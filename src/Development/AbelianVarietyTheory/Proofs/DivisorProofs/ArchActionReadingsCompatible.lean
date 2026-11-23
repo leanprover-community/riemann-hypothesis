@@ -144,7 +144,6 @@ end Laws
 
 section Main
 
-open scoped Classical
 
 theorem actsLaws : ActsLaws := by
   intro F _ _ κ _ f f₁ f₂

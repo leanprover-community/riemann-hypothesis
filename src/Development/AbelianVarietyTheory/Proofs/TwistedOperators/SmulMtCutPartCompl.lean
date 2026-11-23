@@ -61,7 +61,6 @@ end GlobalTheory.ExpansionInvariance
 
 namespace GlobalTheory.ExpansionInvariance
 
-open GlobalTheory.IdemSupport
 
 variable {D : D7}
 

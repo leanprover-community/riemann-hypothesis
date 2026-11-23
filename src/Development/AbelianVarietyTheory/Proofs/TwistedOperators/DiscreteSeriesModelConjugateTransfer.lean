@@ -194,7 +194,6 @@ end Model
 
 section Main
 
-open GlobalTheory.ConjDS
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
 

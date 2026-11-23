@@ -182,7 +182,6 @@ end
 
 noncomputable section
 namespace GlobalTheory.Core.TieSign
-open Formalism.L2.SG.AdBridge Formalism.L2.SG.InstExistsPf
 
 theorem hN_smul {D : D7} (n : GA D (D.sp.Y 0)) (a b : D.host.E) (p q : Fin (D.sp.Y 0).rank → D.host.E) :
     hN n (a • p) (b • q) = incA D (star a * b) * hN n p q := by
@@ -290,7 +289,6 @@ end
 
 noncomputable section
 namespace GlobalTheory.Core.TieSign
-open Formalism.L2.SG.AdBridge Formalism.L2.SG.InstExistsPf
 
 theorem thetaV_incA' (D : D7) (v : InfinitePlace (instOf D).F) (y : D.host.E) :
     thetaV (instOf D) v (incA D y) = (instOf D).φ v y := by

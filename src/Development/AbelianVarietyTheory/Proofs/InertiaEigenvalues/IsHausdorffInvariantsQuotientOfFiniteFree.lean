@@ -83,7 +83,6 @@ end GlobalTheory.InertiaEigenvalues.FreeHausdorff
 
 namespace GlobalTheory.InertiaEigenvalues
 
-open PowerSeries GlobalTheory.BK
 
 theorem isHausdorff_Z_of_finiteFree : ∀ (O K : Type) [CommRing O] [NormedField K] [IsUltrametricDist K] [CompleteSpace K] [Algebra O K] [IsUnitBall O K] (l e a : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι] [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e] [NeZero a] [TameDescentExponentData K l e a] (η H : ℕ) (D : BKDat O K l e a ι η H), GlobalTheory.IndefiniteRowSideFullHecke.ImagePolynomialAction.FiniteFree D → IsHausdorff (Ideal.span {(l : O)}) D.Z := by
   intro O K _ _ _ _ _ _ l e a ι _ _ _ _ _ _ _ η H D hD

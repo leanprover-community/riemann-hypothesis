@@ -101,7 +101,6 @@ end GlobalTheory.AlgebraiseGen
 
 namespace GlobalTheory.AlgebraiseGen
 
-open GlobalTheory.Algebraise GlobalTheory.SectionRingIso ReciprocityTheory.ChartRestriction.G.Geo.Tor TopologicalSpace
 
 theorem exists_iso_of_compatible_thickenings_gen {R : Type} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]
     (I : Ideal R) [IsAdicComplete I R] (P P' : PolAV (Spec (CommRingCat.of R))) (M : LB P.A.left) (M' : LB P'.A.left)

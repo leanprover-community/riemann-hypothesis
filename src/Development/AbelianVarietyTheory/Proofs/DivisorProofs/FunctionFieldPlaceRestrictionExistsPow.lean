@@ -179,7 +179,6 @@ end GlobalTheory.Nef.PlaceResiduePowerBound
 
 namespace GlobalTheory.Nef
 
-open WithZero
 
 theorem place_res_exists_pow : ∀ (k F E : Type) [Field k] [Field F] [Field E] [Algebra k F] [Algebra k E]
     [Algebra F E] [IsScalarTower k F E] [FiniteDimensional F E],

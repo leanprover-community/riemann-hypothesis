@@ -659,7 +659,6 @@ end GlobalTheory.GLm.ResInd
 namespace GlobalTheory.GLm
 
 open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq GlobalTheory.GLm.ResInd
-open scoped Classical
 
 theorem indR_diag1_eq_hc_gg (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (i k : ℕ) (ρ : Gn g i → ℂ)
     (hi : i ≤ k) (hρ : IsClass ρ) (h : Gn g k) :

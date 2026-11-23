@@ -307,7 +307,6 @@ def ccOneG (hJ : CompanionTheory.Lime.BM.UniqGap) (large₂ : SizeData₂ D) {C'
     (ampVec_carrierG hJ large₂ hCl hH0 hB u u' τ hTT hW hA hT hT' a b ξ ξ' 1 hpin1 hscl).choose D θ
     (muN_eq_haarLie D.R.k D.R.rS).choose
 
-open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.Pf.BaseOf in
 variable [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] [Fact Formalism.L2.SG.LitS.PfNVG.BesselNVG] in
 theorem ccOne_neG (hJ : CompanionTheory.Lime.BM.UniqGap) (large₂ : SizeData₂ D) {C' Cl Cg cb Cu cT CT C0 : ℝ}
     (hCl : 1000 ≤ Cl) (hH0 : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0) (u u' : D.what₂.Word) (τ : D.what₂.Tau)
@@ -320,7 +319,6 @@ theorem ccOne_neG (hJ : CompanionTheory.Lime.BM.UniqGap) (large₂ : SizeData₂
     (ampVec_carrierG hJ large₂ hCl hH0 hB u u' τ hTT hW hA hT hT' a b ξ ξ' 1 hpin1 hscl).choose_spec.1 h0 h1
     (Formalism.L2.SG.AmpOrbPf.kapN_ne_zero hW)
 
-open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.Pf.BaseOf in
 variable [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] [Fact Formalism.L2.SG.LitS.PfNVG.BesselNVG] in
 theorem pinAt_oneG (hJ : CompanionTheory.Lime.BM.UniqGap) (large₂ : SizeData₂ D) {C' Cl Cg cb Cu cT CT C0 : ℝ}
     (hCl : 1000 ≤ Cl) (hH0 : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0) (u u' : D.what₂.Word) (τ : D.what₂.Tau)
@@ -369,10 +367,7 @@ end GlobalTheory.CarrierGap
 end
 
 section
-open Formalism Formalism.L2 Formalism.L2.SG Formalism.L2.SG.Pf Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.Carrier.CarPinTor
 
-open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.MainNotions.FrameBoundFromBesselTorus Formalism.L2.S.Pv.AmpNZTie
-open Formalism.BasicNotions Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.RealObj
 open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -380,7 +375,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {θ : ℝ} (C : Choice X θ) (hB : WuBessel C)
 
 namespace GlobalTheory.CarrierGap
-open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.Pf.BaseOf in
 variable [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] [Fact Formalism.L2.SG.LitS.PfNVG.BesselNVG] in
 theorem pinCov_ccOneG (hJ : CompanionTheory.Lime.BM.UniqGap) (large₂ : SizeData₂ D) {C' Cl Cg cb Cu cT CT C0 : ℝ}
     (hCl : 1000 ≤ Cl) (hH0 : Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0)
@@ -423,7 +417,6 @@ section
 open Formalism Formalism.L2 Formalism.L2.SG Formalism.L2.SG.Pf Formalism.L2.SG.Pf.CarrierXAll
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.RealObj
 
@@ -469,12 +462,9 @@ end GlobalTheory.CarrierGap
 end
 
 section
-open Formalism Formalism.L2 Formalism.L2.SG Formalism.L2.SG.Pf Formalism.L2.SG.Pf.CarrierXAll
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
 open scoped Matrix InnerProductSpace
 
-open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.RealObj
 open Formalism.FourierDecayAlt Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups
 open Formalism.L2.SG.AdBridge Formalism.L2.SG.DataInst Formalism.L2.SG.SpectralTiesReal
 
@@ -577,14 +567,8 @@ end GlobalTheory.CarrierGap
 end
 
 section
-open Formalism Formalism.L2 Formalism.L2.SG Formalism.L2.SG.Pf Formalism.L2.SG.Pf.CarrierXAll
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix InnerProductSpace
 
-open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.RealObj
-open Formalism.FourierDecayAlt Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups
-open Formalism.L2.SG.AdBridge Formalism.L2.SG.DataInst Formalism.L2.SG.SpectralTiesReal
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
 

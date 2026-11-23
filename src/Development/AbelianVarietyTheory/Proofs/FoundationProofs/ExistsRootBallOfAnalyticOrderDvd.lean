@@ -92,7 +92,6 @@ theorem exists_root_of_ne_zero (g : ℂ → ℂ) (m : ℕ) (c : ℂ) (R : ℝ) (
 end GlobalTheory.KZ.RootDisc
 
 namespace GlobalTheory.KZ.RootDisc
-open Metric Filter Topology
 
 theorem exists_root_disc : ∀ (h : ℂ → ℂ) (m : ℕ) (c : ℂ) (R : ℝ), 0 < m → 0 < R →
     AnalyticOnNhd ℂ h (Metric.closedBall c R) →

@@ -131,7 +131,6 @@ end GlobalTheory.AHPhase
 
 namespace GlobalTheory.AHPhase
 
-open GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues
 
 theorem psi_realPt_eq_exp_im : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type)
     (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F),

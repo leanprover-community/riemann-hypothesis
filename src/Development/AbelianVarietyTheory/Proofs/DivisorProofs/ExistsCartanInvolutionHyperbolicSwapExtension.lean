@@ -102,7 +102,6 @@ theorem transport {n : ℕ} {k : Type} [Fintype k] [DecidableEq k] (M : Matrix (
 end GlobalTheory.PlaneCartan
 
 namespace GlobalTheory.PlaneCartan
-open Matrix
 
 def swapI : Matrix (Fin 2) (Fin 2) ℂ := !![0, -Complex.I; Complex.I, 0]
 
@@ -164,7 +163,6 @@ theorem blk_cartan {m : ℕ} (G₁ θ₁ : Matrix (Fin m) (Fin m) ℂ) (h : IsCa
 end GlobalTheory.PlaneCartan
 
 namespace GlobalTheory.PlaneCartan
-open Matrix
 
 noncomputable def cols {n₁ : ℕ} (X Y : Fin (n₁ + 2) → ℂ) (ι : Matrix (Fin (n₁ + 2)) (Fin n₁) ℂ) :
     Matrix (Fin (n₁ + 2)) (Fin n₁ ⊕ Fin 2) ℂ :=
@@ -215,7 +213,6 @@ theorem cols_gram {n₁ : ℕ} (M : Matrix (Fin (n₁ + 2)) (Fin (n₁ + 2)) ℂ
 end GlobalTheory.PlaneCartan
 
 namespace GlobalTheory.PlaneCartan
-open Matrix
 
 theorem cols_ker {n₁ : ℕ} (M : Matrix (Fin (n₁ + 2)) (Fin (n₁ + 2)) ℂ) (X Y : Fin (n₁ + 2) → ℂ)
     (ι : Matrix (Fin (n₁ + 2)) (Fin n₁) ℂ) (hM : M.conjTranspose = M)

@@ -63,8 +63,6 @@ private lemma ratCast_algebra_norm_eq_prod_embeddings {E : Type} [Field E] [Numb
   rw [h]
   exact Fintype.prod_equiv (RingHom.equivRatAlgHom E ℂ).symm _ _ (fun σ => rfl)
 
-open Matrix NumberField in
-open scoped ComplexOrder in
 private lemma one_le_prod_re_of_isType_of_isIntegral_pos {E : Type} [Field E] [NumberField E]
     (Ψ : Finset (E →+* ℂ)) (hΨ : _root_.GlobalTheory.SW.IsType Ψ) (d : E)
     (hd : IsIntegral ℤ d) (hpos : ∀ τ ∈ Ψ, 0 < τ d) :
@@ -111,8 +109,6 @@ private lemma one_le_prod_re_of_isType_of_isIntegral_pos {E : Type} [Field E] [N
     exact_mod_cast this
   nlinarith
 
-open Matrix NumberField in
-open scoped ComplexOrder in
 private lemma isIntegral_det_natCast_smul_of_den {E : Type} [Field E] {N : ℕ} (c : ℕ)
     (T : Matrix (Fin N) (Fin N) E) (h : _root_.GlobalTheory.SW.Den c T) :
     IsIntegral ℤ (((c : E) • T).det) := by
@@ -122,8 +118,6 @@ private lemma isIntegral_det_natCast_smul_of_den {E : Type} [Field E] {N : ℕ} 
   rw [Units.smul_def]
   exact IsIntegral.smul _ (IsIntegral.prod _ fun i _ => h _ _)
 
-open Matrix NumberField in
-open scoped ComplexOrder in
 private lemma map_det_natCast_smul {E : Type} [Field E] {N : ℕ} (c : ℕ)
     (T : Matrix (Fin N) (Fin N) E) (τ : E →+* ℂ) :
     τ (((c : E) • T).det) = ((c : ℂ) • T.map τ).det := by
@@ -132,8 +126,6 @@ private lemma map_det_natCast_smul {E : Type} [Field E] {N : ℕ} (c : ℕ)
   ext i j
   simp
 
-open Matrix NumberField in
-open scoped ComplexOrder in
 private lemma exists_conjTranspose_mul_self_eq_of_posDef {N : ℕ} {Y : Matrix (Fin N) (Fin N) ℂ}
     (hY : Y.PosDef) : ∃ C : Matrix (Fin N) (Fin N) ℂ, Cᴴ * C = Y ∧ C.det ≠ 0 := by
   set U : Matrix (Fin N) (Fin N) ℂ := hY.isHermitian.eigenvectorUnitary.1
@@ -160,8 +152,6 @@ private lemma exists_conjTranspose_mul_self_eq_of_posDef {N : ℕ} {Y : Matrix (
     · have h1 : (star U).det * U.det = 1 := by rw [← det_mul, hU, det_one]
       exact left_ne_zero_of_mul_eq_one h1
 
-open Matrix NumberField in
-open scoped ComplexOrder in
 private lemma card_mul_prod_rpow_inv_card_le_sum {ι : Type*} [Fintype ι] [Nonempty ι] (x : ι → ℝ)
     (hx : ∀ i, 0 ≤ x i) :
     (Fintype.card ι : ℝ) * (∏ i, x i) ^ (1 / (Fintype.card ι : ℝ)) ≤ ∑ i, x i := by
@@ -173,8 +163,6 @@ private lemma card_mul_prod_rpow_inv_card_le_sum {ι : Type*} [Fintype ι] [None
       ≤ (Fintype.card ι : ℝ) * (1 / (Fintype.card ι : ℝ) * ∑ i, x i) := by gcongr
     _ = ∑ i, x i := by field_simp
 
-open Matrix NumberField in
-open scoped ComplexOrder in
 private lemma card_mul_det_rpow_le_trace_of_posDef {N : ℕ} (hN : 0 < N) {P : Matrix (Fin N) (Fin N) ℂ}
     (hP : P.PosDef) : (N : ℝ) * P.det.re ^ (1 / (N : ℝ)) ≤ P.trace.re := by
   haveI : Nonempty (Fin N) := ⟨⟨0, hN⟩⟩
@@ -184,8 +172,6 @@ private lemma card_mul_det_rpow_le_trace_of_posDef {N : ℕ} (hN : 0 < N) {P : M
   rw [hP.isHermitian.det_eq_prod_eigenvalues, hP.isHermitian.trace_eq_sum_eigenvalues]
   simpa [← Complex.ofReal_prod, ← Complex.ofReal_sum] using h
 
-open Matrix NumberField in
-open scoped ComplexOrder in
 private lemma card_mul_det_mul_det_rpow_le_trace_mul_of_posDef {N : ℕ} (hN : 0 < N) {A Y : Matrix (Fin N) (Fin N) ℂ}
     (hA : A.PosDef) (hY : Y.PosDef) :
     (N : ℝ) * (A.det.re * Y.det.re) ^ (1 / (N : ℝ)) ≤ (A * Y).trace.re := by

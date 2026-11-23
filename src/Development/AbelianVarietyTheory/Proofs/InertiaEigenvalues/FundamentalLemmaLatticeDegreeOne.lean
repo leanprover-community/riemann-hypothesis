@@ -118,7 +118,6 @@ end GlobalTheory.PMon.FLOne
 
 namespace GlobalTheory.PMon.FLOne
 
-open Matrix
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 
@@ -165,7 +164,6 @@ end GlobalTheory.PMon.FLOne
 
 namespace GlobalTheory.PMon.FLOne
 
-open Matrix
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 
@@ -194,7 +192,6 @@ end GlobalTheory.PMon.FLOne
 
 namespace GlobalTheory.PMon.FLOne
 
-open Matrix
 
 theorem flAt_one : FLAt 1 := by
   intro l _ P AI T n _ _ U x y hxy hU hc

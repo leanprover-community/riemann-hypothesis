@@ -56,7 +56,6 @@ open PowerSeries in
 lemma derivative_prim (f : PowerSeries ℂ) : derivative (B.prim f) = f := B.dz_prim f
 
 
-open PowerSeries in
 lemma sigS_add_const (Q : PowerSeries ℂ) (s : ℂ) :
     B.sigS (Q + C s) = -B.prim (B.prim Q) + -(C (s / 2) * X ^ 2) := by
   have h1 : derivative (C (s / 2) * X ^ 2 : PowerSeries ℂ) = C s * X := by

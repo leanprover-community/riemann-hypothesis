@@ -88,7 +88,6 @@ theorem match_down {e : ℕ} {f : D'.X → D.X}
     ((val_pull hJ' _ _ _).symm.trans (val_corr hJ' (U'.gt_t e x) r))))
 
 
-open CharAgree in
 theorem exists_xe [IsLocalRing R] [IsNoetherianRing R] (hI : I ≠ ⊤) :
     ∃ xe : D'.X ≃+ D.X, ∀ e, CharAgree.Match (U.gt e) (U'.gt e) xe := by
   choose xe hxe using fun e => exists_match hI (U.gt e) (U'.gt e)

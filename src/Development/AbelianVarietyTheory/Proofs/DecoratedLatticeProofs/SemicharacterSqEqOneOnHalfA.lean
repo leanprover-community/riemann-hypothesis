@@ -247,7 +247,6 @@ end GlobalTheory.AdForm.HalfASign
 
 namespace GlobalTheory.AdForm.HalfASign
 
-open GlobalTheory.LatVac
 
 
 

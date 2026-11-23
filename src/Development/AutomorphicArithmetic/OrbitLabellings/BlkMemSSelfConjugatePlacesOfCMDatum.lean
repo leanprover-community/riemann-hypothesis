@@ -181,7 +181,6 @@ private theorem first_chern_integral : IsotropicToStdSubstIntegral d := by
 end P0
 
 section P1
-open Formalism.IncomingBounds Formalism.L2.Pj
 
 variable {C : Type} [Field C] {T Orb : Type} [Fintype Orb] (r : T → ℕ) (tau : Orb → ZMod d → T)
   (gm : Orb → ZMod d → Matrix (Fin 2) (Fin 2) C) {N n : ℕ} (plc : Fin N × Fin 2 ↪ Fin n)
@@ -317,7 +316,6 @@ private theorem back_subG (inj : Function.Injective fun x : Orb × ZMod d => tau
 end P1
 
 section P2
-open Formalism.IncomingBounds Formalism.L2.Pj
 
 section Gen
 
@@ -516,7 +514,6 @@ private theorem isotropic_to_standard_substitution_invariant : IsotropicToStdSub
 end P3
 
 section P4
-open Formalism.IncomingBounds Formalism.L2.Pj MvPolynomial
 
 private theorem trueT_iff (hd2 : hd + hd = 0) (g : Fin 2) (t' s : ZMod d) :
     ((if g = 0 then t' else t' + hd) = s) ↔ t' = trueT hd g s := by
@@ -689,7 +686,6 @@ private theorem isotropic_to_std_subst_degree : IsotropicToStdSubstLineDegree hd
 end P4
 
 section P5
-open Formalism.IncomingBounds Formalism.L2.Pj MvPolynomial
 
 section Chain
 
@@ -740,7 +736,6 @@ end Chain
 end P5
 
 section P6
-open Formalism.IncomingBounds Formalism.L2.Pj MvPolynomial
 
 section Plane
 
@@ -902,7 +897,6 @@ private theorem isotropic_to_std_subst_harmonic : IsotropicToStdSubstHarmonic hd
 end P6
 
 section P7
-open Formalism.IncomingBounds Formalism.L2.Pj
 
 private theorem blkMemS_mono {C : Type} [Field C] {V : VF C} {Orb : Type} [Fintype Orb] {I J : Orb → Fin 2 → Type}
     [∀ o g, Fintype (I o g)] [∀ o g, Fintype (J o g)] {X : ∀ o, RowData C V d (I o) (J o)} {n : ℕ} {F : ∀ o, Flag (X o)}
@@ -961,8 +955,6 @@ end Formalism.L2.FormalSeriesBounds.RF.MemS
 
 end
 
-open scoped BigOperators
-open Classical
 open Formalism.IncomingBounds Formalism.L2.Pj Formalism.L2.FormalSeriesBounds Formalism.L2.FormalSeriesBounds.RF UpperTheory.G2 NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 

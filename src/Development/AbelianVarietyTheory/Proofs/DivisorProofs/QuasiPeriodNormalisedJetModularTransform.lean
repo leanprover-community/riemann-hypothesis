@@ -53,8 +53,6 @@ private lemma length_word_eq_sum {I : Type} [Fintype I] (κ : I → ℕ) :
   unfold _root_.GlobalTheory.HilbFam.word
   simp [List.length_flatMap, Finset.sum_toList]
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma lineDeriv_const_mul_comp_smul {I : Type} (f : (I → ℂ) → ℂ) (a c : ℂ)
     (z v : I → ℂ) :
     lineDeriv ℂ (fun z => a * f (c • z)) z v = a * c * lineDeriv ℂ f (c • z) v := by
@@ -72,8 +70,6 @@ private lemma lineDeriv_const_mul_comp_smul {I : Type} (f : (I → ℂ) → ℂ)
     _ = a * c * deriv (fun t : ℂ => f (c • z + t • v)) 0 := by
         rw [mul_zero, smul_eq_mul, mul_assoc]
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma iterD_comp_smul {I : Type} [DecidableEq I] (c : ℂ)
     (u : List I) (f : (I → ℂ) → ℂ) (z : I → ℂ) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.iterD u (fun z => f (c • z)) z =
@@ -87,8 +83,6 @@ private lemma iterD_comp_smul {I : Type} [DecidableEq I] (c : ℂ)
     unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.partialD
     rw [lineDeriv_const_mul_comp_smul, List.length_cons, pow_succ]
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma jet_mul_eq_pow_sum_mul {F : Type} [Field F] [NumberField F] (k : ℕ)
     (L : _root_.GlobalTheory.HilbFam.Lat F) (κ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℕ) (τ c t lam : ℂ) :
     _root_.GlobalTheory.HilbFam.jet k L κ τ (lam * c) (lam * t) =
@@ -103,8 +97,6 @@ private lemma jet_mul_eq_pow_sum_mul {F : Type} [Field F] [NumberField F] (k : �
   · exact smul_zero lam
 
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 theorem _root_.GlobalTheory.HilbFam.hfun_slash : _root_.GlobalTheory.LatJet.EisExp → ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], 2 ≤ Module.finrank ℚ F → ∀ (s N : ℕ) (L : _root_.GlobalTheory.HilbFam.Lat F), 1 ≤ s → 0 < N → _root_.GlobalTheory.HilbFam.HasLevel N L → ∀ (κ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℕ) (γ : SL(2, ℤ)) (Ch Ch' : ℍ → ℂ) (τ : ℍ), (∃ L', _root_.GlobalTheory.HilbFam.HasLevel N L' ∧ L' = _root_.GlobalTheory.HilbFam.mulMat L (γ : Matrix (Fin 2) (Fin 2) ℤ)) → Ch (γ • τ) = (((γ : Matrix (Fin 2) (Fin 2) ℤ) 1 0 * (τ : ℂ) + (γ : Matrix (Fin 2) (Fin 2) ℤ) 1 1) : ℂ) ^ 2 * Ch' τ - ((γ : Matrix (Fin 2) (Fin 2) ℤ) 1 0 : ℂ) * ((γ : Matrix (Fin 2) (Fin 2) ℤ) 1 0 * (τ : ℂ) + (γ : Matrix (Fin 2) (Fin 2) ℤ) 1 1) / (2 * Real.pi * Complex.I) → _root_.GlobalTheory.HilbFam.hfun (2 * s) L κ Ch (γ • τ) = (((γ : Matrix (Fin 2) (Fin 2) ℤ) 1 0 * (τ : ℂ) + (γ : Matrix (Fin 2) (Fin 2) ℤ) 1 1) : ℂ) ^ _root_.GlobalTheory.HilbFam.wt (2 * s) κ * _root_.GlobalTheory.HilbFam.hfun (2 * s) (_root_.GlobalTheory.HilbFam.mulMat L (γ : Matrix (Fin 2) (Fin 2) ℤ)) κ Ch' τ := by
   intro _ F _ _ _ _ s N L _ _ _ κ γ Ch Ch' τ _ hCh
   have hP : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by

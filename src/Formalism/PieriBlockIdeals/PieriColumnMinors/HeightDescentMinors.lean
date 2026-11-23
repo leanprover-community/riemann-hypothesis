@@ -1393,13 +1393,10 @@ theorem sixth_relation_of_action_and_mu_laws (ha : ActLaws) (hm : MuFacts) (hq :
 
 end PartB2
 
-section PartC
 
-section CapelliProof
 
 variable {𝒰 : Type} [Ring 𝒰]
 
-end CapelliProof
 
 end PartC
 

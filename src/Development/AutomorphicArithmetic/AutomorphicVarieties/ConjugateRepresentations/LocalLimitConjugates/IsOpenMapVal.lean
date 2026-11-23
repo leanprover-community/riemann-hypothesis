@@ -183,7 +183,6 @@ private theorem isOpenMap_val : IsOpenMap fun u : GL (Fin a) (Cinf E) => toL u.v
   haveI : CompleteSpace (Matrix (Fin a) (Fin a) (Cinf E)) := FiniteDimensional.complete ℝ _
   (Units.isOpenEmbedding_val (R := Matrix (Fin a) (Fin a) (Cinf E))).isOpenMap
 
-open scoped Matrix.Norms.Operator in
 omit [_root_.NumberField.IsTotallyComplex E] in
 private theorem locCpt : LocallyCompactSpace (GL (Fin a) (Cinf E)) :=
   haveI : CompleteSpace (Matrix (Fin a) (Fin a) (Cinf E)) := FiniteDimensional.complete ℝ _

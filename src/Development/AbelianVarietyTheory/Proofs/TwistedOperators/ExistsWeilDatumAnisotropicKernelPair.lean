@@ -111,7 +111,6 @@ end GlobalTheory.RowChain
 
 namespace GlobalTheory.RowChain
 
-open GlobalTheory.FunObj GlobalTheory.RowUnf
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (Wl : G.Weil) (t : T) (M : Vol G)
 
@@ -196,7 +195,6 @@ end GlobalTheory.RowChain
 
 namespace GlobalTheory.RowChain
 
-open GlobalTheory.FunObj GlobalTheory.RowUnf
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (Wl : G.Weil) (t : T) (M : Vol G)
 

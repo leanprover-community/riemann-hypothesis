@@ -178,7 +178,6 @@ end ReciprocityTheory.ChartRestriction.G.I2
 
 namespace ReciprocityTheory.ChartRestriction.G.I2
 
-open NumberField MeasureTheory
 
 noncomputable section
 

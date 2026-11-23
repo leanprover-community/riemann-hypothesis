@@ -136,7 +136,6 @@ theorem exists_local_gen {M : FractionalIdeal (𝓞 E)⁰ E} (hM : M ≠ 0) {�
   exact ⟨t, by rw [← ht, Algebra.smul_def, mul_comm]⟩
 
 
-open FractionalIdeal in
 theorem exists_mem_notMem_mul {M : FractionalIdeal (𝓞 E)⁰ E} (hM : M ≠ 0) {𝔭 : Ideal (𝓞 E)} (h𝔭 : 𝔭 ≠ ⊤) :
     ∃ x ∈ M, x ∉ (𝔭 : FractionalIdeal (𝓞 E)⁰ E) * M := by
   by_contra! h
@@ -200,7 +199,6 @@ end GlobalTheory.RealTheta
 
 namespace GlobalTheory.RealTheta
 
-open scoped nonZeroDivisors
 
 theorem exists_bar_inv_trace_gen : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E)
     (𝔭 : Ideal (𝓞 E)) (h𝔭 : 𝔭.IsMaximal),

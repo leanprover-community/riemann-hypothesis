@@ -120,8 +120,6 @@ end GlobalTheory.InertiaPairs
 
 namespace GlobalTheory.InertiaPairs
 
-open Formalism.FrobeniusOrbits Formalism.TwoAdicCyclotomicDecomposition
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
 
 section Fixed
 
@@ -135,8 +133,6 @@ end GlobalTheory.InertiaPairs
 
 namespace GlobalTheory.InertiaPairs
 
-open Formalism.FrobeniusOrbits Formalism.TwoAdicCyclotomicDecomposition
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
 open Formalism.MainNotions.G (plGG)
 
 theorem embT_tauPl (D : D7) (z : Bool × HH D) : TaylorLogMetric.embT D (tauPl D z) = D.host.emb (plGG D z) := by

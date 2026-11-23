@@ -167,7 +167,6 @@ theorem coreP {κ : Type} [Fintype κ] (A : Submodule ℂ Y) (tf : Y →ₗ[ℂ]
     exact sub_eq_zero.2 e2
 
 
-open GlobalTheory.DefU in
 theorem absMain {I J : Type} [Fintype J] [FiniteDimensional ℂ D] (A : Submodule ℂ Y) (tf : Y →ₗ[ℂ] D →ₗ[ℂ] (UA E n → ℂ))
     (r : UA E n → D → D) (hinj : ∀ F ∈ A, (∀ ℓ, tf F ℓ = 0) → F = 0)
     (hsur : ∀ Φ : D →ₗ[ℂ] (UA E n → ℂ), (∀ ℓ, IsAutFormU (Φ ℓ)) → (∀ ℓ, ∀ x ∈ infU E n, RU E n x (Φ ℓ) = Φ (r x ℓ)) →

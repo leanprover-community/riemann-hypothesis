@@ -354,7 +354,6 @@ end Proj
 
 section Field
 
-open GlobalTheory.ProjSpace
 
 variable (k : Type) [Field k] (N : ℕ)
 

@@ -55,7 +55,6 @@ private theorem lowFix_emb (E : Type) [Field E] [TopologicalSpace E] [IsTopologi
   · intro u
     exact (Matrix.coe_units_inv u).symm
 
-open Topology Filter in
 private theorem lowFix_ball (E : Type) [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E]
     (γ : ValueGroupWithZero E) (hγ : γ < 1) (W : Set E) (hW : W ∈ nhds (0 : E)) :
     ∃ m : ℕ, ∀ x : E, valuation E x ≤ γ ^ m → x ∈ W := by
@@ -63,7 +62,6 @@ private theorem lowFix_ball (E : Type) [Field E] [ValuativeRel E] [TopologicalSp
   obtain ⟨m, hm⟩ := exists_pow_lt₀ hγ δ
   exact ⟨m, fun x hx => hδ (lt_of_le_of_lt hx hm)⟩
 
-open Topology Filter in
 theorem UpperTheory.V.Z.Tf.L4.lowFix :
     ∀ (E : Type) [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E] (n : ℕ) (ϖ : Eˣ), valuation E (ϖ : E) = uniformizer E → ∀ (d : ℤ) (U : Set (GL (Fin n) E)), U ∈ nhds (1 : GL (Fin n) E) →
       ∃ a₀ : ℤ, ∀ a ≥ a₀, ∀ b ∈ howeSet n ϖ a (2 * a - d), (∀ i j : Fin n, i < j → (b : Matrix (Fin n) (Fin n) E) i j = 0) → b ∈ U := by

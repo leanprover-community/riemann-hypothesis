@@ -88,7 +88,6 @@ end GlobalTheory.LatScaleSum
 
 namespace GlobalTheory.LatScaleSum
 
-open mixedEmbedding
 
 theorem thetaSum_norm_le_pow :
     ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ], ∃ (N₀ k : ℕ) (C : ℝ), ∀ (A : ℝ) (m : ℕ) (Ψ : (κ → AF F) → ℂ), 1 ≤ m →

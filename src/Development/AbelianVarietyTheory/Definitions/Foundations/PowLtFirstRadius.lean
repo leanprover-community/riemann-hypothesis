@@ -62,20 +62,17 @@ theorem extHom_coe (g : GQ l) (x : Om l) : extHom g (x : PadicComplex l) = ((g x
 
 theorem extHom_cont (g : GQ l) : Continuous (extHom g) := UniformSpace.Completion.continuous_map
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem continuous_cyc_extHom (g : _root_.Formalism.BasicNotions.Loc.GQ l) :
     Continuous (_root_.GlobalTheory.Cyc.Model.extHom g) :=
   UniformSpace.Completion.continuous_extension
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem cyc_extHom_coe (g : _root_.Formalism.BasicNotions.Loc.GQ l) (x : _root_.Formalism.BasicNotions.Loc.Om l) :
     _root_.GlobalTheory.Cyc.Model.extHom g (x : PadicComplex l) = ((g x : _root_.Formalism.BasicNotions.Loc.Om l) : PadicComplex l) := by
   simp only [_root_.GlobalTheory.Cyc.Model.extHom, UniformSpace.Completion.mapRingHom]
   rw [UniformSpace.Completion.extensionHom_coe]; rfl
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Cyc.Model.extHom_mul (g h : _root_.Formalism.BasicNotions.Loc.GQ l) (y : PadicComplex l) :
     _root_.GlobalTheory.Cyc.Model.extHom (g * h) y =
@@ -84,7 +81,6 @@ theorem _root_.GlobalTheory.Cyc.Model.extHom_mul (g h : _root_.Formalism.BasicNo
     ((continuous_cyc_extHom g).comp (continuous_cyc_extHom h))) fun x => ?_
   rw [cyc_extHom_coe, cyc_extHom_coe, cyc_extHom_coe]; rfl
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Cyc.Model.extHom_one (y : PadicComplex l) :
     _root_.GlobalTheory.Cyc.Model.extHom (1 : _root_.Formalism.BasicNotions.Loc.GQ l) y = y := by
@@ -104,7 +100,6 @@ def actC : GQ l →* (PadicComplex l ≃+* PadicComplex l) where
   map_one' := by ext y; exact extHom_one y
   map_mul' g h := by ext y; exact extHom_mul g h y
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem norm_cyc_extHom (g : _root_.Formalism.BasicNotions.Loc.GQ l) (y : PadicComplex l) :
     ‖_root_.GlobalTheory.Cyc.Model.extHom g y‖ = ‖y‖ := by
@@ -113,13 +108,11 @@ private theorem norm_cyc_extHom (g : _root_.Formalism.BasicNotions.Loc.GQ l) (y 
   rw [cyc_extHom_coe, UniformSpace.Completion.norm_coe, UniformSpace.Completion.norm_coe]
   exact (_root_.GlobalTheory.Cyc.Model.isom_gal g).norm_map_of_map_zero (map_zero _) x
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Cyc.Model.isActC_actC :
     _root_.GlobalTheory.Cyc.IsActC (_root_.GlobalTheory.Cyc.Model.actC (l := l)) :=
   ⟨fun g x => cyc_extHom_coe g x, fun g y => norm_cyc_extHom g y⟩
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Cyc.Model.cyc_irred (n : ℕ) :
     Irreducible (cyclotomic (l ^ (n + 1)) ℚ_[l]) := by

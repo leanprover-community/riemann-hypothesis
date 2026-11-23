@@ -56,7 +56,6 @@ private lemma exact_comp_injective {A B C C' : Type*} [Zero C] [Zero C'] {f : A 
   rw [← hfg y, Function.comp_apply, ← h0]
   exact hβ.eq_iff
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 private lemma exact_conj_bijection_middle {A B B' C : Type*} [Zero C] {f : A → B} {g : B → C}
     (β : B → B') (δ : B' → B) (hδβ : ∀ b, δ (β b) = b) (hβδ : ∀ b', β (δ b') = b')
     (hfg : Function.Exact f g) : Function.Exact (β ∘ f) (g ∘ δ) := by
@@ -68,7 +67,6 @@ private lemma exact_conj_bijection_middle {A B B' C : Type*} [Zero C] {f : A →
   · rintro ⟨x, rfl⟩
     exact ⟨x, by rw [Function.comp_apply, hδβ]⟩
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 private lemma exact_comp_surjective {A A' B C : Type*} [Zero C] {f : A → B} {g : B → C}
     {γ : A' → A} (hfg : Function.Exact f g) (hγ : Function.Surjective γ) :
     Function.Exact (f ∘ γ) g := by
@@ -76,7 +74,6 @@ private lemma exact_comp_surjective {A A' B C : Type*} [Zero C] {f : A → B} {g
   rw [hfg y, Set.range_comp, hγ.range_eq, Set.image_univ]
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 theorem _root_.GlobalTheory.EtC.coefSeq_exact : _root_.GlobalTheory.EtC.A7 := by
   unfold _root_.GlobalTheory.EtC.A7
   intro R _ S hS

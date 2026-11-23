@@ -51,25 +51,21 @@ namespace GlobalTheory.TorsRootParam
 open Polynomial in
 abbrev CycRing (n : ℕ) : Type := AdjoinRoot (cyclotomic n ℤ)
 
-open Polynomial in
 theorem root_pow (n : ℕ) : AdjoinRoot.root (cyclotomic n ℤ) ^ n = 1 := by
   have h := (AdjoinRoot.mk_eq_zero (f := cyclotomic n ℤ)).mpr (cyclotomic.dvd_X_pow_sub_one n ℤ)
   rw [map_sub, map_pow, AdjoinRoot.mk_X, map_one] at h
   exact sub_eq_zero.mp h
 
 
-open Polynomial in
 def cycUnit {n : ℕ} (hn : 0 < n) : (CycRing n)ˣ :=
   Units.ofPowEqOne (AdjoinRoot.root (cyclotomic n ℤ)) n (root_pow n) hn.ne'
 
-open Polynomial in
 theorem cycUnit_val {n : ℕ} (hn : 0 < n) : (cycUnit hn : CycRing n) = AdjoinRoot.root (cyclotomic n ℤ) := rfl
 
 theorem cycUnit_pow {n : ℕ} (hn : 0 < n) : cycUnit hn ^ n = 1 := by
   ext
   rw [Units.val_pow_eq_pow_val, cycUnit_val, root_pow, Units.val_one]
 
-open Polynomial in
 theorem isPrimitiveRoot_map {n : ℕ} (hn : 0 < n) {K : Type} [Field K] (hK : (n : K) ≠ 0) (β : CycRing n →+* K) :
     IsPrimitiveRoot (Units.map β.toMonoidHom (cycUnit hn)) n := by
   have : NeZero (n : K) := ⟨hK⟩
@@ -84,7 +80,6 @@ theorem isPrimitiveRoot_map {n : ℕ} (hn : 0 < n) {K : Type} [Field K] (hK : (n
   rw [hv]
   exact (Polynomial.isRoot_cyclotomic_iff).mp hr
 
-open Polynomial in
 theorem exists_map_eq {n : ℕ} (hn : 0 < n) {K : Type} [Field K] {ζ : Kˣ} (hζ : IsPrimitiveRoot ζ n) :
     ∃ β : CycRing n →+* K, Units.map β.toMonoidHom (cycUnit hn) = ζ := by
   have h : (cyclotomic n ℤ).eval₂ (Int.castRingHom K) (ζ : K) = 0 := by
@@ -93,7 +88,6 @@ theorem exists_map_eq {n : ℕ} (hn : 0 < n) {K : Type} [Field K] {ζ : Kˣ} (h�
   refine ⟨AdjoinRoot.lift (Int.castRingHom K) (ζ : K) h, Units.ext ?_⟩
   simp [cycUnit_val]
 
-open Polynomial in
 theorem isFinite_cyc (n : ℕ) : IsFinite (spMap (algebraMap ℤ (CycRing n))) := by
   have hf : Module.Finite ℤ (CycRing n) := (AdjoinRoot.powerBasis' (cyclotomic.monic n ℤ)).finite
   dsimp only [spMap]

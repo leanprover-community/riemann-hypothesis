@@ -238,7 +238,6 @@ end GlobalTheory.TwoSidedMomentsGap
 
 namespace GlobalTheory.TwoSidedMomentsGap
 
-open GlobalTheory.AmpMoments GlobalTheory.TwoSidedMoments
 
 theorem two_sided_moments_gap : GlobalTheory.GapIn.Hyp → ∀ Cg cb Cu cT CT C0 : ℝ, ∃ CH : ℝ, 0 ≤ CH ∧
     ∀ (D : D7) (large₂ : SizeData₂ D) (C' Cl : ℝ), 1000 ≤ Cl → HypZ D large₂ C' Cl Cg cb Cu cT CT C0 →

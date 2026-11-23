@@ -56,7 +56,6 @@ private theorem rt0_im_ne_zero (H : _root_.ReciprocityTheory.ChartRestriction.G.
   simp [sq, Complex.mul_re, h] at this
   nlinarith [mul_self_nonneg H.rt0.re]
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} in
 private theorem embedding_rt_eq_or_eq_neg (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (τ : E →+* ℂ) :
     τ H.rt = H.rt0 ∨ τ H.rt = -H.rt0 := by
@@ -69,7 +68,6 @@ private theorem embedding_rt_eq_or_eq_neg (H : _root_.ReciprocityTheory.ChartRes
     simp
   exact sq_eq_sq_iff_eq_or_eq_neg.1 h2
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} in
 private theorem exists_pos_form_rt_eq_im_mul {D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H} {g : ℕ} {ty : Fin g → E →+* ℂ}
     {P : D.La →+ (Fin g → ℂ)} (hP : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsPeriod D ty P) (c : ℂ)
@@ -86,7 +84,6 @@ private theorem exists_pos_form_rt_eq_im_mul {D : _root_.ReciprocityTheory.Chart
   ring
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} in
 theorem _root_.GlobalTheory.CompRat.splitLat_of_definite : ∀ (E : Type) [Field E] [NumberField E]
     [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H),

@@ -108,7 +108,6 @@ end GlobalTheory.OppLinChar
 
 namespace GlobalTheory.OppLinChar
 
-open scoped TensorProduct
 open GlobalTheory.EmbChart (tensAt)
 
 theorem char_eq_psi_symp : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E),

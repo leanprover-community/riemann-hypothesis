@@ -114,7 +114,6 @@ end GlobalTheory.MiTop.CentralShift
 
 namespace GlobalTheory.MiTop
 
-open GlobalTheory.MiTop.CentralShift
 
 end GlobalTheory.MiTop
 

@@ -98,7 +98,6 @@ end GlobalTheory.EvTame
 
 namespace GlobalTheory.EvTame
 
-open scoped Classical
 
 theorem isTame_of_isEv : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (B : Base F E) (n d n₁ d₁ : ℕ) (X : Spc F E n) (W : Spc F E d) (X₁ : Spc F E n₁) (W₁ : Spc F E d₁)

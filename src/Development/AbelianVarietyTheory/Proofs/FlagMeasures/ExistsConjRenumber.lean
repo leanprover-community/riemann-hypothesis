@@ -68,8 +68,6 @@ private lemma traceOnCharacter_averagedSingles_eq (g N : ℕ) [Fact g.Prime]
   ring
 
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] {N : ℕ} in
 theorem _root_.GlobalTheory.GLm.tr_ePat_renumber : ∀ (g : ℕ) [Fact g.Prime]
     (ψ : AddChar (ZMod g) ℂ) (N : ℕ) (Φ E : Fin N → Fin N → Prop)

@@ -573,10 +573,8 @@ end Adelic
 
 section Adelic2
 
-open NumberField GlobalTheory.SiegelSet Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU PositivityTheory.ThKR GlobalTheory.CompanionTheory.RedCov
 open PositivityTheory.ThKEst (rId)
 open PositivityTheory.ThKEst.Sieg (rId_add rId_zero' yx_eq_one)
-open scoped TensorProduct
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n m r : ℕ}
   {J : Matrix (Fin n) (Fin n) E} {J' : Matrix (Fin m) (Fin m) E} {P : Matrix (Fin n) (Fin m) E}
@@ -682,10 +680,7 @@ end Adelic2
 
 section Adelic3
 
-open NumberField GlobalTheory.SiegelSet Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU PositivityTheory.ThKR GlobalTheory.CompanionTheory.RedCov
-open PositivityTheory.ThKEst (rId)
 open PositivityTheory.ThKEst.Sieg (rId_add rId_zero')
-open scoped TensorProduct
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n m r : ℕ}
   {J : Matrix (Fin n) (Fin n) E} {J' : Matrix (Fin m) (Fin m) E} {P : Matrix (Fin n) (Fin m) E}

@@ -112,7 +112,6 @@ variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]
 
 end Ratios
 
-open NumberField in
 private theorem sImg_eq_sImage_finSuccEquiv_reindex {Ω : Type} [Field Ω] {D N : ℕ} (j : Fin (N + 1))
     (x : Fin N → Ω) (p : _root_.ReciprocityTheory.ChartRestriction.G.T0.TVar D N) :
     _root_.ReciprocityTheory.ChartRestriction.G.T0.sImg j x p = _root_.ReciprocityTheory.MultiplicativeHeights.sImage x (p.1, ((finSuccEquiv' j).trans (finSuccEquiv N).symm) p.2) := by
@@ -125,7 +124,6 @@ private theorem sImg_eq_sImage_finSuccEquiv_reindex {Ω : Type} [Field Ω] {D N 
     exact congrArg _ (Fin.insertNth_apply_succAbove j _ _ k)
 
 
-open NumberField in
 theorem _root_.GlobalTheory.differentials_iff_trdegD_and_genericSection : ∀ (K : Type) [Field K] [NumberField K] (ι : Type) [Fintype ι] (Ω : ι → Type) [∀ c, Field (Ω c)] [∀ c, Algebra K (Ω c)] (WT : Type) [AddCommGroup WT] (A : ι → Type) [∀ c, CommRing (A c)] [∀ c, Algebra (Ω c) (A c)] [∀ c, Algebra K (A c)] [∀ c, Algebra (𝓞 K) (A c)] (_𝒜 : (c : ι) → WT → Submodule (Ω c) (A c)) (d : _root_.ReciprocityTheory.ChartRestriction.G.T0.Data K ι Ω WT A), ∀ c : ι, (⊤ : IntermediateField K (Ω c)).FG → Algebra.trdeg K (Ω c) = d.D → d.w (d.jc c) c ≠ 0 → ((∃ J : Fin d.D → Fin d.N, LinearIndependent (Ω c) fun k => KaehlerDifferential.D K (Ω c) (d.x c (J k))) ↔ _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.TrdegD d c) ∧ (_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.TrdegD d c → Function.Injective (d.sH c) ∧ FiniteDimensional (d.KT c) (_root_.ReciprocityTheory.ChartRestriction.G.T0.OmS (Ω c) d.D d.N)) := by
   intro K _ _ ι _ Ω _ _ WT _ A _ _ _ _ _𝒜 d c hfg hD hw
   have hadj : IntermediateField.adjoin K

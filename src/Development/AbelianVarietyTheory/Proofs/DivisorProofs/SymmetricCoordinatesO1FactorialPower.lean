@@ -92,7 +92,6 @@ end GlobalTheory.UMin.CrdSym
 end
 
 namespace GlobalTheory.UMin.CrdSym
-open GlobalTheory.Points GlobalTheory.ProjSpace
 
 theorem lbIso_symTup : ∀ (k Ω o : Type) [CommRing k] [Field Ω] [Algebra k Ω] [CommRing o] (M : RatModel k Ω) (n : ℕ) (h : M.Z ⟶ PSpace k n) (g : M.Z ⟶ PSpace o n) (c : Fin (n + 1) → Ω), PCrd (M.pt ≫ h) c → PCrd (M.pt ≫ g) (symTup c) → LBIso ((ProjSpace.O1 o n).pull g) (lbPow ((ProjSpace.O1 k n).pull h) (n + 1).factorial) := by
   intro k Ω o _ _ _ _ M n h g c hc he

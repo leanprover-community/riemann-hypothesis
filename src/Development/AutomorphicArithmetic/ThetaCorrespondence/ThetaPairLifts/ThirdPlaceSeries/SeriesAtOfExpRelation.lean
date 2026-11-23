@@ -83,14 +83,12 @@ private theorem setupVecAtL_eq (ρ : Setup (Dof x).ntw) (i : (DL x L).ntw.Tw)
     ((setupL L ρ).B i j b).vecAt = (kc% ((ρ.B (kc% i) (kc% j) b).vecAt)) :=
   kc% (vecAtL_eq L (ρ.B (kc% i) (kc% j) b))
 
-open GlobalTheory.SeriesTie in
 private theorem gens_eq_pz (ρ : Setup (Dof x).ntw) :
     (setupL L ρ).gens = fun i j b k Q ψ h P => (by exact ρ.gens i j b k Q ψ h P) := by
   funext i j b k Q ψ h P
   delta GlobalTheory.SeriesTie.Setup.gens GlobalTheory.ExportSeries.Base.genSet GlobalTheory.ExportSeries.Base.gen GlobalTheory.ExportSeries.Base.vecFlat
   with_unfolding_all rewrite [setupVecAtL_eq L ρ i j b]
   exact_by_kernel Eq.refl (ρ.gens (kc% i) (kc% j) b k (kc% Q) (kc% ψ) (kc% h) (kc% P))
-open GlobalTheory.SeriesTie in
 private theorem sum_eq_pz (ρ : Setup (Dof x).ntw) :
     (setupL L ρ).sum = fun i j b k Q ψ => (by exact ρ.sum i j b k Q ψ) := by
   funext i j b k Q ψ
@@ -99,7 +97,6 @@ private theorem sum_eq_pz (ρ : Setup (Dof x).ntw) :
   have h := SerCopy.classSum_eq (a := x.o.Z) (oL x L).Z (ρ.B (kc% i) (kc% j) b)
     (ρ.om (kc% i) (kc% j) b t.chi) t (ρ.rep (kc% i) (kc% j) b t)
   exact_by_kernel h
-open GlobalTheory.SeriesTie in
 private theorem xi_eq_pz (ρ : Setup (Dof x).ntw) (i : (DL x L).ntw.Tw) (j : Fin (DL x L).R.m) (b : Bool) :
     (setupL L ρ).xi i j b (DL x L).nexp =
       fun Q M h P a => by
@@ -113,7 +110,6 @@ private theorem xi_eq_pz (ρ : Setup (Dof x).ntw) (i : (DL x L).ntw.Tw) (j : Fin
     (ρ.om (kc% i) (kc% j) b 1) u
   have hQ := congrFun h (kc% (half (ρ.ch (kc% i)) places))
   exact_by_kernel congrFun hQ (kc% (GlobalTheory.ExportSeries.Base.univFam u (ρ.β (kc% j))))
-open GlobalTheory.SeriesTie in
 private theorem isHeckeDatum_eq_pz (ρ : Setup (Dof x).ntw) :
     (setupL L ρ).IsHeckeDatum =
       fun i j b k P α R z => (by exact ρ.IsHeckeDatum i j b k P α R z) := by
@@ -175,7 +171,6 @@ private theorem isNormL_pz (ρ : Setup (Dof x).ntw) (i : (DL x L).ntw.Tw) (j : F
     exact_by_kernel hF
 end Cell
 section Comparison₂
-open GlobalTheory.SeriesTie
 variable (l : _root_.GlobalTheory.HeightCounting.Up.StrictHenselianAcyclicLevel hL x)
 theorem rat_setupL_iff_rat_realRd {ρ : Setup (Dof x).ntw} (h : ρ.Good) (i : (DL x L).ntw.Tw) (j : Fin (DL x L).R.m) (c : Bool) (ν : ℂ) :
     SeriesTie.Rat (setupL_good L h) (realRd (_root_.GlobalTheory.HeightCounting.Fin3.yStructureLocal L l) (datL x L).geo.v₀ (setupL_good L h) i j c ν) ↔

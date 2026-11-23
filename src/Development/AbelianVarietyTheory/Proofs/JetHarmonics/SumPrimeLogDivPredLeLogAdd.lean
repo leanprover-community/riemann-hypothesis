@@ -56,7 +56,6 @@ private lemma log_three_lt_one_point_one_one : Real.log 3 < 1.11 := by
   rw [h3]
   nlinarith
 
-open Finset in
 private lemma log_succ_div_le_telescoping_sub (n : ℕ) (hn : 3 ≤ n) :
     Real.log ((n + 1 : ℕ) : ℝ) / (((n + 1 : ℕ) : ℝ) * (((n + 1 : ℕ) : ℝ) - 1))
       ≤ (Real.log n + 4 / 3) / n - (Real.log ((n + 1 : ℕ) : ℝ) + 4 / 3) / ((n + 1 : ℕ) : ℝ) := by
@@ -84,7 +83,6 @@ private lemma log_succ_div_le_telescoping_sub (n : ℕ) (hn : 3 ≤ n) :
     _ = (Real.log x + 4 / 3) / x - (Real.log (x + 1) + 4 / 3) / (x + 1) := by
         field_simp
 
-open Finset in
 private lemma sum_log_div_mul_pred_add_le_const (N : ℕ) (hN : 3 ≤ N) :
     ∑ n ∈ Finset.range (N + 1), Real.log n / ((n : ℝ) * ((n : ℝ) - 1)) + (Real.log N + 4 / 3) / N
       ≤ Real.log 2 / 2 + Real.log 3 / 6 + (Real.log 3 + 4 / 3) / 3 := by
@@ -97,7 +95,6 @@ private lemma sum_log_div_mul_pred_add_le_const (N : ℕ) (hN : 3 ≤ N) :
     have := log_succ_div_le_telescoping_sub n hn
     linarith
 
-open Finset in
 private lemma div_le_factorization_factorial' (N p : ℕ) (hp : p.Prime) :
     N / p ≤ (N.factorial).factorization p := by
   rw [Nat.factorization_factorial hp (lt_add_one (Nat.log p N))]
@@ -107,7 +104,6 @@ private lemma div_le_factorization_factorial' (N p : ℕ) (hp : p.Prime) :
       simp [Nat.log_pos hp.one_lt h]
     simpa using single_le_sum (f := fun i => N / p ^ i) (fun _ _ => Nat.zero_le _) h1
 
-open Finset in
 private lemma mul_sum_prime_log_div_le_log_factorial_add (N : ℕ) :
     (N : ℝ) * ∑ p ∈ (Finset.range (N + 1)).filter Nat.Prime, Real.log p / p
       ≤ Real.log (N.factorial : ℝ) + N * Real.log 4 := by
@@ -156,7 +152,6 @@ private lemma mul_sum_prime_log_div_le_log_factorial_add (N : ℕ) :
         Finset.sum_add_distrib
     _ ≤ _ := by linarith
 
-open Finset in
 private lemma log_factorial_le_stirling_bound (n : ℕ) (hn : 1 ≤ n) :
     Real.log (n.factorial : ℝ) ≤ n * Real.log n - n + 1 + Real.log n / 2 := by
   have h1 : Real.log (Stirling.stirlingSeq n) ≤ Real.log (Stirling.stirlingSeq 1) := by
@@ -170,7 +165,6 @@ private lemma log_factorial_le_stirling_bound (n : ℕ) (hn : 1 ≤ n) :
   linarith [h1]
 
 
-open Finset in
 theorem _root_.GlobalTheory.PrimeLogSum.sum_log_div_pred_le : ∀ N : ℕ,
     ∑ p ∈ (Finset.range (N + 1)).filter Nat.Prime, Real.log p / ((p : ℝ) - 1)
       ≤ Real.log N + 2.2 := by

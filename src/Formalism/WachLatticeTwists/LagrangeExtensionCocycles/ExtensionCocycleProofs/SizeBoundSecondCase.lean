@@ -167,7 +167,6 @@ end Formalism.RepresentationBoundsCohomology.N2.Size
 
 namespace Formalism.RepresentationBoundsCohomology.N2
 
-open Finset
 
 theorem size_bound_second_case : StatSizeB := by
   intro ℓ _ M h H s jumps hs hMH hj

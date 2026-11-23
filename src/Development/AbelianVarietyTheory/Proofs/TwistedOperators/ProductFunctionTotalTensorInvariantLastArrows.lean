@@ -100,7 +100,6 @@ end GlobalTheory.LastVertexTensor
 
 namespace GlobalTheory.LastVertexTensor
 
-open GlobalTheory.LastVertexMove
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
 
@@ -147,7 +146,6 @@ end GlobalTheory.LastVertexTensor
 
 namespace GlobalTheory.LastVertexTensor
 
-open GlobalTheory.LastVertexMove
 
 def prodForm {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ] {X : ι → Type} {Y : κ → Type}
     (A : ∀ i, (X i → ℂ) →ₗ[ℂ] (X i → ℂ)) (B : ∀ j, (Y j → ℂ) →ₗ[ℂ] (Y j → ℂ)) (x : ∀ i, X i) (y : ∀ j, Y j) :

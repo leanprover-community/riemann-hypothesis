@@ -74,7 +74,6 @@ theorem _root_.GlobalTheory.finite_normalisation_of_finite_over_normal (A S : Ty
     IsIntegralClosure.finite A (FractionRing A) (FractionRing S) _
   exact Module.Finite.of_restrictScalars_finite A S _
 
-open IsLocalRing in
 private theorem isPrecomplete_of_finite_module {R M : Type*} [CommRing R] {I : Ideal R} [hR : IsPrecomplete I R]
     [AddCommGroup M] [Module R M] [Module.Finite R M] : IsPrecomplete I M := by
   obtain ⟨k, g, hg⟩ := Module.Finite.exists_fin (R := R) (M := M)
@@ -118,7 +117,6 @@ private theorem isPrecomplete_of_finite_module {R M : Type*} [CommRing R] {I : I
   rw [hpow] at this
   exact Submodule.smul_mem_smul this Submodule.mem_top
 
-open IsLocalRing in
 open Polynomial in
 private theorem isLocalRing_of_finite_domain_over_complete (S C : Type) [CommRing S] [IsLocalRing S] [IsNoetherianRing S]
     [IsAdicComplete (maximalIdeal S) S] [CommRing C] [IsDomain C] [Algebra S C]
@@ -210,7 +208,6 @@ private theorem isLocalRing_of_finite_domain_over_complete (S C : Type) [CommRin
       simpa using M₂.add_mem h hx₂m
     exact hM₂.ne_top ((Ideal.eq_top_iff_one _).2 this)
 
-open IsLocalRing in
 theorem _root_.GlobalTheory.normalisation_finite_local_complete_of_mixedChar :
     ∀ (S : Type) [CommRing S] [IsDomain S] [IsLocalRing S] [CharZero S] (p : ℕ), p.Prime →
       (p : S) ∈ maximalIdeal S → IsNoetherianRing S → IsAdicComplete (maximalIdeal S) S →

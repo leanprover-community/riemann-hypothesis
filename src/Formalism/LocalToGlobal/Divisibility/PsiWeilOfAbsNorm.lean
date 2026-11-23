@@ -133,7 +133,6 @@ theorem PsiPPTie.lvl {P0 : Subgroup G} {ψ0 : P0 →* D.what₂.LLˣ} {Ps : Subg
 
 end Comparison₂
 
-section Forms
 
 open Formalism.DivisionValues Formalism.L2.Indef
 
@@ -141,6 +140,5 @@ variable (D : Formalism.BasicNotions.D7) {G : Type} [Group G] [Fintype G] {Pl0 T
 
 variable {Pl0 I0 Ty : Type} (A3 : FamIn3 D.what₂.LL G Pl0 I0 Ty T m)
 
-end Forms
 
 end Formalism.L2.DIV

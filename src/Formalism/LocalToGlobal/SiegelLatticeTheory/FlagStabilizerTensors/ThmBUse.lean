@@ -64,13 +64,11 @@ def NormTie {Ch Cg : ℝ} {T T' : ℕ} {b : ℝ} (Bd : BData D Ch Cg T T' b 0) (
 
 end Core
 
-section Sum
 
 variable {D : D7} {τ Rw I H H₁ : Type} [Fintype I] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] (X : PB.Terms τ Rw I H H₁)
   {Cl Nu : Type} (N : PN.NGData τ D.host.E D.R.rS Cl Nu)
 
-end Sum
 
 section Step
 

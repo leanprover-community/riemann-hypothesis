@@ -100,7 +100,6 @@ private theorem exists_haar_fundamental_domain (V : HSp D) : ∃ (ν : Measure (
   exact ⟨_, 𝓕, inferInstance, h𝓕⟩
 end GlobalTheory.ThetaKFactor
 namespace GlobalTheory.ThetaKFactor
-open MeasureTheory GlobalTheory.SquareComm
 variable {D : D7}
 theorem integrable_theta_of_mem_kFiniteVectors (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs) {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
     (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) {W W₁ X : HSp D} (A : GlobalTheory.ChainFr.Fr W) (B : GlobalTheory.ChainFr.Fr X)

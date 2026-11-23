@@ -92,7 +92,6 @@ noncomputable def charOfValues {ι : Type} [Fintype ι] (b : Basis ι ℤ X) (u 
   map_one' := by simp
   map_mul' x y := by simp [zpow_add, Finset.prod_mul_distrib]
 
-open Module in
 variable {K X : Type} [Field K] [AddCommGroup X] in
 theorem _root_.GlobalTheory.TorsionFourier.charOfValues_basis {ι : Type} [Fintype ι] (b : Basis ι ℤ X) (u : ι → Kˣ)
     (j : ι) : _root_.GlobalTheory.TorsionFourier.charOfValues b u (Multiplicative.ofAdd (b j)) = u j := by
@@ -102,7 +101,6 @@ theorem _root_.GlobalTheory.TorsionFourier.charOfValues_basis {ι : Type} [Finty
     (fun i _ hi => by simp [Finsupp.single_apply, Ne.symm hi]) (by simp)]
   simp
 
-open Module in
 variable {K X : Type} [Field K] [AddCommGroup X] in
 theorem _root_.GlobalTheory.TorsionFourier.charOfValues_pow {ι : Type} [Fintype ι] (b : Basis ι ℤ X)
     (u : ι → Kˣ) (N : ℕ) (hu : ∀ i, u i ^ N = 1) : _root_.GlobalTheory.TorsionFourier.charOfValues b u ^ N = 1 := by
@@ -113,7 +111,6 @@ theorem _root_.GlobalTheory.TorsionFourier.charOfValues_pow {ι : Type} [Fintype
   refine Finset.prod_eq_one fun i _ => ?_
   rw [← zpow_natCast, ← zpow_mul, mul_comm, zpow_mul, zpow_natCast, hu, one_zpow]
 
-open Module in
 variable {K X : Type} [Field K] [AddCommGroup X] in
 theorem _root_.GlobalTheory.TorsionFourier.apply_pow_eq_one {N : ℕ} {t : Multiplicative X →* Kˣ}
     (ht : t ^ N = 1) (x : Multiplicative X) : t x ^ N = 1 := by
@@ -134,7 +131,6 @@ noncomputable def torsionCharsEquiv {ι : Type} [Fintype ι] (b : Basis ι ℤ X
 
 variable [Module.Free ℤ X] [Module.Finite ℤ X]
 
-open Module in
 variable {K X : Type} [Field K] [AddCommGroup X] in
 variable [Module.Free ℤ X] [Module.Finite ℤ X] in
 theorem _root_.GlobalTheory.TorsionFourier.natCard_torsionChars {N : ℕ} {ζ : K} (hN : 0 < N)
@@ -145,7 +141,6 @@ theorem _root_.GlobalTheory.TorsionFourier.natCard_torsionChars {N : ℕ} {ζ : 
   rw [Nat.card_congr (_root_.GlobalTheory.TorsionFourier.torsionCharsEquiv (K := K) (X := X) b N), Nat.card_fun,
     hζ.card_rootsOfUnity, Module.finrank_eq_card_basis b, Nat.card_eq_fintype_card]
 
-open Module in
 variable {K X : Type} [Field K] [AddCommGroup X] in
 variable [Module.Free ℤ X] [Module.Finite ℤ X] in
 omit [Module.Finite ℤ X] in
@@ -161,7 +156,6 @@ end Algebra
 
 end TorsionFourier
 
-open Module in
 variable {K X : Type} [Field K] [AddCommGroup X] in
 private theorem sum_torsionCharacters_apply_nsmul_eq_card {N : ℕ}
     [Fintype (_root_.GlobalTheory.TorsionFourier.torsionChars K X N)] (μ : X) :
@@ -173,7 +167,6 @@ private theorem sum_torsionCharacters_apply_nsmul_eq_card {N : ℕ}
   rw [Finset.sum_congr rfl fun t _ => hone t]
   simp [Nat.card_eq_fintype_card]
 
-open Module in
 variable {K X : Type} [Field K] [AddCommGroup X] in
 private theorem exists_torsionCharacter_apply_ne_one {ι : Type} [Fintype ι] (b : Basis ι ℤ X)
     {N : ℕ} [NeZero N] {ζ : K} (hζ : IsPrimitiveRoot ζ N) {x : X}
@@ -202,7 +195,6 @@ private theorem exists_torsionCharacter_apply_ne_one {ι : Type} [Fintype ι] (b
     IsPrimitiveRoot.val_toRootsOfUnity_coe, Units.val_one] at hval
   exact (hζ.zpow_eq_one_iff_dvd _).1 hval
 
-open Module in
 variable {K X : Type} [Field K] [AddCommGroup X] in
 private theorem sum_torsionCharacters_apply_eq_zero {ι : Type} [Fintype ι] (b : Basis ι ℤ X)
     {N : ℕ} [NeZero N] {ζ : K} (hζ : IsPrimitiveRoot ζ N)
@@ -222,7 +214,6 @@ private theorem sum_torsionCharacters_apply_eq_zero {ι : Type} [Fintype ι] (b 
   exact (mul_eq_zero.1 hzero).resolve_left hne
 
 
-open Module in
 theorem _root_.GlobalTheory.fourier_extraction_tsum_class :
     ∀ (K X : Type) [NontriviallyNormedField K] [IsUltrametricDist K] [CompleteSpace K] [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] (N : ℕ) (ζ : K), 0 < N → ‖(N : K)‖ = 1 → IsPrimitiveRoot ζ N → ∀ (σ : X → K), Filter.Tendsto σ Filter.cofinite (nhds 0) → ∀ α : X, Finite {t : Multiplicative X →* Kˣ // t ^ N = 1} ∧ (∑ᶠ t : {t : Multiplicative X →* Kˣ // t ^ N = 1}, (((t.1 (Multiplicative.ofAdd α))⁻¹ : Kˣ) : K) * ∑' β, σ β * (t.1 (Multiplicative.ofAdd β) : K)) = (N : K) ^ finrank ℤ X * ∑' μ, σ (α + N • μ) ∧ ((∀ μ, μ ≠ 0 → ‖σ (α + N • μ)‖ < ‖σ α‖) → ‖∑' μ, σ (α + N • μ)‖ = ‖σ α‖) := by
   intro K X _ _ _ _ _ _ N ζ hN hNK hζ σ hσ α

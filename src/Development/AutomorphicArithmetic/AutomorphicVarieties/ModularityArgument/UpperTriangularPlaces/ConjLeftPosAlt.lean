@@ -173,7 +173,6 @@ end UpperTheory.V.Z.Keep.KatoThreePlus
 
 namespace UpperTheory.V.Z.Keep.KatoThreePlus
 
-open UpperTheory.V.Th.End3
 
 private theorem theta_upper {k : Type} [Field k] (b : GL (Fin 3) k) (hb : b.val.BlockTriangular id) :
     (theta b).val.BlockTriangular id ∧ ∀ i, (theta b).val i i = (b.val i.rev i.rev)⁻¹ := by

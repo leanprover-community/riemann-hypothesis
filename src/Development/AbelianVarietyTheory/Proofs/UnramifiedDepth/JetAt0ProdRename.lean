@@ -71,18 +71,12 @@ private lemma prod_monomial_eq_monomial_sum_prod' {α κ : Type} (s : Finset κ)
     rw [Finset.prod_insert hk, Finset.sum_insert hk, Finset.prod_insert hk, ih,
       MvPolynomial.monomial_mul]
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {ι τ : Type} [Fintype ι] {σ : ι → Type} (e : ∀ i, σ i ↪ τ) in
 private lemma jetAt0_zero_left_unramified_depth {α : Type} (G : MvPowerSeries α C) :
     _root_.Formalism.IncomingBounds.jetAt0 (0 : MvPolynomial α C) G = 0 := by
   unfold _root_.Formalism.IncomingBounds.jetAt0
   simp
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {ι τ : Type} [Fintype ι] {σ : ι → Type} (e : ∀ i, σ i ↪ τ) in
 private lemma jetAt0_eq_sum_coeff_mul_mfact_of_support_subset {α : Type} (P : MvPolynomial α C) (G : MvPowerSeries α C)
     {s : Finset (α →₀ ℕ)} (hs : P.support ⊆ s) :
@@ -92,9 +86,6 @@ private lemma jetAt0_eq_sum_coeff_mul_mfact_of_support_subset {α : Type} (P : M
   rw [MvPolynomial.mem_support_iff, not_not] at hm
   rw [hm, zero_mul, zero_mul]
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {ι τ : Type} [Fintype ι] {σ : ι → Type} (e : ∀ i, σ i ↪ τ) in
 private lemma jetAt0_add_left' {α : Type} (P Q : MvPolynomial α C) (G : MvPowerSeries α C) :
     _root_.Formalism.IncomingBounds.jetAt0 (P + Q) G = _root_.Formalism.IncomingBounds.jetAt0 P G + _root_.Formalism.IncomingBounds.jetAt0 Q G := by
@@ -106,9 +97,6 @@ private lemma jetAt0_add_left' {α : Type} (P Q : MvPolynomial α C) (G : MvPowe
   rw [MvPolynomial.coeff_add]
   ring
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {ι τ : Type} [Fintype ι] {σ : ι → Type} (e : ∀ i, σ i ↪ τ) in
 private lemma jetAt0_monomial_eq_mul_mfact_mul_coeff {α : Type} (D : α →₀ ℕ) (a : C) (G : MvPowerSeries α C) :
     _root_.Formalism.IncomingBounds.jetAt0 (MvPolynomial.monomial D a) G = a * (_root_.Formalism.IncomingBounds.mfact D : C) * MvPowerSeries.coeff D G := by
@@ -116,9 +104,6 @@ private lemma jetAt0_monomial_eq_mul_mfact_mul_coeff {α : Type} (D : α →₀ 
   rw [jetAt0_eq_sum_coeff_mul_mfact_of_support_subset _ G (MvPolynomial.support_monomial_subset (s := D) (a := a)),
     Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl]
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {ι τ : Type} [Fintype ι] {σ : ι → Type} (e : ∀ i, σ i ↪ τ) in
 private lemma jetAt0_sum_monomial_eq_sum_mul_mfact_mul_coeff {α κ : Type} (F : Finset κ) (D : κ → α →₀ ℕ) (a : κ → C)
     (G : MvPowerSeries α C) :
@@ -129,9 +114,6 @@ private lemma jetAt0_sum_monomial_eq_sum_mul_mfact_mul_coeff {α κ : Type} (F :
   | empty => simp [jetAt0_zero_left_unramified_depth]
   | insert f F hf ih => rw [Finset.sum_insert hf, Finset.sum_insert hf, jetAt0_add_left', ih, jetAt0_monomial_eq_mul_mfact_mul_coeff]
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {ι τ : Type} [Fintype ι] {σ : ι → Type} (e : ∀ i, σ i ↪ τ) in
 private lemma coeff_rename_eq_zero_of_not_mem_range_embDomain {α β : Type} (f : α ↪ β) (p : MvPowerSeries α C)
     {x : β →₀ ℕ} (hx : x ∉ Set.range (Finsupp.embDomain f)) :
@@ -141,9 +123,6 @@ private lemma coeff_rename_eq_zero_of_not_mem_range_embDomain {α β : Type} (f 
   rw [Set.Finite.mem_toFinset] at hy
   exact absurd ⟨y, by rw [Finsupp.embDomain_eq_mapDomain]; simpa using hy⟩ hx
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {ι τ : Type} [Fintype ι] {σ : ι → Type} (e : ∀ i, σ i ↪ τ) in
 private lemma sum_embDomain_apply_eq_of_disjoint (hd : ∀ i j x y, e i x = e j y → i = j)
     (z : ∀ i, σ i →₀ ℕ) (j : ι) (x : σ j) :
@@ -158,9 +137,6 @@ private lemma sum_embDomain_apply_eq_of_disjoint (hd : ∀ i j x y, e i x = e j 
   · intro h
     exact absurd (Finset.mem_univ j) h
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {ι τ : Type} [Fintype ι] {σ : ι → Type} (e : ∀ i, σ i ↪ τ) in
 private lemma coeff_sum_embDomain_prod_rename_eq_prod_coeff (hd : ∀ i j x y, e i x = e j y → i = j)
     (G : ∀ i, MvPowerSeries (σ i) C) (m : ∀ i, σ i →₀ ℕ) :
@@ -201,9 +177,6 @@ private lemma coeff_sum_embDomain_prod_rename_eq_prod_coeff (hd : ∀ i j x y, e
     refine ⟨?_, by simp⟩
     exact Finset.sum_congr rfl fun j _ => hl0j j
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {ι τ : Type} [Fintype ι] {σ : ι → Type} (e : ∀ i, σ i ↪ τ) in
 private lemma prod_factorial_sum_embDomain_eq_prod_prod_factorial (hd : ∀ i j x y, e i x = e j y → i = j)
     (m : ∀ i, σ i →₀ ℕ) :
@@ -228,9 +201,6 @@ private lemma prod_factorial_sum_embDomain_eq_prod_prod_factorial (hd : ∀ i j 
   refine Finset.prod_congr rfl fun x _ => ?_
   rw [sum_embDomain_apply_eq_of_disjoint e hd m j x]
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {ι τ : Type} [Fintype ι] {σ : ι → Type} (e : ∀ i, σ i ↪ τ) in
 theorem _root_.GlobalTheory.JetProd.jetAt0_prod_rename (hd : ∀ i j x y, e i x = e j y → i = j)
     (P : ∀ i, MvPolynomial (σ i) C) (G : ∀ i, MvPowerSeries (σ i) C) :
@@ -273,9 +243,6 @@ noncomputable def rowSer (hL : Fin 2 → ZMod d → ZMod d → MvPowerSeries (WV
       | Option.some (g, a, a') => hL g a a'
       | none => 0)
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] in
 private lemma mvExp_zero_eq_one' {α : Type} : _root_.Formalism.IncomingBounds.mvExp (0 : MvPowerSeries α C) = 1 := by
   ext m
@@ -285,9 +252,6 @@ private lemma mvExp_zero_eq_one' {α : Type} : _root_.Formalism.IncomingBounds.m
   rw [Finset.sum_range_succ']
   simp
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] in
 private lemma rowCopy_eq_rename_rowEmb {N : ℕ} (ρ : Fin N) (g : MvPowerSeries (_root_.Formalism.L2.FormalSeriesBounds.WV I) C) :
     _root_.Formalism.L2.FormalSeriesBounds.rowCopy ρ g = MvPowerSeries.rename (_root_.GlobalTheory.JetProd.rowEmb ρ) g := by
@@ -295,9 +259,6 @@ private lemma rowCopy_eq_rename_rowEmb {N : ℕ} (ρ : Fin N) (g : MvPowerSeries
   rw [MvPowerSeries.rename_eq_subst]
   rfl
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] in
 private lemma degree_embDomain_eq_degree {α β : Type} (f : α ↪ β) (y : α →₀ ℕ) :
     (Finsupp.embDomain f y).degree = y.degree := by
@@ -306,9 +267,6 @@ private lemma degree_embDomain_eq_degree {α β : Type} (f : α ↪ β) (y : α 
   rw [Finsupp.support_embDomain, Finset.sum_map]
   simp
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] in
 private lemma rename_mvExp_eq_mvExp_rename {α β : Type} (f : α ↪ β) (g : MvPowerSeries α C) :
     MvPowerSeries.rename f (_root_.Formalism.IncomingBounds.mvExp g) = _root_.Formalism.IncomingBounds.mvExp (MvPowerSeries.rename f g) := by
@@ -329,9 +287,6 @@ private lemma rename_mvExp_eq_mvExp_rename {α β : Type} (f : α ↪ β) (g : M
     refine (Finset.sum_eq_zero fun k _ => ?_).symm
     rw [← map_pow, coeff_rename_eq_zero_of_not_mem_range_embDomain f _ hx, zero_div]
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] in
 private lemma valOf_eq_jetAt0_prod_rename_rowSer
     (hL : Fin 2 → ZMod d → ZMod d → MvPowerSeries (_root_.Formalism.L2.FormalSeriesBounds.WV I) C)
@@ -346,9 +301,6 @@ private lemma valOf_eq_jetAt0_prod_rename_rowSer
   rw [← rename_mvExp_eq_mvExp_rename, ← map_mul]
   rfl
 
-open scoped BigOperators in
-open NumberField in
-open Finsupp in
 variable {C : Type} [Field C] {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] in
 theorem _root_.GlobalTheory.JetProd.jetProd : _root_.Formalism.L2.FormalSeriesBounds.JetProdSt := by
   intro C _ d I _ hL N K what₂ pl hpl P kind gr

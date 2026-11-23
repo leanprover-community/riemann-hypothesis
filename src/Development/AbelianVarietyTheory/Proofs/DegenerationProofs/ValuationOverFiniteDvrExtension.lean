@@ -71,8 +71,6 @@ theorem _root_.GlobalTheory.FiniteDVRValuation.exists_nat_val (hϖ : Irreducible
   rw [hv _ n ⟨u, by rw [zpow_natCast, map_mul, map_pow, mul_comm]⟩]
   norm_cast
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing in
-open scoped CategoryTheory.Obj BigOperators in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] {ϖ : V}
   {F : Type} [Field F] [Algebra (FractionRing V) F] {v : AddValuation F (WithTop ℚ)} in
@@ -119,8 +117,6 @@ def nonnegSubring {F K : Type} [Field F] [Field K] (v : AddValuation F (WithTop 
         _ < 0 := hcon.2
     exact h2.ne h1
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField IsLocalRing in
-open scoped CategoryTheory.Obj BigOperators in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.FiniteDVRValuation.main :
     ∀ (W W' : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [CommRing W']

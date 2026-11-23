@@ -210,7 +210,6 @@ theorem exists_coords_ring {R S K B : Type} [CommRing R] [CommRing S] [Field K] 
   exact h1
 
 
-open TensorProduct in
 theorem exists_chart_ring {G Z H : Scheme.{0}} (f : G ⟶ Z) {R S K : Type} [CommRing R] [CommRing S] [Field K]
     {g : ℕ} (α : R →+* S) (ρ : R →+* K) (iW : Sp S ⟶ G) (iV : Sp R ⟶ Z) [IsOpenImmersion iW] [IsOpenImmersion iV]
     (hsq : iW ≫ f = spMap α ≫ iV) (ζ : Sp K ⟶ Z) (hζ : ζ = spMap ρ ≫ iV) (h : H ⟶ pullback f ζ)

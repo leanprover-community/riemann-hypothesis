@@ -234,7 +234,6 @@ section Main
 variable {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of K)}
   {Q : ObjectProperty (Thick (smFun X q))}
 
-open GlobalTheory.CompanionTheory.ConeZcls
 
 theorem plogK_mem {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) (s : ℕ) {x : B} (hx : x ∈ J) :
     plogK δ s x ∈ J :=

@@ -254,7 +254,6 @@ lemma sum_cycWord {A : Type} [Ring A] (E : Fin n → Fin n → A) (m : ℕ) :
   apply GlobalTheory.PhiEigenfun.sum_cycWord <;> assumption
 
 
-open GlobalTheory.CapelliCentral in
 lemma gelf_apply {ε : Fin n → Bool} (m : ℕ) (F : smoothSpace ε ℂ) {f : Matrix (Fin n) (Fin n) ℂ → ℂ}
     (h : ∀ g, inUJ ε g → F.1 g = f g) {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) :
     ((∑ c, (Matrix.of (eabEnd ε ℂ) ^ (m + 1)) c c) F).1 g = gelf ε m f g := by
@@ -262,7 +261,6 @@ lemma gelf_apply {ε : Fin n → Bool} (m : ℕ) (F : smoothSpace ε ℂ) {f : M
   unfold gelf
   exact Finset.sum_congr rfl fun a _ => word_apply (cycWord a) F h g hg
 
-open GlobalTheory.CapelliCentral in
 lemma gelf_mk {ε : Fin n → Bool} {χ : Fin n → ℂ} {f : Matrix (Fin n) (Fin n) ℂ → ℂ} (h : IsZEigen ε χ f) (k : ℕ) :
     (∑ c, (Matrix.of (eabEnd ε ℂ) ^ k) c c) (mk f h.1) = gelfVal χ k • mk f h.1 := by
   cases k with

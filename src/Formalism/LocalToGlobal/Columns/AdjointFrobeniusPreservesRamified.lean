@@ -200,7 +200,6 @@ variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
 
 attribute [local instance] resField resFintype
 
-open Classical
 
 variable {P : ST} {q : 𝓞 X.E}
 
@@ -217,7 +216,6 @@ variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))}
 
 attribute [local instance] resField resFintype
 
-open Classical
 
 variable {P : ST} {q : 𝓞 X.E}
 

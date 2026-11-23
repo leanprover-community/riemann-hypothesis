@@ -172,8 +172,6 @@ end GlobalTheory.AscFinInhab
 
 namespace GlobalTheory.AscFinInhab
 
-open scoped Classical
-open Topology
 
 variable {D : D7}
 
@@ -310,7 +308,6 @@ end GlobalTheory.AscFinInhab
 
 namespace GlobalTheory.AscFinInhab
 
-open scoped Classical
 open Topology Metric
 
 variable {D : D7}
@@ -404,8 +401,6 @@ end GlobalTheory.AscFinInhab
 
 namespace GlobalTheory.AscFinInhab
 
-open scoped Classical
-open Topology Metric
 
 variable {D : D7}
 

@@ -382,7 +382,6 @@ end Top
 end GlobalTheory.CompanionTheory.SW.HermCoord
 
 open HeckeCharacterZeroLocus.SiegelWeilU NumberField MeasureTheory
-open scoped TensorProduct
 
 namespace GlobalTheory.CompanionTheory.SW.HermCoord
 

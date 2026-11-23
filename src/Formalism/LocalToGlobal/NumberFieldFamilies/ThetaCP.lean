@@ -134,12 +134,10 @@ structure PerGaps (ψ : AddChar (AF D.host.F) ℂ) : Prop where
   inv : BesInv ψ
   int2 : BesInt2 ψ
 
-section Bessel2
 
 variable {ψ : AddChar (AF D.host.F) ℂ} {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
 
 
-end Bessel2
 
 end Formalism.L2.Fam.ThC
 

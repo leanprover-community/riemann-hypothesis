@@ -144,7 +144,6 @@ theorem fnRule_injective : Function.Injective (fnRule (Xo := Xo) (c := c)) := by
 
 section Datum
 
-open GlobalTheory.ShortDatumEq
 
 variable {nab : NabV Xo c} (Δ : DeltaDatum Xo c nab) (n : ℕ)
 

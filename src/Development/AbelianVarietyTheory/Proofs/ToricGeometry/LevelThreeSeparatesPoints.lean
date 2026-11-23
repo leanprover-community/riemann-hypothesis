@@ -69,8 +69,6 @@ theorem _root_.GlobalTheory.ThetaSeparation.dense_ne_zero {E : Type*} [NormedAdd
         exact hU ⟨y, hy, hne⟩)
   exact hx₀ (hEq (Set.mem_univ x₀))
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 private lemma eC_pow_eq_eC_natCast_mul (m : ℕ) (X : ℂ) : _root_.ReciprocityTheory.PTheta.eC X ^ m = _root_.ReciprocityTheory.PTheta.eC ((m : ℂ) * X) := by
   induction m with
   | zero => simp [_root_.ReciprocityTheory.PTheta.eC_zero]
@@ -80,8 +78,6 @@ private lemma eC_pow_eq_eC_natCast_mul (m : ℕ) (X : ℂ) : _root_.ReciprocityT
     push_cast
     ring
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 private lemma exists_common_ne_zero_of_differentiable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     [FiniteDimensional ℂ E] {f₁ f₂ : E → ℂ} (h₁ : Differentiable ℂ f₁)
     (h₂ : Differentiable ℂ f₂) (e₁ : ∃ x, f₁ x ≠ 0) (e₂ : ∃ x, f₂ x ≠ 0) :
@@ -92,8 +88,6 @@ private lemma exists_common_ne_zero_of_differentiable {E : Type*} [NormedAddComm
   obtain ⟨x, hx₁, hx₂⟩ := (d₁.inter_of_isOpen_left d₂ o₁).nonempty
   exact ⟨x, hx₁, hx₂⟩
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 private lemma exists_multiplier_of_level_sections_lemma {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ}
     {t : (Fin g → ℂ) → ℂ} (ht : Differentiable ℂ t)
     (hq : ∀ (n n' : Fin g → ℤ) x, t (x + τ *ᵥ _root_.ReciprocityTheory.PTheta.ofIntVec n + _root_.ReciprocityTheory.PTheta.ofIntVec n') =
@@ -221,8 +215,6 @@ private lemma exists_multiplier_of_level_sections_lemma {g : ℕ} {τ : Matrix (
     linear_combination r
 
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 theorem _root_.GlobalTheory.ThetaSeparation.level_three_separates_points :
     (∀ (g : ℕ) (τ : Matrix (Fin g) (Fin g) ℂ), τ ∈ _root_.ReciprocityTheory.PTheta.SiegelH (Fin g) → (Differentiable ℂ (fun z => _root_.ReciprocityTheory.PTheta.theta 0 0 z τ) ∧ ∀ (n n' : Fin g → ℤ) z, (fun z => _root_.ReciprocityTheory.PTheta.theta 0 0 z τ) (z + τ *ᵥ _root_.ReciprocityTheory.PTheta.ofIntVec n + _root_.ReciprocityTheory.PTheta.ofIntVec n') = _root_.ReciprocityTheory.PTheta.eC (-(1 : ℂ) * (_root_.ReciprocityTheory.PTheta.ofIntVec n ⬝ᵥ (τ *ᵥ _root_.ReciprocityTheory.PTheta.ofIntVec n) / 2 + _root_.ReciprocityTheory.PTheta.ofIntVec n ⬝ᵥ z)) * (fun z => _root_.ReciprocityTheory.PTheta.theta 0 0 z τ) z) ∧ (fun z => _root_.ReciprocityTheory.PTheta.theta 0 0 z τ) ≠ 0) → (∀ (g : ℕ) (τ : Matrix (Fin g) (Fin g) ℂ), τ ∈ _root_.ReciprocityTheory.PTheta.SiegelH (Fin g) → ∀ (w : Fin g → ℂ) (h : (Fin g → ℂ) → ℂ), Differentiable ℂ h → (∀ z, h z ≠ 0) → (∀ z, _root_.ReciprocityTheory.PTheta.theta 0 0 (z + w) τ = h z * _root_.ReciprocityTheory.PTheta.theta 0 0 z τ) → w ∈ _root_.ReciprocityTheory.PTheta.periodLattice τ) → (∀ (g : ℕ) (τ : Matrix (Fin g) (Fin g) ℂ), τ ∈ _root_.ReciprocityTheory.PTheta.SiegelH (Fin g) → ∀ N : ℕ, 3 ≤ N → ∀ (z z' : Fin g → ℂ) (γ : ℂ), (∀ f : (Fin g → ℂ) → ℂ, (Differentiable ℂ f ∧ ∀ (n n' : Fin g → ℤ) z, f (z + τ *ᵥ _root_.ReciprocityTheory.PTheta.ofIntVec n + _root_.ReciprocityTheory.PTheta.ofIntVec n') = _root_.ReciprocityTheory.PTheta.eC (-(N : ℂ) * (_root_.ReciprocityTheory.PTheta.ofIntVec n ⬝ᵥ (τ *ᵥ _root_.ReciprocityTheory.PTheta.ofIntVec n) / 2 + _root_.ReciprocityTheory.PTheta.ofIntVec n ⬝ᵥ z)) * f z) → f z = γ * f z') → z - z' ∈ _root_.ReciprocityTheory.PTheta.periodLattice τ) := by
   intro hA hB g τ hτ N hN z z' γ hf

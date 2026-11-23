@@ -420,7 +420,6 @@ theorem sgStarThree_of (h : SigmaThree) : SgStarThree := by
         * Complex.exp (-(s2 L) * c ^ 2 / 2)) ^ 3 * h0
     + (2 * wSigma L (a + b + c) * wSigma L (a - b) * wSigma L (b - c) * wSigma L (c - a)) * hexp
 
-open ThreeTermRelation in
 theorem thetaLine_of (h1 : EllipticOnePole) (hq : SgStarQuasi) (hb : SgStarBasic) : ThetaLine := by
   intro L F hF hfe
   obtain ⟨hd, -, hzero, hder, -⟩ := hb L

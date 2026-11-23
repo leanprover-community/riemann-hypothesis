@@ -111,7 +111,6 @@ theorem nq_sExp_k (e : AE F E) (b : Fin L.n → AE F E) : NQ (Sum.inl L.i₀) (S
       simp [_root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.sExp_eq_k, _root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.sb_em_em_k]
     · simp [_root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.sExp_eq_k]
     · simp [_root_.PositivityTheory.SiegelWeilFormula.Act.C6.B.sExp_eq_k, Matrix.one_apply]
-open B in
 theorem U_sExp_k {ε : ℤˣ} (hσ : ∀ a, σ (σ a) = a) (b : Fin L.n → AE F E) :
     M.U (cA σ).toRingHom (((ε : ℤ) : AE F E)) (_root_.PositivityTheory.SiegelWeilFormula.Act.C6.sExp_k L (((ε : ℤ) : AE F E)) b) := by
   set e : AE F E := ((ε : ℤ) : AE F E) with he
@@ -154,7 +153,6 @@ theorem delta_par_k (h : _root_.PositivityTheory.SiegelWeilFormula.Act.C6.Hyp_k 
   all_goals
     rw [hc] at hp
     simpa only [map_neg, map_mul, map_intCast] using hp
-open B in
 theorem row_sC_k (h : _root_.PositivityTheory.SiegelWeilFormula.Act.C6.Hyp_k L nb uM nb' w₁ cM δ) (e : AE F E) (b u : Fin L.n → AE F E) (a : AF F) :
     (∀ j, (_root_.PositivityTheory.SiegelWeilFormula.Act.C6.sExp_k L e b * inFrame d.b (cM (u, a))) (Sum.inl L.i₀) (Sum.inl (L.em j)) = u j) ∧
     (∀ j, (_root_.PositivityTheory.SiegelWeilFormula.Act.C6.sExp_k L e b * inFrame d.b (cM (u, a))) (Sum.inl L.i₀) (Sum.inr (L.em j)) = b j) ∧

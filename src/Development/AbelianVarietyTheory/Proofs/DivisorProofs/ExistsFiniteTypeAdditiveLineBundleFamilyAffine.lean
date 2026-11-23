@@ -114,7 +114,6 @@ theorem exists_lb_stage (X : Over (Sp R)) [QuasiCompact X.hom] [QuasiSeparated X
   exact hiso
 
 
-open GlobalTheory.CechPic in
 theorem exists_stage_pull_eq (X : Over (Sp R)) [QuasiCompact X.hom] [QuasiSeparated X.hom]
     (s : Finset C) (c c' : Pic (X ⊗ stage R C s).left)
     (h : CechPic.pull (X ◁ toStage R C s).left c = CechPic.pull (X ◁ toStage R C s).left c') :
@@ -194,7 +193,6 @@ end GlobalTheory.DualApprox
 
 namespace GlobalTheory.DualApprox
 
-open GlobalTheory.CechPic GlobalTheory.AbDual GlobalTheory.DualCon
 
 theorem exists_fam_finiteType : ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (A : Over (Sp R)) [GrpObj A], IsAbelianScheme A → ∀ (T : Over (Sp R)) [IsAffine T.left] (N : LB (A ⊗ T).left), Fam A N → ∃ (T₀ : Over (Sp R)) (h : T ⟶ T₀) (N₀ : LB (A ⊗ T₀).left), IsAffine T₀.left ∧ LocallyOfFiniteType T₀.hom ∧ Fam A N₀ ∧ Same A N N₀ (𝟙 T) h := by
   intro R _ _ A _ hA T _ N hF

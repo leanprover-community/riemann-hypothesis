@@ -144,7 +144,6 @@ end GlobalTheory.HeisLineTheta
 
 namespace GlobalTheory.HeisLineTheta
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.WeilM
 
 variable {F : Type} [Field F] [NumberField F]
 variable {W : Type} [AddCommGroup W] [Module (AF F) W] {B : W → W → AF F} {κ : Type} [Fintype κ]
@@ -199,7 +198,6 @@ end GlobalTheory.HeisLineTheta
 
 namespace GlobalTheory.HeisLineTheta
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.WeilM
 open scoped Classical
 
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
@@ -322,8 +320,6 @@ end GlobalTheory.HeisLineTheta
 
 namespace GlobalTheory.HeisLineTheta
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.WeilM
-open scoped Classical
 
 variable {F : Type} [Field F] [NumberField F]
 

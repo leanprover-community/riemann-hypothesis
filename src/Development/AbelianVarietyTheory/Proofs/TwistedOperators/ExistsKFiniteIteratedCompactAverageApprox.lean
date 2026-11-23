@@ -296,7 +296,6 @@ end GlobalTheory.KAvgApprox
 
 namespace GlobalTheory.KAvgApprox
 
-open GlobalTheory.Mem.AutSpace GlobalTheory.PointAtPlaceHom GlobalTheory.Mem.RealTranslate GlobalTheory.RealAverage
 
 variable {D : D7} {θ : InfFam D} {V : HSp D} {τ : D.what₂.Tau}
   {K : Type} [TopologicalSpace K] {κ : K → Matrix (Fin V.rank) (Fin V.rank) ℂ}
@@ -420,7 +419,6 @@ end GlobalTheory.KAvgApprox
 
 namespace GlobalTheory.KAvgApprox
 
-open Formalism.REAL GlobalTheory.TypeSum GlobalTheory.Mem.AutSpace GlobalTheory.PointAtPlaceHom GlobalTheory.Mem.RealTranslate GlobalTheory.RealAverage
 
 section FamGl
 
@@ -581,7 +579,6 @@ theorem family : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (
 end GlobalTheory.KAvgApprox
 
 namespace GlobalTheory.KAvgApprox
-open Formalism.REAL GlobalTheory.TypeSum
 
 theorem one_place : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (τ : D.what₂.Tau) (ε : Fin V.rank → Bool) (P : Matrix (Fin V.rank) (Fin V.rank) ℂ), IsUnit P → Pᴴ * Formalism.REAL.Jm ε * P = gramAt D V τ → ∀ f : GA D V → ℂ, GlobalTheory.Size.RapidDecSm θ V f → ∀ (d : ℕ) (η : ℝ), 0 < η → ∃ e : KG ε → ℂ, KFinFun ε e ∧ GlobalTheory.Size.growthSob θ V d 0 (f - GlobalTheory.SeriesToClosure.avg θ V τ ε P e f) ≤ ENNReal.ofReal η := by
   intro D θ hθ V τ ε P hP hJ f hf d η hη
@@ -633,7 +630,6 @@ theorem one_place : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D
 end GlobalTheory.KAvgApprox
 
 namespace GlobalTheory.KAvgApprox
-open Formalism.REAL GlobalTheory.TypeSum
 
 theorem avgList_congr {D : D7} (θ : InfFam D) (N : GlobalTheory.Grid.Node D) {e e' : ∀ τ, KG (N.M.ε τ) → ℂ}
     (l : List D.what₂.Tau) (h : ∀ τ ∈ l, e τ = e' τ) (φ : GA D N.V → ℂ) :

@@ -145,14 +145,12 @@ theorem rep_mul_apply {σ : G → (HH →L[ℂ] HH)} (hσ : IsUnitRep σ) (x y :
 
 end Rep
 
-section Kernel
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G]
   [MeasurableSpace G] [BorelSpace G] {μ : Measure G} [μ.IsMulLeftInvariant]
 variable {HH : Type} [NormedAddCommGroup HH] [InnerProductSpace ℂ HH]
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V]
 
-end Kernel
 
 section Quot
 

@@ -61,14 +61,12 @@ theorem exists_finset_norm_one (x : F) (hx : x ≠ 0) :
 
 end Places
 
-section Main
 
 variable {D : D7} (δ : D.host.E) (hδ : D.sp.cm.sig δ = -δ) (hδ0 : δ ≠ 0) (Δ : D.host.F)
   (hΔ : algebraMap D.host.F D.host.E Δ = δ * δ)
 
 
 
-end Main
 
 variable {D : D7}
 

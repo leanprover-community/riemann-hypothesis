@@ -57,21 +57,18 @@ private theorem shv_hom_ext_of_sec_map_eq {S : Type} [CommRing S] {F G : _root_.
   ext U a
   exact h U.unop a
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 variable {R : Type} [CommRing R] in
 private theorem sec_map_zero_apply {S : Type} [CommRing S] {F G : _root_.GlobalTheory.EtC.Shv S}
     {U : Scheme} (a : _root_.GlobalTheory.EtC.Sec F U) :
     _root_.GlobalTheory.EtC.Sec.map (0 : F ⟶ G) a = 0 := by
   simp [_root_.GlobalTheory.EtC.Sec.map]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 variable {R : Type} [CommRing R] in
 private theorem etLoc_of_forall {U : Scheme} {P : (V : Scheme) → (V ⟶ U) → Prop}
     (h : ∀ V g, P V g) : _root_.GlobalTheory.EtC.Loc U P :=
   ⟨⊤, GrothendieckTopology.top_mem _ _, fun V g _ => h V g⟩
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 variable {R : Type} [CommRing R] in
 theorem _root_.GlobalTheory.EtC.SuppRes.supp_res : ∀ (q : ℕ) [NeZero q] (i : ℤ)
     (D : _root_.GlobalTheory.EtC.Cx (ZMod q))

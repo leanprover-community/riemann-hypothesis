@@ -63,7 +63,6 @@ private lemma mem_range_algebraMap_iff_isIntegral_int (x : E) :
     exact ⟨⟨x, h⟩, rfl⟩
 
 set_option autoImplicit false in
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma complexConj_mem_integers_iff (x : E) :
     IsCMField.complexConj E x ∈ (algebraMap (𝓞 E) E).range ↔
@@ -74,7 +73,6 @@ private lemma complexConj_mem_integers_iff (x : E) :
 
 
 set_option autoImplicit false in
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 theorem _root_.GlobalTheory.Survey.UnimodularStandardLattice.unimod_std :
     (⟨_root_.Formalism.L2.Pj.stdLat E n⟩ : _root_.Formalism.L2.Pj.GenLat E n).Unimod := by

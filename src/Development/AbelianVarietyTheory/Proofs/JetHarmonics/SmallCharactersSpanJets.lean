@@ -272,7 +272,6 @@ theorem exists_unit_prod {S A X : Type} [CommRing S] [CommRing A] [AddCommGroup 
 
 section Torus
 
-open Chart ChartBaseChange
 open scoped CategoryTheory.Obj
 
 theorem ker_jetAug_eq (k : Type) [CommRing k] (hk : IsField k) (X : Type) [AddCommGroup X] (r : ℕ)
@@ -443,7 +442,6 @@ end Torus
 
 section Main
 
-open Chart ChartBaseChange
 
 theorem expansion_single {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegData R I}
     {A : PolAV (Spec (CommRingCat.of (FractionRing R)))} {G : Over (Spec (CommRingCat.of R))} [GrpObj G]

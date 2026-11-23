@@ -342,7 +342,6 @@ def hsNormSq {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] 
 
 section Kernel
 
-open Formalism.BasicNotions
 
 variable {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {sig : E →ₐ[F] E} {Word Tau : Type} [Fintype Tau]

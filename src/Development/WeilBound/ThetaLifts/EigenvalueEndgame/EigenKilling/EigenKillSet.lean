@@ -578,7 +578,6 @@ end PositivityTheory.ThKEnd.Comp.SoL
 
 namespace PositivityTheory.ThKEnd.Comp.SoL
 
-open Filter Topology NumberField IsDedekindDomain Matrix GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
   GlobalTheory.CompanionTheory.Ar.RT.Move GlobalTheory.LatVac PositivityTheory.KCo GlobalTheory.ThK PositivityTheory.ThKCT PositivityTheory.ThKG.Loc GlobalTheory.LFun
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField Classical.propDecidable

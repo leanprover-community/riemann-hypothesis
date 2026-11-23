@@ -409,7 +409,6 @@ structure WeightFamily [SmoothOfRelativeDimension D p] (R : AnRead p σ D) (κ :
 
 namespace WeightFamily
 
-open AnRead
 
 variable [SmoothOfRelativeDimension D p] {R : AnRead p σ D} {κ : Type} (F : WeightFamily R κ)
 

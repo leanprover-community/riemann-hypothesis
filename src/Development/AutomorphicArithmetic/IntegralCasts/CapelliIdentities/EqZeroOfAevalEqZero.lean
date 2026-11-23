@@ -88,7 +88,6 @@ private theorem UpperTheory.Reformulated.B.G8.eq_zero_of_aeval_eq_zero {K : Type
       exact h2
   exact (Polynomial.map_eq_zero_iff f.injective).mp hz
 
-open Polynomial in
 private theorem UpperTheory.Reformulated.B.G8.exists_kry_field {K : Type} [Field K] {n : ℕ}
     (g : Matrix (Fin n) (Fin n) K) (hg : g.charpoly.Separable) :
     ∃ v : Fin n → K, (UpperTheory.Reformulated.B.G8.kry g v).det ≠ 0 := by

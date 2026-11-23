@@ -74,12 +74,6 @@ end
 section
 section
 namespace GlobalTheory.Triple
-open NumberField IsDedekindDomain Polynomial Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N
-open Formalism.L2.Host (HChar CharFrame embLL0 eExp ValLL0)
-open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-open GlobalTheory.GalChar (IsGal toQ block)
-open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf Zbar GalE toFb)
-open GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary (embOver)
 variable {D : D7}
 section API
 variable {C : CharFrame D} {art : Ideles D.host.E →* Gab D.host.E D.nd.Om} {X : NTw D.R D.host D.what₂ D.LL0 D.nd}
@@ -153,9 +147,6 @@ end
 section
 section
 namespace GlobalTheory.ResLoc
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
-open GlobalTheory.EigTie (ResTied IsRowPar plRed resTied_of_plSide)
-open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf Zbar GalE OnW)
 theorem resTied_of_points_alt_alt {D : D7} (hC : GlobalTheory.RowTie.ChebSplit D.nd) (Rw : RowSide D) (Pl : PlSide D) (hI : IotaOk D Pl)
     (hι : ∀ i : D.nd.Loc, D.naut.iotaQC i = qCast (D.nd.w_l i) (Pl.ι (D.nd.w i)))
     (hk : ∀ (i : D.nd.Loc) (y : D.nd.O i), ∃ h : iotaO D.nd D.naut i y ∈ Pl.plB (D.nd.w i),
@@ -204,9 +195,7 @@ end
 section
 section
 namespace GlobalTheory.TripleResidual
-open NumberField IsDedekindDomain Polynomial Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 open GlobalTheory.TameLabels GlobalTheory.AntiRamConj GlobalTheory.TwistDet
-open GlobalTheory.TypeLeaf (WildOne FrobDense)
 open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (OnW IsBaseChange IsGaloisRepOf IsReduction Zbar GaloisReps GalE toFb)
 open scoped Pointwise
 section Row
@@ -220,7 +209,6 @@ section
 namespace GlobalTheory.Triple
 open NumberField IsDedekindDomain Polynomial Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Formalism.MainNotions.BlochKatoReduction.Gen
 open Formalism.L2.Host (HChar CharFrame)
-open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
 open GlobalTheory.GalChar (IsGal toQ)
 open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf Zbar GalE)
 open GlobalTheory.TripleGal (UnrRho HkFrob)
@@ -230,13 +218,6 @@ end
 end
 section
 namespace GlobalTheory.TripleAdm
-open NumberField IsDedekindDomain Polynomial Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal
-open Formalism.CyclotomicNorms (Fbar rootsBar IsGood IrredOn BB primeToPart)
-open GlobalTheory.TameLabels GlobalTheory.TripleResidual
-open GlobalTheory.TypeLeaf (WildOne FrobDense)
-open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf IsReduction Zbar GalE toFb)
-open GlobalTheory.Triple (IsParam IsResidual Reading IsChars IsTripleWith IsTripleFor IsTripleOf IsTriple muBase hframe jIdx)
-open GlobalTheory.TwistDet GlobalTheory.GalChar Formalism.L2.Host
 variable {D : D7}
 section Row
 variable {σ : D.what₂.FT} {π : D.naut.CG D.R.r} {w : D.what₂.places.Pl}

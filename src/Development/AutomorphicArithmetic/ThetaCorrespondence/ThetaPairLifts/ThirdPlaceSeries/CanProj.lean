@@ -38,7 +38,6 @@ open NumberField Formalism.BasicNotions Formalism.IndefR.NX Formalism.IndefR.Ari
 namespace GlobalTheory.BigOn.Exp.ProjRd
 attribute [local instance] GroupAverageFixedPoints.GlobalTheory.CompanionTheory.LatSpan.algKK
 end GlobalTheory.BigOn.Exp.ProjRd
-open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp
 
 
 theorem GlobalTheory.BigOn.Exp.canProj_alt : _root_.GlobalTheory.BigOn.Exp.CanonicalProjection₂ := by

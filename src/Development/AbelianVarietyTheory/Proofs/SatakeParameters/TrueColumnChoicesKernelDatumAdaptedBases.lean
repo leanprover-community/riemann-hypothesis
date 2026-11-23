@@ -69,7 +69,6 @@ end GlobalTheory.Pdv.KerScale
 
 namespace GlobalTheory.Pdv.KerScale
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.G Formalism.L2.Ker Classical
 
 variable {D : D7}
 
@@ -113,7 +112,6 @@ end GlobalTheory.Pdv.KerScale
 
 namespace GlobalTheory.Pdv.KerScale
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.G Formalism.L2.Ker Classical
 
 variable {D : D7} (P : Examples₂.EntPl D) (O : ∀ u μ, GL3Theta.LiftObj D (D.chTw u μ)) (B : PlaceMatrixFamily D)
   (a : ∀ w : D.what₂.places.Pl, D.what₂.Word → D.what₂.Tup → D.what₂.Tau → Cw D w)
@@ -177,7 +175,6 @@ end GlobalTheory.Pdv.KerScale
 
 namespace GlobalTheory.Pdv.KerScale
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.G Formalism.L2.Ker Classical
 
 variable {D : D7} (P : Examples₂.EntPl D) (O : ∀ u μ, GL3Theta.LiftObj D (D.chTw u μ)) (B : PlaceMatrixFamily D)
   (a : ∀ w : D.what₂.places.Pl, D.what₂.Word → D.what₂.Tup → D.what₂.Tau → Cw D w)

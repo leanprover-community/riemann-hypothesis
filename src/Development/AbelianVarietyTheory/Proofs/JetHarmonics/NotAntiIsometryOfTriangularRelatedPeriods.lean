@@ -72,9 +72,6 @@ private theorem exists_emb_not_mem_conjEmb_mem_Ψ (X : _root_.ReciprocityTheory.
     by_contra h
     exact hρ ((X.cmType ρ).2 h)
 
-open NumberField AlgebraicGeometry CategoryTheory in
-open scoped Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem hermC_self_re_eq_neg_sum_normSq_of_p0_eq_zero (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (h0 : X.p0 = 0) (τ : X.Ψ) :
     ∃ P : Matrix (Fin r) (Fin r) ℂ, P.det ≠ 0 ∧ ∀ p : Fin r → ℂ,
@@ -84,9 +81,6 @@ private theorem hermC_self_re_eq_neg_sum_normSq_of_p0_eq_zero (X : _root_.Recipr
   rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.IntegralBasisReduction.hermC_normal X hP _ hG p p]
   simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn, h0, mul_assoc, Complex.mul_conj, Complex.re_sum]
 
-open NumberField AlgebraicGeometry CategoryTheory in
-open scoped Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem hermC_col_emb_eq_of_not_mem_Ψ (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) (v : Fin r → E)
     {σ τ : E →+* ℂ} (hσ : σ ∉ X.Ψ) (hτ : τ ∈ X.Ψ) (hστ : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.conjEmb σ = τ) (i : ℕ)
@@ -97,9 +91,6 @@ private theorem hermC_col_emb_eq_of_not_mem_Ψ (X : _root_.ReciprocityTheory.Cha
   unfold _root_.Formalism.L2.PjFree.perFr
   rw [dite_eq_right hσ, dite_eq_left hτ, dite_eq_left hi]
 
-open NumberField AlgebraicGeometry CategoryTheory in
-open scoped Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem hermC_first_col_self_re_pos (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} (hx : x ∈ X.dom)
     (τ : X.Ψ) (hp : 0 < X.p0) (hr : 0 < r) :
@@ -113,9 +104,6 @@ private theorem hermC_first_col_self_re_pos (X : _root_.ReciprocityTheory.ChartR
   exact h
 
 
-open NumberField AlgebraicGeometry CategoryTheory in
-open scoped Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.AntiIsom.not_antiIsometry : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X X' : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r), X.Ψ = X'.Ψ → X.p0 = X'.p0 → 1 ≤ r → ∀ (a : GL (Fin r) E), (∀ u v, _root_.ReciprocityTheory.ChartRestriction.G.FD.herm X'.Gm ((a : Matrix (Fin r) (Fin r) E) *ᵥ u) ((a : Matrix (Fin r) (Fin r) E) *ᵥ v) = -1 * _root_.ReciprocityTheory.ChartRestriction.G.FD.herm X.Gm u v) → ∀ (m : (E →+* ℂ) → ℕ), (∀ τ ∈ X.Ψ, m τ = r - X.p0) → (∀ τ ∉ X.Ψ, m τ = X.p0) → ∀ x ∈ X.dom, ∀ x' ∈ X'.dom, ∀ (A : (E →+* ℂ) → ℕ → ℕ → ℂ), (∀ τ i j, j < i → A τ i j = 0) → (∀ τ, ∀ i < m τ, ∀ v ∈ X.Λ, _root_.Formalism.L2.PjFree.perFr X' x' ((a : Matrix (Fin r) (Fin r) E) *ᵥ v) τ i = ∑ j ∈ Finset.range (m τ), A τ i j * _root_.Formalism.L2.PjFree.perFr X x v τ j) → False := by
   intro E _ _ _ r X X' hΨ hp r1 a ha m _ hmout x hx x' hx' A hA hrel

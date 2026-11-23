@@ -58,8 +58,6 @@ private lemma natAbs_discr_pow_finrank_le_natAbs_discr (K L : Type*) [Field K] [
 
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain in
-open scoped IntermediateField nonZeroDivisors in
 theorem _root_.GlobalTheory.FieldSize.log_finrank_rootDiscr_le_of_tower (K L : Type*) [Field K] [NumberField K] [Field L]
     [NumberField L] [Algebra K L] :
     Real.log (Module.finrank ℚ K) ≤ Real.log (Module.finrank ℚ L) ∧
@@ -94,8 +92,6 @@ theorem _root_.GlobalTheory.FieldSize.log_finrank_rootDiscr_le_of_tower (K L : T
 
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain in
-open scoped IntermediateField nonZeroDivisors in
 theorem _root_.GlobalTheory.FieldSize.sz_mono_and_of_le :
     (∀ (F : IntermediateField ℚ ℂ) (a b a' b' : ℝ), _root_.GlobalTheory.FieldSize.Sz F a b →
         a ≤ a' → b ≤ b' → _root_.GlobalTheory.FieldSize.Sz F a' b') ∧

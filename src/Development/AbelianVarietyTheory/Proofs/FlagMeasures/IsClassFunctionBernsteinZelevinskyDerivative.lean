@@ -65,8 +65,6 @@ theorem _root_.GlobalTheory.GLm.DerClass.blocks_mul (A A' : _root_.GlobalTheory.
   unfold _root_.GlobalTheory.GLm.DerClass.blocks
   rw [Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] {a b : ℕ} in
 theorem _root_.GlobalTheory.GLm.DerClass.blocks_one :
     _root_.GlobalTheory.GLm.DerClass.blocks (1 : _root_.GlobalTheory.GLq.Mt g a) 0 0 (1 : _root_.GlobalTheory.GLq.Mt g b) = 1 := by

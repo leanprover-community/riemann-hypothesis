@@ -271,7 +271,6 @@ end GlobalTheory.RowChain
 
 namespace GlobalTheory.RowChain
 
-open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.FlipRun
 
 end GlobalTheory.RowChain
 

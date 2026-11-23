@@ -110,7 +110,6 @@ end GlobalTheory.HwTransfer
 
 namespace GlobalTheory.HwTransfer
 
-open MvPolynomial
 
 variable {L : Type} [Field L] {n : ℕ} {K : Type} [Field K]
 
@@ -206,7 +205,6 @@ end GlobalTheory.HwTransfer
 
 namespace GlobalTheory.HwTransfer
 
-open MvPolynomial
 
 theorem diag_ne_zero {n : ℕ} {F : Type} [Field F] (B : GL (Fin n) F) (hB : B.val.BlockTriangular id) (a : Fin n) :
     B.val a a ≠ 0 := by

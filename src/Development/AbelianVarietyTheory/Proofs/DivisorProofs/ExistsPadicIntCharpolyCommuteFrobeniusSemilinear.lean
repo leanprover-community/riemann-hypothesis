@@ -111,7 +111,6 @@ end GlobalTheory.DieuCharpoly
 
 namespace GlobalTheory.DieuCharpoly
 
-open Polynomial
 
 theorem charpoly_map_eq_of_commute_semilinear {R : Type} [CommRing R] [IsDomain R]
     (σ : R →+* R) (hσ : Function.Surjective σ) (N : Type) [AddCommGroup N] [Module R N]
@@ -173,7 +172,6 @@ end GlobalTheory.DieuCharpoly
 
 namespace GlobalTheory.DieuCharpoly
 
-open Polynomial
 
 theorem exists_monic_map_eq_charpoly : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p]
     [PerfectRing k p] (N : Type) [AddCommGroup N] [Module (WittVector p k) N]

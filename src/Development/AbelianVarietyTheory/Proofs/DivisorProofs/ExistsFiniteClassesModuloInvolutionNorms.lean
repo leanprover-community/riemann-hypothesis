@@ -57,7 +57,6 @@ namespace GlobalTheory.FixNormField
 
 open NumberField IsDedekindDomain in
 open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
 open scoped TensorProduct Classical nonZeroDivisors in
 private theorem finite_heightOneSpectrum_containing_finset_nat (K : Type) [Field K] [NumberField K] (S : Finset ℕ) :
     {P : HeightOneSpectrum (𝓞 K) | ∃ ℓ ∈ S, ℓ ≠ 0 ∧ (ℓ : 𝓞 K) ∈ P.asIdeal}.Finite := by
@@ -71,10 +70,6 @@ private theorem finite_heightOneSpectrum_containing_finset_nat (K : Type) [Field
   rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
   exact_mod_cast (Finset.mem_filter.1 hℓ).2
 
-open NumberField IsDedekindDomain in
-open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Classical nonZeroDivisors in
 private theorem exists_finset_submodule_eq_add_two_smul {M : Type*} [AddCommGroup M]
     [Module.Finite ℤ M] (N : Submodule ℤ M) :
     ∃ V : Finset M, (∀ v ∈ V, v ∈ N) ∧ ∀ h ∈ N, ∃ v ∈ V, ∃ w ∈ N, h = v + 2 • w := by
@@ -106,10 +101,6 @@ private theorem exists_finset_submodule_eq_add_two_smul {M : Type*} [AddCommGrou
     rw [smul_neg, h2, this]
     abel
 
-open NumberField IsDedekindDomain in
-open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Classical nonZeroDivisors in
 private theorem exists_finset_fixedUnit_eq_mul_fixed_sq (K : Type) [Field K] [NumberField K]
     (τ : K ≃+* K) : ∃ V : Finset K, ∀ u ∈ _root_.GlobalTheory.UnitSq.fixedUnits K τ, ∃ v ∈ V, ∃ w : K,
       w ≠ 0 ∧ τ w = w ∧ ((u : 𝓞 K) : K) = v * w ^ 2 := by
@@ -126,10 +117,6 @@ private theorem exists_finset_fixedUnit_eq_mul_fixed_sq (K : Type) [Field K] [Nu
     push_cast
     ring
 
-open NumberField IsDedekindDomain in
-open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Classical nonZeroDivisors in
 private theorem ord_apply_involution_eq_ord_primeMap {K : Type} [Field K] [NumberField K] (τ : K ≃+* K)
     (hτ : ∀ x, τ (τ x) = x) (P : HeightOneSpectrum (𝓞 K)) (x : K) :
     _root_.GlobalTheory.FixNormCls.ord P (τ x) =
@@ -138,10 +125,6 @@ private theorem ord_apply_involution_eq_ord_primeMap {K : Type} [Field K] [Numbe
     (_root_.GlobalTheory.FixNormCls.primeMap τ P) x
   rwa [_root_.GlobalTheory.FixNormCls.primeMap_primeMap τ hτ] at h
 
-open NumberField IsDedekindDomain in
-open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Classical nonZeroDivisors in
 private theorem exists_nat_prime_mem_heightOneSpectrum (K : Type) [Field K] [NumberField K] (P : HeightOneSpectrum (𝓞 K)) :
     ∃ ℓ : ℕ, ℓ.Prime ∧ (ℓ : 𝓞 K) ∈ P.asIdeal := by
   haveI : P.asIdeal.IsMaximal := P.isMaximal
@@ -154,10 +137,6 @@ private theorem exists_nat_prime_mem_heightOneSpectrum (K : Type) [Field K] [Num
   rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]
   exact CharP.cast_eq_zero _ p
 
-open NumberField IsDedekindDomain in
-open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Classical nonZeroDivisors in
 private theorem ord_eq_zero_of_not_mem_of_ne_zero {K : Type} [Field K] [NumberField K]
     (P : HeightOneSpectrum (𝓞 K)) (z : 𝓞 K) (h0 : z ≠ 0) (hz : z ∉ P.asIdeal) :
     _root_.GlobalTheory.FixNormCls.ord P (z : K) = 0 := by
@@ -176,10 +155,6 @@ private theorem ord_eq_zero_of_not_mem_of_ne_zero {K : Type} [Field K] [NumberFi
   have := (Associates.count_ne_zero_iff_dvd hspan P.irreducible).1 hc
   exact hz (Ideal.span_singleton_le_iff_mem _ |>.1 (Ideal.le_of_dvd this))
 
-open NumberField IsDedekindDomain in
-open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Classical nonZeroDivisors in
 private theorem natCast_not_mem_of_prime_mem_not_dvd {K : Type} [Field K] [NumberField K]
     (P : HeightOneSpectrum (𝓞 K)) {ℓ d : ℕ} (hℓ : ℓ.Prime) (hP : (ℓ : 𝓞 K) ∈ P.asIdeal)
     (hd : ¬ ℓ ∣ d) : (d : 𝓞 K) ∉ P.asIdeal := by
@@ -193,10 +168,6 @@ private theorem natCast_not_mem_of_prime_mem_not_dvd {K : Type} [Field K] [Numbe
   rw [Ideal.eq_top_iff_one, ← h1]
   exact P.asIdeal.add_mem (P.asIdeal.mul_mem_left _ hP) (P.asIdeal.mul_mem_left _ hdP)
 
-open NumberField IsDedekindDomain in
-open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Classical nonZeroDivisors in
 private theorem ord_nonneg_of_isIntegral' {K : Type} [Field K] [NumberField K]
     (P : HeightOneSpectrum (𝓞 K)) {z : K} (hz : IsIntegral ℤ z) :
     0 ≤ _root_.GlobalTheory.FixNormCls.ord P z := by
@@ -205,10 +176,6 @@ private theorem ord_nonneg_of_isIntegral' {K : Type} [Field K] [NumberField K]
   rw [← FractionalIdeal.coeIdeal_span_singleton]
   exact FractionalIdeal.count_coe_nonneg K P _
 
-open NumberField IsDedekindDomain in
-open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Classical nonZeroDivisors in
 private theorem ord_eq_ord_add_ord_primeMap_of_isIntegral_mul {K : Type} [Field K] [NumberField K] (τ : K ≃+* K)
     (hτ : ∀ x, τ (τ x) = x) (P : HeightOneSpectrum (𝓞 K)) {ℓ : ℕ} (hℓ : ℓ.Prime)
     (hP : (ℓ : 𝓞 K) ∈ P.asIdeal) {a b x y : K} (ha0 : a ≠ 0) (hb : b ≠ 0)
@@ -238,10 +205,6 @@ private theorem ord_eq_ord_add_ord_primeMap_of_isIntegral_mul {K : Type} [Field 
     ord_apply_involution_eq_ord_primeMap τ hτ]
   omega
 
-open NumberField IsDedekindDomain in
-open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Classical nonZeroDivisors in
 private theorem exists_unit_eq_of_forall_ord_eq_zero {K : Type} [Field K] [NumberField K] {x : K} (hx : x ≠ 0)
     (h : ∀ P : HeightOneSpectrum (𝓞 K), _root_.GlobalTheory.FixNormCls.ord P x = 0) :
     ∃ u : (𝓞 K)ˣ, ((u : 𝓞 K) : K) = x := by
@@ -256,10 +219,6 @@ private theorem exists_unit_eq_of_forall_ord_eq_zero {K : Type} [Field K] [Numbe
   exact ⟨z, by simpa [Units.smul_def, Algebra.smul_def] using hz⟩
 
 
-open NumberField IsDedekindDomain in
-open scoped Classical nonZeroDivisors in
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Classical nonZeroDivisors in
 theorem _root_.GlobalTheory.FixNormField.fixed_classes_mod_norms : ∀ (K : Type) [Field K] [NumberField K]
     (τ : K ≃+* K), (∀ x, τ (τ x) = x) → ∀ S : Finset ℕ,
     ∃ M : Finset K, ∀ a : K, a ≠ 0 → τ a = a →

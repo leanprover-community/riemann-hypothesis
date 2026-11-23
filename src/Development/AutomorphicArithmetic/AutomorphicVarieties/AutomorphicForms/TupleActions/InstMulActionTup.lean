@@ -255,7 +255,6 @@ theorem sLat_smul (σ : 𝓞 L →+* 𝓞 L) (g : Gm L N) (y : Lat L N) : sLat �
 
 end Real
 
-open UpperTheory.V.KT
 
 def RePart : Prop :=
   ∀ (L : Type) [Field L] [NumberField L] (N : ℕ) (σ : 𝓞 L →+* 𝓞 L), IsConj L σ → ∀ k : HS L N,
@@ -289,7 +288,6 @@ def MinOrb : Prop :=
       ∃ g : Gm L N, g • (fun j => minVec (h j)) ∈ R
 
 
-open Pointwise in
 def MinStab : Prop :=
   ∀ (L : Type) [Field L] [NumberField L] [_root_.NumberField.IsTotallyComplex L] (N : ℕ), ∀ h ∈ Ry L N, Spans (minVec h) →
     Finite (MulAction.stabilizer (Gm L N) (minVec h))

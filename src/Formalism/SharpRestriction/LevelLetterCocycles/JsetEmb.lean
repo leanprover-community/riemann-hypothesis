@@ -215,7 +215,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.N.JsetEmb
 
-open Formalism.WeaklyAdmissibleFiltrations Module Polynomial TensorProduct
 
 section GenSup
 

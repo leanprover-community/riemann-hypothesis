@@ -179,7 +179,6 @@ theorem isThetaPtOver_of_iso {S : Scheme.{0}} (P : PolAV S) {k : ℕ} {T T₀ : 
   exact ⟨r, fun j => (hr j).trans (congrArg (_ * ·) (congrArg (fun q => q.1 j) e).symm)⟩
 
 
-open ReciprocityTheory.ChartRestriction.G.Out in
 theorem isThetaPt_of_local {S : Scheme.{0}} (P : PolAV S) {k : ℕ} {T : Over S} {I : Type} {x : I → (T ⟶ P.A)}
     {v : I → Γ(T.left, ⊤)} (ho : Odd k) (hu : IsUnit (k : Γ(T.left, ⊤))) (hk : ∀ i, x i ^ (k ^ 2) = 1)
     (H : ∀ p : T.left, ∃ (T' : Over S) (j : T' ⟶ T), IsOpenImmersion j.left ∧ p ∈ Set.range j.left ∧

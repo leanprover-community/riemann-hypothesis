@@ -161,7 +161,6 @@ section Centre
 
 open TopologicalSpace Limits ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.GeometryOfNumbersTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.TangentOrigin
 open GlobalTheory.Adelic (ptOf le_iff_ptOf_mem ptOf_comp)
-open scoped NNReal
 
 theorem stalkClosedPointTo_ger' {V : Type} [CommRing V] [IsLocalRing V] {Y : Scheme.{0}} (x : Sp V ⟶ Y) (W : Y.Opens)
     (h : ⊤ ≤ x ⁻¹ᵁ W) (g : Γ(Y, W)) (hy : x (IsLocalRing.closedPoint V) ∈ W) :
@@ -237,12 +236,10 @@ end Centre
 section Component
 
 open TopologicalSpace Limits ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.GeometryOfNumbersTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.TangentOrigin GlobalTheory.Vanishing.H0
-open GlobalTheory.Adelic (ptOf le_iff_ptOf_mem ptOf_comp)
 open GlobalTheory.AllWt (secZ exOf suppOn)
 open GlobalTheory.FlagMod (FlagCover)
 open GlobalTheory.CompHt (genVal genPoint)
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
-open scoped NNReal
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} (X : FlagCover Y) (Z : Comp Xo c)

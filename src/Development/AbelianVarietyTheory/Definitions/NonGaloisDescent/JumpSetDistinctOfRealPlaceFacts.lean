@@ -75,7 +75,6 @@ noncomputable section
 
 namespace GlobalTheory.JumpSets
 
-open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.AdmissibleParameterJ
 
 variable {D : D7}
 
@@ -227,7 +226,6 @@ noncomputable section
 
 namespace GlobalTheory.JumpSets
 
-open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.AdmissibleParameterJ
 
 variable {D : D7}
 
@@ -415,7 +413,6 @@ noncomputable section
 
 namespace GlobalTheory.JumpSets
 
-open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.AdmissibleParameterJ
 
 variable {D : D7}
 
@@ -730,7 +727,6 @@ noncomputable section
 
 namespace GlobalTheory.JumpSets
 
-open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.AdmissibleParameterJ
 
 variable {D : D7}
 
@@ -1132,7 +1128,6 @@ noncomputable section
 
 namespace GlobalTheory.JumpSets
 
-open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.AdmissibleParameterJ
 
 end GlobalTheory.JumpSets
 

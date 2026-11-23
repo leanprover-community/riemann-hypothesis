@@ -74,7 +74,6 @@ private lemma det_submatrix_subsetEnum_eq_det_submatrix_val {n j : ℕ} (A : Mat
       (A.submatrix (Subtype.val : {x // x ∈ S.1} → Fin n) Subtype.val).submatrix σ σ := rfl
   rw [hsub, Matrix.det_submatrix_equiv_self]
 
-open Polynomial in
 private lemma trace_compoundMatrix_eq_sum_principal_minors {n : ℕ} (j : ℕ) (A : Matrix (Fin n) (Fin n) ℂ) :
     (_root_.GlobalTheory.compoundMatrix j A).trace = ∑ s ∈ Finset.powersetCard j Finset.univ,
       (A.submatrix (Subtype.val : s → Fin n) Subtype.val).det := by
@@ -84,7 +83,6 @@ private lemma trace_compoundMatrix_eq_sum_principal_minors {n : ℕ} (j : ℕ) (
   simp only [Matrix.trace, Matrix.diag, Matrix.of_apply]
   exact Finset.sum_congr rfl fun S _ => det_submatrix_subsetEnum_eq_det_submatrix_val A S
 
-open Polynomial in
 private lemma esymm_roots_charpoly_eq_sum_principal_minors {n : ℕ} (j : ℕ) (M : Matrix (Fin n) (Fin n) ℂ) :
     M.charpoly.roots.esymm j = ∑ s ∈ Finset.powersetCard j Finset.univ,
       (M.submatrix (Subtype.val : s → Fin n) Subtype.val).det := by
@@ -103,7 +101,6 @@ private lemma esymm_roots_charpoly_eq_sum_principal_minors {n : ℕ} (j : ℕ) (
     simp
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.BI.isChar_esymm_roots_charpoly :
     ∀ (G : Type) [Group G] (n j : ℕ) (ρ : G →* GL (Fin n) ℂ), _root_.GlobalTheory.BI.IsChar ℂ ℂ
       (fun g => (Matrix.charpoly (ρ g : Matrix (Fin n) (Fin n) ℂ)).roots.esymm j) := by

@@ -137,7 +137,6 @@ end GlobalTheory.FormsOnAb
 
 namespace GlobalTheory.FormsOnAb
 
-open GlobalTheory.AbCoh
 
 theorem formSt_of (H : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] (g : ℕ), IsAbelianScheme A →
     SmoothOfRelativeDimension g A.hom →

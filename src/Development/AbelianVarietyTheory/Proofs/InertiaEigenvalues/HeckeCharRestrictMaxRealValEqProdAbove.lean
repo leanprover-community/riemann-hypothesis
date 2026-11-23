@@ -85,7 +85,6 @@ end GlobalTheory.PolChar
 
 namespace GlobalTheory.PolChar
 
-open Formalism.L2.Host
 
 theorem resReal_val_eq_prod : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (ν : Formalism.L2.Host.HChar E)
     (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))),

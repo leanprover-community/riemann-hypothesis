@@ -172,7 +172,6 @@ end GlobalTheory.SWLagTerms
 
 namespace GlobalTheory.SWLagTerms
 
-open Matrix Formalism.UG GlobalTheory.LagWitt
 
 variable {D : D7}
 
@@ -198,7 +197,6 @@ end GlobalTheory.SWLagTerms
 
 namespace GlobalTheory.SWLagTerms
 
-open Matrix Formalism.UG GlobalTheory.LagWitt
 
 variable {D : D7}
 
@@ -238,7 +236,6 @@ end GlobalTheory.SWLagTerms
 
 namespace GlobalTheory.SWLagTerms
 
-open Matrix Formalism.UG GlobalTheory.LagWitt
 
 variable {D : D7}
 
@@ -277,7 +274,6 @@ end GlobalTheory.SWLagTerms
 
 namespace GlobalTheory.SWLagTerms
 
-open Matrix Formalism.UG GlobalTheory.LagWitt
 
 theorem exists_rat_unitary_lagFrame : ∀ (D : D7) (W : HSp D) (Y : Lag W), ∃ γ : GA D (GlobalTheory.Doubling.dblSp W),
     γ ∈ GQ (GlobalTheory.Doubling.dblSp W) ∧ ∃ (g₀ : Matrix (Fin (W.rank + W.rank)) (Fin (W.rank + W.rank)) D.host.E),

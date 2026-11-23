@@ -89,7 +89,6 @@ noncomputable section
 
 namespace GlobalTheory.HeckeSemis
 
-open Module
 
 variable {U : Type} [AddCommGroup U] [Module ℂ U]
 
@@ -167,7 +166,6 @@ end GlobalTheory.HeckeSemis
 
 namespace GlobalTheory.HeckeLocN
 
-open Module
 
 theorem finiteDimensional_MtL (D : D7) (μ : D.what₂.Tup) (j : ℕ) : FiniteDimensional D.what₂.LL (D.what₂.MtL μ j) := by
   have hli := (D.what₂.jMt_basis μ j (Module.Free.chooseBasis D.what₂.LL (D.what₂.MtL μ j))).1

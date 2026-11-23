@@ -63,8 +63,6 @@ theorem _root_.GlobalTheory.RealWeil.Vacuum.line_apply (u : V) (ζ : ℂ) :
     _root_.GlobalTheory.RealWeil.Vacuum.line J u ζ = ζ.re • u + ζ.im • J u := by
   simp [_root_.GlobalTheory.RealWeil.Vacuum.line]
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
   {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] {J : V ≃ₗᵢ[ℝ] V} {ρ : V → B →L[ℂ] B} in
 private theorem inner_self_complexStructure_eq_zero (hJ : ∀ x, J (J x) = -x) (u : V) :
@@ -73,8 +71,6 @@ private theorem inner_self_complexStructure_eq_zero (hJ : ∀ x, J (J x) = -x) (
   rw [hJ, inner_neg_right, real_inner_comm u (J u)] at e
   linarith
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
   {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] {J : V ≃ₗᵢ[ℝ] V} {ρ : V → B →L[ℂ] B} in
 theorem _root_.GlobalTheory.RealWeil.Vacuum.norm_line (hJ : ∀ x, J (J x) = -x) (u : V) (θ : ℝ) :
@@ -102,7 +98,6 @@ namespace GlobalTheory.RealWeil
 open Vacuum
 
 open MeasureTheory Complex in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
   {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] in
 private theorem gaussian_exponent_add_eq (a s : ℝ) (ζ η : ℂ)
@@ -114,8 +109,6 @@ private theorem gaussian_exponent_add_eq (a s : ℝ) (ζ η : ℂ)
   apply Complex.ext <;>
     simp [Complex.sq_norm, Complex.normSq_apply, Complex.mul_re, Complex.mul_im] <;> ring
 
-open MeasureTheory Complex in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
   {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] in
 private theorem omJ_line_line_eq {J : V ≃ₗᵢ[ℝ] V} (hJ : ∀ x, J (J x) = -x)
@@ -129,8 +122,6 @@ private theorem omJ_line_line_eq {J : V ≃ₗᵢ[ℝ] V} (hJ : ∀ x, J (J x) =
     real_inner_comm u (J u), h0, LinearIsometryEquiv.inner_map_map, real_inner_self_eq_norm_sq]
   ring
 
-open MeasureTheory Complex in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
   {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] in
 private theorem differentiable_gaussian_mul_orbit_line {J : V ≃ₗᵢ[ℝ] V} {ρ : V → B →L[ℂ] B}
@@ -197,8 +188,6 @@ private theorem differentiable_gaussian_mul_orbit_line {J : V ≃ₗᵢ[ℝ] V} 
   have h4 := hd.comp (f := fun y => y - ζ) ζ (differentiableAt_id.sub_const ζ)
   simpa [Function.comp_def] using h4
 
-open MeasureTheory Complex in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
   {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] in
 private theorem circleAverage_orbit_line_eq_gaussian_smul {J : V ≃ₗᵢ[ℝ] V} {ρ : V → B →L[ℂ] B}
@@ -230,8 +219,6 @@ private theorem circleAverage_orbit_line_eq_gaussian_smul {J : V ≃ₗᵢ[ℝ] 
     _ = cexp (-(Real.pi / 2) * ‖u‖ ^ 2) • f := by rw [mul_smul, hmean]
 
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder in
 theorem _root_.GlobalTheory.RealWeil.proj_eq_self_of_annihilated (V : Type) [NormedAddCommGroup V]
     [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
     [MeasurableSpace V] [BorelSpace V] (B : Type) [NormedAddCommGroup B] [NormedSpace ℂ B]

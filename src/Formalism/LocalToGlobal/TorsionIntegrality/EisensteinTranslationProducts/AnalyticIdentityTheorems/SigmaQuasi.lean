@@ -289,7 +289,6 @@ theorem sigmaQuasi_of (hq : ZetaQuasi) (hl : SigmaLogDeriv) (_he : SigmaEntire) 
   exact Formalism.L2.Th1.F.PeriodLatticeBasisLemmas.qp_coords hq hl ho hz L _ a b le_rfl z
 
 
-open PeriodLatticeBasisLemmas in
 theorem sigmaSimple_of (hq : SigmaQuasi) (he : SigmaEntire)
     (h0 : ∀ L : PeriodPair, deriv (wSigma L) 0 = 1) : SigmaSimple := by
   intro L

@@ -155,7 +155,6 @@ end Maj
 
 section MajMain
 
-open scoped ContDiff
 
 theorem real_maj (E X : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (P : X → E) (w : X → ℝ) (h : ∀ N : ℕ, ∃ C : ℝ, ∀ x, (1 + ‖P x‖) ^ N * w x ≤ C) :

@@ -169,7 +169,6 @@ end GlobalTheory.ParHeckeTarget
 
 namespace GlobalTheory.ParHeckeTarget
 
-open GlobalTheory.ParHeckeSource
 open Classical
 
 theorem card_filter_eq : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]

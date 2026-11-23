@@ -74,7 +74,6 @@ end GlobalTheory.CosToCoset
 
 namespace GlobalTheory.CosToCoset
 
-open GlobalTheory.FunObj.Comparison₂ GlobalTheory.StdFrames
 
 variable {D : D7} {S T : GlobalTheory.Grid.Node D} {e : AE D} {x : WO S.V T.V}
 
@@ -113,7 +112,6 @@ end GlobalTheory.CosToCoset
 
 namespace GlobalTheory.CosToCoset
 
-open GlobalTheory.FunObj.Comparison₂ GlobalTheory.StdFrames
 
 variable {D : D7} {S T : GlobalTheory.Grid.Node D} {e : AE D} {x : WO S.V T.V}
 
@@ -145,7 +143,6 @@ end GlobalTheory.CosToCoset
 
 namespace GlobalTheory.CosToCoset
 
-open GlobalTheory.FunObj.Comparison₂ GlobalTheory.StdFrames
 
 variable {D : D7} {S T : GlobalTheory.Grid.Node D} {e : AE D} {x : WO S.V T.V}
 
@@ -185,7 +182,6 @@ end GlobalTheory.CosToCoset
 
 namespace GlobalTheory.CosToCoset
 
-open GlobalTheory.FunObj.Comparison₂ GlobalTheory.StdFrames
 
 variable {D : D7} {S T : GlobalTheory.Grid.Node D} {e : AE D}
 

@@ -60,8 +60,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.mem_act {g : GL ι k} {M : Submod
     v ∈ _root_.GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms.act g M ↔ ∃ w ∈ M, g.val *ᵥ w = v := by
   simp [_root_.GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms.act]
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 theorem _root_.GlobalTheory.RootEx.UnfoldShape.mem_act_iff_inv {g : GL ι k} {M : Submodule 𝒪[k] (ι → k)} {v : ι → k} :
@@ -74,8 +72,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.mem_act_iff_inv {g : GL ι k} {M 
     refine ⟨_, hv, ?_⟩
     rw [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mulVec]
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 theorem _root_.GlobalTheory.RootEx.UnfoldShape.act_one (M : Submodule 𝒪[k] (ι → k)) :
@@ -83,8 +79,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.act_one (M : Submodule 𝒪[k] (�
   ext v
   simp [_root_.GlobalTheory.RootEx.UnfoldShape.mem_act_iff_inv]
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 theorem _root_.GlobalTheory.RootEx.UnfoldShape.act_mul (g h : GL ι k) (M : Submodule 𝒪[k] (ι → k)) :
@@ -92,8 +86,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.act_mul (g h : GL ι k) (M : Subm
   ext v
   simp only [_root_.GlobalTheory.RootEx.UnfoldShape.mem_act_iff_inv, _root_.mul_inv_rev, Units.val_mul, Matrix.mulVec_mulVec]
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 omit [Fintype ι] [DecidableEq ι] in
@@ -103,8 +95,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.mem_smul_iff {ϖ : 𝒪[k]} {M : 
   rfl
 
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 omit [Fintype ι] [DecidableEq ι] in
@@ -128,8 +118,6 @@ omit [Fintype n] [DecidableEq n] in
 theorem mem_Yle {i : ℕ} {v : n ⊕ Fin c → k} :
     v ∈ Yle k n c i ↔ ∀ l : Fin c, i < l.val + 1 → v (Sum.inr l) = 0 := Iff.rfl
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 omit [Fintype n] in
@@ -160,8 +148,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.mem_chainLat {ϖ : 𝒪[k]} {L : 
     · simp [_root_.GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms.inX, _root_.GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms.aux, Finset.sum_apply,
         Pi.single_apply, Subring.smul_def, ha i]
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 omit [Fintype n] in
@@ -170,8 +156,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.inX_mem_chainLat {ϖ : 𝒪[k]} {
   rw [_root_.GlobalTheory.RootEx.UnfoldShape.mem_chainLat]
   exact ⟨fun h => h.1, fun h => ⟨h, fun i => ⟨0, by simp [_root_.GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms.inX]⟩⟩⟩
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 omit [Fintype n] in
@@ -196,8 +180,6 @@ omit [ValuativeRel k] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
 
 theorem pt_eq (x₀ : Matrix n n' k) (y : Fin c → (n ⊕ Fin c → k)) : pt x₀ y = basePt c x₀ + colMat n' y := rfl
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 omit [ValuativeRel k] [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] in
@@ -222,8 +204,6 @@ end
 
 variable [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 variable [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
@@ -250,8 +230,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.mapsInto_colMat {ϖ : 𝒪[k]} {L
 variable [MeasurableSpace k] [BorelSpace k]
 
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 omit [ValuativeRel k] in
@@ -268,8 +246,6 @@ private theorem affPt_eq_pt_col (x₀ : Matrix n n' k)
     · by_cases h : _root_.GlobalTheory.RootEx.Free (n' := n') 1 (r, Sum.inr i.succ) <;>
         simp [_root_.GlobalTheory.RootEx.UnfoldShape.col, h]
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 omit [ValuativeRel k] in
@@ -282,8 +258,6 @@ private theorem col_mem_Yle' [ValuativeRel k]
   simp only [_root_.GlobalTheory.RootEx.Free, Fin.val_succ]
   omega
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 variable [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
@@ -301,8 +275,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.exists_pt_ne_zero {ψ : AddChar k
   unfold _root_.GlobalTheory.RootEx.opE
   simp [hzero]
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 omit [ValuativeRel k] in
@@ -321,8 +293,6 @@ private theorem colMat_eq_zero_of_not_free [ValuativeRel k] {y : Fin c → (n �
         simp only [_root_.GlobalTheory.RootEx.Free, Fin.val_succ] at h
         omega
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 omit [ValuativeRel k] in
@@ -339,8 +309,6 @@ private theorem affPt_add_uncol [ValuativeRel k] (x₀ : Matrix n n' k) {y : Fin
   · simp [h, _root_.GlobalTheory.RootEx.UnfoldShape.uncol]
   · simp [h, colMat_eq_zero_of_not_free hy h]
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 omit [ValuativeRel k] in
@@ -351,8 +319,6 @@ private theorem ch_add_colMat (x : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)
   simp [_root_.GlobalTheory.RootEx.ch, Finset.sum_add_distrib, _root_.GlobalTheory.RootEx.UnfoldShape.colMat]
 
 
-open MeasureTheory ValuativeRel Matrix in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 variable [TopologicalSpace k] [IsNonarchimedeanLocalField k] in

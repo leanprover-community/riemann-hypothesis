@@ -70,7 +70,6 @@ private lemma isPol_finset_sum {ι : Type} (s : Finset ι) {f : ι → ℂ → V
     simp only [Finset.sum_insert ha]
     exact (hf a (Finset.mem_insert_self a s)).add (ih fun i hi => hf i (Finset.mem_insert_of_mem hi))
 
-open MeasureTheory in
 variable {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] in
 private lemma isPol_pow_smul (n : ℕ) (v : V) : _root_.GlobalTheory.RhvPoly.IsPol fun y : ℂ => y ^ n • v := by
   induction n with
@@ -79,7 +78,6 @@ private lemma isPol_pow_smul (n : ℕ) (v : V) : _root_.GlobalTheory.RhvPoly.IsP
     simp only [pow_succ', mul_smul]
     exact ih.xsmul
 
-open MeasureTheory in
 variable {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] in
 private lemma isPol_eval_smul (p : Polynomial ℂ) (v : V) :
     _root_.GlobalTheory.RhvPoly.IsPol fun y => p.eval y • v := by
@@ -89,7 +87,6 @@ private lemma isPol_eval_smul (p : Polynomial ℂ) (v : V) :
   funext y
   exact smul_comm _ _ _
 
-open MeasureTheory in
 variable {A : Type} [Ring A] [Algebra ℂ A] in
 private lemma isPol_linearMap_eval {ι : Type} [Fintype ι] [DecidableEq ι] (g : (ι → ℂ) →ₗ[ℂ] A)
     (p : ι → Polynomial ℂ) : _root_.GlobalTheory.RhvPoly.IsPol fun y => g (fun ρ => (p ρ).eval y) := by
@@ -101,7 +98,6 @@ private lemma isPol_linearMap_eval {ι : Type} [Fintype ι] [DecidableEq ι] (g 
   simp only [h, map_sum, map_smul]
   exact isPol_finset_sum _ fun ρ _ => isPol_eval_smul _ _
 
-open MeasureTheory in
 variable {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] in
 private lemma isPol_linearMap_comp (g : V →ₗ[ℂ] W) {f : ℂ → V} (hf : _root_.GlobalTheory.RhvPoly.IsPol f) :
     _root_.GlobalTheory.RhvPoly.IsPol fun y => g (f y) := by
@@ -110,7 +106,6 @@ private lemma isPol_linearMap_comp (g : V →ₗ[ℂ] W) {f : ℂ → V} (hf : _
   | add _ _ ihf ihg => simpa only [map_add (f := _)] using ihf.add ihg
   | xsmul _ ih => simpa only [map_smul] using ih.xsmul
 
-open MeasureTheory in
 variable {A : Type} [Ring A] [Algebra ℂ A] in
 private lemma isPol_mul {f g : ℂ → A} (hf : _root_.GlobalTheory.RhvPoly.IsPol f) (hg : _root_.GlobalTheory.RhvPoly.IsPol g) :
     _root_.GlobalTheory.RhvPoly.IsPol fun y => f y * g y := by
@@ -119,13 +114,11 @@ private lemma isPol_mul {f g : ℂ → A} (hf : _root_.GlobalTheory.RhvPoly.IsPo
   | add _ _ ihf ihg => simpa only [add_mul] using ihf.add ihg
   | xsmul _ ih => simpa only [smul_mul_assoc] using ih.xsmul
 
-open MeasureTheory in
 variable {A : Type} [Ring A] [Algebra ℂ A] in
 private lemma isPol_algebraMap_eval (p : Polynomial ℂ) :
     _root_.GlobalTheory.RhvPoly.IsPol fun y => algebraMap ℂ A (p.eval y) := by
   simpa [Algebra.algebraMap_eq_smul_one] using isPol_eval_smul p (1 : A)
 
-open MeasureTheory in
 variable {A : Type} [Ring A] [Algebra ℂ A] in
 private lemma isPol_list_prod {ι : Type} (l : List ι) {F : ι → ℂ → A}
     (hF : ∀ i, _root_.GlobalTheory.RhvPoly.IsPol (F i)) :
@@ -134,7 +127,6 @@ private lemma isPol_list_prod {ι : Type} (l : List ι) {F : ι → ℂ → A}
   | nil => simpa using _root_.GlobalTheory.RhvPoly.IsPol.const (1 : A)
   | cons a l ih => simpa using isPol_mul (hF a) ih
 
-open MeasureTheory in
 variable {A : Type} [Ring A] [Algebra ℂ A] in
 private lemma isPol_Tvprod' {r : ℕ} (L : _root_.Formalism.FourierDecayAlt.R.LevelData A r) :
     _root_.GlobalTheory.RhvPoly.IsPol fun y => L.Tvprod y := by
@@ -156,7 +148,6 @@ private lemma isPol_Tvprod' {r : ℕ} (L : _root_.Formalism.FourierDecayAlt.R.Le
   rw [h]
   exact isPol_list_prod _ hT
 
-open MeasureTheory in
 variable {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] in
 private lemma exists_polynomial_eq_functional_of_isPol {f : ℂ → V} (hf : _root_.GlobalTheory.RhvPoly.IsPol f) (φ : V →ₗ[ℂ] ℂ) :
     ∃ p : Polynomial ℂ, ∀ y, φ (f y) = p.eval y := by
@@ -170,7 +161,6 @@ private lemma exists_polynomial_eq_functional_of_isPol {f : ℂ → V} (hf : _ro
     obtain ⟨p, hp⟩ := ih
     exact ⟨Polynomial.X * p, fun y => by simp [hp]⟩
 
-open MeasureTheory in
 variable {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] in
 private lemma isPol_eq_zero_of_infinite_zeros {f : ℂ → V} (hf : _root_.GlobalTheory.RhvPoly.IsPol f) {S : Set ℂ}
     (hS : S.Infinite) (h0 : ∀ y ∈ S, f y = 0) (y : ℂ) : f y = 0 := by
@@ -182,7 +172,6 @@ private lemma isPol_eq_zero_of_infinite_zeros {f : ℂ → V} (hf : _root_.Globa
   simp [hp, this]
 
 
-open MeasureTheory in
 theorem _root_.GlobalTheory.RhvPoly.rhv_mem_of_infinite : ∀ (P : _root_.Formalism.FourierDecayAlt.M.Par) (A : Type) [Ring A] [StarRing A] [Algebra ℂ A]
     (d : _root_.Formalism.FourierDecayAlt.Q.NFData P A) (K : Submodule ℂ A) (S : Set ℂ), S.Infinite →
     (∀ y ∈ S, _root_.GlobalTheory.HatNF.rhv d y ∈ K) → ∀ y : ℂ, _root_.GlobalTheory.HatNF.rhv d y ∈ K := by

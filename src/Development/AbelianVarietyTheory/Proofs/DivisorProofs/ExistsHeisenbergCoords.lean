@@ -67,7 +67,6 @@ theorem archMat_unitary (hcm : IsCMExt F E σ) (τ : EmbOver E ν) (g : HA ν.Co
 
 end Transfer
 
-open Formalism.UG (cT bc UJ)
 
 end GlobalTheory.HeisCoords
 

@@ -76,8 +76,6 @@ private lemma ringHomPoint_some {k k' : Type*} [Field k] [Field k']
     _root_.GlobalTheory.MomOne.ringHomPoint f W (.some x y h) =
       .some (f x) (f y) ((W.toAffine.map_nonsingular f.injective x y).mpr h) := rfl
 
-open PowerSeries WeierstrassCurve WeierstrassCurve.Affine in
-open scoped ComplexConjugate BigOperators Topology in
 private lemma ringHomPoint_surjective_of_ringEquiv {k k' : Type*} [Field k] [Field k']
     (e : k ≃+* k') (W : WeierstrassCurve k) :
     Function.Surjective (_root_.GlobalTheory.MomOne.ringHomPoint (e : k →+* k') W) := by
@@ -90,8 +88,6 @@ private lemma ringHomPoint_surjective_of_ringEquiv {k k' : Type*} [Field k] [Fie
     rw [ringHomPoint_some]
     simp
 
-open PowerSeries WeierstrassCurve WeierstrassCurve.Affine in
-open scoped ComplexConjugate BigOperators Topology in
 private lemma ringHomPoint_eq_zero_iff {k k' : Type*} [Field k] [Field k']
     (f : k →+* k') (W : WeierstrassCurve k) (P : W.toAffine.Point) :
     _root_.GlobalTheory.MomOne.ringHomPoint f W P = 0 ↔ P = 0 := by
@@ -101,8 +97,6 @@ private lemma ringHomPoint_eq_zero_iff {k k' : Type*} [Field k] [Field k']
     simp
 
 
-open PowerSeries WeierstrassCurve WeierstrassCurve.Affine in
-open scoped ComplexConjugate BigOperators Topology in
 theorem _root_.GlobalTheory.MomOne.Mdl.exists_pointHom (q : ℕ) [Fact q.Prime]
     (M : _root_.GlobalTheory.MomOne.Mdl q) (hM : M.Ok) :
     ∃ φ : ℂ →+ M.W.toAffine.Point, Function.Surjective φ ∧

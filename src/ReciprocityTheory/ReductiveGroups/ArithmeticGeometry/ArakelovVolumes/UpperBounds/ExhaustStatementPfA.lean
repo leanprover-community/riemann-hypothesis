@@ -106,7 +106,6 @@ end ReciprocityTheory.ChartRestriction.G.AR.Up.ExhA
 namespace ReciprocityTheory.ChartRestriction.G.AR.Up.ExhB
 
 open Matrix Topology Filter
-open scoped ComplexOrder Matrix
 open ReciprocityTheory.L2DbarEstimates ReciprocityTheory.ChartRestriction.G.AR.Up
 
 theorem quad_im {m : ℕ} {A : Matrix (Fin m) (Fin m) ℂ} (hA : A.IsHermitian) (x : Fin m → ℂ) :

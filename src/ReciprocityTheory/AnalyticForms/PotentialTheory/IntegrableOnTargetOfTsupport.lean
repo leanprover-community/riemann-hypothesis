@@ -46,7 +46,6 @@ open scoped ContDiff
 
 noncomputable section
 
-section helpers
 
 variable {e : ℕ} {X : Type} [TopologicalSpace X]
 
@@ -135,7 +134,6 @@ private theorem chart_move [CompactSpace X] (A : FinHolAtlas e X) (P : ChartPart
   rw [locDensChart A Φ hΦ j k y hy.1 hy.2, ReciprocityTheory.AnForm.A.det_jacC, Complex.normSq_eq_norm_sq]
   ring
 
-end helpers
 
 def MIntLocalizeStatement : Prop :=
   ∀ {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X] [T2Space X] (A : FinHolAtlas e X)

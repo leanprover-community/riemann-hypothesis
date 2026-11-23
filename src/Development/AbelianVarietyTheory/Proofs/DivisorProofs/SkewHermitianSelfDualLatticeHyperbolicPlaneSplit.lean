@@ -82,7 +82,6 @@ end Helpers
 end GlobalTheory.PlaneSkew
 
 namespace GlobalTheory.PlaneSkew
-open GlobalTheory.AdelicU (splitPrime IsSplitBasis)
 
 section Helpers2
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n n₁ : ℕ}
@@ -140,7 +139,6 @@ end Helpers2
 end GlobalTheory.PlaneSkew
 
 namespace GlobalTheory.PlaneSkew
-open GlobalTheory.AdelicU (splitPrime IsSplitBasis)
 
 theorem plane_skew : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (B : Base F E), B.IsGood σ → ∀ (n n₁ : ℕ), n = n₁ + 2 → 1 ≤ n₁ → ∀ (Y : Spc F E n) (r s : ℕ), 1 ≤ r → 1 ≤ s →

@@ -182,7 +182,6 @@ end GlobalTheory.CellBump
 
 namespace GlobalTheory.CellBump
 
-open GlobalTheory.CellDec GlobalTheory.RSJ
 open scoped Pointwise
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {m : ℕ}
@@ -266,7 +265,6 @@ end GlobalTheory.CellBump
 
 namespace GlobalTheory.CellBump
 
-open GlobalTheory.CellDec GlobalTheory.RSJ
 
 set_option synthInstance.maxHeartbeats 100000 in
 theorem exists_cellPart_unfoldedIntegral_positive_alt : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (m : ℕ)

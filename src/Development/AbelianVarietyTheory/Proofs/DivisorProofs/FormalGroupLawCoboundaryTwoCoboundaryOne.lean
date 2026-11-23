@@ -51,7 +51,6 @@ theorem _root_.GlobalTheory.Katz.CobCob.elim_has {u v : Fin d → MvPowerSeries 
   hasSubst_of_constantCoeff_zero (by rintro (i | i) <;> simp [hu, hv])
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 theorem _root_.GlobalTheory.Katz.CobCob.op_const
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R} (h : ∀ i, constantCoeff (μ i) = 0)
@@ -63,7 +62,6 @@ theorem _root_.GlobalTheory.Katz.CobCob.op_const
     (by rintro (j | j) <;> simp [hu, hv]) (h i)
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsFirstVariables (i : Fin d) :
     constantCoeff (_root_.GlobalTheory.Katz.x1 (R := R) i) = 0 := by
@@ -71,7 +69,6 @@ theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsFirstVariables 
   exact constantCoeff_X _
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsSecondVariables (i : Fin d) :
     constantCoeff (_root_.GlobalTheory.Katz.x2 (R := R) i) = 0 := by
@@ -79,7 +76,6 @@ theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsSecondVariables
   exact constantCoeff_X _
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsThirdVariables (i : Fin d) :
     constantCoeff (_root_.GlobalTheory.Katz.x3 (R := R) i) = 0 := by
@@ -89,7 +85,6 @@ theorem _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsThirdVariables 
 end CobCob
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 private theorem at2_sub_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
     (h : HasSubst (Sum.elim u v)) (c c' : MvPowerSeries (Fin d ⊕ Fin d) R) :
@@ -99,7 +94,6 @@ private theorem at2_sub_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
   exact subst_sub h c c'
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 private theorem at2_subst_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
     (h : HasSubst (Sum.elim u v)) {a : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R}
@@ -110,7 +104,6 @@ private theorem at2_subst_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
   exact subst_comp_subst_apply (hasSubst_of_constantCoeff_zero ha) h f
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 private theorem at2_X_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
     (h : HasSubst (Sum.elim u v)) (s : Fin d ⊕ Fin d) :
@@ -119,7 +112,6 @@ private theorem at2_X_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
   exact subst_X h s
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 private theorem at2_cob1_eq_subst_op_sub {u v : Fin d → MvPowerSeries τ R}
     (h : HasSubst (Sum.elim u v)) {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R}
@@ -135,7 +127,6 @@ private theorem at2_cob1_eq_subst_op_sub {u v : Fin d → MvPowerSeries τ R}
   rfl
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 private theorem at2_add_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
     (h : HasSubst (Sum.elim u v)) (c c' : MvPowerSeries (Fin d ⊕ Fin d) R) :
@@ -145,7 +136,6 @@ private theorem at2_add_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
   exact subst_add h c c'
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 private theorem at2_smul_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
     (h : HasSubst (Sum.elim u v)) (r : R) (c : MvPowerSeries (Fin d ⊕ Fin d) R) :
@@ -154,7 +144,6 @@ private theorem at2_smul_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
   exact subst_smul h r c
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {R : Type} [CommRing R] {d : ℕ} {τ : Type} in
 private theorem op_addLaw_eq_add_of_hasSubst {u v : Fin d → MvPowerSeries τ R}
     (h : HasSubst (Sum.elim u v)) :
@@ -167,7 +156,6 @@ private theorem op_addLaw_eq_add_of_hasSubst {u v : Fin d → MvPowerSeries τ R
 
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct MvPowerSeries in
 theorem _root_.GlobalTheory.Katz.formalGroupLawCoboundaryTwo_coboundaryOne_alt : ∀ (R : Type) [CommRing R] (d : ℕ)
     (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R), (∀ i, constantCoeff (μ i) = 0) →
     ∀ f : MvPowerSeries (Fin d) R,

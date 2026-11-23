@@ -332,7 +332,6 @@ theorem det_generic_blocks (hinj : Function.Injective (algebraMap O K)) {ι ρ �
     simp
 
 
-open MvPolynomial in
 theorem det_generic_eq_zero (hinj : Function.Injective (algebraMap O K)) {ι G N : Type}
     [Fintype ι] [DecidableEq ι] [Fintype G] [DecidableEq G] [Fintype N]
     (a : N → G → G → Matrix ι ι O) (v : G → ι → K) (hv : v ≠ 0)

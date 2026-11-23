@@ -77,8 +77,6 @@ end GlobalTheory.TorusFrame
 
 namespace GlobalTheory.TorusFrame
 
-open Complex
-open scoped ComplexConjugate
 
 theorem skewHermitian_of_diagonal_imaginary_frame {r : ℕ} (G M Y : Matrix (Fin r) (Fin r) ℂ) (hu : IsUnit M.det) (d s : Fin r → ℂ)
     (hd : ∀ a, conj (d a) = -d a) (hJ : Mᵀ * G * M.map (starRingEnd ℂ) = diagonal s)

@@ -132,7 +132,6 @@ end GlobalTheory.Mum.LieTens
 
 namespace GlobalTheory.Mum.LieTens
 
-open GlobalTheory.Serre
 
 theorem act_eq {S : Scheme.{0}} {O : Type} [CommRing O] {G : Over S} [GrpObj G] (x y : OAct O G)
     (h : ∀ c, x.act c = y.act c) : x = y := by

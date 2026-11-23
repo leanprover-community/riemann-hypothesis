@@ -79,7 +79,6 @@ end GlobalTheory.LieCoordFibre
 
 namespace GlobalTheory.LieCoordFibre
 
-open ReciprocityTheory.ChartRestriction.G.Chart (prodPts scaleD dualMapR)
 
 variable {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G]
   {k : Type} [Field k] (f : R →+* k)
@@ -109,7 +108,6 @@ end GlobalTheory.LieCoordFibre
 
 namespace GlobalTheory.LieCoordFibre
 
-open ReciprocityTheory.ChartRestriction.G.Chart (prodPts scaleD dualMapR)
 
 variable {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G]
   {k : Type} [Field k] (f : R →+* k)
@@ -146,7 +144,6 @@ end GlobalTheory.LieCoordFibre
 
 namespace GlobalTheory.LieCoordFibre
 
-open ReciprocityTheory.ChartRestriction.G.Chart (prodPts scaleD dualMapR)
 
 variable {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G] {n : ℕ}
   {v : Fin n → (epsR R ⟶ G)}

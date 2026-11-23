@@ -436,7 +436,6 @@ private theorem prod_sub_lam_mul_sub_mu_eq_zero {n : ℕ} (D N : Matrix (Fin n) 
         rw [mul_assoc P _ F, hNF0, mul_zero, zero_add, mul_assoc, mul_assoc, hc2.eq]
     _ = 0 := by rw [hE, zero_mul]
 
-open Polynomial in
 private theorem rel_of_chars {W : Type} [Group W] {n q : ℕ} (hq : 2 ≤ q) (R : W →* GL (Fin n) ℂ) (c : Fin n → W →* ℂ)
     (h : ∀ g, (R g : Matrix (Fin n) (Fin n) ℂ).charpoly = ∏ i, (X - C (c i g))) (f t : W)
     (h1 : R ((t ^ q)⁻¹ * (f⁻¹ * t * f)) = 1) (h2 : ∀ i, c i ((t ^ q)⁻¹ * (f⁻¹ * t * f)) = 1)

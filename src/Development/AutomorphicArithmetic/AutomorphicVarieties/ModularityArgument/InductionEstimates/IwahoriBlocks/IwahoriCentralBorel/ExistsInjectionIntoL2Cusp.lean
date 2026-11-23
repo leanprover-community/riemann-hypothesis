@@ -177,8 +177,6 @@ end Avg
 
 section Proj
 
-open Function Set
-open scoped InnerProductSpace
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} {μ : Measure (G1 K n)} [μ.IsHaarMeasure]
 

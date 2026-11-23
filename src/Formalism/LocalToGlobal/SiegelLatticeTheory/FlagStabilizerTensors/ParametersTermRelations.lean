@@ -305,7 +305,6 @@ def sOf : Formalism.MainNotions.S.Draft.SData D.R D.host.F D.host.E D.conjF D.wh
 
 end SOf
 
-section Iso
 
 variable {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {sig : E →ₐ[F] E} {Word Tau : Type} {hc : Word → Tau → HCParam R}
@@ -341,7 +340,6 @@ structure SIso (s s' : Formalism.MainNotions.S.Draft.SData R F E sig Word Tau hc
   massPair : ∀ {u u'} (p : s.Pair u u'), s.massPair p = s'.massPair (eP u u' p)
   meanCount : s.meanCount = s'.meanCount
 
-end Iso
 
 section Ties
 

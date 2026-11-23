@@ -143,8 +143,6 @@ end GlobalTheory.ThLoc.LocStd
 
 namespace GlobalTheory.ThLoc.LocStd
 
-open Formalism.L2.Th1.H (Sesq IsSelfDual IsHerm dualLat altE Th alphaQ blk4 pow4 slice imgLat)
-open Formalism.L2.Th1.F (cmTheta)
 
 section Reindex₂
 

@@ -360,7 +360,6 @@ end Formalism.IncomingBounds.Cay
 
 namespace Formalism.IncomingBounds.Cay
 
-open MvPolynomial Matrix Formalism.IncomingBounds
 
 variable {K : Type} [Field K] [CharZero K]
 
@@ -533,7 +532,6 @@ end Formalism.IncomingBounds.Cay
 
 namespace Formalism.IncomingBounds
 
-open MvPolynomial Matrix
 
 theorem cayleyIdentity : CayleyId := by
   apply GlobalTheory.CayleyCapelli.cayleyId <;> assumption

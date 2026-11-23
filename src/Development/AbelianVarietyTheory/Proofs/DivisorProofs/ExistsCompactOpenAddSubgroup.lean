@@ -58,7 +58,6 @@ theorem _root_.GlobalTheory.WeilM.HaarUniq.exists_compact_openAddSubgroup [Nonar
   exact ⟨K, hC.of_isClosed_subset K.isClosed hK⟩
 
 
-open MeasureTheory Filter Topology in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] in
 theorem _root_.GlobalTheory.WeilM.HaarUniq.indicator_mem [IsTopologicalAddGroup V] [T2Space V]
     (K : OpenAddSubgroup V) (hK : IsCompact (K : Set V)) :
@@ -73,7 +72,6 @@ theorem _root_.GlobalTheory.WeilM.HaarUniq.indicator_mem [IsTopologicalAddGroup 
       simp [Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]⟩
 
 
-open MeasureTheory Filter Topology in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] in
 theorem _root_.GlobalTheory.WeilM.HaarUniq.exists_invariant [NonarchimedeanAddGroup V] {φ : V → ℂ}
     (hφ : φ ∈ _root_.GlobalTheory.WeilM.SB V) :
@@ -113,7 +111,6 @@ theorem _root_.GlobalTheory.WeilM.HaarUniq.exists_invariant [NonarchimedeanAddGr
   rw [image_eq_zero_of_notMem_tsupport hx, image_eq_zero_of_notMem_tsupport hxk]
 
 
-open MeasureTheory Filter Topology in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] in
 theorem _root_.GlobalTheory.WeilM.HaarUniq.exists_decomp [IsTopologicalAddGroup V] (K : OpenAddSubgroup V)
     {φ : V → ℂ} (hc : HasCompactSupport φ) (hinv : ∀ k ∈ K, ∀ x, φ (x + k) = φ x) :
@@ -148,7 +145,6 @@ theorem _root_.GlobalTheory.WeilM.HaarUniq.exists_decomp [IsTopologicalAddGroup 
     rw [QuotientAddGroup.eq]
     simpa using hxp
 
-open MeasureTheory Filter Topology in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] in
 private theorem exists_coeff_form_and_integral [IsTopologicalAddGroup V] [T2Space V]
     [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure]
@@ -188,7 +184,6 @@ private theorem exists_coeff_form_and_integral [IsTopologicalAddGroup V] [T2Spac
       _ = _ := by rw [Finset.sum_mul]
 
 
-open MeasureTheory Filter Topology in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] in
 theorem _root_.GlobalTheory.WeilM.HaarUniq.exists_eq_mul_integral : ∀ (V : Type) [AddCommGroup V]
     [TopologicalSpace V] [NonarchimedeanAddGroup V]

@@ -116,7 +116,6 @@ end
 
 section
 
-open ReciprocityTheory.ChartRestriction.G.FD
 
 variable {D : D7}
 

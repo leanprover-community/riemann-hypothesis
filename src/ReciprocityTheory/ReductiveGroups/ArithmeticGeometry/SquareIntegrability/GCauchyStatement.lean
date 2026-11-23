@@ -319,7 +319,6 @@ def GSupStatement : Prop :=
         (2 * Fintype.card ι) * Y.l2 q F
 
 
-open scoped Classical in
 def GCauchyStatement : Prop :=
   ∀ (ι : Type) [Fintype ι] (F : EuclideanSpace ℂ ι → ℂ), Differentiable ℂ F →
     ∀ S : ℝ, (∀ v, ‖F v‖ ^ 2 * Real.exp (-Real.pi * ‖v‖ ^ 2) ≤ S) → ∀ α : ι →₀ ℕ,

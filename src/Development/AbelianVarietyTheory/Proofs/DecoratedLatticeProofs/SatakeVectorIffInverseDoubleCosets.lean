@@ -75,7 +75,6 @@ theorem Tj_inv_eq_invT {E : Type} [Field E] [NumberField E] (w : HeightOneSpectr
     group
 
 
-open GlobalTheory.LFun.ConjPlace in
 theorem invT_invT {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ)
     (g : GL (Fin n) (w.adicCompletion E)) :
     invT (RingEquiv.refl (w.adicCompletion E)) n (invT (RingEquiv.refl (w.adicCompletion E)) n g) = g :=
@@ -83,7 +82,6 @@ theorem invT_invT {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (�
     rw [invT_val, ← map_inv, invT_val, inv_inv]; rfl)
 
 
-open GlobalTheory.LFun.ConjPlace in
 theorem heckeVec_inv_eq {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (V : Type)
     [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) V) (x : V)
     (hx : x ∈ fixed ρ (KGL w (n := n))) {ϖ : w.adicCompletion E} (hϖ : IsUnifV E w ϖ) (j : ℕ) :
@@ -99,7 +97,6 @@ theorem heckeVec_inv_eq {E : Type} [Field E] [NumberField E] (w : HeightOneSpect
   funext g
   exact Tj_inv_eq_invT w n u j g
 
-open GlobalTheory.LFun.ConjPlace in
 theorem satVec_iff_inv : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) V) (x : V) (B : Multiset ℂˣ), x ≠ 0 → x ∈ fixed ρ (KGL w (n := n)) → B.card = n → (IsSatVecGL w ρ x B ↔ ∀ ϖ, IsUnifV E w ϖ → ∀ j ≤ n, heckeVec ρ (KGL w (n := n)) (fun g => Tj ℂ n (Ov E w) ϖ j g⁻¹) x = satEig (qV E w) n (B.map (·⁻¹)) j • x) := by
   intro E _ _ w n V _ _ ρ x B h0 hx hB
   have hK := mem_iff_invT (n := n) (RingEquiv.refl (w.adicCompletion E)) (O := Ov E w) (O' := Ov E w)

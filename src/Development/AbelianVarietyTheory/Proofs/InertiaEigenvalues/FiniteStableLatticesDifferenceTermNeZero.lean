@@ -135,7 +135,6 @@ end GlobalTheory.UnitLemma.Desc
 
 noncomputable section
 namespace GlobalTheory.UnitLemma.Desc
-open GlobalTheory.UnitLemma Polynomial Classical
 
 variable {K : UQ} (B : InvAlg K)
 

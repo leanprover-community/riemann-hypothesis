@@ -89,7 +89,6 @@ end GlobalTheory.SimSign
 
 namespace GlobalTheory.SimSign
 
-open Matrix
 
 variable {n : ℕ}
 

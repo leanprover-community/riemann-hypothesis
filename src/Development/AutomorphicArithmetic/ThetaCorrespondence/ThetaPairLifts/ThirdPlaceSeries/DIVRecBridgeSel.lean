@@ -57,7 +57,6 @@ def ColumnRecordCompatible (T : _root_.Formalism.L2.TiedDataSKAlt ex) (P : RowSi
     HEq c.Am (Formalism.L2.Ker.ambOf T.ker.seam T.ker.B T.ker.χ T.ker.cD) ∧ c.Mem = D.what₂.Word ∧ HEq c.wd T.ker.word
 end Sel
 section RowsK
-open Formalism.MainNotions Formalism.L2.Rows
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts} {Y : DivX D}
   {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX}
 structure DivisionKernelData (ex : Extra D L hT Gi Gl Kc Y cX) : Type 1 where

@@ -62,8 +62,6 @@ theorem _root_.GlobalTheory.TestLat.SumLat.idx_nonempty (lam : ι → _root_.For
   haveI : Nontrivial (_root_.Formalism.L2.DIV.VV ℚ lam) := nontrivial_of_ne _ _ hne
   exact (_root_.Formalism.L2.DIV.bVV ℚ lam).index_nonempty
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix ComplexOrder in
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] {n N : ℕ} {C : Type} in
 theorem _root_.GlobalTheory.TestLat.SumLat.isLattice_sumLat [Finite C] (lam : ι → _root_.Formalism.BasicNotions.DomWeight n)
     (e : Fin N ≃ C × _root_.Formalism.L2.DIV.VVIdx lam)
@@ -113,8 +111,6 @@ theorem _root_.GlobalTheory.TestLat.SumLat.isLattice_sumLat [Finite C] (lam : ι
   intro s hs hli
   exact (LinearIndependent.iff_fractionRing _ _).mp hli
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix ComplexOrder in
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] {n N : ℕ} {C : Type} in
 theorem _root_.GlobalTheory.TestLat.SumLat.sumLat_lattice_dual : ∀ (K : Type) [Field K] [NumberField K]
     [StarRing K] (ι : Type) [Fintype ι] (n : ℕ) (lam : ι → _root_.Formalism.BasicNotions.DomWeight n) (C : Type) [Nonempty C]

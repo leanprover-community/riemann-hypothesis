@@ -117,9 +117,7 @@ end GtCoord
 
 end Unif
 
-section UnifPre
 
-open scoped CategoryTheory.Obj
 
 variable {R : Type} [CommRing R] [IsDomain R] (I : Ideal R)
 
@@ -198,6 +196,5 @@ structure UnifPre (D : DegData R I) (A : PolAV (Spec (CommRingCat.of (FractionRi
     (h₂ : V ≤ (D.toPre.P.L.pull (gt e).pG.left).U p.1 ⊓ (LG.L.pull (fstG I e G).left).U p.2),
     res h₁ (pullU (thickMap R I e G) _ ((w (e + 1)).s p)) = res h₂ ((w e).s p)
 
-end UnifPre
 
 end ReciprocityTheory.ChartRestriction.G.Out

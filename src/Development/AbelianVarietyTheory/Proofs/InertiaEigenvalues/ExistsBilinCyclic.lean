@@ -96,7 +96,6 @@ theorem _root_.GlobalTheory.SimilarTranspose.exists_form {k : Type} [Field k] (f
     rw [hidx, coeff_mul_X_pow] at h
     exact hr (leadingCoeff_eq_zero.1 h)
 
-open Polynomial in
 private theorem exists_nondegenerate_X_symmetric_form_quotient {k : Type} [Field k] (f : k[X]) (hf : f ≠ 0) :
     ∃ G : (k[X] ⧸ (k[X] ∙ f)) →ₗ[k] (k[X] ⧸ (k[X] ∙ f)) →ₗ[k] k,
       (∀ x y, G ((X : k[X]) • x) y = G x ((X : k[X]) • y)) ∧ ∀ x, (∀ y, G x y = 0) → x = 0 := by
@@ -155,7 +154,6 @@ private theorem exists_nondegenerate_X_symmetric_form_quotient {k : Type} [Field
     rw [Submodule.Quotient.mk_eq_zero, Submodule.mem_span_singleton]
     exact ⟨c, by rw [hc, smul_eq_mul, mul_comm]⟩
 
-open Polynomial in
 private theorem exists_nondegenerate_X_symmetric_form_torsion {k : Type} [Field k] {M : Type} [AddCommGroup M]
     [Module k[X] M] [Module k M] [IsScalarTower k k[X] M] [Module.Finite k[X] M]
     (hM : Module.IsTorsion k[X] M) :
@@ -193,7 +191,6 @@ private theorem exists_nondegenerate_X_symmetric_form_torsion {k : Type} [Field 
     · simp
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.SimilarTranspose.main : ∀ (k ι : Type) [Field k] [Fintype ι] [DecidableEq ι] (A : Matrix ι ι k),
     ∃ P : Matrix ι ι k, IsUnit P ∧ P * A = A.transpose * P := by
   intro k ι _ _ _ A

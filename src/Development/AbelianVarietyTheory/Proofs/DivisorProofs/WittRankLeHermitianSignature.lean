@@ -69,7 +69,6 @@ end GlobalTheory.WittFrameSig
 
 namespace GlobalTheory.WittFrameSig
 
-open Matrix
 
 theorem wittFrame_le_signature : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (B : Base F E) (n : ℕ) (X : Spc F E n) (r s : ℕ), B.IsGood σ → X.IsHerm σ B r s →

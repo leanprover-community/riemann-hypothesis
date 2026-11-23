@@ -240,7 +240,6 @@ end ReciprocityTheory.ChartRestriction.G.DVR.TG
 
 namespace ReciprocityTheory.ChartRestriction.G.DVR.TG
 
-open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegData R I}
   {A : PolAV (Spec (CommRingCat.of (FractionRing R)))}

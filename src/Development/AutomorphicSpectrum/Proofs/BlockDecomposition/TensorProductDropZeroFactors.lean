@@ -104,7 +104,6 @@ def dropEquiv (o : Fin r' → Fin r) (ho : Function.Injective o) (φ : ∀ c : O
         (TensorProduct.rid ℂ _)
 
 
-open scoped Classical in
 theorem dropEquiv_tprod (o : Fin r' → Fin r) (ho : Function.Injective o)
     (φ : ∀ c : Off o, X c ≃ₗ[ℂ] ℂ) (x : ∀ j, X j) :
     dropEquiv o ho φ (PiTensorProduct.tprod ℂ x) =

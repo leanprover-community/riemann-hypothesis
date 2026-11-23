@@ -50,8 +50,6 @@ private lemma sum_index_mul_root_eq_sub' {n : ℕ} (a b : Fin n) :
   simp [_root_.PI.UpqRep.root, Pi.single_apply, mul_sub, Finset.sum_sub_distrib]
 
 
-open Matrix MeasureTheory Finset in
-open scoped InnerProductSpace ENNReal in
 theorem _root_.GlobalTheory.DominantRootSums.not_cDom_add_root : ∀ (n : ℕ) (ε : Fin n → Bool) (Λ : Fin n → ℝ) (a b : Fin n), a < b →
     ¬ _root_.PI.UpqRep.CDom ε (Λ + _root_.PI.UpqRep.root a b) Λ := by
   intro n ε Λ a b hab hdom

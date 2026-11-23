@@ -97,7 +97,6 @@ noncomputable section
 
 namespace GlobalTheory.ScaleSelfDual
 
-open Matrix
 
 section Sc
 
@@ -129,7 +128,6 @@ noncomputable section
 
 namespace GlobalTheory.ScaleSelfDual
 
-open Matrix
 
 section Rel
 
@@ -229,7 +227,6 @@ noncomputable section
 
 namespace GlobalTheory.ScaleSelfDual
 
-open Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -343,7 +340,6 @@ noncomputable section
 
 namespace GlobalTheory.ScaleSelfDual
 
-open Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

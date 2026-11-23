@@ -73,7 +73,6 @@ end GlobalTheory.CuspApproxX
 
 namespace GlobalTheory.CuspApproxX
 
-open GlobalTheory.Grow GlobalTheory.Size
 
 end GlobalTheory.CuspApproxX
 

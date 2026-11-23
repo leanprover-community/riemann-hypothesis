@@ -44,7 +44,6 @@ namespace ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR
 
-section Alg
 
 variable {A U : Type} [CommGroup A] [CommGroup U]
 
@@ -58,7 +57,6 @@ variable (A U) in
 
 variable {ν ν' : A → U} {N : ℕ} {g h : Th A U}
 
-end Alg
 
 variable {S : Scheme.{0}} {A : Over S} [GrpObj A] [IsCommMonObj A] {L : RigLB A} {T T' : Over S} (σ : T' ⟶ T) (z : T'.left)
   (J : (T'.left ⟶ A.left) → L.L.ι)

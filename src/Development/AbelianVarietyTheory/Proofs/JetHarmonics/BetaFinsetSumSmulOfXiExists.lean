@@ -76,14 +76,12 @@ private lemma beta_eq_star_beta_swap (D : _root_.Formalism.FourierDecayAlt.B.Rea
   ext p
   simp [inner_conj_symm]
 
-open Finset MeasureTheory in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] in
 private lemma beta_congr_right_on_GV (D : _root_.Formalism.FourierDecayAlt.B.RealPlaceData k r Wp Wq) {F G G₂ : _root_.Formalism.FourierDecayAlt.B.Mat k r → Wq →L[ℂ] Wp}
     (h : ∀ g ∈ _root_.Formalism.FourierDecayAlt.B.GV k r, G g = G₂ g) : _root_.Formalism.FourierDecayAlt.B.beta D F G = _root_.Formalism.FourierDecayAlt.B.beta D F G₂ := by
   rw [beta_eq_star_beta_swap D F G, beta_eq_star_beta_swap D F G₂, _root_.Formalism.FourierDecayAlt.P.Dx1.LZ.beta_congr_left D h]
 
-open Finset MeasureTheory in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] in
 variable [FiniteDimensional ℂ Wp] in
@@ -113,7 +111,6 @@ private lemma beta_sum_smul_left (D : _root_.Formalism.FourierDecayAlt.B.RealPla
       funext g; simp [Finset.sum_insert hx, add_comm]
     rw [e, (_root_.Formalism.FourierDecayAlt.P.JCx2.sq_beta_sesq D hA hs (hFi x) hG (c x)).1, ih, Finset.sum_insert hx, add_comm]
 
-open Finset MeasureTheory in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] in
 variable [FiniteDimensional ℂ Wp] in
@@ -126,7 +123,6 @@ private lemma beta_sum_smul_right (D : _root_.Formalism.FourierDecayAlt.B.RealPl
   rw [star_mul', beta_eq_star_beta_swap D G (Fi i)]
 
 
-open Finset MeasureTheory in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] in
 variable [FiniteDimensional ℂ Wp] in

@@ -98,7 +98,6 @@ theorem _root_.GlobalTheory.LeastExponentCompare.isCMField_of_conj (E : Type) [F
 
 
 set_option autoImplicit false in
-open NumberField NumberField.IsCMField TensorProduct in
 theorem _root_.GlobalTheory.LeastExponentCompare.conj_iff (E : Type) [Field E] [NumberField E]
     (cj : E → E) :
     ((∀ (φ : E →+* ℂ) (z : E), φ (cj z) = star (φ z)) ∧ ∃ z : E, cj z ≠ z) ↔

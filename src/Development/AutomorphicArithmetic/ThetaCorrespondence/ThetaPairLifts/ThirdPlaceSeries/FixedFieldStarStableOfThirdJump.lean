@@ -42,7 +42,6 @@ theorem fixedField_star_stable_of_third_jump_alt : _root_.GlobalTheory.HeightCou
 end GlobalTheory.HeightCounting.Up
 end
 section
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
 
 theorem _root_.GlobalTheory.T.star_mem_LL0_at_level_c : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt → ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, AllSt fun _ _ _ _ _ _ x => ∀ _ : _root_.GlobalTheory.HeightCounting.Up.StrictHenselianAcyclicLevel hL x, ∀ y : (Dof x).LL0, star (y : (Dof x).what₂.LL) ∈ (Dof x).LL0 := by
   first | exact @_root_.GlobalTheory.HeightCounting.Up.fixedField_star_stable_of_third_jump_alt | exact _root_.GlobalTheory.HeightCounting.Up.fixedField_star_stable_of_third_jump_alt | (intros; apply _root_.GlobalTheory.HeightCounting.Up.fixedField_star_stable_of_third_jump_alt <;> assumption)

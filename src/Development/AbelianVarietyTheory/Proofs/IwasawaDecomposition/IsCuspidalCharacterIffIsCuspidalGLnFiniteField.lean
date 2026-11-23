@@ -103,7 +103,6 @@ theorem res_one_one_eq {d a : ℕ} (had : a ≤ d) (χ : Gn g d → ℂ) :
   exact (mem_unipRadical_twoBlocks_iff had x).symm
 
 
-open scoped Classical in
 theorem res_character_eq_zero_iff {d a : ℕ} (had : a ≤ d) (V : FDRep ℂ (Gn g d)) :
     res a (d - a) (fun x => V.character x) 1 1 = 0 ↔
       ∀ v : V, (∀ u ∈ unipRadical (ZMod g) (twoBlocks d a), V.ρ u v = v) → v = 0 := by
@@ -217,7 +216,6 @@ end GlobalTheory.CuspCharRep
 
 namespace GlobalTheory.CuspCharRep
 
-open Formalism.IrreducibleCountingLemmas.TYPES GlobalTheory.GLq GlobalTheory.FiniteGL
 
 theorem isCusp_character_iff_isCuspidal : ∀ (g : ℕ) [Fact g.Prime] (d : ℕ) (V : FDRep ℂ (GL (Fin d) (ZMod g))),
     1 ≤ d → CategoryTheory.Simple V →

@@ -146,7 +146,6 @@ end ReciprocityTheory.ChartRestriction.DS.Xi.GS
 
 namespace ReciprocityTheory.ChartRestriction.DS.Xi
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
 theorem phiV'_linInd (k r : ℕ) (hk : 1 ≤ k) : LinearIndependent ℂ (phiV' k r) := GS.phiV'_linInd' hk
 

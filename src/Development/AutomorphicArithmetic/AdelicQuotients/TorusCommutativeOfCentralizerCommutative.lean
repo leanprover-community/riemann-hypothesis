@@ -46,7 +46,6 @@ private theorem cent_comm_of {F R : Type} [Field F] [CharZero F] [CommRing R] (h
     exact congrArg Units.val ht
   exact Units.ext (hC F R f n _ hγ _ _ hs' ht')
 
-open NumberField GroundTheory.Automorphic GroundTheory.Automorphic.Reduction in
 theorem UpperTheory.torusCommutative_of_centralizerCommutative :
     CentComm → TComm := by
   intro hC F _ _ n γ hγ

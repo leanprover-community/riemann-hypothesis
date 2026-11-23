@@ -96,7 +96,6 @@ theorem basis_descends_record {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIn
   exact this
 
 
-open ReciprocityTheory.ChartRestriction.G.T0 in
 
 
 theorem chosenForms_basis_of_value_basis {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}

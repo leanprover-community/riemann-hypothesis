@@ -289,7 +289,6 @@ end GlobalTheory.LieChart
 namespace GlobalTheory
 
 open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor MonObj
-open scoped CategoryTheory.Obj
 
 theorem exists_affine_lieBasis_baseChange (X : Scheme.{0}) (G : Over X) [GrpObj G] [Smooth G.hom] (x : X)
     (W : X.Opens) (hx : x ∈ W) :

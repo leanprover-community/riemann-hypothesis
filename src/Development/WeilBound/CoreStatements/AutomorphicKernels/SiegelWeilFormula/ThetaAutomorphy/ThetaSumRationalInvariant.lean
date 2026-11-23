@@ -107,7 +107,6 @@ theorem split_resc {R K : Type} [CommRing R] [CommRing K] [Algebra R K] [Inverti
     fun g => ⟨Subgroup.inclusion hU.ge g, rfl, rfl⟩⟩
 
 
-open PositivityTheory.ThKF0.Resc in
 
 theorem theta_sum_rational_invariant (d : SD σ) (γ : d.G) (hγ : γ ∈ rat2 σ d.Y) (Ψ : d.Fn) (hΨ : Ψ ∈ d.sch) :
     thetaSum F (d.om γ Ψ) = thetaSum F Ψ := by

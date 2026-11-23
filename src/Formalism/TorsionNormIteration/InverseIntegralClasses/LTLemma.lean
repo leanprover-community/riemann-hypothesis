@@ -51,11 +51,9 @@ def Near (k : ℕ) (A B : MvPowerSeries ι K) : Prop := Low k A ∧ Low k B ∧ 
 
 end Near
 
-section Master
 
 variable {K : Type u} [NormedField K] {ι : Type*}
 
-end Master
 
 section Cong
 
@@ -75,19 +73,14 @@ def Cong (c : K) (A B : MvPowerSeries ι K) : Prop :=
 
 end Cong
 
-section FrobPi
 
 variable {K : Type u} [NormedField K] [IsUltrametricDist K]
 
-end FrobPi
 
-section Defect
 
 variable {K : Type u} [NormedField K] [IsUltrametricDist K] {ι : Type*}
 
-end Defect
 
-section Constr
 
 variable {K : Type u} [NormedField K] [IsUltrametricDist K] {ι : Type*}
 
@@ -95,7 +88,6 @@ variable [Fintype ι] [DecidableEq ι]
 
 variable {p q : ℕ} {π : K} {e e' : PowerSeries K} {a : ι → K}
 
-end Constr
 
 end Formalism.LT.LTL
 

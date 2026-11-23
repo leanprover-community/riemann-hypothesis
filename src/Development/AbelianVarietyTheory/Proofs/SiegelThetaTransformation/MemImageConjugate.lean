@@ -54,8 +54,6 @@ theorem _root_.GlobalTheory.Ker.ConjDatum.conjugate_twice (τ : E →+* ℂ) :
   ext x
   simp [ComplexEmbedding.conjugate_coe_eq]
 
-open Matrix Complex NumberField in
-open scoped ComplexConjugate Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.Ker.ConjDatum.gram_conjugate (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E)
@@ -66,8 +64,6 @@ theorem _root_.GlobalTheory.Ker.ConjDatum.gram_conjugate (τ : E →+* ℂ) (G :
 
   simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.gram, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC, _root_.ReciprocityTheory.ChartRestriction.G.FD.col, ComplexEmbedding.conjugate_coe_eq, map_sum]
 
-open Matrix Complex NumberField in
-open scoped ComplexConjugate Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.Ker.ConjDatum.det_map_ne {M : Matrix (Fin r) (Fin r) ℂ} (h : M.det ≠ 0) :
     (M.map (starRingEnd ℂ)).det ≠ 0 := by
@@ -77,8 +73,6 @@ theorem _root_.GlobalTheory.Ker.ConjDatum.det_map_ne {M : Matrix (Fin r) (Fin r)
   rw [hdet]
   exact (map_ne_zero _).2 h
 
-open Matrix Complex NumberField in
-open scoped ComplexConjugate Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.Ker.ConjDatum.mem_image_conjugate (Ψ : Finset (E →+* ℂ)) (τ : E →+* ℂ) :
@@ -95,8 +89,6 @@ def cpl (Ψ : Finset (E →+* ℂ)) (τ : Ψ) : Ψ.image ComplexEmbedding.conjug
 def cfr (Ψ : Finset (E →+* ℂ)) (x : Frame (Ψ.image ComplexEmbedding.conjugate) r) : Frame Ψ r :=
   fun τ a b => conj (x (cpl Ψ τ) a b)
 
-open Matrix Complex NumberField in
-open scoped ComplexConjugate Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.Ker.ConjDatum.cfr_mem_GG (Ψ : Finset (E →+* ℂ)) (G : Matrix (Fin r) (Fin r) E)
@@ -128,8 +120,6 @@ theorem _root_.GlobalTheory.Ker.ConjDatum.cfr_mem_GG (Ψ : Finset (E →+* ℂ))
     rw [hminor, Complex.conj_re]
     exact h
 
-open Matrix Complex NumberField in
-open scoped ComplexConjugate Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.Ker.ConjDatum.cfr_mem_Bor (Ψ : Finset (E →+* ℂ))
@@ -146,8 +136,6 @@ theorem _root_.GlobalTheory.Ker.ConjDatum.cfr_mem_Bor (Ψ : Finset (E →+* ℂ)
     exact _root_.GlobalTheory.Ker.ConjDatum.det_map_ne hdet
   · simp [_root_.GlobalTheory.Ker.ConjDatum.cfr, htri a c hca]
 
-open Matrix Complex NumberField in
-open scoped ComplexConjugate Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.Ker.ConjDatum.cfr_rmul (Ψ : Finset (E →+* ℂ))
@@ -158,8 +146,6 @@ theorem _root_.GlobalTheory.Ker.ConjDatum.cfr_rmul (Ψ : Finset (E →+* ℂ))
 
   simp [_root_.GlobalTheory.Ker.ConjDatum.cfr, _root_.ReciprocityTheory.ChartRestriction.G.FD.rmul, _root_.ReciprocityTheory.ChartRestriction.G.FD.mat, Matrix.mul_apply, map_sum]
 
-open Matrix Complex NumberField in
-open scoped ComplexConjugate Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.Ker.ConjDatum.cfr_lact (Ψ : Finset (E →+* ℂ)) (γ : GL (Fin r) E)

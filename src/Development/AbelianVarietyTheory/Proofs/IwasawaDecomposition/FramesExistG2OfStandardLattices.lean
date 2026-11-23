@@ -88,7 +88,6 @@ end GlobalTheory.NormalFramesLevels
 
 namespace GlobalTheory.NormalFramesLevels
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices GlobalTheory.StdFrames Formalism.IndefR.Mi
 
 variable {D : D7}
 
@@ -171,7 +170,6 @@ end GlobalTheory.NormalFramesLevels
 
 namespace GlobalTheory.NormalFramesLevels
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices GlobalTheory.StdFrames Formalism.IndefR.Mi
 
 variable {D : D7}
 
@@ -271,7 +269,6 @@ end GlobalTheory.NormalFramesLevels
 
 namespace GlobalTheory.NormalFramesLevels
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices GlobalTheory.StdFrames Formalism.IndefR.Mi
 
 variable {D : D7}
 
@@ -294,7 +291,6 @@ end GlobalTheory.NormalFramesLevels
 
 namespace GlobalTheory.NormalFramesLevels
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices GlobalTheory.StdFrames Formalism.IndefR.Mi
 
 variable {D : D7}
 
@@ -307,7 +303,6 @@ end GlobalTheory.NormalFramesLevels
 
 namespace GlobalTheory.NormalFramesLevels
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices GlobalTheory.StdFrames Formalism.IndefR.Mi
 
 end GlobalTheory.NormalFramesLevels
 

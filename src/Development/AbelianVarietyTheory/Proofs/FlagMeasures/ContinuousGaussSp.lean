@@ -64,71 +64,53 @@ theorem _root_.GlobalTheory.GaugeQuot.hsDist_nonneg (g : _root_.Formalism.BasicN
   unfold _root_.GlobalTheory.GaugeQuot.hsDist
   positivity
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 variable {P Q P' Q' : ℕ} in
 theorem _root_.GlobalTheory.GaugeQuot.continuous_hsDist : Continuous (_root_.GlobalTheory.GaugeQuot.hsDist : _root_.Formalism.BasicNotions.UpqT P Q → ℝ) := by
   have hmat : Continuous (_root_.Formalism.BasicNotions.UpqT.mat : _root_.Formalism.BasicNotions.UpqT P Q → _) := _root_.GlobalTheory.UpqTopology.continuous_mat
   unfold _root_.GlobalTheory.GaugeQuot.hsDist
   fun_prop
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 variable {P Q P' Q' : ℕ} in
 theorem _root_.GlobalTheory.GaugeQuot.ptSq_nonneg (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q))
     (y : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q) : 0 ≤ _root_.GlobalTheory.GaugeQuot.ptSq e y := by
   unfold _root_.GlobalTheory.GaugeQuot.ptSq
   positivity
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 variable {P Q P' Q' : ℕ} in
 theorem _root_.GlobalTheory.GaugeQuot.continuous_ptSq (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) :
     Continuous (_root_.GlobalTheory.GaugeQuot.ptSq e) := by
   unfold _root_.GlobalTheory.GaugeQuot.ptSq
   fun_prop
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 variable {P Q P' Q' : ℕ} in
 theorem _root_.GlobalTheory.GaugeQuot.tanSq_nonneg (t : ℝ × _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P' Q') :
     0 ≤ _root_.GlobalTheory.GaugeQuot.tanSq t := by
   unfold _root_.GlobalTheory.GaugeQuot.tanSq
   positivity
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 variable {P Q P' Q' : ℕ} in
 theorem _root_.GlobalTheory.GaugeQuot.continuous_tanSq :
     Continuous (_root_.GlobalTheory.GaugeQuot.tanSq : ℝ × _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P' Q' → ℝ) := by
   unfold _root_.GlobalTheory.GaugeQuot.tanSq
   fun_prop
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 variable {P Q P' Q' : ℕ} in
 theorem _root_.GlobalTheory.GaugeQuot.continuous_gaussSp :
     Continuous (_root_.GlobalTheory.GaugeQuot.gaussSp : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q → ℝ) := by
   unfold _root_.GlobalTheory.GaugeQuot.gaussSp
   fun_prop
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 variable {P Q P' Q' : ℕ} in
 theorem _root_.GlobalTheory.GaugeQuot.ballVol_mul (d : ℕ) (t r : ℝ) (ht : 0 < t) (hr : 0 < r) :
     _root_.GlobalTheory.GaugeQuot.ballVol d (t * r) = ENNReal.ofReal (t ^ d) * _root_.GlobalTheory.GaugeQuot.ballVol d r := by
   unfold _root_.GlobalTheory.GaugeQuot.ballVol
   rw [Measure.addHaar_ball_mul_of_pos _ _ ht, finrank_euclideanSpace_fin]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 variable {P Q P' Q' : ℕ} in
 theorem _root_.GlobalTheory.GaugeQuot.ballVol_ne_zero (d : ℕ) {r : ℝ} (hr : 0 < r) :
     _root_.GlobalTheory.GaugeQuot.ballVol d r ≠ 0 :=
   (Metric.measure_ball_pos volume _ hr).ne'
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 variable {P Q P' Q' : ℕ} in
 theorem _root_.GlobalTheory.GaugeQuot.ballVol_ne_top (d : ℕ) (r : ℝ) : _root_.GlobalTheory.GaugeQuot.ballVol d r ≠ ⊤ :=
   measure_ball_lt_top.ne

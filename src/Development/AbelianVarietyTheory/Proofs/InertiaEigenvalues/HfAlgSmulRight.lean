@@ -54,7 +54,6 @@ theorem _root_.GlobalTheory.HermNbr.hf_add_right (cK : K ≃+* K) (J : Matrix (F
   simp only [_root_.GlobalTheory.HermNbr.hf, Matrix.mulVec_add, dotProduct, Pi.add_apply,
     mul_add, Finset.sum_add_distrib]
 
-open scoped BigOperators in
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {r : ℕ} in
 theorem _root_.GlobalTheory.HermNbr.hf_add_left (cK : K ≃+* K) (J : Matrix (Fin r) (Fin r) K)
     (x y z : Fin r → K) :
@@ -63,7 +62,6 @@ theorem _root_.GlobalTheory.HermNbr.hf_add_left (cK : K ≃+* K) (J : Matrix (Fi
   simp only [_root_.GlobalTheory.HermNbr.hf, dotProduct, Pi.add_apply, map_add (f := _), add_mul,
     Finset.sum_add_distrib]
 
-open scoped BigOperators in
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {r : ℕ} in
 theorem _root_.GlobalTheory.HermNbr.hf_smul_right (cK : K ≃+* K)
     (J : Matrix (Fin r) (Fin r) K) (a : K) (x y : Fin r → K) :
@@ -72,7 +70,6 @@ theorem _root_.GlobalTheory.HermNbr.hf_smul_right (cK : K ≃+* K)
     smul_eq_mul, Finset.mul_sum]
   exact Finset.sum_congr rfl fun i _ => by ring
 
-open scoped BigOperators in
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {r : ℕ} in
 theorem _root_.GlobalTheory.HermNbr.hf_algSmul_right (cK : K ≃+* K)
     (J : Matrix (Fin r) (Fin r) K) (a : O)
@@ -81,7 +78,6 @@ theorem _root_.GlobalTheory.HermNbr.hf_algSmul_right (cK : K ≃+* K)
       algebraMap O K a * _root_.GlobalTheory.HermNbr.hf cK J x y := by
   rw [← algebraMap_smul K a y, _root_.GlobalTheory.HermNbr.hf_smul_right]
 
-open scoped BigOperators in
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {r : ℕ} in
 theorem _root_.GlobalTheory.HermNbr.hf_algSmul_left (cK : K ≃+* K)
     (J : Matrix (Fin r) (Fin r) K) (a : O)
@@ -91,7 +87,6 @@ theorem _root_.GlobalTheory.HermNbr.hf_algSmul_left (cK : K ≃+* K)
   simp only [_root_.GlobalTheory.HermNbr.hf, dotProduct, Pi.smul_apply, Algebra.smul_def,
     map_mul, Finset.mul_sum, mul_assoc]
 
-open scoped BigOperators in
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {r : ℕ} in
 theorem _root_.GlobalTheory.HermNbr.hf_sub_right (cK : K ≃+* K) (J : Matrix (Fin r) (Fin r) K)
     (x y z : Fin r → K) :
@@ -100,7 +95,6 @@ theorem _root_.GlobalTheory.HermNbr.hf_sub_right (cK : K ≃+* K) (J : Matrix (F
   simp only [_root_.GlobalTheory.HermNbr.hf, Matrix.mulVec_sub, dotProduct, Pi.sub_apply,
     mul_sub, Finset.sum_sub_distrib]
 
-open scoped BigOperators in
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {r : ℕ} in
 theorem _root_.GlobalTheory.HermNbr.hf_sub_left (cK : K ≃+* K) (J : Matrix (Fin r) (Fin r) K)
     (x y z : Fin r → K) :
@@ -110,7 +104,6 @@ theorem _root_.GlobalTheory.HermNbr.hf_sub_left (cK : K ≃+* K) (J : Matrix (Fi
     Finset.sum_sub_distrib]
 
 
-open scoped BigOperators in
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {r : ℕ} in
 theorem _root_.GlobalTheory.HermNbr.hf_conj (cK : K ≃+* K) (hc2 : ∀ x, cK (cK x) = x)
     (J : Matrix (Fin r) (Fin r) K)
@@ -136,7 +129,6 @@ def perp (cK : K ≃+* K) (J : Matrix (Fin r) (Fin r) K) (L : Submodule O (Fin r
   smul_mem' := fun a x hx => ⟨L.smul_mem a hx.1, by
     rw [hf_algSmul_right]; exact mul_mem ⟨a, rfl⟩ hx.2⟩
 
-open scoped BigOperators in
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {r : ℕ} in
 theorem _root_.GlobalTheory.HermNbr.mem_perp {cK : K ≃+* K} {J : Matrix (Fin r) (Fin r) K}
     {L : Submodule O (Fin r → K)}
@@ -168,7 +160,6 @@ def Nbrs (cK : K ≃+* K) (J : Matrix (Fin r) (Fin r) K) (ϖ : O)
   {L' | ∃ v, IsStep cK J ϖ L v ∧ L' = nb cK J L v}
 
 
-open scoped BigOperators in
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {r : ℕ} in
 theorem _root_.GlobalTheory.HermNbr.graph_sum {X : Type} (S : Set X) (i : X → X → ℕ)
     (Nb : X → Set X) (Q : ℕ) (hQ : 2 ≤ Q)

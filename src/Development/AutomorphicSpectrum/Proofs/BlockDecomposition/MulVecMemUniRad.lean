@@ -211,7 +211,6 @@ end
 
 noncomputable section
 
-open Matrix MeasureTheory PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D4 PositivityTheory.Rg.Tf.Loc
 
 namespace GlobalTheory.CompanionTheory.QuotVan
 

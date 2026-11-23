@@ -90,7 +90,6 @@ theorem dv_iff {A : ValuationSubring Ω} {l n : ℕ} {x y : HahnSeries ℚ Ω} :
 end GlobalTheory.ThAdd
 
 namespace GlobalTheory.ThAdd
-open GlobalTheory.KZ GlobalTheory.Glue
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω]
 
 theorem unit_iff (A : ValuationSubring Ω) (x : Ω) (hx : x ∈ A) : (x ≠ 0 ∧ x⁻¹ ∈ A) ↔ A.valuation x = 1 := by
@@ -165,7 +164,6 @@ theorem prim_mul {A : ValuationSubring Ω} {x y : HahnSeries ℚ Ω} (hx : Prim 
 end GlobalTheory.ThAdd
 
 namespace GlobalTheory.ThAdd
-open GlobalTheory.KZ GlobalTheory.Glue
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
 theorem isDl_mul {X : Tower Ω ε} {A : ValuationSubring Ω} {l n : ℕ} {s : ℚ} {f f' : X.K} {φ φ' : HahnSeries ℚ Ω}

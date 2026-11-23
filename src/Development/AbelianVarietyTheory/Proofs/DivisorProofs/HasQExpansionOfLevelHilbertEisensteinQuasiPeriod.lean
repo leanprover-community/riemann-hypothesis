@@ -61,8 +61,6 @@ private lemma omegaFactor_ne_zero' {F : Type} [Field F] [NumberField F] (𝔞 : 
   · rw [Rat.cast_ne_zero, Ne, FractionalIdeal.absNorm_eq_zero_iff]
     exact 𝔞.ne_zero
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma norm_exp_two_pi_I_div_lt_one (N : ℕ) (hN : 0 < N) (τ : ℍ) :
     ‖Complex.exp (2 * ↑Real.pi * Complex.I * ↑τ / ↑N)‖ < 1 := by
   rw [Complex.norm_exp]
@@ -73,8 +71,6 @@ private lemma norm_exp_two_pi_I_div_lt_one (N : ℕ) (hN : 0 < N) (τ : ℍ) :
     linarith
   · positivity
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma summable_norm_qExpansion_of_hasSum_everywhere (N : ℕ) (hN : 0 < N) (b : ℕ → ℂ) (f : ℍ → ℂ)
     (h : ∀ τ : ℍ, HasSum (fun n => b n * Complex.exp (2 * ↑Real.pi * Complex.I * ↑τ / ↑N) ^ n) (f τ))
     (τ : ℍ) : Summable (fun n => ‖b n * Complex.exp (2 * ↑Real.pi * Complex.I * ↑τ / ↑N) ^ n‖) := by
@@ -99,8 +95,6 @@ private lemma summable_norm_qExpansion_of_hasSum_everywhere (N : ℕ) (hN : 0 < 
   rw [norm_norm, hq, ← pow_mul, mul_comm 2 n, pow_mul, sq, ← mul_assoc, norm_mul, norm_pow]
   exact mul_le_of_le_one_left (by positivity) hn
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma lag_zero_left_eq_pow (k n : ℕ) (y : ℂ) :
     _root_.GlobalTheory.HilbFam.lag k n 0 y = y ^ n := by
   unfold _root_.GlobalTheory.HilbFam.lag
@@ -114,8 +108,6 @@ private lemma lag_zero_left_eq_pow (k n : ℕ) (y : ℂ) :
   · intro h
     exact absurd (Finset.self_mem_range_succ n) h
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma hasSum_hilbertDiagonalTraceCoefficient_lemma_3 (F : Type) [Field F] [NumberField F]
     [IsTotallyReal F] (k : ℕ) (𝔞 𝔟 : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F) (a₀ : ℂ) (a : F → ℂ) (x : F)
     (N : ℕ) (hN : 0 < N) (hk : Even k) (ha : _root_.GlobalTheory.HilbFam.IsCoef k 𝔞 𝔟 a₀ a)
@@ -190,8 +182,6 @@ private lemma hasSum_hilbertDiagonalTraceCoefficient_lemma_3 (F : Type) [Field F
     simp [Set.indicator, A, h0]
   · exact absurd (by simp [Set.indicator, hm]) hξ
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma hasSum_powerSeries_mul_of_absolutely_summable (A B : PowerSeries ℂ) (z x y : ℂ)
     (hA : HasSum (fun n => PowerSeries.coeff n A * z ^ n) x)
     (hA' : Summable (fun n => ‖PowerSeries.coeff n A * z ^ n‖))
@@ -214,8 +204,6 @@ private lemma hasSum_powerSeries_mul_of_absolutely_summable (A B : PowerSeries �
   rw [← tsum_mul_tsum_eq_tsum_sum_antidiagonal_of_summable_norm hA' hB', hA.tsum_eq, hB.tsum_eq] at this
   exact this.congr_fun hpt
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma hasSum_powerSeries_pow_of_absolutely_summable (A : PowerSeries ℂ) (z x : ℂ)
     (hA : HasSum (fun n => PowerSeries.coeff n A * z ^ n) x)
     (hA' : Summable (fun n => ‖PowerSeries.coeff n A * z ^ n‖)) (m : ℕ) :
@@ -236,8 +224,6 @@ private lemma hasSum_powerSeries_pow_of_absolutely_summable (A : PowerSeries ℂ
     exact hasSum_powerSeries_mul_of_absolutely_summable _ _ z _ _ ih.1 ih.2 hA hA'
 
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 theorem _root_.GlobalTheory.HilbFam.ExpH.hasQ_hfun : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (𝔞 𝔟 : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F) (a₀ : ℂ) (a : F → ℂ) (x : F) (N : ℕ) (κ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℕ) (Ch : ℍ → ℂ) (c : ℕ → ℂ), 0 < N → Even k → _root_.GlobalTheory.HilbFam.IsCoef k 𝔞 𝔟 a₀ a → _root_.GlobalTheory.HilbFam.HasLevel N (_root_.GlobalTheory.HilbFam.split 𝔞 𝔟 x) → _root_.GlobalTheory.QFam.HasQ N Ch c → _root_.GlobalTheory.QFam.HasQ N (_root_.GlobalTheory.HilbFam.hfun k (_root_.GlobalTheory.HilbFam.split 𝔞 𝔟 x) κ Ch) (fun n ↦ PowerSeries.coeff n (_root_.GlobalTheory.HilbFam.hser k N 𝔞 a x κ c)) := by
   intro F _ _ _ k 𝔞 𝔟 a₀ a x N κ Ch c hN hk ha hlev hCh
   rw [_root_.GlobalTheory.QFam.hasQ_iff] at hCh ⊢

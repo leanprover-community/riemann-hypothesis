@@ -138,7 +138,6 @@ end GlobalTheory.MoritaLocal
 
 namespace GlobalTheory.MoritaLocal
 
-open GlobalTheory.Morita
 
 theorem morita_local : ∀ (R : Type) [CommRing R] (I : Ideal R), IsLocalRing (R ⧸ I) → ∀ (m k : ℕ), 0 < m →
     ∀ (O : Type) [Ring O] [Algebra R O] (φ : O →ₐ[R] Matrix (Fin m) (Fin m) (R ⧸ I)), Function.Surjective φ →

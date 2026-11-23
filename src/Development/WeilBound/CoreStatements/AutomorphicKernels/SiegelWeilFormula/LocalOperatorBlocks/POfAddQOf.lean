@@ -76,14 +76,12 @@ open scoped Classical in
 def rhoFun (h : LocHyp sg L) (k : GR n) (P : PX m n) : PX m n :=
   if hk : InK (mR k) then Classical.choose (k_poly h k hk P) else 0
 
-open scoped Classical in
 theorem rhoFun_spec (h : LocHyp sg L) {k : GR n} (hk : InK (mR k)) (P : PX m n) :
     (rhoFun h k P).totalDegree ≤ P.totalDegree ∧ L k (fP P) = fP (rhoFun h k P) := by
   simp only [rhoFun, dif_pos hk]
   exact Classical.choose_spec (k_poly h k hk P)
 
 
-open scoped Classical in
 def rhoOf (h : LocHyp sg L) (k : GR n) : PX m n →ₗ[ℂ] PX m n where
   toFun := rhoFun h k
   map_add' P Q := by

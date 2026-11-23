@@ -207,6 +207,5 @@ end wup
 end Pgsn2pfrla
 
 open Finset Module LinearMap Pgsn2pfrla
-open scoped InnerProductSpace
 
 end Formalism.CorankShareLayerCake.FR

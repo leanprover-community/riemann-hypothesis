@@ -111,7 +111,6 @@ end GlobalTheory.MBLow.Cl.GeoOne
 
 namespace GlobalTheory.MBLow.Cl.GeoOne
 
-open GlobalTheory.CubeValues GlobalTheory.SymmetricSemicharacter GlobalTheory.EigenNorm GlobalTheory.FrameValue
 
 theorem tf_hom (R : Type) [CommRing R] [IsDomain R] [Algebra (FractionRing R) ℂ] :
     (TF (R := R) ℂ).hom = spMap ((algebraMap (FractionRing R) ℂ).comp (algebraMap R (FractionRing R))) := by

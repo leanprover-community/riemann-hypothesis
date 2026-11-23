@@ -97,7 +97,6 @@ def charOf (W : Ideal (MRing ι)) : ℕ :=
   (Submodule.IsPrincipal.generator (W.comap (C : ℤ →+* MRing ι))).natAbs
 
 
-open scoped Classical in
 def geoNum : (n : ℕ) → Ideal (MRing ι) → (Fin n → K → ℤ) → ℤ
   | 0, V, _ =>
     if h : IsRelevant V then

@@ -60,8 +60,6 @@ theorem _root_.GlobalTheory.CapelliCentral.smooth_congr {f f' : Matrix (Fin n) (
   obtain ⟨U, F, hU, hgU, hF, hfF⟩ := hf g₀ hg₀
   exact ⟨U, F, hU, hgU, hF, fun g hg hgG => (h g hgG).trans (hfF g hg hgG)⟩
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.smooth_add_smul {f f' : Matrix (Fin n) (Fin n) ℂ → E} (hf : _root_.Formalism.REAL.SmoothOnGV ε f)
@@ -75,8 +73,6 @@ theorem _root_.GlobalTheory.CapelliCentral.smooth_add_smul {f f' : Matrix (Fin n
   show f g + c • f' g = F g + c • F' g
   rw [hfF g hg.1 hgG, hfF' g hg.2 hgG]
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.smooth_zero :
@@ -84,8 +80,6 @@ theorem _root_.GlobalTheory.CapelliCentral.smooth_zero :
   intro g₀ _
   exact ⟨Set.univ, fun _ => 0, isOpen_univ, trivial, contDiffOn_const, fun _ _ _ => rfl⟩
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.eab_smooth {f : Matrix (Fin n) (Fin n) ℂ → E}
@@ -96,8 +90,6 @@ theorem _root_.GlobalTheory.CapelliCentral.eab_smooth {f : Matrix (Fin n) (Fin n
   have h3 := _root_.GlobalTheory.CapelliCentral.smooth_add_smul h1 h2 Complex.I
   exact _root_.GlobalTheory.CapelliCentral.smooth_congr h3 (fun g _ => rfl)
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.eab_add_smul {f f' : Matrix (Fin n) (Fin n) ℂ → E}
@@ -113,8 +105,6 @@ theorem _root_.GlobalTheory.CapelliCentral.eab_add_smul {f f' : Matrix (Fin n) (
   simp only [smul_add, smul_comm Complex.I c]
   abel
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.eab_zero (a b : Fin n) (g : Matrix (Fin n) (Fin n) ℂ) :
@@ -126,8 +116,6 @@ open Classical in
 def cut (ε : Fin n → Bool) (f : Matrix (Fin n) (Fin n) ℂ → E) : Matrix (Fin n) (Fin n) ℂ → E :=
   fun g => if inUJ ε g then f g else 0
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.cut_of_mem (f : Matrix (Fin n) (Fin n) ℂ → E)
@@ -136,8 +124,6 @@ theorem _root_.GlobalTheory.CapelliCentral.cut_of_mem (f : Matrix (Fin n) (Fin n
   unfold _root_.GlobalTheory.CapelliCentral.cut
   rw [if_pos hg]
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.cut_of_not_mem (f : Matrix (Fin n) (Fin n) ℂ → E)
@@ -162,8 +148,6 @@ def smoothSpace (ε : Fin n → Bool) (E : Type) [NormedAddCommGroup E] [NormedS
 def mk (f : Matrix (Fin n) (Fin n) ℂ → E) (hf : SmoothOnGV ε f) : smoothSpace ε E :=
   ⟨cut ε f, smooth_congr hf (fun _ hg => cut_of_mem f hg), fun _ hg => cut_of_not_mem f hg⟩
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.mk_apply (f : Matrix (Fin n) (Fin n) ℂ → E)
@@ -171,8 +155,6 @@ theorem _root_.GlobalTheory.CapelliCentral.mk_apply (f : Matrix (Fin n) (Fin n) 
     (_root_.GlobalTheory.CapelliCentral.mk f hf).1 g = f g :=
   _root_.GlobalTheory.CapelliCentral.cut_of_mem f hg
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.ext_on {F F' : _root_.GlobalTheory.CapelliCentral.smoothSpace ε E}
@@ -202,8 +184,6 @@ def eabEnd (ε : Fin n → Bool) (E : Type) [NormedAddCommGroup E] [NormedSpace 
     rw [mk_apply _ _ hg, Submodule.coe_smul, Submodule.coe_smul, Pi.smul_apply, mk_apply _ _ hg]
     exact this
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 private theorem inUJ_mul_foundation {g k : Matrix (Fin n) (Fin n) ℂ}
@@ -213,8 +193,6 @@ private theorem inUJ_mul_foundation {g k : Matrix (Fin n) (Fin n) ℂ}
     show kᴴ * gᴴ * _root_.Formalism.REAL.Jm ε * (g * k) = kᴴ * (gᴴ * _root_.Formalism.REAL.Jm ε * g) * k by
       simp only [Matrix.mul_assoc], hg, hk]
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 private theorem rdV_congr_of_eqOn_inUJ {X : Matrix (Fin n) (Fin n) ℂ} (hX : _root_.Formalism.REAL.inG ε X)
@@ -225,8 +203,6 @@ private theorem rdV_congr_of_eqOn_inUJ {X : Matrix (Fin n) (Fin n) ℂ} (hX : _r
   funext t
   exact h _ (inUJ_mul_foundation hg (_root_.Formalism.REAL.f1alg_exp_inUJ ε _ (_root_.Formalism.REAL.lie_algebra_real_smul_mem ε hX t)))
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.eabEnd_apply (a b : Fin n) (F : _root_.GlobalTheory.CapelliCentral.smoothSpace ε E)
@@ -240,8 +216,6 @@ theorem _root_.GlobalTheory.CapelliCentral.eabEnd_apply (a b : Fin n) (F : _root
   unfold _root_.Formalism.REAL.EcV
   rw [rdV_congr_of_eqOn_inUJ hP h hg, rdV_congr_of_eqOn_inUJ hQ h hg]
 
-open Matrix in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] in
 theorem _root_.GlobalTheory.CapelliCentral.eabEnd_glRel : _root_.Formalism.REAL.GlRel (_root_.GlobalTheory.CapelliCentral.eabEnd ε E) := by

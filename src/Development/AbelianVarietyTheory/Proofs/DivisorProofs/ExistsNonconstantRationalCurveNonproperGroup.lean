@@ -299,7 +299,6 @@ end Curve
 end GlobalTheory.RatCurve
 
 namespace GlobalTheory.RatCurve
-open GlobalTheory.SS GlobalTheory.SS.ArcInf
 
 theorem exists_rational_curve : ∀ (k : Type) [Field k] [IsAlgClosed k] (G : Over (Sp k)) [GrpObj G],
     GlobalTheory.SS.SmConn G → ¬ IsProper G.hom → ∃ (P : Polynomial k) (_ : P ≠ 0) (u : Sp (Localization.Away P) ⟶ G.left)

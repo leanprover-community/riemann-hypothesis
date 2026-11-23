@@ -92,7 +92,6 @@ theorem poly_rep {J : Type} [SmallCategory J] [IsFiltered J] (D : J ⥤ CommRing
     obtain ⟨j, f, rfl⟩ := Limits.Concrete.isColimit_exists_rep D hc a
     exact ⟨j, monomial n f, by simp⟩
 
-open Polynomial in
 theorem monic_rep {J : Type} [SmallCategory J] [IsFiltered J] (D : J ⥤ CommRingCat.{0}) (c : Cocone D)
     (hc : IsColimit c) [Nontrivial c.pt] (p : c.pt[X]) (hp : p.Monic) :
     ∃ (j : J) (P : (D.obj j)[X]), P.map (c.ι.app j).hom = p ∧ P.Monic := by
@@ -102,7 +101,6 @@ theorem monic_rep {J : Type} [SmallCategory J] [IsFiltered J] (D : J ⥤ CommRin
   exact ⟨j, Q, hQ, hm⟩
 
 
-open Polynomial in
 theorem root_of_cof {J : Type} [SmallCategory J] [IsFiltered J] (D : J ⥤ CommRingCat.{0}) (c : Cocone D)
     {Ω : Type} [Field Ω] (ω : c.pt →+* Ω)
     (H : ∀ (j : J) (E : Type) (_ : CommRing E) (_ : Algebra (D.obj j) E) (_ : Algebra.Etale (D.obj j) E) (ψ : E →+* Ω),

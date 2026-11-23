@@ -246,7 +246,6 @@ end GridsCh
 
 section GridsChS
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Sz
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePlace E → Type}
   [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]

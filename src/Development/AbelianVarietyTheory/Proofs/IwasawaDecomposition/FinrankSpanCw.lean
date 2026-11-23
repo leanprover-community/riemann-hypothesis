@@ -243,7 +243,6 @@ end GlobalTheory.Mem.R3.GoodBC
 
 namespace GlobalTheory.Mem.R3.GoodBC
 
-open Formalism.IndefR.Arith Module
 
 theorem wgood_bc_rel {LL LL' Ks Ks' : Type} [Field LL] [NumberField LL] [Field LL'] [NumberField LL'] [Field Ks] [NumberField Ks]
     [Field Ks'] [NumberField Ks'] [Algebra Ks LL] [Algebra Ks' LL'] {n n' : ℕ} (hn : n = n')

@@ -698,11 +698,9 @@ theorem tieCountAt_allRowsOf {n₀ : ℕ} {Alev C₃ cb : ℝ} (hB : CountBase X
 
 end CountPf
 
-section FinalK
 
 variable {D : D7} (X : HidaSetting D)
 
-end FinalK
 
 section Count
 

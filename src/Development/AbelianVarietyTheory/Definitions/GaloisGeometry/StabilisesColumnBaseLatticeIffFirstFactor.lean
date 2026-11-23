@@ -81,11 +81,9 @@ end
 section
 
 namespace GlobalTheory.Port
-open Formalism Formalism.MainNotions Formalism.MainNotions.G Formalism.L2 Formalism.L2.G Formalism.MainNotions.G.KAat
 
 open Formalism.BasicNotions Formalism.MainNotions.G Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.UG NumberField IsDedekindDomain Matrix Formalism.MainNotions.G.CmpJ
   Formalism.MainNotions.G.CmpJ.PStabEq
-open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -177,10 +175,8 @@ end
 section
 
 namespace GlobalTheory.Port
-open Formalism Formalism.MainNotions Formalism.MainNotions.G Formalism.L2 Formalism.L2.G Formalism.MainNotions.G.KAat
 
 open Formalism.BasicNotions Formalism.MainNotions.G Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.UG NumberField IsDedekindDomain Matrix Formalism.MainNotions.G.CmpJ.PStabEq
-open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -339,7 +335,6 @@ open Formalism Formalism.MainNotions Formalism.MainNotions.G
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.UG NumberField IsDedekindDomain Matrix Formalism.MainNotions.G.CmpJ
   Formalism.MainNotions.G.CmpJ.PStabEq Formalism.MainNotions.G.KAat
-open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

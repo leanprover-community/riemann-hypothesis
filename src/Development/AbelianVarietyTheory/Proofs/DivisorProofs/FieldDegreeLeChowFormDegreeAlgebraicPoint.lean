@@ -67,7 +67,6 @@ private lemma natDegree_aeval_le_totalDegree_of_natDegree_le_one {R S σ : Type}
 
 
 set_option autoImplicit false in
-open MvPolynomial in
 theorem _root_.GlobalTheory.CompHt.PointLow.finrank_le_of_isChowFormInt : ∀ (K : Type) [Field K] [CharZero K] (N δ : ℕ) (y : Fin N → AlgebraicClosure K)
     (j : Fin N) (f : MvPolynomial (Fin (0 + 1) × Fin N) K), y j = 1 → _root_.GlobalTheory.ChowHt.IsChowFormInt (_root_.GlobalTheory.CompHt.coneIdeal K y) 0 δ f →
     Module.finrank K (IntermediateField.adjoin K (Set.range y)) ≤ δ := by

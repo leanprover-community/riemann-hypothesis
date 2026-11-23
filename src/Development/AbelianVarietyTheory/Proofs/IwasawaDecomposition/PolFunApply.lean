@@ -60,7 +60,6 @@ private lemma eval_bind_eq_eval_comp {K σ τ : Type} [CommRing K] (f : σ → M
     eval x (bind₁ f P) = eval (fun i => eval x (f i)) P := by
   rw [← aeval_eq_eval, ← aeval_eq_eval, aeval_bind₁]
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.IntegralityCompare.eval_twSub {E ι : Type} [Field E] [Fintype ι] {n : ℕ}
     (emb : ι → E →+* ℂ) (M : GL (Fin n) E) (s : ι → ℤ)
     (P : MvPolynomial (ι × Fin n × Fin n) ℂ) (x : ι → Matrix (Fin n) (Fin n) ℂ) :

@@ -99,7 +99,6 @@ end GlobalTheory.LamT.TanRel
 
 namespace GlobalTheory.LamT.TanRel
 
-open MonoidalCategory CartesianMonoidalCategory GlobalTheory.Frames GlobalTheory.LamT GlobalTheory.IntLie GlobalTheory.LamT.LetterInt
 
 
 

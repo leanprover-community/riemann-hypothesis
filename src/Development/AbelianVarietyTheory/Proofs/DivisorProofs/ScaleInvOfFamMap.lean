@@ -79,7 +79,6 @@ def famMap (B : Over (Sp k)) [GrpObj B] (f : Sp (Polynomial k) ⟶ B.left)
 end GlobalTheory.LineConst
 
 namespace GlobalTheory.LineConst
-open Polynomial
 
 theorem scaleHom_comp_map {k : Type} [Field k] {R R' : Type} [CommRing R] [Algebra k R] [CommRing R'] [Algebra k R']
     (φ : R →ₐ[k] R') (u : R) :
@@ -126,7 +125,6 @@ theorem famMap_one {k : Type} [Field k] (B : Over (Sp k)) [GrpObj B] (f : Sp (Po
 end GlobalTheory.LineConst
 
 namespace GlobalTheory.LineConst
-open Polynomial
 
 def linePt {k : Type} [Field k] (a : k) : 𝟙_ (Over (Sp k)) ⟶ lineOver k k :=
   Over.homMk (spMap (Polynomial.evalRingHom a)) (by

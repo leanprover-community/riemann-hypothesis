@@ -327,7 +327,6 @@ end Germs
 
 section GermsRig
 
-open MonoidalCategory CartesianMonoidalCategory
 
 attribute [local instance] Over.cartesianMonoidalCategory
 

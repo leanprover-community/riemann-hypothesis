@@ -59,16 +59,12 @@ private lemma one_le_re_det_one_add {n : ℕ} (D : Matrix (Fin n) (Fin n) ℂ) (
   calc (1 : ℝ) = ∏ _i : Fin n, (1 : ℝ) := by simp
     _ ≤ ∏ i, hH.eigenvalues i := Finset.prod_le_prod₀ (fun _ _ => zero_le_one) (fun i _ => key i)
 
-open Matrix in
-open scoped ComplexOrder in
 open scoped MatrixOrder in
 private lemma exists_star_mul_self {n : ℕ} (B : Matrix (Fin n) (Fin n) ℂ) (hB : B.PosSemidef) :
     ∃ X : Matrix (Fin n) (Fin n) ℂ, B = Xᴴ * X := by
   obtain ⟨X, hX⟩ := CStarAlgebra.nonneg_iff_eq_star_mul_self.mp hB.nonneg
   exact ⟨X, by rw [hX, star_eq_conjTranspose]⟩
 
-open Matrix in
-open scoped ComplexOrder in
 private lemma det_mono {n : ℕ} (A B : Matrix (Fin n) (Fin n) ℂ) (hB : B.PosSemidef)
     (hAB : (A - B).PosSemidef) : B.det.re ≤ A.det.re := by
   have hA : A.PosSemidef := by simpa using hB.add hAB

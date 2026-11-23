@@ -204,8 +204,6 @@ noncomputable section
 
 namespace GlobalTheory.RowGood
 
-open Matrix
-open scoped TensorProduct
 
 end GlobalTheory.RowGood
 

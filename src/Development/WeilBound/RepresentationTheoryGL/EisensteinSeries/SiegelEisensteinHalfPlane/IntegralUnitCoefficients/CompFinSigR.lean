@@ -92,7 +92,6 @@ end PositivityTheory.Rg.Sw.Glob.GenFinLocHf
 
 namespace PositivityTheory.Rg.Sw.Glob.GenFinLocHf
 
-open PositivityTheory.Rg.Sw.Glob.GenFinLocAH
 
 variable {D : D7} {n : ℕ}
 
@@ -137,7 +136,6 @@ end PositivityTheory.Rg.Sw.Glob.GenFinLocHf
 
 namespace PositivityTheory.Rg.Sw.Glob.GenFinLocHf
 
-open PositivityTheory.Rg.Sw.Glob.GenFinLocAH
 
 theorem unit_sub {S : Type} [CommRing S] (O : Subring S) (z : O) (hz : IsUnit z) : (z : S) ∈ O ∧ ∃ z' ∈ O, (z : S) * z' = 1 := by
   obtain ⟨u, rfl⟩ := hz

@@ -95,7 +95,6 @@ theorem _root_.GlobalTheory.LatticeComplement.isSSRep_of_intertwine {k : Type} [
       rw [Submodule.mem_comap, map_sub, ← hyu]
       simpa using hu
 
-open Polynomial Matrix in
 variable {Γ : Type} [Group Γ] in
 private theorem exists_smul_primitive_vector_of_dvr {O : Type} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] {m : ℕ} (x : Fin m → O) (hx : x ≠ 0) :
@@ -129,7 +128,6 @@ private theorem exists_smul_primitive_vector_of_dvr {O : Type} [CommRing O] [IsD
   rw [hsum] at hmax
   exact (mem_nonunits_iff.mp ((IsLocalRing.mem_maximalIdeal _).mp hmax)) isUnit_one
 
-open Polynomial Matrix in
 variable {Γ : Type} [Group Γ] in
 private theorem isSSRep_of_intertwining_quotient {k : Type} [Field k] {a b : ℕ} (ρ : Γ →* GL (Fin a) k)
     (ρ₁ : Γ →* GL (Fin b) k) (Q : Matrix (Fin b) (Fin a) k) (S : Matrix (Fin a) (Fin b) k)
@@ -167,7 +165,6 @@ private theorem isSSRep_of_intertwining_quotient {k : Type} [Field k] {a b : ℕ
       rw [hxeq]
       exact Submodule.add_mem_sup hp (Submodule.mem_map_of_mem hu)
 
-open Polynomial Matrix in
 variable {Γ : Type} [Group Γ] in
 private theorem exists_quotient_of_eigenvector_lemma_2 {O K : Type} [CommRing O] [TopologicalSpace O]
     [IsTopologicalRing O] [Field K] [TopologicalSpace Γ] (φ : O →+* K) {n : ℕ}
@@ -285,7 +282,6 @@ private theorem exists_quotient_of_eigenvector_lemma_2 {O K : Type} [CommRing O]
     ring
 
 
-open Polynomial Matrix in
 variable {Γ : Type} [Group Γ] in
 theorem _root_.GlobalTheory.LatticeComplement.exists_lattice_complement : ∀ (Γ O K : Type) [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [TopologicalSpace O] [IsTopologicalRing O] [Field K] [CharZero K] [Algebra O K] [IsFractionRing O K] (r t : ℕ) (ρ : Γ →* GL (Fin (r + t)) O) (χ : Fin t → Γ →* Oˣ), Continuous (fun g => ((ρ g : GL (Fin (r + t)) O) : Matrix (Fin (r + t)) (Fin (r + t)) O)) → _root_.Formalism.MainNotions.N.IsSSRep (_root_.Formalism.MainNotions.N.mapRep (algebraMap O K) ρ) → (∃ (L : Type) (_ : Field L) (f : K →+* L) (ρ₀ : Γ →* GL (Fin r) L), ∀ g, (((ρ g : GL (Fin (r + t)) O) : Matrix (Fin (r + t)) (Fin (r + t)) O).charpoly).map (f.comp (algebraMap O K)) = ((ρ₀ g : GL (Fin r) L) : Matrix (Fin r) (Fin r) L).charpoly * ∏ c, (X - C (f (algebraMap O K ((χ c g : Oˣ) : O))))) → ∃ ρ' : Γ →* GL (Fin r) O, Continuous (fun g => ((ρ' g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O)) ∧ _root_.Formalism.MainNotions.N.IsSSRep (_root_.Formalism.MainNotions.N.mapRep (algebraMap O K) ρ') ∧ ∀ g, ((ρ g : GL (Fin (r + t)) O) : Matrix (Fin (r + t)) (Fin (r + t)) O).charpoly = ((ρ' g : GL (Fin r) O) : Matrix (Fin r) (Fin r) O).charpoly * ∏ c, (X - C ((χ c g : Oˣ) : O)) := by
   intro Γ O K _ _ _ _ _ _ _ _ _ _ _ _ _ r t

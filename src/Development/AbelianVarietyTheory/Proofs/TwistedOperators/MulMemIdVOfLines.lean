@@ -77,7 +77,6 @@ end GlobalTheory.UniStepFB
 
 namespace GlobalTheory.UniStepFB
 
-open GlobalTheory.FinPl GlobalTheory.FinPlLoc
 
 variable {D : D7}
 
@@ -121,7 +120,6 @@ end GlobalTheory.UniStepFB
 
 namespace GlobalTheory.UniStepFB
 
-open GlobalTheory.FinPl GlobalTheory.FinPlLoc
 
 variable {D : D7}
 
@@ -141,7 +139,6 @@ end GlobalTheory.UniStepFB
 
 namespace GlobalTheory.UniStepFB
 
-open GlobalTheory.FinPl GlobalTheory.FinPlLoc
 
 variable {D : D7}
 

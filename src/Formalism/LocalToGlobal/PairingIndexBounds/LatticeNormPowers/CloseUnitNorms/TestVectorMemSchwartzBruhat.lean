@@ -47,43 +47,33 @@ variable (D : D7)
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-section Kstr
 
 variable (D : D7)
 
-end Kstr
 
-section PadicK
 
 variable (D : D7) {p : ℕ} [hp : Fact p.Prime] (lam : Qbar →+* ℂ_[p])
 
-end PadicK
 
-section Alg
 
 variable (D : D7) {p : ℕ} [hp : Fact p.Prime] (lam : Qbar →+* ℂ_[p])
 
-end Alg
 
-section Lat
 
 variable {D : D7} {N N' : ℕ}
 
-end Lat
 
 end Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
 namespace Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
 
-section Tor0
 
 variable {D : D7} {N N' : ℕ} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 
 
 
 
-end Tor0
 
 end Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
@@ -94,30 +84,24 @@ section Sums
 
 end Sums
 
-section Main
 
 variable {D : D7} {N N' : ℕ} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 
-end Main
 
 end Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
 namespace Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
 
-section StepA
 
 variable {D : D7} {N N' : ℕ} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 
 
-end StepA
 
-section StepC
 
 variable {D : D7} {N N' : ℕ} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 
 
-end StepC
 
 end Formalism.L2.PairingIndexBounds.Xf.XiOneP
 

@@ -92,7 +92,6 @@ end GlobalTheory.FrameGlob
 
 namespace GlobalTheory.FrameGlob
 
-open Matrix
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 

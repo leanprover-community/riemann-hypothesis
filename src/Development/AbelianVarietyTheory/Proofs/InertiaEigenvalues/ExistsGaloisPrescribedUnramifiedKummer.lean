@@ -160,7 +160,6 @@ end GlobalTheory.TameFrob
 
 namespace GlobalTheory.TameFrob
 
-open GlobalTheory.BKReal Polynomial IntermediateField
 
 variable (l : ℕ) [hl : Fact l.Prime] (a : ℕ) [NeZero a]
 

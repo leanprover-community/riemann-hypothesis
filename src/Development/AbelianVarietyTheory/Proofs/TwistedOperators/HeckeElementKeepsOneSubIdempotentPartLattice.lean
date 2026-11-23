@@ -72,7 +72,6 @@ theorem inv_part_mem {D : D7} {e : AE D} (he : IsSplitIdem D e) {V : HSp D} {ϖ 
   have m4 := (Formalism.L2.NTheta.LamHat V).sub_mem m3 m1
   exact (Formalism.L2.NTheta.LamHat V).sub_mem m4 m2
 
-open GlobalTheory.SplitPlace in
 theorem hat_one_mem {D : D7} {e : AE D} (he : IsSplitIdem D e) {V : HSp D} {ϖ : D.host.E} {k : ℕ} {a₀ : GA D V}
     (ha : Formalism.L2.NTheta.IsHeckeElt V e ϖ k a₀) :
     ∀ w ∈ latGHat V 1, fm V a₀⁻¹ *ᵥ ((1 - finPart D e) • w) ∈ latGHat V 1 := by
@@ -95,7 +94,6 @@ theorem hat_one_mem {D : D7} {e : AE D} (he : IsSplitIdem D e) {V : HSp D} {ϖ :
       ((1 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) ⊗ₜ[D.host.F] a) • (fm V a₀⁻¹ *ᵥ ((1 - finPart D e) • x'))
     rw [smul_comm (1 - finPart D e), Matrix.mulVec_smul]
 
-open GlobalTheory.SplitPlace in
 theorem off_parts : ∀ (D : D7) (V : HSp D) (e : AE D) (ϖ : D.host.E) (k : ℕ) (g a₀ : GA D V),
     Formalism.L2.Theta.IsSplitIdem D e → Formalism.L2.NTheta.IsHeckeElt V e ϖ k a₀ →
     ∀ y ∈ latGHat V g, (1 - finPart D e) • y ∈ latGHat V (g * a₀) := by

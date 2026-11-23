@@ -80,8 +80,6 @@ theorem kStd_at_SQ {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (u : B
 end RK
 
 section RK2
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-open GlobalTheory.Mem.Col2.MemChart
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 theorem kStd_pt {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (u : B.Word) (a : I.ι) (i : ℕ) :
@@ -98,7 +96,6 @@ theorem kStd_pt {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (u : B.Wo
 end RK2
 
 section BO
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 def BaseOk {B : Base} {X : PreX B.toPre} (I : TC B X) (u : B.Word) (a : I.ι) (i : ℕ) (k : TC.GA B (B.R.N i)) : Prop :=
@@ -118,7 +115,6 @@ def StepCh {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (Z : TC.Later
     (i = B.R.m → Nonempty (Unique C)) ∧ (∀ h : i = B.R.m, ∀ β, I.TopPt l Z u a (h ▸ k β)) ∧ (i < B.R.m → ∀ β, k β = TC.kStd X u (B.R.N i))
 
 section S0
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 open GlobalTheory.Mem.Col2.MemChart GlobalTheory.Mem.Col2.TC.Chart0
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
@@ -191,8 +187,6 @@ theorem topBaseOk {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : T
   exact GlobalTheory.T.lastStepChartBasePoint_carries_stdPoint I hI hP l Z u a chOf Lb U chi y st k hR htop β
 
 section SMid
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-open GlobalTheory.Mem.Col2.MemChart
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 

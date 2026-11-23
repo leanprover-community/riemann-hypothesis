@@ -96,7 +96,6 @@ theorem sum_two_re_tauE (D : D7) (e : D.host.E) :
 end GlobalTheory.ArchPhase
 
 namespace GlobalTheory.ArchPhase
-open GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues Matrix
 
 variable {D : D7}
 
@@ -156,7 +155,6 @@ theorem sum_herm_eq (V W : HSp D) (b : Matrix (Fin V.rank) (Fin V.rank) D.host.E
 end GlobalTheory.ArchPhase
 
 namespace GlobalTheory.ArchPhase
-open GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues Matrix
 
 
 

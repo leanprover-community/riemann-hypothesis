@@ -100,7 +100,6 @@ theorem algebraMap_mul_gen (φ : MultilinearMap (RingHom.id B) (fun _ : Fin (q +
 end GlobalTheory.KummerAlg
 
 namespace GlobalTheory.KummerAlg
-open MvPolynomial
 variable {B : Type} [CommRing B] {L : Type} [AddCommGroup L] [Module B L] {q : ℕ}
 
 theorem algHom_ext_of_isUnit (φ : MultilinearMap (RingHom.id B) (fun _ : Fin (q + 1) => L) B) (e : L)
@@ -162,7 +161,6 @@ theorem liftRoot_gen [Module.Invertible B L] (φ : MultilinearMap (RingHom.id B)
 end GlobalTheory.KummerAlg
 
 namespace GlobalTheory.KummerAlg
-open MvPolynomial
 variable {B : Type} [CommRing B] {L : Type} [AddCommGroup L] [Module B L] {q : ℕ}
 
 theorem smul_top_ne_top [Module.Invertible B L]

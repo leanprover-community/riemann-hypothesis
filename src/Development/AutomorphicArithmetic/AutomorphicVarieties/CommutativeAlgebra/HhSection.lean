@@ -116,7 +116,6 @@ private theorem inv_supp {O : Type} [CommRing O] {ι X : Type} [Fintype ι] [Dec
   rw [if_neg n, mul_zero] at e3
   exact h e3.symm
 
-open Matrix Classical in
 private theorem fix_point {O : Type} [CommRing O] [IsLocalRing O] {ι X : Type} [Fintype ι] [DecidableEq ι]
     [AddCommGroup X] {w : ι → X} (Φ : FormData O w)
     {R : Type} [CommRing R] [Algebra O R] [IsCO O R] {R' : Type} [CommRing R'] [Algebra O R'] [IsCO O R']
@@ -248,7 +247,6 @@ private theorem good_sum {ι : Type} (T : Finset ι) {j : X} {f : ι → S → A
 
 end Good
 
-open Matrix in
 theorem UpperTheory.V.Alg.hh_section :
     ∀ (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O] (ι X : Type) [Fintype ι] [DecidableEq ι] [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] (w : ι → X) (Φ : FormData O w), IsUnit (2 : O) → ∀ (A : Type) [CommRing A] [Algebra O A] [IsCO O A] (R : Type) [CommRing R] [Algebra O R] [IsCO O R] (p : A →ₐ[O] R), Function.Surjective p → maximalIdeal A * RingHom.ker p = ⊥ → ∀ (W : WPres O X A), (∀ s, W.z s ∈ maximalIdeal A) →
           ∀ (S : Type) [TopologicalSpace S] (h : S → Matrix ι ι R), (∀ s, Φ.HH (h s)) → (∀ a b, AdicCont (maximalIdeal R) fun s => h s a b) → (∀ s a b, h s a b ∈ (W.part (w a - w b)).map p.toLinearMap) →

@@ -118,7 +118,6 @@ end GlobalTheory.TwLatInj
 
 namespace GlobalTheory.TwLatInj
 
-open GlobalTheory.TwOrbLat GlobalTheory.TwLat
 
 theorem dlt_twConj_iff : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (w : Pl E), ¬ IsSplitAt w →
     ∀ (K : GlobalTheory.UnitLemma.UQ) (e : K.E ≃+* w.adicCompletion E), (∀ x, e (K.c x) = cj w (e x)) →

@@ -134,7 +134,6 @@ private theorem hom_ext_of_opens_cover {X : Scheme.{u}} {ι : Type u} (U : ι �
     (Scheme.Cover.mkOfCovers ι (fun i => (U i).toScheme) (fun i => (U i).ι) hc) a b
     (fun i => hab i)
 
-open CategoryTheory.Limits in
 private theorem subschemeι_comp_eq_of_forall_sigmaι_comap {ι : Type u} (Wf : ι → Scheme.{u})
     {Q : Scheme.{u}} (M : (∐ Wf).IdealSheafData) (a b : (∐ Wf) ⟶ Q)
     (h : ∀ i, (M.comap (Sigma.ι Wf i)).subschemeι ≫ Sigma.ι Wf i ≫ a
@@ -182,7 +181,6 @@ private theorem subschemeι_comp_eq_of_forall_sigmaι_comap {ι : Type u} (Wf : 
       rw [h i]
     simpa only [Category.assoc] using e1
 
-open CategoryTheory.Limits in
 private theorem exists_etale_maxContactIdeal_comparison_of_finite_cover {k : Type u} [Field k] [CharZero k]
     {P : Scheme.{u}}
     (p : P ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] [LocallyOfFiniteType p]

@@ -96,7 +96,6 @@ end UpperTheory.V.Z.Keep.OrdFlag2
 
 namespace UpperTheory.V.Z.Keep.OrdFlag2
 
-open Matrix
 
 private theorem flag_block {k H : Type} [Field k] (R : H → Matrix (Fin 3) (Fin 3) k) (a c : H → k) (g : GL (Fin 3) k)
     (hb : ∀ s, R s 0 1 = 0 ∧ R s 1 0 = 0 ∧ R s 1 2 = 0 ∧ R s 2 1 = 0 ∧ R s 1 1 = 1)

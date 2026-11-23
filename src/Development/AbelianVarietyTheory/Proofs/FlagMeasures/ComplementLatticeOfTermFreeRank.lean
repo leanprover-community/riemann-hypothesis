@@ -115,8 +115,6 @@ private theorem exists_integral_smul_mem_of_span_eq_whole (Λ : Submodule L.O S.
     rw [map_mul]
     module
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -143,8 +141,6 @@ private theorem mem_complementLattice_and_tauRel_of_isTerm (d : S.Datum)
     exact ⟨w, hΛ, w, hΛ, hXo', hXo, by simpa using Submodule.zero_mem _,
       by simpa using Submodule.zero_mem _, 0, Λ.zero_mem, by simp⟩
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -176,8 +172,6 @@ private theorem isNoetherianRing_locE_O (L : _root_.Formalism.MainNotions.S.Loc.
   exact IsNoetherianRing.of_finite (ValuativeRel.valuation F).integer L.O
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in

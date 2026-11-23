@@ -104,12 +104,10 @@ theorem mem_range_of_isRoot (P : (FractionRing O)[X]) (hm : P.Monic)
 
 end DVR
 
-section Away
 
 variable {R : Type*} [CommRing R]
 
 variable {q : R}
 
-end Away
 
 end Formalism.L2.NCov

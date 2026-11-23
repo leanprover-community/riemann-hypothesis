@@ -80,16 +80,12 @@ private lemma herm_conj_mul_eq_one_of_mem {H g : Matrix (Fin n) (Fin n) ℂ} (h2
   calc H * gᴴ * H * g = H * (gᴴ * H * g) := by simp only [mul_assoc]
     _ = 1 := by rw [hg, h2]
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma contDiff_entry' (i j : Fin n) :
     ContDiff ℝ ∞ (fun A : Matrix (Fin n) (Fin n) ℂ => A i j) :=
   (contDiff_apply ℝ (fun _ => ℂ) j).comp (contDiff_apply ℝ (fun _ => (Fin n → ℂ)) i)
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma contDiffAt_matrix_mul {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -100,8 +96,6 @@ private lemma contDiffAt_matrix_mul {E : Type*} [NormedAddCommGroup E] [NormedSp
   exact ContDiffAt.sum fun k _ =>
     ((contDiff_entry' i k).comp_contDiffAt x hF).mul ((contDiff_entry' k j).comp_contDiffAt x hG)
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma contDiffAt_conjTranspose_comp {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -111,8 +105,6 @@ private lemma contDiffAt_conjTranspose_comp {E : Type*} [NormedAddCommGroup E] [
   simp only [Matrix.conjTranspose_apply]
   exact Complex.conjCLE.contDiff.comp_contDiffAt x ((contDiff_entry' j i).comp_contDiffAt x hF)
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma contDiffAt_skew_projection {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -123,8 +115,6 @@ private lemma contDiffAt_skew_projection {E : Type*} [NormedAddCommGroup E] [Nor
   exact (hF.sub (contDiffAt_matrix_mul (contDiffAt_matrix_mul contDiffAt_const (contDiffAt_conjTranspose_comp hF))
     contDiffAt_const)).const_smul _
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma contDiff_det_jet_harmonics : ContDiff ℝ ∞ (fun A : Matrix (Fin n) (Fin n) ℂ => A.det) := by
@@ -134,8 +124,6 @@ private lemma contDiff_det_jet_harmonics : ContDiff ℝ ∞ (fun A : Matrix (Fin
   rw [this]
   exact ContDiff.sum fun σ _ => contDiff_const.mul (contDiff_prod fun i _ => contDiff_entry' _ _)
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma contDiff_matrix_of_entries {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -143,8 +131,6 @@ private lemma contDiff_matrix_of_entries {E : Type*} [NormedAddCommGroup E] [Nor
     ContDiff ℝ ∞ F :=
   contDiff_pi.2 fun i => contDiff_pi.2 fun j => h i j
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma contDiff_adjugate_jet_harmonics :
@@ -156,8 +142,6 @@ private lemma contDiff_adjugate_jet_harmonics :
   · subst hk; simp only [Matrix.updateRow_self]; exact contDiff_const
   · simp only [Matrix.updateRow_ne hk]; exact contDiff_entry' k l
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma contDiffAt_inv_of_det_ne_zero {A : Matrix (Fin n) (Fin n) ℂ} (hA : A.det ≠ 0) :
@@ -167,8 +151,6 @@ private lemma contDiffAt_inv_of_det_ne_zero {A : Matrix (Fin n) (Fin n) ℂ} (hA
   rw [this]
   exact ((contDiffAt_inv ℝ hA).comp A contDiff_det_jet_harmonics.contDiffAt).smul contDiff_adjugate_jet_harmonics.contDiffAt
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma contDiffAt_cay_comp {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -178,8 +160,6 @@ private lemma contDiffAt_cay_comp {E : Type*} [NormedAddCommGroup E] [NormedSpac
   exact contDiffAt_matrix_mul (contDiffAt_const.sub hF)
     ((contDiffAt_inv_of_det_ne_zero hdet).comp x (contDiffAt_const.add hF))
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma mul_preserves_herm {H g h : Matrix (Fin n) (Fin n) ℂ} (hg : gᴴ * H * g = H)
@@ -188,8 +168,6 @@ private lemma mul_preserves_herm {H g h : Matrix (Fin n) (Fin n) ℂ} (hg : gᴴ
   calc hᴴ * gᴴ * H * (g * h) = hᴴ * (gᴴ * H * g) * h := by simp only [mul_assoc]
     _ = H := by rw [hg, hh]
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma cay_preserves_herm_of_skew {H X : Matrix (Fin n) (Fin n) ℂ} (hX : Xᴴ * H + H * X = 0)
@@ -208,8 +186,6 @@ private lemma cay_preserves_herm_of_skew {H X : Matrix (Fin n) (Fin n) ℂ} (hX 
         rw [← e]; simp only [conjTranspose_mul, mul_assoc]
     _ = H := by rw [hw]; simp
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma skew_projection_is_skew {H : Matrix (Fin n) (Fin n) ℂ} (hH : Hᴴ = H) (h2 : H * H = 1)
@@ -224,8 +200,6 @@ private lemma skew_projection_is_skew {H : Matrix (Fin n) (Fin n) ℂ} (hH : H�
   rw [← smul_add]
   simp
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma skew_cay_eq_and_cay_cay_eq {H Y : Matrix (Fin n) (Fin n) ℂ} (h2 : H * H = 1) (hY : Yᴴ * H * Y = H)
@@ -276,8 +250,6 @@ private lemma skew_cay_eq_and_cay_cay_eq {H Y : Matrix (Fin n) (Fin n) ℂ} (h2 
     norm_num
 
 
-open Matrix in
-open scoped ContDiff in
 variable {n : ℕ} in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 variable {H : Matrix (Fin n) (Fin n) ℂ} in

@@ -83,8 +83,6 @@ theorem _root_.GlobalTheory.ThickeningClosed.ker_ideal_le_ker {X Z : Scheme.{0}}
 def zeroLocusOpen {X : Scheme.{0}} (K : X.IdealSheafData) : Set X :=
   {x | ∃ V : X.affineOpens, x ∈ V.1 ∧ K.ideal V = ⊥}
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.ThickeningClosed.isOpen_zeroLocusOpen {X : Scheme.{0}} (K : X.IdealSheafData) :
     IsOpen (_root_.GlobalTheory.ThickeningClosed.zeroLocusOpen K) := by
@@ -92,8 +90,6 @@ theorem _root_.GlobalTheory.ThickeningClosed.isOpen_zeroLocusOpen {X : Scheme.{0
   rintro x ⟨V, hxV, hV⟩
   exact ⟨V.1, fun y hy ↦ ⟨V, hy, hV⟩, V.1.2, hxV⟩
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.ThickeningClosed.exists_mul_eq_zero_of_mem {X : Scheme.{0}} (K : X.IdealSheafData)
     (U : X.affineOpens) (q : PrimeSpectrum Γ(X, U))
@@ -119,8 +115,6 @@ theorem _root_.GlobalTheory.ThickeningClosed.exists_mul_eq_zero_of_mem {X : Sche
   exact ⟨f ^ n, fun h ↦ hfq (q.2.mem_of_pow_mem n h), hm⟩
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.ThickeningClosed.mem_of_thickenings {R : Type} [CommRing R] (I : Ideal R)
     {X Z : Scheme.{0}} [IsLocallyNoetherian X] (f : X ⟶ Spec (CommRingCat.of R)) (ι : Z ⟶ X)
@@ -209,8 +203,6 @@ theorem _root_.GlobalTheory.ThickeningClosed.mem_of_thickenings {R : Type} [Comm
     exact (hu.mul_right_eq_zero).mp h0
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.ThickeningClosed.noZeroDivisors_fiber {R C : Type} [CommRing R] [CommRing C]
     [Algebra R C] {X : Scheme.{0}} (f : X ⟶ Spec (CommRingCat.of R))
@@ -241,8 +233,6 @@ theorem _root_.GlobalTheory.ThickeningClosed.noZeroDivisors_fiber {R C : Type} [
 end ThickeningClosed
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.isIso_of_isClosedImmersion_of_thickenings :
     ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (I : Ideal R), I ≤ Ideal.jacobson ⊥ →

@@ -130,7 +130,6 @@ theorem atEmb_conjugate (w : InfinitePlace E) (z : ℂ) :
   rw [InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding, if_neg hne, if_pos rfl]
 
 
-open ComplexConjugate in
 theorem star_atEmb (w : InfinitePlace E) (z : ℂ) : star (atEmb w.embedding z) = atEmb w.embedding (conj z) := by
   funext v
   simp only [atEmb, InfinitePlace.mk_embedding, if_true, Pi.star_apply]
@@ -141,7 +140,6 @@ theorem star_atEmb (w : InfinitePlace E) (z : ℂ) : star (atEmb w.embedding z) 
 
 def sg (w : InfinitePlace E) (a b : Fin n) (z : ℂ) : Lie E n := toL (Matrix.single a b (atEmb w.embedding z))
 
-open ComplexConjugate in
 theorem adjH_sg (w : InfinitePlace E) (a b : Fin n) (z : ℂ) : adjH (sg w a b z) = sg w b a (conj z) := by
   funext i j
   rw [adjH_apply]

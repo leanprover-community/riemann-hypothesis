@@ -52,7 +52,6 @@ variable {k : Type*} [Field k] {n : Type*} [Fintype n] [DecidableEq n] {c : ℕ}
 end Sym
 end GlobalTheory.CompanionTheory.VolVal
 namespace GlobalTheory.CompanionTheory.VolVal
-open GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.RootEx GlobalTheory.FunObj ValuativeRel Matrix
 section Root
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {ι : Type} [Fintype ι] [DecidableEq ι]
@@ -60,7 +59,6 @@ variable {n : Type} [Fintype n] [DecidableEq n] {c : ℕ}
 end Root
 end GlobalTheory.CompanionTheory.VolVal
 namespace GlobalTheory.CompanionTheory.VolVal
-open GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.RootEx GlobalTheory.FunObj ValuativeRel Matrix
 open Formalism.BasicNotions Formalism.L2.DIV IsDedekindDomain NumberField
 open Formalism.DivisionValues (vw lw)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw
@@ -70,16 +68,13 @@ variable {D : D7}
 end Place
 end GlobalTheory.CompanionTheory.VolVal
 namespace GlobalTheory.CompanionTheory.VolVal
-open Formalism.DivisionValues (vw lw)
 open IsDedekindDomain NumberField
 section Val
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 end Val
 end GlobalTheory.CompanionTheory.VolVal
 namespace GlobalTheory.CompanionTheory.VolVal
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.SumSize GlobalTheory.FunObj.AaCoef
-open Formalism.DivisionValues (vw lw)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw
   GlobalTheory.FunObj.borelSpaceKw
 section Factors
@@ -87,9 +82,6 @@ variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc)
 end Factors
 end GlobalTheory.CompanionTheory.VolVal
 namespace GlobalTheory.CompanionTheory.VolVal
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
-open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.SumSize GlobalTheory.FunObj.AaCoef
-open Formalism.DivisionValues (vw lw)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw
   GlobalTheory.FunObj.borelSpaceKw
 section Coef
@@ -97,9 +89,6 @@ variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {
 end Coef
 end GlobalTheory.CompanionTheory.VolVal
 namespace GlobalTheory.CompanionTheory.VolVal
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
-open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.SumSize GlobalTheory.FunObj.AaCoef
-open Formalism.DivisionValues (vw lw)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw
   GlobalTheory.FunObj.borelSpaceKw
 section Loss
@@ -132,7 +121,6 @@ end
 end
 end ResidueCardinalityNilpotence
 section
-open GlobalTheory.SumSize GlobalTheory.RowClaim
 theorem _root_.GlobalTheory.Adopt.finCoefK_of_theta_inputs : _root_.GlobalTheory.FunPr.ThetaLocalInputs → FinCoefK := by
   first | exact @_root_.ResidueCardinalityNilpotence.GlobalTheory.CompanionTheory.VolVal.finCoefK_alt | exact _root_.ResidueCardinalityNilpotence.GlobalTheory.CompanionTheory.VolVal.finCoefK_alt | (intros; apply _root_.ResidueCardinalityNilpotence.GlobalTheory.CompanionTheory.VolVal.finCoefK_alt <;> assumption)
 end

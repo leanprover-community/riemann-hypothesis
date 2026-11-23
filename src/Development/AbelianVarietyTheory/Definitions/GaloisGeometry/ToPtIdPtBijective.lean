@@ -217,7 +217,6 @@ def tdtForm : LinearMap.ker (dOm k k[X] 1) :=
     rw [LinearMap.mem_ker, ← dOne_eq_dOm, dOne_line]⟩
 
 
-open Polynomial in
 theorem HdR.ofForm_tdt_ne_zero [Nontrivial k] (h2 : (2 : k) = 0) : HdR.ofForm 1 (tdtForm k) ≠ 0 := by
   rw [Ne, HdR.ofForm_eq_zero_iff]
   rintro ⟨η, hη⟩

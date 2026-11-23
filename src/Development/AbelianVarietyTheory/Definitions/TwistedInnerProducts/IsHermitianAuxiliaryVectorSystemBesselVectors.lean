@@ -154,7 +154,6 @@ end Frames
 
 section Global
 
-open GlobalTheory.RootEx (N embX)
 
 def colN {m ρ : ℕ} (M : Matrix (Fin m) (Fin ρ) D.host.E) (i : ℕ) : Fin m → D.host.E :=
   if h : i < ρ then fun y => M y ⟨i, h⟩ else 0
@@ -270,7 +269,6 @@ end Global
 
 section Table
 
-open GlobalTheory.RootEx (N embX)
 open Finset (range)
 
 variable {V X : HSp D} {τ : D.host.E →ₐ[D.host.F] Fv D.host.F v} {n : Type} [Fintype n] [DecidableEq n] {c : ℕ}
@@ -336,7 +334,6 @@ end Table
 section Normal
 
 open GlobalTheory.RootEx (N)
-open Finset (range)
 
 variable {n : Type} [Fintype n] [DecidableEq n] {c : ℕ}
 

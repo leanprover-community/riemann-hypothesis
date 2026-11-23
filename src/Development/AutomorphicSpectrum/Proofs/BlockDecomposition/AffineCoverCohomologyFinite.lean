@@ -107,7 +107,6 @@ end GlobalTheory.CompanionTheory.VBGlue
 
 namespace GlobalTheory.CompanionTheory.VBGlue
 
-open GroundTheory.Arith.SchemeCoh
 
 universe w
 
@@ -249,7 +248,6 @@ end GlobalTheory.CompanionTheory.VBGlue
 
 namespace GlobalTheory.CompanionTheory.VBGlue
 
-open GroundTheory.Arith.SchemeCoh
 
 universe w
 

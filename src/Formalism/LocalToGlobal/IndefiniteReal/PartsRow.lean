@@ -40,7 +40,6 @@ namespace Formalism.IndefR.RecTie
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section FromLinks
 
 open Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Datum
 
@@ -68,7 +67,6 @@ structure PartsRec (R : RealDat D A Ks) (F : Face D A) (tupT : D.what₂.Tup →
   prtW : ∀ i π, prtWf i π ≤ (hPart (R.MW i (sg0 D A)) (levG _ (R.βW i) (R.datWp i R.triv)) (A.ok A.μ0) R.pl A.q
     (RealDat.polW (A := A) (labPi (E.cOf π)).1)).map (PiTensorProduct.lift : Mult.MMap (R.MW i (sg0 D A)) ≃ₗ[ℂ] _).toLinearMap
 
-end FromLinks
 
 end Formalism.IndefR.RecTie
 

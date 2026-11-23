@@ -153,7 +153,6 @@ end Gen
 
 section Dict
 
-open scoped TensorProduct
 
 variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l}
   {n r : ℕ}

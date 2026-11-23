@@ -171,7 +171,6 @@ end GlobalTheory.WeightCount
 
 namespace GlobalTheory.WeightCount
 
-open Module
 
 theorem maxGenEigenspace_eq_weight {k V C : Type*} [Field k] [IsAlgClosed k] [AddCommGroup V]
     [Module k V] [FiniteDimensional k V] [CommRing C] (ρ : C →+* Module.End k V) (χ : C → k)

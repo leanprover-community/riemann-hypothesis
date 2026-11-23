@@ -65,7 +65,6 @@ private theorem isArtinian_quotient_maximalIdeal_pow_succ_smul (B M : Type) [Com
   exact isArtinian_of_surjective_algebraMap
     (Ideal.Quotient.mk_surjective (I := maximalIdeal B ^ (n + 1)))
 
-open TensorProduct Polynomial IsLocalRing in
 private theorem mem_of_forall_mem_sup_maximalIdeal_pow_smul (B M : Type) [CommRing B]
     [IsLocalRing B] [IsNoetherianRing B] [AddCommGroup M] [Module B M] [Module.Finite B M]
     (K : Submodule B M) (x : M)
@@ -87,7 +86,6 @@ private theorem mem_of_forall_mem_sup_maximalIdeal_pow_smul (B M : Type) [CommRi
   rw [hbot, Submodule.mem_bot] at hx
   exact (Submodule.Quotient.mk_eq_zero K).mp hx
 
-open TensorProduct Polynomial IsLocalRing in
 private theorem exists_limit_of_sub_mem_maximalIdeal_pow_smul (B M : Type) [CommRing B]
     [IsLocalRing B] [IsNoetherianRing B] [IsAdicComplete (maximalIdeal B) B] [AddCommGroup M]
     [Module B M] [Module.Finite B M] (s : ℕ) (y : ℕ → M)
@@ -136,7 +134,6 @@ private theorem exists_limit_of_sub_mem_maximalIdeal_pow_smul (B M : Type) [Comm
   exact Submodule.sum_mem _ fun l _ => Submodule.smul_mem_smul (hL l k) Submodule.mem_top
 
 
-open TensorProduct Polynomial IsLocalRing in
 theorem _root_.GlobalTheory.Chevalley.exists_le_maximalIdeal_pow_smul_of_directed :
     ∀ (B M ι : Type) [CommRing B] [IsLocalRing B] [IsNoetherianRing B]
       [IsAdicComplete (maximalIdeal B) B] [AddCommGroup M] [Module B M] [Module.Finite B M]

@@ -44,7 +44,6 @@ noncomputable section
 namespace GlobalTheory.SplitPairK
 
 open Matrix Formalism.MainNotions.S GlobalTheory.RowLev
-open scoped TensorProduct
 
 theorem hform_mulVec_mulVec {A : Type} [CommRing A] {n : Type} [Fintype n] (σ : A →+* A)
     (J M : Matrix n n A) (x y : n → A) :

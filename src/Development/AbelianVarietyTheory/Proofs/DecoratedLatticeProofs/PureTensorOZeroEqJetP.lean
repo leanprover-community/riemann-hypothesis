@@ -194,7 +194,6 @@ section Form
 
 variable {D : D7} {θ : InfFam D} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
 
-open GlobalTheory.FockCompare GlobalTheory.OrientedHeis
 
 theorem formAt_eq {δ : ℂ} {sc : ℝ} (hP : StdPair θ S T δ sc ψ) (τ : D.what₂.Tau) (x y : Fin T.rank → Fin S.rank → ℂ) :
     ((formAt S T τ x y : ℝ) : ℂ) = I * ((Real.sqrt D.host.d)⁻¹ : ℝ) * (∑ i, ∑ j, x i j * conj (y i j)) -
@@ -236,7 +235,6 @@ section Step
 
 variable {D : D7} {θ : InfFam D} {σ : (D.what₂.Tau → ℂ) →+ AE D} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
 
-open GlobalTheory.FockCompare GlobalTheory.OrientedHeis
 
 def lamU (D : D7) {ι : Type} [Fintype ι] {a b : ℕ} (δ : ℂ) (U z : VCx ι a b) : ℂ :=
   2 * Real.pi * ((Real.sqrt D.host.d)⁻¹ : ℝ) * conj (pr z U / δ)
@@ -301,7 +299,6 @@ section Crea
 
 variable {D : D7} {θ : InfFam D} {σ : (D.what₂.Tau → ℂ) →+ AE D} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
 
-open GlobalTheory.FockCompare GlobalTheory.OrientedHeis
 
 def cK (D : D7) : ℂ := ((Real.sqrt (2 * Real.pi * (Real.sqrt D.host.d)⁻¹) : ℝ) : ℂ)⁻¹
 

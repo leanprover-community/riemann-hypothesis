@@ -89,19 +89,15 @@ theorem isEntryG_zero (A : Amb X) (a₀ : ℕ) (b₀ c₀ : ℤ) (ha : 0 < a₀)
 
 end Terms
 
-section Place
 
 variable {X : Fields}
 
-end Place
 
-section Record
 
 open Formalism.BasicNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Indef
 
 variable {X : Fields} {Pr : Primes X} {Rk : Ranks} {W : Wts X Pr.Word Rk} {Ch : Chars X Pr Rk.m}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {Sg : Set ℕ}
 
-end Record
 
 end Formalism.L2.AtG.EntryG

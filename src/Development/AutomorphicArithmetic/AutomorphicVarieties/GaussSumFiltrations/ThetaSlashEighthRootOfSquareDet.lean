@@ -256,8 +256,6 @@ theorem GlobalTheory.HilbertThetaSeries.theta_level_eighth_root : ∀ (F : Type)
     rw [hγe, map_mul, sl0_mul_of_pos _ _ _ hP, e1, sl0_smul, e2, smul_smul]
   · exact main_ne G hG t ht k hk N hN0 hN γ hγ hc
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 theorem _root_.GlobalTheory.T.theta_slash_eighth_root_of_square_det : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (κ : Type) [Fintype κ] [DecidableEq κ] (G : Matrix κ κ ℤ), EvenPos G → ∀ t : ℕ, G.det = (t : ℤ) ^ 2 → ∀ k : ℕ, Fintype.card κ = 2 * k → ∃ N : ℕ, 0 < N ∧ ∀ γ : GL (Fin 2) F, InGam N γ → ∃ ζ : ℂ, ζ ^ 8 = 1 ∧ sl0 k (toInf γ) (th G oneL) = ζ • th G oneL := by
   first | exact @GlobalTheory.HilbertThetaSeries.theta_level_eighth_root | exact GlobalTheory.HilbertThetaSeries.theta_level_eighth_root | (intros; apply GlobalTheory.HilbertThetaSeries.theta_level_eighth_root <;> assumption)

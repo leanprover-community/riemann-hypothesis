@@ -130,7 +130,6 @@ theorem actO_neg' {S T : HSp D} (g : GA D S) (h : GA D T) (x : WO S T) :
   rw [Matrix.mul_neg, Matrix.neg_mul]
 
 
-open GlobalTheory.Size in
 theorem word_om_le {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle}
     {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)} (hom : IsWeilDatumO ψ S T χS χT om) (hθ : IsInfFam θ)
     {μ : Measure (WO S T)} {𝓕 : Set (WO S T)} (hμ : IsCovolOne (ratL T S) μ 𝓕) {K : Set (GA D S × GA D T)}

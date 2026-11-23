@@ -123,7 +123,6 @@ theorem dbl_bd : ∀ (V W : Type), (∀ x, hbd V W (hbd V W x) = 0) ∧ (∀ x, 
 end GlobalTheory.SeqCx
 
 section
-open GlobalTheory.SeqCx
 theorem _root_.GlobalTheory.T.pairSeqDoubleComplex_boundary_relations : ∀ (V W : Type), (∀ x, hbd V W (hbd V W x) = 0) ∧ (∀ x, vbd V W (vbd V W x) = 0) ∧ (∀ x, hbd V W (vbd V W x) = vbd V W (hbd V W x)) := by
   first
   | exact @GlobalTheory.SeqCx.dbl_bd

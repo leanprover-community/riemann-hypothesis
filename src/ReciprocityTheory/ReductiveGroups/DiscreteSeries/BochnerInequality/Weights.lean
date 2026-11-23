@@ -46,7 +46,6 @@ namespace ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ}
 
-section AlternatingWeights
 
 variable {M : Type*} [NormedAddCommGroup M] [InnerProductSpace ℂ M]
 
@@ -91,7 +90,6 @@ by
   rw [h1, h2]
   ring
 
-end AlternatingWeights
 
 section Weights
 

@@ -114,7 +114,6 @@ end Blocks
 
 section Main
 
-open GlobalTheory.IndefiniteRowSideFullHecke.BlockEmbeddingFactors
 
 variable {K : Type} [Field K] [Fintype K] [DecidableEq K] {r s : ℕ}
 

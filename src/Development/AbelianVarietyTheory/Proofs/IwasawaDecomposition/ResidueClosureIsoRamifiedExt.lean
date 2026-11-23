@@ -145,7 +145,6 @@ end GlobalTheory.LocIntegral
 
 namespace GlobalTheory.LocIntegral
 
-open Polynomial
 
 theorem isIntegral_iff_isIntegral_map : ∀ (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L]
     (v : HeightOneSpectrum (𝓞 K)) (v' : HeightOneSpectrum (𝓞 L)) (e : ℕ)

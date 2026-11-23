@@ -810,7 +810,6 @@ end Pos
 
 section Small
 
-open NumberField
 
 variable {D : D7}
 

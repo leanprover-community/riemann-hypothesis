@@ -63,7 +63,6 @@ private lemma prod_ofFn_mul_prod_ofFn_eq_one {A : Type} [Ring A] :
     simp only [mul_assoc]
     rw [hcomm.left_comm, ← mul_assoc (f 0), h 0, hrest, one_mul]
 
-open MeasureTheory in
 private lemma levelConstants_commute {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : _root_.Formalism.FourierDecayAlt.R.LevelData A r)
     {x y : A}
     (hx : x ∈ Set.range L.c ∪ Set.range L.ci ∪ Set.range L.cb ∪ Set.range L.cbi ∪
@@ -72,12 +71,10 @@ private lemma levelConstants_commute {A : Type} [Ring A] [Algebra ℂ A] {r : �
       {L.ζ, L.ζi, L.ζb, L.ζbi, L.GG, L.GGi}) : Commute x y :=
   L.fns_comm x hx y hy
 
-open MeasureTheory in
 private lemma commute_prod_ofFn {A : Type} [Ring A] {n : ℕ} (a : A) (f : Fin n → A)
     (h : ∀ i, Commute a (f i)) : Commute a (List.ofFn f).prod :=
   Commute.list_prod_right _ _ (List.forall_mem_ofFn_iff.mpr h)
 
-open MeasureTheory in
 theorem _root_.GlobalTheory.HatNF.start_normalForm : ∀ (P : _root_.Formalism.FourierDecayAlt.M.Par) (A : Type) [Ring A] [StarRing A] [Algebra ℂ A] [StarModule ℂ A] (d : _root_.Formalism.FourierDecayAlt.Q.NFData P A), _root_.GlobalTheory.HatNF.HatHyp d → ∀ (L : _root_.Formalism.FourierDecayAlt.R.LevelData A P.r) (st : _root_.Formalism.FourierDecayAlt.Fr.Start A) (s : ℂ), _root_.GlobalTheory.HatNF.Comparison₂ d L st s → (∀ x ∈ _root_.Formalism.FourierDecayAlt.TL.kAlg st, x ∈ Set.range d.κ) ∧ ∀ Y ∈ st.inv, ∃ E ∈ _root_.GlobalTheory.HatNF.nfSpan d ∅ 0 0 0, L.l0 Y + L.ζb * L.ζi * L.GGi * st.ee Y = d.L.l0 Y + d.L.ζb * d.L.ζi * d.L.GGi * E := by
   intro P A _ _ _ _ d hHyp L st s hTie
   obtain ⟨hA, hSame, hs, hQ, hinv⟩ := hTie

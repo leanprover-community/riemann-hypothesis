@@ -164,7 +164,6 @@ lemma LFunctionPartialSum.norm_tail_le {q : ℕ} [NeZero q] (χ : DirichletChara
       | exact tsum_le_tsum hterm hsn hsf
     _ ≤ B * (‖s‖ / s.re) * ((N : ℝ) + 1) ^ (-s.re) := Real.tsum_le_of_sum_range_le hf0 hpart
 
-open LFunctionPartialSum in
 theorem l_function_partial_sum : LPartialSum := by
   intro q _ χ hχ B hB s hs N hN
   have hB' : ∀ M, ‖Ap χ M‖ ≤ B := hB

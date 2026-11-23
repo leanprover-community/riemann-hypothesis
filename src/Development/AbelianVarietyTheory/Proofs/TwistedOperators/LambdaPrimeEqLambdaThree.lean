@@ -111,7 +111,6 @@ end GlobalTheory.LamPrimeTransport
 
 namespace GlobalTheory.LamPrimeTransport
 
-open Formalism.IndefR.RecTie
 
 section Read
 
@@ -296,7 +295,6 @@ end GlobalTheory.LamPrimeTransport
 
 namespace GlobalTheory.LamPrimeTransport
 
-open Formalism.IndefR.RecTie
 
 end GlobalTheory.LamPrimeTransport
 

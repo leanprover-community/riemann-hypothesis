@@ -187,7 +187,6 @@ private theorem exists_global_cechPrimitive_of_zero_section_lemma
     linear_combination hGc k l x hxk hxl ⟨hxZ, hxC⟩
 
 set_option autoImplicit false in
-open CategoryTheory TopologicalSpace in
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
   {F : _root_.GlobalTheory.AnPer.Fam I g Λ} in
 private theorem hol_sub_fn {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
@@ -198,7 +197,6 @@ private theorem hol_sub_fn {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 
 set_option autoImplicit false in
-open CategoryTheory TopologicalSpace in
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
   {F : _root_.GlobalTheory.AnPer.Fam I g Λ} in
 theorem _root_.GlobalTheory.AnPer.Charts.exists_primitive_of_rich {I : Type} [Fintype I] {g : ℕ} {Λ : Type}

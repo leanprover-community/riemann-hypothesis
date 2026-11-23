@@ -58,7 +58,6 @@ theorem _root_.GlobalTheory.DivisibleHom.cancel_of_flat_surjective {X Y Z : Over
   simpa using congrArg CommaMorphism.left h
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 theorem _root_.GlobalTheory.DivisibleHom.exists_lift_point {A A' T : Over S} (m : A' ⟶ A) [Flat m.left]
@@ -77,7 +76,6 @@ theorem _root_.GlobalTheory.DivisibleHom.exists_lift_point {A A' T : Over S} (m 
     simp [pullback.condition]
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 theorem _root_.GlobalTheory.DivisibleHom.isMonHom_of_mul_points {G H : Over S} [GrpObj G] [GrpObj H] (e : G ⟶ H)
@@ -97,7 +95,6 @@ theorem _root_.GlobalTheory.DivisibleHom.isMonHom_of_mul_points {G H : Over S} [
   · rw [hG, hH, hone]
   · rw [h, ht]
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 theorem _root_.GlobalTheory.DivisibleHom.comp_mulA {A T : Over S} [GrpObj A] (x : T ⟶ A) (n : ℕ) :
@@ -105,7 +102,6 @@ theorem _root_.GlobalTheory.DivisibleHom.comp_mulA {A T : Over S} [GrpObj A] (x 
   unfold _root_.ReciprocityTheory.ChartRestriction.G.Out.mulA
   rw [comp_pow, Category.comp_id]
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 theorem _root_.GlobalTheory.DivisibleHom.mulA_comp {A B : Over S} [GrpObj A] [GrpObj B] (u : A ⟶ B) [IsMonHom u]
@@ -114,7 +110,6 @@ theorem _root_.GlobalTheory.DivisibleHom.mulA_comp {A B : Over S} [GrpObj A] [Gr
   rw [pow_comp, Category.id_comp]
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 theorem _root_.GlobalTheory.DivisibleHom.exists_factor {A B : Over S} [GrpObj A] [IsCommMonObj A]
@@ -144,7 +139,6 @@ theorem _root_.GlobalTheory.DivisibleHom.exists_factor {A B : Over S} [GrpObj A]
     simp [EffectiveEpi.fac]
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 theorem _root_.GlobalTheory.DivisibleHom.isMonHom_of_factor {A B : Over S} [GrpObj A] [IsCommMonObj A] [GrpObj B]
@@ -180,7 +174,6 @@ theorem _root_.GlobalTheory.DivisibleHom.isMonHom_of_factor {A B : Over S} [GrpO
         simp only [Category.assoc]
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 theorem _root_.GlobalTheory.DivisibleHom.exists_eq_pow_of_torsion_comp_eq_one :

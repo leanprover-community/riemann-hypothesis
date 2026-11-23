@@ -108,8 +108,6 @@ end PositivityTheory.ThKG.Loc.Cone.Vf
 
 namespace PositivityTheory.ThKG.Loc.Cone
 
-open scoped Matrix TensorProduct GlobalTheory.VacAny
-open NumberField IsDedekindDomain GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.LatVac
 open PositivityTheory.ThK PositivityTheory.ThK.Vac PositivityTheory.ThKH.Iwas PositivityTheory.ThKH.Locrep Vf
 
 theorem vacFixX_of (hSt : GlobalTheory.ThK.StabEx) : VacFixX := by

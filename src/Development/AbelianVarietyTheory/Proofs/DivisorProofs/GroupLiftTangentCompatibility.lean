@@ -114,7 +114,6 @@ end GlobalTheory.DeRham
 
 namespace GlobalTheory.DeRham
 
-open GlobalTheory.Cris GlobalTheory.Published GlobalTheory.Published.AbelianDeRham TensorProduct
 
 variable {R : Type} [CommRing R] {A : Over (Sp R)} [GrpObj A]
 
@@ -202,7 +201,6 @@ end GlobalTheory.DeRham
 
 namespace GlobalTheory.DeRham
 
-open GlobalTheory.Cris GlobalTheory.Published GlobalTheory.Published.AbelianDeRham TensorProduct
 
 variable {R : Type} [CommRing R] {A : Over (Sp R)} [GrpObj A]
 

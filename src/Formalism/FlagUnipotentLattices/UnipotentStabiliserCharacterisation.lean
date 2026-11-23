@@ -314,7 +314,6 @@ def supL2RatioMajorant : Prop :=
 end PartC
 
 section PartD
-open Finset
 
 def LeadingPrincipalMinor {R : Type*} [CommRing R] {d : ℕ} (Z : Matrix (Fin d) (Fin d) R) (l : ℕ) (h : l ≤ d) : R :=
   (Z.submatrix (Fin.castLE h) (Fin.castLE h)).det

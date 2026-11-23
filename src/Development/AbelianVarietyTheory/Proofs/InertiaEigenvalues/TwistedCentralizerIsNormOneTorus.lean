@@ -235,7 +235,6 @@ end GlobalTheory.Tw.CentralizerAdjoin
 namespace GlobalTheory.Tw.CentralizerAdjoin
 section Cent
 variable {n : ℕ} {R : Type} [CommRing R] [StarRing R]
-open GlobalTheory.Tw.Model
 
 theorem cent_eq {δ : Matrix (Fin n) (Fin n) R} (hδ : Reg δ) :
     cent δ = {g | g ∈ Algebra.adjoin R {nrm δ} ∧ g * adj δ g = 1} := by

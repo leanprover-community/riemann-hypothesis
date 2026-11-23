@@ -80,8 +80,6 @@ end GlobalTheory.CovHt
 
 namespace GlobalTheory.CovHt
 
-open NumberField.InfinitePlace NumberField.mixedEmbedding
-open scoped nonZeroDivisors
 
 theorem exists_elt_balanced : ∀ (K : Type) [Field K] [NumberField K] (e : HeightOneSpectrum (𝓞 K) →₀ ℝ)
     (t : (K →+* ℂ) → ℝ), (∀ σ, t ((starRingEnd ℂ).comp σ) = t σ) → ∃ C : ℝ, ∀ τ : ℕ, ∃ α : K, α ≠ 0 ∧

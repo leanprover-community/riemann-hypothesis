@@ -54,11 +54,9 @@ theorem not_dvd_of_inert {φ : Formalism.HC.Frame} {H : Formalism.HC.HostRaw φ}
     (h : primeClass H p = PrimeClass.inertClass ∨ primeClass H p = PrimeClass.signal) : ¬ p ∣ H.condN :=
   h.elim (not_dvd_conductor_of_inert hp) (not_dvd_of_signal hp)
 
-section Cases
 
 variable (j : ℕ) {p : ℕ}
 
-end Cases
 
 theorem nu_eq_originRow (δ : Code N) (j : ℕ) (hj : 1 ≤ j) (z : RPl N.R) (i : ℕ) :
     ((N.nu δ j z i : ℚ) : ℝ) =

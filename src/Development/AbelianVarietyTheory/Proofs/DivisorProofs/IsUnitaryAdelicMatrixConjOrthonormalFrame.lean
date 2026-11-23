@@ -106,7 +106,6 @@ end GlobalTheory.UnitConjFrame
 
 namespace GlobalTheory.UnitConjFrame
 
-open GlobalTheory.AdLat GlobalTheory.UnRep
 
 section General
 

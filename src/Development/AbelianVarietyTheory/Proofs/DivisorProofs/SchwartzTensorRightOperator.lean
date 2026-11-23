@@ -44,7 +44,6 @@ open scoped ContDiff
 noncomputable section
 
 namespace GlobalTheory.SliceOp
-open GlobalTheory.SliceSchwartz
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   {κ κ' κ₁' : Type} [Fintype κ] [Fintype κ'] [Fintype κ₁']

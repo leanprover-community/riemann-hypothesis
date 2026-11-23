@@ -58,8 +58,6 @@ private theorem two_le_absNorm_heightOneSpectrum {K : Type} [Field K] [NumberFie
   have h1 : Ideal.absNorm P.asIdeal ≠ 1 := Ideal.absNorm_eq_one_iff.not.mpr P.isPrime.ne_top
   omega
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 private theorem one_sub_mul_natCast_cpow_neg_ne_zero {c : ℂ} (hc : ‖c‖ ≤ 1) {n : ℕ} (hn : 2 ≤ n)
     {s : ℂ} (hs : 0 < s.re) : 1 - c * (n : ℂ) ^ (-s) ≠ 0 := by
   intro h
@@ -72,8 +70,6 @@ private theorem one_sub_mul_natCast_cpow_neg_ne_zero {c : ℂ} (hc : ‖c‖ ≤
   nlinarith [norm_nonneg c, norm_nonneg ((n : ℂ) ^ (-s))]
 
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 theorem _root_.GlobalTheory.idealCharacterL_continuation_ne_zero_one :
     ∀ (K : Type) [Field K] [NumberField K] (m : Ideal (𝓞 K)) (X : Ideal (𝓞 K) → ℂ)
     (φ : mixedSpace K → ℂ), m ≠ ⊥ → X ⊥ = 0 → (∀ I J, X (I * J) = X I * X J) →

@@ -523,7 +523,6 @@ end Points
 
 section Places
 
-open GlobalTheory.AdelicU
 
 variable (hc : CMData F E)
 

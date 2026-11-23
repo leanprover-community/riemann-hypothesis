@@ -151,7 +151,6 @@ end GlobalTheory.CongMove
 
 namespace GlobalTheory.CongMove
 
-open GlobalTheory.TwU
 
 theorem nearAt_conj_ratA {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {N : ℕ}
     (P : HeightOneSpectrum (𝓞 E)) (n : ℕ) (κ x k : GL (Fin N) (TensorProduct F E (FiniteAdeleRing (𝓞 F) F))) (f g : GL (Fin N) E)

@@ -60,8 +60,6 @@ theorem _root_.GlobalTheory.HL.invVol_eq_div_of_le {G : Type*} [Group G] {D A B 
     mul_div_mul_left _ _ (Nat.cast_ne_zero.mpr ha)]
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.HL.invVol_mul_pos_le_conj : ∀ {G : Type} [Group G] (K0 K1 K : Subgroup G),
     K0.relIndex K1 ≠ 0 → K1.relIndex K0 ≠ 0 → K0.relIndex K ≠ 0 → K.relIndex K0 ≠ 0 →
     _root_.GlobalTheory.HL.invVol K0 K = _root_.GlobalTheory.HL.invVol K0 K1 * _root_.GlobalTheory.HL.invVol K1 K ∧

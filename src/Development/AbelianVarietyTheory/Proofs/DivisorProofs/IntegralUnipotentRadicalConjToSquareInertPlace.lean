@@ -227,7 +227,6 @@ end
 noncomputable section
 namespace GlobalTheory.InertConjSq
 
-open Matrix GlobalTheory.InertDbl
 
 attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
 
@@ -246,7 +245,6 @@ end
 noncomputable section
 namespace GlobalTheory.InertConjSq
 
-open Matrix GlobalTheory.InertDbl
 
 attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
 
@@ -307,7 +305,6 @@ end
 noncomputable section
 namespace GlobalTheory.InertConjSq
 
-open Matrix GlobalTheory.InertDbl
 
 attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
 
@@ -363,7 +360,6 @@ end
 noncomputable section
 namespace GlobalTheory.InertConjSq
 
-open Matrix GlobalTheory.InertDbl
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -433,7 +429,6 @@ end
 noncomputable section
 namespace GlobalTheory.InertConjSq
 
-open Matrix GlobalTheory.InertDbl IsDedekindDomain.HeightOneSpectrum
 
 attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
 

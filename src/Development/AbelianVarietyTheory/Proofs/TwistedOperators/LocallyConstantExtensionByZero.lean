@@ -64,7 +64,6 @@ theorem _root_.GlobalTheory.SBExtend.exists_isCompact_isClopen_between {K W : Se
     isClopen_biUnion_finset fun x _ => (hU x x.2).1, ht, Set.iUnion₂_subset fun x _ => hUW x x.2⟩
 
 
-open Matrix Topology in
 variable {X : Type} [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X]
   [TotallyDisconnectedSpace X] in
 omit [LocallyCompactSpace X] [TotallyDisconnectedSpace X] in

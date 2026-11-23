@@ -63,8 +63,6 @@ private lemma algebraMap_integer_mem_O' (L : _root_.Formalism.MainNotions.S.Loc.
     algebraMap F E (a : F) ∈ L.O :=
   (_root_.GlobalTheory.UnramOrder.algebraMap_mem_iff L a).2 a.2
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 private lemma exists_inv_of_isUnit_norm (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) {x : E} (hx : x ∈ L.O) {c : 𝒪[F]}
@@ -76,8 +74,6 @@ private lemma exists_inv_of_isUnit_norm (L : _root_.Formalism.MainNotions.S.Loc.
     exact_mod_cast congrArg Subtype.val u.mul_inv
   rw [← mul_assoc, hc, ← map_mul, h, map_one]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable [IsNonarchimedeanLocalField F] [CharZero F] in
@@ -89,8 +85,6 @@ private lemma uniformizer_dvd_of_not_isUnit {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ
   obtain ⟨d, hd⟩ := hmem
   exact ⟨d, by rw [← hd, mul_comm]⟩
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable [IsNonarchimedeanLocalField F] [CharZero F] in
@@ -104,16 +98,12 @@ private lemma exists_norm_eq_uniformizer_mul_of_nonunit (L : _root_.Formalism.Ma
   obtain ⟨d, rfl⟩ := uniformizer_dvd_of_not_isUnit hϖ hcu
   exact ⟨d, by rw [hc, MulMemClass.coe_mul, map_mul]⟩
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 private lemma cj_algebraMap' (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) (a : F) :
     L.cj (algebraMap F E a) = algebraMap F E a :=
   L.cj.commutes a
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   [IsNonarchimedeanLocalField F] [CharZero F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
@@ -176,8 +166,6 @@ private lemma exists_norm_eq_uniformizer' (L : _root_.Formalism.MainNotions.S.Lo
       rw [hd₁, hzN]
       linear_combination (algebraMap F E (ϖ : F)) * hdd
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 private lemma isUnit_algebraMap_uniformizer (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) {ϖ : 𝒪[F]} (hϖ : Irreducible ϖ) :
@@ -185,8 +173,6 @@ private lemma isUnit_algebraMap_uniformizer (L : _root_.Formalism.MainNotions.S.
   have h0 : (ϖ : F) ≠ 0 := fun h => hϖ.ne_zero (Subtype.ext h)
   exact (IsUnit.mk0 _ h0).map _
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   [IsNonarchimedeanLocalField F] [CharZero F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
@@ -234,8 +220,6 @@ private lemma exists_coprime_combination_pi_cj (L : _root_.Formalism.MainNotions
   simp only [Subring.coe_add, Subring.coe_mul, Subring.coe_one, π₁, π₂] at this
   linear_combination this
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   [IsNonarchimedeanLocalField F] [CharZero F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
@@ -270,8 +254,6 @@ private lemma exists_mul_eq_one_add_pi_mul_of_not_dvd (L : _root_.Formalism.Main
   conv_lhs => rw [hxa]
   linear_combination hv
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable [IsNonarchimedeanLocalField F] [CharZero F] in
@@ -290,8 +272,6 @@ private lemma exists_inv_one_sub_uniformizer_mul (L : _root_.Formalism.MainNotio
     · exact absurd (isUnit_of_mul_isUnit_left h) hϖ.not_isUnit
     · exact h
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   [IsNonarchimedeanLocalField F] [CharZero F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
@@ -320,8 +300,6 @@ private lemma ideal_le_pi_or_le_cj_pi_of_proper (L : _root_.Formalism.MainNotion
   rw [hzE, hy1]
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.UnramOrder.proper_ideals : ∀ {F : Type} [Field F] [ValuativeRel F]
     [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E]
     [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E), ∀ ϖ : 𝒪[F], Irreducible ϖ →

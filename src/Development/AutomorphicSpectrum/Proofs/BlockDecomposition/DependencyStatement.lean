@@ -175,7 +175,6 @@ end GlobalTheory.CompanionTheory.FewEq.Dep
 namespace GlobalTheory.CompanionTheory.FewEq
 
 open Dep
-open GlobalTheory.AbLaw (rs_rs rs_self)
 
 theorem depSt : DepSt := by
   intro k _ Y s₀ hsep n r hfin hle hnr A V hV hVa α hα

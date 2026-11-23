@@ -109,8 +109,6 @@ namespace ReciprocityTheory.Coh
 
 namespace ProcyclicCohomology
 
-open ReciprocityTheory.Gal Topology
-open scoped Pointwise
 
 universe u
 

@@ -128,11 +128,9 @@ section Degrees
 
 end Degrees
 
-section Diagonal
 
 variable {ι ν κ : Type u} [Fintype ι] [Fintype ν] [Fintype κ]
 
 
-end Diagonal
 
 end ReciprocityTheory.ChartRestriction.G.AI.T

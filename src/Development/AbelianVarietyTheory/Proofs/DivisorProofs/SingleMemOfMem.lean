@@ -94,7 +94,6 @@ theorem diffGen_ne_zero {S : Type} [Fintype S] [DecidableEq S] (a : S → w.valu
 end GlobalTheory.Div.KerFil
 
 namespace GlobalTheory.Div.KerFil
-open GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference
 
 variable {C : Type} [Field C] {w : Valuation C ℝ≥0}
 

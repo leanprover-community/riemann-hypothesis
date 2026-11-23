@@ -93,7 +93,6 @@ end GlobalTheory.PsiFourthCoord
 
 namespace GlobalTheory.PsiFourthCoord
 
-open ReciprocityTheory.ChartRestriction.G.DVR
 
 variable {R : Type} [CommRing R] [IsDomain R]
 

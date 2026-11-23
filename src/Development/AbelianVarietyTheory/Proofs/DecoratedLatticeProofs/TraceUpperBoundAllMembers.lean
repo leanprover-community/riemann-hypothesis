@@ -157,7 +157,6 @@ end GlobalTheory.LevelPrimeUpper
 
 namespace GlobalTheory.LevelPrimeUpper
 
-open Formalism.MainNotions.StandardLattice Finset
 
 theorem arith (f k m LL lv l2v SL lg S5 S6 X : ℝ) (hf : 1 ≤ f) (hk : 1 ≤ k) (hm : 2 ≤ m)
     (hmk : 100 * m ^ 2 ≤ k) (hL : 1 ≤ LL) (hlv : lv ≤ LL) (hl2v : 0 ≤ l2v) (hSL : SL ≤ f * m)
@@ -236,7 +235,6 @@ end GlobalTheory.LevelPrimeUpper
 
 namespace GlobalTheory.LevelPrimeUpper
 
-open Formalism.MainNotions.StandardLattice Finset
 
 
 
@@ -388,7 +386,6 @@ end GlobalTheory.LevelPrimeUpper
 
 namespace GlobalTheory.LevelPrimeUpper
 
-open Formalism.MainNotions.StandardLattice Finset
 
 theorem eventually_rpow_ge_hundred_and_le_exp (eps : ℝ) (he : 0 < eps) : ∃ x2 : ℝ, ∀ x, x2 ≤ x → 100 ≤ x ^ eps ∧ x ≤ Real.exp (x ^ (eps / 3)) := by
   have h3 : 0 < eps / 3 := by positivity

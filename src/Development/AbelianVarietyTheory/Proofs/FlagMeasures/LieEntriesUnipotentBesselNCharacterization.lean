@@ -57,8 +57,6 @@ private lemma unrealify_eq_of_realifyFun_coords {m : ℕ} (x : EuclideanSpace �
   ext i j
   apply Complex.ext <;> simp [_root_.Formalism.MainNotions.S.unrealify, hx, _root_.Formalism.MainNotions.S.realifyFun]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma tendsto_inv_smul_exp_smul_sub_one {m : ℕ} (X : Matrix (Fin m) (Fin m) ℂ) :
     Tendsto (fun t : ℝ => t⁻¹ • (NormedSpace.exp ((t : ℂ) • X) - 1)) (𝓝[≠] 0) (𝓝 X) := by
   letI : NormedRing (Matrix (Fin m) (Fin m) ℂ) := Matrix.linftyOpNormedRing
@@ -71,8 +69,6 @@ private lemma tendsto_inv_smul_exp_smul_sub_one {m : ℕ} (X : Matrix (Fin m) (F
   simp [slope, Complex.coe_smul]
   rfl
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma lieNCond_of_exp_smul_mem_Nset {k r : ℕ}
     (X : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (hX : ∀ t : ℝ, NormedSpace.exp ((t : ℂ) • X) ∈ _root_.Formalism.QuantumDeterminants.Nset k r) :
@@ -116,28 +112,20 @@ private lemma lieNCond_of_exp_smul_mem_Nset {k r : ℕ}
       simp
     exact tendsto_nhds_unique hE (by simp only [hz]; exact tendsto_const_nhds)
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma unrealify_zero_flag_measures {m : ℕ} :
     _root_.Formalism.MainNotions.S.unrealify (0 : EuclideanSpace ℝ (Fin m × Fin m × Bool)) = 0 := by
   ext i j
   apply Complex.ext <;> simp [_root_.Formalism.MainNotions.S.unrealify]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma lieNCond_zero {k r : ℕ} :
     _root_.GlobalTheory.CellDens.LieN.Cond k r (0 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) :=
   ⟨by simp, fun _ _ _ => rfl⟩
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma unrealify_add_flag_measures {m : ℕ} (x y : EuclideanSpace ℝ (Fin m × Fin m × Bool)) :
     _root_.Formalism.MainNotions.S.unrealify (x + y) = _root_.Formalism.MainNotions.S.unrealify x + _root_.Formalism.MainNotions.S.unrealify y := by
   ext i j
   apply Complex.ext <;> simp [_root_.Formalism.MainNotions.S.unrealify]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma lieNCond_add {k r : ℕ} {X Y : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hX : _root_.GlobalTheory.CellDens.LieN.Cond k r X) (hY : _root_.GlobalTheory.CellDens.LieN.Cond k r Y) :
     _root_.GlobalTheory.CellDens.LieN.Cond k r (X + Y) := by
@@ -145,15 +133,11 @@ private lemma lieNCond_add {k r : ℕ} {X Y : Matrix (Fin (2 * r + k + 1)) (Fin 
   · rw [conjTranspose_add, Matrix.add_mul, Matrix.mul_add, add_add_add_comm, hX.1, hY.1, add_zero]
   · rw [Matrix.add_apply, hX.2 i j h, hY.2 i j h, add_zero]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma unrealify_smul_flag_measures {m : ℕ} (c : ℝ) (x : EuclideanSpace ℝ (Fin m × Fin m × Bool)) :
     _root_.Formalism.MainNotions.S.unrealify (c • x) = (c : ℂ) • _root_.Formalism.MainNotions.S.unrealify x := by
   ext i j
   apply Complex.ext <;> simp [_root_.Formalism.MainNotions.S.unrealify]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma lieNCond_smul {k r : ℕ} (c : ℝ) (X : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (hX : _root_.GlobalTheory.CellDens.LieN.Cond k r X) :
     _root_.GlobalTheory.CellDens.LieN.Cond k r ((c : ℂ) • X) := by
@@ -162,8 +146,6 @@ private lemma lieNCond_smul {k r : ℕ} (c : ℝ) (X : Matrix (Fin (2 * r + k + 
       Matrix.mul_smul, ← smul_add, hX.1, smul_zero]
   · rw [Matrix.smul_apply, hX.2 i j h, smul_zero]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma mul_apply_eq_zero_of_level_le {n : ℕ} (f : Fin n → ℕ) (A B : Matrix (Fin n) (Fin n) ℂ)
     (hA : ∀ i j, f j ≤ f i → A i j = 0) (hB : ∀ i j, f j ≤ f i → B i j = 0) :
     ∀ i j, f j ≤ f i → (A * B) i j = 0 := by
@@ -174,8 +156,6 @@ private lemma mul_apply_eq_zero_of_level_le {n : ℕ} (f : Fin n → ℕ) (A B :
   · rw [hA i l hl, zero_mul]
   · rw [hB l j (by omega), mul_zero]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma pow_succ_apply_eq_zero_of_level_le {n : ℕ} (f : Fin n → ℕ)
     (Y : Matrix (Fin n) (Fin n) ℂ) (hY : ∀ i j, f j ≤ f i → Y i j = 0) :
     ∀ m i j, f j ≤ f i → (Y ^ (m + 1)) i j = 0 := by
@@ -187,8 +167,6 @@ private lemma pow_succ_apply_eq_zero_of_level_le {n : ℕ} (f : Fin n → ℕ)
     rw [pow_succ]
     exact mul_apply_eq_zero_of_level_le f _ _ ih hY i j h
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma exp_apply_eq_one_apply_of_level_le {n : ℕ} (f : Fin n → ℕ) (Y : Matrix (Fin n) (Fin n) ℂ)
     (hY : ∀ i j, f j ≤ f i → Y i j = 0) (i j : Fin n) (h : f j ≤ f i) :
     NormedSpace.exp Y i j = (1 : Matrix (Fin n) (Fin n) ℂ) i j := by
@@ -205,8 +183,6 @@ private lemma exp_apply_eq_one_apply_of_level_le {n : ℕ} (f : Fin n → ℕ) (
     obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hm
     simp [Matrix.smul_apply, pow_succ_apply_eq_zero_of_level_le f Y hY m i j h]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma exp_mem_Nset_of_lieNCond {k r : ℕ}
     (Y : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (hY : _root_.GlobalTheory.CellDens.LieN.Cond k r Y) : NormedSpace.exp Y ∈ _root_.Formalism.QuantumDeterminants.Nset k r := by
@@ -238,8 +214,6 @@ private lemma exp_mem_Nset_of_lieNCond {k r : ℕ}
     unfold _root_.GlobalTheory.CellDens.lev
     rcases hij with hij | hij <;> split_ifs <;> omega
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 private lemma equiv_symm_realifyFun_unrealify {m : ℕ} (x : EuclideanSpace ℝ (Fin m × Fin m × Bool)) :
     (WithLp.equiv 2 (Fin m × Fin m × Bool → ℝ)).symm (_root_.Formalism.MainNotions.S.realifyFun (_root_.Formalism.MainNotions.S.unrealify x)) = x := by
   ext p
@@ -247,8 +221,6 @@ private lemma equiv_symm_realifyFun_unrealify {m : ℕ} (x : EuclideanSpace ℝ 
   cases b <;> simp [_root_.Formalism.MainNotions.S.unrealify, _root_.Formalism.MainNotions.S.realifyFun]
 
 
-open MeasureTheory Matrix Filter Topology in
-open scoped InnerProductSpace ENNReal Nat in
 theorem _root_.GlobalTheory.CellDens.LieN.lieE_Nset : ∀ (k r : ℕ)
     (x : EuclideanSpace ℝ (Fin (2 * r + k + 1) × Fin (2 * r + k + 1) × Bool)),
     (x ∈ _root_.Formalism.MainNotions.S.lieE (_root_.Formalism.QuantumDeterminants.Nset k r) ↔ ((_root_.Formalism.MainNotions.S.unrealify x)ᴴ * _root_.Formalism.QuantumDeterminants.Hpk k r + _root_.Formalism.QuantumDeterminants.Hpk k r * _root_.Formalism.MainNotions.S.unrealify x = 0 ∧

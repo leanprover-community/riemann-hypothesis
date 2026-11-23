@@ -636,7 +636,6 @@ end Tensor
 
 section Irr
 
-open Formalism.GradedWeylDivisibility
 
 variable {n : ℕ}
 
@@ -1418,7 +1417,6 @@ end Inj
 
 section Surj
 
-open Formalism.GradedWeylDivisibility GlobalTheory.FrameRead
 
 variable {Ix : Type} [Fintype Ix] [DecidableEq Ix] {p q n : ℕ} (h : p + q ≤ n) {K : Type} [Field K]
 

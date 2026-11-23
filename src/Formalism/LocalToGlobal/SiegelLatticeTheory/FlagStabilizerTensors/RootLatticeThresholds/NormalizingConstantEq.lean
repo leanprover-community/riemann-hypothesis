@@ -385,12 +385,9 @@ theorem dimTie (u : D.what₂.Word) : DimTie (X := X) u := by
 
 end Dim
 
-section FinX
 
-open Formalism.L2.SG.Full
 
 variable {D : D7} {X : HidaSetting D} (Y : Full X)
 
-end FinX
 
 end Formalism.L2.SG.Pf

@@ -97,7 +97,6 @@ theorem resX (hW : IsWittFrame D.sp.cm.sig V.gram X Y) {l d : ℕ} (h : l + d �
   linear_combination ((derEnd hθ τ Ex F).1 (ι x) + (derEnd hθ τ Ey F).1 (ι x)) * (-1 / 2 : ℂ) * Complex.I_mul_I
 
 
-open GlobalTheory.CuspRep GlobalTheory.Mem.RealTranslate in
 theorem resY (hW : IsWittFrame D.sp.cm.sig V.gram X Y) {l d : ℕ} (h : l + d ≤ m)
     {ι : GlobalTheory.CuspRep.GA D.host.E d →* GA D V} (hι : GlobalTheory.BlockForms.IsBlockEmb D.sp.cm.sig V.gram X Y h ι)
     {C : GL (Fin V.rank) D.host.E} (hC : GlobalTheory.BlockForms.IsAdapted D.sp.cm.sig V.gram X Y C) (τ : D.what₂.Tau)
@@ -450,7 +449,6 @@ theorem span_conj_rev (P Q : Matrix (Fin n) (Fin n) ℂ) (hPQ : P * Q = 1) (hQP 
 end Units
 
 
-open GlobalTheory.CuspRep in
 theorem monic_block : ∀ (D : D7) [_root_.NumberField.IsTotallyComplex D.host.E] (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)), IsInfFam θ →
     ∀ (V : HSp D) (c : D.what₂.Tau → ℕ → ℂ) (m : ℕ) (X Y : Matrix (Fin V.rank) (Fin m) D.host.E),
     IsWittFrame D.sp.cm.sig V.gram X Y → ∀ (T : Finset (Fin m)) (l d : ℕ) (h : l + d ≤ m)

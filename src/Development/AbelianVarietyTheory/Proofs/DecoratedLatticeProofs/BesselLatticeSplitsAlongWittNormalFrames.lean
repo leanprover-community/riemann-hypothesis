@@ -87,7 +87,6 @@ end GlobalTheory.MonoBes
 
 namespace GlobalTheory.MonoBes
 
-open GlobalTheory.FinPl GlobalTheory.SeeSaw.SplitLat
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -144,7 +143,6 @@ end GlobalTheory.MonoBes
 
 namespace GlobalTheory.MonoBes
 
-open GlobalTheory.FinPl GlobalTheory.SeeSaw.SplitLat
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -181,7 +179,6 @@ end GlobalTheory.MonoBes
 
 namespace GlobalTheory.MonoBes
 
-open GlobalTheory.FinPl GlobalTheory.SeeSaw.SplitLat
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -197,7 +194,6 @@ end GlobalTheory.MonoBes
 
 namespace GlobalTheory.MonoBes
 
-open GlobalTheory.FinPl GlobalTheory.SeeSaw.SplitLat
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 

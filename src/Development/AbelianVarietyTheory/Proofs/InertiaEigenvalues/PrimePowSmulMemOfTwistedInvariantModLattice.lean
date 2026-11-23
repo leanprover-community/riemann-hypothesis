@@ -63,7 +63,6 @@ private theorem continuous_algebraMap_padicComplex_lemma_7 :
     Continuous (algebraMap ℚ_[l] ℂ_[l]) :=
   continuous_algebraMap ℚ_[l] ℂ_[l]
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem exists_primitiveRoot_primePow_padicAlgCl_lemma_9 (n : ℕ) :
     ∃ ζ : _root_.Formalism.BasicNotions.Loc.Om l, IsPrimitiveRoot ζ (l ^ n) := by
@@ -74,7 +73,6 @@ private theorem exists_primitiveRoot_primePow_padicAlgCl_lemma_9 (n : ℕ) :
     (Polynomial.degree_cyclotomic_pos _ _ hpos).ne'
   exact ⟨ζ, (Polynomial.isRoot_cyclotomic_iff).1 hζ⟩
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem continuous_cyclotomicCharacter_lemma_8 {χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ}
     (hχ : _root_.GlobalTheory.Cyc.IsCyc χ) : Continuous fun g => (χ g : ℚ_[l]) := by
@@ -113,7 +111,6 @@ private theorem continuous_cyclotomicCharacter_lemma_8 {χ : _root_.Formalism.Ba
         rw [hpow]
         linarith
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem continuous_cyclotomicCharPow_lemma_6 {χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ}
     (hχ : _root_.GlobalTheory.Cyc.IsCyc χ) (i : ℤ) :
@@ -127,7 +124,6 @@ private theorem continuous_cyclotomicCharPow_lemma_6 {χ : _root_.Formalism.Basi
   exact continuous_algebraMap_padicComplex_lemma_7.comp
     ((continuous_cyclotomicCharacter_lemma_8 hχ).zpow₀ i fun g => Or.inl (Units.ne_zero _))
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 variable (act : _root_.Formalism.BasicNotions.Loc.GQ l →* ℂ_[l] ≃+* ℂ_[l]) (χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ) (i : ℤ) {r : ℕ}
   (U : _root_.Formalism.BasicNotions.Loc.GQ l → Matrix (Fin r) (Fin r) ℂ_[l]) in
@@ -144,7 +140,6 @@ private theorem continuousOn_twistedAction_lemma (hact : _root_.GlobalTheory.Cyc
   exact (hF.2.1 a b).mul
     (_root_.GlobalTheory.Cyc.IsActC.continuous_orbit l act hact (y b)).continuousOn
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem act_algebraMap_padic_lemma_10 {act : _root_.Formalism.BasicNotions.Loc.GQ l →* ℂ_[l] ≃+* ℂ_[l]}
     (hact : _root_.GlobalTheory.Cyc.IsActC act) (σ : _root_.Formalism.BasicNotions.Loc.GQ l) (x : ℚ_[l]) :
@@ -153,7 +148,6 @@ private theorem act_algebraMap_padic_lemma_10 {act : _root_.Formalism.BasicNotio
   rw [AlgEquiv.commutes] at h
   exact h
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem cyclotomicCharPow_mul_lemma_11 (χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ) (i : ℤ) (σ τ : _root_.Formalism.BasicNotions.Loc.GQ l) :
     _root_.GlobalTheory.Cyc.chiC χ i (σ * τ) =
@@ -161,7 +155,6 @@ private theorem cyclotomicCharPow_mul_lemma_11 (χ : _root_.Formalism.BasicNotio
   unfold _root_.GlobalTheory.Cyc.chiC
   rw [map_mul, mul_zpow, Units.val_mul, map_mul]
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 variable (act : _root_.Formalism.BasicNotions.Loc.GQ l →* ℂ_[l] ≃+* ℂ_[l]) (χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ) (i : ℤ) {r : ℕ}
   (U : _root_.Formalism.BasicNotions.Loc.GQ l → Matrix (Fin r) (Fin r) ℂ_[l]) in
@@ -184,7 +177,6 @@ private theorem twistedAction_mul_lemma_2 (hact : _root_.GlobalTheory.Cyc.IsActC
 
   simp [Matrix.mulVec, dotProduct, map_sum, map_mul, hfix, hc, Finset.mul_sum]
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 variable (act : _root_.Formalism.BasicNotions.Loc.GQ l →* ℂ_[l] ≃+* ℂ_[l]) (χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ) (i : ℤ) {r : ℕ}
   (U : _root_.Formalism.BasicNotions.Loc.GQ l → Matrix (Fin r) (Fin r) ℂ_[l]) in
@@ -197,7 +189,6 @@ private theorem twistedAction_smul_lemma_3 (σ : _root_.Formalism.BasicNotions.L
     simp
   rw [h, Matrix.mulVec_smul, smul_comm]
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 variable (act : _root_.Formalism.BasicNotions.Loc.GQ l →* ℂ_[l] ≃+* ℂ_[l]) (χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ) (i : ℤ) {r : ℕ}
   (U : _root_.Formalism.BasicNotions.Loc.GQ l → Matrix (Fin r) (Fin r) ℂ_[l]) in
@@ -210,7 +201,6 @@ private theorem twistedAction_sub_lemma_4 (σ : _root_.Formalism.BasicNotions.Lo
     simp
   rw [h, Matrix.mulVec_sub, smul_sub]
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 variable (act : _root_.Formalism.BasicNotions.Loc.GQ l →* ℂ_[l] ≃+* ℂ_[l]) (χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ) (i : ℤ) {r : ℕ}
   (U : _root_.Formalism.BasicNotions.Loc.GQ l → Matrix (Fin r) (Fin r) ℂ_[l]) in
@@ -223,7 +213,6 @@ private theorem twistedAction_add_lemma_12 (σ : _root_.Formalism.BasicNotions.L
     simp
   rw [h, Matrix.mulVec_add, smul_add]
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem cyclotomicCharPow_add_lemma_14 (χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ) (a b : ℤ) (σ : _root_.Formalism.BasicNotions.Loc.GQ l) :
     _root_.GlobalTheory.Cyc.chiC χ (a + b) σ =
@@ -231,7 +220,6 @@ private theorem cyclotomicCharPow_add_lemma_14 (χ : _root_.Formalism.BasicNotio
   unfold _root_.GlobalTheory.Cyc.chiC
   rw [zpow_add, Units.val_mul, map_mul]
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 variable (act : _root_.Formalism.BasicNotions.Loc.GQ l →* ℂ_[l] ≃+* ℂ_[l]) (χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ) (i : ℤ) {r : ℕ}
   (U : _root_.Formalism.BasicNotions.Loc.GQ l → Matrix (Fin r) (Fin r) ℂ_[l]) in
@@ -241,7 +229,6 @@ private theorem twistedAction_eq_charPow_smul_lemma_13 (j : ℤ) (σ : _root_.Fo
   unfold _root_.GlobalTheory.Cyc.twAct
   rw [smul_smul, ← cyclotomicCharPow_add_lemma_14, sub_add_cancel]
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] in
 variable (act : _root_.Formalism.BasicNotions.Loc.GQ l →* ℂ_[l] ≃+* ℂ_[l]) (χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ) (i : ℤ) {r : ℕ}
   (U : _root_.Formalism.BasicNotions.Loc.GQ l → Matrix (Fin r) (Fin r) ℂ_[l]) in
@@ -284,7 +271,6 @@ private theorem eq_zero_of_twistedInvariant_offJumps_lemma_5 (hact : _root_.Glob
   simp [hcoef]
 
 
-open scoped Matrix in
 variable {l : ℕ} [Fact l.Prime] {act : _root_.Formalism.BasicNotions.Loc.GQ l →* (PadicComplex l ≃+* PadicComplex l)}
   {χ : _root_.Formalism.BasicNotions.Loc.GQ l →* ℚ_[l]ˣ} in
 variable {r : ℕ} {U : _root_.Formalism.BasicNotions.Loc.GQ l → Matrix (Fin r) (Fin r) (PadicComplex l)} in

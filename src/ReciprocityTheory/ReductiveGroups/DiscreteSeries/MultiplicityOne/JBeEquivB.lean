@@ -221,7 +221,6 @@ end ReciprocityTheory.ChartRestriction.DS.Mult1.BeEquiv
 
 namespace ReciprocityTheory.ChartRestriction.DS.Mult1.BeEquiv
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r : ℕ} {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
 

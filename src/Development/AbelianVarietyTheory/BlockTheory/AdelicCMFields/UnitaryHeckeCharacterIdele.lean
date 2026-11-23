@@ -92,16 +92,12 @@ def conj [h : IsCMExtension F E] : E ≃ₐ[F] E :=
       exact this }
 
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.embedding_conj [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.IsCMExtension F E] (φ : E →+* ℂ) (x : E) :
     φ (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.conj F E x) = starRingEnd ℂ (φ (x)) := by
   haveI := _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.IsCMExtension.isCMField F E
   exact (IsCMField.isConj_complexConj E φ).eq x
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.conj_conj [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.IsCMExtension F E] (x : E) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.conj F E (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.conj F E x) = x := by
@@ -133,8 +129,6 @@ def finiteCompletionMap (w : HeightOneSpectrum (𝓞 L)) :
       (uniformContinuous_algebraMap_liesOver K L (w.under (𝓞 K)) w).continuous)).comp
     (adicCompletion.equiv K (w.under (𝓞 K))).toRingHom
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.continuous_finiteCompletionMap (w : HeightOneSpectrum (𝓞 L)) :
     Continuous (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.finiteCompletionMap K L w) :=
@@ -142,8 +136,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
     (UniformSpace.Completion.continuous_map.comp
       (adicCompletion.uniformEquiv K (w.under (𝓞 K))).uniformContinuous.continuous)
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.finiteCompletionMap_coe (w : HeightOneSpectrum (𝓞 L)) (x : K) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.finiteCompletionMap K L w (algebraMap K _ x) =
@@ -157,8 +149,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
     (uniformContinuous_algebraMap_liesOver K L (w.under (𝓞 K)) w)]
   rfl
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.finiteCompletionMap_mapsTo (w : HeightOneSpectrum (𝓞 L)) :
     Set.MapsTo (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.finiteCompletionMap K L w)
@@ -184,8 +174,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
   rw [h2, ← valuation_liesOver L (w.under (𝓞 K)) w]
   exact pow_le_one' hy _
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.tendsto_under :
     Tendsto (fun w : HeightOneSpectrum (𝓞 L) => w.under (𝓞 K)) cofinite cofinite := by
@@ -214,8 +202,6 @@ def infiniteAdeleMap : InfiniteAdeleRing K →+* InfiniteAdeleRing L :=
 def adeleMap : AdeleRing (𝓞 K) K →+* AdeleRing (𝓞 L) L :=
   RingHom.prodMap (infiniteAdeleMap K L) (finiteAdeleMap K L)
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.adeleMap_algebraMap (x : K) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.adeleMap K L (algebraMap K _ x) =
@@ -230,8 +216,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
   · ext w : 1
     exact _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.finiteCompletionMap_coe K L w x
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.continuous_adeleMap : Continuous (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.adeleMap K L) := by
   have hinf : Continuous (infiniteAdeleMap K L) := by
@@ -250,14 +234,10 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
 
 def ideleMap : Idele K →* Idele L := Units.map (adeleMap K L).toMonoidHom
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.continuous_ideleMap : Continuous (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap K L) :=
   Continuous.units_map _ (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.continuous_adeleMap K L)
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap_principalIdele (x : Kˣ) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap K L (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.principalIdele K x) =
@@ -270,8 +250,6 @@ def ideleConj (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [
     [IsCMExtension F E] : Idele E →* Idele E :=
   @ideleMap E E _ _ _ _ (conj F E).toRingEquiv.toRingHom.toAlgebra
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleConj_principalIdele (F E : Type) [Field F] [NumberField F] [Field E]
     [NumberField E] [Algebra F E] [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.IsCMExtension F E] (x : Eˣ) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleConj F E (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.principalIdele E x) =
@@ -319,8 +297,6 @@ end UnitaryHeckeChar
 def IsUniformiser (P : HeightOneSpectrum (𝓞 E)) (ϖ : (P.adicCompletion E)ˣ) : Prop :=
   Valued.v (ϖ : P.adicCompletion E) = WithZero.exp (-1 : ℤ)
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.exists_isUniformiser (P : HeightOneSpectrum (𝓞 E)) :
     ∃ ϖ, _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.IsUniformiser P ϖ := by
@@ -336,12 +312,9 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
 namespace UnitaryHeckeChar
 
 
-open scoped Classical in
 def valueAt (χ : UnitaryHeckeChar E) (P : HeightOneSpectrum (𝓞 E)) : ℂ :=
   if χ.IsUnramifiedAt P then (χ.localComponent P (exists_isUniformiser P).choose : ℂ) else 0
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.valueAt_eq (χ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar E)
     {P : HeightOneSpectrum (𝓞 E)} (h : χ.IsUnramifiedAt P)
@@ -356,8 +329,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
   have e : ϖ₀ = (ϖ₀ * ϖ⁻¹) * ϖ := by group
   rw [e, map_mul, h _ hu, one_mul]
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.valueAt_of_ramified (χ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar E) {P : HeightOneSpectrum (𝓞 E)}
     (h : ¬ χ.IsUnramifiedAt P) : χ.valueAt P = 0 := by
@@ -366,8 +337,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
 def eulerFactor (χ : UnitaryHeckeChar E) (P : HeightOneSpectrum (𝓞 E)) (s : ℂ) : ℂ :=
   (1 - χ.valueAt P * (Ideal.absNorm P.asIdeal : ℂ) ^ (-s))⁻¹
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.summable_absNorm_rpow {σ : ℝ} (hσ : 1 < σ) :
     Summable fun P : HeightOneSpectrum (𝓞 E) => (Ideal.absNorm P.asIdeal : ℝ) ^ (-σ) := by
@@ -428,16 +397,12 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
 
 end UnitaryHeckeChar
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.norm_eq_one_of_valued {P : HeightOneSpectrum (𝓞 E)}
     {x : P.adicCompletion E} (h : Valued.v x = 1) : ‖x‖ = 1 := by
   rw [FinitePlace.norm_def, h]
   simp
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.finite_mulSupport (x : _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.Idele E) :
     (Function.mulSupport fun v : HeightOneSpectrum (𝓞 E) => ‖x.val.2 v‖).Finite := by
@@ -469,8 +434,6 @@ def infiniteIdeleNorm : Idele E →* ℝ where
 
 def ideleNorm : Idele E →* ℝ := infiniteIdeleNorm * finiteIdeleNorm
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm_ne_zero (x : _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.Idele E) : _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm x ≠ 0 := by
   intro h
@@ -478,8 +441,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
   rw [mul_inv_cancel, map_one, h, zero_mul] at hx
   exact one_ne_zero hx
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm_principalIdele (x : Eˣ) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.principalIdele E x) = 1 := by
@@ -499,8 +460,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
     rfl
   rw [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm, MonoidHom.mul_apply, hinf, hfin, prod_abs_eq_one x.ne_zero]
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.continuous_ideleNorm : Continuous (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm (E := E)) := by
   have hinf : Continuous (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.infiniteIdeleNorm (E := E)) := by
@@ -547,8 +506,6 @@ def normPow (t : ℝ) : UnitaryHeckeChar E where
     (continuous_const.mul (continuous_ideleNorm.log ideleNorm_ne_zero))
   map_principal x := by simp [ideleNorm_principalIdele]
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.ideleNorm_localIdele (P : HeightOneSpectrum (𝓞 E))
     (u : (P.adicCompletion E)ˣ) :
@@ -567,8 +524,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
   rw [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleNorm, MonoidHom.mul_apply, hinf, hfin, one_mul]
 
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.normPow_isUnramifiedAt (t : ℝ) (P : HeightOneSpectrum (𝓞 E)) :
     (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.normPow E t).IsUnramifiedAt P := by
@@ -577,8 +532,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdel
   rw [_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.ideleNorm_localIdele, _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.norm_eq_one_of_valued hu,
     Real.log_one, mul_zero, Circle.exp_zero]
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 private theorem norm_uniformiser_eq_absNorm_inv {P : HeightOneSpectrum (𝓞 E)}
     {ϖ : (P.adicCompletion E)ˣ} (hϖ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.IsUniformiser P ϖ) :
@@ -587,8 +540,6 @@ private theorem norm_uniformiser_eq_absNorm_inv {P : HeightOneSpectrum (𝓞 E)}
   simp
 
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Filter in
-open scoped RestrictedProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.normPow_valueAt (t : ℝ) (P : HeightOneSpectrum (𝓞 E)) :
     (_root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.normPow E t).valueAt P =

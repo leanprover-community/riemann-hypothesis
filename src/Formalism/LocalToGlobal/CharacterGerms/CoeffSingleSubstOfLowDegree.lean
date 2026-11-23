@@ -258,20 +258,16 @@ theorem isT_sum {V : VF C} {d : ℕ} {I₁ J₁ : Type} [Fintype I₁] [Fintype 
   rw [Finset.sum_comm, MvPowerSeries.coeff_X]
   exact ht.2 x μ
 
-section Law
 
 variable {dd : ℕ}
 
 variable [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O]
 
-end Law
 
-section Sys1
 
 variable [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ} {d : ℕ} {I : Fin 2 → Type}
   [∀ g, Fintype (I g)]
 
-end Sys1
 
 end FormalGermZero
 

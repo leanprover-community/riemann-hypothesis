@@ -139,7 +139,6 @@ theorem growPHolds : GrowPHolds := by
     have := re_le_rho (hnp r hr0 hrN c hc)
     linarith
 
-open Grow in
 theorem growQHolds : GrowQHolds := by
   intro E _ _ _ N u hu hsq
   have hcen := hsq.1

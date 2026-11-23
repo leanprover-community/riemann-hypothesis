@@ -103,7 +103,6 @@ theorem coeff_prod_one_add_low {ι : Type*} [DecidableEq ι] (S : Finset ι) (v 
     · rw [Polynomial.coeff_add, Polynomial.coeff_X_mul, Polynomial.coeff_C_mul, mul_add, h2, h1]
       ring
 
-open Polynomial in
 theorem conj_polynomial_diagonal {m : ℕ} (V : Matrix (Fin m) (Fin m) ℂ) (hV : V * Vᴴ = 1) (ν : Fin m → ℂ) :
     V.map C * diagonal (fun s => 1 + X * C (ν s)) * (Vᴴ).map C =
       1 + (X : ℂ[X]) • (V * diagonal ν * Vᴴ).map C := by
@@ -129,7 +128,6 @@ theorem sq_conj_diagonal {m : ℕ} (V : Matrix (Fin m) (Fin m) ℂ) (ν : Fin m 
         rw [hV, Matrix.mul_one, Matrix.mul_assoc V, Matrix.diagonal_mul_diagonal]
         simp [sq]
 
-open Polynomial in
 theorem coeff_two_det_hermitian {m : ℕ} (A : Matrix (Fin m) (Fin m) ℂ) (hA : A.IsHermitian) :
     2 * (det (1 + (X : ℂ[X]) • A.map C)).coeff 2 = (trace A) ^ 2 - trace (A * A) := by
   set U : Matrix (Fin m) (Fin m) ℂ := (hA.eigenvectorUnitary : Matrix (Fin m) (Fin m) ℂ) with hU

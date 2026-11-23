@@ -190,7 +190,6 @@ theorem theta_eq (ρ : Setup (Dof x).ntw) :
     Lean.Elab.Tactic.elabTerm (Lean.mkIdent `hθ) none
 
 
-open GlobalTheory.SeriesTie in
 theorem isDatum_eq (ρ : Setup (Dof x).ntw) :
     (setupL L ρ).IsDatum = fun i j b s h P => (by exact ρ.IsDatum i j b s h P) := by
   funext i j b s h P

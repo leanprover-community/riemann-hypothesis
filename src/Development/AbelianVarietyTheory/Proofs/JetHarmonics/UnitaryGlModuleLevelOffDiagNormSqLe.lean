@@ -51,15 +51,11 @@ private lemma abs_half_card_sub_le {n : ℕ} (s t : Finset (Fin n)) :
     exact_mod_cast (Finset.card_le_univ t).trans_eq (Fintype.card_fin n)
   rw [abs_le]; constructor <;> linarith
 
-open Finset in
-open scoped InnerProductSpace in
 private lemma re_inner_double_sum_apply {M : Type} [NormedAddCommGroup M] [InnerProductSpace ℂ M]
     {n : ℕ} (F : Fin n → Fin n → Module.End ℂ M) (w : M) :
     (⟪w, (∑ a, ∑ b, F a b) w⟫_ℂ).re = ∑ a, ∑ b, (⟪w, F a b w⟫_ℂ).re := by
   simp [LinearMap.sum_apply, inner_sum, Complex.re_sum]
 
-open Finset in
-open scoped InnerProductSpace in
 private lemma norm_sq_apply_eq_re_inner_of_isUnitary {M : Type} [NormedAddCommGroup M]
     [InnerProductSpace ℂ M] {n : ℕ} {ε : Fin n → Bool} {E : Fin n → Fin n → Module.End ℂ M}
     (hE : _root_.Formalism.REAL.IsUnitary ε E) (a b : Fin n) (w : M) :
@@ -74,8 +70,6 @@ private lemma norm_sq_apply_eq_re_inner_of_isUnitary {M : Type} [NormedAddCommGr
   · rw [if_pos hab.symm, if_pos hab]; simp; ring
   · rw [if_neg (fun h' => hab h'.symm), if_neg hab]; simp
 
-open Finset in
-open scoped InnerProductSpace in
 private lemma mul_sq_sqrt_sub_le_sq_div_sixteen {n : ℕ} (μ U T ρ L : Fin n → ℝ) (K c bv : ℝ) (j : ℕ)
     (hμ : ∀ a, |μ a| ≤ 3 * bv) (hU : ∀ a, |U a| ≤ n) (hT : ∀ a, |T a| ≤ n)
     (hρ : ∀ a, |ρ a| ≤ n) (hL : ∀ a, L a = μ a + U a - T a)
@@ -167,8 +161,6 @@ private lemma mul_sq_sqrt_sub_le_sq_div_sixteen {n : ℕ} (μ U T ρ L : Fin n �
     _ ≤ (bv / 16) ^ 2 := by linarith
 
 
-open Finset in
-open scoped InnerProductSpace in
 theorem _root_.GlobalTheory.lev_offDiag_normSq_le : ∀ (M : Type) [NormedAddCommGroup M]
     [InnerProductSpace ℂ M] (n : ℕ) (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M)
     (μ : Fin n → ℝ) (kk j : ℕ) (bv : ℝ) (w : M), _root_.BranchingSupport.IsMod ε E μ →

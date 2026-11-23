@@ -75,11 +75,9 @@ theorem hkN_fun_mem {χ : GL (Fin n) (v.adicCompletion F) →* ℂ} (hχ : ∀ �
 
 end GLv
 
-section Reps
 
 variable {G H : Type} [Group G] [Group H] {k : Type} [CommRing k] {W : Type} [AddCommGroup W] [Module k W]
 
-end Reps
 
 section Concrete
 

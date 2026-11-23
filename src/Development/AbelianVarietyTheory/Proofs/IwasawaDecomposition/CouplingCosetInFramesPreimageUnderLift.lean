@@ -62,7 +62,6 @@ theorem sub_mem_stdAt_of_redV {E : Type} [Field E] [NumberField E] [StarRing E] 
 
 
 
-open Classical GlobalTheory.TopStep in
 theorem cosetIn_act_of_liftsInv : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (u : B.Word) (a : I.ι) (i : ℕ) (b : (I.stp u a i).β) (κ : (I.stp u a i).G b) (p : (I.stp u a i).D b) (P : SBof I a) (g : Sp B.fields.E (B.R.N i) ≃ₗ[B.fields.E] Sp B.fields.E (B.R.N i)), (I.stp u a i).gam b κ = 1 → LiftsInv I κ P g → ∀ z, z ∈ cosetIn ((I.stp u a i).act b κ p) P ↔ g z ∈ cosetIn p P := by
   intro B X I _ u a i b κ p P g hgam hL z
   have hX : B.fields.Ok := GlobalTheory.Mem.FieldsLaws.fields_ok B

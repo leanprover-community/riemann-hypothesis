@@ -77,7 +77,6 @@ theorem jswWhit_fT (φ : GA E (m + 1) → ℂ) (Φ : (Fin (m + 1) → Cinf E) �
 end GlobalTheory.ZUnf
 
 namespace GlobalTheory.ZUnf
-open GlobalTheory.MirTower GlobalTheory.CuspGeneric Formalism.L2.Host
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {m : ℕ}
 
@@ -111,7 +110,6 @@ theorem psi_lastRow_eq {Φ : (Fin (m + 1) → Cinf E) → ℂ} (hΦ : ∀ u, 0 �
 end GlobalTheory.ZUnf
 
 namespace GlobalTheory.ZUnf
-open GlobalTheory.MirTower GlobalTheory.CuspGeneric Formalism.L2.Host
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {m : ℕ}
 
@@ -146,7 +144,6 @@ theorem isMir_of_mem_mirU_zero {γ : GL (Fin (m + 1)) E} (hγ : γ ∈ mirU E (m
 end GlobalTheory.ZUnf
 
 namespace GlobalTheory.ZUnf
-open GlobalTheory.MirTower GlobalTheory.CuspGeneric Formalism.L2.Host
 
 theorem enorm_uInt_self {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {m : ℕ}
     {Φ : (Fin (m + 1) → Cinf E) → ℂ} (hΦ : ∀ u, 0 ≤ (Φ u).re ∧ (Φ u).im = 0)

@@ -95,7 +95,6 @@ end GlobalTheory.QkClosure
 
 namespace GlobalTheory.QkClosure
 
-open ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.TorusExt
 
 attribute [local instance] gtGroup
 

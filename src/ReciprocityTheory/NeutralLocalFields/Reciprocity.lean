@@ -229,10 +229,8 @@ theorem exists_isUniformiserAt (v : HeightOneSpectrum (𝓞 K)) :
 
 end Global
 
-section Chebotarev
 
 variable (K : Type*) [Field K] [NumberField K]
 
-end Chebotarev
 
 end Neutral.B1

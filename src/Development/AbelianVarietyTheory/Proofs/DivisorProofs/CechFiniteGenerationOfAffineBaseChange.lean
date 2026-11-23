@@ -108,7 +108,6 @@ end GlobalTheory.CechTr
 
 namespace GlobalTheory.CechTr
 
-open GlobalTheory.CechFin
 
 theorem appLE_eq_of_eq {X Y : Scheme.{0}} {f g : X ⟶ Y} (h : f = g) (U : Y.Opens) (V : X.Opens)
     (e : V ≤ f ⁻¹ᵁ U) (e' : V ≤ g ⁻¹ᵁ U) : f.appLE U V e = g.appLE U V e' := by
@@ -136,7 +135,6 @@ end GlobalTheory.CechTr
 
 namespace GlobalTheory.CechTr
 
-open GlobalTheory.CechFin
 
 theorem cechFG_of_baseChange_affineOpen (G X : Scheme.{0}) (p : G ⟶ X) (U : X.Opens) (hU : IsAffineOpen U)
     (J : Type) (W : J → G.Opens) (hWU : ∀ i, W i ≤ p ⁻¹ᵁ U) :

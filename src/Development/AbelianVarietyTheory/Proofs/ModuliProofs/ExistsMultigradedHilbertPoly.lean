@@ -231,7 +231,6 @@ end GlobalTheory.MultiHilbert
 
 namespace GlobalTheory.MultiHilbert
 
-open MvPolynomial
 
 section
 variable {K σ M : Type} [Field K] [AddCancelCommMonoid M] (w : σ → M)
@@ -412,7 +411,6 @@ end GlobalTheory.MultiHilbert
 
 namespace GlobalTheory.MultiHilbert
 
-open MvPolynomial
 
 noncomputable def hilbertFun {K σ : Type} [Field K] {r : ℕ} (col : σ → Fin r)
     (I : Ideal (MvPolynomial σ K)) (n : Fin r → ℕ) : ℚ :=

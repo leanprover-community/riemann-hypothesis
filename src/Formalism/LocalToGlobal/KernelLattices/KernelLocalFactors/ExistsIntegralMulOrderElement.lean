@@ -225,11 +225,9 @@ theorem aa_unit_at (P : HeightOneSpectrum (ğ“ X.E)) (hb : s.PrimeTo D.host.ğ”
 
 end IdealS
 
-section NatS
 
 variable {D : D7} {X : Fields} (s : Seam D X)
 
-end NatS
 
 section Main
 

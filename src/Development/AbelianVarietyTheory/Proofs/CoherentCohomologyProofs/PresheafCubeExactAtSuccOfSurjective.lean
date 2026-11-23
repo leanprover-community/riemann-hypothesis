@@ -102,7 +102,6 @@ private theorem cubeComplex_exactAt_one_of_hom_surj_empty_inj_nonempty {A B : _r
   · rintro ⟨y, rfl⟩
     exact dd y
 
-open CategoryTheory AlgebraicGeometry Limits TopologicalSpace Opposite in
 variable {T : TopCat.{w}} {ι : Type} [LinearOrder ι] {R : Type u} [Ring R]
   {P : (Opens T)ᵒᵖ ⥤ ModuleCat.{w} R} (hP : Presheaf.IsSheaf (Opens.grothendieckTopology T) P)
   (hs : ∀ ⦃W W' : Opens T⦄ (h : W' ≤ W), Function.Surjective (_root_.GlobalTheory.presheafRes P h)) in
@@ -132,7 +131,6 @@ private theorem cubeComplex_presheafCube_exactAt_one (V : Opens T) (U : ι → O
       fun w => back _ _ (h s) h' w
     rw [← key x, ← key y, hxy]
 
-open CategoryTheory AlgebraicGeometry Limits TopologicalSpace Opposite in
 variable {T : TopCat.{w}} {ι : Type} [LinearOrder ι] {R : Type u} [Ring R]
   {P : (Opens T)ᵒᵖ ⥤ ModuleCat.{w} R} (hP : Presheaf.IsSheaf (Opens.grothendieckTopology T) P)
   (hs : ∀ ⦃W W' : Opens T⦄ (h : W' ≤ W), Function.Surjective (_root_.GlobalTheory.presheafRes P h)) in
@@ -170,7 +168,6 @@ private theorem cubeComplex_presheafCube_exactAt_add_one_of_card (n : ℕ) :
           ((_root_.GlobalTheory.cubeFunctor _ R).mapIso (_root_.GlobalTheory.presheafCubeUpperFaceIso P V U e i)).symm
 
 
-open CategoryTheory AlgebraicGeometry Limits TopologicalSpace Opposite in
 variable {T : TopCat.{w}} {ι : Type} in
 variable [LinearOrder ι] [Finite ι] (F : TopCat.Sheaf AddCommGrpCat.{w} T) [F.IsFlasque] in
 theorem _root_.GlobalTheory.subsingleton_cechAbH_succ_of_isFlasque (V : Opens T) (U : ι → Opens T) (p : ℕ) :

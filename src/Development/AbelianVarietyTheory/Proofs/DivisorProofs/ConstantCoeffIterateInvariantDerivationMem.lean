@@ -58,7 +58,6 @@ private lemma coeff_atZero_eq_coeff_mapDomain_inl {S : Type} [CommRing S] {n : �
     coeff α (_root_.GlobalTheory.LawDer.atZero G) = coeff (Finsupp.mapDomain Sum.inl α) G :=
   (_root_.GlobalTheory.coeff_subst_restrict_sum G).1 α
 
-open MvPowerSeries in
 set_option autoImplicit false in
 variable {R : Type} [CommRing R] {d : ℕ} in
 private lemma coeff_subst_X_comp_eq_finsum {σ τ S : Type} [CommRing S] [Finite σ] [DecidableEq τ] (g : σ → τ)
@@ -71,7 +70,6 @@ private lemma coeff_subst_X_comp_eq_finsum {σ τ S : Type} [CommRing S] [Finite
     (by intros; simp [pow_add]), ← monomial_one_eq, coeff_monomial]
   split_ifs <;> simp
 
-open MvPowerSeries in
 set_option autoImplicit false in
 variable {R : Type} [CommRing R] {d : ℕ} in
 private lemma coeff_subst_X_comp_eq_zero_of_not_mem_range {σ τ S : Type} [CommRing S] [Finite σ] (g : σ → τ)
@@ -81,7 +79,6 @@ private lemma coeff_subst_X_comp_eq_zero_of_not_mem_range {σ τ S : Type} [Comm
   rw [coeff_subst_X_comp_eq_finsum]
   exact (finsum_congr fun e => if_neg fun h => hγ ⟨e, h.symm⟩).trans finsum_zero
 
-open MvPowerSeries in
 set_option autoImplicit false in
 variable {R : Type} [CommRing R] {d : ℕ} in
 private lemma coeff_mapDomain_subst_X_comp_of_injective {σ τ S : Type} [CommRing S] [Finite σ] {g : σ → τ}
@@ -95,7 +92,6 @@ private lemma coeff_mapDomain_subst_X_comp_of_injective {σ τ S : Type} [CommRi
   exact fun h => he' (Finsupp.mapDomain_injective hg h).symm
 
 
-open MvPowerSeries in
 set_option autoImplicit false in
 variable {R : Type} [CommRing R] {d : ℕ} in
 theorem _root_.GlobalTheory.LawDer.Kernel.constantCoeff_iterate_invDer_mem : ∀ (B Q : Type) [CommRing B] [CommRing Q] [Algebra B Q] (d : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B), (∀ i, constantCoeff (μ i) = 0) → ∀ (N : Ideal B) (l : MvPowerSeries (Fin d) Q) (j : Fin d), _root_.GlobalTheory.QLog.In N (_root_.GlobalTheory.Katz.cob1 (_root_.GlobalTheory.QLog.up Q μ) l) → _root_.GlobalTheory.Katz.lin l = Pi.single j 1 → ∀ (u : Fin d → B) (n : ℕ), 2 ≤ n → ∃ b ∈ N, constantCoeff ((_root_.GlobalTheory.LawDer.invDer (_root_.GlobalTheory.QLog.up Q μ) (fun i => algebraMap B Q (u i)))^[n] l) = algebraMap B Q b := by

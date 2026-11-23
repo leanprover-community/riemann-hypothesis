@@ -65,14 +65,10 @@ theorem mulVec_mem_hat (D : D7) {n : ℕ} (β : GL (Fin n) (Formalism.IndefR.Lev
 end GlobalTheory.MassLinkConj
 
 namespace GlobalTheory.MassLinkConj
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain
-open scoped Matrix
 
 end GlobalTheory.MassLinkConj
 
 namespace GlobalTheory.MassLinkConj
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain
-open scoped Matrix
 
 
 end GlobalTheory.MassLinkConj

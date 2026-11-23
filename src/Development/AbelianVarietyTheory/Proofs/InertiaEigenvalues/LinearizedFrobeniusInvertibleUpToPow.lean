@@ -252,7 +252,6 @@ end GlobalTheory.BSP.LinFrob
 
 namespace GlobalTheory.BSP.LinFrob
 
-open scoped Matrix
 
 theorem map_A_mul {l : ℕ} [Fact l.Prime] {K : FinExt l} {bk : BK K} {d : ℕ} (S : Strat bk d) {R : Type} [CommRing R]
     (g : bk.S →+* R) : S.A.map g * S.A'.map g = g bk.E ^ S.b • (1 : Matrix (Fin d) (Fin d) R) := by

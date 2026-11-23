@@ -67,8 +67,6 @@ private lemma compactSpace_quotient_of_cocompact {G : Type} [AddCommGroup G] [To
   rw [← this]
   exact hK.image continuous_quotient_mk'
 
-open MeasureTheory in
-open scoped Pointwise in
 private lemma exists_continuous_descend_of_periodic {G : Type} [AddCommGroup G] [TopologicalSpace G] [IsTopologicalAddGroup G]
     (Γ : AddSubgroup G) {Φ : G → ℂ} (hΦ : Continuous Φ) (hper : ∀ γ ∈ Γ, ∀ x, Φ (γ + x) = Φ x) :
     ∃ Ψ : C(G ⧸ Γ, ℂ), ∀ x : G, Ψ (x : G ⧸ Γ) = Φ x := by
@@ -78,8 +76,6 @@ private lemma exists_continuous_descend_of_periodic {G : Type} [AddCommGroup G] 
     rw [← hper _ hxy x]; congr 1; abel
   exact ⟨⟨Quotient.lift Φ h, hΦ.quotient_lift h⟩, fun x => rfl⟩
 
-open MeasureTheory in
-open scoped Pointwise in
 private lemma eventually_norm_translate_sub_le {Q : Type} [AddCommGroup Q] [TopologicalSpace Q]
     [IsTopologicalAddGroup Q] [CompactSpace Q] (f : C(Q, ℂ)) {η : ℝ} (hη : 0 < η) :
     ∀ᶠ w in nhds (0 : Q), ∀ q, ‖f (q + w) - f q‖ ≤ η := by
@@ -94,8 +90,6 @@ private lemma eventually_norm_translate_sub_le {Q : Type} [AddCommGroup Q] [Topo
   rw [e1, e2, dist_eq_norm] at h
   exact h.trans hw.le
 
-open MeasureTheory in
-open scoped Pointwise in
 private lemma exists_norm_le_of_periodic {G : Type} [AddCommGroup G] [TopologicalSpace G]
     (Γ : AddSubgroup G) {K : Set G} (hK : IsCompact K) (hcov : ∀ x, ∃ γ ∈ Γ, γ + x ∈ K)
     {Φ : G → ℂ} (hΦ : Continuous Φ) (hper : ∀ γ ∈ Γ, ∀ x, Φ (γ + x) = Φ x) :
@@ -106,8 +100,6 @@ private lemma exists_norm_le_of_periodic {G : Type} [AddCommGroup G] [Topologica
   rw [← hper γ hγ x]
   exact hM ⟨_, hx, rfl⟩
 
-open MeasureTheory in
-open scoped Pointwise in
 private lemma exists_charSum_approx {Q : Type} [TopologicalSpace Q] [CompactSpace Q] {A : Type}
     [AddCommGroup A] (ψ : A → C(Q, ℂ)) (hmul : ∀ a b, ψ (a + b) = ψ a * ψ b) (h0 : ψ 0 = 1)
     (hstar : ∀ a, star (ψ a) = ψ (-a)) (hsep : ∀ p q : Q, p ≠ q → ∃ a, ψ a p ≠ ψ a q)
@@ -158,8 +150,6 @@ private lemma exists_charSum_approx {Q : Type} [TopologicalSpace Q] [CompactSpac
     _ ≤ δ := by rw [← dist_eq_norm]; exact hfg.le
 
 
-open MeasureTheory in
-open scoped Pointwise in
 theorem _root_.GlobalTheory.exists_summation_kernel_periodic : ∀ (G : Type) [AddCommGroup G] [TopologicalSpace G] [IsTopologicalAddGroup G] [T2Space G] [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (Γ : AddSubgroup G) [DiscreteTopology Γ] (K : Set G), IsCompact K → (∀ x, ∃ γ ∈ Γ, γ + x ∈ K) → ∀ (A : Type) [AddCommGroup A] (χ : A → G → ℂ), (∀ a, Continuous (χ a)) → (∀ a x y, χ a (x + y) = χ a x * χ a y) → (∀ a b x, χ (a + b) x = χ a x * χ b x) → (∀ x, χ 0 x = 1) → (∀ a x, ‖χ a x‖ = 1) → (∀ x, (∀ a, χ a x = 1) ↔ x ∈ Γ) → ∀ (μ : Measure G) (𝓕 : Set G), μ.IsAddHaarMeasure → IsAddFundamentalDomain Γ 𝓕 μ → ∀ l : List (G → ℂ), (∀ Φ ∈ l, Continuous Φ ∧ ∀ γ ∈ Γ, ∀ x, Φ (γ + x) = Φ x) → ∀ ε : ℝ, 0 < ε → ∃ (s : Finset A) (c : A → ℂ), ∀ Φ ∈ l, ∀ x, ‖Φ x - ∑ a ∈ s, c a * ((∫ y in 𝓕, Φ y * starRingEnd ℂ (χ a y) ∂μ) * χ a x)‖ ≤ ε := by
   intro G _ _ _ _ _ _ _ _ Γ _ K hK hcov A _ χ hχc hχmul hχadd hχ0 hχnorm hχΓ μ 𝓕 hμ h𝓕 l hl ε hε
   classical

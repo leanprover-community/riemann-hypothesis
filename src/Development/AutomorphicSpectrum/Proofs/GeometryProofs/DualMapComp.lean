@@ -148,7 +148,6 @@ theorem span_mono_ring {Li : Type} [AddCommGroup Li] [Module Ω Li] {A B : Subri
 end GlobalTheory.CompanionTheory.Ar.OrVert
 
 namespace GlobalTheory.CompanionTheory.Ar.OrVert
-open _root_.GlobalTheory.CompanionTheory.Ar.Top HodgeCpt
 
 theorem spMap_comp' {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (a : A →+* B) (b : B →+* C) :
     spMap (b.comp a) = spMap b ≫ spMap a := by
@@ -304,7 +303,6 @@ theorem core (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D 
 end GlobalTheory.CompanionTheory.Ar.OrVert
 
 namespace GlobalTheory.CompanionTheory.Ar.OrVert
-open _root_.GlobalTheory.CompanionTheory.Ar.Top HodgeCpt
 
 theorem or_vert : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (Sys : PB.AnSys (Top.dimFl (CMType H) (D.p + D.q)) (Option (RootIx D))) (Fx : FixedData Y Sys) (R : Top.RootModel (CMType H) (D.p + D.q)) (o₀ : RootOrigin Y ∅ R Fx), ∃ C₀ : ℝ, ∀ (S : Finset ℕ) (M : Top.RootModel (CMType H) (D.p + D.q)) (o : RootOrigin Y S M Fx) (i : R.Ω →+* M.Ω), i.comp o₀.g = o.g → (∀ p : ℕ, p.Prime → (p : ℤ) ∣ discr E → p ∈ S) → (∀ p ∈ S, ∃ κ, HT.IsCp p κ ∧ HT.Sandwich o.𝔐 p κ) → ∀ r, Ht.VertBound (Ht.joinOf M R i) (Ht.joinDeg M R (some r)) (i (o₀.e r) / o.e r) (C₀ + ∑ p ∈ S, ((if p = 2 then 2 else 1 / ((p : ℝ) - 1)) + 2 * padicValInt p (discr E)) * Real.log p) := by
   intro E _ _ _ H D l Xo c Y Sys Fx R o₀

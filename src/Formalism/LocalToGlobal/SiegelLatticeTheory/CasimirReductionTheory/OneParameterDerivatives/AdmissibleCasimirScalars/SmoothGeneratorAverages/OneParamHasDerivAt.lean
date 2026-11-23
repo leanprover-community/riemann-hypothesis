@@ -383,7 +383,6 @@ end Formalism.L2.SG.Pf.admitted.SkewDerivative
 
 namespace Formalism.L2.SG.Pf.admitted
 
-open Formalism.MainNotions.S Formalism.REAL Formalism.MainNotions.BridgeCPX
 
 theorem c5 : CompactDerivativesBounded := by
   intro n ε H _ _ _ σ hσ S hfd hst

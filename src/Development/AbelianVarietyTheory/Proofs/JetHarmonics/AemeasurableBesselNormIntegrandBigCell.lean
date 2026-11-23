@@ -87,7 +87,6 @@ theorem bigCell_density_eq {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [I
     simp
 
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P in
 theorem bigCell_density_aemeasurable :
     ∀ (P : M.Par) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
       [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (p : KB.Pl P Wp Wq)

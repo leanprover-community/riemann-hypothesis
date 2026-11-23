@@ -122,7 +122,6 @@ private theorem germ_res' {Y : Scheme.{0}} [IsIntegral Y] {V W : Y.Opens} (h : V
       (Y.presheaf.germ W (genericPoint Y) hW).hom f :=
   congrArg (fun q => q.hom f) (TopCat.Presheaf.germ_res Y.presheaf (homOfLE h) (genericPoint Y) hV)
 
-open scoped TensorProduct in
 private theorem ringOn_inf {Y : Scheme.{0}} [IsIntegral Y] [Y.IsSeparated] (p' : Y ⟶ Sp ℂ)
     [instL : Algebra ℂ Y.functionField] (hL : instL = ffAlg p') {W1 W2 : Y.Opens} (h1 : IsAffineOpen W1)
     (h2 : IsAffineOpen W2) (g1 : genericPoint Y ∈ W1) (g2 : genericPoint Y ∈ W2) (g12 : genericPoint Y ∈ W1 ⊓ W2) :

@@ -90,7 +90,6 @@ private theorem autProj (E : Type) [Field E] [NumberField E] [IsCMField E] (n : 
     · left; rw [← hm, h, Submodule.map_bot]
     · right; rw [← hm, h]
 
-open GlobalTheory.DefU in
 private theorem core {E : Type} [Field E] [NumberField E] [IsCMField E] {n m : ℕ} {Y D I : Type} [AddCommGroup Y] [Module ℂ Y]
     [AddCommGroup D] [Module ℂ D] [FiniteDimensional ℂ D] (A : Submodule ℂ Y) (tf : Y →ₗ[ℂ] D →ₗ[ℂ] (UA E n → ℂ))
     (r : UA E n → D → D) (hinj : ∀ F ∈ A, (∀ ℓ, tf F ℓ = 0) → F = 0)

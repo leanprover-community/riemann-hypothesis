@@ -76,7 +76,6 @@ theorem slope_deriv {K : Type} (V : Submodule ℂ (K → ℂ)) [FiniteDimensiona
   simp only [Function.comp_apply, e, map_smul, map_sub, zero_add, Complex.real_smul, smul_eq_mul, Complex.ofReal_inv]
 
 section Curve
-open scoped Matrix
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
 
 variable {E : Type} [Field E] [NumberField E] {a : ℕ}
@@ -249,7 +248,6 @@ theorem rel_lie (hc0 : c 0 = 1) (hc : HasDerivAt (fun t => toL (c t : Matrix (Fi
 end Lie
 
 section Skew
-open scoped Matrix
 
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
 theorem star_atEmb (τ : E →+* ℂ) (z : ℂ) : star (atEmb τ z) = atEmb τ (star z) := by

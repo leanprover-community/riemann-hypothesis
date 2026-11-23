@@ -160,7 +160,6 @@ end GlobalTheory.EtaleLiftQuot
 
 namespace GlobalTheory.EtaleLiftQuot
 
-open IsLocalRing TensorProduct
 
 theorem exists_finite_free_etale_lift : ∀ (R : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R],
     IsAdicComplete (maximalIdeal R) R → ∀ f ∈ maximalIdeal R, ∀ (E : Type) [CommRing E]

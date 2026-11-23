@@ -93,8 +93,6 @@ theorem finite_tp_box : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal 
 
 end GlobalTheory.HilbertThetaSeries
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 
 theorem _root_.GlobalTheory.T.totallyPositive_summands_with_denominator_finite : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (D : ℕ), 0 < D → ∀ ξ : F, {η : F | (η = 0 ∨ TP η) ∧ (ξ - η = 0 ∨ TP (ξ - η)) ∧ IsIntegral ℤ ((D : F) * η)}.Finite := by
   first | exact @GlobalTheory.HilbertThetaSeries.finite_tp_box | exact GlobalTheory.HilbertThetaSeries.finite_tp_box | (intros; apply GlobalTheory.HilbertThetaSeries.finite_tp_box <;> assumption)

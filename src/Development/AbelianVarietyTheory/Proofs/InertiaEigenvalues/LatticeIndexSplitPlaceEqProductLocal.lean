@@ -162,7 +162,6 @@ end GlobalTheory.SplitIndexLocal
 
 noncomputable section
 namespace GlobalTheory.SplitIndexLocal
-open GlobalTheory.SplitHecke.Stab
 
 variable {D : D7} {e : AE D} {v : HeightOneSpectrum (𝓞 D.host.F)} {π : AE D →+* Fv D.host.F v} {W : HSp D}
   {β : GL (Fin W.rank) (Fv D.host.F v)}
@@ -216,8 +215,6 @@ end GlobalTheory.SplitIndexLocal
 
 noncomputable section
 namespace GlobalTheory.SplitIndexLocal
-open GlobalTheory.SplitHecke.Stab
-open GlobalTheory.AdelicLatMove (mt_mul mt_one gram_mul_inv)
 
 variable {D : D7} {e : AE D} {v : HeightOneSpectrum (𝓞 D.host.F)} {π : AE D →+* Fv D.host.F v} {W : HSp D}
   {β : GL (Fin W.rank) (Fv D.host.F v)}

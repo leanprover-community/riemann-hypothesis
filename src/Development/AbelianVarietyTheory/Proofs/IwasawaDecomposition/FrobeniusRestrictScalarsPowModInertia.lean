@@ -69,8 +69,6 @@ theorem _root_.GlobalTheory.FrobRestrict.isFrob_pow {F Ω : Type} [Field F] [Num
     rw [_root_.ReciprocityTheory.Gal.valuation_apply_lt_one_iff (Subgroup.pow_mem _ hdec n)]
     exact hφ.2 x hx
 
-open NumberField IsDedekindDomain in
-open scoped Pointwise in
 private lemma restrictScalars_mem_decompositionSubgroup {E Ω : Type} [Field E] [Field Ω]
     [Algebra E Ω] {K : IntermediateField E Ω} {A : ValuationSubring Ω} {ι : _root_.Formalism.ConjugateSelfDual.G K Ω}
     (h : ι ∈ ValuationSubring.decompositionSubgroup K A) :
@@ -78,8 +76,6 @@ private lemma restrictScalars_mem_decompositionSubgroup {E Ω : Type} [Field E] 
   simp only [ValuationSubring.decompositionSubgroup, MulAction.mem_stabilizer_iff] at h ⊢
   exact h
 
-open NumberField IsDedekindDomain in
-open scoped Pointwise in
 theorem _root_.GlobalTheory.FrobRestrict.frob_restrict : ∀ (E Ω : Type) [Field E] [NumberField E]
     [Field Ω] [Algebra E Ω] (K : IntermediateField E Ω) [FiniteDimensional E K] [NumberField K]
     (v : HeightOneSpectrum (𝓞 E)) (w : HeightOneSpectrum (𝓞 K)),

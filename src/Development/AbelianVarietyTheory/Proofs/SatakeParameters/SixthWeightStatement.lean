@@ -87,6 +87,5 @@ end GlobalTheory.FrobeniusCharacterNorms
 
 namespace GlobalTheory.FrobeniusCharacterNorms
 
-open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.SumRepresentations Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
 
 end GlobalTheory.FrobeniusCharacterNorms

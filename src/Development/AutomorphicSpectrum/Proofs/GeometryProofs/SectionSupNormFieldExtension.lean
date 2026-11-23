@@ -192,7 +192,6 @@ end Frame
 
 section Move
 
-open ReciprocityTheory.ChartRestriction.G.TB.ValAt ReciprocityTheory.ChartRestriction.G.PullbackSections
 
 variable {X X' : Scheme.{0}} {L : LB X} {L' : LB X'} {F : X' ⟶ X} {A : Over (Sp ℂ)} [GrpObj A] {φ : A.left ⟶ X'} {g : ℕ}
 

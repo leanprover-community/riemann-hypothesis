@@ -83,10 +83,7 @@ theorem _root_.GlobalTheory.SiegelFamilyNumberField.nonempty_baseChange {h k : �
   · intro R _ _ x y s' c hxy hx hy
     exact _root_.GlobalTheory.SiegelFamilyBaseChange.inj_baseChange F j rfl U hU x y s' c hxy hx hy
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
-open scoped CategoryTheory.Obj TensorProduct in
 attribute [local instance] Over.cartesianMonoidalCategory in
-open NumberField Polynomial in
 private theorem isPrimitiveRoot_map_localization_away (k : ℕ) (hk : 0 < k) (K : Type) [Field K]
     [NumberField K] (ζ : 𝓞 K) (hζ : IsPrimitiveRoot (algebraMap (𝓞 K) K ζ) k)
     (L : Type) [Field L] (β : Localization.Away (k : 𝓞 K) →+* L) :
@@ -105,10 +102,7 @@ private theorem isPrimitiveRoot_map_localization_away (k : ℕ) (hk : 0 < k) (K 
   exact (isRoot_cyclotomic_iff).mp this
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
-open scoped CategoryTheory.Obj TensorProduct in
 attribute [local instance] Over.cartesianMonoidalCategory in
-open NumberField Polynomial in
 theorem _root_.GlobalTheory.SiegelFamilyNumberField.exists_sFam_numberField : _root_.ReciprocityTheory.ChartRestriction.G.Out.Laws → _root_.ReciprocityTheory.ChartRestriction.G.Out.Laws2 → _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ThetaUnifAV → ∀ h : ℕ, 1 ≤ h → ∃ (k : ℕ) (K : Type) (_ : Field K) (_ : NumberField K) (ζ : K) (σ : K →+* ℂ), 3 ≤ k ∧ Odd k ∧ σ ζ = Complex.exp (-(2 * Real.pi * Complex.I) / k) ∧ Nonempty (_root_.GlobalTheory.ZM.SFam h k ζ) := by
   intro hL hL2 hT h hh
   obtain ⟨j₀, hj₀⟩ := _root_.GlobalTheory.ZM.SiegelArithFamily.nonempty_sFam hL hL2

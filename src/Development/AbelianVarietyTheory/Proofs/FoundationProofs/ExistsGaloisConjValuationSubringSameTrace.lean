@@ -94,10 +94,6 @@ private lemma valuation_lt_one_iff_inv_not_mem' {L : Type} [Field L] (U : Valuat
   rw [← U.valuation_le_one_iff, map_inv₀, not_le,
     one_lt_inv₀ (zero_lt_iff.2 ((Valuation.ne_zero_iff _).2 h0))]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
-open Finset in
-open scoped Pointwise in
 variable {F L : Type} [Field F] [Field L] [Algebra F L] in
 private lemma exists_normalized_integral_relation {F L : Type} [Field F] [Field L] [Algebra F L]
     [FiniteDimensional F L] (U : ValuationSubring L) (x : L) :
@@ -161,10 +157,6 @@ private lemma exists_normalized_integral_relation {F L : Type} [Field F] [Field 
       ring
     rw [this, h0, zero_mul]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
-open Finset in
-open scoped Pointwise in
 variable {F L : Type} [Field F] [Field L] [Algebra F L] in
 private lemma sum_range_succ_eq_lower_add_mid_add_upper {L : Type} [Field L] (f : ℕ → L) (n k : ℕ) (hk : k ≤ n) :
     ∑ j ∈ Finset.range (n + 1), f j =
@@ -172,10 +164,6 @@ private lemma sum_range_succ_eq_lower_add_mid_add_upper {L : Type} [Field L] (f 
   rw [← Finset.sum_range_add_sum_Ico f (by omega : k ≤ n + 1),
     Finset.sum_eq_sum_Ico_succ_bot (by omega : k < n + 1), add_assoc]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
-open Finset in
-open scoped Pointwise in
 variable {F L : Type} [Field F] [Field L] [Algebra F L] in
 private lemma valuation_sum_lower_div_pow_eq_one_and_lt_one {L : Type} [Field L] (U U' : ValuationSubring L) (n k : ℕ)
     (a : ℕ → L) (x : L) (hk : k ≤ n) (hxU : x ∈ U) (hxU' : x ∉ U') (ha : ∀ j, a j ∈ U)
@@ -220,10 +208,6 @@ private lemma valuation_sum_lower_div_pow_eq_one_and_lt_one {L : Type} [Field L]
       _ = U'.valuation x⁻¹ ^ (k - j) := one_mul _
       _ < 1 := pow_lt_one₀ zero_le' hxinv' (by omega)
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
-open Finset in
-open scoped Pointwise in
 variable {F L : Type} [Field F] [Field L] [Algebra F L] in
 private lemma sum_lower_div_pow_mem_of_normalized_relation {L : Type} [Field L] (U : ValuationSubring L) (n k : ℕ) (a : ℕ → L)
     (z : L) (hz : z ≠ 0) (hk : k ≤ n) (ha : ∀ j, a j ∈ U) (hak : a k = 1)
@@ -252,10 +236,6 @@ private lemma sum_lower_div_pow_mem_of_normalized_relation {L : Type} [Field L] 
     rw [this]
     exact mul_mem (ha j) (pow_mem hzinv _)
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
-open Finset in
-open scoped Pointwise in
 variable {F L : Type} [Field F] [Field L] [Algebra F L] in
 private lemma mem_of_mem_of_inv_core_mem [FiniteDimensional F L] (W₁ W₂ U U' : ValuationSubring L)
     (hUW₁ : ∀ f : F, algebraMap F L f ∈ U → algebraMap F L f ∈ W₁)
@@ -291,12 +271,7 @@ private lemma mem_of_mem_of_inv_core_mem [FiniteDimensional F L] (W₁ W₂ U U'
   exact (valuation_lt_one_iff_inv_not_mem' U' s hs0).1 h2 (hcen s hsS hs0 hsU)
 
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
-open Finset in
-open scoped Pointwise in
 variable {F L : Type} [Field F] [Field L] [Algebra F L] in
-open scoped Pointwise in
 theorem _root_.GlobalTheory.KZ.ES.exists_conj_of_same_trace : ∀ (F L : Type) [Field F] [Field L]
     [Algebra F L] [FiniteDimensional F L] [IsGalois F L] (W₁ W₂ : ValuationSubring L),
     (∀ a : F, algebraMap F L a ∈ W₁ ↔ algebraMap F L a ∈ W₂) →

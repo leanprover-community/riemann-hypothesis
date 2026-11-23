@@ -76,7 +76,6 @@ theorem cycMem (l : ℕ) [Fact l.Prime] (Lp : LocPrime l) (K : FinExt l) (LL : T
   exact h
 
 
-open GlobalTheory.CompanionTheory.LocDual.Lat in
 theorem dualLat : ∀ (l : ℕ) [Fact l.Prime] (Lp : LocPrime l) (K : FinExt l), cycIntCore (Lp.PD K) ∧ ∀ (LL : Type) [Field LL] [Algebra ℚ_[l] LL] [TopologicalSpace LL] (O : Type) [CommRing O] [Algebra O LL], GoodO (Qp := ℚ_[l]) LL O → ∀ (A A' : GRep ↥(GK K) ℚ_[l] LL O) (P : A.V →ₗ[LL] A'.V →ₗ[LL] LL), IsDual1 (Lp.PD K) A.ρ A'.ρ P → ∃ (LA : Lattice (O := O) A.ρ) (LA' : Lattice (O := O) A'.ρ), IsDualLat1 (Lp.PD K) LA LA' P ∧ IsDualLat1 (Lp.PD K) LA' LA P.flip := by
   intro l _ Lp K
   haveI : CompactSpace ↥(GK K) := by

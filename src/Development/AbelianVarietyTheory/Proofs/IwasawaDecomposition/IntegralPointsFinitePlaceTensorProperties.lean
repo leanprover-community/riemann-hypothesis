@@ -70,8 +70,6 @@ theorem eq_sum {d : ℕ} (b : Module.Basis (Fin d) F E) (R : Type) [CommRing R] 
 
 variable {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F))
 
-open NumberField IsDedekindDomain MeasureTheory Topology in
-open scoped TensorProduct NNReal ENNReal in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] in
 variable {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) in
 private theorem mem_intV_iff_basis_repr_mem_integers (y : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v ⊗[F] E) :
@@ -81,8 +79,6 @@ private theorem mem_intV_iff_basis_repr_mem_integers (y : _root_.Formalism.MainN
   unfold _root_.GlobalTheory.GaugeEx.intV
   rfl
 
-open NumberField IsDedekindDomain MeasureTheory Topology in
-open scoped TensorProduct NNReal ENNReal in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] in
 variable {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) in
 theorem _root_.GlobalTheory.GaugeEx.IntBasis.tmul_mem {r : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v}
@@ -95,8 +91,6 @@ theorem _root_.GlobalTheory.GaugeEx.IntBasis.tmul_mem {r : _root_.Formalism.Main
     smul_eq_mul]
   exact mul_mem hr (he k)
 
-open NumberField IsDedekindDomain MeasureTheory Topology in
-open scoped TensorProduct NNReal ENNReal in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] in
 variable {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) in
 theorem _root_.GlobalTheory.GaugeEx.IntBasis.sum_mem' {ι : Type} (s : Finset ι)
@@ -127,8 +121,6 @@ theorem compact_open : IsCompact (intV b v) ∧ IsOpen (intV b v) := by
   exact ⟨e.isCompact_preimage.2 (isCompact_univ_pi fun _ => hc),
     (isOpen_set_pi Set.finite_univ fun _ _ => ho).preimage e.continuous⟩
 
-open NumberField IsDedekindDomain MeasureTheory Topology in
-open scoped TensorProduct NNReal ENNReal in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] in
 variable {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) in
 private theorem eventually_basis_repr_mem_adicCompletionIntegers {ι : Type} [Finite ι] (e : ι → E) :
@@ -136,8 +128,6 @@ private theorem eventually_basis_repr_mem_adicCompletionIntegers {ι : Type} [Fi
       ∀ i k, algebraMap F (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F w) (b.repr (e i) k) ∈ w.adicCompletionIntegers F :=
   Filter.eventually_all.2 fun i => _root_.GlobalTheory.GaugeEx.IntBasis.ev_int_coord b (e i)
 
-open NumberField IsDedekindDomain MeasureTheory Topology in
-open scoped TensorProduct NNReal ENNReal in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] in
 variable {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) in
 private theorem eq_sum_basis_repr_tmul_basis (y : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v ⊗[F] E) :
@@ -145,8 +135,6 @@ private theorem eq_sum_basis_repr_tmul_basis (y : _root_.Formalism.MainNotions.G
   conv_lhs => rw [← (Algebra.TensorProduct.basis (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) b).sum_repr y]
   simp only [Algebra.TensorProduct.basis_apply, TensorProduct.smul_tmul', smul_eq_mul, mul_one]
 
-open NumberField IsDedekindDomain MeasureTheory Topology in
-open scoped TensorProduct NNReal ENNReal in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] in
 variable {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) in
 private theorem zero_mem_intV : (0 : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v ⊗[F] E) ∈ _root_.GlobalTheory.GaugeEx.intV b v := by
@@ -155,8 +143,6 @@ private theorem zero_mem_intV : (0 : _root_.Formalism.MainNotions.GlobalTheoryTh
   rw [map_zero, Finsupp.zero_apply]
   exact zero_mem _
 
-open NumberField IsDedekindDomain MeasureTheory Topology in
-open scoped TensorProduct NNReal ENNReal in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] in
 variable {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) in
 private theorem add_mem_intV {y z : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v ⊗[F] E}
@@ -167,8 +153,6 @@ private theorem add_mem_intV {y z : _root_.Formalism.MainNotions.GlobalTheoryThe
   rw [map_add (f := _), Finsupp.add_apply]
   exact add_mem (hy k) (hz k)
 
-open NumberField IsDedekindDomain MeasureTheory Topology in
-open scoped TensorProduct NNReal ENNReal in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] in
 variable {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) in
 private theorem intV_subset_intV_of_basis_repr_integral {d' : ℕ} (b' : Module.Basis (Fin d') F E)
@@ -180,8 +164,6 @@ private theorem intV_subset_intV_of_basis_repr_integral {d' : ℕ} (b' : Module.
     _root_.GlobalTheory.GaugeEx.IntBasis.tmul_mem b' v
       ((mem_intV_iff_basis_repr_mem_integers b v y).1 hy i) (h i)
 
-open NumberField IsDedekindDomain MeasureTheory Topology in
-open scoped TensorProduct NNReal ENNReal in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] in
 variable {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) in
 theorem _root_.GlobalTheory.GaugeEx.IntBasis.main : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), ∀ (d : ℕ) (b : Module.Basis (Fin d) F E), (∀ v : HeightOneSpectrum (𝓞 F), IsCompact (_root_.GlobalTheory.GaugeEx.intV b v) ∧ IsOpen (_root_.GlobalTheory.GaugeEx.intV b v)) ∧ (∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, (1 : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v ⊗[F] E) ∈ _root_.GlobalTheory.GaugeEx.intV b v ∧ (∀ y ∈ _root_.GlobalTheory.GaugeEx.intV b v, ∀ z ∈ _root_.GlobalTheory.GaugeEx.intV b v, y * z ∈ _root_.GlobalTheory.GaugeEx.intV b v) ∧ ∀ y ∈ _root_.GlobalTheory.GaugeEx.intV b v, _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) σ y ∈ _root_.GlobalTheory.GaugeEx.intV b v) ∧ (∀ z : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F ⊗[F] E, ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, _root_.GlobalTheory.GaugeEx.prV v z ∈ _root_.GlobalTheory.GaugeEx.intV b v) ∧ ∀ (d' : ℕ) (b' : Module.Basis (Fin d') F E), ∀ᶠ v : HeightOneSpectrum (𝓞 F) in Filter.cofinite, _root_.GlobalTheory.GaugeEx.intV b v = _root_.GlobalTheory.GaugeEx.intV b' v := by

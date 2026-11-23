@@ -35,7 +35,6 @@ open GlobalTheory.Unf GlobalTheory.Grow GlobalTheory.FinPl ValuativeRel IsLocalR
 open scoped TensorProduct Pointwise
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.AdForm
-open GlobalTheory.AdForm
 
 
 theorem _root_.GlobalTheory.T.mem_integralVectors_component_iff_integral_frame_coords : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

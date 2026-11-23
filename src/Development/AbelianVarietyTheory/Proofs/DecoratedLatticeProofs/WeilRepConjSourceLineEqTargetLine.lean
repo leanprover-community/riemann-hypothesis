@@ -221,7 +221,6 @@ end GlobalTheory.ConjLine
 
 noncomputable section
 namespace GlobalTheory.ConjLine
-open GlobalTheory.Mem.Isom GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger
 variable {D : D7}
 
 theorem trW_cj (L L' S : HSp D) (τ : Matrix (Fin L.rank) (Fin L'.rank) D.host.E) (hr : L.rank = L'.rank)

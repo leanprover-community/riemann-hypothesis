@@ -133,7 +133,6 @@ end GlobalTheory.BallSum
 
 namespace GlobalTheory.BallSum
 
-open ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
@@ -202,7 +201,6 @@ end GlobalTheory.BallSum
 
 namespace GlobalTheory.BallSum
 
-open ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
 
 theorem const_le (f r : ℕ) : (4 * (f : ℝ) * (r : ℝ) ^ 2 + 1) * ((f : ℝ) * (3 * (r : ℝ) * Real.log 2)) ≤
     15 * ((f : ℝ) * r) ^ 8 := by

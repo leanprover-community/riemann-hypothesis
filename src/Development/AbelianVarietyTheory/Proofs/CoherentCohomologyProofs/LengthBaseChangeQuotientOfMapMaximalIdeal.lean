@@ -187,7 +187,6 @@ end DVR
 
 section Uniformizer
 
-open IsDiscreteValuationRing hiding maximalIdeal
 
 variable {R S : Type*} [CommRing R] [CommRing S] [IsDomain R] [IsDomain S]
   [IsDiscreteValuationRing R] [IsDiscreteValuationRing S] [Algebra R S] [FaithfulSMul R S]

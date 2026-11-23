@@ -208,7 +208,6 @@ end GlobalTheory.AddJet
 
 namespace GlobalTheory.AddJet
 
-open MvPowerSeries Formalism.L2.KerInert.Jet
 
 section Deriv
 
@@ -297,9 +296,6 @@ end GlobalTheory.AddJet
 
 namespace GlobalTheory.AddJet
 
-open MvPowerSeries Formalism.L2.KerInert.Jet Formalism.L2.Th1.D.Pair
-open Formalism.InvariantFactorPaths.G7 (lgF at1 Simeq DivAB d1 swap2 cob)
-open Formalism.L2.Th1.D (expF IsMul addC)
 
 section Main
 

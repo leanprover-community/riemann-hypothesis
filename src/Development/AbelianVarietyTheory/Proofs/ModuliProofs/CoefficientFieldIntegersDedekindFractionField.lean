@@ -81,8 +81,6 @@ private theorem isIntegral_one_add_rt0_div_two (H : _root_.ReciprocityTheory.Cha
     Polynomial.eval₂_C, Polynomial.eval₂_natCast, eq_intCast, Int.cast_natCast]
   linear_combination (1 / 4 : ℂ) * H.sqrt_neg_disc_sq + (1 / 4 : ℂ) * hkC
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private theorem exists_isInc_of_le_range {R : Type} [CommRing R] (g : R →+* ℂ)
     (hg : Function.Injective g) (S : Subring ℂ) (hS : S ≤ g.range) :
@@ -92,8 +90,6 @@ private theorem exists_isInc_of_le_range {R : Type} [CommRing R] (g : R →+* �
   refine ⟨e.symm.toRingHom.comp (Subring.inclusion hS), fun x => ?_⟩
   exact congrArg Subtype.val (e.apply_symm_apply ⟨x, hS x.2⟩)
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private theorem natCast_inv_mem_of_coprime (W : ValuationSubring ℂ) {p n : ℕ}
     (hpW : (p : ℂ) ∈ W.nonunits) (hn : n.Coprime p) : (n : ℂ)⁻¹ ∈ W := by
@@ -113,8 +109,6 @@ private theorem natCast_inv_mem_of_coprime (W : ValuationSubring ℂ) {p n : ℕ
     exact lt_irrefl _ this
   exact W.mem_of_valuation_le_one _ (by rw [map_inv₀, hn1, inv_one])
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private theorem mem_valuationSubring_of_isIntegral_moduli {K : Type} [Field K] (V : ValuationSubring K)
     {x : K} (hx : IsIntegral ℤ x) : x ∈ V := by
@@ -123,8 +117,6 @@ private theorem mem_valuationSubring_of_isIntegral_moduli {K : Type} [Field K] (
   rw [← hy]
   exact y.2
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private theorem isDedekindDomain_valuationSubring_of_not_isUnit_natCast {K : Type} [Field K] [NumberField K]
     (V : ValuationSubring K) (p : ℕ) (hp : p ≠ 0) (hpV : ¬ IsUnit (p : V)) :
@@ -205,8 +197,6 @@ private theorem isDedekindDomain_valuationSubring_of_not_isUnit_natCast {K : Typ
   exact IsLocalization.isDedekindDomain (𝓞 K) hM V
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.CoeffRings.coeff_isDedFrac : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (c : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Coeff l), _root_.GlobalTheory.Models.IsDedFrac (algebraMap (𝓞 c.F) c.F) ∧ Algebra.FiniteType ℤ (𝓞 c.F) ∧ (∀ A : ℕ, A ∣ l.A → ∃ b : _root_.GlobalTheory.Models.RZ H 1 A →+* 𝓞 c.F, _root_.GlobalTheory.Models.IsInc (_root_.GlobalTheory.Models.RZ H 1 A).subtype (c.F.val.toRingHom.comp (algebraMap (𝓞 c.F) c.F)) b) ∧ ∀ (p : ℕ) (W : ValuationSubring ℂ), p.Prime → (p : ℂ) ∈ W.nonunits → _root_.GlobalTheory.Models.IsDedFrac (c.V W).subtype ∧ (∀ n : ℕ, n.Coprime p → IsUnit (n : c.V W)) ∧ ∀ S A : ℕ, S.Coprime p → 0 < A → _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.zeta A ∈ c.F → ∃ b : _root_.GlobalTheory.Models.RZ H S A →+* c.V W, _root_.GlobalTheory.Models.IsInc (_root_.GlobalTheory.Models.RZ H S A).subtype (c.F.val.toRingHom.comp (c.V W).subtype) b := by
   intro E _ _ _ H l c

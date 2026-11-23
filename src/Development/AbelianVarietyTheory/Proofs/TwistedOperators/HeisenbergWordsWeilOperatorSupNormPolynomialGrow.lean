@@ -90,7 +90,6 @@ end GlobalTheory.WeilWordGrowth
 
 namespace GlobalTheory.WeilWordGrowth
 
-open GlobalTheory.Size
 
 theorem om_pointwise (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χS χT : (AE D)ˣ →* Circle)
     (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (hω : IsWeilDatumO ψ V W χS χT ω) (θ : InfFam D)
@@ -302,7 +301,6 @@ end GlobalTheory.WeilWordGrowth
 
 namespace GlobalTheory.WeilWordGrowth
 
-open GlobalTheory.Size
 
 theorem sup_words_growth : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)), IsWeilDatumO ψ V W χS χT ω → ∀ θ : InfFam D, IsInfFam θ → ∀ d : ℕ, ∃ A : ℕ, ∀ f, IsThetaFunO ψ V W f → ∃ c : ℝ, ∀ (g : GA D V) (h : GA D W), GlobalTheory.Size.wordSum (GlobalTheory.Size.heisDer ψ θ) (fun φ : WO V W → ℂ => ⨆ w, ‖φ w‖ₑ) d (ω (g, h) f) ≤ ENNReal.ofReal (c * (GlobalTheory.Grow.height V g * GlobalTheory.Grow.height W h) ^ A) := by
   intro D ψ V W χS χT ω hω θ hθ d

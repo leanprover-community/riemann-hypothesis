@@ -54,24 +54,18 @@ theorem _root_.GlobalTheory.SW.TwistAdm.nat_smul_mem (Λ : _root_.GlobalTheory.S
     {v : Fin n → E} (h : v ∈ Λ) : (k : E) • v ∈ Λ :=
   _root_.GlobalTheory.SW.Base.nat_smul_mem Λ k h
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.TwistAdm.single_mem_std (a : Fin N) :
     (Pi.single a 1 : Fin N → E) ∈ _root_.GlobalTheory.SW.stdL E N := by
   unfold _root_.GlobalTheory.SW.stdL
   exact Submodule.subset_span ⟨a, rfl⟩
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.TwistAdm.col_eq (x : Matrix (Fin n) (Fin N) E) (a : Fin N) :
     xᵀ a = x *ᵥ Pi.single a 1 := by
   ext i
   simp [Matrix.mulVec_single]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.TwistAdm.colsIn_mulVec {Λ : _root_.GlobalTheory.SW.Lt E n}
     {y : Matrix (Fin n) (Fin N) E} (h : _root_.GlobalTheory.SW.ColsIn Λ y)
@@ -90,16 +84,12 @@ theorem _root_.GlobalTheory.SW.TwistAdm.colsIn_mulVec {Λ : _root_.GlobalTheory.
     rw [Matrix.mulVec_smul]
     exact Λ.smul_mem r hw
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.TwistAdm.mem_of_coprime (Λ : _root_.GlobalTheory.SW.Lt E n) {u w : ℕ}
     (h : u.Coprime w) {v : Fin n → E}
     (hu : (u : E) • v ∈ Λ) (hw : (w : E) • v ∈ Λ) : v ∈ Λ :=
   _root_.GlobalTheory.SW.Base.mem_of_coprime Λ h hu hw
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.TwistAdm.relIndex_ne_zero (A B : _root_.GlobalTheory.SW.Lt E N)
     (hB : B.FG) {t : ℕ} (ht : 0 < t)
@@ -126,15 +116,11 @@ theorem _root_.GlobalTheory.SW.TwistAdm.relIndex_ne_zero (A B : _root_.GlobalThe
       exact ⟨Submodule.Quotient.mk x, rfl⟩)
   exact @AddSubgroup.index_ne_zero_of_finite _ _ _ this
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.TwistAdm.std_fg : (_root_.GlobalTheory.SW.stdL E N).FG := by
   unfold _root_.GlobalTheory.SW.stdL
   exact Submodule.fg_span (Set.finite_range _)
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.TwistAdm.cols_of_cond {R s : ℕ} {𝔛 : _root_.GlobalTheory.SW.Lt E N}
     {Λ : _root_.GlobalTheory.SW.Lt E n} {x : Matrix (Fin n) (Fin N) E}
@@ -151,8 +137,6 @@ theorem _root_.GlobalTheory.SW.TwistAdm.cols_of_cond {R s : ℕ} {𝔛 : _root_.
 
 variable [IsCMField E]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable [IsCMField E] in
 omit [IsCMField E] in
@@ -174,8 +158,6 @@ theorem _root_.GlobalTheory.SW.TwistAdm.exists_mult {M R : ℕ} (hR : 0 < R)
       le_antisymm hle (Nat.one_le_iff_ne_zero.mpr (pow_ne_zero 2 hR.ne'))
     exact ⟨s, by rw [hR1]; exact Nat.modEq_one, hstd⟩
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable [IsCMField E] in
 omit [IsCMField E] in
@@ -193,8 +175,6 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_eq {R : ℕ} {𝔛 : _root_.Global
     simp only [_root_.GlobalTheory.SW.twist]
     rw [dite_eq_right (fun h' => h h'.1)]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable [IsCMField E] in
 private theorem adm_apply_add_mul_intCast_smul {M R : ℕ} {φ : _root_.GlobalTheory.SW.Fam E n N}
@@ -217,8 +197,6 @@ private theorem adm_apply_add_mul_intCast_smul {M R : ℕ} {φ : _root_.GlobalTh
     rw [add_assoc, ← add_smul]
     simp
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable [IsCMField E] in
 private theorem adm_apply_mul_congr_one_mod_sq {M R : ℕ} {φ : _root_.GlobalTheory.SW.Fam E n N}
@@ -239,8 +217,6 @@ private theorem adm_apply_mul_congr_one_mod_sq {M R : ℕ} {φ : _root_.GlobalTh
   congr 1
   simp only [e, add_smul, mul_smul]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable [IsCMField E] in
 theorem _root_.GlobalTheory.SW.TwistAdm.twist_val {M R : ℕ} {φ : _root_.GlobalTheory.SW.Fam E n N}
@@ -257,8 +233,6 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_val {M R : ℕ} {φ : _root_.Globa
   rw [← adm_apply_mul_congr_one_mod_sq hφ hΛ x hs hc0, Nat.mul_comm hex.choose s,
     adm_apply_mul_congr_one_mod_sq hφ hΛ x hex.choose_spec.1 hx]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable [IsCMField E] in
 theorem _root_.GlobalTheory.SW.TwistAdm.twist_level {M R : ℕ}
@@ -324,8 +298,6 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_level {M R : ℕ}
       exact hφ.per Λ hΛ _ _ hcols
     · rw [if_neg (mt hiff.mp hc), if_neg hc]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable [IsCMField E] in
 theorem _root_.GlobalTheory.SW.TwistAdm.twist_adm {M R : ℕ}
@@ -390,8 +362,6 @@ theorem _root_.GlobalTheory.SW.TwistAdm.twist_adm {M R : ℕ}
 end GlobalTheory.SW.TwistAdm
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 theorem _root_.GlobalTheory.SW.twist_admissible : ∀ (E : Type) [Field E]
     [NumberField E] [IsCMField E] (n N M R : ℕ) (φ : _root_.GlobalTheory.SW.Fam E n N)
     (𝔛 : _root_.GlobalTheory.SW.Lt E N), _root_.GlobalTheory.SW.admitted M R φ → 𝔛.FG →

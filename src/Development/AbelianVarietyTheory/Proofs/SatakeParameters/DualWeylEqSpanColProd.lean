@@ -239,7 +239,6 @@ theorem dualWeyl_eq_span_colProd (R : Type) [CommRing R] [IsDomain R] (n : ℕ) 
     rw [← shapeDeg_colLen]
     exact bidetMem R n n _ _ _ _
 
-open scoped Pointwise in
 theorem tensorLat_span {R K : Type} [CommRing R] [Field K] [Algebra R K] {S : Type} [Fintype S] {n : ℕ}
     {κ : S → Type} (f : ∀ s, κ s → MvPolynomial (Fin n × Fin n) K) :
     tensorLat R K (fun s => Submodule.span R (Set.range (f s))) =

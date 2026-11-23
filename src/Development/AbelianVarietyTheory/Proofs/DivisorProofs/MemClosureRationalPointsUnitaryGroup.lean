@@ -289,7 +289,6 @@ end Transfer
 
 section Main
 
-open Matrix
 open Formalism.UG hiding sigR evalV
 
 theorem isInducing_val {R : Type} [CommRing R] [TopologicalSpace R] [IsTopologicalRing R] (σ : R →+* R)

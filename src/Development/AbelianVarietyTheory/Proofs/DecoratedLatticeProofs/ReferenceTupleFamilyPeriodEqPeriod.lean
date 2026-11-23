@@ -69,7 +69,6 @@ variable {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst
 end GlobalTheory.MiTop.TailColumnRecursion
 
 namespace GlobalTheory.MiTop.TailColumnRecursion
-open Classical
 open Formalism.L2.Forms GlobalTheory.Core.Rk.Top Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev
 variable {D : D7}
 
@@ -113,8 +112,6 @@ theorem reads_uniq {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hc
 end GlobalTheory.MiTop.TailColumnRecursion
 
 namespace GlobalTheory.MiTop.TailColumnRecursion
-open Classical
-open Formalism.L2.Forms GlobalTheory.Core.Rk.Top Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev
 variable {D : D7}
 
 theorem fic_val {bad : Set (IsDedekindDomain.HeightOneSpectrum (𝓞 D.host.F))}
@@ -152,8 +149,6 @@ theorem pos_core {κ : Type} [Fintype κ] {n : ℕ} (lam : D.what₂.Tau → Dom
 end GlobalTheory.MiTop.TailColumnRecursion
 
 namespace GlobalTheory.MiTop.TailColumnRecursion
-open Classical
-open Formalism.L2.Forms GlobalTheory.Core.Rk.Top Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev
 variable {D : D7}
 
 section G
@@ -212,8 +207,6 @@ theorem pos_0 {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).
 end GlobalTheory.MiTop.TailColumnRecursion
 
 namespace GlobalTheory.MiTop.TailColumnRecursion
-open Classical
-open Formalism.L2.Forms GlobalTheory.Core.Rk.Top Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev
 variable {D : D7}
 
 theorem domWeight_ext {n : ℕ} : ∀ a b : DomWeight n, a.w = b.w → a = b := by
@@ -249,7 +242,6 @@ theorem referenceTuple_familyPeriod_eq_period (u : D.what₂.Word) (μ : D.what�
 end GlobalTheory.MiTop.TailColumnRecursion
 
 namespace GlobalTheory.MiTop
-open Classical
 open GlobalTheory.MiTop.TailColumnRecursion Formalism.L2.Forms
 
 end GlobalTheory.MiTop

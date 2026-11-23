@@ -53,7 +53,6 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_apply (R : Type) [CommRing R] (r 
     _root_.GlobalTheory.Mem.Gelf.rowE R r n a b P = ∑ s : Fin n, X (a, s) * pderiv (b, s) P := by
   simp [_root_.GlobalTheory.Mem.Gelf.rowE, LinearMap.sum_apply]
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_X (R : Type) [CommRing R] (r n : ℕ) (a b c : Fin r) (t : Fin n) :
     _root_.GlobalTheory.Mem.Gelf.rowE R r n a b (X (c, t)) = if b = c then X (a, t) else 0 := by
   rw [_root_.GlobalTheory.Mem.GelfCheck.rowE_apply]
@@ -64,7 +63,6 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_X (R : Type) [CommRing R] (r n : 
   · have hcb : ¬c = b := fun h => hbc h.symm
     simp [hcb]
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_mul (R : Type) [CommRing R] (r n : ℕ) (a b : Fin r)
     (P Q : MvPolynomial (Fin r × Fin n) R) :
     _root_.GlobalTheory.Mem.Gelf.rowE R r n a b (P * Q) =
@@ -74,12 +72,10 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_mul (R : Type) [CommRing R] (r n 
   refine Finset.sum_congr rfl fun s _ => ?_
   ring
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_C (R : Type) [CommRing R] (r n : ℕ) (a b : Fin r) (x : R) :
     _root_.GlobalTheory.Mem.Gelf.rowE R r n a b (C x) = 0 := by
   simp [_root_.GlobalTheory.Mem.GelfCheck.rowE_apply]
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.Mem.GelfCheck.glRel_rowE (R : Type) [CommRing R] (r n : ℕ) :
     _root_.GlobalTheory.Mem.Gelf.GlRel (_root_.GlobalTheory.Mem.Gelf.rowE R r n) := by
   intro a b c d
@@ -103,7 +99,6 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.glRel_rowE (R : Type) [CommRing R] (r 
       simp_all [_root_.GlobalTheory.Mem.GelfCheck.rowE_mul, _root_.GlobalTheory.Mem.GelfCheck.rowE_X] <;>
       linear_combination hp * X _
 
-open MvPolynomial in
 private theorem gradedWeyl_gen_coeff_one_and_coeff_zero (R : Type) [CommRing R] (r n : ℕ) (a b : Fin r)
     (P : MvPolynomial (Fin r × Fin n) R) :
     (_root_.Formalism.GradedWeylDivisibility.rowGen R a b P).coeff 1 = ∑ s : Fin n, X (a, s) * pderiv (b, s) P ∧
@@ -139,7 +134,6 @@ private theorem gradedWeyl_gen_coeff_one_and_coeff_zero (R : Type) [CommRing R] 
     · simp [Pi.single_apply, Prod.ext_iff, hib, Polynomial.coeff_mul_C, hp0, hp1, Finset.sum_mul]
       exact Finset.sum_congr rfl fun _ _ => by ring
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv (R : Type) [CommRing R] (r n : ℕ) (a b : Fin r)
     (P : MvPolynomial (Fin r × Fin n) R) :
     _root_.GlobalTheory.Mem.Gelf.rowE R r n a b P = _root_.Formalism.GradedWeylDivisibility.rowDiv R a b 1 P ∧ _root_.Formalism.GradedWeylDivisibility.rowDiv R a b 0 P = P := by
@@ -147,7 +141,6 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.rowE_eq_rowDiv (R : Type) [CommRing R]
   rw [_root_.GlobalTheory.Mem.GelfCheck.rowE_apply]
   exact ⟨by unfold _root_.Formalism.GradedWeylDivisibility.rowDiv; exact h1.symm, by unfold _root_.Formalism.GradedWeylDivisibility.rowDiv; exact h0⟩
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.Mem.GelfCheck.gelfA_eq_Amat {N : ℕ} (μ : Fin N → ℂ) :
     _root_.GlobalTheory.Mem.Gelf.gelfA μ = _root_.Formalism.REAL.Amat (_root_.Formalism.REAL.lsh μ) := by
   ext a b
@@ -164,7 +157,6 @@ theorem _root_.GlobalTheory.Mem.GelfCheck.gelfA_eq_Amat {N : ℕ} (μ : Fin N �
 section
 variable {A : Type} [Ring A] {N : ℕ} {E : Matrix (Fin N) (Fin N) A}
 
-open MvPolynomial in
 variable {A : Type} [Ring A] {N : ℕ} {E : Matrix (Fin N) (Fin N) A} in
 theorem _root_.GlobalTheory.Mem.GelfCheck.pow_cov (h : _root_.GlobalTheory.Mem.Gelf.GlRel E) (k : ℕ)
     (a b c d : Fin N) :
@@ -197,7 +189,6 @@ section
 variable {R : Type} [CommRing R] {V : Type} [AddCommGroup V] [Module R V] {N : ℕ}
   {E : Matrix (Fin N) (Fin N) (Module.End R V)} {μ : Fin N → R} {v : V}
 
-open MvPolynomial in
 variable {R : Type} [CommRing R] {V : Type} [AddCommGroup V] [Module R V] {N : ℕ}
   {E : Matrix (Fin N) (Fin N) (Module.End R V)} {μ : Fin N → R} {v : V} in
 theorem _root_.GlobalTheory.Mem.GelfCheck.trace_pow_apply (h : _root_.GlobalTheory.Mem.Gelf.GlRel E)

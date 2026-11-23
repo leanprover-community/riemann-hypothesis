@@ -101,7 +101,6 @@ theorem zcl_mono {S T : Set (Mat C N)} (h : S ⊆ T) : Zcl S ⊆ Zcl T :=
 end LateralTheory.DivDb.KeyPf
 
 namespace LateralTheory.DivDb.KeyPf
-open LateralTheory.DivDb
 variable {C : Type} [Field C] {N n : ℕ}
 
 theorem sys_conj {p : Fin n → Mat C N} (hS : Sys p) (R Ri : Mat C N) (h1 : ∀ X, R * (Ri * X) = X)

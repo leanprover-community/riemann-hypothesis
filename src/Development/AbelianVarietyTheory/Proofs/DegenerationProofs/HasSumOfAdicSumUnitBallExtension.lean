@@ -66,7 +66,6 @@ private lemma exists_norm_le_mul_of_mem_ideal_smul_fg {R C : Type} [CommRing R] 
   · intro a b ha hb
     exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ha hb)
 
-open Filter Topology in
 private lemma exists_uniform_norm_bound_lt_one_of_fg {R C : Type} [CommRing R] [NormedField C]
     [IsUltrametricDist C] (φ : R →+* C) (hφ : ∀ r, ‖φ r‖ ≤ 1) {I : Ideal R} (hfg : I.FG)
     (hI : ∀ r ∈ I, ‖φ r‖ < 1) : ∃ c : ℝ, 0 ≤ c ∧ c < 1 ∧ ∀ r ∈ I, ‖φ r‖ ≤ c := by
@@ -90,7 +89,6 @@ private lemma exists_uniform_norm_bound_lt_one_of_fg {R C : Type} [CommRing R] [
       rw [smul_eq_mul, map_mul, norm_mul]
       exact (mul_le_of_le_one_left (norm_nonneg _) (hφ a)).trans hb
 
-open Filter Topology in
 private lemma hasSum_of_norm_sub_le_geometric {Ix E : Type} [NormedAddCommGroup E]
     {x : Ix → E} {s : E} {c M : ℝ} (hc0 : 0 ≤ c) (hc1 : c < 1)
     (h : ∀ n : ℕ, ∃ S : Finset Ix, ∀ T : Finset Ix, S ⊆ T → ‖s - ∑ i ∈ T, x i‖ ≤ c ^ n * M) :
@@ -106,7 +104,6 @@ private lemma hasSum_of_norm_sub_le_geometric {Ix E : Type} [NormedAddCommGroup 
   rw [dist_eq_norm, norm_sub_rev]
   exact (hS T hT).trans_lt hn
 
-open Filter Topology in
 private lemma norm_le_pow_of_mem_ideal_pow {R C : Type} [CommRing R] [NormedField C]
     [IsUltrametricDist C] (φ : R →+* C) (hφ : ∀ r, ‖φ r‖ ≤ 1) {I : Ideal R} {c : ℝ}
     (hc0 : 0 ≤ c) (hI : ∀ r ∈ I, ‖φ r‖ ≤ c) : ∀ n : ℕ, ∀ r ∈ I ^ n, ‖φ r‖ ≤ c ^ n := by
@@ -125,7 +122,6 @@ private lemma norm_le_pow_of_mem_ideal_pow {R C : Type} [CommRing R] [NormedFiel
       exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ha hb)
 
 
-open Filter Topology in
 theorem _root_.GlobalTheory.Ex.AdicNormSum.main : ∀ (R : Type) [CommRing R] [IsDomain R]
     [IsNoetherianRing R] (I : Ideal R) (C : Type) [NormedField C] [IsUltrametricDist C]
     [Algebra (FractionRing R) C], _root_.GlobalTheory.Ex.CExt R I C → ∀ (Ix : Type) (x : Ix → C)

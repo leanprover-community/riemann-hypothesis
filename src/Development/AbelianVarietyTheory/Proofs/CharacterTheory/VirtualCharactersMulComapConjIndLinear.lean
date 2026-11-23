@@ -54,7 +54,6 @@ theorem _root_.GlobalTheory.BI.isChar_mem_virt_complex {G : Type} [Group G] {χ 
     (h : _root_.GlobalTheory.BI.IsChar ℂ ℂ χ) : χ ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ G :=
   AddSubgroup.subset_closure h
 
-open Polynomial in
 theorem _root_.GlobalTheory.BI.isChar_mul_complex {G : Type} [Group G] {a b : G → ℂ}
     (ha : _root_.GlobalTheory.BI.IsChar ℂ ℂ a) (hb : _root_.GlobalTheory.BI.IsChar ℂ ℂ b) :
     _root_.GlobalTheory.BI.IsChar ℂ ℂ (a * b) := by
@@ -65,7 +64,6 @@ theorem _root_.GlobalTheory.BI.isChar_mul_complex {G : Type} [Group G] {a b : G 
   funext g
   simp [Representation.char_tensor, hρ, hσ]
 
-open Polynomial in
 private lemma trace_mulLeft_complex_lemma (z : ℂ) :
     LinearMap.trace ℂ ℂ (Algebra.lmul ℂ ℂ z) = z := by
   have hz : (Algebra.lmul ℂ ℂ z : ℂ →ₗ[ℂ] ℂ) = z • LinearMap.id := by
@@ -74,7 +72,6 @@ private lemma trace_mulLeft_complex_lemma (z : ℂ) :
   rw [hz, map_smul, LinearMap.trace_id]
   simp
 
-open Polynomial in
 theorem _root_.GlobalTheory.BI.isChar_monoidHom_complex {G : Type} [Group G] (lam : G →* ℂˣ) :
     _root_.GlobalTheory.BI.IsChar ℂ ℂ (fun g => (lam g : ℂ)) := by
   let ρ : Representation ℂ G ℂ :=
@@ -84,7 +81,6 @@ theorem _root_.GlobalTheory.BI.isChar_monoidHom_complex {G : Type} [Group G] (la
   funext g
   simpa [ρ, Representation.character] using (trace_mulLeft_complex_lemma (lam g : ℂ)).symm
 
-open Polynomial in
 theorem _root_.GlobalTheory.BI.subgroupFunctionExtendByZero_add {G : Type} [Group G] (H : Subgroup G) (a b : H → ℂ)
     (g : G) :
     _root_.GlobalTheory.BI.ext0 H (a + b) g =
@@ -99,7 +95,6 @@ noncomputable def indAddHomComplex {G : Type} [Group G] [Finite G] (H : Subgroup
     simp only [ind, Pi.add_apply, subgroupFunctionExtendByZero_add, finsum_eq_sum_of_fintype, Finset.sum_add_distrib, mul_add])
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.BI.virt_mul_comap_conj_ind_linear : ∀ (G : Type) [Group G] [Finite G],
     (∀ a ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ G, ∀ b ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ G,
       a * b ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ G) ∧

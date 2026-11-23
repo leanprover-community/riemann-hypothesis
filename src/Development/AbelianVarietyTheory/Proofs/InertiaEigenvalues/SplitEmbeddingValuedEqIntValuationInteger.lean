@@ -256,7 +256,6 @@ end GlobalTheory.SplitIdeleModulus
 
 namespace GlobalTheory.SplitIdeleModulus
 
-open Formalism.L2.NTheta (IsIdemAt)
 
 variable {D : D7}
 

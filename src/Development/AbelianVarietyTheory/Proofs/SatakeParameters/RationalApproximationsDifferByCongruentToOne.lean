@@ -108,9 +108,7 @@ end GlobalTheory.TwU.CongTwo
 
 namespace GlobalTheory.TwU.CongTwo
 
-open NumberField IsDedekindDomain Matrix Formalism.L2.Col
 open Formalism.L2.DIV (AfE)
-open scoped TensorProduct
 
 theorem intAt_inv_mul_of_nearAt {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {N : ℕ}
     (P : HeightOneSpectrum (𝓞 E)) (n : ℕ) (x : GL (Fin N) (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) (g₁ g₂ : GL (Fin N) E) :

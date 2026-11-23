@@ -79,7 +79,6 @@ end GlobalTheory.PiTensorCommute
 
 namespace GlobalTheory.PiTensorCommute
 
-open Module
 
 variable {ι : Type} [Fintype ι]
 variable {V W : ι → Type} [∀ τ, AddCommGroup (V τ)] [∀ τ, Module ℂ (V τ)]
@@ -165,7 +164,6 @@ end GlobalTheory.PiTensorCommute
 
 namespace GlobalTheory.PiTensorCommute
 
-open Module
 
 def commDefect {X Y : Type} [AddCommGroup X] [Module ℂ X] [AddCommGroup Y] [Module ℂ Y]
     (p : (X →ₗ[ℂ] X) × (Y →ₗ[ℂ] Y)) : (X →ₗ[ℂ] Y) →ₗ[ℂ] (X →ₗ[ℂ] Y) where
@@ -309,7 +307,6 @@ end GlobalTheory.PiTensorCommute
 
 namespace GlobalTheory.PiTensorCommute
 
-open Module
 
 theorem mem_span_map_of_commute :
     ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (V W : ι → Type) [∀ τ, AddCommGroup (V τ)]

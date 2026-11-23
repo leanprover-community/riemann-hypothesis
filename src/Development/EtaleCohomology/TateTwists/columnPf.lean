@@ -129,7 +129,6 @@ theorem LateralTheory.EtaleFoundations.acyc.column_of_cut (hL : lift) (hK : kill
   · have : IsEmpty V := not_nonempty_iff.1 hV
     exact loc_empty V _
 
-open LateralTheory.EtaleFoundations.columnPf in
 theorem LateralTheory.EtaleFoundations.columnPf.kill_of : kill := by
   classical
   intro R _ C P hC V s x' hflat hx'

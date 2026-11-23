@@ -103,7 +103,6 @@ theorem maxOver {A X B Z : CommRingCat.{0}} (x : A ⟶ X) (b : A ⟶ B) (u : X �
     exact Ideal.isMaximal_of_isIntegral_of_isMaximal_comap b.hom hb (M.comap v.hom) hA'
   exact ⟨hXe.symm.le, (IsLocalRing.eq_maximalIdeal hB).symm.le⟩
 
-open IsLocalRing in
 theorem locHom_of_int {A B : Type} [CommRing A] [CommRing B] [IsLocalRing A] [IsLocalRing B] (b : A →+* B)
     (hb : b.IsIntegral) : IsLocalHom b := by
   have hm : ((maximalIdeal B).comap b).IsMaximal := by
@@ -116,7 +115,6 @@ theorem locHom_of_int {A B : Type} [CommRing A] [CommRing B] [IsLocalRing A] [Is
   have : a ∈ (maximalIdeal B).comap b := by rw [he]; exact hna
   exact (IsLocalRing.mem_maximalIdeal _).mp this ha
 
-open IsLocalRing in
 theorem resInt {A B : Type} [CommRing A] [CommRing B] [IsLocalRing A] [IsLocalRing B] (b : A →+* B)
     (hb : b.IsIntegral) [IsLocalHom b] : (ResidueField.map b).IsIntegral := by
   intro y
@@ -127,7 +125,6 @@ theorem resInt {A B : Type} [CommRing A] [CommRing B] [IsLocalRing A] [IsLocalRi
   refine ⟨p.map (residue A), hpm.map _, ?_⟩
   rw [Polynomial.eval₂_map, hc, ← Polynomial.hom_eval₂, hp, map_zero]
 
-open IsLocalRing in
 theorem nontriv {A X B Z : CommRingCat.{0}} (x : A ⟶ X) (b : A ⟶ B) (u : X ⟶ Z) (v : B ⟶ Z) (hp : IsPushout x b u v)
     [IsLocalRing A] [IsLocalRing X] [IsLocalRing B] (hx : IsLocalHom x.hom) (hb : b.hom.IsIntegral) : Nontrivial Z := by
   have : IsLocalHom b.hom := locHom_of_int b.hom hb
@@ -186,7 +183,6 @@ theorem gen {A X B Z : CommRingCat.{0}} {x : A ⟶ X} {b : A ⟶ B} {u : X ⟶ Z
     have := congrArg (fun f => f.hom z) hs; simpa using this.symm
   rw [this]; exact (s.hom z).2
 
-open IsLocalRing in
 theorem frob {A X B Z : CommRingCat.{0}} (x : A ⟶ X) (b : A ⟶ B) (u : X ⟶ Z) (v : B ⟶ Z) (hp : IsPushout x b u v)
     [IsLocalRing A] [IsLocalRing X] [IsLocalRing B] [IsSepClosed (ResidueField A)]
     (hx : IsLocalHom x.hom) (hb : b.hom.IsIntegral) (z : Z) : ∃ N : ℕ, 0 < N ∧ ∃ y : X,

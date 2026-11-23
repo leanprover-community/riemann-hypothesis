@@ -94,8 +94,6 @@ theorem _root_.GlobalTheory.Published.latticeCurve_j_eq (L : PeriodPair) :
   ring
 
 
-open NumberField in
-open scoped nonZeroDivisors IntermediateField in
 variable {K : Type} [Field K] [NumberField K] [Algebra K ℂ] in
 theorem _root_.GlobalTheory.Published.exists_isIdealLattice [IsTotallyComplex K] (h2 : Module.finrank ℚ K = 2)
     (𝔞 : (FractionalIdeal (𝓞 K)⁰ K)ˣ) : ∃ L, _root_.GlobalTheory.Published.IsIdealLattice 𝔞 L := by
@@ -110,8 +108,6 @@ theorem _root_.GlobalTheory.Published.exists_isIdealLattice [IsTotallyComplex K]
 
 
 
-open NumberField in
-open scoped nonZeroDivisors IntermediateField in
 variable {K : Type} [Field K] [NumberField K] [Algebra K ℂ] in
 theorem _root_.GlobalTheory.Published.ComplexMultiplicationJSt.finrank_eq
     (h : _root_.GlobalTheory.Published.ComplexMultiplicationJSt) [IsTotallyComplex K]

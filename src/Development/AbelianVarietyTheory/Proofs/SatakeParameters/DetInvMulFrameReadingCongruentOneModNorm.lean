@@ -42,7 +42,6 @@ noncomputable section
 namespace GlobalTheory.FramesDet
 
 open Matrix
-open scoped TensorProduct
 
 section Cong
 

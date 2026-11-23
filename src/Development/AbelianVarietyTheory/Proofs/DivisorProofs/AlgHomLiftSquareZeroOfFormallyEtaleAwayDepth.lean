@@ -258,7 +258,6 @@ end
 end GlobalTheory.SquareZeroLift
 
 namespace GlobalTheory.SquareZeroLift
-open RingTheory.Sequence
 
 theorem squareZeroLift : ∀ (R : Type) [CommRing R] [IsLocalRing R] (A : Type) [CommRing A] [Algebra R A],
     (∀ g ∈ maximalIdeal R, Algebra.FormallyEtale (Localization.Away g)

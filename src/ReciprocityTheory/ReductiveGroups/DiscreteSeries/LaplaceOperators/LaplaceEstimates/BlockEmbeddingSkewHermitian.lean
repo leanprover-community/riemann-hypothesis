@@ -144,7 +144,6 @@ theorem block_embedding_single (i j : Fin k) :
   have := j.isLt
   split_ifs <;> first | omega | simp
 
-open scoped Matrix.Norms.Operator in
 theorem exp_embed (A : Matrix (Fin k) (Fin k) ℂ) :
     NormedSpace.exp (emb0 k r A) = Formalism.MainNotions.S.blockW k r (NormedSpace.exp A) := by
   set B0 := Formalism.MainNotions.S.blockW k r (0 : Matrix (Fin k) (Fin k) ℂ) with hB0

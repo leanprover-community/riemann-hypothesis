@@ -88,7 +88,6 @@ private lemma coeff_single_inr_of_isLift {B O : Type} [CommRing B] [CommRing O] 
   · subst h; simp
   · simp [h, Finsupp.single_left_inj]
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private lemma subst_inr_zero_map_eq_X_of_isLift {B O Q : Type} [CommRing B] [CommRing O] [CommRing Q] [Algebra B Q] {θ : B →+* O} {d : ℕ}
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B} (hμ : _root_.GlobalTheory.QLog.IsLift θ μ) (j : Fin d) :
@@ -101,7 +100,6 @@ private lemma subst_inr_zero_map_eq_X_of_isLift {B O Q : Type} [CommRing B] [Com
     ← (_root_.GlobalTheory.coeff_subst_restrict_sum (μ j)).1 α, hadd, coeff_X, coeff_X]
   split_ifs <;> simp
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private lemma subst_zero_fin_eq_C_constantCoeff {Q : Type} [CommRing Q] {d : ℕ} (g : MvPowerSeries (Fin d) Q) :
     subst (fun _ : Fin d => (0 : MvPowerSeries (Fin d) Q)) g = C (constantCoeff g) := by
@@ -119,7 +117,6 @@ private lemma subst_zero_fin_eq_C_constantCoeff {Q : Type} [CommRing Q] {d : ℕ
     rw [Finsupp.prod, Finset.prod_eq_zero (i := s) (by simpa using hs) (by simp [hs])]
     simp
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private lemma subst_inr_zero_pderiv_coboundary_eq {Q : Type} [CommRing Q] {d : ℕ} (ν : Fin d → MvPowerSeries (Fin d ⊕ Fin d) Q)
     (hν0 : ∀ j, constantCoeff (ν j) = 0)
@@ -149,7 +146,6 @@ private lemma subst_inr_zero_pderiv_coboundary_eq {Q : Type} [CommRing Q] {d : �
   rw [subst_zero_fin_eq_C_constantCoeff]
   simp only [show (fun k : Fin d => (X k : MvPowerSeries (Fin d) Q)) = X from rfl, subst_self, id]
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private lemma dIn_univ_of_QL_of_isLift {B O Q : Type} [CommRing B] [CommRing O]
     [CommRing Q] [Algebra B Q] {θ : B →+* O} {d : ℕ}
@@ -207,7 +203,6 @@ private lemma dIn_univ_of_QL_of_isLift {B O Q : Type} [CommRing B] [CommRing O]
     rw [← coeff_zero_eq_constantCoeff_apply, coeff_pderiv, zero_add, hb]
     split_ifs <;> simp [hc]
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private lemma dIn_univ_map_of_compatible {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q]
     {σ : Type} (φ : B →+* B) (s : Q →+* Q) (hs : ∀ b, s (algebraMap B Q b) = algebraMap B Q (φ b))
@@ -219,7 +214,6 @@ private lemma dIn_univ_map_of_compatible {B Q : Type} [CommRing B] [CommRing Q] 
   refine ⟨φ b, Submodule.mem_top, ?_⟩
   rw [coeff_map, ← hs, ← hb, map_mul, map_natCast]
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private lemma exists_pow_dvd_of_theta_pow_eq_mul {p : ℕ} {B O Q : Type} [CommRing B] [CommRing Q]
     [CommRing O] [Algebra B Q] {θ : B →+* O} (hF : _root_.GlobalTheory.QLog.IsFrame p Q θ)
@@ -238,7 +232,6 @@ private lemma exists_pow_dvd_of_theta_pow_eq_mul {p : ℕ} {B O Q : Type} [CommR
   rw [h2]
   exact dvd_add h1 (dvd_mul_right _ _)
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private lemma hasVal_map_of_compatible {p : ℕ} {B Q : Type} [CommRing B]
     [CommRing Q] [Algebra B Q] {σ : Type} [Fintype σ] [DecidableEq σ] (φ : B →+* B)
@@ -263,7 +256,6 @@ private lemma hasVal_map_of_compatible {p : ℕ} {B Q : Type} [CommRing B]
   rw [key, ← map_sub, hb, hs, map_mul, map_pow, map_natCast]
 
 
-open MvPowerSeries in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.QLog.hasPeriod_frob : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C]
     [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C]

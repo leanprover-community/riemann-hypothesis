@@ -137,7 +137,6 @@ section Geo
 open Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1 PositivityTheory.HtPt.Cd
 open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.TB.Canon Formalism.MainNotions.ModuliIntegralCharts.H1.GermD Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdAd
 open Formalism.MainNotions.ModuliIntegralCharts.H1.JetTr
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt FGLaw comp1)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} [StarRing (𝓞 E)] {X0 : Scheme.{0}}
   {t : SAB H X0} {S S₂ S₃ : Type} [CommRing S] [CommRing S₂] [CommRing S₃] {x : Sp S ⟶ X0} {x₂ : Sp S₂ ⟶ X0}

@@ -121,7 +121,6 @@ theorem conj_tt (δ : L) (hδ : IsCMField.complexConj L δ = -δ) : conjAL L (tt
 end GlobalTheory.SplitLift
 
 namespace GlobalTheory.SplitLift
-open GlobalTheory.InertUmax
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
@@ -217,7 +216,6 @@ theorem compAt_Em (s : SplitPlace L) (δ : L) {w : HeightOneSpectrum (𝓞 L⁺)
 end GlobalTheory.SplitLift
 
 namespace GlobalTheory.SplitLift
-open GlobalTheory.InertUmax
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
@@ -245,7 +243,6 @@ def θ (s : SplitPlace L) (δ : L) (d : L⁺) (hd : δ * δ = algebraMap L⁺ L 
 end GlobalTheory.SplitLift
 
 namespace GlobalTheory.SplitLift
-open GlobalTheory.InertUmax
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 

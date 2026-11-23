@@ -69,7 +69,6 @@ theorem comp_tφ (D : DegPre R) (a : D.P.A ⟶ D.P.A) (β : D.X) {T : Over (Spec
   · show r.left ≫ a.left = (r ≫ a).left; rw [Over.comp_left]
 
 
-open ReciprocityTheory.ChartRestriction.G.DVR in
 theorem formEq (D : DegPre R) (a : D.P.A ⟶ D.P.A) (mu β β' β₁ β₁' : D.X) (n j n' j' : ℤ) :
     FormEq (Sum.elim (Sum.elim (Sum.elim (dφ D a mu β β₁) (dφ D a mu β' β₁'))
         (fun k => (lift (cP D (DegPre.BF D (FractionRing R)) β₁) (lift (cP D (DegPre.BF D (FractionRing R)) β₁')
@@ -102,7 +101,6 @@ theorem formEq (D : DegPre R) (a : D.P.A ⟶ D.P.A) (mu β β' β₁ β₁' : D.
   module
 
 
-open ReciprocityTheory.ChartRestriction.G.DVR in
 theorem trF_prB (D : DegPre R) (mu : D.X) : DegPre.trF D (FractionRing R) mu ≫ DegPre.prB D (FractionRing R) =
     DegPre.prB D (FractionRing R) * cP D (DegPre.BF D (FractionRing R)) mu := by
   simp only [DegPre.trF, DegPre.prB, lift_snd, padd, ← Hom.mul_def]; rfl
@@ -111,7 +109,6 @@ theorem zF_prB (D : DegPre R) : DegPre.zF D (FractionRing R) ≫ DegPre.prB D (F
   simp only [DegPre.zF, DegPre.prB, lift_snd, Hom.one_def]
 
 
-open ReciprocityTheory.ChartRestriction.G.DVR in
 theorem exists_prodFac (D : DegPre R) (hB : D.TauBimult) (a : D.P.A ⟶ D.P.A) (h : D.X →+ D.X) (n j n' j' : ℤ)
     (mu β β' β₁ β₁' : D.X) (uf : LB.Gen (LB.LinComb D.P.L (dφ D a mu β β₁) (dε n j)))
     (ug : LB.Gen (LB.LinComb D.P.L (dφ D a mu β' β₁') (dε n' j')))
@@ -155,7 +152,6 @@ theorem exists_prodFac (D : DegPre R) (hB : D.TauBimult) (a : D.P.A ⟶ D.P.A) (
       (congrArg (·⁻¹) (val_pull hJ _ _ _)))
 
 
-open ReciprocityTheory.ChartRestriction.G.DVR in
 theorem comp_cub (D : DegPre R) (β β' : D.X) {T : Over (Spec (CommRingCat.of R))} (r : T ⟶ D.P.A) :
     r.left ≫ (lift (toUnit _ ≫ D.c β) (lift (toUnit _ ≫ D.c β') (𝟙 D.P.A)) : D.P.A ⟶ G3 D.P.A).left =
       (lift (cP D T β) (lift (cP D T β') r) : T ⟶ G3 D.P.A).left := by

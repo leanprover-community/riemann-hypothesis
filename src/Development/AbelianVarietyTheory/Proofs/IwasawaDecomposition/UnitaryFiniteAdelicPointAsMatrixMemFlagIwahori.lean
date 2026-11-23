@@ -75,7 +75,6 @@ end GlobalTheory.Mem.R3.RowDeco
 
 noncomputable section
 namespace GlobalTheory.Mem.R3.RowDeco
-open GlobalTheory.Mem.R3.RowAd
 variable (X : Stages) {px : PreX X.B.toPre} (I : Col2.ColIn X.B px)
 
 theorem decoAd_mul (hI : I.Ok) {U : Set I.ι} (t : TupU I U) (h q : Bridge.Gf X.toD7.sp.X')
@@ -101,7 +100,6 @@ end GlobalTheory.Mem.R3.RowDeco
 
 noncomputable section
 namespace GlobalTheory.Mem.R3.RowDeco
-open GlobalTheory.Mem.R3.RowAd
 variable (X : Stages) {px : PreX X.B.toPre} (I : Col2.ColIn X.B px)
 
 theorem reindex_mem_St_one {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {a b : ℕ} (e : Fin a ≃ Fin b)
@@ -117,7 +115,6 @@ theorem reindex_mem_St_one {F E : Type} [Field F] [NumberField F] [Field E] [Num
 end GlobalTheory.Mem.R3.RowDeco
 
 namespace GlobalTheory.Mem.R3.RowDeco
-open GlobalTheory.Mem.R3.RowAd
 variable (X : Stages) {px : PreX X.B.toPre} (I : Col2.ColIn X.B px)
 
 theorem unitaryFiniteAdelicPointAsMatrix_mem_flagIwahori (hI : I.Ok) {U : Set I.ι} (L : Formalism.IndefR.Links.LevCh X.toD7 (TupU I U)) (hL : LevOf X I U L) (t : TupU I U)
@@ -134,7 +131,6 @@ theorem unitaryFiniteAdelicPointAsMatrix_mem_flagIwahori (hI : I.Ok) {U : Set I.
 end GlobalTheory.Mem.R3.RowDeco
 
 namespace GlobalTheory.Mem.R3.RowDeco
-open GlobalTheory.Mem.R3.RowAd
 
 theorem redAt_reindex {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {a b : ℕ} (e : Fin a ≃ Fin b)
     (β : GL (Fin a) (E ⊗[F] Formalism.L2.Herm.Af F)) (hβ : β = 1)

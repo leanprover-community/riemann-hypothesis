@@ -67,8 +67,6 @@ theorem _root_.GlobalTheory.Sieg.DlogOne.hasProd_gP {q : ℂ} (hq : ‖q‖ < 1)
   simp only [← sub_eq_add_neg] at hm
   exact hm.hasProd
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 theorem _root_.GlobalTheory.Sieg.DlogOne.summable_lambert {q : ℂ} (hq : ‖q‖ < 1) (a : ℂ) :
     Summable fun m : ℕ => q ^ (m + 1) / (1 - q ^ (m + 1) * a) := by
   have hq0 : Tendsto (fun m : ℕ => q ^ (m + 1)) atTop (𝓝 0) :=
@@ -88,8 +86,6 @@ theorem _root_.GlobalTheory.Sieg.DlogOne.summable_lambert {q : ℂ} (hq : ‖q�
 
 def E (q t : ℂ) : ℂ := -(t / (1 - t)) - gS q t + gS q t⁻¹
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 theorem _root_.GlobalTheory.Sieg.DlogOne.tprod_cthFac_eq {q : ℂ} (hq : ‖q‖ < 1) (c : ℕ) {t : ℂ}
     (h : _root_.GlobalTheory.Sieg.DlogOne.gP q (t ^ c) * _root_.GlobalTheory.Sieg.DlogOne.gP q (t ^ c)⁻¹ ≠ 0) :
     ∏' m : ℕ, _root_.GlobalTheory.Sieg.cthFac c q t (m + 1) =
@@ -102,8 +98,6 @@ theorem _root_.GlobalTheory.Sieg.DlogOne.tprod_cthFac_eq {q : ℂ} (hq : ‖q‖
   rw [div_eq_mul_inv, ← (hA.mul hB).tprod_eq]
   congr 1
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 theorem _root_.GlobalTheory.Sieg.DlogOne.ee_int_mul (n : ℤ) (z : ℂ) :
     _root_.GlobalTheory.Sieg.ee (n * z) = _root_.GlobalTheory.Sieg.ee z ^ n := by
   unfold _root_.GlobalTheory.Sieg.ee
@@ -113,8 +107,6 @@ theorem _root_.GlobalTheory.Sieg.DlogOne.ee_int_mul (n : ℤ) (z : ℂ) :
 
 def u (x : Fin 2 → ℚ) (τ : ℍ) (n : ℤ) : ℂ := ee (((x 0 + n : ℚ) : ℂ) * τ + x 1)
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma u_eq_ee_zpow_mul_ee_pt (x : Fin 2 → ℚ) (τ : ℍ) (n : ℤ) :
     _root_.GlobalTheory.Sieg.DlogOne.u x τ n =
       _root_.GlobalTheory.Sieg.ee τ ^ n * _root_.GlobalTheory.Sieg.ee (_root_.GlobalTheory.Sieg.pt x τ) := by
@@ -124,14 +116,10 @@ private lemma u_eq_ee_zpow_mul_ee_pt (x : Fin 2 → ℚ) (τ : ℍ) (n : ℤ) :
   push_cast
   ring
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma im_shifted_lattice_point (x : Fin 2 → ℚ) (τ : ℍ) (p : ℤ) :
     (((x 0 + p : ℚ) : ℂ) * (τ : ℂ) + ((x 1 : ℚ) : ℂ)).im = ((x 0 + p : ℚ) : ℝ) * τ.im := by
   simp
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma norm_u_lt_one_of_pos {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ}
     (h : 0 < x 0 + p) : ‖_root_.GlobalTheory.Sieg.DlogOne.u x τ p‖ < 1 := by
   rw [_root_.GlobalTheory.Sieg.DlogOne.u, _root_.GlobalTheory.Sieg.Model.norm_ee, Real.exp_lt_one_iff, neg_lt_zero,
@@ -139,8 +127,6 @@ private lemma norm_u_lt_one_of_pos {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ}
   have ha : (0 : ℝ) < ((x 0 + p : ℚ) : ℝ) := by exact_mod_cast h
   exact mul_pos (mul_pos two_pos Real.pi_pos) (mul_pos ha τ.im_pos)
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma hasSum_fTerm_fiber_of_pos {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ} (h : 0 < x 0 + p) :
     HasSum (fun n : ℤ => _root_.GlobalTheory.Sieg.fTerm 1 x τ (p, n))
       (_root_.GlobalTheory.Sieg.DlogOne.u x τ p / (1 - _root_.GlobalTheory.Sieg.DlogOne.u x τ p)) := by
@@ -180,16 +166,12 @@ private lemma hasSum_fTerm_fiber_of_pos {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ}
   simpa only [add_zero] using
     HasSum.of_nat_of_neg_add_one (f := fun n : ℤ => _root_.GlobalTheory.Sieg.fTerm 1 x τ (p, n)) hnat hneg
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma ee_neg' (z : ℂ) :
     _root_.GlobalTheory.Sieg.ee (-z) = (_root_.GlobalTheory.Sieg.ee z)⁻¹ := by
   refine eq_inv_of_mul_eq_one_left ?_
   rw [← _root_.GlobalTheory.Sieg.Model.ee_add, neg_add_cancel]
   simp [_root_.GlobalTheory.Sieg.ee]
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma norm_inv_u_lt_one_of_neg {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ}
     (h : x 0 + p < 0) : ‖(_root_.GlobalTheory.Sieg.DlogOne.u x τ p)⁻¹‖ < 1 := by
   rw [_root_.GlobalTheory.Sieg.DlogOne.u, ← ee_neg', _root_.GlobalTheory.Sieg.Model.norm_ee,
@@ -197,8 +179,6 @@ private lemma norm_inv_u_lt_one_of_neg {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ}
   have ha : ((x 0 + p : ℚ) : ℝ) < 0 := by exact_mod_cast h
   nlinarith [Real.pi_pos, τ.im_pos, mul_neg_of_neg_of_pos ha τ.im_pos]
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma hasSum_fTerm_fiber_of_neg {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ} (h : x 0 + p < 0) :
     HasSum (fun n : ℤ => _root_.GlobalTheory.Sieg.fTerm 1 x τ (p, n))
       (-((_root_.GlobalTheory.Sieg.DlogOne.u x τ p)⁻¹ / (1 - (_root_.GlobalTheory.Sieg.DlogOne.u x τ p)⁻¹))) := by
@@ -235,20 +215,14 @@ private lemma hasSum_fTerm_fiber_of_neg {x : Fin 2 → ℚ} {τ : ℍ} {p : ℤ}
   simpa only [zero_add] using
     HasSum.of_nat_of_neg_add_one (f := fun n : ℤ => _root_.GlobalTheory.Sieg.fTerm 1 x τ (p, n)) hnat hneg
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma summable_lambert_term {q : ℂ} (hq : ‖q‖ < 1) (a : ℂ) :
     Summable fun m : ℕ => q ^ (m + 1) * a / (1 - q ^ (m + 1) * a) :=
   ((_root_.GlobalTheory.Sieg.DlogOne.summable_lambert hq a).mul_left a).congr fun m => by ring
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma hasSum_lambert_gS {q : ℂ} (hq : ‖q‖ < 1) (a : ℂ) :
     HasSum (fun m : ℕ => q ^ (m + 1) * a / (1 - q ^ (m + 1) * a)) (_root_.GlobalTheory.Sieg.DlogOne.gS q a) :=
   (summable_lambert_term hq a).hasSum
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma E_ee_pt_eq_neg_F_of_mem_Ico {x : Fin 2 → ℚ}
     (hx : ¬ (x 0 ∈ Set.range ((↑) : ℤ → ℚ) ∧ x 1 ∈ Set.range ((↑) : ℤ → ℚ)))
     (h0 : 0 ≤ x 0) (h1 : x 0 < 1) (τ : ℍ) :
@@ -320,8 +294,6 @@ private lemma E_ee_pt_eq_neg_F_of_mem_Ico {x : Fin 2 → ℚ}
   · rw [if_neg h.ne', if_neg h.ne']
     ring
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma E_mul_left_eq_sub_one {q : ℂ} (hq : ‖q‖ < 1) (hq0 : q ≠ 0) {t : ℂ}
     (ht0 : t ≠ 0) (ht1 : t ≠ 1) :
     _root_.GlobalTheory.Sieg.DlogOne.E q (q * t) = _root_.GlobalTheory.Sieg.DlogOne.E q t - 1 := by
@@ -350,8 +322,6 @@ private lemma E_mul_left_eq_sub_one {q : ℂ} (hq : ‖q‖ < 1) (hq0 : q ≠ 0)
   rw [h1, h2, key]
   ring
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 private lemma E_zpow_mul_eq_sub {q : ℂ} (hq : ‖q‖ < 1) (hq0 : q ≠ 0) {t : ℂ}
     (ht0 : t ≠ 0) (ht : ∀ k : ℤ, q ^ k * t ≠ 1) (k : ℤ) :
     _root_.GlobalTheory.Sieg.DlogOne.E q (q ^ k * t) = _root_.GlobalTheory.Sieg.DlogOne.E q t - k := by
@@ -369,8 +339,6 @@ private lemma E_zpow_mul_eq_sub {q : ℂ} (hq : ‖q‖ < 1) (hq0 : q ≠ 0) {t 
     push_cast at h ⊢
     linear_combination -h
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
-open Filter Topology in
 theorem _root_.GlobalTheory.Sieg.DlogOne.E_eq {x : Fin 2 → ℚ}
     (hx : ¬ (x 0 ∈ Set.range ((↑) : ℤ → ℚ) ∧ x 1 ∈ Set.range ((↑) : ℤ → ℚ))) (τ : ℍ) :
     _root_.GlobalTheory.Sieg.DlogOne.E (_root_.GlobalTheory.Sieg.ee τ) (_root_.GlobalTheory.Sieg.ee (_root_.GlobalTheory.Sieg.pt x τ)) =

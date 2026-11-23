@@ -78,7 +78,6 @@ private lemma exists_le_degType_sum_eq_of_hasDiv {g : ℕ} [Fact g.Prime] {N a :
   rw [hk, ((_root_.GlobalTheory.BadShare.torusCard_bounds_mul g).2.1 u k humon.ne_zero hk0).1]
   exact Multiset.le_add_right _ _
 
-open Polynomial Classical in
 private lemma exists_subset_map_eq_of_le_map {β γ : Type} (f : β → γ) (s : Finset β) :
     ∀ ν : Multiset γ, ν ≤ s.val.map f → ∃ t ⊆ s, t.val.map f = ν := by
   induction s using Finset.cons_induction with
@@ -101,7 +100,6 @@ private lemma exists_subset_map_eq_of_le_map {β γ : Type} (f : β → γ) (s :
     · obtain ⟨t, ht, htν⟩ := ih ν ((Multiset.le_cons_of_notMem hm).mp h)
       exact ⟨t, fun x hx => Finset.mem_cons.mpr (Or.inr (ht hx)), htν⟩
 
-open Polynomial Classical in
 private lemma exists_invariant_finset_card_of_le_cycleType {n : ℕ} (σ : Equiv.Perm (Fin n)) (ν : Multiset ℕ)
     (hν : ν ≤ σ.partition.parts) : ∃ S : Finset (Fin n), S.card = ν.sum ∧ S.map σ.toEmbedding = S := by
   rw [Equiv.Perm.parts_partition] at hν
@@ -152,7 +150,6 @@ private lemma exists_invariant_finset_card_of_le_cycleType {n : ℕ} (σ : Equiv
       exact Finset.mem_union_right _ hx
 
 
-open Polynomial Classical in
 theorem _root_.GlobalTheory.BadShare.mass_hasDiv_le : ∀ (g : ℕ) [Fact g.Prime], ∀ N a : ℕ, 0 < a → a < N →
     _root_.GlobalTheory.BadShare.mass g N (_root_.GlobalTheory.BadShare.HasDiv g a) ≤ 7 / 8 := by
   intro g _ N a ha haN

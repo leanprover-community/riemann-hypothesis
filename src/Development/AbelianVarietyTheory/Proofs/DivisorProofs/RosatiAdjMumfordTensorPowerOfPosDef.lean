@@ -104,7 +104,6 @@ end GlobalTheory.Mum.RosatiTens
 
 namespace GlobalTheory.Mum.RosatiTens
 
-open GlobalTheory.CechPic
 
 section Tensor2
 
@@ -161,7 +160,6 @@ end GlobalTheory.Mum.RosatiTens
 
 namespace GlobalTheory.Mum.RosatiTens
 
-open GlobalTheory.CechPic
 
 variable {R : Type} [CommRing R] [IsDomain R] {D D' : DegPre R} {r : ℕ} {W : Matrix (Fin r) (Fin r) ℤ}
 

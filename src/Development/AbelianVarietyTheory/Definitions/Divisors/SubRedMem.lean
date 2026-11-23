@@ -121,8 +121,6 @@ theorem _root_.GlobalTheory.AnPer.Charts.Hom.red_ten
 
 
 set_option autoImplicit false in
-open TopologicalSpace Filter Topology TensorProduct in
-open CategoryTheory AlgebraicGeometry DividedPowers in
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : _root_.GlobalTheory.AnPer.Fam I g Λ}
   {K : _root_.GlobalTheory.AnPer.Charts F} in
 attribute [local instance] _root_.GlobalTheory.AnPer.Charts.Obj.cAlg in
@@ -138,8 +136,6 @@ theorem _root_.GlobalTheory.AnPer.Charts.Hom.ten_mem {T T' : K.Obj}
   exact f.mem _ h
 
 set_option autoImplicit false in
-open TopologicalSpace Filter Topology TensorProduct in
-open CategoryTheory AlgebraicGeometry DividedPowers in
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : _root_.GlobalTheory.AnPer.Fam I g Λ}
   {K : _root_.GlobalTheory.AnPer.Charts F} in
 attribute [local instance] _root_.GlobalTheory.AnPer.Charts.Obj.cAlg in
@@ -168,8 +164,6 @@ private theorem sub_one_tmul_red_mem_map_ker (T : K.Obj) (x : T.ten D) :
 
 
 set_option autoImplicit false in
-open TopologicalSpace Filter Topology TensorProduct in
-open CategoryTheory AlgebraicGeometry DividedPowers in
 variable {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : _root_.GlobalTheory.AnPer.Fam I g Λ}
   {K : _root_.GlobalTheory.AnPer.Charts F} in
 attribute [local instance] _root_.GlobalTheory.AnPer.Charts.Obj.cAlg in

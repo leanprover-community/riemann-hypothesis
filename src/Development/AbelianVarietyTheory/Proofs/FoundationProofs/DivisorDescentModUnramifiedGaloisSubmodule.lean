@@ -70,8 +70,6 @@ theorem _root_.GlobalTheory.DivisorDescent.exists_pow_eq_of_dvd_count {R L : Typ
   rw [← zpow_natCast, ← zpow_mul, mul_comm, Int.mul_ediv_cancel' (h v)]
 
 
-open IsDedekindDomain in
-open scoped nonZeroDivisors Pointwise in
 theorem _root_.GlobalTheory.DivisorDescent.exists_pow_class {A : Type} [CommRing A]
     [IsDedekindDomain A] (N : ℕ)
     (hCl : ∀ c : ClassGroup A, ∃ d, c = d ^ N) (a : Ideal A) (ha : a ≠ ⊥) :
@@ -84,8 +82,6 @@ theorem _root_.GlobalTheory.DivisorDescent.exists_pow_class {A : Type} [CommRing
   obtain ⟨x, y, hx, hy, hxy⟩ := hd
   exact ⟨b, x, y, nonZeroDivisors.coe_ne_zero b, hx, hy, by simpa using hxy⟩
 
-open IsDedekindDomain in
-open scoped nonZeroDivisors Pointwise in
 private theorem exists_galois_comap_eq_of_comap_eq {A₀ R K₀ L : Type} [CommRing A₀]
     [IsDedekindDomain A₀] [CommRing R] [IsDedekindDomain R] [Field K₀] [Field L]
     [Algebra A₀ K₀] [IsFractionRing A₀ K₀] [Algebra R L] [IsFractionRing R L] [Algebra A₀ R]
@@ -110,8 +106,6 @@ private theorem exists_galois_comap_eq_of_comap_eq {A₀ R K₀ L : Type} [CommR
   rw [Ideal.mem_comap, Ideal.mem_pointwise_smul_iff_inv_smul_mem]
   rw [show ((galRestrict A₀ K₀ L R) τ).toRingEquiv r = τ • r from rfl, inv_smul_smul]
 
-open IsDedekindDomain in
-open scoped nonZeroDivisors Pointwise in
 private theorem count_spanSingleton_mul {R L : Type} [CommRing R] [IsDedekindDomain R]
     [Field L] [Algebra R L] [IsFractionRing R L] (v : HeightOneSpectrum R) {x y : L} (hx : x ≠ 0)
     (hy : y ≠ 0) :
@@ -122,8 +116,6 @@ private theorem count_spanSingleton_mul {R L : Type} [CommRing R] [IsDedekindDom
   · rwa [Ne, FractionalIdeal.spanSingleton_eq_zero_iff]
   · rwa [Ne, FractionalIdeal.spanSingleton_eq_zero_iff]
 
-open IsDedekindDomain in
-open scoped nonZeroDivisors Pointwise in
 private theorem count_spanSingleton_div {R L : Type} [CommRing R] [IsDedekindDomain R]
     [Field L] [Algebra R L] [IsFractionRing R L] (v : HeightOneSpectrum R) {x y : L} (hx : x ≠ 0)
     (hy : y ≠ 0) :
@@ -134,8 +126,6 @@ private theorem count_spanSingleton_div {R L : Type} [CommRing R] [IsDedekindDom
   rw [div_mul_cancel₀ x hy] at h
   omega
 
-open IsDedekindDomain in
-open scoped nonZeroDivisors Pointwise in
 private theorem count_spanSingleton_algebraMap_eq_count_factors {R L : Type} [CommRing R] [IsDedekindDomain R]
     [Field L] [Algebra R L] [IsFractionRing R L] (v : HeightOneSpectrum R) {r : R} (hr : r ≠ 0) :
     FractionalIdeal.count L v (FractionalIdeal.spanSingleton R⁰ (algebraMap R L r)) =
@@ -143,8 +133,6 @@ private theorem count_spanSingleton_algebraMap_eq_count_factors {R L : Type} [Co
   rw [← FractionalIdeal.coeIdeal_span_singleton, FractionalIdeal.count_coe]
   simpa using hr
 
-open IsDedekindDomain in
-open scoped nonZeroDivisors Pointwise in
 private theorem count_factors_span_eq_of_comap_ringEquiv {R : Type} [CommRing R] [IsDedekindDomain R] (e : R ≃+* R)
     (v v' : HeightOneSpectrum R) (hv : v'.asIdeal = Ideal.comap e v.asIdeal) {r : R} (hr : r ≠ 0) :
     (Associates.mk v'.asIdeal).count (Associates.mk (Ideal.span {r})).factors =
@@ -154,8 +142,6 @@ private theorem count_factors_span_eq_of_comap_ringEquiv {R : Type} [CommRing R]
     HeightOneSpectrum.intValuation_if_neg _ (e.map_ne_zero_iff.mpr hr)] at h
   exact_mod_cast neg_injective (WithZero.exp_injective h)
 
-open IsDedekindDomain in
-open scoped nonZeroDivisors Pointwise in
 private theorem count_galois_conj_spanSingleton {A₀ R K₀ L : Type} [CommRing A₀]
     [IsDedekindDomain A₀] [CommRing R] [IsDedekindDomain R] [Field K₀] [Field L]
     [Algebra A₀ K₀] [IsFractionRing A₀ K₀] [Algebra R L] [IsFractionRing R L] [Algebra A₀ R]
@@ -186,16 +172,12 @@ private theorem count_galois_conj_spanSingleton {A₀ R K₀ L : Type} [CommRing
     count_spanSingleton_algebraMap_eq_count_factors v hga, count_spanSingleton_algebraMap_eq_count_factors v hgb,
     count_factors_span_eq_of_comap_ringEquiv g v v' hv ha0, count_factors_span_eq_of_comap_ringEquiv g v v' hv hb0]
 
-open IsDedekindDomain in
-open scoped nonZeroDivisors Pointwise in
 private theorem count_spanSingleton_pow {R L : Type} [CommRing R] [IsDedekindDomain R]
     [Field L] [Algebra R L] [IsFractionRing R L] (v : HeightOneSpectrum R) (x : L) (n : ℕ) :
     FractionalIdeal.count L v (FractionalIdeal.spanSingleton R⁰ (x ^ n)) =
       n * FractionalIdeal.count L v (FractionalIdeal.spanSingleton R⁰ x) := by
   rw [← FractionalIdeal.count_pow, FractionalIdeal.spanSingleton_pow]
 
-open IsDedekindDomain in
-open scoped nonZeroDivisors Pointwise in
 private theorem count_algebraMap_of_unramified_lemma_6 {A₀ R K₀ L : Type} [CommRing A₀]
     [IsDedekindDomain A₀] [CommRing R] [IsDedekindDomain R] [Field K₀] [Field L]
     [Algebra A₀ K₀] [IsFractionRing A₀ K₀] [Algebra R L] [IsFractionRing R L] [Algebra A₀ R]
@@ -233,8 +215,6 @@ private theorem count_algebraMap_of_unramified_lemma_6 {A₀ R K₀ L : Type} [C
   exact_mod_cast (neg_injective (WithZero.exp_injective hv)).symm
 
 
-open IsDedekindDomain in
-open scoped nonZeroDivisors Pointwise in
 theorem _root_.GlobalTheory.DivisorDescent.descent_submodule : ∀ (A₀ R K₀ L : Type) [CommRing A₀]
     [IsDedekindDomain A₀] [CommRing R] [IsDedekindDomain R] [Field K₀] [Field L]
     [Algebra A₀ K₀] [IsFractionRing A₀ K₀] [Algebra R L] [IsFractionRing R L] [Algebra A₀ R]

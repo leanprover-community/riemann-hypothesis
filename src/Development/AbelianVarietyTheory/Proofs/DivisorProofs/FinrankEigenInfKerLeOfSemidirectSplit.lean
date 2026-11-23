@@ -142,7 +142,6 @@ end GlobalTheory.BadCount.Lift
 
 namespace GlobalTheory.BadCount.Lift
 
-open scoped Classical
 
 variable {G Γ : Type} [Group G] [Group Γ] [Fintype Γ]
 

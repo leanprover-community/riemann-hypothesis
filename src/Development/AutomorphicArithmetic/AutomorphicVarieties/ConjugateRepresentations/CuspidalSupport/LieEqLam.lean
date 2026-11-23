@@ -47,7 +47,6 @@ private theorem lie_eq_lam {E : Type} [Field E] [NumberField E] [_root_.NumberFi
   change Cm.mixEq E (Matrix.single i j x k l) = Matrix.single i j (Cm.mixEq E x) k l
   simp only [Matrix.single_apply, apply_ite (Cm.mixEq E), map_zero]
 
-open UpperTheory.V UpperTheory.V.Af.Fin in
 theorem UpperTheory.V.Cj.S.slice :
     UpperTheory.V.Cj.S.Slice := by
   intro E _ _ _ a n e g

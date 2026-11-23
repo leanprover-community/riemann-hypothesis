@@ -96,7 +96,5 @@ end GlobalTheory.UPel.GeometricLevelExistence
 
 namespace GlobalTheory.UPel.GeometricLevelExistence
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 end GlobalTheory.UPel.GeometricLevelExistence

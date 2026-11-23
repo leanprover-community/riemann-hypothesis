@@ -65,7 +65,6 @@ end GlobalTheory.RegSch.StdPos
 
 namespace GlobalTheory.RegSch
 
-open Formalism.UG (cT bc cT_mul cT_one)
 open Matrix StdPos
 
 theorem exists_good_frameLat (D : D7) (V : HSp D) : ∃ a, Lvl.Good (⟨frameLat V, a⟩ : Lvl V) :=

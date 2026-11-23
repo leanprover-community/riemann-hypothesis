@@ -82,7 +82,6 @@ theorem norm_mem_comap {A B : Type} [CommRing A] [CommRing B] [Algebra A B] [Mod
   exact Ideal.mul_mem_left _ _ (Ideal.mem_comap.2 h4)
 
 
-open TensorProduct in
 theorem norm_notMem_iff {A B : Type} [CommRing A] [CommRing B] [Algebra A B] [Module.Free A B]
     [Module.Finite A B] (e : B) (p : Ideal A) (hp : p.IsPrime) :
     Algebra.norm A e ∉ p ↔ ∀ q : Ideal B, q.IsPrime → q.comap (algebraMap A B) = p → e ∉ q := by

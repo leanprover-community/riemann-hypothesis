@@ -225,7 +225,6 @@ theorem continuous_liftM [IsTotallyReal F] (τ : ∀ w : InfinitePlace F, EmbOve
 end GlobalTheory.RealLift.OneParam
 
 namespace GlobalTheory.RealLift.OneParam
-open scoped Matrix
 variable {β : Type} [Fintype β] [DecidableEq β] {R S : ℕ}
 
 theorem jm_mul_self : Jm R S * Jm R S = 1 := by
@@ -284,7 +283,6 @@ theorem exp_unitary {Y : Mat R S} (hY : Y ∈ upq R S) (t : ℝ) :
 end GlobalTheory.RealLift.OneParam
 
 namespace GlobalTheory.RealLift.OneParam
-open scoped Matrix
 variable {β : Type} [Fintype β] [DecidableEq β] {R S : ℕ}
 
 theorem map_star_mul {m n p : Type} [Fintype n] (A : Matrix m n ℂ) (B : Matrix n p ℂ) :
@@ -332,7 +330,6 @@ theorem isEmpty_of_zero {M : Matrix β β ℂ} {C : Matrix β (Ix R S) ℂ} {C' 
 end GlobalTheory.RealLift.OneParam
 
 namespace GlobalTheory.RealLift.OneParam
-open scoped Matrix
 
 theorem continuous_exp_smul {ι : Type} [Fintype ι] [DecidableEq ι] (Y : Matrix ι ι ℂ) :
     Continuous fun t : ℝ => NormedSpace.exp (t • Y) := by
@@ -344,7 +341,6 @@ theorem continuous_exp_smul {ι : Type} [Fintype ι] [DecidableEq ι] (Y : Matri
 end GlobalTheory.RealLift.OneParam
 
 namespace GlobalTheory.RealLift
-open scoped Matrix
 open GlobalTheory.RealLift.OneParam
 
 theorem exists_line_of_upq : LineEx := by

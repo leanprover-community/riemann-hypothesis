@@ -76,7 +76,6 @@ def AZ (k r j m : ℕ) (hm : m ≤ r) (hmj : m ≤ j) (u : ℂ) (h : MJ j → E)
     else 0
 
 
-open scoped Classical in
 def AvZ (k r j m : ℕ) (hm : m ≤ r) (hmj : m ≤ j) (ell : ℂ) (h : MJ j → E) : MJ j → E := fun Z =>
   ∑ B : Fin m → Fin (2 * r + k + 1),
     if StrictMono (fun l => C3.keyS k r (B l)) then

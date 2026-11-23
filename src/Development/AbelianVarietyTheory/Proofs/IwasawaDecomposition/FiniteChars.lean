@@ -75,7 +75,6 @@ def levSub (S : Set (HeightOneSpectrum (𝓞 L))) (N : ℕ) : Subgroup (AdeleRin
 
 end GlobalTheory.LevelChars
 
-open IsDedekindDomain NumberField
 
 namespace GlobalTheory.LevelChars
 

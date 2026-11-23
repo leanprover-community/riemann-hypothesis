@@ -325,7 +325,6 @@ theorem mul_mem_KK {f : ℕ} (hf : f ∣ N) {u v : (ZMod N)ˣ} (hu : u ∈ KK N 
   exact mul_mem hu hv
 
 theorem rho_le (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) : rho U f ≤ 1 - (f.totient : ℝ) / N.totient := by
-  open Classical in
   have one_le_card_inside_lemma_14 {N : ℕ} [NeZero N] (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) :
       (1 : ℝ) ≤ (((KK N f).filter fun u => u ∈ U).card : ℝ) := by
     have h : 0 < ((KK N f).filter fun u => u ∈ U).card :=
@@ -337,7 +336,6 @@ theorem rho_le (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) : rho U f ≤ 
   nlinarith
 
 theorem half_le_rho (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) (h : ∃ u ∈ KK N f, u ∉ U) : 1 / 2 ≤ rho U f := by
-  open Classical in
   have card_outside_add_card_inside_lemma_12 {N : ℕ} [NeZero N] (U : Subgroup (ZMod N)ˣ) (f : ℕ) :
       ((KK N f).filter fun u => u ∉ U).card +
         ((KK N f).filter fun u => u ∈ U).card = (KK N f).card := by
@@ -346,7 +344,6 @@ theorem half_le_rho (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) (h : ∃ 
     | exact Finset.filter_card_add_filter_neg_card_eq_card _
     | convert Finset.filter_card_add_filter_neg_card_eq_card (s := KK N f) (fun u => u ∈ U)
     | convert Finset.card_filter_add_card_filter_not (s := KK N f) (fun u => u ∈ U)
-  open Classical in
   have kernelOutsideFraction_eq_div_lemma_13 {N : ℕ} [NeZero N] (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) :
       rho U f =
         (((KK N f).filter fun u => u ∉ U).card : ℝ) / (KK N f).card := by
@@ -359,7 +356,6 @@ theorem half_le_rho (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) (h : ∃ 
     unfold rho
     rw [← hc]
     field_simp [ht, hK]
-  open Classical in
   have card_inside_le_outside_lemma_15 {N : ℕ} [NeZero N] (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) {u0 : (ZMod N)ˣ}
       (hu0 : u0 ∈ KK N f) (hu0' : u0 ∉ U) :
       ((KK N f).filter fun u => u ∈ U).card ≤
@@ -384,7 +380,6 @@ theorem half_le_rho (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) (h : ∃ 
 
 theorem rho_le_half (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N)
     (h : ∀ u ∈ KK N f, ∀ v ∈ KK N f, u ∉ U → v ∉ U → u * v ∈ U) : rho U f ≤ 1 / 2 := by
-  open Classical in
   have card_outside_add_card_inside_lemma_12 {N : ℕ} [NeZero N] (U : Subgroup (ZMod N)ˣ) (f : ℕ) :
       ((KK N f).filter fun u => u ∉ U).card +
         ((KK N f).filter fun u => u ∈ U).card = (KK N f).card := by
@@ -393,7 +388,6 @@ theorem rho_le_half (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N)
     | exact Finset.filter_card_add_filter_neg_card_eq_card _
     | convert Finset.filter_card_add_filter_neg_card_eq_card (s := KK N f) (fun u => u ∈ U)
     | convert Finset.card_filter_add_card_filter_not (s := KK N f) (fun u => u ∈ U)
-  open Classical in
   have kernelOutsideFraction_eq_div_lemma_13 {N : ℕ} [NeZero N] (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) :
       rho U f =
         (((KK N f).filter fun u => u ∉ U).card : ℝ) / (KK N f).card := by
@@ -406,7 +400,6 @@ theorem rho_le_half (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N)
     unfold rho
     rw [← hc]
     field_simp [ht, hK]
-  open Classical in
   have card_outside_le_inside_lemma_16 {N : ℕ} [NeZero N] (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N)
       (h : ∀ u ∈ KK N f, ∀ v ∈ KK N f, u ∉ U → v ∉ U → u * v ∈ U) :
       ((KK N f).filter fun u => u ∉ U).card ≤

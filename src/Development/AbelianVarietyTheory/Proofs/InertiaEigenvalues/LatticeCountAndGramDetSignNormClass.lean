@@ -78,7 +78,6 @@ private theorem isLat_mulLat_unit {E : Type} [Field E] [Algebra E A] (u : Aˣ) (
     intro z
     exact ⟨((u⁻¹ : Aˣ) : A) * z, by simp⟩
 
-open Polynomial in
 variable {O : Type} [CommRing O] {A : Type} [CommRing A] [Algebra O A] in
 private theorem forall_mem_mulLat_unit_iff (u : Aˣ) (L : Submodule O A) (P : A → Prop) :
     (∀ z ∈ _root_.GlobalTheory.UnitLemma.mulLat O (u : A) L, P z) ↔ ∀ z ∈ L, P (u * z) := by
@@ -89,7 +88,6 @@ private theorem forall_mem_mulLat_unit_iff (u : Aˣ) (L : Submodule O A) (P : A 
     have := h _ ((_root_.GlobalTheory.UnitLemma.Orbit.mem_mulLat u L z).mp hz)
     rwa [Units.mul_inv_cancel_left] at this
 
-open Polynomial in
 variable {K : _root_.GlobalTheory.UnitLemma.UQ} in
 private theorem herm_mul_unit_sigma (B : _root_.GlobalTheory.UnitLemma.InvAlg K) (x : B.A) (u : B.Aˣ) (a b : B.A) :
     B.herm (x * (u * B.σ (u : B.A))) a b = B.herm x (u * a) (u * b) := by
@@ -98,7 +96,6 @@ private theorem herm_mul_unit_sigma (B : _root_.GlobalTheory.UnitLemma.InvAlg K)
   congr 1
   ring
 
-open Polynomial in
 variable {K : _root_.GlobalTheory.UnitLemma.UQ} in
 private theorem mem_X_mul_unit_sigma_iff (B : _root_.GlobalTheory.UnitLemma.InvAlg K) (x : B.A) (u : B.Aˣ)
     (L : Submodule K.O B.A) :
@@ -129,7 +126,6 @@ private theorem mem_X_mul_unit_sigma_iff (B : _root_.GlobalTheory.UnitLemma.InvA
       rw [this]
       simp only [herm_mul_unit_sigma]
 
-open Polynomial in
 variable {O : Type} [CommRing O] {A : Type} [CommRing A] [Algebra O A] in
 private theorem mulLat_unit_comm (u t : Aˣ) (L : Submodule O A) :
     _root_.GlobalTheory.UnitLemma.mulLat O (u : A) (_root_.GlobalTheory.UnitLemma.mulLat O (t : A) L) =
@@ -139,7 +135,6 @@ private theorem mulLat_unit_comm (u t : Aˣ) (L : Submodule O A) :
   rw [mul_left_comm]
 
 
-open Polynomial in
 variable {K : _root_.GlobalTheory.UnitLemma.UQ} in
 theorem _root_.GlobalTheory.UnitLemma.NormClass.N_norm_class : ∀ (K : _root_.GlobalTheory.UnitLemma.UQ) (B : _root_.GlobalTheory.UnitLemma.InvAlg K) (x : B.A) (u : B.Aˣ),
     B.N (x * (u * B.σ (u : B.A))) = B.N x ∧

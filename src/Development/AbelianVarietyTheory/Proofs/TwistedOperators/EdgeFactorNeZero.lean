@@ -140,7 +140,6 @@ end GlobalTheory.FirstRowTermLaw
 
 namespace GlobalTheory.FirstRowTermLaw
 
-open GlobalTheory.SplitFlip GlobalTheory.SplitFlip.Grid MeasureTheory
 
 variable {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {Γ : Grid k}
   [MeasurableSpace k] [BorelSpace k]

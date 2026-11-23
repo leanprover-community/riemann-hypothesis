@@ -72,7 +72,6 @@ private lemma fiber_embeddings_eq_pair {F : Type} [Field F] [NumberField F] (w :
     · exact Or.inl h
     · exact Or.inr (by rw [h]; simp [ComplexEmbedding.conjugate])
 
-open scoped Classical in
 private lemma sum_embeddings_eq_real_add_complex {F : Type} [Field F] [NumberField F] (y : F) :
     ∑ φ : F →+* ℂ, φ y =
       (∑ w : {w : InfinitePlace F // IsReal w}, (embedding_of_isReal w.2 y : ℂ)) +

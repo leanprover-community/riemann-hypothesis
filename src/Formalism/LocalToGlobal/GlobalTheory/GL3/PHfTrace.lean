@@ -105,7 +105,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.FrobeniusOrbits
 
 variable (D : D7)
 

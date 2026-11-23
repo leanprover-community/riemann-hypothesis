@@ -239,7 +239,6 @@ end Abstract
 
 section Local
 
-open IsLocalRing Polynomial
 
 theorem exists_double_root {k : Type*} [Field k] [Finite k] {t n : k} (h : t ^ 2 - 4 * n = 0) :
     ∃ a, t = 2 * a ∧ n = a ^ 2 := by

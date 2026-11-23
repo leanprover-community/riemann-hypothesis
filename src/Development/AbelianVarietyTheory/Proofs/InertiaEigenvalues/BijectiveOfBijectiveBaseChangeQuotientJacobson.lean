@@ -55,7 +55,6 @@ private theorem exists_eq_one_tmul_quotient {A : Type} [CommRing A] (I : Ideal A
     obtain ⟨x', rfl⟩ := hz'
     exact ⟨x + x', by rw [TensorProduct.tmul_add]⟩
 
-open TensorProduct in
 private theorem one_tmul_quotient_eq_zero_iff_mem_smul {A : Type} [CommRing A] (I : Ideal A) {M : Type}
     [AddCommGroup M] [Module A M] (y : M) :
     (1 : A ⧸ I) ⊗ₜ[A] y = 0 ↔ y ∈ I • (⊤ : Submodule A M) := by
@@ -64,7 +63,6 @@ private theorem one_tmul_quotient_eq_zero_iff_mem_smul {A : Type} [CommRing A] (
   rw [← (quotTensorEquivQuotSMul M I).map_eq_zero_iff, h, Submodule.Quotient.mk_eq_zero]
 
 
-open TensorProduct in
 theorem _root_.GlobalTheory.BSP.bijective_of_bijective_baseChange_quotient :
     ∀ (A : Type) [CommRing A] (𝔞 : Ideal A), 𝔞 ≤ Ideal.jacobson ⊥ → ∀ (P : Type) [AddCommGroup P] [Module A P] [Module.Finite A P] (P' : Type) [AddCommGroup P'] [Module A P'] [Module.Finite A P'] [Module.Projective A P'] (w : P →ₗ[A] P'), Function.Bijective (w.baseChange (A ⧸ 𝔞)) → Function.Bijective w := by
   intro A _ 𝔞 h𝔞 P _ _ _ P' _ _ _ _ w hw

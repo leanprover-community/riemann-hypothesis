@@ -128,7 +128,6 @@ theorem tmul_eq (p : AF D.host.F) (e : D.host.E) :
 end GlobalTheory.IdeleAA
 
 namespace GlobalTheory.IdeleAA
-open GlobalTheory.SelfDualAt (cP indP evalV_indP algebraMap_placeIdempotent_mul cA_alg)
 variable {D : D7}
 
 theorem evalV_inv_mem (x : Pl D) (c : 𝓞 D.host.F) (hc : c ∉ x.asIdeal) :
@@ -195,7 +194,6 @@ theorem scale_tmul (x : Pl D) (ρ : AE D) (t : D.host.E) (hρ : ρ * ex x = ex x
 end GlobalTheory.IdeleAA
 
 namespace GlobalTheory.IdeleAA
-open GlobalTheory.SelfDualAt (cP indP evalV_indP algebraMap_placeIdempotent_mul cA_alg)
 variable {D : D7}
 
 theorem indicatorAdele_mul_eq_self (x : Pl D) (γ : Af D.host.F) (hγ : ∀ w, ¬ (w = x) → evalV D.host.F w γ = 0) :
@@ -280,7 +278,6 @@ theorem lat_iff (S : Finset (Pl D)) (a : Pl D → D.host.E) (ha : ∀ v ∉ S, a
 end GlobalTheory.IdeleAA
 
 namespace GlobalTheory.IdeleAA
-open GlobalTheory.SelfDualAt (cP indP evalV_indP algebraMap_placeIdempotent_mul cA_alg)
 open GlobalTheory.FinPl.Conductor (chi chi_add chi_zero psiE_eq_chi approx tmul_mem mul_mem_int lift_mem chi_rat chi_int ev_same ev_ne)
 variable {D : D7}
 
@@ -391,8 +388,6 @@ theorem claimC' (a : D.host.E) (c : 𝓞 D.host.F) (hca : ((c : D.host.F) : D.ho
 end GlobalTheory.IdeleAA
 
 namespace GlobalTheory.IdeleAA
-open GlobalTheory.SelfDualAt (cP indP evalV_indP algebraMap_placeIdempotent_mul cA_alg)
-open GlobalTheory.FinPl.Conductor (chi chi_add chi_zero psiE_eq_chi approx tmul_mem mul_mem_int lift_mem chi_rat chi_int ev_same ev_ne)
 variable {D : D7}
 
 theorem cA_mul_ex (ρ : AE D) (x : Pl D) (t : D.host.E) (h : ρ * ex x = ex x * incA D t) :

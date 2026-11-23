@@ -77,7 +77,6 @@ end IndefiniteRowSideFullHecke
 
 section Wit
 
-open Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.Lev Formalism.IndefR.AutomorphicEvaluation
   Formalism.L2.Theta Formalism.L2.SG.RowsJoinPinned GlobalTheory.Mem.SRe
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {p : Prm hL}

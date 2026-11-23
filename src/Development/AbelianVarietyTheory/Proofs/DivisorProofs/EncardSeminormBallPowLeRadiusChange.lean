@@ -46,7 +46,6 @@ private lemma isBallFam_mono {G : Type} [AddCommGroup G] {Λ : AddSubgroup G} {B
   simpa using this
 
 set_option autoImplicit false in
-open Filter Topology in
 private lemma encard_mul_encard_le_isBallFam {G : Type} [AddCommGroup G] {Λ : AddSubgroup G}
     {B : ℝ → Set G} (hB : _root_.GlobalTheory.VolBr.IsBallFam Λ B) {a b : ℝ} {m : ℕ} (hm : 0 < m)
     (hbm : b + b ≤ m) (hfa : (B a).Finite) (hfb : (B b).Finite) (hf1 : (B 1).Finite) :
@@ -103,7 +102,6 @@ private lemma encard_mul_encard_le_isBallFam {G : Type} [AddCommGroup G] {Λ : A
         gcongr
 
 
-open Filter Topology in
 theorem _root_.GlobalTheory.VolBr.encard_ball_pow_le : ∀ (G : Type) [AddCommGroup G]
     (Λ : AddSubgroup G) (B : ℝ → Set G), _root_.GlobalTheory.VolBr.IsBallFam Λ B → ∀ (R : ℝ) (Q e : ℕ),
     1 ≤ R → 2 * R + 1 ≤ Q → (B R).Finite →

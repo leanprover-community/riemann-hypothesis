@@ -259,7 +259,6 @@ section Field
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegPre R}
   {A : PolAV (Spec (CommRingCat.of (FractionRing R)))} {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
   {U : PreU I D A G} {T : Over (Spec (CommRingCat.of R))} {F : Type} [Field F] [Algebra (FractionRing R) F]
-open ReciprocityTheory.ChartRestriction.G.DVR
 
 theorem exists_expF_sum {k : ℕ}
     (hlin : ∀ t t' t'' s s' s'' (c : F), U.ExpF F k t s → U.ExpF F k t' s' →
@@ -370,7 +369,6 @@ end Field
 section Phi
 variable {R : Type} [CommRing R] [IsDomain R] {D : DegPre R}
   {T : Over (Spec (CommRingCat.of R))} {F : Type} [Field F] [Algebra (FractionRing R) F]
-open ReciprocityTheory.ChartRestriction.G.DVR
 
 theorem exists_line {φ : TF (R := R) F ⟶ T} {b : T ⟶ D.P.A} {b' : TF (R := R) F ⟶ D.P.A} (hb : b' = φ ≫ b) {N : ℕ}
     (w : LB.Gen (LB.LinComb D.P.L (K := Fin 2) ![(1 : T ⟶ D.P.A).left, b.left] ![(N : ℤ), -(N : ℤ)])) (hw : w.IsGen)

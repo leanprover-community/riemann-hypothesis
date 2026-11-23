@@ -247,7 +247,6 @@ theorem radHead : KB.RadHead :=
 section wave
 
 open Matrix Finset Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.PBG
-open scoped ComplexConjugate
 
 section pairing
 

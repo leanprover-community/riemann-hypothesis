@@ -90,8 +90,6 @@ end GlobalTheory.ChartMult
 
 namespace GlobalTheory.ChartMult
 
-open Matrix
-open scoped ComplexConjugate
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
@@ -146,7 +144,6 @@ end GlobalTheory.ChartMult
 
 namespace GlobalTheory.ChartMult
 
-open Matrix
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -181,7 +178,6 @@ end GlobalTheory.ChartMult
 
 namespace GlobalTheory
 
-open Matrix
 
 theorem chart_mult_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : DataX E r) (x : Frame X.Ψ r) (ε ρ : ℝ), 0 < r → IsOrth X.toData x → 0 < ε → (r : ℝ) ^ 2 * ρ ≤ 1 / 100 → (∀ γ ∈ X.Γ, ∀ v ∈ X.L', (γ : Matrix (Fin r) (Fin r) E).mulVec v ∈ X.L') → (∀ v ∈ X.L', v ≠ 0 → ε ≤ ∑ τ, X.maj x τ (Data.emb τ.1 v)) → ({γ : GL (Fin r) E | γ ∈ X.Γ ∧ ∃ z z' : V (nd X.toData), ‖z‖ ≤ ρ ∧ ‖z'‖ ≤ ρ ∧ ∃ b ∈ Bor X.Ψ r, lact γ (cpt X.toData x z) = rmul (cpt X.toData x z') b}.encard : ℝ≥0∞) ≤ ENNReal.ofReal (multBd E r ε) := by
   intro E _ _ _ r X x ε ρ hr hx hε hρ hL hmin

@@ -187,7 +187,6 @@ namespace GlobalTheory.TwV.Xc
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-open Matrix
 
 theorem exists_pow_div_mem (w : HeightOneSpectrum (𝓞 F)) {D : ℕ} (hD : 0 < D) :
     ∃ m : ℕ, ∀ c : 𝓞 F, c ∈ w.asIdeal ^ m →
@@ -217,7 +216,6 @@ namespace GlobalTheory.TwV.Xc
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-open Matrix
 
 theorem inclE_algebraMap (R : Type) [CommRing R] [Algebra F R] (a : F) :
     inclE (F := F) R (algebraMap F E a) = (1 : E) ⊗ₜ[F] algebraMap F R a := by
@@ -278,7 +276,6 @@ end GlobalTheory.TwV.Xc
 
 namespace GlobalTheory.TwV.Xc
 
-open Matrix
 
 theorem latAd_smul_mem_of_sameOff : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (N : ℕ) (Lb : Submodule (𝓞 E) (Fin N → E)), Module.Finite (𝓞 E) Lb → Submodule.span E (Lb : Set (Fin N → E)) = ⊤ → ∀ (w : HeightOneSpectrum (𝓞 F)) (x x' : GL (Fin N) (AfE F E)), SameOff w x x' → ∃ m : ℕ, ∀ c : 𝓞 F, c ∈ w.asIdeal ^ m → ∀ y ∈ latAd x Lb, (algebraMap F E (c : F)) • y ∈ latAd x' Lb := by
   intro F E _ _ _ _ _ N Lb hfin hspan w x x' hx

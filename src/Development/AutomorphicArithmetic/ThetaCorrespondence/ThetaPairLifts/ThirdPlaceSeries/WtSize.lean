@@ -56,12 +56,10 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : D
 variable (P : WtPar Dw)
 end GlobalTheory.CovTop.WtRun
 namespace GlobalTheory.CovTop.WtRun
-open GlobalTheory.FlagTan (dimFlag)
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
 variable (P : WtPar Dw)
 end GlobalTheory.CovTop.WtRun
 namespace GlobalTheory.CovTop.WtRun
-open GlobalTheory.FlagTan (dimFlag)
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
 variable (P : WtPar Dw)
 end GlobalTheory.CovTop.WtRun

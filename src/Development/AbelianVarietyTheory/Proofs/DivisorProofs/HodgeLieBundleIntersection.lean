@@ -76,7 +76,6 @@ end GlobalTheory.PtFib
 
 namespace GlobalTheory.PtFib
 
-open MulAction GlobalTheory.MassConj
 
 variable {H X : Type} [Group H] [MulAction H X]
 

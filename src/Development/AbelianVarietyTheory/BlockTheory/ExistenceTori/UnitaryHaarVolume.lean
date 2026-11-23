@@ -113,8 +113,6 @@ def OrthFr : Set (Frame X.Ψ r) := {x | ∀ τ : X.Ψ, gram τ.1 X.Gm (mat x τ)
 def baseFr : Frame X.Ψ r := fun τ => ((X.signature τ).choose : Matrix (Fin r) (Fin r) ℂ)
 
 set_option autoImplicit false in
-open NumberField MeasureTheory in
-open scoped ENNReal in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHaarVolume.baseFr_mem :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHaarVolume.baseFr X ∈ _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHaarVolume.OrthFr X := by

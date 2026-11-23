@@ -498,7 +498,6 @@ noncomputable section
 
 namespace Formalism.L2.KerInert.PullbackComparison
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker Classical
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

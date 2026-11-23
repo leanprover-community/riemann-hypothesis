@@ -99,7 +99,6 @@ end GlobalTheory.Fam.FramesY
 
 namespace GlobalTheory.Fam.FramesY
 
-open GlobalTheory.FinPl GlobalTheory.SplitCharCond
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -117,7 +116,6 @@ end GlobalTheory.Fam.FramesY
 
 namespace GlobalTheory.Fam.FramesY
 
-open GlobalTheory.FinPl GlobalTheory.SplitCharCond
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -149,7 +147,6 @@ end GlobalTheory.Fam.FramesY
 
 namespace GlobalTheory.Fam.FramesY
 
-open GlobalTheory.FinPl GlobalTheory.SplitCharCond
 
 theorem normalFrames_exist : ∀ {D : D7} (a : XGeo D) (y : YRat a) {βT : GL (Fin D.sp.X'.rank) (Lev.EAf D)} {PP : Pl D.host.E}
     (l : LocX a βT PP) (n : ℕ), y.Tau (-D.host.xi0 ^ (D.R.m / 2)) →

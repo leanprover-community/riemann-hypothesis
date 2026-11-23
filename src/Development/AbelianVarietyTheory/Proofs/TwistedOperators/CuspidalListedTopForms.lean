@@ -110,7 +110,6 @@ end GlobalTheory.EndCusp
 
 namespace GlobalTheory.EndCusp
 
-open Formalism.IndefR.Mult Matrix
 
 variable {D : D7}
 
@@ -155,7 +154,6 @@ end GlobalTheory.EndCusp
 
 namespace GlobalTheory.EndCusp
 
-open Formalism.IndefR.Mult Matrix
 
 variable {D : D7}
 

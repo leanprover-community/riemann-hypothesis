@@ -60,8 +60,6 @@ end Gen
 
 section Glob
 
-open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
-open scoped TensorProduct ENNReal NNReal Matrix
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 

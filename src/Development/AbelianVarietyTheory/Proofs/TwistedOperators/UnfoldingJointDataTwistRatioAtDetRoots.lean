@@ -122,7 +122,6 @@ end GlobalTheory.ConTwist
 
 namespace GlobalTheory.ConTwist
 
-open GlobalTheory.RowChain GlobalTheory.Unf
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc}
 

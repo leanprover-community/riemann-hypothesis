@@ -92,7 +92,6 @@ end GlobalTheory.RawLift.RealLowRed
 
 namespace GlobalTheory.RawLift.RealLowRed
 
-open Formalism.IndefR.FWT
 
 variable {D : D7}
 
@@ -132,7 +131,6 @@ end GlobalTheory.RawLift.RealLowRed
 
 namespace GlobalTheory.RawLift.RealLowRed
 
-open Formalism.IndefR.FWT
 
 variable {D : D7} {V W : HSp D} {S' : D.what₂.Tau → SPar} {ψ : AddChar (AF D.host.F) ℂ} {χV χW : (AE D)ˣ →* Circle}
   {ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)} {μ : Measure (WO V W)} {𝓕 : Set (WO V W)}
@@ -179,7 +177,6 @@ end GlobalTheory.RawLift.RealLowRed
 
 namespace GlobalTheory.RawLift.RealLowRed
 
-open Formalism.IndefR.FWT
 
 variable {D : D7} {V W : HSp D} {S' : D.what₂.Tau → SPar} {ψ : AddChar (AF D.host.F) ℂ} {χV χW : (AE D)ˣ →* Circle}
   {ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)} {μ : Measure (WO V W)} {𝓕 : Set (WO V W)}
@@ -346,7 +343,6 @@ end GlobalTheory.RawLift.RealLowRed
 
 namespace GlobalTheory.RawLift.RealLowRed
 
-open Formalism.IndefR.FWT
 
 theorem realLow_of_ext : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ (i : Fin D.R.m) (t : T), (∀ μ 𝓕, IsCovolOne (ratL (Wc D i) (Vc D i)) μ 𝓕 → ∀ v : (∀ ρ, lowT (R.MW i (sg0 D A)) ρ), Formalism.IndefR.FWT.IsExtVec (R.MW i (sg0 D A)) (fun ρ => ((v ρ : (R.MW i (sg0 D A)).sm ρ))) → ∀ w, ∀ u ∈ GinfC (Wc D i),
     thetaIP μ 𝓕 (jointVec R i t v w) (R.ωP i t (1, u) (jointVec R i t v w)) =

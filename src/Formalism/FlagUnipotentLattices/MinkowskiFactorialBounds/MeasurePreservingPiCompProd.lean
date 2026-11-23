@@ -464,17 +464,14 @@ theorem cardCokernelRestriction : Formalism.HermitianLatticeCounting.LatticeSumB
 
 end homRestrict
 
-section hermConj
 
 open Module Matrix Formalism.HermitianLatticeCounting.LatticeSumBounds
 
-section herm
 
 variable {F K : Type} [Field F] [CommRing K] [StarRing K] [Algebra F K]
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 
-end herm
 
 end hermConj
 

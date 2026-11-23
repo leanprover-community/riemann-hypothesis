@@ -106,8 +106,6 @@ private lemma continuous_bOf :
   exact (hU τ).matrix_mul hs.matrix_diagonal
 
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 theorem _root_.GlobalTheory.Ker.exists_orthonormalisation : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r), ∃ o b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r, ContinuousOn o X.dom ∧ ContinuousOn b X.dom ∧ (∀ x ∈ X.dom, _root_.GlobalTheory.Ker.IsONFr X (o x) ∧ b x ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor X.Ψ r ∧ x = _root_.ReciprocityTheory.ChartRestriction.G.FD.rmul (o x) (b x) ∧ (∀ (τ : X.Ψ) (i : Fin r), ‖b x τ i i‖ ^ 2 = ‖_root_.ReciprocityTheory.ChartRestriction.G.FD.dmin X.Gm x τ i.succ / _root_.ReciprocityTheory.ChartRestriction.G.FD.dmin X.Gm x τ i.castSucc‖) ∧ ∀ u : X.Ψ → Matrix (Fin r) (Fin r) ℂ, (∀ (τ : X.Ψ) v w, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (u τ *ᵥ v) (u τ *ᵥ w) = _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm v w) → X.lmulC u x ∈ X.dom ∧ o (X.lmulC u x) = X.lmulC u (o x)) ∧ ∃ δ : ℝ, 0 < δ ∧ _root_.GlobalTheory.SW.slab X δ ⊆ X.dom ∧ ∃ C : ℝ, ∀ x ∈ _root_.GlobalTheory.SW.slab X δ, ∀ τ i j, ‖b x τ i j‖ ≤ C ∧ C⁻¹ ≤ ‖b x τ i i‖ := by
   intro E _ _ _ r X
   have hcontB := continuous_bOf X

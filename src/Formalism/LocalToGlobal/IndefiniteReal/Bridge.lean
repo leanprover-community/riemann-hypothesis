@@ -220,7 +220,6 @@ end Theta
 
 section Comparison₂
 
-open Formalism.L2.Theta
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

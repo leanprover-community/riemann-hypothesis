@@ -187,7 +187,6 @@ noncomputable section
 
 namespace GlobalTheory.ZarhinUniqIso
 
-open Matrix GlobalTheory.ZarhinFam
 
 variable {S : Scheme.{0}}
 

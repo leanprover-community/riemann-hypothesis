@@ -58,7 +58,6 @@ section Pr
 
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC Formalism.BasicNotions Formalism.MainNotions.N GlobalTheory.DefiniteBC
-open PositivityTheory.Rg.BcN
 
 namespace UpperTheory.BaseChangeIdentities
 

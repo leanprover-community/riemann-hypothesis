@@ -86,11 +86,8 @@ private lemma ne_zero_of_eval₂Hom_formallyEtale {A T : Type} [CommRing A] [Com
   have := congrArg TrivSqZeroExt.snd hc
   simp at this
 
-open CategoryTheory AlgebraicGeometry TopologicalSpace in
-open scoped TensorProduct in
 
 
-open MvPolynomial in
 private lemma formallyEtale_quotient_last {A T : Type} [CommRing A] [CommRing T] {n : ℕ}
     (ι : A →+* T) (τ : Fin (n + 1) → T) (h : (MvPolynomial.eval₂Hom ι τ).FormallyEtale) :
     (MvPolynomial.eval₂Hom ((Ideal.Quotient.mk (Ideal.span {τ (Fin.last n)})).comp ι)
@@ -170,8 +167,6 @@ private lemma formallyEtale_quotient_last {A T : Type} [CommRing A] [CommRing T]
     obtain ⟨f', rfl⟩ := hF.2 f
     exact ⟨f', hG.1 (by rw [hcomm, hf])⟩
 
-open CategoryTheory AlgebraicGeometry TopologicalSpace in
-open scoped TensorProduct in
 
 
 private lemma isDomain_of_formallyEtale_of_isLocalRing {A B : Type} [CommRing A] [IsDomain A]
@@ -220,8 +215,6 @@ private lemma isDomain_of_formallyEtale_of_isLocalRing {A B : Type} [CommRing A]
   exact e'.symm.toMulEquiv.isDomain
 
 
-open CategoryTheory AlgebraicGeometry TopologicalSpace in
-open scoped TensorProduct in
 
 
 theorem _root_.GlobalTheory.FieldPair.IsEtTower.exists_quotient_last :

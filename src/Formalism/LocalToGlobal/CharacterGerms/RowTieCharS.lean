@@ -153,13 +153,11 @@ theorem charGermSelf_holds : CharGermSelfSt := by
   · exact IntS.subst (fun _ => cc_X _) (fun _ => IntS_X _) hI
   · rw [AbstractGermZero.upG_subst (I := fun _ => I0) t ht0 g, key]
 
-section Chart
 
 open Formalism.L2.Pj NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)]
 
-end Chart
 
 end Formalism.L2.FormalSeriesBounds

@@ -55,14 +55,12 @@ theorem _root_.GlobalTheory.Sieg.prod_sub_pow_mul_of_isPrimitiveRoot {m : ℕ} {
     · rw [hζ.card_nthRootsFinset, Finset.card_image_of_injOn hinj, Finset.card_range]
   rw [hζ.pow_sub_pow_eq_prod_sub_mul x y hm, ← himage, Finset.prod_image hinj]
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
 theorem _root_.GlobalTheory.Sieg.ee_nat_div_eq_pow (m j : ℕ) :
     _root_.GlobalTheory.Sieg.ee ((j : ℂ) / m) = Complex.exp (2 * Real.pi * Complex.I / m) ^ j := by
   rw [_root_.GlobalTheory.Sieg.ee, ← Complex.exp_nat_mul]
   congr 1
   ring
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
 theorem _root_.GlobalTheory.Sieg.prod_cthFac_mul_pow {c m : ℕ} {ζ : ℂ} (hζ : IsPrimitiveRoot ζ m)
     (hm : 0 < m) (hc : Nat.Coprime c m) (q t : ℂ) (n : ℕ) :
     ∏ j ∈ Finset.range m, _root_.GlobalTheory.Sieg.cthFac c q (t * ζ ^ j) n =
@@ -87,7 +85,6 @@ theorem _root_.GlobalTheory.Sieg.prod_cthFac_mul_pow {c m : ℕ} {ζ : ℂ} (hζ
   ring
 
 
-open scoped UpperHalfPlane MatrixGroups Manifold in
 theorem _root_.GlobalTheory.Sieg.prod_cth_mul_ee : ∀ (c m : ℕ) (q t : ℂ), 1 < c →
     Nat.Coprime c 6 → 0 < m → Nat.Coprime c m →
     ‖q‖ < 1 → q ≠ 0 → t ≠ 0 → (∀ n : ℤ, q ^ n * t ^ (c * m) ≠ 1) →

@@ -252,23 +252,17 @@ theorem ev_zero' {m n : ℕ} {a : Fin m → Pt k n d} (ha : ∀ p q, constantCoe
     | simp [MvPowerSeries.coe_substAlgHom, ev]
   rw [e, map_zero]
 
-section Trans
 
 variable {F : Fin d → PS k 2 d} {φ φi : Pt k 1 d}
 
-end Trans
 
-section Trans2
 
 variable {F : Fin d → PS k 2 d} {φ φi : Pt k 1 d}
 
-end Trans2
 
-section Trans3
 
 variable {F : Fin d → PS k 2 d} {φ φi : Pt k 1 d}
 
-end Trans3
 
 end ChartChgPfTP
 

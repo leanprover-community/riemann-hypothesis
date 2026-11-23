@@ -95,12 +95,10 @@ theorem isClosedEmbedding_resGal [IsAlgClosure F Ω] [CharZero L] :
 
 end res
 
-section places
 
 variable {F L Ω : Type*} [Field F] [NumberField F] [Field L] [NumberField L] [Field Ω] [Algebra F L]
   [Algebra F Ω] [Algebra L Ω] [IsScalarTower F L Ω]
 
 
-end places
 
 end ReciprocityTheory.Gal

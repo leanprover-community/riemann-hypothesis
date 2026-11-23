@@ -239,7 +239,6 @@ end DualFramesAlt.eigenRingInvariants
 
 namespace DualFramesAlt.eigenRingInvariants
 
-open PowerSeries Formalism.IrreducibleCountingLemmas.WindowSums Classical
 
 variable {l : ℕ} [hl : Fact l.Prime]
 

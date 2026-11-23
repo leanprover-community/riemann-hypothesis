@@ -67,7 +67,6 @@ private theorem isHomogeneous_of_map_of_injective {R S : Type} [CommRing R] [Com
   intro h
   exact hν (hφ (h.trans (map_zero φ).symm))
 
-open Polynomial in
 private theorem mvPolynomial_eval_map_comp {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {n : ℕ}
     (x : Fin n → R) (p : MvPolynomial (Fin n) R) :
     MvPolynomial.eval (φ ∘ x) (MvPolynomial.map φ p) = φ (MvPolynomial.eval x p) := by
@@ -76,7 +75,6 @@ private theorem mvPolynomial_eval_map_comp {R S : Type} [CommRing R] [CommRing S
   | add p q hp hq => simp [hp, hq]
   | mul_X p i hp => simp [hp]
 
-open Polynomial in
 private theorem exists_ne_zero_homogeneous_zero_of_forall_subfield {F K : Type} [Field F] [Field K] [Algebra F K]
     [Algebra.IsAlgebraic F K]
     (hF : ∀ (n d : ℕ) (f : MvPolynomial (Fin n) F), f.IsHomogeneous d → 0 < d → d < n →
@@ -101,7 +99,6 @@ private theorem exists_ne_zero_homogeneous_zero_of_forall_subfield {F K : Type} 
     exact (algebraMap E K).injective (by simpa using congrFun h i)
   · rw [← hfE, mvPolynomial_eval_map_comp, hx, map_zero]
 
-open Polynomial in
 variable {σ k : Type} [CommRing k] in
 private theorem coeffHom_sum {ι : Type} (s : Finset ι) {e : ℕ} (p : ι → (MvPolynomial σ k)[X])
     (hp : ∀ i ∈ s, _root_.GlobalTheory.TsenCount.CoeffHom e (p i)) :
@@ -109,7 +106,6 @@ private theorem coeffHom_sum {ι : Type} (s : Finset ι) {e : ℕ} (p : ι → (
   rw [Polynomial.finsetSum_coeff]
   exact MvPolynomial.IsHomogeneous.sum _ _ _ fun i hi => hp i hi j
 
-open Polynomial in
 variable {σ k : Type} [CommRing k] in
 private theorem coeffHom_mul {e e' : ℕ} {p q : (MvPolynomial σ k)[X]}
     (hp : _root_.GlobalTheory.TsenCount.CoeffHom e p) (hq : _root_.GlobalTheory.TsenCount.CoeffHom e' q) :
@@ -117,7 +113,6 @@ private theorem coeffHom_mul {e e' : ℕ} {p q : (MvPolynomial σ k)[X]}
   rw [Polynomial.coeff_mul]
   exact MvPolynomial.IsHomogeneous.sum _ _ _ fun x _ => (hp x.1).mul (hq x.2)
 
-open Polynomial in
 variable {σ k : Type} [CommRing k] in
 private theorem coeffHom_prod {ι : Type} [DecidableEq ι] (s : Finset ι) (e : ι → ℕ)
     (p : ι → (MvPolynomial σ k)[X]) (hp : ∀ i ∈ s, _root_.GlobalTheory.TsenCount.CoeffHom (e i) (p i)) :
@@ -134,7 +129,6 @@ private theorem coeffHom_prod {ι : Type} [DecidableEq ι] (s : Finset ι) (e : 
     exact coeffHom_mul (hp a (Finset.mem_insert_self a s))
       (ih fun i hi => hp i (Finset.mem_insert_of_mem hi))
 
-open Polynomial in
 variable {σ k : Type} [CommRing k] in
 private theorem coeffHom_pow {e : ℕ} {p : (MvPolynomial σ k)[X]}
     (hp : _root_.GlobalTheory.TsenCount.CoeffHom e p) (m : ℕ) :
@@ -190,7 +184,6 @@ private theorem exists_ne_zero_common_zero_of_lt {k : Type} [Field k] [IsAlgClos
       hQJ (hQmin.1.2 (Ideal.subset_span ⟨i, rfl⟩))
     rwa [MvPolynomial.mem_vanishingIdeal_singleton_iff, MvPolynomial.aeval_eq_eval] at hx
 
-open Polynomial in
 private theorem exists_ne_zero_polynomial_zero_of_homogeneous {k : Type} [Field k] [IsAlgClosed k] {n d : ℕ}
     (F : MvPolynomial (Fin n) k[X]) (hF : F.IsHomogeneous d) (hd : 0 < d) (hdn : d < n) :
     ∃ x : Fin n → k[X], x ≠ 0 ∧ MvPolynomial.eval x F = 0 := by
@@ -308,7 +301,6 @@ private theorem exists_ne_zero_polynomial_zero_of_homogeneous {k : Type} [Field 
     · simp
   exact ht (hc.symm.trans hxi)
 
-open Polynomial in
 private theorem exists_ne_zero_ratFunc_homogeneous_zero {k : Type} [Field k] [IsAlgClosed k] (n d : ℕ)
     (f : MvPolynomial (Fin n) (RatFunc k)) (hf : f.IsHomogeneous d) (hd : 0 < d) (hdn : d < n) :
     ∃ x : Fin n → RatFunc k, x ≠ 0 ∧ MvPolynomial.eval x f = 0 := by
@@ -345,7 +337,6 @@ private theorem exists_ne_zero_ratFunc_homogeneous_zero {k : Type} [Field k] [Is
     exact (mul_eq_zero.1 key).resolve_left hc0
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.tsen_algebraic_extension_ratFunc :
     ∀ (k K : Type) [Field k] [IsAlgClosed k] [Field K] [Algebra (RatFunc k) K]
       [Algebra.IsAlgebraic (RatFunc k) K] (n d : ℕ) (f : MvPolynomial (Fin n) K),

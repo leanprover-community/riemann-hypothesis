@@ -95,7 +95,6 @@ private lemma xS_const {R : Type} [CommRing R] (W : WeierstrassCurve R) :
     constantCoeff (xS W) = 1 := by
   simp [xS]
 
-open Formalism.L2.Th1.A in
 private lemma xS_mem {R : Type} [CommRing R] (S : Subring R) (W : WeierstrassCurve R)
     (h₁ : W.a₁ ∈ S) (h₂ : W.a₂ ∈ S) (h₃ : W.a₃ ∈ S) (h₄ : W.a₄ ∈ S) (h₆ : W.a₆ ∈ S) :
     xS W ∈ ser S := by
@@ -107,7 +106,6 @@ private lemma xS_mem {R : Type} [CommRing R] (S : Subring R) (W : WeierstrassCur
   · rw [← coeff_zero_eq_constantCoeff_apply, wU, coeff_mk]
     exact (Formalism.ELL.wSeriesLead R W _ hw).2.2.2
 
-open Formalism.L2.Th1.A in
 private lemma xPlus_mem {R : Type} [CommRing R] (S : Subring R) (W : WeierstrassCurve R)
     (h₁ : W.a₁ ∈ S) (h₂ : W.a₂ ∈ S) (h₃ : W.a₃ ∈ S) (h₄ : W.a₄ ∈ S) (h₆ : W.a₆ ∈ S)
     {x y : R} (hx : x ∈ S) (hy : y ∈ S) : xPlus W x y ∈ ser S := by
@@ -126,7 +124,6 @@ private lemma xPlus_mem {R : Type} [CommRing R] (S : Subring R) (W : Weierstrass
         (mul_mem h₃ hy)) (pow_mem hx 3))) (pow_mem hX 3))
   exact add_mem (C_mem S hx) (mul_mem (mul_mem hX hn) (pow_mem hd 2))
 
-open Formalism.L2.Th1.A in
 private lemma xPlus_coeff {R : Type} [CommRing R] (W : WeierstrassCurve R) (x y : R) :
     coeff 0 (xPlus W x y) = x ∧ coeff 1 (xPlus W x y) = 2 * y + W.a₁ * x + W.a₃ ∧
       (2 * y + W.a₁ * x + W.a₃ = 0 →

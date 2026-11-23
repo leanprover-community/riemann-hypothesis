@@ -87,31 +87,23 @@ private lemma prV_mem_latS (w : HeightOneSpectrum (𝓞 F)) {m : ℕ} (L : Submo
     funext i
     simp [Subring.smul_def]
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] in
 private lemma inclE_mem_intV_of_mem_intOE (w : HeightOneSpectrum (𝓞 F)) {a : E} (ha : a ∈ _root_.Formalism.UG.intOE E) :
     _root_.Formalism.UG.inclE (F := F) (w.adicCompletion F) a ∈ _root_.Formalism.BasicNotions.intV (F := F) E w := by
   unfold _root_.Formalism.BasicNotions.intV _root_.Formalism.UG.tensInt
   exact Subring.subset_closure (Or.inl ⟨⟨a, ha⟩, rfl⟩)
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] in
 private lemma hform_one_apply {A : Type} [CommRing A] {m : ℕ} (σ : A →+* A) (x y : Fin m → A) :
     _root_.Formalism.UG.hform σ 1 x y = ∑ i, σ (x i) * y i := by
   unfold _root_.Formalism.UG.hform
   simp [Matrix.one_apply]
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] in
 private lemma algHom_coe_mem_intOE (σ : E →ₐ[F] E) (r : 𝓞 E) : σ (r : E) ∈ _root_.Formalism.UG.intOE E := by
   unfold _root_.Formalism.UG.intOE
   exact ⟨⟨σ r, (r.isIntegral_coe).map (σ.toRingHom.toIntAlgHom)⟩, rfl⟩
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] in
 private lemma sigR_mem_intV' (σ : E →ₐ[F] E) (w : HeightOneSpectrum (𝓞 F))
     {c : E ⊗[F] w.adicCompletion F} (hc : c ∈ _root_.Formalism.BasicNotions.intV (F := F) E w) :
@@ -139,8 +131,6 @@ private lemma sigR_mem_intV' (σ : E →ₐ[F] E) (w : HeightOneSpectrum (𝓞 F
       simp
   exact hle hc
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] in
 private lemma pairing_mem_intV_of_mem_dualSet (σ : E →ₐ[F] E) (w : HeightOneSpectrum (𝓞 F)) {m : ℕ}
     (L : Submodule (𝓞 E) (Fin m → E)) {z : Fin m → E} (hz : z ∈ _root_.Formalism.BasicNotions.dualSet (σ : E →+* E) 1 L)
@@ -169,8 +159,6 @@ private lemma pairing_mem_intV_of_mem_dualSet (σ : E →ₐ[F] E) (w : HeightOn
     simp [Subring.smul_def, map_mul, Finset.mul_sum, mul_assoc]
 
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.Mem.LevDual.unitary_carry_dual : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (w : HeightOneSpectrum (𝓞 F)) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (L : Submodule (𝓞 E) (Fin n → E)) (p : 𝓞 E), J = 1 → p ≠ 0 → (∀ x, x ∈ L ↔ ∀ j : Fin n, ∃ r : 𝓞 E, x j = (r : E) ∧ (j.1 + 1 = n → p ∣ r)) → ∀ (L' : Submodule (𝓞 E) (Fin n → E)) (Y : GL (Fin n) (TensorProduct F E (FiniteAdeleRing (𝓞 F) F))), Y ∈ _root_.Formalism.UG.UPts σ J (FiniteAdeleRing (𝓞 F) F) → (∀ x : Fin n → TensorProduct F E (FiniteAdeleRing (𝓞 F) F), x ∈ _root_.Formalism.UG.latS (F := F) (FiniteAdeleRing (𝓞 F) F) (_root_.Formalism.UG.tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (_root_.Formalism.UG.intOE E) (_root_.Formalism.UG.intAd F)) L' ↔ ((Y⁻¹ : GL (Fin n) (TensorProduct F E (FiniteAdeleRing (𝓞 F) F))) : Matrix (Fin n) (Fin n) (TensorProduct F E (FiniteAdeleRing (𝓞 F) F))) *ᵥ x ∈ _root_.Formalism.UG.latS (F := F) (FiniteAdeleRing (𝓞 F) F) (_root_.Formalism.UG.tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (_root_.Formalism.UG.intOE E) (_root_.Formalism.UG.intAd F)) L) → ∀ z ∈ _root_.Formalism.BasicNotions.dualSet (σ : E →+* E) J L', ((_root_.Formalism.UG.bc (_root_.Formalism.UG.prV (E := E) w) Y)⁻¹).1 *ᵥ (fun a => _root_.Formalism.UG.inclE (F := F) (w.adicCompletion F) (z a)) ∈ _root_.Formalism.UG.latS (F := F) (w.adicCompletion F) (_root_.Formalism.BasicNotions.intV E w) (Submodule.span (𝓞 E) (_root_.Formalism.BasicNotions.dualSet (σ : E →+* E) J L)) := by
   intro F E _ _ _ _ _ σ w n J L p hJ hp hL L' Y hY hLat z hz
   subst hJ

@@ -67,7 +67,6 @@ theorem _root_.GlobalTheory.Per.Val.exists_norm_eq (x : _root_.Formalism.BasicNo
   push_cast
   field_simp
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Per.Val.mem_OL_iff (LL : _root_.Formalism.BasicNotions.Loc.FinExt l) (x : ↥LL.1) :
     x ∈ _root_.Formalism.BasicNotions.Loc.OL LL ↔ ‖(x : _root_.Formalism.BasicNotions.Loc.Om l)‖ ≤ 1 := by
@@ -96,14 +95,12 @@ theorem _root_.GlobalTheory.Per.Val.mem_OL_iff (LL : _root_.Formalism.BasicNotio
 open Classical in
 def vf (x : Om l) : WithTop ℚ := if h : x = 0 then ⊤ else ((exists_norm_eq x h).choose : ℚ)
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem exists_rat_vf_eq_norm_eq_rpow_of_ne_zero {x : _root_.Formalism.BasicNotions.Loc.Om l} (hx : x ≠ 0) :
     ∃ q : ℚ, _root_.GlobalTheory.Per.Val.vf x = q ∧ ‖x‖ = (l : ℝ) ^ (-(q : ℝ)) :=
   ⟨_, by simp [_root_.GlobalTheory.Per.Val.vf, hx],
     (_root_.GlobalTheory.Per.Val.exists_norm_eq x hx).choose_spec⟩
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem prime_rpow_neg_le_iff (a b : ℚ) :
     (l : ℝ) ^ (-(a : ℝ)) ≤ (l : ℝ) ^ (-(b : ℝ)) ↔ b ≤ a := by
@@ -111,7 +108,6 @@ private theorem prime_rpow_neg_le_iff (a b : ℚ) :
   rw [Real.rpow_le_rpow_left_iff hl, neg_le_neg_iff]
   exact_mod_cast Iff.rfl
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 private theorem prime_rpow_neg_inj (a b : ℚ) :
     (l : ℝ) ^ (-(a : ℝ)) = (l : ℝ) ^ (-(b : ℝ)) ↔ a = b := by
@@ -120,7 +116,6 @@ private theorem prime_rpow_neg_inj (a b : ℚ) :
     exact le_antisymm ((prime_rpow_neg_le_iff b a).1 h.ge) ((prime_rpow_neg_le_iff a b).1 h.le)
   · rintro rfl; rfl
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Per.Val.vf_eq_iff (x : _root_.Formalism.BasicNotions.Loc.Om l) (q : ℚ) :
     _root_.GlobalTheory.Per.Val.vf x = (q : WithTop ℚ) ↔ ‖x‖ = (l : ℝ) ^ (-(q : ℝ)) := by
@@ -132,12 +127,10 @@ theorem _root_.GlobalTheory.Per.Val.vf_eq_iff (x : _root_.Formalism.BasicNotions
   · obtain ⟨a, ha, hn⟩ := exists_rat_vf_eq_norm_eq_rpow_of_ne_zero hx
     rw [ha, hn, WithTop.coe_eq_coe, prime_rpow_neg_inj]
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Per.Val.vf_zero : _root_.GlobalTheory.Per.Val.vf (0 : _root_.Formalism.BasicNotions.Loc.Om l) = ⊤ := by
   simp [_root_.GlobalTheory.Per.Val.vf]
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Per.Val.le_vf_iff (x : _root_.Formalism.BasicNotions.Loc.Om l) (q : ℚ) :
     (q : WithTop ℚ) ≤ _root_.GlobalTheory.Per.Val.vf x ↔ ‖x‖ ≤ (l : ℝ) ^ (-(q : ℝ)) := by
@@ -149,7 +142,6 @@ theorem _root_.GlobalTheory.Per.Val.le_vf_iff (x : _root_.Formalism.BasicNotions
   · obtain ⟨a, ha, hn⟩ := exists_rat_vf_eq_norm_eq_rpow_of_ne_zero hx
     rw [ha, hn, WithTop.coe_le_coe, prime_rpow_neg_le_iff]
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Per.Val.vf_mul (x y : _root_.Formalism.BasicNotions.Loc.Om l) :
     _root_.GlobalTheory.Per.Val.vf (x * y) =
@@ -166,7 +158,6 @@ theorem _root_.GlobalTheory.Per.Val.vf_mul (x y : _root_.Formalism.BasicNotions.
   push_cast
   ring_nf
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Per.Val.vf_add (x y : _root_.Formalism.BasicNotions.Loc.Om l) :
     min (_root_.GlobalTheory.Per.Val.vf x) (_root_.GlobalTheory.Per.Val.vf y) ≤
@@ -191,13 +182,11 @@ theorem _root_.GlobalTheory.Per.Val.vf_add (x y : _root_.Formalism.BasicNotions.
     rw [max_eq_right ((prime_rpow_neg_le_iff a b).2 h), prime_rpow_neg_le_iff] at hmax
     exact hmax
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Per.Val.vf_one : _root_.GlobalTheory.Per.Val.vf (1 : _root_.Formalism.BasicNotions.Loc.Om l) = 0 := by
   have := (_root_.GlobalTheory.Per.Val.vf_eq_iff (1 : _root_.Formalism.BasicNotions.Loc.Om l) 0).2 (by simp)
   exact_mod_cast this
 
-open Polynomial in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.Per.Val.vf_l : _root_.GlobalTheory.Per.Val.vf ((l : ℕ) : _root_.Formalism.BasicNotions.Loc.Om l) = 1 := by
   have h : ‖((l : ℕ) : _root_.Formalism.BasicNotions.Loc.Om l)‖ = (l : ℝ) ^ (-((1 : ℚ) : ℝ)) := by

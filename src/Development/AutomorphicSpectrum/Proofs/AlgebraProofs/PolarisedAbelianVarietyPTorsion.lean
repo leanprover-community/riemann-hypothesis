@@ -74,7 +74,6 @@ theorem equation_map {A B : Type} [CommRing A] [CommRing B] (f : A →+* B)
   simpa only [map_add (f := _), map_mul, map_pow, WeierstrassCurve.map_a₁, WeierstrassCurve.map_a₂, WeierstrassCurve.map_a₃, WeierstrassCurve.map_a₄, WeierstrassCurve.map_a₆] using this
 
 
-open GlobalTheory.WeierstrassCurve in
 theorem exists_polAV_of_root (p : ℕ) {R C : Type} [CommRing R] [IsDomain R] [Field C] [Algebra R C]
     (hinj : Function.Injective (algebraMap R C)) (W : _root_.WeierstrassCurve R) (hΔ : IsUnit W.Δ)
     (x y : R) (hE : W.toAffine.Equation x y)
@@ -353,7 +352,6 @@ end GlobalTheory.CompanionTheory.Ar.GR.OrdPt
 
 namespace GlobalTheory.CompanionTheory.Ar.GR.OrdPt
 
-open Polynomial
 
 section Root
 

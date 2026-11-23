@@ -270,7 +270,6 @@ end Core
 
 section Prelim
 open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum MeasureTheory
-open scoped BigOperators
 
 theorem infinite_norm_one (D : D7) :
     Set.Infinite {z : D.host.K | D.host.φ₀ (z : D.host.E) * (starRingEnd ℂ) (D.host.φ₀ (z : D.host.E)) = 1} := by
@@ -421,7 +420,6 @@ end Prelim
 
 section Torus
 open NumberField Classical Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum MeasureTheory GlobalTheory.Phase
-open scoped BigOperators
 
 theorem iop_smul (D : D7) (T : Tor D) {N N' : ℕ} (A B : AddSubgroup (VC D N N')) (c : ℂ) (G : VC D N N' → ℂ)
     (z : VC D N N') : Iop D T A B (fun w => c * G w) z = c * Iop D T A B G z := by

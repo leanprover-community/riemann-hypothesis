@@ -57,8 +57,6 @@ theorem _root_.GlobalTheory.TestLat.Model.mem_sumLat (lam : ι → _root_.Formal
 
 
 
-open NumberField in
-open scoped Matrix ComplexOrder in
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] {n N : ℕ} {C : Type} in
 omit [NumberField K] in
 theorem _root_.GlobalTheory.TestLat.Model.valAt_bijective (lam : ι → _root_.Formalism.BasicNotions.DomWeight n) (e : Fin N ≃ C × _root_.Formalism.L2.DIV.VVIdx lam) :
@@ -72,8 +70,6 @@ theorem _root_.GlobalTheory.TestLat.Model.valAt_bijective (lam : ι → _root_.F
     simp [_root_.GlobalTheory.TestLat.valAt, LinearMap.funLeft_apply]
 
 
-open NumberField in
-open scoped Matrix ComplexOrder in
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] {n N : ℕ} {C : Type} in
 omit [NumberField K] in
 theorem _root_.GlobalTheory.TestLat.Model.sumGram_form [StarRing K] [Fintype C] (lam : ι → _root_.Formalism.BasicNotions.DomWeight n)

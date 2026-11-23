@@ -126,11 +126,9 @@ def toH : chrA D →* HChar D.host.E where
 
 end AdBC
 
-section Dens
 
 variable {L : Type} [Field L] [NumberField L]
 
-end Dens
 
 namespace AdBC
 
@@ -152,7 +150,6 @@ structure ChrGaps (B : AdBC D) : Prop where
   unr : B.UnrAll
   etaU : EtaU D
 
-section Frame
 
 variable {C : CharFrame D} {nch : NChoice D} (Tp : TupTied D C nch)
 
@@ -161,7 +158,6 @@ variable (B : AdBC D)
 variable {ψ : AddChar (AF D.host.F) ℂ} (Gc : ChrGaps B) (G : FormGaps D) (P : PerGaps ψ) (hE : ExpU D) (Om : WeilC ψ)
   (f : Free Om)
 
-end Frame
 
 end Formalism.L2.Fam.ThC
 

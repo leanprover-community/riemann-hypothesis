@@ -120,8 +120,6 @@ private theorem exists_unitary_hom_extending_of_dense_isometric {G : Type} [Grou
     change E (g * g') x = E g (E g' x)
     rw [hEmul]; rfl
 
-open Matrix MeasureTheory Complex in
-open scoped InnerProductSpace in
 private theorem dP_sign_fromBlocks_diagonal_eq_det (p q : ℕ) (A : Matrix (Fin p) (Fin p) ℂ)
     (D : Matrix (Fin q) (Fin q) ℂ) :
     _root_.GlobalTheory.RealWeil.dP (fromBlocks (1 : Matrix (Fin p) (Fin p) ℂ) 0 0 (-1 : Matrix (Fin q) (Fin q) ℂ))
@@ -137,8 +135,6 @@ private theorem dP_sign_fromBlocks_diagonal_eq_det (p q : ℕ) (A : Matrix (Fin 
   rw [this, det_fromBlocks_zero₂₁, det_one, mul_one]
 
 
-open Matrix MeasureTheory Complex in
-open scoped InnerProductSpace in
 theorem _root_.GlobalTheory.FockRep.exists_unitary_osc : ∀ (p q : ℕ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (ρ : (Fin p ⊕ Fin q → ℂ) → (H ≃ₗᵢ[ℂ] H)), (∀ v, Continuous fun z => ρ z v) → (∀ z w v, ρ z (ρ w v) = Complex.exp (Real.pi * Complex.I * ((∑ i, z (Sum.inl i) * star (w (Sum.inl i))) - ∑ j, z (Sum.inr j) * star (w (Sum.inr j))).im) • ρ (z + w) v) → ∃ ω : _root_.GlobalTheory.WeilM.UG (Complex.conjAe : ℂ →ₐ[ℝ] ℂ) (Matrix.fromBlocks (1 : Matrix (Fin p) (Fin p) ℂ) 0 0 (-1 : Matrix (Fin q) (Fin q) ℂ)) →* (H ≃ₗᵢ[ℂ] H), (∀ v, Continuous fun g => ω g v) ∧ (∀ g z v, ω g (ρ z v) = ρ ((g.1 : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ) *ᵥ z) (ω g v)) ∧ (∀ A : H →L[ℂ] H, (∀ z v, A (ρ z v) = ρ z (A v)) → ∀ g v, A (ω g v) = ω g (A v)) ∧ ∀ g, (g.1 : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ).toBlocks₁₂ = 0 → (g.1 : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ).toBlocks₂₁ = 0 → ∀ v, (∀ z, ⟪v, ρ z v⟫_ℂ = Complex.exp (-(Real.pi / 2) * ∑ a, ((‖z a‖ ^ 2 : ℝ) : ℂ)) * ⟪v, v⟫_ℂ) → ω g v = (g.1 : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ).toBlocks₁₁.det • v := by
   intro p q H _ _ _ ρ hρc hρm
   let S : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ :=

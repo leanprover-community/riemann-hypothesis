@@ -99,7 +99,6 @@ theorem epsD_mul_self {D : D7} (S : HSp D) : epsD S * epsD S = 1 := by
   rw [mt_epsD, blkMat_mul, neg_mul_neg, Matrix.one_mul, blkMat_one]
 
 
-open GlobalTheory.DiagThetaRule in
 theorem exists_siegel_conj (D : D7) (S : HSp D) (JB : Matrix (Fin S.rank) (Fin S.rank) D.host.E)
     (p : GlobalTheory.WeilM.UG (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (GlobalTheory.WeilM.dbl (incM D.host.F JB)))
     (t : GL (Fin S.rank) (AF D.host.F ⊗[D.host.F] D.host.E))

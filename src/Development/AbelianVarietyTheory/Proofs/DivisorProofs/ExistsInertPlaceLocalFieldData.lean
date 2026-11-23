@@ -109,7 +109,6 @@ end GlobalTheory.InertPsi
 
 namespace GlobalTheory.InertPsi
 
-open Formalism.UG GlobalTheory.LFun.InertChart GlobalTheory.InertCoord
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {v : HeightOneSpectrum (𝓞 F)} {w : HeightOneSpectrum (𝓞 E)} {σ : E →ₐ[F] E}

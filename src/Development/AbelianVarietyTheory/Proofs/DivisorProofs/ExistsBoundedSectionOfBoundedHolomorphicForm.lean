@@ -202,7 +202,6 @@ theorem archM_mul {D : D7} (V : HSp D) (θ : Ainf D.host.F ⊗[D.host.F] D.host.
   rw [map_mul, Units.val_mul, Matrix.map_mul]
 
 
-open ReciprocityTheory.ChartRestriction.G.FD in
 theorem exists_sec (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S)
     (w : D.what₂.Tau → Fin V.rank → ℤ) (Comp : Type) (X : Comp → Data D.host.E V.rank)
     (la : ∀ k, Wt (X k).Ψ V.rank) (dict : GA D V → Σ k, Frame (X k).Ψ V.rank) (mu : GA D V → ℂ) (c : Comp → ℂ)
@@ -380,7 +379,6 @@ theorem exists_sec (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → S
     rw [f₁]
 
 
-open ReciprocityTheory.ChartRestriction.G.FD in
 theorem exists_bddSec_adel_eq : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (w : D.what₂.Tau → Fin V.rank → ℤ) (r : ℕ) (hr : V.rank = r) (Comp : Type) (X : Comp → ReciprocityTheory.ChartRestriction.G.FD.Data D.host.E r) (la : ∀ k, ReciprocityTheory.ChartRestriction.G.FD.Wt (X k).Ψ r) (dict : GA D V → Σ k, ReciprocityTheory.ChartRestriction.G.FD.Frame (X k).Ψ r) (mu : GA D V → ℂ) (c : Comp → ℂ) (Kf : Subgroup (GA D V)), HolShape M → GoodDict θ M w hr X la dict mu c Kf → ∀ φ, HolForm θ M w (Kf : Set (GA D V)) (fun _ => 1) φ → ∃ P : FDSec X, P ∈ offZero X ∧ (∀ k, (X k).IsBddSec (la k) (P k)) ∧ adel V dict (muPin V dict mu c) P = φ := by
   intro D θ V S M w r hr Comp X la dict mu c Kf hM hG φ hφ
   subst hr

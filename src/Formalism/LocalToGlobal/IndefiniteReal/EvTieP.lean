@@ -110,7 +110,6 @@ end Face
 
 section Ok
 
-open Formalism.BasicNotions Formalism.IndefR.Links
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

@@ -321,7 +321,6 @@ end Torus
 
 section Coordinates
 
-open AddMonoidAlgebra
 
 variable {R : Type*} [CommRing R] {X : Type*} [AddCommGroup X] {ι : Type*}
 

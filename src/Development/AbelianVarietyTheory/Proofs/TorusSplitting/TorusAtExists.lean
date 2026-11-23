@@ -80,7 +80,6 @@ private lemma span_col_mul_castLE_eq_span_col {r i : ℕ} (hi : i ≤ r)
   simp only [Function.comp_def, Fintype.card_fin] at h1
   omega
 
-open NumberField in
 private lemma exists_frame_span_castLE_eq_span_col (E : Type) [Field E] [NumberField E]
     [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) :
     ∀ x ∈ X.dom, ∃ e : X.Ψ → Fin r → Fin r → ℂ,
@@ -105,7 +104,6 @@ private lemma exists_frame_span_castLE_eq_span_col (E : Type) [Field E] [NumberF
   exact span_col_mul_castLE_eq_span_col hi (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ) (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat (_root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.bOf X x) τ)
     (fun a c h => (hb τ).2 a c h) hli
 
-open NumberField in
 private lemma im_hermC_emb_eq_sign_mul_trace (E : Type) [Field E] [NumberField E]
     [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) :
     ∃ sg : ℝ, (sg = 1 ∨ sg = -1) ∧ ∀ (u v : Fin r → E),
@@ -138,7 +136,6 @@ private lemma im_hermC_emb_eq_sign_mul_trace (E : Type) [Field E] [NumberField E
     ring
 
 
-open NumberField in
 theorem _root_.GlobalTheory.torusAtExists : _root_.ReciprocityTheory.ChartRestriction.G.I2.TorusAtExistsStatement :=
   _root_.GlobalTheory.torusAtExists_of_parts exists_frame_span_castLE_eq_span_col
     _root_.GlobalTheory.CMLattice.exists_basis_lattice im_hermC_emb_eq_sign_mul_trace

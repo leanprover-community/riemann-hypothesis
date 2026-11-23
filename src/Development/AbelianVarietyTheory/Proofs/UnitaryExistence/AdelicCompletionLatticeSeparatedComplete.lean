@@ -63,8 +63,6 @@ private theorem comb_apply_eq_sum_tmul {m : ℕ} (e : Fin m → Fin n → E)
     (a : Fin m → FiniteAdeleRing (𝓞 F) F) :
     _root_.GlobalTheory.AdLat.Complete.comb e a = ∑ k, fun j => a k ⊗ₜ[F] e k j := rfl
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem exists_integral_comb_of_mem_hat {m : ℕ} {e : Fin m → Fin n → E}
     {L : Set (Fin n → E)} (he : ∀ x ∈ L, ∃ c : Fin m → ℤ, ∑ k, c k • e k = x)
@@ -93,8 +91,6 @@ private theorem exists_integral_comb_of_mem_hat {m : ℕ} {e : Fin m → Fin n �
     obtain ⟨a, ha, rfl⟩ := hx
     exact ⟨-a, fun k v => neg_mem (ha k v), (map_neg _ a).symm⟩
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem eq_zero_of_forall_nsmul_mem_hat [FiniteDimensional F E] {m : ℕ}
     {e : Fin m → Fin n → E} {L : Set (Fin n → E)}
@@ -144,8 +140,6 @@ private theorem eq_zero_of_forall_nsmul_mem_hat [FiniteDimensional F E] {m : ℕ
   ext ℓ
   simp [hcoord i ℓ]
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem comb_mem_hat_of_integral {m : ℕ} {e : Fin m → Fin n → E}
     {L : Set (Fin n → E)} (he : ∀ k, e k ∈ L) {a : Fin m → FiniteAdeleRing (𝓞 F) F}
@@ -155,8 +149,6 @@ private theorem comb_mem_hat_of_integral {m : ℕ} {e : Fin m → Fin n → E}
   refine AddSubgroup.sum_mem _ fun k _ => AddSubgroup.subset_closure ?_
   exact ⟨a k, ha k, e k, he k, rfl⟩
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem exists_limit_in_hat_of_cauchy_nsmul {m : ℕ} {e : Fin m → Fin n → E}
     {L : Set (Fin n → E)} (he : ∀ x ∈ L, ∃ c : Fin m → ℤ, ∑ k, c k • e k = x)
@@ -242,7 +234,6 @@ private theorem exists_limit_in_hat_of_cauchy_nsmul {m : ℕ} {e : Fin m → Fin
   rw [hyA, map_add (f := _), map_nsmul, hA, hxw, smul_add, add_assoc]
 
 
-open NumberField IsDedekindDomain in
 open scoped TensorProduct Matrix nonZeroDivisors in
 theorem _root_.GlobalTheory.AdLat.Complete.hat_separated_complete : ∀ (F E : Type) [Field F] [NumberField F]
     [Field E] [NumberField E] [Algebra F E] (n : ℕ) (L : Submodule (𝓞 E) (Fin n → E)), L.FG →

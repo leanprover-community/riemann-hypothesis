@@ -191,7 +191,6 @@ end Apolar
 
 section Series
 
-open MvPolynomial
 
 variable {σ : Type} [Fintype σ] [DecidableEq σ] {S : Type} [CommRing S] {K : Type} [Field K] [Algebra K S]
 

@@ -119,7 +119,6 @@ end Regroup
 
 section Tr
 
-open scoped Classical
 
 variable {X Y : Scheme.{0}} (L : LB X)
 
@@ -170,7 +169,6 @@ end Tr
 
 section Transport
 
-open scoped Classical
 
 variable {X Y : Scheme.{0}} (L : LB X) {K K' : Type} [Fintype K] [Fintype K']
   (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y ⟶ X)) (ε' : K' → ℤ)
@@ -335,7 +333,6 @@ end Transport
 
 section SecTransport
 
-open scoped Classical
 
 variable {X Y : Scheme.{0}} {L : LB X} {K K' : Type} [Fintype K] [Fintype K']
   {φ : K → (Y ⟶ X)} {ε : K → ℤ} {φ' : K' → (Y ⟶ X)} {ε' : K' → ℤ}
@@ -494,7 +491,6 @@ end SecTransport
 
 section FSum
 
-open scoped Classical
 
 variable {X Y : Scheme.{0}} {K K' : Type} [Fintype K] [Fintype K']
 

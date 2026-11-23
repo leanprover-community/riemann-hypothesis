@@ -130,7 +130,6 @@ theorem linearIndependent_tmul_D {k A : Type} [CommRing k] [CommRing A] [IsLocal
   exact this
 
 
-open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX) in
 theorem formallySmooth_residueField {k : Type} [Field k] [PerfectField k] {X : Scheme.{0}}
     (p : X ⟶ Sp k) {n : ℕ} [SmoothOfRelativeDimension n p] {U : X.Opens} (hU : IsAffineOpen U)
     (y : X) (hy : y ∈ U) [Algebra k (X.presheaf.stalk y)]
@@ -159,7 +158,6 @@ theorem formallySmooth_residueField {k : Type} [Field k] [PerfectField k] {X : S
   exact Algebra.FormallySmooth.of_perfectField
 
 
-open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX) in
 theorem exists_adapted_frame : ∀ {X : Scheme.{0}} {p : X ⟶ Sp ℂ} {n : ℕ} [SmoothOfRelativeDimension n p] (y : X) {J : Type}
     [Fintype J] (f : J → X.presheaf.stalk y)
     (hf : ∀ j, f j ∈ IsLocalRing.maximalIdeal (X.presheaf.stalk y)),

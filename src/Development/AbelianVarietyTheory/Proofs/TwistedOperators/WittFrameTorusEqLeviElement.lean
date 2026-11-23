@@ -176,7 +176,6 @@ noncomputable section
 
 namespace GlobalTheory.WittLevi
 
-open GlobalTheory.AdelicU
 
 variable {D : D7}
 

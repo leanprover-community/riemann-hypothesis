@@ -62,8 +62,6 @@ end GlobalTheory.HtOrth.Transp
 
 namespace GlobalTheory.HtOrth.Transp
 
-open NumberField IsDedekindDomain GlobalTheory.AdelicU GlobalTheory.HtOrth
-open scoped NNReal
 
 variable {D : D7}
 
@@ -93,8 +91,6 @@ end GlobalTheory.HtOrth.Transp
 
 namespace GlobalTheory.HtOrth.Transp
 
-open NumberField IsDedekindDomain GlobalTheory.AdelicU GlobalTheory.HtOrth
-open scoped NNReal
 
 variable {D : D7}
 
@@ -139,8 +135,6 @@ end GlobalTheory.HtOrth.Transp
 
 namespace GlobalTheory.HtOrth.Transp
 
-open NumberField IsDedekindDomain GlobalTheory.AdelicU GlobalTheory.HtOrth
-open scoped NNReal
 
 variable {D : D7}
 
@@ -180,8 +174,6 @@ end GlobalTheory.HtOrth.Transp
 
 namespace GlobalTheory.HtOrth.Transp
 
-open NumberField IsDedekindDomain GlobalTheory.AdelicU GlobalTheory.HtOrth
-open scoped NNReal
 
 variable {D : D7}
 
@@ -199,8 +191,6 @@ end GlobalTheory.HtOrth.Transp
 
 namespace GlobalTheory.HtOrth.Transp
 
-open NumberField IsDedekindDomain GlobalTheory.AdelicU GlobalTheory.HtOrth
-open scoped NNReal
 
 theorem vsize_seen_emb_le : ∀ (D : D7) (S A B : HSp D) (o : GlobalTheory.MixModel.OrthDec S A B), ∃ C : ℝ,
     ∀ (h : GA D A) (η : Fin A.rank → D.host.E),

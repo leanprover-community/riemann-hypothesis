@@ -111,7 +111,6 @@ end Local
 end GlobalTheory.LocFlatFB
 
 namespace GlobalTheory.LocFlatFB
-open GlobalTheory.LocFlat
 
 section Frames
 
@@ -242,7 +241,6 @@ end Frames
 end GlobalTheory.LocFlatFB
 
 namespace GlobalTheory.LocFlatFB
-open GlobalTheory.LocFlat
 
 section Adelic
 

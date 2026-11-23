@@ -185,7 +185,6 @@ end GlobalTheory.CompanionTheory.VolVal
 
 namespace GlobalTheory.CompanionTheory.VolVal
 
-open GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.RootEx GlobalTheory.FunObj ValuativeRel Matrix
 
 section Root
 
@@ -257,7 +256,6 @@ end GlobalTheory.CompanionTheory.VolVal
 
 namespace GlobalTheory.CompanionTheory.VolVal
 
-open GlobalTheory.SplitWeil GlobalTheory.SplitFlip GlobalTheory.RootEx GlobalTheory.FunObj ValuativeRel Matrix
 open Formalism.BasicNotions Formalism.L2.DIV IsDedekindDomain NumberField
 open Formalism.DivisionValues (vw lw)
 
@@ -295,7 +293,6 @@ end GlobalTheory.CompanionTheory.VolVal
 
 namespace GlobalTheory.CompanionTheory.VolVal
 
-open Formalism.DivisionValues (vw lw)
 open IsDedekindDomain NumberField
 
 section Val
@@ -401,9 +398,7 @@ end GlobalTheory.CompanionTheory.VolVal
 
 namespace GlobalTheory.CompanionTheory.VolVal
 
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.SumSize GlobalTheory.FunObj.AaCoef
-open Formalism.DivisionValues (vw lw)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw
   GlobalTheory.FunObj.borelSpaceKw
@@ -478,9 +473,6 @@ end GlobalTheory.CompanionTheory.VolVal
 
 namespace GlobalTheory.CompanionTheory.VolVal
 
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
-open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.SumSize GlobalTheory.FunObj.AaCoef
-open Formalism.DivisionValues (vw lw)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw
   GlobalTheory.FunObj.borelSpaceKw
@@ -614,9 +606,6 @@ end GlobalTheory.CompanionTheory.VolVal
 
 namespace GlobalTheory.CompanionTheory.VolVal
 
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
-open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.SumSize GlobalTheory.FunObj.AaCoef
-open Formalism.DivisionValues (vw lw)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw
   GlobalTheory.FunObj.borelSpaceKw
@@ -735,6 +724,5 @@ end
 
 end ResidueCardinalityNilpotence
 section
-open GlobalTheory.SumSize GlobalTheory.RowClaim
 
 end

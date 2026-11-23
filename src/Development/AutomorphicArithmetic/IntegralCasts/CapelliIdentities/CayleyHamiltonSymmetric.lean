@@ -274,7 +274,6 @@ private lemma homog_of_scale (P : MvPolynomial σ B) (d : ℕ)
   rw [if_neg hne]
   simp
 
-open MvPolynomial in
 private lemma coeff_kill [DecidableEq σ] (T : Finset σ) (P : MvPolynomial σ B) (α : σ →₀ ℕ) :
     (aeval (fun s => if s ∈ T then (X s : MvPolynomial σ B) else 0) P).coeff α =
       if α.support ⊆ T then P.coeff α else 0 := by
@@ -553,7 +552,6 @@ open Polynomial in
 private def lin {B : Type} [CommRing B] (x : MonoidAlgebra B G) : MonoidAlgebra B[X] G :=
   single 1 X - mapRingHom G C x
 
-open Polynomial in
 private def pc (n : ℕ) {B : Type} [CommRing B] (x : MonoidAlgebra B G) (j : ℕ) : MonoidAlgebra B (Fin n → G) :=
   MonoidAlgebra.map (lcoeff B j : B[X] →+ B) (tens fun _ => lin x)
 
@@ -589,7 +587,6 @@ private lemma pc_top (x : MonoidAlgebra B G) : pc n x n = 1 := by
     coeff_single_apply, coeff_mapRingHom, Pi.one_apply, one_def]
   split_ifs <;> simp [Polynomial.coeff_C]
 
-open Polynomial in
 private lemma position_lin (x : MonoidAlgebra B G) (i : Fin n) :
     intersection_update_fsHerm_neg_one i (lin x) = (X : B[X]) • 1 - mapRingHom _ (algebraMap B B[X]) (intersection_update_fsHerm_neg_one i x) := by
   rw [lin, map_sub, position_map, ← map_one (intersection_update_fsHerm_neg_one i), ← map_smul, one_def, smul_single', mul_one]
@@ -604,7 +601,6 @@ private lemma commute_pc (x : MonoidAlgebra B G) (j : ℕ) (v : MonoidAlgebra B 
   rw [position_lin]
   exact ((Commute.one_right _).smul_right _).sub_right ((h i).map _)
 
-open Polynomial in
 private lemma sum_pc (x : MonoidAlgebra B G) (i : Fin n) :
     ∑ j ∈ Finset.range (n + 1), pc n x j * intersection_update_fsHerm_neg_one i x ^ j = 0 := by
   have e : (tens fun _ => lin x) = ∑ j ∈ Finset.range (n + 1),
@@ -757,7 +753,6 @@ section MatrixLaw
 
 variable {A : Type} [CommRing A] {n : ℕ}
 
-open Polynomial in
 private lemma eq_X_of_mul (p : A[X]) (hp : IsUnit (p.coeff 1))
     (h : aeval (C X * X : A[X][X]) p = aeval (C X : A[X][X]) p * aeval (X : A[X][X]) p) : p = X := by
   simp only [← aeval_map_algebraMap A[X] _ p, ← comp_eq_aeval, comp_X, comp_C] at h
@@ -1082,7 +1077,6 @@ private lemma isUnit_of_aeval {S : Type} [Ring S] [Algebra A S] {s : S} {p : Pol
     simpa using (Commute.all Polynomial.X (-p.divX)).map (Polynomial.aeval s)
   exact (c.isUnit_mul_iff.1 (e ▸ hu.map _)).1
 
-open Polynomial in
 private lemma idem_lift [IsLocalRing A] [IsAdicComplete (IsLocalRing.maximalIdeal A) A] [Field k] [Algebra A k]
     [IsLocalHom (algebraMap A k)] {S : Type} [Ring S] [Algebra A S] (π : S →ₐ[A] Matrix (Fin n) (Fin n) k)
     (o : Fin n) {z : S} (hz : π z = Matrix.single o o 1) {p : A[X]} (hp : p.Monic) (h0 : aeval z p = 0)

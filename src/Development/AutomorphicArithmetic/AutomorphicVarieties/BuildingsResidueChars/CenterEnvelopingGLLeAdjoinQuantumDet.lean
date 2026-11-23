@@ -45,7 +45,6 @@ private theorem qdet_mem_center (n : ℕ) (u : ℂ) :
   refine mem_center_of_commute_e fun a => ?_
   exact (Formalism.REAL.qDetCentral (U n) n _ hgl u a.1 a.2).symm
 
-open GroundTheory.Automorphic.HarishChandra in
 private theorem hc_qdet (n : ℕ) (u : ℂ) :
     harishChandraHom (⟨_, qdet_mem_center n (u + ((n : ℂ) - 1) / 2)⟩ : Subalgebra.center ℂ (U n)) =
       ∏ k : Fin n, (MvPolynomial.C u + MvPolynomial.X k : MvPolynomial (Fin n) ℂ) := by

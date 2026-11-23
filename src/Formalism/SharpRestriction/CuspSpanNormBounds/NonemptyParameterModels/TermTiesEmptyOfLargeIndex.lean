@@ -152,7 +152,6 @@ end BC
 
 section Pt0
 
-open Formalism.MainNotions.S.LocalSplitGroups
 
 theorem tie_ptEntry_diag {K : Type*} [Zero K] (ds : List K) (i j : ℕ) :
     ptEntry (ds.map (fun t => (t, 1))) i j = if i = j then ds.getD i 0 else 0 := by

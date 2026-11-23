@@ -106,7 +106,6 @@ end
 
 noncomputable section
 
-open Polynomial Finset
 
 namespace ReciprocityTheory.ChartRestriction.DS.G2
 
@@ -142,7 +141,6 @@ end
 
 noncomputable section
 
-open Polynomial Finset
 
 namespace ReciprocityTheory.ChartRestriction.DS.G2
 
@@ -221,7 +219,6 @@ end
 
 noncomputable section
 
-open Polynomial Finset
 
 namespace ReciprocityTheory.ChartRestriction.DS.G2
 

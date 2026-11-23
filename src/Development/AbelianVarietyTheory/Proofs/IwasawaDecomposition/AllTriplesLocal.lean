@@ -121,7 +121,6 @@ end GlobalTheory.RowTriple
 
 namespace GlobalTheory.RowTriple
 
-open GlobalTheory.TwInputs Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
 theorem tripAll_of_sideB (D : D7) (cf : CharFrame D) (Rw : RowSide D) (low : Finset ℕ)
     (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) (S : RatDat D.ntw)

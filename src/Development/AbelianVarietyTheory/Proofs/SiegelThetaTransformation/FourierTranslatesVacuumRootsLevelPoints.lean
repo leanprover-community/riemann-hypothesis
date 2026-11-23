@@ -204,9 +204,7 @@ end Ideals
 
 section Lattice
 
-open Matrix Complex NumberField GlobalTheory GlobalTheory.SW GlobalTheory.ThFr ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD
 open GlobalTheory.SW.TensVac GlobalTheory.SW.TensLat GlobalTheory.SW.Base
-open scoped ComplexConjugate Real Classical
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r n : ℕ}
 

@@ -293,8 +293,6 @@ end GlobalTheory.CovTop.LocShareNum
 
 namespace GlobalTheory.CovTop.LocShareNum
 
-open Formalism.MainNotions.ArithmeticCylinders (admLq TieAdmG eUk eJk locShare goodAt VecAt IsLabel)
-open Formalism.L2.GlobalTheoryTheory.ConcN (Wg SizesRec SizesAt weight_numbers_bound)
 open Formalism.L2.GlobalTheoryTheory.ConcNWeight (RangeW rangeW_of_sizes)
 
 theorem stdAddChar_ne_one (D : D7) (k : Fin 2) :

@@ -161,7 +161,6 @@ variable {R : Type} [CommRing R] [IsDomain R] {D₁ D₂ : DegPre R}
 
 section Cmp
 
-open FreeAddCommGroup
 
 variable {b : D₁.P.A ⟶ D₂.P.A} {p p' p'' : D₁.X} {χ χ' χ'' : D₂.X} {T : Over (Sp R)} {z : T.left}
   {J : (T.left ⟶ D₁.P.A.left ⨿ D₂.P.A.left) → (JN D₁ D₂).ι}

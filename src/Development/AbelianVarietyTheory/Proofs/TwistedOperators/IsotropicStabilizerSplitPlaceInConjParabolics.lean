@@ -119,8 +119,6 @@ end GlobalTheory.SplitStab
 
 namespace GlobalTheory.SplitStab
 
-open scoped Matrix TensorProduct
-open GlobalTheory.AutFunCompare (colSpan exists_colSpan mem_extSub_colSpan)
 
 theorem inConjParabolic_parab (D : D7) (V : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F))
     (s : SplitAt D.sp.cm.sig V.gram (frameLat V) v) (W : Submodule D.host.E V.V) :

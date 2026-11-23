@@ -76,7 +76,6 @@ def unipOf (c : n → ℤ) : Subgroup (GL n R) :=
 variable {R}
 
 
-open ValuativeRel Matrix MeasureTheory in
 variable {n : Type} [Fintype n] [DecidableEq n] in
 variable (R : Type) [CommRing R] in
 variable {R} in
@@ -88,7 +87,6 @@ theorem _root_.GlobalTheory.InertSupp.mem_unipOf {c : n → ℤ} {g : GL n R} :
 variable {α : Type} {m : α → Type} [Fintype α] [LinearOrder α] [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)]
 
 
-open ValuativeRel Matrix MeasureTheory in
 variable {n : Type} [Fintype n] [DecidableEq n] in
 variable (R : Type) [CommRing R] in
 variable {R} in

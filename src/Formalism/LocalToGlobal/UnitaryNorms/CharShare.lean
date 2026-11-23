@@ -52,11 +52,9 @@ theorem inf_eq_one_of_order [_root_.NumberField.IsTotallyComplex L] {χ : HChar 
 
 end HChar
 
-section Frame
 
 variable {D : D7} (C : CharFrame D)
 
-end Frame
 
 section Tup
 
@@ -80,16 +78,12 @@ theorem TupTied.tup_unitary (μ : D.what₂.Tup) (j : Fin D.R.m) : (Tp.tup μ j)
 
 end Tup
 
-section TupAlg
 
 variable {D : D7} {C : CharFrame D} {nch : NChoice D} (Tp : TupTied D C nch)
 
-end TupAlg
 
-section TupCsd
 
 variable {D : D7} {C : CharFrame D} {nch : NChoice D} (Tp : TupTied D C nch)
 
-end TupCsd
 
 end Formalism.L2.Host

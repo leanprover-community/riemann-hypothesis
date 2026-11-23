@@ -99,7 +99,6 @@ theorem _root_.GlobalTheory.UnitaryHighestWeightUnique.height_le {n : ℕ} {ε :
   exact sub_eq_zero.mp this
 
 
-open Matrix Finset in
 theorem _root_.GlobalTheory.UnitaryHighestWeightUnique.exists_derived_highest {k : ℕ} {W : Type} [NormedAddCommGroup W]
     [InnerProductSpace ℂ W] [FiniteDimensional ℂ W] [Nontrivial W]
     {π : Matrix (Fin k) (Fin k) ℂ → (W →L[ℂ] W)} {Λ : Fin k → ℝ}
@@ -156,7 +155,6 @@ theorem _root_.GlobalTheory.UnitaryHighestWeightUnique.exists_derived_highest {k
     linarith
 
 
-open Matrix Finset in
 theorem _root_.GlobalTheory.UnitaryHighestWeightUnique.intertwine_group {W₁ W₂ : Type} [NormedAddCommGroup W₁]
     [InnerProductSpace ℂ W₁] [NormedAddCommGroup W₂] [InnerProductSpace ℂ W₂]
     [FiniteDimensional ℂ W₁] [FiniteDimensional ℂ W₂]
@@ -186,7 +184,6 @@ theorem _root_.GlobalTheory.UnitaryHighestWeightUnique.intertwine_group {W₁ W�
   exact congrFun heq t
 
 
-open Matrix Finset in
 theorem _root_.GlobalTheory.UnitaryHighestWeightUnique.exists_equiv_of_isHCTypeU : ∀ (k : ℕ) (u : Fin k → ℝ)
     (H₁ : Type) [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] (H₂ : Type) [NormedAddCommGroup H₂]
     [InnerProductSpace ℂ H₂] (π₁ : Matrix (Fin k) (Fin k) ℂ → (H₁ →L[ℂ] H₁))

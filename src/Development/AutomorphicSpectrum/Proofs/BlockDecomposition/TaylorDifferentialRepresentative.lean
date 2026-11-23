@@ -217,7 +217,6 @@ theorem form_neg_pow {j : ℕ} (I : Fin j → Fin d) (x : Φ.A.obj E.D) (m : ℕ
 end Form
 
 section Conn
-open GlobalTheory.CompanionTheory.CocProd
 variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {d : ℕ}
 
 theorem d_form {Fil : ℤ → IdF Φ.A} (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) (hc : E.GrConst Fil)

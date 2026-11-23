@@ -202,7 +202,6 @@ end GelfM
 
 namespace GelfM
 
-open PowerSeries
 
 variable {n : ℕ}
 

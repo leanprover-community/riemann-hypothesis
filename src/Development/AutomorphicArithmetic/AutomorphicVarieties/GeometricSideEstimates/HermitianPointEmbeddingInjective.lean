@@ -46,7 +46,6 @@ private theorem pt_injective {E : Type} [Field E] [NumberField E] [IsTotallyComp
   have h2 : ((pInf E).comp (algebraMap E (Ad E))) (v i) = ((pInf E).comp (algebraMap E (Ad E))) (v' i) := congrFun h1 i
   exact ((pInf E).comp (algebraMap E (Ad E))).injective h2
 
-open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.GKCoh UpperTheory.V.Af GlobalTheory.UnitaryBC UpperTheory.V.Lit.Dr UpperTheory.V.Lit.Bor in
 theorem UpperTheory.hermitian_point_embedding_injective :
     GradA := by
   intro E _ _ _ a ha L hL

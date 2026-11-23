@@ -72,8 +72,6 @@ theorem _root_.GlobalTheory.HL.Glue.mem_span_single_iff {R : Type} [CommRing R] 
     exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
 
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {sig : E →ₐ[F] E} in
 theorem _root_.GlobalTheory.HL.Glue.ιE_mem (A : _root_.GlobalTheory.HL.Places F E sig)

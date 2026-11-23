@@ -237,11 +237,9 @@ theorem X_value' (hGF : GlobalFnsSt) (hB : D.TauBimult) (oa : D.OAct O) (w0 : O)
     linear_combination (norm := module) w₁ - w₂ - b - t
   rw [Rg, mul_comm k N, pow_mul, ← mul_pow, S', mul_pow, ← pow_mul, mul_comm (N + 1) k]
 
-section Closed
 
 variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
   (D : DegData V (IsLocalRing.maximalIdeal V)) {O : Type} [CommRing O] [StarRing O] [Module O D.toPre.X]
 
-end Closed
 
 end ReciprocityTheory.ChartRestriction.G.DVR

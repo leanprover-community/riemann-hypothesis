@@ -49,7 +49,6 @@ theorem _root_.GlobalTheory.Proof.localUnfoldingIntegrand_boundedSchwartz.chArg_
   unfold _root_.Formalism.L2.Col.Loc.chArg
   simp only [LinearMap.add_apply, _root_.GlobalTheory.QNormal.atN_add, Finset.sum_add_distrib]
 
-open NumberField IsDedekindDomain in
 variable {E : Type} [Field E] {n' c' n c : ℕ} in
 theorem _root_.GlobalTheory.Proof.localUnfoldingIntegrand_boundedSchwartz.chArg_smul (a : E) (x : (Fin (n' + c') → E) →ₗ[E] (Fin (n + c) → E)) :
     _root_.Formalism.L2.Col.Loc.chArg (a • x) = a * _root_.Formalism.L2.Col.Loc.chArg x := by
@@ -60,7 +59,6 @@ def freeMap (u : Loc.FC n' c' n c → E) : (Fin (n' + c') → E) →ₗ[E] (Fin 
   Matrix.toLin' (Matrix.of fun (l : Fin (n + c)) (s : Fin (n' + c')) =>
     if hf : Loc.IsFree n' n c l.1 s.1 then u ⟨(l, s), hf⟩ else 0)
 
-open NumberField IsDedekindDomain in
 variable {E : Type} [Field E] {n' c' n c : ℕ} in
 theorem _root_.GlobalTheory.Proof.localUnfoldingIntegrand_boundedSchwartz.periodXX1_add_smul (xj : (Fin n' → E) →ₗ[E] (Fin n → E))
     (t u : _root_.Formalism.L2.Col.Loc.FC n' c' n c → E) (a : E) :
@@ -75,7 +73,6 @@ theorem _root_.GlobalTheory.Proof.localUnfoldingIntegrand_boundedSchwartz.period
 
 variable [NumberField E] {P : HeightOneSpectrum (𝓞 E)}
 
-open NumberField IsDedekindDomain in
 variable {E : Type} [Field E] {n' c' n c : ℕ} in
 variable [NumberField E] {P : HeightOneSpectrum (𝓞 E)} in
 private lemma intAt_atN_of_intV {N : ℕ} {v : Fin N → E}
@@ -85,7 +82,6 @@ private lemma intAt_atN_of_intV {N : ℕ} {v : Fin N → E}
   · exact hv ⟨i, h⟩
   · exact _root_.GlobalTheory.IndefiniteRowSideFullHecke.SourceLatticeInvariance.intAt_zero P
 
-open NumberField IsDedekindDomain in
 variable {E : Type} [Field E] {n' c' n c : ℕ} in
 variable [NumberField E] {P : HeightOneSpectrum (𝓞 E)} in
 private lemma intV_eN' (N s : ℕ) :
@@ -96,7 +92,6 @@ private lemma intV_eN' (N s : ℕ) :
   · exact _root_.GlobalTheory.QNormal.intAt_one P
   · exact _root_.GlobalTheory.IndefiniteRowSideFullHecke.SourceLatticeInvariance.intAt_zero P
 
-open NumberField IsDedekindDomain in
 variable {E : Type} [Field E] {n' c' n c : ℕ} in
 variable [NumberField E] {P : HeightOneSpectrum (𝓞 E)} in
 theorem _root_.GlobalTheory.Proof.localUnfoldingIntegrand_boundedSchwartz.intAt_chArg
@@ -106,7 +101,6 @@ theorem _root_.GlobalTheory.Proof.localUnfoldingIntegrand_boundedSchwartz.intAt_
   exact _root_.GlobalTheory.QNormal.intAt_sum _ _ fun i _ =>
     intAt_atN_of_intV (hy _ (intV_eN' _ _)) _
 
-open NumberField IsDedekindDomain in
 variable {E : Type} [Field E] {n' c' n c : ℕ} in
 variable [NumberField E] {P : HeightOneSpectrum (𝓞 E)} in
 theorem _root_.GlobalTheory.Proof.localUnfoldingIntegrand_boundedSchwartz.intHom_freeMap {u : _root_.Formalism.L2.Col.Loc.FC n' c' n c → E}
@@ -120,7 +114,6 @@ theorem _root_.GlobalTheory.Proof.localUnfoldingIntegrand_boundedSchwartz.intHom
   · exact _root_.GlobalTheory.IndefiniteRowSideFullHecke.SourceLatticeInvariance.intAt_zero P
 
 
-open NumberField IsDedekindDomain in
 variable {E : Type} [Field E] {n' c' n c : ℕ} in
 variable [NumberField E] {P : HeightOneSpectrum (𝓞 E)} in
 theorem _root_.GlobalTheory.Proof.localUnfoldingIntegrand_boundedSchwartz.integrand_bdd : ∀ (E : Type) [Field E] [NumberField E] (K : Type)

@@ -68,7 +68,6 @@ private lemma one_le_ramificationIdx_mul_inertiaDeg_of_mem (E : Type) [Field E]
     (Ideal.IsDedekindDomain.ramificationIdx'_ne_zero_of_liesOver P p.ne_bot)
     (Ideal.inertiaDeg'_pos p.asIdeal P).ne')
 
-open IsDedekindDomain NumberField in
 theorem _root_.GlobalTheory.HenQ.Regroup.mem_fin (E : Type) [Field E] [NumberField E]
     (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E)) :
     v.asIdeal ∈
@@ -81,7 +80,6 @@ theorem _root_.GlobalTheory.HenQ.Regroup.mem_fin (E : Type) [Field E] [NumberFie
     HeightOneSpectrum.under_asIdeal]
   exact ⟨v.isPrime, inferInstance⟩
 
-open IsDedekindDomain NumberField in
 theorem _root_.GlobalTheory.HenQ.Regroup.term_pos (E : Type) [Field E] [NumberField E]
     (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E)) :
     (1 : ℕ) ≤
@@ -91,7 +89,6 @@ theorem _root_.GlobalTheory.HenQ.Regroup.term_pos (E : Type) [Field E] [NumberFi
           v.asIdeal :=
   one_le_ramificationIdx_mul_inertiaDeg_of_mem E _ (_root_.GlobalTheory.HenQ.Regroup.mem_fin E v)
 
-open IsDedekindDomain NumberField in
 theorem _root_.GlobalTheory.HenQ.Regroup.sum_eq (E : Type) [Field E] [NumberField E]
     (hE : Module.finrank ℚ E = (2 : ℕ))
     (p : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers ℚ)) :
@@ -105,7 +102,6 @@ end GlobalTheory.HenQ.Regroup
 
 namespace GlobalTheory.HenQ.Regroup
 
-open IsDedekindDomain NumberField in
 theorem _root_.GlobalTheory.HenQ.Regroup.two_le_absNorm {K : Type} [Field K] [NumberField K]
     (p : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K)) :
     (2 : ℕ) ≤ (Ideal.absNorm : Ideal (NumberField.RingOfIntegers K) → ℕ) p.asIdeal := by
@@ -117,7 +113,6 @@ theorem _root_.GlobalTheory.HenQ.Regroup.two_le_absNorm {K : Type} [Field K] [Nu
     exact p.isPrime.ne_top
   omega
 
-open IsDedekindDomain NumberField in
 private lemma card_le_sum_ramificationIdx_mul_inertiaDeg_le_two (E : Type) [Field E]
     [NumberField E] (hE : Module.finrank ℚ E = 2)
     (p : HeightOneSpectrum (NumberField.RingOfIntegers ℚ))
@@ -135,7 +130,6 @@ private lemma card_le_sum_ramificationIdx_mul_inertiaDeg_le_two (E : Type) [Fiel
           Finset.sum_le_sum_of_subset hT
       _ = 2 := _root_.GlobalTheory.HenQ.Regroup.sum_eq E hE p
 
-open IsDedekindDomain NumberField in
 theorem _root_.GlobalTheory.HenQ.Regroup.fiber_split (E : Type) [Field E] [NumberField E]
     (hE : Module.finrank ℚ E = (2 : ℕ))
     (w w' v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E))
@@ -170,7 +164,6 @@ theorem _root_.GlobalTheory.HenQ.Regroup.fiber_split (E : Type) [Field E] [Numbe
     rw [Finset.card_insert_of_notMem (by simp [h1, h2]), Finset.card_pair h3]
   omega
 
-open IsDedekindDomain NumberField in
 theorem _root_.GlobalTheory.HenQ.Regroup.fiber_inert (E : Type) [Field E] [NumberField E]
     (hE : Module.finrank ℚ E = (2 : ℕ))
     (w v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E))
@@ -220,14 +213,12 @@ end GlobalTheory.HenQ.Regroup
 
 namespace GlobalTheory.HenQ.Regroup
 
-open IsDedekindDomain NumberField in
 private lemma multipliable_of_norm_sub_one_le_summable {ι : Type*} (g : ι → ℂ) (u : ι → ℝ)
     (hu : Summable u) (hg : ∀ i, ‖g i - 1‖ ≤ u i) : Multipliable g := by
   have h := multipliable_one_add_of_summable (f := fun i => g i - 1)
     (Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hg hu)
   simpa using h
 
-open IsDedekindDomain NumberField in
 private lemma norm_multiset_prod_sub_one_le (m : Multiset ℂ) {ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1)
     (hm : ∀ x ∈ m, ‖x - 1‖ ≤ ε) : ‖m.prod - 1‖ ≤ ε * (2 ^ Multiset.card m - 1) := by
   induction m using Multiset.induction_on with
@@ -251,7 +242,6 @@ private lemma norm_multiset_prod_sub_one_le (m : Multiset ℂ) {ε : ℝ} (hε0 
           add_le_add (mul_le_mul ha hP (norm_nonneg _) hε0) ih'
       _ = ε * (2 ^ Multiset.card m * 2 - 1) := by ring
 
-open IsDedekindDomain NumberField in
 private lemma norm_inv_one_sub_sub_one_le_two_mul {z : ℂ} (hz : ‖z‖ ≤ 1 / 2) :
     ‖(1 - z)⁻¹ - 1‖ ≤ 2 * ‖z‖ := by
   have h1 : (1 : ℝ) / 2 ≤ ‖1 - z‖ := by
@@ -268,7 +258,6 @@ private lemma norm_inv_one_sub_sub_one_le_two_mul {z : ℂ} (hz : ‖z‖ ≤ 1 
   rw [hq, norm_div, div_le_iff₀ (by linarith)]
   nlinarith [norm_nonneg z]
 
-open IsDedekindDomain NumberField in
 theorem _root_.GlobalTheory.HenQ.Regroup.multipliable_E (E : Type) [Field E] [NumberField E]
     (SE : Set (IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E)))
     (BE : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers E) → Multiset ℂ)
@@ -334,7 +323,6 @@ end GlobalTheory.HenQ.Regroup
 
 namespace GlobalTheory.HenQ.Regroup
 
-open IsDedekindDomain NumberField in
 theorem _root_.GlobalTheory.HenQ.Regroup.fac_inert (B' : Multiset ℂ) (X : ℂ) :
     (Multiset.map (fun (b : ℂ) ↦ ((1 : ℂ) - b * X)⁻¹) (B' + Multiset.map Neg.neg B')).prod =
       (Multiset.map (fun (b : ℂ) ↦ ((1 : ℂ) - b * X ^ (2 : ℕ))⁻¹)

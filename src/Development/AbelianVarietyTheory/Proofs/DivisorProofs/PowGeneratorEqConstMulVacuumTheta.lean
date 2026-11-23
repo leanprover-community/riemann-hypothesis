@@ -168,11 +168,7 @@ end Renumber
 section Main
 
 open AlgebraicGeometry CategoryTheory NumberField Matrix Complex
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
-open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj GlobalTheory.Dict GlobalTheory.ClsVal
-open scoped ComplexConjugate Classical
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r g : ℕ}
 

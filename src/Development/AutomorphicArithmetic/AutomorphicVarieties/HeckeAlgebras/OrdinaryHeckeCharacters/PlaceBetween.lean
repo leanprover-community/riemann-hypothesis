@@ -80,7 +80,6 @@ private theorem place_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [A
     UpperTheory.V.val_lt_one (σ := g.toRingEquiv) (fun _ => ValuationSubring.smul_mem_pointwise_smul_iff (g := g))
   rw [← h x, ← e, AlgEquiv.commutes]
 
-open scoped Pointwise in
 private theorem w_split {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω]
     [IsAlgClosure L Ω] {s : HidaSetting l L Ω} (V : s.Lev) (v : Vl l L) : IsSplitAt (s.w v.1) := by
   have hc : s.c ∉ (W.resP L Ω).range := fun h => by

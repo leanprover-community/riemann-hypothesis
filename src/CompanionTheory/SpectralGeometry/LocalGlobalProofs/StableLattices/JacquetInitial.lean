@@ -552,7 +552,6 @@ end Lin
 
 section Joint
 
-open Polynomial
 open GlobalTheory.CompanionTheory.Dblock.CentreBlocks (sumPoly sumPoly_monic sumPoly_coeff sumPoly_eval)
 
 variable {Z : Type} [AddCommGroup Z] [Module ℂ Z]

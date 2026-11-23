@@ -137,7 +137,6 @@ end GlobalTheory.CompanionTheory.SW.Plane
 
 namespace GlobalTheory.CompanionTheory.SW.Plane
 
-open Matrix GlobalTheory.CompanionTheory.WeilSiegel.NoFrame.Hasse
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

@@ -99,7 +99,6 @@ theorem smul_genE {D : D7} {S T : HSp D} (e : AE D) (c : EAf D) (τ : Fin T.rank
 end GlobalTheory.HalfOInt
 
 namespace GlobalTheory.HalfOInt
-open Formalism.IndefR.Fin.LevelGroupLemmas.Lat Matrix
 
 
 
@@ -146,7 +145,6 @@ theorem frMapO_int_of_half {D : D7} {S T : HSp D} {ΛS : Submodule (𝓞 D.host.
 end GlobalTheory.HalfOInt
 
 namespace GlobalTheory.HalfOInt
-open Formalism.IndefR.Fin.LevelGroupLemmas.Lat Matrix
 
 theorem sum_decomp {R : Type} [CommRing R] {m n N : ℕ} (M : Matrix (Fin m) (Fin n) R) (g Y : Fin N → Fin n → R)
     (hb : ∑ k, vecMulVec (g k) (Y k) = 1) (c z : R) (hM : (c * z) • M = M) :

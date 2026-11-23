@@ -108,7 +108,6 @@ end General
 end GlobalTheory.PeriodReps
 
 namespace GlobalTheory.PeriodReps
-open Formalism.L2.Th1.H
 
 theorem countable_lamC {E : Type} [Field E] [NumberField E] {ι : Type} [Fintype ι] {a b : ℕ} (emb : ι → E →+* ℂ) (δ : ℂ)
     (AA0 : Submodule (𝓞 E) E) (N : Submodule (𝓞 E) (Formalism.L2.Col.Sp E a)) (N' : Submodule (𝓞 E) (Formalism.L2.Col.Sp E b)) :

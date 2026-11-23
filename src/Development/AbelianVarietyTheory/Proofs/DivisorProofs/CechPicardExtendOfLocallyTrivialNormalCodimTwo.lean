@@ -84,7 +84,6 @@ theorem eq_of_gm_ι (W : X.Opens) (hW : ∀ V : X.Opens, Function.Bijective (res
 end GlobalTheory.ExtendClass
 
 namespace GlobalTheory.ExtendClass
-open GlobalTheory.GlueLineBundle TopologicalSpace
 variable {X : Scheme.{0}}
 
 theorem exists_sigma (W : X.Opens) {M : LB W.toScheme} (N : X.Opens)
@@ -123,7 +122,6 @@ theorem exists_sigma (W : X.Opens) {M : LB W.toScheme} (N : X.Opens)
 end GlobalTheory.ExtendClass
 
 namespace GlobalTheory.ExtendClass
-open GlobalTheory.GlueLineBundle TopologicalSpace
 variable {X : Scheme.{0}}
 
 theorem mul_ringHom_units_ratio {G : Type} [CommGroup G] (g a b : G) : g * a * (g * b)⁻¹ = a * b⁻¹ := by
@@ -179,7 +177,6 @@ theorem exists_ext (W : X.Opens) (hW : ∀ V : X.Opens, Function.Bijective (resG
 end GlobalTheory.ExtendClass
 
 namespace GlobalTheory.ExtendClass
-open GlobalTheory.GlueLineBundle TopologicalSpace
 
 theorem commGroup_cocycle_mul_inv_mul_mul_inv {G : Type} [CommGroup G] (a b c : G) : b * a⁻¹ * (c * b⁻¹) = c * a⁻¹ := by
   apply Additive.ofMul.injective

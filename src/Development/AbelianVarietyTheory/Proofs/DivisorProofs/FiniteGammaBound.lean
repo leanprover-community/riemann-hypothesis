@@ -218,7 +218,6 @@ end GlobalTheory.GamLoss
 
 namespace GlobalTheory.GamLoss
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SumSize GlobalTheory.RowTest
-open Formalism.DivisionValues (vw lw)
 
 variable {D : D7}
 

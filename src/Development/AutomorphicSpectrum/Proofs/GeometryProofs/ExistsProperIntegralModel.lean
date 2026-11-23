@@ -168,7 +168,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.ClSch
 
-open Polynomial HomogeneousLocalization
 
 variable {Ω : Type} [Field Ω] {o : Type} [CommRing o] [Algebra o Ω] {κ : Type} {x : κ → Ω}
 
@@ -505,7 +504,6 @@ end GlobalTheory.CompanionTheory.Ar.ClSch
 
 noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.ClSch
-open AlgebraicGeometry CategoryTheory
 
 variable {Ω : Type} [Field Ω] {X : Scheme.{0}}
 

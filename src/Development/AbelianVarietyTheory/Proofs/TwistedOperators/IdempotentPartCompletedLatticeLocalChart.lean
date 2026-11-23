@@ -50,7 +50,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.EPartChart
 
-open IsDedekindDomain Formalism.L2.NTheta
 
 theorem int_smul_mem_hat (D : D7) {n : ℕ} (L : Submodule (𝓞 D.host.E) (Fin n → D.host.E))
     {a : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F ⊗[D.host.F] D.host.E} (ha : a ∈ intAE D)
@@ -186,7 +185,6 @@ end GlobalTheory.EPartChart
 
 namespace GlobalTheory.EPartChart
 
-open IsDedekindDomain Formalism.L2.NTheta
 
 theorem chart_coord {D : D7} {V : HSp D} {v : HeightOneSpectrum (𝓞 D.host.F)}
     (π : GlobalTheory.SplitPlace.RF D →+* Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv D.host.F v) (B : GL (Fin V.rank) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv D.host.F v))

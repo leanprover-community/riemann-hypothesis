@@ -101,7 +101,6 @@ end GlobalTheory.TensorIrr
 
 namespace GlobalTheory.TensorIrr
 
-open GlobalTheory.Chain.IoLift
 
 variable {ι : Type} [Fintype ι] {K : ι → Type} [∀ i, AddCommGroup (K i)] [∀ i, Module ℂ (K i)]
 

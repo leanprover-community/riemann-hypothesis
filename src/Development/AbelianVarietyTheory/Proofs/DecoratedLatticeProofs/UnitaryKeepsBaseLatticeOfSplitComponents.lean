@@ -59,7 +59,6 @@ open GlobalTheory.Unf GlobalTheory.Grow GlobalTheory.FinPl ValuativeRel IsLocalR
 open scoped TensorProduct Pointwise
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.AdForm
-open GlobalTheory.AdForm
 
 namespace GlobalTheory.SplitStab
 

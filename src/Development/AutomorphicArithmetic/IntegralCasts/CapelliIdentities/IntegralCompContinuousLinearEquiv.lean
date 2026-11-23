@@ -123,7 +123,6 @@ private lemma UpperTheory.Reformulated.B.Yzb9.core (T : E ≃L[ℝ] E) (hT : ∀
 end
 
 section
-open MeasureTheory FourierTransform
 open scoped RealInnerProductSpace NNReal
 
 variable {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]

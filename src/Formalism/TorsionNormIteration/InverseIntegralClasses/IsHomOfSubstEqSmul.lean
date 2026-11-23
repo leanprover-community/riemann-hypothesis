@@ -40,12 +40,10 @@ namespace Formalism.LT.PadicP
 
 open Formalism.G
 
-section LtLog
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
 
-end LtLog
 
 theorem coeff_one_subst {R : Type} [CommRing R] (f a : PowerSeries R)
     (hf0 : constantCoeff f = 0) (ha0 : constantCoeff a = 0) :

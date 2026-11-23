@@ -206,7 +206,6 @@ end
 
 noncomputable section
 
-open MeasureTheory ReciprocityTheory.ChartRestriction.DS
 
 namespace GlobalTheory.PsCo.PcEF.UF
 

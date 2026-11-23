@@ -73,7 +73,6 @@ theorem deriv_aeval {R S L : Type*} [CommRing R] [CommRing S] [Field L] [Algebra
     simp only [smul_eq_mul, nsmul_eq_mul, map_mul, map_pow]
     ring
 
-open Polynomial in
 theorem exists_good_poly {R S : Type*} [CommRing R] [CommRing S] [Nontrivial R] [Algebra R S]
     [Algebra.IsIntegral R S] (hnat : ∀ n : ℕ, n ≠ 0 → IsUnit (n : R)) (P : Ideal S) (hP : P ≠ ⊤)
     (b : S) : ∃ G : R[X], aeval b G ∈ P ∧ aeval b (derivative G) ∉ P := by

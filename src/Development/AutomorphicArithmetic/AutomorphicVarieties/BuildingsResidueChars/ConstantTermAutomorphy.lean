@@ -38,14 +38,12 @@ private theorem ct_cont_infGL (F : Type) [Field F] [NumberField F] [IsTotallyRea
   have hs : Continuous (TR.sInf F : TR.Rinf F → Ad F) := (TR.continuous_infEq F).prodMk continuous_const
   exact continuous_const.sub continuous_const |>.add (continuous_id.matrix_map hs)
 
-open NumberField MeasureTheory GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Sd in
 private theorem ct_aff_add (F : Type) [Field F] [NumberField F] (y : F) (x : Ad F) :
     (aff 1 (algebraMap F (Ad F) y + x) : GA F 2) = ratGL F 2 (aff 1 y) * aff 1 x := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     simp [aff, ratGL, Matrix.mul_apply, Fin.sum_univ_succ, add_comm]
 
-open NumberField MeasureTheory GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Sd in
 private theorem ct_level (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (a : ℕ) (φ : TR.Sm F a) (X : TR.Lie F a)
     (h : IsOpen {k | TR.finRep F a k φ = φ}) : IsOpen {k | TR.finRep F a k (TR.lie F a X φ) = TR.lie F a X φ} := by
   let S : TR.Sm F a → Subgroup (GL (Fin a) (Af F)) := fun ψ =>
@@ -64,7 +62,6 @@ private theorem ct_level (F : Type) [Field F] [NumberField F] [IsTotallyReal F] 
   rw [Module.End.mul_apply, Module.End.mul_apply, hk'] at e
   exact e.symm
 
-open NumberField MeasureTheory GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Sd in
 theorem UpperTheory.constant_term_automorphy :
     UpperTheory.V.Sd.Eis.SmCont → UpperTheory.V.Sd.Eis.PerMean → UpperTheory.V.Sd.Eis.PerDeriv → UpperTheory.V.Sd.Eis.BlockTop → UpperTheory.V.Sd.Eis.CtLie := by
   intro hS hM hD hB F _ _ _ _ _ μ _ D hF φ hl ho X

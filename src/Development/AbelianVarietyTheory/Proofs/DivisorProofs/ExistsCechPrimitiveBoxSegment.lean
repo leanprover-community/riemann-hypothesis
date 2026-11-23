@@ -105,7 +105,6 @@ private theorem hasFDerivAt_integral_unit_of_analytic {E : Type} [NormedAddCommG
     exact (hdiffAt x hxS t (hIoc ht)).hasFDerivAt.comp x (hasFDerivAt_prodMk_left x (t:ℂ))
 
 set_option autoImplicit false in
-open Set Metric in
 private theorem integral_radial_derivative_eq {P : Type} [NormedAddCommGroup P] [NormedSpace ℂ P] {g : ℕ}
     (W : Set (P × (Fin g → ℂ))) (hW : IsOpen W) (ω : Fin g → P × (Fin g → ℂ) → ℂ) (hω : ∀ a, AnalyticOnNhd ℂ (ω a) W)
     (w₁ : Fin g → ℂ) (x : P × (Fin g → ℂ)) (a : Fin g) (hx : ∀ t ∈ Icc (0:ℝ) 1, (x.1, w₁ + (t:ℂ) • (x.2 - w₁)) ∈ W) :
@@ -139,7 +138,6 @@ private theorem integral_radial_derivative_eq {P : Type} [NormedAddCommGroup P] 
   simp
 
 set_option autoImplicit false in
-open Set Metric in
 private theorem hasDerivAt_radial_integrand {P : Type} [NormedAddCommGroup P] [NormedSpace ℂ P] {g : ℕ}
     (W : Set (P × (Fin g → ℂ))) (ω : Fin g → P × (Fin g → ℂ) → ℂ) (hω : ∀ a, AnalyticOnNhd ℂ (ω a) W)
     (hcl : ∀ a b, ∀ p ∈ W, fderiv ℂ (ω b) p (0, Pi.single a 1) = fderiv ℂ (ω a) p (0, Pi.single b 1))
@@ -186,7 +184,6 @@ private theorem hasDerivAt_radial_integrand {P : Type} [NormedAddCommGroup P] [N
     · simp [Pi.single_apply, mul_ite, hp]
 
 set_option autoImplicit false in
-open Set Metric in
 private theorem exists_fibre_primitive_on_ball {P : Type} [NormedAddCommGroup P] [NormedSpace ℂ P] [FiniteDimensional ℂ P] {g : ℕ}
     (W : Set (P × (Fin g → ℂ))) (hW : IsOpen W) (ω : Fin g → P × (Fin g → ℂ) → ℂ) (hω : ∀ a, AnalyticOnNhd ℂ (ω a) W)
     (hcl : ∀ a b, ∀ p ∈ W, fderiv ℂ (ω b) p (0, Pi.single a 1) = fderiv ℂ (ω a) p (0, Pi.single b 1))
@@ -236,7 +233,6 @@ private theorem exists_fibre_primitive_on_ball {P : Type} [NormedAddCommGroup P]
     exact hD.unique hC
 
 set_option autoImplicit false in
-open Set Metric in
 private theorem cech_shift_lemma_2 {P : Type} [NormedAddCommGroup P] [NormedSpace ℂ P] [FiniteDimensional ℂ P] {g : ℕ} {K : Type} (W : K → Set (P × (Fin g → ℂ))) (c : K → K → P × (Fin g → ℂ) → ℂ) (ω : K → Fin g → P × (Fin g → ℂ) → ℂ) (S : Set (P × (Fin g → ℂ))) (j : K) (F : P × (Fin g → ℂ) → ℂ)
   (hW : ∀ k, IsOpen (W k)) (hS : IsOpen S) (hSj : S ⊆ W j)
   (hc : ∀ k l, AnalyticOnNhd ℂ (c k l) (W k ∩ W l))
@@ -258,7 +254,6 @@ private theorem cech_shift_lemma_2 {P : Type} [NormedAddCommGroup P] [NormedSpac
     linear_combination this
 
 set_option autoImplicit false in
-open Set Metric in
 private theorem convex_iUnion_ball_smul_Icc {g : ℕ} (w₀ : Fin g → ℂ) (ρ a b : ℝ) :
     Convex ℝ (⋃ u ∈ Icc a b, ball (u • w₀) ρ) := by
   intro x hx y hy s t hs ht hst
@@ -275,7 +270,6 @@ private theorem convex_iUnion_ball_smul_Icc {g : ℕ} (w₀ : Fin g → ℂ) (ρ
   rw [e]; exact hc
 
 set_option autoImplicit false in
-open Set Metric in
 private theorem iUnion_ball_smul_Icc_union {g : ℕ} (w₀ : Fin g → ℂ) (ρ a m b : ℝ) (ham : a ≤ m) (hmb : m ≤ b) :
     (⋃ u ∈ Icc a m, ball (u • w₀) ρ) ∪ (⋃ u ∈ Icc m b, ball (u • w₀) ρ) = ⋃ u ∈ Icc a b, ball (u • w₀) ρ := by
   ext w
@@ -291,7 +285,6 @@ private theorem iUnion_ball_smul_Icc_union {g : ℕ} (w₀ : Fin g → ℂ) (ρ 
 
 
 set_option autoImplicit false in
-open Set Metric in
 theorem _root_.GlobalTheory.exists_cechPrimitive_box_segment : ∀ {P : Type} [NormedAddCommGroup P] [NormedSpace ℂ P] [FiniteDimensional ℂ P] {g : ℕ} {K : Type} (W : K → Set (P × (Fin g → ℂ))) (c : K → K → P × (Fin g → ℂ) → ℂ) (ω : K → Fin g → P × (Fin g → ℂ) → ℂ) (V : Set P), IsOpen V → (∀ k, IsOpen (W k)) → (∀ p : P × (Fin g → ℂ), p.1 ∈ V → ∃ k, p ∈ W k) → (∀ k l, AnalyticOnNhd ℂ (c k l) (W k ∩ W l)) → (∀ k l m, ∀ p ∈ W k, p ∈ W l → p ∈ W m → c k m p = c k l p + c l m p) → (∀ k a, AnalyticOnNhd ℂ (ω k a) (W k)) → (∀ k a b, ∀ p ∈ W k, fderiv ℂ (ω k b) p (0, Pi.single a 1) = fderiv ℂ (ω k a) p (0, Pi.single b 1)) → (∀ k l a, ∀ p ∈ W k, p ∈ W l → ω k a p - ω l a p = fderiv ℂ (c k l) p (0, Pi.single a 1)) → ∀ z₀ ∈ V, ∀ w₀ : Fin g → ℂ, ∃ (Z : Set P) (C : Set (Fin g → ℂ)) (G : K → P × (Fin g → ℂ) → ℂ), IsOpen Z ∧ z₀ ∈ Z ∧ Z ⊆ V ∧ IsOpen C ∧ Convex ℝ C ∧ 0 ∈ C ∧ w₀ ∈ C ∧ ((∀ k, AnalyticOnNhd ℂ (G k) (W k ∩ Z ×ˢ C)) ∧ (∀ k a, ∀ p ∈ W k, p ∈ Z ×ˢ C → fderiv ℂ (G k) p (0, Pi.single a 1) = ω k a p) ∧ ∀ k l, ∀ p ∈ W k, p ∈ W l → p ∈ Z ×ˢ C → G k p - G l p = c k l p) := by
   intro P _ _ _ g K W c ω V hV hW hcov hc hcoc hω hcl hdiff z₀ hz₀ w₀
   have hloc : ∀ (Z : Set P), IsOpen Z → ∀ (w : Fin g → ℂ) (r : ℝ) (k₀ : K), Z ×ˢ ball w r ⊆ W k₀ →

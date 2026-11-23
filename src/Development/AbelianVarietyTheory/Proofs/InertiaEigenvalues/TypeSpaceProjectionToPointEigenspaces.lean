@@ -190,7 +190,6 @@ end GlobalTheory.EtaJoin.TypeTieProof
 
 namespace GlobalTheory.EtaJoin.TypeTieProof
 
-open Formalism.L2.NG
 
 theorem typeTie_holds : ∀ (D : D7) (M : MtFam D) (i : D.nd.Loc), HeckeTied D M → HeckeRational D M → AVTied D M →
     SplitUnif D → HeckeScalar M i → D.nd.EigSpan → TypeTie D i := by

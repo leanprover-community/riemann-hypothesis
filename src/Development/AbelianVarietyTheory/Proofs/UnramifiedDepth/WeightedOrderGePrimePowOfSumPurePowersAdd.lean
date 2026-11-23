@@ -54,7 +54,6 @@ private theorem ordGe_iff_forall_le_valuation_coeff {f : MvPowerSeries (Fin M) C
   unfold _root_.ReciprocityTheory.PGsh.OrdGe
   exact Iff.rfl
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_add' {f g : MvPowerSeries (Fin M) C} {w : ℝ}
     (hf : _root_.ReciprocityTheory.PGsh.OrdGe v ρ f w) (hg : _root_.ReciprocityTheory.PGsh.OrdGe v ρ g w) : _root_.ReciprocityTheory.PGsh.OrdGe v ρ (f + g) w := by
@@ -63,21 +62,18 @@ private theorem ordGe_add' {f g : MvPowerSeries (Fin M) C} {w : ℝ}
   rw [map_add (f := _)]
   exact le_trans (le_min (hf α) (hg α)) (v.map_add _ _)
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_zero_left {w : ℝ} : _root_.ReciprocityTheory.PGsh.OrdGe v ρ (0 : MvPowerSeries (Fin M) C) w := by
   rw [ordGe_iff_forall_le_valuation_coeff]
   intro α
   simp
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_finset_sum {ι : Type} (s : Finset ι) {f : ι → MvPowerSeries (Fin M) C}
     {w : ℝ} (hf : ∀ i ∈ s, _root_.ReciprocityTheory.PGsh.OrdGe v ρ (f i) w) : _root_.ReciprocityTheory.PGsh.OrdGe v ρ (∑ i ∈ s, f i) w :=
   Finset.sum_induction f (fun g => _root_.ReciprocityTheory.PGsh.OrdGe v ρ g w) (fun _ _ => ordGe_add')
     ordGe_zero_left hf
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_mul_natCast_of_le_valuation {f : MvPowerSeries (Fin M) C} {w t : ℝ} {c : ℕ}
     (hf : _root_.ReciprocityTheory.PGsh.OrdGe v ρ f w) (hc : (t : WithTop ℝ) ≤ v (c : C)) :
@@ -94,7 +90,6 @@ private theorem ordGe_mul_natCast_of_le_valuation {f : MvPowerSeries (Fin M) C} 
   rw [h]
   exact add_le_add (hf α) hc
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_mul' {f g : MvPowerSeries (Fin M) C} {a b : ℝ}
     (hf : _root_.ReciprocityTheory.PGsh.OrdGe v ρ f a) (hg : _root_.ReciprocityTheory.PGsh.OrdGe v ρ g b) : _root_.ReciprocityTheory.PGsh.OrdGe v ρ (f * g) (a + b) := by
@@ -115,7 +110,6 @@ private theorem ordGe_mul' {f g : MvPowerSeries (Fin M) C} {a b : ℝ}
   rw [h]
   exact add_le_add (hf _) (hg _)
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_one_zero : _root_.ReciprocityTheory.PGsh.OrdGe v ρ (1 : MvPowerSeries (Fin M) C) 0 := by
   rw [ordGe_iff_forall_le_valuation_coeff]
@@ -126,7 +120,6 @@ private theorem ordGe_one_zero : _root_.ReciprocityTheory.PGsh.OrdGe v ρ (1 : M
     simp
   · simp
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_pow_unramified_depth {f : MvPowerSeries (Fin M) C} {a : ℝ}
     (hf : _root_.ReciprocityTheory.PGsh.OrdGe v ρ f a) (n : ℕ) : _root_.ReciprocityTheory.PGsh.OrdGe v ρ (f ^ n) (n * a) := by
@@ -136,7 +129,6 @@ private theorem ordGe_pow_unramified_depth {f : MvPowerSeries (Fin M) C} {a : �
     rw [pow_succ, show ((n + 1 : ℕ) : ℝ) * a = n * a + a by push_cast; ring]
     exact ordGe_mul' ih hf
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem one_le_valuation_natCast_of_dvd_of_valuation_eq_one {l c : ℕ} (hv : v (l : C) = 1) (h : l ∣ c) :
     ((1 : ℝ) : WithTop ℝ) ≤ v (c : C) := by
@@ -146,7 +138,6 @@ private theorem one_le_valuation_natCast_of_dvd_of_valuation_eq_one {l c : ℕ} 
   rw [Nat.cast_mul, AddValuation.map_mul, hv]
   simpa [add_comm] using add_le_add_left hm (1 : WithTop ℝ)
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_mono' {f : MvPowerSeries (Fin M) C} {w w' : ℝ}
     (hf : _root_.ReciprocityTheory.PGsh.OrdGe v ρ f w) (hw : w' ≤ w) : _root_.ReciprocityTheory.PGsh.OrdGe v ρ f w' := by
@@ -154,7 +145,6 @@ private theorem ordGe_mono' {f : MvPowerSeries (Fin M) C} {w w' : ℝ}
   intro α
   exact le_trans (WithTop.coe_le_coe.2 (by linarith)) (hf α)
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_add_pow_sub_pow_sub_pow_of_valuation_eq_one {l k : ℕ} (hl : l.Prime)
     (hv : v (l : C) = 1) {f g : MvPowerSeries (Fin M) C} {w : ℝ}
@@ -183,7 +173,6 @@ private theorem ordGe_add_pow_sub_pow_sub_pow_of_valuation_eq_one {l k : ℕ} (h
   push_cast
   ring
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_sum_pow_sub_sum_pow_of_valuation_eq_one {l k : ℕ} (hl : l.Prime)
     (hv : v (l : C) = 1) {ι : Type} (s : Finset ι) {x : ι → MvPowerSeries (Fin M) C} {w : ℝ}
@@ -203,7 +192,6 @@ private theorem ordGe_sum_pow_sub_sum_pow_of_valuation_eq_one {l k : ℕ} (hl : 
     convert h using 1
     ring
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_sum_add_pow_sub_sum_pow_ge_min {l k : ℕ} (hl : l.Prime) (hv : v (l : C) = 1)
     {x : Fin M → MvPowerSeries (Fin M) C} {ν : MvPowerSeries (Fin M) C} {w w₂ : ℝ}
@@ -221,7 +209,6 @@ private theorem ordGe_sum_add_pow_sub_sum_pow_ge_min {l k : ℕ} (hl : l.Prime) 
   convert h using 1
   ring
 
-open MvPowerSeries in
 variable {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {M : ℕ} {ρ : Fin M → ℝ} in
 private theorem ordGe_C_mul_X_pow_of_le_valuation {r w : ℝ} {a : C} (j : Fin M) (N : ℕ)
     (ha : ((w - r * N : ℝ) : WithTop ℝ) ≤ v a) :
@@ -235,7 +222,6 @@ private theorem ordGe_C_mul_X_pow_of_le_valuation {r w : ℝ} {a : C} (j : Fin M
     simpa [Finsupp.single_apply] using ha
   · simp
 
-open MvPowerSeries in
 variable {C : Type} [Field C] (v : AddValuation C (WithTop ℝ)) {M : ℕ} (ρ : Fin M → ℝ) in
 theorem _root_.GlobalTheory.WeightFrobenius.main :
   (∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ)) (l : ℕ), l.Prime → v (l : C) = 1 → ∀ (M N k : ℕ) (r w w₂ : ℝ) (a : Fin M → C) (ν : MvPowerSeries (Fin M) C), w ≤ w₂ → (∀ j, ((w - r * N : ℝ) : WithTop ℝ) ≤ v (a j)) →

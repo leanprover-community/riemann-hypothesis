@@ -61,8 +61,6 @@ theorem _root_.GlobalTheory.GramExp.diag_sq {a : ℕ} {d : Fin a → ℂ}
   rcases hd i with h | h <;> simp [h]
 
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.GramExp.isMatGroup_UH {N : ℕ} (H : Matrix (Fin N) (Fin N) ℂ)
     (hH : H * H = 1) : _root_.PI.IsMatGroup (_root_.Formalism.QuantumDeterminants.UH H) := by
   unfold _root_.PI.IsMatGroup _root_.Formalism.QuantumDeterminants.UH
@@ -101,8 +99,6 @@ theorem _root_.GlobalTheory.GramExp.isMatGroup_UH {N : ℕ} (H : Matrix (Fin N) 
       _ = ((a⁻¹)ᴴ * aᴴ) * H * (a * a⁻¹) := by simp only [Matrix.mul_assoc]
       _ = H := by rw [hc, hr, Matrix.one_mul, Matrix.mul_one]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.GramExp.exp_cont {n : ℕ} :
     Continuous (NormedSpace.exp : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ) := by
   letI : NormedRing (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedRing
@@ -111,8 +107,6 @@ theorem _root_.GlobalTheory.GramExp.exp_cont {n : ℕ} :
   exact NormedSpace.exp_continuous
 
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.GramExp.measurableSet_image_ball {X Y : Type} [PseudoMetricSpace X] [ProperSpace X]
     [TopologicalSpace Y] [T2Space Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] {f : X → Y}
     (hf : Continuous f) (x : X) (ρ : ℝ) :

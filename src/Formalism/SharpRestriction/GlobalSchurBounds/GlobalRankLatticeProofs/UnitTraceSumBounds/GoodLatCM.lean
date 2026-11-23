@@ -43,7 +43,6 @@ variable {E : Type} [Field E] [NumberField E]
 
 end Formalism.MainNotions.Ext
 
-open Formalism.MainNotions.TaylorLogMetric Formalism.BasicNotions NumberField
 
 namespace Formalism.MainNotions.Ext
 

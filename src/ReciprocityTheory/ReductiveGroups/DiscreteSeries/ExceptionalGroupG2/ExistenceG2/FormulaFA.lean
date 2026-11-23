@@ -53,11 +53,9 @@ end Smooth
 
 end General
 
-section KMap
 
 variable {Λ : Fin n → ℝ}
 
-end KMap
 
 section Psi
 

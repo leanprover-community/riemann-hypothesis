@@ -263,9 +263,7 @@ end PositivityTheory.SiegelWeilFormula.SwLocFin.LatticeCovolumeGrowth
 
 namespace PositivityTheory.SiegelWeilFormula.SwLocFin
 
-open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory GlobalTheory.Cont PositivityTheory.PfSWUS.Loc PositivityTheory.SiegelWeilFormula.Gen Filter Topology
 open PositivityTheory.SiegelWeilFormula.SwLocFin.LatticeCovolumeGrowth
-open scoped TensorProduct Matrix ENNReal NNReal
 
 theorem convP : ConvP := by
   intro F E _ _ _ _ _ σ M J n ψ v μv νv lam L₁ L₂ Φv g T h

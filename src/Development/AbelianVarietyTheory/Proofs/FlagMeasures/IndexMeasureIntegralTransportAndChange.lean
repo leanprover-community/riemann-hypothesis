@@ -59,7 +59,6 @@ private lemma apply_out_mk_eq_of_invariant {B : AddSubgroup W} {φ : W → ℂ}
   rw [add_neg_cancel_left] at this
   exact this.symm
 
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'] in
 private lemma Fine_map_addEquiv_and_finsum_eq (e : W ≃+ W') {A B : AddSubgroup W}
     {φ : W' → ℂ} (hB : _root_.GlobalTheory.IdxInt.Fine A (fun w => φ (e w)) B) :
@@ -86,14 +85,12 @@ private lemma Fine_map_addEquiv_and_finsum_eq (e : W ≃+ W') {A B : AddSubgroup
     change φ (Quotient.out (q (QuotientAddGroup.mk y))) = _
     rw [hq, apply_out_mk_eq_of_invariant hφ', apply_out_mk_eq_of_invariant (φ := fun w => φ (e w)) hφ]
 
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'] in
 private lemma map_symm_map_addEquiv (e : W ≃+ W') (A : AddSubgroup W) :
     (A.map e.toAddMonoidHom).map e.symm.toAddMonoidHom = A := by
   ext x
   simp
 
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'] in
 private lemma Fine_of_le_and_finsum_eq_relIndex_mul {A B C : AddSubgroup W} {φ : W → ℂ}
     (hB : _root_.GlobalTheory.IdxInt.Fine A φ B) (hCB : C ≤ B) (hC : C.relIndex B ≠ 0) :
@@ -135,7 +132,6 @@ private lemma Fine_of_le_and_finsum_eq_relIndex_mul {A B C : AddSubgroup W} {φ 
     · exact (hsupp.prod (Set.finite_univ (α := B ⧸ C.addSubgroupOf B))).subset
         fun p hp => ⟨hgT hp, Set.mem_univ _⟩
 
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'] in
 private lemma finsum_out_div_relIndex_eq_inf_of_fine {A B₁ B₂ : AddSubgroup W} {φ : W → ℂ}
     (h₁ : _root_.GlobalTheory.IdxInt.Fine A φ B₁) (h₂ : _root_.GlobalTheory.IdxInt.Fine A φ B₂) :
@@ -150,7 +146,6 @@ private lemma finsum_out_div_relIndex_eq_inf_of_fine {A B₁ B₂ : AddSubgroup 
   rw [(Fine_of_le_and_finsum_eq_relIndex_mul h₁ hle hi).2, ← hprod, Nat.cast_mul,
     mul_div_mul_left _ _ (Nat.cast_ne_zero.mpr hi)]
 
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'] in
 private lemma cint_eq_finsum_div_relIndex_of_fine {A B : AddSubgroup W} {φ : W → ℂ}
     (hB : _root_.GlobalTheory.IdxInt.Fine A φ B) :
@@ -160,7 +155,6 @@ private lemma cint_eq_finsum_div_relIndex_of_fine {A B : AddSubgroup W} {φ : W 
   rw [dite_eq_left hnice, finsum_out_div_relIndex_eq_inf_of_fine hnice.choose_spec hB,
     finsum_out_div_relIndex_eq_inf_of_fine hB hnice.choose_spec, inf_comm]
 
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'] in
 private lemma Fine_inf_of_relIndex_ne_zero {A A' B : AddSubgroup W} {φ : W → ℂ}
     (hB : _root_.GlobalTheory.IdxInt.Fine A φ B) (h₂ : A'.relIndex A ≠ 0) (h₁ : A.relIndex A' ≠ 0) :
@@ -183,7 +177,6 @@ private lemma Fine_inf_of_relIndex_ne_zero {A A' B : AddSubgroup W} {φ : W → 
   exact mul_ne_zero hD h₁
 
 
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'] in
 theorem _root_.GlobalTheory.IdxInt.Transport.cint_map_and_change : ∀ {W : Type} [AddCommGroup W] {W' : Type} [AddCommGroup W'], (∀ (e : W ≃+ W') (A : AddSubgroup W) (φ : W' → ℂ), (_root_.GlobalTheory.IdxInt.Nice (A.map e.toAddMonoidHom) φ ↔ _root_.GlobalTheory.IdxInt.Nice A (fun w => φ (e w))) ∧ _root_.GlobalTheory.IdxInt.cint (A.map e.toAddMonoidHom) φ = _root_.GlobalTheory.IdxInt.cint A (fun w => φ (e w))) ∧ ∀ (A A' : AddSubgroup W) (φ : W → ℂ), A.relIndex A' ≠ 0 → A'.relIndex A ≠ 0 → (_root_.GlobalTheory.IdxInt.Nice A φ ↔ _root_.GlobalTheory.IdxInt.Nice A' φ) ∧ _root_.GlobalTheory.IdxInt.cint A' φ * (A.relIndex A' : ℂ) = _root_.GlobalTheory.IdxInt.cint A φ * (A'.relIndex A : ℂ) := by
   intro W _ W' _

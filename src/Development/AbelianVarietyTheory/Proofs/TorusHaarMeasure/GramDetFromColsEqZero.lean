@@ -63,16 +63,12 @@ private lemma gram_det_re_nonneg_and_im_eq_zero (X : Matrix m α ℂ) : 0 ≤ (X
   have h := Complex.le_def.mp (posSemidef_conjTranspose_mul_self X).det_nonneg
   exact ⟨by simpa using h.1, by simpa using h.2.symm⟩
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 variable {m α β γ n : Type} [Fintype m] [Fintype α] [Fintype β] [Fintype γ] [Fintype n]
   [DecidableEq α] [DecidableEq β] [DecidableEq γ] [DecidableEq n] in
 private lemma gram_fromCols_eq_fromBlocks (X : Matrix m α ℂ) (N : Matrix m n ℂ) :
     (fromCols X N)ᴴ * fromCols X N = fromBlocks (Xᴴ * X) (Xᴴ * N) (Nᴴ * X) (Nᴴ * N) := by
   rw [conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul_fromCols]
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 variable {m α β γ n : Type} [Fintype m] [Fintype α] [Fintype β] [Fintype γ] [Fintype n]
   [DecidableEq α] [DecidableEq β] [DecidableEq γ] [DecidableEq n] in
 private lemma gram_projection_residual_eq [DecidableEq m] (X : Matrix m α ℂ) (N : Matrix m n ℂ)
@@ -97,8 +93,6 @@ private lemma gram_projection_residual_eq [DecidableEq m] (X : Matrix m α ℂ) 
   rw [conjTranspose_mul, hPh, Matrix.mul_assoc, ← Matrix.mul_assoc _ _ N, hP]
   simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul, Matrix.mul_assoc]
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 variable {m α β γ n : Type} [Fintype m] [Fintype α] [Fintype β] [Fintype γ] [Fintype n]
   [DecidableEq α] [DecidableEq β] [DecidableEq γ] [DecidableEq n] in
 private lemma gram_det_fromCols_eq_mul_residual [DecidableEq m] (X : Matrix m α ℂ) (N : Matrix m n ℂ)
@@ -108,15 +102,11 @@ private lemma gram_det_fromCols_eq_mul_residual [DecidableEq m] (X : Matrix m α
   haveI := invertibleOfIsUnitDet _ (isUnit_iff_ne_zero.mpr h)
   rw [gram_fromCols_eq_fromBlocks, det_fromBlocks₁₁, invOf_eq_nonsing_inv, gram_projection_residual_eq X N h]
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 variable {m α β γ n : Type} [Fintype m] [Fintype α] [Fintype β] [Fintype γ] [Fintype n]
   [DecidableEq α] [DecidableEq β] [DecidableEq γ] [DecidableEq n] in
 private lemma re_mul_of_im_eq_zero {z w : ℂ} (hz : z.im = 0) : (z * w).re = z.re * w.re := by
   simp [Complex.mul_re, hz]
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 variable {m α β γ n : Type} [Fintype m] [Fintype α] [Fintype β] [Fintype γ] [Fintype n]
   [DecidableEq α] [DecidableEq β] [DecidableEq γ] [DecidableEq n] in
 private lemma gram_det_fromCols_eq_zero_of_gram_det_eq_zero (X : Matrix m α ℂ) (N : Matrix m n ℂ)
@@ -130,8 +120,6 @@ private lemma gram_det_fromCols_eq_zero_of_gram_det_eq_zero (X : Matrix m α ℂ
     simp [Function.comp_def, hXv]
     exact N.mulVec_zero
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 variable {m α β γ n : Type} [Fintype m] [Fintype α] [Fintype β] [Fintype γ] [Fintype n]
   [DecidableEq α] [DecidableEq β] [DecidableEq γ] [DecidableEq n] in
 private lemma gram_det_fromCols_le_mul
@@ -151,8 +139,6 @@ private lemma gram_det_fromCols_le_mul
     refine hmono'.trans (le_of_eq ?_)
     rw [gram_projection_residual_eq Y Z h, conjTranspose_mul, conjTranspose_conjTranspose, sub_add_cancel]
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 variable {m α β γ n : Type} [Fintype m] [Fintype α] [Fintype β] [Fintype γ] [Fintype n]
   [DecidableEq α] [DecidableEq β] [DecidableEq γ] [DecidableEq n] in
 private lemma gram_det_koteljanskii_inequality
@@ -172,8 +158,6 @@ private lemma gram_det_koteljanskii_inequality
     nlinarith [mul_le_mul_of_nonneg_left hF (mul_self_nonneg (Xᴴ * X).det.re)]
 
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 variable {m α β γ n : Type} [Fintype m] [Fintype α] [Fintype β] [Fintype γ] [Fintype n]
   [DecidableEq α] [DecidableEq β] [DecidableEq γ] [DecidableEq n] in
 theorem _root_.GlobalTheory.gram_det_submodular :

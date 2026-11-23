@@ -75,7 +75,6 @@ theorem _root_.GlobalTheory.phiT_add_smul_homAt (K : Type) [Field K]
   · exact absurd (hiff.2 h2) h1
   · rfl
 
-open NumberField IsDedekindDomain in
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ} in
 omit [NumberField E] [StarRing E] in
 theorem _root_.GlobalTheory.inFr_add (f : _root_.Formalism.L2.Col.Sp E a ≃ₗ[E] _root_.Formalism.L2.Col.Sp E a) (f' : _root_.Formalism.L2.Col.Sp E b ≃ₗ[E] _root_.Formalism.L2.Col.Sp E b)
@@ -85,7 +84,6 @@ theorem _root_.GlobalTheory.inFr_add (f : _root_.Formalism.L2.Col.Sp E a ≃ₗ[
   rw [LinearMap.add_comp, LinearMap.comp_add]
 
 
-open NumberField IsDedekindDomain in
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ} in
 theorem _root_.GlobalTheory.intAt_inFr_smul_homAt {S : Finset (HeightOneSpectrum (𝓞 E))}
     {N : Submodule (𝓞 E) (_root_.Formalism.L2.Col.Sp E a)}

@@ -212,7 +212,6 @@ end Fv
 end GlobalTheory.Reidx
 
 namespace GlobalTheory.Reidx
-open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection
 
 section Index
 variable {r a : ℕ} {A : Type} (ε : Fin r ⊕ A ≃ Fin a) (hε : ∀ i, (ε (.inl i) : ℕ) = i)
@@ -256,7 +255,6 @@ end TopL
 end GlobalTheory.Reidx
 
 namespace GlobalTheory.Reidx
-open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection
 
 theorem phiQ_eq (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) {r a b : ℕ} {A B : Type} [Fintype A] [DecidableEq A]
     [Fintype B] [DecidableEq B] (ε : Fin r ⊕ A ≃ Fin a) (ε' : Fin r ⊕ B ≃ Fin b)
@@ -297,7 +295,6 @@ theorem phiQ_eq (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) {r a b : ℕ} {
 end GlobalTheory.Reidx
 
 namespace GlobalTheory.Reidx
-open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection
 
 section SBsec
 variable {X Y : Type} [TopologicalSpace X] [TopologicalSpace Y]
@@ -342,7 +339,6 @@ end Homeo
 end GlobalTheory.Reidx
 
 namespace GlobalTheory.Reidx
-open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection
 
 section Main
 variable (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) {r a b : ℕ} {A B : Type} [Fintype A] [DecidableEq A]

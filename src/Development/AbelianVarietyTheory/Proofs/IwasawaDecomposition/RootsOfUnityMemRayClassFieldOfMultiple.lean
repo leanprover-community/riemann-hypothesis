@@ -79,8 +79,6 @@ private theorem eq_of_pow_eq_one_of_sub_mem_prime {R : Type} [CommRing R] [IsDom
     exact Ideal.IsPrime.ne_top ‹_› ((Ideal.eq_top_iff_one _).mpr this)
 
 
-open NumberField IsDedekindDomain in
-open scoped nonZeroDivisors IntermediateField in
 variable {K M L : Type} [Field K] [NumberField K] [Field M] [NumberField M] [Field L] [NumberField L]
   [Algebra K M] [Algebra K L] [Algebra M L] [IsScalarTower K M L] in
 theorem _root_.GlobalTheory.Mem.RayZeta.root_mem_rayField : ∀ (K M L : Type) [Field K] [NumberField K]

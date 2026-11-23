@@ -157,7 +157,6 @@ end GlobalTheory.PullUnifId
 
 namespace GlobalTheory.PullUnifId
 
-open GlobalTheory.PsiEvenPull (proj)
 
 theorem isPullUnif_comp_id : ∀ (R R' : Type) [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R'] (I : Ideal R) (I' : Ideal R') (φ : R →+* R')
     (D : DegData R I) (D' D'' : DegData R' I') (hD : IsPullDeg φ D.toPre D'.toPre)

@@ -64,7 +64,6 @@ private theorem UpperTheory.Reformulated.B.Ybf4.isIntegral_det_of_isIntegral {R 
   rw [spectrum.mem_resolventSet_iff, sub_zero]
   exact (IsUnit.mk0 _ hne).map _
 
-open Polynomial in
 theorem UpperTheory.Reformulated.B.Ybf4.isIntegral_det :
     ∀ {E : Type} [inst : Field E] [NumberField E] {N : ℕ} (L : Submodule (NumberField.RingOfIntegers E) (Fin N → E)),
       L.FG →

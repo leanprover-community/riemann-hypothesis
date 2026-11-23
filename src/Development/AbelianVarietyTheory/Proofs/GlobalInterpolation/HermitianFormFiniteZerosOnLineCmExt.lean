@@ -65,8 +65,6 @@ theorem _root_.GlobalTheory.HermLineZeros.hform_expand (s : A →+* A) (J : Matr
   simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, map_add (f := _), map_mul]
   ring
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {A : Type} [CommRing A] {M : ℕ} in
 theorem _root_.GlobalTheory.HermLineZeros.hform_single (s : A →+* A) (J : Matrix (Fin M) (Fin M) A)
     (i j : Fin M) :
@@ -78,8 +76,6 @@ end Ring
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E}
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} in
 theorem _root_.GlobalTheory.HermLineZeros.conj_invol (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) (e : E) : σ (σ e) = e := by
@@ -87,8 +83,6 @@ theorem _root_.GlobalTheory.HermLineZeros.conj_invol (h : _root_.Formalism.MainN
   apply τ.injective
   rw [h.2.2.2 τ, h.2.2.2 τ, star_star]
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} in
 theorem _root_.GlobalTheory.HermLineZeros.exists_conj_ne (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) : ∃ d, σ d ≠ d := by
@@ -104,8 +98,6 @@ theorem _root_.GlobalTheory.HermLineZeros.exists_conj_ne (h : _root_.Formalism.M
   rw [InfinitePlace.isComplex_mk_iff] at hcx
   exact hcx hreal
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} in
 theorem _root_.GlobalTheory.HermLineZeros.exists_of_fixed (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) (e : E) (he : σ e = e) :
@@ -130,8 +122,6 @@ theorem _root_.GlobalTheory.HermLineZeros.exists_of_fixed (h : _root_.Formalism.
   rw [hbot] at heS
   exact Algebra.mem_bot.mp heS
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} in
 private theorem hE_self_conj_fixed (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) {M : ℕ}
@@ -147,8 +137,6 @@ private theorem hE_self_conj_fixed (h : _root_.Formalism.MainNotions.GlobalTheor
   simp only [AlgHom.coe_toRingHom, map_mul, _root_.GlobalTheory.HermLineZeros.conj_invol h, hJ.1]
   ring
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} in
 theorem _root_.GlobalTheory.HermLineZeros.exists_anisotropic (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) {M : ℕ} (hM : 1 ≤ M)
@@ -178,8 +166,6 @@ theorem _root_.GlobalTheory.HermLineZeros.exists_anisotropic (h : _root_.Formali
   norm_num
 
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} in
 theorem _root_.GlobalTheory.HermLineZeros.finite_zeros_on_line : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ → ∀ (M : ℕ), 1 ≤ M → ∀ (J : Matrix (Fin M) (Fin M) E), _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsHermND σ J → ∀ (K : Type) [Field K] [Algebra F K], ∃ y : Fin M → K ⊗[F] E, ∀ x : Fin M → K ⊗[F] E, {t : K | _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.qR K σ J (x + t • y) = 0}.Finite := by

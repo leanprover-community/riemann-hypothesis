@@ -56,18 +56,13 @@ theorem tcol_alt (f : _root_.GlobalTheory.Fam.FamilyCharacter W u) (t : W.P.T) (
     rw [ih]; rfl
 end GlobalTheory.MiTop.TailColumnRecursion
 namespace GlobalTheory.MiTop.TailColumnRecursion
-open Classical
 open Formalism.L2.Forms GlobalTheory.Core.Rk.Top Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev
 variable {D : D7}
 end GlobalTheory.MiTop.TailColumnRecursion
 namespace GlobalTheory.MiTop.TailColumnRecursion
-open Classical
-open Formalism.L2.Forms GlobalTheory.Core.Rk.Top Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev
 variable {D : D7}
 end GlobalTheory.MiTop.TailColumnRecursion
 namespace GlobalTheory.MiTop.TailColumnRecursion
-open Classical
-open Formalism.L2.Forms GlobalTheory.Core.Rk.Top Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev
 variable {D : D7}
 section G
 variable {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {A : ColumnsAtT D.R C} {Pm : PeriodMap D.R C}
@@ -76,12 +71,9 @@ variable {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {A :
 end G
 end GlobalTheory.MiTop.TailColumnRecursion
 namespace GlobalTheory.MiTop.TailColumnRecursion
-open Classical
-open Formalism.L2.Forms GlobalTheory.Core.Rk.Top Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev
 variable {D : D7}
 end GlobalTheory.MiTop.TailColumnRecursion
 namespace GlobalTheory.MiTop
-open Classical
 open GlobalTheory.MiTop.TailColumnRecursion Formalism.L2.Forms
 theorem linkTail_of_topReadAt_alt : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX} (W : _root_.GlobalTheory.MiS.RealPackAlt ex), ∀ u (f : _root_.GlobalTheory.Fam.FamilyCharacter W u), _root_.GlobalTheory.Fam.LeadingReadAt W u f.j f.g.bT → (∀ t, W.P.I.tup t = D.what₂.mu0 → ∀ φ : D.what₂.Mu u, HEq (_root_.GlobalTheory.MiTop.col0_alt f t φ) (D.eMu u φ).1) → _root_.GlobalTheory.MiTop.LinkTailCondition f := by
   intro D L hT Gi Gl Kc Yd cX ex W u f hTR h0 n h t φ F F' hFF G hG

@@ -859,7 +859,6 @@ section
 
 namespace Bridge.RingBasics.ExtendedInverseLemmas
 
-open Reformulated.AutPerF
 
 theorem extend_extend_inv {p : ℕ} [Fact p.Prime] {R : Type*} [CommRing R]
     [Fact ¬IsUnit (p : R)] {G : Type*} [Group G] [MulSemiringAction G R] (g : G)
@@ -973,7 +972,6 @@ end WittFrobeniusLift
 namespace UnitOfRootLog
 section
 
-open Ideal Reformulated.AutPerF
 
 namespace Bridge.CrisLoc.UnitOfRootLemmas
 

@@ -161,7 +161,6 @@ end GlobalTheory.AdicSpan.HenselSqrt
 
 namespace GlobalTheory.AdicSpan.HenselSqrt
 
-open IsDedekindDomain.HeightOneSpectrum WithZero
 
 theorem exists_sqrt : ∀ (v : HeightOneSpectrum ℤ) (L : Type) [Field L] [NumberField L] (κ : Type)
     (bL : Module.Basis κ ℚ L),

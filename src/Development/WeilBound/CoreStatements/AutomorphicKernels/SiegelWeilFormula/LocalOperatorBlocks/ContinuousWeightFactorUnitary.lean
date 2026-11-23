@@ -90,7 +90,6 @@ theorem mR_mG {a : Matrix (Fin n) (Fin n) ℂ} (ha : IsUnit a.det) : mR (mG a) =
   unfold mG; rw [dite_eq_left ha]; rfl
 
 
-open scoped Classical in
 def nG (b : Matrix (Fin n) (Fin n) ℂ) : GR n := if h : bᴴ = b then toGR _ (inG_nU h) else 1
 
 theorem mR_nG {b : Matrix (Fin n) (Fin n) ℂ} (hb : bᴴ = b) : mR (nG b) = nU b := by

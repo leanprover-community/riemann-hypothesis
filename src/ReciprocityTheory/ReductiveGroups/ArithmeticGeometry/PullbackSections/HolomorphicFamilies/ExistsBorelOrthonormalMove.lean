@@ -85,10 +85,8 @@ theorem exists_borel_orthonormal_move {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
 
 end Frames
 
-section Act
 
 variable {dim : (E →+* ℂ) → ℕ}
 
-end Act
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

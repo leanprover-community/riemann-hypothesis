@@ -132,7 +132,6 @@ end GlobalTheory.TypeOrthogonality
 
 namespace GlobalTheory.TypeOrthogonality
 
-open ComplexConjugate NumberField Formalism.L2 ReciprocityTheory.Aut Formalism.AUTREP
 
 section core
 
@@ -199,7 +198,6 @@ end GlobalTheory.TypeOrthogonality
 
 namespace GlobalTheory.TypeOrthogonality
 
-open ComplexConjugate NumberField Formalism.L2 ReciprocityTheory.Aut Formalism.AUTREP
 
 section core2
 
@@ -250,7 +248,6 @@ end GlobalTheory.TypeOrthogonality
 
 namespace GlobalTheory.TypeOrthogonality
 
-open ComplexConjugate NumberField Formalism.L2 ReciprocityTheory.Aut Formalism.AUTREP
 
 section schur
 

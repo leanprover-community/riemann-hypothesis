@@ -152,7 +152,6 @@ theorem oActN_natCast {S : Scheme.{0}} {O : Type} [Ring O] {G : Over S} [GrpObj 
   | succ n ih => rw [Nat.cast_succ, act.add, ih, act.one, pow_succ]
 
 
-open GlobalTheory.UPel.HT in
 theorem act_finite_flat {S : Scheme.{0}} [IsLocallyNoetherian S] {F O : Type} [Field F] [NumberField F] [Ring O]
     [Algebra (𝓞 F) O] (A : Over S) [GrpObj A] [IsCommMonObj A] (hA : IsAbelianScheme A) (act : OActN O A)
     (c : 𝓞 F) (hc : c ≠ 0) :

@@ -74,7 +74,6 @@ private lemma isBorelSph_comp_invRevT {γ : Fin n → ℂ}
       rw [Units.val_inv_eq_inv_val]
       exact eq_inv_of_mul_eq_one_left hi
 
-open MeasureTheory ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : ℕ} in
 private lemma exists_cosetMap_out_eq_invRevT_mul
@@ -86,7 +85,6 @@ private lemma exists_cosetMap_out_eq_invRevT_mul
   refine ⟨x, x.2, ?_⟩
   rw [← hx, ← _root_.GlobalTheory.SatakeFlip.cosetMap_mk, QuotientGroup.out_eq']
 
-open MeasureTheory ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : ℕ} in
 private lemma mul_entries_integral {g h : GL (Fin n) k}
@@ -97,7 +95,6 @@ private lemma mul_entries_integral {g h : GL (Fin n) k}
   rw [Units.val_mul, Matrix.mul_apply]
   exact Subring.sum_mem _ fun l _ => Subring.mul_mem _ (hg i l) (hh l j)
 
-open MeasureTheory ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : ℕ} in
 private lemma invRevT_entries_integral_iff_inv (g : GL (Fin n) k) :
@@ -110,7 +107,6 @@ private lemma invRevT_entries_integral_iff_inv (g : GL (Fin n) k) :
   · intro h i j
     exact h _ _
 
-open MeasureTheory ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : ℕ} in
 private lemma det_invRevT' (g : GL (Fin n) k) :
@@ -122,7 +118,6 @@ private lemma det_invRevT' (g : GL (Fin n) k) :
   show Matrix.det ((↑g⁻¹ : Matrix (Fin n) (Fin n) k).transpose.submatrix Fin.rev Fin.rev) = _
   exact (Matrix.det_submatrix_equiv_self Fin.revPerm _).trans (Matrix.det_transpose _)
 
-open MeasureTheory ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : ℕ} in
 private lemma ord_det_eq_zero_of_mem_KO {x : GL (Fin n) k}
@@ -136,7 +131,6 @@ private lemma ord_det_eq_zero_of_mem_KO {x : GL (Fin n) k}
   simpa using this
 
 
-open MeasureTheory ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : ℕ} in
 theorem _root_.GlobalTheory.HeckeDual.hasSum_dual : ∀ (k : Type) [Field k] [ValuativeRel k]

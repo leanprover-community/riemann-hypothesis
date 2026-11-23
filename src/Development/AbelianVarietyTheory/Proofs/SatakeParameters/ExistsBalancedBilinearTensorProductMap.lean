@@ -91,7 +91,6 @@ end GlobalTheory.LetterDescent
 
 namespace GlobalTheory.LetterDescent
 
-open TensorProduct
 
 theorem exists_letter_tensor_map {LL U D₁ D₂ D₃ : Type} [Field LL] [Field U] [AddCommGroup D₁] [Module LL D₁]
     [AddCommGroup D₂] [Module LL D₂] [AddCommGroup D₃] [Module LL D₃] (m₁ : U →+* Module.End LL D₁)

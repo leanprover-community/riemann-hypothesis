@@ -122,7 +122,6 @@ theorem natCast_notMem_of_not_dvd {F : Type} [Field F] [NumberField F] {p M : �
   exact w.isPrime.ne_top ((Ideal.eq_top_iff_one _).mpr hone)
 
 
-open NumberField IsDedekindDomain in
 theorem eventually_natCast_notMem {F : Type} [Field F] [NumberField F] {M : ℕ} (hM : M ≠ 0) :
     ∀ᶠ w : HeightOneSpectrum (𝓞 F) in Filter.cofinite, (M : 𝓞 F) ∉ w.asIdeal := by
   rw [Filter.eventually_cofinite]

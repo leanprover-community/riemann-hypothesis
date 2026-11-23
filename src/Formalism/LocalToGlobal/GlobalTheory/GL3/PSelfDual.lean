@@ -300,7 +300,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.SD
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.FrobeniusOrbits
 
 def CurveSelfDualRec : Prop :=
   ∀ D : D7, ∀ cc : Ideal (𝓞 D.host.K), IsCurveIdeal D cc → ∀ δ : ℂ, δ ≠ 0 →
@@ -565,7 +564,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.CS
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.FrobeniusOrbits
 
 theorem CS.coe_intO (D : D7) (n : ℤ) :
     ((((n : 𝓞 D.host.K) : D.host.K)) : D.host.E) = (n : D.host.E) := by

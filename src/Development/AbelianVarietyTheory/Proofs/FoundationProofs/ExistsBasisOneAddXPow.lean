@@ -52,7 +52,6 @@ private theorem one_add_X_pow_eq_sum_fin_choose {R : Type} [CommRing R] (p j : �
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [one_pow, mul_one, mul_comm]
 
-open PowerSeries in
 private theorem subsingleton_of_isUnit_natCast_of_isAdicComplete {R : Type} [CommRing R] (p : ℕ)
     (hR : IsAdicComplete (Ideal.span {(p : R)}) R) (hu : IsUnit (p : R)) : Subsingleton R := by
   have htop : Ideal.span {(p : R)} = ⊤ := Ideal.span_singleton_eq_top.2 hu
@@ -63,7 +62,6 @@ private theorem subsingleton_of_isUnit_natCast_of_isAdicComplete {R : Type} [Com
   exact sub_eq_zero.1 h
 
 
-open PowerSeries in
 theorem _root_.GlobalTheory.Col.exists_basis_one_add_X_pow (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.Prime]
     (hR : IsAdicComplete (Ideal.span {(p : R)}) R) :
     ∃ b : @Module.Basis (Fin p) (PowerSeries R) (PowerSeries R) _ _

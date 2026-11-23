@@ -80,7 +80,6 @@ end GlobalTheory.TwU.MuUnr
 
 namespace GlobalTheory.TwU
 
-open GlobalTheory.Mem.Col2 (afIso afIso_tmul_one mem_rInt_iff)
 open GlobalTheory.TwU.MuUnr
 
 end GlobalTheory.TwU

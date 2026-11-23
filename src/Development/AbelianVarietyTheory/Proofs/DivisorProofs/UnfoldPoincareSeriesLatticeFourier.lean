@@ -113,8 +113,6 @@ private lemma setIntegral_exp_linear_fundamentalDomain_eq_zero {V : Type}
   simpa using h4
 
 
-open MeasureTheory in
-open scoped Pointwise in
 theorem _root_.GlobalTheory.PoincareUnfold.unfold_poincare_fourier : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V]
     [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure]
     (Γ : Type) [AddCommGroup Γ] (j : Γ →+ V), Function.Injective j → ∀ C : AddSubgroup Γ,

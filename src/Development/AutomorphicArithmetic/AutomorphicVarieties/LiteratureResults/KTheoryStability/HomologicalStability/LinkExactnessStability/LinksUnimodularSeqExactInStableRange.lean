@@ -104,5 +104,4 @@ theorem GlobalTheory.SeqCx.linkExact_of_stableRangeLe : ∀ (R : Type) [CommRing
           exact Or.inr hx, by simpa using hvx⟩
 
 section
-open GlobalTheory.SeqCx Matrix UpperTheory.V.KL
 end

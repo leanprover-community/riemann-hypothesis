@@ -292,7 +292,6 @@ end UpperTheory.V.J.TorusDerivation
 
 namespace UpperTheory.V.J.TorusDerivation
 
-open Matrix
 
 variable {K : Type} [Field K]
 
@@ -411,7 +410,6 @@ set_option synthInstance.maxHeartbeats 200000
 
 namespace UpperTheory.V.J.TorusDerivation
 
-open Matrix
 
 variable {l : ℕ} [Fact l.Prime] {c : Coef l} [Fr.IsCoef l c.O] {F : Fr.Frame l (ResidueField c.O)} {n : ℕ}
 

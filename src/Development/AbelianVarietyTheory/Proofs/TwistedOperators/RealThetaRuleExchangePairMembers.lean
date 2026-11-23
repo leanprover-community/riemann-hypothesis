@@ -99,7 +99,6 @@ end GlobalTheory.SwapRule
 
 namespace GlobalTheory.SwapRule
 
-open MvPolynomial
 
 variable {p q r s : ℕ}
 
@@ -180,7 +179,6 @@ end GlobalTheory.SwapRule
 
 namespace GlobalTheory.SwapRule
 
-open MvPolynomial
 
 variable {p q r s : ℕ}
 

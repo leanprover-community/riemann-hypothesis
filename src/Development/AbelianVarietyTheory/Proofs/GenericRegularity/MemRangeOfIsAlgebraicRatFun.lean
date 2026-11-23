@@ -224,7 +224,6 @@ theorem apply_mem_genericPoints {X Y : Scheme.{0}} (f : X ⟶ Y) [Flat f] (Z : S
 
 end Schemes
 
-open AlgebraicGeometry CategoryTheory Limits
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.FrameNorm GlobalTheory.Reg
 
 theorem compNe_and_exists_fnAlgClosed : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), 1 ≤ Dw.p + Dw.q → CompNe Xo c ∧ ∃ c' : Coeff l, c.F ≤ c'.F ∧ ∀ c'' : Coeff l, c'.F ≤ c''.F → FnAlgClosed (Xo := Xo) (c := c'') := by

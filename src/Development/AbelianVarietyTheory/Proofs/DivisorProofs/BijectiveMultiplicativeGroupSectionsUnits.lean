@@ -59,7 +59,6 @@ theorem _root_.GlobalTheory.EtC.GmSec.isSheaf_gamma :
 abbrev uval {V : Scheme.{0}} (t : ((Scheme.Γ ⋙ unitsF) ⋙ forget (ModuleCat.{1} (ULift.{1} ℤ))).obj (op V)) : Γ(V, ⊤)ˣ :=
   Additive.toMul (ULift.down (α := Additive Γ(V, ⊤)ˣ) t)
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex Simplicial TensorProduct in
 private lemma gmSec_uval_map_eq_units_map {U V : Scheme.{0}} (g : V ⟶ U)
     (t : ((Scheme.Γ ⋙ _root_.GlobalTheory.EtC.unitsF) ⋙
       forget (ModuleCat.{1} (ULift.{1} ℤ))).obj (op U)) :
@@ -68,14 +67,12 @@ private lemma gmSec_uval_map_eq_units_map {U V : Scheme.{0}} (g : V ⟶ U)
       Units.map (Scheme.Γ.map g.op).hom.toMonoidHom (_root_.GlobalTheory.EtC.GmSec.uval t) :=
   rfl
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex Simplicial TensorProduct in
 private lemma gmSec_eq_of_uval_eq {U : Scheme.{0}}
     (s s' : ((Scheme.Γ ⋙ _root_.GlobalTheory.EtC.unitsF) ⋙
       forget (ModuleCat.{1} (ULift.{1} ℤ))).obj (op U))
     (h : _root_.GlobalTheory.EtC.GmSec.uval s = _root_.GlobalTheory.EtC.GmSec.uval s') : s = s' := by
   cases s; cases s'; congr 1
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex Simplicial TensorProduct in
 private theorem isSheaf_etaleTopology_units :
     Presieve.IsSheaf Scheme.etaleTopology.{0}
       ((Scheme.Γ ⋙ _root_.GlobalTheory.EtC.unitsF) ⋙ forget (ModuleCat.{1} (ULift.{1} ℤ))) := by
@@ -118,7 +115,6 @@ private theorem isSheaf_etaleTopology_units :
   rw [ht f hf, hA f hf]
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex Simplicial TensorProduct in
 theorem _root_.GlobalTheory.EtC.GmSec.gm_sec_bijective :
     ∀ U : Scheme.{0},
       Function.Bijective

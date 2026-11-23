@@ -299,7 +299,6 @@ theorem transport_data {l : ℕ} [Fact l.Prime] (S : Finset (HeightOneSpectrum (
     rw [ContinuousMulEquiv.symm_apply_apply]
 
 
-open scoped Classical in
 theorem ratio_F_exists {l : ℕ} [Fact l.Prime] (h : RatioOne l (fun _ => True))
     (S : Finset (HeightOneSpectrum (𝓞 F))) (hS : ContainsAbove S l) :
     ∃ c' : InfinitePlace F → G F Ω, (∀ w, w.IsReal → IsCCAt w (c' w)) ∧
@@ -326,7 +325,6 @@ theorem ratio_F_exists {l : ℕ} [Fact l.Prime] (h : RatioOne l (fun _ => True))
   exact (Fintype.prod_equiv e _ _ (fun w => by rw [hfix A w])).symm
 
 
-open scoped Classical in
 theorem ratio_F {l : ℕ} [Fact l.Prime] (h : RatioOne l (fun _ => True))
     (S : Finset (HeightOneSpectrum (𝓞 F))) (hS : ContainsAbove S l)
     (A : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside F Ω (S : Set (HeightOneSpectrum (𝓞 F)))))
@@ -357,7 +355,6 @@ theorem dict_A {l : ℕ} [Fact l.Prime] {r : ℕ} {M : Type} [AddCommGroup M]
         Nat.card {m : M // rhoS (toGS Ω _ g) m = m} := by
   exact PositivityTheory.Lit1.GEN.W_dictfwd_b.dict_A S rhoS hc
 
-open scoped Classical in
 theorem globalEulerCharAt_of_ratioOne {l : ℕ} [Fact l.Prime] {r : ℕ} {M : Type} [AddCommGroup M]
     [Module (ZMod (l ^ r)) M] [Finite M] [TopologicalSpace M] [DiscreteTopology M]
     (S : Finset (HeightOneSpectrum (𝓞 F)))

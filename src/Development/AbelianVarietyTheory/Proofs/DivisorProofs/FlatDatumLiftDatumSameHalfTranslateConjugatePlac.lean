@@ -299,7 +299,6 @@ theorem isLocUnit_conj {D : D7} {PP : Pl D.host.E} (h : Formalism.L2.NTheta.IsId
     rfl
 
 
-open GlobalTheory.ConjTwist in
 theorem X_chr : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Hk3.Core R F → ∀ (i : Fin D.R.m) (t : T0) (B : Base (Vc D i) (Wc D i)) (ψ : Twist D Circle), B.Good → ψ.Good → B.admitted ψ.Q → R.xi t = B.de.chi * ψ.chi → ∀ PP ∈ R.Q t, conjPl PP ∈ B.de.Q ∪ ψ.Q → ∀ u : (kP PP)ˣ, (B.de.locC (conjPl PP) * ψ.locC (conjPl PP)) (Units.map (conjK PP).toMonoidHom u) = (R.xiR t PP u)⁻¹ := by
   intro D G _ _ Pl0 T0 A Ks _ _ _ R F hC i t B ψ hB hψ hQ hxi PP hPP hm u
   obtain ⟨P, -, h2, hP⟩ := hQ.1.split

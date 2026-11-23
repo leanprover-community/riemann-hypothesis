@@ -51,7 +51,6 @@ private lemma re_quad_pos {m : Nat} {M : Matrix (Fin m) (Fin m) ℂ} (h : M.PosD
     (hy : y ≠ 0) : 0 < (star y ⬝ᵥ (Matrix.mulVec M y)).re :=
   (Complex.pos_iff.mp (h.dotProduct_mulVec_pos hy)).1
 
-open scoped ComplexOrder in
 private lemma posDef_of_re {m : Nat} {M : Matrix (Fin m) (Fin m) ℂ} (hH : M.IsHermitian)
     (h : ∀ v : Fin m → ℂ, v ≠ 0 → 0 < (star v ⬝ᵥ (Matrix.mulVec M v)).re) : M.PosDef :=
   Matrix.PosDef.of_dotProduct_mulVec_pos hH fun v hv =>

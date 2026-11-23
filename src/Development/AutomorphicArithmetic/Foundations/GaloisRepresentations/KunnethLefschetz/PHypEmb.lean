@@ -71,7 +71,6 @@ private def chartIso (k : Type) [Field k] (d : ℕ) :
     Scheme.Spec.mapIso (((GroundTheory.Arith.SchemeCoh.ProjSpace.chartEquiv k (0 : Fin (d + 2))).trans
       (MvPolynomial.renameEquiv k (finSuccAboveEquiv (0 : Fin (d + 2))).symm).toRingEquiv).toCommRingCatIso).symm.op
 
-open MvPolynomial in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private theorem off_hyp (k : Type) [Field k] (d : ℕ) :
     Off (GlobalTheory.ProjSpace.linearι k (Fin.succ_injective (d + 1))) (GlobalTheory.ProjSpace.chart k (d + 1) 0) := by

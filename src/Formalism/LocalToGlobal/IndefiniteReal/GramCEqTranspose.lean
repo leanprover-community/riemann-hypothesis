@@ -40,7 +40,6 @@ open scoped InnerProductSpace Matrix
 
 namespace Formalism.IndefR.Arith
 
-section Data
 
 variable (LL Ks : Type) [Field LL] [NumberField LL] [Field Ks] [NumberField Ks] [Algebra Ks LL]
 variable (WL : Type) [AddCommGroup WL] [Module LL WL] [Module Ks WL] [IsScalarTower Ks LL WL]
@@ -67,7 +66,6 @@ structure FormsL where
 
   j : ∀ σ : LL →+* ℂ, WL →ₛₗ[σ] W σ
 
-end Data
 
 section Defs
 
@@ -159,13 +157,11 @@ end FormsL
 
 end Defs
 
-section EEMetric
 
 variable {LL : Type} [Field LL]
 variable {QL : Type} [AddCommGroup QL] [Module LL QL]
 variable {Ix J : Type} [Fintype Ix] [Fintype J]
 
-end EEMetric
 
 section Statements
 

@@ -148,7 +148,6 @@ end GlobalTheory.DualSummand
 
 namespace GlobalTheory.DualSummand
 
-open Module Submodule
 
 variable {R : Type} [CommRing R] {C : Type*} [AddCommGroup C] [Module R C]
 variable {R₀ : Type} [CommRing R₀] {π : R →+* R₀} {C₀ : Type*} [AddCommGroup C₀] [Module R₀ C₀]

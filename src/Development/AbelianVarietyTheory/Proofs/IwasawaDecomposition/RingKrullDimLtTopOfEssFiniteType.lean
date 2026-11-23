@@ -50,7 +50,6 @@ private theorem ringKrullDim_le_of_isLocalization (A D : Type) [CommRing A] [Com
     (PrimeSpectrum.localization_comap_injective D M)
   exact Ideal.comap_mono h
 
-open IsLocalRing in
 private theorem ringKrullDim_finite_of_finiteType_int (A : Type) [CommRing A]
     [Algebra.FiniteType ℤ A] : ringKrullDim A < ⊤ := by
   obtain ⟨n, f, hf⟩ := Algebra.FiniteType.iff_quotient_mvPolynomial''.mp ‹_›
@@ -63,7 +62,6 @@ private theorem ringKrullDim_finite_of_finiteType_int (A : Type) [CommRing A]
   exact h
 
 
-open IsLocalRing in
 theorem _root_.GlobalTheory.ringKrullDim_lt_top_of_essFiniteType (D : Type) [CommRing D] [Algebra.EssFiniteType ℤ D] :
     ringKrullDim D < ⊤ :=
   lt_of_le_of_lt

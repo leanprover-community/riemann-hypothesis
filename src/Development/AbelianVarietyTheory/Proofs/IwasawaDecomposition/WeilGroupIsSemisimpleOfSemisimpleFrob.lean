@@ -98,7 +98,6 @@ private theorem isSemisimple_of_mul_eq_one' {V : Type*} [AddCommGroup V] [Module
   · conv_rhs => rw [h1]
     rw [smul_smul, inv_mul_cancel₀ hα, one_smul]
 
-open NumberField IsDedekindDomain Polynomial Module in
 private theorem isSemisimple_of_isUnit_of_pow_isSemisimple {V : Type*} [AddCommGroup V]
     [Module ℂ V] [FiniteDimensional ℂ V] {f : End ℂ V} (hf : IsUnit f) {m : ℕ} (hm : 0 < m)
     (hfm : (f ^ m).IsSemisimple) : f.IsSemisimple := by
@@ -135,7 +134,6 @@ private theorem isSemisimple_of_isUnit_of_pow_isSemisimple {V : Type*} [AddCommG
   exact minpoly.aeval ℂ (f ^ m)
 
 
-open NumberField IsDedekindDomain Polynomial Module in
 theorem _root_.GlobalTheory.WeilDeligne.isSemisimple_of_isSemisimple_frob :
     ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
       (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : _root_.Formalism.ConjugateSelfDual.IsPlaceOver A w) (V : Type)

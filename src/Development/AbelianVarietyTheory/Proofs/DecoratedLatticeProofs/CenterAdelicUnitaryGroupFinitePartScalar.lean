@@ -193,7 +193,6 @@ end GlobalTheory.CentreScalar
 
 namespace GlobalTheory.CentreScalar
 
-open Matrix Formalism.UG
 
 section Alg2
 

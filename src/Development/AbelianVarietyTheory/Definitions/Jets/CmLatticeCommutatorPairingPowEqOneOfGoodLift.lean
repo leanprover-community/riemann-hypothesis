@@ -208,10 +208,7 @@ def okPair (d : ℕ) (hd : 0 < d) : PeriodPair := ⟨1, wK d, LinearIndependent.
   exact ⟨by simpa using h1, rfl⟩⟩
 
 
-open PowerSeries in
-open scoped ComplexConjugate in
 variable {q : ℕ} [Fact q.Prime] in
-open Filter Topology in
 theorem _root_.GlobalTheory.MomOne.Basic.isOK_okPair (d : ℕ) (hd : 0 < d) :
     _root_.GlobalTheory.MomOne.IsOK d (_root_.GlobalTheory.MomOne.Basic.okPair d hd) := by
   intro z
@@ -223,10 +220,7 @@ theorem _root_.GlobalTheory.MomOne.Basic.isOK_okPair (d : ℕ) (hd : 0 < d) :
     exact ⟨u, v, by simp [_root_.GlobalTheory.MomOne.Basic.okPair]⟩
 
 
-open PowerSeries in
-open scoped ComplexConjugate in
 variable {q : ℕ} [Fact q.Prime] in
-open Filter Topology in
 open Cardinal in
 private theorem cardinal_le_seq_of_denseRange {X Y : Type} [TopologicalSpace X]
     [FrechetUrysohnSpace X] [T2Space X] (i : Y → X) (hi : DenseRange i) : #X ≤ #(ℕ → Y) := by
@@ -244,11 +238,7 @@ private theorem cardinal_le_seq_of_denseRange {X Y : Type} [TopologicalSpace X]
   rw [← hxy] at this
   exact tendsto_nhds_unique (hu x) this
 
-open PowerSeries in
-open scoped ComplexConjugate in
 variable {q : ℕ} [Fact q.Prime] in
-open Filter Topology in
-open Cardinal in
 private theorem cardinal_padicComplex_eq_continuum (q : ℕ) [Fact q.Prime] : #ℂ_[q] = 𝔠 := by
   have hQ : #ℚ_[q] ≤ 𝔠 := by
     calc #ℚ_[q] ≤ #(ℕ → ℚ) := cardinal_le_seq_of_denseRange _ (Padic.denseRange_ratCast q)
@@ -269,11 +259,7 @@ private theorem cardinal_padicComplex_eq_continuum (q : ℕ) [Fact q.Prime] : #�
       _ ≤ #ℂ_[q] := mk_le_of_injective (algebraMap ℚ_[q] ℂ_[q]).injective
 
 
-open PowerSeries in
-open scoped ComplexConjugate in
 variable {q : ℕ} [Fact q.Prime] in
-open Filter Topology in
-open Cardinal in
 theorem _root_.GlobalTheory.MomOne.Basic.nonempty_iso (q : ℕ) [Fact q.Prime] :
     Nonempty (ℂ ≃+* ℂ_[q]) := by
   refine IsAlgClosed.ringEquiv_of_equiv_of_charZero ?_ ?_
@@ -281,10 +267,7 @@ theorem _root_.GlobalTheory.MomOne.Basic.nonempty_iso (q : ℕ) [Fact q.Prime] :
   · exact Cardinal.eq.1 (by rw [Cardinal.mk_complex, cardinal_padicComplex_eq_continuum])
 
 
-open PowerSeries in
-open scoped ComplexConjugate in
 variable {q : ℕ} [Fact q.Prime] in
-open Filter Topology in
 theorem _root_.GlobalTheory.MomOne.Basic.norm_nat_eq_one {m : ℕ} (h : Nat.Coprime q m) :
     ‖(m : ℂ_[q])‖ = 1 := by
   have h1 : (m : ℂ_[q]) = (((m : ℚ_[q]) : PadicAlgCl q) : ℂ_[q]) := by simp
@@ -345,10 +328,7 @@ theorem exists_chart (M : Mdl q) (h : M.Ok) : ∃ ℓ, M.Chart ℓ ∧ hat M.ι 
   · rw [e]; simp
 
 
-open PowerSeries in
-open scoped ComplexConjugate in
 variable {q : ℕ} [Fact q.Prime] in
-open Filter Topology in
 theorem _root_.GlobalTheory.MomOne.Basic.cmLatticeCommutatorPairing_pow_eq_one_of_good_lift (ι : ℂ ≃+* ℂ_[q]) {d n s : ℕ}
     (hd : 0 < d) {y : ℂ} (h : _root_.GlobalTheory.MomOne.Good ι d n s y) :
     ι (_root_.GlobalTheory.MomOne.kap1 d 1 y) ^ (q ^ n) = 1 := by
@@ -380,19 +360,13 @@ theorem _root_.GlobalTheory.MomOne.Basic.cmLatticeCommutatorPairing_pow_eq_one_o
   rw [← map_pow, key, map_one]
 
 
-open PowerSeries in
-open scoped ComplexConjugate in
 variable {q : ℕ} [Fact q.Prime] in
-open Filter Topology in
 theorem _root_.GlobalTheory.MomOne.Basic.cmLatticeHermitianForm_mul_left (d : ℕ) (a z w : ℂ) :
     _root_.GlobalTheory.MomOne.h1 d (a * z) w = a * _root_.GlobalTheory.MomOne.h1 d z w := by
   unfold _root_.GlobalTheory.MomOne.h1; ring
 
 
-open PowerSeries in
-open scoped ComplexConjugate in
 variable {q : ℕ} [Fact q.Prime] in
-open Filter Topology in
 theorem _root_.GlobalTheory.MomOne.Basic.shiftS_one (f : ℂ_[q]⟦X⟧) :
     _root_.GlobalTheory.MomOne.shiftS 1 f = f := by
   ext n

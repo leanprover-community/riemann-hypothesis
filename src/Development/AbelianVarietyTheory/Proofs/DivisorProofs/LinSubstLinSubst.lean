@@ -79,7 +79,6 @@ theorem _root_.GlobalTheory.HeightUnique.linSubst_linSubst {R : Type} [CommRing 
   rw [Finset.sum_comm]
 
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.HeightUnique.linSubst_one {R : Type} [CommRing R] {B N : ℕ} (f : MvPolynomial (Fin B × Fin N) R) :
     _root_.GlobalTheory.ChowHt.linSubst (1 : Matrix (Fin N) (Fin N) R) f = f := by
@@ -90,7 +89,6 @@ theorem _root_.GlobalTheory.HeightUnique.linSubst_one {R : Type} [CommRing R] {B
   rw [hX, aeval_X_left_apply]
 
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.HeightUnique.linSubst_ne_zero {R : Type} [CommRing R] {B N n : ℕ} {M : Matrix (Fin N) (Fin n) R}
     {P : Matrix (Fin n) (Fin N) R} (h : M * P = 1) {f : MvPolynomial (Fin B × Fin N) R} (hf : f ≠ 0) :
@@ -103,7 +101,6 @@ theorem _root_.GlobalTheory.HeightUnique.linSubst_ne_zero {R : Type} [CommRing R
   simp [_root_.GlobalTheory.ChowHt.linSubst]
 
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.HeightUnique.linSubst_C_mul {R : Type} [CommRing R] {B N n : ℕ} (M : Matrix (Fin N) (Fin n) R) (c : R)
     (f : MvPolynomial (Fin B × Fin N) R) :
@@ -111,7 +108,6 @@ theorem _root_.GlobalTheory.HeightUnique.linSubst_C_mul {R : Type} [CommRing R] 
   simp [_root_.GlobalTheory.ChowHt.linSubst]
 
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.HeightUnique.exists_right_inv {F : Type} [Field F] {N n : ℕ} {w : Matrix (Fin N) (Fin n) F}
     (hw : Submodule.span F (Set.range w.col) = ⊤) : ∃ P : Matrix (Fin n) (Fin N) F, w * P = 1 := by
@@ -122,7 +118,6 @@ theorem _root_.GlobalTheory.HeightUnique.exists_right_inv {F : Type} [Field F] {
   have hw' : LinearMap.toMatrix' w.mulVecLin = w := (LinearEquiv.eq_symm_apply LinearMap.toMatrix').mp rfl
   rwa [LinearMap.toMatrix'_comp, LinearMap.toMatrix'_id, hw'] at key
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 private lemma isWeightedHomogeneous_aeval_of_isWeightedHomogeneous {R M σ τ : Type*} [CommSemiring R] [AddCommMonoid M]
     {w : σ → M} {w' : τ → M} {g : σ → MvPolynomial τ R} (hg : ∀ i, IsWeightedHomogeneous w' (g i) (w i))
@@ -138,7 +133,6 @@ private lemma isWeightedHomogeneous_aeval_of_isWeightedHomogeneous {R M σ τ : 
     (IsWeightedHomogeneous.prod _ _ _ fun i _ => (hg i).pow (d i))
 
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.HeightUnique.linSubst_homog {R : Type} [Field R] {B N n : ℕ} (M : Matrix (Fin N) (Fin n) R)
     {a : Fin B → ℕ} {f : MvPolynomial (Fin B × Fin N) R} (hf : _root_.ReciprocityTheory.MultiplicativeHeights.IsMultiHomogeneous a f) :
@@ -155,7 +149,6 @@ theorem _root_.GlobalTheory.HeightUnique.linSubst_homog {R : Type} [Field R] {B 
   exact (isWeightedHomogeneous_C _ _).mul (isWeightedHomogeneous_X _ _ _)
 
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.HeightUnique.gaussAbs_C {K σ : Type} [Field K] [NumberField K] (w : FinitePlace K) (c : K) :
     _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs w (C c : MvPolynomial σ K) = w c := by
@@ -167,7 +160,6 @@ theorem _root_.GlobalTheory.HeightUnique.gaussAbs_C {K σ : Type} [Field K] [Num
   · rw [C_apply, support_monomial, if_neg hc]
     simp [Real.coe_toNNReal _ (apply_nonneg w c)]
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 private lemma gaussAbs_C_mul_of_ne_zero {K σ : Type} [Field K] [NumberField K] (w : FinitePlace K) {c : K}
     (hc : c ≠ 0) (g : MvPolynomial σ K) : _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs w (C c * g) = w c * _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs w g := by
@@ -179,7 +171,6 @@ private lemma gaussAbs_C_mul_of_ne_zero {K σ : Type} [Field K] [NumberField K] 
   simp_rw [coeff_C_mul, map_mul, Real.toNNReal_mul (apply_nonneg w c)]
   rw [← NNReal.mul_finset_sup, NNReal.coe_mul, Real.coe_toNNReal _ (apply_nonneg w c)]
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 private lemma gaussAbs_pos_of_ne_zero {K σ : Type} [Field K] [NumberField K] (w : FinitePlace K)
     {g : MvPolynomial σ K} (hg : g ≠ 0) : 0 < _root_.ReciprocityTheory.MultiplicativeHeights.gaussAbs w g := by
@@ -190,7 +181,6 @@ private lemma gaussAbs_pos_of_ne_zero {K σ : Type} [Field K] [NumberField K] (w
   have h2 : 0 < w (AddMonoidAlgebra.coeff g s) := w.pos_iff.mpr hs
   exact_mod_cast lt_of_lt_of_le (Real.toNNReal_pos.mpr h2) h1
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 private lemma finsum_log_finitePlace_add_sum_log_norm_embedding {K : Type} [Field K] [NumberField K] {c : K}
     (hc : c ≠ 0) : ∑ᶠ v : FinitePlace K, Real.log (v c) + ∑ σ : K →+* ℂ, Real.log ‖σ c‖ = 0 := by
@@ -200,7 +190,6 @@ private lemma finsum_log_finitePlace_add_sum_log_norm_embedding {K : Type} [Fiel
   ring
 
 
-open CategoryTheory AlgebraicGeometry NumberField MvPolynomial in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.HeightUnique.formHeight_C_mul {F : Type} [Field F] [NumberField F] {B N n : ℕ} (hN : 0 < N) (δ : ℕ)
     {w : Matrix (Fin N) (Fin n) F} (hw : Submodule.span F (Set.range w.col) = ⊤)

@@ -261,7 +261,6 @@ theorem adj_phase {s : Bool} {E F : Type} [NormedAddCommGroup E] [InnerProductSp
 
 section Core
 
-open Formalism.L2.Col
 
 variable {K V Hv Hw I ι : Type} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
   [NormedAddCommGroup Hv] [InnerProductSpace ℂ Hv] [FiniteDimensional ℂ Hv]

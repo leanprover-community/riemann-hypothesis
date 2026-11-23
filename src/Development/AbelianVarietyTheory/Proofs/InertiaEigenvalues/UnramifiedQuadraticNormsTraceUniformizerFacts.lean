@@ -59,7 +59,6 @@ theorem _root_.GlobalTheory.UnitLemma.UnramNorm.alg_inj :
 
 def cOf (x : K.O) : K.O := Classical.choose (K.c_int x)
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 theorem _root_.GlobalTheory.UnitLemma.UnramNorm.cOf_spec (x : K.O) :
     algebraMap K.O K.E (_root_.GlobalTheory.UnitLemma.UnramNorm.cOf K x) = K.c (algebraMap K.O K.E x) :=
@@ -73,13 +72,11 @@ def cO : K.O ≃+* K.O where
   map_mul' x y := alg_inj K (by rw [cOf_spec, map_mul, map_mul, map_mul, cOf_spec, cOf_spec])
   map_add' x y := alg_inj K (by rw [cOf_spec, map_add (f := _), map_add (f := _), map_add (f := _), cOf_spec, cOf_spec])
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 theorem _root_.GlobalTheory.UnitLemma.UnramNorm.cO_spec (x : K.O) :
     algebraMap K.O K.E (_root_.GlobalTheory.UnitLemma.UnramNorm.cO K x) = K.c (algebraMap K.O K.E x) :=
   _root_.GlobalTheory.UnitLemma.UnramNorm.cOf_spec K x
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 private theorem valuation_algebraMap_isUnit_eq_one (u : K.O) (hu : IsUnit u) :
     IsDedekindDomain.HeightOneSpectrum.valuation K.E (IsDiscreteValuationRing.maximalIdeal K.O)
@@ -97,7 +94,6 @@ private theorem valuation_algebraMap_isUnit_eq_one (u : K.O) (hu : IsUnit u) :
     rw [h3] at this
     exact lt_irrefl _ this)
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 private theorem valuation_algebraMap_irreducible_eq {p p' : K.O} (hp : Irreducible p)
     (hp' : Irreducible p') :
@@ -108,7 +104,6 @@ private theorem valuation_algebraMap_irreducible_eq {p p' : K.O} (hp : Irreducib
   obtain ⟨w, hw⟩ := IsDiscreteValuationRing.associated_of_irreducible K.O hp hp'
   rw [← hw, map_mul, map_mul, valuation_algebraMap_isUnit_eq_one K _ w.isUnit, mul_one]
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 private theorem valuation_algebraMap_cO (a : K.O) :
     IsDedekindDomain.HeightOneSpectrum.valuation K.E (IsDiscreteValuationRing.maximalIdeal K.O)
@@ -126,7 +121,6 @@ private theorem valuation_algebraMap_cO (a : K.O) :
     valuation_algebraMap_isUnit_eq_one K _ u.isUnit, valuation_algebraMap_irreducible_eq K hϖ hcϖ]
 
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 theorem _root_.GlobalTheory.UnitLemma.UnramNorm.val_c (x : K.E) :
     _root_.GlobalTheory.UnitLemma.val K.O (K.c x) = _root_.GlobalTheory.UnitLemma.val K.O x := by
@@ -136,19 +130,16 @@ theorem _root_.GlobalTheory.UnitLemma.UnramNorm.val_c (x : K.E) :
   rw [map_div₀, ← _root_.GlobalTheory.UnitLemma.UnramNorm.cO_spec, ← _root_.GlobalTheory.UnitLemma.UnramNorm.cO_spec,
     map_div₀, map_div₀, valuation_algebraMap_cO, valuation_algebraMap_cO]
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 private theorem cO_cO' (x : K.O) :
     _root_.GlobalTheory.UnitLemma.UnramNorm.cO K (_root_.GlobalTheory.UnitLemma.UnramNorm.cO K x) = x :=
   _root_.GlobalTheory.UnitLemma.UnramNorm.alg_inj K (by
     rw [_root_.GlobalTheory.UnitLemma.UnramNorm.cO_spec, _root_.GlobalTheory.UnitLemma.UnramNorm.cO_spec, K.c_c])
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 private theorem isUnit_iff_notMem_maximalIdeal {x : K.O} : IsUnit x ↔ x ∉ maximalIdeal K.O := by
   rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, not_not]
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 private theorem exists_mul_apply_eq_of_fixed_involution {F : Type} [Field F] [Finite F] (σ : F ≃+* F)
     (hσ : ∀ x, σ (σ x) = x) (hne : ∃ x, σ x ≠ x) (u : F) (hu : u ≠ 0) (hfix : σ u = u) :
@@ -197,7 +188,6 @@ private theorem exists_mul_apply_eq_of_fixed_involution {F : Type} [Field F] [Fi
   rw [huniv, Finset.prod_pair hτ0, hz] at this
   simpa [τ0] using this.symm
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 private theorem exists_add_mul_cO_notMem_maximalIdeal (e : K.O) :
     ∃ t : K.O, t + e * _root_.GlobalTheory.UnitLemma.UnramNorm.cO K t ∉ maximalIdeal K.O := by
@@ -216,7 +206,6 @@ private theorem exists_add_mul_cO_notMem_maximalIdeal (e : K.O) :
   exact Ideal.sub_mem _ hx (Ideal.mul_mem_right _ _ h1)
 
 
-open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 theorem _root_.GlobalTheory.UnitLemma.UnramNorm.unram_quadratic_facts :
     ∀ (K : _root_.GlobalTheory.UnitLemma.UQ), (∀ u : K.Oˣ, K.c (algebraMap K.O K.E u) = algebraMap K.O K.E u →

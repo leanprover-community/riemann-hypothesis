@@ -51,7 +51,6 @@ end Ud
 section Pr
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC Formalism.BasicNotions Formalism.MainNotions.N GlobalTheory.DefiniteBC
-open PositivityTheory.Rg.BcN
 namespace UpperTheory.BaseChangeIdentities
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
 attribute [local instance] host_isCMField

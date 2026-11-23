@@ -62,7 +62,6 @@ theorem cont_apply_Om {l : ℕ} [Fact l.Prime] (d : Om l) : Continuous fun g : G
   exact h
 
 
-open Topology Filter in
 theorem cont_σC {l : ℕ} [Fact l.Prime] (y : ℂ_[l]) : Continuous fun g : GQ l => Formalism.Per.σC g y := by
   refine continuous_iff_continuousAt.2 fun g₀ => Metric.tendsto_nhds.2 fun ε hε => ?_
   obtain ⟨d, hd⟩ := (UniformSpace.Completion.denseRange_coe (α := Om l)).exists_dist_lt y

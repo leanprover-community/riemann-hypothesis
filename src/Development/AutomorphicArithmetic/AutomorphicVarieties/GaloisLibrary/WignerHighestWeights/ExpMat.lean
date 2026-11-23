@@ -63,7 +63,6 @@ private theorem oneParam_eq_exp {n : ℕ} (F : ℝ → Matrix (Fin n) (Fin n) �
     rw [← Matrix.exp_add_of_commute _ _ (Commute.refl D).neg_left, neg_add_cancel, NormedSpace.exp_zero]
   rw [← mul_one (F 1), ← h6, ← mul_assoc, h5, one_mul]
 
-open scoped Matrix.Norms.Operator in
 private theorem representation_exp_eq_exp_derivative {E : Type} [Field E] [NumberField E] {a : ℕ} (Ξ : AlgRep E a)
     (X : Matrix (Fin a) (Fin a) (Cinf E)) :
     Ξ.mat (Matrix.isUnit_exp X).unit = NormedSpace.exp (Ξ.dmat (toL X)) := by

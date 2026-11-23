@@ -60,7 +60,6 @@ private lemma exists_eq_smul_of_map_quotient_eq_zero (g : R⟦X⟧)
   choose c hc using h
   exact ⟨PowerSeries.mk c, by ext n; simp [hc]⟩
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 private lemma prime_dvd_coeff_one_add_X_pow_sub_one_sub_X_pow (n : ℕ) :
     (p : R) ∣ coeff n (((1 : PowerSeries R) + X) ^ p - 1 - X ^ p) := by
@@ -77,7 +76,6 @@ private lemma prime_dvd_coeff_one_add_X_pow_sub_one_sub_X_pow (n : ℕ) :
       · rw [Nat.choose_eq_zero_of_lt (by omega), if_neg hn.ne', if_neg hnp]
         simp
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 private lemma map_quotient_one_add_X_pow_sub_one :
     PowerSeries.map (Ideal.Quotient.mk (Ideal.span {(p : R)})) ((1 + X) ^ p - 1 : R⟦X⟧) =
@@ -86,7 +84,6 @@ private lemma map_quotient_one_add_X_pow_sub_one :
   rw [coeff_map, coeff_map, Ideal.Quotient.eq, Ideal.mem_span_singleton, ← map_sub]
   exact prime_dvd_coeff_one_add_X_pow_sub_one_sub_X_pow p n
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 private lemma map_quotient_phi_eq_map_expand (f : R⟦X⟧) :
     PowerSeries.map (Ideal.Quotient.mk (Ideal.span {(p : R)})) (_root_.GlobalTheory.Col.phi p hp.out.pos f) =
@@ -102,13 +99,11 @@ private lemma map_quotient_phi_eq_map_expand (f : R⟦X⟧) :
   congr 1
   exact map_quotient_one_add_X_pow_sub_one p
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 private lemma exists_phi_sub_expand_eq_smul (f : R⟦X⟧) :
     ∃ d : R⟦X⟧, _root_.GlobalTheory.Col.phi p hp.out.pos f - expand p hp.out.ne_zero f = (p : R) • d :=
   exists_eq_smul_of_map_quotient_eq_zero p _ (by rw [map_sub, map_quotient_phi_eq_map_expand, sub_self])
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 private lemma exists_sum_phi_eq_sum_expand_add_smul (g : Fin p → R⟦X⟧) :
     ∃ D : R⟦X⟧, ∑ i, _root_.GlobalTheory.Col.phi p hp.out.pos (g i) * X ^ (i : ℕ) =
@@ -120,7 +115,6 @@ private lemma exists_sum_phi_eq_sum_expand_add_smul (g : Fin p → R⟦X⟧) :
   rw [← smul_mul_assoc, ← hd i]
   ring
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 private lemma not_dvd_mul_add_sub_of_ne {n : ℕ} {i j : Fin p} (hij : i ≠ j) (hle : (i : ℕ) ≤ p * n + j) :
     ¬ p ∣ p * n + j - i := by
@@ -136,7 +130,6 @@ private lemma not_dvd_mul_add_sub_of_ne {n : ℕ} {i j : Fin p} (hij : i ≠ j) 
     rw [abs_lt]; constructor <;> omega)
   exact hij (Fin.ext (by omega))
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 private lemma coeff_sum_expand_mul_X_pow (g : Fin p → R⟦X⟧) (n : ℕ) (j : Fin p) :
     coeff (p * n + j) (∑ i, expand p hp.out.ne_zero (g i) * X ^ (i : ℕ)) = coeff n (g j) := by
@@ -150,7 +143,6 @@ private lemma coeff_sum_expand_mul_X_pow (g : Fin p → R⟦X⟧) (n : ℕ) (j :
     · rfl
   · intro h; exact absurd (Finset.mem_univ _) h
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 private lemma sum_expand_mk_coeff_mul_X_pow_eq (h : R⟦X⟧) :
     ∑ i : Fin p, expand p hp.out.ne_zero (PowerSeries.mk fun n => coeff (p * n + i) h) * X ^ (i : ℕ) = h := by
@@ -160,14 +152,12 @@ private lemma sum_expand_mk_coeff_mul_X_pow_eq (h : R⟦X⟧) :
   simp only [Nat.div_add_mod, coeff_mk] at hm
   rw [hm]
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 private lemma eq_zero_of_sum_expand_mul_X_pow_eq_zero (g : Fin p → R⟦X⟧)
     (hg : ∑ i, expand p hp.out.ne_zero (g i) * X ^ (i : ℕ) = 0) (j : Fin p) : g j = 0 := by
   ext n
   rw [← coeff_sum_expand_mul_X_pow p g n j, hg, map_zero, map_zero]
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 variable [IsAdicComplete (Ideal.span {(p : R)}) R] in
 theorem _root_.GlobalTheory.Col.Model.indep (hu : (p : R) ∈ nonunits R) (g : Fin p → PowerSeries R)
@@ -200,7 +190,6 @@ theorem _root_.GlobalTheory.Col.Model.indep (hu : (p : R) ∈ nonunits R) (g : F
   rw [SModEq.sub_mem, sub_zero, hw i, coeff_smul]
   exact Submodule.smul_mem_smul (Ideal.pow_mem_pow (Ideal.mem_span_singleton_self _) k) Submodule.mem_top
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 private lemma mem_span_pow_smul_univ_iff_eq_pow_mul (K : ℕ) (x : R) :
     x ∈ ((Ideal.span {(p : R)}) ^ K • ⊤ : Submodule R R) ↔ ∃ c, x = (p : R) ^ K * c := by
@@ -211,7 +200,6 @@ private lemma mem_span_pow_smul_univ_iff_eq_pow_mul (K : ℕ) (x : R) :
   · rintro ⟨c, hc⟩
     exact ⟨c, by rw [hc, mul_comm]⟩
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] in
 variable [IsAdicComplete (Ideal.span {(p : R)}) R] in
 theorem _root_.GlobalTheory.Col.Model.spans (hu : (p : R) ∈ nonunits R) (h : PowerSeries R) :
@@ -333,7 +321,6 @@ theorem up_ev (g : PowerSeries R) : up p m hm (ev R p m g) = ev R p (m + 1) (phi
 
 variable [IsAdicComplete (Ideal.span {(p : R)}) R]
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] (m : ℕ) (hm : 1 ≤ m) in
 variable [IsAdicComplete (Ideal.span {(p : R)}) R] in
 theorem _root_.GlobalTheory.Col.Model.indepL (hu : (p : R) ∈ nonunits R) (x : Fin p → _root_.GlobalTheory.Col.lev R p m)
@@ -372,7 +359,6 @@ def basisL (hu : (p : R) ∈ nonunits R) : Module.Basis (Fin p) (lev R p m) (UpL
       rw [map_mul, up_ev])
 
 
-open PowerSeries in
 variable {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] (m : ℕ) (hm : 1 ≤ m) in
 variable [IsAdicComplete (Ideal.span {(p : R)}) R] in
 theorem _root_.GlobalTheory.Col.Model.nrm_ev (hu : (p : R) ∈ nonunits R) (h : PowerSeries R) :

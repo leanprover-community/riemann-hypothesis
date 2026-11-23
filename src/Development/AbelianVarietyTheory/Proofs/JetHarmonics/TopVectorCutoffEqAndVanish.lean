@@ -60,8 +60,6 @@ private lemma vecV_cutoff_lemma {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup W
   · simp
   · simp
 
-open Filter Topology MeasureTheory in
-open scoped Matrix.Norms.Elementwise in
 private lemma foldr_RdV_zero {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (w : List (_root_.Formalism.FourierDecayAlt.B.Mat k r)) : List.foldr _root_.Formalism.REAL.RdV (fun _ => (0 : E)) w = fun _ => 0 := by
   induction w with
@@ -72,8 +70,6 @@ private lemma foldr_RdV_zero {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [Nor
     unfold _root_.Formalism.REAL.RdV
     simp
 
-open Filter Topology MeasureTheory in
-open scoped Matrix.Norms.Elementwise in
 private lemma opApply_zero {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp]
     [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
     [FiniteDimensional ℂ Wq] (D : _root_.Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq) (g : _root_.Formalism.FourierDecayAlt.B.Mat k r) :
@@ -87,8 +83,6 @@ private lemma opApply_zero {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp]
   rw [foldr_RdV_zero]
   simp
 
-open Filter Topology MeasureTheory in
-open scoped Matrix.Norms.Elementwise in
 theorem _root_.GlobalTheory.TopVec.tv_cutF (Wp Wq : Type) [NormedAddCommGroup Wp]
     [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
     [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : _root_.Formalism.FourierDecayAlt.M.Par) (p : _root_.Formalism.FourierDecayAlt.KB.Pl P Wp Wq)

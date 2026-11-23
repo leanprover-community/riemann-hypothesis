@@ -80,8 +80,6 @@ private lemma symplectic_transpose_block_relations {σ : Matrix (ι ⊕ ι) (ι 
   simp at h1 h2
   exact ⟨h1, h2⟩
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma inverse_block_combination_eq_fst (A B C D : Matrix ι ι ℚ) (a b : Matrix κ ι ℚ)
     (h : Cᵀ * B + -(Aᵀ * D) = -1) (h' : Dᵀ * B + -(Bᵀ * D) = 0) :
@@ -92,8 +90,6 @@ private lemma inverse_block_combination_eq_fst (A B C D : Matrix ι ι ℚ) (a b
       Matrix.mul_assoc]; abel
   rw [e, h, h']; simp
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma inverse_block_combination_eq_snd (A B C D : Matrix ι ι ℚ) (a b : Matrix κ ι ℚ)
     (h : Dᵀ * A + -(Bᵀ * C) = 1) (h' : Cᵀ * A + -(Aᵀ * C) = 0) :
@@ -104,8 +100,6 @@ private lemma inverse_block_combination_eq_snd (A B C D : Matrix ι ι ℚ) (a b
       Matrix.mul_assoc]; abel
   rw [e, h, h']; simp
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma block_combination_mul_transpose_sub_eq_fst (A B C D : Matrix ι ι ℚ) (a b : Matrix κ ι ℚ)
     (h : B * Aᵀ + -(A * Bᵀ) = 0) (h' : D * Aᵀ + -(C * Bᵀ) = 1) :
@@ -116,8 +110,6 @@ private lemma block_combination_mul_transpose_sub_eq_fst (A B C D : Matrix ι ι
       Matrix.mul_assoc]; abel
   rw [e, h, h']; simp
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma block_combination_mul_transpose_sub_eq_snd (A B C D : Matrix ι ι ℚ) (a b : Matrix κ ι ℚ)
     (h : B * Cᵀ + -(A * Dᵀ) = -1) (h' : D * Cᵀ + -(C * Dᵀ) = 0) :
@@ -128,16 +120,12 @@ private lemma block_combination_mul_transpose_sub_eq_snd (A B C D : Matrix ι ι
       Matrix.mul_assoc]; abel
   rw [e, h, h']; simp
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma om_eq_trace (y y' : Matrix κ ι ℚ × Matrix κ ι ℚ) :
     _root_.GlobalTheory.Phase.om y y' = (y.1 * y'.2ᵀ - y.2 * y'.1ᵀ).trace := by
   unfold _root_.GlobalTheory.Phase.om
   simp [Matrix.trace, Matrix.mul_apply, dotProduct, Finset.sum_sub_distrib, mul_comm]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma inverse_block_pairing_eq (A B C D : Matrix ι ι ℚ) (a b a' b' : Matrix κ ι ℚ)
     (h1 : Cᵀ * A + -(Aᵀ * C) = 0) (h2 : Cᵀ * B + -(Aᵀ * D) = -1)
@@ -152,49 +140,35 @@ private lemma inverse_block_pairing_eq (A B C D : Matrix ι ι ℚ) (a b a' b' :
       Matrix.neg_mul, Matrix.mul_assoc]; abel
   rw [e, h1, h2, h3, h4]; simp
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma qm_add_siegel_theta_transformation {α β : Type} (M N : Matrix α β ℚ) :
     _root_.GlobalTheory.SW.qm (M + N) = _root_.GlobalTheory.SW.qm M + _root_.GlobalTheory.SW.qm N := by
   ext i j; simp [_root_.GlobalTheory.SW.qm]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma qm_neg_siegel_theta_transformation {α β : Type} (M : Matrix α β ℚ) :
     _root_.GlobalTheory.SW.qm (-M) = -_root_.GlobalTheory.SW.qm M := by
   ext i j; simp [_root_.GlobalTheory.SW.qm]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma qm_mul_siegel_theta_transformation' {α β γ : Type} [Fintype β] (M : Matrix α β ℚ) (N : Matrix β γ ℚ) :
     _root_.GlobalTheory.SW.qm (M * N) = _root_.GlobalTheory.SW.qm M * _root_.GlobalTheory.SW.qm N := by
   ext i j; simp [_root_.GlobalTheory.SW.qm, Matrix.mul_apply]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma qm_transpose_siegel_theta_transformation {α β : Type} (M : Matrix α β ℚ) :
     _root_.GlobalTheory.SW.qm Mᵀ = (_root_.GlobalTheory.SW.qm M)ᵀ := by
   ext i j; simp [_root_.GlobalTheory.SW.qm]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma qm_zero_siegel_theta_transformation {α β : Type} :
     _root_.GlobalTheory.SW.qm (0 : Matrix α β ℚ) = 0 := by
   ext i j; simp [_root_.GlobalTheory.SW.qm]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma qm_one_siegel_theta_transformation : _root_.GlobalTheory.SW.qm (1 : Matrix ι ι ℚ) = 1 := by
   ext i j; by_cases h : i = j <;> simp [_root_.GlobalTheory.SW.qm, Matrix.one_apply, h]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma transpose_mobius_mul_sub_eq_of_block_relations (A B C D X Y : Matrix ι ι ℂ)
     (h1 : Cᵀ * A + -(Aᵀ * C) = 0) (h2 : Cᵀ * B + -(Aᵀ * D) = -1)
@@ -206,8 +180,6 @@ private lemma transpose_mobius_mul_sub_eq_of_block_relations (A B C D X Y : Matr
     simp only [Matrix.transpose_add, Matrix.transpose_mul]; noncomm_ring
   rw [e, h1, h2, h3, h4]; noncomm_ring
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma isUnit_det_spDen_of_mem_siegel {σ : Matrix (ι ⊕ ι) (ι ⊕ ι) ℚ}
     (hσ : σ ∈ Matrix.symplecticGroup ι ℚ) {τ : Matrix ι ι ℂ} (hτ : τ ∈ _root_.GlobalTheory.SW.Siegel ι) :
@@ -278,16 +250,12 @@ private lemma isUnit_det_spDen_of_mem_siegel {σ : Matrix (ι ⊕ ι) (ι ⊕ ι
   exact hv0 (funext fun i ↦ Complex.ext (by simpa [hxdef] using congrFun hxz i)
     (by simpa [hydef] using congrFun hyz i))
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma qv_add_row (P Q : Matrix κ ι ℚ) (k : κ) :
     _root_.GlobalTheory.SW.qv ((P + Q) k) =
       _root_.GlobalTheory.SW.qv (P k) + _root_.GlobalTheory.SW.qv (Q k) := by
   funext j; simp [_root_.GlobalTheory.SW.qv]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma qv_mul_row (P : Matrix κ ι ℚ) (X : Matrix ι ι ℚ) (k : κ) :
     _root_.GlobalTheory.SW.qv ((P * X) k) =
@@ -295,15 +263,11 @@ private lemma qv_mul_row (P : Matrix κ ι ℚ) (X : Matrix ι ι ℚ) (k : κ) 
   funext j; simp [_root_.GlobalTheory.SW.qv, _root_.GlobalTheory.SW.qm, Matrix.mul_apply, vecMul,
     dotProduct]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma ratCast_dotProduct_eq_qv_dotProduct (u v : ι → ℚ) :
     ((u ⬝ᵥ v : ℚ) : ℂ) = _root_.GlobalTheory.SW.qv u ⬝ᵥ _root_.GlobalTheory.SW.qv v := by
   simp [_root_.GlobalTheory.SW.qv, dotProduct]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma thS_heisenberg_translate (a b : Matrix κ ι ℚ) (φ : Matrix κ ι ℚ → ℂ)
     {τ : Matrix ι ι ℂ} (hτ : τᵀ = τ) (ζ : κ → ι → ℂ) :
@@ -332,8 +296,6 @@ private lemma thS_heisenberg_translate (a b : Matrix κ ι ℚ) (φ : Matrix κ 
     dotProduct_comm (_root_.GlobalTheory.SW.qv (b k)) (_root_.GlobalTheory.SW.qv (a k))]
   ring
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma exp_mul_mul_exp_mul_eq_of_add_eq (d Θ X Y Z W : ℂ) (h : X + Y = Z + W) :
     Complex.exp X * (d * Complex.exp Y * Θ) = d * Complex.exp Z * (Complex.exp W * Θ) := by
@@ -341,8 +303,6 @@ private lemma exp_mul_mul_exp_mul_eq_of_add_eq (d Θ X Y Z W : ℂ) (h : X + Y =
     rw [← Complex.exp_add, ← Complex.exp_add, h]
   linear_combination (d * Θ) * e
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma quadratic_phase_identity_of_symm (τ τ' Q Ji : Matrix ι ι ℂ) (u v z p q : ι → ℂ) (hQ : Qᵀ = Q)
     (h1 : (p + τ *ᵥ q) ᵥ* Ji = u + τ' *ᵥ v) (h2 : Q *ᵥ (p + τ *ᵥ q) = q - Ji *ᵥ v) :
@@ -367,8 +327,6 @@ private lemma quadratic_phase_identity_of_symm (τ τ' Q Ji : Matrix ι ι ℂ) 
   rw [e, f1, f2, f3, f4, f5, dotProduct_comm q z]
   ring
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 private lemma transS_heisS_rowAct {σ : Matrix (ι ⊕ ι) (ι ⊕ ι) ℚ}
     (hσ : σ ∈ Matrix.symplecticGroup ι ℚ) (φ ψ : Matrix κ ι ℚ → ℂ)
@@ -489,8 +447,6 @@ private lemma transS_heisS_rowAct {σ : Matrix (ι ⊕ ι) (ι ⊕ ι) ℚ}
     quadratic_phase_identity_of_symm τ (N * J⁻¹) (J⁻¹ * C) J⁻¹ _ _ (ζ k) _ _ hQ (hshift k) (hcoeff k)
 
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {κ ι : Type} [Fintype κ] [Fintype ι] [DecidableEq ι] in
 theorem _root_.GlobalTheory.Phase.transS_intertwines : ∀ (κ ι : Type) [Fintype κ] [Fintype ι] [DecidableEq ι], ∀ σ ∈ Matrix.symplecticGroup ι ℚ, ∃ T : (Matrix κ ι ℚ × Matrix κ ι ℚ) ≃+ (Matrix κ ι ℚ × Matrix κ ι ℚ), (∀ y y', _root_.GlobalTheory.Phase.om (T y) (T y') = _root_.GlobalTheory.Phase.om y y') ∧ ∀ φ ψ : Matrix κ ι ℚ → ℂ, _root_.GlobalTheory.SW.IsSB φ → _root_.GlobalTheory.SW.IsSB ψ → _root_.GlobalTheory.SW.TransS σ φ ψ → ∀ y, _root_.GlobalTheory.SW.TransS σ (_root_.GlobalTheory.SW.heisS y.1 y.2 φ) (_root_.GlobalTheory.SW.heisS (T y).1 (T y).2 ψ) := by
   intro κ ι _ _ _ σ hσ

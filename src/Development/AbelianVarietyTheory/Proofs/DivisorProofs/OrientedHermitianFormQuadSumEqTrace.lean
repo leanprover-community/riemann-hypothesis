@@ -198,7 +198,6 @@ end GlobalTheory.RouteCoords
 
 namespace GlobalTheory.RouteCoords
 
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -264,7 +263,6 @@ end GlobalTheory.RouteCoords
 
 namespace GlobalTheory.RouteCoords
 
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -279,7 +277,6 @@ end GlobalTheory.RouteCoords
 
 namespace GlobalTheory.RouteCoords
 
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

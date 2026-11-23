@@ -78,8 +78,6 @@ private lemma rep_apply_sum_smul_eq_sum_mul_smul {n m : ℕ} {f : Fin m → Fin 
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun l _ => ?_
   rw [mul_comm]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {E : Type} [CommRing E] in
 private lemma rep_inv_of_mul_eq_one {n m : ℕ} {f : Fin m → Fin n → E}
     {g : (Fin n → E) ≃ₗ[E] (Fin n → E)} {A B : Matrix (Fin m) (Fin m) E}
@@ -93,8 +91,6 @@ private lemma rep_inv_of_mul_eq_one {n m : ℕ} {f : Fin m → Fin n → E}
   rw [← h]
   exact g.symm_apply_apply _
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {E : Type} [CommRing E] in
 private lemma matrix_eq_of_linearIndependent_sum_smul_eq {n m : ℕ} {f : Fin m → Fin n → E}
     (hf : LinearIndependent E f) {A B : Matrix (Fin m) (Fin m) E}
@@ -104,8 +100,6 @@ private lemma matrix_eq_of_linearIndependent_sum_smul_eq {n m : ℕ} {f : Fin m 
     (by simp only [sub_smul, Finset.sum_sub_distrib, h j, sub_self])
   exact sub_eq_zero.mp (this i)
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 private lemma smul_span_le_of_rep_entries_mem (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) {n m : ℕ} {f : Fin m → Fin n → E}
@@ -121,8 +115,6 @@ private lemma smul_span_le_of_rep_entries_mem (L : _root_.Formalism.MainNotions.
   rw [this]
   exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 theorem _root_.GlobalTheory.HL.StabConj.main : ∀ {F : Type} [Field F] [ValuativeRel F]

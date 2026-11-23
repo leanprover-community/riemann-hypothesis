@@ -98,7 +98,6 @@ theorem wt_apply (j : ℕ) (τ : Psi H) (i : Fin (Dw.p + Dw.q)) :
 end GlobalTheory.CovTop.WtRun
 
 namespace GlobalTheory.CovTop.WtRun
-open GlobalTheory.FlagTan (dimFlag)
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
 variable (P : WtPar Dw)
 
@@ -149,7 +148,6 @@ theorem abs_wt_le (ha : P.a < Dw.p + Dw.q) {j : ℕ} (hj : j ≤ P.T) (la : AllW
 end GlobalTheory.CovTop.WtRun
 
 namespace GlobalTheory.CovTop.WtRun
-open GlobalTheory.FlagTan (dimFlag)
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
 variable (P : WtPar Dw)
 

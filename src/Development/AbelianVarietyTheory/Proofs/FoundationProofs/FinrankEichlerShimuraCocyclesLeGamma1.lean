@@ -169,8 +169,6 @@ end GlobalTheory.HeckeFamilyMatrices.CocBound
 
 end
 
-open GlobalTheory.HeckeFamilyMatrices Polynomial
-open scoped MatrixGroups
 
 noncomputable section
 

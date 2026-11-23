@@ -110,7 +110,6 @@ end GlobalTheory.SliceForm
 
 namespace GlobalTheory.SliceForm
 
-open GlobalTheory.Size GlobalTheory.OrientedHeis GlobalTheory.FockCompare
 
 variable {D : D7} {S A B T : HSp D}
 
@@ -174,7 +173,6 @@ end GlobalTheory.SliceForm
 
 namespace GlobalTheory.SliceForm
 
-open GlobalTheory.Size GlobalTheory.OrientedHeis GlobalTheory.FockCompare
 
 variable {D : D7} {S A B T : HSp D}
 

@@ -70,7 +70,6 @@ end GlobalTheory.VecsLast
 
 namespace GlobalTheory.VecsLast
 
-open ValuativeRel
 
 variable {D : D7}
 
@@ -130,7 +129,6 @@ end GlobalTheory.VecsLast
 
 namespace GlobalTheory.VecsLast
 
-open ValuativeRel
 
 variable {D : D7}
 

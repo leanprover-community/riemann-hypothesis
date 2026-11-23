@@ -124,5 +124,4 @@ theorem rd_eOp {D : D7} {c : NChoice D} {w : D.what₂.places.Pl} (ht : NChTie D
 
 end GlobalTheory.BigOn.Exp.ProjRd
 
-open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.BigOn.Exp
 

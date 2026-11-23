@@ -63,8 +63,6 @@ private lemma apply_coordVec_eq_sum_coordMat {n : ℕ} (L : _root_.ReciprocityTh
   _root_.GlobalTheory.LineForm.chain_sum_coordVec _
 
 set_option autoImplicit false in
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix ComplexConjugate in
 private lemma mdel_sum_smul_coordVec {n : ℕ} {r : Type}
     (G : _root_.ReciprocityTheory.L2DbarEstimates.V n → Matrix r r ℂ) (z : _root_.ReciprocityTheory.L2DbarEstimates.V n) (x : Fin n → ℂ) :
     _root_.GlobalTheory.HermFrame.mdel G z (∑ c, x c • _root_.GlobalTheory.GoodMetric.coordVec c) =
@@ -73,8 +71,6 @@ private lemma mdel_sum_smul_coordVec {n : ℕ} {r : Type}
   simp [_root_.GlobalTheory.HermFrame.mdel_apply, Matrix.sum_apply]
 
 set_option autoImplicit false in
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix ComplexConjugate in
 private lemma mdbar_sum_smul_coordVec {n : ℕ} {r : Type}
     (G : _root_.ReciprocityTheory.L2DbarEstimates.V n → Matrix r r ℂ) (z : _root_.ReciprocityTheory.L2DbarEstimates.V n) (y : Fin n → ℂ) :
     _root_.GlobalTheory.HermFrame.mdbar G z (∑ d, y d • _root_.GlobalTheory.GoodMetric.coordVec d) =
@@ -83,8 +79,6 @@ private lemma mdbar_sum_smul_coordVec {n : ℕ} {r : Type}
   simp [_root_.GlobalTheory.HermFrame.mdbar_apply, Matrix.sum_apply]
 
 set_option autoImplicit false in
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix ComplexConjugate in
 private lemma mddbar_sum_smul_coordVec {n : ℕ} {r : Type}
     (G : _root_.ReciprocityTheory.L2DbarEstimates.V n → Matrix r r ℂ) (z : _root_.ReciprocityTheory.L2DbarEstimates.V n) (x y : Fin n → ℂ) :
     _root_.GlobalTheory.HermFrame.mddbar G z (∑ c, x c • _root_.GlobalTheory.GoodMetric.coordVec c)
@@ -96,8 +90,6 @@ private lemma mddbar_sum_smul_coordVec {n : ℕ} {r : Type}
   rw [Finset.sum_comm]
 
 set_option autoImplicit false in
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix ComplexConjugate in
 private lemma curv_sum_smul_coordVec {n : ℕ} {r : Type} [Fintype r] [DecidableEq r]
     (G : _root_.ReciprocityTheory.L2DbarEstimates.V n → Matrix r r ℂ) (z : _root_.ReciprocityTheory.L2DbarEstimates.V n) (hG : _root_.GlobalTheory.HermFrame.MContDiffAt 2 G z)
     (hu : IsUnit (G z).det) (x y : Fin n → ℂ) :
@@ -111,8 +103,6 @@ private lemma curv_sum_smul_coordVec {n : ℕ} {r : Type} [Fintype r] [Decidable
     Matrix.smul_mul, smul_sub, Finset.sum_sub_distrib, smul_smul, Finset.smul_sum]
 
 set_option autoImplicit false in
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix ComplexConjugate in
 private lemma conn_sum_smul {n : ℕ} {r : Type} [Fintype r] [DecidableEq r]
     (G : _root_.ReciprocityTheory.L2DbarEstimates.V n → Matrix r r ℂ) (z : _root_.ReciprocityTheory.L2DbarEstimates.V n) (x : Fin n → ℂ) (v : Fin n → _root_.ReciprocityTheory.L2DbarEstimates.V n) :
     _root_.GlobalTheory.HermFrame.conn G z (∑ c, x c • v c) =
@@ -128,8 +118,6 @@ private lemma conn_sum_smul {n : ℕ} {r : Type} [Fintype r] [DecidableEq r]
 
 
 set_option autoImplicit false in
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix ComplexConjugate in
 theorem _root_.GlobalTheory.GoodTop.corrC_comp_holo {n : ℕ} {r : Type} [Fintype r]
     [DecidableEq r] {ρ : _root_.ReciprocityTheory.L2DbarEstimates.V n → ℝ} {G₀ G₁ : _root_.ReciprocityTheory.L2DbarEstimates.V n → Matrix r r ℂ}
     {φ : _root_.ReciprocityTheory.L2DbarEstimates.V n → _root_.ReciprocityTheory.L2DbarEstimates.V n} {w : _root_.ReciprocityTheory.L2DbarEstimates.V n} (hφ : ContDiffAt ℂ 2 φ w)

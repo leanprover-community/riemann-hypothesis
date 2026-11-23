@@ -98,7 +98,6 @@ end GlobalTheory.ThetaLiouville
 
 namespace GlobalTheory.ThetaLiouville
 
-open Matrix Complex
 
 theorem im_form_mem_int (g : ℕ) (Λ : Submodule ℤ (Fin g → ℂ))
     (hΛ : Submodule.span ℝ (Λ : Set (Fin g → ℂ)) = ⊤)

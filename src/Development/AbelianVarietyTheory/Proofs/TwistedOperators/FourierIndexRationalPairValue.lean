@@ -79,8 +79,6 @@ end GlobalTheory.MovedJet
 
 namespace GlobalTheory.MovedJet
 
-open GlobalTheory.Grid (neg sgn ofSgn)
-open MvPolynomial
 
 theorem conj_invT_of_unitary' {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : Matrix.conjTranspose M * M = 1) :
     ((M⁻¹).transpose).map (starRingEnd ℂ) = M := by
@@ -146,8 +144,6 @@ end GlobalTheory.MovedJet
 
 namespace GlobalTheory.MovedJet
 
-open GlobalTheory.Grid (neg sgn ofSgn)
-open MvPolynomial
 
 theorem isAlgebraic_compAt_of_mem_GQ {D : D7} {θ : InfFam D} (hθ : IsInfFam θ) {V : HSp D} {γ : GA D V}
     (hγ : γ ∈ GQ V) (τ : D.what₂.Tau) (a b : Fin V.rank) :

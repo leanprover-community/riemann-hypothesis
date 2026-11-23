@@ -99,7 +99,6 @@ end GlobalTheory.BK.SDec
 
 namespace GlobalTheory.BK.SDec
 
-open Filter Topology
 
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [IsUnitBall O K] (l : ℕ) [Fact l.Prime] [NormedAlgebra ℚ_[l] K]
@@ -158,7 +157,6 @@ end GlobalTheory.BK.SDec
 
 namespace GlobalTheory.BK.SDec
 
-open Filter Topology
 
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [IsUnitBall O K] (l : ℕ) [Fact l.Prime] [NormedAlgebra ℚ_[l] K]

@@ -65,7 +65,6 @@ private lemma UpperTheory.Reformulated.B.RangeExtension.ext_aux {X : Scheme.{0}}
     rw [← cancel_mono U.toScheme.isoSpec.hom, ← hs, ← ht, h3]
   rw [← ha', ← hb', h4]
 
-open AlgebraicGeometry CategoryTheory in
 private lemma UpperTheory.Reformulated.B.RangeExtension.finiteRing_sq_sub_mul_sq_eq_of_card {X : Scheme.{0}} {Ω : Type} [Field Ω]
     {ξ : Spec (CommRingCat.of Ω) ⟶ X} {U : X.Opens}
     (hU : IsAffineOpen U) {R : Type} [CommRing R] (φ : R →+* Ω)

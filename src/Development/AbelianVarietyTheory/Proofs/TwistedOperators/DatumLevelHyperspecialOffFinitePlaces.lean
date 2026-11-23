@@ -130,7 +130,6 @@ theorem finE_mem_St_of_mem_levG {V : HSp D} {β : GL (Fin V.rank) (EAf D)} {Lv :
     {g : GA D V} (hg : g ∈ levG V β Lv) : Formalism.IndefR.Lev.finE V g ∈ Formalism.L2.DIV.St β :=
   Formalism.L2.DIV.parLev_St (Formalism.L2.DIV.lev_le_parLev hg.2)
 
-open Filter GlobalTheory.AdelicU
 
 variable {D : D7}
 

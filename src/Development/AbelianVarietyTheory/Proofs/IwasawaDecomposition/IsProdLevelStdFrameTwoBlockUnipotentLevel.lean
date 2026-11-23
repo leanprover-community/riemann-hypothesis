@@ -168,7 +168,6 @@ end Adelic
 
 section Adelic2
 
-open ReciprocityTheory.Aut
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 

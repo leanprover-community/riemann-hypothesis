@@ -112,7 +112,6 @@ end GlobalTheory.SmallKerInv
 
 namespace GlobalTheory.SmallKerInv
 
-open GlobalTheory.FinPl
 
 variable {D : D7}
 
@@ -154,7 +153,6 @@ end GlobalTheory.SmallKerInv
 
 namespace GlobalTheory.SmallKerInv
 
-open GlobalTheory.FinPl
 
 theorem kerSmall_inv : GlobalTheory.FunPr.Hypotheses₂ → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.SquareSt.WeilConvergence → GlobalTheory.SquareSt.LocalMatching → GlobalTheory.SquareSt.ThetaIntegralsAgree → BigR fun {D} _ _ _ _ T _ _ _ _ _ R sc => ∀ (G : GridData R.toLevCh sc) (W : G.Weil), W.Over R → ∀ (B : Frames G)
   (ρ : RealMatch W), ρ.Over R → ∀ (t : T) (i j : Fin D.R.m) Θ Θ', IsMatched B t ρ i j Θ Θ' → ∀ g g₁,

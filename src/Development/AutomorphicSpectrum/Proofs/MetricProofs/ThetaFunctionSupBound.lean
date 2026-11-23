@@ -170,7 +170,6 @@ end GlobalTheory.CompanionTheory.ThetaSpan
 
 namespace GlobalTheory.CompanionTheory.ThetaSpan
 
-open Complex Matrix Filter Topology
 
 variable {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ}
 
@@ -368,7 +367,6 @@ end GlobalTheory.CompanionTheory.ThetaSpan
 
 namespace GlobalTheory.CompanionTheory.ThetaSpan
 
-open Complex Matrix Filter Topology
 
 variable {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ}
 

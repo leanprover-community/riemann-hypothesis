@@ -75,8 +75,6 @@ private theorem algebraMap_trace_eq_add_of_ne_id {F E : Type} [Field F] [Field E
   rw [trace_eq_sum_automorphisms, huniv, Finset.sum_pair (Ne.symm hτ)]
   simp [τ]
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors Classical in
 private theorem ne_id_of_embedding_conj {F E : Type} [Field F] [Field E] [NumberField E] [Algebra F E]
     (hE : IsTotallyComplex E) (σ : E →ₐ[F] E)
     (hσ : ∀ (τ : E →+* ℂ) (x : E), τ (σ x) = star (τ x)) :
@@ -93,8 +91,6 @@ private theorem ne_id_of_embedding_conj {F E : Type} [Field F] [Field E] [Number
   simpa [ComplexEmbedding.conjugate_coe_eq] using this.symm
 
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors Classical in
 theorem _root_.GlobalTheory.exists_integer_add_conj_eq_one_of_formallyUnramified :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
       (σ : E →ₐ[F] E), _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ → Algebra.FormallyUnramified (𝓞 F) (𝓞 E) →

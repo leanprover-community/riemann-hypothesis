@@ -217,7 +217,6 @@ theorem GlobalTheory.SkyMod.nonempty_sky_pushforward_iso : ∀ (X Y : Scheme.{0}
     rfl, rfl⟩) (fun g ↦ rfl)⟩
 
 
-open GlobalTheory.SkyMod in
 theorem GlobalTheory.mono_pullback_map_of_flat : ∀ (X Y : Scheme.{0}) (f : X ⟶ Y) [Flat f] (G G' : Y.Modules)
     (φ : G ⟶ G') [Mono φ], Mono ((Scheme.Modules.pullback f).map φ) := by
   intro X Y f _ G G' φ _

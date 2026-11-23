@@ -89,7 +89,6 @@ end GlobalTheory.ExpDeriv
 
 namespace GlobalTheory.ExpDeriv
 
-open Filter Topology GlobalTheory.CuspRep
 
 end GlobalTheory.ExpDeriv
 

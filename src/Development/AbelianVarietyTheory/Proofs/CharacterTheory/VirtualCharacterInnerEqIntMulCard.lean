@@ -56,7 +56,6 @@ private lemma exists_nat_sum_mul_apply_inv_eq_mul_card (G : Type) [Group G] [Fin
   rw [← hn, inv_mul_eq_div, div_mul_cancel₀ _ hc]
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.BI.finsum_mul_star_virt_int : ∀ (G : Type) [Group G] [Finite G] (a b : G → ℂ),
     a ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ G → b ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ G →
     ∃ m : ℤ, ∑ᶠ g, a g * star (b g) = m * (Nat.card G : ℂ) := by

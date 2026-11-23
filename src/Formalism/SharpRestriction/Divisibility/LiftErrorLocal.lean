@@ -398,7 +398,6 @@ def L2BoundAlt : Prop := ∀ (i : Fin 2) (n : ℕ) (R : Type) [CommRing R] [IsDo
       φ (fun a => x a + (D.host.g i : ℚ_[D.host.g i]) * (z a : ℚ_[D.host.g i])) = φ x) →
     ∃ c : (Fin D.R.f × Fin n → ZMod (D.host.g i)) → R, ∀ x : Fin D.R.f × Fin n → ℚ_[D.host.g i],
       (D.host.g i : R) ^ (D.R.f * n) * φ x =
-        open Classical in
         if h : ∀ a, ‖x a‖ ≤ 1 then
           ∑ y : Fin D.R.f × Fin n → ZMod (D.host.g i),
             c y * ζ ^ (∑ a, PadicInt.toZMod (⟨x a, h a⟩ : ℤ_[D.host.g i]) * y a).val

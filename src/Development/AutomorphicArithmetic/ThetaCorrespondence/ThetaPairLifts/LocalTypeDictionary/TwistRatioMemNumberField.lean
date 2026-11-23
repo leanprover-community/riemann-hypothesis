@@ -43,7 +43,6 @@ namespace GlobalTheory.RowEx.RatioField
 open GlobalTheory.FunObj.SqNum GlobalTheory.CMVal
 end GlobalTheory.RowEx.RatioField
 namespace GlobalTheory.RowEx.RatioField
-open GlobalTheory.FunObj.SqNum GlobalTheory.CMVal
 theorem twistRatio_mem_numberField : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.ToricSymbols.ToricRatioConjugates → GlobalTheory.SqTop.FieldDat → GlobalTheory.SqTop.LNe → NFRatio := by
   intro _ hTR hFD _
   obtain ⟨CF0, hF⟩ := hFD

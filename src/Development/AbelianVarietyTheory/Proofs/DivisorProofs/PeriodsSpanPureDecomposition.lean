@@ -458,7 +458,6 @@ theorem exists_immersion [IsNoetherianRing R] (gb : GBase D.toG R) (N : ℕ) (h3
   rw [Category.assoc, pullback.condition, ← Category.assoc, h3, spMap_id', Category.comp_id]
 
 
-open GlobalTheory.UPel.HT.Hecke in
 theorem exists_gHeckeMap_finite_etale_surjective : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R' : Type) [CommRing R'] [Algebra ℚ R'] [IsNoetherianRing R'] (gb : GBase D.toG R') (g : D.La →ₗ[D.O] D.La) (c k N : ℕ), c.Coprime p → k.Coprime p → 3 ≤ N → N.Coprime p → (∀ x y, D.EF (g x) (g y) = c * D.EF x y) → (∀ x, ∃ y, g y = k • x) → c ∣ k ^ 2 → ∀ (X : GenModel gb N) (X' : GenModel gb (N * k)), ∃ π : X'.X ⟶ X.X, IsGHeckeMap g c k N X X' π ∧ IsFinite π ∧ Etale π ∧ Surjective π := by
   intro p _ D R _ _ _ gb g c k N hcp hkp hN hNp hEF hg hck X X'
   have hp1 : 1 < p := (Fact.out : p.Prime).one_lt

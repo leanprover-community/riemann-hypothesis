@@ -50,12 +50,10 @@ variable {D : D7}
 theorem mt_one' (V : HSp D) : L2.Theta.mt V 1 = 1 := by
   simp [L2.Theta.mt, map_one]
 
-section Scalar
 
 variable (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χ χ' : (AE D)ˣ →* Circle)
     (ω ω' : GA D V × GA D W →* Module.End ℂ (Hth ψ V W))
 
-end Scalar
 
 section Side
 

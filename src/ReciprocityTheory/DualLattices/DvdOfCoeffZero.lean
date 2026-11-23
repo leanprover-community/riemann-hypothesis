@@ -88,7 +88,6 @@ private theorem mem_span_of_step {A : Type*} [CommRing A] (q a : A)
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-section Sharp
 
 variable {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)] [IsAdicComplete (span {(p : O)}) O]
 
@@ -158,7 +157,6 @@ private theorem mk_sh (x : PreTilt O p) (n : ℕ) :
   unfold sh
   rw [PreTilt.mk_untilt_eq_coeff_zero, preTilt_coeff_iterate_frobenius_symm, Nat.zero_add]
 
-end Sharp
 
 section Ker
 

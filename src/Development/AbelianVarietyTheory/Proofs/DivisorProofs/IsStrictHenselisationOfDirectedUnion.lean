@@ -96,7 +96,6 @@ instance DivIdx.instNonempty {A : Type} [CommRing A] (M : Submonoid A) : Nonempt
   ⟨(1 : M)⟩
 
 
-open CategoryTheory Limits in
 theorem indEtale_localization_of_etale : ∀ (R A : Type) [CommRing R] [CommRing A] [Algebra R A] [Algebra.Etale R A] (M : Submonoid A), GlobalTheory.IndefiniteRowSideFullHecke.ProjectiveSpaceOverSpec.IsIndEtale (algebraMap R (Localization M)) := by
   intro R A _ _ _ _ M
   haveI : IsFiltered (DivIdx M) := inferInstance

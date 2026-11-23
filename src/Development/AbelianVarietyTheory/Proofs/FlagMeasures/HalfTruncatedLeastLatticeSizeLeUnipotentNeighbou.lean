@@ -61,7 +61,6 @@ theorem opNorm_le_sqrt_hs {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) : ‖A‖ �
   exact pow_le_pow_left₀ (norm_nonneg _) h1 2
 
 
-open scoped Matrix.Norms.L2Operator in
 theorem opNorm_exp_le {n : ℕ} (hn : 1 ≤ n) (A : Matrix (Fin n) (Fin n) ℂ) :
     ‖NormedSpace.exp A‖ ≤ Real.exp ‖A‖ := by
   have h1 : ‖(1 : Matrix (Fin n) (Fin n) ℂ)‖ = 1 := GlobalTheory.LeastVar.opN_one hn
@@ -75,7 +74,6 @@ theorem opNorm_exp_le {n : ℕ} (hn : 1 ≤ n) (A : Matrix (Fin n) (Fin n) ℂ) 
   · simp
   · exact norm_pow_le _ _
 
-open scoped Matrix.Norms.L2Operator in
 theorem dOp_exp_mul_exp_le {n : ℕ} (hn : 1 ≤ n) (A Z : Matrix (Fin n) (Fin n) ℂ) :
     dOp (NormedSpace.exp A * NormedSpace.exp Z) ≤
       Real.sqrt (Formalism.REAL.hs A) + Real.sqrt (Formalism.REAL.hs Z) := by

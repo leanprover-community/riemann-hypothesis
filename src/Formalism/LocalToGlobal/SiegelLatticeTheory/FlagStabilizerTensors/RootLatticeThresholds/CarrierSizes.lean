@@ -48,13 +48,11 @@ theorem unram_host (D : D7) :
 theorem g_pos (D : D7) : 0 < D.host.g 0 ∧ 0 < D.host.g 1 :=
   ⟨(D.host.g_prime 0).pos, (D.host.g_prime 1).pos⟩
 
-section Cut
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePlace E → Type}
   [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]
   [∀ x, NormedAddCommGroup (Wq x)] [∀ x, InnerProductSpace ℂ (Wq x)]
 
-end Cut
 
 def ClCut (C₆ : ℝ) : ℝ := max 1 ((420 * C₆ + 48125) / 8)
 
@@ -144,7 +142,6 @@ theorem grids_card (c : Cfg) (l N : ℕ) (hN : 1 ≤ N) :
 
 end Grids
 
-section TransportedAlt
 
 open Formalism.FourierDecayAlt
 
@@ -152,6 +149,5 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePla
   [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]
   [∀ x, NormedAddCommGroup (Wq x)] [∀ x, InnerProductSpace ℂ (Wq x)]
 
-end TransportedAlt
 
 end Formalism.L2.SG.Pf.CarrierSz

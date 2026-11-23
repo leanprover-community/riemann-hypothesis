@@ -53,8 +53,6 @@ theorem _root_.GlobalTheory.NormOneSplit.ker_isMaximal {R : Type} [CommRing R] {
     (RingHom.ker φ).IsMaximal :=
   RingHom.ker_isMaximal_of_surjective φ (ZMod.ringHom_surjective φ)
 
-open NumberField Module Matrix in
-open scoped ENNReal in
 private theorem exists_ringHom_zmod_ker_eq {E : Type} [Field E] [NumberField E] {T : ℕ}
     (hT : T.Prime) (P : Ideal (𝓞 E)) (hP : P.IsMaximal) (hN : Ideal.absNorm P = T) :
     ∃ φ : 𝓞 E →+* ZMod T, RingHom.ker φ = P := by
@@ -69,8 +67,6 @@ private theorem exists_ringHom_zmod_ker_eq {E : Type} [Field E] [NumberField E] 
   simp [RingHom.mem_ker, Ideal.Quotient.eq_zero_iff_mem]
 
 
-open NumberField Module Matrix in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.NormOneSplit.mem_span_iff {E : Type} [Field E] [NumberField E] {T : ℕ}
     (hT : T.Prime)
     (hs : ∀ P : Ideal (𝓞 E), P.IsMaximal → ((T : 𝓞 E) ∈ P) →
@@ -103,8 +99,6 @@ theorem _root_.GlobalTheory.NormOneSplit.mem_span_iff {E : Type} [Field E] [Numb
     rw [← hφ, RingHom.mem_ker]
     exact h φ
 
-open NumberField Module Matrix in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.NormOneSplit.finite_hom {E : Type} [Field E] [NumberField E] {T : ℕ}
     (hT : T.Prime) :
     Finite (𝓞 E →+* ZMod T) := by
@@ -117,8 +111,6 @@ theorem _root_.GlobalTheory.NormOneSplit.finite_hom {E : Type} [Field E] [Number
   ext x
   exact LinearMap.congr_fun key x
 
-open NumberField Module Matrix in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.NormOneSplit.exists_forall_hom_eq {R : Type} [CommRing R] {T : ℕ} [Fact T.Prime]
     [Finite (R →+* ZMod T)] (g : (R →+* ZMod T) → ZMod T) :
     ∃ x : R, ∀ φ : R →+* ZMod T, φ x = g φ := by
@@ -137,8 +129,6 @@ theorem _root_.GlobalTheory.NormOneSplit.exists_forall_hom_eq {R : Type} [CommRi
     map_natCast, ZMod.natCast_zmod_val] at h
   exact h
 
-open NumberField Module Matrix in
-open scoped ENNReal in
 private theorem card_solutions_mul_involution_eq_pow {H K : Type} [Finite H] [Field K] [Fintype K]
     (ι : H → H) (hι : ∀ h, ι (ι h) = h) (hfix : ∀ h, ι h ≠ h) (c : H → K)
     (hc0 : ∀ h, c h ≠ 0) (hcι : ∀ h, c (ι h) = c h) :
@@ -199,8 +189,6 @@ private theorem card_solutions_mul_involution_eq_pow {H K : Type} [Finite H] [Fi
     rw [Nat.card_congr e, Nat.card_fun, Nat.card_congr unitsEquivNeZero.symm, Nat.card_eq_fintype_card,
       Fintype.card_units]
 
-open NumberField Module Matrix in
-open scoped ENNReal in
 private theorem comp_mapRingHom_star_ne_of_split {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [StarRing E] [Algebra F E] (hcm : _root_.Formalism.BasicNotions.CMData F E) {T : ℕ} (hT : T.Prime)
     (hs : ∀ P : Ideal (𝓞 E), P.IsMaximal → ((T : 𝓞 E) ∈ P) →
@@ -258,8 +246,6 @@ private theorem comp_mapRingHom_star_ne_of_split {F E : Type} [Field F] [NumberF
   exact (hs P hPm hTP).2 (Ideal.pow_le_pow_right h2le (hle2 hTmap))
 
 
-open NumberField Module Matrix in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.NormOneSplit.card_norm_classes : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E], _root_.Formalism.BasicNotions.CMData F E → ∀ T : ℕ, T.Prime → (∀ P : Ideal (𝓞 E), P.IsMaximal → ((T : 𝓞 E) ∈ P) → Ideal.absNorm P = T ∧ (T : 𝓞 E) ∉ P ^ 2) → ∀ c : 𝓞 E, star (c : E) = (c : E) → IsCoprime c (T : 𝓞 E) → Nat.card {a : 𝓞 E ⧸ Ideal.span {(T : 𝓞 E)} // ∃ x y : 𝓞 E, Ideal.Quotient.mk _ x = a ∧ (y : E) = star (x : E) ∧ x * y - c ∈ Ideal.span {(T : 𝓞 E)}} = (T - 1) ^ finrank ℚ F := by
   intro F E _ _ _ _ _ _ hcm T hT hs c hc hcop
   haveI : Fact T.Prime := ⟨hT⟩

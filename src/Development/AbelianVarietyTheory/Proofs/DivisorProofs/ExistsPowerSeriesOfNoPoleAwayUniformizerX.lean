@@ -59,8 +59,6 @@ private lemma C_dvd_iff_map_mk_eq_zero {A : Type} [CommRing A] (ϖ : A) (f : Pow
     ext d
     simp [coeff_C_mul, hq d]
 
-open scoped LaurentSeries in
-open PowerSeries in
 private lemma prime_C_powerSeries {A : Type} [CommRing A] [IsDomain A] {ϖ : A} (hϖ : Prime ϖ) :
     Prime (C ϖ : PowerSeries A) := by
   haveI : (Ideal.span {ϖ}).IsPrime := (Ideal.span_singleton_prime hϖ.ne_zero).2 hϖ
@@ -72,8 +70,6 @@ private lemma prime_C_powerSeries {A : Type} [CommRing A] [IsDomain A] {ϖ : A} 
     exact mul_eq_zero.mp h
 
 
-open scoped LaurentSeries in
-open PowerSeries in
 theorem _root_.GlobalTheory.PowerSeriesNoPole.exists_eq_algebraMap (A : Type) [CommRing A] [IsDomain A]
     [IsDiscreteValuationRing A]
     (ϖ : A) (hϖ : Irreducible ϖ) (k : A →+* ℂ) (hk : Function.Injective k)

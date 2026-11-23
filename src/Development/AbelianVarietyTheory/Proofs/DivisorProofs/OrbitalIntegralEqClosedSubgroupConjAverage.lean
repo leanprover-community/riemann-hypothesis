@@ -115,7 +115,6 @@ end GlobalTheory.IwRed
 
 namespace GlobalTheory.IwRed
 
-open GlobalTheory.LeviDesc GlobalTheory.TwOrbConj
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 

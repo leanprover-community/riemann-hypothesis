@@ -53,7 +53,6 @@ end GlobalTheory.RowTriple.Lay
 
 namespace GlobalTheory.RowTriple.Lay
 
-open GlobalTheory.TwInputs Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting.FitRho
 
 
 
@@ -61,7 +60,6 @@ end GlobalTheory.RowTriple.Lay
 
 namespace GlobalTheory.RowTriple.Lay
 
-open GlobalTheory.TwInputs Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting.FitRho
 
 theorem heq_cf_of_pack {p q : Σ (D₁ : D7) (c₁ : CharFrame D₁) (C₁ : NChoice D₁), TupTied D₁ c₁ C₁} (h : p = q) :
     HEq p.2.1 q.2.1 := by

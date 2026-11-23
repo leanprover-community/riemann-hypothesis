@@ -116,7 +116,6 @@ theorem gridTopVertexLattice_transportStages (X0 : LSp a.D) : ∀ (n : ℕ) (h :
 end V
 
 section W
-open scoped nonZeroDivisors
 variable {L : Formalism.IndefR.Links.LevCh a.D T}
 
 def vtC {𝔞 𝔞' : FractionalIdeal (𝓞 a.D.host.E)⁰ a.D.host.E} (V : Vertices L 𝔞 𝔞') :

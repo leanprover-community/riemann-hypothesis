@@ -125,7 +125,6 @@ end GlobalTheory.KappaRowChar
 
 namespace GlobalTheory.KappaRowChar
 
-open GlobalTheory.FinPl.LineAct (iota)
 
 
 

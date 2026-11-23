@@ -190,7 +190,6 @@ end GlobalTheory.FiniteColim
 
 namespace GlobalTheory.FiniteColim
 
-open MvPolynomial
 
 theorem map_aeval_X {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {σ : Type} (i : σ)
     (q : Polynomial R) :
@@ -204,7 +203,6 @@ end GlobalTheory.FiniteColim
 
 namespace GlobalTheory.FiniteColim
 
-open MvPolynomial
 
 theorem eventually_finite_baseChange : ∀ (J : Type) [SmallCategory J] [IsFiltered J]
     (F : J ⥤ CommRingCat.{0}) (c : Cocone F),

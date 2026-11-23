@@ -123,7 +123,6 @@ lemma C_prod_erase (q : ℕ) [NeZero q] :
 end GlobalTheory.EtC.PrimBasic
 
 namespace GlobalTheory.EtC.PrimBasic
-open Polynomial
 
 lemma prim_pow_q {q : ℕ} [NeZero q] {A : Type} [CommRing A] (ζ : Prim q A) : ζ.1 ^ q = 1 := by
   have h := transfer ζ (X ^ q - 1) (by simp [(μc_prim q).pow_eq_one])
@@ -172,7 +171,6 @@ lemma prod_erase {q : ℕ} [NeZero q] {A : Type} [CommRing A] (ζ : Prim q A) :
 end GlobalTheory.EtC.PrimBasic
 
 namespace GlobalTheory.EtC.PrimBasic
-open Polynomial
 
 lemma isUnit_one_sub {q : ℕ} [NeZero q] {A : Type} [CommRing A] (ζ : Prim q A) (c : ℕ)
     (hc : c % q ≠ 0) : IsUnit (1 - ζ.1 ^ c) := by

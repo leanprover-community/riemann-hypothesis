@@ -60,7 +60,6 @@ theorem idAt₂ (v : Pl D) : algebraMap (AF D.host.F) (AE D) (cP (· = v)) ∈ i
     exact TensorProduct.zero_tmul _ _
 
 
-open GlobalTheory.SelfDualAt in
 theorem eq_alg_cP {v : Pl D} {ε : AE D} (hεI : ε ∈ intAt D (· = v)) (hε : ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a) :
     ε = algebraMap (AF D.host.F) (AE D) (cP (· = v)) := by
   have h1 := algebraMap_placeIdempotent_mul (· = v) ε hεI.1
@@ -69,7 +68,6 @@ theorem eq_alg_cP {v : Pl D} {ε : AE D} (hεI : ε ∈ intAt D (· = v)) (hε :
   exact h1.symm
 
 
-open GlobalTheory.SelfDualAt in
 theorem placeIdem_eq_cP {v : Pl D} {εF : AF D.host.F} (h : IsPlaceIdem D v εF) : εF = cP (· = v) := by
   obtain ⟨α, rfl, h1, h0⟩ := h
   unfold cP
@@ -94,7 +92,6 @@ theorem half_mem_int (v : Pl D) (h2 : (2 : 𝓞 D.host.F) ∉ v.asIdeal) :
   rw [e1, map_inv₀, e2, inv_one]
 
 
-open GlobalTheory.SelfDualAt in
 theorem exists_trace_one_at_tame : ∀ (D : D7) (v : Pl D) (ε : AE D) (hεε : ε * ε = ε) (hεc : cA D ε = ε)
     (hεI : ε ∈ intAt D (· = v)) (hε : ∀ a, a ∈ idAt D (· = v) ↔ ε * a = a), Tame D v →
     ∃ w ∈ intAt D (· = v), w + cA D w = ε := by

@@ -91,7 +91,6 @@ end HomTriv
 end GlobalTheory
 
 namespace GlobalTheory
-open Matrix
 section HomTriv2
 variable {k : Type} [Field k] {N : ℕ}
 
@@ -139,7 +138,6 @@ end HomTriv2
 end GlobalTheory
 
 namespace GlobalTheory
-open Matrix
 section HomTriv3
 variable {k : Type} [Field k] {N : ℕ}
 

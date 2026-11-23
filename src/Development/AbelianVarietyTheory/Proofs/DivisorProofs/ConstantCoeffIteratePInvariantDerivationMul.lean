@@ -68,7 +68,6 @@ private lemma iterate_mul_eq_sum_antidiagonal_choose {A : Type} [CommRing A] (D 
     rw [add_comm]
 
 
-open MvPowerSeries in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.LawDer.constantCoeff_iterate_invDer_mul : ∀ (p : ℕ) [Fact p.Prime] (R : Type)
     [CommRing R] (d : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R),

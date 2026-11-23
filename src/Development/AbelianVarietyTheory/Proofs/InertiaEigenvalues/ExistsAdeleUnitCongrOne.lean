@@ -131,7 +131,6 @@ end GlobalTheory.UnitRootCong
 
 namespace GlobalTheory.UnitRootCong
 
-open Formalism.MainNotions.StandardLattice
 
 
 

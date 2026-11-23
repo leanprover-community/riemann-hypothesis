@@ -68,7 +68,6 @@ private theorem valuation_lt_one_iff_zero_or_inv_not_mem {Ω : Type} [Field Ω] 
     simp only [hx, false_or]
     rw [← map_inv₀, Valuation.one_lt_val_iff _ (inv_ne_zero hx), inv_inv]
 
-open scoped Pointwise in
 private theorem conj_mem_inertia_of_mem_inertia_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
     (Av : ValuationSubring Ω) (σ τ : G F Ω) (hτ : τ ∈ Ine (σ • Av)) : σ⁻¹ * τ * σ ∈ Ine Av := by
   rw [mem_Ine] at hτ ⊢

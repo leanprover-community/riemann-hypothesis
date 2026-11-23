@@ -190,7 +190,6 @@ lemma int_conj (T : KType ε Λ) (P : T.V →L[ℂ] T.V) (k : KG ε) :
 end CompactHaarProbability
 
 
-open CompactHaarProbability in
 theorem kschur_op {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (v : T.V) :
     ((Module.finrank ℂ T.V : ℝ) : ℂ) •
         ∫ k, T.op k * (innerSL ℂ v).smulRight v * T.op k⁻¹ ∂(dk ε) =
@@ -235,7 +234,6 @@ theorem kschur_op {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (
   rw [hc, smul_smul, key]
 
 
-open CompactHaarProbability in
 theorem kschur_coef {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (u v : T.V) :
     (Module.finrank ℂ T.V : ℝ) * ∫ k, ‖⟪u, T.op k v⟫_ℂ‖ ^ 2 ∂(dk ε) = ‖v‖ ^ 2 * ‖u‖ ^ 2 := by
   set P : T.V →L[ℂ] T.V := (innerSL ℂ v).smulRight v with hP

@@ -273,7 +273,6 @@ end GlobalTheory.GaugeVolFixer
 
 namespace GlobalTheory.GaugeVolFixer
 
-open PI.RhsWLim PI.RhsWLim.W
 
 variable {k r : ℕ}
 
@@ -510,7 +509,6 @@ end GlobalTheory.GaugeVolFixer
 
 namespace GlobalTheory.GaugeVolFixer
 
-open PI.RhsWLim PI.RhsWLim.W
 
 variable {k r : ℕ}
 

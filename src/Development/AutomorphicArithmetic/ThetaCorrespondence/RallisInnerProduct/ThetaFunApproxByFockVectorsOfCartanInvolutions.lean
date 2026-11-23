@@ -98,37 +98,16 @@ end UpperTheory.Lit.Rallis
 end
 
 section
-open scoped ComplexConjugate Matrix NNReal ENNReal TensorProduct Classical
-open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
-open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.Eis GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.RegSch
-open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec delta ThetaClause)
-open GlobalTheory.Core.Rk.SW (sch)
-open GlobalTheory.Mem.AutSpace (SmFun)
-open GlobalTheory.Size (sobO thetaLevel)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open GlobalTheory.ThetaDens
 
 theorem _root_.UpperTheory.Lit.Rallis.T.pointwise_limit_mem_graphRelation_of_finiteDimensional : ∀ (X : Type) (R : Submodule ℂ ((X → ℂ) × (X → ℂ))), (∀ E, (0, E) ∈ R → E = 0) → ∀ X₀ : Submodule ℂ (X → ℂ), FiniteDimensional ℂ X₀ → ∀ (a b : ℕ → X → ℂ) (a' b' : X → ℂ), (∀ j, a j ∈ X₀ ∧ (a j, b j) ∈ R) → (∀ x, Filter.Tendsto (fun j => a j x) Filter.atTop (nhds (a' x))) → (∀ x, Filter.Tendsto (fun j => b j x) Filter.atTop (nhds (b' x))) → (a', b') ∈ R := by
   first | exact @UpperTheory.Lit.Rallis.graph_finDim_mem_of_pointwise_tendsto | exact UpperTheory.Lit.Rallis.graph_finDim_mem_of_pointwise_tendsto | (intros; apply UpperTheory.Lit.Rallis.graph_finDim_mem_of_pointwise_tendsto <;> assumption)
 end
 
 section
-open scoped ComplexConjugate Matrix NNReal ENNReal TensorProduct Classical
-open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
-open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.Eis GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.RegSch
-open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec delta ThetaClause)
-open GlobalTheory.Core.Rk.SW (sch)
-open GlobalTheory.Mem.AutSpace (SmFun)
-open GlobalTheory.Size (sobO thetaLevel)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open GlobalTheory.ThetaDens
 
 namespace UpperTheory.Lit.Rallis.FinVecKernel
-open GlobalTheory
 
 open Module
 
@@ -226,39 +205,18 @@ end UpperTheory.Lit.Rallis.FinVecKernel
 end
 
 section
-open scoped ComplexConjugate Matrix NNReal ENNReal TensorProduct Classical
-open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
-open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.Eis GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.RegSch
-open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec delta ThetaClause)
-open GlobalTheory.Core.Rk.SW (sch)
-open GlobalTheory.Mem.AutSpace (SmFun)
-open GlobalTheory.Size (sobO thetaLevel)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open GlobalTheory.ThetaDens
 
 theorem _root_.UpperTheory.Lit.Rallis.T.exists_continuous_kernel_reproducing_finite_vector : ∀ (K : Type) [Group K] [TopologicalSpace K] [IsTopologicalGroup K] [CompactSpace K] [MeasurableSpace K] [BorelSpace K] (ν : Measure K) [ν.IsHaarMeasure] (Y : Type) (ρ : K →* Module.End ℂ (Y → ℂ)) (f : Y → ℂ), FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k => ρ k f)) → (∀ y, Continuous fun k => ρ k f y) → ∃ (e : K → ℂ) (n : ℕ) (a b : Fin n → K → ℂ), Continuous e ∧ (∀ i, Continuous (b i)) ∧ (∀ k₀ k, e (k₀⁻¹ * k) = ∑ i, a i k₀ * b i k) ∧ ∀ y, f y = ∫ k, e k * ρ k f y ∂ν := by
   first | exact @UpperTheory.Lit.Rallis.FinVecKernel.exists_reproducing_kernel | exact UpperTheory.Lit.Rallis.FinVecKernel.exists_reproducing_kernel | (intros; apply UpperTheory.Lit.Rallis.FinVecKernel.exists_reproducing_kernel <;> assumption)
 end
 
 section
-open scoped ComplexConjugate Matrix NNReal ENNReal TensorProduct Classical
-open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
-open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.Eis GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.RegSch
-open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec delta ThetaClause)
-open GlobalTheory.Core.Rk.SW (sch)
-open GlobalTheory.Mem.AutSpace (SmFun)
-open GlobalTheory.Size (sobO thetaLevel)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open GlobalTheory.ThetaDens
 
 noncomputable section
 
 namespace UpperTheory.Lit.Rallis.FockDensCart
-open GlobalTheory
 
 theorem exists_fr_of_cartanInv {D : D7} (V : HSp D) (s : RealMat V) (hs : ∀ τ, IsCartanInv (gramAt D V τ) (s τ)) :
     ∃ A : GlobalTheory.ChainFr.Fr V, A.cart = s := by
@@ -361,7 +319,6 @@ end Fock
 
 section Span
 
-open GlobalTheory.FockIndep GlobalTheory.OrientedHeis GlobalTheory.ChainFr
 
 variable {D : D7} {S T : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D}
 
@@ -428,17 +385,7 @@ end
 end
 
 section
-open scoped ComplexConjugate Matrix NNReal ENNReal TensorProduct Classical
-open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
-open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.Eis GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.RegSch
-open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec delta ThetaClause)
-open GlobalTheory.Core.Rk.SW (sch)
-open GlobalTheory.Mem.AutSpace (SmFun)
-open GlobalTheory.Size (sobO thetaLevel)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open GlobalTheory.ThetaDens
 
 theorem _root_.UpperTheory.Lit.Rallis.T.thetaFun_approx_by_fockVectors_of_cartanInvolutions : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ θ : InfFam D, IsInfFam θ → ∀ S T : HSp D, ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 → ∀ (sS : RealMat S) (sT : RealMat T), (∀ τ, IsCartanInv (gramAt D S τ) (sS τ)) → (∀ τ, IsCartanInv (gramAt D T τ) (sT τ)) → ∀ f, IsThetaFunO ψ S T f → ∃ U : AddSubgroup (WO S T), IsOpen (U : Set (WO S T)) ∧ f ∈ thetaLevel ψ S T U ∧ ∀ (d : ℕ) (δ : ℝ≥0∞), 0 < δ → ∃ g, IsFockVec ψ θ S T sS sT g ∧ g ∈ thetaLevel ψ S T U ∧ sobO ψ θ μ 𝓕 d (f - g) < δ := by
   first | exact @UpperTheory.Lit.Rallis.FockDensCart.fockDense_cart | exact UpperTheory.Lit.Rallis.FockDensCart.fockDense_cart | (intros; apply UpperTheory.Lit.Rallis.FockDensCart.fockDense_cart <;> assumption)
@@ -448,7 +395,6 @@ section
 open MeasureTheory
 
 namespace UpperTheory.Lit.Rallis
-open GlobalTheory
 
 theorem exists_continuous_coords_of_finiteDimensional_span
     {K : Type} [TopologicalSpace K] {Y : Type} (ρ : K → Y → ℂ)
@@ -505,28 +451,16 @@ end UpperTheory.Lit.Rallis
 end
 
 section
-open MeasureTheory
 
 theorem _root_.UpperTheory.Lit.Rallis.T.weighted_integral_mem_span_of_finiteDimensional_orbit : ∀ (K : Type) [TopologicalSpace K] [CompactSpace K] [T2Space K] [MeasurableSpace K] [OpensMeasurableSpace K] (ν : Measure K) [IsFiniteMeasure ν] (Y : Type) (ρ : K → Y → ℂ) (e : K → ℂ), Continuous e → FiniteDimensional ℂ (Submodule.span ℂ (Set.range ρ)) → (∀ y, Continuous fun k => ρ k y) → (fun y => ∫ k, e k * ρ k y ∂ν) ∈ Submodule.span ℂ (Set.range ρ) ∧ ∀ Λ : (Y → ℂ) → ℂ, (∀ f ∈ Submodule.span ℂ (Set.range ρ), ∀ f' ∈ Submodule.span ℂ (Set.range ρ), Λ (f + f') = Λ f + Λ f') → (∀ (c : ℂ), ∀ f ∈ Submodule.span ℂ (Set.range ρ), Λ (c • f) = c * Λ f) → Λ (fun y => ∫ k, e k * ρ k y ∂ν) = ∫ k, e k * Λ (ρ k) ∂ν := by
   first | exact @UpperTheory.Lit.Rallis.weightedIntegral_mem_span_and_map_integral | exact UpperTheory.Lit.Rallis.weightedIntegral_mem_span_and_map_integral | (intros; apply UpperTheory.Lit.Rallis.weightedIntegral_mem_span_and_map_integral <;> assumption)
 end
 
 section
-open scoped ComplexConjugate Matrix NNReal ENNReal TensorProduct Classical
-open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
-open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.Eis GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.RegSch
-open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec delta ThetaClause)
-open GlobalTheory.Core.Rk.SW (sch)
-open GlobalTheory.Mem.AutSpace (SmFun)
-open GlobalTheory.Size (sobO thetaLevel)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open GlobalTheory.ThetaDens
 
 noncomputable section
 namespace UpperTheory.Lit.Rallis.SWFinSpan
-open GlobalTheory
 
 theorem swSec_mem_finiteDimensional : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D) (χ : (AE D)ˣ →* Circle) (om : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ)), IsWeilDatumO ψ (dblSp A) B 1 χ om → ∀ (ν : Measure (WO A B)) (𝓨 : Set (WO A B)), IsCovolOne (ratL B A) ν 𝓨 → ∀ a : GL (Fin A.rank) (AE D), HasIwasawa D.sp.cm.sig (dblSp A).gram (Khat A a) → ∀ (n : ℕ) (α : Fin n → Khat A a → ℂ), ∃ X₀ : Submodule ℂ (GA D (dblSp A) → ℂ), FiniteDimensional ℂ X₀ ∧ ∀ φ, IsThetaFunO ψ (dblSp A) B φ → ∀ β : Fin n → ℂ, (∀ k : Khat A a, swSec A B om ν 𝓨 φ k = ∑ i, β i * α i k) → swSec A B om ν 𝓨 φ ∈ X₀ := by
   intro D ψ A B χ om hom ν 𝓨 hν a hI n α
@@ -557,37 +491,16 @@ end
 end
 
 section
-open scoped ComplexConjugate Matrix NNReal ENNReal TensorProduct Classical
-open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
-open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.Eis GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.RegSch
-open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec delta ThetaClause)
-open GlobalTheory.Core.Rk.SW (sch)
-open GlobalTheory.Mem.AutSpace (SmFun)
-open GlobalTheory.Size (sobO thetaLevel)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open GlobalTheory.ThetaDens
 
 theorem _root_.UpperTheory.Lit.Rallis.T.exists_finiteDimensional_space_of_siegelWeilSections : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D) (χ : (AE D)ˣ →* Circle) (om : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ)), IsWeilDatumO ψ (dblSp A) B 1 χ om → ∀ (ν : Measure (WO A B)) (𝓨 : Set (WO A B)), IsCovolOne (ratL B A) ν 𝓨 → ∀ a : GL (Fin A.rank) (AE D), HasIwasawa D.sp.cm.sig (dblSp A).gram (Khat A a) → ∀ (n : ℕ) (α : Fin n → Khat A a → ℂ), ∃ X₀ : Submodule ℂ (GA D (dblSp A) → ℂ), FiniteDimensional ℂ X₀ ∧ ∀ φ, IsThetaFunO ψ (dblSp A) B φ → ∀ β : Fin n → ℂ, (∀ k : Khat A a, swSec A B om ν 𝓨 φ k = ∑ i, β i * α i k) → swSec A B om ν 𝓨 φ ∈ X₀ := by
   first | exact @UpperTheory.Lit.Rallis.SWFinSpan.swSec_mem_finiteDimensional | exact UpperTheory.Lit.Rallis.SWFinSpan.swSec_mem_finiteDimensional | (intros; apply UpperTheory.Lit.Rallis.SWFinSpan.swSec_mem_finiteDimensional <;> assumption)
 end
 
 section
-open scoped ComplexConjugate Matrix NNReal ENNReal TensorProduct Classical
-open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
-open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.Eis GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.RegSch
-open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec delta ThetaClause)
-open GlobalTheory.Core.Rk.SW (sch)
-open GlobalTheory.Mem.AutSpace (SmFun)
-open GlobalTheory.Size (sobO thetaLevel)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open GlobalTheory.ThetaDens
 
 namespace UpperTheory.Lit.Rallis.ThetaDens
-open GlobalTheory
 
 theorem swSec_sobBdd : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D) (χ : (AE D)ˣ →* Circle) (om : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ)), IsWeilDatumO ψ (dblSp A) B 1 χ om → ∀ θ : InfFam D, IsInfFam θ → ∀ (ν : Measure (WO A B)) (𝓨 : Set (WO A B)), IsCovolOne (ratL B A) ν 𝓨 → ∀ (μ : Measure (WO (dblSp A) B)) (𝓕 : Set (WO (dblSp A) B)), IsCovolOne (ratL B (dblSp A)) μ 𝓕 → SobBdd ψ θ μ 𝓕 fun φ y => ‖swSec A B om ν 𝓨 φ y‖ₑ := by
   intro D ψ A B χ om hom θ hθ ν 𝓨 hν μ 𝓕 hμ U hU K hK
@@ -610,17 +523,7 @@ end UpperTheory.Lit.Rallis.ThetaDens
 end
 
 section
-open scoped ComplexConjugate Matrix NNReal ENNReal TensorProduct Classical
-open MeasureTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum
-open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.Eis GlobalTheory.MixModel GlobalTheory.RegSW GlobalTheory.RegSch
-open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFockVec)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec delta ThetaClause)
-open GlobalTheory.Core.Rk.SW (sch)
-open GlobalTheory.Mem.AutSpace (SmFun)
-open GlobalTheory.Size (sobO thetaLevel)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open GlobalTheory.ThetaDens
 
 theorem _root_.UpperTheory.Lit.Rallis.T.siegelWeilSection_bounded_by_sobolevSeminorm : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D) (χ : (AE D)ˣ →* Circle) (om : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ)), IsWeilDatumO ψ (dblSp A) B 1 χ om → ∀ θ : InfFam D, IsInfFam θ → ∀ (ν : Measure (WO A B)) (𝓨 : Set (WO A B)), IsCovolOne (ratL B A) ν 𝓨 → ∀ (μ : Measure (WO (dblSp A) B)) (𝓕 : Set (WO (dblSp A) B)), IsCovolOne (ratL B (dblSp A)) μ 𝓕 → SobBdd ψ θ μ 𝓕 fun φ y => ‖swSec A B om ν 𝓨 φ y‖ₑ := by
   first | exact @UpperTheory.Lit.Rallis.ThetaDens.swSec_sobBdd | exact UpperTheory.Lit.Rallis.ThetaDens.swSec_sobBdd | (intros; apply UpperTheory.Lit.Rallis.ThetaDens.swSec_sobBdd <;> assumption)

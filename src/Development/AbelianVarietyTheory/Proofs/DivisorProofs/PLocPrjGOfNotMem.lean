@@ -119,7 +119,6 @@ end GlobalTheory.EulerTw.Transport
 
 namespace GlobalTheory.EulerTw.Transport
 
-open GlobalTheory.BCT GlobalTheory.TwOrbConj
 
 variable {G H : Type} [Group G] [TopologicalSpace G] [Group H] [TopologicalSpace H]
 
@@ -152,7 +151,6 @@ end GlobalTheory.EulerTw.Transport
 
 namespace GlobalTheory.EulerTw.Transport
 
-open GlobalTheory.BCT GlobalTheory.TwOrbConj
 
 theorem twOrb_transport : ∀ (G H : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H] [TopologicalSpace H] [IsTopologicalGroup H] (e : G ≃ₜ* H) (θ : G →* G) (θ' : H →* H) (K : Subgroup G) (K' : Subgroup H) (δ : G) (f : G → ℂ) (f' : H → ℂ), (∀ g, e (θ g) = θ' (e g)) → (∀ g, g ∈ K ↔ e g ∈ K') → (∀ g, f' (e g) = f g) → twOrb θ K δ f = twOrb θ' K' (e δ) f' := by
   intro G H _ _ _ _ _ _ e θ θ' K K' δ f f' he hK hf

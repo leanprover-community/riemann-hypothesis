@@ -88,7 +88,6 @@ private lemma differentiable_eval_mvPolynomial_line₂ {d r : ℕ} (z v : Fin d 
     simp only [MvPolynomial.eval₂_mul, MvPolynomial.eval₂_X]
     exact hp.mul (differentiable_const _)
 
-open Polynomial in
 private lemma norm_multiset_prod_le_pow_card' {s : Multiset ℂ} {ρ : ℝ} (hρ : 0 ≤ ρ)
     (h : ∀ a ∈ s, ‖a‖ ≤ ρ) : ‖s.prod‖ ≤ ρ ^ Multiset.card s := by
   induction s using Multiset.induction_on with
@@ -98,7 +97,6 @@ private lemma norm_multiset_prod_le_pow_card' {s : Multiset ℂ} {ρ : ℝ} (hρ
     exact mul_le_mul (h a (Multiset.mem_cons_self a s))
       (ih fun b hb => h b (Multiset.mem_cons_of_mem hb)) (norm_nonneg _) hρ
 
-open Polynomial in
 private lemma norm_coeff_le_choose_mul_pow_of_roots_le {q : ℂ[X]} {n : ℕ} (hq : q.Monic)
     (hn : q.natDegree = n) {ρ : ℝ} (hρ : 0 ≤ ρ) (hr : ∀ a, q.IsRoot a → ‖a‖ ≤ ρ) (k : ℕ)
     (hk : k ≤ n) : ‖q.coeff k‖ ≤ (n.choose k : ℝ) * ρ ^ (n - k) := by
@@ -118,7 +116,6 @@ private lemma norm_coeff_le_choose_mul_pow_of_roots_le {q : ℂ[X]} {n : ℕ} (h
   · rw [Multiset.card_map, Multiset.card_powersetCard, IsAlgClosed.card_roots_eq_natDegree,
       nsmul_eq_mul, Nat.choose_symm hk]
 
-open Polynomial in
 private lemma norm_root_le_two_pow_mul_of_coeff_le {p : ℂ[X]} {n : ℕ} (hp : p.Monic)
     (hn : p.natDegree = n) {ρ : ℝ} (hρ : 0 ≤ ρ)
     (hc : ∀ k < n, ‖p.coeff k‖ ≤ (n.choose k : ℝ) * ρ ^ (n - k)) {a : ℂ} (ha : p.IsRoot a) :
@@ -174,7 +171,6 @@ private lemma norm_root_le_two_pow_mul_of_coeff_le {p : ℂ[X]} {n : ℕ} (hp : 
     rw [← pow_succ']; exact hmain
   exact le_of_mul_le_mul_right hmain' (pow_pos hpos m)
 
-open Polynomial in
 private lemma natDegree_minpoly_pow_le {A S : Type*} [CommRing A] [IsDomain A]
     [IsIntegrallyClosed A] [CommRing S] [IsDomain S] [Algebra A S] [Module.IsTorsionFree A S]
     {g : S} (hg : IsIntegral A g) (N : ℕ) :

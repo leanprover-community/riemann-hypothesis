@@ -165,7 +165,6 @@ end PositivityTheory.RgBcC.Cxeeig
 
 namespace PositivityTheory.RgBcC
 
-open PositivityTheory.RgTw (Mat)
 open PositivityTheory.RgBcC.Cxeeig
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace

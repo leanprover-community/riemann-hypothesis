@@ -65,7 +65,6 @@ private lemma norm_le_one_add_sum_norm_coeff_of_isRoot_monic {p : Polynomial ℂ
   have h3 := NNReal.coe_le_coe.mpr h2
   simpa [NNReal.coe_sum] using h3
 
-open Polynomial in
 private lemma ringHom_algebraMap_eq_eval_map {d : ℕ} {B : Type} [CommRing B] [Algebra (MvPolynomial (Fin d) ℚ) B]
     (x : B →+* ℂ) (a : MvPolynomial (Fin d) ℚ) :
     x (algebraMap (MvPolynomial (Fin d) ℚ) B a) =
@@ -81,7 +80,6 @@ private lemma ringHom_algebraMap_eq_eval_map {d : ℕ} {B : Type} [CommRing B] [
       exact h) (fun i => by simp)
   exact congrArg (fun g => g a) this
 
-open Polynomial in
 private lemma exists_norm_le_of_isCompact_homs_over {d : ℕ} {B : Type} [CommRing B] [Algebra (MvPolynomial (Fin d) ℚ) B]
     [Module.Finite (MvPolynomial (Fin d) ℚ) B] {T : Set (Fin d → ℂ)} (hT : IsCompact T) (b : B) :
     ∃ M : ℝ, ∀ x : B →+* ℂ,
@@ -109,7 +107,6 @@ private lemma exists_norm_le_of_isCompact_homs_over {d : ℕ} {B : Type} [CommRi
   rw [ringHom_algebraMap_eq_eval_map]
   exact hC _ _ hx
 
-open Polynomial in
 private lemma isCompact_image_homs_over_isCompact {d : ℕ} {B : Type} [CommRing B]
     [Algebra (MvPolynomial (Fin d) ℚ) B] [Module.Finite (MvPolynomial (Fin d) ℚ) B]
     {T : Set (Fin d → ℂ)} (hT : IsCompact T) :
@@ -154,7 +151,6 @@ private lemma isCompact_image_homs_over_isCompact {d : ℕ} {B : Type} [CommRing
   rintro _ ⟨x, hx, rfl⟩ b -
   simpa using hM b x hx
 
-open Polynomial in
 private lemma finite_setOf_homs_over_point {d : ℕ} {B : Type} [CommRing B]
     [Algebra (MvPolynomial (Fin d) ℚ) B] [Module.Finite (MvPolynomial (Fin d) ℚ) B]
     (z : Fin d → ℂ) :
@@ -198,7 +194,6 @@ private lemma finite_setOf_homs_over_point {d : ℕ} {B : Type} [CommRing B]
   rintro _ ⟨x, hx, rfl⟩ b -
   exact hroot x hx b
 
-open Polynomial in
 private lemma exists_ne_zero_dvd_algebraMap_of_ne_zero {d : ℕ} {B : Type} [CommRing B] [IsDomain B]
     [Algebra (MvPolynomial (Fin d) ℚ) B] [Module.Finite (MvPolynomial (Fin d) ℚ) B]
     {s : B} (hs : s ≠ 0) :
@@ -208,7 +203,6 @@ private lemma exists_ne_zero_dvd_algebraMap_of_ne_zero {d : ℕ} {B : Type} [Com
   obtain ⟨a, ha, ha0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot h
   exact ⟨a, ha0, Ideal.mem_span_singleton.mp ha⟩
 
-open Polynomial in
 private lemma exists_small_direction_eval_circle_ne_zero {d : ℕ} {P : MvPolynomial (Fin d) ℂ} (hP : P ≠ 0)
     (z : Fin d → ℂ) {ρ : ℝ} (hρ : 0 < ρ) :
     ∃ v : Fin d → ℂ, ‖v‖ < ρ ∧
@@ -265,7 +259,6 @@ private lemma exists_small_direction_eval_circle_ne_zero {d : ℕ} {P : MvPolyno
         rw [norm_mul, hw, one_mul, Complex.norm_real, Real.norm_of_nonneg hr.1.le]
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.local_maximum_principle_weight_finite_mvPolynomial_algebra :
     ∀ (d : ℕ) (B : Type) [CommRing B] [IsDomain B] [Algebra (MvPolynomial (Fin d) ℚ) B] [Module.Finite (MvPolynomial (Fin d) ℚ) B], Function.Injective (algebraMap (MvPolynomial (Fin d) ℚ) B) → (letI : TopologicalSpace (B →+* ℂ) := TopologicalSpace.induced (fun x : B →+* ℂ => (x : B → ℂ)) inferInstance; ∀ (ψ : (B →+* ℂ) → ℝ), Continuous ψ → ∀ s : B, s ≠ 0 → ∀ (x₀ : B →+* ℂ) (δ : ℝ), 0 < δ → ∃ (W K : Set (B →+* ℂ)), W ∈ nhds x₀ ∧ IsCompact K ∧ (∀ x ∈ K, x s ≠ 0) ∧ ∀ (N : ℕ) (f : B) (R : ℝ), (∀ x ∈ K, ‖x f‖ * Real.exp (-(N * ψ x)) ≤ R) → ∀ y ∈ W, ‖y f‖ * Real.exp (-(N * ψ y)) ≤ Real.exp (δ * N) * R) := by
   intro d B _ _ _ _ hinj

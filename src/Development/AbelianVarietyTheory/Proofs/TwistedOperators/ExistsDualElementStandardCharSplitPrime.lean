@@ -121,7 +121,6 @@ end GlobalTheory.SplitDualElt
 
 namespace GlobalTheory.SplitDualElt
 
-open GlobalTheory.IdemModTwo GlobalTheory.SplitChart
 
 variable {D : D7} {v : HeightOneSpectrum (𝓞 D.host.F)} {e : AE D}
 
@@ -213,7 +212,6 @@ end GlobalTheory.SplitDualElt
 
 namespace GlobalTheory.SplitDualElt
 
-open GlobalTheory.IdemModTwo GlobalTheory.SplitChart
 
 variable {D : D7} {v : HeightOneSpectrum (𝓞 D.host.F)} {e : AE D}
 
@@ -245,7 +243,6 @@ end GlobalTheory.SplitDualElt
 
 namespace GlobalTheory.SplitDualElt
 
-open GlobalTheory.IdemModTwo GlobalTheory.SplitChart
 
 theorem exists_edge {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (χ : AddChar (v.adicCompletion F) ℂ)
     (hχ : Continuous χ) (hne : ∃ a, χ a ≠ 1) :
@@ -280,7 +277,6 @@ end GlobalTheory.SplitDualElt
 
 namespace GlobalTheory.SplitDualElt
 
-open GlobalTheory.IdemModTwo GlobalTheory.SplitChart
 
 
 

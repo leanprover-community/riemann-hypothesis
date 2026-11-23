@@ -53,7 +53,6 @@ open Formalism.MainNotions.ArcLiftingSetup in
 theorem ps_zero : ps W 0 = W.π₀ + lA W := by
   simp [ps, qA]
 
-open Formalism.MainNotions.ArcLiftingSetup in
 theorem ps_succ (s : ℕ) : ps W (s + 1) = W.φA (ps W s) := by
   simp only [ps, pow_succ', AlgHom.mul_apply]
 

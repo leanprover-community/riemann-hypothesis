@@ -239,7 +239,6 @@ end GlobalTheory.ZM.Amp
 
 namespace GlobalTheory.ZM
 open GlobalTheory.ProjSpace Amp
-open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 
 theorem projRep_projective_ample : ∀ (R σ : Type) [CommRing R] [Finite σ] (I : Ideal (MvPolynomial σ R)) (Z : Over (Sp R)) (M : LB Z.left) (th : σ → M.Sec), ProjRep I Z.hom M th → IsProjOver Z.hom ∧ IsProper Z.hom ∧ Out.RelAmple Z M := by
   intro R σ _ _ I Z M th H

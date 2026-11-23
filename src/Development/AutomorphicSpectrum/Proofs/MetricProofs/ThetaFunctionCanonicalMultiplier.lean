@@ -91,8 +91,6 @@ end Law
 
 section Main
 
-open Complex Matrix ReciprocityTheory.PTheta ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CanTh
-open scoped Real
 
 variable {g : ℕ}
 

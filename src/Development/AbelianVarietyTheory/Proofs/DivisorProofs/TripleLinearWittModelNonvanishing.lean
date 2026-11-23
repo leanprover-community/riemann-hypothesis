@@ -175,7 +175,6 @@ end GlobalTheory.LinearModelL2
 
 namespace GlobalTheory.LinearModelL2
 
-open GlobalTheory.LinSchur
 
 
 theorem ip_cind {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] [MeasurableSpace V]
@@ -245,7 +244,6 @@ end GlobalTheory.LinearModelL2
 
 namespace GlobalTheory.LinearModelL2
 
-open GlobalTheory.LinSchur
 open scoped GlobalTheory.VacAny GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 theorem linIso_lintegral_eq : GlobalTheory.FunPr.Hypotheses₂ → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)

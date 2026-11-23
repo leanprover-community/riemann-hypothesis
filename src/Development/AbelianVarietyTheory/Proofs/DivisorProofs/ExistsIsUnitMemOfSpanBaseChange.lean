@@ -170,7 +170,6 @@ end GlobalTheory.LKInv
 
 namespace GlobalTheory.LKInv
 
-open Module Polynomial TensorProduct
 
 theorem exists_unit_conj_of_baseChange {k A K : Type} [Field k] [Infinite k] [Ring A] [Algebra k A]
     [FiniteDimensional k A] [Field K] [Algebra k K] (x₀ x : A) (w : (K ⊗[k] A)ˣ)

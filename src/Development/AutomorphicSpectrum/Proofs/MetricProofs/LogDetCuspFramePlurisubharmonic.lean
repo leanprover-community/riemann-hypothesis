@@ -222,7 +222,6 @@ end GlobalTheory.CompanionTheory.Ar.Cusp.PhiI
 namespace GlobalTheory.CompanionTheory.Ar.Cusp
 
 open GlobalTheory.CompanionTheory.Ar.Cusp.PhiI
-open ReciprocityTheory.AnForm.A (IsPsh)
 
 theorem phi_isPsh_continuous : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (Ψ : Type) [Fintype Ψ] (n : ℕ) (U : Set (Fin n → ℂ)) (R : (Fin n → ℂ) → RiemLat E g Λ) (σ : Ψ → (𝓞 E →+* ℂ)) (m : ℕ) (b : Ψ → Fin m → (Fin n → ℂ) → Fin g → ℂ) (I : Submodule (𝓞 E) Λ), IsOpen U → IsHolFam U R → IsCMFam σ → IsEigFrames U (fun t => (R t).B) σ b → (∀ t ∈ U, (R t).IsCusp I) → ReciprocityTheory.AnForm.A.IsPsh U (fun t => (R t).logDet (fun τ i => b τ i t) - Real.log ((R t).nz σ I)) ∧ ContinuousOn (fun t => (R t).nz σ I) U := by
   intro E _ _ _ g Λ _ _ Ψ _ n U R σ m b I hU hHol hCM hB hC

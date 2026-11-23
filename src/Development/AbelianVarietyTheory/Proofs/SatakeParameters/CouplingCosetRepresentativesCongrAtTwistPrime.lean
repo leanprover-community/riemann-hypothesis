@@ -92,7 +92,6 @@ end GlobalTheory.LocQCoset
 
 namespace GlobalTheory.LocQCoset
 
-open GlobalTheory.TopInv
 
 theorem coset_agree : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
   ∀ (hi : t.m2 + 1 ≤ D.R.m) (β : (St (t.m2 + 1) hi).Ch) (P : SB t μ), P.1 ∉ t.Pr.vGs →

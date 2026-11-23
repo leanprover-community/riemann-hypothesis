@@ -206,7 +206,6 @@ def slice {ρ κ β : Type} (j0 : κ → ρ) (j1 : β → ρ) (γ : κ → Power
 theorem coeff_slice {ρ κ β : Type} (j0 : κ → ρ) (j1 : β → ρ) (γ : κ → PowerSeries C) (n : ℕ) (P : MvPowerSeries ρ C)
     (μ : β →₀ ℕ) : coeff μ (slice j0 j1 γ n P) = PowerSeries.coeff n (subst γ (row j0 j1 μ P)) := rfl
 
-open scoped MvPowerSeries.WithPiTopology in
 theorem jet_subst {ρ κ β τ : Type} [Finite ρ] [Finite κ] [Finite β] [Finite τ] {j0 : κ → ρ} {j1 : β → ρ}
     (hj : Function.Bijective (Sum.elim j0 j1)) {γ : κ → PowerSeries C}
     (hγ : ∀ i, PowerSeries.constantCoeff (γ i) = 0) {a : β → MvPowerSeries τ C} (ha : ∀ b, constantCoeff (a b) = 0)

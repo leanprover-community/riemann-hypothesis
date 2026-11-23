@@ -48,8 +48,6 @@ theorem _root_.GlobalTheory.Amp.Model.det_upper {r : ℕ} (x : _root_.GlobalTheo
     have h1 : ¬ i < j := not_lt.mpr hij.le
     simp [_root_.GlobalTheory.Amp.upper, h1, hij.ne']
 
-open MeasureTheory Matrix in
-open scoped InnerProductSpace ENNReal in
 theorem _root_.GlobalTheory.Amp.Model.cont_uEmb (k r : ℕ) :
     Continuous fun x : _root_.GlobalTheory.Amp.UT r → ℂ =>
       _root_.GlobalTheory.Amp.uEmb k r (_root_.GlobalTheory.Amp.upper x) := by
@@ -75,8 +73,6 @@ theorem _root_.GlobalTheory.Amp.Model.cont_uEmb (k r : ℕ) :
   · exact continuous_const
   · exact continuous_const
 
-open MeasureTheory Matrix in
-open scoped InnerProductSpace ENNReal in
 theorem _root_.GlobalTheory.Amp.Model.cont_pOf (k r : ℕ) :
     Continuous (_root_.GlobalTheory.Amp.pOf k r) := by
   have herm : ∀ {f g : _root_.GlobalTheory.Amp.PPar k r → Fin (k + 1) → ℂ},
@@ -102,8 +98,6 @@ theorem _root_.GlobalTheory.Amp.Model.cont_pOf (k r : ℕ) :
   · exact (hS _ _).sub ((herm (hB _) (hB _)).div_const _)
   · exact continuous_const
 
-open MeasureTheory Matrix in
-open scoped InnerProductSpace ENNReal in
 theorem _root_.GlobalTheory.Amp.Model.cont_lebN_map (k r : ℕ) :
     Continuous fun q : (_root_.GlobalTheory.Amp.UT r → ℂ) × _root_.GlobalTheory.Amp.PPar k r =>
       (Matrix.of.symm (_root_.GlobalTheory.Amp.uEmb k r (_root_.GlobalTheory.Amp.upper q.1) *

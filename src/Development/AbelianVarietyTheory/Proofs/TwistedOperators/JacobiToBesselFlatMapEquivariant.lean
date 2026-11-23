@@ -199,7 +199,6 @@ end GlobalTheory.AscFlatEquiFB
 
 namespace GlobalTheory.AscFlatEquiFB
 
-open GlobalTheory.Unf.FB
 
 variable {D : D7}
 

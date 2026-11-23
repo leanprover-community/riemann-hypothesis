@@ -93,7 +93,6 @@ end Local
 
 section LocalLevel
 
-open Formalism.UG GlobalTheory.LatticeStabLocal Formalism.L2.Herm
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
   (hc : CMData F E) (S : HSpace E) (gp : Fin 2 → ℕ) (Λ : Submodule (𝓞 E) (Fin S.rank → E))

@@ -125,7 +125,6 @@ end GlobalTheory.GdegMetric
 
 namespace GlobalTheory.GdegMetric
 
-open MvPolynomial HermLB
 
 theorem gdeg_up : GlobalTheory.Published.ArCalc → ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k)
     (D : ℕ), IsArithVar p D → ∀ (L : HermLB p) (u : SmFn p), gdeg (up L u) D = gdeg L D := by

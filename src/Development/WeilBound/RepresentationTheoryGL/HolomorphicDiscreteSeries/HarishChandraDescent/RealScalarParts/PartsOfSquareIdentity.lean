@@ -91,7 +91,6 @@ end PositivityTheory.RgHe3.RealScalarQuadraticForm
 
 namespace PositivityTheory.RgHe3
 
-open ReciprocityTheory.ChartRestriction.DS
 
 theorem parts_of_square_identity : SqId → Parts := by
   intro hsq n ε M _ _ E hG hU μ ν κ S y hg hq

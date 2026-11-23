@@ -149,6 +149,5 @@ end GlobalTheory.UPel.TensorTorsionNsmul
 
 namespace GlobalTheory.UPel
 
-open scoped TensorProduct
 
 end GlobalTheory.UPel

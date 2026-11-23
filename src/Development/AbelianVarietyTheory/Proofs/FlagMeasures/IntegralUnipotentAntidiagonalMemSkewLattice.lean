@@ -70,8 +70,6 @@ section Field
 
 variable {E : Type} [Field E] [NumberField E]
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors Pointwise in
 variable {E : Type} [Field E] [NumberField E] in
 private lemma algEquiv_map_mem_one_fractionalIdeal {E : Type} [Field E] [NumberField E] (t : E ≃ₐ[ℚ] E) {x : E}
     (hx : x ∈ (1 : FractionalIdeal (𝓞 E)⁰ E)) : t x ∈ (1 : FractionalIdeal (𝓞 E)⁰ E) := by
@@ -80,8 +78,6 @@ private lemma algEquiv_map_mem_one_fractionalIdeal {E : Type} [Field E] [NumberF
     (y.isIntegral_coe).map (t.toAlgHom.restrictScalars ℤ)
   exact (FractionalIdeal.mem_one_iff _).2 ⟨⟨_, hint⟩, rfl⟩
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors Pointwise in
 variable {E : Type} [Field E] [NumberField E] in
 private lemma trace_map_mul_eq_trace_mul_map_of_involutive {E : Type} [Field E] [NumberField E] (t : E ≃ₐ[ℚ] E)
     (ht : ∀ x, t (t x) = x) (y a : E) :
@@ -89,8 +85,6 @@ private lemma trace_map_mul_eq_trace_mul_map_of_involutive {E : Type} [Field E] 
   have h : t y * a = t (y * t a) := by rw [map_mul, ht]
   rw [h, Algebra.trace_eq_of_algEquiv]
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors Pointwise in
 variable {E : Type} [Field E] [NumberField E] in
 private lemma map_mem_dual_one_of_involutive {E : Type} [Field E] [NumberField E] (t : E ≃ₐ[ℚ] E)
     (ht : ∀ x, t (t x) = x) {y : E}
@@ -102,8 +96,6 @@ private lemma map_mem_dual_one_of_involutive {E : Type} [Field E] [NumberField E
   have := hy (t a) (algEquiv_map_mem_one_fractionalIdeal t ha)
   simpa [Algebra.traceForm_apply, trace_map_mul_eq_trace_mul_map_of_involutive t ht] using this
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors Pointwise in
 variable {E : Type} [Field E] [NumberField E] in
 private lemma map_mem_differentIdeal_of_involutive {E : Type} [Field E] [NumberField E] (t : E ≃ₐ[ℚ] E)
     (ht : ∀ x, t (t x) = x) {x : E}
@@ -117,8 +109,6 @@ private lemma map_mem_differentIdeal_of_involutive {E : Type} [Field E] [NumberF
   have h1 := algEquiv_map_mem_one_fractionalIdeal t (hx (t y) (map_mem_dual_one_of_involutive t ht hy))
   rwa [map_mul, ht] at h1
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors Pointwise in
 variable {E : Type} [Field E] [NumberField E] in
 private lemma map_mem_differentIdeal_pow_of_involutive {E : Type} [Field E] [NumberField E] (t : E ≃ₐ[ℚ] E)
     (ht : ∀ x, t (t x) = x) (m : ℕ) {x : E}
@@ -137,8 +127,6 @@ private lemma map_mem_differentIdeal_pow_of_involutive {E : Type} [Field E] [Num
       exact Submodule.add_mem _ ha hb
 
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors Pointwise in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.SnMass.VolN.IntG.mem_dInv_two_mul (t : E ≃ₐ[ℚ] E) (ht : ∀ x, t (t x) = x) (m : ℕ) (c : E)
     (h : ∀ x ∈ ((differentIdeal ℤ (𝓞 E) : FractionalIdeal (𝓞 E)⁰ E)) ^ m,
@@ -168,8 +156,6 @@ variable {E : Type} [Field E]
 
 end Place
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors Pointwise in
 variable {E : Type} [Field E] in
 private lemma modelEntry_eq_sq_mul_pairing_lemma_6 (σ : E →+* E) {k r : ℕ}
     (J γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) E)
@@ -214,8 +200,6 @@ private lemma modelEntry_eq_sq_mul_pairing_lemma_6 (σ : E →+* E) {k r : ℕ}
   field_simp
 
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors Pointwise in
 theorem _root_.GlobalTheory.SnMass.VolN.IntG.antidiag_mem_skewLat (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (σ : E →ₐ[F] E) (k r : ℕ) (J : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) E)
     (Λ : Submodule (𝓞 E) (Fin (2 * r + k + 1) → E)) (P : Matrix (Fin (2 * r + k + 1)) (Fin (r + 1)) E)

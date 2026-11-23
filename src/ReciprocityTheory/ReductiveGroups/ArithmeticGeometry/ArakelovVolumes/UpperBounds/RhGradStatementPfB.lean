@@ -124,8 +124,6 @@ end ReciprocityTheory.ChartRestriction.G.AR.Up.RgC
 
 namespace ReciprocityTheory.ChartRestriction.G.AR.Up.RgD
 
-open Matrix Topology Filter
-open scoped ComplexOrder Matrix ContDiff
 open ReciprocityTheory.L2DbarEstimates ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Up.ExhA ReciprocityTheory.ChartRestriction.G.AR.Up.ExhB
   ReciprocityTheory.ChartRestriction.G.AR.Up.ExhC ReciprocityTheory.ChartRestriction.G.AR.Up.ExhD ReciprocityTheory.ChartRestriction.G.AR.Up.RgC
 

@@ -99,10 +99,7 @@ section
 noncomputable section
 
 open MeasureTheory Filter Topology GlobalTheory.Orb GlobalTheory.OpTrace GlobalTheory.AutomorphicL2Unitary
-open Formalism.REAL (UJ KG toM toMK muK)
 open Formalism.MainNotions.S (IsDS)
-open GlobalTheory.HCChar (dsChar torusPt)
-open scoped ComplexConjugate
 
 namespace GlobalTheory.PsCo.Pc1
 
@@ -166,8 +163,6 @@ section
 
 noncomputable section
 
-open MeasureTheory Filter Topology
-open Formalism.REAL (UJ KG toM toMK muK)
 open GlobalTheory.PsCo.Pc1
 
 namespace GlobalTheory.PsCo.Pc3
@@ -242,9 +237,7 @@ section
 
 noncomputable section
 
-open MeasureTheory Filter Topology GlobalTheory.Orb GlobalTheory.OpTrace GlobalTheory.AutomorphicL2Unitary
 open Formalism.REAL (UJ KG toM toMK muK expG inG)
-open GlobalTheory.PsCo.Pc1
 open scoped InnerProductSpace
 
 namespace GlobalTheory.PsCo.Pc3

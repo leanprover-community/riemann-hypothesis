@@ -153,9 +153,7 @@ end PositivityTheory.ThKCT.So
 
 namespace PositivityTheory.ThKCT
 
-open NumberField IsDedekindDomain Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 open PositivityTheory.ThKOwn.KPol So
-open scoped TensorProduct Classical Matrix
 
 theorem kFinData_of (hS : StabEx) : KFinData := by
   intro F E _ _ _ _ _ σ B n d X W M χX χW om r s r' s' hP K hK Φ hΦ

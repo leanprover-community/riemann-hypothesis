@@ -110,7 +110,6 @@ end SlopeTestRemainingChoices
 
 section Down
 
-open GlobalTheory.Published.AbelianDeRham
 
 variable {K L : Type} [Field K] [Field L] [Algebra K L] {A : Over (Sp K)} [GrpObj A]
   {A' : Over (Sp L)} [GrpObj A'] {φ : A'.left ⟶ A.left}

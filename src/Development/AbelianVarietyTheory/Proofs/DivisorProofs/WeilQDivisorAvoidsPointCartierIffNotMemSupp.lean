@@ -100,7 +100,6 @@ private lemma exists_coheight_one_generalization_not_unitAt {X : Scheme.{0}} [Is
     exact_mod_cast hdim
 
 
-open CategoryTheory AlgebraicGeometry TopologicalSpace in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.PairStep.off_qWeil_iff_notMem_supp : ∀ (X : Scheme.{0}) [IsIntegral X]
     [IsLocallyNoetherian X] (D₀ : _root_.GlobalTheory.Cartier.CartierDiv X) (m : ℕ) (z : X),

@@ -56,11 +56,9 @@ section Alg
 
 end Alg
 
-section L2
 
 variable {α : Type*} [MeasurableSpace α] {ν : Measure α}
 
-end L2
 
 section Sob
 

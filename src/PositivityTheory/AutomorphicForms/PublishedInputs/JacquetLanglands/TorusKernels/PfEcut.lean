@@ -108,7 +108,6 @@ theorem tsum_le_fiber {G Ω : Type} (φ : G → Ω) (w : Ω → ℝ≥0∞) (K :
 end UpperTheory.Esk.TruncationKernelLemmas
 
 open UpperTheory.Esk in
-open UpperTheory.Esk in
 theorem UpperTheory.Esk.pf_Ecut : UpperTheory.Esk.B1b → UpperTheory.Esk.B1c → UpperTheory.Esk.C2 → UpperTheory.Esk.E0a → UpperTheory.Esk.E0d → UpperTheory.Esk.KapSum → UpperTheory.Esk.Ecut := by
   classical
   intro _ hB hC hE _ hK F I Gf _ _ _ D hax

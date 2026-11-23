@@ -97,12 +97,10 @@ section Cut
 
 open TensorProduct Formalism.BasicNotions.Rows
 
-section CutTensor
 
 variable {O R W : Type} [CommRing O] [CommRing R] [Algebra O R] [AddCommGroup W] [Module O W] [Module R W]
   [IsScalarTower O R W]
 
-end CutTensor
 
 section OForm
 
@@ -137,10 +135,8 @@ theorem ranks_r_sym (D : Formalism.BasicNotions.D7) : D.R.r = D.R.k + 2 * D.R.rS
 
 end Fam
 
-section Inhabit
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-end Inhabit
 
 end Formalism.L2.DIV

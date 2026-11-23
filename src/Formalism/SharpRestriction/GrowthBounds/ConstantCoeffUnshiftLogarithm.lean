@@ -213,7 +213,6 @@ theorem col_right (Y : FBChart C V O dd) {τ : Type} (n : ℕ) (a : ℕ → Fin 
     (hsum : s = VP.sumL Y ((List.range n).map a)) :
     IntS V (mvExp (∑ k ∈ Finset.range n, VP.hAt Y c (a k) - VP.hAt Y c s)) ∧
       MvPowerSeries.constantCoeff (∑ k ∈ Finset.range n, VP.hAt Y c (a k) - VP.hAt Y c s) = 0 := by
-  open VP in
   have biadd :
     ∀ l : List (Fin dd → MvPowerSeries τ C), (∀ a ∈ l, GoodPt V a) →
       ∃ U : MvPowerSeries τ C, IsIU V U ∧ mvExp (hAt Y c (sumL Y l)) * U = (l.map fun a => mvExp (hAt Y c a)).prod := by

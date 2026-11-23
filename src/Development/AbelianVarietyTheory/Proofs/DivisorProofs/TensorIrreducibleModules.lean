@@ -171,7 +171,6 @@ end GlobalTheory.TensIrr
 
 namespace GlobalTheory.TensIrr
 
-open Formalism.BasicNotions.TH GlobalTheory.RealLift
 open scoped Matrix
 
 section Lin2

@@ -191,7 +191,6 @@ end Gal
 
 end UpperTheory.V.Z.Sym.W.RetractionModules
 
-open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial ValuativeRel
 open GlobalTheory.CuspRep GlobalTheory.GalOfCusp GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.SmGL UpperTheory.V.Af
 open UpperTheory.V.Sd UpperTheory.V.Z.Sym.W.RetractionModules
 

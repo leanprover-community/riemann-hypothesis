@@ -56,7 +56,6 @@ private theorem UpperTheory.V.Af.Smo.inner_closure {H : Type*} [NormedAddCommGro
   exact (Submodule.mem_orthogonal _ _).1
     (Submodule.topologicalClosure_minimal T h1 (Submodule.isClosed_orthogonal _) hy) x hx
 
-open CuspidalSpectrum RightCosetSpace in
 theorem UpperTheory.V.Af.Smo.orthTr :
     UpperTheory.V.Af.Smo.OrthTr := by
   intro E _ _ n μ _ U U' hU hU' sU sU' h φ hφ φ' hφ' g g'

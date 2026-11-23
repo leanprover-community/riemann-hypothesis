@@ -268,7 +268,6 @@ end Alg
 
 section Tens
 
-open MvPolynomial
 open scoped TensorProduct
 
 variable (W N : Type) [Fintype W] [DecidableEq W]
@@ -1087,7 +1086,6 @@ end Main
 
 end Fock
 
-open scoped TensorProduct Matrix Classical
 open Fock NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.BasicNotions.TH GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.RealLift
 
 theorem fockEx : GlobalTheory.RealLift.DerEx → GlobalTheory.RealLift.FockEx := by

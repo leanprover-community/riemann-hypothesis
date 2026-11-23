@@ -238,7 +238,6 @@ end GlobalTheory.GoodMetric.RepBundle
 
 namespace GlobalTheory.GoodMetric.RepBundle
 
-open Filter
 
 variable {ι : Type} {m : ι → ℕ} {F : Type} [Field F] {X : Var F} {σ : F →+* ℂ} (ρ : PolyRep m)
 

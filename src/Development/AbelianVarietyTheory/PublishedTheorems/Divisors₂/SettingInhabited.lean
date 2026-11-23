@@ -94,7 +94,6 @@ private theorem exists_zmod_mul_of_pow_eq_pow_pred_mul {R : Type*} [CommRing R] 
   omega
 
 
-open WittVector Ideal CategoryTheory Opposite Function in
 variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
   [IsAdicComplete (span {(p : O)}) O] in
 theorem _root_.GlobalTheory.DieudonneTest.eigen_step [IsDomain (PreTilt O p)] {ε : PreTilt O p}

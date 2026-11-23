@@ -52,7 +52,6 @@ private theorem fpd_prec_cofinal {R : Type} [CommRing R] {I J : Ideal R} (hJI : 
   have h2 := hf (m := n) (n := (e + 1) * n) (Nat.le_mul_of_pos_left n (Nat.succ_pos e))
   simpa using (I ^ n).add_mem h2 (Ideal.pow_right_mono hJI n h1)⟩
 
-open IsLocalRing in
 private theorem fpd_complete {R R' : Type} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]
     [IsAdicComplete (maximalIdeal R) R] [CommRing R'] [Algebra R R'] [Module.Finite R R']
     [IsLocalRing R'] : IsAdicComplete (maximalIdeal R') R' := by
@@ -78,7 +77,6 @@ private theorem fpd_complete {R R' : Type} [CommRing R] [IsLocalRing R] [IsNoeth
     fpd_prec_cofinal hle he (IsPrecomplete.map_algebraMap_iff.2 (fpd_prec_finite _))
   exact { toIsHausdorff := inferInstance, toIsPrecomplete := hP }
 
-open IsLocalRing in
 private theorem fpd_ext {A k k₁ : Type} [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
     [IsAdicComplete (maximalIdeal A) A] [Finite (ResidueField A)] [Field k] [Field k₁] [Finite k₁]
     (f : k →+* k₁) (j : k →+* A) :

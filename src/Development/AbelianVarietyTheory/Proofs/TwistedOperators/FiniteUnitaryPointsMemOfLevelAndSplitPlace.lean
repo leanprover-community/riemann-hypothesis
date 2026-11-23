@@ -226,7 +226,6 @@ section Split
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.WeilParts IsDedekindDomain NumberField
 open GlobalTheory.IdemModTwo GlobalTheory.Member GlobalTheory.UnRep GlobalTheory.UnitarySplit GlobalTheory.SplitCharTrivial
-open scoped TensorProduct
 
 variable {D : D7} {V : HSp D} (H : Subgroup (GA D V))
 
@@ -285,9 +284,6 @@ end Split
 
 section Key
 
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.WeilParts IsDedekindDomain NumberField
-open GlobalTheory.IdemModTwo GlobalTheory.Member GlobalTheory.UnRep GlobalTheory.UnitarySplit GlobalTheory.SplitCharTrivial
-open scoped TensorProduct
 
 variable {D : D7} {V : HSp D}
 
@@ -326,9 +322,6 @@ end Key
 
 section Reflection
 
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.WeilParts IsDedekindDomain NumberField
-open GlobalTheory.IdemModTwo GlobalTheory.Member GlobalTheory.UnRep GlobalTheory.UnitarySplit GlobalTheory.SplitCharTrivial
-open scoped TensorProduct
 
 variable {D : D7} {V : HSp D} (H : Subgroup (GA D V))
 
@@ -407,9 +400,6 @@ end Reflection
 
 section Rat
 
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum GlobalTheory.WeilParts IsDedekindDomain NumberField
-open GlobalTheory.IdemModTwo GlobalTheory.Member GlobalTheory.UnRep GlobalTheory.UnitarySplit GlobalTheory.SplitCharTrivial
-open scoped TensorProduct
 
 variable {D : D7} {V : HSp D} (H : Subgroup (GA D V))
 

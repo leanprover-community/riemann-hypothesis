@@ -118,7 +118,6 @@ theorem scale_movFn_apply (S : GridChoice W U) {t : T} (j : ℕ) (hj : j + 1 < D
 end GlobalTheory.RowVertexInv
 
 namespace GlobalTheory.RowVertexInv
-open GlobalTheory.SplitFlip
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
 
@@ -176,7 +175,6 @@ theorem sum_fn_of_half (S : GridChoice W U) {t : T} {Φ : G.Datum} {β : CosFam 
 end GlobalTheory.RowVertexInv
 
 namespace GlobalTheory.RowVertexInv
-open GlobalTheory.SplitFlip
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
 

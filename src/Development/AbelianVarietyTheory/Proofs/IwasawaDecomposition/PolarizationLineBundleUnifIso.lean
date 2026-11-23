@@ -101,7 +101,6 @@ end GlobalTheory.SquareOfGeneric
 
 namespace GlobalTheory.SquareOfGeneric
 
-open MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.CechPic
 
 theorem diag_lam_eq (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (G : Over (Sp R)) [GrpObj G]
     [IsCommMonObj G] (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R)))

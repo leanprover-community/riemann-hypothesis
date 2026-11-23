@@ -114,7 +114,6 @@ end GlobalTheory.MomSetup
 
 namespace GlobalTheory.MomSetup
 
-open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 variable {D : D7} {N N' : ℕ} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 
@@ -190,7 +189,6 @@ end GlobalTheory.MomSetup
 
 namespace GlobalTheory.MomSetup
 
-open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 variable {D : D7} {N N' : ℕ} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 
@@ -286,7 +284,6 @@ end GlobalTheory.MomSetup
 
 namespace GlobalTheory.MomSetup
 
-open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 theorem periodSetup : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (B : Base D cc δ), IsCurveIdeal D cc → IsDiscriminantTwelfthRootOfIdealLattice D cc δ → ∀ (N N' : ℕ) (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)), admitted D N N' L L' → ∃ (g : ℕ) (S : JMB.Setup g) (e : VC D N N' ≃L[ℂ] (Fin g → ℂ)), S.d = D.host.d ∧ S.Ok ∧ (∀ x, e x ∈ S.La ↔ x ∈ La D B.tor L L') ∧ (∀ x y, JMB.hf S.Hm (e x) (e y) = Hf D B.tor x y) ∧ (∀ x y : Matrix (Fin N') (Fin N) D.host.E, JMB.beta S.d S.Hm (e (δ • embV D B.tor x)) (e (δ • embV D B.tor y)) = D.host.φ₀ ((hYY D x y : D.host.K) : D.host.E) / (Ideal.absNorm cc : ℂ)) ∧ (∀ x ∈ La D B.tor L L', ∃ (n : ℕ) (A : Matrix (Fin N') (Fin N) D.host.E), 0 < n ∧ x = δ • embV D B.tor A ∧ (n : D.host.E) • A ∈ YYl D L L') ∧ ∀ (q r : ℕ) (b : Fin r → Matrix (Fin N') (Fin N) D.host.E), Nat.Coprime (Ideal.absNorm cc) q → NNBasis D B.tor δ q L L' b → JMB.Setup.NNBasis S q fun i => e (δ • embV D B.tor (b i)) := by
   intro D cc δ B hcc hδ N N' L L' hA

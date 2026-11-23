@@ -260,8 +260,6 @@ end Frame
 
 section Main
 
-open PositivityTheory.RgTw (Mat G)
-open PositivityTheory.RgBcC (nilSet)
 
 variable {n : ℕ}
 

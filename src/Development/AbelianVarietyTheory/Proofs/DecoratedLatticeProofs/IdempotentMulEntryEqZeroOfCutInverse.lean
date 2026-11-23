@@ -107,7 +107,6 @@ theorem eFin_of_placeIdem {v : Pl D} {ε : AF D.host.F} (h : IsPlaceIdem D v ε)
   · subst hu; rw [h1, evalV_single_same]
   · rw [h2 u hu, evalV_single_ne _ hu]
 
-open GlobalTheory.LocWeil.PlaceIdem in
 theorem eFin_idem (v : Pl D) : eFin D.host.F v * eFin D.host.F v = eFin D.host.F v := by
   refine Prod.ext (mul_zero _) ?_
   change singleV D.host.F v 1 * singleV D.host.F v 1 = singleV D.host.F v 1
@@ -123,7 +122,6 @@ theorem compAt_eq (u : Pl D) (y : AE D) : compAt D u y = Algebra.TensorProduct.m
 theorem baseAdele_ext_infinite_finite {a b : AF D.host.F} (h1 : fstA D.host.F a = fstA D.host.F b) (h2 : sndA D.host.F a = sndA D.host.F b) :
     a = b := Prod.ext h1 h2
 
-open GlobalTheory.LocWeil.PlaceIdem in
 theorem c_mul {W : Type} [Fintype W] (v : W → Pl D) (hv : Function.Injective v) (a : AF D.host.F)
     (ha : ∀ u, u ∉ Set.range v → evalV D.host.F u (sndA D.host.F a) = 0) :
     (1 - pairA D.host.F 1 0 - ∑ w, eFin D.host.F (v w)) * a = 0 := by
@@ -162,7 +160,6 @@ theorem key_gen {F E A ι : Type} [Field F] [CommRing E] [Algebra F E] [CommRing
   rw [← Algebra.smul_def, map_smul, Finsupp.smul_apply, smul_eq_mul, map_zero, Finsupp.zero_apply]
   exact hy k
 
-open GlobalTheory.LocWeil.PlaceIdem in
 theorem key {W : Type} [Fintype W] (v : W → Pl D) (hv : Function.Injective v) (y : AE D)
     (hy : ∀ u, u ∉ Set.range v → compAt D u y = 0) :
     algebraMap (AF D.host.F) (AE D) (1 - pairA D.host.F 1 0 - ∑ w, eFin D.host.F (v w)) * y = 0 := by
@@ -210,7 +207,6 @@ theorem mt_list_prod (V : HSp D) {W : Type} (h : W → GA D V) (E : W → AE D)
 
 
 
-open GlobalTheory.LocWeil.PlaceIdem in
 theorem prod_of_trivOff : ∀ (D : D7) (V : HSp D) (W : Type) [Fintype W] [DecidableEq W] (v : W → Pl D) (e : W → AE D),
     Function.Injective v → (∀ w, IsSplitIdem D (e w) ∧ ∃ ε, IsPlaceIdem D (v w) ε ∧
       e w + cA D (e w) = algebraMap (AF D.host.F) (AE D) ε) →

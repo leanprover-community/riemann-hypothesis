@@ -65,7 +65,6 @@ private lemma mulVec_column_of_orthogonal_idempotents {R J C : Type} [CommRing R
   · rfl
 
 
-open Module in
 theorem _root_.GlobalTheory.ZH.exists_basis_adapted_to_idempotents :
     ∀ (O : Type) [CommRing O] [IsLocalRing O] (J C : Type) [Fintype J] [DecidableEq J] [Fintype C]
       [DecidableEq C] (e : C → Matrix J J O),

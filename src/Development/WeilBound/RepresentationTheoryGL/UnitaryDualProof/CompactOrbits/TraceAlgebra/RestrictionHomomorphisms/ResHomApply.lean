@@ -96,7 +96,6 @@ end PositivityTheory.RgUd.T.Alg.Iso2
 
 namespace PositivityTheory.RgUd.T.Alg.Iso2
 
-open Module
 
 variable {k : Type} [Field k] [CharZero k]
 

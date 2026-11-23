@@ -119,7 +119,6 @@ end GlobalTheory.GrowthOfInvariants
 
 namespace GlobalTheory.GrowthOfInvariants
 
-open Pointwise
 
 theorem exists_smul_mem {O LL V : Type} [CommRing O] [IsDomain O] [Field LL] [Algebra O LL]
     [IsFractionRing O LL] [AddCommGroup V] [Module LL V] [Module O V] [IsScalarTower O LL V]
@@ -187,7 +186,6 @@ end GlobalTheory.GrowthOfInvariants
 
 namespace GlobalTheory.GrowthOfInvariants
 
-open Pointwise
 
 theorem growth_core {G LL O V : Type} [Group G] [Field LL] [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] [Algebra O LL] [IsFractionRing O LL] [AddCommGroup V]

@@ -68,7 +68,6 @@ variable {R S B : Type} [CommRing R] [CommRing S] [CommRing B] [Algebra R S] [Al
   simp [_root_.GlobalTheory.DiscrJacobian.mu]
 
 
-open scoped TensorProduct in
 variable {R S B : Type} [CommRing R] [CommRing S] [CommRing B] [Algebra R S] [Algebra S B]
   [Algebra R B] [IsScalarTower R S B] in
 theorem _root_.GlobalTheory.DiscrJacobian.mem_span_of_mu_eq_zero {ι : Type} [Fintype ι] [Module.Finite R B]
@@ -163,14 +162,12 @@ theorem _root_.GlobalTheory.DiscrJacobian.mem_span_of_mu_eq_zero {ι : Type} [Fi
 noncomputable def der (D : Derivation R S S) : S ⊗[R] B →ₗ[R] B :=
   ((mu R S B).toLinearMap.restrictScalars R) ∘ₗ D.toLinearMap.rTensor B
 
-open scoped TensorProduct in
 variable {R S B : Type} [CommRing R] [CommRing S] [CommRing B] [Algebra R S] [Algebra S B]
   [Algebra R B] [IsScalarTower R S B] in
 @[simp] theorem _root_.GlobalTheory.DiscrJacobian.der_tmul (D : Derivation R S S) (s : S) (w : B) :
     _root_.GlobalTheory.DiscrJacobian.der D (s ⊗ₜ[R] w) = algebraMap S B (D s) * w := by
   simp [_root_.GlobalTheory.DiscrJacobian.der]
 
-open scoped TensorProduct in
 variable {R S B : Type} [CommRing R] [CommRing S] [CommRing B] [Algebra R S] [Algebra S B]
   [Algebra R B] [IsScalarTower R S B] in
 theorem _root_.GlobalTheory.DiscrJacobian.der_mul (D : Derivation R S S) (y z : S ⊗[R] B) :
@@ -200,7 +197,6 @@ variable {R B C : Type} [CommRing R] [CommRing B] [CommRing C] [Algebra R B] [Al
 
 
 
-open scoped TensorProduct in
 variable {R B C : Type} [CommRing R] [CommRing B] [CommRing C] [Algebra R B] [Algebra R C] in
 open IsLocalRing in
 theorem _root_.GlobalTheory.DiscrJacobian.isUnit_det_of_productMap_ne_zero [IsLocalRing R]
@@ -282,7 +278,6 @@ section Series
 open MvPowerSeries IsLocalRing
 
 open MvPowerSeries IsLocalRing in
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.DiscrJacobian.exists_eq_C_add_sum {R : Type} [CommRing R] {g : ℕ}
     (s : MvPowerSeries (Fin g) R) :
     ∃ u : Fin g → MvPowerSeries (Fin g) R, s = C (constantCoeff s) + ∑ j, X j * u j := by
@@ -299,8 +294,6 @@ theorem _root_.GlobalTheory.DiscrJacobian.exists_eq_C_add_sum {R : Type} [CommRi
   rw [← sub_eq_iff_eq_add', ← hc]
   simp [mul_comm]
 
-open MvPowerSeries IsLocalRing in
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.DiscrJacobian.X_mem_jacobson {R : Type} [CommRing R] {σ : Type} (j : σ) :
     (X j : MvPowerSeries σ R) ∈ (⊥ : Ideal (MvPowerSeries σ R)).jacobson := by
   rw [Ideal.mem_jacobson_bot]
@@ -309,8 +302,6 @@ theorem _root_.GlobalTheory.DiscrJacobian.X_mem_jacobson {R : Type} [CommRing R]
   simp
 
 
-open MvPowerSeries IsLocalRing in
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.DiscrJacobian.map_mem_radical {R S B : Type} [CommRing R]
     [IsLocalRing R] [CommRing S] [CommRing B]
     [Algebra R B] [Algebra S B] [Module.Finite R B] (hsurj : Function.Surjective (algebraMap S B))
@@ -332,7 +323,6 @@ theorem _root_.GlobalTheory.DiscrJacobian.map_mem_radical {R S B : Type} [CommRi
   unfold Ideal.jacobson at hx
   exact Ideal.mem_sInf.mp hx ⟨bot_le, hmax⟩
 
-open scoped TensorProduct in
 variable {R S B : Type} [CommRing R] [CommRing S] [CommRing B] [Algebra R S] [Algebra S B]
   [Algebra R B] [IsScalarTower R S B] in
 private theorem tensorMap_det_mul_tmul_sub_eq_zero {g : ℕ} [Module.Finite R B] [Module.FinitePresentation S B]
@@ -367,7 +357,6 @@ private theorem tensorMap_det_mul_tmul_sub_eq_zero {g : ℕ} [Module.Finite R B]
   refine Finset.sum_eq_zero fun l _ => ?_
   rw [mul_left_comm, map_mul, RingHom.mem_ker.mp (hker l), mul_zero]
 
-open scoped TensorProduct in
 variable {R S B : Type} [CommRing R] [CommRing S] [CommRing B] [Algebra R S] [Algebra S B]
   [Algebra R B] [IsScalarTower R S B] in
 private theorem algebraMap_derivation_eq_sum_mu_mul {g : ℕ} (D : Derivation R S S) (x f : Fin g → S)
@@ -383,7 +372,6 @@ private theorem algebraMap_derivation_eq_sum_mu_mul {g : ℕ} (D : Derivation R 
   rw [_root_.GlobalTheory.DiscrJacobian.der_mul, map_sub, map_sub]
   simp
 
-open scoped TensorProduct in
 private theorem norm_sum_mul_eq_discr_mul_det {R B : Type} [CommRing R] [CommRing B] [Algebra R B]
     {d : ℕ} (b : Module.Basis (Fin d) R B) (M : Matrix (Fin d) (Fin d) R)
     (h : ∀ x : B, (∑ i, ∑ j, M i j • TensorProduct.tmul R (b i) (b j)) *
@@ -408,8 +396,6 @@ private theorem norm_sum_mul_eq_discr_mul_det {R B : Type} [CommRing R] [CommRin
     Algebra.discr_def, mul_comm]
 
 
-open MvPowerSeries IsLocalRing in
-open scoped TensorProduct in
 
 theorem _root_.GlobalTheory.DiscrJacobian.associated_discr_norm_jacobian (R : Type) [CommRing R] [IsLocalRing R]
     (g d : ℕ) (f : Fin g → MvPowerSeries (Fin g) R)

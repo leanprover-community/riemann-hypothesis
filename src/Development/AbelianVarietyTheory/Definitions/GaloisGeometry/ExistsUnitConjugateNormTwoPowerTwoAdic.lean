@@ -94,8 +94,6 @@ end
 
 namespace HalfW
 
-open Formalism.L2.Th1.CM (HasCMBy omegaK jInv)
-open Formalism.L2.Th1.F (scalePair)
 
 theorem twist : Twist := by
   intro K _ _ _ W g2 g3 hΔ hD hrel
@@ -179,8 +177,6 @@ end HalfW
 
 section
 
-open Formalism.L2.Th1.CM (HasCMBy omegaK jInv)
-open Formalism.L2.Th1.F (scalePair)
 
 theorem deuringScale_of (hT : Twist) : DeuringScale := by
   intro L ι W hΔ hj
@@ -265,8 +261,6 @@ end
 
 section
 
-open Formalism.L2.Th1.CM (HasCMBy omegaK jInv)
-open Formalism.L2.Th1.F (scalePair)
 
 theorem norm_three_padicComplex_two : ‖(3 : ℂ_[2])‖ = 1 := by
   have h := PadicComplex.norm_extends' (p := 2) ((3:ℕ) : ℚ_[2])

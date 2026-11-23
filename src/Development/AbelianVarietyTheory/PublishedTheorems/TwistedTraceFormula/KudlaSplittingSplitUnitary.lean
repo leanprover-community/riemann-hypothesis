@@ -218,7 +218,6 @@ end GlobalTheory.SplitUnitary
 namespace GlobalTheory.Published
 
 open GlobalTheory.WeilM (UG IsQuad IsHerm ResEtaPow)
-open GlobalTheory.SplitWeil (SB IsSmoothRep nabs)
 open GlobalTheory.SplitUnitary
 
 def KudlaSplittingSplitUnitary : Prop :=

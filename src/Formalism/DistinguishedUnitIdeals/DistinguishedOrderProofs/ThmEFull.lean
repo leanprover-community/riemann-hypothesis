@@ -163,7 +163,6 @@ end Formalism.ExponentWindows.E.Full
 
 namespace Formalism.ExponentWindows.E
 
-open PowerSeries
 
 theorem word_constants_holds : WordConsts := by
   unfold WordConsts

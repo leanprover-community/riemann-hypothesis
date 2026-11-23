@@ -92,7 +92,6 @@ theorem _root_.GlobalTheory.StepData.NormalForm.exists_valuation_eq_zpow {ϖ : k
     simp
   exact ⟨-b.toAdd, φ.injective key⟩
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 private lemma latOf_mul_of_mem_KO' {K : Type} [Field K] [ValuativeRel K]
     [TopologicalSpace K] [IsNonarchimedeanLocalField K] {Y : Type} [Fintype Y] [DecidableEq Y]
@@ -106,7 +105,6 @@ private lemma latOf_mul_of_mem_KO' {K : Type} [Field K] [ValuativeRel K]
     simpa [mul_assoc] using hw.2
 
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem _root_.GlobalTheory.StepData.NormalForm.normalFormModN : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k], _root_.GlobalTheory.IndefiniteRowSideFullHecke.NormalRepresentationLattice.NormalFormModN k := by

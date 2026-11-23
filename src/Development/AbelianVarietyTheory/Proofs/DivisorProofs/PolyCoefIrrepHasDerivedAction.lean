@@ -226,7 +226,6 @@ end GlobalTheory.PsCo.PcEF.PolynomialCoefficientDerivedAction
 
 namespace GlobalTheory.PsCo.PcEF
 
-open ReciprocityTheory.ChartRestriction.DS ReciprocityTheory.ChartRestriction.DS.S7 ReciprocityTheory.ChartRestriction.DS.HW
 
 theorem polyCoefIrrep_hasDerivedAction :
     ∀ (n : ℕ) (ε : Fin n → Bool) (γ : Fin n → ℝ) (W : Type)

@@ -480,7 +480,6 @@ end Down
 
 section Main
 
-open Formalism.MainNotions.LocalTheoryWindows
 
 theorem ppγ_eq (e : ℕ) (JS : Finset ℤ) (f : W.EE) :
     PPγ W e JS f = Polynomial.aeval (γL W) (∏ i ∈ JS.erase 0, fac W e i)

@@ -163,7 +163,6 @@ end Formalism.FourierDecayAlt.P.TLB
 namespace Formalism.FourierDecayAlt.P
 
 open MeasureTheory Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P.TLB
-open scoped ComplexConjugate
 
 theorem lift_of_functions : TL.LiftFns := by
   intro Wp Wq _ _ _ _ _ _ Pa Bs X L hL

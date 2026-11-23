@@ -255,7 +255,6 @@ end GlobalTheory.NestedStab
 
 namespace GlobalTheory.NestedStab
 
-open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl SplitProj IsProjAt IsIdemOf rdA grpCo frCo)
 
 
 

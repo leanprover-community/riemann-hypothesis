@@ -117,7 +117,6 @@ end GlobalTheory.EtProj.RatSpan
 
 namespace GlobalTheory.EtProj.RatSpan
 
-open GlobalTheory.ProjSpace GlobalTheory.ProjFrac
 
 variable {N : ℕ}
 
@@ -135,7 +134,6 @@ end GlobalTheory.EtProj.RatSpan
 
 namespace GlobalTheory.EtProj.RatSpan
 
-open GlobalTheory.ProjSpace GlobalTheory.ProjFrac
 
 variable {N : ℕ}
 
@@ -182,7 +180,6 @@ end GlobalTheory.EtProj.RatSpan
 
 namespace GlobalTheory.EtProj.RatSpan
 
-open GlobalTheory.ProjSpace GlobalTheory.ProjFrac
 
 variable {N : ℕ}
 

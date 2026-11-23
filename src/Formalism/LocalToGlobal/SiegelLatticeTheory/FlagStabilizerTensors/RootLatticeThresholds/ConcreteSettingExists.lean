@@ -37,11 +37,9 @@ namespace Formalism.L2.SG.Pf.Set3
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Witt
 
 variable {D : D7}
 
-end Witt
 
 end Formalism.L2.SG.Pf.Set3
 

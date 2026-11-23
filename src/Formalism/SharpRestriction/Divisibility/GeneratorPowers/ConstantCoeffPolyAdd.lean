@@ -142,7 +142,6 @@ end KAV
 
 namespace KAV
 
-open MvPowerSeries
 
 theorem sum_encP {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {n : ℕ}
     {K S : Type} [CommRing K] [CommRing S] (φ : K →+* S) (P : MvPolynomial (LtN Dw n) K)
@@ -165,7 +164,6 @@ end KAV
 
 namespace KAV
 
-open MvPowerSeries
 
 theorem val_encP {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {n : ℕ}
     {S : Type} [CommRing S] (G : MvPowerSeries (Fin n × Fin (dL Dw)) S) (m : LtN Dw n →₀ ℕ) :
@@ -287,7 +285,6 @@ theorem killAddValCol_of (h : TB.KillAddSt) : KillAddValColSt := by
 
 namespace KAV
 
-open MvPowerSeries
 
 theorem colEmb_inj {n d : ℕ} (b : Fin n) : Function.Injective (fun p : Fin 1 × Fin d => ((b, p.2) : Fin n × Fin d)) :=
   fun p q h => by

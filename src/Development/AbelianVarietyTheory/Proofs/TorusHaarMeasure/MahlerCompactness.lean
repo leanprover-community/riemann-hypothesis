@@ -94,11 +94,7 @@ theorem gram_stab {γ : Matrix (Fin r) (Fin r) E}
     intro c; funext i; simp [col, Matrix.mul_apply, mulVec, dotProduct]
   rw [hc, hc, hermC_stab X hγ]
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
-open Complex in
 theorem _root_.GlobalTheory.FlagMahler.inv_lact (γ : GL (Fin r) E) (τ : E →+* ℂ) (Y : Matrix (Fin r) (Fin r) ℂ)
     (v : Fin r → E) :
     ((γ : Matrix (Fin r) (Fin r) E).map τ * Y)⁻¹ *ᵥ _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ v =
@@ -148,11 +144,7 @@ theorem entry_bound {τ : E →+* ℂ} {Y : Matrix (Fin r) (Fin r) ℂ} (hY : Y.
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [norm_mul, hq, Complex.norm_conj, mul_comm]
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
-open Complex in
 theorem _root_.GlobalTheory.FlagMahler.comp_le_Qy (y : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (τ : X.Ψ)
     (p : Fin r → E) (b : Fin r) :
     X.c τ * ‖((y τ)⁻¹ *ᵥ _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ.1 p) b‖ ^ 2 ≤ _root_.ReciprocityTheory.ChartRestriction.G.FD.QuadraticLatticeForms.Qy X y p := by
@@ -168,11 +160,7 @@ theorem _root_.GlobalTheory.FlagMahler.comp_le_Qy (y : X.Ψ → Matrix (Fin r) (
           (fun σ _ => mul_nonneg (_root_.ReciprocityTheory.ChartRestriction.G.FD.QuadraticLatticeForms.c_pos X σ).le (Finset.sum_nonneg fun _ _ => sq_nonneg _))
           (Finset.mem_univ τ)
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
-open Complex in
 theorem _root_.GlobalTheory.FlagMahler.comb_bound (y : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (τ : X.Ψ)
     {ι : Type} [Fintype ι] (q : ι → ℚ) (f : ι → Fin r → E) (b : Fin r) :
     ‖((y τ)⁻¹ *ᵥ _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ.1 (∑ i, q i • f i)) b‖ ≤
@@ -196,9 +184,6 @@ def Kset (R : ℝ) : Set (Frame X.Ψ r) :=
   {w | ∀ τ : X.Ψ, gram τ.1 X.Gm (mat w τ) = diagonal (fun a : Fin r => ((sgn X.p0 (a : ℕ) : ℝ) : ℂ)) ∧
     ∀ a c, ‖w τ a c‖ ≤ R}
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.FlagMahler.Kset_compact (R : ℝ) :
     IsCompact (_root_.GlobalTheory.FlagMahler.Kset X R) := by
@@ -269,9 +254,6 @@ theorem norm_herm_le {y : X.Ψ → Matrix (Fin r) (Fin r) ℂ} (hy : IntegralBas
     _ = _ := by simp
 
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.FlagMahler.Qy_smul_le (y : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (α : E) (v : Fin r → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.QuadraticLatticeForms.Qy X y (α • v) ≤ (∑ σ : X.Ψ, ‖σ.1 α‖ ^ 2) * _root_.ReciprocityTheory.ChartRestriction.G.FD.QuadraticLatticeForms.Qy X y v := by
@@ -315,9 +297,6 @@ theorem finite_bounded (B : X.Ψ → ℝ) :
     simp only [ComplexEmbedding.conjugate_coe_eq, Complex.norm_conj] at h4
     exact h4
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.FlagMahler.finite_int_sq (D : ℝ) : {n : ℤ | (n : ℝ) ^ 2 ≤ D}.Finite := by
   refine (Set.finite_Icc (-(⌈|D|⌉ + 1)) (⌈|D|⌉ + 1)).subset fun n hn => ?_
@@ -351,9 +330,6 @@ noncomputable def bound {ι : Type} [Fintype ι] (C : ℝ) (g : Basis ι ℤ X.�
     ∑ i, ‖(((RealPlaceEmbeddings.qb X g).repr ((s : Matrix (Fin r) (Fin r) E) *ᵥ Pi.single k 1) i : ℚ) : ℂ)‖ *
       (1 + |C| / X.c τ)
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem finite_setOf_reduced_bounded_invariants (C m : ℝ) (hm : 0 < m) :
     {t | ∃ f : Basis (Fin (finrank ℤ X.Λ)) ℤ X.Λ, _root_.ReciprocityTheory.ChartRestriction.G.FD.HermitianLatticeMaps.ty X f = t ∧
@@ -416,9 +392,6 @@ private theorem finite_setOf_reduced_bounded_invariants (C m : ℝ) (hm : 0 < m)
     exact (_root_.GlobalTheory.FlagMahler.Qy_smul_le X y _ _).trans (mul_le_mul_of_nonneg_left
       ((hfC i).trans (le_abs_self C)) (Finset.sum_nonneg fun _ _ => sq_nonneg _))
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem gram_eq_transpose_mul_map (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E)
     (Y : Matrix (Fin r) (Fin r) ℂ) :
@@ -428,9 +401,6 @@ private theorem gram_eq_transpose_mul_map (τ : E →+* ℂ) (G : Matrix (Fin r)
     Matrix.map_apply, Finset.sum_mul]
   rw [Finset.sum_comm]
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem kset_subset_dom (R : ℝ) :
     _root_.GlobalTheory.FlagMahler.Kset X R ⊆ X.dom := by
@@ -452,9 +422,6 @@ private theorem kset_subset_dom (R : ℝ) :
     rw [← Complex.ofReal_prod, Complex.ofReal_re, ← Finset.prod_mul_distrib]
     exact Finset.prod_pos fun a _ => mul_self_pos.mpr (hs _)
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem gram_map_mul_of_isUStab {γ : GL (Fin r) E} (hγ : _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab X.Gm X.Λ γ)
     (τ : E →+* ℂ) (Y : Matrix (Fin r) (Fin r) ℂ) :
@@ -481,9 +448,6 @@ private theorem gram_map_mul_of_isUStab {γ : GL (Fin r) E} (hγ : _root_.Recipr
         simp only [Matrix.mul_assoc]
     _ = _ := by rw [hG]
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem norm_entry_le_of_gram_eq_diagonal_sgn (τ : X.Ψ) (W : Matrix (Fin r) (Fin r) ℂ)
     (hW : _root_.ReciprocityTheory.ChartRestriction.G.FD.gram τ.1 X.Gm W = diagonal (fun a : Fin r => ((_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 (a : ℕ) : ℝ) : ℂ)))
@@ -532,9 +496,6 @@ private theorem norm_entry_le_of_gram_eq_diagonal_sgn (τ : X.Ψ) (W : Matrix (F
   rw [norm_mul, transpose_apply, conjTranspose_apply, norm_star]
 
 
-open NumberField Module in
-open Matrix in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.FlagMahler.mahler_compactness : _root_.ReciprocityTheory.ChartRestriction.G.FD.MahlerCompactnessCriterion (E := E) := by
   classical

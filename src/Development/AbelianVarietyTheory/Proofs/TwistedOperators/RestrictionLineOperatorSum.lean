@@ -90,7 +90,5 @@ theorem hasDerivAt_clm {κ : Type} [Fintype κ] {F : Type} [Field F] [NumberFiel
 end GlobalTheory.ThetaLineDeriv
 
 namespace GlobalTheory.ThetaLineDeriv
-open GlobalTheory.WeilM GlobalTheory.LFun Filter Topology
-open scoped Classical
 
 end GlobalTheory.ThetaLineDeriv

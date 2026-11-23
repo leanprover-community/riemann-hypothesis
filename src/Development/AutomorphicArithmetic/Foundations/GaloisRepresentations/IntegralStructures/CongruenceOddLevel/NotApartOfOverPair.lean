@@ -94,7 +94,6 @@ theorem not_apart_of_overPair {E : Type} [Field E] [NumberField E] [IsCMField E]
   exact GlobalTheory.Cong.AdaptLev.not_apart_trans (GlobalTheory.Cong.AdaptLev.not_apart_symm hxu) hyv
 
 
-open UpperTheory.Gal.Gen in
 theorem intL_congr {E : Type} [Field E] [NumberField E] [IsCMField E] {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a : ℕ}
     {v' : HeightOneSpectrum (𝓞 E)} {lam mu : (E →+* ℂ) → DomWeight a} (h : ∀ τ, mu τ ≠ lam τ → OverPair ι v' τ)
     {f : UA E a →₀ ℂ} (hv : ∀ g ∈ f.support, ∀ u, ¬ Apart u v' → cLoc u g = 1) (hf : Loc.IntL ι lam f) : Loc.IntL ι mu f := by
@@ -109,7 +108,6 @@ theorem intL_congr {E : Type} [Field E] [NumberField E] [IsCMField E] {l : ℕ} 
     exact hu.2 (hv g hg u (not_apart_of_overPair ι (Finset.mem_filter.1 hτ).2 (h τ hne)))
   rw [this]
 
-open UpperTheory.Gal.Gen in
 theorem stepSt_of_ex (hEll : EllSt) (H : WtLacEx) : StepSt := by
   intro E _ _ _ l _ ι a ha w₀ hw₀ hs₀ v' hv' hsv hap K hK hKv Kv hKvo lam Jx t η ht htv hη τ₀ hτ₀ U hU
   have h1 := H E l ι a ha w₀ hw₀ hs₀ v' hv' hsv hap K hK hKv Kv hKvo lam Jx t η (fun j => (ht j).2) htv hη τ₀ hτ₀ U hU
@@ -144,7 +142,6 @@ theorem stepSt_of_ex (hEll : EllSt) (H : WtLacEx) : StepSt := by
   rintro _ ⟨U', k1, k2, rfl⟩
   exact ⟨U', mu, g1, g2, k1, k2, rfl⟩
 
-open UpperTheory.Gal.Gen in
 theorem congUWG_of (H : StepSt) (hFin : FinU) (D : ∀ a : ℕ, MvPolynomial (Fin a) ℤ) (hD : ∀ a, D a ≠ 0) :
     CongUWG TyEll (GenOf D) WtLac := by
   classical

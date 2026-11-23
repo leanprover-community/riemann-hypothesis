@@ -122,7 +122,6 @@ end GlobalTheory.CovTop.WtSz
 
 namespace GlobalTheory.CovTop.WtSz
 
-open GlobalTheory.CompHS
 
 theorem gap_sub_const {N : ℕ} (w : Fin N → ℤ) (c : ℤ) (k : ℕ) : gap (fun j => w j - c) k = gap w k := by
   unfold gap; split_ifs <;> ring

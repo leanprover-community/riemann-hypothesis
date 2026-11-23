@@ -108,7 +108,6 @@ theorem conjP_vGs (hX : X.Ok) (hPr : Pr.Ok) {P : HeightOneSpectrum (𝓞 X.E)} (
 end Joint
 
 
-open Classical
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks}
 

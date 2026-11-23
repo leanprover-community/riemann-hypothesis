@@ -158,7 +158,6 @@ end
 noncomputable section
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.Frames
 
-open Formalism.REAL
 
 variable {n n' : ℕ}
 
@@ -262,7 +261,6 @@ end
 noncomputable section
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.Frames
 
-open Formalism.REAL
 
 variable {n n' : ℕ}
 

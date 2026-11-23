@@ -215,8 +215,6 @@ end GlobalTheory.BlockForms.CuspGrowth
 
 namespace GlobalTheory.BlockForms.CuspGrowth
 
-open GlobalTheory.CuspRep (Ad Cinf sInf infEq continuous_infEq infGL toL pFin_infGL)
-open GlobalTheory.BlockForms.LeviLoc (gl_entry fin_symm compFin_eq_zero compFin_sigR map_formula)
 
 section Emb
 
@@ -247,7 +245,6 @@ end GlobalTheory.BlockForms.CuspGrowth
 
 namespace GlobalTheory.BlockForms.CuspGrowth
 
-open GlobalTheory.CuspRep (Ad Cinf sInf infEq continuous_infEq infGL toL pFin_infGL)
 
 section Inf
 
@@ -325,7 +322,6 @@ end GlobalTheory.BlockForms.CuspGrowth
 
 namespace GlobalTheory.BlockForms.CuspGrowth
 
-open GlobalTheory.CuspRep (Ad Cinf sInf infEq continuous_infEq infGL toL pFin_infGL)
 
 section Ht
 

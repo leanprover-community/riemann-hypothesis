@@ -104,7 +104,6 @@ end GlobalTheory.SquareAgree.FinHeightBound
 
 namespace GlobalTheory.SquareAgree.FinHeightBound
 
-open GlobalTheory.AdelicU
 
 variable {D : D7}
 

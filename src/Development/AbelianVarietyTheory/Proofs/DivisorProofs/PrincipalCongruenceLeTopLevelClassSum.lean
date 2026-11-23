@@ -88,7 +88,6 @@ end GlobalTheory.LevTopCong
 
 namespace GlobalTheory.LevTopCong
 
-open GlobalTheory.SplitWeil GlobalTheory.RootEx
 
 theorem KO_le_pr_stair {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     [MeasurableSpace k] [BorelSpace k] {G : GlobalTheory.SplitFlip.Grid k} (hs : 1 ≤ G.s) (J : G.Level)

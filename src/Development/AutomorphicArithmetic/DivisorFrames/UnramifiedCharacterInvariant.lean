@@ -102,7 +102,6 @@ private theorem inv_mul_int (x : Matrix A A k) (c : k)
 
 end
 
-open scoped Pointwise in
 theorem UpperTheory.unramified_character_invariant :
     ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] {A : Type} [Fintype A] [DecidableEq A] {K : Type} [Field K] (ι τ : K →+* ℂ) {J : Subgroup (GL A k)}, IsOpen (J : Set (GL A k)) → J ≤ GlobalTheory.SplitWeil.KO k A → ∀ (ν : kˣ →* ℂˣ) {ϖ : kˣ} {e : ℕ}, IsUnif ϖ → CondLE ϖ e ν → (∀ u, Un ι τ (ν u : ℂ)) → (∀ u : kˣ, apow u (1 / 2) ∈ Set.range ι) → ∀ (n : ℕ) (x : Matrix A A k), (∀ i j, valuation k (x i j) ≤ 1) → (∀ y : Matrix A A k, (∀ i j, valuation k (y i j - x i j) ≤ valuation k ((ϖ ^ e : kˣ) : k)) → y.det ≠ 0) → Sz ι τ (∫ g in {g : GL A k | ∀ i j, valuation k (g.val i j - x i j) ≤ valuation k ((ϖ ^ e : kˣ) : k)}, (ν (gdet g) : ℂ) * apow (gdet g) ((n : ℂ) / 2) ∂(haarVol J)) ((haarVol J).real (GlobalTheory.SplitWeil.KO k A : Set (GL A k))) := by
   intro k _ _ _ _ _ _ A _ _ K _ ι τ J hJo hJK ν ϖ e hϖ hcond hν hap n x hx hdet

@@ -114,7 +114,6 @@ def heckeAlg {W : Type} [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ
 
 end Unitary
 
-section GeneralLinearIntegers
 
 variable {L : Type} [Field L] [NumberField L]
 
@@ -125,7 +124,6 @@ structure Part (S : Formalism.ConjugateSelfDual.SpectrumFamily) (L : Type) [Fiel
   t : ℤ
   ν : (S L 1).Rep
 
-end GeneralLinearIntegers
 
 
 end Formalism.AUTREP

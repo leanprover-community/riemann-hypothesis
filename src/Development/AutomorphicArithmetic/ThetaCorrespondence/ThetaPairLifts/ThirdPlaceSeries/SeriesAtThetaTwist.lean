@@ -187,7 +187,6 @@ private theorem choice_imp_pz {ch} (h : @IsChoice a.D ch) : @IsChoice b.D ((ch))
 end L2
 abbrev lt_pz {B : Base} {C : Cols B} (c : Late B C) (n : NStage B C c.W) : Late B C := ⟨c.W, c.V, c.S, n, c.G⟩
 section L2
-open GlobalTheory.SeriesTie
 variable {B : Base} {C : Cols B} {c : Late B C} {a : NStage B C c.W} (b : NStage B C c.W)
 section
 variable {N : NData (lt_pz c a).D.R (lt_pz c a).D.host (lt_pz c a).D.what₂} {X : NTw (lt_pz c a).D.R (lt_pz c a).D.host (lt_pz c a).D.what₂ (lt_pz c a).D.LL0 N}
@@ -283,7 +282,6 @@ private theorem rat_imp_pz {hρ : ρ.Good} (h : SeriesTie.Rat hρ rd) :
 end
 end L2
 section L3
-open GlobalTheory.SeriesTie
 variable {B : Base} {C : Cols B} {c : Late B C} {a : NStage B C c.W} (b : NStage B C c.W)
   {Γ : Type} [i1 : Group Γ] [i2 : Fintype Γ] {Pl0 I0 T : Type}
   {A3 : FamIn3 (lt_pz c a).D.what₂.LL Γ Pl0 I0 (List ℕ) T (lt_pz c a).D.R.m} {Ks : Type} [i3 : Field Ks] [i4 : NumberField Ks]
@@ -335,7 +333,6 @@ private theorem norm_from_pz
   · with_unfolding_all exact hPow
 end L3
 section L4
-open GlobalTheory.SeriesTie
 variable {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} {P : Pre2 K w}
   (x : St P) (l : _root_.GlobalTheory.HeightCounting.Up.SecondIntermediateLevel hL x) (th : NTh (Dof x).R (Dof x).host (Dof x).what₂ (Dof x).LL0 (Dof x).nd (Dof x).ntw (Dof x).nexp)
 private def nTh_pz : NStage B w.C x.o.Z.W := (by with_unfolding_all exact ((nTw x (thTw (Dof x) th)) :))

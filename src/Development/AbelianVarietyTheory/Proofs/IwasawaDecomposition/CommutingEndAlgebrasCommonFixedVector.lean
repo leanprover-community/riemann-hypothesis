@@ -54,7 +54,6 @@ private theorem sum_smulRight_finBasis_mul_smulRight_eq_one {W : Type} [AddCommG
   ext x
   simpa [h] using (Module.finBasis ℂ W).sum_repr x
 
-open NumberField IsDedekindDomain Matrix in
 private theorem exists_dual_algHom_smulRight_apply_ne_zero {W V : Type} [AddCommGroup W] [Module ℂ W]
     [FiniteDimensional ℂ W] [AddCommGroup V] [Module ℂ V] (w : W) (ℓ : Module.Dual ℂ W)
     (h : ℓ w = 1) (Φ : Module.End ℂ W →ₐ[ℂ] Module.End ℂ V) {y : V} (hy : y ≠ 0) :
@@ -69,7 +68,6 @@ private theorem exists_dual_algHom_smulRight_apply_ne_zero {W V : Type} [AddComm
         simp only [map_mul, Module.End.mul_apply]
     _ = 0 := by simp [hzero]
 
-open NumberField IsDedekindDomain Matrix in
 private theorem smulRight_mul_smulRight_of_apply_eq_one {W : Type} [AddCommGroup W] [Module ℂ W]
     (w : W) (ℓ φ : Module.Dual ℂ W) (h : ℓ w = 1) :
     ℓ.smulRight w * φ.smulRight w = φ.smulRight w := by
@@ -77,7 +75,6 @@ private theorem smulRight_mul_smulRight_of_apply_eq_one {W : Type} [AddCommGroup
   simp [h]
 
 
-open NumberField IsDedekindDomain Matrix in
 theorem _root_.GlobalTheory.commuting_endAlgebras_common_fixed_vector :
     ∀ (ι : Type) [Fintype ι] (Wv : ι → Type) [∀ v, AddCommGroup (Wv v)] [∀ v, Module ℂ (Wv v)]
       [∀ v, FiniteDimensional ℂ (Wv v)] (V : Type) [AddCommGroup V] [Module ℂ V]

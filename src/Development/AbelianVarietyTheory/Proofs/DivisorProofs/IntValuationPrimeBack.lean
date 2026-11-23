@@ -150,7 +150,6 @@ end GlobalTheory.GalSup
 
 namespace GlobalTheory.GalSup
 
-open ReciprocityTheory.ChartRestriction.G
 
 theorem evI_sum {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
     {Xo : Moduli Dw l} {c : Coeff l} {T : CDVR} {io : c.F →+* T.Fr} (y : IntFr Xo c T io) {m : ℕ}

@@ -66,7 +66,6 @@ theorem _root_.GlobalTheory.PDivGroup.KerGrp.isCocomm_of_surjective {k A B : Typ
 
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct Coalgebra Bialgebra in
 theorem _root_.GlobalTheory.PDivGroup.KerGrp.map_res_kerIdeal {p : ℕ} {k : Type} [CommRing k] {G H : _root_.GlobalTheory.PDivGroup p k} (u : G ⟶ H)
     (n : ℕ) : Ideal.map (G.res n : G.A (n + 1) →ₐ[k] G.A n) (_root_.GlobalTheory.PDiv.kerIdeal (u.app (n + 1))) =
       _root_.GlobalTheory.PDiv.kerIdeal (u.app n) := by
@@ -149,7 +148,6 @@ theorem exists_of_family {p : ℕ} {k : Type} [Field k] (G : PDivGroup p k)
 
 
 set_option autoImplicit false in
-open CategoryTheory TensorProduct Coalgebra Bialgebra in
 theorem _root_.GlobalTheory.PDivGroup.KerGrp.exists_kernel (p : ℕ) [Fact p.Prime] (k : Type) [Field k] (G : _root_.GlobalTheory.PDivGroup p k)
     (u : G ⟶ G) (h₀ : ℕ)
     (h : ∀ n : ℕ, Module.finrank k (G.A n ⧸ _root_.GlobalTheory.PDiv.kerIdeal (u.app n)) = p ^ (n * h₀)) :

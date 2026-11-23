@@ -221,7 +221,6 @@ def Reg {ι : Type} (a : ι → Gf) : Prop :=
   ∀ (γ : GL (Fin 2) F) x i, (a i)⁻¹ * (x⁻¹ * D.j γ * x) ∈ D.H → γ.val.trace ≠ 0 ∧ γ.val.trace ^ 2 ≠ 4 * γ.val.det
 
 
-open scoped Classical in
 def ee (x : Gf) : ℂ := if h : x ∈ D.H then D.χ ⟨x, h⟩ else 0
 
 def Te {ι : Type} [Fintype ι] (a : ι → Gf) (γ : GL (Fin 2) F) (x : Gf) : ℂ := ∑ i, D.ee (x⁻¹ * (D.j γ)⁻¹ * x * a i)
@@ -375,7 +374,6 @@ def F5 : Prop := AllH fun F _ _ _ _ _ _ _ D k a => ∃ C : ℝ≥0, ∀ T : ℝ,
   (y ∈ D.abelian₂ T → ∀ γ, y ∈ D.LamF T γ) ∧ (y ∉ D.abelian₂ T → ∑' γ : PG F, ‖(D.LamF T γ).indicator (D.kk k a γ) y‖ₑ ≤ C)
 
 
-open scoped Classical in
 def Fhyp : Prop := AllH fun F _ _ _ _ _ _ _ D k a => ∀ b : D.Y → ℝ, IsCut (PG F) b →
   Integrable (fun y => b y • ∑' γ : PG F, if IsEll γ then 0 else D.kk k a γ y) D.μY →
     ∫ y, b y • (∑' γ : PG F, if IsEll γ then 0 else D.kk k a γ y) ∂D.μY = 0
@@ -388,7 +386,6 @@ def geo {F I Gf ι : Type} [Field F] [Group Gf] [Fintype I] [Fintype ι] (D : Da
     (D.Te a ((D.el p.1).out) (D.rep p.2) * D.orb k ((D.el p.1).out))
 
 
-open scoped Classical in
 def Fell : Prop := AllD fun F I Gf _ _ _ D => ∀ (ι : Type) [Fintype ι] (a : ι → Gf), ∃ S : Finset (D.Cj × D.Om), Fam D S ∧
   ∀ k : I → ℕ, D.Hyp k a → ∀ b : D.Y → ℝ, IsCut (PG F) b →
     Integrable (fun y => b y • ∑' γ : PG F, if IsEll γ then D.kk k a γ y else 0) D.μY ∧

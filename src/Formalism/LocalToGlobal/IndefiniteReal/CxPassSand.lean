@@ -450,12 +450,10 @@ namespace In
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
   (I : In K G Pl0 T m)
 
-section Prin
 
 variable {I} {s : ℕ} (hH : I.Hyp s)
 include hH
 
-end Prin
 
 end In
 

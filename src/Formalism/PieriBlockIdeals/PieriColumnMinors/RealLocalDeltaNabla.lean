@@ -60,7 +60,6 @@ theorem units_of_local_holds : UnitsOfLocal := by
   · exact absurd (isUnit_of_mul_isUnit_left h) hlO
   · exact isUnit_of_mul_isUnit_left h
 
-section core
 
 variable (O : Type) [CommRing O] [IsDomain O] [IsLocalRing O] [CharZero O] (l : ℕ) (hl : l.Prime)
   (hlO : ¬ IsUnit (l : O)) (ι : Type) [Fintype ι] (r n : ι → ℕ) (hn : ∀ i, n i ≤ r i)
@@ -68,7 +67,6 @@ variable (O : Type) [CommRing O] [IsDomain O] [IsLocalRing O] [CharZero O] (l : 
 
 include hl hlO he
 
-end core
 
 theorem nabla_rep_tensor_product : NablaRepTprod := by
   intro O _ ι r n ν g a

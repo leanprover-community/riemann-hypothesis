@@ -215,7 +215,6 @@ noncomputable section
 namespace GlobalTheory.RatWeilOp
 
 
-open scoped Classical in
 theorem hasOp_levi (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F) ℂ) (κ : Type) [Fintype κ] [DecidableEq κ]
     (g h : Matrix κ κ F) (hg : gᵀ * h = 1) : HasOp ψ (Matrix.fromBlocks g 0 0 h) := by
   obtain ⟨hI1, hI2⟩ := levi_map_mul (mixedEmbedding F) hg

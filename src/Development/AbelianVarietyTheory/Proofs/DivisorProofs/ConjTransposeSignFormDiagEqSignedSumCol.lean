@@ -215,7 +215,6 @@ section
 noncomputable section
 
 open Formalism.REAL (UJ KG toM Jm Kset inUJ)
-open GlobalTheory.PsCo.Pc1 (rM Mode)
 open scoped Matrix
 
 namespace GlobalTheory.PsCo.PcdConjLow
@@ -431,9 +430,6 @@ section
 
 noncomputable section
 
-open scoped Matrix
-open Formalism.REAL (UJ KG toM)
-open GlobalTheory.PsCo.Pc1 (rM Mode)
 
 namespace GlobalTheory.PsCo.PcdConjLow
 
@@ -578,7 +574,6 @@ section
 
 noncomputable section
 
-open Formalism.REAL (UJ KG toM)
 
 namespace GlobalTheory.PsCo.PcdConjLow
 
@@ -597,7 +592,6 @@ section
 
 noncomputable section
 
-open Formalism.REAL (UJ KG toM)
 open GlobalTheory.PsCo.Pc1 (rM)
 
 namespace GlobalTheory.PsCo.Pcd

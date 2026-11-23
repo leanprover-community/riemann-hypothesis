@@ -68,7 +68,6 @@ private lemma CV_comp_clm_eq_clm_CV {k r : ℕ} {E E' : Type} [NormedAddCommGrou
   have hg0 : g ∈ _root_.Formalism.FourierDecayAlt.Q.Glev k r 0 := ⟨hg, fun a ha => (Nat.not_lt_zero _ ha).elim⟩
   exact _root_.Formalism.FourierDecayAlt.Q.TPresMain.qminor_clm (i := 0) (D := Set.univ) isOpen_univ id id (_root_.Formalism.FourierDecayAlt.Q.uC k r 0 Y) Φ f hs g ⟨hg0, trivial⟩
 
-open Finset in
 private lemma entry_smul_eigenfunction_lemma_6 {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
     (lam : Fin (2 * r + k + 1) → ℝ) (d : ℕ) (A : ℝ) (ν : Fin (2 * r + k + 1) → ℤ) (i j : Fin (2 * r + k + 1))
@@ -171,7 +170,6 @@ private lemma entry_smul_eigenfunction_lemma_6 {k r : ℕ} {Wp Wq : Type} [Norme
 
     rw [hv, map_sum, Finset.sum_apply]
 
-open Finset in
 private lemma isEigenSum_entry_smul {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
     (lam : Fin (2 * r + k + 1) → ℝ) (d : ℕ) (A : ℝ) (i j : Fin (2 * r + k + 1))
@@ -184,7 +182,6 @@ private lemma isEigenSum_entry_smul {k r : ℕ} {Wp Wq : Type} [NormedAddCommGro
       (hreg l).1 (hreg l).2 (heig l)⟩)
     (fun g hg => by simp [hsum g hg, Finset.smul_sum])
 
-open Finset in
 private lemma isEigenSum_star_entry_smul {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
     (lam : Fin (2 * r + k + 1) → ℝ) (d : ℕ) (A : ℝ) (i j : Fin (2 * r + k + 1))
@@ -192,7 +189,6 @@ private lemma isEigenSum_star_entry_smul {k r : ℕ} {Wp Wq : Type} [NormedAddCo
     (hF : _root_.GlobalTheory.EigenSumPoly.IsEigenSum lam d A F) : _root_.GlobalTheory.EigenSumPoly.IsEigenSum lam (d + 1) (A - 1) (fun g => star (g i j) • F g) :=
   _root_.GlobalTheory.conj_entry_smul_eigenSum k r Wp Wq lam d A i j F hgap hF
 
-open Finset in
 private lemma monomial_smul_eigenSum_lemma_3 {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
     (lam : Fin (2 * r + k + 1) → ℝ)
@@ -229,7 +225,6 @@ private lemma monomial_smul_eigenSum_lemma_3 {k r : ℕ} {Wp Wq : Type} [NormedA
     convert h2 using 2 with g
     rw [Multiset.map_cons, Multiset.prod_cons, mul_smul]
 
-open Finset in
 private lemma isEigenSum_poly_smul {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
     (lam : Fin (2 * r + k + 1) → ℝ) (d e : ℕ) (A : ℝ) (c : _root_.Formalism.FourierDecayAlt.B.Mat k r → ℂ) (hc : _root_.Formalism.FourierDecayAlt.U.IsPolyDeg e c)
@@ -257,7 +252,6 @@ private lemma isEigenSum_poly_smul {k r : ℕ} {Wp Wq : Type} [NormedAddCommGrou
     rfl
 
 
-open Finset in
 theorem _root_.GlobalTheory.gfPow_smul_comp_polyOp_eigenSum :
     ∀ (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (Wq' : Type) [NormedAddCommGroup Wq'] [InnerProductSpace ℂ Wq'] [FiniteDimensional ℂ Wq'] (z z' : Fin (2 * r + k + 1) → ℂ) (lam : Fin (2 * r + k + 1) → ℝ) (A₀ : ℝ) (p₀ dA : ℕ) (f : _root_.Formalism.FourierDecayAlt.B.Mat k r → (Wq →L[ℂ] Wp)) (Aop : _root_.Formalism.FourierDecayAlt.B.Mat k r → (Wq' →L[ℂ] Wq)), (∀ s t, s ≠ t → 2 * (((2 * r + 2) * p₀ + dA : ℕ) : ℝ) < |lam s - lam t|) → (_root_.Formalism.FourierDecayAlt.B.CkOn ⊤ (_root_.Formalism.FourierDecayAlt.B.GV k r) (f) ∧ ∀ m : ℕ, _root_.Formalism.FourierDecayAlt.B.InCC (A₀) m (f)) → (∀ Y : ℝ, ∀ g ∈ _root_.Formalism.FourierDecayAlt.B.GV k r, _root_.Formalism.FourierDecayAlt.Q.CV k r (Y : ℂ) (f) g = ((∏ s, (Y + lam s) : ℝ) : ℂ) • (f) g) → (∃ (n₁ : ℕ) (c : Fin n₁ → _root_.Formalism.FourierDecayAlt.B.Mat k r → ℂ) (L : Fin n₁ → (Wq' →L[ℂ] Wq)), (∀ i, _root_.Formalism.FourierDecayAlt.U.IsPolyDeg dA (c i)) ∧ ∀ g, Aop g = ∑ i, c i g • L i) → (∃ (N₀ : ℕ) (Fi : Fin N₀ → _root_.Formalism.FourierDecayAlt.B.Mat k r → (Wq' →L[ℂ] Wp)) (ν : Fin N₀ → Fin (2 * r + k + 1) → ℤ), (∀ i s, |ν i s| ≤ (((2 * r + 2) * p₀ + dA : ℕ) : ℤ)) ∧ (∀ i, (_root_.Formalism.FourierDecayAlt.B.CkOn ⊤ (_root_.Formalism.FourierDecayAlt.B.GV k r) (Fi i) ∧ ∀ m : ℕ, _root_.Formalism.FourierDecayAlt.B.InCC (A₀ - (((2 * r + 2) * p₀ + dA : ℕ) : ℝ)) m (Fi i))) ∧ (∀ i, (∀ Y : ℝ, ∀ g ∈ _root_.Formalism.FourierDecayAlt.B.GV k r, _root_.Formalism.FourierDecayAlt.Q.CV k r (Y : ℂ) (Fi i) g = ((∏ s, (Y + lam s + (ν i s : ℝ)) : ℝ) : ℂ) • (Fi i) g)) ∧ ∀ g ∈ _root_.Formalism.FourierDecayAlt.B.GV k r, (fun g => ((_root_.Formalism.QuantumDeterminants.Gf k r z z' g ^ p₀ : ℝ) : ℂ) • (f g).comp (Aop g)) g = ∑ i, Fi i g) := by
   intro k r Wp Wq _ _ _ _ _ _ Wq' _ _ _ z z' lam A₀ p₀ dA f Aop hgap hf heig hA

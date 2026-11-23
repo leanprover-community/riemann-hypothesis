@@ -164,7 +164,6 @@ end
 end GlobalTheory.CommTriang
 
 namespace GlobalTheory.CommTriang
-open Matrix
 
 theorem isUnit_blockOne {k : Type} [Field k] {n : ℕ} (Q : Matrix (Fin n) (Fin n) k) (hQ : IsUnit Q) :
     IsUnit (blockOne Q) ∧ (blockOne Q)⁻¹ = blockOne Q⁻¹ := by
@@ -278,6 +277,5 @@ theorem exists_triangular (k ι : Type) [Field k] [IsAlgClosed k] : ∀ (n : ℕ
 end GlobalTheory.CommTriang
 
 namespace GlobalTheory.CommTriang
-open Matrix
 
 end GlobalTheory.CommTriang

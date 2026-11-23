@@ -407,7 +407,6 @@ private theorem cr_descend (hP : LocalPublishedTheorems) {l : ℕ} [Fact l.Prime
 end UpperTheory.V.Z.Keep.PotentialOfUnlocked
 
 
-open UpperTheory.V.Z.Keep.PotentialOfUnlocked in
 theorem UpperTheory.V.Z.Keep.crDescend (hP : LocalPublishedTheorems) {l : ℕ} [Fact l.Prime] {Γ : Type} [Group Γ] [TopologicalSpace Γ]
     [IsTopologicalGroup Γ] [CompactSpace Γ] [T2Space Γ] (φ : Γ →* GQ l) (hφ : IsOpenEmbedding φ)
     (H : Subgroup Γ) [H.Normal] (hH : IsOpen (H : Set Γ)) {n : ℕ} (r₀ : Γ →* GL (Fin n) (Om l))

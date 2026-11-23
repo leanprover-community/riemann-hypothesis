@@ -65,7 +65,6 @@ private theorem exists_pow_eq_one_algebraicClosure_of_finite (F : Type) [Field F
   simpa using this
 
 
-open Polynomial IntermediateField in
 theorem _root_.GlobalTheory.CuspGL.TeichEmb.exists_teichmuller :
     ∀ (F : Type) [Field F] [Finite F], ∃ θ : AlgebraicClosure F →* ℂ,
       ∀ x y : AlgebraicClosure F, x ≠ 0 → y ≠ 0 → θ x = θ y → x = y := by

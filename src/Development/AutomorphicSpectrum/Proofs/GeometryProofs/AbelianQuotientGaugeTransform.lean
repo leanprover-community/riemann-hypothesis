@@ -200,7 +200,6 @@ end Alg
 
 section Fib
 
-open Formalism.MainNotions.ModuliIntegralCharts.H1.GermD Formalism.MainNotions.ModuliIntegralCharts.H1.GermB Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X : Scheme.{0}} (t : SAB H X)
   {k : Type} [Field k] (x : Sp k ⟶ X)
@@ -259,7 +258,6 @@ end Fib
 
 section Tr
 
-open Formalism.MainNotions.ModuliIntegralCharts.H1.GermD Formalism.MainNotions.ModuliIntegralCharts.H1.GermB Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun
 
 variable {Xs Ys F : Scheme.{0}} {L : LB Xs} {M : LB Ys} {f : F ⟶ Xs} {g : F ⟶ Ys}
   (w : LB.Iso (L.pull f) (M.pull g)) {K : Type} [Fintype K] {Y₀ Y₁ : Scheme.{0}} {ε : K → ℤ}

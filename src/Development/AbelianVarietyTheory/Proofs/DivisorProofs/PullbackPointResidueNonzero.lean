@@ -66,7 +66,6 @@ theorem _root_.GlobalTheory.PullbackFinitePoint.residueDegree_ne_zero_iff_finite
     exact Module.finrank_pos.ne'
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry TopologicalSpace in
 private theorem residueFieldMap_surjective_of_surjectiveOnStalks {X Y : Scheme.{0}} (f : X ⟶ Y)
     [SurjectiveOnStalks f] (x : X) : Function.Surjective (f.residueFieldMap x) := by
   intro z
@@ -77,7 +76,6 @@ private theorem residueFieldMap_surjective_of_surjectiveOnStalks {X Y : Scheme.{
 
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry TopologicalSpace in
 theorem _root_.GlobalTheory.PullbackFinitePoint.residueDegree_ne_zero_of_surjectiveOnStalks {X Y : Scheme.{0}} (f : X ⟶ Y)
     [SurjectiveOnStalks f] (x : X) : f.residueDegree x ≠ 0 :=
   (_root_.GlobalTheory.PullbackFinitePoint.residueDegree_ne_zero_iff_finite f x).2

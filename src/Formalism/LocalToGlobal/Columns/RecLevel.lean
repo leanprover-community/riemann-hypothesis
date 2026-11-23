@@ -161,7 +161,6 @@ def parFam (h : r ≤ n) (t s : ℕ) {SG : Finset (Pl E)} (P : LevFam E K r SG)
   ⟨HPar n (𝓞 E ⧸ w.1.asIdeal) h (List.replicate s t) (P w).H, lamPar h (List.replicate s t) (P w).lam (χ w)⟩
 
 
-open Classical in
 def parDat (h : r ≤ n) (t s : ℕ) {SG : Finset (Pl E)} (P : LevFam E K r SG)
     (χ : ∀ w : SG, ℕ → (𝓞 E ⧸ w.1.asIdeal)ˣ →* Kˣ) : Formalism.L2.DIV.LevDat E K n where
   r := r

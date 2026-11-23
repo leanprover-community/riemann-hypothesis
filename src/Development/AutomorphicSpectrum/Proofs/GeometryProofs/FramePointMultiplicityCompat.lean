@@ -184,7 +184,6 @@ theorem dualMap_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : 
     ext <;> simp [Formalism.L2.Pj.dualMap]
 
 
-open MonoidalCategory CartesianMonoidalCategory MonObj in
 theorem exists_tied (Y : Model Xo c β) {B : Type} [CommRing B] (y : Sp B ⟶ Xo.XF c)
     (v' : Sp (DualNumber B) ⟶ Y.t.G.left)
     (hv : v' ≫ Y.t.G.hom = spMap (algebraMap B (DualNumber B)) ≫ y ≫ Y.j)
@@ -264,7 +263,6 @@ theorem isTanAt_of_comb {B : Type} [CommRing B] {xB : Sp B ⟶ Xo.X} {m : ℕ}
   exact (htan _).2 ⟨_, rfl⟩
 
 
-open MonoidalCategory CartesianMonoidalCategory MonObj in
 theorem tan_pull (Y : Model Xo c β) {R B : Type} [CommRing R] [CommRing B] {x : Sp R ⟶ Y.X} (θ₀ : R →+* B)
     (y : Sp B ⟶ Xo.XF c) (h : spMap θ₀ ≫ x = y ≫ Y.j) (v : epsAt x ⟶ Y.t.G) (hv : IsTanAt Y.t.G x v) :
     ∃ V, Tied Y y V (spMap (Formalism.L2.Pj.dualMap θ₀) ≫ v.left) ∧ Formalism.L2.Pj.IsTanAt (y ≫ pullback.fst _ _) V := by

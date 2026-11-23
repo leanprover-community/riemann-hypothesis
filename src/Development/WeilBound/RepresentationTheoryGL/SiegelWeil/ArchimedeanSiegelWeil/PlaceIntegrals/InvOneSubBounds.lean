@@ -58,9 +58,6 @@ theorem finite_lt : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Number
 
 end GlobalTheory.CompanionTheory.WeilSiegel.HypMass.HH
 
-open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
-open scoped TensorProduct ENNReal NNReal Matrix
-open GlobalTheory.CompanionTheory.WeilSiegel.Frame GlobalTheory.CompanionTheory.WeilSiegel.Free GlobalTheory.CompanionTheory.WeilSiegel.HypStep GlobalTheory.CompanionTheory.WeilSiegel.HypMass
 
 noncomputable section
 

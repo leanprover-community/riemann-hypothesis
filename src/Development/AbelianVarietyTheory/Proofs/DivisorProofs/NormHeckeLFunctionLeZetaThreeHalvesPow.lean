@@ -179,7 +179,6 @@ namespace GlobalTheory.HeckeLBound
 
 variable {E : Type} [Field E] [NumberField E]
 
-open Filter Topology
 
 theorem prod_fac_absNorm_le (F : Finset (HeightOneSpectrum (𝓞 E))) :
     ∏ v ∈ F, fac (Ideal.absNorm v.asIdeal : ℝ) ≤ ‖riemannZeta (3 / 2)‖ ^ Module.finrank ℚ E := by

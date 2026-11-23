@@ -90,7 +90,6 @@ theorem uSupp_tr {D : D7} {V V' : HSp D} (e : V' = V) {u : GfC V} {u' : GfC V'} 
   subst e; cases hu; exact h
 
 
-open Matrix in
 theorem top_tr {D : D7} {A A' B B' : HSp D} (eA : A' = A) (eB : B' = B) {ι : A.V →ₗ[D.host.E] B.V}
     {ι' : A'.V →ₗ[D.host.E] B'.V} (hι : HEq ι' ι) {a : Matrix (Fin B.rank) (Fin 1) D.host.E}
     {a' : Matrix (Fin B'.rank) (Fin 1) D.host.E} (ha : HEq a' a) (r : A.rank + 1 = B.rank) (r' : A'.rank + 1 = B'.rank)
@@ -112,7 +111,6 @@ theorem top_tr {D : D7} {A A' B B' : HSp D} (eA : A' = A) (eB : B' = B) {ι : A.
 abbrev dOf {D : D7} {T : Type} (_ : LevCh D T) : D7 := D
 
 
-open Matrix in
 theorem sumFrame_tr {D : D7} {A A' B B' : HSp D} (eA : A' = A) (eB : B' = B) {c : ℕ} {ι : A.V →ₗ[D.host.E] B.V}
     {ι' : A'.V →ₗ[D.host.E] B'.V} (hι : HEq ι' ι) {a : Matrix (Fin B.rank) (Fin c) D.host.E}
     {a' : Matrix (Fin B'.rank) (Fin c) D.host.E} (ha : HEq a' a) (r : A.rank + c = B.rank) (r' : A'.rank + c = B'.rank)

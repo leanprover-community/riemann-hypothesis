@@ -154,7 +154,6 @@ end Eig
 
 section Main
 
-open Formalism.L2.DIV
 open scoped Matrix
 
 theorem hw_eigvec_transport : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι]

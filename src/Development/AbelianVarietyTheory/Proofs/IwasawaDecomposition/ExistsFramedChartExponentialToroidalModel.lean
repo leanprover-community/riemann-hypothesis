@@ -237,7 +237,6 @@ end Sections
 
 section Main
 
-open Metric
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
 

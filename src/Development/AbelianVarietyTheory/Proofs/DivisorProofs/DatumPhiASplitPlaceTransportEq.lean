@@ -92,8 +92,6 @@ end General
 end GlobalTheory.PureMatch.Transport
 
 namespace GlobalTheory.PureMatch.Transport
-open GlobalTheory.FlipMatch GlobalTheory.FlipMatch.FieldTransport
-open scoped Pointwise
 
 section General
 variable {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

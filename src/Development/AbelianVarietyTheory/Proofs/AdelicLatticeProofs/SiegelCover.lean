@@ -71,8 +71,6 @@ private lemma le_two_pow_mul_of_consecutive_le {N : ℕ} (a : Fin N → ℝ) (ha
       mul_le_mul_of_nonneg_right (pow_le_pow_right₀ (by norm_num) (by have := j.isLt; omega))
         (ha j).le
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma exists_reduced_iwasawa_decomposition {ι : Type} [Fintype ι] [DecidableEq ι]
     [LinearOrder ι] (g : Matrix ι ι ℝ) (hg : g.det ≠ 0) :
     ∃ (γ : Matrix ι ι ℤ) (k : Matrix ι ι ℝ) (a : ι → ℝ) (n : Matrix ι ι ℝ),
@@ -110,8 +108,6 @@ private lemma exists_reduced_iwasawa_decomposition {ι : Type} [Fintype ι] [Dec
     rw [hg', ← submatrix_map, submatrix_mul_equiv, hdec, ← submatrix_diagonal_equiv,
       submatrix_mul_equiv, submatrix_mul_equiv]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma isSiegel_of_reduced {ι : Type} [Fintype ι] [DecidableEq ι]
     [LinearOrder ι] {C : ℝ} {g : Matrix ι ι ℝ} {γ : Matrix ι ι ℤ} {k : Matrix ι ι ℝ}
     {a : ι → ℝ} {n : Matrix ι ι ℝ} (hC : 1 ≤ C) (hg : g.det = 1) (hγ : γ.det = 1)
@@ -145,8 +141,6 @@ private lemma isSiegel_of_reduced {ι : Type} [Fintype ι] [DecidableEq ι]
   rw [hk1, one_mul] at hdet
   exact hdet
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma exists_det_one_of_det_neg_one {ι : Type} [Fintype ι] [DecidableEq ι]
     [LinearOrder ι] {g : Matrix ι ι ℝ} {γ : Matrix ι ι ℤ} {k : Matrix ι ι ℝ} {a : ι → ℝ}
     {n : Matrix ι ι ℝ} (hγ : γ.det = -1) (hk : kᵀ * k = 1) (hn1 : ∀ i, n i i = 1)
@@ -206,8 +200,6 @@ private lemma exists_det_one_of_det_neg_one {ι : Type} [Fintype ι] [DecidableE
           simp only [Matrix.mul_assoc]
 
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 theorem _root_.GlobalTheory.ClassFin.siegel_cover (ι : Type) [Fintype ι] [DecidableEq ι] [LinearOrder ι] :
     ∃ C : ℝ, ∀ g : Matrix ι ι ℝ, g.det = 1 → ∃ γ : Matrix ι ι ℤ, γ.det = 1 ∧ ∃ k a n, _root_.GlobalTheory.ClassFin.IsSiegel C k a n ∧
       g * γ.map (Int.cast : ℤ → ℝ) = k * diagonal a * n := by

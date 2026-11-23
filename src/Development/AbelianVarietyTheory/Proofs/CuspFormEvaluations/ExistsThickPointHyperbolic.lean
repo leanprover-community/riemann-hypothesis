@@ -96,8 +96,6 @@ theorem _root_.GlobalTheory.ThickPoint.exists_euclidean_real {M : ℕ} [FiniteDi
 variable {V : Type} [AddCommGroup V] [Module ℚ V]
 
 
-open NumberField Module Submodule in
-open scoped nonZeroDivisors in
 variable {W : Type} [AddCommGroup W] [Module ℝ W] in
 variable {V : Type} [AddCommGroup V] [Module ℚ V] in
 theorem _root_.GlobalTheory.ThickPoint.transference_pair {M : ℕ} (b : Basis (Fin M) ℚ V)
@@ -176,8 +174,6 @@ noncomputable def traceFormOf (G : Matrix (Fin r) (Fin r) E) : LinearMap.BilinFo
 theorem traceFormOf_apply (G : Matrix (Fin r) (Fin r) E) (x y : Fin r → E) :
     traceFormOf G x y = Algebra.trace ℚ E (herm G x y) := rfl
 
-open NumberField Module Submodule in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma herm_swap_eq_cc_herm {G : Matrix (Fin r) (Fin r) E}
     (hG : ∀ a b, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (G a b) = G b a)
@@ -192,8 +188,6 @@ private lemma herm_swap_eq_cc_herm {G : Matrix (Fin r) (Fin r) E}
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   ring
 
-open NumberField Module Submodule in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.ThickPoint.traceFormOf_isSymm {G : Matrix (Fin r) (Fin r) E}
     (hG : ∀ a b, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (G a b) = G b a) :
@@ -202,8 +196,6 @@ theorem _root_.GlobalTheory.ThickPoint.traceFormOf_isSymm {G : Matrix (Fin r) (F
   rw [RingHom.id_apply, _root_.GlobalTheory.ThickPoint.traceFormOf_apply, _root_.GlobalTheory.ThickPoint.traceFormOf_apply,
     herm_swap_eq_cc_herm hG x y, _root_.GlobalTheory.TraceDualMin.trace_cc]
 
-open NumberField Module Submodule in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.ThickPoint.traceFormOf_nondegenerate {G : Matrix (Fin r) (Fin r) E}
     (hG : ∀ a b, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (G a b) = G b a)
@@ -251,8 +243,6 @@ noncomputable def reflHom (X : Data E r) (x : Frame X.Ψ r) : (Fin r → E) →+
     funext τ
     simp only [map_add (f := _), Pi.add_apply, Data.jp_add, smul_add]
 
-open NumberField Module Submodule in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.ThickPoint.pair_eq (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r)
     (hx : x ∈ X.dom) (u v : Fin r → E) :
@@ -270,8 +260,6 @@ end ThickPoint
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-open NumberField Module Submodule in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma isIntegral_natAbs_discr_mul_of_mem_inv_differentIdeal {z : E}
     (hz : z ∈ (↑(differentIdeal ℤ (𝓞 E)) : FractionalIdeal (𝓞 E)⁰ E)⁻¹) :
@@ -289,8 +277,6 @@ private lemma isIntegral_natAbs_discr_mul_of_mem_inv_differentIdeal {z : E}
   exact RingOfIntegers.isIntegral_coe a
 
 
-open NumberField Module Submodule in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.exists_short_basis_at {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.DataX E r) (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r)
     (hx : x ∈ X.dom) (ε : ℝ) (hε : 0 < ε)

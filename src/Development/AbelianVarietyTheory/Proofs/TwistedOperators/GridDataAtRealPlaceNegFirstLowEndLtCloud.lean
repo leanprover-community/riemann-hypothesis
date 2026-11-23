@@ -70,7 +70,6 @@ end GlobalTheory.GridParD
 
 namespace GlobalTheory.GridParD
 
-open GlobalTheory.SignedHC Finset
 
 variable (G : GridData)
 
@@ -121,7 +120,6 @@ end GlobalTheory.GridParD
 
 namespace GlobalTheory.GridParD
 
-open GlobalTheory.SignedHC Finset
 
 variable (G : GridData)
 
@@ -199,7 +197,6 @@ end GlobalTheory.GridParD
 
 namespace GlobalTheory.GridParD
 
-open GlobalTheory.SignedHC Finset
 
 variable (G : GridData)
 
@@ -251,7 +248,6 @@ end GlobalTheory.GridParD
 
 namespace GlobalTheory.GridParD
 
-open GlobalTheory.SignedHC Finset
 
 theorem gapOver_shift {S : SPar} {g : ℚ} (h : ℚ) (H : GapOver S g) : GapOver (shift h S) g := by
   intro x hx y hy hs

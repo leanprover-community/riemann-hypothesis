@@ -119,10 +119,8 @@ theorem local_conditions_weighted_at_place : LocalConditionsWeightedAtPlace := b
     (idxRules_inf_lat h3 h4) X θ' eX pr Mt hc hpr h4 inf_le_right ε
     (by rw [locP w _ _ _ h34]; exact hTW) d φ hinj hrng Mj Tj hMj hTj
 
-section Instance
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K]
 
-end Instance
 
 end Formalism.EigenvalueLevelCeiling

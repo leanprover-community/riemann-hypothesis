@@ -119,7 +119,6 @@ theorem hsOp_ge_integral {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType �
         rw [kschur_coef, T.w_norm, one_pow, one_mul]
     _ = hsOp A := sum_norm_adjoint_sq_eq_hsOp A
 
-open CompactHaarProbability in
 theorem continuous_fF (ε : Fin n → Bool) (lam : Fin n → ℝ) {Λ : Fin n → ℝ} (T : KType ε Λ) :
     Continuous fun z : PCoord ε → ℂ => fF ε lam T (pmat z) := by
   letI : IsProbabilityMeasure (dk ε) := ⟨by

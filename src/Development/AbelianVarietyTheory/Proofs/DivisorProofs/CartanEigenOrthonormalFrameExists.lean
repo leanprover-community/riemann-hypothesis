@@ -115,7 +115,6 @@ end GlobalTheory.RealLift.HermitianFrameExistence
 namespace GlobalTheory.RealLift
 
 open Matrix GlobalTheory.RealLift.HermitianFrameExistence
-open scoped ComplexOrder
 
 theorem frameEx_holds : FrameEx := by
   intro n r s M θ hSig hC

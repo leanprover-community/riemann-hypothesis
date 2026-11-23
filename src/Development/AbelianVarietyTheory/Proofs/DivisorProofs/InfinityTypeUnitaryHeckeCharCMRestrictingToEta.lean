@@ -152,7 +152,6 @@ end
 
 noncomputable section
 
-open ReciprocityTheory.Neutral.Bridge.HCFR
 
 namespace GlobalTheory.MuInfType
 

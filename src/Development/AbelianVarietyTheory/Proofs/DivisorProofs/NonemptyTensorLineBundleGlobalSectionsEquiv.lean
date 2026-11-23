@@ -142,7 +142,6 @@ end GlobalTheory.SecTensor
 
 namespace GlobalTheory.SecTensor
 
-open TensorProduct GlobalTheory.LB
 
 variable {T : Scheme.{0}}
 
@@ -193,7 +192,6 @@ end GlobalTheory.SecTensor
 
 namespace GlobalTheory.SecTensor
 
-open TensorProduct GlobalTheory.LB
 
 theorem tensorSecEquiv : ∀ (T : Scheme.{0}) [IsAffine T] (A B : LB T), A.IsLB → B.IsLB →
     Nonempty (TensorProduct Γ(T, ⊤) (LB.Sec A) (LB.Sec B) ≃ₗ[Γ(T, ⊤)]

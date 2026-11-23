@@ -125,12 +125,9 @@ end Tangent
 
 section Pairing
 
-open GlobalTheory.Published.AbelianDeRham (bcMor)
 
 end Pairing
 
-open GlobalTheory.DeRhamSheaf (onAff)
-open GlobalTheory.Published.AbelianDeRham (bcMor)
 open GlobalTheory.DualPull (theta dualApp_theta)
 
 

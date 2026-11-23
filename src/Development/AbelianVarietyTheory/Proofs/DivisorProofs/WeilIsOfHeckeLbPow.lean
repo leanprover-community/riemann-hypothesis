@@ -73,6 +73,5 @@ end GlobalTheory.BiextPairing
 
 namespace GlobalTheory.BiextPairing
 
-open GlobalTheory.UPel.HT
 
 end GlobalTheory.BiextPairing

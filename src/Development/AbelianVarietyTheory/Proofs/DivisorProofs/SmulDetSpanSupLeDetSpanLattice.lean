@@ -78,7 +78,6 @@ private lemma exterior_form_eq_zero_of_two_mem_span_singleton {ι : Type*} [Deci
         (by simp [Function.update_of_ne hik.symm]) hik
     rw [h0, smul_zero]
 
-open NumberField MvPolynomial in
 variable {F V : Type} [Field F] [NumberField F] [AddCommGroup V] [Module F V] [Module (𝓞 F) V]
   [IsScalarTower (𝓞 F) F V] {d : ℕ} in
 private lemma multilinear_mem_span_of_entry_mem_span_singleton {ι : Type*} [DecidableEq ι]
@@ -115,7 +114,6 @@ private lemma multilinear_mem_span_of_entry_mem_span_singleton {ι : Type*} [Dec
         (by rwa [Function.update_of_ne hik]) (by rw [Function.update_self]; exact hz)]
       exact Submodule.zero_mem _
 
-open NumberField MvPolynomial in
 variable {F V : Type} [Field F] [NumberField F] [AddCommGroup V] [Module F V] [Module (𝓞 F) V]
   [IsScalarTower (𝓞 F) F V] {d : ℕ} in
 private lemma smul_multilinear_mem_span {ι : Type*} [DecidableEq ι] (f : V [⋀^ι]→ₗ[F] F)
@@ -163,7 +161,6 @@ private lemma smul_multilinear_mem_span {ι : Type*} [DecidableEq ι] (f : V [�
         exact hs j (Finset.mem_insert_of_mem hj)
 
 
-open NumberField MvPolynomial in
 variable {F V : Type} [Field F] [NumberField F] [AddCommGroup V] [Module F V] [Module (𝓞 F) V]
   [IsScalarTower (𝓞 F) F V] {d : ℕ} in
 theorem _root_.GlobalTheory.DetColon.smul_detSpan_sup_le :

@@ -149,7 +149,6 @@ theorem levJ_le_Q (D : D7) (X : RealSide D) (E : IntegralHeckeForms.XD D) (Y : S
 end GlobalTheory.ProjLiftLaw
 
 namespace GlobalTheory.ProjLiftLaw
-open Formalism.IndefR.Links GlobalTheory.IndefiniteRowSideFullHecke.CommutingRationalGroups
 
 theorem flagLevelTwistedTranslation_finsetSum {G W ι : Type} [Group G] [NormedAddCommGroup W] [InnerProductSpace ℂ W] {Q : Subgroup G} (ch : Q →* ℂˣ)
     (q : Q) (s : Finset ι) (a : ι → ℂ) (f : ι → G → W) :
@@ -218,7 +217,6 @@ theorem eC_conj (hC : GlobalTheory.Hk3.Core R F) (u g : G) :
 end GlobalTheory.ProjLiftLaw
 
 namespace GlobalTheory.ProjLiftLaw
-open Formalism.IndefR.Links GlobalTheory.IndefiniteRowSideFullHecke.CommutingRationalGroups
 
 theorem twistedTranslation_fixes_adelicForm_of_mem_level {G Γ W : Type} [Group G] [Group Γ] {ι : Γ →* G} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
     {ρ : Γ →* Module.End ℂ W} {Q J : Subgroup G} (ch : Q →* ℂˣ) (χ : J →* ℂˣ) (hJ : J ≤ Q)
@@ -262,7 +260,6 @@ theorem thG_apply_eq (hC : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) (t : T) (�
 end GlobalTheory.ProjLiftLaw
 
 namespace GlobalTheory.ProjLiftLaw
-open Formalism.IndefR.Links GlobalTheory.IndefiniteRowSideFullHecke.CommutingRationalGroups
 
 theorem projLift_law : ∀ (D : D7) (X : RealSide D) (E : IntegralHeckeForms.XD D) (Y : SerSide X E) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool) (t : X.T),
     X.R.xi t = (Y.Z.ρ.B i j b).de.chi → X.R.Q t = (Y.Z.ρ.B i j b).de.Q → ∀ y : (X.R.HV j t).H,

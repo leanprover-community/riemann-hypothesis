@@ -36,7 +36,6 @@ private def repHomEvalLinearMap {Γ : Type} [Group Γ] {A B : Rep.{0} ℂ Γ} (x
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-open CategoryTheory UpperTheory.V.Af.BA in
 theorem UpperTheory.rep_hom_alternating_sum_eq_zero :
     UpperTheory.V.Af.BA.AltZero := by
   intro Γ I _ _ K

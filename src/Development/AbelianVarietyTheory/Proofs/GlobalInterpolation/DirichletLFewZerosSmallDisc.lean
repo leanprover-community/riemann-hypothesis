@@ -58,14 +58,10 @@ private lemma derSeries_one_eq_tsum_vonMangoldt (σ : ℝ) :
   rw [Complex.ofReal_cpow (Nat.cast_nonneg n)]
   simp
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
-open scoped Classical in
 private lemma re_natCast_div_pow_zero_add_one (m : ℕ) (z : ℂ) :
     ((m : ℂ) / z ^ (0 + 1)).re = m * (z⁻¹).re := by
   rw [zero_add, pow_one, div_eq_mul_inv, ← Complex.ofReal_natCast, Complex.re_ofReal_mul]
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
-open scoped Classical in
 private lemma re_lt_one_of_mem_zerosDisc {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q} {c w : ℂ}
     {R : ℝ} (hw : w ∈ _root_.GlobalTheory.Lin.zerosDisc χ c R) : w.re < 1 := by
   simp only [_root_.GlobalTheory.Lin.zerosDisc, Set.mem_setOf_eq] at hw
@@ -73,14 +69,10 @@ private lemma re_lt_one_of_mem_zerosDisc {q : ℕ} [NeZero q] {χ : DirichletCha
   by_contra h
   exact LFunction_ne_zero_of_one_le_re χ h1 (not_lt.mp h) h0
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
-open scoped Classical in
 private lemma inv_re_nonneg_of_re_nonneg {z : ℂ} (h : 0 ≤ z.re) : 0 ≤ (z⁻¹).re := by
   rw [Complex.inv_re]
   exact div_nonneg h (Complex.normSq_nonneg _)
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
-open scoped Classical in
 private lemma summable_vonMangoldt_mul_rpow_neg {σ : ℝ} (hσ : 1 < σ) :
     Summable fun n : ℕ ↦ vonMangoldt n * (n : ℝ) ^ (-σ) := by
   have h := LSeriesSummable_vonMangoldt (s := (σ : ℂ)) (by simpa using hσ)
@@ -93,8 +85,6 @@ private lemma summable_vonMangoldt_mul_rpow_neg {σ : ℝ} (hσ : 1 < σ) :
   · rw [if_neg hn, Complex.ofReal_re, Complex.norm_real, Real.norm_of_nonneg vonMangoldt_nonneg,
       Real.rpow_neg (Nat.cast_nonneg n), div_eq_mul_inv]
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
-open scoped Classical in
 private lemma norm_derSeries_le_tsum_vonMangoldt {q : ℕ} (χ : DirichletCharacter ℂ q) {s : ℂ}
     (hs : 1 < s.re) :
     ‖_root_.GlobalTheory.Lin.derSeries (fun n ↦ χ n) 0 s‖ ≤
@@ -110,8 +100,6 @@ private lemma norm_derSeries_le_tsum_vonMangoldt {q : ℕ} (χ : DirichletCharac
       (mul_le_of_le_one_right vonMangoldt_nonneg (DirichletCharacter.norm_le_one χ _))
       (by positivity)
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
-open scoped Classical in
 private lemma inv_re_ge_of_norm_sub_le {t r : ℝ} {w : ℂ} (hr : 0 < r) (hw : ‖w - (1 + t * I)‖ ≤ r)
     (hre : w.re < 1) : 1 / (4 * r) ≤ ((((1 + r : ℝ) : ℂ) + t * I - w)⁻¹).re := by
   set z : ℂ := ((1 + r : ℝ) : ℂ) + t * I - w with hz
@@ -131,8 +119,6 @@ private lemma inv_re_ge_of_norm_sub_le {t r : ℝ} {w : ℂ} (hr : 0 < r) (hw : 
   nlinarith [mul_le_mul hznorm hznorm (norm_nonneg _) (by positivity : (0 : ℝ) ≤ 2 * r)]
 
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
-open scoped Classical in
 theorem _root_.GlobalTheory.SmallDiscZeros.few_zeros : ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (t r : ℝ), (χ ≠ 1 ∨ 2 ≤ |t|) → 0 < r → r ≤ 1 / 2 → (_root_.GlobalTheory.Lin.zerosDisc χ (1 + t * I) r).Finite ∧ (∑ᶠ w ∈ _root_.GlobalTheory.Lin.zerosDisc χ (1 + t * I) r, (_root_.GlobalTheory.Lin.ord χ w : ℝ)) ≤ C * (1 + r * Real.log (q * (|t| + 2))) := by
   obtain ⟨C, hC, hmain⟩ := _root_.GlobalTheory.LogDerivHigher.main
   refine ⟨6 + 4 * C, by positivity, ?_⟩

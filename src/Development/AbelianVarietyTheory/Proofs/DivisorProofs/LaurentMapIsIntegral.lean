@@ -71,7 +71,6 @@ private theorem map_rowDifferential_of_commute_faces_lemma {E E' : _root_.Global
   exact Finset.sum_congr rfl fun j _ => congrArg (fun x => ((-1 : ℤ) ^ (j : ℕ)) • x) (hc p j y)
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 variable (R : Type) [CommRing R] in
 variable {R} in
 theorem _root_.GlobalTheory.EtC.GmStep.rowExact_transfer {E E' : _root_.GlobalTheory.EtC.Spc}
@@ -95,14 +94,12 @@ theorem _root_.GlobalTheory.EtC.GmStep.rowExact_transfer {E E' : _root_.GlobalTh
 def laurentMap {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) : LaurentPolynomial A →+* LaurentPolynomial B :=
   LaurentPolynomial.eval₂ ((LaurentPolynomial.C : B →+* LaurentPolynomial B).comp f) (laurentVarUnit B)
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 variable (R : Type) [CommRing R] in
 variable {R} in
 theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_C {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (a : A) :
     _root_.GlobalTheory.EtC.GmStep.laurentMap f (LaurentPolynomial.C a) = LaurentPolynomial.C (f a) := by
   simp [_root_.GlobalTheory.EtC.GmStep.laurentMap, LaurentPolynomial.eval₂_C]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 variable (R : Type) [CommRing R] in
 variable {R} in
 theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_T {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (m : ℤ) :
@@ -120,7 +117,6 @@ theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_T {A B : Type} [CommRing A] [C
   · rw [zpow_add_one, Units.val_mul, ih, hu, ← LaurentPolynomial.T_add]
   · rw [zpow_sub_one, Units.val_mul, ih, hinv, ← LaurentPolynomial.T_add, sub_eq_add_neg]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 variable (R : Type) [CommRing R] in
 variable {R} in
 theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_comp_C {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) :
@@ -128,7 +124,6 @@ theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_comp_C {A B : Type} [CommRing 
       (LaurentPolynomial.C : B →+* LaurentPolynomial B).comp f :=
   RingHom.ext fun a => _root_.GlobalTheory.EtC.GmStep.laurentMap_C f a
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 variable (R : Type) [CommRing R] in
 variable {R} in
 theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_coeff {A B : Type} [CommRing A] [CommRing B] (f : A →+* B)
@@ -142,7 +137,6 @@ theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_coeff {A B : Type} [CommRing A
       AddMonoidAlgebra.coeff_single, AddMonoidAlgebra.coeff_single, Finsupp.mapRange_single]
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 variable (R : Type) [CommRing R] in
 variable {R} in
 theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_isIntegral {A B : Type} [CommRing A] [CommRing B] (f : A →+* B)
@@ -162,7 +156,6 @@ theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_isIntegral {A B : Type} [CommR
     exact isIntegral_algebraMap
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 variable (R : Type) [CommRing R] in
 variable {R} in
 theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_ker {A B : Type} [CommRing A] [CommRing B]
@@ -182,7 +175,6 @@ theorem _root_.GlobalTheory.EtC.GmStep.laurentMap_ker {A B : Type} [CommRing A] 
   exact mem_nilradical.mpr ((mem_nilradical.mp (hk (RingHom.mem_ker.mpr (hc n)))).map _)
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 variable (R : Type) [CommRing R] in
 variable {R} in
 theorem _root_.GlobalTheory.EtC.GmStep.spec_integral_surj {A B : Type} [CommRing A] [CommRing B]

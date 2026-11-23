@@ -268,7 +268,6 @@ end Formalism.L2.SG.Pf.G9
 
 namespace Formalism.L2.SG.Pf.Cnt
 
-open Formalism.HermitianLattices.Ext.L3
 open scoped Formalism.L2.SG.Pf.G9
 
 theorem glueMass_of (h1 : JordanExists) (h2 : JordanInv) (h6 : GlueLoc) (h8 : GlueProd)

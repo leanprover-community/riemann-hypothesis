@@ -453,7 +453,6 @@ theorem law_fC (hG0 : jumpWindows.G0) (hG5 : jumpWindows.G5) (hP2 : P2) (hP3 : P
     rw [← h3]
     ring
 
-open scoped ValuativeRel
 
 theorem sph_memO {w : Pl E} (x : w.adicCompletion E) :
     x ∈ 𝒪[w.adicCompletion E] ↔ x ∈ Formalism.UG.Ov E w := by

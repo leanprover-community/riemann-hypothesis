@@ -76,10 +76,6 @@ end GlobalTheory.TripInhab
 
 namespace GlobalTheory.TripInhab
 
-open GlobalTheory.Triple GlobalTheory.EigTie
-open GlobalTheory.GalChar (IsGal toQ inQ)
-open GlobalTheory.IndefiniteRowSideFullHecke.RayClassPrimeCounting (IsGaloisRepOf GalE)
-open GlobalTheory.TwistAbove (twGL)
 
 end GlobalTheory.TripInhab
 

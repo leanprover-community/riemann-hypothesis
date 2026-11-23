@@ -81,7 +81,6 @@ theorem val_inj [NeZero q] [Nontrivial A] (ζ : Prim q A) (a b : ZMod q) (h : ζ
 end LateralTheory.EtaleFoundations.TwFlat
 
 namespace LateralTheory.EtaleFoundations.TwFlat
-open GlobalTheory.EtC
 
 variable (q : ℕ) [NeZero q] (A : Type) [CommRing A]
 
@@ -129,7 +128,6 @@ theorem cc_out [Nontrivial A] (o : Quotient (St q A)) : cc o.out = 1 := by
 end LateralTheory.EtaleFoundations.TwFlat
 
 namespace LateralTheory.EtaleFoundations.TwFlat
-open GlobalTheory.EtC
 
 variable {q : ℕ} [NeZero q] {A : Type} [CommRing A]
 

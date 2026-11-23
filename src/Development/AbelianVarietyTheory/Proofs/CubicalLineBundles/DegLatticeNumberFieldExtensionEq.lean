@@ -61,9 +61,6 @@ private lemma eq_sum_apply_smul_single {F : Type} [Field F] (z : Fin n → F) :
     z = ∑ a, z a • (Pi.single a 1 : Fin n → F) := by
   ext i; simp [Finset.sum_apply, Pi.single_apply]
 
-open NumberField Module in
-open scoped nonZeroDivisors in
-open scoped ComplexOrder in
 variable {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] (j : K →+* K') {n : ℕ} in
 private lemma hermFam_form_map_eq_of_eq_on_basis (h : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam K (Fin n → K)) (h' : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam K' (Fin n → K'))
     (hf : ∀ s a b, h'.form s (Pi.single a 1) (Pi.single b 1) =
@@ -76,17 +73,11 @@ private lemma hermFam_form_map_eq_of_eq_on_basis (h : _root_.ReciprocityTheory.G
   simp only [_root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam.ds_form_sum_left, _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam.ds_form_sum_right, _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam.ds_form_smul_left,
     _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam.smul_right, hf, RingHom.comp_apply]
 
-open NumberField Module in
-open scoped nonZeroDivisors in
-open scoped ComplexOrder in
 variable {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] (j : K →+* K') {n : ℕ} in
 private lemma hermFam_form_zero_right {F W : Type} [Field F] [AddCommGroup W] [Module F W]
     (h : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam F W) (σ : F →+* ℂ) (x : W) : h.form σ x 0 = 0 := by
   simpa using h.smul_right σ 0 x 0
 
-open NumberField Module in
-open scoped nonZeroDivisors in
-open scoped ComplexOrder in
 variable {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] (j : K →+* K') {n : ℕ} in
 private lemma linearIndependent_map_of_linearIndependent (h : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam K (Fin n → K)) (h' : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam K' (Fin n → K'))
     (hf : ∀ s a b, h'.form s (Pi.single a 1) (Pi.single b 1) =
@@ -116,9 +107,6 @@ private lemma linearIndependent_map_of_linearIndependent (h : _root_.Reciprocity
   rw [hz] at hpos
   simp at hpos
 
-open NumberField Module in
-open scoped nonZeroDivisors in
-open scoped ComplexOrder in
 variable {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] (j : K →+* K') {n : ℕ} in
 private lemma map_mem_span_range_map_of_mem_span {r : ℕ} {v : Fin r → Fin n → K} {x : Fin n → K}
     (hx : x ∈ Submodule.span K (Set.range v)) :
@@ -129,9 +117,6 @@ private lemma map_mem_span_range_map_of_mem_span {r : ℕ} {v : Fin r → Fin n 
 
   simp [Finset.sum_apply, map_sum]
 
-open NumberField Module in
-open scoped nonZeroDivisors in
-open scoped ComplexOrder in
 variable {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] (j : K →+* K') {n : ℕ} in
 private lemma isFrame_span_image_map (h : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam K (Fin n → K)) (h' : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam K' (Fin n → K'))
     (hf : ∀ s a b, h'.form s (Pi.single a 1) (Pi.single b 1) =
@@ -151,9 +136,6 @@ private lemma isFrame_span_image_map (h : _root_.ReciprocityTheory.GeometryOfNum
   intro y hy
   exact hle hy
 
-open NumberField Module in
-open scoped nonZeroDivisors in
-open scoped ComplexOrder in
 variable {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] (j : K →+* K') {n : ℕ} in
 private lemma span_image_map_span_eq_span_image (S : Set (Fin n → K)) :
     Submodule.span (𝓞 K') ((fun c i => j (c i)) '' (Submodule.span (𝓞 K) S : Set (Fin n → K))) =
@@ -175,9 +157,6 @@ private lemma span_image_map_span_eq_span_image (S : Set (Fin n → K)) :
       ext i; simp [Algebra.smul_def]
   · exact Submodule.span_mono (Set.image_mono Submodule.subset_span)
 
-open NumberField Module in
-open scoped nonZeroDivisors in
-open scoped ComplexOrder in
 variable {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] (j : K →+* K') {n : ℕ} in
 private lemma fg_span_image_map_of_fg {B : Submodule (𝓞 K) (Fin n → K)} (hB : B.FG) :
     (Submodule.span (𝓞 K') ((fun c i => j (c i)) '' (B : Set (Fin n → K)))).FG := by
@@ -185,8 +164,6 @@ private lemma fg_span_image_map_of_fg {B : Submodule (𝓞 K) (Fin n → K)} (hB
   rw [span_image_map_span_eq_span_image]
   exact Submodule.fg_span (S.finite_toSet.image _)
 
-open NumberField Module in
-open scoped nonZeroDivisors in
 variable {L : Type} [Field L] [NumberField L] {V : Type} [AddCommGroup V] [Module L V]
   [Module (𝓞 L) V] [IsScalarTower (𝓞 L) L V] in
 private lemma le_span_range_of_isFrame_fin_zero {B : Submodule (𝓞 L) V} {v : Fin 0 → V}
@@ -197,8 +174,6 @@ private lemma le_span_range_of_isFrame_fin_zero {B : Submodule (𝓞 L) V} {v : 
   simp [Set.range_eq_empty] at hx'
   simp [hx']
 
-open NumberField Module in
-open scoped nonZeroDivisors in
 variable {L : Type} [Field L] [NumberField L] {V : Type} [AddCommGroup V] [Module L V]
   [Module (𝓞 L) V] [IsScalarTower (𝓞 L) L V] in
 private lemma exists_linearForm_vanish_init_eq_one_last {r : ℕ} {v : Fin (r + 1) → V} (hv : LinearIndependent L v) :
@@ -214,8 +189,6 @@ private lemma exists_linearForm_vanish_init_eq_one_last {r : ℕ} {v : Fin (r + 
   · rw [key]
     simp
 
-open NumberField Module in
-open scoped nonZeroDivisors in
 variable {L : Type} [Field L] [NumberField L] {V : Type} [AddCommGroup V] [Module L V]
   [Module (𝓞 L) V] [IsScalarTower (𝓞 L) L V] in
 private lemma map_span_range_eq_one_of_form_last {r : ℕ} {v : Fin (r + 1) → V} {f : V →ₗ[L] L}
@@ -231,8 +204,6 @@ private lemma map_span_range_eq_one_of_form_last {r : ℕ} {v : Fin (r + 1) → 
   · rw [Submodule.span_le, Set.singleton_subset_iff]
     exact Submodule.subset_span ⟨v (Fin.last r), Set.mem_range_self _, by simp [h1]⟩
 
-open NumberField Module in
-open scoped nonZeroDivisors in
 variable {L : Type} [Field L] [NumberField L] {V : Type} [AddCommGroup V] [Module L V]
   [Module (𝓞 L) V] [IsScalarTower (𝓞 L) L V] in
 private lemma span_range_inf_ker_eq_span_range_castSucc {R : Type} [CommRing R] [Algebra R L] [Module R V]
@@ -257,8 +228,6 @@ private lemma span_range_inf_ker_eq_span_range_castSucc {R : Type} [CommRing R] 
     rintro _ ⟨i, rfl⟩
     exact ⟨Submodule.subset_span ⟨_, rfl⟩, by simp [h0 i]⟩
 
-open NumberField Module in
-open scoped nonZeroDivisors in
 variable {L : Type} [Field L] [NumberField L] {V : Type} [AddCommGroup V] [Module L V]
   [Module (𝓞 L) V] [IsScalarTower (𝓞 L) L V] in
 private lemma relIndex_eq_relIndex_map_mul_relIndex_inf_ker {A B : Submodule (𝓞 L) V} (hAB : A ≤ B)
@@ -274,8 +243,6 @@ private lemma relIndex_eq_relIndex_map_mul_relIndex_inf_ker {A B : Submodule (�
   rw [Submodule.map_toAddSubgroup, Submodule.map_toAddSubgroup, hk, hk]
   exact _root_.ReciprocityTheory.MultiplicativeHeights.SemiDegIdx.relIndex_eq_map_mul_ker _ hAB
 
-open NumberField Module in
-open scoped nonZeroDivisors in
 variable {L : Type} [Field L] [NumberField L] {V : Type} [AddCommGroup V] [Module L V]
   [Module (𝓞 L) V] [IsScalarTower (𝓞 L) L V] in
 private lemma log_relIndex_one_eq_neg_log_absNorm_of_one_le (𝔞 : FractionalIdeal (𝓞 L)⁰ L) (h1 : 1 ≤ (𝔞 : Submodule (𝓞 L) L)) :
@@ -289,9 +256,6 @@ private lemma log_relIndex_one_eq_neg_log_absNorm_of_one_le (𝔞 : FractionalId
     exact_mod_cast hq
   rw [eq_inv_of_mul_eq_one_right hr, Real.log_inv]
 
-open NumberField Module in
-open scoped nonZeroDivisors in
-open scoped ComplexOrder in
 variable {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] (j : K →+* K') {n : ℕ} in
 private lemma log_relIndex_map_lemma_4 (h : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam K (Fin n → K)) (h' : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam K' (Fin n → K'))
     (hf : ∀ s a b, h'.form s (Pi.single a 1) (Pi.single b 1) =
@@ -433,8 +397,6 @@ private lemma log_relIndex_map_lemma_4 (h : _root_.ReciprocityTheory.GeometryOfN
       hIH, neg_div, neg_div, hN]
 
 
-open NumberField Module in
-open scoped nonZeroDivisors in
 theorem _root_.GlobalTheory.deg_span_image_eq :
     ∀ (K K' : Type) [Field K] [NumberField K] [Field K'] [NumberField K'] (j : K →+* K') (n : ℕ)
       (h : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam K (Fin n → K)) (h' : _root_.ReciprocityTheory.GeometryOfNumbersTheory.HermFam K' (Fin n → K')) (Λ : Submodule (𝓞 K) (Fin n → K)), Λ.FG →

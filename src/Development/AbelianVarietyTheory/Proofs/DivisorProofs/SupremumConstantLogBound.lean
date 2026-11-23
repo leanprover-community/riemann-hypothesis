@@ -111,11 +111,8 @@ theorem massLev_size (E : Type) [Field E] [NumberField E] [IsCMField E] (r M : �
 end GlobalTheory.SupConstSize
 
 namespace GlobalTheory.SupConstSize
-open Real
 
 
-open NumberField MeasureTheory in
-open scoped ENNReal in
 open Real in
 theorem _root_.GlobalTheory.SupConstSize.epsLev_bounds (E : Type) [Field E] [NumberField E] (d M : ℕ) (w : ℝ)
     (hf : 1 ≤ (_root_.ReciprocityTheory.ChartRestriction.G.FD.fdeg E : ℝ)) (hd : 1 ≤ d) (hM : 1 ≤ M) (hw : 1 ≤ w) :
@@ -151,9 +148,6 @@ theorem _root_.GlobalTheory.SupConstSize.epsLev_bounds (E : Type) [Field E] [Num
     exact mul_le_mul_of_nonneg_left key hAB.le
 
 
-open NumberField MeasureTheory in
-open scoped ENNReal in
-open Real in
 theorem _root_.GlobalTheory.SupConstSize.multBd_size (E : Type) [Field E] [NumberField E] (r : ℕ)
     (ε B : ℝ) (hf : 1 ≤ (_root_.ReciprocityTheory.ChartRestriction.G.FD.fdeg E : ℝ)) (hr : 1 ≤ (r : ℝ)) (hε : 0 < ε) (hB : 1 ≤ B) (hεB : 1 / B ≤ ε) :
     1 ≤ _root_.GlobalTheory.LevGeo.multBd E r ε ∧
@@ -205,12 +199,8 @@ theorem _root_.GlobalTheory.SupConstSize.multBd_size (E : Type) [Field E] [Numbe
 end GlobalTheory.SupConstSize
 
 namespace GlobalTheory.SupConstSize
-open Real
 
 
-open NumberField MeasureTheory in
-open scoped ENNReal in
-open Real in
 theorem _root_.GlobalTheory.SupConstSize.chart_factor_size (E : Type) [Field E] [NumberField E] (r : ℕ) (w L : ℝ)
     (hf : 1 ≤ (_root_.ReciprocityTheory.ChartRestriction.G.FD.fdeg E : ℝ)) (hr : 2 ≤ r) (hw : 1 ≤ w) (hL : 1 ≤ L)
     (hfr : Real.log (_root_.ReciprocityTheory.ChartRestriction.G.FD.fdeg E) + Real.log r ≤ L) (hlw : Real.log w ≤ 2 * L) :
@@ -310,7 +300,6 @@ theorem _root_.GlobalTheory.SupConstSize.chart_factor_size (E : Type) [Field E] 
 end GlobalTheory.SupConstSize
 
 namespace GlobalTheory.SupConstSize
-open Real
 
 theorem supConst_size : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r d M : ℕ) (w L : ℝ), 2 ≤ r → 1 ≤ d →
     1 ≤ M → 1 ≤ L → 1 ≤ w → Real.log (fdeg E * r) ≤ L → Real.log M ≤ 30 * L →

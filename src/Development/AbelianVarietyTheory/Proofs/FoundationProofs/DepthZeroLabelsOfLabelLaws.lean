@@ -324,7 +324,6 @@ theorem odd_r (R : Ranks) : Odd R.r := by
 
 end Row
 
-open GlobalTheory.Proof.ListFormLabels (ListFormAt)
 
 variable {D}
 

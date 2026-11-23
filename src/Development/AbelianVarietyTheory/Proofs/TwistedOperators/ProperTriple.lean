@@ -68,7 +68,6 @@ private lemma unipotent_block_entries_eq_one_zero {k : Type} [Field k] {n : Type
   · rw [h _ _ (by simp [hi])]
     simp
 
-open MeasureTheory ValuativeRel Matrix in
 private lemma recover_colE_vec_from_embX_product {k : Type} [Field k] {n : Type} [Fintype n] [DecidableEq n]
     {c ρ : ℕ} (hρc : ρ < c) (x : GL n k) (u : _root_.GlobalTheory.RootEx.N k n c (ρ + 1))
     (β : n → k) (r : n) :
@@ -106,7 +105,6 @@ private lemma recover_colE_vec_from_embX_product {k : Type} [Field k] {n : Type}
   rw [Matrix.mulVec_mulVec, Units.inv_mul, Matrix.one_mulVec]
 
 
-open MeasureTheory ValuativeRel Matrix in
 theorem _root_.GlobalTheory.RootEx.ProperTriple.proper_triple : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (n : Type) [Fintype n] [DecidableEq n] (c ρ : ℕ) (_ : 1 ≤ ρ)
     (_ : ρ < c) (C : Set (GL (n ⊕ Fin c) k)) (_ : IsCompact C),

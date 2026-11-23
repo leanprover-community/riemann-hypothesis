@@ -223,7 +223,6 @@ section Record
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.MainNotions.S.Lat
 
 theorem sig_hS (D : D7) (τ : D.host.E →+* ℂ) : ((hS D).sig τ).2 = D.R.rS + 1 := by
   show ((D.sp.Y 0).sig τ).2 = D.R.rS + 1

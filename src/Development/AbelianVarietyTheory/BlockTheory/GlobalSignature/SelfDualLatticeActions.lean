@@ -96,8 +96,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.SelfDualLatticeActions.ac
   have h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.HA.mat (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) σ J 1 = 1 := rfl
   rw [_root_.GlobalTheory.IndefiniteRowSideFullHecke.SelfDualLatticeActions.act, h, Units.val_one, Matrix.one_mulVec]
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain in
 variable {F : Type} [Field F] [NumberField F] (E : Type) [Field E] [Algebra F E]
   (v : HeightOneSpectrum (𝓞 F)) in
 variable {E} (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) in
@@ -204,8 +202,6 @@ variable {F : Type} [Field F] [NumberField F] {E : Type} [Field E] [Algebra F E]
   (v : HeightOneSpectrum (𝓞 F)) (σ : E →ₐ[F] E)
 
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain in
 variable {F : Type} [Field F] [NumberField F] {E : Type} [Field E] [Algebra F E]
   (v : HeightOneSpectrum (𝓞 F)) (σ : E →ₐ[F] E) in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.SelfDualLatticeActions.sigR_mem {z : _root_.GlobalTheory.IndefiniteRowSideFullHecke.SelfDualLatticeActions.Ev E v}

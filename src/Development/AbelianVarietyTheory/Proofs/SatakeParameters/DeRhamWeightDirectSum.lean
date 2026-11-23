@@ -104,7 +104,6 @@ theorem wdAt_bridge : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAin
 end GlobalTheory.SumRepAdd
 
 namespace GlobalTheory.SumRepAdd
-open Formalism.BasicNotions.Loc
 
 section Gen
 variable {Γ : Type} [Group Γ] {k k' : Type} [CommRing k] [CommRing k'] {a b : ℕ}
@@ -142,7 +141,6 @@ end Gen
 end GlobalTheory.SumRepAdd
 
 namespace GlobalTheory.SumRepAdd
-open Formalism.BasicNotions.Loc
 
 section W
 variable (D : D7) (T : WDTie D.nd D.naut) (W : WDSide D T) (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ)
@@ -189,7 +187,6 @@ end W
 end GlobalTheory.SumRepAdd
 
 namespace GlobalTheory.SumRepAdd
-open Formalism.BasicNotions.Loc
 
 section W2
 variable (D : D7) (T : WDTie D.nd D.naut) (W : WDSide D T) (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ)

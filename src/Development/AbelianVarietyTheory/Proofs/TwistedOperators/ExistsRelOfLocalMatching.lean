@@ -178,7 +178,6 @@ end GlobalTheory.SquareRel
 
 namespace GlobalTheory.SquareRel
 
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (alpha beta)
 
 variable {D : D7}
 

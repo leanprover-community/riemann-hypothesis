@@ -105,8 +105,6 @@ noncomputable section
 
 namespace GlobalTheory.ThetaTransformF
 
-open Formalism.IndefR.DatumF GlobalTheory.ThetaTransform GlobalTheory.SWQ
-open scoped ContDiff
 
 section Crit
 
@@ -208,8 +206,6 @@ noncomputable section
 
 namespace GlobalTheory.ThetaTransformF
 
-open Formalism.IndefR.DatumF GlobalTheory.ThetaTransform GlobalTheory.SWQ
-open scoped ContDiff
 
 section Main
 

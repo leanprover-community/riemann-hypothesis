@@ -53,7 +53,6 @@ private lemma natCast_eq_zero_stalk_of_over_zmod (n : ℕ) {X : Scheme} (f : X �
   rw [← this, ZMod.natCast_self, map_zero]
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry TopologicalSpace in
 private lemma stalk_hom_eq_zero_of_stalkMap_eq_zero {X Y : Scheme} (π : X ⟶ Y) (y : X) {R : CommRingCat}
     [IsLocalRing R] (h : Spec R ⟶ X) (hy : h (IsLocalRing.closedPoint R) = y)
     (q : Y.presheaf.stalk (π y) ⟶ R) (hh : h ≫ π = Spec.map q ≫ Y.fromSpecStalk (π y))
@@ -67,7 +66,6 @@ private lemma stalk_hom_eq_zero_of_stalkMap_eq_zero {X Y : Scheme} (π : X ⟶ Y
 
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry TopologicalSpace in
 theorem _root_.GlobalTheory.DI.StalkKer.stalkMap_surjective_ker : ∀ (p : ℕ) [Fact p.Prime] (Y X : Scheme.{0})
     (g : Y ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp (ZMod (p ^ 2))) (f : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp (ZMod p)) (π : X ⟶ Y),
     IsPullback π f g (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (ZMod.castHom (dvd_pow_self p two_ne_zero) (ZMod p))) →

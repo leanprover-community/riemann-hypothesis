@@ -351,7 +351,6 @@ end Formalism.ExponentWindows.E
 
 namespace Formalism.ExponentWindows.E.CL
 
-open PowerSeries
 
 variable {O : Type} [CommRing O]
 

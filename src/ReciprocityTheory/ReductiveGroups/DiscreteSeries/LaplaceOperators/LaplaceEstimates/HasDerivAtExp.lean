@@ -83,7 +83,6 @@ end ReciprocityTheory.ChartRestriction.DS.Lap
 
 namespace ReciprocityTheory.ChartRestriction.DS.Lap
 namespace ExponentialSlopeDerivatives
-open Formalism.QuantumDeterminants
 
 def sg (k r : ℕ) (i : Fin (2 * r + k + 1)) : Fin (2 * r + k + 1) :=
   if r ≤ i.val ∧ i.val ≤ r + k then i else ⟨2 * r + k - i.val, by omega⟩
@@ -133,7 +132,6 @@ end ReciprocityTheory.ChartRestriction.DS.Lap
 
 namespace ReciprocityTheory.ChartRestriction.DS.Lap
 namespace ExponentialSlopeDerivatives
-open Formalism.QuantumDeterminants
 
 theorem s_fix (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) :
     ∀ s ∈ Sset k r z, s ∈ UH (Hpk k r) ∧ s *ᵥ xOne k r z = xOne k r z := by

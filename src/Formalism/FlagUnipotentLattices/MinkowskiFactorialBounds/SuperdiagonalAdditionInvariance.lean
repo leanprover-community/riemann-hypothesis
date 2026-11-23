@@ -154,110 +154,79 @@ theorem fourth_reduction_identity : Step4 := by
           rw [← mul_pow]; norm_num
         rw [this]; ring
 
-section unfold
 variable {G X : Type} [Group G] [MulAction G X]
 open MulAction
 
-end unfold
 
-section dualcap
 variable {o O : Type} [CommRing o] [IsDomain o] [IsDiscreteValuationRing o] [CommRing O] [StarRing O]
   [Algebra o O]
 
-end dualcap
 
-section sametrace
 variable {E : Type} [CommRing E] [StarRing E] {V : Type} [AddCommGroup V] [Module E V]
   (h : V →ₗ[E] V →ₗ⋆[E] E) {r : ℕ} (e : Fin r → V)
 
-end sametrace
 
 namespace Part2
 
 end Part2
 
-section dvrcard
 variable {o : Type} [CommRing o] [IsDomain o] [IsDiscreteValuationRing o]
 
-end dvrcard
 
-section count
 variable {F : Type} [Field F] [Fintype F]
 
-end count
 
-section inert
 variable {K L : Type} [Field K] [Fintype K] [Field L] [Fintype L] [Algebra K L]
 
-end inert
 
-section inert2
 variable (K : Type) {L : Type} [Field K] [Fintype K] [Field L] [Fintype L] [Algebra K L]
 
 variable {K}
 variable {n : ℕ} (Ph : Matrix (Fin n) (Fin n) L)
 
-end inert2
 
-section inert3
 variable {K L : Type} [Field K] [Fintype K] [Field L] [Fintype L] [Algebra K L]
 variable {n : ℕ} (Ph : Matrix (Fin n) (Fin n) L)
 
 
 
 
-end inert3
 
-section inert4
 variable {K L : Type} [Field K] [Fintype K] [Field L] [Fintype L] [Algebra K L]
 variable {n : ℕ} (Ph : Matrix (Fin n) (Fin n) L)
 
 
 
-end inert4
 
-section unram2
 variable {o O : Type} [CommRing o] [IsDomain o] [IsDiscreteValuationRing o] [CommRing O] [StarRing O]
   [Algebra o O]
 
-end unram2
 
-section orth
 variable {O : Type} [CommRing O] [StarRing O] {abelian₂ : Type} [AddCommGroup abelian₂] [Module O abelian₂]
   (h : abelian₂ →ₗ[O] abelian₂ →ₗ⋆[O] O)
 
-end orth
 
-section unimod
-variable {o O : Type} [CommRing o] [IsDomain o] [IsDiscreteValuationRing o] [CommRing O] [StarRing O]
-  [Algebra o O] {abelian₂ : Type} [AddCommGroup abelian₂] [Module O abelian₂] [Module.Free O abelian₂]
-  [Module.Finite O abelian₂] (h : abelian₂ →ₗ[O] abelian₂ →ₗ⋆[O] O)
-
-end unimod
-
-section unimod2
 variable {o O : Type} [CommRing o] [IsDomain o] [IsDiscreteValuationRing o] [CommRing O] [StarRing O]
   [Algebra o O] {abelian₂ : Type} [AddCommGroup abelian₂] [Module O abelian₂] [Module.Free O abelian₂]
   [Module.Finite O abelian₂] (h : abelian₂ →ₗ[O] abelian₂ →ₗ⋆[O] O)
 
 
+variable {o O : Type} [CommRing o] [IsDomain o] [IsDiscreteValuationRing o] [CommRing O] [StarRing O]
+  [Algebra o O] {abelian₂ : Type} [AddCommGroup abelian₂] [Module O abelian₂] [Module.Free O abelian₂]
+  [Module.Finite O abelian₂] (h : abelian₂ →ₗ[O] abelian₂ →ₗ⋆[O] O)
 
-end unimod2
 
-section annih
+
+
 variable {o O : Type} [CommRing o] [IsDomain o] [IsDiscreteValuationRing o] [CommRing O] [StarRing O]
   [Algebra o O]
 
-end annih
 
-section stdform
 variable {K L : Type} [Field K] [Fintype K] [Field L] [Fintype L] [Algebra K L]
 
 variable {n : ℕ} (Ph : Matrix (Fin n) (Fin n) L)
 
-end stdform
 
-section hermjac
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] [StarRing E]
 
 
@@ -265,23 +234,16 @@ variable {F E : Type} [Field F] [CommRing E] [Algebra F E] [StarRing E]
 
 
 
-end hermjac
 
-section hermjacA
 variable {E : Type} [CommRing E]
 
-end hermjacA
 
-section hermjacA2
-variable {F E : Type} [Field F] [CommRing E] [Algebra F E] [StarRing E]
-
-end hermjacA2
-
-section hermjacB
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] [StarRing E]
 
 
-end hermjacB
+variable {F E : Type} [Field F] [CommRing E] [Algebra F E] [StarRing E]
+
+
 
 end Formalism.HermitianLatticeCounting.P.S4aux
 

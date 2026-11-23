@@ -135,7 +135,6 @@ end Step
 
 section Cons
 
-open Formalism.BasicNotions Formalism.MainNotions.G.CmpJ Formalism.L2.G
 
 variable {D : D7} {c : LatCmp D} {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl}
   {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Fl : Fills (D.gat u w h)} {Lv : Levels Fl}

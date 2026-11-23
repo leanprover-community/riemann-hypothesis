@@ -45,7 +45,6 @@ variable {D : D7}
 end GlobalTheory.GamLoss
 namespace GlobalTheory.GamLoss
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SumSize GlobalTheory.RowTest
-open Formalism.DivisionValues (vw lw)
 variable {D : D7}
 end GlobalTheory.GamLoss
 namespace GlobalTheory.GamLoss
@@ -63,7 +62,6 @@ end GlobalTheory.GamLoss
 end
 
 section
-open GlobalTheory.SumSize GlobalTheory.RowClaim
 
 theorem _root_.GlobalTheory.T.gamma_factor_loss_at_finite_places : _root_.GlobalTheory.FunPr.ThetaLocalInputs → FinGamK := by
   first | exact @_root_.GlobalTheory.GamLoss.finite_place_gamma_loss_bound | exact _root_.GlobalTheory.GamLoss.finite_place_gamma_loss_bound | (intros; apply _root_.GlobalTheory.GamLoss.finite_place_gamma_loss_bound <;> assumption)

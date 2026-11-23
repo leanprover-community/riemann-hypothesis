@@ -186,7 +186,6 @@ end GlobalTheory.RowChain.TopPer
 
 namespace GlobalTheory.RowChain.TopPer
 
-open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.RowUnf
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
@@ -198,7 +197,6 @@ end GlobalTheory.RowChain.TopPer
 
 namespace GlobalTheory.RowChain.TopPer
 
-open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.RowUnf
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 

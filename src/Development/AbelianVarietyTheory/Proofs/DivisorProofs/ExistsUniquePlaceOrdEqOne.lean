@@ -88,7 +88,6 @@ end GlobalTheory.Nef
 
 namespace GlobalTheory.Nef
 
-open Polynomial
 
 theorem exists_unique_place_ord_eq_one (k L : Type) [Field k] [Field L] [Algebra k L] (x : L)
     (hx : Transcendental k x) (htop : k⟮x⟯ = ⊤) :

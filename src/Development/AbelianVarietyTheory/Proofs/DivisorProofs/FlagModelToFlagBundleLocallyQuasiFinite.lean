@@ -140,7 +140,6 @@ end GlobalTheory.VarFlag.LQF
 namespace GlobalTheory.VarFlag.LQF
 
 open GlobalTheory.FlagMod (FlagCover FlagModel Frames initSpan)
-open GlobalTheory.ShFam (EigFrame FlagCpt)
 open GlobalTheory.CompHS (Y₀ inc₀)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}

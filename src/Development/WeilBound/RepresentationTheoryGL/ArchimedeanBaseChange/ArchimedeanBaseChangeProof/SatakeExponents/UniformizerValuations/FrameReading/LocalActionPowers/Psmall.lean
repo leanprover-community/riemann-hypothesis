@@ -244,7 +244,6 @@ theorem locM_iter_diag (w : Pl E) {k : Type} [Fintype k] (q : k → GLw a w × G
 
 end Psmall
 
-open Psmall in
 theorem locPow_holds : LocPow := by
   intro E _ _ _ a b w k _ U G m _ _
   constructor

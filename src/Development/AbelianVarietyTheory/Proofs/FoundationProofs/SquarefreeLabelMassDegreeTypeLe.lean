@@ -69,7 +69,6 @@ private theorem mass_degType_eq_zero_le_one (g : ℕ) [Fact g.Prime] (N : ℕ) :
   ext f
   simp
 
-open Polynomial Classical UniqueFactorizationMonoid in
 private theorem mul_card_irreducible_add_one_le_pow (g : ℕ) [Fact g.Prime] {d : ℕ} (hd : 0 < d) :
     d * ((_root_.GlobalTheory.BadShare.sqSet g d).filter Irreducible).card + 1 ≤ g ^ d := by
   set S := (_root_.GlobalTheory.BadShare.sqSet g d).filter Irreducible with hS
@@ -108,7 +107,6 @@ private theorem mul_card_irreducible_add_one_le_pow (g : ℕ) [Fact g.Prime] {d 
     exact hP.1.2.1
   omega
 
-open Polynomial Classical UniqueFactorizationMonoid in
 private theorem sum_inv_torusCard_irreducible_le (g : ℕ) [Fact g.Prime] {d : ℕ} (hd : 0 < d) :
     ∑ P ∈ (_root_.GlobalTheory.BadShare.sqSet g d).filter Irreducible,
       ((_root_.GlobalTheory.BadShare.torusCard g P : ℕ) : ℝ)⁻¹ ≤ (d : ℝ)⁻¹ := by
@@ -126,7 +124,6 @@ private theorem sum_inv_torusCard_irreducible_le (g : ℕ) [Fact g.Prime] {d : �
     rw [Finset.mem_filter, _root_.GlobalTheory.BadShare.mem_sqSet] at hP
     rw [_root_.GlobalTheory.BadShare.torusCard_irreducible hP.2, hP.1.2.1]
 
-open Polynomial Classical UniqueFactorizationMonoid in
 private theorem count_succ_mul_mass_cons_le (g : ℕ) [Fact g.Prime] (N d : ℕ) (ν : Multiset ℕ)
     (hd : 0 < d) :
     ((ν.count d + 1 : ℕ) : ℝ) *
@@ -241,7 +238,6 @@ private theorem count_succ_mul_mass_cons_le (g : ℕ) [Fact g.Prime] (N d : ℕ)
             (Finset.sum_nonneg fun _ _ => by positivity)
   convert hmain using 3 <;> (ext f; simp [hA, hB])
 
-open Polynomial Classical UniqueFactorizationMonoid in
 private theorem prod_pow_count_mul_factorial_cons (d : ℕ) (ν : Multiset ℕ) :
     ∏ e ∈ (d ::ₘ ν).toFinset, ((e : ℝ) ^ (d ::ₘ ν).count e * ((d ::ₘ ν).count e).factorial) =
       (∏ e ∈ ν.toFinset, ((e : ℝ) ^ ν.count e * (ν.count e).factorial)) *
@@ -264,7 +260,6 @@ private theorem prod_pow_count_mul_factorial_cons (d : ℕ) (ν : Multiset ℕ) 
   simp
 
 
-open Polynomial Classical UniqueFactorizationMonoid in
 theorem _root_.GlobalTheory.BadShare.mass_degType_le : ∀ (g : ℕ) [Fact g.Prime], ∀ (N : ℕ) (μ : Multiset ℕ),
     (_root_.GlobalTheory.BadShare.mass g N fun f => _root_.GlobalTheory.BadShare.degType g f = μ) ≤
       (∏ d ∈ μ.toFinset, ((d : ℝ) ^ μ.count d * (μ.count d).factorial))⁻¹ := by

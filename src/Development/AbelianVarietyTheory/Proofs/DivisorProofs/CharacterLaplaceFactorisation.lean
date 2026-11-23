@@ -133,7 +133,6 @@ noncomputable section
 
 namespace GlobalTheory.LaplaceChar
 
-open ReciprocityTheory.ChartRestriction.TR.Weyl
 
 theorem conj_eq_inv_of_norm_one {x : ℂ} (hx : ‖x‖ = 1) : (starRingEnd ℂ) x = x⁻¹ := by
   rw [Complex.inv_def, Complex.normSq_eq_norm_sq, hx]; simp
@@ -175,7 +174,6 @@ noncomputable section
 
 namespace GlobalTheory.LaplaceChar
 
-open ReciprocityTheory.ChartRestriction.TR.Weyl
 
 def selL {a b : ℕ} (J : {J : Finset (Fin (a + b)) // J.card = a}) : Fin a → Fin (a + b) :=
   J.1.orderEmbOfFin J.2

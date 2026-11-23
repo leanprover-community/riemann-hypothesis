@@ -105,7 +105,6 @@ section Asm2
 
 variable {ι : Type} [Fintype ι]
 
-open Classical
 
 theorem paU_add (q : ℕ) (a : EuclideanSpace ℂ ι) (F G : EuclideanSpace ℂ ι → ℂ) :
     paU q a (F + G) = paU q a F + paU q a G := by
@@ -144,7 +143,6 @@ section Asm3
 
 variable {ι : Type} [Fintype ι]
 
-open Classical
 
 theorem propA_core (hP : Ext.PackingCount) (hA : Ext.GaussianTailBound) (Y : GT ι) {q c : ℕ} {R0 : ℝ}
     (hq : 1 ≤ q) (hR0 : 0 < R0)

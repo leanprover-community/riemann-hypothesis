@@ -60,29 +60,21 @@ variable {K : Type} [Field K] [NumberField K] in
 private lemma coe_idealUnit_eq (I : Ideal (𝓞 K)) (hI : I ≠ ⊥) :
     ((_root_.GlobalTheory.Mem.RayData.idealUnit I hI : (FractionalIdeal (𝓞 K)⁰ K)ˣ) : FractionalIdeal (𝓞 K)⁰ K) = I := rfl
 
-open NumberField IsDedekindDomain in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Mem.RayData.idealUnit_mul (I J : Ideal (𝓞 K)) (hI : I ≠ ⊥) (hJ : J ≠ ⊥) (h : I * J ≠ ⊥) :
     _root_.GlobalTheory.Mem.RayData.idealUnit (I * J) h = _root_.GlobalTheory.Mem.RayData.idealUnit I hI * _root_.GlobalTheory.Mem.RayData.idealUnit J hJ := by
   ext
   simp [coe_idealUnit_eq, FractionalIdeal.coeIdeal_mul]
 
-open NumberField IsDedekindDomain in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Mem.RayData.idealUnit_congr {I J : Ideal (𝓞 K)} (hI : I ≠ ⊥) (hJ : J ≠ ⊥) :
     _root_.GlobalTheory.Mem.RayData.idealUnit I hI = _root_.GlobalTheory.Mem.RayData.idealUnit J hJ ↔ I = J := by
   rw [Units.ext_iff, coe_idealUnit_eq, coe_idealUnit_eq, FractionalIdeal.coeIdeal_inj]
 
-open NumberField IsDedekindDomain in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Mem.RayData.span_ne_bot {a : 𝓞 K} (ha : a ≠ 0) : Ideal.span {a} ≠ ⊥ := by
   rwa [Ne, Ideal.span_singleton_eq_bot]
 
-open NumberField IsDedekindDomain in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 private lemma idealUnit_span_mem_rayP_of_sub_one_mem {𝔮 : Ideal (𝓞 K)} {a : 𝓞 K} (ha : a ≠ 0)
     (h : a - 1 ∈ 𝔮) : _root_.GlobalTheory.Mem.RayData.idealUnit _ (_root_.GlobalTheory.Mem.RayData.span_ne_bot ha) ∈ _root_.GlobalTheory.Mem.An.rayP 𝔮 := by
@@ -90,8 +82,6 @@ private lemma idealUnit_span_mem_rayP_of_sub_one_mem {𝔮 : Ideal (𝓞 K)} {a 
   exact Subgroup.subset_closure ⟨a, h, rfl⟩
 
 
-open NumberField IsDedekindDomain in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Mem.RayData.mem_principalRay_iff (𝔮 : Ideal (𝓞 K)) (x : (FractionalIdeal (𝓞 K)⁰ K)ˣ) :
     x ∈ _root_.GlobalTheory.Mem.An.rayP 𝔮 ↔ ∃ (a b : 𝓞 K) (ha : a ≠ 0) (hb : b ≠ 0), a - 1 ∈ 𝔮 ∧ b - 1 ∈ 𝔮 ∧
@@ -140,14 +130,10 @@ variable {M : ℕ} (D : RayData K M)
 
 end aux
 
-open NumberField IsDedekindDomain in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 private lemma ideal_mul_ne_bot {I J : Ideal (𝓞 K)} (hI : I ≠ ⊥) (hJ : J ≠ ⊥) : I * J ≠ ⊥ :=
   fun h => (Ideal.mul_eq_bot.mp h).elim hI hJ
 
-open NumberField IsDedekindDomain in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 private lemma exists_coprime_idealUnit_mul_mem_rayP {𝔮 I : Ideal (𝓞 K)}
     (hIq : IsCoprime I 𝔮) (hI : I ≠ ⊥) :
@@ -187,8 +173,6 @@ private lemma exists_coprime_idealUnit_mul_mem_rayP {𝔮 I : Ideal (𝓞 K)}
     exact idealUnit_span_mem_rayP_of_sub_one_mem hc0 hc1
 
 
-open NumberField IsDedekindDomain in
-open scoped nonZeroDivisors in
 theorem _root_.GlobalTheory.Mem.RayData.card_eq_rayNo : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), M ≠ 0 →
     ∀ D : _root_.GlobalTheory.Mem.RayData K M,
     Fintype.card D.G =

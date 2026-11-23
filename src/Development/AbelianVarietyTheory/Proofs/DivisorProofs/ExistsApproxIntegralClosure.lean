@@ -160,7 +160,6 @@ end GlobalTheory.DecompFixed
 
 namespace GlobalTheory.DecompFixed
 
-open Pointwise IsLocalRing
 
 variable {A B G : Type} [CommRing A] [CommRing B] [Algebra A B] [Group G] [Finite G]
   [MulSemiringAction G B] [SMulCommClass G A B]
@@ -254,7 +253,6 @@ end GlobalTheory.DecompFixed
 
 namespace GlobalTheory.DecompFixed
 
-open Pointwise IsLocalRing Polynomial
 
 variable {A B G : Type} [CommRing A] [CommRing B] [Algebra A B] [Group G] [Finite G]
   [MulSemiringAction G B] [SMulCommClass G A B]
@@ -374,7 +372,6 @@ end GlobalTheory.DecompFixed
 
 namespace GlobalTheory.DecompFixed
 
-open Pointwise IsLocalRing
 
 variable {A B G : Type} [CommRing A] [CommRing B] [Algebra A B] [Group G] [Finite G]
   [MulSemiringAction G B] [SMulCommClass G A B]

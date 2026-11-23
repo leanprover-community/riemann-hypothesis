@@ -145,7 +145,6 @@ end GlobalTheory.QuadSigns
 
 namespace GlobalTheory.QuadSigns
 
-open scoped TensorProduct
 
 theorem exists_signs (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
     (hd : Module.finrank K L = 2) (σ : L →+* L) (hσ : σ ≠ RingHom.id L)

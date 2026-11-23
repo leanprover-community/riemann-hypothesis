@@ -74,13 +74,10 @@ theorem _root_.GlobalTheory.PureMatch.ShellVolume.isOpen_translate {a : ℕ} (u 
 end GlobalTheory.PureMatch.ShellVolume
 
 
-open IsDedekindDomain NumberField MeasureTheory Matrix in
-open scoped TensorProduct in
 attribute [local instance] _root_.Formalism.BasicNotions.Host.cmStar _root_.GlobalTheory.LocalData.complRel
   _root_.GlobalTheory.LocalData.isLocalField _root_.GlobalTheory.FunObj.borelKw
   _root_.GlobalTheory.FunObj.borelSpaceKw in
 attribute [local instance] _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.measFv _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.borelFv in
-open ValuativeRel in
 theorem _root_.GlobalTheory.PureMatch.ShellVolume.finsum_vol_shell_inter_translate : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k]
     (a : ℕ) (ϖ : kˣ) (u u' : GL (Fin a) k), _root_.GlobalTheory.SplitFlip.IsUnif ϖ →
     ∑ᶠ m : {m : Fin a → ℤ // Antitone m}, (_root_.GlobalTheory.SplitFlip.haarVol (_root_.GlobalTheory.SplitWeil.KO k (Fin a))).real (_root_.GlobalTheory.SplitFlip.shellSet ϖ m.1 ∩ {g | u * g * u' ∈ _root_.GlobalTheory.SplitWeil.KO k (Fin a)}) = 1 := by

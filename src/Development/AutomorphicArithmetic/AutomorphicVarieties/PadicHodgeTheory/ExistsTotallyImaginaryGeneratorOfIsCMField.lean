@@ -79,7 +79,6 @@ private theorem conj_of_sq (w : ℂ) (r : ℝ) (hr : r < 0) (h : w ^ 2 = r) : st
     nlinarith [mul_self_nonneg w.re]
   apply Complex.ext <;> simp [h3]
 
-open Polynomial in
 private theorem conj_of_root (g : ℚ[X]) (hg : g ≠ 0) (hs : (g.map (algebraMap ℚ ℝ)).Splits) (w : ℂ)
     (h : aeval w g = 0) : starRingEnd ℂ w = w := by
   have h1 : g.map (algebraMap ℚ ℝ) ≠ 0 := Polynomial.map_ne_zero hg

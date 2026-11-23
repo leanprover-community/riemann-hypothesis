@@ -63,7 +63,6 @@ private lemma exists_omg_eq_smul_of_isDFrame (D : _root_.Formalism.FourierDecayA
   obtain ⟨-, ⟨a, ha, hEq⟩, -⟩ := hd
   exact ⟨a, ha, hω.trans hEq⟩
 
-open Matrix in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] in
 private lemma herm_smul_self_re_eq (H : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
@@ -75,7 +74,6 @@ private lemma herm_smul_self_re_eq (H : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r
     Complex.normSq_conj]
   ring
 
-open Matrix in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] in
 private lemma cofactor_eq_of_frames_lemma (D : _root_.Formalism.FourierDecayAlt.B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ)
@@ -104,7 +102,6 @@ private lemma cofactor_eq_of_frames_lemma (D : _root_.Formalism.FourierDecayAlt.
   have ha : a₁ = a₂ := by nlinarith [sq_nonneg (a₁ - a₂), sq_nonneg (a₁ + a₂)]
   rw [e₁, e₂, ha, hZ]
 
-open Matrix in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] in
 private lemma omg_sgs_eq_inv_mulVec (D : _root_.Formalism.FourierDecayAlt.B.RealPlaceData k r Wp Wq) (p : _root_.Formalism.FourierDecayAlt.B.SS k r) (hp : D.inSS p)
@@ -124,7 +121,6 @@ private lemma omg_sgs_eq_inv_mulVec (D : _root_.Formalism.FourierDecayAlt.B.Real
     D.z'_mem D.T'_pos u2 h1 h2, _root_.GlobalTheory.WigSh.omg_mul_N k r D.z D.z' _ _
     D.z_mem D.z'_mem u1 n2, _root_.GlobalTheory.WigSh.OmLeftN.omg_mul_left k r D.z D.z' _ _ D.z_mem hn1]
 
-open Matrix in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] in
 private lemma integrand_comp_lemma_5 {Wq' : Type} [NormedAddCommGroup Wq'] [InnerProductSpace ℂ Wq']
@@ -147,7 +143,6 @@ private lemma integrand_comp_lemma_5 {Wq' : Type} [NormedAddCommGroup Wq'] [Inne
   congr 1
   simp only [ContinuousLinearMap.comp_assoc, hint]
 
-open Matrix in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] in
 private lemma orbital_comp_lemma_2 {Wq' : Type} [NormedAddCommGroup Wq'] [InnerProductSpace ℂ Wq']
@@ -190,7 +185,6 @@ private lemma orbital_comp_lemma_2 {Wq' : Type} [NormedAddCommGroup Wq'] [InnerP
   · exact (h₁ ⟨θ, hθ', hint'⟩).elim
 
 
-open Matrix in
 theorem _root_.GlobalTheory.WigSh.contraction_maps_at_representatives :
     ∃ c₃ : ℝ, ∀ (Wp : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ
         Wp] (Wq : Type) [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ

@@ -115,6 +115,5 @@ end
 
 end ThetaProjectionIdempotent
 section
-open GlobalTheory.RowClaim
 
 end

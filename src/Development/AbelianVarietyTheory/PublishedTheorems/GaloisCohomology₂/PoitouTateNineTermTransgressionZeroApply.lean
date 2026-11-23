@@ -332,7 +332,6 @@ def PoitouTateTotallyComplex : Prop :=
       (hρ : ContAction ρ),
       NineTermExact S Av μ (invAt S Av μ hμ inv) ρ hρ ∧ ShaDual S Av μ ρ
 
-open PoitouTate in
 theorem PoitouTateTotallyComplex.annihilators (h : PoitouTateTotallyComplex)
     (F Ω : Type) [Field F] [NumberField F] [_root_.NumberField.IsTotallyComplex F] [Field Ω] [Algebra F Ω]
     [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (r : ℕ) (hr : 0 < r) (ζ : Ω)

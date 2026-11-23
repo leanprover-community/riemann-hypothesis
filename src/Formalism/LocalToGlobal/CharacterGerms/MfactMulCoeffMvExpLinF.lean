@@ -114,10 +114,8 @@ theorem coeff_zero_mvExp (h : MvPowerSeries τ K) : coeff 0 (mvExp h) = 1 := by
 
 end ExpLin
 
-section Rename
 
 variable {K : Type} [Field K] {σ τ : Type}
 
-end Rename
 
 end Formalism.L2.FormalSeriesBounds

@@ -281,7 +281,6 @@ end GlobalTheory.Mum.RosComp
 
 namespace GlobalTheory.Mum.RosComp
 
-open GlobalTheory.TensRosati
 
 variable {R : Type} [CommRing R] [IsDomain R] {D D' : DegPre R} {r : ℕ} {W : Matrix (Fin r) (Fin r) ℤ}
   {F : Type} [Field F] [Algebra (FractionRing R) F] {N N' : NumD F}

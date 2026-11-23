@@ -66,12 +66,10 @@ end Loc
 end GlobalTheory.CompanionTheory.KMVan
 
 namespace GlobalTheory.CompanionTheory.KMVan
-open TensorProduct
 
 end GlobalTheory.CompanionTheory.KMVan
 
 namespace GlobalTheory.CompanionTheory.KMVan
-open TensorProduct
 section D
 variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
   {Φ : PDF R C} {Λ : Type} [CommRing Λ]
@@ -80,7 +78,6 @@ end D
 end GlobalTheory.CompanionTheory.KMVan
 
 namespace GlobalTheory.CompanionTheory.KMVan
-open TensorProduct
 section LT
 variable {R : Type} [CommRing R] {C C' : Type 1} [Category.{0} C] [Category.{0} C']
   {Φ : PDF R C} {Λ : Type} [CommRing Λ]
@@ -118,7 +115,6 @@ end GlobalTheory.CompanionTheory.KMVan
 
 namespace GlobalTheory.CompanionTheory.KMVan
 section CL
-open CrystallineSemistableComparison.Pb.Site
 variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
   {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I} {V V' : X.Opens} {d : ℕ}
 
@@ -127,7 +123,6 @@ end GlobalTheory.CompanionTheory.KMVan
 
 namespace GlobalTheory.CompanionTheory.KMVan
 section TAU
-open CrystallineSemistableComparison.Pb.Site
 variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
   {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I}
 
@@ -150,7 +145,6 @@ end GlobalTheory.CompanionTheory.KMVan
 
 namespace GlobalTheory.CompanionTheory.KMVan
 section TAU2
-open CrystallineSemistableComparison.Pb.Site
 variable {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ}
   {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I}
 

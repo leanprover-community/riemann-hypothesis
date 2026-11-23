@@ -189,7 +189,6 @@ end PositivityTheory.RgBcC.Cxa
 
 namespace PositivityTheory.RgBcC
 
-open PositivityTheory.RgTw (Mat hb)
 open Cxa
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace

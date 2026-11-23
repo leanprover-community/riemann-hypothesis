@@ -110,7 +110,6 @@ theorem exactAt_linkIn_of_map : ∀ (R M : Type) [CommRing R] [AddCommGroup M] [
 end GlobalTheory.SeqCxLinkEquiv
 
 section
-open GlobalTheory.SeqCx Matrix
 theorem _root_.GlobalTheory.T.exactAt_linkIn_uniM_of_exactAt_map_linearEquiv : ∀ (R M : Type) [CommRing R] [AddCommGroup M] [Module R M] (ψ : M ≃ₗ[R] M) (X : Set M), (∀ x, ψ x ∈ X ↔ x ∈ X) → ∀ (τ : List M) (p : ℕ), ExactAt (linkIn (uniM R M) X (τ.map ψ)) p → ExactAt (linkIn (uniM R M) X τ) p := by
   first
   | exact @GlobalTheory.SeqCxLinkEquiv.exactAt_linkIn_of_map

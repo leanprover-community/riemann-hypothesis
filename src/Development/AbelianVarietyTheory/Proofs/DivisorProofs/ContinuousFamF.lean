@@ -129,9 +129,6 @@ section
 
 noncomputable section
 
-open MeasureTheory Filter Topology
-open Formalism.REAL (UJ KG toM toMK muK)
-open GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc3
 
 namespace GlobalTheory.PsCo.Pcd
 
@@ -354,9 +351,6 @@ section
 
 noncomputable section
 
-open MeasureTheory Filter Topology
-open Formalism.REAL (UJ KG toM toMK muK)
-open GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc3
 
 namespace GlobalTheory.PsCo.Pcd
 

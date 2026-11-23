@@ -58,7 +58,6 @@ private theorem exists_sum_smul_of_mem_span_range_smul' {R N : Type*} [CommRing 
     exact ⟨k + k', fun i => P.add_mem (hk i) (hk' i), by
       simp [smul_add, Finset.sum_add_distrib]⟩
 
-open CategoryTheory CategoryTheory.Limits TensorProduct in
 private theorem flat_quotient_of_mem_ideal_smul_imp_mem_map_smul {V A N : Type*} [CommRing V] [CommRing A]
     [Algebra V A] [AddCommGroup N] [Module A N] [Module V N] [IsScalarTower V A N]
     [Module.Flat V N] (K : Submodule A N)
@@ -94,7 +93,6 @@ private theorem flat_quotient_of_mem_ideal_smul_imp_mem_map_smul {V A N : Type*}
   exact (map_sum (K.mkQ.restrictScalars V) (fun j => a i j • y j) Finset.univ).trans
     (Finset.sum_congr rfl fun j _ => map_smul _ _ _)
 
-open CategoryTheory CategoryTheory.Limits TensorProduct in
 private theorem smul_mem_ideal_smul_of_mem_map {V A N : Type*} [CommRing V] [CommRing A]
     [Algebra V A] [AddCommGroup N] [Module A N] [Module V N] [IsScalarTower V A N] (I : Ideal V)
     {r : A} (hr : r ∈ I.map (algebraMap V A)) (y : N) : r • y ∈ I • (⊤ : Submodule V N) := by
@@ -109,7 +107,6 @@ private theorem smul_mem_ideal_smul_of_mem_map {V A N : Type*} [CommRing V] [Com
   · rw [add_smul]; exact Submodule.add_mem _ (hx y) (hx' y)
   · rw [smul_eq_mul, mul_comm, mul_smul]; exact hx _
 
-open CategoryTheory CategoryTheory.Limits TensorProduct in
 private theorem mem_ideal_smul_of_mem_map_smul {V A N : Type*} [CommRing V] [CommRing A]
     [Algebra V A] [AddCommGroup N] [Module A N] [Module V N] [IsScalarTower V A N] (I : Ideal V)
     (K : Submodule A N) {w : N} (hw : w ∈ I.map (algebraMap V A) • K) :
@@ -118,7 +115,6 @@ private theorem mem_ideal_smul_of_mem_map_smul {V A N : Type*} [CommRing V] [Com
     (fun r hr y _ => smul_mem_ideal_smul_of_mem_map I hr y)
     (fun x y hx hy => Submodule.add_mem _ hx hy)
 
-open CategoryTheory CategoryTheory.Limits TensorProduct in
 private theorem mem_ideal_smul_of_smul_mem_of_flat {V N : Type*} [CommRing V] [IsNoetherianRing V]
     [AddCommGroup N] [Module V N] [Module.Flat V N] (J m : Ideal V) (a : V)
     (ha : ∀ b, a * b ∈ J → b ∈ m) {n : N} (hn : a • n ∈ J • (⊤ : Submodule V N)) :
@@ -142,7 +138,6 @@ private theorem mem_ideal_smul_of_smul_mem_of_flat {V N : Type*} [CommRing V] [I
   rw [he, ← hg]
   exact Submodule.sum_mem _ fun i _ => Ideal.mul_mem_right _ _ (Submodule.subset_span ⟨i, rfl⟩)
 
-open CategoryTheory CategoryTheory.Limits TensorProduct in
 private theorem mem_map_smul_of_maximalIdeal_pow_le {V A N : Type*} [CommRing V] [IsNoetherianRing V]
     [IsLocalRing V] [CommRing A] [Algebra V A] [AddCommGroup N] [Module A N] [Module V N]
     [IsScalarTower V A N] [Module.Flat V N] (K : Submodule A N)
@@ -220,7 +215,6 @@ private theorem mem_map_smul_of_maximalIdeal_pow_le {V A N : Type*} [CommRing V]
   exact Submodule.add_mem _ hw (key c hcm)
 
 
-open CategoryTheory CategoryTheory.Limits TensorProduct in
 theorem _root_.GlobalTheory.flat_coker_of_injective_mod_maximalIdeal : ∀ (V A : Type) [CommRing V] [IsNoetherianRing V] [IsLocalRing V] [CommRing A] [IsNoetherianRing A] [IsLocalRing A] [Algebra V A] [IsLocalHom (algebraMap V A)] (M N : Type) [AddCommGroup M] [Module A M] [Module.Finite A M] [AddCommGroup N] [Module A N] [Module V N] [IsScalarTower V A N] [Module.Flat V N] (u : M →ₗ[A] N), (∀ x : M, u x ∈ (((IsLocalRing.maximalIdeal V).map (algebraMap V A)) • ⊤ : Submodule A N) → x ∈ (((IsLocalRing.maximalIdeal V).map (algebraMap V A)) • ⊤ : Submodule A M)) → Module.Flat V (N ⧸ LinearMap.range u) := by
   intro V A _ _ _ _ _ _ _ _ M N _ _ _ _ _ _ _ _ u hu
   have hmA : (IsLocalRing.maximalIdeal V).map (algebraMap V A) ≠ ⊤ := by

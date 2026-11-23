@@ -73,16 +73,12 @@ private lemma posDef_det_one_eq_unitary_conj_exp_diagonal {ι : Type} [Fintype �
     rw [mul_div_cancel₀ _ two_ne_zero, Real.exp_log (hP.eigenvalues_pos i)]
     rfl
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma unitary_conj_exp_diagonal_conjTranspose {ι : Type} [Fintype ι] [DecidableEq ι]
     (U : Matrix ι ι ℂ) (δ : ι → ℝ) (s : ℝ) :
     ((U * diagonal fun i => ((Real.exp (s * δ i) : ℝ) : ℂ)) * Uᴴ)ᴴ =
       (U * diagonal fun i => ((Real.exp (s * δ i) : ℝ) : ℂ)) * Uᴴ := by
   simp [conjTranspose_mul, Matrix.mul_assoc, diagonal_conjTranspose, -Complex.ofReal_exp, Pi.star_def]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma unitary_conj_exp_diagonal_mul {ι : Type} [Fintype ι] [DecidableEq ι]
     {U : Matrix ι ι ℂ} (hU : U * Uᴴ = 1) (δ : ι → ℝ) (s t : ℝ) :
     ((U * diagonal fun i => ((Real.exp (s * δ i) : ℝ) : ℂ)) * Uᴴ) *
@@ -94,8 +90,6 @@ private lemma unitary_conj_exp_diagonal_mul {ι : Type} [Fintype ι] [DecidableE
     diagonal_mul_diagonal]
   simp only [← Complex.ofReal_mul, ← Real.exp_add, ← add_mul]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma exists_unitary_exp_diagonal_fixing_of_nsq_eq {ι : Type} [Fintype ι] [DecidableEq ι] {m : ℕ}
     (d : Fin m → ℕ) (v : _root_.GlobalTheory.ClassFin.TIdx ι d → ℂ) (hv : _root_.GlobalTheory.ClassFin.IsMinVec d v)
     (g : Matrix ι ι ℂ) (hg : g.det = 1)
@@ -127,8 +121,6 @@ private lemma exists_unitary_exp_diagonal_fixing_of_nsq_eq {ι : Type} [Fintype 
   rw [hh] at hnh
   exact _root_.GlobalTheory.ClassFin.act_exp_eq_of_isMinVec ι m d v U δ hv hU hδ (by simpa only [one_mul] using hnh)
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma map_conj_mul_conjTranspose_eq_one {ι : Type} [Fintype ι] [DecidableEq ι]
     {U : Matrix ι ι ℂ} (hU : U * Uᴴ = 1) : U.map (starRingEnd ℂ) * (U.map (starRingEnd ℂ))ᴴ = 1 := by
   have := congrArg (fun M : Matrix ι ι ℂ => M.map (starRingEnd ℂ)) hU
@@ -137,8 +129,6 @@ private lemma map_conj_mul_conjTranspose_eq_one {ι : Type} [Fintype ι] [Decida
   · ext i j; simp
   · ext i j; simp only [Matrix.map_apply, Matrix.one_apply]; split_ifs <;> simp
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma unitary_conj_exp_diagonal_map_conj {ι : Type} [Fintype ι] [DecidableEq ι]
     (U : Matrix ι ι ℂ) (δ : ι → ℝ) (s : ℝ) :
     ((U * diagonal fun i => ((Real.exp (s * δ i) : ℝ) : ℂ)) * Uᴴ).map (starRingEnd ℂ) =
@@ -149,15 +139,11 @@ private lemma unitary_conj_exp_diagonal_map_conj {ι : Type} [Fintype ι] [Decid
   ext i j
   by_cases h : i = j <;> simp [diagonal, h, -Complex.ofReal_exp]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma unitary_conj_exp_zero_diagonal_eq_one {ι : Type} [Fintype ι] [DecidableEq ι]
     {U : Matrix ι ι ℂ} (hU : U * Uᴴ = 1) (δ : ι → ℝ) :
     (U * diagonal fun i => ((Real.exp (0 * δ i) : ℝ) : ℂ)) * Uᴴ = 1 := by
   simp [hU]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma posSemidef_eq_of_mul_self_eq {ι : Type} [Fintype ι] [DecidableEq ι]
     (X Y : Matrix ι ι ℂ) (hX : X.PosSemidef) (hY : Y.PosSemidef) (h : X * X = Y * Y) : X = Y := by
   have hX2 : (0 : Matrix ι ι ℂ) ≤ X * X := by
@@ -169,8 +155,6 @@ private lemma posSemidef_eq_of_mul_self_eq {ι : Type} [Fintype ι] [DecidableEq
   have h2 := (CFC.sqrt_eq_iff (Y * Y) Y hY2 hY.nonneg).mpr rfl
   rw [← h1, ← h2, h]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma nsq_act_eq_of_gram_eq {ι : Type} [Fintype ι] [DecidableEq ι] {m : ℕ}
     (d : Fin m → ℕ) (v : _root_.GlobalTheory.ClassFin.TIdx ι d → ℂ) (a b : Matrix ι ι ℂ) (ha : IsUnit a.det)
     (hab : b * bᴴ = a * aᴴ) :
@@ -185,8 +169,6 @@ private lemma nsq_act_eq_of_gram_eq {ι : Type} [Fintype ι] [DecidableEq ι] {m
   rw [hb, hactmul, (_root_.GlobalTheory.ClassFin.ActNorm.act_norm_continuity ι m d).1 _ _ hk]
 
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 theorem _root_.GlobalTheory.ClassFin.exists_real_translate_isMinVec : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (m : ℕ) (d : Fin m → ℕ) (t : _root_.GlobalTheory.ClassFin.TIdx ι d → ℝ), (∃ w ∈ _root_.GlobalTheory.ClassFin.orb d (fun k => (t k : ℂ)), _root_.GlobalTheory.ClassFin.IsMinVec d w) → ∃ g : Matrix ι ι ℝ, g.det = 1 ∧ _root_.GlobalTheory.ClassFin.IsMinVec d (_root_.GlobalTheory.ClassFin.act d (fun k => (t k : ℂ)) (g.map (fun r : ℝ => (r : ℂ)))) := by
   intro ι _ _ m d t ⟨w, hwo, hw⟩
   obtain ⟨g₀, hg₀, rfl⟩ := hwo

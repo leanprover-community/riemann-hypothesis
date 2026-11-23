@@ -116,7 +116,6 @@ end GlobalTheory.KFourier
 
 namespace GlobalTheory.KFourier
 
-open MeasureTheory Matrix Formalism.REAL
 
 variable {n : ℕ}
 

@@ -162,7 +162,6 @@ end GlobalTheory.SatHecke
 
 namespace GlobalTheory.SatHecke
 
-open GlobalTheory.LatHecke GlobalTheory.LFun Formalism.UG
 
 def formCore {X : Type} [AddCommGroup X] [Module ℂ X] (B : X →ₗ[ℂ] X →ₗ⋆[ℂ] ℂ)
     (hB : ∀ v w, B w v = starRingEnd ℂ (B v w)) (hp : ∀ v, v ≠ 0 → 0 < (B v v).re) :

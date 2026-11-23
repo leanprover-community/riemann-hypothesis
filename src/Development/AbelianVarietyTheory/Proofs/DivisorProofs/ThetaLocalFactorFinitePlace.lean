@@ -116,7 +116,6 @@ noncomputable section
 
 namespace GlobalTheory.UnitaryTriSplit
 
-open Matrix GlobalTheory.UnitaryPlaceSplit
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -215,7 +214,6 @@ noncomputable section
 
 namespace GlobalTheory.UnitaryTriSplit
 
-open Matrix GlobalTheory.UnitaryPlaceSplit
 
 theorem factor_away : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →

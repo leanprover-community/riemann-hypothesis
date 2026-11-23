@@ -100,7 +100,6 @@ theorem sphComm : SphComm := by
   obtain ⟨a₂, b₂, e₂⟩ := Formalism.UG.P.heckecomm_tr_dc Formalism.UG.Final.CartanDecomp E w b g.2
   exact ⟨⟨((a₁ : GLw a w), (a₂ : GLw b w)), ⟨a₁.2, a₂.2⟩⟩, ⟨((b₁ : GLw a w), (b₂ : GLw b w)), ⟨b₁.2, b₂.2⟩⟩, Prod.ext e₁ e₂⟩
 
-open Idem in
 theorem idemAlg : IdemAlg := by
   intro E _ _ _ a b w L hL hLK
   have hne : L.relIndex (K2 a b w) ≠ 0 := relIndex_ne_zero hL

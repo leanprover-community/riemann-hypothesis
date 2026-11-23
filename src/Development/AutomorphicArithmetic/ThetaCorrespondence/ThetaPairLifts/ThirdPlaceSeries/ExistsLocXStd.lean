@@ -51,7 +51,6 @@ open GlobalTheory.SymBridge GlobalTheory.FinPl GlobalTheory.Fam.Inhab
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 end GlobalTheory.XGeoStd.Frames
 namespace GlobalTheory.XGeoStd.Frames
-open GlobalTheory.SymBridge GlobalTheory.FinPl GlobalTheory.Fam.Inhab
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 variable {B : GlobalTheory.Mem.Base} {X : GlobalTheory.Mem.PreX B.toPre}
 end GlobalTheory.XGeoStd.Frames

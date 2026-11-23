@@ -82,7 +82,6 @@ private lemma UpperTheory.rational_polynomial_vanishing_naturals {K : Type} [Fie
       rfl
     rw [this, map_smul, smul_eq_mul, mul_comm]
 
-open MvPolynomial in
 private lemma UpperTheory.exists_nat_point_avoiding_polynomials {W : Type} [Finite W] {K : W → Type} [∀ w, Field (K w)]
     [∀ w, CharZero (K w)] {m : ℕ}
     (P : ∀ w, MvPolynomial (Fin m) (K w)) (hP : ∀ w, P w ≠ 0) :

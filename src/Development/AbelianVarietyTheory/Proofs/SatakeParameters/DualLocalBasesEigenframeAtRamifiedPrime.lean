@@ -147,7 +147,6 @@ end GlobalTheory.Proof.dualLocalBases_eigenframe_at_ramifiedPrime
 
 namespace GlobalTheory.Proof.dualLocalBases_eigenframe_at_ramifiedPrime
 
-open GlobalTheory.DFrame
 
 theorem conj_conj' (D : D7) (y : D.host.E) : D.host.conj (D.host.conj y) = y := by
   apply D.host.φ₀.injective

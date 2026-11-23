@@ -48,8 +48,6 @@ private lemma ringEquiv_eval_eq_eval_map {σ : Type} (e : ℂ ≃+* ℂ) (x : σ
   rw [MvPolynomial.eval_map, MvPolynomial.eval, MvPolynomial.coe_eval₂Hom]
   exact MvPolynomial.hom_eval₂ p (RingHom.id ℂ) (e : ℂ →+* ℂ) x
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma ev_eq_evC_map_algebraMap {ι : Type} (p : MvPolynomial (ι × ι) ℚ)
     (g : Matrix ι ι ℂ) :
     _root_.GlobalTheory.ClassFin.ev p g =
@@ -57,8 +55,6 @@ private lemma ev_eq_evC_map_algebraMap {ι : Type} (p : MvPolynomial (ι × ι) 
   unfold _root_.GlobalTheory.ClassFin.ev _root_.GlobalTheory.ClassFin.evC
   rw [MvPolynomial.aeval_def, MvPolynomial.eval_map]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma mem_span_rational_of_vanishing {ι : Type} (Γ : Set (Matrix ι ι ℂ))
     (hΓ : ∀ σ : ℂ ≃+* ℂ, ∀ g ∈ Γ, g.map σ ∈ Γ) (f : MvPolynomial (ι × ι) ℂ)
     (hf : ∀ g ∈ Γ, _root_.GlobalTheory.ClassFin.evC f g = 0) :
@@ -99,8 +95,6 @@ private lemma mem_span_rational_of_vanishing {ι : Type} (Γ : Set (Matrix ι ι
   exact hwW g hg
 
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 theorem _root_.GlobalTheory.ClassFin.evC_eq_zero_of_mem_pts_of_stable : ∀ (ι : Type) [Fintype ι] [DecidableEq ι]
     (Γ : Set (Matrix ι ι ℂ)), (∀ σ : ℂ ≃+* ℂ, ∀ g ∈ Γ, g.map σ ∈ Γ) →
     ∀ f : MvPolynomial (ι × ι) ℂ, (∀ g ∈ Γ, _root_.GlobalTheory.ClassFin.evC f g = 0) →

@@ -69,7 +69,6 @@ private theorem linearIndependent_one_of_notMem_range {K L : Type} [Field K] [Fi
     rw [map_div₀, map_neg, div_eq_iff ht']
     linear_combination -hst
 
-open NumberField IsDedekindDomain in
 private theorem exists_basis_one_sqrt_nonsquare_of_finrank_two (K L : Type) [Field K] [CharZero K] [Field L]
     [Algebra K L] (h2 : Module.finrank K L = 2) :
     ∃ (e : Module.Basis (Fin 2) K L) (δ : K), e 0 = 1 ∧ e 1 * e 1 = algebraMap K L δ ∧
@@ -117,7 +116,6 @@ private theorem exists_basis_one_sqrt_nonsquare_of_finrank_two (K L : Type) [Fie
     · exact hθ' ⟨c, by linear_combination -h⟩
     · exact hθ' ⟨-c, by rw [map_neg]; linear_combination -h⟩
 
-open NumberField IsDedekindDomain in
 private theorem exists_sq_sub_mul_sq_of_isSquare {K : Type} [Field K] [CharZero K] {d : K}
     (hd : d ≠ 0) (hsq : IsSquare d) (x : K) : ∃ a b : K, x = a ^ 2 - d * b ^ 2 := by
   obtain ⟨c, rfl⟩ := hsq
@@ -126,7 +124,6 @@ private theorem exists_sq_sub_mul_sq_of_isSquare {K : Type} [Field K] [CharZero 
   field_simp
   ring
 
-open NumberField IsDedekindDomain in
 private theorem exists_place_notMem_not_isSquare (F : Type) [Field F] [NumberField F] (δ : F)
     (hδ0 : δ ≠ 0) (hδ : ¬ IsSquare δ) (S₀ : Finset (HeightOneSpectrum (𝓞 F))) :
     ∃ v, v ∉ S₀ ∧ ¬ IsSquare (algebraMap F (v.adicCompletion F) δ) := by
@@ -169,7 +166,6 @@ private theorem exists_place_notMem_not_isSquare (F : Type) [Field F] [NumberFie
     (Subgroup.mem_sup_right (hle (Subgroup.inv_mem _ h.2)))
 
 
-open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.QuadSymbol.exists_almostNorm_etaProd_eq_neg_one :
     ∀ (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
       [Algebra.IsQuadraticExtension K L],

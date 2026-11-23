@@ -55,8 +55,6 @@ private lemma norm_add_intCast_eq_abs_of_im_eq_zero {w : ℂ} (hw : w.im = 0) (m
   have h : w + m = ((w.re + m : ℝ) : ℂ) := Complex.ext (by simp) (by simp [hw])
   rw [h, Complex.norm_real, Real.norm_eq_abs, add_comm]
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
-open Filter Topology in
 private lemma exists_pos_le_norm_add_intCast_of_im_eq_zero {w : ℂ} (hw : w.im = 0) (hn : ∀ n : ℤ, w ≠ n) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ m : ℤ, δ ≤ ‖w + m‖ := by
   have hwx : w = ((w.re : ℝ) : ℂ) := Complex.ext (by simp) (by simp [hw])
@@ -82,8 +80,6 @@ private lemma exists_pos_le_norm_add_intCast_of_im_eq_zero {w : ℂ} (hw : w.im 
     rw [abs_of_neg (by linarith)]
     exact (min_le_right _ _).trans (by linarith)
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
-open Filter Topology in
 private lemma tsum_one_div_add_int_pow_of_real_of_continuousAt {w : ℂ} (hw : w.im = 0)
     (hn : ∀ n : ℤ, w ≠ n) {k : ℕ} (hk : 2 ≤ k) {G : ℂ → ℂ} (hG : ContinuousAt G w)
     (hEq : ∀ z : ℂ, 0 < z.im → ∑' m : ℤ, 1 / (z + m) ^ k = G z) :
@@ -125,8 +121,6 @@ private lemma tsum_one_div_add_int_pow_of_real_of_continuousAt {w : ℂ} (hw : w
   filter_upwards [self_mem_nhdsWithin] with ε hε
   exact hEq _ (by simpa [hw] using hε)
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
-open Filter Topology in
 private lemma tsum_one_div_add_int_sq_of_im_pos (z : ℂ) (hz : 0 < z.im) :
     ∑' m : ℤ, 1 / (z + m) ^ 2 = (2 * (Real.pi : ℂ) * Complex.I) ^ 2 *
       (Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * z)
@@ -138,8 +132,6 @@ private lemma tsum_one_div_add_int_sq_of_im_pos (z : ℂ) (hz : 0 < z.im) :
   rw [h, tsum_coe_mul_geometric_of_norm_lt_one hq]
   ring
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
-open Filter Topology in
 private lemma tsum_sq_mul_geometric_of_norm_lt_one {r : ℂ} (hr : ‖r‖ < 1) :
     ∑' n : ℕ, (n : ℂ) ^ 2 * r ^ n = r * (1 + r) / (1 - r) ^ 3 := by
   have hne : 1 - r ≠ 0 := by
@@ -171,8 +163,6 @@ private lemma tsum_sq_mul_geometric_of_norm_lt_one {r : ℂ} (hr : ‖r‖ < 1) 
   rw [eq_div_iff (pow_ne_zero 3 hne)]
   linear_combination (1 - r) ^ 2 * hsplit + 2 * r * e1 + r * (1 - r) * e2
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
-open Filter Topology in
 private lemma tsum_one_div_add_int_pow_three_of_im_pos (z : ℂ) (hz : 0 < z.im) :
     ∑' m : ℤ, 1 / (z + m) ^ 3 = -(1 / 2) * (2 * (Real.pi : ℂ) * Complex.I) ^ 3 *
       (Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * z)
@@ -186,8 +176,6 @@ private lemma tsum_one_div_add_int_pow_three_of_im_pos (z : ℂ) (hz : 0 < z.im)
   ring
 
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
-open Filter Topology in
 theorem _root_.GlobalTheory.WpFam.RowReal.row_real : ∀ w : ℂ, w.im = 0 → (∀ n : ℤ, w ≠ n) → (∑' m : ℤ, 1 / (w + m) ^ 2 = (2 * (Real.pi : ℂ) * Complex.I) ^ 2 * (Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * w) / (1 - Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * w)) ^ 2)) ∧ ∑' m : ℤ, 1 / (w + m) ^ 3 = -(1 / 2) * (2 * (Real.pi : ℂ) * Complex.I) ^ 3 * (Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * w) * (1 + Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * w)) / (1 - Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * w)) ^ 3) := by
   intro w hw hn
   have hne : 1 - Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * w) ≠ 0 := by

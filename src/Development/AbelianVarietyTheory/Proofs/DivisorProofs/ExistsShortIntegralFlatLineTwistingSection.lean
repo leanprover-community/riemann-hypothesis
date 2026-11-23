@@ -90,8 +90,6 @@ end GlobalTheory.FlatShort
 
 namespace GlobalTheory.FlatShort
 
-open NumberField IsDedekindDomain Module NumberField.mixedEmbedding NumberField.InfinitePlace MeasureTheory
-open scoped nonZeroDivisors
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -161,8 +159,6 @@ end GlobalTheory.FlatShort
 
 namespace GlobalTheory.FlatShort
 
-open NumberField IsDedekindDomain Module NumberField.mixedEmbedding NumberField.InfinitePlace MeasureTheory
-open scoped nonZeroDivisors
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -221,7 +217,6 @@ end GlobalTheory.FlatShort
 namespace GlobalTheory.FlatShort
 
 open NumberField IsDedekindDomain Module NumberField.mixedEmbedding NumberField.InfinitePlace MeasureTheory ENNReal
-open scoped nonZeroDivisors
 
 variable {K : Type} [Field K] [NumberField K]
 

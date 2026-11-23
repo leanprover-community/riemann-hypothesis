@@ -349,7 +349,6 @@ theorem level_clause_of_open_tool' (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D
   intro l _ K LL hg _
   exact QTool_of_open _ (h6.2.2.1 l K 1 LL hg) (h l K LL hg)
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions.Loc
 
 section RNum
 

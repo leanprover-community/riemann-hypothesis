@@ -430,7 +430,6 @@ theorem num (b rd ρ d P S NI : ℝ) (N f r c n : ℕ) (hb : 2 ≤ b) (hN : N = 
     _ = _ := by ring
 
 section Sign
-open GlobalTheory.LoopV GlobalTheory.LoopV.Cell
 variable {K : Type} [Field K] {r : ℕ}
 
 theorem zhatOM_eq (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) K) :

@@ -65,7 +65,6 @@ private lemma squarefree_prod_of_prime (s : Finset ℕ) (h : ∀ p ∈ s, p.Prim
   have := hmem (s.erase x) (Finset.erase_subset _ _) (Nat.dvd_of_mul_dvd_mul_left hx.pos hxx)
   simp at this
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma dvd_pow_of_prime_dvd_imp (n k : ℕ) (h : ∀ p, p.Prime → p ∣ n → p ∣ k) (hn : n ≠ 0) (hk : k ≠ 0) :
     n ∣ k ^ n := by
   rw [← Nat.factorization_le_iff_dvd hn (pow_ne_zero _ hk)]
@@ -82,7 +81,6 @@ private lemma dvd_pow_of_prime_dvd_imp (n k : ℕ) (h : ∀ p, p.Prime → p ∣
       · exact Nat.factorization_eq_zero_of_not_prime _ hp'
     rw [this]; exact Nat.zero_le _
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma sum_inv_divisors_eq_sigma_div (N : ℕ) (hN : N ≠ 0) :
     ∑ m ∈ N.divisors, (1 : ℝ) / m = (ArithmeticFunction.sigma 1 N : ℝ) / N := by
   rw [ArithmeticFunction.sigma_one_apply, Nat.cast_sum, Finset.sum_div, ← Nat.sum_div_divisors]
@@ -93,7 +91,6 @@ private lemma sum_inv_divisors_eq_sigma_div (N : ℕ) (hN : N ≠ 0) :
   rw [Nat.cast_div hdN hd0]
   field_simp
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma totient_mul_sigma_pow_le_pow_succ (K : ℕ) :
     ∀ n : ℕ, 0 < n → n.totient * ArithmeticFunction.sigma 1 (n ^ K) ≤ n ^ (K + 1) := by
   intro n hn
@@ -122,7 +119,6 @@ private lemma totient_mul_sigma_pow_le_pow_succ (K : ℕ) :
         = (a.totient * ArithmeticFunction.sigma 1 (a ^ K)) * (b.totient * ArithmeticFunction.sigma 1 (b ^ K)) := by ring
       _ ≤ a ^ (K + 1) * b ^ (K + 1) := Nat.mul_le_mul (iha (by omega)) (ihb (by omega))
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma sum_inv_le_mul_sum_squarefree_inv_totient (Q q : ℕ) (hq : 1 ≤ q) :
     ∑ n ∈ Finset.Icc 1 Q, (1:ℝ) / n ≤ ((q:ℝ) / q.totient) *
       ∑ f ∈ (Finset.Icc 1 Q).filter (fun f => Squarefree f ∧ Nat.Coprime f q), (1:ℝ) / f.totient := by
@@ -188,20 +184,17 @@ private lemma sum_inv_le_mul_sum_squarefree_inv_totient (Q q : ℕ) (hq : 1 ≤ 
         rw [hrw, le_div_iff₀ (by positivity)]
         nlinarith [hprod]
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma coprime_mod_mul_iff (d p m : ℕ) : Nat.Coprime d (m % (d * p)) ↔ Nat.Coprime d m := by
   have h : m % (d * p) + (p * (m / (d * p))) * d = m := by
     have := Nat.mod_add_div m (d * p); linarith [mul_comm d p, mul_assoc d p (m / (d*p)), mul_comm (p * (m / (d * p))) d]
   conv_rhs => rw [← h]
   exact (Nat.coprime_add_mul_right_right _ _ _).symm
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma coprime_mul_add_mul_iff (d p a b : ℕ) (h : Nat.Coprime d p) :
     Nat.Coprime d (a * p + b * d) ↔ Nat.Coprime d a := by
   rw [Nat.coprime_add_mul_right_right, Nat.coprime_mul_iff_right]
   exact ⟨fun h => h.1, fun h' => ⟨h', h⟩⟩
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma sum_coprime_range_mul_eq_sum_sum (d p : ℕ) (hd : 0 < d) (hp : p.Prime) (hpd : ¬ p ∣ d)
     (F : ℕ → ℝ) (hF : ∀ m, F m = F (m % (d * p))) :
     ∑ a ∈ (Finset.range (d * p)).filter (d * p).Coprime, F a
@@ -245,7 +238,6 @@ private lemma sum_coprime_range_mul_eq_sum_sum (d p : ℕ) (hd : 0 < d) (hp : p.
     exact ⟨x, hx, hxz.symm⟩
   · intro x _; exact hF _
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma cexp_mul_div_eq_of_mod_right (D : ℕ) (hD : 0 < D) (n m : ℕ) :
     cexp (2 * ↑Real.pi * I * n * m / D) = cexp (2 * ↑Real.pi * I * n * ↑(m % D) / D) := by
   rw [Complex.exp_eq_exp_iff_exists_int]
@@ -256,7 +248,6 @@ private lemma cexp_mul_div_eq_of_mod_right (D : ℕ) (hD : 0 < D) (n m : ℕ) :
   refine ⟨(n * k : ℕ), ?_⟩
   rw [this]; push_cast; field_simp; ring
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma cexp_crt_combination_eq_mul (d p n a₁ a₂ : ℕ) (hd : 0 < d) (hp : 0 < p) :
     cexp (2 * ↑Real.pi * I * n * ↑(a₁ * p + a₂ * d) / ↑(d * p))
       = cexp (2 * ↑Real.pi * I * n * a₁ / d) * cexp (2 * ↑Real.pi * I * n * a₂ / p) := by
@@ -267,7 +258,6 @@ private lemma cexp_crt_combination_eq_mul (d p n a₁ a₂ : ℕ) (hd : 0 < d) (
   push_cast
   field_simp
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma filter_coprime_range_prime_eq_erase_zero (p : ℕ) (hp : p.Prime) :
     (Finset.range p).filter p.Coprime = (Finset.range p).erase 0 := by
   ext a
@@ -283,7 +273,6 @@ private lemma filter_coprime_range_prime_eq_erase_zero (p : ℕ) (hp : p.Prime) 
     intro h
     exact h1 (Nat.eq_zero_of_dvd_of_lt h h2)
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma cexp_mul_div_eq_natMod_left (d : ℕ) (hd : 0 < d) (n a : ℕ) :
     cexp (2 * ↑Real.pi * I * n * a / d) = cexp (2 * ↑Real.pi * I * ↑(n % d) * a / d) := by
   rw [Complex.exp_eq_exp_iff_exists_int]
@@ -294,7 +283,6 @@ private lemma cexp_mul_div_eq_natMod_left (d : ℕ) (hd : 0 < d) (n a : ℕ) :
   refine ⟨(m * a : ℕ), ?_⟩
   rw [this]; push_cast; field_simp; ring
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma sum_range_cexp_eq_ite_dvd (d : ℕ) (hd : 0 < d) (k : ℤ) :
     ∑ a ∈ Finset.range d, cexp (2 * ↑Real.pi * I * k * a / d) = if (d:ℤ) ∣ k then (d:ℂ) else 0 := by
   have hd' : (d:ℂ) ≠ 0 := by exact_mod_cast hd.ne'
@@ -320,7 +308,6 @@ private lemma sum_range_cexp_eq_ite_dvd (d : ℕ) (hd : 0 < d) (k : ℤ) :
       exact_mod_cast hj
     rw [geom_sum_eq hne, hζd, sub_self, zero_div]
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma sum_norm_sq_exp_sum_eq_mul_sum_residues (d : ℕ) (hd : 0 < d) (S : Finset ℕ) (b : ℕ → ℂ) :
     ∑ a ∈ Finset.range d, ‖∑ n ∈ S, b n * cexp (2 * ↑Real.pi * I * n * a / d)‖ ^ 2
       = d * ∑ r ∈ Finset.range d, ‖∑ n ∈ S.filter (fun n => n % d = r), b n‖ ^ 2 := by
@@ -378,7 +365,6 @@ private lemma sum_norm_sq_exp_sum_eq_mul_sum_residues (d : ℕ) (hd : 0 < d) (S 
 
   simp [map_sum, Finset.sum_mul_sum]
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma norm_sum_sq_le_pred_mul_of_avoids_class (p : ℕ) (hp : p.Prime) (c : ℕ) (S : Finset ℕ) (b : ℕ → ℂ)
     (hS : ∀ n ∈ S, ¬ n ≡ c [MOD p]) :
     ‖∑ n ∈ S, b n‖ ^ 2 ≤ (p - 1 : ℝ) *
@@ -416,7 +402,6 @@ private lemma norm_sum_sq_le_pred_mul_of_avoids_class (p : ℕ) (hp : p.Prime) (
   rw [← hB'] at hpar
   nlinarith [hcs, hpar, sq_nonneg ‖∑ n ∈ S, b n‖]
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma norm_sum_sq_le_totient_mul_of_avoids_classes (S : Finset ℕ) :
     ∀ d : ℕ, 0 < d → Squarefree d → (∀ p : ℕ, p.Prime → p ∣ d → ∃ c : ℕ, ∀ n ∈ S, ¬ n ≡ c [MOD p]) →
     ∀ b : ℕ → ℂ, ‖∑ n ∈ S, b n‖ ^ 2 ≤ (d.totient : ℝ) *
@@ -465,7 +450,6 @@ private lemma norm_sum_sq_le_totient_mul_of_avoids_classes (S : Finset ℕ) :
         rw [← Finset.mul_sum]; push_cast [Nat.cast_sub hp.one_le]; ring
 
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 theorem _root_.GlobalTheory.arithmetic_large_sieve_one_class : ∀ (M N Q q : ℕ) (S : Finset ℕ), 1 ≤ Q → 1 ≤ q →
     S ⊆ Finset.Ioc M (M + N) →
     (∀ p : ℕ, p.Prime → p ≤ Q → ¬ p ∣ q → ∃ c : ℕ, ∀ n ∈ S, ¬ n ≡ c [MOD p]) →

@@ -72,7 +72,6 @@ abbrev RepIdx {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) (n j : ℕ
 def cosetRep {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) {n j : ℕ} (i : RepIdx hϖ n j) : GL (Fin n) k :=
   satakeRep 𝒪[k] ⟨(ϖ : k), unif_mem hϖ⟩ ϖ.ne_zero j i
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 private theorem torusElt_indic_eq_satakeGL {N : ℕ} (ϖ : kˣ) (s : Finset (Fin N)) :
     _root_.GlobalTheory.GLDoubling.torusElt (k := k) (n := Fin N) ϖ (_root_.GlobalTheory.ParHecke.indic s) =
@@ -84,7 +83,6 @@ private theorem torusElt_indic_eq_satakeGL {N : ℕ} (ϖ : kˣ) (s : Finset (Fin
     by_cases ha : a ∈ s <;> simp [_root_.GlobalTheory.ParHecke.indic, _root_.Formalism.UG.P.satakeN, ha]
   · simp [Matrix.diagonal_apply_ne _ h, Matrix.one_apply_ne h, _root_.Formalism.UG.P.satakeN]
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 private theorem irreducible_of_valuation_eq_uniformizer {ϖ : kˣ}
     (hϖ : valuation k (ϖ : k) = uniformizer k) :
@@ -110,7 +108,6 @@ private theorem irreducible_of_valuation_eq_uniformizer {ϖ : kˣ}
       simpa using mul_lt_mul_of_pos_left hlt hpos
     exact lt_irrefl _ (h1.trans_lt h2)
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 private theorem uniformizer_inv_mul_mem_integer_iff_residue_eq_zero {ϖ : kˣ}
     (hϖ : valuation k (ϖ : k) = uniformizer k) (x : 𝒪[k]) :
@@ -121,14 +118,12 @@ private theorem uniformizer_inv_mul_mem_integer_iff_residue_eq_zero {ϖ : kˣ}
     map_mul, map_inv₀, hϖ, inv_mul_le_iff₀ uniformizer_pos, mul_one, le_uniformizer_iff]
   exact ⟨ne_of_lt, lt_of_le_of_ne hx⟩
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 private theorem uniformizer_inv_not_mem_integer {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) :
     (ϖ : k)⁻¹ ∉ 𝒪[k] := by
   rw [Valuation.mem_integer_iff, map_inv₀, hϖ, not_le]
   exact (one_lt_inv₀ uniformizer_pos).mpr uniformizer_lt_one
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 private theorem isBorelSph_apply_satakeGL_eq {N : ℕ} {ϖ : kˣ}
     (hϖ : valuation k (ϖ : k) = uniformizer k) {γ : Fin N → ℂ} {ψ : GL (Fin N) k → ℂ}
@@ -143,7 +138,6 @@ private theorem isBorelSph_apply_satakeGL_eq {N : ℕ} {ϖ : kˣ}
         split_ifs <;> simp [_root_.GlobalTheory.SmGL.ord_eq_one hϖ, hone]
     _ = ∏ a ∈ S, γ a := by rw [Finset.prod_ite_mem, Finset.univ_inter]
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 private theorem card_satakePairs_eq_card_filter_lt {N : ℕ} (S : Finset (Fin N)) :
     Fintype.card (_root_.Formalism.UG.P.satakePairs S) = ((S ×ˢ Sᶜ).filter fun p : Fin N × Fin N => p.1 < p.2).card := by
@@ -155,7 +149,6 @@ private theorem card_satakePairs_eq_card_filter_lt {N : ℕ} (S : Finset (Fin N)
   simp [Finset.mem_product, and_assoc]
 
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem _root_.GlobalTheory.BorelCosetSum.sum_cosets_eq : ∀ (k : Type) [Field k] [ValuativeRel k]
     [TopologicalSpace k] [IsNonarchimedeanLocalField k] (N : ℕ) (ϖ : kˣ),

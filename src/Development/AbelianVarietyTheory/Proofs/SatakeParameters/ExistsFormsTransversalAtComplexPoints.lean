@@ -239,7 +239,6 @@ end GlobalTheory.EtProj.Transv
 
 namespace GlobalTheory.EtProj.Transv
 
-open GlobalTheory.ProjSpace
 
 theorem exists_forms_transversal (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp ℂ) (d : ℕ)
     [SmoothOfRelativeDimension d p] (N : ℕ)

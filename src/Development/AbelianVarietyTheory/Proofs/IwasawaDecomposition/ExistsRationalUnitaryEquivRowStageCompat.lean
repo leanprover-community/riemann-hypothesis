@@ -86,7 +86,6 @@ end GlobalTheory.Mem.R3.RowStdRat
 
 namespace GlobalTheory.Mem.R3.RowStdRat
 
-open GlobalTheory.Mem.R3.RowAd GlobalTheory.Mem.R3.LiftBrg.StdGroups
 
 theorem psiX_injective (X : Stages) (hg : X.toD7.sp.X'.gram = 1) : Function.Injective (psiX X hg) := by
   intro a b hab

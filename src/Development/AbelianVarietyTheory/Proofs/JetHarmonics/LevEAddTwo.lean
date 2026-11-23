@@ -55,8 +55,6 @@ private lemma adMat_conjTranspose_eq_adMat_swap {n : ℕ} (a b : Fin n) :
   · exact if_congr ⟨fun ⟨h₁, h₂, h₃⟩ => ⟨h₂, h₁, h₃.symm⟩, fun ⟨h₁, h₂, h₃⟩ => ⟨h₂, h₁, h₃.symm⟩⟩ rfl rfl
   · exact if_congr ⟨fun ⟨h₁, h₂, h₃⟩ => ⟨h₃, h₂.symm, h₁⟩, fun ⟨h₁, h₂, h₃⟩ => ⟨h₃, h₂.symm, h₁⟩⟩ rfl rfl
 
-open Finset in
-open scoped InnerProductSpace in
 private lemma sum_adMat_apply_first_index_smul {M : Type} [AddCommGroup M] [Module ℂ M] {n : ℕ}
     (a b : Fin n) (x : Fin n × Fin n → M) (i : Fin n × Fin n) :
     ∑ j, _root_.GlobalTheory.CasKAdjoint.adMat a b i j • x j =
@@ -66,14 +64,10 @@ private lemma sum_adMat_apply_first_index_smul {M : Type} [AddCommGroup M] [Modu
     Fintype.sum_prod_type, Prod.mk.injEq]
   simp [ite_and]
 
-open Finset in
-open scoped InnerProductSpace in
 private lemma norm_ite_zero_sq {M : Type} [NormedAddCommGroup M] (p : Prop) [Decidable p] (y : M) :
     ‖if p then y else 0‖ ^ 2 = if p then ‖y‖ ^ 2 else 0 := by
   split_ifs <;> simp
 
-open Finset in
-open scoped InnerProductSpace in
 private lemma sum_norm_sq_adMat_mulVec_le {M : Type} [NormedAddCommGroup M]
     [InnerProductSpace ℂ M] {n : ℕ} (a b : Fin n) (x : Fin n × Fin n → M) :
     ∑ i, ‖∑ j, _root_.GlobalTheory.CasKAdjoint.adMat a b i j • x j‖ ^ 2 ≤
@@ -91,8 +85,6 @@ private lemma sum_norm_sq_adMat_mulVec_le {M : Type} [NormedAddCommGroup M]
         rw [Finset.sum_comm (f := fun x_1 y => if y = b then ‖x (x_1, a)‖ ^ 2 else 0)]
         simp
 
-open Finset in
-open scoped InnerProductSpace in
 private lemma sum_eq_sign_norm_sq_adMat_mulVec_le {M : Type} [NormedAddCommGroup M]
     [InnerProductSpace ℂ M] {n : ℕ} (ε : Fin n → Bool) (x : Fin n × Fin n → M) :
     (∑ a, ∑ b, if ε a = ε b then ∑ i, ‖∑ j, _root_.GlobalTheory.CasKAdjoint.adMat a b i j • x j‖ ^ 2 else 0) ≤
@@ -119,8 +111,6 @@ private lemma sum_eq_sign_norm_sq_adMat_mulVec_le {M : Type} [NormedAddCommGroup
           nlinarith [mul_nonneg (mul_nonneg (by linarith : (0:ℝ) ≤ 4 * n) h0)
             (by linarith : (0:ℝ) ≤ 16 * n - 1)]
 
-open Finset in
-open scoped InnerProductSpace in
 private lemma sum_adMat_apply_second_index_smul {M : Type} [AddCommGroup M] [Module ℂ M] {n : ℕ}
     (a b : Fin n) (y : Fin n × Fin n → M) (j : Fin n × Fin n) :
     ∑ i, _root_.GlobalTheory.CasKAdjoint.adMat a b i j • y i =
@@ -130,8 +120,6 @@ private lemma sum_adMat_apply_second_index_smul {M : Type} [AddCommGroup M] [Mod
     Fintype.sum_prod_type, Prod.mk.injEq]
   simp [ite_and, eq_comm]
 
-open Finset in
-open scoped InnerProductSpace in
 private lemma sum_abs_shifted_weight_sub_le_add_two {n : ℕ} (ω μ : Fin n → ℝ) (a b : Fin n) :
     ∑ c, |ω c + (if c = a then 1 else 0) - (if c = b then 1 else 0) - μ c| ≤ ∑ c, |ω c - μ c| + 2 := by
   calc ∑ c, |ω c + (if c = a then 1 else 0) - (if c = b then 1 else 0) - μ c|
@@ -147,8 +135,6 @@ private lemma sum_abs_shifted_weight_sub_le_add_two {n : ℕ} (ω μ : Fin n →
         rw [Finset.sum_add_distrib, Finset.sum_add_distrib]
         simp; norm_num
 
-open Finset in
-open scoped InnerProductSpace in
 private lemma isWeight_shift_of_glRel {M : Type} [AddCommGroup M] [Module ℂ M] {n : ℕ}
     {E : Fin n → Fin n → Module.End ℂ M} (hG : _root_.Formalism.REAL.GlRel E) {ω : Fin n → ℝ} {x : M} (hx : _root_.Formalism.REAL.IsWeight E ω x)
     (a b : Fin n) :
@@ -166,8 +152,6 @@ private lemma isWeight_shift_of_glRel {M : Type} [AddCommGroup M] [Module ℂ M]
   · simp [ha, hb]
 
 
-open Finset in
-open scoped InnerProductSpace in
 theorem _root_.GlobalTheory.lev_E_add_two : ∀ (M : Type) [NormedAddCommGroup M] [InnerProductSpace ℂ M] (n : ℕ) (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M) (μ : Fin n → ℝ) (j : ℕ) (w : M), _root_.Formalism.REAL.GlRel E → _root_.Formalism.REAL.IsUnitary ε E → _root_.BranchingSupport.Lev ε E μ j w → ∀ a b, _root_.BranchingSupport.Lev ε E μ (j + 2) (E a b w) := by
   intro M _ _ n ε E μ j w hG hU hw a b
   unfold _root_.BranchingSupport.Lev _root_.BranchingSupport.WtNear at hw ⊢

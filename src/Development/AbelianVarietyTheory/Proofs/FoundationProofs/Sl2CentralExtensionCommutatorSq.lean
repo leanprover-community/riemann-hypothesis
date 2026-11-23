@@ -104,8 +104,6 @@ private theorem pow_card_div_orderOf_eq_one_of_mem_ker_commutator {E G : Type} [
     have : x ^ k ∈ Subgroup.center E := Subgroup.pow_mem _ (hK hx) k
     rw [mul_assoc, (Subgroup.mem_center_iff.mp this g₀).symm, ← mul_assoc, inv_mul_cancel, one_mul]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private theorem exists_card_ker_red_eq_prime_pow (p b : ℕ) [Fact p.Prime] :
     ∃ k, Nat.card (_root_.GlobalTheory.SLTwoCentral.red p b).ker = p ^ k := by
   have hp : p.Prime := Fact.out
@@ -181,8 +179,6 @@ private theorem exists_card_ker_red_eq_prime_pow (p b : ℕ) [Fact p.Prime] :
     rw [hY, h0, zero_smul, zero_add]
   exact IsPGroup.iff_card.mp hP
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private theorem card_sl2_zmod_mul_pred (p : ℕ) [Fact p.Prime] :
     Nat.card (Matrix.SpecialLinearGroup (Fin 2) (ZMod p)) * (p - 1) = (p ^ 2 - 1) * (p ^ 2 - p) := by
   set D := Matrix.GeneralLinearGroup.det (n := Fin 2) (R := ZMod p)
@@ -202,8 +198,6 @@ private theorem card_sl2_zmod_mul_pred (p : ℕ) [Fact p.Prime] :
     Fin.prod_univ_two, ZMod.card]
   simp only [Fin.val_zero, Fin.val_one, pow_zero, pow_one]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private theorem exists_orderOf_eq_succ_sl2_zmod (p : ℕ) [Fact p.Prime] :
     ∃ h : Matrix.SpecialLinearGroup (Fin 2) (ZMod p), orderOf h = p + 1 := by
   have hp := (Fact.out : p.Prime)
@@ -241,8 +235,6 @@ private theorem exists_orderOf_eq_succ_sl2_zmod (p : ℕ) [Fact p.Prime] :
   change (Algebra.leftMulMatrix b ζ) ^ n = 1 ↔ _
   rw [← map_pow, ← map_one (Algebra.leftMulMatrix b), (Algebra.leftMulMatrix_injective b).eq_iff]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private theorem exists_orderOf_eq_pred_sl2_zmod (p : ℕ) [Fact p.Prime] :
     ∃ h : Matrix.SpecialLinearGroup (Fin 2) (ZMod p), orderOf h = p - 1 := by
   obtain ⟨γ, hγ⟩ := IsCyclic.exists_ofOrder_eq_natCard (α := (ZMod p)ˣ)
@@ -273,8 +265,6 @@ private theorem exists_orderOf_eq_pred_sl2_zmod (p : ℕ) [Fact p.Prime] :
       rw [← Units.val_pow_eq_pow_val, inv_pow, hγn, inv_one, Units.val_one]
 
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 theorem _root_.GlobalTheory.sl2_zmod_central_ext_commutator_sq_eq_one :
     ∀ (l n p a : ℕ), l.Prime → p.Prime → 5 ≤ p → p ≠ l → ∀ (E : Type) [Group E]
       (π : E →* Matrix.SpecialLinearGroup (Fin 2) (ZMod (p ^ a))), Function.Surjective π →

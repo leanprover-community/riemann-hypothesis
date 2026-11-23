@@ -54,7 +54,6 @@ private lemma piOp_tprod {ι : Type} [DecidableEq ι] {M : ι → Type}
     simp
   · simp [h]
 
-open scoped TensorProduct in
 lemma _root_.GlobalTheory.TensHead.piOp_tprod_update {ι : Type} [DecidableEq ι] {M : ι → Type}
     [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)] (i : ι) (g : Module.End ℂ (M i))
     (y : ∀ j, M j) (x : M i) :
@@ -63,7 +62,6 @@ lemma _root_.GlobalTheory.TensHead.piOp_tprod_update {ι : Type} [DecidableEq ι
   rw [piOp_tprod]
   simp
 
-open scoped TensorProduct in
 private lemma apply_tmul_mem_of_stab_left {ι : Type} [DecidableEq ι] {M₀ : Type} [AddCommGroup M₀]
     [Module ℂ M₀] {M : ι → Type} [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)]
     {Op₀ : Set (Module.End ℂ M₀)} {Op : ∀ i, Set (Module.End ℂ (M i))}
@@ -79,7 +77,6 @@ private lemma apply_tmul_mem_of_stab_left {ι : Type} [DecidableEq ι] {M₀ : T
   unfold _root_.GlobalTheory.TensHead.Stab at hN
   simpa using hN _ hmem _ h
 
-open scoped TensorProduct in
 private lemma tmul_tprod_update_apply_mem_of_stab {ι : Type} [DecidableEq ι] {M₀ : Type} [AddCommGroup M₀]
     [Module ℂ M₀] {M : ι → Type} [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)]
     {Op₀ : Set (Module.End ℂ M₀)} {Op : ∀ i, Set (Module.End ℂ (M i))}
@@ -98,7 +95,6 @@ private lemma tmul_tprod_update_apply_mem_of_stab {ι : Type} [DecidableEq ι] {
   rwa [TensorProduct.map_tmul, LinearMap.id_apply, _root_.GlobalTheory.TensHead.piOp_tprod_update] at this
 
 
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.TensHead.eq_top_of_pure_generators :
     ∀ {ι : Type} [Fintype ι] [DecidableEq ι] {M₀ : Type} [AddCommGroup M₀] [Module ℂ M₀]
     {M : ι → Type} [∀ i, AddCommGroup (M i)] [∀ i, Module ℂ (M i)]

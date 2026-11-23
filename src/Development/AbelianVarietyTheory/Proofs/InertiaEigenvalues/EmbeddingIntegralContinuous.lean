@@ -72,7 +72,6 @@ private lemma norm_le_one_of_monic_root_lemma {K : Type*} [NormedField K] [IsUlt
   linarith
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.padicAlgCl_embedding_bounded_continuous (l : ℕ) [Fact l.Prime] {O : Type} [CommRing O]
     [IsDomain O] [IsDiscreteValuationRing O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O]
     [TopologicalSpace O] [IsTopologicalRing O] (hO : IsAdic (IsLocalRing.maximalIdeal O))

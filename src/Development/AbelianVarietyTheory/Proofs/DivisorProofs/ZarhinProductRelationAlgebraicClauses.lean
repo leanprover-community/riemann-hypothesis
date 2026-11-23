@@ -133,7 +133,6 @@ noncomputable section
 
 namespace GlobalTheory.ZarhinFam.RelAlg
 
-open GlobalTheory.ZarhinFam
 
 section Lev
 

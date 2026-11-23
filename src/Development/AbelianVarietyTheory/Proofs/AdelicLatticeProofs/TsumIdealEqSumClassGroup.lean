@@ -62,8 +62,6 @@ theorem _root_.GlobalTheory.existsUnique_isPrincipal_mul_classRep {K : Type} [Fi
   exact hc.symm
 
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 theorem _root_.GlobalTheory.tsum_isPrincipal_mul_eq {K : Type} [Field K] [NumberField K]
     (B : Ideal (𝓞 K)) (hB : B ≠ ⊥) (F : Ideal (𝓞 K) → ℂ) :
     ∑' I : {I : Ideal (𝓞 K) // I ≠ ⊥ ∧ (I * B).IsPrincipal}, F (I * B) =

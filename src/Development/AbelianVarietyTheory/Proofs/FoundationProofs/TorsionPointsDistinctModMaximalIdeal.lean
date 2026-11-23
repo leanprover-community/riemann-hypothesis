@@ -58,19 +58,16 @@ private lemma short_negY_eq (A B x y : K) :
     ((⟨0, 0, 0, A, B⟩ : WeierstrassCurve K).toAffine).negY x y = -y := by
   simp [Affine.negY]
 
-open WeierstrassCurve WeierstrassCurve.Affine in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma short_addX_eq (A B x₁ x₂ l : K) :
     ((⟨0, 0, 0, A, B⟩ : WeierstrassCurve K).toAffine).addX x₁ x₂ l = l ^ 2 - x₁ - x₂ := by
   simp [Affine.addX]
 
-open WeierstrassCurve WeierstrassCurve.Affine in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma norm_add_le_one_of_le_one {a b : K} (ha : ‖a‖ ≤ 1) (hb : ‖b‖ ≤ 1) :
     ‖a + b‖ ≤ 1 :=
   (IsUltrametricDist.norm_add_le_max a b).trans (max_le ha hb)
 
-open WeierstrassCurve WeierstrassCurve.Affine in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma norm_le_one_of_norm_sq_sub_le_one {l s : K} (h : ‖l ^ 2 - s‖ ≤ 1) (hs : ‖s‖ ≤ 1) :
     ‖l‖ ≤ 1 := by
@@ -80,14 +77,12 @@ private lemma norm_le_one_of_norm_sq_sub_le_one {l s : K} (h : ‖l ^ 2 - s‖ �
   rw [norm_pow] at hsq
   exact (pow_le_one_iff_of_nonneg (norm_nonneg l) two_ne_zero).mp hsq
 
-open WeierstrassCurve WeierstrassCurve.Affine in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma norm_mul_le_one_of_le_one {a b : K} (ha : ‖a‖ ≤ 1) (hb : ‖b‖ ≤ 1) :
     ‖a * b‖ ≤ 1 := by
   rw [norm_mul]
   exact mul_le_one₀ ha (norm_nonneg _) hb
 
-open WeierstrassCurve WeierstrassCurve.Affine in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma short_equation_of_nonsingular {A B x y : K}
     (h : (⟨0, 0, 0, A, B⟩ : WeierstrassCurve K).toAffine.Nonsingular x y) :
@@ -96,19 +91,16 @@ private lemma short_equation_of_nonsingular {A B x y : K}
   simp [Affine.equation_iff] at this
   linear_combination this
 
-open WeierstrassCurve WeierstrassCurve.Affine in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma norm_sub_le_one_of_le_one {a b : K} (ha : ‖a‖ ≤ 1) (hb : ‖b‖ ≤ 1) :
     ‖a - b‖ ≤ 1 := by
   rw [sub_eq_add_neg]
   exact norm_add_le_one_of_le_one ha (by rwa [norm_neg])
 
-open WeierstrassCurve WeierstrassCurve.Affine in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma norm_ofNat_le_one (n : ℕ) [n.AtLeastTwo] : ‖(OfNat.ofNat n : K)‖ ≤ 1 := by
   exact_mod_cast IsUltrametricDist.norm_natCast_le_one K n
 
-open WeierstrassCurve WeierstrassCurve.Affine in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma norm_y_eq_one_of_nsmul_eq_zero [DecidableEq K] {A B : K} {N : ℕ} (hA : ‖A‖ ≤ 1) (hB : ‖B‖ ≤ 1)
     (h2 : ‖(2 : K)‖ = 1) (hD : ‖4 * A ^ 3 + 27 * B ^ 2‖ = 1) (hN : Odd N)
@@ -185,7 +177,6 @@ private lemma norm_y_eq_one_of_nsmul_eq_zero [DecidableEq K] {A B : K} {N : ℕ}
   rw [hD] at hlt1
   exact lt_irrefl _ hlt1
 
-open WeierstrassCurve WeierstrassCurve.Affine in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma norm_sub_y_le_norm_sub_x_of_torsion [DecidableEq K] {A B : K} {N : ℕ}
     (hT : ∀ (x y : K) (h : (⟨0, 0, 0, A, B⟩ : WeierstrassCurve K).toAffine.Nonsingular x y),
@@ -207,7 +198,6 @@ private lemma norm_sub_y_le_norm_sub_x_of_torsion [DecidableEq K] {A B : K} {N :
   exact mul_le_of_le_one_left (norm_nonneg _) hl
 
 
-open WeierstrassCurve WeierstrassCurve.Affine in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 theorem _root_.GlobalTheory.torsion_points_distinct_mod_maximal_ideal : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [DecidableEq K] (A B : K) (N : ℕ), ‖A‖ ≤ 1 → ‖B‖ ≤ 1 → ‖(2 : K)‖ = 1 → ‖4 * A ^ 3 + 27 * B ^ 2‖ = 1 → Odd N → (∀ (x y : K) (h : (⟨0, 0, 0, A, B⟩ : WeierstrassCurve K).toAffine.Nonsingular x y), N • (WeierstrassCurve.Affine.Point.some x y h) = 0 → ‖x‖ ≤ 1) → ∀ (x y : K) (h : (⟨0, 0, 0, A, B⟩ : WeierstrassCurve K).toAffine.Nonsingular x y), N • (WeierstrassCurve.Affine.Point.some x y h) = 0 → ‖x ^ 3 + A * x + B‖ = 1 ∧ ∀ (x' y' : K) (h' : (⟨0, 0, 0, A, B⟩ : WeierstrassCurve K).toAffine.Nonsingular x' y'), N • (WeierstrassCurve.Affine.Point.some x' y' h') = 0 → x ≠ x' → ‖x - x'‖ = 1 := by
   intro K _ _ _ A B N hA hB h2 hD hN hT x y h hP

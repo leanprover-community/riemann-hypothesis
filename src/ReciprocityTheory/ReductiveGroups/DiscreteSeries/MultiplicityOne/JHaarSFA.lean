@@ -158,7 +158,6 @@ end Mat
 
 section Transfer
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r : ℕ} {U : Set (Mat k r)} [hU : Fact (IsClosedSubgroup U)]
 

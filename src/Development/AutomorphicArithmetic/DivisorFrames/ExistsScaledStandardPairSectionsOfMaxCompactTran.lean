@@ -99,7 +99,6 @@ private theorem stdA_ne (ν : kˣ →* ℂˣ) (ϖ : kˣ) (c a a' : ℕ) : ∃ X,
   rw [stdA, dite_eq_left h]
   exact Units.ne_zero _
 
-open GlobalTheory.StdPairCone in
 private theorem stdB_ne (ν : kˣ →* ℂˣ) (ϖ : kˣ) (c a a' : ℕ) : ∃ Y, stdB ν ϖ c a a' Y ≠ 0 := by
   let X : Matrix (Fin a') (Fin (a + a')) k :=
     Matrix.of fun i => Fin.append (fun _ => 0) ((1 : Matrix (Fin a') (Fin a') k) i)

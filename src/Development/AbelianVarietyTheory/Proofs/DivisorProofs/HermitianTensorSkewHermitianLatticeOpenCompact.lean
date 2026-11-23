@@ -98,7 +98,6 @@ theorem locCo_smul {F : Type} [Field F] [NumberField F] {W : Type} [AddCommGroup
 end GlobalTheory.LatOpenCpt
 
 namespace GlobalTheory.LatOpenCpt
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 theorem incM_single {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n d : ℕ}
     (i : Fin n) (j : Fin d) (e : E) :

@@ -152,13 +152,11 @@ theorem af_apply (c : F) (v : HeightOneSpectrum (𝓞 F)) :
 
 end Single
 
-section Split
 
 variable {D : D7} (δ : D.host.E) (hδ : D.sp.cm.sig δ = -δ) (hδ0 : δ ≠ 0) (Δ : D.host.F)
   (hΔ : algebraMap D.host.F D.host.E Δ = δ * δ)
 
 
-end Split
 
 end Formalism.IndefR.Fin.U1
 

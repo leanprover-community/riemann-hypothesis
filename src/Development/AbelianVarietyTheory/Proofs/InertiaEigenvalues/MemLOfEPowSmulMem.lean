@@ -69,7 +69,6 @@ private lemma pow_mul_mem_of_pow_mul_mem_of_le {S : Subalgebra O (PowerSeries K)
   rw [pow_add, mul_comm (s ^ n), mul_assoc]
   exact mul_mem (pow_mem hs k) hf
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -81,7 +80,6 @@ private lemma exists_uniform_pow_mul_mem {T : Type} [Finite T] {S : Subalgebra O
   choose n hn using h
   exact ⟨Finset.univ.sup n, fun t => pow_mul_mem_of_pow_mul_mem_of_le hs (Finset.le_sup (Finset.mem_univ t)) (hn t)⟩
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -90,7 +88,6 @@ private lemma eisenstein_mem_integral :
   rw [← _root_.GlobalTheory.BK.coe_EIn l e (_root_.GlobalTheory.BK.A O K)]
   exact Subtype.property _
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -101,7 +98,6 @@ private lemma exists_eisenstein_pow_mul_mem_integral {f : PowerSeries K}
   obtain ⟨n, hn⟩ := _root_.GlobalTheory.BK.mem_away.1 hf
   exact ⟨n, by rwa [_root_.GlobalTheory.BK.coe_EIn] at hn⟩
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -121,7 +117,6 @@ private lemma exists_eisenstein_pow_mul_matrix_mem_integral [NeZero a] : ∃ N :
     ⟨pow_mul_mem_of_pow_mul_mem_of_le eisenstein_mem_integral (le_max_left _ _) (h₁ (τ, i, j)),
       pow_mul_mem_of_pow_mul_mem_of_le eisenstein_mem_integral (le_max_right _ _) (h₂ (τ, i, j))⟩⟩
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -132,7 +127,6 @@ private lemma mem_baseChangeSpan_iff {S : Subalgebra O (PowerSeries K)} {v : _ro
   simp only [_root_.GlobalTheory.BK.PhiMod.ext, _root_.GlobalTheory.BK.mem_tot,
     _root_.GlobalTheory.BK.PhiMod.mem_extc_iff, _root_.GlobalTheory.BK.mem_vecs]
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -143,7 +137,6 @@ private lemma mem_baseChangeAll_iff {S : Subalgebra O (PowerSeries K)} {v : _roo
   simp only [_root_.GlobalTheory.BK.PhiMod.Mext, _root_.GlobalTheory.BK.mem_tot,
     _root_.GlobalTheory.BK.mem_vecs]
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -153,7 +146,6 @@ private lemma mx_mulVec_mxInv_mulVec_eq_self (τ : ZMod a) (w : ι → PowerSeri
     (P.mx τ).mulVec ((P.mxInv τ).mulVec w) = w := by
   rw [Matrix.mulVec_mulVec, P.mx_mul_mxInv, Matrix.one_mulVec]
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -164,7 +156,6 @@ private lemma mulVec_mem_of_forall_mem {S : Subalgebra O (PowerSeries K)} {A : M
   simp only [Matrix.mulVec, dotProduct]
   exact sum_mem fun j _ => mul_mem (hA i j) (hw j)
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -188,7 +179,6 @@ private lemma eisenstein_pow_smul_mem_baseChangeAll {S : Subalgebra O (PowerSeri
   rw [h]
   exact mulVec_mem_of_forall_mem (fun i j => hS (hN τ i j)) (hx τ) i
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -199,7 +189,6 @@ private lemma integral_le_invertPrime :
       _root_.GlobalTheory.BK.invL l (_root_.GlobalTheory.BK.A O K) :=
   _root_.GlobalTheory.BK.le_away _ _
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -210,7 +199,6 @@ private lemma mulVec_smul_apply_eq_mul_mulVec_apply (A : Matrix ι ι (PowerSeri
     A.mulVec ((f • v) τ) i = f * A.mulVec (v τ) i := by
   rw [Pi.smul_apply, Matrix.mulVec_smul, Pi.smul_apply, smul_eq_mul]
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -231,7 +219,6 @@ private lemma eisenstein_pow_smul_mem_baseChangeSpan {S : Subalgebra O (PowerSer
   rw [h]
   exact mulVec_mem_of_forall_mem (fun i j => hS (hN τ i j)) (hm τ) i
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -243,7 +230,6 @@ private lemma ezpow_smul_mem_submodule_of_nonneg
     _root_.GlobalTheory.BK.Ezpow K l e n • w ∈ W :=
   W.smul_mem ⟨_, _root_.GlobalTheory.BK.Ezpow_mem_invL_A_iff.2 hn⟩ hw
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -254,7 +240,6 @@ private lemma ezpow_smul_ezpow_smul_eq_ezpow_add_smul (m n : ℤ) (w : _root_.Gl
       _root_.GlobalTheory.BK.Ezpow K l e (m + n) • w := by
   rw [smul_smul, _root_.GlobalTheory.BK.Ezpow_add]
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -265,7 +250,6 @@ private lemma ezpow_zero_smul_eq_self (w : _root_.GlobalTheory.BK.Vec K a ι) : 
   simp only [Nat.cast_zero, pow_zero] at h
   rw [h, one_smul]
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -289,7 +273,6 @@ private lemma filL_eq_ext_of_le (c : ℕ)
     rw [_root_.GlobalTheory.BK.mem_shiftE, show -j = (-j - c) + c by ring, ← ezpow_smul_ezpow_smul_eq_ezpow_add_smul]
     exact ezpow_smul_mem_submodule_of_nonneg (O := O) _ (by omega) (hc x hx)
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -309,7 +292,6 @@ private lemma filL_eq_shiftE_of_ge (c : ℕ)
   have h := ezpow_smul_mem_submodule_of_nonneg (O := O) (e := e) _ (show (0 : ℤ) ≤ j - 1 - c by omega) (hc _ hxm)
   rwa [ezpow_smul_ezpow_smul_eq_ezpow_add_smul, ezpow_smul_ezpow_smul_eq_ezpow_add_smul, show j - 1 - c + c + -j = -1 by ring] at h
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -320,7 +302,6 @@ private lemma mem_allComponents_iff {v : _root_.GlobalTheory.BK.Vec K a ι} :
   simp only [_root_.GlobalTheory.BK.PhiMod.M, _root_.GlobalTheory.BK.mem_tot,
     _root_.GlobalTheory.BK.mem_vecs]
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -331,7 +312,6 @@ private lemma mem_frobeniusImageSpan_iff {v : _root_.GlobalTheory.BK.Vec K a ι}
       ∀ τ i, (P.mxInv τ).mulVec (v τ) i ∈ _root_.GlobalTheory.BK.A O K :=
   mem_baseChangeSpan_iff P
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -353,7 +333,6 @@ private lemma exists_eq_prime_mul_of_eisenstein_mul {g h : PowerSeries K}
     rw [← map_natCast (PowerSeries.C (R := K)), coeff_C_mul, coeff_mk]
     linear_combination key
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -371,7 +350,6 @@ private lemma exists_eq_prime_mul_of_eisenstein_pow_mul (N : ℕ) {g : PowerSeri
       (by rw [← mul_assoc, ← pow_succ']; exact hgh)
     exact ih hh'' he
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -381,7 +359,6 @@ private lemma natCast_prime_ne_zero_powerSeries : ((l : ℕ) : PowerSeries K) �
   rw [← map_natCast (PowerSeries.C (R := K))]
   exact (map_ne_zero_iff _ PowerSeries.C_injective).2 (Nat.cast_ne_zero.2 (Fact.out : l.Prime).ne_zero)
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -403,7 +380,6 @@ private lemma mem_integral_of_mem_invertPrime_of_eisenstein_pow_mul {f : PowerSe
     rw [mul_left_cancel₀ natCast_prime_ne_zero_powerSeries he]
     exact hh'
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -433,7 +409,6 @@ private lemma eisenstein_pow_smul_mem_frobeniusImageSpan (H N : ℕ)
   rw [mul_left_comm]
   exact mul_mem (pow_mem eisenstein_mem_integral H) h₃
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -483,7 +458,6 @@ private lemma eisenstein_zpow_smul_mem_baseChangeSpan_invertPrime (H N : ℕ)
   rw [← ezpow_smul_ezpow_smul_eq_ezpow_add_smul]
   exact ezpow_smul_mem_submodule_of_nonneg (O := O) _ (Nat.cast_nonneg H) (hN m hm)
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -510,7 +484,6 @@ private lemma eisenstein_pow_smul_mem_allComponents (η N : ℕ)
   rw [mul_left_comm]
   exact mul_mem (pow_mem eisenstein_mem_integral η) (h₂ τ i)
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -569,7 +542,6 @@ private lemma eisenstein_zpow_smul_mem_baseChangeAll_invertPrime (η N : ℕ)
   rw [smul_add]
   exact add_mem hf₂ (ezpow_smul_mem_submodule_of_nonneg (O := O) _ (Nat.cast_nonneg η) (hN z hz))
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -607,7 +579,6 @@ private lemma eisenstein_zpow_smul_mem_baseChangeAll_of_pow_smul [NeZero a] (η 
   show _ = _root_.GlobalTheory.BK.E K l e ^ η * ((l : PowerSeries K) ^ n * x τ i)
   ring
 
-open PowerSeries in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] [Fact l.Prime]
   [NormedAlgebra ℚ_[l] K] [NeZero e] in
@@ -645,7 +616,6 @@ private lemma eisenstein_zpow_smul_mem_baseChangeSpan_of_pow_smul [NeZero a] (H 
   ring
 
 
-open PowerSeries in
 theorem _root_.GlobalTheory.BK.PhiMod.jumps_subset_Icc_iff : ∀ (O K : Type) [CommRing O] [NormedField K]
     [IsUltrametricDist K] [Algebra O K] [_root_.GlobalTheory.BK.IsUnitBall O K] (l e a : ℕ) (ι : Type)
     [Fintype ι] [DecidableEq ι] [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero e] [NeZero a]

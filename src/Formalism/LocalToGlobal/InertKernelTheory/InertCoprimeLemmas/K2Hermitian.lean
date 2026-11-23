@@ -127,7 +127,6 @@ theorem rename_linear : RenameLin := by
 
 section Alg
 
-open Formalism.L2.G.Pend
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) (Kc : Type) [Field Kc] [Algebra X.G.Kf Kc] (j : ℕ)
 

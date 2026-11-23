@@ -80,7 +80,6 @@ end
 noncomputable section
 namespace GlobalTheory.FinDecompLim
 
-open Filter Topology
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -125,7 +124,6 @@ end
 noncomputable section
 namespace GlobalTheory.FinDecompLim
 
-open Filter Topology
 
 theorem tendsto_loc_idemS : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (d : ℕ)
     (J : Matrix (Fin d) (Fin d) E) (K : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.UA σ J),

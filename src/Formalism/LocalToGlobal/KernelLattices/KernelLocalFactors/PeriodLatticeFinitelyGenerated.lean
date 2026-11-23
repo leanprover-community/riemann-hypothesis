@@ -1543,11 +1543,9 @@ theorem compatible_lift_exists : TiedLift := by
 
 end Ent
 
-section Tests
 
 variable {D : D7} {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)}
 
-end Tests
 
 section Cons
 
@@ -1573,11 +1571,9 @@ theorem ambient_of_hypotheses : AmbOfHyp := by
 
 end Cons
 
-section Tests2
 
 variable {D : D7} {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)}
 
-end Tests2
 
 section SeamLatS
 

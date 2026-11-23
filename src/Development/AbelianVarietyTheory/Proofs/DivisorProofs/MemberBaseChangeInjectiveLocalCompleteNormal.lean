@@ -168,7 +168,6 @@ theorem yK_comp {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin
 end GlobalTheory.Poinc.Sep.MemBC
 
 namespace GlobalTheory.Poinc.Sep.MemBC
-open GlobalTheory.ArcPull
 
 theorem aA_comm {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R'] {I : Ideal R} {I' : Ideal R'}
     (g : R →+* R') (hg : Function.Injective g) {D : DegData R I} {D' : DegData R' I'}
@@ -186,7 +185,6 @@ end GlobalTheory.Poinc.Sep.MemBC
 
 namespace GlobalTheory.Poinc.Sep.MemBC
 
-open GlobalTheory.ArcPull
 
 theorem qk_field {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] (hV : IsCN V) {D : DegData V (maximalIdeal V)}
     {A : PolAV (Spec (CommRingCat.of (FractionRing V)))} {G : Over (Spec (CommRingCat.of V))} [GrpObj G] [IsCommMonObj G]
@@ -262,7 +260,6 @@ theorem yy_pull' {V V' : Type} [CommRing V] [IsDomain V] [IsLocalRing V] [CommRi
 end GlobalTheory.Poinc.Sep.MemBC
 
 namespace GlobalTheory.Poinc.Sep.MemBC
-open GlobalTheory.ArcPull
 
 theorem uMem_baseChange : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix (Fin 8) (Fin 8) ℤ) (Z : Scheme.{0}) (i : F.X ⟶ Z) (X₁ : Setup F W i) (z₁ : X₁.M.Z) (act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)), IsAct X₁ act → ∀ (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V] (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (X : Type) [AddCommGroup X] (m : ℕ) (t : Fin m → V) (δ : Fin m → LinearMap.BilinForm ℤ X) (𝔪 : UMem X₁ z₁ act V ev X t δ) (V' : Type) [CommRing V'] [IsDomain V'] [IsLocalRing V'] (j : V →+* V'), IsCN V' → Function.Injective j → IsLocalHom j → ∃ (m' : ℕ) (t' : Fin m' → V') (δ' : Fin m' → LinearMap.BilinForm ℤ X) (𝔫 : UMem X₁ z₁ act V' (j.comp ev) X t' δ'), ∀ a mu, 𝔪.YY a mu → 𝔫.YY a mu := by
   intro g n F W Z i X₁ z₁ act _hact V _ _ _ ev X _ m t δ 𝔪 V' _ _ _ j hV' hj hl

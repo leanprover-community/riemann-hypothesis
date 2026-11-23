@@ -95,11 +95,9 @@ attribute [instance] Free.fjAdd Free.fjMod
 
 variable {ψ : AddChar (AF D.host.F) ℂ}
 
-section Ties
 
 variable (G : FormGaps D) (P : PerGaps ψ) (hE : ExpU D) (Om : WeilC ψ) (c : ChrIn D) (f : Free Om)
 
-end Ties
 
 end Formalism.L2.Fam.ThC
 

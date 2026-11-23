@@ -118,7 +118,6 @@ theorem avg_fixed : âˆ€ {A X : Type} [AddCommGroup A] [AddCommGroup X] [Module â
 end Tw.VacLoc
 
 namespace Tw.VacLoc
-open _root_.GlobalTheory
 
 open GlobalTheory.WeilM
 

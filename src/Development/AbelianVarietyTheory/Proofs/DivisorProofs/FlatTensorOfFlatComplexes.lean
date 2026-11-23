@@ -317,7 +317,6 @@ theorem tensor_locally_zero_of_exact {A B M N : Scheme.{0}ᵒᵖ ⥤ ModuleCat.{
 end GlobalTheory.EtC.FlatTens
 
 namespace GlobalTheory.EtC.FlatTens
-open TensorProduct
 
 variable {R : Type} [CommRing R]
 

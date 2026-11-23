@@ -73,21 +73,18 @@ private lemma specMap_residueFieldMap_conj_eq_ofHom_map {R S : CommRingCat.{0}} 
   apply Ideal.ResidueField.ringHom_ext
   exact congr_arg CommRingCat.Hom.hom key
 
-open AlgebraicGeometry CategoryTheory Limits in
 private lemma residueFieldCongr_hom_hom_comp {Y : Scheme.{0}} {a b : Y} {Z : CommRingCat.{0}}
     (h : a = b) (h' : b = a) (g : Y.residueField a ⟶ Z) :
     (Y.residueFieldCongr h).hom ≫ (Y.residueFieldCongr h').hom ≫ g = g := by
   subst h
   simp [Scheme.residueFieldCongr_refl]
 
-open AlgebraicGeometry CategoryTheory Limits in
 private lemma trdeg_le_of_ringEquiv {K L K' L' : Type} [CommRing K] [CommRing L] [CommRing K']
     [CommRing L'] [Nontrivial K'] [Algebra K L] [Algebra K' L'] (e₁ : K ≃+* K') (e₂ : L ≃+* L')
     (h : (algebraMap K' L').comp e₁.toRingHom = e₂.toRingHom.comp (algebraMap K L)) :
     Algebra.trdeg K L ≤ Algebra.trdeg K' L' :=
   ciSup_le' fun s ↦ (s.2.ringHom_of_comp_eq e₁ e₂ e₁.surjective e₂.injective h).cardinalMk_le_trdeg
 
-open AlgebraicGeometry CategoryTheory Limits in
 private lemma trdeg_eq_of_ringEquiv {K L K' L' : Type} [Field K] [CommRing L] [Field K']
     [CommRing L'] [Algebra K L] [Algebra K' L'] (e₁ : K ≃+* K') (e₂ : L ≃+* L')
     (h : (algebraMap K' L').comp e₁.toRingHom = e₂.toRingHom.comp (algebraMap K L)) :
@@ -100,7 +97,6 @@ private lemma trdeg_eq_of_ringEquiv {K L K' L' : Type} [Field K] [CommRing L] [F
   simp [this]
 
 
-open AlgebraicGeometry CategoryTheory Limits in
 theorem _root_.GlobalTheory.RelDimFibCrit.trdeg_affine {X Y : Scheme.{0}} (f : X ⟶ Y) (U : Y.Opens)
     (hU : IsAffineOpen U) (V : X.Opens) (hV : IsAffineOpen V) (e : V ≤ f ⁻¹ᵁ U)
     (p : PrimeSpectrum Γ(X, V)) :

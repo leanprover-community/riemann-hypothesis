@@ -61,8 +61,6 @@ lemma _root_.GlobalTheory.SW.Parab.parChar_mul_conj {κ ι : Type} [Fintype κ] 
   convert Complex.exp_zero using 2
   simp [Complex.conj_I, map_ratCast]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 private lemma exists_pos_nat_mul_eq_int {ι : Type} [Fintype ι] (S : Matrix ι ι ℚ) :
     ∃ d : ℕ, 0 < d ∧ ∃ T : Matrix ι ι ℤ, ∀ i j, (T i j : ℚ) = d * S i j := by
   refine ⟨∏ i, ∏ j, (S i j).den, Finset.prod_pos fun i _ => Finset.prod_pos fun j _ => (S i j).den_pos, ?_⟩
@@ -79,14 +77,10 @@ private lemma exists_pos_nat_mul_eq_int {ι : Type} [Fintype ι] (S : Matrix ι 
   choose T hT using key
   exact ⟨T, hT⟩
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 private lemma isIntegral_int_rat_iff_exists_int (q : ℚ) : IsIntegral ℤ q ↔ ∃ n : ℤ, (n : ℚ) = q := by
   rw [IsIntegrallyClosed.isIntegral_iff]
   simp
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 theorem _root_.GlobalTheory.SW.Parab.isSB_parChar_mul {κ ι : Type} [Fintype κ] [Fintype ι] (S : Matrix ι ι ℚ)
     (φ : Matrix κ ι ℚ → ℂ) (h : _root_.GlobalTheory.SW.IsSB φ) :
     _root_.GlobalTheory.SW.IsSB fun x => _root_.GlobalTheory.SW.Parab.parChar S x * φ x := by
@@ -151,28 +145,20 @@ theorem _root_.GlobalTheory.SW.Parab.isSB_parChar_mul {κ ι : Type} [Fintype κ
       ring
     rw [this, Complex.exp_add, Complex.exp_int_mul_two_pi_mul_I, mul_one]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 theorem _root_.GlobalTheory.SW.Parab.qv_row_mul {κ ι : Type} [Fintype ι] (x : Matrix κ ι ℚ) (A : Matrix ι ι ℚ) (k : κ) :
     _root_.GlobalTheory.SW.qv ((x * A) k) = _root_.GlobalTheory.SW.qv (x k) ᵥ* _root_.GlobalTheory.SW.qm A := by
   funext j
   simp [_root_.GlobalTheory.SW.qv, _root_.GlobalTheory.SW.qm, vecMul, dotProduct, Matrix.mul_apply]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 theorem _root_.GlobalTheory.SW.Parab.qv_bilin {ι : Type} [Fintype ι] (S : Matrix ι ι ℚ) (v : ι → ℚ) :
     ((v ⬝ᵥ S *ᵥ v : ℚ) : ℂ) = _root_.GlobalTheory.SW.qv v ⬝ᵥ _root_.GlobalTheory.SW.qm S *ᵥ _root_.GlobalTheory.SW.qv v := by
   simp [_root_.GlobalTheory.SW.qv, _root_.GlobalTheory.SW.qm, mulVec, dotProduct]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 theorem _root_.GlobalTheory.SW.Parab.qm_mul' {α β γ : Type} [Fintype β] (A : Matrix α β ℚ) (B : Matrix β γ ℚ) :
     _root_.GlobalTheory.SW.qm (A * B) = _root_.GlobalTheory.SW.qm A * _root_.GlobalTheory.SW.qm B := by
   ext i j
   simp [_root_.GlobalTheory.SW.qm, Matrix.mul_apply]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 private lemma parabolic_exponent_term_eq {ι : Type} [Fintype ι] (A B : Matrix ι ι ℚ) (τ : Matrix ι ι ℂ)
     (v : ι → ℚ) (z : ι → ℂ) :
     _root_.GlobalTheory.SW.qv v ⬝ᵥ ((_root_.GlobalTheory.SW.qm A * τ + _root_.GlobalTheory.SW.qm B) *
@@ -191,8 +177,6 @@ private lemma parabolic_exponent_term_eq {ι : Type} [Fintype ι] (A B : Matrix 
   ring
 
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 theorem _root_.GlobalTheory.SW.Parab.trans_parabolic : ∀ (κ ι : Type) [Fintype κ] [Fintype ι] [DecidableEq ι]
     (σ : Matrix (ι ⊕ ι) (ι ⊕ ι) ℚ), Even (Fintype.card κ) → σ ∈ Matrix.symplecticGroup ι ℚ →
     σ.toBlocks₂₁ = 0 → ∃ ω : (Matrix κ ι ℚ → ℂ) → (Matrix κ ι ℚ → ℂ), ∀ φ, _root_.GlobalTheory.SW.IsSB φ →

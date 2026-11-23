@@ -108,7 +108,6 @@ end GlobalTheory.MixTargetProof
 
 namespace GlobalTheory.MixTargetProof
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule
 
 variable {D : D7}
 
@@ -136,7 +135,6 @@ end GlobalTheory.MixTargetProof
 
 namespace GlobalTheory.MixTargetProof
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule
 
 section Read
 

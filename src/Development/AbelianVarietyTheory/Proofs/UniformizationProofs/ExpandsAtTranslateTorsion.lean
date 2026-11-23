@@ -398,7 +398,6 @@ end Level
 
 section Main
 
-open TorusInvariance TorusCoord
 
 theorem expandsAt_translate (hGF : GlobalFnsSt) (k e : ℕ) (x : 𝟙_ (Over (Spec (CommRingCat.of R))) ⟶ G)
     (gp : GtPt D.toPre (𝟙_ (Over (Spec (CommRingCat.of R))))) (hx : x ^ k = 1)

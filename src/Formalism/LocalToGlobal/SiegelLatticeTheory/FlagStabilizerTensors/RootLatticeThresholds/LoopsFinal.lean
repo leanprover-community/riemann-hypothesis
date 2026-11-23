@@ -41,7 +41,6 @@ namespace Formalism.L2.SG.LoopsFinal
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section admitted
 
 variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ)
 
@@ -49,7 +48,6 @@ variable (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
   (Yt : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word),
     LoopTie (Fm.D x i) (Fm.L x i) (At x hx i) u u' C1)
 
-end admitted
 
 section AtOne
 
@@ -84,21 +82,17 @@ theorem frameEqvInj_of (hFC : FrameChangeAt W hI) (u u' : D.what₂.Word) :
 
 end AtOne
 
-section Ev
 
 variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ) (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
   (Yt : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word),
     LoopTie (Fm.D x i) (Fm.L x i) (At x hx i) u u' C1)
   (Cc : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ConcAt (Fm.D x i) (At x hx i))
 
-end Ev
 
-section Summ
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {hF : FinX Y} {hI : SIso D.s (sOf hF)}
 
 
-end Summ
 
 section Fam
 

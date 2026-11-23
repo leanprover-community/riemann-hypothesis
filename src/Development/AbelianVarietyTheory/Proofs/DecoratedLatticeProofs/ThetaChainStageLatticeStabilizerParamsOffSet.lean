@@ -96,7 +96,6 @@ end GlobalTheory.LatAgree
 
 namespace GlobalTheory.LatAgree
 
-open GlobalTheory.AdelicU GlobalTheory.LFun Formalism.UG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 

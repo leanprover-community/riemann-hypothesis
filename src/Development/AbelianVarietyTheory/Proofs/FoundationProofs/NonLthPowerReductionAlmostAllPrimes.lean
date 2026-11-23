@@ -150,7 +150,6 @@ end GlobalTheory.LthPowRed
 
 namespace GlobalTheory.LthPowRed
 
-open Polynomial
 
 theorem finiteDimensional_adjoin_map {F K L : Type} [Field F] [Field K] [Field L] [Algebra F K]
     [Algebra K L] [Algebra F L] [IsScalarTower F K L] (hKL : FiniteDimensional K L) (t : K)
@@ -278,7 +277,6 @@ end GlobalTheory.LthPowRed
 
 namespace GlobalTheory.LthPowRed
 
-open Polynomial
 
 theorem not_valuation_lt_one : ∀ {F : Type} [Field F] [CharZero F] [IsAlgClosed F] [Algebra.IsAlgebraic ℚ F]
     {K : Type} [Field K] [Algebra F K] (t : K), Transcendental F t →

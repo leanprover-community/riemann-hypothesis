@@ -386,7 +386,6 @@ end cont
 
 section main
 
-open Formalism.FourierDecayAlt.P Formalism.FourierDecayAlt.P.Dx2 Formalism.FourierDecayAlt.P.Dx2.OrbJ
 
 variable {k r : ℕ} (L : LocBessel k r) (Bs : B.RealPlaceData k r L.Wp L.Wq)
 

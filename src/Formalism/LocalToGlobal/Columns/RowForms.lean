@@ -198,7 +198,6 @@ variable {X}
 
 def QE (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (ξ : Chr X.F X.E X.K) :
     Finset (HeightOneSpectrum (𝓞 X.E)) :=
-  open Classical in
   if h : (Qprime ξ).Finite then h.toFinset.image sel else ∅
 
 end Sel

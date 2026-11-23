@@ -525,13 +525,11 @@ private theorem idealOrder_map_of_inverse {R S : Type*} [CommRing R] [CommRing S
   rw [h2] at h3
   exact le_antisymm h3 h1
 
-open CategoryTheory in
 private theorem hom_hom_apply_of_comp_eq {A B C : CommRingCat} (f : A ⟶ B) (g : B ⟶ C)
     (k : A ⟶ C) (hk : f ≫ g = k) (x : A) : g.hom (f.hom x) = k.hom x := by
   rw [← hk, CommRingCat.hom_comp]
   rfl
 
-open CategoryTheory in
 theorem orderAt_comap_of_isOpenImmersion {Y : Scheme.{u}} (h : Y ⟶ X) [IsOpenImmersion h]
     (I : X.IdealSheafData) (y : Y) :
     orderAt (I.comap h) y = orderAt I (h.base y) := by
@@ -574,7 +572,6 @@ theorem orderAt_comap_of_isOpenImmersion {Y : Scheme.{u}} (h : Y ⟶ X) [IsOpenI
     ← Ideal.map_map]
   exact idealOrder_map_of_inverse (h.stalkMap y).hom (inv (h.stalkMap y)).hom hsgf hsfg _
 
-open CategoryTheory in
 theorem orderAt_comap_of_isIso {A B : Scheme.{u}} (f : A ⟶ B) [IsIso f] (J : B.IdealSheafData)
     (x : ↥A) : orderAt (J.comap f) x = orderAt J (f.base x) :=
   orderAt_comap_of_isOpenImmersion f J x

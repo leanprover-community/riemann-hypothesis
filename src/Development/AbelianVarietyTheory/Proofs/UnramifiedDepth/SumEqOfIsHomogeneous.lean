@@ -360,7 +360,6 @@ end
 end
 
 section
-open ReciprocityTheory.PGsh
 
 theorem _root_.GlobalTheory.OddBlock.expShift : (∀ (C : Type) [Field C] [CharZero C] (κ κ' : Type) [Fintype κ] [Fintype κ'] [DecidableEq κ] [DecidableEq κ'] (ζ : κ' → MvPolynomial κ C) (F : MvPolynomial κ C) (G : MvPolynomial κ' C) (g : MvPowerSeries (κ ⊕ κ') C),
     (∑ A ∈ ((MvPolynomial.rename Sum.inl F * MvPolynomial.rename Sum.inr G : MvPolynomial (κ ⊕ κ') C)).support, AddMonoidAlgebra.coeff ((MvPolynomial.rename Sum.inl F * MvPolynomial.rename Sum.inr G : MvPolynomial (κ ⊕ κ') C)) A * (A.prod fun _ e => (e.factorial : C)) * MvPowerSeries.coeff A (PowerSeries.subst (((∑ j, MvPolynomial.rename Sum.inl (ζ j) * MvPolynomial.X (Sum.inr j) : MvPolynomial (κ ⊕ κ') C) : MvPowerSeries (κ ⊕ κ') C)) (PowerSeries.exp C) * g)) =
@@ -371,7 +370,6 @@ theorem _root_.GlobalTheory.OddBlock.expShift : (∀ (C : Type) [Field C] [CharZ
 end
 
 section
-open ReciprocityTheory.PGsh
 
 noncomputable section
 
@@ -552,7 +550,6 @@ theorem le_v_of_dvd {C : Type} [Field C] (v : AddValuation C (WithTop ℝ)) {l :
   rw [v.map_mul, v.map_pow, hv, nsmul_one_coe]
   exact le_add_of_nonneg_right (intCast_nonneg v w)
 
-open ReciprocityTheory.ChartRestriction.G.Sh.PowerSeriesCoeffGaps in
 theorem v_prod_factorial {C : Type} [Field C] (v : AddValuation C (WithTop ℝ)) {l : ℕ}
     (hl : l.Prime) (hv : v (l : C) = 1) {κ : Type} [Fintype κ] (B : κ →₀ ℕ) :
     v (B.prod fun _ e => (e.factorial : C)) =
@@ -725,7 +722,6 @@ end
 end
 
 section
-open ReciprocityTheory.PGsh
 
 theorem _root_.GlobalTheory.OddBlock.expBinomial : (∀ (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ)) (l : ℕ), l.Prime → v (l : C) = 1 → 5 ≤ l → ∀ (i E n₀ : ℕ), Odd i → (E : ℝ) = 1 + ((l : ℝ) ^ i - l) / ((l : ℝ) ^ 2 - 1) → ∀ h₁ : MvPowerSeries ((Fin n₀ × Fin n₀) ⊕ (Fin n₀ × Fin n₀)) C,
     (∀ α, (((1 / (l - 1)) - α.sum (fun j e => Sum.elim (fun _ => 1 / ((l : ℝ) ^ 2 - 1) + 3 / (8 * (l : ℝ) ^ i)) (fun _ => 1 / ((l : ℝ) ^ 2 - 1) + 1 / 2 - 1 / (8 * (l : ℝ) ^ i)) j * (e : ℝ)) : ℝ) : WithTop ℝ) ≤ v (MvPowerSeries.coeff α (h₁))) → (∀ α, MvPowerSeries.coeff α h₁ ≠ 0 → ∃ q, α (Sum.inr q) ≠ 0) →
@@ -911,7 +907,6 @@ end
 end
 
 section
-open Formalism.L2.FormalSeriesBounds
 
 namespace GlobalTheory.OddBlock.WindowValuationBound
 
@@ -1009,7 +1004,6 @@ end GlobalTheory.OddBlock.WindowValuationBound
 end
 
 section
-open Formalism.L2.FormalSeriesBounds
 
 theorem _root_.GlobalTheory.OddBlock.windowBound : ThmP := by
   exact @GlobalTheory.OddBlock.WindowValuationBound.main
@@ -1134,7 +1128,6 @@ end GlobalTheory.OddBlock.BlockContent
 end
 
 section
-open Formalism.L2.FormalSeriesBounds
 
 theorem _root_.GlobalTheory.OddBlock.content_and_window : BiContent ∧ BiWindow := by
   exact @GlobalTheory.OddBlock.BlockContent.biContent_and_biWindow

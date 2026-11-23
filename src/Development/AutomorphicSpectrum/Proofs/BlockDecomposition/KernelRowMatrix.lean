@@ -76,8 +76,6 @@ end GlobalTheory.CompanionTheory.KerFc.RowLin
 
 namespace GlobalTheory.CompanionTheory.KerFc
 
-open PositivityTheory.RgTw (Mat G)
-open PositivityTheory.RgBcC PositivityTheory.RgBcC.Fc
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

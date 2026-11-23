@@ -64,8 +64,6 @@ theorem _root_.GlobalTheory.Mass.Transp.mem_img (e : V ≃ₗ[K] V') (L : Submod
   · intro hy
     exact ⟨e.symm y, hy, by simp⟩
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -76,8 +74,6 @@ theorem _root_.GlobalTheory.Mass.Transp.img_symm_img (e : V ≃ₗ[K] V') (L : S
   ext x
   simp [_root_.GlobalTheory.Mass.Transp.mem_img]
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -90,8 +86,6 @@ theorem _root_.GlobalTheory.Mass.Transp.img_img_symm (e : V ≃ₗ[K] V') (L : S
 
 variable {h : V →ₗ⋆[K] V →ₗ[K] K} {h' : V' →ₗ⋆[K] V' →ₗ[K] K}
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -103,8 +97,6 @@ theorem _root_.GlobalTheory.Mass.Transp.symm_isom (e : V ≃ₗ[K] V') (he : ∀
   rw [← he]
   simp
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -115,8 +107,6 @@ private lemma mem_dual_iff_hermitian_lattices (L : Submodule R V) (x : V) :
   unfold _root_.Formalism.HermitianLatticesTheory.dual _root_.Formalism.E.hdual
   simp [Submodule.mem_iInf]
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -135,8 +125,6 @@ theorem _root_.GlobalTheory.Mass.Transp.dual_img (e : V ≃ₗ[K] V') (he : ∀ 
     have := hy _ hz
     rwa [_root_.GlobalTheory.Mass.Transp.symm_isom e he] at this
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -161,8 +149,6 @@ private lemma isFullLattice_img (e : V ≃ₗ[K] V') (L : Submodule R V)
     rw [← LinearMap.map_span, hL.span_eq_top, Submodule.map_top]
     exact LinearMap.range_eq_top_of_surjective _ e.surjective
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -187,8 +173,6 @@ def conj (e : V ≃ₗ[K] V') (he : ∀ x y, h' (e x) (e y) = h x y) : isom h �
   right_inv g := by ext x; simp
   map_mul' g g' := by ext x; simp
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -197,8 +181,6 @@ variable {h : V →ₗ⋆[K] V →ₗ[K] K} {h' : V' →ₗ⋆[K] V' →ₗ[K] K
 private lemma isom_smul_eq_img (g : _root_.Formalism.HermitianLatticesTheory.isom h) (L : Submodule R V) :
     g • L = _root_.GlobalTheory.Mass.Transp.img (g : V ≃ₗ[K] V) L := rfl
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -210,8 +192,6 @@ private lemma img_trans_eq_img_img (e₁ : V ≃ₗ[K] V') (e₂ : V' ≃ₗ[K] 
   ext x
   simp [_root_.GlobalTheory.Mass.Transp.mem_img]
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -224,8 +204,6 @@ theorem _root_.GlobalTheory.Mass.Transp.img_smul (e : V ≃ₗ[K] V') (he : ∀ 
   ext x
   simp [_root_.GlobalTheory.Mass.Transp.conj]
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -236,8 +214,6 @@ private lemma mem_genus_iff_isFullLattice_and_locally_isom (L M : Submodule R V)
     ∀ p : Ideal R, p.IsMaximal → ∃ g ∈ _root_.Formalism.HermitianLatticesTheory.isom h,
       _root_.GlobalTheory.Mass.Transp.img g (_root_.Formalism.HermitianLatticesTheory.loc (K := K) p L) = _root_.Formalism.HermitianLatticesTheory.loc (K := K) p M := Iff.rfl
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -253,8 +229,6 @@ private lemma loc_img_eq_img_loc (e : V ≃ₗ[K] V') (p : Ideal R) (L : Submodu
   show (∃ s ∈ _, s • y ∈ _) ↔ (∃ s ∈ _, s • e.symm y ∈ _)
   simp only [_root_.GlobalTheory.Mass.Transp.mem_img, hsmul]
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -271,8 +245,6 @@ theorem _root_.GlobalTheory.Mass.Transp.genus_img (e : V ≃ₗ[K] V') (he : ∀
   ext x
   simp [_root_.GlobalTheory.Mass.Transp.conj]
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']
@@ -282,8 +254,6 @@ private lemma mem_isom_iff_preserves_form (g : V ≃ₗ[K] V) :
     g ∈ _root_.Formalism.HermitianLatticesTheory.isom h ↔ ∀ x y, h (g x) (g y) = h x y :=
   Iff.rfl
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {R K V V' V'' : Type} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
   [AddCommGroup V'] [Module K V'] [Module R V'] [IsScalarTower R K V']

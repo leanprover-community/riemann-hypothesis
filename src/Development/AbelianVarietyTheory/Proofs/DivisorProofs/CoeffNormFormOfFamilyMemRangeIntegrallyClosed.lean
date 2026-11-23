@@ -83,8 +83,6 @@ end GlobalTheory.NormSheaf.IntegralCoeff
 
 namespace GlobalTheory.NormSheaf.IntegralCoeff
 
-open MvPolynomial
-open scoped TensorProduct
 
 theorem isIntegral_normForm (A K L : Type) [CommRing A] [Field K] [Field L] [Algebra A K]
     [Algebra K L] [FiniteDimensional K L] [Algebra A L] [IsScalarTower A K L] {m : ℕ}

@@ -89,7 +89,6 @@ private theorem isProL_of_PL (l : ℕ) (Γ : Type) [Group Γ] [TopologicalSpace 
   rw [← this]
   exact hn
 
-open UpperTheory.V.AlgebraTools in
 private theorem fg_of_open (Γ : Type) [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ]
     (H : Subgroup Γ) (hH : IsOpen (H : Set Γ)) (s : Set H) (hs : s.Finite) (h : TopGen s) :
     ∃ s : Finset Γ, (Subgroup.closure (s : Set Γ)).topologicalClosure = ⊤ := by

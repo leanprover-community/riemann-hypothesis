@@ -154,7 +154,6 @@ theorem mat_entry (s s' : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (a b : Fin (r + 
 end GlobalTheory.HL.RatStab
 
 namespace GlobalTheory.HL.RatStab
-open GlobalTheory.HL.FrameStab
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {sig : E →ₐ[F] E} {A : Places F E sig} {r k : ℕ} (G : GFrames A r k) (p : HeightOneSpectrum (𝓞 F))
 
@@ -212,7 +211,6 @@ theorem glob_of_loc (u : Fin (r + 1) → Fin (k + 2 * r + 1) → (A.loc p).Ep) (
 end GlobalTheory.HL.RatStab
 
 namespace GlobalTheory.HL.RatStab
-open GlobalTheory.HL.FrameStab
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {sig : E →ₐ[F] E} {A : Places F E sig} {r k : ℕ} (G : GFrames A r k) (p : HeightOneSpectrum (𝓞 F))
 
@@ -313,7 +311,6 @@ theorem decomp : LinearIndependent E (gg G) ∧ IsCompl (Submodule.span E (Set.r
 end GlobalTheory.HL.RatStab
 
 namespace GlobalTheory.HL.RatStab
-open GlobalTheory.HL.FrameStab
 
 theorem stab_rat : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E} (A : Places F E sig), ∀ (r k : ℕ) (G : GFrames A r k), ∀ s s' : Matrix (Fin (r + 1)) (Fin (r + 1)) E, ((∀ i j, j < i → s i j = 0) ∧ (∀ i, s i i = 1)) → ((∀ i j, j < i → s' i j = 0) ∧ (∀ i, s' i i = 1)) → ((s.map sig).transpose * G.Zh * s' = G.Zh ↔ ∃ h ∈ G.St, (∀ j, h (G.f j) = ∑ i, s i j • G.f i) ∧ ∀ j, h (G.f' j) = ∑ i, s' i j • G.f' i) := by
   intro F E _ _ _ _ _ sig A r k G s s' hs hs'

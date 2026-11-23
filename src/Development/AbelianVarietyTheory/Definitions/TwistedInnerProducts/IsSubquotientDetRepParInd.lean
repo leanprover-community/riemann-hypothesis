@@ -530,7 +530,6 @@ end Local
 
 section Examples
 
-open Matrix
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α]

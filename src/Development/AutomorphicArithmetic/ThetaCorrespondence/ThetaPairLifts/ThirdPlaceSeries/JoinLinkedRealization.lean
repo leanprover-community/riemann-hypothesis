@@ -66,7 +66,6 @@ theorem join_linked_realization_alt (hR : GlobalTheory.Published.DiscreteSeriesC
     (rowConditions_at_companion_from_readings D L hT Gi Gl K Yd cX ex x).2.1 hSee hEv hRow).1
 end IndefiniteRowSideFullHecke
 section Wit
-open Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.Lev Formalism.IndefR.AutomorphicEvaluation
   Formalism.L2.Theta Formalism.L2.SG.RowsJoinPinned GlobalTheory.Mem.SRe
 variable {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {p : _root_.GlobalTheory.Mem.Top.Bl.Parameters hL}
 

@@ -60,11 +60,9 @@ theorem toMatrix_bcRep {W₀ : Type} [AddCommGroup W₀] [Module K W₀] {ι : T
 
 end BC
 
-section AdlK
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {K : Type} [Field K]
 
-end AdlK
 
 section AlgBC
 
@@ -99,20 +97,16 @@ attribute [local instance] algKk
 
 end Real
 
-section LevGen
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {K : Type} [Field K]
 
-end LevGen
 
-section LevNX
 
 variable (D : D7) (i : D.ntw.Tw) (b : Bool) (k : ℕ) (Q : Finset (PlE D.host))
   (ψ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ) (e : ℤ)
   (τ : ∀ kv : (Σ kk : Fin 2, D.nd.PlG kk), (ZMod (D.host.g kv.1))ˣ →* (FractionRing (D.ntw.O i))ˣ)
   (sp : PlE D.host → SplitPlace D.host.E) (QP DP : Finset (PlE D.host))
 
-end LevNX
 
 section ChrG
 
@@ -163,14 +157,11 @@ theorem gVal_of (kv : Σ kk : Fin 2, D.nd.PlG kk) (s : SplitPlace D.host.E)
 
 end ChrG
 
-section Tau
 
 variable (D : D7)
 
 
-end Tau
 
-section Assembly
 
 variable (D : D7) (i : D.ntw.Tw) (j : ℕ) (b : Bool) (k : ℕ) (Q : Finset (PlE D.host))
   (ψ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ) (e : ℤ)
@@ -178,7 +169,6 @@ variable (D : D7) (i : D.ntw.Tw) (j : ℕ) (b : Bool) (k : ℕ) (Q : Finset (PlE
 
 attribute [local instance] algKk
 
-end Assembly
 
 section Pq
 

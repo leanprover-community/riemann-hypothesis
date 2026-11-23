@@ -209,7 +209,6 @@ end GlobalTheory.BotSmallDict
 
 namespace GlobalTheory.BotSmallDict
 
-open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.RowVacScalar (detIdl idemAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (stdSnd)
 
@@ -316,9 +315,6 @@ end GlobalTheory.BotSmallDict
 
 namespace GlobalTheory.BotSmallDict
 
-open GlobalTheory.BotFormula (IsFinPt)
-open GlobalTheory.RowVacScalar (detIdl idemAt)
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (stdSnd)
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData L sc} {W : G.Weil} {i j : Fin D.R.m}
   {A A' WW : HSp D} {X : Tri T A A' WW} {μ₀ : T} {δ t0 : ℂ} {s : T} {Q : ℕ} {P P' : Pair D ⊤ δ t0 Q}

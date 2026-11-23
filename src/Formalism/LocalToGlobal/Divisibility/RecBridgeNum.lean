@@ -120,7 +120,6 @@ end Formalism.L2.DIV.NumTieH
 
 namespace Formalism.L2.DIV.NumTieH
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.MainNotions.G
 
 variable (D : D7) (L : SizeData₂ D) (Del h0 : ℕ)
 
@@ -176,7 +175,6 @@ end Formalism.L2.DIV.NumTieH
 
 namespace Formalism.L2.DIV.NumTieH
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.MainNotions.G
 
 variable (D : D7) (L : SizeData₂ D) (Del h0 : ℕ)
 

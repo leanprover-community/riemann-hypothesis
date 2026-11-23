@@ -487,7 +487,6 @@ end Datum
 
 section Scalar
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker
 
 variable {X : Fields} (A : Amb X) {a b : ℕ} {Sa SB : Finset (HeightOneSpectrum (𝓞 X.E))}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {mU : HeightOneSpectrum (𝓞 X.E) → X.Kˣ} {mI sS sT : SB → X.E → X.K}

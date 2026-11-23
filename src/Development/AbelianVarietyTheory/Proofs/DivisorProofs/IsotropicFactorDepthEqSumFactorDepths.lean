@@ -60,7 +60,6 @@ def colEmb {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTh
     rfl
 
 
-open GlobalTheory.IndefiniteRowSideFullHecke.LocalValuationColumns in
 theorem prodP_eq_rename_polyH {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
     {Dw : Datum H} (C : Type) [Field C] (cx : Lt1 Dw → ℕ) :
     prodP C cx = MvPolynomial.rename (fun x : Let cx =>

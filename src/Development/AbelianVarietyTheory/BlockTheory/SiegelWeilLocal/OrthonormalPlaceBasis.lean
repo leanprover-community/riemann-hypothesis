@@ -105,7 +105,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalPlaceBasis.ste
   Submodule.span_mono fun _ ⟨l, u, hl, hu, hy⟩ => ⟨l, u, hl.trans h, hu, hy⟩
 
 
-open NumberField Matrix in
 variable (B : _root_.Formalism.MainNotions.S.RowsAut) in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalPlaceBasis.tens_w_mem {d : InfinitePlace B.I.F → ℝ}
     (h : _root_.GlobalTheory.Count.IsDSData B d) (P : ℕ) :

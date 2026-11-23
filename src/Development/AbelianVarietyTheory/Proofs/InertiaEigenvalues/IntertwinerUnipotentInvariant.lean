@@ -265,7 +265,6 @@ theorem map_zOf {G H : Type} [Group G] [Fintype G] [Group H] (i : G →* H) (α 
 
   simp [zOf, map_sum]
 
-open MonoidAlgebra in
 theorem commute_map {G H : Type} [Group G] [Group H] (i : G →* H) (e : MonoidAlgebra ℂ H)
     (h : ∀ x c, Commute e (single (i x) c)) (a : MonoidAlgebra ℂ G) : Commute e (mapDomainAlgHom ℂ ℂ i a) := by
   induction a using MonoidAlgebra.induction_on with
@@ -273,7 +272,6 @@ theorem commute_map {G H : Type} [Group G] [Group H] (i : G →* H) (e : MonoidA
   | add x y hx hy => rw [map_add (f := _)]; exact hx.add_right hy
   | smul r x hx => rw [map_smul]; exact hx.smul_right r
 
-open MonoidAlgebra in
 theorem commute_AB (σ : Fin k ⊕ Fin l ≃ Fin n) (a : MonoidAlgebra ℂ (Gn g k)) (b : MonoidAlgebra ℂ (Gn g l)) :
     Commute (mapDomainAlgHom ℂ ℂ (inA σ) a) (mapDomainAlgHom ℂ ℂ (inB σ) b) := by
   refine commute_map _ _ (fun y c => ?_) b
@@ -286,7 +284,6 @@ theorem isClass_of_isIrr {G : Type} [Group G] {χ : G → ℂ} (h : IsIrr χ) : 
   intro x y
   rw [← hV, ← hV, FDRep.char_conj]
 
-open MonoidAlgebra in
 theorem irr_vanish (σ : Fin k ⊕ Fin l ≃ Fin n) (χ : Gn g n → ℂ) (α : Gn g k → ℂ) (β : Gn g l → ℂ)
     (hχ : IsIrr χ) (hα : IsIrr α) (hβ : IsIrr β) (h : ip χ (hc k l α β n) = 0) :
     eN g σ * mapDomainAlgHom ℂ ℂ (inA σ) (zOf α) * mapDomainAlgHom ℂ ℂ (inB σ) (zOf β) * zOf χ = 0 := by
@@ -327,7 +324,6 @@ theorem irr_vanish (σ : Fin k ⊕ Fin l ≃ Fin n) (χ : Gn g n → ℂ) (α : 
   simp only [Prod.fst_inv, Prod.snd_inv]
   ring
 
-open MonoidAlgebra in
 theorem ser_vanish (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) (σ : Fin k ⊕ Fin l ≃ Fin n)
     (f f₁ f₂ : (ZMod g)[X]) (hf : f ≠ f₁ * f₂) :
     eN g σ * mapDomainAlgHom ℂ ℂ (inA σ) (eSerC L k f₁) * mapDomainAlgHom ℂ ℂ (inB σ) (eSerC L l f₂) *
@@ -353,7 +349,6 @@ theorem ser_vanish (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) (σ : Fin k �
   exact hf (((GlobalTheory.T.harishChandraSeriesLabel_exists_unique_GLn g L h5 hG n).1 χ hχ).unique hχ'
     (GlobalTheory.T.harishChandraSeriesLabel_mul_of_constituent g L k l n χ α β f₁ f₂ hn hχ hα hβ hα' hβ' hne))
 
-open MonoidAlgebra in
 theorem ser_vanish' (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) (σ : Fin k ⊕ Fin l ≃ Fin n)
     (f f₁ f₂ : (ZMod g)[X]) (hf : f ≠ f₁ * f₂) :
     eSerC L n f * mapDomainAlgHom ℂ ℂ (inB σ) (eSerC L l f₂) * mapDomainAlgHom ℂ ℂ (inA σ) (eSerC L k f₁) *
@@ -366,7 +361,6 @@ theorem ser_vanish' (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) (σ : Fin k �
     ← (cA.mul_right cB).eq, ← mul_assoc]
   exact ser_vanish L h5 hG σ f f₁ f₂ hf
 
-open MonoidAlgebra in
 theorem comp_alg {G H W : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ H W)
     (i : G →* H) (a : MonoidAlgebra ℂ G) :
     Representation.asAlgebraHom (ρ.comp i : Representation ℂ G W) a = ρ.asAlgebraHom (mapDomainAlgHom ℂ ℂ i a) := by
@@ -409,7 +403,6 @@ theorem exists_split (a : Fin n → ℤ) (hn : 0 < n) : ∃ (k l : ℕ) (σ : Fi
   · exact ((Fintype.equivFin {i // a i < a i₀}).symm i).2
   · exact le_antisymm (hi₀ _ (Finset.mem_univ _)) (not_lt.1 ((Fintype.equivFin {i // ¬ a i < a i₀}).symm j).2)
 
-open MonoidAlgebra in
 theorem step (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) (σ : Fin k ⊕ Fin l ≃ Fin n) {W W' : Type}
     [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W'] (ρ : Representation ℂ (Gn g n) W)
     (ρ' : Representation ℂ (Gn g n) W') (T : W →ₗ[ℂ] W')

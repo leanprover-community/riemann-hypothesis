@@ -249,12 +249,10 @@ theorem wSeriesExistsUnique_holds : WSeriesUnique.{u} := by
   exact ⟨Formalism.ELL.WeierstrassSeriesLimit.lim W, Formalism.ELL.WeierstrassSeriesLimit.lim_fixed W,
     fun w hw => Formalism.ELL.WeierstrassSeriesLimit.fixed_unique W hw (Formalism.ELL.WeierstrassSeriesLimit.lim_fixed W)⟩
 
-open WeierstrassSeriesLimit in
 theorem wSeriesLeadingTerm_holds : WSeriesLead.{u} := by
   intro R _ W w hw
   exact Formalism.ELL.WeierstrassSeriesLimit.lead W hw
 
-open WeierstrassSeriesLimit in
 theorem wSeriesSubstUnique_holds : WSubstUnique.{u} := by
   intro R _ W w hw σ _ s hs
   refine ⟨Formalism.ELL.WeierstrassSeriesLimit.subst_eq W hw s hs, fun v hv hvE => ?_⟩

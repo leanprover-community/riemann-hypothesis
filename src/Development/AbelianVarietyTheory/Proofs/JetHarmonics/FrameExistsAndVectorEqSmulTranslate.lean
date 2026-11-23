@@ -71,17 +71,14 @@ private theorem Hpk_mulVec_of_inWb {k r : ℕ} {v : Fin (2 * r + k + 1) → ℂ}
       split_ifs with h1 h2 h3 <;> first | omega | exact absurd (congrArg Fin.val h3.2.2) hne | simp
   · simp
 
-open Matrix in
 private theorem herm_smul_left_jet_harmonics {ι : Type} [Fintype ι] (H : Matrix ι ι ℂ) (c : ℂ) (v w : ι → ℂ) :
     _root_.Formalism.QuantumDeterminants.herm H (c • v) w = c * _root_.Formalism.QuantumDeterminants.herm H v w := by
   simp [_root_.Formalism.QuantumDeterminants.herm, mulVec_smul, dotProduct_smul, smul_eq_mul]
 
-open Matrix in
 private theorem herm_smul_right_jet_harmonics {ι : Type} [Fintype ι] (H : Matrix ι ι ℂ) (c : ℂ) (v w : ι → ℂ) :
     _root_.Formalism.QuantumDeterminants.herm H v (c • w) = star c * _root_.Formalism.QuantumDeterminants.herm H v w := by
   simp [_root_.Formalism.QuantumDeterminants.herm, star_smul, smul_dotProduct, smul_eq_mul]
 
-open Matrix in
 private theorem exists_unit_orth_in_Wb {n r : ℕ} {z : Fin (2 * r + (n + 1) + 1) → ℂ} (hz : _root_.Formalism.QuantumDeterminants.inWb (n + 1) r z)
     (hT : 0 < _root_.Formalism.QuantumDeterminants.Tz (n + 1) r z) :
     ∃ e, _root_.Formalism.QuantumDeterminants.inWb (n + 1) r e ∧ _root_.Formalism.QuantumDeterminants.herm (_root_.Formalism.QuantumDeterminants.Hpk (n + 1) r) e z = 0 ∧
@@ -150,14 +147,12 @@ private theorem exists_unit_orth_in_Wb {n r : ℕ} {z : Fin (2 * r + (n + 1) + 1
     field_simp
     exact_mod_cast hs.symm
 
-open Matrix in
 private theorem swapMat_eq_one_add_sub_mul {k r : ℕ} (H : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (B B' : Fin k → Fin (2 * r + k + 1) → ℂ) :
     _root_.GlobalTheory.FrameTrans.swapMat H B B' = 1 + (_root_.Formalism.FourierDecayAlt.P.HermitianFormRankFour.colM B' - _root_.Formalism.FourierDecayAlt.P.HermitianFormRankFour.colM B) * ((_root_.Formalism.FourierDecayAlt.P.HermitianFormRankFour.colM B)ᴴ * H) := by
   ext p q
   simp [_root_.GlobalTheory.FrameTrans.swapMat, Matrix.mul_apply, _root_.Formalism.FourierDecayAlt.P.HermitianFormRankFour.colM, _root_.Formalism.QuantumDeterminants.herm, _root_.Formalism.QuantumDeterminants.bvec, dotProduct, mulVec, Pi.single_apply, Finset.mul_sum]
 
-open Matrix in
 private theorem swapMat_mulVec' {k r : ℕ} (H : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (B B' : Fin k → Fin (2 * r + k + 1) → ℂ) (v : Fin (2 * r + k + 1) → ℂ) :
     _root_.GlobalTheory.FrameTrans.swapMat H B B' *ᵥ v =
@@ -170,7 +165,6 @@ private theorem swapMat_mulVec' {k r : ℕ} (H : Matrix (Fin (2 * r + k + 1)) (F
     _root_.Formalism.QuantumDeterminants.herm, Finset.sum_mul, Finset.mul_sum, mul_assoc]
   exact Finset.sum_comm
 
-open Matrix in
 private theorem colM_eq_mul_gram_of_isFrameOf {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : _root_.Formalism.QuantumDeterminants.inWb k r z)
     (hzz : _root_.Formalism.QuantumDeterminants.herm (_root_.Formalism.QuantumDeterminants.Hpk k r) z z ≠ 0) {B B' : Fin k → Fin (2 * r + k + 1) → ℂ}
     (hB : _root_.Formalism.FourierDecayAlt.Q.IsFrameOf k r [z] B) (hB' : _root_.Formalism.FourierDecayAlt.Q.IsFrameOf k r [z] B') :
@@ -183,7 +177,6 @@ private theorem colM_eq_mul_gram_of_isFrameOf {k r : ℕ} {z : Fin (2 * r + k + 
   conv_lhs => rw [e]
   simp [Finset.sum_apply, mul_comm]
 
-open Matrix in
 private theorem swapMat_mem_UWset_of_isFrameOf {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : _root_.Formalism.QuantumDeterminants.inWb k r z)
     (hzz : _root_.Formalism.QuantumDeterminants.herm (_root_.Formalism.QuantumDeterminants.Hpk k r) z z ≠ 0) {B B' : Fin k → Fin (2 * r + k + 1) → ℂ}
     (hB : _root_.Formalism.FourierDecayAlt.Q.IsFrameOf k r [z] B) (hB' : _root_.Formalism.FourierDecayAlt.Q.IsFrameOf k r [z] B') :
@@ -227,7 +220,6 @@ private theorem swapMat_mem_UWset_of_isFrameOf {k r : ℕ} {z : Fin (2 * r + k +
     _ = H := by rw [hQ]; simp
 
 
-open Matrix in
 theorem _root_.GlobalTheory.frame_exists_and_vector_eq_smul_translate :
     ∀ (n r : ℕ) (z : (Fin (2 * r + (n + 1) + 1) → ℂ)), _root_.Formalism.QuantumDeterminants.inWb (n + 1) r z → 0 < _root_.Formalism.QuantumDeterminants.Tz (n + 1) r z →
       (∃ B : Fin (n + 1) → (Fin (2 * r + (n + 1) + 1) → ℂ), _root_.Formalism.FourierDecayAlt.Q.IsFrameOf (n + 1) r [z] B) ∧

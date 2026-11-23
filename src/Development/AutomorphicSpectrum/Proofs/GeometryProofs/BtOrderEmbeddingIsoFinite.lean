@@ -87,7 +87,6 @@ end GlobalTheory.CompanionTheory.Ar.BT.FiniteIso
 
 namespace GlobalTheory.CompanionTheory.Ar.BT.FiniteIso
 
-open GlobalTheory.CompanionTheory.Ar.BT.SubOrder
 
 theorem isIso_of_finite : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] (T : Type) [CommGroup T] [Finite T] (Γ : QFGroup R T) (j : Γ.G.left ⟶ Spec (CommRingCat.of (Γ.btOrder ⊤))), Γ.IsEmb (Γ.btOrder ⊤) j → IsFinite Γ.G.hom → IsIso j := by
   intro R _ _ _ T _ _ Γ j hj hfin

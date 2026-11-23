@@ -57,7 +57,6 @@ end GlobalTheory.CellLastRow
 
 namespace GlobalTheory.CellLastRow
 
-open GlobalTheory.CellDec GlobalTheory.ZEul
 
 theorem indN_lastRow_tl : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (m : ℕ)
     (S : Finset (HeightOneSpectrum (𝓞 E))) (ϖ : ∀ v : HeightOneSpectrum (𝓞 E), (v.adicCompletion E)ˣ),

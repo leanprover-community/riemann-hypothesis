@@ -81,7 +81,6 @@ end Generic
 
 section SlopeTestRemainingChoices
 
-open GlobalTheory.SeeSaw.SplitLat
 
 theorem sum_three {M : Type*} [AddCommMonoid M] {c σ : ℕ} (h : c = 2 * σ + 1) (f : Fin c → M) :
     ∑ p, f p = ∑ i : Fin σ, f (Fin.castLE (by omega) i) + f ⟨σ, by omega⟩ +
@@ -104,7 +103,6 @@ end SlopeTestRemainingChoices
 
 section Dec
 
-open GlobalTheory.SeeSaw.SplitLat
 
 variable {A B : HSp D} {c σ : ℕ} (dd : HermitianOrthogonalExtensionData A B c (-1)) (h : c = 2 * σ + 1) (l : Fin σ → D.host.E) (hl : ∀ a, l a ≠ 0)
 
@@ -157,7 +155,6 @@ end Dec
 
 section Lat
 
-open GlobalTheory.SeeSaw.SplitLat
 
 theorem coords_of_eq {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {x : Fin S.rank → D.host.E} {w w' : Fin ρ → D.host.E}
     {z : Fin S₀.rank → D.host.E} (hx : x = d.e *ᵥ w + d.i₀ *ᵥ z + d.e' *ᵥ w') :
@@ -210,7 +207,6 @@ end Lat
 
 section Split
 
-open GlobalTheory.SeeSaw.SplitLat
 
 variable {A B : HSp D} {c σ : ℕ} (dd : HermitianOrthogonalExtensionData A B c (-1)) (h : c = 2 * σ + 1) (l : Fin σ → D.host.E) (hl : ∀ a, l a ≠ 0)
 

@@ -88,8 +88,6 @@ end GlobalTheory.ConjPlaceUnitary
 
 namespace GlobalTheory.ConjPlaceUnitary
 
-open GlobalTheory.AdIsom
-open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents (cjA inc)
 
 theorem conj_formula_gen {A : Type} [CommRing A] (σ : A →+* A) {n : ℕ}
     (J B Bi B' B'i Z Zi : Matrix (Fin n) (Fin n) A) (hB : B * Bi = 1) (hB' : B' * B'i = 1) (hZ : Z * Zi = 1)
@@ -127,8 +125,6 @@ end GlobalTheory.ConjPlaceUnitary
 
 namespace GlobalTheory.ConjPlaceUnitary
 
-open GlobalTheory.AdIsom
-open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents (cjA inc)
 
 variable {D : D7}
 
@@ -149,8 +145,6 @@ end GlobalTheory.ConjPlaceUnitary
 
 namespace GlobalTheory.ConjPlaceUnitary
 
-open GlobalTheory.AdIsom
-open GlobalTheory.IndefiniteRowSideFullHecke.FlatSpaceComponents (cjA inc)
 
 theorem inBasis_conjPl_mem_KO : ∀ {D : D7} (V : HSp D) (β : GL (Fin V.rank) (Lev.EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)), IsFrame β Λ → Formalism.L2.Herm.dualL D.sp.cm V Λ = Λ → ∀ x ∈ UA D.sp.cm V.gram, ∀ w : Pl D.host.E, inBasis rfl β w x ∈ GlobalTheory.SplitWeil.KO (Kw w) (Fin V.rank) → inBasis rfl β (Formalism.DivisionValues.conjPl w) x ∈ GlobalTheory.SplitWeil.KO (Kw (Formalism.DivisionValues.conjPl w)) (Fin V.rank) := by
   intro D V β Λ hβ hd x hx w hw

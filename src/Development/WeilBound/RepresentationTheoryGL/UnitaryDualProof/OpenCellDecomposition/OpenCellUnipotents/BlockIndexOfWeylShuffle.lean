@@ -209,7 +209,6 @@ theorem aDiag_conj_apply_unipB (N n : ℕ) (z : kˣ) {u : GL (Fin N) k} (hu : u 
   · simp [hi, hj]
 
 
-open ValuativeRel GroundTheory.Automorphic.GLnLocal in
 theorem aDiag_conj_mem_congr (N n : ℕ) (z : kˣ) (hz : valuation k (z : k) ≤ 1) (c : ℕ) {u : GL (Fin N) k}
     (hu : u ∈ unipB k (Fin N)) (hK : u ∈ congruenceSubgroup k N c) :
     aDiag k N n z * u * (aDiag k N n z)⁻¹ ∈ congruenceSubgroup k N c := by

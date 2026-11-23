@@ -172,7 +172,6 @@ end GlobalTheory.FinPl.SrcExact
 
 namespace GlobalTheory.FinPl.SrcExact
 
-open GlobalTheory.FinPl GlobalTheory.FinPl.SrcGl GlobalTheory.FinPl.SrcTheta
 
 private theorem isFullLattice_of_gluedIndicator {k : Type} [Field k] [ValuativeRel k]
     [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n n' : Type} [Fintype n']

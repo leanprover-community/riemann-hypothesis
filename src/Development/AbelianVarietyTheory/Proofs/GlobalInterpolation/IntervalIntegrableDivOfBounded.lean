@@ -50,7 +50,6 @@ private lemma measurable_norm_sum_primesIoc (a : ℕ → ℂ) (x : ℝ) :
   rw [h]
   exact measurable_from_nat.comp Nat.measurable_floor
 
-open MeasureTheory in
 private lemma norm_sum_primesIoc_le_sum_range (a : ℕ → ℂ) (x y t : ℝ) (hty : t ≤ y) :
     ‖∑ p ∈ _root_.GlobalTheory.Lin.primesIoc x t, a p‖ ≤ ∑ n ∈ Finset.range (⌊y⌋₊ + 1), ‖a n‖ := by
   refine (norm_sum_le _ _).trans
@@ -61,7 +60,6 @@ private lemma norm_sum_primesIoc_le_sum_range (a : ℕ → ℂ) (x y t : ℝ) (h
   have h2 : ⌊t⌋₊ ≤ ⌊y⌋₊ := Nat.floor_le_floor hty
   exact Finset.mem_range.2 (by omega)
 
-open MeasureTheory in
 private lemma integrableOn_norm_sum_primesIoc_pow_div (a : ℕ → ℂ) (x y : ℝ) (hx : 0 < x)
     (k : ℕ) :
     IntegrableOn (fun t : ℝ => ‖∑ p ∈ _root_.GlobalTheory.Lin.primesIoc x t, a p‖ ^ k / t) (Set.Icc x y) := by

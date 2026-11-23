@@ -77,7 +77,6 @@ theorem _root_.GlobalTheory.CurveDegreesCompare.residueDegree_comp {X Y Z : Sche
 
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry TopologicalSpace Limits in
 theorem _root_.GlobalTheory.CurveDegreesCompare.residueDegree_of_isOpenImmersion {X Y : Scheme.{0}} (f : X ⟶ Y)
     [IsOpenImmersion f] (x : X) : f.residueDegree x = 1 := by
   letI := (f.residueFieldMap x).hom.toAlgebra

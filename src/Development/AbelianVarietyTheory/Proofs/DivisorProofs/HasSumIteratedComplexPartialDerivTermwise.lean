@@ -55,7 +55,6 @@ private lemma partialD_eqOn_fderiv_single {I : Type} [Fintype I] [DecidableEq I]
   unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.partialD
   exact (hh.differentiableAt (hU.mem_nhds hz)).lineDeriv_eq_fderiv
 
-open Set Filter Topology in
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma iterD_eqOn_iteratedFDeriv_single {I : Type} [Fintype I] [DecidableEq I]
@@ -86,9 +85,6 @@ private lemma iterD_eqOn_iteratedFDeriv_single {I : Type} [Fintype I] [Decidable
       (fun k ↦ Pi.single ((i :: l).get k) 1)).symm
 
 
-open Set Filter Topology in
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 theorem _root_.GlobalTheory.HilbFam.hasSum_iterD_termwise : ∀ (I : Type) [Fintype I] [DecidableEq I] (Ξ : Type) (u : List I) (r : ℝ)
     (f : Ξ → (I → ℂ) → ℂ) (g : (I → ℂ) → ℂ) (M : Ξ → ℝ), 0 < r → Summable M →
     (∀ ξ, DifferentiableOn ℂ (f ξ) (Metric.ball 0 r)) →

@@ -99,7 +99,6 @@ end GlobalTheory.NormaliserGLint
 
 namespace GlobalTheory.NormaliserGLint
 
-open Matrix
 
 theorem conj_eq_glint_mul_mul :
     ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (n : ℕ)

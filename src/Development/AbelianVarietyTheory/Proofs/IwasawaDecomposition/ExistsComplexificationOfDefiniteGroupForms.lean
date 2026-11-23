@@ -87,7 +87,6 @@ end GlobalTheory.Mem.R3.Rw.SpOfMat
 
 namespace GlobalTheory.Mem.R3.Rw.SpOfMat
 
-open MonoidAlgebra
 
 variable {G : Type} [Group G] [Fintype G]
 
@@ -193,7 +192,6 @@ end GlobalTheory.Mem.R3.Rw.SpOfMat
 
 namespace GlobalTheory.Mem.R3.Rw.SpOfMat
 
-open MonoidAlgebra
 
 theorem exists_complexification_of_definiteGroupForms : ∀ (K O : Type) [Field K] [NumberField K] [StarRing K] [CommRing O] (o : O →+* K) (σ : K →+* ℂ) (G : Type) [Group G] [Fintype G] (m : Mat1 K G) (e : MonoidAlgebra K G), (∀ x, σ (star x) = starRingEnd ℂ (σ x)) → (∀ y, IsIntegral ℤ (o y)) → m.Laws σ e → ∃ s : Sp1 O (σ.comp o) G, Nonempty (Tie1 σ m s) := by
   intro K O _ _ _ _ o σ G _ _ m e hσ ho hm

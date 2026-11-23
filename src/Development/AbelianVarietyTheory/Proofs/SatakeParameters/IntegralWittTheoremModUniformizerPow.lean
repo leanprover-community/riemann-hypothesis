@@ -86,7 +86,6 @@ end GlobalTheory.Hk3.IntWittMod
 
 namespace GlobalTheory.Hk3.IntWittMod
 
-open Matrix GlobalTheory.Hk3.IntWitt
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
@@ -132,7 +131,6 @@ end GlobalTheory.Hk3.IntWittMod
 
 namespace GlobalTheory.Hk3.IntWittMod
 
-open Matrix GlobalTheory.Hk3.IntWitt
 
 theorem witt_mod_pow : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : L) (σ : L →+* L) (q : ℕ),
     Formalism.UG.IsUnramInv ϖ σ q → Odd q → ∀ (n' : ℕ) (JT : GL (Fin n') L),

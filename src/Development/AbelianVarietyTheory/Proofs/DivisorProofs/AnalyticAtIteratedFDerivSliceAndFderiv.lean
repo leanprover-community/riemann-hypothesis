@@ -72,7 +72,6 @@ private lemma iteratedFDeriv_slice_eq_compContinuousLinearMap_inl {E F : Type} [
     iteratedFDerivWithin_of_isOpen k hso h0s', iteratedFDeriv_comp_add_right]
   simp
 
-open Filter Topology in
 private lemma fin_snoc_eq_cons_comp_finRotate {X : Type} {k : ℕ} (u : Fin k → X) (a : X) :
     (Fin.snoc u a : Fin (k + 1) → X) = Fin.cons a u ∘ finRotate (k + 1) := by
   funext i
@@ -81,7 +80,6 @@ private lemma fin_snoc_eq_cons_comp_finRotate {X : Type} {k : ℕ} (u : Fin k �
   · simp
 
 
-open Filter Topology in
 theorem _root_.GlobalTheory.analyticAt_iteratedFDeriv_slice_and_fderiv :
     ∀ {E F : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedAddCommGroup F] [NormedSpace ℂ F] [FiniteDimensional ℂ E] [FiniteDimensional ℂ F] (H : E × F → ℂ) (w₀ : F) (k : ℕ) (v : Fin k → E), AnalyticAt ℂ H (0, w₀) → AnalyticAt ℂ (fun w ↦ iteratedFDeriv ℂ k (fun z ↦ H (z, w)) 0 v) w₀ ∧ ∀ e : F, fderiv ℂ (fun w ↦ iteratedFDeriv ℂ k (fun z ↦ H (z, w)) 0 v) w₀ e = iteratedFDeriv ℂ k (fun z ↦ fderiv ℂ H (z, w₀) (0, e)) 0 v := by
   intro E F _ _ _ _ _ _ H w₀ k v hH

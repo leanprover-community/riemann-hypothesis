@@ -91,8 +91,6 @@ theorem dimOf_mem (X : Data E r) {σ : E →+* ℂ} (h : σ ∈ X.Ψ) : dimOf X 
 theorem dimOf_not_mem (X : Data E r) {σ : E →+* ℂ} (h : σ ∉ X.Ψ) : dimOf X σ = r - X.p0 := by
   simp [dimOf, h]
 
-open NumberField in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.TorusCoord.conj_mem (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {σ : E →+* ℂ} (h : σ ∉ X.Ψ) :
     ComplexEmbedding.conjugate σ ∈ X.Ψ :=
@@ -109,8 +107,6 @@ theorem card_idx (X : Data E r) : Fintype.card (Idx (dimOf X)) = X.Ψ.card * r :
   rw [Fintype.card_sigma, sum_emb_split X]
   simp [dimOf_add]
 
-open NumberField in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.TorusCoord.c_pos (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (τ : X.Ψ) : 0 < X.c τ := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.c
@@ -119,32 +115,24 @@ theorem _root_.GlobalTheory.TorusCoord.c_pos (X : _root_.ReciprocityTheory.Chart
 def pr (X : Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ)) (y : X.Ψ → Fin r → ℂ) (τ : X.Ψ) (b : Fin r) : ℂ :=
   (Real.sqrt (X.c τ) : ℂ) * hermC τ.1 X.Gm (y τ) (e τ b)
 
-open NumberField in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.TorusCoord.pr_add (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ)) (y y' : X.Ψ → Fin r → ℂ) (τ : X.Ψ)
     (b : Fin r) : _root_.GlobalTheory.TorusCoord.pr X e (y + y') τ b = _root_.GlobalTheory.TorusCoord.pr X e y τ b + _root_.GlobalTheory.TorusCoord.pr X e y' τ b := by
   simp only [_root_.GlobalTheory.TorusCoord.pr, Pi.add_apply, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_add_left]
   ring
 
-open NumberField in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.TorusCoord.pr_real_smul (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ)) (t : ℝ) (y : X.Ψ → Fin r → ℂ)
     (τ : X.Ψ) (b : Fin r) : _root_.GlobalTheory.TorusCoord.pr X e (t • y) τ b = (t : ℂ) * _root_.GlobalTheory.TorusCoord.pr X e y τ b := by
   simp only [_root_.GlobalTheory.TorusCoord.pr, Pi.smul_apply, ← Complex.coe_smul, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_smul_left]
   ring
 
-open NumberField in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.TorusCoord.lt_pos (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {σ : E →+* ℂ} (h : σ ∈ X.Ψ) (a : Fin (_root_.GlobalTheory.TorusCoord.dimOf X σ)) : a.1 < r := by
   have ha : a.1 < X.p0 := lt_of_lt_of_eq a.2 (if_pos h)
   have := X.p0_le
   omega
 
-open NumberField in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.TorusCoord.lt_neg (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {σ : E →+* ℂ} (h : σ ∉ X.Ψ) (a : Fin (_root_.GlobalTheory.TorusCoord.dimOf X σ)) :
     X.p0 + a.1 < r := by
@@ -152,7 +140,6 @@ theorem _root_.GlobalTheory.TorusCoord.lt_neg (X : _root_.ReciprocityTheory.Char
   have := X.p0_le
   omega
 
-open scoped Classical in
 def coord (X : Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ)) (y : X.Ψ → Fin r → ℂ)
     (i : Idx (dimOf X)) : ℂ :=
   if h : i.1 ∈ X.Ψ then pr X e y ⟨i.1, h⟩ ⟨i.2.1, lt_pos X h i.2⟩
@@ -185,8 +172,6 @@ end
 
 end TorusCoord
 
-open NumberField in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem coord_eq_pr_of_mem_psi (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ))
     (y : X.Ψ → Fin r → ℂ) (τ : X.Ψ) (a : Fin (_root_.GlobalTheory.TorusCoord.dimOf X τ.1)) :
@@ -195,8 +180,6 @@ private theorem coord_eq_pr_of_mem_psi (X : _root_.ReciprocityTheory.ChartRestri
   unfold _root_.GlobalTheory.TorusCoord.coord
   rw [dite_eq_left τ.2]
 
-open NumberField in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem coord_conjugate_eq_neg_conj_pr (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ))
     (y : X.Ψ → Fin r → ℂ) (τ : X.Ψ) (a : Fin (_root_.GlobalTheory.TorusCoord.dimOf X (ComplexEmbedding.conjugate τ.1))) :
@@ -209,14 +192,10 @@ private theorem coord_conjugate_eq_neg_conj_pr (X : _root_.ReciprocityTheory.Cha
   unfold _root_.GlobalTheory.TorusCoord.coord
   rw [dite_eq_right h, hτ]
 
-open NumberField in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem sum_idx_eq_sum_sigma {dim : (E →+* ℂ) → ℕ} (G : _root_.ReciprocityTheory.ChartRestriction.G.I2.Idx dim → ℝ) :
     ∑ i, G i = ∑ σ, ∑ a : Fin (dim σ), G ⟨σ, a⟩ := Fintype.sum_sigma G
 
-open NumberField in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem torusCoordinates_pair_im_lemma_4 (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ))
     (he : ∀ τ a b, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (e τ a) (e τ b) = if a = b then ((_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 a : ℝ) : ℂ) else 0)
@@ -283,8 +262,6 @@ private theorem torusCoordinates_pair_im_lemma_4 (X : _root_.ReciprocityTheory.C
     simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn, hb.2]
 
 
-open NumberField in
-open scoped ComplexConjugate in
 theorem _root_.GlobalTheory.exists_torus_coordinates : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ)), (∀ τ a b, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (e τ a) (e τ b) = if a = b then ((_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 a : ℝ) : ℂ) else 0) → ∃ (dim : (E →+* ℂ) → ℕ) (hp : ∀ τ : X.Ψ, dim τ.1 = X.p0) (hn : ∀ τ : X.Ψ, dim (ComplexEmbedding.conjugate τ.1) = r - X.p0) (Φ : (X.Ψ → Fin r → ℂ) ≃ₗ[ℝ] _root_.ReciprocityTheory.ChartRestriction.G.I2.Vsp dim), Fintype.card (_root_.ReciprocityTheory.ChartRestriction.G.I2.Idx dim) = X.Ψ.card * r ∧ (∀ τ, dim τ + dim (ComplexEmbedding.conjugate τ) = r) ∧ (∀ y (τ : X.Ψ) (a : Fin (dim τ.1)), (Φ y) ⟨τ.1, a⟩ = (Real.sqrt (X.c τ) : ℂ) * _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (y τ) (e τ (Fin.castLE (by rw [hp τ]; exact X.p0_le) a))) ∧ (∀ y (τ : X.Ψ) (a : Fin (dim (ComplexEmbedding.conjugate τ.1))), (Φ y) ⟨ComplexEmbedding.conjugate τ.1, a⟩ = (Real.sqrt (X.c τ) : ℂ) * (starRingEnd ℂ) (-_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (y τ) (e τ ⟨X.p0 + a.1, by have h1 : a.1 < r - X.p0 := lt_of_lt_of_eq a.2 (hn τ); have := X.p0_le; omega⟩))) ∧ (∀ (α : 𝓞 E) y, Φ (fun τ => τ.1 (α : E) • y τ) = _root_.ReciprocityTheory.ChartRestriction.G.I2.act α (Φ y)) ∧ ∀ y y', (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf (Φ y) (Φ y')).im = ∑ τ : X.Ψ, X.c τ * (_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (y τ) (y' τ)).im := by
   intro E _ _ _ r X e he
   have hp : ∀ τ : X.Ψ, _root_.GlobalTheory.TorusCoord.dimOf X τ.1 = X.p0 := fun τ => if_pos τ.2

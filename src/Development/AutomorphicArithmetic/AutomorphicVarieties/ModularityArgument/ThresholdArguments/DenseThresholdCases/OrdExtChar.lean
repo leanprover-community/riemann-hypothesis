@@ -309,7 +309,6 @@ private theorem algPow_eq {F : Type} [Field F] [NumberField F] (w : HeightOneSpe
   rw [finprod_eq_prod_of_fintype]
 end Pow
 section Const
-open GroundTheory.Global.SemiLocal
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] {l : ℕ} [Fact l.Prime]
   {v : HeightOneSpectrum (𝓞 K)} (w : PlacesOver L v)
 private theorem exists_const [Fintype (UpperTheory.V.W.Emb l w.1)] [Fintype (UpperTheory.V.W.Emb l v)]

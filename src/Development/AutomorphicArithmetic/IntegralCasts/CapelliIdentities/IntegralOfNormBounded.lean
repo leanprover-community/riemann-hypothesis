@@ -85,7 +85,6 @@ private lemma UpperTheory.Reformulated.B.IntegralOfNormBounded.mem_of_mul_eq_one
   have := p.eraseLead_natDegree_le
   omega
 
-open Polynomial in
 private lemma UpperTheory.Reformulated.B.IntegralOfNormBounded.isIntegral_of_norm_le {l : ℕ} [Fact (Nat.Prime l)] {K : Type}
     [Field K] [Algebra ℚ_[l] K] [Module.Finite ℚ_[l] K] [Algebra ℤ_[l] K]
     [IsScalarTower ℤ_[l] ℚ_[l] K] (z : K) (hz : spectralNorm ℚ_[l] K z ≤ 1) :

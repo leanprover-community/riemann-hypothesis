@@ -130,11 +130,9 @@ theorem lift_cancel (Z : M.Mat (r + 1)) (A B : Matrix (Fin (r + 1)) (Fin (r + 1)
 
 end LiftM
 
-section LiftK
 
 variable {R : Type} [CommRing R] {r : ℕ}
 
-end LiftK
 
 def isoMbeSymm {R : Type} [CommRing R] {r : ℕ} {Z₁ Z₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) R} (γ : IsoMbe Z₁ Z₂) :
     IsoMbe Z₂ Z₁ :=

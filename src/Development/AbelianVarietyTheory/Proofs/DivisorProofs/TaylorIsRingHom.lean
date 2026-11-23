@@ -108,7 +108,6 @@ theorem sum_antidiagonal_succ {M : Type} [AddCommMonoid M] {n : ℕ} (α : Fin (
 end GlobalTheory.FormalOrigin.TaylorRingHom
 
 namespace GlobalTheory.FormalOrigin.TaylorRingHom
-open Finset
 
 theorem iterOp_mul {A : Type} [CommRing A] : ∀ {n : ℕ} (ds : Fin n → Derivation ℤ A A) (α : Fin n →₀ ℕ) (f g : A),
     iterOp (fun i => ⇑(ds i)) α (f * g) = ∑ p ∈ antidiagonal α,
@@ -135,7 +134,6 @@ theorem iterOp_mul {A : Type} [CommRing A] : ∀ {n : ℕ} (ds : Fin n → Deriv
 end GlobalTheory.FormalOrigin.TaylorRingHom
 
 namespace GlobalTheory.FormalOrigin.TaylorRingHom
-open Finset
 
 theorem iterate_one {A : Type} [CommRing A] (D : Derivation ℤ A A) (k : ℕ) :
     (⇑D)^[k] 1 = if k = 0 then 1 else 0 := by

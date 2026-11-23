@@ -143,7 +143,6 @@ end GlobalTheory.TwTraceCx
 
 namespace GlobalTheory.TwTraceCx
 
-open GlobalTheory.ClassTrace
 
 variable {D : D7}
 
@@ -173,7 +172,6 @@ end GlobalTheory.TwTraceCx
 
 namespace GlobalTheory.TwTraceCx
 
-open GlobalTheory.ClassTrace
 
 variable {D : D7}
 
@@ -247,7 +245,6 @@ end GlobalTheory.TwTraceCx
 
 namespace GlobalTheory.TwTraceCx
 
-open GlobalTheory.ClassTrace
 
 theorem trace_cx : ∀ (D : D7) (ρ : Setup D.ntw), ρ.Good → ∀ (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool), ∀ k Q ψ,
     TwOK i k Q ψ →

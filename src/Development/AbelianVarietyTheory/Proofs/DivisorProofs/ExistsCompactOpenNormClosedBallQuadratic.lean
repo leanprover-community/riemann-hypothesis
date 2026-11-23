@@ -64,8 +64,6 @@ private lemma eval_zero_quadratic_mem_maximalIdeal (t : F) (ht : valuation F t <
     (Valuation.integer.integers _).isUnit_iff_valuation_eq_one]
   exact ht.ne
 
-open MeasureTheory Matrix in
-open ValuativeRel in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 private lemma exists_sq_eq_one_sub_four_mul {t : F} (ht : valuation F t < 1) :
     ∃ w : F, (1 + 2 * w) ^ 2 = 1 - 4 * t := by
@@ -87,16 +85,12 @@ private lemma exists_sq_eq_one_sub_four_mul {t : F} (ht : valuation F t < 1) :
   simp at h
   linear_combination 4 * h
 
-open MeasureTheory Matrix in
-open ValuativeRel in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 private lemma valuation_two_le_one : valuation F (2 : F) ≤ 1 := by
   rw [← one_add_one_eq_two]
   exact (valuation F).map_add_le (by simp) (by simp)
 
 
-open MeasureTheory Matrix in
-open ValuativeRel in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 theorem _root_.GlobalTheory.NormBall.val_trace_sq_le {d : F} (hd : ∀ r : F, r ^ 2 ≠ d) (a b : F) :
     valuation F (2 * a) ^ 2 ≤ valuation F (a ^ 2 - d * b ^ 2) := by
@@ -153,8 +147,6 @@ def ballSub {d : F} (hd : ∀ r : F, r ^ 2 ≠ d) (s : Fˣ) : AddSubgroup (F × 
     rw [e]
     exact (valuation F).map_add_le ((valuation F).map_add_le h h') k2
 
-open MeasureTheory Matrix in
-open ValuativeRel in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 private lemma mem_union_of_valuation_sq_le (u : Fˣ) {y : F} (h : valuation F y ^ 2 ≤ valuation F (u : F)) :
     y ∈ _root_.GlobalTheory.SplitWeil.cball (1 : Fˣ) ∪ _root_.GlobalTheory.SplitWeil.cball u := by
@@ -168,8 +160,6 @@ private lemma mem_union_of_valuation_sq_le (u : Fˣ) {y : F} (h : valuation F y 
       _ = valuation F y ^ 2 := (sq _).symm
       _ ≤ _ := h
 
-open MeasureTheory Matrix in
-open ValuativeRel in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 private lemma isCompact_isOpen_normFormBall {d : F} (hd : ∀ r : F, r ^ 2 ≠ d) (hd0 : d ≠ 0)
     (h2 : (2 : F) ≠ 0) (s : Fˣ) :
@@ -211,8 +201,6 @@ private lemma isCompact_isOpen_normFormBall {d : F} (hd : ∀ r : F, r ^ 2 ≠ d
     exact (_root_.GlobalTheory.SplitWeil.isOpen_cball s).preimage hq
 
 
-open MeasureTheory Matrix in
-open ValuativeRel in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] in
 theorem _root_.GlobalTheory.NormBall.exists_normBall : ∀ (F : Type) [Field F] [CharZero F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (E : Type) [Field E] [Algebra F E] [TopologicalSpace E] [IsModuleTopology F E] (c : E →ₐ[F] E) (δ : E) (hE : _root_.GlobalTheory.WeilM.IsQuad c δ) (s : Fˣ), ∃ L : AddSubgroup E, (L : Set E) = {z | Algebra.norm F z ∈ _root_.GlobalTheory.SplitWeil.cball s} ∧ IsCompact (L : Set E) ∧ IsOpen (L : Set E) := by
   intro F _ _ _ _ _ E _ _ _ _ c δ hE s

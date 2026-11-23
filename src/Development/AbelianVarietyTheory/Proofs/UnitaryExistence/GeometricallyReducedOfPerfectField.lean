@@ -110,7 +110,6 @@ theorem isReduced_subscheme_vanishingIdeal {X : Scheme.{u}} (Z : TopologicalSpac
   exact IsReduced.of_openCover _ (vanishingIdeal Z).subschemeCover.openCover
 
 
-open Scheme.IdealSheafData in
 theorem vanishingIdeal_le_ker {T X : Scheme.{u}} [IsReduced T] (g : T ⟶ X)
     (Z : TopologicalSpace.Closeds X) (h : Set.range g ⊆ Z) : vanishingIdeal Z ≤ g.ker := by
   refine le_ofIdeals_iff.mpr fun U a ha => ?_
@@ -157,7 +156,6 @@ theorem range_subset_of_points {k : Type} [Field k] [IsAlgClosed k] {T B : Over 
   exact congrArg g.left (pointOfClosedPoint_apply T.hom x hxc _)
 
 
-open Scheme.IdealSheafData in
 theorem exists_smooth_closed_subgroup (k : Type) [Field k] [IsAlgClosed k] (B : Over (Sp k))
     [GrpObj B] (hB : LocallyOfFiniteType B.hom) (C : Subgroup (𝟙_ (Over (Sp k)) ⟶ B))
     (Z : Set B.left) (hZ : IsClosed Z) (hC : ∀ x, x ∈ C ↔ Set.range x.left ⊆ Z) :

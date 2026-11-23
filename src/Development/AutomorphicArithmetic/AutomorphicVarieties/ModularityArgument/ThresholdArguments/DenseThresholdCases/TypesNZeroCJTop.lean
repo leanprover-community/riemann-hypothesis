@@ -68,7 +68,6 @@ theorem twisted_spherical_product_of_irreducible_of_eigenvector (hC : _root_.Upp
     hjI, hjF, hsub, hten, hsupp⟩ := hG n G
   exact G.cMain_alt hcb hccB hJone hJmul hJinv hKC hΔU hΔM hlM hlB hlU hiw hPJ hkill hni hTE hTp hjK hTI hun hlL hjI
     (G.jacProd_of_alt hjF hsub hten hsupp) L V ρ hs hi hx
-open UpperTheory.NonzeroTypeTheory in
 theorem need_CProps_alt (hC : _root_.UpperTheory.TNZ.CStepsAlt) : Need_CProps := by
   intro k _ _ _ _ n G
   obtain ⟨hcb, -, -, hG⟩ := hC k
@@ -81,7 +80,6 @@ theorem need_CProps_alt (hC : _root_.UpperTheory.TNZ.CStepsAlt) : Need_CProps :=
     fun g _ => hlB'.2.1 g, hK.2.2.1, ?_, hK.2.2.2.2 le_rfl, hlB'.2.2, fun φ hφ k' => hV0s hccB hKC k' φ hφ, hV0f hccB hKC, h1, h2, h3⟩
   rw [← hK.1]
   exact (KCg k n G.lev).one_mem
-open UpperTheory.NonzeroTypeTheory in
 theorem need_Grp_alt (hC : _root_.UpperTheory.TNZ.CStepsAlt) : Need_Grp := by
   intro k _ _ _ _ n μ hμ
   obtain ⟨-, -, hex, -⟩ := hC k

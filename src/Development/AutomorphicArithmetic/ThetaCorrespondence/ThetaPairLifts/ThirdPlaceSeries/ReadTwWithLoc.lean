@@ -73,7 +73,6 @@ theorem readTw_withLoc_alt (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D' : D
     rfl
 end GlobalTheory.RowTriple.Lay
 namespace GlobalTheory.RowTriple.Lay
-open GlobalTheory.TwInputs Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeightCounting.FitRho
 
 
 theorem sideB_built_alt (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D' : D7) (b : _root_.GlobalTheory.HeightCounting.NormChoiceConstructed hL D')

@@ -54,7 +54,6 @@ private theorem aeval_det_linear_form_eq_det_map {K Ω ι : Type} [Field K] [Fie
   ext l k
   simp [RingHom.mapMatrix_apply, Matrix.map_apply]
 
-open MvPolynomial in
 private theorem det_linear_form_ne_zero_of_eq_one {K ι : Type} [Field K] {N d : ℕ}
     (e : Fin N → ι) (he : Function.Injective e) (M : Fin N → Matrix (Fin d) (Fin d) K) (j : Fin N)
     (hM : M j = 1) :
@@ -70,7 +69,6 @@ private theorem det_linear_form_ne_zero_of_eq_one {K ι : Type} [Field K] {N d :
   rw [this, Matrix.det_one] at h1
   exact zero_ne_one h1
 
-open MvPolynomial in
 private theorem isHomogeneous_det_linear_form {K ι : Type} [Field K] {N d : ℕ}
     (e : Fin N → ι) (M : Fin N → Matrix (Fin d) (Fin d) K) :
     (Matrix.of fun l k => ∑ i, (X (e i) * C (M i l k) : MvPolynomial ι K)).det.IsHomogeneous d := by
@@ -86,7 +84,6 @@ private theorem isHomogeneous_det_linear_form {K ι : Type} [Field K] {N d : ℕ
   rw [Units.smul_def]
   exact zsmul_mem (show _ ∈ homogeneousSubmodule ι K d from hprod) _
 
-open MvPolynomial in
 private theorem coord_ne_zero_of_vanishes_on_coneIdeal {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω]
     [Algebra.IsAlgebraic K Ω] {N : ℕ} (y z : Fin N → Ω) (j : Fin N) (hy : y j = 1) (hz0 : z ≠ 0)
     (hzI : ∀ g ∈ _root_.GlobalTheory.CompHt.coneIdeal K y, aeval z g = 0) : z j ≠ 0 := by
@@ -121,7 +118,6 @@ private theorem coord_ne_zero_of_vanishes_on_coneIdeal {K Ω : Type} [Field K] [
     simp [hzj, zero_pow this]
   · intro hr; exact absurd (Finset.self_mem_range_succ r) hr
 
-open MvPolynomial in
 private theorem exists_algHom_adjoin_of_ker_le {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] {N : ℕ}
     (y w : Fin N → Ω) (hker : ∀ g : MvPolynomial (Fin N) K, aeval y g = 0 → aeval w g = 0) :
     ∃ ρ : Algebra.adjoin K (Set.range y) →ₐ[K] Ω,
@@ -149,7 +145,6 @@ private theorem exists_algHom_adjoin_of_ker_le {K Ω : Type} [Field K] [Field Ω
     AlgEquiv.symm_apply_apply, Ideal.Quotient.liftₐ_apply, Ideal.Quotient.lift_mk]
   exact aeval_X w i
 
-open MvPolynomial in
 private theorem aeval_smul_eq_pow_mul_of_isHomogeneous {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] {N n : ℕ}
     {φ : MvPolynomial (Fin N) K} (hφ : φ.IsHomogeneous n) (c : Ω) (x : Fin N → Ω) :
     aeval (c • x) φ = c ^ n * aeval x φ := by
@@ -164,7 +159,6 @@ private theorem aeval_smul_eq_pow_mul_of_isHomogeneous {K Ω : Type} [Field K] [
     rw [← hdeg, Finsupp.weight_apply, Finsupp.sum_fintype] <;> simp
   rw [Finsupp.prod_pow, Finset.prod_pow_eq_pow_sum, this]; ring
 
-open MvPolynomial in
 private theorem aeval_inv_smul_eq_zero_of_mem_coneIdeal_zero {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] {N : ℕ}
     (y z : Fin N → Ω) (j : Fin N) (hy : y j = 1) (hz : z j ≠ 0)
     (hzI : ∀ g ∈ _root_.GlobalTheory.CompHt.coneIdeal K y, aeval z g = 0)
@@ -198,7 +192,6 @@ private theorem aeval_inv_smul_eq_zero_of_mem_coneIdeal_zero {K Ω : Type} [Fiel
   rw [← Nat.sub_add_cancel hdD, pow_add, mul_assoc, mul_inv_cancel₀ (pow_ne_zero _ hz), mul_one,
     Nat.add_sub_cancel]
 
-open MvPolynomial in
 private theorem det_multiplication_form_eq_zero_of_sum_eq_zero {K L A : Type} [Field K] [CommRing A] [Algebra K A]
     [Field L] [Algebra K L] {d N : ℕ} (b : Module.Basis (Fin d) K A) (Y : Fin N → A)
     (ρ : A →ₐ[K] L) (u : Fin N → L) (hu : ∑ i, u i * ρ (Y i) = 0) :
@@ -241,7 +234,6 @@ private theorem det_multiplication_form_eq_zero_of_sum_eq_zero {K L A : Type} [F
 
 
 set_option autoImplicit false in
-open MvPolynomial in
 variable {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] {N : ℕ} in
 theorem _root_.GlobalTheory.CompHt.PointUp.le_finrank_of_isChowFormInt : ∀ (K : Type) [Field K] (N δ : ℕ) (y : Fin N → AlgebraicClosure K)
     (j : Fin N) (f : MvPolynomial (Fin (0 + 1) × Fin N) K), y j = 1 → _root_.GlobalTheory.ChowHt.IsChowFormInt (_root_.GlobalTheory.CompHt.coneIdeal K y) 0 δ f →

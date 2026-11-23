@@ -45,7 +45,6 @@ theorem _root_.GlobalTheory.TypeLeaf.lpChar_eq_triv_of_mul_eq_one (D : _root_.Fo
   rw [D.naut.unr_eq_lpUnr _ hu2, D.naut.frobEig_char χ χ' c' hu hu' hd' hc', hc]
   simp [h]
 
-open Polynomial NumberField IsDedekindDomain in
 private lemma exists_frobEig_etaT_inv_etaTinv (D : _root_.Formalism.BasicNotions.D7) (w : _root_.Formalism.BasicNotions.PlE D.host) :
     ∃ c : ℂ, c ≠ 0 ∧ D.naut.frobEig (D.naut.locG D.naut.etaT w) = {c} ∧
       D.naut.frobEig (D.naut.locG D.naut.etaTinv w) = {c⁻¹} := by
@@ -59,7 +58,6 @@ private lemma exists_frobEig_etaT_inv_etaTinv (D : _root_.Formalism.BasicNotions
   simp
 
 
-open Polynomial NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.TypeLeaf.twistInv_of_charLaws_multOne :
     ∀ D : _root_.Formalism.BasicNotions.D7, _root_.GlobalTheory.TypeLeaf.CharLaws D → _root_.GlobalTheory.TypeLeaf.MultOne D →
       _root_.GlobalTheory.TypeLeaf.TwistInv D := by

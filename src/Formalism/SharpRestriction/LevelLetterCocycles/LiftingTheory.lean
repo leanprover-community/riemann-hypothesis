@@ -65,7 +65,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section Local
 
@@ -216,7 +215,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section Local2
 
@@ -324,7 +322,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section Ext
 

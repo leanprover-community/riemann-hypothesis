@@ -55,7 +55,6 @@ namespace ReciprocityTheory.PGsh.L2
 
 open SecondCohomologyLattice
 
-section SlopeTestRemainingChoices
 
 variable {C : Type} [Field C] {R : Type} [CommRing R] [Algebra R C]
 
@@ -97,7 +96,6 @@ private theorem sum_pushQ {N : Type} [AddCommGroup N] [Fintype N] (K : AddSubgro
   simp only [e1]
   exact Finset.sum_fiberwise Finset.univ (fun a : N => (a : N ⧸ K)) (fun a => u a * g (a : N ⧸ K))
 
-end SlopeTestRemainingChoices
 
 private theorem isLat_span_lemma {C R : Type} [Field C] [CommRing R] [Algebra R C]
     (v : Valuation C NNReal) (hv : v.Integers R) {X ι : Type} [Fintype X] [DecidableEq X]

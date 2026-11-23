@@ -195,8 +195,6 @@ end ReciprocityTheory.GeometryOfNumbersTheory
 
 namespace ReciprocityTheory.GeometryOfNumbersTheory
 
-open NumberField Module MeasureTheory Set
-open scoped Classical ComplexOrder
 
 variable {K : Type*} [Field K] [NumberField K] {V : Type*} [AddCommGroup V] [Module K V]
 

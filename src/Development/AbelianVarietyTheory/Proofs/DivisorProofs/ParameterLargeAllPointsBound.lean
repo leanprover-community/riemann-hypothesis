@@ -123,7 +123,6 @@ end GlobalTheory.ExpTie
 
 namespace GlobalTheory.ExpTie
 
-open Formalism.CohomologicalDescent.LogSmallConstantBounds Formalism.CohomologicalDescent.LargeParameterEstimates
 
 theorem ev_large (eps : ℝ) (he : 0 < eps) : ∃ x0 : ℝ, ∀ x : ℝ, x0 ≤ x →
     0 < x ∧

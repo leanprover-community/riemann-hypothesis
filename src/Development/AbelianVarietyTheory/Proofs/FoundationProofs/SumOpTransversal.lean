@@ -54,7 +54,6 @@ private lemma quotient_mk_eq_mk_iff_sub_mem (A B : Submodule R X) (x y : B.toAdd
   rw [QuotientAddGroup.eq, AddSubgroup.mem_addSubgroupOf]
   simp [neg_add_eq_sub]
 
-open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 private lemma heis_apply_eq_of_sub_mem_of_fixes {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M}
     (h : _root_.GlobalTheory.FinWeil.IsHeis σ w γ W) {A B : Submodule R X}
@@ -65,7 +64,6 @@ private lemma heis_apply_eq_of_sub_mem_of_fixes {σ : R →+* R} {w : R} {γ : X
     _ = W x (W (y - x) v) := (h.comp_of_mem hB hx hyx v).symm
     _ = W x v := by rw [hv _ hxy]
 
-open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 private lemma quotient_out_sub_mem (A B : Submodule R X)
     (q : B.toAddSubgroup ⧸ A.toAddSubgroup.addSubgroupOf B.toAddSubgroup) (x : B.toAddSubgroup)
@@ -74,7 +72,6 @@ private lemma quotient_out_sub_mem (A B : Submodule R X)
   rw [← quotient_mk_eq_mk_iff_sub_mem, hq]
   exact (QuotientAddGroup.out_eq' q).symm
 
-open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 theorem _root_.GlobalTheory.FinWeil.sumOp_eq_sum_transversal {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M}
     (h : _root_.GlobalTheory.FinWeil.IsHeis σ w γ W)
@@ -106,7 +103,6 @@ theorem _root_.GlobalTheory.FinWeil.sumOp_eq_sum_transversal {σ : R →+* R} {w
   · unfold _root_.GlobalTheory.FinWeil.idx
     rw [AddSubgroup.relIndex, AddSubgroup.index, ← Nat.card_congr e, Nat.card_eq_fintype_card]
 
-open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 theorem _root_.GlobalTheory.FinWeil.exists_transversal_of_idx_ne_zero (A B : Submodule R X)
     (hi : _root_.GlobalTheory.FinWeil.idx A B ≠ 0) :
@@ -129,7 +125,6 @@ theorem _root_.GlobalTheory.FinWeil.exists_transversal_of_idx_ne_zero (A B : Sub
 
 end
 
-open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 private lemma fixes_sumOp_of_selfDual {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M}
     (h : _root_.GlobalTheory.FinWeil.IsHeis σ w γ W) {A B : Submodule R X}
@@ -164,7 +159,6 @@ private lemma fixes_sumOp_of_selfDual {σ : R →+* R} {w : R} {γ : X → X →
   simp_rw [hterm]
   exact finsum_comp_equiv (Equiv.addLeft c)
 
-open scoped BigOperators in
 theorem _root_.GlobalTheory.FinWeil.sumOp_transversal : ∀ {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X]
     [AddCommGroup M] [Module ℂ M] {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M},
     _root_.GlobalTheory.FinWeil.IsHeis σ w γ W → ∀ (A B : Submodule R X),

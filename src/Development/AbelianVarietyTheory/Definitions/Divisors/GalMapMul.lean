@@ -205,7 +205,6 @@ theorem _root_.GlobalTheory.EtC.pull_id (E : _root_.GlobalTheory.EtC.Spc)
   ext : 1
   simp [_root_.GlobalTheory.EtC.zcomp]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 variable (R : Type) [CommRing R] in
 theorem _root_.GlobalTheory.EtC.pull_comp {E E' E'' : _root_.GlobalTheory.EtC.Spc} (f : E ⟶ E')
     (g : E' ⟶ E'') (F : _root_.GlobalTheory.EtC.Shv R) (n : ℤ) (x : _root_.GlobalTheory.EtC.H R E'' F n) :
@@ -310,7 +309,6 @@ section Galois
 open GlobalTheory.Et
 variable {k : Type} [Field k] (Ω : Type) [Field Ω] [Algebra k Ω] {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k))
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 variable (R : Type) [CommRing R] in
 variable {k : Type} [Field k] (Ω : Type) [Field Ω] [Algebra k Ω] {X : Scheme.{0}}
   (p : X ⟶ Spec (CommRingCat.of k)) in
@@ -323,7 +321,6 @@ theorem _root_.GlobalTheory.EtC.galMap_one :
     convert Spec.map_id _
     rfl
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 variable (R : Type) [CommRing R] in
 variable {k : Type} [Field k] (Ω : Type) [Field Ω] [Algebra k Ω] {X : Scheme.{0}}
   (p : X ⟶ Spec (CommRingCat.of k)) in

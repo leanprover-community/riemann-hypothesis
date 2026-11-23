@@ -52,11 +52,9 @@ theorem sndA_pairA (x : Ainf D.host.F) (y : Af D.host.F) : sndA D.host.F (pairA 
 
 
 
-section Sym
 
 variable (S T : HSp D)
 
-end Sym
 
 section Phi
 
@@ -93,12 +91,10 @@ theorem open_neighbourhood_set_eq (Λ : AddSubgroup (WO S T)) :
 
 end Phi
 
-section Lat
 
 variable (S T : HSp D)
 
 variable {S T}
 
-end Lat
 
 end Formalism.IndefR.Fin.VacEx

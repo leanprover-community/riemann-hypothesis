@@ -153,7 +153,6 @@ end CrystallineSemistableComparison.Onto.FormCupProduct
 
 namespace CrystallineSemistableComparison.Onto.FormCupProduct
 
-open CrystallineSemistableComparison.Onto Pb HT
 
 variable {K : Type} [Field K] {Z : Scheme.{0}} {q : Z ⟶ Spec (CommRingCat.of K)} {V : Z.Opens}
 

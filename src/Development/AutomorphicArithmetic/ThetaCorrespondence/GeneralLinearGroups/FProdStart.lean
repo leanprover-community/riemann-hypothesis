@@ -121,7 +121,6 @@ private theorem occ_prodIrr {h N : ℕ} (z : Fin h → IrrGL (k := k)) (hd : ∑
 
 end
 
-open GlobalTheory.LocGL.SupportRing in
 theorem UpperTheory.Lit.Full.prodStart :
     GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.BernsteinZelevinskyFiniteness → GlobalTheory.Published.ZelevinskyPolynomialRing → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ρ : IrrGL (k := k)) (h N : ℕ) (Δ : Fin h → Segment k) (z : Fin h → IrrGL (k := k)) (hd : ∑ i, (z i).1 = N), ρ.IsCusp → (∀ i, (Δ i).first = ρ) → (∀ i, IsZSeg (Δ i) (z i).rep) → (prodIrr z hd).IsIrreducible := by
   intro hG hBZ hZ k _ _ _ _ ρ h N Δ z hd hρ hf hz

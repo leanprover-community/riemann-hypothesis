@@ -71,7 +71,6 @@ theorem adj_wCol (p : SplitPt D k) {W₀ L' : HSp D} (ζ' : Fin L'.rank → D.ho
 end GlobalTheory.FinPl.LineAct.ColTrans
 
 namespace GlobalTheory.FinPl.LineAct
-open GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule (ofAdj)
 open GlobalTheory.FinPl.LineAct.ColTrans
 
 

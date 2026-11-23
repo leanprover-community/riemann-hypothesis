@@ -93,7 +93,6 @@ end GlobalTheory.AdjPullFrame
 
 namespace GlobalTheory.AdjPullFrame
 
-open GlobalTheory.ProdUnifSq GlobalTheory.LamPullFrame
 
 variable {g : ℕ} {A : Over (Sp ℂ)} [GrpObj A] [IsCommMonObj A]
 

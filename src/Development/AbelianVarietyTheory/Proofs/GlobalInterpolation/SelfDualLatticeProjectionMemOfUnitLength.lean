@@ -65,8 +65,6 @@ def proj (x : Fin M → Ev F E v) (b : Ev F E v) :
     (Fin M → Ev F E v) →ₗ[Ev F E v] (Fin M → Ev F E v) :=
   LinearMap.id - (b • formAt σ J v x).smulRight x
 
-open scoped TensorProduct Matrix in
-open NumberField IsDedekindDomain in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (v : HeightOneSpectrum (𝓞 F)) in
 private lemma selfDualLatticeSplit_proj_eq_sub_smul (x : Fin M → _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryLatticeOrthogonal.Ev F E v)
@@ -75,8 +73,6 @@ private lemma selfDualLatticeSplit_proj_eq_sub_smul (x : Fin M → _root_.Global
       y - (b * _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.hR (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) σ J x y) • x := by
   simp [_root_.GlobalTheory.SelfDualLatticeSplit.proj, _root_.GlobalTheory.SelfDualLatticeSplit.formAt]
 
-open scoped TensorProduct Matrix in
-open NumberField IsDedekindDomain in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (v : HeightOneSpectrum (𝓞 F)) in
 private lemma hR_selfDualLatticeSplit_proj_eq_zero (x : Fin M → _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryLatticeOrthogonal.Ev F E v)
@@ -87,8 +83,6 @@ private lemma hR_selfDualLatticeSplit_proj_eq_zero (x : Fin M → _root_.GlobalT
     _root_.GlobalTheory.SelfDualLatticeCompare.hR_smul_right]
   linear_combination (-(_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.hR (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) σ J x y)) * hb
 
-open scoped TensorProduct Matrix in
-open NumberField IsDedekindDomain in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (v : HeightOneSpectrum (𝓞 F)) in
 private lemma form_smul_add_left_lemma_3 (c : _root_.GlobalTheory.IndefiniteRowSideFullHecke.UnitaryLatticeOrthogonal.Ev F E v)
@@ -100,8 +94,6 @@ private lemma form_smul_add_left_lemma_3 (c : _root_.GlobalTheory.IndefiniteRowS
   simp [add_mul, mul_assoc, Finset.sum_add_distrib, Finset.mul_sum]
 
 
-open scoped TensorProduct Matrix in
-open NumberField IsDedekindDomain in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (v : HeightOneSpectrum (𝓞 F)) in
 theorem _root_.GlobalTheory.SelfDualLatticeSplit.unit_vector_splits :

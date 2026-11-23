@@ -85,7 +85,6 @@ private theorem nonempty_irreducibleCloseds {Z : Type u} [TopologicalSpace Z] (z
   ⟨⟨closure {z}, ⟨⟨z, subset_closure rfl⟩, isPreirreducible_singleton.closure⟩,
     isClosed_closure⟩⟩
 
-open Order in
 theorem topologicalKrullDim_lt_of_isClosed_of_not_subset_irreducibleComponents
     {X : Type u} [TopologicalSpace X] (Y : Set X) (hY : IsClosed Y) (hne : Y.Nonempty)
     (hcomp : ∀ C ∈ irreducibleComponents X, ¬ C ⊆ Y)
@@ -174,7 +173,6 @@ private theorem strictMono_irreducibleClosedsMapOfHomeomorph {X : Type u} {Y : T
       rw [← coe_irreducibleClosedsMapOfHomeomorph e a, ← coe_irreducibleClosedsMapOfHomeomorph e b, h]
     exact hab.ne (SetLike.coe_injective (Set.image_injective.mpr e.injective h1))
 
-open Order in
 private theorem topologicalKrullDim_le_of_homeomorph {X : Type u} {Y : Type v} [TopologicalSpace X]
     [TopologicalSpace Y] (e : X ≃ₜ Y) : topologicalKrullDim X ≤ topologicalKrullDim Y := by
   rw [topologicalKrullDim_eq_iSup_length (Z := X), topologicalKrullDim_eq_iSup_length (Z := Y)]

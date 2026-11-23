@@ -84,7 +84,6 @@ end GlobalTheory.TwistHaar
 
 namespace GlobalTheory.TwistHaar
 
-open scoped Pointwise
 
 
 

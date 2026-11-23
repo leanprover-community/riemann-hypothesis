@@ -277,7 +277,6 @@ theorem act_one (k : UA σ W.J) (u : Matrix (Fin n) (Fin d) (AE F E)) :
 theorem at_mul {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (N : Matrix (Fin d) (Fin d) (AE F E)) :
     At (evI F) (u * N) := fun s hs => by rw [← Matrix.smul_mul, hu s hs, Matrix.zero_mul]
 
-open scoped Classical in
 theorem actsD_dop (M : Model σ Y W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (f : SInf F (Fin n × Fin d)) :
     ActsD (evI F) (M.heisLine ψ u) f (dop (aOf M u) (lOf M u) f) := by
@@ -290,7 +289,6 @@ theorem actsD_dop (M : Model σ Y W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
   rw [e]
   exact (hasDerivAt_hl _ _ f _).mul_const (r x)
 
-open scoped Classical in
 theorem actsD_unique (M : Model σ Y W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) {f f₁ : SInf F (Fin n × Fin d)}
     (h : ActsD (evI F) (M.heisLine ψ u) f f₁) : f₁ = dop (aOf M u) (lOf M u) f := by
@@ -302,7 +300,6 @@ theorem actsD_unique (M : Model σ Y W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd �
   have := h1.unique h2
   simpa [tens_rOf, pureA_pt, h0] using this
 
-open scoped Classical in
 theorem pureA_inj {κ : Type} [Fintype κ] {f₁ f₂ : SInf F κ} {g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ} (h0 : g 0 = 1)
     (h : pureA F f₁ g = pureA F f₂ g) : f₁ = f₂ := by
   ext x
@@ -312,11 +309,9 @@ theorem pureA_inj {κ : Type} [Fintype κ] {f₁ f₂ : SInf F κ} {g : (κ → 
 variable {M : Model σ Y W} {ψ : AddChar (AF F) ℂ} {om : Rep σ Y W} {k : UA σ W.J}
 
 
-open scoped Classical in
 def Impl (om : Rep σ Y W) (k : UA σ W.J) (A : SInf F (Fin n × Fin d) →ₗ[ℂ] SInf F (Fin n × Fin d)) : Prop :=
   ∀ f : SInf F (Fin n × Fin d), ∀ g ∈ SB (Fin n × Fin d → FiniteAdeleRing (𝓞 F) F), om (1, k) (pureA F f g) = pureA F (A f) g
 
-open scoped Classical in
 theorem exists_impl (hl : ∀ f : SInf F (Fin n × Fin d), ∃ f₁ : SInf F (Fin n × Fin d),
       ∀ g ∈ SB (Fin n × Fin d → FiniteAdeleRing (𝓞 F) F), om (1, k) (pureA F f g) = pureA F f₁ g) :
     ∃ A, Impl om k A := by
@@ -335,7 +330,6 @@ theorem exists_impl (hl : ∀ f : SInf F (Fin n × Fin d), ∃ f₁ : SInf F (Fi
     simp only [RingHom.id_apply]
     rw [← hA₀ _ g hg, e, e, map_smul, hA₀ _ g hg]
 
-open scoped Classical in
 theorem polynomial_functional_eval_continuous (hs : IsSplitting (adeleClass F) ψ M.co (actAB (cA σ)) om)
     {A : SInf F (Fin n × Fin d) →ₗ[ℂ] SInf F (Fin n × Fin d)} (hA : Impl om k A) (x : Fin n × Fin d → mixedEmbedding.mixedSpace F) :
     ∃ T : SInf F (Fin n × Fin d) →L[ℂ] ℂ, ∀ f, A f x = T f := by
@@ -448,7 +442,6 @@ variable {E : Type} [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 variable {n d : ℕ} {Y : Spc F E n} {W : Spc F E d}
 variable {M : Model σ Y W} {ψ : AddChar (AF F) ℂ} {om : Rep σ Y W} {k : UA σ W.J}
 
-open scoped Classical in
 theorem line_hl (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (actAB (cA σ)) om)
     {A : SInf F (Fin n × Fin d) →ₗ[ℂ] SInf F (Fin n × Fin d)} (hA : Impl om k A)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (f G : SInf F (Fin n × Fin d)) (t : ℝ)
@@ -471,7 +464,6 @@ theorem line_hl (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (actAB
   have := congrFun e2 (pt x 0)
   simpa [tens_rOf, pureA_pt, h0] using this
 
-open scoped Classical in
 theorem inter_of_ne (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (actAB (cA σ)) om)
     {A : SInf F (Fin n × Fin d) →ₗ[ℂ] SInf F (Fin n × Fin d)} (hA : Impl om k A)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (ha : aOf M u ≠ 0) (f : SInf F (Fin n × Fin d)) :
@@ -488,7 +480,6 @@ theorem inter_of_ne (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (a
   rw [hT]
   exact h1.unique (hasDerivAt_hl _ _ (A f) x)
 
-open scoped Classical in
 theorem exists_at (M : Model σ Y W) (ξ : Fin n × Fin d → mixedEmbedding.mixedSpace F) :
     ∃ v : Matrix (Fin n) (Fin d) (AE F E), At (evI F) v ∧ aOf M v = ξ := by
   refine ⟨M.co.e.symm (pt ξ 0, 0), fun s hs => ?_, ?_⟩
@@ -506,7 +497,6 @@ theorem exists_at (M : Model σ Y W) (ξ : Fin n × Fin d → mixedEmbedding.mix
     rw [this]
     exact evI_pt ξ 0
 
-open scoped Classical in
 theorem inter (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (actAB (cA σ)) om)
     {A : SInf F (Fin n × Fin d) →ₗ[ℂ] SInf F (Fin n × Fin d)} (hA : Impl om k A)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (f : SInf F (Fin n × Fin d)) :
@@ -523,7 +513,6 @@ theorem inter (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (actAB (
       exact add_right_cancel h1
   · exact inter_of_ne hψ hs hA hu ha f
 
-open scoped Classical in
 theorem acts_unique {A : SInf F (Fin n × Fin d) →ₗ[ℂ] SInf F (Fin n × Fin d)} (hA : Impl om k A) {f f₁ : SInf F (Fin n × Fin d)}
     (h : Acts (evI F) (om (1, k)) f f₁) : f₁ = A f := by
   obtain ⟨g, hg, h0⟩ := exists_sb_one (F := F) (κ := Fin n × Fin d)
@@ -547,7 +536,6 @@ theorem mat_mul_inv (k : UA σ W.J) : mat k * mat k⁻¹ = 1 := by
   show k.1.1 * ((k⁻¹ : UA σ W.J).1.1) = 1
   simp
 
-open scoped Classical in
 theorem gauss_impl (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (actAB (cA σ)) om)
     {τ : ∀ w : InfinitePlace F, EmbOver E w} (hk : k ∈ KInf σ W τ)
     {A : SInf F (Fin n × Fin d) →ₗ[ℂ] SInf F (Fin n × Fin d)} (hA : Impl om k A)
@@ -754,7 +742,6 @@ theorem evI_iot (X : Fin n × Fin d → AF F) (p : Fin n × Fin d → Af F) :
   have : evI F (iot p i) = 0 := map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
   rw [Pi.add_apply, GlobalTheory.CompanionTheory.AgreeO.Sys.HeisD.evI_add, this, add_zero]
 
-open scoped Classical in
 theorem exists_arch_operator (hψ : IsStd ψ)
     (hs : IsSplitting (adeleClass F) ψ M.co (actAB (cA σ)) om) (hk : k ∈ UAt σ W (evI F)) (f : SInf F (Fin n × Fin d)) :
     ∃ f₁ : SInf F (Fin n × Fin d), ∀ g ∈ SB (Fin n × Fin d → FiniteAdeleRing (𝓞 F) F), om (1, k) (pureA F f g) = pureA F f₁ g := by

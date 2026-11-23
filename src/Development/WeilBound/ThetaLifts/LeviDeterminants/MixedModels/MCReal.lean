@@ -220,7 +220,6 @@ end PositivityTheory.Mix.Real
 namespace PositivityTheory.Mix
 
 open PositivityTheory.Mix.Real
-open scoped RealInnerProductSpace
 
 theorem real_estimates_holds : RealSt := by
   intro X _ _ _ β hs hn S hS

@@ -132,7 +132,6 @@ end GlobalTheory.Dict.Setup
 
 namespace GlobalTheory.Dict.Setup
 
-open GlobalTheory.SW.Lev
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X X' : Data E r}
 

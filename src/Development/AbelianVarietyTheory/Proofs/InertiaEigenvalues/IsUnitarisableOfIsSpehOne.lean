@@ -93,7 +93,6 @@ end Local
 
 section Speh
 
-open GlobalTheory.PRep GlobalTheory.LocGL
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 

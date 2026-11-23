@@ -54,7 +54,6 @@ private theorem algHom_coe_polynomial_eq_aeval {O : Type} [CommRing O] (f : O⟦
   have := DFunLike.congr_fun hfp p
   simpa using this
 
-open PowerSeries in
 private theorem X_pow_dvd_algHom_sub_aeval_trunc {O : Type} [CommRing O] (f : O⟦X⟧ →ₐ[O] O⟦X⟧)
     (hf : (X : O⟦X⟧) ∣ f X) (a : O⟦X⟧) (n : ℕ) :
     (X : O⟦X⟧) ^ n ∣ f a - Polynomial.aeval (f X) (trunc n a) := by
@@ -67,7 +66,6 @@ private theorem X_pow_dvd_algHom_sub_aeval_trunc {O : Type} [CommRing O] (f : O�
   exact Dvd.dvd.mul_right (pow_dvd_pow_of_dvd hf n) _
 
 
-open PowerSeries in
 theorem _root_.GlobalTheory.CycFr.algHom_ext_X {O : Type} [CommRing O] (f g : O⟦X⟧ →ₐ[O] O⟦X⟧)
     (hf : (X : O⟦X⟧) ∣ f X) (h : f X = g X) : f = g := by
   ext a : 1
@@ -80,14 +78,12 @@ theorem _root_.GlobalTheory.CycFr.algHom_ext_X {O : Type} [CommRing O] (f g : O�
   have := X_pow_dvd_iff.mp h3 n (Nat.lt_succ_self n)
   rwa [map_sub, sub_eq_zero] at this
 
-open PowerSeries in
 theorem _root_.GlobalTheory.CycFr.algHom_C {O B : Type} [CommRing O] [CommRing B] [Algebra O B] (f : O⟦X⟧ →ₐ[O] B) (c : O) :
     f (C c) = algebraMap O B c := by
   have hc : (C c : O⟦X⟧) = algebraMap O O⟦X⟧ c := by simp
   rw [hc, f.commutes]
 
 
-open PowerSeries in
 theorem _root_.GlobalTheory.CycFr.constantCoeff_algHom {O : Type} [CommRing O] (f : O⟦X⟧ →ₐ[O] O⟦X⟧)
     (hf : (X : O⟦X⟧) ∣ f X) (a : O⟦X⟧) : constantCoeff (f a) = constantCoeff a := by
   obtain ⟨s, hs⟩ : ∃ s, a = s * X + C (constantCoeff a) := ⟨_, eq_shift_mul_X_add_const a⟩
@@ -102,7 +98,6 @@ variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O]
 
 abbrev bin (c : ℤ_[l]) : O⟦X⟧ := binomialSeries O c
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 theorem _root_.GlobalTheory.CycFr.hasSubst_bin (c : ℤ_[l]) : HasSubst (_root_.GlobalTheory.CycFr.bin O c - 1) :=
   HasSubst.of_constantCoeff_zero' (by rw [map_sub, binomialSeries_constantCoeff, map_one, sub_self])
@@ -114,59 +109,50 @@ def lvl (l : ℕ) (O : Type) [CommRing O] (k : ℕ) : O⟦X⟧ :=
 
 variable {O}
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.act_apply (c : ℤ_[l]) (a : O⟦X⟧) : _root_.GlobalTheory.CycFr.act O c a = a.subst (_root_.GlobalTheory.CycFr.bin O c - 1) := by
   rw [_root_.GlobalTheory.CycFr.act, coe_substAlgHom]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.act_X (c : ℤ_[l]) : _root_.GlobalTheory.CycFr.act O c X = _root_.GlobalTheory.CycFr.bin O c - 1 := by
   rw [_root_.GlobalTheory.CycFr.act_apply, subst_X (_root_.GlobalTheory.CycFr.hasSubst_bin O c)]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.act_one_add_X (c : ℤ_[l]) : _root_.GlobalTheory.CycFr.act O c (1 + X) = _root_.GlobalTheory.CycFr.bin O c := by
   rw [map_add (f := _), map_one, _root_.GlobalTheory.CycFr.act_X]
   ring
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.act_C (c : ℤ_[l]) (x : O) : _root_.GlobalTheory.CycFr.act O c (C x) = C x := by
   rw [_root_.GlobalTheory.CycFr.algHom_C]
   simp
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.X_dvd_act_X (c : ℤ_[l]) : (X : O⟦X⟧) ∣ _root_.GlobalTheory.CycFr.act O c X := by
   rw [X_dvd_iff, _root_.GlobalTheory.CycFr.act_X, map_sub, binomialSeries_constantCoeff,
     map_one, sub_self]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.constantCoeff_act (c : ℤ_[l]) (a : O⟦X⟧) : constantCoeff (_root_.GlobalTheory.CycFr.act O c a) = constantCoeff a :=
   _root_.GlobalTheory.CycFr.constantCoeff_algHom _ (_root_.GlobalTheory.CycFr.X_dvd_act_X c) a
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.bin_nat (d : ℕ) : _root_.GlobalTheory.CycFr.bin O (d : ℤ_[l]) = (1 + X) ^ d :=
   binomialSeries_nat d
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.bin_one : _root_.GlobalTheory.CycFr.bin O (1 : ℤ_[l]) = 1 + X := by
   have h := _root_.GlobalTheory.CycFr.bin_nat (O := O) (l := l) 1
   rwa [Nat.cast_one, pow_one] at h
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.coeff_one_act_X (c : ℤ_[l]) : coeff 1 (_root_.GlobalTheory.CycFr.act O c X) = algebraMap ℤ_[l] O c := by
@@ -175,7 +161,6 @@ theorem _root_.GlobalTheory.CycFr.coeff_one_act_X (c : ℤ_[l]) : coeff 1 (_root
   simp
 
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.exists_act_X (c : ℤ_[l]) :
@@ -187,7 +172,6 @@ theorem _root_.GlobalTheory.CycFr.exists_act_X (c : ℤ_[l]) :
   · rw [← coeff_zero_eq_constantCoeff_apply, coeff_mk, zero_add,
       _root_.GlobalTheory.CycFr.coeff_one_act_X]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.derivative_bin (c : ℤ_[l]) :
@@ -200,7 +184,6 @@ theorem _root_.GlobalTheory.CycFr.derivative_bin (c : ℤ_[l]) :
     Algebra.smul_def, mul_one, mul_one, ← map_mul, ← key, map_mul, mul_comm]
   simp
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 private theorem one_add_X_mul_bin_sub_one_eq_bin (c : ℤ_[l]) :
@@ -210,7 +193,6 @@ private theorem one_add_X_mul_bin_sub_one_eq_bin (c : ℤ_[l]) :
     simp only [_root_.GlobalTheory.CycFr.bin, ← binomialSeries_add, sub_add_cancel]
   rw [h, _root_.GlobalTheory.CycFr.bin_one, mul_comm]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 theorem _root_.GlobalTheory.CycFr.one_add_X_mul_derivative_bin (c : ℤ_[l]) :
@@ -221,7 +203,6 @@ theorem _root_.GlobalTheory.CycFr.one_add_X_mul_derivative_bin (c : ℤ_[l]) :
 
 variable [IsDomain O] [CharZero O]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
@@ -253,7 +234,6 @@ private theorem eq_of_one_add_X_mul_derivative_eq_C_mul {F H : O⟦X⟧} (a : O)
   have h := (key n).1
   rwa [map_sub, sub_eq_zero] at h
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
@@ -280,7 +260,6 @@ theorem _root_.GlobalTheory.CycFr.act_bin (c d : ℤ_[l]) :
   · rw [_root_.GlobalTheory.CycFr.constantCoeff_act, binomialSeries_constantCoeff,
       binomialSeries_constantCoeff]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
@@ -293,14 +272,12 @@ theorem _root_.GlobalTheory.CycFr.act_mul (c d : ℤ_[l]) (a : O⟦X⟧) : _root
   rw [← _root_.GlobalTheory.CycFr.act_apply, map_sub, map_one,
     _root_.GlobalTheory.CycFr.act_bin]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
 theorem _root_.GlobalTheory.CycFr.act_comm (c d : ℤ_[l]) (a : O⟦X⟧) : _root_.GlobalTheory.CycFr.act O c (_root_.GlobalTheory.CycFr.act O d a) = _root_.GlobalTheory.CycFr.act O d (_root_.GlobalTheory.CycFr.act O c a) := by
   rw [← _root_.GlobalTheory.CycFr.act_mul, ← _root_.GlobalTheory.CycFr.act_mul, mul_comm]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
@@ -312,7 +289,6 @@ theorem _root_.GlobalTheory.CycFr.act_one (a : O⟦X⟧) : _root_.GlobalTheory.C
         add_sub_cancel_left, AlgHom.id_apply])
   rw [h, AlgHom.id_apply]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
@@ -320,7 +296,6 @@ omit [IsDomain O] [CharZero O] in
 theorem _root_.GlobalTheory.CycFr.act_nat_X (d : ℕ) : _root_.GlobalTheory.CycFr.act O (d : ℤ_[l]) X = (1 + X) ^ d - 1 := by
   rw [_root_.GlobalTheory.CycFr.act_X, _root_.GlobalTheory.CycFr.bin_nat]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
@@ -329,7 +304,6 @@ theorem _root_.GlobalTheory.CycFr.mul_lvl (k : ℕ) :
     ((1 + X : O⟦X⟧) ^ l ^ k - 1) * _root_.GlobalTheory.CycFr.lvl l O k = (1 + X) ^ l ^ (k + 1) - 1 := by
   rw [_root_.GlobalTheory.CycFr.lvl, mul_comm, geom_sum_mul, ← pow_mul, ← pow_succ]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
@@ -343,7 +317,6 @@ theorem _root_.GlobalTheory.CycFr.act_l_pow_lvl (k : ℕ) : _root_.GlobalTheory.
   rw [map_pow, pow_zero, pow_one, _root_.GlobalTheory.CycFr.act_one_add_X, hb]
 
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
@@ -369,7 +342,6 @@ theorem _root_.GlobalTheory.CycFr.dvd_bin_sub (k : ℕ) (c d : ℤ_[l]) (h : (l 
   exact Dvd.dvd.mul_left (dvd_mul_right _ _) _
 
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
@@ -408,7 +380,6 @@ theorem _root_.GlobalTheory.CycFr.dvd_algHom_sub [IsNoetherianRing O] (f g : O�
   exact key
 
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in
@@ -421,7 +392,6 @@ theorem _root_.GlobalTheory.CycFr.dvd_act_sub [IsNoetherianRing O] (k : ℕ) (c 
   exact _root_.GlobalTheory.CycFr.dvd_bin_sub k c d h
 
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [Algebra ℤ_[l] O] in
 variable {O} in
 variable [IsDomain O] [CharZero O] in

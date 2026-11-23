@@ -149,7 +149,6 @@ def piece {A : Type*} (M : Type*) [CommRing A] [AddCommGroup M] [Module A M] (e 
   LinearMap.range (LinearMap.lsmul A M e)
 
 section dec
-open Classical
 variable {A : Type*} [CommRing A] [IsArtinianRing A] [IsReduced A] [Fintype (MaximalSpectrum A)]
 
 theorem pidem_smul_piece (P : Type*) [AddCommGroup P] [Module A P] (I J : MaximalSpectrum A) {y : P}

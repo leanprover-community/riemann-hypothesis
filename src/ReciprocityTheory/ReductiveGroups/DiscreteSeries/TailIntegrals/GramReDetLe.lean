@@ -85,7 +85,6 @@ end ReciprocityTheory.ChartRestriction.DS.Xi.GSB
 
 namespace ReciprocityTheory.ChartRestriction.DS.Xi.GSB
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B ReciprocityTheory.ChartRestriction.DS.Xi.GS
 
 def linA {k r : ℕ} (A : Mat k r) :
     EuclideanSpace ℂ (Fin (2 * r + k + 1)) →ₗ[ℂ] EuclideanSpace ℂ (Fin (2 * r + k + 1)) :=

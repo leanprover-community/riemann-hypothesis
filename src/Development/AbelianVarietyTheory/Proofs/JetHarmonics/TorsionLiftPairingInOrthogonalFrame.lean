@@ -68,23 +68,14 @@ private lemma hf_eq_dotProduct_mulVec_star {g : ℕ} (Hm : Matrix (Fin g) (Fin g
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-open scoped ComplexConjugate BigOperators in
-open Matrix in
-open scoped ComplexOrder in
 private lemma beta_smul_left' {g d : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (c : ℂ) (u v : Fin g → ℂ) :
     _root_.Formalism.L2.Ker.JMB.beta d Hm (c • u) v = c * _root_.Formalism.L2.Ker.JMB.beta d Hm u v := by
   unfold _root_.Formalism.L2.Ker.JMB.beta; simp only [hf_eq_dotProduct_mulVec_star, smul_dotProduct, smul_eq_mul]; ring
 
-open scoped ComplexConjugate BigOperators in
-open Matrix in
-open scoped ComplexOrder in
 private lemma beta_add_left' {g d : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (u w v : Fin g → ℂ) :
     _root_.Formalism.L2.Ker.JMB.beta d Hm (u + w) v = _root_.Formalism.L2.Ker.JMB.beta d Hm u v + _root_.Formalism.L2.Ker.JMB.beta d Hm w v := by
   unfold _root_.Formalism.L2.Ker.JMB.beta; simp only [hf_eq_dotProduct_mulVec_star, add_dotProduct]; ring
 
-open scoped ComplexConjugate BigOperators in
-open Matrix in
-open scoped ComplexOrder in
 private lemma beta_sum_left' {g d : ℕ} {κ : Type*} (Hm : Matrix (Fin g) (Fin g) ℂ) (t : Finset κ)
     (f : κ → Fin g → ℂ) (v : Fin g → ℂ) :
     _root_.Formalism.L2.Ker.JMB.beta d Hm (∑ k ∈ t, f k) v = ∑ k ∈ t, _root_.Formalism.L2.Ker.JMB.beta d Hm (f k) v := by
@@ -93,9 +84,6 @@ private lemma beta_sum_left' {g d : ℕ} {κ : Type*} (Hm : Matrix (Fin g) (Fin 
   | empty => unfold _root_.Formalism.L2.Ker.JMB.beta; simp [hf_eq_dotProduct_mulVec_star]
   | insert k t hk ih => rw [Finset.sum_insert hk, Finset.sum_insert hk, beta_add_left', ih]
 
-open scoped ComplexConjugate BigOperators in
-open Matrix in
-open scoped ComplexOrder in
 private lemma beta_swap_eq_conj_of_isHermitian {g d : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian)
     (u v : Fin g → ℂ) : _root_.Formalism.L2.Ker.JMB.beta d Hm v u = starRingEnd ℂ (_root_.Formalism.L2.Ker.JMB.beta d Hm u v) := by
   unfold _root_.Formalism.L2.Ker.JMB.beta
@@ -104,16 +92,10 @@ private lemma beta_swap_eq_conj_of_isHermitian {g d : ℕ} {Hm : Matrix (Fin g) 
   have := _root_.GlobalTheory.SiegelNormalForm.form_conj hH u v
   exact this.symm
 
-open scoped ComplexConjugate BigOperators in
-open Matrix in
-open scoped ComplexOrder in
 private lemma beta_add_right_jet_harmonics {g d : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (u v w : Fin g → ℂ) :
     _root_.Formalism.L2.Ker.JMB.beta d Hm u (v + w) = _root_.Formalism.L2.Ker.JMB.beta d Hm u v + _root_.Formalism.L2.Ker.JMB.beta d Hm u w := by
   unfold _root_.Formalism.L2.Ker.JMB.beta; simp only [hf_eq_dotProduct_mulVec_star, star_add, Matrix.mulVec_add, dotProduct_add]; ring
 
-open scoped ComplexConjugate BigOperators in
-open Matrix in
-open scoped ComplexOrder in
 private lemma beta_sum_right_jet_harmonics {g d : ℕ} {κ : Type*} (Hm : Matrix (Fin g) (Fin g) ℂ) (t : Finset κ)
     (u : Fin g → ℂ) (f : κ → Fin g → ℂ) :
     _root_.Formalism.L2.Ker.JMB.beta d Hm u (∑ k ∈ t, f k) = ∑ k ∈ t, _root_.Formalism.L2.Ker.JMB.beta d Hm u (f k) := by
@@ -122,18 +104,12 @@ private lemma beta_sum_right_jet_harmonics {g d : ℕ} {κ : Type*} (Hm : Matrix
   | empty => unfold _root_.Formalism.L2.Ker.JMB.beta; simp [hf_eq_dotProduct_mulVec_star]
   | insert k t hk ih => rw [Finset.sum_insert hk, Finset.sum_insert hk, beta_add_right_jet_harmonics, ih]
 
-open scoped ComplexConjugate BigOperators in
-open Matrix in
-open scoped ComplexOrder in
 private lemma beta_smul_right_eq_conj_mul {g d : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (c : ℂ) (u v : Fin g → ℂ) :
     _root_.Formalism.L2.Ker.JMB.beta d Hm u (c • v) = starRingEnd ℂ c * _root_.Formalism.L2.Ker.JMB.beta d Hm u v := by
   unfold _root_.Formalism.L2.Ker.JMB.beta
   simp only [hf_eq_dotProduct_mulVec_star, star_smul, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul, RCLike.star_def]
   ring
 
-open scoped ComplexConjugate BigOperators in
-open Matrix in
-open scoped ComplexOrder in
 private lemma eq_sum_beta_div_smul_of_beta_orthogonal {g d : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ}
     (hpos : Hm.PosDef) (hd : 0 < d) (x : Fin g → Fin g → ℂ) (a : Fin g → ℕ) (ha : ∀ i, 0 < a i)
     (hx : ∀ i j, _root_.Formalism.L2.Ker.JMB.beta d Hm (x i) (x j) = if i = j then (a i : ℂ) else 0) (v : Fin g → ℂ) :
@@ -180,9 +156,6 @@ private lemma eq_sum_beta_div_smul_of_beta_orthogonal {g d : ℕ} {Hm : Matrix (
   exact sub_eq_zero.1 hw0
 
 
-open scoped ComplexConjugate BigOperators in
-open Matrix in
-open scoped ComplexOrder in
 theorem _root_.GlobalTheory.MomOne.kapFrame : ∀ (q : ℕ) [Fact q.Prime] (lam : _root_.Formalism.L2.Ker.JMB.Qbar →+* ℂ_[q])
     (ι : ℂ ≃+* ℂ_[q]) (g : ℕ) (S : _root_.Formalism.L2.Ker.JMB.Setup g) (x : Fin g → Fin g → ℂ) (a : Fin g → ℕ) (r : ℕ)
     (b : Fin r → Fin g → ℂ) (n m s s₀ : ℕ) (eps : ℂ) (y : Fin r → Fin (q ^ n)),

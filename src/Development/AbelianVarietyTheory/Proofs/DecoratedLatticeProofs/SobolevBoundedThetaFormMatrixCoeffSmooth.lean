@@ -214,7 +214,6 @@ end GlobalTheory.Unf.MatCoef
 
 namespace GlobalTheory.Unf.MatCoef
 
-open GlobalTheory.OrientedHeis GlobalTheory.FockCompare
 
 theorem matCoef_smooth : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ θ : InfFam D, IsInfFam θ →
     ∀ (S T : HSp D) (ℓ : (WO S T → ℂ) → ℂ), IsSobForm ψ θ S T ℓ → ∀ f, IsThetaFunO ψ S T f →

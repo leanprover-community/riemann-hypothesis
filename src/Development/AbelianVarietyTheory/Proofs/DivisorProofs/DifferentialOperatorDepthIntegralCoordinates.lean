@@ -55,7 +55,6 @@ private lemma subst_sum_smul_X' {C : Type} [Field C] {σ τ ι : Type} [Fintype 
   rw [← coe_substAlgHom hb, map_sum]
   simp only [map_smul, coe_substAlgHom, subst_X hb]
 
-open MvPowerSeries in
 private lemma mvIsInt_X_divisor {C : Type} [Field C] (v : AddValuation C (WithTop ℝ)) {σ : Type}
     (s : σ) : _root_.ReciprocityTheory.PGsh.MvIsInt v (X s : MvPowerSeries σ C) := by
   classical
@@ -65,7 +64,6 @@ private lemma mvIsInt_X_divisor {C : Type} [Field C] (v : AddValuation C (WithTo
   split_ifs <;> simp
 
 
-open MvPowerSeries in
 variable {C : Type} [Field C] in
 theorem _root_.GlobalTheory.FGDepth.Coord.depth_in_coords : ∀ (C : Type) [Field C] [CharZero C]
     (v : AddValuation C (WithTop ℝ)) (i d c : ℕ) (G : _root_.ReciprocityTheory.PGsh.LogFGL v d) (u : Fin i → Fin d → C)

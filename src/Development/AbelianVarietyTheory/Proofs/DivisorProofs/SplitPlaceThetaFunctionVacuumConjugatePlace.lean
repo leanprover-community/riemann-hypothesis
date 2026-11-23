@@ -133,7 +133,6 @@ noncomputable section
 
 namespace GlobalTheory.SplitVacF
 
-open GlobalTheory.SplitInvFormF
 
 end GlobalTheory.SplitVacF
 

@@ -117,9 +117,7 @@ open Matrix
 open scoped InnerProductSpace
 
 namespace GlobalTheory.HcPort
-open CompanionTheory.D.gk.HC
 
-open ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}
@@ -183,7 +181,6 @@ end
 
 section
 namespace GlobalTheory.HcPort
-open CompanionTheory.D.gk.HC
 
 theorem kFiniteWordBound_indefUnitary : WordBd := wordBd_of casimirActsByScalar_indefUnitary
 
@@ -195,7 +192,6 @@ end
 
 section
 namespace GlobalTheory.HcPort
-open CompanionTheory.D.gk.HC
 
 theorem clause1_of (hS : KFSm) (hW : IntWts) (hI : UIrr) (hA : UAdm) : Clause1 :=
   harish_chandra_first_clause (fun _ _ _ _ _ _ _ hσ _ => kfinDense_UJC hσ) hS hW hI hA harish_chandra_descent
@@ -210,12 +206,9 @@ end
 section
 
 open Matrix WithLp
-open scoped InnerProductSpace
 
 namespace GlobalTheory.HcPort
-open CompanionTheory.D.gk.HC
 
-open ReciprocityTheory.ChartRestriction.DS
 open Formalism.BasicNotions.TH (GrpData URep GKMod Mat upq IsKC Eab wtSub hwSub posC KFin sameBlock)
 open Formalism.MainNotions.SchurIrreducible (IsHCMod IrrU)
 
@@ -326,7 +319,6 @@ end
 
 section
 namespace GlobalTheory.HcPort
-open CompanionTheory.D.gk.HC
 
 theorem uIrr : UIrr := uIrr_of K_finite_smooth_vectors casimirActsByScalar_indefUnitary
 

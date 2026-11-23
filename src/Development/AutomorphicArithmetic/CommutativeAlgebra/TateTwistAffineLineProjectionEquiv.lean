@@ -180,7 +180,6 @@ private theorem po (A : Type) [CommRing A] :
     · have := congr($(h1).hom X)
       simpa using this
 
-open Polynomial in
 private theorem line_iso (A : Type) [CommRing A] :
     ∃ u : Spec (CommRingCat.of A[X]) ⟶ Pbf.A1 ⨯ Spec (CommRingCat.of A), IsIso u ∧
       u ≫ prod.snd = Spec.map (CommRingCat.ofHom (C : A →+* A[X])) := by
@@ -194,7 +193,6 @@ private theorem line_iso (A : Type) [CommRing A] :
     · rw [Category.assoc, prod.lift_fst, IsPullback.lift_fst, Category.id_comp]
     · rw [Category.assoc, prod.lift_snd, IsPullback.lift_snd, Category.id_comp]
 
-open Polynomial in
 private theorem eqv_spec (q : ℕ) [NeZero q] (A : Type) [CommRing A] (hq : IsUnit (q : A)) (i : ℤ) :
     Eqv _ (sch.map (prod.snd : Pbf.A1 ⨯ Spec (CommRingCat.of A) ⟶ Spec (CommRingCat.of A))) (tw q i) := by
   obtain ⟨u, hu, hc⟩ := line_iso A

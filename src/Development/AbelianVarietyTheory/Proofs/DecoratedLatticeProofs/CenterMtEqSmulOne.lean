@@ -125,7 +125,6 @@ theorem cayley_unitary (σ : E →+* E) (J X : Matrix n n E) (t : E) (ht : σ t 
 end GlobalTheory.CenterScalar
 
 namespace GlobalTheory.CenterScalar
-open Matrix Polynomial
 
 variable {E : Type} [Field E] {n : Type} [Fintype n] [DecidableEq n]
 variable {R : Type} [CommRing R] (ι : E →+* R)

@@ -53,7 +53,6 @@ theorem _root_.GlobalTheory.LocRep.rep_zero (hlin : ∀ (a : ℂ) v w, ι (a •
   filter_upwards [hlin 1 0 0] with x hx
   simpa using hx
 
-open MeasureTheory in
 variable {G : Type} [TopologicalSpace G] [MeasurableSpace G] {μ : Measure G}
   {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K] {ι : K → G → ℂ} in
 theorem _root_.GlobalTheory.LocRep.rep_add (hlin : ∀ (a : ℂ) v w, ι (a • v + w) =ᵐ[μ] fun x => a * ι v x + ι w x) (v w : K) :
@@ -61,7 +60,6 @@ theorem _root_.GlobalTheory.LocRep.rep_add (hlin : ∀ (a : ℂ) v w, ι (a • 
   filter_upwards [hlin 1 v w] with x hx
   simpa using hx
 
-open MeasureTheory in
 variable {G : Type} [TopologicalSpace G] [MeasurableSpace G] {μ : Measure G}
   {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K] {ι : K → G → ℂ} in
 theorem _root_.GlobalTheory.LocRep.rep_smul (hlin : ∀ (a : ℂ) v w, ι (a • v + w) =ᵐ[μ] fun x => a * ι v x + ι w x) (a : ℂ) (v : K) :
@@ -70,7 +68,6 @@ theorem _root_.GlobalTheory.LocRep.rep_smul (hlin : ∀ (a : ℂ) v w, ι (a •
   simp only [add_zero] at hx
   rw [hx, h0, add_zero]
 
-open MeasureTheory in
 variable {G : Type} [TopologicalSpace G] [MeasurableSpace G] {μ : Measure G}
   {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K] {ι : K → G → ℂ} in
 theorem _root_.GlobalTheory.LocRep.rep_sub (hlin : ∀ (a : ℂ) v w, ι (a • v + w) =ᵐ[μ] fun x => a * ι v x + ι w x) (v w : K) :
@@ -79,7 +76,6 @@ theorem _root_.GlobalTheory.LocRep.rep_sub (hlin : ∀ (a : ℂ) v w, ι (a • 
   rw [show v - w = (-1 : ℂ) • w + v by rw [neg_one_smul]; abel, hx]
   ring
 
-open MeasureTheory in
 variable {G : Type} [TopologicalSpace G] [MeasurableSpace G] {μ : Measure G}
   {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K] {ι : K → G → ℂ} in
 theorem _root_.GlobalTheory.LocRep.rep_sum (hlin : ∀ (a : ℂ) v w, ι (a • v + w) =ᵐ[μ] fun x => a * ι v x + ι w x) {J : Type} (s : Finset J)
@@ -92,7 +88,6 @@ theorem _root_.GlobalTheory.LocRep.rep_sum (hlin : ∀ (a : ℂ) v w, ι (a • 
     rw [Finset.sum_insert hj, h1, h2, Finset.sum_insert hj]
 
 
-open MeasureTheory in
 variable {G : Type} [TopologicalSpace G] [MeasurableSpace G] {μ : Measure G}
   {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K] {ι : K → G → ℂ} in
 theorem _root_.GlobalTheory.LocRep.exists_pairing
@@ -117,7 +112,6 @@ theorem _root_.GlobalTheory.LocRep.exists_pairing
   refine ⟨L.mkContinuous M fun v => ?_, fun v => rfl⟩
   exact (norm_integral_le_integral_norm _).trans (hM v).2
 
-open MeasureTheory in
 variable {G : Type} [TopologicalSpace G] [MeasurableSpace G] {μ : Measure G}
   {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K] {ι : K → G → ℂ} in
 theorem _root_.GlobalTheory.LocRep.locallyIntegrable_rep [LocallyCompactSpace G]
@@ -129,7 +123,6 @@ theorem _root_.GlobalTheory.LocRep.locallyIntegrable_rep [LocallyCompactSpace G]
   exact ⟨C, hCx, (hM v).1⟩
 
 
-open MeasureTheory in
 variable {G : Type} [TopologicalSpace G] [MeasurableSpace G] {μ : Measure G}
   {K : Type} [NormedAddCommGroup K] [InnerProductSpace ℂ K] {ι : K → G → ℂ} in
 theorem _root_.GlobalTheory.LocRep.rep_of_pairing [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [BorelSpace G]

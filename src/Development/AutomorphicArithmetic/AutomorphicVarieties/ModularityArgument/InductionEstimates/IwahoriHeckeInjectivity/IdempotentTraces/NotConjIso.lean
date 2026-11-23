@@ -215,7 +215,6 @@ end Conj
 
 section Main
 
-open Formalism.L2.Host Formalism.ConjugateSelfDual UpperTheory.ConvolutionTheory.T
 
 private theorem satTw {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ} {π : CuspSub E a}
     {w : HeightOneSpectrum (𝓞 E)} {B : Multiset ℂˣ} (h : (CG.mk π).HasSat w B) {χ : HChar E}

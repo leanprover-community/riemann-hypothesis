@@ -70,16 +70,7 @@ theorem GlobalTheory.RallisBottom.hecke_form_anisotropic_of_rallis_bottom : _roo
 end
 
 section
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset MeasureTheory
-open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest GlobalTheory.SqTop
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-open scoped ComplexConjugate Matrix NNReal
-open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (FinPl RealMat Lat IsFockVec IsSphOff HidaSetting volQ)
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (sZero)
-open GlobalTheory.Mem.Th (CptF)
-open GlobalTheory.Core.Rk.IP (Pair Unram SphFun openOff integrand wcoef rcoef up)
 
 theorem _root_.GlobalTheory.T.rallis_bottom_hecke_form_anisotropic : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ D : D7, GlobalTheory.RallisBottom.HeckeFormAniso D := by
   first | exact @_root_.GlobalTheory.RallisBottom.hecke_form_anisotropic_of_rallis_bottom | exact _root_.GlobalTheory.RallisBottom.hecke_form_anisotropic_of_rallis_bottom | (intros; apply _root_.GlobalTheory.RallisBottom.hecke_form_anisotropic_of_rallis_bottom <;> assumption)

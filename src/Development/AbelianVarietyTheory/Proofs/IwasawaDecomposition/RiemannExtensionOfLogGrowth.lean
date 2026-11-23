@@ -66,8 +66,6 @@ theorem _root_.GlobalTheory.LogExt.analyticOnNhd_of_differentiableOn [FiniteDime
     {f : V → ℂ} (hU : IsOpen U) (hf : DifferentiableOn ℂ f U) : AnalyticOnNhd ℂ f U :=
   _root_.GlobalTheory.SCV.analyticOnNhd_of_differentiableOn hU hf
 
-open Filter Topology Asymptotics Metric Set Complex in
-open scoped Real in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] in
 private theorem exists_differentiableOn_of_locally_extends {U S : Set V} (hU : IsOpen U) (hS : S ⊆ U)
     (hd : U ⊆ closure S) (u : V → ℂ)
@@ -95,8 +93,6 @@ private theorem exists_differentiableOn_of_locally_extends {U S : Set V} (hU : I
     rw [key b (hS hb) N hN G hG hGu]
     exact hGu ⟨mem_of_mem_nhds hN, hb⟩
 
-open Filter Topology Asymptotics Metric Set Complex in
-open scoped Real in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] in
 private theorem isLittleO_sub_inv_sub_of_log_bound {ψ h : ℂ → ℂ} {s₀ : ℂ} (hψ : AnalyticAt ℂ ψ s₀)
     (hz : ψ s₀ = 0) (hne : ∀ᶠ s in 𝓝[≠] s₀, ψ s ≠ 0) {C : ℝ} {k : ℕ}
@@ -179,8 +175,6 @@ private theorem isLittleO_sub_inv_sub_of_log_bound {ψ h : ℂ → ℂ} {s₀ : 
   · filter_upwards [self_mem_nhdsWithin] with s hs h0
     exact absurd h0 (inv_ne_zero (sub_ne_zero.mpr hs))
 
-open Filter Topology Asymptotics Metric Set Complex in
-open scoped Real in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] in
 private theorem exists_differentiableOn_ball_of_log_bound {ψ h : ℂ → ℂ} {ρ : ℝ} (hρ : 0 < ρ)
     (hψ : DifferentiableOn ℂ ψ (ball 0 ρ)) (h0 : ψ 0 ≠ 0)
@@ -223,8 +217,6 @@ private theorem exists_differentiableOn_ball_of_log_bound {ψ h : ℂ → ℂ} {
       simp [Function.update_of_ne hne]
 
 
-open Filter Topology Asymptotics Metric Set Complex in
-open scoped Real in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] in
 theorem _root_.GlobalTheory.LogExt.riemann_extension_log (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V]
     [FiniteDimensional ℂ V] (U : Set V) (φ u : V → ℂ) (hU : IsOpen U)

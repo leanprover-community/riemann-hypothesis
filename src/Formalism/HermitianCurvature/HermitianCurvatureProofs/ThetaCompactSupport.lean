@@ -112,7 +112,6 @@ end Formalism.FourierDecayAlt.P.PBJ
 
 namespace Formalism.FourierDecayAlt.P
 
-open MeasureTheory Filter Topology Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
 theorem theta_compact_support : Formalism.FourierDecayAlt.KB.ThetaCpt := by
   intro Wp Wq _ _ _ _ _ _ P p F w e Cb hDD hF hw

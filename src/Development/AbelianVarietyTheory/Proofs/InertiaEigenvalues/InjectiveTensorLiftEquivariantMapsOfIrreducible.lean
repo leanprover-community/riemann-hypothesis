@@ -121,7 +121,6 @@ private theorem eq_zero_of_sum_intertwining_apply_eq_zero {H X Y : Type} [Group 
       simp at h1
 
 
-open ValuativeRel Topology in
 theorem _root_.GlobalTheory.SmGL.EvalInj.lift_subtype_injective :
     ∀ (H X Y : Type) [Group H] [AddCommGroup X] [Module ℂ X] [AddCommGroup Y] [Module ℂ Y]
       (τ : Representation ℂ H X) (ρ : Representation ℂ H Y), ρ.IsIrreducible →

@@ -94,7 +94,6 @@ theorem jetTab_comb {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGr
 end GlobalTheory.DictFree
 
 namespace GlobalTheory.DictFree
-open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 MvPolynomial
 
 theorem differentiable_U {D : D7} (Tr : Tor D) {N N' : ℕ} (s : VC D N N') {G : VC D N N' → ℂ} (hG : Differentiable ℂ G) :
     Differentiable ℂ (Formalism.MainNotions.TaylorLogMetric.U D Tr s G) := by

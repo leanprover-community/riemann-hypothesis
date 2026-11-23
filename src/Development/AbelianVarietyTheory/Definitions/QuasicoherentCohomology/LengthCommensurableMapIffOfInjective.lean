@@ -230,14 +230,12 @@ theorem relLength_smul_smul {G : Type*} [Monoid G] [DistribMulAction G V] [SMulC
   relLength_map_of_injective (DistribSMul.toLinearMap R V a) ha A B
 
 
-open Pointwise in
 theorem lengthCommensurable_smul_smul_iff {G : Type*} [Monoid G] [DistribMulAction G V]
     [SMulCommClass G R V] {a : G} (ha : IsSMulRegular V a) {A B : Submodule R V} :
     LengthCommensurable (a • A) (a • B) ↔ LengthCommensurable A B :=
   lengthCommensurable_map_iff_of_injective (DistribSMul.toLinearMap R V a) ha
 
 
-open Pointwise in
 theorem LengthCommensurable.signedLength_smul_smul {G : Type*} [Monoid G] [DistribMulAction G V]
     [SMulCommClass G R V] {a : G} {A B : Submodule R V} (h : LengthCommensurable A B)
     (ha : IsSMulRegular V a) : signedLength (a • A) (a • B) = signedLength A B :=

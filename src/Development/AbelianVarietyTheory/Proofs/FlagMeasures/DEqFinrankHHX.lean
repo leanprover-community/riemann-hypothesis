@@ -51,7 +51,6 @@ theorem projRowsR : Formalism.L2.SG.ProjRows.ProjRowsR :=
     Formalism.L2.SG.Pf.regular_representation_unitary
 
 
-open Formalism Formalism.L2 Formalism.L2.SG in
 theorem unimodGf : Formalism.L2.SG.Pf.UnimodGf := fun I μf _ _ =>
   (PI.WAU.adUnimod_of PI.WAU.kg_subgroup PI.WAU.maximal_compact_isCompact PI.WAU.compact_countable
     PI.adelic_index_eq) I μf inferInstance

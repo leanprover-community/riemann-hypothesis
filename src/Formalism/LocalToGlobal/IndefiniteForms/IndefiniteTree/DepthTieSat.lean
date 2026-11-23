@@ -77,7 +77,6 @@ end CoreSat
 
 section NuFin
 
-open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions
 
 end NuFin
 

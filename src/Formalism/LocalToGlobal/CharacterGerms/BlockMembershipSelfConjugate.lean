@@ -249,7 +249,6 @@ end Formalism.L2.FormalSeriesBounds.RF
 
 namespace Formalism.L2.FormalSeriesBounds.RF
 
-open Formalism.IncomingBounds
 
 variable {C : Type} [Field C] {V : VF C}
   {Orb : Type} [Fintype Orb] {I J : Orb → Fin 2 → Type} [∀ o g, Fintype (I o g)] [∀ o g, Fintype (J o g)]

@@ -168,7 +168,6 @@ end GlobalTheory.HL.NUTransport
 namespace GlobalTheory.HL.NUTransport
 
 section Main
-open Formalism.MainNotions.S.Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]

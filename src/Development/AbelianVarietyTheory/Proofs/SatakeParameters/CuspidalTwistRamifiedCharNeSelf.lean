@@ -100,7 +100,6 @@ end GlobalTheory.TwistRamified
 
 noncomputable section
 
-open NumberField IsDedekindDomain Formalism.L2.Host GlobalTheory.CuspRep Matrix
 
 namespace GlobalTheory.TwistRamified
 

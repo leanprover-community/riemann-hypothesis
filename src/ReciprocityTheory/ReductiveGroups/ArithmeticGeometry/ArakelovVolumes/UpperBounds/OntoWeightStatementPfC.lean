@@ -92,8 +92,6 @@ end ReciprocityTheory.ChartRestriction.G.AR.Up.OW
 
 namespace ReciprocityTheory.ChartRestriction.G.AR.Up.OW
 
-open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.L2DbarEstimates MeasureTheory Topology Filter
-open scoped ContDiff ENNReal
 
 noncomputable section
 
@@ -235,7 +233,6 @@ end ReciprocityTheory.ChartRestriction.G.AR.Up.OW
 namespace ReciprocityTheory.ChartRestriction.G.AR.Up.OW
 
 open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.L2DbarEstimates MeasureTheory Topology Filter Metric
-open scoped ContDiff ENNReal
 
 noncomputable section
 

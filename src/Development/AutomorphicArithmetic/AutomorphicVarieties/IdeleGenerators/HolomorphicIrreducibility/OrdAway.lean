@@ -328,8 +328,6 @@ private theorem iwahori_level_zero_eq {F : Type} [Field F] [NumberField F] (w : 
 
 end UpperTheory.V.Sd.OrdinaryAwayPlaces
 
-open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial ValuativeRel
-open GlobalTheory.CuspRep GlobalTheory.GalOfCusp GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.SmGL UpperTheory.V.Af
 open UpperTheory.V.Sd UpperTheory.V.Sd.OrdinaryAwayPlaces
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField

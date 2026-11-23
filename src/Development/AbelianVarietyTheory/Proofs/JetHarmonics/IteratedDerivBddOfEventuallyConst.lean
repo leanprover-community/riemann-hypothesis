@@ -95,8 +95,6 @@ private theorem exists_smooth_bounded_derivs_eq_pow_mul_of_cutPow {e : ℕ} {φ 
       show φ x = x ^ e * (φ x / x ^ e)
       rw [mul_comm, div_mul_cancel₀ (φ x) hx0]
 
-open MeasureTheory in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private theorem ckOn_smul_of_ckOn_infinite {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
     {c : _root_.Formalism.FourierDecayAlt.B.Mat k r → ℂ} (hc : ContDiff ℝ ∞ c) {F : _root_.Formalism.FourierDecayAlt.B.Mat k r → E} (n : ℕ∞)
@@ -107,8 +105,6 @@ private theorem ckOn_smul_of_ckOn_infinite {k r : ℕ} {E : Type} [NormedAddComm
   refine ⟨U, fun g => c g • F' g, hU, hgU, ?_, fun g hgU hg => by simp only [hEq g hgU hg]⟩
   exact (hc.contDiffOn.smul hF').of_le (WithTop.coe_le_coe.mpr le_top)
 
-open MeasureTheory in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private theorem inCC_real_smul_comp_Gf_of_inCC {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (z z' : Fin (2 * r + k + 1) → ℂ) {h : ℝ → ℝ}
@@ -382,8 +378,6 @@ private theorem inCC_real_smul_comp_Gf_of_inCC {k r : ℕ} {Wp Wq : Type} [Norme
         rw [h0, Real.rpow_zero, mul_one]
 
 
-open MeasureTheory in
-open scoped ContDiff in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 theorem _root_.GlobalTheory.HatNF.mulG_ckOn_inCC : ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]

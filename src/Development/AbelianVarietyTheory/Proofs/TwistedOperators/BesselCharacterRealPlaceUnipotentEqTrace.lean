@@ -170,7 +170,6 @@ end GlobalTheory.BesselCoords
 
 namespace GlobalTheory.BesselCoords
 
-open GlobalTheory.BesselChar
 
 
 

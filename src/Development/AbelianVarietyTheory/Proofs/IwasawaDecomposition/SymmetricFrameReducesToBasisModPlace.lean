@@ -219,7 +219,6 @@ end GlobalTheory.Mem.SymFrameRed
 
 namespace GlobalTheory.Mem.SymFrameRed
 
-open Formalism.MainNotions.S Formalism.L2.SG.Pf.RowDictPf PIW.AdelClassFin Formalism.L2.SG.Pf.RedBasicsPf Formalism.L2.SG.Pf.unitaryCongruence
   Formalism.L2.SG.Pf.AllRowsRedKerA Formalism.L2.SG.Pf.KppRedW Formalism.L2.SG.Pf.AllRowsRho Formalism.L2.SG.Pf.KppFrameW
 
 variable {D : D7}

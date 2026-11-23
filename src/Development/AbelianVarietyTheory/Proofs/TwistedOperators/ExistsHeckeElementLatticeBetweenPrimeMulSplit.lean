@@ -76,8 +76,6 @@ end GlobalTheory.HeckeLocStep
 
 namespace GlobalTheory.HeckeLocStep
 
-open Formalism.L2.Theta
-open scoped TensorProduct
 
 theorem hat_mono {D : D7} {n : ℕ} {L L' : Submodule (𝓞 D.host.E) (Fin n → D.host.E)} (h : L ≤ L') :
     GlobalTheory.AdLat.hat D.host.F (L : Set (Fin n → D.host.E)) ≤ GlobalTheory.AdLat.hat D.host.F (L' : Set (Fin n → D.host.E)) := by

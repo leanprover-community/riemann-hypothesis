@@ -280,7 +280,6 @@ theorem quadraticSemicharacterIdentityEquivalent_of_kernelRatio (hK : KernelRati
   · rw [hθκ, hc, smul_smul]
 
 
-open KR in
 theorem quadraticSemicharacterIdentityReformulated_of_kernelRatio_of_localStandard_of_kappaExists (hK : KernelRatio) (hL : LocalStandard) (hκ : KappaExists) : quadraticSemicharacterIdentityReformulated := by
   intro a b c d ha hd lam hlam hOK n _ _ h Λ g₀ hg₀ hsd hst i1 i2
   obtain ⟨h4, hodd, h8, hprime⟩ := hOK

@@ -246,7 +246,6 @@ theorem key (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {n n₁ : ℕ} (J 
 end GlobalTheory.UnipCocptForm
 
 namespace GlobalTheory.UnipCocptForm
-open GlobalTheory.UAut GlobalTheory.SiegelSet GlobalTheory.ThK.SquareIntegrability
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 theorem isHermND_smul' (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (hskew : ∀ i j, σ (J j i) = -J i j)
@@ -305,7 +304,6 @@ theorem cocompact_of_mem (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {n n₁ : �
 end GlobalTheory.UnipCocptForm
 
 namespace GlobalTheory.UnipCocptForm
-open GlobalTheory.UAut GlobalTheory.SiegelSet GlobalTheory.ThK.SquareIntegrability
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 theorem mem_unip_iff (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {n n₁ : ℕ} (Y : Spc F E n)

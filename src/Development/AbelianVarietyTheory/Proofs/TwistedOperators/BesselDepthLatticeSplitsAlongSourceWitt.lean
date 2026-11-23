@@ -119,7 +119,6 @@ end GlobalTheory.AscFin.SrcSplit
 
 namespace GlobalTheory.AscFin.SrcSplit
 
-open GlobalTheory.FinPl.LatMem
 
 variable {D : D7}
 

@@ -82,8 +82,6 @@ def patSub (g : ℕ) [Fact g.Prime] {N : ℕ} (Φ : Fin N → Fin N → Prop)
     show InPat Φ ((x⁻¹ : Gn g N) : Mt g N)
     rw [this]; exact hp _
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] {N : ℕ} in
 private theorem isUnit_of_inPat_irrefl_trans {Φ : Fin N → Fin N → Prop} (hirr : ∀ a, ¬ Φ a a)
     (htrans : ∀ a b c, Φ a b → Φ b c → Φ a c) {M : _root_.GlobalTheory.GLq.Mt g N}
@@ -114,8 +112,6 @@ private theorem isUnit_of_inPat_irrefl_trans {Φ : Fin N → Fin N → Prop} (hi
   simp [hblock]
 
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] {N : ℕ} in
 theorem _root_.GlobalTheory.GLm.Pattern.pattern_group : ∀ (g : ℕ) [Fact g.Prime] (N : ℕ)
     (Φ : Fin N → Fin N → Prop), (∀ a, ¬ Φ a a) → (∀ a b c, Φ a b → Φ b c → Φ a c) →

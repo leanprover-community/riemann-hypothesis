@@ -84,7 +84,6 @@ def MapsAt (pr : J → (X' ⟶ X)) (w : LB.Iso L' (LB.LinComb L pr (fun _ => 1))
 
 end GeneratorPullback
 
-section Pow
 
 variable {S : Scheme.{0}}
 
@@ -92,9 +91,7 @@ structure IsPowPolAV (P' P : PolAV S) (j : ℕ) extends IsPowGrp P'.A P.A j wher
   w : LB.Iso P'.L (boxLB P.L pr)
   w_gen : w.IsGen
 
-end Pow
 
-section PowDeg
 
 variable {R : Type} [CommRing R] [IsDomain R]
 
@@ -116,9 +113,7 @@ structure IsPowDeg (D' D : DegPre R) (j : ℕ) where
       (GeneratorPullback.finProdGen D.P.L (J := Fin j) (fun i _ => D.xK (xe x i)) (fun _ _ => -1)
         (fun i => D.psi (xe x i)))
 
-end PowDeg
 
-section UnifPow
 
 open scoped CategoryTheory.Obj
 
@@ -141,6 +136,5 @@ structure UnifPowOf {j : ℕ} {D D' : DegData R I}
     (U'.gt e).q ≫ (Over.pullback (thick R I e)).map (pD.pw.pr i) =
       (Over.pullback (thick R I e)).map (pG.pr i) ≫ (U.gt e).q
 
-end UnifPow
 
 end ReciprocityTheory.ChartRestriction.G.Out

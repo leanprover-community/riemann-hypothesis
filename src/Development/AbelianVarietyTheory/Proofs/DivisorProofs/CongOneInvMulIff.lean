@@ -40,12 +40,6 @@ open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
 noncomputable section
 
-open scoped Pointwise
-open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
-open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
-open Formalism.L2.Host (HChar)
-open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum GlobalTheory.NormSum
-open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 
 namespace GlobalTheory.CongReps
 

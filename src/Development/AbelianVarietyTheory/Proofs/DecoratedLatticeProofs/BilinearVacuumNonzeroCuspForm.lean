@@ -67,7 +67,6 @@ theorem dLine_smul {S T : HSp D} (M : ℝ →+ WO S T) (a : ℂ) (f : WO S T →
   funext t
   ring
 
-open GlobalTheory.WeilVacMove in
 theorem dLine_add (hψ : IsStdChar D ψ (-1)) {S T : HSp D} {M : ℝ →+ WO S T} (hM : Continuous M)
     (hM0 : ∀ s, (M s).map (finPart D) = 0) {f g : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) (hg : IsThetaFunO ψ S T g) :
     dLine ψ S T M (f + g) = dLine ψ S T M f + dLine ψ S T M g := by

@@ -97,12 +97,10 @@ def degT [NumberField K] [StarRing K] {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 end Defs
 
-section Places
 
 variable {K : Type*} [Field K] [NumberField K]
 
 
-end Places
 
 section Parts
 

@@ -75,8 +75,6 @@ private lemma quaternionAlgebra_exists_coord_nhds_subset_of_mem_nhds {k : Type} 
   · exact h₃
   · exact h₄
 
-open NumberField IsDedekindDomain in
-open scoped Quaternion Topology RestrictedProduct in
 variable {ι : Type*} {R : ι → Type*} [∀ i, TopologicalSpace (R i)] {A : (i : ι) → Set (R i)} in
 variable {F : Type} [Field F] [NumberField F] in
 private lemma restrictedProduct_exists_finite_box_subset_of_mem_nhds (hA : ∀ i, IsOpen (A i)) {S : Set ι}
@@ -107,40 +105,30 @@ private lemma restrictedProduct_exists_finite_box_subset_of_mem_nhds (hA : ∀ i
     rw [Set.mem_preimage, e] at hyN
     exact hyN
 
-open NumberField IsDedekindDomain in
-open scoped Quaternion Topology RestrictedProduct in
 variable {ι : Type*} {R : ι → Type*} [∀ i, TopologicalSpace (R i)] {A : (i : ι) → Set (R i)} in
 variable {F : Type} [Field F] [NumberField F] in
 private lemma continuous_quaternionAlgebra_re {k : Type} [CommRing k] [TopologicalSpace k] {a b : k} :
     Continuous fun w : ℍ[k, a, b] => w.re :=
   (continuous_apply (0 : Fin 4)).comp (continuous_induced_dom (f := _root_.GlobalTheory.QSA.coords))
 
-open NumberField IsDedekindDomain in
-open scoped Quaternion Topology RestrictedProduct in
 variable {ι : Type*} {R : ι → Type*} [∀ i, TopologicalSpace (R i)] {A : (i : ι) → Set (R i)} in
 variable {F : Type} [Field F] [NumberField F] in
 private lemma continuous_quaternionAlgebra_imI {k : Type} [CommRing k] [TopologicalSpace k] {a b : k} :
     Continuous fun w : ℍ[k, a, b] => w.imI :=
   (continuous_apply (1 : Fin 4)).comp (continuous_induced_dom (f := _root_.GlobalTheory.QSA.coords))
 
-open NumberField IsDedekindDomain in
-open scoped Quaternion Topology RestrictedProduct in
 variable {ι : Type*} {R : ι → Type*} [∀ i, TopologicalSpace (R i)] {A : (i : ι) → Set (R i)} in
 variable {F : Type} [Field F] [NumberField F] in
 private lemma continuous_quaternionAlgebra_imJ {k : Type} [CommRing k] [TopologicalSpace k] {a b : k} :
     Continuous fun w : ℍ[k, a, b] => w.imJ :=
   (continuous_apply (2 : Fin 4)).comp (continuous_induced_dom (f := _root_.GlobalTheory.QSA.coords))
 
-open NumberField IsDedekindDomain in
-open scoped Quaternion Topology RestrictedProduct in
 variable {ι : Type*} {R : ι → Type*} [∀ i, TopologicalSpace (R i)] {A : (i : ι) → Set (R i)} in
 variable {F : Type} [Field F] [NumberField F] in
 private lemma continuous_quaternionAlgebra_imK {k : Type} [CommRing k] [TopologicalSpace k] {a b : k} :
     Continuous fun w : ℍ[k, a, b] => w.imK :=
   (continuous_apply (3 : Fin 4)).comp (continuous_induced_dom (f := _root_.GlobalTheory.QSA.coords))
 
-open NumberField IsDedekindDomain in
-open scoped Quaternion Topology RestrictedProduct in
 variable {ι : Type*} {R : ι → Type*} [∀ i, TopologicalSpace (R i)] {A : (i : ι) → Set (R i)} in
 variable {F : Type} [Field F] [NumberField F] in
 private lemma nrm_apply_eq_nrm_finAdele_loc {a b : F}
@@ -155,8 +143,6 @@ private lemma nrm_apply_eq_nrm_finAdele_loc {a b : F}
   rfl
 
 
-open NumberField IsDedekindDomain in
-open scoped Quaternion Topology RestrictedProduct in
 variable {ι : Type*} {R : ι → Type*} [∀ i, TopologicalSpace (R i)] {A : (i : ι) → Set (R i)} in
 variable {F : Type} [Field F] [NumberField F] in
 theorem _root_.GlobalTheory.QSA.FinAdele.traceOpen_finiteAdele : ∀ (F : Type) [Field F] [NumberField F] (a b : F), (∀ v : HeightOneSpectrum (𝓞 F), _root_.GlobalTheory.QSA.TraceOpen (v.adicCompletion F) (algebraMap F (v.adicCompletion F) a) (algebraMap F (v.adicCompletion F) b)) → (∀ᶠ v in (Filter.cofinite : Filter (HeightOneSpectrum (𝓞 F))), ∀ t ∈ v.adicCompletionIntegers F, ∃ u : ℍ[v.adicCompletion F, algebraMap F (v.adicCompletion F) a, algebraMap F (v.adicCompletion F) b], _root_.GlobalTheory.QSA.nrm u = 1 ∧ u.re = t ∧ u.imI ∈ v.adicCompletionIntegers F ∧ u.imJ ∈ v.adicCompletionIntegers F ∧ u.imK ∈ v.adicCompletionIntegers F) → _root_.GlobalTheory.QSA.TraceOpen (FiniteAdeleRing (𝓞 F) F) (algebraMap F (FiniteAdeleRing (𝓞 F) F) a) (algebraMap F (FiniteAdeleRing (𝓞 F) F) b) := by

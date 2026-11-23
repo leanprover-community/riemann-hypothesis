@@ -55,21 +55,18 @@ variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.isInt (x : _root_.Formalism.CyclotomicNorms.Fbar g) : IsIntegral (ZMod g) x :=
   Algebra.IsIntegral.isIntegral x
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.mem_rootsBar {f : (ZMod g)[X]} (hf : f ≠ 0) {x : _root_.Formalism.CyclotomicNorms.Fbar g} :
     x ∈ _root_.Formalism.CyclotomicNorms.rootsBar f ↔ aeval x f = 0 := by
   unfold _root_.Formalism.CyclotomicNorms.rootsBar
   rw [mem_roots_map_of_injective (algebraMap (ZMod g) (_root_.Formalism.CyclotomicNorms.Fbar g)).injective hf, aeval_def]
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.nodup_minpoly (x : _root_.Formalism.CyclotomicNorms.Fbar g) : (_root_.Formalism.CyclotomicNorms.rootsBar (minpoly (ZMod g) x)).Nodup := by
   unfold _root_.Formalism.CyclotomicNorms.rootsBar
   exact nodup_roots ((PerfectField.separable_of_irreducible
     (minpoly.irreducible (_root_.GlobalTheory.GoodCharsCompare.isInt x))).map)
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.eq_of_rootsBar {f h : (ZMod g)[X]} (hf : f.Monic) (hh : h.Monic)
     (e : _root_.Formalism.CyclotomicNorms.rootsBar f = _root_.Formalism.CyclotomicNorms.rootsBar h) : f = h := by
@@ -83,7 +80,6 @@ theorem _root_.GlobalTheory.GoodCharsCompare.eq_of_rootsBar {f h : (ZMod g)[X]} 
     (algebraMap (ZMod g) (_root_.Formalism.CyclotomicNorms.Fbar g)).injective
   rw [← key hf, ← key hh, e]
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.card_rootsBar (f : (ZMod g)[X]) :
     (_root_.Formalism.CyclotomicNorms.rootsBar f).card = f.natDegree := by
@@ -92,12 +88,10 @@ theorem _root_.GlobalTheory.GoodCharsCompare.card_rootsBar (f : (ZMod g)[X]) :
 
 abbrev dg (y : _root_.Formalism.CyclotomicNorms.Fbar g) : ℕ := (minpoly (ZMod g) y).natDegree
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.dg_pos (y : _root_.Formalism.CyclotomicNorms.Fbar g) : 0 < _root_.GlobalTheory.GoodCharsCompare.dg y :=
   minpoly.natDegree_pos (_root_.GlobalTheory.GoodCharsCompare.isInt y)
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.frobenius_orbit_degreeOverPrimeFieldFbar (y : _root_.Formalism.CyclotomicNorms.Fbar g) :
     y ^ g ^ _root_.GlobalTheory.GoodCharsCompare.dg y = y ∧
@@ -166,7 +160,6 @@ theorem _root_.GlobalTheory.GoodCharsCompare.frobenius_orbit_degreeOverPrimeFiel
     · exact h
     · exact (key j i h hi e.symm).elim
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.aeval_pow_g (f : (ZMod g)[X]) (y : _root_.Formalism.CyclotomicNorms.Fbar g) (i : ℕ)
     (h : aeval y f = 0) : aeval (y ^ g ^ i) f = 0 := by
@@ -176,7 +169,6 @@ theorem _root_.GlobalTheory.GoodCharsCompare.aeval_pow_g (f : (ZMod g)[X]) (y : 
     rw [pow_succ, pow_mul, ← expand_aeval, ZMod.expand_card, map_pow, ih,
       zero_pow (Fact.out : g.Prime).ne_zero]
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 open Classical in
 theorem _root_.GlobalTheory.GoodCharsCompare.roots_minpoly (y : _root_.Formalism.CyclotomicNorms.Fbar g) :
@@ -196,7 +188,6 @@ theorem _root_.GlobalTheory.GoodCharsCompare.roots_minpoly (y : _root_.Formalism
       exact (_root_.GlobalTheory.GoodCharsCompare.frobenius_orbit_degreeOverPrimeFieldFbar y).2 i (by simpa using hi) j
         (by simpa using hj) e
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.mem_roots_minpoly {y z : _root_.Formalism.CyclotomicNorms.Fbar g} :
     z ∈ _root_.Formalism.CyclotomicNorms.rootsBar (minpoly (ZMod g) y) ↔ ∃ i, z = y ^ g ^ i := by
@@ -211,38 +202,32 @@ theorem _root_.GlobalTheory.GoodCharsCompare.mem_roots_minpoly {y z : _root_.For
       (minpoly.ne_zero (_root_.GlobalTheory.GoodCharsCompare.isInt y))]
     exact _root_.GlobalTheory.GoodCharsCompare.aeval_pow_g _ _ _ (minpoly.aeval _ _)
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.g_pow_sub_pos {d : ℕ} (hd : 0 < d) : 0 < g ^ d - 1 :=
   Nat.sub_pos_of_lt (Nat.one_lt_pow hd.ne' (Fact.out : g.Prime).one_lt)
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.pow_g_of {y : _root_.Formalism.CyclotomicNorms.Fbar g} {d : ℕ} (h : y ^ (g ^ d - 1) = 1) :
     y ^ g ^ d = y := by
   rw [← Nat.sub_add_cancel (Nat.one_le_pow d g (Fact.out : g.Prime).pos), pow_succ, h, one_mul]
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 private theorem pow_sub_one_eq_one_of_pow_pow_eq {y : _root_.Formalism.CyclotomicNorms.Fbar g} (hy : y ≠ 0) {n : ℕ}
     (h : y ^ g ^ n = y) : y ^ (g ^ n - 1) = 1 := by
   rw [← Nat.sub_add_cancel (Nat.one_le_pow n g (Fact.out : g.Prime).pos), pow_succ] at h
   exact mul_right_cancel₀ hy (h.trans (one_mul y).symm)
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.pow_dg {y : _root_.Formalism.CyclotomicNorms.Fbar g} (hy : y ≠ 0) :
     y ^ (g ^ _root_.GlobalTheory.GoodCharsCompare.dg y - 1) = 1 :=
   pow_sub_one_eq_one_of_pow_pow_eq hy (_root_.GlobalTheory.GoodCharsCompare.frobenius_orbit_degreeOverPrimeFieldFbar y).1
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.rootC_prim {d : ℕ} (hd : 0 < d) :
     IsPrimitiveRoot (_root_.GlobalTheory.IndefiniteRowSideFullHecke.CuspValueComparison.rootC (g ^ d - 1)) (g ^ d - 1) := by
   unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.CuspValueComparison.rootC
   exact Complex.isPrimitiveRoot_exp _ (_root_.GlobalTheory.GoodCharsCompare.g_pow_sub_pos hd).ne'
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.exists_log (ω : _root_.Formalism.CyclotomicNorms.Fbar g →*₀ ℂ) {d : ℕ} (hd : 0 < d)
     {y : _root_.Formalism.CyclotomicNorms.Fbar g} (hy : y ^ (g ^ d - 1) = 1) :
@@ -252,7 +237,6 @@ theorem _root_.GlobalTheory.GoodCharsCompare.exists_log (ω : _root_.Formalism.C
     (ξ := ω y) (by rw [← map_pow, hy, map_one])
   exact ⟨i, hi.symm⟩
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.labelChar_eq (ω : _root_.Formalism.CyclotomicNorms.Fbar g →*₀ ℂ) {d : ℕ} (hd : 0 < d)
     {x y : _root_.Formalism.CyclotomicNorms.Fbar g} (hx : x ^ (g ^ d - 1) = 1) {m : ℕ}
@@ -275,7 +259,6 @@ theorem _root_.GlobalTheory.GoodCharsCompare.labelChar_eq (ω : _root_.Formalism
     exact hs.symm.trans hm
   rw [red _ hxn, hmod, ← red _ hxn]
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.exists_preimage {ω : _root_.Formalism.CyclotomicNorms.Fbar g →*₀ ℂ}
     (hω : Function.Injective ω) {d : ℕ} (hd : 0 < d) {z : ℂ} (hz : z ^ (g ^ d - 1) = 1) :
@@ -311,13 +294,11 @@ theorem _root_.GlobalTheory.GoodCharsCompare.exists_preimage {ω : _root_.Formal
   rw [Multiset.mem_toFinset, mem_nthRoots npos] at hy
   exact ⟨y, hy, rfl⟩
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.rootsBar_pow (f : (ZMod g)[X]) (k : ℕ) : _root_.Formalism.CyclotomicNorms.rootsBar (f ^ k) = k • _root_.Formalism.CyclotomicNorms.rootsBar f := by
   unfold _root_.Formalism.CyclotomicNorms.rootsBar
   rw [Polynomial.map_pow, roots_pow]
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.sum_shift {z : ℂ} {m e : ℕ} (h : z ^ (m * g ^ e) = z ^ m) (j : ℕ) :
     ∑ i ∈ Finset.range e, (z ^ g ^ j) ^ (m * g ^ i) = ∑ i ∈ Finset.range e, z ^ (m * g ^ i) := by

@@ -65,7 +65,6 @@ private theorem half_le_norm_sub_of_re_eq_neg_half_of_LFunction_eq_zero {N : ℕ
       rw [abs_of_nonneg (by linarith)]; linarith
   · rw [abs_of_neg (by linarith)]; linarith
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem LFunction_ne_zero_of_re_eq_neg_half {N : ℕ} [NeZero N]
     (χ : DirichletCharacter ℂ N) (hχ : χ.IsPrimitive) {s : ℂ} (hs : s.re = -(1 / 2)) :
     LFunction χ s ≠ 0 := by
@@ -74,7 +73,6 @@ private theorem LFunction_ne_zero_of_re_eq_neg_half {N : ℕ} [NeZero N]
   simp at this
   linarith
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem norm_finsum_div_sub_le_two_mul_finsum_of_half_le_dist {S : Set ℂ} (hS : S.Finite) (k : ℂ → ℕ) (s : ℂ)
     (hd : ∀ w ∈ S, 1 / 2 ≤ ‖s - w‖) :
     ‖∑ᶠ (w : ℂ) (_ : w ∈ S), (k w : ℂ) / (s - w)‖ ≤ 2 * ∑ᶠ (w : ℂ) (_ : w ∈ S), (k w : ℝ) := by
@@ -87,7 +85,6 @@ private theorem norm_finsum_div_sub_le_two_mul_finsum_of_half_le_dist {S : Set �
   have : (0 : ℝ) ≤ k w := Nat.cast_nonneg _
   nlinarith
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem exists_norm_logDeriv_LFunction_neg_half_le_log_conductor :
     ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), χ.IsPrimitive →
       ∀ t : ℝ, ‖deriv (LFunction χ) (((-(1 / 2) : ℝ) : ℂ) + t * I) /
@@ -159,12 +156,10 @@ private theorem exists_norm_logDeriv_LFunction_neg_half_le_log_conductor :
     have := add_le_add hbd (hsum.trans (by linarith : _ ≤ 2 * (C₁ * Real.log (N * (|t| + 2)))))
     nlinarith
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem norm_neg_mul_ofReal_cpow_div_eq (a s : ℂ) {u : ℝ} (hu : 0 < u) :
     ‖-a * (u : ℂ) ^ s / s‖ = ‖a‖ * u ^ s.re / ‖s‖ := by
   rw [norm_div, norm_mul, norm_neg, norm_cpow_eq_rpow_re_of_pos hu]
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem integral_one_div_abs_add_half_eq_two_mul_log (a : ℝ) (ha : 0 ≤ a) :
     ∫ t in -a..a, 1 / (|t| + 1 / 2) = 2 * Real.log (2 * a + 1) := by
   have hc : Continuous fun t : ℝ => 1 / (|t| + 1 / 2) :=
@@ -183,7 +178,6 @@ private theorem integral_one_div_abs_add_half_eq_two_mul_log (a : ℝ) (ha : 0 �
     (hc.intervalIntegrable _ _), hneg, h0]
   ring
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem norm_integral_logDeriv_LFunction_mul_cpow_div_neg_half_le :
     ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), χ.IsPrimitive →
       ∀ u T' : ℝ, 1 ≤ u → 0 ≤ T' →
@@ -227,7 +221,6 @@ private theorem norm_integral_logDeriv_LFunction_mul_cpow_div_neg_half_le :
   · rw [intervalIntegral.integral_const_mul, integral_one_div_abs_add_half_eq_two_mul_log T' hT']
     apply le_of_eq; ring
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem rpow_one_add_inv_log_le_three_mul (u : ℝ) (hu : 1 < u) :
     u ^ (1 + 1 / Real.log u) ≤ 3 * u := by
   have hl : 0 < Real.log u := Real.log_pos hu
@@ -236,7 +229,6 @@ private theorem rpow_one_add_inv_log_le_three_mul (u : ℝ) (hu : 1 < u) :
   have := Real.exp_one_lt_d9
   nlinarith
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem inv_two_pi_mul_sub_add_eq_of_contour_identity (H₁ H₂ V W M S E : ℂ)
     (hid : H₁ - H₂ + I * V - I * W = 2 * (Real.pi : ℂ) * I * (M - S - E)) :
     (1 / (2 * (Real.pi : ℂ))) * V - M + S =
@@ -249,7 +241,6 @@ private theorem inv_two_pi_mul_sub_add_eq_of_contour_identity (H₁ H₂ V W M S
       - (1 / (2 * (Real.pi : ℂ))) * (2 * (Real.pi : ℂ)) * (M - S - E)) * hI
     + (M - S - E) * hk
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem norm_neg_add_inv_two_pi_mul_add_I_mul_sub_le (H₁ H₂ W E : ℂ) :
     ‖-E + (1 / (2 * (Real.pi : ℂ))) * (W + I * (H₁ - H₂))‖ ≤ ‖E‖ + ‖W‖ + ‖H₁‖ + ‖H₂‖ := by
   have h1 : ‖(1 / (2 * (Real.pi : ℂ)))‖ ≤ 1 := by
@@ -266,7 +257,6 @@ private theorem norm_neg_add_inv_two_pi_mul_add_I_mul_sub_le (H₁ H₂ W E : �
   linarith
 
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 
 theorem _root_.GlobalTheory.PerronShift.perron_shift : ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ N), χ.IsPrimitive → ∀ u T : ℝ, 2 ≤ T → T ≤ u → ∃ T' : ℝ, T ≤ T' ∧ T' ≤ T + 1 ∧ ‖(1 / (2 * Real.pi) : ℂ) * (∫ t : ℝ in (-T')..T', (-(deriv (LFunction χ) (((1 + 1 / Real.log u : ℝ) : ℂ) + t * I) / LFunction χ (((1 + 1 / Real.log u : ℝ) : ℂ) + t * I)) * (u : ℂ) ^ (((1 + 1 / Real.log u : ℝ) : ℂ) + t * I) / (((1 + 1 / Real.log u : ℝ) : ℂ) + t * I))) - (if N = 1 then (u : ℂ) else 0) + ∑ᶠ ρ ∈ {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im| < T' ∧ LFunction χ ρ = 0}, ((analyticOrderNatAt (LFunction χ) ρ : ℕ) : ℂ) * ((u : ℂ) ^ ρ / ρ)‖ ≤ C * (u * Real.log (N * u * T) ^ 2 / T + Real.log (N * u) + ∑ᶠ ρ ∈ {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im| < 1 ∧ LFunction χ ρ = 0}, ((analyticOrderNatAt (LFunction χ) ρ : ℕ) : ℝ) / ‖ρ‖) := by
   obtain ⟨C₁, hC₁, HZ⟩ := _root_.GlobalTheory.GoodHeight.exists_height

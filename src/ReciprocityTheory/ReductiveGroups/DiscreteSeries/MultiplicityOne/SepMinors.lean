@@ -132,12 +132,9 @@ end ReciprocityTheory.ChartRestriction.DS.Mult1.TopH
 
 noncomputable section
 
-open MeasureTheory Matrix
-open scoped InnerProductSpace ENNReal NNReal ComplexConjugate
 
 namespace ReciprocityTheory.ChartRestriction.DS.Mult1.TopH
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 ReciprocityTheory.ChartRestriction.DS.Mult1
 
 variable {k r : ℕ} {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
 
@@ -225,12 +222,9 @@ end ReciprocityTheory.ChartRestriction.DS.Mult1.TopH
 
 noncomputable section
 
-open MeasureTheory Matrix
-open scoped InnerProductSpace ENNReal NNReal ComplexConjugate
 
 namespace ReciprocityTheory.ChartRestriction.DS.Mult1.TopH
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 ReciprocityTheory.ChartRestriction.DS.Mult1
 
 theorem AG_ge {k r : ℕ} (hk : 1 ≤ k) : AB k r ≤ AG k r + 1 := by
   have e : nR k r = 2 * (r : ℝ) + k + 1 := by unfold nR; push_cast; ring

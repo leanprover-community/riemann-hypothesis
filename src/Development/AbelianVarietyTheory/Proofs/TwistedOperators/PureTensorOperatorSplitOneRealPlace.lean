@@ -162,7 +162,6 @@ end GlobalTheory.TrSplit
 
 namespace GlobalTheory.TrSplit
 
-open MeasureTheory GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb NumberField IsDedekindDomain
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E}

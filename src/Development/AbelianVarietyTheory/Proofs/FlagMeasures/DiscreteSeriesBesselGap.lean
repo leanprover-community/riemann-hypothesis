@@ -82,8 +82,6 @@ theorem _root_.GlobalTheory.BesselPeriodNonzero.sq_int {X E : Type} [MeasurableS
     exact ENNReal.toReal_ofReal ha
 
 
-open Matrix MeasureTheory Finset in
-open scoped InnerProductSpace ENNReal in
 theorem _root_.GlobalTheory.BesselPeriodNonzero.inner_int {X E : Type} [MeasurableSpace X] [NormedAddCommGroup E]
     [InnerProductSpace ℂ E] {ν : Measure X}
     {f g : X → E} (hf : AEStronglyMeasurable f ν) (hg : AEStronglyMeasurable g ν)
@@ -112,8 +110,6 @@ theorem _root_.GlobalTheory.BesselPeriodNonzero.inner_int {X E : Type} [Measurab
     ring
 
 
-open Matrix MeasureTheory Finset in
-open scoped InnerProductSpace ENNReal in
 theorem _root_.GlobalTheory.BesselPeriodNonzero.unfold_zero {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {mu : Fin (2 * r + k + 1) → ℝ} {R : _root_.BranchingSupport.Rep k r}
     {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [CompleteSpace Wp] [FiniteDimensional ℂ Wp]
     {z : Fin (2 * r + k + 1) → ℂ} {π : _root_.Formalism.FourierDecayAlt.ThreeDimData.Mx k r → (Wp →L[ℂ] Wp)} {u : ℕ → ℝ}

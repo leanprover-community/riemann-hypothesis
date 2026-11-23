@@ -80,8 +80,6 @@ private theorem weberSet_subset_of_isRay_span_natCast :
 
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain Polynomial in
-open scoped IntermediateField in
 theorem _root_.GlobalTheory.FieldSize.InRay.weberSet_subset :
     ∀ (K : IntermediateField ℚ ℂ) [NumberField K] [_root_.NumberField.IsTotallyComplex K], Module.finrank ℚ K = 2 →
       discr K < -4 → ∀ L : PeriodPair, (∀ z, z ∈ L.lattice ↔ ∃ a : 𝓞 K, ((a : K) : ℂ) = z) →

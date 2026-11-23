@@ -172,7 +172,6 @@ end GlobalTheory.AHPhase
 
 namespace GlobalTheory.AHPhase
 
-open ReciprocityTheory.ChartRestriction.G.FD
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ} {U : Unf Xo c σ r} {k : U.Comp} {x : (U.X k).dom}

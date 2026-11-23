@@ -51,19 +51,16 @@ variable {Γ : Type} [Group Γ] {K : Type} [Field K]
 end Alg
 end GlobalTheory.StringDecomp
 namespace GlobalTheory.StringDecomp
-open Formalism.MainNotions.SumRepresentations.At Topology
 section Frob
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
 end Frob
 end GlobalTheory.StringDecomp
 namespace GlobalTheory.StringDecomp
-open Formalism.MainNotions.SumRepresentations.At Topology
 section Eps
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N) (i : N.Loc)
 end Eps
 end GlobalTheory.StringDecomp
 namespace GlobalTheory.StringDecomp
-open Formalism.MainNotions.SumRepresentations.At Topology
 theorem exists_stringRep_alt_alt (D : D7) (hA : _root_.Formalism.MainNotions.SumRepresentations.AdmissibleDatum D) (i : D.nd.Loc) (P : D.naut.AV i)
     (Pa : List (Part D.naut.CG)) (hBC : IsBCV D.nd D.naut i P Pa) (p : Part D.naut.CG) (hp : p ∈ Pa) :
     ∃ ρ : Formalism.ConjugateSelfDual.G D.host.E D.nd.Om →* GL (Fin p.a) (Qbar (D.nd.l i)), UpperTheory.GalS.IsStringRepN D i p ρ := by

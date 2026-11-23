@@ -53,12 +53,10 @@ def PTAgree (k : ℕ) (A A' : ι → MvPowerSeries τ R) : Prop :=
 theorem PTAgree.eq {A A' : ι → MvPowerSeries τ R} (h : ∀ k, PTAgree k A A') : A = A' :=
   funext fun i => MvPowerSeries.ext fun e => h (e.degree + 1) i e (Nat.lt_succ_self _)
 
-section Fixed
 
 variable (T : (ι → MvPowerSeries τ R) → (ι → MvPowerSeries τ R))
   (P : (ι → MvPowerSeries τ R) → Prop)
 
-end Fixed
 
 section Order
 

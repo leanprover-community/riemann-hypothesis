@@ -138,7 +138,6 @@ theorem Datum.finrank_algO (D : Datum p) : Module.finrank ℚ D.algO = D.m ^ 2 *
 end GlobalTheory.UPel.HT
 
 noncomputable section
-open scoped TensorProduct
 namespace GlobalTheory.UPel.HT
 variable {p : ℕ} [Fact p.Prime]
 

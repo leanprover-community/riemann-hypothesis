@@ -75,16 +75,12 @@ private lemma posDef_det_one_exists_unitary_exp_diagonal_sum_zero {ι : Type} [F
     rw [show 2 * (Real.log (hP.1.eigenvalues i) / 2) = Real.log (hP.1.eigenvalues i) by ring,
       Real.exp_log (hP.eigenvalues_pos i)]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma unitary_conj_exp_diagonal_conjTranspose {ι : Type} [Fintype ι] [DecidableEq ι]
     (U : Matrix ι ι ℂ) (δ : ι → ℝ) (s : ℝ) :
     ((U * diagonal fun i => ((Real.exp (s * δ i) : ℝ) : ℂ)) * Uᴴ)ᴴ =
       (U * diagonal fun i => ((Real.exp (s * δ i) : ℝ) : ℂ)) * Uᴴ := by
   simp [conjTranspose_mul, Matrix.mul_assoc, diagonal_conjTranspose, -Complex.ofReal_exp, Pi.star_def]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma unitary_conj_exp_diagonal_mul_add_exponents {ι : Type} [Fintype ι] [DecidableEq ι]
     {U : Matrix ι ι ℂ} (hU : U * Uᴴ = 1) (δ : ι → ℝ) (s t : ℝ) :
     ((U * diagonal fun i => ((Real.exp (s * δ i) : ℝ) : ℂ)) * Uᴴ) *
@@ -96,8 +92,6 @@ private lemma unitary_conj_exp_diagonal_mul_add_exponents {ι : Type} [Fintype �
     diagonal_mul_diagonal]
   simp only [← Complex.ofReal_mul, ← Real.exp_add, ← add_mul]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 private lemma exists_unitary_exp_diagonal_fixing_of_nsq_eq {ι : Type} [Fintype ι] [DecidableEq ι] {m : ℕ}
     (d : Fin m → ℕ) (v : _root_.GlobalTheory.ClassFin.TIdx ι d → ℂ) (hv : _root_.GlobalTheory.ClassFin.IsMinVec d v)
     (g : Matrix ι ι ℂ) (hg : g.det = 1)
@@ -130,8 +124,6 @@ private lemma exists_unitary_exp_diagonal_fixing_of_nsq_eq {ι : Type} [Fintype 
   exact _root_.GlobalTheory.ClassFin.act_exp_eq_of_isMinVec ι m d v U δ hv hU hδ (by simpa only [one_mul] using hnh)
 
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 theorem _root_.GlobalTheory.ClassFin.act_conjTranspose_of_isMinVec : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (m : ℕ) (d : Fin m → ℕ)
     (v : _root_.GlobalTheory.ClassFin.TIdx ι d → ℂ), _root_.GlobalTheory.ClassFin.IsMinVec d v → ∀ g : Matrix ι ι ℂ, g.det = 1 →
       _root_.GlobalTheory.ClassFin.act d v g = v → _root_.GlobalTheory.ClassFin.act d v gᴴ = v := by

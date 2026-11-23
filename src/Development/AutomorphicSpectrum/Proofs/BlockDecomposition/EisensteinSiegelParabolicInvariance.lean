@@ -89,7 +89,6 @@ end GlobalTheory.CompanionTheory.EisCellsPInv
 
 namespace GlobalTheory.CompanionTheory.EisCellsPInv
 
-open Matrix PositivityTheory.GramSchwartzFunctions.EC
 
 variable {D : D7}
 
@@ -131,7 +130,6 @@ end GlobalTheory.CompanionTheory.EisCellsPInv
 
 namespace GlobalTheory.CompanionTheory.EisCellsPInv
 
-open Matrix PositivityTheory.GramSchwartzFunctions.EC
 
 variable {D : D7}
 
@@ -169,7 +167,6 @@ end GlobalTheory.CompanionTheory.EisCellsPInv
 
 namespace GlobalTheory.CompanionTheory.EisCellsPInv
 
-open Matrix PositivityTheory.GramSchwartzFunctions.EC
 
 variable {D : D7}
 

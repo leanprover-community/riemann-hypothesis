@@ -231,16 +231,13 @@ end RealDat
 
 end Prim
 
-section Geo
 
 open Formalism.L2.Geo Formalism.MainNotions
 
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Gm : DV.Geo D.what₂.LL} {Lv : Type} {Fam : ShimFam D Gm Lv} (Kp : FormsKPkg Fam) [Algebra Kp.fs.KO D.what₂.LL]
 
-end Geo
 
-section Exist
 
 
 
@@ -254,9 +251,7 @@ variable (R : RealDat D A Ks) (F : Face D A)
 end RealDat
 
 
-end Exist
 
-section Host
 
 
 variable (D) in
@@ -271,7 +266,6 @@ structure HostHyp : Prop where
   nodeGapR : D.NodeGap (256 * (D.R.r : ℝ) ^ 4)
 
 
-end Host
 
 end Formalism.IndefR.Links
 

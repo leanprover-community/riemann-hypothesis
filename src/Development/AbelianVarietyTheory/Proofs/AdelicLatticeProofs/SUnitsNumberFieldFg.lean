@@ -50,8 +50,6 @@ private lemma valuation_algebraMap_unit_eq_one {F : Type} [Field F] [NumberField
   rw [HeightOneSpectrum.valuation_of_algebraMap, HeightOneSpectrum.intValuation_eq_one_iff]
   exact fun h => v.isPrime.ne_top (Ideal.eq_top_of_isUnit_mem _ h u.isUnit)
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private lemma exists_unit_of_valuation_eq_one {F : Type} [Field F] [NumberField F] (y : Fˣ)
     (hy : ∀ v : HeightOneSpectrum (𝓞 F), v.valuation F y = 1) :
     ∃ u : (𝓞 F)ˣ, algebraMap (𝓞 F) F u = y := by
@@ -66,8 +64,6 @@ private lemma exists_unit_of_valuation_eq_one {F : Type} [Field F] [NumberField 
   exact ⟨⟨a, b, hab, by rw [mul_comm, hab]⟩, ha⟩
 
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 theorem _root_.GlobalTheory.QNorm.sUnits_fg :
     ∀ (F : Type) [Field F] [NumberField F] (S : Finset (HeightOneSpectrum (𝓞 F))),
       Group.FG (_root_.GlobalTheory.QNorm.sUnits F S) := by

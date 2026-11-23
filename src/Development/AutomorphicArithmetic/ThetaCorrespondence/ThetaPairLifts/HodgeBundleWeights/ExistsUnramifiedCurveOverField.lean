@@ -48,7 +48,6 @@ end GlobalTheory.RefSum.UnramCurveField
 end
 
 section
-open GlobalTheory.IndefiniteRowSideFullHecke.DifferentConjugateDefects NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.FlatTw GlobalTheory.SlopeRec GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.RefSum
 
 theorem _root_.GlobalTheory.T.unramified_curve_field_existence : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (n q : ℕ), 3 ≤ n → q.Prime → ¬ q ∣ 2 * n * H.d → ∃ (F' : IntermediateField ℚ ℂ) (_ : NumberField F'), ¬ (q : ℤ) ∣ discr F' ∧ GlobalTheory.CompRat.CurveOver H F' n := by
   first | exact @_root_.GlobalTheory.RefSum.UnramCurveField.exists_unramified_curve_over_field | exact _root_.GlobalTheory.RefSum.UnramCurveField.exists_unramified_curve_over_field | (intros; apply _root_.GlobalTheory.RefSum.UnramCurveField.exists_unramified_curve_over_field <;> assumption)

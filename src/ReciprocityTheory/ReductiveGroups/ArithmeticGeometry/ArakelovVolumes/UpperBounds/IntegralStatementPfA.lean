@@ -122,13 +122,10 @@ theorem exists_cons_one_ne {K : Type*} [Field K] [Infinite K] {n m : ℕ}
       rw [this, mul_zero]
   exact (mul_eq_zero.mp hX).resolve_left (X_ne_zero _)
 
-section Int
 
-open MvPolynomial
 
 variable {R E : Type*} [CommRing R] [CommRing E] [Algebra R E] {ι : Type*}
 
-end Int
 
 section Homog
 

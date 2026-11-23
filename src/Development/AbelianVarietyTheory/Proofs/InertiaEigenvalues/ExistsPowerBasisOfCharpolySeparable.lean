@@ -85,8 +85,6 @@ theorem _root_.GlobalTheory.UnitLemma.charpoly_dvd_minpoly_of_separable {E V : T
   exact hroot
 
 
-open Matrix MeasureTheory in
-open Polynomial in
 theorem _root_.GlobalTheory.UnitLemma.exists_basis_pow_of_separable : ∀ (K : _root_.GlobalTheory.UnitLemma.UQ)
     (B : _root_.GlobalTheory.UnitLemma.InvAlg K), B.P.Separable →
     ∃ e : Module.Basis (Fin (Module.finrank K.E B.A)) K.E

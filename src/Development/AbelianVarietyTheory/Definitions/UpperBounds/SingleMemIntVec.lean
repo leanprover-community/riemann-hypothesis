@@ -60,8 +60,6 @@ theorem _root_.GlobalTheory.Up.Definite.herm_one (x y : Fin r → E) :
   · simp
 
 
-open NumberField in
-open scoped ComplexConjugate ComplexOrder Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.Up.Definite.map_herm_one_self (φ : E →+* ℂ) (x : Fin r → E) :
     φ (_root_.ReciprocityTheory.ChartRestriction.G.FD.herm (1 : Matrix (Fin r) (Fin r) E) x x) = ((∑ a, ‖φ (x a)‖ ^ 2 : ℝ) : ℂ) := by
@@ -78,8 +76,6 @@ variable (E r) in
 def intVec : Submodule (𝓞 E) (Fin r → E) := Submodule.pi Set.univ fun _ => (1 : Submodule (𝓞 E) E)
 
 
-open NumberField in
-open scoped ComplexConjugate ComplexOrder Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.Up.Definite.mem_intVec (x : Fin r → E) :
@@ -92,8 +88,6 @@ theorem _root_.GlobalTheory.Up.Definite.mem_intVec (x : Fin r → E) :
   exact y.isIntegral_coe
 
 
-open NumberField in
-open scoped ComplexConjugate ComplexOrder Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.Up.Definite.single_mem_intVec (b : Fin r) :
@@ -105,8 +99,6 @@ theorem _root_.GlobalTheory.Up.Definite.single_mem_intVec (b : Fin r) :
     simpa using isIntegral_one
   · simpa [h] using isIntegral_zero
 
-open NumberField in
-open scoped ComplexConjugate ComplexOrder Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [IsCMField E] in
 private theorem finite_GL_of_scaled_entries_integral_bounded (c : E) (hc : c ≠ 0) (B : ℝ) :
@@ -125,8 +117,6 @@ private theorem finite_GL_of_scaled_entries_integral_bounded (c : E) (hc : c ≠
   exact fun a b => hγ a b
 
 
-open NumberField in
-open scoped ComplexConjugate ComplexOrder Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [IsCMField E] in
 theorem _root_.GlobalTheory.Up.Definite.finite_small :

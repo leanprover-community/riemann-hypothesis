@@ -45,7 +45,6 @@ open scoped TensorProduct Pointwise
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.AdForm
 
-open GlobalTheory.AdForm
 
 
 

@@ -128,7 +128,6 @@ end GlobalTheory.HeatUniqGlob
 
 namespace GlobalTheory.HeatUniqGlob
 
-open GlobalTheory.HeatGlue GlobalTheory.KS
 
 theorem isField_mono {Z : Scheme.{0}} {W W' : Z.Opens} {d : Fld Z} (h : IsField W d) (hle : W' ≤ W) : IsField W' d :=
   ⟨fun O hO => h.1 O (hO.trans hle), fun O hO => h.2.1 O (hO.trans hle), fun O O' h' hO => h.2.2 O O' h' (hO.trans hle)⟩
@@ -144,7 +143,6 @@ end GlobalTheory.HeatUniqGlob
 
 namespace GlobalTheory.HeatUniqGlob
 
-open GlobalTheory.HeatGlue GlobalTheory.KS
 
 theorem main : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R] [Algebra ℚ R] (Q : DegPre R) (O : Type) [CommRing O] [StarRing O] [Module O Q.X] (oa : Q.OAct O) (Y : Ray oa) (n : ℕ) (v : Module.Basis (Fin n) R (TanM (𝟙 (Sp R)) Y.H)) (dd : Fin n → Fld Y.H.left), (∀ a, IsInv Y.H (v a) (dd a)) → ∀ (D : Derivation ℤ R R) (h h' : Heat Y.H Y.q.left Q.P.L dd ⇑D), IsBasic Y h → IsBasic Y h' → h.Θ = h'.Θ → h.u = h'.u → ∃ (e : Fin n → R) (π π' : R), (∀ (V : Q.P.A.left.Opens) f, IsWt Y 0 (Y.q.left ⁻¹ᵁ V) f → ∑ a, constFn Y.H.hom _ (e a) * dd a _ f = 0) ∧ ∀ (i : h.J) (i' : h'.J) (Wo : Y.H.left.Opens), Wo ≤ h.W i ⊓ h'.W i' → (∀ f, h.d i Wo f - h'.d i' Wo f = ∑ a, constFn Y.H.hom Wo (e a) * dd a Wo f + ∑ a, ∑ b, constFn Y.H.hom Wo (h.Θ a b) * dlg Y.H Y.q.left Q.P.L (dd b) (h.j i) (h'.j i') Wo * dd a Wo f) ∧ 2 * (rsT (h.p i) Wo - rsT (h'.p i') Wo) + 2 * dlg Y.H Y.q.left Q.P.L (h.d i) (h.j i) (h'.j i') Wo - ∑ a, ∑ b, constFn Y.H.hom Wo (h.Θ a b) * dlg Y.H Y.q.left Q.P.L (dd a) (h.j i) (h'.j i') Wo * dlg Y.H Y.q.left Q.P.L (dd b) (h.j i) (h'.j i') Wo = 2 * constFn Y.H.hom Wo π ∧ 2 * (rsT (h.p' i) Wo - rsT (h'.p' i') Wo) + 2 * ∑ a, constFn Y.H.hom Wo (h.u a) * dlg Y.H Y.q.left Q.P.L (dd a) (h.j i) (h'.j i') Wo - ∑ a, ∑ b, constFn Y.H.hom Wo (h.Θ a b) * dd a Wo (dlg Y.H Y.q.left Q.P.L (dd b) (h.j i) (h'.j i') Wo) = 2 * constFn Y.H.hom Wo π' := by
   intro R _ _ _ _ _ Q O _ _ _ oa Y n v dd hinv D h h' hB hB' hΘ hu

@@ -87,7 +87,6 @@ end GlobalTheory.CompanionTheory.Ar.Flat.PoleDisc
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat.PoleDisc
 
-open GlobalTheory.CompanionTheory.Ar.CptModel
 
 theorem exists_pole_prime {R K : Type} [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] [Field K]
     [Algebra R K] [IsFractionRing R K] (t : K) (ht : ∀ a : R, algebraMap R K a ≠ t) :

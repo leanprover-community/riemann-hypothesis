@@ -76,8 +76,6 @@ private theorem exists_rep_add_smul_zm_of_intM_smul {κ ι : Type} [Fintype κ] 
     congr 1
     rw [mul_assoc, mul_div_cancel_left₀ _ hRq]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 private theorem mem_perSub_iff_exists_eq_smul_zm {κ ι : Type} [Fintype κ] [Fintype ι] (R : ℕ)
     (y : Matrix κ ι ℚ) : y ∈ _root_.GlobalTheory.SW.perSub ℚ κ ι R ↔
       ∃ m : κ → ι → ℤ, y = R • _root_.GlobalTheory.SW.FourierJ.zm m := by
@@ -92,8 +90,6 @@ private theorem mem_perSub_iff_exists_eq_smul_zm {κ ι : Type} [Fintype κ] [Fi
       ((_root_.GlobalTheory.SW.FourierJ.intM_iff _).mpr ⟨m, rfl⟩)
     exact ⟨y', by rw [hy']⟩
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 private theorem rep_injective_of_neg_add_eq_smul_zm {κ ι : Type} {R : ℕ} (hR : 0 < R)
     {n n' : κ → ι → Fin (R * R)} (m : κ → ι → ℤ)
     (hm : -_root_.GlobalTheory.SW.FourierJ.rep R n + _root_.GlobalTheory.SW.FourierJ.rep R n' =
@@ -118,8 +114,6 @@ private theorem rep_injective_of_neg_add_eq_smul_zm {κ ι : Type} {R : ℕ} (hR
     exact Fin.ext (by omega)
 
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 theorem _root_.GlobalTheory.SW.FourierJ.haar_eq_sum_rep : ∀ (κ ι : Type) [Fintype κ]
     [Fintype ι] [DecidableEq κ] [DecidableEq ι] (R : ℕ) (φ : Matrix κ ι ℚ → ℂ), 0 < R →
     _root_.GlobalTheory.SW.HasLevel R φ → _root_.GlobalTheory.SW.haar φ =

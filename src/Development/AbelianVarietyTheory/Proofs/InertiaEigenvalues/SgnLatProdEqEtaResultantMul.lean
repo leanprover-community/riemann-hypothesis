@@ -208,7 +208,6 @@ end GlobalTheory.UnitLemma.SgnProd
 
 namespace GlobalTheory.UnitLemma.SgnProd
 
-open Module
 
 theorem det_trace_lift {E A₁ A₂ : Type} [Field E] [CommRing A₁] [CommRing A₂] [Algebra E A₁] [Algebra E A₂]
     {a b : ℕ} (g : A₁ × A₂) (e₁ : Basis (Fin a) E A₁) (e₂ : Basis (Fin b) E A₂) (x : Fin b → A₁ × A₂)
@@ -267,7 +266,6 @@ end GlobalTheory.UnitLemma.SgnProd
 
 namespace GlobalTheory.UnitLemma.SgnProd
 
-open Module
 
 theorem sgnLat_prod : ∀ (K : UQ) (B₁ B₂ : InvAlg K), (B₁.P * B₂.P).Separable → ∀ M ∈ (B₁.prod B₂).Lin,
     (B₁.prod B₂).sgnLat M = K.eta (resultant B₁.P B₂.P) *

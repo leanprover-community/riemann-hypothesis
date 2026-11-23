@@ -69,7 +69,6 @@ end GlobalTheory.CohenChart
 
 namespace GlobalTheory.CohenChart
 
-open IsLocalRing MvPowerSeries
 
 theorem exists_ringEquiv_chartRing : ∀ (R : Type) [CommRing R] [IsRegularLocalRing R],
     IsAdicComplete (maximalIdeal R) R → Nonempty (ℚ →+* R) → ∀ (m : ℕ) (t : Fin m → R),

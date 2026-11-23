@@ -186,13 +186,11 @@ end ReciprocityTheory.ChartRestriction.DS
 
 noncomputable section
 
-open Finset Matrix
 
 namespace ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ}
 
-open MeasureTheory
 
 theorem cns_zuck_nc {ε : Fin n → Bool} (hq : 1 ≤ S7.q0 ε) {μ : Fin n → ℝ} {H : Type} [NormedAddCommGroup H]
     [InnerProductSpace ℂ H] [CompleteSpace H] {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}

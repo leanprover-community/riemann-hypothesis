@@ -120,7 +120,6 @@ end GlobalTheory.CplTwoInt
 
 namespace GlobalTheory.CplTwoInt
 
-open GlobalTheory.GO.ChRoot (mem_stdAt' intAt_natCast intAt_one' intAt_zero' psi_root)
 
 section Ft
 

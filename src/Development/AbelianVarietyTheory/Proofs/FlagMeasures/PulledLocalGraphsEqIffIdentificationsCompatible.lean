@@ -214,7 +214,6 @@ namespace GlobalTheory.PullGraph
 
 section Gen
 
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]

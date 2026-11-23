@@ -336,7 +336,6 @@ end GlobalTheory.IsoCompl
 
 namespace GlobalTheory.IsoCompl
 
-open GlobalTheory.MixModel
 
 section Forms
 
@@ -373,7 +372,6 @@ end GlobalTheory.IsoCompl
 
 namespace GlobalTheory.IsoCompl
 
-open GlobalTheory.MixModel
 
 section Forms2
 
@@ -410,7 +408,6 @@ end GlobalTheory.IsoCompl
 
 namespace GlobalTheory.IsoCompl
 
-open GlobalTheory.MixModel
 
 section Forms3
 
@@ -456,7 +453,6 @@ end GlobalTheory.IsoCompl
 
 namespace GlobalTheory.IsoCompl
 
-open GlobalTheory.MixModel
 
 theorem annih_step {D : D7} (V W : HSp D) {a b k : ℕ} (P : Matrix (Fin W.rank) (Fin a) D.host.E)
     (Q : Matrix (Fin b) (Fin V.rank) D.host.E) (P' : Matrix (Fin a) (Fin W.rank) D.host.E)
@@ -480,7 +476,6 @@ end GlobalTheory.IsoCompl
 
 namespace GlobalTheory.IsoCompl
 
-open GlobalTheory.MixModel
 
 
 

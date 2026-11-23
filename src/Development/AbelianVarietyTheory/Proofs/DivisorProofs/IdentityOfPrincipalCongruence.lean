@@ -152,7 +152,6 @@ end GlobalTheory.UnitLemma.CongruenceCayley
 
 namespace GlobalTheory.UnitLemma.CongruenceCayley
 
-open GlobalTheory.UnitLemma.CayleyCase
 
 theorem identity_of_principal_congruence : UnitLemmaLie → ∀ (K : UQ) (a : K.O), K.Small a →
     ∀ B₁ B₂ : InvAlg K,

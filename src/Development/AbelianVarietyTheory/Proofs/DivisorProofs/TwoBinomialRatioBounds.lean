@@ -100,7 +100,6 @@ theorem prod_lower (T c n : ℕ) (hc : (c : ℝ) ≤ T) (hT : 0 < T) :
 end GlobalTheory.BinomRatio
 
 namespace GlobalTheory.BinomRatio
-open Finset
 
 theorem first_ratio (T n : ℕ) (hn : 2 ≤ n) (hT : 11 * n ^ 2 ≤ T) :
     (T + 3 * n + 10).choose n ≤ 2 * (T + n).choose n := by

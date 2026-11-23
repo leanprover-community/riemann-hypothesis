@@ -52,7 +52,6 @@ theorem _root_.GlobalTheory.StepFacNe.chrW_continuous {F E : Type} [Field F] [Nu
   exact h1.comp h2
 
 
-open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.StepFacNe.chrW_ram {F E : Type} [Field F]
     [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (χ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chr F E) {v : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)} (τ : E →ₐ[F] _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v)

@@ -94,7 +94,6 @@ end GlobalTheory.Poinc.TwistSum₂
 
 namespace GlobalTheory.Poinc.TwistSum₂
 
-open GlobalTheory.Poinc.Sep
 
 variable {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin 8) ℤ} {Z : Scheme.{0}} {i : F.X ⟶ Z}
 

@@ -85,7 +85,6 @@ end GlobalTheory.AbMonoIso
 
 namespace GlobalTheory.AbMonoIso
 
-open GlobalTheory.NearFibreIso
 
 theorem isIso_of_isClosedImmersion {S X Y : Scheme.{0}} [IsLocallyNoetherian S] (p : X ⟶ S)
     (f : Y ⟶ X) [IsClosedImmersion f] [GeometricallyConnected p] [Surjective (f ≫ p)]

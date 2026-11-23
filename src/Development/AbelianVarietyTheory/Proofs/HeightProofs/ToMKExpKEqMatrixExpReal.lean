@@ -147,13 +147,11 @@ noncomputable section
 
 namespace GlobalTheory.KFourier
 
-open Matrix
 
 variable {n : ℕ}
 
 section Expansion
 
-open scoped Matrix.Norms.Operator
 
 theorem mxDerW_expand {r : ℕ} (b : Fin r → Mx n) (cf : Mx n → Fin r → ℝ) {F : Mx n → ℂ}
     (hF : ContDiff ℝ ⊤ F) : ∀ (k : ℕ) (x : Fin k → Mx n), (∀ i, x i = ∑ j, cf (x i) j • b j) →
@@ -195,7 +193,6 @@ noncomputable section
 
 namespace GlobalTheory.KFourier
 
-open Matrix
 
 variable {n : ℕ}
 
@@ -300,7 +297,6 @@ noncomputable section
 
 namespace GlobalTheory.KFourier
 
-open Matrix
 
 theorem rder_bound_basisWords : ∀ {n : ℕ} (ε : Fin n → Bool) (m : ℕ), ∃ (U : List (List (Mx n))) (C : ℝ),
     0 ≤ C ∧ (∀ u ∈ U, ∀ X ∈ u, inK ε X) ∧ ∀ (d : ℕ) (φ : KG ε → ℂ), φ ∈ GlobalTheory.KFourier.polyV ε d →

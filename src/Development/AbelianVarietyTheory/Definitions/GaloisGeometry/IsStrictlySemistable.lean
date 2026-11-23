@@ -72,7 +72,6 @@ theorem _root_.GlobalTheory.LogCris.evalAt_res {B : Type} [CommRing B] {X : Sche
   rw [← CommRingCat.comp_apply, Scheme.Hom.map_appLE]
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry in
 variable {O : Type} [CommRing O] in
 private theorem gammaSpecIso_hom_appLE_spec_map {A C : CommRingCat.{0}} (χ : A ⟶ C)
     (e : (⊤ : (Spec C).Opens) ≤ Spec.map χ ⁻¹ᵁ ⊤) (b : Γ(Spec A, ⊤)) :
@@ -84,7 +83,6 @@ private theorem gammaSpecIso_hom_appLE_spec_map {A C : CommRingCat.{0}} (χ : A 
 
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry in
 variable {O : Type} [CommRing O] in
 theorem _root_.GlobalTheory.LogCris.evalAt_map {B B' : CommRingCat.{0}} {X : Scheme.{0}} (φ : B ⟶ B')
     (y : Spec B ⟶ X) {U : X.Opens}
@@ -97,7 +95,6 @@ theorem _root_.GlobalTheory.LogCris.evalAt_map {B B' : CommRingCat.{0}} {X : Sch
 
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry in
 variable {O : Type} [CommRing O] in
 theorem _root_.GlobalTheory.LogCris.evalAt_base {B : Type} [CommRing B] {X : Scheme.{0}}
     (q : X ⟶ Spec (CommRingCat.of O)) {k : Type} [CommRing k]
@@ -119,7 +116,6 @@ theorem _root_.GlobalTheory.LogCris.evalAt_base {B : Type} [CommRing B] {X : Sch
 
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry in
 variable {O : Type} [CommRing O] in
 theorem _root_.GlobalTheory.LogCris.le_preimage_inf {B : Type} [CommRing B] {X : Scheme.{0}}
     (y : Spec (CommRingCat.of B) ⟶ X) {U V : X.Opens}

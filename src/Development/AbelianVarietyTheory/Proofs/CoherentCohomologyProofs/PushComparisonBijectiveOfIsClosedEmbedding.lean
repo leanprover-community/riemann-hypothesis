@@ -282,7 +282,6 @@ end Space
 
 section Functoriality
 
-open SheafLES Flasque
 
 variable {X Y Z : TopCat.{u}}
 

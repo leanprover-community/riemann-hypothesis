@@ -128,7 +128,6 @@ private theorem cont_aff (hB : B1) (q : ℕ) (i n : ℤ) {I : Type} [SmallCatego
 end UpperTheory.Cb.TensorPullbackSquares
 
 namespace UpperTheory.Cb.TensorPullbackSquares
-open LateralTheory.E.E4 LateralTheory.E.LeafGhostCut LateralTheory.E.EtaleTopologySheaves LateralTheory.E.LeafDegCut
 
 private theorem cont_qc (hA : A9) (hB : B1) (q : ℕ) (i : ℤ) {I : Type} [SmallCategory I] [IsCofiltered I]
     (G : I ⥤ Scheme.{0}) (c : Cone G) (hc : IsLimit c) (hcomp : ∀ j, CompactSpace (G.obj j))
@@ -247,7 +246,6 @@ private theorem cont_step (hA : A9) (hB : B1) (q : ℕ) (i : ℤ) {S X : Scheme.
 end UpperTheory.Cb.TensorPullbackSquares
 
 namespace UpperTheory.Cb.TensorPullbackSquares
-open LateralTheory.E.E4 LateralTheory.E.LeafGhostCut LateralTheory.E.EtaleTopologySheaves LateralTheory.E.LeafDegCut
 
 private theorem locAbs (hA : A9) (hB : B1) (q : ℕ) (i : ℤ) {k : Type} [Field k] (hq : IsUnit (q : k))
     {B Y : Scheme.{0}} (toK : B ⟶ Sp k) (P : Y ⟶ B) [IsProper P] (V : B.Opens)

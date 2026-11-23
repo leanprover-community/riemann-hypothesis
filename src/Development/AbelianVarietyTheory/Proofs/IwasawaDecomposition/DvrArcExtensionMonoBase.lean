@@ -132,7 +132,6 @@ end Level
 
 section Level2
 
-open GlobalTheory.TorusExt GlobalTheory.QkNumberField GlobalTheory.ArcPull
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
@@ -141,7 +140,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
 end Level2
 section Main
 
-open GlobalTheory.TorusExt GlobalTheory.QkNumberField GlobalTheory.ArcPull
 
 
 end Main

@@ -153,7 +153,6 @@ end GlobalTheory.DblSurj
 
 namespace GlobalTheory.DblSurj
 
-open Matrix GlobalTheory.EmbChart
 
 section Local
 
@@ -280,7 +279,6 @@ theorem det_ne_zero_of_sig {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : H
 
 end GlobalTheory.DblSurj
 
-open scoped Matrix
 
 
 open GlobalTheory.DblSurj in

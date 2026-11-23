@@ -80,7 +80,6 @@ theorem isUnit_natCast_ainfP (n : ℕ) (hn : n ≠ 0) : IsUnit (n : Formalism.Pe
 end GlobalTheory.AcrisFrobE
 
 namespace GlobalTheory.AcrisFrobE
-open scoped Nat
 variable (l : ℕ) [Fact l.Prime]
 
 theorem coe_natCast0 (k : ℕ) : ((k : Formalism.Per.Acris0 l) : Formalism.Per.AinfP l) = k :=

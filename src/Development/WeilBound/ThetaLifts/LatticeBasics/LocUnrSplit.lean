@@ -68,7 +68,6 @@ theorem val_equiv (v : Pl F) : (valuation (Fv F v)).IsEquiv (Valued.v : Valuatio
 theorem norm_unif (v : Pl F) : ‖(unifAt v : Fv F v)‖ = (Ideal.absNorm v.asIdeal : ℝ)⁻¹ := by
   simpa using congrArg NNReal.toReal (GlobalTheory.norm_uniformiser_eq_inv_absNorm F v _ (GlobalTheory.ChrWUnif.valued_unifAt v))
 
-open ValuativeRel in
 theorem lf (v : Pl F) : GlobalTheory.CompanionTheory.QL.LF (v.adicCompletionIntegers F).toSubring (unifAt v : Fv F v)
     (NormedField.toAbsoluteValue (Fv F v)) (Ideal.absNorm v.asIdeal) := by
   have he := val_equiv v
@@ -150,10 +149,7 @@ end GlobalTheory.ThK.Dbl.Split
 namespace GlobalTheory.ThK.Dbl
 
 open Split
-open scoped TensorProduct NNReal Matrix
-open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open PositivityTheory.ThK PositivityTheory.ThKH.Iwas PositivityTheory.ThKH.Locpair
-open Matrix (fromBlocks fromRows GeneralLinearGroup)
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 

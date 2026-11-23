@@ -90,8 +90,6 @@ end GlobalTheory.CompanionTheory.MemQ
 end
 
 section
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DivisionValues Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows
-open scoped Matrix
 
 end
 
@@ -177,7 +175,6 @@ end
 section
 
 open NumberField GlobalTheory.CompanionTheory.Mem Formalism.DivisionValues Formalism.L2.DIV
-open scoped Matrix ComplexOrder
 
 namespace GlobalTheory.CompanionTheory.Mem
 
@@ -212,8 +209,6 @@ end
 
 section
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DivisionValues Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows
-open scoped Matrix
 
 namespace GlobalTheory.CompanionTheory.MemQ
 
@@ -297,15 +292,11 @@ end GlobalTheory.CompanionTheory.MemQ
 end
 
 section
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DivisionValues Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows
-open scoped Matrix
 
 end
 
 section
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DivisionValues Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows
-open scoped Matrix
 
 namespace GlobalTheory.CompanionTheory.MemQ
 
@@ -397,14 +388,10 @@ end GlobalTheory.CompanionTheory.MemQ
 end
 
 section
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DivisionValues Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows
-open scoped Matrix
 
 end
 
 section
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DivisionValues Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows
-open scoped Matrix
 
 namespace GlobalTheory.CompanionTheory.MemQ
 
@@ -471,14 +458,10 @@ end GlobalTheory.CompanionTheory.MemQ
 end
 
 section
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DivisionValues Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows
-open scoped Matrix
 
 end
 
 section
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.DivisionValues Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows
-open scoped Matrix
 
 namespace GlobalTheory.CompanionTheory.MemQ
 
@@ -549,8 +532,6 @@ end GlobalTheory.CompanionTheory.Twist
 end
 
 section
-open Formalism.BasicNotions NumberField IsDedekindDomain Matrix Formalism.L2.DIV Formalism.L2.Indef
-open scoped InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem _root_.GlobalTheory.Adopt.indefinite_side_row_lattice_adopted : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (m : ℕ) (A : FamIn D.what₂.LL G Pl0 T m) (s : ℕ)
     (EE : Type) [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE] (X : RowSide D EE)

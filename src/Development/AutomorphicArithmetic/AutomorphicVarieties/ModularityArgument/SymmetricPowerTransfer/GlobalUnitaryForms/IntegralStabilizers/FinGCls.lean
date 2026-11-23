@@ -234,7 +234,6 @@ end Adel
 
 section Main
 
-open PI.UJClassFin
 
 variable {F : Type} [Field F] [NumberField F] (Δ : F) [Fact (∀ r : F, r ^ 2 ≠ Δ + 0 * r)]
 

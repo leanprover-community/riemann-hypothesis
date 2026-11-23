@@ -143,7 +143,6 @@ end GlobalTheory.DegCnt.WnLat
 
 namespace GlobalTheory.DegCnt.WnLat
 
-open Formalism.HermitianLatticeCounting.P
 
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]

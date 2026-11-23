@@ -94,7 +94,6 @@ private theorem mem_evC_iff (e : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1))) :
   unfold _root_.GlobalTheory.FlatFactor.evC
   simp only [Finset.mem_filter_univ]
 
-open MeasureTheory ValuativeRel Matrix in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c ρ : ℕ} in
 private theorem mem_evAll_iff (e : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1))) :
     e ∈ _root_.GlobalTheory.FlatFactor.evAll n n' c ρ ↔
@@ -102,7 +101,6 @@ private theorem mem_evAll_iff (e : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1))) :
   unfold _root_.GlobalTheory.FlatFactor.evAll
   simp only [Finset.mem_filter_univ]
 
-open MeasureTheory ValuativeRel Matrix in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c ρ : ℕ} in
 private theorem evC_subset_evAll :
     _root_.GlobalTheory.FlatFactor.evC n n' c ρ ⊆ _root_.GlobalTheory.FlatFactor.evAll n n' c ρ := by
@@ -112,7 +110,6 @@ private theorem evC_subset_evAll :
   obtain ⟨r | r, q | q⟩ := e <;>
     simp [_root_.GlobalTheory.RootEx.Free, _root_.GlobalTheory.FlatFactor.IsRead] at hC ⊢ <;> omega
 
-open MeasureTheory ValuativeRel Matrix in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c ρ : ℕ} in
 private theorem mem_itB_iff (e : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1))) :
     e ∈ _root_.GlobalTheory.FlatFactor.itB n n' c ρ ↔
@@ -120,7 +117,6 @@ private theorem mem_itB_iff (e : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1))) :
   unfold _root_.GlobalTheory.FlatFactor.itB
   simp only [Finset.mem_filter_univ]
 
-open MeasureTheory ValuativeRel Matrix in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c ρ : ℕ} in
 private theorem disjoint_evAll_itB :
     Disjoint (_root_.GlobalTheory.FlatFactor.evAll n n' c ρ) (_root_.GlobalTheory.FlatFactor.itB n n' c ρ) := by
@@ -129,7 +125,6 @@ private theorem disjoint_evAll_itB :
   rw [mem_itB_iff] at h2
   exact h1.1 h2.1
 
-open MeasureTheory ValuativeRel Matrix in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c ρ : ℕ} in
 private theorem exists_inr_lt_le_of_mem_evAll_notMem_evC
     {e : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1))} (he : e ∈ _root_.GlobalTheory.FlatFactor.evAll n n' c ρ)
@@ -140,7 +135,6 @@ private theorem exists_inr_lt_le_of_mem_evAll_notMem_evC
   obtain ⟨r | r, q | q⟩ := e <;>
     simp [_root_.GlobalTheory.RootEx.Free, _root_.GlobalTheory.FlatFactor.IsRead] at he hC ⊢ <;> omega
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c ρ : ℕ} in
 private theorem embA_tv_eq_one_add_single (i j : Fin c) (h : i ≠ j) (a : k) :
@@ -151,7 +145,6 @@ private theorem embA_tv_eq_one_add_single (i j : Fin c) (h : i ≠ j) (a : k) :
   rcases r with r | r <;> rcases s with s | s <;>
     simp [Matrix.transvection, Matrix.one_apply, Matrix.single_apply]
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 private theorem comp_left_mul_mem_SB {m m' : Type} [Fintype m] [DecidableEq m]
     [Fintype m'] (A : GL m k) {Θ : Matrix m m' k → ℂ} (hΘ : Θ ∈ _root_.GlobalTheory.SplitWeil.SB (Matrix m m' k)) :
@@ -168,7 +161,6 @@ private theorem comp_left_mul_mem_SB {m m' : Type} [Fintype m] [DecidableEq m]
       continuous_invFun := continuous_const.matrix_mul continuous_id }
   exact ⟨hlc.comp_continuous φ.continuous, hcs.comp_homeomorph φ⟩
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 variable [MeasurableSpace k] [BorelSpace k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c ρ : ℕ} in
@@ -281,7 +273,6 @@ private theorem killsKernel_rowShear_invariant_lemma_10 (ν : Measure k) [ν.IsA
   rw [map_sub, sub_eq_zero] at h
   exact h
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c ρ : ℕ} in
 variable [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k]
@@ -392,7 +383,6 @@ private theorem twist_invariant_of_lowerEntry_lemma_4 (ψ : AddChar k Circle) (�
   exact hTw'.symm
 
 
-open MeasureTheory ValuativeRel Matrix in
 theorem _root_.GlobalTheory.FlatFactor.LowStage.kerRed_evAll : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ψ : AddChar k Circle) (ν : Measure k), Continuous ψ → ψ ≠ 1 → ν.IsAddHaarMeasure → ∀ (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (c ρ : ℕ) (M : Type) [AddCommGroup M] [Module ℂ M] (l : _root_.GlobalTheory.SplitWeil.SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k) →ₗ[ℂ] M), c = 2 * ρ → _root_.GlobalTheory.FlatFactor.TwLaw ρ ψ l → _root_.GlobalTheory.FlatFactor.KerRed ν (_root_.GlobalTheory.FlatFactor.evC n n' c ρ) (_root_.GlobalTheory.FlatFactor.itB n n' c ρ) (_root_.GlobalTheory.RootEx.basePt c (0 : Matrix n n' k)) l → _root_.GlobalTheory.FlatFactor.KerRed ν (_root_.GlobalTheory.FlatFactor.evAll n n' c ρ) (_root_.GlobalTheory.FlatFactor.itB n n' c ρ) (_root_.GlobalTheory.RootEx.basePt c (0 : Matrix n n' k)) l := by
   intro k _ _ _ _ _ _ ψ ν hψ hψ1 hν n n' _ _ _ _ c ρ M _ _ l _ hTw hC
   haveI := hν

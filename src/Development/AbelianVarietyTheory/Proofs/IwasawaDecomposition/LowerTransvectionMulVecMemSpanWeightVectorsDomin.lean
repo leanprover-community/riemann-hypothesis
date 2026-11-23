@@ -93,7 +93,6 @@ end GlobalTheory.AlgWtHW.LowerTransv
 
 namespace GlobalTheory.AlgWtHW.LowerTransv
 
-open Polynomial
 
 theorem diagonal_eq_of_isDiag {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.IsDiag) :
     A = diagonal (fun m => A m m) := by
@@ -140,7 +139,6 @@ end GlobalTheory.AlgWtHW.LowerTransv
 
 namespace GlobalTheory.AlgWtHW.LowerTransv
 
-open Polynomial
 
 def shiftWt {n : ℕ} (ν : Fin n → ℤ) (i j : Fin n) (k : ℕ) : Fin n → ℤ :=
   fun m => ν m + (k : ℤ) * (if m = i then 1 else 0) - (k : ℤ) * (if m = j then 1 else 0)

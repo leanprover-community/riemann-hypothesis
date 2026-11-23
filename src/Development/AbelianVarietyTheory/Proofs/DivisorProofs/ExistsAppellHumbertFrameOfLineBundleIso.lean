@@ -102,7 +102,6 @@ end GlobalTheory.TransportFrame
 
 namespace GlobalTheory.TransportFrame
 
-open ReciprocityTheory.ChartRestriction.G.TB.ValAt
 
 theorem val_g_self {X : Scheme.{0}} {L : LB X} (hL : L.IsLB) (x : Sp ℂ ⟶ X) (i : L.ι) (h : ⊤ ≤ x ⁻¹ᵁ L.U i) :
     valAt' x (L.U i ⊓ L.U i) (L.g i i).val = 1 := by

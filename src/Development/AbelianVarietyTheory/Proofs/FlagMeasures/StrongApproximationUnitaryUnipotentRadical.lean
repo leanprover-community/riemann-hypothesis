@@ -452,7 +452,6 @@ end Arith
 
 section Inst
 
-open Formalism.UG
 
 theorem unitary_conj_iff {n : Type} [Fintype n] [DecidableEq n] {P Q J D : Matrix n n ℂ} (h : P * Q = 1)
     (hD : Pᴴ * J * P = D) (u : Matrix n n ℂ) :
@@ -650,7 +649,6 @@ end Inst
 
 section Top
 
-open Formalism.UG
 
 variable (I : AutInst)
 

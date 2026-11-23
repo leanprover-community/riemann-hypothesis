@@ -280,8 +280,6 @@ end
 
 noncomputable section
 
-open scoped BigOperators
-open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds MvPowerSeries
 
 namespace GlobalTheory.RowLaw.GaugeDeriv
 
@@ -476,8 +474,6 @@ end
 
 noncomputable section
 
-open scoped BigOperators
-open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds MvPowerSeries
 
 namespace GlobalTheory.RowLaw.GaugeDeriv
 
@@ -655,8 +651,6 @@ end
 
 noncomputable section
 
-open scoped BigOperators
-open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds MvPowerSeries
 
 namespace GlobalTheory.RowLaw.GaugeDeriv
 
@@ -845,8 +839,6 @@ end
 
 noncomputable section
 
-open scoped BigOperators
-open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds MvPowerSeries
 
 namespace GlobalTheory.RowLaw.GaugeDeriv
 

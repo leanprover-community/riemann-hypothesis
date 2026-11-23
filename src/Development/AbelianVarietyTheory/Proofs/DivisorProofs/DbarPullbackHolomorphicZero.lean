@@ -64,8 +64,6 @@ theorem _root_.GlobalTheory.CxForm.PullClosed.repr_sum_smul {ι : Type} [Fintype
   simp [map_sum, Finsupp.finsetSum_apply]
 
 
-open Set Filter Topology in
-open scoped ComplexConjugate ContDiff in
 set_option autoImplicit false in
 variable {n m : ℕ} in
 theorem _root_.GlobalTheory.CxForm.PullClosed.dbarAt_sum_smul {ι : Type} [Fintype ι] {v : _root_.ReciprocityTheory.L2DbarEstimates.V n}
@@ -94,8 +92,6 @@ theorem _root_.GlobalTheory.CxForm.PullClosed.dbarAt_sum_smul {ι : Type} [Finty
   simp [mul_smul_comm]
 
 
-open Set Filter Topology in
-open scoped ComplexConjugate ContDiff in
 set_option autoImplicit false in
 variable {n m : ℕ} in
 theorem _root_.GlobalTheory.CxForm.PullClosed.sum_symm_dzb {s : Fin n → Fin n → ℂ}
@@ -126,8 +122,6 @@ theorem _root_.GlobalTheory.CxForm.PullClosed.sum_symm_dzb {s : Fin n → Fin n 
   exact (smul_eq_zero.mp h2).resolve_left two_ne_zero
 
 
-open Set Filter Topology in
-open scoped ComplexConjugate ContDiff in
 set_option autoImplicit false in
 variable {n m : ℕ} in
 theorem _root_.GlobalTheory.CxForm.PullClosed.analyticOnNhd_of_holo {φ : _root_.ReciprocityTheory.L2DbarEstimates.V n → _root_.ReciprocityTheory.L2DbarEstimates.V m}
@@ -142,8 +136,6 @@ theorem _root_.GlobalTheory.CxForm.PullClosed.analyticOnNhd_of_holo {φ : _root_
   funext y
   rfl
 
-open Set Filter Topology in
-open scoped ComplexConjugate ContDiff in
 set_option autoImplicit false in
 variable {n m : ℕ} in
 private theorem dbarAt_add_of_differentiableAt {v : _root_.ReciprocityTheory.L2DbarEstimates.V n}
@@ -163,8 +155,6 @@ private theorem dbarAt_add_of_differentiableAt {v : _root_.ReciprocityTheory.L2D
   rw [_root_.GlobalTheory.dbar_add (hF S) (hG S), ContinuousLinearMap.add_apply]
 
 
-open Set Filter Topology in
-open scoped ComplexConjugate ContDiff in
 set_option autoImplicit false in
 variable {n m : ℕ} in
 theorem _root_.GlobalTheory.CxForm.PullClosed.diff_and_closed {φ : _root_.ReciprocityTheory.L2DbarEstimates.V n → _root_.ReciprocityTheory.L2DbarEstimates.V m} {v : _root_.ReciprocityTheory.L2DbarEstimates.V n}
@@ -282,8 +272,6 @@ theorem _root_.GlobalTheory.CxForm.PullClosed.diff_and_closed {φ : _root_.Recip
   exact ExteriorAlgebra.induction hconst hι hmul hadd θ
 
 
-open Set Filter Topology in
-open scoped ComplexConjugate ContDiff in
 set_option autoImplicit false in
 variable {n m : ℕ} in
 theorem _root_.GlobalTheory.CxForm.PullClosed.dbarAt_pull_fderiv : ∀ {n m : ℕ}

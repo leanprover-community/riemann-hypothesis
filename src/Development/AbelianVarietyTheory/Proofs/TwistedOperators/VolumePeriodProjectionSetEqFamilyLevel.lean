@@ -179,7 +179,6 @@ theorem KO_frame {n : ℕ} {Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}
 end GlobalTheory.PrLevel
 
 namespace GlobalTheory.PrLevel
-open GlobalTheory.RootEx GlobalTheory.RowRep GlobalTheory.SplitWeil GlobalTheory.FunObj.LevRowSucc
 
 theorem diag_mul {k : Type} [Field k] {n : Type} [Fintype n] [DecidableEq n] {c : ℕ} {y z : GL (n ⊕ Fin c) k}
     (hy : ∃ f, y.val = diagonal f ∧ ∀ i, f (.inl i) = 1) (hz : ∃ f, z.val = diagonal f ∧ ∀ i, f (.inl i) = 1) :

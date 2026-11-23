@@ -164,7 +164,6 @@ theorem quotSH : QuotSH := by
 end LateralTheory.E.FibStalkPf
 
 namespace LateralTheory.E.FibStalkPf
-open Polynomial IsLocalRing
 
 def StalkAIC : Prop := ∀ (S : Scheme.{0}), AICSch S → ∀ x : S, AIC (S.presheaf.stalk x)
 

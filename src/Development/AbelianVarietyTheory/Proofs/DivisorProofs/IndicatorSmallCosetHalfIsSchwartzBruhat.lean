@@ -140,7 +140,6 @@ end GlobalTheory.FunObj.CosSB
 
 namespace GlobalTheory.FunObj.CosSB
 
-open GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StepData GlobalTheory.StdFrames Formalism.L2.Host Formalism.L2.DIV GlobalTheory.LatVac
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
 theorem prod_pow_ne_bot {D : D7} (P : Finset (Pl D.host.E)) (n : ℕ) : (∏ w ∈ P, w.asIdeal ^ n) ≠ ⊥ := by

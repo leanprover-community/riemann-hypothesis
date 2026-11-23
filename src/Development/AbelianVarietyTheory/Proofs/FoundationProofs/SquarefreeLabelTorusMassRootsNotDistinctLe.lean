@@ -74,7 +74,6 @@ private theorem pow_card_pow_natDegree_minpoly_sub_one_eq_one {g : ℕ} [Fact g.
   rw [hcard] at this
   exact congrArg Subtype.val this
 
-open Polynomial Classical in
 private theorem mem_primeFactors_mul_of_same_of_ne {g : ℕ} [Fact g.Prime] (l : ℕ) (hl : l.Prime) (n m : ℕ)
     (hn : 0 < n) (hm : 0 < m) (x y : AlgebraicClosure (ZMod g)) (hx : x ^ n = 1) (hy : y ^ m = 1) (hxy : x ≠ y)
     (hs : _root_.GlobalTheory.BadShare.SamePart l x y) : l ∈ (n * m).primeFactors := by
@@ -88,7 +87,6 @@ private theorem mem_primeFactors_mul_of_same_of_ne {g : ℕ} [Fact g.Prime] (l :
   exact hxy (_root_.GlobalTheory.BadShare.eq_of_pow_eq (M := n * m) (l := l) (a := a) hcop
     (by rw [pow_mul, hx, one_pow]) (by rw [mul_comm, pow_mul, hy, one_pow]) (by positivity) ha)
 
-open Polynomial Classical in
 private theorem isCoprime_minpoly_of_ne {g : ℕ} [Fact g.Prime] {x y : AlgebraicClosure (ZMod g)}
     (h : minpoly (ZMod g) x ≠ minpoly (ZMod g) y) : IsCoprime (minpoly (ZMod g) x) (minpoly (ZMod g) y) := by
   have hix : IsIntegral (ZMod g) x := Algebra.IsIntegral.isIntegral x
@@ -97,7 +95,6 @@ private theorem isCoprime_minpoly_of_ne {g : ℕ} [Fact g.Prime] {x y : Algebrai
   exact eq_of_monic_of_associated (minpoly.monic hix) (minpoly.monic hiy)
     ((minpoly.irreducible hix).associated_of_dvd (minpoly.irreducible hiy) hd)
 
-open Polynomial Classical in
 private theorem exists_root_pow_eq_pow_padicVal {g : ℕ} [Fact g.Prime] (l : ℕ) (hl : l.Prime) (n : ℕ) (hn : 0 < n)
     (y : AlgebraicClosure (ZMod g)) (hy : y ^ n = 1) :
     ∃ z : AlgebraicClosure (ZMod g), z ^ (n / l ^ padicValNat l n) = 1 ∧
@@ -123,7 +120,6 @@ private theorem exists_root_pow_eq_pow_padicVal {g : ℕ} [Fact g.Prime] (l : �
       conv_lhs => rw [← Nat.div_add_mod a m, pow_add, pow_mul, hw, one_pow, one_mul]
     rw [← pow_mul, mul_comm, pow_mul, key, ht, ← key, pow_one]
 
-open Polynomial Classical in
 private theorem pow_pow_gcd_sub_one_eq_one_of_same_prime_power {g : ℕ} [Fact g.Prime] (l : ℕ) (hl : l.Prime) (d e : ℕ) (he : 0 < g ^ e - 1)
     (x y z : AlgebraicClosure (ZMod g)) (hx : x ^ (g ^ d - 1) = 1)
     (a : ℕ) (ha : x ^ l ^ a = y ^ l ^ a)
@@ -155,7 +151,6 @@ private theorem pow_pow_gcd_sub_one_eq_one_of_same_prime_power {g : ℕ} [Fact g
   have := pow_gcd_eq_one.2 ⟨hzd, hze⟩
   rwa [Nat.pow_sub_one_gcd_pow_sub_one] at this
 
-open Polynomial Classical in
 private theorem card_nthRoots_samePrimePower_le {g : ℕ} [Fact g.Prime] (l n : ℕ) (hl : l.Prime) (hn : 0 < n) (z : AlgebraicClosure (ZMod g)) :
     ((nthRoots n (1 : AlgebraicClosure (ZMod g))).toFinset.filter (fun x => _root_.GlobalTheory.BadShare.SamePart l x z)).card ≤
       l ^ padicValNat l n := by
@@ -167,7 +162,6 @@ private theorem card_nthRoots_samePrimePower_le {g : ℕ} [Fact g.Prime] (l n : 
   simp only [Finset.coe_filter, Multiset.mem_toFinset, mem_nthRoots hn, Set.mem_setOf_eq] at hx ⊢
   exact hx
 
-open Polynomial Classical in
 private theorem card_root_pairs_samePrimePower_le {g : ℕ} [Fact g.Prime] (l : ℕ) (hl : l.Prime) (d e : ℕ)
     (hd : 0 < g ^ d - 1) (he : 0 < g ^ e - 1) :
     (((nthRoots (g ^ d - 1) (1 : AlgebraicClosure (ZMod g))).toFinset ×ˢ
@@ -215,7 +209,6 @@ private theorem card_root_pairs_samePrimePower_le {g : ℕ} [Fact g.Prime] (l : 
   refine Nat.mul_le_mul_right _ ?_
   exact (Multiset.toFinset_card_le _).trans (card_nthRoots _ _)
 
-open Polynomial Classical in
 private theorem mass_pairFor_le {g : ℕ} [Fact g.Prime] (N l : ℕ) (hl : l.Prime) (d e : ℕ) (hd1 : 1 ≤ d) (he1 : 1 ≤ e) :
     _root_.GlobalTheory.BadShare.mass g N (_root_.GlobalTheory.BadShare.TwoFactors.PairFor d e l) ≤
       (((g ^ Nat.gcd d e - 1) * l ^ padicValNat l (g ^ e - 1) * l ^ padicValNat l (g ^ d - 1) : ℕ) : ℝ) /
@@ -262,7 +255,6 @@ private theorem mass_pairFor_le {g : ℕ} [Fact g.Prime] (N l : ℕ) (hl : l.Pri
   gcongr
   exact_mod_cast (Finset.card_filter_le _ _).trans (card_root_pairs_samePrimePower_le l hl d e hd he)
 
-open Polynomial Classical in
 private theorem pair_ratio_le_of_not_bb {g : ℕ} [Fact g.Prime] (hg : 2 ^ 12 ≤ g) (N l d e : ℕ) (hd1 : 1 ≤ d) (he1 : 1 ≤ e)
     (hdN : d ≤ N) (heN : e ≤ N) (hl : l.Prime) (hexc : ¬ _root_.GlobalTheory.BadShare.BB g N l) :
     (((g ^ Nat.gcd d e - 1) * l ^ padicValNat l (g ^ e - 1) * l ^ padicValNat l (g ^ d - 1) : ℕ) : ℝ) /
@@ -313,7 +305,6 @@ private theorem pair_ratio_le_of_not_bb {g : ℕ} [Fact g.Prime] (hg : 2 ^ 12 �
         field_simp
         ring
 
-open Polynomial Classical in
 private theorem card_primeFactors_le_logb_two (n : ℕ) (hn : n ≠ 0) : (n.primeFactors.card : ℝ) ≤ Real.logb 2 n := by
   have h : 2 ^ n.primeFactors.card ≤ n := by
     refine (Finset.pow_card_le_prod _ _ 2 fun p hp => (Nat.prime_of_mem_primeFactors hp).two_le).trans ?_
@@ -321,7 +312,6 @@ private theorem card_primeFactors_le_logb_two (n : ℕ) (hn : n ≠ 0) : (n.prim
   rw [Real.le_logb_iff_rpow_le (by norm_num) (by exact_mod_cast Nat.pos_of_ne_zero hn), Real.rpow_natCast]
   exact_mod_cast h
 
-open Polynomial Classical in
 private theorem sum_icc_prod_add_mul_pow_le (N : ℕ) {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
     ∑ de ∈ Finset.Icc 1 N ×ˢ Finset.Icc 1 N, ((de.1 + de.2 : ℕ) : ℝ) * r ^ (de.1 + de.2) ≤
       2 * r ^ 2 / (1 - r) ^ 3 := by
@@ -360,7 +350,6 @@ private theorem sum_icc_prod_add_mul_pow_le (N : ℕ) {r : ℝ} (hr0 : 0 ≤ r) 
     _ = 2 * r ^ 2 / (1 - r) ^ 3 := by field_simp <;> ring
 
 
-open Polynomial Classical in
 theorem _root_.GlobalTheory.BadShare.mass_not_rootsApart_le : ∀ (g : ℕ) [Fact g.Prime], ∀ N : ℕ, 2 ^ 12 ≤ g →
     (_root_.GlobalTheory.BadShare.mass g N fun f => ¬ _root_.GlobalTheory.BadShare.RootsApart g N f) ≤ 23 * Real.log g / Real.sqrt g := by
   intro g _ N hg

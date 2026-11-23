@@ -77,7 +77,6 @@ theorem _root_.GlobalTheory.isIntegral_matrix_of_pow_bounded {O K : Type} [CommR
   exact IsIntegral.of_mem_of_fg _ (Submodule.fg_of_fg_map_injective φ hφ
     (Submodule.FG.of_le_of_isNoetherian hle)) g (Algebra.self_mem_adjoin_singleton O g)
 
-open NumberField IsDedekindDomain in
 private theorem exists_smul_pow_entry_mem_adicCompletionIntegers (E : Type) [Field E] [NumberField E]
     (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (g : GL (Fin n) (w.adicCompletion E))
     (hg : IsCompact (closure (Subgroup.zpowers g : Set (GL (Fin n) (w.adicCompletion E))))) :
@@ -119,7 +118,6 @@ private theorem exists_smul_pow_entry_mem_adicCompletionIntegers (E : Type) [Fie
   exact Subgroup.npow_mem_zpowers g k
 
 
-open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.isIntegral_of_isCompact_closure_zpowers (E : Type) [Field E] [NumberField E]
     (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (g : GL (Fin n) (w.adicCompletion E))
     (hg : IsCompact (closure (Subgroup.zpowers g : Set (GL (Fin n) (w.adicCompletion E))))) :

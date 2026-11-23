@@ -74,7 +74,6 @@ namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein.L4
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
-open GroundTheory.Automorphic.GodementSection
 
 theorem pInf_yAd (y : (UpperTheory.V.TR.Rinf F)ˣ) (yf : (Af F)ˣ) : UpperTheory.V.TR.pInf F (yAd y yf) = y.val := by
   have hs : ∀ x, UpperTheory.V.TR.pInf F (UpperTheory.V.TR.sInf F x) = x := fun x => (UpperTheory.V.TR.infEq F).symm_apply_apply x
@@ -147,7 +146,6 @@ namespace UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein.L4
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
-open GroundTheory.Automorphic.GodementSection
 
 omit [IsTotallyReal F] in
 theorem ordAt_eq_zero {b : (Af F)ˣ} {w : HeightOneSpectrum (𝓞 F)} (h : IsIntegralUnitAt b w) : ordAt b w = 0 := by

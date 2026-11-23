@@ -768,7 +768,6 @@ theorem exists_elt [FiniteDimensional K V] (u : Matrix (Fin N.j) (Fin N.j) K) (h
 end Normal
 
 section Final
-open GlobalTheory.HL Matrix Formalism.MainNotions.S.Loc
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : HermSpace K V} {r : ℕ} (N : NF H r)
 

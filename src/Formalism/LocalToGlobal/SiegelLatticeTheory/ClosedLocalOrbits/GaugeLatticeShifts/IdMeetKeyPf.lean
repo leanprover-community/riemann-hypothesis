@@ -211,7 +211,6 @@ namespace Formalism.L2.SG.Pf.IdMeet
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.L2.SG.Pf.Vanish2 Formalism.L2.SG.Pf.SlabCoverPf Formalism.L2.SG.Pf.Level
 
 theorem idMeetKeyC_holds : IdMeetKeyC := by
   intro D X Y u hNeat ρ ρ' t ht hM

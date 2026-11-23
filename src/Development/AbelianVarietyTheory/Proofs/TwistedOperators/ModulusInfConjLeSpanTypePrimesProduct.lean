@@ -70,7 +70,6 @@ end GlobalTheory.ModulConj
 
 namespace GlobalTheory.ModulConj
 
-open Formalism.MainNotions.ModuliIntegralCharts.H1.GSplit
 
 theorem inf_le_place {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (k : Fin 2)
     (P : HeightOneSpectrum (𝓞 D.host.E)) (hP : ((D.host.g k : ℕ) : 𝓞 D.host.E) ∈ P.asIdeal) :

@@ -247,8 +247,6 @@ end Coords
 
 section Main
 
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.Hypotheses₂.OneV
-open scoped TensorProduct
 
 end Main
 

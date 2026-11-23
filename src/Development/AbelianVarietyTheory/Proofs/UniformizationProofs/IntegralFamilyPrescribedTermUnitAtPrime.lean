@@ -346,7 +346,6 @@ theorem exists_move (D : DegPre R) (k : ℕ) (α mu : D.X) {Ix : Type} [Fintype 
     rw [ha, hm, comp_cQ, comp_cQ, Category.comp_id]
 
 
-open SectionScalarValuation in
 theorem exists_const {I : Ideal R} (D : DegData R I) (k : ℕ) (ρ mu : D.toPre.X) (r : R)
     (Φ : LB.Sec (LB.LinComb D.toPre.P.L (Y := Spec (CommRingCat.of R)) (K := PUnit) (fun _ => (D.toPre.c ρ).left)
       (fun _ => - -1)))

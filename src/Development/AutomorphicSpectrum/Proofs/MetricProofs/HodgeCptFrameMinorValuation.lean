@@ -133,9 +133,6 @@ end GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt
 
-open AlgebraicGeometry CategoryTheory Matrix
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
-open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun
 
 theorem det_mem {Ω : Type} [Field Ω] (R : Subring Ω) {r : ℕ} (Z : Matrix (Fin r) (Fin r) Ω)
     (h : ∀ a b, Z a b ∈ R) : Z.det ∈ R := by
@@ -257,9 +254,6 @@ end GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt
 
-open AlgebraicGeometry CategoryTheory Matrix
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
-open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun
 
 theorem minorIJ_single {R : Type} [CommRing R] {N : ℕ} (h : Matrix (Fin N) (Fin N) R) (a b : Fin N) :
     minorIJ h {a} {b} = h a b := by
@@ -409,9 +403,6 @@ end GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt
 
-open AlgebraicGeometry CategoryTheory Matrix
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
-open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun
 
 section Pure
 
@@ -552,9 +543,6 @@ end GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt
 
-open AlgebraicGeometry CategoryTheory Matrix
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
-open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun
 
 theorem ColFac.rescale {Ω : Type} [Field Ω] {R : Subring Ω} {a b : ℕ} {M : Matrix (Fin a) (Fin b) Ω} {X c v : Ω}
     (hc : c ≠ 0) (hv : v ≠ 0) (hvR : v ∈ R) (hvi : v⁻¹ ∈ R) (h : ColFac R ((c * v) • M) (c * X)) : ColFac R M X := by
@@ -778,8 +766,6 @@ end GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt
 namespace GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt
 
 open AlgebraicGeometry CategoryTheory NumberField Matrix
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
-open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun
 
 theorem inW_injective {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
     {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F} {Y : Model Xo c β} {S : Finset ℕ}

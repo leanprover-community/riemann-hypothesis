@@ -107,7 +107,6 @@ end GlobalTheory.UnitLemma.ResDeg
 
 namespace GlobalTheory.UnitLemma.ResDeg
 
-open GlobalTheory.UnitLemma GlobalTheory.UnitLemma.Orbit Polynomial IsLocalRing
 
 variable {K : UQ}
 

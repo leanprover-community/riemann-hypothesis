@@ -161,7 +161,6 @@ end GlobalTheory.SumBound
 
 namespace GlobalTheory.SumBound
 
-open Finset
 
 theorem sum_ite_const (s : Finset ℕ) (P : ℕ → Prop) [DecidablePred P] (c : ℝ) :
     ∑ q ∈ s, (if P q then c else 0) = (s.filter P).card * c := by

@@ -74,7 +74,6 @@ end GlobalTheory.ResidueEisenstein.ChartU
 
 namespace GlobalTheory.ResidueEisenstein.ChartU
 
-open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
   {n : ℕ} (J : Matrix (Fin n) (Fin n) E) {j m : ℕ} (C D : Matrix (Fin n) (Fin j) E) (Z : Matrix (Fin n) (Fin m) E)
@@ -126,7 +125,6 @@ end GlobalTheory.ResidueEisenstein.ChartU
 
 namespace GlobalTheory.ResidueEisenstein.ChartU
 
-open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {j m : ℕ} {C D : Matrix (Fin n) (Fin j) E} {Z : Matrix (Fin n) (Fin m) E}
@@ -190,7 +188,6 @@ end GlobalTheory.ResidueEisenstein.ChartU
 
 namespace GlobalTheory.ResidueEisenstein.ChartU
 
-open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {j m : ℕ} {C D : Matrix (Fin n) (Fin j) E} {Z : Matrix (Fin n) (Fin m) E}
@@ -225,7 +222,6 @@ end GlobalTheory.ResidueEisenstein.ChartU
 
 namespace GlobalTheory.ResidueEisenstein.ChartU
 
-open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {j m : ℕ} {C D : Matrix (Fin n) (Fin j) E} {Z : Matrix (Fin n) (Fin m) E}
@@ -257,7 +253,6 @@ end GlobalTheory.ResidueEisenstein.ChartU
 
 namespace GlobalTheory.ResidueEisenstein.ChartU
 
-open GlobalTheory.SphEis GlobalTheory.SphEis.UnipCrd
 
 theorem chart : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (j m : ℕ) (C D : Matrix (Fin n) (Fin j) E) (Z : Matrix (Fin n) (Fin m) E) (J₀ : Matrix (Fin m) (Fin m) E), GlobalTheory.SphEis.Fr σ J C D Z J₀ → ∃ φ : Matrix (Fin j) (Fin m) (AF F ⊗[F] E) × GlobalTheory.ResidueEisenstein.ModConj.skewA σ j → GAd σ J, Continuous φ ∧ ∀ b s, GlobalTheory.SphEis.Crd σ J C D Z J₀ (φ (b, s)) b ((s : Matrix (Fin j) (Fin j) (AF F ⊗[F] E)) - inclR (F := F) (AF F) (2⁻¹ : E) • (b * GlobalTheory.SphEis.plus σ J₀ b)) := by
   intro F E _ _ _ _ _ σ n J j m C D Z J₀ hF

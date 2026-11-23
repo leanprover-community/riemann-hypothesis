@@ -110,7 +110,6 @@ theorem lev_pow_smul {M : Type} [CommGroup M] {l : ℕ} [Fact l.Prime]
   rfl
 
 
-open GlobalTheory.HTLat in
 theorem tate_lev_eq_one_iff (M : Type) [CommGroup M] (l : ℕ) [Fact l.Prime]
     (t : GlobalTheory.HTLat.Tate l M) (j : ℕ) :
     t.lev j = 1 ↔ ∃ s : GlobalTheory.HTLat.Tate l M, t = ((l : ℤ_[l]) ^ j) • s := by
@@ -123,7 +122,6 @@ theorem tate_lev_eq_one_iff (M : Type) [CommGroup M] (l : ℕ) [Fact l.Prime]
     rw [lev_pow_smul, Tate.lev_pow]
 
 
-open GlobalTheory.HTLat in
 theorem tate_lev_surj (M : Type) [CommGroup M] (l : ℕ) [Fact l.Prime] (r : ℕ)
     (hc : ∀ n : ℕ, Nat.card {x : M // x ^ (l ^ n) = 1} = l ^ (r * n)) (j : ℕ) (x : M)
     (hx : x ^ (l ^ j) = 1) : ∃ t : GlobalTheory.HTLat.Tate l M, t.lev j = x := by

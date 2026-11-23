@@ -96,7 +96,6 @@ end GlobalTheory.FinPlLoc
 
 namespace GlobalTheory.FinPlLoc
 
-open NumberField
 
 variable {D : D7}
 

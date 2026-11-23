@@ -153,7 +153,6 @@ end GlobalTheory.AdditionGraph
 namespace GlobalTheory
 
 open GlobalTheory.CechPic GlobalTheory.AdditionGraph
-open scoped Kronecker
 
 theorem sectionsDim_additionGraph_principalPolarisation : Out.Laws → Out.Laws2 → ∀ (K : Type) [Field K] [IsAlgClosed K] (P : Out.PolAV (Sp K)) (N : ℕ), 1 ≤ N → ∀ e ≥ 1, SectionsHaveFiniteDimension (P.A ⊗ P.A).hom (lbPow (LB.LinComb P.L (K := Fin 3) ![(fst P.A P.A).left, (snd P.A P.A).left, (fst P.A P.A * snd P.A P.A).left] ![(N : ℤ), (N : ℤ), (N : ℤ)]) e) (3 ^ P.g * (N * e) ^ (2 * P.g)) := by
   intro laws laws₂ K _ _ P N hN e he

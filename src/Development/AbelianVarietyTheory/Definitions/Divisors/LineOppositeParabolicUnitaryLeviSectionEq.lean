@@ -639,10 +639,8 @@ end Unitary
 
 section Examples
 
-open ValuativeRel
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-open Formalism.UG
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
 theorem locallyCompact_GU_of_unram [CompleteSpace L] {ϖ : L} {σ : L →+* L} {q : ℕ} (h : IsUnramInv ϖ σ q) (n : ℕ) :
@@ -681,7 +679,6 @@ variable {P} {P' : LeviDatum G M}
 end LeviDatum
 
 section Compare
-open ValuativeRel
 variable {G H V W : Type} [Group G] [Group H] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
 
 theorem isUnitarisable_iff (ρ : Representation ℂ G V) : IsUnitarisable ρ ↔ SmGL.IsUnitarisable ρ := Iff.rfl
@@ -699,7 +696,6 @@ variable {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α] [∀ a, F
 end Compare
 
 section Line
-open Formalism.UG
 variable {n : ℕ}
 
 def midIdx (i : Fin n) : Fin (n + 2) := i.castSucc.succ

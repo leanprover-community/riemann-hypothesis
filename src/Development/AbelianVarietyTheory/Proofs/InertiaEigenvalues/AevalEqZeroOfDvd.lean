@@ -57,7 +57,6 @@ private lemma aeval_eq_zero_of_dvd_of_aeval_eq_zero {M : E} {p q : R[X]} (hp : a
   obtain ⟨r, rfl⟩ := h
   simp [hp]
 
-open TensorProduct Polynomial IsLocalRing in
 variable {R E ι : Type} [CommRing R] [Ring E] [Algebra R E] [Fintype ι] [DecidableEq ι] in
 variable (a : ι → R) (hu : ∀ i j, i ≠ j → IsUnit (a i - a j)) in
 include hu in
@@ -77,19 +76,16 @@ private lemma prod_X_sub_C_dvd_sum_lagPoly_sub_one :
   · intro h
     exact absurd (Finset.mem_univ k) h
 
-open TensorProduct Polynomial IsLocalRing in
 variable {R E ι : Type} [CommRing R] [Ring E] [Algebra R E] [Fintype ι] [DecidableEq ι] in
 private lemma aeval_lagPoly_eq_lagIdem (M : E) (a : ι → R) (i : ι) :
     aeval M (_root_.GlobalTheory.LagIdem.lagPoly a i) = _root_.GlobalTheory.Pat.lagIdem M a i := by
   simp [_root_.GlobalTheory.LagIdem.lagPoly, _root_.GlobalTheory.Pat.lagIdem, Algebra.smul_def]
 
-open TensorProduct Polynomial IsLocalRing in
 variable {R E ι : Type} [CommRing R] [Ring E] [Algebra R E] [Fintype ι] [DecidableEq ι] in
 private lemma prod_X_sub_C_eq_mul_prod_erase (a : ι → R) (i : ι) :
     ∏ j, (X - C (a j)) = (X - C (a i)) * ∏ j ∈ Finset.univ.erase i, (X - C (a j)) :=
   (Finset.mul_prod_erase _ _ (Finset.mem_univ i)).symm
 
-open TensorProduct Polynomial IsLocalRing in
 variable {R E ι : Type} [CommRing R] [Ring E] [Algebra R E] [Fintype ι] [DecidableEq ι] in
 variable (a : ι → R) (hu : ∀ i j, i ≠ j → IsUnit (a i - a j)) in
 include hu in
@@ -105,7 +101,6 @@ private lemma prod_X_sub_C_dvd_lagPoly_mul_of_ne {i j : ι} (hij : i ≠ j) :
   simp only [_root_.GlobalTheory.LagIdem.lagPoly, hq]
   ring
 
-open TensorProduct Polynomial IsLocalRing in
 variable {R E ι : Type} [CommRing R] [Ring E] [Algebra R E] [Fintype ι] [DecidableEq ι] in
 private lemma commute_aeval_of_commute' {T M : E} (h : Commute T M) (p : R[X]) :
     Commute T (aeval M p) := by
@@ -116,7 +111,6 @@ private lemma commute_aeval_of_commute' {T M : E} (h : Commute T M) (p : R[X]) :
     exact Commute.mul_right (show Commute T (algebraMap R E c) from (Algebra.commutes c T).symm)
       (h.pow_right n)
 
-open TensorProduct Polynomial IsLocalRing in
 theorem _root_.GlobalTheory.lagIdem_spec : ∀ (R E ι : Type) [CommRing R]
     [Ring E] [Algebra R E] [Fintype ι] [DecidableEq ι] [Nonempty ι] (M : E) (a : ι → R),
     (∀ i j, i ≠ j → IsUnit (a i - a j)) → Polynomial.aeval M (∏ j, (X - C (a j))) = 0 →

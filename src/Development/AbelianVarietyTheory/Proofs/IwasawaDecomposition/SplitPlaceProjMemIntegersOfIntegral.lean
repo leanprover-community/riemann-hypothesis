@@ -61,7 +61,6 @@ theorem _root_.GlobalTheory.splitPlace_proj_mem_integers_of_integral {L : Type} 
   exact key hy
 
 
-open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.splitPlace_loc_congr_one :
     ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (s : _root_.ReciprocityTheory.Aut.SplitPlace L) (N : ℕ) (x : _root_.Formalism.AUTREP.GAf L n),
     _root_.Formalism.L2.NG.Cong L n N x →

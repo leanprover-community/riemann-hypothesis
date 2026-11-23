@@ -61,8 +61,6 @@ lemma _root_.GlobalTheory.ThetaPositivity.form_conj {Hm : Matrix (Fin g) (Fin g)
     w ⬝ᵥ Hm.mulVec (star z) = star (z ⬝ᵥ Hm.mulVec (star w)) := by
   rw [← star_dotProduct_star, Matrix.star_mulVec, star_star, hH.eq, ← Matrix.dotProduct_mulVec]
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 variable {g : ℕ} in
 lemma _root_.GlobalTheory.ThetaPositivity.form_add_self {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian) (z w : Fin g → ℂ) :
     ((z + w) ⬝ᵥ Hm.mulVec (star (z + w))).re =
@@ -73,16 +71,12 @@ lemma _root_.GlobalTheory.ThetaPositivity.form_add_self {Hm : Matrix (Fin g) (Fi
   simp only [Complex.add_re, Complex.star_def, Complex.conj_re]
   ring
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 variable {g : ℕ} in
 private lemma continuous_re_dotProduct_mulVec_star (Hm : Matrix (Fin g) (Fin g) ℂ) :
     Continuous (fun z : Fin g → ℂ => (z ⬝ᵥ Hm.mulVec (star z)).re) :=
   Complex.continuous_re.comp (continuous_id.dotProduct (continuous_const.matrix_mulVec continuous_star))
 
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 variable {g : ℕ} in
 lemma _root_.GlobalTheory.ThetaPositivity.exists_norm_le (Λ : Submodule ℤ (Fin g → ℂ)) [DiscreteTopology Λ] [IsZLattice ℝ Λ]
     {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian) (χ : Λ → ℂ) (hχ : ∀ l, ‖χ l‖ = 1)
@@ -128,8 +122,6 @@ lemma _root_.GlobalTheory.ThetaPositivity.exists_norm_le (Λ : Submodule ℤ (Fi
     _ ≤ C * Real.exp (Real.pi / 2 * (z ⬝ᵥ Hm.mulVec (star z)).re) :=
         mul_le_mul_of_nonneg_right hbd hexp.le
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 variable {g : ℕ} in
 private lemma re_form_add_smul_of_isHermitian {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian)
     (z w : Fin g → ℂ) (t : ℂ) :
@@ -146,8 +138,6 @@ private lemma re_form_add_smul_of_isHermitian {Hm : Matrix (Fin g) (Fin g) ℂ} 
   rw [h1, h2, Complex.re_ofReal_mul]
 
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 variable {g : ℕ} in
 lemma _root_.GlobalTheory.ThetaPositivity.eq_zero_of_neg {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian)
     {θ : (Fin g → ℂ) → ℂ} (hθ : Differentiable ℂ θ) {C : ℝ}
@@ -194,8 +184,6 @@ lemma _root_.GlobalTheory.ThetaPositivity.eq_zero_of_neg {Hm : Matrix (Fin g) (F
   simpa [hfdef] using this
 
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.ThetaPositivity.re_form_pos_of_theta_ne_zero :
     ∀ (g : ℕ) (Λ : Submodule ℤ (Fin g → ℂ)), DiscreteTopology Λ →

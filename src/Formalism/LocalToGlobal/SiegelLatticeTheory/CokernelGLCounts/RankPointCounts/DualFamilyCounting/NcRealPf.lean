@@ -151,7 +151,6 @@ end StepsX
 
 section Reduction
 
-open Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates Formalism.MainNotions.S Matrix
 
 def PlaceData {D : D7} (X : HidaSetting D) (FdN FdN' : Set X.B.I.Ginf) (u u' : D.what₂.Word) : Prop :=
   ∃ (μN μN' μH μH' : ∀ v : NumberField.InfinitePlace X.B.I.F, Measure (Formalism.REAL.UJ (X.B.I.ε v)))

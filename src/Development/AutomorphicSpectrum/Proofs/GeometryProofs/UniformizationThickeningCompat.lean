@@ -194,7 +194,6 @@ end Torus
 
 section Main
 
-open ReciprocityTheory.ChartRestriction.G.Semi.Rosenlicht
 
 theorem pullTop_val {Y Z : Scheme.{0}} (f : Y ⟶ Z) (w : Γ(Z, ⊤)ˣ) :
     ((pullTop f w : Γ(Y, ⊤)ˣ) : Γ(Y, ⊤)) = f.appTop.hom (w : Γ(Z, ⊤)) :=

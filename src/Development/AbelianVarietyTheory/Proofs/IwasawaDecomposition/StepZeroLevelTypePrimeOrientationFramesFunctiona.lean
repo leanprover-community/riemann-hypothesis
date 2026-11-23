@@ -110,7 +110,6 @@ theorem exists_equiv_of_cyclic {S M A B : Type} [CommRing S] [AddCommGroup M] [M
   rfl
 
 
-open scoped TensorProduct in
 theorem functional_of_reindex {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (σ : E →+* E) (w : HeightOneSpectrum (𝓞 F)) {a b : ℕ} (h : a = b)
     (J : Matrix (Fin a) (Fin a) E) (J' : Matrix (Fin b) (Fin b) E) (hJ : J' = J.reindex (finCongr h) (finCongr h))
@@ -143,7 +142,6 @@ theorem functional_of_reindex {F E : Type} [Field F] [NumberField F] [Field E] [
   exact ⟨ht' ▸ t.2, congrArg g' (Subtype.ext ht')⟩
 
 
-open scoped TensorProduct in
 
 theorem colLevel_functional {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [StarRing E] [Algebra F E] {sp : Spaces R F E} {gp : Fin 2 → ℕ}
@@ -212,7 +210,6 @@ theorem colLevel_functional {R : Ranks} {F E : Type} [Field F] [NumberField F] [
   rw [tie c z t ht, AddEquiv.trans_apply, hφ]
 
 
-open scoped TensorProduct in
 
 theorem stepZeroLevel_functional_residueField {D : D7} (H : Formalism.L2.Herm.HermColsCh D) (F : ∀ u, FormsTiedSym D u (H.Ch u) (H.chOf u))
     (A : ∀ u, Formalism.L2.Herm.AtT D u (H.vT u) (H.Fv u)) (hH : CarH H F) (hT : CarT H F A) (u : D.what₂.Word)

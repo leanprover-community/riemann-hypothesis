@@ -96,7 +96,6 @@ end GlobalTheory.EtC.RowVanish
 
 namespace GlobalTheory.EtC.RowVanish
 
-open GlobalTheory.EtC.ClsBasic GlobalTheory.EtC.HCElements
 
 variable {R : Type} [CommRing R] {F : Shv R}
 
@@ -170,7 +169,6 @@ end GlobalTheory.EtC.RowVanish
 
 namespace GlobalTheory.EtC.RowVanish
 
-open GlobalTheory.EtC.ClsBasic GlobalTheory.EtC.HCElements
 
 variable {R : Type} [CommRing R] {F : Shv R}
 

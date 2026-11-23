@@ -74,7 +74,6 @@ end Down
 
 section Frob
 
-open GlobalTheory.CechPic GlobalTheory.AbLaw
 
 variable {p : ℕ} [Fact p.Prime] {R : Type} [CommRing R] (hR : (p : R) = 0) {A A₁ : Over (Sp R)} [GrpObj A] [GrpObj A₁]
   {π : A₁.left ⟶ A.left}

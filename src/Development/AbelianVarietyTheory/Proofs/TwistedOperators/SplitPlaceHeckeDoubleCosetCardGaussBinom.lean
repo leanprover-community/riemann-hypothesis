@@ -128,7 +128,6 @@ end GlobalTheory.SplitCosetCount
 
 namespace GlobalTheory.SplitCosetCount
 
-open Classical
 open Formalism.IndefR.Lev GlobalTheory.HeckeParts Formalism.L2.NTheta
 
 

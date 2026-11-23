@@ -110,8 +110,6 @@ end GlobalTheory.CompanionTheory.Ar.Cusp.MuPsh
 noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.MuPsh
 
-open ReciprocityTheory.AnForm.A (IsPsh)
-open _root_.Metric
 open GroundTheory.Heights₂.Heights.Regular (logCover expCover)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H}

@@ -123,8 +123,6 @@ private theorem card_quot_range_nsmul_eq_pow_finrank_mul_card_ker (M : Type) [Ad
       hindexD, hker]
 
 
-open NumberField IsDedekindDomain Polynomial in
-open scoped WithZero TensorProduct in
 theorem _root_.GlobalTheory.CNorm.pIdx_top_of_fg : ∀ (p : ℕ) (G : Type) [CommGroup G] [Group.FG G],
     0 < p →
     _root_.GlobalTheory.CNorm.pTor p (⊤ : Subgroup G) ≠ 0 ∧

@@ -289,7 +289,6 @@ private theorem rel_conj [IsCMField E] {τ : E ≃+* E} {σ : Ω ≃+* Ω} (h : 
 end Conc
 end UpperTheory.V.Z.Ord.CU
 namespace UpperTheory.V.Z.Ord.CU
-open UpperTheory.V.Af UpperTheory.V.Af.Bc UpperTheory.V.Af.Gu GlobalTheory.MonoConj
 variable {E Ω : Type} [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
 private theorem isPlaceOver_real {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} (h : IsPlaceOver A w) :
     IsPlaceOver (F := maximalRealSubfield E) A (w.under (𝓞 (maximalRealSubfield E))) := fun x =>

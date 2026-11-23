@@ -97,7 +97,6 @@ end Comparison₂
 end GlobalTheory.Mem.R3.MKExt
 
 namespace GlobalTheory.Mem.R3.MKExt
-open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 
 

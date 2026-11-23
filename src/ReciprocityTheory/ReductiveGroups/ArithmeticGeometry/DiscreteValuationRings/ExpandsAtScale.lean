@@ -129,10 +129,8 @@ lemma rs_resTop {Y : Scheme.{0}} {W W' : Y.Opens} (h : W' ≤ W) (c : Γ(Y, ⊤)
 
 end BackK
 
-section Integral
 
 variable (D : DegData V (maximalIdeal V)) {O : Type} [CommRing O] [StarRing O] [Module O D.toPre.X]
 
-end Integral
 
 end ReciprocityTheory.ChartRestriction.G.DVR

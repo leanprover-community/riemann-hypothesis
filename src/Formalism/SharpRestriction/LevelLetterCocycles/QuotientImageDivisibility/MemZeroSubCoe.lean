@@ -118,7 +118,6 @@ end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 
-open Module Formalism.MainNotions.RamifiedCoefficientChains.S9
 
 variable {O : Type} [CommRing O] {FF : Type} [AddCommGroup FF] [Module O FF]
 

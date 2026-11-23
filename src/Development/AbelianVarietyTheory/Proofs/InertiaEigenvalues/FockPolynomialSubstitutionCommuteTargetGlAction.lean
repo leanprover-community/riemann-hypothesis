@@ -142,7 +142,6 @@ theorem rai_comm (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.what₂.Tau) 
     refine Finset.sum_congr rfl fun b _ => ?_
     simp [smul_neg]
 
-open GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators in
 theorem low_comm (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.what₂.Tau) (l : Fin m) (c : Fin n) :
     (fockSubst p g).toLinearMap * lowO τ (fun _ : Fin n => true) (fun j : Fin m => decide ((j : ℕ) < p τ)) l c =
       ∑ b, (g τ).val b c • (lowO τ (fun _ : Fin n => true) (fun j : Fin m => decide ((j : ℕ) < p τ)) l b *
@@ -163,7 +162,6 @@ theorem low_comm (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.what₂.Tau) 
     refine Finset.sum_congr rfl fun b _ => ?_
     simp [rowMat, h, smul_eq_C_mul, mul_assoc]
 
-open GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators in
 theorem pair_comm (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.what₂.Tau) (i l : Fin m) :
     Commute (fockSubst p g).toLinearMap
       (∑ j, raiO τ (fun _ : Fin n => true) (fun j : Fin m => decide ((j : ℕ) < p τ)) i j *
@@ -203,7 +201,6 @@ theorem pair_comm (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.what₂.Tau)
         simp
 
 
-open GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators in
 theorem fockSubst_fockT (D : D7) (m n : ℕ) (p : D.what₂.Tau → ℕ) (g : GLR D n) (τ : D.what₂.Tau)
     (Y : Matrix (Fin m) (Fin m) ℂ) (P : PolF D m n) :
     fockSubst p g (fockT τ (fun _ : Fin n => true) (fun j : Fin m => decide ((j : ℕ) < p τ)) Y P) =

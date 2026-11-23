@@ -71,7 +71,6 @@ def ramE (p : ℕ) (O : Type*) [CommRing O] [IsDomain O] [IsDiscreteValuationRin
 
 open Classical in
 def ordW (x : KK O) : WithTop ℤ :=
-  open Classical in
   if x = 0 then ⊤ else
     let ab := Classical.choose (IsLocalization.surj (nonZeroDivisors O) x)
     (((IsDiscreteValuationRing.addVal O ab.1).toNat : ℤ) - ((IsDiscreteValuationRing.addVal O (ab.2 : O)).toNat : ℤ) : ℤ)

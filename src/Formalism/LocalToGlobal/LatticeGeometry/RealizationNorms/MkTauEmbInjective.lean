@@ -89,7 +89,6 @@ variable {D}
 
 end Formalism.L2.Geo.Rec.StarEmbeddingNorm
 
-open NumberField NumberField.InfinitePlace Module Matrix Formalism.BasicNotions
 open scoped ComplexOrder
 
 noncomputable section
@@ -102,8 +101,6 @@ variable {D : D7} {n : ℕ}
 
 end Formalism.L2.Geo.Rec.StarEmbeddingNorm
 
-open NumberField NumberField.InfinitePlace Module Matrix Formalism.BasicNotions
-open scoped ComplexOrder
 
 noncomputable section
 

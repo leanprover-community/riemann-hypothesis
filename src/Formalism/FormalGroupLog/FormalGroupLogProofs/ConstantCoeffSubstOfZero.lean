@@ -173,7 +173,6 @@ end Formalism.G.LogP
 
 namespace Formalism.G.LogP
 
-open Formalism.G.LogCR
 
 variable {R : Type*} [CommRing R]
 
@@ -250,7 +249,6 @@ end Formalism.G.LogP
 
 namespace Formalism.G.LogP
 
-open Formalism.G.LogCR
 
 variable {R : Type*} [CommRing R]
 

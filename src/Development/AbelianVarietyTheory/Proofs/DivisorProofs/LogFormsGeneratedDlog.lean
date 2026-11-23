@@ -59,7 +59,6 @@ private lemma smul_dlog_mem_forms {X : Scheme.{0}} [IsIntegral X] (Z : Set X) (y
   simp
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry TopologicalSpace in
 private lemma logUnit_of_isUnit_stalk {X : Scheme.{0}} [IsIntegral X] (Z : Set X)
     (y : X) (g : X.functionFieldˣ) (a : X.presheaf.stalk y) (ha : IsUnit a)
     (hg : algebraMap (X.presheaf.stalk y) X.functionField a = g) :
@@ -73,7 +72,6 @@ private lemma logUnit_of_isUnit_stalk {X : Scheme.{0}} [IsIntegral X] (Z : Set X
 
 
 set_option autoImplicit false in
-open CategoryTheory AlgebraicGeometry TopologicalSpace in
 theorem _root_.GlobalTheory.DI.dK_dlog_mem_forms_one : ∀ {X : Scheme.{0}} [IsIntegral X]
     (Z : Set X) (y : X), (∀ w ∈ _root_.GlobalTheory.LogDR.locRing y,
       ExteriorAlgebra.ι X.functionField (_root_.GlobalTheory.LogDR.dK w) ∈

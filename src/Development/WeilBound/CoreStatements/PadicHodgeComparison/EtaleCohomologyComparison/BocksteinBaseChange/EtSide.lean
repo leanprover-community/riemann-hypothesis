@@ -96,7 +96,6 @@ def InBock : Prop := ∀ (p a b : ℕ) [Fact p.Prime] (X : Scheme.{0}), IsUnit (
     p ^ a • z = 0 ∧ ∃ w : Ht (p ^ a) (sch.obj X) n i, red (p ^ (a + b)) (p ^ a) _ n i z = p ^ b • w
 
 
-open GlobalTheory.EtC in
 def InRoot : Prop := ∀ (q : ℕ) [NeZero q] (X : Scheme.{0}), Nonempty (Prim q Γ(X, ⊤)) → ∀ i : ℤ,
   ∃ (u : Ht q (sch.obj X) 0 i) (v : Ht q (sch.obj X) 0 (-i)), cup q v u = (one q (sch.obj X)).cast (by ring) (by ring)
 
@@ -105,7 +104,6 @@ def IsSum {X : Scheme.{0}} {r : ℕ} {Y : Fin r → Scheme.{0}} (j : ∀ s, Y s 
     ∀ s s', s ≠ s' → Disjoint (Set.range (j s)) (Set.range (j s'))
 
 
-open GlobalTheory.EtC in
 def InSum : Prop := ∀ (R : Type) [CommRing R] (F : Shv R) {X : Scheme.{0}} {r : ℕ} {Y : Fin r → Scheme.{0}} (j : ∀ s, Y s ⟶ X),
   IsSum j → ∀ n : ℤ, Function.Bijective fun (x : H R (sch.obj X) F n) (s : Fin r) => pull R (sch.map (j s)) F n x
 

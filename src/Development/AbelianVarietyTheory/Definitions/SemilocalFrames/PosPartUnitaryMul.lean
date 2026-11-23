@@ -191,7 +191,6 @@ theorem posPart_posDef_sq {g : Matrix (Fin n) (Fin n) ℂ} (hg : IsUnit g) :
   exact isUnit_of_mul_isUnit_left hu
 
 
-open scoped MatrixOrder in
 theorem posPart_eq_of_sq {g p : Matrix (Fin n) (Fin n) ℂ} (hp : p.PosDef) (h : p * p = gᴴ * g) :
     posPart g = p := by
   obtain ⟨h1, h2⟩ : (posPart g).PosDef ∧ posPart g * posPart g = gᴴ * g :=

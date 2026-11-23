@@ -60,25 +60,16 @@ private lemma eichler_mem_degreeLT_succ (w : ℕ) (g : ℍ → ℂ) (τ : ℍ) :
   intro m hm
   rw [_root_.GlobalTheory.EichlerChange.coeff_eichler, Nat.choose_eq_zero_of_lt (by omega), Nat.cast_zero, zero_mul]
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
 private lemma map_conj_mem_degreeLT {n : ℕ} {p : ℂ[X]} (hp : p ∈ ℂ[X]_n) :
     p.map (starRingEnd ℂ) ∈ ℂ[X]_n := by
   rw [Polynomial.mem_degreeLT] at hp ⊢
   rwa [Polynomial.degree_map]
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
 private lemma sl_denom_ne_zero (γ : SL(2, ℤ)) (τ : ℍ) :
     ((γ 1 0 : ℤ) : ℂ) * τ + ((γ 1 1 : ℤ) : ℂ) ≠ 0 := by
   have h := UpperHalfPlane.denom_ne_zero (γ : GL (Fin 2) ℝ) τ
   simpa [UpperHalfPlane.denom] using h
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
 private lemma eval_eq_denom_pow_mul_eval_of_slP_invariant (w : ℕ) (V : ℍ → ℂ[X]) (γ : SL(2, ℤ)) (τ : ℍ)
     (hmem : V (γ • τ) ∈ ℂ[X]_(w + 1))
     (hrel : _root_.GlobalTheory.HeckeFamilyMatrices.slP w (_root_.GlobalTheory.HeckeFamilyMatrices.mat γ) (V (γ • τ)) = V τ) :
@@ -89,17 +80,11 @@ private lemma eval_eq_denom_pow_mul_eval_of_slP_invariant (w : ℕ) (V : ℍ →
   rw [UpperHalfPlane.coe_specialLinearGroup_apply]
   simp
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
 private lemma im_sl_smul_eq_im_div_normSq_denom (γ : SL(2, ℤ)) (τ : ℍ) :
     (γ • τ).im = τ.im / Complex.normSq (((γ 1 0 : ℤ) : ℂ) * τ + ((γ 1 1 : ℤ) : ℂ)) := by
   rw [ModularGroup.sl_moeb, UpperHalfPlane.im_smul_eq_div_normSq]
   simp [UpperHalfPlane.denom]
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
 private lemma continuous_eval_of_continuous_coeff_of_degree_le (w : ℕ) (V : ℍ → ℂ[X])
     (hmem : ∀ τ, V τ ∈ ℂ[X]_(w + 1)) (hc : ∀ n, Continuous fun τ => (V τ).coeff n) :
     Continuous fun τ : ℍ => eval (τ : ℂ) (V τ) := by
@@ -115,9 +100,6 @@ private lemma continuous_eval_of_continuous_coeff_of_degree_le (w : ℕ) (V : �
   rw [h]
   exact continuous_finsetSum _ fun i _ => (hc i).mul (continuous_coe.pow i)
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
 private lemma exists_norm_eval_le_mul_im_rpow_of_slP_invariant (Γ : Subgroup SL(2, ℤ)) [Γ.FiniteIndex] (w : ℕ)
     (V : ℍ → ℂ[X]) (hmem : ∀ τ, V τ ∈ ℂ[X]_(w + 1))
     (hc : ∀ n, Continuous fun τ => (V τ).coeff n)
@@ -157,9 +139,6 @@ private lemma exists_norm_eval_le_mul_im_rpow_of_slP_invariant (Γ : Subgroup SL
         simp [neg_div]
     _ ≤ C * τ.im ^ ((w : ℝ) / 2) := mul_le_mul_of_nonneg_right h1 hpos.le
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
 private lemma eq_zero_of_eichler_conj_slash_relation (Γ : Subgroup SL(2, ℤ)) (k : ℕ)
     (hΓ : Γ.FiniteIndex) (hk : 3 ≤ k)
     (f h : CuspForm (Subgroup.map (Matrix.SpecialLinearGroup.mapGL ℝ) Γ) k) (p : ℂ[X])
@@ -210,9 +189,6 @@ private lemma eq_zero_of_eichler_conj_slash_relation (Γ : Subgroup SL(2, ℤ)) 
   exact he.symm
 
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
 theorem _root_.GlobalTheory.HeckeFamilyMatrices.Positivity.eq_zero_of_per_sub_cj_mem : ∀ (N : ℕ) (Γ : Subgroup SL(2, ℤ)) (k : ℕ), 5 ≤ N →
     Γ ≤ CongruenceSubgroup.Gamma1 N → Γ.FiniteIndex → 3 ≤ k → ∀ (f h : CuspForm Γ (k : ℤ)),
     _root_.GlobalTheory.HeckeFamilyMatrices.per Γ (k - 2) ⇑f - _root_.GlobalTheory.HeckeFamilyMatrices.cj (_root_.GlobalTheory.HeckeFamilyMatrices.per Γ (k - 2) ⇑h) ∈

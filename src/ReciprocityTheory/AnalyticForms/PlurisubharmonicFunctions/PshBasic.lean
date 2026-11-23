@@ -161,7 +161,6 @@ end ReciprocityTheory.AnForm.A.PshLap
 
 namespace ReciprocityTheory.AnForm.A.PshInh
 
-open MeasureTheory Metric Set Filter Topology Real
 
 noncomputable section
 

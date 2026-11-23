@@ -178,7 +178,6 @@ end Val
 end GlobalTheory.UseLoc.InstPoly
 
 namespace GlobalTheory.UseLoc.InstPoly
-open Polynomial
 
 
 theorem core {R O : Type} [CommRing R] [IsDomain R] [Infinite R] [CommRing O] [IsLocalRing O]

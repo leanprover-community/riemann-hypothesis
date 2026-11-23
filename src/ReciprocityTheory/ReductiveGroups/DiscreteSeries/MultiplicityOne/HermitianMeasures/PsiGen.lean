@@ -73,7 +73,6 @@ theorem ellA_mul {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
     · have hz0 : z q = 0 := hz q (by omega)
       rw [hz0, mul_zero, mul_zero, mul_zero, add_zero]
 
-open Formalism.QuantumDeterminants.WeylGroupFacts in
 theorem ellA_conj {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) {h m : Mat k r}
     (hh : h ∈ UWset k r z) (hm : m ∈ Nset k r) (a : Fin r) :
     Formalism.MainNotions.S.ellA k r z (h * m * h⁻¹) a = Formalism.MainNotions.S.ellA k r z m a := by

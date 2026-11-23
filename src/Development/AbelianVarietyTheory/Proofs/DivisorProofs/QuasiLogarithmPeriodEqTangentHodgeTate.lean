@@ -61,7 +61,6 @@ private theorem pderiv_map_algebraMap {B Q σ : Type} [CommRing B] [CommRing Q] 
   ext n
   simp [coeff_pderiv, coeff_map]
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private theorem subst_zero_eq_C_constantCoeff_divisor {σ τ Q : Type} [CommRing Q] [Finite σ] (h : MvPowerSeries σ Q) :
     subst (fun _ : σ => (0 : MvPowerSeries τ Q)) h = C (constantCoeff h) := by
@@ -78,7 +77,6 @@ private theorem subst_zero_eq_C_constantCoeff_divisor {σ τ Q : Type} [CommRing
       · simp [zero_pow (by simpa using hs)]
     simp [this]
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private theorem dIn_univ_of_QL_of_isLaw {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q] {d : ℕ}
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B} (hμ : _root_.GlobalTheory.Katz.IsLaw μ)
@@ -214,7 +212,6 @@ private theorem dIn_univ_of_QL_of_isLaw {B Q : Type} [CommRing B] [CommRing Q] [
       ring
     rw [← hb, coeff_pderiv, hαe, hαi, mul_comm]
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private theorem constantCoeff_nmul_eq_zero {d : ℕ} {R : Type} [CommRing R]
     {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R} (hμ : ∀ i, constantCoeff (μ i) = 0) (k : ℕ) (i : Fin d) :
@@ -236,7 +233,6 @@ private theorem constantCoeff_nmul_eq_zero {d : ℕ} {R : Type} [CommRing R]
       · simp
     exact constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero ha) ha (hμ i)
 
-open MvPowerSeries in
 set_option autoImplicit false in
 private theorem hasVal_zero_of_constantCoeff_eq_zero {p : ℕ} {B Q : Type} [CommRing B] [CommRing Q] [Algebra B Q] {d : ℕ}
     {f : MvPowerSeries (Fin d) Q} (hf : constantCoeff f = 0) :
@@ -250,7 +246,6 @@ private theorem hasVal_zero_of_constantCoeff_eq_zero {p : ℕ} {B Q : Type} [Com
   simp [hf]
 
 
-open MvPowerSeries in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.QLogPeriod.hasPeriod_hodgeTate : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (G : _root_.GlobalTheory.PDivGroup p O) (d : ℕ) (c : _root_.GlobalTheory.QLog.Chart G d), ∀ (E : Type) [CommRing E] [Algebra O E], _root_.GlobalTheory.QLog.IsFrame p E (RingHom.id O) → ∀ (f : MvPowerSeries (Fin d) E) (l : G.dual.Lie), _root_.GlobalTheory.QLog.QL c.μ ⊤ f → c.IsLie f l → ∀ t : G.Tate, c.HasPeriod (RingHom.id O) t f (l (G.hodgeTate t)) := by
   intro p _ C _ _ _ v O _ _ _ _ _ hv G d c E _ _ hF f l hQL hLie t

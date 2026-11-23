@@ -71,7 +71,6 @@ end GlobalTheory.KapVal
 
 namespace GlobalTheory.KapVal
 
-open IsDedekindDomain
 
 variable {q : ℕ} [Fact q.Prime] {K : Type} [Field K] [NumberField K]
 
@@ -167,7 +166,6 @@ end GlobalTheory.KapVal
 
 namespace GlobalTheory.KapVal
 
-open IsDedekindDomain
 
 theorem norm_kappa_sq_mul_det : ∀ (D : D7) (γ₀ γ : IsoK D) (k : KapChoice γ₀) (q : ℕ) [Fact q.Prime], q ≠ 2 →
     jacobiSym (-(D.host.d : ℤ)) q = 1 → γ.AtP q → ∀ ι : ℂ ≃+* ℂ_[q],

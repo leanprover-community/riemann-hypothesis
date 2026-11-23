@@ -76,7 +76,6 @@ end GlobalTheory.LinBarCoords
 
 namespace GlobalTheory.LinBarCoords
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.EmbChart
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -121,7 +120,6 @@ theorem eq_zero_of_at (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {m n : Type} (
 end GlobalTheory.LinBarCoords
 
 namespace GlobalTheory.LinBarCoords
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 theorem det_ne_zero_of_hasSig {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} {r s : ℕ} (h : HasSig M r s) : M.det ≠ 0 := by
   obtain ⟨hn, A, hA⟩ := h
@@ -155,7 +153,6 @@ theorem det_map_isUnit : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [N
 end GlobalTheory.LinBarCoords
 
 namespace GlobalTheory.LinBarCoords
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.EmbChart
 
 theorem exists_split_coords : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →

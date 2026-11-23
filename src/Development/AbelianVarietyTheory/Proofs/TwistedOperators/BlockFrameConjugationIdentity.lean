@@ -111,7 +111,6 @@ theorem scalar_of_comm (hσ : ∀ x, σ (σ x) = x) (h2 : IsUnit (2 : R)) (a : M
     simp [hij]
 
 
-open ReciprocityTheory.Aut in
 theorem exists_unitary_conj : ∀ {R : Type} [CommRing R] (σ : R →+* R) (hσ : ∀ x, σ (σ x) = x) {n : ℕ}, IsUnit (2 : R) → Odd n → ∀ g : GL (Fin n) R, (∀ κ ∈ ReciprocityTheory.Aut.UGroup n σ hσ, g * κ * g⁻¹ ∈ ReciprocityTheory.Aut.UGroup n σ hσ) → ∃ h ∈ ReciprocityTheory.Aut.UGroup n σ hσ, ∀ κ : GL (Fin n) R, g * κ * g⁻¹ = h * κ * h⁻¹ := by
   intro R _ σ hσ n h2 hn g hg
   obtain ⟨k, rfl⟩ := hn

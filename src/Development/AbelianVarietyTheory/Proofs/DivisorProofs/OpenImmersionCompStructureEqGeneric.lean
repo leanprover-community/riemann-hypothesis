@@ -264,7 +264,6 @@ theorem exists_intFr_lift (T : CDVR) (io : c.F →+* T.Fr) (yt : Sp T.V ⟶ Y.X)
   · rw [GlobalTheory.AllWt.ptF, GlobalTheory.AllWt.ptF, pullback.lift_snd, pullback.lift_snd]
 
 
-open GlobalTheory.LocM.BaseMdl in
 
 theorem exists_change {R : Type} [CommRing R] {ξ : Sp R ⟶ Y.X} {g : ℕ}
     {e : Fin g → (Sp (DualNumber R) ⟶ Y.t.G.left)} (he : IsTanBasis Y.t ξ e) {σ : E →+* ℂ}
@@ -457,7 +456,6 @@ theorem images_eigenBasis (σ : E →+* ℂ) (T : CDVR) (io : c.F →+* T.Fr) (y
     exact h5
 
 
-open GlobalTheory.LocM.BaseMdl in
 
 theorem coord_integral {R : Type} [CommRing R] {ξ : Sp R ⟶ Y.X} {g : ℕ}
     {e : Fin g → (Sp (DualNumber R) ⟶ Y.t.G.left)} (he : IsTanBasis Y.t ξ e) (σ : E →+* ℂ) {σR : 𝓞 E →+* R}

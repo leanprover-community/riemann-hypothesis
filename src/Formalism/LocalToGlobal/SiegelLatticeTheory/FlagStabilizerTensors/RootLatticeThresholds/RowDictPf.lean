@@ -246,11 +246,9 @@ theorem monicOf_coeff {K : Type} [Field K] {N : ℕ} {h : K[X]} (hm : h.Monic) (
   · rw [coeff_eq_zero_of_natDegree_lt (by rw [(monicOf_monic _).2]; exact hj),
       coeff_eq_zero_of_natDegree_lt (by rw [hd]; exact hj)]
 
-section Recip
 
 variable {g : ℕ} [Fact g.Prime] {f : (ZMod g)[X]}
 
-end Recip
 
 end E0
 

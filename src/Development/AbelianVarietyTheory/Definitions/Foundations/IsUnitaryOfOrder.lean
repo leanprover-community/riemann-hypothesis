@@ -263,11 +263,9 @@ end
 
 section
 
-open NumberField IsDedekindDomain
 
 namespace GlobalTheory.Mem.Chr
 
-open Formalism.BasicNotions Formalism.FrobeniusOrbits
 
 section General
 

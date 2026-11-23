@@ -222,7 +222,6 @@ end Choice
 
 section Dlog
 
-open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.TB ReciprocityTheory.ChartRestriction.G.TB.LogPf
 
 variable {V O F Λ L : Type} [CommRing V] [CommRing O] [CommRing F] [Algebra ℚ F] [Algebra V F] [Algebra O F]
   [CommRing Λ] [StarRing Λ] {d : ℕ}

@@ -119,7 +119,6 @@ private lemma val_prim_root {C : Type*} [Field C] (v : Valuation C NNReal) {p : 
     exact le_antisymm (val_sub_one_le v hμ' hz) (val_sub_one_le v hz hμ')
   rw [Finset.prod_congr rfl heq, Finset.prod_const, hz.card_primitiveRoots, Nat.totient_prime hp.out]
 
-section Ainf
 
 variable {p : ℕ} [hp : Fact p.Prime] {C : Type} [Field C] {v : Valuation C NNReal}
   {O : Type} [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)]
@@ -235,7 +234,6 @@ private lemma val_untilt_e_sub_one (hv : v.Integers O) (e : PreTilt O p)
       | exact pow_lt_self_of_lt_one₀ (pos_iff_ne_zero.mpr hx0) hxl hp3
     rw [val_untilt_sub_one hv e hlt, hx]
 
-end Ainf
 
 theorem xiNu (p : ℕ) [hp : Fact p.Prime] (C : Type) [Field C] (v : Valuation C NNReal)
     (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)]

@@ -50,8 +50,6 @@ private lemma coeff_mul_mem_algebraicClosure {f g : PowerSeries ℂ}
   rw [PowerSeries.coeff_mul]
   exact sum_mem fun p _ ↦ mul_mem (hf _) (hg _)
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma coeff_pow_mem_algebraicClosure {f : PowerSeries ℂ}
     (hf : ∀ n, PowerSeries.coeff n f ∈ algebraicClosure ℚ ℂ) (e : ℕ) :
     ∀ n, PowerSeries.coeff n (f ^ e) ∈ algebraicClosure ℚ ℂ := by
@@ -66,8 +64,6 @@ private lemma coeff_pow_mem_algebraicClosure {f : PowerSeries ℂ}
     rw [pow_succ]
     exact coeff_mul_mem_algebraicClosure ih hf
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma isAlgebraic_exp_two_pi_I_mul_rat (q : ℚ) :
     IsAlgebraic ℚ (Complex.exp (2 * ↑Real.pi * Complex.I * (q : ℂ))) := by
   refine (IsIntegral.of_pow q.den_pos ?_).isAlgebraic
@@ -81,14 +77,10 @@ private lemma isAlgebraic_exp_two_pi_I_mul_rat (q : ℚ) :
   rw [h]
   exact isIntegral_one
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma isAlgebraic_realEmbedding_apply {F : Type} [Field F] [NumberField F]
     (i : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F) (y : F) : IsAlgebraic ℚ ((i y : ℝ) : ℂ) :=
   (Algebra.IsAlgebraic.isAlgebraic y).algHom (Complex.ofRealHom.comp i).toRatAlgHom
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma ecoef_mem_algebraicClosure_of_isCoef {F : Type} [Field F] [NumberField F] {k : ℕ}
     {𝔞 𝔟 : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F} {a₀ : ℂ} {a : F → ℂ}
     (ha : _root_.GlobalTheory.HilbFam.IsCoef k 𝔞 𝔟 a₀ a) (ha₀ : IsAlgebraic ℚ a₀) (N : ℕ)
@@ -111,8 +103,6 @@ private lemma ecoef_mem_algebraicClosure_of_isCoef {F : Type} [Field F] [NumberF
     exact isAlgebraic_realEmbedding_apply i ξ
 
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 theorem _root_.GlobalTheory.HilbFam.hser_coeff_isAlgebraic : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (𝔞 𝔟 : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F) (a₀ : ℂ) (a : F → ℂ) (x : F) (s N : ℕ) (κ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℕ) (c : ℕ → ℂ) (n : ℕ), k = 2 * s → _root_.GlobalTheory.HilbFam.IsCoef k 𝔞 𝔟 a₀ a → IsAlgebraic ℚ a₀ → (∀ m, IsAlgebraic ℚ (c m)) → IsAlgebraic ℚ (PowerSeries.coeff n (_root_.GlobalTheory.HilbFam.hser k N 𝔞 a x κ c)) := by
   intro F _ _ _ k 𝔞 𝔟 a₀ a x s N κ c n hk ha ha₀ hc
   rw [← mem_algebraicClosure_iff]

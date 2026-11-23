@@ -119,8 +119,6 @@ theorem _root_.GlobalTheory.SubstMem.rename_mem_dualWeyl {a b : ℕ} (hab : a �
       exact DFunLike.congr_fun key f
 
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] in
 theorem _root_.GlobalTheory.SubstMem.det_pow_mem (a m : ℕ) :
     _root_.Formalism.GradedWeylDivisibility.initMinor K (id : Fin a → Fin a) le_rfl ^ m ∈ _root_.Formalism.GradedWeylDivisibility.dualWeyl K a a (fun _ => m) := by
@@ -131,8 +129,6 @@ theorem _root_.GlobalTheory.SubstMem.det_pow_mem (a m : ℕ) :
 def padRows {a b : ℕ} (A : Matrix (Fin a) (Fin b) K) : Matrix (Fin b) (Fin b) K :=
   fun α β => if h : (α : ℕ) < a then A ⟨α, h⟩ β else 0
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] in
 theorem _root_.GlobalTheory.SubstMem.substAdj_blockEmb {ι : Type} {a b : ℕ} (hab : a ≤ b)
     (ap : ι → Matrix (Fin a) (Fin b) K) (τ : ι) (f : MvPolynomial (Fin a × Fin a) K) :
@@ -148,23 +144,17 @@ theorem _root_.GlobalTheory.SubstMem.substAdj_blockEmb {ι : Type} {a b : ℕ} (
     simp [_root_.GlobalTheory.IndefiniteRowSideFullHecke.SubstitutionAdjoint.substAdj, _root_.Formalism.GradedWeylDivisibility.blockEmb, _root_.Formalism.GradedWeylDivisibility.rowAct, _root_.GlobalTheory.SubstMem.padRows, map_sum]
   exact DFunLike.congr_fun key f
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] in
 private theorem DomWeight_detShift_eq_w_last {N : ℕ} (l : _root_.Formalism.BasicNotions.DomWeight N) (h : 0 < N) :
     l.detShift = l.w ⟨N - 1, by omega⟩ := by
   unfold _root_.Formalism.BasicNotions.DomWeight.detShift
   rw [dite_eq_left h]
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] in
 private theorem DomWeight_detShift_le_w {N : ℕ} (l : _root_.Formalism.BasicNotions.DomWeight N) (i : Fin N) : l.detShift ≤ l.w i := by
   rw [DomWeight_detShift_eq_w_last l (Fin.pos i)]
   exact l.anti (Fin.le_def.2 (by simp; omega))
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] in
 private theorem isWeightedHomogeneous_colW_rowAct_of_isWeightedHomogeneous {R : Type} [CommRing R] {r n : ℕ}
     (g : Matrix (Fin r) (Fin r) R) {f : MvPolynomial (Fin r × Fin n) R} {ν : Fin n → ℕ}
@@ -182,8 +172,6 @@ private theorem isWeightedHomogeneous_colW_rowAct_of_isWeightedHomogeneous {R : 
   exact (isWeightedHomogeneous_C _ _).mul
     (IsWeightedHomogeneous.prod _ _ _ fun v _ => (_root_.Formalism.GradedWeylDivisibility.rowAct_X_isWH g v).pow (d v))
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] in
 private theorem rowAct_mem_dualWeyl_of_mem_dualWeyl {R : Type} [CommRing R] {r n : ℕ}
     (g : Matrix (Fin r) (Fin r) R) {ν : Fin n → ℕ} {f : MvPolynomial (Fin r × Fin n) R}
@@ -192,8 +180,6 @@ private theorem rowAct_mem_dualWeyl_of_mem_dualWeyl {R : Type} [CommRing R] {r n
   refine ⟨isWeightedHomogeneous_colW_rowAct_of_isWeightedHomogeneous g hf.1, fun l j hlj => ?_⟩
   rw [_root_.Formalism.GradedWeylDivisibility.colAddGen_rowAct, hf.2 l j hlj, ← _root_.Formalism.GradedWeylDivisibility.rename_rowAct]
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] in
 private theorem frDet_eq_blockEmb_initMinor_id {K : Type} [Field K] {ι : Type} (a : ℕ) (τ : ι) :
     _root_.Formalism.L2.Ker.frDet K a τ = _root_.Formalism.GradedWeylDivisibility.blockEmb K τ (_root_.Formalism.GradedWeylDivisibility.initMinor K (id : Fin a → Fin a) le_rfl) := by
@@ -203,8 +189,6 @@ private theorem frDet_eq_blockEmb_initMinor_id {K : Type} [Field K] {ι : Type} 
   simp [_root_.Formalism.GradedWeylDivisibility.blockEmb]
 
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] in
 theorem _root_.GlobalTheory.SubstMem.substAdj_sharp_mem : ∀ (K : Type) [Field K] (ι : Type) [Fintype ι]
     (a b : ℕ) (hab : a < b) (lam : ι → _root_.Formalism.BasicNotions.DomWeight a) (lam' : ι → _root_.Formalism.BasicNotions.DomWeight b) (s s' : ι → ℤ)

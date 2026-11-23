@@ -48,7 +48,6 @@ open Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br
 variable {D : D7}
 end Record
 section Reduce
-open Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br Formalism.NG Formalism.NG.QuotientPowerLengths
 variable {D : D7}
 def CongruenceAtTypePrimes' (CT : ℕ) (Q : ∀ (i : D.nd.Loc), Fin 2 →
     (D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) → ℕ → Prop) : Prop :=

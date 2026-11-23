@@ -117,7 +117,6 @@ end L2
 section Closable
 
 open Formalism.MainNotions.S GlobalTheory.SmVec MeasureTheory Matrix Filter
-open scoped InnerProductSpace Topology ENNReal
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
   {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {X V : Type} [MeasurableSpace X] {ν : Measure X} [SigmaFinite ν]

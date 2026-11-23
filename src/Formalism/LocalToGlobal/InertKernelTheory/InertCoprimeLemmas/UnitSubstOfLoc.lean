@@ -524,7 +524,6 @@ theorem locInv_of (hU : UnitSubstLoc) : LocInv := by
     hvA hvA' F hI
 
 
-open ThetaInverseLemmas in
 theorem unitSubst_of_loc (hU : UnitSubstLoc) : UnitSubst := by
   intro D cc δ hcc hδ p _ hp5 hin lam C wq hC hW r A hAK hAp hAu
   have hp : p.Prime := Fact.out

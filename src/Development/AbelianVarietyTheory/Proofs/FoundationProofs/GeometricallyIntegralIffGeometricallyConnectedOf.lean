@@ -238,7 +238,6 @@ section Groups
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 variable {S : Scheme.{u}}
 

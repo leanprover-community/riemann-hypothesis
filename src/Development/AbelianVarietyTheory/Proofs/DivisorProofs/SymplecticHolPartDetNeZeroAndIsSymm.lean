@@ -77,7 +77,6 @@ end GlobalTheory.SympBlocks
 
 namespace GlobalTheory.SympBlocks
 
-open scoped ComplexOrder
 
 theorem det_ne_zero_and_isSymm : ∀ (l : Type) [Fintype l] [DecidableEq l]
     (s : Matrix (l ⊕ l) (l ⊕ l) ℝ) (P Q : Matrix l l ℂ),

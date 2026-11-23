@@ -80,7 +80,6 @@ def polyOf {K : Type} [Fintype K] (φ : Matrix (Fin q → ι) (Fin q → ι) ℂ
     (M : K → Matrix ι ι ℂ) : MvPolynomial K ℂ :=
   ∑ f : Fin q → K, C (φ (mt fun j => M (f j))) * ∏ j, X (f j)
 
-open MvPolynomial in
 theorem eval_polyOf {K : Type} [Fintype K] [DecidableEq K]
     (φ : Matrix (Fin q → ι) (Fin q → ι) ℂ →ₗ[ℂ] ℂ) (M : K → Matrix ι ι ℂ) (c : K → ℂ) :
     eval c (polyOf φ M) = φ (tp q (∑ k, c k • M k)) := by
@@ -91,7 +90,6 @@ theorem eval_polyOf {K : Type} [Fintype K] [DecidableEq K]
   simp only [eval_X]
   ring
 
-open MvPolynomial in
 theorem totalDegree_polyOf {K : Type} [Fintype K]
     (φ : Matrix (Fin q → ι) (Fin q → ι) ℂ →ₗ[ℂ] ℂ) (M : K → Matrix ι ι ℂ) :
     (polyOf φ M).totalDegree ≤ q := by
@@ -367,7 +365,6 @@ theorem sum_perm_mt (x : Fin q → Matrix ι ι ℂ) (I J : Fin q → ι)
     exact ⟨congrFun h1 i, congrFun h2 i⟩
 
 
-open MvPolynomial in
 theorem sym_zero (φ : Matrix (Fin q → ι) (Fin q → ι) ℂ →ₗ[ℂ] ℂ) (x : Fin q → Matrix ι ι ℂ)
     (h0 : ∀ t : Fin q → ℂ, φ (tp q (∑ j, t j • x j)) = 0) :
     φ (∑ σ : Equiv.Perm (Fin q), mt (fun j => x (σ j))) = 0 := by

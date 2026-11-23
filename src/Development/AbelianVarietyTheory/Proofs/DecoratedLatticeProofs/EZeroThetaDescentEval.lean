@@ -106,7 +106,6 @@ end GlobalTheory.GoodFix
 
 namespace GlobalTheory.GoodFix
 
-open Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Lev
 
 
 

@@ -173,7 +173,6 @@ end Formalism.FourierDecayAlt.P.ProductIntervalFrames
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr
 
 theorem qr_branching_of : Qr.BranchingK → Formalism.FourierDecayAlt.Q.Branching := by
   intro hK Wp _ _ _ P hOK hu'

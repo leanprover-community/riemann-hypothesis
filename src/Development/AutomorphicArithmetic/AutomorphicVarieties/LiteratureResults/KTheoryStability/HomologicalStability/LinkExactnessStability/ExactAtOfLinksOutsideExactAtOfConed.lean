@@ -52,5 +52,4 @@ theorem exactAt_of_links_cone : ∀ (V : Type) (F : Set (List V)) (S : Set V) (y
 end GlobalTheory
 
 section
-open GlobalTheory.SeqCx Matrix
 end

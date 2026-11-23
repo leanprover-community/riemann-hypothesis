@@ -104,7 +104,6 @@ end GlobalTheory.CotDim
 
 namespace GlobalTheory.CotDim
 
-open TensorProduct KaehlerDifferential
 
 theorem nonempty_basis_fibre {A : Type} [CommRing A] [Algebra ℂ A] (e : A →+* ℂ)
     (he : ∀ c : ℂ, e (algebraMap ℂ A c) = c) (d : ℕ) (t : A) (ht : e t ≠ 0)

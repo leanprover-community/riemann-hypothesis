@@ -76,11 +76,9 @@ def SecondRoots.model (R : SecondRoots M) : RootModel Ψ N :=
 
 def SecondRoots.pairs (R : SecondRoots M) : LocPair M.ι ℤ (Ψ × Fin N) := ⟨M.xdeg, R.xdeg, R.f, R.g⟩
 
-open scoped Classical in
 def SecondRoots.IsChange (R : SecondRoots M) (S : Finset Nat.Primes) : Prop :=
   R.pairs.IsVertOff M.P S ∧ ∀ t, 0 < t → R.pairs.IsIsometric M.P (M.x t) (R.x t)
 
-open scoped Classical in
 def SecondRoots.LocalAt [DecidableEq Ψ] (R : SecondRoots M) (j p : ℕ) (φ : Equiv.Perm (Ψ ⊕ Ψ)) (O : Type) [CommRing O]
     [IsDomain O] [IsDiscreteValuationRing O] (P : Ideal (MvPolynomial (Σ k, M.ι k) O)) : Prop :=
   FlagChernComparison P (dimFl Ψ N) p j φ (R.pairs.map (Int.castRingHom O)) ∧

@@ -86,7 +86,6 @@ end GlobalTheory.UPel.HT.LieLin.LieAlgebraMultiplication
 
 namespace GlobalTheory.UPel.HT.LieLin.LieAlgebraMultiplication
 attribute [local instance] Over.cartesianMonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.PullbackSections Formalism.L2.Pj
 
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {k : Type} [Field k] (t : Sp k ⟶ S)
 variable {O : Type} [CommRing O] (act : OAct O G) (τ : O →+* k)

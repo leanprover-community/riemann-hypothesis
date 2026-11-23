@@ -83,7 +83,6 @@ end
 end
 
 namespace GlobalTheory.PsCo.PcEF
-open GlobalTheory.PsCo.PcEG
 
 theorem torusId_full : TorusId := weylFormulaCompactTorusIdentity_of_ingredients vandermonde_splits_compactNoncompact adjointDet_onCompactTorus numShift_holds
 

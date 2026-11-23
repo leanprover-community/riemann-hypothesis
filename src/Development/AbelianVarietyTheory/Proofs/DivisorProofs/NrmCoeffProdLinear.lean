@@ -94,7 +94,6 @@ theorem coeff_max_mul_linear {F Γ : Type} [Field F] [LinearOrderedCommGroupWith
       _ < v β * N := mul_lt_mul_of_pos_right h (zero_lt_iff.2 hN)
 
 
-open Polynomial in
 theorem coeff_max_prod_linear {F Γ ι : Type} [Field F] [LinearOrderedCommGroupWithZero Γ] (v : Valuation F Γ)
     (α β : ι → F) (s : Finset ι) :
     (∀ i, v ((∏ j ∈ s, (C (α j) + C (β j) * X)).coeff i) ≤ ∏ j ∈ s, max (v (α j)) (v (β j))) ∧

@@ -357,6 +357,5 @@ end Main
 end GlobalTheory.Mem.DiagSp
 
 open Formalism.BasicNotions NumberField IsDedekindDomain GlobalTheory.Mem
-open scoped TensorProduct
 
 end

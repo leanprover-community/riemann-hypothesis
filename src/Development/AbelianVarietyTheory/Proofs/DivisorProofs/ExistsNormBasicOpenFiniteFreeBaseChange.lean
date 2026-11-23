@@ -124,7 +124,6 @@ end GlobalTheory.Mum.NormBC
 
 namespace GlobalTheory.Mum.NormBC
 
-open TensorProduct
 
 theorem exists_norm_basicOpen : ∀ (R R₁ : Type) [CommRing R] [CommRing R₁] [Algebra R R₁]
     [Module.Finite R R₁] [Module.Free R R₁] (X X₁ : Scheme.{0}) (p : X ⟶ Sp R) (p₁ : X₁ ⟶ Sp R₁)

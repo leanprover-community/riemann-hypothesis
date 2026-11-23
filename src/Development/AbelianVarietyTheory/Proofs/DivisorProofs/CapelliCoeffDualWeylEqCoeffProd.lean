@@ -165,7 +165,6 @@ end GlobalTheory.CapelliCoeffs
 
 namespace GlobalTheory.CapelliCoeffs
 
-open Polynomial
 
 theorem capelli_coeff_dualWeyl : ∀ (O : Type) [CommRing O] [IsDomain O] [CharZero O] (N : ℕ),
     ∃ F : ℕ → FreeAlgebra O (Fin N × Fin N), ∀ ν : Fin N → ℕ, Antitone ν →

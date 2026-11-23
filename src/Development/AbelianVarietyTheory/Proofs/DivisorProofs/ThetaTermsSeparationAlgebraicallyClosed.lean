@@ -298,7 +298,6 @@ end GlobalTheory.Poinc.Sep.TorsValue
 
 namespace GlobalTheory.Poinc.Sep.TorsValue
 
-open GlobalTheory.UT GlobalTheory.UT.SymFrame GlobalTheory.FieldBaseChange GlobalTheory.TorRef
 
 theorem value_eq_root_mul_term {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] (hV : IsCN V) (D : DegPre V) {N : ℕ}
     (hN : 1 ≤ N) {X C : Type} [AddCommGroup X] (e : X ≃+ D.X) (Tm : X → C → V) (hT : IsThetaTerms D N e Tm)

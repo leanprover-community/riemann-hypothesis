@@ -119,7 +119,6 @@ theorem unitOff_of_mul_eq {N m : ℕ} {a b : ℂ} (ha : IsIntegral ℤ a) (hb : 
 end GlobalTheory.ChiUnit
 
 namespace GlobalTheory.ChiUnit
-open GlobalTheory.IndefiniteRowSideFullHecke.CentralInvolutionRing
 
 theorem LR {L : Type} [Field L] [NumberField L] (χ : Formalism.L2.Host.HChar L) (n : ℕ) (h : χ ^ n = 1)
     (w : IsDedekindDomain.HeightOneSpectrum (𝓞 L)) (k : Lˣ) : (χ.locK w k) ^ n = 1 := by
@@ -138,7 +137,6 @@ theorem locK_eq_val {L : Type} [Field L] [NumberField L] (χ : Formalism.L2.Host
 end GlobalTheory.ChiUnit
 
 namespace GlobalTheory.ChiUnit
-open GlobalTheory.IndefiniteRowSideFullHecke.CentralInvolutionRing
 
 theorem finite_ramified_places_hecke_character {D : D7} (χ : Formalism.L2.Host.HChar D.host.E)
     (h : ∀ v : IsDedekindDomain.HeightOneSpectrum (𝓞 D.host.E), (∀ k : Fin 2, ¬Formalism.L2.Host.OverP D.host (D.host.g k) v) → χ.UnrAt v) :

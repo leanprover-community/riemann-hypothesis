@@ -289,7 +289,6 @@ end Cone
 
 section Ord
 
-open GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.OrbitChartMult
 
 variable [IsClosedImmersion i] (c : ∀ k, Bk n k)
 

@@ -57,8 +57,6 @@ private lemma integrable_matrixCoeff_mul_star
   nlinarith [sq_nonneg (‖⟪y, σ g x⟫_ℂ‖ - ‖⟪y', σ g x'⟫_ℂ‖),
     mul_nonneg (norm_nonneg ⟪y, σ g x⟫_ℂ) (norm_nonneg ⟪y', σ g x'⟫_ℂ)]
 
-open MeasureTheory in
-open scoped InnerProductSpace in
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] in
 variable {G : Type} [Group G] [MeasurableSpace G] {μ : Measure G} {σ : G →* (H →L[ℂ] H)} {d : ℝ} in
 private lemma integral_matrixCoeff_mul_star_self
@@ -84,8 +82,6 @@ private lemma mul_conj_eq_polarization (a b : ℂ) :
   simp only [Complex.I_sq, Complex.I_pow_three]
   ring
 
-open MeasureTheory in
-open scoped InnerProductSpace in
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] in
 private lemma inner_swap_eq_polarization (x x' : H) :
     ⟪x', x⟫_ℂ = 1 / 4 * (⟪x + x', x + x'⟫_ℂ - ⟪x - x', x - x'⟫_ℂ
@@ -97,8 +93,6 @@ private lemma inner_swap_eq_polarization (x x' : H) :
   simp only [Complex.I_sq, Complex.I_pow_three]
   ring
 
-open MeasureTheory in
-open scoped InnerProductSpace in
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] in
 variable {G : Type} [Group G] [MeasurableSpace G] {μ : Measure G} {σ : G →* (H →L[ℂ] H)} {d : ℝ} in
 private lemma integral_matrixCoeff_mul_star_same_left
@@ -127,7 +121,6 @@ private lemma integral_matrixCoeff_mul_star_same_left
     | exact (hint _ _ _ _).sub (hint _ _ _ _)
     | exact ((hint _ _ _ _).sub (hint _ _ _ _)).add ((hint _ _ _ _).const_mul _)
 
-open scoped ComplexConjugate in
 private lemma mul_conj_eq_polarization_four (a a' b b' : ℂ) :
     a * conj b' = 1 / 4 * ((a + a') * conj (b + b') - (a - a') * conj (b - b')
       - Complex.I * ((a - Complex.I * a') * conj (b - Complex.I * b'))
@@ -137,8 +130,6 @@ private lemma mul_conj_eq_polarization_four (a a' b b' : ℂ) :
   simp only [Complex.I_sq, Complex.I_pow_three]
   ring
 
-open MeasureTheory in
-open scoped InnerProductSpace in
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] in
 private lemma inner_eq_polarization (w w' : H) :
     ⟪w, w'⟫_ℂ = 1 / 4 * (⟪w + w', w + w'⟫_ℂ - ⟪w - w', w - w'⟫_ℂ
@@ -151,8 +142,6 @@ private lemma inner_eq_polarization (w w' : H) :
   ring
 
 
-open MeasureTheory in
-open scoped InnerProductSpace in
 theorem _root_.GlobalTheory.polarised_schur_relations :
     ∀ (G : Type) [Group G] [MeasurableSpace G] (μ : Measure G) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (σ : G →* (H →L[ℂ] H)) (d : ℝ), (∀ x y : H, AEStronglyMeasurable (fun g => ⟪y, σ g x⟫_ℂ) μ) → (∀ x y : H, Integrable (fun g => ‖⟪y, σ g x⟫_ℂ‖ ^ 2) μ ∧ ∫ g, ‖⟪y, σ g x⟫_ℂ‖ ^ 2 ∂μ = ‖x‖ ^ 2 * ‖y‖ ^ 2 / d) → ∀ v w v' w' : H, Integrable (fun g => ⟪w, σ g v⟫_ℂ * star ⟪w', σ g v'⟫_ℂ) μ ∧ ∫ g, ⟪w, σ g v⟫_ℂ * star ⟪w', σ g v'⟫_ℂ ∂μ = ⟪v', v⟫_ℂ * ⟪w, w'⟫_ℂ / (d : ℂ) := by
   intro G _ _ μ H _ _ _ σ d hmeas hsq v w v' w'

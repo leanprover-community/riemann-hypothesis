@@ -284,7 +284,6 @@ end SpecU
 
 section StepZero
 
-open Formalism.MainNotions.product_first_zeroth_parts Formalism.L2.Forms Classical
 
 variable (D : D7) (u : D.what₂.Word)
 

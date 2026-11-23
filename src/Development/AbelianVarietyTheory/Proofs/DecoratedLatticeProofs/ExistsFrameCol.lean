@@ -117,7 +117,6 @@ theorem finv_mod (ψk : AddChar k Circle) (ν : Measure k) (C : ℂ) (t₀ : Mat
 end GlobalTheory.KappaModel
 
 namespace GlobalTheory.KappaModel
-open GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule (ofAdj)
 
 theorem heis_comp {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (L S L'' : HSp D) (κ : WO S L'' → WO L S)
     (hadd : ∀ w w', κ (w + w') = κ w + κ w') (hs : ∀ w w', symplO L S (κ w) (κ w') = symplO S L'' w w')

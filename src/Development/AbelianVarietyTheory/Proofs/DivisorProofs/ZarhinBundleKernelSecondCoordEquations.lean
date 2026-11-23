@@ -103,9 +103,7 @@ end GlobalTheory.ZarhinKerB
 
 namespace GlobalTheory.ZarhinKerB
 
-open GlobalTheory.ZarhinFam
 
-open GlobalTheory.CechPic GlobalTheory.AbDual
 
 section KerAux2
 
@@ -138,9 +136,7 @@ end GlobalTheory.ZarhinKerB
 
 namespace GlobalTheory.ZarhinKerB
 
-open GlobalTheory.ZarhinFam
 
-open GlobalTheory.CechPic GlobalTheory.AbDual
 
 theorem zarhinBundle_kernel : ∀ (h M d : ℕ) (S : Scheme.{0}) (t : S ⟶ Sp (cycAway M)) (c : SiegPre h M (zetaAway M) t) (B : Over S) [GrpObj B] [IsCommMonObj B] (Q : LB (c.A ⊗ B).left) (la : c.A ⟶ B) (mu : B ⟶ c.A) (hZ : GlobalTheory.ZarhinFam.ZData c d B Q la mu) (T : Over S) (x : T ⟶ GlobalTheory.ZarhinFam.Zob c.A B), (∃ t : ((GlobalTheory.ZarhinFam.zP c.A B c.isLB hZ.2.1.isLB d mu).pull (lift (snd (GlobalTheory.ZarhinFam.Zob c.A B) T ≫ x) (fst (GlobalTheory.ZarhinFam.Zob c.A B) T)).left).Gen, t.IsGen) → ∀ j, ((∏ i, (x ≫ GlobalTheory.ZarhinFam.pa c.A B i) ^ GlobalTheory.ZarhinFam.quat d j i) ≫ la) * (x ≫ GlobalTheory.ZarhinFam.pb c.A B j) ^ d = 1 := by
   intro h M d S t c B _ _ Q la mu hZ T x hx j

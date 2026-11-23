@@ -184,7 +184,6 @@ theorem tied_pair_square_relation (hH : GlobalTheory.Published.HoweDualityReal) 
     (by rw [map_smul, hp _ f1, hp' _ f2, h1, h2, TensorProduct.tmul_smul, map_smul])
   rw [map_smul] at h3
   rw [mul_smul, h3, smul_smul, inv_mul_cancel₀ hs, one_smul]
-open GlobalTheory.SquareIdent in
 theorem tied_pair_regularization_constant (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs) (hK : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree) (hWC : GlobalTheory.SquareSt.WeilConvergence)
     (hTA : GlobalTheory.SquareSt.ThetaIntegralsAgree) {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T} (hL : L.Is μ₀)
     (W : G.Weil) (B : Frames G) (ρ : RealMatch W) (t : T) (hst : SquareStanding G t) (i j : Fin D.R.m)

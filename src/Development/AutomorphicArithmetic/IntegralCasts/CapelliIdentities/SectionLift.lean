@@ -66,7 +66,6 @@ private theorem UpperTheory.Reformulated.B.Yt7.ring_lift {R K : Type} [CommRing 
   · ext a
     exact key a
 
-open CategoryTheory AlgebraicGeometry in
 private theorem UpperTheory.Reformulated.B.Yt7.section_lift {R K : Type} [CommRing R] [IsDomain R] [Field K] [Algebra R K]
     [IsFractionRing R K] [IsIntegrallyClosed R] {P : Scheme} (g : P ⟶ Spec (CommRingCat.of R)) [IsFinite g]
     (s : Spec (CommRingCat.of K) ⟶ P)

@@ -210,7 +210,6 @@ theorem mu_one_unramAt {μ₀ : T} (hL : L.Is μ₀) (G : GridData L sc) (t : T)
     · exact hQ P hP (by rw [← hw, (GlobalTheory.IdemSupport.isConjPl_iff _ _).1 h, GlobalTheory.IdemSupport.under_cP])
 
 
-open GlobalTheory.RowVacScalar in
 
 theorem om_first_vac (S : GridChoice W U) {μ₀ : T} (hL : L.Is μ₀) (t : T) (k : FinPt G (.top 0))
     (hk : finG (G.V (.top 0)) k ∈ G.Kplus) :

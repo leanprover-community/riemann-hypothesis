@@ -147,7 +147,6 @@ end GlobalTheory
 
 namespace GlobalTheory
 
-open SheafPull
 
 theorem cechAbHEquivH'_pull {T T' : TopCat.{0}} (f : T' ⟶ T) {ι κ : Type} [LinearOrder ι]
     [LinearOrder κ] [Finite ι] [Finite κ] {V : Opens T} {U : ι → Opens T} {V' : Opens T'}
@@ -192,7 +191,6 @@ end GlobalTheory
 
 namespace GlobalTheory
 
-open SheafPull
 
 theorem cechOpen_le_preimage_image {X X' : Scheme.{0}} (f : X' ⟶ X) {ι κ : Type} [LinearOrder ι] (U : ι → X.Opens)
     (U' : κ → X'.Opens) (τ : κ → ι) (hτ : ∀ k, U' k ≤ f ⁻¹ᵁ U (τ k)) (s : Finset κ) :

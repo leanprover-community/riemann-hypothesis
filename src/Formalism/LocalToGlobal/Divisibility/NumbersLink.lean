@@ -716,13 +716,11 @@ theorem ofNum_errB : (ofNum N eJ δ T Nc lam0 C0 ce Ch Sw C1 H).errB =
 
 end RecNums
 
-section Concrete
 
 open NumberField IsDedekindDomain Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
 
-end Concrete
 
 namespace NumInst
 

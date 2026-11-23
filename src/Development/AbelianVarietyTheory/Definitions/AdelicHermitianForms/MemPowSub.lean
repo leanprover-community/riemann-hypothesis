@@ -82,8 +82,6 @@ def powSub (p : ℕ) {F L : Type} [Field F] [Field L] (φ : F →+* L) : Subgrou
     rintro a ⟨r, hr⟩
     exact ⟨r⁻¹, by rw [inv_pow, hr, Units.val_inv_eq_inv_val, map_inv₀]⟩
 
-open NumberField IsDedekindDomain Polynomial in
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.CNorm.mem_powSub (p : ℕ) {F L : Type} [Field F] [Field L] (φ : F →+* L)
     (x : Fˣ) : x ∈ _root_.GlobalTheory.CNorm.powSub p φ ↔ ∃ r : L, r ^ p = φ (x : F) := Iff.rfl
 
@@ -91,8 +89,6 @@ def kNorm (p : ℕ) {F L : Type} [Field F] [Field L] (φ : F →+* L) (δ : F) :
   (Units.map (Algebra.norm L : AdjoinRoot (X ^ p - C (φ δ) : L[X]) →* L)).range.comap
     (Units.map (φ : F →* L))
 
-open NumberField IsDedekindDomain Polynomial in
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.CNorm.mem_kNorm (p : ℕ) {F L : Type} [Field F] [Field L] (φ : F →+* L)
     (δ : F) (x : Fˣ) :
     x ∈ _root_.GlobalTheory.CNorm.kNorm p φ δ ↔ ∃ y : (AdjoinRoot (X ^ p - C (φ δ) : L[X]))ˣ,

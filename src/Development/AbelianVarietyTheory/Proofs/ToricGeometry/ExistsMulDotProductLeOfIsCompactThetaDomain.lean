@@ -59,7 +59,6 @@ private lemma im_quadForm_pos_of_mem_thetaDomain {τ : Matrix ι ι ℂ} (hτ : 
   rw [add_mulVec, dotProduct_add, star_trivial, h1] at h2
   linarith
 
-open Complex Matrix in
 variable {ι : Type*} [Fintype ι] in
 private lemma exists_uniform_im_quadForm_lower_bound_on_compact {K : Set ((ι → ℂ) × (ι → ι → ℂ))}
     (hK : IsCompact K) (hKd : ∀ p ∈ K, Matrix.of p.2 ∈ _root_.ReciprocityTheory.PTheta.ThetaDomain ι) :
@@ -119,7 +118,6 @@ private lemma exists_uniform_im_quadForm_lower_bound_on_compact {K : Set ((ι �
       _ ≤ Q := h4
 
 
-open Complex Matrix in
 variable {ι : Type*} [Fintype ι] in
 theorem _root_.GlobalTheory.thetaMTest_holds : _root_.ReciprocityTheory.PTheta.ThetaMTestStatement := by
   unfold _root_.ReciprocityTheory.PTheta.ThetaMTestStatement
@@ -132,7 +130,6 @@ theorem _root_.GlobalTheory.thetaMTest_holds : _root_.ReciprocityTheory.PTheta.T
     (fun i => (_root_.GlobalTheory.abs_im_apply_le_norm p.1 i).trans (hS p hp)) l
 
 
-open Complex Matrix in
 variable {ι : Type*} [Fintype ι] in
 theorem _root_.GlobalTheory.thetaSummable_holds : _root_.ReciprocityTheory.PTheta.ThetaSummableStatement := by
   have hM := _root_.GlobalTheory.thetaMTest_holds
@@ -147,7 +144,6 @@ theorem _root_.GlobalTheory.thetaSummable_holds : _root_.ReciprocityTheory.PThet
     (fun l => hbound b _ (Set.mem_singleton _) l) hu
 
 
-open Complex Matrix in
 variable {ι : Type*} [Fintype ι] in
 theorem _root_.GlobalTheory.thetaMTest_and_thetaSummable : _root_.ReciprocityTheory.PTheta.ThetaMTestStatement ∧ _root_.ReciprocityTheory.PTheta.ThetaSummableStatement :=
   ⟨_root_.GlobalTheory.thetaMTest_holds, _root_.GlobalTheory.thetaSummable_holds⟩

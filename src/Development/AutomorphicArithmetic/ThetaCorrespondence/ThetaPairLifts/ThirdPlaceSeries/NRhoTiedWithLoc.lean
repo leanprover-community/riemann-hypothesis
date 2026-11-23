@@ -39,10 +39,8 @@ namespace GlobalTheory.HeightCounting.FitRho
 open Formalism.L2.NR
 end GlobalTheory.HeightCounting.FitRho
 namespace GlobalTheory.HeightCounting.FitRho
-open Formalism.L2.NR
 end GlobalTheory.HeightCounting.FitRho
 namespace GlobalTheory.HeightCounting.FitRho
-open Formalism.L2.NR
 
 
 theorem rhoS_withLoc_alt (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D' : D7) (b : _root_.GlobalTheory.HeightCounting.NormChoiceConstructed hL D')

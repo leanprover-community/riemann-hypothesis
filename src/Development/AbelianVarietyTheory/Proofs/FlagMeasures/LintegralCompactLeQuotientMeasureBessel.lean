@@ -66,8 +66,6 @@ theorem continuousOn_inv : ContinuousOn (fun b : Mat k r => b⁻¹) {b | b.det �
 
 end GlobalTheory.SgInf.LocEmb
 
-open MeasureTheory Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S GlobalTheory.SgInf
-open scoped InnerProductSpace
 
 namespace GlobalTheory.SgInf.LocEmb
 variable {k r : ℕ}

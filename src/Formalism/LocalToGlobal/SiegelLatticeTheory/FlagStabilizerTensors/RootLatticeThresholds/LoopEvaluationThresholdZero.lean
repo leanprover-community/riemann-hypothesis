@@ -133,7 +133,6 @@ theorem loop_evaluation_threshold_zero (hLC : PN.LoopCores) (hSub : PB.SubFamily
 
 end TransportedAlt
 
-section Fam5
 
 variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ)
   (X : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, HidaSetting (Fm.D x i))
@@ -143,6 +142,5 @@ variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ)
   (hCT : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ConcTie (X x hx i) (Y x hx i))
 
 
-end Fam5
 
 end Formalism.L2.SG.LoopsTies

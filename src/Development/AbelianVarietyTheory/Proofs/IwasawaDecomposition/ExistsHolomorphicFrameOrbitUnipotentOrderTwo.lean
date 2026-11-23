@@ -270,7 +270,6 @@ theorem exists_monic (Λ : Submodule (𝓞 E) (Fin N → E)) (hfg : Λ.FG) (hsp 
   rw [hq0] at this
   simpa using this.symm
 
-open Polynomial in
 theorem exists_pow_nilpotent (h : IsOrbit X T M γ x) :
     ∃ m : ℕ, 0 < m ∧ IsNilpotent ((γ : Matrix (Fin N) (Fin N) E) ^ m - 1) := by
   classical

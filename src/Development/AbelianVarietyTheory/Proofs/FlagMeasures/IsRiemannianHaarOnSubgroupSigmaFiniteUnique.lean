@@ -50,8 +50,6 @@ private theorem uMat_one_flag_measures {n : ℕ} {ε : Fin n → Bool} : _root_.
   rw [inv_one, ← h1] at h2
   exact h2
 
-open MeasureTheory NumberField Matrix Finset in
-open Topology in
 private theorem comap_subtype_val_haar_properties {n : ℕ} {ε : Fin n → Bool}
     (S : Subgroup (_root_.Formalism.REAL.UJ ε)) (hS : IsClosed (S : Set (_root_.Formalism.REAL.UJ ε))) (d : ℕ)
     (μ : Measure (_root_.Formalism.REAL.UJ ε)) (h : _root_.GlobalTheory.FlagMeas.IsGaugeSub (S : Set (_root_.Formalism.REAL.UJ ε)) d μ) :
@@ -120,8 +118,6 @@ private theorem comap_subtype_val_haar_properties {n : ℕ} {ε : Fin n → Bool
     rw [← hνB, h0, Measure.coe_zero, Pi.zero_apply]
 
 
-open MeasureTheory NumberField Matrix Finset in
-open Topology in
 theorem _root_.GlobalTheory.GaugeSubHaar.isGaugeSub_haar : ∀ (n : ℕ) (ε : Fin n → Bool) (S : Subgroup (_root_.Formalism.REAL.UJ ε)), IsClosed (S : Set (_root_.Formalism.REAL.UJ ε)) → ∀ (d : ℕ) (μ : Measure (_root_.Formalism.REAL.UJ ε)), _root_.GlobalTheory.FlagMeas.IsGaugeSub (S : Set (_root_.Formalism.REAL.UJ ε)) d μ → SigmaFinite μ ∧ IsFiniteMeasureOnCompacts μ ∧ ∀ μ', _root_.GlobalTheory.FlagMeas.IsGaugeSub (S : Set (_root_.Formalism.REAL.UJ ε)) d μ' → μ' = μ := by
   intro n ε S hS d μ hμ
   have hme : MeasurableEmbedding (Subtype.val : S → _root_.Formalism.REAL.UJ ε) :=

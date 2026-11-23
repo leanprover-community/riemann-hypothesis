@@ -71,8 +71,6 @@ theorem _root_.GlobalTheory.AppellHumbert.exists_real_extension {g : ℕ} (Λ : 
     rw [← Module.Basis.ofZLatticeBasis_apply ℝ Λ b i, Module.Basis.constr_basis]
   exact LinearMap.congr_fun key l
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 theorem _root_.GlobalTheory.AppellHumbert.eq_sum_re_im {g : ℕ} (u : Fin g → ℂ) :
     u = ∑ j, ((u j).re • (Pi.single j (1 : ℂ) : Fin g → ℂ)
       + (u j).im • (Pi.single j I : Fin g → ℂ)) := by
@@ -82,8 +80,6 @@ theorem _root_.GlobalTheory.AppellHumbert.eq_sum_re_im {g : ℕ} (u : Fin g → 
 end AppellHumbert
 
 
-open Complex Matrix Filter Topology in
-open scoped BigOperators Real in
 theorem _root_.GlobalTheory.appellHumbert_normal_form_of_linear_exponent :
     (∀ (g : ℕ) (Λ : Submodule ℤ (Fin g → ℂ)), DiscreteTopology Λ → Submodule.span ℝ (Λ : Set (Fin g → ℂ)) = ⊤ → ∀ (a : Λ → ℂ) (B : Λ →+ ((Fin g → ℂ) →ₗ[ℂ] ℂ)), (∀ l, a l ≠ 0) → (∀ l m : Λ, a (l + m) = a l * a m * cexp (B l m)) → ∃ (Hm : Matrix (Fin g) (Fin g) ℂ) (χ : Λ → ℂ) (Ef : LinearMap.BilinForm ℤ Λ) (Q : (Fin g → ℂ) → ℂ), Hm.IsHermitian ∧ (∀ l, ‖χ l‖ = 1) ∧ (∀ l m : Λ, (Ef l m : ℝ) = ((l : Fin g → ℂ) ⬝ᵥ Hm.mulVec (star (m : Fin g → ℂ))).im) ∧ Differentiable ℂ Q ∧ Q 0 = 0 ∧ ∀ (l : Λ) z, a l * cexp (B l z) * cexp (Q z - Q (z + l)) = (χ l * cexp (Real.pi * (z ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ))) + Real.pi / 2 * ((l : Fin g → ℂ) ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ)))))) := by
   intro g Λ hdisc hΛ a B ha hcoc

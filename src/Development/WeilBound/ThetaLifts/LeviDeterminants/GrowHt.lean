@@ -275,7 +275,6 @@ end PositivityTheory.ThKF0.Grow.Ht
 
 namespace PositivityTheory.ThKF0.Grow
 
-open scoped Matrix NNReal ENNReal Classical TensorProduct
 open NumberField IsDedekindDomain Filter Topology GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Ht
 
 theorem htBd : HtBd := by

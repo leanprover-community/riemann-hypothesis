@@ -67,8 +67,6 @@ attribute [local instance] MvPolynomial.gradedAlgebra MvPolynomial.algebraMvPoly
   simp [_root_.GlobalTheory.ChowSpec.lastSubst]
 
 set_option autoImplicit false in
-open MvPolynomial Filter in
-open scoped ENNReal in
 attribute [local instance] MvPolynomial.gradedAlgebra MvPolynomial.algebraMvPolynomial in
 @[simp] theorem _root_.GlobalTheory.ChowSpec.lastSubst_castSucc {A : Type} [CommRing A] {N : ℕ} (D : ℕ)
     (t : Fin N → A) (i : Fin D) (j : Fin N) :
@@ -90,8 +88,6 @@ def lastEquiv (K : Type) [CommRing K] (N D : ℕ) :
       refine Fin.lastCases ?_ (fun i => ?_) i <;> simp)
 
 set_option autoImplicit false in
-open MvPolynomial Filter in
-open scoped ENNReal in
 attribute [local instance] MvPolynomial.gradedAlgebra MvPolynomial.algebraMvPolynomial in
 private theorem isWeightedHomogeneous_aeval_of_forall {R S σ τ Γ Δ : Type} [CommSemiring R]
     [CommSemiring S] [Algebra R S] [AddCommMonoid Γ] [AddCommMonoid Δ] {w : σ → Γ}
@@ -114,8 +110,6 @@ private theorem isWeightedHomogeneous_aeval_of_forall {R S σ τ Γ Δ : Type} [
 
 
 set_option autoImplicit false in
-open MvPolynomial Filter in
-open scoped ENNReal in
 attribute [local instance] MvPolynomial.gradedAlgebra MvPolynomial.algebraMvPolynomial in
 theorem _root_.GlobalTheory.ChowSpec.exists_isChowFormInt_generic_section : ∀ (K L : Type) [Field K] [Field L] (N : ℕ) [Algebra K L] [Algebra (MvPolynomial (Fin N) K) L] [IsScalarTower K (MvPolynomial (Fin N) K) L] [IsFractionRing (MvPolynomial (Fin N) K) L] (P : Ideal (MvPolynomial (Fin N) K)) (D δ : ℕ) (f : MvPolynomial (Fin (D + 1 + 1) × Fin N) K), (∀ g ∈ P, ∀ n : ℕ, homogeneousComponent n g ∈ P) → _root_.GlobalTheory.ChowHt.IsChowFormInt P (D + 1) δ f → ∃ f' : MvPolynomial (Fin (D + 1) × Fin N) L, _root_.GlobalTheory.ChowHt.IsChowFormInt (P.map (MvPolynomial.map (algebraMap K L) : MvPolynomial (Fin N) K →+* MvPolynomial (Fin N) L) ⊔ Ideal.span {(∑ j : Fin N, C (algebraMap (MvPolynomial (Fin N) K) L (X j)) * X j : MvPolynomial (Fin N) L)}) D δ f' := by
   intro K L _ _ N _ _ _ _ P D δ f hP hf

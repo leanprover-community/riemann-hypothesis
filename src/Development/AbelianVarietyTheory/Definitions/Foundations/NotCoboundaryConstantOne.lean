@@ -147,7 +147,6 @@ end GlobalTheory.K5
 
 namespace GlobalTheory.K5.Basic
 
-open Polynomial
 
 section Ring
 

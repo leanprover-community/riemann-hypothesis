@@ -53,13 +53,10 @@ open scoped Classical
 variable (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ]
 end GlobalTheory.LagrThetaAdm
 namespace GlobalTheory.LagrThetaAdm
-open GlobalTheory.ThetaTrCont
-open scoped Classical
 variable (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ] [Invertible (2 : AdeleRing (𝓞 F) F)]
 end GlobalTheory.LagrThetaAdm
 namespace GlobalTheory.LagrThetaAdm
 open GlobalTheory.ThetaTrCont GlobalTheory.WeilSchrodinger
-open scoped Classical
 theorem exists_admissible_eq_lagrangian_integral : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E),
     _root_.UpperTheory.TP.W.GoodK σ B → ∀ (nS nT : ℕ) (JT : Matrix (Fin nT) (Fin nT) E) (JB : Matrix (Fin nS) (Fin nS) E) (ξ : AF F ⊗[F] E)
       (κ : Type) [Fintype κ]

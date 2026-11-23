@@ -74,7 +74,6 @@ end GlobalTheory.LiftWeightForced
 
 namespace GlobalTheory.LiftWeightForced
 
-open Formalism.IndefR.IndefiniteWeightData
 
 variable (D : D7) (j : Fin D.R.m) (τ : D.what₂.Tau)
 
@@ -157,7 +156,6 @@ end GlobalTheory.LiftWeightForced
 
 namespace GlobalTheory.LiftWeightForced
 
-open Formalism.IndefR.IndefiniteWeightData
 
 variable (D : D7) (j : Fin D.R.m) (τ : D.what₂.Tau)
 

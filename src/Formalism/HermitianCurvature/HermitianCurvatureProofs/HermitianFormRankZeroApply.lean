@@ -565,7 +565,6 @@ end Formalism.FourierDecayAlt.P.StabilizerDisintegration.HC
 namespace Formalism.FourierDecayAlt.P.StabilizerDisintegration.HC
 
 open MeasureTheory Matrix Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
-open scoped ComplexConjugate
 
 noncomputable section
 

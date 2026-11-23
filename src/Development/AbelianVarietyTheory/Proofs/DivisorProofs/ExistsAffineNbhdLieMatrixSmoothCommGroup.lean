@@ -180,7 +180,6 @@ end GlobalTheory.LieFrameCoord
 
 namespace GlobalTheory.LieFrameCoord
 
-open ReciprocityTheory.ChartRestriction.G.PullbackSections Formalism.L2.Pj
 
 variable {X0 : Scheme.{0}} {A : Over X0} [GrpObj A] [IsCommMonObj A]
 

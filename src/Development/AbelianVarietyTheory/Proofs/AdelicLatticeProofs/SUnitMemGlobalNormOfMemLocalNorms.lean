@@ -59,8 +59,6 @@ theorem _root_.GlobalTheory.QNorm.index_eq_relIndex_mul_index_sup {G : Type} [Co
     W.index = W.relIndex U * (U ⊔ W).index := by
   rw [← Subgroup.relIndex_mul_index (le_sup_right : W ≤ U ⊔ W), Subgroup.relIndex_sup_right]
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 theorem _root_.GlobalTheory.QNorm.sqs_le_locSq (F : Type) [Field F] [NumberField F]
     (U : Subgroup Fˣ) (S : Finset (HeightOneSpectrum (𝓞 F))) :
     _root_.GlobalTheory.QNorm.sqs U ≤ _root_.GlobalTheory.QNorm.locSq F S := by
@@ -73,8 +71,6 @@ theorem _root_.GlobalTheory.QNorm.sqs_le_locSq (F : Type) [Field F] [NumberField
     Units.val_pow_eq_pow_val, map_pow]
   exact ⟨fun v _ => ⟨_, sq _⟩, fun σ => ⟨_, sq _⟩⟩
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private lemma eq_one_of_mul_self_eq_one_withZero (a : WithZero (Multiplicative ℤ))
     (h : a * a = 1) : a = 1 := by
   induction a using WithZero.recZeroCoe with
@@ -87,8 +83,6 @@ private lemma eq_one_of_mul_self_eq_one_withZero (a : WithZero (Multiplicative �
     have h4 : m = 1 := by rw [← ofAdd_toAdd m, h3, ofAdd_zero]
     rw [h4, WithZero.coe_one]
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 theorem _root_.GlobalTheory.QNorm.mem_sqs_sUnits_of_isSquare (F : Type) [Field F] [NumberField F]
     (S : Finset (HeightOneSpectrum (𝓞 F))) (y : Fˣ) (hy : y ∈ _root_.GlobalTheory.QNorm.sUnits F S)
     (h : IsSquare (y : F)) : y ∈ _root_.GlobalTheory.QNorm.sqs (_root_.GlobalTheory.QNorm.sUnits F S) := by
@@ -107,8 +101,6 @@ theorem _root_.GlobalTheory.QNorm.mem_sqs_sUnits_of_isSquare (F : Type) [Field F
   · ext
     simp [hs, sq]
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private lemma sqs_le_self {G : Type} [CommGroup G] (U : Subgroup G) :
     _root_.GlobalTheory.QNorm.sqs U ≤ U := by
   intro y hy
@@ -118,8 +110,6 @@ private lemma sqs_le_self {G : Type} [CommGroup G] (U : Subgroup G) :
   exact U.pow_mem hs 2
 
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 theorem _root_.GlobalTheory.QNorm.sUnit_mem_normSub_of_mem_locNorm : ∀ (F : Type) [Field F] [NumberField F] (δ : Fˣ) (S : Finset (HeightOneSpectrum (𝓞 F))), _root_.GlobalTheory.QNorm.admitted F S → δ ∈ _root_.GlobalTheory.QNorm.sUnits F S → ¬ IsSquare (δ : F) → ∀ x ∈ _root_.GlobalTheory.QNorm.sUnits F S, x ∈ _root_.GlobalTheory.QNorm.locNorm F δ S → x ∈ _root_.GlobalTheory.QNorm.normSub (RingHom.id F) (δ : F) := by
   intro F _ _ δ S hS hδ hns x hx hxN
   classical

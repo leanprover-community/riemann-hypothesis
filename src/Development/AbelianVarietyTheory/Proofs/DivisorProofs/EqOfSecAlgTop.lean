@@ -55,8 +55,6 @@ theorem _root_.GlobalTheory.HilbAff.appLE_eq_of_eq {X Y : Scheme.{0}} {f₁ f₂
   subst h
   rfl
 
-open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Opposite in
-open scoped TensorProduct in
 variable (A B : Type) [CommRing A] [CommRing B] [Algebra A B] in
 theorem _root_.GlobalTheory.HilbAff.kappa_comm {T : Scheme.{0}}
     (g : T ⟶ Spec (CommRingCat.of A))
@@ -119,8 +117,6 @@ def xI (C : Type) [CommRing C] [Algebra A C] (J : Ideal (C ⊗[A] B)) :
   (Spec.map (CommRingCat.ofHom ((Ideal.Quotient.mk J).comp
     (Algebra.TensorProduct.comm A B C).toRingHom)) ≫ (pullbackSpecIso A B C).inv).ker
 
-open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Opposite in
-open scoped TensorProduct in
 variable (A B : Type) [CommRing A] [CommRing B] [Algebra A B] in
 theorem _root_.GlobalTheory.HilbAff.basic_iff_kappa {r N : ℕ} (e : Module.Basis (Fin N) A B)
     (σ : Fin r ↪ Fin N) {T : Scheme.{0}}
@@ -136,8 +132,6 @@ theorem _root_.GlobalTheory.HilbAff.basic_iff_kappa {r N : ℕ} (e : Module.Basi
 
   simp only [map_sum, _root_.GlobalTheory.HilbAff.kappa_tmul]
 
-open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Opposite in
-open scoped TensorProduct in
 variable (A B : Type) [CommRing A] [CommRing B] [Algebra A B] in
 theorem _root_.GlobalTheory.HilbAff.secAlg_res {T : Scheme.{0}}
     (g : T ⟶ Spec (CommRingCat.of A)) {U V : T.Opens}
@@ -147,8 +141,6 @@ theorem _root_.GlobalTheory.HilbAff.secAlg_res {T : Scheme.{0}}
   exact congrArg (fun φ => φ.hom ((Scheme.ΓSpecIso (CommRingCat.of A)).inv.hom a))
     (Scheme.Hom.appLE_map g (U := ⊤) (by simp) (homOfLE h).op)
 
-open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Opposite in
-open scoped TensorProduct in
 variable (A B : Type) [CommRing A] [CommRing B] [Algebra A B] in
 theorem _root_.GlobalTheory.HilbAff.secAlg_comp {C : Type} [CommRing C] {T : Scheme.{0}}
     (h : T ⟶ Spec (CommRingCat.of C)) (f : A →+* C) (U : T.Opens) :
@@ -169,8 +161,6 @@ theorem _root_.GlobalTheory.HilbAff.secAlg_comp {C : Type} [CommRing C] {T : Sch
   ext a
   exact congrArg (fun φ => φ.hom a) hm
 
-open CategoryTheory CategoryTheory.Limits AlgebraicGeometry Opposite in
-open scoped TensorProduct in
 variable (A B : Type) [CommRing A] [CommRing B] [Algebra A B] in
 theorem _root_.GlobalTheory.HilbAff.eq_of_secAlg_top {T : Scheme.{0}}
     {g₁ g₂ : T ⟶ Spec (CommRingCat.of A)}

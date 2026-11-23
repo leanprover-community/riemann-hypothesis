@@ -90,7 +90,6 @@ end GlobalTheory.KillSquare
 
 namespace GlobalTheory.KillSquare
 
-open GlobalTheory.CechPic
 
 theorem pow_sq_eq_one_of_lam_trivial : ∀ (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A → ∀ (M : LB A.left), M.IsLB →
     ∀ (P : Out.PolAV (Sp ℂ)) (ψ : A ⟶ P.A) (ρ : P.A ⟶ A) (N : ℕ), IsMonHom ψ → IsMonHom ρ →

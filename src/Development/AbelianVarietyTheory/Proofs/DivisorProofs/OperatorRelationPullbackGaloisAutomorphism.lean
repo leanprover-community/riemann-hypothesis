@@ -80,7 +80,6 @@ end GlobalTheory.Mum.Conj.PhiTw
 
 namespace GlobalTheory.Mum.Conj.PhiTw
 
-open GlobalTheory.FieldBaseChange GlobalTheory.Mum.Conj.FamBij
 
 theorem phiRel_famTw : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (N : ℕ)
     (τ : Kb R →ₐ[FractionRing R] Kb R) (p p₀ : QkPt D (Kb R) N) (h : QkExt τ.toRingHom p p₀)

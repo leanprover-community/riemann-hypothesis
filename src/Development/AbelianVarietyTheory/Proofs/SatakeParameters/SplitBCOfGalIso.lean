@@ -55,6 +55,5 @@ end GlobalTheory.SplitDetermines
 
 namespace GlobalTheory.RowTie
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain
 
 end GlobalTheory.RowTie

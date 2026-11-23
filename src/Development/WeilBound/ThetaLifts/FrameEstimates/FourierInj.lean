@@ -75,7 +75,6 @@ def split : (κ → AF F) ≃ₜ+ ((κ → mixedEmbedding.mixedSpace F) × (κ �
     exact (GroundTheory.Global.homeomorphMixedSpace F).symm.continuous.comp ((continuous_apply i).comp continuous_fst)
 
 
-open scoped Classical in
 theorem sch_props (μ : Measure (κ → AF F)) [μ.IsAddHaarMeasure] {Φ : (κ → AF F) → ℂ} (hΦ : Φ ∈ schA F κ) :
     Continuous Φ ∧ (∃ C : ℝ, ∀ x, ‖Φ x‖ ≤ C) ∧ Integrable Φ μ := by
   have : BorelSpace (κ → AF F) := ⟨rfl⟩

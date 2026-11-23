@@ -104,7 +104,6 @@ end GlobalTheory.AlgWave
 
 namespace GlobalTheory.AlgWave
 
-open GlobalTheory.PlaceModel
 
 variable {G : Type} [AddCommGroup G] {χ : G → G → ℂ} {X Y L L' : AddSubgroup G}
 

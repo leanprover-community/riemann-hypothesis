@@ -75,7 +75,6 @@ private lemma exists_prime_gen (v : Pl) :
     rwa [h3, h4] at h2
   exact Ideal.span_singleton_eq_span_singleton.2 this
 
-open NumberField in
 private lemma eq_of_natCast_mem {p : ℕ} (hp : p.Prime) (v v' : Pl)
     (h : (p : 𝓞 ℚ) ∈ v.asIdeal) (h' : (p : 𝓞 ℚ) ∈ v'.asIdeal) : v = v' := by
   have key : ∀ u : Pl, (p : 𝓞 ℚ) ∈ u.asIdeal → u.asIdeal = Ideal.span {(p : 𝓞 ℚ)} := by
@@ -90,7 +89,6 @@ private lemma eq_of_natCast_mem {p : ℕ} (hp : p.Prime) (v v' : Pl)
     rw [this]
   exact IsDedekindDomain.HeightOneSpectrum.ext ((key v h).trans (key v' h').symm)
 
-open NumberField in
 theorem htc_places :
     ∀ (w : UpperTheory.Reformulated.B.Yza3.Pl),
       UpperTheory.Reformulated.B.Yza3.normV w ≠ (0 : ℕ) ∧

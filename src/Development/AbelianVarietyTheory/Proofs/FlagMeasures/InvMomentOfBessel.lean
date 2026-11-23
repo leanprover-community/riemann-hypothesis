@@ -87,7 +87,6 @@ end GlobalTheory.TwoSidedMoments
 
 namespace GlobalTheory.TwoSidedMoments
 
-open GlobalTheory.AmpMoments
 
 theorem hypTT_self (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ) (hZ : HypZ D large₂ C' Cl Cg cb Cu cT CT C0)
     (w : D.what₂.Word) : HypTT D w w := by
@@ -120,7 +119,6 @@ end GlobalTheory.TwoSidedMoments
 
 namespace GlobalTheory.TwoSidedMoments
 
-open GlobalTheory.AmpMoments
 
 theorem rd_le_b (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ) (hCl : 1000 ≤ Cl)
     (hZ : HypZ D large₂ C' Cl Cg cb Cu cT CT C0) : D.host.rdE ≤ large₂.sc.b := by

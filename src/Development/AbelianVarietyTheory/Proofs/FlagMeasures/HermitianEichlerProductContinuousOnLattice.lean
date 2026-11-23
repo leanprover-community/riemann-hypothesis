@@ -116,8 +116,6 @@ private lemma exists_algebraMap_mul_mem_O {F : Type} [Field F] [ValuativeRel F]
   exact L.O.add_mem (L.O.mul_mem (hO _ hs₂) (hO _ hs₁x))
     (L.O.mul_mem (L.O.mul_mem (hO _ hs₁) (hO _ hs₂y)) hωO)
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] (O : Subring E) {N : ℕ} in
 variable {O} in
 variable (hden : ∀ z : E, ∃ a : F, a ≠ 0 ∧ algebraMap F E a ∈ O ∧ algebraMap F E a * z ∈ O) in
@@ -131,8 +129,6 @@ private lemma exists_algebraMap_mul_mem_O_forall {κ : Type} [Fintype κ] (z : �
   · rw [map_prod, ← Finset.prod_erase_mul _ _ (Finset.mem_univ k), mul_assoc]
     exact O.mul_mem (O.prod_mem fun k' _ => haO k') (haz k)
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] (O : Subring E) {N : ℕ} in
 variable {O} in
 variable (hden : ∀ z : E, ∃ a : F, a ≠ 0 ∧ algebraMap F E a ∈ O ∧ algebraMap F E a * z ∈ O) in
@@ -149,23 +145,17 @@ private lemma exists_algebraMap_mem_O_Bd_inv (A : Module.End E (Fin N → E)) :
       exact O.mul_mem (hm j) (haz (j, i))
   · rw [smul_smul, ← map_mul, inv_mul_cancel₀ ha0, map_one, one_smul]
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] (O : Subring E) {N : ℕ} in
 variable {O} in
 private lemma Bd_zero' (t : F) : _root_.GlobalTheory.HL.EichCont.Bd O (0 : Module.End E (Fin N → E)) t :=
   fun _ _ => ⟨0, fun _ => O.zero_mem, by simp⟩
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] (O : Subring E) {N : ℕ} in
 variable {O} in
 private lemma IntV_smul_of_mem {o : E} (ho : o ∈ O) {m : Fin N → E}
     (hm : _root_.GlobalTheory.HL.EichCont.IntV O m) : _root_.GlobalTheory.HL.EichCont.IntV O (o • m) :=
   fun j => by simpa using O.mul_mem ho (hm j)
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] (O : Subring E) {N : ℕ} in
 variable {O} in
 private lemma Bd_of_Bd_mul_of_mem_O {A : Module.End E (Fin N → E)} {s o : F}
@@ -175,23 +165,17 @@ private lemma Bd_of_Bd_mul_of_mem_O {A : Module.End E (Fin N → E)} {s o : F}
   obtain ⟨m₁, hm₁, e₁⟩ := hA m hm
   exact ⟨algebraMap F E o • m₁, IntV_smul_of_mem ho hm₁, by rw [e₁, map_mul, mul_smul]⟩
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] (O : Subring E) {N : ℕ} in
 variable {O} in
 private lemma Bd_of_eq {A : Module.End E (Fin N → E)} {s t : F} (h : s = t)
     (hA : _root_.GlobalTheory.HL.EichCont.Bd O A s) : _root_.GlobalTheory.HL.EichCont.Bd O A t := h ▸ hA
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] (O : Subring E) {N : ℕ} in
 variable {O} in
 private lemma IntV_add' {m m' : Fin N → E} (hm : _root_.GlobalTheory.HL.EichCont.IntV O m)
     (hm' : _root_.GlobalTheory.HL.EichCont.IntV O m') : _root_.GlobalTheory.HL.EichCont.IntV O (m + m') :=
   fun j => O.add_mem (hm j) (hm' j)
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] (O : Subring E) {N : ℕ} in
 variable {O} in
 private lemma Bd_add' {A B : Module.End E (Fin N → E)} {t : F}
@@ -202,8 +186,6 @@ private lemma Bd_add' {A B : Module.End E (Fin N → E)} {t : F}
   obtain ⟨m₂, hm₂, e₂⟩ := hB m hm
   exact ⟨m₁ + m₂, IntV_add' hm₁ hm₂, by rw [LinearMap.add_apply, e₁, e₂, smul_add]⟩
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] (O : Subring E) {N : ℕ} in
 variable {O} in
 private lemma Bd_mul' {A B : Module.End E (Fin N → E)} {s t : F}
@@ -215,8 +197,6 @@ private lemma Bd_mul' {A B : Module.End E (Fin N → E)} {s t : F}
   refine ⟨m₂, hm₂, ?_⟩
   rw [Module.End.mul_apply, e₁, map_smul, e₂, smul_smul, ← map_mul, mul_comm t s]
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E] (O : Subring E) {N : ℕ} in
 variable {O} in
 variable (hden : ∀ z : E, ∃ a : F, a ≠ 0 ∧ algebraMap F E a ∈ O ∧ algebraMap F E a * z ∈ O) in
@@ -273,8 +253,6 @@ private lemma exists_Bd_prod_sub_of_Bd_sub : ∀ (r : ℕ) (A : Fin r → Module
         (by rw [map_mul]; exact O.mul_mem hbO hwO)
 
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.HL.EichCont.prod_eich_cont : ∀ {F : Type} [Field F] [ValuativeRel F]
     [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E]
     [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) (N r : ℕ) (Hm : Matrix (Fin N) (Fin N) E)

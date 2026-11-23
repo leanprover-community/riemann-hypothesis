@@ -113,7 +113,6 @@ end GlobalTheory.IntBall.MinorLast
 namespace GlobalTheory.IntBall.MinorLast
 
 open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst GlobalTheory.IndefiniteRowSideFullHecke.ExhaustionFrames GlobalTheory.IntBall
-open scoped ComplexOrder
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -166,8 +165,6 @@ end GlobalTheory.IntBall.MinorLast
 
 namespace GlobalTheory.IntBall.MinorLast
 
-open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst GlobalTheory.IndefiniteRowSideFullHecke.ExhaustionFrames GlobalTheory.IntBall
-open scoped ComplexOrder
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {p : ℕ}
 

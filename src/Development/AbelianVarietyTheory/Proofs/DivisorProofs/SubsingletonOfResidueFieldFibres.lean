@@ -41,7 +41,6 @@ open TensorProduct
 
 
 open TensorProduct in
-open TensorProduct in
 theorem _root_.GlobalTheory.subsingleton_of_residueField_fibres (O Q : Type) [CommRing O]
     [AddCommGroup Q] [Module O Q] [Module.Finite O Q]
     (h : ∀ q : PrimeSpectrum O, Subsingleton (q.asIdeal.ResidueField ⊗[O] Q)) :
@@ -51,8 +50,6 @@ theorem _root_.GlobalTheory.subsingleton_of_residueField_fibres (O Q : Type) [Co
   rw [Module.mem_support_iff_nontrivial_residueField_tensorProduct] at hq
   exact not_nontrivial_iff_subsingleton.mpr (h q) hq
 
-open TensorProduct in
-open TensorProduct in
 theorem _root_.GlobalTheory.surjective_of_fibre_rank (O M N : Type) [CommRing O] [AddCommGroup M]
     [Module O M] [AddCommGroup N] [Module O N] [Module.Finite O N] (f : M →ₗ[O] N)
     (h : ∀ q : PrimeSpectrum O, Module.finrank q.asIdeal.ResidueField

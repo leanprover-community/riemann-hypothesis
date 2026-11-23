@@ -166,7 +166,6 @@ end GlobalTheory.PureDS
 
 namespace GlobalTheory.PureDS
 
-open GlobalTheory.AutMult
 
 section Expand
 

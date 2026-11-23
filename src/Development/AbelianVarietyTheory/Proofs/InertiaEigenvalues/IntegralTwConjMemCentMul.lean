@@ -76,7 +76,6 @@ theorem _root_.GlobalTheory.TwIntegral.intg_inv {A : Matrix (Fin n) (Fin n) E}
     inv_one, one_mul]
   exact hadj
 
-open Matrix in
 variable {E : Type} [NontriviallyNormedField E] [IsUltrametricDist E] {n : ℕ} in
 theorem _root_.GlobalTheory.TwIntegral.isUnit_of_norm_det {A : Matrix (Fin n) (Fin n) E} (hd : ‖A.det‖ = 1) :
     IsUnit A := by
@@ -87,7 +86,6 @@ theorem _root_.GlobalTheory.TwIntegral.isUnit_of_norm_det {A : Matrix (Fin n) (F
 
 end Basics
 
-open Matrix in
 private theorem theta_integral_of_integral_of_norm_det_one (F E : Type)
     [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
     [_root_.GlobalTheory.JR.Unram F E] {n : ℕ} {g : Matrix (Fin n) (Fin n) E}
@@ -112,7 +110,6 @@ private theorem theta_integral_of_integral_of_norm_det_one (F E : Type)
     Ring.inverse_eq_inv', _root_.GlobalTheory.JR.Unram.norm_star F, norm_inv,
     hd, inv_one]
 
-open Matrix in
 private theorem exists_star_fixed_uniformizer (F E : Type) [NontriviallyNormedField F]
     [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
     [_root_.GlobalTheory.JR.Unram F E] :
@@ -135,7 +132,6 @@ private theorem exists_star_fixed_uniformizer (F E : Type) [NontriviallyNormedFi
   · intro z hz
     exact hmax (by simpa using hz)
 
-open Matrix in
 private theorem mul_inv_mul_conj_eq_one_of_norm_quotient {B : Type} [CommRing B] (τ : B → B)
     (w c Q Qi X Xi : B) (hτmul : ∀ g h, τ (g * h) = τ g * τ h) (hτone : τ 1 = 1)
     (hX : X = (w + c ^ 3) * (w * c ^ 2 + (τ c * c) ^ 2))
@@ -160,7 +156,6 @@ private theorem mul_inv_mul_conj_eq_one_of_norm_quotient {B : Type} [CommRing B]
     _ = (Q * Qi) * (τ Q * τ Qi) := by ring
     _ = 1 := by rw [e1, e1', one_mul]
 
-open Matrix in
 private theorem mul_inv_quotient_mem_twistedCentralizerGL_lemma_3 {E : Type} [Field E] [StarRing E]
     {n : ℕ} (δ c : Matrix (Fin n) (Fin n) E) (ϖ : E) (hδ : IsUnit δ) (hϖ : star ϖ = ϖ)
     (hsep : (_root_.GlobalTheory.Tw.nrm δ).charpoly.Separable) (hc : IsUnit c)
@@ -283,7 +278,6 @@ private theorem mul_inv_quotient_mem_twistedCentralizerGL_lemma_3 {E : Type} [Fi
   show c * (QA.1)⁻¹ * δ = δ * _root_.GlobalTheory.Tw.theta (c * (QA.1)⁻¹)
   rw [heq, nonsing_inv_mul_cancel_right _ _ hδd, ← heq]
 
-open Matrix in
 theorem _root_.GlobalTheory.TwIntegral.integral_twConj_mem_cent_mul : ∀ (F E : Type) [NontriviallyNormedField F]
     [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
     [_root_.GlobalTheory.JR.Unram F E] (n : ℕ) (δ x : Matrix (Fin n) (Fin n) E),

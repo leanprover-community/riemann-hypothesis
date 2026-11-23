@@ -96,12 +96,10 @@ private theorem exists_commute_coprime_mul_prime_power_order {G : Type} [Group G
     convert hx (Nat.gcdB (p ^ a) m) using 2
     rw [← hnm]; push_cast; ring
 
-open Polynomial in
 private theorem zpow_mul_zpow_eq_of_commute_of_zpow_eq {G : Type} [Group G] {c w : G} (hcw : Commute c w)
     {M : ℤ} (hc : c ^ M = c) (hw : w ^ M = 1) (i : ℤ) : (c ^ i * w) ^ M = c ^ i := by
   rw [(hcw.zpow_left i).mul_zpow, ← zpow_mul, mul_comm i M, zpow_mul, hc, hw, mul_one]
 
-open Polynomial in
 private theorem inv_mul_mul_zpow {G : Type} [Group G] (s a : G) (n : ℤ) :
     (s⁻¹ * a * s) ^ n = s⁻¹ * a ^ n * s := by
   have := map_zpow (MulAut.conj s⁻¹) a n
@@ -109,7 +107,6 @@ private theorem inv_mul_mul_zpow {G : Type} [Group G] (s a : G) (n : ℤ) :
   exact this.symm
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.exists_induced_int_prime_to : ∀ (G : Type) [Group G] [Finite G] (x : G) (p : ℕ), p.Prime → ∃ (E : Subgroup G) (f : G → ℤ) (ι : Type) (_ : Fintype ι) (r : ι → ℂ) (lam : ι → E →* ℂˣ), (∃ l : ℕ, l.Prime ∧ ∀ y : E, ∃ j : ℕ, y ^ l ^ j ∈ Subgroup.center E) ∧ ¬ (p : ℤ) ∣ f x ∧ (∀ i, IsIntegral ℤ (r i)) ∧ ∀ g, (f g : ℂ) = ∑ i, r i * _root_.GlobalTheory.BI.ind E (fun e => (lam i e : ℂ)) g := by
   intro G _ _ x p hp
   classical

@@ -54,10 +54,8 @@ def IsFrRd {U : Unf Xo c σ r} {k : U.Comp} {x : (U.X k).dom} (W : UnfAt U k x) 
 
 end FrRd
 
-section BC
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 
-end BC
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

@@ -100,7 +100,6 @@ private lemma charpoly_separable_of_isGen {F E : Type} [NontriviallyNormedField 
   rw [PerfectField.separable_iff_squarefree]
   exact (minpoly.isRadical F τ).squarefree (minpoly.ne_zero (Algebra.IsIntegral.isIntegral τ))
 
-open Matrix MeasureTheory Filter Topology in
 private lemma map_mul_of_commute_generator {F E : Type} [NontriviallyNormedField F]
     [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
     (A : _root_.GlobalTheory.JR.Et F E) (τ : A.K) (hτ : Algebra.adjoin F {τ} = ⊤)
@@ -131,7 +130,6 @@ private lemma map_mul_of_commute_generator {F E : Type} [NontriviallyNormedField
     rw [hK]
   | add u₁ u₂ h₁ h₂ => intro w; rw [map_add (f := _), add_mul, map_add (f := _), h₁, h₂, add_mul]
 
-open Matrix MeasureTheory Filter Topology in
 private lemma adjoin_eq_whole_of_isGen {F E : Type} [NontriviallyNormedField F]
     [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
     (A : _root_.GlobalTheory.JR.Et F E) (r : ℕ) (τ : A.K) (p : Fin r → F)
@@ -148,7 +146,6 @@ private lemma adjoin_eq_whole_of_isGen {F E : Type} [NontriviallyNormedField F]
   let pb : PowerBasis F A.K := ⟨τ, r, b, fun i => by simp [b]⟩
   exact pb.adjoin_gen_eq_top
 
-open Matrix MeasureTheory Filter Topology in
 private lemma exists_uHom_eq_of_mulVec_eq {F E : Type} [NontriviallyNormedField F]
     [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
     (A : _root_.GlobalTheory.JR.Et F E) (r : ℕ) (x : A.K)
@@ -190,7 +187,6 @@ private lemma exists_uHom_eq_of_mulVec_eq {F E : Type} [NontriviallyNormedField 
   rw [Matrix.toLin'_apply, Matrix.toLin'_apply,
     _root_.GlobalTheory.JR.Et.mulMat_mulVec_apply, hy]
 
-open Matrix MeasureTheory Filter Topology in
 private lemma isClosedEmbedding_uHom {F E : Type} [NontriviallyNormedField F]
     [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
     [_root_.GlobalTheory.JR.Unram F E] (A : _root_.GlobalTheory.JR.Et F E) (r : ℕ)
@@ -258,7 +254,6 @@ private lemma isClosedEmbedding_uHom {F E : Type} [NontriviallyNormedField F]
   exact (IsClosedEmbedding.of_comp_iff hval).1 ⟨hemb, hclosed⟩
 
 
-open Matrix MeasureTheory Filter Topology in
 theorem _root_.GlobalTheory.JR.TorusCutOff.exists_unitary_cutoff : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [_root_.GlobalTheory.JR.Unram F E] (A : _root_.GlobalTheory.JR.Et F E) (r : ℕ) (τ : A.K) (p : Fin r → F), A.IsGen τ p → ∀ (x : A.K) (j : A.L ≃ₗ[E] (Fin r → E)) (hx : A.IsIsom x j) (Ax : selfAdjoint (Matrix (Fin r) (Fin r) E)), (∀ z, j (algebraMap A.K A.L τ * z) = Ax.1 *ᵥ j z) → ∀ (ν : Measure (unitary A.L)), ν.IsHaarMeasure → ∀ Z : Set (Matrix (Fin r) (Fin r) E), IsCompact Z → ∃ α : Matrix.unitaryGroup (Fin r) E → ℝ, IsLocallyConstant α ∧ HasCompactSupport α ∧ (∀ g, 0 ≤ α g) ∧ ∀ g : Matrix.unitaryGroup (Fin r) E, g.1 * Ax.1 * star g.1 ∈ Z → ∫ t, α (g * (A.uHom hx t)⁻¹) ∂ν = 1 := by
   intro F E _ _ _ _ _ A r τ p hτ x j hx Ax hAx ν _ Z hZ
   haveI : LocallyCompactSpace E :=

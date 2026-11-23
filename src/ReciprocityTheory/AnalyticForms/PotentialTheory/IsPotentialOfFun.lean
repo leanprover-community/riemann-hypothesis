@@ -203,7 +203,6 @@ def pushDens (A : FinHolAtlas e X) (Φ : Fin e → LocPot X) (q : X → Fin e �
       (Fin e → ℂ) →ₗ[ℂ] (Fin e → ℂ))‖ ^ 2
 
 
-open scoped Classical in
 def maMeasure [MeasurableSpace X] (A : FinHolAtlas e X) (Φ : Fin e → LocPot X) : Measure X :=
   by classical exact if h : Nonempty (ChartPartition A) then
     ∑ j, ((volume.restrict (A.chart j).target).withDensity fun y =>

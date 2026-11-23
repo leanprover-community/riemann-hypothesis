@@ -200,7 +200,6 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
 
-open GlobalTheory.FrameAct in
 theorem mem_perp_span (s : Set S.V) (x : S.V) :
     x ∈ perp L S.Hm (Submodule.span E s) ↔ ∀ y ∈ s, hf L S.Hm x y = 0 :=
   ⟨fun H y hy => H y (Submodule.subset_span hy), fun H => GlobalTheory.FramePsi.hf_span_right L S.Hm x s H⟩
@@ -244,7 +243,6 @@ variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
 
 
-open GlobalTheory.FrameAct in
 theorem inner_transport (g : Fin (r + 1) → S.V) (gs : Fin r → S.V) (t : E)
     (hg : ∀ a b, hf L S.Hm (g a) (g b) = if a = Fin.last r ∧ b = Fin.last r then t else 0)
     (hd : ∀ a j, hf L S.Hm (g a) (gs j) = if a = j.castSucc then 1 else 0)

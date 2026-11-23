@@ -255,7 +255,6 @@ end Formalism.MainNotions.UnusedSlot80.SatW
 
 namespace Formalism.MainNotions.UnusedSlot80.SatW
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section Inst
 
@@ -354,7 +353,6 @@ end Formalism.MainNotions.UnusedSlot80.SatW
 
 namespace Formalism.MainNotions.UnusedSlot80
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem saturation_general_of_ring_condition (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F) : SaturationArcLifting D HW F := by

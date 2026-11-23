@@ -86,7 +86,6 @@ private theorem archExp_single (K : Type) [Field K] [NumberField K] (r s : ℕ) 
       exact (map_zero e).symm
     · exact (map_zero e).symm
 
-open GroundTheory.Automorphic.CuspidalSpectrum in
 theorem UpperTheory.archExp_single_unipotent_embedding :
     ∀ (K : Type) [Field K] [NumberField K] (r s : ℕ) (i : Fin r) (j : Fin s) (x : mixedSpace K), ∀ ψ ∈ NInv K (r + s) r, lam K (r + s) (Matrix.single (Fin.castAdd s i) (Fin.natAdd r j) x) ψ ∈ Van K r s := by
   intro K _ _ r s i j x ψ hψ

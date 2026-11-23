@@ -144,7 +144,6 @@ end GlobalTheory.LiftAbsPow
 
 namespace GlobalTheory.LiftAbsPow
 
-open GlobalTheory.CuspRep.InfType GlobalTheory.HeckeGal.Model
 
 theorem absNorm_eq_normV {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) :
     Ideal.absNorm v.asIdeal = normV v := by

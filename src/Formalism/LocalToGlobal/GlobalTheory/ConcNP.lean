@@ -299,7 +299,6 @@ end Rec
 
 section Inputs
 
-open Formalism.BasicNotions Formalism.MainNotions
 
 end Inputs
 

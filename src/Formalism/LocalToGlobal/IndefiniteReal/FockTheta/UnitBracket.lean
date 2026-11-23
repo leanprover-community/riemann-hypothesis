@@ -73,7 +73,6 @@ def DRhoLin (D : D7) : Prop :=
 
 end DRho
 
-section CCR
 
 variable {D : D7}
 
@@ -89,7 +88,6 @@ structure PairSetup (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp 
   onbT : ∀ τ, IsONBasis (gramAt D T τ) (sT τ) (BT τ) (pT τ)
 
 
-end CCR
 
 section Der
 

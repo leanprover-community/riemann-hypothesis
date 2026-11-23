@@ -124,7 +124,6 @@ end GlobalTheory.GLq.HCFrobWeight
 
 namespace GlobalTheory.GLq.HCFrobWeight
 
-open scoped Classical
 
 theorem exists_irr_hc_thetaInv : ∀ (g : ℕ) [Fact g.Prime] (n : ℕ) (ψ : Gn g (n + 1) → ℂ), IsIrr ψ → ∀ θ : (ZMod g)ˣ →* ℂˣ,
     (∑ x : Gn g 1, ((θ (Matrix.GeneralLinearGroup.det x) : ℂˣ) : ℂ) * res n 1 ψ 1 x ≠ 0 →

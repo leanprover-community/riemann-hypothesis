@@ -162,7 +162,6 @@ end GlobalTheory.Mem.Col2.AdT.DeepElt
 
 namespace GlobalTheory.Mem.Col2.AdT.DeepElt
 
-open WithZero
 
 section Core
 

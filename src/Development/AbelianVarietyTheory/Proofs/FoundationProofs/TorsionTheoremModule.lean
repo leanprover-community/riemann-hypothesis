@@ -85,7 +85,6 @@ end Hyp
 
 section Final
 
-open Formalism.MainNotions.LocalSituation
 
 variable {l : ℕ} [Fact l.Prime]
 

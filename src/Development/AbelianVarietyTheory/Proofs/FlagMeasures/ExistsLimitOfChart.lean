@@ -300,7 +300,6 @@ theorem sqrt_hs (A : Matrix (Fin n) (Fin n) ℂ) : Real.sqrt (Formalism.REAL.hs 
   rw [Matrix.frobenius_norm_def, Real.sqrt_eq_rpow]
   simp [Formalism.REAL.hs]
 
-open scoped Matrix.Norms.Frobenius in
 theorem exists_limit (ε : Fin n → Bool) : ∃ A : ℝ, 0 < A ∧ Tendsto
     (fun r : ℝ => (muG ε {g | Real.sqrt (Formalism.REAL.hs (uMat g - 1)) ≤ r}).toReal / r ^ (n ^ 2))
     (𝓝[>] 0) (𝓝 A) := by

@@ -49,12 +49,10 @@ noncomputable section
 open Finset Matrix
 
 namespace ReciprocityTheory.ChartRestriction.DS.G2
-section Gen
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
   {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [CompleteSpace V]
 
-end Gen
 
 section Main
 

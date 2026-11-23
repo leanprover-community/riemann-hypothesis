@@ -103,7 +103,6 @@ theorem finite_kernel_points {k : Type} [Field k] [IsAlgClosed k] {G B : Over (S
   exact ⟨hp.lift x (toUnit _) hx, hp.lift_fst _ _ _⟩
 
 
-open RationalPoint in
 theorem eq_top_of_finite_cover {k : Type} [Field k] [IsAlgClosed k] {G : Over (Sp k)} [GrpObj G]
     [LocallyOfFiniteType G.hom] [IrreducibleSpace G.left]
     (H : Subgroup (𝟙_ (Over (Sp k)) ⟶ G)) {Z : Set G.left} (hZ : IsClosed Z)

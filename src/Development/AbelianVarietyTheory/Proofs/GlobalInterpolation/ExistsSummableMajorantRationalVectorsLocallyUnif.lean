@@ -134,7 +134,6 @@ theorem finrank_le_of_discrete {E : Type} [NormedAddCommGroup E] [NormedSpace �
 end GlobalTheory.SumMaj
 
 namespace GlobalTheory.SumMaj
-open scoped Classical
 
 theorem summable_majorant : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ), IsTotallyReal F →
     ∀ K : Set (Fin N → Af F), IsCompact K → ∃ k : ℕ, ∀ ω : Set (Fin N → AF F), IsCompact ω →

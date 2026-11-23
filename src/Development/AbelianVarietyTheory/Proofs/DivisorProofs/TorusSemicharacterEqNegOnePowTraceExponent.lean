@@ -80,7 +80,6 @@ end GlobalTheory.SemicharTrace
 
 namespace GlobalTheory.SemicharTrace
 
-open Formalism.MainNotions.TaylorLogMetric
 
 variable {D : D7}
 
@@ -146,7 +145,6 @@ end GlobalTheory.SemicharTrace
 
 namespace GlobalTheory.SemicharTrace
 
-open Formalism.MainNotions.TaylorLogMetric
 
 variable {D : D7}
 
@@ -178,7 +176,6 @@ end GlobalTheory.SemicharTrace
 
 namespace GlobalTheory.SemicharTrace
 
-open Formalism.MainNotions.TaylorLogMetric
 
 variable {D : D7}
 
@@ -221,7 +218,6 @@ end GlobalTheory.SemicharTrace
 
 namespace GlobalTheory.SemicharTrace
 
-open Formalism.MainNotions.TaylorLogMetric
 
 variable {D : D7}
 

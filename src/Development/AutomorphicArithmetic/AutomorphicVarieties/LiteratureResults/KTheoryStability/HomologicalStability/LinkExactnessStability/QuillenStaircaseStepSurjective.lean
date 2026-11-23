@@ -67,5 +67,4 @@ theorem homStab_step : ∀ (k G : Type) [CommRing k] [Group G] (C₃ C₂ Z₁ C
 end GlobalTheory
 
 section
-open CategoryTheory CategoryTheory.Limits GlobalTheory.HomStab
 end

@@ -63,7 +63,6 @@ theorem _root_.GlobalTheory.IsSmoothBlowupSeq.mono {S Y Y' : Scheme.{0}} {f : Y 
 namespace Principalise
 
 
-open AlgebraicGeometry CategoryTheory Limits TopologicalSpace in
 theorem _root_.GlobalTheory.Principalise.effCartier_comap_of_disjoint {W X : Scheme.{0}} (g : W ⟶ X) (J : X.IdealSheafData)
     (h : ∀ w, g w ∉ J.support) : _root_.ReciprocityTheory.AnForm.R.FinalTheorems.EffCartier (J.comap g) := by
   have htop : J.comap g = ⊤ := by
@@ -78,7 +77,6 @@ theorem _root_.GlobalTheory.Principalise.effCartier_comap_of_disjoint {W X : Sch
   simp [Scheme.IdealSheafData.ideal_top]
 
 
-open AlgebraicGeometry CategoryTheory Limits TopologicalSpace in
 theorem _root_.GlobalTheory.Principalise.isIso_restrict_of_blowup {X X' : Scheme.{0}} {π : X' ⟶ X}
     {J : X.IdealSheafData} (h : _root_.ReciprocityTheory.AnForm.R.FinalTheorems.Blowup π J)
     (U : X.Opens) (hU : ∀ x ∈ U, x ∉ J.support) : IsIso (π ∣_ U) := by
@@ -106,7 +104,6 @@ theorem _root_.GlobalTheory.Principalise.isIso_restrict_of_blowup {X X' : Scheme
 end Principalise
 
 
-open AlgebraicGeometry CategoryTheory Limits TopologicalSpace in
 theorem _root_.GlobalTheory.IsSmoothBlowupSeq.isIso_restrict {S Y Y' : Scheme.{0}} {f : Y ⟶ S}
     {B : Set Y} {s : Y' ⟶ Y}
     (h : _root_.GlobalTheory.IsSmoothBlowupSeq f B s) (U : Y.Opens) (hU : ∀ y ∈ U, y ∉ B) : IsIso (s ∣_ U) := by
@@ -121,7 +118,6 @@ theorem _root_.GlobalTheory.IsSmoothBlowupSeq.isIso_restrict {S Y Y' : Scheme.{0
 namespace Principalise
 
 
-open AlgebraicGeometry CategoryTheory Limits TopologicalSpace in
 theorem _root_.GlobalTheory.Principalise.nonempty_compl_support {Y : Scheme.{0}} [IsIntegral Y] {I : Y.IdealSheafData} (hI : I ≠ ⊥) :
     (I.support.compl : Set Y).Nonempty := by
   by_contra hne

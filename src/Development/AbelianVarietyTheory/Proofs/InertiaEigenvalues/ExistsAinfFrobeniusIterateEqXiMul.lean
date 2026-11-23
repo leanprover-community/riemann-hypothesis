@@ -92,7 +92,6 @@ theorem xi_bar_ne_zero (e : Per.Fl l) (he : GlobalTheory.MemLoc.IsEps e) :
 end GlobalTheory.PeriodSol
 
 namespace GlobalTheory.PeriodSol
-open Polynomial
 
 variable {l : ℕ} [Fact l.Prime]
 

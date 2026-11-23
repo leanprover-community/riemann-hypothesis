@@ -161,7 +161,6 @@ end Approx
 
 section Local
 
-open Formalism.L2.Col
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)} {a b : ℕ}
 

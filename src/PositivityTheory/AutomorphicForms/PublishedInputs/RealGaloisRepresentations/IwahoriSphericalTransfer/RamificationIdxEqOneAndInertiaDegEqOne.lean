@@ -90,7 +90,6 @@ end GlobalTheory.PlaceIsoDec
 
 namespace GlobalTheory.PlaceIsoDec
 
-open scoped Pointwise
 
 variable {F K L Ω : Type} [Field F] [NumberField F] [Field K] [NumberField K] [Field L] [NumberField L] [Field Ω]
     [Algebra F K] [Algebra F L] [Algebra K L] [Algebra F Ω] [Algebra K Ω] [Algebra L Ω]
@@ -131,7 +130,6 @@ end GlobalTheory.PlaceIsoDec
 
 namespace GlobalTheory.PlaceIsoDec
 
-open scoped Pointwise
 
 variable {F K L Ω : Type} [Field F] [NumberField F] [Field K] [NumberField K] [Field L] [NumberField L] [Field Ω]
     [Algebra F K] [Algebra F L] [Algebra K L] [Algebra F Ω] [Algebra K Ω] [Algebra L Ω]

@@ -81,8 +81,6 @@ private lemma two_le_q' : 2 ≤ S.q := by
   show 2 ≤ Nat.card (IsLocalRing.ResidueField (ValuativeRel.valuation F).integer)
   exact Finite.one_lt_card_iff_nontrivial.2 inferInstance
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] {L : _root_.Formalism.MainNotions.S.Loc.LocE F E}
   {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -103,8 +101,6 @@ private lemma q_le_Hp_of_Hp_ne_one {d : S.Datum} {Λ : Submodule L.O S.V}
         = (S.q : ℝ) ^ (1 : ℤ) := (zpow_one _).symm
       _ ≤ _ := zpow_le_zpow_right₀ (by linarith) (by omega)
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] {L : _root_.Formalism.MainNotions.S.Loc.LocE F E}
   {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -117,8 +113,6 @@ private lemma vE_nonneg_of_mem_O (ϖ : (ValuativeRel.valuation F).integer) {x : 
   · exact le_csSup hb hmem
   · rw [Int.csSup_of_not_bddAbove hb]
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] {L : _root_.Formalism.MainNotions.S.Loc.LocE F E}
   {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -168,8 +162,6 @@ private lemma gg_false_and_vE_eq_zero_of_Hp_eq_one {d : S.Datum} {Λ : Submodule
             (L.O.mul_mem (hD i) (_root_.GlobalTheory.HL.Inhab.cj_int L (hD i)))
         · exact le_rfl
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] {L : _root_.Formalism.MainNotions.S.Loc.LocE F E}
   {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -197,8 +189,6 @@ private lemma exists_inv_mem_O_of_vE_mul_cj_eq_zero (ϖ : (ValuativeRel.valuatio
     L.O.mul_mem (_root_.GlobalTheory.HL.Inhab.cj_int L hx) ((_root_.GlobalTheory.UnramOrder.algebraMap_mem_iff L _).2 (Subtype.prop _)), ?_⟩
   rw [← mul_assoc, hc, ← map_mul, hmu, zpow_zero, one_mul, hu1, map_one]
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] {L : _root_.Formalism.MainNotions.S.Loc.LocE F E}
   {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -284,8 +274,6 @@ private lemma norm_amp_BBzero_eq_one_and_mass_eq_one_of_Hp_eq_one (hk : 4 * r + 
   simpa using (_root_.GlobalTheory.HL.WitIndep.witness_independence L r k S d' _ _ _ hW).2.2.2.2
 
 
-open ValuativeRel NumberField IsDedekindDomain in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.HL.BadPlaces.bad_places : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E} (A : _root_.GlobalTheory.HL.Places F E sig), ∀ (r k : ℕ) (G : _root_.GlobalTheory.HL.GFrames A r k), 4 * r + 7 ≤ k → ∀ d Λ, G.IsTerm d Λ → G.Om.Finite ∧ (∀ p, 1 ≤ (G.S p).Hp) ∧ (∀ p ∈ G.Om, 2 ≤ (G.S p).q ∧ ((G.S p).q : ℝ) ≤ (G.S p).Hp) ∧ (2 : ℝ) ^ G.Om.ncard ≤ G.Ht ∧ ∀ p ∉ G.Om, (∀ d' Λ', (G.S p).IsTerm d' Λ' → (G.S p).BBzero d' Λ') ∧ ∀ d', (∃ Λ', (G.S p).IsTerm d' Λ') → ‖(G.S p).amp d' ((G.S p).BBzero d')‖ = 1 ∧ (G.S p).mass d' (fun _ => True) = 1 := by
   intro F E _ _ _ _ _ sig A r k G hk d Λ hT
   have hlf : ∀ p, IsNonarchimedeanLocalField (A.loc p).Fp := fun p => (A.loc p).lf

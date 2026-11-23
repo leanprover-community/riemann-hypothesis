@@ -97,7 +97,6 @@ private theorem linearIndependent_laurentMonomials {k F ι : Type} [Field k] [Fi
         rw [← Finset.mul_sum, Finset.sum_coe_sort s (fun m => g m • ∏ i, y i ^ m i)]
     _ = 0 := by rw [hg, mul_zero]
 
-open KaehlerDifferential in
 private theorem prod_zpow_eq_prod_div_zpow_of_sum_eq_zero {F : Type} [Field F] {d : ℕ} (x : Fin (d + 1) → F)
     (hx : ∀ i, x i ≠ 0) (m : Fin (d + 1) → ℤ) (hm : ∑ j, m j = 0) :
     ∏ j, x j ^ m j = ∏ i : Fin d, (x i.succ / x 0) ^ m i.succ := by
@@ -115,7 +114,6 @@ private theorem prod_zpow_eq_prod_div_zpow_of_sum_eq_zero {F : Type} [Field F] {
   rw [Finset.prod_div_distrib, hpow, zpow_neg, div_eq_mul_inv, mul_comm]
 
 
-open KaehlerDifferential in
 theorem _root_.GlobalTheory.exists_isRes : ∀ (k : Type) [Field k] (F : Type) [Field F]
     [Algebra k F] (d : ℕ) (x : Fin (d + 1) → F),
     _root_.GlobalTheory.PD.IsPd k x → ∃ ρ : F →ₗ[k] k, _root_.GlobalTheory.PD.IsRes k x ρ := by

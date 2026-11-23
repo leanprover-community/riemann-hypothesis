@@ -204,7 +204,6 @@ private theorem la_loc {O G Γ ι K : Type} [CommRing O] [IsLocalRing O] [Finite
     ← mul_assoc _ _ (GG.ofGL (tor K t)), ← mul_assoc (GG.map _ k), h1]
   group
 
-open UpperTheory.V UpperTheory.V.Base in
 theorem UpperTheory.V.UnitaryThreeInertia.levelAway_of_pt :
     ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] (c : Coef l) {N : ℕ} [NeZero N] (e : ℕ) (ψ : DirichletCharacter c.O N) (o₁ : ℕ), HostData l e ψ o₁ →
     ∀ (S : Finset Pl) (A : S → ValuationSubring Ω) (F : Frame c.O (Formalism.ConjugateSelfDual.G ℚ Ω) (Gam Ω S) S), IsHostFrame Ω c e ψ S A F →

@@ -92,7 +92,6 @@ private lemma norm_le_one_of_mem_integralClosure_padicInt {l : ℕ} [Fact (Nat.P
   have := pow_lt_pow_right₀ hlt (show p.natDegree - 1 < p.natDegree by omega)
   linarith
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma rescale_C_eq_C (c b : K) : rescale c (C b) = C b := by
   ext j
@@ -101,7 +100,6 @@ private lemma rescale_C_eq_C (c b : K) : rescale c (C b) = C b := by
   · simp
   · simp [coeff_C, hj.ne']
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma aeval_rescale_eq_rescale_aeval (c : K) (v : K⟦X⟧) (p : Polynomial K) :
     Polynomial.aeval (rescale c v) p = rescale c (Polynomial.aeval v p) := by
@@ -116,7 +114,6 @@ private lemma aeval_rescale_eq_rescale_aeval (c : K) (v : K⟦X⟧) (p : Polynom
     · simp
     · simp [coeff_C, hj.ne']
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma ex_rescale {v a e : K⟦X⟧} (c : K) (he : _root_.GlobalTheory.HWL.ExpSub.Ex v a e) :
     _root_.GlobalTheory.HWL.ExpSub.Ex (rescale c v) a (rescale c e) := by
@@ -124,7 +121,6 @@ private lemma ex_rescale {v a e : K⟦X⟧} (c : K) (he : _root_.GlobalTheory.HW
   simp_rw [aeval_rescale_eq_rescale_aeval, coeff_rescale]
   exact (he k).const_mul _
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma exists_norm_coeff_pow_le_mul_pow_sub (u : K⟦X⟧) {r : ℝ} (hr : ‖constantCoeff u‖ ≤ r) (hr1 : r ≤ 1) (k : ℕ) :
     ∃ B : ℝ, 0 ≤ B ∧ ∀ j : ℕ, ‖coeff k (u ^ j)‖ ≤ B * r ^ (j - k) := by
@@ -165,7 +161,6 @@ private lemma exists_norm_coeff_pow_le_mul_pow_sub (u : K⟦X⟧) {r : ℝ} (hr 
         · intros; positivity
     _ = _ := by rw [Finset.sum_mul]
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma exists_norm_coeff_aeval_le_mul_of_weighted_bound (u : K⟦X⟧) {r : ℝ} (hr : ‖constantCoeff u‖ ≤ r) (hr0 : 0 < r)
     (hr1 : r ≤ 1) (k : ℕ) :
@@ -188,7 +183,6 @@ private lemma exists_norm_coeff_aeval_le_mul_of_weighted_bound (u : K⟦X⟧) {r
     _ ≤ B / r ^ k * (‖p.coeff j‖ * r ^ j) := by gcongr
     _ ≤ B / r ^ k * ε := by gcongr; exact hp j
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma ex_add_inertia_eigenvalues {u f g e e' : K⟦X⟧} (h₁ : _root_.GlobalTheory.HWL.ExpSub.Ex u f e)
     (h₂ : _root_.GlobalTheory.HWL.ExpSub.Ex u g e') : _root_.GlobalTheory.HWL.ExpSub.Ex u (f + g) (e + e') := by
@@ -196,7 +190,6 @@ private lemma ex_add_inertia_eigenvalues {u f g e e' : K⟦X⟧} (h₁ : _root_.
   simp_rw [map_add (f := _)]
   exact (h₁ k).add (h₂ k)
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma ex_C_mul {u f e : K⟦X⟧} (a : K) (h : _root_.GlobalTheory.HWL.ExpSub.Ex u f e) :
     _root_.GlobalTheory.HWL.ExpSub.Ex u (C a * f) (C a * e) := by
@@ -209,7 +202,6 @@ private lemma ex_C_mul {u f e : K⟦X⟧} (a : K) (h : _root_.GlobalTheory.HWL.E
   simp_rw [hk, coeff_C_mul]
   exact (h k).const_mul a
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma ex_one' (u : K⟦X⟧) : _root_.GlobalTheory.HWL.ExpSub.Ex u 1 1 := by
   intro k
@@ -218,7 +210,6 @@ private lemma ex_one' (u : K⟦X⟧) : _root_.GlobalTheory.HWL.ExpSub.Ex u 1 1 :
   obtain ⟨n, rfl⟩ : ∃ n, m = n + 1 := ⟨m - 1, by omega⟩
   rw [trunc_one, Polynomial.aeval_one]
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma ex_mul_of_bounded_coeff {u f g e e' : K⟦X⟧} (hu : ‖constantCoeff u‖ < 1) {M : ℝ}
     (hf : ∀ j, ‖coeff j f‖ ≤ M) (hg : ∀ j, ‖coeff j g‖ ≤ M)
@@ -266,7 +257,6 @@ private lemma ex_mul_of_bounded_coeff {u f g e e' : K⟦X⟧} (hu : ‖constantC
   rw [add_zero, ← coeff_mul] at hlim
   exact hlim.congr (fun m => (hsplit m).symm)
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma norm_coeff_pow_le_one_of_norm_coeff_le_one {f : K⟦X⟧} (hf : ∀ m, ‖coeff m f‖ ≤ 1) (n k : ℕ) :
     ‖coeff k (f ^ n)‖ ≤ 1 := by
@@ -279,7 +269,6 @@ private lemma norm_coeff_pow_le_one_of_norm_coeff_le_one {f : K⟦X⟧} (hf : �
     rw [norm_mul]
     exact mul_le_one₀ (ih _) (norm_nonneg _) (hf _)
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma ex_pow_of_norm_coeff_le_one {u f e : K⟦X⟧} (hu : ‖constantCoeff u‖ < 1)
     (hf : ∀ m, ‖coeff m f‖ ≤ 1) (h : _root_.GlobalTheory.HWL.ExpSub.Ex u f e) (n : ℕ) :
@@ -290,7 +279,6 @@ private lemma ex_pow_of_norm_coeff_le_one {u f e : K⟦X⟧} (hu : ‖constantCo
     rw [pow_succ, pow_succ]
     exact ex_mul_of_bounded_coeff hu (norm_coeff_pow_le_one_of_norm_coeff_le_one hf n) hf ih h
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma ex_aeval_of_norm_constantCoeff_lt_one {u f e : K⟦X⟧} (hu : ‖constantCoeff u‖ < 1)
     (hf : ∀ m, ‖coeff m f‖ ≤ 1) (he : _root_.GlobalTheory.HWL.ExpSub.Ex u f e) (p : Polynomial K) :
@@ -301,14 +289,12 @@ private lemma ex_aeval_of_norm_constantCoeff_lt_one {u f e : K⟦X⟧} (hu : ‖
     rw [Polynomial.aeval_monomial, Polynomial.aeval_monomial]
     exact ex_C_mul a (ex_pow_of_norm_coeff_le_one hu hf he n)
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma coeff_pow_eq_zero_of_constantCoeff_eq_zero_of_lt {Y : K⟦X⟧} (h0 : constantCoeff Y = 0) {j d : ℕ} (h : j < d) :
     coeff j (Y ^ d) = 0 := by
   obtain ⟨Y', hY'⟩ := (PowerSeries.X_dvd_iff).mpr h0
   rw [hY', mul_pow, coeff_X_pow_mul', if_neg (by omega)]
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma norm_coeff_subst_mul_pow_le_of_weighted_bound {Y f : K⟦X⟧} (h0 : constantCoeff Y = 0)
     (hY : ∀ m, ‖coeff m Y‖ ≤ 1) {r δ : ℝ} (hr0 : 0 < r) (hr1 : r ≤ 1) (hδ : 0 ≤ δ)
@@ -331,7 +317,6 @@ private lemma norm_coeff_subst_mul_pow_le_of_weighted_bound {Y f : K⟦X⟧} (h0
     by_contra hjd
     exact hd (by rw [coeff_pow_eq_zero_of_constantCoeff_eq_zero_of_lt h0 (by omega), smul_zero])
 
-open PowerSeries Filter Topology in
 variable {K : Type} [NormedField K] [IsUltrametricDist K] in
 private lemma ex_subst_of_ex_of_coeff_decay {u v Y a e : K⟦X⟧} (hu : ‖constantCoeff u‖ < 1)
     (h0 : constantCoeff Y = 0) (hY : ∀ m, ‖coeff m Y‖ ≤ 1) (hv : _root_.GlobalTheory.HWL.ExpSub.Ex u Y v)
@@ -385,8 +370,6 @@ private lemma ex_subst_of_ex_of_coeff_decay {u v Y a e : K⟦X⟧} (hu : ‖cons
     _ < ε := by linarith
 
 
-open PowerSeries Filter Topology in
-open TensorProduct in
 theorem _root_.GlobalTheory.HWL.ExpSub.conv_isExp_subst : ∀ (l : ℕ) [Fact l.Prime] (LL : _root_.Formalism.BasicNotions.Loc.FinExt l) (ζ ζ' c : ↥LL.1) (y : PowerSeries ↥(_root_.Formalism.BasicNotions.Loc.OL LL)), ‖((ζ : _root_.Formalism.BasicNotions.Loc.Om l)) - 1‖ < 1 → ‖((ζ' : _root_.Formalism.BasicNotions.Loc.Om l)) - 1‖ < 1 → PowerSeries.constantCoeff y = 0 → _root_.GlobalTheory.HWL.IsExp ζ (PowerSeries.map (algebraMap ↥(_root_.Formalism.BasicNotions.Loc.OL LL) ↥LL.1) y) (PowerSeries.C ζ' * PowerSeries.rescale c (PowerSeries.exp ↥LL.1) - 1) → ∀ a e : PowerSeries ↥LL.1, _root_.GlobalTheory.HWL.Conv a → _root_.GlobalTheory.HWL.IsExp ζ' a e → _root_.GlobalTheory.HWL.Conv (PowerSeries.subst (PowerSeries.map (algebraMap ↥(_root_.Formalism.BasicNotions.Loc.OL LL) ↥LL.1) y) a) ∧ _root_.GlobalTheory.HWL.IsExp ζ (PowerSeries.subst (PowerSeries.map (algebraMap ↥(_root_.Formalism.BasicNotions.Loc.OL LL) ↥LL.1) y) a) (PowerSeries.rescale c e) := by
   intro l _ LL ζ ζ' c y hζ hζ' hy0 hyexp a e ha hae
   have hiff : ∀ (z : ↥LL.1) (f g : PowerSeries ↥LL.1), _root_.GlobalTheory.HWL.IsExp z f g ↔

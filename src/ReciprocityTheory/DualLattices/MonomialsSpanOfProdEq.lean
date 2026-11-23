@@ -51,7 +51,6 @@ namespace ReciprocityTheory.PGsh.Up
 
 open ReciprocityTheory.PGsh.L2
 
-section Basis
 
 variable {C : Type} [Field C] {R : Type} [CommRing R] [Algebra R C]
 
@@ -112,7 +111,6 @@ private lemma exp_eq (p g : ℕ) :
     _ = (p - 1) * g * (p ^ (g + g - 1) * p) := by ring
     _ = (p - 1) * g * p ^ (g + g) := by rw [h3]
 
-end Basis
 
 theorem monomials_span_of_prod_eq : EigenLiftsBasisStatement := by
   intro p _ g C _ _ _ v R _ _ _ O _ _ σ cp hS H U X hprod D

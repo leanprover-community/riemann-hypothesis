@@ -93,7 +93,6 @@ end GlobalTheory.NormCover
 
 namespace GlobalTheory.NormCover
 
-open GlobalTheory.BplusDescent
 
 theorem exists_normalization_model : ∀ (k Ω : Type) [CommRing k] [IsNoetherianRing k] [Field Ω] [CharZero Ω] [Algebra k Ω]
     (M : RatModel k Ω) (Ω' : Type) [Field Ω'] [Algebra Ω Ω'] [Algebra k Ω'] [IsScalarTower k Ω Ω']

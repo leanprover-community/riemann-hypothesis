@@ -230,7 +230,6 @@ private theorem as_open {l : ℕ} [Fact l.Prime] (n : ℕ) : IsOpen {a : ℤ_[l]
   rw [this]
   exact Ideal.isOpen_pow_of_isMaximal _ n
 
-open GroundTheory.LocalField.Abstract in
 private theorem as_core {l : ℕ} [Fact l.Prime] {d : ℕ} {M A : Type} [CommGroup M] [TopologicalSpace M]
     [IsTopologicalGroup M] [CommGroup A] [TopologicalSpace A]
     [IsTopologicalGroup A] [CompactSpace A] [T2Space A] (θ : M →* A) (hc : Continuous θ)

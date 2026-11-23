@@ -77,7 +77,6 @@ end GlobalTheory.RecT
 
 namespace GlobalTheory.RecT
 
-open GlobalTheory.RowTie
 
 end GlobalTheory.RecT
 

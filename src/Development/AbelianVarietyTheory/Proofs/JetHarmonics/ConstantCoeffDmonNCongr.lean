@@ -158,7 +158,6 @@ theorem constantCoeff_DpolyN_eq (F : Fin d → PS k 2 d) {Ix : Type} [Fintype Ix
 end GlobalTheory.PowGerm.NabJet
 
 namespace GlobalTheory.PowGerm
-open MvPowerSeries
 
 theorem nabJet : NabJetSt := by
   intro R _ d O _ _ B k _ _ _ h w0 q n Ix _ cp u

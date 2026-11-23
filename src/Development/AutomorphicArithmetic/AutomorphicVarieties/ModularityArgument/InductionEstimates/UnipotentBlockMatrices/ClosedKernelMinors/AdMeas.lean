@@ -97,7 +97,6 @@ private theorem adMeas_unip {R : Type} [CommRing R] (X : UPos (2 + 2) 2 → R) :
     simp only [finSumFinEquiv_apply_left, finSumFinEquiv_apply_right] <;>
     fin_cases i <;> fin_cases j <;> simp [adMeas_tau, Fin.ext_iff]
 
-open scoped Matrix Kronecker in
 private noncomputable def adMeas_M {R : Type} [CommRing R] (a b : GL (Fin 2) R) :
     Matrix (UPos (2 + 2) 2) (UPos (2 + 2) 2) R :=
   Matrix.reindex adMeas_tau adMeas_tau (((a⁻¹ : GL (Fin 2) R) : Matrix (Fin 2) (Fin 2) R)ᵀ ⊗ₖ (b : Matrix (Fin 2) (Fin 2) R))
@@ -126,7 +125,6 @@ private theorem adMeas_conj {R : Type} [CommRing R] (a b : GL (Fin 2) R) (X : UP
     ← Matrix.mul_assoc, ← Units.val_mul, mul_inv_cancel]
   simp
 
-open scoped Matrix in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.adMeas :
     ∀ {K : Type} [Field K] [NumberField K] (m₁ m₂ : G1 K 2) (t : ℝ),
     ∃ e : (UPos (2 + 2) 2 → 𝔸[K]) ≃ₜ+ (UPos (2 + 2) 2 → 𝔸[K]),

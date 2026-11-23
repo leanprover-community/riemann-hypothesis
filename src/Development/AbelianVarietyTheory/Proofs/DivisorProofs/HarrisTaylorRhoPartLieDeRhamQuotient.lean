@@ -133,7 +133,6 @@ theorem quad_lie (o₀ : GlobalTheory.UPel.HT.Obj b N t) (v : Lie (o₀.act.toF 
 end GlobalTheory.HTLieRho
 
 namespace GlobalTheory.HTLieRho
-open GlobalTheory.Serre
 variable {p : ℕ} [Fact p.Prime] {D : GlobalTheory.UPel.HT.Datum p} {R : Type} [CommRing R] {b : GlobalTheory.UPel.HT.Base D R}
   {N : ℕ} {k : Type} [Field k] {t : Sp k ⟶ Sp R}
 
@@ -205,7 +204,6 @@ theorem mem_G_of (o₀ : GlobalTheory.UPel.HT.Obj b N t) (β : R →+* k) (HL : 
 end GlobalTheory.HTLieRho
 
 namespace GlobalTheory.HTLieRho
-open GlobalTheory.Serre
 variable {p : ℕ} [Fact p.Prime] {D : GlobalTheory.UPel.HT.Datum p} {R : Type} [CommRing R] {b : GlobalTheory.UPel.HT.Base D R}
   {N : ℕ} {k : Type} [Field k] {t : Sp k ⟶ Sp R}
 
@@ -249,7 +247,6 @@ theorem jSub_le (o₀ : GlobalTheory.UPel.HT.Obj b N t) (β : R →+* k) (ht : t
 end GlobalTheory.HTLieRho
 
 namespace GlobalTheory.HTLieRho
-open GlobalTheory.Serre
 variable {p : ℕ} [Fact p.Prime] {D : GlobalTheory.UPel.HT.Datum p} {R : Type} [CommRing R] {b : GlobalTheory.UPel.HT.Base D R}
   {N : ℕ} {k : Type} [Field k] {t : Sp k ⟶ Sp R}
 

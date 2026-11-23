@@ -157,7 +157,6 @@ end GlobalTheory.CompanionTheory.BZPsiPG.FibOnto
 
 namespace GlobalTheory.CompanionTheory.BZPsiPG.FibOnto
 
-open Topology GlobalTheory.SplitWeil
 
 section
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

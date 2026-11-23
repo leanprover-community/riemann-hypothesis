@@ -86,7 +86,6 @@ theorem relExact : LeafRelExact := by
   · refine congrArg CohomologyClass.mk (Cocycle.ext ?_)
     simp [zcomp]
 
-open CochainComplex.HomComplex in
 theorem relNat : LeafRelNat := by
   intro R _ F U E U' E' f f' u e comm n y
   have key : mappingCone.inr ((chains R).map f') ≫ rmap R f f' u e comm =

@@ -71,8 +71,6 @@ end GlobalTheory.GyLat
 
 namespace GlobalTheory.GyLat
 
-open Formalism.L2.G Formalism.MainNotions.G Formalism.UG Formalism.FrobeniusOrbits
-open scoped TensorProduct
 
 theorem reps_canon {D : D7} {L : SizeData₂ D} (X : Inst D L) (hb : ∀ h t, X.bs h t = Formalism.L2.GlobalTheoryTheory.Arith.bsH h t) {p : ℕ}
     (hc : IsResidueClassZero D p) : ((reps X p : Finset (HH D)) : Set (HH D)) = Set.range (Formalism.L2.G.bsH D.R.toFrame (hP D p)) := by
@@ -173,7 +171,6 @@ end GlobalTheory.GyLat
 
 namespace GlobalTheory.GyLat
 
-open Formalism.L2.G Formalism.MainNotions.G Formalism.UG Formalism.FrobeniusOrbits
 
 attribute [local instance] Formalism.BasicNotions.factResChar
 
@@ -221,7 +218,6 @@ end GlobalTheory.GyLat
 
 namespace GlobalTheory.GyLat
 
-open Formalism.L2.G Formalism.MainNotions.G Formalism.UG Formalism.FrobeniusOrbits
 
 attribute [local instance] Formalism.BasicNotions.factResChar
 

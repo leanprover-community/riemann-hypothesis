@@ -128,7 +128,6 @@ theorem exists_form_of_bounded {ι : Type} [Fintype ι] [DecidableEq ι]
 end GlobalTheory.InvFormBdd
 
 noncomputable section
-open MeasureTheory Topology Matrix
 
 namespace GlobalTheory.InvFormBdd
 

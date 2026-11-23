@@ -143,7 +143,6 @@ end GlobalTheory.QpChar
 
 namespace GlobalTheory.QpChar
 
-open IsLocalRing
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {T : ℕ} [hT : Fact T.Prime]
@@ -191,7 +190,6 @@ end GlobalTheory.QpChar
 
 namespace GlobalTheory.QpChar
 
-open IsLocalRing
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {T : ℕ} [hT : Fact T.Prime]
@@ -320,7 +318,6 @@ end GlobalTheory.QpChar
 
 namespace GlobalTheory.QpChar
 
-open IsLocalRing Filter Topology
 
 theorem exists_ringEquiv_padic : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [IsTopologicalRing k] [CharZero k] (T : ℕ) [Fact T.Prime], Nat.card (IsLocalRing.ResidueField 𝒪[k]) = T → Irreducible (T : 𝒪[k]) → ∃ φ : ℚ_[T] ≃+* k, Continuous φ ∧ Continuous φ.symm ∧ ∀ x : ℚ_[T], φ x ∈ 𝒪[k] ↔ ‖x‖ ≤ 1 := by
   intro k _ _ _ _ _ _ T hT hcard hirr

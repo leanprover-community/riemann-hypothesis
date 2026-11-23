@@ -276,7 +276,6 @@ end GlobalTheory.CxCoh.TowerOne
 
 namespace GlobalTheory.CxCoh
 
-open ObjectProperty
 
 theorem restriction_h1_bijective_of_exhaustion : ∀ (C : Type 1) [Category.{0} C] (D : Type) [Category.{0} D] (K : Cx C)
     (P : ℕ → ObjectProperty C) (ℓ : D ⥤ C) (N₀ : ℕ), (∀ m n T, m ≤ n → P m T → P n T) →

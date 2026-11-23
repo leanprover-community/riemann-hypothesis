@@ -76,8 +76,6 @@ private theorem map_mul_left_eq_smul' (a : F) (ha : a ≠ 0) :
     Set.preimage_smul, ← distribHaarChar_mul ν]
   rw [Measure.coe_nnreal_smul_apply]
 
-open MeasureTheory Matrix in
-open scoped Pointwise in
 variable {F : Type} [Field F] [TopologicalSpace F] [IsTopologicalDivisionRing F] [T2Space F]
   [LocallyCompactSpace F] [SecondCountableTopology F]
   [MeasurableSpace F] [BorelSpace F] (ν : Measure F) [ν.IsAddHaarMeasure]
@@ -97,8 +95,6 @@ private theorem map_diagonal_mulVec_pi (D : κ → F) (hD : ∀ i, D i ≠ 0) :
     ← Finset.prod_mul_distrib]
   exact Finset.prod_congr rfl fun i _ => Measure.coe_nnreal_smul_apply _ _ _
 
-open MeasureTheory Matrix in
-open scoped Pointwise in
 variable {F : Type} [Field F] [TopologicalSpace F] [IsTopologicalDivisionRing F] [T2Space F]
   [LocallyCompactSpace F] [SecondCountableTopology F]
   [MeasurableSpace F] [BorelSpace F] (ν : Measure F) [ν.IsAddHaarMeasure]
@@ -141,8 +137,6 @@ private theorem measurePreserving_transvection_mulVec (t : TransvectionStruct κ
   exact ((hA.symm e).comp hB).comp hA
 
 
-open MeasureTheory Matrix in
-open scoped Pointwise in
 variable {F : Type} [Field F] [TopologicalSpace F] [IsTopologicalDivisionRing F] [T2Space F]
   [LocallyCompactSpace F] [SecondCountableTopology F]
   [MeasurableSpace F] [BorelSpace F] (ν : Measure F) [ν.IsAddHaarMeasure]

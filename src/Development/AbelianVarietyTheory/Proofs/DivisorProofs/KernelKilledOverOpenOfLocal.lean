@@ -90,7 +90,6 @@ end GlobalTheory.KerKilledLocal
 
 namespace GlobalTheory.KerKilledLocal
 
-open ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison
 
 noncomputable section Grp
 

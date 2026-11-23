@@ -91,7 +91,6 @@ end Main
 
 section Final
 
-open GlobalTheory.IndefiniteRowSideFullHecke GlobalTheory.Published
 
 variable {G V W Y : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
   [AddCommGroup Y] [Module ℂ Y]

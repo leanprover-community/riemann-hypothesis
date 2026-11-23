@@ -172,7 +172,6 @@ section
 
 noncomputable section
 
-open MeasureTheory Filter Topology
 open GlobalTheory.PsCo.Pc1 GlobalTheory.PsCo.Pc3
 open scoped ContDiff
 

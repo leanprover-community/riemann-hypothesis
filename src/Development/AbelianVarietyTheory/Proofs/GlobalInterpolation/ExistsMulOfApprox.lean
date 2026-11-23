@@ -284,7 +284,6 @@ end Integral
 
 section Closure
 
-open Formalism.GradedWeylDivisibility (blockAct)
 
 variable {K L Γ : Type} [Field K] [NumberField K] [Field L] [LinearOrderedCommGroupWithZero Γ]
 

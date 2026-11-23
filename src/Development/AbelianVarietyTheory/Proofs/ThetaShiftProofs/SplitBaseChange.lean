@@ -81,7 +81,6 @@ end One
 
 section Two
 
-open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.TorusModel
 
 variable {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R'] {f : R →+* R'} {D₀ : DegPre R}
   {D₁ : DegPre R'} (p : IsPullDeg f D₀ D₁) {n : ℕ} {s₀ : ∀ T : Over (Sp R), (T ⟶ D₀.P.A) → GtPt D₀ T}

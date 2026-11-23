@@ -190,7 +190,6 @@ end GlobalTheory.BottomFinComb
 
 namespace GlobalTheory.BottomFinComb
 
-open StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle
 
 
 

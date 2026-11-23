@@ -577,7 +577,6 @@ theorem matGroup_N : PI.IsMatGroup (Nset k r) :=
   ⟨closed_N, (nSubgroup k r).1, (nSubgroup k r).2.1, fun a ha => ⟨(nSubgroup k r).2.2 a ha,
     Matrix.mul_nonsing_inv _ ((uHGroup _ _ (Matrix.isUnit_det_of_left_inverse (hpkFacts k r).2.1)).2.2 a ha.1).1⟩⟩
 
-open scoped Matrix.Norms.Operator in
 theorem cont_exp {m : ℕ} : Continuous (NormedSpace.exp : Matrix (Fin m) (Fin m) ℂ → _) :=
   NormedSpace.exp_continuous
 

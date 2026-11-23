@@ -511,7 +511,6 @@ end Export
 
 section Target
 
-open Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.SeriesTie
 
 theorem typeKept_of_fullTie : ∀ (D : D7) (ρ : Setup D.ntw) (hρ : ρ.Good) (rd : Rds D.nexp ρ), FullTie hρ rd →
     (∀ i j b, ActRead (rd i j b)) → ∀ E : Formalism.MainNotions.IntegralHeckeForms.XD D, GlobalTheory.TwAll.TypeKept E :=

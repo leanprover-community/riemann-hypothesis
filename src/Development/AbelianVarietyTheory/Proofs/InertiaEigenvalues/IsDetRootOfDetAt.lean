@@ -107,7 +107,6 @@ end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
 variable {D : D7} {S T : HSp D}
-open Classical
 open Formalism.IndefR.Links (PolF)
 
 theorem fock_sum {F : Frame S T} (hF : F.Good) {ι : Type} (s : Finset ι) (f : ι → WO S T → ℂ)
@@ -159,7 +158,6 @@ end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
 variable {D : D7} {S T : HSp D}
-open Classical
 
 theorem sum_ext_prod {ι C : Type} [Fintype ι] [Fintype C] (i₀ : ι) (b : ι → C) (f : ι → C → ℂ) :
     ∑ c ∈ Finset.univ.filter (fun c : ι → C => ∀ i, i ≠ i₀ → c i = b i), ∏ i, f i (c i) =
@@ -212,8 +210,6 @@ end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
 variable {D : D7} {S T : HSp D}
-open Classical
-open Formalism.IndefR.Links (PolF)
 
 theorem series_add {F : Frame S T} (hF : F.Good) (ω : PairRep S T) {f f' : WO S T → ℂ} (hf : IsThetaFunO F.ψ S T f)
     (hf' : IsThetaFunO F.ψ S T f') (h : GA D S) (Pol : PolF D T.rank S.rank) (g : GA D T) :

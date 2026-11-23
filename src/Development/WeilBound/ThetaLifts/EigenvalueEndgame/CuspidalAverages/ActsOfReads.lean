@@ -533,7 +533,6 @@ theorem locV (hB : ThetaBasic) (hK : KDecay) (hA : IAut) (hT : IsTriple B G X om
   exact exists_loc hB hp hs (fun Φ h => (hK F E σ B a a' G X om om' hT).1 Φ (hs h))
     (hA F E σ B a a' G X om om' hT).1 (polData_le_placewise hT.geo.hM hΦ)
 
-open PositivityTheory.ThKG in
 theorem locV' (hB : ThetaBasic) (hK : KDecay) (hA : IAut) (hT : IsTriple B G X om om') {Φ}
     (hΦ : Φ ∈ PolData B G.M' ⊓ G.M'.So B.ψ B.τ₁) :
     ∀ᶠ v : Pl F in cofinite, ∀ t : E →ₐ[F] Fv F v, ∃ ι S, G.M'.IsLinBar B.ψ t 1 1 ι ∧ ι (G.M'.vac v) ∈ SB _ ∧

@@ -177,7 +177,6 @@ end GlobalTheory.UnitPairNorm
 
 namespace GlobalTheory.UnitPairNorm
 
-open Module
 
 section Main
 

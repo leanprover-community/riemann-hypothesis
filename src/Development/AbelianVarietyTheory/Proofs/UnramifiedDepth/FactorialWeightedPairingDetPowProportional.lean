@@ -60,7 +60,6 @@ private theorem pairing_eq_sum_factorial (F G : MvPolynomial κ C) :
   rw [_root_.GlobalTheory.DetPowPairing.pairing, LinearMap.sum_apply]
   simp only [LinearMap.smul_apply, lcoeff_apply, smul_eq_mul]
 
-open MvPolynomial in
 variable {C : Type} [CommRing C] in
 private theorem exists_cayOp_pow_cayDet_pow (n k Y : ℕ) :
     ∃ c : ℕ, (_root_.ReciprocityTheory.PGsh.cayOp n C ^ k) (_root_.ReciprocityTheory.PGsh.cayDet n C ^ Y) = c • _root_.ReciprocityTheory.PGsh.cayDet n C ^ (Y - k) := by
@@ -75,7 +74,6 @@ private theorem exists_cayOp_pow_cayDet_pow (n k Y : ℕ) :
     have : Y - 1 - k = Y - (k + 1) := by omega
     rw [this]
 
-open MvPolynomial in
 variable {C : Type} [CommRing C] {κ : Type} in
 private theorem pairing_eq_sum_of_support_subset (F G : MvPolynomial κ C)
     (S : Finset (κ →₀ ℕ)) (hS : F.support ⊆ S) :
@@ -86,7 +84,6 @@ private theorem pairing_eq_sum_of_support_subset (F G : MvPolynomial κ C)
   have h : AddMonoidAlgebra.coeff F A = 0 := by simpa using hA
   rw [h]; ring
 
-open MvPolynomial in
 variable {C : Type} [CommRing C] {κ : Type} in
 private theorem pairing_comm' (F G : MvPolynomial κ C) :
     _root_.GlobalTheory.DetPowPairing.pairing F G = _root_.GlobalTheory.DetPowPairing.pairing G F := by
@@ -97,7 +94,6 @@ private theorem pairing_comm' (F G : MvPolynomial κ C) :
       Finset.subset_union_right]
   exact Finset.sum_congr rfl fun _ _ => by ring
 
-open MvPolynomial in
 variable {C : Type} [CommRing C] {κ : Type} in
 private theorem pairing_monomial_eq_coeff_mul_prod_factorial_mul (F : MvPolynomial κ C) (A : κ →₀ ℕ) (b : C) :
     _root_.GlobalTheory.DetPowPairing.pairing F (monomial A b) =
@@ -110,7 +106,6 @@ private theorem pairing_monomial_eq_coeff_mul_prod_factorial_mul (F : MvPolynomi
     rw [coeff_monomial, if_neg (Ne.symm hB)]; ring
   · intro h; exact absurd (Finset.mem_insert_self _ _) h
 
-open MvPolynomial in
 variable {C : Type} [CommRing C] {κ : Type} in
 private theorem prod_factorial_add_single_one_eq_succ_mul_prod_factorial (B : κ →₀ ℕ) (x : κ) :
     ((B + Finsupp.single x 1).prod fun _ e => (e.factorial : C)) =
@@ -138,7 +133,6 @@ private theorem prod_factorial_add_single_one_eq_succ_mul_prod_factorial (B : κ
   simp [Nat.factorial_succ]
   ring
 
-open MvPolynomial in
 variable {C : Type} [CommRing C] {κ : Type} in
 private theorem pairing_X_mul_eq_pairing_pderiv (x : κ) (F G : MvPolynomial κ C) :
     _root_.GlobalTheory.DetPowPairing.pairing (X x * F) G =
@@ -165,7 +159,6 @@ private theorem pairing_X_mul_eq_pairing_pderiv (x : κ) (F G : MvPolynomial κ 
       rw [hf]; ring
   | add p q hp hq => rw [map_add (f := _), map_add (f := _), map_add (f := _), hp, hq]
 
-open MvPolynomial in
 variable {C : Type} [CommRing C] {κ : Type} in
 private theorem pairing_list_prod_X_mul_eq_pairing_list_prod_pderiv {ι : Type} (g : ι → κ) (L : List ι)
     (F G : MvPolynomial κ C) :
@@ -180,7 +173,6 @@ private theorem pairing_list_prod_X_mul_eq_pairing_list_prod_pderiv {ι : Type} 
       pairing_X_mul_eq_pairing_pderiv, List.map_cons, List.prod_cons, Module.End.mul_apply]
     rfl
 
-open MvPolynomial in
 variable {C : Type} [CommRing C] in
 private theorem pairing_cayDet_mul' (n : ℕ) (F G : MvPolynomial (Fin n × Fin n) C) :
     _root_.GlobalTheory.DetPowPairing.pairing (_root_.ReciprocityTheory.PGsh.cayDet n C * F) G =
@@ -198,7 +190,6 @@ private theorem pairing_cayDet_mul' (n : ℕ) (F G : MvPolynomial (Fin n × Fin 
     rw [Fin.prod_univ_def]; rfl
   rw [hprod, pairing_list_prod_X_mul_eq_pairing_list_prod_pderiv (fun j => (σ j, j))]
 
-open MvPolynomial in
 variable {C : Type} [CommRing C] in
 private theorem pairing_cayDet_pow_mul (n k : ℕ) (F G : MvPolynomial (Fin n × Fin n) C) :
     _root_.GlobalTheory.DetPowPairing.pairing (_root_.ReciprocityTheory.PGsh.cayDet n C ^ k * F) G =
@@ -209,7 +200,6 @@ private theorem pairing_cayDet_pow_mul (n k : ℕ) (F G : MvPolynomial (Fin n ×
     rw [pow_succ, mul_assoc, ih, pairing_cayDet_mul', pow_succ', Module.End.mul_apply]
 
 
-open MvPolynomial in
 variable {C : Type} [CommRing C] {n : ℕ} in
 theorem _root_.GlobalTheory.DetPowPairing.pairing_pow_proportional :
   (∀ (C : Type) [Field C] [CharZero C] (n₀ M Y : ℕ) (Q : MvPolynomial (Fin n₀ × Fin n₀) C), M ≤ Y → Q.IsHomogeneous (n₀ * M) →

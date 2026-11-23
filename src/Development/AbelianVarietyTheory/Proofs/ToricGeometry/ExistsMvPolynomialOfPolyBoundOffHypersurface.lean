@@ -63,7 +63,6 @@ private theorem norm_cons_le_lemma_4 {d : ℕ} (j : ℂ) (x' : Fin d → ℂ) :
   · simp only [Fin.cons_zero]; linarith [norm_nonneg x']
   · simp only [Fin.cons_succ]; linarith [norm_le_pi_norm x' i, norm_nonneg j]
 
-open Filter Topology Asymptotics in
 private theorem norm_le_of_bound_cons_lemma {d m : ℕ} {C : ℝ} {g : (Fin (d + 1) → ℂ) → ℂ}
     {x : Fin (d + 1) → ℂ} (j : ℂ) (x' : Fin d → ℂ) (hx : x = Fin.cons j x')
     (h : ‖g x‖ ≤ C * (1 + ‖x‖) ^ m) :
@@ -78,7 +77,6 @@ private theorem norm_le_of_bound_cons_lemma {d m : ℕ} {C : ℝ} {g : (Fin (d +
       mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) h1 m) (abs_nonneg C)
     _ = |C| * (1 + ‖j‖) ^ m * (1 + ‖x'‖) ^ m := by rw [mul_pow, mul_assoc]
 
-open Filter Topology Asymptotics in
 private theorem polynomial_of_bound_off_roots_lemma_2 {m : ℕ} {K : ℝ} :
     ∀ (n : ℕ) (r : Polynomial ℂ) (g : ℂ → ℂ), r.natDegree = n → r ≠ 0 →
       DifferentiableOn ℂ g {s | r.eval s ≠ 0} →
@@ -184,7 +182,6 @@ private theorem polynomial_of_bound_off_roots_lemma_2 {m : ℕ} {K : ℝ} :
       intro h0; apply hs; rw [heval, h0, mul_zero]
     rw [← hoff s hsc]; exact hgp s hs'
 
-open Filter Topology Asymptotics in
 private theorem polynomial_eventually_ne_zero_lemma_3 {ρ : Polynomial ℂ} (hρ : ρ ≠ 0) (a : ℂ) :
     ∀ᶠ t in 𝓝[≠] a, ρ.eval t ≠ 0 := by
   have hU : IsOpen ((↑(ρ.roots.toFinset.erase a) : Set ℂ)ᶜ) :=
@@ -197,7 +194,6 @@ private theorem polynomial_eventually_ne_zero_lemma_3 {ρ : Polynomial ℂ} (hρ
   exact ht
 
 
-open Filter Topology Asymptotics in
 theorem _root_.GlobalTheory.exists_mvPolynomial_of_poly_bound_off_hypersurface :
     ∀ (d m : ℕ) (q : MvPolynomial (Fin d) ℂ) (f : (Fin d → ℂ) → ℂ) (C : ℝ), q ≠ 0 →
       DifferentiableOn ℂ f {x | MvPolynomial.eval x q ≠ 0} →

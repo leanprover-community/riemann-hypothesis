@@ -69,7 +69,6 @@ theorem kaehlerD_aeval_eq_sum {K : Type*} {Ω : Type*} [Field K] [Field Ω] [Alg
       Finset.mem_univ, if_true, mul_smul, ← Finset.smul_sum]
     exact add_comm _ _
 
-open MvPolynomial in
 theorem exists_pderiv_ne_zero_lt {K : Type*} [Field K] [CharZero K] {D : ℕ}
     (P : MvPolynomial (Fin D) K) (hP : 0 < P.totalDegree) :
     ∃ i, pderiv i P ≠ 0 ∧ (pderiv i P).totalDegree < P.totalDegree := by

@@ -225,7 +225,6 @@ end GlobalTheory.HeatGlue
 
 namespace GlobalTheory.HeatGlue
 
-open GlobalTheory.KS
 
 section Wt
 
@@ -302,7 +301,6 @@ end GlobalTheory.HeatGlue
 
 namespace GlobalTheory.HeatGlue
 
-open GlobalTheory.KS
 
 section Dlg
 
@@ -345,7 +343,6 @@ end GlobalTheory.HeatGlue
 
 namespace GlobalTheory.HeatGlue
 
-open GlobalTheory.KS
 
 theorem resG_constFn {R : Type} [CommRing R] {Z : Scheme.{0}} (p : Z ⟶ Sp R) {W W' : Z.Opens} (h : W' ≤ W) (r : R) :
     resG Z h (constFn p W r) = constFn p W' r := by

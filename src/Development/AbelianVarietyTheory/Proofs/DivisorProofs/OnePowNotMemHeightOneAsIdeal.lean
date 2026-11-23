@@ -178,7 +178,6 @@ end GlobalTheory.WtInterlaceC
 
 namespace GlobalTheory.WtInterlaceC
 
-open Finset GlobalTheory.SignedHC
 
 theorem good_empty : Good (-1) 0 0 ∅ ∅ := ⟨disjoint_empty_left _, by simp, fun p _ => by simp [cnt]⟩
 
@@ -297,7 +296,6 @@ end GlobalTheory.WtInterlaceC
 
 namespace GlobalTheory.WtInterlaceC
 
-open Finset GlobalTheory.SignedHC
 
 theorem good_CB (c a : ℚ) (n : ℕ) (ha : a < c - (n : ℚ) / 2) :
     Good (-1) 0 0 (TPar.block c n ∪ {a}) (TPar.block c (n + 1)) := by
@@ -535,7 +533,6 @@ end GlobalTheory.WtInterlaceC
 
 namespace GlobalTheory.WtInterlaceC
 
-open Finset GlobalTheory.SignedHC GlobalTheory.FunObj GlobalTheory.ChiGrid
 
 theorem interlace_wtOf {N n : ℕ} (hN : N = n + 1) {A B : Finset ℚ} (hA : A.card = N) (hB : B.card = n)
     (hAc : InCoset (((N : ℚ) - 1) / 2) A) (hBc : InCoset (((n : ℚ) - 1) / 2) B) (hSI : StrictInterlace A B) :
@@ -599,7 +596,6 @@ end GlobalTheory.WtInterlaceC
 
 namespace GlobalTheory.WtInterlaceC
 
-open Finset GlobalTheory.SignedHC GlobalTheory.FunObj GlobalTheory.ChiGrid
 
 section Min
 

@@ -136,7 +136,6 @@ end GlobalTheory.LevelDescent
 
 namespace GlobalTheory.LevelDescent
 
-open GlobalTheory.SiegelPull GlobalTheory.CharZeroPts
 
 section Cond
 
@@ -208,7 +207,6 @@ end GlobalTheory.LevelDescent
 
 namespace GlobalTheory.LevelDescent
 
-open GlobalTheory.SiegelPull GlobalTheory.CharZeroPts
 
 theorem isLevel_of_subring : ∀ (h M : ℕ) (R : Type) [CommRing R] (R₁ : Subring R) (A : Over (Sp R)) [GrpObj A] (A₁ : Over (Sp R₁)) [GrpObj A₁] (φ : A.left ⟶ A₁.left) (lv : Std h M → (𝟙_ (Over (Sp R)) ⟶ A)) (lv₁ : Std h M → (𝟙_ (Over (Sp R₁)) ⟶ A₁)), 0 < M → IsUnit (M : R₁) → IsAbelianScheme A₁ → IsGrpPullback A A₁ (spMap R₁.subtype) φ → (∀ a, (lv a).left ≫ φ = spMap R₁.subtype ≫ (lv₁ a).left) → (∀ a b, lv₁ (a + b) = lv₁ a * lv₁ b) → IsLevel A lv → IsLevel A₁ lv₁ := by
   intro h M R _ R₁ A _ A₁ _ φ lv lv₁ hM hu hA hp hl hadd hlev

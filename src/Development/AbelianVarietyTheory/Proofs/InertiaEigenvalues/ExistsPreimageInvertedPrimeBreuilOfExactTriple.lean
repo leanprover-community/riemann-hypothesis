@@ -120,7 +120,6 @@ end GlobalTheory.BK.ExtExact
 
 namespace GlobalTheory.BK.ExtExact
 
-open PowerSeries GlobalTheory.BK Matrix
 
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [IsUnitBall O K] {l e a : ℕ} [Fact l.Prime] [NormedAlgebra ℚ_[l] K] {ι κ μ : Type} [Fintype ι]

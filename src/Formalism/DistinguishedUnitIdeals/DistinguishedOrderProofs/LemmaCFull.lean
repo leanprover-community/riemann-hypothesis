@@ -504,7 +504,6 @@ end Formalism.ExponentWindows.E.LC
 
 namespace Formalism.ExponentWindows.E
 
-open PowerSeries
 
 theorem lemma_C_full_holds : LemmaCFull := by
   intro hVal O _ _ _ ϖ hϖ B e he hℓe n V₁ V₂ _ _ _ _ L₁ L₂ h c ell Λ r₁ r₂ S₁ S₂ m H b kind U₁ U₂

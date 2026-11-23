@@ -323,7 +323,6 @@ end Adelic
 
 section Step
 
-open Formalism.L2.Col Formalism.L2.DIV
 
 variable {E K ι : Type} [Field E] [NumberField E] [StarRing E] [Field K] [NumberField K] [StarRing K] [Fintype ι] {n : ℕ}
   (S : GStep E K n) (emb : ι → E →+* K) (σ : K →+* ℂ) (lam : ι → DomWeight n)

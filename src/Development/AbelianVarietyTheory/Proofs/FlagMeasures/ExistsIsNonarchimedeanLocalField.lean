@@ -101,8 +101,6 @@ theorem mem_pow_iff {ϖ : o} (hϖ : Irreducible ϖ) (n : ℕ) (x : (val o F).int
 end GlobalTheory.LocFieldOfDVR
 
 namespace GlobalTheory.LocFieldOfDVR
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Topology
-open scoped WithZero
 variable {o F : Type} [CommRing o] [IsDomain o] [IsDiscreteValuationRing o] [Field F] [Algebra o F]
   [IsFractionRing o F]
 
@@ -142,8 +140,6 @@ theorem isAdic_map {ϖ : o} (hϖ : Irreducible ϖ) :
 end GlobalTheory.LocFieldOfDVR
 
 namespace GlobalTheory.LocFieldOfDVR
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Topology
-open scoped WithZero
 variable {o F : Type} [CommRing o] [IsDomain o] [IsDiscreteValuationRing o] [Field F] [Algebra o F]
   [IsFractionRing o F]
 
@@ -180,8 +176,6 @@ theorem locallyCompactSpace [IsAdicComplete (IsLocalRing.maximalIdeal o) o]
 end GlobalTheory.LocFieldOfDVR
 
 namespace GlobalTheory.LocFieldOfDVR
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Topology
-open scoped WithZero
 
 theorem exists_isNonarchimedeanLocalField : ∀ (o F : Type) [CommRing o] [IsDomain o] [IsDiscreteValuationRing o] [IsAdicComplete (IsLocalRing.maximalIdeal o) o] [Finite (IsLocalRing.ResidueField o)] [Field F] [Algebra o F] [IsFractionRing o F], ∃ (_ : ValuativeRel F) (_ : TopologicalSpace F), IsNonarchimedeanLocalField F ∧ ∀ x : F, x ∈ 𝒪[F] ↔ ∃ a : o, algebraMap o F a = x := by
   intro o F _ _ _ _ _ _ _ _

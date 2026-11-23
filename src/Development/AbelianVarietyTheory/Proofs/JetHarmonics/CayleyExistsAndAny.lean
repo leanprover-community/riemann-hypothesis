@@ -63,8 +63,6 @@ theorem _root_.GlobalTheory.CayleyChoice.Kset_sub {g : Matrix (Fin n) (Fin n) �
   rw [Matrix.mul_assoc, ← hc, ← Matrix.mul_assoc, ← star_eq_conjTranspose,
     (mem_unitaryGroup_iff').mp hu, Matrix.one_mul]
 
-open Matrix MeasureTheory Finset in
-open scoped InnerProductSpace ENNReal in
 variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : Fin n → Bool}
   {σ σ' : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} in
 private theorem mul_mem_UJset_jet_harmonics {a b : Matrix (Fin n) (Fin n) ℂ}
@@ -75,8 +73,6 @@ private theorem mul_mem_UJset_jet_harmonics {a b : Matrix (Fin n) (Fin n) ℂ}
   rw [conjTranspose_mul, show bᴴ * aᴴ * _root_.PI.UpqRep.Jm ε * (a * b) = bᴴ * (aᴴ * _root_.PI.UpqRep.Jm ε * a) * b by
     simp only [Matrix.mul_assoc], ha', hb']
 
-open Matrix MeasureTheory Finset in
-open scoped InnerProductSpace ENNReal in
 variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : Fin n → Bool}
   {σ σ' : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} in
 private theorem isKTypeOf_map_of_intertwining {σ₁ σ₂ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (e : H ≃ₗ[ℂ] H)
@@ -128,8 +124,6 @@ private theorem isKTypeOf_map_of_intertwining {σ₁ σ₂ : Matrix (Fin n) (Fin
     exact hmax ν x hx (by rintro rfl; simp at hy0) (wt' ν x hyw)
 
 
-open Matrix MeasureTheory Finset in
-open scoped InnerProductSpace ENNReal in
 variable {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : Fin n → Bool}
   {σ σ' : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} in
 theorem _root_.GlobalTheory.CayleyChoice.isDS_conj {lam : Fin n → ℝ} (hσ : _root_.PI.UpqRep.IsDS ε lam σ)
@@ -223,8 +217,6 @@ theorem _root_.GlobalTheory.CayleyChoice.isDS_conj {lam : Fin n → ℝ} (hσ : 
     exact hmin μ _ (isKTypeOf_map_of_intertwining e.symm he' hT)
 
 
-open Matrix MeasureTheory Finset in
-open scoped InnerProductSpace ENNReal in
 theorem _root_.GlobalTheory.CayleyChoice.cayley_exists_and_any : ∀ (k r : ℕ),
     (1 ≤ k → ∃ Q, _root_.PI.UpqRep.IsCayleyU k r (_root_.PI.BesselPeriodGGP.eps48 k r) Q) ∧
     ∀ (ε : Fin (2 * r + k + 1) → Bool) (mu : Fin (2 * r + k + 1) → ℝ)

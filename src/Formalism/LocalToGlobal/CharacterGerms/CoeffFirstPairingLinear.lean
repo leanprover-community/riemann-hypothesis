@@ -157,18 +157,14 @@ theorem frobPowMv {σ : Type} (F : MvPowerSeries σ C) (hF : IntS V F) (α : σ 
 
 end Gen
 
-section Slice
 
 variable {C : Type} [Field C] [CharZero C] {dd : ℕ}
 
-end Slice
 
-section FBs
 
 variable {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ}
   (Y : FBChart C V O dd)
 
-end FBs
 
 end PhPowP
 

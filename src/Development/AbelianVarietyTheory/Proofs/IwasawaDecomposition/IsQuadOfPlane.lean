@@ -64,16 +64,12 @@ theorem _root_.GlobalTheory.Mem.Lift.dH_add_left (ρ : V → B →L[ℂ] B) (u v
       _root_.GlobalTheory.Mem.Lift.dH ρ u f + _root_.GlobalTheory.Mem.Lift.dH ρ v f :=
   map_add _ _ _
 
-open MeasureTheory Complex Matrix in
-open scoped ContDiff Real in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] {B : Type} [NormedAddCommGroup B]
   [NormedSpace ℂ B] in
 theorem _root_.GlobalTheory.Mem.Lift.dH_smul_left (ρ : V → B →L[ℂ] B) (r : ℝ) (v : V) (f : B) :
     _root_.GlobalTheory.Mem.Lift.dH ρ (r • v) f = r • _root_.GlobalTheory.Mem.Lift.dH ρ v f :=
   map_smul _ _ _
 
-open MeasureTheory Complex Matrix in
-open scoped ContDiff Real in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] {B : Type} [NormedAddCommGroup B]
   [NormedSpace ℂ B] in
 theorem _root_.GlobalTheory.Mem.Lift.dH_add {ρ : V → B →L[ℂ] B} (v : V) {f g : B}
@@ -89,8 +85,6 @@ theorem _root_.GlobalTheory.Mem.Lift.dH_add {ρ : V → B →L[ℂ] B} (v : V) {
   rw [(hf'.hasFDerivAt.fun_add hg'.hasFDerivAt).fderiv]
   rfl
 
-open MeasureTheory Complex Matrix in
-open scoped ContDiff Real in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] {B : Type} [NormedAddCommGroup B]
   [NormedSpace ℂ B] in
 theorem _root_.GlobalTheory.Mem.Lift.dH_smul {ρ : V → B →L[ℂ] B} (v : V) (a : ℂ) {f : B}
@@ -104,8 +98,6 @@ theorem _root_.GlobalTheory.Mem.Lift.dH_smul {ρ : V → B →L[ℂ] B} (v : V) 
   rfl
 
 
-open MeasureTheory Complex Matrix in
-open scoped ContDiff Real in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] {B : Type} [NormedAddCommGroup B]
   [NormedSpace ℂ B] in
 theorem _root_.GlobalTheory.Mem.Lift.hasDerivAt_dH {ρ : V → B →L[ℂ] B} (v : V) {f : B}
@@ -118,8 +110,6 @@ theorem _root_.GlobalTheory.Mem.Lift.hasDerivAt_dH {ρ : V → B →L[ℂ] B} (v
   exact hf'.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hl (by simp)
 
 
-open MeasureTheory Complex Matrix in
-open scoped ContDiff Real in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] {B : Type} [NormedAddCommGroup B]
   [NormedSpace ℂ B] in
 theorem _root_.GlobalTheory.Mem.Lift.dH_comm {ρ : V → B →L[ℂ] B} (A : B →L[ℂ] B)

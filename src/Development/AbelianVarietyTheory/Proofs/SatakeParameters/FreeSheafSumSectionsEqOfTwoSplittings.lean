@@ -49,7 +49,6 @@ private lemma exists_sigma_ι_apply_eq_of_finite_coprod {σ : Type} [Finite σ] 
     ∃ k a, (Sigma.ι g k) a = q :=
   (sigmaOpenCover g).exists_eq q
 
-open CategoryTheory Limits AlgebraicGeometry in
 private lemma exists_pullback_lift_apply_eq_of_isIso_sigmaDesc {Z X V : Scheme.{0}} {f : Z ⟶ X} {y : V ⟶ X} {m : ℕ}
     {s : Fin m → (V ⟶ Z)} (hc : ∀ j, s j ≫ f = y)
     [IsIso (Sigma.desc fun j => pullback.lift (s j) (𝟙 V) (by simp [hc j]) :
@@ -61,7 +60,6 @@ private lemma exists_pullback_lift_apply_eq_of_isIso_sigmaDesc {Z X V : Scheme.{
   obtain ⟨k, a, rfl⟩ := exists_sigma_ι_apply_eq_of_finite_coprod _ q
   exact ⟨k, a, by rw [← Scheme.Hom.comp_apply, Sigma.ι_desc]⟩
 
-open CategoryTheory Limits AlgebraicGeometry in
 private lemma isOpenImmersion_pullback_lift_of_isIso_sigmaDesc {Z X V : Scheme.{0}} {f : Z ⟶ X} {y : V ⟶ X} {m : ℕ}
     {s : Fin m → (V ⟶ Z)} (hc : ∀ j, s j ≫ f = y)
     [IsIso (Sigma.desc fun j => pullback.lift (s j) (𝟙 V) (by simp [hc j]) :
@@ -71,13 +69,11 @@ private lemma isOpenImmersion_pullback_lift_of_isIso_sigmaDesc {Z X V : Scheme.{
     (j : Fin m) → V ⟶ pullback f y) k]
   infer_instance
 
-open CategoryTheory Limits AlgebraicGeometry in
 private lemma pullback_snd_lift_id_apply {Z X V : Scheme.{0}} {f : Z ⟶ X} {y : V ⟶ X} (t : V ⟶ Z)
     (h : t ≫ f = 𝟙 V ≫ y) (a : ↥V) : pullback.snd f y (pullback.lift t (𝟙 V) h a) = a := by
   rw [← Scheme.Hom.comp_apply, pullback.lift_snd]
   rfl
 
-open CategoryTheory Limits AlgebraicGeometry in
 private lemma index_eq_of_pullback_lift_apply_eq {Z X V : Scheme.{0}} {f : Z ⟶ X} {y : V ⟶ X} {m : ℕ}
     {s : Fin m → (V ⟶ Z)} (hc : ∀ j, s j ≫ f = y)
     [IsIso (Sigma.desc fun j => pullback.lift (s j) (𝟙 V) (by simp [hc j]) :
@@ -96,7 +92,6 @@ private lemma index_eq_of_pullback_lift_apply_eq {Z X V : Scheme.{0}} {f : Z ⟶
     Scheme.Hom.injective _ h1
   exact congrArg Sigma.fst ((sigmaι_eq_iff (fun _ : Fin m => V) j j' a b).mp (by convert h2))
 
-open CategoryTheory Limits AlgebraicGeometry in
 private lemma injective_of_pullback_lift_apply_eq_of_isIso {Z X V : Scheme.{0}} {f : Z ⟶ X} {y : V ⟶ X} {m m' : ℕ}
     {s : Fin m → (V ⟶ Z)} {s' : Fin m' → (V ⟶ Z)} (hc : ∀ j, s j ≫ f = y) (hc' : ∀ j, s' j ≫ f = y)
     [IsIso (Sigma.desc fun j => pullback.lift (s j) (𝟙 V) (by simp [hc j]) :
@@ -118,7 +113,6 @@ private lemma injective_of_pullback_lift_apply_eq_of_isIso {Z X V : Scheme.{0}} 
   exact key _ _ hjj
 
 
-open CategoryTheory Limits AlgebraicGeometry in
 theorem _root_.GlobalTheory.EtC.Tr.sum_sections_eq_of_two_splittings : ∀ (R : Type) [CommRing R] {Z X V : Scheme.{0}} {f : Z ⟶ X} {y : V ⟶ X}
     {m m' : ℕ} {s : Fin m → (V ⟶ Z)} {s' : Fin m' → (V ⟶ Z)}, _root_.GlobalTheory.EtC.Tr.SplitBy f y s → _root_.GlobalTheory.EtC.Tr.SplitBy f y s' →
     ∑ j, (_root_.GlobalTheory.EtC.free R).map (yoneda.map (s j)) = ∑ j, (_root_.GlobalTheory.EtC.free R).map (yoneda.map (s' j)) := by

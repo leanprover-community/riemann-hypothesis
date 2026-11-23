@@ -82,8 +82,6 @@ private lemma le_one_and_mem_latM_of_hasLevel {F : Type} [Field F] [NumberField 
       (Submodule.neg_mem _ (FractionalIdeal.mem_coe.2 ((mem _).1 hv).2))
     simpa [Algebra.smul_def] using this
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma mem_and_totally_pos_of_coeff_ne_zero {F : Type} [Field F] [NumberField F]
     {k N : ℕ} {A B : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F} {a₀ : ℂ} {a : F → ℂ} {x : F}
     (ha : _root_.GlobalTheory.HilbFam.IsCoef k A B a₀ a)
@@ -100,8 +98,6 @@ private lemma mem_and_totally_pos_of_coeff_ne_zero {F : Type} [Field F] [NumberF
       _ = A := mul_one _
   exact hle hmem
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma sum_realEmbeddings_eq_trace {F : Type} [Field F] [NumberField F]
     [IsTotallyReal F] (y : F) :
     ∑ i : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F, i y = ((Algebra.trace ℚ F y : ℚ) : ℝ) := by
@@ -109,8 +105,6 @@ private lemma sum_realEmbeddings_eq_trace {F : Type} [Field F] [NumberField F]
   push_cast
   exact _root_.GlobalTheory.HilbFam.sum_realEmb_eq_trace F y
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma trace_mul_int_of_mem_latM {F : Type} [Field F] [NumberField F]
     {A : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F} {y ξ : F} (hy : y ∈ _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.latM A)
     (hξ : ξ ∈ (A : FractionalIdeal (𝓞 F)⁰ F)) : ∃ c : ℤ, Algebra.trace ℚ F (y * ξ) = c := by
@@ -118,8 +112,6 @@ private lemma trace_mul_int_of_mem_latM {F : Type} [Field F] [NumberField F]
   obtain ⟨c, hc⟩ := hy ξ hξ
   exact ⟨c, by simpa [Algebra.traceForm_apply] using hc.symm⟩
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private lemma coeff_support_trace_natCast_and_finite {F : Type} [Field F] [NumberField F]
     [IsTotallyReal F] {k : ℕ} {𝔞 𝔟 : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F} {a₀ : ℂ} {a : F → ℂ} {x : F}
     {N : ℕ} (hN : 0 < N) (ha : _root_.GlobalTheory.HilbFam.IsCoef k 𝔞 𝔟 a₀ a)
@@ -194,8 +186,6 @@ private lemma coeff_support_trace_natCast_and_finite {F : Type} [Field F] [Numbe
       exact mul_le_mul hφD hφξ (norm_nonneg _) (Finset.sum_nonneg fun ψ _ ↦ norm_nonneg _)
 
 
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 theorem _root_.GlobalTheory.HilbFam.coef_support_trace : ∀ (F : Type) [Field F] [NumberField F]
     [IsTotallyReal F] (k : ℕ) (𝔞 𝔟 : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F) (a₀ : ℂ) (a : F → ℂ) (x : F)
     (N : ℕ), 0 < N → _root_.GlobalTheory.HilbFam.IsCoef k 𝔞 𝔟 a₀ a →

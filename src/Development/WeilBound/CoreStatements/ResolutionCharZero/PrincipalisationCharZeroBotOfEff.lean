@@ -78,7 +78,6 @@ end PositivityTheory.ResPlug.WeightsCompactStabilizer
 
 namespace PositivityTheory.ResPlug.WeightsCompactStabilizer
 
-open GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.SncBlowup FunctorialResolution
 
 theorem isIso_structMap_zero {X : Scheme.{0}} (s : BlowupSequence X) : IsIso (s.structMap 0) := by
   have : IsIso (s.down (le_refl 0)) := by
@@ -113,7 +112,6 @@ end PositivityTheory.ResPlug.WeightsCompactStabilizer
 
 namespace PositivityTheory.ResPlug.WeightsCompactStabilizer
 
-open GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.SncBlowup FunctorialResolution
 
 theorem isSncBlowupSeq_of_principalizing (hC : GCentre) (hT : GTransform) {k : Type} [Field k] [CharZero k]
     {X : Scheme.{0}} (g : X ⟶ Spec (CommRingCat.of k)) [Smooth g] (E : Closeds X) (I : X.IdealSheafData)
@@ -175,7 +173,6 @@ end PositivityTheory.ResPlug.WeightsCompactStabilizer
 
 namespace PositivityTheory.ResPlug.WeightsCompactStabilizer
 
-open GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.SncBlowup FunctorialResolution
 
 theorem principalisationCharZero_of (H : FPrinc) (hB : GBoundary) (hC : GCentre) (hE : GEnd) :
     PrincipalisationCharZero := by
@@ -195,7 +192,6 @@ end PositivityTheory.ResPlug.WeightsCompactStabilizer
 
 namespace PositivityTheory.ResPlug.WeightsCompactStabilizer
 
-open GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.SncBlowup FunctorialResolution
 
 theorem fPrinc : FPrinc := FunctorialResolution.functorialPrincipalizationCharZero.{0}
 
@@ -234,7 +230,6 @@ end PositivityTheory.ResPlug.WeightsCompactStabilizer
 
 namespace PositivityTheory.ResPlug.WeightsCompactStabilizer
 
-open GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.SncBlowup FunctorialResolution
 
 theorem gCentre : GCentre := PositivityTheory.ResPlug.BlowupCentre.gCentre
 
@@ -245,7 +240,6 @@ end PositivityTheory.ResPlug.WeightsCompactStabilizer
 
 namespace PositivityTheory.ResPlug.WeightsCompactStabilizer
 
-open GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.SncBlowup FunctorialResolution
 
 def GIso : Prop :=
   ∀ (k : Type) [Field k] (X : Scheme.{0}) (p : X ⟶ Spec (CommRingCat.of k)) (I : X.IdealSheafData)
@@ -283,7 +277,6 @@ end PositivityTheory.ResPlug.WeightsCompactStabilizer
 
 namespace PositivityTheory.ResPlug.WeightsCompactStabilizer
 
-open GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.SncBlowup FunctorialResolution
 
 theorem gIso : GIso := fun _ _ _ _ _ _ _ hs =>
   PositivityTheory.ResPlug.FromRes.isIso_topMap_restrict_of_isPrincipalizingSequence hs
@@ -298,7 +291,6 @@ end PositivityTheory.ResPlug.WeightsCompactStabilizer
 
 namespace PositivityTheory.ResPlug.WeightsCompactStabilizer
 
-open GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.SncBlowup FunctorialResolution
 
 theorem principalisationCharZero_bot_of_eff (hc : GEff) :
     ∀ (k : Type) [Field k] [CharZero k] (d : ℕ) (X : Scheme.{0}) (g : X ⟶ Sp k),

@@ -393,7 +393,6 @@ end Null
 section Main
 
 open GlobalTheory.SquareComm GlobalTheory.SquareIdent GlobalTheory.SquareDict GlobalTheory.SqTop
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (alpha beta spV spW spW₁ spV₁)
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc}
 

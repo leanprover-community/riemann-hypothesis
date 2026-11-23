@@ -70,7 +70,6 @@ end GlobalTheory.ConjSelfRecip
 
 namespace GlobalTheory.ConjSelfRecip
 
-open ComplexConjugate
 
 theorem reverse_map_inj {R S : Type} [CommRing R] [CommRing S] (f : R →+* S)
     (hf : Function.Injective f) (Q : R[X]) : (Q.map f).reverse = Q.reverse.map f := by

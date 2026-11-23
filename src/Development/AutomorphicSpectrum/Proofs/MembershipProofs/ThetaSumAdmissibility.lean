@@ -173,7 +173,6 @@ theorem indicator_mem_SB : (Set.univ.pi fun _ : κ => (integralFiniteAdeles (�
   · exact ⟨_, hcl.isOpen_compl, hx, fun y hy => by rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem hy]⟩
 
 
-open GroundTheory.Global in
 theorem exists_thetaSum_ne_zero : ∃ Φ ∈ schA F κ, thetaSum F Φ ≠ 0 := by
   let b : ContDiffBump (0 : κ → mixedEmbedding.mixedSpace F) := default
   have hb : HasCompactSupport fun v => (b v : ℂ) := b.hasCompactSupport.comp_left (g := fun r : ℝ => (r : ℂ)) (by simp)

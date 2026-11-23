@@ -70,7 +70,6 @@ end GlobalTheory.InertUnitNorm
 
 namespace GlobalTheory.InertUnitNorm
 
-open IsDedekindDomain.HeightOneSpectrum Polynomial
 
 theorem exists_ne_of_isCMExt {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (σ : E →ₐ[F] E) (hσ : IsCMExt F E σ) : ∃ x : E, σ x ≠ x := by
@@ -153,7 +152,6 @@ end GlobalTheory.InertUnitNorm
 
 namespace GlobalTheory.InertUnitNorm
 
-open IsDedekindDomain.HeightOneSpectrum Polynomial
 
 theorem exists_approx_mod {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
     (b c u₀ : 𝓞 F) (h2 : (2 : 𝓞 F) ∉ v.asIdeal) (hroot : ∀ r : 𝓞 F, r ^ 2 + b * r + c ∉ v.asIdeal)
@@ -212,7 +210,6 @@ end GlobalTheory.InertUnitNorm
 
 namespace GlobalTheory.InertUnitNorm
 
-open IsDedekindDomain.HeightOneSpectrum Polynomial
 
 theorem mem_maximalIdeal_iff_valued_lt_one {F : Type} [Field F] [NumberField F]
     (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletionIntegers F) :
@@ -242,7 +239,6 @@ end GlobalTheory.InertUnitNorm
 
 namespace GlobalTheory.InertUnitNorm
 
-open IsDedekindDomain.HeightOneSpectrum Polynomial
 
 theorem exists_int_sol {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
     (b c : 𝓞 F) (h2 : (2 : 𝓞 F) ∉ v.asIdeal) (hroot : ∀ r : 𝓞 F, r ^ 2 + b * r + c ∉ v.asIdeal)
@@ -311,7 +307,6 @@ end GlobalTheory.InertUnitNorm
 
 namespace GlobalTheory.InertUnitNorm
 
-open IsDedekindDomain.HeightOneSpectrum Polynomial
 
 theorem unit_eq_mul_conj : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E),
     B.IsGood σ → ∀ (v : Pl (F := F)) (w : HeightOneSpectrum (𝓞 E)), Formalism.UG.IsInertAt F E v w → IsField (Fv F v ⊗[F] E) →

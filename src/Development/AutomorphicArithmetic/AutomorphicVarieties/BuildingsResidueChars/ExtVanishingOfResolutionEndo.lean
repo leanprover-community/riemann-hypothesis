@@ -39,7 +39,6 @@ private theorem homologyMap_zero_of_f {C : Type*} [Category C] [Abelian C] {ι :
     rw [← cancel_mono (L.iCycles q), zero_comp, HomologicalComplex.cyclesMap_i, h, comp_zero]
   rw [← cancel_epi (K.homologyπ q), comp_zero, HomologicalComplex.homologyπ_naturality, h1, zero_comp]
 
-open CategoryTheory Limits in
 private theorem isZero_yoneda {R : Type*} [Ring R] {C : Type*} [Category C] [Abelian C]
     [Linear R C] {X : C} (Y : C) (P : ProjectiveResolution X) (e : P.complex ⟶ P.complex)
     (he : e ≫ P.π = P.π) (q : ℕ) (hq : e.f q = 0) :
@@ -59,7 +58,6 @@ private theorem isZero_yoneda {R : Type*} [Ring R] {C : Type*} [Category C] [Abe
   rw [IsZero.iff_id_eq_zero]
   exact h3.symm
 
-open CategoryTheory Limits in
 theorem UpperTheory.ext_vanishing_of_resolution_endo :
     UpperTheory.V.Af.BA.VanishOf := by
   intro Γ _ P e he q hq A

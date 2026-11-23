@@ -59,8 +59,6 @@ lemma _root_.GlobalTheory.DualFamily.herm_one_eq {n : ℕ} (x y : Fin n → E) :
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.herm
   simp [Matrix.one_apply]
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 lemma _root_.GlobalTheory.DualFamily.herm_one_symm {n : ℕ} (x y : Fin n → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.herm 1 x y = _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (_root_.ReciprocityTheory.ChartRestriction.G.FD.herm 1 y x) := by
@@ -71,8 +69,6 @@ lemma _root_.GlobalTheory.DualFamily.herm_one_symm {n : ℕ} (x y : Fin n → E)
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [map_mul, IsCMField.complexConj_apply_apply, mul_comm]
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 lemma _root_.GlobalTheory.DualFamily.isIntegral_cc {a : E} (ha : IsIntegral ℤ a) :
     IsIntegral ℤ (_root_.ReciprocityTheory.ChartRestriction.G.FD.cc a) := by
@@ -80,8 +76,6 @@ lemma _root_.GlobalTheory.DualFamily.isIntegral_cc {a : E} (ha : IsIntegral ℤ 
   exact ha.map (RingHom.toIntAlgHom (IsCMField.complexConj E).toRingEquiv.toRingHom)
 
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 lemma _root_.GlobalTheory.DualFamily.exists_herm_eq {n : ℕ} (f : (Fin n → E) →ₗ[E] E) :
     ∃ w : Fin n → E, ∀ u, f u = _root_.ReciprocityTheory.ChartRestriction.G.FD.herm 1 u w := by
@@ -92,8 +86,6 @@ lemma _root_.GlobalTheory.DualFamily.exists_herm_eq {n : ℕ} (f : (Fin n → E)
   rw [IsCMField.complexConj_apply_apply, smul_eq_mul]
 
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 omit [IsCMField E] in
 lemma _root_.GlobalTheory.DualFamily.eq_zero_of_line {n : ℕ} (Λ : Submodule (𝓞 E) (Fin n → E))
@@ -108,8 +100,6 @@ lemma _root_.GlobalTheory.DualFamily.eq_zero_of_line {n : ℕ} (Λ : Submodule (
   exact RingOfIntegers.not_isField E
     (isField_of_isIntegral_of_isField (IsFractionRing.injective (𝓞 E) E) (Field.toIsField E))
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 lemma _root_.GlobalTheory.DualFamily.span_eq_top {n : ℕ} (Λ : Submodule (𝓞 E) (Fin n → E)) (hfg : Λ.FG)
     (hdual : ∀ x, (∀ y ∈ Λ, IsIntegral ℤ (_root_.ReciprocityTheory.ChartRestriction.G.FD.herm 1 x y)) → x ∈ Λ) :
@@ -131,8 +121,6 @@ lemma _root_.GlobalTheory.DualFamily.span_eq_top {n : ℕ} (Λ : Submodule (𝓞
 
 end DualFamily
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 omit [IsCMField E] in
 private lemma exists_linearForm_extend_of_span_eq_univ {n : ℕ} (Λ : Submodule (𝓞 E) (Fin n → E))
@@ -172,8 +160,6 @@ private lemma exists_linearForm_extend_of_span_eq_univ {n : ℕ} (Λ : Submodule
   rw [map_smul, Module.Basis.constr_basis, ha i, smul_eq_mul, Algebra.smul_def]
   ring
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.exists_dual_family {n : ℕ} (Λ : Submodule (𝓞 E) (Fin n → E))
     (hfg : Λ.FG)

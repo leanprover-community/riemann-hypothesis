@@ -127,14 +127,8 @@ end
 end
 
 section
-open MeasureTheory Set Filter NumberField IsDedekindDomain
-open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary GlobalTheory.AutMult Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
-open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestDataX NoFixed)
-open GlobalTheory.TrMult GlobalTheory.TruncKer
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.PsCo.Plug
-open MainStatements.WeightKernel
 theorem hyperZero_of_intX (hI : MainStatements.RegularCuspidalTrace.RegClassInt) (hRS : GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms.RegularSemisimple) : HyperZeroX :=
   hyperX cuspAny (archZero bumpOn (weight (weightDiag lagr shiftT boundT))
     (vanish (kerSwap (kerUnif smoothSum closedGraph)) identOne identTwo) fdRight archGroup archUnimod hI) hRS
@@ -142,9 +136,6 @@ end GlobalTheory.PsCo.Plug
 end
 
 section
-open MeasureTheory Set Filter NumberField IsDedekindDomain
-open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary GlobalTheory.AutMult Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestDataX PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPartX TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
@@ -242,11 +233,6 @@ end
 end
 
 section
-open MeasureTheory Set Filter NumberField IsDedekindDomain
-open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary GlobalTheory.AutMult Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
-open GlobalTheory.PRep (IsAdmissible)
-open GlobalTheory.TrMult
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem GlobalTheory.PsCo.Plug.ellipticSideDirect : GlobalTheory.Published.CuspTraceClass → EllTraceX := fun tc =>

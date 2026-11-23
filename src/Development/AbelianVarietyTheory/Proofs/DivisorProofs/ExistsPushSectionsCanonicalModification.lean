@@ -79,7 +79,6 @@ end GlobalTheory.ModifCanon
 
 namespace GlobalTheory.ModifCanon
 
-open GlobalTheory.Vanishing.H0 GlobalTheory.TangentOrigin
 
 variable {X Y : Scheme.{0}}
 

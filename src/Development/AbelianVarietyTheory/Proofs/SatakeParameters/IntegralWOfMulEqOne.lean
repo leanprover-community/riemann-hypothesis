@@ -112,7 +112,6 @@ end Props
 
 section Sign
 
-open Formalism.MainNotions.GL3Theta MvPowerSeries
 
 variable {l d : ℕ} [Fact l.Prime] [NeZero d]
 

@@ -453,7 +453,6 @@ end Weights
 
 section Main
 
-open Formalism.MainNotions.S
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}

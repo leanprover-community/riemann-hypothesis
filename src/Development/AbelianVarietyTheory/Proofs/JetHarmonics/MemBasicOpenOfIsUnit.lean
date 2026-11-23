@@ -372,7 +372,6 @@ end Ratio
 
 section Main
 
-open Chart
 
 def germOf {A : Type} [CommRing A] (z : Spec (CommRingCat.of A)) : A →+* (Spec (CommRingCat.of A)).presheaf.stalk z :=
   ((Spec (CommRingCat.of A)).presheaf.germ ⊤ z trivial).hom.comp (Scheme.ΓSpecIso (CommRingCat.of A)).inv.hom

@@ -153,7 +153,6 @@ end UpperTheory.Esk.ImaginaryPartBound
 
 namespace UpperTheory.Esk.ImaginaryPartBound
 
-open UpperTheory.Esk
 
 variable {F I Gf : Type} [Field F] [Group Gf] [Fintype I] (D : Dat F I Gf)
 
@@ -234,7 +233,6 @@ end UpperTheory.Esk.ImaginaryPartBound
 
 namespace UpperTheory.Esk.ImaginaryPartBound
 
-open UpperTheory.Esk
 
 variable {F I Gf : Type} [Field F] [Group Gf] [Fintype I] (D : Dat F I Gf)
 
@@ -334,7 +332,6 @@ end UpperTheory.Esk.ImaginaryPartBound
 
 namespace UpperTheory.Esk.ImaginaryPartBound
 
-open UpperTheory.Esk
 
 variable {F I Gf : Type} [Field F] [Group Gf] [Fintype I] (D : Dat F I Gf)
 
@@ -408,7 +405,6 @@ end UpperTheory.Esk.ImaginaryPartBound
 
 namespace UpperTheory.Esk.ImaginaryPartBound
 
-open UpperTheory.Esk
 
 variable {F I Gf : Type} [Field F] [Group Gf] [Fintype I] (D : Dat F I Gf)
 

@@ -750,7 +750,6 @@ end CorA
 
 section RecordA
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 def JumpsSubL (LT : LocTheory) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (n : ℕ) [NeZero n]

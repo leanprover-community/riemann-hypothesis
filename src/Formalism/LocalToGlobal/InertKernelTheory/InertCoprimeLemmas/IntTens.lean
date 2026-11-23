@@ -567,7 +567,6 @@ theorem taylorSer_eq_taylorMv [DecidableEq D.what₂.Tau] {a b : ℕ} (G : VC D 
 end LatticeGramTransferCondition
 
 section Part7
-open Formalism.L2.Th1.H (taylorMv linSubst taylorMvMul taylorMvComp taylorMv_coeff)
 
 def blkCL (D : D7) {N N' n n' m m' : ℕ} (eR : Fin N' ≃ Fin n' × Fin m') (eC : Fin N ≃ Fin n × Fin m)
     (I : Fin n') (J : Fin n) : VC D N N' →L[ℂ] VC D m m' :=

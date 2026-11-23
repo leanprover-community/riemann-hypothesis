@@ -73,8 +73,6 @@ private lemma hf_sum_smul_left {F : Type} [Field F] [ValuativeRel F] [Topologica
     Finset.sum_congr rfl fun l _ ↦ ?_
   ring
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 private lemma unipotent_pairing_integral_iff_mem_stabilizer_lemma {F : Type} [Field F] [ValuativeRel F]
     [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
     {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) (g : Fin (r + 1) → S.V)
@@ -156,8 +154,6 @@ private lemma unipotent_pairing_integral_iff_mem_stabilizer_lemma {F : Type} [Fi
     exact (d a.castSucc).2
 
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.HL.CoordMass.transport :
     ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E]
       [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : _root_.Formalism.MainNotions.S.Loc.Model F E), M.OK →

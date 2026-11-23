@@ -124,6 +124,5 @@ end
 
 namespace GlobalTheory.MovedJetNZ
 
-open GlobalTheory.Grid (neg ofSgn)
 
 end GlobalTheory.MovedJetNZ

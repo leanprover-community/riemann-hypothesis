@@ -86,7 +86,6 @@ theorem surjective_specMap_field {k L : Type u} [Field k] [Field L] (σ : k →+
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {K : Type u} [Field K] [IsAlgClosed K] in
 theorem _root_.GlobalTheory.ComplexPoints.top_le_preimage_iff {L : Type u} [Field L] {X : Scheme.{u}}
     (x : Spec (.of L) ⟶ X) (U : X.Opens) (a : ↥(Spec (.of L))) : ⊤ ≤ x ⁻¹ᵁ U ↔ x a ∈ U := by
@@ -99,7 +98,6 @@ theorem _root_.GlobalTheory.ComplexPoints.top_le_preimage_iff {L : Type u} [Fiel
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {K : Type u} [Field K] [IsAlgClosed K] in
 theorem _root_.GlobalTheory.ComplexPoints.surjective_of_geomPoints_lift {A B S : Scheme.{u}} (p : A ⟶ S)
     [LocallyOfFiniteType p]
@@ -126,7 +124,6 @@ theorem _root_.GlobalTheory.ComplexPoints.surjective_of_geomPoints_lift {A B S :
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {K : Type u} [Field K] [IsAlgClosed K] in
 theorem _root_.GlobalTheory.ComplexPoints.hom_ext_of_points {X Y S : Scheme.{u}} (p : X ⟶ Spec (.of K))
     [LocallyOfFiniteType p]
@@ -147,7 +144,6 @@ variable {X Y : Scheme.{0}}
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
 theorem _root_.GlobalTheory.ComplexPoints.top_le_preimage_basicOpen_iff (x : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ ⟶ X) (U : X.Opens)
     (h : ⊤ ≤ x ⁻¹ᵁ U) (f : Γ(X, U)) :
@@ -171,7 +167,6 @@ theorem _root_.GlobalTheory.ComplexPoints.top_le_preimage_basicOpen_iff (x : _ro
     rw [Scheme.basicOpen_of_isUnit _ hu]
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
 private theorem opens_le_of_forall_complex_section (p : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ) [LocallyOfFiniteType p]
     (U V : X.Opens)
@@ -187,7 +182,6 @@ private theorem opens_le_of_forall_complex_section (p : X ⟶ _root_.Reciprocity
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
 theorem _root_.GlobalTheory.ComplexPoints.eq_of_valAt'_eq (p : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ) [LocallyOfFiniteType p]
     [IsReduced X] (U : X.Opens)
@@ -208,7 +202,6 @@ theorem _root_.GlobalTheory.ComplexPoints.eq_of_valAt'_eq (p : X ⟶ _root_.Reci
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
 theorem _root_.GlobalTheory.ComplexPoints.isUnit_of_valAt'_ne_zero (p : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ) [LocallyOfFiniteType p]
     (U : X.Opens) (f : Γ(X, U))
@@ -228,7 +221,6 @@ theorem _root_.GlobalTheory.ComplexPoints.isUnit_of_valAt'_ne_zero (p : X ⟶ _r
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
 theorem _root_.GlobalTheory.ComplexPoints.over_hom_ext_of_complexPoints {A B : Over (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ)} [LocallyOfFiniteType A.hom]
     [IsReduced A.left] [IsSeparated B.hom] {f g : A ⟶ B}
@@ -241,7 +233,6 @@ theorem _root_.GlobalTheory.ComplexPoints.over_hom_ext_of_complexPoints {A B : O
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
 theorem _root_.GlobalTheory.ComplexPoints.opens_le_of_complexPoints (p : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ) [LocallyOfFiniteType p] (U V : X.Opens)
     (h : ∀ x : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ ⟶ X, x ≫ p = 𝟙 _ → ⊤ ≤ x ⁻¹ᵁ U → ⊤ ≤ x ⁻¹ᵁ V) : U ≤ V :=
@@ -249,7 +240,6 @@ theorem _root_.GlobalTheory.ComplexPoints.opens_le_of_complexPoints (p : X ⟶ _
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {X Y : Scheme.{0}} in
 theorem _root_.GlobalTheory.ComplexPoints.iSup_eq_top_of_complexPoints (p : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ) [LocallyOfFiniteType p]
     {I : Type*} (U : I → X.Opens) (h : ∀ x : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ ⟶ X, x ≫ p = 𝟙 _ → ∃ i, ⊤ ≤ x ⁻¹ᵁ U i) :

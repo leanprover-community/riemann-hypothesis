@@ -88,8 +88,6 @@ end GlobalTheory.PoinSumBound
 
 namespace GlobalTheory.PoinSumBound
 
-open Topology Filter ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
-open scoped Matrix ComplexConjugate
 
 noncomputable section
 
@@ -206,8 +204,6 @@ end GlobalTheory.PoinSumBound
 
 namespace GlobalTheory.PoinSumBound
 
-open Topology Filter ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
-open scoped Matrix ComplexConjugate
 
 noncomputable section
 

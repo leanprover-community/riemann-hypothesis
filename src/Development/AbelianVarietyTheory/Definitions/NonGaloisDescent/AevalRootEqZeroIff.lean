@@ -104,7 +104,6 @@ def powBasis : Module.Basis (Fin P.1.natDegree) B (Alg P) := (AdjoinRoot.powerBa
 instance : Module.Finite B (Alg P) := .of_basis (powBasis P)
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -114,7 +113,6 @@ theorem _root_.GlobalTheory.UTr.aeval_root_eq_zero_iff {q : B[X]} :
   rw [AdjoinRoot.aeval_eq, AdjoinRoot.mk_eq_zero]
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -123,7 +121,6 @@ theorem _root_.GlobalTheory.UTr.aeval_root :
   (_root_.GlobalTheory.UTr.aeval_root_eq_zero_iff P).2 dvd_rfl
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -143,7 +140,6 @@ def gamma : (Alg P)ˣ :=
     linear_combination (-algebraMap B (Alg P) (s (P.1.coeff 0))) * h + h1)
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -161,7 +157,6 @@ theorem _root_.GlobalTheory.UTr.eval₂_gamma_inv :
 def conj : Alg P →+* Alg P := AdjoinRoot.lift _ _ (eval₂_gamma_inv P)
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -170,7 +165,6 @@ variable (P : _root_.GlobalTheory.UTr.Csr s) in
   AdjoinRoot.lift_of _
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -180,7 +174,6 @@ variable (P : _root_.GlobalTheory.UTr.Csr s) in
   AdjoinRoot.lift_root _
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -222,7 +215,6 @@ def normU : (Alg P)ˣ →* (Alg P)ˣ := MonoidHom.id _ * Units.map (conj P : Alg
 def plus : Subgroup (Alg P)ˣ := (Units.map (conj P : Alg P →* Alg P)).eqLocus (MonoidHom.id _)
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -234,7 +226,6 @@ theorem _root_.GlobalTheory.UTr.mem_plus {x : (_root_.GlobalTheory.UTr.Alg P)ˣ}
   rfl
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -271,7 +262,6 @@ def evalMat (g : Matrix n n B) (hg : aeval g P.1 = 0) : Alg P →ₐ[B] Matrix n
     rw [map_mul, hg, zero_mul]
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -285,7 +275,6 @@ variable {n : Type} [Fintype n] [DecidableEq n] in
 variable {J : Matrix n n B}
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in
@@ -348,7 +337,6 @@ variable {x x' : Alg P}
 
 
 
-open Polynomial Matrix in
 variable {B B' : Type} [CommRing B] [CommRing B'] (s : B →+* B) {s' : B' →+* B'} in
 variable {s} in
 variable (P : _root_.GlobalTheory.UTr.Csr s) in

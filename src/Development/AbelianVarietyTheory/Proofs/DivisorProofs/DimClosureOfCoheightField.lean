@@ -124,8 +124,6 @@ end General
 
 section Cut
 
-open CategoryTheory AlgebraicGeometry TopologicalSpace Topology
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.ArInt GlobalTheory.Cartier
 
 end Cut
 

@@ -65,7 +65,6 @@ private lemma isUnit_det_of_mem_Glev {k r : ℕ} {g : _root_.Formalism.FourierDe
       _ = 1 := by rw [h1, _root_.Formalism.QuantumDeterminants.GBasic.Hpk_sq]
   exact Matrix.isUnit_det_of_left_inverse h2
 
-open MeasureTheory Topology Filter in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma haar_isOpen_ne_zero_of_mem_Glev {k r : ℕ} {μ : Measure (_root_.Formalism.QuantumDeterminants.Mt k r)}
     (hμ : _root_.Formalism.FourierDecayAlt.B.IsHaarOn (_root_.Formalism.FourierDecayAlt.Q.Glev k r (Fin.last r)) μ) {V : Set (_root_.Formalism.QuantumDeterminants.Mt k r)} (hV : IsOpen V)
@@ -94,7 +93,6 @@ private lemma haar_isOpen_ne_zero_of_mem_Glev {k r : ℕ} {μ : Measure (_root_.
     exact hgV
   exact hμ.ne_zero (ae_eq_bot.1 (Filter.eventually_false_iff_eq_bot.1 hfalse))
 
-open MeasureTheory Topology Filter in
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
 private lemma zetaFunction_vanish_of_orthogonal_bumps_lemma {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ}
     (hz : _root_.Formalism.QuantumDeterminants.inWb k r z) (hz' : _root_.Formalism.QuantumDeterminants.inWb k r z') (hT : 0 < _root_.Formalism.QuantumDeterminants.Tz k r z) (hT' : 0 < _root_.Formalism.QuantumDeterminants.Tz k r z')

@@ -124,7 +124,6 @@ end GlobalTheory.KZ.LevelOneFrac
 
 namespace GlobalTheory.KZ.LevelOneFrac
 
-open Filter Topology Polynomial
 
 theorem germ_differentiableOn (G : Mero) (a b : ℂ → ℂ) (ha : DifferentiableOn ℂ a Hs) (hb : DifferentiableOn ℂ b Hs)
     (hb0 : (b : Mero) ≠ 0) (hab : G * (b : Mero) = (a : Mero)) (p : Mero[X]) (hp : p.Monic)
@@ -181,7 +180,6 @@ end GlobalTheory.KZ.LevelOneFrac
 
 namespace GlobalTheory.KZ.LevelOneFrac
 
-open Filter Topology Polynomial
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 

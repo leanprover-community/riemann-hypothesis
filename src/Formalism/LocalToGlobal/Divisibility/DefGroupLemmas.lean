@@ -125,14 +125,12 @@ def StdIsDefUnimod : Prop :=
     (n : ℕ) (neg : Bool),
     IsDefUnimod hc (stdSpace (E := E) n neg).gram (stdLat (n := Fin n) (A := E) (𝓞 E))
 
-section Proved
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] {n : ℕ}
   {LL : Type} [CommRing LL]
 
 instance (PP : Pl E) : Finite (kP PP) := Ideal.finiteQuotientOfFreeOfNeBot PP.asIdeal PP.ne_bot
 
-end Proved
 
 theorem mem_stdLatS {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
     (z : Fin n → E ⊗[F] Af F) :
@@ -1280,11 +1278,9 @@ theorem reduction_surjective_bis : RedSurj := by
   rw [redFn_frGL]
   exact hzy PP
 
-section Emb
 
 variable {κ : Type} [CommRing κ] {r n : ℕ}
 
-end Emb
 
 section FrAlg
 
@@ -1701,13 +1697,11 @@ theorem reduction_local : RedLocal := by
 
 end LocalA
 
-section LocalB
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
 variable {gp : Fin 2 → ℕ} {pb : Fin 2 → 𝓞 E}
 
-end LocalB
 
 section LocalC
 
@@ -1841,17 +1835,13 @@ theorem lc_one_coe (i j : Fin n) :
 
 end LocalD
 
-section TypeD
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-end TypeD
 
-section TypeE
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 
-end TypeE
 
 section Tests
 

@@ -197,7 +197,6 @@ theorem of_dehomChart (P : MorphismProperty Scheme.{u}) [IsZariskiLocalAtSource 
 
 section Smooth
 
-open MvPolynomial
 
 theorem nonsingular_of_Δ_ne_zero {F : Type*} [Field F] {V : WeierstrassCurve F} (hΔ : V.Δ ≠ 0)
     {P : Fin 3 → F} (h : V.toProjective.Equation P) {i : Fin 3} (hi : P i ≠ 0) :

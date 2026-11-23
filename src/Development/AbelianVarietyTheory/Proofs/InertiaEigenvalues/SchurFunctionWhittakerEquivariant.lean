@@ -185,7 +185,6 @@ end GlobalTheory.SchurEquiv
 
 namespace GlobalTheory.SchurEquiv
 
-open Matrix
 
 section Adelic
 

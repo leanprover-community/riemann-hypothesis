@@ -239,7 +239,6 @@ end Finite
 section Padic
 
 open Polynomial GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.GLp.Supp GlobalTheory.SerSys GlobalTheory.SerSys.Prod Formalism.MainNotions.ArithmeticCylinders TensorProduct GlobalTheory.GLq.Opp MonoidAlgebra
-open scoped Classical
 
 variable {g : ℕ} [Fact g.Prime]
 
@@ -407,7 +406,6 @@ theorem actK_map {n : ℕ} {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCom
   simp only [actK, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul, hT]
 
 
-open GlobalTheory.SmGL GlobalTheory.PRep in
 theorem has_of_isSubquotient (S : Sys g) {n : ℕ} {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V']
     [Module ℂ V'] {π : Representation ℂ (GL (Fin n) ℚ_[g]) V} {π' : Representation ℂ (GL (Fin n) ℚ_[g]) V'}
     (hs : IsSmooth π') (h : IsSubquotient π π') {F : (ZMod g)[X]} (hF : Has S π F) : Has S π' F := by
@@ -434,7 +432,6 @@ theorem has_of_isSubquotient (S : Sys g) {n : ℕ} {V V' : Type} [AddCommGroup V
     exact e3.symm
 
 
-open GlobalTheory.SmGL GlobalTheory.PRep in
 theorem series_multiProd_std (S : Sys g) {s : ℕ} : ∀ {d : Fin s → ℕ} {X : Fin s → Type}
     [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)] {N : ℕ} (hd : ∑ i, d i = N)
     (σ : ∀ i, Representation ℂ (GL (Fin (d i)) ℚ_[g]) (X i)) (F : (ZMod g)[X]),
@@ -461,7 +458,6 @@ theorem series_multiProd_std (S : Sys g) {s : ℕ} : ∀ {d : Fin s → ℕ} {X 
     | succ i => exact hfs i
 
 
-open GlobalTheory.SmGL GlobalTheory.PRep in
 theorem series_of_isSubquotient (S : Sys g) {s N : ℕ} {d : Fin s → ℕ} {X : Fin s → Type}
     [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)] (e : (Σ a, Fin (d a)) ≃ Fin N)
     (σ : ∀ i, Representation ℂ (GL (Fin (d i)) ℚ_[g]) (X i)) {V : Type} [AddCommGroup V] [Module ℂ V]

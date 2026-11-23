@@ -732,7 +732,6 @@ theorem eigenBundle_of_injective {E : Type*} [Field E] [NumberField E]
     exact he'.exists_triangular c c' hc hc' hF
 
 
-open EigenSplit in
 theorem eigenBundle {E : Type*} [Field E] [NumberField E]
     {L : Type*} [Field L] [CharZero L] [Fintype (E →+* L)] [DecidableEq (E →+* L)]
     (hL : ∀ x : E, ((minpoly ℚ x).map (algebraMap ℚ L)).Splits)

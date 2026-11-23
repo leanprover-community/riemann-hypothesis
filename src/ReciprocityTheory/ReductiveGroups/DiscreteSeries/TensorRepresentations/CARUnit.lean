@@ -170,10 +170,8 @@ theorem nsq_rho_split (ε : Fin n → Bool) : nsq (rho n) = nsq (rhoC ε) + nsq 
     exact (Equiv.ofBijective σ hbij).sum_comp (fun b => rho n b * rho n b)
   rw [← hs, carU_nsq_add, dot_rhoC_rhoHol]; ring
 
-section Unitary
 variable {W : Type*} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
 
-end Unitary
 
 section Value
 variable {W : Type*} [AddCommGroup W] [Module ℂ W]

@@ -80,7 +80,6 @@ private theorem norm_update_sub_update_sub_smul_le {k : ℕ} (F : (Fin k → ℝ
   exact key
 
 
-open Filter Topology in
 theorem _root_.GlobalTheory.hasFDerivAt_of_continuous_partials :
     ∀ (k : ℕ) (F : (Fin k → ℝ) → ℂ) (d : Fin k → (Fin k → ℝ) → ℂ),
       (∀ i t, HasDerivAt (fun s : ℝ => F (Function.update t i s)) (d i t) (t i)) →

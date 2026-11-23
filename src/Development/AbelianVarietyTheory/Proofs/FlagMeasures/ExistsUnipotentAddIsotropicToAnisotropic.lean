@@ -133,7 +133,6 @@ end GlobalTheory.LocOver.ZStep
 
 namespace GlobalTheory.LocOver.ZStep
 
-open GlobalTheory.LocOver.UnipOnto
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
@@ -164,7 +163,6 @@ end GlobalTheory.LocOver.ZStep
 
 namespace GlobalTheory.LocOver.ZStep
 
-open GlobalTheory.LocOver.UnipOnto
 
 theorem zstep : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E]
     [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK → ∀ {V : Type} [AddCommGroup V] [Module E V]

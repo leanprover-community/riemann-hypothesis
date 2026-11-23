@@ -341,7 +341,6 @@ theorem leftInv_dblIntegrand (hμ : IsHeckeChar D μ) (hE : LeftInv (GQ (dblSp V
     map_mul (detA V), map_mul μ, apply_detA hμ hγ.2, one_mul]
 
 
-open scoped Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes in
 theorem continuous_detA : Continuous (detA V) := by
   have h1 : Continuous (aP V) := continuous_aH
   have h2 : Continuous fun g : GA D V => (⟨io V (g, g), (io_mem_siegel V).2 rfl⟩ : siegel V) :=
@@ -349,7 +348,6 @@ theorem continuous_detA : Continuous (detA V) := by
   exact (h1.comp h2).congr fun g => aH_ioDiag (gram_hdbl V) g
 
 
-open scoped Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes in
 theorem continuous_dblIntegrand (hμ : IsHeckeChar D μ) (hE : Continuous E) (h₁ : Continuous f₁) (h₂ : Continuous f₂) :
     Continuous (dblIntegrand V μ E f₁ f₂) :=
   have h : Continuous fun g : GA D V => (μ (detA V g) : ℂ) := continuous_subtype_val.comp (hμ.1.comp continuous_detA)

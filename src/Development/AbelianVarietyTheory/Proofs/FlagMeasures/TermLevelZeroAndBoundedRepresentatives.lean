@@ -71,8 +71,6 @@ private lemma mem_spanTo_of_triangular_of_lt {h : Fin (r + 1) → S.V}
     (_root_.GlobalTheory.HL.TermBasic.spanTo_mono S g hij.le (hsub i))
   simpa using this
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -103,8 +101,6 @@ private lemma spanTo_le_span_image_of_triangular {h : Fin (r + 1) → S.V}
       have := Submodule.sub_mem _ h1 h2
       simpa using this
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -141,8 +137,6 @@ private lemma levelRep_good_add_add_smul (hθ : S.th ≠ 0) {j : ℕ} {u u' m : 
     simp only [hci, hci']
     ring
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -153,8 +147,6 @@ private lemma levelRep_good_mono {j j' : ℕ} {b : S.V}
   obtain ⟨al, al', hb, hal⟩ := h
   exact ⟨al, al', hb, fun i hi => hal i (hj.trans hi)⟩
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -172,8 +164,6 @@ private lemma lev_le_iff_levelRep_good {b : S.V}
   · intro hj
     exact Nat.sInf_le hj
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -221,8 +211,6 @@ private lemma exists_decomp_of_levelRep_good (hθ : S.th ≠ 0) {j : ℕ} {v : S
     · simp
     · simp only [zero_smul, zero_add, smul_smul, ht, one_smul]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -242,8 +230,6 @@ private lemma eq_and_eq_of_sum_elim_linearIndependent (hli : LinearIndependent E
     simpa [sub_eq_zero] using this
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.HL.LevelRep.level_rep : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E), ∀ (r k : ℕ) (S : _root_.GlobalTheory.HL.Frames L r k), ∀ (d : S.Datum) (Λ : Submodule L.O S.V), S.IsTerm d Λ → (∀ y ∈ S.sat Λ, S.levC d Λ y = 0 ↔ y ∈ S.M d Λ) ∧ (∀ y ∈ S.sat Λ, ∀ j, S.levC d Λ y ≤ j ↔ ∃ y₁ ∈ (S.spanTo S.f j ⊔ S.spanTo S.f' j), y - y₁ ∈ S.M d Λ) ∧ (∀ y ∈ S.sat Λ, ∀ m ∈ S.M d Λ, S.levC d Λ (y + m) = S.levC d Λ y) ∧ ∀ (al al' : Fin (r + 1) → E) (j : ℕ), S.lev (S.fr d Λ) (S.fr' d Λ) (∑ i, al i • S.fr d Λ i + ∑ i, al' i • S.fr' d Λ i) ≤ j ↔ ∀ i : Fin (r + 1), j ≤ (i : ℕ) → S.RR (al i) (al' i) := by
   intro F _ _ _ _ _ E _ _ _ L r k S d Λ hT
   obtain ⟨-, hW, hMsat, -, -, hli, -⟩ := _root_.GlobalTheory.HL.TermBasic.term_basic L r k S d Λ hT

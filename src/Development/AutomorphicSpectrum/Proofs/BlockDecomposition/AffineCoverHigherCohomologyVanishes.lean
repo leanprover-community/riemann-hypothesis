@@ -465,7 +465,6 @@ end Cochains
 
 section Top
 
-open GroundTheory.Arith.SchemeCoh
 
 attribute [local instance] VB.fin
 

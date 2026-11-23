@@ -118,7 +118,6 @@ theorem central_of_tame {ψ : Sm E n} (hA : IsAutForm ψ) (htame : ψ ∈ tame E
 
 end GlobalTheory.CentreInherit
 
-open NumberField MeasureTheory GlobalTheory.CuspRep GlobalTheory.AutGrowth
 
 namespace GlobalTheory.CentreInherit
 

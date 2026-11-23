@@ -121,7 +121,6 @@ theorem zhat_of_zhatO {z z' : Fin (2 * r + k + 1) → ℂ} {g : MatKR k r} {Z : 
   simp
 
 
-open GlobalTheory.ThA.OrbSq in
 theorem monomial_of_pt {z z' : Fin (2 * r + k + 1) → ℂ} {g : MatKR k r} (hg : g ∈ UH (Hpk k r))
     {p : Point ℂ (r + 1)} (h : ZhatO k r z z' g = ptMat p) :
     (∃ d : Fin (r + 1) → ℂ, (∀ a, d a ≠ 0) ∧ Zhat k r z z' g = C2.monoP (permOf p) d) ∧

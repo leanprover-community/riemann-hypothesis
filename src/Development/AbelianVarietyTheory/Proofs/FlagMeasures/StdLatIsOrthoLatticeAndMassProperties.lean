@@ -54,8 +54,6 @@ theorem _root_.GlobalTheory.Mass.StdMass.isSymm_of_ortho {K V : Type} [Field K] 
 
   simp only [map_sum, starRingEnd_apply, star_mul, star_star]
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 private theorem massU_zero_eq_one (K : Type) [Field K] [NumberField K] [StarRing K] :
     _root_.Formalism.MainNotions.S.Cnt.massU K 0 = 1 := by
   have hsub : ∀ M N : Submodule (𝓞 K) (Fin 0 → K), M = N := fun M N => Subsingleton.elim M N
@@ -93,8 +91,6 @@ private theorem massU_zero_eq_one (K : Type) [Field K] [NumberField K] [StarRing
   norm_num
 
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 theorem _root_.GlobalTheory.Mass.StdMass.main : ∀ (K : Type) [Field K] [NumberField K]
     [StarRing K], _root_.Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ j : ℕ, (_root_.Formalism.MainNotions.S.Cnt.stdH K j).IsSymm ∧
       _root_.Formalism.HermitianLatticesTheory.IsOrthoLattice (_root_.Formalism.MainNotions.S.Cnt.stdH K j) (_root_.Formalism.MainNotions.S.Cnt.stdLat K j) j ∧ 0 < _root_.Formalism.MainNotions.S.Cnt.massU K j ∧ _root_.Formalism.MainNotions.S.Cnt.massU K 0 = 1 ∧

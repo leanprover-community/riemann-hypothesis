@@ -99,7 +99,6 @@ end GlobalTheory.MBLow.JetEx
 
 namespace GlobalTheory.MBLow.JetEx
 
-open TrivSqZeroExt
 
 variable {W : Type} [CommRing W]
 

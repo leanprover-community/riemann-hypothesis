@@ -284,7 +284,6 @@ theorem heisLine_tens (M : Model σ X W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd 
   simp only [hl, aOf, lOf, linForm_apply, mul_assoc]
   rfl
 
-open scoped Classical in
 theorem actsD_dop (M : Model σ X W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (f : SInf F (Fin n × Fin d)) :
     ActsD (evI F) (M.heisLine ψ u) f (dop (aOf M u) (lOf M u) f) := by
@@ -297,7 +296,6 @@ theorem actsD_dop (M : Model σ X W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
   rw [e]
   exact (hasDerivAt_hl _ _ f _).mul_const (r x)
 
-open scoped Classical in
 theorem actsD_unique' (M : Model σ X W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) {f f₁ : SInf F (Fin n × Fin d)}
     (h : ActsD (evI F) (M.heisLine ψ u) f f₁) : f₁ = dop (aOf M u) (lOf M u) f := by
@@ -325,11 +323,9 @@ theorem act_add (k : UA σ Y.J × UA σ W.J) (u v : Matrix (Fin n) (Fin d) (AE F
   rw [actAB, Matrix.mul_add, Matrix.add_mul]; rfl
 
 
-open scoped Classical in
 def Impl (om : Rep σ Y W) (k : UA σ Y.J × UA σ W.J) (A : SInf F (Fin n × Fin d) →L[ℂ] SInf F (Fin n × Fin d)) : Prop :=
   ∀ f : SInf F (Fin n × Fin d), ∀ g ∈ SB (Fin n × Fin d → Af F), om k (pureA F f g) = pureA F (A f) g
 
-open scoped Classical in
 theorem line_hl (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (actAB (cA σ)) om)
     {A : SInf F (Fin n × Fin d) →L[ℂ] SInf F (Fin n × Fin d)} (hA : Impl om k A)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (f G : SInf F (Fin n × Fin d)) (t : ℝ)
@@ -352,7 +348,6 @@ theorem line_hl (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (actAB
   have := congrFun e2 (pt x 0)
   simpa [tens_rOf, pureA_pt, h0] using this
 
-open scoped Classical in
 theorem inter_of_ne (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (actAB (cA σ)) om)
     {A : SInf F (Fin n × Fin d) →L[ℂ] SInf F (Fin n × Fin d)} (hA : Impl om k A)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (ha : aOf M u ≠ 0) (f : SInf F (Fin n × Fin d)) :
@@ -370,7 +365,6 @@ theorem inter_of_ne (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (a
   rw [hT]
   exact h1.unique (hasDerivAt_hl _ _ (A f) x)
 
-open scoped Classical in
 theorem exists_at (M : Model σ Y W) (ξ : Fin n × Fin d → mixedEmbedding.mixedSpace F) :
     ∃ v : Matrix (Fin n) (Fin d) (AE F E), At (evI F) v ∧ aOf M v = ξ := by
   refine ⟨M.co.e.symm (pt ξ 0, 0), fun s hs => ?_, ?_⟩
@@ -388,7 +382,6 @@ theorem exists_at (M : Model σ Y W) (ξ : Fin n × Fin d → mixedEmbedding.mix
     rw [this]
     exact evI_pt ξ 0
 
-open scoped Classical in
 theorem inter (hψ : IsStd ψ) (hs : IsSplitting (adeleClass F) ψ M.co (actAB (cA σ)) om)
     {A : SInf F (Fin n × Fin d) →L[ℂ] SInf F (Fin n × Fin d)} (hA : Impl om k A)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (f : SInf F (Fin n × Fin d)) :
@@ -455,14 +448,12 @@ theorem pureA_splitE (f : (κ → mixedEmbedding.mixedSpace F) → ℂ) (g : (κ
     GlobalTheory.WeilM.pureA F f g (splitE F κ p) = f p.1 * g p.2 := by
   simp only [GlobalTheory.WeilM.pureA, splitE_apply, RingEquiv.apply_symm_apply]
 
-open scoped Classical in
 theorem volume_isAddHaar [Fintype κ] : (volume : Measure (κ → mixedEmbedding.mixedSpace F)).IsAddHaarMeasure := by
   haveI : MeasurableAdd (mixedEmbedding.mixedSpace F) := ContinuousAdd.measurableAdd
   exact Measure.pi.isAddHaarMeasure _
 
 variable {F κ} [Fintype κ]
 
-open scoped Classical in
 theorem lintegral_eq {S : ((κ → AF F) → ℂ) → (κ → AF F) → ℂ}
     (hU : ∀ μ : @Measure (κ → AF F) (borel _), @Measure.IsAddHaarMeasure _ _ _ (borel _) μ →
       ∀ φ ∈ schA F κ, ∫⁻ x, ‖S φ x‖ₑ ^ 2 ∂μ = ∫⁻ x, ‖φ x‖ₑ ^ 2 ∂μ) {f f' : SInf F κ}

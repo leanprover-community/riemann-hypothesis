@@ -188,7 +188,6 @@ end Loc
 
 section Amp
 
-open MeasureTheory Finset Formalism.QuantumDeterminants
 
 variable (D : D7) (large₂ : SizeData₂ D)
 

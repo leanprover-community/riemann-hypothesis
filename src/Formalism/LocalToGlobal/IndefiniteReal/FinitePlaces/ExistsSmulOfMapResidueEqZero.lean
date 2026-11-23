@@ -697,23 +697,17 @@ theorem card_reps {ϖ : O} (hϖ : Irreducible ϖ) [Fintype (IsLocalRing.ResidueF
 
 end Count
 
-section Main
 
 variable [IsDiscreteValuationRing O]
 
-end Main
 
-section Index
 
 variable [IsDiscreteValuationRing O]
 
-end Index
 
-section Mirror
 
 variable [IsDiscreteValuationRing O]
 
-end Mirror
 
 section Completion
 

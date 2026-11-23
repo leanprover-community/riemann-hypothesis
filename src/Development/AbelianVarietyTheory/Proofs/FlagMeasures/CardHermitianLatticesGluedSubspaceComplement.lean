@@ -63,8 +63,6 @@ private lemma apply_self_ne_zero_of_PD {h : V →ₗ⋆[K] V →ₗ[K] K}
   have := hpd τ x hx
   simp [h0] at this
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 private lemma nondegenerate_of_PD {h : V →ₗ⋆[K] V →ₗ[K] K}
@@ -72,8 +70,6 @@ private lemma nondegenerate_of_PD {h : V →ₗ⋆[K] V →ₗ[K] K}
   ⟨fun x hx => by_contra fun h0 => apply_self_ne_zero_of_PD hpd h0 (hx x),
     fun y hy => by_contra fun h0 => apply_self_ne_zero_of_PD hpd h0 (hy y)⟩
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 private lemma idxN_dual_hRes_ne_zero_of_isIntLat [FiniteDimensional K V] {h : V →ₗ⋆[K] V →ₗ[K] K}
@@ -87,8 +83,6 @@ private lemma idxN_dual_hRes_ne_zero_of_isIntLat [FiniteDimensional K V] {h : V 
   unfold _root_.GlobalTheory.Mass.discN at this
   exact this
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 private lemma index_sup_map_le_lemma_2 {W₁ W₂ : Submodule K V} {A₁ A₁' : Submodule (𝓞 K) W₁}
@@ -140,8 +134,6 @@ private lemma index_sup_map_le_lemma_2 {W₁ W₂ : Submodule K V} {A₁ A₁' :
   haveI : Nonempty (Y ⧸ Z) := ⟨0⟩
   exact ⟨Nat.card_le_card_of_surjective G hG, Nat.card_ne_zero.2 ⟨inferInstance, inferInstance⟩⟩
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 private lemma le_dual_of_apply_mem_one (h : V →ₗ⋆[K] V →ₗ[K] K) {L : Submodule (𝓞 K) V}
@@ -151,8 +143,6 @@ private lemma le_dual_of_apply_mem_one (h : V →ₗ⋆[K] V →ₗ[K] K) {L : S
   intro x hx
   exact hL x hx y hy
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 private lemma apply_mem_one_of_isIntLat {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (𝓞 K) V}
@@ -163,24 +153,18 @@ private lemma apply_mem_one_of_isIntLat {h : V →ₗ⋆[K] V →ₗ[K] K} {L : 
   unfold _root_.Formalism.HermitianLatticesTheory.IsIntegralLat at this
   exact this
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 private lemma mem_latIn_iff {W : Submodule K V} {L : Submodule (𝓞 K) V}
     {x : W} : x ∈ _root_.GlobalTheory.Mass.latIn W L ↔ (x : V) ∈ L := by
   unfold _root_.GlobalTheory.Mass.latIn; exact Iff.rfl
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 private lemma hRes_apply (h : V →ₗ⋆[K] V →ₗ[K] K) (W : Submodule K V)
     (x y : W) : _root_.GlobalTheory.Mass.hRes h W x y = h x y := by
   unfold _root_.GlobalTheory.Mass.hRes; rfl
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 private lemma apply_eq_zero_of_mem_perp {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm)
@@ -188,8 +172,6 @@ private lemma apply_eq_zero_of_mem_perp {h : V →ₗ⋆[K] V →ₗ[K] K} (hs :
     h w x = 0 := by
   rw [← hs.eq x w, (_root_.GlobalTheory.Mass.Witt.mem_perp h W w).1 hw x hx, map_zero]
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 private lemma le_sup_map_dual_latIn_perp {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) {W : Submodule K V}
@@ -219,8 +201,6 @@ private lemma le_sup_map_dual_latIn_perp {h : V →ₗ⋆[K] V →ₗ[K] K} (hs 
     rw [hRes_apply]
     exact hyL
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 theorem _root_.GlobalTheory.Mass.Glue.main : ∀ (K V : Type) [Field K] [NumberField K]

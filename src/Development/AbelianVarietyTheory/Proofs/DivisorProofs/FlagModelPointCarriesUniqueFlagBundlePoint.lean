@@ -67,8 +67,6 @@ end GlobalTheory.VarFlag
 
 namespace GlobalTheory.VarFlag
 
-open GlobalTheory.FlagMod (FlagCover Frames)
-open GlobalTheory.ShFam (EigFrame FlagCpt)
 open GlobalTheory.Toroidal (gen genι genStr)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}

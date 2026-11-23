@@ -84,7 +84,6 @@ theorem cT_Q_mul (hσ : ∀ a, σ (σ a) = a) (hJ : ∀ i j, σ (J j i) = J i j)
 end GlobalTheory.SUPair
 
 namespace GlobalTheory.SUPair
-open Matrix
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) {M : ℕ}
   (J : Matrix (Fin M) (Fin M) E)
 
@@ -140,7 +139,6 @@ theorem det_qr (x : Fin M → E) (hx : hE σ J x x ≠ 0) (u : E) : (GlobalTheor
 end GlobalTheory.SUPair
 
 namespace GlobalTheory.SUPair
-open Matrix
 
 section Grp
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) {M : ℕ}

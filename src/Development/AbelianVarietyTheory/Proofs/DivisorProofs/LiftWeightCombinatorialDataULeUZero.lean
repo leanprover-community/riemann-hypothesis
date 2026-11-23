@@ -127,7 +127,6 @@ end GlobalTheory.ExpTie.Lift
 
 namespace GlobalTheory.ExpTie.Lift
 
-open Formalism.IndefR.Bridge
 
 variable {D : D7}
 

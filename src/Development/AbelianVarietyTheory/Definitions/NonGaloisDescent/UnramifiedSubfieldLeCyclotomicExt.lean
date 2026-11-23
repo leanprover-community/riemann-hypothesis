@@ -59,7 +59,6 @@ theorem _root_.GlobalTheory.NL.Model.conv_finite (e : PowerSeries L) {u : ℤ �
   push_neg at hlt
   exact hj (by rw [hm _ (by omega), smul_zero])
 
-open TensorProduct in
 variable {L M : Type} [Field L] [AddCommGroup M] [Module L M] in
 theorem _root_.GlobalTheory.NL.Model.conv_one (u : ℤ → M) :
     _root_.GlobalTheory.NL.conv (1 : PowerSeries L) u = u := by
@@ -69,13 +68,11 @@ theorem _root_.GlobalTheory.NL.Model.conv_one (u : ℤ → M) :
   · intro j hj
     simp [PowerSeries.coeff_one, hj]
 
-open TensorProduct in
 variable {L M : Type} [Field L] [AddCommGroup M] [Module L M] in
 theorem _root_.GlobalTheory.NL.Model.mem_latSpan {ι : Type} (ex : ι → ℤ → M) (x : ι) :
     ex x ∈ _root_.GlobalTheory.NL.latSpan (LL := L) ex :=
   Submodule.subset_span ⟨1, x, (_root_.GlobalTheory.NL.Model.conv_one _).symm⟩
 
-open TensorProduct in
 variable {L M : Type} [Field L] [AddCommGroup M] [Module L M] in
 private theorem conv_mem_and_vanish_below (e : PowerSeries L) (D : Submodule L M)
     {u : ℤ → M} (hu : ∀ k, u k ∈ D) {m : ℤ} (hm : ∀ k < m, u k = 0) :
@@ -90,7 +87,6 @@ private theorem conv_mem_and_vanish_below (e : PowerSeries L) (D : Submodule L M
     rw [hm _ (by omega), smul_zero]
 
 
-open TensorProduct in
 variable {L M : Type} [Field L] [AddCommGroup M] [Module L M] in
 theorem _root_.GlobalTheory.NL.Model.latSpan_coeff {ι : Type} (ex : ι → ℤ → M)
     (D : Submodule L M) (hD : ∀ x k, ex x k ∈ D) (hs : ∀ x, ∃ m : ℤ, ∀ k < m, ex x k = 0)
@@ -124,7 +120,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL]
     [CommRing O] [Algebra O LL] [TopologicalSpace LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -140,7 +135,6 @@ theorem _root_.GlobalTheory.NL.Model.mem_van (W : _root_.Formalism.BasicNotions.
     PowerSeries.X_pow_dvd_iff]
 
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -168,7 +162,6 @@ theorem _root_.GlobalTheory.NL.Model.pi_van_one (W : _root_.Formalism.BasicNotio
   · have := h 1 (by norm_num)
     simp [h1] at this
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -196,7 +189,6 @@ section Concrete
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : LocAinf l P} {H : LocHW l P} {F : LocFon l P AI H}
   {K : FinExt l} {s : ℕ} {LL : FinExt l}
 
-open TensorProduct in
 variable {l : ℕ} [Fact l.Prime] {P : _root_.Formalism.BasicNotions.LocPrime l} {AI : _root_.Formalism.BasicNotions.LocAinf l P} {H : _root_.Formalism.BasicNotions.LocHW l P}
   {F : _root_.Formalism.BasicNotions.LocFon l P AI H} {K : _root_.Formalism.BasicNotions.Loc.FinExt l} {s : ℕ} {LL : _root_.Formalism.BasicNotions.Loc.FinExt l} in
 theorem _root_.GlobalTheory.NL.Model.ex_mem_Lat (C : _root_.Formalism.BasicNotions.LocCmpT l P AI H F) (h : _root_.Formalism.BasicNotions.Loc.Good K s LL)
@@ -206,7 +198,6 @@ theorem _root_.GlobalTheory.NL.Model.ex_mem_Lat (C : _root_.Formalism.BasicNotio
   _root_.GlobalTheory.NL.Model.mem_latSpan _ x
 
 
-open TensorProduct in
 variable {l : ℕ} [Fact l.Prime] {P : _root_.Formalism.BasicNotions.LocPrime l} {AI : _root_.Formalism.BasicNotions.LocAinf l P} {H : _root_.Formalism.BasicNotions.LocHW l P}
   {F : _root_.Formalism.BasicNotions.LocFon l P AI H} {K : _root_.Formalism.BasicNotions.Loc.FinExt l} {s : ℕ} {LL : _root_.Formalism.BasicNotions.Loc.FinExt l} in
 theorem _root_.GlobalTheory.NL.Model.Lat_coeff (C : _root_.Formalism.BasicNotions.LocCmpT l P AI H F)
@@ -217,7 +208,6 @@ theorem _root_.GlobalTheory.NL.Model.Lat_coeff (C : _root_.Formalism.BasicNotion
     (fun x k => (C.C K s LL h).tie.levB_mem T i ζ x k)
     (fun x => (C.C K s LL h).tie.levB_supp T i ζ x) f hf
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -230,7 +220,6 @@ private theorem periodTensor_ιV_injective (T : _root_.Formalism.BasicNotions.Lo
   have hf : Function.Injective ((PD.ι.toLinearMap).restrictScalars Qp) := PD.ι_inj
   exact Module.Flat.lTensor_preserves_injective_linearMap (M := T.V) _ hf
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -254,7 +243,6 @@ private theorem levB_smul_eq_powerSeriesSmul_lemma_2 {Zl Ai : Type} [CommRing Zl
   simp only [map_smul, S.levN_eq]
 
 
-open TensorProduct in
 variable {l : ℕ} [Fact l.Prime] {P : _root_.Formalism.BasicNotions.LocPrime l} {AI : _root_.Formalism.BasicNotions.LocAinf l P} {H : _root_.Formalism.BasicNotions.LocHW l P}
   {F : _root_.Formalism.BasicNotions.LocFon l P AI H} {K : _root_.Formalism.BasicNotions.Loc.FinExt l} {s : ℕ} {LL : _root_.Formalism.BasicNotions.Loc.FinExt l} in
 theorem _root_.GlobalTheory.NL.Model.ex_smul (C : _root_.Formalism.BasicNotions.LocCmpT l P AI H F) (h : _root_.Formalism.BasicNotions.Loc.Good K s LL)

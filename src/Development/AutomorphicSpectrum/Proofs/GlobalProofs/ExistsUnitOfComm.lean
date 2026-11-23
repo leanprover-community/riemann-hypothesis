@@ -57,8 +57,6 @@ def ind (I : Set (Fin r)) : Fin r → A := I.indicator fun _ => 1
 
 end GlobalTheory.CompanionTheory.LeviGen
 
-open Matrix
-open Formalism.UG (cT)
 
 noncomputable section
 
@@ -161,8 +159,6 @@ theorem cT_prY_mul (hs : ∀ a, s (s a) = a) (hJ : cT s J = J) (d : Fin r → A)
 
 end GlobalTheory.CompanionTheory.LeviGen
 
-open Matrix
-open Formalism.UG (cT)
 
 noncomputable section
 
@@ -254,8 +250,6 @@ end FrameComm
 
 end GlobalTheory.CompanionTheory.LeviGen
 
-open Matrix
-open Formalism.UG (cT)
 
 noncomputable section
 

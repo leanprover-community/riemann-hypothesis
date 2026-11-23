@@ -61,7 +61,6 @@ theorem _root_.GlobalTheory.exists_heightOneSpectrum_natCast_mem (L : Type*) [Fi
   rw [Ideal.mem_comap, Ideal.mem_bot] at this
   exact hp.ne_zero (by simpa using this)
 
-open NumberField IsDedekindDomain in
 private theorem exists_injective_units_zmod_hom_units_complex (p : ℕ) [Fact p.Prime] :
     ∃ f : (ZMod p)ˣ →* ℂˣ, Function.Injective f := by
   set n := Nat.card (ZMod p)ˣ
@@ -72,7 +71,6 @@ private theorem exists_injective_units_zmod_hom_units_complex (p : ℕ) [Fact p.
     Subtype.val_injective.comp (mulEquivOfCyclicCardEq hc).injective⟩
 
 
-open NumberField IsDedekindDomain in
 open Classical in
 theorem _root_.GlobalTheory.nonempty_piBar_and_omg :
     ∀ (R : _root_.Formalism.BasicNotions.Ranks) (H : _root_.Formalism.BasicNotions.Host R), Nonempty (_root_.Formalism.L2.Host.PiBar H) ∧ Nonempty (_root_.Formalism.L2.Host.Omg H) := by

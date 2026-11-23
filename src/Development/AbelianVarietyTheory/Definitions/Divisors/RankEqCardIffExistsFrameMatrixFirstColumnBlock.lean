@@ -726,7 +726,6 @@ theorem smallF_mul_left (μ : Measure (GL A' k)) [μ.IsHaarMeasure] (ν : kˣ �
   ring
 
 
-open scoped Classical
 
 def fFun (μ : Measure (GL A' k)) (σ : A ⊕ A' ≃ D) (ν : kˣ →* ℂˣ) (Ψ : Matrix A' D k → ℂ) (X : Matrix A D k) : ℂ :=
   if hX : ∃ h : GL D k, X = X0 (k := k) σ * (invT h).val then

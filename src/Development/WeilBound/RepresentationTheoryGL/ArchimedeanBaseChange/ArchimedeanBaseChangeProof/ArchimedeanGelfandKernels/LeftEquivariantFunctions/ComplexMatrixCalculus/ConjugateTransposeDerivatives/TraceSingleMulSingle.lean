@@ -128,7 +128,6 @@ end PositivityTheory.RgBcC.Cxa
 
 namespace PositivityTheory.RgBcC
 
-open PositivityTheory.RgTw (Mat hb)
 open Cxa
 
 theorem hbOrtho : HbOrtho := by

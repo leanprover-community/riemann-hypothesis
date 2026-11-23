@@ -88,7 +88,6 @@ namespace ReciprocityTheory.Coh
 
 namespace ProcyclicCohomology
 
-open ReciprocityTheory.Gal Topology Function
 
 universe u
 

@@ -59,7 +59,6 @@ end GlobalTheory.WachExp
 
 namespace GlobalTheory.WachExp
 
-open PowerSeries
 
 variable {l : ℕ} [Fact l.Prime] (LL : FinExt l)
 
@@ -105,6 +104,5 @@ end GlobalTheory.WachExp
 
 namespace GlobalTheory.WachExp
 
-open PowerSeries
 
 end GlobalTheory.WachExp

@@ -313,7 +313,6 @@ end Formalism.MainNotions.FormalGroupSystem.Pf.Cnt
 
 namespace Formalism.MainNotions.FormalGroupSystem.Pf
 
-open Formalism.MainNotions.G
 
 theorem countLoc : CountLoc := by
   intro p n' W Qq _ _ _ _ _ hfr hirr hcard N N' g i hN A B hA hB x

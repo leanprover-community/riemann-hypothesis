@@ -49,10 +49,8 @@ def hilbFn (J : Ideal (MRingOver F ι)) (d : K → ℕ) : ℕ :=
 
 attribute [local instance] MvPolynomial.weightedGradedAlgebra
 
-section SupSpan
 
 variable [DecidableEq K]
 
-end SupSpan
 
 end ReciprocityTheory.ChartRestriction.G.AI.I1

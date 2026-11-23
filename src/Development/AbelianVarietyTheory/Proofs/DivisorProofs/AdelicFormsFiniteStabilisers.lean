@@ -90,8 +90,6 @@ theorem _root_.GlobalTheory.InnerClassSum.finite_stab_of_measure {G : Type} [Gro
   exact h1 (top_le_iff.1 hle)
 
 
-open MeasureTheory IsDedekindDomain NumberField Matrix in
-open scoped TensorProduct InnerProductSpace Pointwise in
 attribute [local instance] _root_.Formalism.BasicNotions.Host.cmStar in
 theorem _root_.GlobalTheory.InnerClassSum.integral_inner_eq_adInner {G H W : Type} [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] [MeasurableSpace G]
@@ -177,8 +175,6 @@ theorem _root_.GlobalTheory.InnerClassSum.integral_inner_eq_adInner {G H W : Typ
         right_inv := fun _ => rfl }
   rw [hFψ', ha i, hcard]
 
-open MeasureTheory IsDedekindDomain NumberField Matrix in
-open scoped TensorProduct InnerProductSpace Pointwise in
 attribute [local instance] _root_.Formalism.BasicNotions.Host.cmStar in
 private lemma norm_character_eq_one_of_finite {A : Type} [Group A] [Finite A] (φ : A →* ℂˣ) (a : A) :
     ‖((φ a : ℂˣ) : ℂ)‖ = 1 := by
@@ -186,8 +182,6 @@ private lemma norm_character_eq_one_of_finite {A : Type} [Group A] [Finite A] (�
   rw [← Units.val_pow_eq_pow_val, ← map_pow, pow_card_eq_one', map_one, Units.val_one]
 
 
-open MeasureTheory IsDedekindDomain NumberField Matrix in
-open scoped TensorProduct InnerProductSpace Pointwise in
 attribute [local instance] _root_.Formalism.BasicNotions.Host.cmStar in
 theorem _root_.GlobalTheory.InnerClassSum.norm_levFn {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] {n : ℕ}

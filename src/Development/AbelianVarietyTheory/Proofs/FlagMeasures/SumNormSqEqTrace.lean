@@ -69,7 +69,6 @@ theorem gN_eq_norm (g : B.Mat k r) : B.gN g = ‖g‖ := by
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   rw [Real.rpow_two, Complex.normSq_eq_norm_sq]
 
-open scoped Matrix.Norms.Frobenius in
 theorem gN_mul_le (x y : B.Mat k r) : B.gN (x * y) ≤ B.gN x * B.gN y := by
   simpa only [gN_eq_norm] using Matrix.frobenius_norm_mul x y
 

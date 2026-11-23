@@ -111,7 +111,6 @@ theorem isSubquotient_prodIrr_uc {N : ℕ} (α : Fin N → ℂˣ) (hd : ∑ i, (
 end GlobalTheory.GenSph
 
 namespace GlobalTheory.GenSph
-open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL ValuativeRel
 
 end GlobalTheory.GenSph
 

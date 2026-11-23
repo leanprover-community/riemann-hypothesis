@@ -96,7 +96,6 @@ end GlobalTheory.InertLagParam
 end
 
 namespace GlobalTheory.InertLagParam
-open GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagUniq
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 theorem card_eq_of_inv {R : Type} [CommRing R] [Nontrivial R] {α β : Type} [Fintype α] [Fintype β] [DecidableEq α]
@@ -152,7 +151,6 @@ theorem det_mulLeft {R : Type} [CommRing R] (n m : ℕ) (A : Matrix (Fin n) (Fin
 end GlobalTheory.InertLagParam
 
 namespace GlobalTheory.InertLagParam
-open GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagUniq
 
 theorem param : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) (v : Pl (F := F))
     (m : ℕ) (C : Matrix (Fin d) (Fin m) (AE F E)), IsLagrAt σ W v C →

@@ -100,8 +100,6 @@ private theorem exists_scale_of_homogeneousCore_ker_eq {K T : Type} [Field K] [C
   field_simp
   linear_combination h2
 
-open Matrix Polynomial in
-open scoped BigOperators in
 private theorem sup_span_ne_top_of_homogeneous_pos_degree {K T : Type} [Field K] [CommRing T] [Algebra K T]
     {𝒜 : ℕ → Submodule K T} [GradedAlgebra 𝒜] {Q : Ideal T} (hQ : Q.IsHomogeneous 𝒜)
     (hQt : Q ≠ ⊤) {h : T} {n : ℕ} (hh : h ∈ 𝒜 n) (hn : 0 < n) : Q ⊔ Ideal.span {h} ≠ ⊤ := by
@@ -117,8 +115,6 @@ private theorem sup_span_ne_top_of_homogeneous_pos_degree {K T : Type} [Field K]
     DirectSum.coe_decompose_mul_of_left_mem_of_not_le 𝒜 hh (by omega), add_zero] at h0
   exact h0 ▸ hQ 0 hq
 
-open Matrix Polynomial in
-open scoped BigOperators in
 private theorem exists_algHom_vanishing_prime_ne_zero_of_notMem {K T : Type} [Field K] [IsAlgClosed K] [CommRing T]
     [Algebra K T] [Algebra.FiniteType K T] {P : Ideal T} [hP : P.IsPrime] {y : T} (hy : y ∉ P) :
     ∃ φ : T →ₐ[K] K, (∀ z ∈ P, φ z = 0) ∧ φ y ≠ 0 := by
@@ -140,8 +136,6 @@ private theorem exists_algHom_vanishing_prime_ne_zero_of_notMem {K T : Type} [Fi
     rw [← Ideal.Quotient.eq_zero_iff_mem]
     simpa using h0
 
-open Matrix Polynomial in
-open scoped BigOperators in
 private theorem exists_mem_notMem_homogeneous_prime_of_finite_points {K T : Type} [Field K] [IsAlgClosed K] [CommRing T]
     [IsDomain T] [Algebra K T] {𝒜 : ℕ → Submodule K T} [GradedAlgebra 𝒜] {m : ℕ} {x : Fin m → T}
     (hx : ∀ i, x i ∈ 𝒜 1) (hfin : Module.Finite (Algebra.adjoin K (Set.range x)) T)
@@ -214,8 +208,6 @@ private theorem exists_mem_notMem_homogeneous_prime_of_finite_points {K T : Type
   rw [hφh, pow_one, hψh] at h2
   exact mul_ne_zero hc0 (heval ψ hψG) h2.symm
 
-open Matrix Polynomial in
-open scoped BigOperators in
 private theorem card_le_of_points_lemma_2 {K T : Type} [Field K] [IsAlgClosed K] [CommRing T]
     [IsDomain T] [Algebra K T] {𝒜 : ℕ → Submodule K T} [GradedAlgebra 𝒜] {m : ℕ} {x : Fin m → T}
     (hx : ∀ i, x i ∈ 𝒜 1) (hfin : Module.Finite (Algebra.adjoin K (Set.range x)) T)
@@ -292,8 +284,6 @@ private theorem card_le_of_points_lemma_2 {K T : Type} [Field K] [IsAlgClosed K]
       _ = (a : ℚ) ^ (k + 1) * _root_.GlobalTheory.gradedQuotDeg 𝒜 (k + 1) Q := by ring
 
 
-open Matrix Polynomial in
-open scoped BigOperators in
 theorem _root_.GlobalTheory.graded_bezout_bound :
     (∀ (K T : Type) [Field K] [IsAlgClosed K] [CommRing T] [IsDomain T] [Algebra K T] (𝒜 : ℕ → Submodule K T) [GradedAlgebra 𝒜] (m g N d a : ℕ) (x : Fin m → T) (s : T) (F : Set T), 1 ≤ g → (∀ i, x i ∈ 𝒜 1) → Module.Finite (Algebra.adjoin K (Set.range x)) T → ringKrullDim T = (g + 1 : ℕ) → (∀ e, 1 ≤ e → Module.finrank K (𝒜 e) ≤ (N * e) ^ g) → s ∈ 𝒜 d → s ≠ 0 → (∀ f ∈ F, f ∈ 𝒜 a) → (∃ Φ : Set (T →ₐ[K] K), Φ.Finite ∧ ∀ φ : T →ₐ[K] K, (∃ i, φ (x i) ≠ 0) → (∀ f ∈ F, φ f = 0) → ∃ ψ ∈ Φ, (∃ c : K, ∀ (e : ℕ), ∀ y ∈ 𝒜 e, φ y = c ^ e * ψ y)) → ∀ (n : ℕ) (φ : Fin n → (T →ₐ[K] K)), (∀ j, ∃ i, φ j (x i) ≠ 0) → (∀ j, φ j s = 0 ∧ ∀ f ∈ F, φ j f = 0) → (∀ j j', (∃ c : K, ∀ (e : ℕ), ∀ y ∈ 𝒜 e, φ j' y = c ^ e * φ j y) → j = j') → n ≤ N ^ g * g.factorial * d * a ^ (g - 1)) := by
   intro K T _ _ _ _ _ 𝒜 _ m g N d a x s F hg hx hfin hdim hN hs hs0 hF hΦ n φ hφx hφ hinj

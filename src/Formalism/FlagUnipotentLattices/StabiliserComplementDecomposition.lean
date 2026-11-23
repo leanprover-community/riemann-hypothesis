@@ -192,7 +192,6 @@ open Finset
 end PartC2
 
 section PartD2
-open Finset
 
 end PartD2
 

@@ -93,7 +93,6 @@ theorem not_inert_three {D : D7} (h : 3 ≤ D.host.splitBound) : ¬ TwistedPlace
     simp
 
 
-open Formalism.MainNotions.TwistedPlaces in
 theorem qd_le_lStar {D : D7} (L : SizeData₂ D) (P : ParameterChoice' D L) :
     (D.host.q : ℝ) ≤ TwistedPlaces.lStar L ∧ (D.host.d : ℝ) ≤ TwistedPlaces.lStar L ∧
       ∀ l ∈ D.host.small, (l : ℝ) ≤ TwistedPlaces.lStar L := by

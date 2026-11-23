@@ -207,7 +207,6 @@ theorem projLineAtlas_chart0 : p1.chart (0 : Fin 2) = projectiveLineChartAtZero 
 theorem projLineAtlas_chart1 : p1.chart (1 : Fin 2) = projectiveLineChartAtInfinity := rfl
 
 
-open scoped Classical in
 def fsPot : LocPot (OnePoint ℂ) where
   U x := if x = ∞ then projectiveLineChartAtInfinity.source else projectiveLineChartAtZero.source
   isOpen_U := by
@@ -231,7 +230,6 @@ theorem fsPot_φ_coe (z : ℂ) :
     fsPot.φ (z : OnePoint ℂ) = fun y => (1 / 2) * Real.log (1 + ‖crd0 y‖ ^ 2) := by simp [fsPot]
 
 
-open scoped Classical in
 def projectiveLinePairSection (x y : OnePoint ℂ) : ℂ := if x = ∞ then crd1 y else 1
 
 theorem projLineSection_infty : projectiveLinePairSection ∞ = crd1 := by

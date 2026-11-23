@@ -551,8 +551,6 @@ end Unif
 end
 
 section
-open AlgebraicGeometry CategoryTheory NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
-open Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory.CompanionTheory.Ar.BT
 open GlobalTheory.CompanionTheory.Ar
 
@@ -621,7 +619,6 @@ theorem mem_iff_span {R A B H K T : Type} [CommRing R] [AddCommGroup A] [Module 
 end Groups
 
 section QF
-open scoped CategoryTheory.Obj
 variable {R : Type} [CommRing R] [IsDomain R] {T H : Type} [CommGroup T] [CommGroup H]
 
 theorem pt_inj (Γ : QFGroup R T) : Function.Injective Γ.pt := fun s t h =>
@@ -680,7 +677,6 @@ end QF
 
 section Struct
 open IsLocalRing ReciprocityTheory.ChartRestriction.G.Out
-open scoped CategoryTheory.Obj
 
 theorem span_triple {R X Y Z : Type} [CommRing R] (A : Set (X × Y → R)) (S : Set (X × Y → R))
     (h : ∀ f, f ∈ A ↔ f ∈ Submodule.span R S) :
@@ -1034,7 +1030,6 @@ theorem val_facts {C V : Type} [Field C] [IsAlgClosed C] [CharZero C] [CommRing 
 
 section Core
 open IsLocalRing ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.CompanionTheory.Ar.GR ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Up
-open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem core (hD : HodgeTateDatumStatement) (hO : OrdinaryCurveStatement) (p : ℕ) [Fact p.Prime] (C : Type) [Field C]
@@ -1137,7 +1132,6 @@ end PositivityTheory.Xgn.TightHopfOrder
 open AlgebraicGeometry CategoryTheory NumberField MvPolynomial ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Num GlobalTheory.CompanionTheory.Ar.Top
 open GroundTheory.Heights₂.Heights.NumbersDVR (pointIdeal segreVec IsFlagFrame IsFlagPair SameGenericFibre IsModelOver divCycle)
 open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles (mseg fnField)
-open Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.BT
 
 open PositivityTheory.Xgn.TightHopfOrder in

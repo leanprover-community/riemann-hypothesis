@@ -125,7 +125,6 @@ end Clauses
 
 section Main
 
-open GlobalTheory.IndefiniteRowSideFullHecke GlobalTheory.IndefiniteRowSideFullHecke.SeparatedSymmetricModel
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R}
   {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]

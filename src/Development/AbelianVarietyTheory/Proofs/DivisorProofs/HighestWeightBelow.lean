@@ -150,7 +150,6 @@ end Weights
 
 section Num
 
-open Finset
 
 variable (D : D7) (C : ℝ) (τ : D.what₂.Tau)
 
@@ -329,7 +328,6 @@ end Num
 
 section Grid
 
-open Finset
 
 variable (D : D7) (C : ℝ) (τ : D.what₂.Tau)
 
@@ -562,7 +560,6 @@ end Grid
 
 section Final
 
-open Finset
 
 theorem neg_sub_mem_block {c h x : ℚ} {t : ℕ} : -x - h ∈ TPar.block (-c - h) t ↔ x ∈ TPar.block c t := by
   rw [sub_eq_add_neg (-c) h, ← sub_mem_block, sub_neg_eq_add, sub_add_cancel]

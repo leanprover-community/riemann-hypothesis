@@ -77,8 +77,6 @@ private lemma tendsto_sq_mul_weierstrassP' (L : PeriodPair) :
   field_simp
   ring
 
-open Filter PeriodPair in
-open scoped Topology in
 private lemma exists_tendsto_pow_mul_of_tendsto_pow_succ_mul_zero {h : ℂ → ℂ} (k : ℕ)
     (hd : ∀ᶠ z in 𝓝[≠] (0:ℂ), DifferentiableAt ℂ h z)
     (h2 : Tendsto (fun z ↦ z ^ (k + 1) * h z) (𝓝[≠] 0) (𝓝 0)) :
@@ -99,8 +97,6 @@ private lemma exists_tendsto_pow_mul_of_tendsto_pow_succ_mul_zero {h : ℂ → �
   simp [hu, Function.update_of_ne ht, pow_succ]
   field_simp
 
-open Filter PeriodPair in
-open scoped Topology in
 private lemma exists_const_of_periodic_of_mul_tendsto_zero (L : PeriodPair) {F : ℂ → ℂ}
     (hd : ∀ z ∉ L.lattice, DifferentiableAt ℂ F z) (hp : ∀ z, ∀ l ∈ L.lattice, F (z + l) = F z)
     (h : Tendsto (fun z ↦ z * F z) (𝓝[≠] 0) (𝓝 0)) : ∃ k, ∀ z ∉ L.lattice, F z = k := by
@@ -157,8 +153,6 @@ private lemma exists_const_of_periodic_of_mul_tendsto_zero (L : PeriodPair) {F :
   have := _root_.GlobalTheory.eq_of_differentiable_of_periodic L hdiff hGp z 0
   simpa [hGdef, hz, L.lattice.zero_mem] using this
 
-open Filter PeriodPair in
-open scoped Topology in
 private lemma tendsto_sq_mul_weierstrassP_sub_one_div (L : PeriodPair) :
     Tendsto (fun z ↦ (z ^ 2 * ℘[L] z - 1) / z) (𝓝[≠] 0) (𝓝 0) := by
   have h0 : (0 : ℂ) ∈ L.lattice := L.lattice.zero_mem
@@ -175,8 +169,6 @@ private lemma tendsto_sq_mul_weierstrassP_sub_one_div (L : PeriodPair) :
   field_simp
   ring
 
-open Filter PeriodPair in
-open scoped Topology in
 private lemma half_sub_half_notMem_lattice (L : PeriodPair) :
     L.ω₁ / 2 - L.ω₂ / 2 ∉ L.lattice := by
   rw [mem_lattice]
@@ -187,8 +179,6 @@ private lemma half_sub_half_notMem_lattice (L : PeriodPair) :
   rw [Int.cast_eq_zero] at h'
   omega
 
-open Filter PeriodPair in
-open scoped Topology in
 private lemma half_add_half_notMem_lattice (L : PeriodPair) :
     L.ω₁ / 2 + L.ω₂ / 2 ∉ L.lattice := by
   rw [mem_lattice]
@@ -200,8 +190,6 @@ private lemma half_add_half_notMem_lattice (L : PeriodPair) :
   omega
 
 
-open Filter PeriodPair in
-open scoped Topology in
 lemma _root_.GlobalTheory.PeriodicWeierstrass.exists_eq_of_sq_mul_tendsto (L : PeriodPair) {g : ℂ → ℂ} {a : ℂ}
     (hd : ∀ z ∉ L.lattice, DifferentiableAt ℂ g z) (hp : ∀ z, ∀ l ∈ L.lattice, g (z + l) = g z)
     (h : Tendsto (fun z ↦ z ^ 2 * g z) (𝓝[≠] 0) (𝓝 a)) :
@@ -324,8 +312,6 @@ lemma _root_.GlobalTheory.PeriodicWeierstrass.exists_eq_of_sq_mul_tendsto (L : P
   simp only [hf₀] at this
   linear_combination this
 
-open Filter PeriodPair in
-open scoped Topology in
 private lemma tendsto_pow_three_mul_derivWeierstrassP (L : PeriodPair) :
     Tendsto (fun z ↦ z ^ 3 * ℘'[L] z) (𝓝[≠] 0) (𝓝 (-2)) := by
   have h0 : (0 : ℂ) ∈ L.lattice := L.lattice.zero_mem
@@ -345,8 +331,6 @@ private lemma tendsto_pow_three_mul_derivWeierstrassP (L : PeriodPair) :
   ring
 
 
-open Filter PeriodPair in
-open scoped Topology in
 lemma _root_.GlobalTheory.PeriodicWeierstrass.exists_eq_of_cube_mul_tendsto (L : PeriodPair) {g : ℂ → ℂ}
     (hd : ∀ z ∉ L.lattice, DifferentiableAt ℂ g z) (hp : ∀ z, ∀ l ∈ L.lattice, g (z + l) = g z)
     (h : Tendsto (fun z ↦ z ^ 3 * g z) (𝓝[≠] 0) (𝓝 (-2))) :
@@ -371,8 +355,6 @@ lemma _root_.GlobalTheory.PeriodicWeierstrass.exists_eq_of_cube_mul_tendsto (L :
   linear_combination this
 
 
-open Filter PeriodPair in
-open scoped Topology in
 lemma _root_.GlobalTheory.PeriodicWeierstrass.tendsto_leading (W : WeierstrassCurve ℂ)
     {x y t : ℂ → ℂ} {c : ℂ} (hc : c ≠ 0)
     (hE : ∀ᶠ z in 𝓝[≠] 0, W.toAffine.Equation (x z) (y z))
@@ -432,8 +414,6 @@ lemma _root_.GlobalTheory.PeriodicWeierstrass.tendsto_leading (W : WeierstrassCu
 end PeriodicWeierstrass
 
 
-open Filter PeriodPair in
-open scoped Topology in
 theorem _root_.GlobalTheory.invariants_eq_of_periodic_solution :
     ∀ (L : PeriodPair) (W : WeierstrassCurve ℂ) (x y t : ℂ → ℂ) (c : ℂ), c ≠ 0 →
   DifferentiableOn ℂ x (L.lattice : Set ℂ)ᶜ → DifferentiableOn ℂ y (L.lattice : Set ℂ)ᶜ →

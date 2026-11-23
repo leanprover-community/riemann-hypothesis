@@ -52,7 +52,6 @@ private theorem sqrt_div_mul_eq_sqrt_mul (p : ℕ) (L : Type) [Field L] [Algebra
   refine ⟨s, eq_neg_of_add_eq_zero_left ?_⟩
   simpa using hs
 
-open Polynomial in
 private theorem sqrt_kstar (p : ℕ) : ∃ s : Kstar p, s ^ 2 = -(p : Kstar p) := by
   exact @sqrt_div_mul_eq_sqrt_mul p (SplittingField (X ^ 2 + C (p : ℚ) : ℚ[X])) _ _
     (Polynomial.IsSplittingField.splittingField _)

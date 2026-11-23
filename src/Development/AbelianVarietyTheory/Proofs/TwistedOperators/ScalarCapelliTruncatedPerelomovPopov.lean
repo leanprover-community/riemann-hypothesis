@@ -77,7 +77,6 @@ end GlobalTheory.ScalarNewton
 
 namespace GlobalTheory.ScalarNewton
 
-open Matrix
 
 variable (m : ℕ) (χ : Fin (m + 1) → ℂ)
 
@@ -133,7 +132,6 @@ end GlobalTheory.ScalarNewton
 
 namespace GlobalTheory.ScalarNewton
 
-open Matrix
 
 theorem sumEnt_smul {n : ℕ} (c : ℂ[X]) (W : Matrix (Fin n) (Fin n) ℂ[X]) :
     ∑ a, ∑ b, (c • W) a b = c * ∑ a, ∑ b, W a b := by
@@ -196,7 +194,6 @@ end GlobalTheory.ScalarNewton
 
 namespace GlobalTheory.ScalarNewton
 
-open Matrix
 
 theorem natDegree_adjugate_pmat_le (m : ℕ) (χ : Fin (m + 1) → ℂ) (i j : Fin (m + 1)) :
     ((pmat m χ).adjugate i j).natDegree ≤ m := by

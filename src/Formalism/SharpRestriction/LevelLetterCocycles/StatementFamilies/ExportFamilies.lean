@@ -58,7 +58,6 @@ end Formalism.MainNotions.TwistedPlaces
 
 namespace Formalism.MainNotions.ExportFamilies
 
-open Formalism.BasicNotions Formalism.MainNotions
 
 abbrev FamilyThinScalesBound {eps : ℝ} (Fm : FamP eps) (C : ℝ) : Prop := TwistedPlaces.FamilyThinScalesBound Fm C
 

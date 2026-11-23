@@ -38,19 +38,14 @@ namespace GlobalTheory.InertUnitNorm
 open IsDedekindDomain.HeightOneSpectrum Polynomial
 end GlobalTheory.InertUnitNorm
 namespace GlobalTheory.InertUnitNorm
-open IsDedekindDomain.HeightOneSpectrum Polynomial
 end GlobalTheory.InertUnitNorm
 namespace GlobalTheory.InertUnitNorm
-open IsDedekindDomain.HeightOneSpectrum Polynomial
 end GlobalTheory.InertUnitNorm
 namespace GlobalTheory.InertUnitNorm
-open IsDedekindDomain.HeightOneSpectrum Polynomial
 end GlobalTheory.InertUnitNorm
 namespace GlobalTheory.InertUnitNorm
-open IsDedekindDomain.HeightOneSpectrum Polynomial
 end GlobalTheory.InertUnitNorm
 namespace GlobalTheory.InertUnitNorm
-open IsDedekindDomain.HeightOneSpectrum Polynomial
 theorem unit_eq_mul_conj_k : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E),
     _root_.UpperTheory.TP.W.GoodK σ B → ∀ (v : Pl F) (w : HeightOneSpectrum (𝓞 E)), Formalism.UG.IsInertAt F E v w → IsField (Fv F v ⊗[F] E) →
     ∀ u : Fv F v, Valued.v u = 1 →

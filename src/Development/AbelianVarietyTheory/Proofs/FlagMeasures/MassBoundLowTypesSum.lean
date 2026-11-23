@@ -173,7 +173,6 @@ end prelim
 section main
 
 open BranchingSupport GlobalTheory.CellAmp GlobalTheory.Amp Formalism.BasicNotions Formalism.MainNotions.S Formalism.QuantumDeterminants Matrix MeasureTheory Finset
-open scoped InnerProductSpace ENNReal
 
 end main
 

@@ -50,7 +50,6 @@ private noncomputable def latE {F E : Type} [Field F] [NumberField F] [Field E] 
   left_inv g := Subtype.ext (D.coE.apply_symm_apply g.1)
   right_inv y := Subtype.ext (D.coE.symm_apply_apply y.1)
 
-open GroundTheory.Automorphic.FourierWhittaker in
 theorem UpperTheory.ConvolutionTheory.R2.G.cuspE :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (D : Dat F E) (Φ : GL (Fin 2) (A E) → ℂ), (∀ γ h, Φ (ratGL E 2 γ * h) = Φ h) →
     (∀ h, ∫ u in FS2 F, Φ (nE D u * h) ∂(adeleMeasurePi F) = 0) → GlobalTheory.CuspRep.IsCuspidal Φ := by

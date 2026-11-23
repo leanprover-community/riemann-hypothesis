@@ -70,7 +70,6 @@ theorem _root_.GlobalTheory.PowLie.isTangent_iff {G : Over (_root_.ReciprocityTh
   · intro h
     simpa [_root_.GlobalTheory.PowLie.zeroPt] using congrArg Over.Hom.left h
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {R : Type} [CommRing R] in
 theorem _root_.GlobalTheory.PowLie.isLieComb_iff_prod {G : Over (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp R)} [GrpObj G] [IsCommMonObj G]
@@ -89,7 +88,6 @@ theorem _root_.GlobalTheory.PowLie.isLieComb_iff_prod {G : Over (_root_.Reciproc
     rw [List.prod_ofFn]
     exact hw
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {R : Type} [CommRing R] in
 private theorem finset_prod_comp_of_isMonHom {X M N : Over (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp R)} [MonObj M] [IsCommMonObj M]
@@ -97,7 +95,6 @@ private theorem finset_prod_comp_of_isMonHom {X M N : Over (_root_.ReciprocityTh
     [IsMonHom h] : (∏ i ∈ s, f i) ≫ h = ∏ i ∈ s, f i ≫ h :=
   map_prod (IsMonHom.monoidHom h X) f s
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {R : Type} [CommRing R] in
 private theorem zeroPt_comp_one {G : Over (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp R)} [GrpObj G] :
@@ -105,7 +102,6 @@ private theorem zeroPt_comp_one {G : Over (_root_.ReciprocityTheory.ChartRestric
   rw [comp_one, Hom.one_def]
   simp
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.PowLie.isLieBasis_pow : ∀ (R : Type) [CommRing R] (G' G : Over (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp R)) [GrpObj G']
     [IsCommMonObj G'] [GrpObj G] [IsCommMonObj G] (j g : ℕ) (p : _root_.ReciprocityTheory.ChartRestriction.G.Out.IsPowGrp G' G j)

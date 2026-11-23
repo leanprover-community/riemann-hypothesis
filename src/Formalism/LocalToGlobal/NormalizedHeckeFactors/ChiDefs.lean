@@ -116,7 +116,6 @@ theorem HC.At.unique {χ : HC E} {P : HeightOneSpectrum (𝓞 E)} {a b : ℂ} (h
   rw [← ha.2 ϖ hϖ, ← hb.2 ϖ hϖ]
 
 
-open scoped Classical in
 def locInf (v : InfinitePlace E) : v.Completion →* AdeleRing (𝓞 E) E where
   toFun x := ((Pi.mulSingle v x : InfiniteAdeleRing E), (1 : FiniteAdeleRing (𝓞 E) E))
   map_one' := by
@@ -170,10 +169,8 @@ theorem finite_placesOver (l : ℕ) [Fact l.Prime] :
 
 end read
 
-section rcg
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
 
-end rcg
 
 end Formalism.L2.NC

@@ -64,8 +64,6 @@ theorem _root_.GlobalTheory.SimMb.mem_of_modN {x : D.La} (hx : D.ModN l.M x) :
   rw [hb]
   exact Submodule.smul_mem_smul hM Submodule.mem_top
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H)
   (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) in
 private theorem level_Mb_ne_bot : l.Mb ≠ ⊥ := by
@@ -77,8 +75,6 @@ private theorem level_Mb_ne_bot : l.Mb ≠ ⊥ := by
   omega
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H)
   (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) in
 theorem _root_.GlobalTheory.SimMb.exists_left_inv (g : D.La →ₗ[𝓞 E] D.La)
@@ -123,8 +119,6 @@ namespace GlobalTheory
 
 open SimMb
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H)
   (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) in
 private theorem conjO_conjO_unimodular_class_representatives (a : 𝓞 E) : H.bar (H.bar a) = a := by
@@ -133,8 +127,6 @@ private theorem conjO_conjO_unimodular_class_representatives (a : 𝓞 E) : H.ba
   rw [H.bar_eq, H.bar_eq]
   simp
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H)
   (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) in
 private theorem exists_mul_eq_level_mul_of_mem_Mb {α β : 𝓞 E} (hα : α ∈ l.Mb)
@@ -144,8 +136,6 @@ private theorem exists_mul_eq_level_mul_of_mem_Mb {α β : 𝓞 E} (hα : α ∈
   obtain ⟨c, hc⟩ := h1
   exact ⟨c, hc⟩
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H)
   (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) in
 private theorem exists_smul_eq_level_smul_of_mem_map_bar_Mb {β : 𝓞 E} (hβ : β ∈ Ideal.map (H.bar : 𝓞 E →+* 𝓞 E) l.Mb)
@@ -162,8 +152,6 @@ private theorem exists_smul_eq_level_smul_of_mem_map_bar_Mb {β : 𝓞 E} (hβ :
     obtain ⟨z₂, hz₂⟩ := h₂
     exact ⟨z₁ + z₂, by rw [smul_add, hz₁, hz₂, smul_add]⟩
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H)
   (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) in
 private theorem level_dvd_EF_level_smul (x z : D.La) :
@@ -171,8 +159,6 @@ private theorem level_dvd_EF_level_smul (x z : D.La) :
   rw [Nat.cast_smul_eq_nsmul, map_nsmul, nsmul_eq_mul]
   exact Dvd.intro _ rfl
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H)
   (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) in
 private theorem level_dvd_EF_mul_smul_of_mem_Mb {α β : 𝓞 E} (hα : α ∈ l.Mb)

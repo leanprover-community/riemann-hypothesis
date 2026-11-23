@@ -218,7 +218,6 @@ theorem frame {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] [C
         simp only [Matrix.mul_assoc]
     _ = cT σ (h : Matrix (Fin n) (Fin n) L) * h := by rw [e1, e2, Matrix.mul_one, Matrix.mul_one]
 
-open Formalism.UG in
 theorem antiJ_case {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {ϖ : L} {σ : L →+* L} {q n : ℕ}
     (hU : IsUnramInv ϖ σ q) (N : Subgroup (GU σ n)) (hN : N.Normal) (hK : KU σ n ≤ N) : N = ⊤ := by
   have h2 := unip_mem L ϖ σ q n hU N hN hK

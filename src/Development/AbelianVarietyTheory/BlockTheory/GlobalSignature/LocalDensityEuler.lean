@@ -56,8 +56,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalAdditiveCharacterDua
   rw [RestrictedProduct.single_zero]
   exact AddChar.map_zero_eq_one ψ
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain in
 variable (F : Type) [Field F] [NumberField F] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalAdditiveCharacterDual.psiV_add (ψ : AddChar (_root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) ℂ) (v : HeightOneSpectrum (𝓞 F))
     (x y : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) :
@@ -178,8 +176,6 @@ def EulerProductOfDensities : Prop :=
         (∃ a : Fˣ, ScalesInf F ψ a) ∧ ∀ a : Fˣ, ScalesInf F ψ a → DensityProduct F E ψ a M
 
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalAdditiveCharacterDual.star_eq_sigma {F E : Type} [Field F] [NumberField F] [Field E]
     [NumberField E] [Algebra F E] [StarRing E] (σ : E →ₐ[F] E) (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ)
     (hu : _root_.Formalism.HermitianLatticesTheory.IsCMUnram E) (x : E) :

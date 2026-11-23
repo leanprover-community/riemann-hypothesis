@@ -62,8 +62,6 @@ theorem _root_.GlobalTheory.UnitaryDoubleCoset.cT_map (ι : O →+* L) {c : O �
   ext i j
   simp [_root_.Formalism.UG.cT, hι]
 
-open IsDedekindDomain NumberField in
-open scoped TensorProduct Matrix in
 variable {O L : Type} [CommRing O] [CommRing L] {n : Type} [Fintype n] [DecidableEq n] in
 omit [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.UnitaryDoubleCoset.cT_cT {c : O →+* O} (hc : ∀ x, c (c x) = x)
@@ -71,8 +69,6 @@ theorem _root_.GlobalTheory.UnitaryDoubleCoset.cT_cT {c : O →+* O} (hc : ∀ x
   ext i j
   simp [_root_.Formalism.UG.cT, hc]
 
-open IsDedekindDomain NumberField in
-open scoped TensorProduct Matrix in
 variable {O L : Type} [CommRing O] [CommRing L] {n : Type} [Fintype n] [DecidableEq n] in
 private theorem cT_aeval_eq_aeval_cT_map (c : O →+* O) (B : Matrix n n O) (q : Polynomial O) :
     _root_.Formalism.UG.cT c (Polynomial.aeval B q) = Polynomial.aeval (_root_.Formalism.UG.cT c B) (q.map c) := by
@@ -96,8 +92,6 @@ private theorem cT_aeval_eq_aeval_cT_map (c : O →+* O) (B : Matrix n n O) (q :
     simp only [_root_.Formalism.UG.cT, ← Matrix.transpose_mul, ← Matrix.map_mul, hcomm]
 
 
-open IsDedekindDomain NumberField in
-open scoped TensorProduct Matrix in
 variable {O L : Type} [CommRing O] [CommRing L] {n : Type} [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.UnitaryDoubleCoset.exists_poly_norm {c : O →+* O} (hc : ∀ x, c (c x) = x)
     (hN : ∀ f : Polynomial O, f.Monic → f.map c = f → IsUnit (f.coeff 0) →
@@ -118,8 +112,6 @@ theorem _root_.GlobalTheory.UnitaryDoubleCoset.exists_poly_norm {c : O →+* O} 
   rw [map_mul, Matrix.aeval_self_charpoly, zero_mul, map_sub, Polynomial.aeval_X, sub_eq_zero] at h1
   rw [cT_aeval_eq_aeval_cT_map, hB, ← map_mul, mul_comm, h1]
 
-open IsDedekindDomain NumberField in
-open scoped TensorProduct Matrix in
 variable {O L : Type} [CommRing O] [CommRing L] {n : Type} [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.UnitaryDoubleCoset.exists_unitary_factors (ι : O →+* L) {c : O →+* O} {σ : L →+* L}
     (hι : ∀ x, σ (ι x) = ι (c x))

@@ -72,8 +72,6 @@ private theorem lid_rTensor_map_id_eq {V : Type} [AddCommGroup V] [Module Qp V] 
   | tmul m n => simp [AlgebraTensorModule.map_tmul]
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
-open PowerSeries in
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -93,8 +91,6 @@ private theorem eq_sum_basis_tmul_coord {V : Type} [AddCommGroup V] [Module Qp V
     simp only [map_add (f := _), TensorProduct.tmul_add, Finset.sum_add_distrib]
 
 
-open PowerSeries in
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -139,8 +135,6 @@ theorem _root_.GlobalTheory.TrivCrys.dcris_of_trivial {V : Type} [AddCommGroup V
     | add y z hy hz => simp only [map_add (f := _), hy, hz]
 
 
-open PowerSeries in
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -174,8 +168,6 @@ theorem _root_.GlobalTheory.TrivCrys.isCrys_of_trivial {V : Type} [AddCommGroup 
     Module.finrank_tensorProduct, mul_comm]
 
 
-open PowerSeries in
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]

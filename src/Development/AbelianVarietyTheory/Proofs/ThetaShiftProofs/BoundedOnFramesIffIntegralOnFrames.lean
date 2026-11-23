@@ -141,7 +141,6 @@ end Coefficients
 
 section Core
 
-open MvPolynomial
 
 variable {O : Type*} [CommRing O] {π : O}
   {A : Type*} [CommRing A] [Algebra O⟦X⟧ A]
@@ -460,7 +459,6 @@ end Points
 
 section Frames
 
-open MvPolynomial
 
 
 variable (p) in

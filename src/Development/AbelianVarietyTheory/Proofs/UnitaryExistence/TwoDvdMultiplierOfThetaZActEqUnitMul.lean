@@ -81,7 +81,6 @@ theorem _root_.GlobalTheory.entire_eq_zero_of_mul_continuous_eq_zero {E : Type*}
     (Set.mem_univ 0) h0 (Set.mem_univ 1)
   simpa using this
 
-open Complex Matrix NumberField Filter Topology in
 private theorem span_real_period_lattice_full {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ}
     (hτ : τ ∈ _root_.ReciprocityTheory.PTheta.SiegelH (Fin g)) :
     Submodule.span ℝ (Set.range fun p : (Fin g → ℤ) × (Fin g → ℤ) =>
@@ -115,7 +114,6 @@ private theorem span_real_period_lattice_full {g : ℕ} {τ : Matrix (Fin g) (Fi
   · exact Submodule.subset_span ⟨(0, Pi.single j 1), rfl⟩
 
 
-open Complex Matrix NumberField Filter Topology in
 theorem _root_.GlobalTheory.two_dvd_of_entire_sign_periodic {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ}
     (hτ : τ ∈ _root_.ReciprocityTheory.PTheta.SiegelH (Fin g)) {σ : (Fin g → ℂ) → ℂ} (hσ : Differentiable ℂ σ) (h0 : σ 0 ≠ 0)
     {N : (Fin g → ℤ) → (Fin g → ℤ) → ℤ}
@@ -155,7 +153,6 @@ variable {g : ℕ} {γ : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ} {τ : M
 
 end Transform
 
-open Complex Matrix NumberField Filter Topology in
 private theorem symplectic_block_combination_eq {g : ℕ} (A B C D τ : Matrix (Fin g) (Fin g) ℂ)
     (r2 : Cᵀ * B - Aᵀ * D = -1) (r4 : Dᵀ * B - Bᵀ * D = 0) :
     (τ * Aᵀ + Bᵀ) * D - (τ * Cᵀ + Dᵀ) * B = τ := by
@@ -164,7 +161,6 @@ private theorem symplectic_block_combination_eq {g : ℕ} (A B C D τ : Matrix (
     simp only [Matrix.mul_sub, Matrix.add_mul, Matrix.mul_assoc, Matrix.mul_neg]; abel
   rw [e, r2, r4, neg_neg, Matrix.mul_one, sub_zero]
 
-open Complex Matrix NumberField Filter Topology in
 private theorem mulVec_lattice_translate_eq {g : ℕ} (A B C D τ τ' Mi : Matrix (Fin g) (Fin g) ℂ)
     (F1 : A - τ' * C = Mi) (F2 : Mi * τ = τ' * D - B) (z u v : Fin g → ℂ) :
     Mi *ᵥ (z + τ *ᵥ u + v) = Mi *ᵥ z + τ' *ᵥ (D *ᵥ u - C *ᵥ v) + (A *ᵥ v - B *ᵥ u) := by
@@ -172,7 +168,6 @@ private theorem mulVec_lattice_translate_eq {g : ℕ} (A B C D τ τ' Mi : Matri
   simp only [Matrix.sub_mulVec, Matrix.mulVec_sub, Matrix.mulVec_mulVec]
   abel
 
-open Complex Matrix NumberField Filter Topology in
 private theorem quadratic_lattice_translate_eq {g : ℕ} (C τ τ' M : Matrix (Fin g) (Fin g) ℂ) (hM : IsUnit M.det)
     (hτ : τᵀ = τ) (hS : (M⁻¹ * C)ᵀ = M⁻¹ * C) (z u v q q' : Fin g → ℂ)
     (hC : C *ᵥ (τ *ᵥ u + v) = M *ᵥ u - q)
@@ -205,7 +200,6 @@ private theorem quadratic_lattice_translate_eq {g : ℕ} (C τ τ' M : Matrix (F
   ring
 
 
-open Complex Matrix NumberField Filter Topology in
 theorem _root_.GlobalTheory.halfChar_fixed_of_theta_transform_unit :
     ∀ (g : ℕ) (γ : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ), γ ∈ Matrix.symplecticGroup (Fin g) ℤ → (∀ i j, (8 : ℤ) ∣ γ (Sum.inl i) (Sum.inr j) ∧ (8 : ℤ) ∣ γ (Sum.inr i) (Sum.inl j)) → ∀ (c : ℂ) (n n' : Fin g → ℤ), c ≠ 0 → (∀ τ ∈ _root_.ReciprocityTheory.PTheta.SiegelH (Fin g), ∀ z : Fin g → ℂ, _root_.ReciprocityTheory.PTheta.theta (_root_.ReciprocityTheory.ChartRestriction.G.Key.halfVec 0) (_root_.ReciprocityTheory.ChartRestriction.G.Key.halfVec 0) (_root_.ReciprocityTheory.ChartRestriction.G.Key.Chi.zAct γ τ z) (_root_.ReciprocityTheory.ChartRestriction.G.Key.Chi.spAct γ τ) ^ 2 = c * (_root_.ReciprocityTheory.ChartRestriction.G.Key.Chi.jAut γ τ).det * _root_.ReciprocityTheory.PTheta.eC (_root_.ReciprocityTheory.ChartRestriction.G.Key.Chi.expArg γ τ z) * _root_.ReciprocityTheory.PTheta.theta (_root_.ReciprocityTheory.ChartRestriction.G.Key.halfVec 0) (_root_.ReciprocityTheory.ChartRestriction.G.Key.halfVec 0) z τ ^ 2) → ∀ τ ∈ _root_.ReciprocityTheory.PTheta.SiegelH (Fin g), ∀ ρ : (Fin g → ℂ) → ℂ, Differentiable ℂ ρ → (∀ z, ρ z ≠ 0) → (∀ z, _root_.ReciprocityTheory.PTheta.theta (_root_.ReciprocityTheory.ChartRestriction.G.Key.halfVec n) (_root_.ReciprocityTheory.ChartRestriction.G.Key.halfVec n') (_root_.ReciprocityTheory.ChartRestriction.G.Key.Chi.zAct γ τ z) (_root_.ReciprocityTheory.ChartRestriction.G.Key.Chi.spAct γ τ) = ρ z * _root_.ReciprocityTheory.PTheta.theta (_root_.ReciprocityTheory.ChartRestriction.G.Key.halfVec n) (_root_.ReciprocityTheory.ChartRestriction.G.Key.halfVec n') z τ) → (∀ i, (2 : ℤ) ∣ (γ.toBlocks₁₁ᵀ *ᵥ n) i - n i) ∧ (∀ i, (2 : ℤ) ∣ (γ.toBlocks₂₂ᵀ *ᵥ n') i - n' i) := by
 

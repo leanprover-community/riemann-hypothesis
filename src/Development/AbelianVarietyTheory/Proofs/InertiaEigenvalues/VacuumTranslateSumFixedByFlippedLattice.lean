@@ -161,7 +161,6 @@ end GlobalTheory.FlipFixSum
 
 namespace GlobalTheory.FlipFixSum
 
-open GlobalTheory.PlaceModel GlobalTheory.PlaceModelSum GlobalTheory.LevelSeries
 
 
 

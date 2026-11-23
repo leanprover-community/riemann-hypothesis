@@ -177,7 +177,6 @@ theorem traces_from_eigenvalues_rank3 :
 end
 
 section
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial GlobalTheory.GalOfCusp UpperTheory.V.Af
 
 private theorem norm_inv_pow_le_sqrt_and_pos_of_one_lt_sqrt_mul_norm (p : ℕ) (hp : 1 ≤ p) (h : ℕ) (b : ℂ)
     (h1 : 1 < √(p : ℝ) * ‖b‖) (h2 : ‖b‖ < √(p : ℝ) * 1) :
@@ -262,7 +261,6 @@ theorem traces_from_eigenvalues_rank2 :
 end
 
 section
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial GlobalTheory.GalOfCusp UpperTheory.V.Af
 
 theorem eisenstein_trace_difference_log_bound :
     ∀ (q e k : ℕ), 7 ≤ q → 1 ≤ e → 0 < k → ∀ z t : ℂ, z ^ k = 1 → ‖t‖ ≤ Real.sqrt q + 2 → IsIntegral ℤ ((q : ℂ) ^ e * t) → t ≠ eis3 q e z ∧ IsIntegral ℤ ((q : ℂ) ^ e * (t - eis3 q e z)) ∧ Real.log ‖(q : ℂ) ^ e * (t - eis3 q e z)‖ ≤ 2 * e * Real.log q + 1 := by
@@ -347,7 +345,6 @@ theorem eisenstein_trace_difference_log_bound :
 end
 
 section
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial GlobalTheory.GalOfCusp UpperTheory.V.Af
 
 private theorem norm_natCast_qbar_eq_one_of_not_dvd (l q : ℕ) [Fact l.Prime] (h : ¬ l ∣ q) : ‖(q : Qbar l)‖ = 1 := by
   show ‖(q : PadicAlgCl l)‖ = 1
@@ -432,7 +429,6 @@ theorem frobenius_trace_norm_nonzero_log_bound :
 end
 
 section
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial GlobalTheory.GalOfCusp UpperTheory.V.Af
 
 private theorem trace_conj_gl3 {k : Type} [Field k] (g x : GL (Fin 3) k) :
     ((g * x * g⁻¹ : GL (Fin 3) k) : Matrix (Fin 3) (Fin 3) k).trace = (x : Matrix (Fin 3) (Fin 3) k).trace := by
@@ -448,7 +444,6 @@ private theorem place_over_rational_prime (K : Type) [Field K] [NumberField K] (
 end
 
 section
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial GlobalTheory.GalOfCusp UpperTheory.V.Af
 
 private theorem not_mem_of_distinct_prime {K : Type} [Field K] [NumberField K] {p l : ℕ} (w : HeightOneSpectrum (𝓞 K)) (hp : p.Prime)
     (hl : l.Prime) (hlp : l ≠ p) (hw : (p : 𝓞 K) ∈ w.asIdeal) : (l : 𝓞 K) ∉ w.asIdeal := by

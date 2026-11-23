@@ -86,7 +86,6 @@ theorem rs_comp_cst {R : Type} [CommRing R] (q : X ⟶ Spec (CommRingCat.of R)) 
 end GlobalTheory.Mum.AnySec
 
 namespace GlobalTheory.Mum.AnySec
-open MvPolynomial
 variable {X Y : Scheme.{0}}
 
 theorem locGen_anySec_gen {R : Type} [CommRing R] (q : X ⟶ Spec (CommRingCat.of R)) (p : X ⟶ Y) (L : LB Y)

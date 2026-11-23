@@ -126,11 +126,9 @@ theorem inh_cycEval_single (J : Ideal (MRingOver F ι) → ℤ) (W : Ideal (MRin
 
 end Div
 
-section Kill
 
 variable {σ : Type*} (F : Type*) [Field F] [DecidableEq σ] (S : Finset σ)
 
-end Kill
 
 section Homog
 

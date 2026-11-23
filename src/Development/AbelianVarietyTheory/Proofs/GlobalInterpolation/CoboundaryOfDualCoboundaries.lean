@@ -66,13 +66,11 @@ private lemma span_prime_isMaximal_ratRingOfIntegers {l : ℕ} [hl : Fact l.Prim
     simp
   rwa [heq] at hc
 
-open NumberField IsDedekindDomain in
 private lemma asIdeal_eq_span_of_prime_mem {l : ℕ} [Fact l.Prime] {w : HeightOneSpectrum (𝓞 ℚ)}
     (hw : ((l : ℕ) : 𝓞 ℚ) ∈ w.asIdeal) : w.asIdeal = Ideal.span {((l : ℕ) : 𝓞 ℚ)} :=
   (span_prime_isMaximal_ratRingOfIntegers.eq_of_le w.isPrime.ne_top
     ((Ideal.span_singleton_le_iff_mem _).2 hw)).symm
 
-open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.OrdLoc.Dcmp.locDeg_rat {l : ℕ} [Fact l.Prime] {v : HeightOneSpectrum (𝓞 ℚ)}
     (hv : ((l : ℕ) : 𝓞 ℚ) ∈ v.asIdeal) :
     _root_.ReciprocityTheory.Gal.locDeg v = 1 := by

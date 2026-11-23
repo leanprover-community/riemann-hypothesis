@@ -73,7 +73,6 @@ end GlobalTheory.Mum
 
 namespace GlobalTheory.Mum
 
-open GlobalTheory.LabTrans GlobalTheory.ArcPull
 
 theorem labExt_of_trait : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R))
     (C : LabCover D) (j : ℕ) (W : Type) [CommRing W] [IsDomain W] [IsLocalRing W], Nonempty (Trait C W) →

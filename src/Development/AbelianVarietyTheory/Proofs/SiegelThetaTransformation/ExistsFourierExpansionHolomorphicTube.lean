@@ -81,9 +81,6 @@ private lemma exists_unitAddTorus_lift_of_periodic {ι : Type} [Fintype ι] (F :
   refine ⟨hq'.lift ⟨F, hF⟩ hfac, fun x ↦ ?_⟩
   exact congrFun (congrArg DFunLike.coe (hq'.lift_comp ⟨F, hF⟩ hfac)) x
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
-open MeasureTheory in
 private lemma mFourier_apply_coe {ι : Type} [Fintype ι] (ν : ι → ℤ) (x : ι → ℝ) :
     UnitAddTorus.mFourier ν (fun i ↦ (x i : UnitAddCircle)) =
       cexp (2 * π * I * ∑ i, (ν i : ℂ) * x i) := by
@@ -95,9 +92,6 @@ private lemma mFourier_apply_coe {ι : Type} [Fintype ι] (ν : ι → ℤ) (x :
   congr 1
   ring
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
-open MeasureTheory in
 private lemma mFourierCoeff_lift_eq_integral {ι : Type} [Fintype ι] (g : C(UnitAddTorus ι, ℂ))
     (F : (ι → ℝ) → ℂ) (hg : ∀ x : ι → ℝ, g (fun i ↦ (x i : UnitAddCircle)) = F x) (ν : ι → ℤ) :
     UnitAddTorus.mFourierCoeff g ν =
@@ -117,9 +111,6 @@ private lemma mFourierCoeff_lift_eq_integral {ι : Type} [Fintype ι] (g : C(Uni
   ring
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
-open MeasureTheory in
 theorem _root_.GlobalTheory.exists_fourier_expansion_tube :
     ∀ (ι : Type) [Fintype ι] (Ω : Set (ι → ℝ)) (f : (ι → ℂ) → ℂ), IsOpen Ω → Convex ℝ Ω →
       DifferentiableOn ℂ f {z | (fun i => (z i).im) ∈ Ω} →

@@ -76,7 +76,6 @@ private theorem model_eval_mul_eval_succ_neg (n j : ℕ) (hj : j < n) :
     norm_num
   exact mul_neg_of_neg_of_pos hneg hpos
 
-open Polynomial in
 private theorem model_monic_natDegree (n : ℕ) :
     (UpperTheory.V.RealGen.model n).Monic ∧ (UpperTheory.V.RealGen.model n).natDegree = n := by
   unfold UpperTheory.V.RealGen.model
@@ -84,7 +83,6 @@ private theorem model_monic_natDegree (n : ℕ) :
   rw [natDegree_prod_of_monic _ _ (fun i _ => monic_X_sub_C _)]
   simp only [natDegree_X_sub_C, Finset.sum_const, Finset.card_range, smul_eq_mul, mul_one]
 
-open Polynomial in
 private theorem splits_real_of_sign_changing_at_integers (g : ℚ[X]) (n : ℕ) (hmon : g.Monic) (hdeg : g.natDegree = n)
     (halt : ∀ j < n, g.eval (j : ℚ) * g.eval ((j : ℚ) + 1) < 0) :
     (g.map (algebraMap ℚ ℝ)).Splits := by
@@ -140,7 +138,6 @@ private theorem splits_real_of_sign_changing_at_integers (g : ℚ[X]) (n : ℕ) 
   rw [splits_iff_card_roots]
   exact le_antisymm (card_roots' G) (hdG ▸ hcard)
 
-open Polynomial in
 private theorem exists_root_near_of_aeval_small (l : ℕ) [Fact l.Prime] (g : ℚ[X]) (n : ℕ) (hmon : g.Monic)
     (hdeg : g.natDegree = n) (α : Om l) (δ : ℝ) (hδ : 0 < δ) (hsmall : ‖aeval α g‖ < δ ^ n) :
     ∃ β : Om l, aeval β g = 0 ∧ ‖α - β‖ < δ := by
@@ -179,7 +176,6 @@ private theorem exists_root_near_of_aeval_small (l : ℕ) [Fact l.Prime] (g : �
       _ ≤ _ := h2
   linarith
 
-open Polynomial in
 private theorem exists_rat_monic_aeval_close (l : ℕ) [Fact l.Prime] (f : ℚ_[l][X]) (hf : f.Monic) (n : ℕ)
     (hn : f.natDegree = n) (α : Om l) (ε : ℝ) (hε : 0 < ε) :
     ∃ g : ℚ[X], g.Monic ∧ g.natDegree = n ∧ ‖aeval α g - aeval α f‖ < ε := by
@@ -226,7 +222,6 @@ private theorem exists_rat_monic_aeval_close (l : ℕ) [Fact l.Prime] (f : ℚ_[
           rw [div_mul_eq_mul_div, div_lt_iff₀ hB]
           nlinarith
 
-open Polynomial in
 private theorem exists_rat_monic_close_sign_changing_at_integers (l : ℕ) [Fact l.Prime] (g₁ : ℚ[X]) (n : ℕ) (hn : 0 < n)
     (hmon : g₁.Monic) (hdeg : g₁.natDegree = n) (α : Om l) (ε : ℝ) (hε : 0 < ε) :
     ∃ g : ℚ[X], g.Monic ∧ g.natDegree = n ∧ ‖aeval α g - aeval α g₁‖ < ε ∧

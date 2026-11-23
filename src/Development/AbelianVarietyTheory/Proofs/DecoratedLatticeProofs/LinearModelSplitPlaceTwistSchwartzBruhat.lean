@@ -77,7 +77,6 @@ theorem triv_eq_ofLocal (Pg : Finset (Pl D.host.E)) (r : ℕ) :
 end GlobalTheory.TwistLinModel
 
 namespace GlobalTheory.TwistLinModel
-open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl)
 variable {D : D7}
 
 
@@ -112,7 +111,6 @@ theorem detAt_exists {v : FinPl D} (φ : SplitProj D v) {e : AE D} (he : IsIdemO
 end GlobalTheory.TwistLinModel
 
 namespace GlobalTheory.TwistLinModel
-open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl)
 variable {D : D7}
 
 theorem mem_GfC_of_gAt {v : FinPl D} (φ : SplitProj D v) {e : AE D} (he : IsIdemOf φ e) (V : HSp D)

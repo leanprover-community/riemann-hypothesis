@@ -111,7 +111,6 @@ theorem ordF_natCast {E : Type} [Field E] [NumberField E] (v : HeightOneSpectrum
 end GlobalTheory.FlipScalField
 
 namespace GlobalTheory.FlipScalField
-open Formalism.L2.Host
 
 
 

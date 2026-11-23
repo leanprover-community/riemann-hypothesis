@@ -88,7 +88,6 @@ theorem psi_of_at (ψ : AddChar (AF F) ℂ) {v : HeightOneSpectrum (𝓞 F)} {a 
 end Tw.VacIndic
 
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -150,7 +149,6 @@ theorem eventually_psiLoc_eq_one (ψ : AddChar (AF F) ℂ) (hψ : Continuous ψ)
 end Tw.VacIndic
 
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -183,7 +181,6 @@ theorem indicator_int_ne_zero {κ : Type} (v : HeightOneSpectrum (𝓞 F)) :
 end Tw.VacIndic
 
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -253,7 +250,6 @@ theorem acts_indicator {κ : Type} [Fintype κ] {W : Type} [AddCommGroup W] [Mod
 end Tw.VacIndic
 
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -289,7 +285,6 @@ theorem symp_smul_incM (σ : E →ₐ[F] E) (θ : E) (A : Matrix (Fin n) (Fin n)
 end Tw.VacIndic
 
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 
 section SympAdd
 
@@ -347,7 +342,6 @@ theorem exists_gen {n d : ℕ} (LX : Submodule (𝓞 E) (Fin n → E)) (LY : Sub
 end Tw.VacIndic
 
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -389,7 +383,6 @@ theorem latAtV_le (X : Spc F E n) (Y : Spc F E d) (G : Finset (Matrix (Fin n) (F
 end Tw.VacIndic
 
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -480,7 +473,6 @@ theorem isVac_indicator_of_theta {σ : E →ₐ[F] E} (B : Base F E) (hB : B.IsG
 end Tw.VacIndic
 
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 
 theorem eventually_isVac_indicator : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
     (B : Base F E), B.IsGood σ → ∀ {n d : ℕ} (X : Spc F E n) (Y : Spc F E d) (r s r' s' : ℕ),

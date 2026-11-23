@@ -57,14 +57,12 @@ private theorem UpperTheory.specMapAlg_comp {S : Scheme.{0}} {R : Type} [CommRin
   rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
   rfl
 
-open AlgebraicGeometry CategoryTheory in
 private theorem UpperTheory.specMap_id {S : Scheme.{0}} {R : Type} [CommRing R]
     (x : Spec (CommRingCat.of R) ⟶ S) {A : Type} [CommRing A] [Algebra R A] :
     UpperTheory.specMapOverOfAlgHom x (AlgHom.id R A) = 𝟙 _ := by
   apply Over.OverMorphism.ext
   exact Spec.map_id _
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 private theorem UpperTheory.grpObj_one_left_congr {S : Scheme.{0}} (G : Over S) [GrpObj G]
     {X : Scheme.{0}} {x y : X ⟶ S} (h : x = y) :
     (1 : Over.mk x ⟶ G).left = (1 : Over.mk y ⟶ G).left := by

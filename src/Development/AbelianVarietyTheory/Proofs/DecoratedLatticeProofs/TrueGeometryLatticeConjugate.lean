@@ -238,7 +238,6 @@ theorem grpAt_empty {D : D7} (V : HSp D) {P : Pl D → Prop} (hP : ∀ w, ¬ P w
   exact this
 
 
-open GlobalTheory.FinPl in
 theorem locHom_one_of_off {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {Y : Type} [Fintype Y] [DecidableEq Y] (q : GlobalTheory.FinPl.SplitPt D k) (S : HSp D) (F : GlobalTheory.LocMod.Frame k S.rank Y)
     {x : GA D S} (h1 : x ∈ grpOff S (· = q.v)) : GlobalTheory.LevIdx.locHom q S F x = 1 := by
@@ -248,7 +247,6 @@ theorem locHom_one_of_off {D : D7} {k : Type} [Field k] [ValuativeRel k] [Topolo
   simp [F.βγ]
 
 
-open GlobalTheory.FinPl in
 theorem grpAt_le_of {D : D7} (V : HSp D) {P P' : Pl D → Prop} (h : ∀ w, P w → P' w) {n : GA D V} (hn : n ∈ grpAt V P) :
     n ∈ grpAt V P' := by
   rw [GlobalTheory.FinPl.SetCut.mem_grpAt_iff_parts] at hn ⊢

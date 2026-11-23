@@ -73,7 +73,6 @@ theorem _root_.GlobalTheory.UnitLemma.isIntegral_of_isLat_stable {O E A : Type} 
   rw [mul_one] at h1
   rwa [← aeval_def]
 
-open Polynomial in
 private lemma latticeCount_eq_zero_of_not_isIntegral_lemma (K : _root_.GlobalTheory.UnitLemma.UQ)
     (B : _root_.GlobalTheory.UnitLemma.InvAlg K) (hB : ¬ IsIntegral K.O B.g) (k : B.Cl) :
     B.N k.rep = 0 := by
@@ -82,7 +81,6 @@ private lemma latticeCount_eq_zero_of_not_isIntegral_lemma (K : _root_.GlobalThe
   obtain ⟨hfull, hstab, -⟩ := (Quot.out o).2
   exact _root_.GlobalTheory.UnitLemma.isIntegral_of_isLat_stable _ hfull _ hstab
 
-open Polynomial in
 private lemma stableLatticeCountSum_eq_zero_of_not_isIntegral_lemma_2 (K : _root_.GlobalTheory.UnitLemma.UQ)
     (B : _root_.GlobalTheory.UnitLemma.InvAlg K) (hB : ¬ IsIntegral K.O B.g) :
     B.stSum = 0 := by
@@ -90,7 +88,6 @@ private lemma stableLatticeCountSum_eq_zero_of_not_isIntegral_lemma_2 (K : _root
   exact finsum_eq_zero_of_forall_eq_zero fun k => latticeCount_eq_zero_of_not_isIntegral_lemma K B hB k
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.UnitLemma.kapSum_eq_zero_and_stSum_mul_eq_zero_of_not_isIntegral :
     ∀ (K : _root_.GlobalTheory.UnitLemma.UQ) (B₁ B₂ : _root_.GlobalTheory.UnitLemma.InvAlg K),
       ¬ (IsIntegral K.O B₁.g ∧ IsIntegral K.O B₂.g) →

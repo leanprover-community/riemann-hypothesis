@@ -338,7 +338,6 @@ end GlobalTheory.Published.LogLine
 
 namespace GlobalTheory.Published
 
-open LogLine
 
 theorem canonicalExtensionRankOne_holds : CanonicalExtensionRankOne := by
   intro n U S a f hU ha h0 hf hne
@@ -390,7 +389,6 @@ end GlobalTheory.Published
 
 namespace GlobalTheory.Published
 
-open LogLine
 
 end GlobalTheory.Published
 

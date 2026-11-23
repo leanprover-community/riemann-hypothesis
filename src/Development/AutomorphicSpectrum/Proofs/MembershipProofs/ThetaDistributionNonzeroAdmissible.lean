@@ -64,7 +64,6 @@ theorem iteratedDeriv_exp_I (n : ℕ) :
     simp only [Complex.ofReal_one, mul_one]
     ring
 
-open Complex in
 theorem temperate_exp_I : (fun t : ℝ => exp (I * t)).HasTemperateGrowth := by
   refine ⟨Complex.contDiff_exp.comp (contDiff_const.mul Complex.ofRealCLM.contDiff),
     fun n => ⟨0, 1, fun t => ?_⟩⟩

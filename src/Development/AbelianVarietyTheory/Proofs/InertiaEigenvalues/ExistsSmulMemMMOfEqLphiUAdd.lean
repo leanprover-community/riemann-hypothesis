@@ -57,7 +57,6 @@ private lemma coeff_eq_add_of_X_pow_succ_dvd_sub {f s g : K⟦X⟧} {c : K} {n :
   rw [map_sub, map_add (f := _), PowerSeries.coeff_smul, smul_eq_mul, sub_eq_zero] at h0
   exact h0
 
-open PowerSeries Filter Topology Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] in
@@ -69,7 +68,6 @@ private lemma norm_add_mul_mul_le_max {x y c : K} {w : ℝ} (hw : 0 ≤ w) :
     _ = max (‖x‖ * w) (‖c‖ * (‖y‖ * w)) := by
         rw [max_mul_of_nonneg _ _ hw, norm_mul, mul_assoc]
 
-open PowerSeries Filter Topology Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] in
@@ -79,7 +77,6 @@ private lemma norm_natCast_prime_lt_one_inertia_eigenvalues : ‖(l : K)‖ < 1 
   exact Padic.norm_p_lt_one
 
 
-open PowerSeries Filter Topology Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] in
@@ -117,7 +114,6 @@ namespace PhiMod
 
 variable (P : PhiMod O K l e a ι)
 
-open PowerSeries Filter Topology Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] in
@@ -128,7 +124,6 @@ theorem _root_.GlobalTheory.BK.PhiMod.l_pow_smul_mem_MM (n : ℕ) {v : _root_.Gl
   rw [← Nat.cast_pow, Nat.cast_smul_eq_nsmul]
   exact nsmul_mem hv _
 
-open PowerSeries Filter Topology Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] in
@@ -142,7 +137,6 @@ theorem _root_.GlobalTheory.BK.PhiMod.smul_mem_MM {f : K⟦X⟧}
 variable [NeZero e]
 
 
-open PowerSeries Filter Topology Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] in

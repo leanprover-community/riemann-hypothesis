@@ -530,7 +530,6 @@ end Block
 
 end LevelOperators
 
-section Defs
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
   (A : FamIn K G Pl0 T m) (X : CxData A.fam.amb)
@@ -538,9 +537,7 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
 variable {P1 : Subgroup G} {ψ1 : P1 →* Kˣ} {Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)}
   {Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs)} {Zsc : DefSub A.fam.amb → IndefScale A.fam.base}
 
-end Defs
 
-section Conc
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
   {A : FamIn K G Pl0 T m} {X : CxData A.fam.amb}
@@ -549,9 +546,7 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
 
 open LevelOperators
 
-end Conc
 
-section ConcL
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
   {A : FamIn K G Pl0 T m} {X : CxData A.fam.amb}
@@ -559,9 +554,7 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
   {Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs)} {Zsc : DefSub A.fam.amb → IndefScale A.fam.base}
 
 
-end ConcL
 
-section Final
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
   {A : FamIn K G Pl0 T m} {X : CxData A.fam.amb} {P0 : Subgroup G} {ψ0 : P0 →* Kˣ}
@@ -569,6 +562,5 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
   {Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs)} {Zsc : DefSub A.fam.amb → IndefScale A.fam.base} {s : ℕ}
 
 
-end Final
 
 end Formalism.IndefR.CxPass

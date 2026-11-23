@@ -146,7 +146,6 @@ section
 
 noncomputable section
 
-open MvPolynomial
 
 namespace GlobalTheory.PsCo.Pc1.A
 

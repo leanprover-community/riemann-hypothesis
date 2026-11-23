@@ -79,7 +79,6 @@ end GlobalTheory.TraceDiagonal
 
 namespace GlobalTheory
 
-open IsLocalRing
 
 theorem exists_trace_eq_form_mul_diagonal : ∀ (A R : Type) [CommRing A] [IsLocalRing A] [CommRing R] [Algebra A R] [Module.Free A R] [Module.Finite A R] (Δ : TensorProduct A R R) (ε : R →+* ResidueField A), ε.comp (algebraMap A R) = residue A → (∀ x : R, ε x = 0 → ∃ m : ℕ, x ^ m ∈ (maximalIdeal A).map (algebraMap A R)) → (∀ x : R, (TensorProduct.tmul A x 1 - TensorProduct.tmul A 1 x) * Δ = 0) → (∀ (s : Finset (R × R)), Δ = ∑ p ∈ s, TensorProduct.tmul A p.1 p.2 → ∀ lift : ResidueField A → A, (∀ z, residue A (lift z) = z) → ∑ p ∈ s, lift (ε p.1) • p.2 ∉ (maximalIdeal A).map (algebraMap A R)) → ∃ lam : R →ₗ[A] A, ∀ x : R, Algebra.trace A R x = lam (x * Algebra.TensorProduct.lmul' (S := R) A Δ) := by
   intro A R _ _ _ _ _ _ Δ ε hε hnil hΔ hne

@@ -132,7 +132,6 @@ theorem isEqn_sum_of_isSncOn {X : Scheme.{0}} [IsIntegral X] {C : Type} [Fintype
 end GlobalTheory.LogDR
 
 namespace GlobalTheory.LogDR
-open TopForm GlobalTheory.Cartier.CartierDiv
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 
 theorem det_mem_subring {K : Type} [Field K] (A : Subring K) {n : ℕ} (c : Matrix (Fin n) (Fin n) K)
@@ -257,7 +256,6 @@ theorem coordForm_eq_regAt_smul (p : ℕ) [Fact p.Prime] {X : Scheme.{0}} [IsInt
 end GlobalTheory.LogDR
 
 namespace GlobalTheory.LogDR
-open TopForm GlobalTheory.Cartier.CartierDiv
 
 theorem ιMulti_coord_ne_zero {K : Type} [Field K] {n : ℕ} (x : Fin n → Kˣ) (hx : IsCoord x) :
     ExteriorAlgebra.ιMulti K n (fun j => dK (x j : K)) ≠ 0 := by

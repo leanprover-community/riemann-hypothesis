@@ -50,7 +50,6 @@ private theorem UpperTheory.V.Pr.exp_product_chart_local {X : Type} [Topological
   have h3 : q ⤳ y := hq.specializes (subset_closure hy)
   exact specializes_iff_mem_closure.mp (h3.map hj.continuous)
 
-open PrimeSpectrum in
 theorem UpperTheory.V.Pr.chartOfFlat :
     UpperTheory.V.Pr.ChartOfFlat := by
   intro X _ C _ j hj R _ _ _ _

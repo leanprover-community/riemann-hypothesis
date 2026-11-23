@@ -127,7 +127,6 @@ end GlobalTheory.Mem.LastGrp
 
 namespace GlobalTheory.Mem.LastGrp
 
-open GlobalTheory.TopStep
 
 theorem lv_lt {k rS t b l : ℕ} (hb : b < rSym k rS) (h : symIdx k rS b < symIdx k rS l) :
     lvSym k rS t b < lvSym k rS t l := by
@@ -173,7 +172,6 @@ end GlobalTheory.Mem.LastGrp
 
 namespace GlobalTheory.Mem.LastGrp
 
-open GlobalTheory.TopStep
 
 section Local
 
@@ -266,7 +264,6 @@ end GlobalTheory.Mem.LastGrp
 
 namespace GlobalTheory.Mem.LastGrp
 
-open GlobalTheory.TopStep
 
 theorem mem_levG_last : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))) (G : ChGlob X R.m) (m2 : ℕ), X.Ok → Pr.Ok → IsSel X sel → L.Ok Ch sel mu cst G m2 → cst.sharp = true → ∀ (j : ℕ), j + 1 = R.m → ∀ (b : L.β j) (w : {w // w ∈ Pr.vGs}) (κ : Type) [Field κ] (e : (𝓞 X.E ⧸ w.1.asIdeal) ≃+* κ) (M : GL (Fin (R.N j)) (𝓞 X.E ⧸ w.1.asIdeal)), Matrix.GeneralLinearGroup.map e.toRingHom M ∈ JSymG κ (R.N j) R.k (rSD R) R.t false → M ∈ (L.levG j b w).H := by
   intro X Pr R Ch sel S mu cst L G m2 hX hPr hsel hL hs j hj b w κ _ e M hM

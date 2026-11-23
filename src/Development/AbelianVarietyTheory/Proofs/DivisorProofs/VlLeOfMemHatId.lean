@@ -57,7 +57,6 @@ theorem vl_le_of_mem_hatId' {I : Ideal (𝓞 D.host.E)} {PP : HeightOneSpectrum 
   | neg a _ ha => rwa [Valuation.map_neg]
 
 
-open GlobalTheory.Mem.Col2.SplitChar in
 theorem sgA_mem_hatId' {I : Ideal (𝓞 D.host.E)} {x : AE D} (hx : x ∈ hatId D I) :
     sgA D x ∈ hatId D (D.host.conj • I) := by
   induction hx using AddSubgroup.closure_induction with
@@ -76,7 +75,6 @@ theorem conj_conj_smul (𝔪 : Ideal (𝓞 D.host.E)) : D.host.conj • D.host.c
   rw [smul_smul, h, one_smul]
 
 
-open GlobalTheory.Mem.Col2.SplitChar in
 theorem vl_sub_le' {T : Type} {L : LevCh D T} (P : Places L) {y : AE D}
     (h1 : y ∈ hatId D (condE P)) (h2 : y ∈ hatId D (D.host.conj • condE P))
     {PP : HeightOneSpectrum (𝓞 D.host.E)} (hv : (_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP) ∈ P.S0) :

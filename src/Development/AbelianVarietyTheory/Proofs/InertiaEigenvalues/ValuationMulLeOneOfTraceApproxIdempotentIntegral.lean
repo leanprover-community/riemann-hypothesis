@@ -121,7 +121,6 @@ end GlobalTheory.InvDiffLocal
 namespace GlobalTheory.InvDiffLocal
 
 
-open IsDedekindDomain.HeightOneSpectrum in
 theorem exists_approx_idempotent {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L]
     [Algebra K L] (la : HeightOneSpectrum (𝓞 L)) (p : HeightOneSpectrum (𝓞 K)) (N : ℕ) :
     ∃ z : 𝓞 L, z ∉ la.asIdeal ∧ ∀ la' : HeightOneSpectrum (𝓞 L), la' ≠ la →
@@ -157,7 +156,6 @@ end GlobalTheory.InvDiffLocal
 namespace GlobalTheory.InvDiffLocal
 
 
-open IsDedekindDomain.HeightOneSpectrum in
 theorem valuation_mul_different_le_one : ∀ (K L : Type) [Field K] [NumberField K] [Field L]
     [NumberField L] [Algebra K L] (la : HeightOneSpectrum (𝓞 L)) (p : HeightOneSpectrum (𝓞 K)),
     la.asIdeal.under (𝓞 K) = p.asIdeal → ∀ y : L, (∃ N : ℕ, ∀ b : 𝓞 L,

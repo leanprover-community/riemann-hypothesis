@@ -145,7 +145,6 @@ end GlobalTheory.AdicSurj
 
 namespace GlobalTheory.AdicSurj
 
-open AdicCompletion
 
 variable {A B : Type} [CommRing A] [CommRing B] [Algebra A B] (J : Ideal A)
 

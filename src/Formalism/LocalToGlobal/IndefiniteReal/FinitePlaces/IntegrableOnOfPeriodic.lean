@@ -97,11 +97,9 @@ theorem cont_symplOH_left (w : MO S T) : Continuous fun z : MO S T => symplOH S 
 
 end Cont
 
-section Per
 
 variable (S T : HSp D)
 
-end Per
 
 section Theta
 
@@ -147,11 +145,9 @@ theorem theta_smul (c : ℂ) {f : MO S T → ℂ} (hf : IsThetaFunO ψ S T f) : 
 
 end Theta
 
-section Svn
 
 variable {ψ : AddChar (AF D.host.F) ℂ} (S T : HSp D)
 
-end Svn
 
 end Formalism.IndefR.Fin
 

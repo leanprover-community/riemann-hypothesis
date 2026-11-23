@@ -81,7 +81,6 @@ theorem dvd_pair (h : ℕ → D.La →+ D.La) (u : ℕ → ℤ) (c k n : ℕ) (h
 end GlobalTheory.UPel.HT.HeckeRootA
 
 namespace GlobalTheory.UPel.HT.HeckeRootA
-open GlobalTheory.UPel.HT.HeckeRoot
 
 variable {p : ℕ} [Fact p.Prime] {D : GlobalTheory.UPel.HT.Datum p} {K : Type} [Field K] {Q : Type} [Group Q]
     {act : D.O → Q → Q} {e : ℕ → Q → Q → Kˣ → Prop}

@@ -145,7 +145,6 @@ end GlobalTheory.CompanionTheory.WhitFree.AvgInf.Topo
 
 namespace GlobalTheory.CompanionTheory.WhitFree.AvgInf.Topo
 
-open GlobalTheory.CompanionTheory.WhitFree.AvgInf
 
 variable {K W : Type} [CommRing K] [TopologicalSpace K] [Fintype W]
 

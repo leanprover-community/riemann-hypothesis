@@ -206,7 +206,6 @@ theorem cay_invol : ∀ {K : Type} [Field K] [CharZero K] {n : ℕ} (M : Matrix 
 end GlobalTheory.UnitaryDense
 
 namespace GlobalTheory.UnitaryDense
-open Matrix
 
 section
 variable (L : Type) [Field L] [NumberField L] [IsCMField L] (K : Type) [Field K] [CharZero K] (n : ℕ)

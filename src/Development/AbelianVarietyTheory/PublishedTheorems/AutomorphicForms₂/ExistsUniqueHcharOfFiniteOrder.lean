@@ -500,7 +500,6 @@ end GlobalTheory.HeckeGal
 
 namespace GlobalTheory.Published
 
-open GlobalTheory.HeckeGal
 
 theorem HeckeLAdicCharacter.globalArtin (H : HeckeLAdicCharacter) : GlobalArtinReciprocity := fun E Ω _ _ _ _ _ =>
   let ⟨art, ha, _⟩ := H E Ω

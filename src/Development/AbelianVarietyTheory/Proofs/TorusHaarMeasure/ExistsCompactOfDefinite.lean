@@ -68,7 +68,6 @@ private lemma exists_diagonal_sgn_eq_smul_one (X : _root_.ReciprocityTheory.Char
       simp [Matrix.diagonal_apply, Matrix.one_apply, _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn, ha]
     · simp [Matrix.diagonal_apply, Matrix.one_apply, hab]
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma norm_apply_le_sum_of_gram_eq_smul_one {n : ℕ} (G M M₀ : Matrix (Fin n) (Fin n) ℂ)
     (c : ℂ) (hc : c ≠ 0) (h₀ : M₀.det ≠ 0)
@@ -104,7 +103,6 @@ private lemma norm_apply_le_sum_of_gram_eq_smul_one {n : ℕ} (G M M₀ : Matrix
       rw [norm_mul]; exact mul_le_of_le_one_right (norm_nonneg _) (hbound k j)
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.DefiniteFrames.isCompact_ortho (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (hp : X.p0 = 0 ∨ r ≤ X.p0) :
     IsCompact {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r | X.IsOrtho x} := by
@@ -137,7 +135,6 @@ theorem _root_.GlobalTheory.DefiniteFrames.isCompact_ortho (X : _root_.Reciproci
     exact norm_apply_le_sum_of_gram_eq_smul_one (X.Gm.map (τ : E →+* ℂ)) (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ)
       (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x₀ τ) c hc (hdet τ) (hgram hx₀ τ) (hgram hx τ) i j
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma mem_dom_of_isOrtho' (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} (hx : X.IsOrtho x) :
     x ∈ X.dom := by
@@ -161,7 +158,6 @@ private lemma mem_dom_of_isOrtho' (X : _root_.ReciprocityTheory.ChartRestriction
     exact mul_self_pos.mpr hne
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.DefiniteFrames.exists_compact_of_definite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r), (X.p0 = 0 ∨ r ≤ X.p0) → ∃ C : Set (_root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r), IsCompact C ∧ C ⊆ X.dom ∧ ∀ x ∈ X.dom, ∃ γ ∈ X.Γ, ∃ b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor X.Ψ r, _root_.ReciprocityTheory.ChartRestriction.G.FD.lact γ (_root_.ReciprocityTheory.ChartRestriction.G.FD.rmul x b) ∈ C := by
   intro E _ _ _ r X hp

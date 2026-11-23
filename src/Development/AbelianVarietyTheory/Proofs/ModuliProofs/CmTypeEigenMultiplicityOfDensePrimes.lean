@@ -62,8 +62,6 @@ theorem _root_.GlobalTheory.TraceSpread.isSplitting_embeddings (K : Type) [Field
   simpa using _root_.GlobalTheory.EigenSplit.isSplitting_of_isDomain (R := K) hinj (Embeddings.card E K)
     (RingHom.id K) hdisc
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 variable {E : Type} [Field E] [NumberField E] in
 private lemma ringOfIntegers_ringHom_injective' {K : Type} [Field K] [CharZero K]
     (τ : 𝓞 E →+* K) : Function.Injective τ := by
@@ -83,8 +81,6 @@ private lemma ringOfIntegers_ringHom_injective' {K : Type} [Field K] [CharZero K
   exact hz (Int.cast_eq_zero.mp this)
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.TraceSpread.exists_embedding {K : Type} [Field K] [CharZero K]
     (τ : 𝓞 E →+* K) :
@@ -94,8 +90,6 @@ theorem _root_.GlobalTheory.TraceSpread.exists_embedding {K : Type} [Field K] [C
   exact IsFractionRing.lift_algebraMap (ringOfIntegers_ringHom_injective' τ) a
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.TraceSpread.trace_eq_sum {K : Type} [Field K] [IsAlgClosed K]
     [CharZero K] {V : Type} [AddCommGroup V] [Module K V]
@@ -119,8 +113,6 @@ theorem _root_.GlobalTheory.TraceSpread.trace_eq_sum {K : Type} [Field K] [IsAlg
   rw [hres, map_smul, LinearMap.trace_id, smul_eq_mul, mul_comm]
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.TraceSpread.map_trace {R K : Type} [CommRing R] [CommRing K]
     {n : ℕ} (f : R →+* K) (A : Module.End R (Fin n → R))
@@ -142,8 +134,6 @@ theorem _root_.GlobalTheory.TraceSpread.map_trace {R K : Type} [CommRing R] [Com
 
 variable [IsCMField E]
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 variable {E : Type} [Field E] [NumberField E] in
 private lemma intTrace_cast_eq_sum_embeddings {K : Type} [Field K] [IsAlgClosed K] [CharZero K]
     (a : 𝓞 E) :
@@ -158,8 +148,6 @@ private lemma intTrace_cast_eq_sum_embeddings {K : Type} [Field K] [IsAlgClosed 
       (Fintype.sum_equiv (RingHom.equivRatAlgHom E K) _ _ fun φ => rfl).symm
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 variable {E : Type} [Field E] [NumberField E] in
 variable [IsCMField E] in
 theorem _root_.GlobalTheory.TraceSpread.finrank_iff_trace (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (p q : ℕ) {K : Type} [Field K]
@@ -244,8 +232,6 @@ theorem _root_.GlobalTheory.TraceSpread.finrank_iff_trace (H : _root_.Reciprocit
 end GlobalTheory.TraceSpread
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 theorem _root_.GlobalTheory.eigenMult_of_dense : ∀ (E : Type) [Field E] [NumberField E]
     [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (p q n : ℕ) (R : Type) [CommRing R] [IsReduced R]
     (M : 𝓞 E →+* Module.End R (Fin n → R)) (r : R), r ^ 2 = -(H.d : R) →

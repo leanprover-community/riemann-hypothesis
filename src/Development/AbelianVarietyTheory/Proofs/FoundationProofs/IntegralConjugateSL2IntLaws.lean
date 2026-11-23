@@ -57,8 +57,6 @@ private lemma mul_eq_cj_mul_of_exists {m : Matrix (Fin 2) (Fin 2) ℤ} {δ : SL(
   rw [dite_eq_left h]
   exact h.choose_spec
 
-open Matrix in
-open scoped MatrixGroups TensorProduct in
 private lemma eq_of_mul_eq_mul_of_det_ne_zero {m δ₁ δ₂ : Matrix (Fin 2) (Fin 2) ℤ} (hm : m.det ≠ 0)
     (h : δ₁ * m = δ₂ * m) : δ₁ = δ₂ := by
   have h2 : δ₁ * m * adjugate m = δ₂ * m * adjugate m := by rw [h]
@@ -66,8 +64,6 @@ private lemma eq_of_mul_eq_mul_of_det_ne_zero {m δ₁ δ₂ : Matrix (Fin 2) (F
     Matrix.mul_one, Matrix.mul_one] at h2
   exact smul_right_injective _ hm h2
 
-open Matrix in
-open scoped MatrixGroups TensorProduct in
 private lemma mul_eq_cj_mul_and_cj_mem_gamma (m : Matrix (Fin 2) (Fin 2) ℤ) (M : ℕ) (hm : 0 < m.det)
     (δ : SL(2, ℤ)) (hδ : δ ∈ CongruenceSubgroup.Gamma (M * m.det.natAbs)) :
     m * (δ : Matrix (Fin 2) (Fin 2) ℤ) =
@@ -111,8 +107,6 @@ private lemma mul_eq_cj_mul_and_cj_mem_gamma (m : Matrix (Fin 2) (Fin 2) ℤ) (M
   refine ⟨?_, ?_, ?_, ?_⟩ <;> simp only [hD, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul] <;>
     push_cast <;> simp
 
-open Matrix in
-open scoped MatrixGroups TensorProduct in
 theorem _root_.GlobalTheory.KZ.cj_laws : (∀ (m : Matrix (Fin 2) (Fin 2) ℤ) (M : ℕ), 0 < m.det →
     ∀ δ ∈ CongruenceSubgroup.Gamma (M * m.det.natAbs),
       m * (δ : Matrix (Fin 2) (Fin 2) ℤ) = (_root_.GlobalTheory.KZ.H3.cj m δ : Matrix (Fin 2) (Fin 2) ℤ) * m ∧

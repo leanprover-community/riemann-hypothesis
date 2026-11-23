@@ -79,8 +79,6 @@ end GlobalTheory.AdLat.UnitRoot
 namespace GlobalTheory.AdLat
 open UnitRoot
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Topology Matrix in
 private lemma mul_self_eq_one_of_quadratic {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (c : E ≃ₐ[F] E) (h2 : Module.finrank F E = 2) (hc : c ≠ 1) : c * c = 1 := by
   by_contra h
@@ -104,8 +102,6 @@ private lemma mul_self_eq_one_of_quadratic {F E : Type} [Field F] [NumberField F
   rw [Nat.card_fin] at this
   omega
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Topology Matrix in
 private lemma sg_sg_of_quadratic {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] (c : E ≃ₐ[F] E) (h2 : Module.finrank F E = 2) (hc : c ≠ 1)
     (z : _root_.GlobalTheory.AdLat.RA F E) :
@@ -120,8 +116,6 @@ private lemma sg_sg_of_quadratic {F E : Type} [Field F] [NumberField F] [Field E
     rw [← AlgEquiv.mul_apply, hcc, AlgEquiv.one_apply]
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Topology Matrix in
 private lemma exists_sum_mul_sub_conj_eq_one {F E : Type} [Field F] [NumberField F] [Field E]
     [NumberField E] [Algebra F E] (c : E ≃ₐ[F] E)
     (hP : ∀ P : Ideal (𝓞 E), P.IsMaximal → ∃ t s : 𝓞 E, (s : E) = c (t : E) ∧ t - s ∉ P) :
@@ -140,8 +134,6 @@ private lemma exists_sum_mul_sub_conj_eq_one {F E : Type} [Field F] [NumberField
   rw [← hfg]
   exact Finset.sum_congr rfl fun k _ => by rw [smul_eq_mul, ht k]
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Topology Matrix in
 private lemma mem_bot_of_fixed_of_quadratic {F E : Type} [Field F] [NumberField F] [Field E]
     [NumberField E] [Algebra F E] (c : E ≃ₐ[F] E) (h2 : Module.finrank F E = 2) (hc : c ≠ 1)
     (x : E) (hx : c x = x) : x ∈ (⊥ : IntermediateField F E) := by
@@ -164,8 +156,6 @@ private lemma mem_bot_of_fixed_of_quadratic {F E : Type} [Field F] [NumberField 
   ext y
   exact DFunLike.congr_fun this y
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Topology Matrix in
 private lemma exists_integer_of_fixed_integral {F E : Type} [Field F] [NumberField F] [Field E]
     [NumberField E] [Algebra F E] (c : E ≃ₐ[F] E) (h2 : Module.finrank F E = 2) (hc : c ≠ 1)
     (x : E) (hx : c x = x) (hint : x ∈ Set.range (algebraMap (𝓞 E) E)) :
@@ -176,8 +166,6 @@ private lemma exists_integer_of_fixed_integral {F E : Type} [Field F] [NumberFie
   have : IsIntegral ℤ (algebraMap F E f) := hy ▸ y.2
   exact (isIntegral_algHom_iff (IsScalarTower.toAlgHom ℤ F E) (algebraMap F E).injective).1 this
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Topology Matrix in
 private lemma exists_add_sg_eq_tmul_one_of_mem_closure {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] (c : E ≃ₐ[F] E) (h2 : Module.finrank F E = 2) (hc : c ≠ 1)
     (P : FiniteAdeleRing (𝓞 F) F → Prop) (h0 : P 0) (hadd : ∀ a b, P a → P b → P (a + b))
@@ -209,8 +197,6 @@ private lemma exists_add_sg_eq_tmul_one_of_mem_closure {F E : Type} [Field F] [N
     obtain ⟨n, hn, e⟩ := hx
     exact ⟨-n, hneg _ hn, by rw [map_neg, TensorProduct.neg_tmul, ← e]; abel⟩
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Topology Matrix in
 private lemma exists_norm_sum_tmul_eq_tmul_one {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] (c : E ≃ₐ[F] E) (h2 : Module.finrank F E = 2) (hc : c ≠ 1)
     (P : FiniteAdeleRing (𝓞 F) F → Prop) (h0 : P 0) (hadd : ∀ a b, P a → P b → P (a + b))
@@ -251,8 +237,6 @@ private lemma exists_norm_sum_tmul_eq_tmul_one {F E : Type} [Field F] [NumberFie
     linear_combination hN
 
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Topology Matrix in
 theorem _root_.GlobalTheory.AdLat.exists_integral_unit_root : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (c : E ≃ₐ[F] E), Module.finrank F E = 2 → c ≠ 1 → (∀ P : Ideal (𝓞 E), P.IsMaximal → ∃ t s : 𝓞 E, (s : E) = c (t : E) ∧ t - s ∉ P) → ∀ u ∈ _root_.GlobalTheory.AdLat.hat1 F (Set.range (algebraMap (𝓞 E) E)), u * _root_.GlobalTheory.AdLat.sg (FiniteAdeleRing (𝓞 F) F) c u = 1 → ∃ x ∈ _root_.GlobalTheory.AdLat.hat1 F (Set.range (algebraMap (𝓞 E) E)), (∃ y ∈ _root_.GlobalTheory.AdLat.hat1 F (Set.range (algebraMap (𝓞 E) E)), x * y = 1) ∧ x = u * _root_.GlobalTheory.AdLat.sg (FiniteAdeleRing (𝓞 F) F) c x := by
   intro F E _ _ _ _ _ c h2 hc hP u hu hnorm
   classical

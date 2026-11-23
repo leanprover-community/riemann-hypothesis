@@ -282,7 +282,6 @@ end
 
 section
 
-open NumberField Complex
 
 noncomputable section
 
@@ -491,7 +490,6 @@ end
 
 section
 
-open NumberField Complex
 
 noncomputable section
 

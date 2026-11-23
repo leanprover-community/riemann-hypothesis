@@ -102,7 +102,6 @@ end GlobalTheory.SeeMatchOnto
 
 namespace GlobalTheory.SeeMatchOnto
 
-open scoped TensorProduct
 open Matrix
 
 section Frame
@@ -146,7 +145,6 @@ end GlobalTheory.SeeMatchOnto
 
 namespace GlobalTheory.SeeMatchOnto
 
-open scoped TensorProduct
 open Matrix Formalism.L2.SG.AdBridge
 
 theorem ofHAFin_eq (I : AutInst) (z : HAd I) :
@@ -196,8 +194,6 @@ end GlobalTheory.SeeMatchOnto
 
 namespace GlobalTheory.SeeMatchOnto
 
-open scoped TensorProduct
-open Matrix Formalism.L2.SG.AdBridge
 
 theorem conj_mem_St {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
     {β a M : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)} (hM : M ∈ Formalism.L2.DIV.St β) :

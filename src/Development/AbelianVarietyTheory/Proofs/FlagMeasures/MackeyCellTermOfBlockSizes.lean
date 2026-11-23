@@ -440,8 +440,6 @@ end GlobalTheory.GLm.Cell
 
 namespace GlobalTheory.GLm
 
-open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq GlobalTheory.GLm
-open scoped Classical
 
 theorem mackey_cell_term : ∀ (g : ℕ) [Fact g.Prime] (a b c d n i : ℕ), n = a + b → n = c + d → i ≤ a → i ≤ c → c - i ≤ b → ∀ (Λ : Gn g c → Gn g d → ℂ) (Φ : Gn g a → Gn g b → ℂ), ((Finset.univ.filter fun x : Gn g n => InPar c (x : Mt g n) ∧ InPar a (((wI g a c i n)⁻¹ * x * wI g a c i n : Gn g n) : Mt g n)).card : ℂ)⁻¹ * (∑ x : Gn g n, if InPar c (x : Mt g n) ∧ InPar a (((wI g a c i n)⁻¹ * x * wI g a c i n : Gn g n) : Mt g n) then Λ (toG (tl c (x : Mt g n))) (toG (br c d (x : Mt g n))) * Φ (toG (tl a (((wI g a c i n)⁻¹ * x * wI g a c i n : Gn g n) : Mt g n))) (toG (br a b (((wI g a c i n)⁻¹ * x * wI g a c i n : Gn g n) : Mt g n))) else 0) = mean (fun y : (Gn g i × Gn g (a - i)) × (Gn g (c - i) × Gn g (b - (c - i))) => res i (c - i) (fun z => res (a - i) (b - (c - i)) (Λ z) y.1.2 y.2.2) y.1.1 y.2.1 * res i (a - i) (fun x => res (c - i) (b - (c - i)) (Φ x) y.2.1 y.2.2) y.1.1 y.1.2) := by
   intro g _ a b c d n i h₁ h₂ h₃ h₄ h₅ Λ Φ

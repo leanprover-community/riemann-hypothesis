@@ -70,14 +70,12 @@ theorem _root_.GlobalTheory.FibreProj.pol_sum {J : Type} (T : Finset J)
   exact Finset.sum_comm
 
 set_option autoImplicit false in
-open MvPolynomial in
 variable {ι : Type} [Fintype ι] in
 private theorem sum_pow_eq_sum_words_prod {R : Type} [CommRing R] (c : ι → R) (D : ℕ) :
     (∑ i, c i) ^ D = ∑ f : Fin D → ι, ∏ k, c (f k) := by
   rw [← Fin.prod_const, Fintype.prod_sum]
 
 set_option autoImplicit false in
-open MvPolynomial in
 variable {ι : Type} [Fintype ι] in
 private theorem sum_neg_one_pow_card_range_subset_eq_ite_surjective {R : Type} [CommRing R] {D : ℕ}
     (hD : Fintype.card ι = D) (f : Fin D → ι) :
@@ -112,7 +110,6 @@ private theorem sum_neg_one_pow_card_range_subset_eq_ite_surjective {R : Type} [
           exact Finset.prod_eq_zero (Finset.mem_univ i) (by rw [if_pos (show i ∉ Set.range f from fun h => hi h)]; ring)
 
 set_option autoImplicit false in
-open MvPolynomial in
 variable {ι : Type} [Fintype ι] in
 private theorem sum_surjective_words_prod_eq_factorial_prod {R : Type} [CommRing R] {D : ℕ}
     (hD : Fintype.card ι = D) (w : ι → R) :
@@ -148,7 +145,6 @@ private theorem sum_surjective_words_prod_eq_factorial_prod {R : Type} [CommRing
   ring
 
 set_option autoImplicit false in
-open MvPolynomial in
 variable {ι : Type} [Fintype ι] in
 private theorem sum_neg_one_pow_card_mul_sum_pow_eq_factorial_prod {R : Type} [CommRing R] {D : ℕ}
     (hD : Fintype.card ι = D) (w : ι → R) :
@@ -172,7 +168,6 @@ private theorem sum_neg_one_pow_card_mul_sum_pow_eq_factorial_prod {R : Type} [C
 
 
 set_option autoImplicit false in
-open MvPolynomial in
 variable {ι : Type} [Fintype ι] in
 theorem _root_.GlobalTheory.FibreProj.pol_pow {R : Type} [CommRing R]
     [Algebra ℝ R] (z : ι → R) (Φ : R →ₗ[ℝ] ℝ) {D : ℕ} (hD : Fintype.card ι = D) :

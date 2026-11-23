@@ -62,7 +62,6 @@ theorem _root_.GlobalTheory.FjCauchy.isIsoV_embV {ξ : Fin r → E} (hξ : X.IsI
   rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_emb, hξ.2.1, map_zero]
 
 
-open NumberField Complex Filter Topology in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.FjCauchy.tt_pos {ξ : Fin r → E} (hξ : X.IsIso ξ) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) (τ : X.Ψ) :
@@ -70,7 +69,6 @@ theorem _root_.GlobalTheory.FjCauchy.tt_pos {ξ : Fin r → E} (hξ : X.IsIso ξ
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.tt
   exact one_div_pos.2 (mul_pos (_root_.ReciprocityTheory.ChartRestriction.G.FD.MajorantFamilyNorms.c_pos X τ) (X.maj_pos hx τ (_root_.ReciprocityTheory.ChartRestriction.G.FD.emb_ne_zero (τ : E →+* ℂ) hξ.2.2)))
 
-open NumberField Complex Filter Topology in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem one_add_two_mul_pos_of_le {c y h hp : ℝ} (hc : 0 < c) (h0 : 0 ≤ h) (hle : h ≤ hp)
     (hpos : 0 < 1 + 2 * c * y * hp) : 0 < 1 + 2 * c * y * h := by
@@ -82,7 +80,6 @@ private theorem one_add_two_mul_pos_of_le {c y h hp : ℝ} (hc : 0 < c) (h0 : 0 
     have : 0 ≤ 2 * c * (-y) * (hp - h) := by positivity
     nlinarith
 
-open NumberField Complex Filter Topology in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem one_add_two_mul_pos_of_inv_add_pos {c y hp : ℝ} (hc : 0 < c) (hp0 : 0 < hp)
     (hs : 0 < 1 / (c * (2 * hp)) + y) : 0 < 1 + 2 * c * y * hp := by
@@ -94,7 +91,6 @@ private theorem one_add_two_mul_pos_of_inv_add_pos {c y hp : ℝ} (hc : 0 < c) (
   exact mul_pos hs hk
 
 
-open NumberField Complex Filter Topology in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.FjCauchy.flow_mem_dom {ξ : Fin r → E} (hξ : X.IsIso ξ) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) (s : X.Ψ → ℂ) (hs : ∀ τ, 0 < X.tt ξ x τ + (s τ).im) :
@@ -126,7 +122,6 @@ theorem _root_.GlobalTheory.FjCauchy.flow_mem_dom {ξ : Fin r → E} (hξ : X.Is
     exact mul_pos hmi (one_add_two_mul_pos_of_le hc hb.1 hb.2 (one_add_two_mul_pos_of_inv_add_pos hc hp0 hsτ))
 
 
-open NumberField Complex Filter Topology in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.FjCauchy.tt_flow {ξ : Fin r → E} (hξ : X.IsIso ξ) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) (s : X.Ψ → ℂ) (hs : X.flow ξ s x ∈ X.dom) (τ : X.Ψ) :
@@ -153,7 +148,6 @@ theorem _root_.GlobalTheory.FjCauchy.tt_flow {ξ : Fin r → E} (hξ : X.IsIso �
   have hc' : X.c τ ≠ 0 := hc.ne'
   field_simp
 
-open NumberField Complex Filter Topology in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem differentiable_flow_affine_line (ξ : Fin r → E) (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r)
     (a b : X.Ψ → ℂ) :
@@ -166,7 +160,6 @@ private theorem differentiable_flow_affine_line (ξ : Fin r → E) (x : _root_.R
   fun_prop
 
 
-open NumberField Complex Filter Topology in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.FjCauchy.fj_flow {la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r} {P : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → ℂ}
     (hP : X.IsBddSec la P) {ξ : Fin r → E}

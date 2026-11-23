@@ -93,7 +93,6 @@ theorem ideleNorm_localIdele (E : Type) [Field E] [NumberField E] [IsCMField E] 
 end GlobalTheory.NormBelow
 
 namespace GlobalTheory.NormBelow
-open GlobalTheory.UnitaryHeckeBaseChange
 
 theorem unrAt_under_of_compNorm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     (χ : HChar (maximalRealSubfield E)) (w : HeightOneSpectrum (𝓞 E)), ¬ GlobalTheory.UnitaryBC.IsSplitAt w →

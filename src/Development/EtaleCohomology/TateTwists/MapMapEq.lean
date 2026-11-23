@@ -98,6 +98,5 @@ theorem LateralTheory.EtaleFoundations.columnPf.lift_of (hK : kerLoc) : lift := 
       (g2' := (M.obj.map k.op).hom) (by simp) hφ, h1, ← LinearMap.comp_apply, ← TensorProduct.map_comp]
     simp only [op_comp, Functor.map_comp, ModuleCat.hom_comp]
 
-open LateralTheory.EtaleFoundations.columnPf in
 theorem LateralTheory.EtaleFoundations.columnPf.column_of' (hK : kerLoc) : LateralTheory.EtaleFoundations.acyc.column :=
   LateralTheory.EtaleFoundations.acyc.column_of_cut (lift_of hK) kill_of

@@ -296,8 +296,6 @@ end PowMulEqZero
 namespace CrisAway
 section
 
-open Ideal Reformulated.AutPerF
-open scoped Nat
 
 namespace Bridge.CrisLoc.CrisAwayLemmas
 
@@ -565,8 +563,6 @@ end CrisAway
 namespace MulPowEq
 section
 
-open Ideal Reformulated.AutPerF
-open scoped Nat
 
 namespace Bridge.CrisLoc.MulPowEqLemmas
 
@@ -845,8 +841,6 @@ section
 
 noncomputable section
 
-open Ideal Reformulated.AutPerF
-open scoped Nat
 
 namespace Bridge.CrisLoc.unitOfRootSeries
 
@@ -1004,8 +998,6 @@ section
 
 noncomputable section
 
-open Ideal Reformulated.AutPerF
-open scoped Nat
 
 namespace Bridge.CrisLoc.CrisExtensionLemmas
 

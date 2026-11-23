@@ -122,7 +122,6 @@ theorem om_g_ne {a b : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableE
 end GlobalTheory.QPl.CoupStab
 
 namespace GlobalTheory.QPl.CoupStab
-open GlobalTheory.StepData GlobalTheory.SplitWeil
 
 theorem psi_ne {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {s : ℕ} {X : ℕ → Type} [∀ j, Fintype (X j)] [∀ j, DecidableEq (X j)] {Z : Type} [Fintype Z] [DecidableEq Z]

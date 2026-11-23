@@ -126,7 +126,6 @@ end GlobalTheory.SkewLagr
 
 namespace GlobalTheory.SkewLagr
 
-open Matrix
 
 theorem exists_isLagr_tensor : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E),
     IsCMExt F E σ → ∀ (v : Pl (F := F)), IsField (Fv F v ⊗[F] E) →

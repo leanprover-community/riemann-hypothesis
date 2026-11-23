@@ -147,7 +147,6 @@ end GlobalTheory.UnitaryAvg
 
 namespace GlobalTheory.UnitaryAvg
 
-open MvPolynomial GlobalTheory.MinorFrame
 
 variable {ι : Type} [Fintype ι] {K : Type} [Group K] [MeasurableSpace K] {a d : ℕ}
 

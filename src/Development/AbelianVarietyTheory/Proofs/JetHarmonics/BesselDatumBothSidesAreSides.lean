@@ -60,8 +60,6 @@ private theorem exists_quotient_side_of_isType_lemma (k r : ℕ) (W : Type) [Nor
   exact ⟨ν, hz, hT, ⟨u₀, hu₀⟩, hπ.2.2.2.2.2, hW', hN', hG', hν⟩
 
 
-open Matrix MeasureTheory Finset in
-open scoped InnerProductSpace ENNReal in
 theorem _root_.GlobalTheory.exists_sideG_both_of_isType : ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGroup Wp]
     [InnerProductSpace ℂ Wp] [CompleteSpace Wp] [FiniteDimensional ℂ Wp] (Wq : Type)
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [CompleteSpace Wq] [FiniteDimensional ℂ Wq]

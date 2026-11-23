@@ -81,8 +81,6 @@ section Trace
 variable {E : Type} [Field E] [NumberField E]
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.HermModel.eq_zero_of_trace_mul_integer {t : E}
     (ht : ∀ a : 𝓞 E, Algebra.trace ℚ E (t * a) = 0) : t = 0 := by
@@ -96,16 +94,12 @@ end Trace
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.HermModel.herm_sub_left (G : Matrix (Fin r) (Fin r) E) (x x' y : Fin r → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G (x - x') y = _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G x y - _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G x' y := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.herm
   simp only [Pi.sub_apply, sub_mul, Finset.sum_sub_distrib]
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.HermModel.herm_smul_left (G : Matrix (Fin r) (Fin r) E) (c : E) (x y : Fin r → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G (c • x) y = c * _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G x y := by
@@ -113,16 +107,12 @@ theorem _root_.GlobalTheory.HermModel.herm_smul_left (G : Matrix (Fin r) (Fin r)
   simp only [Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
   exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.HermModel.herm_add_right (G : Matrix (Fin r) (Fin r) E) (x y y' : Fin r → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G x (y + y') = _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G x y + _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G x y' := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.herm _root_.ReciprocityTheory.ChartRestriction.G.FD.cc
   simp only [Pi.add_apply, map_add (f := _), mul_add, Finset.sum_add_distrib]
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.HermModel.herm_smul_right (G : Matrix (Fin r) (Fin r) E) (c : E) (x y : Fin r → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G x (c • y) = _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G x y * _root_.ReciprocityTheory.ChartRestriction.G.FD.cc c := by
@@ -130,8 +120,6 @@ theorem _root_.GlobalTheory.HermModel.herm_smul_right (G : Matrix (Fin r) (Fin r
   simp only [Pi.smul_apply, smul_eq_mul, map_mul, Finset.sum_mul]
   exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.HermModel.herm_zero_right (G : Matrix (Fin r) (Fin r) E) (x : Fin r → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G x 0 = 0 := by
@@ -139,8 +127,6 @@ theorem _root_.GlobalTheory.HermModel.herm_zero_right (G : Matrix (Fin r) (Fin r
   simp
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.HermModel.eq_zero_of_herm_eq_zero {G : Matrix (Fin r) (Fin r) E}
     (hG : G.det ≠ 0) {w : Fin r → E} (hw : ∀ u, _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G w u = 0) : w = 0 := by
@@ -151,8 +137,6 @@ theorem _root_.GlobalTheory.HermModel.eq_zero_of_herm_eq_zero {G : Matrix (Fin r
     Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
   simpa [Matrix.vecMul, dotProduct] using h
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.HermModel.rank_integral_selfDual (E : Type) [Field E] [NumberField E] [IsCMField E]
     (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H) (r : ℕ) (ξ : E) (Gm : Matrix (Fin r) (Fin r) E)

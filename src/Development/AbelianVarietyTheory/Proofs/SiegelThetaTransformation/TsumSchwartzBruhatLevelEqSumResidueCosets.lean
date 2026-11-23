@@ -66,8 +66,6 @@ private theorem rep_eq_of_neg_rep_add_rep_eq_smul_zm {κ ι : Type} {R : ℕ} (h
         linarith [Int.natCast_nonneg (n k i : ℕ), Int.natCast_nonneg (n' k i : ℕ)]
     exact Fin.ext (by omega)
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 private theorem exists_rep_add_natCast_smul_zm_of_intM_smul {κ ι : Type} [Fintype κ] [Fintype ι] {R : ℕ}
     (hR : 0 < R) (x : Matrix κ ι ℚ) (hx : _root_.GlobalTheory.SW.IntM (R • x)) :
     ∃ (n : κ → ι → Fin (R * R)) (m : κ → ι → ℤ),
@@ -104,8 +102,6 @@ private theorem exists_rep_add_natCast_smul_zm_of_intM_smul {κ ι : Type} [Fint
     rw [mul_assoc, mul_div_cancel_left₀ _ hRq]
 
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 theorem _root_.GlobalTheory.SW.FourierJ.tsum_level_eq_sum_cosets : ∀ (κ ι : Type) [Fintype κ] [Fintype ι]
     [DecidableEq κ]
     [DecidableEq ι] (R : ℕ) (φ F : Matrix κ ι ℚ → ℂ), 0 < R → _root_.GlobalTheory.SW.HasLevel R φ →

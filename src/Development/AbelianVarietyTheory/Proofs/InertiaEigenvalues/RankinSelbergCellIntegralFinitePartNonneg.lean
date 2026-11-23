@@ -102,7 +102,6 @@ end GlobalTheory.RSnmFT
 
 namespace GlobalTheory.RSnmFT
 
-open GlobalTheory.CellDec GroundTheory.Automorphic.FourierWhittaker
 open scoped ComplexConjugate
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]

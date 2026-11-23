@@ -120,7 +120,6 @@ end Gl2
 
 section Lev
 
-open Matrix
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 

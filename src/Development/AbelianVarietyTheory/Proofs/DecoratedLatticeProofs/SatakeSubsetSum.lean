@@ -106,7 +106,6 @@ end GlobalTheory.SatakeSubsetSum
 
 namespace GlobalTheory.SatakeSubsetSum
 
-open Finset
 
 theorem prod_zpow_eq {ι : Type} (s : ℂ) (hs : s ≠ 0) (S : Finset ι) (e : ι → ℤ) :
     ∏ a ∈ S, s ^ e a = s ^ (∑ a ∈ S, e a) := by
@@ -138,7 +137,6 @@ end GlobalTheory.SatakeSubsetSum
 
 namespace GlobalTheory.SatakeSubsetSum
 
-open Finset
 
 theorem term_eq (q N : ℕ) (hq : 0 < q) (α : Fin N → ℂˣ) (S : Finset (Fin N)) :
     (q : ℂ) ^ ((S ×ˢ Sᶜ).filter fun p : Fin N × Fin N => p.1 < p.2).card * ∏ a ∈ S, borelParam q α a
@@ -172,7 +170,6 @@ end GlobalTheory.SatakeSubsetSum
 
 namespace GlobalTheory.SatakeSubsetSum
 
-open Finset
 
 theorem satake_subset_sum : ∀ (q N : ℕ), 0 < q → ∀ (α : Fin N → ℂˣ) (n : ℕ),
     ∑ S ∈ (Finset.univ : Finset (Fin N)).powersetCard n,

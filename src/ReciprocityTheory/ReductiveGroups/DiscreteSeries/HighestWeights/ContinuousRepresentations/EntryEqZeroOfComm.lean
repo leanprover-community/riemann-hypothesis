@@ -254,7 +254,6 @@ def pieceKType {n : ℕ} {ε : Fin n → Bool} (R : KRep ε)
       rw [h1, smul_zero] }
 
 
-open PieceCon in
 theorem kRepPiece_of (hR : KRepRelStatement) (hS : KRepStableStatement) : KRepPieceStatement := by
   intro n ε R μ x hx hhi
   set W := Formalism.REAL.kSpan ε R.units x with hWdef

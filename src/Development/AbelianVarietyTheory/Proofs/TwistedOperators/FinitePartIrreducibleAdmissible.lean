@@ -88,8 +88,6 @@ theorem toFin_embV (v : HeightOneSpectrum (𝓞 D.host.F)) (k : Gv V v) : toFin 
 end GlobalTheory.FinPartIrrAdm
 
 namespace GlobalTheory.FinPartIrrAdm
-open GlobalTheory.PRep (fixed smoothPart smoothRep IsSmooth)
-open Formalism.MainNotions.KudlaSiegelWeil (Restr)
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {H : Type} [NormedAddCommGroup H]
   [InnerProductSpace ℂ H] {π : GA D V →* (H →L[ℂ] H)}
@@ -160,7 +158,6 @@ theorem admissible (hF : GlobalTheory.Published.FlathFactorisation) (hπ : IsIrr
 end GlobalTheory.FinPartIrrAdm
 
 namespace GlobalTheory.FinPartIrrAdm
-open GlobalTheory.PRep (fixed smoothPart smoothRep IsSmooth)
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {H : Type} [NormedAddCommGroup H]
   [InnerProductSpace ℂ H] {π : GA D V →* (H →L[ℂ] H)}

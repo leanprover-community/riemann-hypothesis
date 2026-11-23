@@ -84,7 +84,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.CornerMinors.nextPart_le 
   · exact ha (show i ≤ (⟨i + 1, h⟩ : Fin l) from Fin.le_def.mpr (Nat.le_succ _))
   · exact Nat.zero_le _
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.CornerMinors.hookDen_pos {l : ℕ} {a : Fin l → ℕ} (ha : Antitone a) :
     0 < _root_.GlobalTheory.IndefiniteRowSideFullHecke.CornerMinors.hookDen a := by
   unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.CornerMinors.hookDen

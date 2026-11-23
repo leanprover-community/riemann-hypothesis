@@ -52,8 +52,6 @@ private theorem tate_nsmul_lev {p : ℕ} {M : Type} [CommGroup M]
   | succ k ih => rw [succ_nsmul, _root_.GlobalTheory.HTLat.Tate.lev_add, ih, pow_succ]
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.AV.AbVar.tl_lev_surj_ker : ∀ (K : Type) [Field K]
     (l : ℕ) [Fact l.Prime] (A : _root_.GlobalTheory.AV.AbVar K) (n : ℕ),

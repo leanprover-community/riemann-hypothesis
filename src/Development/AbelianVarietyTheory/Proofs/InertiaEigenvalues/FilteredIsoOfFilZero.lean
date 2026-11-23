@@ -77,7 +77,6 @@ private theorem dualExactSequence_mapdR_eq {K LL : _root_.Formalism.BasicNotions
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.DualExactSequence.mapdR P f = _root_.GlobalTheory.IndefiniteRowSideFullHecke.JumpMultiplicityDual.mapdR (Qp := ℚ_[l]) (BdR := P.R.BdR) f :=
   rfl
 
-open Module TensorProduct in
 variable {l : ℕ} [Fact l.Prime] (P : _root_.Formalism.BasicNotions.LocPrime l) in
 private theorem strictness_of_dualExactSequence_strict
     (h : _root_.GlobalTheory.IndefiniteRowSideFullHecke.DualExactSequence.Strict l P) : _root_.GlobalTheory.IndefiniteRowSideFullHecke.JumpMultiplicityDual.Strictness l P := by
@@ -94,7 +93,6 @@ private theorem strictness_of_dualExactSequence_strict
     · ext z
       simpa using k₃ z
 
-open Module TensorProduct in
 variable {l : ℕ} [Fact l.Prime] (P : _root_.Formalism.BasicNotions.LocPrime l) in
 private theorem dualExactSequence_strict_of_strictness
     (h : _root_.GlobalTheory.IndefiniteRowSideFullHecke.JumpMultiplicityDual.Strictness l P) : _root_.GlobalTheory.IndefiniteRowSideFullHecke.DualExactSequence.Strict l P := by
@@ -116,7 +114,6 @@ private theorem dualExactSequence_strict_of_strictness
     · have := SetLike.ext_iff.mp k₃ z
       simpa [dualExactSequence_mapdR_eq] using this
 
-open Module TensorProduct in
 variable {l : ℕ} [Fact l.Prime] (P : _root_.Formalism.BasicNotions.LocPrime l) in
 theorem _root_.GlobalTheory.DeRhamCompare.strict_iff :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.DualExactSequence.Strict l P ↔ _root_.GlobalTheory.IndefiniteRowSideFullHecke.JumpMultiplicityDual.Strictness l P :=

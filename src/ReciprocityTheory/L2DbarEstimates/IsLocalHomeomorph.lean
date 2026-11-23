@@ -94,7 +94,6 @@ def d {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (j : Fin n) (f 
   else 0
 
 
-open scoped Classical in
 def db {M : Type*} [TopologicalSpace M] (n : ℕ) (z : M → V n) (j : Fin n) (f : M → ℂ) (x : M) :
     ℂ := by
   classical
@@ -128,7 +127,6 @@ def VolAdditive {M : Type*} [MeasurableSpace M] (n : ℕ) (z : M → V n) : Prop
     volFun n z (⋃ i, f i) = ∑' i, volFun n z (f i)
 
 
-open scoped Classical in
 def vol {M : Type*} [MeasurableSpace M] (n : ℕ) (z : M → V n) : Measure M := by
   classical
   exact if h : VolAdditive n z then

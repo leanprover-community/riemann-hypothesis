@@ -111,7 +111,6 @@ end GlobalTheory.ZEul
 
 namespace GlobalTheory.ZEul
 
-open GlobalTheory.JSW
 
 theorem summable_sqTerm {I : Type} (q : I → ℕ) {n : ℕ} (α : I → Fin n → ℂ) (x : ℝ)
     (h : GlobalTheory.RSPole.eulD q α x ≠ ⊤) :

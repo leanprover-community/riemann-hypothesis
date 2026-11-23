@@ -65,9 +65,6 @@ private theorem isLieData_star_pow (H : _root_.GlobalTheory.SmoothForms.IsLieDat
   | zero => simpa using H.one
   | succ n ih => rw [pow_succ, H.anti, ih, ← pow_succ']
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 private theorem isLieData_star_exp (H : _root_.GlobalTheory.SmoothForms.IsLieData σ j s) (x : 𝔸) :
@@ -82,9 +79,6 @@ private theorem isLieData_star_exp (H : _root_.GlobalTheory.SmoothForms.IsLieDat
   rw [h3] at h1
   exact h1.unique h2
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 theorem _root_.GlobalTheory.SmoothForms.SecondKind.exp_unitary (H : _root_.GlobalTheory.SmoothForms.IsLieData σ j s) (X : L) :
@@ -95,9 +89,6 @@ theorem _root_.GlobalTheory.SmoothForms.SecondKind.exp_unitary (H : _root_.Globa
   rw [isLieData_star_exp H, hX, ← NormedSpace.exp_add_of_commute (Commute.neg_left (Commute.refl _)),
     neg_add_cancel, exp_zero]
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 omit [FiniteDimensional ℝ 𝔸] in
@@ -107,9 +98,6 @@ theorem _root_.GlobalTheory.SmoothForms.SecondKind.map_one_eq (H : _root_.Global
   rw [one_mul] at h
   exact mul_left_cancel (a := s 1) (by rw [mul_one]; exact h.symm)
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 theorem _root_.GlobalTheory.SmoothForms.SecondKind.contDiff_exp : ContDiff ℝ ∞ (exp : 𝔸 → 𝔸) := by
@@ -118,9 +106,6 @@ theorem _root_.GlobalTheory.SmoothForms.SecondKind.contDiff_exp : ContDiff ℝ �
 
 variable {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P]
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 variable {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] in
@@ -132,9 +117,6 @@ private theorem isLieData_list_prod_unitary (H : _root_.GlobalTheory.SmoothForms
       h a (by simp), one_mul]
     exact isLieData_list_prod_unitary H l fun b hb => h b (by simp [hb])
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 variable {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] in
@@ -146,9 +128,6 @@ private theorem isLieData_s_list_prod_eq_prod_map_of_unitary (H : _root_.GlobalT
       (isLieData_list_prod_unitary H l fun b hb => h b (by simp [hb])), List.map_cons, List.prod_cons,
       isLieData_s_list_prod_eq_prod_map_of_unitary H l fun b hb => h b (by simp [hb])]
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 variable {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] in
@@ -162,9 +141,6 @@ private theorem isLieData_s_prod_exp_eq_prod_expMap (H : _root_.GlobalTheory.Smo
     obtain ⟨m, rfl⟩ := List.mem_ofFn.1 ha
     exact _root_.GlobalTheory.SmoothForms.SecondKind.exp_unitary H _
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 variable {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] in
@@ -178,9 +154,6 @@ private theorem contDiff_list_prod_ofFn' :
     simp only [List.ofFn_succ, List.prod_cons]
     exact (hF 0).mul (contDiff_list_prod_ofFn' k (fun i => F i.succ) fun i => hF _)
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 variable {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] in
@@ -193,9 +166,6 @@ private theorem contDiff_list_prod_ofFn_exp_smul {k : ℕ} (Y : Fin k → L) :
   rw [h]
   exact _root_.GlobalTheory.SmoothForms.SecondKind.contDiff_exp.comp ((contDiff_apply ℝ (fun _ => ℝ) i).smul contDiff_const)
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 variable {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] in
@@ -207,9 +177,6 @@ private theorem isLieData_prod_exp_smul_unitary (H : _root_.GlobalTheory.SmoothF
   obtain ⟨m, rfl⟩ := List.mem_ofFn.1 ha
   exact _root_.GlobalTheory.SmoothForms.SecondKind.exp_unitary H _
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 variable {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] in
@@ -229,9 +196,6 @@ private theorem list_prod_ofFn_eq_of_eq_one_of_ne :
       exact list_prod_ofFn_eq_of_eq_one_of_ne k _ i fun m hm => h _ fun e => hm (Fin.succ_injective _ e)
 
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 variable {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] in
@@ -362,9 +326,6 @@ theorem _root_.GlobalTheory.SmoothForms.SecondKind.sm_iff (H : _root_.GlobalTheo
     exact _root_.GlobalTheory.SmoothForms.contDiff_family H hl h0
       (_root_.GlobalTheory.SmoothForms.SecondKind.contDiff_exp.comp hj) (fun X => _root_.GlobalTheory.SmoothForms.SecondKind.exp_unitary H X) g
 
-open NumberField Matrix in
-open scoped ContDiff Topology in
-open NormedSpace in
 variable {𝔸 L G : Type} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [FiniteDimensional ℝ 𝔸] [NormedAddCommGroup L]
   [NormedSpace ℝ L] [Group G] {σ : 𝔸 →ₗ[ℝ] 𝔸} {j : L →ₗ[ℝ] 𝔸} {s : 𝔸 → G} in
 variable {P : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] in

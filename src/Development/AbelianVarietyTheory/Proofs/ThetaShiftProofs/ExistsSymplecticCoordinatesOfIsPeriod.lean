@@ -151,7 +151,6 @@ end Theta
 
 section Family
 
-open ReciprocityTheory.PTheta
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 

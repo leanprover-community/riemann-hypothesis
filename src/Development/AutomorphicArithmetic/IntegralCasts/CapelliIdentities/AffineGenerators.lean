@@ -43,7 +43,6 @@ private theorem mem_spanOver_of_mem_span {o Ω : Type} [CommRing o] [Field Ω] [
   refine AddSubgroup.sum_mem _ fun i _ => AddSubgroup.subset_closure ?_
   exact ⟨(a i : Ω), (a i).2, (g i : E), (g i).2, rfl⟩
 
-open GlobalTheory.CompanionTheory.Ar.Num in
 private theorem exists_finset_span_of_locFree {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
     {E : Type} [AddCommGroup E] [Module Ω E] (R : Subalgebra o Ω) (N : ℕ) (L : AddSubgroup E)
     (h : LocFree R N L) :
@@ -96,7 +95,6 @@ private theorem exists_finset_span_of_locFree {o Ω : Type} [CommRing o] [Field 
       refine Submodule.smul_mem _ _ (Submodule.subset_span ?_)
       exact Finset.mem_coe.2 (Finset.mem_image.2 ⟨(l, q), Finset.mem_univ _, rfl⟩)
 
-open GlobalTheory.CompanionTheory.Ar.Num in
 private theorem linMap_injective {Ω : Type} [Field Ω] {F : Type} [Zero F] [One F] (n : ℕ)
     (χ : F → Ω) (h0 : χ 0 = 0) (h1 : χ 1 = 1) : LinearMap.ker (linMap n χ) = ⊥ := by
   classical

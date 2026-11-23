@@ -155,7 +155,6 @@ theorem mp_affine {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [Is
 end GlobalTheory.StepLeft
 
 namespace GlobalTheory.StepLeft
-open Classical
 
 theorem left_change : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} (ν : Measure k) [ν.IsAddHaarMeasure],
     ∀ v ∈ symN k n c, ∀ κ : GL n k, valuation k (gdet κ : k) = 1 → ∀ x₀ : Matrix n n' k,

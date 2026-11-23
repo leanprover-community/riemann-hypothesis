@@ -59,8 +59,6 @@ private lemma pow_apply_ofMul_eq_iterate {M : Type} [CommGroup M] (ψ : AddMonoi
   | zero => rfl
   | succ n ih => rw [Function.iterate_succ_apply', Function.iterate_succ_apply', ih, hψ]
 
-open NumberField IsDedekindDomain Polynomial in
-open scoped WithZero TensorProduct in
 private lemma cyclotomic_comp_X_add_one_eq (p : ℕ) [Fact p.Prime] :
     ∃ H : ℤ[X], (cyclotomic p ℤ).comp (X + 1) = X ^ (p - 1) + (p : ℤ[X]) * (1 + X * H) := by
   have hp : p.Prime := Fact.out
@@ -95,8 +93,6 @@ private lemma cyclotomic_comp_X_add_one_eq (p : ℕ) [Fact p.Prime] :
   rw [← hH, ← C_eq_natCast]
   linear_combination hG
 
-open NumberField IsDedekindDomain Polynomial in
-open scoped WithZero TensorProduct in
 private lemma exists_pow_factor_of_aeval_cyclotomic {S : Type*} [Ring S] (p : ℕ) [Fact p.Prime]
     (y : S) (hy : aeval y ((cyclotomic p ℤ).comp (X + 1)) = 0) :
     ∃ W V : S, y ^ (p - 1) = (p : S) * W ∧ y ^ (p - 1) = W * p ∧
@@ -130,8 +126,6 @@ private lemma exists_pow_factor_of_aeval_cyclotomic {S : Type*} [Ring S] (p : �
     rwa [map_add, map_mul, map_mul, map_natCast, hy, mul_zero, add_zero, map_pow, aeval_X] at h
 
 
-open NumberField IsDedekindDomain Polynomial in
-open scoped WithZero TensorProduct in
 theorem _root_.GlobalTheory.CNorm.pows_eq_range_dif_pow : ∀ (p : ℕ) (M : Type) [CommGroup M] (τ : M →* M)
     (lam : Monoid.End M), p.Prime → (∀ a, lam a = τ a / a) →
     (∀ a, _root_.GlobalTheory.CNorm.nrm τ p a = 1) →

@@ -67,8 +67,6 @@ theorem _root_.GlobalTheory.PureType.exists_hom_over (hβ : β ≫ B.hom = B'.ho
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj in
 variable {S S' : Scheme.{0}} {f : S' ⟶ S} {B G : Over S} {B' G' : Over S'}
   {β : B'.left ⟶ B.left} {π : G'.left ⟶ G.left} in
 theorem _root_.GlobalTheory.PureType.eq_of_comp_eq (hπ : IsPullback π G'.hom G.hom f) {T : Over S'}
@@ -79,8 +77,6 @@ variable [GrpObj B] [GrpObj G] [GrpObj B'] [GrpObj G']
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj in
 variable {S S' : Scheme.{0}} {f : S' ⟶ S} {B G : Over S} {B' G' : Over S'}
   {β : B'.left ⟶ B.left} {π : G'.left ⟶ G.left} in
 variable [GrpObj B] [GrpObj G] [GrpObj B'] [GrpObj G'] in

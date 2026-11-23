@@ -147,7 +147,6 @@ end Diag
 end GlobalTheory.FunObj
 
 namespace GlobalTheory.FunObj
-open Matrix
 
 section Main
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

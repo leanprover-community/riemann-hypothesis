@@ -87,10 +87,6 @@ private lemma integral_planeWave_eq_lemma_3 (hQ : _root_.Formalism.FourierDecayA
   rw [hφ c hc, ← _root_.Formalism.FourierDecayAlt.P.TBBx5.wv_np p nn F j hj h hh w c]
   ring
 
-open NumberField MeasureTheory in
-open scoped ComplexOrder in
-open Filter Topology in
-open scoped ComplexConjugate ENNReal in
 private lemma shiftedPairing_bound_lemma_4 (hQ : _root_.Formalism.FourierDecayAlt.P5.ThmPActualCpt) (hV : _root_.Formalism.FourierDecayAlt.KB.VIsoCpt) (hS : _root_.Formalism.FourierDecayAlt.KB.SizeStdCpt)
     (hPos : _root_.Formalism.FourierDecayAlt.P.PBL.FormPosCpt) {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp]
@@ -135,10 +131,6 @@ private lemma shiftedPairing_bound_lemma_4 (hQ : _root_.Formalism.FourierDecayAl
   · exact mul_nonneg (div_nonneg hJL (mul_pos hQ₁ hN).le) f₁
   · exact mul_nonneg (div_nonneg hJL (mul_pos hQ₂ hN).le) f₂
 
-open NumberField MeasureTheory in
-open scoped ComplexOrder in
-open Filter Topology in
-open scoped ComplexConjugate ENNReal in
 private lemma planeWave_grid_bound_lemma (hQ : _root_.Formalism.FourierDecayAlt.P5.ThmPActualCpt) (hV : _root_.Formalism.FourierDecayAlt.KB.VIsoCpt) (hS : _root_.Formalism.FourierDecayAlt.KB.SizeStdCpt)
     (hPos : _root_.Formalism.FourierDecayAlt.P.PBL.FormPosCpt) {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp]
@@ -181,10 +173,6 @@ private lemma planeWave_grid_bound_lemma (hQ : _root_.Formalism.FourierDecayAlt.
           (shiftedPairing_bound_lemma_4 hQ hV hS hPos P p nn F hF hnn j hj h hh w s _
             (hcut n).1 (hcut n).2.1 (hcut n).2.2) (abs_nonneg _)
 
-open NumberField MeasureTheory in
-open scoped ComplexOrder in
-open Filter Topology in
-open scoped ComplexConjugate ENNReal in
 private lemma normalizedWeight_nonneg_lemma_2 (hQ : _root_.Formalism.FourierDecayAlt.P5.ThmPActualCpt) (hPos : _root_.Formalism.FourierDecayAlt.P.PBL.FormPosCpt) {Wp Wq : Type}
     [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : _root_.Formalism.FourierDecayAlt.M.Par)
@@ -199,10 +187,6 @@ private lemma normalizedWeight_nonneg_lemma_2 (hQ : _root_.Formalism.FourierDeca
   exact mul_nonneg (div_nonneg h1 h2.le) (Complex.nonneg_iff.mp h3).1
 
 
-open NumberField MeasureTheory in
-open scoped ComplexOrder in
-open Filter Topology in
-open scoped ComplexConjugate ENNReal in
 theorem _root_.GlobalTheory.planeWave_bound_of_xiExists (hXi : _root_.Formalism.FourierDecayAlt.B.XiExists) :
     _root_.Formalism.FourierDecayAlt.P5.ThmPActualCpt → _root_.Formalism.FourierDecayAlt.KB.VIsoCpt → _root_.Formalism.FourierDecayAlt.KB.SizeStdCpt → _root_.Formalism.FourierDecayAlt.P.PBL.FormPosCpt → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : _root_.Formalism.FourierDecayAlt.M.Par) (p : _root_.Formalism.FourierDecayAlt.KB.Pl P Wp Wq) (nn : ℝ → ℝ) (F : _root_.Formalism.FourierDecayAlt.B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (Y : Finset ℝ) (Λ : ℝ) (K N : ℕ) (Cb : ℝ), _root_.Formalism.FourierDecayAlt.KB.InDDplus2 P p.l0 p.T.base Cb p.Θ → _root_.Formalism.FourierDecayAlt.KB.CptCoef p.T.base F → (∀ y, 0 < nn y) → _root_.Formalism.FourierDecayAlt.P.TBBx5.WaveGrid p nn Y Λ K N → _root_.Formalism.FourierDecayAlt.TBB.KernelFourierIntegralBound p nn F Y Λ K N := by
   intro hQ hV hS hPos Wp Wq _ _ _ _ _ _ P p nn F Y Λ K N Cb hI hF hnn hgrid

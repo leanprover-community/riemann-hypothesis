@@ -48,7 +48,6 @@ noncomputable section
 
 namespace GlobalTheory.GelfSymm
 
-open scoped Matrix
 
 open GlobalTheory.Mem.RealTranslate (derEnd)
 open GlobalTheory.RegSch (wordDer)
@@ -83,9 +82,6 @@ end GlobalTheory.GelfSymm
 
 namespace GlobalTheory.GelfSymm
 
-open scoped Matrix
-open GlobalTheory.Mem.RealTranslate (derEnd)
-open GlobalTheory.RegSch (wordDer)
 
 variable {D : D7} {θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {V : HSp D}
 

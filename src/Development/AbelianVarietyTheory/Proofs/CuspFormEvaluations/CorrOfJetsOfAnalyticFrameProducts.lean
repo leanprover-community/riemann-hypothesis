@@ -142,7 +142,6 @@ theorem prod_zpow_fiber {M T K : Type*} [CommGroup M] [Fintype K] (s : Finset T)
   rw [Finset.prod_ite_eq, if_pos (hs k)]
 
 
-open scoped Classical in
 theorem prod_zpow_eq {M T K K' : Type*} [CommGroup M] [Fintype K] [Fintype K'] (φ : K → T) (ε : K → ℤ)
     (φ' : K' → T) (ε' : K' → ℤ) (u : K → M) (u' : K' → M)
     (h₁ : ∀ k l, φ k = φ l → u k = u l) (h₂ : ∀ k l, φ' k = φ' l → u' k = u' l)

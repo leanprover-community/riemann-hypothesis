@@ -236,7 +236,6 @@ end Sch
 
 section Core
 
-open GlobalTheory.CompanionTheory.Ar.Flat.UnitChart
 
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)]
 

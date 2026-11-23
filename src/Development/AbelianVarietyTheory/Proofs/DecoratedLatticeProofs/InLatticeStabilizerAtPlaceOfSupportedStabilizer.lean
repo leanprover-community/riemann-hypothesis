@@ -243,7 +243,6 @@ theorem keeps_of_core (v : Pl D) {n : ℕ} (Ls : Set (Fin n → D.host.E))
 end GlobalTheory.KStabBridge
 
 namespace GlobalTheory.KStabBridge
-open scoped Matrix
 variable {D : D7}
 
 theorem mem_latHat_iff_lift (S : HSp D) (L : Lat S) (v : Pl D) (z : Fin S.rank → Af D.host.F ⊗[D.host.F] D.host.E)

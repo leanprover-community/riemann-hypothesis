@@ -50,7 +50,6 @@ private theorem UpperTheory.Reformulated.B.Qe3b.mp_left.{u_1, u_2, u_3}
   rw [h, Measure.pi_pi, Fintype.prod_prod_type]
   exact Finset.prod_congr rfl fun i _ ↦ Measure.pi_pi _ _
 
-open MeasureTheory in
 private theorem UpperTheory.Reformulated.B.Qe3b.mp_right.{u_1, u_2, u_3}
     {ι : Type u_1} {κ : Type u_2} {X : Type u_3} [Fintype ι] [Fintype κ]
     [MeasurableSpace X] (ν : Measure X) [SigmaFinite ν] :

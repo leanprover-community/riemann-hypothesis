@@ -128,7 +128,6 @@ theorem coord_measurable : Measurable (coord F) := by
   haveI : BorelSpace (Ainf F) := ⟨rfl⟩
   exact (isHomeomorph_coord F).continuous.measurable
 
-open scoped Classical in
 theorem map_coord_eq (lam : Measure (Ainf F)) (hl : IsStdInf lam) :
     lam.map (coord F) = ENNReal.ofReal (Real.sqrt |(discr F : ℝ)|)⁻¹ • (volume : Measure (InfinitePlace F → ℝ)) := by
   obtain ⟨hH, D, hD, hD1⟩ := hl

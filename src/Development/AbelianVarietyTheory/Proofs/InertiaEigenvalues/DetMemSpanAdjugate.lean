@@ -62,7 +62,6 @@ private theorem det_updateRow_mem_span_adjugate_entries {α : Type} [Fintype α]
   simp only [mulVec, dotProduct, transpose_apply]
   exact Ideal.sum_mem _ fun l _ => Ideal.mul_mem_right _ _ (Ideal.subset_span ⟨(l, k), rfl⟩)
 
-open Matrix in
 variable {R : Type} [CommRing R] in
 variable {m n : Type} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] in
 private theorem det_mem_span_adjugate_entries {α : Type} [Fintype α] [DecidableEq α] [Nonempty α]
@@ -72,7 +71,6 @@ private theorem det_mem_span_adjugate_entries {α : Type} [Fintype α] [Decidabl
   have h := det_updateRow_mem_span_adjugate_entries Φ i (Φ i)
   rwa [updateRow_eq_self] at h
 
-open Matrix in
 variable {R : Type} [CommRing R] in
 variable {m n : Type} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] in
 private theorem det_eq_mul_of_toBlocks₂₁_eq_zero {α β : Type} [Fintype α] [DecidableEq α]
@@ -81,7 +79,6 @@ private theorem det_eq_mul_of_toBlocks₂₁_eq_zero {α β : Type} [Fintype α]
   conv_lhs => rw [← fromBlocks_toBlocks M, h]
   exact det_fromBlocks_zero₂₁ _ _ _
 
-open Matrix in
 variable {R : Type} [CommRing R] in
 variable {m n : Type} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] in
 private theorem det_eq_mul_of_toBlocks₁₂_eq_zero {α β : Type} [Fintype α] [DecidableEq α]
@@ -91,7 +88,6 @@ private theorem det_eq_mul_of_toBlocks₁₂_eq_zero {α β : Type} [Fintype α]
   exact det_fromBlocks_zero₁₂ _ _ _
 
 
-open Matrix in
 variable {R : Type} [CommRing R] in
 variable {m n : Type} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.FitSquare.relations_mem {M : Type} [AddCommGroup M] [Module R M]
@@ -188,7 +184,6 @@ theorem _root_.GlobalTheory.FitSquare.relations_mem {M : Type} [AddCommGroup M] 
 end blocks
 
 
-open Matrix in
 variable {R : Type} [CommRing R] in
 theorem _root_.GlobalTheory.FitSquare.fitting_exact : ∀ (R : Type) [CommRing R] (M₁ M₂ M₃ : Type) [AddCommGroup M₁] [Module R M₁] [AddCommGroup M₂] [Module R M₂] [AddCommGroup M₃] [Module R M₃] (f : M₁ →ₗ[R] M₂) (g : M₂ →ₗ[R] M₃), Function.Exact f g → Function.Surjective g → ∀ (k : ℕ) (x : R) (v : Fin k → M₁), Submodule.span R (Set.range v) = ⊤ → (∀ m : M₁, x • m = 0) → ∀ (a b : ℕ) (Φ : Matrix (Fin a) (Fin a) R) (Ψ : Matrix (Fin b) (Fin b) R), Nonempty (M₂ ≃ₗ[R] ((Fin a → R) ⧸ LinearMap.range Φ.mulVecLin)) → Nonempty (M₃ ≃ₗ[R] ((Fin b → R) ⧸ LinearMap.range Ψ.mulVecLin)) → x ^ k * Ψ.det ∈ Ideal.span {Φ.det} ∧ (a = 0 ∨ ((∀ p q, x ^ k * Ψ.adjugate p q ∈ Ideal.span (Set.range fun p : Fin a × Fin a => Φ.adjugate p.1 p.2)) ∧ (b = 0 → x ^ k ∈ Ideal.span (Set.range fun p : Fin a × Fin a => Φ.adjugate p.1 p.2)))) := by
   intro R _ M₁ M₂ M₃ _ _ _ _ _ _ f g hfg hg k x v hv hx a b Φ Ψ ⟨e₂⟩ ⟨e₃⟩

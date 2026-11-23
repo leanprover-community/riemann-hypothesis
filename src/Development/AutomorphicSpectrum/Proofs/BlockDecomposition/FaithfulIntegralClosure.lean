@@ -310,7 +310,6 @@ private theorem val_det_lt_lemma_3 {n K Γ : Type*} [Fintype n] [DecidableEq n] 
       exact h k m
   exact lt_of_le_of_lt (mul_le_of_le_one_right' hadj) (hj l)
 
-open IsDedekindDomain in
 include F in
 theorem trace_jac_dvr {n : Type*} [Fintype n] [DecidableEq n]
     (hnat : ∀ m : ℕ, m ≠ 0 → IsUnit (m : R))

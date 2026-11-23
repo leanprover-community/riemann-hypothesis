@@ -84,7 +84,6 @@ theorem chart_sec (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E
 end GlobalTheory.UMin.ThBdl
 
 namespace GlobalTheory.UMin.ThBdl
-open ProjSpace
 
 theorem app_resG {X Y : Scheme.{0}} (f : Y ⟶ X) {U V : X.Opens} (e : V ≤ U) (x : Γ(X, U)) :
     (f.app V).hom (resG X e x) = resG Y (fun _ hy => e hy : f ⁻¹ᵁ V ≤ f ⁻¹ᵁ U) ((f.app U).hom x) := by
@@ -112,7 +111,6 @@ theorem val_pullU' {X Y : Scheme.{0}} (f : Y ⟶ X) (U : X.Opens) (u : Γ(X, U)�
 end GlobalTheory.UMin.ThBdl
 
 namespace GlobalTheory.UMin.ThBdl
-open ProjSpace
 
 
 

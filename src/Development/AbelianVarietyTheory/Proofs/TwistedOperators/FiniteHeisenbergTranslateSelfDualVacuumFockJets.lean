@@ -96,7 +96,6 @@ theorem applyAt0_scale {N N' : ℕ} (G : Formalism.MainNotions.TaylorLogMetric.V
 end GlobalTheory.HeisTrans
 
 namespace GlobalTheory.HeisTrans
-open GlobalTheory.FockPos
 
 variable {D : D7}
 
@@ -200,7 +199,6 @@ theorem core (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D)
 end GlobalTheory.HeisTrans
 
 namespace GlobalTheory.HeisTrans
-open GlobalTheory.FockPos
 
 variable {D : D7}
 

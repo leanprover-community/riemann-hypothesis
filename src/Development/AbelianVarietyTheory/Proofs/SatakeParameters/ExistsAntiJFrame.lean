@@ -443,7 +443,6 @@ end Completion
 
 section Par
 
-open GlobalTheory.IndefiniteRowSideFullHecke.InertPlaceSetting
 
 end Par
 

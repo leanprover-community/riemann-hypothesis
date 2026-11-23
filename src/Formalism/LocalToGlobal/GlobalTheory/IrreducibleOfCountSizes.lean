@@ -131,7 +131,6 @@ end Rec
 
 section Inputs
 
-open Formalism.BasicNotions Formalism.MainNotions
 
 def CountRec {k : Type} [Field k] (HH : Type) [AddCommGroup HH] [Module k HH] [FiniteDimensional k HH]
     (e₁ e₂ : HH →ₗ[k] HH) (εC : ℝ) (PP : Fin 2 → ℝ) : Prop :=

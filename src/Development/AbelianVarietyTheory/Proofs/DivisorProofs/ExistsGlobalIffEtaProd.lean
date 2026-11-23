@@ -96,7 +96,6 @@ end GlobalTheory.QuadRecip
 
 namespace GlobalTheory.QuadRecip
 
-open GlobalTheory.QuadSymbol
 
 
 open Classical in

@@ -78,7 +78,6 @@ theorem coeff_taylorMv_flatV (D : D7) (X : Fields) (s : Seam D X) (N N' : ℕ) (
 end GlobalTheory.FlatTaylorBridge
 
 namespace GlobalTheory.FlatTaylorBridge
-open MvPowerSeries
 
 theorem subst_rename_lin {σ τ γ : Type} [Finite σ] [Finite τ] {R : Type} [CommRing R] (f : σ → τ)
     (a : τ → MvPowerSeries γ R) (ha : ∀ t, constantCoeff (a t) = 0) (Φ : MvPowerSeries σ R) :

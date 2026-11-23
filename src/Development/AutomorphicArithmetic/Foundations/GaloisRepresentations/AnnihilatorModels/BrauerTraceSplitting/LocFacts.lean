@@ -42,7 +42,6 @@ private theorem exists_finset_adjoin_laurent_preimage {A : Type} [CommRing A] (a
   rw [map_mul, map_pow, ← hy', ← hb', pow_add, pow_mul, hT, mul_pow]
   ring
 
-open Formalism.Per6 in
 private theorem exists_pow_kill_of_localization_zero {A : Type} [CommRing A] (a t c : A) (r : ℕ) (hc : t ^ r = a * c)
     (y : A) (hy : Loc2.mk₀ a t y = 0) : ∃ k : ℕ, t ^ k * y = 0 := by
   have h1 : algebraMap (Localization.Away a) (Localization.Away (algebraMap A (Localization.Away a) t))

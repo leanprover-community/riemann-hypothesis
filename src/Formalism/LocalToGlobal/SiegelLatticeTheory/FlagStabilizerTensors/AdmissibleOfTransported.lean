@@ -182,14 +182,11 @@ theorem adm13_of_colJoin (hM : P.MIstar2 eV sEE) (J : JoinAt X G Y j Tr P fc eV 
 
 end At
 
-section Ties
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX} {R : Formalism.L2.RecT ex}
 
-end Ties
 
-section Real
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX}
@@ -199,6 +196,5 @@ variable {R : Formalism.L2.RecT ex} {S : Formalism.L2.SG.SpectralTiesReal.STiesR
   {Zscf : DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
   {Q : Formalism.IndefR.RealT R P Dcf Spf Zscf S Ks}
 
-end Real
 
 end Formalism.L2.SG.JoinSI

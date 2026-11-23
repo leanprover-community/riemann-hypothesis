@@ -439,7 +439,6 @@ noncomputable def extendToGroupWithForm {O : Type} [CommRing O] (c : Fin 3 → G
   if g ∈ K.fixingSubgroup then diagN c g else diagN c (g * cc) * Jad3 O
 
 
-open Classical in
 noncomputable def extGG3 {A : Type} [CommRing A] (K : IntermediateField ℚ QbarQ) (cc : GQ)
     (H : Subgroup GQ) (s : K.fixingSubgroup →* GL (Fin 3) A) (g : H) : Matrix (Fin 3) (Fin 3) A :=
   if h : (g : GQ) ∈ K.fixingSubgroup then (s ⟨g, h⟩ : Matrix (Fin 3) (Fin 3) A)

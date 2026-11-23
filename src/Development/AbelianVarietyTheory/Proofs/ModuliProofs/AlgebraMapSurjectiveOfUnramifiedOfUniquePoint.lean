@@ -99,7 +99,6 @@ private lemma algebraMap_injective_of_denseP_unique_lift {R B : Type} [CommRing 
   obtain ⟨K, _, _, x, hx, y, hy, -⟩ := hpt p hp
   rw [← hx, RingHom.mem_ker, ← hy, RingHom.comp_apply, ha, map_zero]
 
-open scoped TensorProduct in
 private lemma algebraMap_surjective_of_unique_algHom (K A : Type) [Field K] [IsAlgClosed K] [CommRing A]
     [Algebra K A] [Module.Finite K A] [Algebra.FormallyUnramified K A]
     (φ₀ : A →ₐ[K] K) (hφ₀ : ∀ φ : A →ₐ[K] K, φ = φ₀) : Function.Surjective (algebraMap K A) := by
@@ -129,7 +128,6 @@ private lemma algebraMap_surjective_of_unique_algHom (K A : Type) [Field K] [IsA
   intro a
   exact ⟨φ₀ a, hinj (by simp)⟩
 
-open scoped TensorProduct in
 private lemma exists_smul_mem_range_algebraMap_of_unique_lift {R B : Type} [CommRing R] [CommRing B] [Algebra R B]
     [Module.Finite R B] [Algebra.FormallyUnramified R B] {K : Type} [Field K] [IsAlgClosed K]
     (x : R →+* K) (hy : ∃! y : B →+* K, y.comp (algebraMap R B) = x) :
@@ -189,7 +187,6 @@ private lemma exists_smul_mem_range_algebraMap_of_unique_lift {R B : Type} [Comm
   exact ⟨a, by simpa using ha.symm⟩
 
 
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.algebraMap_bijective_of_unramified_of_unique_geometric_point :
     ∀ (R B : Type) [CommRing R] [IsReduced R] [CommRing B] [Algebra R B] [Module.Finite R B]
       [Algebra.FormallyUnramified R B] (P : Set (Ideal R)),

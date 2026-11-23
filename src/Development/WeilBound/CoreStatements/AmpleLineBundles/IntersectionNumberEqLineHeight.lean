@@ -153,7 +153,6 @@ theorem coordIdeal_eq (x : Cone n (AlgebraicClosure ℚ)) (f : MRing ι) :
 end CoverDenseAlt.HtF
 
 open CoverDenseAlt.Rename₂ CoverDenseAlt.HtF in
-open GroundTheory.Heights₂.Heights (blockIdx flatCone unflatCone Cone BlockNonzero orbitIdeal coordField coordVec height
   blockNonzero_unflatCone_iff chartMonomial) in
 theorem CoverDenseAlt.intersection_number_eq_line_height : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (II : IntersectionSystem), IsIntersectionSystem II → ∀ W : Ideal (MRing ι), IsArithVar W 1 → ∃ (L : Type) (_ : Field L) (_ : NumberField L) (w : (Σ k, ι k) → L), W = mCoordIdeal w ∧ w ∈ ptsOver L W ∧ ∀ A : HermLine ι, IsSmoothHerm A → II K ι W 1 ![A] / (degC W : ℝ) = lineHt A L w := by
   intro K _ ι _ II hII W hW

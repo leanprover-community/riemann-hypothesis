@@ -105,7 +105,6 @@ private theorem natDegree_minpoly_le_natDegree_minpoly_map {k Ω D : Type} [Fiel
     _ = (minpoly F (o α)).natDegree := natDegree_map_eq_of_injective (RingHom.injective _) _
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.GalDisj.galois_linearDisjoint : ∀ (k Ω D : Type) [Field k] [Field Ω] [Field D] [Algebra k Ω] [IsGalois k Ω] (o : Ω →+* D) (F : Subfield D), (∀ x : Ω, o x ∈ F ↔ x ∈ (algebraMap k Ω).range) → ∀ (m : ℕ) (x : Fin m → Ω), LinearIndependent k x → ∀ b : Fin m → D, (∀ i, b i ∈ F) → ∑ i, o (x i) * b i = 0 → ∀ i, b i = 0 := by
   intro k Ω D _ _ _ _ _ o F hF m x hx b hb hsum
   classical

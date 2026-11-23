@@ -62,7 +62,6 @@ end GlobalTheory.ClassSumPinLink
 
 namespace GlobalTheory.ClassSumPinLink
 
-open Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.NX
 
 section Pack
 

@@ -57,8 +57,6 @@ private lemma isMaximal_and_algebraMap_mem_iff_of_mem_primesOver (F E : Type) [F
   refine ⟨Ideal.IsMaximal.of_liesOver_isMaximal P v.asIdeal, fun a => ?_⟩
   rw [Ideal.over_def P v.asIdeal, Ideal.under_def, Ideal.mem_comap]
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain Polynomial in
 private lemma exists_root_quadratic_of_isUnit_of_mem_maximalIdeal (R : Type) [CommRing R]
     [IsLocalRing R] [IsAdicComplete (IsLocalRing.maximalIdeal R) R] (b c : R)
     (hb : IsUnit b) (hc : c ∈ IsLocalRing.maximalIdeal R) : ∃ β : R, β ^ 2 + b * β + c = 0 := by
@@ -68,8 +66,6 @@ private lemma exists_root_quadratic_of_isUnit_of_mem_maximalIdeal (R : Type) [Co
   exact ⟨β, by simpa using hβ⟩
 
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain Polynomial in
 theorem _root_.GlobalTheory.SplitPlace.not_isField_of_split : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E], Module.finrank F E = 2 → ∀ v : HeightOneSpectrum (𝓞 F),
     (v.asIdeal.primesOver (𝓞 E)).ncard = 2 → ¬ IsField (v.adicCompletion F ⊗[F] E) := by

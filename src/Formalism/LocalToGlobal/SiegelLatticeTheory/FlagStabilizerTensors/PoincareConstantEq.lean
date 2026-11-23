@@ -44,11 +44,9 @@ namespace Formalism.L2.SG.Full
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Defs
 
 variable {D : D7} (X : HidaSetting D)
 
-end Defs
 
 structure Full {D : D7} (X : HidaSetting D) where
   hK : X.LevelSubgroupCharacter

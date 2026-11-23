@@ -65,7 +65,6 @@ end GlobalTheory.Mum.ThetaSep
 
 namespace GlobalTheory.Mum.ThetaSep
 
-open GlobalTheory.ProjSpace
 
 theorem agree_near_of_minors : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (Y : Ext D) (k N : ℕ)
     (τ : Fin (N + 1) → SecK D.P.L Y.q.left k) (hτ : ⨆ i, nonzeroLocus (τ i) = ⊤),

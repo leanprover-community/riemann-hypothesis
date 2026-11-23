@@ -59,14 +59,12 @@ private lemma sum_normSq_apply_right_eq_one_of_mul_conjTranspose (W : Matrix ι 
   rw [Complex.normSq_apply]
   simp [Complex.mul_re]
 
-open Matrix in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma sum_normSq_apply_left_eq_one_of_conjTranspose_mul (W : Matrix ι ι ℂ) (h : Wᴴ * W = 1) (j : ι) :
     ∑ i, Complex.normSq (W i j) = 1 := by
   have h1 := sum_normSq_apply_right_eq_one_of_mul_conjTranspose Wᴴ (by rw [conjTranspose_conjTranspose]; exact h) j
   simpa [conjTranspose_apply, Complex.normSq_conj] using h1
 
-open Matrix in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma norm_apply_le_one_of_conjTranspose_mul_eq_one (V : Matrix ι ι ℂ) (hV : Vᴴ * V = 1) (k j : ι) : ‖V k j‖ ≤ 1 := by
   have h1 : Complex.normSq (V k j) ≤ 1 := by
@@ -76,7 +74,6 @@ private lemma norm_apply_le_one_of_conjTranspose_mul_eq_one (V : Matrix ι ι �
   rw [Complex.normSq_eq_norm_sq] at h1
   nlinarith [norm_nonneg (V k j)]
 
-open Matrix in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma norm_conj_diag_apply_le (V Y : Matrix ι ι ℂ) (hV : Vᴴ * V = 1) (δ : ℝ)
     (hY : ∀ i j, ‖Y i j‖ ≤ δ) (j : ι) :
@@ -102,7 +99,6 @@ private lemma norm_conj_diag_apply_le (V Y : Matrix ι ι ℂ) (hV : Vᴴ * V = 
     _ = (Fintype.card ι : ℝ) * Fintype.card ι * δ := by
         simp [Finset.sum_const, Finset.card_univ]; ring
 
-open Matrix in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma le_eigenvalue_of_add (U V Y : Matrix ι ι ℂ) (x y : ι → ℝ) (m δ : ℝ)
     (hU : U * Uᴴ = 1) (hV : V * Vᴴ = 1) (hx : ∀ i, m ≤ x i) (hY : ∀ i j, ‖Y i j‖ ≤ δ)
@@ -145,7 +141,6 @@ private lemma le_eigenvalue_of_add (U V Y : Matrix ι ι ℂ) (x y : ι → ℝ)
   have hre' := neg_abs_le ((Vᴴ * Y * V) j j).re
   linarith
 
-open Matrix in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma conj_real_diagonal_mul_conj_real_diagonal (U : Matrix ι ι ℂ) (hU : Uᴴ * U = 1) (a b : ι → ℝ) :
     U * diagonal (fun i => (a i : ℂ)) * Uᴴ * (U * diagonal (fun i => (b i : ℂ)) * Uᴴ)
@@ -156,7 +151,6 @@ private lemma conj_real_diagonal_mul_conj_real_diagonal (U : Matrix ι ι ℂ) (
   rw [this, hU, Matrix.mul_one, diagonal_mul_diagonal]
   simp
 
-open Matrix in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma re_trace_conj_diagonal_mul (U V : Matrix ι ι ℂ) (a b : ι → ℝ) :
     Complex.re (Matrix.trace (U * diagonal (fun i => (a i : ℂ)) * Uᴴ * (V * diagonal (fun j => (b j : ℂ)) * Vᴴ)))
@@ -183,7 +177,6 @@ private lemma re_trace_conj_diagonal_mul (U V : Matrix ι ι ℂ) (a b : ι → 
       = ((a i * b j : ℝ) * (W i j * star (W i j)) : ℂ).re := by push_cast; ring_nf
     _ = _ := by rw [h4, ← Complex.ofReal_mul, Complex.ofReal_re]
 
-open Matrix in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma sum_norm_sq_eq_re_trace_mul_conjTranspose (Y : Matrix ι ι ℂ) :
     ∑ i, ∑ j, ‖Y i j‖ ^ (2 : ℕ) = Complex.re (Matrix.trace (Y * Yᴴ)) := by
@@ -192,14 +185,12 @@ private lemma sum_norm_sq_eq_re_trace_mul_conjTranspose (Y : Matrix ι ι ℂ) :
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
   simp [Complex.mul_re]
 
-open Matrix in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma conjTranspose_unitary_conj_real_diagonal (U : Matrix ι ι ℂ) (a : ι → ℝ) :
     (U * diagonal (fun i => (a i : ℂ)) * Uᴴ)ᴴ = U * diagonal (fun i => (a i : ℂ)) * Uᴴ := by
   have h : (star fun i => (a i : ℂ)) = fun i => (a i : ℂ) := funext fun i => by simp
   simp [conjTranspose_mul, Matrix.mul_assoc, diagonal_conjTranspose, h]
 
-open Matrix in
 theorem _root_.GlobalTheory.ClassFin.LogSqVar.first_variation (ι : Type) [Fintype ι] [DecidableEq ι]
     (H A : Matrix ι ι ℂ) :
     _root_.GlobalTheory.ClassFin.IsLog H A →

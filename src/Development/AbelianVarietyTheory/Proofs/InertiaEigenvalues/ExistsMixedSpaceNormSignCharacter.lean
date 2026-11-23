@@ -113,9 +113,6 @@ theorem snorm_mixedEmbedding (x : K) :
 
 noncomputable def sgn (ε : ℂ) (t : ℝ) : ℂ := if 0 < t then 1 else if t < 0 then ε else 0
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding Filter Topology Asymptotics Polynomial in
-open scoped ContDiff Classical in
-open NumberField.InfinitePlace in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.NormSign.sgn_mul {ε : ℂ} (hε : ε * ε = 1) (a b : ℝ) :
     _root_.GlobalTheory.NormSign.sgn ε (a * b) = _root_.GlobalTheory.NormSign.sgn ε a * _root_.GlobalTheory.NormSign.sgn ε b := by

@@ -73,7 +73,6 @@ variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
   {Λ : Type} [CommRing Λ] (ρ : Λ →+* Module.End C V) in
 variable {ι : Type} [DecidableEq ι] {σ : ι → Λ →+* C} (h : IsSplitting σ) in
 set_option autoImplicit false in
-open scoped TensorProduct NNReal NumberField Pointwise in
 variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
   {V : Type} [AddCommGroup V] [Module C V] [Module O V] [IsScalarTower O C V]
   {Λ : Type} [CommRing Λ] (ρ : Λ →+* Module.End C V) in
@@ -84,7 +83,6 @@ theorem _root_.GlobalTheory.HTLat.eigSubLat_le_eigQuotLat (i : ι) (X : Submodul
   exact ⟨x, hx.1, _root_.GlobalTheory.EigenSplit.proj_of_mem h hx.2⟩
 
 set_option autoImplicit false in
-open scoped TensorProduct NNReal NumberField Pointwise in
 variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
   {V : Type} [AddCommGroup V] [Module C V] [Module O V] [IsScalarTower O C V]
   {Λ : Type} [CommRing Λ] (ρ : Λ →+* Module.End C V) in
@@ -108,7 +106,6 @@ def embO (φ : E →+* C) : 𝓞 E →+* O :=
       ((map_isIntegral_int φ (NumberField.RingOfIntegers.isIntegral_coe a)).tower_top)))
 
 set_option autoImplicit false in
-open scoped TensorProduct NNReal NumberField Pointwise in
 variable {C : Type} [Field C] {v : Valuation C ℝ≥0} {O : Type} [CommRing O] [Algebra O C]
   (hv : v.Integers O) {E : Type} [Field E] [NumberField E] in
 omit [NumberField E] in
@@ -125,7 +122,6 @@ theorem _root_.GlobalTheory.HTLat.algebraMap_embO (φ : E →+* C) (a : 𝓞 E) 
 
 
 set_option autoImplicit false in
-open scoped TensorProduct NNReal NumberField Pointwise in
 variable {C : Type} [Field C] {v : Valuation C ℝ≥0} {O : Type} [CommRing O] [Algebra O C]
   (hv : v.Integers O) {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.HTLat.isSplitting_embO [IsAlgClosed C] [CharZero C] :
@@ -177,12 +173,10 @@ theorem latNorm_span_singleton (hv : v.Integers O) {g : U} (hg : g ≠ 0) (c : C
   exact mul_le_of_le_one_right' (hv.map_le_one b)
 
 set_option autoImplicit false in
-open scoped TensorProduct NNReal NumberField Pointwise in
 variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
   {U : Type} [AddCommGroup U] [Module C U] [Module O U] [IsScalarTower O C U] in
 variable {v : Valuation C ℝ≥0} in
 set_option autoImplicit false in
-open scoped TensorProduct NNReal NumberField Pointwise in
 variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
   {U : Type} [AddCommGroup U] [Module C U] [Module O U] [IsScalarTower O C U] in
 variable (v : Valuation C ℝ≥0) in
@@ -243,7 +237,6 @@ variable (C) in
 def step (f : Fin N → U) (i : ℕ) : Submodule C U := Submodule.span C (f '' {k | (k : ℕ) < i})
 
 set_option autoImplicit false in
-open scoped TensorProduct NNReal NumberField Pointwise in
 variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
   {U : Type} [AddCommGroup U] [Module C U] [Module O U] [IsScalarTower O C U] {N : ℕ} in
 theorem _root_.GlobalTheory.HTLat.step_zero (f : Fin N → U) :
@@ -251,7 +244,6 @@ theorem _root_.GlobalTheory.HTLat.step_zero (f : Fin N → U) :
   simp [_root_.GlobalTheory.HTLat.step]
 
 set_option autoImplicit false in
-open scoped TensorProduct NNReal NumberField Pointwise in
 variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
   {U : Type} [AddCommGroup U] [Module C U] [Module O U] [IsScalarTower O C U] {N : ℕ} in
 theorem _root_.GlobalTheory.HTLat.step_mono (f : Fin N → U) :
@@ -262,7 +254,6 @@ theorem _root_.GlobalTheory.HTLat.step_mono (f : Fin N → U) :
   exact lt_of_lt_of_le hk hij
 
 set_option autoImplicit false in
-open scoped TensorProduct NNReal NumberField Pointwise in
 variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
   {U : Type} [AddCommGroup U] [Module C U] [Module O U] [IsScalarTower O C U] {N : ℕ} in
 theorem _root_.GlobalTheory.HTLat.mem_step_succ (f : Fin N → U) (i : Fin N) :
@@ -278,7 +269,6 @@ def grNorm (v : Valuation C ℝ≥0) (La : Submodule O U) (f : Fin N → U) (i :
 
 
 set_option autoImplicit false in
-open scoped TensorProduct NNReal NumberField Pointwise in
 variable {O C : Type} [CommRing O] [Field C] [Algebra O C]
   {U : Type} [AddCommGroup U] [Module C U] [Module O U] [IsScalarTower O C U] {N : ℕ} in
 theorem _root_.GlobalTheory.HTLat.exists_grAt_eq {v : Valuation C ℝ≥0} (hv : v.Integers O)

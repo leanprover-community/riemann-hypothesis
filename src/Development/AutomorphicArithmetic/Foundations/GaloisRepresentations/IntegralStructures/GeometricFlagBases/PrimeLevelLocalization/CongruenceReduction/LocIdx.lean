@@ -309,7 +309,6 @@ end Loc
 
 section Adic
 
-open Formalism.UG Formalism.UG.P
 
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) [v.asIdeal.IsMaximal]
 

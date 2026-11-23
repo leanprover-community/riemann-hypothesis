@@ -222,7 +222,6 @@ lemma dblInt_eq (e : PowerSeries ℂ) : C.dblInt e = B.prim (B.prim e) := by
 end TaylorSigmaUniqueness
 
 
-open TaylorSigmaUniqueness in
 theorem taylorSgStar'_of (h : TaylorSgStar) : TaylorSgStar' := by
   intro L
   rw [h L, B.sgStar, B.sigma, C.sgStar, C.lam, dblInt_eq, mul_assoc]

@@ -236,7 +236,6 @@ end GlobalTheory.Poinc.Sep.Frames
 
 namespace GlobalTheory.Poinc.Sep.Frames
 
-open GlobalTheory.UT.CoefBasic GlobalTheory.TorusExt
 
 variable {V : Type} [CommRing V] [IsDomain V] {D : DegPre V}
 
@@ -308,7 +307,6 @@ end GlobalTheory.Poinc.Sep.Frames
 
 namespace GlobalTheory.Poinc.Sep.Frames
 
-open GlobalTheory.UT.CoefBasic GlobalTheory.TorusExt
 
 variable {V : Type} [CommRing V] [IsDomain V] {D : DegPre V}
 

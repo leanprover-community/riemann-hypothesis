@@ -92,7 +92,6 @@ end GlobalTheory.RowExNF
 
 namespace GlobalTheory.RowExNF
 
-open Formalism.L2.Host
 
 theorem locIn_fin {L : Type} [Field L] [NumberField L] (χ : HChar L) (n : ℕ) (hn : 0 < n) (h : χ.OrderDvd n) :
     ∃ M : IntermediateField ℚ ℂ, FiniteDimensional ℚ M ∧ ∀ w x, ((χ.loc w x : ℂˣ) : ℂ) ∈ M := by
@@ -115,7 +114,6 @@ theorem locIn_fin {L : Type} [Field L] [NumberField L] (χ : HChar L) (n : ℕ) 
 end GlobalTheory.RowExNF
 
 namespace GlobalTheory.RowExNF
-open Formalism.L2.Host
 
 theorem unr_vals' (L : Type) [Field L] [NumberField L] (χ : HChar L) (m : (L →+* ℂ) → ℤ)
     (hm : ∀ k : Lˣ, ((χ.inf k : ℂˣ) : ℂ) = ∏ φ : L →+* ℂ, φ (k : L) ^ m φ) :
@@ -141,7 +139,6 @@ end GlobalTheory.RowExNF
 
 namespace GlobalTheory.RowExNF
 
-open Formalism.L2.Host
 
 theorem locIn_alg (L : Type) [Field L] [NumberField L] (χ : HChar L) (m : (L →+* ℂ) → ℤ)
     (S : Finset (HeightOneSpectrum (𝓞 L)))
@@ -180,7 +177,6 @@ end GlobalTheory.RowExNF
 
 namespace GlobalTheory.RowExNF
 
-open Formalism.L2.Host
 
 theorem exists_finset_over {L : Type} [Field L] [NumberField L] (n : ℕ) (hn : n ≠ 0) :
     ∃ S : Finset (HeightOneSpectrum (𝓞 L)), ∀ v, v ∉ S → ((n : ℕ) : 𝓞 L) ∉ v.asIdeal := by

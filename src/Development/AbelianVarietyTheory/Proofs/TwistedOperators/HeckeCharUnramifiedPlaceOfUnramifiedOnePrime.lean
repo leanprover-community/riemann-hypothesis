@@ -81,7 +81,6 @@ end GlobalTheory.UnramFromOnePrime
 
 namespace GlobalTheory.UnramFromOnePrime
 
-open GlobalTheory.IdemSupport GlobalTheory.ResLoc
 
 
 

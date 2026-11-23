@@ -67,7 +67,6 @@ private lemma sum_tensor_fin_cons {V : Type} {N n : ℕ} (T : Fin N → V → �
   simp only [Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ]
   ring
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory in
 attribute [local instance] Over.cartesianMonoidalCategory in
 private lemma exists_tensor_expansion_of_quasiperiodic {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
     {N : ℕ} {Λ : Type} (L : Λ → V) (A : Λ → V → ℂ) (T : Fin N → V → ℂ)
@@ -143,7 +142,6 @@ private lemma exists_tensor_expansion_of_quasiperiodic {V : Type} [NormedAddComm
     rw [hqk k]
     simp [Fin.tail]
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory in
 attribute [local instance] Over.cartesianMonoidalCategory in
 private lemma differentiable_simTheta {g m : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ}
     {a b : Fin g → ℂ} (al : Matrix (Fin 4) (Fin 4) ℤ) (k n : Fin 4 → Fin g → ℤ)
@@ -153,7 +151,6 @@ private lemma differentiable_simTheta {g m : ℕ} {τ : Matrix (Fin g) (Fin g) �
   simp only [dotProduct]
   fun_prop
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory in
 attribute [local instance] Over.cartesianMonoidalCategory in
 private lemma simTheta_update_add_lat {g m : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ}
     {a b : Fin g → ℂ} {al : Matrix (Fin 4) (Fin 4) ℤ} (ha : _root_.GlobalTheory.KeyPow.charHalf g a b)
@@ -203,7 +200,6 @@ private lemma simTheta_update_add_lat {g m : ℕ} {τ : Matrix (Fin g) (Fin g) �
   rw [← (_root_.GlobalTheory.SimilTheta.aut_similitude_and_mul g m τ a b al ha hτ hm hal).1 k n y c k₀ n₀]
   ring
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory in
 attribute [local instance] Over.cartesianMonoidalCategory in
 private lemma tensor_coeff_eq_zero_of_linearIndependent {V : Type} {N : ℕ} (T : Fin N → V → ℂ)
     (hli : LinearIndependent ℂ T) :
@@ -233,7 +229,6 @@ private lemma tensor_coeff_eq_zero_of_linearIndependent {V : Type} {N : ℕ} (T 
     exact congrFun (hk (I 0)) (Fin.tail I)
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.SimilTheta.exists_holomorphic_coord_simTheta : ∀ (g m : ℕ) (a b : Fin g → ℂ)
     (al : Matrix (Fin 4) (Fin 4) ℤ) (Th : Fin (m ^ g) → (Fin g → Fin g → ℂ) → (Fin g → ℂ) → ℂ),

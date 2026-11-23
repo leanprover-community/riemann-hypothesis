@@ -245,7 +245,6 @@ end Series
 
 section Symbol
 
-open MvPowerSeries
 
 variable {R σ Λ M : Type*} [CommRing R] [Finite σ] [AddCommGroup M] [Module R M]
   [Module (MvPowerSeries σ R) M]
@@ -256,7 +255,6 @@ end Symbol
 
 section Example
 
-open MvPowerSeries
 
 end Example
 

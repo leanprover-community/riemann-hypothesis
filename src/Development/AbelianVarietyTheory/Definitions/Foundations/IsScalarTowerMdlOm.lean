@@ -104,8 +104,6 @@ theorem _root_.GlobalTheory.ZetaB.eval_clsHat (X : _root_.GlobalTheory.KZ.Tower 
   rfl
 
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 attribute [local instance] _root_.GlobalTheory.K4.algMdl in
 theorem _root_.GlobalTheory.ZetaB.unitOf_val (X : _root_.GlobalTheory.KZ.Tower Ω ε) {a : X.K}
@@ -115,8 +113,6 @@ theorem _root_.GlobalTheory.ZetaB.unitOf_val (X : _root_.GlobalTheory.KZ.Tower �
   rfl
 
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 attribute [local instance] _root_.GlobalTheory.K4.algMdl in
 theorem _root_.GlobalTheory.ZetaB.unitOf_zero (X : _root_.GlobalTheory.KZ.Tower Ω ε) :

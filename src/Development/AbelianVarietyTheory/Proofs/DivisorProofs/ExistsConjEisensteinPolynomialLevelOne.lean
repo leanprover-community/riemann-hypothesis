@@ -65,8 +65,6 @@ private theorem exists_eisensteinCombination_of_isModularForm {w : ℕ} {F : ℍ
     rw [_root_.ReciprocityTheory.PGsh.coe_monoW a.2]
     rfl
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
-open ModularForm (E₄ E₆) in
 private theorem qConj_eisensteinCombination (g : ℂ ≃+* ℂ) {N : ℕ}
     (hN : 0 < N) {ι : Type} (s : Finset ι) (c : ι → ℂ) (u v : ι → ℕ) :
     _root_.GlobalTheory.QFam.QConj g N (fun τ => ∑ i ∈ s, c i * (E₄ τ ^ u i * E₆ τ ^ v i))
@@ -78,8 +76,6 @@ private theorem qConj_eisensteinCombination (g : ℂ ≃+* ℂ) {N : ℕ}
     ((h₄.pow hN (u i)).mul hN (h₆.pow hN (v i)))
 
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
-open ModularForm (E₄ E₆) in
 theorem _root_.GlobalTheory.QFam.levelPoly_conj : ∀ (g : ℂ ≃+* ℂ) (w N : ℕ) (F F' : ℍ → ℂ),
     0 < N → (∀ γ : SL(2, ℤ), F ∣[(w : ℤ)] γ = F) → _root_.GlobalTheory.QFam.QConj g N F F' →
     ∃ (s : Finset (ℕ × ℕ)) (c : ℕ × ℕ → ℂ), (∀ p ∈ s, 4 * p.1 + 6 * p.2 = w) ∧

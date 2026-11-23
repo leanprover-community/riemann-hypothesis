@@ -584,7 +584,6 @@ theorem exists_fixed (hc : ∀ x, Continuous fun g => ρ g x) (hn : NoFix (GK K)
   · rw [map_sub, (mem_Dcris _ _ _).1 hz g, hx g]
     abel
 
-open GlobalTheory.BKRightExact in
 theorem core_surj (hc : ∀ x, Continuous fun g => ρ g x) (hc' : ∀ x, Continuous fun g => ρ' g x)
     (hdr : IsDR ((PP l).PD K) ρ) (hn : NoFix (GK K).subtype ρ') (f : V →ₗ[ℚ_[l]] V')
     (hf : ∀ g x, f (ρ g x) = ρ' g (f x)) (hs : Function.Surjective f) (c' : ↥(GK K) → V')
@@ -624,7 +623,6 @@ theorem core_surj (hc : ∀ x, Continuous fun g => ρ g x) (hc' : ∀ x, Continu
 
 omit [FiniteDimensional ℚ_[l] V] [TopologicalSpace V]
   [IsModuleTopology ℚ_[l] V] [IsTopologicalAddGroup V] [ContinuousConstSMul ℚ_[l] V] in
-open GlobalTheory.BKRightExact in
 theorem core_inj {W : Type} [AddCommGroup W] [Module ℚ_[l] W] (σ : Representation ℚ_[l] ↥(GK K) W)
     (hc' : ∀ x, Continuous fun g => ρ' g x) (hn : NoFix (GK K).subtype ρ') (hW : NoFix (GK K).subtype σ)
     (f : V →ₗ[ℚ_[l]] V') (hf : ∀ g x, f (ρ g x) = ρ' g (f x)) (hi : Function.Injective f)

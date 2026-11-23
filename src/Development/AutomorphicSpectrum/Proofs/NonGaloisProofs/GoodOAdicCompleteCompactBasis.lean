@@ -277,7 +277,6 @@ theorem exists_pow_mem (h : GoodO (Qp := ℚ_[l]) LL O) {ϖ : O} (hϖ : Irreduci
     ring
 
 
-open GlobalTheory.TateTop in
 theorem goodO_structure : ∀ (l : ℕ) [Fact l.Prime], ∀ (LL : Type) [Field LL] [Algebra ℚ_[l] LL]
     [TopologicalSpace LL] (O : Type) [CommRing O] [Algebra O LL], GoodO (Qp := ℚ_[l]) LL O →
     ∀ ϖ : O, Irreducible ϖ → IsAdicComplete (Ideal.span {ϖ}) O ∧ Finite (O ⧸ Ideal.span {ϖ}) ∧

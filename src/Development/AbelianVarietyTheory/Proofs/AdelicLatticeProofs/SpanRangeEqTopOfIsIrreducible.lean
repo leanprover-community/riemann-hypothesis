@@ -97,9 +97,6 @@ private theorem subalgebra_end_eq_whole_of_isSimpleModule {V : Type} [AddCommGro
   exact a.2
 
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
-open scoped MonoidAlgebra in
 theorem _root_.GlobalTheory.ClassFin.span_range_eq_top_of_isIrreducible :
     ∀ (G : Type) [Group G] (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V) [FiniteDimensional ℂ V], ρ.IsIrreducible → Submodule.span ℂ (Set.range ρ) = ⊤ := by
   intro G _ V _ _ ρ _ h

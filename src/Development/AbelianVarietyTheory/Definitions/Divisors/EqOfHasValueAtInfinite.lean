@@ -83,8 +83,6 @@ private theorem valuation_det_le_one_of_entries_integer {y : GL n k}
   exact (Valuation.mem_integer_iff _ _).mp (SetLike.coe_mem _)
 
 
-open MeasureTheory Matrix in
-open ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] in
 variable [MeasurableSpace (GL n k)] in
@@ -103,8 +101,6 @@ theorem _root_.GlobalTheory.LGrp.nabs_det_of_mem_KO {x : GL n k}
     exact (Valuation.ne_zero_iff _).mpr (Units.ne_zero _)
   exact le_antisymm h1 ((inv_le_one₀ hpos).mp h2)
 
-open MeasureTheory Matrix in
-open ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] in
 variable [MeasurableSpace (GL n k)] in
@@ -120,8 +116,6 @@ private theorem smGL_ord_pow_eq_mul (x : kˣ) (m : ℕ) :
     push_cast
     ring
 
-open MeasureTheory Matrix in
-open ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] in
 variable [MeasurableSpace (GL n k)] in
@@ -163,8 +157,6 @@ private theorem exists_unit_ord_eq_one_and_nabs_eq_inv_resCard :
   · omega
 
 
-open MeasureTheory Matrix in
-open ValuativeRel in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] in
 variable [MeasurableSpace (GL n k)] in

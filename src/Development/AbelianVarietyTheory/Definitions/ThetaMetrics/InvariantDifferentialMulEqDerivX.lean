@@ -120,7 +120,6 @@ end Group
 
 section Law
 
-open MvPowerSeries
 
 variable {R S : Type} [CommRing R] [CommRing S]
 
@@ -154,7 +153,6 @@ end Points
 
 section Examples
 
-open MvPowerSeries
 
 variable {R : Type u} [CommRing R]
 

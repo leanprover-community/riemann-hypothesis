@@ -177,7 +177,6 @@ theorem eps_rel (Λ Λ' : CLiftK g D) (v : ∀ c, (g.obj c).Bˣ)
   exact five (g.obj c₂).δ (GlobalTheory.CompanionTheory.ConeUnit.r_sub_mem Λ' φ ψ χ hχ) (GlobalTheory.CompanionTheory.ConeUnit.r_sub_mem Λ φ ψ χ hχ) e0
     (eps_sub Λ Λ' v hv ψ) (eps_sub Λ Λ' v hv χ) key'
 
-open GlobalTheory.CompanionTheory.ConeZcls in
 theorem cz_eq (Λ Λ' : CLiftK g D) : cz Λ' = cz Λ := by
   have hl : ∀ c, ∃ v : (g.obj c).Bˣ, Ideal.Quotient.mk (g.obj c).J ((v : (g.obj c).Bˣ) : (g.obj c).B) =
       ub (Λ.p c) (Λ'.p c) ((Λ.hp c).trans (Λ'.hp c).symm) :=

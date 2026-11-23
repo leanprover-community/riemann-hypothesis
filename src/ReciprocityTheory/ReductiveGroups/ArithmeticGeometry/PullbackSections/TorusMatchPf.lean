@@ -54,11 +54,9 @@ variable (X : Data E r) (x : Frame X.Ψ r)
 
 end Frame
 
-section Torus
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X : Data E r} {x : Frame X.Ψ r}
 
-end Torus
 
 section Relab
 
@@ -169,7 +167,6 @@ def wt (i : ReciprocityTheory.ChartRestriction.G.I2.Idx A.T.dim) : ℂ :=
 
 end Map
 
-section Pin1
 
 attribute [local instance] Classical.propDecidable
 
@@ -178,6 +175,5 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : D
   {U : Unf Xo c σ r} (hU : IsUnf U) (hσ : GoodEmb c σ) {k : U.Comp} {x : (U.X k).dom}
   (W : UnfAt U k x) (A : ReciprocityTheory.ChartRestriction.G.I2.TorusAt (U.X k) x.1)
 
-end Pin1
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

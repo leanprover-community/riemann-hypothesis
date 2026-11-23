@@ -151,7 +151,6 @@ end GlobalTheory.CompanionTheory.RSq
 
 namespace GlobalTheory.CompanionTheory.RSq
 
-open GroundTheory.Automorphic.AdelicGLn GroundTheory.Automorphic.GL2Classical
 
 abbrev uOf (γ : GL (Fin 2) ℚ) (h : G2) : FiniteAdelicGL ℚ 2 := (finiteDiagonal ℚ 2 γ)⁻¹ * (prodEquiv ℚ 2 h).2
 
@@ -285,7 +284,6 @@ end GlobalTheory.CompanionTheory.RSq
 
 namespace GlobalTheory.CompanionTheory.RSq
 
-open GroundTheory.Automorphic.AdelicGLn GroundTheory.Automorphic.GL2Classical UpperHalfPlane
 
 theorem lf_det (v : Pl) (u : FiniteAdelicGL ℚ 2) :
     (lf v (GeneralLinearGroup.det u) : Qv v) = ((GeneralLinearGroup.det (glAt v u)) : (Qv v)ˣ) := by
@@ -363,7 +361,6 @@ end GlobalTheory.CompanionTheory.RSq
 
 namespace GlobalTheory.CompanionTheory.RSq
 
-open GroundTheory.Automorphic.AdelicGLn GroundTheory.Automorphic.GL2Classical UpperHalfPlane
 
 theorem archLift_tri (k : ℕ) (f : ℍ → ℂ) {g x : GL (Fin 2) ℝ} (hg : 0 < g.det.val) (hx : 0 < x.det.val)
     (h10 : (g : Matrix (Fin 2) (Fin 2) ℝ) 1 0 = 0) :
@@ -425,7 +422,6 @@ end GlobalTheory.CompanionTheory.RSq
 
 namespace GlobalTheory.CompanionTheory.RSq
 
-open GroundTheory.Automorphic.AdelicGLn GroundTheory.Automorphic.GL2Classical UpperHalfPlane
 
 theorem f3a : Ad3.R.B0 → Ad3.R.HeckeSumLocalTranslates := by
   intro h0 k N _ hk χ hχ f a hf ha ω φ hω hL v ϖ hϖ t t' ht ht' x hx

@@ -76,7 +76,6 @@ end GlobalTheory.Core.MiFold
 
 namespace GlobalTheory.Core.MiFold
 
-open scoped ENNReal
 
 variable {D : D7}
 

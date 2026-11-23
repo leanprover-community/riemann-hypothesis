@@ -78,7 +78,6 @@ private theorem nonempty_equiv_smInd_of_eq [TopologicalSpace G] [IsTopologicalGr
   obtain rfl : σ = σ' := MonoidHom.ext fun p => hσ p p.2 p.2
   exact ⟨Representation.Equiv.refl _⟩
 
-open ValuativeRel MeasureTheory in
 variable (R : Type) [CommRing R] {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
   [Fintype n] [DecidableEq n] in
 private theorem parabLower_eq_parab_sumComm (e : a ⊕ b ≃ n) :
@@ -88,7 +87,6 @@ private theorem parabLower_eq_parab_sumComm (e : a ⊕ b ≃ n) :
   rw [_root_.GlobalTheory.SmGL.mem_parabLower_two, _root_.GlobalTheory.SmGL.mem_parab_two]
   simp
 
-open ValuativeRel MeasureTheory in
 variable (R : Type) [CommRing R] {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
   [Fintype n] [DecidableEq n] in
 private theorem leviProj_sumComm_eq_swap_leviProjLower (e : a ⊕ b ≃ n)
@@ -111,7 +109,6 @@ private theorem leviProj_sumComm_eq_swap_leviProjLower (e : a ⊕ b ≃ n)
     rw [_root_.GlobalTheory.SmGL.leviProj_apply, _root_.GlobalTheory.SmGL.leviProjLower_apply]
     rfl
 
-open ValuativeRel MeasureTheory in
 variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {a b : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] in
 private theorem deltaHalf_inv_leviTwo_eq_deltaHalf_swap (g : GL a k × GL b k) :
@@ -123,7 +120,6 @@ private theorem deltaHalf_inv_leviTwo_eq_deltaHalf_swap (g : GL a k × GL b k) :
   simp only [Prod.fst_swap, Prod.snd_swap, MonoidHom.inv_apply, mul_inv, inv_inv]
   exact mul_comm _ _
 
-open ValuativeRel MeasureTheory in
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] in
 private theorem jacquet_apply_eq_of_eq {M M' : Type} [Group M] [Group M']
     (π : Representation ℂ G V) (N : Subgroup G) (s : M →* G) (s' : M' →* G)
@@ -135,7 +131,6 @@ private theorem jacquet_apply_eq_of_eq {M M' : Type} [Group M] [Group M']
   congr 1
   rw [h]
 
-open ValuativeRel MeasureTheory in
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] in
 private theorem nonempty_equiv_twist_jacquet_comp {M M' K : Type} [Group M] [Group M'] [Group K]
     (π : Representation ℂ G V) {N N' : Subgroup G} (hN : N = N') (s : M →* G) (s' : M' →* G)
@@ -155,7 +150,6 @@ private theorem nonempty_equiv_twist_jacquet_comp {M M' K : Type} [Group M] [Gro
   rw [h]
   exact ⟨Representation.Equiv.refl _⟩
 
-open ValuativeRel MeasureTheory in
 variable (R : Type) [CommRing R] {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
   [Fintype n] [DecidableEq n] in
 private theorem unipRadLower_eq_unipRad_sumComm (e : a ⊕ b ≃ n) :
@@ -168,7 +162,6 @@ private theorem unipRadLower_eq_unipRad_sumComm (e : a ⊕ b ≃ n) :
   simp only [Bool.forall_bool]
   exact and_comm
 
-open ValuativeRel MeasureTheory in
 variable (R : Type) [CommRing R] {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
   [Fintype n] [DecidableEq n] in
 private theorem leviEmb_leviTwo_apply_eq_fromBlocks (e : a ⊕ b ≃ n) (g : GL a R × GL b R) (u v : a ⊕ b) :
@@ -189,7 +182,6 @@ private theorem leviEmb_leviTwo_apply_eq_fromBlocks (e : a ⊕ b ≃ n) (g : GL 
       _root_.GlobalTheory.SmGL.leviEmb_apply_same]
     rfl
 
-open ValuativeRel MeasureTheory in
 variable (R : Type) [CommRing R] {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
   [Fintype n] [DecidableEq n] in
 private theorem leviEmb_leviTwo_eq_leviEmb_sumComm_swap (e : a ⊕ b ≃ n) (g : GL a R × GL b R) :
@@ -205,7 +197,6 @@ private theorem leviEmb_leviTwo_eq_leviEmb_sumComm_swap (e : a ⊕ b ≃ n) (g :
   rcases u with u | u <;> rcases v with v | v <;> rfl
 
 
-open ValuativeRel MeasureTheory in
 theorem _root_.GlobalTheory.SmGL.SwapBlocks.lower_equiv_upper_swap : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (a b n : Type) [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype n] [DecidableEq n] (e : a ⊕ b ≃ n) (V : Type) [AddCommGroup V] [Module ℂ V], (∀ ρ : Representation ℂ (GL a k × GL b k) V, Nonempty ((_root_.GlobalTheory.SmGL.ind₂Lower e ρ).Equiv (_root_.GlobalTheory.SmGL.ind₂ ((Equiv.sumComm b a).trans e) (ρ.comp (MulEquiv.prodComm : GL b k × GL a k ≃* GL a k × GL b k).toMonoidHom)))) ∧ ∀ π : Representation ℂ (GL n k) V, Nonempty ((_root_.GlobalTheory.SmGL.jac₂Lower e π).Equiv ((_root_.GlobalTheory.SmGL.jac₂ ((Equiv.sumComm b a).trans e) π).comp (MulEquiv.prodComm : GL a k × GL b k ≃* GL b k × GL a k).toMonoidHom)) := by
   intro k _ _ _ _ a b n _ _ _ _ _ _ e V _ _
   refine ⟨fun ρ => ?_, fun π => ?_⟩

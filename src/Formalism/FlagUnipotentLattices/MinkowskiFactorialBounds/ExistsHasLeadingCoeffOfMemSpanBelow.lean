@@ -1498,11 +1498,9 @@ theorem existsNormalForm : Formalism.HermitianLatticeCounting.S6.NormalForm := b
   · obtain ⟨j, c, hj, hS⟩ := normalFormMeetNeBot K V H r F F' hμ hrel hm
     exact ⟨j, hj.le, c, nf_full F F' hA hA' j hj.le c hS⟩
 
-section DetBlocks
 
 variable {R : Type} [CommRing R] {n : Type} [Fintype n] [DecidableEq n]
 
-end DetBlocks
 
 theorem eichlerMapIsometry : Formalism.HermitianLatticeCounting.S6.EichlerIsom := by
   intro K V _ _ _ _ H x v c hxx hxv hc

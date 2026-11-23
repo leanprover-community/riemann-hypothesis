@@ -101,7 +101,6 @@ private theorem cf_primes {L : Type} [Field L] [NumberField L] [IsCMField L] (w 
       rfl
     rw [hx]
 
-open scoped Pointwise in
 theorem UpperTheory.V.Z.Sym.Ga.conjFrob :
     ∀ (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (c : G (maximalRealSubfield L) Ω), IsConjEl c → ∀ w w' : Plc L, w'.under (𝓞 (Lp L)) = w.under (𝓞 (Lp L)) → ∀ s, Ga.FrobAt w s → Ga.FrobAt w' s ∨ ∃ s', Ga.FrobAt w' s' ∧ s'.restrictScalars (maximalRealSubfield L) = c * s.restrictScalars (maximalRealSubfield L) * c⁻¹ := by
   intro L Ω _ _ _ _ _ _ c hc w w' hw s hs

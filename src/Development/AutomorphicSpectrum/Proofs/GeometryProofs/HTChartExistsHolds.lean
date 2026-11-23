@@ -94,7 +94,6 @@ end GlobalTheory.CompanionTheory.Ar.BT.ChartEx
 
 namespace GlobalTheory.CompanionTheory.Ar.BT.ChartEx
 
-open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
 
 variable {R : Type} [CommRing R] {E : Type} [Field E] [NumberField E] {N : ℕ} {T : Type} [CommGroup T]
 
@@ -157,7 +156,6 @@ end GlobalTheory.CompanionTheory.Ar.BT.ChartEx
 
 namespace GlobalTheory.CompanionTheory.Ar.BT.ChartEx
 
-open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField
 
 theorem htChartExists : HTChartExists := by
   intro R K _ _ _ _ _ _ _ _ E _ _ c p n N _ T _ _ Γ S G _ _ x i hTor hSm act hmon L _ _ M ρ hρ Ω _ _ _ _ j hj

@@ -159,7 +159,6 @@ theorem trace_leading_submatrix_pmat {ε : Fin n → Bool} (z : PCoord ε → �
   simp [pmat_diag_zero]
 
 
-open Polynomial in
 theorem lemma3c {ε : Fin n → Bool} (z : PCoord ε → ℂ) {i : ℕ} (hi : i ≤ n) :
     ∑ S, wS z hi S * yS z S.1 = 0 := by
   have hP := sum_weights_coeff_eq_det z hi (fun s => ((pev z s : ℝ) : ℂ)) (pmat z) (pmat_eq_eigenvectorUnitary_conj_diagonal_pev z).symm 1
@@ -176,7 +175,6 @@ theorem lemma3c {ε : Fin n → Bool} (z : PCoord ε → ℂ) {i : ℕ} (hi : i 
   exact_mod_cast hP
 
 
-open Polynomial in
 theorem lemma3d {ε : Fin n → Bool} (z : PCoord ε → ℂ) {i : ℕ} (hi : i ≤ n) :
     ∑ S, wS z hi S * yS z S.1 ^ 2 = Vi (pmat z) i := by
   have hP2 := sum_weights_coeff_eq_det z hi (fun s => ((pev z s : ℝ) : ℂ)) (pmat z) (pmat_eq_eigenvectorUnitary_conj_diagonal_pev z).symm 2

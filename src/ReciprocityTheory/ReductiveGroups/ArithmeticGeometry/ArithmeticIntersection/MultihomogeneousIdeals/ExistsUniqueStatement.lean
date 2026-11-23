@@ -92,12 +92,10 @@ def GeoNumStatement : Prop :=
 
 end Fibre
 
-section BaseField
 
 variable {K : Type*} [Fintype K] (F F' : Type*) [Field F] [Field F'] [Algebra F F'] (ι : K → Type*)
   [∀ k, Fintype (ι k)]
 
-end BaseField
 
 section Positivity
 
@@ -110,10 +108,8 @@ def PositivityStatement : Prop :=
 
 end Positivity
 
-section Inhabit
 
 variable (F : Type*) [Field F]
 
-end Inhabit
 
 end ReciprocityTheory.ChartRestriction.G.AI.I1

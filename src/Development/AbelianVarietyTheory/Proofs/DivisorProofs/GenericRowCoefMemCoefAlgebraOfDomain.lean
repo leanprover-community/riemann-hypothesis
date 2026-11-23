@@ -287,7 +287,6 @@ end GlobalTheory.GenCoef
 
 namespace GlobalTheory.HighWt
 
-open Formalism.CohomologicalDescent.DepthNonnegative Formalism.CohomologicalDescent.LD GlobalTheory.ExpFrame
 
 theorem coefIn_of_domain : ∀ (O : Type) [CommRing O] [IsDomain O] [CharZero O] (N : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι]
     (lam : ι → ℕ → ℕ), CoefIn O N lam := by

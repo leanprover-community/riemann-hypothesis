@@ -52,7 +52,6 @@ private theorem rev_lin (r : ℂ) (hr : r ≠ 0) :
   · rw [revAt_eq_self_of_lt (by omega)]
     simp [coeff_X, coeff_one, coeff_C]
 
-open Polynomial in
 private theorem rev_prod (s : Multiset ℂ) (hs : ∀ z ∈ s, z ≠ 0) :
     ((s.map (fun a => X - C a)).prod : ℂ[X]).reverse.roots = s.map (fun z => z⁻¹) := by
   induction s using Multiset.induction_on with
@@ -71,7 +70,6 @@ private theorem rev_prod (s : Multiset ℂ) (hs : ∀ z ∈ s, z ≠ 0) :
       roots_mul (mul_ne_zero hl hm'), roots_C_mul _ (neg_ne_zero.mpr ha), roots_X_sub_C, ih',
       Multiset.map_cons, Multiset.singleton_add]
 
-open Polynomial in
 private theorem rev_roots (Q : ℂ[X]) (h0 : Q.coeff 0 ≠ 0) :
     Q.reverse.roots = Q.roots.map (fun z => z⁻¹) := by
   have hQ : Q ≠ 0 := fun h => h0 (by simp [h])
@@ -84,7 +82,6 @@ private theorem rev_roots (Q : ℂ[X]) (h0 : Q.coeff 0 ≠ 0) :
   conv_lhs => rw [← hf]
   rw [reverse_mul_of_domain, reverse_C, roots_C_mul _ hl, rev_prod _ hz]
 
-open Polynomial in
 theorem UpperTheory.Gal.LocalSmoothExtension.invRoots_of :
     InvRoots := by
   intro F _ _ P h0 τ

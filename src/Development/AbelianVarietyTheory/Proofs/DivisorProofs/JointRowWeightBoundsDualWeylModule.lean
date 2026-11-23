@@ -99,7 +99,6 @@ end GlobalTheory.HighWt
 
 namespace GlobalTheory.HighWt
 
-open MvPolynomial Formalism.GradedWeylDivisibility
 
 theorem sum_fin_lt_one {N : ℕ} (h : 0 < N) (g : Fin N → ℕ) : ∑ b : Fin N with b.val < 1, g b = g ⟨0, h⟩ := by
   rw [Finset.sum_eq_single_of_mem (⟨0, h⟩ : Fin N) (by simp)]

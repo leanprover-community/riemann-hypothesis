@@ -307,7 +307,6 @@ end
 
 namespace GlobalTheory.NL.KillLevels
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices
 
 
 set_option maxHeartbeats 2000000 in

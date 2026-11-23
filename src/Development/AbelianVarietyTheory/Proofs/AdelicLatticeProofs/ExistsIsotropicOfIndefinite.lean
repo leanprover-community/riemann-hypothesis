@@ -63,8 +63,6 @@ theorem _root_.GlobalTheory.UTrans.herm_diagonal_self {r : ℕ} (g u : Fin r →
   simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.herm, diagonal_apply, mul_ite, ite_mul]
 
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.UTrans.exists_isotropic_diagonal {n : ℕ} (hn : 3 ≤ n) {g : Fin n → E}
     (hg : ∀ i, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (g i) = g i) (hg0 : ∀ i, g i ≠ 0)
@@ -100,15 +98,11 @@ theorem _root_.GlobalTheory.UTrans.exists_isotropic_diagonal {n : ℕ} (hn : 3 �
   rw [hw]
   ring
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma herm_eq_dotProduct_mulVec_cc {r : ℕ} (H : Matrix (Fin r) (Fin r) E) (x y : Fin r → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.herm H x y = x ⬝ᵥ (H *ᵥ fun b => _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (y b)) := by
   simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.herm, dotProduct, mulVec, Finset.mul_sum, mul_assoc]
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma herm_mulVec_mulVec' {r : ℕ} (G P : Matrix (Fin r) (Fin r) E) (u v : Fin r → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G (P *ᵥ u) (P *ᵥ v) = _root_.ReciprocityTheory.ChartRestriction.G.FD.herm (Pᵀ * G * P.map _root_.ReciprocityTheory.ChartRestriction.G.FD.cc) u v := by
@@ -119,16 +113,12 @@ private lemma herm_mulVec_mulVec' {r : ℕ} (G P : Matrix (Fin r) (Fin r) E) (u 
   rw [herm_eq_dotProduct_mulVec_cc, herm_eq_dotProduct_mulVec_cc, hc, ← mulVec_mulVec, ← mulVec_mulVec,
     dotProduct_mulVec u, vecMul_transpose]
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma re_mul_cc_eq_normSq_mul_re (τ : E →+* ℂ) (y d : E) :
     (τ (y * d * _root_.ReciprocityTheory.ChartRestriction.G.FD.cc y)).re = Complex.normSq (τ y) * (τ d).re := by
   rw [map_mul, map_mul, _root_.GlobalTheory.Published.embedding_cc, mul_right_comm, Complex.mul_conj,
     Complex.re_ofReal_mul]
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma exists_re_pos_of_herm_diagonal_re_pos {r : ℕ} (τ : E →+* ℂ) (d y : Fin r → E)
     (hy : 0 < (τ (_root_.ReciprocityTheory.ChartRestriction.G.FD.herm (Matrix.diagonal d) y y)).re) : ∃ i, 0 < (τ (d i)).re := by
@@ -140,8 +130,6 @@ private lemma exists_re_pos_of_herm_diagonal_re_pos {r : ℕ} (τ : E →+* ℂ)
   rw [re_mul_cc_eq_normSq_mul_re]
   exact mul_nonpos_of_nonneg_of_nonpos (Complex.normSq_nonneg _) (h i)
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma exists_re_neg_of_herm_diagonal_re_neg {r : ℕ} (τ : E →+* ℂ) (d y : Fin r → E)
     (hy : (τ (_root_.ReciprocityTheory.ChartRestriction.G.FD.herm (Matrix.diagonal d) y y)).re < 0) : ∃ i, (τ (d i)).re < 0 := by
@@ -154,8 +142,6 @@ private lemma exists_re_neg_of_herm_diagonal_re_neg {r : ℕ} (τ : E →+* ℂ)
   exact mul_nonneg (Complex.normSq_nonneg _) (h i)
 
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.UTrans.exists_isotropic_of_indefinite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (σ : E →+* E) (G : Matrix (Fin n) (Fin n) E), (∀ a, σ a = IsCMField.complexConj E a) → _root_.GlobalTheory.UTrans.IsHerm σ G → 3 ≤ n → (∀ τ : E →+* ℂ, (∃ x, 0 < (τ (_root_.GlobalTheory.UTrans.hf σ G x x)).re) ∧ ∃ y, (τ (_root_.GlobalTheory.UTrans.hf σ G y y)).re < 0) → ∃ z : Fin n → E, z ≠ 0 ∧ _root_.GlobalTheory.UTrans.hf σ G z z = 0 := by
   intro E _ _ _ n σ G hσ hG hn hs

@@ -118,7 +118,6 @@ end
 
 namespace GlobalTheory.LiftStandardGroup
 
-open ReciprocityTheory.Aut
 
 section Local2
 
@@ -184,7 +183,6 @@ end GlobalTheory.LiftStandardGroup
 
 namespace GlobalTheory.LiftStandardGroup
 
-open ReciprocityTheory.Aut
 
 theorem list_prod_map_eq {ι G : Type} [Monoid G] (f : ι → G) (a : ι) :
     ∀ l : List ι, l.Nodup → a ∈ l → (∀ b ∈ l, b ≠ a → f b = 1) → (l.map f).prod = f a := by

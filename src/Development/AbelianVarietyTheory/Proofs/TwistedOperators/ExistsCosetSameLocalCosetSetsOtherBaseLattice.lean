@@ -95,7 +95,6 @@ end GlobalTheory.FunObj.CosFlip
 
 namespace GlobalTheory.FunObj.CosFlip
 
-open Matrix GlobalTheory.FunObj.Comparison₂ GlobalTheory.SplitFlip GlobalTheory.StdFrames ValuativeRel Formalism.L2.DIV
 
 theorem sub_mem_iff_of_sub_mem {R M : Type*} [Ring R] [AddCommGroup M] [Module R M] (S : Submodule R M) {a b : M}
     (h : a - b ∈ S) (x : M) : x - a ∈ S ↔ x - b ∈ S := by

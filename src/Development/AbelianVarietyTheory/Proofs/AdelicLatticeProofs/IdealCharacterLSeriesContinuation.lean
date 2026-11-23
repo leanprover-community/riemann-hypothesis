@@ -77,9 +77,6 @@ private theorem eq_of_norm_sub_div_le {f : ℝ → ℂ} {R R' : ℂ} {C C' : ℝ
     mul_le_mul_of_nonneg_left (by linarith [le_abs_self C, le_abs_self C']) ht0.le
   linarith
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
-open Filter Topology Set Asymptotics in
 private theorem exists_differentiable_eq_div_of_family {ι : Type} (M G : ι → ℂ → ℂ)
     (F : ℂ → ℂ) (hM : ∀ i, Differentiable ℂ (M i)) (hG : ∀ i, Differentiable ℂ (G i))
     (hGF : ∀ i s, 1 < s.re → G i s = M i s * F s) (hne : ∀ s, ∃ i, M i s ≠ 0) :
@@ -113,9 +110,6 @@ private theorem exists_differentiable_eq_div_of_family {ι : Type} (M G : ι →
     simp only
     rw [hGF _ s hs, mul_div_cancel_left₀ _ (hw s)]
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
-open Filter Topology Set Asymptotics in
 private theorem differentiable_mellin_of_support_in_Icc_pos {w : ℝ → ℂ} (hw : Continuous w) {a b : ℝ}
     (ha : 0 < a) (hab : ∀ y, w y ≠ 0 → a ≤ y ∧ y ≤ b) : Differentiable ℂ (mellin w) := by
   intro s
@@ -132,9 +126,6 @@ private theorem differentiable_mellin_of_support_in_Icc_pos {w : ℝ → ℂ} (h
     ((isBigO_zero _ _).congr' htop.symm EventuallyEq.rfl) (by linarith)
     ((isBigO_zero _ _).congr' hzero.symm EventuallyEq.rfl) (by linarith)
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
-open Filter Topology Set Asymptotics in
 private theorem exists_weight_mellin_ne_zero (s₀ : ℂ) :
     ∃ w : ℝ → ℂ, ContDiff ℝ ∞ w ∧ (∃ a b : ℝ, 0 < a ∧ ∀ y, w y ≠ 0 → a ≤ y ∧ y ≤ b) ∧
       mellin w s₀ ≠ 0 := by
@@ -182,9 +173,6 @@ private theorem exists_weight_mellin_ne_zero (s₀ : ℂ) :
     exact ofReal_ne_zero.2 ψ.integral_pos.ne'
 
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
-open Filter Topology Set Asymptotics in
 theorem _root_.GlobalTheory.idealCharacter_LSeries_continuation : ∀ (K : Type) [Field K] [NumberField K] (m : Ideal (𝓞 K)) (X : Ideal (𝓞 K) → ℂ) (φ : mixedSpace K → ℂ), m ≠ ⊥ → X ⊥ = 0 → (∀ I J, X (I * J) = X I * X J) → (∀ I, I ≠ ⊥ → I ⊔ m = ⊤ → ‖X I‖ = 1) → (∀ I, I ⊔ m ≠ ⊤ → X I = 0) → (∀ x y, φ (x * y) = φ x * φ y) → (∀ (t : ℝ) x, 0 < t → φ (t • x) = φ x) → ContDiffOn ℝ ∞ φ {x | mixedEmbedding.norm x ≠ 0} → (∀ x, mixedEmbedding.norm x ≠ 0 → ‖φ x‖ = 1) → (∀ β : 𝓞 K, β ≠ 0 → β - 1 ∈ m → X (Ideal.span {β}) = φ (mixedEmbedding K β)) → ∃ Z : ℂ → ℂ, Differentiable ℂ Z ∧ (∀ s : ℂ, 1 < s.re → Z s = (s - 1) * ∑' I, X I * ((Ideal.absNorm I : ℕ) : ℂ) ^ (-s)) ∧ ((∃ J, J ≠ ⊥ ∧ J ⊔ m = ⊤ ∧ X J ≠ 1) → Z 1 = 0) := by
   intro K _ _ m X φ hm hX0 hXmul hXn hXz hφmul hφh hφs hφn hβ
   have hmain := _root_.GlobalTheory.smoothedSum_main_term_representatives K m X φ hm hX0 hXmul

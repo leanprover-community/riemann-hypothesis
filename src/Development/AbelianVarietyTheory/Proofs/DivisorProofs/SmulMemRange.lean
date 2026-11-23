@@ -73,7 +73,6 @@ private lemma mul_eq_smul_one_of_mul_eq_smul_one [IsDomain R] {A B : Matrix n n 
   simp only [Matrix.smul_apply, smul_eq_mul] at hij
   exact mul_left_cancel₀ hdet hij
 
-open Matrix in
 variable {A O : Type*} [CommRing A] [CommRing O] {h : ℕ} in
 private lemma smul_mem_range_of_mem_ker_of_mul_eq (θ : A →+* O) (hθ : Function.Surjective θ)
     {ξ ν : A} (hker : RingHom.ker θ = Ideal.span {ξ}) (hξ : ∀ y : A, y * ξ = 0 → y = 0)
@@ -109,7 +108,6 @@ private lemma smul_mem_range_of_mem_ker_of_mul_eq (θ : A →+* O) (hθ : Functi
   rw [← RingHom.map_mulVec, hQg]
   simp [← hs]
 
-open Matrix in
 variable {O : Type*} [CommRing O] {h : ℕ} in
 private lemma map_iInf_eigenspace_le_of_intertwine {ι : Type*} {X Y : ι → Matrix (Fin h) (Fin h) O}
     {Z : Matrix (Fin h) (Fin h) O} (c : ι → O) (hZ : ∀ a, Y a * Z = Z * X a) :
@@ -124,7 +122,6 @@ private lemma map_iInf_eigenspace_le_of_intertwine {ι : Type*} {X Y : ι → Ma
   rw [toLin'_apply, mulVec_mulVec, hZ, ← mulVec_mulVec, hxa, mulVec_smul]
 
 
-open Matrix in
 theorem _root_.GlobalTheory.Sandwich.HodgeTateBound.bound : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C]
     [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C]
     [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O], v.Integers O →

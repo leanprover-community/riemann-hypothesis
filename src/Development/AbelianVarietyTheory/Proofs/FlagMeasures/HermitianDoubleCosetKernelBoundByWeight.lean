@@ -68,8 +68,6 @@ theorem _root_.GlobalTheory.HL.KernelWeight.hf_add_left (L : _root_.Formalism.Ma
   rw [add_sub_cancel_right] at h
   linear_combination -h
 
-open scoped Pointwise ENNReal Classical in
-open ValuativeRel MeasureTheory in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 theorem _root_.GlobalTheory.HL.KernelWeight.hf_smul_left (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E)

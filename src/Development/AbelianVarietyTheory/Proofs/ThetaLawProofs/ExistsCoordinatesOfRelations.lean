@@ -64,8 +64,6 @@ private theorem exists_differentiableOn_ne_zero_mul_eq {E : Type} [NormedAddComm
   intro z hz
   exact (((hρ z hz).self_of_nhds.1).congr_of_eventuallyEq (heq z hz)).differentiableWithinAt
 
-open Filter Set in
-open scoped Topology in
 private theorem eq_of_continuousAt_mul_eq_eventually {E : Type} [TopologicalSpace E] {θ f ρ₁ ρ₂ : E → ℂ} {z : E}
     (hnz : ∃ᶠ w in 𝓝 z, θ w ≠ 0) (h₁ : ContinuousAt ρ₁ z) (h₂ : ContinuousAt ρ₂ z)
     (e₁ : ∀ᶠ w in 𝓝 z, ρ₁ w * θ w = f w) (e₂ : ∀ᶠ w in 𝓝 z, ρ₂ w * θ w = f w) :
@@ -75,8 +73,6 @@ private theorem eq_of_continuousAt_mul_eq_eventually {E : Type} [TopologicalSpac
   exact mul_right_cancel₀ hy.1 (hy.2.1.trans hy.2.2.symm)
 
 
-open Filter Set in
-open scoped Topology in
 theorem _root_.GlobalTheory.ThetaValueCont.continuousAt_constant {V V' K ι : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [FiniteDimensional ℂ V]
     [NormedAddCommGroup V'] [NormedSpace ℂ V'] [FiniteDimensional ℂ V'] {B : Set V} {b₀ : V}
     {W : ι → Set (V × V')} {f : ι → V × V' → ℂ} {θ : K → V × V' → ℂ} {C : Set K} (hC : C.Finite) {κ : V → K}
@@ -204,8 +200,6 @@ theorem _root_.GlobalTheory.ThetaValueCont.continuousAt_constant {V V' K ι : Ty
 
 open scoped Matrix in
 
-open Filter Set in
-open scoped Topology in
 open Complex Matrix in
 theorem _root_.GlobalTheory.ThetaValueCont.exists_coordinates_of_relations {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian)
     (hpos : ∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm.mulVec (star z)).re) (e f : Fin g → Fin g → ℂ)

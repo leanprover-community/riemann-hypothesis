@@ -130,7 +130,6 @@ end GlobalTheory.TowerSmooth
 
 namespace GlobalTheory.TowerSmooth
 
-open GlobalTheory.WeilVacMove
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {k : ℕ}
 
@@ -222,7 +221,6 @@ end GlobalTheory.TowerSmooth
 
 namespace GlobalTheory.TowerSmooth
 
-open GlobalTheory.WeilVacMove
 
 theorem res_smooth : ∀ (D : D7) (V V' W : HSp D) (r : ℕ) (C : Matrix (Fin V.rank) (Fin r) D.host.E) (B : Matrix (Fin V.rank) (Fin V'.rank) D.host.E), (∀ (y y' : Mx D W.rank r) (x x' : WO V' W), symplOH V W (isoPart V W C y + midPart V V' W B x) (isoPart V W C y' + midPart V V' W B x') = symplOH V' W x x') → ∀ (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (μ : Measure (Mx D W.rank r)) (𝓨 : Set (Mx D W.rank r)), IsCovolOne (ratMx D W.rank r) μ 𝓨 → ∀ f, IsThetaFunO ψ V W f → ∀ (k : ℕ) (L : (Fin k → ℝ) →+ WO V' W), Continuous L → (∀ t, (L t).map (finPart D) = 0) → ∀ w, ContDiff ℝ ∞ fun t => res V V' W C B μ 𝓨 f (w + L t) := by
   intro D V V' W r C B hform ψ hψ μ 𝓨 hcov f hf k L hL hL0 w

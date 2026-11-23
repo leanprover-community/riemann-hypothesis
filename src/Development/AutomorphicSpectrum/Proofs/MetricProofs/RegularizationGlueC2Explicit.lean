@@ -596,7 +596,6 @@ end GlobalTheory.CompanionTheory.Ar.Giv.GlueC2
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv.GlueC2
 
-open GroundTheory.Heights₂.Heights.AnalyticLimit (TendstoC2On)
 
 noncomputable section
 

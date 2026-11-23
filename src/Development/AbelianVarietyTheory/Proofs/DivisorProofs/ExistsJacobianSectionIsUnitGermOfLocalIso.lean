@@ -103,7 +103,6 @@ namespace GlobalTheory
 
 namespace MorJac
 
-open TopForm
 
 variable {k : Type} [CommRing k] {Y X : Scheme.{0}} {p : Y ⟶ Sp k} {σ : X ⟶ Y} {D : ℕ}
   [SmoothOfRelativeDimension D p] [SmoothOfRelativeDimension D (σ ≫ p)]
@@ -152,7 +151,6 @@ namespace GlobalTheory
 
 namespace MorJac
 
-open TopForm
 
 variable {k : Type} [CommRing k] {Y X : Scheme.{0}} {p : Y ⟶ Sp k} {σ : X ⟶ Y} {D : ℕ}
   [SmoothOfRelativeDimension D p] [SmoothOfRelativeDimension D (σ ≫ p)]
@@ -204,7 +202,6 @@ namespace GlobalTheory
 
 namespace MorJac
 
-open TopForm
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 
 variable {k : Type} [CommRing k] {Y X : Scheme.{0}} {p : Y ⟶ Sp k} {σ : X ⟶ Y} {D : ℕ}

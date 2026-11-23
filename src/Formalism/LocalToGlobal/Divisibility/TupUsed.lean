@@ -153,7 +153,6 @@ theorem DivRows3G.toRows (hU : TupAllUsed P) (h : DivRows3G P) :
 
 end IndefiniteRowSideFullHecke
 
-section Member
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.BasicNotions.DV Formalism.L2.Col Formalism.L2.DIV.Member
 
@@ -175,6 +174,5 @@ variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst 
         D.what₂.LL) →ₗ[D.what₂.LL] V0X W Ch sel t.1 Xg (rPsymF (R := D.R) Ch)}
   {Sp : ∀ Zs, SPer ((colM F hX v0 TU Xg xiVal trIv hE ev).face Zs)}
 
-end Member
 
 end Formalism.L2.DIV

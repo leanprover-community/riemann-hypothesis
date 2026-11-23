@@ -723,7 +723,6 @@ theorem torsVal_map {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] (P
 end GlobalTheory.CompanionTheory.Ar.Sl.IntTors
 
 namespace GlobalTheory.CompanionTheory.Ar.Sl.IntTors
-open IsLocalRing GlobalTheory.UT GlobalTheory.LN GlobalTheory.OneBasis IsDedekindDomain Formalism.L2.Pj
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 

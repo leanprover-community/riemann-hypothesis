@@ -59,16 +59,12 @@ theorem _root_.GlobalTheory.RiemannRel.hermForm_mulVec (G A B : Matrix (Fin g) (
   rw [hstar, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec v Aᵀ,
     Matrix.vecMul_transpose, Matrix.mulVec_mulVec]
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.RiemannRel.hermForm_col (G A B : Matrix (Fin g) (Fin g) ℂ) (j k : Fin g) :
     _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.hermForm G (A *ᵥ Pi.single j 1) (B *ᵥ Pi.single k 1) = (Aᵀ * G * B.map (starRingEnd ℂ)) j k := by
   rw [_root_.GlobalTheory.RiemannRel.hermForm_mulVec]; simp [Pi.star_single]
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.RiemannRel.det_ne_zero (G A B : Matrix (Fin g) (Fin g) ℂ)
     (hpos : ∀ z : Fin g → ℂ, z ≠ 0 → 0 < (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.hermForm G z z).re)
@@ -121,8 +117,6 @@ theorem _root_.GlobalTheory.RiemannRel.det_ne_zero (G A B : Matrix (Fin g) (Fin 
   · simpa using h2
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.RiemannRel.symm_posDef (G A τ : Matrix (Fin g) (Fin g) ℂ) (hG : G.IsHermitian)
     (hA : A.det ≠ 0)
@@ -196,8 +190,6 @@ theorem _root_.GlobalTheory.RiemannRel.symm_posDef (G A τ : Matrix (Fin g) (Fin
   · exact hXs j i
   · exact hYs j i
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.RiemannRel.differentiableOn_det {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
     {B : Set V} (A : V → Matrix (Fin g) (Fin g) ℂ)
@@ -213,8 +205,6 @@ theorem _root_.GlobalTheory.RiemannRel.differentiableOn_det {V : Type*} [NormedA
   exact Finset.prod_induction _ (fun f => DifferentiableOn ℂ f B) (fun f f' hf hf' => hf.mul hf')
     (differentiableOn_const 1) fun i _ => hA (σ i) i
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.RiemannRel.differentiableOn_left_inverse {V : Type*} [NormedAddCommGroup V]
     [NormedSpace ℂ V] {B : Set V}
@@ -236,16 +226,12 @@ theorem _root_.GlobalTheory.RiemannRel.differentiableOn_left_inverse {V : Type*}
   · simp only [Matrix.updateRow_ne hk]; exact hA k l
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.RiemannRel.of_cols_mulVec (c : Fin g → Fin g → ℂ) (k : Fin g) :
     (Matrix.of fun i j => c j i) *ᵥ Pi.single k 1 = c k := by
   ext i; simp [mulVec, dotProduct, Pi.single_apply]
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.RiemannRel.riemann_relations : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] D.La), (∀ a b, D.EF (bas a) (bas b) = -_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.omegaStd a b) → (∀ P, _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsPeriod D ty P → ∃ h τ : Matrix (Fin g) (Fin g) ℂ, (∀ k, h *ᵥ P (bas (Pi.single (Sum.inl k) 1)) = Pi.single k 1 ∧ h *ᵥ P (bas (Pi.single (Sum.inr k) 1)) = τ *ᵥ Pi.single k 1) ∧ IsUnit h.det ∧ τ.IsSymm ∧ (τ.map Complex.im).PosDef ∧ ∀ h' τ' : Matrix (Fin g) (Fin g) ℂ, (∀ k, h' *ᵥ P (bas (Pi.single (Sum.inl k) 1)) = Pi.single k 1 ∧ h' *ᵥ P (bas (Pi.single (Sum.inr k) 1)) = τ' *ᵥ Pi.single k 1) → h' = h ∧ τ' = τ) ∧ ∀ (m : ℕ) (B : Set (Fin m → ℂ)) (P : (Fin m → ℂ) → (D.La →+ (Fin g → ℂ))) (h τ : (Fin m → ℂ) → Matrix (Fin g) (Fin g) ℂ), _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsHolPeriods D ty B P → (∀ b ∈ B, (∀ k, h b *ᵥ P b (bas (Pi.single (Sum.inl k) 1)) = Pi.single k 1 ∧ h b *ᵥ P b (bas (Pi.single (Sum.inr k) 1)) = τ b *ᵥ Pi.single k 1)) → ∀ i j, DifferentiableOn ℂ (fun b => h b i j) B ∧ DifferentiableOn ℂ (fun b => τ b i j) B := by
   intro E _ _ _ H D g ty bas hEF

@@ -48,7 +48,6 @@ private theorem UpperTheory.V.Af.Rs.volume_open_pos_upper_half_plane (U : Set �
   rw [measurableEmbedding_coe.comap_apply] at h1
   exact ((isOpenEmbedding_coe.isOpenMap U hU).measure_pos volume (hne.image _)).ne' h1
 
-open MeasureTheory Set UpperHalfPlane in
 theorem UpperTheory.V.Af.Rs.fdPos :
     UpperTheory.V.Af.Rs.VolMap → UpperTheory.V.Af.Rs.FdPos := by
   intro _ φ hc h0 hint z hz hpos

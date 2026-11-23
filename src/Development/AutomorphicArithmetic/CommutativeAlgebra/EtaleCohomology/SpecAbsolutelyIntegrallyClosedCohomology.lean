@@ -497,7 +497,6 @@ theorem towers (H : Hyp) (q : ℕ) (i : ℤ) (B : Type) [CommRing B] [IsLocalRin
   simpa using h
 
 
-open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC LateralTheory.E.t_E2Cut in
 theorem main (H : Hyp) : E2 := by
   intro q A _ _ hA hq X p _ i
   show PB q i p

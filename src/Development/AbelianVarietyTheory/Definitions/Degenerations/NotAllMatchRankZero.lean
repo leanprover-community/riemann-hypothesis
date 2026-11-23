@@ -70,7 +70,6 @@ theorem _root_.GlobalTheory.Ex.NumD.Form.half_add {N : _root_.GlobalTheory.Ex.Nu
   omega
 
 
-open scoped BigOperators in
 variable {O : Type} [CommRing O] in
 variable (N : _root_.GlobalTheory.Ex.NumD O) in
 theorem _root_.GlobalTheory.Ex.NumD.Form.div_mul {N : _root_.GlobalTheory.Ex.NumD O}
@@ -81,7 +80,6 @@ theorem _root_.GlobalTheory.Ex.NumD.Form.div_mul {N : _root_.GlobalTheory.Ex.Num
     (dvd_trans (dvd_mul_left (k : ℤ) 2) (β.dvd x y)))
 
 
-open scoped BigOperators in
 variable {O : Type} [CommRing O] in
 variable (N : _root_.GlobalTheory.Ex.NumD O) in
 theorem _root_.GlobalTheory.Ex.NumD.Form.div_add {N : _root_.GlobalTheory.Ex.NumD O} {k : ℕ}
@@ -109,7 +107,6 @@ def twist {k : ℕ} (β : N.Form k) (u : Oˣ) : NumD O :=
              exact mul_mul_mul_comm _ _ _ _ }
 
 
-open scoped BigOperators in
 variable {O : Type} [CommRing O] in
 variable (N : _root_.GlobalTheory.Ex.NumD O) in
 theorem _root_.GlobalTheory.Ex.NumD.twist_τ {k : ℕ} (β : N.Form k) (u : Oˣ)
@@ -131,7 +128,6 @@ def twG {k : ℕ} (β : N.Form k) (u : Oˣ) (g : N.Gt) (l : N.X → ℤ) (hl : �
     rw [mul_right_comm, g.mult, hl, zpow_add]; exact mul_mul_mul_comm _ _ _ _⟩
 
 
-open scoped BigOperators in
 variable {O : Type} [CommRing O] in
 variable (N : _root_.GlobalTheory.Ex.NumD O) in
 theorem _root_.GlobalTheory.Ex.NumD.twG_pow {k : ℕ} (β : N.Form k) (u : Oˣ)
@@ -265,7 +261,6 @@ def homOfIso {N N' : NumD O} (I : NumD.Iso N N') : NumD.Hom (RingHom.id O) N N' 
   ψ_eq := I.ψ_eq
 
 
-open scoped BigOperators in
 variable {O : Type} [CommRing O] in
 theorem _root_.GlobalTheory.Ex.TateInh.evT_one (N : _root_.GlobalTheory.Ex.NumD O) (m : ℕ)
     (p : N.QT (m ^ 2)) (χ : N.X) :
@@ -276,7 +271,6 @@ theorem _root_.GlobalTheory.Ex.TateInh.evT_one (N : _root_.GlobalTheory.Ex.NumD 
     _root_.GlobalTheory.Ex.NumD.Gt.one_b, one_mul, N.cub.N_one]
 
 
-open scoped BigOperators in
 variable {O : Type} [CommRing O] in
 theorem _root_.GlobalTheory.Ex.TateInh.qEq_mul (N : _root_.GlobalTheory.Ex.NumD O) {k : ℕ}
     {p p' q q' : N.QT k} (h : N.QEq p p')

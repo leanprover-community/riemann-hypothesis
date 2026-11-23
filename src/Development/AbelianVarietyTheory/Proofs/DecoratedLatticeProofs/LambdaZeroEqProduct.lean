@@ -61,7 +61,6 @@ end GlobalTheory.LevelComb
 
 noncomputable section
 namespace GlobalTheory.LevelComb
-open GlobalTheory.FinPl (MxAt idAt)
 
 section Comb
 variable {D : D7} (ψ : AddChar (AF D.host.F) ℂ) {S T : HSp D}

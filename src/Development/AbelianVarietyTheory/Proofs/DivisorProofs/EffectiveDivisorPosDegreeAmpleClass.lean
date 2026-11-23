@@ -93,9 +93,6 @@ end GlobalTheory.AV.EffPos
 
 namespace GlobalTheory.AV.EffPos
 
-open TopologicalSpace
-open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
-open GlobalTheory.Cartier
 
 theorem interNumRed_pos {K : Type} [Field K] (A : AbVar K) (n : ℕ) (hdim : A.dim = n + 1)
     (L : LB A.X.left) (hL : L.IsLB) (hLa : IsAmpleLB L) {w : A.X.left} (hw : Order.coheight w = 1) :

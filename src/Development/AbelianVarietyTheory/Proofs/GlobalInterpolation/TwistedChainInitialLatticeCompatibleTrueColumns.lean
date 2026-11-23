@@ -82,7 +82,6 @@ end GlobalTheory.LvT.TrueStep0
 
 namespace GlobalTheory.LvT.TrueStep0
 
-open GlobalTheory.LvT.StartTie GlobalTheory.Mem.Col2.ClsZero
 
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X}
 
@@ -106,7 +105,6 @@ end GlobalTheory.LvT.TrueStep0
 
 namespace GlobalTheory.LvT.TrueStep0
 
-open GlobalTheory.LvT.StartTie GlobalTheory.Mem.Col2.ClsZero
 
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X}
 
@@ -170,7 +168,6 @@ end GlobalTheory.LvT.TrueStep0
 
 namespace GlobalTheory.LvT.TrueStep0
 
-open GlobalTheory.LvT.StartTie GlobalTheory.Mem.Col2.ClsZero
 
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X}
 

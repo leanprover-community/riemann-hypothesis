@@ -143,7 +143,6 @@ private theorem fx_ord {H K : Type} [Group H] [Field K] {n : ℕ} (I : Subgroup 
     rw [this, zero_mul]
 end Fx
 section Tw
-open Matrix Ws.Eb
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
   {F : Fr.Frame l (ResidueField O)} {n : ℕ} {G : W.GFrame l} {r : W.Resid G O n} (K : TwLink F r)
 include K in
@@ -202,7 +201,6 @@ private theorem fx_coc (ρD : Fr.NRep F n (DualNumber Q)) (a b : G.G₀) :
   · simp only [Matrix.mul_assoc]
 end Tw
 section Core
-open Matrix Ws.Eb
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
   {F : Fr.Frame l (ResidueField O)} {n : ℕ} {G : W.GFrame l} {r : W.Resid G O n} (K : TwLink F r)
   {Q : Type} [Field Q] [Algebra O Q]
@@ -280,7 +278,6 @@ private theorem fx_core (ρD : Fr.NRep F n (DualNumber Q))
   abel
 end Core
 section Sp
-open Matrix Ws.Eb
 private noncomputable def fxD {O A Q : Type} [CommRing O] [CommRing A] [Algebra O A] [Field Q] [Algebra O Q]
     (ξ : A →ₐ[O] Q) (D : A →ₗ[O] Q) (hD : D ∈ PtDer ξ Q) : A →ₐ[O] DualNumber Q :=
   have h1 : D 1 = 0 := by

@@ -117,7 +117,6 @@ theorem _root_.GlobalTheory.Katz.formalCoboundary_add {μ : Fin d → MvPowerSer
   abel
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R : Type} [CommRing R] {d e : ℕ} {τ : Type} in
 theorem _root_.GlobalTheory.Katz.formalCoboundary_smul {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R} (h : ∀ i, constantCoeff (μ i) = 0)
     (r : R) (f : MvPowerSeries (Fin d) R) :
@@ -147,7 +146,6 @@ theorem coeff_lift (f : MvPowerSeries σ k) (α : σ →₀ ℕ) : coeff α (lif
     algebraMap (WittVector p k) (Fr p k) (WittVector.teichmuller p (coeff α f)) := rfl
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable (p : ℕ) [Fact p.Prime] {k : Type} [Field k] [CharP k p] {σ : Type} {d : ℕ} in
 theorem _root_.GlobalTheory.Katz.constantCoeff_lift {f : MvPowerSeries σ k}
     (h : constantCoeff f = 0) :
@@ -253,7 +251,6 @@ def x₂ (n : ℕ) : Fin d ⊕ Fin d → G.A n ⊗[k] G.A n :=
   Sum.elim (fun i => c.x n i ⊗ₜ 1) (fun i => 1 ⊗ₜ c.x n i)
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {k : Type} [CommRing k] {σ : Type} [Finite σ] in
 variable {p d e : ℕ} {G H : _root_.GlobalTheory.PDivGroup p k} (c : _root_.GlobalTheory.Katz.Chart G d) in
 theorem _root_.GlobalTheory.Katz.Chart.nil₂ (n : ℕ) (i : Fin d ⊕ Fin d) :

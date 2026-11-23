@@ -394,7 +394,6 @@ end Geometry
 
 section Standard
 
-open GlobalTheory.IndefiniteRowSideFullHecke.DiscriminantKernelAutomorphisms GlobalTheory.RowMassCompare
 
 variable {D : D7} {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T)
 
@@ -717,7 +716,6 @@ end Standard
 
 section Count
 
-open GlobalTheory.IndefiniteRowSideFullHecke.DiscriminantKernelAutomorphisms GlobalTheory.RowMassCompare
 
 variable {D : D7} {T : D.host.E} {F0 : FlagG (VS D) D.R.rS T}
   (he : F0.e = D.sp.hypE) {t : D.host.E} (hz : F0.z = t • D.sp.zm) (hT : T ≠ 0)

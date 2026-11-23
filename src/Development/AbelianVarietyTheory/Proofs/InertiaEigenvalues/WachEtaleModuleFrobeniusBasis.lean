@@ -76,7 +76,6 @@ end GlobalTheory.EtaleFrob
 
 namespace GlobalTheory.EtaleFrob
 
-open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
 
 section Generic
 

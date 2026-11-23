@@ -214,7 +214,6 @@ theorem fmTr (h3 : Slots) : FmTr := by
   simp only [fac, LM.tr, if_pos i.2, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul]
   exact Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => by ring
 
-open Fm in
 theorem fmAlg (h1 : FinConv) (h3 : Slots) : FmAlg := by
   intro E _ _ _ κ _ S P B e hS hPS L L' hL hL'
   obtain ⟨hv, hC⟩ := h1 E B S hS

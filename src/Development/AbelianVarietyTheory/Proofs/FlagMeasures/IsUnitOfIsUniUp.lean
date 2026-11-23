@@ -253,7 +253,6 @@ end GlobalTheory.GLm.TraceTail
 namespace GlobalTheory.GLm
 
 open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq GlobalTheory.GLm GlobalTheory.GLm.TraceTail
-open scoped Classical
 
 theorem tr_eJ'_eq_wh_tail (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (N k : ℕ) (χ : Gn g N → ℂ)
     (hk : k < N) :

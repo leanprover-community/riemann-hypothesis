@@ -101,7 +101,6 @@ end GlobalTheory.DiagIdx
 
 namespace GlobalTheory.DiagIdx
 
-open GlobalTheory.InertHomIdx
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 

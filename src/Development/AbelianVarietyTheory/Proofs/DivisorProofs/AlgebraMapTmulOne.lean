@@ -183,7 +183,6 @@ end GlobalTheory.KeyOriginTransport
 
 namespace GlobalTheory.KeyOriginTransport
 
-open GlobalTheory.KeyOriginBC
 
 section FirstIso2
 
@@ -271,7 +270,6 @@ end GlobalTheory.KeyOriginTransport
 
 namespace GlobalTheory.KeyOriginTransport
 
-open GlobalTheory.KeyOriginBC
 
 section SecondIso
 
@@ -346,7 +344,6 @@ end GlobalTheory.KeyOriginTransport
 
 namespace GlobalTheory.KeyOriginTransport
 
-open GlobalTheory.KeyOriginBC
 
 theorem isUnit_tmul_one {R₁ B₁ S₁ B DA : Type} [CommRing R₁] [CommRing B₁] [CommRing S₁] [IsDomain S₁]
     [IsDiscreteValuationRing S₁] [CommRing B] [CommRing DA] [Algebra R₁ B₁] [Algebra R₁ S₁]
@@ -369,7 +366,6 @@ end GlobalTheory.KeyOriginTransport
 
 namespace GlobalTheory.KeyOriginTransport
 
-open GlobalTheory.KeyOriginBC
 
 theorem etale_closure_core
     (H : ∀ (S S₁ K K₁ : Type) [CommRing S] [IsDomain S] [IsDiscreteValuationRing S] [CommRing S₁]

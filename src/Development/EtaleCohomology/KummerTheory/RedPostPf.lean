@@ -81,7 +81,6 @@ theorem scomp_op (hS : LateralTheory.EtaleFoundations.EtaleCochainSemilinearMapO
 end LateralTheory.KummerTheory.RedPostPf
 
 namespace LateralTheory.KummerTheory.RedPostPf
-open LateralTheory.KummerTheory.BockCut
 
 variable {S R : Type} [CommRing S] [CommRing R]
 

@@ -367,7 +367,6 @@ theorem mem_R_iff {p : ℕ} {g : GL (n ⊕ Fin c) k} : g ∈ R k n c p ↔ InR p
 end Grp
 
 section Meas
-open GlobalTheory.RootEx.Model
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] {c : ℕ}
 

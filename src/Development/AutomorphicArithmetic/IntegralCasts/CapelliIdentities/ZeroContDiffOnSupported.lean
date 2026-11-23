@@ -142,7 +142,6 @@ private theorem exists_global_approx {F : Type} [Field F] [NumberField F]
   rw [← map_sub, hval]
   exact hr
 
-open IsDedekindDomain NumberField in
 private theorem finite_residueField {F : Type} [Field F] [NumberField F]
     (p : HeightOneSpectrum (RingOfIntegers F)) :
     Finite (IsLocalRing.ResidueField (p.adicCompletionIntegers F)) := by
@@ -175,7 +174,6 @@ private theorem finite_residueField {F : Type} [Field F] [NumberField F]
   exact Finite.of_surjective (Ideal.Quotient.lift p.asIdeal f hker)
     (Ideal.Quotient.lift_surjective_of_surjective _ hker hsurj)
 
-open IsDedekindDomain NumberField in
 private theorem locallyCompact {F : Type} [Field F] [NumberField F]
     (p : HeightOneSpectrum (RingOfIntegers F)) :
     LocallyCompactSpace (p.adicCompletion F) := by

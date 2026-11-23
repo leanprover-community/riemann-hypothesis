@@ -55,7 +55,6 @@ namespace GlobalTheory.CovTop.WtSz
 open GlobalTheory.CompHS
 end GlobalTheory.CovTop.WtSz
 namespace GlobalTheory.CovTop.WtSz
-open GlobalTheory.CompHS
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
 end GlobalTheory.CovTop.WtSz
 namespace GlobalTheory.CovTop.WtSz

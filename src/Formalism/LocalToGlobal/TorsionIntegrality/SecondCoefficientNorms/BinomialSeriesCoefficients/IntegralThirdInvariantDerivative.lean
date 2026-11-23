@@ -233,7 +233,6 @@ theorem log_derivative_integral' : LogDerivInt := by
   intro K iF iC R l linv h hF
   exact FormalGroupJetIntegrality.logDeriv h hF
 
-open JetSubstitutionLemmas in
 theorem third_jet_integral : ThirdJetIntegral := by
   intro K _ _ R l linv ph hFr hF1
   have hl := FormalGroupJetIntegrality.logDeriv hFr.1 hFr.2.1

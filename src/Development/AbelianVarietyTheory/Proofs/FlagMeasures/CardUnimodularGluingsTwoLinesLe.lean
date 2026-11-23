@@ -108,8 +108,6 @@ private lemma exists_generator_of_integral_dual {β : E} {N : Submodule (𝓞 E)
       rw [ha', ← hiz, map_add (f := _), map_smul, add_sub_cancel_right]
     rw [this]; exact hi
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [StarRing E] in
 private lemma star_mem_range_algebraMap_integers {x : E} (hx : x ∈ (algebraMap (𝓞 E) E).range) :
     star x ∈ (algebraMap (𝓞 E) E).range := by
@@ -118,8 +116,6 @@ private lemma star_mem_range_algebraMap_integers {x : E} (hx : x ∈ (algebraMap
     (r.isIntegral_coe).map (starRingEnd E).toIntAlgHom
   exact ⟨⟨_, h⟩, rfl⟩
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [StarRing E] in
 private lemma mem_of_mem_dual_of_dual_le {β : E} {N P : Submodule (𝓞 E) E} (hP : P.FG) (hP0 : P ≠ ⊥)
     (hβ : star β = β) (hβ0 : β ≠ 0)
@@ -156,8 +152,6 @@ private lemma mem_of_mem_dual_of_dual_le {β : E} {N P : Submodule (𝓞 E) E} (
   have := key 1 (by rw [hmul]; exact FractionalIdeal.one_mem_one _)
   simpa using this
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [StarRing E] in
 open Matrix in
 variable {β₁ β₂ : E} {N₁ N₂ : Submodule (𝓞 E) E} {M : Submodule (𝓞 E) (Fin 2 → E)} in
@@ -167,10 +161,7 @@ private lemma star_dotProduct_diagonal_two_mulVec (y x : Fin 2 → E) :
       star (y 0) * β₁ * x 0 + star (y 1) * β₂ * x 1 := by
   simp [dotProduct, Fin.sum_univ_two, Matrix.mulVec_diagonal]; ring
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [StarRing E] in
-open Matrix in
 variable {β₁ β₂ : E} {N₁ N₂ : Submodule (𝓞 E) E} {M : Submodule (𝓞 E) (Fin 2 → E)} in
 private lemma exists_snd_mem_of_integral_dual_fst (hβ₁ : star β₁ = β₁) (hβ₁0 : β₁ ≠ 0) (hfg : M.FG) (hN0 : N₁ ≠ ⊥)
     (hdual : ∀ x, x ∈ M ↔ ∀ y ∈ M, star y ⬝ᵥ ((Matrix.diagonal ![β₁, β₂]) *ᵥ x) ∈
@@ -197,10 +188,7 @@ private lemma exists_snd_mem_of_integral_dual_fst (hβ₁ : star β₁ = β₁) 
   convert hx using 1
   funext i; fin_cases i <;> rfl
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [StarRing E] in
-open Matrix in
 variable {β₁ β₂ : E} {N₁ N₂ : Submodule (𝓞 E) E} {M : Submodule (𝓞 E) (Fin 2 → E)} in
 private lemma exists_fst_mem_of_integral_dual_snd (hβ₂ : star β₂ = β₂) (hβ₂0 : β₂ ≠ 0) (hfg : M.FG) (hN0 : N₂ ≠ ⊥)
     (hdual : ∀ x, x ∈ M ↔ ∀ y ∈ M, star y ⬝ᵥ ((Matrix.diagonal ![β₁, β₂]) *ᵥ x) ∈
@@ -227,10 +215,7 @@ private lemma exists_fst_mem_of_integral_dual_snd (hβ₂ : star β₂ = β₂) 
   convert hx using 1
   funext i; fin_cases i <;> rfl
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [StarRing E] in
-open Matrix in
 variable {β₁ β₂ : E} {N₁ N₂ : Submodule (𝓞 E) E} {M : Submodule (𝓞 E) (Fin 2 → E)} in
 private lemma star_mul_mul_snd_mem_integers_of_mem
     (hdual : ∀ x, x ∈ M ↔ ∀ y ∈ M, star y ⬝ᵥ ((Matrix.diagonal ![β₁, β₂]) *ᵥ x) ∈
@@ -241,10 +226,7 @@ private lemma star_mul_mul_snd_mem_integers_of_mem
   rw [star_dotProduct_diagonal_two_mulVec] at this
   simpa using this
 
-open NumberField in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [StarRing E] in
-open Matrix in
 variable {β₁ β₂ : E} {N₁ N₂ : Submodule (𝓞 E) E} {M : Submodule (𝓞 E) (Fin 2 → E)} in
 private lemma star_mul_mul_fst_mem_integers_of_mem
     (hdual : ∀ x, x ∈ M ↔ ∀ y ∈ M, star y ⬝ᵥ ((Matrix.diagonal ![β₁, β₂]) *ᵥ x) ∈
@@ -257,7 +239,6 @@ private lemma star_mul_mul_fst_mem_integers_of_mem
 
 
 open MeasureTheory NumberField Matrix Finset in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] in
 variable [StarRing E] in
 theorem _root_.GlobalTheory.GlueLines.card_gluings_le : ∀ (E : Type) [Field E] [NumberField E] [StarRing E],

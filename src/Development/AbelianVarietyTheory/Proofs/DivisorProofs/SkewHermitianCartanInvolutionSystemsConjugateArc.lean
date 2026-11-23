@@ -134,7 +134,6 @@ end GlobalTheory.CartanConjSkew
 
 namespace GlobalTheory.CartanConjSkew
 
-open scoped Matrix
 
 theorem conj_skew : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (B : Base F E) (n r s : ℕ) (X Y : Spc F E n), B.IsGood σ → X.IsSkew σ B r s → (reS X Y).IsSkew σ B r s →

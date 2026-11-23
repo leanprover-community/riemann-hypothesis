@@ -50,7 +50,6 @@ private lemma eq_of_mem_finset_of_mk_eq {A B : AddSubgroup W} {R : Finset W}
   have h2 := hz x ⟨hx, by rwa [sub_eq_neg_add]⟩
   exact h2.trans h1.symm
 
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] in
 private lemma exists_mem_finset_mk_eq_of_mem {A B : AddSubgroup W} {R : Finset W}
     (hR : ∀ w ∈ A, ∃! x, x ∈ R ∧ w - x ∈ B) {w : W} (hw : w ∈ A) :
@@ -60,7 +59,6 @@ private lemma exists_mem_finset_mk_eq_of_mem {A B : AddSubgroup W} {R : Finset W
   rw [← sub_eq_neg_add]
   exact hwx
 
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] in
 private lemma apply_eq_of_quotient_mk_eq_of_invariant {B : AddSubgroup W} {φ : W → ℂ}
     (hinv : ∀ w, ∀ b ∈ B, φ (w + b) = φ w) {u v : W} (h : (u : W ⧸ B) = v) : φ u = φ v := by
@@ -69,7 +67,6 @@ private lemma apply_eq_of_quotient_mk_eq_of_invariant {B : AddSubgroup W} {φ : 
   rwa [add_neg_cancel_left, eq_comm] at this
 
 
-open scoped Pointwise Classical in
 variable {W : Type} [AddCommGroup W] in
 theorem _root_.GlobalTheory.IdxInt.cint_eq_mean_reps {W : Type} [AddCommGroup W]
     (A B : AddSubgroup W) (φ : W → ℂ) (R : Finset W)

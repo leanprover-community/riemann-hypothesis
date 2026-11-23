@@ -60,7 +60,6 @@ private theorem coeff_scale {σ : Type} [Fintype σ] (t : σ → ℂ) (P : MvPol
   | add p q hp hq =>
     simp only [map_add, AddMonoidAlgebra.coeff_add, Finsupp.add_apply, hp, hq, mul_add]
 
-open MvPolynomial in
 private theorem eval_scale {σ : Type} (t x : σ → ℂ) (P : MvPolynomial σ ℂ) :
     MvPolynomial.eval x (aeval (fun p => MvPolynomial.C (t p) * MvPolynomial.X p) P : MvPolynomial σ ℂ) =
       MvPolynomial.eval (fun p => t p * x p) P := by

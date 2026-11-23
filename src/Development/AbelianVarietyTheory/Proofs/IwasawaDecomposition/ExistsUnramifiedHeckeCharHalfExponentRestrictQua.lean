@@ -295,7 +295,6 @@ theorem idF_norm (D : D7) (x : (AE D)ˣ) :
 
 
 
-open GlobalTheory.FockCompare in
 theorem isEta_res (D : D7) (c : (AE D)ˣ →* Circle) (χ : HChar D.host.E) (hc : ChrEq c χ) (h : IsEtaT D.host χ) :
     IsEta D (c.comp (idF D)) := by
   classical

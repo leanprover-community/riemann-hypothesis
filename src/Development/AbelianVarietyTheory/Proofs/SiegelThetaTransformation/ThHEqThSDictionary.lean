@@ -62,8 +62,6 @@ theorem _root_.GlobalTheory.SW.Dict.intM_nsmul {K κ ι : Type} [Field K] (R : �
   intro k i
   simpa using (h k i).nsmul R
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 theorem _root_.GlobalTheory.SW.Dict.isSB_comp {K K' κ ι κ' ι' : Type} [Field K] [Field K']
     (e : Matrix κ ι K →+ Matrix κ' ι' K') (D D' : ℕ) (hD : 0 < D) (hD' : 0 < D')
     (h1 : ∀ x, _root_.GlobalTheory.SW.IntM x → _root_.GlobalTheory.SW.IntM (D • e x))
@@ -86,8 +84,6 @@ theorem _root_.GlobalTheory.SW.Dict.isSB_comp {K K' κ ι κ' ι' : Type} [Field
     congr 2
     ring_nf
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 theorem _root_.GlobalTheory.SW.Dict.exists_den {K ι : Type} [Field K] [NumberField K]
     [Finite ι] (x : ι → K) :
     ∃ D : ℕ, 0 < D ∧ ∀ i, IsIntegral ℤ (D • x i) := by
@@ -125,8 +121,6 @@ def ofQEquiv (E : Type) [Field E] [NumberField E] (n N : ℕ) :
     ext k a
     simp [ofQ, add_smul, Finset.sum_add_distrib]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.Dict.exists_den_ofQ : ∃ D : ℕ, 0 < D ∧
     ∀ m : Matrix (Fin n) (_root_.GlobalTheory.SW.QI E N) ℚ, _root_.GlobalTheory.SW.IntM m →
@@ -139,8 +133,6 @@ theorem _root_.GlobalTheory.SW.Dict.exists_den_ofQ : ∃ D : ℕ, 0 < D ∧
   rw [smul_comm, Algebra.smul_def]
   exact ((hm k (a, j)).map (IsScalarTower.toAlgHom ℤ ℚ E)).mul (hb j)
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.Dict.exists_den_symm : ∃ D : ℕ, 0 < D ∧
     ∀ x : Matrix (Fin n) (Fin N) E, _root_.GlobalTheory.SW.IntM x →
@@ -166,8 +158,6 @@ theorem _root_.GlobalTheory.SW.Dict.exists_den_symm : ∃ D : ℕ, 0 < D ∧
   show IsIntegral ℤ (D • (Module.finBasis ℚ E).repr (x k p.1) p.2)
   exact key _ ((mem_span_integralBasis E).mpr ⟨⟨x k p.1, hx k p.1⟩, rfl⟩) p.2
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.Dict.isSB_iff (φ : Matrix (Fin n) (Fin N) E → ℂ) :
     _root_.GlobalTheory.SW.IsSB φ ↔
@@ -187,8 +177,6 @@ theorem _root_.GlobalTheory.SW.Dict.isSB_iff (φ : Matrix (Fin n) (Fin N) E → 
     convert this using 2 with x
     exact congrArg φ ((_root_.GlobalTheory.SW.Dict.ofQEquiv E n N).apply_symm_apply x).symm
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.Dict.exists_emb_comb (c : Fin (Module.finrank ℚ E) → ℂ) :
     ∃ w : (E →+* ℂ) → ℂ, ∀ j, ∑ σ : E →+* ℂ, σ (Module.finBasis ℚ E j) * w σ = c j := by
@@ -210,8 +198,6 @@ theorem _root_.GlobalTheory.SW.Dict.exists_emb_comb (c : Fin (Module.finrank ℚ
   refine Fintype.sum_equiv ((RingHom.equivRatAlgHom E ℂ).trans e.symm) _ _ fun σ => ?_
   simp [M, Algebra.embeddingsMatrixReindex, Algebra.embeddingsMatrix]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.Dict.sum_type {Ψ : Finset (E →+* ℂ)}
     (hΨ : _root_.GlobalTheory.SW.IsType Ψ) (f : (E →+* ℂ) → ℂ) :
@@ -240,8 +226,6 @@ variable (Ψ : Finset (E →+* ℂ))
 def vec (σ : E →+* ℂ) (m : QI E N → ℂ) : Fin N → ℂ :=
   fun a => ∑ j, σ (Module.finBasis ℚ E j) * m (a, j)
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable (Ψ : Finset (E →+* ℂ)) in
 theorem _root_.GlobalTheory.SW.Dict.quad_tauOf (Z : _root_.GlobalTheory.SW.CM Ψ N N)
@@ -279,8 +263,6 @@ theorem _root_.GlobalTheory.SW.Dict.quad_tauOf (Z : _root_.GlobalTheory.SW.CM Ψ
     conv_lhs => rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable (Ψ : Finset (E →+* ℂ)) in
 theorem _root_.GlobalTheory.SW.Dict.lin_zetaOf (z z' : _root_.GlobalTheory.SW.CM Ψ n N)
@@ -295,8 +277,6 @@ theorem _root_.GlobalTheory.SW.Dict.lin_zetaOf (z z' : _root_.GlobalTheory.SW.CM
   congr 1 <;> exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ =>
     Finset.sum_congr rfl fun _ _ => by ring
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable (Ψ : Finset (E →+* ℂ)) in
 theorem _root_.GlobalTheory.SW.Dict.map_ofQ (σ : E →+* ℂ)
@@ -309,8 +289,6 @@ theorem _root_.GlobalTheory.SW.Dict.map_ofQ (σ : E →+* ℂ)
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [Rat.smul_def, map_mul, map_ratCast, mul_comm]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable (Ψ : Finset (E →+* ℂ)) in
 theorem _root_.GlobalTheory.SW.Dict.thH_eq (φ : Matrix (Fin n) (Fin N) E → ℂ)
@@ -343,8 +321,6 @@ theorem _root_.GlobalTheory.SW.Dict.thH_eq (φ : Matrix (Fin n) (Fin N) E → �
 
 variable {Ψ}
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable (Ψ : Finset (E →+* ℂ)) in
 variable {Ψ} in
@@ -361,8 +337,6 @@ theorem _root_.GlobalTheory.SW.Dict.zetaOf_surj (hΨ : _root_.GlobalTheory.SW.Is
   simp only [_root_.GlobalTheory.SW.zetaOf, Matrix.of_apply, ComplexEmbedding.conjugate_coe_eq]
   exact Finset.sum_congr rfl fun _ _ => by ring
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] {n N : ℕ} in
 variable (Ψ : Finset (E →+* ℂ)) in
 variable {Ψ} in
@@ -471,8 +445,6 @@ end
 end GlobalTheory.SW.Dict
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 theorem _root_.GlobalTheory.SW.thH_eq_thS_dictionary : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Finset (E →+* ℂ)), _root_.GlobalTheory.SW.IsType Ψ → ∀ (n N : ℕ), Function.Bijective (_root_.GlobalTheory.SW.ofQ : Matrix (Fin n) (_root_.GlobalTheory.SW.QI E N) ℚ → Matrix (Fin n) (Fin N) E) ∧ (∀ Z ∈ _root_.GlobalTheory.SW.Hn Ψ N, _root_.GlobalTheory.SW.tauOf Ψ Z ∈ _root_.GlobalTheory.SW.Siegel (_root_.GlobalTheory.SW.QI E N)) ∧ (∀ ζ : Fin n → _root_.GlobalTheory.SW.QI E N → ℂ, ∃ z z' : _root_.GlobalTheory.SW.CM Ψ n N, _root_.GlobalTheory.SW.zetaOf Ψ z z' = ζ) ∧ (∀ (φ : Matrix (Fin n) (Fin N) E → ℂ) Z z z', _root_.GlobalTheory.SW.thH Ψ φ Z z z' = _root_.GlobalTheory.SW.thS (fun m => φ (_root_.GlobalTheory.SW.ofQ m)) (_root_.GlobalTheory.SW.tauOf Ψ Z) (_root_.GlobalTheory.SW.zetaOf Ψ z z')) ∧ ∀ φ : Matrix (Fin n) (Fin N) E → ℂ, _root_.GlobalTheory.SW.IsSB φ ↔ _root_.GlobalTheory.SW.IsSB (fun m : Matrix (Fin n) (_root_.GlobalTheory.SW.QI E N) ℚ => φ (_root_.GlobalTheory.SW.ofQ m)) := by
   intro E _ _ _ Ψ hΨ n N
   exact ⟨(_root_.GlobalTheory.SW.Dict.ofQEquiv E n N).bijective,

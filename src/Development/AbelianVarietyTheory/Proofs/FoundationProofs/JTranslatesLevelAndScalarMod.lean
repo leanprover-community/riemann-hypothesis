@@ -69,8 +69,6 @@ private lemma sl_ofSL_sl_jK_eq_of_mul_eq_ofSL_mul {Ω : Type} [Field Ω] [Algebr
     _root_.GlobalTheory.KZ.Tower.sl_mul,
     _root_.GlobalTheory.KZ.Tower.j_inv]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma sl_ofSL_sl_jK_eq_of_mul_eq_intMatrix_mul {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
     (X : _root_.GlobalTheory.KZ.Tower Ω ε) (G : _root_.GlobalTheory.KZ.GQ) (γ : SL(2, ℤ))
     (M : Matrix (Fin 2) (Fin 2) ℤ) (hM : M.det = 1)
@@ -83,22 +81,16 @@ private lemma sl_ofSL_sl_jK_eq_of_mul_eq_intMatrix_mul {Ω : Type} [Field Ω] [A
   rw [h]
   congr 1
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma ofSL_apply (γ : SL(2, ℤ)) (i j : Fin 2) :
     ((_root_.GlobalTheory.KZ.ofSL γ : GL (Fin 2) ℚ) : Matrix (Fin 2) (Fin 2) ℚ) i j =
       ((γ : Matrix (Fin 2) (Fin 2) ℤ) i j : ℚ) := by
   simp [_root_.GlobalTheory.KZ.ofSL]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma toGQ_apply (M : Matrix (Fin 2) (Fin 2) ℤ) (h : 0 < M.det)
     (i j : Fin 2) :
     ((_root_.GlobalTheory.KZ.toGQ M : GL (Fin 2) ℚ) : Matrix (Fin 2) (Fin 2) ℚ) i j = (M i j : ℚ) := by
   simp [_root_.GlobalTheory.KZ.toGQ, h]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma exists_ofSL_mul_upperTriangular (A : _root_.GlobalTheory.KZ.GQ) :
     ∃ (σ : SL(2, ℤ)) (T : _root_.GlobalTheory.KZ.GQ), _root_.GlobalTheory.KZ.ent T 1 0 = 0 ∧
       A = _root_.GlobalTheory.KZ.ofSL σ * T := by
@@ -153,8 +145,6 @@ private lemma exists_ofSL_mul_upperTriangular (A : _root_.GlobalTheory.KZ.GQ) :
   rw [zero_mul, ← hzero, hx, hy]
   ring
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma diag_ne_zero_and_ratio_pos_of_upperTriangular (S : _root_.GlobalTheory.KZ.GQ) (hS : _root_.GlobalTheory.KZ.ent S 1 0 = 0) :
     _root_.GlobalTheory.KZ.ent S 1 1 ≠ 0 ∧ _root_.GlobalTheory.KZ.ent S 0 0 ≠ 0 ∧
       0 < _root_.GlobalTheory.KZ.ent S 0 0 / _root_.GlobalTheory.KZ.ent S 1 1 := by
@@ -173,8 +163,6 @@ private lemma diag_ne_zero_and_ratio_pos_of_upperTriangular (S : _root_.GlobalTh
   rw [this]
   exact div_pos h (by positivity)
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma exp_sl_jK_coeff_lowest_of_upperTriangular {Ω : Type} [Field Ω] [Algebra ℚ Ω]
     [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ} (X : _root_.GlobalTheory.KZ.Tower Ω ε) (S : _root_.GlobalTheory.KZ.GQ)
     (hS : _root_.GlobalTheory.KZ.ent S 1 0 = 0) :
@@ -205,8 +193,6 @@ private lemma exp_sl_jK_coeff_lowest_of_upperTriangular {Ω : Type} [Field Ω] [
         _root_.GlobalTheory.KZ.ent S 1 1 = s := by field_simp
     rwa [hs'] at h
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma entry_ratios_eq_of_upperTriangular_sl_jK_eq {Ω : Type} [Field Ω] [Algebra ℚ Ω]
     [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ} (X : _root_.GlobalTheory.KZ.Tower Ω ε) (S T : _root_.GlobalTheory.KZ.GQ)
     (hS : _root_.GlobalTheory.KZ.ent S 1 0 = 0) (hT : _root_.GlobalTheory.KZ.ent T 1 0 = 0)
@@ -237,8 +223,6 @@ private lemma entry_ratios_eq_of_upperTriangular_sl_jK_eq {Ω : Type} [Field Ω]
     linear_combination -hn
   exact_mod_cast key
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma exists_smul_ofSL_mul_of_sl_jK_eq {Ω : Type} [Field Ω] [Algebra ℚ Ω]
     [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ} (X : _root_.GlobalTheory.KZ.Tower Ω ε) (A B : _root_.GlobalTheory.KZ.GQ)
     (h : X.sl A X.jK = X.sl B X.jK) :
@@ -290,8 +274,6 @@ private lemma exists_smul_ofSL_mul_of_sl_jK_eq {Ω : Type} [Field Ω] [Algebra �
   simp only [Subgroup.coe_mul, Units.val_mul]
   rw [hT₁, Matrix.mul_smul]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma det_ofSL_eq_one (σ : SL(2, ℤ)) :
     Matrix.det ((_root_.GlobalTheory.KZ.ofSL σ : GL (Fin 2) ℚ) : Matrix (Fin 2) (Fin 2) ℚ) = 1 := by
   have h := σ.2
@@ -299,8 +281,6 @@ private lemma det_ofSL_eq_one (σ : SL(2, ℤ)) :
   simp only [ofSL_apply]
   exact_mod_cast h
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma exists_smul_ofSL_mul_of_mul_ofSL {Ω : Type} [Field Ω] [Algebra ℚ Ω]
     [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ} (X : _root_.GlobalTheory.KZ.Tower Ω ε) (G : _root_.GlobalTheory.KZ.GQ)
     (γ : SL(2, ℤ))
@@ -322,8 +302,6 @@ private lemma exists_smul_ofSL_mul_of_mul_ofSL {Ω : Type} [Field Ω] [Algebra �
     linear_combination -hdet
   exact mul_self_eq_one_iff.1 (sub_eq_zero.1 ((mul_eq_zero.1 h3).resolve_right hG))
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private lemma natCast_dvd_of_eq_sign_mul {x y : ℤ} {m : ℕ} {c : ℚ} (hc : c = 1 ∨ c = -1)
     (h : (x : ℚ) = c * (y * m)) : (m : ℤ) ∣ x := by
   rcases hc with rfl | rfl
@@ -335,8 +313,6 @@ private lemma natCast_dvd_of_eq_sign_mul {x y : ℤ} {m : ℕ} {c : ℚ} (hc : c
     exact_mod_cast h'
 
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 theorem _root_.GlobalTheory.KZ.ES.Scal.lev_and_scalar : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : _root_.GlobalTheory.KZ.Tower Ω ε), ∀ m : ℕ, 0 < m → (∀ g ∈ ({!![(m : ℤ), 0; 0, 1], !![1, 0; 0, (m : ℤ)], !![1, 1; 0, (m : ℤ)]} : Set (Matrix (Fin 2) (Fin 2) ℤ)), _root_.GlobalTheory.KZ.ES.Lev X m (X.sl (_root_.GlobalTheory.KZ.toGQ g) X.jK)) ∧ ∀ γ : SL(2, ℤ), (∀ g ∈ ({!![(m : ℤ), 0; 0, 1], !![1, 0; 0, (m : ℤ)], !![1, 1; 0, (m : ℤ)]} : Set (Matrix (Fin 2) (Fin 2) ℤ)), X.sl (_root_.GlobalTheory.KZ.ofSL γ) (X.sl (_root_.GlobalTheory.KZ.toGQ g) X.jK) = X.sl (_root_.GlobalTheory.KZ.toGQ g) X.jK) → (_root_.GlobalTheory.KZ.en γ 0 1 : ZMod m) = 0 ∧ (_root_.GlobalTheory.KZ.en γ 1 0 : ZMod m) = 0 ∧ (_root_.GlobalTheory.KZ.en γ 0 0 : ZMod m) = _root_.GlobalTheory.KZ.en γ 1 1 := by
   intro Ω _ _ _ ε X m hm

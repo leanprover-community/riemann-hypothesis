@@ -349,7 +349,6 @@ theorem prod₂_cls {A : Type 1} [CommRing A] {Ψ : GrothGL k ≃+ A} (hΨ : IsP
 
 section Main
 
-open MvPolynomial
 
 variable {Z : ∀ Δ : Segment k, IrrCl (GL (Fin (Δ.len * Δ.d)) k)}
   {Ψ : GrothGL k ≃+ MvPolynomial (Segment k) ℤ}

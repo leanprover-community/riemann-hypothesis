@@ -65,7 +65,6 @@ private theorem exists_mulBy_pow_eq_comp_resOne' {p : ℕ} {R : Type} [CommRing 
 
 
 set_option autoImplicit false in
-open TensorProduct Coalgebra Bialgebra CategoryTheory WithConv in
 variable {p : ℕ} {R : Type} [CommRing R] (G : _root_.GlobalTheory.PDivGroup p R) in
 theorem _root_.GlobalTheory.PDivGroup.exists_mulP_eq_of_transl_eq {p : ℕ} {R : Type} [CommRing R] (G : _root_.GlobalTheory.PDivGroup p R)
     (n : ℕ) (a : G.A (n + 1))

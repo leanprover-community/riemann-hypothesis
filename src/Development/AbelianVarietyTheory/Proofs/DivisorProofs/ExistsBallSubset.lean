@@ -134,7 +134,6 @@ end GlobalTheory.PrincCong
 
 namespace GlobalTheory.PrincCong
 
-open Filter Topology
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -220,6 +219,5 @@ end GlobalTheory.PrincCong
 
 namespace GlobalTheory.PrincCong
 
-open Filter Topology
 
 end GlobalTheory.PrincCong

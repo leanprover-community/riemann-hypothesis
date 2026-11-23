@@ -78,8 +78,6 @@ private theorem mem_span_infinitePlace_embedding (K : Type) [Field K] [NumberFie
   rintro _ ⟨_, ⟨i, rfl⟩, rfl⟩
   exact ⟨_, (by rw [mixedEmbedding.latticeBasis_apply, hP])⟩
 
-open Matrix NumberField in
-open scoped TensorProduct Classical in
 variable {p : ℕ} [Fact p.Prime] in
 private theorem mem_span_range_psi {p : ℕ} [Fact p.Prime] (G : _root_.GlobalTheory.LKTrip.HTGroup p)
     (v : InfinitePlace G.F) (M : Matrix (Fin G.n) (Fin G.n) ℂ) :
@@ -142,8 +140,6 @@ private theorem mem_span_range_psi {p : ℕ} [Fact p.Prime] (G : _root_.GlobalTh
     exact Submodule.add_mem _ hx hy
 
 
-open Matrix NumberField in
-open scoped TensorProduct Classical in
 variable {p : ℕ} [Fact p.Prime] in
 theorem _root_.GlobalTheory.CoordArch.coord_bound : ∀ (p : ℕ) [Fact p.Prime] (G : _root_.GlobalTheory.LKTrip.HTGroup p), ∃ R : ℝ, ∀ (c : G.C) (i : Fin (Module.finrank ℚ G.C)),
     |((Module.finBasis ℚ G.C).repr c i : ℝ)| ≤ R * ∑ w : InfinitePlace G.F, ∑ a : Fin G.n, ∑ b : Fin G.n, ‖G.psi w c a b‖ := by

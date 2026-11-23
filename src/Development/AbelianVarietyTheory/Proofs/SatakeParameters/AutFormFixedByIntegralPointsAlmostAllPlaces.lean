@@ -79,7 +79,6 @@ end GlobalTheory.Cong.AutFormFix
 
 namespace GlobalTheory.Cong.AutFormFix
 
-open Matrix GlobalTheory.BCT.GlobLev GroundTheory.Automorphic
 
 theorem fixed_intU_eventually : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a : ℕ) (φ : UA E a → ℂ),
     IsAutFormU φ → ∀ᶠ w in Filter.cofinite, ∀ x ∈ GlobalTheory.Cong.AdaptLev.intU a w, RU E a x φ = φ := by

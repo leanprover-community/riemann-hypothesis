@@ -51,29 +51,21 @@ variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : 
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.xa_mono (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) {a b : ℕ} (h : a ≤ b) : F.Xa a ≤ F.Xa b :=
   _root_.Formalism.HermitianLatticeCounting.P.Xa_mono F h
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.e_mem_xa (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) (b : Fin r) {a : ℕ} (h : b.val < a) :
     F.e b.castSucc ∈ F.Xa a :=
   _root_.Formalism.HermitianLatticeCounting.P.e_mem_Xa F b h
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem Xa_eq_span_e_castSucc (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) (n : ℕ) :
     F.Xa n = Submodule.span K ((fun b : Fin r => F.e b.castSucc) '' {b | b.val < n}) := rfl
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem sameGr_e_sub_mem_Xa {F G : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G)
     (a : Fin (r + 1)) : G.e a - F.e a ∈ F.Xa a := by
   unfold _root_.GlobalTheory.DegAsm.SameGr at h
   exact h a
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.xa_eq {F G : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) (n : ℕ) :
     G.Xa n = F.Xa n := by
@@ -99,8 +91,6 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.xa_eq {F G : _root_.Formalism.Hermit
   have h3 := Submodule.add_mem _ h1 h2
   simpa using h3
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.sameGr_symm {F G : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) :
     _root_.GlobalTheory.DegAsm.SameGr G F := by
@@ -110,16 +100,12 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.sameGr_symm {F G : _root_.Formalism.
   have hd := Submodule.neg_mem _ (sameGr_e_sub_mem_Xa h a)
   rwa [neg_sub] at hd
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.x_eq {F G : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) :
     G.X = F.X := by
   unfold _root_.Formalism.HermitianLatticeCounting.S6.FlagD.X
   exact _root_.GlobalTheory.DegAsm.AdaptInv.xa_eq h r
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem sameGr_z_sub_mem_X {F G : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r}
     (h : _root_.GlobalTheory.DegAsm.SameGr F G) : G.z - F.z ∈ F.X := by
@@ -127,8 +113,6 @@ private theorem sameGr_z_sub_mem_X {F G : _root_.Formalism.HermitianLatticeCount
   simp only [Fin.val_last] at hd
   exact hd
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem sameGr_V0_le {F G F' G' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r}
     (h : _root_.GlobalTheory.DegAsm.SameGr F G) (h' : _root_.GlobalTheory.DegAsm.SameGr F' G') :
@@ -145,15 +129,11 @@ private theorem sameGr_V0_le {F G F' G' : _root_.Formalism.HermitianLatticeCount
       (_root_.Formalism.HermitianLatticeCounting.P.isotropicSpan_le_jointSpan_right F F' (sameGr_z_sub_mem_X h'))
     simpa using h3
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.sitesCommonSpace_v0_eq_Vp {F G F' G' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) (h' : _root_.GlobalTheory.DegAsm.SameGr F' G') : _root_.Formalism.HermitianLatticeCounting.S6.V0 G G' = _root_.Formalism.HermitianLatticeCounting.S6.V0 F F' :=
   le_antisymm (sameGr_V0_le h h')
     (sameGr_V0_le (_root_.GlobalTheory.DegAsm.AdaptInv.sameGr_symm h) (_root_.GlobalTheory.DegAsm.AdaptInv.sameGr_symm h'))
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem det_of_eq_of_sub_mem_span_lt {l : ℕ} (u u' w : Fin l → V)
     (h : ∀ a, u' a - u a ∈ Submodule.span K (u '' {c | c < a})) :
@@ -184,8 +164,6 @@ private theorem det_of_eq_of_sub_mem_span_lt {l : ℕ} (u u' w : Fin l → V)
       simp [hM, h0, Matrix.one_apply_ne hij'.ne]
   rw [hmat, Matrix.det_mul, hdet, one_mul]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem sameGr_Dl_left_eq {F G : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G)
     (F' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) (l : ℕ) (hl : l ≤ r + 1) : _root_.Formalism.HermitianLatticeCounting.S6.Dl G F' l hl = _root_.Formalism.HermitianLatticeCounting.S6.Dl F F' l hl := by
@@ -205,8 +183,6 @@ private theorem sameGr_Dl_left_eq {F G : _root_.Formalism.HermitianLatticeCounti
   · simp only
     congr 1
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.dl_eq {F G F' G' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) (h' : _root_.GlobalTheory.DegAsm.SameGr F' G') (l : ℕ) (hl : l ≤ r + 1) :
     _root_.Formalism.HermitianLatticeCounting.S6.Dl G G' l hl = _root_.Formalism.HermitianLatticeCounting.S6.Dl F F' l hl := by
@@ -215,8 +191,6 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.dl_eq {F G F' G' : _root_.Formalism.
     _ = star (_root_.Formalism.HermitianLatticeCounting.S6.Dl F' F l hl) := by rw [sameGr_Dl_left_eq h' F l hl]
     _ = _root_.Formalism.HermitianLatticeCounting.S6.Dl F F' l hl := (_root_.Formalism.HermitianLatticeCounting.P.Dl_swap F' F l hl).symm
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.inN_of {F G : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) (s : V →ₗ[K] V) (hs : F.InN s) : G.InN s := by
   unfold _root_.Formalism.HermitianLatticeCounting.S6.FlagD.InN at hs ⊢
@@ -251,8 +225,6 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.inN_of {F G : _root_.Formalism.Hermi
 
 variable {R : Type} [CommRing R] [Algebra R K] [Module R V] [IsScalarTower R K V]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 variable {R : Type} [CommRing R] [Algebra R K] [Module R V] [IsScalarTower R K V] in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.lead_eq {F G : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r}
@@ -272,8 +244,6 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.lead_eq {F G : _root_.Formalism.Herm
     abel
   rw [h3, Submodule.add_mem_iff_left _ hd]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 variable {R : Type} [CommRing R] [Algebra R K] [Module R V] [IsScalarTower R K V] in
 private theorem sameGr_sub_smul_e_mem_Xa_iff {F G : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r}
@@ -286,8 +256,6 @@ private theorem sameGr_sub_smul_e_mem_Xa_iff {F G : _root_.Formalism.HermitianLa
     abel
   rw [h3, Submodule.sub_mem_iff_left _ (Submodule.smul_mem _ t hd)]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 variable {R : Type} [CommRing R] [Algebra R K] [Module R V] [IsScalarTower R K V] in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.isAdm_iff {F G F' G' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) (h' : _root_.GlobalTheory.DegAsm.SameGr F' G') (Λ : Submodule R V) (g : R) :
@@ -295,8 +263,6 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.isAdm_iff {F G F' G' : _root_.Formal
   unfold _root_.GlobalTheory.HermLat.IsAdm
   simp only [sameGr_sub_smul_e_mem_Xa_iff h, sameGr_sub_smul_e_mem_Xa_iff h']
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 variable {R : Type} [CommRing R] [Algebra R K] [Module R V] [IsScalarTower R K V] in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.isFramed_iff {F G F' G' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) (h' : _root_.GlobalTheory.DegAsm.SameGr F' G') (Λ : Submodule R V)
@@ -304,8 +270,6 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.isFramed_iff {F G F' G' : _root_.For
   unfold _root_.GlobalTheory.HermLat.IsFramed _root_.GlobalTheory.HermLat.IsFrame
   simp only [_root_.GlobalTheory.DegAsm.AdaptInv.lead_eq h, _root_.GlobalTheory.DegAsm.AdaptInv.lead_eq h']
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 variable {R : Type} [CommRing R] [Algebra R K] [Module R V] [IsScalarTower R K V] in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.latL_eq {F G F' G' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) (h' : _root_.GlobalTheory.DegAsm.SameGr F' G') (Λ : Submodule R V) :
@@ -313,8 +277,6 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.latL_eq {F G F' G' : _root_.Formalis
   unfold _root_.GlobalTheory.HermLat.latL _root_.GlobalTheory.HermLat.uPerp
   rw [_root_.GlobalTheory.DegAsm.AdaptInv.x_eq h, _root_.GlobalTheory.DegAsm.AdaptInv.x_eq h']
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 variable {R : Type} [CommRing R] [Algebra R K] [Module R V] [IsScalarTower R K V] in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.flagFramesSameGraded_definitePartLattice_eq {F G F' G' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) (h' : _root_.GlobalTheory.DegAsm.SameGr F' G') (Λ : Submodule R V) :
@@ -323,8 +285,6 @@ theorem _root_.GlobalTheory.DegAsm.AdaptInv.flagFramesSameGraded_definitePartLat
   rw [_root_.GlobalTheory.DegAsm.AdaptInv.latL_eq h h',
     _root_.GlobalTheory.DegAsm.AdaptInv.sitesCommonSpace_v0_eq_Vp h h']
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 variable {R : Type} [CommRing R] [Algebra R K] [Module R V] [IsScalarTower R K V] in
 theorem _root_.GlobalTheory.DegAsm.AdaptInv.iotaGraph_eq {F G F' G' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} (h : _root_.GlobalTheory.DegAsm.SameGr F G) (h' : _root_.GlobalTheory.DegAsm.SameGr F' G') (Λ : Submodule R V) (g : R) :
@@ -338,8 +298,6 @@ end GlobalTheory.DegAsm.AdaptInv
 namespace GlobalTheory.DegAsm
 open AdaptInv
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 private theorem NF_j_eq_sub_finrank_II {K V : Type} [Field K] [NumberField K]
     [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ}
     (N : _root_.GlobalTheory.DegCnt.NF H r) :
@@ -365,8 +323,6 @@ private theorem NF_j_eq_sub_finrank_II {K V : Type} [Field K] [NumberField K]
   rw [_root_.Formalism.HermitianLatticeCounting.P.finrank_compl N.F hj _ hsup hinf]
   omega
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 private theorem NF_Dl_eq_zero_of_j_lt {K V : Type} [Field K] [NumberField K]
     [StarRing K] [AddCommGroup V] [Module K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ}
     (N : _root_.GlobalTheory.DegCnt.NF H r) (l : ℕ) (hl : l ≤ r + 1) (hjl : N.j < l)
@@ -396,8 +352,6 @@ private theorem NF_Dl_eq_zero_of_j_lt {K V : Type} [Field K] [NumberField K]
   exact _root_.Formalism.HermitianLatticeCounting.P.X_iso N.F' hX hb
 
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.DegAsm.adapt_invariants : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V), _root_.Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ), ∀ (F F' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) (𝔡 : Ideal (𝓞 K)) (N : _root_.GlobalTheory.DegCnt.NF H r), _root_.GlobalTheory.DegAsm.Adapt F F' 𝔡 N → (∀ a : ℕ, N.F.Xa a = F.Xa a ∧ N.F'.Xa a = F'.Xa a) ∧ N.F.X = F.X ∧ N.F'.X = F'.X ∧ _root_.Formalism.HermitianLatticeCounting.S6.V0 N.F N.F' = _root_.Formalism.HermitianLatticeCounting.S6.V0 F F' ∧ N.j = r - Module.finrank K (_root_.Formalism.HermitianLatticeCounting.S6.II F F') ∧ (∀ (l : ℕ) (hl : l ≤ r + 1), _root_.Formalism.HermitianLatticeCounting.S6.Dl N.F N.F' l hl = _root_.Formalism.HermitianLatticeCounting.S6.Dl F F' l hl) ∧ (∀ (l : ℕ) (hl : l ≤ r + 1), N.j < l → l ≤ r → _root_.Formalism.HermitianLatticeCounting.S6.Dl F F' l hl = 0) ∧ (∀ s : V →ₗ[K] V, (N.F.InN s ↔ F.InN s) ∧ (N.F'.InN s ↔ F'.InN s)) ∧ ∀ (g : ℕ) (Λ : Submodule (𝓞 K) V), (N.IsTerm g Λ ↔ _root_.GlobalTheory.HermLat.IsFramed F F' Λ N.aa ∧ _root_.GlobalTheory.HermLat.IsAdm F F' Λ (g : 𝓞 K)) ∧ _root_.GlobalTheory.HermLat.latL N.F N.F' Λ = _root_.GlobalTheory.HermLat.latL F F' Λ ∧ _root_.GlobalTheory.HermLat.latL N.F' N.F Λ = _root_.GlobalTheory.HermLat.latL F' F Λ ∧ _root_.GlobalTheory.HermLat.flagPairDefinitePartLattice N.F N.F' Λ = _root_.GlobalTheory.HermLat.flagPairDefinitePartLattice F F' Λ ∧ _root_.GlobalTheory.HermLat.flagPairDefinitePartLattice N.F' N.F Λ = _root_.GlobalTheory.HermLat.flagPairDefinitePartLattice F' F Λ ∧ _root_.GlobalTheory.HermLat.iotaGraph N.F N.F' Λ (g : 𝓞 K) = _root_.GlobalTheory.HermLat.iotaGraph F F' Λ (g : 𝓞 K) := by
   intro K V _ _ _ _ _ _ _ _ H _ r F F' 𝔡 N hN
   unfold _root_.GlobalTheory.DegAsm.Adapt at hN

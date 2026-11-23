@@ -53,7 +53,6 @@ private lemma norm_sub_two_add_le_of_mem_strip {ρ : ℂ} {t : ℝ} (h0 : 0 < ρ
   rw [hre, him, abs_of_neg (by linarith)]
   linarith
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private lemma finsum_mem_le_of_subset_of_nonneg {S D : Set ℂ} (f : ℂ → ℝ)
     (hf : ∀ x, 0 ≤ f x) (hD : D.Finite) (hSD : S ⊆ D) :
     ∑ᶠ x ∈ S, f x ≤ ∑ᶠ x ∈ D, f x := by
@@ -61,7 +60,6 @@ private lemma finsum_mem_le_of_subset_of_nonneg {S D : Set ℂ} (f : ℂ → ℝ
   exact Finset.sum_le_sum_of_subset_of_nonneg (by simpa using hSD) (fun x _ _ => hf x)
 
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 theorem _root_.GlobalTheory.ZeroWindow.count_zeros_window : ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) [NeZero N]
     (χ : DirichletCharacter ℂ N), χ.IsPrimitive → ∀ t : ℝ,
     {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im - t| ≤ 1 ∧ LFunction χ ρ = 0}.Finite ∧

@@ -153,8 +153,6 @@ private theorem evenNorms_of_valuation_sub_one_le_four (F : Type) [Field F]
   have : e = (e * s⁻¹ ^ 2) * s ^ 2 := by field_simp
   rw [this, hr]; ring
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private theorem exists_normalForm_nonsquare_unit_lemma (F : Type) [Field F] [NumberField F]
     (v : HeightOneSpectrum (𝓞 F)) (π : v.adicCompletion F) (hπ : Valued.v π = WithZero.exp (-1))
     (hsq : Valued.v (2 : v.adicCompletion F) < 1 → ∀ x : v.adicCompletion F, Valued.v x ≤ 1 →
@@ -217,8 +215,6 @@ private theorem exists_normalForm_nonsquare_unit_lemma (F : Type) [Field F] [Num
     · refine ⟨1, one_ne_zero, Or.inl ⟨by rw [one_pow, mul_one, he], by rwa [one_pow, mul_one],
         m, by rw [one_pow, mul_one, hj, hm]⟩⟩
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private theorem exists_sq_near_of_valuation_two_lt_one {K : Type} [Field K] (w : Valuation K ℤᵐ⁰)
     (R : Finset K) (hR : ∀ r ∈ R, w r ≤ 1) (hcov : ∀ x : K, w x ≤ 1 → ∃ r ∈ R, w (x - r) < 1)
     (h2 : w 2 < 1) (x : K) (hx : w x ≤ 1) : ∃ y : K, w y ≤ 1 ∧ w (x - y ^ 2) < 1 := by
@@ -276,8 +272,6 @@ private theorem exists_sq_near_of_valuation_two_lt_one {K : Type} [Field K] (w :
   exact ⟨y.1, y.2, by rwa [← Valuation.map_neg, neg_sub]⟩
 
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 theorem _root_.GlobalTheory.QNorm.exists_normal_form_of_not_isSquare : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (δ : v.adicCompletion F), δ ≠ 0 → ¬ IsSquare δ → ∃ c : v.adicCompletion F, c ≠ 0 ∧ ((∃ n : ℤ, Valued.v (δ * c ^ 2) = WithZero.exp (2 * n + 1)) ∨ (Valued.v (δ * c ^ 2) = 1 ∧ Valued.v (4 : v.adicCompletion F) < Valued.v (δ * c ^ 2 - 1) ∧ ∃ n : ℤ, Valued.v (δ * c ^ 2 - 1) = WithZero.exp (2 * n + 1)) ∨ _root_.GlobalTheory.QNorm.EvenNorms Valued.v (δ * c ^ 2)) := by
   intro F _ _ v δ hδ0 hδsq
   obtain ⟨⟨π₀, -, hπ⟩, -, -, R, -, hR, hcov⟩ := _root_.GlobalTheory.QNorm.exists_uniformizer_and_residue_representatives F v

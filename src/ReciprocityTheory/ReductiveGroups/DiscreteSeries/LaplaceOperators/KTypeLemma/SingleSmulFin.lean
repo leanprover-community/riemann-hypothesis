@@ -40,7 +40,6 @@ namespace ReciprocityTheory.ChartRestriction.DS.Lap.LemK
 
 open ReciprocityTheory.ChartRestriction.DS
 
-section GeneratorMatrix
 
 variable {n : ℕ} {M : Type*} [AddCommGroup M] [Module ℂ M]
 
@@ -107,7 +106,6 @@ private lemma tensVd_single (E : Fin n → Fin n → Module.End ℂ M) (a b c : 
   by_cases h2 : c' = b <;> by_cases h1 : c' = c <;> by_cases h3 : a = c <;>
     simp_all [Pi.single_apply, ite_apply]
 
-end GeneratorMatrix
 
 theorem gen_statement (n : ℕ) : GenStatement n := by
   intro ε M _ _ E V _ _

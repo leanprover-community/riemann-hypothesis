@@ -168,7 +168,6 @@ end GlobalTheory
 namespace GlobalTheory
 namespace TorusPiTorsion
 
-open ReciprocityTheory.ChartRestriction.G.Semi.Rosenlicht
 
 theorem exists_int_dvd (E : Type) [Field E] [NumberField E] (r : 𝓞 E) (hr : r ≠ 0) :
     ∃ m : ℤ, m ≠ 0 ∧ r ∣ (m : 𝓞 E) := by

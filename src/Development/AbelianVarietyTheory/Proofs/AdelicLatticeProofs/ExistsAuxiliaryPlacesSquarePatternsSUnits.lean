@@ -113,8 +113,6 @@ private theorem relIndex_adjoinRoot_ne_zero_and_le_two {G : Type} [CommGroup G] 
       · exact ⟨fun _ h' => hsub _ h' hb, fun _ => hb⟩
     omega
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private theorem valued_algebraMap_eq_one_of_mem_sUnits {F : Type} [Field F] [NumberField F]
     {S : Finset (HeightOneSpectrum (𝓞 F))} {v : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) {x : Fˣ}
     (hx : x ∈ _root_.GlobalTheory.QNorm.sUnits F S) :
@@ -122,8 +120,6 @@ private theorem valued_algebraMap_eq_one_of_mem_sUnits {F : Type} [Field F] [Num
   rw [← (_root_.GlobalTheory.QNorm.mem_sUnits F S x).1 hx v hv]
   exact HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v (x : F)
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private theorem isSquare_mul_iff_of_mem_sUnits {F : Type} [Field F] [NumberField F]
     {S : Finset (HeightOneSpectrum (𝓞 F))} (hS : _root_.GlobalTheory.QNorm.admitted F S)
     {v : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) {x y : Fˣ} (hx : x ∈ _root_.GlobalTheory.QNorm.sUnits F S)
@@ -156,8 +152,6 @@ private theorem isSquare_mul_iff_of_mem_sUnits {F : Type} [Field F] [NumberField
       exact _root_.GlobalTheory.QNorm.isSquare_mul_of_nonsquare_units F v h2 a b
         (valued_algebraMap_eq_one_of_mem_sUnits hv hx) (valued_algebraMap_eq_one_of_mem_sUnits hv hy) ha hb
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private theorem relIndex_sqSub_le_two_of_not_mem {F : Type} [Field F] [NumberField F]
     {S : Finset (HeightOneSpectrum (𝓞 F))} (hS : _root_.GlobalTheory.QNorm.admitted F S)
     {v : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) :
@@ -173,8 +167,6 @@ private theorem relIndex_sqSub_le_two_of_not_mem {F : Type} [Field F] [NumberFie
     rw [_root_.GlobalTheory.QNorm.mem_sqSub] at haK
     tauto
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private theorem relIndex_iInf_sqSub_le_two_pow_card {F : Type} [Field F] [NumberField F]
     {S : Finset (HeightOneSpectrum (𝓞 F))} (hS : _root_.GlobalTheory.QNorm.admitted F S)
     (T : Finset (HeightOneSpectrum (𝓞 F))) (hT : ∀ v ∈ T, v ∉ S) :
@@ -190,8 +182,6 @@ private theorem relIndex_iInf_sqSub_le_two_pow_card {F : Type} [Field F] [Number
       (ih fun w hw => hT w (Finset.mem_insert_of_mem hw)))
 
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 theorem _root_.GlobalTheory.QNorm.exists_auxiliary_places : ∀ (F : Type) [Field F] [NumberField F] (δ : Fˣ) (S : Finset (HeightOneSpectrum (𝓞 F))), _root_.GlobalTheory.QNorm.admitted F S → δ ∈ _root_.GlobalTheory.QNorm.sUnits F S → ¬ IsSquare (δ : F) → ∃ T : Finset (HeightOneSpectrum (𝓞 F)), Disjoint S T ∧ T.card + 1 = S.card + Fintype.card (InfinitePlace F) ∧ (∀ v ∈ T, IsSquare (algebraMap F (v.adicCompletion F) δ)) ∧ ∀ A : Finset (HeightOneSpectrum (𝓞 F)), ∃ u ∈ _root_.GlobalTheory.QNorm.sUnits F S, ∀ v ∈ T, (IsSquare (algebraMap F (v.adicCompletion F) u) ↔ v ∉ A) := by
   intro F _ _ δ S hS hδ hsq
   classical

@@ -221,7 +221,6 @@ end Comparison
 
 section Homotopy
 
-open CategoryTheory Category Limits
 
 set_option backward.isDefEq.respectTransparency false
 
@@ -232,7 +231,6 @@ end Homotopy
 
 section Modules
 
-open CategoryTheory Category Limits
 
 universe u w
 
@@ -265,7 +263,6 @@ end Explicit
 
 section Main
 
-open CategoryTheory Category Limits
 
 universe u
 

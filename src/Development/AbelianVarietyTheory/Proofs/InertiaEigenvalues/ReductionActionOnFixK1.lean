@@ -48,15 +48,11 @@ theorem _root_.GlobalTheory.GLp.red_surjective (g : ℕ) [Fact g.Prime] (n : ℕ
     Function.Surjective (_root_.GlobalTheory.GLp.red g n) :=
   _root_.GlobalTheory.GLp.Model.red_surjective n
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] in
 theorem _root_.GlobalTheory.GLp.red_invFun (x : _root_.GlobalTheory.GLq.Gn g n) :
     _root_.GlobalTheory.GLp.red g n (Function.invFun (_root_.GlobalTheory.GLp.red g n) x) = x :=
   Function.invFun_eq (_root_.GlobalTheory.GLp.red_surjective g n x)
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] in
 theorem _root_.GlobalTheory.GLp.mem_principalCongruenceFixedVectors_iff (π : Representation ℂ (GL (Fin n) ℚ_[g]) V)
     (v : V) :
@@ -64,8 +60,6 @@ theorem _root_.GlobalTheory.GLp.mem_principalCongruenceFixedVectors_iff (π : Re
       _root_.GlobalTheory.GLp.red g n k = 1 → π (_root_.GlobalTheory.GLp.inc g n k) v = v :=
   _root_.GlobalTheory.GLp.Model.mem_principalCongruenceFixedVectors_iff π v
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] in
 theorem _root_.GlobalTheory.GLp.padicIntGL_smul_mem_principalCongruenceFixed (π : Representation ℂ (GL (Fin n) ℚ_[g]) V)
     {v : V} (hv : v ∈ _root_.GlobalTheory.GLp.fixK1 π) (a : GL (Fin n) ℤ_[g]) :
@@ -77,8 +71,6 @@ theorem _root_.GlobalTheory.GLp.padicIntGL_smul_mem_principalCongruenceFixed (π
   rw [← Module.End.mul_apply, ← map_mul, ← map_mul, h, map_mul, map_mul, Module.End.mul_apply,
     hv _ hconj]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] in
 theorem _root_.GlobalTheory.GLp.inc_eq_of_red_eq (π : Representation ℂ (GL (Fin n) ℚ_[g]) V)
     {v : V} (hv : v ∈ _root_.GlobalTheory.GLp.fixK1 π) {a b : GL (Fin n) ℤ_[g]}
@@ -91,8 +83,6 @@ theorem _root_.GlobalTheory.GLp.inc_eq_of_red_eq (π : Representation ℂ (GL (F
   rw [map_mul, map_mul, Module.End.mul_apply,
     (_root_.GlobalTheory.GLp.mem_principalCongruenceFixedVectors_iff π v).1 hv _ hk]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] in
 theorem _root_.GlobalTheory.GLp.lift_mul_apply (π : Representation ℂ (GL (Fin n) ℚ_[g]) V) {v : V}
     (hv : v ∈ _root_.GlobalTheory.GLp.fixK1 π) (x y : _root_.GlobalTheory.GLq.Gn g n) :
@@ -106,8 +96,6 @@ theorem _root_.GlobalTheory.GLp.lift_mul_apply (π : Representation ℂ (GL (Fin
       (_root_.GlobalTheory.GLp.padicIntGL_smul_mem_principalCongruenceFixed π hv b) a,
     map_mul, map_mul, Module.End.mul_apply]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] in
 theorem _root_.GlobalTheory.GLp.lift_one_apply (π : Representation ℂ (GL (Fin n) ℚ_[g]) V) {v : V}
     (hv : v ∈ _root_.GlobalTheory.GLp.fixK1 π) :

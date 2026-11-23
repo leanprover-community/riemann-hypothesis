@@ -117,10 +117,8 @@ def GapLap (ε : Fin n → Bool) (lam : Fin n → ℝ) (h : ℝ) : Prop :=
 
 end Gap
 
-section L2
 
 variable {k r : ℕ} {Vp : Type*} [NormedAddCommGroup Vp] [InnerProductSpace ℂ Vp]
 
-end L2
 
 end ReciprocityTheory.ChartRestriction.DS.Lap

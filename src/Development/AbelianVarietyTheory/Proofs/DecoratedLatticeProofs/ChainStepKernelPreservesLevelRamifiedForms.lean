@@ -99,7 +99,6 @@ end GlobalTheory.KRamT
 
 namespace GlobalTheory.KRamT
 
-open Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem.Col2.TC GlobalTheory.KerDia
 
 section Dia
 attribute [local instance] GlobalTheory.Mem.Col2.starE

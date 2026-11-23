@@ -332,7 +332,6 @@ end UpperTheory.V.Z.Ord.CU
 
 namespace UpperTheory.V.Z.Ord.CU
 
-open UpperTheory.V.Af UpperTheory.V.Af.Bc UpperTheory.V.Af.Gu GlobalTheory.MonoConj
 
 variable {E Ω : Type} [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
 

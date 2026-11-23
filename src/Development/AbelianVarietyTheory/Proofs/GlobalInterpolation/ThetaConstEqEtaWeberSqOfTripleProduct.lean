@@ -57,16 +57,10 @@ private lemma norm_cexp_pi_mul_I_mul_upperHalfPlane_lt_one (τ : ℍ) : ‖cexp 
   have := mul_pos Real.pi_pos τ.im_pos
   linarith
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma cexp_eq_cexp_pi_mul_I_mul_pow_of_eq (τ : ℍ) (k : ℕ) (w : ℂ) (hw : w = ↑Real.pi * I * k * τ) :
     cexp w = cexp (↑Real.pi * I * τ) ^ k := by
   rw [← Complex.exp_nat_mul, hw]; ring_nf
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma tpFactor_eq_nome_product (τ : ℍ) (z : ℂ) (n : ℕ) :
     _root_.GlobalTheory.ThetaWeberRoad.tpFactor τ z n =
       (1 - cexp (↑Real.pi * I * τ) ^ (2 * n + 2)) *
@@ -79,16 +73,10 @@ private lemma tpFactor_eq_nome_product (τ : ℍ) (z : ℂ) (n : ℕ) :
     cexp_eq_cexp_pi_mul_I_mul_pow_of_eq τ _ _ (by push_cast; ring)
   rw [Complex.exp_add, Complex.exp_sub, h1, h2]
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma hasProd_one_sub_pow_succ_of_norm_lt_one {y : ℂ} (hy : ‖y‖ < 1) :
     HasProd (fun n : ℕ => 1 - y ^ (n + 1)) (∏' n : ℕ, (1 - y ^ (n + 1))) :=
   (ModularForm.multipliable_one_sub_pow hy).hasProd
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma hasProd_one_add_even_mul_one_add_odd_tprod {f : ℕ → ℂ} (he : Summable fun k => f (2 * k))
     (ho : Summable fun k => f (2 * k + 1)) :
     HasProd (fun k => (1 + f (2 * k)) * (1 + f (2 * k + 1))) (∏' n, (1 + f n)) := by
@@ -98,9 +86,6 @@ private lemma hasProd_one_add_even_mul_one_add_odd_tprod {f : ℕ → ℂ} (he :
   rw [h.tprod_eq]
   exact hme.mul hmo
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma summable_pow_mul_add_of_norm_lt_one {y : ℂ} (hy : ‖y‖ < 1) (a b : ℕ) (hb : 0 < b) :
     Summable fun k : ℕ => y ^ (b * k + a) := by
   apply Summable.of_norm
@@ -111,9 +96,6 @@ private lemma summable_pow_mul_add_of_norm_lt_one {y : ℂ} (hy : ‖y‖ < 1) (
   refine hg'.congr fun k => ?_
   rw [norm_pow, ← pow_mul, ← pow_add]; ring_nf
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma hasProd_one_sub_pow_odd_mul_one_sub_pow_even {y : ℂ} (hy : ‖y‖ < 1) :
     HasProd (fun k : ℕ => (1 - y ^ (2 * k + 1)) * (1 - y ^ (2 * k + 2)))
       (∏' n : ℕ, (1 - y ^ (n + 1))) := by
@@ -123,9 +105,6 @@ private lemma hasProd_one_sub_pow_odd_mul_one_sub_pow_even {y : ℂ} (hy : ‖y�
   simp only [← sub_eq_add_neg] at h
   exact h
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma eta_eq_cexp_div_twentyFour_mul_tprod_one_sub_pow (w : ℂ) :
     ModularForm.eta w = cexp (2 * ↑Real.pi * I * w / 24) *
       ∏' n : ℕ, (1 - cexp (2 * ↑Real.pi * I * w) ^ (n + 1)) := by
@@ -133,35 +112,23 @@ private lemma eta_eq_cexp_div_twentyFour_mul_tprod_one_sub_pow (w : ℂ) :
   simp only [Function.Periodic.qParam, ModularForm.eta_q_eq_pow]
   norm_num
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma eta_eq_cexp_mul_tprod_one_sub_nome_sq_pow (τ : ℍ) :
     ModularForm.eta τ = cexp (2 * ↑Real.pi * I * τ / 24) *
       ∏' n : ℕ, (1 - (cexp (↑Real.pi * I * τ) ^ 2) ^ (n + 1)) := by
   rw [eta_eq_cexp_div_twentyFour_mul_tprod_one_sub_pow, cexp_eq_cexp_pi_mul_I_mul_pow_of_eq τ 2 (2 * ↑Real.pi * I * τ) (by push_cast; ring)]
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma mul_inv_mul_mul_inv_eq_mul_inv_mul_mul_inv {Θ A B E c E₂ : ℂ} (hA : A ≠ 0) (hE : E ≠ 0)
     (key : Θ * (E * A) = c ^ 2 * E₂ ^ 2 * B ^ 2) : Θ = E * A * (c * (E₂ * B) / (E * A)) ^ 2 := by
   have h : E * A ≠ 0 := mul_ne_zero hE hA
   rw [div_pow, mul_pow, mul_pow, eq_comm, mul_div_assoc', div_eq_iff (pow_ne_zero 2 h)]
   linear_combination (-(E * A)) * key
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma tprod_one_sub_nome_sq_pow_succ_ne_zero (τ : ℍ) :
     ∏' n : ℕ, (1 - (cexp (↑Real.pi * I * τ) ^ 2) ^ (n + 1)) ≠ 0 := by
   have h := ModularForm.eta_ne_zero (z := (τ : ℂ)) τ.im_pos
   rw [eta_eq_cexp_mul_tprod_one_sub_nome_sq_pow] at h
   exact right_ne_zero_of_mul h
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma thetaConst_zero_zero_eq_eta_mul_weberF_sq (hTP : _root_.GlobalTheory.ThetaWeberRoad.TripleProduct) (τ : ℍ) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.thetaConst 0 0 τ = ModularForm.eta τ * _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.weberF τ ^ 2 := by
   set q := cexp (↑Real.pi * I * τ) with hqdef
@@ -194,16 +161,10 @@ private lemma thetaConst_zero_zero_eq_eta_mul_weberF_sq (hTP : _root_.GlobalTheo
   refine mul_inv_mul_mul_inv_eq_mul_inv_mul_mul_inv (tprod_one_sub_nome_sq_pow_succ_ne_zero τ) (Complex.exp_ne_zero _) ?_
   rw [hexp, ← key]; ring
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma eq_mul_div_sq_of_mul_mul_eq_sq_mul_sq {Θ A B E E₂ : ℂ} (hA : A ≠ 0) (hE : E ≠ 0)
     (key : Θ * (E * A) = E₂ ^ 2 * B ^ 2) : Θ = E * A * ((E₂ * B) / (E * A)) ^ 2 := by
   simpa using mul_inv_mul_mul_inv_eq_mul_inv_mul_mul_inv (c := 1) hA hE (by simpa using key)
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma thetaConst_zero_one_eq_eta_mul_weberF₁_sq (hTP : _root_.GlobalTheory.ThetaWeberRoad.TripleProduct) (τ : ℍ) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.thetaConst 0 1 τ = ModularForm.eta τ * _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.weberF₁ τ ^ 2 := by
   set q := cexp (↑Real.pi * I * τ) with hqdef
@@ -234,9 +195,6 @@ private lemma thetaConst_zero_one_eq_eta_mul_weberF₁_sq (hTP : _root_.GlobalTh
   refine eq_mul_div_sq_of_mul_mul_eq_sq_mul_sq (tprod_one_sub_nome_sq_pow_succ_ne_zero τ) (Complex.exp_ne_zero _) ?_
   rw [hexp, ← key]; ring
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 private lemma thetaConst_one_zero_eq_eta_mul_weberF₂_sq (hTP : _root_.GlobalTheory.ThetaWeberRoad.TripleProduct) (τ : ℍ) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.thetaConst 1 0 τ = ModularForm.eta τ * _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.weberF₂ τ ^ 2 := by
   set q := cexp (↑Real.pi * I * τ) with hqdef
@@ -285,9 +243,6 @@ private lemma thetaConst_one_zero_eq_eta_mul_weberF₂_sq (hTP : _root_.GlobalTh
   rw [hc, hx, hΘ, h₁, ← h₂]
   ring
 
-open Complex in
-open UpperHalfPlane hiding I in
-open scoped Real in
 theorem _root_.GlobalTheory.ThetaWeberProof.thetaWeber_of_tripleProduct (hTP : _root_.GlobalTheory.ThetaWeberRoad.TripleProduct) (τ : ℍ) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.ThetaWeber τ :=
   ⟨thetaConst_zero_zero_eq_eta_mul_weberF_sq hTP τ, thetaConst_zero_one_eq_eta_mul_weberF₁_sq hTP τ, thetaConst_one_zero_eq_eta_mul_weberF₂_sq hTP τ⟩

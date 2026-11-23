@@ -61,7 +61,6 @@ open Matrix in
 theorem periodMatrix_im {g : ℕ} (X Y : Matrix (Fin g) (Fin g) ℝ) : (periodMatrix X Y).map Complex.im = Y := by
   ext i j; simp [periodMatrix]
 
-open Matrix in
 theorem periodMatrix_isSymm {g : ℕ} {X Y : Matrix (Fin g) (Fin g) ℝ} (hX : X.IsSymm) (hY : Y.IsSymm) :
     (periodMatrix X Y).IsSymm := by
   ext i j

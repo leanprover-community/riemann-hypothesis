@@ -437,7 +437,6 @@ end MainStatements.WeightKernel.RegInt
 
 namespace MainStatements.WeightKernel.RegInt
 
-open GlobalTheory.SiegelSet in
 theorem regClassInt : PositivityTheory.ThKR.SiegelCore → MainStatements.RegularCuspidalTrace.RegClassInt := by
   intro hcore D V μ _ f hf hcusp γ hreg
   have hknown := PositivityTheory.ThKR.siegel_of_core hcore

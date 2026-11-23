@@ -66,8 +66,6 @@ private lemma Jpq_eq_diagonal_sg (P Q : ℕ) :
   rcases i with i | i <;> rcases k with k | k <;>
     simp [Matrix.fromBlocks, Matrix.diagonal, Matrix.one_apply] <;> split_ifs <;> simp
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 variable {P Q P' Q' : ℕ} in
 private lemma conjTranspose_mul_diagonal_mul_apply {ι : Type*} [Fintype ι] [DecidableEq ι]
     (u : Matrix ι ι ℂ) (d : ι → ℂ) (a b : ι) :
@@ -77,8 +75,6 @@ private lemma conjTranspose_mul_diagonal_mul_apply {ι : Type*} [Fintype ι] [De
   ext k
   rw [Matrix.mul_diagonal, conjTranspose_apply]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 variable {P Q P' Q' : ℕ} in
 variable (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q))
   (m : Matrix (Fin P' ⊕ Fin Q') (Fin P' ⊕ Fin Q') ℂ) in
@@ -86,16 +82,12 @@ private lemma sum_eq_none_add_sum_some {M : Type*} [AddCommMonoid M] (f : Fin P 
     ∑ i, f i = f (e none) + ∑ a, f (e (some a)) := by
   rw [← e.sum_comp, Fintype.sum_option]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 variable {P Q P' Q' : ℕ} in
 variable (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q))
   (m : Matrix (Fin P' ⊕ Fin Q') (Fin P' ⊕ Fin Q') ℂ) in
 private lemma blk_none_none : _root_.GlobalTheory.BlockEmbedding.blk e m (e none) (e none) = 1 := by
   simp [_root_.GlobalTheory.BlockEmbedding.blk]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 variable {P Q P' Q' : ℕ} in
 variable (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q))
   (m : Matrix (Fin P' ⊕ Fin Q') (Fin P' ⊕ Fin Q') ℂ) in
@@ -103,8 +95,6 @@ private lemma blk_some_none (a : Fin P' ⊕ Fin Q') :
     _root_.GlobalTheory.BlockEmbedding.blk e m (e (some a)) (e none) = 0 := by
   simp [_root_.GlobalTheory.BlockEmbedding.blk]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 variable {P Q P' Q' : ℕ} in
 variable (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q))
   (m : Matrix (Fin P' ⊕ Fin Q') (Fin P' ⊕ Fin Q') ℂ) in
@@ -112,8 +102,6 @@ private lemma blk_none_some (b : Fin P' ⊕ Fin Q') :
     _root_.GlobalTheory.BlockEmbedding.blk e m (e none) (e (some b)) = 0 := by
   simp [_root_.GlobalTheory.BlockEmbedding.blk]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 variable {P Q P' Q' : ℕ} in
 variable (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q))
   (m : Matrix (Fin P' ⊕ Fin Q') (Fin P' ⊕ Fin Q') ℂ) in
@@ -121,8 +109,6 @@ private lemma blk_some_some (a b : Fin P' ⊕ Fin Q') :
     _root_.GlobalTheory.BlockEmbedding.blk e m (e (some a)) (e (some b)) = m a b := by
   simp [_root_.GlobalTheory.BlockEmbedding.blk]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 variable {P Q P' Q' : ℕ} in
 private lemma blk_preserves_Jpq (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q))
     (hs : _root_.GlobalTheory.CompactDualQuot.SignCompat e) (m : Matrix (Fin P' ⊕ Fin Q') (Fin P' ⊕ Fin Q') ℂ)
@@ -145,8 +131,6 @@ private lemma blk_preserves_Jpq (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ F
     rw [this]
     simp [Matrix.diagonal_apply, hs]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 variable {P Q P' Q' : ℕ} in
 private lemma blk_one_global_interpolation (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) :
     _root_.GlobalTheory.BlockEmbedding.blk e 1 = 1 := by
@@ -157,8 +141,6 @@ private lemma blk_one_global_interpolation (e : Option (Fin P' ⊕ Fin Q') ≃ (
     simp [blk_none_none, blk_none_some, blk_some_none, blk_some_some,
       Matrix.one_apply]
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 variable {P Q P' Q' : ℕ} in
 private lemma blk_mul_global_interpolation (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q))
     (m n : Matrix (Fin P' ⊕ Fin Q') (Fin P' ⊕ Fin Q') ℂ) :
@@ -173,8 +155,6 @@ private lemma blk_mul_global_interpolation (e : Option (Fin P' ⊕ Fin Q') ≃ (
       Matrix.mul_apply]
 
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 variable {P Q P' Q' : ℕ} in
 theorem _root_.GlobalTheory.BlockEmbedding.exists_blockEmb : ∀ (P Q P' Q' : ℕ) (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)),
     _root_.GlobalTheory.CompactDualQuot.SignCompat e → ∃ j : _root_.Formalism.BasicNotions.UpqT P' Q' →* _root_.Formalism.BasicNotions.UpqT P Q, _root_.GlobalTheory.CompactDualQuot.IsBlockEmb e j ∧ Topology.IsClosedEmbedding j ∧

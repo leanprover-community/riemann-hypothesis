@@ -81,6 +81,5 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.NormBallVolumes
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 end Formalism.FourierDecayAlt.P.NormBallVolumes

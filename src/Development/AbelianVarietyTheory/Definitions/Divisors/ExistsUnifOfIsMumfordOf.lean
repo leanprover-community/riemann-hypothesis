@@ -278,7 +278,6 @@ def tate (k : ℤ) : Data InhTate.R where
 
 
 
-open InhTate in
 theorem not_isPos_tate_zero : ¬ (tate 0).IsPos (maximalIdeal (PowerSeries ℚ)) := fun h => by
   obtain ⟨r, hr, k, hk, u, -, hu⟩ := h (1 : ℤ) (one_ne_zero (α := ℤ))
   let J : ((TK InhTate.R).left ⟶ (tate 0).B.left) → (tate 0).M.L.ι := fun _ => PUnit.unit

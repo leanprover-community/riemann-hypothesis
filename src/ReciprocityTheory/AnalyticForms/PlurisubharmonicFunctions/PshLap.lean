@@ -158,7 +158,6 @@ end
 
 end ReciprocityTheory.AnForm.A.PshLap
 
-open MeasureTheory Metric Set Filter Topology Real
 
 namespace ReciprocityTheory.AnForm.A.PshLap
 
@@ -295,7 +294,6 @@ end
 
 end ReciprocityTheory.AnForm.A.PshLap
 
-open MeasureTheory Metric Set Filter Topology Real
 
 namespace ReciprocityTheory.AnForm.A.PshLap
 

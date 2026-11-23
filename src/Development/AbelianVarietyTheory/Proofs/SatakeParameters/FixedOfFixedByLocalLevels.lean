@@ -45,7 +45,6 @@ noncomputable section
 
 namespace GlobalTheory.Cong.AdaptLevFix
 
-open GlobalTheory.Cong.AdaptLev
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a : ℕ}
 

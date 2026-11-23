@@ -160,9 +160,7 @@ end ReciprocityTheory.ChartRestriction.G.AR.Up.ExtFPf
 
 namespace ReciprocityTheory.ChartRestriction.G.AR.Up
 
-open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.L2DbarEstimates MeasureTheory Topology Metric
   ReciprocityTheory.ChartRestriction.G.AR.Up.ExtFPf
-open scoped ENNReal Matrix
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 

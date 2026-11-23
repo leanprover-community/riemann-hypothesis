@@ -76,7 +76,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
   exact _root_.GlobalTheory.TraceDualMin.cc_cc (v k)
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 theorem _root_.GlobalTheory.Harm.herm_conjVec (v w : Fin n → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.herm 1 (_root_.GlobalTheory.Harm.conjVec E n v) (_root_.GlobalTheory.Harm.conjVec E n w)
@@ -91,7 +90,6 @@ noncomputable def conjLattice (Λ : Submodule (𝓞 E) (Fin n → E)) : Submodul
 variable {Λ : Submodule (𝓞 E) (Fin n → E)}
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 variable {Λ : Submodule (𝓞 E) (Fin n → E)} in
 theorem _root_.GlobalTheory.Harm.mem_conjLattice {v : Fin n → E} :
@@ -104,7 +102,6 @@ theorem _root_.GlobalTheory.Harm.mem_conjLattice {v : Fin n → E} :
     exact ⟨_, hv, _root_.GlobalTheory.Harm.conjVec_conjVec v⟩
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 variable {Λ : Submodule (𝓞 E) (Fin n → E)} in
 theorem _root_.GlobalTheory.Harm.conjLattice_selfDual (hfg : Λ.FG)
@@ -133,7 +130,6 @@ theorem _root_.GlobalTheory.Harm.conjLattice_selfDual (hfg : Λ.FG)
     exact h
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 variable {Λ : Submodule (𝓞 E) (Fin n → E)} in
 omit [IsCMField E] in
@@ -147,7 +143,6 @@ theorem _root_.GlobalTheory.Harm.one_le_rdE : 1 ≤ _root_.ReciprocityTheory.Cha
   exact_mod_cast h'
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 variable {Λ : Submodule (𝓞 E) (Fin n → E)} in
 theorem _root_.GlobalTheory.Harm.one_le_fdeg : 1 ≤ _root_.ReciprocityTheory.ChartRestriction.G.FD.fdeg E := by
@@ -156,7 +151,6 @@ theorem _root_.GlobalTheory.Harm.one_le_fdeg : 1 ≤ _root_.ReciprocityTheory.Ch
   omega
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 variable {Λ : Submodule (𝓞 E) (Fin n → E)} in
 theorem _root_.GlobalTheory.Harm.one_le_add_of_one_le_typeDegree {T : Type*} [Fintype T] {p q : ℕ}
@@ -174,7 +168,6 @@ noncomputable def hermPairing : (Fin n → E) →ₗ[E] ((Fin n → E) → E) wh
   map_smul' r x := funext fun y => TraceDualMin.herm_smul_left r x y
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 variable {Λ : Submodule (𝓞 E) (Fin n → E)} in
 theorem _root_.GlobalTheory.Harm.perpVec_hermPairing_mem

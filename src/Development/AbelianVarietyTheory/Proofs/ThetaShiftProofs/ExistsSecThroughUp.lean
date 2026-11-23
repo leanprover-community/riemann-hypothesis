@@ -307,7 +307,6 @@ theorem rig_fib_iff (hw : IsRigIso m.cm t'.PP t.PP w)
 end Main
 
 section Gen
-open MonObj
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} [StarRing (𝓞 E)] {S S' : Scheme.{0}}
   {A : AnArc (𝓞 E)} {t : SAB H S} {t' : SAB H S'} {f : S' ⟶ S} {m : SABMap t' t f}
   {w : LB.Iso t'.PP.L (t.PP.L.pull m.φ)} {y' : Sp ℂ⸨X⸩ ⟶ S'}

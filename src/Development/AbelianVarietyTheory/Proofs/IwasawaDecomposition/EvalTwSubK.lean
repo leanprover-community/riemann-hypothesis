@@ -54,13 +54,11 @@ theorem _root_.GlobalTheory.IntegralityCompare.map_twSubK {E K ι : Type} [Field
   rw [_root_.GlobalTheory.IntegralityCompare.twSubK, _root_.GlobalTheory.IntegralityCompare.twSub, map_mul, map_C, map_bind₁]
   simp [map_prod, map_zpow₀]
 
-open MvPolynomial in
 private lemma eval_bind_eq_eval_comp {K σ τ : Type} [CommRing K] (f : σ → MvPolynomial τ K)
     (x : τ → K) (P : MvPolynomial σ K) :
     eval x (bind₁ f P) = eval (fun i => eval x (f i)) P := by
   rw [← aeval_eq_eval, ← aeval_eq_eval, aeval_bind₁]
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.IntegralityCompare.eval_twSubK {E K ι : Type} [Field E] [Field K] [Fintype ι] {n : ℕ}
     (t : ι → E →+* K) (M : GL (Fin n) E) (s : ι → ℤ) (P : MvPolynomial (ι × Fin n × Fin n) K)
     (x : ι → Matrix (Fin n) (Fin n) K) :

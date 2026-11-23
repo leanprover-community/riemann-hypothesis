@@ -198,7 +198,6 @@ theorem pure_bound [Fintype κ] (f : SchwartzMap (κ → mixedEmbedding.mixedSpa
     _ = M * (C * (1 + R) ^ k) * (‖V.indicator (fun _ => (1 : ℂ)) y‖ * ((1 + ‖p‖) ^ k)⁻¹) := by ring
 
 
-open scoped Classical in
 theorem schA_bound [Fintype κ] {Φ : (κ → AF F) → ℂ} (hΦ : Φ ∈ schA F κ) :
     Continuous Φ ∧ ∀ K : Set (κ → AF F), IsCompact K →
       ∃ u : (κ → F) → ℝ, Summable u ∧ ∀ ξ, ∀ a ∈ K, ‖Φ (ratA ξ + a)‖ ≤ u ξ := by

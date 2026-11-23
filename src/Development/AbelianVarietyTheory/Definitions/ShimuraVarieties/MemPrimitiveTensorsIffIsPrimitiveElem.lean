@@ -1042,7 +1042,6 @@ end CartierDual
 
 section PairingMap
 
-open CartierDual
 
 variable {R : Type*} [CommSemiring R]
 
@@ -1136,7 +1135,6 @@ end PairingMap
 
 section Examples
 
-open CartierDual
 
 theorem canonical_zmod_two_ne_one (R : Type*) [CommRing R] [Nontrivial R] :
     canonical R (AddMonoidAlgebra R (ZMod 2)) ≠ 1 := by

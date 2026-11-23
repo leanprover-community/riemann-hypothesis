@@ -114,7 +114,6 @@ end GlobalTheory.TwistSwap
 
 namespace GlobalTheory.TwistSwap
 
-open GlobalTheory.MixModel
 
 variable {D : D7}
 

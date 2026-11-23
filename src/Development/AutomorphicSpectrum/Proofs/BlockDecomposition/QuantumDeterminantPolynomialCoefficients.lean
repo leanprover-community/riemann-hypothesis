@@ -81,7 +81,6 @@ theorem qdet_eq_sum_coeff {A : Type} [Ring A] [Algebra ℂ A] (n : ℕ) (E : Fin
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [RingHom.id_apply, ← map_pow, Algebra.smul_def, Algebra.commutes]
 
-open Polynomial GroundTheory.BlockD.FourierDecayAlt.GaugeExists in
 theorem qdetPoly_coeff_top {A : Type} [Ring A] [Algebra ℂ A] (n : ℕ) (E : Fin n → Fin n → A) :
     (qdetPoly E).coeff n = 1 := by
   rw [coeff_qdetPoly_top E n (by omega), (prod_linear n _).2.1]

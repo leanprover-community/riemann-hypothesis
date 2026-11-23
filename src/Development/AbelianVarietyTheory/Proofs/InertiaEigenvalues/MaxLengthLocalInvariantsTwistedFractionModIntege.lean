@@ -118,7 +118,6 @@ end GlobalTheory.InvariantsKO
 
 namespace GlobalTheory.InvariantsKO
 
-open IsDiscreteValuationRing
 
 theorem lenUnit_invariants_le (D : D7) (i : D.nd.Loc) (hls : D.nd.l i ∉ D.host.small)
     (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i)) (n : ℕ) (hn : 0 < n) :

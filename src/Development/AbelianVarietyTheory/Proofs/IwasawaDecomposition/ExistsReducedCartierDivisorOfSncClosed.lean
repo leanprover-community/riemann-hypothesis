@@ -65,8 +65,6 @@ theorem _root_.GlobalTheory.BoundaryDivisor.stalkMap_bijective (y : Y) : Functio
 end Pull
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory in
-open TopologicalSpace Opposite in
 variable {X : Scheme.{0}} in
 variable {Y : Scheme.{0}} [IsIntegral Y] (j : Y ⟶ X) [IsOpenImmersion j] in
 private lemma pull_germ_eq_pull_germ (V : X.Opens) (s : Γ(X, V)) (y z : Y)
@@ -86,8 +84,6 @@ private lemma pull_germ_eq_pull_germ (V : X.Opens) (s : Γ(X, V)) (y z : Y)
   rw [e y hy, e z hz]
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory in
-open TopologicalSpace Opposite in
 variable {X : Scheme.{0}} in
 private lemma mem_closed_iff_not_isUnit_germ (T : Closeds X) (U : X.affineOpens) (h : Γ(X, U))
     (hI : (Scheme.IdealSheafData.vanishingIdeal T).ideal U = Ideal.span {h}) (z : X)
@@ -106,8 +102,6 @@ private lemma mem_closed_iff_not_isUnit_germ (T : Closeds X) (U : X.affineOpens)
     exact H hzf.2
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory in
-open TopologicalSpace Opposite in
 variable {X : Scheme.{0}} in
 private lemma mem_vanishingIdeal_of_not_isUnit_germ (T : Closeds X) (W : X.affineOpens)
     (s : Γ(X, W))
@@ -125,8 +119,6 @@ private lemma mem_vanishingIdeal_of_not_isUnit_germ (T : Closeds X) (W : X.affin
   exact hs _ hz hp ((X.mem_basicOpen s _ hz).1 h1)
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory in
-open TopologicalSpace Opposite in
 variable {X : Scheme.{0}} in
 private lemma exists_germ_eq_mul_of_not_isUnit_on_closed (T : Closeds X) (U : X.affineOpens) (h : Γ(X, U))
     (hI : (Scheme.IdealSheafData.vanishingIdeal T).ideal U = Ideal.span {h}) (x : X)
@@ -152,8 +144,6 @@ private lemma exists_germ_eq_mul_of_not_isUnit_on_closed (T : Closeds X) (U : X.
   exact X.presheaf.germ_res_apply _ x hxW h
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory in
-open TopologicalSpace Opposite in
 variable {X : Scheme.{0}} in
 private lemma exists_eq_mul_of_pow_eq_mul_germ (T : Closeds X) (U : X.affineOpens) (h : Γ(X, U))
     (hI : (Scheme.IdealSheafData.vanishingIdeal T).ideal U = Ideal.span {h}) (x : X)
@@ -185,8 +175,6 @@ private lemma exists_eq_mul_of_pow_eq_mul_germ (T : Closeds X) (U : X.affineOpen
 
 
 set_option autoImplicit false in
-open AlgebraicGeometry CategoryTheory in
-open TopologicalSpace Opposite in
 variable {X : Scheme.{0}} in
 theorem _root_.GlobalTheory.BoundaryDivisor.exists_reduced_cartierDiv :
     ∀ (X Y : Scheme.{0}) [IsIntegral Y] (j : Y ⟶ X) [IsOpenImmersion j]

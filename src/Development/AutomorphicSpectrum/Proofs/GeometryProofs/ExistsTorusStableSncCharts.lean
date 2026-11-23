@@ -107,7 +107,6 @@ end GlobalTheory.CompanionTheory.Ar.SncCpt
 
 namespace GlobalTheory.CompanionTheory.Ar.SncCpt
 
-open ReciprocityTheory.AnForm.R (locRing locPt ptIdeal renPt renC renR zeroSet)
 
 theorem snc_params : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] [CharZero Ω]
     (y : (Σ k, J k) → Ω) (n : ℕ) (bd : Ideal (MRing J)),

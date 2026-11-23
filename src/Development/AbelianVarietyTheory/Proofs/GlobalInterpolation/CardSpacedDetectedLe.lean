@@ -91,7 +91,6 @@ private theorem succ_le_mul_pow_rpow_of_two_le (ε : ℝ) (hε : 0 < ε) (p a : 
           exact_mod_cast this
       _ ≤ ((p : ℝ) ^ ε) ^ a := pow_le_pow_left₀ (by norm_num) h2 a
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem exists_card_divisors_le_mul_rpow (ε : ℝ) (hε : 0 < ε) :
     ∃ K : ℝ, 0 < K ∧ ∀ n : ℕ, n ≠ 0 → (n.divisors.card : ℝ) ≤ K * (n : ℝ) ^ ε := by
   set M := max 1 (1 / (ε * Real.log 2)) with hM
@@ -133,7 +132,6 @@ private theorem exists_card_divisors_le_mul_rpow (ε : ℝ) (hε : 0 < ε) :
     _ ≤ M ^ B * ∏ p ∈ n.primeFactors, ((p : ℝ) ^ n.factorization p) ^ ε :=
         mul_le_mul_of_nonneg_right hf (Finset.prod_nonneg (fun p _ => by positivity))
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem sum_integral_separated_windows_le (h : ℝ → ℝ) (hc : Continuous h) (hpos : ∀ t, 0 ≤ h t)
     (S : Finset ℝ) (r T : ℝ) (hr : 0 < r)
     (hsep : ∀ a ∈ S, ∀ b ∈ S, a ≠ b → 2 * r ≤ |a - b|)
@@ -162,7 +160,6 @@ private theorem sum_integral_separated_windows_le (h : ℝ → ℝ) (hc : Contin
   · intro a _
     exact hc.integrableOn_Ioc
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem mul_rpow_sub_one_le_rpow_sub_rpow (θ : ℝ) (h0 : 0 < θ) (h1 : θ ≤ 1) (x : ℝ) (hx : 1 ≤ x) :
     θ * x ^ (θ - 1) ≤ x ^ θ - (x - 1) ^ θ := by
   have hx0 : 0 < x := by linarith
@@ -178,7 +175,6 @@ private theorem mul_rpow_sub_one_le_rpow_sub_rpow (θ : ℝ) (h0 : 0 < θ) (h1 :
   have e : x ^ θ * (1 + θ * -(1 / x)) = x ^ θ - θ * (x ^ θ / x) := by field_simp; ring
   linarith
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem sum_range_succ_rpow_sub_one_le (θ : ℝ) (h0 : 0 < θ) (h1 : θ ≤ 1) (N : ℕ) :
     ∑ k ∈ Finset.range N, ((k : ℝ) + 1) ^ (θ - 1) ≤ (N : ℝ) ^ θ / θ := by
   rw [le_div_iff₀ h0, Finset.sum_mul]
@@ -194,7 +190,6 @@ private theorem sum_range_succ_rpow_sub_one_le (θ : ℝ) (h0 : 0 < θ) (h1 : θ
         rw [Finset.sum_range_sub (fun k : ℕ => ((k : ℝ)) ^ θ) N]
         simp [Real.zero_rpow h0.ne']
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 private theorem sum_weighted_moebius_coeff_sq_le (K : ℝ) (hK : 0 < K)
     (hdiv : ∀ n : ℕ, n ≠ 0 → (n.divisors.card : ℝ) ≤ K * (n : ℝ) ^ ((1 : ℝ) / 400))
     (Q : ℕ) (hQ : 2 ≤ Q) (σ : ℝ) (hσ : 1 - 3 / 800 ≤ σ) :
@@ -265,7 +260,6 @@ private theorem sum_weighted_moebius_coeff_sq_le (K : ℝ) (hK : 0 < K)
     positivity
 
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
 theorem _root_.GlobalTheory.SpacedDetected.card_spaced_detected_le : ∃ C : ℝ, 0 < C ∧ ∀ Q : ℕ, 2 ≤ Q → ∀ T : Finset (Σ N : ℕ, DirichletCharacter ℂ (N + 1) × ℂ), (∀ p ∈ T, p.1 + 1 ≤ Q ∧ p.2.1.IsPrimitive ∧ 1 - 1 / 400 ≤ p.2.2.re ∧ p.2.2.re ≤ 1 ∧ |p.2.2.im| ≤ Q ∧ (1 / 2 : ℝ) ≤ ‖∑ n ∈ Finset.Ioc (Q ^ 3) (Q ^ 6), ((∑ d ∈ n.divisors.filter (fun d => d ≤ Q ^ 3), (moebius d : ℤ) : ℤ) : ℂ) * p.2.1 (n : ZMod (p.1 + 1)) * (n : ℂ) ^ (-p.2.2)‖) → (∀ (N : ℕ) (χ : DirichletCharacter ℂ (N + 1)) (ρ ρ' : ℂ), (⟨N, χ, ρ⟩ : (Σ N : ℕ, DirichletCharacter ℂ (N + 1) × ℂ)) ∈ T → (⟨N, χ, ρ'⟩ : (Σ N : ℕ, DirichletCharacter ℂ (N + 1) × ℂ)) ∈ T → ρ ≠ ρ' → 1 ≤ |ρ.im - ρ'.im|) → (T.card : ℝ) ≤ C * (Q : ℝ) ^ ((1 : ℝ) / 8) := by
   classical
   obtain ⟨C₁, hC₁, hmv⟩ := _root_.GlobalTheory.norm_sq_le_integral_square

@@ -82,7 +82,6 @@ end ReciprocityTheory.Coh.InflationRestrictionInvariants
 
 namespace ReciprocityTheory.Coh.InflationRestrictionInvariants
 
-open ReciprocityTheory.Gal Cx Function
 
 universe u
 
@@ -160,7 +159,6 @@ end ReciprocityTheory.Coh.InflationRestrictionInvariants
 
 namespace ReciprocityTheory.Coh.InflationRestrictionInvariants
 
-open ReciprocityTheory.Gal Cx Function
 
 universe u
 

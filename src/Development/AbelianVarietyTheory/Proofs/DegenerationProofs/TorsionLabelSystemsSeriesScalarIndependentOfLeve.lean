@@ -60,8 +60,6 @@ theorem _root_.GlobalTheory.ModelData.Scalar.tx_congr {O : Type} [CommRing O] [T
 variable {O : Type} [CommRing O] {N : NumD O} {La : Type} [AddCommGroup La] {EF : LinearMap.BilinForm ℤ La}
   {ζ : ℕ → Oˣ} {lab : ∀ k : ℕ, La → N.QT k}
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField in
-open scoped CategoryTheory.Obj BigOperators in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {O : Type} [CommRing O] {N : _root_.GlobalTheory.Ex.NumD O} {La : Type} [AddCommGroup La] {EF : LinearMap.BilinForm ℤ La}
   {ζ : ℕ → Oˣ} {lab : ∀ k : ℕ, La → N.QT k} in
@@ -78,8 +76,6 @@ private theorem qEq_mul' (N : _root_.GlobalTheory.Ex.NumD O) {k : ℕ}
   · simp only [Subgroup.coe_mul, Prod.snd_mul, hz2, hz2', N.io_add]
     ac_rfl
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField in
-open scoped CategoryTheory.Obj BigOperators in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {O : Type} [CommRing O] {N : _root_.GlobalTheory.Ex.NumD O} {La : Type} [AddCommGroup La] {EF : LinearMap.BilinForm ℤ La}
   {ζ : ℕ → Oˣ} {lab : ∀ k : ℕ, La → N.QT k} in
@@ -95,8 +91,6 @@ private theorem qEq_label_pow_nsmul
     exact (N.qEq_equivalence k).trans
       (qEq_mul' N ih ((N.qEq_equivalence k).refl _)) (hL.1 k hk _ _)
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField in
-open scoped CategoryTheory.Obj BigOperators in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {O : Type} [CommRing O] {N : _root_.GlobalTheory.Ex.NumD O} {La : Type} [AddCommGroup La] {EF : LinearMap.BilinForm ℤ La}
   {ζ : ℕ → Oˣ} {lab : ∀ k : ℕ, La → N.QT k} in
@@ -138,8 +132,6 @@ private theorem tx_label_nsmul_eq_of_odd [TopologicalSpace O]
   exact _root_.GlobalTheory.ModelData.Scalar.tx_congr N hm h3
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField in
-open scoped CategoryTheory.Obj BigOperators in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {O : Type} [CommRing O] {N : _root_.GlobalTheory.Ex.NumD O} {La : Type} [AddCommGroup La] {EF : LinearMap.BilinForm ℤ La}
   {ζ : ℕ → Oˣ} {lab : ∀ k : ℕ, La → N.QT k} in

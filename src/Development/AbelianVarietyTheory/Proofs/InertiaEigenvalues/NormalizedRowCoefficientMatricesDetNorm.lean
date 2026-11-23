@@ -134,7 +134,6 @@ end GlobalTheory.PMonE
 end
 
 namespace GlobalTheory.PMonE
-open Finset
 
 theorem coefB_det (F : Type) [NormedField F] [IsUltrametricDist F] (p : ℕ) [Fact p.Prime] [CharP F p]
     [PerfectRing F p] (h : ℕ) (ϖ : F) (hϖ : ϖ ≠ 0) (lam π : Fin h → F) (hl : ∀ j, lam j ≠ 0)

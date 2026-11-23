@@ -57,7 +57,6 @@ private lemma addValuation_pow_mul_pow_div_pow {F : Type*} [Field F]
   norm_cast
   simp [nsmul_eq_mul]
 
-open TensorProduct in
 private lemma le_of_nonneg_imp_nonneg {F : Type*} [Field F] (v w : AddValuation F (WithTop ℚ)) {π : F}
     (hv : v π = 1) (hw : w π = 1) (h : ∀ y, 0 ≤ v y → 0 ≤ w y) {x : F} {t s : ℚ}
     (hvx : v x = t) (hwx : w x = s) : t ≤ s := by
@@ -72,7 +71,6 @@ private lemma le_of_nonneg_imp_nonneg {F : Type*} [Field F] (v w : AddValuation 
   have hd : (0 : ℚ) < t.den := by exact_mod_cast t.den_pos
   nlinarith
 
-open TensorProduct in
 private lemma addValuation_eq_of_nonneg_iff {F : Type*} [Field F] (v w : AddValuation F (WithTop ℚ))
     {π : F} (hv : v π = 1) (hw : w π = 1) (h : ∀ y, 0 ≤ v y ↔ 0 ≤ w y) (x : F) : v x = w x := by
   by_cases hx : x = 0
@@ -85,7 +83,6 @@ private lemma addValuation_eq_of_nonneg_iff {F : Type*} [Field F] (v w : AddValu
   exact congrArg _ (le_antisymm h1 h2)
 
 
-open TensorProduct in
 theorem _root_.GlobalTheory.HWL.NormVal.locPrime_v_normalised : ∀ (l : ℕ) [Fact l.Prime] (P : _root_.Formalism.BasicNotions.LocPrime l) (LL : _root_.Formalism.BasicNotions.Loc.FinExt l), (∀ (x : ↥LL.1) (q : ℚ), P.v LL x = (q : WithTop ℚ) ↔ ‖(x : _root_.Formalism.BasicNotions.Loc.Om l)‖ = (l : ℝ) ^ (-(q : ℝ))) ∧ (∀ (x : ↥LL.1) (q : ℚ), (q : WithTop ℚ) ≤ P.v LL x ↔ ‖(x : _root_.Formalism.BasicNotions.Loc.Om l)‖ ≤ (l : ℝ) ^ (-(q : ℝ))) ∧ ∀ x : ↥LL.1, x ∈ _root_.Formalism.BasicNotions.Loc.OL LL ↔ ‖(x : _root_.Formalism.BasicNotions.Loc.Om l)‖ ≤ 1 := by
   intro l _ P LL
   set w : AddValuation (↥LL.1) (WithTop ℚ) :=

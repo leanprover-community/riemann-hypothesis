@@ -315,7 +315,6 @@ end One
 
 section Two
 
-open GlobalTheory.SmGL hiding iwahori
 
 variable {k E : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E]

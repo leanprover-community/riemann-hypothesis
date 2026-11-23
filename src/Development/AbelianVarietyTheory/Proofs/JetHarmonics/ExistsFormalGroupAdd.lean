@@ -328,7 +328,6 @@ end Series
 
 section Log
 
-open MvPowerSeries
 
 variable {k : Type} [CommRing k] {σ τ : Type}
 
@@ -457,7 +456,6 @@ end Log
 
 section Main
 
-open MvPowerSeries
 
 theorem exists_formalGroup {R k : Type} [CommRing R] [IsDomain R] [Field k] [CharZero k] (φ : R →+* k)
     (hφ : Function.Injective φ) (W : WeierstrassCurve R) {U V : PowerSeries k} {c : k} (hc : c ≠ 0)

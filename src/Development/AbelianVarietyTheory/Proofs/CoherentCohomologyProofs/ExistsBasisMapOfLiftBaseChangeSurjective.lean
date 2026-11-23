@@ -99,8 +99,6 @@ section Minor
 open exteriorPower
 
 
-open Module Function in
-open scoped TensorProduct Pointwise in
 open exteriorPower in
 theorem _root_.GlobalTheory.Avoid.exists_orderEmbedding_minor_ne_zero {K V ι : Type*} [Field K] [AddCommGroup V]
     [Module K V] [Finite ι] [LinearOrder ι] (c : ι → Dual K V)

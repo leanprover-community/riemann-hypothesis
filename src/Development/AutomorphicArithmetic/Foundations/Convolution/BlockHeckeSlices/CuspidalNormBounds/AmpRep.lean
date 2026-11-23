@@ -110,8 +110,6 @@ private theorem ampRep_killed {f : TG E n} {v : LL μ} {d : ℕ} {ρ : KA E n �
 
 end SlopeTestRemainingChoices
 
-open MeasureTheory IsDedekindDomain GlobalTheory.CuspRep
-open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.V in
 theorem UpperTheory.ConvolutionTheory.BW.ampRep :
     ∀ (E : Type) [Field E] [NumberField E] [IsTotallyComplex E], UpperTheory.ConvolutionTheory.BW.AmpRep E := by

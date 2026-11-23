@@ -121,7 +121,6 @@ theorem unimodular_to_coord_one : ∀ (R : Type) [CommRing R] (s : ℕ), StableR
 end GlobalTheory
 
 section
-open GlobalTheory.SeqCx Matrix UpperTheory.V.KL
 theorem _root_.GlobalTheory.T.exists_automorphism_preserving_translates_coord_one : ∀ (R : Type) [CommRing R] (s : ℕ), StableRangeLe R s → ∀ (n : ℕ), s ≤ n → ∀ v : ℕ →₀ R, [v] ∈ uniM R (ℕ →₀ R) → ∃ ψ : (ℕ →₀ R) ≃ₗ[R] (ℕ →₀ R), (∀ x, ψ x ∈ low R (n + 1) ↔ x ∈ low R (n + 1)) ∧ (∀ j x, ψ x ∈ aff R (n + 1) j ↔ x ∈ aff R (n + 1) j) ∧ ψ v n = 1 := by
   first
   | exact @GlobalTheory.unimodular_to_coord_one

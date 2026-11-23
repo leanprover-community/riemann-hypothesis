@@ -155,7 +155,6 @@ end GlobalTheory.Pst.SumOneField
 
 namespace GlobalTheory.Pst.SumOneField
 
-open Module TensorProduct GlobalTheory.Pst.DpstMap
 
 section WdLin
 

@@ -67,7 +67,6 @@ theorem norm_hsEmb_sq (A : Wq →L[ℂ] Wp) : ‖hsEmb A‖ ^ 2 = hsNormSq A := 
 
 end HS
 
-section Comparison₂
 
 variable {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {sig : E →ₐ[F] E} {Word Tau : Type} [Fintype Tau] {hc : Word → Tau → HCParam R}
@@ -93,7 +92,6 @@ structure RowIn (τ : Type) : Type 1 where
 
 attribute [instance] RowIn.fI RowIn.n₁ RowIn.i₁ RowIn.c₁
 
-end Comparison₂
 
 section Kernel
 

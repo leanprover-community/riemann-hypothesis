@@ -75,7 +75,6 @@ theorem PqF_tmul (Y : NExp D.R D.host D.what₂ D.LL0 N X) (i : X.Tw) (j : ℕ) 
 end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
-open Classical
 variable {D : D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
 
 theorem coord_eq_delOf {Y : NExp D.R D.host D.what₂ D.LL0 N X} (hU : GlobalTheory.UnivChar.IsUnivChar Y) (i : X.Tw) (M : ℕ)
@@ -106,7 +105,6 @@ theorem isOpen_coord (Y : NExp D.R D.host D.what₂ D.LL0 N X) (i : X.Tw) (Q : F
 end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
-open Classical
 variable {D : D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
 
 theorem isDC_of_rep {ρ : Setup X} (hρ : ρ.Good) {i : X.Tw} (j : Fin D.R.m) (b : Bool) {k : ℕ} {P : Pl D.host.E}
@@ -138,7 +136,6 @@ theorem isDC_of_rep {ρ : Setup X} (hρ : ρ.Good) {i : X.Tw} (j : Fin D.R.m) (b
 end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
-open Classical
 open Formalism.IndefR.Links (PolF)
 variable {D : D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
 
@@ -162,8 +159,6 @@ theorem closed_erase {Q : Finset (Pl D.host.E)} (hQc : ∀ P ∈ Q, ∀ P', Form
 end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
-open Classical
-open Formalism.IndefR.Links (PolF)
 variable {D : D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
 
 
@@ -387,7 +382,6 @@ theorem thURel_of_tie {ρ : Setup X} (hρ : ρ.Good) {Y : NExp D.R D.host D.what
 end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
-open Classical
 
 end GlobalTheory.DistRel
 

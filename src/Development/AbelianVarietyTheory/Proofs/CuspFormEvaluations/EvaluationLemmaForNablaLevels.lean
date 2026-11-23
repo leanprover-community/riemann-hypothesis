@@ -96,7 +96,6 @@ theorem exists_lift_geometric (R S : Type) [CommRing R] [CommRing S] [Algebra R 
   exact g.commutes (χ x)
 
 
-open scoped TensorProduct in
 theorem exists_preimage_of_geometric (R S : Type) [CommRing R] [CommRing S] [Algebra R S]
     [_root_.IsReduced R] [Algebra.Smooth R S] [Module.FaithfullyFlat R S] (w : S)
     (h : ∀ (k : Type) [Field k] [IsAlgClosed k] (χ₁ χ₂ : S →+* k),

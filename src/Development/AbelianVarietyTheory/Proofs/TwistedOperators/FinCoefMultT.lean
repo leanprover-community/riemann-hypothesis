@@ -111,7 +111,6 @@ end GlobalTheory.ColTypeLift
 
 namespace GlobalTheory.ColTypeLift
 
-open Formalism.IndefR.Mult Matrix GlobalTheory.Grid
 
 variable {D : D7}
 

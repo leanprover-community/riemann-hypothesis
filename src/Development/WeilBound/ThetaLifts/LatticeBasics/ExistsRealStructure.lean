@@ -104,7 +104,6 @@ theorem hasDerivAt_line (f : SInf F κ) (y A : κ → mixedEmbedding.mixedSpace 
   exact (h2.fun_mul (h4.mul_const ρ)).congr_deriv (by simp; ring)
 
 
-open scoped Classical in
 theorem phase_line (ψ : AddChar (AF F) ℂ) (hψ : IsStd ψ) (a b x : κ → AF F) (hb : At (evI F) b) (t : ℝ) :
     ψ (x ⬝ᵥ (realAd F t • b) + ⅟(2 : AF F) * ((realAd F t • a) ⬝ᵥ (realAd F t • b))) =
       Complex.exp (-(2 * Real.pi * Complex.I) * ((t * linForm (fun i => evI F (b i)) (fun i => evI F (x i)) +
@@ -280,11 +279,9 @@ theorem exists_real_structure (σ : E →ₐ[F] E) (h : IsCMExt F E σ) (emb : �
     exact congrFun this w
 
 
-open scoped Classical in
 def dOp {κ : Type} [Fintype κ] (A B : κ → mixedEmbedding.mixedSpace F) (f : SInf F κ) : SInf F κ :=
   ∂_{A} f + (-(2 * Real.pi * Complex.I)) • SchwartzMap.smulLeftCLM ℂ (linForm B) f
 
-open scoped Classical in
 theorem dOp_apply {κ : Type} [Fintype κ] (A B : κ → mixedEmbedding.mixedSpace F) (f : SInf F κ) (y) :
     dOp A B f y = fderiv ℝ f y A + (-(2 * Real.pi * Complex.I)) * ((linForm B y : ℝ) : ℂ) * f y := by
   have hT := (linForm B).hasTemperateGrowth
@@ -292,7 +289,6 @@ theorem dOp_apply {κ : Type} [Fintype κ] (A B : κ → mixedEmbedding.mixedSpa
     SchwartzMap.lineDerivOp_apply_eq_fderiv]
   simp [mul_assoc]
 
-open scoped Classical in
 theorem hasDerivAt_dOp {κ : Type} [Fintype κ] (ψ : AddChar (AF F) ℂ) (hψ : IsStd ψ) (a b : κ → AF F)
     (ha : At (evI F) a) (hb : At (evI F) b) (f : SInf F κ) (r) (hr : Rest (evI F) f r) (x) :
     HasDerivAt (fun t : ℝ => schr ψ (realAd F t • a, realAd F t • b) (tens (evI F) f r) x)
@@ -410,7 +406,6 @@ section Uniq
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {n d : ℕ} {X : Spc F E n} {W : Spc F E d}
 
-open scoped Classical in
 theorem actsD_unique (M : Model σ X W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) {f f₁ : SInf F (Fin n × Fin d)}
     (h : ActsD (evI F) (M.heisLine ψ u) f f₁) :

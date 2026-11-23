@@ -69,7 +69,6 @@ private theorem tmul_mem_filV_of_mem_fil (n : ℤ) (v : V) {y : BdR} (hy : y ∈
   unfold _root_.Formalism.WeaklyAdmissibleFiltrations.FilV
   exact ⟨v ⊗ₜ[Qp] (⟨y, hy⟩ : (PD.Fil n).restrictScalars Qp), by simp⟩
 
-open TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -81,7 +80,6 @@ private theorem fil_antitone' {a b : ℤ} (h : b ≤ a) : PD.Fil a ≤ PD.Fil b 
   | base => exact le_rfl
   | succ n _ ih => exact (PD.Fil_anti n).trans ih
 
-open TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -102,7 +100,6 @@ private theorem filV_antitone' {a b : ℤ} (h : b ≤ a) :
     rw [LinearMap.map_add]
     exact add_mem hx hy
 
-open TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -123,7 +120,6 @@ private theorem exists_mem_filV' (x : V ⊗[Qp] BdR) : ∃ n, x ∈ _root_.Forma
     exact ⟨min n₁ n₂, add_mem (filV_antitone' PD (min_le_left _ _) h₁)
       (filV_antitone' PD (min_le_right _ _) h₂)⟩
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp : Type} [Field Qp] {BdR : Type}
     [CommRing BdR] [Algebra Qp BdR] {LL O : Type} [Field LL] [Algebra Qp LL] [CommRing O]
     [Algebra O LL] [TopologicalSpace LL] (T : _root_.Formalism.BasicNotions.LocLat G Qp LL O) in
@@ -131,7 +127,6 @@ private theorem mulVR_tmul' (β : BdR) (v : T.V) (y : BdR) :
     _root_.Formalism.BasicNotions.mulVR T β (v ⊗ₜ[Qp] y) = v ⊗ₜ[Qp] (β * y) := by
   simp [_root_.Formalism.BasicNotions.mulVR]
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp : Type} [Field Qp] {BdR : Type}
     [CommRing BdR] [Algebra Qp BdR] {LL O : Type} [Field LL] [Algebra Qp LL] [CommRing O]
     [Algebra O LL] [TopologicalSpace LL] (T : _root_.Formalism.BasicNotions.LocLat G Qp LL O) in
@@ -142,7 +137,6 @@ private theorem mulVR_mulVR' (β γ : BdR) (x : T.V ⊗[Qp] BdR) :
   | tmul v y => simp only [mulVR_tmul', mul_assoc]
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp : Type} [Field Qp] {BdR : Type}
     [CommRing BdR] [Algebra Qp BdR] {LL O : Type} [Field LL] [Algebra Qp LL] [CommRing O]
     [Algebra O LL] [TopologicalSpace LL] (T : _root_.Formalism.BasicNotions.LocLat G Qp LL O) in
@@ -161,7 +155,6 @@ private theorem mulVR_mem_compKer (ι : LL →ₐ[Qp] BdR) (β : BdR) {x : T.V �
     exact add_mem hx hy
   | smul c x _ hx => rw [LinearMap.map_smul]; exact Submodule.smul_mem _ c hx
 
-open TensorProduct in
 private theorem mulRight_mem_filV_lemma_4 {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type}
     [Field Qp] [Field K₀] [Field K] [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K]
     [IsScalarTower Qp K₀ K] {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B]
@@ -183,7 +176,6 @@ private theorem mulRight_mem_filV_lemma_4 {G : Type} [Group G] [TopologicalSpace
     simp only [LinearMap.map_add]
     exact add_mem hx hy
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp : Type} [Field Qp] {BdR : Type}
     [CommRing BdR] [Algebra Qp BdR] {LL O : Type} [Field LL] [Algebra Qp LL] [CommRing O]
     [Algebra O LL] [TopologicalSpace LL] (T : _root_.Formalism.BasicNotions.LocLat G Qp LL O) in
@@ -194,7 +186,6 @@ private theorem mulVR_add' (β γ : BdR) (x : T.V ⊗[Qp] BdR) :
   | tmul v y => simp only [mulVR_tmul', add_mul, TensorProduct.tmul_add]
   | add x y hx hy => simp only [map_add (f := _), hx, hy]; abel
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp : Type} [Field Qp] {BdR : Type}
     [CommRing BdR] [Algebra Qp BdR] {LL O : Type} [Field LL] [Algebra Qp LL] [CommRing O]
     [Algebra O LL] [TopologicalSpace LL] (T : _root_.Formalism.BasicNotions.LocLat G Qp LL O) in
@@ -204,7 +195,6 @@ private theorem mulVR_zero' (x : T.V ⊗[Qp] BdR) : _root_.Formalism.BasicNotion
   | tmul v y => simp only [mulVR_tmul', zero_mul, TensorProduct.tmul_zero]
   | add x y hx hy => simp only [map_add (f := _), hx, hy, add_zero]
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp : Type} [Field Qp] {BdR : Type}
     [CommRing BdR] [Algebra Qp BdR] {LL O : Type} [Field LL] [Algebra Qp LL] [CommRing O]
     [Algebra O LL] [TopologicalSpace LL] (T : _root_.Formalism.BasicNotions.LocLat G Qp LL O) in
@@ -215,7 +205,6 @@ private theorem mulVR_sum {ι : Type} (s : Finset ι) (f : ι → BdR) (x : T.V 
   | empty => simp [mulVR_zero']
   | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, mulVR_add', ih]
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp : Type} [Field Qp] {BdR : Type}
     [CommRing BdR] [Algebra Qp BdR] {LL O : Type} [Field LL] [Algebra Qp LL] [CommRing O]
     [Algebra O LL] [TopologicalSpace LL] (T : _root_.Formalism.BasicNotions.LocLat G Qp LL O) in
@@ -225,7 +214,6 @@ private theorem smul_sub_mulVR_mem_compKer (ι : LL →ₐ[Qp] BdR) (c : LL) (x 
   exact Submodule.subset_span ⟨c, x, rfl⟩
 
 
-open TensorProduct in
 theorem _root_.GlobalTheory.HWL.Cmp.filt_expansion_component : ∀ {G : Type} [Group G]
     [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K] [Algebra Qp K₀]
     [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K] {B BdR : Type} [CommRing B]

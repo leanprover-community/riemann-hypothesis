@@ -166,7 +166,6 @@ end GlobalTheory.ArcNormal
 
 namespace GlobalTheory.ArcNormal
 
-open scoped Matrix
 
 theorem main_of_lemmas (hFib : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo

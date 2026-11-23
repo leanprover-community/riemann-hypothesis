@@ -63,7 +63,6 @@ private theorem norm_lterm_sq {W A B : Type} [Fintype A] [Fintype B] (q : W → 
   rw [norm_lterm q hq, norm_lterm q hq, norm_lterm q hq]
   ring
 
-open DiagonalEntryNormBounds in
 private theorem lterm_diag_norm {W A : Type} [Fintype A] (q : W → ℕ) (hq : ∀ w, 2 ≤ q w)
     (α : W → A → ℂ) (σ : ℝ) (p : W × ℕ) :
     lterm q α α σ p = ((‖lterm q α α σ p‖ : ℝ) : ℂ) := by

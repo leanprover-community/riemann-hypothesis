@@ -346,7 +346,6 @@ end Pow
 
 section Const
 
-open GroundTheory.Global.SemiLocal
 
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] {l : ℕ} [Fact l.Prime]
   {v : HeightOneSpectrum (𝓞 K)} (w : PlacesOver L v)

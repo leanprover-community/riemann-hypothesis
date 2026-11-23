@@ -105,7 +105,6 @@ theorem detShift_lamTG {D : D7} {u : D.what₂.Word} {C : ColumnChain D.R D.what
   show (lamTG M i τ).w (lastI D i) = _
   omega
 
-open GlobalTheory.PdvKm in
 theorem natW_lamTG {D : D7} {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {A : ColumnsAtT D.R C}
     {P : PeriodMap D.R C} (M : MemberForms D.what₂.LL D.what₂.embLL D.what₂.places D.what₂.Tau (D.hcW u) C A P)
     (i : ℕ) (hi : i < D.R.m) (τ : D.what₂.Tau) (r : Fin (D.R.N i)) :
@@ -126,7 +125,6 @@ end GlobalTheory.KerValRat
 
 namespace GlobalTheory.KerValRat
 
-open GlobalTheory.PdvKm in
 theorem evC_ratSpan_gen {D : D7} (O : ∀ u μ, GL3Theta.LiftObj D (D.chTw u μ)) (u : D.what₂.Word) (μ : D.what₂.Tup)
     {A : ColumnsAtT D.R (D.chTw u μ)} {P : PeriodMap D.R (D.chTw u μ)}
     (M : MemberForms D.what₂.LL D.what₂.embLL D.what₂.places D.what₂.Tau (D.hcW u) (D.chTw u μ) A P)

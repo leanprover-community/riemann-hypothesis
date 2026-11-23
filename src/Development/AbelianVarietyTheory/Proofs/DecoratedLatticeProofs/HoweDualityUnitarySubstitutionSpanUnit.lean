@@ -167,7 +167,6 @@ end GlobalTheory.HoweOne
 
 namespace GlobalTheory.HoweOne
 
-open GlobalTheory.Branching
 
 def subMap {a b : ℕ} (hab : a ≤ b) (lam : Unit → DomWeight a) (n : Unit → ℕ)
     (y' : Unit → Matrix (Fin b) (Fin b) ℂ) : Vn lam n →ₗ[ℂ] MvPolynomial (Fin b × Fin a) ℂ :=

@@ -57,7 +57,6 @@ lemma _root_.GlobalTheory.MomOne.OrthFrame.beta_add_left (d : ℕ) (H : Matrix (
     _root_.Formalism.L2.Ker.JMB.beta d H (x + y) z = _root_.Formalism.L2.Ker.JMB.beta d H x z + _root_.Formalism.L2.Ker.JMB.beta d H y z := by
   simp only [_root_.Formalism.L2.Ker.JMB.beta, _root_.Formalism.L2.Ker.JMB.hf, Pi.add_apply, add_mul, Finset.sum_add_distrib, mul_add]
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 lemma _root_.GlobalTheory.MomOne.OrthFrame.beta_smul_left (d : ℕ) (H : Matrix (Fin g) (Fin g) ℂ) (c : ℂ) (x z : Fin g → ℂ) :
     _root_.Formalism.L2.Ker.JMB.beta d H (c • x) z = c * _root_.Formalism.L2.Ker.JMB.beta d H x z := by
@@ -71,18 +70,15 @@ noncomputable def betaL (d : ℕ) (H : Matrix (Fin g) (Fin g) ℂ) (z : Fin g �
 
 end GlobalTheory.MomOne.OrthFrame
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma w0_eq_wK (d : ℕ) : _root_.Formalism.L2.Ker.JMB.w0 d = _root_.GlobalTheory.MomOne.wK d := by
   unfold _root_.Formalism.L2.Ker.JMB.w0 _root_.Formalism.L2.Ker.JMB.rtd _root_.GlobalTheory.MomOne.wK; rfl
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma mem_OK_iff' (d : ℕ) (b : ℂ) :
     b ∈ _root_.Formalism.L2.Ker.JMB.OK d ↔ ∃ u v : ℤ, b = u + v * _root_.GlobalTheory.MomOne.wK d := by
   unfold _root_.Formalism.L2.Ker.JMB.OK; rw [w0_eq_wK]; rfl
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma smul_mem_of_mem_OK {d : ℕ} {L : Submodule ℤ (Fin g → ℂ)}
     (hL : ∀ x ∈ L, _root_.Formalism.L2.Ker.JMB.w0 d • x ∈ L) {c : ℂ} (hc : c ∈ _root_.Formalism.L2.Ker.JMB.OK d) {x : Fin g → ℂ}
@@ -92,7 +88,6 @@ private lemma smul_mem_of_mem_OK {d : ℕ} {L : Submodule ℤ (Fin g → ℂ)}
   rw [add_smul, mul_smul, ← w0_eq_wK, Int.cast_smul_eq_zsmul, Int.cast_smul_eq_zsmul]
   exact L.add_mem (L.smul_mem u hx) (L.smul_mem v (hL x hx))
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma natCast_mul_mem_OK {d : ℕ} {b : ℂ} (hb : b ∈ _root_.Formalism.L2.Ker.JMB.OK d) (n : ℕ) :
     (n : ℂ) * b ∈ _root_.Formalism.L2.Ker.JMB.OK d := by
@@ -100,7 +95,6 @@ private lemma natCast_mul_mem_OK {d : ℕ} {b : ℂ} (hb : b ∈ _root_.Formalis
   obtain ⟨u, v, rfl⟩ := hb
   exact ⟨n * u, n * v, by push_cast; ring⟩
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma conj_beta_eq_beta_swap (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H.IsHermitian)
     (x z : Fin g → ℂ) : conj (_root_.Formalism.L2.Ker.JMB.beta d H x z) = _root_.Formalism.L2.Ker.JMB.beta d H z x := by
@@ -112,7 +106,6 @@ private lemma conj_beta_eq_beta_swap (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} 
   rw [show (starRingEnd ℂ) (H j i) = H i j from hH.apply i j]
   ring
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma beta_sub_right (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H.IsHermitian)
     (x y z : Fin g → ℂ) : _root_.Formalism.L2.Ker.JMB.beta d H x (y - z) = _root_.Formalism.L2.Ker.JMB.beta d H x y - _root_.Formalism.L2.Ker.JMB.beta d H x z := by
@@ -121,13 +114,11 @@ private lemma beta_sub_right (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H.
   congr 1
   exact (_root_.GlobalTheory.MomOne.OrthFrame.betaL d H x).map_sub y z
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma beta_smul_right' (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H.IsHermitian)
     (c : ℂ) (x z : Fin g → ℂ) : _root_.Formalism.L2.Ker.JMB.beta d H x (c • z) = conj c * _root_.Formalism.L2.Ker.JMB.beta d H x z := by
   rw [← conj_beta_eq_beta_swap d hH, _root_.GlobalTheory.MomOne.OrthFrame.beta_smul_left, map_mul, conj_beta_eq_beta_swap d hH]
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma beta_sum_right' (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H.IsHermitian)
     {ι : Type*} (s : Finset ι) (f : ι → Fin g → ℂ) (x : Fin g → ℂ) :
@@ -139,13 +130,11 @@ private lemma beta_sum_right' (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H
   rw [this, map_sum]
   exact Finset.sum_congr rfl fun i _ => conj_beta_eq_beta_swap d hH _ _
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma im_int_add_mul_wK (d : ℕ) (u v : ℤ) :
     ((u : ℂ) + v * _root_.GlobalTheory.MomOne.wK d).im = v * (√(d : ℝ) / 2) := by
   simp [Complex.add_im, Complex.mul_im, _root_.GlobalTheory.MomOne.OKArith.im_w]
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma im_hf_eq_of_beta_eq {d : ℕ} (hd : 0 < d) {H : Matrix (Fin g) (Fin g) ℂ}
     {x z : Fin g → ℂ} {u v : ℤ}
@@ -157,7 +146,6 @@ private lemma im_hf_eq_of_beta_eq {d : ℕ} (hd : 0 < d) {H : Matrix (Fin g) (Fi
   have h0 : √(d : ℝ) / 2 ≠ 0 := by positivity
   exact mul_left_cancel₀ h0 (h.trans (mul_comm _ _))
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma exists_pos_nat_beta_self_eq {d : ℕ} (hd : 0 < d) {H : Matrix (Fin g) (Fin g) ℂ}
     (hH : H.PosDef) {w : Fin g → ℂ} (hw : w ≠ 0) (hb : _root_.Formalism.L2.Ker.JMB.beta d H w w ∈ _root_.Formalism.L2.Ker.JMB.OK d) :
@@ -184,14 +172,12 @@ private lemma exists_pos_nat_beta_self_eq {d : ℕ} (hd : 0 < d) {H : Matrix (Fi
   rw [hre]
   exact_mod_cast (Int.toNat_of_nonneg hu'.le).symm
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma beta_add_right' (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H.IsHermitian)
     (x y z : Fin g → ℂ) : _root_.Formalism.L2.Ker.JMB.beta d H x (y + z) = _root_.Formalism.L2.Ker.JMB.beta d H x y + _root_.Formalism.L2.Ker.JMB.beta d H x z := by
   rw [← conj_beta_eq_beta_swap d hH, _root_.GlobalTheory.MomOne.OrthFrame.beta_add_left, map_add (f := _), conj_beta_eq_beta_swap d hH,
     conj_beta_eq_beta_swap d hH]
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma div_mem_of_norms_dvd_lemma_9 {d k q : ℕ} (hd : 0 < d) (hk : 4 * k = d + 1) (hq : q.Prime)
     (hqd : ¬ q ∣ d) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H.IsHermitian) {w₁ w₂ : Fin g → ℂ}
@@ -252,7 +238,6 @@ private lemma div_mem_of_norms_dvd_lemma_9 {d k q : ℕ} (hd : 0 < d) (hk : 4 * 
   push_cast
   field_simp
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma div_mem_OK_of_mul_div_mem_of_coprime {d q A : ℕ} (hd : 0 < d) (hq : q.Prime) {c : ℂ}
     (hc : c ∈ _root_.Formalism.L2.Ker.JMB.OK d) (h : (A : ℂ) * c / q ∈ _root_.Formalism.L2.Ker.JMB.OK d) (hA : Nat.Coprime A q) :
@@ -275,7 +260,6 @@ private lemma div_mem_OK_of_mul_div_mem_of_coprime {d q A : ℕ} (hd : 0 < d) (h
   push_cast
   field_simp
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma conj_mem_OK {d : ℕ} {b : ℂ} (hb : b ∈ _root_.Formalism.L2.Ker.JMB.OK d) :
     conj b ∈ _root_.Formalism.L2.Ker.JMB.OK d := by
@@ -285,7 +269,6 @@ private lemma conj_mem_OK {d : ℕ} {b : ℂ} (hb : b ∈ _root_.Formalism.L2.Ke
   rw [_root_.GlobalTheory.MomOne.OKArith.conj_el]
   push_cast; ring
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 private lemma exists_orthogonal_vector_norm_coprime {q : ℕ} (hq : q.Prime) (S : _root_.Formalism.L2.Ker.JMB.Setup g)
     (hS : S.Ok) (hqd : ¬ q ∣ S.d) {r : ℕ} (hr : r < g) (x : Fin r → Fin g → ℂ) (a : Fin r → ℕ)
@@ -425,7 +408,6 @@ private lemma exists_orthogonal_vector_norm_coprime {q : ℕ} (hq : q.Prime) (S 
   omega
 
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.MomOne.exists_orthFrame : ∀ (q g : ℕ) (S : _root_.Formalism.L2.Ker.JMB.Setup g),
     q.Prime → S.Ok → ¬ q ∣ S.d → ∃ (x : Fin g → Fin g → ℂ) (a : Fin g → ℕ), (∀ i, x i ∈ S.La) ∧

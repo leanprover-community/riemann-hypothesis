@@ -137,5 +137,4 @@ theorem LateralTheory.EtaleFoundations.columnPf.kerLoc_of : kerLoc := by
   refine Finset.sum_eq_zero fun κ _ => ?_
   rw [TensorProduct.map_tmul, hk' κ (Finset.mem_univ κ), TensorProduct.tmul_zero]
 
-open LateralTheory.EtaleFoundations.columnPf in
 theorem LateralTheory.EtaleFoundations.acyc.column_of : LateralTheory.EtaleFoundations.acyc.column := column_of' kerLoc_of

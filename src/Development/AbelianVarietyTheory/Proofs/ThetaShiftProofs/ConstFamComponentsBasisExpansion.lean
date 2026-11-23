@@ -195,7 +195,6 @@ end GlobalTheory.ConstFam
 
 namespace GlobalTheory
 
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
 open GlobalTheory.FieldBaseChange GlobalTheory.ConstFam
 
 end GlobalTheory

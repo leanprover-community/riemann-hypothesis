@@ -84,8 +84,6 @@ private theorem isGalois_card_two_of_isCMExt {σ : E →ₐ[F] E} (h : _root_.Fo
   have hc : Nat.card Gal(E/F) = 2 := le_antisymm hle hge
   exact ⟨IsGalois.of_card_aut_eq_finrank F E (by rw [hc, hfin]), hc, τ, hτ1, hτ⟩
 
-open scoped TensorProduct Pointwise in
-open NumberField IsDedekindDomain in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   [StarRing E] in
 private theorem exists_sub_algebraMap_mem_of_inertiaDeg_eq_one (p : Ideal (𝓞 F)) [p.IsMaximal]
@@ -102,8 +100,6 @@ private theorem exists_sub_algebraMap_mem_of_inertiaDeg_eq_one (p : Ideal (𝓞 
   rw [← Ideal.Quotient.eq, ← ha]
   rfl
 
-open scoped TensorProduct Pointwise in
-open NumberField IsDedekindDomain in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   [StarRing E] in
 private theorem conjIdeal_eq_smul_of_star_eq (τ : Gal(E/F)) (hs : ∀ x : E, star x = τ x)
@@ -125,8 +121,6 @@ private theorem conjIdeal_eq_smul_of_star_eq (τ : Gal(E/F)) (hs : ∀ x : E, st
     rw [hs]; rfl
 
 
-open scoped TensorProduct Pointwise in
-open NumberField IsDedekindDomain in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   [StarRing E] in
 theorem _root_.GlobalTheory.EtaEulerProduct.inert_or_split {σ : E →ₐ[F] E} (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ)
@@ -266,8 +260,6 @@ def fibreEquiv (v : HeightOneSpectrum (𝓞 F)) :
   left_inv _ := rfl
   right_inv _ := rfl
 
-open scoped TensorProduct Pointwise in
-open NumberField IsDedekindDomain in
 private theorem absNorm_under_int_prime (K : Type) [Field K] [NumberField K] (P : Ideal (𝓞 K))
     [P.IsMaximal] : (Ideal.absNorm (P.under ℤ)).Prime := by
   haveI : (P.under ℤ).IsMaximal :=
@@ -281,8 +273,6 @@ private theorem absNorm_under_int_prime (K : Type) [Field K] [NumberField K] (P 
   have := (Ideal.span_singleton_prime h0).mp hprime
   exact Int.prime_iff_natAbs_prime.mp this
 
-open scoped TensorProduct Pointwise in
-open NumberField IsDedekindDomain in
 private theorem two_le_absNorm_of_isMaximal (K : Type) [Field K] [NumberField K]
     (P : Ideal (𝓞 K)) [P.IsMaximal] : 2 ≤ Ideal.absNorm P := by
   have hP := Ideal.absNorm_pow_inertiaDeg (P.under ℤ) P
@@ -292,8 +282,6 @@ private theorem two_le_absNorm_of_isMaximal (K : Type) [Field K] [NumberField K]
   calc 2 ≤ Ideal.absNorm (P.under ℤ) := hp.two_le
     _ ≤ _ := Nat.le_self_pow hf.ne' _
 
-open scoped TensorProduct Pointwise in
-open NumberField IsDedekindDomain in
 private theorem abs_log_le_two_mul_abs_sub_one_of_half_le {y : ℝ} (hy : 1 / 2 ≤ y) :
     |Real.log y| ≤ 2 * |y - 1| := by
   have hy0 : 0 < y := by linarith
@@ -309,8 +297,6 @@ private theorem abs_log_le_two_mul_abs_sub_one_of_half_le {y : ℝ} (hy : 1 / 2 
       linarith
     linarith
 
-open scoped TensorProduct Pointwise in
-open NumberField IsDedekindDomain in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   [StarRing E] in
 private theorem eulerFac_hasProd_and_primesOver_card_le_two {σ : E →ₐ[F] E} (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ)
@@ -389,8 +375,6 @@ private theorem eulerFac_hasProd_and_primesOver_card_le_two {σ : E →ₐ[F] E}
       rw [h2]
       linarith
 
-open scoped TensorProduct Pointwise in
-open NumberField IsDedekindDomain in
 private theorem under_int_eq_of_absNorm_eq (K : Type) [Field K] [NumberField K]
     (P Q : Ideal (𝓞 K)) [P.IsMaximal] [Q.IsMaximal] (h : Ideal.absNorm P = Ideal.absNorm Q) :
     P.under ℤ = Q.under ℤ := by
@@ -407,8 +391,6 @@ private theorem under_int_eq_of_absNorm_eq (K : Type) [Field K] [NumberField K]
   rw [← Int.ideal_span_absNorm_eq_self (P.under ℤ), ← Int.ideal_span_absNorm_eq_self (Q.under ℤ),
     heq]
 
-open scoped TensorProduct Pointwise in
-open NumberField IsDedekindDomain in
 private theorem summable_absNorm_maximal_rpow_neg (K : Type) [Field K] [NumberField K] {s : ℝ} (hs : 1 < s) :
     Summable (fun P : {P : Ideal (𝓞 K) // P.IsMaximal} => (Ideal.absNorm P.1 : ℝ) ^ (-s)) := by
   set d := Module.finrank ℚ K
@@ -467,8 +449,6 @@ private theorem summable_absNorm_maximal_rpow_neg (K : Type) [Field K] [NumberFi
   exact_mod_cast hc
 
 
-open scoped TensorProduct Pointwise in
-open NumberField IsDedekindDomain in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   [StarRing E] in
 theorem _root_.GlobalTheory.EtaEulerProduct.hasProd_eulerInv_inv : ∀ (F E : Type) [Field F] [NumberField F]

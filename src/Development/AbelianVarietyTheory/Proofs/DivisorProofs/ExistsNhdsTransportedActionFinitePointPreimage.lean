@@ -135,7 +135,6 @@ end
 
 noncomputable section
 
-open Topology Filter
 
 namespace GlobalTheory.WeilTransNbhd
 

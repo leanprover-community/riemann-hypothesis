@@ -235,7 +235,6 @@ theorem hasDiv_iff {E : Type} [Field E] [NumberField E] {n : ℕ} (P : HeightOne
   funext i
   rw [← mul_zpow, mul_div_cancel₀ _ h0]
 
-open IsDedekindDomain NumberField in
 theorem valued_unif {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {ϖ : 𝓞 E}
     (h1 : ϖ ∈ w.asIdeal) (h2 : ϖ ∉ w.asIdeal ^ 2) :
     Valued.v (algebraMap E (w.adicCompletion E) (ϖ : E)) = WithZero.exp (-1 : ℤ) := by

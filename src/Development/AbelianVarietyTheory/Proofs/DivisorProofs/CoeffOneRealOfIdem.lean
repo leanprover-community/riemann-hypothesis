@@ -233,7 +233,6 @@ end GlobalTheory.BadCount
 
 namespace GlobalTheory.BadCount
 
-open Polynomial
 
 variable (D : D7)
 

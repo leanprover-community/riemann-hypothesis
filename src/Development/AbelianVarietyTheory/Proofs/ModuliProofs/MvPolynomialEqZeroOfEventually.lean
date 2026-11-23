@@ -242,7 +242,6 @@ theorem _root_.GlobalTheory.CountableFibres.exists_injective_fderiv {E F : Type}
   exact hxS hx
 
 
-open Filter Topology in
 theorem _root_.GlobalTheory.CountableFibres.exists_independent_ratios :
     ∀ (d : ℕ) (I : Type) [Finite I] (B : Set (Fin d → ℂ)) (θ : (Fin d → ℂ) → I → ℂ), IsOpen B →
       IsPreconnected B → B.Nonempty → (∀ a, DifferentiableOn ℂ (fun z => θ z a) B) →

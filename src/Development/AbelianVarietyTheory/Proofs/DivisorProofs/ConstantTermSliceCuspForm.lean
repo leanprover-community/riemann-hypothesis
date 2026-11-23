@@ -246,7 +246,6 @@ end Specific
 
 section Local
 
-open GlobalTheory.LeviGA GlobalTheory.SliceTwo
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a r : ℕ}
 

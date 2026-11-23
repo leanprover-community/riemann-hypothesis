@@ -109,7 +109,6 @@ end GlobalTheory.LastOpPf
 
 namespace GlobalTheory.LastOpPf
 
-open GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule (ofAdj starAdj)
 
 variable {D : D7}
 

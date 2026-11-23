@@ -97,8 +97,6 @@ end GlobalTheory.CongMember
 
 namespace GlobalTheory.CongMember
 
-open Matrix
-open scoped TensorProduct
 
 section General
 

@@ -554,13 +554,8 @@ theorem mul_mem_vanBd {a b s : AllWt.Weight Dw} (h : a + b = s) (θ : H0 (str₀
 
 end Geometry
 
-open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory Formalism.L2.Pj Formalism.BasicNotions
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
-open GlobalTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.HermTools GlobalTheory.Adelic GlobalTheory.CompHS GlobalTheory.CovTop GlobalTheory.BigTop
-open GlobalTheory.FlagMod (FlagCover)
 open GlobalTheory.FlagTan (dimFlag)
-open GlobalTheory.HSApp
 
 theorem four_le_expL {L : ℝ} (hL : 10 ≤ L) : 4 ≤ expL L := by
   refine le_expL ?_

@@ -70,7 +70,6 @@ lemma tens_single {n : ℕ} {Z : Type} [NormedAddCommGroup Z] [InnerProductSpace
     simp [Pi.single_apply, Finset.sum_apply, Matrix.neg_apply, Matrix.transpose_apply, sub_eq_add_neg]
   · simp [Pi.single_apply, hk, Finset.sum_apply, Matrix.neg_apply, Matrix.transpose_apply]
 
-open ReciprocityTheory.ChartRestriction.DS.HW in
 lemma tens_apply {n : ℕ} {Z : Type} [NormedAddCommGroup Z] [InnerProductSpace ℂ Z] {ι : Type} [Fintype ι]
     (A : Fin n → Fin n → Module.End ℂ Z) (D : Fin n → Fin n → Matrix ι ι ℂ) (a b : Fin n) (x : PiLp 2 (fun _ : ι => Z)) (i : ι) :
     tensAct A D a b x i = A a b (x i) + ∑ j, D a b i j • x j := by
@@ -140,7 +139,6 @@ private theorem glRel_ext1Dual {n : ℕ} {ι : Type} [Fintype ι] [DecidableEq �
     show G c d * G a b - G a b * G c d = -(G a b * G c d - G c d * G a b) by abel, hG a b c d]
   split_ifs <;> simp [Matrix.transpose_sub] <;> abel
 
-open ReciprocityTheory.ChartRestriction.DS.HW in
 theorem assemble {n : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι] (c : Fin n → Fin n → Matrix ι ι ℂ) (hc : IsCliff c)
     (q : ι → ℂ) (hq0 : q ≠ 0) (hq1 : ∀ a, spinM c a a *ᵥ q = ((-(rhoV n a) : ℝ) : ℂ) • q)
     (hq2 : ∀ a b, a < b → spinM c b a *ᵥ q = 0)

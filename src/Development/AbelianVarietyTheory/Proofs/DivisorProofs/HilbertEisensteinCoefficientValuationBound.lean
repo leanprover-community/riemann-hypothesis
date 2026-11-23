@@ -65,8 +65,6 @@ private theorem sz_mono_divisor {r s : ℝ} {x : ℂ} (hrs : r ≤ s)
     _root_.GlobalTheory.LatVal.Sz l lam s x :=
   (_root_.GlobalTheory.QFam.SzSum.sz_ring l lam).2.2.2.1 r s x hrs hx
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 private theorem valBound_embedding_mem_mul_lemma_2 {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ →+* ℂ_[l]}
     {F : Type} [Field F] [NumberField F] [IsTotallyReal F] [IsGalois ℚ F]
     {𝔞 𝔟 : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F} {ρ₀ : ℝ} {M b : ℕ} (hM : ¬ l ∣ M)
@@ -119,21 +117,15 @@ private theorem valBound_embedding_mem_mul_lemma_2 {l : ℕ} [Fact l.Prime] {lam
   convert this using 1
   ring
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 variable {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ →+* ℂ_[l]} in
 private theorem sz_intCast_of_nonneg {r : ℝ} (hr : 0 ≤ r) (m : ℤ) :
     _root_.GlobalTheory.LatVal.Sz l lam r (m : ℂ) :=
   sz_mono_divisor hr ((_root_.GlobalTheory.QFam.SzSum.sz_ring l lam).2.2.2.2.1 m)
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 variable {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ →+* ℂ_[l]} in
 private theorem sz_zero' (r : ℝ) : _root_.GlobalTheory.LatVal.Sz l lam r 0 :=
   (_root_.GlobalTheory.QFam.SzSum.sz_ring l lam).1 r
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 variable {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ →+* ℂ_[l]} in
 private theorem sz_finsum {α : Type*} {r : ℝ} {f : α → ℂ}
     (hf : ∀ a, _root_.GlobalTheory.LatVal.Sz l lam r (f a)) :
@@ -144,8 +136,6 @@ private theorem sz_finsum {α : Type*} {r : ℝ} {f : α → ℂ}
   · rw [finsum_of_infinite_support h]
     exact sz_zero' r
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 private theorem sz_finset_prod {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ →+* ℂ_[l]}
     {ι : Type*} [DecidableEq ι] (t : Finset ι) {w : ι → ℝ} {f : ι → ℂ}
     (hf : ∀ i ∈ t, _root_.GlobalTheory.LatVal.Sz l lam (w i) (f i)) :
@@ -157,8 +147,6 @@ private theorem sz_finset_prod {l : ℕ} [Fact l.Prime] {lam : algebraicClosure 
     exact _root_.GlobalTheory.QFam.SzSum.sz_mul (hf j (Finset.mem_insert_self j t))
       (ih fun i hi => hf i (Finset.mem_insert_of_mem hi))
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 private theorem sz_pow' {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ →+* ℂ_[l]}
     {r : ℝ} {x : ℂ} (hx : _root_.GlobalTheory.LatVal.Sz l lam r x) (m : ℕ) :
     _root_.GlobalTheory.LatVal.Sz l lam (m * r) (x ^ m) := by
@@ -170,8 +158,6 @@ private theorem sz_pow' {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ
     push_cast
     ring
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 private theorem absNorm_mul_norm_mul_discr_eq_natCast_of_mem_dual {F : Type} [Field F] [NumberField F] (𝔞 : FractionalIdeal (𝓞 F)⁰ F) (h0 : 𝔞 ≠ 0) (t : F) (ht0 : t ≠ 0)
     (ht : t ∈ dual ℤ ℚ 𝔞) : ∃ n : ℕ, n ≠ 0 ∧
       absNorm 𝔞 * |Algebra.norm ℚ t| * |(discr F : ℚ)| = n := by
@@ -198,8 +184,6 @@ private theorem absNorm_mul_norm_mul_discr_eq_natCast_of_mem_dual {F : Type} [Fi
     rw [this, Nat.cast_natAbs, Int.cast_abs]
     ring
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 private theorem neg_padicValRat_le_of_mul_eq_natCast {l : ℕ} [hl : Fact l.Prime] {M b d : ℕ} {D : ℤ} {A : ℚ} {n : ℕ} (hn : n ≠ 0)
     (hM : ¬ l ∣ M) (hD : D ≠ 0) (h : A * |(((M * l ^ b : ℕ) : ℚ) ^ d)| * |(D : ℚ)| = n) :
     -(padicValRat l A) ≤ d * b + padicValInt l D := by
@@ -229,8 +213,6 @@ private theorem neg_padicValRat_le_of_mul_eq_natCast {l : ℕ} [hl : Fact l.Prim
   have h0 : (0 : ℤ) ≤ padicValRat l n := by rw [padicValRat.of_nat]; positivity
   linarith
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 variable {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ →+* ℂ_[l]} in
 private theorem sz_coeff_mul {r s : ℝ} {φ ψ : PowerSeries ℂ}
     (hφ : ∀ n, _root_.GlobalTheory.LatVal.Sz l lam r (PowerSeries.coeff n φ))
@@ -240,8 +222,6 @@ private theorem sz_coeff_mul {r s : ℝ} {φ ψ : PowerSeries ℂ}
   exact _root_.GlobalTheory.QFam.SzSum.sz_sum _ fun p _ =>
     _root_.GlobalTheory.QFam.SzSum.sz_mul (hφ p.1) (hψ p.2)
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 variable {l : ℕ} [Fact l.Prime] {lam : algebraicClosure ℚ ℂ →+* ℂ_[l]} in
 private theorem sz_coeff_pow {r : ℝ} {φ : PowerSeries ℂ}
     (hφ : ∀ n, _root_.GlobalTheory.LatVal.Sz l lam r (PowerSeries.coeff n φ)) (m : ℕ)
@@ -260,8 +240,6 @@ private theorem sz_coeff_pow {r : ℝ} {φ : PowerSeries ℂ}
     ring
 
 
-open NumberField UpperHalfPlane FractionalIdeal in
-open scoped nonZeroDivisors in
 open scoped Classical MatrixGroups in
 theorem _root_.GlobalTheory.HilbFam.sz_hfun_coef : _root_.GlobalTheory.LatJet.EisExp →
     ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], 2 ≤ Module.finrank ℚ F →

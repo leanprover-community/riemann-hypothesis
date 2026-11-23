@@ -165,7 +165,6 @@ theorem normsq_mE_le (x : F) : ‖mixedEmbedding F x‖ ^ 2 ≤ ∑ v, reAt v x 
     _ = ∑ v, reAt v x ^ 2 := Real.sq_sqrt hS
 
 variable (F) in
-open scoped Classical in
 theorem coord_bound : ∃ μ : ℝ, 0 < μ ∧ ∀ m : Module.Free.ChooseBasisIndex ℤ (𝓞 F) → ℤ,
     μ * ∑ j, (m j : ℝ) ^ 2 ≤ ∑ v, reAt v (∑ j, m j • integralBasis F j) ^ 2 := by
   set lb := mixedEmbedding.latticeBasis F

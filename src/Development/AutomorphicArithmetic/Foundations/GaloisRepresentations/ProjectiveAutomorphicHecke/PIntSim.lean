@@ -50,7 +50,6 @@ private theorem rel {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
       simp [RingHom.mapMatrix_apply, sim, Matrix.one_apply]
     · simp [RingHom.mapMatrix_apply, sim, Matrix.one_apply, hij]
 
-open GroundTheory.Global.AdeleBaseChange in
 private theorem val_le {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} (hn : 0 < n) (k : GUf E n)
     (hk : ∀ w, comp w k ∈ GlobalTheory.LFun.KGL w (n := n)) (u : Plc E) :
     Valued.v (pLoc E u (finiteAdeleMap ℚ E (sim k : AfQˣ))) ≤ 1 := by
@@ -62,7 +61,6 @@ private theorem val_le {E : Type} [Field E] [NumberField E] [IsCMField E] {n : �
   exact mul_le_one' (((GlobalTheory.BCT.GlobLev.mem_KGL_iff_val _ _).1 (hk _)).1 _ _)
     (((GlobalTheory.BCT.GlobLev.mem_KGL_iff_val _ _).1 (hk _)).1 _ _)
 
-open GroundTheory.Global.AdeleBaseChange in
 theorem UpperTheory.Gal.CertificateRingHomMap.pIntSim_of :
     UpperTheory.Gal.CertificateRingHomMap.IntSim := by
   intro E _ _ _ n hn k hk v

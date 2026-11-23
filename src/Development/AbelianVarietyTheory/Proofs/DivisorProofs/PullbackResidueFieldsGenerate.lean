@@ -62,7 +62,6 @@ theorem _root_.GlobalTheory.subfield_eq_top_of_fromSpecResidueField_factors (Z :
   exact (φ.hom y).2
 
 
-open CategoryTheory Limits AlgebraicGeometry in
 theorem _root_.GlobalTheory.closure_range_residueFieldMap_pullback_eq_top (X Y S : Scheme.{0}) (f : X ⟶ S) (g : Y ⟶ S)
     (t : ↑(pullback f g)) :
     Subfield.closure (Set.range ((pullback.fst f g).residueFieldMap t).hom ∪

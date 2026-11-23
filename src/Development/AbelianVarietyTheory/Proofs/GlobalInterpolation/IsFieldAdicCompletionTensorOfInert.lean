@@ -72,8 +72,6 @@ theorem _root_.GlobalTheory.InertField.exists_not_congr {F E : Type} [Field F] [
     exact hr
   omega
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Polynomial in
 private lemma exists_integer_valuation_sub_lt_one {F : Type} [Field F] [NumberField F]
     (v : HeightOneSpectrum (𝓞 F)) (s : F) (hs : v.valuation F s ≤ 1) :
     ∃ r : 𝓞 F, v.valuation F (s - algebraMap (𝓞 F) F r) < 1 := by
@@ -140,8 +138,6 @@ private lemma exists_integer_valuation_sub_lt_one {F : Type} [Field F] [NumberFi
     rw [intValuation_le_pow_iff_dvd, Ideal.dvd_span_singleton]; exact hz
   exact lt_of_le_of_lt hz' (not_le.mp hdc1)
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Polynomial in
 private lemma exists_quadratic_root_mod_of_adic_root {F : Type} [Field F] [NumberField F]
     (v : HeightOneSpectrum (𝓞 F)) (b c : 𝓞 F) (β : v.adicCompletion F)
     (hβ : β ^ 2 + algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F b) * β
@@ -216,8 +212,6 @@ private lemma exists_quadratic_root_mod_of_adic_root {F : Type} [Field F] [Numbe
   exact (intValuation_lt_one_iff_mem v _).mp hval
 
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Polynomial in
 theorem _root_.GlobalTheory.InertField.isField_of_inert : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E], Module.finrank F E = 2 → ∀ v : HeightOneSpectrum (𝓞 F), (v.asIdeal.map (algebraMap (𝓞 F) (𝓞 E))).IsPrime → IsField (v.adicCompletion F ⊗[F] E) := by
   intro F E _ _ _ _ _ h2 v hP
   classical

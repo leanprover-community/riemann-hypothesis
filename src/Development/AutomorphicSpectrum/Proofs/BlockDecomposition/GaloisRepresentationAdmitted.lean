@@ -102,7 +102,6 @@ end GlobalTheory.CompanionTheory.RankOneGal
 
 namespace GlobalTheory.CompanionTheory.RankOneGal
 
-open GlobalTheory.CuspRep GlobalTheory.CuspRep.InfType GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.TripleGal GlobalTheory.Pst GlobalTheory.GalOfCusp
 open Formalism.BasicNotions.Loc
 
 end GlobalTheory.CompanionTheory.RankOneGal

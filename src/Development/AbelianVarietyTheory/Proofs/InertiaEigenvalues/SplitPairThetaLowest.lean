@@ -180,7 +180,6 @@ end GlobalTheory.RefPair
 
 namespace GlobalTheory.RefPair
 
-open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.ThetaGL GlobalTheory.SplitRead GlobalTheory.NPin
 
 
 end GlobalTheory.RefPair

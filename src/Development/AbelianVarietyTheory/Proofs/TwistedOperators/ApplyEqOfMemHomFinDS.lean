@@ -97,7 +97,6 @@ end GlobalTheory.TrExt
 
 namespace GlobalTheory.TrExt
 
-open scoped InnerProductSpace ComplexConjugate
 
 theorem apply_eq_of_mem_homFinDS {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {W : Type}
     [AddCommGroup W] [Module ℂ W] {σ : Representation ℂ (GfC V) W} {X : Type} [NormedAddCommGroup X]

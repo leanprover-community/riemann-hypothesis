@@ -258,7 +258,6 @@ end GlobalTheory.LocConst
 
 namespace GlobalTheory.LocConst
 
-open GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.StandardMaximalParabolic ValuativeRel
 
 
 

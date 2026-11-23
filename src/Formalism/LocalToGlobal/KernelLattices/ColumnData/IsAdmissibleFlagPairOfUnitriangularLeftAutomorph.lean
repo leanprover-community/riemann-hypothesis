@@ -661,11 +661,9 @@ theorem Base.stdOK_of' {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ
 
 end Isom
 
-section KapInh
 
 variable {D : Car}
 
-end KapInh
 
 namespace Test
 

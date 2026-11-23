@@ -96,7 +96,6 @@ variable {l : ℕ} [hl : Fact l.Prime] {d : ℕ}
 def serW (l : ℕ) [Fact l.Prime] (κ : Type) : Subring (MvPowerSeries κ ℂ_[l]) :=
   (MvPowerSeries.map (σ := κ) (Wp l).subtype).range
 
-open MvPowerSeries in
 variable {l : ℕ} [hl : Fact l.Prime] {d : ℕ} in
 theorem _root_.GlobalTheory.BiextInhab.mem_serW {κ : Type} {F : MvPowerSeries κ ℂ_[l]} :
     F ∈ _root_.GlobalTheory.BiextInhab.serW l κ ↔ _root_.Formalism.MainNotions.GL3Theta.IntegralW F := by
@@ -111,7 +110,6 @@ variable [NeZero d]
 
 
 
-open MvPowerSeries in
 variable {l : ℕ} [hl : Fact l.Prime] {d : ℕ} in
 variable [NeZero d] in
 private theorem coeff_mapDomain_rename_of_injective {σ τ R : Type} [CommSemiring R] (f : σ → τ)
@@ -125,7 +123,6 @@ private theorem coeff_mapDomain_rename_of_injective {σ τ R : Type} [CommSemiri
     exact absurd (by simp) hn
 
 
-open MvPowerSeries in
 variable {l : ℕ} [hl : Fact l.Prime] {d : ℕ} in
 variable [NeZero d] in
 theorem _root_.GlobalTheory.BiextInhab.bridge (l : ℕ) [Fact l.Prime] (d : ℕ) [NeZero d]

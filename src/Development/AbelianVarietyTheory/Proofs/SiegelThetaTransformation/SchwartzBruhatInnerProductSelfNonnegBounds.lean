@@ -60,9 +60,6 @@ theorem _root_.GlobalTheory.SW.IpPos.exists_of_mem_perSub {R : ℕ} {x : Matrix 
     (_root_.GlobalTheory.SW.HaarLevel.intM_iff _).mpr ⟨y, rfl⟩,
     (Nat.cast_smul_eq_nsmul K R _).symm⟩
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-open NumberField in
 variable {K κ ι : Type} [Field K] [NumberField K] [Fintype κ] [Fintype ι] in
 omit [NumberField K] [Fintype κ] [Fintype ι] in
 theorem _root_.GlobalTheory.SW.IpPos.apply_out_mk {R : ℕ} {φ : Matrix κ ι K → ℂ}
@@ -72,9 +69,6 @@ theorem _root_.GlobalTheory.SW.IpPos.apply_out_mk {R : ℕ} {φ : Matrix κ ι K
     (QuotientAddGroup.out_eq' (QuotientAddGroup.mk (s := _root_.GlobalTheory.SW.perSub K κ ι R) x)).symm
   rw [← _root_.GlobalTheory.SW.HaarLevel.periodic h x _ hmem, add_neg_cancel_left]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-open NumberField in
 variable {K κ ι : Type} [Field K] [NumberField K] [Fintype κ] [Fintype ι] in
 omit [NumberField K] [Fintype κ] [Fintype ι] in
 theorem _root_.GlobalTheory.SW.IpPos.intM_natCast_smul (n : ℕ) {x : Matrix κ ι K}
@@ -83,9 +77,6 @@ theorem _root_.GlobalTheory.SW.IpPos.intM_natCast_smul (n : ℕ) {x : Matrix κ 
   rw [Matrix.smul_apply, smul_eq_mul]
   exact (isIntegral_natCast n).mul (hx k i)
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-open NumberField in
 variable {K κ ι : Type} [Field K] [NumberField K] [Fintype κ] [Fintype ι] in
 omit [NumberField K] [Fintype κ] [Fintype ι] in
 theorem _root_.GlobalTheory.SW.IpPos.hasLevel_mul {R : ℕ} {φ : Matrix κ ι K → ℂ} (h : _root_.GlobalTheory.SW.HasLevel R φ)
@@ -99,9 +90,6 @@ theorem _root_.GlobalTheory.SW.IpPos.hasLevel_mul {R : ℕ} {φ : Matrix κ ι K
 def classes (K κ ι : Type) [Field K] (R : ℕ) : Set (Matrix κ ι K ⧸ perSub K κ ι R) :=
   {q | IntM ((R : K) • q.out)}
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-open NumberField in
 variable {K κ ι : Type} [Field K] [NumberField K] [Fintype κ] [Fintype ι] in
 theorem _root_.GlobalTheory.SW.IpPos.classes_finite_card {R : ℕ} (hR : 0 < R) :
     (_root_.GlobalTheory.SW.IpPos.classes K κ ι R).Finite ∧
@@ -145,9 +133,6 @@ theorem _root_.GlobalTheory.SW.IpPos.classes_finite_card {R : ℕ} (hR : 0 < R) 
     _ ≤ Nat.card (L ⧸ H) := Nat.card_le_card_of_surjective _ Set.rangeFactorization_surjective
     _ = _ := hidx
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-open NumberField in
 variable {K κ ι : Type} [Field K] [NumberField K] [Fintype κ] [Fintype ι] in
 theorem _root_.GlobalTheory.SW.IpPos.ip_eq_sum {R : ℕ} (hR : 0 < R) {φ ψ : Matrix κ ι K → ℂ}
     (hφ : _root_.GlobalTheory.SW.HasLevel R φ) (hψ : _root_.GlobalTheory.SW.HasLevel R ψ) :
@@ -169,9 +154,6 @@ theorem _root_.GlobalTheory.SW.IpPos.ip_eq_sum {R : ℕ} (hR : 0 < R) {φ ψ : M
 
 end GlobalTheory.SW.IpPos
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
-open NumberField in
 variable {K κ ι : Type} [Field K] [NumberField K] [Fintype κ] [Fintype ι] in
 private lemma schwartzBruhatInnerProduct_self_eq_lemma {R : ℕ} (hR : 0 < R) {φ : Matrix κ ι K → ℂ}
     (hφ : _root_.GlobalTheory.SW.HasLevel R φ) :
@@ -185,8 +167,6 @@ private lemma schwartzBruhatInnerProduct_self_eq_lemma {R : ℕ} (hR : 0 < R) {�
   rfl
 
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 theorem _root_.GlobalTheory.SW.ip_self_nonneg_and_bounds : ∀ (K κ ι : Type) [Field K] [NumberField K]
     [Fintype κ] [Fintype ι] (R : ℕ) (φ : Matrix κ ι K → ℂ), 0 < R → _root_.GlobalTheory.SW.HasLevel R φ →
     (_root_.GlobalTheory.SW.ip φ φ).im = 0 ∧ 0 ≤ (_root_.GlobalTheory.SW.ip φ φ).re ∧

@@ -103,7 +103,6 @@ end GlobalTheory.HeatUConn
 
 namespace GlobalTheory.HeatUConn
 
-open GlobalTheory.KS.DlogPol (gs_rsT gs_pbT gs_one gs_sub gs_constFn)
 
 theorem prod_one_add_eps {S : Type} [CommRing S] (ee : S) (hee : ee * ee = 0) {I : Type} (s : Finset I) (b : I → S) :
     ∏ j ∈ s, (1 + ee * b j) = 1 + ee * ∑ j ∈ s, b j := by
@@ -145,7 +144,6 @@ end GlobalTheory.HeatUConn
 
 namespace GlobalTheory.HeatUConn
 
-open GlobalTheory.KS.DlogPol (gs_rsT gs_pbT gs_one gs_sub gs_constFn)
 
 theorem core {R : Type} [CommRing R] {k : Type} [Field k] [CharZero k] (A : Over (Sp R)) (L : LB A.left)
     (B' : Over (Sp (DualNumber k))) (π₁ π₂ : B'.left ⟶ A.left) (hpt : ∀ b : B'.left, π₁ b = π₂ b)

@@ -62,7 +62,6 @@ theorem _root_.GlobalTheory.CoefEmbed.norm_prime_lt_one : ‖((l : ℕ) : PadicA
   rw [h, norm_algebraMap']
   exact Padic.norm_p_lt_one
 
-open IsLocalRing Topology in
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] in
 private lemma norm_le_one_of_monic_root_lemma {R F : Type*} [CommRing R] [NormedField F]
     [IsUltrametricDist F] (f : R →+* F) (hf : ∀ r, ‖f r‖ ≤ 1) {P : Polynomial R}
@@ -76,7 +75,6 @@ private lemma norm_le_one_of_monic_root_lemma {R F : Type*} [CommRing R] [Normed
   exact ((Valuation.integer.integers v).isIntegral_iff_v_le_one.mp hy')
 
 
-open IsLocalRing Topology in
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] in
 theorem _root_.GlobalTheory.CoefEmbed.embedding_closed_integral : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] [TopologicalSpace O] [IsTopologicalRing O], IsAdic (IsLocalRing.maximalIdeal O) → ∀ κ : FractionRing O →+* PadicAlgCl l, (∀ z : ℤ_[l], κ (algebraMap O (FractionRing O) (algebraMap ℤ_[l] O z)) = algebraMap ℚ_[l] (PadicAlgCl l) (z : ℚ_[l])) → Topology.IsEmbedding (fun x : O => κ (algebraMap O (FractionRing O) x)) ∧ IsClosed (Set.range κ) ∧ (∀ x : FractionRing O, ‖κ x‖ ≤ 1 → ∃ y : O, algebraMap O (FractionRing O) y = x) ∧ ((l : ℕ) : O) ∈ IsLocalRing.maximalIdeal O := by
   intro l _ O _ _ _ _ _ _ _ hO κ hκ

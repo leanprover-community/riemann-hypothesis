@@ -100,7 +100,6 @@ theorem coeff_single_subst {σ τ : Type} [Fintype σ] [DecidableEq σ] [Decidab
     rw [hz, smul_zero]
 
 
-open Formalism.FG.SolveVAux in
 theorem eq_linear {N : ℕ} (g : MvPowerSeries (Fin 1 × Fin N) S)
     (h : ∀ n : Fin 1 × Fin N →₀ ℕ, n.degree ≠ 1 → coeff n g = 0) :
     g = ∑ q, C (coeff (Finsupp.single ((0 : Fin 1), q) 1) g) * X ((0 : Fin 1), q) := by

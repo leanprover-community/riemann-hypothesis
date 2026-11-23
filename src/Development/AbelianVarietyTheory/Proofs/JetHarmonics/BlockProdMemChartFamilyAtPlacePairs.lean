@@ -178,8 +178,6 @@ end Blocks
 
 section Letters
 
-open scoped BigOperators
-open Classical Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds Formalism.L2.Pj GlobalTheory.RowAt
 
 variable {Ty : Type} (r : Ty → ℕ) {Orb : Type} {d : ℕ} (tau : Orb → Fin 2 → ZMod d → Ty)
 

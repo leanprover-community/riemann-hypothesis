@@ -160,7 +160,6 @@ noncomputable section
 
 namespace GlobalTheory.TensorSquareIntegral
 
-open scoped Classical
 
 theorem exists_const_tensor : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ]
     (e : ((κ → AF F) → ℂ) →ₗ[ℂ] (κ → AF F) → ℂ) (vac vac₁ : ∀ v : Pl (F := F), (κ → Fv F v) → ℂ)

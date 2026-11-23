@@ -362,7 +362,6 @@ theorem pointConeMap_map (y : (Σ k, J k) → Ω) (f : MRing J O) :
     simp only [map_mul, hp, MvPolynomial.map_X]
     simp [pointConeMap]
 
-open GroundTheory.Heights₂.Heights.NumbersDVR in
 theorem map_mem_pointIdeal_iff (y : (Σ k, J k) → Ω) (f : MRing J O) :
     MvPolynomial.map (algebraMap O O') f ∈ pointIdeal O' (bcPt Ω' y) ↔ f ∈ pointIdeal O y := by
   simp only [pointIdeal, RingHom.mem_ker, pointConeMap_map]
@@ -378,7 +377,6 @@ theorem aeval_map (y : (Σ k, J k) → Ω) (f : GroundTheory.Heights₂.Heights.
 
 variable [DecidableEq K]
 
-open GroundTheory.Heights₂.Heights.NumbersDVR in
 theorem isMultiHomog_map {f : MRing J O} {b : K → ℕ} (h : IsMultiHomog f b) :
     IsMultiHomog (MvPolynomial.map (algebraMap O O') f) b := by
   intro d hd
@@ -386,7 +384,6 @@ theorem isMultiHomog_map {f : MRing J O} {b : K → ℕ} (h : IsMultiHomog f b) 
   exact h fun h0 => hd (by rw [h0, map_zero])
 
 
-open GroundTheory.Heights₂.Heights.NumbersDVR in
 theorem isVerticalDivisor_ext [Fintype K] [IsDomain O] [IsDiscreteValuationRing O] [IsDomain O']
     [IsDiscreteValuationRing O'] (y : (Σ k, J k) → Ω)
     (hinj : Function.Injective (algebraMap O Ω)) {ϖ : O} {ϖ' : O'} (hϖ : Irreducible ϖ)

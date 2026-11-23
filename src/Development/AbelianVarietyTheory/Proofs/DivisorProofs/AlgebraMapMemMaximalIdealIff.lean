@@ -125,7 +125,6 @@ end GlobalTheory.LocalTangent
 
 namespace GlobalTheory.LocalTangent
 
-open IsLocalRing
 
 variable {k S : Type} [Field k] [CommRing S] [IsLocalRing S] [Algebra k S]
 

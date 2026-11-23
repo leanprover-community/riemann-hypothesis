@@ -69,7 +69,6 @@ theorem AO_eq (i : X.Tw) (j : ℕ) (b : Bool) (x : Y.Fm i j b) :
   rw [← map_natCast (algebraMap (X.O i) (FractionRing (X.O i))), algebraMap_smul]
 
 
-open Formalism.MainNotions.IntegralHeckeForms in
 theorem thetaSeries_mem_goodTypeForms (E : ExpDat Y) (i : X.Tw) (j : ℕ) (b : Bool) (a : Y.Dat i j b) (ha : a ∈ E.Dat0 i j b) :
     Y.th i j b a ∈ Fm0 Y i j b := by
   simp only [Fm0, Submodule.mem_iInf, LinearMap.mem_ker]
@@ -78,7 +77,6 @@ theorem thetaSeries_mem_goodTypeForms (E : ExpDat Y) (i : X.Tw) (j : ℕ) (b : B
   simp [this]
 
 
-open Formalism.MainNotions.IntegralHeckeForms in
 theorem AO_Th_le (E : ExpDat Y) (i : X.Tw) (j : ℕ) (b : Bool) :
     ∀ x ∈ (Th Y i j b (SgJ Y E i j b)).map (AO Y i j b), x ∈ V0 Y i j b := by
   rintro _ ⟨y, hy, rfl⟩
@@ -89,7 +87,6 @@ theorem AO_Th_le (E : ExpDat Y) (i : X.Tw) (j : ℕ) (b : Bool) :
   exact thetaSeries_mem_goodTypeForms Y E i j b a ha
 
 
-open Formalism.MainNotions.IntegralHeckeForms in
 theorem fullRk_of_le (E : ExpDat Y) (i : X.Tw) (j : ℕ) (b : Bool)
     (h : V0 Y i j b ≤ Submodule.span (FractionRing (X.O i)) (eG Y i j b '' (Y.th i j b '' E.Dat0 i j b))) :
     FullRk Y E i j b (SgJ Y E i j b) := by

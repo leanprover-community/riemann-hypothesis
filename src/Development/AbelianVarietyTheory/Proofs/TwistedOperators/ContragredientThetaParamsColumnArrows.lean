@@ -114,7 +114,6 @@ end GlobalTheory.ParPairArrows
 
 namespace GlobalTheory.ParPairArrows
 
-open GlobalTheory.SignedHC Finset
 
 section
 variable (G : GridData)
@@ -242,7 +241,6 @@ end GlobalTheory.ParPairArrows
 
 namespace GlobalTheory.ParPairArrows
 
-open GlobalTheory.SignedHC Finset
 
 section
 variable (G : GridData)

@@ -1163,7 +1163,6 @@ namespace JSL
 
 section
 
-open Formalism.FrobeniusOrbits
 
 def SlopesM_at {D : D7} (L : SizeData₂ D) (C : ℝ) : Prop :=
   ∀ u, -(C * D.host.TT.card * L.sc.a * L.La * (1 + (D.R.m : ℝ) / D.R.k)) ≤ ((D.fm u).lat 0).mu ∧

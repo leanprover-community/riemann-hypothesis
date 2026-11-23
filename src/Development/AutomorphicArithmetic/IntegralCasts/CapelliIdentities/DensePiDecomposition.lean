@@ -67,7 +67,6 @@ private theorem UpperTheory.Reformulated.B.AdicDensityOfPresentationSubalgebra.m
       Ideal.mem_of_dvd _ h2 (Ideal.subset_span ⟨i, rfl⟩)
     simpa using Ideal.add_mem _ h3 h1
 
-open MvPowerSeries in
 private theorem UpperTheory.Reformulated.B.AdicDensityOfPresentationSubalgebra.exists_decomp {σ O : Type} [CommRing O] [Fintype σ]
     (f : MvPowerSeries σ O) :
     ∃ (c : O) (g : σ → MvPowerSeries σ O),

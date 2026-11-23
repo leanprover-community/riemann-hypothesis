@@ -123,7 +123,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Classical
 
 variable {D : D7} {N N' : ℕ}
 
@@ -188,7 +187,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Classical
 
 variable {D : D7} {N N' : ℕ}
 
@@ -212,7 +210,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Classical
 
 variable {D : D7} {N N' : ℕ}
 
@@ -300,7 +297,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Classical
 
 theorem finite_quot_of_smul {V : Type*} [AddCommGroup V] (La₁ La₂ R : AddSubgroup V)
     [Module.Finite ℤ R] (hle : La₂ ≤ R) (k : ℤ) (hk : k ≠ 0) (hkR : ∀ z ∈ R, k • z ∈ La₁) :

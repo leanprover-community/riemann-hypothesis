@@ -134,12 +134,10 @@ theorem one_lt_normV (v : HeightOneSpectrum (𝓞 F)) : 1 < normV v := by
 
 end split
 
-section frob
 
 variable {F L Ω : Type*} [Field F] [NumberField F] [Field L] [NumberField L] [Field Ω] [Algebra F L]
   [Algebra F Ω] [Algebra L Ω] [IsScalarTower F L Ω] {A : ValuationSubring Ω}
 
-end frob
 
 section conj
 

@@ -47,7 +47,6 @@ open GlobalTheory.InertFrameLoc
 namespace GlobalTheory.InertFrameSympl
 
 open Formalism.UG (cT cT_mul cT_one antiJ)
-open GlobalTheory.InertFrameLoc
 
 variable {D : D7} {v : HeightOneSpectrum (𝓞 D.host.F)} {w : HeightOneSpectrum (𝓞 D.host.E)}
   {hw : IsInertAt D.host.F D.host.E v w} {h : w.under (𝓞 D.host.F) = v}

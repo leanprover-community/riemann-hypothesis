@@ -123,7 +123,6 @@ noncomputable section
 
 namespace GlobalTheory.MixSwap
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger (dagger dagger_dagger cj)
 open scoped Pointwise
 
 variable {D : D7}
@@ -201,7 +200,6 @@ noncomputable section
 
 namespace GlobalTheory.MixSwap
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger (dagger dagger_dagger cj)
 
 attribute [local instance] borelMx
 

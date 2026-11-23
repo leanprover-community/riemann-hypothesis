@@ -111,7 +111,6 @@ end P90P
 
 section Named
 
-open Formalism.QuantumDeterminants.WeylGroupFacts
 
 def KFinSmooth : Prop :=
   ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (lam : Fin (2 * r + k + 1) → ℝ) (H : Type) [NormedAddCommGroup H]

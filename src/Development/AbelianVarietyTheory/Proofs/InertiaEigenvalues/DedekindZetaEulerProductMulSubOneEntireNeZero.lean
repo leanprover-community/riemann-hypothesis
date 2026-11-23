@@ -74,8 +74,6 @@ private lemma dedekindZeta_eq_exp_tsum_neg_log (K : Type) [Field K] [NumberField
     simp [P.ne_bot]
 
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding Filter Topology Asymptotics Polynomial in
-open scoped ContDiff Classical in
 theorem _root_.GlobalTheory.dedekindZeta_eulerProduct_mul_sub_one_entire_ne_zero :
     ∀ (K : Type) [Field K] [NumberField K], ∃ Z : ℂ → ℂ, Differentiable ℂ Z ∧ Z 1 ≠ 0 ∧ ∀ s : ℂ, 1 < s.re → Z s = (s - 1) * Complex.exp (∑' P : HeightOneSpectrum (𝓞 K), -Complex.log (1 - 1 * ((Ideal.absNorm P.asIdeal : ℕ) : ℂ) ^ (-s))) := by
   intro K _ _

@@ -125,12 +125,10 @@ theorem coeff_subst_tyS {τ : Type} [Finite τ] {l : ℕ} (hl : 2 ≤ l) {T : Mv
   rw [show (PowerSeries.X : PowerSeries C) = (MvPowerSeries.X () : MvPowerSeries Unit C) from rfl,
     MvPowerSeries.subst_X (hasSubst_unit hT), MvPowerSeries.coeff_smul]
 
-section Add
 
 variable [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ} {d : ℕ} {I : Fin 2 → Type}
   [∀ g, Fintype (I g)] (Y : FBChart C V O dd) (p : PairData Y d I)
 
-end Add
 
 end RowTiePCEqSum
 

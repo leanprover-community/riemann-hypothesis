@@ -62,7 +62,6 @@ private theorem exists_contRep {K I : Type} [Group K] [TopologicalSpace K] {d : 
     rw [hq]
     rfl
 
-open Matrix in
 theorem UpperTheory.V.Af.admissibleReal :
     UpperTheory.V.Published.AdmissibleReal := by
   intro F _ _ _ a π U hU d ξ

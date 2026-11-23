@@ -134,7 +134,6 @@ end GlobalTheory
 namespace GlobalTheory
 namespace HilbertSamuelPS
 
-open MvPowerSeries
 
 section Valuation
 variable {D n : ℕ} {A : Type} [CommRing A] [Algebra ℂ A]
@@ -275,7 +274,6 @@ end GlobalTheory
 namespace GlobalTheory
 namespace HilbertSamuelPS
 
-open MvPowerSeries
 
 theorem expand_mem {D : ℕ} {A : Type} [CommRing A] [Algebra ℂ A] (x : Fin D → A) (c : Fin D → ℂ)
     (F G : Submodule ℂ A) (m : ℕ)

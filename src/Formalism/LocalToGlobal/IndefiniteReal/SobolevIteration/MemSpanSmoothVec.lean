@@ -45,11 +45,9 @@ namespace Formalism.IndefR.Tow.OrbStPf
 variable {n : ℕ} {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
   (ρ : Matrix (Fin n) (Fin n) ℂ → (E →L[ℂ] E)) (Lie U : Set (Matrix (Fin n) (Fin n) ℂ))
 
-section SV
 
 variable {ρ Lie}
 
-end SV
 
 variable {ρ Lie U}
 variable (hU1 : (1 : Matrix (Fin n) (Fin n) ℂ) ∈ U) (hUm : ∀ a ∈ U, ∀ b ∈ U, a * b ∈ U)

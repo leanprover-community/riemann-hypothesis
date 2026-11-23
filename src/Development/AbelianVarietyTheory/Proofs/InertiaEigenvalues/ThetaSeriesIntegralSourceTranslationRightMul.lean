@@ -136,7 +136,6 @@ namespace GlobalTheory.SourceTrans
 
 section LocalLift
 
-open Formalism.MainNotions.S Formalism.IndefR.Mult Formalism.IndefR.Lev GlobalTheory.ParahoricLift GlobalTheory.LevSplit Formalism.L2.NTheta
 
 variable {D : D7}
 

@@ -125,7 +125,6 @@ open MeasureTheory NumberField Matrix
 open GlobalTheory.Chain GlobalTheory.Chain.RealIt GlobalTheory.ChainFr GlobalTheory.Chain.IoLift GlobalTheory.Chain.IoLift.FockOrbit GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators
 open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension (kFin KVec maxCpt)
 open GlobalTheory.LowerMembers (frame_fock_orbit signCard_signed ptF_zero)
-open scoped TensorProduct InnerProductSpace
 
 
 

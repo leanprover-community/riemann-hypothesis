@@ -59,7 +59,6 @@ theorem _root_.GlobalTheory.LocalDifferentProduct.valued_coe_algebraMap (x : �
       v.adicCompletion K) = v.intValuation x := by
   simp [valuation_of_algebraMap]
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WithZero Polynomial in
 variable {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K)) in
 private lemma valued_le_of_mem_map_of_le_pow {I : Ideal (𝓞 K)} {n : ℕ} (hIn : I ≤ v.asIdeal ^ n)
     {x : v.adicCompletionIntegers K} (hx : x ∈ I.map (algebraMap (𝓞 K) (v.adicCompletionIntegers K))) :
@@ -81,7 +80,6 @@ private lemma valued_le_of_mem_map_of_le_pow {I : Ideal (𝓞 K)} {n : ℕ} (hIn
         ≤ 1 * WithZero.exp (-(n : ℤ)) := mul_le_mul' (a.2 : Valued.v (a : v.adicCompletion K) ≤ 1) hy
       _ = _ := one_mul _
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WithZero Polynomial in
 variable {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K)) in
 private lemma exists_notMem_mul_mem_of_pow_count {I : Ideal (𝓞 K)} (hI : I ≠ 0) :
     ∃ s : 𝓞 K, s ∉ v.asIdeal ∧
@@ -108,7 +106,6 @@ private lemma exists_notMem_mul_mem_of_pow_count {I : Ideal (𝓞 K)} (hI : I �
   rw [hJ]
   exact Ideal.mul_mem_mul ha hsJ
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WithZero Polynomial in
 variable {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K)) in
 private lemma mem_map_adicCompletionIntegers_of_valued_le {I : Ideal (𝓞 K)} (hI : I ≠ 0) {y : v.adicCompletionIntegers K}
     (hy : Valued.v (y : v.adicCompletion K) ≤
@@ -143,7 +140,6 @@ private lemma mem_map_adicCompletionIntegers_of_valued_le {I : Ideal (𝓞 K)} (
   rw [hy']
   exact Ideal.mul_mem_right _ _ (Ideal.mem_map_of_mem _ hi₀)
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WithZero Polynomial in
 variable {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K)) in
 private lemma exists_integer_valuation_sub_le_exp_neg (k : K) (hk : v.valuation K k ≤ 1) (n : ℕ) :
     ∃ a : 𝓞 K, v.valuation K (k - algebraMap (𝓞 K) K a) ≤ WithZero.exp (-(n : ℤ)) := by
@@ -194,7 +190,6 @@ private lemma exists_integer_valuation_sub_le_exp_neg (k : K) (hk : v.valuation 
         mul_le_mul' hk ((intValuation_le_pow_iff_mem v _ n).mpr (Ideal.pow_mem_pow hi n))
     _ = _ := one_mul _
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WithZero Polynomial in
 variable {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K)) in
 private lemma exists_integer_valued_sub_le_exp_neg (x : v.adicCompletionIntegers K) (n : ℕ) :
     ∃ a : 𝓞 K, Valued.v ((x : v.adicCompletion K) -
@@ -255,7 +250,6 @@ private lemma exists_integer_valued_sub_le_exp_neg (x : v.adicCompletionIntegers
   exact ha
 
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WithZero Polynomial in
 variable {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K)) in
 theorem _root_.GlobalTheory.LocalDifferentProduct.card_quot_map {I : Ideal (𝓞 K)} (hI : I ≠ 0) :
     Nat.card (v.adicCompletionIntegers K ⧸
@@ -299,7 +293,6 @@ theorem _root_.GlobalTheory.LocalDifferentProduct.card_quot_map {I : Ideal (𝓞
 end Local
 
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WithZero Polynomial in
 theorem _root_.GlobalTheory.LocalDifferentProduct.finprod_card_quot_map {K : Type} [Field K] [NumberField K] {I : Ideal (𝓞 K)} (hI : I ≠ 0) :
     (Function.mulSupport fun v : HeightOneSpectrum (𝓞 K) => Nat.card (v.adicCompletionIntegers K ⧸
       I.map (algebraMap (𝓞 K) (v.adicCompletionIntegers K)))).Finite ∧
@@ -324,7 +317,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 end Relative
 
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum WithZero Polynomial in
 theorem _root_.GlobalTheory.LocalDifferentProduct.prod_normDifferentV : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] [StarRing E] (σ : E →ₐ[F] E), _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ → (∀ x : E, star x = σ x) →
     _root_.Formalism.HermitianLatticesTheory.IsCMUnram E → (Function.mulSupport (_root_.GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.normDifferentV F)).Finite ∧

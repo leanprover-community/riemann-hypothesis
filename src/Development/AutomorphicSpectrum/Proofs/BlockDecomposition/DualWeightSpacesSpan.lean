@@ -82,7 +82,6 @@ end GlobalTheory.CompanionTheory.RealCount.TorusSpan
 
 namespace GlobalTheory.CompanionTheory.RealCount.TorusSpan
 
-open PositivityTheory.RgBcC Module.End
 
 theorem jointEig_top {V I : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V]
     (T : I → V →ₗ[ℂ] V) (hc : ∀ i k, Commute (T i) (T k))
@@ -189,7 +188,6 @@ end GlobalTheory.CompanionTheory.RealCount.TorusSpan
 
 namespace GlobalTheory.CompanionTheory.RealCount.TorusSpan
 
-open PositivityTheory.RgBcC Module.End
 
 variable {n : ℕ}
 

@@ -53,7 +53,6 @@ private theorem isUnit_add_mul_of_mem_maximalIdeal {O : Type*} [CommRing O] [IsL
     IsLocalRing.residue_ne_zero_iff_isUnit]
   exact hu
 
-open Finset Matrix in
 private theorem isUnit_diag_dvd_lower_mul {O : Type*} [CommRing O] [IsLocalRing O] {ϖ : O}
     (hϖ : ϖ ∈ IsLocalRing.maximalIdeal O) {r : ℕ} (A B : Matrix (Fin r) (Fin r) O)
     (hA : ∀ i, IsUnit (A i i)) (hB : ∀ i, IsUnit (B i i))
@@ -77,7 +76,6 @@ private theorem isUnit_diag_dvd_lower_mul {O : Type*} [CommRing O] [IsLocalRing 
     · exact Dvd.dvd.mul_right (hA' i l h) _
     · exact Dvd.dvd.mul_left (hB' l j (lt_of_lt_of_le hij h)) _
 
-open Finset Matrix in
 private theorem isUnit_det_of_isUnit_diag_of_dvd_lower {O : Type*} [CommRing O] [IsLocalRing O] {ϖ : O}
     (hϖ : ϖ ∈ IsLocalRing.maximalIdeal O) {ι : Type*} [Fintype ι] [DecidableEq ι] [LinearOrder ι]
     (N : Matrix ι ι O) (hd : ∀ i, IsUnit (N i i)) (hl : ∀ i j, j < i → ϖ ∣ N i j) :
@@ -92,7 +90,6 @@ private theorem isUnit_det_of_isUnit_diag_of_dvd_lower {O : Type*} [CommRing O] 
   refine Finset.prod_ne_zero_iff.mpr fun i _ => ?_
   simpa [IsLocalRing.residue_ne_zero_iff_isUnit] using hd i
 
-open Finset Matrix in
 private theorem card_filter_sub_le_eq (r k : ℕ) (hk : k ≤ r) :
     (univ.filter fun j : Fin r => r - k ≤ (j : ℕ)).card = k := by
   have : (univ.filter fun j : Fin r => r - k ≤ (j : ℕ)).map Fin.valEmbedding = Finset.Ico (r - k) r := by
@@ -103,7 +100,6 @@ private theorem card_filter_sub_le_eq (r k : ℕ) (hk : k ≤ r) :
     · rintro ⟨h1, h2⟩; exact ⟨⟨x, h2⟩, h1, rfl⟩
   rw [← card_map, this, Nat.card_Ico]; omega
 
-open Finset Matrix in
 private theorem sum_filter_lt_sum_of_strictAnti {r : ℕ} {a : Fin r → ℕ} (ha : StrictAnti a) (k : ℕ)
     (s : Finset (Fin r)) (hs : s.card = (univ.filter fun j : Fin r => r - k ≤ (j : ℕ)).card)
     (hne : s ≠ univ.filter fun j : Fin r => r - k ≤ (j : ℕ)) :
@@ -135,7 +131,6 @@ private theorem sum_filter_lt_sum_of_strictAnti {r : ℕ} {a : Fin r → ℕ} (h
   omega
 
 
-open Finset Matrix in
 theorem _root_.GlobalTheory.IwahoriNewtonTest.intersectionNumber_baseChange : _root_.Formalism.PacketSums.IwahoriNewton := by
   unfold _root_.Formalism.PacketSums.IwahoriNewton
   intro O _ _ ϖ hϖ r a ha i₁ i₂ h1 h2 h1' h2' k hk

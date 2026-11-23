@@ -84,7 +84,6 @@ theorem xPart_apply (P : SchwartzMap (κ' → V) ℂ →L[ℂ] SchwartzMap (κ�
 end GlobalTheory.SliceOpDeriv
 
 namespace GlobalTheory.SliceOpDeriv
-open GlobalTheory.SliceSchwartz GlobalTheory.SliceOp
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   {κ κ' κ₁' : Type} [Fintype κ] [Fintype κ'] [Fintype κ₁']
@@ -120,7 +119,6 @@ theorem hasFDerivAt_sliceR_apply (P : SchwartzMap (κ' → V) ℂ →L[ℂ] Schw
 end GlobalTheory.SliceOpDeriv
 
 namespace GlobalTheory.SliceOpDeriv
-open GlobalTheory.SliceSchwartz GlobalTheory.SliceOp
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   {κ κ' κ₁' : Type} [Fintype κ] [Fintype κ'] [Fintype κ₁']

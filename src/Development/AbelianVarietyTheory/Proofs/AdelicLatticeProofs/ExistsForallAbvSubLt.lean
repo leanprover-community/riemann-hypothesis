@@ -67,15 +67,11 @@ noncomputable def abv (T : Finset (HeightOneSpectrum (𝓞 F))) :
   | Sum.inl v => NumberField.HeightOneSpectrum.adicAbv F v.1
   | Sum.inr σ => (InfinitePlace.mk (Complex.ofRealHom.comp σ)).1
 
-open NumberField IsDedekindDomain in
-open scoped Matrix WithZero in
 variable {F : Type} [Field F] [NumberField F] in
 theorem _root_.GlobalTheory.LocalQuad.Approx.abv_inl (T : Finset (HeightOneSpectrum (𝓞 F))) (v : T) (x : F) :
     _root_.GlobalTheory.LocalQuad.Approx.abv T (Sum.inl v) x = ‖algebraMap F (v.1.adicCompletion F) x‖ :=
   (FinitePlace.norm_embedding v.1 x).symm
 
-open NumberField IsDedekindDomain in
-open scoped Matrix WithZero in
 variable {F : Type} [Field F] [NumberField F] in
 theorem _root_.GlobalTheory.LocalQuad.Approx.abv_isNontrivial (T : Finset (HeightOneSpectrum (𝓞 F)))
     (i : T ⊕ (F →+* ℝ)) : (_root_.GlobalTheory.LocalQuad.Approx.abv T i).IsNontrivial := by
@@ -87,8 +83,6 @@ theorem _root_.GlobalTheory.LocalQuad.Approx.abv_isNontrivial (T : Finset (Heigh
     exact ((FinitePlace.norm_lt_one_iff_mem F v.1 r).2 hrv).ne
   · exact (InfinitePlace.mk (Complex.ofRealHom.comp σ)).isNontrivial
 
-open NumberField IsDedekindDomain in
-open scoped Matrix WithZero in
 variable {F : Type} [Field F] [NumberField F] in
 private theorem not_isEquiv_adicAbv_real_place (v : HeightOneSpectrum (𝓞 F)) (σ : F →+* ℝ) :
     ¬(NumberField.HeightOneSpectrum.adicAbv F v).IsEquiv
@@ -102,8 +96,6 @@ private theorem not_isEquiv_adicAbv_real_place (v : HeightOneSpectrum (𝓞 F)) 
   simp only [RingHom.comp_apply, hσ2] at h2
   norm_num at h2
 
-open NumberField IsDedekindDomain in
-open scoped Matrix WithZero in
 variable {F : Type} [Field F] [NumberField F] in
 theorem _root_.GlobalTheory.LocalQuad.Approx.abv_pairwise (T : Finset (HeightOneSpectrum (𝓞 F))) :
     Pairwise fun i j ↦ ¬(_root_.GlobalTheory.LocalQuad.Approx.abv T i).IsEquiv
@@ -138,8 +130,6 @@ theorem _root_.GlobalTheory.LocalQuad.Approx.abv_pairwise (T : Finset (HeightOne
 end GlobalTheory.LocalQuad.Approx
 
 
-open NumberField IsDedekindDomain in
-open scoped Matrix WithZero in
 variable {F : Type} [Field F] [NumberField F] in
 theorem _root_.GlobalTheory.LocalQuad.denseRange_finite_real (F : Type) [Field F] [NumberField F]
     (T : Finset (HeightOneSpectrum (𝓞 F))) :

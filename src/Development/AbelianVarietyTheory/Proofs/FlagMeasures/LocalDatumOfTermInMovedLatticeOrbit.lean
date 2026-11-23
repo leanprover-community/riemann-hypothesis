@@ -194,7 +194,6 @@ namespace GlobalTheory.HL.TermOrbit
 
 section Glob
 
-open Formalism.L2.SG.Pf
 
 variable {D : D7}
 
@@ -285,7 +284,6 @@ namespace GlobalTheory.HL.TermOrbit
 
 section LocO
 
-open Formalism.MainNotions.S.Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
@@ -391,7 +389,6 @@ end GlobalTheory.HL.TermOrbit
 
 namespace GlobalTheory.HL.TermOrbit
 
-open Formalism.L2.SG.Pf
 
 
 

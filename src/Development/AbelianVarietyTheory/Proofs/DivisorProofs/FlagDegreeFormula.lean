@@ -79,7 +79,6 @@ private theorem coeff_linearForm_pow_eq_factorial_mul_prod {σ : Type} [Fintype 
     rw [Finset.mem_piAntidiag]
     exact ⟨hsum, fun i _ => Finset.mem_univ i⟩
 
-open MvPolynomial Finset in
 private theorem prod_factorial_rev_eq_prod_sub (N : ℕ) :
     ∏ j : Fin N, ((j.rev : ℕ).factorial : ℝ) =
       ∏ i : Fin N, ∏ k ∈ Ioi i, (((k : ℕ) : ℝ) - ((i : ℕ) : ℝ)) := by
@@ -93,7 +92,6 @@ private theorem prod_factorial_rev_eq_prod_sub (N : ℕ) :
       ← Fin.prod_univ_eq_prod_range (fun x => ((x.factorial : ℕ) : ℝ)) (n + 1)]
     exact Fintype.prod_equiv Fin.revPerm _ _ (fun j => rfl)
 
-open MvPolynomial Finset in
 private theorem sum_sign_prod_pow_div_factorial_eq_prod {N : ℕ} (v : Fin N → ℝ) :
     ∑ π : Equiv.Perm (Fin N), ((Equiv.Perm.sign π : ℤ) : ℝ) *
         ∏ i, (v i ^ (N - 1 - (π i : ℕ)) / ((N - 1 - (π i : ℕ)).factorial : ℝ)) =
@@ -122,7 +120,6 @@ private theorem sum_sign_prod_pow_div_factorial_eq_prod {N : ℕ} (v : Fin N →
   simp
 
 
-open MvPolynomial Finset in
 theorem _root_.GlobalTheory.FlagPoly.flagDegFormula : _root_.Formalism.DegreeFormula.FlagDegFormula := by
   unfold _root_.Formalism.DegreeFormula.FlagDegFormula
   intro ι _ _ N lam

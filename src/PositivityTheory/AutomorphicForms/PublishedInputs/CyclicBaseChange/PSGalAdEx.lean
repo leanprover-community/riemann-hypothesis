@@ -164,7 +164,6 @@ open UpperTheory.CBC.GaloisActionOnAdeles in
 def UpperTheory.CBC.SGalAdEx : Prop :=
   ∀ (M : Type) [Field M] [NumberField M] (σ : M ≃+* M), ∃ s : Ad M ≃+* Ad M, UpperTheory.CBC.IsGalAd σ s
 
-open UpperTheory.CBC.GaloisActionOnAdeles in
 theorem UpperTheory.CBC.SGalAdEx_holds : UpperTheory.CBC.SGalAdEx := by
   intro M _ _ σ
   refine ⟨RingEquiv.prodCongr (infEquiv σ) (finEquiv σ), ?_, fun x => ?_, fun x => rfl⟩

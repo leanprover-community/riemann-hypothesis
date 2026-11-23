@@ -209,12 +209,10 @@ def GreenbergWiles : Prop :=
 
 end Universal
 
-section Restrict
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime] {r : ℕ}
   {M : Type} [AddCommGroup M] [Module (ZMod (l ^ r)) M] [Finite M]
   [TopologicalSpace M] [DiscreteTopology M]
 
-end Restrict
 
 end ReciprocityTheory.Gal

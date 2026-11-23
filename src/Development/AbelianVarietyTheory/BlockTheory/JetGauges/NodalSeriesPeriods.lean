@@ -74,7 +74,6 @@ private lemma nodal_map_sub_eq_X_mul_sub_mul (u v : A⟦X⟧) :
   unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.NodalSeriesPeriods.step
   ring
 
-open PowerSeries in
 variable {A : Type} [CommRing A] (W : WeierstrassCurve A) in
 private lemma X_pow_succ_dvd_sub_of_X_pow_dvd {k : ℕ} {u v : A⟦X⟧} (h : X ^ k ∣ u - v) :
     X ^ (k + 1) ∣
@@ -82,7 +81,6 @@ private lemma X_pow_succ_dvd_sub_of_X_pow_dvd {k : ℕ} {u v : A⟦X⟧} (h : X 
   rw [nodal_map_sub_eq_X_mul_sub_mul, pow_succ']
   exact Dvd.dvd.mul_right (mul_dvd_mul_left X h) _
 
-open PowerSeries in
 variable {A : Type} [CommRing A] (W : WeierstrassCurve A) in
 private lemma X_pow_dvd_iterate_sub_iterate (n m : ℕ) :
     X ^ n ∣ (_root_.GlobalTheory.IndefiniteRowSideFullHecke.NodalSeriesPeriods.step W)^[n + m] 0
@@ -102,7 +100,6 @@ private lemma X_pow_dvd_iterate_sub_iterate (n m : ℕ) :
     rw [e1, e2]
     exact X_pow_succ_dvd_sub_of_X_pow_dvd W ih
 
-open PowerSeries in
 variable {A : Type} [CommRing A] (W : WeierstrassCurve A) in
 private lemma vSer_isFixedPt :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.NodalSeriesPeriods.vSer W =
@@ -128,7 +125,6 @@ private lemma vSer_isFixedPt :
   rw [map_sub, sub_eq_zero] at h3
   rw [h3, _root_.GlobalTheory.IndefiniteRowSideFullHecke.NodalSeriesPeriods.vSer, coeff_mk]
 
-open PowerSeries in
 variable {A : Type} [CommRing A] (W : WeierstrassCurve A) in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.NodalSeriesPeriods.wSer_eq :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.NodalSeriesPeriods.wSer W = X ^ 3 + C W.a₁ * X * _root_.GlobalTheory.IndefiniteRowSideFullHecke.NodalSeriesPeriods.wSer W

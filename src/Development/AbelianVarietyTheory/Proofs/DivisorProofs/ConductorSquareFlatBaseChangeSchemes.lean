@@ -82,7 +82,6 @@ end GlobalTheory.Pinch.FlatSq
 
 namespace GlobalTheory.Pinch.FlatSq
 
-open TensorProduct
 
 theorem ideal_mul_of_isPushout {A B F G : Type} [CommRing A] [CommRing B] [CommRing F] [CommRing G]
     (f : A →+* F) (g : A →+* B) (h : F →+* G) (k : B →+* G)

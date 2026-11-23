@@ -83,7 +83,6 @@ end MainStatements.Tam.I
 
 namespace MainStatements.Tam
 
-open GlobalTheory.UCls.IdxK
 
 theorem idx : IdxSt := by
   intro E _ _ _ r M G Λ hM hSD

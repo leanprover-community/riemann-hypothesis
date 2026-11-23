@@ -100,7 +100,6 @@ namespace GlobalTheory.LogDR
 
 namespace LatTwist
 
-open GlobalTheory.Twist
 
 variable {X : Scheme.{0}} [IsIntegral X] {V : Type} [AddCommGroup V] [Module X.functionField V]
   {M M' : X → AddSubgroup V} {F : X.Modules} {D : CartierDiv X} {L : LB X}

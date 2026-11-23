@@ -53,7 +53,6 @@ theorem _root_.GlobalTheory.PowGerm.starRing_ext_of_star {R : Type*} [NonUnitalN
   rfl
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsLocalRing in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.PowGerm.starSt : _root_.GlobalTheory.PowGerm.StarSt := by
   unfold _root_.GlobalTheory.PowGerm.StarSt

@@ -419,7 +419,6 @@ end Additive
 
 section Complex
 
-open CategoryTheory Limits
 
 universe v u₁ u₂
 

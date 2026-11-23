@@ -61,8 +61,6 @@ private lemma upperUnitriangular_mul_apply_of_le {R : Type} [CommRing R] {N : �
   · intro hi
     exact absurd (Finset.mem_univ i) hi
 
-open NumberField Module Matrix in
-open scoped Classical in
 private lemma exists_integral_unitriangular_reduction {K : Type} [Field K] [NumberField K]
     (hK : ∀ w : InfinitePlace K, w.IsComplex) {N : ℕ} (V : Matrix (Fin N) (Fin N) K)
     (hV0 : ∀ i j, j < i → V i j = 0) (hV1 : ∀ i, V i i = 1) :
@@ -116,8 +114,6 @@ private lemma exists_integral_unitriangular_reduction {K : Type} [Field K] [Numb
   rw [← InfinitePlace.apply, ← InfinitePlace.norm_embedding_eq]
   exact key i j _
 
-open NumberField Module Matrix in
-open scoped Classical in
 private lemma det_submatrix_mul_diagonal {R : Type} [CommRing R] {N t : ℕ}
     (X : Matrix (Fin N) (Fin N) R) (s : Fin N → R) (I J : Fin t → Fin N) :
     ((X * diagonal s).submatrix I J).det = (X.submatrix I J).det * ∏ k, s (J k) := by
@@ -127,8 +123,6 @@ private lemma det_submatrix_mul_diagonal {R : Type} [CommRing R] {N t : ℕ}
   rw [hsub, det_mul, det_diagonal]
 
 
-open NumberField Module Matrix in
-open scoped Classical in
 theorem _root_.GlobalTheory.ReducedGram.exists_reduced : ∀ (K : Type) [Field K] [NumberField K],
     (∀ w : InfinitePlace K, w.IsComplex) → ∀ (r : ℕ) (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) K)
     (p : _root_.Formalism.MainNotions.S.Point K (r + 1)), _root_.Formalism.MainNotions.S.IsInCell (_root_.Formalism.MainNotions.S.ZhatOM Z) p →

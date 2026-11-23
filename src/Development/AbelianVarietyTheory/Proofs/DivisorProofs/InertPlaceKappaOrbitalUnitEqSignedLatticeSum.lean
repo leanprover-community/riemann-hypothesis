@@ -87,7 +87,6 @@ theorem finsum_match {α β : Type*} (F : α → ℂ) (G : β → ℚ) (Φ : α 
 end GlobalTheory.InertUnitOrb
 
 namespace GlobalTheory.InertUnitOrb
-open GlobalTheory.UnitLemma
 
 theorem ul_mem_iff {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {w : Pl E} (hw : ¬ IsSplitAt w)
     (g : GLw n w) : g ∈ UL n w ↔ (g.val.map (cj w))ᵀ * g.val = 1 := by

@@ -290,7 +290,6 @@ end GlobalTheory.CompanionTheory.Ar.LieEx
 
 namespace GlobalTheory.CompanionTheory.Ar
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 
 theorem lieModel_exists (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G] (R : Type) [CommRing R]
     (x : Spec (CommRingCat.of R) ⟶ S) :

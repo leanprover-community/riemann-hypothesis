@@ -140,7 +140,6 @@ end GlobalTheory.LayerJumps
 
 namespace GlobalTheory.LayerJumps
 
-open Module
 
 section Factor
 
@@ -199,7 +198,6 @@ end GlobalTheory.LayerJumps
 
 namespace GlobalTheory.LayerJumps
 
-open Module
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -245,7 +243,6 @@ end GlobalTheory.LayerJumps
 
 namespace GlobalTheory.LayerJumps
 
-open Module
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -307,7 +304,6 @@ end GlobalTheory.LayerJumps
 
 namespace GlobalTheory.LayerJumps
 
-open Module
 
 variable {l : ℕ} [Fact l.Prime]
 

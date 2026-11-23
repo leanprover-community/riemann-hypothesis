@@ -58,7 +58,6 @@ private theorem pow_pow_dg_mul_eq_self (y : _root_.Formalism.CyclotomicNorms.Fba
   | succ q ih =>
     rw [Nat.mul_succ, pow_add, pow_mul, ih, (_root_.GlobalTheory.GoodCharsCompare.frobenius_orbit_degreeOverPrimeFieldFbar y).1]
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.exists_dg_mul {d : ℕ} (hd : 0 < d) {y : _root_.Formalism.CyclotomicNorms.Fbar g}
     (hy : y ^ (g ^ d - 1) = 1) : ∃ k, d = _root_.GlobalTheory.GoodCharsCompare.dg y * k := by
@@ -74,14 +73,12 @@ theorem _root_.GlobalTheory.GoodCharsCompare.exists_dg_mul {d : ℕ} (hd : 0 < d
   rw [h1, add_zero] at h2
   exact h2.symm
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 private theorem pow_pow_sub_one_eq_one_of_pow_pow_eq_self {y : _root_.Formalism.CyclotomicNorms.Fbar g} (hy : y ≠ 0) {n : ℕ}
     (h : y ^ g ^ n = y) : y ^ (g ^ n - 1) = 1 := by
   rw [← Nat.sub_add_cancel (Nat.one_le_pow n g (Fact.out : g.Prime).pos), pow_succ] at h
   exact mul_right_cancel₀ hy (h.trans (one_mul y).symm)
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.root_pow {ι : Type} [Fintype ι]
     [DecidableEq ι] {M : Matrix ι ι (ZMod g)} (hM : M.det ≠ 0)
@@ -114,7 +111,6 @@ theorem _root_.GlobalTheory.GoodCharsCompare.root_pow {ι : Type} [Fintype ι]
   rw [hcard]
   exact pow_pow_dg_mul_eq_self y k
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.coeff_zero_iff {f : (ZMod g)[X]} (hf : f ≠ 0) :
     f.coeff 0 ≠ 0 ↔ (0 : _root_.Formalism.CyclotomicNorms.Fbar g) ∉ _root_.Formalism.CyclotomicNorms.rootsBar f := by
@@ -122,7 +118,6 @@ theorem _root_.GlobalTheory.GoodCharsCompare.coeff_zero_iff {f : (ZMod g)[X]} (h
   rw [mem_roots_map_of_injective (algebraMap (ZMod g) (_root_.Formalism.CyclotomicNorms.Fbar g)).injective hf, ← aeval_def,
     ← coeff_zero_eq_aeval_zero', map_eq_zero]
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.squarefree_iff {f : (ZMod g)[X]} (hf : f ≠ 0) :
     Squarefree f ↔ (_root_.Formalism.CyclotomicNorms.rootsBar f).Nodup := by
@@ -130,14 +125,12 @@ theorem _root_.GlobalTheory.GoodCharsCompare.squarefree_iff {f : (ZMod g)[X]} (h
   rw [nodup_roots_iff_of_splits (Polynomial.map_ne_zero hf) (IsAlgClosed.splits _), separable_map,
     PerfectField.separable_iff_squarefree]
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.primeToPart_map (β : _root_.Formalism.CyclotomicNorms.Fbar g ≃* _root_.Formalism.CyclotomicNorms.Fbar g) (l : ℕ) (x : _root_.Formalism.CyclotomicNorms.Fbar g) :
     _root_.Formalism.CyclotomicNorms.primeToPart l (β x) = β (_root_.Formalism.CyclotomicNorms.primeToPart l x) := by
   unfold _root_.Formalism.CyclotomicNorms.primeToPart
   rw [MulEquiv.orderOf_eq, map_pow]
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.eq_minpoly {φ : (ZMod g)[X]} (hm : φ.Monic)
     (hi : Irreducible φ) {x : _root_.Formalism.CyclotomicNorms.Fbar g} (hx : x ∈ _root_.Formalism.CyclotomicNorms.rootsBar φ) : φ = minpoly (ZMod g) x :=
@@ -148,7 +141,6 @@ def Ext (ι : (_root_.Formalism.CyclotomicNorms.Fbar g)ˣ →* ℂˣ)
     (ω : _root_.Formalism.CyclotomicNorms.Fbar g →*₀ ℂ) : Prop :=
   ∀ u : (_root_.Formalism.CyclotomicNorms.Fbar g)ˣ, ((ι u : ℂˣ) : ℂ) = ω u
 
-open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GoodCharsCompare.exists_ext {ι : (_root_.Formalism.CyclotomicNorms.Fbar g)ˣ →* ℂˣ}
     (hι : Function.Injective ι) :

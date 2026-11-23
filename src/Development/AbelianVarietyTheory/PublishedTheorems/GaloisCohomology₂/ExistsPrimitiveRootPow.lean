@@ -70,7 +70,6 @@ theorem _root_.GlobalTheory.Published.PoitouTateDuality.totallyComplex (h : _roo
     ⟨(hall S hS Av hAv μ hμ M ρ hρ).1, (hall S hS Av hAv μ hμ M ρ hρ).2.1⟩⟩
 
 
-open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.Published.exists_primitiveRoot_pow (F Ω : Type) [Field F] [NumberField F]
     [Field Ω] [Algebra F Ω]
     [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (r : ℕ) : ∃ ζ : Ω, IsPrimitiveRoot ζ (l ^ r) := by
@@ -80,7 +79,6 @@ theorem _root_.GlobalTheory.Published.exists_primitiveRoot_pow (F Ω : Type) [Fi
   exact HasEnoughRootsOfUnity.exists_primitiveRoot Ω (l ^ r)
 
 
-open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.Published.PoitouTateDuality.cohDimTwoGlobal
     (h : _root_.GlobalTheory.Published.PoitouTateDuality) : _root_.GlobalTheory.Published.CohDimTwoGlobal := by
   unfold _root_.GlobalTheory.Published.CohDimTwoGlobal

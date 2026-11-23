@@ -187,7 +187,6 @@ theorem linearIndependent_mkQ {p q : ℕ} (F : Submodule C (Fin (p + q) → C))
 end GlobalTheory.HerbrandBridge
 
 namespace GlobalTheory.HerbrandBridge
-open GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference (freeLattice unif IsFiltration filSpace eigenSub eigenQuot lie quotMap addVal
   DetRel IsLatticeBasis HasVal)
 
 variable {C : Type} [Field C] {S : Type} [Fintype S] [DecidableEq S]
@@ -226,7 +225,6 @@ theorem eigRank_eq {w : Valuation C ℝ≥0} {v : AddValuation C (WithTop ℝ)}
 end GlobalTheory.HerbrandBridge
 
 namespace GlobalTheory.HerbrandBridge
-open GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference (freeLattice unif IsFiltration filSpace eigenSub eigenQuot lie quotMap addVal
   DetRel IsLatticeBasis HasVal)
 
 variable {C : Type} [Field C] {S : Type} [Fintype S] [DecidableEq S]
@@ -255,7 +253,6 @@ theorem yExp_eq (w : Valuation C ℝ≥0) (ℓ : C) (h0 : 0 < w ℓ) (h1 : w ℓ
 end GlobalTheory.HerbrandBridge
 
 namespace GlobalTheory.HerbrandBridge
-open GlobalTheory.IndefiniteRowSideFullHecke.QuotientEigenDifference (freeLattice unif IsFiltration filSpace eigenSub eigenQuot lie quotMap addVal
   DetRel IsLatticeBasis HasVal)
 
 theorem exForm : ∀ (C : Type) [Field C] (w : Valuation C ℝ≥0) (ℓ : C), 0 < w ℓ → w ℓ < 1 →

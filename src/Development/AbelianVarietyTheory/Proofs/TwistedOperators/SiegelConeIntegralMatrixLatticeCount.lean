@@ -95,7 +95,6 @@ theorem tail_le {b : ℝ} (hb : 0 < b) :
 end GlobalTheory.LatCount
 
 namespace GlobalTheory.LatCount
-open scoped ENNReal
 
 theorem tsum_int_split (g : ℤ → ℝ≥0∞) :
     ∑' z : ℤ, g z = g 0 + ∑' n : ℕ, g ((n : ℤ) + 1) + ∑' n : ℕ, g (-((n : ℤ) + 1)) := by
@@ -135,7 +134,6 @@ end GlobalTheory.LatCount
 
 namespace GlobalTheory.LatCount
 
-open scoped ENNReal
 
 theorem cone_pow_le {r : ℕ} {c : ℝ} (hc : 0 < c) {t : Fin r → ℝ}
     (ht : t ∈ GlobalTheory.SiegelSet.cone r c) (k : Fin r) : min c 1 ^ r ≤ t k := by
@@ -202,7 +200,6 @@ end GlobalTheory.LatCount
 
 namespace GlobalTheory.LatCount
 
-open scoped ENNReal
 open NumberField
 
 theorem repr_int {D : D7} {x : D.host.E} (hx : IsIntegral ℤ x)

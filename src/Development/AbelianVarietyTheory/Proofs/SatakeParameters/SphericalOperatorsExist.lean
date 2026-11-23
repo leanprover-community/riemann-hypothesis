@@ -136,7 +136,6 @@ end GlobalTheory.Cong.SphOpsProof
 
 namespace GlobalTheory.Cong.SphOpsProof
 
-open GlobalTheory.LFun Formalism.UG GlobalTheory.Cong.OpPoly
 
 theorem normV_eq {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) : normV w = qV E w := by
   rw [normV, qV, Ideal.absNorm_apply, Submodule.cardQuot_apply]

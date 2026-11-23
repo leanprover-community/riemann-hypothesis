@@ -95,7 +95,6 @@ end
 
 noncomputable section
 
-open scoped Classical
 
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.HoweGlobalPair.Transfer in

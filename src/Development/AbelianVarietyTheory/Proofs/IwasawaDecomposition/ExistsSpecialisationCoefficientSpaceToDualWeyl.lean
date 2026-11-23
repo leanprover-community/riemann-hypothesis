@@ -111,7 +111,6 @@ end GlobalTheory.SpecFactor
 
 namespace GlobalTheory.SpecFactor
 
-open MvPolynomial
 
 variable {K : Type} [Field K] {ι : Type} [Fintype ι] [DecidableEq ι] {n : ℕ}
 

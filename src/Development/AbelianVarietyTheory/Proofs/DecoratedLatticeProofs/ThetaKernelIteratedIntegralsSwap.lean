@@ -83,7 +83,6 @@ end GlobalTheory.ChainOnto.ThetaSwap
 
 namespace GlobalTheory.ChainOnto.ThetaSwap
 
-open GlobalTheory.Grow GlobalTheory.Size
 
 theorem integrable_prod {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle}
     {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)} (hθ : IsInfFam θ) (hω : IsWeilDatumO ψ S T χS χT om)

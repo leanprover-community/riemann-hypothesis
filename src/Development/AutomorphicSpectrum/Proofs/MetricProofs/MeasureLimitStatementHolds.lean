@@ -527,7 +527,6 @@ end GlobalTheory.CompanionTheory.Ar.Giv.MuLimit
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
 
-open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.ChartRestriction.G.Geo
   GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar.Giv.MuLimit
 
 theorem muMeasureLimit : GroundTheory.Heights₂.Heights.LowerBoundFree.MuMeasureLimit.Statement := by

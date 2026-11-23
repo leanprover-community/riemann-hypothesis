@@ -143,7 +143,6 @@ end GlobalTheory.RowEig
 
 namespace GlobalTheory.RowEig
 
-open Formalism.IndefR.principalLevelFrame
 
 
 

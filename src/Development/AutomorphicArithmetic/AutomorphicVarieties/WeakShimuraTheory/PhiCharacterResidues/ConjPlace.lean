@@ -46,7 +46,6 @@ private theorem val_lt {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] (A : Va
     ValuationSubring.mem_inv_pointwise_smul_iff]
   simp only [AlgEquiv.smul_def, map_inv₀, map_eq_zero]
 
-open scoped Pointwise in
 private theorem conj_place {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {A : ValuationSubring Ω}
     {v : HeightOneSpectrum (𝓞 F)} (h : IsPlaceOver A v) (t : G F Ω) :
     IsPlaceOver (t⁻¹ • A) v ∧ ∀ σ ∈ Ine (F := F) A, t⁻¹ * σ * t ∈ Ine (F := F) (t⁻¹ • A) := by

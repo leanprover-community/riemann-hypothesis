@@ -168,7 +168,6 @@ section ThetaShiftProofs
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits NumberField MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.L2.Pj.QAt GlobalTheory.ArcQ GlobalTheory.Frames
 open Matrix GlobalTheory.LieEigen GlobalTheory.ConstBasis GlobalTheory.Serre
-open ReciprocityTheory.ChartRestriction.G.Chart (prodPts)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F} {Y : Model Xo c β}
@@ -314,7 +313,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open Formalism.L2.Pj Formalism.L2.PjFree Formalism.L2.Pj.QAt Formalism.L2.LamCM GlobalTheory GlobalTheory.ArcQ GlobalTheory.LamF GlobalTheory.ArcCM
 open scoped LaurentSeries
 open GlobalTheory.LieEigen
-open ReciprocityTheory.ChartRestriction.G.Chart (prodPts)
 
 theorem letter_eq {E : Type} [Field E] [NumberField E] [IsCMField E] [StarRing (𝓞 E)] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
     {l : Level H} {c : Coeff l} {n₁ n₂ f : ℕ} {o : LamObj c n₁ n₂} {La : ℝ} (ho : LamObjGood o f La) {L : LamLetters o}

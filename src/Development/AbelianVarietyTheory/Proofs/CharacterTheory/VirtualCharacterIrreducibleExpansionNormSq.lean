@@ -69,7 +69,6 @@ private theorem exists_irreducible_expansion_of_isCharacter_lemma_3 {G : Type} [
   · rw [Finsupp.sum_add_index' (by simp) (fun _ _ _ => add_smul _ _ _),
       Finsupp.sum_single_index (by simp), one_smul]
 
-open Polynomial in
 private theorem exists_irreducible_expansion_of_mem_lemma {G : Type} [Group G] [Finite G]
     (φ : G → ℂ) (hφ : φ ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ G) :
     ∃ c : (G → ℂ) →₀ ℤ, (∀ χ ∈ c.support, _root_.GlobalTheory.BI.IsIrrChar ℂ ℂ χ) ∧
@@ -84,7 +83,6 @@ private theorem exists_irreducible_expansion_of_mem_lemma {G : Type} [Group G] [
     · exact hcb χ h
   · rw [Finsupp.sum_sub_index (fun _ _ _ => sub_smul _ _ _)]
 
-open Polynomial in
 private theorem sum_mul_inv_irreducible_lemma_2 {G : Type} [Group G] [Fintype G] (χ ψ : G → ℂ)
     (hχ : _root_.GlobalTheory.BI.IsIrrChar ℂ ℂ χ) (hψ : _root_.GlobalTheory.BI.IsIrrChar ℂ ℂ ψ) :
     ∑ g, χ g * ψ g⁻¹ = if χ = ψ then (Nat.card G : ℂ) else 0 := by
@@ -102,7 +100,6 @@ private theorem sum_mul_inv_irreducible_lemma_2 {G : Type} [Group G] [Fintype G]
     simpa [hG] using this
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.BI.virt_expand : ∀ (G : Type) [Group G] [Finite G]
     (φ : G → ℂ), φ ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ G →
     ∃ c : (G → ℂ) →₀ ℤ, (∀ χ ∈ c.support, _root_.GlobalTheory.BI.IsIrrChar ℂ ℂ χ) ∧

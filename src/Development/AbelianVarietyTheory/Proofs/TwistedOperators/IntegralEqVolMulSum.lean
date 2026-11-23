@@ -166,7 +166,6 @@ end GlobalTheory.ClassRegroup
 
 namespace GlobalTheory.ClassRegroup
 
-open GlobalTheory.FunObj
 
 variable {D : D7}
 
@@ -312,7 +311,6 @@ end GlobalTheory.ClassRegroup
 
 namespace GlobalTheory.ClassRegroup
 
-open GlobalTheory.FunObj
 
 variable {D : D7}
 

@@ -672,7 +672,6 @@ theorem lift_res (PD' : PeriodData H F K₀' K' B BdR)
 
 end Crys
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc
 
 theorem mem_GKs {l : ℕ} [Fact l.Prime] (P : LocPrime l) (HW : LocHW l P) (K : FinExt l) (s : ℕ)
     (LL : FinExt l) (h : Good K s LL) (j : ℕ) (hj : s ≤ j) (g : ↥(GK K)) (hg : (g : GQ l) ∈ Gj K j) :

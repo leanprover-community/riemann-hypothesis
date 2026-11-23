@@ -53,8 +53,6 @@ theorem _root_.GlobalTheory.GLm.OpenCell.coe_toG {n : ℕ} {M : _root_.GlobalThe
   rw [dite_eq_left h]
   rfl
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GLm.OpenCell.wh_eq (ψ : AddChar (ZMod g) ℂ) {n : ℕ} (χ : _root_.GlobalTheory.GLq.Gn g n → ℂ) :
     _root_.GlobalTheory.GLq.wh ψ χ = ((Finset.univ.filter fun u : _root_.GlobalTheory.GLq.Gn g n => _root_.Formalism.MainNotions.ArithmeticCylinders.IsUniUp (u : _root_.GlobalTheory.GLq.Mt g n)).card : ℂ)⁻¹ *
@@ -82,8 +80,6 @@ include hσ
 
 end
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 private lemma permMatrix_mul_transpose_eq_one {n : ℕ} (σ : Equiv.Perm (Fin n)) :
     (Matrix.of (fun r j => if r = σ j then (1 : ZMod g) else 0) *
@@ -97,8 +93,6 @@ private lemma permMatrix_mul_transpose_eq_one {n : ℕ} (σ : Equiv.Perm (Fin n)
     simp [this]
   · simp
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 private lemma coe_pm_inv_mul_mul_pm {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : _root_.GlobalTheory.GLq.Gn g n) :
     (((_root_.GlobalTheory.GLm.pm g σ)⁻¹ * x * _root_.GlobalTheory.GLm.pm g σ :
@@ -122,22 +116,16 @@ private lemma coe_pm_inv_mul_mul_pm {n : ℕ} (σ : Equiv.Perm (Fin n)) (x : _ro
   ext i j
   simp [Pm, Matrix.mul_apply, Matrix.transpose_apply, Matrix.of_apply]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 private lemma entN_eq_apply_of_lt' {A : Type} [Zero A] {n : ℕ} (M : Matrix (Fin n) (Fin n) A) {i j : ℕ}
     (hi : i < n) (hj : j < n) : _root_.Formalism.MainNotions.ArithmeticCylinders.entN M i j = M ⟨i, hi⟩ ⟨j, hj⟩ := by
   simp [_root_.Formalism.MainNotions.ArithmeticCylinders.entN, hi, hj]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 private lemma entN_fin_eq_apply {A : Type} [Zero A] {n : ℕ} (M : Matrix (Fin n) (Fin n) A) (i j : Fin n) :
     _root_.Formalism.MainNotions.ArithmeticCylinders.entN M i j = M i j := by
   simp [_root_.Formalism.MainNotions.ArithmeticCylinders.entN]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 variable {a b : ℕ} {σ : Equiv.Perm (Fin (a + b))}
   (hσ : ∀ j : Fin (a + b), (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a) in
@@ -170,8 +158,6 @@ private lemma isUniUp_and_inPar_iff_good (M : _root_.GlobalTheory.GLq.Mt g (a + 
     rw [entN_fin_eq_apply] at this
     exact this
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 private lemma isUnit_of_isUniUp' {n : ℕ} {M : _root_.GlobalTheory.GLq.Mt g n} (h : _root_.Formalism.MainNotions.ArithmeticCylinders.IsUniUp M) :
     IsUnit M := by
@@ -181,8 +167,6 @@ private lemma isUnit_of_isUniUp' {n : ℕ} {M : _root_.GlobalTheory.GLq.Mt g n} 
   · intro i j hij
     exact (h i j).1 hij
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 variable {a b : ℕ} {σ : Equiv.Perm (Fin (a + b))}
   (hσ : ∀ j : Fin (a + b), (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a) in
@@ -193,8 +177,6 @@ private lemma tl_submatrix_apply (M : _root_.GlobalTheory.GLq.Mt g (a + b)) (i j
   rw [entN_eq_apply_of_lt' _ (by omega) (by omega), Matrix.submatrix_apply]
   congr 1 <;> apply Fin.ext <;> rw [hσ] <;> simp
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 variable {a b : ℕ} {σ : Equiv.Perm (Fin (a + b))}
   (hσ : ∀ j : Fin (a + b), (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a) in
@@ -210,8 +192,6 @@ private lemma isUniUp_tl_of_good {M : _root_.GlobalTheory.GLq.Mt g (a + b)}
     omega
   · simp [h]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 variable {a b : ℕ} {σ : Equiv.Perm (Fin (a + b))}
   (hσ : ∀ j : Fin (a + b), (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a) in
@@ -222,8 +202,6 @@ private lemma br_submatrix_apply (M : _root_.GlobalTheory.GLq.Mt g (a + b)) (i j
   rw [entN_eq_apply_of_lt' _ (by omega) (by omega), Matrix.submatrix_apply]
   congr 1 <;> apply Fin.ext <;> rw [hσ] <;> simp
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 variable {a b : ℕ} {σ : Equiv.Perm (Fin (a + b))}
   (hσ : ∀ j : Fin (a + b), (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a) in
@@ -238,8 +216,6 @@ private lemma isUniUp_br_of_good {M : _root_.GlobalTheory.GLq.Mt g (a + b)}
     simpa using h
   · simp [h]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 variable {a b : ℕ} {σ : Equiv.Perm (Fin (a + b))}
   (hσ : ∀ j : Fin (a + b), (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a) in
@@ -268,8 +244,6 @@ private lemma good_bd_of_isUniUp {u : _root_.GlobalTheory.GLq.Mt g a}
     simp only [_root_.GlobalTheory.GLm.OpenCell.bd]
     rw [if_pos hi, if_neg (by omega)]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 variable {a b : ℕ} {σ : Equiv.Perm (Fin (a + b))}
   (hσ : ∀ j : Fin (a + b), (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a) in
@@ -289,8 +263,6 @@ private lemma bd_tl_br_eq_of_good {M : _root_.GlobalTheory.GLq.Mt g (a + b)}
   · rw [entN_eq_apply_of_lt' _ (by omega) (by omega), tl_submatrix_apply hσ]
     congr 1 <;> apply Fin.ext <;> simp <;> omega
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 variable {a b : ℕ} {σ : Equiv.Perm (Fin (a + b))}
   (hσ : ∀ j : Fin (a + b), (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a) in
@@ -303,8 +275,6 @@ private lemma tl_bd_submatrix (u : _root_.GlobalTheory.GLq.Mt g a) (v : _root_.G
   rw [if_neg (by omega), if_neg (by omega), entN_eq_apply_of_lt' _ (by omega) (by omega)]
   congr 1 <;> apply Fin.ext <;> simp
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 variable {a b : ℕ} {σ : Equiv.Perm (Fin (a + b))}
   (hσ : ∀ j : Fin (a + b), (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a) in
@@ -316,8 +286,6 @@ private lemma br_bd_submatrix (u : _root_.GlobalTheory.GLq.Mt g a) (v : _root_.G
   simp only [_root_.GlobalTheory.GLm.OpenCell.bd]
   rw [if_pos i.2, if_pos j.2, entN_fin_eq_apply]
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 private lemma entN_eq_zero_of_le {A : Type} [Zero A] {n : ℕ} (M : Matrix (Fin n) (Fin n) A) {i j : ℕ}
     (h : n ≤ i ∨ n ≤ j) : _root_.Formalism.MainNotions.ArithmeticCylinders.entN M i j = 0 := by
@@ -325,8 +293,6 @@ private lemma entN_eq_zero_of_le {A : Type} [Zero A] {n : ℕ} (M : Matrix (Fin 
   rw [dite_eq_right]
   omega
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 private lemma entN_bd_superdiagonal {a b : ℕ} (u : _root_.GlobalTheory.GLq.Mt g a)
     (v : _root_.GlobalTheory.GLq.Mt g b) {j : ℕ} (hj : j + 1 < a + b) :
@@ -340,8 +306,6 @@ private lemma entN_bd_superdiagonal {a b : ℕ} (u : _root_.GlobalTheory.GLq.Mt 
     | (rw [entN_eq_zero_of_le v (Or.inr (by omega))]; simp; done)
     | (rw [entN_eq_zero_of_le v (Or.inl (by omega)), zero_add]; congr 1; omega)
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 private lemma supFrom_zero_bd {a b : ℕ} (u : _root_.GlobalTheory.GLq.Mt g a)
     (v : _root_.GlobalTheory.GLq.Mt g b) :
@@ -368,8 +332,6 @@ private lemma supFrom_zero_bd {a b : ℕ} (u : _root_.GlobalTheory.GLq.Mt g a)
     exact entN_eq_zero_of_le v (Or.inr (by omega))
 
 
-open Polynomial in
-open scoped Classical in
 variable {g : ℕ} [Fact g.Prime] in
 theorem _root_.GlobalTheory.GLm.OpenCell.openCell : ∀ (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (a b n : ℕ) (σ : Equiv.Perm (Fin n)) (Φ : _root_.GlobalTheory.GLq.Gn g a → _root_.GlobalTheory.GLq.Gn g b → ℂ), n = a + b → (∀ j : Fin n, (σ j : ℕ) = if (j : ℕ) < a then b + j else j - a) → ((Finset.univ.filter fun x : _root_.GlobalTheory.GLq.Gn g n => _root_.Formalism.MainNotions.ArithmeticCylinders.IsUniUp (x : _root_.GlobalTheory.GLq.Mt g n) ∧ _root_.GlobalTheory.GLq.InPar a (((_root_.GlobalTheory.GLm.pm g σ)⁻¹ * x * _root_.GlobalTheory.GLm.pm g σ : _root_.GlobalTheory.GLq.Gn g n) : _root_.GlobalTheory.GLq.Mt g n)).card : ℂ)⁻¹ * (∑ x : _root_.GlobalTheory.GLq.Gn g n, if _root_.Formalism.MainNotions.ArithmeticCylinders.IsUniUp (x : _root_.GlobalTheory.GLq.Mt g n) ∧ _root_.GlobalTheory.GLq.InPar a (((_root_.GlobalTheory.GLm.pm g σ)⁻¹ * x * _root_.GlobalTheory.GLm.pm g σ : _root_.GlobalTheory.GLq.Gn g n) : _root_.GlobalTheory.GLq.Mt g n) then (ψ (_root_.GlobalTheory.GLm.supFrom 0 (x : _root_.GlobalTheory.GLq.Mt g n)))⁻¹ * Φ (_root_.GlobalTheory.GLq.toG (_root_.GlobalTheory.GLq.tl a (((_root_.GlobalTheory.GLm.pm g σ)⁻¹ * x * _root_.GlobalTheory.GLm.pm g σ : _root_.GlobalTheory.GLq.Gn g n) : _root_.GlobalTheory.GLq.Mt g n))) (_root_.GlobalTheory.GLq.toG (_root_.GlobalTheory.GLq.br a b (((_root_.GlobalTheory.GLm.pm g σ)⁻¹ * x * _root_.GlobalTheory.GLm.pm g σ : _root_.GlobalTheory.GLq.Gn g n) : _root_.GlobalTheory.GLq.Mt g n))) else 0) = _root_.GlobalTheory.GLq.wh ψ (fun x => _root_.GlobalTheory.GLq.wh ψ (Φ x)) := by
   intro g _ ψ a b n σ Φ hn hσ

@@ -58,7 +58,6 @@ end GlobalTheory.ExpModel
 
 namespace GlobalTheory.ExpModel
 
-open GlobalTheory.ExpTie
 
 section Sub
 

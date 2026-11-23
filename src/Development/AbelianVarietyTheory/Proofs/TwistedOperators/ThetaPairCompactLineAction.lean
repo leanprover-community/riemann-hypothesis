@@ -363,7 +363,6 @@ end GlobalTheory.KExpLineW
 
 namespace GlobalTheory.KExpLineW
 
-open MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 
 end GlobalTheory.KExpLineW
 

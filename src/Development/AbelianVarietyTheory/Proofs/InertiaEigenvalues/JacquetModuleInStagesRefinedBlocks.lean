@@ -125,7 +125,6 @@ namespace GlobalTheory.JacStagesProof
 
 section Groups2
 
-open Matrix
 
 variable {R : Type} [Field R] [ValuativeRel R] [TopologicalSpace R] [IsNonarchimedeanLocalField R] {s n : ℕ} {d : Fin s → ℕ} {t : Fin s → ℕ} {d' : ∀ a, Fin (t a) → ℕ}
 

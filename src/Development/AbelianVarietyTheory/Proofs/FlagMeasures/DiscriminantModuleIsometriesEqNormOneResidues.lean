@@ -159,7 +159,6 @@ end GlobalTheory.DiscAutLenOne
 
 namespace GlobalTheory.DiscAutLenOne
 
-open Formalism.L2.SG.Pf.G2 Formalism.L2.SG.Pf.fibreCountingData
 
 variable {K F V : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
   [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]

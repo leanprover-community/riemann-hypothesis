@@ -236,7 +236,6 @@ end Formal
 
 section Taylor
 
-open PowerSeries
 
 def Ent : Subring (ℂ → ℂ) where
   carrier := {f | Differentiable ℂ f}

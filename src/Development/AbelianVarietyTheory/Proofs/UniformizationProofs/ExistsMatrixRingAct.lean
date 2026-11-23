@@ -59,8 +59,6 @@ theorem _root_.GlobalTheory.MatrixAction.comp_finsetProd {G : Over S} [GrpObj G]
   | insert i s hi ih => rw [Finset.prod_insert hi, Finset.prod_insert hi, comp_mul, ih]
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 theorem _root_.GlobalTheory.MatrixAction.isMonHom_of_points {G H : Over S} [GrpObj G] [GrpObj H] (f : G ⟶ H)

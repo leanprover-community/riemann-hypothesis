@@ -120,7 +120,6 @@ end GlobalTheory.EtC.GalSec.Tens
 
 namespace GlobalTheory.EtC.GalSec.Tens
 
-open Polynomial
 
 variable {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω]
 

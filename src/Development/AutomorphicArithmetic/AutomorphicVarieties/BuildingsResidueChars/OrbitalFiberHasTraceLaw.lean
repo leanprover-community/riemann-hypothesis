@@ -46,7 +46,6 @@ private theorem UpperTheory.star_diagonal_entry_eq {K : Type} [Field K] {Δ : K}
   simp only [inv_inv, Units.val_mul, hw, hw'] at h1
   simpa [Matrix.mul_apply, Fin.sum_univ_two, Matrix.vecMul, dotProduct, starRingEnd_apply] using h1
 
-open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Glob Matrix in
 theorem UpperTheory.orbitalFiber_hasTraceLaw :
     UpperTheory.V.Z.Sym.Glob.Fib.HasTrLaw := by
   intro K _ Δ γ

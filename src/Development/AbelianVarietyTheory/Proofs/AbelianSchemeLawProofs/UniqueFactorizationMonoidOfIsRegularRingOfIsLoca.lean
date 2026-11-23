@@ -71,7 +71,6 @@ private lemma prime_of_mem_maximalIdeal_of_not_mem_sq {A : Type} [CommRing A] [I
   rw [← Ideal.span_singleton_prime hx0]
   exact (Ideal.Quotient.isDomain_iff_prime _).1 inferInstance
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 attribute [local instance] Over.cartesianMonoidalCategory in
 private lemma isPrincipal_of_isPrincipal_map_away_prime {A : Type} [CommRing A] [IsDomain A]
     [IsNoetherianRing A] {x : A} (hx : Prime x) {p : Ideal A} [hp : p.IsPrime] (hxp : x ∉ p)
@@ -121,9 +120,7 @@ private lemma isPrincipal_of_isPrincipal_map_away_prime {A : Type} [CommRing A] 
       exact Submodule.mem_span_singleton.2 ⟨c', by rw [smul_eq_mul, mul_comm]⟩
     · rw [Submodule.span_le, Set.singleton_subset_iff]; exact hg
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 attribute [local instance] Over.cartesianMonoidalCategory in
-open IsLocalRing in
 private lemma uniqueFactorizationMonoid_localization_of_height_le
     (hPD : ∀ (R : Type) [CommRing R] [IsRegularLocalRing R] (M : Type) [AddCommGroup M] [Module R M]
       [Module.Finite R M], ∃ n : ℕ, HasProjectiveDimensionLE (ModuleCat.of R M) n)
@@ -224,9 +221,7 @@ private lemma uniqueFactorizationMonoid_localization_of_height_le
     exact absurd hph (by rw [hp, Ideal.height_bot]; exact zero_ne_one)
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 attribute [local instance] Over.cartesianMonoidalCategory in
-open IsLocalRing in
 theorem _root_.GlobalTheory.uniqueFactorizationMonoid_of_isRegularRing_of_isLocalRing :
     (∀ (R : Type) [CommRing R] [IsRegularLocalRing R] (M : Type) [AddCommGroup M] [Module R M]
       [Module.Finite R M], ∃ n : ℕ, HasProjectiveDimensionLE (ModuleCat.of R M) n) →

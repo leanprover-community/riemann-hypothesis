@@ -163,7 +163,6 @@ theorem act_q (Q : TQ G X) {T : Over S} (t : T ⟶ splitTorus S X) (x : T ⟶ G)
 end Invariant
 
 section Torus
-open GlobalTheory.PairingLevels
 variable {S : Scheme.{0}} {G H : Over S} [GrpObj G] [IsCommMonObj G] [GrpObj H] [IsCommMonObj H]
 
 end Torus

@@ -73,7 +73,6 @@ private theorem hermGL_coset_out_entries_integral {k : Type} [Field k] [Valuativ
   rw [_root_.GlobalTheory.SatakeBound.val_hermGL]
   exact ((_root_.GlobalTheory.SatakeBound.hermMat p a c) i l).2
 
-open MeasureTheory ValuativeRel in
 private theorem exists_hermGL_coset_eq_of_integral {k : Type} [Field k] [ValuativeRel k]
     [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ} {p : 𝒪[k]} (hp : Irreducible p)
     (g : GL (Fin n) k) (hg : ∀ i j, (g : Matrix (Fin n) (Fin n) k) i j ∈ 𝒪[k]) :
@@ -123,7 +122,6 @@ private theorem exists_hermGL_coset_eq_of_integral {k : Type} [Field k] [Valuati
   convert mul_mem (inv_mem hWk) hw using 1
   group
 
-open MeasureTheory ValuativeRel in
 private theorem ord_eq_of_nabs_eq_resCard_zpow_neg {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] {x : kˣ} {m : ℤ}
     (hx : _root_.GlobalTheory.SplitWeil.nabs k x = (_root_.GlobalTheory.SplitWeil.resCard k : ℝ) ^ (-m)) :
@@ -217,7 +215,6 @@ private theorem ord_eq_of_nabs_eq_resCard_zpow_neg {k : Type} [Field k] [Valuati
   have := zpow_right_injective₀ (by linarith) hq.ne' hx
   linarith
 
-open MeasureTheory ValuativeRel in
 private theorem ord_det_hermGL_mul_eq_sum {k : Type} [Field k] [ValuativeRel k]
     [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ} {p : 𝒪[k]} (hp : Irreducible p)
     (a : Fin n → ℕ) (c : _root_.GlobalTheory.SatakeBound.HermIdx p a) {w : GL (Fin n) k}
@@ -254,7 +251,6 @@ private theorem ord_det_hermGL_mul_eq_sum {k : Type} [Field k] [ValuativeRel k]
   push_cast
   ring
 
-open MeasureTheory ValuativeRel in
 private theorem hasSum_prod_pow_eq_prod_one_sub_inv : ∀ (n : ℕ) (β : Fin n → ℂ), (∀ i, ‖β i‖ < 1) →
     Summable (fun a : Fin n → ℕ => ‖∏ i, β i ^ a i‖) ∧
       HasSum (fun a : Fin n → ℕ => ∏ i, β i ^ a i) (∏ i, (1 - β i)⁻¹) := by
@@ -287,7 +283,6 @@ private theorem hasSum_prod_pow_eq_prod_one_sub_inv : ∀ (n : ℕ) (β : Fin n 
       simp only [Function.comp_apply, hfe]
 
 
-open MeasureTheory ValuativeRel in
 theorem _root_.GlobalTheory.HeckeSeries.hasSum_integral_cosets : ∀ (k : Type) [Field k] [ValuativeRel k]
     [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (γ : Fin n → ℂ)
     (φ : GL (Fin n) k → ℂ), _root_.GlobalTheory.SatakeBound.IsBorelSph k γ φ → ∀ X : ℂ,

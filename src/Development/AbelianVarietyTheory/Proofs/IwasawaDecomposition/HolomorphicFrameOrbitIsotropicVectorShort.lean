@@ -149,7 +149,6 @@ theorem maj_natCast_smul (x : Frame X.Ψ N) (τ : X.Ψ) (k : ℕ) (v : Fin N →
   ring
 
 
-open ReciprocityTheory.ChartRestriction.G.FD in
 theorem maj_parallelogram (x : Frame X.Ψ N) (τ : X.Ψ) (u v : Fin N → ℂ) :
     X.maj x τ (u + v) + X.maj x τ (u - v) = 2 * X.maj x τ u + 2 * X.maj x τ v := by
   have hs : u - v = u + (-1 : ℂ) • v := by simp [sub_eq_add_neg]

@@ -235,7 +235,6 @@ end GlobalTheory.CosetOrbital
 
 namespace GlobalTheory.CosetOrbital
 
-open Formalism.L2.SG.TermOp.Vanish Formalism.L2.SG.Pf.FormTranspose
 
 theorem conj_inv_of_norm_one (z : ℂ) (hz : ‖z‖ = 1) : conj (z⁻¹) = z := by
   have hz0 : z ≠ 0 := by intro h; rw [h, norm_zero] at hz; exact zero_ne_one hz

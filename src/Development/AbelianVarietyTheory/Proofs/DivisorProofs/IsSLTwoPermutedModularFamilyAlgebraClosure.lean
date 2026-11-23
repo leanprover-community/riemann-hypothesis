@@ -54,8 +54,6 @@ private lemma isFam_apply_smul_mul_denom_zpow {w : ℤ} {f : ι → ℍ → ℂ}
   rw [← SL_slash_apply, hf i γ]
 
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
-open ModularForm in
 variable {ι : Type} {act : ι → SL(2, ℤ) → ι} in
 theorem _root_.GlobalTheory.QFam.IsFam.const_mul_fun {w : ℤ} {f : ι → ℍ → ℂ} (c : ℂ)
     (hf : _root_.GlobalTheory.QFam.IsFam act w f) :
@@ -67,8 +65,6 @@ theorem _root_.GlobalTheory.QFam.IsFam.const_mul_fun {w : ℤ} {f : ι → ℍ �
   ring
 
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
-open ModularForm in
 variable {ι : Type} {act : ι → SL(2, ℤ) → ι} in
 theorem _root_.GlobalTheory.QFam.IsFam.mul_fun {w w' : ℤ} {f g : ι → ℍ → ℂ}
     (hf : _root_.GlobalTheory.QFam.IsFam act w f) (hg : _root_.GlobalTheory.QFam.IsFam act w' g) :
@@ -81,8 +77,6 @@ theorem _root_.GlobalTheory.QFam.IsFam.mul_fun {w w' : ℤ} {f g : ι → ℍ �
   ring
 
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
-open ModularForm in
 variable {ι : Type} {act : ι → SL(2, ℤ) → ι} in
 theorem _root_.GlobalTheory.QFam.IsFam.pow_fun {w : ℤ} {f : ι → ℍ → ℂ} (k : ℕ)
     (hf : _root_.GlobalTheory.QFam.IsFam act w f) :
@@ -94,8 +88,6 @@ theorem _root_.GlobalTheory.QFam.IsFam.pow_fun {w : ℤ} {f : ι → ℍ → ℂ
     show -((k : ℤ) * w) = -w * k by ring]
 
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
-open ModularForm in
 variable {ι : Type} {act : ι → SL(2, ℤ) → ι} in
 theorem _root_.GlobalTheory.QFam.IsFam.sum_fun {κ : Type} (t : Finset κ) {w : ℤ}
     {f : κ → ι → ℍ → ℂ} (hf : ∀ k ∈ t, _root_.GlobalTheory.QFam.IsFam act w (f k)) :
@@ -106,8 +98,6 @@ theorem _root_.GlobalTheory.QFam.IsFam.sum_fun {κ : Type} (t : Finset κ) {w : 
   exact Finset.sum_congr rfl fun k hk => isFam_apply_smul_mul_denom_zpow (hf k hk) i γ τ
 
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
-open ModularForm in
 variable {ι : Type} {act : ι → SL(2, ℤ) → ι} in
 theorem _root_.GlobalTheory.QFam.isFam_algebra : ∀ (ι : Type) (act : ι → SL(2, ℤ) → ι),
     (∀ c : ℂ, _root_.GlobalTheory.QFam.IsFam act 0 fun _ _ => c) ∧

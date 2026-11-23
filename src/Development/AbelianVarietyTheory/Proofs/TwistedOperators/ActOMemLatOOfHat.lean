@@ -152,7 +152,6 @@ end GlobalTheory.StdHalfLat
 
 namespace GlobalTheory.StdHalfLat
 
-open Matrix
 
 
 

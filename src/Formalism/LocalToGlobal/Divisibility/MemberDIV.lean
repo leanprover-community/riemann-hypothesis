@@ -61,7 +61,6 @@ end Fam
 
 section Cols
 
-section Gen
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (Sg : Set ℕ) (Gc : ChGlob X R.m) (m2 : ℕ) (Mem : Type)
@@ -79,7 +78,6 @@ structure ColFam : Type 1 where
     Formalism.L2.Ker.KerEquivC W Ch sel μ (cst μ) (Li μ) Am (wd x) m2 (b μ x) (hY μ x) (rPsymF (R := R) Ch)
   hF : ∀ (μ : Tup X.F X.E X.K Sg) (x : Mem) j, (chF W sel μ (Li μ) (wd x) j).Ok
 
-end Gen
 
 variable {X : Fields} {e : X.Tau → (X.E →+* D.what₂.LL)} {Pr : Primes (fieldsLL D X e)}
   (W : Wts (fieldsLL D X e) Pr.Word D.R) (Ch : Chars (fieldsLL D X e) Pr D.R.m)
@@ -184,7 +182,6 @@ variable {F hX v0 TU Xg xiVal trIv hE ev Sp} (T : TiedDataSK ex) (R : RestM F hX
 
 end K
 
-section Pins
 
 variable {T : TiedDataSK ex} {P : RowSideFamily ex}
 
@@ -208,7 +205,6 @@ variable {X : Fields} {e : X.Tau → (X.E →+* D.what₂.LL)} {Pr : Primes (fie
   {hKer : ColTieT T R.extendedDatum X e (colM F hX v0 TU Xg xiVal trIv hE ev)} {hwU : ∀ u, HEq (R.I.wU u) u}
   {hsg : F.Am.σ₀ = D.what₂.embLL} {hH : ColHyp3 W Ch sel v0 TU Xg ∅}
 
-end Pins
 
 end Formalism.L2.DIV.Member
 

@@ -323,7 +323,6 @@ end Core
 
 section Descent
 
-open GlobalTheory.CoverRead GlobalTheory.Member GlobalTheory.FinalJoin
 
 variable {T : CoreJ D} {j : ℕ} {σ : T.Q.c.F →+* ℂ}
   {θ : (D.host.E →+* ℂ) → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)}

@@ -98,13 +98,11 @@ theorem invT_of_symm {L : Type} [Field L] {n : ℕ} (d : GL (Fin n) L)
   conv_lhs => rw [← hd]
   rw [← Matrix.transpose_nonsing_inv, Matrix.transpose_apply]
 
-open GlobalTheory.LFun.ConjPlace in
 theorem invT_mem_iff {L : Type} [Field L] {n : ℕ} (O : Subring L) (g : GL (Fin n) L) :
     invT (RingEquiv.refl L) n g ∈ Formalism.UG.GLint (Fin n) O ↔ g ∈ Formalism.UG.GLint (Fin n) O :=
   (mem_iff_invT (RingEquiv.refl L) (O := O) (O' := O) (fun _ => Iff.rfl) g).symm
 
 
-open GlobalTheory.LFun.ConjPlace in
 theorem invT_mem_doset (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ)
     (g : GL (Fin n) (w.adicCompletion E)) : ∃ a ∈ KGL w (n := n), ∃ b ∈ KGL w (n := n),
       invT (RingEquiv.refl _) n g = a * g⁻¹ * b := by

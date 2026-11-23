@@ -65,16 +65,12 @@ private lemma mem_locSq_iff' (F : Type) [Field F] [NumberField F]
   unfold _root_.GlobalTheory.QNorm.locSq _root_.GlobalTheory.QNorm.finSq
   simp [_root_.GlobalTheory.QNorm.mem_sqSub]
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private lemma pos_of_isSquare_real_embedding_unit {F : Type} [Field F] (σ : F →+* ℝ) (x : Fˣ)
     (h : IsSquare (σ (x : F))) : 0 < σ (x : F) := by
   obtain ⟨r, hr⟩ := h
   have hne : σ (x : F) ≠ 0 := (map_ne_zero σ).mpr x.ne_zero
   exact lt_of_le_of_ne (by rw [hr]; exact mul_self_nonneg r) (Ne.symm hne)
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private lemma exists_valuation_eq_exp_two_mul_of_isSquare_completion (F : Type) [Field F] [NumberField F]
     (v : HeightOneSpectrum (𝓞 F)) (x : F) (hx : x ≠ 0)
     (h : IsSquare (algebraMap F (v.adicCompletion F) x)) :
@@ -90,8 +86,6 @@ private lemma exists_valuation_eq_exp_two_mul_of_isSquare_completion (F : Type) 
   rw [← hv, hy, map_mul, two_mul, WithZero.exp_add, WithZero.exp_log hy0]
 
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 theorem _root_.GlobalTheory.QNorm.exists_odd_order_at_even_elsewhere : ∀ (F : Type) [Field F] [NumberField F] (δ : Fˣ)
     (σ₀ : F →+* ℝ), ¬ IsSquare (δ : F) →
     (∀ t : F, t ≠ 0 → (∀ v : IsDedekindDomain.HeightOneSpectrum (𝓞 F),

@@ -278,7 +278,6 @@ end GlobalTheory.PlaceChain
 
 namespace GlobalTheory.PlaceChain
 
-open GlobalTheory.ExpansionInvariance
 
 theorem isTilt_one {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) {j : ℕ} (hj : j ∉ idx D) :
     IsTilt G j 1 := by

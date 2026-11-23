@@ -85,7 +85,6 @@ end GlobalTheory.MinorFrame
 
 noncomputable section
 namespace GlobalTheory.MinorFrame
-open MvPolynomial
 
 variable {ι : Type} [Fintype ι]
 
@@ -135,7 +134,6 @@ end GlobalTheory.MinorFrame
 
 noncomputable section
 namespace GlobalTheory.MinorFrame
-open MvPolynomial
 
 theorem prod_det_scalAt_zpow {ι : Type} [Fintype ι] {a : ℕ} (τ₀ : ι) (ζ : ℂ) (m : ι → ℤ) (n : ℕ)
     (hn : (n : ℤ) = m τ₀) : (∏ τ, (scalAt (a := a) τ₀ ζ τ).det ^ (m τ)) = ζ ^ (a * n) := by

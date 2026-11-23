@@ -53,8 +53,6 @@ theorem _root_.GlobalTheory.isDominant_pullback_fst_of_isOpenMap {X U Y : Scheme
   exact j.denseRange.preimage hp
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 theorem _root_.GlobalTheory.eq_of_specializes_of_mem_genericPoints {T : Type*} [TopologicalSpace T] [T0Space T]
     {x y : T} (hx : x ∈ genericPoints T) (h : y ⤳ x) : y = x := by
   have h1 : closure ({y} : Set T) ⊆ closure {x} :=
@@ -62,8 +60,6 @@ theorem _root_.GlobalTheory.eq_of_specializes_of_mem_genericPoints {T : Type*} [
   exact (h.antisymm (specializes_iff_closure_subset.2 h1)).eq
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 theorem _root_.GlobalTheory.genericPoints_subset_range_of_isDominant {X U : Scheme.{0}} (j : U ⟶ X) [IsDominant j]
     [QuasiCompact j] : genericPoints X ⊆ Set.range j := by
   intro ξ hξ
@@ -124,8 +120,6 @@ theorem _root_.GlobalTheory.genericPoints_subset_range_of_isDominant {X U : Sche
   exact PrimeSpectrum.ext hqp
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 theorem _root_.GlobalTheory.isIso_stalkMap_of_flat_of_surjectiveOnStalks {X U : Scheme.{0}} (j : U ⟶ X) [Flat j]
     [SurjectiveOnStalks j] (u : U) : IsIso (j.stalkMap u) := by
   have hs := j.stalkMap_surjective u
@@ -140,8 +134,6 @@ theorem _root_.GlobalTheory.isIso_stalkMap_of_flat_of_surjectiveOnStalks {X U : 
   exact (ConcreteCategory.isIso_iff_bijective _).2 ⟨hi, hs⟩
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct Pointwise in
 theorem _root_.GlobalTheory.densePart_basic : ∀ (X U : Scheme.{0}) (j : U ⟶ X), IsPreimmersion j → Flat j → IsDominant j → QuasiCompact j → genericPoints X ⊆ Set.range j ∧ (∀ u : U, IsIso (j.stalkMap u)) ∧ (IsReduced X → IsSchemeTheoreticallyDominant j) ∧ ∀ (Y : Scheme.{0}) (p : Y ⟶ X), UniversallyOpen p → IsDominant (pullback.fst p j) := by
   intro X U j _ _ _ _
   refine ⟨_root_.GlobalTheory.genericPoints_subset_range_of_isDominant j,

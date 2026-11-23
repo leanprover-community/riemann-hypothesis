@@ -357,7 +357,6 @@ end Lattice
 
 section Datum
 
-open GlobalTheory.StdFrames (cpt OA)
 
 variable {D : D7}
 

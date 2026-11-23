@@ -82,7 +82,6 @@ theorem fix_root (g : Gl l) (hg : g ∈ IK (Formalism.MainNotions.ElementDenomin
   exact congrArg Subtype.val this
 
 
-open GlobalTheory.MemLoc.FrobLaws in
 theorem frob_root (Fr : Gl l) (hFr : ∀ x : Om l, x ∈ MaximalUnramifiedExtension l → ‖x‖ ≤ 1 → ‖(Fr : GQ l) x - x ^ l‖ < 1)
     {ζ : Om l} {m : ℕ} (hm : 0 < m) (hlm : ¬ l ∣ m) (hζ : ζ ^ m = 1) : (Fr : GQ l) ζ = ζ ^ l := by
   have hK : ζ ∈ MaximalUnramifiedExtension l := IntermediateField.subset_adjoin _ _ ⟨m, hm, hlm, hζ⟩
@@ -96,7 +95,6 @@ theorem frob_root (Fr : Gl l) (hFr : ∀ x : Om l, x ∈ MaximalUnramifiedExtens
   exact congrArg Subtype.val this
 
 
-open GlobalTheory.MemLoc.FrobLaws in
 theorem mem_IK_of_fix_Kur (g : Gl l) (hg : ∀ x ∈ MaximalUnramifiedExtension l, (g : GQ l) x = x) :
     g ∈ IK (Formalism.MainNotions.ElementDenominator.qlExt l) := by
   have key : ∀ y : Om l, ‖y‖ < 1 → ‖(g : GQ l) y - y‖ < 1 := fun y hy => by

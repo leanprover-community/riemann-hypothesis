@@ -70,7 +70,6 @@ theorem exists_cob_of_pair (φ : X' ⟶ X) (s' : X' ⟶ Sp R') (f : Z1 (OAff s')
 end GlobalTheory.CechDR
 
 namespace GlobalTheory.CechDR
-open Opposite KaehlerDifferential
 
 theorem pairRes_injective : ∀ {R' : Type} [CommRing R'] {X X' : Scheme.{0}} (φ : X' ⟶ X)
     (s' : X' ⟶ Sp R'), Function.Injective (pairRes φ s').pull1 ∧

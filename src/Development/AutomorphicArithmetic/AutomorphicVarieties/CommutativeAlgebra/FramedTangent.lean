@@ -402,7 +402,6 @@ end Mat
 
 section Dual
 
-open Matrix TrivSqZeroExt
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {ι X : Type} [Fintype ι] [DecidableEq ι] [AddCommGroup X] {w : ι → X}
   (Φ : FormData O w) [IsCO O (ResidueField O)] [IsCO O (DualNumber (ResidueField O))]
@@ -489,7 +488,6 @@ end Dual
 
 section Framed
 
-open Matrix TrivSqZeroExt
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {ι X : Type} [Fintype ι] [DecidableEq ι] [AddCommGroup X] {w : ι → X}
   (Φ : FormData O w) [IsCO O (ResidueField O)] [IsCO O (DualNumber (ResidueField O))]

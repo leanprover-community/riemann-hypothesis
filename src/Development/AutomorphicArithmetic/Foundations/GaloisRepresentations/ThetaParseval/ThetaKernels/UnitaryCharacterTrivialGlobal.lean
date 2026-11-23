@@ -59,8 +59,6 @@ variable {ν : GAF (c : E →ₐ[F] E) J →* Circle}
 end Char
 end PositivityTheory.ThKW.SplitChar
 open PositivityTheory.ThKW.SplitChar Filter Topology GlobalTheory.UnRep
-open GlobalTheory.SplitCharTrivial (cut cutH cut_val cT_add cT_smul rf tendsto_UJ tendsto_rf norm_cut cut_rf exists_seq map_sub_one map_cut)
-open scoped TensorProduct Matrix
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 

@@ -95,7 +95,6 @@ open Polynomial
 end FiniteOrder
 
 
-open Polynomial
 
 variable {R : Type*} [CommRing R] [IsDomain R] {N : Type*} [Fintype N] [DecidableEq N]
 

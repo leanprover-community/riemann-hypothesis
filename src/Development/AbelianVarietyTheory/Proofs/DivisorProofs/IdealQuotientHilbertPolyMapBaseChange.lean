@@ -65,9 +65,6 @@ private theorem homogeneousComponent_map_algebraMap {σ K L : Type} [Field K] [F
   simp only [coeff_homogeneousComponent, coeff_map]
   split_ifs <;> simp
 
-open MvPolynomial Filter in
-open scoped ENNReal in
-open Module TensorProduct in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private theorem homogeneousComponent_mem_span_map_homogeneous {σ K L : Type} [Field K] [Field L] [Algebra K L]
     (P : Ideal (MvPolynomial σ K)) (hP : ∀ g ∈ P, ∀ n : ℕ, homogeneousComponent n g ∈ P)
@@ -86,9 +83,6 @@ private theorem homogeneousComponent_mem_span_map_homogeneous {σ K L : Type} [F
   | add y z _ _ hy hz => rw [map_add (f := _)]; exact Submodule.add_mem _ hy hz
   | smul c y _ hy => rw [map_smul]; exact Submodule.smul_mem _ c hy
 
-open MvPolynomial Filter in
-open scoped ENNReal in
-open Module TensorProduct in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private theorem mem_span_image_of_mem_ideal_map {σ K L : Type} [Field K] [Field L] [Algebra K L]
     (P : Ideal (MvPolynomial σ K)) {g : MvPolynomial σ L}
@@ -123,9 +117,6 @@ private theorem mem_span_image_of_mem_ideal_map {σ K L : Type} [Field K] [Field
   | add y z _ _ hy hz => exact M.add_mem hy hz
   | smul a y _ hy => exact hmul a y hy
 
-open MvPolynomial Filter in
-open scoped ENNReal in
-open Module TensorProduct in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private theorem decompose_coe_eq_homogeneousComponent {σ L : Type} [Field L]
     (g : MvPolynomial σ L) (n : ℕ) :
@@ -146,9 +137,6 @@ private theorem decompose_coe_eq_homogeneousComponent {σ L : Type} [Field L]
       exact DirectSum.decompose_of_mem_ne _ (homogeneousComponent_mem i g) (by rintro rfl; exact hn hi)
     · simp at hn; omega
 
-open MvPolynomial Filter in
-open scoped ENNReal in
-open Module TensorProduct in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private theorem linearIndependent_map_algebraMap {σ K L : Type} [Field K] [Field L] [Algebra K L] {ι : Type} {v : ι → MvPolynomial σ K}
     (hv : LinearIndependent K v) :
@@ -163,9 +151,6 @@ private theorem linearIndependent_map_algebraMap {σ K L : Type} [Field K] [Fiel
   rw [he]
   exact h2
 
-open MvPolynomial Filter in
-open scoped ENNReal in
-open Module TensorProduct in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private theorem finrank_span_map_algebraMap_eq {σ K L : Type} [Field K] [Field L] [Algebra K L]
     (W : Submodule K (MvPolynomial σ K)) [FiniteDimensional K W] :
@@ -205,9 +190,6 @@ private theorem finrank_span_map_algebraMap_eq {σ K L : Type} [Field K] [Field 
   rw [← hspan, finrank_span_eq_card hli, Fintype.card_fin]
 
 
-open MvPolynomial Filter in
-open scoped ENNReal in
-open Module TensorProduct in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 theorem _root_.GlobalTheory.HilbBaseChange.idealHilbertPoly_map : ∀ (K L : Type) [Field K] [Field L] [Algebra K L] (N : ℕ) (P : Ideal (MvPolynomial (Fin N) K)), (∀ g ∈ P, ∀ n : ℕ, homogeneousComponent n g ∈ P) → (∀ g ∈ P.map (MvPolynomial.map (algebraMap K L) : MvPolynomial (Fin N) K →+* MvPolynomial (Fin N) L), ∀ n : ℕ, homogeneousComponent n g ∈ P.map (MvPolynomial.map (algebraMap K L) : MvPolynomial (Fin N) K →+* MvPolynomial (Fin N) L)) ∧ _root_.GlobalTheory.idealHilbertPoly (P.map (MvPolynomial.map (algebraMap K L) : MvPolynomial (Fin N) K →+* MvPolynomial (Fin N) L)) = _root_.GlobalTheory.idealHilbertPoly P := by
   intro K L _ _ _ N P hP

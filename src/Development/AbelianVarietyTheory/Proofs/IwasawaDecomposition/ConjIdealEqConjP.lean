@@ -64,7 +64,6 @@ theorem conjIdeal_eq_conjP {E : Type} [Field E] [NumberField E] [StarRing E] (P 
     rw [star_star]
 
 
-open Formalism.L2.Col in
 theorem g_notMem_of_levOff {X : Fields} {Pr : Primes X} (hPr : Pr.Ok)
     (P : letI := X.starE; LevOff (E := X.E) ∅ Pr.vGs ∅) (k : Fin 2) :
     ((Pr.g k : ℕ) : 𝓞 X.E) ∉ P.1.asIdeal := by

@@ -50,14 +50,12 @@ theorem real_smul_posDef {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : M.PosDe
   rw [e]
   exact h.smul (Complex.zero_lt_real.2 ha)
 
-open ComplexOrder in
 theorem real_smul_posSemidef {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : M.PosSemidef) {a : ℝ}
     (ha : 0 ≤ a) : (a • M).PosSemidef := by
   have e : a • M = (a : ℂ) • M := by ext i j; simp [Complex.real_smul]
   rw [e]
   exact h.smul (Complex.zero_le_real.2 ha)
 
-open ComplexOrder in
 theorem pos_convex (L : Type) [Field L] [NumberField L] (N : ℕ) : Convex ℝ (Pos L N) := by
   intro x hx y hy a b ha hb hab w
   have e : mat (a • x + b • y) w = a • mat x w + b • mat y w := by simp

@@ -57,16 +57,12 @@ theorem _root_.GlobalTheory.SnMass.VolN.form_smul_left' (c : E) (x y : Fin n →
   unfold _root_.GlobalTheory.SgAlg.form
   rw [Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] {n : ℕ} (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E) in
 theorem _root_.GlobalTheory.SnMass.VolN.form_smul_right' (c : E) (x y : Fin n → E) :
     _root_.GlobalTheory.SgAlg.form σ J x (c • y) = σ c * _root_.GlobalTheory.SgAlg.form σ J x y := by
   simp only [_root_.GlobalTheory.SgAlg.form, dotProduct, Pi.smul_apply, smul_eq_mul, map_mul,
     Finset.mul_sum, mul_assoc]
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] {n : ℕ} (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E) in
 theorem _root_.GlobalTheory.SnMass.VolN.form_sub_left' (x x' y : Fin n → E) :
     _root_.GlobalTheory.SgAlg.form σ J (x - x') y =
@@ -74,8 +70,6 @@ theorem _root_.GlobalTheory.SnMass.VolN.form_sub_left' (x x' y : Fin n → E) :
   unfold _root_.GlobalTheory.SgAlg.form
   rw [Matrix.mulVec_sub, dotProduct_sub]
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] {n : ℕ} (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E) in
 theorem _root_.GlobalTheory.SnMass.VolN.form_sum_left' {ι : Type} (S : Finset ι) (g : ι → Fin n → E)
     (y : Fin n → E) :
@@ -87,8 +81,6 @@ theorem _root_.GlobalTheory.SnMass.VolN.form_sum_left' {ι : Type} (S : Finset �
     rw [Finset.sum_insert ha, Finset.sum_insert ha, ← ih]
     simp [_root_.GlobalTheory.SgAlg.form, Matrix.mulVec_add, dotProduct_add]
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] {n : ℕ} (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E) in
 theorem _root_.GlobalTheory.SnMass.VolN.form_conj (hσ : ∀ x, σ (σ x) = x) (hJ : ∀ i j, σ (J j i) = J i j)
     (x y : Fin n → E) :
@@ -99,8 +91,6 @@ theorem _root_.GlobalTheory.SnMass.VolN.form_conj (hσ : ∀ x, σ (σ x) = x) (
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] {n : ℕ} (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E) in
 theorem _root_.GlobalTheory.SnMass.VolN.pairM_apply' {a b : Type} [Fintype a] [Fintype b]
     (P' : Matrix (Fin n) b E) (P : Matrix (Fin n) a E)
@@ -115,8 +105,6 @@ theorem _root_.GlobalTheory.SnMass.VolN.pairM_apply' {a b : Type} [Fintype a] [F
 def projF {r : ℕ} (e g : Fin r → Fin n → E) (u : Fin n → E) : Fin n → E :=
   u - ∑ c, form σ J u (g c) • e c - ∑ c, form σ J u (e c) • g c
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] {n : ℕ} (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E) in
 theorem _root_.GlobalTheory.SnMass.VolN.projF_orth {r : ℕ} (e g : Fin r → Fin n → E)
     (hee : ∀ c d, _root_.GlobalTheory.SgAlg.form σ J (e c) (e d) = 0)
@@ -138,8 +126,6 @@ section Lat
 variable {E : Type} [Field E] [NumberField E] {n : ℕ} (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E)
 
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] {n : ℕ} (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E) in
 theorem _root_.GlobalTheory.SnMass.VolN.form_mem_inv (hσ : ∀ x, σ (σ x) = x)
     {Λ : Submodule (𝓞 E) (Fin n → E)}
@@ -154,8 +140,6 @@ theorem _root_.GlobalTheory.SnMass.VolN.form_mem_inv (hσ : ∀ x, σ (σ x) = x
   rw [FractionalIdeal.mem_one_iff, mul_comm]
   exact h1
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] {n : ℕ} (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E) in
 theorem _root_.GlobalTheory.SnMass.VolN.projF_mem (hσ : ∀ x, σ (σ x) = x)
     {Λ : Submodule (𝓞 E) (Fin n → E)}
@@ -181,8 +165,6 @@ variable {E : Type} [Field E] {n : ℕ}
 
 def mv (φ : E →+* ℂ) (x : Fin n → E) : Fin n → ℂ := fun i => φ (x i)
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] {n : ℕ} in
 theorem _root_.GlobalTheory.SnMass.VolN.herm_model {H B M : Matrix (Fin n) (Fin n) ℂ} (h : Bᴴ * H * B = M)
     (x y : Fin n → ℂ) :
@@ -191,15 +173,11 @@ theorem _root_.GlobalTheory.SnMass.VolN.herm_model {H B M : Matrix (Fin n) (Fin 
   rw [Matrix.star_mulVec, Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, Matrix.vecMul_vecMul,
     ← Matrix.dotProduct_mulVec, ← Matrix.mul_assoc, h]
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] {n : ℕ} in
 theorem _root_.GlobalTheory.SnMass.VolN.herm_smul_right' (H : Matrix (Fin n) (Fin n) ℂ) (c : ℂ) (x y : Fin n → ℂ) :
     _root_.Formalism.QuantumDeterminants.herm H x (c • y) = star c * _root_.Formalism.QuantumDeterminants.herm H x y := by
   simp [_root_.Formalism.QuantumDeterminants.herm, star_smul, smul_dotProduct]
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 variable {E : Type} [Field E] {n : ℕ} in
 theorem _root_.GlobalTheory.SnMass.VolN.herm_bvec_right (H : Matrix (Fin n) (Fin n) ℂ) (x : Fin n → ℂ)
     (i : Fin n) :
@@ -210,15 +188,11 @@ end Cx
 
 section Model
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 private theorem Hpk_esI_applyFlagMeasures (k r : ℕ) (a : Fin r) (j : Fin (2 * r + k + 1)) :
     _root_.Formalism.QuantumDeterminants.Hpk k r (_root_.Formalism.QuantumDeterminants.esI k r a) j = if j = _root_.Formalism.QuantumDeterminants.eI k r a then 1 else 0 := by
   simp only [_root_.Formalism.QuantumDeterminants.Hpk, _root_.Formalism.QuantumDeterminants.esI, _root_.Formalism.QuantumDeterminants.eI, Fin.ext_iff]
   split_ifs <;> first | rfl | (exfalso; omega)
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 theorem _root_.GlobalTheory.SnMass.VolN.mulVec_esI (k r : ℕ) (a : Fin r)
     (x : Fin (2 * r + k + 1) → ℂ) :
     x (_root_.Formalism.QuantumDeterminants.eI k r a) = (_root_.Formalism.QuantumDeterminants.Hpk k r *ᵥ x) (_root_.Formalism.QuantumDeterminants.esI k r a) := by
@@ -234,8 +208,6 @@ variable {E : Type} [Field E] [NumberField E]
 end Main
 
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 theorem _root_.GlobalTheory.SnMass.VolN.row_mem_homLat : ∀ (F E : Type) [Field F] [NumberField F]
     [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (k r : ℕ)
     (J : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) E)

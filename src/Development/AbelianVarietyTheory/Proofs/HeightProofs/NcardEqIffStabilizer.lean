@@ -74,8 +74,6 @@ theorem _root_.GlobalTheory.FieldSize.RaySplit.ncard_eq_primesOver (𝔭 : Heigh
     exact FaithfulSMul.algebraMap_injective _ _
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain Polynomial in
-open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 private theorem ncard_primesOver_eq_finrank_iff_frob_eq_one {F R : Type} [Field F]
     [NumberField F] [Field R] [NumberField R] [Algebra F R] [IsGalois F R]
@@ -160,8 +158,6 @@ private theorem ncard_primesOver_eq_finrank_iff_frob_eq_one {F R : Type} [Field 
     omega
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain Polynomial in
-open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 private theorem eq_one_iff_forall_char_eq_one_of_finite_commutative {G : Type} [Group G] [Finite G]
     [IsMulCommutative G] (σ : G) : σ = 1 ↔ ∀ χ : G →* ℂˣ, χ σ = 1 := by
@@ -173,8 +169,6 @@ private theorem eq_one_iff_forall_char_eq_one_of_finite_commutative {G : Type} [
   exact hχ (h χ)
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain Polynomial in
-open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 private theorem heckeIdeal_asIdeal_eq_heckeVal {F R : Type} [Field F] [NumberField F]
     [Field R] [NumberField R] [Algebra F R] (χ : Gal(R/F) →* ℂˣ) (𝔭 : HeightOneSpectrum (𝓞 F)) :
@@ -190,8 +184,6 @@ private theorem heckeIdeal_asIdeal_eq_heckeVal {F R : Type} [Field F] [NumberFie
     exact h𝔮 (HeightOneSpectrum.ext (associated_iff_eq.mp (Associates.mk_eq_mk_iff_associated.mp h)))
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain Polynomial in
-open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 private theorem false_of_ringHom_real_of_isTotallyComplex {F : Type} [Field F] [NumberField F] [_root_.NumberField.IsTotallyComplex F]
     (φ : F →+* ℝ) : False := by
@@ -204,8 +196,6 @@ private theorem false_of_ringHom_real_of_isTotallyComplex {F : Type} [Field F] [
 
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain Polynomial in
-open scoped IntermediateField Pointwise in
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] in
 theorem _root_.GlobalTheory.FieldSize.RaySplit.ncard_eq_finrank_iff : ∀ (K R : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] [Field R] [NumberField R]
     [Algebra K R] [IsAbelianGalois K R] (n : ℕ), 0 < n → _root_.GlobalTheory.FieldSize.IsRay R (Ideal.span {(n : 𝓞 K)}) →

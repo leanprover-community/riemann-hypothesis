@@ -187,7 +187,6 @@ theorem bd_of_oneTerm_cycle : ∀ (V W : Type) (D : Set (List V × List W)) (F :
 end GlobalTheory.SeqCx.OneTermEnd
 
 section
-open GlobalTheory.SeqCx
 theorem _root_.GlobalTheory.T.exists_bd_of_vbd_eq_of_oneTerm_cycle : ∀ (V W : Type) (D : Set (List V × List W)) (F : Set (List V)) (p : ℕ), (∀ u : W, (∃ l, (l, [u]) ∈ D) → ∀ c ∈ chains {l | (l, [u]) ∈ D} p, bd V c = 0 → ∃ b ∈ chains F (p + 1), bd V b = c) → ∀ z ∈ chains2 D p 1, hbd V W z = 0 → ∀ c : List V →₀ ℤ, vbd V W z = Finsupp.mapDomain (fun l => (l, ([] : List W))) c → ∃ b ∈ chains F (p + 1), bd V b = c := by
   first
   | exact @GlobalTheory.SeqCx.OneTermEnd.bd_of_oneTerm_cycle

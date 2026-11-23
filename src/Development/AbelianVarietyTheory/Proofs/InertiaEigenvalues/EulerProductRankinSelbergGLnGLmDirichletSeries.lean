@@ -116,7 +116,6 @@ end GlobalTheory.RSnmEul
 
 namespace GlobalTheory.RSnmEul
 
-open GlobalTheory.ZEul GlobalTheory.RSnmUnf
 
 theorem hasSum_rsTermNM_local (q : ℕ) {m n : ℕ} (hmn : m ≤ n) (α : Fin n → ℂˣ) (β : Fin m → ℂˣ) (x : ℝ)
     (hs : Summable fun v : Fin m → ℤ => ‖rsTermNM q (fun j => (α j : ℂ)) (fun j => (β j : ℂ)) x v‖) :

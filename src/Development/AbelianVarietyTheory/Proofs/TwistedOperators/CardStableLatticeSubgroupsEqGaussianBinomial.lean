@@ -139,7 +139,6 @@ end Sub
 end GlobalTheory.LatCountGauss
 
 namespace GlobalTheory.LatCountGauss
-open GlobalTheory.HeckeCount ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 section Lat
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
@@ -211,7 +210,6 @@ end Lat
 end GlobalTheory.LatCountGauss
 
 namespace GlobalTheory.LatCountGauss
-open GlobalTheory.HeckeCount ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped TensorProduct
 
 theorem card_latCount : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}

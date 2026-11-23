@@ -55,27 +55,23 @@ private lemma padicComplex_norm_add_le_of_norm_le {x y : ℂ_[p]} {a : ℝ} (hx 
     ‖x + y‖ ≤ a :=
   (IsUltrametricDist.norm_add_le_max x y).trans (max_le hx hy)
 
-open scoped ComplexConjugate BigOperators in
 variable {p : ℕ} [Fact p.Prime] in
 private lemma padicComplex_norm_sub_le_of_norm_le {x y : ℂ_[p]} {a : ℝ} (hx : ‖x‖ ≤ a) (hy : ‖y‖ ≤ a) :
     ‖x - y‖ ≤ a := by
   rw [sub_eq_add_neg]
   exact padicComplex_norm_add_le_of_norm_le hx (by rwa [norm_neg])
 
-open scoped ComplexConjugate BigOperators in
 variable {p : ℕ} [Fact p.Prime] in
 private lemma padicComplex_norm_mul_le_of_norm_le_one {x y : ℂ_[p]} {a : ℝ} (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ a) :
     ‖x * y‖ ≤ a := by
   rw [norm_mul]
   exact (mul_le_of_le_one_left (norm_nonneg _) hx).trans hy
 
-open scoped ComplexConjugate BigOperators in
 variable {p : ℕ} [Fact p.Prime] in
 private lemma padicComplex_norm_ofNat_le_one (n : ℕ) [n.AtLeastTwo] : ‖(OfNat.ofNat n : ℂ_[p])‖ ≤ 1 := by
   have := IsUltrametricDist.norm_natCast_le_one ℂ_[p] (OfNat.ofNat n)
   rwa [Nat.cast_ofNat] at this
 
-open scoped ComplexConjugate BigOperators in
 variable {p : ℕ} [Fact p.Prime] in
 private lemma norm_sub_eq_one_of_discriminant_relations (hp2 : ‖(2 : ℂ_[p])‖ = 1)
     {X₁ X₂ S T Y₁ Y₂ b c D : ℂ_[p]} (hX₁ : ‖X₁‖ ≤ 1) (hX₂ : ‖X₂‖ ≤ 1) (hS : ‖S‖ ≤ 1)
@@ -148,7 +144,6 @@ private lemma norm_sub_eq_one_of_discriminant_relations (hp2 : ‖(2 : ℂ_[p])�
     norm_num
   linarith
 
-open scoped ComplexConjugate BigOperators in
 variable {p : ℕ} [Fact p.Prime] in
 private lemma padicComplex_norm_two_eq_one_of_ne_two (h : p ≠ 2) : ‖(2 : ℂ_[p])‖ = 1 := by
   have h1 : ‖algebraMap ℚ_[p] ℂ_[p] 2‖ = ‖(2 : ℚ_[p])‖ := norm_algebraMap' _ _
@@ -163,7 +158,6 @@ private lemma padicComplex_norm_two_eq_one_of_ne_two (h : p ≠ 2) : ‖(2 : ℂ
   exact (Nat.prime_dvd_prime_iff_eq Fact.out Nat.prime_two).1 this
 
 
-open scoped ComplexConjugate BigOperators in
 variable {p : ℕ} [Fact p.Prime] in
 theorem _root_.GlobalTheory.Klein.norm_weierstrassP_sub_eq_one (p : ℕ) [Fact p.Prime] (ι : ℂ ≃+* ℂ_[p])
     (L : PeriodPair) (r : ℂ)

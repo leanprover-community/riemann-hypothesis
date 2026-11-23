@@ -105,7 +105,6 @@ end Ring
 end GlobalTheory.EtC.Psi
 
 namespace GlobalTheory.EtC.Psi
-open GlobalTheory.EtC.Rel
 
 section Schemes
 
@@ -182,7 +181,6 @@ end Schemes
 end GlobalTheory.EtC.Psi
 
 namespace GlobalTheory.EtC.Psi
-open GlobalTheory.EtC.Rel
 
 section Nearby
 
@@ -211,7 +209,6 @@ end Nearby
 end GlobalTheory.EtC.Psi
 
 namespace GlobalTheory.EtC.Psi
-open GlobalTheory.EtC.Rel
 
 section Adic
 
@@ -267,7 +264,6 @@ end Adic
 end GlobalTheory.EtC.Psi
 
 namespace GlobalTheory.EtC.Psi
-open GlobalTheory.EtC.Rel
 
 section AdicGal
 
@@ -280,7 +276,6 @@ end AdicGal
 end GlobalTheory.EtC.Psi
 
 namespace GlobalTheory.EtC.Psi
-open GlobalTheory.EtC.Rel
 
 section Examples
 

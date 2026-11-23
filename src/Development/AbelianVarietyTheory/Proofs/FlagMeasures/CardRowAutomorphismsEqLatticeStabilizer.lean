@@ -148,7 +148,6 @@ end GlobalTheory.RowsOrbCard
 
 namespace GlobalTheory.RowsOrbCard
 
-open GlobalTheory.RowsOrb
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 

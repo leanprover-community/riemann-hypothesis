@@ -75,7 +75,6 @@ def sTil (wt : (VS D).V ≃ₗ[D.host.E] (VS D).V) (s : X.B.I.Ginf) (τ : D.what
 
 end Frames
 
-section Transport
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
@@ -110,7 +109,6 @@ structure Transport (F : Formalism.L2.Forms.Forms0 D u) where
     (D.fm u).ipV 0 c (fun z => J ξ (F.val0.eY z))
       (fun z => J η (F.val0.eY z)) = ⟪η, ξ⟫_ℂ
 
-end Transport
 
 section Dict
 

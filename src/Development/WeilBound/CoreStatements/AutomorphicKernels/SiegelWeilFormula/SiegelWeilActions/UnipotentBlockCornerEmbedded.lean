@@ -167,7 +167,6 @@ theorem nq_sExp (e : AE F E) (b : Fin L.n → AE F E) : NQ (Sum.inl L.i₀) (Sum
     · simp
     · simp [Matrix.one_apply]
 
-open B in
 theorem U_sExp {ε : ℤˣ} (hσ : ∀ a, σ (σ a) = a) (b : Fin L.n → AE F E) :
     M.U (cA σ).toRingHom (((ε : ℤ) : AE F E)) (sExp L (((ε : ℤ) : AE F E)) b) := by
   unfold M.U
@@ -228,7 +227,6 @@ private theorem isHecke_div_and_resEtaPow_div {M : Type} [AddCommMonoid M] (f : 
     exact fun k h => (L.rng (L.em k)).2 ⟨k, rfl⟩ h
 
 
-open B in
 theorem row_sC (h : Hyp L nb uM nb' w₁ cM δ) (e : AE F E) (b u : Fin L.n → AE F E) (a : AF F) :
     (∀ j, (sExp L e b * inFrame d.b (cM (u, a))) (Sum.inl L.i₀) (Sum.inl (L.em j)) = u j) ∧
     (∀ j, (sExp L e b * inFrame d.b (cM (u, a))) (Sum.inl L.i₀) (Sum.inr (L.em j)) = b j) ∧

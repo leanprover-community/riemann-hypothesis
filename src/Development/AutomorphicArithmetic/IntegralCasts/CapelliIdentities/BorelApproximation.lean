@@ -146,7 +146,6 @@ private theorem exists_near {F : Type} [Field F] [NumberField F]
   rw [Valuation.map_sub_swap, ← sub_add_sub_cancel _ (algebraMap F (adicCompletion F p) k)]
   exact Valuation.map_add_lt _ ha hk
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum in
 private theorem finite_residue {F : Type} [Field F] [NumberField F]
     (p : HeightOneSpectrum (NumberField.RingOfIntegers F)) :
     Finite (IsLocalRing.ResidueField (adicCompletionIntegers F p)) := by
@@ -171,7 +170,6 @@ private theorem finite_residue {F : Type} [Field F] [NumberField F]
   have := hmax (x - algebraMap _ _ a) ha
   rwa [map_sub] at this
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum in
 private theorem locCompact {F : Type} [Field F] [NumberField F]
     (p : HeightOneSpectrum (NumberField.RingOfIntegers F)) :
     LocallyCompactSpace (adicCompletion F p) := by

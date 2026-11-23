@@ -149,9 +149,7 @@ end ReciprocityTheory.ChartRestriction.G.AR.Up.VanishPf
 
 namespace ReciprocityTheory.ChartRestriction.G.AR.Up
 
-open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.L2DbarEstimates MeasureTheory Topology Metric
   Filter ReciprocityTheory.ChartRestriction.G.AR.Up.VanishPf
-open scoped ENNReal
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 

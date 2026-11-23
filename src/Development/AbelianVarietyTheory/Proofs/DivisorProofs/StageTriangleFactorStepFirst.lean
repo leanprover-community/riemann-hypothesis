@@ -170,7 +170,6 @@ noncomputable section
 
 namespace GlobalTheory.SqStepBig
 
-open GlobalTheory.Square
 
 end GlobalTheory.SqStepBig
 

@@ -150,7 +150,6 @@ end GlobalTheory.GLq.DetRoot
 
 namespace GlobalTheory.GLq.DetRoot
 
-open scoped Classical
 
 theorem root_of_hc_det : ∀ (g : ℕ) [Fact g.Prime] (L : LabelDatum g) (n : ℕ) (ψ : Gn g (n + 1) → ℂ) (f : (ZMod g)[X]),
     IsIrr ψ → HasLabel L ψ f → ∀ (σ : Gn g n → ℂ), IsIrr σ → ∀ (θ : (ZMod g)ˣ →* ℂˣ) (c : ZMod g),

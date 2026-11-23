@@ -41,13 +41,11 @@ open TensorProduct IsLocalRing Polynomial
 
 namespace Formalism.L2.FormalSeriesBounds.UpFBr.Pl
 
-section Complete
 
 variable {Z : Type} [CommRing Z] (π : Z) {A : Type} [CommRing A] [Algebra Z A] {N : ℕ}
   (β : Module.Basis (Fin N) Z A)
 
 
-end Complete
 
 section Lift
 

@@ -101,13 +101,6 @@ theorem absNorm_modT (G : GridData L sc) (t : T) : Ideal.absNorm (modT G t) = le
 end GlobalTheory.FunObj.StdDatum.TwBig
 
 noncomputable section
-open scoped Pointwise
-open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
-open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
-open Formalism.L2.Host (HChar)
-open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum GlobalTheory.NormSum GlobalTheory.FunObj.StdDatum
-open GlobalTheory.Mem.Col2.SplitChar (finIdl)
-open GlobalTheory.SqTop (twPl Qn modT)
 
 namespace GlobalTheory.FunObj.StdDatum.TwBig
 open GlobalTheory.FunObj.SqNum.NuCond GlobalTheory.Mem.Col2.SplitChar
@@ -202,13 +195,6 @@ theorem nuInv_eq_one_of_cong : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Con
 end GlobalTheory.FunObj.StdDatum.TwBig
 
 noncomputable section
-open scoped Pointwise
-open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
-open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
-open Formalism.L2.Host (HChar)
-open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum GlobalTheory.NormSum GlobalTheory.FunObj.StdDatum
-open GlobalTheory.Mem.Col2.SplitChar (finIdl)
-open GlobalTheory.SqTop (twPl Qn modT)
 
 namespace GlobalTheory.FunObj.StdDatum.TwBig
 
@@ -234,13 +220,6 @@ theorem modT_isCoprime_bb {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ�
 end GlobalTheory.FunObj.StdDatum.TwBig
 
 noncomputable section
-open scoped Pointwise
-open Formalism.BasicNotions Formalism.IndefR.Links IsDedekindDomain NumberField
-open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3
-open Formalism.L2.Host (HChar)
-open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNum GlobalTheory.NormSum GlobalTheory.FunObj.StdDatum
-open GlobalTheory.Mem.Col2.SplitChar (finIdl)
-open GlobalTheory.SqTop (twPl Qn modT)
 
 namespace GlobalTheory.FunObj.StdDatum
 

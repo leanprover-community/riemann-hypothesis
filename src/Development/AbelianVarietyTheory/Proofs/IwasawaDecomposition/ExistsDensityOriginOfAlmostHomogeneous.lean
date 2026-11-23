@@ -60,7 +60,6 @@ theorem _root_.GlobalTheory.densHom_scale (l : Measure V) [l.IsAddHaarMeasure] (
   rw [Measure.addHaar_closedBall_mul_of_pos l x hs r, Measure.addHaar_closedBall l 0 hr.le,
     Measure.addHaar_ball_of_pos l 0 hr]
 
-open MeasureTheory Filter Topology Matrix in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
 theorem _root_.GlobalTheory.densHom_tendsto_mul {s : ℝ} (hs : 0 < s) :
@@ -73,7 +72,6 @@ theorem _root_.GlobalTheory.densHom_tendsto_mul {s : ℝ} (hs : 0 < s) :
 
 end
 
-open MeasureTheory Filter Topology Matrix in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
 private theorem closedBall_smul_div_ball_eq_ofReal_pow_mul (l ν : Measure V) [l.IsAddHaarMeasure] (x : V)
@@ -84,7 +82,6 @@ private theorem closedBall_smul_div_ball_eq_ofReal_pow_mul (l ν : Measure V) [l
   rw [_root_.GlobalTheory.densHom_scale l x hs hr, ← mul_div_assoc,
     ENNReal.mul_div_mul_left _ _ (ENNReal.ofReal_pos.2 (pow_pos hs _)).ne' ENNReal.ofReal_ne_top]
 
-open MeasureTheory Filter Topology Matrix in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
 private theorem ofReal_pow_mul_le_liminf_ball_ratio (l ν : Measure V) [l.IsAddHaarMeasure] {x : V} {s : ℝ}
@@ -103,7 +100,6 @@ private theorem ofReal_pow_mul_le_liminf_ball_ratio (l ν : Measure V) [l.IsAddH
   rw [← closedBall_smul_div_ball_eq_ofReal_pow_mul l ν x hs hr0]
   exact ENNReal.div_le_div_right hr _
 
-open MeasureTheory Filter Topology Matrix in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
 private theorem limsup_ball_ratio_le_ofReal_pow_mul (l ν : Measure V) [l.IsAddHaarMeasure] {x : V} {s : ℝ}
@@ -123,7 +119,6 @@ private theorem limsup_ball_ratio_le_ofReal_pow_mul (l ν : Measure V) [l.IsAddH
   exact ENNReal.div_le_div_right hr _
 
 
-open MeasureTheory Filter Topology Matrix in
 theorem _root_.GlobalTheory.exists_density_origin_of_almost_homogeneous : ∀ (V : Type) [NormedAddCommGroup V]
     [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (l ν : Measure V)
     [l.IsAddHaarMeasure] [IsLocallyFiniteMeasure ν], (∀ r : ℝ, 0 < r → ν (Metric.ball 0 r) ≠ 0) →

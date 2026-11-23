@@ -38,7 +38,6 @@ private theorem mem_dw_iff {R : Type} [CommRing R] (r n : ℕ) (ν : Fin n → �
       ∀ l j : Fin n, l < j → Formalism.GradedWeylDivisibility.colAddGen R l j f = rename some f := by
   simp [Formalism.GradedWeylDivisibility.dualWeyl, Submodule.mem_iInf, sub_eq_zero]
 
-open MvPolynomial in
 private theorem map_mem_dw_iff {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) (hφ : Function.Injective φ)
     (r n : ℕ) (ν : Fin n → ℕ) (f : MvPolynomial (Fin r × Fin n) R) :
     map φ f ∈ Formalism.GradedWeylDivisibility.dualWeyl S r n ν ↔ f ∈ Formalism.GradedWeylDivisibility.dualWeyl R r n ν := by

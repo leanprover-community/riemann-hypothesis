@@ -112,7 +112,6 @@ end GlobalTheory.AbsoluteIrreducibilityOfTraceSpan
 
 namespace GlobalTheory.AbsoluteIrreducibilityOfTraceSpan
 
-open GlobalTheory.IndefiniteRowSideFullHecke.CongruenceModuleMatrices
 
 theorem mat_mapRep {Γ A B : Type} [Group Γ] [CommRing A] [CommRing B] {k : ℕ} (f : A →+* B)
     (σ : Γ →* GL (Fin k) A) (g : Γ) : mat (mapRep f σ) g = (mat σ g).map f := by

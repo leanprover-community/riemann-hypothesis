@@ -529,7 +529,6 @@ variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
 
-open GlobalTheory.DownLift.Params in
 theorem paramV_coord (R : RealDat D A Ks) {F : Face D A} (hC : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) (t : T) (h)
     (hh : GlobalTheory.Hk3.IsOpsV R i t h) (s : GlobalTheory.DownLift.Sys D) (y : (R.HV i t).H) (hy : GlobalTheory.DownLift.IsEigV R i t h s y)
     (B : GlobalTheory.LFun.Fam D.host.E) (hB : GlobalTheory.LFun.IsSysParamD D (GlobalTheory.IndefiniteRowSideFullHecke.LabelSettingScalars.badPl R t) (Vc D i).rank s B)
@@ -558,7 +557,6 @@ theorem thetaKO_sum {S T : HSp D} (om : GA D S × GA D T →* Module.End ℂ (WO
   simp [thetaKO, map_sum, Finset.sum_apply]
 
 
-open GlobalTheory.DownLift.Params in
 
 theorem unrCorr_inert : GlobalTheory.Hk3.HoweUnram → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type)
     (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]

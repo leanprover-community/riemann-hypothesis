@@ -292,7 +292,6 @@ end GlobalTheory.BiRoot
 
 namespace GlobalTheory.BiRoot
 
-open GlobalTheory.ProdUnifSq GlobalTheory.TorusRM
 
 theorem trivial_factor {B : Over (Sp ℂ)} [GrpObj B] {N : LB B.left} {n : ℕ} (v : HolUnif B N n)
     {H : Matrix (Fin n) (Fin n) ℂ} {ψ : v.Λ → ℂ} (hN : N.IsLB) (hv : IsFactorAH v H ψ)
@@ -362,7 +361,6 @@ end GlobalTheory.BiRoot
 
 namespace GlobalTheory.BiRoot
 
-open GlobalTheory.ProdUnifSq GlobalTheory.TorusRM
 
 theorem exists_lbIso_lam_of_birigid_symm : ∀ (A : Over (Sp ℂ)) [GrpObj A] [IsCommMonObj A] (g : ℕ), IsAbelianScheme A →
     SmoothOfRelativeDimension g A.hom → ∀ P : LB (G2 A).left, P.IsLB →

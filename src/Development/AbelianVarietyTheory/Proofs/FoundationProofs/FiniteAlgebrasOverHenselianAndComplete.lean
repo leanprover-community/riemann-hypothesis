@@ -72,13 +72,11 @@ theorem _root_.GlobalTheory.bialgHom_map_antipode {R A B : Type*} [CommSemiring 
   simpa using congrArg (fun f : WithConv (A →ₗ[R] B) ↦ (ofConv f) a) h
 
 
-open IsLocalRing TensorProduct in
 theorem _root_.GlobalTheory.henselianLocalRing_of_isAdicComplete (R : Type*) [CommRing R] [IsLocalRing R]
     [IsAdicComplete (maximalIdeal R) R] : HenselianLocalRing R :=
   _root_.GlobalTheory.henselianLocalRing_of_henselianRing R
 
 
-open IsLocalRing TensorProduct in
 theorem _root_.GlobalTheory.exists_etale_henselian_lift_of_isSeparable (R : Type u) (L : Type*) [CommRing R]
     [HenselianLocalRing R] [Field L] [Algebra (ResidueField R) L]
     [Module.Finite (ResidueField R) L] [Algebra.IsSeparable (ResidueField R) L] :
@@ -88,7 +86,6 @@ theorem _root_.GlobalTheory.exists_etale_henselian_lift_of_isSeparable (R : Type
   exact ⟨A, inferInstance, inferInstance, hfin, het, _root_.GlobalTheory.henselianLocalRing_of_finite R A, he⟩
 
 
-open IsLocalRing TensorProduct in
 open CategoryTheory in
 theorem _root_.GlobalTheory.finite_algebras_over_henselian (R : Type u) [CommRing R] [HenselianLocalRing R] :
     (∀ (S : Type u) [CommRing S] [Algebra R S] [Module.Finite R S],

@@ -75,7 +75,6 @@ end PositivityTheory.Rg.BcB.F.FX.Bo.CandidateLeafDecomposition
 
 namespace PositivityTheory.Rg.BcB.F.FX.Bo
 
-open PositivityTheory.Rg.BcB.F
 
 theorem CandParts_holds : CandParts := by
   intro hR E _ _ _ n π S F₀ d i s₁ s₂ Pa Pb D hC

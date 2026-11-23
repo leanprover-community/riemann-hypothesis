@@ -96,7 +96,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Col2.TC.ChTw.Match.LocForm
 
-open GlobalTheory.Mem.Col2.LevRead
 
 section Gen2
 
@@ -221,7 +220,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Col2.TC.ChTw.Match.LocForm
 
-open GlobalTheory.Mem.Col2.LevRead
 
 section Gen3
 

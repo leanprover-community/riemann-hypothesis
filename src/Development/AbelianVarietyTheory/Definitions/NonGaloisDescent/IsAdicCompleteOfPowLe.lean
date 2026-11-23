@@ -921,8 +921,6 @@ theorem Bridge.exists_powerSeries_eval_eq : ∀ {l : ℕ} [hl : Fact (Nat.Prime 
 end
 
 noncomputable section
-open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct PowerSeries GlobalTheory.Prism
-open scoped Formalism.Per
 namespace GlobalTheory.BKReal
 variable (l : ℕ) [hl : Fact l.Prime] (a : ℕ)
 variable [NeZero a]

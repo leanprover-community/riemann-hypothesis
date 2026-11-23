@@ -109,7 +109,6 @@ end Formalism.MainNotions.N.Ln03.Pf.ConvolutionAlt
 
 namespace Formalism.MainNotions.N.Ln03.Pf.ConvolutionAlt
 
-open PowerSeries
 
 variable {R M : Type} [Field R] [AddCommGroup M] [Module R M]
 

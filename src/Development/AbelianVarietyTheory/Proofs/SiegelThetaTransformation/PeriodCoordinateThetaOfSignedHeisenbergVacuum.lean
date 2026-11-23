@@ -303,7 +303,6 @@ end Siegel
 section Basis
 
 open Matrix Complex NumberField GlobalTheory GlobalTheory.SW GlobalTheory.ThFr ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.Dict
-open scoped ComplexConjugate Real Classical
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (omegaStd)
 
 namespace GlobalTheory.Dict.VacForm

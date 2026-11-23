@@ -48,7 +48,6 @@ private theorem cont_nilM (F : Type) [Field F] [NumberField F] :
   · exact continuous_apply _
   · exact continuous_const
 
-open NumberField IsDedekindDomain GlobalTheory.CuspRep in
 theorem UpperTheory.eisenstein_constantTerm_upperBlock :
     UpperTheory.V.Sd.Eis.BlockTop := by
   intro F _ _

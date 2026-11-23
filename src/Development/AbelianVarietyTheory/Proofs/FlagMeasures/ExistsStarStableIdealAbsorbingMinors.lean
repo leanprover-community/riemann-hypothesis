@@ -66,8 +66,6 @@ theorem _root_.GlobalTheory.DegCnt.Absorb.mem_ipow_nat (𝔡 : Ideal (𝓞 K)) (
     FractionalIdeal.mem_coeIdeal]
 
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.DegCnt.Absorb.mem_ipow_iff {𝔡 : Ideal (𝓞 K)} (h : 𝔡 ≠ ⊥) (n : ℤ) (x : K) :
     x ∈ _root_.GlobalTheory.DegCnt.ipow 𝔡 n ↔ ∀ u ∈ _root_.GlobalTheory.DegCnt.ipow 𝔡 (-n),
@@ -93,8 +91,6 @@ variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [M
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : HermSpace K V} {r : ℕ}
 
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 omit [NumberField K] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
@@ -130,8 +126,6 @@ theorem _root_.GlobalTheory.DegCnt.Absorb.exists_coord (F : _root_.Formalism.Her
     obtain ⟨m, hm, rfl⟩ := hx
     exact ⟨c • m, fun b hb => by simp [hm b hb], by simp [Finset.smul_sum, smul_smul]⟩
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 private theorem fractionalIdeal_zpow_sum_eq_prod (J : FractionalIdeal (𝓞 K)⁰ K) (hJ : J ≠ 0) (s : Finset ℕ)
     (f : ℕ → ℤ) : J ^ (∑ a ∈ s, f a) = ∏ a ∈ s, J ^ f a := by
@@ -140,8 +134,6 @@ private theorem fractionalIdeal_zpow_sum_eq_prod (J : FractionalIdeal (𝓞 K)�
   | empty => simp
   | insert a s ha ih => rw [Finset.sum_insert ha, Finset.prod_insert ha, zpow_add₀ hJ, ih]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem lead_eq_ipow_of_isFrame (N : _root_.GlobalTheory.DegCnt.NF H r) {F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r}
@@ -151,8 +143,6 @@ private theorem lead_eq_ipow_of_isFrame (N : _root_.GlobalTheory.DegCnt.NF H r) 
   · rw [hF.1 b]; rfl
   · rw [hF.2]; simp [_root_.GlobalTheory.DegCnt.ipow]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem exists_mem_pow_eq_star (N : _root_.GlobalTheory.DegCnt.NF H r) (k : ℕ) {d : 𝓞 K}
@@ -167,8 +157,6 @@ private theorem exists_mem_pow_eq_star (N : _root_.GlobalTheory.DegCnt.NF H r) (
   have h2 := (Ideal.pow_right_mono h1 k).trans (Ideal.le_comap_pow _ k) hd
   exact ⟨_, h2, rfl⟩
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem star_mem_ipow_neg_of_nonneg (N : _root_.GlobalTheory.DegCnt.NF H r) {n : ℤ}
@@ -187,8 +175,6 @@ private theorem star_mem_ipow_neg_of_nonneg (N : _root_.GlobalTheory.DegCnt.NF H
       star (algebraMap (𝓞 K) K o) := rfl
   rw [e1, ho, star_mul, star_star, mul_comm]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 private theorem mul_mem_of_forall_prod_mem {ι : Type} (s : Finset ι) (I : ι → FractionalIdeal (𝓞 K)⁰ K)
     (M : Submodule (𝓞 K) K) (x : K)
@@ -223,8 +209,6 @@ private theorem mul_mem_of_forall_prod_mem {ι : Type} (s : Finset ι) (I : ι �
       rw [mul_add]
       exact M.add_mem hy hz
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem exists_triangular_lattice_vectors (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) (Λ : Submodule (𝓞 K) V)
@@ -254,8 +238,6 @@ private theorem exists_triangular_lattice_vectors (F : _root_.Formalism.Hermitia
     convert hmΛ a using 1
     simp [sub_smul, Finset.sum_sub_distrib, ite_smul]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 private theorem det_mem_one_of_entries_mem_one {n : Type} [Fintype n] [DecidableEq n] (X : Matrix n n K)
     (hX : ∀ i j, X i j ∈ (1 : Submodule (𝓞 K) K)) : X.det ∈ (1 : Submodule (𝓞 K) K) := by
@@ -265,8 +247,6 @@ private theorem det_mem_one_of_entries_mem_one {n : Type} [Fintype n] [Decidable
   rw [hXY, ← RingHom.map_det]
   exact Submodule.mem_one.2 ⟨_, rfl⟩
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem hermForm_combinations_eq_gram_mul {l : ℕ} (P Q : Matrix (Fin l) (Fin l) K) (F F' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r)
@@ -280,8 +260,6 @@ private theorem hermForm_combinations_eq_gram_mul {l : ℕ} (P Q : Matrix (Fin l
   refine Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun d _ => ?_
   simp [starRingEnd_apply]; ring
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem hermForm_mem_one_of_isFramed {F F' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} {Λ : Submodule (𝓞 K) V}
@@ -291,8 +269,6 @@ private theorem hermForm_mem_one_of_isFramed {F F' : _root_.Formalism.HermitianL
   rw [← hd] at hx
   exact ((_root_.GlobalTheory.HermLat.mem_dual_iff H Λ x).1 hx).2 y hy
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem prod_mul_Dl_mul_star_prod_mem_one {F F' : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r} {Λ : Submodule (𝓞 K) V}
@@ -312,8 +288,6 @@ private theorem prod_mul_Dl_mul_star_prod_mem_one {F F' : _root_.Formalism.Hermi
   rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hs', hP, hQ] at hX
   exact hX
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 private theorem Dl_mul_mem_one_of_mem_ipow (N : _root_.GlobalTheory.DegCnt.NF H r) {Λ : Submodule (𝓞 K) V}
@@ -358,8 +332,6 @@ private theorem Dl_mul_mem_one_of_mem_ipow (N : _root_.GlobalTheory.DegCnt.NF H 
     exact add_mem hy hz
 
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} in
 theorem _root_.GlobalTheory.DegCnt.Absorb.exists_ideal (N : _root_.GlobalTheory.DegCnt.NF H r) {Λ : Submodule (𝓞 K) V}
@@ -413,22 +385,16 @@ theorem _root_.GlobalTheory.DegCnt.Absorb.exists_ideal (N : _root_.GlobalTheory.
 
 end Flags
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] [StarRing K] in
 private theorem absNorm_map_sig_eq (A : Ideal (𝓞 K)) :
     Ideal.absNorm (A.map (_root_.GlobalTheory.DegCnt.Absorb.sig K)) = Ideal.absNorm A := by
   rw [Ideal.absNorm_apply, Ideal.absNorm_apply, Submodule.cardQuot_apply, Submodule.cardQuot_apply]
   exact Nat.card_congr (Ideal.quotientEquiv A _ (_root_.GlobalTheory.DegCnt.Absorb.sig K) rfl).toEquiv.symm
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] [StarRing K] in
 private theorem coe_sig_eq_star (x : 𝓞 K) :
     ((_root_.GlobalTheory.DegCnt.Absorb.sig K x : 𝓞 K) : K) = star (x : K) := rfl
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] [StarRing K] in
 private theorem sig_mem_mul_of_sig_mem {I J : Ideal (𝓞 K)}
     (hI : ∀ x ∈ I, _root_.GlobalTheory.DegCnt.Absorb.sig K x ∈ I)
@@ -439,8 +405,6 @@ private theorem sig_mem_mul_of_sig_mem {I J : Ideal (𝓞 K)}
   · rw [map_mul]; exact Ideal.mul_mem_mul (hI a ha) (hJ b hb)
   · rw [map_add]; exact add_mem ha hb
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] [StarRing K] in
 private theorem sig_mem_prod_of_sig_mem (s : Finset ℕ) (I : ℕ → Ideal (𝓞 K))
     (h : ∀ l ∈ s, ∀ x ∈ I l, _root_.GlobalTheory.DegCnt.Absorb.sig K x ∈ I l) :
@@ -453,8 +417,6 @@ private theorem sig_mem_prod_of_sig_mem (s : Finset ℕ) (I : ℕ → Ideal (�
     have h2 := ih fun l hl => h l (Finset.mem_cons_of_mem hl)
     exact sig_mem_mul_of_sig_mem h1 h2
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] [StarRing K] in
 private theorem sig_sig_eq (x : 𝓞 K) :
     _root_.GlobalTheory.DegCnt.Absorb.sig K (_root_.GlobalTheory.DegCnt.Absorb.sig K x) = x := by
@@ -462,8 +424,6 @@ private theorem sig_sig_eq (x : 𝓞 K) :
   show star (star (x : K)) = x
   exact star_star _
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] [StarRing K] in
 private theorem sig_mem_mul_map_sig (A : Ideal (𝓞 K)) :
     ∀ x ∈ A * A.map (_root_.GlobalTheory.DegCnt.Absorb.sig K),
@@ -476,8 +436,6 @@ private theorem sig_mem_mul_map_sig (A : Ideal (𝓞 K)) :
   · rw [map_add]; exact add_mem ha hb
 
 
-open NumberField in
-open scoped Pointwise ENNReal Classical nonZeroDivisors in
 theorem _root_.GlobalTheory.DegCnt.Absorb.exists_absorbing_ideal : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V), _root_.Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ) (N : _root_.GlobalTheory.DegCnt.NF H r), ∀ (g : ℕ) (Λ : Submodule (𝓞 K) V), 1 ≤ g → N.IsTerm g Λ → ∃ 𝔠 : Ideal (𝓞 K), (Ideal.absNorm 𝔠 : ℝ) ≤ (N.Db * N.NT) ^ 2 ∧ 1 ≤ N.Db ∧ 1 ≤ N.Del ∧ ∀ Q : Prop, (𝔠 ≠ ⊥ → (∀ x ∈ 𝔠, ∃ y ∈ 𝔠, (y : K) = star (x : K)) → (∀ x ∈ 𝔠, (N.T : 𝓞 K) ∣ x) → (∀ (l : ℕ) (hl : l ≤ r + 1), l ≤ N.j → _root_.Formalism.HermitianLatticeCounting.S6.Dl N.F N.F' l hl ≠ 0 → ∀ x ∈ 𝔠, ∀ y ∈ _root_.GlobalTheory.DegCnt.ipow N.𝔡 (2 * ∑ a ∈ Finset.range l, ((r : ℤ) - a)), (x : K) * y / _root_.Formalism.HermitianLatticeCounting.S6.Dl N.F N.F' l hl ∈ (1 : Submodule (𝓞 K) K) ∧ (x : K) * y / star (_root_.Formalism.HermitianLatticeCounting.S6.Dl N.F N.F' l hl) ∈ (1 : Submodule (𝓞 K) K)) → Q) → Q := by
   intro K V _ _ _ _ _ _ _ _ H hCM r N g Λ _ hΛ
   haveI : IsTotallyComplex K := hCM.1

@@ -487,7 +487,6 @@ private theorem frac [NumberField F] [Algebra.IsAlgebraic F Ω] {q : ℕ} (hq0 :
 
 private theorem coe_smul (σ : G F Ω) (b : 𝓞 Ω) : ((σ • b : 𝓞 Ω) : Ω) = σ b := rfl
 
-open scoped Pointwise in
 private theorem mem_stab {σ : G F Ω} :
     σ ∈ MulAction.stabilizer (G F Ω) (cen A) ↔ ∀ b, σ • b ∈ cen A ↔ b ∈ cen A := by
   show σ • cen A = cen A ↔ _
@@ -499,11 +498,9 @@ private theorem mem_stab {σ : G F Ω} :
     ext x
     rw [Ideal.mem_pointwise_smul_iff_inv_smul_mem, ← h, smul_inv_smul]
 
-open scoped Pointwise in
 private theorem dec_le_stab : Dec A ≤ MulAction.stabilizer (G F Ω) (cen A) := fun σ h ↦
   (mem_stab A).2 fun b ↦ by rw [mem_cen, mem_cen, coe_smul, dec_lt A h]
 
-open scoped Pointwise in
 private theorem stab_le_dec [NumberField F] [Algebra.IsAlgebraic F Ω] {q : ℕ} (hq0 : q ≠ 0)
     (hq : A.valuation (q : Ω) < 1) : MulAction.stabilizer (G F Ω) (cen A) ≤ Dec A := by
   have key : ∀ σ ∈ MulAction.stabilizer (G F Ω) (cen A), ∀ x ∈ A, σ x ∈ A := by
@@ -598,7 +595,6 @@ private theorem root_eq {N : ℕ} (hN : A.valuation (N : Ω) = 1) {x y : Ω} (hx
 
 end NT
 
-open NumberField IsDedekindDomain
 
 section Fr
 

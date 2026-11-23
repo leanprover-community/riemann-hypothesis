@@ -74,9 +74,7 @@ theorem ps_gs_secOfIso {A B : LB Y} (u : LB.Iso A B) (t : LB.Sec B) (hu : u.IsGe
 
 end PSHelp
 
-section ScalB
 
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {j : ℕ} {D D' : DegData R I}
   {A A' : PolAV (Spec (CommRingCat.of (FractionRing R)))}
@@ -84,6 +82,5 @@ variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {j : ℕ} {D D' : De
   {pD : IsPowDeg D'.toPre D.toPre j} {pA : IsPowPolAV A' A j} {pG : IsPowGrp G' G j}
   {U' : Unif I D' A' G'} {U : Unif I D A G}
 
-end ScalB
 
 end ReciprocityTheory.ChartRestriction.G.DVR

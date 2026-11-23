@@ -142,7 +142,6 @@ end GlobalTheory.RowOnto
 
 namespace GlobalTheory.RowOnto
 
-open GlobalTheory.LiftLevel GlobalTheory.LiftDat
 
 variable {D : D7}
 
@@ -181,7 +180,6 @@ end GlobalTheory.RowOnto
 
 namespace GlobalTheory.RowOnto
 
-open GlobalTheory.LiftLevel GlobalTheory.LiftDat
 
 variable {D : D7}
 

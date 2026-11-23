@@ -73,7 +73,6 @@ theorem _root_.GlobalTheory.LatticeRep.transl_induction (hs : Submodule.span ℂ
   | add a b _ _ ha hb => exact add a b ha hb
   | smul c a _ ha => exact smul c a ha
 
-open scoped BigOperators in
 variable {R X M Γ : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] [Group Γ] in
 variable {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M} {lam : ℕ →* ℂ} {A : Submodule R X}
   {ρ : Γ →* Module.End R X} {Om : Γ →* Module.End ℂ M} in
@@ -88,7 +87,6 @@ private theorem sumOp_eq_self_of_le {B : Submodule R X} (hBA : B ≤ A) {v : M}
   exact hv _ (hBA (Quotient.out (0 : B.toAddSubgroup ⧸ A.toAddSubgroup.addSubgroupOf B.toAddSubgroup)).2)
 
 
-open scoped BigOperators in
 variable {R X M Γ : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] [Group Γ] in
 variable {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M} {lam : ℕ →* ℂ} {A : Submodule R X}
   {ρ : Γ →* Module.End R X} {Om : Γ →* Module.End ℂ M} in
@@ -101,7 +99,6 @@ theorem _root_.GlobalTheory.LatticeRep.IsLatRep.fix_of_map_le (h : _root_.Global
   rw [hidx, map_one, inv_one, one_smul]
   exact sumOp_eq_self_of_le hg hv
 
-open scoped BigOperators in
 variable {R X M Γ : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] [Group Γ] in
 variable {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M} {lam : ℕ →* ℂ} {A : Submodule R X}
   {ρ : Γ →* Module.End R X} {Om : Γ →* Module.End ℂ M} in
@@ -116,7 +113,6 @@ private theorem map_sumOp_of_commute {B : Submodule R X} (φ : M →ₗ[ℂ] M)
   simp only [hφ]
 
 
-open scoped BigOperators in
 variable {R X M Γ : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] [Group Γ] in
 variable {σ : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M} {lam : ℕ →* ℂ} {A : Submodule R X}
   {ρ : Γ →* Module.End R X} {Om : Γ →* Module.End ℂ M} in

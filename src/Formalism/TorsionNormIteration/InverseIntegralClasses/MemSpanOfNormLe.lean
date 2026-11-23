@@ -174,7 +174,6 @@ end Formalism.LT.FrobP
 
 namespace Formalism.LT
 
-open Formalism.G
 
 theorem FrobCongr_valid : Formalism.LT.FrobCongr.{u, v} := by
   intro K _ _ _ p q hq σ hset ι A hA

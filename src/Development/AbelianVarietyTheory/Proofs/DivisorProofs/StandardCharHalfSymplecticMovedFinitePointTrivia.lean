@@ -105,8 +105,6 @@ theorem recon_uniq {D : D7} (a b : AE D) (h1 : infPart D a = infPart D b) (h2 : 
 end GlobalTheory.MovedTrChar
 
 namespace GlobalTheory.MovedTrChar
-open GlobalTheory.BotClassDict (finQ finStd)
-open scoped TensorProduct
 
 theorem finPt_parts {D : D7} (S T : HSp D) (r : D.host.E) (z : Matrix (Fin T.rank) (Fin S.rank) D.host.E) (i : Fin T.rank) (j : Fin S.rank) :
     infPart D (finPt (S := S) (T := T) rfl rfl r z i j) = 0 ∧
@@ -158,7 +156,6 @@ theorem uComp {D : D7} (S T : HSp D) (hGS : HSpace.gram S = 1) (hGT : HSpace.gra
 end GlobalTheory.MovedTrChar
 
 namespace GlobalTheory.MovedTrChar
-open GlobalTheory.BotClassDict (finQ finStd)
 
 theorem symplOH_neg_self {D : D7} (S T : HSp D) (u : WO S T) : symplOH S T (-u) u = 0 := by
   have h0 := Formalism.IndefR.Fin.symplOH_add_left S T u (-u) u

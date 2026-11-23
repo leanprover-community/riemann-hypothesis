@@ -116,7 +116,6 @@ end GlobalTheory.Mem.R3.ResStd
 
 namespace GlobalTheory.Mem.R3.ResStd
 
-open GlobalTheory.Mem.R3.ResEx
 
 variable {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} {Z : w.Lt} {hX : B.fields.Ok} {Wt : Set B.places.Pl}
 

@@ -48,7 +48,6 @@ private theorem exists_over {E Ω : Type} [Field E] [NumberField E] [Field Ω] [
   obtain ⟨A, rfl⟩ := exists_cen Q
   exact ⟨A, hQ, hw⟩
 
-open CompanionTheory.PlaceDict in
 private theorem lift_ine {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
     [IsGalois E Ω] (L : IntermediateField E Ω) [FiniteDimensional E L] [Normal E L] [NumberField L]
     (w : HeightOneSpectrum (𝓞 L)) (τ : L ≃ₐ[E] L) (hτ : τ ∈ w.asIdeal.inertia (L ≃ₐ[E] L)) :

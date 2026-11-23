@@ -142,7 +142,6 @@ end GlobalTheory.Mem.Col2.TC.ChartBase
 
 namespace GlobalTheory.Mem.Col2.TC.ChartBase
 
-open NumberField
 
 variable {E : Type} [Field E] [NumberField E]
 

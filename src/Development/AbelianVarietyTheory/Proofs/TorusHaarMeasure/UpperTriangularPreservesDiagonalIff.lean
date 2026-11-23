@@ -52,7 +52,6 @@ private theorem gram_mul_eq_transpose_mul_gram_mul_conj {F : Type} [Field F] {r 
   simp only [_root_.GlobalTheory.UnitaryFrames.gram_eq_mul, Matrix.transpose_mul, Matrix.map_mul,
     Matrix.mul_assoc]
 
-open scoped Matrix in
 private theorem transpose_mul_diagonal_mul_conj_of_offDiag_eq_zero {r : ℕ}
     {B : Matrix (Fin r) (Fin r) ℂ} (d : Fin r → ℂ) (hdiag : ∀ a c, c ≠ a → B a c = 0) :
     Bᵀ * Matrix.diagonal d * B.map (starRingEnd ℂ) =
@@ -71,7 +70,6 @@ private theorem transpose_mul_diagonal_mul_conj_of_offDiag_eq_zero {r : ℕ}
   rw [← Complex.mul_conj]
   ring
 
-open scoped Matrix in
 private theorem transpose_mul_diagonal_mul_conj_eq_diagonal_iff {r : ℕ} {B : Matrix (Fin r) (Fin r) ℂ}
     {d : Fin r → ℂ} (hd : ∀ a, d a ≠ 0) (hdet : B.det ≠ 0) (hup : ∀ a c, c < a → B a c = 0) :
     Bᵀ * Matrix.diagonal d * B.map (starRingEnd ℂ) = Matrix.diagonal d ↔

@@ -51,7 +51,6 @@ variable {ι : Type} [Fintype ι] (G : Sz.Glob ι) (C : ℝ) (de de' : ℕ → �
 end sizes
 
 section sums
-open scoped nonZeroDivisors
 
 end sums
 

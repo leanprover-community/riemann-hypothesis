@@ -161,7 +161,6 @@ end Curves
 section Mean
 
 open NumberField
-open scoped UpperHalfPlane nonZeroDivisors
 
 theorem sum_log_norm_unit {N : Type} [Field N] [NumberField N] (u : (𝓞 N)ˣ) :
     ∑ s : N →+* ℂ, Real.log ‖s ((u : 𝓞 N) : N)‖ = 0 := by

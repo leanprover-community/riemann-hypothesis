@@ -99,7 +99,6 @@ end GlobalTheory.HalfSeparate
 
 namespace GlobalTheory.HalfSeparate
 
-open GlobalTheory.IdemModTwo
 
 
 

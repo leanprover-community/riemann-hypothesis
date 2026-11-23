@@ -80,11 +80,9 @@ open GlobalTheory.Grid (neg) in
 theorem negFrame_inl (A : HSp D) (τ : D.what₂.Tau) (a : Fin ((neg A).sig (tauE D τ)).1) (c : Fin (neg A).rank) :
     negFrame A τ (Sum.inl a) c = 0 := rfl
 
-open GlobalTheory.Grid (neg) in
 theorem negFrame_inr (A : HSp D) (τ : D.what₂.Tau) (k : Fin ((neg A).sig (tauE D τ)).2) (c : Fin (neg A).rank) :
     negFrame A τ (Sum.inr k) c = if (k : ℕ) = (c : ℕ) then 1 else 0 := rfl
 
-open GlobalTheory.Grid (neg neg_gram) in
 theorem jpq_mul_negFrame (A : HSp D) (τ : D.what₂.Tau) :
     Formalism.UG.Jpq ((neg A).sig (tauE D τ)).1 ((neg A).sig (tauE D τ)).2 * negFrame A τ = -negFrame A τ := by
   ext r c
@@ -98,7 +96,6 @@ theorem jpq_mul_negFrame (A : HSp D) (τ : D.what₂.Tau) :
       negFrame_inl, negFrame_inr, mul_zero, Finset.sum_const_zero, Matrix.neg_apply, Matrix.zero_apply, zero_mul, zero_add,
       Matrix.one_apply, neg_mul, ite_mul, one_mul, Finset.sum_neg_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
 
-open GlobalTheory.Grid (neg neg_gram) in
 theorem negFrame_conj_mul (A : HSp D) (hg : A.gram = 1) (hA : A.SigOK) (τ : D.what₂.Tau) :
     (negFrame A τ)ᴴ * negFrame A τ = 1 := by
   obtain ⟨hq, hp⟩ := sig_of_gram_one hg hA (tauE D τ)
@@ -122,7 +119,6 @@ theorem negFrame_conj_mul (A : HSp D) (hg : A.gram = 1) (hA : A.SigOK) (τ : D.w
   · intro x _ hx; rw [if_neg]; rintro ⟨h1, -⟩; exact hx (Fin.ext h1)
   · simp
 
-open GlobalTheory.Grid (neg neg_gram) in
 theorem gramAt_neg_of_gram_one {A : HSp D} (hg : A.gram = 1) (τ : D.what₂.Tau) : gramAt D (neg A) τ = -1 := by
   ext a b
   simp only [gramAt, neg_gram, hg, Matrix.map_apply, Matrix.neg_apply, Matrix.one_apply]
@@ -155,7 +151,6 @@ theorem exists_pair {T : Type} {A A' WW : HSp D} (X : Tri T A A' WW) {ψ : AddCh
     simp [compAt]
 
 
-open GlobalTheory.Grid (neg) in
 theorem one_le_bot (i j : Fin D.R.m) : 1 ≤ botBig D i j ∧ 1 ≤ botSmall D i j := by
   obtain ⟨u, hu⟩ := D.R.t_odd
   have h2 : D.R.m ≤ D.R.r := by have := D.R.m_add_three_le_k; unfold Ranks.r; omega

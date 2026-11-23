@@ -109,7 +109,6 @@ namespace GlobalTheory
 
 namespace FirstOrderPoints
 
-open TrivSqZeroExt
 
 theorem exists_linearCombination_eq :
     ∀ (R₀ B K : Type) [CommRing R₀] [CommRing B] [Algebra R₀ B] [Field K] (n : ℕ),

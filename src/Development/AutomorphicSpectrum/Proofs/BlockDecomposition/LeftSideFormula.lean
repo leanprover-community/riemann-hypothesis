@@ -242,7 +242,6 @@ end GlobalTheory.CompanionTheory.SW.LS
 
 namespace GlobalTheory.CompanionTheory.SW.LS
 
-open GlobalTheory.CompanionTheory.SW.WBox (cK eW)
 
 theorem eW_rat {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R]
     [SecondCountableTopology R] [MeasurableSpace R] [BorelSpace R] {d : ℕ} {b : Module.Basis (Fin d) F E}
@@ -450,7 +449,6 @@ end GlobalTheory.CompanionTheory.SW.LS
 
 namespace GlobalTheory.CompanionTheory.SW.LS
 
-open GlobalTheory.CompanionTheory.SW.WBox (cK)
 
 theorem count : Equi → ∀ (F : Type) [Field F] [NumberField F], IsTotallyReal F → ∀ θ : ℝ →+* Ainf F, Continuous θ →
     ∀ (li : Measure (Ainf F)) (lam : ∀ v : HeightOneSpectrum (𝓞 F), Measure (Fv F v)), IsStdInf li → (∀ v, IsStdV v (lam v)) →

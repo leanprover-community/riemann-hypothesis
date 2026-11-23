@@ -455,7 +455,6 @@ theorem J_sq : J ^ 2 = 0 := by
   rw [Ideal.span_singleton_pow, pow_two, DualNumber.eps_mul_eps, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
 
 
-open scoped Classical in
 def δJ : DividedPowers J := RatAlgebra.dividedPowers J
 
 def T : Thick nodeL where

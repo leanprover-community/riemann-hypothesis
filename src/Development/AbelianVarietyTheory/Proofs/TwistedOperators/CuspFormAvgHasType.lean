@@ -76,6 +76,5 @@ end
 
 namespace GlobalTheory.KFinCuspAvgType
 
-open Matrix Formalism.REAL Formalism.MainNotions.S GlobalTheory.TypeSum GlobalTheory.SmoothGlob GlobalTheory.LowTypeDetermined
 
 end GlobalTheory.KFinCuspAvgType

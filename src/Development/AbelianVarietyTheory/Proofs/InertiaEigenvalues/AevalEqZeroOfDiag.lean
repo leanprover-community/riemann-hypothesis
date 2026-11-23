@@ -427,7 +427,6 @@ theorem ENΔ_eq {g : W.Gam} (hJ : QFrame W g J) (y : ℕ) : tableLineDegreeTwo.E
     refine ⟨⟨h3, hinj _ _ ?_⟩, fun δ h => hinj _ _ (by rw [← hδ δ h, h4 δ h])⟩
     rw [smul_comm, ← hz', smul_smul, hE]
 
-open Formalism.MainNotions in
 theorem EkNΔ_eq {g : W.Gam} (hJ : QFrame W g J) (k : ℕ) : tableLineDegreeTwo.EkNΔ W T i k = qN W T i k := by
   rw [tableLineDegreeTwo.EkNΔ, ENΔ_eq W T J i hJ, Nat.cast_zero, neg_zero, qN_zero, qN,
     show (-(k : ℤ)).toNat = 0 by omega, Int.toNat_natCast]
@@ -458,7 +457,6 @@ theorem count_pairs {r : ℕ} (u : Fin r → ℤ) (y k : ℕ) (x : ℤ) :
     omega
 
 
-open Formalism.MainNotions in
 theorem lines_of_coeff (hK : Function.Surjective (algebraMap K₀ K)) (τ : K →ₐ[Qp] LL)
     (hτ : τ.comp (IsScalarTower.toAlgHom Qp K₀ K) = W.emb i) (ζ : LL)
     (hD : ∀ x k, W.levN T i ζ x k ∈ DeltaInvariantLattices.ιDi W T i)
@@ -494,7 +492,6 @@ theorem lines_of_coeff (hK : Function.Surjective (algebraMap K₀ K)) (τ : K �
     hF _ _ (Submodule.sub_mem _ (Submodule.smul_mem _ _ (hD' x k)) hw.1) h4⟩
 
 
-open Formalism.MainNotions in
 theorem clauses_of_lines [CharZero LL] [IsDomain O] [IsPrincipalIdealRing O] [IsFractionRing O LL]
     (hJ : QFrame W W.gam J) {r : ℕ} (b : Module.Basis (Fin r) (LetA O n) ↥(W.N T))
     (hb : ∀ k, (b k : W.DD T) ∈ W.NΔ T) (ζ : LL) (hζ : IsPrimitiveRoot ζ PD.p)
@@ -544,7 +541,6 @@ theorem clauses_of_lines [CharZero LL] [IsDomain O] [IsPrincipalIdealRing O] [Is
     exact hχ' _ (sub_ne_zero.2 hne) (by rw [zpow_sub₀ hχ, h, div_self (zpow_ne_zero _ hχ)])
 
 
-open Formalism.MainNotions in
 theorem senLat_of_tie [CharZero LL] [IsDomain O] [IsPrincipalIdealRing O] [IsFractionRing O LL]
     {Zl Ai : Type} [CommRing Zl] [CommRing Ai] [Algebra Zl O] [Algebra Zl Ai]
     {RW : Type} [CommRing RW] [Algebra O RW]
@@ -584,7 +580,6 @@ theorem senLat_of_tie [CharZero LL] [IsDomain O] [IsPrincipalIdealRing O] [IsFra
 end Generic
 
 
-open Formalism.MainNotions in
 
 theorem senLat_of_coeff {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : LocAinf l P} (hT : LocTied l P AI)
     {H : LocHW l P} {E : LocFon l P AI H} (C : LocCmpT l P AI H E) {K LL : FinExt l} (hA : CaseA K LL)

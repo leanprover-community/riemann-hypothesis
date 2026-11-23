@@ -65,8 +65,6 @@ theorem _root_.GlobalTheory.Square.AwayClosure.of_integral {m k l : ℕ} {x : K}
   refine ⟨a, k, k + l, ⟨b, RingOfIntegers.coe_injective ?_⟩, ha⟩
   simpa using hab
 
-open NumberField IsDedekindDomain Finset in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Square.AwayClosure.of_pow_eq_one (m : ℕ) {x : K} {k : ℕ} (hk : 0 < k) (h : x ^ k = 1) :
     _root_.GlobalTheory.Square.IsAwayUnit m x := by
@@ -79,15 +77,11 @@ theorem _root_.GlobalTheory.Square.AwayClosure.of_pow_eq_one (m : ℕ) {x : K} {
   exact _root_.GlobalTheory.Square.AwayClosure.of_integral (k := 0) (l := 0) (a := ⟨x, hxi⟩)
     (b := ⟨x⁻¹, hxinv⟩) hx (by rw [pow_zero, mul_one]; rfl) (by rw [pow_zero, mul_one]; rfl)
 
-open NumberField IsDedekindDomain Finset in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Square.AwayClosure.of_dvd {m k : ℕ} {a : 𝓞 K} (h : a ∣ (m : 𝓞 K) ^ k) :
     _root_.GlobalTheory.Square.IsAwayUnit m (a : K) :=
   ⟨a, 0, k, h, by simp⟩
 
-open NumberField IsDedekindDomain Finset in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Square.AwayClosure.mul {m : ℕ} {x y : K} (hx : _root_.GlobalTheory.Square.IsAwayUnit m x)
     (hy : _root_.GlobalTheory.Square.IsAwayUnit m y) : _root_.GlobalTheory.Square.IsAwayUnit m (x * y) :=
@@ -99,8 +93,6 @@ theorem _root_.GlobalTheory.Square.AwayClosure.mul {m : ℕ} {x y : K} (hx : _ro
       x * y * (m : K) ^ (k + l) = (x * (m : K) ^ k) * (y * (m : K) ^ l) := by rw [pow_add]; ring
       _ = ((a * b : 𝓞 K) : K) := by rw [hx, hy]; push_cast; rfl
 
-open NumberField IsDedekindDomain Finset in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Square.AwayClosure.inv {m : ℕ} (hm : 0 < m) {x : K} (hx : _root_.GlobalTheory.Square.IsAwayUnit m x) :
     _root_.GlobalTheory.Square.IsAwayUnit m x⁻¹ := by
@@ -122,8 +114,6 @@ end GlobalTheory.Square.AwayClosure
 
 namespace GlobalTheory.Square
 
-open NumberField IsDedekindDomain Finset in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 private lemma valuation_coe_integer_eq_exp_neg_count (v : HeightOneSpectrum (𝓞 K)) {r : 𝓞 K} (hr : r ≠ 0) :
     v.valuation K (r : K) =
@@ -133,8 +123,6 @@ private lemma valuation_coe_integer_eq_exp_neg_count (v : HeightOneSpectrum (�
     HeightOneSpectrum.intValuation_if_neg _ hr, ← FractionalIdeal.coeIdeal_span_singleton,
     FractionalIdeal.count_coe K v hspan]
 
-open NumberField IsDedekindDomain Finset in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 private lemma valuation_eq_exp_neg_count_spanSingleton_foundation (v : HeightOneSpectrum (𝓞 K)) {y : K} (hy : y ≠ 0) :
     v.valuation K y =
@@ -159,8 +147,6 @@ private lemma valuation_eq_exp_neg_count_spanSingleton_foundation (v : HeightOne
   congr 1
   ring
 
-open NumberField IsDedekindDomain Finset in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 private lemma exists_integer_eq_of_count_nonneg {y : K} (hy : y ≠ 0)
     (h : ∀ v : HeightOneSpectrum (𝓞 K),
@@ -171,8 +157,6 @@ private lemma exists_integer_eq_of_count_nonneg {y : K} (hy : y ≠ 0)
     linarith [h v]
   exact ⟨b, hb.symm⟩
 
-open NumberField IsDedekindDomain Finset in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 private lemma exists_mul_pow_integer_of_count_eq_zero_coprime {m : ℕ} (hm : 0 < m) {y : K} (hy : y ≠ 0)
     (h : ∀ w : HeightOneSpectrum (𝓞 K), (m : 𝓞 K) ∉ w.asIdeal →
@@ -215,8 +199,6 @@ private lemma exists_mul_pow_integer_of_count_eq_zero_coprime {m : ℕ} (hm : 0 
   exact ⟨n, b, hb⟩
 
 
-open NumberField IsDedekindDomain Finset in
-open scoped nonZeroDivisors in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.Square.isAwayUnit_closure : ∀ (K : Type) [Field K] [NumberField K]
     [StarRing K] (m : ℕ), 0 < m →

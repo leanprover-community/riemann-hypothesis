@@ -85,7 +85,6 @@ end GlobalTheory.HeckeSplitField
 
 namespace GlobalTheory.HeckeSplitField
 
-open Module
 
 theorem exists_finExt_split : ∀ (D : D7) (M : MtFam D) (C : NChoice D) (hR : HeckeLift0 (mt0 M) C.Q) (E0 : PlEmb D.what₂),
     (∀ j w v k v' k', Commute (hLC (mt0 M) C.Q hR j w v k) (hLC (mt0 M) C.Q hR j w v' k')) →

@@ -236,11 +236,9 @@ theorem one_intAf : (1 : Af D.host.F) ∈ intAf D.host.F := by
 
 end Kernel
 
-section Exist
 
 variable {D : D7}
 
-end Exist
 
 end Formalism.IndefR.Fin
 

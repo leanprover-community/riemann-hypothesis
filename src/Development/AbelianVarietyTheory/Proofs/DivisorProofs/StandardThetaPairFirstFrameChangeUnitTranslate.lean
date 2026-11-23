@@ -178,7 +178,6 @@ end GlobalTheory.frameChangeUnitDeterminant
 
 namespace GlobalTheory.frameChangeUnitDeterminant
 
-open Formalism.IndefR.Datum GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle
 
 variable {D : D7}
 
@@ -248,7 +247,6 @@ end GlobalTheory.frameChangeUnitDeterminant
 
 namespace GlobalTheory.frameChangeUnitDeterminant
 
-open Formalism.IndefR.Datum
 
 
 

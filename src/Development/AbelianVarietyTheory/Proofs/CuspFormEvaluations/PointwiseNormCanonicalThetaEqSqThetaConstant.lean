@@ -265,7 +265,6 @@ theorem finrank_lattice (X : Data E r) : Module.Free ℤ X.Λ ∧ Module.Finite 
     rw [Module.finrank_eq_card_basis c, Fintype.card_fin]⟩
 
 
-open SemicharIndep in
 theorem exists_isSympl (X : DataX E r) :
     ∃ bas : (Fin (X.Ψ.card * r) ⊕ Fin (X.Ψ.card * r) → ℤ) ≃ₗ[ℤ] X.Λ, IsSympl X.toData bas := by
   obtain ⟨h1, h2, h3⟩ := finrank_lattice X.toData

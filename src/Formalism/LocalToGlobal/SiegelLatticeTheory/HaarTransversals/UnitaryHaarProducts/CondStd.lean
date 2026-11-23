@@ -148,7 +148,6 @@ def LocTrDual : Prop :=
       Formalism.L2.SG.LocVol.dV v * x ∈ v.adicCompletionIntegers F
 
 
-open Formalism.L2.SG.Pf.StdChar in
 theorem condAllTR_of (hL : LocTrDual) (F : Type) [Field F] [NumberField F] [IsTotallyReal F]
     (ψ : AddChar (AF F) ℂ) (h1 : IsCharAF F ψ) (h2 : Formalism.L2.SG.LocVol.IsStdChar ψ)
     (v : HeightOneSpectrum (𝓞 F)) (x : Fv F v) :

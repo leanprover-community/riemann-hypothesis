@@ -134,7 +134,6 @@ end PositivityTheory.RgHe3.SquareIdentity
 
 namespace PositivityTheory.RgHe3
 
-open ReciprocityTheory.ChartRestriction.DS
 
 theorem square_identity_holds : SqId := by
   intro n ε M _ _ E _ hU x

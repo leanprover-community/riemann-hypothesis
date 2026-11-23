@@ -97,7 +97,6 @@ end GlobalTheory.LogKSDiv
 
 namespace GlobalTheory.LogKSDiv
 
-open TopForm
 
 theorem topPair_dForm {k A : Type} [CommRing k] [CommRing A] (α : k →+* A) {n : ℕ}
     (D : Fin n → (letI := α.toAlgebra; Derivation k A A)) (f : Fin n → A) :

@@ -106,7 +106,6 @@ end GlobalTheory.AfeLocTr
 
 namespace GlobalTheory.AfeLocTr
 
-open HeightOneSpectrum
 
 theorem transport_zero {E E' : Type} [Field E] [NumberField E] [Field E'] [NumberField E'] (s : E ≃+* E')
     (Φ : FiniteAdeleRing (𝓞 E) E ≃+* FiniteAdeleRing (𝓞 E') E')

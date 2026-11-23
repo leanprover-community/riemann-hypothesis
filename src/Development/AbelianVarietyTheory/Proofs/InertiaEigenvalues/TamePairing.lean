@@ -104,8 +104,6 @@ private theorem ne_zero_of_isUnifRoot {F Ω : Type} [Field F] [NumberField F] [F
   exact hϖ ((map_eq_zero_iff _ (algebraMap F Ω).injective).1 hxN)
 
 
-open NumberField IsDedekindDomain in
-open scoped Pointwise in
 theorem _root_.GlobalTheory.TamePairing.exists_apply_eq_pow_mul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
     {v : HeightOneSpectrum (𝓞 F)} {N : ℕ} [NeZero N] {ζ x : Ω} (hζ : IsPrimitiveRoot ζ N)
     (hx : _root_.GlobalTheory.TameQuot.IsUnifRoot v N x) (g : _root_.Formalism.ConjugateSelfDual.G F Ω) : ∃ c : ZMod N, g x = ζ ^ c.val * x := by
@@ -119,8 +117,6 @@ theorem _root_.GlobalTheory.TamePairing.exists_apply_eq_pow_mul {F Ω : Type} [F
   refine ⟨(i : ZMod N), ?_⟩
   rw [ZMod.val_natCast, Nat.mod_eq_of_lt hi, hi', div_mul_cancel₀ _ hx0]
 
-open NumberField IsDedekindDomain in
-open scoped Pointwise in
 private theorem apply_eq_self_of_cycMod_eq_one_of_pow_eq_one {F Ω : Type} [Field F] [NumberField F] [Field Ω]
     [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime] {g : _root_.Formalism.ConjugateSelfDual.G F Ω}
     (hg : _root_.ReciprocityTheory.Gal.cycMod F Ω l 1 g = 1) {t : Ω} (ht : t ^ l ^ 1 = 1) : g t = t := by
@@ -135,23 +131,17 @@ private theorem apply_eq_self_of_cycMod_eq_one_of_pow_eq_one {F Ω : Type} [Fiel
     Nat.mod_eq_of_lt (Nat.one_lt_pow one_ne_zero (Fact.out : l.Prime).one_lt), pow_one] at h
   exact h
 
-open NumberField IsDedekindDomain in
-open scoped Pointwise in
 private theorem eq_of_primitiveRoot_pow_val_mul_eq {Ω : Type} [Field Ω] {N : ℕ} [NeZero N] {ζ x : Ω}
     (hζ : IsPrimitiveRoot ζ N) (hx : x ≠ 0) {a b : ZMod N}
     (h : ζ ^ a.val * x = ζ ^ b.val * x) : a = b :=
   ZMod.val_injective _ (hζ.pow_inj (ZMod.val_lt a) (ZMod.val_lt b) (mul_right_cancel₀ hx h))
 
-open NumberField IsDedekindDomain in
-open scoped Pointwise in
 private theorem primitiveRoot_pow_val_add_eq_mul {Ω : Type} [Field Ω] {N : ℕ} [NeZero N] {ζ : Ω}
     (hζ : IsPrimitiveRoot ζ N) (a b : ZMod N) : ζ ^ (a + b).val = ζ ^ a.val * ζ ^ b.val := by
   rw [← pow_add, ZMod.val_add]
   conv_rhs => rw [← Nat.mod_add_div (a.val + b.val) N, pow_add, pow_mul, hζ.pow_eq_one, one_pow,
     mul_one]
 
-open NumberField IsDedekindDomain in
-open scoped Pointwise in
 private theorem map_eq_one_of_mem_ine_kernel {F Ω : Type} [Field F] [NumberField F]
     [Field Ω] [Algebra F Ω] {A : ValuationSubring Ω} {l : ℕ} [hl : Fact l.Prime] {m : ℕ}
     (ψ : _root_.ReciprocityTheory.Gal.Ine (F := F) A →* Multiplicative (ZMod (l ^ m)))
@@ -166,8 +156,6 @@ private theorem map_eq_one_of_mem_ine_kernel {F Ω : Type} [Field F] [NumberFiel
   obtain ⟨i, -, hi⟩ := (Nat.dvd_prime_pow hl.out).1 hdvd
   exact ⟨i, by rw [Subgroup.index_ker, hi]⟩
 
-open NumberField IsDedekindDomain in
-open scoped Pointwise in
 private theorem isClosed_setOf_pred_map_apply_of_isOpen_ker {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω]
     [Algebra.IsIntegral F Ω] {H : Type} [Group H] (d : _root_.Formalism.ConjugateSelfDual.G F Ω →* H)
     (hd : IsOpen (d.ker : Set (_root_.Formalism.ConjugateSelfDual.G F Ω))) (x : Ω) (P : H → Ω → Prop) :
@@ -187,8 +175,6 @@ private theorem isClosed_setOf_pred_map_apply_of_isOpen_ker {F Ω : Type} [Field
     exact one_mem _
 
 
-open NumberField IsDedekindDomain in
-open scoped Pointwise in
 theorem _root_.GlobalTheory.TamePairing.tame_pairing : _root_.GlobalTheory.Published.TameLocal → ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 F)), _root_.Formalism.ConjugateSelfDual.IsPlaceOver A v → ((l : ℕ) : 𝓞 F) ∉ v.asIdeal → _root_.Formalism.ConjugateSelfDual.normV v ≡ 1 [MOD l ^ 1] → (∀ g : _root_.ReciprocityTheory.Gal.Dec (F := F) A, _root_.ReciprocityTheory.Gal.cycMod F Ω l 1 g = 1) → ∀ e : _root_.ReciprocityTheory.Gal.H2 (_root_.GlobalTheory.Published.PoitouTate.muLoc F l 1 A) →ₗ[ZMod (l ^ 1)] ZMod (l ^ 1), Function.Bijective e → ∀ (M : ℕ), 1 ≤ M → ∀ d : _root_.Formalism.ConjugateSelfDual.G F Ω →* Multiplicative (ZMod (l ^ M)), IsOpen (d.ker : Set (_root_.Formalism.ConjugateSelfDual.G F Ω)) → ∀ γ φ : _root_.ReciprocityTheory.Gal.Dec (F := F) A, (γ : _root_.Formalism.ConjugateSelfDual.G F Ω) ∈ _root_.ReciprocityTheory.Gal.Ine (F := F) A → d γ = Multiplicative.ofAdd 1 → _root_.Formalism.ConjugateSelfDual.IsFrob A (_root_.Formalism.ConjugateSelfDual.normV v) (φ : _root_.Formalism.ConjugateSelfDual.G F Ω) → ∃ u : (ZMod (l ^ 1))ˣ, ∀ z y : _root_.ReciprocityTheory.Gal.Dec (F := F) A → ZMod (l ^ 1), Continuous z → Continuous y → (∀ g h, z (g * h) = z g + z h) → (∀ g h, y (g * h) = y g + y h) → (∀ g : _root_.ReciprocityTheory.Gal.Dec (F := F) A, (g : _root_.Formalism.ConjugateSelfDual.G F Ω) ∈ _root_.ReciprocityTheory.Gal.Ine (F := F) A → y g = 0) → ∀ w : _root_.ReciprocityTheory.Gal.Z2 (_root_.GlobalTheory.Published.PoitouTate.muLoc F l 1 A), (∀ g h, w.1 (g, h) = z g * y h) → e (Submodule.Quotient.mk w) = (u : ZMod (l ^ 1)) * (z γ * y φ) := by
   intro TL F Ω _ _ _ _ _ l _ A v hA hl hnorm hcyc e he M hM d hd γ φ hγ hdγ hφ
   obtain ⟨hS, hT⟩ := TL

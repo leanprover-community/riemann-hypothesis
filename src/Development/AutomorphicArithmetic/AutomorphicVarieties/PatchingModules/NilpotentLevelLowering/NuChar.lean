@@ -67,7 +67,6 @@ private theorem roots_smul_matrix {ι : Type*} [Fintype ι] [DecidableEq ι] (M 
   simp
   field_simp
 
-open Polynomial in
 private theorem charpoly_smul_prod {V ι : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] [Fintype ι]
     (f : Module.End ℂ V) (u : ℂ) (hu : u ≠ 0) (c : ι → ℂ) (h : f.charpoly = ∏ i, (X - C (c i))) :
     (u • f).charpoly = ∏ i, (X - C (c i * u)) := by

@@ -75,8 +75,6 @@ theorem _root_.GlobalTheory.OrbitScalar.exists_mem_dom (X : _root_.ReciprocityTh
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn
   split_ifs <;> norm_num
 
-open NumberField in
-open scoped Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma isOpen_dom_cubical_line_bundles (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) :
     IsOpen (X.dom : Set (X.Ψ → Fin r → Fin r → ℂ)) := by
@@ -96,8 +94,6 @@ private lemma isOpen_dom_cubical_line_bundles (X : _root_.ReciprocityTheory.Char
     unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.dmin _root_.ReciprocityTheory.ChartRestriction.G.FD.lminor _root_.ReciprocityTheory.ChartRestriction.G.FD.gram _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC _root_.ReciprocityTheory.ChartRestriction.G.FD.col _root_.ReciprocityTheory.ChartRestriction.G.FD.mat
     fun_prop
 
-open NumberField in
-open scoped Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma exists_scalar_of_eigen_on_open {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ)
     (U : Set (Fin n → ℂ)) (hU : IsOpen U) (hne : U.Nonempty)
@@ -162,8 +158,6 @@ private lemma exists_scalar_of_eigen_on_open {n : ℕ} (A : Matrix (Fin n) (Fin 
   have htne : (t : ℂ) ≠ 0 := by exact_mod_cast htpos.ne'
   exact smul_right_injective _ htne h2
 
-open NumberField in
-open scoped Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma exists_eq_smul_of_parallel_on_open {n : ℕ} (A B : Matrix (Fin n) (Fin n) ℂ)
     (hB : B.det ≠ 0) (U : Set (Fin n → ℂ)) (hU : IsOpen U) (hne : U.Nonempty)
@@ -198,8 +192,6 @@ private lemma exists_eq_smul_of_parallel_on_open {n : ℕ} (A B : Matrix (Fin n)
   funext i
   simp [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_assoc]
 
-open NumberField in
-open scoped Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.OrbitScalar.exists_smul_of_orbits : ∀ (E : Type) [Field E] [NumberField E]
     [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (γ : GL (Fin r) E),

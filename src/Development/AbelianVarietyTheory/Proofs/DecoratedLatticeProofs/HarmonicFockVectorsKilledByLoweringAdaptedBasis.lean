@@ -125,8 +125,6 @@ end GlobalTheory.FockKillAdapted
 
 namespace GlobalTheory.FockKillAdapted
 
-open GlobalTheory.FockKill GlobalTheory.FockIndep GlobalTheory.OrientedHeis
-open scoped Real Classical
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle}
   {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)} {θ : InfFam D} {τ : D.what₂.Tau}

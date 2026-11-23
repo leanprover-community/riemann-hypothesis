@@ -169,7 +169,6 @@ private theorem evc_pow_left {B T Y : Over S} [GrpObj B] {Q : LB (B ⊗ T).left}
   | zero => simp [IsAdditive.evc_one hQ hadd]
   | succ k ih => rw [pow_succ, key, ih, succ_nsmul]
 
-open GlobalTheory.AbDual GlobalTheory.CechPic in
 private theorem evc_pow_right {B T Y : Over S} [GrpObj B] [GrpObj T] {Q : LB (B ⊗ T).left} (hQ : Q.IsLB)
     (hadd : IsAdditive (swap Q)) (a : Y ⟶ B) (t : Y ⟶ T) (m : ℕ) : evc hQ a (t ^ m) = m • evc hQ a t := by
   have hs : (swap Q).IsLB := ReciprocityTheory.ChartRestriction.G.Geo.Tor.pull_isLB hQ _
@@ -179,7 +178,6 @@ private theorem evc_pow_right {B T Y : Over S} [GrpObj B] [GrpObj T] {Q : LB (B 
   | zero => simp [IsAdditive.evc_one hs hadd]
   | succ k ih => rw [pow_succ, key, ih, succ_nsmul]
 
-open GlobalTheory.AbDual GlobalTheory.CechPic in
 private theorem pull_square_pow_eq_sq_smul {B : Over S} [GrpObj B] [IsCommMonObj B] {Q : LB (G2 B).left} (hQ : Q.IsLB)
     (a₁ : IsAdditive Q) (s₁ : IsAdditive (swap Q)) (n : ℕ) :
     pull (sq2 ((𝟙 B) ^ n)) (cls Q hQ) = (n * n) • cls Q hQ := by
@@ -198,7 +196,6 @@ namespace UpperTheory.EvaluationPowerKernel
 
 variable {S : Scheme.{0}}
 
-open GlobalTheory.AbDual GlobalTheory.CechPic in
 private theorem lbIso_of_pull {B : Over S} [GrpObj B] [IsCommMonObj B] (hB : IsAbelianScheme B) {n : ℕ}
     (hn : IsUnit (n : Γ(S, ⊤))) {Q₁ Q₂ : LB (G2 B).left} (h₁ : Q₁.IsLB) (h₂ : Q₂.IsLB)
     (r₁ : ∃ t : (Q₁.pull (lift (1 : B ⟶ B) (𝟙 B)).left).Gen, t.IsGen)

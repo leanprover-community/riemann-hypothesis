@@ -167,7 +167,6 @@ end Wt
 
 section BaseCh
 
-open MvPolynomial Formalism.L2.DIV
 
 variable {K L : Type} [Field K] [Field L] {ι : Type} [Fintype ι] {a b : ℕ}
 
@@ -222,7 +221,6 @@ end BaseCh
 
 section UnfG
 
-open MvPolynomial Formalism.L2.DIV
 
 variable {ι : Type} [Fintype ι] {a b : ℕ} {Y Y' : Type}
 
@@ -544,7 +542,6 @@ end VVWt
 
 section WtVVA
 
-open MvPolynomial Formalism.L2.DIV Formalism.GradedWeylDivisibility
 
 variable {K : Type} [Field K] {r n : ℕ}
 
@@ -647,7 +644,6 @@ end WtVVA
 
 section WtVVB
 
-open MvPolynomial Formalism.L2.DIV Formalism.GradedWeylDivisibility
 
 variable {K : Type} [Field K] {n : ℕ} {ι : Type}
 

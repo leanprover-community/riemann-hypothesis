@@ -78,7 +78,6 @@ theorem eulerProd_eq_mul_prod {F E : Type} [Field F] [NumberField F] [Field E] [
   exact h1.unique h4
 
 
-open GlobalTheory.LFun in
 theorem Lv_pair {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (c : Fam E)
     {v : HeightOneSpectrum (𝓞 F)} {P P' : HeightOneSpectrum (𝓞 E)} (hne : P' ≠ P)
     (hv : ∀ u : HeightOneSpectrum (𝓞 E), u.under (𝓞 F) = v ↔ u = P ∨ u = P') (s : ℂ) :
@@ -87,13 +86,11 @@ theorem Lv_pair {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
   have e : Formalism.L2.Host.aboveF (L := E) F v = {P, P'} := by ext u; simp [GlobalTheory.LFun.mem_aboveF, hv]
   rw [Lv, e, Finset.prod_pair hne.symm]
 
-open GlobalTheory.LFun in
 theorem norm_npow_lt_one {K : Type} [Field K] [NumberField K] (P : HeightOneSpectrum (𝓞 K)) {z : ℂ} (hz : 0 < z.re) :
     ‖npow P (-z)‖ < 1 := by
   rw [norm_npow]
   exact Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast one_lt_absNorm P) (by simpa using hz)
 
-open GlobalTheory.LFun in
 theorem one_sub_ne_zero {K : Type} [Field K] [NumberField K] (P : HeightOneSpectrum (𝓞 K)) {b : ℂ} (hb : ‖b‖ = 1)
     {z : ℂ} (hz : 0 < z.re) : 1 - b * npow P (-z) ≠ 0 := fun h => by
   have h1 : b * npow P (-z) = 1 := (sub_eq_zero.1 h).symm
@@ -102,12 +99,10 @@ theorem one_sub_ne_zero {K : Type} [Field K] [NumberField K] (P : HeightOneSpect
   rw [norm_mul, hb, one_mul, norm_one] at h3
   linarith
 
-open GlobalTheory.LFun in
 theorem npow_neg_natCast {K : Type} [Field K] [NumberField K] (P : HeightOneSpectrum (𝓞 K)) (n : ℕ) :
     npow P (-(n : ℂ)) = ((Ideal.absNorm P.asIdeal : ℂ) ^ n)⁻¹ := by
   rw [npow, Complex.cpow_neg, Complex.cpow_natCast]
 
-open GlobalTheory.LFun in
 theorem differentiable_factor {K : Type} [Field K] [NumberField K] (P : HeightOneSpectrum (𝓞 K)) (b : ℂ) :
     Differentiable ℂ fun z : ℂ => 1 - b * npow P (-z) :=
   (differentiable_const _).sub ((differentiable_const _).mul
@@ -156,7 +151,6 @@ theorem quotL_entire_ne_zero_off (c : Com D) (hc : c.Is) (S' : Finset (HeightOne
     exact lt_irrefl _ this
 
 
-open GlobalTheory.LFun in
 theorem eval_relation (c : Com D) (w : Twist D) (hw : w.Is c) {i j : ℕ} (hi : i ∈ Finset.Icc 1 D.R.m)
     (hj : j ∈ Finset.Icc 1 D.R.m) {Λ Λ₀ : ℂ → ℂ} (hΛ : Differentiable ℂ Λ) (hΛ₀ : Differentiable ℂ Λ₀)
     (e : ∀ z : ℂ, 1 < z.re → Λ z = eulerProd (above D.host.E (c.S : Set (HeightOneSpectrum (𝓞 D.host.F))))
@@ -243,7 +237,6 @@ end GlobalTheory.ChainTw.EulerAtTwist
 namespace GlobalTheory.ChainTw.EulerAtTwist
 
 
-open GlobalTheory.LFun in
 theorem restore_hval : ∀ (D : D7) (c : Com D) (w : Twist D), w.Is c → ∀ k < D.R.m,
     (∀ H H₀, IsHval c (c.S : Set _) k H → IsHval c w.S₀ k H₀ → H₀ = H * ∏ PP ∈ w.Q, blockL c k PP) ∧
     ∃ H₀, H₀ ≠ 0 ∧ IsHval c w.S₀ k H₀ := by

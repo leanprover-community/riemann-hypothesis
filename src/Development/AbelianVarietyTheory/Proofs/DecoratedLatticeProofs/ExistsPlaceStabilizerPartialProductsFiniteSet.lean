@@ -282,7 +282,6 @@ end GlobalTheory.PlaceProducts
 
 namespace GlobalTheory.PlaceProducts
 
-open Classical
 
 set_option synthInstance.maxHeartbeats 400000
 

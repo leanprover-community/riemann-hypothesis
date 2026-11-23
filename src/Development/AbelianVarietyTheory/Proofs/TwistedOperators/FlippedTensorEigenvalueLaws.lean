@@ -130,7 +130,6 @@ end GlobalTheory.FirstRowEndLaw
 
 namespace GlobalTheory.FirstRowEndLaw
 
-open GlobalTheory.FunObj.GivenAdm
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T} {G : GridData L sc} {t : T} {w : Pl D.host.E}
 
@@ -223,7 +222,6 @@ end GlobalTheory.FirstRowEndLaw
 
 namespace GlobalTheory.FirstRowEndLaw
 
-open GlobalTheory.FunObj.GivenAdm
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T} {G : GridData L sc} {w : Pl D.host.E}
 

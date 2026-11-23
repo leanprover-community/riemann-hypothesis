@@ -66,11 +66,9 @@ theorem proj_entry {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} 
       ((SplitPlace.loc s n x : GL (Fin n) (s.v.adicCompletion (maximalRealSubfield L))) :
         Matrix (Fin n) (Fin n) (s.v.adicCompletion (maximalRealSubfield L))) i j := rfl
 
-open NumberField IsDedekindDomain TensorProduct in
 private theorem evalAt_apply' {L : Type} [Field L] [NumberField L] (w)
     (a : _root_.ReciprocityTheory.Aut.AFplus L) : _root_.ReciprocityTheory.Aut.evalAt L w a = a w := rfl
 
-open NumberField IsDedekindDomain TensorProduct in
 private theorem eq_zero_of_compAt_eq_zero_of_proj_conj_eq_zero {L : Type} [Field L] [NumberField L] [IsCMField L]
     (s : _root_.ReciprocityTheory.Aut.SplitPlace L) (d : _root_.ReciprocityTheory.Aut.AL L)
     (hw : ∀ w, w ≠ s.v → _root_.ReciprocityTheory.Aut.compAt L w d = 0) (h₁ : SplitPlace.proj s d = 0)
@@ -126,7 +124,6 @@ private theorem eq_zero_of_compAt_eq_zero_of_proj_conj_eq_zero {L : Type} [Field
   simp [ha, hc]
 
 
-open NumberField IsDedekindDomain TensorProduct in
 theorem _root_.GlobalTheory.SplitLocEq.eq_of_trivOutside_of_loc_eq : ∀ (L : Type) [Field L] [NumberField L]
     [IsCMField L] (n : ℕ) (s : _root_.ReciprocityTheory.Aut.SplitPlace L) (x y : _root_.Formalism.AUTREP.GAf L n),
     _root_.ReciprocityTheory.Aut.TrivOutside (L := L) {s.v} x →

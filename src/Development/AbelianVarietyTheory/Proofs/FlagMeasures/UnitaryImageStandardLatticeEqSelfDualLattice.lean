@@ -82,7 +82,6 @@ end GlobalTheory.StdLatImg
 
 namespace GlobalTheory.StdLatImg
 
-open GlobalTheory.HL.CoordInnerSnd
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
@@ -143,7 +142,6 @@ end GlobalTheory.StdLatImg
 
 namespace GlobalTheory.StdLatImg
 
-open GlobalTheory.HL.CoordInnerSnd
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]

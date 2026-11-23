@@ -55,8 +55,6 @@ private theorem one_le_inv_differentIdeal :
   simpa using h
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.SgGlob.Iota.one_mem_dInv (j : ℕ) : (1 : E) ∈ _root_.GlobalTheory.SgGlob.dInv E j := by
   unfold _root_.GlobalTheory.SgGlob.dInv

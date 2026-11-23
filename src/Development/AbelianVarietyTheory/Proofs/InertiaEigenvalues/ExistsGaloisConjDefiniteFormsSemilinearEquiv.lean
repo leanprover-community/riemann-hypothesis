@@ -71,7 +71,6 @@ end GlobalTheory.ConjTwist
 
 namespace GlobalTheory.ConjTwist
 
-open GlobalTheory.CoefModel
 
 def conjVV {ι : Type} [Fintype ι] {n : ℕ} (τ : ℂ ≃+* ℂ) (lam : ι → DomWeight n) : VV ℂ lam ≃+ VV ℂ lam where
   toFun := mapVV (τ : ℂ →+* ℂ) lam
@@ -100,7 +99,6 @@ end GlobalTheory.ConjTwist
 
 namespace GlobalTheory.ConjTwist
 
-open GlobalTheory.CoefModel
 
 theorem c_rhoVr {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
     {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F} {i : Fin D.R.m} {Tp : Type} {tup : Tp → T0}
@@ -131,7 +129,6 @@ end GlobalTheory.ConjTwist
 
 namespace GlobalTheory.ConjTwist
 
-open GlobalTheory.CoefModel
 
 theorem mapVV_tau_rhoVr (D : D7) (i : Fin D.R.m) (τ : ℂ ≃+* ℂ) (hτ : ∀ (φ : D.host.E →+* ℂ) x, τ (φ x) = φ x)
     (γE : GL (Fin (Vc D i).rank) D.host.E) (x : VsV D i ℂ) :

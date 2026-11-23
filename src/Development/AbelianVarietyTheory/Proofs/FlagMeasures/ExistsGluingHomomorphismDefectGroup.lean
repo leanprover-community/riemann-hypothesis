@@ -86,8 +86,6 @@ private theorem exists_tauRel_of_mem_complementLattice (d : S.Datum)
     rw [this, htt, sub_self]
     exact Submodule.zero_mem _
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -170,8 +168,6 @@ private theorem tauRel_iff_sub_mem_M (d : S.Datum)
     rw [this]
     exact Submodule.sub_mem _ hy hyy
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -201,8 +197,6 @@ private theorem tauRel_smul_add (d : S.Datum)
     convert this using 1
     module
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -229,8 +223,6 @@ private theorem mem_complementLattice_of_mem_term (d : S.Datum)
     exact ⟨w, hΛ, w, hΛ, hXo', hXo, by simpa using Submodule.zero_mem _,
       by simpa using Submodule.zero_mem _, 0, Λ.zero_mem, by simp⟩
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -305,8 +297,6 @@ private theorem mem_of_tauRel_zero (d : S.Datum)
   simpa using this
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} {S : _root_.GlobalTheory.HL.Frames L r k} in

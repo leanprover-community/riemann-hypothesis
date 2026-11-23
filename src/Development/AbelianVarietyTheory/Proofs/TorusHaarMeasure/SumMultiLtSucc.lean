@@ -64,8 +64,6 @@ theorem _root_.GlobalTheory.JetsPure.monomial_isBigO {n D : ℕ} (σ : Fin D →
   simpa only [Finset.prod_pow_eq_pow_sum] using h2
 
 
-open MeasureTheory Topology Filter Asymptotics in
-open scoped ContDiff ENNReal Matrix in
 theorem _root_.GlobalTheory.JetsPure.main : ∀ (J I : Type) [Fintype I] (D T a : ℕ),
     a ≤ T + 1 → ∀ (n : J → ℕ) (e : ∀ p, Fin (n p) ≃ Fin D)
     (f w0 : ∀ p, _root_.ReciprocityTheory.L2DbarEstimates.V (n p) → ℂ) (s : ∀ p, Fin D → _root_.ReciprocityTheory.L2DbarEstimates.V (n p) → ℂ)

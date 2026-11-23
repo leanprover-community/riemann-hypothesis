@@ -42,7 +42,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.HeatConn
-open GlobalTheory.HeatConn
 
 set_option autoImplicit false
 

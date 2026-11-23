@@ -162,7 +162,6 @@ end Rows
 
 section Loop
 
-open MeasureTheory
 
 def rhoF (D : D7) (a : Fin (D.R.rS + 1)) : ℝ := D.host.rdE ^ (-((D.R.rS : ℝ) - (a : ℕ)))
 

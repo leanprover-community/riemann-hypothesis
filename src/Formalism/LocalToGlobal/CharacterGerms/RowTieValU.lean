@@ -60,10 +60,8 @@ theorem IsIU.one {σ : Type} : IsIU V (1 : MvPowerSeries σ C) := by
 theorem IsIU.mul {σ : Type} {U U' : MvPowerSeries σ C} (h : IsIU V U) (h' : IsIU V U') : IsIU V (U * U') :=
   ⟨IntS.mul h.1 h'.1, by rw [map_mul, AddValuation.map_mul, h.2, h'.2, add_zero]⟩
 
-section Defs
 
 variable (Y : FBChart C V O dd) (p : ∀ o, PairData Y d (I o))
 
-end Defs
 
 end Formalism.L2.FormalSeriesBounds

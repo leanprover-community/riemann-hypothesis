@@ -91,8 +91,6 @@ private lemma mul_prod_sublevel_add_le_of_fst_sublevel_le {A A' B : Type*} [Meas
     _ = b * ∫⁻ y, m' ((fun x => (x, y)) ⁻¹' {p : A' × B | n' p.1 + g p.2 < r}) ∂μ :=
         lintegral_const_mul _ (measurable_measure_prodMk_right hS')
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 private lemma mul_prod_sublevel_add_le_of_snd_sublevel_le {A B B' : Type*} [MeasurableSpace A] [MeasurableSpace B]
     [MeasurableSpace B'] (μ : Measure A) (m : Measure B) (m' : Measure B') [SFinite m]
     [SFinite m'] (g : A → ℝ) (n : B → ℝ) (n' : B' → ℝ) (hg : Measurable g) (hn : Measurable n)
@@ -137,8 +135,6 @@ private lemma mul_prod_sublevel_add_le_of_snd_sublevel_le {A B B' : Type*} [Meas
         lintegral_const_mul _ (measurable_measure_prodMk_left hS')
 
 
-open MeasureTheory Matrix Filter Topology in
-open scoped ENNReal NNReal in
 theorem _root_.GlobalTheory.SublevelDensity.tendsto_prod_density : ∀ (A₁ E₁ A₂ E₂ : Type) [MeasurableSpace A₁] [MeasurableSpace E₁] [MeasurableSpace A₂] [MeasurableSpace E₂] (m₁ : Measure A₁) (l₁ : Measure E₁) (m₂ : Measure A₂) (l₂ : Measure E₂) [SFinite m₁] [SFinite l₁] [SFinite m₂] [SFinite l₂] (n₁ : A₁ → ℝ) (N₁ : E₁ → ℝ) (n₂ : A₂ → ℝ) (N₂ : E₂ → ℝ) (c₁ c₂ : ℝ≥0∞), Measurable n₁ → Measurable N₁ → Measurable n₂ → Measurable N₂ → (∀ x, 0 ≤ n₁ x) → (∀ x, 0 ≤ N₁ x) → (∀ x, 0 ≤ n₂ x) → (∀ x, 0 ≤ N₂ x) → c₁ ≠ ⊤ → c₂ ≠ ⊤ → (∀ r : ℝ, 0 < r → l₁ {x | N₁ x < r} ≠ 0 ∧ l₁ {x | N₁ x < r} ≠ ⊤) → (∀ r : ℝ, 0 < r → l₂ {x | N₂ x < r} ≠ 0 ∧ l₂ {x | N₂ x < r} ≠ ⊤) → Tendsto (fun r : ℝ => m₁ {x | n₁ x < r} / l₁ {x | N₁ x < r}) (𝓝[>] 0) (𝓝 c₁) → Tendsto (fun r : ℝ => m₂ {x | n₂ x < r} / l₂ {x | N₂ x < r}) (𝓝[>] 0) (𝓝 c₂) → Tendsto (fun r : ℝ => (m₁.prod m₂) {p | n₁ p.1 + n₂ p.2 < r} / (l₁.prod l₂) {p | N₁ p.1 + N₂ p.2 < r}) (𝓝[>] 0) (𝓝 (c₁ * c₂)) := by
   intro A₁ E₁ A₂ E₂ _ _ _ _ m₁ l₁ m₂ l₂ _ _ _ _ n₁ N₁ n₂ N₂ c₁ c₂ hn₁ hN₁ hn₂ hN₂ hn₁0 hN₁0
     hn₂0 hN₂0 hc₁ hc₂ hl₁ hl₂ h₁ h₂

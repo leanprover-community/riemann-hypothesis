@@ -119,7 +119,6 @@ end GlobalTheory.ConjInfExp
 
 namespace GlobalTheory.ConjInfExp
 
-open GlobalTheory.FockCompare GlobalTheory.AdelicU
 
 
 

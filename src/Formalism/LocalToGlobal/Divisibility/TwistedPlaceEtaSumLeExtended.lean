@@ -340,7 +340,6 @@ variable {I0 Ty : Type}
 
 end N
 
-section Link3
 
 open Formalism.BasicNotions Formalism.L2.Col
 
@@ -348,13 +347,10 @@ variable {X : Fields} {Pr : Primes X} {Rk : Ranks} {W : Wts X Pr.Word Rk} {Ch : 
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {Sg : Set ℕ}
   {G : Type} [Group G] [Fintype G] {Pl0 I0 Ty T : Type} {m : ℕ}
 
-end Link3
 
-section Link3N
 
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 Ty T : Type} {m : ℕ}
 
-end Link3N
 
 end Formalism.L2.DIV

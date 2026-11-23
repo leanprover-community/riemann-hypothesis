@@ -67,19 +67,16 @@ private lemma constantCoeff_coeff_one_one_add_X_pow {R : Type*} [CommRing R] (N 
       push_cast
       ring
 
-open PowerSeries in
 private lemma isUnit_padicInt_of_not_dvd' {l : ℕ} [Fact l.Prime] (z : ℤ_[l]) (hz : ¬ (l : ℤ_[l]) ∣ z) :
     IsUnit z :=
   PadicInt.isUnit_iff.2 (le_antisymm (PadicInt.norm_le_one z)
     (not_lt.1 fun h => hz ((PadicInt.norm_lt_one_iff_dvd z).1 h)))
 
-open PowerSeries in
 private lemma toZMod_eq_zero_iff_dvd {l : ℕ} [Fact l.Prime] (z : ℤ_[l]) :
     PadicInt.toZMod z = 0 ↔ (l : ℤ_[l]) ∣ z := by
   rw [← RingHom.mem_ker, PadicInt.ker_toZMod, PadicInt.maximalIdeal_eq_span_p,
     Ideal.mem_span_singleton]
 
-open PowerSeries in
 private lemma three_le_prime_pow {l s : ℕ} (hl : l.Prime) (hs : 1 ≤ s) (h2 : l = 2 → 2 ≤ s) :
     3 ≤ l ^ s := by
   rcases hl.eq_two_or_odd' with rfl | hodd
@@ -93,7 +90,6 @@ private lemma three_le_prime_pow {l s : ℕ} (hl : l.Prime) (hs : 1 ≤ s) (h2 :
       _ = l ^ 1 := (pow_one l).symm
       _ ≤ l ^ s := Nat.pow_le_pow_right hl.pos hs
 
-open PowerSeries in
 private lemma coeff_one_mul_one_add_X_sq_mul_pow {R : Type*} [CommRing R] (f w : R⟦X⟧) (n : ℕ) :
     coeff 1 (f * (1 + X ^ 2 * w) ^ n) = coeff 1 f := by
   obtain ⟨q, hq⟩ : X ^ 2 ∣ (1 + X ^ 2 * w) ^ n - 1 ^ n := by
@@ -105,7 +101,6 @@ private lemma coeff_one_mul_one_add_X_sq_mul_pow {R : Type*} [CommRing R] (f w :
     linear_combination f * hq
   rw [e, map_add (f := _), X_pow_dvd_iff.1 (dvd_mul_right _ _) 1 (by norm_num), add_zero]
 
-open PowerSeries in
 private lemma sum_mul_triSol_eq {R : Type*} [CommRing R] (M : ℕ → ℕ → R)
     (g : ℕ → R) (n : ℕ) (hn : IsUnit (M n n)) :
     ∑ i ∈ Finset.range (n + 1), M n i * _root_.GlobalTheory.ExpImage.triSol M g i = g n := by
@@ -116,7 +111,6 @@ private lemma sum_mul_triSol_eq {R : Type*} [CommRing R] (M : ℕ → ℕ → R)
   ring
 
 
-open PowerSeries in
 theorem _root_.GlobalTheory.ExpImage.solve_mod_pow : ∀ (l : ℕ) [Fact l.Prime] (s : ℕ), _root_.GlobalTheory.Cyc.Lev l s →
     ∀ (m : ℕ), ¬ l ∣ m → ∀ U : ℤ_[l], (l : ℤ_[l]) ^ s ∣ U - 1 →
     ∀ (γ : PowerSeries ℤ_[l] →ₐ[ℤ_[l]] PowerSeries ℤ_[l]) (v : PowerSeries ℤ_[l]),

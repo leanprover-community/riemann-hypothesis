@@ -132,8 +132,6 @@ private lemma isPullback_model_j_spMap_algebraMap (M : _root_.GlobalTheory.SS.Mo
   · have := Over.w M.e.hom
     simpa using this.symm
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 variable {R K : Type} [CommRing R] [Field K] [Algebra R K] {A A' : Over (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp K)} in
 private lemma eq_of_openImmersion_of_eq_on_genericFibre [IsDomain R] [IsFractionRing R K]
     (M : _root_.GlobalTheory.SS.Model R A)
@@ -154,8 +152,6 @@ private lemma eq_of_openImmersion_of_eq_on_genericFibre [IsDomain R] [IsFraction
     (a := Over.homMk a ha) (b := Over.homMk b hb) h
   exact congrArg (fun c => c.left) this
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 variable {R K : Type} [CommRing R] [Field K] [Algebra R K] {A A' : Over (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp K)} in
 private lemma comp_eq_of_extends_of_genericFibre_comm {M : _root_.GlobalTheory.SS.Model R A}
     {N : _root_.GlobalTheory.SS.Model R A'} {f : A ⟶ A'} {U : M.Y.left.Opens}
@@ -167,8 +163,6 @@ private lemma comp_eq_of_extends_of_genericFibre_comm {M : _root_.GlobalTheory.S
   rw [← hP.lift_fst t s hts.symm, Category.assoc, h2, ← Category.assoc, hP.lift_snd]
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 variable {R K : Type} [CommRing R] [Field K] [Algebra R K] {A A' : Over (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp K)} in
 theorem _root_.GlobalTheory.SS.existsUnique_extension_of_forall_defAt :
     ∀ (R K : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field K] [Algebra R K]

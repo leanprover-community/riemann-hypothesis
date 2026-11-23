@@ -433,7 +433,6 @@ end GlobalTheory.SiegelPower
 
 namespace GlobalTheory.SiegelPower
 
-open GlobalTheory.CechPic
 
 section Geometry
 
@@ -575,7 +574,6 @@ end GlobalTheory.SiegelPower
 
 namespace GlobalTheory.SiegelPower
 
-open GlobalTheory.CechPic
 
 theorem exists_tObj_isSharp : Out.Laws → Out.Laws2 → ∀ (h g : ℕ) (W : Matrix (Fin 8) (Fin 8) ℤ) (J : Type) (a : J → Matrix (Fin 8) (Fin 8) ℤ) (bas : (Fin (2 * g) → ℤ) ≃ₗ[ℤ] (Fin 8 → (Fin h ⊕ Fin h → ℤ))), IsE8 W → IsSharpBasis W bas → ∀ (k : ℕ) (o : Type) [CommRing o] (b : TBase o k) (S : Scheme.{0}) (s : S ⟶ Sp o) (c : SiegPre h k (b.ζ : o) s), Odd k → 3 ≤ k → b.ζ ^ k = 1 → c.Principal → ∃ t : TObj g k J b s, IsSharp W a bas t c := by
   intro hL _ h g W J a bas hW hbas k o _ b S s c hk h3 hζ hc

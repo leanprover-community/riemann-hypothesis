@@ -53,7 +53,6 @@ theorem evFin_liftV (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModel
 end Tw.LatVac
 
 namespace Tw.LatVac
-open _root_.GlobalTheory
 
 theorem symp_smul_smul {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (σ : E →ₐ[F] E) {n d : ℕ} (JA : Matrix (Fin n) (Fin n) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)))
@@ -74,6 +73,5 @@ theorem symp_smul_smul {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
 end Tw.LatVac
 
 namespace Tw.LatVac
-open _root_.GlobalTheory
 
 end Tw.LatVac

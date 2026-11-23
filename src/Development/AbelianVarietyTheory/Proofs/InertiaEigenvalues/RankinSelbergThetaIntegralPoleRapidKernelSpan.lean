@@ -140,7 +140,6 @@ end GlobalTheory.RSThetaLimR
 
 namespace GlobalTheory.RSThetaLimR
 
-open GlobalTheory.RSTheta GlobalTheory.ThetaPoisson GlobalTheory.RSThetaLow GroundTheory.Automorphic.GJMatrix GroundTheory.Global
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 

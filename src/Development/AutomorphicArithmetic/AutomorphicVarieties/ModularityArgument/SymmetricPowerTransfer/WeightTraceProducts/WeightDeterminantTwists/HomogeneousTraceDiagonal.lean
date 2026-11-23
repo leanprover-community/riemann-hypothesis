@@ -116,7 +116,6 @@ private theorem cont_coeff {σ ι : Type} [Fintype ι] (F : ι → ℂ → MvPol
     simp only [Multiset.map_cons, Multiset.prod_cons, MvPolynomial.coeff_mul]
     exact continuous_finsetSum _ fun p _ => (h a _).mul (ih _)
 
-open MvPolynomial in
 private theorem homogeneous_trace_diagonal {d : ℕ} (n : ℕ) (g : GL (Fin d) ℂ) (h : ∀ i j, i ≠ j → g i j = 0) :
     tr1 d n g = MvPolynomial.eval (fun i => g i i) (hsymm (Fin d) ℂ n) := by
   classical

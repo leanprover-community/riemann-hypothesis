@@ -83,7 +83,6 @@ theorem _root_.GlobalTheory.FlagMeas.measurable_detOn_comp {X : Type} [Topologic
   exact Measurable.ite hS.measurableSet hg.norm.measurable measurable_const
 
 
-open MeasureTheory NumberField Matrix Finset in
 theorem _root_.GlobalTheory.FlagMeas.measurable_locSize_uMat (n : ℕ) (ε : Fin n → Bool) (a : ℕ) (j : Fin a → ℕ)
     (W : Fin (a + 1) → Submodule ℂ (Fin n → ℂ)) (i : Fin a) :
     Measurable fun g : _root_.Formalism.REAL.UJ ε => _root_.GlobalTheory.FlagMeas.locSize j W (_root_.Formalism.MainNotions.S.uMat g) i := by

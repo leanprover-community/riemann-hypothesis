@@ -92,8 +92,6 @@ private theorem exists_rat_sum_norm_forms_eq_one {a b d : ℚ} (ha : 0 < a) (hb 
   field_simp
   linarith
 
-open NumberField in
-open scoped Matrix ComplexConjugate in
 private theorem sesq_apply_eq_zero_and_of_mem_span_of_forall_mem {K V : Type} [Field K] [AddCommGroup V] [Module K V]
     {σ : K →+* K} (h : V →ₗ[K] V →ₛₗ[σ] K) {s : Set V} {w : V}
     (hs : ∀ u ∈ s, h u w = 0 ∧ h w u = 0) {u : V} (hu : u ∈ Submodule.span K s) :
@@ -104,8 +102,6 @@ private theorem sesq_apply_eq_zero_and_of_mem_span_of_forall_mem {K V : Type} [F
   | add x y _ _ hx hy => simp [hx.1, hy.1, hx.2, hy.2]
   | smul c x _ hx => simp [hx.1, hx.2]
 
-open NumberField in
-open scoped Matrix ComplexConjugate in
 private theorem exists_orthonormal_mem_span_of_diagonal_square_prod {K V : Type} [Field K] [CharZero K]
     [AddCommGroup V] [Module K V] (σ : K →+* K) (h : V →ₗ[K] V →ₛₗ[σ] K) {d : ℕ} {θ : K}
     (hd : 0 < d) (hθ2 : θ ^ 2 = -(d : K)) (hθ : σ θ = -θ) :
@@ -260,8 +256,6 @@ private theorem exists_orthonormal_mem_span_of_diagonal_square_prod {K V : Type}
       | succ i => simpa using hle (hspan' i)
 
 
-open NumberField in
-open scoped Matrix ComplexConjugate in
 theorem _root_.GlobalTheory.SqDet.exists_orthonormal_of_diag_pos_isSquare :
     ∀ (K V : Type) [Field K] [NumberField K] [AddCommGroup V] [Module K V] (σ : K →+* K) (h : V →ₗ[K] V →ₛₗ[σ] K) (d : ℕ) (θ : K), 0 < d → θ ^ 2 = -(d : K) → σ θ = -θ → (∀ x : K, ∃ a b : ℚ, x = (a : K) + (b : K) * θ) → ∀ (r : ℕ) (v : Fin r → V) (a : Fin r → ℚ), (∀ i, 0 < a i) → (∀ i j, h (v i) (v j) = if i = j then (a i : K) else 0) → IsSquare (∏ i, a i) → ∃ e : Fin r → V, ∀ i j, h (e i) (e j) = if i = j then 1 else 0 := by
   intro K V _ _ _ _ σ h d θ hd hθ2 hθ _ r v a ha hv hsq

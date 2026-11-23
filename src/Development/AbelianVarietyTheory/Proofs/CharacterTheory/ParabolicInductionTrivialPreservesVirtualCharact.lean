@@ -86,7 +86,6 @@ def lin (x : GL (Fin n) F) : (Fin n → F) ≃ₗ[F] (Fin n → F) :=
 theorem lin_apply (x : GL (Fin n) F) (v : Fin n → F) :
     lin x v = Matrix.toLin' (x : Matrix (Fin n) (Fin n) F) v := rfl
 
-open Polynomial in
 variable {F : Type} [Field F] {n : ℕ} in
 theorem _root_.GlobalTheory.ParabVirt.lin_mul (x y : GL (Fin n) F) (v : Fin n → F) :
     _root_.GlobalTheory.ParabVirt.lin (x * y) v =
@@ -94,7 +93,6 @@ theorem _root_.GlobalTheory.ParabVirt.lin_mul (x y : GL (Fin n) F) (v : Fin n �
   simp only [_root_.GlobalTheory.ParabVirt.lin_apply, Units.val_mul,
     Matrix.toLin'_mul_apply]
 
-open Polynomial in
 variable {F : Type} [Field F] {n : ℕ} in
 theorem _root_.GlobalTheory.ParabVirt.lin_one (v : Fin n → F) :
     _root_.GlobalTheory.ParabVirt.lin (1 : GL (Fin n) F) v = v := by
@@ -102,7 +100,6 @@ theorem _root_.GlobalTheory.ParabVirt.lin_one (v : Fin n → F) :
 
 theorem lin_inv (x : GL (Fin n) F) (v : Fin n → F) : lin x⁻¹ v = (lin x).symm v := rfl
 
-open Polynomial in
 variable {F : Type} [Field F] {n : ℕ} in
 theorem _root_.GlobalTheory.ParabVirt.lin_surjective (e : (Fin n → F) ≃ₗ[F] (Fin n → F)) :
     ∃ x : GL (Fin n) F, _root_.GlobalTheory.ParabVirt.lin x = e := by
@@ -112,7 +109,6 @@ theorem _root_.GlobalTheory.ParabVirt.lin_surjective (e : (Fin n → F) ≃ₗ[F
   · ext v : 1
     simp [_root_.GlobalTheory.ParabVirt.lin_apply]
 
-open Polynomial in
 variable {F : Type} [Field F] {n : ℕ} in
 theorem _root_.GlobalTheory.ParabVirt.map_eq_of_stable (x : GL (Fin n) F)
     (W : Submodule F (Fin n → F)) (h : ∀ v ∈ W, _root_.GlobalTheory.ParabVirt.lin x v ∈ W) :
@@ -132,13 +128,11 @@ def stab (W : Submodule F (Fin n → F)) : Subgroup (GL (Fin n) F) where
     obtain ⟨w, hw, rfl⟩ := hv
     simpa using hw
 
-open Polynomial in
 variable {F : Type} [Field F] {n : ℕ} in
 theorem _root_.GlobalTheory.ParabVirt.mem_stab (W : Submodule F (Fin n → F)) (x : GL (Fin n) F) :
     x ∈ _root_.GlobalTheory.ParabVirt.stab W ↔
       ∀ v ∈ W, Matrix.toLin' (x : Matrix (Fin n) (Fin n) F) v ∈ W := Iff.rfl
 
-open Polynomial in
 variable {F : Type} [Field F] {n : ℕ} in
 private theorem lin_mul_toLinearMap (x y : GL (Fin n) F) :
     (_root_.GlobalTheory.ParabVirt.lin (x * y)).toLinearMap =
@@ -146,7 +140,6 @@ private theorem lin_mul_toLinearMap (x y : GL (Fin n) F) :
         (_root_.GlobalTheory.ParabVirt.lin y).toLinearMap :=
   LinearMap.ext fun v => _root_.GlobalTheory.ParabVirt.lin_mul x y v
 
-open Polynomial in
 variable {F : Type} [Field F] {n : ℕ} in
 theorem _root_.GlobalTheory.ParabVirt.map_eq_map_iff (W : Submodule F (Fin n → F))
     (s t : GL (Fin n) F) :
@@ -167,7 +160,6 @@ theorem _root_.GlobalTheory.ParabVirt.map_eq_map_iff (W : Submodule F (Fin n →
     rw [lin_mul_toLinearMap, Submodule.map_comp,
       _root_.GlobalTheory.ParabVirt.map_eq_of_stable _ W h']
 
-open Polynomial in
 variable {F : Type} [Field F] {n : ℕ} in
 theorem _root_.GlobalTheory.ParabVirt.conj_mem_stab_iff (W : Submodule F (Fin n → F))
     (x t : GL (Fin n) F) :
@@ -211,7 +203,6 @@ def resMat {a : ℕ} (W : Submodule F (Fin n → F)) (e : W ≃ₗ[F] (Fin a →
     ext1
     exact lin_mul x.1 y.1 _
 
-open Polynomial in
 variable {F : Type} [Field F] {n : ℕ} in
 private theorem exists_gl_map_lin_eq_of_finrank_eq (W₀ W : Submodule F (Fin n → F))
     (h : Module.finrank F W₀ = Module.finrank F W) :
@@ -235,7 +226,6 @@ private theorem exists_gl_map_lin_eq_of_finrank_eq (W₀ W : Submodule F (Fin n 
   · rw [LinearEquiv.finrank_map_eq, h]
 
 
-open Polynomial in
 variable {F : Type} [Field F] {n : ℕ} in
 theorem _root_.GlobalTheory.ParabVirt.parab_virt : ∀ (F : Type) [Field F] [Finite F] (Φ : ∀ (V : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V], Module.End F V → ℂ), (∀ (V V' : Type) [AddCommGroup V] [Module F V] [FiniteDimensional F V] [AddCommGroup V'] [Module F V'] [FiniteDimensional F V'] (e : V ≃ₗ[F] V') (g : Module.End F V), Φ V' (e.conj g) = Φ V g) → ∀ a n : ℕ, (fun x : GL (Fin a) F => Φ (Fin a → F) (Matrix.toLin' (x : Matrix (Fin a) (Fin a) F))) ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ (GL (Fin a) F) → (fun x : GL (Fin n) F => ∑ᶠ W : {W : Submodule F (Fin n → F) // Module.finrank F W = a ∧ ∀ v ∈ W, Matrix.toLin' (x : Matrix (Fin n) (Fin n) F) v ∈ W}, Φ W.1 ((Matrix.toLin' (x : Matrix (Fin n) (Fin n) F)).restrict W.2.2)) ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ (GL (Fin n) F) := by
   intro F _ _ Φ hΦ a n hχ

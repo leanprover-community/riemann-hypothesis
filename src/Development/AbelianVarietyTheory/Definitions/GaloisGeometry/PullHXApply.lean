@@ -111,7 +111,6 @@ end Functors
 end GlobalTheory.EtC.Psi
 
 namespace GlobalTheory.EtC.Psi
-open GlobalTheory.EtC.Rel
 
 variable (R : Type) [CommRing R]
 

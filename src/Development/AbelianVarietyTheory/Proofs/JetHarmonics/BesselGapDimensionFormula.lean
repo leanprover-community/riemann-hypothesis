@@ -359,7 +359,6 @@ noncomputable section
 
 namespace GlobalTheory.BesselNorm
 
-open Formalism.FourierDecayAlt.P Formalism.FourierDecayAlt.P.MatrixMultiplicationContinuity
 
 theorem fdegHC_pos {n : ℕ} (lam : Fin n → ℝ) (hlam : Function.Injective lam) :
     0 < Formalism.QuantumDeterminants.fdegHC lam := by

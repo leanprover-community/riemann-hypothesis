@@ -43,7 +43,6 @@ theorem fromRows_add_fromRows {R : Type} [Add R] {m₁ m₂ n : Type} (A B : Mat
     fromRows A C + fromRows B D = fromRows (A + B) (C + D) := by
   ext (i | i) j <;> rfl
 
-open Matrix in
 theorem smul_fromRows {R S : Type} [SMul S R] {m₁ m₂ n : Type} (s : S) (A : Matrix m₁ n R) (C : Matrix m₂ n R) :
     s • fromRows A C = fromRows (s • A) (s • C) := by
   ext (i | i) j <;> rfl

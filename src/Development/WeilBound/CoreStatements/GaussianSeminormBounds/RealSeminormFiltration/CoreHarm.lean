@@ -209,7 +209,6 @@ theorem rename_first_lowering (a b : Ix p q) (P : Pol p q r s) :
     rfl
   · simp
 
-open PI.FockOneDegW.Swap in
 theorem minus1_eq (Z : Mat p q) (hZ : IsPC Z) (P : Pol p q r s) :
     minusPart (fockAct1 p q r s Z) P = -∑ a, ∑ b, Z a b • low1 a b P := by
   apply rename_sw_injective p q r s

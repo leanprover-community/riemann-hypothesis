@@ -74,7 +74,6 @@ end Generic
 end GlobalTheory.OriginBox
 
 namespace GlobalTheory.OriginBox
-open GlobalTheory.FunObj GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx
 
 section Vol
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -119,7 +118,6 @@ end Vol
 end GlobalTheory.OriginBox
 
 namespace GlobalTheory.OriginBox
-open GlobalTheory.FunObj GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx
 
 section Expo
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

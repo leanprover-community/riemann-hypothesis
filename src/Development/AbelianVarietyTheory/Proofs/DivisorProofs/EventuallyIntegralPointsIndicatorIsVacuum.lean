@@ -99,7 +99,6 @@ open GlobalTheory.AdelicU GlobalTheory.WeilM
 
 namespace GlobalTheory.StdVacuum
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -173,7 +172,6 @@ end GlobalTheory.StdVacuum
 
 namespace GlobalTheory.StdVacuum
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

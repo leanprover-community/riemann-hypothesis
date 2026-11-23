@@ -149,7 +149,6 @@ theorem stdA_mul {ν : kˣ →* ℂˣ} {ϖ : kˣ} {c a a' : ℕ} {X : Matrix (Fi
 end GlobalTheory.StdPairMatch
 
 namespace GlobalTheory.StdPairMatch
-open GlobalTheory.SplitFlip GlobalTheory.SplitWeil Matrix MeasureTheory
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -199,7 +198,6 @@ theorem stdB_mul {ν : kˣ →* ℂˣ} {ϖ : kˣ} {c a a' : ℕ} {Y : Matrix (Fi
 end GlobalTheory.StdPairMatch
 
 namespace GlobalTheory.StdPairMatch
-open GlobalTheory.SplitFlip GlobalTheory.SplitWeil Matrix MeasureTheory
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 variable [MeasurableSpace k] [BorelSpace k]
@@ -287,7 +285,6 @@ theorem smallF_stdB_of_det_eq_zero (ν : kˣ →* ℂˣ) (ϖ : kˣ) (c : ℕ) {a
 end GlobalTheory.StdPairMatch
 
 namespace GlobalTheory.StdPairMatch
-open GlobalTheory.SplitFlip GlobalTheory.SplitWeil Matrix
 
 variable {k : Type} [Field k]
 

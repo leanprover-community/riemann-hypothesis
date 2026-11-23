@@ -240,7 +240,6 @@ end Mat
 
 section Dat
 
-open GlobalTheory.StepLaw.TypeDatum
 
 variable {D : D7} {a b : ℕ} (L : LevDat D.host.E ℂ a) (hL : L.P = LevelP.triv L.Pg L.r ℂ)
   (χj : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ) (y : ∀ PP : Pl D.host.E, Matrix (Fin b) (Fin a) (kP PP))
@@ -351,7 +350,6 @@ end Dual
 
 section Lat
 
-open GlobalTheory.PlaceModel GlobalTheory.PlaceDatum GlobalTheory.SplitHecke
 
 variable {D : D7} {S T : HSp D} {ψ : AddChar (AF D.host.F) ℂ}
   {ΛS ΛS' : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)} {ΛT ΛT' : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)}

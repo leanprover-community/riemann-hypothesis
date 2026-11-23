@@ -101,9 +101,6 @@ private theorem exists_algebraMap_eq_of_algebraMap_eq_algebraMap {c : F} {a : R'
     refine ⟨(u⁻¹ : Rˣ), ?_⟩
     rw [map_units_inv, hr, inv_inv]
 
-open NumberField in
-open scoped TensorProduct in
-open Polynomial in
 variable (R R' F F' : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [CommRing R']
   [IsDomain R'] [IsDiscreteValuationRing R'] [Algebra R R'] [Module.Flat R R']
   [IsLocalHom (algebraMap R R')] [Field F] [Algebra R F] [IsFractionRing R F] [Field F']
@@ -168,9 +165,6 @@ private theorem isIntegral_of_isIntegral_one_tmul' {y : L}
   rw [← aeval_def, ← aeval_map_algebraMap F, hq'map, hf, minpoly.aeval]
 
 
-open NumberField in
-open scoped TensorProduct in
-open Polynomial in
 theorem _root_.GlobalTheory.isIntegral_iff_mem_span_one_tmul_integralClosure :
     ∀ (R R' F F' : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [CommRing R'] [IsDomain R'] [IsDiscreteValuationRing R'] [Algebra R R'] [Module.Flat R R'] [IsLocalHom (algebraMap R R')] [Field F] [Algebra R F] [IsFractionRing R F] [Field F'] [Algebra R' F'] [IsFractionRing R' F'] [Algebra F F'] [Algebra R F'] [IsScalarTower R F F'] [IsScalarTower R R' F'], Ideal.map (algebraMap R R') (IsLocalRing.maximalIdeal R) = IsLocalRing.maximalIdeal R' → Function.Surjective (IsLocalRing.ResidueField.map (algebraMap R R')) → ∀ (L : Type) [Field L] [Algebra F L] [FiniteDimensional F L] [Algebra.IsSeparable F L] [Algebra R L] [IsScalarTower R F L] (x : F' ⊗[F] L), IsIntegral R' x ↔ x ∈ Submodule.span R' ((fun b : L => (1 : F') ⊗ₜ[F] b) '' (integralClosure R L : Set L)) := by
   intro R R' F F' _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hmax hres L _ _ _ _ _ _ x

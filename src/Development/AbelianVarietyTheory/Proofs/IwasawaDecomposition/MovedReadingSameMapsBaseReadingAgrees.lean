@@ -119,11 +119,9 @@ def datMv {hX : B.fields.Ok} (z : Dat (w.st Z) w.I hX T Wt) : Dat (w.st (Db.setD
 def p0Mv (p0 : BaseLevelRowSide (w.D Z)) : BaseLevelRowSide (w.D (Db.setDivZ Z N h)) :=
   ⟨{ p0.s with }⟩
 
-open DivX (md) in
 def divMv (X : DivX (w.D Z)) : DivX (w.D (Db.setDivZ Z N h)) :=
   { X with md := fun S κ p _ la z => { md X S κ p la z with } }
 
-open DivX (md) in
 def divUnmv (X : DivX (w.D (Db.setDivZ Z N h))) : DivX (w.D Z) :=
   { X with md := fun S κ p _ la z => { md X S κ p la z with } }
 

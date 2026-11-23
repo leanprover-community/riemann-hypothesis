@@ -49,7 +49,6 @@ private def Dz {E ι : Type} [Field E] [StarRing E] [Fintype ι] [DecidableEq ι
     (T : Matrix ι ι E) : Prop :=
   ∃ g : Matrix ι ι E, g.det ≠ 0 ∧ ∃ D : ι → E, Matrix.conjTranspose g * T * g = Matrix.diagonal D
 
-open Matrix in
 private theorem Dz.of_submatrix {E ι κ : Type} [Field E] [StarRing E] [Fintype ι] [DecidableEq ι]
     [Fintype κ] [DecidableEq κ] (e : ι ≃ κ) {T : Matrix κ κ E}
     (h : Dz (T.submatrix e e)) : Dz T := by
@@ -64,7 +63,6 @@ private theorem Dz.of_submatrix {E ι κ : Type} [Field E] [StarRing E] [Fintype
     ext a b
     simp [diagonal_apply]
 
-open Matrix in
 private theorem Dz.of_congr {E ι : Type} [Field E] [StarRing E] [Fintype ι] [DecidableEq ι]
     {T P : Matrix ι ι E} (hP : P.det ≠ 0) (h : Dz (Pᴴ * T * P)) : Dz T := by
   obtain ⟨g, hg, D, hD⟩ := h
@@ -72,7 +70,6 @@ private theorem Dz.of_congr {E ι : Type} [Field E] [StarRing E] [Fintype ι] [D
   · rw [det_mul]; exact mul_ne_zero hP hg
   · rw [← hD, conjTranspose_mul]; simp only [Matrix.mul_assoc]
 
-open Matrix in
 private theorem Dz.sum {E A B : Type} [Field E] [StarRing E] [Fintype A] [DecidableEq A]
     [Fintype B] [DecidableEq B]
     (hA : ∀ X : Matrix A A E, X.IsHermitian → Dz X)
@@ -116,7 +113,6 @@ private theorem Dz.sum {E A B : Type} [Field E] [StarRing E] [Fintype A] [Decida
   · rw [fromBlocks_conjTranspose, fromBlocks_multiply, fromBlocks_multiply, ← fromBlocks_diagonal]
     simp [hDA, hDB]
 
-open Matrix in
 private theorem Dz.pivot {E ι : Type} [Field E] [StarRing E] [Fintype ι] [DecidableEq ι]
     (ih : ∀ (κ : Type) [Fintype κ] [DecidableEq κ], Fintype.card κ < Fintype.card ι →
       ∀ X : Matrix κ κ E, X.IsHermitian → Dz X)
@@ -136,7 +132,6 @@ private theorem Dz.pivot {E ι : Type} [Field E] [StarRing E] [Fintype ι] [Deci
     have hdef : (((default : {a // a = i})) : ι) = i := (default : {a // a = i}).2
     simpa [e, toBlocks₁₁, hdef] using hi
 
-open Matrix in
 private theorem Dz.all {E : Type} [Field E] [StarRing E] [CharZero E] :
     ∀ (n : ℕ) (ι : Type) [Fintype ι] [DecidableEq ι], Fintype.card ι = n →
       ∀ T : Matrix ι ι E, T.IsHermitian → Dz T := by

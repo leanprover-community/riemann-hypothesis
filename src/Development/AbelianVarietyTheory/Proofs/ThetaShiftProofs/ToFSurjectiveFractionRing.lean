@@ -517,7 +517,6 @@ end GlobalTheory.ThetaTranslate
 
 namespace GlobalTheory
 
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
 open GlobalTheory.FieldBaseChange GlobalTheory.ConstFam GlobalTheory.ThetaScalar GlobalTheory.ThetaTranslate
 
 theorem values_at_translate (hG : GlobalFnsSt) (hK : KerPowSt) {R : Type} [CommRing R] [IsDomain R] {I : Ideal R}

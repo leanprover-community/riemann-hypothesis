@@ -295,7 +295,6 @@ theorem exists_sep {X : Scheme.{0}} (p : X ⟶ Sp ℂ) {N : ℕ} (ι : X ⟶ PSp
 end GlobalTheory.EtProj.Jets
 
 namespace GlobalTheory.EtProj.Jets
-open GlobalTheory.ProjSpace GlobalTheory.ProjFrac
 
 theorem exists_lin_mul {X : Scheme.{0}} (p : X ⟶ Sp ℂ) {N : ℕ} (ι : X ⟶ PSpace ℂ N) (hι : IsClosedImmersion ι)
     (hp : ι ≫ PSpace.str ℂ N = p) {k : ℕ} {g₀ w : MvPolynomial (Fin (N + 1)) ℂ} (hg₀ : g₀ ∈ grading ℂ N 1)
@@ -378,7 +377,6 @@ theorem exists_form_jet {X : Scheme.{0}} (p : X ⟶ Sp ℂ) [LocallyOfFiniteType
 end GlobalTheory.EtProj.Jets
 
 namespace GlobalTheory.EtProj.Jets
-open GlobalTheory.ProjSpace
 
 section Defs
 
@@ -475,7 +473,6 @@ end Defs
 end GlobalTheory.EtProj.Jets
 
 namespace GlobalTheory.EtProj.Jets
-open GlobalTheory.ProjSpace
 
 theorem exists_jet_forms : ∀ (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp ℂ) (d : ℕ) [SmoothOfRelativeDimension d p] (N : ℕ)
     (ι : X ⟶ PSpace ℂ N), IsClosedImmersion ι → ι ≫ PSpace.str ℂ N = p → ∀ S : Finset (CxPts p (RingHom.id ℂ)),

@@ -225,10 +225,8 @@ theorem even_val_add_two {d : ℕ} [NeZero d] (hd : Even d) (a : ZMod d) :
 
 end ValuationNonnegativity
 
-section Closed
 
 variable {C : Type} [Field C]
 
-end Closed
 
 end Formalism.L2.FormalSeriesBounds

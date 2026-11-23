@@ -132,7 +132,6 @@ theorem GlobalTheory.SeqCx.vertical_exact_of_columns : ∀ (V W : Type) (D : Set
     exact Finset.sum_congr rfl (fun l hl => by rw [vbd_mapDomain, hybd l hl])
 
 section
-open GlobalTheory.SeqCx
 theorem _root_.GlobalTheory.T.pairSeqVerticalCycle_is_boundary_of_slices_exact : ∀ (V W : Type) (D : Set (List V × List W)) (a b : ℕ), (∀ l : List V, l.length = a → (∃ w, (l, w) ∈ D) → ExactAt {w | (l, w) ∈ D} b) → ∀ x ∈ chains2 D a b, vbd V W x = 0 → ∃ y ∈ chains2 D a (b + 1), vbd V W y = x := by
   first
   | exact @GlobalTheory.SeqCx.vertical_exact_of_columns

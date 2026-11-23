@@ -72,8 +72,6 @@ private lemma exists_nhds_maj_two_sided_norm_sq_bound {r : ℕ} (X : _root_.Reci
   obtain ⟨h3, h4⟩ := hb x rfl τ w
   constructor <;> nlinarith
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma exists_integral_denominator (x : E) :
     ∃ b : 𝓞 E, b ≠ 0 ∧ IsIntegral ℤ ((b : E) * x) := by
@@ -86,8 +84,6 @@ private lemma exists_integral_denominator (x : E) :
   rw [this]
   exact RingOfIntegers.isIntegral_coe a
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma exists_common_denominator_lattice {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) :
     ∃ y : 𝓞 E, y ≠ 0 ∧ ∀ v ∈ X.Λ, ∀ i, IsIntegral ℤ ((y : E) * v i) := by
@@ -117,8 +113,6 @@ private lemma exists_common_denominator_lattice {r : ℕ} (X : _root_.Reciprocit
     rw [this]
     exact (RingOfIntegers.isIntegral_coe a).mul (hu i)
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma finite_denominator_norm_le (Ψ : Finset (E →+* ℂ))
     (hΨ : ∀ τ : E →+* ℂ, τ ∈ Ψ ∨ ComplexEmbedding.conjugate τ ∈ Ψ)
@@ -138,8 +132,6 @@ private lemma finite_denominator_norm_le (Ψ : Finset (E →+* ℂ))
     (fun _ _ => norm_nonneg _) (Finset.mem_univ φ)) hφ (norm_nonneg _)
     (Finset.sum_nonneg fun _ _ => norm_nonneg _)
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma mem_Ψ_or_conjugate_mem {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (τ : E →+* ℂ) :
     τ ∈ X.Ψ ∨ ComplexEmbedding.conjugate τ ∈ X.Ψ := by
@@ -149,8 +141,6 @@ private lemma mem_Ψ_or_conjugate_mem {r : ℕ} (X : _root_.ReciprocityTheory.Ch
     rw [X.cmType]
     simpa [ComplexEmbedding.conjugate, star_star] using h
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma finite_lattice_norm_emb_le {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (R : ℝ) :
     {v : Fin r → E | v ∈ X.Λ ∧ ∀ τ : X.Ψ, ‖_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (τ : E →+* ℂ) v‖ ≤ R}.Finite := by
@@ -163,8 +153,6 @@ private lemma finite_lattice_norm_emb_le {r : ℕ} (X : _root_.ReciprocityTheory
   have := hR ⟨τ, hτ⟩
   exact le_trans (by simpa [_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb] using norm_le_pi_norm (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ v) i) this
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma matrix_eq_of_mulVec_eq_on_span_generators {r : ℕ} {Λ : Submodule (𝓞 E) (Fin r → E)}
     {S : Finset (Fin r → E)} (hS : Submodule.span (𝓞 E) ↑S = Λ)
@@ -178,16 +166,12 @@ private lemma matrix_eq_of_mulVec_eq_on_span_generators {r : ℕ} {Λ : Submodul
   apply Matrix.toLin'.injective
   exact LinearMap.ext_on htop (fun s hs => by simpa using h s hs)
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma le_sqrt_mul_of_sq_le_mul_sq {a b k : ℝ} (hk : 0 ≤ k) (hb : 0 ≤ b) (ha : 0 ≤ a)
     (h : a ^ 2 ≤ k * b ^ 2) : a ≤ Real.sqrt k * b := by
   rw [← Real.sqrt_sq ha, ← Real.sqrt_sq hb, ← Real.sqrt_mul hk]
   exact Real.sqrt_le_sqrt h
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma emb_mulVec_torus_haar_measure {r : ℕ} (τ : E →+* ℂ) (g : Matrix (Fin r) (Fin r) E) (v : Fin r → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ (g.mulVec v) = (g.map τ).mulVec (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ v) := by
@@ -195,8 +179,6 @@ private lemma emb_mulVec_torus_haar_measure {r : ℕ} (τ : E →+* ℂ) (g : Ma
 
   simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb, Matrix.mulVec, dotProduct, map_sum, map_mul]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma propDisc_arithmetic_group_frames (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) : _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.PropDisc X := by
   classical
@@ -248,15 +230,11 @@ private lemma propDisc_arithmetic_group_frames (r : ℕ) (X : _root_.Reciprocity
       (fun _ _ => norm_nonneg _) (Finset.mem_univ τ)
 
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.ClosedDiscontinuity.propDisc_closed :
     ∀ (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r), _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.PropDisc X :=
   fun r X => propDisc_arithmetic_group_frames r X
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma la1_lact_rmul_eq {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ)
     {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} (hx : x ∈ X.dom) {b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} (hb : b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor X.Ψ r) :
@@ -285,8 +263,6 @@ private lemma la1_lact_rmul_eq {r : ℕ} (X : _root_.ReciprocityTheory.ChartRest
     · refine Finset.sum_congr rfl (fun τ _ => ?_)
       rw [← hmaj τ, ← emb_mulVec_torus_haar_measure]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma la1_eq_sqrt_la1sq {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) :
     X.la1 = fun x => Real.sqrt (X.firstMinimumSq x) := by
@@ -294,8 +270,6 @@ private lemma la1_eq_sqrt_la1sq {r : ℕ} (X : _root_.ReciprocityTheory.ChartRes
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.la1
   rfl
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma abs_sub_lt_of_ratio_bounds {L y e ε : ℝ} (hL : 0 ≤ L) (he : 0 < e) (he1 : e ≤ 1)
     (heL : 2 * e * L < ε) (h1 : L ≤ (1 + e) * y) (h2 : y ≤ (1 + e) * L) : |y - L| < ε := by
@@ -306,8 +280,6 @@ private lemma abs_sub_lt_of_ratio_bounds {L y e ε : ℝ} (hL : 0 ≤ L) (he : 0
   rw [abs_lt]
   constructor <;> nlinarith
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma continuousOn_la1sq_dom {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) : ContinuousOn X.firstMinimumSq X.dom := by
   intro x hx
@@ -339,8 +311,6 @@ private lemma continuousOn_la1sq_dom {r : ℕ} (X : _root_.ReciprocityTheory.Cha
   rw [Real.dist_eq]
   exact abs_sub_lt_of_ratio_bounds hL0 he0 he1 heL (by linarith) h2
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma exists_pos_lower_bound_of_finite {α : Type} {s : Set α} (hs : s.Finite)
     (f : α → ℝ) (hpos : ∀ v ∈ s, 0 < f v) : ∃ δ : ℝ, 0 < δ ∧ ∀ v ∈ s, δ ≤ f v := by
@@ -349,8 +319,6 @@ private lemma exists_pos_lower_bound_of_finite {α : Type} {s : Set α} (hs : s.
   · obtain ⟨v0, hv0, hmin⟩ := Set.exists_min_image s f hs hne
     exact ⟨f v0, hpos v0 hv0, hmin⟩
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma la1sq_pos_of_mem_dom {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (hr : 0 < r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) : 0 < X.firstMinimumSq x := by
@@ -418,8 +386,6 @@ private lemma la1sq_pos_of_mem_dom {r : ℕ} (X : _root_.ReciprocityTheory.Chart
   exact hlow v hv hv0
 
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.ClosedDiscontinuity.firstMinimum_invariant_continuous_pos_on_frames : _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.LineBundleFirstBoundGlobalGeneration (E := E) := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.LineBundleFirstBoundGlobalGeneration
@@ -431,8 +397,6 @@ theorem _root_.GlobalTheory.ClosedDiscontinuity.firstMinimum_invariant_continuou
     exact Real.sqrt_pos.2 (la1sq_pos_of_mem_dom X hr hx)
 
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.ClosedDiscontinuity.propDisc_and_la1GG :
     (∀ (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r), _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.PropDisc X) ∧ (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.LineBundleFirstBoundGlobalGeneration (E := E)) :=

@@ -69,8 +69,6 @@ private lemma exists_linearIndependent_smul_mem_span {A M : Type*} [CommRing A] 
     (Submodule.mem_annihilator.1 hcann) _ Submodule.mem_top
   rwa [← map_smul, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero] at this
 
-open IsLocalRing in
-open scoped Pointwise in
 private lemma isFiniteLength_of_nonZeroDivisor_smul_eq_zero {A X : Type*} [CommRing A] [IsNoetherianRing A]
     [Ring.KrullDimLE 1 A] [AddCommGroup X] [Module A X] [Module.Finite A X] {c : A}
     (hc : c ∈ nonZeroDivisors A) (hX : ∀ x : X, c • x = 0) : IsFiniteLength A X := by
@@ -98,8 +96,6 @@ private lemma isFiniteLength_of_nonZeroDivisor_smul_eq_zero {A X : Type*} [CommR
   obtain ⟨-, hQa⟩ := hQ
   exact ⟨inferInstance, isArtinian_of_surjective _ φ hφ⟩
 
-open IsLocalRing in
-open scoped Pointwise in
 private lemma length_quotient_eq_length_add_of_le {A M : Type*} [CommRing A] [AddCommGroup M] [Module A M]
     (P Q : Submodule A M) (h : P ≤ Q) :
     Module.length A (M ⧸ P) =
@@ -111,8 +107,6 @@ private lemma length_quotient_eq_length_add_of_le {A M : Type*} [CommRing A] [Ad
   rw [e, (LinearMap.quotKerEquivRange (P.mkQ ∘ₗ Q.subtype)).length_eq, LinearMap.range_comp,
     Submodule.range_subtype]
 
-open IsLocalRing in
-open scoped Pointwise in
 private lemma length_quotient_smul_univ_eq_finrank_mul {A M : Type*} [CommRing A] [IsDomain A]
     [IsNoetherianRing A] [Ring.KrullDimLE 1 A] [AddCommGroup M] [Module A M] [Module.Finite A M]
     (a : A) (hM : ∀ m : M, a • m = 0 → m = 0) :
@@ -207,8 +201,6 @@ private lemma length_quotient_smul_univ_eq_finrank_mul {A M : Type*} [CommRing A
   exact (WithTop.add_left_cancel hfin e2).symm
 
 
-open IsLocalRing in
-open scoped Pointwise in
 theorem _root_.GlobalTheory.finsum_ord_mul_inertiaDeg_eq_finrank_mul_ord (A B : Type) [CommRing A] [IsDomain A]
     [IsNoetherianRing A] [IsLocalRing A] [CommRing B] [IsDomain B] [Algebra A B]
     [Module.Finite A B] (hinj : Function.Injective (algebraMap A B)) (hdim : ringKrullDim A = 1)

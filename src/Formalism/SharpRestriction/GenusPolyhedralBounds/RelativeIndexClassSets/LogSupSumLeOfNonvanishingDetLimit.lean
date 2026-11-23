@@ -1622,7 +1622,6 @@ end GP
 
 section GPPacket
 
-open Formalism.MainNotions Formalism.MainNotions.WeightAlgebra
 
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ}
 
@@ -1949,7 +1948,6 @@ end Br
 
 section Final
 
-open Formalism.MainNotions Formalism.MainNotions.WeightAlgebra
 
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ}
 

@@ -265,7 +265,6 @@ theorem exists_v_term_le (hLL : LL) [CharZero V] [IsAlgClosed F] (hc : IsAdicCom
 end
 
 section
-open ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.UT GlobalTheory.UT.CoefBasic IsLocalRing
 
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {S : ThetaSys o Ω} {ρ : S.Real} {p : ℕ} [Fact p.Prime]
   {y₀ : S.R →+* PadicAlgCl p} (u : ρ.UTest p y₀)

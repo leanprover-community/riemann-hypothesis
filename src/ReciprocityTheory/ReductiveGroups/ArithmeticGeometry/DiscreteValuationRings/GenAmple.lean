@@ -83,7 +83,6 @@ lemma gm_pull_g' {Z : Scheme.{0}} {X : Scheme.{0}} (L : LB X) (f : Y ⟶ X) (r :
   exact (gm_linComb L (fun _ : PUnit => f) (fun _ => 1) r z (fun _ => a) (fun _ => b)
     (Set.mem_iInter.2 fun _ => ha) (Set.mem_iInter.2 fun _ => hb)).trans (by simp)
 
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor in
 
 theorem flatIso_isGen (w : LB.Iso (L₁.pull f₁) (L₂.pull f₂)) (hw : w.IsGen) {K : Type} [Fintype K] (ε : K → ℤ) :
     (flatIso L₁ L₂ f₁ f₂ w ε).IsGen := by
@@ -145,10 +144,8 @@ theorem nonzeroLocus_secOfIso {A B : LB Y} (u : LB.Iso A B) (t : LB.Sec B) (hu :
 
 end NZ
 
-section Main
 
 variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
 
-end Main
 
 end ReciprocityTheory.ChartRestriction.G.DVR

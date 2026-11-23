@@ -52,8 +52,6 @@ end GlobalTheory.ThetaTransformF
 end
 noncomputable section
 namespace GlobalTheory.ThetaTransformF
-open Formalism.IndefR.DatumF GlobalTheory.ThetaTransform GlobalTheory.SWQ
-open scoped ContDiff
 section Crit
 variable {F : Type} [Field F] [NumberField F] {N : ℕ} [Invertible (2 : AF F)] {ψ : AddChar (AF F) ℂ}
 end Crit
@@ -61,8 +59,6 @@ end GlobalTheory.ThetaTransformF
 end
 noncomputable section
 namespace GlobalTheory.ThetaTransformF
-open Formalism.IndefR.DatumF GlobalTheory.ThetaTransform GlobalTheory.SWQ
-open scoped ContDiff
 section Main
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [Invertible (2 : AF F)]
   {σ : E →ₐ[F] E} {nS nT N : ℕ} {JS : Matrix (Fin nS) (Fin nS) E} {JT : Matrix (Fin nT) (Fin nT) E} {ξ₀ : E}

@@ -73,7 +73,6 @@ private theorem restrict_ine {E Ω : Type} [Field E] [NumberField E] [Field Ω] 
       rw [← Subgroup.card_eq_one, natCard_inertia (HeightOneSpectrum.under (𝓞 E) w) w, hram]
     exact Subgroup.mem_bot.1 (hI ▸ hc)
 
-open GroundTheory.Global in
 private theorem restrict_conj {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
     (L : IntermediateField E Ω) [NumberField L] [IsGalois E L] (hL : IsUnramifiedEverywhere E L)
     (g : Ω ≃ₐ[E] Ω) (j : Ω →+* ℂ) (hj : ∀ x, j (g x) = starRingEnd ℂ (j x)) :

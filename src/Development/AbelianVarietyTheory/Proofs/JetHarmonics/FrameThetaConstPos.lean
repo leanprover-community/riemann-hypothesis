@@ -84,8 +84,6 @@ private lemma twoDelta_sub_eq_two_mul_blockWt_sub {X : _root_.ReciprocityTheory.
   exact_mod_cast key
 
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.ThetaRecordCompare.levi_twoDelta {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} {de : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r}
     (h : _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaWeightedNorm.IsTwoDelta X de) {x0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
@@ -103,8 +101,6 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.levi_twoDelta {X : _root_.Recipro
   rw [twoDelta_sub_eq_two_mul_blockWt_sub h]
   ring
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.ThetaRecordCompare.leviRh_nonneg (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (ho : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x0) {z : _root_.ReciprocityTheory.L2DbarEstimates.V (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X)}
@@ -113,8 +109,6 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.leviRh_nonneg (X : _root_.Recipro
   rw [_root_.GlobalTheory.FrameThetaCompare.curvDe_eq_omRh X ho hz ξ] at h0
   exact h0
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.ThetaRecordCompare.gapsGe_mono {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} {la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r} {g g' : ℝ}
     (h : _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaWeightedNorm.GapsGe X la g) (hg : g' ≤ g) :
@@ -122,8 +116,6 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.gapsGe_mono {X : _root_.Reciproci
   fun τ i j hij hne => hg.trans (h τ i j hij hne)
 
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.ThetaRecordCompare.cusp_of_gaps {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} (hn : 2 ≤ _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X)
     (h0 : 0 < X.p0) (hr : X.p0 < r) {la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r}
@@ -140,8 +132,6 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.cusp_of_gaps {X : _root_.Reciproc
       exact_mod_cast hp _ i0 i1 hi0 hi1
     omega
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.ThetaRecordCompare.two_le_r {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} (hn : 2 ≤ _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X) : 2 ≤ r := by
   by_contra hlt
@@ -160,8 +150,6 @@ section Records
 
 variable {X : Data E r}
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma cpt_zero_jet_harmonics (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) :
     _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x0 0 = x0 := by
@@ -175,8 +163,6 @@ private lemma cpt_zero_jet_harmonics (X : _root_.ReciprocityTheory.ChartRestrict
     split_ifs <;> first | exact mul_zero _ | simp_all
   · simp
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 private lemma exists_surjective_diagForm_leviM (A : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ArchInM X) :
@@ -188,8 +174,6 @@ private lemma exists_surjective_diagForm_leviM (A : _root_.ReciprocityTheory.Cha
   obtain ⟨x1, D, -, hD, -, hdiag, -⟩ := _root_.GlobalTheory.FrameThetaCompare.transfer X x0 0 hd
   exact ⟨x0, hx0, hd, D, LinearMap.injective_iff_surjective.1 hD, fun la ξ => hdiag la ξ⟩
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 private lemma diagForm_L_pos (A : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ArchInM X) {η : Fin (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X) → ℂ} (hη : η ≠ 0) :
@@ -200,8 +184,6 @@ private lemma diagForm_L_pos (A : _root_.ReciprocityTheory.ChartRestriction.G.AR
   rw [← hdiag]
   exact A.posL x0 hx0 0 hd ξ hξ
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 private lemma single_ne_zero_jet_harmonics (τ : X.Ψ) (i j : Fin r) (h : i < j) :
@@ -212,8 +194,6 @@ private lemma single_ne_zero_jet_harmonics (τ : X.Ψ) (i j : Fin r) (h : i < j)
   simp only [if_pos rfl] at this
   exact one_ne_zero this
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 private lemma diagForm_single' (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r) (τ : X.Ψ) (i j : Fin r) (h : i < j) :
@@ -232,8 +212,6 @@ private lemma diagForm_single' (la : _root_.ReciprocityTheory.ChartRestriction.G
     simp
   · simp
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 private lemma diagForm_Fp_sub_pos (A : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ArchInM X) {η : Fin (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X) → ℂ} (hη : η ≠ 0) :
@@ -249,8 +227,6 @@ private lemma diagForm_Fp_sub_pos (A : _root_.ReciprocityTheory.ChartRestriction
   linarith
 
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 theorem _root_.GlobalTheory.ThetaRecordCompare.arch_gaps (A : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ArchInM X) (h0 : 0 < X.p0)
@@ -329,8 +305,6 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.arch_gaps (A : _root_.Reciprocity
     have : (1 : ℤ) ≤ A.Fp τ i1 - A.Fp τ i0 := by linarith
     exact_mod_cast this
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 theorem _root_.GlobalTheory.ThetaRecordCompare.arch_extra (A : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ArchInM X) :
@@ -344,8 +318,6 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.arch_extra (A : _root_.Reciprocit
   · obtain ⟨A', hdec, C, hC⟩ := (_root_.GlobalTheory.FlatCompare.extraBounds_iff X A.ps0 A.frame_theta_weight_pos.le).2 A.base_psi_weighted_cf
     exact ⟨A', ⟨C, hC⟩, fun η hη => hdec η hη⟩
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 theorem _root_.GlobalTheory.ThetaRecordCompare.gaps_add {la la' : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r} (h : _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaWeightedNorm.GapsGe X la 0)
@@ -360,8 +332,6 @@ theorem _root_.GlobalTheory.ThetaRecordCompare.gaps_add {la la' : _root_.Recipro
     nlinarith
   exact_mod_cast this
 
-open NumberField Topology in
-open scoped ContDiff in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 theorem _root_.GlobalTheory.ThetaRecordCompare.pair_add {la la' : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r} (h : _root_.GlobalTheory.IndefiniteRowSideFullHecke.ThetaWeightedNorm.PairingGe X la 1)

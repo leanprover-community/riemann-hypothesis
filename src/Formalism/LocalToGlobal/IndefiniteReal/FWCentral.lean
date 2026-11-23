@@ -44,14 +44,11 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Loc
 
 variable {D : D7}
 
 
-end Loc
 
-section Frame
 
 open ReciprocityTheory.ChartRestriction.G.FD
 
@@ -62,17 +59,13 @@ variable {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S)
 variable {M}
 
 
-end Frame
 
-section Cut
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F)
 
 
-end Cut
 
-section Central
 
 variable {LL Ks : Type} [Field LL] [NumberField LL] [Field Ks] [NumberField Ks] [Algebra Ks LL]
   {WL : Type} [AddCommGroup WL] [Module LL WL] [Module Ks WL] [IsScalarTower Ks LL WL]
@@ -82,7 +75,6 @@ variable {LL Ks : Type} [Field LL] [NumberField LL] [Field Ks] [NumberField Ks] 
 
 variable {ζ : LLˣ} {z : G0}
 
-end Central
 
 section Mat
 
@@ -112,7 +104,6 @@ theorem principal_form_tensor_expansion (c : Fin (finrank D.what₂.LL (R.toReal
 
 end Mat
 
-section CC
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
 
@@ -129,9 +120,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
 
 
 
-end CC
 
-section CCTie
 
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
@@ -144,15 +133,12 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
   {vol : Tup → c'.F} {ep : ∀ t, Cl' t → c'.F} {io : Vs →ₗ[c'.F] MvPolynomial (LtN Dw n) c'.F}
   {thAd : ∀ t, (Cl' t → Vs) → (AutQ V → ℂ)} {Pl : ∀ t, (Cl' t → Vs) → Prop} {cc cc' : (unfBC hle U σ0').Comp → ℂ} {ph ph' : ℂ}
 
-end CCTie
 
-section CCDat
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {C : Core D} [Algebra C.Q.c.F D.what₂.LL] {R : RealDat D A C.Q.c.F} {i : Fin D.R.m} {Tp : Type} {tup : Tp → T0}
   (O : OMDat C R i Tp tup) (κ : WeightFamilies.Wt D ((i : ℕ) + 1))
 
-end CCDat
 
 section Phase
 

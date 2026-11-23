@@ -153,8 +153,6 @@ private theorem exists_periodic_mod_ideal_eq_character_div_infinity_type {K : Ty
     · have hm : m ≠ ⊤ := fun hm => hc (by rw [hm, sup_top_eq])
       simp [ψ, hc, hm, hXcop _ hc]
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 private theorem contDiffAt_mixedEmbedding_norm_of_ne_zero {K : Type} [Field K] [NumberField K] {x : mixedSpace K}
     (hx : mixedEmbedding.norm x ≠ 0) : ContDiffAt ℝ ∞ (⇑(mixedEmbedding.norm (K := K))) x := by
   have hfun : (⇑(mixedEmbedding.norm (K := K)) : mixedSpace K → ℝ) =
@@ -186,8 +184,6 @@ private theorem contDiffAt_mixedEmbedding_norm_of_ne_zero {K : Type} [Field K] [
     exact (contDiffAt_norm ℝ hx').comp x
       ((contDiff_apply ℝ (fun _ => ℂ) (⟨w, hc⟩ : {w : InfinitePlace K // w.IsComplex})).comp contDiff_snd).contDiffAt
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 private theorem contDiff_and_hasCompactSupport_mul_weight_mixedNorm {K : Type} [Field K] [NumberField K]
     (h : mixedSpace K → ℝ) (hh : ContDiffOn ℝ ∞ h {x | mixedEmbedding.norm x ≠ 0})
     (hC : ∀ a b : ℝ, 0 < a → ∃ C, IsCompact C ∧ (∀ x ∈ C, mixedEmbedding.norm x ≠ 0) ∧
@@ -221,8 +217,6 @@ private theorem contDiff_and_hasCompactSupport_mul_weight_mixedNorm {K : Type} [
       exact hsupp y hy
     exact contDiffAt_const.congr_of_eventuallyEq hev
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 private theorem finite_setOf_ringOfIntegers_mixedEmbedding_mem_compact {K : Type} [Field K] [NumberField K]
     (C : Set (mixedSpace K)) (hC : IsCompact C) :
     {β : 𝓞 K | mixedEmbedding K (β : K) ∈ C}.Finite := by
@@ -240,16 +234,12 @@ private theorem finite_setOf_ringOfIntegers_mixedEmbedding_mem_compact {K : Type
   · intro β hβ
     exact ⟨⟨mixedEmbedding K (β : K), ⟨β, rfl⟩⟩, hβ, rfl⟩
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 private theorem mixedEmbedding_norm_eq_absNorm_span_singleton {K : Type} [Field K] [NumberField K] (β : 𝓞 K) :
     mixedEmbedding.norm (mixedEmbedding K (β : K)) = (Ideal.absNorm (Ideal.span {β}) : ℝ) := by
   rw [mixedEmbedding.norm_eq_norm, Ideal.absNorm_span_singleton, ← Algebra.coe_norm_int]
   push_cast
   simp [Nat.cast_natAbs]
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 
 private theorem tsum_principal_le_eq_tsum_mul_cutoff_span {K : Type} [Field K] [NumberField K]
     (B : Ideal (𝓞 K)) (G : Ideal (𝓞 K) → ℂ) (hG0 : G ⊥ = 0) (h : mixedSpace K → ℝ)
@@ -334,8 +324,6 @@ private theorem tsum_principal_le_eq_tsum_mul_cutoff_span {K : Type} [Field K] [
   exact ((hsumm.tsum_sigma' (fun J => (hfiber J).summable)).trans
     (tsum_congr fun J => (hfiber J).tsum_eq)).symm
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 private theorem finite_support_mul_weight_absNorm_of_bounded_support {K : Type} [Field K] [NumberField K]
     (X : Ideal (𝓞 K) → ℂ) (wt : ℝ → ℂ) (a b : ℝ)
     (hw : ∀ y, wt y ≠ 0 → a ≤ y ∧ y ≤ b) (t : ℝ) (ht : 0 < t) :
@@ -349,8 +337,6 @@ private theorem finite_support_mul_weight_absNorm_of_bounded_support {K : Type} 
   rw [le_div_iff₀ ht]
   linarith
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 private theorem tsum_ideal_eq_sum_classGroup_tsum_mul_isPrincipal {K : Type} [Field K] [NumberField K]
     (b : ClassGroup (𝓞 K) → (Ideal (𝓞 K))⁰)
     (hb : Function.Bijective (fun c => ClassGroup.mk0 (b c)))
@@ -381,8 +367,6 @@ private theorem tsum_ideal_eq_sum_classGroup_tsum_mul_isPrincipal {K : Type} [Fi
     · simp
 
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 theorem _root_.GlobalTheory.smoothedSum_main_term_representatives : ∀ (K : Type) [Field K] [NumberField K] (m : Ideal (𝓞 K)) (X : Ideal (𝓞 K) → ℂ) (φ : mixedSpace K → ℂ), m ≠ ⊥ → X ⊥ = 0 → (∀ I J, X (I * J) = X I * X J) → (∀ I, I ≠ ⊥ → I ⊔ m = ⊤ → ‖X I‖ = 1) → (∀ I, I ⊔ m ≠ ⊤ → X I = 0) → (∀ x y, φ (x * y) = φ x * φ y) → (∀ (t : ℝ) x, 0 < t → φ (t • x) = φ x) → ContDiffOn ℝ ∞ φ {x | mixedEmbedding.norm x ≠ 0} → (∀ x, mixedEmbedding.norm x ≠ 0 → ‖φ x‖ = 1) → (∀ β : 𝓞 K, β ≠ 0 → β - 1 ∈ m → X (Ideal.span {β}) = φ (mixedEmbedding K β)) → ∀ (wt : ℝ → ℂ), ContDiff ℝ ∞ wt → (∃ a b : ℝ, 0 < a ∧ ∀ y, wt y ≠ 0 → a ≤ y ∧ y ≤ b) → ∃ κ : ℂ, ∀ b : ClassGroup (𝓞 K) → (Ideal (𝓞 K))⁰, Function.Bijective (fun c => ClassGroup.mk0 (b c)) → (∀ c, (b c : Ideal (𝓞 K)) ⊔ m = ⊤) → ∀ A : ℕ, ∃ C : ℝ, ∀ t : ℝ, 0 < t → t ≤ 1 → ‖∑' I, X I * wt (t * (Ideal.absNorm I : ℝ)) - (κ * ∑ c, (X (b c))⁻¹) / (t : ℂ)‖ ≤ C * t ^ A := by
   intro K _ _ m X φ hm hX0 hXmul hXnorm hXcop hφmul hφhom hφsm hφnorm hXφ wt hwt hwtsupp
   obtain ⟨a, b', ha, hab⟩ := hwtsupp

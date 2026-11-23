@@ -81,7 +81,6 @@ def GenFrame : Prop :=
 end GlobalTheory.St.Lat
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -95,7 +94,6 @@ def DdG (D : D7) : Prop :=
 end GlobalTheory.St.Lat
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 section Gen
 
@@ -198,14 +196,11 @@ end Gen
 end GlobalTheory.St.Lat
 
 noncomputable section
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 section Gen2
 
-open Formalism.L2.SG.Saturated
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E}
 
@@ -282,14 +277,11 @@ end Gen2
 end GlobalTheory.St.Lat
 
 noncomputable section
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 section GF
 
-open Formalism.L2.SG.Saturated
 
 theorem fi_neg {E : Type} [Field E] [NumberField E] {I : FractionalIdeal (nonZeroDivisors (𝓞 E)) E} {u : E}
     (hu : u ∈ I) : -u ∈ I :=
@@ -418,10 +410,8 @@ end GF
 end GlobalTheory.St.Lat
 
 noncomputable section
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 end GlobalTheory.St.Lat
 
@@ -430,7 +420,6 @@ noncomputable section
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 section Gen3
 
@@ -515,10 +504,8 @@ end GlobalTheory.St.Lat
 
 noncomputable section
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 theorem satBasis_holds : SatBasis := by
   intro E _ _ _ S Λ hΛ n w hw a ha
@@ -550,10 +537,8 @@ end GlobalTheory.St.Lat
 
 noncomputable section
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 section D7asm
 
@@ -602,10 +587,8 @@ end GlobalTheory.St.Lat
 
 noncomputable section
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 section D7main
 
@@ -858,7 +841,6 @@ end D7main
 end GlobalTheory.St.Lat
 
 namespace GlobalTheory.St.Lat
-open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.LatEx
 
 theorem latExists_of (hH : HypRep) (hU : Unram) (D : Formalism.BasicNotions.D7) (hI : IsoW D) : Formalism.L2.SG.SplitPrimeNormLemmas.LatExists D :=
   latExists_of_steps D satBasis_holds hH hI (ddG_of D hU LatEx.splitDiff_holds)

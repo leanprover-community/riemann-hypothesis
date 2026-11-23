@@ -105,7 +105,6 @@ end GlobalTheory.TwV.Xc.MuLL
 
 namespace GlobalTheory.TwV.Xc.MuLL
 
-open GlobalTheory.TwU (IsAdIso exists_isAdIso)
 
 theorem natCast_not_mem_of_coprime {R : Type} [CommRing R] (I : Ideal R) (hI : I ≠ ⊤) (a b : ℕ) (hab : Nat.Coprime a b)
     (hb : ((b : ℕ) : R) ∈ I) : ((a : ℕ) : R) ∉ I := by

@@ -149,7 +149,6 @@ noncomputable section
 
 namespace GlobalTheory.FockMonoForm
 
-open MvPolynomial
 
 variable {σ : Type} [DecidableEq σ]
 

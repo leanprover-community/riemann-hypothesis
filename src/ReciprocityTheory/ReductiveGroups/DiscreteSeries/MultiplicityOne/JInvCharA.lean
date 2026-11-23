@@ -116,10 +116,8 @@ theorem Hpk_sq : Hpk k r * Hpk k r = 1 := by
 
 end hpk
 
-section wb
 variable {k r : ℕ}
 
-end wb
 
 section cc
 variable {k r : ℕ}

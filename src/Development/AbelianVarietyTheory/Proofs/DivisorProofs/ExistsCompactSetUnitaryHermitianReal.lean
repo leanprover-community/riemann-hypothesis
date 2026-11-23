@@ -172,7 +172,6 @@ end GlobalTheory.AnisoCpt
 
 namespace GlobalTheory.AnisoCpt
 
-open Metric Matrix
 
 theorem exists_isCompact_entries_of_anisotropic :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E),

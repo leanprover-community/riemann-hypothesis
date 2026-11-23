@@ -60,7 +60,6 @@ theorem _root_.GlobalTheory.QFam.QAllSubring.const {c : ℂ} (hc : c ∈ R) :
     · exact hc
     · exact R.zero_mem
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
 variable {R : Subring ℂ} {N : ℕ} in
 theorem _root_.GlobalTheory.QFam.QAllSubring.add {f g : ℍ → ℂ} (hf : _root_.GlobalTheory.QFam.QAll (· ∈ R) N f)
     (hg : _root_.GlobalTheory.QFam.QAll (· ∈ R) N g) :
@@ -72,7 +71,6 @@ theorem _root_.GlobalTheory.QFam.QAllSubring.add {f g : ℍ → ℂ} (hf : _root
   intro τ
   simpa [add_mul] using (ha τ).add (hb τ)
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
 variable {R : Subring ℂ} {N : ℕ} in
 theorem _root_.GlobalTheory.QFam.QAllSubring.sub {f g : ℍ → ℂ} (hf : _root_.GlobalTheory.QFam.QAll (· ∈ R) N f)
     (hg : _root_.GlobalTheory.QFam.QAll (· ∈ R) N g) :
@@ -84,7 +82,6 @@ theorem _root_.GlobalTheory.QFam.QAllSubring.sub {f g : ℍ → ℂ} (hf : _root
   intro τ
   simpa [sub_mul] using (ha τ).sub (hb τ)
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
 variable {R : Subring ℂ} {N : ℕ} in
 theorem _root_.GlobalTheory.QFam.QAllSubring.mul {f g : ℍ → ℂ} (hf : _root_.GlobalTheory.QFam.QAll (· ∈ R) N f)
     (hg : _root_.GlobalTheory.QFam.QAll (· ∈ R) N g) :
@@ -113,7 +110,6 @@ theorem _root_.GlobalTheory.QFam.QAllSubring.mul {f g : ℍ → ℂ} (hf : _root
   simp only [hterm] at hs ⊢
   exact (summable_norm_iff.mp hs).hasSum
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
 variable {R : Subring ℂ} {N : ℕ} in
 theorem _root_.GlobalTheory.QFam.QAllSubring.pow {f : ℍ → ℂ} (k : ℕ)
     (hf : _root_.GlobalTheory.QFam.QAll (· ∈ R) N f) :
@@ -122,7 +118,6 @@ theorem _root_.GlobalTheory.QFam.QAllSubring.pow {f : ℍ → ℂ} (k : ℕ)
   | zero => simpa using _root_.GlobalTheory.QFam.QAllSubring.const (N := N) R.one_mem
   | succ k ih => simpa [pow_succ] using _root_.GlobalTheory.QFam.QAllSubring.mul ih hf
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
 variable {R : Subring ℂ} {N : ℕ} in
 theorem _root_.GlobalTheory.QFam.QAllSubring.sum {κ : Type} (s : Finset κ) {f : κ → ℍ → ℂ}
     (hf : ∀ k ∈ s, _root_.GlobalTheory.QFam.QAll (· ∈ R) N (f k)) :
@@ -135,7 +130,6 @@ theorem _root_.GlobalTheory.QFam.QAllSubring.sum {κ : Type} (s : Finset κ) {f 
     exact _root_.GlobalTheory.QFam.QAllSubring.add (hf i (Finset.mem_insert_self i s))
       (ih fun k hk => hf k (Finset.mem_insert_of_mem hk))
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
 variable {R : Subring ℂ} {N : ℕ} in
 theorem _root_.GlobalTheory.QFam.QAllSubring.prod {κ : Type} (s : Finset κ) {f : κ → ℍ → ℂ}
     (hf : ∀ k ∈ s, _root_.GlobalTheory.QFam.QAll (· ∈ R) N (f k)) :
@@ -149,7 +143,6 @@ theorem _root_.GlobalTheory.QFam.QAllSubring.prod {κ : Type} (s : Finset κ) {f
       (ih fun k hk => hf k (Finset.mem_insert_of_mem hk))
 
 
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold BigOperators in
 variable {R : Subring ℂ} {N : ℕ} in
 theorem _root_.GlobalTheory.QFam.QAllSubring.ring_closed : ∀ (R : Subring ℂ) (N : ℕ), 0 < N →
     (∀ c ∈ R, _root_.GlobalTheory.QFam.QAll (· ∈ R) N fun _ => c) ∧

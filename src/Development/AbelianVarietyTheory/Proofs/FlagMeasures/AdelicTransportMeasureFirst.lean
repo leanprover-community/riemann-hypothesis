@@ -353,7 +353,6 @@ theorem hform_mulVec (s : A →+* A) (J : Matrix (Fin n) (Fin n) A) (C : Matrix 
   have h2 : s ∘ (C *ᵥ a) = C.map s *ᵥ (s ∘ a) := funext fun i => RingHom.map_mulVec s C a i
   rw [h1, h2, ← mulVec_mulVec, dotProduct_mulVec _ (cT s C), cT, vecMul_transpose]
 
-open Formalism.UG in
 theorem perp_iff (s : A →+* A) (J : Matrix (Fin n) (Fin n) A) (C : Matrix (Fin n) (Fin r) A) (y : Fin n → A) :
     (∀ x, (∃ a, x = C *ᵥ a) → hform s J x y = 0) ↔ (cT s C * J) *ᵥ y = 0 := by
   constructor

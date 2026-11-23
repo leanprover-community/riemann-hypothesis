@@ -157,7 +157,6 @@ end GlobalTheory.CompanionTheory.Ar.Flat.ExpChart.Coords
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat.ExpChart.Coords
 
-open GlobalTheory.HolHom GlobalTheory.CompanionTheory.Ar.Flat.ExpChart
 
 theorem exists_coords : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj G] (g : ℕ) (M : LieModel G (𝟙 (Sp R)) (Fin g → R)) (φ : R →+* ℂ), Smooth G.hom →
   ∃ (V : G.left.Opens) (t : Fin g → Γ(G.left, V)) (ρ : R), IsAffineOpen V ∧ φ ρ ≠ 0 ∧ (GlobalTheory.CompanionTheory.Ar.Flat.ExpChart.cst G.hom V).IsStandardSmooth ∧

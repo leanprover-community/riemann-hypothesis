@@ -157,8 +157,6 @@ end GlobalTheory.CplMuDet
 
 namespace GlobalTheory.CplMuDet
 
-open Matrix
-open scoped TensorProduct
 
 section Rat
 

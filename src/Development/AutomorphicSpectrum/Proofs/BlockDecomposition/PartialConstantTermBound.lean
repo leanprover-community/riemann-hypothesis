@@ -180,7 +180,6 @@ end GlobalTheory.CompanionTheory.PcB
 
 namespace GlobalTheory.CompanionTheory.PcB
 
-open GlobalTheory.CompanionTheory.FourierN (mat_injective continuous_halfTr blk4_map_alt exists_compact_cover)
 
 variable {D : D7} {n ρ p : ℕ} {hn : ρ + p = n}
 

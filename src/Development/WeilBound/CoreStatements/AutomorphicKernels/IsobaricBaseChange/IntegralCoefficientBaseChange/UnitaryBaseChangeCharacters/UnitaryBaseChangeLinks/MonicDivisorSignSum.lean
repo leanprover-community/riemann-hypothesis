@@ -77,7 +77,6 @@ end GlobalTheory.DivSum
 
 namespace GlobalTheory.DivSum
 
-open UniqueFactorizationMonoid
 
 variable {k : Type} [Field k]
 

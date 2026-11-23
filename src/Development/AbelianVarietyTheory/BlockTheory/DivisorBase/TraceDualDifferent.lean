@@ -85,7 +85,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.TraceDualDifferent.mem_tr
   simp [Algebra.traceForm_apply, eq_comm]
 
 
-open NumberField nonZeroDivisors in
 variable {F : Type} [Field F] [NumberField F] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.TraceDualDifferent.covol_pos {M : FractionalIdeal (𝓞 F)⁰ F} (hM : M ≠ 0) :
     0 < _root_.GlobalTheory.IndefiniteRowSideFullHecke.TraceDualDifferent.covol M := by
@@ -95,7 +94,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.TraceDualDifferent.covol_
 
 
 open scoped Classical in
-open NumberField nonZeroDivisors in
 variable {F : Type} [Field F] [NumberField F] in
 open Classical in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.TraceDualDifferent.covol_eq_covolume [IsTotallyReal F]
@@ -108,7 +106,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.TraceDualDifferent.covol_
   rfl
 
 
-open NumberField nonZeroDivisors in
 variable {F : Type} [Field F] [NumberField F] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.TraceDualDifferent.card_realEmb [IsTotallyReal F] :
     Fintype.card (F →+* ℝ) = Module.finrank ℚ F := by

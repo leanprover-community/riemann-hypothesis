@@ -39,7 +39,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 open GlobalTheory.UT
 open ReciprocityTheory.ChartRestriction.G.DVR
-open ReciprocityTheory.ChartRestriction.G.DVR
 noncomputable section
 
 namespace GlobalTheory.DvrAnyChar
@@ -52,12 +51,10 @@ open GlobalTheory.TorsionAnyChar
 end GlobalTheory.DvrAnyChar
 
 namespace GlobalTheory.DvrAnyChar
-open GlobalTheory.TorsionAnyChar
 
 end GlobalTheory.DvrAnyChar
 
 namespace GlobalTheory.DvrAnyChar
-open GlobalTheory.TorsionAnyChar
 section
 open GlobalTheory.UT.CoefUnit GlobalTheory.UT.CoefBasic
 
@@ -92,7 +89,6 @@ end FieldAny
 end GlobalTheory.DvrAnyChar
 
 namespace GlobalTheory.DvrAnyChar
-open GlobalTheory.TorsionAnyChar
 
 theorem qkToAkU_level_any : LL → AnyUF fun {R} _ _ {I} {D} {A} {G} _ _ U F _ _ => ∀ (k n N : ℕ), 1 ≤ k → 1 ≤ n →
     N = k * n → ∀ (p : QkPt D.toPre F k) (q : QkPt D.toPre F N) x, q.y = n • p.y → q.g = p.g →

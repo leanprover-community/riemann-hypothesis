@@ -136,7 +136,6 @@ theorem gal_of_isFrob (𝔭 : HeightOneSpectrum (𝓞 ℚ)) (hp : (Ideal.absNorm
 end Cyc
 
 section Cyc2
-open IsCyclotomicExtension.Rat
 variable (m : ℕ) [NeZero m] (F : Type) [Field F] [NumberField F] [IsCyclotomicExtension {m} ℚ F]
 
 theorem unramIn_cyc (𝔭 : HeightOneSpectrum (𝓞 ℚ)) (hp : (Ideal.absNorm 𝔭.asIdeal).Coprime m) : UnramIn F 𝔭 := by

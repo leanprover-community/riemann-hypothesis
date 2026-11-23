@@ -138,7 +138,6 @@ end GlobalTheory.VacScalar
 
 namespace GlobalTheory.VacScalar
 
-open GlobalTheory.FinPl
 
 variable {D : D7}
 
@@ -217,7 +216,6 @@ end GlobalTheory.VacScalar
 
 namespace GlobalTheory.VacScalar
 
-open GlobalTheory.FinPl
 
 variable {D : D7}
 
@@ -320,7 +318,6 @@ end GlobalTheory.VacScalar
 
 namespace GlobalTheory.VacScalar
 
-open GlobalTheory.FinPl
 
 theorem main : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (M N : GlobalTheory.FinPl.Lat S) (M' N' : GlobalTheory.FinPl.Lat T) (Q : Finset (GlobalTheory.FinPl.Pl D)) (o o' : WO S T →₀ ℂ) (g₀ : WO S T → ℂ), IsStdChar D ψ (-1) → IsSelfDualC S M → IsSelfDualC T M' → IsSelfDualC S N → IsSelfDualC T N' → GlobalTheory.FinPl.CombAt (· ∈ Q) o → GlobalTheory.FinPl.CombAt (· ∈ Q) o' → GlobalTheory.FinPl.Vac ψ S T M M' (· ∈ Q) g₀ → GlobalTheory.FinPl.Vac ψ S T N N' (· ∈ Q) (comb ψ S T o g₀) → GlobalTheory.FinPl.Vac ψ S T N N' (· ∈ Q) (comb ψ S T o' g₀) → comb ψ S T o' g₀ ≠ 0 → ∃ c : ℂ, comb ψ S T o g₀ = c • comb ψ S T o' g₀ := by
   intro D ψ S T M N M' N' Q o o' g₀ hψ hM hM' hN hN' ho ho' hg hF hF' hne

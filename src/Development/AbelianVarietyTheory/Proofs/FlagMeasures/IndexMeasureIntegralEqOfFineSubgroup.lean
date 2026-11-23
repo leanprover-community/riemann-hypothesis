@@ -50,8 +50,6 @@ private lemma quotientEquivProdOfLE_apply_fst {W : Type} [AddCommGroup W] {C B :
   conv_lhs => rw [← QuotientAddGroup.out_eq' c]
   rfl
 
-open scoped Pointwise Classical in
-open Function in
 private lemma finsum_prod_fst_eq_card_mul {X Y : Type} [Finite Y] (g : X → ℂ) (hg : (support g).Finite) :
     ∑ᶠ p : X × Y, g p.1 = (Nat.card Y : ℂ) * ∑ᶠ x, g x := by
   have := Fintype.ofFinite Y
@@ -65,15 +63,11 @@ private lemma finsum_prod_fst_eq_card_mul {X Y : Type} [Finite Y] (g : X → ℂ
   · intro p hp
     simpa using hp
 
-open scoped Pointwise Classical in
-open Function in
 private lemma support_quotient_out_finite_of_image_finite {W : Type} [AddCommGroup W] {B : AddSubgroup W} (φ : W → ℂ)
     (hφ : ((fun w : W => (w : W ⧸ B)) '' support φ).Finite) :
     (support fun c : W ⧸ B => φ (Quotient.out c)).Finite := by
   refine hφ.subset fun c hc => ⟨Quotient.out c, hc, QuotientAddGroup.out_eq' c⟩
 
-open scoped Pointwise Classical in
-open Function in
 private lemma finsum_quotient_out_eq_relIndex_mul_of_le {W : Type} [AddCommGroup W] {C B : AddSubgroup W} (hCB : C ≤ B)
     (hidx : C.relIndex B ≠ 0) (φ : W → ℂ) (hinv : ∀ w b : W, b ∈ B → φ (w + b) = φ w)
     (hφ : ((fun w : W => (w : W ⧸ B)) '' support φ).Finite) :
@@ -91,8 +85,6 @@ private lemma finsum_quotient_out_eq_relIndex_mul_of_le {W : Type} [AddCommGroup
       (f := fun p => φ (Quotient.out p.1)), finsum_prod_fst_eq_card_mul _ (support_quotient_out_finite_of_image_finite φ hφ)]
   rfl
 
-open scoped Pointwise Classical in
-open Function in
 private lemma finsum_out_div_relIndex_eq_of_le {W : Type} [AddCommGroup W] {A B C : AddSubgroup W}
     {φ : W → ℂ} (hB : _root_.GlobalTheory.IdxInt.Fine A φ B) (hCB : C ≤ B) (hC : C.relIndex A ≠ 0) :
     (∑ᶠ c : W ⧸ C, φ (Quotient.out c)) / (C.relIndex A : ℂ) =
@@ -105,8 +97,6 @@ private lemma finsum_out_div_relIndex_eq_of_le {W : Type} [AddCommGroup W] {A B 
     Nat.cast_mul, mul_div_mul_left _ _ (Nat.cast_ne_zero.mpr hidx)]
 
 
-open scoped Pointwise Classical in
-open Function in
 theorem _root_.GlobalTheory.IdxInt.cint_eq_of_fine : ∀ {W : Type} [AddCommGroup W] (A B : AddSubgroup W) (φ : W → ℂ),
     _root_.GlobalTheory.IdxInt.Fine A φ B → _root_.GlobalTheory.IdxInt.cint A φ = (∑ᶠ c : W ⧸ B, φ c.out) / (B.relIndex A : ℂ) := by
   intro W _ A B φ hB

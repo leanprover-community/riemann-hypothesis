@@ -172,7 +172,6 @@ end Fields
 
 open Classical in
 def divs {A : Type} [CommRing A] [IsDedekindDomain A] (a : A) : Finset (HeightOneSpectrum A) :=
-  open Classical in
   if h : {P : HeightOneSpectrum A | a ∈ P.asIdeal}.Finite then h.toFinset else ∅
 
 structure Primes (X : Fields) where

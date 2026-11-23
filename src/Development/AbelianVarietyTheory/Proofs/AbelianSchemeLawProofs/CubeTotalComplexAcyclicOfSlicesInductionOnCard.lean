@@ -823,7 +823,6 @@ end Cube
 
 section Main
 
-open Cube
 
 variable {ι κ : Type} [LinearOrder ι] [LinearOrder κ] {R : Type u} [Ring R]
 
@@ -869,7 +868,6 @@ end Main
 
 section Three
 
-open Cube
 
 variable {ι κ ν : Type} [LinearOrder ι] [LinearOrder κ] [LinearOrder ν] {R : Type u} [Ring R]
 

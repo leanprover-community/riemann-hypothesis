@@ -203,7 +203,6 @@ theorem im_form_real {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} (hs : τ.IsSymm
   ring
 
 
-open GlobalTheory.ThetaMean in
 theorem mem_of_integral {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} (hs : τ.IsSymm) (hp : (τ.map Complex.im).PosDef)
     (x : Fin g → ℂ) (hx : ∀ a b : Fin g → ℤ, ∃ k : ℤ, (k : ℝ) = (x ⬝ᵥ
       ((τ.map Complex.im)⁻¹).map (fun x : ℝ => (x : ℂ)) *ᵥ

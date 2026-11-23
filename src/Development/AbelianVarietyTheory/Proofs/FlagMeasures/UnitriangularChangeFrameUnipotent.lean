@@ -124,7 +124,6 @@ end GlobalTheory.LocOver.UnipLevi
 
 namespace GlobalTheory.LocOver.UnipLevi
 
-open GlobalTheory.LocOver.UnipOnto
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
   {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
@@ -197,7 +196,6 @@ end GlobalTheory.LocOver.UnipLevi
 
 namespace GlobalTheory.LocOver.UnipLevi
 
-open GlobalTheory.LocOver.UnipOnto
 
 theorem levi_integral : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E]
     [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] (M : Model F E), M.OK → ∀ {V : Type}

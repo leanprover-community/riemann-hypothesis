@@ -80,7 +80,6 @@ end GlobalTheory.Hk3.ShiftPhase
 
 namespace GlobalTheory.Hk3.ShiftPhase
 
-open Matrix
 
 theorem conjT_mul_int {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {a b : ℕ} (σ : L →+* L)
     (hσσ : ∀ x, σ (σ x) = x) (hσ : ∀ x, Valued.v (σ x) = Valued.v x)

@@ -55,7 +55,6 @@ private theorem exists_sub_eq_p_mul_of_constantCoeff_eq {x y : WittVector p k}
     exact h1.symm
   · exact ⟨p ^ m * z, by rw [hxyz, pow_succ]; ring⟩
 
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] [CharP k p] [PerfectRing k p] in
 private theorem prod_sub_prod_divisible_lemma_2 {σ τ : Type} (c : _root_.GlobalTheory.Katz.Fr p k)
     (U V : σ → MvPowerSeries τ (WittVector p k)) (e : σ → ℕ) (S : Finset σ)
@@ -80,7 +79,6 @@ private theorem prod_sub_prod_divisible_lemma_2 {σ τ : Type} (c : _root_.Globa
       (MvPowerSeries.map (algebraMap (WittVector p k) (_root_.GlobalTheory.Katz.Fr p k)) (U i)) ^ e i * hY1 +
       (∏ j ∈ S, (MvPowerSeries.map (algebraMap (WittVector p k) (_root_.GlobalTheory.Katz.Fr p k)) (V j)) ^ e j) * hY2
 
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] [CharP k p] [PerfectRing k p] in
 private theorem exists_choose_mul_p_pow_mul_eq_p_mul (c : _root_.GlobalTheory.Katz.Fr p k) (m : WittVector p k)
     {n : ℕ} (hc : (n : _root_.GlobalTheory.Katz.Fr p k) * c = algebraMap (WittVector p k) _ m)
@@ -126,7 +124,6 @@ private theorem exists_choose_mul_p_pow_mul_eq_p_mul (c : _root_.GlobalTheory.Ka
       (p : _root_.GlobalTheory.Katz.Fr p k) ^ q * ι s) * hjK -
     ((p : _root_.GlobalTheory.Katz.Fr p k) ^ (q + e + 1) * (n'.choose (q + e) : _root_.GlobalTheory.Katz.Fr p k) * ι m) * hs'
 
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] [CharP k p] [PerfectRing k p] in
 private theorem map_algebraMap_smul' {τ : Type} (a : WittVector p k) (Y : MvPowerSeries τ (WittVector p k)) :
     MvPowerSeries.map (algebraMap (WittVector p k) (_root_.GlobalTheory.Katz.Fr p k)) (a • Y) =
@@ -135,7 +132,6 @@ private theorem map_algebraMap_smul' {τ : Type} (a : WittVector p k) (Y : MvPow
   ext β
   simp only [MvPowerSeries.coeff_map, map_smul, smul_eq_mul, map_mul]
 
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] [CharP k p] [PerfectRing k p] in
 private theorem map_add_p_mul_pow_sub_pow_eq_p_smul {τ : Type} (c : _root_.GlobalTheory.Katz.Fr p k) (m : WittVector p k)
     {n : ℕ} (hc : (n : _root_.GlobalTheory.Katz.Fr p k) * c = algebraMap (WittVector p k) _ m)
@@ -181,7 +177,6 @@ private theorem map_add_p_mul_pow_sub_pow_eq_p_smul {τ : Type} (c : _root_.Glob
   exact hsum _ key
 
 
-open CategoryTheory TensorProduct MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] [CharP k p] [PerfectRing k p] in
 theorem _root_.GlobalTheory.Katz.subst_sub_subst_mem_intBy : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [CharP k p] [PerfectRing k p] (σ τ : Type) [Finite σ] (u v : σ → MvPowerSeries (τ) (_root_.GlobalTheory.Katz.Fr p k)) (w : σ → MvPowerSeries τ k) (f : MvPowerSeries (σ) (_root_.GlobalTheory.Katz.Fr p k)), (∀ i, constantCoeff (u i) = 0) → (∀ i, constantCoeff (v i) = 0) → (∀ i, _root_.GlobalTheory.Katz.Red p (u i) (w i)) → (∀ i, _root_.GlobalTheory.Katz.Red p (v i) (w i)) → f ∈ _root_.GlobalTheory.Katz.quasiInt p k σ → subst u f - subst v f ∈ _root_.GlobalTheory.Katz.intBy p k τ p := by
   intro p _ k _ _ _ σ τ _ u v w f hu0 hv0 hu hv hf

@@ -44,7 +44,6 @@ noncomputable def coeffDerivFun {B τ : Type} [CommRing B] (D : Derivation ℤ B
     (p : MvPolynomial τ B) : MvPolynomial τ B :=
   ∑ s ∈ p.support, MvPolynomial.monomial s (D (p.coeff s))
 
-open MvPolynomial in
 theorem coeff_coeffDerivFun {B τ : Type} [CommRing B] (D : Derivation ℤ B B)
     (p : MvPolynomial τ B) (m : τ →₀ ℕ) :
     (coeffDerivFun D p).coeff m = D (p.coeff m) := by

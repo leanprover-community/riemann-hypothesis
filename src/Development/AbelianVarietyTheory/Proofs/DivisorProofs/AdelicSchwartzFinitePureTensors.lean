@@ -150,7 +150,6 @@ end GlobalTheory.SchADecomp
 
 namespace GlobalTheory.SchADecomp
 
-open Topology Filter
 
 variable {F : Type} [Field F] [NumberField F]
 

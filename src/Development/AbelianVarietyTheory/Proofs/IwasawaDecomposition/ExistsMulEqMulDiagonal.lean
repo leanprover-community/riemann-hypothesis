@@ -91,8 +91,6 @@ theorem _root_.GlobalTheory.SmithBetween.exists_mul_eq_mul_diagonal {R : Type} [
     simp [Matrix.mulVec, dotProduct] at this
     simpa [mul_comm, Module.Basis.toMatrix_apply] using this
 
-open IsDedekindDomain NumberField in
-open Matrix in
 theorem _root_.GlobalTheory.SmithBetween.smith_between (R : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] (ϖ : R)
     (hϖ : Irreducible ϖ) (n k : ℕ) (hk : k ≤ n) (M M' : Matrix (Fin n) (Fin n) R)
     (hMM : M * M' = ϖ • (1 : Matrix (Fin n) (Fin n) R)) (hdet : Associated M.det (ϖ ^ k)) :

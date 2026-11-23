@@ -116,7 +116,6 @@ theorem localization₂ (hD : ∀ n U (a : Sec ((res _ (tw q i)).X n) U), (∃ b
 end GlobalTheory.EtC.UnitMul
 
 namespace GlobalTheory.EtC.UnitMul
-open ClsSpec
 
 variable {R : Type} [CommRing R]
 

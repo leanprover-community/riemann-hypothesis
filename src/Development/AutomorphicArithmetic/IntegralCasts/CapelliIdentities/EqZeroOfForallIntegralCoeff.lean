@@ -225,7 +225,6 @@ private theorem entry_lin [CompactSpace U2] (i j : Fin 2) : ∃ a b c d : ℂ,
   · exact ⟨0, 1, 1, 0, by simp [lin]⟩
   · exact ⟨0, 1, 0, 1, by simp [lin]⟩
 
-open UpperTheory.Reformulated.B.Gwa7 in
 private theorem star_entry_lin [CompactSpace U2] (i j : Fin 2) : ∃ a b c d : ℂ,
     star (entry i j) = detPow (-1) * lin (entry 0 0) (entry 0 1) (entry 1 0) (entry 1 1) a b c d := by
   have h : ∀ k : U2, star (k.1 i j) = (k.1.det)⁻¹ * k.1.adjugate j i := fun k => by
@@ -241,7 +240,6 @@ private theorem star_entry_lin [CompactSpace U2] (i j : Fin 2) : ∃ a b c d : �
   · refine ⟨1, 0, 1, 0, ContinuousMap.ext fun k => (h k).trans ?_⟩
     simp [lin, detPow, entry, Matrix.adjugate_fin_two]
 
-open UpperTheory.Reformulated.B.Gwa7 in
 private theorem lin_eq [CompactSpace U2] (a b c d : ℂ) :
     ∃ (r : ℂ) (l₁ l₂ : U2), ∀ k : U2,
     lin (entry 0 0) (entry 0 1) (entry 1 0) (entry 1 1) a b c d k = r * (l₁ * k * l₂).1 0 0 := by
@@ -262,7 +260,6 @@ private theorem lin_eq [CompactSpace U2] (a b c d : ℂ) :
   · simp [lin, entry, Matrix.mul_apply, Fin.sum_univ_two, Matrix.vecMul, dotProduct]
     ring
 
-open UpperTheory.Reformulated.B.Gwa7 in
 private theorem functional_zero [CompactSpace U2] (φ : C(U2, ℂ) →L[ℂ] ℂ)
     (h : ∀ (n : ℕ) (m : ℤ) (a b c d : ℂ),
       φ (lin (entry 0 0) (entry 0 1) (entry 1 0) (entry 1 1) a b c d ^ n * detPow m * 1) = 0)

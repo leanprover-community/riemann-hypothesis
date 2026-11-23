@@ -252,7 +252,6 @@ theorem mem_flagN_of_blocks {e : AE D} {Q : Finset (Pl D.host.E)} (he : IsIdemSu
 end GlobalTheory.PrLevel
 
 namespace GlobalTheory.PrLevel
-open GlobalTheory.RootEx GlobalTheory.RowRep GlobalTheory.LocGrp GlobalTheory.LocGrpIff
 
 variable {D : D7}
 

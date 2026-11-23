@@ -53,7 +53,6 @@ private theorem exists_mul_pow_le_exp_half_rpow (eps K : ℝ) (N : ℕ) (heps : 
         apply Real.exp_le_exp.mpr
         linarith
 
-open NumberField in
 private theorem zBase_and_log_b_bounds {D : _root_.Formalism.BasicNotions.D7} (L : _root_.Formalism.BasicNotions.SizeData₂ D) (hR : _root_.GlobalTheory.EX.RankVal L.sc D.R) :
     1 ≤ L.sc.x ∧ (D.R.k : ℝ) ≤ 2 * L.sc.x ^ 5 ∧ (D.R.m : ℝ) ≤ 2 * L.sc.x ^ 5 ∧
       (D.R.f : ℝ) ≤ 2 * L.sc.x ^ 5 ∧ (D.R.r : ℝ) ≤ 4 * L.sc.x ^ 5 ∧
@@ -114,14 +113,12 @@ private theorem zBase_and_log_b_bounds {D : _root_.Formalism.BasicNotions.D7} (L
           exact le_trans hchR (by gcongr)
       _ = 32 * x ^ 15 := by ring
 
-open NumberField in
 private theorem scale_b_rpow_half (s : _root_.Formalism.BasicNotions.Scale) :
     s.b ^ (1 / 2 : ℝ) = Real.exp (s.x ^ s.eps / 2) := by
   simp only [_root_.Formalism.BasicNotions.Scale.b, _root_.Formalism.BasicNotions.Scale.L]
   rw [← Real.exp_mul]
   ring_nf
 
-open NumberField in
 private theorem exp_half_le_scale_b (s : _root_.Formalism.BasicNotions.Scale) :
     Real.exp (s.x ^ s.eps / 2) ≤ s.b := by
   simp only [_root_.Formalism.BasicNotions.Scale.b, _root_.Formalism.BasicNotions.Scale.L]
@@ -130,7 +127,6 @@ private theorem exp_half_le_scale_b (s : _root_.Formalism.BasicNotions.Scale) :
   linarith
 
 
-open NumberField in
 theorem _root_.GlobalTheory.EX.szRow_poly_le_b : _root_.GlobalTheory.EX.SzRow (fun C D L => (((_root_.GlobalTheory.EX.TOv L.sc : ℕ) : ℝ) * ((D.R.f * D.R.r.choose 2 : ℕ) : ℝ) ^ 2 * Real.log L.sc.b * L.sc.x ^ C.T.Cb ≤ L.sc.b) ∧ (((_root_.GlobalTheory.EX.TOv L.sc : ℕ) : ℝ) * ((D.R.f * D.R.r.choose 2 : ℕ) : ℝ) ^ 2 * Real.log L.sc.b ≤ L.sc.b ^ (1 / 2 : ℝ)) ∧ (C.T.CbN * (D.R.r : ℝ) * D.R.m * D.R.k * (C.T.CP * _root_.Formalism.BasicNotions.zBase L ^ C.T.eP) ^ 2 * ((D.R.f * D.R.r.choose 2 : ℕ) : ℝ) ^ 3 ≤ L.sc.b)) := by
   intro eps heps _ C hC
   have heP : C.T.eP = 12 := hC.2.2.2.2.2.2.2.2.1

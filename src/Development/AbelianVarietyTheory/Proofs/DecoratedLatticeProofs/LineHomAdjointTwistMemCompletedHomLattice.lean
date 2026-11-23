@@ -212,7 +212,6 @@ end GlobalTheory.KapLat2
 
 namespace GlobalTheory.KapLat2
 
-open GlobalTheory.FinPl GlobalTheory.KapLat
 
 
 

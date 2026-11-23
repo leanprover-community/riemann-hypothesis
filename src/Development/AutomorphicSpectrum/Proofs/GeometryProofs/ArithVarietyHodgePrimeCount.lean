@@ -232,7 +232,6 @@ end GlobalTheory.CompanionTheory.Ar.Num.FamEx.FunPart
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx.FunPart
 
-open GlobalTheory.CompanionTheory.Ar.Num.FamEx.FunAlg GlobalTheory.CompanionTheory.Ar.LieVB GlobalTheory.CompanionTheory.Ar.LieTangent
 
 section Sec
 
@@ -347,7 +346,6 @@ end GlobalTheory.CompanionTheory.Ar.Num.FamEx.FunPart
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx.FunPart
 
-open GlobalTheory.CompanionTheory.Ar.Num.FamEx.FunAlg GlobalTheory.CompanionTheory.Ar.LieVB GlobalTheory.CompanionTheory.Ar.LieTangent
 
 section Form
 

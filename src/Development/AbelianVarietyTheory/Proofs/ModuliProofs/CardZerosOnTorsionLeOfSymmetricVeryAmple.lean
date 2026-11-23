@@ -291,10 +291,6 @@ theorem secOne_ratio {X : Scheme.{0}} {M : LB X} (s t : M.Sec) (V : X.Opens) (r 
 
 end GlobalTheory.TorsionZero
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-open scoped CategoryTheory.Obj TensorProduct
-open GlobalTheory.ZV
 
 namespace GlobalTheory
 

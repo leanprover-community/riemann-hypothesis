@@ -55,22 +55,16 @@ private theorem cK_nonneg' (β βJ : ℕ) :
   unfold _root_.GlobalTheory.HL.Frames.cK
   positivity
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem ind_eq_one_of_pos {W : Type} {P : W → Prop} {w : W} (h : P w) :
     _root_.GlobalTheory.IdxInt.ind P w = 1 := by
   unfold _root_.GlobalTheory.IdxInt.ind
   exact if_pos h
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem ind_eq_zero_of_not {W : Type} {P : W → Prop} {w : W} (h : ¬ P w) :
     _root_.GlobalTheory.IdxInt.ind P w = 0 := by
   unfold _root_.GlobalTheory.IdxInt.ind
   exact if_neg h
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E]
   [Algebra F E] [TopologicalSpace E] {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ}
   (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -80,8 +74,6 @@ private theorem eq_of_MvTo_of_MvTo {a : ℕ} {d : S.Datum}
   unfold _root_.GlobalTheory.HL.Frames.MvTo at h₁ h₂
   exact SetLike.coe_injective (h₁.2.trans h₂.2.symm)
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E]
   [Algebra F E] [TopologicalSpace E] {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ}
   (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -91,8 +83,6 @@ private theorem Mv_of_MvTo {a : ℕ} {d : S.Datum}
   unfold _root_.GlobalTheory.HL.Frames.MvTo at h
   exact h.1
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E]
   [Algebra F E] [TopologicalSpace E] {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ}
   (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -112,10 +102,6 @@ private theorem exists_MvTo_isTerm_of_Mv_of_InFF [IsNonarchimedeanLocalField F] 
     exact ⟨⟨_, _⟩, hW⟩
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.HL.kern_row_sum : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E), ∀ (r k : ℕ) (S : _root_.GlobalTheory.HL.Frames L r k), 4 * r + 7 ≤ k → ∀ (j : Fin r) (β βJ : ℕ) (d : S.Datum) (Λ : Submodule L.O S.V), S.IsTerm d Λ → S.InFF β (j + 1) βJ d Λ → |(∑ᶠ y : {y // S.IsTerm d y ∧ S.InFF β (j + 1) βJ d y}, S.kern β (j + 1) βJ d Λ y) - 1| ≤ 24 / 7 * (S.q : ℝ) ^ (1 - ((k : ℤ) - 2 * r - 3)) := by
   intro F _ _ _ _ _ E _ _ _ L r k S hk j β βJ d Λ hT hF
   obtain ⟨-, -, hfinK, -, hsplit⟩ :=

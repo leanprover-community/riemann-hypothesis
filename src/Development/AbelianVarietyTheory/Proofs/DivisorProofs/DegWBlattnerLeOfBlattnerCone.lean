@@ -46,7 +46,6 @@ private lemma shiftNu_add_right {p q : ℕ} (c : ℚ) (f g : _root_.Formalism.Ba
     _root_.Formalism.BasicNotions.TH.shiftNu c (fun x => f x + g x) a = _root_.Formalism.BasicNotions.TH.shiftNu c f a + g a := by
   cases a <;> simp only [_root_.Formalism.BasicNotions.TH.shiftNu] <;> ring
 
-open MvPolynomial in
 private lemma degW_blattner_le_of_sign_lemma {p q : ℕ} (M : _root_.Formalism.BasicNotions.TH.GKMod p q) (lam : _root_.Formalism.BasicNotions.TH.Ix p q → ℚ)
     (c : ℚ) (hC : _root_.GlobalTheory.FockAlg.ConeTypes M lam) (s : _root_.Formalism.BasicNotions.TH.Ix p q → ℚ)
     (hs : ∀ a, s a = 1 ∨ s a = -1)
@@ -89,7 +88,6 @@ private lemma degW_blattner_le_of_sign_lemma {p q : ℕ} (M : _root_.Formalism.B
         simp [shiftNu_add_right]
 
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.FlowLemma.degW_blattner_le (p q : ℕ) (M : _root_.Formalism.BasicNotions.TH.GKMod p q) (lam : _root_.Formalism.BasicNotions.TH.Ix p q → ℚ)
     (c θ : ℚ)
     (hC : _root_.GlobalTheory.FockAlg.ConeTypes M lam)

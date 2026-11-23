@@ -100,7 +100,6 @@ variable (W : WachDatum E n V)
 
 end WachDatum
 
-section Hom
 
 variable {B : Base O A} {E : Amb B AA} {n : ℕ}
 variable {V₁ : Type} [AddCommGroup V₁] [Module AA V₁] [Module A V₁] [IsScalarTower A AA V₁]
@@ -118,7 +117,6 @@ namespace Hom
 
 variable {W₁ : WachDatum E n V₁} {W₂ : WachDatum E n V₂} (h : Hom W₁ W₂)
 
-end Hom
 
 end Hom
 

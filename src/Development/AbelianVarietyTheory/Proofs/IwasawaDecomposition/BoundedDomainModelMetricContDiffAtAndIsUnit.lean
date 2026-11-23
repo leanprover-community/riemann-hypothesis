@@ -81,7 +81,6 @@ end GlobalTheory.ModelMetricReg
 
 namespace GlobalTheory.ModelMetricReg
 
-open scoped ComplexOrder
 
 theorem contDiff_hP_entry (ι : Type) [Fintype ι] (p q n : ℕ)
     (h : Fintype.card (ι × Fin p × Fin q) = n) (τ : ι) (a b : Fin p) :

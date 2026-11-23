@@ -338,7 +338,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
 
 section Unram
 
-open Classical
 
 variable {X : Fields} {Pr : Primes X}
 
@@ -352,7 +351,6 @@ theorem mem_of_mem_divs {A : Type} [CommRing A] [IsDedekindDomain A] {a : A} {P 
 end Unram
 
 
-open Classical
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks}
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}

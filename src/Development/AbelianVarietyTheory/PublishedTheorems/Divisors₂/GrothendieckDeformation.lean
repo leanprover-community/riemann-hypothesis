@@ -55,7 +55,6 @@ theorem _root_.GlobalTheory.Published.GrothendieckDeformation.grothendieckMessin
 
 
 set_option autoImplicit false in
-open DividedPowers in
 theorem _root_.GlobalTheory.Published.GrothendieckDeformation.at_dualNumber (H : _root_.GlobalTheory.Published.GrothendieckDeformation) (R : Type)
     [CommRing R] :
     _root_.GlobalTheory.Published.GrothendieckMessing.At

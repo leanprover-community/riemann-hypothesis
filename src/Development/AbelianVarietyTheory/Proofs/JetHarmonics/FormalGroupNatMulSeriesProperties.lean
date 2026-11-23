@@ -54,7 +54,6 @@ theorem _root_.GlobalTheory.ConvSer.nMul_hasSubst_pair {R : Type*} [CommRing R] 
   · exact hf
   · exact hg
 
-open MvPowerSeries Finsupp in
 theorem _root_.GlobalTheory.ConvSer.nMul_constantCoeff {R : Type*} [CommRing R] (F : FormalGroup R)
     (n : ℕ) : PowerSeries.constantCoeff (_root_.GlobalTheory.ConvSer.nMul F n) = 0 := by
   induction n with
@@ -156,7 +155,6 @@ theorem nMul_subst_nMul {R : Type*} [CommRing R] (F : FormalGroup R) (i j : ℕ)
     · exact ih
     · exact PowerSeries.subst_X (nMul_hasSubst F j)
 
-open MvPowerSeries Finsupp in
 private theorem coeff_one_subst_pair_X {R : Type*} [CommRing R] (F : FormalGroup R)
     {f : PowerSeries R} (hf : PowerSeries.constantCoeff f = 0) :
     PowerSeries.coeff 1 (MvPowerSeries.subst (![f, PowerSeries.X] : Fin 2 → MvPowerSeries Unit R)
@@ -200,7 +198,6 @@ private theorem coeff_one_subst_pair_X {R : Type*} [CommRing R] (F : FormalGroup
     · exact absurd (by simp [h2]) hd
 
 
-open MvPowerSeries Finsupp in
 theorem _root_.GlobalTheory.ConvSer.nMul_props : ∀ (R : Type) [CommRing R] (F : FormalGroup R), (∀ n, PowerSeries.constantCoeff (_root_.GlobalTheory.ConvSer.nMul F n) = 0 ∧ PowerSeries.coeff 1 (_root_.GlobalTheory.ConvSer.nMul F n) = (n : R)) ∧ _root_.GlobalTheory.ConvSer.nMul F 1 = PowerSeries.X ∧ (∀ i j, MvPowerSeries.subst (![_root_.GlobalTheory.ConvSer.nMul F i, _root_.GlobalTheory.ConvSer.nMul F j] : Fin 2 → MvPowerSeries Unit R) F.toPowerSeries = _root_.GlobalTheory.ConvSer.nMul F (i + j)) ∧ (∀ i j, (_root_.GlobalTheory.ConvSer.nMul F i).subst (_root_.GlobalTheory.ConvSer.nMul F j) = _root_.GlobalTheory.ConvSer.nMul F (i * j)) ∧ (∀ (S : Type) [CommRing S] (φ : R →+* S) (n : ℕ), PowerSeries.map φ (_root_.GlobalTheory.ConvSer.nMul F n) = _root_.GlobalTheory.ConvSer.nMul (F.map φ) n) := by
   intro R _ F
   have hc := _root_.GlobalTheory.ConvSer.nMul_constantCoeff F

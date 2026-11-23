@@ -75,9 +75,7 @@ theorem _root_.GlobalTheory.EtaAn.ThetaTorus.setAverage_equiv {V W : Type} [Norm
     mul_inv, _root_.mul_mul_mul_comm, inv_mul_cancel₀ hpos.ne', _root_.one_mul]
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
 attribute [local instance] Over.cartesianMonoidalCategory in
-open MeasureTheory in
 theorem _root_.GlobalTheory.EtaAn.ThetaTorus.Hf_add_re {κ : Type} [Fintype κ] (v w : EuclideanSpace ℂ κ) :
     (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf (v + w) (v + w)).re = (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf v v).re + 2 * (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf v w).re + (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf w w).re := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.I2.Hf
@@ -92,9 +90,7 @@ theorem _root_.GlobalTheory.EtaAn.ThetaTorus.Hf_add_re {κ : Type} [Fintype κ] 
   ring
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
 attribute [local instance] Over.cartesianMonoidalCategory in
-open MeasureTheory in
 theorem _root_.GlobalTheory.EtaAn.ThetaTorus.theta_section_l2_torus :
     ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (Pm : D.La →+ (Fin g → ℂ)) (Hm : Matrix (Fin g) (Fin g) ℂ) (T : _root_.ReciprocityTheory.ChartRestriction.G.I2.PT E) (ψ : (Fin g → ℂ) ≃ₗ[ℂ] _root_.ReciprocityTheory.ChartRestriction.G.I2.Vsp T.dim) (θ : (Fin g → ℂ) → ℂ) (Fd : Set (Fin g → ℂ)), _root_.GlobalTheory.EtaAn.IsTorusOf D ty Pm Hm T ψ → Differentiable ℂ θ → (∀ a z, θ (z + Pm a) = (((Int.negOnePow (D.EF a (H.w0 • a)) : ℤˣ) : ℤ) : ℂ) * Complex.exp (Real.pi * _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.hermForm Hm z (Pm a) + Real.pi / 2 * _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.hermForm Hm (Pm a) (Pm a)) * θ z) → MeasureTheory.IsAddFundamentalDomain Pm.range Fd MeasureTheory.volume → (fun v : Fin 1 → _root_.ReciprocityTheory.ChartRestriction.G.I2.Vsp T.dim => θ (ψ.symm (v 0))) ∈ T.Sec 1 1 ∧ T.l2 1 (fun v : Fin 1 → _root_.ReciprocityTheory.ChartRestriction.G.I2.Vsp T.dim => θ (ψ.symm (v 0))) = (∫ z in Fd, ‖θ z‖ ^ 2 * Real.exp (-Real.pi * (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.hermForm Hm z z).re)) / (MeasureTheory.volume Fd).toReal ∧ ∀ z, Real.sqrt (T.ptN2 1 (fun v : Fin 1 → _root_.ReciprocityTheory.ChartRestriction.G.I2.Vsp T.dim => θ (ψ.symm (v 0))) (fun _ => ψ z)) = ‖θ z‖ * Real.exp (-(Real.pi / 2) * (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.hermForm Hm z z).re) := by
   intro E _ _ _ H D g ty Pm Hm T ψ θ Fd hT hθ hper hFd

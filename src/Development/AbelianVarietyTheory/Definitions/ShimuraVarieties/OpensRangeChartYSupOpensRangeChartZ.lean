@@ -653,8 +653,6 @@ end ChartZ
 
 section ChartY
 
-open Polynomial
-open scoped Polynomial.Bivariate
 
 def originPolynomial : R[X][Y] :=
   Y ^ 3 + C (C W.a₂ * X) * Y ^ 2 + C (C W.a₁ * X + C W.a₄ * X ^ 2) * Y

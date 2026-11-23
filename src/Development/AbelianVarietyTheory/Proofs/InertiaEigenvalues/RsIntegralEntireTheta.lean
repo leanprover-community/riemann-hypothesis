@@ -132,7 +132,6 @@ theorem mem_goodFns (ha : 0 < a) {π : CuspSub E a} (hπ : π.IsUnitary) {F : GA
 
 end GlobalTheory.RSnm
 
-open NumberField Matrix MeasureTheory GlobalTheory.CuspRep GlobalTheory.ShortVecDecay
 open GroundTheory.Automorphic.FourierWhittaker (colGL uMat uMat_apply colX colX_apply coe_uGL blockGL blockMat blockMat_apply
   coe_blockGL partialCoeff stepCoeff vecCoeff vecDomain vecMeasure det_uMat)
 
@@ -451,7 +450,6 @@ end GlobalTheory.RSnm
 
 namespace GlobalTheory.RSnm
 
-open GroundTheory.Global GroundTheory.Global.IdeleGroup GroundTheory.Automorphic GlobalTheory.CuspRep.CuspidalL2GL
 open GroundTheory.Automorphic.FourierWhittaker (continuous_partialCoeff)
 open scoped ComplexConjugate nonZeroDivisors
 

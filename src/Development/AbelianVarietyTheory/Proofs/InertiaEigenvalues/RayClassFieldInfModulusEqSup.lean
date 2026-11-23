@@ -78,7 +78,6 @@ private theorem heckeIdeal_comp_restrictNormalHom {L M : Type} [Field L]
     rfl
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain in
 variable {K : Type} [Field K] [NumberField K] in
 private theorem not_isUnit_natCast_of_prime' {F : Type} [Field F] [NumberField F] {q : ℕ}
     (hq : q.Prime) : ¬ IsUnit ((q : 𝓞 F)) := by
@@ -91,7 +90,6 @@ private theorem not_isUnit_natCast_of_prime' {F : Type} [Field F] [NumberField F
   omega
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain in
 variable {K : Type} [Field K] [NumberField K] in
 private theorem isCoprime_of_le_right {R : Type} [CommRing R] {I J J' : Ideal R}
     (h : IsCoprime I J) (hJ : J ≤ J') : IsCoprime I J' := by
@@ -99,7 +97,6 @@ private theorem isCoprime_of_le_right {R : Type} [CommRing R] {I J J' : Ideal R}
   exact top_unique (h.ge.trans (sup_le_sup_left hJ _))
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain in
 variable {K : Type} [Field K] [NumberField K] in
 private theorem mem_of_mul_mem_of_isCoprime_span {R : Type} [CommRing R] {J : Ideal R} {y z : R}
     (h : IsCoprime (Ideal.span {y}) J) (hyz : y * z ∈ J) : z ∈ J := by
@@ -110,7 +107,6 @@ private theorem mem_of_mul_mem_of_isCoprime_span {R : Type} [CommRing R] {J : Id
   exact J.add_mem (J.mul_mem_left _ hyz) (J.mul_mem_left _ hj)
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain in
 variable {K : Type} [Field K] [NumberField K] in
 private theorem exists_rayPair_inf_of_rayPair (hu : ∀ u : (𝓞 K)ˣ, u = 1 ∨ u = -1)
     {𝔞 𝔟 : Ideal (𝓞 K)} {q : ℕ} (hq : q.Prime) (hq2 : q ≠ 2)
@@ -210,7 +206,6 @@ private theorem exists_rayPair_inf_of_rayPair (hu : ∀ u : (𝓞 K)ˣ, u = 1 �
 
 
 set_option autoImplicit false in
-open NumberField IsDedekindDomain in
 variable {K : Type} [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.RayCompositum.fieldRange_sup_eq_top : ∀ {K H H₁ H₂ : Type} [Field K] [NumberField K] [Field H] [NumberField H]
     [Algebra K H] [IsAbelianGalois K H] [Field H₁] [NumberField H₁] [Algebra K H₁] [IsAbelianGalois K H₁]

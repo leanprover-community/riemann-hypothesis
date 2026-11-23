@@ -58,7 +58,6 @@ end PositivityTheory.ThKW.SplitVacuumEigenvectors
 end
 noncomputable section
 namespace PositivityTheory.ThKW.SplitVacuumEigenvectors
-open GlobalTheory.SplitInvFormF
 theorem exists_vac_split_k : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E),
     _root_.UpperTheory.TP.W.GoodK σ B → ∀ (nS nT : ℕ) (JS : Matrix (Fin nS) (Fin nS) E) (JT : Matrix (Fin nT) (Fin nT) E),
       IsHermND σ JS → IsHermND σ JT → ∀ ξ₀ : E, ξ₀ ≠ 0 → σ ξ₀ = -ξ₀ →

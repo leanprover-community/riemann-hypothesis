@@ -70,10 +70,8 @@ abbrev chr0 (X : Fields) (S : Set ℕ) : Chr X.F X.E X.K := ((mu0 X.F X.E X.K S 
 
 end Fin
 
-section Dat
 
 variable (d : ColDat) (S : Set ℕ)
 
-end Dat
 
 end Formalism.L2.Ker

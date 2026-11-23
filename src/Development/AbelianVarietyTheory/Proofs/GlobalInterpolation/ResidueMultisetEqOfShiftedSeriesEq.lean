@@ -55,14 +55,12 @@ open Polynomial in
 noncomputable def linProd {k : Type} [Field k] {ι : Type} [Fintype ι] (a : ι → k) : k[X] :=
   ∏ i, (1 - Polynomial.C (a i) * Polynomial.X)
 
-open Polynomial in
 theorem linProd_ne_zero {k : Type} [Field k] {ι : Type} [Fintype ι] (a : ι → k) :
     linProd a ≠ 0 := by
   intro h
   have := congrArg (Polynomial.eval 0) h
   simp [linProd, Polynomial.eval_prod] at this
 
-open Polynomial in
 theorem count_roots_factor {k : Type} [Field k] [DecidableEq k] (c y : k) (hy : y ≠ 0) :
     Multiset.count y⁻¹ (1 - Polynomial.C c * Polynomial.X).roots = if c = y then 1 else 0 := by
   by_cases hc : c = 0
@@ -80,7 +78,6 @@ theorem count_roots_factor {k : Type} [Field k] [DecidableEq k] (c y : k) (hy : 
     · have : y⁻¹ ≠ c⁻¹ := fun h' => h (inv_injective h').symm
       simp [h, this]
 
-open Polynomial in
 theorem count_roots_linProd {k : Type} [Field k] [DecidableEq k] {ι : Type} [Fintype ι] (a : ι → k) (y : k)
     (hy : y ≠ 0) :
     Multiset.count y⁻¹ (linProd a).roots = (Finset.univ.filter fun i => a i = y).card := by

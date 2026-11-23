@@ -66,7 +66,6 @@ end GlobalTheory.UnitLocWeight
 
 namespace GlobalTheory.UnitLocWeight
 
-open GlobalTheory.ResW
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a : ℕ}
 
@@ -92,7 +91,6 @@ end GlobalTheory.UnitLocWeight
 
 namespace GlobalTheory.UnitLocWeight
 
-open GlobalTheory.ResW
 
 theorem rexp_eq {E : Type} [Field E] [NumberField E] [IsCMField E] {a : ℕ} (ha : 1 ≤ a) {π : CuspSub E a} {wt : ℤ}
     (h : IsWeight π wt) : rexp (⟨a, π⟩ : Letter E) = ((a : ℝ) - 1 - wt) / 2 := by

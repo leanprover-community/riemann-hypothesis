@@ -285,7 +285,6 @@ end GlobalTheory.GLm.Stages
 namespace GlobalTheory.GLm
 
 open Polynomial Formalism.MainNotions.ArithmeticCylinders GlobalTheory.GLq GlobalTheory.GLm.Stages
-open scoped Classical
 
 theorem indV_indR (g : ℕ) [Fact g.Prime] (ψ : AddChar (ZMod g) ℂ) (i m : ℕ) (ρ : Gn g i → ℂ) (him : i < m)
     (x : Gn g (m + 1)) (hx : InMir (x : Mt g (m + 1))) :

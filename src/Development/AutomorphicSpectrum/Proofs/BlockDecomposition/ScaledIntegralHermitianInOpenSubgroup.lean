@@ -133,7 +133,6 @@ end GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.Commens
 
 namespace GlobalTheory.CompanionTheory.SiegelND.Integ.Hua.Commens
 
-open Topology
 
 theorem exists_smul_mem_open : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E),
     IsCMExt F E σ → ∀ (n : ℕ) (U : AddSubgroup (HermR (Af F) σ n)), IsOpen (U : Set (HermR (Af F) σ n)) →

@@ -83,7 +83,6 @@ theorem val_stalkHom {V' : Type} [CommRing V'] [IsDomain V'] {z : M.Z} (ev : M.Z
 end GlobalTheory.Poinc.Sep.GalVal
 
 namespace GlobalTheory.Poinc.Sep.GalVal
-open GlobalTheory.Points GlobalTheory.ZH
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {M : RatModel o Ω}
 
 theorem exists_mul_eq_stalkHom {P z : M.Z} (hs : P ⤳ z) {a : Ω} (ha : a ∈ M.O P) :

@@ -128,9 +128,6 @@ end GlobalTheory.BlockRealLine
 
 namespace GlobalTheory.BlockRealLine
 
-open Matrix
-open scoped TensorProduct
-open Formalism.UG (cT bc)
 open GlobalTheory.CuspRep (Cinf infEq infGL expGLi)
 
 section SlopeTestRemainingChoices
@@ -212,10 +209,6 @@ end GlobalTheory.BlockRealLine
 
 namespace GlobalTheory.BlockRealLine
 
-open Matrix
-open scoped TensorProduct
-open Formalism.UG (cT bc)
-open GlobalTheory.CuspRep (Cinf infEq infGL expGLi)
 
 theorem isRealLine_blockEmb_exp : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
     [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J →

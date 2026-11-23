@@ -140,7 +140,6 @@ end PositivityTheory.RgBcC.VC.NAvgH
 namespace PositivityTheory.RgBcC.VC
 
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.VC.NAvgH
-open PositivityTheory.RgTw (Mat G)
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

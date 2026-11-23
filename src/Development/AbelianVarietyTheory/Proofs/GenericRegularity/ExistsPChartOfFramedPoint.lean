@@ -414,6 +414,5 @@ end GlobalTheory.Reg.ChartInhab
 namespace GlobalTheory.Reg
 
 open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Reg
 
 end GlobalTheory.Reg

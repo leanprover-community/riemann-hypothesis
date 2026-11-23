@@ -136,7 +136,6 @@ end
 
 namespace GlobalTheory.IntSpanCmp
 
-open MvPolynomial
 
 variable {σ : Type}
 
@@ -213,7 +212,6 @@ end GlobalTheory.IntSpanCmp
 
 namespace GlobalTheory.IntSpanCmp
 
-open MvPolynomial
 
 theorem ten_map {ι R K : Type} [Fintype ι] [CommRing R] [CommRing K] (φ : R →+* K) {n : ℕ}
     (f : ι → MvPolynomial (Fin n × Fin n) R) :
@@ -251,7 +249,6 @@ end GlobalTheory.IntSpanCmp
 
 namespace GlobalTheory.IntSpanCmp
 
-open MvPolynomial
 
 theorem intSpan_iff_delW : ∀ (D : D7) (Pl : Examples₂.EntPl D) (w : D.what₂.places.Pl) {n : ℕ} (lam : D.what₂.Tau → DomWeight n)
     (R : MvPolynomial (D.what₂.Tau × Fin n × Fin n) D.what₂.LL),

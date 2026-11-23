@@ -75,8 +75,6 @@ theorem _root_.GlobalTheory.TorsorFieldPoint.formallyUnramified_of_isZTorsor (B 
   exact Algebra.FormallyUnramified.of_formallyUnramified_tensorProduct_of_faithfullyFlat D
 
 
-open IsLocalRing Polynomial in
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.TorsorFieldPoint.exists_point_finite_separable : ∀ (B K : Type) [CommRing B] [Field K]
     (f : B →+* K) (D : Type) [CommRing D] [Algebra B D]
     (q : ℕ), 0 < q → ∀ (act : Multiplicative (ZMod q) →* (D ≃ₐ[B] D)),

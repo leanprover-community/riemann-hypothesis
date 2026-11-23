@@ -118,7 +118,6 @@ end GlobalTheory.WeilSpecialise
 
 namespace GlobalTheory.WeilSpecialise
 
-open ReciprocityTheory.ChartRestriction.G.Out
 
 theorem unitOn_surjective {R : Type} [CommRing R] : Function.Surjective (unitOn (R := R)) :=
   (Units.mapEquiv (Scheme.ΓSpecIso (CommRingCat.of R)).symm.commRingCatIsoToRingEquiv.toMulEquiv).bijective.2

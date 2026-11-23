@@ -81,7 +81,6 @@ end GlobalTheory.EtaCompare
 
 namespace GlobalTheory.EtaCompare
 
-open WithZero
 
 theorem eta_eq_uq_eta : ∀ (K : UQ) (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E]
     [NormedAlgebra F E] [StarRing E] [GlobalTheory.JR.Unram F E] (φ : K.E ≃+* E),

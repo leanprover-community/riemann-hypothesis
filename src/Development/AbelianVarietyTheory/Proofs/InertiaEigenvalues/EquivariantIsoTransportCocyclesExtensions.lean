@@ -99,7 +99,6 @@ end General
 end GlobalTheory.TransportCoef
 
 namespace GlobalTheory.TransportCoef
-open Formalism.MainNotions.N (twistRep coefRep)
 
 theorem transport {O G : Type} [CommRing O] [Group G] [TopologicalSpace G] {M M' : Type} [AddCommGroup M]
     [Module O M] [AddCommGroup M'] [Module O M'] (W : Representation O G M) (W' : Representation O G M')

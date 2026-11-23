@@ -215,7 +215,6 @@ theorem ampSum_le_of_rows (T : TermTie D) (hJ : JtPin hF hI T) (hW : WRowPin hF 
       exact (hQ x (Finset.mem_filter.1 hx).2).choose_spec
 
 
-open Formalism.MainNotions.BridgeLemma in
 theorem rowBound_or (T : TermTie D) {large₂ : SizeData₂ D} {u u' : D.what₂.Word} {C1 : ℝ} (L : LoopTie D large₂ T u u' C1)
     {Q₁ Q₂ : D.s.Pair u u' → Prop} {B₁ B₂ : ℝ} (h₁ : RowBound T L Q₁ B₁) (h₂ : RowBound T L Q₂ B₂) :
     RowBound T L (fun p => Q₁ p ∨ Q₂ p) (B₁ + B₂) := by
@@ -453,7 +452,6 @@ theorem oneSC_at (T : TermTie D) (hJ : JtPin hF hI T) (hW : WRowPin hF hI T) (hC
 
 end Cut
 
-section Fam
 
 structure ConcAt (D : D7) (T : TermTie D) where
   X : HidaSetting D
@@ -470,7 +468,6 @@ variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ) (At : ∀ x, Fm.x1 < x → ∀ i
     LoopTie (Fm.D x i) (Fm.L x i) (At x hx i) u u' C1)
   (Cc : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ConcAt (Fm.D x i) (At x hx i))
 
-end Fam
 
 section Parts
 

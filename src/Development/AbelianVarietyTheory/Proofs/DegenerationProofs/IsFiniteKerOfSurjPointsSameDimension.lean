@@ -125,8 +125,6 @@ private theorem isFinite_pullback_unit_of_surjective_on_points (k : Type) [Field
   exact IsFinite.of_locallyQuasiFinite _
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 theorem _root_.GlobalTheory.SS.isFinite_ker_of_surjective_points_of_dim_eq : ∀ (k : Type) [Field k] [IsAlgClosed k]
     (G G' : Over (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp k)) [GrpObj G] [GrpObj G'] (g : ℕ), _root_.GlobalTheory.SS.SmConn G →
     _root_.GlobalTheory.SS.SmConn G' → SmoothOfRelativeDimension g G.hom →

@@ -77,8 +77,6 @@ theorem _root_.GlobalTheory.ShortLawsCompare.mem_std_block (v : Fin (n₁ + n₂
     · exact h₂ i
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] in
 variable {n₁ n₂ : ℕ} in
 private theorem smul_inf_comap_funLeft_le (I : Ideal (𝓞 E)) (L₁ P₁ : Submodule (𝓞 E) (Fin n₁ → E))
@@ -97,8 +95,6 @@ private theorem smul_inf_comap_funLeft_le (I : Ideal (𝓞 E)) (L₁ P₁ : Subm
     exact h₂ (Submodule.smul_mem_smul hr hv.2)
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] in
 variable {n₁ n₂ : ℕ} in
 private theorem stdLat_add_eq_inf_comap_funLeft :
@@ -109,8 +105,6 @@ private theorem stdLat_add_eq_inf_comap_funLeft :
   exact _root_.GlobalTheory.ShortLawsCompare.mem_std_block v
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] in
 variable {n₁ n₂ : ℕ} in
 theorem _root_.GlobalTheory.ShortLawsCompare.levOK_block {Λ₁ : _root_.Formalism.L2.Pj.GenLat E n₁} {Λ₂ : _root_.Formalism.L2.Pj.GenLat E n₂} {N M : ℕ}
@@ -126,8 +120,6 @@ theorem _root_.GlobalTheory.ShortLawsCompare.levOK_block {Λ₁ : _root_.Formali
   tauto
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] in
 variable {n₁ n₂ : ℕ} in
 theorem _root_.GlobalTheory.ShortLawsCompare.trivAt_std (n b : ℕ) :
@@ -136,8 +128,6 @@ theorem _root_.GlobalTheory.ShortLawsCompare.trivAt_std (n b : ℕ) :
   refine ⟨1, Nat.coprime_one_left _, ?_, ?_⟩ <;> simp
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] in
 variable {n₁ n₂ : ℕ} in
 private theorem complexConj_coe_mem_range_algebraMap [IsCMField E] (a : 𝓞 E) :
@@ -145,8 +135,6 @@ private theorem complexConj_coe_mem_range_algebraMap [IsCMField E] (a : 𝓞 E) 
   ⟨RingOfIntegers.mapRingHom (IsCMField.complexConj E : E →+* E) a, rfl⟩
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] in
 variable {n₁ n₂ : ℕ} in
 theorem _root_.GlobalTheory.ShortLawsCompare.unimod_std [IsCMField E] (n : ℕ) :
@@ -193,8 +181,6 @@ section Beta
 variable (c : Coeff l)
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H}
   {l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H} in
 variable (c : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Coeff l) in
@@ -253,8 +239,6 @@ theorem _root_.GlobalTheory.ShortLawsCompare.isUnit_idealAt {n b : ℕ} {Λ : _r
 
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H}
   {l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H} in
 variable (c : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Coeff l) in
@@ -295,8 +279,6 @@ theorem _root_.GlobalTheory.ShortLawsCompare.isBeta_ratio {n : ℕ} {Λ : _root_
 
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H}
   {l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H} in
 variable (c : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Coeff l) in
@@ -346,8 +328,6 @@ theorem blockLat_eq (Λ₁ : GenLat E n₁) (Λ₂ : GenLat E n₂) : BlockLatti
 theorem latAdm_iff {n : ℕ} (bad : ℕ) (Λ : GenLat E n) : BlockLatticeAdmissibility.LatAdm l bad Λ ↔ BlockProductLattices.LatOK bad l.M Λ := Iff.rfl
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] in
 variable {n₁ n₂ : ℕ} in
 private theorem blockLat_unimod [IsCMField E] {Λ₁ : _root_.Formalism.L2.Pj.GenLat E n₁}
@@ -369,8 +349,6 @@ private theorem blockLat_unimod [IsCMField E] {Λ₁ : _root_.Formalism.L2.Pj.Ge
       simpa using this
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] in
 variable {n₁ n₂ : ℕ} in
 private theorem blockLat_trivAt {Λ₁ : _root_.Formalism.L2.Pj.GenLat E n₁} {Λ₂ : _root_.Formalism.L2.Pj.GenLat E n₂} {b : ℕ}
@@ -391,8 +369,6 @@ private theorem blockLat_trivAt {Λ₁ : _root_.Formalism.L2.Pj.GenLat E n₁} {
       ((Submodule.smul_mono_left hle₂).trans b₂)
 
 set_option autoImplicit false in
-open NumberField MvPolynomial in
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H}
   {l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H} in
 variable (c : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Coeff l) {n₁ n₂ : ℕ} in

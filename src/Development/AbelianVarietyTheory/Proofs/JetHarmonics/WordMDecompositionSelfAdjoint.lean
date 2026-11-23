@@ -81,7 +81,6 @@ private lemma mem_inv_of_mem_ofWord_inv {A S : Type} [Ring A] [StarRing A] [Alge
       unfold _root_.Formalism.FourierDecayAlt.Fr.FrameData.minus at hZ
       exact ih Z (Set.mem_of_mem_inter_left hZ)
 
-open MeasureTheory in
 private lemma star_l0_sub_one_add_eq_m0_add {P : _root_.Formalism.FourierDecayAlt.M.Par} {A : Type} [Ring A] [StarRing A] [Algebra ℂ A]
     [StarModule ℂ A] (d : _root_.Formalism.FourierDecayAlt.Q.NFData P A) (E : A) (Y : ℂ) (hYr : star Y = Y)
     (hstarD : _root_.Formalism.FourierDecayAlt.Fr.IsStarLevel d.L) (hsnab : star d.L.nab = d.L.nabs)
@@ -109,7 +108,6 @@ private lemma star_l0_sub_one_add_eq_m0_add {P : _root_.Formalism.FourierDecayAl
     exact hcE.eq
 
 
-open MeasureTheory in
 variable {P : _root_.Formalism.FourierDecayAlt.M.Par} {A : Type} [Ring A] [StarRing A] [Algebra ℂ A] in
 variable {S : Type} [Fintype S] [DecidableEq S] in
 variable [StarModule ℂ A] in

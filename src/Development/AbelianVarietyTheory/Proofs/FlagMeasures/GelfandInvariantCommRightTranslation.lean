@@ -207,7 +207,6 @@ def rightEnd {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ} (hk : inUJ �
     exact (mk_apply _ (smooth_right hk (c • F).2.1) hg).trans
       (congrArg (c • ·) (mk_apply _ (smooth_right hk F.2.1) hg).symm)
 
-open GlobalTheory.CapelliCentral in
 lemma rightEnd_apply {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ} (hk : inUJ ε k)
     (F : smoothSpace ε ℂ) {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) :
     (rightEnd hk F).1 g = F.1 (g * k) := by
@@ -222,7 +221,6 @@ private lemma mul_single_mul_apply' (M N : Matrix (Fin n) (Fin n) ℂ) (a b c d 
     (M * Matrix.single a b (1 : ℂ) * N : Matrix (Fin n) (Fin n) ℂ) c d = M c a * N b d := by
   simp [Matrix.mul_apply, Matrix.single_apply, ite_and]
 
-open GlobalTheory.CapelliCentral in
 lemma eabEnd_rightEnd {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ} (hk : inUJ ε k) (a b : Fin n) :
     eabEnd ε ℂ a b * rightEnd hk =
       rightEnd hk * ∑ c, ∑ d, ((k⁻¹)ᵀ a c * kᵀ d b) • eabEnd ε ℂ c d := by

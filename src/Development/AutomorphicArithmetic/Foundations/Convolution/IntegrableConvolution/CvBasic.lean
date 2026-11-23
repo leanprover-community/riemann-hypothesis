@@ -78,7 +78,6 @@ private theorem cvb_cs {a b : G → ℂ} (ha' : HasCompactSupport a) (hb' : HasC
   obtain ⟨y, z, hy, hz, rfl⟩ := cvb_supp μ x h
   exact hx (Set.mul_mem_mul (subset_tsupport _ hy) (subset_tsupport _ hz))
 
-open scoped Pointwise in
 private theorem cvb_assoc {a b c : G → ℂ} (ha : Continuous a) (ha' : HasCompactSupport a) (hb : Continuous b)
     (hb' : HasCompactSupport b) (hc : Continuous c) : cv μ (cv μ a b) c = cv μ a (cv μ b c) := by
   funext x

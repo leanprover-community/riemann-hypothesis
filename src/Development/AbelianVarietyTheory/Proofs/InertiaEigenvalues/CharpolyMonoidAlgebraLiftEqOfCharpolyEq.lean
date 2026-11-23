@@ -56,8 +56,6 @@ private lemma det_generic_sum_eq_of_charpoly_eq {k G : Type} [Field k] [Monoid G
     (fun b => if b then ρ else σ) (by intro g j; simp [T, AlgHom.mem_equalizer, h]) m g d
   simpa [T, AlgHom.mem_equalizer] using key
 
-open scoped BigOperators in
-open Polynomial in
 private lemma charpoly_sum_smul_eq_of_charpoly_eq {k G : Type} [Field k] [Monoid G] (n : ℕ)
     (ρ σ : G →* Matrix (Fin n) (Fin n) k) (h : ∀ g, (ρ g).charpoly = (σ g).charpoly)
     (m : ℕ) (c : Fin m → k) (g : Fin m → G) :
@@ -77,8 +75,6 @@ private lemma charpoly_sum_smul_eq_of_charpoly_eq {k G : Type} [Field k] [Monoid
     split_ifs <;> simp [sub_eq_add_neg]
   rw [key ρ, key σ, hd]
 
-open scoped BigOperators in
-open Polynomial in
 theorem _root_.GlobalTheory.charpoly_lift_eq_of_charpoly_eq : ∀ {k G : Type} [Field k] [Monoid G] (n : ℕ)
     (ρ σ : G →* Matrix (Fin n) (Fin n) k), (∀ g, (ρ g).charpoly = (σ g).charpoly) →
     ∀ a : MonoidAlgebra k G,

@@ -106,7 +106,6 @@ theorem _root_.GlobalTheory.RegularQuotient.quot_regular (Λ : Type) [CommRing �
     hdim⟩
 
 
-open IsLocalRing Matrix in
 theorem _root_.GlobalTheory.RegularQuotient.exists_extend (Λ : Type) [CommRing Λ]
     [IsRegularLocalRing Λ] {ι : Type} [Fintype ι]
     (τ : ι → maximalIdeal Λ)
@@ -146,7 +145,6 @@ theorem _root_.GlobalTheory.RegularQuotient.exists_extend (Λ : Type) [CommRing 
   · rw [← (IsRegularLocalRing.iff_finrank_cotangentSpace Λ).mp inferInstance, Fintype.card_fin,
       ← finrank_span_eq_card hτ, ← hN, Submodule.finrank_quotient_add_finrank]
 
-open IsLocalRing Matrix in
 private theorem linearIndependent_toCotangent_of_sum_mem_maximalIdeal_sq (A : Type) [CommRing A]
     [IsRegularLocalRing A] (k : ℕ) (x : Fin k → A) (hx : ∀ i, x i ∈ maximalIdeal A)
     (hind : ∀ a : Fin k → A, ∑ i, a i * x i ∈ maximalIdeal A ^ 2 → ∀ i, a i ∈ maximalIdeal A) :
@@ -170,7 +168,6 @@ private theorem linearIndependent_toCotangent_of_sum_mem_maximalIdeal_sq (A : Ty
   exact hind a hsum i
 
 
-open IsLocalRing Matrix in
 theorem _root_.GlobalTheory.RegularQuotient.quotient_span_range : ∀ (A : Type) [CommRing A] [IsRegularLocalRing A] (d k : ℕ)
     (x : Fin k → A),
     ringKrullDim A = ((d + k : ℕ) : WithBot ℕ∞) → (∀ i, x i ∈ maximalIdeal A) →

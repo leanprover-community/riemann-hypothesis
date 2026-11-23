@@ -103,7 +103,6 @@ theorem _root_.GlobalTheory.PDA.isLev_iff_prod (δ : DividedPowers J) (N : ℕ) 
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
@@ -114,7 +113,6 @@ theorem _root_.GlobalTheory.PDA.isDPNilpotent_iff_exists_isLevel (δ : DividedPo
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
@@ -123,7 +121,6 @@ theorem _root_.GlobalTheory.PDA.fil_zero_eq_top (δ : DividedPowers J) :
   (Ideal.eq_top_iff_one _).mpr (Ideal.subset_span ⟨[], by simp, by simp, by simp⟩)
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
@@ -141,7 +138,6 @@ private lemma prod_dpow_mem_of_one_le_sum (δ : DividedPowers J) :
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
@@ -156,7 +152,6 @@ theorem _root_.GlobalTheory.PDA.fil_one_eq (δ : DividedPowers J) :
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
@@ -166,7 +161,6 @@ theorem _root_.GlobalTheory.PDA.PDPoly.e_succ_mem_aug (Q : _root_.GlobalTheory.P
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
@@ -176,7 +170,6 @@ theorem _root_.GlobalTheory.PDA.PDPoly.e_one_mem_ext (Q : _root_.GlobalTheory.PD
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
@@ -193,7 +186,6 @@ def ratBasis : Module.Basis ℕ ℚ ℚ[X] :=
   (basisMonomials ℚ).unitsSMul fun n ↦ Units.mk0 ((n.factorial : ℚ)⁻¹) (inv_ne_zero (by positivity))
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
@@ -205,21 +197,17 @@ private lemma ratBasis_eq_C_inv_factorial_mul_X_pow (n : ℕ) :
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
-open Polynomial TensorProduct in
 theorem _root_.GlobalTheory.PDA.ratBasis_zero : _root_.GlobalTheory.PDA.ratBasis 0 = 1 := by
   rw [ratBasis_eq_C_inv_factorial_mul_X_pow]; simp
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
-open Polynomial TensorProduct in
 theorem _root_.GlobalTheory.PDA.ratBasis_mul (m n : ℕ) : _root_.GlobalTheory.PDA.ratBasis m * _root_.GlobalTheory.PDA.ratBasis n = ((m + n).choose m : ℚ[X]) * _root_.GlobalTheory.PDA.ratBasis (m + n) := by
   have key : ((m.factorial : ℚ)⁻¹ * (n.factorial : ℚ)⁻¹)
       = ((m + n).choose m : ℚ) * ((m + n).factorial : ℚ)⁻¹ := by
@@ -254,22 +242,18 @@ def intForm : Subalgebra ℤ ℚ[X] :=
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
-open Polynomial TensorProduct in
 theorem _root_.GlobalTheory.PDA.ratBasis_linearIndependent_int : LinearIndependent ℤ _root_.GlobalTheory.PDA.ratBasis :=
   _root_.GlobalTheory.PDA.ratBasis.linearIndependent.restrict_scalars' ℤ
 
 def intBasis : Module.Basis ℕ ℤ intForm := Module.Basis.span ratBasis_linearIndependent_int
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
-open Polynomial TensorProduct in
 private lemma intBasis_cast_eq_ratBasis (n : ℕ) :
     (_root_.GlobalTheory.PDA.intBasis n : ℚ[X]) = _root_.GlobalTheory.PDA.ratBasis n := by
   exact congrArg Subtype.val
@@ -277,21 +261,17 @@ private lemma intBasis_cast_eq_ratBasis (n : ℕ) :
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
-open Polynomial TensorProduct in
 theorem _root_.GlobalTheory.PDA.intBasis_zero : _root_.GlobalTheory.PDA.intBasis 0 = 1 :=
   Subtype.ext (by simp [intBasis_cast_eq_ratBasis, _root_.GlobalTheory.PDA.ratBasis_zero])
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 attribute [instance] _root_.GlobalTheory.PDA.PDPoly.ring
   _root_.GlobalTheory.PDA.PDPoly.alg in
-open Polynomial TensorProduct in
 theorem _root_.GlobalTheory.PDA.intBasis_mul (m n : ℕ) : _root_.GlobalTheory.PDA.intBasis m * _root_.GlobalTheory.PDA.intBasis n = ((m + n).choose m : _root_.GlobalTheory.PDA.intForm) * _root_.GlobalTheory.PDA.intBasis (m + n) :=
   Subtype.ext (by simp [intBasis_cast_eq_ratBasis, _root_.GlobalTheory.PDA.ratBasis_mul])
 

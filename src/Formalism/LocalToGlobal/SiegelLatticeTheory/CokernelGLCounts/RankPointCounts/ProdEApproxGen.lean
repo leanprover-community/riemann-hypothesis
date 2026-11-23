@@ -40,12 +40,10 @@ open IsDedekindDomain
 
 namespace Formalism.L2.SG.Pf.ProdEApprox
 
-section DedekindLFunctions
 
 variable {R : Type*} [CommRing R] [IsDedekindDomain R] {K : Type*} [Field K] [Algebra R K] [IsFractionRing R K]
   {n : ℕ}
 
-end DedekindLFunctions
 
 section Ent
 

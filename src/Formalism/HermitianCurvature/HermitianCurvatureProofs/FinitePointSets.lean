@@ -145,8 +145,6 @@ end Formalism.FourierDecayAlt.P.FinitePointSets
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt.TB Finset Filter Topology
-open scoped ComplexInnerProductSpace ComplexConjugate
 
 theorem limitStep : Formalism.FourierDecayAlt.TB.LimitStep := by
   intro E W _ D jn H _ _ _ Vt c _ _ hE hC hA B hB R

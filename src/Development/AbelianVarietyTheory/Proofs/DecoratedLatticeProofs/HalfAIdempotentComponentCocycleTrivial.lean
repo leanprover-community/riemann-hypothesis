@@ -80,7 +80,6 @@ theorem conjP_not_mem {e : AE D} {SS : Finset (Formalism.L2.DIV.Pl D.host.E)} (h
 end GlobalTheory.AdForm.CocycleSS
 
 namespace GlobalTheory.AdForm.CocycleSS
-open GlobalTheory.LatVac
 
 variable {D : D7} {S T : HSp D}
 

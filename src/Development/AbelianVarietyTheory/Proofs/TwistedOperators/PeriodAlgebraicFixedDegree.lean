@@ -100,6 +100,5 @@ end GlobalTheory.BotTransJet
 
 namespace GlobalTheory.BotTransJet
 
-open GlobalTheory.Grid (neg)
 
 end GlobalTheory.BotTransJet

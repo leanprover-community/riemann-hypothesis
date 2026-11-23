@@ -55,7 +55,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.NonzeroPlacesOverPrimes
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
 
 theorem conjPl_injective {K : Type} [Field K] [StarRing K] :
     Function.Injective (Formalism.DivisionValues.conjPl (K := K)) := by
@@ -120,7 +119,6 @@ end GlobalTheory.Mem.NonzeroPlacesOverPrimes
 
 namespace GlobalTheory.Mem.NonzeroPlacesOverPrimes
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

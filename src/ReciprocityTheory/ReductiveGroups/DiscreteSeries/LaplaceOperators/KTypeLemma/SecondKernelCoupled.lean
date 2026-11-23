@@ -50,12 +50,10 @@ namespace ReciprocityTheory.ChartRestriction.DS.Lap.LemK
 
 open ReciprocityTheory.ChartRestriction.DS
 
-section Irr
 
 variable {n : ℕ} {X : Type*} [AddCommGroup X] [Module ℂ X] {ε : Fin n → Bool}
   {A : Fin n → Fin n → Module.End ℂ X}
 
-end Irr
 
 section Main
 

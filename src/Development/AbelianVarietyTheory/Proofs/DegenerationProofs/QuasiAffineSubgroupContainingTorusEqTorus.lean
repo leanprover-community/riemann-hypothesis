@@ -402,7 +402,6 @@ end Geometry
 
 section Main
 
-open RationalPoint
 
 variable {k : Type} [Field k] {X : Type} [AddCommGroup X]
 

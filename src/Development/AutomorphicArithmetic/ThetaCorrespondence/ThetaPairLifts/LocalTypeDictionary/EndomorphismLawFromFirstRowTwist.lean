@@ -49,11 +49,9 @@ variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 variable {μ₀ : T} {G : GridData L sc} {t : T} {w : Pl D.host.E}
 end GlobalTheory.FirstRowEndLaw
 namespace GlobalTheory.FirstRowEndLaw
-open GlobalTheory.FunObj.GivenAdm
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T} {G : GridData L sc} {t : T} {w : Pl D.host.E}
 end GlobalTheory.FirstRowEndLaw
 namespace GlobalTheory.FirstRowEndLaw
-open GlobalTheory.FunObj.GivenAdm
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T} {G : GridData L sc} {w : Pl D.host.E}
 end GlobalTheory.FirstRowEndLaw
 namespace GlobalTheory.FirstRowEndLaw
@@ -86,7 +84,6 @@ end
 end
 
 section
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 

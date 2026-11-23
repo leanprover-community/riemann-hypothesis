@@ -55,7 +55,6 @@ theorem _root_.GlobalTheory.GenericSection.polyImg_same (j0 : Fin (N + 1)) (x : 
       (if i = 0 then X (Sum.inl ()) else -∑ k, X (Sum.inr (i, k)) * C (x k)) := by
   simp [_root_.GlobalTheory.GenericSection.polyImg]
 
-open NumberField MvPolynomial in
 variable {F : Type} [Field F] {D N : ℕ} in
 theorem _root_.GlobalTheory.GenericSection.polyImg_succAbove (j0 : Fin (N + 1)) (x : Fin N → F)
     (i : Fin (D + 1)) (k : Fin N) :

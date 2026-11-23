@@ -293,7 +293,6 @@ end Tan
 section TanSAB
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
@@ -352,8 +351,6 @@ end TanSAB
 
 section Sat
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
@@ -437,8 +434,6 @@ end Sat
 
 section Reb
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
@@ -721,7 +716,6 @@ end Reb
 
 end GlobalTheory.IntRebase
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Frames
 
 theorem GlobalTheory.IntRebase.intRebase : Out.SecBaseChangeSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), Formalism.L2.PjFree.IntRebase Xo c :=

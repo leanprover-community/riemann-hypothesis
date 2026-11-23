@@ -511,7 +511,6 @@ end Formalism.ExponentWindows.E.Prim
 
 namespace Formalism.ExponentWindows.E
 
-open PowerSeries
 
 theorem theorem_E_primitive_form : ThmEPrim := by
   intro O _ _ _ ϖ hϖ B e n _ Cu H j g G hh sig rr kap ellmax V₁ V₂ V₀ _ _ _ _ _ _ L₁ L₂ L₀ e₀ h

@@ -103,8 +103,6 @@ end GlobalTheory.UpperGrowth
 
 namespace GlobalTheory.UpperGrowth
 
-open Complex
-open scoped ComplexConjugate
 
 theorem qf_ball {f : ℂ → ℂ} (hd : DifferentiableOn ℂ f (Metric.ball 0 1))
     (hpos : ∀ z ∈ Metric.ball (0 : ℂ) 1, 0 < (f z).im) {ζ : ℂ} (hζ : ‖ζ‖ < 1) :
@@ -219,7 +217,6 @@ end GlobalTheory.UpperGrowth
 
 namespace GlobalTheory.UpperGrowth
 
-open Complex
 
 theorem upd_mem {n a : ℕ} {p : Fin n → ℂ} (hp : p ∈ logDom n a) (i : Fin n) {z : ℂ}
     (hz : if (i : ℕ) < a then z.re < 0 else ‖z‖ < 1) : Function.update p i z ∈ logDom n a := by

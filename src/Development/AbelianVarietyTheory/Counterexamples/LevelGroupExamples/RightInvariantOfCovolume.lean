@@ -61,8 +61,6 @@ theorem _root_.GlobalTheory.AutQuotCheck.cls_eq_iff (g g' : G) :
   · rintro ⟨γ, hγ, rfl⟩
     simpa using hγ
 
-open MeasureTheory in
-open scoped Pointwise in
 variable {G : Type} [Group G] (Γ : Subgroup G) in
 theorem _root_.GlobalTheory.AutQuotCheck.cls_smul (γ : Γ) (x : G) :
     _root_.GlobalTheory.AutQuotCheck.cls Γ (γ • x) = _root_.GlobalTheory.AutQuotCheck.cls Γ x := by
@@ -70,15 +68,11 @@ theorem _root_.GlobalTheory.AutQuotCheck.cls_smul (γ : Γ) (x : G) :
   refine ⟨(γ : G)⁻¹, Γ.inv_mem γ.2, ?_⟩
   rw [Subgroup.smul_def, smul_eq_mul, inv_mul_cancel_left]
 
-open MeasureTheory in
-open scoped Pointwise in
 variable {G : Type} [Group G] (Γ : Subgroup G) in
 theorem _root_.GlobalTheory.AutQuotCheck.measurable_cls [MeasurableSpace G] :
     Measurable (_root_.GlobalTheory.AutQuotCheck.cls Γ) := fun _ hs => hs
 
 
-open MeasureTheory in
-open scoped Pointwise in
 variable {G : Type} [Group G] (Γ : Subgroup G) in
 theorem _root_.GlobalTheory.AutQuotCheck.map_restrict_eq [MeasurableSpace G] [Countable Γ]
     [MeasurableConstSMul Γ G] (μ : Measure G) [SMulInvariantMeasure Γ G μ] {F F' : Set G}
@@ -102,8 +96,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   (Γ : Subgroup G) [Countable Γ]
 
 
-open MeasureTheory in
-open scoped Pointwise in
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
   (Γ : Subgroup G) [Countable Γ] in

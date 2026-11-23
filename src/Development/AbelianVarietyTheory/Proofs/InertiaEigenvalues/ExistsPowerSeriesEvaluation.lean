@@ -146,8 +146,6 @@ theorem main (l : ℕ) [Fact l.Prime] {B L : Type*} [CommRing B] [Field L]
       rw [map_zero]; exact BdR.eq_zero_of_forall_mem_fil fun a => (hF _ _).1 (hb a))
 
 
-open Reformulated.AutPerF Formalism in
-open scoped Formalism.Per in
 theorem exists_gen (l : ℕ) [Fact l.Prime] (x : BdR l (Per.OC l))
     (h1 : x ∈ BdR.fil l (Per.OC l) 1) (h2 : x ∉ BdR.fil l (Per.OC l) 2) :
     ∃ π : BdRPlus l (Per.OC l), RingHom.ker (BdRPlus.theta l (Per.OC l)) = Ideal.span {π} ∧
@@ -162,8 +160,6 @@ theorem exists_gen (l : ℕ) [Fact l.Prime] (x : BdR l (Per.OC l))
   exact ⟨BdRPlus.xi ϖ * c, by rw [Ideal.span_singleton_mul_right_unit hu, hξ],
     by rw [hc, zpow_one, map_mul]⟩
 
-open Reformulated.AutPerF Formalism in
-open scoped Formalism.Per in
 theorem main' (l : ℕ) [Fact l.Prime] {B L : Type*} [CommRing B] [Field L]
     (e : B ≃+* Per.BdR l) (Fil : ℤ → B → Prop)
     (hF : ∀ a x, Fil a x ↔ e x ∈ Per.FilD l a) (t : B) (h1 : Fil 1 t) (h2 : ¬ Fil 2 t)
@@ -263,7 +259,6 @@ end
 noncomputable section
 
 open Formalism Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL GlobalTheory.MemLoc
-open scoped Formalism.Per
 
 namespace GlobalTheory.NL.EvdR
 

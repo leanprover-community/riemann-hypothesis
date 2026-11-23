@@ -92,8 +92,6 @@ theorem _root_.GlobalTheory.HAtBasis.isLattice_of_basisAt {n : ℕ} (w : HeightO
 variable {ι : Type} [Fintype ι] {a : ℕ}
 
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
 variable {ι : Type} [Fintype ι] {a : ℕ} in
 omit [NumberField K] in
@@ -107,8 +105,6 @@ theorem _root_.GlobalTheory.HAtBasis.polyAction_invTranspose_inv (lam : ι → _
   simp only [_root_.Formalism.L2.DIV.actP, _root_.Formalism.L2.DIV.trAct, _root_.Formalism.L2.DIV.detTw_eq, LinearMap.smul_apply, AlgHom.toLinearMap_apply, hg,
     Matrix.det_transpose, Matrix.transpose_transpose]
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
 variable {ι : Type} [Fintype ι] {a : ℕ} in
 private theorem valuation_coe_eq_one_of_notMem {K : Type} [Field K] [NumberField K]
@@ -116,8 +112,6 @@ private theorem valuation_coe_eq_one_of_notMem {K : Type} [Field K] [NumberField
   rw [show (s : K) = algebraMap (𝓞 K) K s from rfl, HeightOneSpectrum.valuation_of_algebraMap]
   exact (HeightOneSpectrum.intValuation_eq_one_iff_mem_primeCompl w s).2 hs
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
 variable {ι : Type} [Fintype ι] {a : ℕ} in
 private theorem exists_notMem_mul_eq_integer_of_valuation_le_one {K : Type} [Field K] [NumberField K]
@@ -138,8 +132,6 @@ private theorem exists_notMem_mul_eq_integer_of_valuation_le_one {K : Type} [Fie
   field_simp
 
 
-open NumberField IsDedekindDomain MvPolynomial in
-open scoped Matrix in
 variable {K : Type} [Field K] [NumberField K] in
 variable {ι : Type} [Fintype ι] {a : ℕ} in
 theorem _root_.GlobalTheory.HAtBasis.mem_HAt_iff : ∀ (K : Type) [Field K]

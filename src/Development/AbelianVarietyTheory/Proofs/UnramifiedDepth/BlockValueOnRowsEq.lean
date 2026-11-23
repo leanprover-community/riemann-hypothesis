@@ -71,7 +71,6 @@ private lemma coeff_mvExp_eq_sum_range_degree_succ (f : MvPowerSeries σ C) (m :
       ∑ k ∈ Finset.range (m.degree + 1), MvPowerSeries.coeff m (f ^ k) / (k.factorial : C) :=
   rfl
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma mvExp_zero_unramified_depth : _root_.Formalism.IncomingBounds.mvExp (0 : MvPowerSeries σ C) = 1 := by
   ext m
@@ -82,7 +81,6 @@ private lemma mvExp_zero_unramified_depth : _root_.Formalism.IncomingBounds.mvEx
   · intro h
     simp at h
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma coeff_pow_eq_zero_of_degree_lt_unramified_depth (f : MvPowerSeries σ C)
     (hf : MvPowerSeries.constantCoeff f = 0) :
@@ -91,7 +89,6 @@ private lemma coeff_pow_eq_zero_of_degree_lt_unramified_depth (f : MvPowerSeries
   exact MvPowerSeries.coeff_of_lt_order
     (lt_of_lt_of_le (by exact_mod_cast h) (f.le_order_pow_of_constantCoeff_eq_zero k hf))
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma coeff_mvExp_eq_sum_range_of_degree_lt (f : MvPowerSeries σ C)
     (hf : MvPowerSeries.constantCoeff f = 0) (m : σ →₀ ℕ) (N : ℕ) (hN : m.degree < N) :
@@ -102,7 +99,6 @@ private lemma coeff_mvExp_eq_sum_range_of_degree_lt (f : MvPowerSeries σ C)
   rw [Finset.mem_range, not_lt] at hk
   rw [coeff_pow_eq_zero_of_degree_lt_unramified_depth f hf k m (by omega), zero_div]
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma coeff_pow_mul_pow_eq_zero_of_degree_lt {f g : MvPowerSeries σ C}
     (hf : MvPowerSeries.constantCoeff f = 0) (hg : MvPowerSeries.constantCoeff g = 0)
@@ -117,7 +113,6 @@ private lemma coeff_pow_mul_pow_eq_zero_of_degree_lt {f g : MvPowerSeries σ C}
   · rw [coeff_pow_eq_zero_of_degree_lt_unramified_depth f hf i _ h1, zero_mul]
   · rw [coeff_pow_eq_zero_of_degree_lt_unramified_depth g hg j _ (by omega), mul_zero]
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma mvExp_add_unramified_depth [CharZero C] {a b : MvPowerSeries σ C}
     (ha : MvPowerSeries.constantCoeff a = 0) (hb : MvPowerSeries.constantCoeff b = 0) :
@@ -174,7 +169,6 @@ private lemma mvExp_add_unramified_depth [CharZero C] {a b : MvPowerSeries σ C}
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [← Finset.sum_div, ← MvPowerSeries.coeff_mul]
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma mvExp_sum' [CharZero C] {ι : Type} (s : Finset ι) (f : ι → MvPowerSeries σ C)
     (h : ∀ i ∈ s, MvPowerSeries.constantCoeff (f i) = 0) :
@@ -189,7 +183,6 @@ private lemma mvExp_sum' [CharZero C] {ι : Type} (s : Finset ι) (f : ι → Mv
     rw [map_sum]
     exact Finset.sum_eq_zero fun i hi => h i (Finset.mem_insert_of_mem hi)
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma onlyIn_one (S : σ → Prop) : _root_.GlobalTheory.BlockValue.OnlyIn S (1 : MvPowerSeries σ C) := by
   classical
@@ -200,7 +193,6 @@ private lemma onlyIn_one (S : σ → Prop) : _root_.GlobalTheory.BlockValue.Only
   subst h0
   simp at hx
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma onlyIn_mul {S : σ → Prop} {f g : MvPowerSeries σ C} (hf : _root_.GlobalTheory.BlockValue.OnlyIn S f)
     (hg : _root_.GlobalTheory.BlockValue.OnlyIn S g) : _root_.GlobalTheory.BlockValue.OnlyIn S (f * g) := by
@@ -214,7 +206,6 @@ private lemma onlyIn_mul {S : σ → Prop} {f g : MvPowerSeries σ C} (hf : _roo
   · exact hf _ (left_ne_zero_of_mul hne) x h
   · exact hg _ (right_ne_zero_of_mul hne) x h
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma onlyIn_pow {S : σ → Prop} {f : MvPowerSeries σ C} (hf : _root_.GlobalTheory.BlockValue.OnlyIn S f)
     (k : ℕ) : _root_.GlobalTheory.BlockValue.OnlyIn S (f ^ k) := by
@@ -222,7 +213,6 @@ private lemma onlyIn_pow {S : σ → Prop} {f : MvPowerSeries σ C} (hf : _root_
   | zero => simpa using onlyIn_one S
   | succ k ih => rw [pow_succ]; exact onlyIn_mul ih hf
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma onlyIn_mvExp {S : σ → Prop} {f : MvPowerSeries σ C}
     (hf : _root_.GlobalTheory.BlockValue.OnlyIn S f) : _root_.GlobalTheory.BlockValue.OnlyIn S (_root_.Formalism.IncomingBounds.mvExp f) := by
@@ -231,7 +221,6 @@ private lemma onlyIn_mvExp {S : σ → Prop} {f : MvPowerSeries σ C}
   obtain ⟨k, -, hk⟩ := Finset.exists_ne_zero_of_sum_ne_zero hm
   exact onlyIn_pow hf k m fun h => hk (by rw [h, zero_div])
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma onlyIn_sum {S : σ → Prop} {ι : Type} (s : Finset ι) (f : ι → MvPowerSeries σ C)
     (h : ∀ i ∈ s, _root_.GlobalTheory.BlockValue.OnlyIn S (f i)) :
@@ -242,7 +231,6 @@ private lemma onlyIn_sum {S : σ → Prop} {ι : Type} (s : Finset ι) (f : ι �
   obtain ⟨i, hi, hne⟩ := Finset.exists_ne_zero_of_sum_ne_zero hm
   exact h i hi m hne
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma onlyIn_prod {S : σ → Prop} {ι : Type} (s : Finset ι) (f : ι → MvPowerSeries σ C)
     (h : ∀ i ∈ s, _root_.GlobalTheory.BlockValue.OnlyIn S (f i)) :
@@ -255,7 +243,6 @@ private lemma onlyIn_prod {S : σ → Prop} {ι : Type} (s : Finset ι) (f : ι 
     exact onlyIn_mul (h a (Finset.mem_insert_self a s))
       (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma lead_zero_one (π : σ → κ) :
     _root_.GlobalTheory.BlockValue.Lead π 0 (1 : MvPowerSeries σ C) := by
@@ -267,7 +254,6 @@ private lemma lead_zero_one (π : σ → κ) :
   subst h0
   simp
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma lead_mapDomain_le_and_eq_of_coeff_ne_zero {π : σ → κ} {d e p q : σ →₀ ℕ} {f g : MvPowerSeries σ C}
     (hf : _root_.GlobalTheory.BlockValue.Lead π d f)
@@ -282,7 +268,6 @@ private lemma lead_mapDomain_le_and_eq_of_coeff_ne_zero {π : σ → κ} {d e p 
   · exact le_of_add_le_add_right (h.trans (add_le_add le_rfl h3))
   · exact le_of_add_le_add_left (h.trans (add_le_add h1 le_rfl))
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma lead_mul' {π : σ → κ} {d e : σ →₀ ℕ} {f g : MvPowerSeries σ C}
     (hf : _root_.GlobalTheory.BlockValue.Lead π d f)
@@ -311,7 +296,6 @@ private lemma lead_mul' {π : σ → κ} {d e : σ →₀ ℕ} {f g : MvPowerSer
       apply h
       rw [Finset.HasAntidiagonal.mem_antidiagonal]
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma lead_prod' {π : σ → κ} {ι : Type} (s : Finset ι) (d : ι → σ →₀ ℕ)
     (f : ι → MvPowerSeries σ C) (h : ∀ i ∈ s, _root_.GlobalTheory.BlockValue.Lead π (d i) (f i)) :
@@ -324,7 +308,6 @@ private lemma lead_prod' {π : σ → κ} {ι : Type} (s : Finset ι) (d : ι �
     exact lead_mul' (h a (Finset.mem_insert_self a s))
       (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma lead_pow' {π : σ → κ} {d : σ →₀ ℕ} {f : MvPowerSeries σ C}
     (hf : _root_.GlobalTheory.BlockValue.Lead π d f) (k : ℕ) :
@@ -333,7 +316,6 @@ private lemma lead_pow' {π : σ → κ} {d : σ →₀ ℕ} {f : MvPowerSeries 
   | zero => simpa using lead_zero_one π
   | succ k ih => rw [pow_succ, succ_nsmul]; exact lead_mul' ih hf
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma mapDomain_eq_single_degree_of_const {π : σ → κ} {z : κ} {m : σ →₀ ℕ}
     (h : ∀ x ∈ m.support, π x = z) : m.mapDomain π = Finsupp.single z m.degree := by
@@ -342,7 +324,6 @@ private lemma mapDomain_eq_single_degree_of_const {π : σ → κ} {z : κ} {m :
     Finset.sum_congr rfl (fun x hx => congrArg (fun w => Finsupp.single w (m x)) (h x hx)),
     ← Finsupp.single_finsetSum] <;> rfl
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma lead_single_of_linear_coeff_eq_X {ι : Type} {π : σ → κ} {v : ι → σ} {z : κ}
     (hv : ∀ c, π (v c) = z) {c₀ : ι} {f : MvPowerSeries σ C}
@@ -376,7 +357,6 @@ private lemma lead_single_of_linear_coeff_eq_X {ι : Type} {π : σ → κ} {v :
   · exact heq
   · exact absurd rfl hm
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma lead_zero_mvExp (π : σ → κ) (f : MvPowerSeries σ C) :
     _root_.GlobalTheory.BlockValue.Lead π 0 (_root_.Formalism.IncomingBounds.mvExp f) := by
@@ -388,7 +368,6 @@ private lemma lead_zero_mvExp (π : σ → κ) (f : MvPowerSeries σ C) :
   · rw [coeff_mvExp_eq_sum_range_degree_succ]
     simp
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma mapDomain_sideRow_inl {n : ℕ} (m : _root_.Formalism.IncomingBounds.PVar n →₀ ℕ) (ρ : Fin n) :
     (m.mapDomain (_root_.GlobalTheory.BlockValue.sideRow n)) (Sum.inl ρ) = ∑ c : Fin n, m (Sum.inl (ρ, c)) := by
@@ -398,7 +377,6 @@ private lemma mapDomain_sideRow_inl {n : ℕ} (m : _root_.Formalism.IncomingBoun
   rw [Finset.sum_eq_single ρ (fun b _ hb => by simp [hb]) (by simp)]
   simp
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 private lemma mapDomain_sideRow_inr {n : ℕ} (m : _root_.Formalism.IncomingBounds.PVar n →₀ ℕ) (ρ : Fin n) :
     (m.mapDomain (_root_.GlobalTheory.BlockValue.sideRow n)) (Sum.inr ρ) = ∑ c : Fin n, m (Sum.inr (ρ, c)) := by
@@ -409,7 +387,6 @@ private lemma mapDomain_sideRow_inr {n : ℕ} (m : _root_.Formalism.IncomingBoun
   simp
 
 
-open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
 theorem _root_.GlobalTheory.blockValue_rows : _root_.Formalism.L2.FormalSeriesBounds.BiValue := by
   unfold _root_.Formalism.L2.FormalSeriesBounds.BiValue

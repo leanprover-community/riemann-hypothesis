@@ -51,14 +51,12 @@ private theorem isCoprime_of_le_of_le {R : Type*} [CommRing R] {a b c d : Ideal 
   rw [Ideal.isCoprime_iff_sup_eq] at h ⊢
   exact top_le_iff.1 (by rw [← h]; exact sup_le_sup hac hbd)
 
-open NumberField Pointwise in
 private theorem span_eq_span_inter_subalgebra {R : Type*} [CommRing R] (A : Subalgebra ℤ R)
     (S : Set R) (hS : S ⊆ A) :
     Ideal.span S = Ideal.span {a | a ∈ Ideal.span S ∧ a ∈ A} :=
   le_antisymm (Ideal.span_mono fun a ha => ⟨Ideal.subset_span ha, hS ha⟩)
     (Ideal.span_le.2 fun _ ha => ha.1)
 
-open NumberField Pointwise in
 private theorem mul_eq_span_inter_subalgebra {R : Type*} [CommRing R] (A : Subalgebra ℤ R)
     (I J : Ideal R) (hI : I = Ideal.span {a | a ∈ I ∧ a ∈ A})
     (hJ : J = Ideal.span {a | a ∈ J ∧ a ∈ A}) :
@@ -72,7 +70,6 @@ private theorem mul_eq_span_inter_subalgebra {R : Type*} [CommRing R] (A : Subal
   rw [hIJ]
   exact span_eq_span_inter_subalgebra A _ hsub
 
-open NumberField Pointwise in
 private theorem w0_sq_sub_w0_add_eq_zero {E : Type} [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E)
     (c : ℕ) (hc : H.d + 1 = 4 * c) : H.w0 ^ 2 - H.w0 + (c : 𝓞 E) = 0 := by
   have hc' : (H.d : 𝓞 E) + 1 = 4 * c := by exact_mod_cast hc
@@ -80,7 +77,6 @@ private theorem w0_sq_sub_w0_add_eq_zero {E : Type} [Field E] [NumberField E] [I
     linear_combination (2 * H.w0 + H.rt - 1) * H.two_weight_eq_one_add_root + H.rt_sq - hc'
   exact (mul_eq_zero.1 h4).resolve_left (by norm_num)
 
-open NumberField Pointwise in
 private theorem host_bar_rt_of_isCMField {E : Type} [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) :
     H.bar H.rt = -H.rt := by
   have hsq : (H.bar H.rt - H.rt) * (H.bar H.rt + H.rt) = 0 := by
@@ -104,7 +100,6 @@ private theorem host_bar_rt_of_isCMField {E : Type} [Field E] [NumberField E] [I
     nlinarith [sq_nonneg t]
   · exact eq_neg_of_add_eq_zero_left h
 
-open NumberField Pointwise in
 private theorem host_bar_w0_of_isCMField {E : Type} [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) :
     H.bar H.w0 = 1 - H.w0 := by
   have h := congrArg H.bar H.two_weight_eq_one_add_root
@@ -114,7 +109,6 @@ private theorem host_bar_w0_of_isCMField {E : Type} [Field E] [NumberField E] [I
   exact mul_left_cancel₀ two_ne_zero h2
 
 
-open NumberField Pointwise in
 theorem _root_.GlobalTheory.exists_level_mul_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H), (∀ (pd : ℕ) (I : Ideal (𝓞 E)), Odd pd → pd.Coprime l.M → I = Ideal.span {a | a ∈ I ∧ a ∈ Algebra.adjoin ℤ {H.w0}} → I * I.map (H.bar : 𝓞 E →+* 𝓞 E) = Ideal.span {(pd : 𝓞 E)} → I ⊔ I.map (H.bar : 𝓞 E →+* 𝓞 E) = ⊤ → ∃ l₂ : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H, l.Dvd l₂ ∧ l₂.M = l.M * pd ∧ l₂.Mb = l.Mb * I ∧ l₂.A = l.A) ∧ ∀ pd : ℕ, pd.Prime → pd ≠ 2 → jacobiSym (-(H.d : ℤ)) pd = 1 → ∃ I : Ideal (𝓞 E), I = Ideal.span {a | a ∈ I ∧ a ∈ Algebra.adjoin ℤ {H.w0}} ∧ I * I.map (H.bar : 𝓞 E →+* 𝓞 E) = Ideal.span {(pd : 𝓞 E)} ∧ I ⊔ I.map (H.bar : 𝓞 E →+* 𝓞 E) = ⊤ := by
   intro E _ _ _ H l
   refine ⟨fun pd I hodd hcop hI hprod hsup => ?_, fun pd hp hp2 hJ => ?_⟩

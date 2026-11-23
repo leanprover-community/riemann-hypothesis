@@ -66,7 +66,6 @@ end GlobalTheory.StdUnn
 
 namespace GlobalTheory.StdUnn
 
-open Matrix GlobalTheory.Doubling
 
 theorem chart_levi_mul {D : D7} {A : HSp D} {μ : D.host.E} {κ : GA D (dblSp A) ≃* G D A.rank}
     (hκ : IsChart A μ κ) (p : GA D (dblSp A)) (hp : κ p ∈ P D A.rank) :
@@ -86,7 +85,6 @@ end GlobalTheory.StdUnn
 
 namespace GlobalTheory.StdUnn
 
-open Matrix GlobalTheory.Doubling
 
 theorem chart_aP_eq_det : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ → ∀ κ : GA D (dblSp A) ≃* G D A.rank,
     IsChart A μ κ → ∀ (p : siegel A) (a : GL (Fin A.rank) (AE D)), blkA (mat (κ p)) = a.1 →

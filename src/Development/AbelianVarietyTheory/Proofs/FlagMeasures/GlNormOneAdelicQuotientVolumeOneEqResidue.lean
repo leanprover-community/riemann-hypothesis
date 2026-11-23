@@ -139,7 +139,6 @@ theorem volume_cone_le (K : Type) [Field K] [NumberField K] (s : ℝ) :
       rfl
     rw [this, Measure.addHaar_smul, mixedEmbedding.finrank, hcs, abs_of_pos hs, mul_comm]
 
-open NumberField.mixedEmbedding NumberField.mixedEmbedding.fundamentalCone in
 open scoped Classical in
 theorem lintegral_cone_slab (K : Type) [Field K] [NumberField K] :
     ∫⁻ x in fundamentalCone K ∩ {x | 1 ≤ mixedEmbedding.norm x ∧ mixedEmbedding.norm x < Real.exp 1},
@@ -390,7 +389,6 @@ theorem norm_toMixed (hE : IsTotallyComplex E) (x : InfinitePlace E → Fin 1 �
   rw [normAtPlace_apply_of_isComplex (hE.isComplex w), mult_isComplex ⟨w, hE.isComplex w⟩]
   simp [toMixed, Matrix.det_unique]
 
-open scoped Classical in
 theorem measurePreserving_toMixed (hE : IsTotallyComplex E) : MeasurePreserving (toMixed E) volume volume := by
   have := isEmpty_real hE
   have h1 : MeasurePreserving (fun (x : InfinitePlace E → Fin 1 → Fin 1 → ℂ) (w : InfinitePlace E) => x w 0 0)
@@ -433,7 +431,6 @@ theorem measurePreserving_act (hE : IsTotallyComplex E) (u : (𝓞 E)ˣ) :
   rw [hd, inv_one, abs_one, ENNReal.ofReal_one, one_smul] at this
   exact this
 
-open scoped Classical in
 theorem torsion_mul_covol (hE : IsTotallyComplex E) (Λ : Submodule (𝓞 E) (Fin 1 → E))
     (h : Submodule.IsLattice E Λ) (hΛ : Λ ≠ ⊥) :
     (Units.torsionOrder E : ENNReal) *

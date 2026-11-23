@@ -70,7 +70,6 @@ end WachMod
 
 variable {B : Base p A} {η : ℕ}
 
-section Hyp
 
 variable {D₀ D₁ D₂ : Type}
     [AddCommGroup D₀] [Module A D₀] [Module ℤ_[p] D₀] [IsScalarTower ℤ_[p] A D₀]
@@ -78,6 +77,5 @@ variable {D₀ D₁ D₂ : Type}
     [AddCommGroup D₂] [Module A D₂] [Module ℤ_[p] D₂] [IsScalarTower ℤ_[p] A D₂]
     {W₀ : WachMod B η D₀} {W₁ : WachMod B η D₁} {W₂ : WachMod B η D₂}
 
-end Hyp
 
 end Formalism.CL.W

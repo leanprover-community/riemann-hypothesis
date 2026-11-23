@@ -70,9 +70,6 @@ private theorem mem_dotDual_iff' (N : Submodule S (J → Ω)) (v : J → Ω) :
   Iff.rfl
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
-open Matrix in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : Subalgebra o Ω) {J : Type}
   [Fintype J] in
 theorem _root_.GlobalTheory.ZH.DualLattice.mem_dotDual_span {I : Type} (a : I → J → Ω) (v : J → Ω) :
@@ -97,9 +94,6 @@ theorem _root_.GlobalTheory.ZH.DualLattice.mem_dotDual_span {I : Type} (a : I �
       exact mul_mem c.2 hx
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
-open Matrix in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : Subalgebra o Ω) {J : Type}
   [Fintype J] in
 theorem _root_.GlobalTheory.ZH.DualLattice.mem_span_rows (B : Matrix J J Ω) (v : J → Ω) :
@@ -119,9 +113,6 @@ theorem _root_.GlobalTheory.ZH.DualLattice.mem_span_rows (B : Matrix J J Ω) (v 
 variable [DecidableEq J]
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
-open Matrix in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : Subalgebra o Ω) {J : Type}
   [Fintype J] in
 variable [DecidableEq J] in
@@ -144,9 +135,6 @@ theorem _root_.GlobalTheory.ZH.DualLattice.dotDual_span_rows {A B : Matrix J J �
     exact hc i
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
-open Matrix in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : Subalgebra o Ω) {J : Type}
   [Fintype J] in
 variable [DecidableEq J] in
@@ -194,9 +182,6 @@ theorem _root_.GlobalTheory.ZH.DualLattice.span_eq_span_minor {n : ℕ} (g : Fin
     rwa [Subalgebra.smul_def] at hmem
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
-open Matrix in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : Subalgebra o Ω) {J : Type}
   [Fintype J] in
 variable [DecidableEq J] in
@@ -209,9 +194,6 @@ theorem _root_.GlobalTheory.ZH.DualLattice.smul_mul_smul_inv {G : Matrix J J Ω}
 end Algebra
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
-open Matrix in
 theorem _root_.GlobalTheory.ZH.DualLattice.exists_lat_dual : ∀ (o Ω : Type) [CommRing o] [Field Ω]
     [Algebra o Ω] (M : _root_.GlobalTheory.ZH.RatModel o Ω) (J : Type) [Fintype J]
     [DecidableEq J] (n : ℕ) (g : Fin n → J → Ω) (θ : M.Z → Ω),

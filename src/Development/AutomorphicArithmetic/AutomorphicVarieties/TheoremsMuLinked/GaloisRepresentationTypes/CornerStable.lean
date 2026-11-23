@@ -242,7 +242,6 @@ section Bar
 variable {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
   {φ : G →* GQ l} {n : ℕ}
 
-open TensorProduct in
 private theorem desc [T2Space G] (r : G →* GL (Fin n) (PadicAlgCl l))
     (hr : Continuous fun g => (r g).val)
     (y : G → Matrix (Fin n) (Fin n) (PadicAlgCl l)) (hy : y ∈ finiteCocycles φ (adGL r)) :

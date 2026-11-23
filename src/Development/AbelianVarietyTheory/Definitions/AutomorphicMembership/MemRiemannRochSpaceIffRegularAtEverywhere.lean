@@ -397,7 +397,6 @@ theorem riemannRoch_finite (F : Type) [Field F] : RiemannRochFinite F := Var.fin
 
 section Proj
 
-open ProjSpace
 
 variable (F : Type) [Field F] (n : ℕ)
 

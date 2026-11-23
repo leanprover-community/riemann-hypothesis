@@ -76,7 +76,6 @@ end GlobalTheory.E8AdjointPairing
 
 namespace GlobalTheory.E8AdjointPairing
 
-open GlobalTheory.CechPic
 
 section Bilinear
 
@@ -132,7 +131,6 @@ end GlobalTheory.E8AdjointPairing
 
 namespace GlobalTheory.E8AdjointPairing
 
-open GlobalTheory.CechPic
 
 theorem alg_left {M : Type*} [AddCommGroup M] (S a : Matrix (Fin 8) (Fin 8) ℤ) (B : Fin 8 → Fin 8 → M) :
     ∑ i, ∑ j, S i j • ∑ v, a i v • B v j = ∑ v, ∑ j, (a.transpose * S) v j • B v j := by

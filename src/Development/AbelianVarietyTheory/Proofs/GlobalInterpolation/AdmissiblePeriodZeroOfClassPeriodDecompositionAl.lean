@@ -216,8 +216,6 @@ noncomputable section
 
 namespace GlobalTheory.PerRed
 
-open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.WeilJacquetShalikaLaw Formalism.L2.Forms Matrix NumberField
-open scoped BigOperators
 
 attribute [local instance] MemberForms.clsPFin
 

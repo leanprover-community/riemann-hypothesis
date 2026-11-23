@@ -36,7 +36,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.NX
 
-section Iso
 
 variable {LL Ks Ks' WL WL' G G' : Type} [Field LL] [NumberField LL] [Field Ks] [NumberField Ks] [Algebra Ks LL]
   [Field Ks'] [NumberField Ks'] [Algebra Ks' LL]
@@ -59,7 +58,6 @@ structure FormsIso (A : Arith.FormsL LL Ks WL W G) (A' : Arith.FormsL LL Ks' WL'
   chi : ∀ g, A'.chi (eG g) = A.chi g
   j : ∀ σ x, A'.j σ (e x) = eW σ (A.j σ x)
 
-end Iso
 
 section Real
 
@@ -164,7 +162,6 @@ structure NMjR (X : DivX D) (c : NChoice D) where
 
 section Real2
 
-open Formalism.IndefR.Links
 
 variable {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
   {A3 : Formalism.L2.DIV.FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]

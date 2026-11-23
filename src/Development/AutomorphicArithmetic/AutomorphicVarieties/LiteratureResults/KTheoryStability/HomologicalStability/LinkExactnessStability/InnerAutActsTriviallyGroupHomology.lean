@@ -95,7 +95,6 @@ theorem conj_map_eq_id : ∀ (k G : Type) [CommRing k] [Group G] (g : G) (n : �
 end GlobalTheory.HomStab
 
 section
-open CategoryTheory CategoryTheory.Limits GlobalTheory.HomStab
 theorem _root_.GlobalTheory.T.innerAut_acts_trivially_groupHomology : ∀ (k G : Type) [CommRing k] [Group G] (g : G) (n : ℕ) (A : Rep k G) (u : A ⟶ Rep.res (MulAut.conj g).toMonoidHom A), (∀ a, u.hom a = A.ρ g a) → groupHomology.map (MulAut.conj g).toMonoidHom u n = 𝟙 _ := by
   first
   | exact @GlobalTheory.HomStab.conj_map_eq_id

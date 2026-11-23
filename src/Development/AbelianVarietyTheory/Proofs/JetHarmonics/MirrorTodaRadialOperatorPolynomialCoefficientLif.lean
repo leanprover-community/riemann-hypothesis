@@ -521,8 +521,6 @@ end group
 
 section cell
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx5 Formalism.FourierDecayAlt.P.PBN Formalism.FourierDecayAlt.P.PBN.MC Formalism.FourierDecayAlt.C3
-open Formalism.FourierDecayAlt.P.PBG (Emir ep rv)
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

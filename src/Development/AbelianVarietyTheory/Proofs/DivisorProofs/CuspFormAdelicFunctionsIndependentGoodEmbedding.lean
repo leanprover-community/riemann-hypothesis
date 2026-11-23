@@ -50,7 +50,6 @@ theorem bchar_ne_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : F
   exact Finset.prod_ne_zero_iff.1 hd i (Finset.mem_univ _)
 
 
-open ReciprocityTheory.ChartRestriction.G.FD in
 theorem indep_along {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {Comp G : Type}
     (X : Comp → Data E r) (la : ∀ k, ReciprocityTheory.ChartRestriction.G.FD.Wt (X k).Ψ r) (dict : G → Σ k, Frame (X k).Ψ r)
     (honto : ∀ k, ∀ x ∈ (X k).dom, ∃ g, ∃ γ ∈ (X k).Γ, ∃ b ∈ Bor (X k).Ψ r, dict g = ⟨k, rmul (lact γ x) b⟩)

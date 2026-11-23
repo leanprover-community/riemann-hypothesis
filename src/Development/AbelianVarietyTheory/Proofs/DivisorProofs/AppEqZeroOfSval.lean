@@ -85,7 +85,6 @@ end GlobalTheory.FamWtZero
 
 namespace GlobalTheory.FamWtZero
 
-open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.H1 GlobalTheory.FamIntAt
 
 variable {R : Type} [CommRing R] [IsDomain R]
 
@@ -178,7 +177,6 @@ end GlobalTheory.FamWtZero
 
 namespace GlobalTheory.FamWtZero
 
-open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.H1 GlobalTheory.FamIntAt
 
 variable {R : Type} [CommRing R] [IsDomain R]
 
@@ -235,10 +233,8 @@ end GlobalTheory.FamWtZero
 
 namespace GlobalTheory.FamWtZero
 
-open ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.H1 GlobalTheory.FamIntAt
 
 
-open SectionScalarValuation in
 theorem exists_family : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) →
     ∀ (D : DegData R (maximalIdeal R)) (k : ℕ), 1 ≤ k → ∀ σ₀ : D.toPre.SecB k 0,
     ∃ (F : Fam D.toPre (FractionRing R) k) (f : ∀ α : D.toPre.X, D.toPre.SecB k α),

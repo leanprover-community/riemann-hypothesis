@@ -56,8 +56,6 @@ private theorem isOrth_lact_of_isOrth {r : ℕ} (X : _root_.ReciprocityTheory.Ch
   rw [_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.OntoS.gram_lact X hγ]
   exact hx τ
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem continuousAt_bchar_of_ne_zero (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r)
     {b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} (hb : _root_.ReciprocityTheory.ChartRestriction.G.FD.bchar la b ≠ 0) :
@@ -76,8 +74,6 @@ private theorem continuousAt_bchar_of_ne_zero (X : _root_.ReciprocityTheory.Char
     (continuous_apply i).comp ((continuous_apply i).comp (continuous_apply τ))
   exact hc.continuousAt.zpow₀ _ hne
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem bchar_ne_zero_of_mem_bor_torus_haar_measure (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r)
     {b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} (hb : b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor X.Ψ r) : _root_.ReciprocityTheory.ChartRestriction.G.FD.bchar la b ≠ 0 := by
@@ -86,8 +82,6 @@ private theorem bchar_ne_zero_of_mem_bor_torus_haar_measure (X : _root_.Reciproc
   rw [_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExtFPf.rmul_invF X hb, _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExtFPf.bchar_oneF X la, h, zero_mul] at hmul
   exact one_ne_zero hmul
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private theorem rmul_lact_comm {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (γ : GL (Fin r) E)
     (x b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) : _root_.ReciprocityTheory.ChartRestriction.G.FD.rmul (_root_.ReciprocityTheory.ChartRestriction.G.FD.lact γ x) b = _root_.ReciprocityTheory.ChartRestriction.G.FD.lact γ (_root_.ReciprocityTheory.ChartRestriction.G.FD.rmul x b) := by
@@ -96,8 +90,6 @@ private theorem rmul_lact_comm {r : ℕ} (X : _root_.ReciprocityTheory.ChartRest
   exact Matrix.mul_assoc ((γ : Matrix (Fin r) (Fin r) E).map (τ : E →+* ℂ)) (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ)
     (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat b τ)
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private theorem cpt_lact_eq_lact_cpt {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (γ : GL (Fin r) E)
     (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) (z : _root_.ReciprocityTheory.L2DbarEstimates.V (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X)) :
@@ -105,8 +97,6 @@ private theorem cpt_lact_eq_lact_cpt {r : ℕ} (X : _root_.ReciprocityTheory.Cha
   unfold _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt
   exact rmul_lact_comm X γ x _
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private theorem norm_chi_eq_one_of_mem_gamma {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r)
     {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ) : ‖X.χ la γ‖ = 1 := by
@@ -114,8 +104,6 @@ private theorem norm_chi_eq_one_of_mem_gamma {r : ℕ} (X : _root_.ReciprocityTh
   have hpow : ‖X.χ la γ‖ ^ n = 1 := by rw [← norm_pow, h γ hγ, norm_one]
   exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn.ne').1 hpow
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem differentiable_lact' (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (γ : GL (Fin r) E) :
     Differentiable ℂ (fun x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r => _root_.ReciprocityTheory.ChartRestriction.G.FD.lact γ x) := by
@@ -123,8 +111,6 @@ private theorem differentiable_lact' (X : _root_.ReciprocityTheory.ChartRestrict
   simp only [_root_.ReciprocityTheory.ChartRestriction.G.FD.lact, _root_.ReciprocityTheory.ChartRestriction.G.FD.mat, Matrix.mul_apply, Matrix.of_apply]
   fun_prop
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem lact_lact_eq_lact_mul' (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (γ δ : GL (Fin r) E) (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.lact γ (_root_.ReciprocityTheory.ChartRestriction.G.FD.lact δ x) = _root_.ReciprocityTheory.ChartRestriction.G.FD.lact (γ * δ) x := by
@@ -135,8 +121,6 @@ private theorem lact_lact_eq_lact_mul' (X : _root_.ReciprocityTheory.ChartRestri
       (((γ * δ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E).map (τ : E →+* ℂ)) * _root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ
   rw [← Matrix.mul_assoc, ← Matrix.map_mul, Units.val_mul]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem lact_one_apply (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.lact (1 : GL (Fin r) E) x = x := by
@@ -147,8 +131,6 @@ private theorem lact_one_apply (X : _root_.ReciprocityTheory.ChartRestriction.G.
   rw [Units.val_one, Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mul]
 
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.PoinHol.poin_summable_isBddSec :
     (∀ (H : Type) [NormedAddCommGroup H] [NormedSpace ℂ H] (ι : Type) (U : Set H) (f : ι → H → ℂ) (u : ι → ℝ), IsOpen U → (∀ i, DifferentiableOn ℂ (f i) U) → Summable u → (∀ i, ∀ x ∈ U, ‖f i x‖ ≤ u i) → DifferentiableOn ℂ (fun x => ∑' i, f i x) U) → (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.NfacRmulStatement (E := E) ∧ _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.NfacLactStatement (E := E) ∧ _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.PnormInvStatement (E := E)) → (∀ (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r) (κ : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → ℝ) (P : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → ℂ), _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsBEq X la P → (∃ C : ℝ≥0∞, C < ⊤ ∧ ∀ x ∈ X.dom, ∑' γ : X.Γ, ENNReal.ofReal (Real.sqrt (κ (_root_.ReciprocityTheory.ChartRestriction.G.FD.lact γ.1 x))) ≤ C) → (∃ ρ C : ℝ, 0 < ρ ∧ ∀ x, _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x → ∀ z : _root_.ReciprocityTheory.L2DbarEstimates.V (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X), ‖z‖ < ρ → _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z ∈ X.dom ∧ ‖P (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z)‖ ≤ C * Real.sqrt (κ x)) → (∀ x ∈ X.dom, Summable fun γ : X.Γ => ‖(X.χ la γ.1)⁻¹ * P (_root_.ReciprocityTheory.ChartRestriction.G.FD.lact γ.1 x)‖) ∧ X.IsBddSec la (_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.poin X la P)) := by

@@ -94,7 +94,6 @@ theorem basicOpen_triv {R R₁ : Type} [CommRing R] [CommRing R₁] (j : R₁ �
 end GlobalTheory.LocTrivDescent
 
 namespace GlobalTheory.LocTrivDescent
-open GlobalTheory.CechPic
 
 theorem cls_spread (S : Type) [CommRing S] (R₀ : Subring S) (X X₀ : Scheme.{0}) (f : X ⟶ Sp S) (f₀ : X₀ ⟶ Sp R₀)
     (π : X ⟶ X₀) [QuasiCompact f₀] [QuasiSeparated f₀] (M : LB X₀) (hM : M.IsLB)

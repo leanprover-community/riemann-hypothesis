@@ -57,7 +57,6 @@ private theorem cut (K s B : ℕ) (e : ℕ → ℕ) : ∃ pc : Fin s → ℕ →
   · exact ⟨fun _ _ => 0, by simp, fun h' => absurd h' h⟩
 
 
-open Formalism.IncomingBounds in
 private theorem monAl_le_first (K rk : ℕ) (e : ℕ → ℕ) (ρ : ℕ) :
     monAl K rk e ρ ≤ ∑ k ∈ Finset.Icc 1 K, e k := by
   unfold monAl

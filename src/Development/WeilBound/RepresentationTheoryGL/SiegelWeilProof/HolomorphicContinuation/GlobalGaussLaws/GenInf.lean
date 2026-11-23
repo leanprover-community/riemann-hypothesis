@@ -178,7 +178,6 @@ end PositivityTheory.Rg.Sw.Glob.GenInfH
 namespace PositivityTheory.Rg.Sw.Glob
 
 open GenInfH PlaceFactsH
-open Formalism.IndefR.Eqv (psiT glueA splitInv psiT_glueA finPart_glueA ae_ext' mat_ext)
 
 
 theorem kInInf_of (hU : UnitD) (hL : LocRedField) : KInInf := by

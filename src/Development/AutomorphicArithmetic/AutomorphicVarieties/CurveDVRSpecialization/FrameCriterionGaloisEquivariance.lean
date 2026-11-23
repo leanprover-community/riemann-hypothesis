@@ -44,7 +44,6 @@ private theorem val_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Alg
       exact ValuationSubring.smul_mem_pointwise_smul g y A hy
   exact val_lt_one key x
 
-open scoped Pointwise in
 private theorem place_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] (g : G F Ω) {A : ValuationSubring Ω}
     {v : W.Plc F} (h : IsPlaceOver A v) : IsPlaceOver (g • A) v := by
   intro x
@@ -52,7 +51,6 @@ private theorem place_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [A
   rw [← hx, val_smul]
   exact h x
 
-open scoped Pointwise in
 theorem UpperTheory.frame_criterion_galois_equivariance :
     UpperTheory.V.Pr.CrE := by
   intro Ω _ _ _ l _ O _ _ η Ψ σ g₁ B M L _ _ _ _ _ Φ k hB

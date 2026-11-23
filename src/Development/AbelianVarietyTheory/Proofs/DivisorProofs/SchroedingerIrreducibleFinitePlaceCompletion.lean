@@ -102,7 +102,6 @@ end GlobalTheory.SchrIrred
 
 namespace GlobalTheory.SchrIrred
 
-open ValuativeRel
 
 theorem schr_irreducible_local (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     [CharZero k] [Invertible (2 : k)] {κ : Type} [Fintype κ] (ψk : AddChar k ℂ) (hc : Continuous ψk) (h1 : ψk ≠ 1)

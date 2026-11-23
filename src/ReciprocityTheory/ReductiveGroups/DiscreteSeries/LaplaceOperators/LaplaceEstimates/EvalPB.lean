@@ -96,12 +96,9 @@ end ReciprocityTheory.ChartRestriction.DS.Lap
 
 noncomputable section
 
-open Matrix MeasureTheory
-open scoped InnerProductSpace
 
 namespace ReciprocityTheory.ChartRestriction.DS.Lap
 
-open ReciprocityTheory.ChartRestriction.DS
 
 namespace CapelliMinorRestriction
 

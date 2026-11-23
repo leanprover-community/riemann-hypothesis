@@ -51,7 +51,6 @@ private theorem iw_eq (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
   · intro hg
     exact ⟨iwahori_le_integralGL F n hg, ((mem_iwahori_iff F n).1 hg).2.1⟩
 
-open ValuativeRel in
 private theorem unif (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] :
     PositivityTheory.Rg.Tf.Loc.IsUniformiser ((uniformizerUnit F : Fˣ) : F) := by
   refine ⟨valuation_uniformizer_lt_one F, Units.ne_zero _, fun x hx => ?_⟩
@@ -62,7 +61,6 @@ private theorem unif (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] 
   have h1 := (mem_maximalIdeal_pow_iff F (m := 1) (y := y)).1 (by rwa [pow_one])
   simpa using h1
 
-open ValuativeRel in
 private theorem diag_mem (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (n : ℕ)
     (t : Fin n → Fˣ) (ht : ∀ i, valuation F ((t i : Fˣ) : F) = 1) : diagGL F n t ∈ iwahori F n := by
   have he : ∀ i j, ((diagGL F n t : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) i j =

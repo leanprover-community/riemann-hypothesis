@@ -158,7 +158,6 @@ theorem bLG_def {J Pl : Type} [Fintype J] [Fintype Pl] [DecidableEq Pl] (R : Rec
 
 end Concrete
 
-section Inputs
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
 
@@ -168,12 +167,9 @@ variable [_root_.NumberField.IsTotallyComplex K] {A : FamIn K G Pl0 T m} {s : �
   {Pl : Type} [Fintype Pl] [DecidableEq Pl] {R : RecNums A.fam.base.J Pl} {u : (Dc Pk.Zs).Mem}
   {Nu : Submodule (𝓞 K) (Fin ((Dc Pk.Zs).a u) → K)} {sg : HeightOneSpectrum (𝓞 K) → ℝ}
 
-end Inputs
 
-section Corollary
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
 
-end Corollary
 
 end Formalism.L2.DIV

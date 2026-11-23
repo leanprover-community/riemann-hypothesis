@@ -76,12 +76,10 @@ def diagSec (a : Fin 2 → Φ) : Φ := a 1 - a 0
 
 end Defs
 
-section Statements
 
 variable {o : Type*} {Ω : Type*} [CommRing o] [Field Ω] [Algebra o Ω] {ι κ : Type*} [Fintype κ]
   {E : Type*} [AddCommGroup E] [Module Ω E] {x : ι → Ω}
   {Φ : Type*} [Field Φ] [Algebra Ω Φ] [Algebra o Φ] [IsScalarTower o Ω Φ]
 
-end Statements
 
 end ReciprocityTheory.ChartRestriction.G.AI.T

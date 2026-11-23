@@ -120,8 +120,6 @@ end Div
 
 section Complete
 
-open scoped NNReal
-open Ideal
 
 variable {p : ℕ} [Fact p.Prime]
 

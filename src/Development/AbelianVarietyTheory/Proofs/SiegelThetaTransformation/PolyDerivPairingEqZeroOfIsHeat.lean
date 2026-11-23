@@ -71,8 +71,6 @@ private lemma continuous_star_dotProduct_imH_mulVec {N : ℕ} :
   unfold _root_.GlobalTheory.SW.imH
   fun_prop
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private lemma isOpen_setOf_posDef_imH {N : ℕ} :
     IsOpen {A : Matrix (Fin N) (Fin N) ℂ | (_root_.GlobalTheory.SW.imH A).PosDef} := by
   rw [isOpen_iff_mem_nhds]
@@ -107,8 +105,6 @@ private lemma isOpen_setOf_posDef_imH {N : ℕ} :
   · exact pos_of_mul_pos_right h1 (by positivity)
   · exact (hH.im_star_dotProduct_mulVec_self x).symm
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private lemma polyDeriv_mul_sum_pairs_eq_sum_lineDerivList {σ ι W : Type*} [Fintype ι] [NormedAddCommGroup W] [NormedSpace ℂ W]
     (A : MvPolynomial σ ℂ) (i j : ι → σ) (u : σ → W) {F : W → ℂ} {x : W}
     (hF : ∀ᶠ y in 𝓝 x, AnalyticAt ℂ F y) :
@@ -137,8 +133,6 @@ private lemma polyDeriv_mul_sum_pairs_eq_sum_lineDerivList {σ ι W : Type*} [Fi
   rw [_root_.GlobalTheory.dirPolyDeriv_monomial_eq_lineDerivList hl u hFx, List.map_append, _root_.GlobalTheory.lineDerivList_append]
   rfl
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private lemma polyDeriv_eq_sum_coeff_lineDerivList_of_analyticAt {σ W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W]
     (P : MvPolynomial σ ℂ) (u : σ → W) {F : W → ℂ} {x : W} (hF : AnalyticAt ℂ F x) :
     _root_.ReciprocityTheory.ChartRestriction.G.I2.polyDeriv P u F x = ∑ m ∈ P.support,
@@ -147,8 +141,6 @@ private lemma polyDeriv_eq_sum_coeff_lineDerivList_of_analyticAt {σ W : Type*} 
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [_root_.GlobalTheory.dirPolyDeriv_monomial_eq_lineDerivList (Multiset.coe_toList _) u hF]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private lemma sum_coeff_lineDerivList_eq_lineDeriv_polyDeriv {σ W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W]
     (A : MvPolynomial σ ℂ) (u : σ → W) {F : W → ℂ} {x : W} (z : W)
     (hF : ∀ᶠ y in 𝓝 x, AnalyticAt ℂ F y) :
@@ -171,8 +163,6 @@ private lemma sum_coeff_lineDerivList_eq_lineDeriv_polyDeriv {σ W : Type*} [Nor
   rw [← _root_.GlobalTheory.lineDerivList_append, ← _root_.GlobalTheory.lineDerivList_append]
   exact _root_.GlobalTheory.lineDerivList_perm hFx List.perm_append_comm
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private lemma polyDeriv_comp_linearMap_add_of_analyticAt {σ W W' : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W]
     [NormedAddCommGroup W'] [NormedSpace ℂ W'] [FiniteDimensional ℂ W'] (P : MvPolynomial σ ℂ)
     (u : σ → W') (L : W' →ₗ[ℂ] W) (c : W) {F : W → ℂ} (hF : AnalyticAt ℂ F c) :
@@ -191,8 +181,6 @@ private lemma polyDeriv_comp_linearMap_add_of_analyticAt {σ W W' : Type*} [Norm
   rfl
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 theorem _root_.GlobalTheory.SW.polyDeriv_pairing_eq_zero_of_isHeat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Finset (E →+* ℂ)) (n N : ℕ) (D : _root_.GlobalTheory.SW.CM Ψ N N → _root_.GlobalTheory.SW.CM Ψ n N → _root_.GlobalTheory.SW.CM Ψ n N → ℂ), _root_.GlobalTheory.SW.IsHeat Ψ D → (∀ Z ∈ _root_.GlobalTheory.SW.Hn Ψ N, D Z 0 0 = 0) → ∀ Z ∈ _root_.GlobalTheory.SW.Hn Ψ N, ∀ s : MvPolynomial (Ψ × Fin N × Fin N) ℂ, _root_.ReciprocityTheory.ChartRestriction.G.I2.polyDeriv (MvPolynomial.aeval (fun v : Ψ × Fin N × Fin N => ∑ k, (MvPolynomial.X (v.1, false, k, v.2.1) * MvPolynomial.X (v.1, true, k, v.2.2) : MvPolynomial (Ψ × Bool × Fin n × Fin N) ℂ)) s) (fun v => (Pi.single v 1 : Ψ × Bool × Fin n × Fin N → ℂ)) (fun w : Ψ × Bool × Fin n × Fin N → ℂ => D Z (fun τ => Matrix.of fun k a => w (τ, false, k, a)) (fun τ => Matrix.of fun k a => w (τ, true, k, a))) 0 = 0 := by
   intro E _ _ _ Ψ n N D hD h0 Z hZ s
   obtain ⟨hdiff, hheat⟩ := hD

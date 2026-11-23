@@ -91,7 +91,6 @@ end General
 
 section Base
 
-open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] {I : Ideal R} [IsHausdorff I R] {D : DegData R I}
   {A : PolAV (Spec (CommRingCat.of (FractionRing R)))}
@@ -136,7 +135,6 @@ end Base
 
 section Through
 
-open ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR
 
 variable {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R'] {D : DegPre R}
   {D' : DegPre R'} {Φ : D'.P.A.left ⟶ D.P.A.left} (w : LB.Iso D'.P.L (D.P.L.pull Φ)) (e : D.X → D'.X)

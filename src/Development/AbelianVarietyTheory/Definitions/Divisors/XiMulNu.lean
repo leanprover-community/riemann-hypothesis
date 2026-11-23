@@ -77,7 +77,6 @@ theorem _root_.GlobalTheory.Sandwich.xi_mul_nu (ε : PreTilt O p) :
   unfold _root_.GlobalTheory.Sandwich.root
   rw [← frobenius_def, frobenius_apply_frobeniusEquiv_symm]
 
-open WittVector Ideal Matrix in
 variable (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [Fact ¬IsUnit (p : O)]
   [IsAdicComplete (span {(p : O)}) O] in
 variable {p O} in

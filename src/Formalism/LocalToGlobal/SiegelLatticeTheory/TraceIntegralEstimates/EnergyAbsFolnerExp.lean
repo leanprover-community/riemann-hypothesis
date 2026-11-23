@@ -49,7 +49,6 @@ namespace Formalism.L2.S.Pv.EnergyAbs
 
 open Formalism.L2.SG.Pf.EnergyAbs
 
-section General
 
 variable {α β : Type} [MeasurableSpace α] [MeasurableSpace β]
 
@@ -61,7 +60,6 @@ private theorem norm_eq_of_inner_self_eq_inner_self_lemma {E : Type*} [NormedAdd
     exact_mod_cast h'
   nlinarith [norm_nonneg a, norm_nonneg b]
 
-end General
 
 section Main
 

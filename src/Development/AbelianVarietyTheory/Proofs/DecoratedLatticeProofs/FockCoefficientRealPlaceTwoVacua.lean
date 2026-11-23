@@ -170,7 +170,6 @@ end GlobalTheory.VacCoefAtPlace
 
 namespace GlobalTheory.VacCoefAtPlace
 
-open GlobalTheory.ArchRec GlobalTheory.IndefiniteRowSideFullHecke.BarMatrix GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {V W : HSp D}
 

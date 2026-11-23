@@ -77,7 +77,6 @@ end Formalism.ELL.FormalGroupQuadraticJets
 
 namespace Formalism.ELL.FormalGroupQuadraticJets
 
-open Formalism.G.LogCR
 
 variable {K : Type u} [NormedField K] [IsUltrametricDist K] [CharZero K]
 

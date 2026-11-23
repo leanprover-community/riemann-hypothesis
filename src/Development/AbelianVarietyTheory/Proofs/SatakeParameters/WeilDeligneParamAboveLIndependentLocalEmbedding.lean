@@ -363,7 +363,6 @@ theorem mem_span_dQ {K L₁ L₂ : FinExt l}
   exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, rfl⟩)
 
 
-open EnlargeCoeff in
 theorem wdPst_enlarge {m : ℕ} {L₁ L₂ : FinExt l} (hL : L₁.1 ≤ L₂.1) (r₁ : ↥(Dec (F := E) A) →* GL (Fin m) ↥L₁.1)
     (hV₁ : IsPst P (B.repE L₁ r₁)) :
     wdPst P ι B h hj (B.repE L₁ r₁) =

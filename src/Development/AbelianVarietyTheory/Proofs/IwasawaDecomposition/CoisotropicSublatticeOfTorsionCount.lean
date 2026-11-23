@@ -154,7 +154,6 @@ end GlobalTheory.CoisoCount
 
 namespace GlobalTheory.CoisoCount
 
-open Matrix
 
 theorem ker_le_span {r r₀ : ℕ} (Mr : Matrix (Fin r) (Fin r) ℝ) (Ar : Matrix (Fin r₀) (Fin r) ℝ)
     (hM : IsUnit Mr.det) (hA : LinearIndependent ℝ (fun i => Ar i))
@@ -203,7 +202,6 @@ end GlobalTheory.CoisoCount
 
 namespace GlobalTheory.CoisoCount
 
-open Matrix
 
 theorem coisotropic_of_torsion_count (r r₀ : ℕ) (M : Matrix (Fin r) (Fin r) ℤ)
     (A : Fin r₀ → Fin r → ℤ) (hM : M.det ≠ 0)

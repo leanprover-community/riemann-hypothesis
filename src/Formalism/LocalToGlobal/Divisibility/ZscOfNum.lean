@@ -153,10 +153,8 @@ def DGamSize (hT : Finite T) (s : ℕ) (cD : ℝ) : Prop :=
 
 end Sizes
 
-section Assemble
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
 
-end Assemble
 
 end Formalism.L2.DIV

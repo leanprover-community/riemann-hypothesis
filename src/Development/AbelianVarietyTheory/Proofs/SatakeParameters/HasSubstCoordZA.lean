@@ -89,7 +89,6 @@ end GlobalTheory.TwU
 
 namespace GlobalTheory.TwU
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.FrobeniusOrbits Classical Formalism.L2.KerInert.Loc
 
 theorem hasSubst_coordZA {p : ℕ} [Fact p.Prime] (X : Sys p) (j : ℕ) :
     MvPowerSeries.HasSubst (X.coordZA (K0 p) j) :=

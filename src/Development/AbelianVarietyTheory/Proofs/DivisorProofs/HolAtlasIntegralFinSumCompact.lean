@@ -58,8 +58,6 @@ private theorem isForm_zero' : A.IsForm 0 := by
     exact (map_zero _).symm
 
 set_option autoImplicit false in
-open Set Matrix MeasureTheory in
-open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in
 variable [CompactSpace M] [T2Space M] [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] in
 private theorem integral_zero_fld : A.integral 0 = 0 := by
@@ -67,8 +65,6 @@ private theorem integral_zero_fld : A.integral 0 = 0 := by
   simpa using h
 
 set_option autoImplicit false in
-open Set Matrix MeasureTheory in
-open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in
 private theorem isForm_add' {α β : A.Fld}
     (ha : A.IsForm α) (hb : A.IsForm β) :
@@ -87,8 +83,6 @@ private theorem isForm_add' {α β : A.Fld}
     simp [ha.compat x x' hx, hb.compat x x' hx]
 
 set_option autoImplicit false in
-open Set Matrix MeasureTheory in
-open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in
 private theorem isForm_sub' {α β : A.Fld}
     (ha : A.IsForm α) (hb : A.IsForm β) :
@@ -107,8 +101,6 @@ private theorem isForm_sub' {α β : A.Fld}
     simp [ha.compat x x' hx, hb.compat x x' hx]
 
 set_option autoImplicit false in
-open Set Matrix MeasureTheory in
-open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in
 variable [CompactSpace M] [T2Space M] [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] in
 private theorem integral_add_of_isForm {α β : A.Fld}
@@ -125,8 +117,6 @@ private theorem integral_add_of_isForm {α β : A.Fld}
   ring
 
 set_option autoImplicit false in
-open Set Matrix MeasureTheory in
-open scoped ComplexOrder in
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : _root_.GlobalTheory.CxForm.HolAtlas M n) in
 variable [CompactSpace M] [T2Space M] [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] in
 private theorem isForm_and_integral_finset_sum {ι : Type} (s : Finset ι)

@@ -51,7 +51,6 @@ private lemma natLog_mul_log_two_le_log_of_le {l m : ℕ} {C : ℝ} (hl : 2 ≤ 
   have h4 := Real.log_le_log (by positivity) h3
   rwa [Real.log_pow] at h4
 
-open NumberField IsDedekindDomain Module in
 private lemma natLog_le_add_two_mul_of_le_two_pow_mul_exp {l m k : ℕ} {L : ℝ} (hl : 2 ≤ l) (hL : 0 ≤ L)
     (hm : (m : ℝ) ≤ 2 ^ k * Real.exp L) : (Nat.log l m : ℝ) ≤ k + 2 * L := by
   have hC : (1 : ℝ) ≤ 2 ^ k * Real.exp L :=
@@ -67,7 +66,6 @@ private lemma natLog_le_add_two_mul_of_le_two_pow_mul_exp {l m k : ℕ} {L : ℝ
   nlinarith
 
 
-open NumberField IsDedekindDomain Module in
 theorem _root_.GlobalTheory.HubLoc.cBnum_le_thirty : ∀ (l t N : ℕ) (L : ℝ), 2 ≤ l → 1 ≤ t → 1 ≤ N →
     1 ≤ L → (_root_.GlobalTheory.HubLoc.cBnum l ⌊2 * Real.exp L⌋₊ t N : ℝ) ≤ 30 * t * N * L := by
   intro l t N L hl ht hN hL

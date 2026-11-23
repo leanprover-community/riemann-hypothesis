@@ -118,7 +118,6 @@ end
 
 noncomputable section
 
-open Formalism.L2.Col (qOf rowSG cAof cBof IsSel QE)
 
 namespace GlobalTheory.Mem.Top.ReW
 
@@ -201,7 +200,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Top.ReW
 
-open GlobalTheory.Mem.Col2.InEx
 
 theorem valuesIn_lift {L : Type} [Field L] [NumberField L] {χ : HChar L} {s : ℝ} {C C' : Type} [Field C] [Field C']
     {σ : C →+* ℂ} {σ' : C' →+* ℂ} (h : χ.ValuesIn s σ) (hσ : ∀ y, ∃ x, σ' x = σ y) : χ.ValuesIn s σ' := fun v hv => by

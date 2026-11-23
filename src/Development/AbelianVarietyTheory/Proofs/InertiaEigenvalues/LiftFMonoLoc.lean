@@ -174,7 +174,6 @@ end Apply
 
 section Wrap
 
-open Formalism.MainNotions.ElementDenominator
 
 variable {l : ℕ} [Fact l.Prime]
 

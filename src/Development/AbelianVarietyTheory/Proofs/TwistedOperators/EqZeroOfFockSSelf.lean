@@ -417,7 +417,6 @@ namespace GlobalTheory.CoefPsi
 
 section Grid2
 
-open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowReal Formalism.IndefR.Links
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} [DecidableEq D.what₂.Tau]
 

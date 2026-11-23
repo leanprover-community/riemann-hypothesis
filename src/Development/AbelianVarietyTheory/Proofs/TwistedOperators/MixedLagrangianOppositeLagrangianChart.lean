@@ -101,7 +101,6 @@ end GlobalTheory.FlipMatch.ChartOpp
 
 namespace GlobalTheory.FlipMatch.ChartOpp
 
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (blk blk_mul blk_transpose blk_one blk_map)
 
 theorem map_mul_equiv {K K' : Type} [Field K] [Field K'] (f : K ≃+* K') {a b c : Type} [Fintype b] (P : Matrix a b K)
     (Q : Matrix b c K) : (P * Q).map f = P.map f * Q.map f :=

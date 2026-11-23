@@ -62,16 +62,12 @@ private theorem valuation_aeval_map_subtype_le_one (V : ValuationSubring F) (W :
   rw [map_mul, map_pow]
   exact le_trans (mul_le_of_le_one_right' (pow_le_one' ht j)) (hVW _ (q.coeff j).2)
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private theorem polynomial_smul_eq_C_algebraMap_mul {R S : Type} [CommRing R] [CommRing S]
     [Algebra R S] (x : R) (p : Polynomial S) :
     x • p = Polynomial.C (algebraMap R S x) * p := by
   ext n
   simp [Polynomial.coeff_C_mul, Algebra.smul_def]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 private theorem exists_mul_add_mul_eq_C_of_monic_irreducible {k : Type} [Field k]
     (Ψ R : Polynomial (Polynomial k)) (hΨ : Ψ.Monic)
     (hirr : ∀ A B : Polynomial (Polynomial k), A.Monic → B.Monic → A * B = Ψ →
@@ -113,8 +109,6 @@ private theorem exists_mul_add_mul_eq_C_of_monic_irreducible {k : Type} [Field k
   linear_combination (Polynomial.C (algebraMap (Polynomial k) (FractionRing (Polynomial k)) ca) *
     Polynomial.C (algebraMap (Polynomial k) (FractionRing (Polynomial k)) cb)) * hab
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {F L : Type} [Field F] [Field L] [Algebra F L] in
 private theorem valuation_eval2_aeval_le_one (V : ValuationSubring F) (W : ValuationSubring L)
     (t ω : L) (ht : W.valuation t ≤ 1) (hω : W.valuation ω ≤ 1)
@@ -129,8 +123,6 @@ private theorem valuation_eval2_aeval_le_one (V : ValuationSubring F) (W : Valua
   exact le_trans (mul_le_of_le_one_right' (pow_le_one' hω i))
     (valuation_aeval_map_subtype_le_one V W t ht hVW (Q.coeff i))
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {F L : Type} [Field F] [Field L] [Algebra F L] in
 private theorem valuation_aeval_map_subtype_lt_one (V : ValuationSubring F) (W : ValuationSubring L)
     (t : L) (ht : W.valuation t ≤ 1) (q : Polynomial V)
@@ -142,8 +134,6 @@ private theorem valuation_aeval_map_subtype_lt_one (V : ValuationSubring F) (W :
   rw [map_mul, map_pow]
   exact lt_of_le_of_lt (mul_le_of_le_one_right' (pow_le_one' ht j)) (hq j)
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {F L : Type} [Field F] [Field L] [Algebra F L] in
 private theorem valuation_eval2_aeval_lt_one (V : ValuationSubring F) (W : ValuationSubring L)
     (t ω : L) (ht : W.valuation t ≤ 1) (hω : W.valuation ω ≤ 1)
@@ -159,10 +149,6 @@ private theorem valuation_eval2_aeval_lt_one (V : ValuationSubring F) (W : Valua
     (valuation_aeval_map_subtype_lt_one V W t ht (Q.coeff i) (hQ i))
 
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 theorem _root_.GlobalTheory.gaussExtension_coeff_mem_nonunits : ∀ {F : Type} [Field F] {L : Type} [Field L] [Algebra F L] (t : L) (V : ValuationSubring F) (W : ValuationSubring L), (∀ a : F, algebraMap F L a ∈ W ↔ a ∈ V) → (∀ P : Polynomial F, (∀ i, P.coeff i ∈ V) → (∃ i, P.coeff i ≠ 0 ∧ P.coeff i ∈ V ∧ (P.coeff i)⁻¹ ∈ V) → W.valuation (Polynomial.aeval t P) = 1) → ∀ (Ψ : Polynomial (Polynomial V)) (ω : L), Ψ.Monic → (Ψ.map (Polynomial.mapRingHom V.subtype)).eval₂ (Polynomial.aeval t).toRingHom ω = 0 → (∀ (k : Type) [Field k] (φ : V →+* k) (A B : Polynomial (Polynomial k)), A.Monic → B.Monic → A * B = Ψ.map (Polynomial.mapRingHom φ) → A.natDegree = 0 ∨ B.natDegree = 0) → ∀ R : Polynomial (Polynomial F), R.natDegree < Ψ.natDegree → (∀ i j, (R.coeff i).coeff j ∈ V) → R.eval₂ (Polynomial.aeval t).toRingHom ω ∈ W.nonunits → ∀ i j, (R.coeff i).coeff j ∈ V.nonunits := by
   intro F _ L _ _ t V W hVW hgauss Ψ ω hΨ hroot hirr R hdeg hRV hRW i₀ j₀
   by_contra hnot

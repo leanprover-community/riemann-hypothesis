@@ -212,7 +212,6 @@ theorem atPl_tprod {ι : Type} [Fintype ι] [DecidableEq ι] {V : ι → Type} [
   · subst e; simp
   · simp [Function.update_of_ne e]
 
-open GlobalTheory.RealLift in
 theorem sumPl_single {ι : Type} [Fintype ι] [DecidableEq ι] {P : Type} [AddCommGroup P] [Module ℂ P]
     (aP : ι → Mat r s →ₗ[ℂ] Module.End ℂ P) (w : ι) (Y : Mat r s) (y : ι → P) :
     sumPl (V := fun _ => P) (fun i => aP i ((Pi.single w Y : ι → Mat r s) i)) (PiTensorProduct.tprod ℂ y) =
@@ -222,7 +221,6 @@ theorem sumPl_single {ι : Type} [Fintype ι] [DecidableEq ι] {P : Type} [AddCo
     rw [atPl_tprod, Pi.single_eq_of_ne e, map_zero, LinearMap.zero_apply, MultilinearMap.map_update_zero]
   · simp
 
-open GlobalTheory.RealLift in
 theorem tens_hw {ι P M : Type} [Fintype ι] [DecidableEq ι] [AddCommGroup P] [Module ℂ P] [AddCommGroup M] [Module ℂ M]
     {T : ι → Type} [∀ w, AddCommGroup (T w)] [∀ w, Module ℂ (T w)] (La : ι → Ix r s → ℚ)
     (aT : ∀ w, Mat r s →ₗ[ℂ] Module.End ℂ (T w)) (hS : ∀ w, Side (La w) (T w) (aT w))

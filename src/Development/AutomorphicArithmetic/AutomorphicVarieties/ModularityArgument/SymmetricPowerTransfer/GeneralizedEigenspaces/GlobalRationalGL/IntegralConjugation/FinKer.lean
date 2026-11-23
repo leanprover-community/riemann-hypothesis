@@ -47,7 +47,6 @@ private theorem fin_fst {L : Type} [Field L] [NumberField L] {n : ℕ} (g : GL (
       ((0 : InfiniteAdeleRing L), g.val i j)).1 = _
   by_cases h : i = j <;> simp [Matrix.one_apply, h]
 
-open Formalism.UG GlobalTheory.BCT.FinPtLoc in
 private theorem fin_snd {L : Type} [Field L] [NumberField L] {n : ℕ} (g : GL (Fin n) (Af L)) (i j : Fin n) :
     pFin L ((finGL L n g).val i j) = g.val i j := by
   change ((1 : Matrix (Fin n) (Fin n) (InfiniteAdeleRing L × Af L)) i j -
@@ -56,7 +55,6 @@ private theorem fin_snd {L : Type} [Field L] [NumberField L] {n : ℕ} (g : GL (
   by_cases h : i = j <;> simp [Matrix.one_apply, h]
 
 
-open Formalism.UG GlobalTheory.BCT.FinPtLoc in
 private theorem fin_mem {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} (g : GL (Fin n) (Af L))
     (hg : cT (cjF (L := L)) g.val * g.val = 1) : finGL L n g ∈ UA L n := by
   show cT (conjAd L) (finGL L n g).val * 1 * (finGL L n g).val = 1
@@ -70,7 +68,6 @@ private theorem fin_mem {L : Type} [Field L] [NumberField L] [IsCMField L] {n : 
   · rw [Matrix.map_mul, Matrix.map_mul, map_cT (pFin L) (conjAd L) (cjF (L := L)) (fun x => rfl), hs,
       Matrix.map_one _ (map_zero _) (map_one _), Matrix.mul_one, hg]
 
-open Formalism.UG GlobalTheory.BCT.FinPtLoc in
 private theorem fin_ker {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} (g : GL (Fin n) (Af L))
     (h : finGL L n g ∈ UA L n) : (⟨_, h⟩ : UA L n) ∈ finU (E := L) (n := n) := by
   show cInf (⟨_, h⟩ : UA L n) = 1

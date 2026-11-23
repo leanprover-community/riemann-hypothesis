@@ -228,7 +228,6 @@ theorem l2_upwardLift {F : Face D A} (hI : InnerProductFormulaC R F) (hFo : Fock
     exact h1
 
 
-open Datum in
 theorem form_of_data {F : Face D A} (hS : SourceLevelLawC R F) (hI : InnerProductFormulaC R F) (hFo : FockCoefficientC R F)
     {i t σ s P cμ cη m ω BW f₀ f c io} (hd : IsLiftDataC R F i t σ s P cμ cη m ω BW f₀ f c io)
     {ν : Measure (GA D (Vc D i))} {𝓕 : Set (GA D (Vc D i))} (hν : IsMeasDef (Vc D i) (levV R i t P m) ν 𝓕)
@@ -357,7 +356,6 @@ theorem vol_mul_nrm {i : Fin D.R.m} (hp : (Vc D i).IsPosDef) {t P m} {ν : Measu
   field_simp
 
 
-open Datum in
 theorem scalar_of_data {F : Face D A} (hS : SourceLevelLawC R F) (hI : InnerProductFormulaC R F) (hFo : FockCoefficientC R F)
     (hZ : FiniteZetaL R F) (hL : LevelIndexNormC R F) (hδ : RealLowestKTypeCoeffSquareIntegrable R) (hp : ∀ i, (Vc D i).IsPosDef) :
     ∃ a : Fin D.R.m → (D.what₂.LL →+* ℂ) → ℝ, (∀ i σ, 0 < a i σ) ∧

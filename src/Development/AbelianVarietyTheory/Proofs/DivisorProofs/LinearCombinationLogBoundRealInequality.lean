@@ -179,7 +179,6 @@ end GlobalTheory.DenSumPf
 
 namespace GlobalTheory.DenSumPf
 
-open Formalism.BasicNotions Formalism.IndefR.Links GlobalTheory.ChiGrid GlobalTheory.FunObj.SqNum GlobalTheory.SqTop
 
 section Sizes
 
@@ -290,7 +289,6 @@ end GlobalTheory.DenSumPf
 
 namespace GlobalTheory.DenSumPf
 
-open Formalism.BasicNotions Formalism.IndefR.Links GlobalTheory.ChiGrid GlobalTheory.FunObj.SqNum GlobalTheory.SqTop
 
 
 

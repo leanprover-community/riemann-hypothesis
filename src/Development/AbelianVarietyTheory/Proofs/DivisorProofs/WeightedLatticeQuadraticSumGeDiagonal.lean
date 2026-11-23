@@ -53,7 +53,6 @@ theorem exists_pos_posSemidef_sub_smul_one {n : Type} [Fintype n] [DecidableEq n
   rw [smul_one_eq_diagonal, diagonal_sub]
   exact PosSemidef.diagonal fun i => by simpa using hle i
 
-open Matrix in
 theorem gram_nonneg_int {s : ℕ} {X : Type} [AddCommGroup X] (β : LinearMap.BilinForm ℤ X) (hβ : ∀ y, 0 ≤ β y y)
     (y : Fin s → X) (z : Fin s → ℤ) : 0 ≤ ∑ u, ∑ v, z u * β (y u) (y v) * z v := by
   have h := hβ (∑ u, z u • y u)
@@ -66,7 +65,6 @@ theorem gram_nonneg_int {s : ℕ} {X : Type} [AddCommGroup X] (β : LinearMap.Bi
     ring
   rw [e]; exact h
 
-open Matrix in
 theorem gram_nonneg_rat {s : ℕ} {X : Type} [AddCommGroup X] (β : LinearMap.BilinForm ℤ X) (hβ : ∀ y, 0 ≤ β y y)
     (y : Fin s → X) (q : Fin s → ℚ) :
     0 ≤ ∑ u, ∑ v, (q u : ℝ) * (β (y u) (y v) : ℝ) * (q v : ℝ) := by
@@ -93,7 +91,6 @@ theorem gram_nonneg_rat {s : ℕ} {X : Type} [AddCommGroup X] (β : LinearMap.Bi
   rw [this] at h0
   exact (mul_nonneg_iff_of_pos_left (by positivity)).mp h0
 
-open Matrix in
 theorem gram_posSemidef {s : ℕ} {X : Type} [AddCommGroup X] (β : LinearMap.BilinForm ℤ X)
     (hsym : ∀ a b, β a b = β b a) (hβ : ∀ y, 0 ≤ β y y) (y : Fin s → X) :
     (Matrix.of fun u v => (β (y u) (y v) : ℝ)).PosSemidef := by
@@ -109,7 +106,6 @@ theorem gram_posSemidef {s : ℕ} {X : Type} [AddCommGroup X] (β : LinearMap.Bi
     refine le_of_le_of_eq hx (Finset.sum_congr rfl fun u _ => Finset.sum_congr rfl fun v _ => ?_)
     ring
 
-open Matrix in
 theorem qW_ge : ∀ (s : ℕ) (W : Matrix (Fin s) (Fin s) ℤ), PosW W → ∃ c : ℝ, 0 < c ∧ ∀ (X : Type) [AddCommGroup X] (β : LinearMap.BilinForm ℤ X), (∀ a b, β a b = β b a) → (∀ y, 0 ≤ β y y) → ∀ y : Fin s → X, c * (∑ u, β (y u) (y u) : ℤ) ≤ (qW W β y : ℤ) := by
   intro s W hW
   obtain ⟨c, hc, hP⟩ := exists_pos_posSemidef_sub_smul_one hW

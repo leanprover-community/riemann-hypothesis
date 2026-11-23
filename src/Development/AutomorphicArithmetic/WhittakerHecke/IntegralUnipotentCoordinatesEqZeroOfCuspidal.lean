@@ -53,7 +53,6 @@ private noncomputable def latE' {F E : Type} [Field F] [NumberField F] [Field E]
   left_inv g := Subtype.ext (D.coE.apply_symm_apply g.1)
   right_inv y := Subtype.ext (D.coE.symm_apply_apply y.1)
 
-open GroundTheory.Automorphic.FourierWhittaker in
 theorem UpperTheory.integral_unipotentCoordinates_eq_zero_of_cuspidal :
     ∀ (E : Type) [Field E] [NumberField E] (D : Dat ℚ E) (f : GL (Fin 2) (A E) → ℂ), Pp.Lf f →
         (∀ g, ∫ b in fundamentalSet E, f (gl (nU b) * g) ∂(adeleMeasure E) = 0) →

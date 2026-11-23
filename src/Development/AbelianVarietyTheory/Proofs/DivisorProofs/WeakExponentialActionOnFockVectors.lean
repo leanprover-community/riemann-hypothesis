@@ -187,7 +187,6 @@ theorem evalAt_mem_adm (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype
   simp [evalAt, GlobalTheory.WeilM.pureA, mul_comm]
 
 
-open scoped Classical in
 def pureL (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ] (g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ) :
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SInf F κ →ₗ[ℂ] ((κ → AdeleRing (𝓞 F) F) → ℂ) where
   toFun f := GlobalTheory.WeilM.pureA F f g

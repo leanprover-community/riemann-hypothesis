@@ -738,7 +738,6 @@ end Reduction
 
 section Int
 
-open TensorProduct
 
 theorem specialLinearGroup_map_zmod_surjective (n : Type*) [Fintype n] [DecidableEq n] (N : ℕ) :
     Surjective (SpecialLinearGroup.map (n := n) (Int.castRingHom (ZMod N))) := by

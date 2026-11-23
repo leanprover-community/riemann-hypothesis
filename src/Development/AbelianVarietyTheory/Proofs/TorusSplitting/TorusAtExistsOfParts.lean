@@ -54,7 +54,6 @@ theorem _root_.GlobalTheory.TorusAtAssembly.im_Hf_add_left (x y z : EuclideanSpa
     (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf (x + y) z).im = (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf x z).im + (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf y z).im := by
   simp [_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf, add_mul, Finset.sum_add_distrib]
 
-open NumberField in
 variable {ι : Type} [Fintype ι] in
 theorem _root_.GlobalTheory.TorusAtAssembly.im_Hf_add_right (x y z : EuclideanSpace ℂ ι) :
     (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf x (y + z)).im = (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf x y).im + (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf x z).im := by
@@ -64,7 +63,6 @@ theorem im_Hf_neg_left (x z : EuclideanSpace ℂ ι) :
     (Hf (-x) z).im = -(Hf x z).im := by
   simp [Hf, Finset.sum_neg_distrib]
 
-open NumberField in
 variable {ι : Type} [Fintype ι] in
 theorem _root_.GlobalTheory.TorusAtAssembly.im_Hf_swap (x y : EuclideanSpace ℂ ι) :
     (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf y x).im = -(_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf x y).im := by
@@ -77,7 +75,6 @@ end Form
 
 variable {E : Type} [Field E] [NumberField E]
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.TorusAtAssembly.act_add {dim : (E →+* ℂ) → ℕ} (α : 𝓞 E) (x y : _root_.ReciprocityTheory.ChartRestriction.G.I2.Vsp dim) :
     _root_.ReciprocityTheory.ChartRestriction.G.I2.act α (x + y) = _root_.ReciprocityTheory.ChartRestriction.G.I2.act α x + _root_.ReciprocityTheory.ChartRestriction.G.I2.act α y := by
@@ -85,7 +82,6 @@ theorem _root_.GlobalTheory.TorusAtAssembly.act_add {dim : (E →+* ℂ) → ℕ
   ext i
   simp [mul_add]
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.TorusAtAssembly.Hf_act_conj [IsCMField E] {dim : (E →+* ℂ) → ℕ} (α β : 𝓞 E)
     (h : (β : E) = _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (α : E))
@@ -101,25 +97,21 @@ theorem _root_.GlobalTheory.TorusAtAssembly.Hf_act_conj [IsCMField E] {dim : (E 
 
 noncomputable def sgnFloor (t : ℝ) : ℤ := ((Int.negOnePow ⌊t⌋ : ℤˣ) : ℤ)
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.TorusAtAssembly.sgnFloor_pm (t : ℝ) :
     _root_.GlobalTheory.TorusAtAssembly.sgnFloor t = 1 ∨ _root_.GlobalTheory.TorusAtAssembly.sgnFloor t = -1 := by
   rcases Int.units_eq_one_or (Int.negOnePow ⌊t⌋) with h | h <;> simp [_root_.GlobalTheory.TorusAtAssembly.sgnFloor, h]
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 private theorem sgnFloor_intCast_eq_negOnePow (k : ℤ) :
     _root_.GlobalTheory.TorusAtAssembly.sgnFloor (k : ℝ) = ((Int.negOnePow k : ℤˣ) : ℤ) := by
   simp [_root_.GlobalTheory.TorusAtAssembly.sgnFloor]
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.TorusAtAssembly.sgnFloor_cos (k : ℤ) :
     (_root_.GlobalTheory.TorusAtAssembly.sgnFloor (k : ℝ) : ℝ) = Real.cos (Real.pi * k) := by
   rw [sgnFloor_intCast_eq_negOnePow, mul_comm, Real.cos_int_mul_pi, Int.cast_negOnePow]
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.TorusAtAssembly.sgnFloor_add (a b c k : ℤ) :
     (_root_.GlobalTheory.TorusAtAssembly.sgnFloor ((a : ℝ) + b + c + 2 * k) : ℝ) =
@@ -138,7 +130,6 @@ variable [IsCMField E] {dim : (E →+* ℂ) → ℕ}
   {b : Module.Basis (Fin (2 * Fintype.card (Idx dim))) ℝ (Vsp dim)} {w w' : 𝓞 E}
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 variable [IsCMField E] {dim : (E →+* ℂ) → ℕ}
   {b : Module.Basis (Fin (2 * Fintype.card (_root_.ReciprocityTheory.ChartRestriction.G.I2.Idx dim))) ℝ (_root_.ReciprocityTheory.ChartRestriction.G.I2.Vsp dim)} {w w' : 𝓞 E} in
@@ -204,7 +195,6 @@ end Build
 end TorusAtAssembly
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.torusAtExists_of_parts :
     (∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r), ∀ x ∈ X.dom, ∃ e : X.Ψ → Fin r → (Fin r → ℂ), (∀ τ a b, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (e τ a) (e τ b) = if a = b then ((_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 a : ℝ) : ℂ) else 0) ∧ ∀ τ (i : ℕ) (hi : i ≤ r), Submodule.span ℂ (Set.range fun a : Fin i => e τ (Fin.castLE hi a)) = Submodule.span ℂ (Set.range fun a : Fin i => _root_.ReciprocityTheory.ChartRestriction.G.FD.col (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ) (Fin.castLE hi a))) → (∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r), ∃ b : Module.Basis (Fin (2 * (X.Ψ.card * r))) ℝ (X.Ψ → Fin r → ℂ), ∀ y, y ∈ Submodule.span ℤ (Set.range b) ↔ ∃ v ∈ X.Λ, (fun τ : X.Ψ => _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ.1 v) = y) → (∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r), ∃ sg : ℝ, (sg = 1 ∨ sg = -1) ∧ ∀ u v : Fin r → E, ∑ τ : X.Ψ, X.c τ * (_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ.1 u) (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb τ.1 v)).im = sg * ((Algebra.trace ℚ E (X.ξ0 * _root_.ReciprocityTheory.ChartRestriction.G.FD.herm X.Gm u v) : ℚ) : ℝ)) → (∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ)), (∀ τ a b, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (e τ a) (e τ b) = if a = b then ((_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn X.p0 a : ℝ) : ℂ) else 0) → ∃ (dim : (E →+* ℂ) → ℕ) (hp : ∀ τ : X.Ψ, dim τ.1 = X.p0) (hn : ∀ τ : X.Ψ, dim (ComplexEmbedding.conjugate τ.1) = r - X.p0) (Φ : (X.Ψ → Fin r → ℂ) ≃ₗ[ℝ] _root_.ReciprocityTheory.ChartRestriction.G.I2.Vsp dim), Fintype.card (_root_.ReciprocityTheory.ChartRestriction.G.I2.Idx dim) = X.Ψ.card * r ∧ (∀ τ, dim τ + dim (ComplexEmbedding.conjugate τ) = r) ∧ (∀ y (τ : X.Ψ) (a : Fin (dim τ.1)), (Φ y) ⟨τ.1, a⟩ = (Real.sqrt (X.c τ) : ℂ) * _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (y τ) (e τ (Fin.castLE (by rw [hp τ]; exact X.p0_le) a))) ∧ (∀ y (τ : X.Ψ) (a : Fin (dim (ComplexEmbedding.conjugate τ.1))), (Φ y) ⟨ComplexEmbedding.conjugate τ.1, a⟩ = (Real.sqrt (X.c τ) : ℂ) * (starRingEnd ℂ) (-_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (y τ) (e τ ⟨X.p0 + a.1, by have h1 : a.1 < r - X.p0 := lt_of_lt_of_eq a.2 (hn τ); have := X.p0_le; omega⟩))) ∧ (∀ (α : 𝓞 E) y, Φ (fun τ => τ.1 (α : E) • y τ) = _root_.ReciprocityTheory.ChartRestriction.G.I2.act α (Φ y)) ∧ ∀ y y', (_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf (Φ y) (Φ y')).im = ∑ τ : X.Ψ, X.c τ * (_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (y τ) (y' τ)).im) → (∀ (E : Type) [Field E] [NumberField E] (X : _root_.ReciprocityTheory.ChartRestriction.G.I2.PT E), ∃ s ∈ X.Sec 1 1, s ≠ 0) → _root_.ReciprocityTheory.ChartRestriction.G.I2.TorusAtExistsStatement := by

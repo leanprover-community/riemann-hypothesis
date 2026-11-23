@@ -65,8 +65,6 @@ theorem _root_.GlobalTheory.Published.LandherrSt.herm_eq (G : Matrix (Fin r) (Fi
   simp only [dotProduct, mulVec, Finset.mul_sum, mul_assoc]
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.Published.LandherrSt.herm_mulVec (G P : Matrix (Fin r) (Fin r) E) (x y : Fin r → E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G (P *ᵥ x) (P *ᵥ y) = _root_.ReciprocityTheory.ChartRestriction.G.FD.herm (Pᵀ * G * P.map _root_.ReciprocityTheory.ChartRestriction.G.FD.cc) x y := by
@@ -80,16 +78,12 @@ theorem _root_.GlobalTheory.Published.LandherrSt.herm_mulVec (G P : Matrix (Fin 
 
 end LandherrSt
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 private lemma cc_inv' {E : Type} [Field E] [NumberField E] [IsCMField E] (z : E) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.cc z⁻¹ = (_root_.ReciprocityTheory.ChartRestriction.G.FD.cc z)⁻¹ := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.cc
   exact map_inv₀ _ _
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 theorem _root_.GlobalTheory.Published.landherrSt_of_landherr (H : _root_.GlobalTheory.Published.Landherr) :
     _root_.GlobalTheory.Published.LandherrSt := by
   intro E _ _ _ r G G' hG hG' hd hd' hsig hdet
@@ -111,8 +105,6 @@ namespace LandherrSt
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 private lemma eq_zero_iff_lt_card_filter_eq_zero_of_monotone {r : ℕ} (g : Fin r → ℕ) (hg : Monotone g) (a : Fin r) :
     g a = 0 ↔ (a : ℕ) < (Finset.univ.filter fun b => g b = 0).card := by
   constructor
@@ -136,8 +128,6 @@ private lemma eq_zero_iff_lt_card_filter_eq_zero_of_monotone {r : ℕ} (g : Fin 
     simp only [Fin.card_Iio] at this
     omega
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 private lemma inv_sqrt_abs_mul_self_mul_inv_sqrt_abs_eq_sign (x : ℝ) (hx : x ≠ 0) :
     (Real.sqrt |x|)⁻¹ * x * (Real.sqrt |x|)⁻¹ = if 0 < x then 1 else -1 := by
   have hpos : 0 < |x| := abs_pos.2 hx
@@ -148,8 +138,6 @@ private lemma inv_sqrt_abs_mul_self_mul_inv_sqrt_abs_eq_sign (x : ℝ) (hx : x �
   · rw [abs_of_pos h]; field_simp
   · rw [abs_of_neg (lt_of_le_of_ne (not_lt.1 h) hx)]; field_simp
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 private lemma exists_conjTranspose_mul_mul_eq_sgn_diagonal {r : ℕ} (A : Matrix (Fin r) (Fin r) ℂ)
     (hA : A.IsHermitian) (hd : A.det ≠ 0) :
     ∃ (p : ℕ) (M : Matrix (Fin r) (Fin r) ℂ),
@@ -188,15 +176,11 @@ private lemma exists_conjTranspose_mul_mul_eq_sgn_diagonal {r : ℕ} (A : Matrix
   · simp only [h, if_false, one_ne_zero, false_iff] at key ⊢
     rw [if_neg key]
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 private lemma sgn_ne_zero_published_landherr (p a : ℕ) : _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn p a ≠ 0 := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn
   split_ifs <;> norm_num
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.Published.LandherrSt.exists_gram_eq_sgn {G : Matrix (Fin r) (Fin r) E}
     (hG : ∀ a b, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (G a b) = G b a) (hd : G.det ≠ 0) (τ : E →+* ℂ) :
@@ -228,16 +212,12 @@ theorem _root_.GlobalTheory.Published.LandherrSt.exists_gram_eq_sgn {G : Matrix 
 
 end LandherrSt
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 private lemma one_map_cc {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} :
     (1 : Matrix (Fin r) (Fin r) E).map _root_.ReciprocityTheory.ChartRestriction.G.FD.cc = 1 := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.cc
   exact Matrix.map_one _ (map_zero _) (map_one _)
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 theorem _root_.GlobalTheory.Published.landherr_of_landherrSt (H : _root_.GlobalTheory.Published.LandherrSt) :
     _root_.GlobalTheory.Published.Landherr := by
   intro E _ _ _ r G G' hG hG' hd hd' hcong hdet

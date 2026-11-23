@@ -320,7 +320,6 @@ end Formalism.MainNotions.GlobalTheoryTheory
 
 namespace Formalism.MainNotions.GlobalTheoryTheory
 
-open Formalism.BasicNotions Formalism.MainNotions
 
 theorem rowsAF_fam {eps : ℝ} (Fm : FamP eps) : StandardLattice.RowsAF Fm :=
     fun C0 => ⟨(44 : ℝ) ^ 4, fun x h3 hx i Δ w hB => JDB.rowsA_of_dataB_fam Fm x h3 hx i C0 Δ w hB⟩

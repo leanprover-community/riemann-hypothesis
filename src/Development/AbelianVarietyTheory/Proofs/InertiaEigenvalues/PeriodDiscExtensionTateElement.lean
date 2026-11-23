@@ -68,7 +68,6 @@ theorem _root_.GlobalTheory.HWL.Cmp.actS_tmul (c : LL) (b : B) (x : V) (y : B) :
     _root_.GlobalTheory.HWL.Cmp.actS V B (c ⊗ₜ[Qp] b) (x ⊗ₜ[Qp] y) = (c • x) ⊗ₜ[Qp] (b * y) := by
   simp [_root_.GlobalTheory.HWL.Cmp.actS, _root_.GlobalTheory.HWL.Cmp.mulR, smul_tmul']
 
-open TensorProduct in
 variable {Qp LL : Type} [Field Qp] [Field LL] [Algebra Qp LL] (V : Type) [AddCommGroup V] [Module LL V]
   [Module Qp V] [IsScalarTower Qp LL V] (B : Type) [CommRing B] [Algebra Qp B] in
 variable {V B} in
@@ -78,7 +77,6 @@ theorem _root_.GlobalTheory.HWL.Cmp.actS_one_tmul (b : B) (m : V ⊗[Qp] B) :
   simp [_root_.GlobalTheory.HWL.Cmp.actS, _root_.GlobalTheory.HWL.Cmp.mulR]
 
 
-open TensorProduct in
 variable {Qp LL : Type} [Field Qp] [Field LL] [Algebra Qp LL] (V : Type) [AddCommGroup V] [Module LL V]
   [Module Qp V] [IsScalarTower Qp LL V] (B : Type) [CommRing B] [Algebra Qp B] in
 variable {V B} in
@@ -116,7 +114,6 @@ def toL (O LL : Type) [CommRing O] [Field LL] [Algebra O LL] (n : ℕ) : LetA O 
 
 def cst {L : Type} [CommRing L] {n : ℕ} (c : ZMod n → L) : LetA L n := fun i => PowerSeries.C (c i)
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -131,7 +128,6 @@ theorem _root_.GlobalTheory.HWL.Cmp.hasSubst_γ (R : _root_.GlobalTheory.HWL.WSe
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_map,
     PowerSeries.coeff_zero_eq_constantCoeff_apply, (R.γ₀_X g).1, map_zero]
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -151,7 +147,6 @@ def γL (R : WSer Γ) (g : Γ.Gam) : LetA LL n →ₐ[LL] LetA LL n :=
 def φL (L : Type) [CommRing L] (n p : ℕ) : LetA L n →ₐ[L] LetA L n :=
   letφ (PowerSeries.substAlgHom (hasSubst_φ L p))
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -165,7 +160,6 @@ theorem _root_.GlobalTheory.HWL.Cmp.γL_apply (R : _root_.GlobalTheory.HWL.WSer 
   funext k
   simp [_root_.GlobalTheory.HWL.Cmp.γL, _root_.Formalism.BasicNotions.letγ, PowerSeries.coe_substAlgHom]
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -180,7 +174,6 @@ theorem _root_.GlobalTheory.HWL.Cmp.φL_apply (L : Type) [CommRing L] (n p : ℕ
   simp [_root_.GlobalTheory.HWL.Cmp.φL, _root_.Formalism.BasicNotions.letφ, PowerSeries.coe_substAlgHom]
 
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -214,7 +207,6 @@ theorem _root_.GlobalTheory.HWL.Cmp.ringHom_ext_of_X {O L : Type} [CommRing O] [
   rw [← sub_eq_zero, ← map_sub, hdiff, PowerSeries.coeff_X_pow_mul']
   simp
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -235,7 +227,6 @@ theorem _root_.GlobalTheory.HWL.Cmp.map_algHom_eq (f : PowerSeries O →ₐ[O] P
   · simp [hX, PowerSeries.coe_substAlgHom, PowerSeries.subst_X hy]
   · simp [hX, h0]
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -249,7 +240,6 @@ private lemma constantCoeff_map_gammaAction_X_eq_zero (R : _root_.GlobalTheory.H
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_map,
     PowerSeries.coeff_zero_eq_constantCoeff_apply, (R.γ₀_X g).1, map_zero]
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -267,7 +257,6 @@ theorem _root_.GlobalTheory.HWL.Cmp.toL_γ (R : _root_.GlobalTheory.HWL.WSer Γ)
   rw [PowerSeries.coe_substAlgHom] at this
   simpa [_root_.GlobalTheory.HWL.Cmp.toL, _root_.Formalism.BasicNotions.letγ] using this
 
-open TensorProduct in
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]

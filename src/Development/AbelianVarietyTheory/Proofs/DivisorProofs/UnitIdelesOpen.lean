@@ -100,9 +100,5 @@ end GlobalTheory.ThK.ConeEuler.UnitsOpen
 
 namespace GlobalTheory.ThK.ConeEuler
 
-open scoped TensorProduct NNReal Matrix ENNReal
-open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK GlobalTheory.ThK.ConeEuler
-open GlobalTheory.Doubling (absE absEv unitFin ideleAt)
 
 end GlobalTheory.ThK.ConeEuler

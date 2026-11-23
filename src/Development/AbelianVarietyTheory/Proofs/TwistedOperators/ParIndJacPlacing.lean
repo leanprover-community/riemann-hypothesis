@@ -93,7 +93,6 @@ theorem _root_.GlobalTheory.SmGL.Placing.smInd_equiv [TopologicalSpace G] [IsTop
     exact congrArg f.1.1 (mul_assoc w x g)
 
 
-open ValuativeRel MeasureTheory in
 variable {F G M V : Type} [Field F] [Group G] [Group M] [AddCommGroup V] [Module F V] in
 lemma _root_.GlobalTheory.SmGL.Placing.twKer_le (π : Representation F G V)
     {N N' : Subgroup G} (w : G) (h : ∀ u ∈ N, w * u * w⁻¹ ∈ N') :
@@ -107,7 +106,6 @@ lemma _root_.GlobalTheory.SmGL.Placing.twKer_le (π : Representation F G V)
   rw [← Module.End.mul_apply (π w⁻¹), ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
 
 
-open ValuativeRel MeasureTheory in
 variable {F G M V : Type} [Field F] [Group G] [Group M] [AddCommGroup V] [Module F V] in
 theorem _root_.GlobalTheory.SmGL.Placing.jacquet_equiv (π : Representation F G V) {N N' : Subgroup G}
     {s s' : M →* G}
@@ -148,7 +146,6 @@ def Moves {ι : Type} (e e' : ι ≃ n) (w : GL n R) : Prop :=
     (g : Matrix n n R) (e x) (e y)
 
 
-open ValuativeRel MeasureTheory in
 variable {R : Type} [CommRing R] {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α]
   [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.SmGL.Placing.exists_moves {ι : Type} (e e' : ι ≃ n) :
@@ -167,7 +164,6 @@ variable {e e' : (Σ a, m a) ≃ n} {w : GL n R}
 
 end Blocks
 
-open ValuativeRel MeasureTheory in
 variable {R : Type} [CommRing R] {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α]
   [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] [Fintype n] [DecidableEq n] in
 private theorem moves_inv_of_moves {ι : Type} {e e' : ι ≃ n} {w : GL n R}
@@ -178,7 +174,6 @@ private theorem moves_inv_of_moves {ι : Type} {e e' : ι ≃ n} {w : GL n R}
   congr 2
   group
 
-open ValuativeRel MeasureTheory in
 variable {R : Type} [CommRing R] {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α]
   [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] [Fintype n] [DecidableEq n] in
 variable {e e' : (Σ a, m a) ≃ n} {w : GL n R} in
@@ -193,7 +188,6 @@ private theorem conj_mem_parab_of_moves (hw : _root_.GlobalTheory.SmGL.Placing.M
   rw [hw]
   exact hg' (by simpa [_root_.GlobalTheory.SmGL.blk] using hij)
 
-open ValuativeRel MeasureTheory in
 variable {R : Type} [CommRing R] {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α]
   [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] [Fintype n] [DecidableEq n] in
 variable {e e' : (Σ a, m a) ≃ n} {w : GL n R} in
@@ -204,7 +198,6 @@ private theorem leviProj_conj_of_moves (hw : _root_.GlobalTheory.SmGL.Placing.Mo
   refine funext fun a => Units.ext (Matrix.ext fun i j => ?_)
   simpa [_root_.GlobalTheory.SmGL.leviProj, _root_.GlobalTheory.SmGL.diagBlock] using hw (p : GL n R) ⟨a, i⟩ ⟨a, j⟩
 
-open ValuativeRel MeasureTheory in
 variable {R : Type} [CommRing R] {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α]
   [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] [Fintype n] [DecidableEq n] in
 variable {e e' : (Σ a, m a) ≃ n} {w : GL n R} in
@@ -217,7 +210,6 @@ private theorem conj_mem_unipRad_of_moves (hw : _root_.GlobalTheory.SmGL.Placing
     (p := ⟨w * u * w⁻¹, conj_mem_parab_of_moves hw hP⟩)).2
     ((leviProj_conj_of_moves hw ⟨u, hP⟩).trans h1)
 
-open ValuativeRel MeasureTheory in
 variable {R : Type} [CommRing R] {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α]
   [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] [Fintype n] [DecidableEq n] in
 variable {e e' : (Σ a, m a) ≃ n} {w : GL n R} in
@@ -231,7 +223,6 @@ private theorem leviEmb_conj_of_moves (hw : _root_.GlobalTheory.SmGL.Placing.Mov
   simp [_root_.GlobalTheory.SmGL.leviEmb, Matrix.reindex_apply]
 
 
-open ValuativeRel MeasureTheory in
 theorem _root_.GlobalTheory.SmGL.Placing.parInd_jac_placing : ∀ (k : Type) [Field k] [ValuativeRel k]
     [TopologicalSpace k] [IsNonarchimedeanLocalField k] (α n : Type) (m : α → Type) [Fintype α]
     [LinearOrder α] [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] [Fintype n] [DecidableEq n]

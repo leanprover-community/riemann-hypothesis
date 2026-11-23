@@ -57,8 +57,6 @@ private lemma transvection_zero' {E : Type} [Field E] {n : ℕ} (σ : E →+* E)
   ext i j
   simp
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 private lemma quasiReflection_eq_transvectionGen_mul_shifted {E : Type} [Field E] [CharZero E] {n : ℕ} (σ : E →+* E)
     (G : Matrix (Fin n) (Fin n) E) (hinv : ∀ a, σ (σ a) = a) (hG : ∀ a b, σ (G a b) = G b a)
     (x z : Fin n → E) (a u : E) (hzz : _root_.GlobalTheory.UTrans.hf σ G z z = 0)
@@ -148,8 +146,6 @@ private lemma quasiReflection_eq_transvectionGen_mul_shifted {E : Type} [Field E
   field_simp
   ring
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 private lemma transvection_isometry {E : Type} [Field E] {n : ℕ} (σ : E →+* E)
     (G : Matrix (Fin n) (Fin n) E) (hinv : ∀ a, σ (σ a) = a) (hG : ∀ a b, σ (G a b) = G b a)
     (w : Fin n → E) (t : E)
@@ -161,8 +157,6 @@ private lemma transvection_isometry {E : Type} [Field E] {n : ℕ} (σ : E →+*
   rw [_root_.GlobalTheory.UTrans.Model.hf_conj σ G hinv hG v' w]
   linear_combination (_root_.GlobalTheory.UTrans.hf σ G v w * _root_.GlobalTheory.UTrans.hf σ G w v') * ht
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 private lemma isometry_mul_transvection {E : Type} [Field E] {n : ℕ} (σ : E →+* E)
     (G : Matrix (Fin n) (Fin n) E) (g : Matrix (Fin n) (Fin n) E)
     (hg : ∀ v w, _root_.GlobalTheory.UTrans.hf σ G (g.mulVec v) (g.mulVec w) =
@@ -172,8 +166,6 @@ private lemma isometry_mul_transvection {E : Type} [Field E] {n : ℕ} (σ : E �
   simp only [Matrix.toLin'_apply, ← Matrix.mulVec_mulVec, _root_.GlobalTheory.UTrans.Model.tv_mulVec, hg,
     Matrix.mulVec_add, Matrix.mulVec_smul]
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 private lemma transvection_mul_isotropic {E : Type} [Field E] {n : ℕ} (σ : E →+* E)
     (G : Matrix (Fin n) (Fin n) E) (w : Fin n → E) (hw : _root_.GlobalTheory.UTrans.hf σ G w w = 0)
     (s t : E) : _root_.GlobalTheory.UTrans.tv σ G w s * _root_.GlobalTheory.UTrans.tv σ G w t =
@@ -186,8 +178,6 @@ private lemma transvection_mul_isotropic {E : Type} [Field E] {n : ℕ} (σ : E 
   ring
 
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 variable {R : Type} [CommRing R] {n : ℕ} (σ : R →+* R) (G : Matrix (Fin n) (Fin n) R) in
 theorem _root_.GlobalTheory.UTrans.PlaneRefl.quasiRefl_eq_mul_of_plane : ∀ (E : Type) [Field E] [CharZero E]
     (n : ℕ) (σ : E →+* E) (G : Matrix (Fin n) (Fin n) E), _root_.GlobalTheory.UTrans.IsHerm σ G →

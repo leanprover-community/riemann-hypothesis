@@ -61,7 +61,6 @@ private lemma gcdSum_inj :
   subst hab
   rfl
 
-open UpperTheory.V.Af.Rs in
 private lemma gcdSum_surj (v : Fin 2 → ℤ) (hv : v ≠ 0) :
     v ∈ Set.range (fun p : ℕ × Cop => (((p.1 + 1 : ℕ) : ℤ)) • p.2.1) := by
   set g := (v 0).gcd (v 1) with hg

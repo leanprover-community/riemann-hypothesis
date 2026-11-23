@@ -269,7 +269,6 @@ theorem ell_mul (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z)
 
 end WeylGroupFacts
 
-open WeylGroupFacts in
 theorem length_additive_holds : EllAdd := by
   unfold EllAdd
   intro k r z hz g hg h hh
@@ -463,7 +462,6 @@ theorem ell_conj (z : Fin (2 * r + k + 1) → ℂ)
 
 end WeylGroupFacts
 
-open WeylGroupFacts in
 theorem unitary_weyl_normal_holds : UWNormal := by
   unfold UWNormal
   intro k r z hz h hh g hg
@@ -484,7 +482,6 @@ theorem unitary_weyl_normal_holds : UWNormal := by
   exact ⟨(nset_iff _).2 ⟨uh_mul (uh_mul hU hg'.1) hUi,
     conj_col hb hb' (Matrix.mul_nonsing_inv h hd) hg'.2⟩, ell_conj z hb hb' hzi⟩
 
-open WeylGroupFacts in
 theorem symmetric_group_holds : SGroup := by
   unfold SGroup
   intro k r z hz

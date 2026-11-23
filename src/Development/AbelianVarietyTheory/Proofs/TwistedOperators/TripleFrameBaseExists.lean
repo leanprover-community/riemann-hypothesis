@@ -381,7 +381,6 @@ end GlobalTheory.TripleDarboux
 
 namespace GlobalTheory.TripleDarboux
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model SplitsFully Chars HasExp)
 
 end GlobalTheory.TripleDarboux
 

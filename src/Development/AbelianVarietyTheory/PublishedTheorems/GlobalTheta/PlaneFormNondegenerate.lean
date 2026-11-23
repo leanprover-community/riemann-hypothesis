@@ -737,7 +737,6 @@ theorem StoneVonNeumann_holds : StoneVonNeumann := by
 
 namespace SvN
 
-open ValuativeRel
 
 end SvN
 

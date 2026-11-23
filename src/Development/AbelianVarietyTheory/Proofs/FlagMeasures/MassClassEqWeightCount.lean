@@ -148,7 +148,6 @@ end GlobalTheory.HL.LocGenMass
 
 namespace GlobalTheory.HL.LocGenMass
 
-open GlobalTheory.HL.PairingClass
 
 theorem act_one' {E : Type} [CommRing E] {V : Type} [AddCommGroup V] [Module E V] {n : ℕ}
     (g : Fin n → V) : act g (1 : Matrix (Fin n) (Fin n) E) = g := by

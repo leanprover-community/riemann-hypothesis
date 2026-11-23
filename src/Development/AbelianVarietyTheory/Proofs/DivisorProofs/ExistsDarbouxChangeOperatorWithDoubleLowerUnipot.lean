@@ -114,7 +114,6 @@ end GlobalTheory.TowU.UnipOp
 
 namespace GlobalTheory.TowU.UnipOp
 
-open GlobalTheory.AdelicSvNQuad GlobalTheory.AdelicSvN
 
 variable {F : Type} [Field F] [NumberField F]
 

@@ -52,7 +52,6 @@ private theorem linear_part_comp_single {R : Type} [CommRing R] {d : ℕ} (φ ψ
   rw [Matrix.mul_apply]
   exact h
 
-open ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.EigA in
 private theorem linear_part_formal_add {R : Type} [CommRing R] {d : ℕ} (F : FGLaw R d) (φ ψ : Pt R 1 d)
     (hφ : ∀ i, MvPowerSeries.constantCoeff (φ i) = 0)
     (hψ : ∀ i, MvPowerSeries.constantCoeff (ψ i) = 0) : lin (F.add φ ψ) = lin φ + lin ψ := by
@@ -64,7 +63,6 @@ private theorem linear_part_formal_add {R : Type} [CommRing R] {d : ℕ} (F : FG
     if_true] at h
   exact h.trans (congrArg₂ (· + ·) (_root_.one_mul _) (_root_.one_mul _))
 
-open ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.EigA in
 private theorem linear_part_zero_point {R : Type} [CommRing R] {d : ℕ} : lin (pt R (n := 1) d 0) = 1 := by
   ext i j
   change MvPowerSeries.coeff _ (MvPowerSeries.X ((0 : Fin 1), i) : PS R 1 d) = _

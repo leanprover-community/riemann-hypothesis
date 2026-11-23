@@ -62,8 +62,6 @@ private theorem exists_unit_transfQuot_out_eq_smul {F : Type} [Field F] [NumberF
   exact ⟨ε, hε.symm⟩
 
 set_option autoImplicit false in
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private theorem gTerm_eq_of_linear_change {F : Type} [Field F] [NumberField F]
     {k : ℕ} (σ : ℂ) {b a b' a' lam : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℂ}
     (T : (Fin 2 → F) ≃ₗ[F] (Fin 2 → F))
@@ -78,8 +76,6 @@ private theorem gTerm_eq_of_linear_change {F : Type} [Field F] [NumberField F]
   ring
 
 set_option autoImplicit false in
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 private theorem isGVal_of_linear_change {F : Type} [Field F] [NumberField F]
     [IsTotallyReal F] {k : ℕ} (hk : Even k) {L L' : _root_.GlobalTheory.HilbFam.Lat F}
     (T : (Fin 2 → F) ≃ₗ[F] (Fin 2 → F)) {b a b' a' lam : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℂ}
@@ -144,8 +140,6 @@ private theorem isGVal_of_linear_change {F : Type} [Field F] [NumberField F]
 
 
 set_option autoImplicit false in
-open NumberField UpperHalfPlane in
-open scoped Classical MatrixGroups nonZeroDivisors in
 theorem _root_.GlobalTheory.HilbFam.gval_linear_change : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (L L' : _root_.GlobalTheory.HilbFam.Lat F) (T : (Fin 2 → F) ≃ₗ[F] (Fin 2 → F)) (b a b' a' lam : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℂ), Even k → (∀ x, x ∈ L ↔ T x ∈ L') → (∀ i, lam i ≠ 0) → (∀ x i, _root_.GlobalTheory.HilbFam.coord b a x i = lam i * _root_.GlobalTheory.HilbFam.coord b' a' (T x) i) → _root_.GlobalTheory.HilbFam.gval k L b a = (∏ i, lam i)⁻¹ ^ k * _root_.GlobalTheory.HilbFam.gval k L' b' a' := by
   intro F _ _ _ k L L' T b a b' a' lam hk hL hlam hc
   by_cases h : ∃ G, _root_.GlobalTheory.HilbFam.IsGVal k L' b' a' G

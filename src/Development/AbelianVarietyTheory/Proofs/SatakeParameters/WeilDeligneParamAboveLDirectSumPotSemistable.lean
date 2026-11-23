@@ -145,7 +145,6 @@ end General
 end GlobalTheory.Pst.SumParam
 
 namespace GlobalTheory.Pst.SumParam
-open GlobalTheory.Pst GlobalTheory.WeilDeligne Module
 
 theorem wdPst_enlarge {l : ℕ} [Fact l.Prime] (P : LocPrime l) (ι : Om l ≃+* ℂ) {E Ω : Type} [Field E]
     [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {A : ValuationSubring Ω}

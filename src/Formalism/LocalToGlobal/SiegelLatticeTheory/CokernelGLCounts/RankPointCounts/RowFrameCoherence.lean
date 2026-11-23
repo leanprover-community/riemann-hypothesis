@@ -147,7 +147,6 @@ end Formalism.L2.SG.Pf.RowForm
 
 namespace Formalism.L2.SG.Pf
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge Formalism.L2.SG.TypedSets
   Formalism.L2.SG.MassDataConc Formalism.L2.SG.MassDataForm Formalism.L2.SG.Pf.RowForm MeasureTheory
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar

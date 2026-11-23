@@ -83,7 +83,6 @@ theorem pullRatio_chartMap (k : Fin (m + 1)) (j : Bk n k) :
   rw [e]
   exact congrArg (Scheme.ΓSpecIso (.of (CRing c))).inv.hom (chartLift_ratio (c k) _ (coordVal_self c k) j)
 
-open GlobalTheory.QCoh.Qcqs in
 theorem pullRatio_comp_chartMap {Z : Scheme.{0}} (w : Z ⟶ CSpec c) (k : Fin (m + 1))
     (h : ⊤ ≤ (w ≫ chartMap c k) ⁻¹ᵁ chart ℤ (n k) (c k)) (j : Bk n k) :
     pullRatio (w ≫ chartMap c k) ⊤ (c k) h j = (baseRingHom w ⊤).hom (coordVal c k j) := by
@@ -140,12 +139,10 @@ def toC : (mchart c).toScheme ⟶ CSpec c :=
   (mchart c).toScheme.toSpecΓ ≫
     Spec.map (CommRingCat.ofHom (rho c) ≫ (mchart c).ι.appLE (mchart c) ⊤ (mchart c).ι_preimage_self.ge)
 
-open GlobalTheory.QCoh.Qcqs in
 theorem baseRingHom_toC : baseRingHom (toC c) ⊤ =
     CommRingCat.ofHom (rho c) ≫ (mchart c).ι.appLE (mchart c) ⊤ (mchart c).ι_preimage_self.ge :=
   baseRingHom_toSpecΓ _
 
-open GlobalTheory.QCoh.Qcqs in
 theorem toC_tau : toC c ≫ tau c = (mchart c).ι := by
   refine GroundTheory.Arith.SchemeCoh.ProjSpace.hom_ext m n _ _ fun k => ?_
   have e : (toC c ≫ tau c) ≫ prB n k = toC c ≫ chartMap c k := by rw [Category.assoc, tau_pr]
@@ -161,7 +158,6 @@ theorem toC_tau : toC c ≫ tau c = (mchart c).ι := by
 end Chart
 
 
-open GlobalTheory.QCoh.Qcqs in
 theorem affine_surj (c : ∀ k, Bk n k) : IsAffineOpen (mchart c) ∧ Function.Surjective (dehomog c) := by
   have hr : Set.range (tau c) ⊆ Set.range (mchart c).ι := by
     rintro _ ⟨x, rfl⟩

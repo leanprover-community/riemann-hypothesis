@@ -133,7 +133,6 @@ end
 
 section
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Formalism.MainNotions.N ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws GlobalTheory.GalOfCusp
 
 private theorem dvd_norm {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F)) {p : ℕ} (hp : p.Prime)
     (h : (p : 𝓞 F) ∈ w.asIdeal) : p ∣ Ideal.absNorm w.asIdeal := by

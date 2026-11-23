@@ -184,7 +184,6 @@ end Core
 end GlobalTheory.TypeAsm.InjProof
 
 namespace GlobalTheory.TypeAsm.InjProof
-open Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Obj
@@ -233,7 +232,6 @@ end Obj
 end GlobalTheory.TypeAsm.InjProof
 
 namespace GlobalTheory.TypeAsm.InjProof
-open Formalism.HermitianLatticeCounting.S6 GlobalTheory.HermLat
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem injC : InjC := by

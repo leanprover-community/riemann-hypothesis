@@ -189,7 +189,6 @@ end PositivityTheory.SecR.Hladr
 
 namespace PositivityTheory.SecR.Hladr
 
-open PositivityTheory.HodgeLocalCharacter.HLC
 
 theorem field_of_ltPeriods (HP : LTPeriods) : GlobalTheory.Published.HeckeLAdicCharacterDeRham := by
   intro E Ω _ _ _ _ _ l _ P AI hT ι art hart χ n μ hχ hμ hL w A hA O _ _ _ Bw hI

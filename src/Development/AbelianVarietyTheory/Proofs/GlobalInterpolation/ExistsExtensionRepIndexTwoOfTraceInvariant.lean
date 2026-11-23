@@ -202,7 +202,6 @@ private theorem exists_dvd_sq_sub_X_of_eval_zero_ne_zero {k : Type} [Field k] [I
       linear_combination he, hw, ← hfg]
     ring
 
-open Polynomial in
 private theorem exists_sqrt_commute_of_isUnit_det {k : Type} [Field k] [IsAlgClosed k] [CharZero k] {n : ℕ}
     (M : Matrix (Fin n) (Fin n) k) (hM : IsUnit M.det) :
     ∃ D : Matrix (Fin n) (Fin n) k, D * D = M ∧ ∀ Y, Commute M Y → Commute D Y := by

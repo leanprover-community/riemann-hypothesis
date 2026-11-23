@@ -68,7 +68,6 @@ private theorem exists_valuation_natCast_eq_exp_neg_and_dvd {F : Type} [Field F]
   · rw [← HeightOneSpectrum.intValuation_le_pow_iff_dvd, Int.toNat_of_nonneg (by omega), neg_neg,
       WithZero.exp_log hne]
 
-open NumberField IsDedekindDomain in
 private theorem powSub_eq_comap_pows_units_map {F L : Type} [Field F] [Field L] {p : ℕ} (hp : 0 < p)
     (φ : F →+* L) :
     _root_.GlobalTheory.CNorm.powSub p φ =
@@ -89,7 +88,6 @@ private theorem powSub_eq_comap_pows_units_map {F L : Type} [Field F] [Field L] 
     have := congrArg Units.val hy
     simpa using this
 
-open NumberField IsDedekindDomain in
 private theorem powSub_index_ne_zero_and_le_pIdx {F L : Type} [Field F] [Field L] {p : ℕ} (hp : 0 < p)
     (φ : F →+* L) (h : _root_.GlobalTheory.CNorm.pIdx p (⊤ : Subgroup Lˣ) ≠ 0) :
     (_root_.GlobalTheory.CNorm.powSub p φ).index ≠ 0 ∧
@@ -103,7 +101,6 @@ private theorem powSub_index_ne_zero_and_le_pIdx {F L : Type} [Field F] [Field L
     (Units.map φ.toMonoidHom).range
   exact ⟨ne_zero_of_dvd_ne_zero h hd, Nat.le_of_dvd (Nat.pos_of_ne_zero h) hd⟩
 
-open NumberField IsDedekindDomain in
 private theorem pTor_units_le {L : Type} [Field L] {p : ℕ} (hp : 0 < p) :
     _root_.GlobalTheory.CNorm.pTor p (⊤ : Subgroup Lˣ) ≤ p := by
   unfold _root_.GlobalTheory.CNorm.pTor
@@ -120,7 +117,6 @@ private theorem pTor_units_le {L : Type} [Field L] {p : ℕ} (hp : 0 < p) :
     _ ≤ (Polynomial.nthRoots p (1 : L)).card := Multiset.toFinset_card_le _
     _ ≤ p := Polynomial.card_nthRoots p 1
 
-open NumberField IsDedekindDomain in
 private theorem prod_absNorm_pow_le_pow_finrank {F : Type} [Field F] [NumberField F]
     (S : Finset (HeightOneSpectrum (𝓞 F))) {p : ℕ} (hp : 0 < p) (e : HeightOneSpectrum (𝓞 F) → ℕ)
     (he : ∀ v ∈ S, v.asIdeal ^ e v ∣ Ideal.span {(p : 𝓞 F)}) :

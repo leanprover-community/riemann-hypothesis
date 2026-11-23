@@ -95,8 +95,6 @@ theorem _root_.GlobalTheory.QNorm.isSquare_of_isSquare_residue_odd (F : Type) [F
   ring
 
 
-open NumberField IsDedekindDomain IsLocalRing in
-open scoped WithZero in
 theorem _root_.GlobalTheory.QNorm.isSquare_mul_of_nonsquare_units : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)), Valued.v (2 : v.adicCompletion F) = 1 → ∀ x y : v.adicCompletion F, Valued.v x = 1 → Valued.v y = 1 → ¬ IsSquare x → ¬ IsSquare y → IsSquare (x * y) := by
   intro F _ _ v h2 x y hx hy hnx hny
   classical

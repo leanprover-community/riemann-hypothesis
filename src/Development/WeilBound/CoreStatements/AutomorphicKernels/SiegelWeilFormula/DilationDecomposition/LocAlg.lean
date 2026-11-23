@@ -107,25 +107,21 @@ theorem actZ_mul_K (y k : GR n) (hk : InK (mR k)) : actZ (y * k) (Complex.I • 
     match_scalars <;> simp [Complex.I_sq] <;> ring
   rw [hN, hDn, Matrix.mul_inv_rev, Matrix.mul_assoc, ← Matrix.mul_assoc M, hMM, Matrix.one_mul]
 
-open PositivityTheory.Rg.Sw.Glob.GaussH in
 theorem gram_true_all {m : ℕ} (u : Fin m → Fin n → ℂ) :
     PositivityTheory.Rg.Sw.Glob.gramB (fun _ : Fin m => true) true u = (Matrix.of u)ᴴ * Matrix.of u := by
   ext i j
   simp [PositivityTheory.Rg.Sw.Glob.gramB, PositivityTheory.Rg.Sw.Qb, PositivityTheory.Rg.Sw.evX, Matrix.mul_apply, Matrix.conjTranspose_apply]
 
-open PositivityTheory.Rg.Sw.Glob.GaussH in
 theorem gram_false_all {m : ℕ} (u : Fin m → Fin n → ℂ) :
     PositivityTheory.Rg.Sw.Glob.gramB (fun _ : Fin m => true) false u = 0 := by
   ext i j
   simp [PositivityTheory.Rg.Sw.Glob.gramB, PositivityTheory.Rg.Sw.Qb, PositivityTheory.Rg.Sw.evX]
 
-open PositivityTheory.Rg.Sw.Glob.GaussH in
 theorem gramF_true {m : ℕ} (u : Fin m → Fin n → ℂ) :
     PositivityTheory.Rg.Sw.Glob.gramB (fun _ : Fin m => false) true u = 0 := by
   ext i j
   simp [PositivityTheory.Rg.Sw.Glob.gramB, PositivityTheory.Rg.Sw.Qb, PositivityTheory.Rg.Sw.evX]
 
-open PositivityTheory.Rg.Sw.Glob.GaussH in
 theorem gramF_false {m : ℕ} (u : Fin m → Fin n → ℂ) :
     PositivityTheory.Rg.Sw.Glob.gramB (fun _ : Fin m => false) false u = (Matrix.of u)ᴴ * Matrix.of u := by
   ext i j
@@ -149,7 +145,6 @@ theorem trace_aa {m : ℕ} (u : Fin m → Fin n → ℂ) (a : Matrix (Fin n) (Fi
   ring
 
 
-open PositivityTheory.Rg.Sw.Glob.GaussH in
 theorem gzf_eval {m : ℕ} (s : ℤˣ) (b a : Matrix (Fin n) (Fin n) ℂ) (hb : bᴴ = b) (u : Fin m → Fin n → ℂ) :
     gZf (fun _ : Fin m => true) (2 * Real.pi * ((s : ℤ) : ℝ)) (2 * Real.pi) (b + Complex.I • (a * aᴴ)) u =
       Complex.exp (2 * Real.pi * Complex.I * ((s : ℤ) : ℂ) * Matrix.trace (b * ((Matrix.of u)ᴴ * Matrix.of u))) *

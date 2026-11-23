@@ -53,7 +53,6 @@ theorem _root_.GlobalTheory.isProjOver_of_isProper_of_isImmersion {A : Type} [Co
   haveI : IsProper (e ≫ i) := IsProper.of_comp (e ≫ i) (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.PSpace.str A N)
   exact ⟨N, e ≫ i, .of_isPreimmersion _ (e ≫ i).isClosedMap.isClosed_range, by simp⟩
 
-open AlgebraicGeometry CategoryTheory Limits in
 private theorem isPullback_fst_comp_map {X Y Z W : Scheme.{0}} (f : X ⟶ Y) (s : Y ⟶ Z)
     (t : W ⟶ Z) :
     IsPullback (pullback.fst (f ≫ s) t)
@@ -66,7 +65,6 @@ private theorem isPullback_fst_comp_map {X Y Z W : Scheme.{0}} (f : X ⟶ Y) (s 
   rw [h₂]
   exact IsPullback.of_hasPullback (f ≫ s) t
 
-open AlgebraicGeometry CategoryTheory Limits in
 private theorem isImmersion_pullback_lift_of_isPullback {X Y Z W P : Scheme.{0}} (f : X ⟶ Y)
     (s : Y ⟶ Z) (t : W ⟶ Z) (y : W ⟶ Y) (hy : y ≫ s = t) (φ : P ⟶ X) (b : P ⟶ W)
     (h : IsPullback φ b f y) :
@@ -96,7 +94,6 @@ private theorem isImmersion_pullback_lift_of_isPullback {X Y Z W P : Scheme.{0}}
   exact MorphismProperty.of_isPullback (P := @IsImmersion) hleft.flip ‹IsImmersion Γ›
 
 
-open AlgebraicGeometry CategoryTheory Limits in
 theorem _root_.GlobalTheory.isProjOver_of_isPullback_of_isProper_of_isQProjOver :
     ∀ (R A : Type) [CommRing R] [CommRing A] (S : Scheme.{0}) (s : S ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp R) (G : Over S)
       (y : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp A ⟶ S) (B : Over (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp A)) (φ : B.left ⟶ G.left), IsProper G.hom →

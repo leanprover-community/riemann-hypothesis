@@ -408,7 +408,6 @@ end Dual
 
 section Quadratic
 
-open scoped InnerProductSpace
 
 variable {V : Type*} [AddCommGroup V] [Module ℝ V]
 

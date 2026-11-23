@@ -79,8 +79,6 @@ private lemma finite_setOf_algebraMap_mem_of_isCompact (F : Type) [Field F] [Num
   · simpa using ht hc
 
 
-open NumberField Topology in
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.RegSSLattice.tensorLattice : _root_.GlobalTheory.RegSS.TensorLattice := by
   unfold _root_.GlobalTheory.RegSS.TensorLattice
   intro F B _ _ _ _ _

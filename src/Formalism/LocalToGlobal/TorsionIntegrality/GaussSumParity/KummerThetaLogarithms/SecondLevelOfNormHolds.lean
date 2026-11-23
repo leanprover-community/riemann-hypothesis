@@ -318,7 +318,6 @@ theorem second_level_of_norm_holds : SecondLevelOfNorm := by
     exact hsym
 
 
-open BrC in
 theorem norm_units_alt : NormUnits := by
   intro K _ _ _ l σ hU ph hph S hS α hα
   have hl : 2 ≤ l := by have := hU.2.1; omega

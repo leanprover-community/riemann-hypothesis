@@ -274,7 +274,6 @@ section Contraction
 
 variable {ι : Type} [LinearOrder ι] {K : Type u} [Field K]
 
-open GlobalTheory.Cube
 
 theorem exists_comp_comp_eq_of_field {V W : Type*} [AddCommGroup V] [Module K V] [AddCommGroup W]
     [Module K W] (f : V →ₗ[K] W) : ∃ g : W →ₗ[K] V, ∀ x, f (g (f x)) = f x := by

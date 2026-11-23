@@ -186,7 +186,6 @@ end GlobalTheory.MBLow.JetBCGen
 
 namespace GlobalTheory.MBLow.JetBCGen
 
-open TrivSqZeroExt
 
 theorem one_add_inr_pow {K : Type} [Field K] (e : K) (M : ℕ) :
     ((1 : DualNumber K) + inr e) ^ M = 1 + inr ((M : K) * e) := by

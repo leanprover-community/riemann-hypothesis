@@ -69,8 +69,6 @@ private lemma exists_compact_exhaustion_with_bumps {V : Type} [MetricSpace V] [P
       (inter_subset_left.trans (hFG n))
   exact ⟨K, f, hKm, hKU, fun n => ⟨hKc n, hf1 n, hfc n, hfG n, hf01 n⟩⟩
 
-open MeasureTheory Set Topology in
-open scoped ENNReal in
 private lemma measure_le_lintegral_of_eqOn_one {V : Type} [MeasurableSpace V] (μ : Measure V)
     {K : Set V} (hK : MeasurableSet K) {g : V → ℝ} (hg : EqOn g 1 K) :
     μ K ≤ ∫⁻ v, ENNReal.ofReal (g v) ∂μ := by
@@ -80,8 +78,6 @@ private lemma measure_le_lintegral_of_eqOn_one {V : Type} [MeasurableSpace V] (�
   · simp [indicator_of_mem hv, hg hv]
   · simp [indicator_of_notMem hv]
 
-open MeasureTheory Set Topology in
-open scoped ENNReal in
 private lemma measure_isOpen_le_of_lintegral_le {V : Type} [MetricSpace V] [ProperSpace V]
     [MeasurableSpace V] [BorelSpace V] (m m' : Measure V) {G : Set V} (hG : IsOpen G)
     (h : ∀ φ : V → ℝ, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ G → (∀ v, 0 ≤ φ v) →
@@ -105,8 +101,6 @@ private lemma measure_isOpen_le_of_lintegral_le {V : Type} [MetricSpace V] [Prop
     _ = m' G := lintegral_indicator_one hG.measurableSet
 
 
-open MeasureTheory Set Topology in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.measure_eq_of_lintegral_eq_on_compactSupport {V : Type} [MetricSpace V] [ProperSpace V]
     [MeasurableSpace V] [BorelSpace V] (m m' : Measure V) (O : Set V) (hO : IsOpen O)
     (hm : m Oᶜ = 0) (hm' : m' Oᶜ = 0)
@@ -151,8 +145,6 @@ theorem _root_.GlobalTheory.measure_eq_of_lintegral_eq_on_compactSupport {V : Ty
     · simpa using hopen _ hWo hWO
 
 
-open MeasureTheory Set Topology in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.IsFibreFamily_lintegral_preimage {V : Type} [TopologicalSpace V]
     [MeasurableSpace V] [BorelSpace V] {μ : Measure V} {f : V → ℝ} {O U : Set V} {B : Set ℝ}
     {fib : ℝ → Measure V}
@@ -182,8 +174,6 @@ theorem _root_.GlobalTheory.IsFibreFamily_lintegral_preimage {V : Type} [Topolog
     exact (lintegral_congr_ae (hae.mono fun v hv => by simp [indicator, hv, hb])).trans
       lintegral_zero
 
-open MeasureTheory Set Topology in
-open scoped ENNReal in
 private lemma le_of_setLIntegral_eq_near {g g' : ℝ → ℝ} {β : ℝ} {W : Set ℝ} (hW : W ∈ 𝓝 β)
     (hg : ContinuousAt g β) (hg' : ContinuousAt g' β) (hg0 : 0 ≤ g' β)
     (h : ∀ S ⊆ W, MeasurableSet S →
@@ -215,8 +205,6 @@ private lemma le_of_setLIntegral_eq_near {g g' : ℝ → ℝ} {β : ℝ} {W : Se
   exact absurd key' (not_le.2 h₃)
 
 
-open MeasureTheory Set Topology in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.IsFibreFamily_eq_at {V : Type} [NormedAddCommGroup V]
     [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
     (μ : Measure V) (f : V → ℝ)

@@ -263,7 +263,6 @@ theorem evI_half_trace (S : mixedEmbedding.mixedSpace F) :
   rw [map_add (f := _)] at h3
   linarith
 
-open scoped Classical in
 theorem heisLine_tens (M : Model σ X W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (f : SInf F (Fin n × Fin d))
     {r : (Fin n × Fin d → AF F) → ℂ} (hr : ∀ x z, At (evI F) z → r (x + z) = r x) (t : ℝ) :
@@ -293,7 +292,6 @@ section Core
 variable {E : Type} [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 variable {n d : ℕ} {Y : Spc F E n} {W : Spc F E d}
 
-open scoped Classical in
 theorem actsD_dop (M : Model σ Y W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) (f : SInf F (Fin n × Fin d)) :
     ActsD (evI F) (M.heisLine ψ u) f (dop (aOf M u) (lOf M u) f) := by
@@ -306,7 +304,6 @@ theorem actsD_dop (M : Model σ Y W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
   rw [e]
   exact (hasDerivAt_hl _ _ f _).mul_const (r x)
 
-open scoped Classical in
 theorem actsD_unique (M : Model σ Y W) {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ)
     {u : Matrix (Fin n) (Fin d) (AE F E)} (hu : At (evI F) u) {f f₁ : SInf F (Fin n × Fin d)}
     (h : ActsD (evI F) (M.heisLine ψ u) f f₁) : f₁ = dop (aOf M u) (lOf M u) f := by

@@ -92,7 +92,6 @@ end GlobalTheory.AlmostEt
 
 noncomputable section
 namespace GlobalTheory.AlmostEt.LevDer
-open Polynomial TrivSqZeroExt
 
 section Gen2
 variable {A S M : Type} [CommRing A] [CommRing S] [Algebra A S] [AddCommGroup M] [Module S M]
@@ -154,7 +153,6 @@ end GlobalTheory.AlmostEt
 
 noncomputable section
 namespace GlobalTheory.AlmostEt.LevDer
-open Polynomial TrivSqZeroExt
 
 variable {p : ℕ} [Fact p.Prime] {Ω : Type} [Field Ω] [Algebra (O0 p) Ω]
 
@@ -234,7 +232,6 @@ end LevDer
 end GlobalTheory.AlmostEt
 
 namespace GlobalTheory.AlmostEt.LevDer
-open Polynomial TrivSqZeroExt
 
 theorem exists_derOn_levelAlg : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω → ∀ (T : Tower p Ω) (n : ℕ), 1 ≤ n → ∀ (M : Type) [AddCommGroup M] [Module (integralClosure (O0 p) Ω) M] (μ ν : M), (Polynomial.aeval (zS T n) (Polynomial.derivative (Polynomial.cyclotomic (p ^ n) (O0 p)))) • μ = 0 → ((p : (integralClosure (O0 p) Ω)) ^ n * qS T n ^ (p ^ n - 1)) • ν = 0 → ∃ D : (integralClosure (O0 p) Ω) → M, IsDerOn (levelAlg T n) D ∧ D (zS T n) = μ ∧ D (qS T n) = ν := by
   intro p _ Ω _ _ hc T n hn M _ _ μ ν hμ hν

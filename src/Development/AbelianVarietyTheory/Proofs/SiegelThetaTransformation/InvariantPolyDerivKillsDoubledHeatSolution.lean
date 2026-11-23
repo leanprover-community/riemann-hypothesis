@@ -172,7 +172,6 @@ end General
 
 section Letters
 
-open MvPolynomial
 
 variable {T J : Type} [Fintype T] [Fintype J] {n r g p q : ℕ}
 
@@ -295,7 +294,6 @@ end Letters
 
 section Core
 
-open MvPolynomial
 
 variable {T J : Type} [Fintype T] [DecidableEq T] [Fintype J] {n r g p q : ℕ}
 

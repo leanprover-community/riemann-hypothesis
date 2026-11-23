@@ -530,14 +530,12 @@ theorem prod_uSG_dite {α M : Type} [CommMonoid M] {A B : Finset α} (hd : ∀ P
 
 end ProdU
 
-section InvQ
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) {u : Pr.Word}
 
 
-end InvQ
 
 section Cp2Q
 
@@ -589,19 +587,15 @@ end Close
 
 namespace Test
 
-section T1
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)} {K : Type} [Field K]
 
-end T1
 
-section T2
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu))
 
-end T2
 
 end Test
 

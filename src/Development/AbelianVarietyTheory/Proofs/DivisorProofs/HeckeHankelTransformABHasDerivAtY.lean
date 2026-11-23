@@ -104,7 +104,6 @@ end GlobalTheory.HeckeTwoDY
 
 noncomputable section
 namespace GlobalTheory.HeckeTwoDY
-open MeasureTheory
 
 theorem hasDerivAt_wt (t y : ℝ) : HasDerivAt (fun y' : ℝ => wt t y') I y := by
   unfold wt
@@ -159,7 +158,6 @@ end GlobalTheory.HeckeTwoDY
 
 noncomputable section
 namespace GlobalTheory.HeckeTwoDY
-open MeasureTheory
 
 theorem integrable_bd {k c : ℝ} (hk : 1 < k) (hc : c ≠ 0) :
     Integrable (fun t : ℝ => Real.exp (-(k / 2) * Real.log (t ^ 2 + c ^ 2))) := by

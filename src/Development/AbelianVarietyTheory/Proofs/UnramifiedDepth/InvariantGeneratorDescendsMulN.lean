@@ -52,7 +52,6 @@ private theorem invGenDescent_gs_appLE {Y Y' : Scheme.{0}} (τ : Y' ⟶ Y) (W : 
   exact e
 
 
-open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor in
 private theorem invariant_generator_descent {X Y Y' : Scheme.{0}} (m : Y' ⟶ Y) {T : Type} (τ : T → (Y' ⟶ Y'))
     (hτ : ∀ t, τ t ≫ m = m)
     (H : ∀ (V : Y.Opens) (a : Γ(Y', m ⁻¹ᵁ V)),

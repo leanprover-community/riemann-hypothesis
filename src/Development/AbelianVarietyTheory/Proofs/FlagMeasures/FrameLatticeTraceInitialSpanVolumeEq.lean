@@ -73,8 +73,6 @@ private theorem unitriangular_sum_castLE_eq {E V : Type} [CommRing E] [AddCommGr
   have hiJ : ¬ (i : ℕ) < J := fun h => hi (Finset.mem_map.2 ⟨⟨i, h⟩, Finset.mem_univ _, rfl⟩)
   rw [hs i _ (by rw [Fin.lt_def]; simp; omega), zero_smul]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem span_image_frameScaledDifferenceFamily_eq_lemma_3 {E V : Type} [CommRing E] [AddCommGroup V]
     [Module E V] (O : Subring E) {m J : ℕ} (hJ : J ≤ m) (f f' : Fin m → V)
     (s s' : Matrix (Fin m) (Fin m) E) (hs : ∀ i j, j < i → s i j = 0)
@@ -126,8 +124,6 @@ private theorem span_image_frameScaledDifferenceFamily_eq_lemma_3 {E V : Type} [
   funext a
   exact (hpt a).symm
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem dfam_mem_lower_span {E V : Type} [CommRing E] [AddCommGroup V]
     [Module E V] {m : ℕ} (f f' g g' : Fin m → V) (t : E)
     (hg : ∀ j, g j - f j ∈ Submodule.span E (f '' {i | i < j}))
@@ -158,8 +154,6 @@ private theorem dfam_mem_lower_span {E V : Type} [CommRing E] [AddCommGroup V]
   · exact Submodule.smul_mem _ _ (Submodule.sub_mem _ (Submodule.mem_sup_right (hf' j ha))
       (Submodule.mem_sup_left (hf j ha)))
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem coeff_eq_zero_of_mem_span_lower_indices {E V : Type} [CommRing E] [AddCommGroup V] [Module E V]
     {m : ℕ} (f f' : Fin m → V) (hB : LinearIndependent E (Sum.elim f f')) (J : Fin m) (α β : E)
     (h : α • f J + β • f' J ∈ Submodule.span E (f '' {i | i < J}) ⊔ Submodule.span E (f' '' {i | i < J})) :
@@ -188,8 +182,6 @@ private theorem coeff_eq_zero_of_mem_span_lower_indices {E V : Type} [CommRing E
   have := hli (fun b => if b then α else β) (by simpa [add_comm] using h0)
   exact ⟨this true, this false⟩
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem mem_span_dfam_inf_iff {E V : Type} [CommRing E]
     [AddCommGroup V] [Module E V] (O : Subring E) {m : ℕ} (f f' g g' : Fin m → V)
     (hB : LinearIndependent E (Sum.elim f f')) (t : E) (ht : IsUnit t)
@@ -275,8 +267,6 @@ private theorem mem_span_dfam_inf_iff {E V : Type} [CommRing E]
     have ha : a = 0 := Subtype.ext (by simpa [hb] using h1)
     simpa [ha, hb] using hy
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem unitriangular_sum_sub_mem_span_lower {E V : Type} [CommRing E] [AddCommGroup V] [Module E V]
     {m : ℕ} (b : Fin m → V) (s : Fin m → Fin m → E)
     (hs : (∀ i j, j < i → s i j = 0) ∧ ∀ i, s i i = 1) (j : Fin m) :
@@ -294,8 +284,6 @@ private theorem unitriangular_sum_sub_mem_span_lower {E V : Type} [CommRing E] [
   · exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, h, rfl⟩)
   · exact Submodule.zero_mem _
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem termFrameLattice_inf_initialSpan_eq_lemma {F : Type} [Field F] [ValuativeRel F]
     [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E]
     [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) (r k : ℕ) (S : _root_.GlobalTheory.HL.Frames L r k)
@@ -335,8 +323,6 @@ private theorem termFrameLattice_inf_initialSpan_eq_lemma {F : Type} [Field F] [
   exact mem_span_dfam_inf_iff L.O S.f S.f' _ _ hB _ hθ
     (unitriangular_sum_sub_mem_span_lower S.f s hs) (unitriangular_sum_sub_mem_span_lower S.f' s' hs') J x
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem det_fromBlocks_unitriangular_eq_pow {E : Type} [CommRing E] {m : ℕ} (θ : E)
     (s s' : Matrix (Fin m) (Fin m) E)
     (hs : (∀ i j, j < i → s i j = 0) ∧ ∀ i, s i i = 1)
@@ -346,8 +332,6 @@ private theorem det_fromBlocks_unitriangular_eq_pow {E : Type} [CommRing E] {m :
     Matrix.det_of_upperTriangular (fun i j h => hs'.1 i j h)]
   simp [hs.2, hs'.2]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem linearIndependent_comb_of_isUnit_det {E V ι : Type} [CommRing E] [AddCommGroup V] [Module E V]
     [Fintype ι] [DecidableEq ι] (b : ι → V) (hb : LinearIndependent E b) (M : Matrix ι ι E)
     (hM : IsUnit M.det) : LinearIndependent E (fun j => ∑ i, M i j • b i) := by
@@ -366,8 +350,6 @@ private theorem linearIndependent_comb_of_isUnit_det {E V ι : Type} [CommRing E
   rw [this, h2, Matrix.mulVec_zero]
   rfl
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem sum_smul_sum_smul_eq_sum_mul_smul' {E V ι : Type} [CommRing E] [AddCommGroup V] [Module E V] [Fintype ι]
     (b : ι → V) (M N : Matrix ι ι E) (j : ι) :
     ∑ i, N i j • ∑ l, M l i • b l = ∑ l, (M * N) l j • b l := by
@@ -375,8 +357,6 @@ private theorem sum_smul_sum_smul_eq_sum_mul_smul' {E V ι : Type} [CommRing E] 
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun i _ => by rw [mul_comm]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private theorem relIndex_symm_of_blockFrameMatrix_lemma_2 {F : Type} [Field F] [ValuativeRel F]
     [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E]
     [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) (ϖ : (ValuativeRel.valuation F).integer)
@@ -429,8 +409,6 @@ private theorem relIndex_symm_of_blockFrameMatrix_lemma_2 {F : Type} [Field F] [
   exact ⟨by exact_mod_cast h3.symm, h2⟩
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.HL.TraceVol.trace_volume : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E), ∀ (r k : ℕ) (S : _root_.GlobalTheory.HL.Frames L r k), ∀ (d : S.Datum) (Λ : Submodule L.O S.V), S.IsTerm d Λ → ∀ d' Λ', S.IsTerm d' Λ' → ∀ (J : ℕ) (Yy : Submodule L.O S.V), J ≤ r + 1 → Yy = (S.spanTo S.f J ⊔ S.spanTo S.f' J).restrictScalars L.O → (S.M d Λ ⊓ Yy).toAddSubgroup.relIndex (S.M d' Λ' ⊓ Yy).toAddSubgroup = (S.M d' Λ' ⊓ Yy).toAddSubgroup.relIndex (S.M d Λ ⊓ Yy).toAddSubgroup ∧ (S.M d Λ ⊓ Yy).toAddSubgroup.relIndex (S.M d' Λ' ⊓ Yy).toAddSubgroup ≠ 0 := by
   intro F _ _ _ _ _ E _ _ _ L r k S d Λ hT d' Λ' hT' J Yy hJ hYy
   subst hYy

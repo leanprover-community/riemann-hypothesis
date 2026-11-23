@@ -110,7 +110,6 @@ theorem Dom.le_of_dom (hD : Dom v w W) (hD' : Dom v w W') (hW : IsMultiHomogIdea
 end
 
 section
-open MvPolynomial GroundTheory.FunctionField
 
 variable {B : Type} [Fintype B] {J : B → Type} [∀ k, Fintype (J k)]
   {p : ℕ} [Fact p.Prime] {K : Type} [Field K] [Algebra (ZMod p) K] [IsFunctionField (ZMod p) K]
@@ -241,8 +240,6 @@ end
 
 section
 open MvPolynomial GroundTheory.FunctionField GroundTheory.Heights₂.Heights.Inter IsLocalRing
-open GroundTheory.Heights₂.Heights.Targets.CurveVerticalPointChart (mem_of_aeval_eq chartMono_notMem)
-open GroundTheory.Heights₂.Heights.HilbertSamuel.SmallSectionsNonzero (chartMono isMultiHomog_chartMono)
 open GroundTheory.Heights₂.Heights.Inter.regularityLocalFlat_holds (homog_zero homog_X mem_locRing_iff div_mem_locRing fracHom fracHom_apply fracHom_eq_zero_iff isLocalRing mem_maximalIdeal_iff isUnit_iff)
 
 variable {B : Type} [Fintype B] {J : B → Type} [∀ k, Fintype (J k)]

@@ -86,7 +86,6 @@ end GlobalTheory.WeilReal
 
 namespace GlobalTheory.WeilReal
 
-open GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators GlobalTheory.WeilReal.QuadAlg Formalism.IndefR.Fock.Sk
 
 theorem comb {R : Type} [AddCommGroup R] [Module ℂ R] (a b q P : R) (h c d : ℂ) (hq : a + b = q + h • P) :
     q + (h + c - d) • P = (a + (-d) • P) + (b + c • P) := by

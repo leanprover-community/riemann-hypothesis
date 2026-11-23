@@ -51,8 +51,6 @@ theorem _root_.GlobalTheory.LevelUnfold.mul_inv_q (q : _root_.GlobalTheory.LatPa
   mul_inv_cancel₀ q.ne_zero
 
 
-open MeasureTheory ValuativeRel Matrix IsLocalRing in
-open scoped Pointwise ENNReal in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n n' : Type} {c : ℕ} {q : _root_.GlobalTheory.LatPair.Unif k} in
 theorem _root_.GlobalTheory.LevelUnfold.mem_gluedS {L : Submodule 𝒪[k] (n → k)} {f : n → k}
@@ -69,8 +67,6 @@ theorem _root_.GlobalTheory.LevelUnfold.mem_gluedS {L : Submodule 𝒪[k] (n →
     exact ⟨fun h => absurd h (by omega), fun h => h2 (by omega), fun h => h3 (by omega)⟩
 
 
-open MeasureTheory ValuativeRel Matrix IsLocalRing in
-open scoped Pointwise ENNReal in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n n' : Type} {c : ℕ} {q : _root_.GlobalTheory.LatPair.Unif k} in
 theorem _root_.GlobalTheory.LevelUnfold.gluedS_le_iff {L : Submodule 𝒪[k] (n → k)} {f : n → k}
@@ -91,8 +87,6 @@ theorem _root_.GlobalTheory.LevelUnfold.gluedS_le_iff {L : Submodule 𝒪[k] (n 
     obtain ⟨m, rfl⟩ : ∃ m, j = m + 1 := ⟨j - 1, by omega⟩
     exact h ⟨m, by omega⟩ (by simp only; omega)
 
-open MeasureTheory ValuativeRel Matrix IsLocalRing in
-open scoped Pointwise ENNReal in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n n' : Type} {c : ℕ} {q : _root_.GlobalTheory.LatPair.Unif k} in
 theorem _root_.GlobalTheory.LevelUnfold.interX_gluedS (hc : 1 ≤ c) (L : Submodule 𝒪[k] (n → k))
@@ -102,8 +96,6 @@ theorem _root_.GlobalTheory.LevelUnfold.interX_gluedS (hc : 1 ≤ c) (L : Submod
   rw [Submodule.mem_comap, ← _root_.GlobalTheory.LatPair.gluedLat_one]
   exact _root_.GlobalTheory.LatPair.inX_mem_gluedLat le_rfl hc
 
-open MeasureTheory ValuativeRel Matrix IsLocalRing in
-open scoped Pointwise ENNReal in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n n' : Type} {c : ℕ} {q : _root_.GlobalTheory.LatPair.Unif k} in
 theorem _root_.GlobalTheory.LevelUnfold.glue_mem_gluedS (L : Submodule 𝒪[k] (n → k)) (f : n → k) :
@@ -112,8 +104,6 @@ theorem _root_.GlobalTheory.LevelUnfold.glue_mem_gluedS (L : Submodule 𝒪[k] (
   unfold _root_.GlobalTheory.LatPair.gluedS
   exact Submodule.mem_sup_left (Submodule.mem_sup_right (Submodule.mem_span_singleton_self _))
 
-open MeasureTheory ValuativeRel Matrix IsLocalRing in
-open scoped Pointwise ENNReal in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n n' : Type} {c : ℕ} {q : _root_.GlobalTheory.LatPair.Unif k} in
 theorem _root_.GlobalTheory.LevelUnfold.glue_mem_gluedS_iff (hc : 1 ≤ c) {L : Submodule 𝒪[k] (n → k)}
@@ -131,8 +121,6 @@ theorem _root_.GlobalTheory.LevelUnfold.glue_mem_gluedS_iff (hc : 1 ≤ c) {L : 
   rw [hsplit, Submodule.add_mem_iff_right _ hg, ← _root_.GlobalTheory.LatPair.gluedLat_one,
     _root_.GlobalTheory.LatPair.inX_mem_gluedLat le_rfl hc]
 
-open MeasureTheory ValuativeRel Matrix IsLocalRing in
-open scoped Pointwise ENNReal in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n n' : Type} {c : ℕ} {q : _root_.GlobalTheory.LatPair.Unif k} in
 theorem _root_.GlobalTheory.LevelUnfold.gluedS_congr {L : Submodule 𝒪[k] (n → k)} {f f' : n → k}
@@ -142,8 +130,6 @@ theorem _root_.GlobalTheory.LevelUnfold.gluedS_congr {L : Submodule 𝒪[k] (n �
 
 variable [Fintype n] [DecidableEq n]
 
-open MeasureTheory ValuativeRel Matrix IsLocalRing in
-open scoped Pointwise ENNReal in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n n' : Type} {c : ℕ} {q : _root_.GlobalTheory.LatPair.Unif k} in
 variable [Fintype n] [DecidableEq n] in

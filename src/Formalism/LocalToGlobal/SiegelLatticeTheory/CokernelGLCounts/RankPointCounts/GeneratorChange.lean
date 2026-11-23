@@ -209,7 +209,6 @@ end Change
 
 section Main
 
-open Formalism.L2.SG.Pf.BBTie
 
 variable {r : ℕ}
 

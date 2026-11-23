@@ -238,7 +238,6 @@ end Sections
 
 section Theta
 
-open GlobalTheory.VVRank
 
 variable {S S' : Scheme.{0}} {G : Over S} [GrpObj G] {A : Over S'} [GrpObj A]
   {f : S' ⟶ S} {φ : A.left ⟶ G.left} (hp : IsGrpPullback A G f φ)

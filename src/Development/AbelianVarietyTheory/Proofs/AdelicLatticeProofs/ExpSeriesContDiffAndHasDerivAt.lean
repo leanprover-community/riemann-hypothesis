@@ -65,14 +65,12 @@ private lemma norm_smulRight_le_opNorm_mul_norm {V E : Type} [NormedAddCommGroup
         mul_le_mul_of_nonneg_right (L.le_opNorm h) (norm_nonneg _)
     _ = ‖L‖ * ‖w‖ * ‖h‖ := by ring
 
-open scoped ContDiff in
 private lemma mul_exp_mul_le_exp_add_one_mul (r R : ℝ) :
     r * Real.exp (R * r) ≤ Real.exp ((R + 1) * r) := by
   calc r * Real.exp (R * r) ≤ Real.exp r * Real.exp (R * r) :=
         mul_le_mul_of_nonneg_right (by linarith [Real.add_one_le_exp r]) (Real.exp_pos _).le
     _ = Real.exp ((R + 1) * r) := by rw [← Real.exp_add]; ring_nf
 
-open scoped ContDiff in
 private lemma summable_norm_smulRight_mul_exp {V E I : Type} [NormedAddCommGroup V]
     [NormedSpace ℝ V] [NormedAddCommGroup E] [NormedSpace ℂ E] (m : I → V →L[ℝ] ℂ) (w : I → E)
     (hw : ∀ R : ℝ, Summable fun i => ‖w i‖ * Real.exp (R * ‖m i‖)) (R : ℝ) :
@@ -85,7 +83,6 @@ private lemma summable_norm_smulRight_mul_exp {V E I : Type} [NormedAddCommGroup
     _ ≤ ‖w i‖ * Real.exp ((R + 1) * ‖m i‖) :=
         mul_le_mul_of_nonneg_left (mul_exp_mul_le_exp_add_one_mul _ _) (norm_nonneg _)
 
-open scoped ContDiff in
 private lemma norm_cexp_le_exp_mul_opNorm_of_norm_le {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (L : V →L[ℝ] ℂ) {y : V} {r : ℝ} (hy : ‖y‖ ≤ r) :
     ‖Complex.exp (L y)‖ ≤ Real.exp (r * ‖L‖) := by
@@ -95,7 +92,6 @@ private lemma norm_cexp_le_exp_mul_opNorm_of_norm_le {V : Type} [NormedAddCommGr
     _ ≤ ‖L‖ * ‖y‖ := L.le_opNorm y
     _ ≤ r * ‖L‖ := by rw [mul_comm]; exact mul_le_mul_of_nonneg_right hy (norm_nonneg _)
 
-open scoped ContDiff in
 private lemma hasFDerivAt_tsum_cexp_smul_of_summable_exp {V E I : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
     [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E] (m : I → V →L[ℝ] ℂ) (w : I → E)
     (hw : ∀ R : ℝ, Summable fun i => ‖w i‖ * Real.exp (R * ‖m i‖)) (x : V) :
@@ -120,7 +116,6 @@ private lemma hasFDerivAt_tsum_cexp_smul_of_summable_exp {V E I : Type} [NormedA
     rw [norm_smul, mul_comm]
     exact mul_le_mul_of_nonneg_left (norm_cexp_le_exp_mul_opNorm_of_norm_le _ (by simp [r])) (norm_nonneg _)
 
-open scoped ContDiff in
 private lemma contDiff_tsum_cexp_smul_of_summable_exp {V I : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (m : I → V →L[ℝ] ℂ) (n : ℕ) :
     ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E] (w : I → E),
@@ -144,7 +139,6 @@ private lemma contDiff_tsum_cexp_smul_of_summable_exp {V I : Type} [NormedAddCom
       (summable_norm_smulRight_mul_exp m w hw)
 
 
-open scoped ContDiff in
 theorem _root_.GlobalTheory.expSeries_contDiff_and_hasDerivAt :
     ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] (I : Type) (c : I → ℂ)
       (m : I → V →L[ℝ] ℂ), (∀ R : ℝ, Summable fun i => ‖c i‖ * Real.exp (R * ‖m i‖)) →

@@ -154,7 +154,6 @@ end GlobalTheory.CovTop.VolUp.OneMeasure
 
 namespace GlobalTheory.CovTop.VolUp.OneMeasure
 
-open Filter Topology
 
 theorem measure_sMat_near_le : ∀ (p q : ℕ) (a₀ : Fin p ⊕ Fin q) (m : Measure (UpqT p q)), IsMinf m →
     ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, 0 < ε → ε < ε₀ →

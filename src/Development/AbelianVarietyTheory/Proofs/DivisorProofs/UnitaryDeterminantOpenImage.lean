@@ -82,7 +82,6 @@ end GlobalTheory.SkewLeviNear
 
 namespace GlobalTheory.SkewLeviNear
 
-open GlobalTheory.EmbChart GlobalTheory.LeviAtPlace GlobalTheory.SkewLevi
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {v : HeightOneSpectrum (𝓞 F)} {n : ℕ}
@@ -111,7 +110,6 @@ end GlobalTheory.SkewLeviNear
 
 namespace GlobalTheory.SkewLeviNear
 
-open GlobalTheory.EmbChart GlobalTheory.LeviAtPlace GlobalTheory.SkewLevi
 
 theorem near_one_det : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →

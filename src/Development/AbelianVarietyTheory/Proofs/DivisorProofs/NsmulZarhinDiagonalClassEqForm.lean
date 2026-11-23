@@ -69,7 +69,6 @@ end GlobalTheory.ZarhinFam
 
 namespace GlobalTheory.ZarhinFam
 
-open GlobalTheory.CechPic GlobalTheory.AbDual
 
 theorem zClsDiag_sum_sig {M : Type*} [AddCommMonoid M] (F : Fin 4 ⊕ Fin 4 → Fin 4 ⊕ Fin 4 → M) :
     ∑ kl : Fin 8 × Fin 8, F (sig kl.1) (sig kl.2) = ∑ s, ∑ t, F s t := by

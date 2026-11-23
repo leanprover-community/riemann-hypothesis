@@ -53,7 +53,6 @@ theorem _root_.GlobalTheory.EtaleCoordJacobian.mapBaseChange_basis (i : I) :
   rw [Module.Basis.baseChange_apply, mvPolynomialBasis_apply, mapBaseChange_tmul, one_smul,
     map_D]
 
-open KaehlerDifferential TensorProduct in
 variable (R B : Type) [CommRing R] [CommRing B] (I : Type) [Algebra R B]
   [Algebra (MvPolynomial I R) B] [IsScalarTower R (MvPolynomial I R) B] in
 theorem _root_.GlobalTheory.EtaleCoordJacobian.exists_basis_of_etale [Finite I] [Algebra.Etale (MvPolynomial I R) B] :
@@ -67,7 +66,6 @@ theorem _root_.GlobalTheory.EtaleCoordJacobian.exists_basis_of_etale [Finite I] 
   rw [Module.Basis.map_apply, ← _root_.GlobalTheory.EtaleCoordJacobian.mapBaseChange_basis]
   rfl
 
-open KaehlerDifferential TensorProduct in
 variable (R B : Type) [CommRing R] [CommRing B] (I : Type) [Algebra R B]
   [Algebra (MvPolynomial I R) B] [IsScalarTower R (MvPolynomial I R) B] in
 theorem _root_.GlobalTheory.EtaleCoordJacobian.etale_of_basis [Finite I] [Algebra.Smooth R B]
@@ -108,7 +106,6 @@ theorem _root_.GlobalTheory.EtaleCoordJacobian.etale_of_basis [Finite I] [Algebr
 
 end tower
 
-open KaehlerDifferential TensorProduct in
 private theorem exists_basis_D_and_smooth_of_etale_eval2Hom (R B I : Type) [CommRing R] [CommRing B]
     [Finite I] [Algebra R B] (t : I → B)
     (h : (MvPolynomial.eval₂Hom (algebraMap R B) t).Etale) :
@@ -120,7 +117,6 @@ private theorem exists_basis_D_and_smooth_of_etale_eval2Hom (R B I : Type) [Comm
   obtain ⟨⟨b, hb⟩, hs⟩ := _root_.GlobalTheory.EtaleCoordJacobian.exists_basis_of_etale R B I
   exact ⟨⟨b, fun i => by rw [hb]; simp [RingHom.algebraMap_toAlgebra]⟩, hs⟩
 
-open KaehlerDifferential TensorProduct in
 private theorem det_derivation_eq_mul_det_repr {R B I : Type} [CommRing R] [CommRing B] [Fintype I]
     [DecidableEq I] [Algebra R B] (t t' : I → B) (b : Module.Basis I B Ω[B⁄R])
     (hb : ∀ i, b i = D R B (t i)) (C : Type) [CommRing C] (φ : B →+* C) (d : I → B →+ C)
@@ -161,7 +157,6 @@ private theorem det_derivation_eq_mul_det_repr {R B I : Type} [CommRing R] [Comm
   congr 1
   exact (RingHom.map_det φ _).symm
 
-open KaehlerDifferential TensorProduct in
 private theorem exists_basis_D_of_isUnit_det_repr {R B I : Type} [CommRing R] [CommRing B]
     [Fintype I] [DecidableEq I] [Algebra R B] (t' : I → B) (b : Module.Basis I B Ω[B⁄R])
     (ha : IsUnit (Matrix.of fun k j => b.repr (D R B (t' j)) k).det) :
@@ -171,7 +166,6 @@ private theorem exists_basis_D_of_isUnit_det_repr {R B I : Type} [CommRing R] [C
   conv_rhs => rw [← b.sum_repr (D R B (t' j))]
   simp only [Matrix.of_apply]
 
-open KaehlerDifferential TensorProduct in
 private theorem etale_eval2Hom_of_basis_D (R B I : Type) [CommRing R] [CommRing B]
     [Finite I] [Algebra R B] [Algebra.Smooth R B] (t : I → B) (b : Module.Basis I B Ω[B⁄R])
     (hb : ∀ i, b i = D R B (t i)) : (MvPolynomial.eval₂Hom (algebraMap R B) t).Etale := by
@@ -182,7 +176,6 @@ private theorem etale_eval2Hom_of_basis_D (R B I : Type) [CommRing R] [CommRing 
     rw [hb]; simp [RingHom.algebraMap_toAlgebra]
 
 
-open KaehlerDifferential TensorProduct in
 theorem _root_.GlobalTheory.EtaleCoordJacobian.chain_rule_and_jacobian_criterion : ∀ (R B : Type) [CommRing R] [CommRing B] (c : R →+* B) (I : Type) [Fintype I] [DecidableEq I] (t t' : I → B), (MvPolynomial.eval₂Hom c t).Etale → ∃ a : B, (∀ (C : Type) [CommRing C] (φ : B →+* C) (d : I → B →+ C), (∀ i x y, d i (x * y) = φ x * d i y + φ y * d i x) → (∀ i r, d i (c r) = 0) → (Matrix.of fun i j => d i (t' j)).det = φ a * (Matrix.of fun i j => d i (t j)).det) ∧ (IsUnit a → (MvPolynomial.eval₂Hom c t').Etale) := by
   intro R B _ _ c I _ _ t t' het
   letI : Algebra R B := c.toAlgebra

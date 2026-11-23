@@ -221,13 +221,10 @@ def testA : Arith.FormsL ℚ ℚ ℚ (fun _ => ℂ) Unit where
 
 end Test
 
-section BsupMap
 
-open Formalism.BasicNotions
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} [NumberField what₂.LL] [StarRing what₂.LL]
   {LL0 : IntermediateField ℚ what₂.LL} {N : NData R H what₂}
 
-end BsupMap
 
 end Formalism.IndefR.NX.BC

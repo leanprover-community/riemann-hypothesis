@@ -38,13 +38,10 @@ namespace GlobalTheory.LevelPrimeUpper
 open Formalism.MainNotions.StandardLattice Finset
 end GlobalTheory.LevelPrimeUpper
 namespace GlobalTheory.LevelPrimeUpper
-open Formalism.MainNotions.StandardLattice Finset
 end GlobalTheory.LevelPrimeUpper
 namespace GlobalTheory.LevelPrimeUpper
-open Formalism.MainNotions.StandardLattice Finset
 end GlobalTheory.LevelPrimeUpper
 namespace GlobalTheory.LevelPrimeUpper
-open Formalism.MainNotions.StandardLattice Finset
 theorem levelPrime_le_at_points_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (p : _root_.GlobalTheory.Mem.Top.Bl.Parameters hL),
     GlobalTheory.Fc.RowE (Bl.IsGoodE p.s) (_root_.GlobalTheory.Mem.Top.Bl.BundleLinkage p)
       (fun κ D O _ _ => ∀ u : D.what₂.Word, Formalism.MainNotions.S.Tr D u ≤ O.L.sc.b ^ (κ.C.CTu * (D.R.m : ℝ))) := by

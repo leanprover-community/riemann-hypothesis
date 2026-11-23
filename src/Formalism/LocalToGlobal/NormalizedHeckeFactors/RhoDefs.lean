@@ -37,11 +37,9 @@ open Formalism.BasicNotions Formalism.ConjugateSelfDual NumberField IsDedekindDo
 
 namespace Formalism.L2.NR
 
-section frame
 
 variable {E Ω L : Type} [Field E] [Field Ω] [Algebra E Ω] [Field L]
 
-end frame
 
 def IsRepOfSigI (D : D7) (ℓ : ℕ) [Fact ℓ.Prime] (ι : Qbar ℓ ≃+* ℂ) (b : ℕ) (Sig : List (Formalism.BasicNotions.Part D.naut.CG))
     (ρ : Formalism.ConjugateSelfDual.G D.host.E D.nd.Om →* GL (Fin b) (Qbar ℓ)) : Prop :=

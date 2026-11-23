@@ -43,7 +43,6 @@ private lemma exists_nat_mul_rat_eq_int' {s : ℕ} (q : Fin s → ℚ) :
   rw [← Rat.mul_den_eq_num (q u)]
   ring
 
-open Matrix in
 private lemma bilinForm_sum_zsmul_eq_sum_mul {s : ℕ} {X : Type} [AddCommGroup X]
     (β : LinearMap.BilinForm ℤ X) (y : Fin s → X) (n : Fin s → ℤ) :
     β (∑ u, n u • y u) (∑ v, n v • y v) = ∑ u, ∑ v, n u * n v * β (y u) (y v) := by
@@ -54,7 +53,6 @@ private lemma bilinForm_sum_zsmul_eq_sum_mul {s : ℕ} {X : Type} [AddCommGroup 
   refine Finset.sum_congr rfl fun u _ => Finset.sum_congr rfl fun v _ => ?_
   ring
 
-open Matrix in
 private lemma gram_quadratic_real_nonneg {s : ℕ} {X : Type} [AddCommGroup X]
     (β : LinearMap.BilinForm ℤ X) (hpos : ∀ x, 0 ≤ β x x) (y : Fin s → X) (c : Fin s → ℝ) :
     0 ≤ ∑ u, ∑ v, c u * c v * ((β (y u) (y v) : ℤ) : ℝ) := by
@@ -82,7 +80,6 @@ private lemma gram_quadratic_real_nonneg {s : ℕ} {X : Type} [AddCommGroup X]
   exact (mul_nonneg_iff_of_pos_left hNpos).mp h0
 
 
-open Matrix in
 theorem _root_.GlobalTheory.Poinc.qW_nonneg_of_posW : ∀ {s : ℕ} (W : Matrix (Fin s) (Fin s) ℤ),
     _root_.GlobalTheory.Poinc.PosW W → ∀ {X : Type} [AddCommGroup X]
     (β : LinearMap.BilinForm ℤ X), (∀ a b, β a b = β b a) → (∀ x, 0 ≤ β x x) →

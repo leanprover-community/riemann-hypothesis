@@ -405,7 +405,6 @@ end Adelic
 
 section Local
 
-open GlobalTheory.LevSplit Formalism.L2.NTheta
 
 variable {D : D7}
 

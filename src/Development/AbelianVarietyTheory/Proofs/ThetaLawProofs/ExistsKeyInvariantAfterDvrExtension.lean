@@ -203,7 +203,6 @@ theorem mem_nonzeroLocus_of_via {R R' : Type} [CommRing R] [CommRing R'] {x : Ke
   exact TopologicalSpace.Opens.mem_iSup.2 ⟨k, ((Scheme.basicOpen_appLE φ _ (x.P.L.U k) hle (s.f k)).le h1).2⟩
 
 
-open EtBaseChange in
 theorem etZ_descend {R R' : Type} [Field R] [Field R'] {x : KeyIn R} {x' : KeyIn R'} {f : R →+* R'} {φ w} {n d : ℕ}
     (hg : x.P.g = x'.P.g) {s : Fin x.P.g → RR x n} {s' : Fin x'.P.g → RR x' n} (z : Fin d → Pt x)
     {z' : Fin d → Pt x'} {ch' : Fin d → x'.P.L.ι} (H : KeyVia x' x f φ w)

@@ -191,7 +191,6 @@ theorem absAt : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalS
     first | rfl | simp [WithZero.log] | exact WithZero.log_coe _
   rw [GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.absV, hn, GlobalTheory.LatPair.Unif.unit, Units.val_mk0, h1, resCard, h2, h3, zpow_neg_one]
 
-open GlobalTheory.SplitLinAt GlobalTheory.SplitLinear
 
 theorem absFin_unif {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (p : SplitPt D k) (q : GlobalTheory.LatPair.Unif k) :
@@ -209,7 +208,6 @@ theorem lam_unif {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpac
 end GlobalTheory.LinExactAt
 
 namespace GlobalTheory.LinExactAt
-open GlobalTheory.SplitLinAt GlobalTheory.SplitLinear
 
 theorem linExact : ∀ D : D7, GlobalTheory.FinPl.LinExact D := by
   intro D k _ _ _ _ p q ψ S T χS χT om hW

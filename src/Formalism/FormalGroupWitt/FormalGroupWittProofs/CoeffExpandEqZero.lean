@@ -71,7 +71,6 @@ end Formalism.FG.LowCoefficients
 
 namespace Formalism.FG
 
-open Formalism.G
 
 theorem low_coeff_vector : Formalism.FG.LowCoeffV.{u, v, w} := by
 

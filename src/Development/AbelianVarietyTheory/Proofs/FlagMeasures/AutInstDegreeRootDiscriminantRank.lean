@@ -53,7 +53,6 @@ private theorem card_infinitePlace_E_eq_F (I : _root_.Formalism.MainNotions.S.Au
     rw [h]
   exact Fintype.card_of_bijective ⟨hinj, hsurj⟩
 
-open MeasureTheory NumberField Matrix Finset in
 private theorem card_infinitePlace_F_eq_finrank (I : _root_.Formalism.MainNotions.S.AutInst) :
     Fintype.card (InfinitePlace I.F) = Module.finrank ℚ I.F := by
   haveI := I.cm.totReal
@@ -62,14 +61,12 @@ private theorem card_infinitePlace_F_eq_finrank (I : _root_.Formalism.MainNotion
     IsTotallyReal.nrComplexPlaces_eq_zero] at *
   omega
 
-open MeasureTheory NumberField Matrix Finset in
 private theorem one_le_abs_discr_E (I : _root_.Formalism.MainNotions.S.AutInst) : (1 : ℝ) ≤ |(discr I.E : ℝ)| := by
   have h := discr_ne_zero I.E
   rw [← Int.cast_abs]
   exact_mod_cast Int.one_le_abs h
 
 
-open MeasureTheory NumberField Matrix Finset in
 theorem _root_.GlobalTheory.FlagMeas.instance_numbers : ∀ I : _root_.Formalism.MainNotions.S.AutInst, _root_.Formalism.HermitianLatticesTheory.fDeg I.E = I.f ∧ 2 * _root_.Formalism.HermitianLatticesTheory.vInv I.E = I.rd ∧ 1 ≤ I.rd ∧ 1 ≤ I.f ∧ Fintype.card (InfinitePlace I.F) = I.f ∧ ∀ p q, _root_.GlobalTheory.FlagMeas.HasSig I p q → p + q = I.n := by
   intro I
   have hdeg : _root_.Formalism.HermitianLatticesTheory.fDeg I.E = I.f := by

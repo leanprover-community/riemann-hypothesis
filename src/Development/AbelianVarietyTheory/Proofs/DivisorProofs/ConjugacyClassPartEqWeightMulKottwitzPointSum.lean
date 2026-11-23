@@ -152,7 +152,6 @@ noncomputable section
 
 namespace GlobalTheory.CxUnfoldGen
 
-open GlobalTheory.CxUnfold
 
 section Point
 
@@ -245,7 +244,6 @@ noncomputable section
 
 namespace GlobalTheory.CxUnfoldGen
 
-open GlobalTheory.CxUnfold
 
 theorem finsum_mul_const_complex {α : Type} (g : α → ℂ) (w : ℂ) : ∑ᶠ i, g i * w = (∑ᶠ i, g i) * w := by
   exact (finsum_mul _ _).symm

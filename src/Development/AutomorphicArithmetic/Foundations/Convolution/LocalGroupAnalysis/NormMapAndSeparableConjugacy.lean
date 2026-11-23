@@ -46,7 +46,6 @@ private theorem nm_eq_normGL {k E : Type} [Field k] [Field E] [Algebra k E] (σ 
   rw [← sigmaGL_pow]
   rfl
 
-open PositivityTheory.Rg.Tf.Loc in
 theorem UpperTheory.ConvolutionTheory.G.nm_agrees_with_twisted_norm_sigmaGL :
     N2 := by
   intro k E _ _ _ _ _ _ σ hσ n

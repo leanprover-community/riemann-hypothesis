@@ -192,7 +192,6 @@ end Helpers
 end GlobalTheory.StdPairLoc
 
 namespace GlobalTheory.StdPairLoc
-open GlobalTheory.SplitFlip GlobalTheory.SplitWeil
 
 theorem bigF_stdA : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     [MeasurableSpace k] [BorelSpace k] (ν : kˣ →* ℂˣ) (ϖ : kˣ) (c a a' : ℕ), IsUnif ϖ →

@@ -105,7 +105,6 @@ theorem canM_ker (hfit : ∀ s c, (nu s).colLen c ≤ N) (χ : Module.Dual (Cw D
 end GlobalTheory.KerVal
 
 namespace GlobalTheory.KerVal
-open MvPolynomial Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.G
 
 variable {D : D7} (P : Examples₂.EntPl D) (w : D.what₂.places.Pl) (N : ℕ) (nu : Bool × HH D → YoungDiagram)
 
@@ -189,7 +188,6 @@ theorem onMin_canInv_mem (hfit : ∀ s c, (nu s).colLen c ≤ N) (F : FrP D w N 
 end GlobalTheory.KerVal
 
 namespace GlobalTheory.KerVal
-open MvPolynomial Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.G
 
 theorem colLen_le_of_fits {D : D7} {N : ℕ} {nu : Bool × HH D → YoungDiagram} {ν : D.what₂.Tau → Fin N → ℕ} (h : NuFits D nu ν) :
     ∀ s c, (nu s).colLen c ≤ N := by

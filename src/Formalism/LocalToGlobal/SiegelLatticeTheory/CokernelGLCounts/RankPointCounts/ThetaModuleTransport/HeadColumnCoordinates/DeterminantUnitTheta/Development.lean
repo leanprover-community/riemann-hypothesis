@@ -62,11 +62,9 @@ def CoordG : Prop :=
 
 end Steps
 
-section Deriv
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
-end Deriv
 
 end Formalism.L2.SG.LocalCountModules.ThetaMbe0GWork

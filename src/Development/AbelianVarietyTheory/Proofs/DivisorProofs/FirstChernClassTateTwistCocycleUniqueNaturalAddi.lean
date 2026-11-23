@@ -137,7 +137,6 @@ theorem firstChernClassTateTwist_pullback (q : ℕ) [NeZero q] {E E' : Spc} (f :
 end GlobalTheory.EtC.ChernSpec
 
 namespace GlobalTheory.EtC.ChernSpec
-open GlobalTheory.EtC.ClsSpec
 set_option backward.isDefEq.respectTransparency false
 
 theorem isOneCochain_add (q : ℕ) [NeZero q] {E : Spc} (L M N : E ⟶ ofCat (glCat 1)) (hE : Inv q E)

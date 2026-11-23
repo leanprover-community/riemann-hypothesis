@@ -626,7 +626,6 @@ end DecoInst
 
 section BaseInst
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory
 
 theorem Fields.Ok.finrank_E {X : Fields} (hX : X.Ok) : finrank ℚ X.E = 2 * X.f := by
   rw [← Module.finrank_mul_finrank ℚ X.F X.E, hX.rankE, Fields.f, hX.card_Tau, mul_comm]

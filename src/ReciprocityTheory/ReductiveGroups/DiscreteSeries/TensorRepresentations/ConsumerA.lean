@@ -96,13 +96,11 @@ end ReciprocityTheory.ChartRestriction.DS
 
 noncomputable section
 
-open Finset
 
 namespace ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ}
 
-open MeasureTheory
 
 section Kfin
 
@@ -205,7 +203,6 @@ namespace ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ}
 
-open MeasureTheory
 
 theorem cns_single_bd (s x : Fin n) : 0 ≤ (Pi.single s (1 : ℝ) : Fin n → ℝ) x ∧
     (Pi.single s (1 : ℝ) : Fin n → ℝ) x ≤ 1 := by

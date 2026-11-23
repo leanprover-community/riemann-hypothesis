@@ -196,7 +196,6 @@ end GlobalTheory.CharXFB.OffPl
 
 namespace GlobalTheory.CharXFB.OffPl
 variable {D : D7}
-open GlobalTheory.SeeSaw (idV FI conjFI)
 
 theorem conjFI_conjFI (D : D7) (𝔞 : FI D) : conjFI D (conjFI D 𝔞) = 𝔞 := by
   ext x; rw [GlobalTheory.SeeSaw.mem_conjFI, GlobalTheory.SeeSaw.conj_mem_conjFI]
@@ -239,7 +238,6 @@ theorem stair_prod {A B : FI D} (hA : A ≠ 0) (hB : B ≠ 0) (hcA : conjFI D A 
 end GlobalTheory.CharXFB.OffPl
 
 namespace GlobalTheory.CharXFB.OffPl
-open GlobalTheory.SeeSaw (idV FI conjFI)
 
 theorem psi_pair_trivial_off : All fun {D} _ _ {sc} {G} W _ => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m) (u : WO (G.V (.grid (2 * σ + 2 + 1) 0)) (G.V (.grid (2 * σ + 2) 0))), u ∈ latRow G (2 * σ + 2) → ∀ (p : Fin (σ + 1)) (v : GlobalTheory.FinPl.Pl D), v ∉ G.pl.S0 → psiE W.ψ (GlobalTheory.FinPlLoc.idem D (· = v) * (incA D D.host.xi0 * hA _ (ratV fun k => (G.colDec (2 * σ + 2) (by omega) h').a k (Fin.castLE (by omega) p)) (u *ᵥ ratV fun k => (G.colDec (2 * (σ + 1) + 1) (by omega) (by omega)).a k (Fin.castLE (by omega) p : Fin (2 * (σ + 1) + 1 - 1)).rev))) = 1 := by
   intro D _ T L μ _ sc G W _ _ σ h h' u hu p v hv

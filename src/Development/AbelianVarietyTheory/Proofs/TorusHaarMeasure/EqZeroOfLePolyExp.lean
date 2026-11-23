@@ -62,8 +62,6 @@ theorem _root_.GlobalTheory.ModeDecay.nonempty_cmType {r : ℕ} (X : _root_.Reci
   · exact ⟨⟨τ, h⟩⟩
   · exact ⟨⟨ComplexEmbedding.conjugate τ, not_not.mp (mt (X.cmType τ).mpr h)⟩⟩
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma det_mat_ne_zero_of_mem_dom {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) (τ : X.Ψ) : (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ).det ≠ 0 := by
@@ -72,16 +70,12 @@ private lemma det_mat_ne_zero_of_mem_dom {r : ℕ} (X : _root_.ReciprocityTheory
   simp only [Set.mem_setOf_eq] at h
   exact (h τ).1
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma hermC_emb_self_eq_zero_of_isIso {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {ξ : Fin r → E}
     (hξ : X.IsIso ξ) (τ : X.Ψ) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC (↑τ) X.Gm (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (↑τ) ξ) (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (↑τ) ξ) = 0 := by
   rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC_emb, hξ.2.1, map_zero]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma mN_nonneg {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ) (τ : X.Ψ) (i : ℕ) (hi : i ≤ r) :
@@ -93,8 +87,6 @@ private lemma mN_nonneg {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction
   have h4 := h3 hiso
   exact (h4 i hi).1
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma flow_mem_dom_of_im_nonneg' {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ) (s : X.Ψ → ℂ)
@@ -130,8 +122,6 @@ private lemma flow_mem_dom_of_im_nonneg' {r : ℕ} (X : _root_.ReciprocityTheory
     rw [Complex.re_mul_ofReal, ← mul_assoc]
     exact mul_pos h0 hf
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma mN_p0_pos {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ) (τ : X.Ψ) :
@@ -144,8 +134,6 @@ private lemma mN_p0_pos {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction
   have hne : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (↑τ) ξ ≠ 0 := _root_.ReciprocityTheory.ChartRestriction.G.FD.emb_ne_zero _ hξ.2.2
   exact h4 hne
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma tt_flow_eq_add_im {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ) (s : X.Ψ → ℂ)
@@ -167,8 +155,6 @@ private lemma tt_flow_eq_add_im {r : ℕ} (X : _root_.ReciprocityTheory.ChartRes
   rw [h1, h2]
   field_simp
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma maj_flow_two_sided_bound {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ) (s : X.Ψ → ℂ) {Y B K : ℝ}
@@ -223,8 +209,6 @@ private lemma maj_flow_two_sided_bound {r : ℕ} (X : _root_.ReciprocityTheory.C
       _ ≤ _ := hlo
   · exact hhi.trans (mul_le_mul_of_nonneg_right hP hm0)
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma one_add_inv_la1_flow_le_mul {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ) (s : X.Ψ → ℂ) {Y B K : ℝ}
@@ -260,8 +244,6 @@ private lemma one_add_inv_la1_flow_le_mul {r : ℕ} (X : _root_.ReciprocityTheor
   have : P / X.la1 x = P * (1 / X.la1 x) := by ring
   nlinarith [one_div_pos.mpr hx1]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma dmin_flow_eq_mul_one_add {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ) (s : X.Ψ → ℂ) (τ : X.Ψ)
@@ -278,8 +260,6 @@ private lemma dmin_flow_eq_mul_one_add {r : ℕ} (X : _root_.ReciprocityTheory.C
   rw [hc0, hc1]
   exact hd2
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma rpow_neg_abs_le_rpow_of_mem_Icc_inv {Q q e : ℝ} (hQ : 1 ≤ Q) (hq0 : 0 < q) (hlo : Q⁻¹ ≤ q)
     (hhi : q ≤ Q) : Q ^ (-|e|) ≤ q ^ e := by
@@ -290,8 +270,6 @@ private lemma rpow_neg_abs_le_rpow_of_mem_Icc_inv {Q q e : ℝ} (hQ : 1 ≤ Q) (
   · rw [abs_of_neg he, neg_neg]
     exact Real.rpow_le_rpow_of_nonpos hq0 hhi he.le
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma nfac_flow_ge_lemma_5 {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
     (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ) (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r) (s : X.Ψ → ℂ)
@@ -347,8 +325,6 @@ private lemma nfac_flow_ge_lemma_5 {r : ℕ} (X : _root_.ReciprocityTheory.Chart
   · rw [div_le_iff₀ (by positivity)]
     nlinarith
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma eq_zero_of_le_poly_mul_exp_neg {a D K L A S b : ℝ} (ha : 0 ≤ a) (hD : 0 ≤ D)
     (hK : 0 ≤ K) (hL : 0 ≤ L) (hA : 0 ≤ A) (hS : 0 ≤ S) (hb : 0 < b)
@@ -376,8 +352,6 @@ private lemma eq_zero_of_le_poly_mul_exp_neg {a D K L A S b : ℝ} (ha : 0 ≤ a
   linarith
 
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 
 theorem _root_.GlobalTheory.ModeDecay.fj_eq_zero_of_decay :

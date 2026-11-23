@@ -71,7 +71,6 @@ end GlobalTheory.OrdShellInt
 
 namespace GlobalTheory.OrdShellInt
 
-open ValuativeRel
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -81,6 +80,5 @@ end GlobalTheory.OrdShellInt
 
 namespace GlobalTheory.OrdShellInt
 
-open ValuativeRel
 
 end GlobalTheory.OrdShellInt

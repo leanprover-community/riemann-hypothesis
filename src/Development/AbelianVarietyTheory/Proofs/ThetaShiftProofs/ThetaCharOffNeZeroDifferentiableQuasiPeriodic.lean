@@ -61,7 +61,6 @@ private theorem submatrix_mem_siegelH_of_posDef_im (S : Finset (Fin g)) {τ : Ma
   unfold _root_.ReciprocityTheory.PTheta.SiegelH
   exact ⟨hs.submatrix _, hp.submatrix Subtype.val_injective⟩
 
-open Matrix in
 variable {g : ℕ} {S : Finset (Fin g)} in
 private theorem ofReal_re_eq_self_of_eq_zero_or_half {c : ℂ} (h : c = 0 ∨ c = 1 / 2) :
     ((c.re : ℝ) : ℂ) = c := by
@@ -69,7 +68,6 @@ private theorem ofReal_re_eq_self_of_eq_zero_or_half {c : ℂ} (h : c = 0 ∨ c 
   · simp
   · apply Complex.ext <;> simp
 
-open Matrix in
 variable {g : ℕ} {S : Finset (Fin g)} in
 private theorem dotProduct_eq_restrict_of_vanishing (S : Finset (Fin g)) {v : Fin g → ℂ}
     (hv : ∀ k ∈ S, v k = 0) (w : Fin g → ℂ) :
@@ -80,7 +78,6 @@ private theorem dotProduct_eq_restrict_of_vanishing (S : Finset (Fin g)) {v : Fi
     Finset.sum_eq_zero fun i _ => by rw [hv i (not_not.1 i.2), zero_mul]
   rw [h0, add_zero]
 
-open Matrix in
 variable {g : ℕ} {S : Finset (Fin g)} in
 private theorem mulVec_restrict_eq_submatrix_mulVec_of_vanishing (S : Finset (Fin g)) (τ : Matrix (Fin g) (Fin g) ℂ)
     {v : Fin g → ℂ} (hv : ∀ k ∈ S, v k = 0) :
@@ -90,7 +87,6 @@ private theorem mulVec_restrict_eq_submatrix_mulVec_of_vanishing (S : Finset (Fi
   simp only [mulVec, submatrix_apply]
   rw [dotProduct_comm, dotProduct_eq_restrict_of_vanishing S hv, dotProduct_comm]
 
-open Matrix in
 variable {g : ℕ} {S : Finset (Fin g)} in
 private theorem thetaCharOff_eq_theta_submatrix (S : Finset (Fin g)) (τ : Matrix (Fin g) (Fin g) ℂ)
     (c₁ c₂ : Fin g → ℂ) (h₁ : ∀ k, c₁ k = 0 ∨ c₁ k = 1 / 2) (h₂ : ∀ k, c₂ k = 0 ∨ c₂ k = 1 / 2)
@@ -120,7 +116,6 @@ private theorem thetaCharOff_eq_theta_submatrix (S : Finset (Fin g)) (τ : Matri
   ring
 
 
-open Matrix in
 variable {g : ℕ} {S : Finset (Fin g)} in
 theorem _root_.GlobalTheory.ThetaBlock.thetaCharOff_ne_zero_differentiable_quasiPeriodic (g : ℕ) (S : Finset (Fin g))
     (τ : Matrix (Fin g) (Fin g) ℂ) (c₁ c₂ : Fin g → ℂ) (hs : τ.IsSymm)

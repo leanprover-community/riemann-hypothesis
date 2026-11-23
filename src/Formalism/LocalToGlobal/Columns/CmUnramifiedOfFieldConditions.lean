@@ -176,7 +176,6 @@ theorem vandN_congr {x y : ℕ → ℝ} {N : ℕ} (h : ∀ i j, i < N → j < N 
 end Inst
 
 
-open Finset Formalism.LogVandermondeBounds.StandardLattice
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks}
 

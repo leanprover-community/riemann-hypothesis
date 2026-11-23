@@ -61,7 +61,6 @@ theorem supp_neg_le {X : Scheme.{0}} [IsIntegral X] (D : GlobalTheory.Cartier.Ca
   exact hu.inv
 
 
-open GlobalTheory.Cartier.CartierDiv in
 theorem supp_nsmul_le {X : Scheme.{0}} [IsIntegral X] (D : GlobalTheory.Cartier.CartierDiv X) (m : ℕ) :
     (m • D).supp ≤ D.supp := by
   intro x hx

@@ -77,8 +77,6 @@ private lemma exists_map_eq_zero_of_isColimit_lemma {c : Cocone D} (hc : IsColim
   obtain ⟨k, f, g, hfg⟩ := Concrete.isColimit_exists_of_rep_eq D hc x 0 (by simpa using h)
   exact ⟨k, f, by simpa using hfg⟩
 
-open CategoryTheory Limits AlgebraicGeometry Opposite in
-open scoped TensorProduct in
 variable {J : Type} [SmallCategory J] (D : J ⥤ CommRingCat.{0}) in
 variable {D} [IsFiltered J] in
 theorem _root_.GlobalTheory.EtC.PolyColim.poly_exists_map_eq_zero {c : Cocone D} (hc : IsColimit c) {j : J}
@@ -105,8 +103,6 @@ theorem _root_.GlobalTheory.EtC.PolyColim.poly_exists_map_eq_zero {c : Cocone D}
   · exact hf n hn
   · rw [Polynomial.notMem_support_iff.mp hn, map_zero]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite in
-open scoped TensorProduct in
 variable {J : Type} [SmallCategory J] (D : J ⥤ CommRingCat.{0}) in
 variable {D} [IsFiltered J] in
 private lemma exists_rep_of_isColimit_lemma_2 {c : Cocone D} (hc : IsColimit c) (x : c.pt) :
@@ -114,8 +110,6 @@ private lemma exists_rep_of_isColimit_lemma_2 {c : Cocone D} (hc : IsColimit c) 
   obtain ⟨j, y, hy⟩ := Concrete.isColimit_exists_rep D hc x
   exact ⟨j, y, hy⟩
 
-open CategoryTheory Limits AlgebraicGeometry Opposite in
-open scoped TensorProduct in
 variable {J : Type} [SmallCategory J] (D : J ⥤ CommRingCat.{0}) in
 variable {D} [IsFiltered J] in
 theorem _root_.GlobalTheory.EtC.PolyColim.poly_exists_rep {c : Cocone D} (hc : IsColimit c)

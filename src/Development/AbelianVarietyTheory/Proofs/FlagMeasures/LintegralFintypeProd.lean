@@ -79,8 +79,6 @@ private theorem lmarginal_prod_eq_prod_lintegral_mul_prod [DecidableEq ι] (f : 
       lintegral_mul_const _ (hf i)]
     ring
 
-open NumberField IsDedekindDomain MeasureTheory Matrix in
-open scoped TensorProduct ENNReal nonZeroDivisors in
 theorem _root_.GlobalTheory.SnMass.Push.lintegral_fintype_prod {ι : Type} [Fintype ι] {X : ι → Type}
     {mX : ∀ i, MeasurableSpace (X i)}
     {μ : (i : ι) → Measure (X i)} [∀ i, SigmaFinite (μ i)]

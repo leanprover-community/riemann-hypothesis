@@ -177,7 +177,6 @@ end GlobalTheory.CompanionTheory.Ar.Num.FamEx.SeqPure
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx.SeqPure
 
-open Module GlobalTheory.CompanionTheory.Ar.HT GlobalTheory.CompanionTheory.Ar.Flat
 
 section Refl
 
@@ -280,7 +279,6 @@ end GlobalTheory.CompanionTheory.Ar.Num.FamEx.SeqPure
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx.SeqPure
 
-open Module GlobalTheory.CompanionTheory.Ar.HT GlobalTheory.CompanionTheory.Ar.Flat
 
 theorem frame {Ω Li : Type} [Field Ω] [AddCommGroup Li] [Module Ω Li] {r : ℕ} {v : Fin r → Li}
     {V : Submodule Ω Li} (hv : LinearIndependent Ω v) (hs : Submodule.span Ω (Set.range v) = V) :

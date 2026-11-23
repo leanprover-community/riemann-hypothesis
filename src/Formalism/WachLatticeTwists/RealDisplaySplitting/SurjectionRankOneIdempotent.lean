@@ -43,7 +43,6 @@ open Formalism.NG
 def LatM {R : Type} [Ring R] (O : Type) [CommRing O] (M : Type) [AddCommGroup M] [Module O M]
     (n : Type) [Fintype n] [DecidableEq n] (_ρ : R →+* Matrix n n O) : Type := n → M
 
-section LatM
 variable {R : Type} [Ring R] (O : Type) [CommRing O] (M : Type) [AddCommGroup M] [Module O M]
   (n : Type) [Fintype n] [DecidableEq n] (ρ : R →+* Matrix n n O)
 
@@ -51,7 +50,6 @@ instance : AddCommGroup (LatM O M n ρ) := inferInstanceAs (AddCommGroup (n → 
 instance : Module O (LatM O M n ρ) := inferInstanceAs (Module O (n → M))
 instance : Module R (LatM O M n ρ) := Module.compHom (n → M) ((matEnd O M n).comp ρ)
 
-end LatM
 
 section Maps
 variable {R : Type} [Ring R] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]

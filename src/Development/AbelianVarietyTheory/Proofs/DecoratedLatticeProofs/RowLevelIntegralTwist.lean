@@ -146,8 +146,6 @@ theorem res_eq {D : D7} (PP : Formalism.L2.DIV.Pl D.host.E) (g : ℕ) (hg : ((g 
 end GlobalTheory.CongFlag
 
 namespace GlobalTheory.CongFlag
-open Formalism.MainNotions.S Formalism.L2.SG.HidaSetting
-open scoped Matrix
 
 theorem finE_inv_val {D : D7} (y : GA D (D.sp.Y 0)) :
     ((Formalism.IndefR.Lev.finE (Yc D 0) (show GA D (Yc D 0) from y))⁻¹ : GL (Fin (Yc D 0).rank) (Formalism.IndefR.Lev.EAf D)).val =

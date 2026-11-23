@@ -222,9 +222,6 @@ end UpperTheory.G2.ConjugatePartitionShape
 
 namespace UpperTheory.G2.ConjugatePartitionShape
 
-open MvPowerSeries Formalism.L2.Th1.D
-open Formalism.InvariantFactorPaths.G7 (Simeq)
-open Formalism.DworkPowerSeriesWeights (Integral mvExp)
 
 private theorem diagJ (K0 K : Type) [NormedField K0] [IsUltrametricDist K0] [CharZero K0] [NormedField K]
     [IsUltrametricDist K] [CharZero K] (j : K0 →+* K) (hj : ∀ a, ‖j a‖ = ‖a‖) (l i : ℕ) [NeZero i]

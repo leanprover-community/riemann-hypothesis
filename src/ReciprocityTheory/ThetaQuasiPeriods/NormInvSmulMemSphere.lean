@@ -281,7 +281,6 @@ theorem term_bound (a b : ι → ℝ) (z : ι → ℂ) (A : Matrix ι ι ℂ) (l
 end ReciprocityTheory.PTheta.sphereQuadraticPositivity
 
 namespace ReciprocityTheory.PTheta
-open sphereQuadraticPositivity
 
 theorem thetaMTest_holds : ThetaMTestStatement := by
   intro ι _ a K hK hKd

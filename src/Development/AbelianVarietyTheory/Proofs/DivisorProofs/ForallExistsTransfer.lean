@@ -200,7 +200,6 @@ end Place
 
 section CM
 
-open GlobalTheory.PlaceComp
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 attribute [local instance] IsCMField.starRing

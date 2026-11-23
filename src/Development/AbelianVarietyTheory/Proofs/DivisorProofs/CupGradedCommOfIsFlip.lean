@@ -86,7 +86,6 @@ theorem phi_along (w : ℤ) {N M : ℕ} (θ : SimplexCategory.mk N ⟶ SimplexCa
 end GlobalTheory.EtC.CupFlip
 
 namespace GlobalTheory.EtC.CupFlip
-open GlobalTheory.EtC.CupSpec
 variable {R : Type} [CommRing R] {I J K : Cx R} (μ : Pair I J K) {E : Spc} {U : Scheme.{0}} {n m : ℤ}
 variable (a : Cochain ((chains R).obj E) I n) (b : Cochain ((chains R).obj E) J m)
 
@@ -177,7 +176,6 @@ theorem phi_d (α : Cocycle ((chains R).obj E) I n) (β : Cocycle ((chains R).ob
 end GlobalTheory.EtC.CupFlip
 
 namespace GlobalTheory.EtC.CupFlip
-open GlobalTheory.EtC.CupSpec
 variable {R : Type} [CommRing R] {I J K : Cx R} (μ : Pair I J K) {E : Spc} {U : Scheme.{0}} {n m : ℤ}
 
 theorem sg_eq_of_even (c d : ℤ) (h : Even (c - d)) : sg c = sg d := by
@@ -216,7 +214,6 @@ theorem phi_wa {ν : Pair J I K} (hf : μ.IsFlip ν) {k : ℤ} (h' : m + n = k) 
 end GlobalTheory.EtC.CupFlip
 
 namespace GlobalTheory.EtC.CupFlip
-open GlobalTheory.EtC.CupSpec
 
 theorem ev_sub' {R : Type} [CommRing R] {E : Spc} {I : Cx R} {n : ℤ} (a b : Cochain ((chains R).obj E) I n) (p : ℕ) (s : ℤ)
     (h : -(p : ℤ) + n = s) (U : Scheme.{0}) (x : Sx E p U) : ev (a - b) p s h U x = ev a p s h U x - ev b p s h U x :=

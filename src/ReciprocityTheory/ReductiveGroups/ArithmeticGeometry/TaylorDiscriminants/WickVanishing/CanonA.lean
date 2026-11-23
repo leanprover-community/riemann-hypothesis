@@ -47,11 +47,9 @@ namespace ReciprocityTheory.ChartRestriction.G.TB.Canon
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.TB.LogPf
 
-section Prim
 
 variable {k : Type} [CommRing k] [Algebra ℚ k] {τ : Type} [DecidableEq τ]
 
-end Prim
 
 variable {k : Type} [CommRing k] {d : ℕ}
 

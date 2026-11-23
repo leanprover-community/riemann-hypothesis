@@ -108,6 +108,5 @@ end GlobalTheory.ArchIntAlter
 
 namespace GlobalTheory.ArchIntAlter
 
-open Set
 
 end GlobalTheory.ArchIntAlter

@@ -61,9 +61,6 @@ private lemma sum_range_zpow_primitiveRoot_pow {ζ : ℂ} {n : ℕ} (hζ : IsPri
       rw [← zpow_natCast, ← zpow_mul, mul_comm, zpow_mul, zpow_natCast, hζ.pow_eq_one, one_zpow]
     rw [this, sub_self, zero_div]
 
-open UpperHalfPlane Filter in
-open ModularForm (E₄ E₆) in
-open scoped MatrixGroups ModularForm Manifold Topology in
 private lemma eventually_ne_zero_nhdsNE_of_simple_zero {E : ℍ → ℂ} (hE : MDiff E) {z : ℂ}
     (hz : 0 < z.im) (he : (E ∘ ofComplex) z = 0) (hd : deriv (E ∘ ofComplex) z ≠ 0) :
     ∀ᶠ w in 𝓝[≠] z, (E ∘ ofComplex) w ≠ 0 := by
@@ -80,9 +77,6 @@ private lemma eventually_ne_zero_nhdsNE_of_simple_zero {E : ℍ → ℂ} (hE : M
   rw [← hs]
   exact mul_ne_zero (sub_ne_zero.2 hwz) hw
 
-open UpperHalfPlane Filter in
-open ModularForm (E₄ E₆) in
-open scoped MatrixGroups ModularForm Manifold Topology in
 private lemma eq_of_eq_off_simple_zeros' {E A B : ℍ → ℂ} (hE : MDiff E)
     (hzero : ∀ τ : ℍ, E τ = 0 → deriv (E ∘ ofComplex) τ ≠ 0) (hA : MDiff A) (hB : MDiff B)
     (h : ∀ τ, E τ ≠ 0 → A τ = B τ) : A = B := by
@@ -104,9 +98,6 @@ private lemma eq_of_eq_off_simple_zeros' {E A B : ℍ → ℂ} (hE : MDiff E)
     (hBc.tendsto.mono_left nhdsWithin_le_nhds)
   simpa using this
 
-open UpperHalfPlane Filter in
-open ModularForm (E₄ E₆) in
-open scoped MatrixGroups ModularForm Manifold Topology in
 private lemma exists_isMF_mul_eq_of_vanishes_on_orbit {Γ : Subgroup SL(2, ℤ)} {N b : ℤ}
     {E H : ℍ → ℂ} {τ₀ : ℍ} (hE : _root_.GlobalTheory.OddFrame.IsMF ⊤ b E)
     (hzero : ∀ τ : ℍ, E τ = 0 → deriv (E ∘ ofComplex) τ ≠ 0 ∧ ∃ γ : SL(2, ℤ), τ = γ • τ₀)
@@ -211,9 +202,6 @@ private lemma exists_isMF_mul_eq_of_vanishes_on_orbit {Γ : Subgroup SL(2, ℤ)}
     rw [Pi.mul_apply, hkey x τ hτ, div_eq_mul_inv]
 
 
-open UpperHalfPlane Filter in
-open ModularForm (E₄ E₆) in
-open scoped MatrixGroups ModularForm Manifold Topology in
 theorem _root_.GlobalTheory.OddFrame.reduces_of_det_evM_eq_zero : ∀ (Γ : Subgroup SL(2, ℤ)) (r : ℕ) (s : Fin r → SL(2, ℤ)) (w : Fin r → ℤ)
     (F : Fin r → ℍ → ℂ) (τ₀ : ℍ), _root_.GlobalTheory.OddFrame.IsReps Γ s → (∀ j, Odd (w j) ∧ _root_.GlobalTheory.OddFrame.IsMF Γ (w j) (F j)) →
     (_root_.GlobalTheory.OddFrame.evM s w F τ₀).det = 0 → _root_.GlobalTheory.OddFrame.Reduces Γ w F := by

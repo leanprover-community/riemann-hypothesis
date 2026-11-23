@@ -244,7 +244,6 @@ section
 
 namespace GlobalTheory.Mem.Col2
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Forms Matrix
 
 abbrev Res {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E)) : Type := 𝓞 E ⧸ P.asIdeal
 
@@ -619,7 +618,6 @@ section
 
 namespace GlobalTheory.Mem.Col2
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Forms Matrix
 
 structure AtIn {E K ι : Type} [Field E] [NumberField E] [Field K] [Fintype ι] {R : Ranks} (I : ChainIn E K ι R) where
   T : ℕ

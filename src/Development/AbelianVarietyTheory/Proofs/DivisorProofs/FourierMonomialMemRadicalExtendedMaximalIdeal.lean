@@ -164,7 +164,6 @@ end GlobalTheory.Poinc.RadQ
 
 namespace GlobalTheory.Poinc.RadQ
 
-open IsDiscreteValuationRing
 
 theorem map_mono_eq_zero {O : Type} [CommRing O] {bar : O → O} {q s : ℕ} {W : Matrix (Fin s) (Fin s) ℤ} {A : Type}
     [CommRing A] [IsLocalRing A] (Φ : VPre bar q W A) (N₁ : ℕ) (hN : 3 ≤ N₁) (hE : Φ.Exact N₁) (y : Φ.Y)

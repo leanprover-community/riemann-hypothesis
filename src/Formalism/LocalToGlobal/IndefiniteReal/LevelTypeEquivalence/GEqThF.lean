@@ -42,11 +42,9 @@ open Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Kernel1
 
 variable {D : D7} {S T : HSp D}
 
-end Kernel1
 
 section CoefV
 

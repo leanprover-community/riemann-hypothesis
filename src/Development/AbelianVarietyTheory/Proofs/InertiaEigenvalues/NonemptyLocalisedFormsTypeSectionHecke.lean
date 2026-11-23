@@ -141,7 +141,6 @@ end GlobalTheory.PendOf.SecProof
 
 namespace GlobalTheory.PendOf.SecProof
 
-open GlobalTheory.EtaJoin.TypeTieProof Formalism.L2.NG Formalism.AUTREP ReciprocityTheory.Aut
 
 
 

@@ -78,7 +78,6 @@ private lemma exists_ringHom_of_isPushout {A X Y P W : Type} [CommRing A] [CommR
     congrArg CommRingCat.Hom.hom (hP.inl_desc (W := CommRingCat.of W) _ _ hw),
     congrArg CommRingCat.Hom.hom (hP.inr_desc (W := CommRingCat.of W) _ _ hw)⟩
 
-open CategoryTheory in
 private lemma ringHom_eq_of_isPushout_of_comp_eq {A X Y P W : Type} [CommRing A] [CommRing X] [CommRing Y]
     [CommRing P] [CommRing W] {f : A →+* X} {g : A →+* Y} {i : X →+* P} {j : Y →+* P}
     (hP : IsPushout (CommRingCat.ofHom f) (CommRingCat.ofHom g) (CommRingCat.ofHom i)
@@ -89,7 +88,6 @@ private lemma ringHom_eq_of_isPushout_of_comp_eq {A X Y P W : Type} [CommRing A]
     (by rw [← CommRingCat.ofHom_comp, ← CommRingCat.ofHom_comp, hj])
   exact congrArg CommRingCat.Hom.hom h
 
-open CategoryTheory in
 private lemma factorPow_comp_qmap_eq_qmap_comp_factorPow {l : ℕ} {R : Type} [CommRing R]
     {P P' : _root_.GlobalTheory.Prism.Obj l R} (f : _root_.GlobalTheory.Prism.Hom P P') {m n : ℕ} (hle : m ≤ n) :
     (Ideal.Quotient.factorPow (_root_.GlobalTheory.BSP.adI P') hle).comp
@@ -101,7 +99,6 @@ private lemma factorPow_comp_qmap_eq_qmap_comp_factorPow {l : ℕ} {R : Type} [C
   simp only [RingHom.comp_apply, _root_.GlobalTheory.BSP.qmap_mk]
   rfl
 
-open CategoryTheory in
 private lemma eq_of_forall_mk_pow_eq_of_isHausdorff {A : Type} [CommRing A] (I : Ideal A) [IsHausdorff I A]
     {x y : A} (hxy : ∀ n, Ideal.Quotient.mk (I ^ n) x = Ideal.Quotient.mk (I ^ n) y) :
     x = y := by
@@ -110,7 +107,6 @@ private lemma eq_of_forall_mk_pow_eq_of_isHausdorff {A : Type} [CommRing A] (I :
   rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, ← Ideal.Quotient.eq]
   exact hxy n
 
-open CategoryTheory in
 private lemma mem_subring_of_isPushout_of_maps_mem {A X Y P : Type} [CommRing A] [CommRing X] [CommRing Y]
     [CommRing P] {f : A →+* X} {g : A →+* Y} {i : X →+* P} {j : Y →+* P}
     (hP : IsPushout (CommRingCat.ofHom f) (CommRingCat.ofHom g) (CommRingCat.ofHom i)
@@ -136,7 +132,6 @@ private lemma mem_subring_of_isPushout_of_maps_mem {A X Y P : Type} [CommRing A]
   exact (r p).2
 
 
-open CategoryTheory in
 theorem _root_.GlobalTheory.BSP.PoUniv.isPO_univ (l : ℕ) [Fact l.Prime] (R : Type) [CommRing R]
     (B C B' C' : _root_.GlobalTheory.Prism.Obj l R) (h : _root_.GlobalTheory.Prism.Hom B C)
     (k : _root_.GlobalTheory.Prism.Hom B B') (k' : _root_.GlobalTheory.Prism.Hom C C') (h' : _root_.GlobalTheory.Prism.Hom B' C')

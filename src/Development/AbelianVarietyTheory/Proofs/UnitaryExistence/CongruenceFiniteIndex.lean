@@ -58,8 +58,6 @@ theorem _root_.GlobalTheory.CongruenceIndex.mul_mulVec (γ δ : GL (Fin r) E) (v
       (γ : Matrix (Fin r) (Fin r) E) *ᵥ ((δ : Matrix (Fin r) (Fin r) E) *ᵥ v) := by
   rw [Units.val_mul, Matrix.mulVec_mulVec]
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
   {Gm : Matrix (Fin r) (Fin r) E} {Λ : Submodule (𝓞 E) (Fin r → E)} in
 omit [NumberField E] [IsCMField E] in
@@ -69,16 +67,12 @@ theorem _root_.GlobalTheory.CongruenceIndex.mulVec_inv_mulVec (γ : GL (Fin r) E
   rw [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mulVec]
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
   {Gm : Matrix (Fin r) (Fin r) E} {Λ : Submodule (𝓞 E) (Fin r → E)} in
 theorem _root_.GlobalTheory.CongruenceIndex.isUStab_one : _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab Gm Λ 1 := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab
   exact ⟨fun x y => by simp, fun x => by simp⟩
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
   {Gm : Matrix (Fin r) (Fin r) E} {Λ : Submodule (𝓞 E) (Fin r → E)} in
 theorem _root_.GlobalTheory.CongruenceIndex.isUStab_mul {γ δ : GL (Fin r) E} (hγ : _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab Gm Λ γ) (hδ : _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab Gm Λ δ) :
@@ -89,8 +83,6 @@ theorem _root_.GlobalTheory.CongruenceIndex.isUStab_mul {γ δ : GL (Fin r) E} (
   · rw [_root_.GlobalTheory.CongruenceIndex.mul_mulVec]
     exact (hδ.2 x).trans (hγ.2 _)
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
   {Gm : Matrix (Fin r) (Fin r) E} {Λ : Submodule (𝓞 E) (Fin r → E)} in
 theorem _root_.GlobalTheory.CongruenceIndex.isUStab_inv {γ : GL (Fin r) E} (hγ : _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab Gm Λ γ) :
@@ -126,8 +118,6 @@ def congruenceSubgroup (Gm : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) 
     rw [smul_neg, ← sub_eq_add_neg, eq_sub_iff_add_eq]
     exact e.symm
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
   {Gm : Matrix (Fin r) (Fin r) E} {Λ : Submodule (𝓞 E) (Fin r → E)} in
 private theorem inv_mul_mem_congruenceSubgroup_of_agree_mod {T : Finset (Fin r → E)}
@@ -158,8 +148,6 @@ private theorem inv_mul_mem_congruenceSubgroup_of_agree_mod {T : Finset (Fin r �
     refine ⟨a • w, Λ.smul_mem a hw, ?_⟩
     rw [Matrix.mulVec_smul, ex, smul_add, smul_comm a M w]
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
   {Gm : Matrix (Fin r) (Fin r) E} {Λ : Submodule (𝓞 E) (Fin r → E)} in
 theorem _root_.GlobalTheory.CongruenceIndex.exists_finset_cosets (hΛ : Λ.FG) {M : ℕ} (hM : 0 < M) :
@@ -206,8 +194,6 @@ theorem _root_.GlobalTheory.CongruenceIndex.exists_finset_cosets (hΛ : Λ.FG) {
   abel
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
   {Gm : Matrix (Fin r) (Fin r) E} {Λ : Submodule (𝓞 E) (Fin r → E)} in
 theorem _root_.GlobalTheory.CongruenceIndex.congruence_finiteIndex : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r M : ℕ) (Gm : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)), Λ.FG → 0 < M → ∃ Γ : Subgroup (GL (Fin r) E), (∀ γ, γ ∈ Γ ↔ _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab Gm Λ γ ∧ (∀ v ∈ Λ, ∃ w ∈ Λ, (γ : Matrix (Fin r) (Fin r) E) *ᵥ v = v + M • w)) ∧ ∃ S : Finset (GL (Fin r) E), ∀ γ, _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab Gm Λ γ → ∃ s ∈ S, s⁻¹ * γ ∈ Γ := by

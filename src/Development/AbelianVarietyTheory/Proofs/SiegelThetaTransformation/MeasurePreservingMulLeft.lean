@@ -77,8 +77,6 @@ theorem _root_.GlobalTheory.SW.Slab.exists_lminor_near {r : ℕ} (S : Matrix (Fi
   exact h2
 
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 theorem _root_.GlobalTheory.SW.Slab.exists_bound_upper {r : ℕ} (d : Fin r → ℂ) (hd : ∀ a, ‖d a‖ = 1) (m : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ b : Matrix (Fin r) (Fin r) ℂ, b.BlockTriangular id → (∀ a, b a a ≠ 0) →
       (∀ a, ‖(b a a)⁻¹‖ ≤ 2) →
@@ -136,15 +134,11 @@ theorem _root_.GlobalTheory.SW.Slab.exists_bound_upper {r : ℕ} (d : Fin r → 
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r)
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.SW.Slab.norm_sgn (p a : ℕ) : ‖((_root_.ReciprocityTheory.ChartRestriction.G.FD.sgn p a : ℝ) : ℂ)‖ = 1 := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.sgn
   split_ifs <;> simp
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.SW.Slab.psgn_sq (p i : ℕ) : _root_.ReciprocityTheory.ChartRestriction.G.FD.psgn p i = 1 ∨ _root_.ReciprocityTheory.ChartRestriction.G.FD.psgn p i = -1 := by
   induction i with
@@ -153,8 +147,6 @@ theorem _root_.GlobalTheory.SW.Slab.psgn_sq (p i : ℕ) : _root_.ReciprocityTheo
     rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.psgn_succ]
     rcases ih with h | h <;> rcases _root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.sgn_sq p k with h' | h' <;> simp [h, h']
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.SW.Slab.lminor_sgnM (i : Fin (r + 1)) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.lminor (_root_.GlobalTheory.SW.sgnM X) i = ((_root_.ReciprocityTheory.ChartRestriction.G.FD.psgn X.p0 i : ℝ) : ℂ) := by
@@ -166,8 +158,6 @@ theorem _root_.GlobalTheory.SW.Slab.lminor_sgnM (i : Fin (r + 1)) :
   push_cast
   rfl
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private theorem gram_eq_transpose_mul_map_mul_conj' {E : Type} [Field E] {r : ℕ} (τ : E →+* ℂ)
     (G : Matrix (Fin r) (Fin r) E) (x : Matrix (Fin r) (Fin r) ℂ) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.gram τ G x = xᵀ * G.map τ * x.map (starRingEnd ℂ) := by
@@ -175,8 +165,6 @@ private theorem gram_eq_transpose_mul_map_mul_conj' {E : Type} [Field E] {r : �
   simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.gram, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC, _root_.ReciprocityTheory.ChartRestriction.G.FD.col, Matrix.mul_apply, Finset.sum_mul]
   rw [Finset.sum_comm]
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.SW.Slab.det_gram (τ : E →+* ℂ) (x : Matrix (Fin r) (Fin r) ℂ) :
     (_root_.ReciprocityTheory.ChartRestriction.G.FD.gram τ X.Gm x).det = x.det * τ X.Gm.det * conj x.det := by
@@ -184,8 +172,6 @@ theorem _root_.GlobalTheory.SW.Slab.det_gram (τ : E →+* ℂ) (x : Matrix (Fin
   have h2 : (x.map (starRingEnd ℂ)).det = conj x.det := (RingHom.map_det (starRingEnd ℂ) x).symm
   rw [gram_eq_transpose_mul_map_mul_conj', Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, h1, h2]
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.SW.Slab.continuous_gram (τ : X.Ψ) (a b : Fin r) :
     Continuous fun x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r => _root_.ReciprocityTheory.ChartRestriction.G.FD.gram τ.1 X.Gm (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ) a b := by
@@ -193,8 +179,6 @@ theorem _root_.GlobalTheory.SW.Slab.continuous_gram (τ : X.Ψ) (a b : Fin r) :
   simp only [Matrix.of_apply]
   fun_prop
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.SW.Slab.gram_lmulC {u : X.Ψ → Matrix (Fin r) (Fin r) ℂ}
     (hu : ∀ (τ : X.Ψ) v w, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (u τ *ᵥ v) (u τ *ᵥ w) = _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm v w)
@@ -208,24 +192,18 @@ end GlobalTheory.SW.Slab
 
 namespace GlobalTheory.SW
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem mem_slab_iff_norm_gram_sub_sgnM_lt {δ : ℝ} {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} :
     x ∈ _root_.GlobalTheory.SW.slab X δ ↔ ∀ (τ : X.Ψ) (a b : Fin r),
       ‖_root_.ReciprocityTheory.ChartRestriction.G.FD.gram τ.1 X.Gm (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ) a b - _root_.GlobalTheory.SW.sgnM X a b‖ < δ :=
   Iff.rfl
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem mem_dom_iff_det_ne_zero_and_sign_dmin {x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} :
     x ∈ X.dom ↔ ∀ τ : X.Ψ, (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ).det ≠ 0 ∧
       ∀ i : Fin (r + 1), 0 < _root_.ReciprocityTheory.ChartRestriction.G.FD.psgn X.p0 i * (_root_.ReciprocityTheory.ChartRestriction.G.FD.dmin X.Gm x τ i).re :=
   Iff.rfl
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private theorem sign_re_pos_and_norm_bounds_of_near_sign {z : ℂ} {s : ℝ} (hs : s = 1 ∨ s = -1)
     (h : ‖z - s‖ < 1 / 2) : 0 < s * z.re ∧ 1 / 2 < ‖z‖ ∧ ‖z‖ < 3 / 2 := by
   have hsn : ‖(s : ℂ)‖ = 1 := by rcases hs with rfl | rfl <;> simp
@@ -242,26 +220,18 @@ private theorem sign_re_pos_and_norm_bounds_of_near_sign {z : ℂ} {s : ℝ} (hs
   · have := norm_sub_norm_le z (s : ℂ)
     linarith
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private theorem lminor_last_eq_det {r : ℕ} (G : Matrix (Fin r) (Fin r) ℂ) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.lminor G (Fin.last r) = G.det := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.lminor; rfl
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private theorem mem_Bor_iff_det_ne_zero_and_lower_eq_zero {E : Type} [Field E] {Ψ : Finset (E →+* ℂ)} {r : ℕ}
     {b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame Ψ r} : b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor Ψ r ↔
       ∀ τ : Ψ, (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat b τ).det ≠ 0 ∧ ∀ a c : Fin r, c < a → b τ a c = 0 := Iff.rfl
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private theorem frame_ext_of_mat_eq' {E : Type} [Field E] {Ψ : Finset (E →+* ℂ)} {r : ℕ}
     {x y : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame Ψ r} (h : ∀ τ, _root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ = _root_.ReciprocityTheory.ChartRestriction.G.FD.mat y τ) : x = y :=
   funext fun τ => h τ
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 private theorem measurePreserving_mul_left_of_normSq_det_eq_one {r : ℕ} (u : Matrix (Fin r) (Fin r) ℂ)
     (hu : Complex.normSq u.det = 1) :
     MeasurePreserving (fun (M : Fin r → Fin r → ℂ) (i j : Fin r) => ∑ k, u i k * M k j)
@@ -301,14 +271,10 @@ private theorem measurePreserving_mul_left_of_normSq_det_eq_one {r : ℕ} (u : M
   simp only [inv_one, abs_one, ENNReal.ofReal_one, one_smul] at hmap
   exact hmap
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem mat_lmulC' (u : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) (τ : X.Ψ) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.mat (X.lmulC u x) τ = u τ * _root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ := rfl
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem norm_sgnM_le_one (a b : Fin r) :
     ‖_root_.GlobalTheory.SW.sgnM X a b‖ ≤ 1 := by
@@ -320,8 +286,6 @@ private theorem norm_sgnM_le_one (a b : Fin r) :
     simp
 
 
-open Matrix Complex NumberField MeasureTheory in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 theorem _root_.GlobalTheory.SW.thin_slab : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r), ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₀ → IsOpen (_root_.GlobalTheory.SW.slab X δ) ∧ _root_.GlobalTheory.SW.slab X δ ⊆ X.dom ∧ (∀ x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r, (∀ τ : X.Ψ, _root_.ReciprocityTheory.ChartRestriction.G.FD.gram τ.1 X.Gm (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ) = _root_.GlobalTheory.SW.sgnM X) → x ∈ _root_.GlobalTheory.SW.slab X δ) ∧ (∃ x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r, (∀ τ : X.Ψ, _root_.ReciprocityTheory.ChartRestriction.G.FD.gram τ.1 X.Gm (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ) = _root_.GlobalTheory.SW.sgnM X)) ∧ (∀ u : X.Ψ → Matrix (Fin r) (Fin r) ℂ, (∀ (τ : X.Ψ) v w, _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm (u τ *ᵥ v) (u τ *ᵥ w) = _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ.1 X.Gm v w) → MeasurePreserving (X.lmulC u) volume volume ∧ (∀ x, X.lmulC u x ∈ _root_.GlobalTheory.SW.slab X δ ↔ x ∈ _root_.GlobalTheory.SW.slab X δ) ∧ ∀ x, X.lmulC u x ∈ X.dom ↔ x ∈ X.dom) ∧ (∃ C : ℝ, ∀ x ∈ _root_.GlobalTheory.SW.slab X δ, ∃ x' : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r, (∀ τ : X.Ψ, _root_.ReciprocityTheory.ChartRestriction.G.FD.gram τ.1 X.Gm (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x' τ) = _root_.GlobalTheory.SW.sgnM X) ∧ ∃ b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor X.Ψ r, x = _root_.ReciprocityTheory.ChartRestriction.G.FD.rmul x' b ∧ ∀ τ i j, ‖b τ i j‖ ≤ C ∧ ‖(b τ i i)⁻¹‖ ≤ C) ∧ ∀ x ∈ X.dom, ∃ x' : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r, (∀ τ : X.Ψ, _root_.ReciprocityTheory.ChartRestriction.G.FD.gram τ.1 X.Gm (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x' τ) = _root_.GlobalTheory.SW.sgnM X) ∧ ∃ b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor X.Ψ r, x = _root_.ReciprocityTheory.ChartRestriction.G.FD.rmul x' b := by
   intro E _ _ _ r X
   obtain ⟨δ₀, hδ₀, hδ₀1, hnear⟩ := _root_.GlobalTheory.SW.Slab.exists_lminor_near (_root_.GlobalTheory.SW.sgnM X)

@@ -427,7 +427,6 @@ theorem dualMapR_eq_of_map {R R' : Type} [CommRing R] [CommRing R'] (f : R →+*
   rfl
 
 
-open Cardinal GlobalTheory.KeyEven in
 theorem key_unit_trait (κ : Rule) (hR : Rule4 κ) (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V]
     (hA : IsAdicComplete (IsLocalRing.maximalIdeal V) V) (hF : #V ≤ 𝔠)
     (G : Over (Sp V)) [GrpObj G] [IsCommMonObj G] (L : RigLB G) (σ : L.L.Sec) (x : KeyIn (FractionRing V))

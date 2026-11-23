@@ -157,7 +157,6 @@ noncomputable section
 
 namespace GlobalTheory.Amp.PinRoot
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.RealObj
 
 section Gen
 
@@ -282,7 +281,6 @@ noncomputable section
 
 namespace GlobalTheory.Amp.PinRoot
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.RealObj
 
 section Glob
 
@@ -439,7 +437,6 @@ noncomputable section
 
 namespace GlobalTheory.Amp.PinRoot
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.RealObj
 
 section Base
 
@@ -508,7 +505,6 @@ noncomputable section
 
 namespace GlobalTheory.Amp.PinRoot
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.RealObj
 
 section Main
 

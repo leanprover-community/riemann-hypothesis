@@ -381,7 +381,6 @@ theorem spanAt (hP : GlobalTheory.Published.CuspRapidDecay) (hsz : SizeOK D) (hL
 
 
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ThetaTranslateSize in
 theorem goodRangeAt (hP : GlobalTheory.Published.CuspRapidDecay) (hsz : SizeOK D) (hL : R.toLevCh.Is A.μ0) (hG : R.grp_record) (hF : R.IsFam)
     (hM : R.IsModels) (hT : R.IsThP) (i : Fin D.R.m) (t : T0) : GoodRangeAt R i t := by
   rw [goodRangeAt_iff hM.HW hT.thG, LinearMap.range_comp, range_thF R hP hsz hL hF hM hT i t]

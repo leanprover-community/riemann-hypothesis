@@ -338,7 +338,6 @@ def ofRankOne {L : X.Modules} (h : IsVB L 1) : Flag L 1 where
   isIso_last := IsIso.id L
 
 
-open ZeroObject in
 def ofBiprod {L M : X.Modules} (hL : IsVB L 1) (hM : IsVB M 1) : Flag (L ⊞ M) 2 where
   F := ![0, L, L ⊞ M]
   ι := Fin.cons 0 (Fin.cons biprod.inl (Fin.cons (𝟙 _) finZeroElim))

@@ -130,7 +130,6 @@ end GlobalTheory.CompanionTheory.NefSections
 
 namespace GlobalTheory.CompanionTheory.NefSections
 
-open GroundTheory.Heights₂.Heights ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Kleiman2
 
 theorem exists_rat_multilinear_le {M : Type} [AddCommGroup M] {n : ℕ}
     (f : (Π _ : Fin n, M) →ₘₗ[ℤ] ℤ) (μ e : M) (ε : ℚ) (hε : 0 < ε) :

@@ -54,7 +54,6 @@ private theorem prod_ty {F : Type} [Field F] {g : ℕ} [Fintype (F →+* ℂ)]
   simp only [Finset.mem_val, Finset.mem_filter, Finset.mem_univ, true_and] at hi
   rw [hi]
 
-open scoped Classical in
 theorem UpperTheory.Gal.W2.fibW_of :
     UpperTheory.Gal.W2.FibW := by
   intro F _ _ g n t₀ ε ty ev χ mu hcx hn heps hcard hrts hmu x y

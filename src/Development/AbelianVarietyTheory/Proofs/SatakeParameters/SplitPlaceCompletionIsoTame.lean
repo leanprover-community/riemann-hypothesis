@@ -164,7 +164,6 @@ theorem det_ne_zero_of_mem_blockGrp : ∀ (k : Type) [Field k] [ValuativeRel k] 
 end GlobalTheory.TypeBlockFix
 
 namespace GlobalTheory.TypeBlockFix
-open Filter Topology
 
 theorem comp_agree : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (s : SplitPlace L) (χ : HChar L) (ξ : (s.v.adicCompletion (maximalRealSubfield L))ˣ →* ℂˣ) (μ : (s.w.adicCompletion L)ˣ →* ℂˣ) (c : s.v.adicCompletion (maximalRealSubfield L) ≃+* s.w.adicCompletion L), Continuous c → (∀ x : L, c (s.i x) = algebraMap L (s.w.adicCompletion L) x) → NG.IsCompAt χ s ξ → GlobalTheory.NPin.IsComp χ s.w μ → ∀ u, ξ u = μ (Units.map c.toRingHom.toMonoidHom u) := by
   intro L _ _ _ s χ ξ μ c hc hci hξ hμ

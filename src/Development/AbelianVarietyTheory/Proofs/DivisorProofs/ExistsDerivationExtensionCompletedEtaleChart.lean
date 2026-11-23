@@ -210,7 +210,6 @@ end GlobalTheory.ChartDerivation
 
 namespace GlobalTheory.ChartDerivation
 
-open Polynomial
 
 theorem main : ∀ (A : Type) [CommRing A] [IsLocalRing A] (k : Type) [Field k] [CharZero k] (m d : ℕ) (ψ : A →+* ChartRing k m d), IsEtaleCompletion ψ → ∀ δ : Derivation ℤ A A, ∃ D' : Derivation ℤ (ChartRing k m d) (ChartRing k m d), ∀ a, D' (ψ a) = ψ (δ a) := by
   intro A _ _ k _ _ m d ψ hψ δ

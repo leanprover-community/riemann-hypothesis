@@ -104,8 +104,6 @@ end GlobalTheory.LocalUnitaryL2
 
 namespace GlobalTheory.LocalUnitaryL2
 
-open Filter
-open scoped ENNReal NNReal
 
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
 

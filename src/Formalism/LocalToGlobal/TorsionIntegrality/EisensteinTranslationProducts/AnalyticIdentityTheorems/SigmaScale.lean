@@ -213,7 +213,6 @@ theorem sigma_scale' : SigmaScale := fun _ _ _ P s lam =>
 
 namespace Scale
 
-open PowerSeries
 
 variable {K K' : Type} [Field K] [Field K'] (φ : K →+* K')
 

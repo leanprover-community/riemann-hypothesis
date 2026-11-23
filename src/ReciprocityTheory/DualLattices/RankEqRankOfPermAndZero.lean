@@ -57,7 +57,6 @@ namespace ReciprocityTheory.PGsh.Up
 
 open ReciprocityTheory.PGsh.L2
 
-section Rank
 
 private lemma map_smul_hom {n S T : Type} [Fintype n] [CommRing S] [CommRing T] (f : S →+* T)
     (r : S) (A : Matrix n n S) : (r • A).map f = f r • A.map f := by
@@ -145,7 +144,6 @@ private lemma εT_eig_left {H : HodgeTateDatum p g v R O σ cp} (U : UnramData p
   · intro h
     exact absurd (Finset.mem_univ j) h
 
-section Local
 
 variable [IsLocalRing R]
 
@@ -262,7 +260,6 @@ private lemma rank_phi_le (hS : HodgeTateSetting p v R O σ cp) [CharP (IsLocalR
         RankA.rank_map_le _ _
     _ = ((U.εT i).map (IsLocalRing.residue R)).rank := Matrix.finrank_range_mulVecLin _
 
-end Local
 
 end Rank
 

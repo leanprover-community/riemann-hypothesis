@@ -63,7 +63,6 @@ private theorem lev_left {R : Type} [CommRing R] {r s : ℕ} (x : GL (Fin r) R) 
   · rw [Matrix.add_apply, extendByZero_apply_eq_zero_of_row_not_mem _ _ fun k => (cast_ne_nat k i).symm]
     simp [Matrix.one_apply]
 
-open UpperTheory.V.Af.Fin in
 private theorem lev_right {R : Type} [CommRing R] {r s : ℕ} (y : GL (Fin s) R) :
     GlobalTheory.CompanionTheory.CTFin.lev R r s (1, y) = emb (e2 r s) y := by
   refine Units.ext ?_

@@ -53,8 +53,6 @@ private lemma sgStar_add_lattice_eq_mul_exp (hΛ : _root_.GlobalTheory.EvenTheta
   rw [← h, mul_assoc, ← Complex.exp_add]
   ring_nf <;> simp
 
-open NumberField Classical in
-open scoped BigOperators in
 variable {Λ : AddSubgroup ℂ} in
 private lemma mul_exp_eq_one_of_exp_relation {ε s x y w k : ℂ} (hs : s ≠ 0)
     (h : -1 * s * Complex.exp x = ε * (-1 * s * Complex.exp y) * Complex.exp w)
@@ -68,8 +66,6 @@ private lemma mul_exp_eq_one_of_exp_relation {ε s x y w k : ℂ} (hs : s ≠ 0)
   · exact absurd h0 (mul_ne_zero hs (Complex.exp_ne_zero x))
   · exact sub_eq_zero.1 h0
 
-open NumberField Classical in
-open scoped BigOperators in
 variable {Λ : AddSubgroup ℂ} in
 private lemma mul_mul_exp_eq_of_mul_exp_eq_one {ε k a s q : ℂ} (h : ε * Complex.exp k = 1) (hs : s = k + q) :
     ε * (a * Complex.exp s) = a * Complex.exp q := by
@@ -77,8 +73,6 @@ private lemma mul_mul_exp_eq_of_mul_exp_eq_one {ε k a s q : ℂ} (h : ε * Comp
   linear_combination (a * Complex.exp q) * h
 
 
-open NumberField Classical in
-open scoped BigOperators in
 variable {Λ : AddSubgroup ℂ} in
 theorem _root_.GlobalTheory.EvenTheta.evenThetaTwoTorsion_basic_properties : ∀ Λ : AddSubgroup ℂ, _root_.GlobalTheory.EvenTheta.IsLat Λ →
     ∀ t₀ : ℂ, t₀ ∉ Λ → 2 * t₀ ∈ Λ → Differentiable ℂ (_root_.Formalism.MainNotions.GL3Theta.th0 Λ t₀) ∧ _root_.Formalism.MainNotions.GL3Theta.th0 Λ t₀ 0 = 1 ∧

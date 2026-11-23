@@ -115,7 +115,6 @@ open scoped InnerProductSpace
 
 namespace ReciprocityTheory.ChartRestriction.DS.Lap
 
-open ReciprocityTheory.ChartRestriction.DS
 
 namespace CapelliMinorRestriction
 

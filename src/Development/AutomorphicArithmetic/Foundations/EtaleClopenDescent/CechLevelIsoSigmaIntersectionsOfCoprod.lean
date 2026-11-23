@@ -193,7 +193,6 @@ end
 end UpperTheory.Cb.RestrictionCovers
 
 namespace UpperTheory.Cb.RestrictionCovers
-open LateralTheory.E.CechSigmaProof LateralTheory.E.CechSigma_xy1Pf_Lev
 
 theorem nat_sq {Y X : Scheme.{0}} (g : Y ⟶ X) (O : X.Opens) {ι : Type} (V : ι → X.Opens)
     (hV : ∀ j, V j ≤ O) (n : ℕ)

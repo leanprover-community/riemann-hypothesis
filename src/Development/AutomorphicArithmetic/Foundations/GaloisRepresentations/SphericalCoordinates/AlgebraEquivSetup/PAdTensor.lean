@@ -142,7 +142,6 @@ private theorem conj_finiteAdeleMap {E : Type} [Field E] [NumberField E] [IsCMFi
 
 end UpperTheory.Gal.W2.Seed
 
-open GlobalTheory.SplitPts (conjE)
 open GroundTheory.Global.AdeleBaseChange (finiteAdeleMap)
 
 theorem UpperTheory.Gal.W2.Seed.pAdTensor :

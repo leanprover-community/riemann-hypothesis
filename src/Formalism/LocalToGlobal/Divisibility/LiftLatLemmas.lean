@@ -64,7 +64,6 @@ namespace Formalism.L2.DIV
 open Formalism.DivisionValues Formalism.L2.Indef
 open Formalism.HermitianLatticesTheory (locS localization₂ indexBasic_denom dualBasic_mem_dual)
 
-section Poly
 
 variable {K : Type} [Field K]
 
@@ -72,7 +71,6 @@ private theorem coeff_dualPoly' (s : K) (R : K[X]) (i : ℕ) :
     (dualPoly s R).coeff i = R.leadingCoeff⁻¹ * (R.coeff (revAt R.natDegree i) * s ^ i) := by
   rw [dualPoly, coeff_C_mul, comp_C_mul_X_coeff, coeff_reverse]
 
-end Poly
 
 theorem eta_units : EtaUnits := by
   intro K _ _ _ G _ _ Pl0 B ℓ Z w

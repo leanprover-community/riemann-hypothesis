@@ -140,7 +140,6 @@ end GlobalTheory.LieBasisRing
 
 namespace GlobalTheory.LieBasisRing
 
-open GlobalTheory.KSExist.FrameLift
 
 theorem lifts_basis_mod_fil : GlobalTheory.Published.AbelianDeRham → ∀ {E : Type} [Field E] [NumberField E] [IsCMField E]
     {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {S : Type} [CommRing S]

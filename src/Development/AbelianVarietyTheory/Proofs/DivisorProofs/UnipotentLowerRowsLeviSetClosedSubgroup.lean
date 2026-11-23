@@ -47,8 +47,6 @@ private theorem mem_levSet_iff_unitriangular_below_r {n r : ℕ} {g : GL (Fin n)
         (∀ j < i, (g : Matrix (Fin n) (Fin n) ℂ) i j = 0) ∧ (g : Matrix (Fin n) (Fin n) ℂ) i i = 1 :=
   Iff.rfl
 
-open MeasureTheory in
-open scoped FourierTransform ContDiff in
 private theorem mul_apply_eq_apply_of_unitriangular_index_le {n : ℕ} {A B : Matrix (Fin n) (Fin n) ℂ}
     {i : Fin n} (hA : (∀ j < i, A i j = 0) ∧ A i i = 1)
     (hB : ∀ k, i < k → ∀ j < k, B k j = 0) (j : Fin n) (hj : j ≤ i) :
@@ -63,8 +61,6 @@ private theorem mul_apply_eq_apply_of_unitriangular_index_le {n : ℕ} {A B : Ma
     exact absurd (Finset.mem_univ i) h
 
 
-open MeasureTheory in
-open scoped FourierTransform ContDiff in
 theorem _root_.GlobalTheory.JSW.levSet_closed_subgroup : ∀ (n r : ℕ),
     (∀ g ∈ _root_.GlobalTheory.JSW.levSet n r, ∀ h ∈ _root_.GlobalTheory.JSW.levSet n r,
       g * h ∈ _root_.GlobalTheory.JSW.levSet n r) ∧

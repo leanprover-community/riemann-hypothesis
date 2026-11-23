@@ -49,16 +49,12 @@ theorem _root_.GlobalTheory.Amp.RootMove.det_Hpk : IsUnit (_root_.Formalism.Quan
   refine isUnit_iff_exists_inv.2 ⟨(_root_.Formalism.QuantumDeterminants.Hpk k r).det, ?_⟩
   rw [← Matrix.det_mul, _root_.Formalism.QuantumDeterminants.GBasic.Hpk_sq, Matrix.det_one]
 
-open MeasureTheory Matrix in
-open scoped ENNReal in
 variable {k r : ℕ} in
 theorem _root_.GlobalTheory.Amp.RootMove.unit_det {g : _root_.Formalism.MainNotions.S.MatKR k r} (hg : g ∈ _root_.Formalism.QuantumDeterminants.UH (_root_.Formalism.QuantumDeterminants.Hpk k r)) :
     IsUnit g.det := _root_.Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hg
 
 def lr (a b : MatKR k r) : Mt k r → Mt k r := fun x => fun i j => (a * Matrix.of x * b) i j
 
-open MeasureTheory Matrix in
-open scoped ENNReal in
 variable {k r : ℕ} in
 theorem _root_.GlobalTheory.Amp.RootMove.continuous_lr (a b : _root_.Formalism.MainNotions.S.MatKR k r) :
     Continuous (_root_.GlobalTheory.Amp.RootMove.lr a b) := by
@@ -66,8 +62,6 @@ theorem _root_.GlobalTheory.Amp.RootMove.continuous_lr (a b : _root_.Formalism.M
   simp only [_root_.GlobalTheory.Amp.RootMove.lr, Matrix.mul_apply, Matrix.of_apply]
   fun_prop
 
-open MeasureTheory Matrix in
-open scoped ENNReal in
 variable {k r : ℕ} in
 private theorem isClosed_Nset' : IsClosed (_root_.Formalism.QuantumDeterminants.Nset k r) := by
   have hent : ∀ i j, Continuous fun g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ => g i j :=
@@ -87,8 +81,6 @@ private theorem isClosed_Nset' : IsClosed (_root_.Formalism.QuantumDeterminants.
   · exact isClosed_iInter fun i => isClosed_iInter fun j => isClosed_iInter fun _ =>
       isClosed_iInter fun _ => isClosed_iInter fun _ => isClosed_eq (hent _ _) continuous_const
 
-open MeasureTheory Matrix in
-open scoped ENNReal in
 variable {k r : ℕ} in
 theorem _root_.GlobalTheory.Amp.RootMove.measurableSet_notR (g : _root_.Formalism.MainNotions.S.MatKR k r) :
     MeasurableSet {x : _root_.Formalism.QuantumDeterminants.Mt k r | Matrix.of x ∉ _root_.Formalism.MainNotions.S.Rset k r g} := by
@@ -101,8 +93,6 @@ theorem _root_.GlobalTheory.Amp.RootMove.measurableSet_notR (g : _root_.Formalis
     (isClosed_Nset'.preimage h1).inter (isClosed_Nset'.preimage h2)
   exact hc.measurableSet.compl
 
-open MeasureTheory Matrix in
-open scoped ENNReal in
 variable {k r : ℕ} in
 theorem _root_.GlobalTheory.Amp.RootMove.measurable_rootCoords (z : Fin (2 * r + k + 1) → ℂ) (p : _root_.Formalism.MainNotions.S.Point ℂ (r + 1)) :
     Measurable (_root_.Formalism.MainNotions.S.rootCoords k r z p) := by
@@ -113,8 +103,6 @@ theorem _root_.GlobalTheory.Amp.RootMove.measurable_rootCoords (z : Fin (2 * r +
   · simp only [_root_.Formalism.MainNotions.S.rootCoords, _root_.Formalism.MainNotions.S.flagMat, hi, dite_false]
     exact continuous_const
 
-open MeasureTheory Matrix in
-open scoped ENNReal in
 variable {k r : ℕ} in
 private theorem flagMat_conj_eq_of_mem_UWset {z : Fin (2 * r + k + 1) → ℂ}
     {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hh : h ∈ _root_.Formalism.QuantumDeterminants.UWset k r z)
@@ -148,8 +136,6 @@ private theorem flagMat_conj_eq_of_mem_UWset {z : Fin (2 * r + k + 1) → ℂ}
   all_goals rfl
 
 
-open MeasureTheory Matrix in
-open scoped ENNReal in
 variable {k r : ℕ} in
 theorem _root_.GlobalTheory.Amp.RootMove.rootMeas_move : ∀ (D : _root_.Formalism.BasicNotions.D7) (z z' : Fin (2 * D.R.rS + D.R.k + 1) → ℂ) (p : _root_.Formalism.MainNotions.S.Point ℂ (D.R.rS + 1)) (g a a' : _root_.Formalism.MainNotions.S.MatKR D.R.k D.R.rS) (μ : Measure (_root_.Formalism.QuantumDeterminants.Mt D.R.k D.R.rS)), _root_.Formalism.QuantumDeterminants.inWb D.R.k D.R.rS z → _root_.Formalism.QuantumDeterminants.inWb D.R.k D.R.rS z' → 0 < _root_.Formalism.QuantumDeterminants.Tz D.R.k D.R.rS z → 0 < _root_.Formalism.QuantumDeterminants.Tz D.R.k D.R.rS z' → g ∈ _root_.Formalism.QuantumDeterminants.UH (_root_.Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS) → a ∈ _root_.Formalism.QuantumDeterminants.Sset D.R.k D.R.rS z → a' ∈ _root_.Formalism.QuantumDeterminants.Sset D.R.k D.R.rS z' → _root_.Formalism.MainNotions.S.IsRootMeasR D z z' p g μ → _root_.Formalism.MainNotions.S.IsRootMeasR D z z' p (a * g * a'⁻¹) (μ.map fun x => fun i j => (a' * Matrix.of x * a'⁻¹) i j) := by
   intro D z z' p g a a' μ hz hz' _ _ _ ha ha' hμ

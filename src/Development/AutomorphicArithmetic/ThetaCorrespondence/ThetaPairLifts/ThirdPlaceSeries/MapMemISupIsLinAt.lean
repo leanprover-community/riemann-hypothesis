@@ -47,7 +47,6 @@ end GlobalTheory.ThetaTri
 end
 noncomputable section
 namespace GlobalTheory.ThetaTri
-open MeasureTheory Formalism.IndefR.Datum GlobalTheory.ThetaLoc
 variable {D : D7} {V W : Formalism.BasicNotions.TH.HSp D}
   (om : Formalism.L2.Theta.GA D V × Formalism.L2.Theta.GA D W →* Module.End ℂ (WO V W → ℂ))
   {TauV Fm C : Type} [AddCommGroup TauV] [Module ℂ TauV]
@@ -111,7 +110,6 @@ end GlobalTheory.ThetaTri
 end
 noncomputable section
 namespace GlobalTheory.ThetaTri
-open MeasureTheory Formalism.IndefR.Datum GlobalTheory.ThetaLoc
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n r : ℕ}
 theorem map_mem_iSup_range_isLinAt {Θ Ω : Type} [AddCommGroup Θ] [Module ℂ Θ] [AddCommGroup Ω] [Module ℂ Ω]
     (ω₁ : GAf E n × GAf E r →* Module.End ℂ Θ) (ω₂ : GAf E n × GAf E r →* Module.End ℂ Ω)
@@ -157,7 +155,6 @@ end GlobalTheory.ThetaTri
 end
 noncomputable section
 namespace GlobalTheory.ThetaTri
-open MeasureTheory Formalism.IndefR.Datum Formalism.IndefR.Links GlobalTheory.ThetaLoc
 variable {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {D : D7} {P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D} {X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp}
 def omegaMapAtLocal (A : GlobalTheory.NJoin.Agree X P.M P.rep) (i : D.nd.Loc) (j : Fin D.R.m) (hj : j.1 + 1 = D.nd.j i)
     {Y : RowMod D P.rep (D.nd.j i)} (hc : GlobalTheory.NJoin.IsCanon X j hj Y) (hμ : Formalism.IndefR.RecTie.Used0 D (D.nd.mu i)) :

@@ -76,8 +76,6 @@ private theorem one_mem_colon_one_smul_of_fg {E : Type} [Field E] [NumberField E
   exact Submodule.smul_mem_smul hi ha
 
 
-open NumberField in
-open scoped nonZeroDivisors in
 theorem _root_.GlobalTheory.colon_one_span_image_eq_map {E K : Type} [Field E] [NumberField E] [Field K]
     [NumberField K]
     (τ : 𝓞 E →+* 𝓞 K) (τE : E →+* K) (hτ : ∀ x : 𝓞 E, τE x = ((τ x : 𝓞 K) : K))

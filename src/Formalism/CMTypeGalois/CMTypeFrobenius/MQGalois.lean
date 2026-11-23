@@ -128,11 +128,9 @@ lemma mq_isGalois (h : IsMQ a α) : IsGalois ℚ E := by
 
 end MQ
 
-section Exists
 
 variable {k : ℕ} (a : Fin k → ℤ)
 
-end Exists
 
 theorem mqGalois : MQGalois := by
   intro k E _ _ a α h ha

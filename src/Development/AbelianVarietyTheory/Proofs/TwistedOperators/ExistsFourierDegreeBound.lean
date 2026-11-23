@@ -122,7 +122,6 @@ end GlobalTheory.RealAvg
 
 namespace GlobalTheory.RealAvg
 
-open MvPolynomial
 open GlobalTheory.Grid (neg sgn ofSgn)
 
 end GlobalTheory.RealAvg

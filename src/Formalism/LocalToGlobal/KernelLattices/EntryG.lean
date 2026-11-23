@@ -43,25 +43,19 @@ open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV F
 open Formalism.L2.AlgTh (KerStd SplitS)
 open Formalism.DivisionValues (vw)
 
-section Cf
 
 variable {K : Type} [Field K] {ι : Type} [Fintype ι] {a b : ℕ}
 
 
 
-end Cf
 
-section AtG
 
 variable {X : Fields} (A : Amb X) {p : ℕ} [Fact p.Prime] {a b : ℕ}
 
-end AtG
 
-section Lat
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
 
-end Lat
 
 section AtRec
 
@@ -72,20 +66,16 @@ def StdOver {E : Type} [Field E] [NumberField E] {n : ℕ} (g : ℕ) (Lat : Subm
 
 end AtRec
 
-section Hyp
 
 variable {X : Fields} (A : Amb X) {p : ℕ} [Fact p.Prime] {a b : ℕ}
 
-end Hyp
 
-section Rec
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {Sg : Set ℕ}
   (mu : Tup X.F X.E X.K Sg) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
   (A : Amb X) {p : ℕ} [Fact p.Prime]
 
-end Rec
 
 section Paths
 
@@ -154,7 +144,6 @@ def RowInt (w : HeightOneSpectrum (𝓞 K)) (NB : Set Bsp) : Prop :=
 
 end Generic
 
-section Transport
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
@@ -172,15 +161,12 @@ variable {Q : KerChain K} (G : ChGood Q)
 
 variable {Bsp : Type} [AddCommGroup Bsp] [Module K Bsp] {J : Type}
 
-end Transport
 
-section Place
 
 open Formalism.L2.Indef Formalism.L2.AtG.EntryG Formalism.L2.AlgTh
 
 variable {X : Fields}
 
-end Place
 
 section Record
 
@@ -194,23 +180,19 @@ abbrev recQ {mu : Tup X.F X.E X.K Sg} {cst : LocCst X (rowSG Pr sel mu)} {L : Ch
     (hK : KerEquivC W Ch sel mu cst L Am u m2 b hY P) (hF : ∀ j, (chF W sel mu L u j).Ok) (hE : (evGSD W Ch sel mu P u).Ok) : KerChain X.K :=
   KerChain.ofCol W Ch sel mu cst L (chKerC W Ch sel mu cst L Am u m2 b hY P hK) hF hE
 
-section Entries
 
 variable {mu : Tup X.F X.E X.K Sg} {cst : LocCst X (rowSG Pr sel mu)} {L : ChIdx X Pr Rk (QE sel (mu : Chr X.F X.E X.K))}
   {P : LevFam X.E X.K Rk.r Pr.vGs} {u : Pr.Word} {m2 : ℕ} {b : L.β (m2 + 1)} {hY : YbHyp (R := Rk) sel mu cst L u m2 b} {Am : Amb X}
   {hK : KerEquivC W Ch sel mu cst L Am u m2 b hY P} {hF : ∀ j, (chF W sel mu L u j).Ok} {hE : (evGSD W Ch sel mu P u).Ok}
   (Bb : ChBas (recQ Am hK hF hE))
 
-end Entries
 
-section Steps
 
 variable {mu : Tup X.F X.E X.K Sg} {cst : LocCst X (rowSG Pr sel mu)} {L : ChIdx X Pr Rk (QE sel (mu : Chr X.F X.E X.K))}
   {P : LevFam X.E X.K Rk.r Pr.vGs} {u : Pr.Word} {m2 : ℕ} {b : L.β (m2 + 1)} {hY : YbHyp (R := Rk) sel mu cst L u m2 b} {Am : Amb X}
   {hK : KerEquivC W Ch sel mu cst L Am u m2 b hY P} {hF : ∀ j, (chF W sel mu L u j).Ok} {hE : (evGSD W Ch sel mu P u).Ok}
   {g : ℕ} [Fact g.Prime] {J : Type}
 
-end Steps
 
 end Record
 

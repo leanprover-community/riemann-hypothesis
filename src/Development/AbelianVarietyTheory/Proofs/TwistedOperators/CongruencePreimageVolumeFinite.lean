@@ -97,7 +97,6 @@ end GlobalTheory.UnitaryEmbeddingVolume
 
 namespace GlobalTheory.UnitaryEmbeddingVolume
 
-open Topology
 
 theorem vol_pos_lt_top : ∀ (D : D7) (Y V : HSp D) (d : HermitianOrthogonalExtensionData Y V 1 1) (Λ : Lat V) (𝔪 : Ideal (𝓞 D.host.E)),
     IsSelfDualC V Λ → 𝔪 ≠ ⊥ → ∀ μ : Measure (GfC Y), μ.IsHaarMeasure →

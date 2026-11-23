@@ -103,7 +103,6 @@ theorem cK_skew (x : CI k r → ℂ) (s : Fin r → ℝ) (a b : Fin r) : cK x s 
     ring
   · rw [dite_eq_right (not_lt.2 h.le), dite_eq_left h, dite_eq_left h, neg_add_cancel]
 
-section entries
 
 variable (t : (CI k r → ℂ) × (Fin r → ℝ))
 
@@ -128,7 +127,6 @@ variable (t : (CI k r → ℂ) × (Fin r → ℝ))
 @[simp] theorem Lm_ss (a b : Fin r) : Lm t (esI k r a) (esI k r b) = -star ((cA t.1 - 1) b a) := by
   simp only [Lm, Matrix.sub_apply, mk_ss, Matrix.zero_apply, sub_zero, Matrix.neg_apply, conjTranspose_apply]
 
-end entries
 
 theorem chart_filtration_one (t : (CI k r → ℂ) × (Fin r → ℝ)) : Fil 1 (Lm t) := by
   intro i j h

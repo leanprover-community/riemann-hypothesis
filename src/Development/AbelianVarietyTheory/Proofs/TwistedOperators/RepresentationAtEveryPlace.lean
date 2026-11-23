@@ -381,7 +381,6 @@ theorem emb_par {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthogonal
 end GlobalTheory.RowRep
 
 namespace GlobalTheory.RowRep
-open GlobalTheory.RootEx GlobalTheory.LocGrp GlobalTheory.LocGrpIff
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem jac_par {D : D7} {K : Type} [Field K] (π : AE D →+* K) {A B : HSp D} {σ : ℕ} {ε : D.host.E} (d : HermitianOrthogonalExtensionData A B (2 * σ) ε)
@@ -434,7 +433,6 @@ theorem jacGrp_mem_symR : ∀ {D : D7} {A B : HSp D} {c σ : ℕ} {ε : D.host.E
 end GlobalTheory.RowRep
 
 namespace GlobalTheory.RowRep
-open GlobalTheory.RootEx GlobalTheory.LocGrp GlobalTheory.LocGrpIff
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem bes_par {D : D7} {K : Type} [Field K] (π : AE D →+* K) {A B : HSp D} {σ : ℕ} (d : HermitianOrthogonalExtensionData A B (2 * σ + 1) (-1))

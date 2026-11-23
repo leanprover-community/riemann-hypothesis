@@ -289,7 +289,6 @@ theorem isoPart_opD {V : Submodule ℂ (Sm E N)} (hs : _root_.GlobalTheory.CuspR
     exact LinearMap.congr_fun (lie_rt_fin X (locGL E N w g)) y.1
 
 
-open GlobalTheory.CuspRep.LocUniq in
 theorem isLocCompGL_unique {V : Submodule ℂ (Sm E N)} (hV : IsDiscrete V) (w : HeightOneSpectrum (𝓞 E))
     (σ σ' : SmIrr (GL (Fin N) (w.adicCompletion E))) (h : IsLocCompGL V w σ) (h' : IsLocCompGL V w σ') :
     Nonempty (σ.ρ.Equiv σ'.ρ) := by

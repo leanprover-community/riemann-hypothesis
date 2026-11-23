@@ -60,9 +60,7 @@ theorem _root_.GlobalTheory.ChartCompare.hasSubst_C (a : σ → S) (ha : ∀ i, 
     HasSubst (fun i => (C (a i) : MvPowerSeries Empty S)) :=
   hasSubst_of_constantCoeff_nilpotent fun i => by simpa using ha i
 
-open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
-open MvPowerSeries in
 variable {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ]
   {S : Type} [CommRing S] [Algebra R₀ S] in
 private theorem nilpotent_eval_eq_finsum (f : MvPowerSeries σ R₀) (a : σ → S)
@@ -87,9 +85,7 @@ private theorem nilpotent_eval_eq_finsum (f : MvPowerSeries σ R₀) (a : σ →
   rw [_root_.GlobalTheory.IndefiniteRowSideFullHecke.FormalGroupTorsionCharts.evalTerm, Algebra.smul_def, Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
   simp
 
-open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
-open MvPowerSeries in
 variable {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ]
   {S : Type} [CommRing S] [Algebra R₀ S] in
 theorem _root_.GlobalTheory.ChartCompare.subst_C_eq (f : MvPowerSeries σ R₀) (a : σ → S)
@@ -105,9 +101,7 @@ theorem _root_.GlobalTheory.ChartCompare.subst_C_eq (f : MvPowerSeries σ R₀) 
     simp [map_finsuppProd]
   rw [hC, coeff_zero_C, _root_.GlobalTheory.IndefiniteRowSideFullHecke.FormalGroupTorsionCharts.evalTerm]
 
-open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
-open MvPowerSeries in
 variable {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ]
   {S : Type} [CommRing S] [Algebra R₀ S] in
 theorem _root_.GlobalTheory.ChartCompare.nEval_X (a : σ → S) (ha : ∀ i, IsNilpotent (a i)) (s : σ) :
@@ -116,9 +110,7 @@ theorem _root_.GlobalTheory.ChartCompare.nEval_X (a : σ → S) (ha : ∀ i, IsN
   rw [subst_X (_root_.GlobalTheory.ChartCompare.hasSubst_C a ha), coeff_zero_C, coeff_zero_C] at h
   exact h.symm
 
-open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
-open MvPowerSeries in
 variable {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ]
   {S : Type} [CommRing S] [Algebra R₀ S] in
 theorem _root_.GlobalTheory.ChartCompare.nEval_zero (a : σ → S) (ha : ∀ i, IsNilpotent (a i)) :
@@ -126,9 +118,7 @@ theorem _root_.GlobalTheory.ChartCompare.nEval_zero (a : σ → S) (ha : ∀ i, 
   rw [nilpotent_eval_eq_finsum _ a ha]
   simp [_root_.GlobalTheory.IndefiniteRowSideFullHecke.FormalGroupTorsionCharts.evalTerm]
 
-open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
-open MvPowerSeries in
 variable {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ]
   {S : Type} [CommRing S] [Algebra R₀ S] in
 theorem _root_.GlobalTheory.ChartCompare.isNilpotent_nEval (f : MvPowerSeries σ R₀)
@@ -141,9 +131,7 @@ theorem _root_.GlobalTheory.ChartCompare.isNilpotent_nEval (f : MvPowerSeries σ
   exact mem_nilradical.mp (hle h)
 
 
-open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
-open MvPowerSeries in
 variable {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ]
   {S : Type} [CommRing S] [Algebra R₀ S] in
 theorem _root_.GlobalTheory.ChartCompare.nEval_subst (b : σ → MvPowerSeries τ R₀)
@@ -160,9 +148,7 @@ theorem _root_.GlobalTheory.ChartCompare.nEval_subst (b : σ → MvPowerSeries �
   simpa using (congrArg (coeff 0) h).symm
 
 
-open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
-open MvPowerSeries in
 variable {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ]
   {S : Type} [CommRing S] [Algebra R₀ S] in
 private theorem finsupp_prod_pow_eq_toMultiset_map_prod (a : σ → S) (d : σ →₀ ℕ) :
@@ -170,9 +156,7 @@ private theorem finsupp_prod_pow_eq_toMultiset_map_prod (a : σ → S) (d : σ �
   rw [Finsupp.toMultiset_map, Finsupp.prod_toMultiset,
     Finsupp.prod_mapDomain_index (fun _ => pow_zero _) (fun _ _ _ => pow_add _ _ _)]
 
-open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
-open MvPowerSeries in
 variable {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ]
   {S : Type} [CommRing S] [Algebra R₀ S] in
 private theorem multiset_map_prod_sub_mem_of_sub_mem (a b : σ → S) (J : Ideal S) (hJ : ∀ i, a i - b i ∈ J)
@@ -186,9 +170,7 @@ private theorem multiset_map_prod_sub_mem_of_sub_mem (a b : σ → S) (J : Ideal
     rw [e]
     exact J.add_mem (J.mul_mem_left _ ih) (J.mul_mem_right _ (hJ i))
 
-open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
-open MvPowerSeries in
 variable {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ]
   {S : Type} [CommRing S] [Algebra R₀ S] in
 private theorem multiset_map_prod_sub_mem_mul_of_two_le_card (a b : σ → S) (I J : Ideal S) (ha : ∀ i, a i ∈ I)
@@ -211,9 +193,7 @@ private theorem multiset_map_prod_sub_mem_mul_of_two_le_card (a b : σ → S) (I
     (Ideal.mul_mem_mul hB (hJ i))
 
 
-open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
-open MvPowerSeries in
 variable {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [DecidableEq τ]
   {S : Type} [CommRing S] [Algebra R₀ S] in
 theorem _root_.GlobalTheory.ChartCompare.nEval_sub_mem (f : MvPowerSeries σ R₀) (a b : σ → S)
@@ -263,7 +243,6 @@ end Eval
 
 section Law
 
-open MvPowerSeries
 
 variable {g : ℕ}
 

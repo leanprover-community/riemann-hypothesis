@@ -83,8 +83,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.latM_e
     Units.val_inv_eq_inv_val]
 
 
-open NumberField Complex in
-open scoped nonZeroDivisors ContDiff in
 variable (F : Type) [Field F] [NumberField F] in
 variable {F} in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.unit_inv_mul (ε : (𝓞 F)ˣ) :
@@ -183,8 +181,6 @@ def HeckeWeightTwo : Prop :=
       DifferentiableOn ℂ (G 0) (upperHalf F) ∧ HasExpansion 𝔞 𝔟 2 (G 0)
 
 
-open NumberField Complex in
-open scoped nonZeroDivisors ContDiff in
 variable (F : Type) [Field F] [NumberField F] in
 variable {F} in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.prod_emb [IsTotallyReal F] (x : F) :
@@ -209,8 +205,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.prod_e
   rw [h2, h3]
 
 
-open NumberField Complex in
-open scoped nonZeroDivisors ContDiff in
 variable (F : Type) [Field F] [NumberField F] in
 variable {F} in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.eisTerm_unit [IsTotallyReal F] {k : ℕ} (hk : Even k)
@@ -231,8 +225,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.eisTer
     simp [hk.neg_pow, inv_neg, norm_neg]
 
 
-open NumberField Complex in
-open scoped nonZeroDivisors ContDiff in
 variable (F : Type) [Field F] [NumberField F] in
 variable {F} in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.eisClass_mk [IsTotallyReal F] (𝔞 𝔟 : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F)
@@ -248,8 +240,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.eisCla
   rw [hp, _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.eisTerm_unit hk]
 
 
-open NumberField Complex in
-open scoped nonZeroDivisors ContDiff in
 variable (F : Type) [Field F] [NumberField F] in
 variable {F} in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.qClass_mk (𝔞 𝔟 : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Frac F) (k : ℕ)
@@ -269,8 +259,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.qClass
   rw [hn, hmul]
 
 
-open NumberField Complex in
-open scoped nonZeroDivisors ContDiff in
 variable (F : Type) [Field F] [NumberField F] in
 variable {F} in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.latPt_ne_zero {z : _root_.GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization.Emb F → ℂ}

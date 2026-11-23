@@ -53,7 +53,6 @@ private theorem red_lift_self [CharP k p] {σ : Type} (f : MvPowerSeries σ k) :
   exact ⟨WittVector.teichmuller p (coeff α f), _root_.GlobalTheory.Katz.coeff_lift p f α,
     by rw [WittVector.constantCoeff_apply, WittVector.teichmuller_coeff_zero]⟩
 
-open MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] in
 variable [CharP k p] [PerfectRing k p] in
 omit [CharP k p] [PerfectRing k p] in
@@ -67,7 +66,6 @@ private theorem constantCoeff_at2_eq_zero {R : Type} [CommRing R] {d : ℕ} {τ 
     · exact hb₀ i
   exact constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero h) h hf
 
-open MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] in
 variable [CharP k p] [PerfectRing k p] in
 private theorem red_at2_of_red {d : ℕ} {τ : Type}
@@ -90,7 +88,6 @@ private theorem red_at2_of_red {d : ℕ} {τ : Type}
     · exact ha i
     · exact hb i
 
-open MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] in
 private theorem red_X' {σ : Type} (s : σ) :
     _root_.GlobalTheory.Katz.Red p (X s : MvPowerSeries σ (_root_.GlobalTheory.Katz.Fr p k))
@@ -102,7 +99,6 @@ private theorem red_X' {σ : Type} (s : σ) :
   · rw [coeff_X]; split_ifs <;> simp
   · rw [coeff_X]; split_ifs <;> simp
 
-open MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] in
 private theorem red_sub_divisor {σ : Type} {f g : MvPowerSeries σ (_root_.GlobalTheory.Katz.Fr p k)}
     {f' g' : MvPowerSeries σ k} (hf : _root_.GlobalTheory.Katz.Red p f f')
@@ -114,7 +110,6 @@ private theorem red_sub_divisor {σ : Type} {f g : MvPowerSeries σ (_root_.Glob
   obtain ⟨w, hw, hw'⟩ := hg α
   exact ⟨v - w, by rw [map_sub, map_sub, hv, hw], by rw [map_sub, map_sub, hv', hw']⟩
 
-open MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] in
 private theorem red_add_divisor {σ : Type} {f g : MvPowerSeries σ (_root_.GlobalTheory.Katz.Fr p k)}
     {f' g' : MvPowerSeries σ k} (hf : _root_.GlobalTheory.Katz.Red p f f')
@@ -126,7 +121,6 @@ private theorem red_add_divisor {σ : Type} {f g : MvPowerSeries σ (_root_.Glob
   obtain ⟨w, hw, hw'⟩ := hg α
   exact ⟨v + w, by rw [map_add (f := _), map_add (f := _), hv, hw], by rw [map_add (f := _), map_add (f := _), hv', hw']⟩
 
-open MvPowerSeries in
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] in
 variable [CharP k p] [PerfectRing k p] in
 private theorem at2_mem_intBy_of_red {d : ℕ} {τ : Type}

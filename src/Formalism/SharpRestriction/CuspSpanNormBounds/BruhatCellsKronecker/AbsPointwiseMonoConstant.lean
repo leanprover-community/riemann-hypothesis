@@ -113,7 +113,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.MainNotions.S.Bridge
 
 theorem take_of_mem_scanl (xs : List ℕ) : ∀ (a y : ℕ), y ∈ xs.scanl (· + ·) a → ∃ q, y = a + (xs.take q).sum := by
   induction xs with

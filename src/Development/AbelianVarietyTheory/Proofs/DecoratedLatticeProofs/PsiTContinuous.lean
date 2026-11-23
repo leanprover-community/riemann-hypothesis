@@ -102,7 +102,6 @@ theorem psiT_continuous (τ : D.what₂.Tau) : Continuous (psiT D τ) := by
   rw [hfun]
   exact continuous_finsetSum _ fun c _ => (halg.comp (hc c)).mul continuous_const
 
-open Formalism.IndefR.Eqv in
 theorem inB_eq (V : HSp D) (B : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ) (g : GA D V) (τ : D.what₂.Tau) :
     inB (thetaC D) V B g τ = (B τ)⁻¹ * infMat D.sp.cm.sig V.gram (thetaC D τ) g * B τ := by
   rw [infMat_thetaC]; rfl

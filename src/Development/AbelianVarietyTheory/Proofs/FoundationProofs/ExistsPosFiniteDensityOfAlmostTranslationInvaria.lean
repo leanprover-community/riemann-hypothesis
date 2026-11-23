@@ -59,7 +59,6 @@ private theorem measurableSet_pairs_mem_ball_mem_ball (ρ s : ℝ) :
   ((isOpen_ball.preimage continuous_fst).inter
     (isOpen_lt (continuous_snd.dist continuous_fst) continuous_const)).measurableSet
 
-open MeasureTheory Filter Topology Metric Set in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
 private theorem measure_ball_mul_le_mul_of_forall_le_measure_ball (lam ν : Measure V) [lam.IsAddHaarMeasure]
@@ -98,7 +97,6 @@ private theorem measure_ball_mul_le_mul_of_forall_le_measure_ball (lam ν : Meas
             rw [hempty, measure_empty]
     _ = lam (ball 0 s) * ν (ball 0 (ρ + s)) := lintegral_indicator_const measurableSet_ball _
 
-open MeasureTheory Filter Topology Metric Set in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
 private theorem measure_ball_mul_le_mul_of_forall_measure_ball_le (lam ν : Measure V) [lam.IsAddHaarMeasure]
@@ -138,7 +136,6 @@ private theorem measure_ball_mul_le_mul_of_forall_measure_ball_le (lam ν : Meas
     _ = lam (ball 0 ρ) * b := by rw [lintegral_indicator_const measurableSet_ball, mul_comm]
 
 
-open MeasureTheory Filter Topology Metric Set in
 theorem _root_.GlobalTheory.exists_pos_finite_density_of_almost_translation_invariant :
     ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] (lam ν : Measure V) [lam.IsAddHaarMeasure] [IsFiniteMeasure ν], (∀ r : ℝ, 0 < r → ν (ball 0 r) ≠ 0) → (∀ κ : ℝ, 1 < κ → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ ball (0 : V) δ, ∀ r ∈ Ioo (0 : ℝ) δ, ν (ball 0 r) ≤ ν (ball x (κ * r)) ∧ ν (ball x r) ≤ ν (ball 0 (κ * r))) → ∃ c : ENNReal, c ≠ 0 ∧ c ≠ ⊤ ∧ Tendsto (fun r : ℝ => ν (ball 0 r) / lam (ball 0 r)) (𝓝[>] 0) (𝓝 c) := by
   intro V _ _ _ _ _ lam ν _ _ hpos hinv

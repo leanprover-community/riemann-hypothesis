@@ -180,7 +180,6 @@ end GlobalTheory.Mem.SRe.TrPt
 
 namespace GlobalTheory.Mem.SRe.TrPt
 
-open Formalism.L2.SG.RowsJoinPinned (castGA)
 
 variable {D : D7}
 
@@ -252,7 +251,6 @@ end GlobalTheory.Mem.SRe.TrPt
 
 namespace GlobalTheory.Mem.SRe.TrPt
 
-open Formalism.L2.SG.RowsJoinPinned (castGA)
 open GlobalTheory.KapLevel
 
 variable {D : D7} {G' : Type} [Group G'] [Fintype G'] {Pl0 T : Type} {A : FamIn D.what₂.LL G' Pl0 T D.R.m}
@@ -299,7 +297,6 @@ end GlobalTheory.Mem.SRe.TrPt
 
 namespace GlobalTheory.Mem.SRe.TrPt
 
-open Formalism.L2.SG.RowsJoinPinned (castGA)
 
 variable {D : D7} {G' : Type} [Group G'] [Fintype G'] {Pl0 T : Type} {A : FamIn D.what₂.LL G' Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
@@ -364,7 +361,6 @@ end GlobalTheory.Mem.SRe.TrPt
 
 namespace GlobalTheory.Mem.SRe.TrPt
 
-open Formalism.L2.SG.RowsJoinPinned (castGA)
 
 variable {D : D7} {G' : Type} [Group G'] [Fintype G'] {Pl0 T : Type} {A : FamIn D.what₂.LL G' Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
@@ -480,7 +476,6 @@ end GlobalTheory.Mem.SRe.TrPt
 
 namespace GlobalTheory.Mem.SRe.TrPt
 
-open Formalism.L2.SG.RowsJoinPinned (castGA)
 
 theorem exists_trans : ∀ (D : D7) (G' : Type) [Group G'] [Fintype G'] (Pl0 T : Type) (A : FamIn D.what₂.LL G' Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (X : HidaSetting D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf D) (eR : G' ≃* G0g D.nd) (plg : (Σ k : Fin 2, D.nd.PlG k) ≃ R.Pg) (iso : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), ZMod (D.host.g kv.1) ≃+* kP (plg kv).1), (∀ x : X.B.I.E, HEq (X.ιE x) x) → R.toLevCh.Is A.μ0 → (∀ kv, ((plg kv : R.Pg) : Pl D.host.E) = D.naut.plGw kv.1 kv.2) → (∀ kv, R.C.P.Div kv.1 (plg kv).1) → (∀ g kv, R.eG g (plg kv) = Formalism.UG.bc (iso kv : ZMod (D.host.g kv.1) →+* kP (plg kv).1) (eR g kv)) → ∃ t₀ : GA D (D.sp.Y 0), t₀ ∈ GfC (Yc D 0) ∧ ∃ (red : X.B.I.Gf → G0g D.nd) (b : (Σ k : Fin 2, D.nd.PlG k) → Fin D.R.r → Fin X.B.I.n → X.B.I.E), IsRedHom X red ∧ FixRed X red b ∧ (∀ k ∈ X.B.I.Kset, IsLevelLift (Yc D 0) (R.βY 0) (R.dat0 R.triv) (R.eG (eR.symm (red k))) (kap X h t₀ k)) ∧ ∀ y ∈ levG (Yc D 0) (R.βY 0) (flagL (R.dat0 R.triv)), ∃ k ∈ X.B.I.Kset, y = kap X h t₀ k := by
   intro D G' _ _ Pl0 T A Ks _ _ _ R X h eR plg iso hιE hLev hplw _ hpe

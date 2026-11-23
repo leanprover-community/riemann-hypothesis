@@ -54,8 +54,6 @@ theorem _root_.GlobalTheory.OrbitUnfold.nullMeasurableSet_pull (hF : IsFundament
     NullMeasurableSet (_root_.GlobalTheory.OrbitUnfold.pull 𝓕 g) ν :=
   hF.nullMeasurableSet.preimage (measurePreserving_mul_left ν g).quasiMeasurePreserving
 
-open MeasureTheory Set in
-open scoped ENNReal Pointwise in
 variable {H : Type} [Group H] [MeasurableSpace H] [MeasurableMul H] {ν : Measure H}
   [ν.IsMulLeftInvariant] {Γ : Subgroup H} {Y : Type} [MulAction Γ Y] {𝓕 : Set H} in
 theorem _root_.GlobalTheory.OrbitUnfold.aedisjoint_pull (hF : IsFundamentalDomain Γ 𝓕 ν) {a b : Γ}
@@ -67,16 +65,12 @@ theorem _root_.GlobalTheory.OrbitUnfold.aedisjoint_pull (hF : IsFundamentalDomai
   rw [key, key]
   exact hF.aedisjoint (inv_injective.ne hab)
 
-open MeasureTheory Set in
-open scoped ENNReal Pointwise in
 variable {H : Type} [Group H] [MeasurableSpace H] [MeasurableMul H] {ν : Measure H}
   [ν.IsMulLeftInvariant] {Γ : Subgroup H} {Y : Type} [MulAction Γ Y] {𝓕 : Set H} in
 theorem _root_.GlobalTheory.OrbitUnfold.setIntegral_pull (g : H) (f : H → ℂ) :
     ∫ h in _root_.GlobalTheory.OrbitUnfold.pull 𝓕 g, f (g * h) ∂ν = ∫ h in 𝓕, f h ∂ν :=
   (measurePreserving_mul_left ν g).setIntegral_preimage_emb (measurableEmbedding_mulLeft g) f 𝓕
 
-open MeasureTheory Set in
-open scoped ENNReal Pointwise in
 variable {H : Type} [Group H] [MeasurableSpace H] [MeasurableMul H] {ν : Measure H}
   [ν.IsMulLeftInvariant] {Γ : Subgroup H} {Y : Type} [MulAction Γ Y] {𝓕 : Set H} in
 theorem _root_.GlobalTheory.OrbitUnfold.setLIntegral_pull (g : H) (f : H → ℝ≥0∞) :
@@ -85,8 +79,6 @@ theorem _root_.GlobalTheory.OrbitUnfold.setLIntegral_pull (g : H) (f : H → ℝ
     (measurableEmbedding_mulLeft g) f 𝓕
 
 
-open MeasureTheory Set in
-open scoped ENNReal Pointwise in
 variable {H : Type} [Group H] [MeasurableSpace H] [MeasurableMul H] {ν : Measure H}
   [ν.IsMulLeftInvariant] {Γ : Subgroup H} {Y : Type} [MulAction Γ Y] {𝓕 : Set H} in
 theorem _root_.GlobalTheory.OrbitUnfold.isFundamentalDomain_iUnion_pull (hF : IsFundamentalDomain Γ 𝓕 ν)
@@ -125,8 +117,6 @@ theorem _root_.GlobalTheory.OrbitUnfold.isFundamentalDomain_iUnion_pull (hF : Is
     subst this
     rfl
 
-open MeasureTheory Set in
-open scoped ENNReal Pointwise in
 variable {H : Type} [Group H] [MeasurableSpace H] [MeasurableMul H] {ν : Measure H}
   [ν.IsMulLeftInvariant] {Γ : Subgroup H} {Y : Type} [MulAction Γ Y] {𝓕 : Set H} in
 private theorem selfEquivSigmaOrbits_symm_mk {G X : Type} [Group G] [MulAction G X]
@@ -134,8 +124,6 @@ private theorem selfEquivSigmaOrbits_symm_mk {G X : Type} [Group G] [MulAction G
     (MulAction.selfEquivSigmaOrbits G X).symm ⟨ω, x⟩ = x := rfl
 
 
-open MeasureTheory Set in
-open scoped ENNReal Pointwise in
 variable {H : Type} [Group H] [MeasurableSpace H] [MeasurableMul H] {ν : Measure H}
   [ν.IsMulLeftInvariant] {Γ : Subgroup H} {Y : Type} [MulAction Γ Y] {𝓕 : Set H} in
 theorem _root_.GlobalTheory.OrbitUnfold.tsum_setIntegral_eq_zero :

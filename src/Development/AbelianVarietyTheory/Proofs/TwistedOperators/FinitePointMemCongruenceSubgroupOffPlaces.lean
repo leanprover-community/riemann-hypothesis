@@ -80,8 +80,6 @@ theorem exists_F_mem_not_mem {S : Finset (HeightOneSpectrum (𝓞 D.host.F))} {�
 end GlobalTheory.CongOff
 
 namespace GlobalTheory.CongOff
-open Matrix
-open scoped TensorProduct
 
 section General
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
@@ -118,8 +116,6 @@ end General
 end GlobalTheory.CongOff
 
 namespace GlobalTheory.CongOff
-open Matrix
-open scoped TensorProduct
 
 theorem fg_ideal_smul {R M : Type} [CommRing R] [IsNoetherianRing R] [AddCommGroup M] [Module R M] (I : Ideal R)
     (N : Submodule R M) (hN : N.FG) : (I • N).FG := by

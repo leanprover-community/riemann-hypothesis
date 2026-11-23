@@ -130,8 +130,6 @@ private theorem exists_algHom_apply_ne_zero_of_pointDerivation_eq_zero {C B : Ty
     rw [hI, LinearMap.mem_ker, LinearMap.mulRight_apply, sub_mul, _root_.one_mul, hey, sub_self])
   exact hm.ne_top ((Ideal.eq_top_iff_one m).2 (by simpa using m.add_mem h1e he'm))
 
-open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj in
-open scoped CategoryTheory.Obj CategoryTheory.MonObj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 private theorem finrank_eq_card_algHom_of_pointDerivation_eq_zero {C B : Type} [Field C] [IsAlgClosed C]
     [CommRing B] [Algebra C B] [FiniteDimensional C B]
@@ -156,8 +154,6 @@ private theorem finrank_eq_card_algHom_of_pointDerivation_eq_zero {C B : Type} [
         rw [Module.finrank_fintype_fun_eq_card, Nat.card_eq_fintype_card]
 
 
-open TensorProduct IsLocalRing Matrix CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj in
-open scoped CategoryTheory.Obj CategoryTheory.MonObj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.finEtale_main :
     (∀ (C O A : Type) [Field C] [IsAlgClosed C] (v : Valuation C NNReal) [CommRing O]

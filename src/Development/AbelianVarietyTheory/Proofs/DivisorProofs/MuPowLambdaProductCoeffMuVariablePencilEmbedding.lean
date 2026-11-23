@@ -80,7 +80,6 @@ section
 
 noncomputable section
 
-open MvPolynomial
 
 namespace GlobalTheory.PsCo.Pc1.A
 
@@ -128,13 +127,11 @@ private lemma pderiv_mu_lambdaPoly_lemma_5 (f : _root_.GlobalTheory.PsCo.Pc1.A.P
     simp only [map_mul, Derivation.leibniz, hp, smul_eq_mul, map_add (f := _)]
     simp [_root_.GlobalTheory.PsCo.Pc1.A.inM, pderiv_X]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma pderiv_mu_muVariable_lemma_6 : pderiv none (_root_.GlobalTheory.PsCo.Pc1.A.muM n L) = 1 := by
   simp [_root_.GlobalTheory.PsCo.Pc1.A.muM, pderiv_X]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma pencilModeDerivation_lambdaPoly_lemma_7 (x : _root_.GlobalTheory.PsCo.Pc1.Mode ε) (f : _root_.GlobalTheory.PsCo.Pc1.A.PolyL n L) :
@@ -147,7 +144,6 @@ private lemma pencilModeDerivation_lambdaPoly_lemma_7 (x : _root_.GlobalTheory.P
     simp only [map_mul, Derivation.leibniz, hp, smul_eq_mul, map_add (f := _)]
     simp [_root_.GlobalTheory.PsCo.Pc1.A.dMu, _root_.GlobalTheory.PsCo.Pc1.A.inM, mkDerivation_X]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma lambdaModeDerivation_entryPoly_lemma_8 (x : _root_.GlobalTheory.PsCo.Pc1.Mode ε) (P : _root_.GlobalTheory.PsCo.Pc1.Poly n) :
@@ -160,21 +156,18 @@ private lemma lambdaModeDerivation_entryPoly_lemma_8 (x : _root_.GlobalTheory.Ps
     simp only [map_mul, Derivation.leibniz, hp, smul_eq_mul, map_add (f := _)]
     simp [_root_.GlobalTheory.PsCo.Pc1.A.dL, _root_.GlobalTheory.PsCo.Pc1.A.inL, mkDerivation_X]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma pencilModeDerivation_muVariable_lemma_9 (x : _root_.GlobalTheory.PsCo.Pc1.Mode ε) :
     _root_.GlobalTheory.PsCo.Pc1.A.dMu L ε x (_root_.GlobalTheory.PsCo.Pc1.A.muM n L) = 0 := by
   simp [_root_.GlobalTheory.PsCo.Pc1.A.dMu, _root_.GlobalTheory.PsCo.Pc1.A.muM, mkDerivation_X]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma lambdaModeDerivation_variable_lemma_10 (x : _root_.GlobalTheory.PsCo.Pc1.Mode ε) (i : Fin L) :
     _root_.GlobalTheory.PsCo.Pc1.A.dL L ε x (_root_.GlobalTheory.PsCo.Pc1.A.laL n i) = 0 := by
   simp [_root_.GlobalTheory.PsCo.Pc1.A.dL, _root_.GlobalTheory.PsCo.Pc1.A.laL, mkDerivation_X]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma modeDerivation_offDiagonalEntry_lemma_21 (x j : _root_.GlobalTheory.PsCo.Pc1.Mode ε) :
@@ -187,7 +180,6 @@ private lemma modeDerivation_offDiagonalEntry_lemma_21 (x j : _root_.GlobalTheor
   have h2 : b ≠ r := fun h => by simp_all
   simp [h1, h2]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma modeDerivation_offDiagonalBlockSqNorm_lemma_19 (x : _root_.GlobalTheory.PsCo.Pc1.Mode ε) :
@@ -197,7 +189,6 @@ private lemma modeDerivation_offDiagonalBlockSqNorm_lemma_19 (x : _root_.GlobalT
   simp [_root_.GlobalTheory.PsCo.Pc1.rP, _root_.GlobalTheory.PsCo.Pc1.OmP, map_sum, Derivation.leibniz,
   modeDerivation_offDiagonalEntry_lemma_21]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma pencilModeDerivation_embedding_lemma_16 (x : _root_.GlobalTheory.PsCo.Pc1.Mode ε) (s : _root_.GlobalTheory.PsCo.Pc1.Poly n) :
@@ -205,7 +196,6 @@ private lemma pencilModeDerivation_embedding_lemma_16 (x : _root_.GlobalTheory.P
       _root_.GlobalTheory.PsCo.Pc1.A.i2 L (_root_.GlobalTheory.PsCo.Pc1.dM ε x s) := by
   simp [_root_.GlobalTheory.PsCo.Pc1.A.i2, pencilModeDerivation_lambdaPoly_lemma_7, lambdaModeDerivation_entryPoly_lemma_8]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma lambdaPoly_mem_lambdaSquaresIdealPolyM_lemma_20 {g : _root_.GlobalTheory.PsCo.Pc1.A.PolyL n L}
@@ -217,7 +207,6 @@ private lemma lambdaPoly_mem_lambdaSquaresIdealPolyM_lemma_20 {g : _root_.Global
     simp [Function.comp_def, map_pow]
   exact h ▸ Ideal.mem_map_of_mem _ hg
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma weight_modeDerivation_sub_mem_lemma_11 (M : ℕ) (m : Fin L → _root_.GlobalTheory.PsCo.Pc1.Poly n)
@@ -289,7 +278,6 @@ private lemma weight_modeDerivation_sub_mem_lemma_11 (M : ℕ) (m : Fin L → _r
   rw [key]
   exact lambdaPoly_mem_lambdaSquaresIdealPolyM_lemma_20 (Ideal.mul_mem_left _ _ hP0)
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma optionEquivLeft_rename_some_eq_C_lemma_23 (a : _root_.GlobalTheory.PsCo.Pc1.A.PolyL n L) :
@@ -301,7 +289,6 @@ private lemma optionEquivLeft_rename_some_eq_C_lemma_23 (a : _root_.GlobalTheory
     simp [optionEquivLeft_X_some]
   exact congrArg (fun f => f a) h
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma muCoeff_lambdaPoly_mul_lemma_18 (a : _root_.GlobalTheory.PsCo.Pc1.A.PolyL n L) (F : _root_.GlobalTheory.PsCo.Pc1.A.PolyM n L) (k : ℕ) :
@@ -309,7 +296,6 @@ private lemma muCoeff_lambdaPoly_mul_lemma_18 (a : _root_.GlobalTheory.PsCo.Pc1.
       a * _root_.GlobalTheory.PsCo.Pc1.A.coefM n L k F := by
   simp [_root_.GlobalTheory.PsCo.Pc1.A.coefM, _root_.GlobalTheory.PsCo.Pc1.A.inM, optionEquivLeft_rename_some_eq_C_lemma_23]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma lambdaCoeff_mul_variable_sq_lemma_22 (G : _root_.GlobalTheory.PsCo.Pc1.A.PolyL n L) (i : Fin L) :
@@ -322,7 +308,6 @@ private lemma lambdaCoeff_mul_variable_sq_lemma_22 (G : _root_.GlobalTheory.PsCo
   have := h i
   simp [_root_.GlobalTheory.PsCo.Pc1.A.allOnes] at this
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma coeff_eq_zero_of_mem_lambdaSquares_lemma_12 {g : _root_.GlobalTheory.PsCo.Pc1.A.PolyM n L}
@@ -335,7 +320,6 @@ private lemma coeff_eq_zero_of_mem_lambdaSquares_lemma_12 {g : _root_.GlobalTheo
   refine Finset.sum_eq_zero fun l _ => ?_
   rw [← map_pow, mul_comm, muCoeff_lambdaPoly_mul_lemma_18, mul_comm, lambdaCoeff_mul_variable_sq_lemma_22]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma sumAlgEquiv_rename_inr_eq_C_lemma_25 (s : _root_.GlobalTheory.PsCo.Pc1.Poly n) :
@@ -343,7 +327,6 @@ private lemma sumAlgEquiv_rename_inr_eq_C_lemma_25 (s : _root_.GlobalTheory.PsCo
   have h := sumAlgEquiv_comp_rename_inr ℂ (Fin L) (_root_.GlobalTheory.PsCo.Pc1.A.EntIdx n)
   exact congrArg (fun f => f s) h
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma extractCoeff_inl_mul (s : _root_.GlobalTheory.PsCo.Pc1.Poly n) (G : _root_.GlobalTheory.PsCo.Pc1.A.PolyL n L) :
@@ -351,7 +334,6 @@ private lemma extractCoeff_inl_mul (s : _root_.GlobalTheory.PsCo.Pc1.Poly n) (G 
       s * _root_.GlobalTheory.PsCo.Pc1.A.exL n L G := by
   simp [_root_.GlobalTheory.PsCo.Pc1.A.exL, _root_.GlobalTheory.PsCo.Pc1.A.inL, sumAlgEquiv_rename_inr_eq_C_lemma_25, coeff_C_mul]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma coeff_pderiv_mu_lemma_13 (F : _root_.GlobalTheory.PsCo.Pc1.A.PolyM n L) (k : ℕ) :
@@ -363,7 +345,6 @@ private lemma coeff_pderiv_mu_lemma_13 (F : _root_.GlobalTheory.PsCo.Pc1.A.PolyM
   rw [show ((k : _root_.GlobalTheory.PsCo.Pc1.A.PolyL n L) + 1) =
       _root_.GlobalTheory.PsCo.Pc1.A.inL n L ((k : _root_.GlobalTheory.PsCo.Pc1.Poly n) + 1) by simp, extractCoeff_inl_mul]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma coeff_embedding_mul_lemma_14 (s : _root_.GlobalTheory.PsCo.Pc1.Poly n) (F : _root_.GlobalTheory.PsCo.Pc1.A.PolyM n L) (k : ℕ) :
@@ -371,7 +352,6 @@ private lemma coeff_embedding_mul_lemma_14 (s : _root_.GlobalTheory.PsCo.Pc1.Pol
       s * _root_.GlobalTheory.PsCo.Pc1.A.exL n L (_root_.GlobalTheory.PsCo.Pc1.A.coefM n L k F) := by
   simp [_root_.GlobalTheory.PsCo.Pc1.A.i2, muCoeff_lambdaPoly_mul_lemma_18, extractCoeff_inl_mul]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma coeff_modeDerivation_lemma_15 {ε : Fin n → Bool} (x : _root_.GlobalTheory.PsCo.Pc1.Mode ε)
@@ -381,14 +361,12 @@ private lemma coeff_modeDerivation_lemma_15 {ε : Fin n → Bool} (x : _root_.Gl
         (_root_.GlobalTheory.PsCo.Pc1.A.exL n L (_root_.GlobalTheory.PsCo.Pc1.A.coefM n L k F)) := by
   rw [_root_.GlobalTheory.PsCo.Cw2a.coefM_dMu, _root_.GlobalTheory.PsCo.Cw2a.exL_dL_holds]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma muCoeff_zero_mu_mul_lemma_26 (F : _root_.GlobalTheory.PsCo.Pc1.A.PolyM n L) :
     _root_.GlobalTheory.PsCo.Pc1.A.coefM n L 0 (_root_.GlobalTheory.PsCo.Pc1.A.muM n L * F) = 0 := by
   simp [_root_.GlobalTheory.PsCo.Pc1.A.coefM, _root_.GlobalTheory.PsCo.Pc1.A.muM]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma muCoeff_succ_mu_mul_lemma_27 (F : _root_.GlobalTheory.PsCo.Pc1.A.PolyM n L) (k : ℕ) :
@@ -396,7 +374,6 @@ private lemma muCoeff_succ_mu_mul_lemma_27 (F : _root_.GlobalTheory.PsCo.Pc1.A.P
       _root_.GlobalTheory.PsCo.Pc1.A.coefM n L k F := by
   simp [_root_.GlobalTheory.PsCo.Pc1.A.coefM, _root_.GlobalTheory.PsCo.Pc1.A.muM]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma coeff_mu_mul_lemma_17 (F : _root_.GlobalTheory.PsCo.Pc1.A.PolyM n L) (k : ℕ) :
@@ -407,14 +384,12 @@ private lemma coeff_mu_mul_lemma_17 (F : _root_.GlobalTheory.PsCo.Pc1.A.PolyM n 
   | zero => simp [muCoeff_zero_mu_mul_lemma_26, _root_.GlobalTheory.PsCo.Pc1.prev]
   | succ k => simp [muCoeff_succ_mu_mul_lemma_27, _root_.GlobalTheory.PsCo.Pc1.prev]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma shift_const_mul_lemma_4 (s : _root_.GlobalTheory.PsCo.Pc1.Poly n) (f : ℕ → _root_.GlobalTheory.PsCo.Pc1.Poly n) (k : ℕ) :
     _root_.GlobalTheory.PsCo.Pc1.prev (fun k => s * f k) k = s * _root_.GlobalTheory.PsCo.Pc1.prev f k := by
   cases k <;> simp [_root_.GlobalTheory.PsCo.Pc1.prev]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} (ε : Fin n → Bool) in
 private lemma koszulRecursion_solvable_of_product_lemma (M : ℕ) (m : Fin L → _root_.GlobalTheory.PsCo.Pc1.Poly n)
@@ -492,14 +467,12 @@ private lemma koszulRecursion_solvable_of_product_lemma (M : ℕ) (m : Fin L →
     simp only [_root_.GlobalTheory.PsCo.Pc1.topP]
     ring
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma shift_zero_lemma_2 (k : ℕ) :
     _root_.GlobalTheory.PsCo.Pc1.prev (fun _ => (0 : _root_.GlobalTheory.PsCo.Pc1.Poly n)) k = 0 := by
   cases k <;> simp [_root_.GlobalTheory.PsCo.Pc1.prev]
 
-open MvPolynomial in
 variable {n L : ℕ} in
 variable {n L : ℕ} in
 private lemma shift_add_lemma_3 (f g : ℕ → _root_.GlobalTheory.PsCo.Pc1.Poly n) (k : ℕ) :
@@ -508,7 +481,6 @@ private lemma shift_add_lemma_3 (f g : ℕ → _root_.GlobalTheory.PsCo.Pc1.Poly
   cases k <;> simp [_root_.GlobalTheory.PsCo.Pc1.prev]
 
 
-open MvPolynomial in
 variable {n L : ℕ} in
 theorem _root_.GlobalTheory.PsCo.Pc1.A.stAlg : _root_.GlobalTheory.PsCo.Pc1.StAlg := by
   intro n ε M P hP

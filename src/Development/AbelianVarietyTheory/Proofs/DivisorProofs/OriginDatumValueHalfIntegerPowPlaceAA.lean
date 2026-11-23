@@ -81,7 +81,6 @@ end Flat
 end GlobalTheory.OriginBox
 
 namespace GlobalTheory.OriginBox
-open GlobalTheory.FunObj GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx
 
 section Expo
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -114,7 +113,6 @@ theorem flatTensor_moved_box_apow (G : Grid k) (hs : 1 ≤ G.s) (ψ : AddChar k 
 end Expo
 end GlobalTheory.OriginBox
 namespace GlobalTheory.OriginBox
-open GlobalTheory.FunObj GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.RootEx
 
 section Generic
 variable {k : Type} [Field k]

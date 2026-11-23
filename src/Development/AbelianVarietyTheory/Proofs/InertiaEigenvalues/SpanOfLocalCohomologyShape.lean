@@ -120,7 +120,6 @@ end GlobalTheory.ContCocycleDualLattice
 
 namespace GlobalTheory
 
-open ReciprocityTheory.Gal Formalism.RepresentationBoundsCohomology.LOC
 
 theorem jSpan_holds : ReciprocityTheory.ChartRestriction.T2.JSpan := by
   intro p _ K O _ _ _ _ _ _ _ VT VT' _ _ _ _ _ _ _ _ _ _ _ _ _ _ G _ _ _ hF i D hD y

@@ -90,12 +90,10 @@ theorem ptEntry_lptOf (hκ : star κ = -κ) : ∀ (L : List (K × ℕ)) (o i j :
 
 end Pt
 
-section Model
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
 
-end Model
 
 section PointMat
 

@@ -125,7 +125,6 @@ private lemma eq_at_imag_of_real_translation_invariant {ι : Type} [Fintype ι] 
     (fun u hu => (hderiv u hu.1 hu.2.le).hasDerivWithinAt) 1 ⟨zero_le_one, le_rfl⟩
   simpa [hg] using hconst
 
-open NumberField Complex in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma exists_mem_D1set_fj_ne_zero {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r)
     (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r) (P : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → ℂ) (hP : X.IsBddSec la P)
@@ -203,7 +202,6 @@ private lemma exists_mem_D1set_fj_ne_zero {r : ℕ} (X : _root_.ReciprocityTheor
     rw [hconst, hF0] at hFv
     exact hfx hFv
 
-open NumberField Complex in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma exists_mem_D1set_sSup_hatN_lt_two_mul {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r)
     (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r) (P : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → ℂ) (hP : X.IsBddSec la P)
@@ -242,7 +240,6 @@ private lemma exists_mem_D1set_sSup_hatN_lt_two_mul {r : ℕ} (X : _root_.Recipr
   exact ⟨z0, hz0, by linarith⟩
 
 
-open NumberField Complex in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.FJDetect.exists_fj_ne_zero_at_split_point' {r : ℕ} (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.DataX E r)
     (la : _root_.ReciprocityTheory.ChartRestriction.G.FD.Wt X.Ψ r) (P : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → ℂ) (c1 w : ℝ)

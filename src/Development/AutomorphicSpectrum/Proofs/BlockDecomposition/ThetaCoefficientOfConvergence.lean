@@ -147,7 +147,6 @@ end GlobalTheory.CompanionTheory.ThetaCoefND
 namespace GlobalTheory.CompanionTheory.ThetaCoefND
 
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND PositivityTheory.PfSWUS
-open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
 variable {D : D7} {r : ℕ}
 

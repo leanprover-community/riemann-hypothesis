@@ -46,7 +46,6 @@ open WittVector Ideal TensorProduct
 
 namespace ReciprocityTheory.PGsh
 
-section Principal
 
 variable {S M : Type*} [CommRing S] [AddCommGroup M] [Module S M]
 
@@ -74,7 +73,6 @@ private lemma principal_inj (g : S)
   rw [lift.tmul] at ht
   exact h m ht
 
-end Principal
 
 section ZModSq
 

@@ -114,7 +114,6 @@ variable [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
 end Generic
 
 
-open TensorProduct in
 variable {l : ℕ} [Fact l.Prime] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.SelmerFiniteUnramified.cyc_mem (P : _root_.Formalism.BasicNotions.LocPrime l) (K LL : _root_.Formalism.BasicNotions.Loc.FinExt l) (g : ↥(_root_.Formalism.BasicNotions.Loc.GK K)) :
     ((_root_.Formalism.MainNotions.N.cycLL (P.PD K) ↥LL.1 g : (↥LL.1)ˣ) : ↥LL.1) ∈ _root_.Formalism.BasicNotions.Loc.OL LL := by

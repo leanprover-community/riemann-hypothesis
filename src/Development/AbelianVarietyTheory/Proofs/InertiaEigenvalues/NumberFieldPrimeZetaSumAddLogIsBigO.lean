@@ -64,8 +64,6 @@ private theorem tsum_logFactor_add_log_sub_one_isBigO_one (K : Type) [Field K] [
   rw [hs1, Real.log_mul (sub_ne_zero.2 hs.ne') (Real.exp_pos _).ne', Real.log_exp]
   ring
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding Filter Topology Asymptotics Polynomial in
-open scoped ContDiff Classical in
 private theorem tsum_logFactor_sub_tsum_absNorm_rpow_isBigO_one (K : Type) [Field K]
     [NumberField K] :
     (fun s : ℝ => (∑' P : HeightOneSpectrum (𝓞 K),
@@ -94,8 +92,6 @@ private theorem tsum_logFactor_sub_tsum_absNorm_rpow_isBigO_one (K : Type) [Fiel
   exact hC'.norm_left.congr_left fun s => Complex.norm_real _
 
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding Filter Topology Asymptotics Polynomial in
-open scoped ContDiff Classical in
 theorem _root_.GlobalTheory.ChebCyc.primeSum_add_log_isBigO : ∀ (K : Type) [Field K] [NumberField K], (fun s : ℝ => (∑' P : HeightOneSpectrum (𝓞 K), ((Ideal.absNorm P.asIdeal : ℕ) : ℝ) ^ (-s)) + Real.log (s - 1)) =O[𝓝[>] 1] (fun _ => (1 : ℝ)) := by
   intro K _ _
   refine ((tsum_logFactor_add_log_sub_one_isBigO_one K).sub

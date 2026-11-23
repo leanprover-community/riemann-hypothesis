@@ -49,7 +49,6 @@ namespace Formalism.RepresentationBoundsCohomology.SF
 
 open Formalism.NG Formalism.RepresentationBoundsCohomology.ringDataObjects
 
-section Inst
 variable {R : Type} [Ring R] (O : Type) [CommRing O] (M : Type) [AddCommGroup M] [Module O M]
   (n : Type) [Fintype n] [DecidableEq n] (ρ : R →+* Matrix n n O)
 
@@ -67,7 +66,6 @@ instance [IsDomain O] [IsDiscreteValuationRing O] :
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun j _ => (mul_smul_comm _ _ _).symm⟩
 
-end Inst
 
 theorem rank_one_factor (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (n : Type) [Fintype n]
     [DecidableEq n] (e : Matrix n n O) (he : e * e = e)

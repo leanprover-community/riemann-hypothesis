@@ -62,8 +62,6 @@ private lemma valuation_lt_one_iff_eq_zero_or_inv_notMem' (B : ValuationSubring 
       rw [zero_lt_iff]; exact (Valuation.ne_zero_iff _).2 hy
     simp [hy, inv_le_one₀ h0]
 
-open Polynomial NumberField IsDedekindDomain in
-open scoped Pointwise in
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] in
 private lemma smul_mem_smul_valuationSubring_iff (h : _root_.Formalism.ConjugateSelfDual.G F Ω) (B : ValuationSubring Ω) (y : Ω) :
     h • y ∈ h • B ↔ y ∈ B := by
@@ -71,8 +69,6 @@ private lemma smul_mem_smul_valuationSubring_iff (h : _root_.Formalism.Conjugate
   have := ValuationSubring.smul_mem_pointwise_smul h⁻¹ _ _ hy
   simpa [smul_smul] using this
 
-open Polynomial NumberField IsDedekindDomain in
-open scoped Pointwise in
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] in
 private lemma valuation_smul_smul_lt_one_iff (h : _root_.Formalism.ConjugateSelfDual.G F Ω) (B : ValuationSubring Ω) (y : Ω) :
     (h • B).valuation (h • y) < 1 ↔ B.valuation y < 1 := by
@@ -81,8 +77,6 @@ private lemma valuation_smul_smul_lt_one_iff (h : _root_.Formalism.ConjugateSelf
   simp
 
 
-open Polynomial NumberField IsDedekindDomain in
-open scoped Pointwise in
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] in
 theorem _root_.GlobalTheory.ParamRepCompare.conj_mem_Ine_of_smul_eq {A A' : ValuationSubring Ω} {g σ : _root_.Formalism.ConjugateSelfDual.G F Ω}
     (hg : g • A = A') (hσ : σ ∈ _root_.ReciprocityTheory.Gal.Ine (F := F) A') : g⁻¹ * σ * g ∈ _root_.ReciprocityTheory.Gal.Ine (F := F) A := by

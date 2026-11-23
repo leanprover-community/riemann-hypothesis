@@ -437,7 +437,6 @@ theorem isHaarOnM_map (e : Fin P ⊕ Fin Q ≃ Fin n) (μ : Measure (UpqT P Q)) 
     rw [Measure.map_map hmeas hme.measurable, hcomm, ← Measure.map_map hme.measurable (measurable_const_mul g),
       map_mul_left_eq_self]
 
-open scoped Matrix.Norms.Operator in
 theorem hasStrictFDerivAt_entry {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (T : E →ₗ[ℝ] Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
     ∃ D : E →L[ℝ] ℂ, HasStrictFDerivAt (fun x => NormedSpace.exp (T x) i j) D 0 ∧ ∀ v, D v = T v i j := by

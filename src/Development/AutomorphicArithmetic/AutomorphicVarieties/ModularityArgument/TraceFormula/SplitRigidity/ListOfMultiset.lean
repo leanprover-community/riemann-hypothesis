@@ -79,7 +79,6 @@ private theorem sat_pow {E : Type} [Field E] [NumberField E] [_root_.NumberField
     rw [pow_succ]
     simpa [Function.comp_def, pow_succ, mul_assoc] using h
 
-open PositivityTheory.RgJS in
 theorem UpperTheory.V.Z.Tf.SR.splitRigid_of (hSh : ShareBd) (hAS : AbsShare) (hTw : AntiTw) : SplitRigid := by
   intro E _ _ _ hE n hn π hπu J _ a P ha1 hPu hev
   classical

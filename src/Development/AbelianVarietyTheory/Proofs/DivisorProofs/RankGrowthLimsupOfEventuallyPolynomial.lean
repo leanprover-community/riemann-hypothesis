@@ -56,8 +56,6 @@ private lemma factorial_mul_div_pow_ennreal_eq_ofReal (D k m : ℕ) (hk : 1 ≤ 
   simp
 
 set_option autoImplicit false in
-open Filter Topology in
-open scoped ENNReal in
 private lemma tendsto_eval_div_pow_atTop_coeff_of_degree_le (Q : Polynomial ℝ) (D : ℕ) (hQ : Q.degree ≤ D) :
     Tendsto (fun y : ℝ => Q.eval y / y ^ D) atTop (𝓝 (Q.coeff D)) := by
   have hX : (Polynomial.X ^ D : Polynomial ℝ).degree = D := by simp
@@ -72,8 +70,6 @@ private lemma tendsto_eval_div_pow_atTop_coeff_of_degree_le (Q : Polynomial ℝ)
 
 
 set_option autoImplicit false in
-open Filter Topology in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.CompHt.growth_of_eventually_eq_eval :
     ∀ (D a : ℕ) (h : ℕ → ℕ) (H : Polynomial ℚ), 1 ≤ a → (∀ᶠ n : ℕ in atTop, (h n : ℚ) = H.eval (n : ℚ)) →
       (H.degree ≤ D → ∀ δ : ℕ, (δ : ℚ) = (D.factorial : ℚ) * H.coeff D →

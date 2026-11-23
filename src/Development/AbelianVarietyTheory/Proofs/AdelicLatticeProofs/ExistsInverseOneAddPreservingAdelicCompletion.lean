@@ -94,8 +94,6 @@ theorem _root_.GlobalTheory.UnRep.Nakayama.mem_jacobson (a : _root_.GlobalTheory
     exact zero_ne_one this
   exact mul_inv_cancel₀ hne
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable (F : Type) [Field F] [NumberField F] in
 theorem _root_.GlobalTheory.UnRep.Nakayama.valuation_natCast_lt_one (N : ℕ) (v : HeightOneSpectrum (𝓞 F)) (hv : (N : 𝓞 F) ∈ v.asIdeal) :
     Valued.v ((N : ℕ) : v.adicCompletion F) < 1 := by
@@ -112,8 +110,6 @@ variable {E : Type} [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
 end GlobalTheory.UnRep.Nakayama
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private lemma integral_tmul_smul_mem_hat {S : Set (Fin n → E)} {b : FiniteAdeleRing (𝓞 F) F}
     (hb : ∀ v, b v ∈ v.adicCompletionIntegers F) {z : Fin n → _root_.GlobalTheory.AdLat.RA F E}
@@ -134,8 +130,6 @@ private lemma integral_tmul_smul_mem_hat {S : Set (Fin n → E)} {b : FiniteAdel
     rw [smul_neg]
     exact neg_mem hx
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private lemma one_tmul_mem_hat {S : Set (Fin n → E)} {x : Fin n → E} (hx : x ∈ S) :
     (fun i ↦ (1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] x i) ∈ _root_.GlobalTheory.AdLat.hat F S := by
@@ -144,9 +138,6 @@ private lemma one_tmul_mem_hat {S : Set (Fin n → E)} {x : Fin n → E} (hx : x
     ⟨1, fun v ↦ one_mem (v.adicCompletionIntegers F), x, hx, rfl⟩
 
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
-open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.UnRep.exists_inverse_one_add_preserving_hat : ∀ (F E : Type) [Field F] [NumberField F]
     [Field E] [NumberField E] [Algebra F E] (n : ℕ) (L : Submodule (𝓞 E) (Fin n → E)), L.FG →
     Submodule.span E (L : Set (Fin n → E)) = ⊤ → ∀ (N : ℕ) (e : FiniteAdeleRing (𝓞 F) F),

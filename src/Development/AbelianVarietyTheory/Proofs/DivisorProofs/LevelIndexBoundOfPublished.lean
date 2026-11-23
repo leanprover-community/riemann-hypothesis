@@ -100,7 +100,6 @@ theorem relIndex_lev_le (hc : CMData F E) (J : Matrix (Fin n) (Fin n) E) (β : G
   rw [Subgroup.relIndex, e]
   exact index_comap_le _ _
 
-open scoped TensorProduct in
 theorem lev_full (hc : CMData F E) (J : Matrix (Fin n) (Fin n) E) (β : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) (L : LevDat E LL n) :
     lev hc J β { L with P := LevelP.full L.Pg L.r LL } = parLev hc J β L := by
   ext x

@@ -67,21 +67,18 @@ private lemma polyOp_mono' {n n' κ κ' : ℕ} {Θ : _root_.Formalism.FourierDec
   obtain ⟨hlen, Q, ⟨q, hq, hQ⟩, hc, hca⟩ := h T hT
   exact ⟨hlen.trans hn, Q, ⟨q, hq.trans hκ, hQ⟩, hc, hca⟩
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma polyOp_nil (n κ : ℕ) : _root_.Formalism.FourierDecayAlt.P.CutMP.PolyOp n κ ([] : _root_.Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq) := by
   unfold _root_.Formalism.FourierDecayAlt.P.CutMP.PolyOp
   simp
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma opApply_nil (F : _root_.Formalism.FourierDecayAlt.B.Mat k r → Wq →L[ℂ] Wp) (g : _root_.Formalism.FourierDecayAlt.B.Mat k r) :
     _root_.Formalism.FourierDecayAlt.B.opApply ([] : _root_.Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq) F g = 0 := by
   simp [_root_.Formalism.FourierDecayAlt.B.opApply]
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma polyOp_of_polyOp_cons {n κ : ℕ} {T : _root_.Formalism.FourierDecayAlt.B.DTerm k r Wp Wq} {Θ : _root_.Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq}
@@ -89,7 +86,6 @@ private lemma polyOp_of_polyOp_cons {n κ : ℕ} {T : _root_.Formalism.FourierDe
   unfold _root_.Formalism.FourierDecayAlt.P.CutMP.PolyOp at h ⊢
   exact fun T' hT' => h T' (by simp [hT'])
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma totalDegree_lin_le_one {N : ℕ} (X : Matrix (Fin N) (Fin N) ℂ) (i : _root_.PI.UnitaryGroupMassFormula.UsCompose.Vr N) :
@@ -99,7 +95,6 @@ private lemma totalDegree_lin_le_one {N : ℕ} (X : Matrix (Fin N) (Fin N) ℂ) 
     refine (totalDegree_finsetSum _ _).trans (Finset.sup_le fun c _ => ?_)
     exact (totalDegree_mul _ _).trans (by simp [totalDegree_C, totalDegree_X])
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma totalDegree_pderiv_add_one_le_of_ne_zero {σ : Type*} (q : MvPolynomial σ ℂ) (i : σ)
@@ -117,7 +112,6 @@ private lemma totalDegree_pderiv_add_one_le_of_ne_zero {σ : Type*} (q : MvPolyn
   have := le_totalDegree hs
   rwa [Finsupp.sum_add_index' (fun _ => rfl) (fun _ _ _ => rfl), Finsupp.sum_single_index rfl] at this
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma totalDegree_dP_le {N : ℕ} (X : Matrix (Fin N) (Fin N) ℂ)
@@ -129,7 +123,6 @@ private lemma totalDegree_dP_le {N : ℕ} (X : Matrix (Fin N) (Fin N) ℂ)
   · exact (totalDegree_mul _ _).trans
       ((Nat.add_le_add_left (totalDegree_lin_le_one X i) _).trans (totalDegree_pderiv_add_one_le_of_ne_zero q i h))
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma exists_isPolyDeg_hasDerivAt_comp_crv {X : _root_.Formalism.FourierDecayAlt.B.Mat k r} {κ : ℕ} {Q : _root_.Formalism.FourierDecayAlt.B.Mat k r → ℂ}
@@ -146,7 +139,6 @@ private lemma exists_isPolyDeg_hasDerivAt_comp_crv {X : _root_.Formalism.Fourier
   rw [e]
   exact _root_.PI.UnitaryGroupMassFormula.UsCompose.hasDerivAt_poly X g q
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma ckOn_rightWordDeriv_of_forall_inLie {F : _root_.Formalism.FourierDecayAlt.B.Mat k r → Wq →L[ℂ] Wp}
@@ -158,7 +150,6 @@ private lemma ckOn_rightWordDeriv_of_forall_inLie {F : _root_.Formalism.FourierD
     have := _root_.Formalism.FourierDecayAlt.P.B5.ckOn_RdV (m := ⊤) (hw X (by simp)) (by simpa using h)
     simpa [_root_.Formalism.FourierDecayAlt.B.Rw] using this
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma opApply_cons' (T : _root_.Formalism.FourierDecayAlt.B.DTerm k r Wp Wq) (Θ : _root_.Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq)
@@ -166,7 +157,6 @@ private lemma opApply_cons' (T : _root_.Formalism.FourierDecayAlt.B.DTerm k r Wp
     _root_.Formalism.FourierDecayAlt.B.opApply (T :: Θ) F g = (T.coef g) (_root_.Formalism.FourierDecayAlt.B.Rw T.word F g) + _root_.Formalism.FourierDecayAlt.B.opApply Θ F g := by
   simp [_root_.Formalism.FourierDecayAlt.B.opApply]
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma polyOp_deriv_lemma_10 {X : _root_.Formalism.FourierDecayAlt.B.Mat k r} (hX : _root_.Formalism.FourierDecayAlt.B.inLie k r X) {κ : ℕ} :
@@ -216,7 +206,6 @@ private lemma polyOp_deriv_lemma_10 {X : _root_.Formalism.FourierDecayAlt.B.Mat 
         ContinuousLinearMap.id_apply, _root_.Formalism.FourierDecayAlt.P.BetaSesquilinearity.crv_zero]
       abel
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma polyOp_word_lemma_6 {κ : ℕ} : ∀ (u : List (_root_.Formalism.FourierDecayAlt.B.Mat k r)), (∀ X ∈ u, _root_.Formalism.FourierDecayAlt.B.inLie k r X) →
@@ -239,7 +228,6 @@ private lemma polyOp_word_lemma_6 {κ : ℕ} : ∀ (u : List (_root_.Formalism.F
         _root_.PI.UnitaryGroupMassFormula.UsCompose.RdV_eq_Dx, _root_.Formalism.FourierDecayAlt.P.BetaSesquilinearity.Dx_eq]
       exact (hD2 F hF g hg).deriv
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma exists_polyOp_opApply_eq_smul {κa : ℕ} {Pf : _root_.Formalism.FourierDecayAlt.B.Mat k r → ℂ} (hP : _root_.Formalism.FourierDecayAlt.U.IsPolyDeg κa Pf) :
@@ -265,7 +253,6 @@ private lemma exists_polyOp_opApply_eq_smul {κa : ℕ} {Pf : _root_.Formalism.F
     · rw [opApply_cons', opApply_cons', hEr F g, hc]
       simp [_root_.GlobalTheory.HatNF.PolyComp.scalTerm, smul_add, mul_smul]
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma opApply_append' (Θ₁ Θ₂ : _root_.Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq)
@@ -273,7 +260,6 @@ private lemma opApply_append' (Θ₁ Θ₂ : _root_.Formalism.FourierDecayAlt.B.
     _root_.Formalism.FourierDecayAlt.B.opApply (Θ₁ ++ Θ₂) F g = _root_.Formalism.FourierDecayAlt.B.opApply Θ₁ F g + _root_.Formalism.FourierDecayAlt.B.opApply Θ₂ F g := by
   simp [_root_.Formalism.FourierDecayAlt.B.opApply]
 
-open MvPolynomial in
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] {k r : ℕ} in
 private lemma polyOp_comp_lemma_2 {o₂ κ₁ κ₂ : ℕ} {Θb : _root_.Formalism.FourierDecayAlt.B.DiffOp k r Wp Wq} (hb : _root_.Formalism.FourierDecayAlt.P.CutMP.PolyOp o₂ κ₂ Θb) :

@@ -79,7 +79,6 @@ end GlobalTheory.DesignBC
 
 namespace GlobalTheory.DesignBC
 
-open Formalism.FrobeniusOrbits
 
 variable (D : D7)
 
@@ -151,7 +150,6 @@ end GlobalTheory.DesignBC
 
 namespace GlobalTheory.DesignBC
 
-open Formalism.FrobeniusOrbits
 
 variable (D : D7)
 

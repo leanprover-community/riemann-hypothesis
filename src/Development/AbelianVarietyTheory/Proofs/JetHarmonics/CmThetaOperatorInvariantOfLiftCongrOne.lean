@@ -55,7 +55,6 @@ theorem _root_.GlobalTheory.MomOne.LiftChange.hf_smul_left (Hm : Matrix (Fin g) 
   unfold _root_.Formalism.L2.Ker.JMB.hf
   simp only [Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_assoc]
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.MomOne.LiftChange.hf_smul_right (Hm : Matrix (Fin g) (Fin g) ℂ) (a : ℂ) (x y : Fin g → ℂ) :
     _root_.Formalism.L2.Ker.JMB.hf Hm x (a • y) = conj a * _root_.Formalism.L2.Ker.JMB.hf Hm x y := by
@@ -64,14 +63,12 @@ theorem _root_.GlobalTheory.MomOne.LiftChange.hf_smul_right (Hm : Matrix (Fin g)
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.MomOne.LiftChange.hf_add_left (Hm : Matrix (Fin g) (Fin g) ℂ) (x x' y : Fin g → ℂ) :
     _root_.Formalism.L2.Ker.JMB.hf Hm (x + x') y = _root_.Formalism.L2.Ker.JMB.hf Hm x y + _root_.Formalism.L2.Ker.JMB.hf Hm x' y := by
   unfold _root_.Formalism.L2.Ker.JMB.hf
   simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.MomOne.LiftChange.hf_sum_left (Hm : Matrix (Fin g) (Fin g) ℂ) {r : ℕ} (x : Fin r → Fin g → ℂ)
     (y : Fin g → ℂ) :
@@ -81,7 +78,6 @@ theorem _root_.GlobalTheory.MomOne.LiftChange.hf_sum_left (Hm : Matrix (Fin g) (
   conv_rhs => rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun a _ => Finset.sum_comm
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.MomOne.LiftChange.kap_eq_one (Hm : Matrix (Fin g) (Fin g) ℂ)
     (x y : Fin g → ℂ) (z : ℤ) (h : (_root_.Formalism.L2.Ker.JMB.hf Hm x y).im = z) :
@@ -90,7 +86,6 @@ theorem _root_.GlobalTheory.MomOne.LiftChange.kap_eq_one (Hm : Matrix (Fin g) (F
   rw [h, Complex.exp_eq_one_iff]
   exact ⟨-z, by push_cast; ring⟩
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.MomOne.LiftChange.norm_int {d : ℕ} (hd : d % 4 = 3) {eps : ℂ}
     (h : eps ∈ _root_.Formalism.L2.Ker.JMB.OK d) :
@@ -141,7 +136,6 @@ theorem _root_.GlobalTheory.MomOne.LiftChange.norm_int {d : ℕ} (hd : d % 4 = 3
     push_cast
     linear_combination (-(v : ℂ) ^ 2) * hquad
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
 theorem _root_.GlobalTheory.MomOne.LiftChange.smul_mem (S : _root_.Formalism.L2.Ker.JMB.Setup g) (hS : S.Ok) {a : ℂ}
     (ha : a ∈ _root_.Formalism.L2.Ker.JMB.OK S.d) {x : Fin g → ℂ} (hx : x ∈ S.La) :
@@ -163,7 +157,6 @@ namespace GlobalTheory.MomOne
 open LiftChange
 
 
-open scoped ComplexConjugate BigOperators ComplexOrder in
 theorem _root_.GlobalTheory.MomOne.lift_change : ∀ (q : ℕ) [Fact q.Prime] (lam : _root_.Formalism.L2.Ker.JMB.Qbar →+* ℂ_[q]) (g : ℕ) (S : _root_.Formalism.L2.Ker.JMB.Setup g) (r : ℕ) (b : Fin r → Fin g → ℂ) (e : (Fin g → ℂ) → ℂ) (t : Fin g → ℂ) (n m s : ℕ) (eps : ℂ) (y : Fin r → Fin (q ^ n)), S.Ok → (∀ i, b i ∈ S.La) → S.IsTheta e → _root_.Formalism.L2.Ker.JMB.IsIdem lam S.d m eps → 2 * n ≤ m → (∀ i, ∃ z : ℤ, (_root_.Formalism.L2.Ker.JMB.hf S.Hm (eps • b i) t).im = z) → s ≡ 1 [MOD q ^ n] → _root_.Formalism.L2.Ker.JMB.opW S.d S.Hm ((s : ℂ) • _root_.Formalism.L2.Ker.JMB.liftY q n eps b y) (_root_.Formalism.L2.Ker.JMB.opU S.Hm t e) = _root_.Formalism.L2.Ker.JMB.opW S.d S.Hm (_root_.Formalism.L2.Ker.JMB.liftY q n eps b y) (_root_.Formalism.L2.Ker.JMB.opU S.Hm t e) ∧ ∀ v ∈ S.La, _root_.Formalism.L2.Ker.JMB.kap S.Hm v ((s : ℂ) • _root_.Formalism.L2.Ker.JMB.liftY q n eps b y) = _root_.Formalism.L2.Ker.JMB.kap S.Hm v (_root_.Formalism.L2.Ker.JMB.liftY q n eps b y) := by
   intro q _ lam g S r b e t n m s eps y hS hb he hid hnm hti hs
   obtain ⟨hprime, hd16, hpos, -, -, -, hbeta, -⟩ := id hS

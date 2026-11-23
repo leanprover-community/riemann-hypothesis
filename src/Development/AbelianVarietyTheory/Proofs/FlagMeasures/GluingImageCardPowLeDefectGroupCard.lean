@@ -87,29 +87,21 @@ theorem _root_.GlobalTheory.HL.SmallImage.resQ_pos {F : Type} [Field F] [Valuati
   have : Finite (IsLocalRing.ResidueField 𝒪[F]) := inferInstance
   exact Nat.card_pos_iff.mpr ⟨inferInstance, this⟩
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private lemma hf_sub_left_flag_measures {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) {n : ℕ} (H : Matrix (Fin n) (Fin n) E) (x x' y : Fin n → E) :
     _root_.GlobalTheory.HL.hf L H (x - x') y = _root_.GlobalTheory.HL.hf L H x y - _root_.GlobalTheory.HL.hf L H x' y := by
   unfold _root_.GlobalTheory.HL.hf
   simp only [Pi.sub_apply, sub_mul, Finset.sum_sub_distrib]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private lemma hf_sub_right_flag_measures {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) {n : ℕ} (H : Matrix (Fin n) (Fin n) E) (x y y' : Fin n → E) :
     _root_.GlobalTheory.HL.hf L H x (y - y') = _root_.GlobalTheory.HL.hf L H x y - _root_.GlobalTheory.HL.hf L H x y' := by
   unfold _root_.GlobalTheory.HL.hf
   simp only [Pi.sub_apply, map_sub, mul_sub, Finset.sum_sub_distrib]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private lemma hf_add_left_flag_measures'' {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) {n : ℕ} (H : Matrix (Fin n) (Fin n) E) (x x' y : Fin n → E) :
     _root_.GlobalTheory.HL.hf L H (x + x') y = _root_.GlobalTheory.HL.hf L H x y + _root_.GlobalTheory.HL.hf L H x' y := by
   unfold _root_.GlobalTheory.HL.hf
   simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 private lemma hf_algebraMap_smul_right {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) {n : ℕ} (H : Matrix (Fin n) (Fin n) E) (x y : Fin n → E) (c : F) :
     _root_.GlobalTheory.HL.hf L H x (algebraMap F E c • y) = algebraMap F E c * _root_.GlobalTheory.HL.hf L H x y := by
   unfold _root_.GlobalTheory.HL.hf
@@ -118,8 +110,6 @@ private lemma hf_algebraMap_smul_right {F : Type} [Field F] [ValuativeRel F] [To
   ring
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.HL.SmallImage.small_image : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E), ∀ (r k : ℕ) (S : _root_.GlobalTheory.HL.Frames L r k), ∀ (d : S.Datum) (Λ : Submodule L.O S.V), S.IsTerm d Λ → (∃ i : ℕ, S.cardI d Λ = S.q ^ i) ∧ S.cardI d Λ ≤ S.be d Λ ∧ (¬ S.BBzero d Λ → ¬ S.TypeBe d Λ → S.q * S.cardI d Λ ≤ S.be d Λ) := by
   intro F _ _ _ _ _ E _ _ _ L r k S d Λ hT
   have hbasic := _root_.GlobalTheory.HL.TermBasic.term_basic L r k S d Λ hT

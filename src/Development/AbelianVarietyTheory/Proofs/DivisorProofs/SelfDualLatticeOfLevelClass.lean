@@ -68,7 +68,6 @@ end GlobalTheory.MassLinkSD
 
 namespace GlobalTheory.MassLinkSD
 
-open Formalism.BasicNotions.TH Formalism.IndefR.Datum
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

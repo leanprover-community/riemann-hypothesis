@@ -125,8 +125,6 @@ end GlobalTheory.UniStepFB
 
 namespace GlobalTheory.UniStepFB
 
-open GlobalTheory.FinPl GlobalTheory.FinPlLoc GlobalTheory.SeeSaw
-open scoped Pointwise
 
 
 
@@ -275,7 +273,6 @@ end GlobalTheory.UniStepFB
 
 namespace GlobalTheory.UniStepFB
 
-open GlobalTheory.FinPl GlobalTheory.FinPlLoc
 
 theorem psiUni_pcFB : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m),
     ∀ u : UX D (σ + 1), MxAt (fun _ => True) (u.1.1 - 1) → xFB F σ h' ⬝ u.1.1 - xFB F σ h' ∈ (pcFB W F σ h h').A₁ →

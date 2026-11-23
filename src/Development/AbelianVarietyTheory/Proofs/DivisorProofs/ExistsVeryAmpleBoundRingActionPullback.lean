@@ -80,7 +80,6 @@ end GlobalTheory.OEndDegree
 
 namespace GlobalTheory.OEndDegree
 
-open GlobalTheory.CechPic GlobalTheory.EffBound
 
 theorem pull_pow (k : Type) [Field k] (B : Over (Sp k)) [GrpObj B] [IsCommMonObj B] (M : GlobalTheory.UU.CP B) (f : B ⟶ B) (n : ℕ) :
     pull (f ^ n).left (cls M.L.L M.L.isLB) = (n ^ 2) • pull f.left (cls M.L.L M.L.isLB) := by
@@ -96,7 +95,6 @@ end GlobalTheory.OEndDegree
 
 namespace GlobalTheory.OEndDegree
 
-open GlobalTheory.CechPic GlobalTheory.EffBound
 
 theorem act_zsmul {O : Type} [CommRing O] {S : Scheme.{0}} {B : Over S} [GrpObj B] (act : OAct O B) (a : O) (n : ℤ) :
     act.act (n • a) = act.act a ^ n := by
@@ -116,7 +114,6 @@ end GlobalTheory.OEndDegree
 
 namespace GlobalTheory.OEndDegree
 
-open GlobalTheory.CechPic GlobalTheory.EffBound
 
 theorem pull_zpow (k : Type) [Field k] (B : Over (Sp k)) [GrpObj B] [IsCommMonObj B] (M : GlobalTheory.UU.CP B) (f : B ⟶ B) (n : ℤ) :
     pull (f ^ n).left (cls M.L.L M.L.isLB) = (n.natAbs ^ 2) • pull f.left (cls M.L.L M.L.isLB) := by
@@ -166,7 +163,6 @@ end GlobalTheory.OEndDegree
 
 namespace GlobalTheory.OEndDegree
 
-open GlobalTheory.CechPic GlobalTheory.EffBound
 
 theorem exists_effective_bound : ∀ (E : Type) [Field E] [NumberField E] (k : Type) [Field k] [IsAlgClosed k] [CharZero k] (A : Over (Sp k)) [GrpObj A] (act : OAct (𝓞 E) A) (g : ℕ), IsAbelianScheme A → SmoothOfRelativeDimension g A.hom → ∀ (d : ℕ) (a : Fin d → 𝓞 E), ∃ (H : LB A.left) (m : ℕ) (s : Fin (m + 1) → LB.Sec H) (c : ℕ), H.IsLB ∧ GlobalTheory.AbLaw.VeryAmpleBy A.hom H s ∧ 1 ≤ c ∧ ∀ (n : Fin d → ℤ) (K : ℕ), 1 ≤ K → (∀ i, (n i).natAbs ≤ K) → ∃ (σ : LB.Sec (LB.div (GlobalTheory.AbLaw.pw H ((c * K ^ 2 : ℕ) : ℤ)) (H.pull (act.act (∑ i, n i • a i)).left))) (j : (LB.div (GlobalTheory.AbLaw.pw H ((c * K ^ 2 : ℕ) : ℤ)) (H.pull (act.act (∑ i, n i • a i)).left)).ι), σ.f j ≠ 0 := by
   intro E _ _ k _ _ _ A _ act g hB hg d a

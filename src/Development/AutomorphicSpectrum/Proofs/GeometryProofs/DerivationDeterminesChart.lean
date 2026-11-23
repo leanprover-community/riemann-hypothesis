@@ -234,7 +234,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.StdSmoothChart
 
-open MvPolynomial
 
 section Family
 

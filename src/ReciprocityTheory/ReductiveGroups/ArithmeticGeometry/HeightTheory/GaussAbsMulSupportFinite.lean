@@ -158,7 +158,6 @@ end ReciprocityTheory.ChartRestriction.G.T0.SatakeVectors
 
 namespace ReciprocityTheory.ChartRestriction.G.T0.SatakeVectors
 
-open NumberField IsDedekindDomain
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -216,7 +215,6 @@ end ReciprocityTheory.ChartRestriction.G.T0.SatakeVectors
 
 namespace ReciprocityTheory.ChartRestriction.G.T0.SatakeVectors
 
-open NumberField IsDedekindDomain
 open scoped nonZeroDivisors
 
 variable {K : Type} [Field K] [NumberField K]

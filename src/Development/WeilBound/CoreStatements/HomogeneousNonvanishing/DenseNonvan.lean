@@ -52,7 +52,6 @@ theorem isClosed_res {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (�
     (fun x p => holo_continuousAt (R.holo x p) (R.mem_U x)) R.compat (fun _ => ⟨isOpen_univ, trivial⟩)
     (fun _ p => (continuous_apply p).continuousAt) (fun _ _ w _ => so_refl w)
 
-open HolomorphicMinorCharts in
 theorem dense_nonvan {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {P J : Ideal (MRing ι)} {e : ℕ}
     (R : AnLogRes P J e) (hP : IsArithVar P (e + 1)) {g : MRing ι} {a : K → ℕ} (hg : IsMultiHomog g a) (hgP : g ∉ P) :
     Dense {x | eval (R.lift x x) (map (Int.castRingHom ℂ) g) ≠ 0} := by
@@ -79,7 +78,6 @@ theorem dense_nonvan {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (�
   by_contra h
   exact hz1 ⟨(x', z), ⟨minors_of_so hx', h⟩, rfl⟩
 
-open HolomorphicMinorCharts in
 theorem r_pull : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (K₁ : Type) [Fintype K₁] (ι₁ : K₁ → Type) [∀ k, Fintype (ι₁ k)] (κ₁ : K₁ → K) (v₁ : (Σ k, ι₁ k) → Σ k, ι k) (P J : Ideal (MRing ι)) (D : ℕ) (σ : Type) (S : AnSys D σ) (Re : Realis S (imageZ v₁ P)) (R : AnLogRes P J D), IsBlockMap κ₁ v₁ → IsArithVar P (D + 1) → AlgOver Re → ∃ (π : R.X → S.X) (hπ : HoloMap R.A S.A π), (∀ (x : R.X) (x₁ : Re.R.X), SameOrbit (Re.R.lift x₁ x₁) (fun p => R.lift x x (v₁ p)) → π x = Re.π x₁) ∧ (∀ a (ref' : HermLine ι), IsPullHerm κ₁ v₁ (Re.ref a) ref' → SamePot R.A Set.univ (potOf R ref') ((S.th a).pullback π hπ.1)) ∧ (∀ a t, 0 < t → t ≤ S.t₀ → ∀ x, Real.log ((Re.line a t).h fun p => R.lift x x (v₁ p)) = Real.log ((Re.ref a).h fun p => R.lift x x (v₁ p)) + S.phT a t (π x)) ∧ ∃ (β : MRing ι) (b : K → ℕ), IsMultiHomog β b ∧ β ∉ P ∧ ∀ x, π x ∈ bdry S.s → evC (R.lift x x) β = 0 := by
   intro K _ ι _ K₁ _ ι₁ _ κ₁ v₁ P J D σ S Re R hv₁ hP hA
   obtain ⟨K₀, _, ι₀, _, κ, v, U, lam, β₀, b₀, hv, hE, hπ₁, hβ, hβP, hβ0⟩ := hA

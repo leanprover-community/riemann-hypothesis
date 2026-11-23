@@ -72,7 +72,6 @@ theorem _root_.GlobalTheory.LocalCartan.diagT_mem_KO {t : n → kˣ} (ht : ∀ i
     · exact zero_mem _
 
 
-open ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.LocalCartan.exists_diagT (g : GL n k) :
@@ -120,13 +119,11 @@ theorem _root_.GlobalTheory.LocalCartan.exists_diagT (g : GL n k) :
   change (g : Matrix n n k) = f.mapMatrix P * _ * f.mapMatrix C
   rw [hdiag, Matrix.mul_smul, Matrix.smul_mul, key, smul_smul, inv_mul_cancel₀ hc, one_smul]
 
-open ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] in
 private lemma ord_one_twisted_operators : _root_.GlobalTheory.SmGL.ord k 1 = 0 :=
   _root_.GlobalTheory.SmGL.ord_eq_zero_iff.mpr (by simp)
 
-open ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] in
 private lemma ord_inv_twisted_operators (y : kˣ) :
@@ -135,7 +132,6 @@ private lemma ord_inv_twisted_operators (y : kˣ) :
   rw [mul_inv_cancel, ord_one_twisted_operators] at h
   omega
 
-open ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] in
 private lemma ord_zpow_uniformizer' {ϖ : kˣ}
@@ -149,7 +145,6 @@ private lemma ord_zpow_uniformizer' {ϖ : kˣ}
     rw [_root_.zpow_sub_one, _root_.GlobalTheory.SmGL.ord_mul, ih, ord_inv_twisted_operators, h1]
     ring
 
-open ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] in
 private lemma exists_unit_mul_zpow_uniformizer {ϖ : kˣ}
@@ -162,7 +157,6 @@ private lemma exists_unit_mul_zpow_uniformizer {ϖ : kˣ}
   ring
 
 
-open ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : Type} [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.LocalCartan.cartan_decomposition (k : Type) [Field k] [ValuativeRel k]

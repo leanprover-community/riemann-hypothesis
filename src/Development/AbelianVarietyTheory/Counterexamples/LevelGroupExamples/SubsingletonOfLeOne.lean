@@ -262,7 +262,6 @@ theorem matrix_level_local {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R]
   simp [Matrix.mul_apply, vecMul, dotProduct, Diag.dualBasis_apply]
 
 
-open IsLocalRing ReciprocityTheory.ChartRestriction.G.Out in
 theorem finrank_le_local {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R]
     {D : DegData R (maximalIdeal R)} {P : PolAV (Sp (FractionRing R))} {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G]
     (U : UnifPre (maximalIdeal R) D P G) {O : Type} [CommRing O] [IsDomain O] [StarRing O] [Module.Finite ℤ O]

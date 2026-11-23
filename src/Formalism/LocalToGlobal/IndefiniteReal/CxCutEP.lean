@@ -143,7 +143,6 @@ namespace EigenprojectionMatrices
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 : Type}
   {B : BlockDat K G Pl0} {ℓ : Lvl K G} {v0 : InfinitePlace K} {s : ℕ}
 
-section Proj
 
 variable (hc : Col.PairComm B.op) (hs : Col.SplitOver B.op) (C : (B.Pl × ℕ → K) → Prop)
 
@@ -154,7 +153,6 @@ private theorem hform_eq_lemma {L : Type} [Field L] [StarRing L] {n : ℕ} (H : 
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-end Proj
 
 end EigenprojectionMatrices
 
@@ -691,7 +689,6 @@ theorem Pq_tV (h : BlockHyp B ℓ v0 s) (hH : B.OkH) (hZ : ∀ i, Z ≤ Z.comap 
 
 end EigenprojectionMatrices
 
-section Main
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
@@ -700,6 +697,5 @@ variable (P0 : Subgroup G) (ψ0 : P0 →* Kˣ) (P1 : Subgroup G) (ψ1 : P1 →* 
   (Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)) (Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs))
   (Zsc : DefSub A.fam.amb → IndefScale A.fam.base)
 
-end Main
 
 end Formalism.IndefR.Cx

@@ -106,7 +106,6 @@ end GlobalTheory.PsCo.PcEF
 
 namespace GlobalTheory.PsCo.PcEF
 
-open GlobalTheory.PsCo.PcEG
 
 theorem rangeFD_closed : RangeFD := irrepAveragesFinDimSmooth_of_kTypes_and_polyAverages @GlobalTheory.PsCo.PcEF.finDimStable_isSumOfKTypes @GlobalTheory.PsCo.PcEF.polyAverages_finiteWeightStableSubspace
 

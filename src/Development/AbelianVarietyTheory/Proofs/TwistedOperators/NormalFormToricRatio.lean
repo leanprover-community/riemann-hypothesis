@@ -165,7 +165,6 @@ end GlobalTheory.RowEx.RatioField
 
 namespace GlobalTheory.RowEx.RatioField
 
-open GlobalTheory.FunObj.SqNum GlobalTheory.CMVal
 
 theorem inNF_ratios (hTR : GlobalTheory.IndefiniteRowSideFullHecke.ToricSymbols.ToricRatioConjugates) {D : D7} {T : Type} [Finite T] {Lc : LevCh D T} {sc : Consts}
     {μ₀ : T} (hL : Lc.Is μ₀) (G : GridData Lc sc) (hcm : IsCMField D.host.E)

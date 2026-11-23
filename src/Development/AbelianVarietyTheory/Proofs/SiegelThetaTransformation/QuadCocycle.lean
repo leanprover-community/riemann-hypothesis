@@ -78,8 +78,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 end GlobalTheory.SW.HermComp
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private theorem inv_denominator_mul_lower_left_cocycle {N : ℕ}
     {A B C D C' D' Z : Matrix (Fin N) (Fin N) ℂ}
     (h1 : Aᴴ * C = Cᴴ * A) (h2 : Aᴴ * D = Cᴴ * B + 1) (h3 : Dᴴ * A = Bᴴ * C + 1)
@@ -104,14 +102,10 @@ private theorem inv_denominator_mul_lower_left_cocycle {N : ℕ}
   simp only [Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc]
   abel
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private theorem matrix_of_apply_row {m r : Type} {α : Type} (f : m → r → α) (k : m) :
     Matrix.of f k = f k := rfl
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 theorem _root_.GlobalTheory.SW.transH_comp : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Finset (E →+* ℂ)) (n N : ℕ) (γ γ' : _root_.GlobalTheory.SW.M2 E N), γ ∈ _root_.GlobalTheory.SW.UU E N → γ' ∈ _root_.GlobalTheory.SW.UU E N → (∀ Z ∈ _root_.GlobalTheory.SW.Hn Ψ N, ∀ z z' : _root_.GlobalTheory.SW.CM Ψ n N, _root_.GlobalTheory.SW.hFac Ψ (γ' * γ) Z z z' = _root_.GlobalTheory.SW.hFac Ψ γ' (_root_.GlobalTheory.SW.hAct Ψ γ Z) (fun τ => Matrix.of fun k => (_root_.GlobalTheory.SW.hDen' Ψ γ Z τ)⁻¹ *ᵥ z τ k) (fun τ => Matrix.of fun k => z' τ k ᵥ* (_root_.GlobalTheory.SW.hDen Ψ γ Z τ)⁻¹) * _root_.GlobalTheory.SW.hFac Ψ γ Z z z') ∧ ∀ φ ψ χ : Matrix (Fin n) (Fin N) E → ℂ, _root_.GlobalTheory.SW.TransH Ψ γ φ ψ → _root_.GlobalTheory.SW.TransH Ψ γ' ψ χ → _root_.GlobalTheory.SW.TransH Ψ (γ' * γ) φ χ := by
   intro E _ _ _ Ψ n N γ γ' hγ hγ'
   have key : ∀ Z ∈ _root_.GlobalTheory.SW.Hn Ψ N, ∀ z z' : _root_.GlobalTheory.SW.CM Ψ n N,

@@ -87,7 +87,6 @@ end Formalism.L2.G
 
 namespace Formalism.L2.G
 
-open Formalism.MainNotions.FormalGroupSystem
 
 variable {p : ℕ} [hp : Fact p.Prime]
 

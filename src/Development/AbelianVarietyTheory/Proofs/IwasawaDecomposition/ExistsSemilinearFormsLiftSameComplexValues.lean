@@ -100,7 +100,6 @@ private theorem liftHom_reidx (X : Fields) {L : Type} [Field L] [NumberField L] 
     rw [hc']
 
 
-open Formalism.L2.Col in
 private theorem formsLift_of_eqFunLift {K₁ K₂ : Type} [Field K₁] [NumberField K₁] [StarRing K₁] [Field K₂] [NumberField K₂] [StarRing K₂]
     (ι : K₁ →+* K₂) (S₁ : GSD K₁) (S₂ : GSD K₂) (h₁ : S₁.Ok) (h₂ : S₂.Ok) (Lf : S₁.EqFun →+ S₂.EqFun)
     (hLf : ∀ (a : K₁) ψ, Lf (a • ψ) = ι a • Lf ψ) :

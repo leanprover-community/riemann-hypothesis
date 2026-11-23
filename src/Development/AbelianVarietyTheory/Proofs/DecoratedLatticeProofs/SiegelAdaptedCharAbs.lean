@@ -62,7 +62,6 @@ open GlobalTheory.LFun
 end GlobalTheory.Core.Rk.SecPar
 
 namespace GlobalTheory.Core.Rk.SecPar
-open GlobalTheory.LFun
 
 theorem cw_incA {D : D7} {q : FinPl D} {w : HeightOneSpectrum (𝓞 D.host.E)} (h : w.under (𝓞 D.host.F) = q)
     (x : D.host.E) : cw h (incA D x) = algebraMap D.host.E (w.adicCompletion D.host.E) x := by
@@ -72,12 +71,10 @@ theorem cw_incA {D : D7} {q : FinPl D} {w : HeightOneSpectrum (𝓞 D.host.E)} (
 end GlobalTheory.Core.Rk.SecPar
 
 namespace GlobalTheory.Core.Rk.SecPar
-open GlobalTheory.LFun
 
 end GlobalTheory.Core.Rk.SecPar
 
 namespace GlobalTheory.Core.Rk.SecPar
-open GlobalTheory.LFun
 
 end GlobalTheory.Core.Rk.SecPar
 

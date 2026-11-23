@@ -117,7 +117,6 @@ def LateralTheory.EtaleFoundations.EtaleTateTwistGeneratorCompatibleMapIsIso : P
       Sec.map (sglι T) (Sec.map φ (twGen k ζ)) =
         μ.mul U 0 0 0 (add_zero 0) (Sec.map (sglι _) (twGen i ζ)) (Sec.map (sglι _) (twGen j ζ))) → IsIso φ
 
-open LateralTheory.EtaleFoundations.TwMulPf in
 theorem LateralTheory.EtaleFoundations.etale_tate_twist_tensor_iso_of_generator_map_iso (h1 : LateralTheory.EtaleFoundations.EtaleTateTwistTensorPairingExists)
     (h2 : LateralTheory.EtaleFoundations.EtaleTateTwistGeneratorCompatibleMapExists) (h3 : LateralTheory.EtaleFoundations.EtaleTateTwistGeneratorCompatibleMapIsIso) :
     LateralTheory.EtaleFoundations.EtaleTateTwistSingletonTensorGenMul := by

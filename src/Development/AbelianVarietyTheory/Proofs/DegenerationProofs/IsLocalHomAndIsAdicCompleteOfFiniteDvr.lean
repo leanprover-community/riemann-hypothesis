@@ -57,7 +57,6 @@ private lemma exists_pow_maximalIdeal_eq_span {V V' : Type} [CommRing V] [IsDoma
   · rw [hϖ'.maximalIdeal_eq, Ideal.span_singleton_pow, hu, mul_pow, ← pow_mul,
       ← Units.val_pow_eq_pow_val, Ideal.span_singleton_mul_left_unit (u ^ n).isUnit]
 
-open IsLocalRing in
 private lemma mem_span_pow_iff_repr {V V' : Type} [CommRing V] [CommRing V'] [Algebra V V']
     {ι : Type} [Fintype ι] (b : Module.Basis ι V V') (ϖ : V) (j : ℕ) (x : V') :
     x ∈ Ideal.span {algebraMap V V' ϖ ^ j} ↔ ∀ i, b.repr x i ∈ Ideal.span {ϖ ^ j} := by
@@ -76,7 +75,6 @@ private lemma mem_span_pow_iff_repr {V V' : Type} [CommRing V] [CommRing V'] [Al
     rw [← hc i, smul_smul, mul_comm (ϖ ^ j)]
 
 
-open IsLocalRing in
 theorem _root_.GlobalTheory.isLocalHom_and_isAdicComplete_of_finite_dvr :
     ∀ (V V' : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
       [IsAdicComplete (IsLocalRing.maximalIdeal V) V] [CommRing V'] [IsDomain V']

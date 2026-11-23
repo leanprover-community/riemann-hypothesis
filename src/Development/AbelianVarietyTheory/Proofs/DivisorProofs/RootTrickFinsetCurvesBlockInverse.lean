@@ -51,7 +51,6 @@ private lemma sum_dite_mem_eq_sum_equivFin {d : ℕ} (S : Finset (Fin d)) {M : T
     ← Finset.sum_subset (Finset.subset_univ S) (fun b _ hb => by simp [hb]), ← Finset.sum_coe_sort S]
   exact Finset.sum_congr rfl (fun b _ => by simp [b.2])
 
-open MvPowerSeries in
 private lemma lc_sumF_eq_sum {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {d m : ℕ} (G : _root_.ReciprocityTheory.PGsh.LogFGL v d) (p : ℕ)
     (g : Fin m → Fin d → PowerSeries C) (hg : ∀ u, _root_.ReciprocityTheory.PGsh.IsCurve v (g u)) (n : ℕ) :
     G.lc p (G.sumF g) n = ∑ u, G.lc p (g u) n := by
@@ -59,7 +58,6 @@ private lemma lc_sumF_eq_sum {C : Type} [Field C] {v : AddValuation C (WithTop �
 
   simp only [_root_.ReciprocityTheory.PGsh.LogFGL.lc, _root_.ReciprocityTheory.ChartRestriction.G.Sh.PTb.lgCurve_sumF G g hg c, map_sum, Finset.sum_apply]
 
-open MvPowerSeries in
 private lemma lc_rescaleCurve_eq_pow_smul {C : Type} [Field C] {v : AddValuation C (WithTop ℝ)} {d : ℕ} (G : _root_.ReciprocityTheory.PGsh.LogFGL v d) (p : ℕ)
     (x : C) {ga : Fin d → PowerSeries C} (hga : _root_.ReciprocityTheory.PGsh.IsCurve v ga) (n : ℕ) :
     G.lc p (_root_.ReciprocityTheory.PGsh.rescaleCurve x ga) n = x ^ (p ^ n) • G.lc p ga n := by
@@ -67,7 +65,6 @@ private lemma lc_rescaleCurve_eq_pow_smul {C : Type} [Field C] {v : AddValuation
   simp only [_root_.ReciprocityTheory.PGsh.LogFGL.lc, _root_.ReciprocityTheory.ChartRestriction.G.Sh.PTb.lgCurve_rescale G x (fun b => (hga b).1) c, PowerSeries.coeff_rescale, Pi.smul_apply, smul_eq_mul]
 
 
-open MvPowerSeries in
 theorem _root_.GlobalTheory.RootFin.root_fin : _root_.ReciprocityTheory.ChartRestriction.G.Sh.RootStatement → ∀ (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
     (v : AddValuation C (WithTop ℝ)) (p : ℕ),
     p.Prime → v (p : C) = 1 → ∀ (d h : ℕ) (ty : Fin d → ZMod h) (i : ZMod h) (G : _root_.ReciprocityTheory.PGsh.LogFGL v d)

@@ -56,8 +56,6 @@ lemma _root_.GlobalTheory.FlatQuotient.epi_of_flat_surjective {X Y : Over S} (f 
   have hepi : Epi f.left := Flat.epi_of_flat_of_surjective f.left
   exact (Over.forget S).epi_of_epi_map hepi
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 private lemma whiskerRight_left_of_isStableUnderBaseChange (P : MorphismProperty Scheme.{0})
@@ -76,8 +74,6 @@ private lemma whiskerRight_left_of_isStableUnderBaseChange (P : MorphismProperty
   exact MorphismProperty.of_isPullback
     (IsPullback.of_right houter e2 (IsPullback.of_hasPullback Y.hom Z.hom).flip).flip hf
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 private lemma whiskerLeft_left_of_isStableUnderBaseChange (P : MorphismProperty Scheme.{0})
@@ -97,8 +93,6 @@ private lemma whiskerLeft_left_of_isStableUnderBaseChange (P : MorphismProperty 
     (IsPullback.of_right houter e2 (IsPullback.of_hasPullback Z.hom Y.hom)).flip hf
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 lemma _root_.GlobalTheory.FlatQuotient.epi_tensorHom {X Y X' Y' : Over S} (f : X ⟶ Y) (g : X' ⟶ Y')
@@ -114,8 +108,6 @@ lemma _root_.GlobalTheory.FlatQuotient.epi_tensorHom {X Y X' Y' : Over S} (f : X
   exact epi_comp _ _
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 lemma _root_.GlobalTheory.FlatQuotient.comp_eq_of_kills_kernel {G B B' T : Over S} [GrpObj G] [GrpObj B] [GrpObj B']
@@ -132,8 +124,6 @@ lemma _root_.GlobalTheory.FlatQuotient.comp_eq_of_kills_kernel {G B B' T : Over 
   exact hone
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 variable {S : Scheme.{0}} in
 theorem _root_.GlobalTheory.FlatQuotient.exists_desc {G B B' T : Over S} [GrpObj G]
@@ -172,8 +162,6 @@ theorem _root_.GlobalTheory.FlatQuotient.exists_desc {G B B' T : Over S} [GrpObj
 end FlatQuotient
 
 
-open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
 theorem _root_.GlobalTheory.flatQuotient_iso_of_same_kernel :
     ∀ (S : Scheme.{0}) (G B B' T T' : Over S) [GrpObj G] [GrpObj B] [GrpObj B'] [GrpObj T]

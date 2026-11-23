@@ -56,8 +56,6 @@ theorem _root_.GlobalTheory.UnipStab.Xa_mono {a b : ℕ} (h : a ≤ b) : F.Xa a 
   have hc' : (c : ℕ) < a := hc
   exact lt_of_lt_of_le hc' h
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 private theorem hermFlag_basis_vector_mem_graded_lemma (a : Fin r) {n : ℕ} (h : (a : ℕ) < n) :
@@ -65,15 +63,11 @@ private theorem hermFlag_basis_vector_mem_graded_lemma (a : Fin r) {n : ℕ} (h 
   unfold _root_.Formalism.HermitianLatticeCounting.S6.FlagD.Xa
   exact Submodule.subset_span ⟨a, h, rfl⟩
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 theorem _root_.GlobalTheory.UnipStab.e_mem_X (a : Fin r) : F.e a.castSucc ∈ F.X :=
   hermFlag_basis_vector_mem_graded_lemma F a a.isLt
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 private theorem hermFlag_orthogonal_graded_of_basis_lemma_2 {n : ℕ} {y : V}
@@ -88,8 +82,6 @@ private theorem hermFlag_orthogonal_graded_of_basis_lemma_2 {n : ℕ} {y : V}
   | add x z _ _ hx hz => simp [hx, hz]
   | smul c x _ hx => simp [hx]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 theorem _root_.GlobalTheory.UnipStab.orth_X {y : V}
@@ -99,8 +91,6 @@ theorem _root_.GlobalTheory.UnipStab.orth_X {y : V}
 
 variable {F}
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 variable {F} in
@@ -121,8 +111,6 @@ theorem _root_.GlobalTheory.UnipStab.map_Xa {g : V →ₗ[K] V} (hg : F.InN g) (
   | add x z _ _ hx hz => simpa using add_mem hx hz
   | smul c x _ hx => simpa using Submodule.smul_mem _ c hx
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 variable {F} in
@@ -132,8 +120,6 @@ theorem _root_.GlobalTheory.UnipStab.hermFlagUnipotent_anisotropic_vector_sub_me
   unfold _root_.Formalism.HermitianLatticeCounting.S6.FlagD.z
   exact hg.2.2.2 _ F.zperp
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 variable {F} in
@@ -142,14 +128,10 @@ theorem _root_.GlobalTheory.UnipStab.inN_one : F.InN ((1 : V ≃ₗ[K] V) : V �
   refine ⟨fun x y => rfl, (1 : V ≃ₗ[K] V).bijective, fun a => ?_, fun y _ => ?_⟩ <;>
     simp [LinearEquiv.coe_coe]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 private theorem hermFlag_isotropic_eq_graded_lemma_4 : F.X = F.Xa r := rfl
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 variable {F} in
@@ -158,8 +140,6 @@ private theorem hermFlagUnipotent_maps_isotropic_lemma_3 {g : V →ₗ[K] V} (hg
   rw [hermFlag_isotropic_eq_graded_lemma_4 F] at hx ⊢
   exact _root_.GlobalTheory.UnipStab.map_Xa hg r hx
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 variable {F} in
@@ -184,8 +164,6 @@ theorem _root_.GlobalTheory.UnipStab.inN_mul {s t : V ≃ₗ[K] V} (hs : F.InN (
     have := add_mem h1 h2
     rwa [map_sub, sub_add_sub_cancel] at this
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 variable {F} in
@@ -199,8 +177,6 @@ private theorem hermFlagUnipotent_symm_maps_graded_lemma_5 [FiniteDimensional K 
   obtain ⟨w, hw, rfl⟩ := hx
   simpa using hw
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 variable {F} in
@@ -233,8 +209,6 @@ theorem _root_.GlobalTheory.UnipStab.inN_inv [FiniteDimensional K V] {s : V ≃�
     have h3 := Submodule.neg_mem _ (hsy (s.symm y) hperp)
     simpa using h3
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 variable {F} in
@@ -256,8 +230,6 @@ private theorem hermFlagUnipotent_sub_lowers_graded_lemma_6 {g : V →ₗ[K] V} 
     rw [map_smul, ← smul_sub]
     exact Submodule.smul_mem _ c hx
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 private theorem hermFlag_graded_zero_lemma_7 {x : V} (hx : x ∈ F.Xa 0) : x = 0 := by
@@ -265,8 +237,6 @@ private theorem hermFlag_graded_zero_lemma_7 {x : V} (hx : x ∈ F.Xa 0) : x = 0
   simpa using hx
 
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (F : _root_.Formalism.HermitianLatticeCounting.S6.FlagD H r) in
 variable {F} in
@@ -335,8 +305,6 @@ variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [M
   [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
   {H : HermSpace K V} {r : ℕ} (N : NF H r)
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (N : _root_.GlobalTheory.DegCnt.NF H r) in
@@ -358,8 +326,6 @@ theorem _root_.GlobalTheory.UnipStab.mem_R (s : V ≃ₗ[K] V) :
     unfold _root_.GlobalTheory.DegCnt.NF.R
     exact Subgroup.subset_closure h
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (N : _root_.GlobalTheory.DegCnt.NF H r) in
@@ -370,8 +336,6 @@ theorem _root_.GlobalTheory.UnipStab.mem_fixing (S : Submodule K V) (t : V ≃�
   rw [mem_fixingSubgroup_iff]
   rfl
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (N : _root_.GlobalTheory.DegCnt.NF H r) in
@@ -393,8 +357,6 @@ theorem _root_.GlobalTheory.UnipStab.sub_mem_II {s : V ≃ₗ[K] V}
   unfold _root_.Formalism.HermitianLatticeCounting.S6.FlagD.InN at h1 h2
   exact Submodule.mem_inf.mpr ⟨h1.2.2.2 y hF, h2.2.2.2 y hF'⟩
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (N : _root_.GlobalTheory.DegCnt.NF H r) in
@@ -427,8 +389,6 @@ private theorem hermFramePairCommonUnipotent_maps_span_lemma_9 {F F' : _root_.Fo
         simpa using add_mem h1 h2
   exact hle hx
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (N : _root_.GlobalTheory.DegCnt.NF H r) in
@@ -448,8 +408,6 @@ private theorem hermFramePairCommonUnipotent_conj_mem_fixingBoth_lemma_8 {s t : 
   change s (t (s.symm v)) = v
   rw [ht2 _ hmem, LinearEquiv.apply_symm_apply]
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
   {H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V} {r : ℕ} (N : _root_.GlobalTheory.DegCnt.NF H r) in
@@ -492,8 +450,6 @@ theorem _root_.GlobalTheory.UnipStab.conj_ZI {s t : V ≃ₗ[K] V}
 end Two
 
 
-open NumberField in
-open scoped Pointwise ENNReal Classical in
 theorem _root_.GlobalTheory.UnipStab.common_unipotent_stabiliser : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (H : _root_.Formalism.HermitianLatticeCounting.S6.HermSpace K V), _root_.Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ (r : ℕ) (N : _root_.GlobalTheory.DegCnt.NF H r), (∀ s : V ≃ₗ[K] V, s ∈ N.R ↔ N.F.InN (s : V →ₗ[K] V) ∧ N.F'.InN (s : V →ₗ[K] V)) ∧ (∀ s ∈ N.R, ∀ y ∈ _root_.GlobalTheory.HermLat.uPerp N.F N.F', s y - y ∈ _root_.Formalism.HermitianLatticeCounting.S6.II N.F N.F') ∧ (∀ s ∈ N.R, ∀ t ∈ N.R1, s * t * s⁻¹ ∈ N.R1) ∧ (∀ s ∈ N.R, ∀ t ∈ N.ZI, s * t * s⁻¹ ∈ N.ZI) ∧ ∀ s ∈ N.R, ((s : V →ₗ[K] V) - 1) ^ (2 * r + 1) = 0 := by
   intro K V _ _ _ _ _ _ _ _ H _ r N
   refine ⟨_root_.GlobalTheory.UnipStab.mem_R N,

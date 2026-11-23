@@ -74,7 +74,6 @@ theorem conjProd_ne_bot (SS : Finset (Formalism.L2.DIV.Pl D.host.E)) : conjProd 
 end GlobalTheory.OffIdemLat
 
 namespace GlobalTheory.OffIdemLat
-open GlobalTheory.IdemSupport GlobalTheory.OffIdemDen
 variable {D : D7}
 
 theorem finPart_mul_mem (e : AE D) (SS : Finset (Formalism.L2.DIV.Pl D.host.E)) (he : IsIdemSum e SS) (x : D.host.E)

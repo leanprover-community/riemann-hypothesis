@@ -189,7 +189,6 @@ end GlobalTheory.OffPartLattice
 
 namespace GlobalTheory.OffPartLattice
 
-open GlobalTheory.StdFrames Matrix
 
 variable {D : D7}
 

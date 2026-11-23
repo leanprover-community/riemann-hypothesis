@@ -105,8 +105,6 @@ theorem _root_.GlobalTheory.finrank_int_eq_mul_of_finite {O M : Type*} [CommRing
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.datum_free_int {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H) : Module.Free ℤ D.La := by
   haveI := D.fin
@@ -117,8 +115,6 @@ theorem _root_.GlobalTheory.datum_free_int {H : _root_.ReciprocityTheory.ChartRe
   exact Module.free_of_finite_type_torsion_free'
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.datum_finrank_int {H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H) :
     Module.finrank ℤ D.La = 2 * (Module.finrank ℚ E / 2 * (D.p + D.q)) := by
@@ -133,8 +129,6 @@ theorem _root_.GlobalTheory.datum_finrank_int {H : _root_.ReciprocityTheory.Char
       NumberField.InfinitePlace.nrComplexPlaces E := by omega
   rw [h3]; ring
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma w0_sq_eq_w0_sub_two_mul (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) :
     H.w0 ^ 2 = H.w0 - 2 * ((2 * (H.d / 16 : ℕ) + 1 : ℕ) : 𝓞 E) := by
@@ -149,8 +143,6 @@ private lemma w0_sq_eq_w0_sub_two_mul (H : _root_.ReciprocityTheory.ChartRestric
   · exact absurd h (by norm_num)
   · exact sub_eq_zero.mp h
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma host_bar_rt_eq_neg (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : H.bar H.rt = -H.rt := by
   obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
@@ -175,8 +167,6 @@ private lemma host_bar_rt_eq_neg (H : _root_.ReciprocityTheory.ChartRestriction.
   rw [H.bar_eq, NumberField.IsCMField.complexEmbedding_complexConj, hconj]
   simp
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private lemma host_bar_w0 (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : H.bar H.w0 = 1 - H.w0 := by
   have h := congrArg H.bar H.two_weight_eq_one_add_root
@@ -188,8 +178,6 @@ private lemma host_bar_w0 (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.T
   · exact sub_eq_zero.mp h3
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.exists_symplectic_basis_adapted_mod_eight :
     ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H) (g : ℕ),

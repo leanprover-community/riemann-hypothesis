@@ -37,13 +37,11 @@ namespace Formalism.L2.Ker
 
 open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility Formalism.REAL
 
-section LcOne
 
 open Formalism.BranchingDeterminantCap
 
 variable {N n : ℕ} (hN : N = n + 1) (l : DomWeight N) (s : DomWeight n)
 
-end LcOne
 
 end Formalism.L2.Ker
 
@@ -79,25 +77,19 @@ end Formalism.L2.Ker
 namespace Formalism.L2.Ker
 
 
-section LcBr
 
 
 variable {N n : ℕ} (hN : N = n + 1) (l : DomWeight N) (s : DomWeight n)
 
-end LcBr
 
-section LcBrTen
 
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {N n : ℕ} (hN : N = n + 1) (l : ι → DomWeight N) (s : ι → DomWeight n)
 
-end LcBrTen
 
-section LcFrame
 
 variable {N n : ℕ} (hN : N = n + 1) (l : DomWeight N) (s : DomWeight n)
 
-end LcFrame
 
 end Formalism.L2.Ker
 
@@ -118,24 +110,20 @@ theorem lc_blk_sqAct_mem {k : ℕ} (m : ι → DomWeight k) (g : ι → GL (Fin 
 
 end LcFrameTen
 
-section LcRec
 
 open Formalism.MainNotions.product_first_zeroth_parts
 
 variable {D : Formalism.BasicNotions.D7} {u : D.what₂.Word}
 
-end LcRec
 
 end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
 
-section LcLog
 
 
 variable {D : Formalism.BasicNotions.D7} {u : D.what₂.Word}
 
-end LcLog
 
 end Formalism.L2.Ker

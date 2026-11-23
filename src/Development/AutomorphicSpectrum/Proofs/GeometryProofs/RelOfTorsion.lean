@@ -110,7 +110,6 @@ end GlobalTheory.CompanionTheory.Ar.BT.Tan
 
 noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.BT.Tan
-open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieEx
 
 theorem one_left_eq {B : Scheme.{0}} {X M : Over B} [GrpObj M] : (1 : X ⟶ M).left = X.hom ≫ η[M].left := by
   rw [Hom.one_def, Over.comp_left, Over.toUnit_left]
@@ -324,7 +323,6 @@ end GlobalTheory.CompanionTheory.Ar.BT.Tan
 
 noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.BT.Tan
-open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieEx
 
 theorem hom_add' {S : Scheme.{0}} {R : Type} [CommRing R] (x : Spec (CommRingCat.of R) ⟶ S) (G : Over S) [GrpObj G]
     {P V : Type} [AddCommGroup P] [Module R P] [Module Rᵐᵒᵖ P] [IsCentralScalar R P]
@@ -361,7 +359,6 @@ theorem dual_eq_smul {R L : Type} [CommRing R] [AddCommGroup L] [Module R L] [Mo
 end GlobalTheory.CompanionTheory.Ar.BT.Tan
 
 namespace GlobalTheory.CompanionTheory.Ar.BT.Tan
-open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.LieEx
 
 section Core
 variable {R : Type} [CommRing R] [IsDomain R] {T : Type} [CommGroup T] (Γ : QFGroup R T)

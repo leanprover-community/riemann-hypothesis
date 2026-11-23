@@ -50,7 +50,6 @@ open GroundTheory.Global.RationalIdeles GroundTheory.Automorphic.Reduction in
 private theorem pos_real (s : {r : ℝ // 0 < r}) : (realPart (posIdeleHom ℚ s) : ℝ) = s.1 := by
   rw [coe_realPart, posIdeleHom_apply, GroundTheory.Automorphic.GL2Classical.posIdele_fst_rat, RingEquiv.apply_symm_apply]
 
-open GroundTheory.Global.RationalIdeles GroundTheory.Automorphic.Reduction in
 private theorem pos_mem (s : {r : ℝ // 0 < r}) : posIdeleHom ℚ s ∈ positiveSubgroup := by
   refine mem_positiveSubgroup.2 ⟨(IdeleGroup.mem_standardOpenSubgroup ℚ).2 fun v => ?_, ?_⟩
   · rw [← map_inv, posIdeleHom_apply, posIdeleHom_apply, posIdele_finite, posIdele_finite]
@@ -75,7 +74,6 @@ private theorem uu_mem {t : IdeleGroup ℚ} (ht : t ∈ UU) : t ∈ positiveSubg
   exact ⟨(HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).2 hv.le,
     (HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 ℚ) ℚ v).2 hi.le⟩
 
-open GroundTheory.Global.RationalIdeles in
 private theorem mem_uu {t : IdeleGroup ℚ} (hp : t ∈ positiveSubgroup) (h1 : (realPart t : ℝ) = 1) : t ∈ UU := by
   refine ⟨realEquiv.injective ?_, fun v => ?_⟩
   · rw [map_one, ← coe_realPart, h1]
@@ -87,7 +85,6 @@ private theorem mem_uu {t : IdeleGroup ℚ} (hp : t ∈ positiveSubgroup) (h1 : 
     have := mul_le_mul' hb' (le_refl (Valued.v ((t : 𝔸[ℚ]).2 v)))
     rwa [hi, one_mul] at this
 
-open GroundTheory.Global.RationalIdeles GroundTheory.Automorphic.Reduction in
 private theorem dec : ∃ (Q : IdeleGroup ℚ → ℚˣ) (S : IdeleGroup ℚ → {r : ℝ // 0 < r}) (T : IdeleGroup ℚ → IdeleGroup ℚ),
     IsLocallyConstant Q ∧ Continuous S ∧ Continuous T ∧ (∀ d, T d ∈ UU) ∧
     (∀ d, d = IdeleGroup.diagonal ℚ (Q d) * posIdeleHom ℚ (S d) * T d) ∧
@@ -221,7 +218,6 @@ private theorem toS_eq {y y' : GL (Fin 2) (A ℚ)} {h : Dt y = 1} {h' : Dt y' = 
     toS y h = g * toS y' h' := Subtype.ext (congrArg Units.val e)
 
 
-open GroundTheory.Automorphic.Reduction in
 private def Mx (Q : IdeleGroup ℚ → ℚˣ) (S : IdeleGroup ℚ → {r : ℝ // 0 < r}) (T : IdeleGroup ℚ → IdeleGroup ℚ)
     (x : GL (Fin 2) (A ℚ)) : GL (Fin 2) (A ℚ) :=
   ratGL ℚ 2 (dq (Q (Dt x)))⁻¹ * (centralSection ℚ 2 (S (Dt x)))⁻¹ * x * (dM (T (Dt x)))⁻¹
@@ -251,7 +247,6 @@ private theorem nU_plus (b c : A ℚ) : nU (b + c) = nU b * nU c := by
 private theorem rat_sl (γ : GL (Fin 2) ℚ) (h : Dt γ = 1) : ∃ g, ratGL ℚ 2 γ = gl (ratS ℚ g) :=
   ⟨⟨γ.val, congrArg Units.val h⟩, Units.ext rfl⟩
 
-open GroundTheory.Automorphic.Reduction in
 theorem ext : Ext := by
   intro u hu
   obtain ⟨Q, S, T, hQ, hS, hT, hTU, hdec, huniq⟩ := dec

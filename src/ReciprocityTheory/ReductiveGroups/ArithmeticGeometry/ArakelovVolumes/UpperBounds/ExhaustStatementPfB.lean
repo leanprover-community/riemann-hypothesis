@@ -50,9 +50,7 @@ end ReciprocityTheory.ChartRestriction.G.AR.Up.ExhC
 
 namespace ReciprocityTheory.ChartRestriction.G.AR.Up.ExhD
 
-open Matrix Topology Filter
 open scoped ComplexOrder Matrix ContDiff
-open ReciprocityTheory.L2DbarEstimates ReciprocityTheory.ChartRestriction.G.AR.Up ReciprocityTheory.ChartRestriction.G.AR.Up.ExhA ReciprocityTheory.ChartRestriction.G.AR.Up.ExhB
   ReciprocityTheory.ChartRestriction.G.AR.Up.ExhC
 
 variable {f p q N' : ℕ}

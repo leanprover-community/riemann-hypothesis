@@ -43,13 +43,11 @@ private theorem isIntAf_iff_val {p : ℕ} (x : AfP p) :
     IsIntAf x ↔ ∀ v : AwayP p, Valued.v (AfP.eval v x) ≤ 1 := by
   simp only [IsIntAf, mem_adicCompletionIntegers]
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum in
 private theorem val_algebraMap {p : ℕ} (v : AwayP p) (q : ℚ) :
     Valued.v (AfP.eval v (algebraMap ℚ (AfP p) q)) = v.1.valuation ℚ q := by
   rw [AlgHom.commutes]
   exact IsDedekindDomain.HeightOneSpectrum.adicCompletion.valued_coe ℚ v.1 q
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum in
 private theorem val_nat_eq_one (v : HeightOneSpectrum ℤ) {n : ℕ} (h : (n : ℤ) ∉ v.asIdeal) :
     v.valuation ℚ (n : ℚ) = 1 := by
   have e : (n : ℚ) = algebraMap ℤ ℚ (n : ℤ) := by simp
@@ -65,7 +63,6 @@ private theorem lt_one_mul_exp_le {t : WithZero (Multiplicative ℤ)} (h : t < 1
     rw [← WithZero.exp_zero (M := ℤ), WithZero.exp_lt_exp] at h
     omega
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum in
 private theorem exists_gen (v : HeightOneSpectrum ℤ) :
     ∃ l : ℕ, 1 < l ∧ v.asIdeal = Ideal.span {(l : ℤ)} := by
   have hspan : v.asIdeal = Ideal.span {Submodule.IsPrincipal.generator v.asIdeal} :=
@@ -124,7 +121,6 @@ private theorem natCast_prime_not_mem_awayP {p : ℕ} [Fact p.Prime] (v : AwayP 
   · omega
   · exact v.2 (by rw [hspan, h])
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum in
 private theorem valuation_generator_eq_exp_neg_one (v : HeightOneSpectrum ℤ) (l : ℕ) (hl : 1 < l)
     (hspan : v.asIdeal = Ideal.span {(l : ℤ)}) : v.valuation ℚ (l : ℚ) = WithZero.exp (-1) := by
   have e : (l : ℚ) = algebraMap ℤ ℚ (l : ℤ) := by simp
@@ -133,7 +129,6 @@ private theorem valuation_generator_eq_exp_neg_one (v : HeightOneSpectrum ℤ) (
     multiplicity_self (Ideal.finiteMultiplicity v.isPrime.ne_top v.ne_bot)]
   rfl
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum in
 private theorem valuation_generator_other_eq_one (v w : HeightOneSpectrum ℤ) (l : ℕ)
     (hspan : v.asIdeal = Ideal.span {(l : ℤ)}) (hvw : v ≠ w) : w.valuation ℚ (l : ℚ) = 1 := by
   apply val_nat_eq_one
@@ -144,7 +139,6 @@ private theorem valuation_generator_other_eq_one (v w : HeightOneSpectrum ℤ) (
     exact hmem
   exact HeightOneSpectrum.ext (v.isMaximal.eq_of_le w.isPrime.ne_top hle)
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum in
 private theorem exists_pos_rat_valuation_one_away {p : ℕ} [Fact p.Prime] (K : ℕ) : ∀ (y : (AfP p)ˣ), 0 < K →
     IsIntAf (y : AfP p) → IsIntAf (algebraMap ℚ (AfP p) K * ((y⁻¹ : (AfP p)ˣ) : AfP p)) →
     ∃ s : ℚ, 0 < s ∧ ∀ v : AwayP p,
@@ -219,7 +213,6 @@ private theorem exists_pos_rat_valuation_one_away {p : ℕ} [Fact p.Prime] (K : 
   rw [e]
   exact hval w
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum in
 private theorem scale {p : ℕ} [Fact p.Prime] (c : (AfP p)ˣ) :
     ∃ s₀ : ℚ, 0 < s₀ ∧ ∀ v : AwayP p,
       Valued.v (AfP.eval v (algebraMap ℚ (AfP p) s₀ * ((c⁻¹ : (AfP p)ˣ) : AfP p))) = 1 := by

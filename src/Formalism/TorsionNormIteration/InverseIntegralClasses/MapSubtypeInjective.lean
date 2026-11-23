@@ -149,13 +149,11 @@ theorem FunEqHom_of' (h1 : SolveExists.{u, 0}) (h2 : InvIntegralOfClass.{u, 0})
     exact funEqType_unit (q_ne_zero hS) hgE)
   exact ⟨h, hh0, fun n => hI _, hh⟩
 
-section FG
 
 open Formalism.G.LogP
 
 variable {K : Type u} [NormedField K] [IsUltrametricDist K]
 
-end FG
 
 end Formalism.LT.Asm
 

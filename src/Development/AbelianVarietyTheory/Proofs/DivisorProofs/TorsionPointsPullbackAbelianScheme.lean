@@ -71,7 +71,6 @@ end GlobalTheory.KerConst
 
 namespace GlobalTheory.KerConst
 
-open GlobalTheory.LevelCompare
 
 theorem isPullback_const_ker (Ω : Type) [Field Ω] [IsAlgClosed Ω]
     (G : Over (Spec (CommRingCat.of Ω))) [GrpObj G] : IsAbelianScheme G → ∀ (n : ℕ), (n : Ω) ≠ 0 →

@@ -94,8 +94,6 @@ theorem _root_.GlobalTheory.UnitaryInvMeasure.diagF_unit (t : _root_.GlobalTheor
   · simp [_root_.GlobalTheory.UnitaryInvMeasure.diagF, Matrix.diagonal_apply_eq, Circle.norm_coe]
   · simp [_root_.GlobalTheory.UnitaryInvMeasure.diagF, Matrix.diagonal_apply_ne _ (Ne.symm hc)]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.UnitaryInvMeasure.diagF_mem (t : _root_.GlobalTheory.UnitaryInvMeasure.Torus X) :
@@ -108,8 +106,6 @@ theorem _root_.GlobalTheory.UnitaryInvMeasure.diagF_mem (t : _root_.GlobalTheory
     exact Finset.prod_ne_zero_iff.mpr fun a _ => Circle.coe_ne_zero _
   · simp [_root_.GlobalTheory.UnitaryInvMeasure.diagF, Matrix.diagonal_apply_ne _ h.ne']
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.UnitaryInvMeasure.continuous_diagF : Continuous (_root_.GlobalTheory.UnitaryInvMeasure.diagF X) := by
@@ -121,8 +117,6 @@ theorem _root_.GlobalTheory.UnitaryInvMeasure.continuous_diagF : Continuous (_ro
   · simp only [_root_.GlobalTheory.UnitaryInvMeasure.diagF, Matrix.diagonal_apply_ne _ h]
     exact continuous_const
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.UnitaryInvMeasure.continuous_rmul :
@@ -132,8 +126,6 @@ theorem _root_.GlobalTheory.UnitaryInvMeasure.continuous_rmul :
   exact Continuous.matrix_mul
     ((continuous_apply τ).comp continuous_fst) ((continuous_apply τ).comp continuous_snd)
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.UnitaryInvMeasure.lmulC_rmul (n : X.Ψ → Matrix (Fin r) (Fin r) ℂ)
@@ -143,8 +135,6 @@ theorem _root_.GlobalTheory.UnitaryInvMeasure.lmulC_rmul (n : X.Ψ → Matrix (F
   funext τ
   exact (Matrix.mul_assoc (n τ) (Matrix.of (x τ)) (Matrix.of (b τ))).symm
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.UnitaryInvMeasure.gram_lmulC {n : X.Ψ → Matrix (Fin r) (Fin r) ℂ} (hn : X.IsUnitaryC n)
@@ -161,8 +151,6 @@ theorem _root_.GlobalTheory.UnitaryInvMeasure.gram_lmulC {n : X.Ψ → Matrix (F
     rfl
   rw [key, key, hn τ]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.UnitaryInvMeasure.orth_lmulC {n : X.Ψ → Matrix (Fin r) (Fin r) ℂ} (hn : X.IsUnitaryC n)
@@ -172,22 +160,16 @@ theorem _root_.GlobalTheory.UnitaryInvMeasure.orth_lmulC {n : X.Ψ → Matrix (F
   rw [_root_.GlobalTheory.UnitaryInvMeasure.gram_lmulC X hn]
   exact hx τ
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem sFinite_muF (x0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) : SFinite (_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.muF X x0) := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.muF; infer_instance
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem continuous_frame_mat (τ : X.Ψ) : Continuous fun x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r => _root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ :=
   continuous_apply τ
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem continuous_dmin_torus_haar_measure (τ : X.Ψ) (i : Fin (r + 1)) :
@@ -199,8 +181,6 @@ private theorem continuous_dmin_torus_haar_measure (τ : X.Ψ) (i : Fin (r + 1))
   exact (h.matrix_transpose.matrix_mul continuous_const).matrix_mul
     (h.matrix_map continuous_star)
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem isOpen_X_dom : IsOpen X.dom := by
@@ -211,8 +191,6 @@ private theorem isOpen_X_dom : IsOpen X.dom := by
   · exact isOpen_lt continuous_const
       (continuous_const.mul (Complex.continuous_re.comp (continuous_dmin_torus_haar_measure X τ i)))
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem continuous_cpt_torus_haar_measure (x0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) : Continuous (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x0) := by
@@ -225,8 +203,6 @@ private theorem continuous_cpt_torus_haar_measure (x0 : _root_.ReciprocityTheory
   refine continuous_finsetSum _ fun k _ => continuous_const.mul ?_
   exact (_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExF.cd_nM X τ k c).continuous
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem oneF_rmul (b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) : _root_.ReciprocityTheory.ChartRestriction.G.FD.rmul (_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExtFPf.oneF X) b = b := by
@@ -239,8 +215,6 @@ private theorem oneF_rmul (b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Fr
   rw [h1, Matrix.one_mul]
   rfl
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem exists_diagF_eq_of_unit_diagonal (b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r)
@@ -253,8 +227,6 @@ private theorem exists_diagF_eq_of_unit_diagonal (b : _root_.ReciprocityTheory.C
     simp [_root_.GlobalTheory.UnitaryInvMeasure.diagF, Matrix.diagonal_apply_eq]
   · simp [_root_.GlobalTheory.UnitaryInvMeasure.diagF, Matrix.diagonal_apply_ne _ h, (hb τ a).2 c (Ne.symm h)]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem rmul_diagF_diagF (s t : _root_.GlobalTheory.UnitaryInvMeasure.Torus X) :
@@ -265,8 +237,6 @@ private theorem rmul_diagF_diagF (s t : _root_.GlobalTheory.UnitaryInvMeasure.To
   rw [Matrix.diagonal_mul_diagonal]
   rfl
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem lintegral_haarT_rmul_diagF_translate (f : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r → ℝ≥0∞) (y : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r)
@@ -278,15 +248,11 @@ private theorem lintegral_haarT_rmul_diagF_translate (f : _root_.ReciprocityTheo
   exact lintegral_mul_left_eq_self
     (fun t => f (_root_.ReciprocityTheory.ChartRestriction.G.FD.rmul y (_root_.GlobalTheory.UnitaryInvMeasure.diagF X t))) s
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem mat_lmulC (n : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) (τ : X.Ψ) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.mat (X.lmulC n x) τ = n τ * _root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ := rfl
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem lmulC_mem_dom_iff_of_unitary {n : X.Ψ → Matrix (Fin r) (Fin r) ℂ} (hn : X.IsUnitaryC n)
@@ -300,8 +266,6 @@ private theorem lmulC_mem_dom_iff_of_unitary {n : X.Ψ → Matrix (Fin r) (Fin r
     rw [_root_.GlobalTheory.UnitaryInvMeasure.gram_lmulC X hn]
   simp only [hp, mat_lmulC, Matrix.det_mul, mul_ne_zero_iff, hdet, ne_eq, not_false_eq_true, true_and]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem lmulC_lmulC (n m : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (x : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) :
@@ -310,8 +274,6 @@ private theorem lmulC_lmulC (n m : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (x : _ro
   funext τ
   exact (Matrix.mul_assoc (n τ) (m τ) (Matrix.of (x τ))).symm
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem cpt_lmulC_eq_lmulC_cpt (n : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (x0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r) z :
@@ -322,8 +284,6 @@ private theorem cpt_lmulC_eq_lmulC_cpt (n : X.Ψ → Matrix (Fin r) (Fin r) ℂ)
   change _root_.ReciprocityTheory.ChartRestriction.G.FD.mat (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X (X.lmulC n x0) z) τ = _root_.ReciprocityTheory.ChartRestriction.G.FD.mat (X.lmulC n (_root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x0 z)) τ
   rw [h1, mat_lmulC, mat_lmulC, h2, Matrix.mul_assoc]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 private theorem muF_lmulC_eq_of_unitary {n : X.Ψ → Matrix (Fin r) (Fin r) ℂ} (hn : X.IsUnitaryC n)
@@ -336,8 +296,6 @@ private theorem muF_lmulC_eq_of_unitary {n : X.Ψ → Matrix (Fin r) (Fin r) ℂ
   unfold _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.muF _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.OmF _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.densF
   simp only [cpt_lmulC_eq_lmulC_cpt, lmulC_mem_dom_iff_of_unitary X hn hdet, hp]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable (X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r) in
 theorem _root_.GlobalTheory.UnitaryInvMeasure.invMeas :

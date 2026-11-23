@@ -43,13 +43,11 @@ private theorem deg_finrank_zero {E : Type} [Field E] [NumberField E] [IsCMField
     exact degM_zero x M
   exact key _ _ hW
 
-open NumberField PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.E GlobalTheory.CuspRep GlobalTheory.UnitaryBC in
 private theorem logSize_inv' {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} (h : GA E n) :
     logSize (h⁻¹ : GA E n) = logSize h := by
   simp only [logSize, inv_inv]
   exact add_comm _ _
 
-open NumberField PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.E GlobalTheory.CuspRep GlobalTheory.UnitaryBC in
 private theorem tau_le_prof {n k : ℕ} {τ : ℝ} (hτ : 0 ≤ τ) (h1 : 1 ≤ k) (hk : k ≤ n) : τ ≤ prof n τ k := by
   have a : (1 : ℝ) ≤ k := by exact_mod_cast h1
   have b : (k : ℝ) ≤ n := by exact_mod_cast hk
@@ -59,7 +57,6 @@ private theorem tau_le_prof {n k : ℕ} {τ : ℝ} (hτ : 0 ≤ τ) (h1 : 1 ≤ 
   simp only [prof]
   nlinarith
 
-open NumberField PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.E GlobalTheory.CuspRep GlobalTheory.UnitaryBC in
 theorem UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.inCut_pf :
     InCut := by
   intro E _ _ _ n

@@ -132,7 +132,6 @@ end
 
 namespace GlobalTheory.Hk3.ResWitt
 
-open Formalism.UG GlobalTheory.Hk3.IntWitt
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
@@ -210,7 +209,6 @@ end GlobalTheory.Hk3.ResWitt
 
 namespace GlobalTheory.Hk3.ResWitt
 
-open Formalism.UG GlobalTheory.Hk3.IntWitt
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
@@ -295,7 +293,6 @@ end GlobalTheory.Hk3.ResWitt
 
 namespace GlobalTheory.Hk3.ResWitt
 
-open Formalism.UG GlobalTheory.Hk3.IntWitt
 
 theorem exists_int_unitary_mod_of_gram_mod : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (ϖ : L) (σ : L →+* L) (q : ℕ),
     Formalism.UG.IsUnramInv ϖ σ q → Odd q → ∀ (n' : ℕ) (JT : GL (Fin n') L),

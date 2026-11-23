@@ -59,7 +59,6 @@ variable {k r : ℕ}
 variable {z : Fin (2 * r + k + 1) → ℂ} {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
 end Frame
 section Dual
-open PI.UpqRep PI.HwUniqW GlobalTheory.RealBessel
 variable {k : ℕ} {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
 end Dual
 section Main

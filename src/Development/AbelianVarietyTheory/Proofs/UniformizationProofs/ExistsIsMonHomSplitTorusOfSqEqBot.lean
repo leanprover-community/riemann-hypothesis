@@ -298,7 +298,6 @@ theorem exists_coboundary (hv : IsLieBasis v) (hJ : J ^ 2 = ⊥)
   exact hg i
 
 
-open AddMonoidHom in
 theorem exists_correction (hv : IsLieBasis v) (hJ : J ^ 2 = ⊥) (h : sp (AddMonoidAlgebra A X) ⟶ G)
     (hh : pull G (inr X X) h / pull G (inl X X + inr X X) h * pull G (inl X X) h ∈
       redKer (R := A) G (J.map (algebraMap A (AddMonoidAlgebra A (X × X))))) :

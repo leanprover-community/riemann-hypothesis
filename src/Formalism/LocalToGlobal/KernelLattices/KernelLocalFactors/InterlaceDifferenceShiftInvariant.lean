@@ -367,18 +367,14 @@ theorem brTranspose : BrTranspose hN lam sg K := by
 
 end Transpose
 
-section Period
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
-end Period
 
-section Chi
 
 variable {G : Type} [CommGroup G]
 
-end Chi
 
 end Formalism.L2.Ker
 
@@ -585,11 +581,9 @@ theorem lb_map_projVV [CharZero K] [CharZero K'] {n : ℕ} (lam : ι → DomWeig
 
 end BCMaps
 
-section Member
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R)
 
-end Member
 
 end Formalism.L2.Ker
 
@@ -600,26 +594,20 @@ noncomputable section
 namespace Formalism.L2.Ker
 
 
-section Shift
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R)
 
-end Shift
 
-section Degen
 
 open Classical
 
 variable {K : Type} [Field K] {ι : Type} [Fintype ι]
 
-end Degen
 
-section Degen2
 
 
 variable {K : Type} [Field K] {ι : Type} [Fintype ι]
 
-end Degen2
 
 end Formalism.L2.Ker
 
@@ -1371,11 +1359,9 @@ def wt0 : DomWeight 1 := ⟨![0], by intro a b _; fin_cases a; fin_cases b; simp
 
 end Small
 
-section Chain
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R)
 
-end Chain
 
 end Formalism.L2.Ker
 
@@ -1469,18 +1455,14 @@ theorem sameShiftTr (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (τ : D
 
 end ShiftTr
 
-section NZ
 
 variable {K : Type} [Field K] [CharZero K] {ι : Type} [Fintype ι] {N n : ℕ} (hN : N = n + 1)
   (lam : ι → DomWeight N) (sg : ι → DomWeight n)
 
-end NZ
 
-section ShapeNe
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R)
 
-end ShapeNe
 
 section Comparison₂
 
@@ -4287,14 +4269,12 @@ theorem ta_nfAll_nonneg {n : ℕ} (l : ι → Formalism.BasicNotions.DomWeight n
 
 end BlkCalc
 
-section TieAt
 
 variable {D : Formalism.BasicNotions.D7} {u : D.what₂.Word}
   {coM : D.what₂.places.Pl → (D.fm u).clsP → (((D.mem u).C.Y D.R.m → ℂ) →ₗ[ℂ]
     MvPolynomial (D.what₂.Tau × Fin (D.R.N D.R.m) × Fin (D.R.N D.R.m)) ℂ)}
   {gP : D.what₂.places.Pl → (D.fm u).clsP → D.what₂.Tau → GL (Fin (D.R.N D.R.m - 1)) ℂ}
 
-end TieAt
 
 section Kill
 

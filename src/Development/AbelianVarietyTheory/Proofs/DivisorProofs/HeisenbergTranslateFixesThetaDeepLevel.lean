@@ -126,7 +126,6 @@ theorem finQ_finRat {D : D7} (S T : HSp D) (γ : Matrix (Fin T.rank) (Fin S.rank
 end GlobalTheory.LevelTr
 
 namespace GlobalTheory.LevelTr
-open GlobalTheory.BotClassDict
 
 theorem finQ_finPt {D : D7} (S T : HSp D) (r : D.host.E) (z : Matrix (Fin T.rank) (Fin S.rank) D.host.E) :
     (finPt (S := S) (T := T) rfl rfl r z).map (finQ D) =
@@ -154,7 +153,6 @@ theorem finQ_actO_sub {D : D7} (S T : HSp D) (hGS : S.gram = 1) (hGT : T.gram = 
 end GlobalTheory.LevelTr
 
 namespace GlobalTheory.LevelTr
-open GlobalTheory.BotClassDict
 open scoped TensorProduct
 
 theorem infPart_mt_of_mem_GfC {D : D7} (V : HSp D) {g : GA D V} (hg : g ∈ GfC V) :
@@ -175,7 +173,6 @@ theorem infPart_actO_sub {D : D7} (S T : HSp D) (r : D.host.E) (g : GA D S) (h :
 end GlobalTheory.LevelTr
 
 namespace GlobalTheory.LevelTr
-open GlobalTheory.BotClassDict
 
 theorem ennreal_volume_ratio_step_cancel {R : Type} [CommRing R] (a b c k t : R) (h : a * k = 1) :
     a * (b * (c * k * t)) = c * b * t := by

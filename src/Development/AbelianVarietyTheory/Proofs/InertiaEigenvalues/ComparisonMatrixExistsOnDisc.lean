@@ -133,7 +133,6 @@ end GlobalTheory.BSP.Height
 
 namespace GlobalTheory.BSP.Height
 
-open GlobalTheory.BSP.RelEx
 
 theorem rel_exists : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (d : ℕ)
     (ρ : ↥(GK K) → Matrix (Fin d) (Fin d) ℤ_[l]) (τ : Ainf l) (s : Seed bk d ρ τ) (ht : Height s)

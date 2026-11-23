@@ -168,7 +168,6 @@ end GlobalTheory.HeisOrbitSmooth
 
 namespace GlobalTheory.HeisOrbitSmooth
 
-open scoped ContDiff
 
 section Orbit
 
@@ -207,7 +206,6 @@ end GlobalTheory.HeisOrbitSmooth
 
 namespace GlobalTheory.HeisOrbitSmooth
 
-open scoped ContDiff
 
 section Orbit2
 

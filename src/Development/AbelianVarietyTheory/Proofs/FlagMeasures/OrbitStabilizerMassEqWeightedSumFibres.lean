@@ -104,8 +104,6 @@ theorem _root_.GlobalTheory.Mass.OrbFib.key (π : α → β)
   rw [hcard]
   exact ENat.toENNReal_mul _ _
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {G α β : Type} [Group G] [MulAction G α] [MulAction G β] in
 theorem _root_.GlobalTheory.Mass.OrbFib.mem_orbit_out (q : MulAction.orbitRel.Quotient G α) (x : α) :
     x ∈ MulAction.orbit G (Quotient.out q) ↔ (Quotient.mk (MulAction.orbitRel G α) x) = q := by
@@ -115,8 +113,6 @@ theorem _root_.GlobalTheory.Mass.OrbFib.mem_orbit_out (q : MulAction.orbitRel.Qu
   · intro h
     exact Quotient.exact (h.trans (Quotient.out_eq q).symm)
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {G α β : Type} [Group G] [MulAction G α] [MulAction G β] in
 theorem _root_.GlobalTheory.Mass.OrbFib.encard_orbits (X : Set α) (hX : _root_.GlobalTheory.Mass.Stable G X)
     (S : Set α) :
@@ -166,8 +162,6 @@ end GlobalTheory.Mass.OrbFib
 
 namespace GlobalTheory.Mass
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {G α β : Type} [Group G] [MulAction G α] [MulAction G β] in
 private theorem tsum_inv_card_stabilizer_mul_encard_orbit_fibre (π : α → β)
     (hπ : ∀ (g : G) x, π (g • x) = g • π x) (Y : Set β) (hY : _root_.GlobalTheory.Mass.Stable G Y)
@@ -223,8 +217,6 @@ private theorem tsum_inv_card_stabilizer_mul_encard_orbit_fibre (π : α → β)
     simp
 
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 theorem _root_.GlobalTheory.Mass.orbMass_eq_orbSum_fibre : ∀ (G α β : Type) [Group G] [MulAction G α]
     [MulAction G β] (X : Set α) (Y : Set β) (π : α → β), (∀ (g : G) x, π (g • x) = g • π x) →
     _root_.GlobalTheory.Mass.Stable G X → _root_.GlobalTheory.Mass.Stable G Y → Set.MapsTo π X Y →

@@ -58,8 +58,6 @@ private lemma unitary_conj_pow {ι : Type} [Fintype ι] [DecidableEq ι] (U D : 
   | zero => simp [hU]
   | succ n ih => rw [pow_succ, ih, pow_succ]; simp only [Matrix.mul_assoc]; rw [← Matrix.mul_assoc Uᴴ U, hU', Matrix.one_mul]
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma aeval_unitary_conj_eq_conj_aeval {ι : Type} [Fintype ι] [DecidableEq ι] (U D : Matrix ι ι ℂ) (hU : U * Uᴴ = 1) (p : ℂ[X]) :
     aeval (U * D * Uᴴ) p = U * aeval D p * Uᴴ := by
   induction p using Polynomial.induction_on' with
@@ -68,16 +66,12 @@ private lemma aeval_unitary_conj_eq_conj_aeval {ι : Type} [Fintype ι] [Decidab
     rw [aeval_monomial, aeval_monomial, unitary_conj_pow U D hU]
     simp [Algebra.algebraMap_eq_smul_one, Matrix.mul_smul, Matrix.smul_mul]
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma aeval_diagonal_adelic_lattice {ι : Type} [Fintype ι] [DecidableEq ι] (f : ι → ℂ) (p : ℂ[X]) :
     aeval (diagonal f) p = diagonal fun i => p.eval (f i) := by
   induction p using Polynomial.induction_on' with
   | add p q hp hq => simp [hp, hq]
   | monomial n a => simp [Polynomial.aeval_monomial, diagonal_pow, Algebra.algebraMap_eq_smul_one]; ext i j; by_cases h : i = j <;> simp [h, diagonal_apply]
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma exists_interp_aeval_eq_of_isLog {ι : Type} [Fintype ι] [DecidableEq ι] {H A : Matrix ι ι ℂ} (h : _root_.GlobalTheory.ClassFin.IsLog H A) :
     ∃ S : Finset ℝ, ∀ p : ℂ[X], (∀ x ∈ S, p.eval ((Real.exp x : ℝ) : ℂ) = x) → aeval A p = H := by
   obtain ⟨U, d, hU, hH, hA⟩ := h
@@ -86,8 +80,6 @@ private lemma exists_interp_aeval_eq_of_isLog {ι : Type} [Fintype ι] [Decidabl
     show (fun i => p.eval ((Real.exp (d i) : ℝ) : ℂ)) = fun i => ((d i : ℝ) : ℂ) from
       funext fun i => hp _ (Finset.mem_image_of_mem _ (Finset.mem_univ i))]
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma exists_poly_eval_exp_eq (S : Finset ℝ) : ∃ p : ℂ[X], ∀ x ∈ S, p.eval ((Real.exp x : ℝ) : ℂ) = x := by
   classical
   let T : Finset ℂ := S.image fun x => ((Real.exp x : ℝ) : ℂ)
@@ -98,8 +90,6 @@ private lemma exists_poly_eval_exp_eq (S : Finset ℝ) : ∃ p : ℂ[X], ∀ x �
   simp only [id] at this
   rw [this, Complex.ofReal_re, Real.log_exp]
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma aeval_conj_eq_conj_aeval {ι : Type} [Fintype ι] [DecidableEq ι] (k D : Matrix ι ι ℂ) (hk : IsUnit k.det) (p : ℂ[X]) :
     aeval (k⁻¹ * D * k) p = k⁻¹ * aeval D p * k := by
   have hk1 : k * k⁻¹ = 1 := Matrix.mul_nonsing_inv k hk
@@ -114,8 +104,6 @@ private lemma aeval_conj_eq_conj_aeval {ι : Type} [Fintype ι] [DecidableEq ι]
     rw [aeval_monomial, aeval_monomial, hpow n]
     simp [Algebra.algebraMap_eq_smul_one, Matrix.mul_smul, Matrix.smul_mul]
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma isLog_eq_conj_of_conj {ι : Type} [Fintype ι] [DecidableEq ι] {H A H' B k : Matrix ι ι ℂ}
     (hH : _root_.GlobalTheory.ClassFin.IsLog H A) (hH' : _root_.GlobalTheory.ClassFin.IsLog H' B) (hk : IsUnit k.det)
     (hB : B = k⁻¹ * A * k) : H' = k⁻¹ * H * k := by
@@ -125,8 +113,6 @@ private lemma isLog_eq_conj_of_conj {ι : Type} [Fintype ι] [DecidableEq ι] {H
   rw [← hS' p (fun x hx => hp x (Finset.mem_union_right _ hx)), ← hS p (fun x hx => hp x (Finset.mem_union_left _ hx)),
     hB, aeval_conj_eq_conj_aeval k A hk]
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma isLog_neg_inv {ι : Type} [Fintype ι] [DecidableEq ι] {H A : Matrix ι ι ℂ}
     (hH : _root_.GlobalTheory.ClassFin.IsLog H A) : _root_.GlobalTheory.ClassFin.IsLog (-H) A⁻¹ := by
   obtain ⟨U, d, hU, rfl, rfl⟩ := hH
@@ -141,8 +127,6 @@ private lemma isLog_neg_inv {ι : Type} [Fintype ι] [DecidableEq ι] {H A : Mat
           rw [diagonal_mul_diagonal]
           simp [← Complex.exp_add, hU]
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma isLog_isHermitian {ι : Type} [Fintype ι] [DecidableEq ι] {H A : Matrix ι ι ℂ}
     (hH : _root_.GlobalTheory.ClassFin.IsLog H A) : Hᴴ = H := by
   obtain ⟨U, d, hU, rfl, -⟩ := hH
@@ -151,8 +135,6 @@ private lemma isLog_isHermitian {ι : Type} [Fintype ι] [DecidableEq ι] {H A :
   ext i
   simp
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma eq_zero_of_trace_zero_of_re_trace_squareZero {ι : Type} [Fintype ι] [DecidableEq ι] (M : Matrix ι ι ℂ)
     (hM : Mᴴ = M) (htr : M.trace = 0)
     (hV : ∀ N : Matrix ι ι ℂ, N * N = 0 → Complex.re (Matrix.trace (M * (N + Nᴴ))) = 0) : M = 0 := by
@@ -200,13 +182,9 @@ private lemma eq_zero_of_trace_zero_of_re_trace_squareZero {ι : Type} [Fintype 
     simpa [hcard] using ht.symm
   · exact hoff i j hij
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma norm_add_add_add_le (a b c d : ℂ) : ‖a + b + c + d‖ ≤ ‖a‖ + ‖b‖ + ‖c‖ + ‖d‖ := by
   linarith [norm_add_le (a + b + c) d, norm_add_le (a + b) c, norm_add_le a b]
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma re_trace_isLog_sq_le_second_order {ι : Type} [Fintype ι] [DecidableEq ι] (H A Y1 Y2 Y3 Y4 : Matrix ι ι ℂ)
     (hH : _root_.GlobalTheory.ClassFin.IsLog H A) :
     ∃ K ε : ℝ, 0 < ε ∧ ∀ t : ℝ, |t| < ε → ∀ H' : Matrix ι ι ℂ,
@@ -282,8 +260,6 @@ private lemma re_trace_isLog_sq_le_second_order {ι : Type} [Fintype ι] [Decida
   rw [htr] at key
   linarith [key, hC, hl]
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma gram_expansion_quartic_in_t {ι : Type} [Fintype ι] [DecidableEq ι] (h N : Matrix ι ι ℂ) (hNN : N * N = 0) (t : ℝ) :
     ((1 + (t : ℂ) • N) * h * (1 - (t : ℂ) • N))ᴴ * ((1 + (t : ℂ) • N) * h * (1 - (t : ℂ) • N)) - hᴴ * h =
       (t : ℂ) • (hᴴ * (N + Nᴴ) * h - Nᴴ * (hᴴ * h) - hᴴ * h * N) +
@@ -297,8 +273,6 @@ private lemma gram_expansion_quartic_in_t {ι : Type} [Fintype ι] [DecidableEq 
     smul_smul, Matrix.mul_assoc, Matrix.one_mul, Matrix.mul_one, hNN', hNN, smul_zero, Matrix.mul_zero]
   module
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma eq_zero_of_nonneg_linear_add_quadratic {a K ε : ℝ} (hε : 0 < ε) (h : ∀ t : ℝ, |t| < ε → 0 ≤ t * a + t ^ 2 * K) :
     a = 0 := by
   by_contra ha
@@ -318,8 +292,6 @@ private lemma eq_zero_of_nonneg_linear_add_quadratic {a K ε : ℝ} (hε : 0 < �
     rw [abs_of_pos hpos] at hsa
     nlinarith
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma isLog_commute {ι : Type} [Fintype ι] [DecidableEq ι] {H A : Matrix ι ι ℂ}
     (hH : _root_.GlobalTheory.ClassFin.IsLog H A) : H * A = A * H := by
   obtain ⟨U, d, hU, rfl, rfl⟩ := hH
@@ -331,8 +303,6 @@ private lemma isLog_commute {ι : Type} [Fintype ι] [DecidableEq ι] {H A : Mat
   simp only [mul_comm]
 
 
-open Matrix Polynomial in
-open scoped Kronecker ComplexOrder TensorProduct in
 theorem _root_.GlobalTheory.ClassFin.exists_conj_harm_of_span : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (σ : Type) [Fintype σ] (τ : σ ≃ σ) (g : σ → Matrix ι ι ℂ), (∀ s, g (τ s) * g s = 1) → Submodule.span ℂ (Set.range g) = ⊤ → ∃ P : Matrix ι ι ℂ, IsUnit P.det ∧ _root_.GlobalTheory.ClassFin.Harm (fun s => P * g s * P⁻¹) := by
   intro ι _ _ σ _ τ g hτ hspan
   have hdet : ∀ s, IsUnit (g s).det := fun s => Matrix.isUnit_det_of_left_inverse (hτ s)

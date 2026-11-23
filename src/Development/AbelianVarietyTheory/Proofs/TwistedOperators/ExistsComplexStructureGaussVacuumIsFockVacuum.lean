@@ -227,7 +227,6 @@ end GlobalTheory.FockPair
 
 namespace GlobalTheory.FockPair
 
-open GlobalTheory.ThK.EvAt0.PolD
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {n d : ℕ} {X : Spc F E n} {W : Spc F E d} [IsTotallyReal F]

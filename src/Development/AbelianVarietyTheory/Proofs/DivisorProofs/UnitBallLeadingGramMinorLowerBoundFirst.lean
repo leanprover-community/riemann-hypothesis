@@ -83,8 +83,6 @@ theorem norm_det_le_add_rankOne {k : ℕ} (P : Matrix (Fin k) (Fin k) ℂ) (hP :
 end GlobalTheory.IntBallMinorOne
 
 namespace GlobalTheory.IntBallMinorOne
-open Matrix
-open scoped ComplexOrder
 
 theorem schur_bound {m k : ℕ} (Z : Matrix (Fin m) (Fin 1) ℂ) (N : Matrix (Fin m) (Fin k) ℂ)
     (hd : 0 < (1 - Zᴴ * Z).det.re) :
@@ -146,7 +144,6 @@ theorem schur_bound {m k : ℕ} (Z : Matrix (Fin m) (Fin 1) ℂ) (N : Matrix (Fi
 end GlobalTheory.IntBallMinorOne
 
 namespace GlobalTheory.IntBallMinorOne
-open Matrix
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
@@ -199,7 +196,6 @@ theorem mat_nFrame (X : Data E r) (hp : X.p0 = 1) (z : V (nd X)) (τ : X.Ψ) :
 end GlobalTheory.IntBallMinorOne
 
 namespace GlobalTheory.IntBallMinorOne
-open Matrix
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 

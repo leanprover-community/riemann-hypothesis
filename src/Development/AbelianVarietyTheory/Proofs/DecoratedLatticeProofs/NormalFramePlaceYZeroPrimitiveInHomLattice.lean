@@ -118,7 +118,6 @@ end GlobalTheory.SplitLastPt
 
 namespace GlobalTheory.SplitLastPt
 
-open GlobalTheory.FinPl
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -180,7 +179,6 @@ end GlobalTheory.SplitLastPt
 
 namespace GlobalTheory.SplitLastPt
 
-open GlobalTheory.FinPl
 
 
 

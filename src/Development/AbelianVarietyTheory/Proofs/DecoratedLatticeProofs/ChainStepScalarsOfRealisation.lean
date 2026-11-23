@@ -115,7 +115,6 @@ end StepScal
 
 namespace StepScal
 
-open GlobalTheory.ChainOnto
 
 def GoodAt (R : RealDat D A Ks) (t : T) (B : GlobalTheory.LFun.Fam D.host.E) (k : ℕ) (u : MMap (R.MY k)) : Prop :=
   ∃ hu : PiTensorProduct.lift u ∈ (stY R t k).CC (comR R t),
@@ -194,7 +193,6 @@ end StepScal
 
 namespace StepScal
 
-open GlobalTheory.ChainOnto
 
 theorem conj_step {P Q K d : ℂ} {l : ℝ} (hd : conj d = d) (hd0 : d ≠ 0) (hf : P * d = conj (K * l) * Q) :
     conj P = K / d * l * conj Q := by
@@ -225,7 +223,6 @@ end StepScal
 
 namespace StepScal
 
-open GlobalTheory.ChainOnto
 
 
 
@@ -342,7 +339,6 @@ end StepScal
 
 namespace StepScal
 
-open GlobalTheory.ChainOnto
 
 
 

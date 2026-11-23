@@ -96,9 +96,6 @@ theorem _root_.GlobalTheory.SW.SplitPrime.exists_prim_den (E : Type) [Field E] [
     rw [hg, algebraMap_smul, zsmul_eq_mul]
     push_cast; rfl
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
-open Polynomial in
 private theorem exists_prime_dvd_eval_not_dvd_of_natDegree_pos (h : ℤ[X]) (hh : 0 < h.natDegree) (M : ℤ)
     (hM : M ≠ 0) : ∃ (n : ℤ) (p : ℕ), p.Prime ∧ (p : ℤ) ∣ h.eval n ∧ ¬ (p : ℤ) ∣ M := by
   set c := h.coeff 0 with hcdef
@@ -162,9 +159,6 @@ private theorem exists_prime_dvd_eval_not_dvd_of_natDegree_pos (h : ℤ[X]) (hh 
       rw [h4]; exact dvd_sub hpg (Dvd.dvd.mul_right hpM _)
     exact hp.one_lt.ne' (by exact_mod_cast Int.eq_one_of_dvd_one (by positivity) this)
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
-open Polynomial in
 private theorem span_prime_sup_span_proper_of_dvd_norm {E : Type} [Field E] [NumberField E] (x : 𝓞 E)
     (p : ℕ) (hp : p.Prime) (hdvd : (p : ℤ) ∣ Algebra.norm ℤ x) :
     Ideal.span {(p : 𝓞 E)} ⊔ Ideal.span {x} ≠ ⊤ := by
@@ -206,9 +200,6 @@ private theorem span_prime_sup_span_proper_of_dvd_norm {E : Type} [Field E] [Num
     exact hp.one_lt.ne hz
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
-open Polynomial in
 theorem _root_.GlobalTheory.SW.SplitPrime.exists_degree_one {E : Type} [Field E] [NumberField E] (θ : 𝓞 E)
     (hθ : θ ≠ 0) (d : ℤ) (hd : d ≠ 0) (hden : ∀ a : 𝓞 E, ∃ g : ℤ[X], (d : 𝓞 E) * a = aeval θ g)
     (N : ℤ) (hN : N ≠ 0) :
@@ -263,9 +254,6 @@ theorem _root_.GlobalTheory.SW.SplitPrime.exists_degree_one {E : Type} [Field E]
   rw [← hga, ← map_intCast (Ideal.Quotient.mk P) v, ← map_mul, ← mul_assoc, map_mul, hv', one_mul]
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
-open Polynomial in
 theorem _root_.GlobalTheory.SW.SplitPrime.absNorm_prime {E : Type} [Field E] [NumberField E]
     (P : Ideal (𝓞 E)) (hP : P.IsMaximal)
     (hs : Function.Surjective (Int.castRingHom (𝓞 E ⧸ P))) : (Ideal.absNorm P).Prime := by
@@ -287,9 +275,6 @@ theorem _root_.GlobalTheory.SW.SplitPrime.absNorm_prime {E : Type} [Field E] [Nu
   exact hp'
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
-open Polynomial in
 theorem _root_.GlobalTheory.SW.SplitPrime.exists_goodPrime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     (m : ℕ), 0 < m → ∃ (q : ℕ) (P : Ideal (𝓞 E)), _root_.GlobalTheory.SW.GoodPrime m q P := by
   intro E _ _ _ m hm

@@ -78,7 +78,6 @@ theorem adjC (h : BlockHyp B ℓ v0 s) (hH : B.OkH) (σ : K →+* ℂ) (i : B.Pl
 
 end OrthogonalPartDecomposition
 
-section Main
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
@@ -87,6 +86,5 @@ variable (P0 : Subgroup G) (ψ0 : P0 →* Kˣ) (P1 : Subgroup G) (ψ1 : P1 →* 
   (Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)) (Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs))
   (Zsc : DefSub A.fam.amb → IndefScale A.fam.base)
 
-end Main
 
 end Formalism.IndefR.Cx

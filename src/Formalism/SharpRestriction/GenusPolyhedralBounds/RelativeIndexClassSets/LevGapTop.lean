@@ -133,7 +133,6 @@ variable {k : ℕ} (P : Par F E k) (v : HeightOneSpectrum (𝓞 F))
 end Bridge
 
 
-open Formalism.MainNotions.Gaps.LG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {k : ℕ}
 

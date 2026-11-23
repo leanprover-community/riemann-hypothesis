@@ -65,14 +65,12 @@ theorem _root_.GlobalTheory.QuadricSection.qrefl_mulVec (J : Matrix n n ℂ) (x 
   rw [_root_.GlobalTheory.QuadricSection.qrefl, sub_mulVec, one_mulVec, smul_mulVec, vecMulVec_mulVec,
     hdot, op_smul_eq_smul, smul_smul, inv_mul_cancel₀ hc, one_smul, sub_sub_cancel]
 
-open MeasureTheory Matrix in
 variable {n : Type} [Fintype n] [DecidableEq n] in
 private lemma star_dotProduct_mulVec_of_hermitian {J : Matrix n n ℂ} (hJ : Jᴴ = J) (a b : n → ℂ) :
     star (star a ⬝ᵥ (J *ᵥ b)) = star b ⬝ᵥ (J *ᵥ a) := by
   rw [← star_dotProduct_star, star_mulVec, star_star, hJ, dotProduct_comm, dotProduct_mulVec]
   exact dotProduct_comm _ _
 
-open MeasureTheory Matrix in
 variable {n : Type} [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.QuadricSection.qrefl_unitary (J : Matrix n n ℂ) (hJ : Jᴴ = J) (x y : n → ℂ)
     (hxy : star x ⬝ᵥ (J *ᵥ x) = star y ⬝ᵥ (J *ᵥ y))
@@ -112,7 +110,6 @@ theorem _root_.GlobalTheory.QuadricSection.qrefl_unitary (J : Matrix n n ℂ) (h
     ring
   rw [hzero, zero_smul, sub_zero]
 
-open MeasureTheory Matrix in
 variable {n : Type} [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.QuadricSection.measurable_qrefl (J : Matrix n n ℂ) (x : n → ℂ) (i j : n) :
     Measurable fun y => _root_.GlobalTheory.QuadricSection.qrefl J x y i j := by
@@ -132,20 +129,17 @@ end general
 
 open GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding
 
-open MeasureTheory Matrix in
 theorem _root_.GlobalTheory.QuadricSection.jpq_conjTranspose (P Q : ℕ) : (_root_.Formalism.UG.Jpq P Q)ᴴ = _root_.Formalism.UG.Jpq P Q := by
   unfold _root_.Formalism.UG.Jpq
   rw [fromBlocks_conjTranspose]
   simp
 
-open MeasureTheory Matrix in
 theorem _root_.GlobalTheory.QuadricSection.form_self {P Q : ℕ} (x : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q) :
     star x ⬝ᵥ (_root_.Formalism.UG.Jpq P Q *ᵥ x) = (_root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.qf x : ℂ) := by
   rw [← _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.herm_self, _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.herm_eq_hform]
   unfold _root_.Formalism.UG.hform
   simp [dotProduct, mulVec, Finset.mul_sum, mul_assoc, mul_add]
 
-open MeasureTheory Matrix in
 theorem _root_.GlobalTheory.QuadricSection.measurable_qf {P Q : ℕ} :
     Measurable (_root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.qf : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q → ℝ) := by
   refine Continuous.measurable ?_
@@ -160,13 +154,11 @@ def sectMat {P Q : ℕ} (β : ℝ) (x₀ y : Sp P Q) : Matrix (Fin P ⊕ Fin Q) 
       else qrefl (Formalism.UG.Jpq P Q) x₀ y)
   else 1
 
-open MeasureTheory Matrix in
 theorem _root_.GlobalTheory.QuadricSection.qf_neg {P Q : ℕ} (y : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.qf (-y) = _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.qf y := by
   unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.qf
   simp [Complex.normSq_neg]
 
-open MeasureTheory Matrix in
 theorem _root_.GlobalTheory.QuadricSection.sectMat_spec {P Q : ℕ} {β : ℝ} {x₀ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q}
     (hβ : β ≠ 0) (hx : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.qf x₀ = β) (y : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q) :
     (_root_.GlobalTheory.QuadricSection.sectMat β x₀ y)ᴴ * _root_.Formalism.UG.Jpq P Q * _root_.GlobalTheory.QuadricSection.sectMat β x₀ y = _root_.Formalism.UG.Jpq P Q ∧
@@ -207,7 +199,6 @@ theorem _root_.GlobalTheory.QuadricSection.sectMat_spec {P Q : ℕ} {β : ℝ} {
     rw [hsect]
     exact ⟨by simp, fun h => absurd h hy⟩
 
-open MeasureTheory Matrix in
 theorem _root_.GlobalTheory.QuadricSection.measurable_sectMat {P Q : ℕ} (β : ℝ) (x₀ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q)
     (i j : Fin P ⊕ Fin Q) :
     Measurable fun y => _root_.GlobalTheory.QuadricSection.sectMat β x₀ y i j := by
@@ -237,7 +228,6 @@ theorem _root_.GlobalTheory.QuadricSection.measurable_sectMat {P Q : ℕ} (β : 
   · exact _root_.GlobalTheory.QuadricSection.measurable_qrefl _ x₀ i j
 
 
-open MeasureTheory Matrix in
 theorem _root_.GlobalTheory.QuadricSection.exists_isSection : ∀ (P Q : ℕ) (β : ℝ) (x₀ : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q), β ≠ 0 →
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.qf x₀ = β →
     ∃ s : _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.Sp P Q → _root_.Formalism.BasicNotions.UpqT P Q, _root_.GlobalTheory.IndefiniteRowSideFullHecke.PerpendicularEmbedding.IsSection β x₀ s := by

@@ -94,7 +94,6 @@ end GlobalTheory.GraphLocal.FlatPlace
 
 namespace GlobalTheory.GraphLocal.FlatPlace
 
-open MvPolynomial
 
 variable {K κ : Type} [Field K] [Field κ] [Algebra ℂ K] [Algebra ℂ κ]
 

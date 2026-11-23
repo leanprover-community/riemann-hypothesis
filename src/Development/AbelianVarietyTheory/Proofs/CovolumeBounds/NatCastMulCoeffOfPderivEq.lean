@@ -98,7 +98,6 @@ theorem pderiv_comm (i j : σ) (f : MvPowerSeries σ R) :
   ring
 
 
-open MvPowerSeries.WithPiTopology in
 theorem pderiv_subst [Fintype σ] {a : σ → MvPowerSeries τ S} (ha : HasSubst a)
     (f : MvPowerSeries σ R) (j : τ) :
     pderiv (R := S) j (subst a f) = ∑ i, subst a (pderiv (R := R) i f) * pderiv (R := S) j (a i) := by

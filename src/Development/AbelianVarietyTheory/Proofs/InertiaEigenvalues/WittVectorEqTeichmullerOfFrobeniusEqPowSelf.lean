@@ -53,7 +53,6 @@ theorem wittVector_iterate_frobenius_of_eq_pow {l : ℕ} [Fact l.Prime] {O : Typ
     rw [Function.iterate_succ_apply', ih, map_pow, h, ← pow_mul, pow_succ', mul_comm]
 
 
-open WittVector in
 theorem wittVector_coeff_iterate_frobenius {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O]
     [CharP O l] (y : WittVector l O) (k n : ℕ) :
     ((WittVector.frobenius (p := l) (R := O))^[k] y).coeff n = y.coeff n ^ l ^ k := by
@@ -63,7 +62,6 @@ theorem wittVector_coeff_iterate_frobenius {l : ℕ} [Fact l.Prime] {O : Type} [
     rw [Function.iterate_succ_apply', WittVector.coeff_frobenius_charP, ih, ← pow_mul, ← pow_succ]
 
 
-open WittVector in
 theorem wittVector_eq_teichmuller_of_frobenius_eq_pow :
     ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [CharP O l] [PerfectRing O l]
       (y : WittVector l O), WittVector.frobenius y = y ^ l →

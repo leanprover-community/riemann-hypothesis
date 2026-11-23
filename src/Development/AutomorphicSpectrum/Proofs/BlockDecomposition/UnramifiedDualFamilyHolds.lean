@@ -192,7 +192,6 @@ end Local
 
 noncomputable section Main
 
-open ValuativeRel PositivityTheory.Rg.Tf.Loc
 
 variable {k E : Type} [Field k] [ValuativeRel k] [Field E] [ValuativeRel E] [Algebra k E]
   [ValuativeExtension k E] [FiniteDimensional k E] [IsGalois k E]

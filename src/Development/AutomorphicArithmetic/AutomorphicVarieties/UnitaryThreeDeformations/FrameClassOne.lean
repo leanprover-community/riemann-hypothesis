@@ -198,7 +198,6 @@ private theorem conj_ine {k Ω : Type} [Field k] [NumberField k] [Field Ω] [Alg
     rfl
   rwa [he] at key
 
-open NumberField Formalism.ConjugateSelfDual UpperTheory.V UpperTheory.V.Base UpperTheory.V.Kum IntermediateField in
 theorem UpperTheory.V.UnitaryThreeInertia.frame_class_one :
     ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] (c : Coef l) {N : ℕ} [NeZero N] (e : ℕ) (ψ : DirichletCharacter c.O N) (o₁ : ℕ), HostData l e ψ o₁ →
     ∀ (S : Finset Pl) (A : S → ValuationSubring Ω) (F : Frame c.O (Formalism.ConjugateSelfDual.G ℚ Ω) (Gam Ω S) S), IsHostFrame Ω c e ψ S A F →

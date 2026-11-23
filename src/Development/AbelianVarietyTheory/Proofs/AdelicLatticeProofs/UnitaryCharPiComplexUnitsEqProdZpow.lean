@@ -51,7 +51,6 @@ private lemma continuous_circle_toUnits' : Continuous Circle.toUnits := by
   convert this using 2 with w
   simp
 
-open scoped Topology BigOperators in
 private lemma div_norm_sq_eq_div_conj_of_ne_zero (x : ℂ) (hx : x ≠ 0) :
     (x / ‖x‖) ^ 2 = x / starRingEnd ℂ x := by
   have h : x * starRingEnd ℂ x = ((‖x‖ : ℂ)) ^ 2 := by
@@ -61,7 +60,6 @@ private lemma div_norm_sq_eq_div_conj_of_ne_zero (x : ℂ) (hx : x ≠ 0) :
   field_simp
 
 
-open scoped Topology BigOperators in
 theorem _root_.GlobalTheory.unitaryChar_pi_complexUnits_eq_prod_zpow :
     ∀ (ι : Type) [Fintype ι] (f : (ι → ℂˣ) →* Circle), Continuous f → (∀ z : ι → ℂˣ, (∀ i, ((z i : ℂ)).im = 0) → f z = 1) → ∃ k : ι → ℤ, ∀ z, ((f z : Circle) : ℂ) = ∏ i, ((z i : ℂ) / starRingEnd ℂ (z i : ℂ)) ^ k i := by
   intro ι _ f hf hreal

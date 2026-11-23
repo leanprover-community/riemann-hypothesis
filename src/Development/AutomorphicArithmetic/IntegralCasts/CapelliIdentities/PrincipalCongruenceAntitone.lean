@@ -50,7 +50,6 @@ private theorem UpperTheory.Reformulated.B.Gr32.aut_zero {F : Type} [Field F] [N
   · intro g
     exact ⟨0, 0, fun y => by simp⟩
 
-open UpperTheory.V.Sd UpperTheory.V.TR in
 private theorem UpperTheory.Reformulated.B.Gr32.aut_lin {F : Type} [Field F] [NumberField F] [NumberField.IsTotallyReal F]
     {φ ψ : Sm F 2} (z : ℂ) (hφ : IsAutForm φ) (hψ : IsAutForm ψ) : IsAutForm (φ + z • ψ) := by
   obtain ⟨a1, a2, a3, a4, a5⟩ := hφ
@@ -75,14 +74,12 @@ private theorem UpperTheory.Reformulated.B.Gr32.principal_congruence_antitone {F
   refine Subgroup.map_mono fun g hg => ?_
   exact UpperTheory.mirabolic_row_congruence _ _ g (Ideal.pow_le_pow_right h) hg
 
-open UpperTheory.V.Sd in
 private theorem UpperTheory.Reformulated.B.Gr32.coefAt_lin {F : Type} [Field F] [NumberField F]
     (a b : Ideal (NumberField.RingOfIntegers F) → ℂ) (z : ℂ) (y : GlobalTheory.CuspRep.Af F) :
     coefAt (a + z • b) y = coefAt a y + z * coefAt b y := by
   unfold coefAt
   split_ifs <;> simp
 
-open UpperTheory.V.Sd in
 private theorem UpperTheory.Reformulated.B.Gr32.coefAt_zero {F : Type} [Field F] [NumberField F]
     (y : GlobalTheory.CuspRep.Af F) : coefAt (0 : Ideal (NumberField.RingOfIntegers F) → ℂ) y = 0 := by
   unfold coefAt

@@ -79,7 +79,6 @@ private theorem expand_small {O : Type} [CommRing O] [IsLocalRing O] {ι : Type}
     simp only [map_apply] at this
     rw [map_apply, Matrix.add_apply, map_add (f := _), z2, add_zero, this]
 
-open Matrix in
 theorem UpperTheory.V.Alg.hh_small :
     ∀ (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O] (ι X : Type) [Fintype ι] [DecidableEq ι] [AddCommGroup X] (w : ι → X) (Φ : FormData O w), IsUnit (2 : O) → ∀ (R : Type) [CommRing R] [Algebra O R] [IsCO O R] (R' : Type) [CommRing R'] [Algebra O R'] [IsCO O R'] (p : R →ₐ[O] R'), Function.Surjective p → maximalIdeal R * RingHom.ker p = ⊥ →
       (∀ h' : Matrix ι ι R', Φ.HH h' → ∃ h : Matrix ι ι R, Φ.HH h ∧ h.map p = h') ∧

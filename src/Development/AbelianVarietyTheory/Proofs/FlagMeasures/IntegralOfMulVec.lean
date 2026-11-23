@@ -69,8 +69,6 @@ theorem _root_.GlobalTheory.HL.UnimodTerm.hf_sum_left {ι : Type} [Fintype ι] (
   refine Finset.sum_congr rfl fun b _ => ?_
   ring
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -82,8 +80,6 @@ private lemma hf_Hm_sub_left (x m y : S.V) :
   simp only [_root_.GlobalTheory.HL.hf, Pi.sub_apply, sub_mul, Finset.sum_sub_distrib]
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -169,8 +165,6 @@ theorem _root_.GlobalTheory.HL.UnimodTerm.proj_mem {d : S.Datum}
   exact Submodule.smul_mem _ (⟨μ b, hμO b⟩ : L.O) hmem
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -198,8 +192,6 @@ theorem _root_.GlobalTheory.HL.UnimodTerm.mem_iff_graph {d : S.Datum} {Λ : Subm
     have h2 := Λ.sub_mem hy (Submodule.mem_inf.mp h1).1
     rwa [sub_sub_cancel] at h2
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -225,8 +217,6 @@ theorem _root_.GlobalTheory.HL.UnimodTerm.le_of_M_eq {d : S.Datum} {Λ Λ' : Sub
     ((_root_.GlobalTheory.HL.UnimodTerm.mem_iff_graph S hT' ha hw).mp hwΛ')
   exact Λ.add_mem hmΛ hwΛ
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -243,8 +233,6 @@ private lemma mem_frameCls_self (g h : Fin (r + 1) → S.V) : (g, h) ∈ S.frame
   · intro j; simp [Matrix.one_apply]
   · intro j; simp [Matrix.one_apply]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in
@@ -277,8 +265,6 @@ private lemma Mof_le_of_mem_frameCls {g h g' h' : Fin (r + 1) → S.V}
     · exact Submodule.smul_mem _ (⟨c i j, hc i j⟩ : L.O) (Submodule.subset_span (Or.inl ⟨i, rfl⟩))
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] in
 variable {L : _root_.Formalism.MainNotions.S.Loc.LocE F E} {r k : ℕ} (S : _root_.GlobalTheory.HL.Frames L r k) in

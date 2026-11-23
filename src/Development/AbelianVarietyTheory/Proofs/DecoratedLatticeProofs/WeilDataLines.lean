@@ -59,6 +59,5 @@ end GlobalTheory.SeeSaw.WeilLines
 
 namespace GlobalTheory.SeeSaw.WeilLines
 
-open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter (CharUnramAt)
 
 end GlobalTheory.SeeSaw.WeilLines

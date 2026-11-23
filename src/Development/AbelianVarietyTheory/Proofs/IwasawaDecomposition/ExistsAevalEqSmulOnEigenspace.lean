@@ -105,7 +105,6 @@ private lemma exists_polynomial_eigenspace_smul_lemma {V : Type} [AddCommGroup V
   simp only [id] at hnode
   rw [hnode]
 
-open NumberField IsDedekindDomain Polynomial Module in
 private lemma eq_of_eq_on_eigenspaces_lemma_2 {V : Type} [AddCommGroup V] [Module ℂ V]
     [FiniteDimensional ℂ V] (T : Module.End ℂ V) (hT : T.IsSemisimple) {g g' : Module.End ℂ V}
     (h : ∀ (α : ℂ) (v : V), v ∈ T.eigenspace α → g v = g' v) : g = g' := by
@@ -115,7 +114,6 @@ private lemma eq_of_eq_on_eigenspaces_lemma_2 {V : Type} [AddCommGroup V] [Modul
   ext v
   simpa [sub_eq_zero] using hle (Submodule.mem_top : v ∈ ⊤)
 
-open NumberField IsDedekindDomain Polynomial Module in
 private lemma mem_eigenspace_pow_lemma_3 {V : Type} [AddCommGroup V] [Module ℂ V]
     (T : Module.End ℂ V) {α : ℂ} {v : V} (hv : v ∈ T.eigenspace α) (m : ℕ) :
     v ∈ (T ^ m).eigenspace (α ^ m) := by
@@ -124,7 +122,6 @@ private lemma mem_eigenspace_pow_lemma_3 {V : Type} [AddCommGroup V] [Module ℂ
   | zero => simp
   | succ m ih => rw [pow_succ, Module.End.mul_apply, hv, map_smul, ih, smul_smul, pow_succ, mul_comm]
 
-open NumberField IsDedekindDomain Polynomial Module in
 private lemma commute_aeval_of_commute_lemma_4 {V : Type} [AddCommGroup V] [Module ℂ V]
     {S T : Module.End ℂ V} (hST : Commute S T) (p : ℂ[X]) : Commute S (aeval T p) := by
   induction p using Polynomial.induction_on' with
@@ -132,7 +129,6 @@ private lemma commute_aeval_of_commute_lemma_4 {V : Type} [AddCommGroup V] [Modu
   | monomial n x => rw [aeval_monomial]; exact (Algebra.commute_algebraMap_right x S).mul_right (hST.pow_right n)
 
 
-open NumberField IsDedekindDomain Polynomial Module in
 theorem _root_.GlobalTheory.WeilDeligne.WDRep.iso_of_N_eq_smul : ∀ (E Ω : Type) [Field E] [NumberField E]
     [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω)
     (w : HeightOneSpectrum (𝓞 E)) (h : _root_.Formalism.ConjugateSelfDual.IsPlaceOver A w) (V : Type) [AddCommGroup V] [Module ℂ V]

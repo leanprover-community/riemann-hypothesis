@@ -92,13 +92,11 @@ theorem levelLe_mul {L : Type} [Field L] [NumberField L] {a b : HChar L} {w : He
   change a.loc w x * b.loc w x = 1
   rw [ha x hx h, hb x hx h, one_mul]
 
-open Formalism.L2.Host in
 theorem levelLe_inv {L : Type} [Field L] [NumberField L] {a : HChar L} {w : HeightOneSpectrum (𝓞 L)} {n : ℕ}
     (ha : a.LevelLe w n) : (a⁻¹).LevelLe w n := fun x hx h => by
   change (a.loc w x)⁻¹ = 1
   rw [ha x hx h, inv_one]
 
-open Formalism.L2.Host in
 theorem levelLe_mono {L : Type} [Field L] [NumberField L] {a : HChar L} {w : HeightOneSpectrum (𝓞 L)} {m n : ℕ}
     (ha : a.LevelLe w m) (hmn : m ≤ n) : a.LevelLe w n := fun x hx h =>
   ha x hx (h.trans (WithZero.exp_le_exp.2 (by omega)))
@@ -192,7 +190,6 @@ end GlobalTheory.SqStepArith
 namespace GlobalTheory.SqStepArith
 
 
-open Formalism.L2.Host in
 theorem nuH_loc_mem {D : D7} {T : Type} {Lc : LevCh D T} {sc : Consts} {G : GridData Lc sc} {μ₀ : T} {W : G.Weil}
     {S : GridChoice W Set.univ} (hN : NumbersIn D.what₂.embLL S μ₀) (i j : Fin D.R.m) (t : T)
     (w : HeightOneSpectrum (𝓞 D.host.E)) (y : (w.adicCompletion D.host.E)ˣ) :
@@ -208,7 +205,6 @@ theorem nuH_loc_mem {D : D7} {T : Type} {Lc : LevCh D T} {sc : Consts} {G : Grid
   exact mul_mem (mul_mem h1 h2) (inv_mem h3)
 
 
-open Formalism.L2.Host in
 theorem isUnitAt_complMap {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {v : HeightOneSpectrum (𝓞 F)} (τ : E →ₐ[F] Fv F v) (x : (Fv F v)ˣ) (h1 : (x : Fv F v) ∈ v.adicCompletionIntegers F)
     (h2 : ((x⁻¹ : (Fv F v)ˣ) : Fv F v) ∈ v.adicCompletionIntegers F) :
@@ -230,7 +226,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 
 
-open Formalism.L2.Host in
 theorem base_place_factor_zero : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : Consts} (G : GridData Lc sc) {μ₀ : T}, Lc.Is μ₀ →
     ∀ (W : G.Weil) (S : GridChoice W Set.univ), NumbersIn D.what₂.embLL S μ₀ → ∀ (i j : Fin D.R.m) (t : T)
     (Bs : Base D.host.F D.host.E), GlobalTheory.SqStep.BaseFits G W i j t Bs → ∀ (v : Bs.P), v.1 ∈ G.pl.S0 → ∀ (s : ℤˣ) (z : ℤ),

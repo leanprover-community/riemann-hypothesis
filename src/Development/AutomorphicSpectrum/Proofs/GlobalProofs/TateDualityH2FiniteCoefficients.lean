@@ -72,7 +72,6 @@ theorem actLoc (l : ℕ) [Fact l.Prime] (Lp : LocPrime l) (K : FinExt l)
   act_lc A LA ϖ r hI (latTop l Lp K LL O hG A LA ϖ hϖ).2.1 m
 
 
-open GlobalTheory.CompanionTheory.LocDual.Q in
 
 theorem dualQ : Formalism.GaloisCohomology.LocalTateDualityK → ∀ (l : ℕ) [Fact l.Prime] (Lp : LocPrime l) (K : FinExt l),
     TopInj (Lp.PD K) → DualQ (Lp.PD K) := by
@@ -333,7 +332,6 @@ theorem rightKernel (l : ℕ) [Fact l.Prime] (Lp : LocPrime l) (K : FinExt l)
   exact sub_eq_zero.mp hz'
 
 
-open GlobalTheory.CompanionTheory.LocDual.Kernels in
 theorem nondegLL : ∀ (l : ℕ) [Fact l.Prime] (Lp : LocPrime l) (K : FinExt l), DualD (Lp.PD K) →
     CobLO (Lp.PD K) → NondegL (Lp.PD K) := by
   intro l _ Lp K hD hC LL _ _ _ O _ _ hO A A' P hP

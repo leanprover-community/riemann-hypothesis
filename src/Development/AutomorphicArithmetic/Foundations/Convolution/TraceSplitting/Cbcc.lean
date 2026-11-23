@@ -34,7 +34,6 @@ private theorem not_both (F : Type) [Field F] [NumberField F] (h : IsTotallyReal
   obtain ⟨v⟩ : Nonempty (InfinitePlace F) := inferInstance
   exact (InfinitePlace.not_isReal_iff_isComplex.2 (h'.isComplex v)) (h.isReal v)
 
-open NumberField in
 theorem UpperTheory.ConvolutionTheory.T.cbcc :
     UpperTheory.ConvolutionTheory.T.Places → UpperTheory.ConvolutionTheory.T.LiftStep → UpperTheory.ConvolutionTheory.T.LiftAll → UpperTheory.ConvolutionTheory.T.DescStep → UpperTheory.ConvolutionTheory.T.SplitStrong → UpperTheory.V.Z.Bc.CBCc := by
   intro hPl hLS hLA hDS hSS K M _ _ _ _ _ _ hp hK n hn

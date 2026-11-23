@@ -54,8 +54,6 @@ theorem _root_.GlobalTheory.comap_maximalIdeal_of_localHom_strictHens {A B : Typ
   ext x
   simp only [Ideal.mem_comap, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, isUnit_map_iff]
 
-open IsLocalRing Polynomial in
-open scoped TensorProduct in
 private lemma locPiecesEtale_localization_atPrime {R A : Type} [CommRing R] [CommRing A]
     [Algebra R A] [Algebra.Etale R A] (q : Ideal A) [q.IsPrime] :
     _root_.GlobalTheory.LocAcyc.LocPiecesEtale R (Localization.AtPrime q) := by
@@ -65,8 +63,6 @@ private lemma locPiecesEtale_localization_atPrime {R A : Type} [CommRing R] [Com
       inferInstance, ⟨Subalgebra.topEquiv.symm⟩⟩⟩
 
 
-open IsLocalRing Polynomial in
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.strictHenselisation_etale_over_polynomial : ∀ (T E : Type) [CommRing T] [IsDomain T]
     [IsLocalRing T] [CommRing E]
     [Algebra (Polynomial T) E] [Algebra T E] [IsScalarTower T (Polynomial T) E]

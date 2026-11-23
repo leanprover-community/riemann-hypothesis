@@ -94,7 +94,6 @@ end GlobalTheory.MovedDat
 
 namespace GlobalTheory.MovedDat
 
-open GlobalTheory.LocMod.StepVec
 
 end GlobalTheory.MovedDat
 

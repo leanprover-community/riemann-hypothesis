@@ -333,7 +333,6 @@ end Clauses
 
 section Gram
 
-open scoped ComplexConjugate
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {hF : FinX Y} (W : WittDat X) (hI : SIso D.s (sOf hF)) {θ : ℝ}
   (C : Choice X θ)
@@ -813,11 +812,9 @@ theorem thetaWin_of {large₂ : SizeData₂ D} {C1 : ℝ} {u u' : D.what₂.Word
 
 end ThetaCut
 
-section Assembly
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {hF : FinX Y} (W : WittDat X) (hI : SIso D.s (sOf hF))
 
-end Assembly
 
 section Fact
 

@@ -58,7 +58,6 @@ private theorem unipGL_ixEq {R : Type} [CommRing R] {a r : ℕ} (x : BlockIx a r
   change 1 + blockEntry (fun p => x (ixEq a r p)) = 1 + nilM x
   congr 1
 
-open MeasureTheory in
 theorem UpperTheory.isCuspidal_of_constantTerm_eq_zero :
     UpperTheory.V.Fb.CuspOf := by
   intro E _ _ a φ hl _ hφ r h0 h1 i1 i2 μ 𝓕 hμ hF g

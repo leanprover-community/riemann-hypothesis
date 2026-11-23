@@ -219,9 +219,7 @@ end PositivityTheory.SiegelWeilFormula.SwLocFin.DualA
 
 namespace PositivityTheory.SiegelWeilFormula.SwLocFin
 
-open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory GlobalTheory.Cont PositivityTheory.PfSWUS.Loc PositivityTheory.SiegelWeilFormula.Gen Filter Topology
   PositivityTheory.SiegelWeilFormula.SwLocFin.DualA
-open scoped TensorProduct Matrix
 
 theorem dualP : DualP := by
   intro F E _ _ _ _ _ σ M J n ψ v μv νv lam L₁ L₂ Φv g T h

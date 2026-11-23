@@ -227,7 +227,6 @@ end Alg
 
 section Jet
 
-open MvPolynomial
 
 theorem jetMap_congr {K : Type} [Field K] {ι : Type} [Fintype ι] [DecidableEq ι] {a b : ℕ} (lam : ι → DomWeight a) (n : ι → ℕ)
     (J J' : (DVar ι a b →₀ ℕ) → K)

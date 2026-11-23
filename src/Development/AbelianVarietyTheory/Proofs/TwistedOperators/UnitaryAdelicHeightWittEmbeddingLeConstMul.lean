@@ -192,7 +192,6 @@ end GlobalTheory.EmbHeight
 
 namespace GlobalTheory.EmbHeight
 
-open scoped NNReal
 open GlobalTheory.AdelicU
 
 theorem unitaryAdelicHeight_wittEmbedding_le : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ), ∃ C : ℝ, ∀ g : GA D S₀,

@@ -115,7 +115,6 @@ end GlobalTheory.EtRoot
 
 namespace GlobalTheory.EtRoot
 
-open MvPolynomial
 
 theorem dvd_of_dvd_pow_prod_coords (p : ℕ) [Fact p.Prime] (A : Type) [CommRing A]
     [Algebra (ZMod p) A] {n : ℕ} (t : Fin n → A)

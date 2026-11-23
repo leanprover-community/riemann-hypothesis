@@ -82,7 +82,6 @@ end GlobalTheory.LinBarOps
 
 namespace GlobalTheory.LinBarOps
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (AE At piW cA incM)
 
 theorem at_hTens {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
     {v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)} {m n : ℕ} (JA : Matrix (Fin m) (Fin m) E) (JB : Matrix (Fin n) (Fin n) E)

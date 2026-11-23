@@ -88,8 +88,6 @@ theorem _root_.GlobalTheory.UnRep.SplitRep.mix_mul_mix {R : Type} [CommRing R] {
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ}
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 theorem _root_.GlobalTheory.UnRep.SplitRep.isUnA_mix (c : E ≃ₐ[F] E) (G : Matrix (Fin n) (Fin n) E) (ε : _root_.GlobalTheory.AdLat.RA F E) (hε : ε * ε = ε)
     (hs : _root_.GlobalTheory.AdLat.sg (FiniteAdeleRing (𝓞 F) F) c ε = ε) (κ : GL (Fin n) (_root_.GlobalTheory.AdLat.RA F E)) (hκ : _root_.GlobalTheory.UnRep.IsUnA c G κ.1) :
@@ -118,8 +116,6 @@ def inc (F E : Type) [Field F] [NumberField F] [Field E] [Algebra F E] : E →+*
 variable [NumberField E]
 
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 variable [NumberField E] in
 theorem _root_.GlobalTheory.UnRep.SplitRep.exists_multiple (s : 𝓞 E) (hs : s ≠ 0) :
@@ -152,8 +148,6 @@ theorem _root_.GlobalTheory.UnRep.SplitRep.exists_multiple (s : 𝓞 E) (hs : s 
     obtain ⟨Q, hQ, hQp, hQc⟩ := Ideal.exists_ideal_over_prime_of_isIntegral v.asIdeal (Ideal.span {s}) hle
     exact ⟨Q, hQp, hQ (Ideal.mem_span_singleton_self s), hQc⟩
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 variable [NumberField E] in
 omit [NumberField E] in
@@ -175,15 +169,11 @@ theorem _root_.GlobalTheory.UnRep.SplitRep.exists_div (m : 𝓞 F) (hm : m ≠ 0
 
 end GlobalTheory.UnRep.SplitRep
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem galoisAut_one_tmul_eq_one_tmul (c : E ≃ₐ[F] E) (z : E) :
     _root_.GlobalTheory.AdLat.sg (FiniteAdeleRing (𝓞 F) F) c ((1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] z) = 1 ⊗ₜ[F] c z := by
   simp [_root_.GlobalTheory.AdLat.sg]
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem isUnA_fm_of_isUnE (c : E ≃ₐ[F] E) (G γ : Matrix (Fin n) (Fin n) E)
     (hγ : _root_.GlobalTheory.UnRep.IsUnE c G γ) :
@@ -226,8 +216,6 @@ private theorem isUnA_fm_of_isUnE (c : E ≃ₐ[F] E) (G γ : Matrix (Fin n) (Fi
         ring
 
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 theorem _root_.GlobalTheory.UnRep.exists_rep_suppSplit : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (c : E ≃ₐ[F] E) (n : ℕ) (G : Matrix (Fin n) (Fin n) E), _root_.GlobalTheory.UnRep.IsHermForm c G → Module.finrank F E = 2 → ∀ L : Submodule (𝓞 E) (Fin n → E), L.FG → Submodule.span E (L : Set (Fin n → E)) = ⊤ → ∀ (g : GL (Fin n) (_root_.GlobalTheory.AdLat.RA F E)) (N : ℕ), _root_.GlobalTheory.UnRep.IsUnA c G g.1 → 0 < N → ∃ (γ : GL (Fin n) E) (h k : GL (Fin n) (_root_.GlobalTheory.AdLat.RA F E)), _root_.GlobalTheory.UnRep.IsUnE c G γ.1 ∧ _root_.GlobalTheory.UnRep.IsUnA c G h.1 ∧ _root_.GlobalTheory.UnRep.IsUnA c G k.1 ∧ g.1 = _root_.GlobalTheory.UnRep.fm F γ.1 * h.1 * k.1 ∧ _root_.GlobalTheory.UnRep.SuppSplit c N h.1 ∧ (∀ z ∈ _root_.GlobalTheory.AdLat.hat F (L : Set (Fin n → E)), ∃ w ∈ _root_.GlobalTheory.AdLat.hat F (L : Set (Fin n → E)), k.1 *ᵥ z - z = N • w) ∧ ∀ z ∈ _root_.GlobalTheory.AdLat.hat F (L : Set (Fin n → E)), (k⁻¹).1 *ᵥ z ∈ _root_.GlobalTheory.AdLat.hat F (L : Set (Fin n → E)) := by
   intro F E _ _ _ _ _ c n G hG hdeg L hL hspan g N hg hN
   obtain ⟨γ, hγ, hcong, s, hsm, hsL⟩ :=

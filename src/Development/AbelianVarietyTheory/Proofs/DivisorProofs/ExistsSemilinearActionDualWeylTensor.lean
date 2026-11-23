@@ -124,7 +124,6 @@ end GlobalTheory.SemilinTransport
 
 namespace GlobalTheory.SemilinTransport
 
-open MvPolynomial
 
 variable {R : Type} [CommRing R] {ι : Type} (N : ℕ) (mu : ι → ℕ → ℕ)
 

@@ -140,7 +140,6 @@ end GlobalTheory.JacBlock
 
 namespace GlobalTheory.JacBlock
 
-open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead ValuativeRel Matrix
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -176,7 +175,6 @@ end GlobalTheory.JacBlock
 
 namespace GlobalTheory.JacBlock
 
-open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.SplitRead ValuativeRel Matrix
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 

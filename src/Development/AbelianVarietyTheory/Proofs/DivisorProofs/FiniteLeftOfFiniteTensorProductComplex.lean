@@ -50,7 +50,6 @@ private lemma trace_eq_zero_of_not_finite' {V : Type} [AddCommGroup V] [Module �
     exact h (Module.Finite.of_basis b)
   simp [LinearMap.trace, hb]
 
-open scoped TensorProduct in
 private lemma finite_left_of_finite_tensor_of_nontrivial {V W : Type} [AddCommGroup V] [Module ℂ V]
     [AddCommGroup W] [Module ℂ W] [Nontrivial W] [Module.Finite ℂ (V ⊗[ℂ] W)] :
     Module.Finite ℂ V := by
@@ -63,7 +62,6 @@ private lemma finite_left_of_finite_tensor_of_nontrivial {V W : Type} [AddCommGr
   refine Module.Finite.of_surjective p fun v => ⟨v ⊗ₜ ((φ w)⁻¹ • w), ?_⟩
   simp [p, hφ]
 
-open scoped TensorProduct in
 private lemma finite_right_of_finite_tensor_of_nontrivial {V W : Type} [AddCommGroup V] [Module ℂ V]
     [AddCommGroup W] [Module ℂ W] [Nontrivial V] [Module.Finite ℂ (V ⊗[ℂ] W)] :
     Module.Finite ℂ W := by
@@ -72,7 +70,6 @@ private lemma finite_right_of_finite_tensor_of_nontrivial {V W : Type} [AddCommG
   exact finite_left_of_finite_tensor_of_nontrivial (W := V)
 
 
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.trace_tensorProduct_map_complex {U U' : Type} [AddCommGroup U] [Module ℂ U]
     [AddCommGroup U'] [Module ℂ U'] (T : U →ₗ[ℂ] U) (T' : U' →ₗ[ℂ] U') :
     LinearMap.trace ℂ (U ⊗[ℂ] U') (TensorProduct.map T T') =

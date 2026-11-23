@@ -85,7 +85,6 @@ end GlobalTheory.StdFrameCong
 
 namespace GlobalTheory.StdFrameCong
 
-open ReciprocityTheory.Aut
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -158,7 +157,6 @@ end GlobalTheory.StdFrameCong
 
 namespace GlobalTheory.StdFrameCong
 
-open ReciprocityTheory.Aut
 
 variable {D : D7}
 
@@ -269,7 +267,6 @@ end GlobalTheory.StdFrameCong
 
 namespace GlobalTheory.StdFrameCong
 
-open ReciprocityTheory.Aut
 
 theorem finCong_of_cong {D : D7} {V : HSp D} {n : ℕ} {P : principalLevelFrame.RowPsi V n}
     {hF : D.host.F = maximalRealSubfield D.host.E} (hS : StdFrame hF P) (N : ℕ) (κ : Formalism.AUTREP.GAf D.host.E n)

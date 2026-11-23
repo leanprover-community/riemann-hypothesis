@@ -44,9 +44,7 @@ variable (M : Model σ Y W) (T : Finset (Pl F))
 end GlobalTheory.HoweGlobal.Transfer
 end
 noncomputable section
-open scoped Classical
 namespace GlobalTheory.HoweGlobal.Transfer
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
   {Y : Spc F E n} {W : Spc F E d} (M : Model σ Y W) (T : Finset (Pl F))
 end GlobalTheory.HoweGlobal.Transfer
@@ -170,8 +168,6 @@ end
 end
 
 section
-open NumberField IsDedekindDomain
-open scoped TensorProduct
 
 theorem _root_.GlobalTheory.T.global_howe_tensor_product_transfer : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (Bs : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E) (a a' : ℕ) (G : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo σ a a') (Xc : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars F E)

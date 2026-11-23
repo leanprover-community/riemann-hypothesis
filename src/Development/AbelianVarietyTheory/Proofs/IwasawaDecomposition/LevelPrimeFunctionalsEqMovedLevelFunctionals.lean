@@ -103,8 +103,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Col2.FunMv
 
-open GlobalTheory.Mem.Dil GlobalTheory.Mem.Col2.DilPt
-open scoped TensorProduct
 
 theorem hasRes_last {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
     (y k : GL (Fin n) (AfE F E)) (v : HeightOneSpectrum (𝓞 F)) (P : HeightOneSpectrum (𝓞 E)) (hP : P.under (𝓞 F) = v)
@@ -132,8 +130,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Col2.FunMv
 
-open GlobalTheory.Mem.Dil GlobalTheory.Mem.Col2.DilPt
-open scoped TensorProduct
 
 section Loc
 
@@ -226,8 +222,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Col2.FunMv
 
-open GlobalTheory.Mem.Dil GlobalTheory.Mem.Col2.DilPt
-open scoped TensorProduct
 
 theorem exists_fun' {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E]
     (hc : Formalism.BasicNotions.CMData F E) {n T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))} {J : Matrix (Fin n) (Fin n) E} (hJ : J = 1)

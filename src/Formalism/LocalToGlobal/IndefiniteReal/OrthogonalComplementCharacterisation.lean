@@ -96,11 +96,9 @@ structure IsIoUp [MeasurableSpace G] (νG : Measure G) (𝓕G : Set G) (th : G �
 
 end Step
 
-section Adj
 
 variable {M N : Type*} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
 
-end Adj
 
 section Chain
 
@@ -121,11 +119,9 @@ def IsChainIo {S Sinf : ℕ → Type*} [∀ j, MeasurableSpace (G j)] [∀ j, Ad
 
 end Chain
 
-section Rows
 
 variable {M N : Type*} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
 
-end Rows
 
 section ThetaP
 
@@ -176,11 +172,9 @@ theorem IsKap.unique {Tup Sig : Type*} {m : ℕ} {dnup : Tup → N →ₗ[ℂ] N
 
 end Kap
 
-section Bu
 
 variable {M N Mu : Type*} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
 
-end Bu
 
 section Statements
 

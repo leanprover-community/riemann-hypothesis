@@ -415,7 +415,6 @@ section Eich2
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
 
-open Formalism.L2.SG.Saturated
 
 def aE (y₀ : S.V) (v : Fin r → E) : Fin r → S.V := fun c => -(star (v c)) • y₀
 
@@ -529,7 +528,6 @@ section D7
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.L2.SG.Saturated
 
 theorem aaF_cs (D : D7) (c : Fin D.R.rS) : Formalism.L2.SG.Pf.FibQ.aaF D c.castSucc = aaS D c := by
   simp only [Formalism.L2.SG.Pf.FibQ.aaF, aaS, Fin.coe_castSucc]

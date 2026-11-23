@@ -76,7 +76,6 @@ theorem conjEquiv_act (o : Op E a) (φ : Sm E a) :
 end GlobalTheory.SmoothConj
 
 namespace GlobalTheory
-open GlobalTheory.CuspRep
 
 theorem smooth_conj_commutes_act : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ),
     ∃ C : Sm E a ≃ₗ⋆[ℂ] Sm E a, (∀ φ g, (C φ).1 g = starRingEnd ℂ (φ.1 g)) ∧

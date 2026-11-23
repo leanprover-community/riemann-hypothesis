@@ -81,7 +81,6 @@ private theorem under_plMap {F E : Type} [Field F] [NumberField F] [Field E] [Nu
   rw [e] at this
   exact this
 
-open Formalism.L2.Host.CT in
 private theorem exists_plMap {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsGalois F E]
     {w w' : Pl E} (h : w.under (𝓞 F) = w'.under (𝓞 F)) : ∃ g : E ≃ₐ[F] E, plMap g.toRingEquiv w = w' := by
   obtain ⟨g, hg⟩ := Algebra.IsInvariant.exists_smul_of_under_eq (𝓞 F) (𝓞 E) (E ≃ₐ[F] E) w.asIdeal w'.asIdeal
@@ -90,7 +89,6 @@ private theorem exists_plMap {F E : Type} [Field F] [NumberField F] [Field E] [N
   rw [hg, asIdeal_plMap]
   rfl
 
-open Formalism.L2.Host.CT in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.swapAt :
     SwapAt := by
   intro F E _ _ _ _ _ _ _ _ σ h2 hσ τ₁ τ₂ θ hp hθ e₁ e₂

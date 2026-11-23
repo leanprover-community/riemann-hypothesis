@@ -110,7 +110,6 @@ theorem exists_of_mem_rcone_image {n m : ℕ} (u : Fin m → Fin n → ℚ) (x :
 end GlobalTheory.StarCover
 
 namespace GlobalTheory.StarCover
-open GlobalTheory.MinkWeylReal
 
 theorem toReal_apply' {X : Type} [AddCommGroup X] (β : LinearMap.BilinForm ℤ X) (x y : X) :
     toReal β x y = (β x y : ℝ) := by simp [toReal]
@@ -128,7 +127,6 @@ theorem castR_mem_rcone {n m : ℕ} (u : Fin m → Fin n → ℚ) (j : Fin m) :
 end GlobalTheory.StarCover
 
 namespace GlobalTheory.StarCover
-open GlobalTheory.MinkWeylReal
 
 theorem star_cover : ∀ (X : Type) [AddCommGroup X] (m : ℕ) (γ : Fin m → LinearMap.BilinForm ℤ X)
     (v : LinearMap.BilinForm ℤ X) (B : X →ₗ[ℤ] X →ₗ[ℤ] ℝ), (∀ i y z, γ i y z = γ i z y) → (∀ i y, 0 ≤ γ i y y) →

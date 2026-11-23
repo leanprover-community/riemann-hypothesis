@@ -98,7 +98,6 @@ theorem xiHyp_mono {C D : ℝ} (hC : 1 ≤ C) (hCD : C ≤ D) {k m f : ℕ} {b v
       · exact mul_le_mul_of_nonneg_right hCD hk0
     exact mul_le_mul e1 e2 (by positivity) (by positivity)
 
-open Formalism.HermitianLatticeCounting.LatticeSumBounds in
 theorem params_mono {C D K K₀ : ℝ} (hC : 1 ≤ C) (hCD : C ≤ D) (hK : K ≤ K₀) {k m f : ℕ} {b g v NT : ℝ}
     (h : Params C K₀ k m f b g v NT 1) : Params D K k m f b g v NT 1 := by
   obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12⟩ := h
@@ -126,7 +125,6 @@ theorem gam_absorb {C Gam : ℝ} (hC : 0 ≤ C) {k f : ℕ} (hf : 1 ≤ f) (hG :
   push_cast
   nlinarith
 
-open Formalism.HermitianLatticeCounting.LatticeSumBounds in
 theorem ndRow_mono {C Gam : ℝ} (hC : 1 ≤ C) {k m f s : ℕ} {b g v : ℝ} {Xi : ℕ → ℝ}
     (hf : 1 ≤ f) (hb : 1 ≤ b) (hg : 0 < g) (hv : 0 ≤ v) (hXi : 0 ≤ Xi s)
     (hG : Gam ≤ Real.exp ((k : ℝ) / 8)) :
@@ -162,7 +160,6 @@ theorem ndRow_mono {C Gam : ℝ} (hC : 1 ≤ C) {k m f s : ℕ} {b g v : ℝ} {X
       gcongr
     _ = _ := by ring
 
-open Formalism.HermitianLatticeCounting.LatticeSumBounds in
 theorem degRow_mono {C Gam : ℝ} (hC : 1 ≤ C) {k m f s : ℕ} {b g v : ℝ} {Xi : ℕ → ℝ}
     (hf : 1 ≤ f) (hb : 1 ≤ b) (hg : 0 < g) (hv : 0 ≤ v) (hXi : 0 ≤ Xi s)
     (hG : Gam ≤ Real.exp ((k : ℝ) / 8)) :
@@ -215,7 +212,6 @@ end GlobalTheory.Core.Deg
 namespace GlobalTheory.Core.Deg
 
 
-open Formalism.HermitianLatticeCounting.LatticeSumBounds in
 theorem corankSums_expLoss : ∀ C : ℝ, 1 ≤ C → ∃ K₀ : ℝ, ∀ (k m f : ℕ) (b g v NT Gam : ℝ) (Xi : ℕ → ℝ),
     Formalism.HermitianLatticeCounting.LatticeSumBounds.Params C K₀ k m f b g v NT 1 → Formalism.HermitianLatticeCounting.LatticeSumBounds.XiHyp C k m f b v NT Xi → 0 ≤ Gam →
     Gam ≤ Real.exp ((k : ℝ) / 8) →

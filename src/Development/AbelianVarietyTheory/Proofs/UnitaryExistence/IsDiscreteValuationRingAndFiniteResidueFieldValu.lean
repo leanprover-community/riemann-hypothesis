@@ -64,7 +64,6 @@ theorem _root_.GlobalTheory.isDiscreteValuationRing_and_finite_residueField_valu
     Finite.of_equiv _ (IsLocalization.AtPrime.equivQuotMaximalIdeal v.asIdeal S).toEquiv
   exact ⟨hD, hS⟩
 
-open IsLocalRing IsDedekindDomain NumberField in
 private theorem eq_of_le_of_mem_nonunits_of_dvr {K : Type*} [Field K]
     (A W : ValuationSubring K) (h : A ≤ W) [IsDiscreteValuationRing A]
     (a : A) (ha0 : a ≠ 0) (haW : (a : K) ∈ W.nonunits) : A = W := by
@@ -93,7 +92,6 @@ private theorem eq_of_le_of_mem_nonunits_of_dvr {K : Type*} [Field K]
     _ = W := A.ofPrime_idealOfLE W h
 
 
-open IsLocalRing IsDedekindDomain NumberField in
 theorem _root_.GlobalTheory.isDiscreteValuationRing_and_finite_residueField_of_numberField {L : Type*} [Field L]
     [NumberField L] (W : ValuationSubring L) {n : ℕ} (hn : n ≠ (0 : ℕ))
     (hW : (↑n : L) ∈ W.nonunits) :

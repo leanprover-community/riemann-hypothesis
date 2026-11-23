@@ -48,8 +48,6 @@ private theorem weil_pairing_properties : _root_.ReciprocityTheory.ChartRestrict
     (fun S P M a ↦ _root_.GlobalTheory.AbLaw.CubeAssembly.cube_gen S P M a)).2.2.2.2.1
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj in
 theorem _root_.GlobalTheory.cmPoint_closed : _root_.GlobalTheory.CMPoint :=
   _root_.GlobalTheory.cmPoint _root_.GlobalTheory.thetaUnifAV_all weil_pairing_properties
 

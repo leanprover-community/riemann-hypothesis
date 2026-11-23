@@ -86,7 +86,6 @@ theorem smul_last_of {R : Type*} [CommRing R] {a b c d e : Type*} [Fintype b] [F
 end GlobalTheory.TransportBack
 
 namespace GlobalTheory.TransportBack
-open Matrix
 
 theorem transport_back : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (n : ℕ) (X : Spc F E n) (v : Pl (F := F)) (O : Type) [CommRing O] (c : O →+* O) (ι : O →ₙ+* AE F E)

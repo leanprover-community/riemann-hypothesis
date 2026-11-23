@@ -85,7 +85,6 @@ private theorem absSumAt_algebraMap (u a : C) :
   · rw [h]
     simp
 
-open scoped BigOperators in
 variable {C : Type} [NontriviallyNormedField C] [CompleteSpace C] in
 private theorem absSumAt_add {u : C} {f g : PowerSeries C} {a b : C}
     (hf : _root_.GlobalTheory.BddArc.AbsSumAt u f a) (hg : _root_.GlobalTheory.BddArc.AbsSumAt u g b) :
@@ -100,7 +99,6 @@ private theorem absSumAt_add {u : C} {f g : PowerSeries C} {a b : C}
   · simp_rw [h]
     rw [(hf.1.of_norm).tsum_add hg.1.of_norm, hf.2, hg.2]
 
-open scoped BigOperators in
 variable {C : Type} [NontriviallyNormedField C] [CompleteSpace C] in
 private theorem absSumAt_mul {u : C} {f g : PowerSeries C} {a b : C}
     (hf : _root_.GlobalTheory.BddArc.AbsSumAt u f a) (hg : _root_.GlobalTheory.BddArc.AbsSumAt u g b) :
@@ -116,7 +114,6 @@ private theorem absSumAt_mul {u : C} {f g : PowerSeries C} {a b : C}
   · exact (summable_norm_sum_mul_antidiagonal_of_summable_norm hf.1 hg.1).congr fun n => by rw [h]
   · rw [tsum_congr h, ← tsum_mul_tsum_eq_tsum_sum_antidiagonal_of_summable_norm hf.1 hg.1, hf.2, hg.2]
 
-open scoped BigOperators in
 variable {C : Type} [NontriviallyNormedField C] [CompleteSpace C] in
 theorem _root_.GlobalTheory.BddArc.AbsSumAt.aeval {u : C} {ι : Type} {f : ι → PowerSeries C} {a : ι → C}
     (h : ∀ i, _root_.GlobalTheory.BddArc.AbsSumAt u (f i) (a i))
@@ -137,7 +134,6 @@ end
 
 end GlobalTheory.BddArc
 
-open scoped BigOperators in
 private theorem finite_setOf_bilin_self_le_of_posDef {X : Type} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
     (B : LinearMap.BilinForm ℤ X) (hsymm : ∀ y z, B y z = B z y) (hpos : ∀ y, y ≠ 0 → 0 < B y y) (L : ℤ) :
     {y | B y y ≤ L}.Finite := by
@@ -254,7 +250,6 @@ private theorem finite_setOf_bilin_self_le_of_posDef {X : Type} [AddCommGroup X]
     simp only [φ] at h4
     exact_mod_cast h4
 
-open scoped BigOperators in
 private theorem injective_add_nsmul_of_ne_zero {X : Type} [AddCommGroup X] [Module.Free ℤ X] (a : X) {m : ℕ}
     (hm : m ≠ 0) : Function.Injective (fun χ : X => a + m • χ) := by
   intro x y h
@@ -265,14 +260,12 @@ private theorem injective_add_nsmul_of_ne_zero {X : Type} [AddCommGroup X] [Modu
   simp only [map_nsmul, Finsupp.smul_apply, nsmul_eq_mul] at this
   exact mul_left_cancel₀ (by exact_mod_cast hm) this
 
-open scoped BigOperators in
 private theorem tsum_subtype_eq_finsum_mem_of_finite {X M : Type} [AddCommMonoid M] [TopologicalSpace M]
     [T2Space M] (S : Set X) (hS : S.Finite) (g : X → M) : ∑' b : S, g b = ∑ᶠ x ∈ S, g x := by
   have h := Finset.tsum_subtype' hS.toFinset g
   rw [hS.coe_toFinset] at h
   rw [finsum_mem_eq_finite_toFinset_sum _ hS, h]
 
-open scoped BigOperators in
 private theorem absSumAt_arcTx_twist_tx {C : Type} [NontriviallyNormedField C]
     [IsUltrametricDist C] [CompleteSpace C] (N : _root_.GlobalTheory.Ex.NumD C) {k : ℕ}
     (β : N.Form k) (m : ℕ) (hm : m ^ 2 ∣ k) (hodd : Odd m)
@@ -372,7 +365,6 @@ private theorem absSumAt_arcTx_twist_tx {C : Type} [NontriviallyNormedField C]
     exact hfib.tsum_eq
 
 
-open scoped BigOperators in
 theorem _root_.GlobalTheory.eval_twist_tx_eq_zero_of_aeval_arcTx : ∀ (C : Type) [NontriviallyNormedField C]
     [IsUltrametricDist C] [CompleteSpace C] (N : _root_.GlobalTheory.Ex.NumD C) (k : ℕ)
     (β : N.Form k) (m : ℕ) (hm : m ^ 2 ∣ k), Odd m →

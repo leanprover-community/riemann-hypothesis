@@ -75,7 +75,6 @@ theorem _root_.GlobalTheory.Glue.DlPow.isAlgebraic_of_tower {Ω : Type} [Field �
   rw [hc']
   exact (isAlgebraic_algebraMap _).mul h1
 
-open scoped MatrixGroups in
 private lemma prim_pow_succ {Ω : Type} [Field Ω] {A : ValuationSubring Ω}
     {P : HahnSeries ℚ Ω} (hP : _root_.GlobalTheory.Glue.Prim A P) (k : ℕ) :
     _root_.GlobalTheory.Glue.Prim A (P ^ (k + 1)) := by
@@ -85,7 +84,6 @@ private lemma prim_pow_succ {Ω : Type} [Field Ω] {A : ValuationSubring Ω}
     rw [pow_succ]
     exact _root_.GlobalTheory.Glue.Prim.mul A _ _ ih hP
 
-open scoped MatrixGroups in
 private lemma theta_pow_succ {Ω : Type} [Field Ω] [Algebra ℚ Ω] (s : ℚ)
     (P : HahnSeries ℚ Ω) (k : ℕ) :
     _root_.GlobalTheory.Glue.theta s (P ^ (k + 1)) =
@@ -98,7 +96,6 @@ private lemma theta_pow_succ {Ω : Type} [Field Ω] [Algebra ℚ Ω] (s : ℚ)
     simp only [map_add (f := _), map_natCast, map_one]
     ring
 
-open scoped MatrixGroups in
 private lemma theta_one_coeff_mem_of_integral_den_one {Ω : Type} [Field Ω] [Algebra ℚ Ω]
     (A : ValuationSubring Ω) {P : HahnSeries ℚ Ω} (hP : ∀ r, P.coeff r ∈ A)
     (hden : ∀ r, P.coeff r ≠ 0 → r.den = 1) (r : ℚ) :
@@ -111,14 +108,12 @@ private lemma theta_one_coeff_mem_of_integral_den_one {Ω : Type} [Field Ω] [Al
     rw [one_mul, ← Rat.coe_int_num_of_den_eq_one (hden r h), map_intCast]
     exact intCast_mem A _
 
-open scoped MatrixGroups in
 private lemma hahnSeries_coeff_mul_mem_valuationSubring {Ω : Type} [Field Ω] (A : ValuationSubring Ω)
     {x y : HahnSeries ℚ Ω} (hx : ∀ r, x.coeff r ∈ A) (hy : ∀ r, y.coeff r ∈ A) (r : ℚ) :
     (x * y).coeff r ∈ A := by
   rw [HahnSeries.coeff_mul]
   exact sum_mem fun ij _ => mul_mem (hx _) (hy _)
 
-open scoped MatrixGroups in
 private lemma hahnSeries_coeff_pow_mem_valuationSubring {Ω : Type} [Field Ω] (A : ValuationSubring Ω)
     {x : HahnSeries ℚ Ω} (hx : ∀ r, x.coeff r ∈ A) (k : ℕ) (r : ℚ) : (x ^ k).coeff r ∈ A := by
   induction k generalizing r with
@@ -132,7 +127,6 @@ private lemma hahnSeries_coeff_pow_mem_valuationSubring {Ω : Type} [Field Ω] (
     exact hahnSeries_coeff_mul_mem_valuationSubring A ih hx r
 
 
-open scoped MatrixGroups in
 theorem _root_.GlobalTheory.Glue.DlPow.isDl_mul_lpow_cong : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω]
     [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ} (X : _root_.GlobalTheory.KZ.Tower Ω ε)
     (A : ValuationSubring Ω) (l : ℕ) [Fact l.Prime], (l : Ω) ∈ A.nonunits →

@@ -130,7 +130,6 @@ private theorem eig_res {F F' Ω : Type} [Field F] [NumberField F] [Field F'] [N
 
 end SlopeTestRemainingChoices
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N GlobalTheory.WeilDeligne GlobalTheory.Pst
   GlobalTheory.WeilRestrict GlobalTheory.TripleGal UpperTheory.V in
 
 theorem UpperTheory.Lit.CharWD.chRes :

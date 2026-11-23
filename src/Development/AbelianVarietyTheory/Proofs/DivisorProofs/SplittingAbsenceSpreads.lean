@@ -114,7 +114,6 @@ theorem sum_coeff {k : Type} [CommRing k] (p : MvPolynomial σ k) (hp : p.totalD
 end GlobalTheory.SplitSpread
 
 namespace GlobalTheory.SplitSpread
-open MvPolynomial
 variable {σ : Type} [Finite σ] {A : Type} [CommRing A] {D : ℕ}
 
 noncomputable def spec {k : Type} [CommRing k] (z : Var σ D → k) (b : Bool) : MvPolynomial σ k :=
@@ -149,7 +148,6 @@ theorem eval_eqs_inv {k : Type} [CommRing k] (ψ : A →+* k) (z : Var σ D → 
 end GlobalTheory.SplitSpread
 
 namespace GlobalTheory.SplitSpread
-open MvPolynomial
 variable {σ : Type} [Finite σ] {A : Type} [CommRing A]
 
 def Bad (f g : MvPolynomial σ A) (D : ℕ) (k : Type) [Field k] (ψ : A →+* k) : Prop :=

@@ -205,7 +205,6 @@ theorem psd_sub_of_quad_le {r : ℕ} {P Q : Matrix (Fin r) (Fin r) ℂ} (hP : P.
   rw [hsplit, Complex.sub_re]
   linarith [h c]
 
-open Matrix in
 theorem isHermitian_sq_smul {r : ℕ} {G : Matrix (Fin r) (Fin r) ℂ} (hG : G.IsHermitian) (A : ℝ) :
     (((A : ℂ) ^ 2) • G).IsHermitian := by
   unfold Matrix.IsHermitian
@@ -213,13 +212,11 @@ theorem isHermitian_sq_smul {r : ℕ} {G : Matrix (Fin r) (Fin r) ℂ} (hG : G.I
   congr 1
   simp [← Complex.ofReal_pow, Complex.conj_ofReal]
 
-open Matrix in
 theorem quad_conj {r s : ℕ} (M : Matrix (Fin s) (Fin r) ℂ) (G : Matrix (Fin s) (Fin s) ℂ)
     (c : Fin r → ℂ) :
     star c ⬝ᵥ (Mᴴ * G * M) *ᵥ c = star (M *ᵥ c) ⬝ᵥ G *ᵥ (M *ᵥ c) := by
   rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, Matrix.star_mulVec]
 
-open Matrix in
 theorem quad_monoDiag (D N δ : ℕ) (v : Fin (δ * (Finset.Nat.antidiagonalTuple (D + 1) N).card) → ℂ) :
     (star v ⬝ᵥ monoDiag D N δ *ᵥ v).re =
       ∑ l : Fin δ, ∑ i, monoNormSq (adtEnum D N i) * ‖v (finProdFinEquiv (l, i))‖ ^ 2 := by

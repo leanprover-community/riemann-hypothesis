@@ -77,7 +77,6 @@ private lemma existsDual (S : Type) [AddCommGroup S] [Module ℂ S] [FiniteDimen
   obtain ⟨f, hf⟩ := this
   exact ⟨(f e)⁻¹ • f, e, by simp [hf]⟩
 
-open TensorProduct in
 private lemma commuting_idempotent_trace {X : Type} [AddCommGroup X] [Module ℂ X] [FiniteDimensional ℂ X] :
     ∀ (r : ℕ) (S : Fin r → Type) [∀ i, AddCommGroup (S i)] [∀ i, Module ℂ (S i)]
       [∀ i, FiniteDimensional ℂ (S i)] [∀ i, Nontrivial (S i)]

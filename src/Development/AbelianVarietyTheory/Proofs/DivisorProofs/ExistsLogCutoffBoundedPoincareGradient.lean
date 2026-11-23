@@ -73,8 +73,6 @@ private lemma logCutoff_eq_zero_of_norm_le (k : ℕ) {z : ℂ}
     (-2 * ((k : ℝ) + 1) - Real.log ‖z‖) / ((k : ℝ) + 1) by field_simp; ring]
   exact div_nonneg (by linarith) hk.le
 
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix in
 set_option autoImplicit false in
 lemma _root_.GlobalTheory.GoodTop.contDiff_logCutoff (k : ℕ) : ContDiff ℝ ∞ (_root_.GlobalTheory.GoodTop.logCutoff k) := by
   rw [contDiff_iff_contDiffAt]

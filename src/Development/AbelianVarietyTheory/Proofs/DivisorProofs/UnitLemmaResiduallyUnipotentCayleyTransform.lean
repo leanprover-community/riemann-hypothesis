@@ -95,7 +95,6 @@ end GlobalTheory.UnitLemma.CayleyAny
 
 namespace GlobalTheory.UnitLemma.CayleyAny
 
-open GlobalTheory.UnitLemma.CayleyCase
 
 variable {K : UQ}
 
@@ -140,7 +139,6 @@ end GlobalTheory.UnitLemma.CayleyAny
 
 namespace GlobalTheory.UnitLemma.CayleyAny
 
-open GlobalTheory.UnitLemma.CayleyCase
 
 theorem identity_of_residually_unipotent_any : UnitLemmaLie → ∀ (K : UQ) (B₁ B₂ : InvAlg K),
     B₁.g * B₁.σ B₁.g = 1 → B₂.g * B₂.σ B₂.g = 1 → (B₁.P * B₂.P).Separable → ∀ s : K.Oˣ,

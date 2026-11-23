@@ -184,8 +184,6 @@ end PositivityTheory.ThKEst.LatArchPf
 
 namespace PositivityTheory.ThKEst
 
-open scoped TensorProduct NNReal ENNReal Matrix
-open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK LatArchPf
 
 theorem latArch_of (hb : FrameBasis) : LatArch := by

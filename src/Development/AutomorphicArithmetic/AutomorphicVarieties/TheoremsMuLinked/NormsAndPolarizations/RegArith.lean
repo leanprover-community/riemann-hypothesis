@@ -76,7 +76,6 @@ private theorem emb_ne (H : GlobalTheory.Published.GlobalArtinReciprocity) {L Ω
   exact (GlobalTheory.PlaceBridge.norm_l_lt_one (l := l)).ne h2
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField in
-open GlobalTheory.WeilDeligne GlobalTheory.LocLanglands in
 private theorem main (H : GlobalTheory.Published.GlobalArtinReciprocity) {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
     [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime] {w : Plc F} {A : ValuationSubring Ω} (h : IsPlaceOver A w)
     {a : Weil h →* (w.adicCompletion F)ˣ} (hw : ((l : ℕ) : 𝓞 F) ∈ w.asIdeal) (ha : IsLocalArtin h a) {n : ℕ}

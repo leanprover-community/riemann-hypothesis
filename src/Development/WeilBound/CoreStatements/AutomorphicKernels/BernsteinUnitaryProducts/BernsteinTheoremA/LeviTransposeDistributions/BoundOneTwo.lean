@@ -116,7 +116,6 @@ theorem extZ_mem (φ : SB (GL (Fin m) k)) : extZ φ ∈ SB (Matrix (Fin m) (Fin 
     rw [hzero y' hy'', hzero y hy']
 
 
-open scoped Classical in
 def cutFun (U : Set k) (ψ : SB (Matrix (Fin m) (Fin m) k)) : GL (Fin m) k → ℂ :=
   fun x => if (x.val).det ∈ U then ψ.1 x.val else 0
 

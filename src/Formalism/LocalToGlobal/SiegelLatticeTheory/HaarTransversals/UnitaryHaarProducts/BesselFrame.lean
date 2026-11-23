@@ -815,7 +815,6 @@ theorem nuLoc_le (hF : IsFrameJ ε e f wf z0) {P0 B0 : Matrix (Fin (2 * r + k + 
 end Loc
 
 section Pack
-open Formalism.L2.SG.SplitPrimeNormLemmas Formalism.L2.SG.WuDecay
 
 variable {ε : Fin (2 * r + k + 1) → Bool} {e f : Fin r → Fin (2 * r + k + 1) → ℂ}
   {wf : Fin k → Fin (2 * r + k + 1) → ℂ} {z0 : Fin (2 * r + k + 1) → ℂ}

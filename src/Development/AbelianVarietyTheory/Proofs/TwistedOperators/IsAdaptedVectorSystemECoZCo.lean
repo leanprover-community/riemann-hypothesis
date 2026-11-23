@@ -123,7 +123,6 @@ end GlobalTheory.NormalFramesStd
 
 namespace GlobalTheory.NormalFramesStd
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ChainMatrices GlobalTheory.StdFrames GlobalTheory.NormalFramesLevels
 
 variable {D : D7}
 

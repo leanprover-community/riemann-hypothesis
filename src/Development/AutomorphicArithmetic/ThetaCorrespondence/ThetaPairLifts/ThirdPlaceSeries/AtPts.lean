@@ -39,11 +39,9 @@ open Formalism.IndefR.IndefiniteWeightData
 variable (D : D7) (j : Fin D.R.m) (τ : D.what₂.Tau)
 end GlobalTheory.LiftWeightForced
 namespace GlobalTheory.LiftWeightForced
-open Formalism.IndefR.IndefiniteWeightData
 variable (D : D7) (j : Fin D.R.m) (τ : D.what₂.Tau)
 end GlobalTheory.LiftWeightForced
 namespace GlobalTheory.LiftWeightForced
-open Formalism.IndefR.IndefiniteWeightData
 variable (D : D7) (j : Fin D.R.m) (τ : D.what₂.Tau)
 end GlobalTheory.LiftWeightForced
 theorem GlobalTheory.LiftWeightForced.atPts_alt : _root_.GlobalTheory.BigOn.AtPtsAlt fun Fm x _ i _ => ∀ (j : Fin (Fm.D x i).R.m) τ,

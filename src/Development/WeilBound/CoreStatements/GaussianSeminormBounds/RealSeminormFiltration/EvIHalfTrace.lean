@@ -270,7 +270,6 @@ theorem snd_eq_zero {z : κ → AF F} (hz : At (evI F) z) (i : κ) : (z i).2 = 0
   rwa [one_mul] at h'
 
 
-open scoped Classical in
 theorem schr_pure {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) {a b : κ → AF F} (ha : At (evI F) a) (hb : At (evI F) b)
     (f : (κ → mixedEmbedding.mixedSpace F) → ℂ) (g : (κ → Af F) → ℂ) (t : ℝ) :
     schr ψ (realAd F t • a, realAd F t • b) (pureA F f g) =

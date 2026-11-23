@@ -59,11 +59,9 @@ structure NRhoTied (D : D7) : Prop where
         IsConjRep (Formalism.MainNotions.N.mapRep ((Formalism.MainNotions.N.iotaOQ D.nd D.naut a).comp (D.ntw.twist₂ a)) (D.ntw.rhoS _ s))
           (rhoOfRow D hG hC hη a π (rowSig_csd_ralg D hP a σ hσ hg π hS).1 (rowSig_csd_ralg D hP a σ hσ hg π hS).2)
 
-section transport
 
 variable {E Ω L : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [Field L] [NumberField L]
 
-end transport
 
 section charpolyInv
 
@@ -154,30 +152,22 @@ section norm
 
 end norm
 
-section ss
 
 variable {Γ : Type} [Group Γ] {K : Type} [Field K] {n : ℕ}
 
-end ss
 
-section krull
 
 variable {E Ω L : Type} [Field E] [Field Ω] [Algebra E Ω] [Field L]
 
-end krull
 
-section transfer
 
 variable {E Ω L : Type} [Field E] [Field Ω] [Algebra E Ω] [Field L]
 variable {K : Type} [Field K] [TopologicalSpace K] {a b : ℕ}
 
-end transfer
 
-section gal
 
 variable (D : D7) (T : NormalizedHeckeDataPlaceholder D)
 
-end gal
 
 theorem placesOver_finite (E : Type) [Field E] [NumberField E] (p : ℕ) (hp : p ≠ 0) : (placesOver E p).Finite := by
   have h0 : Ideal.span {((p : ℕ) : 𝓞 E)} ≠ 0 := by

@@ -100,7 +100,6 @@ end GlobalTheory.CxForm.LocStokes
 
 namespace GlobalTheory.CxForm.LocStokes
 
-open GlobalTheory.CxForm
 
 variable {n : ℕ}
 
@@ -164,7 +163,6 @@ end GlobalTheory.CxForm.LocStokes
 
 namespace GlobalTheory.CxForm.LocStokes
 
-open GlobalTheory.CxForm
 
 variable {n : ℕ}
 

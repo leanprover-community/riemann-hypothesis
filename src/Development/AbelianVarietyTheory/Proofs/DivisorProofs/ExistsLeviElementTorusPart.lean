@@ -56,7 +56,6 @@ end GlobalTheory.AdelicPlaneLevi
 
 namespace GlobalTheory.AdelicPlaneLevi
 
-open Matrix
 
 section Main
 

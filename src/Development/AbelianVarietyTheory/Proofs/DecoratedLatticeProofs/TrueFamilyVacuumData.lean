@@ -118,7 +118,6 @@ theorem intIn_stdFr (q : SplitPt D k) (S : HSp D) (L : Lat S)
 end GlobalTheory.XGeoStd.Frames
 
 namespace GlobalTheory.XGeoStd.Frames
-open GlobalTheory.SymBridge GlobalTheory.FinPl GlobalTheory.Fam.Inhab
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 

@@ -67,7 +67,6 @@ private def liftAlg {R₀ : Type} [CommRing R₀] {O R : Type} [CommRing O] [Com
     simp only [TrivSqZeroExt.fst_add, TrivSqZeroExt.snd_add, map_add (f := _)]; ring
   commutes' r := by simp [TrivSqZeroExt.algebraMap_eq_inl']
 
-open GlobalTheory.IndefiniteRowSideFullHecke.EtaDualPairing in
 private theorem exists_lift {R₀ : Type} [CommRing R₀] {O R : LAlg R₀} (s : LHom O R) (i : (R : Type))
     (hi : i * i = 0) : ∃ f : LHom (dual O) R, f.comp (incl O) = s ∧ f.1 (eta O) = i := by
   refine ⟨⟨liftAlg s.1 i hi, ⟨fun x hx => ?_⟩⟩, Subtype.ext (AlgHom.ext fun x => ?_), ?_⟩
@@ -124,7 +123,6 @@ private theorem chart_add {R₀ : Type} [CommRing R₀] {B : BX R₀} {O : LAlg 
   rw [add_mul, add_mul, ← h1, ← h2]
 
 
-open GlobalTheory.IndefiniteRowSideFullHecke.EtaDualPairing in
 theorem exists_tanMat : ∀ (R₀ : Type) [CommRing R₀] (B : BX R₀) (O : LAlg R₀) (g : ℕ) (F : FGLaw (O : Type) g) (Y : ∀ R : LAlg R₀, LHom O R → (Fin g → (R : Type)) → B.G R), BXChart B O F.F Y → ∀ gb : Module.Basis (Fin g) R₀ B.gg, ∃ S : Matrix (Fin g) (Fin g) (O : Type), IsUnit S ∧ TanMat B O Y gb S := by
   intro R₀ _ B O g F Y h gb
   have hee := eta_mul_eta O

@@ -201,7 +201,6 @@ end ReciprocityTheory.ChartRestriction.G.T0
 
 namespace ReciprocityTheory.ChartRestriction.G.T0
 
-open NumberField MvPolynomial ReciprocityTheory.MultiplicativeHeights ReciprocityTheory.MultiplicativeHeights.Closed MeasureTheory IsDedekindDomain
   ReciprocityTheory.ChartRestriction.G.T0.HeightMultiplicativity
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]

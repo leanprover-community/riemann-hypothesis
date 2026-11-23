@@ -703,30 +703,22 @@ theorem depth_skeleton_third_form_holds : LemmaDSkeleton3 := by
   exact depth_skeleton_literal_holds O K V P q S B n w lam2 DelL _ xi lam l e i' hl hO
     (inputs_from_pieri_holds O K V P q S B n w lam2 DelL xi lam (l : O) e i' H)
 
-section Inst
 
 variable (K : Type) [Field K] (y d : ℕ)
 
-end Inst
 
-section Inst2
 
 variable (K : Type) [Field K] [CharZero K] (y d : ℕ)
 
-end Inst2
 
-section Inst3
 
 variable (K : Type) [Field K] [CharZero K] (y d : ℕ)
 
-end Inst3
 
-section Inst4
 
 variable (K : Type) [Field K] [CharZero K] (y d : ℕ)
 
 variable (O : Type) [CommRing O] [Algebra O K]
 
-end Inst4
 
 end Formalism.CohomologicalDescent.BinaryFormsExample

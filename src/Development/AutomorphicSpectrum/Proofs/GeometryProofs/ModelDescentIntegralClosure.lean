@@ -169,7 +169,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Num.ModelDescentAlt
 
 noncomputable section
 
-open GroundTheory.Heights₂.Heights.NumbersDVR (classList classNum cycEval ratDiv IsVerticalDivisor pairNum psumExpansion isHomogeneous_psumExpansion)
 
 variable {O O' : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   [CommRing O'] [IsDomain O'] [IsDiscreteValuationRing O'] [Algebra O O']

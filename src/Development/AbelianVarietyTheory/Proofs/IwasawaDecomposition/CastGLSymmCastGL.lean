@@ -112,7 +112,6 @@ end GlobalTheory.Mem.R3.LiftPres
 
 namespace GlobalTheory.Mem.R3.LiftPres
 
-open Formalism.IndefR.Bridge
 
 section Assemble
 

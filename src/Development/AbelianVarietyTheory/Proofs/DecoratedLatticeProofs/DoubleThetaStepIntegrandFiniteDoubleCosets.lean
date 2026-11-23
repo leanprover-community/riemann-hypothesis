@@ -291,7 +291,6 @@ theorem sum_eq_eFin {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [
   rw [h, eFin_of_placeIdem hε]
 
 
-open GlobalTheory.SplitCut GlobalTheory.LocWeil.PlaceIdem in
 theorem exists_vac (hψ : IsStdChar D ψ (-1)) {r : ℕ} (Q : Fin r → QStep S) (hinj : Function.Injective fun i => (Q i).q.v)
     (f₁ : WO S.B.V S.J.W → ℂ) (f₂ : WO S.J.W S.B'.V → ℂ) (hv : ∀ i, (Q i).Vac f₁ f₂) (i : Fin r) :
     ∃ f₁' f₂', (Q i).Vac f₁' f₂' ∧ comb ψ _ _ (aconv (List.ofFn fun i => (Q i).D₁)) f₁ = comb ψ _ _ (Q i).D₁ f₁' ∧

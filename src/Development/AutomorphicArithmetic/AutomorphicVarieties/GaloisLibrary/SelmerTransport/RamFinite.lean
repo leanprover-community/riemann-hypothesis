@@ -65,7 +65,6 @@ private theorem key {Ω : Type} [Field Ω] (A : ValuationSubring Ω) (f : ℤ[X]
   rw [h3, map_mul, Valuation.map_neg]
   exact lt_of_le_of_lt (mul_le_of_le_one_left' (A.valuation_le_one c)) hab
 
-open Polynomial in
 private theorem fix_int {k E' Ω : Type} [Field k] [NumberField k] [Field E'] [NumberField E'] [Field Ω] [Algebra k Ω]
     [Algebra E' Ω] (α : 𝓞 E') : ∃ d : ℤ, d ≠ 0 ∧ ∀ A : ValuationSubring Ω, ¬ A.valuation (d : Ω) < 1 →
       ∀ σ ∈ Ine (F := k) A, σ (algebraMap E' Ω α) = algebraMap E' Ω α := by
@@ -101,7 +100,6 @@ private theorem fix_int {k E' Ω : Type} [Field k] [NumberField k] [Field E'] [N
   rw [e, map_mul]
   exact lt_of_le_of_lt (mul_le_of_le_one_left' ((A.valuation_le_one_iff _).2 (hφ t))) h
 
-open Polynomial in
 private theorem fix_root {k Ω : Type} [Field k] [NumberField k] [Field Ω] [Algebra k Ω] {N : ℕ} (hN : N ≠ 0)
     (A : ValuationSubring Ω) (hA : ¬ A.valuation (N : Ω) < 1) {σ : G k Ω} (hσ : σ ∈ Ine (F := k) A) {z : Ω}
     (hz : z ^ N = 1) : σ z = z := by

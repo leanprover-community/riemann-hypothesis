@@ -62,44 +62,32 @@ private lemma qm_add' {α β : Type} (M N : Matrix α β ℚ) :
   ext i j
   simp [_root_.GlobalTheory.SW.qm]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma qm_neg' {α β : Type} (M : Matrix α β ℚ) :
     _root_.GlobalTheory.SW.qm (-M) = -_root_.GlobalTheory.SW.qm M := by
   ext i j
   simp [_root_.GlobalTheory.SW.qm]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma qm_mul_siegel_theta_transformation {α β γ : Type} [Fintype β] (M : Matrix α β ℚ) (N : Matrix β γ ℚ) :
     _root_.GlobalTheory.SW.qm (M * N) = _root_.GlobalTheory.SW.qm M * _root_.GlobalTheory.SW.qm N := by
   ext i j
   simp [_root_.GlobalTheory.SW.qm, Matrix.mul_apply]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma qm_transpose' {α β : Type} (M : Matrix α β ℚ) :
     _root_.GlobalTheory.SW.qm Mᵀ = (_root_.GlobalTheory.SW.qm M)ᵀ := rfl
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma qm_zero' {α β : Type} : _root_.GlobalTheory.SW.qm (0 : Matrix α β ℚ) = 0 := by
   ext i j
   simp [_root_.GlobalTheory.SW.qm]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma qm_one' : _root_.GlobalTheory.SW.qm (1 : Matrix ι ι ℚ) = 1 := by
   ext i j
   by_cases h : i = j <;> simp [_root_.GlobalTheory.SW.qm, Matrix.one_apply, h]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma sub_conjTranspose_of_isSymm (τ : Matrix ι ι ℂ) (hτ : τ.IsSymm) :
     τ - τᴴ = (2 * I) • τ.map fun z => (z.im : ℂ) := by
@@ -110,16 +98,12 @@ private lemma sub_conjTranspose_of_isSymm (τ : Matrix ι ι ℂ) (hτ : τ.IsSy
   push_cast
   ring
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma qm_conjTranspose_eq_transpose {α β : Type} (M : Matrix α β ℚ) :
     (_root_.GlobalTheory.SW.qm M)ᴴ = (_root_.GlobalTheory.SW.qm M)ᵀ := by
   ext i j
   simp [_root_.GlobalTheory.SW.qm, conjTranspose_apply]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma re_star_dotProduct_ofReal_mulVec (Y : Matrix ι ι ℝ) (v : ι → ℂ) :
     (star v ⬝ᵥ (Y.map (fun t => (t : ℂ)) *ᵥ v)).re =
@@ -131,16 +115,12 @@ private lemma re_star_dotProduct_ofReal_mulVec (Y : Matrix ι ι ℝ) (v : ι �
   intro j _
   simp [Complex.mul_re, Complex.mul_im]
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma dotProduct_transpose_mulVec_self (N : Matrix ι ι ℂ) (ζ : ι → ℂ) :
     ζ ⬝ᵥ (Nᵀ *ᵥ ζ) = ζ ⬝ᵥ (N *ᵥ ζ) := by
   rw [mulVec_transpose, dotProduct_comm, dotProduct_mulVec]
 
 
-open Matrix Complex in
-open scoped ComplexConjugate Real in
 theorem _root_.GlobalTheory.SW.canon_exponent_invariant : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (σ : Matrix (ι ⊕ ι) (ι ⊕ ι) ℚ), σ ∈ Matrix.symplecticGroup ι ℚ → ∀ τ ∈ _root_.GlobalTheory.SW.Siegel ι, ∀ ζ : ι → ℂ, (ζ ᵥ* (_root_.GlobalTheory.SW.spDen σ τ)⁻¹) ⬝ᵥ ((_root_.GlobalTheory.SW.spAct σ τ).map fun z => (z.im : ℂ))⁻¹ *ᵥ (ζ ᵥ* (_root_.GlobalTheory.SW.spDen σ τ)⁻¹) + 2 * I * (ζ ⬝ᵥ ((_root_.GlobalTheory.SW.spDen σ τ)⁻¹ * _root_.GlobalTheory.SW.qm σ.toBlocks₂₁) *ᵥ ζ) = ζ ⬝ᵥ (τ.map fun z => (z.im : ℂ))⁻¹ *ᵥ ζ := by
   intro ι _ _ σ hσ τ hτ ζ
   obtain ⟨hsym, hpos⟩ := hτ

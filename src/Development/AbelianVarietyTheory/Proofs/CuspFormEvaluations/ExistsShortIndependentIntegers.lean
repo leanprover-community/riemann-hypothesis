@@ -84,8 +84,6 @@ private lemma sum_embeddings_eq_zero_of_conjugate_neg {K : Type} [Field K] [Numb
   simp only [Function.Involutive.coe_toPerm, hf, Finset.sum_neg_distrib] at h
   linarith
 
-open NumberField Module Submodule in
-open scoped nonZeroDivisors in
 private lemma inner_realCoords_one_neg_one_eq_trace {K : Type} [Field K] [NumberField K] {M : ℕ}
     (e : Fin M ≃ (K →+* ℂ)) (x y : K) :
     inner ℝ (_root_.GlobalTheory.ShortIntegers.realCoords e 1 x) (_root_.GlobalTheory.ShortIntegers.realCoords e (-1) y)
@@ -101,8 +99,6 @@ private lemma inner_realCoords_one_neg_one_eq_trace {K : Type} [Field K] [Number
   refine Finset.sum_congr rfl fun σ _ => ?_
   ring
 
-open NumberField Module Submodule in
-open scoped nonZeroDivisors in
 private lemma norm_sq_realCoords_eq_sum_norm_sq {K : Type} [Field K] [NumberField K] {M : ℕ}
     (e : Fin M ≃ (K →+* ℂ)) {ε : ℝ} (hε : ε ^ 2 = 1) (x : K) :
     ‖_root_.GlobalTheory.ShortIntegers.realCoords e ε x‖ ^ 2 = ∑ σ : K →+* ℂ, ‖σ x‖ ^ 2 := by
@@ -118,8 +114,6 @@ private lemma norm_sq_realCoords_eq_sum_norm_sq {K : Type} [Field K] [NumberFiel
   linear_combination (σ x).im ^ 2 * hε
 
 
-open NumberField Module Submodule in
-open scoped nonZeroDivisors in
 theorem _root_.GlobalTheory.exists_short_independent_integers (K : Type) [Field K] [NumberField K] :
     ∃ ω : Fin (Module.finrank ℚ K) → 𝓞 K, LinearIndependent ℚ (fun k => (ω k : K)) ∧
       ∀ (s : K →+* ℂ) k, ‖s (ω k : K)‖ ≤ (Module.finrank ℚ K : ℝ) ^ 3 *

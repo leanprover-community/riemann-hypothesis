@@ -79,7 +79,6 @@ theorem schurAt_conj {n : ℕ} (l : Fin n → ℕ) (a : Fin n → ℂ) :
 end GlobalTheory.RSPole.EulerPole
 
 namespace GlobalTheory.RSPole.EulerPole
-open Filter Topology GlobalTheory.RSPole
 
 def schurTerm (q : ℕ) {n : ℕ} (a : Fin n → ℂ) (x : ℝ) (l : {l : Fin n → ℕ // Antitone l}) : ℝ :=
   ‖GlobalTheory.JSW.schurAt l.1 a‖ ^ 2 * (q : ℝ) ^ (-(((∑ i, l.1 i : ℕ) : ℝ) * x))

@@ -472,7 +472,6 @@ end Adelic
 
 section Shape
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (piW incM AE latAtV At)
 
 theorem isConjOf_sig (D : D7) : Formalism.L2.DIV.IsConjOf D.sp.cm.sig := by
   refine ⟨fun h0 => ?_, fun e => star_star e, fun e he => ?_⟩
@@ -541,7 +540,6 @@ end Shape
 
 section Main
 
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (piW incM AE latAtV At)
 
 variable {D : D7} {a a' : ℕ}
 

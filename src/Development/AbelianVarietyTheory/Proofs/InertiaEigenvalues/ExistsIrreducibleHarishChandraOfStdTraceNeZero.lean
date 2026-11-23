@@ -102,8 +102,6 @@ end GlobalTheory.GLq.StdRes
 
 namespace GlobalTheory.GLq.StdRes
 
-open GlobalTheory.GLq GlobalTheory.LevelType Formalism.MainNotions.ArithmeticCylinders
-open scoped Classical
 
 variable {p : ℕ} [Fact p.Prime]
 
@@ -161,8 +159,6 @@ end GlobalTheory.GLq.StdRes
 
 namespace GlobalTheory.GLq.StdRes
 
-open GlobalTheory.GLq GlobalTheory.LevelType Formalism.MainNotions.ArithmeticCylinders
-open scoped Classical
 
 theorem sum_list_comm {ι X : Type} [Fintype ι] (L : List X) (f : ι → X → ℂ) :
     ∑ i, (L.map (f i)).sum = (L.map fun q => ∑ i, f i q).sum := by
@@ -221,7 +217,6 @@ end GlobalTheory.GLq.StdRes
 namespace GlobalTheory.LevelType
 
 open GlobalTheory.GLq GlobalTheory.GLq.StdRes Formalism.MainNotions.ArithmeticCylinders
-open scoped Classical
 
 theorem exists_irr_hc_of_stdTrace_ne_zero : ∀ (p : ℕ) [Fact p.Prime] (r a c : ℕ) (θ : (ZMod p)ˣ →* ℂˣ)
     (ψ : GlobalTheory.GLq.Gn p r → ℂ), r = a + 1 + c → GlobalTheory.GLq.IsChar ψ → stdTrace a θ ψ ≠ 0 →

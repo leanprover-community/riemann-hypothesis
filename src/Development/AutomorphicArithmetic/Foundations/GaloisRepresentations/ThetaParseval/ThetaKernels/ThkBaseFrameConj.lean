@@ -48,9 +48,7 @@ end Generic
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ} {Y : Spc F E n}
 end GlobalTheory.ThK.Dbl.Frame
 namespace GlobalTheory.ThK.Dbl
-open scoped Matrix TensorProduct
 open NumberField IsDedekindDomain GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Doubling GlobalTheory.ThK.Dbl.Frame
-open Formalism.UG (bc)
 theorem frameConj_k : _root_.GlobalTheory.ThK.Dbl.FrameConj_k := by
   intro F E _ _ _ _ _ σ B n Y r s hB hY K hK
   have hc := hB.cm

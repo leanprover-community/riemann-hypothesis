@@ -67,8 +67,6 @@ private theorem refl_eq_tv_sub_one_div_hf {F E : Type} [Field F] [Field E] [Alge
   congr 2
   ring
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 private theorem det_refl_eq_of_hermE_ne_zero {F E : Type} [Field F] [Field E] [Algebra F E]
     (c : E ≃ₐ[F] E) {n : ℕ} (G : Matrix (Fin n) (Fin n) E) (x : Fin n → E) (u : E)
     (hx : _root_.GlobalTheory.UnRep.hermE c G x x ≠ 0) :
@@ -87,8 +85,6 @@ private theorem det_refl_eq_of_hermE_ne_zero {F E : Type} [Field F] [Field E] [A
   ring
 
 
-open NumberField IsDedekindDomain Matrix in
-open scoped TensorProduct in
 theorem _root_.GlobalTheory.UTrans.isU_eq_tv_mul_tvGen : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (c : E ≃ₐ[F] E) (n : ℕ) (G : Matrix (Fin n) (Fin n) E), _root_.GlobalTheory.UTrans.IsHerm (c : E →+* E) G → (∃ z : Fin n → E, z ≠ 0 ∧ _root_.GlobalTheory.UTrans.hf (c : E →+* E) G z z = 0) → ∀ γ, _root_.GlobalTheory.UTrans.IsU (c : E →+* E) G γ → (∀ x, _root_.GlobalTheory.UTrans.hf (c : E →+* E) G x x ≠ 0 → ∃ m ∈ _root_.GlobalTheory.UTrans.TvGen (c : E →+* E) G, γ = _root_.GlobalTheory.UTrans.tv (c : E →+* E) G x ((γ.det - 1) / _root_.GlobalTheory.UTrans.hf (c : E →+* E) G x x) * m) ∧ (γ.det = 1 → γ ∈ _root_.GlobalTheory.UTrans.TvGen (c : E →+* E) G) := by
   intro F E _ _ _ _ _ c n G hG hiso γ hγ
   have hG' : _root_.GlobalTheory.UnRep.IsHermForm c G := by

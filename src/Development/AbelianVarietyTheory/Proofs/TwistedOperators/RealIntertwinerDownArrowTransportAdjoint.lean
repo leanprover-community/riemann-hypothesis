@@ -103,7 +103,6 @@ theorem ptOf_dag {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} (hψ : IsStdCh
       aPlus_real_smul hψ hθ (ptF_theta hψ hθ A B hg p), dag_smul', Complex.conj_ofReal, smul_smul]
     rw [show ((sg (B.ε τ i) * sg (A.ε τ j) : ℝ) : ℂ) = sgv A B τ i j from rfl, sgv_mul_self, one_smul]
 
-open GlobalTheory.FockAdjoint in
 theorem jHom_map_conj {S T : HSp D} (A : Fr S) (B : Fr T) (P : PolF D T.rank S.rank) :
     jHom A B (MvPolynomial.map (starRingEnd ℂ) P) = swapHom A B P := by
   induction P using MvPolynomial.induction_on with

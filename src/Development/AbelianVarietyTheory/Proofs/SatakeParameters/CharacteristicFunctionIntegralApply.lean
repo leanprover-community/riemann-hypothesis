@@ -215,7 +215,6 @@ noncomputable section
 
 namespace GlobalTheory.ThetaTri
 
-open MeasureTheory Formalism.IndefR.Datum GlobalTheory.ThetaLoc
 
 variable {D : D7} {V W : Formalism.BasicNotions.TH.HSp D}
   (om : Formalism.L2.Theta.GA D V × Formalism.L2.Theta.GA D W →* Module.End ℂ (WO V W → ℂ))
@@ -381,7 +380,6 @@ noncomputable section
 
 namespace GlobalTheory.ThetaTri
 
-open MeasureTheory Formalism.IndefR.Datum GlobalTheory.ThetaLoc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n r : ℕ}
 
@@ -464,7 +462,6 @@ noncomputable section
 
 namespace GlobalTheory.ThetaTri
 
-open MeasureTheory Formalism.IndefR.Datum Formalism.IndefR.Links GlobalTheory.ThetaLoc
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {P : Pin hL D} {X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp}
 

@@ -163,7 +163,6 @@ private theorem exactAt_of_exactAt_image_injective {V U : Type} (e : V → U) (h
     rw [← comm, Finsupp.mapDomain_comapDomain (List.map e) hM b' hrange, hbb]
 
 section
-open GlobalTheory.SeqCx Matrix
 theorem _root_.GlobalTheory.T.exactAt_unimodularSeqs_of_link_nil_coordSubspace : ∀ (R : Type) [CommRing R] (m q : ℕ), ExactAt (linkIn (uniM R (ℕ →₀ R)) (low R m) []) q → ExactAt (uniSeq R m) q := by
   intro R _ m q h
   rw [GlobalTheory.SeqCxLow.link_eq] at h

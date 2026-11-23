@@ -87,7 +87,6 @@ theorem resG_frac (h : V ≤ U) :
     resG (Proj 𝒜) h (frac 𝒜 U a b ha hb hU) = frac 𝒜 V a b ha hb (h.trans hU) := rfl
 
 
-open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite in
 variable {A σ : Type} [CommRing A] [SetLike σ A] [AddSubgroupClass σ A] (𝒜 : ℕ → σ) [GradedRing 𝒜] in
 variable {𝒜} in
 variable {U V : (Proj 𝒜).Opens} {d d' : ℕ} {a b a' b' : A} {ha : a ∈ 𝒜 d} {hb : b ∈ 𝒜 d}
@@ -102,7 +101,6 @@ theorem _root_.GlobalTheory.ProjFrac.frac_eq (h : a * b' = a' * b) :
   exact ⟨1, by simp only [OneMemClass.coe_one, one_mul]; linear_combination h⟩
 
 
-open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite in
 variable {A σ : Type} [CommRing A] [SetLike σ A] [AddSubgroupClass σ A] (𝒜 : ℕ → σ) [GradedRing 𝒜] in
 variable {𝒜} in
 variable {U V : (Proj 𝒜).Opens} {d d' : ℕ} {a b a' b' : A} {ha : a ∈ 𝒜 d} {hb : b ∈ 𝒜 d}
@@ -119,7 +117,6 @@ theorem _root_.GlobalTheory.ProjFrac.frac_mul :
   rfl
 
 
-open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite in
 variable {A σ : Type} [CommRing A] [SetLike σ A] [AddSubgroupClass σ A] (𝒜 : ℕ → σ) [GradedRing 𝒜] in
 variable {𝒜} in
 variable {U V : (Proj 𝒜).Opens} {d d' : ℕ} {a b a' b' : A} {ha : a ∈ 𝒜 d} {hb : b ∈ 𝒜 d}
@@ -133,7 +130,6 @@ theorem _root_.GlobalTheory.ProjFrac.frac_mul_eq {d'' : ℕ} {a'' b'' : A} {ha''
   _root_.GlobalTheory.ProjFrac.frac_mul.trans (_root_.GlobalTheory.ProjFrac.frac_eq h)
 
 
-open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite in
 variable {A σ : Type} [CommRing A] [SetLike σ A] [AddSubgroupClass σ A] (𝒜 : ℕ → σ) [GradedRing 𝒜] in
 variable {𝒜} in
 variable {U V : (Proj 𝒜).Opens} {d d' : ℕ} {a b a' b' : A} {ha : a ∈ 𝒜 d} {hb : b ∈ 𝒜 d}
@@ -148,7 +144,6 @@ theorem _root_.GlobalTheory.ProjFrac.frac_add {a₂ : A} {ha₂ : a₂ ∈ 𝒜 
     _root_.GlobalTheory.ProjFrac.ev_frac, Localization.add_mk_self]
 
 
-open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite in
 variable {A σ : Type} [CommRing A] [SetLike σ A] [AddSubgroupClass σ A] (𝒜 : ℕ → σ) [GradedRing 𝒜] in
 variable {𝒜} in
 variable {U V : (Proj 𝒜).Opens} {d d' : ℕ} {a b a' b' : A} {ha : a ∈ 𝒜 d} {hb : b ∈ 𝒜 d}
@@ -161,7 +156,6 @@ theorem _root_.GlobalTheory.ProjFrac.frac_self :
   exact Localization.mk_self (⟨b, hU hx⟩ : x.asHomogeneousIdeal.toIdeal.primeCompl)
 
 
-open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite in
 variable {A σ : Type} [CommRing A] [SetLike σ A] [AddSubgroupClass σ A] (𝒜 : ℕ → σ) [GradedRing 𝒜] in
 variable {𝒜} in
 variable {U V : (Proj 𝒜).Opens} {d d' : ℕ} {a b a' b' : A} {ha : a ∈ 𝒜 d} {hb : b ∈ 𝒜 d}
@@ -173,7 +167,6 @@ theorem _root_.GlobalTheory.ProjFrac.frac_zero :
   rw [map_zero, _root_.GlobalTheory.ProjFrac.ev_frac, Localization.mk_zero]
 
 
-open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite in
 variable {A σ : Type} [CommRing A] [SetLike σ A] [AddSubgroupClass σ A] (𝒜 : ℕ → σ) [GradedRing 𝒜] in
 variable {𝒜} in
 variable {U V : (Proj 𝒜).Opens} {d d' : ℕ} {a b a' b' : A} {ha : a ∈ 𝒜 d} {hb : b ∈ 𝒜 d}
@@ -190,7 +183,6 @@ theorem _root_.GlobalTheory.ProjFrac.frac_pow (n : ℕ) :
     (hU := fun x hx h => hU hx (x.isPrime.mem_of_pow_mem n h)) x hx).symm
 
 
-open AlgebraicGeometry CategoryTheory TopologicalSpace Opposite in
 variable {A σ : Type} [CommRing A] [SetLike σ A] [AddSubgroupClass σ A] (𝒜 : ℕ → σ) [GradedRing 𝒜] in
 variable {𝒜} in
 variable {U V : (Proj 𝒜).Opens} {d d' : ℕ} {a b a' b' : A} {ha : a ∈ 𝒜 d} {hb : b ∈ 𝒜 d}

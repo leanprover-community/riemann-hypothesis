@@ -130,7 +130,6 @@ end GlobalTheory.ThetaTrCont
 
 namespace GlobalTheory.ThetaTrCont
 
-open GlobalTheory.WeilM
 open scoped Classical Topology
 
 section Theta
@@ -234,8 +233,6 @@ end GlobalTheory.ThetaTrCont
 
 namespace GlobalTheory.ThetaTrCont
 
-open GlobalTheory.WeilM
-open scoped Classical Topology
 
 section Theta2
 

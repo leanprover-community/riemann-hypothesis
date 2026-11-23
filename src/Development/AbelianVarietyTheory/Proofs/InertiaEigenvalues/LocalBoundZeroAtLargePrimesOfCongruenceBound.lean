@@ -110,7 +110,6 @@ end GlobalTheory.NLink.RowE
 
 namespace GlobalTheory.NLink.RowE
 
-open GlobalTheory.IndefiniteRowSideFullHecke
 
 theorem main : ∀ (D : D7) (L : SizeData₂ D) (r : FamilyRepresentationConstants.RFam D) (ρ : FamilyRepresentationConstants.RhoFam D) (exc : Finset ℕ), GlobalTheory.IndefiniteRowSideFullHecke.BaseSizes.CongBound_at D L → GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary.WeightParam D → GlobalTheory.PtCore.PtFam D r ρ → KillingConditions.KillAt ρ → TwistedPlaces.ShaFinOdd D → 3 ≤ TwistedPlaces.lStar L → (exc : Set ℕ) = GlobalTheory.IndefiniteRowSideFullHecke.BaseSizes.Exc L → StarE L ρ exc := by
   intro D L r ρ exc hCB hW hP hK hS h3 hexc i hTw hl hg hx π hπ

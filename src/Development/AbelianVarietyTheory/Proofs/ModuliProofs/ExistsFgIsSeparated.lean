@@ -134,13 +134,11 @@ theorem _root_.GlobalTheory.SpreadSep.exists_isClosed_preimage_diff {I : Type u}
   rw [hset]
   exact (TopologicalSpace.Opens.isOpen _).isClosed_compl
 
-open AlgebraicGeometry CategoryTheory Limits in
 private theorem isSeparated_iff_isClosed_range_diagonal {Y Z : Scheme.{0}} (f : Y ⟶ Z) :
     IsSeparated f ↔ IsClosed (Set.range (pullback.diagonal f)) :=
   ⟨fun _ => (pullback.diagonal f).isClosedEmbedding.isClosed_range,
     fun h => ⟨IsClosedImmersion.of_isPreimmersion _ h⟩⟩
 
-open AlgebraicGeometry CategoryTheory Limits in
 private theorem isClosed_range_iso_comp_comp_iso_inv_iff {A B C D : Scheme.{0}} (a : A ≅ B) (g : B ⟶ C)
     (e : D ≅ C) : IsClosed (Set.range (a.hom ≫ g ≫ e.inv)) ↔ IsClosed (Set.range g) := by
   have hr : Set.range (a.hom ≫ g ≫ e.inv) = e.hom ⁻¹' Set.range g := by
@@ -172,7 +170,6 @@ private theorem isClosed_range_iso_comp_comp_iso_inv_iff {A B C D : Scheme.{0}} 
   · intro h
     exact h.preimage e.hom.continuous
 
-open AlgebraicGeometry CategoryTheory Limits in
 private theorem isSeparated_pullback_snd_spMap_iff_isClosed_preimage (k R : Type) [CommRing k] [CommRing R] [Algebra k R]
     (X : Scheme.{0}) (p : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp k) :
     IsSeparated (pullback.snd p (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (algebraMap k R))) ↔
@@ -210,7 +207,6 @@ private theorem isSeparated_pullback_snd_spMap_iff_isClosed_preimage (k R : Type
   rw [hr]
 
 
-open AlgebraicGeometry CategoryTheory Limits in
 theorem _root_.GlobalTheory.SpreadSep.exists_fg_isSeparated (k V : Type) [CommRing k] [IsNoetherianRing k] [CommRing V]
     [Algebra k V] (X : Scheme.{0}) (p : X ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp k) (h₁ : LocallyOfFiniteType p) (h₂ : QuasiCompact p)
     (h : IsSeparated (pullback.snd p (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (algebraMap k V)))) :

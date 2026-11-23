@@ -741,7 +741,6 @@ end PositivityTheory.ResPlug.GBnd
 
 namespace PositivityTheory.ResPlug.GBnd
 
-open FunctorialResolution FunctorialResolution.EmbeddedResolution
 
 theorem notMem_basicOpen_prod_iff {X : Scheme.{0}} {U : X.Opens} {n : ℕ} (f : Fin n → Γ(X, U))
     (J : Finset (Fin n)) (y : X) :

@@ -179,7 +179,6 @@ end GlobalTheory.FockTransl.Jet
 
 namespace GlobalTheory.FockTransl.Jet
 
-open Complex
 
 variable {D : D7}
 

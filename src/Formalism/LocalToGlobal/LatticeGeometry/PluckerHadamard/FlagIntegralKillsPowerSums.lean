@@ -57,7 +57,6 @@ end Alg
 
 section AlgStmt
 
-open Formalism.ShimuraLimitIdentity (Pol Sh Tot psumAt Kills)
 
 def FlagIntegralAnnihilatesPowerSums : Prop :=
   ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ), Kills (degFlL Ψ N)
@@ -65,7 +64,6 @@ def FlagIntegralAnnihilatesPowerSums : Prop :=
 end AlgStmt
 
 
-open Formalism.ShimuraLimitIdentity (Pol Sh Tot psumAt Kills)
 
 variable {D : D7} {G : DV.Geo D.what₂.LL} {Lev : Type}
   {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)} {ng : NgPkg} {w : Dat D Lev}

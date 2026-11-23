@@ -436,11 +436,9 @@ theorem one_mem_KpC (V : HSp D) (N : ℕ) : (1 : GA D V) ∈ Formalism.L2.NTheta
 
 end Level
 
-section Clauses
 
 variable {G : Type} [Group G]
 
-end Clauses
 
 section Checks
 

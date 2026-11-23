@@ -71,8 +71,6 @@ theorem cartan_posDef {M θ : Matrix (Fin n) (Fin n) ℂ} (hM : ∀ i j, star (M
 end GlobalTheory.CartanTensor
 
 namespace GlobalTheory.CartanTensor
-open Matrix
-open scoped Kronecker ComplexOrder
 variable {n d : ℕ}
 
 theorem quadruple_sum_eq_trace_transpose_mul (A : Matrix (Fin n) (Fin n) ℂ) (B : Matrix (Fin d) (Fin d) ℂ) (x y : Matrix (Fin n) (Fin d) ℂ) :
@@ -94,8 +92,6 @@ theorem quadruple_sum_eq_kronecker_quadraticForm (P : Matrix (Fin n) (Fin n) ℂ
 end GlobalTheory.CartanTensor
 
 namespace GlobalTheory.CartanTensor
-open Matrix
-open scoped Kronecker ComplexOrder
 variable {n d : ℕ}
 
 theorem map_star_smulI {a b : Type} (M : Matrix a b ℂ) : (Complex.I • M).map star = (-Complex.I) • M.map star := by

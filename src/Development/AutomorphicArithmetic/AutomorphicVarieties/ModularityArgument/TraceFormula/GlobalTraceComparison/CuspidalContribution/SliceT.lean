@@ -102,7 +102,6 @@ end SlopeTestRemainingChoices
 
 section Main
 
-open UpperTheory.V.Af.Fin GroundTheory.Automorphic.AutomorphicForm
 open PositivityTheory.Rg.BcB.SpectralAccumulation (TypeB)
 open UpperTheory.V.Cj.S (res)
 

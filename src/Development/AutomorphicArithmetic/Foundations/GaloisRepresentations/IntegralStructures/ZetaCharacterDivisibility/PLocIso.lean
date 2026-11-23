@@ -49,7 +49,6 @@ private noncomputable def cEq {E : Type} [Field E] [NumberField E] [IsCMField E]
     (cpl w).adicCompletion E ≃+* w.adicCompletion E :=
   RingEquiv.ofBijective (conjLoc (conjE E) w) ⟨(conjLoc (conjE E) w).injective, fun y => ⟨psi w y, conjLoc_psi w y⟩⟩
 
-open GlobalTheory.SplitPts in
 private theorem conjInvT_eq {E : Type} [Field E] [NumberField E] [IsCMField E] (w : HeightOneSpectrum (𝓞 E)) {a : ℕ}
     (g : GL (Fin a) ((cpl w).adicCompletion E)) :
     GlobalTheory.LFun.ConjPlace.invT (cEq w) a g = invT a _ (Matrix.GeneralLinearGroup.map (conjLoc (conjE E) w) g) :=
@@ -62,7 +61,6 @@ private theorem invT_invT {R : Type} [CommRing R] {a : ℕ} (h : GL (Fin a) R) :
   change (((h⁻¹)⁻¹ : GL (Fin a) R).val.transpose).transpose = h.val
   rw [inv_inv, Matrix.transpose_transpose]
 
-open GlobalTheory.SplitPts in
 private theorem conjInvT_symm_eq {E : Type} [Field E] [NumberField E] [IsCMField E] (w : HeightOneSpectrum (𝓞 E)) {a : ℕ}
     (h : GL (Fin a) (w.adicCompletion E)) :
     (GlobalTheory.LFun.ConjPlace.invT (cEq w) a).symm h = invT a _ (Matrix.GeneralLinearGroup.map (psi w) h) := by
@@ -70,7 +68,6 @@ private theorem conjInvT_symm_eq {E : Type} [Field E] [NumberField E] [IsCMField
     show Matrix.GeneralLinearGroup.map (conjLoc (conjE E) w) (Matrix.GeneralLinearGroup.map (psi w) h) = h from
       Units.ext (Matrix.ext fun i j => conjLoc_psi w _), invT_invT]
 
-open GlobalTheory.SplitPts in
 theorem UpperTheory.Gal.Int.Div.locIso_of :
     LocIso := by
   intro E _ _ _ a w hw

@@ -96,7 +96,6 @@ end GlobalTheory.BotTranslate
 
 namespace GlobalTheory.BotTranslate
 
-open GlobalTheory.Grid (neg sgn ofSgn)
 
 
 

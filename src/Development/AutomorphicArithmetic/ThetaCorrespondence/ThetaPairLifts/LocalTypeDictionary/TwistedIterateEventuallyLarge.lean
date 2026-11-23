@@ -58,7 +58,6 @@ variable (W : G.Weil) (M : Vol G) (t : T)
 variable {W M t}
 end GlobalTheory.RowChain
 namespace GlobalTheory.RowChain
-open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.FlipRun
 end GlobalTheory.RowChain
 namespace GlobalTheory.RowChain
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.FlipRun GlobalTheory.RowUnf GlobalTheory.RowVal

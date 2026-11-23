@@ -72,8 +72,6 @@ private lemma exists_bound_abs_deriv_smoothTransition_mul_sub_two :
     rw [hd, abs_zero, zero_mul]
     exact le_max_right _ _
 
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix in
 set_option autoImplicit false in
 private lemma exists_bound_fderiv_logCutoff_mul_norm_mul_log :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ (k : ℕ) (z c : ℂ),
@@ -118,8 +116,6 @@ private lemma exists_bound_fderiv_logCutoff_mul_norm_mul_log :
   rw [e]
   exact mul_le_mul (hM x) (by rw [← Real.norm_eq_abs]; exact hNc) (abs_nonneg _) hM0
 
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix in
 set_option autoImplicit false in
 private lemma logCutoff_mem_Icc (k : ℕ) (z : ℂ) :
     0 ≤ _root_.GlobalTheory.GoodTop.logCutoff k z ∧ _root_.GlobalTheory.GoodTop.logCutoff k z ≤ 1 := by
@@ -128,8 +124,6 @@ private lemma logCutoff_mem_Icc (k : ℕ) (z : ℂ) :
   · exact ⟨le_rfl, zero_le_one⟩
   · exact ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
 
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix in
 set_option autoImplicit false in
 private lemma logCutoff_eq_zero_of_norm_le_exp_neg_two_mul (k : ℕ) {z : ℂ}
     (hz : ‖z‖ ≤ Real.exp (-2 * ((k : ℝ) + 1))) : _root_.GlobalTheory.GoodTop.logCutoff k z = 0 := by
@@ -145,8 +139,6 @@ private lemma logCutoff_eq_zero_of_norm_le_exp_neg_two_mul (k : ℕ) {z : ℂ}
     (-2 * ((k : ℝ) + 1) - Real.log ‖z‖) / ((k : ℝ) + 1) by field_simp; ring]
   exact div_nonneg (by linarith) hk.le
 
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix in
 set_option autoImplicit false in
 private lemma logCutoff_eq_one_of_exp_le_norm (k : ℕ) {z : ℂ}
     (hz : Real.exp (-((k : ℝ) + 1)) ≤ ‖z‖) : _root_.GlobalTheory.GoodTop.logCutoff k z = 1 := by
@@ -163,8 +155,6 @@ private lemma logCutoff_eq_one_of_exp_le_norm (k : ℕ) {z : ℂ}
     (Real.log ‖z‖ + ((k : ℝ) + 1)) / ((k : ℝ) + 1) by field_simp; ring]
   exact div_nonneg (by linarith) hk.le
 
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix in
 set_option autoImplicit false in
 private lemma fderiv_prod_logCutoff_coordVec {n : ℕ} (k : ℕ) (S : Finset (Fin n))
     (v : _root_.ReciprocityTheory.L2DbarEstimates.V n) (b : Fin n) (c : ℂ) :
@@ -225,8 +215,6 @@ private lemma fderiv_prod_logCutoff_coordVec {n : ℕ} (k : ℕ) (S : Finset (Fi
     exact h1.unique h2
 
 
-open MeasureTheory Filter Topology in
-open scoped ContDiff Matrix in
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.GoodTop.exists_logCutoff_hyperplanes {n : ℕ} (S : Finset (Fin n)) :
     ∃ (C : ℝ) (χ : ℕ → _root_.ReciprocityTheory.L2DbarEstimates.V n → ℝ),

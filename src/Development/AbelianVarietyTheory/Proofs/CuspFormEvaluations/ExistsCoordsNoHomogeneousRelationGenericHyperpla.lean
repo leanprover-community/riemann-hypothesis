@@ -59,7 +59,6 @@ theorem aeval_mul_of_isHomogeneous_cone {K L ι : Type} [CommRing K] [CommRing L
   ring
 
 
-open MvPolynomial in
 theorem aeval_eq_pow_mul_aeval_dehomogenise {K L : Type} [CommRing K] [Field L] [Algebra K L]
     {m : ℕ} {Q : MvPolynomial (Fin (m + 1)) K} {d : ℕ} (hQ : Q.IsHomogeneous d)
     (x : Fin (m + 1) → L) (hx : x 0 ≠ 0) :
@@ -81,7 +80,6 @@ theorem aeval_eq_pow_mul_aeval_dehomogenise {K L : Type} [CommRing K] [Field L] 
     aeval_eq_bind₁ (Fin.cons 1 X : Fin (m + 1) → MvPolynomial (Fin m) K), aeval_bind₁, key]
 
 
-open MvPolynomial in
 theorem dehomogenise_ne_zero_of_isHomogeneous {K : Type} [Field K]
     {m : ℕ} {Q : MvPolynomial (Fin (m + 1)) K} {d : ℕ} (hQ : Q.IsHomogeneous d) (h0 : Q ≠ 0) :
     aeval (Fin.cons 1 X : Fin (m + 1) → MvPolynomial (Fin m) K) Q ≠ 0 := by

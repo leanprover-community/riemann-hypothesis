@@ -41,7 +41,6 @@ end Formalism.MainNotions.G.SymmetricFormBlocks
 
 namespace Formalism.MainNotions.G.SymmetricFormBlocks
 
-open MvPolynomial Finset Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction
 
 theorem winA_sum (X : flipOneThree.Inst) (f : ℕ → ℝ) :
     ∑ aPlus ∈ X.winA, f aPlus = ∑ j ∈ Finset.range X.winA.card, f (X.L.a + j) := by

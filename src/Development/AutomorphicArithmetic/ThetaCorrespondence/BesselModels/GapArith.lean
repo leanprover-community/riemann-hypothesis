@@ -135,7 +135,6 @@ end Num
 
 section Gap
 
-open GlobalTheory.SignedHC GlobalTheory.PairLift
 
 def LowsOver (D : D7) (g : ℚ) : Prop :=
   ∀ (τ : D.what₂.Tau) (j : ℕ) (hj : j + 1 < D.R.m), g < (D.hc τ).b ⟨j + 1, hj⟩ - (D.hc τ).b ⟨j, by omega⟩

@@ -136,7 +136,6 @@ end GlobalTheory.PerfectCompl
 
 namespace GlobalTheory.PerfectCompl
 
-open GlobalTheory.MixModel
 
 variable {D : D7}
 

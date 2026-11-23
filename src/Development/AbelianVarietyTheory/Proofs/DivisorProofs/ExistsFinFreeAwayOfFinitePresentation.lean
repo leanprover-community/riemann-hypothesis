@@ -266,7 +266,6 @@ end GlobalTheory.FinTrace
 
 namespace GlobalTheory.FinTrace
 
-open GlobalTheory.FiniteAmple GlobalTheory.LB GlobalTheory.AbLaw
 
 section Cech
 
@@ -322,7 +321,6 @@ end GlobalTheory.FinTrace
 
 namespace GlobalTheory.FinTrace
 
-open GlobalTheory.FiniteAmple GlobalTheory.LB GlobalTheory.AbLaw
 
 theorem exactAt_of_isIso_comp {R : Type} [CommRing R] {C D : CochainComplex (ModuleCat.{0} R) ℕ}
     (i : C ⟶ D) (p : D ⟶ C) [IsIso (i ≫ p)] {n : ℕ} (hD : D.ExactAt n) : C.ExactAt n := by

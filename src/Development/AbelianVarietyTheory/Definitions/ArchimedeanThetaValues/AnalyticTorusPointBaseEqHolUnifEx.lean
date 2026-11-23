@@ -473,7 +473,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
   {D : Datum H} {l : Level H} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
   [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ] {b : O →+* ℂ} {a : ArcIn D l β ℂ b}
 
-open FrameValue
 
 theorem gtAct (Λ : letI := H.starRing; GtAn a) (r : 𝓞 E) (v : letI := H.starRing; Λ.A.V) :
     letI := H.starRing; GtAct a.oa r (Λ.ex0 v) (Λ.ex0 (Λ.A.actV r v)) := by

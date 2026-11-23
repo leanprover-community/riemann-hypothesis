@@ -141,18 +141,14 @@ theorem ginf_mem_closure {θ : Datum.InfFam D} (hθ : IsInfFam θ) {a : GA D V} 
 
 end Adelic
 
-section GenAd
 
 variable {G Γ : Type} [Group G] [Group Γ] {ι : Γ →* G} {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
   {ρ : Γ →* Module.End ℂ W} {J : Subgroup G} {χ : J →* ℂˣ} {F : G → W}
 
-end GenAd
 
-section GenHom
 
 variable {G H : Type} [Group G] [Group H] (f : G →* H)
 
-end GenHom
 
 section Generic
 
@@ -197,12 +193,10 @@ theorem lift_unique {h h' : GA D V} (hh : h ∈ GfC V) (hh' : h' ∈ GfC V)
 
 end Generic
 
-section Real
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : Formalism.L2.DIV.FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
 
-end Real
 
 end Formalism.IndefR.TopMult

@@ -165,7 +165,6 @@ end GlobalTheory.ReflVal
 
 namespace GlobalTheory.ReflVal
 
-open Formalism.L2.Host (unif atFin)
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -188,7 +187,6 @@ end GlobalTheory.ReflVal
 namespace GlobalTheory.SqTop
 
 open Formalism.BasicNotions Formalism.IndefR.Links GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest GlobalTheory.ReflVal
-open Formalism.L2.Host (unif atFin)
 
 theorem refl_square (hFE : GlobalTheory.Published.HeckeTateFunctionalEquation) {D : D7} {T : Type} {Lc : LevCh D T}
     {sc : GlobalTheory.ChiGrid.Consts} [IsCMField D.host.E] (hφ : IsCMType (cmPhi D)) {μ₀ : T} (hL : Lc.Is μ₀)

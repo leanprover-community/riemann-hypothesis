@@ -48,7 +48,6 @@ private theorem den_eq {n : ℕ} (t : Fin n → ℂ) :
   rw [hm, Matrix.det_projVandermonde]
   simp only [one_mul, vdm]
 
-open UpperTheory.Gal.Schur in
 private theorem num_eq' {n : ℕ} (l : Fin n → ℤ) (t : Fin n → ℂ) :
     (Matrix.of fun i j : Fin n => t i ^ (l j + (n - 1 - (j : ℕ) : ℕ))).det =
       altnZ (fun i => l i + n - 1 - (i : ℕ)) t := by

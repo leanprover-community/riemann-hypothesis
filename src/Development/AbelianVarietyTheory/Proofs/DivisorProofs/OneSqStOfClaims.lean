@@ -143,7 +143,6 @@ theorem exists_prime_mem' {K : Type} [Field K] [NumberField K] (w : Formalism.Pa
 end GlobalTheory.SqTop.OneSqProof
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Theta IsDedekindDomain NumberField Finset
-open Formalism.DivisionValues (vw)
 open Formalism.PairingDivisionLocalBalance (wt HtLe)
 open Formalism.L2.Host (HChar)
 open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest

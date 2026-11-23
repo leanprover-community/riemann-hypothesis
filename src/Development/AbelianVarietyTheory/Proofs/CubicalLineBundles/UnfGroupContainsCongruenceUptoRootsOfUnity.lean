@@ -52,8 +52,6 @@ private lemma isUStab_one_cubical_line_bundles {E : Type} [Field E] [NumberField
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab
   simp
 
-open NumberField in
-open scoped Matrix in
 private lemma isUStab_mul_cubical_line_bundles {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {r : ℕ}
     {G : Matrix (Fin r) (Fin r) E} {L : Submodule (NumberField.RingOfIntegers E) (Fin r → E)}
     {g h : GL (Fin r) E} (hg : _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab G L g) (hh : _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab G L h) : _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab G L (g * h) := by
@@ -63,8 +61,6 @@ private lemma isUStab_mul_cubical_line_bundles {E : Type} [Field E] [NumberField
   · rw [Units.val_mul, ← Matrix.mulVec_mulVec]
     exact (hh.2 x).trans (hg.2 _)
 
-open NumberField in
-open scoped Matrix in
 private lemma isUStab_pow' {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {r : ℕ}
     {G : Matrix (Fin r) (Fin r) E} {L : Submodule (NumberField.RingOfIntegers E) (Fin r → E)}
     {g : GL (Fin r) E} (hg : _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab G L g) (n : ℕ) : _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab G L (g ^ n) := by
@@ -73,8 +69,6 @@ private lemma isUStab_pow' {E : Type} [Field E] [NumberField E] [NumberField.IsC
   | succ n ih => rw [pow_succ]; exact isUStab_mul_cubical_line_bundles ih hg
 
 
-open NumberField in
-open scoped Matrix in
 theorem _root_.GlobalTheory.unf_group_contains_congruence_upto_rootsOfUnity : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H) (l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H) (Xo : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Moduli Dw l) (c : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : _root_.Formalism.L2.PjFree.Unf Xo c σ r), _root_.Formalism.L2.PjFree.IsUnf U → l.A = 1 → 0 < r → ∀ k (γ : GL (Fin r) E), _root_.ReciprocityTheory.ChartRestriction.G.FD.IsUStab (U.X k).Gm (U.X k).Λ γ → (∀ x ∈ (U.X k).Λ, ∃ y ∈ (U.X k).Λ, Matrix.mulVec (γ : Matrix (Fin r) (Fin r) E) x - x = (l.M : E) • y) → ∃ γ' ∈ (U.X k).Γ, ∃ (u : E) (n : ℕ), 0 < n ∧ u ^ n = 1 ∧ (γ' : Matrix (Fin r) (Fin r) E) = u • (γ : Matrix (Fin r) (Fin r) E) := by
   intro E _ _ _ H Dw l Xo c σ r U hU hA hr k γ hγ hcong
   obtain ⟨γ', hγ'Γ, u, hu⟩ := _root_.GlobalTheory.OrbitScalar.exists_smul_of_orbits E r (U.X k) γ

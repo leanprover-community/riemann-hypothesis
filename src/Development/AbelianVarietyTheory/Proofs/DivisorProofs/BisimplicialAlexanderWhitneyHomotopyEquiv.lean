@@ -109,7 +109,6 @@ end GlobalTheory.EZ.AWEq
 noncomputable section
 namespace GlobalTheory.EZ.AWEq
 
-open Finset HomologicalComplex₂
 
 set_option backward.isDefEq.respectTransparency false
 
@@ -190,7 +189,6 @@ end GlobalTheory.EZ.AWEq
 noncomputable section
 namespace GlobalTheory.EZ.AWEq
 
-open Finset HomologicalComplex₂
 
 set_option backward.isDefEq.respectTransparency false
 

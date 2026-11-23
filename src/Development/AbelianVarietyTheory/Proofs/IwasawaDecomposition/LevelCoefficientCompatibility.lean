@@ -224,7 +224,6 @@ section Adelic
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV
   Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.L2.Pj GlobalTheory.Member GlobalTheory.LevSplit
-open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem eq_one_of_full_upper_block_eq_one {κ : Type} [CommRing κ] {n r : ℕ} (hr : r ≤ n) (hn : n = r) {g : GL (Fin n) κ}

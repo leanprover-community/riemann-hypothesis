@@ -93,7 +93,6 @@ end GlobalTheory.MatLog
 
 namespace GlobalTheory.MatLog
 
-open NormedSpace
 
 section Comm
 
@@ -173,7 +172,6 @@ end GlobalTheory.MatLog
 
 namespace GlobalTheory.MatLog
 
-open NormedSpace
 
 theorem eq_zero_of_exp_eq_one {A : Type*} [NormedRing A] [NormedAlgebra ℂ A] [CompleteSpace A] {z : A}
     (hz : ‖z‖ ≤ 2 / 3) (he : exp z = 1) : z = 0 := by
@@ -199,7 +197,6 @@ end GlobalTheory.MatLog
 
 namespace GlobalTheory.MatLog
 
-open NormedSpace
 
 theorem map_logS {A B : Type*} [NormedRing A] [NormedAlgebra ℂ A] [CompleteSpace A] [NormedRing B] [NormedAlgebra ℂ B]
     [CompleteSpace B] (φ : A →ₐ[ℂ] B) (hφ : Continuous φ) {y : A} (hy : ‖y‖ < 1) : φ (logS y) = logS (φ y) := by
@@ -272,7 +269,6 @@ open NormedSpace GlobalTheory.MatLog GlobalTheory.SepReal.LogNearPf
 
 section Main
 
-open scoped Matrix.Norms.Frobenius
 
 theorem logNear_holds : LogNear := by
   intro m ε δ hδ g hg hgd

@@ -111,7 +111,6 @@ end GlobalTheory.SchurQuot
 
 namespace GlobalTheory.SchurQuot
 
-open GlobalTheory.MinorFrame
 
 variable {ι : Type} [Fintype ι]
 
@@ -208,7 +207,6 @@ end GlobalTheory.SchurQuot
 
 namespace GlobalTheory.SchurQuot
 
-open GlobalTheory.MinorFrame
 
 theorem minorF_eq_prodMinors (D : D7) {a d : ℕ} {n : D.what₂.Tau → ℕ} (T : Tup D a d n) :
     GlobalTheory.BotFormula.minorF rfl rfl T = prodMinors (ι := D.what₂.Tau) (n := n) T := by

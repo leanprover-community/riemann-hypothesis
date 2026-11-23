@@ -58,16 +58,12 @@ theorem _root_.GlobalTheory.EtC.TensEx.res_lof {I J : _root_.GlobalTheory.EtC.Cx
   unfold _root_.GlobalTheory.EtC.Tens.res
   rw [DirectSum.lmap_lof, TensorProduct.map_tmul]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
-open scoped DirectSum TensorProduct in
 variable {R : Type} [CommRing R] in
 theorem _root_.GlobalTheory.EtC.TensEx.sres_id {F : _root_.GlobalTheory.EtC.Shv R} {U : Scheme.{0}}
     (a : _root_.GlobalTheory.EtC.Sec F U) : _root_.GlobalTheory.EtC.Sec.res (𝟙 U) a = a := by
   unfold _root_.GlobalTheory.EtC.Sec.res
   simp
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
-open scoped DirectSum TensorProduct in
 variable {R : Type} [CommRing R] in
 theorem _root_.GlobalTheory.EtC.TensEx.sres_comp {F : _root_.GlobalTheory.EtC.Shv R} {W V U : Scheme.{0}}
     (g : W ⟶ V) (f : V ⟶ U) (a : _root_.GlobalTheory.EtC.Sec F U) :
@@ -92,8 +88,6 @@ namespace GlobalTheory.EtC.TensEx
 
 variable {R : Type} [CommRing R]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
-open scoped DirectSum TensorProduct in
 variable {R : Type} [CommRing R] in
 theorem _root_.GlobalTheory.EtC.TensEx.smap_res {F G : _root_.GlobalTheory.EtC.Shv R} (φ : F ⟶ G)
     {V U : Scheme.{0}} (g : V ⟶ U) (a : _root_.GlobalTheory.EtC.Sec F U) :
@@ -111,8 +105,6 @@ def dT (I J : Cx R) (U : Scheme.{0}) (w : ℤ) : Tens I J U w →ₗ[ULift.{1} R
       Sec (I.X q.1.1) U ⊗[ULift.{1} R] Sec (J.X q.1.2) U) ⟨(p.1.1, p.1.2 + 1), by have := p.2; simp; omega⟩ ∘ₗ
       TensorProduct.map LinearMap.id ((J.d p.1.2 (p.1.2 + 1)).hom.app (op U)).hom))
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
-open scoped DirectSum TensorProduct in
 variable {R : Type} [CommRing R] in
 theorem _root_.GlobalTheory.EtC.TensEx.dT_lof {I J : _root_.GlobalTheory.EtC.Cx R} (U : Scheme.{0})
     (s t w : ℤ) (h : s + t = w) (a : _root_.GlobalTheory.EtC.Sec (I.X s) U)
@@ -147,8 +139,6 @@ def D (I J : Cx R) (w : ℤ) : pre I J w ⟶ pre I J (w + 1) where
     erw [LinearMap.comp_apply, LinearMap.comp_apply, LinearMap.comp_apply, LinearMap.comp_apply]
     rw [res_lof, dT_lof, dT_lof, map_add (f := _), map_zsmul, res_lof, res_lof, smap_res, smap_res]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
-open scoped DirectSum TensorProduct in
 variable {R : Type} [CommRing R] in
 private theorem sec_map_d_map_d_eq_zero (K : _root_.GlobalTheory.EtC.Cx R) {U : Scheme.{0}}
     (i j k : ℤ) (a : _root_.GlobalTheory.EtC.Sec (K.X i) U) :
@@ -156,8 +146,6 @@ private theorem sec_map_d_map_d_eq_zero (K : _root_.GlobalTheory.EtC.Cx R) {U : 
   have key := congrArg (fun f : K.X i ⟶ K.X k => (f.hom.app (op U)).hom a) (K.d_comp_d i j k)
   exact key
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
-open scoped DirectSum TensorProduct in
 variable {R : Type} [CommRing R] in
 theorem _root_.GlobalTheory.EtC.TensEx.D_comp (I J : _root_.GlobalTheory.EtC.Cx R) (w : ℤ) :
     _root_.GlobalTheory.EtC.TensEx.D I J w ≫
@@ -188,8 +176,6 @@ def cx (I J : Cx R) : Cx R :=
 def toS (I J : Cx R) (U : Scheme.{0}) (w : ℤ) : Tens I J U w →ₗ[ULift.{1} R] Sec ((cx I J).X w) U :=
   ((toSheafify Scheme.etaleTopology (pre I J w)).app (op U)).hom
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
-open scoped DirectSum TensorProduct in
 variable {R : Type} [CommRing R] in
 theorem _root_.GlobalTheory.EtC.TensEx.toS_res (I J : _root_.GlobalTheory.EtC.Cx R) {V U : Scheme.{0}}
     (g : V ⟶ U) (w : ℤ) (x : _root_.GlobalTheory.EtC.Tens I J U w) :
@@ -199,8 +185,6 @@ theorem _root_.GlobalTheory.EtC.TensEx.toS_res (I J : _root_.GlobalTheory.EtC.Cx
     ((toSheafify Scheme.etaleTopology (_root_.GlobalTheory.EtC.TensEx.pre I J w)).naturality g.op)
   exact key.symm
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
-open scoped DirectSum TensorProduct in
 variable {R : Type} [CommRing R] in
 theorem _root_.GlobalTheory.EtC.TensEx.d_toS (I J : _root_.GlobalTheory.EtC.Cx R)
     (U : Scheme.{0}) (w : ℤ) (x : _root_.GlobalTheory.EtC.Tens I J U w) :
@@ -236,8 +220,6 @@ def pair (I J : Cx R) : Pair I J (cx I J) where
 end GlobalTheory.EtC.TensEx
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
-open scoped DirectSum TensorProduct in
 theorem _root_.GlobalTheory.EtC.tensor_exists :
     ∀ (R : Type) [CommRing R] (I J : _root_.GlobalTheory.EtC.Cx R),
       ∃ (K : _root_.GlobalTheory.EtC.Cx R) (τ : _root_.GlobalTheory.EtC.Pair I J K), τ.IsTensor := by

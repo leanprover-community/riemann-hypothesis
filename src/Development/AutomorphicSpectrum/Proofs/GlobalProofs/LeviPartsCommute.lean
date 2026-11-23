@@ -54,7 +54,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.Sep
 
-open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 open GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.KInf GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 open scoped Pointwise
 

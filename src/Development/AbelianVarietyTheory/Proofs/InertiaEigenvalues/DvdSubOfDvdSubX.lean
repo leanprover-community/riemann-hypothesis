@@ -66,7 +66,6 @@ private lemma subsingleton_of_isHausdorff_whole_ideal {I : Ideal R} [IsHausdorff
     IsHausdorff.haus ‹_› z fun n => by simp [Ideal.top_pow, SModEq.top]
   rw [key x, key y]
 
-open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
 private lemma order_map_toNat_eq_natDegree_of_isDistinguishedAt {I : Ideal R} {p : Polynomial R}
     (H : p.IsDistinguishedAt I) (hI : I ≠ ⊤) :
@@ -78,7 +77,6 @@ private lemma order_map_toNat_eq_natDegree_of_isDistinguishedAt {I : Ideal R} {p
   simp
 
 
-open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
 theorem _root_.GlobalTheory.NB.LT.exists_poly_mod [Nontrivial R] {I : Ideal R} [IsAdicComplete I R] {p : Polynomial R}
     (H : p.IsDistinguishedAt I) (a : R⟦X⟧) :
@@ -95,7 +93,6 @@ theorem _root_.GlobalTheory.NB.LT.exists_poly_mod [Nontrivial R] {I : Ideal R} [
   rwa [Polynomial.degree_eq_natDegree (Polynomial.Monic.ne_zero H.monic)]
 
 
-open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
 theorem _root_.GlobalTheory.NB.LT.poly_dvd_of_dvd {I : Ideal R} [IsAdicComplete I R] {p : Polynomial R}
     (H : p.IsDistinguishedAt I) {r : Polynomial R} (h : (p : R⟦X⟧) ∣ (r : R⟦X⟧)) : p ∣ r := by
@@ -123,7 +120,6 @@ theorem _root_.GlobalTheory.NB.LT.poly_dvd_of_dvd {I : Ideal R} [IsAdicComplete 
   have := (D.eq_zero_of_mul_eq hdeg hmul).2
   exact (Polynomial.modByMonic_eq_zero_iff_dvd hm).mp this
 
-open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
 theorem _root_.GlobalTheory.NB.LT.algHom_coe {B : Type} [CommRing B] [Algebra R B] (σ : R⟦X⟧ →ₐ[R] B) (r : Polynomial R) :
     σ (r : R⟦X⟧) = Polynomial.aeval (σ X) r := by
@@ -131,7 +127,6 @@ theorem _root_.GlobalTheory.NB.LT.algHom_coe {B : Type} [CommRing B] [Algebra R 
     Polynomial.algHom_ext (by simp)
   simpa using DFunLike.congr_fun e r
 
-open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
 private lemma X_pow_dvd_sub_aeval_trunc (ρ : R⟦X⟧ →ₐ[R] R⟦X⟧) (hρ : X ∣ ρ X) (n : ℕ)
     (f : R⟦X⟧) : X ^ n ∣ ρ f - Polynomial.aeval (ρ X) (trunc n f) := by
@@ -145,7 +140,6 @@ private lemma X_pow_dvd_sub_aeval_trunc (ρ : R⟦X⟧ →ₐ[R] R⟦X⟧) (hρ 
   exact (pow_dvd_pow_of_dvd hρ n).mul_right _
 
 
-open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
 theorem _root_.GlobalTheory.NB.LT.algHom_ext_X (σ τ : R⟦X⟧ →ₐ[R] R⟦X⟧) (h : σ X = τ X) (hX : X ∣ σ X) : σ = τ := by
   refine AlgHom.ext fun f => PowerSeries.ext fun m => ?_

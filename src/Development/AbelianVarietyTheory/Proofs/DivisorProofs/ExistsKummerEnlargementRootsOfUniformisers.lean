@@ -76,7 +76,6 @@ end GlobalTheory.KummerEnlarge
 
 namespace GlobalTheory.KummerEnlarge
 
-open GlobalTheory.NormalApprox
 
 theorem exists_kummer_enlargement : ∀ (T : Type) [CommRing T] [IsDomain T] [IsLocalRing T], GlobalTheory.LocAcyc.AbsIntClosed T →
     ∀ (q : ℕ), 0 < q → IsUnit (q : T) →

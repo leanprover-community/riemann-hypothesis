@@ -78,5 +78,4 @@ theorem ptH_comp_permMap_eq : ∀ (k G H H' X Y : Type) [CommRing k] [Group G] [
 end GlobalTheory.HomStab
 
 section
-open CategoryTheory CategoryTheory.Limits GlobalTheory.HomStab
 end

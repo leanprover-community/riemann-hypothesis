@@ -145,7 +145,6 @@ theorem hc_at {E : Type} [Field E] [NumberField E] (χ : HChar E) (h : Formalism
 end GlobalTheory.TwRing
 
 namespace GlobalTheory.TwRing
-open GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
 
 theorem placesOver_inj (E : Type) [Field E] [NumberField E] {p q : ℕ} (hp : p.Prime) (hq : q.Prime)
     (h : placesOver E p = placesOver E q) : p = q := by
@@ -218,7 +217,6 @@ theorem read_of_isGal {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebr
 end GlobalTheory.TwRing
 
 namespace GlobalTheory.TwRing
-open GlobalTheory.GalChar Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR GlobalTheory.HeckeGal
 
 theorem exists_padicBaseField_integral_places (D : D7) : ∃ c0 : Big D, ∀ (l : ℕ) [Fact l.Prime] (j : ↥D.LL0 →+* PadicAlgCl l),
     (∀ x, j x ∈ (c0 l j).1) ∧ muK l 1 ≤ (c0 l j).1 ∧

@@ -201,7 +201,6 @@ instance completionMulSemiringAction : MulSemiringAction G (Completion E) where
     rw [← Completion.coe_mul, ← Completion.coe_smul, ← Completion.coe_smul,
       ← Completion.coe_smul, smul_mul', Completion.coe_mul]
 
-open UniformSpace in
 instance completionIsIsometricSMul : IsIsometricSMul G (Completion E) :=
   ⟨fun g => (isometry_smul E g).completion_map⟩
 

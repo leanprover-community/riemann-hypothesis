@@ -91,8 +91,6 @@ private lemma exists_nat_mul_ev_mem {R : Type} [CommRing R] [Algebra ℚ R]
     rw [h']
     exact R₀.mul_mem (h u hu) (hu _ _)
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma exists_nat_mul_ev_section_mem {R : Type} [CommRing R] [Algebra ℚ R]
     (R₀ : Subring R) (b : ι → ι → MvPolynomial (ι × ι) ℚ) : ∃ N : ℕ, 0 < N ∧
@@ -108,8 +106,6 @@ private lemma exists_nat_mul_ev_section_mem {R : Type} [CommRing R] [Algebra ℚ
   rw [hm, h']
   exact R₀.mul_mem (natCast_mem R₀ m) (h (i, j) u hu)
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 private lemma exists_nat_mul_rat_eq_int {κ : Type} [Fintype κ] (q : κ → ℚ) :
     ∃ M : ℕ, 0 < M ∧ ∀ k, ∃ z : ℤ, (M : ℚ) * q k = z := by
   refine ⟨∏ k, (q k).den, Finset.prod_pos fun k _ => (q k).pos, fun k => ?_⟩
@@ -120,8 +116,6 @@ private lemma exists_nat_mul_rat_eq_int {κ : Type} [Fintype κ] (q : κ → ℚ
   calc ((q k).den : ℚ) * m * q k = m * (q k * (q k).den) := by ring
     _ = m * (q k).num := by rw [Rat.mul_den_eq_num]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma exists_nat_mul_linExt_mem {R : Type} [CommRing R] [Algebra ℚ R]
     (R₀ : Subring R) (c : ι × ι → ι × ι → ℚ) : ∃ K : ℕ, 0 < K ∧
@@ -137,8 +131,6 @@ private lemma exists_nat_mul_linExt_mem {R : Type} [CommRing R] [Algebra ℚ R]
   rw [← mul_assoc, ← map_natCast (algebraMap ℚ R) K, ← map_mul, hz'', map_intCast]
   exact R₀.mul_mem (intCast_mem R₀ z) (hA _ _)
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma matrix_mul_mem_subring_of_mem {R : Type} [CommRing R] (R₀ : Subring R) {A B : Matrix ι ι R}
     (hA : ∀ i j, A i j ∈ R₀) (hB : ∀ i j, B i j ∈ R₀) : ∀ i j, (A * B) i j ∈ R₀ :=
@@ -146,8 +138,6 @@ private lemma matrix_mul_mem_subring_of_mem {R : Type} [CommRing R] (R₀ : Subr
     rw [Matrix.mul_apply]
     exact R₀.sum_mem fun k _ => R₀.mul_mem (hA i k) (hB k j)
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma exists_finset_integral_classes {R : Type} [CommRing R] [Algebra ℚ R]
     (R₀ : Subring R) (S : Set (Matrix ι ι R)) (hone : 1 ∈ S)
@@ -212,8 +202,6 @@ private lemma exists_finset_integral_classes {R : Type} [CommRing R] [Algebra �
       · exact R₀.zero_mem
     · rw [← Matrix.mul_assoc, Matrix.mul_adjugate, hdet t htS, one_smul, Matrix.one_mul]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma idempotent_block_mul_of_upper {A : Type*} [Ring A] (E x y : A) (hE : E * E = E)
     (hx : (1 - E) * x * E = 0) (hy : (1 - E) * y * E = 0) :
@@ -235,8 +223,6 @@ private lemma idempotent_block_mul_of_upper {A : Type*} [Ring A] (E x y : A) (hE
   rw [key, hy, hx, h2, h1, h0, h0']
   simp
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma blk_mul_of_upper {R : Type} [CommRing R] [Algebra ℚ R] (e : Matrix ι ι ℚ)
     (he : e * e = e) (x y : Matrix ι ι R)
@@ -246,23 +232,17 @@ private lemma blk_mul_of_upper {R : Type} [CommRing R] [Algebra ℚ R] (e : Matr
       _root_.GlobalTheory.ClassFin.blk e x * _root_.GlobalTheory.ClassFin.blk e y :=
   idempotent_block_mul_of_upper _ x y (by rw [← Matrix.map_mul, he]) hx hy
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma idempotent_block_one {A : Type*} [Ring A] (E : A) (hE : E * E = E) :
     E * 1 * E + (1 - E) * 1 * (1 - E) = 1 := by
   have h : E * 1 * E + (1 - E) * 1 * (1 - E) = 1 + 2 * (E * E - E) := by noncomm_ring
   rw [h, hE, sub_self, mul_zero, add_zero]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma blk_one_of_idempotent {R : Type} [CommRing R] [Algebra ℚ R] (e : Matrix ι ι ℚ)
     (he : e * e = e) : _root_.GlobalTheory.ClassFin.blk e (1 : Matrix ι ι R) = 1 :=
   idempotent_block_one _ (by rw [← Matrix.map_mul, he])
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma blk_map_algebraMap_eq_map_blk {R : Type} [CommRing R] [Algebra ℚ R] (e g : Matrix ι ι ℚ) :
     _root_.GlobalTheory.ClassFin.blk e (g.map (algebraMap ℚ R)) =
@@ -270,8 +250,6 @@ private lemma blk_map_algebraMap_eq_map_blk {R : Type} [CommRing R] [Algebra ℚ
   unfold _root_.GlobalTheory.ClassFin.blk
   simp [Matrix.map_mul, Matrix.map_add (f := _), Matrix.map_sub, Matrix.map_one]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma linExt_add {R : Type} [CommRing R] [Algebra ℚ R] (c : ι × ι → ι × ι → ℚ)
     (X Y : Matrix ι ι R) : _root_.GlobalTheory.ClassFin.linExt c (X + Y) =
@@ -280,8 +258,6 @@ private lemma linExt_add {R : Type} [CommRing R] [Algebra ℚ R] (c : ι × ι �
   simp only [_root_.GlobalTheory.ClassFin.linExt, Matrix.of_apply, Matrix.add_apply, mul_add,
     Finset.sum_add_distrib]
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma linExt_smul {R : Type} [CommRing R] [Algebra ℚ R] (c : ι × ι → ι × ι → ℚ)
     (k : R) (X : Matrix ι ι R) : _root_.GlobalTheory.ClassFin.linExt c (k • X) =
@@ -291,8 +267,6 @@ private lemma linExt_smul {R : Type} [CommRing R] [Algebra ℚ R] (c : ι × ι 
     Finset.mul_sum]
   exact Finset.sum_congr rfl fun _ _ => by ring
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 private lemma linExt_map_algebraMap {R : Type} [CommRing R] [Algebra ℚ R] (c : ι × ι → ι × ι → ℚ)
     (X : Matrix ι ι ℚ) : (_root_.GlobalTheory.ClassFin.linExt c X).map (algebraMap ℚ R) =
@@ -302,8 +276,6 @@ private lemma linExt_map_algebraMap {R : Type} [CommRing R] [Algebra ℚ R] (c :
   simp [_root_.GlobalTheory.ClassFin.linExt, map_sum, map_mul]
 
 
-open Matrix in
-open scoped Kronecker ComplexOrder TensorProduct in
 variable {ι : Type} [Fintype ι] [DecidableEq ι] in
 theorem _root_.GlobalTheory.ClassFin.cf_of_cf_blk_image : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (Γ : Set (Matrix ι ι ℂ)) (e : Matrix ι ι ℚ) (R : Type) [CommRing R] [Algebra ℚ R] (R₀ : Subring R), _root_.GlobalTheory.ClassFin.IsQGroup Γ → e * e = e → (∀ g ∈ Γ, (1 - e.map (algebraMap ℚ ℂ)) * g * e.map (algebraMap ℚ ℂ) = 0) → _root_.GlobalTheory.ClassFin.AdelicPair R R₀ → _root_.GlobalTheory.ClassFin.CF (_root_.GlobalTheory.ClassFin.blk e '' Γ) R R₀ → _root_.GlobalTheory.ClassFin.CF Γ R R₀ := by
   intro ι _ _ Γ e R _ _ R₀ hΓ he hblock hR hCF

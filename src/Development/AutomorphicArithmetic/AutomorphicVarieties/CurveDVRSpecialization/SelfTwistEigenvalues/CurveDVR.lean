@@ -68,7 +68,6 @@ private theorem curveDVR_prec_cofinal {R : Type} [CommRing R] {I J : Ideal R} (h
   have h2 := hf (m := n) (n := (e + 1) * n) (Nat.le_mul_of_pos_left n (Nat.succ_pos e))
   simpa using (I ^ n).add_mem h2 (Ideal.pow_right_mono hJI n h1)⟩
 
-open IsLocalRing in
 private theorem curveDVR_complete {R R' : Type} [CommRing R] [IsLocalRing R] [IsNoetherianRing R]
     [IsAdicComplete (maximalIdeal R) R] [CommRing R'] [Algebra R R'] [Module.Finite R R']
     [IsLocalRing R'] : IsAdicComplete (maximalIdeal R') R' := by
@@ -94,7 +93,6 @@ private theorem curveDVR_complete {R R' : Type} [CommRing R] [IsLocalRing R] [Is
     curveDVR_prec_cofinal hle he (IsPrecomplete.map_algebraMap_iff.2 (curveDVR_prec_finite _))
   exact { toIsHausdorff := inferInstance, toIsPrecomplete := hP }
 
-open IsLocalRing in
 private theorem exists_dvr_quotient_of_complete_local {A R : Type} [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
     [IsAdicComplete (maximalIdeal A) A] [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R]
     [IsAdicComplete (maximalIdeal R) R] [Finite (ResidueField R)]

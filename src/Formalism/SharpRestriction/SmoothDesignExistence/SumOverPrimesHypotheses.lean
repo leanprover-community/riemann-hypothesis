@@ -111,7 +111,6 @@ end Sz
 
 section Re
 
-open Formalism.MainNotions.G
 
 def reY {D : D7} (Y : LatInst D)
     (LC : D.what₂.Tup → ∀ u (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),

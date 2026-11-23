@@ -52,8 +52,6 @@ theorem _root_.GlobalTheory.GoodMetric.PolyRep.lie_proj_model [Fintype ι] (τ :
   rfl
 
 set_option autoImplicit false in
-open MvPolynomial in
-open scoped Matrix in
 variable {ι : Type} {m : ι → ℕ} in
 private lemma aeval_dualNumber_inl_add_inr {σ : Type} [Fintype σ] {R : Type} [CommRing R]
     (x y : σ → R) (p : MvPolynomial σ ℤ) :
@@ -77,8 +75,6 @@ private lemma aeval_dualNumber_inl_add_inr {σ : Type} [Fintype σ] {R : Type} [
 
 
 set_option autoImplicit false in
-open MvPolynomial in
-open scoped Matrix in
 variable {ι : Type} {m : ι → ℕ} in
 theorem _root_.GlobalTheory.GoodMetric.PolyRep.ev_dual_model [Fintype ι] (ρ : _root_.GlobalTheory.GoodMetric.PolyRep m) {R : Type} [CommRing R] (A : _root_.GlobalTheory.FlagBundle.Mat m R) (i j : Fin ρ.M) :
     ρ.ev (R := DualNumber R) (fun τ => Matrix.of fun a b =>

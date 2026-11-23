@@ -102,7 +102,6 @@ end GlobalTheory.TorusRM.LamAdd
 
 namespace GlobalTheory.TorusRM.LamAdd
 
-open GlobalTheory.ProdUnifSq
 
 variable {A : Over (Sp ℂ)} [GrpObj A] {g : ℕ}
 
@@ -179,7 +178,6 @@ end GlobalTheory.TorusRM.LamAdd
 
 namespace GlobalTheory.TorusRM.LamAdd
 
-open GlobalTheory.ProdUnifSq
 
 variable {A : Over (Sp ℂ)} [GrpObj A] {g : ℕ}
 

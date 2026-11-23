@@ -316,7 +316,6 @@ end GlobalTheory.UnrPer
 
 namespace GlobalTheory.UnrPer
 
-open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations GlobalTheory.Pst GlobalTheory.PMon GlobalTheory.UnramifiedCrys
 open scoped Formalism.Per
 
 theorem coe_one_apply {l : ℕ} [Fact l.Prime] {n : Type} [DecidableEq n] (i j : n) :

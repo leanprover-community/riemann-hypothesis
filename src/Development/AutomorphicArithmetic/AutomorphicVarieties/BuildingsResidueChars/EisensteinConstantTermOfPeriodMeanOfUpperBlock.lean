@@ -55,7 +55,6 @@ private noncomputable def cb_scale (F : Type) [Field F] [NumberField F] (u : (Ad
   continuous_toFun := continuous_pi fun p => continuous_const.mul (continuous_apply p)
   continuous_invFun := continuous_pi fun p => continuous_const.mul (continuous_apply p)
 
-open NumberField GlobalTheory.CuspRep in
 private theorem cb_mem (F : Type) [Field F] [NumberField F] (a : F) (x : NA F) (hx : x ∈ ratN F 2 1) :
     (fun p => algebraMap F (Ad F) a * x p) ∈ ratN F 2 1 := by
   obtain ⟨y, rfl⟩ := hx

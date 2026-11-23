@@ -125,7 +125,6 @@ noncomputable section
 
 namespace ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.Fib
 
-open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
 theorem deh_apply {ι S : Type*} [Field S] (v : ι → S) (i₀ : ι) (F : MvPolynomial ι ℤ) :
     deh v i₀ F = eval₂ (Int.castRingHom S) (fun i => v i / v i₀) F := rfl
@@ -164,7 +163,6 @@ noncomputable section
 
 namespace ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.Fib
 
-open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry
 
 theorem coneMap_eq_zero_of_mem_pts {J : Type} [Fintype J] {P : Ideal (MvPolynomial J ℤ)}
     (hP : IsHomogIdeal ℤ P) {z : J → ℂ} (hz : z ∈ pts P) {f : MvPolynomial J ℤ} (hf : f ∈ P) :

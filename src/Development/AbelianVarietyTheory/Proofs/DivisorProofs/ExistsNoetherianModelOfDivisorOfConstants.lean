@@ -159,7 +159,6 @@ end GlobalTheory.VertUnitsNoeth
 
 namespace GlobalTheory.VertUnitsNoeth
 
-open GlobalTheory.NormalApprox
 
 theorem mem_originIdeal_iff' {T : Type} [CommRing T] [IsLocalRing T] (f : Polynomial T) :
     f ∈ GlobalTheory.KeyOriginCut.originIdeal T ↔ f.coeff 0 ∈ maximalIdeal T := by

@@ -71,13 +71,11 @@ theorem _root_.GlobalTheory.CuspGL.isCharacter_of_isIrreducibleCharacter_complex
   obtain ⟨n, ρ, -, hρ⟩ := h
   exact ⟨n, ρ, hρ⟩
 
-open Polynomial in
 theorem _root_.GlobalTheory.CuspGL.generalLinearGroupCardComplex_finiteField_ne_zero (F : Type) [Field F] [Finite F] (d : ℕ) : _root_.GlobalTheory.CuspGL.glCard F d ≠ 0 := by
   unfold _root_.GlobalTheory.CuspGL.glCard
   exact_mod_cast Nat.card_pos.ne'
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.CuspGL.sum_coef_mul_eq_pair (F : Type) [Field F] [Finite F] (θ : AlgebraicClosure F →* ℂ)
     (hθ : ∀ x y : AlgebraicClosure F, x ≠ 0 → y ≠ 0 → θ x = θ y → x = y) (d : ℕ) (hd : 0 < d)
     (χ χ' : GL (Fin d) F → ℂ) (h : _root_.GlobalTheory.BI.IsChar ℂ ℂ χ) (h' : _root_.GlobalTheory.BI.IsChar ℂ ℂ χ')
@@ -147,13 +145,11 @@ theorem _root_.GlobalTheory.CuspGL.sum_coef_mul_eq_pair (F : Type) [Field F] [Fi
   rw [hre] at hmain
   linear_combination -hmain
 
-open Polynomial in
 private theorem charpoly_toLin'' {F : Type} [Field F] {d : ℕ} (M : Matrix (Fin d) (Fin d) F) :
     (Matrix.toLin' M).charpoly = M.charpoly := by
   rw [← LinearMap.charpoly_toMatrix (Matrix.toLin' M) (Pi.basisFun F (Fin d)),
     LinearMap.toMatrix_eq_toMatrix', LinearMap.toMatrix'_toLin']
 
-open Polynomial in
 private theorem sum_range_apply_mul_mod_eq_of_coprime {m u : ℕ} (hu : Nat.Coprime u m) (c : ℕ → ℂ) :
     ∑ k ∈ Finset.range m, c (k * u % m) = ∑ k ∈ Finset.range m, c k := by
   rcases Nat.eq_zero_or_pos m with rfl | hm
@@ -171,7 +167,6 @@ private theorem sum_range_apply_mul_mod_eq_of_coprime {m u : ℕ} (hu : Nat.Copr
     (fun a b ha hb hab => hinj a ha b hb hab) le_rfl b hb
   exact ⟨a, ha, rfl⟩
 
-open Polynomial in
 private theorem character_elliptic_eq_coeff_sum_lemma (F : Type) [Field F] [Finite F] (θ : AlgebraicClosure F →* ℂ)
     (hθ : ∀ x y : AlgebraicClosure F, x ≠ 0 → y ≠ 0 → θ x = θ y → x = y) (d : ℕ) (hd : 0 < d)
     (χ : GL (Fin d) F → ℂ) (hχ : _root_.GlobalTheory.BI.IsChar ℂ ℂ χ)
@@ -257,7 +252,6 @@ private theorem character_elliptic_eq_coeff_sum_lemma (F : Type) [Field F] [Fini
   linear_combination hexp
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.CuspGL.eq_of_isPrimitive_of_eq_on_elliptic (F : Type) [Field F] [Finite F] (d : ℕ) (χ χ' : GL (Fin d) F → ℂ)
     (hd : 0 < d) (hi : _root_.GlobalTheory.BI.IsIrrChar ℂ ℂ χ) (hi' : _root_.GlobalTheory.BI.IsIrrChar ℂ ℂ χ') (hp : _root_.GlobalTheory.CuspGL.IsPrimitive (_root_.GlobalTheory.CuspGL.extZero χ))
     (hp' : _root_.GlobalTheory.CuspGL.IsPrimitive (_root_.GlobalTheory.CuspGL.extZero χ'))

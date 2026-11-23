@@ -228,7 +228,6 @@ end GlobalTheory.Mem.Col2.ColIn
 
 namespace GlobalTheory.Mem.Col2.TC
 
-open GlobalTheory.Mem.ColAd GlobalTheory.Mem.Chr
 open GlobalTheory.Mem.Col2.ColIn (zero_succ_ne)
 
 attribute [local instance] starE

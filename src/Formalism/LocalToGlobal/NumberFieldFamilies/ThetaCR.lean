@@ -47,11 +47,9 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.MainNotions.DIV.Inh
 
-section Cover
 
 variable (p q : ℕ)
 
-end Cover
 
 
 variable {D : D7}
@@ -164,11 +162,9 @@ theorem embU (D : D7) : EmbU D := by
 
 end Emb
 
-section Rows
 
 variable (X : ThetaX D)
 
-end Rows
 
 end Formalism.L2.Fam.ThC
 

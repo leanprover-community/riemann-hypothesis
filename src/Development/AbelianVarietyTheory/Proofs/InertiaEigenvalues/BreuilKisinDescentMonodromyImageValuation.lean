@@ -110,7 +110,6 @@ end GlobalTheory.LcImage
 
 namespace GlobalTheory.LcImage
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ImagePolynomialAction
 
 section Lin
 
@@ -153,7 +152,6 @@ end GlobalTheory.LcImage
 
 namespace GlobalTheory.LcImage
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ImagePolynomialAction
 
 theorem eval_zero_polyR_ne_zero {l e : ℕ} (hl : l ≠ 0) (he : e ≠ 0) (U : Finset ℤ) (η : ℕ) :
     (polyR l e U η).eval 0 ≠ 0 := by

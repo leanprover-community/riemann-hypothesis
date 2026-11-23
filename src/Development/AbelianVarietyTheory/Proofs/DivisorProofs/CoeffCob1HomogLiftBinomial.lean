@@ -214,7 +214,6 @@ end GlobalTheory.CobHom
 
 namespace GlobalTheory.CobHom
 
-open GlobalTheory.HomogCob
 
 variable {R : Type} [CommRing R]
 

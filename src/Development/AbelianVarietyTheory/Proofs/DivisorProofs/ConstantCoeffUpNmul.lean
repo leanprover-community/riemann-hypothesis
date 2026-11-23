@@ -53,7 +53,6 @@ private lemma nmul_zero (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S) :
     _root_.GlobalTheory.QLog.nmul μ 0 = fun _ => 0 := rfl
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma nmul_succ_eq_op_X (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S) (k : ℕ) :
@@ -62,7 +61,6 @@ private lemma nmul_succ_eq_op_X (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) 
   rw [_root_.GlobalTheory.QLog.nmul, _root_.GlobalTheory.QLog.nmul, Function.iterate_succ_apply']
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma hasSubst_sumElim_of_constantCoeff_eq_zero {τ : Type} {v w : Fin d → MvPowerSeries τ S}
@@ -71,7 +69,6 @@ private lemma hasSubst_sumElim_of_constantCoeff_eq_zero {τ : Type} {v w : Fin d
   hasSubst_of_constantCoeff_zero fun s => by cases s <;> simp [hv, hw]
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma constantCoeff_katz_op_eq_zero {τ : Type} (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S)
@@ -82,7 +79,6 @@ private lemma constantCoeff_katz_op_eq_zero {τ : Type} (μ : Fin d → MvPowerS
     (fun s => by cases s <;> simp [hv, hw]) (hμ i)
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma constantCoeff_nmul_eq_zero' (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S)
@@ -95,7 +91,6 @@ private lemma constantCoeff_nmul_eq_zero' (μ : Fin d → MvPowerSeries (Fin d �
     exact constantCoeff_katz_op_eq_zero μ hμ ih (fun j => constantCoeff_X j) i
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma mvPowerSeries_map_injective {σ A B : Type} [CommRing A] [CommRing B] {h : A →+* B}
@@ -105,7 +100,6 @@ private lemma mvPowerSeries_map_injective {σ A B : Type} [CommRing A] [CommRing
   simpa using congrArg (coeff n) hpq
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma subst_zero_divisor {σ τ : Type} {c : σ → MvPowerSeries τ S} (hc : HasSubst c) :
@@ -113,7 +107,6 @@ private lemma subst_zero_divisor {σ τ : Type} {c : σ → MvPowerSeries τ S} 
   rw [← coe_substAlgHom hc, map_zero]
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma subst_subst_sumElim_eq_subst_sumElim_subst {τ υ : Type} {v w : Fin d → MvPowerSeries τ S}
@@ -127,7 +120,6 @@ private lemma subst_subst_sumElim_eq_subst_sumElim_subst {τ υ : Type} {v w : F
   cases s <;> rfl
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma subst_katz_op_eq_op_subst {τ υ : Type} (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S)
@@ -139,7 +131,6 @@ private lemma subst_katz_op_eq_op_subst {τ υ : Type} (μ : Fin d → MvPowerSe
   subst_subst_sumElim_eq_subst_sumElim_subst hv hw hc (μ i)
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma nmul_add_eq_op {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S}
@@ -181,7 +172,6 @@ private lemma nmul_add_eq_op {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S}
     exact h
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma subst_nmul_nmul_eq_nmul_mul {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S}
@@ -202,7 +192,6 @@ private lemma subst_nmul_nmul_eq_nmul_mul {μ : Fin d → MvPowerSeries (Fin d �
 
 
 set_option autoImplicit false in
-open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 theorem _root_.GlobalTheory.DefectComp.main : ∀ (R Q : Type) [CommRing R] [CommRing Q] [Algebra R Q] (d : ℕ) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R), _root_.GlobalTheory.Katz.IsLaw μ → Function.Injective (algebraMap R Q) → ∀ (f : MvPowerSeries (Fin d) Q), constantCoeff f = 0 → ∀ (k m : ℕ) (s t u : MvPowerSeries (Fin d) R), map (algebraMap R Q) s = _root_.GlobalTheory.QLog.defect μ k f → map (algebraMap R Q) t = _root_.GlobalTheory.QLog.defect μ m f → map (algebraMap R Q) u = _root_.GlobalTheory.QLog.defect μ (k * m) f → u = subst (_root_.GlobalTheory.QLog.nmul μ m) s + (k : R) • t := by

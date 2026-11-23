@@ -57,7 +57,6 @@ private theorem prod_pow_sub_pow_pos (q n : ℕ) (hq : 2 ≤ q) :
   have := Nat.pow_lt_pow_right hq i.isLt
   omega
 
-open Matrix in
 private theorem prod_pow_sub_pow_succ (q n : ℕ) :
     ∏ i : Fin (n + 1), (q ^ (n + 1) - q ^ (i : ℕ)) =
       (q ^ (n + 1) - 1) * (q ^ n * ∏ i : Fin n, (q ^ n - q ^ (i : ℕ))) := by
@@ -70,12 +69,10 @@ private theorem prod_pow_sub_pow_succ (q n : ℕ) :
   rw [Finset.prod_congr rfl (fun i _ => h i), Finset.prod_mul_distrib, Finset.prod_const,
     Finset.card_univ, Fintype.card_fin]
 
-open Matrix in
 private theorem padicValNat_le_padicValNat_of_dvd {p a b : ℕ} [Fact p.Prime] (hb : b ≠ 0) (h : a ∣ b) :
     padicValNat p a ≤ padicValNat p b :=
   ((by simpa only [_root_.Nat.padicValNat_def] using @_root_.multiplicity_dvd_iff_le : ∀ {p : _root_.Nat} [hp : _root_.Fact (_root_.Nat.Prime p)] {a n : _root_.Nat} (ha : a ≠ 0), p ^ n ∣ a ↔ n ≤ _root_.padicValNat p a) hb).mp ((_root_.Dvd.intro_left _ (_root_.Nat.divMaxPow_mul_pow_padicValNat _ _)).trans h)
 
-open Matrix in
 private theorem padicValNat_two_three_pow_sub_one_le (k : ℕ) (hk : 0 < k) :
     padicValNat 2 (3 ^ k - 1) ≤ 3 + padicValNat 2 k := by
   have hlte := padicValNat.pow_two_sub_pow (x := 3) (y := 1) (by norm_num) (by norm_num)
@@ -97,7 +94,6 @@ private theorem padicValNat_two_three_pow_sub_one_le (k : ℕ) (hk : 0 < k) :
   have := padicValNat_le_padicValNat_of_dvd (p := 2) hne hdvd
   omega
 
-open Matrix in
 private theorem padicValNat_two_prod_three_pow_sub_le (n : ℕ) :
     padicValNat 2 (∏ i : Fin n, (3 ^ n - 3 ^ (i : ℕ))) ≤ 3 * n + padicValNat 2 n.factorial := by
   induction n with
@@ -120,7 +116,6 @@ private theorem padicValNat_two_prod_three_pow_sub_le (n : ℕ) :
     have := padicValNat_two_three_pow_sub_one_le (n + 1) (by omega)
     omega
 
-open Matrix in
 private theorem padicValNat_two_prod_three_pow_sub_le_eight_pow_factorial (n : ℕ) :
     padicValNat 2 (∏ i : Fin n, (3 ^ n - 3 ^ (i : ℕ))) ≤
       padicValNat 2 (8 ^ n * (2 * n).factorial) := by
@@ -132,7 +127,6 @@ private theorem padicValNat_two_prod_three_pow_sub_le_eight_pow_factorial (n : �
     (Nat.factorial_dvd_factorial (by omega : n ≤ 2 * n))
   omega
 
-open Matrix in
 private theorem exists_prime_gt_order_padicValNat_pow_sub_one (p : ℕ) [hp : Fact p.Prime] (hp2 : p ≠ 2) :
     ∃ q, q.Prime ∧ p < q ∧ (∀ k, 0 < k → p ∣ q ^ k - 1 → (p - 1) ∣ k) ∧
       (∀ j, 0 < j → padicValNat p (q ^ ((p - 1) * j) - 1) = 1 + padicValNat p j) := by
@@ -195,7 +189,6 @@ private theorem exists_prime_gt_order_padicValNat_pow_sub_one (p : ℕ) [hp : Fa
     rw [one_pow, ← pow_mul, hv1] at hlte
     exact hlte
 
-open Matrix in
 private theorem padicValNat_prod_pow_sub_pow_eq_padicValNat_factorial (p q : ℕ) [hp : Fact p.Prime] (hq : 2 ≤ q)
     (hqp : ¬ p ∣ q) (hdiv : ∀ k, 0 < k → p ∣ q ^ k - 1 → (p - 1) ∣ k)
     (hval : ∀ j, 0 < j → padicValNat p (q ^ ((p - 1) * j) - 1) = 1 + padicValNat p j) (n : ℕ) :
@@ -235,7 +228,6 @@ private theorem padicValNat_prod_pow_sub_pow_eq_padicValNat_factorial (p q : ℕ
     · rw [if_neg hd, add_zero, Nat.padicValNat_def,
         padicValNat.eq_zero_of_not_dvd (fun h => hd (hdiv _ (by omega) h)), zero_add]
 
-open Matrix in
 private theorem padicValNat_factorial_le_padicValNat_eight_pow_mul_factorial (p n : ℕ) [hp : Fact p.Prime] :
     padicValNat p (p * (n / (p - 1))).factorial ≤ padicValNat p (8 ^ n * (2 * n).factorial) := by
   have h2 := hp.out.two_le
@@ -248,7 +240,6 @@ private theorem padicValNat_factorial_le_padicValNat_eight_pow_mul_factorial (p 
   exact padicValNat_le_padicValNat_of_dvd (by positivity)
     ((Nat.factorial_dvd_factorial hle).trans (Dvd.intro_left _ rfl))
 
-open Matrix in
 private theorem eq_one_of_pow_eq_one_of_congr_one_mod {n : ℕ} (g : GL (Fin n) ℤ) (k : ℕ) (hk : 0 < k)
     (hgk : g ^ k = 1) (q : ℕ) (hq : 3 ≤ q)
     (hcong : ∀ i j, (q : ℤ) ∣ (g : Matrix (Fin n) (Fin n) ℤ) i j - (1 : Matrix (Fin n) (Fin n) ℤ) i j) :
@@ -271,7 +262,6 @@ private theorem eq_one_of_pow_eq_one_of_congr_one_mod {n : ℕ} (g : GL (Fin n) 
     rw [Matrix.toLinAlgEquiv'_apply, hg, Matrix.add_mulVec, Matrix.one_mulVec,
       Matrix.smul_mulVec, ← Nat.cast_smul_eq_nsmul ℤ]
 
-open Matrix in
 private theorem card_finite_subgroup_dvd_prod_pow_sub_pow {n : ℕ} (G : Subgroup (GL (Fin n) ℤ)) [Finite G]
     (q : ℕ) [Fact q.Prime] (hq : 3 ≤ q) :
     Nat.card G ∣ ∏ i : Fin n, (q ^ n - q ^ (i : ℕ)) := by
@@ -296,7 +286,6 @@ private theorem card_finite_subgroup_dvd_prod_pow_sub_pow {n : ℕ} (G : Subgrou
     · simpa [sub_eq_zero, Matrix.one_apply, hij, Matrix.GeneralLinearGroup.map] using this
 
 
-open Matrix in
 theorem _root_.GlobalTheory.card_finite_subgroup_GL_int_dvd :
     ∀ (n : ℕ) (G : Subgroup (GL (Fin n) ℤ)), Finite G → Nat.card G ∣ 8 ^ n * (2 * n).factorial := by
   intro n G hG

@@ -115,7 +115,6 @@ private theorem actL_mul' (a b : Gp L N) (x : HS L N) : actL (a * b) x = actL a 
     Matrix.conjTranspose_mul]
   simp only [Matrix.mul_assoc]
 
-open ComplexOrder in
 private theorem actL_mem_Pos (g : Gp L N) {h : HS L N} (hh : h ∈ Pos L N) : actL g h ∈ Pos L N := by
   simp only [Pos, Set.mem_setOf_eq] at hh ⊢
   intro w
@@ -185,7 +184,6 @@ theorem ext_zero {q : ℕ} (h : HS L N) : ext (0 : HS L N [⋀^Fin q]→L[ℝ] �
   ext v
   simp [ext]
 
-open ComplexOrder in
 theorem convex_pos : Convex ℝ (Pos L N) := by
   intro x hx y hy a b ha hb hab
   simp only [Pos, Set.mem_setOf_eq] at *

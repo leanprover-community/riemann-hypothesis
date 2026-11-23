@@ -80,7 +80,6 @@ private theorem nonempty_iso_shortComplex_map_of_squares {A B : Type*} [Category
   exact ⟨ShortComplex.isoMk iW (T.mapBiprod X Y ≪≫ biprod.mapIso iX iY) iZ h₁ h₂⟩
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 universe u in
 theorem _root_.GlobalTheory.EtC.mv_map_shortExact {A B : Type*} [Category A] [Category B] [Abelian A] [Abelian B] (T : A ⥤ B) [T.Additive]
     {W X Y Z : A} {a : W ⟶ X} {b : W ⟶ Y} {f : X ⟶ Z} {g : Y ⟶ Z}
@@ -94,7 +93,6 @@ theorem _root_.GlobalTheory.EtC.mv_map_shortExact {A B : Type*} [Category A] [Ca
     (Classical.choice (nonempty_iso_shortComplex_map_of_squares T iW iX iY iZ ha hb hf hg w w')).symm h
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 universe u in
 theorem _root_.GlobalTheory.EtC.chainsXIso_naturality (R : Type) [CommRing R] {E E' : _root_.GlobalTheory.EtC.Spc} (f : E ⟶ E') (p : ℕ) :
     ((_root_.GlobalTheory.EtC.chains R).map f).f (-(p : ℤ)) ≫ (_root_.GlobalTheory.EtC.chainsXIso R E' p).hom =
@@ -105,7 +103,6 @@ theorem _root_.GlobalTheory.EtC.chainsXIso_naturality (R : Type) [CommRing R] {E
   simp [_root_.GlobalTheory.EtC.chainsN]
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 universe u in
 theorem _root_.GlobalTheory.EtC.chains_isZero_pos (R : Type) [CommRing R] (E : _root_.GlobalTheory.EtC.Spc) (i : ℤ) (hi : 0 < i) : IsZero (((_root_.GlobalTheory.EtC.chains R).obj E).X i) := by
   apply HomologicalComplex.isZero_extend_X
@@ -113,7 +110,6 @@ theorem _root_.GlobalTheory.EtC.chains_isZero_pos (R : Type) [CommRing R] (E : _
   simp at hn
   omega
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 universe u in
 private theorem exists_mapDomain_eq_of_pullback_square {S : Type*} [Ring S] {W A B C : Type*} (t : W → A) (l : W → B)
     (r : A → C) (b : B → C) (hr : Function.Injective r) (hb : Function.Injective b)
@@ -143,7 +139,6 @@ private theorem exists_mapDomain_eq_of_pullback_square {S : Type*} [Ring S] {W A
     Finsupp.mapDomain_comp, Finsupp.mapDomain_comapDomain t ht m hsupp, hneg]
   exact eq_neg_of_add_eq_zero_left h
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 universe u in
 private theorem moduleCat_free_pullback_exact {S : Type u} [Ring S] {W A B C : Type u} (t : W ⟶ A) (l : W ⟶ B)
     (r : A ⟶ C) (b : B ⟶ C) (hsq : IsPullback t l r b) [Mono r] [Mono b]
@@ -199,7 +194,6 @@ private theorem moduleCat_free_pullback_exact {S : Type u} [Ring S] {W A B C : T
     rw [hz2]
     exact neg_neg _
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 universe u in
 private theorem freePresheaf_pullback_exact (R : Type) [CommRing R]
     {P A B C : _root_.GlobalTheory.EtC.PSh} (t : P ⟶ A) (l : P ⟶ B) (r : A ⟶ C) (b : B ⟶ C)
@@ -243,7 +237,6 @@ private theorem freePresheaf_pullback_exact (R : Type) [CommRing R]
   exact ((ShortComplex.exact_iff_isZero_homology _).1 (hU U).2).of_iso
     ((ShortComplex.mk _ _ w).mapHomologyIso ((evaluation _ _).obj U)).symm
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 universe u in
 private theorem freeSheaf_pullback_shortExact (R : Type) [CommRing R]
     {P A B C : _root_.GlobalTheory.EtC.PSh} (t : P ⟶ A) (l : P ⟶ B) (r : A ⟶ C) (b : B ⟶ C)
@@ -275,7 +268,6 @@ private theorem freeSheaf_pullback_shortExact (R : Type) [CommRing R]
   exact mono_of_mono _ e.inv.τ₂
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 universe u in
 theorem _root_.GlobalTheory.EtC.mv_shortExact : ∀ (R : Type) [CommRing R] {U V E : _root_.GlobalTheory.EtC.Spc} (f : U ⟶ E) (g : V ⟶ E), _root_.GlobalTheory.EtC.Cover2 R f g → ∃ w, (ShortComplex.mk (biprod.lift ((_root_.GlobalTheory.EtC.chains R).map (pullback.fst f g)) (-(_root_.GlobalTheory.EtC.chains R).map (pullback.snd f g))) (biprod.desc ((_root_.GlobalTheory.EtC.chains R).map f) ((_root_.GlobalTheory.EtC.chains R).map g)) w).ShortExact := by
   intro R _ U V E f g hcov

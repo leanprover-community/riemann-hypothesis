@@ -198,7 +198,6 @@ end GlobalTheory.EtC.PrCx
 
 namespace GlobalTheory.EtC.PrCx
 
-open SimplexCategory Finsupp
 
 theorem push_single {N M : ℕ} (θ : SimplexCategory.mk N ⟶ SimplexCategory.mk M) (z : Pr N) (c : ℤ) :
     Pr.push θ (single z c) = single (⟨z.1, z.2.1, z.2.2.1 ≫ θ, z.2.2.2 ≫ θ⟩ : Pr M) c := by

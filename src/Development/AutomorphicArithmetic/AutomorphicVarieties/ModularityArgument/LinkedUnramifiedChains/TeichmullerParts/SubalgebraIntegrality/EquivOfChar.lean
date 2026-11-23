@@ -147,7 +147,6 @@ private theorem dg_mem_Uo (p : parab k (points (Fin n))) (hp : (p : GL (Fin n) k
   have hne : valuation k ((dg p i : kˣ) : k) ≠ 0 := by simp
   exact le_antisymm a1 ((inv_le_one₀ (zero_lt_iff.2 hne)).1 a2)
 
-open GlobalTheory.SmGL.PrinProd in
 private theorem sB_apply (χ : Fin n → kˣ →* ℂˣ) (p : parab k (points (Fin n))) (v : ℂ) :
     sB χ p v = ((deltaHalf k (fun _ : Fin n => Unit) (leviProj k (points (Fin n)) p) : ℂˣ) : ℂ) *
       (((torusChar χ (dg p) : ℂˣ) : ℂ) * v) := rfl
@@ -155,7 +154,6 @@ private theorem sB_apply (χ : Fin n → kˣ →* ℂˣ) (p : parab k (points (F
 end Loc
 
 
-open GlobalTheory.SmGL.PrinProd in
 theorem psRes : PsRes := by
   intro k _ _ _ _ n ω ω' _ _ h
   let χ : Fin n → kˣ →* ℂˣ := fun i => ω i * absPow k ((↑n - 1) / 2)

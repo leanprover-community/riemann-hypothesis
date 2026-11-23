@@ -95,8 +95,6 @@ section
 
 noncomputable section
 
-open NumberField NumberField.InfinitePlace IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.LDataCardLeFinrank UpperTheory.V.Base
-open UpperTheory.V.ZK
 
 namespace PositivityTheory.QuaternionShaBounds.CyclotomicLayerExistence
 
@@ -229,8 +227,6 @@ section
 
 noncomputable section
 
-open NumberField NumberField.InfinitePlace IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.LDataCardLeFinrank UpperTheory.V.Base
-open UpperTheory.V.ZK
 
 namespace PositivityTheory.QuaternionShaBounds.ClassGroupInjection
 
@@ -366,7 +362,6 @@ noncomputable section
 
 open NumberField NumberField.InfinitePlace IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.LDataCardLeFinrank
   UpperTheory.V.Base
-open UpperTheory.V.ZK
 
 namespace PositivityTheory.QuaternionShaBounds.ShaAssumptions
 

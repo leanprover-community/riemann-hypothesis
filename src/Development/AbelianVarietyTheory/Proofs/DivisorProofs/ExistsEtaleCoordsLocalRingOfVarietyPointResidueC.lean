@@ -133,7 +133,6 @@ end GlobalTheory.EtaleCoordLocal
 
 namespace GlobalTheory.EtaleCoordLocal
 
-open IsLocalRing KaehlerDifferential
 
 theorem exists_coords (k A : Type) [Field k] [CommRing A] [IsLocalRing A] [IsNoetherianRing A]
     [Algebra k A] [Algebra.EssFiniteType k A] [Algebra.FormallySmooth k A]

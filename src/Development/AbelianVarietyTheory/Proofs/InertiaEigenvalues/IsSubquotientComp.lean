@@ -89,7 +89,6 @@ end GlobalTheory.SuppIne
 
 namespace GlobalTheory.SuppIne
 
-open GlobalTheory.LocGL GlobalTheory.SmGL
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 

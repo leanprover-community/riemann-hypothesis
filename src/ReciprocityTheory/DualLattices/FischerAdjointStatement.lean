@@ -62,11 +62,9 @@ def CayleyStatement : Prop :=
 
 end Cayley
 
-section Tests
 
 variable (R : Type*) [CommRing R]
 
-end Tests
 
 section HW
 

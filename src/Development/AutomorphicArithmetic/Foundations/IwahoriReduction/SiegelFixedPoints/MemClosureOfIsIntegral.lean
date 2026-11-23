@@ -202,7 +202,6 @@ end UpperTheory.Kd.L.InertiaZetaPowers
 
 namespace UpperTheory.Kd.L.InertiaZetaPowers
 
-open Finset
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] [CharZero Ω]
 

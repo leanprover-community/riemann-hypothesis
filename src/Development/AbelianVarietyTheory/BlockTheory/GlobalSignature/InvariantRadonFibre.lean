@@ -95,8 +95,6 @@ noncomputable def rightMeasure [MeasurableSpace (G ⧸ H)] [MeasurableSpace (Rig
   μ.map (invCoset H)
 
 
-open MeasureTheory MeasureTheory.Measure Topology in
-open scoped ENNReal NNReal in
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [MeasurableSpace G] [BorelSpace G] (H : Subgroup G) in
 omit [MeasurableSpace G] [BorelSpace G] in

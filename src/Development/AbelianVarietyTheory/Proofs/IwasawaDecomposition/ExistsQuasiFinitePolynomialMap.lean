@@ -280,7 +280,6 @@ end GlobalTheory.NoetherInt
 
 namespace GlobalTheory.NoetherInt
 
-open MvPolynomial
 
 theorem exists_coeff_map_eq_C {K : Type*} [Field K] {n : ℕ} (φ : ℤ →+* K)
     (g : MvPolynomial (Fin (n + 1)) ℤ) (hg : MvPolynomial.map φ g ≠ 0) :
@@ -348,7 +347,6 @@ end GlobalTheory.NoetherInt
 
 namespace GlobalTheory.NoetherInt
 
-open MvPolynomial
 
 theorem exists_quasiFiniteAt_of_not_injective {S : Type*} [CommRing S] [IsDomain S] [CharZero S]
     (q : Ideal S) [q.IsPrime] {n : ℕ} (y : Fin (n + 1) → S)

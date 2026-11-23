@@ -62,8 +62,6 @@ theorem _root_.GlobalTheory.JacobiDeriv.jacobiTheta₂_half_period (τ : ℂ) : 
   rw [e1, h1, e2, exp_pi_mul_I] at h2
   linear_combination h2 / 2
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 theorem _root_.GlobalTheory.JacobiDeriv.thetaChar_half_half (τ z : ℂ) :
     _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.thetaChar (g := 1) !![τ] ![1 / 2] ![1 / 2] ![z] =
       cexp (π * I * (τ / 4 + z + 1 / 2)) * jacobiTheta₂ (z + (τ + 1) / 2) τ := by
@@ -76,8 +74,6 @@ theorem _root_.GlobalTheory.JacobiDeriv.thetaChar_half_half (τ z : ℂ) :
   congr 1
   ring
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 lemma _root_.GlobalTheory.JacobiDeriv.derivAtZero_add_one (τ : ℂ) :
     _root_.GlobalTheory.JacobiDeriv.derivAtZero (τ + 1) = _root_.GlobalTheory.JacobiDeriv.derivAtZero τ := by
   unfold _root_.GlobalTheory.JacobiDeriv.derivAtZero jacobiTheta₂'
@@ -91,8 +87,6 @@ lemma _root_.GlobalTheory.JacobiDeriv.derivAtZero_add_one (τ : ℂ) :
   have hm' : ((n : ℂ) * (n + 1)) = (m : ℂ) + m := by exact_mod_cast hm
   linear_combination (π * I) * hm'
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 private lemma norm_jacobiTheta₂'_term_half_period_le {y : ℝ} (n : ℤ) {w : ℂ} (hy : 0 ≤ y)
     (hw : y ≤ w.im) :
     ‖jacobiTheta₂'_term n ((w + 1) / 2) w‖ ≤
@@ -115,14 +109,10 @@ private lemma norm_jacobiTheta₂'_term_half_period_le {y : ℝ} (n : ℤ) {w : 
   nlinarith [mul_nonneg hwy (by nlinarith : (0 : ℝ) ≤ (n : ℝ) ^ 2 + n), mul_nonneg hy hn,
     Real.pi_pos]
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 private lemma derivAtZero_eq_tsum_jacobiTheta₂'_term {w : ℂ} (hw : 0 < w.im) :
     _root_.GlobalTheory.JacobiDeriv.derivAtZero w = ∑' n : ℤ, jacobiTheta₂'_term n ((w + 1) / 2) w :=
   (hasSum_jacobiTheta₂'_term _ hw).tsum_eq.symm
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 theorem _root_.GlobalTheory.JacobiDeriv.differentiableAt_derivAtZero {τ : ℂ} (hτ : 0 < τ.im) :
     DifferentiableAt ℂ _root_.GlobalTheory.JacobiDeriv.derivAtZero τ := by
   have hy : 0 < τ.im / 2 := by linarith
@@ -142,8 +132,6 @@ theorem _root_.GlobalTheory.JacobiDeriv.differentiableAt_derivAtZero {τ : ℂ} 
     with w hw
   exact derivAtZero_eq_tsum_jacobiTheta₂'_term hw
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 theorem _root_.GlobalTheory.JacobiDeriv.tendsto_derivAtZero :
     Tendsto (fun τ : ℍ => _root_.GlobalTheory.JacobiDeriv.derivAtZero τ) UpperHalfPlane.atImInfty
       (𝓝 (2 * π * I)) := by
@@ -196,8 +184,6 @@ theorem _root_.GlobalTheory.JacobiDeriv.tendsto_derivAtZero :
 
 def eighthPower (τ : ℍ) : ℂ := cexp (2 * π * I * τ) * derivAtZero τ ^ 8
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 private lemma derivAtZero_neg_inv (τ : ℂ) (hτ : τ ≠ 0) :
     _root_.GlobalTheory.JacobiDeriv.derivAtZero (-τ)⁻¹ =
       -(1 / (-I * (-τ)⁻¹) ^ (1 / 2 : ℂ) * cexp (-π * I * (((-τ)⁻¹ + 1) / 2) ^ 2 / (-τ)⁻¹) /
@@ -210,8 +196,6 @@ private lemma derivAtZero_neg_inv (τ : ℂ) (hτ : τ ≠ 0) :
     jacobiTheta₂_neg_left, _root_.GlobalTheory.JacobiDeriv.jacobiTheta₂_half_period]
   ring
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 private lemma eighthPower_slash_S :
     _root_.GlobalTheory.JacobiDeriv.eighthPower ∣[(12 : ℤ)] ModularGroup.S =
       _root_.GlobalTheory.JacobiDeriv.eighthPower := by
@@ -250,8 +234,6 @@ private lemma eighthPower_slash_S :
     _ = cexp (2 * π * I * t) * _root_.GlobalTheory.JacobiDeriv.derivAtZero t ^ 8 := by
         rw [hE, hsum, hc, ← pow_add, hpow, inv_one, mul_one]
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 private lemma eighthPower_slash_T :
     _root_.GlobalTheory.JacobiDeriv.eighthPower ∣[(12 : ℤ)] ModularGroup.T =
       _root_.GlobalTheory.JacobiDeriv.eighthPower := by
@@ -266,8 +248,6 @@ private lemma eighthPower_slash_T :
   have : cexp (2 * π * I) = 1 := Complex.exp_two_pi_mul_I
   rw [this, mul_one]
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 theorem _root_.GlobalTheory.JacobiDeriv.eighthPower_slash (γ : SL(2, ℤ)) :
     _root_.GlobalTheory.JacobiDeriv.eighthPower ∣[(12 : ℤ)] γ = _root_.GlobalTheory.JacobiDeriv.eighthPower := by
   have hγ : γ ∈ Subgroup.closure {ModularGroup.S, ModularGroup.T} := by
@@ -283,8 +263,6 @@ theorem _root_.GlobalTheory.JacobiDeriv.eighthPower_slash (γ : SL(2, ℤ)) :
     conv_lhs => rw [← hx]
     rw [← SlashAction.slash_mul, mul_inv_cancel, SlashAction.slash_one]
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 theorem _root_.GlobalTheory.JacobiDeriv.qParam_one (τ : ℂ) : Function.Periodic.qParam 1 τ = cexp (2 * π * I * τ) := by
   simp [Function.Periodic.qParam]
 
@@ -309,8 +287,6 @@ def eighthPowerForm : CuspForm 𝒮ℒ 12 where
     rw [zero_mul] at h
     exact h.congr fun τ => by rw [qParam_one, eighthPower]
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 private lemma deriv_thetaChar_half_half' (τ : ℍ) :
     deriv (fun z : ℂ => _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.thetaChar (g := 1) !![(τ : ℂ)] ![1 / 2] ![1 / 2] ![z]) 0 =
       cexp (π * I * ((τ : ℂ) / 4 + 1 / 2)) * _root_.GlobalTheory.JacobiDeriv.derivAtZero τ := by
@@ -328,8 +304,6 @@ private lemma deriv_thetaChar_half_half' (τ : ℍ) :
   unfold _root_.GlobalTheory.JacobiDeriv.derivAtZero
   ring
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 private lemma deriv_thetaChar_pow_eight_eq (τ : ℍ) :
     (deriv (fun z : ℂ => _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.thetaChar (g := 1) !![(τ : ℂ)] ![1 / 2] ![1 / 2] ![z]) 0) ^ 8 =
       _root_.GlobalTheory.JacobiDeriv.eighthPower τ := by
@@ -341,8 +315,6 @@ private lemma deriv_thetaChar_pow_eight_eq (τ : ℍ) :
   ring
 
 
-open Complex Filter in
-open scoped UpperHalfPlane MatrixGroups ModularForm Manifold Topology Real in
 theorem _root_.GlobalTheory.JacobiDeriv.deriv_thetaChar_pow_eight : ∀ τ : UpperHalfPlane,
     (deriv (fun z : ℂ => _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.thetaChar (g := 1) !![(τ : ℂ)] ![1 / 2] ![1 / 2] ![z]) 0) ^ 8 =
       (2 * Real.pi : ℂ) ^ 8 * ModularForm.discriminant τ := by

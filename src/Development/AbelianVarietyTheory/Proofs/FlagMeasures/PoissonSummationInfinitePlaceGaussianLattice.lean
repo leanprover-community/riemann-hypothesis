@@ -77,13 +77,11 @@ def coords : EuclideanSpace ℂ (ι × κ) ≃L[ℝ] (ι → κ → ℂ) :=
       left_inv := fun _ => rfl
       right_inv := fun _ => rfl }
 
-open MeasureTheory NumberField Matrix Finset in
 variable (ι κ : Type) [Fintype ι] [Fintype κ] in
 theorem _root_.GlobalTheory.FlagBase.PoissonV.measurePreserving_coords :
     MeasurePreserving (_root_.GlobalTheory.FlagBase.PoissonV.coords ι κ) volume volume :=
   (_root_.GlobalTheory.FlagBase.PoissonV.measurePreserving_curry ι κ).comp (_root_.GlobalTheory.volume_preserving_ofLp_complex _)
 
-open MeasureTheory NumberField Matrix Finset in
 variable (ι κ : Type) [Fintype ι] [Fintype κ] in
 theorem _root_.GlobalTheory.FlagBase.PoissonV.norm_sq_coords (x : EuclideanSpace ℂ (ι × κ)) :
     ∑ w, ∑ a, ‖_root_.GlobalTheory.FlagBase.PoissonV.coords ι κ x w a‖ ^ 2 = ‖x‖ ^ 2 := by
@@ -96,7 +94,6 @@ namespace GlobalTheory.FlagBase
 
 open PoissonV
 
-open MeasureTheory NumberField Matrix Finset in
 variable (ι κ : Type) [Fintype ι] [Fintype κ] in
 private theorem inner_toLp_conj_eq_sum_re_dotProduct (u : EuclideanSpace ℂ (ι × κ))
     (y : ι → κ → ℂ) :
@@ -107,7 +104,6 @@ private theorem inner_toLp_conj_eq_sum_re_dotProduct (u : EuclideanSpace ℂ (ι
   congr 1 <;> exact Finset.sum_congr rfl fun w _ => Finset.sum_congr rfl fun a _ => mul_comm _ _
 
 
-open MeasureTheory NumberField Matrix Finset in
 theorem _root_.GlobalTheory.FlagBase.poisson_gaussV (E : Type) [Field E] [NumberField E] (j : ℕ)
     (L : Submodule ℤ (_root_.GlobalTheory.FlagBase.VecInf E j))
     [DiscreteTopology L] (hL : IsZLattice ℝ L) :

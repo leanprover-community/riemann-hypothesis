@@ -124,8 +124,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData.mem_la
       simp [_root_.GlobalTheory.LatPair.inX, _root_.GlobalTheory.LatPair.avec, Subring.smul_def]
 
 
-open MeasureTheory ValuativeRel Matrix IsLocalRing in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n n' n'' : Type} [Fintype n] [Fintype n'] [Fintype n''] in
 omit [Fintype n''] in
@@ -143,8 +141,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData.lastKe
     exact ⟨by simpa using h1, (h2 0).1 (by norm_num)⟩
 
 
-open MeasureTheory ValuativeRel Matrix IsLocalRing in
-open scoped Pointwise in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n n' n'' : Type} [Fintype n] [Fintype n'] [Fintype n''] in
 omit [Fintype n''] in

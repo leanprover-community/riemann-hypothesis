@@ -91,7 +91,6 @@ end GlobalTheory.CellDec
 
 noncomputable section
 namespace GlobalTheory.CellDec
-open Filter
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
 theorem adl_add (ϖ : ∀ v : HeightOneSpectrum (𝓞 E), (v.adicCompletion E)ˣ) (m₁ m₂ : HeightOneSpectrum (𝓞 E) →₀ ℤ) :
@@ -179,7 +178,6 @@ end GlobalTheory.CellDec
 
 noncomputable section
 namespace GlobalTheory.CellDec
-open Filter
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
 theorem tl_inv_conj_mem (ϖ : ∀ v : HeightOneSpectrum (𝓞 E), (v.adicCompletion E)ˣ) (l : HeightOneSpectrum (𝓞 E) →₀ (Fin n → ℤ))

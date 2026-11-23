@@ -74,7 +74,6 @@ namespace GlobalTheory.HenQ.ShellOp
 
 section Hecke
 
-open GroundTheory.Automorphic.Spherical GLnLocal Iwasawa HeckeAlgebra
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
 
@@ -177,7 +176,6 @@ namespace GlobalTheory.HenQ.ShellOp
 
 section Global
 
-open GroundTheory.Automorphic.Spherical GLnLocal Iwasawa HeckeAlgebra
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -187,6 +185,5 @@ end GlobalTheory.HenQ.ShellOp
 
 namespace GlobalTheory.HenQ
 
-open GroundTheory.Automorphic.Spherical GLnLocal Iwasawa HeckeAlgebra
 
 end GlobalTheory.HenQ

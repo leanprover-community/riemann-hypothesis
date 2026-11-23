@@ -150,8 +150,6 @@ end GlobalTheory.LastRowLat
 
 namespace GlobalTheory.LastRowLat
 
-open GlobalTheory.FinPl (Moves Lat)
-open Matrix
 
 theorem rowPt_mem_stdLat : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T} (S : GridChoice W U) {t : T}, t ∈ U → ∀ k : FinPt G (.grid D.R.m D.R.m),
     finG (G.V (.grid D.R.m D.R.m)) k ∈ S.levRow t D.R.m le_rfl →

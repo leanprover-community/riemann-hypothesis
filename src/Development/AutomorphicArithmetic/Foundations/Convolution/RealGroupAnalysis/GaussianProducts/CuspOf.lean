@@ -50,21 +50,18 @@ private theorem setIntegral_haar {E : Type} [Field E] [NumberField E] {a r : ℕ
   rw [Measure.isAddLeftInvariant_eq_smul ν (unipMeasure E a r), Measure.restrict_smul, integral_smul_nnreal_measure, h,
     smul_zero]
 
-open GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm UpperTheory.V.Fb in
 private def ixEq (a r : ℕ) : UPos a r ≃ BlockIx a r where
   toFun p := ⟨p.1, p.2.1, p.2.2⟩
   invFun p := ⟨p.1, p.2.1, p.2.2⟩
   left_inv _ := rfl
   right_inv _ := rfl
 
-open GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm UpperTheory.V.Fb in
 private theorem unipGL_ixEq {R : Type} [CommRing R] {a r : ℕ} (x : BlockIx a r → R) :
     unipGL (fun p => x (ixEq a r p)) = unip x := by
   refine Units.ext ?_
   change 1 + blockEntry (fun p => x (ixEq a r p)) = 1 + nilM x
   congr 1
 
-open GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm UpperTheory.V.Fb in
 private theorem cusp_of {E : Type} [Field E] [NumberField E] {a : ℕ} {φ : GA E a → ℂ}
     (hl : IsLeftInvariant φ) (hφ : AutomorphicForm.IsCuspidal φ) : GlobalTheory.CuspRep.IsCuspidal φ := by
   intro r h0 h1 i1 i2 μ 𝓕 hμ hF g

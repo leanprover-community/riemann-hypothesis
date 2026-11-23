@@ -136,7 +136,6 @@ def IsLog (l : ℕ) [Fact l.Prime] (e : (Reformulated.AutPerF.Tilt l ↥(PadicCo
 
 namespace Bridge.CrisIncl.LogOfPartialLemmas
 
-open Reformulated.AutPerF
 
 theorem eq_truncLog {B : Type*} [CommRing B] [Algebra ℚ B] (n : ℕ) (c x : B)
     (h : ((n.factorial : ℕ) : B) * c =

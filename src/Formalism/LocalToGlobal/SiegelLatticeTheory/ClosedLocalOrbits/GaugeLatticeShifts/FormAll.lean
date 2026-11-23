@@ -133,7 +133,6 @@ namespace Formalism.L2.SG.Pf
 
 open MeasureTheory Set Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.TermOp.Vanish
   NumberField
-open scoped ENNReal
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

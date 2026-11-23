@@ -372,7 +372,6 @@ end CechMem
 
 section Pull
 
-open UpperTheory.GenericCoverClass
 
 variable {Z Z' : Scheme.{0}} [IsIntegral Z] [IsIntegral Z'] {p : Z ⟶ Sp ℂ} {p' : Z' ⟶ Sp ℂ}
   [Smooth p] [Smooth p'] [inst : Algebra ℂ Z.functionField] [inst' : Algebra ℂ Z'.functionField]
@@ -515,7 +514,6 @@ end Pull
 
 section Trace
 
-open UpperTheory.GenericCoverClass
 
 variable {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] {p : Z ⟶ Sp ℂ} {p' : Y ⟶ Sp ℂ}
   [Smooth p] [Smooth p'] [inst : Algebra ℂ Z.functionField] [inst' : Algebra ℂ Y.functionField]
@@ -538,7 +536,6 @@ end Trace
 
 section TraceCmp
 
-open UpperTheory.GenericCoverClass
 
 variable {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] {p : Z ⟶ Sp ℂ} (p' : Y ⟶ Sp ℂ)
   [Smooth p] [Smooth p'] [inst : Algebra ℂ Z.functionField] [inst' : Algebra ℂ Y.functionField]
@@ -871,7 +868,6 @@ end TraceCmp
 
 section TraceMain
 
-open UpperTheory.GenericCoverClass
 
 variable {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] {p : Z ⟶ Sp ℂ} {p' : Y ⟶ Sp ℂ}
   [Smooth p] [Smooth p'] [inst : Algebra ℂ Z.functionField] [inst' : Algebra ℂ Y.functionField]

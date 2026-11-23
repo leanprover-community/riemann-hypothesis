@@ -135,7 +135,6 @@ end GlobalTheory.HTPull
 
 namespace GlobalTheory.HTPull
 
-open GlobalTheory.SiegelPull ReciprocityTheory.ChartRestriction.G.Pdiv
 
 theorem exists_objMap_pull : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ)
     (S S' : Scheme.{0}) (s : S ⟶ Sp R) (f : S' ⟶ S) (o : Obj b N s), ∃ o' : Obj b N (f ≫ s), Nonempty (ObjMap o' o f) := by

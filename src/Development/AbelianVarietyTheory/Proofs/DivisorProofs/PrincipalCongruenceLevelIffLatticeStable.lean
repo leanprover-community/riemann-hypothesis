@@ -105,7 +105,6 @@ end GlobalTheory.TwLat.Lv
 
 namespace GlobalTheory.TwLat.Lv
 
-open IsDedekindDomain.HeightOneSpectrum
 
 theorem valued_uniformizerPower_completion_eq_exp_neg {E : Type} [Field E] [NumberField E] {w : Pl E} {K : GlobalTheory.UnitLemma.UQ}
     (e : K.E ≃+* w.adicCompletion E) (hval : ∀ x, GlobalTheory.UnitLemma.val K.O x = ordL (e x)) (t : K.O) (k : ℕ)

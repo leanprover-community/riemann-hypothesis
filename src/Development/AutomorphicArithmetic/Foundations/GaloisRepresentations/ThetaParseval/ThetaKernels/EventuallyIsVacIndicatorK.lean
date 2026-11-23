@@ -45,27 +45,22 @@ open _root_.GlobalTheory
 variable {F : Type} [Field F] [NumberField F]
 end Tw.VacIndic
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 variable {F : Type} [Field F] [NumberField F]
 end Tw.VacIndic
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 variable {F : Type} [Field F] [NumberField F]
 end Tw.VacIndic
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 variable {F : Type} [Field F] [NumberField F]
 section AtLemmas
 variable {v : HeightOneSpectrum (𝓞 F)}
 end AtLemmas
 end Tw.VacIndic
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {n d : ℕ}
 end Tw.VacIndic
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 section SympAdd
 variable {R E' : Type} [CommRing R] [CommRing E'] [Algebra R E'] (c : E' →ₐ[R] E') (ξ : E')
   {α β : Type} [Fintype α] [Fintype β] (JA : Matrix α α E') (JB : Matrix β β E')
@@ -73,12 +68,10 @@ end SympAdd
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 end Tw.VacIndic
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {n d : ℕ}
 end Tw.VacIndic
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 theorem isVac_indicator_of_theta_k {σ : E →ₐ[F] E} (B : Base F E) (hB : _root_.UpperTheory.TP.W.GoodK σ B) {n d : ℕ} (X : Spc F E n)
     (Y : Spc F E d) (r s r' s' : ℕ) (hX : X.IsHerm σ B r s) (hY : Y.IsSkew σ B r' s')
@@ -163,7 +156,6 @@ theorem isVac_indicator_of_theta_k {σ : E →ₐ[F] E} (B : Base F E) (hB : _ro
     (fun k => (hA γ hγ' k).2.2.1) (fun k => (hA γ hγ' k).2.2.2)
 end Tw.VacIndic
 namespace Tw.VacIndic
-open _root_.GlobalTheory
 theorem eventually_isVac_indicator_k : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
     (B : Base F E), _root_.UpperTheory.TP.W.GoodK σ B → ∀ {n d : ℕ} (X : Spc F E n) (Y : Spc F E d) (r s r' s' : ℕ),
     X.IsHerm σ B r s → Y.IsSkew σ B r' s' → ∀ (co : GlobalTheory.WeilM.Darboux (GlobalTheory.WeilM.symp (R := AF F) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA σ) (-1) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM F X.J) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM F Y.J)) (Fin n × Fin d)), (∀ x : Matrix (Fin n) (Fin d) E, ∃ y z : Fin n × Fin d → F, co.e (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.incM F x) = (fun k => algebraMap F (AF F) (y k), fun k => algebraMap F (AF F) (z k))) →

@@ -172,6 +172,5 @@ end
 
 end LeafFixedPointPairing
 section
-open GlobalTheory.BigTop GlobalTheory.BigTop.Fun GlobalTheory.SumSize
 
 end

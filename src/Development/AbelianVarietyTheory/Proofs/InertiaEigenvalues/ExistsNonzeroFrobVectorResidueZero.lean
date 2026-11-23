@@ -77,7 +77,6 @@ end GlobalTheory.PMonII
 
 namespace GlobalTheory.PMonII
 
-open GlobalTheory.PSer
 
 theorem exII : ExII := by
   intro l _ P AI T h hh lam hlam hind

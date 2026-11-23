@@ -107,7 +107,6 @@ theorem polyProper5 (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (γ : B.Mat
   exact PI.PolynomialProperness.bound_core hG hN hNF hγ hCf hCf' hCc σ s' v u' hσG hs'G hv hu hσf hsf hbv hbu
 
 
-open Formalism.FourierDecayAlt in
 theorem haar_stab {k r : ℕ} (L : LocBessel k r) (hk : 1 ≤ k) {γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hγ : γ ∈ UH (Hpk k r)) (hpos : 0 < Gf k r L.z L.z' γ) (hmono : C2.IsMonomial (Zhat k r L.z L.z' γ))
     {μR : Measure (Mt k r)} (hR : IsHaarOn (RStab k r γ) μR) {M : ℝ} (hM : 2 * ((r : ℝ) + 1) ^ 2 < M) :
@@ -125,7 +124,6 @@ theorem haar_stab {k r : ℕ} (L : LocBessel k r) (hk : 1 ≤ k) {γ : Matrix (F
   exact ⟨GlobalTheory.ThA.OrbSq.haar_smul hRB c0 ct, (P.Dx3.intR Bs hγ hd hG hM).smul_measure ct⟩
 
 
-open Formalism.FourierDecayAlt in
 theorem intN_zero {k : ℕ} {μN : Measure (Mt k 0)} (hN : B.IsHaarOn (Nset k 0) μN) {a : ℝ} (ha : 0 ≤ a) :
     Integrable (fun x : Mt k 0 => B.gN (Matrix.of x) ^ (-a)) μN := by
   have hsub : (Nset k 0 : Set (B.Mat k 0)) ⊆ {(1 : B.Mat k 0)} := fun x hx => P.SliceLastLevel.sz_N_zero hx
@@ -143,7 +141,6 @@ theorem intN_zero {k : ℕ} {μN : Measure (Mt k 0)} (hN : B.IsHaarOn (Nset k 0)
   exact Real.rpow_le_one_of_one_le_of_nonpos h1 (by linarith)
 
 
-open Formalism.FourierDecayAlt in
 theorem maj_pair {k r : ℕ} (L : LocBessel k r) (hκ : L.κN ≠ ⊤) {α β : ℝ}
     (hα : Integrable (fun x : Mt k r => B.gN (Matrix.of x) ^ (-α)) (Formalism.FourierDecayAlt.D.muN k r))
     (hβ : Integrable (fun x : Mt k r => B.gN (Matrix.of x) ^ (-β)) (Formalism.FourierDecayAlt.D.muN k r)) :
@@ -173,7 +170,6 @@ theorem maj_pair {k r : ℕ} (L : LocBessel k r) (hκ : L.κN ≠ ⊤) {α β : 
   simpa only [one_mul] using i3
 
 
-open Formalism.FourierDecayAlt in
 theorem bound_pt {k r : ℕ} (Bs : B.RealPlaceData k r ℂ ℂ) {γ : B.Mat k r} (hγ : γ ∈ B.GV k r)
     (hpos : 0 < Gf k r Bs.z Bs.z' γ) (hmono : C2.IsMonomial (Zhat k r Bs.z Bs.z' γ))
     {μR : Measure (Mt k r)} (hR : B.IsHaarOn (C6.Rset γ) μR) {M : ℝ} (hM0 : 0 ≤ M)
@@ -256,7 +252,6 @@ theorem bound_pt {k r : ℕ} (Bs : B.RealPlaceData k r ℂ ℂ) {γ : B.Mat k r}
     zero_le_one hCP0 hK10 hKγ0 hMdef hbN h4
 
 
-open Formalism.FourierDecayAlt in
 theorem meas_inv (k r : ℕ) :
     Measurable (fun x : Mt k r => (Matrix.of.symm ((Matrix.of x : B.Mat k r)⁻¹) : Mt k r)) := by
   refine measurable_pi_iff.mpr fun i => measurable_pi_iff.mpr fun j => ?_
@@ -273,7 +268,6 @@ theorem meas_inv (k r : ℕ) :
   exact hdet.measurable.inv.mul hadj.measurable
 
 
-open Formalism.FourierDecayAlt in
 theorem meas_pairMaj {k r : ℕ} (γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (b : ℝ) :
     Measurable (pairMaj (k := k) (r := r) γ b) := by
   have hc : Continuous fun q : (Mt k r × Mt k r) × (Mt k r × Mt k r) =>
@@ -292,7 +286,6 @@ theorem meas_pairMaj {k r : ℕ} (γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r 
   exact ((P.HaarUniquenessConjugation.gN_meas k r).comp h).pow_const _
 
 
-open Formalism.FourierDecayAlt in
 theorem core {k r : ℕ} (L : LocBessel k r) (hk : 1 ≤ k) (hκ : L.κN ≠ ⊤)
     {γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hγ : γ ∈ UH (Hpk k r))
     (hpos : 0 < Gf k r L.z L.z' γ) (hmono : C2.IsMonomial (Zhat k r L.z L.z' γ))
@@ -349,7 +342,6 @@ theorem core {k r : ℕ} (L : LocBessel k r) (hk : 1 ≤ k) (hκ : L.κN ≠ ⊤
   exact hfin
 
 
-open Formalism.FourierDecayAlt in
 theorem cellConv : CellConv := by
   intro k r L h μG γ μR νR ν hκ hok hgap hC hmono
   obtain ⟨hγ, hpos, -, -, hR, hQ, -⟩ := hC

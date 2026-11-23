@@ -216,7 +216,6 @@ end Frame
 
 section Point
 
-open GlobalTheory.CompanionTheory.Ar.Small
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l} {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)} {S : Finset ℕ} {Ω : Type} [Field Ω]
@@ -256,7 +255,6 @@ end SlopeTestRemainingChoices
 
 section Main
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.FrameTangent GlobalTheory.CompanionTheory.Ar.Small
 
 attribute [local instance] Over.cartesianMonoidalCategory

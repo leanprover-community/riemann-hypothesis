@@ -97,7 +97,6 @@ def dinv (l : HeightOneSpectrum (𝓞 E) →₀ (Fin n → ℤ)) : ℝ :=
 end GlobalTheory.CellDec
 
 namespace GlobalTheory.CellDec
-open NumberField IsDedekindDomain Matrix Formalism.UG GlobalTheory.CuspRep
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
 theorem diagT_conj_mem {R : Type} [CommRing R] (w : Fin n → Rˣ) {u : GL (Fin n) R}

@@ -232,7 +232,6 @@ theorem weil_desc (P : PolAV (Sp Ω)) {n : ℕ} {k : Type} [Field k] (i : Ω →
 end weil
 
 section obj
-open ReciprocityTheory.ChartRestriction.G.Out
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {B : Type} [CommRing B] {b : Base l B} {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {s : Sp Ω ⟶ Sp B}
@@ -266,7 +265,6 @@ theorem root (o : Obj D l b s) (t : SAB H X) (m : SABMap o.t t ξ) {n : ℕ} (hf
 end obj
 
 section obj2
-open ReciprocityTheory.ChartRestriction.G.Out
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {B : Type} [CommRing B] {b : Base l B} {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {s : Sp Ω ⟶ Sp B}

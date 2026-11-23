@@ -38,11 +38,9 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.Her
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Mem
 
 variable {D : D7} {u : D.what₂.Word}
 
-end Mem
 
 section Comparison₂
 

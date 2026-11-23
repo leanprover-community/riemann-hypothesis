@@ -138,7 +138,6 @@ end GlobalTheory.Ord2.GwFin
 
 namespace GlobalTheory.Ord2.GwFin
 
-open GlobalTheory.Ord2.TwistTriv
 
 variable {l : ℕ} [Fact l.Prime] {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (S : Finset Pl)
 
@@ -223,7 +222,6 @@ end GlobalTheory.Ord2.GwFin
 
 namespace GlobalTheory.Ord2.GwFin
 
-open GlobalTheory.Ord2.TwistTriv
 
 theorem finite_cocycles_of_finite_h1 {R : Type*} [CommRing R] {H : Type*} [Group H] [TopologicalSpace H]
     {Q : Type*} [AddCommGroup Q] [Module R Q] [TopologicalSpace Q] [IsTopologicalAddGroup Q]

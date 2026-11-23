@@ -140,19 +140,14 @@ def IsMultihomog {K : Type*} [CommSemiring K] (P : MvPolynomial (Fin (e + 1) × 
 
 end Chow
 
-section MetrisedHeight
 
-open NumberField
 
 variable {ι : Type*}
 
-end MetrisedHeight
 
-section SphereMeasure
 
 variable {e n : ℕ}
 
-end SphereMeasure
 
 section Joins
 
@@ -162,11 +157,9 @@ def segreJoin (x : ι → Ω) (y : κ → Ω) : ι × κ → Ω := fun p => x p.
 
 end Joins
 
-section Multi
 
 variable {r : ℕ} {ι : Fin r → Type*} [∀ k, Fintype (ι k)]
 
-end Multi
 
 section Along
 

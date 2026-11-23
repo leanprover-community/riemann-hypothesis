@@ -232,7 +232,6 @@ end GlobalTheory.InducedSectionsSpanStatement
 
 namespace GlobalTheory
 
-open Formalism.BasicNotions.Loc
 
 theorem res_cor_H1f : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW),
     LiftingTheory.adm20 D HW F := by

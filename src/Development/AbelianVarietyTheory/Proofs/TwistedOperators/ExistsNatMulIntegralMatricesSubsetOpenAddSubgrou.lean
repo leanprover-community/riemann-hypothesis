@@ -96,7 +96,6 @@ end GlobalTheory.OpenSubAdele
 
 namespace GlobalTheory.OpenSubAdele
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
 
 theorem exists_nat_mul_mem_of_mem_nhds {F : Type} [Field F] [NumberField F] {t : Set (Af F)}
     (ht : t ∈ nhds (0 : Af F)) :
@@ -127,7 +126,6 @@ end GlobalTheory.OpenSubAdele
 
 namespace GlobalTheory.OpenSubAdele
 
-open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
 
 noncomputable def singleEntry (D : D7) (V W : HSp D) (i : Fin W.rank) (j : Fin V.rank)
     (k : Fin (Module.finrank D.host.F D.host.E)) (c : Af D.host.F) : WO V W :=

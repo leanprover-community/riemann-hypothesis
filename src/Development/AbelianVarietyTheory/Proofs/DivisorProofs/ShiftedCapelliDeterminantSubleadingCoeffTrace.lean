@@ -92,7 +92,6 @@ theorem prod_affine_two_top (t : ℕ) (p : Fin (t + 1) → ℂ) (q : Fin (t + 1)
 end GlobalTheory.CapelliNext
 
 namespace GlobalTheory.CapelliNext
-open Finset
 
 theorem qdet_shift_next_coeff : ∀ (A : Type) [Ring A] [Algebra ℂ A] (m : ℕ) (E : Fin (m + 1) → Fin (m + 1) → A) (s : ℂ), ∃ (c : ℕ → A) (t : ℂ),
     c (m + 1) = 1 ∧ c m = ∑ i, E i i + t • (1 : A) ∧

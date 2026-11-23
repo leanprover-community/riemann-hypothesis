@@ -390,7 +390,6 @@ private lemma ker_le (W : WPres O (ℤ × ℤ) R) (h : W.HasOrigin)
 end PartA
 
 section PartB
-open MvPowerSeries
 
 variable {O A X τ : Type} [CommRing O] [IsDomain O] [CommRing A] [Algebra O A] [AddCommGroup X]
   {𝒜 : X → Submodule O A} {x : A →ₐ[O] O} {wt : τ → X} {φ : A →ₐ[O] MvPowerSeries τ (FractionRing O)}
@@ -703,7 +702,6 @@ private theorem coeff_two {E : Type} [CommRing E] [IsDomain E] [DecidableEq τ] 
 end PartB
 
 section PartC
-open MvPowerSeries
 
 private theorem iota {τ : Type} [Fintype τ] [DecidableEq τ] (wt : τ → ℤ × ℤ) (b : τ) (hb : (wt b).1 = -1)
     (hτ : ∀ i, i ≠ b → (wt i).1 = 0 ∨ (wt i).1 = 1) :

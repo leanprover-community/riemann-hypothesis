@@ -149,7 +149,6 @@ noncomputable def Tm : TraceIntegralBasis.VS E →ₗ[ℝ] (X.Ψ → ℂ) where
     simp only [Pi.smul_apply, RingHom.id_apply]
     split_ifs <;> simp [Complex.real_smul]
 
-open scoped Classical in
 theorem Tm_iota (x : E) (τ : X.Ψ) : Tm X (TraceIntegralBasis.iota E x) τ = τ.1 x := by
   simp only [Tm, LinearMap.coe_mk, AddHom.coe_mk, TraceIntegralBasis.iota_apply]
   split_ifs with h
@@ -159,7 +158,6 @@ theorem Tm_iota (x : E) (τ : X.Ψ) : Tm X (TraceIntegralBasis.iota E x) τ = τ
     · change conj ((InfinitePlace.mk τ.1).embedding x) = τ.1 x
       rw [h', ComplexEmbedding.conjugate_coe_eq, Complex.conj_conj]
 
-open scoped Classical in
 theorem Tm_injective : Function.Injective (Tm X) := by
   rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
   intro z hz

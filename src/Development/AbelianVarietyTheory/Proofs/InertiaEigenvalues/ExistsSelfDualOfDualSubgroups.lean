@@ -88,7 +88,6 @@ theorem _root_.GlobalTheory.JR.AbsInv.exists_nhds_invariant {f : V → ℂ}
 variable [MeasurableSpace V] [BorelSpace V]
 
 
-open MeasureTheory Filter Topology Pointwise in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] in
 variable [MeasurableSpace V] [BorelSpace V] in
 theorem _root_.GlobalTheory.JR.AbsInv.integral_eq_zero_of_translate (μ : Measure V) [μ.IsAddHaarMeasure] (g : V → ℂ) (m : V) (c : ℂ)
@@ -104,7 +103,6 @@ theorem _root_.GlobalTheory.JR.AbsInv.integral_eq_zero_of_translate (μ : Measur
 
 variable [T2Space V] [LocallyCompactSpace V] [SecondCountableTopology V]
 
-open MeasureTheory Filter Topology Pointwise in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] in
 variable [MeasurableSpace V] [BorelSpace V] in
 variable [T2Space V] [LocallyCompactSpace V] [SecondCountableTopology V] in
@@ -124,7 +122,6 @@ private theorem fourB_eq_zero_of_not_mem_annihilator (μ : Measure V)
   rw [hi x m hm, ha]
   ring
 
-open MeasureTheory Filter Topology Pointwise in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] in
 variable [MeasurableSpace V] [BorelSpace V] in
 variable [T2Space V] [LocallyCompactSpace V] [SecondCountableTopology V] in
@@ -159,7 +156,6 @@ private theorem integral_indicator_bicharacter_eq_indicator (μ : Measure V) [μ
       rw [Set.indicator_of_notMem hyn, Set.indicator_of_notMem hy, mul_zero]
 
 
-open MeasureTheory Filter Topology Pointwise in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] in
 variable [MeasurableSpace V] [BorelSpace V] in
 variable [T2Space V] [LocallyCompactSpace V] [SecondCountableTopology V] in
@@ -235,7 +231,6 @@ theorem _root_.GlobalTheory.JR.AbsInv.fourB_fourB (μ : Measure V) [μ.IsAddHaar
         push_cast
         ring
 
-open MeasureTheory Filter Topology Pointwise in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] in
 variable [MeasurableSpace V] [BorelSpace V] in
 variable [T2Space V] [LocallyCompactSpace V] [SecondCountableTopology V] in
@@ -272,7 +267,6 @@ private theorem measureReal_mul_eq_of_dual_pairs_subset (μ : Measure V) [μ.IsA
   exact_mod_cast h2.symm.trans h1
 
 
-open MeasureTheory Filter Topology Pointwise in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] in
 variable [MeasurableSpace V] [BorelSpace V] in
 variable [T2Space V] [LocallyCompactSpace V] [SecondCountableTopology V] in
@@ -325,7 +319,6 @@ theorem _root_.GlobalTheory.JR.AbsInv.exists_selfDual (B : V → V → ℂ)
 end GlobalTheory.JR.AbsInv
 
 
-open MeasureTheory Filter Topology Pointwise in
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] in
 variable [MeasurableSpace V] [BorelSpace V] in
 variable [T2Space V] [LocallyCompactSpace V] [SecondCountableTopology V] in

@@ -65,7 +65,6 @@ end Ops
 
 def la (G : Type) [Fintype G] : ℝ := Real.log (Fintype.card G)
 
-section Lat
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
   {V ι : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
@@ -73,7 +72,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K]
   {W κ : Type} [AddCommGroup W] [Module K W] [Module (𝓞 K) W] [IsScalarTower (𝓞 K) K W]
   [Fintype κ] [DecidableEq κ]
 
-end Lat
 
 def M1 {K : Type} [Field K] {G : Type} [Group G] [Finite G] {S : Type} {Ws : S → Type}
     [∀ s, AddCommGroup (Ws s)] [∀ s, Module K (Ws s)] (τ : ∀ s, Representation K G (Ws s))

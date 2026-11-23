@@ -99,9 +99,7 @@ theorem _root_.GlobalTheory.PDivGroup.ker_resOne (n : ℕ) :
     rw [h0]
     exact _root_.GlobalTheory.PDiv.torsionIdeal_le_of_dvd (dvd_pow_self p (Nat.succ_ne_zero n))
 
-open scoped TensorProduct in
 set_option autoImplicit false in
-open TensorProduct Coalgebra Bialgebra in
 variable {p : ℕ} {R : Type} [CommRing R] (G : _root_.GlobalTheory.PDivGroup p R) in
 theorem _root_.GlobalTheory.PDivGroup.kerIdeal_mulP (n : ℕ) :
     _root_.GlobalTheory.PDiv.kerIdeal (G.mulP n) =
@@ -122,9 +120,7 @@ namespace PDivGroup
 
 end PDivGroup
 
-open scoped TensorProduct in
 set_option autoImplicit false in
-open TensorProduct Coalgebra Bialgebra in
 private theorem mem_ker_smul_univ_of_one_tmul_eq_zero {R k M : Type} [CommRing R] [CommRing k]
     [Algebra R k] [AddCommGroup M] [Module R M] (hk : Function.Surjective (algebraMap R k))
     {m : M} (hm : (1 : k) ⊗ₜ[R] m = 0) :
@@ -143,9 +139,7 @@ private theorem mem_ker_smul_univ_of_one_tmul_eq_zero {R k M : Type} [CommRing R
   rw [hm, map_zero, eq_comm, Submodule.Quotient.mk_eq_zero] at h2
   exact hker ▸ h2
 
-open scoped TensorProduct in
 set_option autoImplicit false in
-open TensorProduct Coalgebra Bialgebra in
 theorem _root_.GlobalTheory.fibre_statement : ∀ (p : ℕ) (R k : Type) [CommRing R] [CommRing k]
     [Algebra R k], Function.Surjective (algebraMap R k) → ∀ (G : _root_.GlobalTheory.PDivGroup p R) (n : ℕ),
       Function.Surjective (fun a : G.A (n + 1) =>

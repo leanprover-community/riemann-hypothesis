@@ -174,7 +174,6 @@ end GlobalTheory.RayZeta
 
 namespace GlobalTheory.Published
 
-open GlobalTheory.RayZeta
 
 end GlobalTheory.Published
 

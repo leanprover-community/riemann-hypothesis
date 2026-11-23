@@ -55,7 +55,6 @@ private theorem jetMap_smul' {ι : Type} [Fintype ι] {a b : ℕ} (c : ℂ) (J :
     rw [GlobalTheory.KerT.RatLaw.jetLin_monomial, GlobalTheory.KerT.RatLaw.jetLin_monomial, smul_monomial, smul_eq_mul]
   simp only [jetMap, LinearMap.comp_apply, h, LinearMap.smul_apply]
 
-open MvPolynomial Formalism.L2.Ker in
 private theorem jetMap_substF {ι : Type} [Fintype ι] {a b : ℕ} (c : ℂ) (ℓ : MvPolynomial (DVar ι a b) ℂ →ₗ[ℂ] ℂ)
     (g : ι → Matrix (Fin a) (Fin a) ℂ) (h : ι → Matrix (Fin b) (Fin b) ℂ) (n : ι → ℕ) (P : Pol ℂ ι a) :
     jetMap (fun m => c * ℓ (GlobalTheory.CompactHowe.substF h (fun τ => (g τ)ᵀ) (monomial m 1))) n P =

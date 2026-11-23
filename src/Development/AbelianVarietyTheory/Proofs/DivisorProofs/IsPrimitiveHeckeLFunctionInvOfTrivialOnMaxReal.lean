@@ -93,7 +93,6 @@ end GlobalTheory.CMVal.InvConj
 
 namespace GlobalTheory.CMVal.InvConj
 
-open Formalism.L2.Host Formalism.L2.Host.CT
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 

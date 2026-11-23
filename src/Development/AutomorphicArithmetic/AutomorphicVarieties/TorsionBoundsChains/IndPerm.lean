@@ -46,7 +46,6 @@ private theorem indV_mk_mul {k G : Type} [CommRing k] [Group G] (S : Subgroup G)
     (MonoidAlgebra.single h (1 : k) ⊗ₜ[k] a)
   simpa [ofMulAction_single] using this
 
-open Representation in
 private noncomputable def fwd (k G X : Type) [CommRing k] [Group G] [MulAction G X] (x : X) :
     IndV (MulAction.stabilizer G x).subtype
       (Representation.trivial k (MulAction.stabilizer G x) k) →ₗ[k] (X →₀ k) :=
@@ -58,7 +57,6 @@ private noncomputable def fwd (k G X : Type) [CommRing k] [Group G] [MulAction G
       have hg : (g : G)⁻¹ • x = x := (g⁻¹).2
       simp [mul_smul, hg]
 
-open Representation in
 private theorem fwd_mk (k G X : Type) [CommRing k] [Group G] [MulAction G X] (x : X) (h : G)
     (a : k) :
     fwd k G X x (IndV.mk _ _ h a) = Finsupp.single (h⁻¹ • x) a := by

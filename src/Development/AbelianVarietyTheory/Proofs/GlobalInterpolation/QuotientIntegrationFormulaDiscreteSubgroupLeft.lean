@@ -71,8 +71,6 @@ theorem _root_.GlobalTheory.QuotDiscrete.isInvInvariant_of_isMulRightInvariant {
   exact ⟨by rw [h1, h6, one_smul]⟩
 
 
-open MeasureTheory in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.QuotDiscrete.existsUnique_subgroupOf {G : Type} [Group G] {Γ H : Subgroup G} (hΓ : Γ ≤ H) {F : Set G}
     (hF : ∀ x : G, ∃! γ : Γ, γ • x ∈ F) (g : G) (h : H) :
     ∃! γ : Γ.subgroupOf H, γ • h ∈ {h : H | (h : G) * g ∈ F} := by
@@ -89,8 +87,6 @@ theorem _root_.GlobalTheory.QuotDiscrete.existsUnique_subgroupOf {G : Type} [Gro
     exact Subtype.ext (Subtype.ext h2)
 
 
-open MeasureTheory in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.QuotDiscrete.discreteClause : _root_.GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre.DiscreteClause := by
   unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.InvariantRadonFibre.DiscreteClause
   intro G _ _ _ _ _ _ _ _ H _ _ _ _ hH hG hHu dg _ ν _ μ hμ hQ Γ hΓ hd

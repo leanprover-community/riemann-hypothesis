@@ -84,7 +84,6 @@ theorem neg_one_not_mem_JW {L : SizeData₂ D} (hc : jcCondition L) (j : ℕ) (h
 end GlobalTheory.GTwoTheta
 
 namespace GlobalTheory.GTwoTheta
-open Formalism.MainNotions.AdmissibleParameterJ
 
 theorem dR_WT (D : D7) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
     (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
@@ -103,7 +102,6 @@ theorem dR_WT (D : D7) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.
 end GlobalTheory.GTwoTheta
 
 namespace GlobalTheory.GTwoTheta
-open Formalism.MainNotions.AdmissibleParameterJ
 
 theorem twistedRep_no_invariants_purity (D : D7) (L : SizeData₂ D) (ep : Bool) (hJ : hodgeTateJumpsAtModulesForSign D ep) (hJc : jcCondition L) (i : D.nd.Loc)
     (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
@@ -134,7 +132,6 @@ theorem twistedRep_no_invariants_purity (D : D7) (L : SizeData₂ D) (ep : Bool)
 end GlobalTheory.GTwoTheta
 
 namespace GlobalTheory.GTwoTheta
-open Formalism.MainNotions.AdmissibleParameterJ
 
 theorem chi_jump (D : D7) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
     (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
@@ -175,6 +172,5 @@ theorem tw_jumps (D : D7) (L : SizeData₂ D) (ep : Bool) (hJ : hodgeTateJumpsAt
 end GlobalTheory.GTwoTheta
 
 namespace GlobalTheory.GTwoTheta
-open Formalism.MainNotions.AdmissibleParameterJ
 
 end GlobalTheory.GTwoTheta

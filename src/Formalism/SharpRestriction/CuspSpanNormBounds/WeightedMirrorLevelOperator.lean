@@ -124,7 +124,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.MainNotions.S.LevR
 
-open Formalism.QuantumDeterminants
 
 structure Base (E : Type*) [NormedAddCommGroup E] [NormedSpace ℂ E] where
 
@@ -190,7 +189,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.MainNotions.S.LevR
 
-open Formalism.QuantumDeterminants
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -269,7 +267,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.MainNotions.S.LevR
 
-open Formalism.QuantumDeterminants
 open Formalism.MainNotions.S.TopsChoicePartA
 
 end Formalism.MainNotions.S.LevR

@@ -106,7 +106,6 @@ end Lift
 end GlobalTheory.CompanionTheory.ConeTopChart
 
 namespace GlobalTheory.CompanionTheory.ConeTopChart
-open GlobalTheory.CompanionTheory.CupRep GlobalTheory.CompanionTheory.CocProd
 section Key
 variable {K : Type} [Field K] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of K)}
 
@@ -160,7 +159,6 @@ end Key
 end GlobalTheory.CompanionTheory.ConeTopChart
 
 namespace GlobalTheory.CompanionTheory.ConeTopChart
-open GlobalTheory.CompanionTheory.CupRep GlobalTheory.CompanionTheory.CocProd
 section Key2
 variable {K : Type} [Field K] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of K)}
 

@@ -124,7 +124,6 @@ end GlobalTheory.CharInvForm
 
 namespace GlobalTheory.CharInvForm
 
-open scoped Classical
 
 theorem psi_dot_inf {F : Type} [Field F] [NumberField F] {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) {κ : Type} [Fintype κ]
     (x : κ → AF F) (Y : κ → mixedEmbedding.mixedSpace F) :

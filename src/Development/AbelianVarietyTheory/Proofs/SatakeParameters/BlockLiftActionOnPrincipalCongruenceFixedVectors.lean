@@ -117,7 +117,6 @@ end GlobalTheory.SerSys.BlockLift
 
 namespace GlobalTheory.SerSys.BlockLift
 
-open ValuativeRel Formalism.MainNotions.ArithmeticCylinders
 
 section Mat
 
@@ -173,7 +172,6 @@ end GlobalTheory.SerSys.BlockLift
 
 namespace GlobalTheory.SerSys.BlockLift
 
-open ValuativeRel Formalism.MainNotions.ArithmeticCylinders
 
 theorem blockLift_act (g : ℕ) [Fact g.Prime] (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
     [IsNonarchimedeanLocalField F] (e : ℚ_[g] ≃+* F) (he : Continuous e) (r t : ℕ) (V : Type) [AddCommGroup V]

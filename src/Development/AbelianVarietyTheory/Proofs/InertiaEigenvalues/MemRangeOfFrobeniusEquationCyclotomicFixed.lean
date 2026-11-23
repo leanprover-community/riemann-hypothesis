@@ -709,7 +709,6 @@ end Generic
 
 section Main
 
-open GlobalTheory.Cyc
 
 variable {l : ℕ} [Fact l.Prime]
 

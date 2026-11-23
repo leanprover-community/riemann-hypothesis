@@ -53,7 +53,6 @@ private theorem UpperTheory.V.Th.product_factors_aeval {S : Type} [CommRing S] {
   simp only [Function.comp_apply]
   split_ifs <;> simp [Algebra.algebraMap_eq_smul_one]
 
-open Polynomial in
 theorem UpperTheory.V.Th.powRel :
     ∀ (K S : Type) [CommRing K] [CommRing S] (f : K →+* S) (n N E : ℕ) (P T : Matrix (Fin n) (Fin n) K) (α : Fin n → K) (β : K) (U : Fin n → S) (i : Fin n), N ≤ E + 1 → (∀ k, (U k - f (α k)) ^ N = 0) → (List.ofFn fun k => if k = i then 1 else P - α k • (1 : Matrix (Fin n) (Fin n) K)).prod * (T - β • (1 : Matrix (Fin n) (Fin n) K)) = 0 → (List.ofFn fun k => if k = i then 1 else P.map f - U k • (1 : Matrix (Fin n) (Fin n) S)).prod ^ (E + 1) * (T.map f - f β • (1 : Matrix (Fin n) (Fin n) S)) = 0 := by
   intro K S _ _ f n N E P T α β U i hN hU h

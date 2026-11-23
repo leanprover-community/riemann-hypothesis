@@ -103,7 +103,6 @@ namespace GlobalTheory.Mem.Col2.TilX
 
 section GenR
 
-open scoped TensorProduct
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E] {n : ℕ}
 
@@ -200,7 +199,6 @@ namespace GlobalTheory.Mem.Col2.TilX
 
 section GenT
 
-open scoped TensorProduct
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [StarRing E] {N n : ℕ} (hN : N = n + 1)
 

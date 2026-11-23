@@ -106,7 +106,6 @@ private lemma maximalIdeal_eq_span_of_kummer_tower (A W : Type) [CommRing A] [Is
   exact ⟨x', z', hznz, hzw⟩
 
 
-open IsLocalRing in
 
 
 theorem _root_.GlobalTheory.abhyankar_ramificationIdx_eq_one : ∀ (S K L : Type) [CommRing S] [IsDomain S] [IsDiscreteValuationRing S]

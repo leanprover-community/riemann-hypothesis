@@ -76,7 +76,6 @@ private theorem scalar_unit_mem {E : Type} [Field E] [NumberField E] (a : ℕ) (
     · simp [bc, h]
 
 
-open GlobalTheory.LFun Formalism.UG Matrix in
 private theorem satEig_self (q n : ℕ) (B : Multiset ℂˣ) (hB : B.card = n) :
     satEig q n B n = ((B.prod : ℂˣ) : ℂ) := by
   subst hB
@@ -87,7 +86,6 @@ private theorem satEig_self (q n : ℕ) (B : Multiset ℂˣ) (hB : B.card = n) :
   exact (map_multiset_prod (Units.coeHom ℂ) B).symm
 
 
-open GlobalTheory.LFun Formalism.UG Matrix in
 private theorem scalar_unif_act {E V : Type} [Field E] [NumberField E] [AddCommGroup V] [Module ℂ V] {a : ℕ}
     {w : HeightOneSpectrum (𝓞 E)} {ρ : Representation ℂ (GL (Fin a) (w.adicCompletion E)) V} {x : V}
     {B : Multiset ℂˣ} (hx : IsSatVecGL w ρ x B) (u : (w.adicCompletion E)ˣ)

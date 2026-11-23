@@ -362,7 +362,6 @@ private lemma hasSum_V (p : ℕ) [NeZero p] {f : ℍ → ℂ} {a : ℕ → ℂ}
     rintro ⟨m, rfl⟩
     exact hn ⟨m, rfl⟩
 
-open Function.Periodic in
 private lemma hasSum_U (p : ℕ) [NeZero p] {f : ℍ → ℂ} {a : ℕ → ℂ}
     (hf : ∀ τ : ℍ, HasSum (fun m ↦ a m * qParam 1 τ ^ m) (f τ)) (τ : ℍ) :
     HasSum (fun n ↦ a (p * n) * qParam 1 τ ^ n)

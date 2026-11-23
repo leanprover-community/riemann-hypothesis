@@ -71,7 +71,6 @@ end GlobalTheory.Mem.Col2.AdT
 
 namespace GlobalTheory.Mem.Col2.AdT
 
-open GlobalTheory.TopStep
 
 theorem exists_topLev_liftsInv : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (u : B.Word) (a : I.ι) (i : ℕ), i = B.R.m →
     ∀ (b : (I.stp u a i).β) (κ : (I.stp u a i).G b) (P : SBof I a), ∃ g g' z,

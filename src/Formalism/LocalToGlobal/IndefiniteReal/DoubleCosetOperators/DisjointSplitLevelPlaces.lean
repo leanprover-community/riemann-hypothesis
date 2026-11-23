@@ -151,11 +151,9 @@ attribute [instance] CoefLat.acg CoefLat.md
 def eTot (S : ExpSet D) (P1 : Finset (Formalism.L2.DIV.Pl D.host.E)) (es : Formalism.L2.DIV.Pl D.host.E → AE D) : AE D :=
   S.e0 + ∑ PP ∈ P1, es PP
 
-section SuppHalf
 
 variable {m n : ℕ}
 
-end SuppHalf
 
 def PhiTot (S : ExpSet D) (P1 : Finset (Formalism.L2.DIV.Pl D.host.E)) (es : Formalism.L2.DIV.Pl D.host.E → AE D)
     (Φl : Formalism.L2.DIV.Pl D.host.E → WO S.V S.W → ℂ) (x : WO S.V S.W) : ℂ :=

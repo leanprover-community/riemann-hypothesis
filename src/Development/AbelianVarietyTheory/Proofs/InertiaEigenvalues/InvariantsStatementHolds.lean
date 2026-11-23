@@ -111,7 +111,6 @@ theorem t2Space_lattice_V_of_good_situation (LT : LocTheory) (HW : HWOf LT) (AI 
 end
 
 section
-open Formalism.MainNotions Formalism.MainNotions.InvariantsGenerators Formalism.MainNotions.InvariantsGenerators.InvariantsFromGenerators
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.tableLineDegreeTwo Formalism.MainNotions.LocalSituation Topology Filter
 
 variable {l : ℕ} [hl : Fact l.Prime]

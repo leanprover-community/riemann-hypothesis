@@ -51,7 +51,6 @@ namespace GlobalTheory.SpanVA
 
 open TopologicalSpace
 open ReciprocityTheory.ChartRestriction.G.Semi (LB)
-open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp PSpace resG)
 open GlobalTheory.ProjSpace (toProj O1 coord)
 

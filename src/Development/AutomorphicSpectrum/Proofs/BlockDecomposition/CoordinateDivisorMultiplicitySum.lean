@@ -142,8 +142,6 @@ end GlobalTheory.CompanionTheory.MixZ.DivCyc
 
 namespace GlobalTheory.CompanionTheory.MixZ.DivCyc
 variable {m : ℕ} {n : Fin (m + 1) → ℕ}
-open GroundTheory.Heights₂.Heights (coordDeg localQuotLength)
-open GlobalTheory.CompanionTheory.MPDict.Spec (mratio Phi)
 
 theorem mem_ptIdeal_iff_gam {Z : Scheme.{0}} (f : Z ⟶ MP ℤ m n) (c : ∀ k, Bk n k) (w : Z) (hw : w ∈ f ⁻¹ᵁ mchart c) (F : Pol n) :
     F ∈ ptIdeal (f w) ↔ MvPolynomial.map (Z.evaluation (f ⁻¹ᵁ mchart c) w hw).hom (gam f c F) = 0 := by
@@ -213,8 +211,6 @@ end GlobalTheory.CompanionTheory.MixZ.DivCyc
 
 namespace GlobalTheory.CompanionTheory.MixZ.DivCyc
 variable {m : ℕ} {n : Fin (m + 1) → ℕ}
-open GroundTheory.Heights₂.Heights (coordDeg localQuotLength)
-open GlobalTheory.CompanionTheory.MPDict.Spec (mratio Phi)
 
 theorem app_pullRatio {Z Y : Scheme.{0}} {N : ℕ} (f : Z ⟶ Y) (P : Y ⟶ PSpace ℤ N) (W : Y.Opens) (i j : Fin (N + 1))
     (hi : W ≤ P ⁻¹ᵁ chart ℤ N i) (hi' : f ⁻¹ᵁ W ≤ (f ≫ P) ⁻¹ᵁ chart ℤ N i) :
@@ -250,7 +246,6 @@ end GlobalTheory.CompanionTheory.MixZ.DivCyc
 
 namespace GlobalTheory.CompanionTheory.MixZ.DivCyc
 variable {m : ℕ} {n : Fin (m + 1) → ℕ}
-open GroundTheory.Heights₂.Heights (coordDeg localQuotLength)
 
 theorem length_quot_ringEquiv {A B : Type*} [CommRing A] [CommRing B] (e : A ≃+* B) (a : A) :
     Module.length A (A ⧸ Ideal.span {a}) = Module.length B (B ⧸ Ideal.span {e a}) := by
@@ -307,7 +302,6 @@ end GlobalTheory.CompanionTheory.MixZ.DivCyc
 
 namespace GlobalTheory.CompanionTheory.MixZ.DivCyc
 variable {m : ℕ} {n : Fin (m + 1) → ℕ}
-open GroundTheory.Heights₂.Heights (coordDeg localQuotLength)
 
 theorem localQuot_congr {O : Type*} [CommRing O] {a b : Ideal O} (h : a = b) [a.IsPrime] [b.IsPrime] (g : O) :
     localQuotLength a g = localQuotLength b g := by

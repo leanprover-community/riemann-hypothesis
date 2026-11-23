@@ -107,7 +107,6 @@ end GlobalTheory.Mum.PolTens
 
 noncomputable section
 namespace GlobalTheory.Mum.PolTens
-open GlobalTheory.TensBal
 
 variable {R : Type} [CommRing R] [IsDomain R] {r : ℕ}
 
@@ -136,7 +135,6 @@ theorem vecLat_add {X X' : Type} [AddCommGroup X] [AddCommGroup X'] (xe : X' ≃
 end GlobalTheory.Mum.PolTens
 
 namespace GlobalTheory.Mum.PolTens
-open GlobalTheory.TensBal
 
 variable {R : Type} [CommRing R] [IsDomain R] {r : ℕ}
 
@@ -226,7 +224,6 @@ theorem triv_theta (xe : D'.X ≃+ (Fin r → Q.X)) (hpr : ∀ i, IsMonHom (pr i
 end GlobalTheory.Mum.PolTens
 
 namespace GlobalTheory.Mum.PolTens
-open GlobalTheory.TensBal
 
 variable {R : Type} [CommRing R] [IsDomain R] {r : ℕ} {Q : Data R} {D' : DegPre R} {pr : Fin r → (D'.P.A ⟶ Q.B)}
 
@@ -317,7 +314,6 @@ theorem triv_span {n : PVec r →₀ ℤ} (hn : n ∈ Submodule.span ℤ (rels r
 end GlobalTheory.Mum.PolTens
 
 namespace GlobalTheory.Mum.PolTens
-open GlobalTheory.TensBal
 
 variable {R : Type} [CommRing R] [IsDomain R] {r : ℕ} {Q : Data R} {D' : DegPre R} {pr : Fin r → (D'.P.A ⟶ Q.B)}
   (hl : IsLimit (Fan.mk D'.P.A pr))
@@ -373,7 +369,6 @@ theorem ros_pr (hpr : ∀ i, IsMonHom (pr i)) (A A' : Matrix (Fin r) (Fin r) ℤ
 end GlobalTheory.Mum.PolTens
 
 namespace GlobalTheory.Mum.PolTens
-open GlobalTheory.TensBal
 
 variable {R : Type} [CommRing R] [IsDomain R] {r : ℕ} {Q : Data R} {D' : DegPre R} {pr : Fin r → (D'.P.A ⟶ Q.B)}
   (hl : IsLimit (Fan.mk D'.P.A pr))
@@ -464,7 +459,6 @@ theorem ros_sig (hpr : ∀ i, IsMonHom (pr i)) {W : Matrix (Fin r) (Fin r) ℤ}
 end GlobalTheory.Mum.PolTens
 
 namespace GlobalTheory.Mum.PolTens
-open GlobalTheory.TensBal
 
 variable {R : Type} [CommRing R] [IsDomain R] {r : ℕ}
 
@@ -514,7 +508,6 @@ theorem tv_sigP (Q : Data R) {X' : Type} [AddCommGroup X'] (xe : X' ≃+ (Fin r 
 end GlobalTheory.Mum.PolTens
 
 namespace GlobalTheory.Mum.PolTens
-open GlobalTheory.TensBal
 
 theorem axv_eq {r : ℕ} (A : Matrix (Fin r) (Fin r) ℤ) (i : Fin r) : axv A i = ∑ l, A i l • xv l := by
   funext k
@@ -607,7 +600,6 @@ theorem span_sigP {r : ℕ} (W A A' : Matrix (Fin r) (Fin r) ℤ)
 end GlobalTheory.Mum.PolTens
 
 namespace GlobalTheory.Mum.PolTens
-open GlobalTheory.TensBal
 
 theorem transpose_mul_eq {r : ℕ} (W : Matrix (Fin r) (Fin r) ℤ) (h : IsUnit (W + W.transpose).det)
     (a : TensO (symUnitOf W h)) :

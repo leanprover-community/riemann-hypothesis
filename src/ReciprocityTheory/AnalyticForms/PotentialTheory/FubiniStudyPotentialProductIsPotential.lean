@@ -40,26 +40,20 @@ open MeasureTheory OnePoint CompatibleChartOperations
 
 noncomputable section
 
-section ProdChart
 
 variable {e e' : ℕ} {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
   (A : FinHolAtlas e X) (B : FinHolAtlas e' Y) (j : Fin A.n) (k : Fin B.n)
 
-end ProdChart
 
-section ProdChart2
 
 variable {e e' : ℕ} {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
   (A : FinHolAtlas e X) (B : FinHolAtlas e' Y)
 
-end ProdChart2
 
-section Pull
 
 variable {e e' : ℕ} {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
   (A : FinHolAtlas e X) (B : FinHolAtlas e' Y)
 
-end Pull
 
 
 

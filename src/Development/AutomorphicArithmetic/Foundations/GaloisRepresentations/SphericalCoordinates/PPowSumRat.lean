@@ -78,7 +78,6 @@ private lemma sum_evAt {F : Type} [Field F] {g : ℕ} (ty : Fin g → (F →+* �
   rw [Multiset.map_map, ← Finset.sum_filter]
   rfl
 
-open scoped Classical in
 private lemma sum_evFull {F : Type} [Field F] [NumberField F] {g : ℕ} (ty : Fin g → (F →+* ℂ))
     (e : Fin g → ℂ) (j : ℕ) (x : F) :
     ∑ τ : F →+* ℂ, τ x * ((evFull ty e τ).map fun r => r ^ j).sum =

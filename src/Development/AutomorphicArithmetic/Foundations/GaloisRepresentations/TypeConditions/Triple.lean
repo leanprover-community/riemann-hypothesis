@@ -276,10 +276,8 @@ end
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.BlochKatoReduction Formalism.MainNotions.BlochKatoReduction.Gen Formalism.ConjugateSelfDual ReciprocityTheory.Gal NumberField IsDedekindDomain Polynomial
 open Formalism.L2.Host Formalism.FrobeniusOrbits Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR
-open GlobalTheory.RowTie (WDTie)
 open GlobalTheory.HeightCounting (CharSide)
 open GlobalTheory.GalOfCusp GlobalTheory.TripleGal GlobalTheory.Triple
-open GlobalTheory.TypeLeaf (FrobDense)
 open GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary (embOver)
 open GlobalTheory.JumpDictionaryFoundation (exists_embOver embOver_true_apply)
 variable {D : D7} {T : WDTie D.nd D.naut} {C₀ C : CharFrame D} (S : CharSide D C₀)

@@ -98,7 +98,6 @@ end GlobalTheory.RatWeilUnip
 
 namespace GlobalTheory.RatWeilUnip
 
-open GlobalTheory.AdelicSvNQuad (quad map_quad quad_neg quad_add continuous_quad archMul archMul_temperate)
 
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
 
@@ -141,7 +140,6 @@ end GlobalTheory.RatWeilUnip
 
 namespace GlobalTheory.RatWeilUnip
 
-open GlobalTheory.AdelicSvNQuad (quad map_quad quad_neg quad_add continuous_quad archMul archMul_temperate)
 
 open scoped Classical
 

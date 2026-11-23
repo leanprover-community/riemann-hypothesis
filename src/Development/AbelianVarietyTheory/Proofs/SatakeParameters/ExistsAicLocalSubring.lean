@@ -104,7 +104,6 @@ end GlobalTheory.GenusTwoPureComparison.Cmp
 
 namespace GlobalTheory.GenusTwoPureComparison.Cmp
 
-open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC
 
 theorem eqv_fieldChange (hE2 : E2) (hE3 : E3) (q : ℕ) [NeZero q] (k K : Type) [Field k] [IsAlgClosed k] [Field K]
     [IsAlgClosed K] (φ : k →+* K) (hq : IsUnit (q : k)) {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) [IsProper p]

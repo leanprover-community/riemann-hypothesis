@@ -196,7 +196,6 @@ def resH2 : H2 rho →ₗ[R] H2 (rho.comp phi) :=
 
 end Restriction
 
-section Map
 
 variable {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
   [IsTopologicalAddGroup M'] [ContinuousConstSMul R M']
@@ -204,9 +203,7 @@ variable {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
   (hequiv : ∀ g m, u (rho g m) = rho' g (u m))
 include hu hequiv
 
-end Map
 
-section Pair
 
 variable {G' : Type*} [Group G'] [TopologicalSpace G']
   {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
@@ -215,25 +212,20 @@ variable {G' : Type*} [Group G'] [TopologicalSpace G']
   (u : M →ₗ[R] M') (hu : Continuous u) (hcompat : ∀ g m, u (rho (phi g) m) = rho' g (u m))
 include hphi hu hcompat
 
-end Pair
 
-section MapPair
 
 variable {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
   [IsTopologicalAddGroup M'] [ContinuousConstSMul R M']
   (rho' : Representation R G M') (u : M →ₗ[R] M') (hu : Continuous u)
   (hequiv : ∀ g m, u (rho g m) = rho' g (u m))
 
-end MapPair
 
-section RestrictionN
 
 variable {H : Type*} [Group H] [TopologicalSpace H] (phi : H →* G)
 
 variable (hphi : Continuous phi)
 include hphi
 
-end RestrictionN
 
 section Tate
 
@@ -253,7 +245,6 @@ section Coh
 
 noncomputable section
 
-open Representation
 
 variable {R : Type*} [CommRing R]
 variable {G : Type*} [Group G] [TopologicalSpace G]
@@ -262,7 +253,6 @@ variable {M : Type*} [AddCommGroup M] [Module R M] [TopologicalSpace M]
 
 variable (rho : Representation R G M)
 
-section Cup
 
 variable {M' : Type*} [AddCommGroup M'] [Module R M'] [TopologicalSpace M']
   [IsTopologicalAddGroup M'] [ContinuousConstSMul R M']
@@ -280,7 +270,6 @@ end CupZ11
 
 include hb hbe
 
-end Cup
 
 section Local
 
@@ -308,7 +297,6 @@ end
 
 end Coh
 
-section NatCoh
 
 variable {R : Type*} [CommRing R] {G : Type*} [Group G] [TopologicalSpace G]
   {M : Type*} [AddCommGroup M] [Module R M] [TopologicalSpace M]
@@ -321,7 +309,6 @@ variable {R : Type*} [CommRing R] {G : Type*} [Group G] [TopologicalSpace G]
 variable {I : Type*} {Dl : I → Type*} [∀ i, Group (Dl i)] [∀ i, TopologicalSpace (Dl i)]
   (phis : ∀ i, Dl i →* G) (hphis : ∀ i, Continuous (phis i))
 
-end NatCoh
 
 instance (priority := 100) continuousConstSMul_of_discrete {R M : Type*} [SMul R M]
     [TopologicalSpace M] [DiscreteTopology M] : ContinuousConstSMul R M :=
@@ -343,7 +330,6 @@ def charRep (χ : Γ →* Rˣ) : Representation R Γ R where
 
 end Coeff
 
-section Cup
 
 variable {R : Type*} [CommRing R] [TopologicalSpace R] [DiscreteTopology R]
   {Γ : Type*} [Group Γ] {M : Type*} [AddCommGroup M] [Module R M]
@@ -352,9 +338,7 @@ variable {R : Type*} [CommRing R] [TopologicalSpace R] [DiscreteTopology R]
 variable {D : Type*} [Group D] [TopologicalSpace D]
   (χ : Γ →* Rˣ) (rho : Representation R Γ M) (φ : D →* Γ)
 
-end Cup
 
-section NatMaps
 
 variable {R : Type*} [CommRing R] [TopologicalSpace R] [DiscreteTopology R]
   {Γ : Type*} [Group Γ] [TopologicalSpace Γ] (χ : Γ →* Rˣ)
@@ -366,7 +350,6 @@ variable {R : Type*} [CommRing R] [TopologicalSpace R] [DiscreteTopology R]
 variable {I : Type*} {Dl : I → Type*} [∀ i, Group (Dl i)] [∀ i, TopologicalSpace (Dl i)]
   (phis : ∀ i, Dl i →* Γ) (hphis : ∀ i, Continuous (phis i))
 
-end NatMaps
 
 section Cyc
 
@@ -598,7 +581,6 @@ variable (inv : ∀ i : S ⊕ InfinitePlace F, H2 ((charRep D.chi).comp (locHom 
 
 end PTMapsAll
 
-section PTFam
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
   {S : Finset (HeightOneSpectrum (𝓞 F))} {n : ℕ} [NeZero n] (D : GData F Ω S n)
@@ -607,7 +589,6 @@ variable {M : Type} [AddCommGroup M] [Module (ZMod n) M] [TopologicalSpace M] [D
   (rho : Representation (ZMod n) (GS Ω (S : Set (HeightOneSpectrum (𝓞 F)))) M)
   (hrho : ContAction rho)
 
-end PTFam
 
 section LubinTate
 
@@ -640,11 +621,9 @@ def resCard (π : OK p K) : ℕ := Nat.card (OK p K ⧸ Ideal.span {π})
 
 end LubinTate
 
-section FGL
 
 variable {R : Type} [CommRing R]
 
-end FGL
 
 section Division
 
@@ -655,13 +634,11 @@ def ltPoly (π : OK p K) : Polynomial (PadicAlgCl p) :=
 
 end Division
 
-section LTRecip
 
 open ValuativeRel
 
 variable (K : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
 
-end LTRecip
 
 
 section Hecke

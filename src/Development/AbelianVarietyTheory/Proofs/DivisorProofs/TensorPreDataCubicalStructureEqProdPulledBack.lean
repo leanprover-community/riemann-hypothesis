@@ -90,7 +90,6 @@ end Box
 end GlobalTheory.TensCub
 
 namespace GlobalTheory.TensCub
-open TopologicalSpace ReciprocityTheory.ChartRestriction.G.DVR
 section Box2
 variable {X X' Y Y₀ : Scheme.{0}} {M : LB X} {M' : LB X'} {K₀ : Type} [Fintype K₀] {pr : K₀ → (X' ⟶ X)} {εp : K₀ → ℤ}
 variable {K : Type} [Fintype K]

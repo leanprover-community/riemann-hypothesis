@@ -115,7 +115,6 @@ theorem one_sub_ne_zero {z : ℂ} (h : ‖z‖ < 1) : 1 - z ≠ 0 := fun e => by
   rw [← sub_eq_zero.1 e, norm_one] at h
   exact lt_irrefl _ h
 
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalSectionVariables in
 theorem closedForm_mul_denom (q n : ℕ) (c X : ℂ) (α : Fin (n / 2) → ℂˣ) (h : Domain (c * X) α) :
     closedForm q n X (c * X) α * denom n c α X = ∏ j ∈ Finset.range n, (1 - (-(q : ℂ)) ^ j * X) := by
   have h1 : (∏ i, (1 - c * X * (α i : ℂ))⁻¹ * (1 - c * X / (α i : ℂ))⁻¹) *
@@ -144,7 +143,6 @@ theorem numer_ne_zero {q n : ℕ} (hq : 1 ≤ q) {X : ℂ} (hX : ‖X‖ < ((q :
     _ = 1 := mul_inv_cancel₀ (by positivity)
 
 
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalSectionVariables in
 theorem domain_of_bound {r : ℕ} {y : ℂ} {α : Fin r → ℂˣ} {M : ℝ} (hM : 1 ≤ M)
     (hα : ∀ i, ‖(α i : ℂ)‖ ≤ M ∧ ‖(α i : ℂ)‖⁻¹ ≤ M) (hy : ‖y‖ * M < 1) : Domain y α := by
   have key : ∀ a : ℝ, a ≤ M → ‖y‖ * a < 1 := fun a ha =>
@@ -161,7 +159,6 @@ theorem exists_bound {r : ℕ} (α : Fin r → ℂˣ) :
   constructor <;> linarith
 
 
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalSectionVariables in
 theorem exists_deg {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : Lˣ)
     {σ : L →+* L} {q n : ℕ} (hU : IsUnramInv (ϖ : L) σ q) (hn : 1 ≤ n) :
     ∃ deg : GU σ n ⧸ KU σ n → ℕ, ∀ X : ℂ, X ≠ 0 → ∃ (χ : Lˣ →* ℂˣ) (s : ℂ) (Φ : GD σ n → ℂ), IsUnr χ ∧
@@ -195,7 +192,6 @@ theorem exists_deg {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ)
   · rw [hval1, ← zpow_natCast, Int.toNat_of_nonneg (Finset.sum_nonneg fun i _ => le_max_right _ _)]
 
 
-open GlobalTheory.IndefiniteRowSideFullHecke.SphericalSectionVariables in
 theorem trivialBound_of_bounded : GlobalTheory.IndefiniteRowSideFullHecke.SphericalSectionVariables.UnramDoublingInert → ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : Lˣ) (σ : L →+* L) (q n : ℕ), IsUnramInv (ϖ : L) σ q → ∀ (α : Fin (n / 2) → ℂˣ) (w : GU σ n → ℂ), GlobalTheory.IndefiniteRowSideFullHecke.SphericalSectionVariables.IsZonal (ϖ : L) q α w → (∃ C : ℝ, ∀ g, ‖w g‖ ≤ C) → GlobalTheory.IndefiniteRowSideFullHecke.TrivialParameterBound.TrivialBound q n α := by
   intro H L _ _ _ ϖ σ q n hU α w hw hb
   obtain ⟨C, hC⟩ := hb

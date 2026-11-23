@@ -99,7 +99,6 @@ variable {V V₀ : HSp D} {σ : ℕ} (d : HypDec V V₀ (σ + 1)) {n : Type} [Fi
 
 variable {τ}
 
-open GlobalTheory.RootEx (colE rowE)
 
 variable (hβ : IsScaled V V₀ τ d.i₀ (fourierJacobiVectors d) γ β t)
 include hβ

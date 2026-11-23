@@ -168,7 +168,6 @@ noncomputable section
 
 namespace GlobalTheory.JacPiTensor
 
-open scoped TensorProduct
 
 section Spec2
 

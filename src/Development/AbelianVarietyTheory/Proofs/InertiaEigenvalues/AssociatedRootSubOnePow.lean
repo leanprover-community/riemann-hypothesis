@@ -77,7 +77,6 @@ theorem _root_.GlobalTheory.CycFr.constantCoeff_lvl (k : ℕ) :
 
   simp [map_sum]
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [CharZero O] [Algebra ℤ_[l] O] in
 omit [IsDomain O] [CharZero O] in
 theorem _root_.GlobalTheory.CycFr.act_l_X :
@@ -87,7 +86,6 @@ theorem _root_.GlobalTheory.CycFr.act_l_X :
   simp only [pow_zero, pow_one, zero_add, add_sub_cancel_left] at h
   exact h.symm
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [CharZero O] [Algebra ℤ_[l] O] in
 omit [Algebra ℤ_[l] O] [CharZero O] in
 theorem _root_.GlobalTheory.CycFr.sub_one_mem_max [IsLocalRing O] (hl : ¬ IsUnit (l : O)) (ζ : O)
@@ -102,7 +100,6 @@ theorem _root_.GlobalTheory.CycFr.sub_one_mem_max [IsLocalRing O] (hl : ¬ IsUni
     rw [sub_pow_char, ← map_pow, hζ, map_one, one_pow, sub_self]
   exact (pow_eq_zero_iff hp.ne_zero).mp h1
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [CharZero O] [Algebra ℤ_[l] O] in
 omit [Algebra ℤ_[l] O] [CharZero O] [Fact l.Prime] in
 theorem _root_.GlobalTheory.CycFr.prime_X_sub_C [IsLocalRing O]
@@ -128,7 +125,6 @@ include hinj hr hξ hE
 
 end Fields
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [CharZero O] [Algebra ℤ_[l] O] in
 private lemma exists_descent_of_cyclotomic_action {Δ : Subgroup ℤ_[l]ˣ} {j : O⟦X⟧ →ₐ[O] O⟦X⟧}
     (hr : ∀ a, (∃ b, j b = a) ↔ ∀ δ ∈ Δ, _root_.GlobalTheory.CycFr.act O (δ : ℤ_[l]) a = a)
@@ -156,7 +152,6 @@ private lemma exists_descent_of_cyclotomic_action {Δ : Subgroup ℤ_[l]ˣ} {j :
     · simp only [AlgHom.comp_apply, coe_substAlgHom, subst_X hs, hy]
   exact congrArg (fun f => f a) key
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [CharZero O] [Algebra ℤ_[l] O] in
 private lemma dvd_of_invariant_map_dvd {Δ : Subgroup ℤ_[l]ˣ} {j : O⟦X⟧ →ₐ[O] O⟦X⟧}
     (hinj : Function.Injective j)
@@ -173,7 +168,6 @@ private lemma dvd_of_invariant_map_dvd {Δ : Subgroup ℤ_[l]ˣ} {j : O⟦X⟧ �
   obtain ⟨c', rfl⟩ := (hr c).2 hinvc
   exact ⟨c', hinj (by rw [hc, map_mul])⟩
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [CharZero O] [Algebra ℤ_[l] O] in
 private lemma associated_of_associated_invariant_map {Δ : Subgroup ℤ_[l]ˣ} {j : O⟦X⟧ →ₐ[O] O⟦X⟧}
     (hinj : Function.Injective j)
@@ -190,7 +184,6 @@ private lemma associated_of_associated_invariant_map {Δ : Subgroup ℤ_[l]ˣ} {
     exact associated_of_dvd_dvd (dvd_of_invariant_map_dvd hinj hr ha h.dvd)
       (dvd_of_invariant_map_dvd hinj hr hb h.symm.dvd)
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [CharZero O] [Algebra ℤ_[l] O] in
 private lemma associated_pow_sub_one_prime_of_lt_prime {l : ℕ} [Fact l.Prime] (u : ℤ_[l])
     (hu : Associated (u - 1) (l : ℤ_[l])) {d : ℕ} (hd0 : 0 < d) (hdl : d < l) :
@@ -215,7 +208,6 @@ private lemma associated_pow_sub_one_prime_of_lt_prime {l : ℕ} [Fact l.Prime] 
   exact (associated_mul_unit_left _ _ hS).trans hu
 
 
-open PowerSeries in
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [CharZero O] [Algebra ℤ_[l] O] in
 theorem _root_.GlobalTheory.CycFr.exists_frame [IsDiscreteValuationRing O]
     [IsAdicComplete (IsLocalRing.maximalIdeal O) O]

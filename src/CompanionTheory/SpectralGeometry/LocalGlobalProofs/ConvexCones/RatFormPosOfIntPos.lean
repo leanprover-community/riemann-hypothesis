@@ -85,7 +85,6 @@ theorem ratForm_pos_of_int_pos {n : ℕ} (Q : Matrix (Fin n) (Fin n) ℚ)
   exact (pos_iff_pos_of_mul_pos h).1 hb2
 
 
-open Matrix in
 theorem posDef_of_int_pos (n : ℕ) (Q : Matrix (Fin n) (Fin n) ℚ) (hs : Q.IsSymm)
     (hQ : ∀ v : Fin n → ℤ, v ≠ 0 → 0 < ∑ i, ∑ j, Q i j * v i * v j) :
     (Q.map (Rat.cast : ℚ → ℝ)).PosDef := by

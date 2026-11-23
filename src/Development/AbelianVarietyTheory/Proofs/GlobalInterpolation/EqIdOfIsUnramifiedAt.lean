@@ -67,8 +67,6 @@ private lemma isCMExt_conj_ne_id (h : _root_.Formalism.MainNotions.GlobalTheoryT
   rw [hσ, AlgHom.id_apply] at hx
   exact hx.symm
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} in
 private lemma isCMExt_mem_range_of_conj_fixed (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) {x : E} (hx : σ x = x) :
@@ -86,8 +84,6 @@ private lemma isCMExt_mem_range_of_conj_fixed (h : _root_.Formalism.MainNotions.
     exact hmem
 
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} in
 theorem _root_.GlobalTheory.UnramifiedDiscriminant.exists_int_of_conj_eq (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) (a : 𝓞 E) (ha : σ a = a) :
@@ -100,8 +96,6 @@ theorem _root_.GlobalTheory.UnramifiedDiscriminant.exists_int_of_conj_eq (h : _r
   ext
   exact hf
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} in
 private lemma isCMExt_conj_conj (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) (x : E) : σ (σ x) = x := by
@@ -110,8 +104,6 @@ private lemma isCMExt_conj_conj (h : _root_.Formalism.MainNotions.GlobalTheoryTh
   apply τ.injective
   rw [hτ, hτ, star_star]
 
-open scoped TensorProduct in
-open NumberField IsDedekindDomain MeasureTheory Topology in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} in
 theorem _root_.GlobalTheory.UnramifiedDiscriminant.exists_discr_notMem (F E : Type) [Field F] [NumberField F] [Field E]

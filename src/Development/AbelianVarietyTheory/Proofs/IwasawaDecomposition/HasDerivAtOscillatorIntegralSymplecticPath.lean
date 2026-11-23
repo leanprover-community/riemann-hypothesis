@@ -70,8 +70,6 @@ private lemma omL_apply_eq_omJ (x y : V) :
     _root_.GlobalTheory.Mem.Lift.OscDeriv.omL J x y = _root_.GlobalTheory.RealWeil.omJ J x y := by
   simp [_root_.GlobalTheory.Mem.Lift.OscDeriv.omL, _root_.GlobalTheory.RealWeil.omJ]
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder Topology in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V]
   [BorelSpace V] {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] {J : V ≃ₗᵢ[ℝ] V}
   {ρ : V → B →L[ℂ] B} in
@@ -80,8 +78,6 @@ private lemma omL_eq_omJ :
     (fun x y => _root_.GlobalTheory.Mem.Lift.OscDeriv.omL J x y) = _root_.GlobalTheory.RealWeil.omJ J := by
   funext x y; exact omL_apply_eq_omJ x y
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder Topology in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V]
   [BorelSpace V] {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] {J : V ≃ₗᵢ[ℝ] V}
   {ρ : V → B →L[ℂ] B} in
@@ -94,8 +90,6 @@ private lemma omL_self_eq_zero (hJ : ∀ x, J (J x) = -x) (x : V) :
   rw [hJ, inner_neg_right, real_inner_comm] at h1
   linarith
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder Topology in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V]
   [BorelSpace V] {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] {J : V ≃ₗᵢ[ℝ] V}
   {ρ : V → B →L[ℂ] B} in
@@ -108,8 +102,6 @@ private lemma integrable_of_quadratic_weight {μ : Measure V} {g : V → ℝ}
   refine Integrable.mono' (hi.congr (ae_of_all _ fun w => ?_)) hGm (ae_of_all _ hb)
   simp only [pow_zero, pow_one, Pi.add_apply]; ring
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder Topology in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V]
   [BorelSpace V] {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] {J : V ≃ₗᵢ[ℝ] V}
   {ρ : V → B →L[ℂ] B} in
@@ -124,8 +116,6 @@ private lemma aestronglyMeasurable_dH_comp {μ : Measure V} {G : V → B}
     (fun t => (((ρ _).continuous.comp_aestronglyMeasurable hGm).sub
       ((ρ _).continuous.comp_aestronglyMeasurable hGm)).const_smul _) (ae_of_all _ hlim)
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder Topology in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V]
   [BorelSpace V] {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] {J : V ≃ₗᵢ[ℝ] V}
   {ρ : V → B →L[ℂ] B} in
@@ -137,8 +127,6 @@ private lemma abs_omL_apply_le (x y : V) :
   calc |⟪x, J y⟫| ≤ ‖x‖ * ‖J y‖ := abs_real_inner_le_norm _ _
     _ = ‖x‖ * ‖y‖ := by rw [LinearIsometryEquiv.norm_map]
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder Topology in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V]
   [BorelSpace V] {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] {J : V ≃ₗᵢ[ℝ] V}
   {ρ : V → B →L[ℂ] B} in
@@ -157,8 +145,6 @@ private lemma norm_dH_action_le (hJ : ∀ x, J (J x) = -x)
     simp [abs_of_pos Real.pi_pos]
   rw [hn]; gcongr
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder Topology in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V]
   [BorelSpace V] {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] {J : V ≃ₗᵢ[ℝ] V}
   {ρ : V → B →L[ℂ] B} in
@@ -190,8 +176,6 @@ private lemma quad_integral_eq_integral_quad (hJ : ∀ x, J (J x) = -x)
   · intro i _
     exact (hD2 _ _).smul (c i)
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder Topology in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V]
   [BorelSpace V] {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] {J : V ≃ₗᵢ[ℝ] V}
   {ρ : V → B →L[ℂ] B} in
@@ -225,8 +209,6 @@ private lemma norm_heis_action_sub_le (hJ : ∀ x, J (J x) = -x)
       ≤ C * ‖s‖ * ‖y‖ + π * (R * ‖s‖) * ‖y‖ := by gcongr; exact hC s
     _ = (C + π * R) * ‖y‖ * ‖s‖ := by ring
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder Topology in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V]
   [BorelSpace V] {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] {J : V ≃ₗᵢ[ℝ] V}
   {ρ : V → B →L[ℂ] B} in
@@ -245,8 +227,6 @@ private lemma tendsto_heis_action_apply {om : V → V → ℝ} (h : _root_.Globa
     _ = ‖v i - v₀‖ + ‖ρ (u i) v₀ - ρ u₀ v₀‖ := by rw [h.2.2.1]
 
 
-open MeasureTheory Complex Matrix in
-open scoped RealInnerProductSpace ContDiff Real ComplexOrder Topology in
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V]
   [BorelSpace V] {B : Type} [NormedAddCommGroup B] [NormedSpace ℂ B] [CompleteSpace B] {J : V ≃ₗᵢ[ℝ] V}
   {ρ : V → B →L[ℂ] B} in

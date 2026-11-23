@@ -55,8 +55,6 @@ theorem _root_.GlobalTheory.UnRep.ReflLaws.hermE_eq_dot (v x : Fin n → E) :
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   ring
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (c : E ≃ₐ[F] E) {n : ℕ}
   (G : Matrix (Fin n) (Fin n) E) in
 theorem _root_.GlobalTheory.UnRep.ReflLaws.refl_mulVec (x : Fin n → E) (u : E) (v : Fin n → E) :
@@ -72,8 +70,6 @@ theorem _root_.GlobalTheory.UnRep.ReflLaws.refl_mulVec (x : Fin n → E) (u : E)
     _root_.GlobalTheory.UnRep.ReflLaws.hermE_eq_dot]
   ring
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (c : E ≃ₐ[F] E) {n : ℕ}
   (G : Matrix (Fin n) (Fin n) E) in
 private theorem hermE_add_smul_left' (v x y : Fin n → E) (t : E) :
@@ -82,8 +78,6 @@ private theorem hermE_add_smul_left' (v x y : Fin n → E) (t : E) :
   simp only [_root_.GlobalTheory.UnRep.ReflLaws.hermE_eq_dot, dotProduct_add, dotProduct_smul,
     smul_eq_mul]
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (c : E ≃ₐ[F] E) {n : ℕ}
   (G : Matrix (Fin n) (Fin n) E) in
 private theorem hermE_conj_eq_swap_of_involutive_of_conj_symm (hinv : ∀ z : E, c (c z) = z) (hG : ∀ a b, c (G a b) = G b a)
@@ -96,8 +90,6 @@ private theorem hermE_conj_eq_swap_of_involutive_of_conj_symm (hinv : ∀ z : E,
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (c : E ≃ₐ[F] E) {n : ℕ}
   (G : Matrix (Fin n) (Fin n) E) in
 private theorem hermE_add_smul_right' (v x y : Fin n → E) (t : E) :
@@ -109,8 +101,6 @@ private theorem hermE_add_smul_right' (v x y : Fin n → E) (t : E) :
   simp only [_root_.GlobalTheory.UnRep.ReflLaws.hermE_eq_dot, hfun, Matrix.mulVec_add,
     Matrix.mulVec_smul, add_dotProduct, smul_dotProduct, smul_eq_mul]
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix in
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (c : E ≃ₐ[F] E) {n : ℕ}
   (G : Matrix (Fin n) (Fin n) E) in
 theorem _root_.GlobalTheory.UnRep.ReflLaws.refl_laws : ∀ (F E : Type) [Field F] [NumberField F] [Field E]

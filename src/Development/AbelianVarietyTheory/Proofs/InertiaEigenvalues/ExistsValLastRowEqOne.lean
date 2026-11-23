@@ -95,7 +95,6 @@ end GlobalTheory.CellEvalNM
 
 namespace GlobalTheory.CellEvalNM
 
-open GroundTheory.Automorphic.FourierWhittaker (blockGL blockMat blockMat_apply coe_blockGL)
 
 theorem eq_zero_of_comp_diag (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (N : ℕ)
     (w : HeightOneSpectrum (𝓞 E))
@@ -270,7 +269,6 @@ end GlobalTheory.CellEvalNM
 
 namespace GlobalTheory.CellEvalNM
 
-open GroundTheory.Automorphic.FourierWhittaker (blockGL blockMat blockMat_apply coe_blockGL)
 
 theorem compV_tl {E : Type} [Field E] [NumberField E] (N : ℕ) (ϖ : ∀ w : HeightOneSpectrum (𝓞 E), (w.adicCompletion E)ˣ)
     (l : HeightOneSpectrum (𝓞 E) →₀ (Fin N → ℤ)) (w : HeightOneSpectrum (𝓞 E)) :

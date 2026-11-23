@@ -217,7 +217,6 @@ theorem exists_gen_norm (wP : PrimTy H Xo) (hwP : wP.IsGen) (β : 𝓞 E) (N : �
 theorem one_left (T : Over Xo.X) : (1 : T ⟶ Xo.univ.t.G).left = (toUnit T).left ≫ eSec Xo.univ.t.G := rfl
 
 
-open Formalism.MainNotions.ModuliIntegralCharts.H1.ExpGC in
 theorem val_norm (wP : PrimTy H Xo) (hwP : IsPrim wP) (β : 𝓞 E) (N k : ℕ) (hN : β * H.bar β = (N : 𝓞 E))
     (wL : AdTy Xo β) (hwL : wL.IsGen)
     (α : LB.Gen (LB.LinComb Xo.univ.t.PP.L (K := Fin 2) ![𝟙 Xo.univ.t.G.left, (Xo.univ.t.act.act β).left]
@@ -316,7 +315,6 @@ end Sec
 
 section Chart
 
-open Formalism.MainNotions.ModuliIntegralCharts.H1.GermD Formalism.MainNotions.ModuliIntegralCharts.H1.ExpGF
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable {Xo : Moduli Dw l} {c : Coeff l} [StarRing (𝓞 E)]

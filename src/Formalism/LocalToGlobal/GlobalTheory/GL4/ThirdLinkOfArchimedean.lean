@@ -102,7 +102,6 @@ end Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
 namespace Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
-open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.HN Formalism.MainNotions.flipTwoThree Formalism.L2.DIV Formalism.L2.GlobalTheoryTheory.HLatOps Formalism.L2.Col
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

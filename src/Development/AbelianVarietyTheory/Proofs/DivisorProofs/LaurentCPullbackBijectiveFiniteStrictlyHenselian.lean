@@ -68,7 +68,6 @@ private lemma pull_spMap_comp_apply (R : Type) [CommRing R] {A B C : Type} [Comm
         (_root_.GlobalTheory.EtC.pull R (_root_.GlobalTheory.EtC.spMap f) F n x) := by
   rw [_root_.GlobalTheory.EtC.HInvIso.spMap_comp', _root_.GlobalTheory.EtC.pull_comp]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 private lemma pull_bijective_of_ringHom_inverse (R : Type) [CommRing R] {A B : Type} [CommRing A]
     [CommRing B] (f : A →+* B) (g : B →+* A) (hgf : g.comp f = RingHom.id A)
     (hfg : f.comp g = RingHom.id B) (F : _root_.GlobalTheory.EtC.Shv R) (n : ℤ) :
@@ -80,7 +79,6 @@ private lemma pull_bijective_of_ringHom_inverse (R : Type) [CommRing R] {A B : T
   · rw [← pull_spMap_comp_apply, hfg, _root_.GlobalTheory.EtC.HInvIso.spMap_id',
       _root_.GlobalTheory.EtC.pull_id]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 private lemma laurentConstant_of_ringEquiv (q : ℕ) {T T' : Type} [CommRing T] [CommRing T']
     (e : T ≃+* T') (h : _root_.GlobalTheory.EtC.SpecMapPullbackFunctoriality.PC q T) :
     _root_.GlobalTheory.EtC.SpecMapPullbackFunctoriality.PC q T' := by
@@ -112,7 +110,6 @@ private lemma laurentConstant_of_ringEquiv (q : ℕ) {T T' : Type} [CommRing T] 
     rw [← pull_spMap_comp_apply, ← pull_spMap_comp_apply, hsq]
   exact (Function.Bijective.of_comp_iff _ hu).mp (hfun ▸ hv.comp (h i))
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 private lemma subsingleton_cohomology_of_subsingleton_ring (q : ℕ) (S : Type) [CommRing S]
     [Subsingleton S] (i n : ℤ) :
     Subsingleton (_root_.GlobalTheory.EtC.H (ZMod q) (_root_.GlobalTheory.EtC.sp S) (_root_.GlobalTheory.EtC.tw q i) n) := by
@@ -122,7 +119,6 @@ private lemma subsingleton_cohomology_of_subsingleton_ring (q : ℕ) (S : Type) 
   simp only [Prod.mk.injEq] at hx
   rw [← hx.1, ← hx.2, hfs]
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 private lemma laurentMap_fst_prod_snd_bijective (T₁ T₂ : Type) [CommRing T₁] [CommRing T₂] :
     Function.Bijective (RingHom.prod (_root_.GlobalTheory.EtC.GmStep.laurentMap (RingHom.fst T₁ T₂))
       (_root_.GlobalTheory.EtC.GmStep.laurentMap (RingHom.snd T₁ T₂))) := by
@@ -150,7 +146,6 @@ private lemma laurentMap_fst_prod_snd_bijective (T₁ T₂ : Type) [CommRing T�
     simp only [RingHom.prod_apply, map_add (f := _), map_mul, _root_.GlobalTheory.EtC.GmStep.laurentMap_C, hy₁, hy₂]
     refine Prod.ext ?_ ?_ <;> simp
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 private lemma laurentConstant_prod (q : ℕ) (T₁ T₂ : Type) [CommRing T₁] [CommRing T₂]
     (h₁ : _root_.GlobalTheory.EtC.SpecMapPullbackFunctoriality.PC q T₁)
     (h₂ : _root_.GlobalTheory.EtC.SpecMapPullbackFunctoriality.PC q T₂) :
@@ -207,7 +202,6 @@ private lemma laurentConstant_prod (q : ℕ) (T₁ T₂ : Type) [CommRing T₁] 
     exact pull_spMap_comp_apply _ _ _ _ _ x
   exact (Function.Bijective.of_comp_iff' hΦbij _).mp (hcomp ▸ hD)
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Polynomial in
 private lemma exists_cyclotomic_root_of_strictlyHenselian (q : ℕ) [NeZero q] (A : Type)
     [CommRing A] (hA : _root_.GlobalTheory.EtC.SH A) (hq : IsUnit (q : A)) :
     ∃ ζ : A, Polynomial.aeval ζ (Polynomial.cyclotomic q ℤ) = 0 := by
@@ -240,14 +234,12 @@ private lemma exists_cyclotomic_root_of_strictlyHenselian (q : ℕ) [NeZero q] (
   rw [aeval_def, eval₂_eq_eval_map, map_cyclotomic]
   exact hζ
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Polynomial in
 private lemma isIdempotentElem_eq_zero_or_one_of_isLocalRing {T : Type} [CommRing T]
     [IsLocalRing T] (e : T) (he : IsIdempotentElem e) : e = 0 ∨ e = 1 := by
   rcases IsLocalRing.isUnit_or_isUnit_one_sub_self e with h | h
   · exact Or.inr (h.mul_left_cancel (by rw [he.eq, mul_one]))
   · exact Or.inl (h.mul_right_eq_zero.mp (by rw [sub_mul, one_mul, he.eq, sub_self]))
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Polynomial in
 private lemma laurent_isIdempotentElem_eq_zero_or_one_of_isLocalRing (T : Type) [CommRing T] [IsLocalRing T]
     (e : LaurentPolynomial T) (he : IsIdempotentElem e) : e = 0 ∨ e = 1 := by
   set m := IsLocalRing.maximalIdeal T
@@ -286,7 +278,6 @@ private lemma laurent_isIdempotentElem_eq_zero_or_one_of_isLocalRing (T : Type) 
   · refine Or.inr (sub_eq_zero.mp ?_).symm
     exact main (1 - e) he.one_sub (by rw [map_sub, map_one, h, sub_self])
 
-open CategoryTheory Limits AlgebraicGeometry Opposite Simplicial in
 theorem _root_.GlobalTheory.EtC.SpecMapPullbackFunctoriality.laurent_C_pull_bijective : ∀ (q : ℕ) [NeZero q] (A : Type) [CommRing A], _root_.GlobalTheory.EtC.SH A → IsUnit (q : A) →
     ∀ (T : Type) [CommRing T] [Algebra A T], Module.Finite A T → ∀ i : ℤ,
     Function.Bijective (_root_.GlobalTheory.EtC.pull _ (_root_.GlobalTheory.EtC.spMap (LaurentPolynomial.C : T →+* LaurentPolynomial T)) (_root_.GlobalTheory.EtC.tw q i) 0) := by

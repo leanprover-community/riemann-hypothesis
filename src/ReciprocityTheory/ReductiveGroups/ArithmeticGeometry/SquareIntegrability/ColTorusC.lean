@@ -241,7 +241,6 @@ end ReciprocityTheory.ChartRestriction.G.I2
 
 namespace ReciprocityTheory.ChartRestriction.G.I2
 
-open MeasureTheory Complex
 
 noncomputable section
 

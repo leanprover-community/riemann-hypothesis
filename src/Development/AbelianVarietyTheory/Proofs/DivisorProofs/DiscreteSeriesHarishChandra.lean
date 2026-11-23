@@ -49,7 +49,6 @@ private theorem diagonal_exp_single_two_pi_eq_one {n : ℕ} (a : Fin n) :
   · subst h; simp [Complex.exp_two_pi_mul_I]
   · simp [Pi.single_apply, h]
 
-open Finset in
 private theorem exists_int_eq_weight_of_isWtOn {n : ℕ} {H : Type} [NormedAddCommGroup H]
     [InnerProductSpace ℂ H] {K : Set (Matrix (Fin n) (Fin n) ℂ)}
     (hK : (1 : Matrix (Fin n) (Fin n) ℂ) ∈ K)
@@ -80,13 +79,11 @@ private theorem exists_int_eq_weight_of_isWtOn {n : ℕ} {H : Type} [NormedAddCo
     linear_combination hm
   exact_mod_cast this
 
-open Finset in
 private theorem one_mem_Kset_divisor {n : ℕ} (ε : Fin n → Bool) :
     (1 : Matrix (Fin n) (Fin n) ℂ) ∈ _root_.Formalism.REAL.Kset ε := by
   unfold _root_.Formalism.REAL.Kset
   exact ⟨one_mem _, by simp⟩
 
-open Finset in
 private theorem card_same_diff_sign_lt_gt_add_one_eq {n : ℕ} (ε : Fin n → Bool) (a : Fin n) :
     #{b | a < b ∧ ε b = ε a} + #{b | b < a ∧ ε b = ε a} + #{b | a < b ∧ ε b ≠ ε a}
       + #{b | b < a ∧ ε b ≠ ε a} + 1 = n := by
@@ -111,7 +108,6 @@ private theorem card_same_diff_sign_lt_gt_add_one_eq {n : ℕ} (ε : Fin n → B
   have := a.isLt
   omega
 
-open Finset in
 private theorem exists_int_rhoC_sub_rhoN_sub_half {n : ℕ} (ε : Fin n → Bool) (a : Fin n) :
     ∃ m : ℤ, _root_.Formalism.REAL.rhoC ε a - _root_.Formalism.REAL.rhoN ε a - ((n : ℝ) - 1) / 2 = m := by
   have h := card_same_diff_sign_lt_gt_add_one_eq ε a
@@ -124,7 +120,6 @@ private theorem exists_int_rhoC_sub_rhoN_sub_half {n : ℕ} (ε : Fin n → Bool
   linear_combination hr / 2
 
 
-open Finset in
 theorem _root_.GlobalTheory.DSParam.isHCParam_of_isDS : ∀ (n : ℕ) (H : Type) [NormedAddCommGroup H]
     [InnerProductSpace ℂ H]
     (ε : Fin n → Bool) (lam : Fin n → ℝ) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)),

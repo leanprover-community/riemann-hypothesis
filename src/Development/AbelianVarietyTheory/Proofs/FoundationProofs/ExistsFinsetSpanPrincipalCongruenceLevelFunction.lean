@@ -68,15 +68,11 @@ theorem _root_.GlobalTheory.KZ.ES.LevFin.sl_ofSL_mul (X : _root_.GlobalTheory.KZ
       X.sl (_root_.GlobalTheory.KZ.ofSL b) (X.sl (_root_.GlobalTheory.KZ.ofSL a) f) := by
   rw [map_mul, X.sl_mul]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 theorem _root_.GlobalTheory.KZ.ES.LevFin.sl_ofSL_one (X : _root_.GlobalTheory.KZ.Tower Ω ε)
     (f : X.K) : X.sl (_root_.GlobalTheory.KZ.ofSL 1) f = f := by
   rw [map_one, X.sl_one]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 theorem _root_.GlobalTheory.KZ.ES.LevFin.lev_sl
     (X : _root_.GlobalTheory.KZ.Tower Ω ε) (M : ℕ) (g : SL(2, ℤ)) {f : X.K}
@@ -144,16 +140,12 @@ def act (X : Tower Ω ε) (M : ℕ) : SL(2, ℤ) →* RingAut (levSub X M) where
     rw [actE_apply, _root_.mul_inv_rev, sl_ofSL_mul]
     rfl
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 private lemma coe_sum_smul_fixedPoints_eq_sum_mul {K : Type*} [Field K] (L : Subfield K) (G : Type*) [Group G]
     [MulSemiringAction G L] {ι : Type*} [Fintype ι] (c : ι → FixedPoints.subfield G L)
     (x : ι → L) : ((∑ i, c i • x i : L) : K) = ∑ i, ((c i : L) : K) * (x i : K) :=
   (map_sum L.subtype _ _).trans (Finset.sum_congr rfl fun _ _ => rfl)
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 private lemma exists_common_denominator_adjoin_simple {E : Type*} [Field E] [Algebra Ω E] (α : E)
     (S : Finset ℕ) (a : ℕ → IntermediateField.adjoin Ω {α}) :
@@ -174,8 +166,6 @@ private lemma exists_common_denominator_adjoin_simple {E : Type*} [Field E] [Alg
     · obtain ⟨r, hr⟩ := hS i hi
       exact ⟨s₀ * r, by rw [map_mul, map_mul, ← hr]; ring⟩
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 private lemma exists_differentiableOn_an_aeval_jK
     (X : _root_.GlobalTheory.KZ.Tower Ω ε)
@@ -198,8 +188,6 @@ private lemma exists_differentiableOn_an_aeval_jK
     rw [pow_succ, ← mul_assoc, map_mul, Polynomial.aeval_X, map_mul, hφe, hψe]
     rfl
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 private lemma norm_le_max_one_of_monic_root {d : ℕ} {c : ℕ → ℂ} {w : ℂ} {B : ℝ}
     (hc : ∀ i < d, ‖c i‖ ≤ B) (hw : w ^ d + ∑ i ∈ Finset.range d, c i * w ^ i = 0) :
@@ -233,8 +221,6 @@ private lemma norm_le_max_one_of_monic_root {d : ℕ} {c : ℕ → ℂ} {w : ℂ
   have := mul_lt_mul_of_pos_right h2 hpos
   linarith
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 open Filter Topology in
 private lemma exists_differentiableOn_eventuallyEq_div_of_monic_root {U : Set ℂ} (hU : IsOpen U)
@@ -301,8 +287,6 @@ private lemma exists_differentiableOn_eventuallyEq_div_of_monic_root {U : Set �
   filter_upwards [(key z₀ hz₀).2] with z hz
   exact Or.inl hz
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 open Filter in
 private lemma exists_differentiableOn_eq_of_monic_root_Mero {y : _root_.GlobalTheory.KZ.Mero}
@@ -343,8 +327,6 @@ private lemma exists_differentiableOn_eq_of_monic_root_Mero {y : _root_.GlobalTh
       exact ⟨hz1, hz2⟩)
   exact ⟨φ, hφ, hyq.trans (Filter.Germ.coe_eq.2 hφe)⟩
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 private lemma sl_aeval_jK (X : _root_.GlobalTheory.KZ.Tower Ω ε) (γ : SL(2, ℤ))
     (q : Polynomial Ω) :
@@ -354,8 +336,6 @@ private lemma sl_aeval_jK (X : _root_.GlobalTheory.KZ.Tower Ω ε) (γ : SL(2, �
   simp only [AlgEquiv.coe_algHom, X.j_inv] at e
   exact e.symm
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 private lemma mem_adjoin_jK_of_sl_invariant [IsAlgClosure ℚ Ω]
     (X : _root_.GlobalTheory.KZ.Tower Ω ε)
@@ -417,8 +397,6 @@ private lemma mem_adjoin_jK_of_sl_invariant [IsAlgClosure ℚ Ω]
   exact div_mem hgF hℓF
 
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 theorem _root_.GlobalTheory.KZ.ES.LevFin.exists_finset_span : ∀ {Ω : Type} [Field Ω]
     [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : _root_.GlobalTheory.KZ.Tower Ω ε),

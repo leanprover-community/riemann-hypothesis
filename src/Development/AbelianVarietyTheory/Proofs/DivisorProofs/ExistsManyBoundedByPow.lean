@@ -105,7 +105,6 @@ end GlobalTheory.Nef.PolesOfT
 
 namespace GlobalTheory.Nef.PolesOfT
 
-open Polynomial
 
 variable {k F : Type} [Field k] [Field F] [Algebra k F]
 

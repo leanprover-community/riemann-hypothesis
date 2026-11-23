@@ -104,8 +104,6 @@ end GlobalTheory.LogPole.CellMono
 
 namespace GlobalTheory.LogPole
 
-open GlobalTheory.Reg GlobalTheory.FlagMod MonoidalCategory CartesianMonoidalCategory MonObj
-open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv mkT tanM_ext tv_mem actR)
 
 attribute [local instance] Over.cartesianMonoidalCategory
 

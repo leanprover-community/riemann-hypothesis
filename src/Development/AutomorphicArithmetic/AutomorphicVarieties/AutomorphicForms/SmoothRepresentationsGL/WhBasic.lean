@@ -63,7 +63,6 @@ private theorem exists_uGL {E : Type} [Field E] [NumberField E] {n : ℕ} (ν : 
     · intro p _
       rfl
 
-open GroundTheory.Automorphic.FourierWhittaker in
 theorem UpperTheory.V.Af.Smo.whBasic :
     UpperTheory.V.Af.Smo.WhBasic := by
   intro E _ _ n f hf

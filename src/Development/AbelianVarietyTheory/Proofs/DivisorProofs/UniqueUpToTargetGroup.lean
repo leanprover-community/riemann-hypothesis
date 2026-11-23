@@ -164,7 +164,6 @@ end GlobalTheory.ShareOn
 
 namespace GlobalTheory.ShareOn
 
-open scoped Matrix
 
 section Transfer
 

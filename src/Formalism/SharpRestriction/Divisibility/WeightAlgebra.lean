@@ -212,7 +212,6 @@ def bad (_X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO)) : Prop :=
   (((2 * (NumberField.discr D.host.E).natAbs * D.host.g 0 * D.host.g 1 : ℕ) : 𝓞 B.KO) ∈ la.asIdeal)
 
 
-open Classical in
 def eLa (T : ℕ) (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ) (la : HeightOneSpectrum (𝓞 B.KO)) : ℤ :=
   ⌈(T : ℝ) * (nus la + if X.bad la then 1 else 0)⌉
 

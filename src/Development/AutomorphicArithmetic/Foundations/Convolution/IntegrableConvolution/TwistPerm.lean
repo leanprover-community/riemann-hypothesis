@@ -244,7 +244,6 @@ private theorem galOf_mul {A B : Type*} [CommRing A] [Algebra F A] [CommRing B] 
     | add a c ha hc => simp only [map_add (f := _), ha, hc]
   simp [galOf, h]
 
-open scoped TensorProduct in
 private theorem galOf_one {A B : Type*} [CommRing A] [Algebra F A] [CommRing B] [Algebra E B] (e : E ⊗[F] A ≃ₐ[E] B)
     (b : B) : galOf e (1 : E ≃ₐ[F] E) b = b := by
   have h : ∀ x : E ⊗[F] A, Algebra.TensorProduct.map ((1 : E ≃ₐ[F] E) : E →ₐ[F] E) (AlgHom.id F A) x = x := by

@@ -69,7 +69,6 @@ end GlobalTheory.MinorFrame
 
 noncomputable section
 namespace GlobalTheory.MinorFrame
-open scoped Matrix
 variable {ι : Type} [Fintype ι]
 
 theorem rsub_frame_det {a d : ℕ} (x₀ : Var ι d a → ℂ) (τ : ι) :

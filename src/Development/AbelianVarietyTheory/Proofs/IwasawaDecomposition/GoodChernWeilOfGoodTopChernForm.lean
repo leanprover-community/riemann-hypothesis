@@ -129,8 +129,6 @@ end GlobalTheory.GoodMetric
 
 namespace GlobalTheory.GoodMetric.Bridge
 
-open CategoryTheory AlgebraicGeometry TopologicalSpace Filter Topology MvPolynomial
-open ReciprocityTheory.L2DbarEstimates (V)
 open GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.ChartGlue GlobalTheory.FlagBundle GlobalTheory.HermFrame GlobalTheory.GoodMetric
 
 theorem _root_.GlobalTheory.GoodMetric.isGood_polyRep : ∀ (F : Type) [Field F] (σ : F →+* ℂ) (X : Var F) (ι : Type) [Fintype ι] (m : ι → ℕ)

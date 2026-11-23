@@ -148,13 +148,10 @@ end
 end
 
 section
-open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM
-open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels ContDiff
 
 noncomputable section
 namespace PositivityTheory.Member.ZakTransform.Z
 
-open NumberField.mixedEmbedding GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 section Coord
 
@@ -191,7 +188,6 @@ variable [Invertible (2 : k)]
 end LocA
 
 section LocB
-open Filter Topology
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {ψ : AddChar k ℂ} {κ : Type} [Fintype κ] [Invertible (2 : k)]
@@ -207,8 +203,6 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 end LocC
 
 section LocD
-open Filter Topology GlobalTheory.SplitFlip
-open GlobalTheory.SplitWeil hiding SB
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -221,8 +215,6 @@ end
 end
 
 section
-open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM ValuativeRel
-open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
 noncomputable section
 namespace PositivityTheory.Member.ZakTransform
@@ -1133,7 +1125,6 @@ theorem sub_mem {n d : ℕ} (γ : GL (Fin n) (Fv F v)) {f : Matrix (Fin n) (Fin 
 end Gen
 
 section PartB
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (AE cA incM UA Spc Model Rep mat HasSig)
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {v : HeightOneSpectrum (𝓞 F)} {n d : ℕ} {X : Spc F E n} {W : Spc F E d}
 
@@ -1152,7 +1143,6 @@ section PartA
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.MainNotions.StandardLattice GlobalTheory.ChiGrid GlobalTheory.FunObj
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (skewGram mulG colV adjV₁ incM boxB IsDatumB)
 open Formalism.IndefR.Datum.Brg (GG GI cA_inc GG_herm GI_GG)
-open scoped ContDiff
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

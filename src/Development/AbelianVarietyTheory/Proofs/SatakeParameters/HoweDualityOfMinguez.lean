@@ -123,8 +123,6 @@ end GlobalTheory.HoweBridge
 
 noncomputable section
 
-open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.ThetaGL
-open scoped TensorProduct
 
 namespace GlobalTheory.HoweBridge
 
@@ -190,8 +188,6 @@ end GlobalTheory.HoweBridge
 
 noncomputable section
 
-open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.ThetaGL
-open scoped TensorProduct
 
 namespace GlobalTheory.HoweBridge
 

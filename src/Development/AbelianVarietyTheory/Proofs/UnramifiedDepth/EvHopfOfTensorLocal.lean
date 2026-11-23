@@ -77,7 +77,6 @@ private theorem ptMap_comp_sO_and_map_y (t : _root_.ReciprocityTheory.PGsh.Up.Nb
     (Classical.choose_spec (D.fin.univ Tw.O (_root_.ReciprocityTheory.PGsh.LHom.id _) _ (D.pt_p t)))
   exact ⟨h.1, h.2.1⟩
 
-open TensorProduct IsLocalRing Matrix in
 set_option linter.style.haveILetI false in
 variable {R₀ : Type} [CommRing R₀] in
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw}
@@ -87,7 +86,6 @@ private theorem evAll_apply (C : Type) [Field C] [Algebra Tw.O.carrier C]
     (a : (i : D.fin.ι) → (D.fin.AAx i).carrier) (t : _root_.ReciprocityTheory.PGsh.Up.Nb p g) :
     D.evAll C a t = algebraMap Tw.O.carrier C ((D.ptMap t).1 (a (D.ptIdx t))) := rfl
 
-open TensorProduct IsLocalRing Matrix in
 set_option linter.style.haveILetI false in
 variable {R₀ : Type} [CommRing R₀] in
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw}
@@ -103,7 +101,6 @@ private theorem retraction_apply_eq_ptMap (t : _root_.ReciprocityTheory.PGsh.Up.
   rw [eq_of_heq hh]
   rfl
 
-open TensorProduct IsLocalRing Matrix in
 set_option linter.style.haveILetI false in
 variable {R₀ : Type} [CommRing R₀] in
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw}
@@ -151,7 +148,6 @@ private theorem tensor_evAll_mem_tensorSpan (C : Type) [Field C] [Algebra Tw.O.c
       fun t t' φ hφ φ' hφ' e e' => ?_⟩
     simp only [Pi.add_apply, h1 t t' φ hφ φ' hφ' e e', h1' t t' φ hφ φ' hφ' e e', map_add (f := _)]
 
-open TensorProduct IsLocalRing Matrix in
 set_option linter.style.haveILetI false in
 variable {R₀ : Type} [CommRing R₀] in
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw}
@@ -160,7 +156,6 @@ variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.B
 private theorem lHom_comp_assoc {R S T U : _root_.ReciprocityTheory.PGsh.LAlg R₀} (f : _root_.ReciprocityTheory.PGsh.LHom T U) (f' : _root_.ReciprocityTheory.PGsh.LHom S T)
     (f'' : _root_.ReciprocityTheory.PGsh.LHom R S) : (f.comp f').comp f'' = f.comp (f'.comp f'') := rfl
 
-open TensorProduct IsLocalRing Matrix in
 set_option linter.style.haveILetI false in
 variable {R₀ : Type} [CommRing R₀] in
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw}
@@ -173,7 +168,6 @@ private theorem p_nsmul_tau_zero (j : _root_.ReciprocityTheory.PGsh.Up.Ix g) : p
   rwa [Finset.sum_eq_single j (fun b _ hb => by simp [Pi.single_eq_of_ne hb]) (by simp),
     Pi.single_eq_same, ZMod.val_one, one_smul] at h
 
-open TensorProduct IsLocalRing Matrix in
 set_option linter.style.haveILetI false in
 variable {R₀ : Type} [CommRing R₀] in
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw}
@@ -191,7 +185,6 @@ private theorem ptOf_add_unramified_depth (t t' : _root_.ReciprocityTheory.PGsh.
   rw [← add_nsmul, key ((t j).val + (t' j).val), ← ZMod.val_add]
   rfl
 
-open TensorProduct IsLocalRing Matrix in
 set_option linter.style.haveILetI false in
 variable {R₀ : Type} [CommRing R₀] in
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw}
@@ -305,7 +298,6 @@ private theorem exists_tensorSpan_eq_evAll_add (hTL : _root_.GlobalTheory.EvHopf
   · rw [_root_.ReciprocityTheory.PGsh.BX.map_comp, hψ₂, map_add (f := _), ← _root_.ReciprocityTheory.PGsh.BX.map_comp, ← _root_.ReciprocityTheory.PGsh.BX.map_comp, hΦL, hΦR, e, e',
       ptOf_add_unramified_depth]
 
-open TensorProduct IsLocalRing Matrix in
 set_option linter.style.haveILetI false in
 variable {R₀ : Type} [CommRing R₀] in
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw}
@@ -320,7 +312,6 @@ private theorem ptOf_neg' (t : _root_.ReciprocityTheory.PGsh.Up.Nb p g) :
   rw [h0] at h
   exact eq_neg_of_add_eq_zero_left h.symm
 
-open TensorProduct IsLocalRing Matrix in
 set_option linter.style.haveILetI false in
 variable {R₀ : Type} [CommRing R₀] in
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw}
@@ -344,7 +335,6 @@ private theorem evAll_comp_neg_mem_evImg (C : Type) [Field C] [Algebra Tw.O.carr
   · rw [_root_.ReciprocityTheory.PGsh.BX.map_comp, (hψ _).2.1, map_neg, hP.2, ptOf_neg']
 
 
-open TensorProduct IsLocalRing Matrix in
 set_option linter.style.haveILetI false in
 variable {R₀ : Type} [CommRing R₀] in
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw}

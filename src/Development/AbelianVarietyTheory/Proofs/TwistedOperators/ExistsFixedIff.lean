@@ -63,7 +63,6 @@ private theorem valuation_le_one_iff_adicValuation_le_one (x : v.adicCompletion 
     Valuation.Compatible.ofValuation _
   exact (ValuativeRel.isEquiv (valuation (v.adicCompletion F)) Valued.v).le_one_iff_le_one
 
-open ValuativeRel MeasureTheory NumberField IsDedekindDomain in
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) in
 private theorem residueFieldCard_adicCompletion_lemma :
     letI := _root_.GlobalTheory.LocalData.complRel v
@@ -87,7 +86,6 @@ private theorem residueFieldCard_adicCompletion_lemma :
   exact Nat.card_congr (IsLocalRing.ResidueField.mapEquiv e).toEquiv
 
 
-open ValuativeRel MeasureTheory NumberField IsDedekindDomain in
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) in
 theorem _root_.GlobalTheory.SmGL.SphCompletion.ord_completion (x : (v.adicCompletion F)ˣ) :
     letI := _root_.GlobalTheory.LocalData.complRel v
@@ -105,7 +103,6 @@ theorem _root_.GlobalTheory.SmGL.SphCompletion.ord_completion (x : (v.adicComple
   omega
 
 
-open ValuativeRel MeasureTheory NumberField IsDedekindDomain in
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) in
 theorem _root_.GlobalTheory.SmGL.SphCompletion.KO_completion (n : ℕ) :
     letI := _root_.GlobalTheory.LocalData.complRel v
@@ -118,7 +115,6 @@ theorem _root_.GlobalTheory.SmGL.SphCompletion.KO_completion (n : ℕ) :
   rw [_root_.GlobalTheory.SplitFlip.mem_KO_iff, _root_.Formalism.UG.P.tjcosets_mem_K_iff]
   simp only [Valuation.mem_integer_iff, _root_.Formalism.UG.P.cartan_mem_Ov, valuation_le_one_iff_adicValuation_le_one]
 
-open ValuativeRel MeasureTheory NumberField IsDedekindDomain in
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) in
 private theorem natCast_zpow_neg_cpow_eq_cpow_mul (q : ℕ) (m : ℤ) (n : ℕ) (i : Fin n) :
     (((q : ℝ) ^ (-m) : ℝ) : ℂ) ^ ((((n : ℤ) - 1 - 2 * (i : ℤ) : ℤ) : ℂ) / 2) =
@@ -136,7 +132,6 @@ private theorem natCast_zpow_neg_cpow_eq_cpow_mul (q : ℕ) (m : ℤ) (n : ℕ) 
   rfl
 
 
-open ValuativeRel MeasureTheory NumberField IsDedekindDomain in
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) in
 theorem _root_.GlobalTheory.SmGL.SphCompletion.law_completion (n : ℕ) (α : Fin n → ℂˣ)
     (b : _root_.GlobalTheory.SmGL.borel (v.adicCompletion F) (Fin n)) (c : ℂ) :
@@ -175,7 +170,6 @@ theorem _root_.GlobalTheory.SmGL.SphCompletion.law_completion (n : ℕ) (α : Fi
   rw [Units.val_zpow_eq_zpow_val, natCast_zpow_neg_cpow_eq_cpow_mul]
 
 
-open ValuativeRel MeasureTheory NumberField IsDedekindDomain in
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) in
 theorem _root_.GlobalTheory.SmGL.SphCompletion.exists_fixed_iff {k : Type} [Field k] [ValuativeRel k]
     [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ} (χ : Fin n → kˣ →* ℂˣ)
@@ -219,7 +213,6 @@ theorem _root_.GlobalTheory.SmGL.SphCompletion.exists_fixed_iff {k : Type} [Fiel
     exact (_root_.GlobalTheory.SmGL.parInd_apply _ _ g x _).trans (hinv g hg x)
 
 
-open ValuativeRel MeasureTheory NumberField IsDedekindDomain in
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) in
 theorem _root_.GlobalTheory.SmGL.SphCompletion.isSpherical_iff : ∀ (F : Type) [Field F] [NumberField F]
     (v : HeightOneSpectrum (𝓞 F)) (n : ℕ) (α : Fin n → ℂˣ)

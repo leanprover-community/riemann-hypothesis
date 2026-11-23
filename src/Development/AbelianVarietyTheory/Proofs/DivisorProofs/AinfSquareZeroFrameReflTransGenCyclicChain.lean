@@ -178,7 +178,6 @@ end GlobalTheory.BChain
 
 namespace GlobalTheory.BChain
 
-open GlobalTheory.Sandwich GlobalTheory.QLog
 
 variable {p : ℕ} [hp : Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
   [IsAdicComplete (span {(p : O)}) O]

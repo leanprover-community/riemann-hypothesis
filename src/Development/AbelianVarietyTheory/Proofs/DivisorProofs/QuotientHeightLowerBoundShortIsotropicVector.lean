@@ -77,7 +77,6 @@ end Coord
 section Arith
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open scoped TensorProduct
 
 variable (F : Type) [Field F] [NumberField F]
 
@@ -142,7 +141,6 @@ section Adelic
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.Pj
 open GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies
-open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

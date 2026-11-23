@@ -83,15 +83,11 @@ private lemma exists_scale_one_mod_M_of_mem_Vset (M : ℕ) (hM : 0 < M) {Λ : _r
   · have := _root_.GlobalTheory.SW.Base.nat_smul_mem _ (s₀ ^ (M.totient - 1)) (hΛs v hv)
     rwa [smul_smul, hpow] at this
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma ccT_apply (A : Matrix (Fin n) (Fin n) E) (i j : Fin n) :
     _root_.GlobalTheory.SW.ccT A i j = _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (A j i) := by
   simp [_root_.GlobalTheory.SW.ccT]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma unitary_of_hermitian_mulVec {h : Matrix (Fin n) (Fin n) E}
     (H : ∀ x y, _root_.ReciprocityTheory.ChartRestriction.G.FD.herm 1 (h *ᵥ x) (h *ᵥ y) = _root_.ReciprocityTheory.ChartRestriction.G.FD.herm 1 x y) :
@@ -105,8 +101,6 @@ private lemma unitary_of_hermitian_mulVec {h : Matrix (Fin n) (Fin n) E}
   rw [Finset.sum_congr rfl (fun a _ => mul_comm _ _), this]
   simp [Pi.single_apply, _root_.ReciprocityTheory.ChartRestriction.G.FD.cc, Matrix.one_apply, eq_comm]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma single_mem_stdL' (a : Fin n) :
     (Pi.single a 1 : Fin n → E) ∈ _root_.GlobalTheory.SW.stdL E n := by
@@ -115,8 +109,6 @@ private lemma single_mem_stdL' (a : Fin n) :
   rw [Pi.single_apply]
   split_ifs <;> simp [isIntegral_one, isIntegral_zero]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma related_of_same_reduction_lemma_5 (M : ℕ) {Λ₁ Λ₂ : _root_.GlobalTheory.SW.Lt E n}
     (Q : Submodule (𝓞 E) (Fin n → E)) (q : Q →ₗ[𝓞 E] (Fin n → 𝓞 E ⧸ Ideal.span {(M : 𝓞 E)}))
@@ -186,8 +178,6 @@ private lemma related_of_same_reduction_lemma_5 (M : ℕ) {Λ₁ Λ₂ : _root_.
       push_cast
       linear_combination (-1 : E) * hce a i + (s₁ : E) * (Pi.single i (1 : E) : Fin n → E) a * (e₁ - e₂)
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma finite_cls' (M : ℕ) (hM : 0 < M) : Finite (_root_.GlobalTheory.SW.Cls E n M) := by
   obtain ⟨S, -, hS2⟩ := _root_.GlobalTheory.finite_classes_selfDual_level (E := E) n M hM.ne'
@@ -216,8 +206,6 @@ private lemma finite_cls' (M : ℕ) (hM : 0 < M) : Finite (_root_.GlobalTheory.S
   exact related_of_same_reduction_lemma_5 M (P (Quot.out c₂)).1 (P (Quot.out c₂)).2 _ _ _ _
     (hst _) (hst _) (hstd _) (hΛs _) (hstd _) (γ _) (γ _) (hγ _) (hγ _) hmem₁ (hmem _) hf₁ (hf _)
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma finite_integral_multiple_embeddings_bounded (s : ℕ) (hs : 0 < s) :
     {x : E | IsIntegral ℤ ((s : E) * x) ∧ ∀ τ : E →+* ℂ, ‖τ x‖ ≤ 1}.Finite := by
@@ -228,8 +216,6 @@ private lemma finite_integral_multiple_embeddings_bounded (s : ℕ) (hs : 0 < s)
   rw [map_mul, norm_mul, map_natCast, Complex.norm_natCast]
   simpa using mul_le_mul_of_nonneg_left (hb τ) (Nat.cast_nonneg (α := ℝ) s)
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma sum_conj_mul_eq_of_unitary {h : Matrix (Fin n) (Fin n) E}
     (hh : _root_.GlobalTheory.SW.ccT h * h = 1) (i j : Fin n) :
@@ -237,8 +223,6 @@ private lemma sum_conj_mul_eq_of_unitary {h : Matrix (Fin n) (Fin n) E}
   rw [← hh, Matrix.mul_apply]
   simp [ccT_apply]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma norm_embedding_entry_le_one_of_unitary {h : Matrix (Fin n) (Fin n) E}
     (hh : _root_.GlobalTheory.SW.ccT h * h = 1) (τ : E →+* ℂ) (k a : Fin n) : ‖τ (h k a)‖ ≤ 1 := by
@@ -256,8 +240,6 @@ private lemma norm_embedding_entry_le_one_of_unitary {h : Matrix (Fin n) (Fin n)
     (f := fun b => ‖τ (h b a)‖ ^ 2) (fun b _ => by positivity) (Finset.mem_univ k)
   exact (sq_le_one_iff₀ (norm_nonneg _)).1 hle
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma finite_stabiliser_DH (M : ℕ) {Λ : _root_.GlobalTheory.SW.Lt E n}
     (hΛ : Λ ∈ _root_.GlobalTheory.SW.Vset E n M) :
@@ -281,8 +263,6 @@ private lemma finite_stabiliser_DH (M : ℕ) {Λ : _root_.GlobalTheory.SW.Lt E n
   rw [e]
   exact h2
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma herm_one_mulVec_of_unitary {h : Matrix (Fin n) (Fin n) E}
     (hh : _root_.GlobalTheory.SW.ccT h * h = 1) (x y : Fin n → E) :
@@ -307,8 +287,6 @@ private lemma herm_one_mulVec_of_unitary {h : Matrix (Fin n) (Fin n) E}
         simp only [key, Matrix.one_apply]
         simp
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma exists_coprime_scale_integral_entries_of_mem_DH {M : ℕ} {h : Matrix (Fin n) (Fin n) E}
     (hh : h ∈ _root_.GlobalTheory.SW.DH E n M) :
@@ -324,8 +302,6 @@ private lemma exists_coprime_scale_integral_entries_of_mem_DH {M : ℕ} {h : Mat
   rw [Matrix.one_apply]
   split_ifs <;> simp [isIntegral_one, isIntegral_zero]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma smul_mulVec_mem_stdL_of_integral_scaled {g : Matrix (Fin n) (Fin n) E} {s : ℕ}
     (hg : ∀ k i, IsIntegral ℤ ((s : E) * g k i)) {v : Fin n → E}
@@ -338,8 +314,6 @@ private lemma smul_mulVec_mem_stdL_of_integral_scaled {g : Matrix (Fin n) (Fin n
   rw [this]
   exact IsIntegral.sum _ fun i _ => (hg k i).mul (hv i)
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} in
 private lemma exists_moves_mem_Vset_of_mem_DH {M : ℕ} {h : Matrix (Fin n) (Fin n) E}
     (hh : h ∈ _root_.GlobalTheory.SW.DH E n M) {Λ : _root_.GlobalTheory.SW.Lt E n}
@@ -389,8 +363,6 @@ private lemma exists_moves_mem_Vset_of_mem_DH {M : ℕ} {h : Matrix (Fin n) (Fin
       ring
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 theorem _root_.GlobalTheory.SW.finite_cls_and_stab : ∀ (E : Type) [Field E] [NumberField E]
     [IsCMField E] (n M : ℕ), 0 < M → Finite (_root_.GlobalTheory.SW.Cls E n M) ∧
     _root_.GlobalTheory.SW.stdL E n ∈ _root_.GlobalTheory.SW.Vset E n M ∧

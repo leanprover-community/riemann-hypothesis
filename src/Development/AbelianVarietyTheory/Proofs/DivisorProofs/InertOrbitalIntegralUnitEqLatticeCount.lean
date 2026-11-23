@@ -62,7 +62,6 @@ theorem relIndex_transport : ∀ (G H : Type) [Group G] [Group H] (T : Subgroup 
 end GlobalTheory.InertUnitOrb
 
 namespace GlobalTheory.InertUnitOrb
-open GlobalTheory.UnitLemma
 
 theorem mem_mulLat_unit {O A : Type} [CommRing O] [CommRing A] [Algebra O A] (L : Submodule O A) (a : Aˣ) (y : A) :
     y ∈ mulLat O (a : A) L ↔ ((a⁻¹ : Aˣ) : A) * y ∈ L := by
@@ -109,7 +108,6 @@ theorem unitLat_mul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Un
 end GlobalTheory.InertUnitOrb
 
 namespace GlobalTheory.InertUnitOrb
-open GlobalTheory.UnitLemma
 
 theorem mulLat_one' {O A : Type} [CommRing O] [CommRing A] [Algebra O A] (L : Submodule O A) :
     mulLat O (1 : A) L = L := by

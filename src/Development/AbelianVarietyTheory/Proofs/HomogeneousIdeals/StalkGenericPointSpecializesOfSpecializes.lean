@@ -85,7 +85,6 @@ end ThetaShiftProofs
 
 section Model
 
-open PowerSeries
 
 end Model
 

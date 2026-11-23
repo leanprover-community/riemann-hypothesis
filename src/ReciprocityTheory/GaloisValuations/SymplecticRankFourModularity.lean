@@ -49,10 +49,8 @@ def tw (e : ℤ) (χ : G F Ω →* (Qbar l)ˣ) : G F Ω →* (Qbar l)ˣ := (cyc 
 
 end basic
 
-section proposals
 
 variable {l : ℕ} [Fact l.Prime]
 
-end proposals
 
 end ReciprocityTheory.Gal

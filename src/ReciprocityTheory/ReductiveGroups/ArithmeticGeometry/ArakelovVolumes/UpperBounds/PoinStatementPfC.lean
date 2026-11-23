@@ -143,8 +143,6 @@ end ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
 
 namespace ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
 
-open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.L2DbarEstimates MeasureTheory Topology
-open scoped ENNReal Matrix
 
 noncomputable section
 
@@ -398,8 +396,6 @@ end ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
 
 namespace ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf
 
-open NumberField ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Inst ReciprocityTheory.L2DbarEstimates MeasureTheory Topology
-open scoped ENNReal Matrix
 
 noncomputable section
 

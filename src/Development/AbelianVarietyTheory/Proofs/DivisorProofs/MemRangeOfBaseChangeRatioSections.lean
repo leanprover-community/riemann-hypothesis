@@ -113,7 +113,6 @@ end GlobalTheory.ConstDescent
 
 namespace GlobalTheory.ConstDescent
 
-open TensorProduct
 
 theorem mem_range_of_pullback_eq {K L : Type} [Field K] [Field L] (ψ : K →+* L) {X : Scheme.{0}}
     (h : X ⟶ Sp K) (U : X.Opens) (f₁ f₂ : Γ(X, U)) (l : L) (hf : f₂ ≠ 0)

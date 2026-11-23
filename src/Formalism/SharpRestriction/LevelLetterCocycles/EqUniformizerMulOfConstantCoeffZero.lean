@@ -354,7 +354,6 @@ end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
 namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 
 

@@ -78,8 +78,6 @@ private theorem fourier_gaussian_two_pi (l : ℂ) :
   push_cast
   field_simp
 
-open NumberField MeasureTheory in
-open scoped RealInnerProductSpace FourierTransform in
 private theorem integrable_exp_neg_pi_norm_sq : Integrable (fun v : ℂ => Real.exp (-Real.pi * ‖v‖ ^ 2)) := by
   have h := GaussianFourier.integrable_cexp_neg_mul_sq_norm_add (V := ℂ) (b := (Real.pi : ℂ))
     (by simp [Real.pi_pos]) 0 0
@@ -88,8 +86,6 @@ private theorem integrable_exp_neg_pi_norm_sq : Integrable (fun v : ℂ => Real.
   congr 1
   simp [← Complex.ofReal_pow]
 
-open NumberField MeasureTheory in
-open scoped RealInnerProductSpace FourierTransform in
 private theorem integrable_pow_norm_mul_gaussian (m : ℕ) :
     Integrable (fun v : ℂ => ‖v‖ ^ m * Real.exp (-2 * Real.pi * ‖v‖ ^ 2)) := by
   refine (integrable_exp_neg_pi_norm_sq.const_mul ((m.factorial : ℝ) * Real.exp 1)).mono'
@@ -111,22 +107,16 @@ private theorem integrable_pow_norm_mul_gaussian (m : ℕ) :
     _ ≤ m.factorial * (Real.exp 1 * Real.exp (-Real.pi * ‖v‖ ^ 2)) := by gcongr
     _ = _ := by ring
 
-open NumberField MeasureTheory in
-open scoped RealInnerProductSpace FourierTransform in
 private theorem norm_conj_pow_mul_gaussian (n : ℕ) (v : ℂ) :
     ‖(starRingEnd ℂ) v ^ n * Complex.exp ((-2 * Real.pi * ‖v‖ ^ 2 : ℝ) : ℂ)‖ =
       ‖v‖ ^ n * Real.exp (-2 * Real.pi * ‖v‖ ^ 2) := by
   rw [norm_mul, norm_pow, Complex.norm_conj, Complex.norm_exp_ofReal]
 
-open NumberField MeasureTheory in
-open scoped RealInnerProductSpace FourierTransform in
 private theorem integrable_conj_pow_mul_gaussian (n : ℕ) :
     Integrable (fun v : ℂ => (starRingEnd ℂ) v ^ n * Complex.exp ((-2 * Real.pi * ‖v‖ ^ 2 : ℝ) : ℂ)) :=
   (integrable_pow_norm_mul_gaussian n).mono' (by fun_prop)
     (Filter.Eventually.of_forall fun v => (norm_conj_pow_mul_gaussian n v).le)
 
-open NumberField MeasureTheory in
-open scoped RealInnerProductSpace FourierTransform in
 private theorem integrable_norm_mul_conj_pow_mul_gaussian (n : ℕ) :
     Integrable (fun v : ℂ =>
       ‖v‖ * ‖(starRingEnd ℂ) v ^ n * Complex.exp ((-2 * Real.pi * ‖v‖ ^ 2 : ℝ) : ℂ)‖) := by
@@ -134,8 +124,6 @@ private theorem integrable_norm_mul_conj_pow_mul_gaussian (n : ℕ) :
   simp only [norm_conj_pow_mul_gaussian]
   ring
 
-open NumberField MeasureTheory in
-open scoped RealInnerProductSpace FourierTransform in
 private theorem hasFDerivAt_conj_pow_mul_gaussian_half (n : ℕ) (l : ℂ) :
     ∃ L : ℂ →L[ℝ] ℂ, HasFDerivAt (fun z : ℂ => (1 / 2 : ℂ) * (-Complex.I) ^ n *
         ((starRingEnd ℂ) (z / 2) ^ n * Complex.exp ((-2 * Real.pi * ‖z / 2‖ ^ 2 : ℝ) : ℂ))) L l ∧
@@ -176,8 +164,6 @@ private theorem hasFDerivAt_conj_pow_mul_gaussian_half (n : ℕ) (l : ℂ) :
   simp only [Complex.I_sq]
   ring
 
-open NumberField MeasureTheory in
-open scoped RealInnerProductSpace FourierTransform in
 private theorem fourier_fourierSMulRight_sub_I_mul_eq_fourier_conj_mul (g : ℂ → ℂ) (hg : Integrable g)
     (hg' : Integrable (fun v : ℂ => ‖v‖ * ‖g v‖)) (l : ℂ) :
     (𝓕 (VectorFourier.fourierSMulRight (innerSL ℝ) g) l) 1 -
@@ -213,8 +199,6 @@ private theorem fourier_fourierSMulRight_sub_I_mul_eq_fourier_conj_mul (g : ℂ 
   simp only [Complex.I_sq, Complex.real_smul]
   ring
 
-open NumberField MeasureTheory in
-open scoped RealInnerProductSpace FourierTransform in
 private theorem fourier_conj_pow_mul_gaussian (n : ℕ) : ∀ l : ℂ,
     𝓕 (fun v : ℂ => (starRingEnd ℂ) v ^ n * Complex.exp ((-2 * Real.pi * ‖v‖ ^ 2 : ℝ) : ℂ)) l =
       (1 / 2 : ℂ) * (-Complex.I) ^ n *
@@ -248,8 +232,6 @@ private theorem fourier_conj_pow_mul_gaussian (n : ℕ) : ∀ l : ℂ,
       ((starRingEnd ℂ) (l / 2) ^ (n + 1) * Complex.exp ((-2 * Real.pi * ‖l / 2‖ ^ 2 : ℝ) : ℂ)))) *
       Complex.I_sq
 
-open NumberField MeasureTheory in
-open scoped RealInnerProductSpace FourierTransform in
 private theorem fourier_pow_mul_gaussian (m : ℕ) (l : ℂ) :
     𝓕 (fun v : ℂ => v ^ m * Complex.exp ((-2 * Real.pi * ‖v‖ ^ 2 : ℝ) : ℂ)) l =
       (1 / 2 : ℂ) * (-Complex.I) ^ m *
@@ -270,8 +252,6 @@ private theorem fourier_pow_mul_gaussian (m : ℕ) (l : ℂ) :
   ring
 
 
-open NumberField MeasureTheory in
-open scoped RealInnerProductSpace FourierTransform in
 theorem _root_.GlobalTheory.HeckeLemma.fourier_hmon_mul_gaussian : ∀ (k : ℤ) (l : ℂ),
     𝓕 (fun w : ℂ => _root_.GlobalTheory.HeckeTheta.hmon k w *
         Complex.exp ((-2 * Real.pi * ‖w‖ ^ 2 : ℝ) : ℂ)) l =

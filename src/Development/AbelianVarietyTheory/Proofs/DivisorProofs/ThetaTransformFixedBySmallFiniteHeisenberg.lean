@@ -109,7 +109,6 @@ end GlobalTheory.ThetaLevel
 
 namespace GlobalTheory.ThetaLevel
 
-open Matrix
 
 def infIncl (F : Type) [Field F] [NumberField F] : Ainf F →ₗ[F] AF F where
   toFun x := pairA F x 0
@@ -219,7 +218,6 @@ end GlobalTheory.ThetaLevel
 
 namespace GlobalTheory.ThetaLevel
 
-open Matrix
 
 
 

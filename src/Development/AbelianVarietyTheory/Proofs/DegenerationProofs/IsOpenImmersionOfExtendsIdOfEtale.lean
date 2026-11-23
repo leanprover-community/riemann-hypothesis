@@ -59,8 +59,6 @@ private lemma model_isPullback_genericFibre_spMap (M : _root_.GlobalTheory.SS.Mo
     simpa using this.symm
 
 
-open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
-open scoped CategoryTheory.Obj in
 variable {R K : Type} [CommRing R] [Field K] [Algebra R K] in
 theorem _root_.GlobalTheory.SS.Ord.isOpenImmersion_of_extends_id_of_etale :
     ∀ (R K : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field K] [Algebra R K]

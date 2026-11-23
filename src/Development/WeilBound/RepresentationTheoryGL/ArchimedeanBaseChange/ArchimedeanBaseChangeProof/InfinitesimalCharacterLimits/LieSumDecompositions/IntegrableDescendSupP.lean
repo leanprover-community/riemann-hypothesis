@@ -221,7 +221,6 @@ theorem pairRt : PairRt := by
     conj (descend (latticeGL E N) (fun y => g (y * x⁻¹)) (rmul (latticeGL E N) x q))
   rw [descend_rmul hf, descend_rmul hg', mul_inv_cancel_right]
 
-open Pair in
 theorem pairLin_of (hI : IntBnd) : PairLin := by
   intro E _ _ _ N
   refine ⟨fun f₁ f₂ g c h₁ h₂ hg => ⟨?_, ?_⟩, fun f g₁ g₂ c hf h₁ h₂ => ⟨?_, ?_⟩⟩
@@ -243,7 +242,6 @@ theorem pairLin_of (hI : IntBnd) : PairLin := by
     simp only [descend, Pi.smul_apply, smul_eq_mul, map_mul]
     ring
 
-open Pair in
 theorem pairLie_of (hI : IntBnd) : PairLie := by
   intro E _ _ _ N X χ u hχ hXχ hu hXu
   have hc : Continuous (cX (E := E) (N := N) X) := continuous_cX X

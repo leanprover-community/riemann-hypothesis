@@ -108,7 +108,6 @@ end GlobalTheory.LamPullFrame
 
 namespace GlobalTheory.LamPullFrame
 
-open GlobalTheory.ProdUnifSq
 
 variable {g : ℕ} {A : Over (Sp ℂ)} [GrpObj A] [IsCommMonObj A]
 
@@ -199,7 +198,6 @@ end GlobalTheory.LamPullFrame
 
 namespace GlobalTheory.LamPullFrame
 
-open GlobalTheory.ProdUnifSq
 
 variable {g : ℕ} {A : Over (Sp ℂ)} [GrpObj A] [IsCommMonObj A]
 
@@ -299,7 +297,6 @@ end GlobalTheory.LamPullFrame
 
 namespace GlobalTheory.LamPullFrame
 
-open GlobalTheory.ProdUnifSq
 
 variable {g : ℕ}
 

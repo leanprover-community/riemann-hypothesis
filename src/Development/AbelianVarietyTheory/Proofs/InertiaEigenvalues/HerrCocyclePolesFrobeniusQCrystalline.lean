@@ -67,7 +67,6 @@ theorem constantCoeff_algHom {L : Type} [CommRing L] (γ : L⟦X⟧ →ₐ[L] L�
   simp
 
 
-open PowerSeries in
 theorem eq_zero_of_fixed {L ι : Type} [Field L] [Fintype ι] [DecidableEq ι] (γ : L⟦X⟧ →ₐ[L] L⟦X⟧)
     (h0 : constantCoeff (γ X) = 0) (hu : ∀ k : ℕ, 0 < k → coeff 1 (γ X) ^ k ≠ 1) (G : ι → ι → L⟦X⟧)
     (hG : ∀ i j, constantCoeff (G i j) = if i = j then 1 else 0) (d : ι → L⟦X⟧)

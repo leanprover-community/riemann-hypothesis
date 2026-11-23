@@ -100,9 +100,6 @@ private lemma norm_dmin_cpt_last_eq_one {x0 : _root_.ReciprocityTheory.ChartRest
   unfold _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf.Gw
   rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hN, hmap, one_mul, mul_one, h0]
 
-open NumberField in
-open MeasureTheory Topology Asymptotics Filter Metric in
-open scoped ENNReal in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 private lemma sum_range_odd_mul_sub_eq (L : ℕ → ℝ) (r : ℕ) :
@@ -115,9 +112,6 @@ private lemma sum_range_odd_mul_sub_eq (L : ℕ → ℝ) (r : ℕ) :
     push_cast
     ring
 
-open NumberField in
-open MeasureTheory Topology Asymptotics Filter Metric in
-open scoped ENNReal in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 private lemma sum_range_centered_mul_sub_eq (L : ℕ → ℝ) (r : ℕ) :
@@ -133,9 +127,6 @@ private lemma sum_range_centered_mul_sub_eq (L : ℕ → ℝ) (r : ℕ) :
   rw [h3, h1, h2]
   ring
 
-open NumberField in
-open MeasureTheory Topology Asymptotics Filter Metric in
-open scoped ENNReal in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 private lemma phla_kapW_cpt_eq_log_densF {x0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
@@ -192,9 +183,6 @@ private lemma phla_kapW_cpt_eq_log_densF {x0 : _root_.ReciprocityTheory.ChartRes
     ← Finset.mul_sum]
   ring
 
-open NumberField in
-open MeasureTheory Topology Asymptotics Filter Metric in
-open scoped ENNReal in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 private lemma leviWeight_sub_leviDensity_eq_lemma {x0 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r}
@@ -216,9 +204,6 @@ private lemma leviWeight_sub_leviDensity_eq_lemma {x0 : _root_.ReciprocityTheory
   push_cast
   ring
 
-open NumberField in
-open MeasureTheory Topology Asymptotics Filter Metric in
-open scoped ENNReal in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 private lemma sum_mul_norm_unitVec_sq_eq (c : _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.Ent X → ℝ) (e : _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.Ent X) :
@@ -232,9 +217,6 @@ private lemma sum_mul_norm_unitVec_sq_eq (c : _root_.ReciprocityTheory.ChartRest
     exact absurd (Finset.mem_univ e) h
 
 
-open NumberField in
-open MeasureTheory Topology Asymptotics Filter Metric in
-open scoped ENNReal in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} in
 theorem _root_.GlobalTheory.DivisionVolume.margin_iff (h0 : 0 < X.p0) (h1 : X.p0 < r)

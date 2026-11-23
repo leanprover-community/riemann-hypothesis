@@ -66,7 +66,6 @@ theorem lam_pull_inv (c : Pic G.left) (x y : T ⟶ G) :
 end GlobalTheory.PolDeg.NegPrim
 
 namespace GlobalTheory.PolDeg.NegPrim
-open GlobalTheory.CechPic
 
 theorem lam_negPull_sub_isTrivial : ∀ (A : Type) [CommRing A] [IsLocalRing A] [IsNoetherianRing A] (B : Over (Sp A)) [GrpObj B] [IsCommMonObj B] (M : RigLB B) (_ : CubicalStr B M), IsAbelianScheme B → ∃ u : LB.Gen (abelian₂ B (LB.LinComb M.L (K := Fin 2) ![(ι[B]).left, 𝟙 B.left] ![1, -1])), u.IsGen := by
   intro A _ _ _ B _ _ M cub _

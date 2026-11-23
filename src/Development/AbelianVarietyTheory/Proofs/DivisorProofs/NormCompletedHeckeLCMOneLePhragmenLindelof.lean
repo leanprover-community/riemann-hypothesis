@@ -126,7 +126,6 @@ theorem archFactor_three_halves_le {I : Type} [Fintype I] (m : I → ℤ) (hm : 
 end GlobalTheory.HeckeLOneBound
 
 namespace GlobalTheory.HeckeLOneBound
-open GlobalTheory.IndefiniteRowSideFullHecke.CompletedLStripBounds
 
 theorem norm_heckeL_one_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (I : Type) [Fintype I] (φ : I → E →+* ℂ),
     GlobalTheory.Published.HeckeFunctionalEquationAbs → GlobalTheory.IndefiniteRowSideFullHecke.CompletedLStripBounds.CompletedLBoundedInStrips → IsCMType φ →

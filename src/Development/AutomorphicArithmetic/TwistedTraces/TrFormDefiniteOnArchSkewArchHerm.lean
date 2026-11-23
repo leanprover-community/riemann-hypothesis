@@ -47,7 +47,6 @@ private theorem trace_mixedSpace_eq {K : Type} [Field K] [NumberField K]
     Complex.im_ofNat, mul_zero, sub_zero, ← Finset.sum_mul]
   ring
 
-open scoped Classical in
 private theorem trace_eq_zero_of_star_neg {K : Type} [Field K] [NumberField K]
     (z : NumberField.mixedEmbedding.mixedSpace K) (hz : star z = -z) :
     Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace K) z = 0 := by
@@ -63,7 +62,6 @@ private theorem trace_eq_zero_of_star_neg {K : Type} [Field K] [NumberField K]
   rw [trace_mixedSpace_eq, h2]
   linarith
 
-open scoped Classical in
 private theorem trace_conjTranspose_mul_pos {K : Type} [Field K] [NumberField K] {n : ℕ}
     {A : Matrix (Fin n) (Fin n) (NumberField.mixedEmbedding.mixedSpace K)} (hA : A ≠ 0) :
     0 < Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace K)

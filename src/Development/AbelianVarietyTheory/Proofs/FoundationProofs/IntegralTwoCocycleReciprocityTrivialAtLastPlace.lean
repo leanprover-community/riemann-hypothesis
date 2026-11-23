@@ -116,7 +116,6 @@ end GlobalTheory.Ord2.Rec
 
 namespace GlobalTheory.Ord2.Rec
 
-open GlobalTheory.Published.PoitouTate
 
 theorem reciprocity : GlobalTheory.Mem.LiteralAutomorphy.LitCoh → ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω]
     [IsAlgClosure ℚ Ω] (c : Coef l) (n : ℕ) (S : Finset Pl) (ξ : G ℚ Ω → G ℚ Ω → Qbar l) (v₀ : Pl),

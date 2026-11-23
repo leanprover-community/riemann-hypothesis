@@ -162,7 +162,6 @@ end GlobalTheory.SgInf.PiUnitary
 
 namespace GlobalTheory.SgInf.PiUnitary
 
-open Formalism.QuantumDeterminants.WeylGroupFacts
 
 theorem piS_unitary : ∀ (k r : ℕ) {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [FiniteDimensional ℂ Wp] [CompleteSpace Wp] (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ)

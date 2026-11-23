@@ -404,14 +404,12 @@ theorem coupling_index_set_finite (u : Pr.Word) (m2 : ℕ) (b : L.β (m2 + 1)) :
 
 end Yb2
 
-section Inst
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
   (A : Amb X) (u : Pr.Word) (m2 : ℕ)
 
-end Inst
 
 section SeamLat
 
@@ -554,7 +552,6 @@ end SeamLat
 
 section InstN
 
-open Formalism.MainNotions
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
@@ -631,7 +628,6 @@ theorem cBof_pos (hT : 0 < Pr.T u) : 0 < cBof sel mu cst u := Nat.mul_pos hT (po
 
 end Ne
 
-section Zero
 
 variable {X : Fields} (A : Amb X) {a b : ℕ}
 
@@ -639,7 +635,6 @@ variable {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))) (u : Pr.Word) (m2 : ℕ)
 
-end Zero
 
 section Scal
 
@@ -739,19 +734,15 @@ variable [StarRing E] {K : Type} [Field K]
 
 end Scal
 
-section Scal2
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu))
 
-end Scal2
 
-section JetNe
 
 variable {K : Type} [Field K] {ι : Type} [Fintype ι] {a b : ℕ}
 
-end JetNe
 
 section Wt
 
@@ -857,14 +848,12 @@ theorem jet_in_weight_space_chain (u : Pr.Word) {i : ℕ} (hi : i < R.m) : JetIn
 
 end InVV
 
-section Crit
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
   (A : Amb X) (u : Pr.Word) (m2 : ℕ)
 
-end Crit
 
 section Unram
 
@@ -909,37 +898,27 @@ theorem xqMem_stdAt {n : ℕ} (x : Sp E n) : x ∈ stdAt E n P ↔ ∀ i, IntAt 
 
 end Scl
 
-section Cst
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
 
 variable {Ch}
 
-end Cst
 
-section Grp
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-end Grp
 
-section Lift
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-end Lift
 
-section Mem
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-end Mem
 
-section Mem2
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-end Mem2
 
 section Of
 
@@ -961,38 +940,28 @@ theorem xqSingle_mem {n : ℕ} (l : Fin n) : (Pi.single l (1 : E) : Sp E n) ∈ 
 
 end Of
 
-section Lev
 
 variable {X : Fields} {Pr : Primes X} (Ch : Chars X Pr Examples₂.R0.m)
 
-end Lev
 
-section Chr
 
 variable {X : Fields} {Pr : Primes X} (Ch : Chars X Pr Examples₂.R0.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ)
 
-end Chr
 
-section Chr1
 
 variable {X : Fields} {Pr : Primes X} (Ch : Chars X Pr Examples₂.R0.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (S : Set ℕ)
 
-end Chr1
 
-section Phi
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
 
-end Phi
 
-section XiLoc
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-end XiLoc
 
 section XiFr
 
@@ -1005,13 +974,11 @@ theorem redV_single {n : ℕ} (i : Fin n) : redV P (Pi.single i (1 : E) : Sp E n
 
 end XiFr
 
-section XiGlob
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
 
-end XiGlob
 
 section XiNum
 
@@ -1027,13 +994,11 @@ theorem notMem_of_coprime {q q' : ℕ} (h : Nat.Coprime q q') (hq : ((q : ℕ) :
 
 end XiNum
 
-section XiOk
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
 
-end XiOk
 
 section Ref
 
@@ -1053,7 +1018,6 @@ variable (cst : LocCst X (rowSG Pr sel (mu0 X.F X.E X.K S)))
 
 end Ref
 
-section Closed
 
 variable (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL] (hLL : cycQ nd2N ≤ LL) (Ch : Chars (nd2X LL hLL) (toyPrimes LL hLL) Examples₂.R0.m)
   (sel : HeightOneSpectrum (𝓞 (nd2X LL hLL).F) → HeightOneSpectrum (𝓞 (nd2X LL hLL).E)) (S : Set ℕ)
@@ -1062,57 +1026,42 @@ variable (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL] (hLL : cycQ nd2N 
     (QE sel ((mu0 (nd2X LL hLL).F (nd2X LL hLL).E (nd2X LL hLL).K S : Tup (nd2X LL hLL).F (nd2X LL hLL).E (nd2X LL hLL).K S) : Chr (nd2X LL hLL).F (nd2X LL hLL).E (nd2X LL hLL).K)))
   (A : Amb (nd2X LL hLL)) (u : (toyPrimes LL hLL).Word)
 
-end Closed
 
-section NeCons
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
   (A : Amb X) (u : Pr.Word) (m2 : ℕ)
 
-end NeCons
 
-section TabSpec
 
 variable {X : Fields} (A : Amb X) {a b : ℕ} (Sall : Finset (HeightOneSpectrum (𝓞 X.E)))
 
-end TabSpec
 
-section Xi2Loc
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-end Xi2Loc
 
-section Xi2Glob
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu))
 
-end Xi2Glob
 
-section Xi2T
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-end Xi2T
 
-section Xi2Ok
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu))
 
-end Xi2Ok
 
-section Joint
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K)))
 
-end Joint
 
 end Formalism.L2.Ker

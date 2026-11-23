@@ -89,7 +89,6 @@ theorem sub_complexConj_eq_of_two_mul {w x : 𝓞 E} {n : ℕ} (hx : x ^ 2 = -(n
   linear_combination hw - h
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.HostModel.exists_embedding_rt_eq (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : ∃ τ : E →+* ℂ, τ (H.rt : E) = H.rt0 := by
   let φ : E →+* ℂ := (IsAlgClosed.lift : E →ₐ[ℚ] ℂ).toRingHom
@@ -152,13 +151,11 @@ theorem halfSqrtNegSeven_quadratic : halfSqrtNegSeven ^ 2 - halfSqrtNegSeven + 2
   unfold halfSqrtNegSeven
   linear_combination 2 * sum_zeta21_pow_multiples_of_three_eq_zero + primitiveRootCyclotomicField21 ^ 3 * h
 
-open NumberField in
 private theorem isPrimitiveRoot_hostModel_primitiveRoot21 :
     IsPrimitiveRoot _root_.GlobalTheory.HostModel.primitiveRootCyclotomicField21 21 :=
   (IsCyclotomicExtension.zeta_spec 21 ℚ _root_.GlobalTheory.HostModel.E21).toInteger_isPrimitiveRoot
 
 
-open NumberField in
 theorem _root_.GlobalTheory.HostModel.sqrtNegSeven_sq : _root_.GlobalTheory.HostModel.sqrtNegSeven ^ 2 = -((7 : ℕ) : 𝓞 _root_.GlobalTheory.HostModel.E21) := by
   have hz := isPrimitiveRoot_hostModel_primitiveRoot21
   have hω : IsPrimitiveRoot (_root_.GlobalTheory.HostModel.primitiveRootCyclotomicField21 ^ 3) 7 := hz.pow (by norm_num) (by norm_num)
@@ -169,7 +166,6 @@ theorem _root_.GlobalTheory.HostModel.sqrtNegSeven_sq : _root_.GlobalTheory.Host
   push_cast
   linear_combination 8 * h1 + 4 * _root_.GlobalTheory.HostModel.primitiveRootCyclotomicField21 ^ 3 * h2
 
-open NumberField in
 private theorem ringOfIntegersComplexConj_zeta21_eq_pow_twenty :
     IsCMField.ringOfIntegersComplexConj _root_.GlobalTheory.HostModel.E21 _root_.GlobalTheory.HostModel.primitiveRootCyclotomicField21 =
       _root_.GlobalTheory.HostModel.primitiveRootCyclotomicField21 ^ 20 := by
@@ -194,7 +190,6 @@ private theorem ringOfIntegersComplexConj_zeta21_eq_pow_twenty :
   rw [map_pow]
   exact mul_left_cancel₀ hw0 (hnorm.trans h21.symm)
 
-open NumberField in
 private theorem isUnit_one_sub_of_isPrimitiveRoot_twentyOne {R : Type*} [CommRing R] [IsDomain R] {u : R}
     (hu : IsPrimitiveRoot u 21) : IsUnit (1 - u) := by
   have hroot := hu.isRoot_cyclotomic (by norm_num)
@@ -212,7 +207,6 @@ private theorem isUnit_one_sub_of_isPrimitiveRoot_twentyOne {R : Type*} [CommRin
   exact IsUnit.of_mul_eq_one _ h1
 
 
-open NumberField in
 theorem _root_.GlobalTheory.HostModel.unramified_E21_over_maximalRealSubfield : Algebra.Unramified (𝓞 (maximalRealSubfield _root_.GlobalTheory.HostModel.E21)) (𝓞 _root_.GlobalTheory.HostModel.E21) := by
   set ζ := _root_.GlobalTheory.HostModel.primitiveRootCyclotomicField21
   have hz : IsPrimitiveRoot ζ 21 := isPrimitiveRoot_hostModel_primitiveRoot21

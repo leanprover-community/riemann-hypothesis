@@ -89,7 +89,6 @@ end Formalism.L2.SG.RealObj.StepIntOf.Steps
 
 namespace Formalism.L2.SG.RealObj.StepIntOf.Theta
 
-open Formalism.L2.SG.RealObj.StepIntOf
 
 section
 

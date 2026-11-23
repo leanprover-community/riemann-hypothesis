@@ -62,8 +62,6 @@ theorem _root_.GlobalTheory.Mass.StabSplit.mem_perp (h : V →ₗ⋆[K] V →ₗ
 theorem smul_eq_map (h : V →ₗ⋆[K] V →ₗ[K] K) (g : isom h) (U : Submodule K V) :
     g • U = U.map (g.1 : V →ₗ[K] V) := rfl
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] in
 private lemma exists_preimage_mem_of_isom_smul_eq {h : V →ₗ⋆[K] V →ₗ[K] K} {g : _root_.Formalism.HermitianLatticesTheory.isom h}
     {U : Submodule K V} (hg : g • U = U) {x : V} (hx : x ∈ U) : ∃ u ∈ U, g.1 u = x := by
@@ -71,8 +69,6 @@ private lemma exists_preimage_mem_of_isom_smul_eq {h : V →ₗ⋆[K] V →ₗ[K
   obtain ⟨u, hu, hux⟩ := Submodule.mem_map.1 hx
   exact ⟨u, hu, hux⟩
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] in
 private lemma isom_apply_mem_of_smul_eq {h : V →ₗ⋆[K] V →ₗ[K] K} {g : _root_.Formalism.HermitianLatticesTheory.isom h}
     {U : Submodule K V} (hg : g • U = U) {x : V} (hx : x ∈ U) : g.1 x ∈ U := by
@@ -80,8 +76,6 @@ private lemma isom_apply_mem_of_smul_eq {h : V →ₗ⋆[K] V →ₗ[K] K} {g : 
   exact Submodule.mem_map_of_mem hx
 
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] in
 theorem _root_.GlobalTheory.Mass.StabSplit.smul_perp (h : V →ₗ⋆[K] V →ₗ[K] K) (g : _root_.Formalism.HermitianLatticesTheory.isom h)
     (U : Submodule K V) (hg : g • U = U) :
@@ -109,8 +103,6 @@ noncomputable def res (h : V →ₗ⋆[K] V →ₗ[K] K) (U : Submodule K V) (g 
     (hg : g • U = U) : isom (hRes h U) :=
   ⟨g.1.ofSubmodules U U hg, fun x y => g.2 x y⟩
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] in
 theorem _root_.GlobalTheory.Mass.StabSplit.latIn_smul {R : Type} [CommRing R] [Algebra R K] [Module R V]
     [IsScalarTower R K V] (h : V →ₗ⋆[K] V →ₗ[K] K) (U : Submodule K V) (g : _root_.Formalism.HermitianLatticesTheory.isom h)
@@ -135,8 +127,6 @@ noncomputable def resHom (h : V →ₗ⋆[K] V →ₗ[K] K) (U : Submodule K V) 
 
 end
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] in
 private lemma apply_self_ne_zero_of_PD_of_numberField [NumberField K] {h : V →ₗ⋆[K] V →ₗ[K] K}
     (hpd : _root_.GlobalTheory.Mass.PD h) {x : V} (hx : x ≠ 0) : h x x ≠ 0 := by
@@ -146,8 +136,6 @@ private lemma apply_self_ne_zero_of_PD_of_numberField [NumberField K] {h : V →
   rw [hzero, map_zero, Complex.zero_re] at hpos
   exact lt_irrefl 0 hpos
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] in
 private lemma disjoint_perp_of_PD [NumberField K]
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hpd : _root_.GlobalTheory.Mass.PD h) (U : Submodule K V) :
@@ -158,8 +146,6 @@ private lemma disjoint_perp_of_PD [NumberField K]
   exact apply_self_ne_zero_of_PD_of_numberField hpd hx
     ((_root_.GlobalTheory.Mass.StabSplit.mem_perp h U x).1 hxW x hxU)
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] in
 private lemma finrank_le_finrank_add_finrank_perp [FiniteDimensional K V]
     (h : V →ₗ⋆[K] V →ₗ[K] K) (U : Submodule K V) :
@@ -184,8 +170,6 @@ private lemma finrank_le_finrank_add_finrank_perp [FiniteDimensional K V]
   rw [hker] at hrn
   omega
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] in
 private lemma isCompl_perp_of_PD [NumberField K] [FiniteDimensional K V]
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hpd : _root_.GlobalTheory.Mass.PD h) (U : Submodule K V) :
@@ -199,8 +183,6 @@ private lemma isCompl_perp_of_PD [NumberField K] [FiniteDimensional K V]
   have hle' := Submodule.finrank_le (U ⊔ _root_.GlobalTheory.Mass.perp h U)
   omega
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] in
 private lemma apply_add_add_of_mem_perp {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm)
     {U : Submodule K V} {u u' w w' : V} (hu' : u' ∈ U) (hu : u ∈ U)
@@ -215,8 +197,6 @@ private lemma apply_add_add_of_mem_perp {h : V →ₗ⋆[K] V →ₗ[K] K} (hs :
   ring
 
 
-open NumberField Matrix in
-open scoped ENNReal Classical in
 theorem _root_.GlobalTheory.Mass.StabSplit.main : ∀ (K V : Type) [Field K] [NumberField K]
     [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V]
     [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K), _root_.Formalism.HermitianLatticesTheory.IsCMUnram K → h.IsSymm →

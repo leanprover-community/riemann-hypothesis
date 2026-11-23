@@ -59,9 +59,6 @@ private theorem natDegree_lt_of_mem_degreeLT {w : ℕ} {p : ℂ[X]} (hp : p ∈ 
   · simp
   · exact (natDegree_lt_iff_degree_lt h).2 (mem_degreeLT.1 hp)
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
 open Filter Topology in
 private theorem norm_eval_le_sum_of_mem_degreeLT {w : ℕ} {p : ℂ[X]} (hp : p ∈ degreeLT ℂ (w + 1))
     (x : ℂ) : ‖p.eval x‖ ≤ ∑ j ∈ Finset.range (w + 1), ‖p.coeff j‖ * ‖x‖ ^ j := by
@@ -69,10 +66,6 @@ private theorem norm_eval_le_sum_of_mem_degreeLT {w : ℕ} {p : ℂ[X]} (hp : p 
   refine (norm_sum_le _ _).trans (le_of_eq ?_)
   simp [norm_mul, norm_pow]
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
-open Filter Topology in
 private theorem eq_C_of_eval_add_natCast_eq {Q : ℂ[X]} {n : ℕ} (hn : 0 < n)
     (hQ : ∀ x : ℂ, Q.eval (x + n) = Q.eval x) : Q = C (Q.coeff 0) := by
   have hn' : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
@@ -91,10 +84,6 @@ private theorem eq_C_of_eval_add_natCast_eq {Q : ℂ[X]} {n : ℕ} (hn : 0 < n)
   rw [coeff_zero_eq_eval_zero]
   exact sub_eq_zero.1 (eq_zero_of_infinite_isRoot _ hinf)
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
-open Filter Topology in
 private theorem tendsto_exp_neg_mul_mul_add_pow_zero {c : ℝ} (hc : 0 < c) (b : ℝ) (m : ℕ) :
     Tendsto (fun y : ℝ => Real.exp (-c * y) * (b + y) ^ m) atTop (𝓝 0) := by
   have h1 := ((isLittleO_pow_exp_pos_mul_atTop m hc).comp_tendsto
@@ -107,10 +96,6 @@ private theorem tendsto_exp_neg_mul_mul_add_pow_zero {c : ℝ} (hc : 0 < c) (b :
   field_simp
 
 
-open Polynomial UpperHalfPlane in
-open scoped MatrixGroups ModularForm in
-open scoped Manifold in
-open Filter Topology in
 theorem _root_.GlobalTheory.HeckeFamilyMatrices.QConst.qconst : ∀ (w n : ℕ) (V : ℍ → ℂ[X]) (Q : ℂ[X]) (C' c : ℝ), 0 < n → 0 < c → Q ∈ degreeLT ℂ (w + 1) →
     (∀ τ, V τ ∈ degreeLT ℂ (w + 1)) →
     (∀ τ : ℍ, _root_.GlobalTheory.HeckeFamilyMatrices.slP w (_root_.GlobalTheory.HeckeFamilyMatrices.mat (ModularGroup.T ^ (n : ℤ))) (V (ModularGroup.T ^ (n : ℤ) • τ)) = V τ) →

@@ -91,8 +91,6 @@ namespace GlobalTheory.FockApprox
 
 section
 
-open GlobalTheory.RealWeil GlobalTheory.Mem.Lift GlobalTheory.Size GlobalTheory.ChainFr GlobalTheory.FockCompare GlobalTheory.OrientedHeis GlobalTheory.FockDensity GlobalTheory.SquareComm
-open scoped ENNReal
 
 theorem exists_sum_of_mem_fockSpan {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (ε : Bool) (S T : GlobalTheory.Grid.Node D)
     (U : AddSubgroup (WO S.V T.V)) {g : WO S.V T.V → ℂ}
@@ -115,7 +113,6 @@ namespace GlobalTheory.FockApprox
 section
 
 open Formalism.IndefR.Mult GlobalTheory.RealWeil GlobalTheory.Mem.Lift GlobalTheory.Size GlobalTheory.ChainFr GlobalTheory.FockCompare GlobalTheory.OrientedHeis GlobalTheory.FockDensity
-open scoped ENNReal
 
 theorem dense_level {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {V W : HSp D} (A : Fr V) (B : Fr W)
     (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) {μ : Measure (WO V W)} {𝓕 : Set (WO V W)}

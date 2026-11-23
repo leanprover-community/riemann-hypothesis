@@ -108,7 +108,6 @@ end GlobalTheory.ZeroLevel
 
 noncomputable section
 namespace GlobalTheory.ZeroLevel
-open Formalism.L2.Col Formalism.L2.Ker Formalism.UG GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.MemChart
 
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X)
 

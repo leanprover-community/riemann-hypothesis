@@ -60,7 +60,6 @@ private theorem affPt_apply_of_not_free {p : ℕ} (x₀ : Matrix n n' k)
     _root_.GlobalTheory.RootEx.affPt (c := c) p x₀ e r s = _root_.GlobalTheory.RootEx.basePt c x₀ r s := by
   simp only [_root_.GlobalTheory.RootEx.affPt, Matrix.add_apply, Matrix.of_apply, dif_neg hf, add_zero]
 
-open ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] {n n' : Type} {c : ℕ} in
 private theorem affPt_apply_of_free {p : ℕ} (x₀ : Matrix n n' k)
     (e : { rs // _root_.GlobalTheory.RootEx.Free p rs } → k) {r : n ⊕ Fin c} {s : n' ⊕ Fin (c + 1)}
@@ -73,7 +72,6 @@ private theorem affPt_apply_of_free {p : ℕ} (x₀ : Matrix n n' k)
     simp [Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂] <;>
     omega
 
-open ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] {n n' : Type} {c : ℕ} in
 private theorem intM_basePt_of_intM {x₀ : Matrix n n' k}
     (hx : _root_.GlobalTheory.StepData.IntM x₀) :
@@ -110,7 +108,6 @@ theorem _root_.GlobalTheory.RootEx.Unram.intM_affPt {p : ℕ} (x₀ : Matrix n n
       exact intM_basePt_of_intM hx r s
 
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 theorem _root_.GlobalTheory.RootEx.Unram.psi_eq_one {ψ : AddChar k Circle}
@@ -120,7 +117,6 @@ theorem _root_.GlobalTheory.RootEx.Unram.psi_eq_one {ψ : AddChar k Circle}
     exact (Valuation.mem_integer_iff _ _).mp hx)
   exact h1 x le_rfl
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 theorem _root_.GlobalTheory.RootEx.Unram.mem_of_psi {ψ : AddChar k Circle}
@@ -142,7 +138,6 @@ theorem _root_.GlobalTheory.RootEx.Unram.mem_of_psi {ψ : AddChar k Circle}
 
 variable [MeasurableSpace k] [BorelSpace k]
 
-open ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] {n n' : Type} {c : ℕ} in
 private theorem ch_affPt_mem_of_integral {p : ℕ} (x₀ : Matrix n n' k)
     (e : { rs // _root_.GlobalTheory.RootEx.Free p rs } → k) (he : ∀ rs, e rs ∈ 𝒪[k]) :
@@ -154,7 +149,6 @@ private theorem ch_affPt_mem_of_integral {p : ℕ} (x₀ : Matrix n n' k)
   rw [affPt_apply_of_free x₀ e hf]
   exact he _
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 variable [MeasurableSpace k] [BorelSpace k] in
@@ -195,7 +189,6 @@ theorem _root_.GlobalTheory.RootEx.Unram.opE_of_ite {p : ℕ} {ψ : AddChar k Ci
   · simp
 
 
-open MeasureTheory ValuativeRel Matrix in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} in
 variable [MeasurableSpace k] [BorelSpace k] in

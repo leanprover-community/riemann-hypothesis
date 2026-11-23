@@ -270,7 +270,6 @@ variable {κ K : Type} [CommRing κ] [Field K]
 
 section Sharp
 
-open Formalism.BasicNotions (Ranks)
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (hc : Formalism.BasicNotions.CMData X.F X.E) (Ch : Chars X Pr R.m)
 

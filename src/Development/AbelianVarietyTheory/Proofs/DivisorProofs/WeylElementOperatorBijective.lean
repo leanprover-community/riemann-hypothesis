@@ -91,7 +91,6 @@ end GlobalTheory.WeylBij
 
 namespace GlobalTheory.WeylBij
 
-open GlobalTheory.WeylFourier GlobalTheory.RatWeilOp
 
 
 open scoped Classical in

@@ -221,7 +221,6 @@ end partA
 end
 
 section
-open ReciprocityTheory.AnForm.A
 
 variable {D : ℕ} {U : Set (Fin D → ℂ)} {S : Finset (Fin D)} {u : (Fin D → ℂ) → ℝ} {C : ℝ}
 

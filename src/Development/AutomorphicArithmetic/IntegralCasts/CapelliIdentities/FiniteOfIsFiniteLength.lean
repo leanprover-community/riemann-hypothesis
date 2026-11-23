@@ -53,7 +53,6 @@ private lemma finite_of_isFiniteLength {S : Type} [CommRing S] [IsLocalRing S]
     haveI : Finite N.toAddSubgroup := ih
     exact Finite.of_addSubgroup_quotient N.toAddSubgroup
 
-open IsLocalRing in
 theorem UpperTheory.monic_ideal_completion :
     ∀ {O R : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
         [Finite (IsLocalRing.ResidueField O)] [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [Algebra O R]

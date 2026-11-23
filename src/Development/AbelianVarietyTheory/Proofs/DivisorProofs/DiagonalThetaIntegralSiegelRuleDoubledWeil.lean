@@ -146,7 +146,6 @@ end GlobalTheory.DiagThetaRule
 
 namespace GlobalTheory.DiagThetaRule
 
-open GlobalTheory.Doubling Formalism.IndefR.Datum
 
 theorem scalar_rule (D : D7) (S T : HSp D) (χT : (AE D)ˣ →* Circle) (hrT : ResEta D χT T.rank)
     (t : GL (Fin S.rank) (AF D.host.F ⊗[D.host.F] D.host.E)) :

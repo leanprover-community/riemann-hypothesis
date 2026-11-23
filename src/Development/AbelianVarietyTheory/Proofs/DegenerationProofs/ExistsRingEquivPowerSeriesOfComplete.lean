@@ -125,7 +125,6 @@ theorem surjective_residue_of_isAlgebraic {k V : Type*} [Field k] [IsAlgClosed k
   exact (IsAlgClosed.algebraMap_bijective_of_isIntegral (k := k) (K := ResidueField V)).2
 
 
-open Polynomial in
 theorem exists_injective_of_height_le_one {k B : Type*} [Field k] [IsAlgClosed k] [CommRing B]
     [IsDomain B] [Algebra k B] [Algebra.FiniteType k B] (m : Ideal B) [hm : m.IsMaximal]
     (h1 : m.height ≤ 1) :

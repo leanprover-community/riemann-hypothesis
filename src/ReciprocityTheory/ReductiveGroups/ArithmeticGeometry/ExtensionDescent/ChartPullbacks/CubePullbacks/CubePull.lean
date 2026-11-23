@@ -200,7 +200,6 @@ end ReciprocityTheory.ChartRestriction.G.Out.CubePf
 
 namespace ReciprocityTheory.ChartRestriction.G.Out.CubePf
 
-open Semi
 
 theorem cubePull : CubePullSt := by
   intro S S' G G' _ _ _ _ m L c

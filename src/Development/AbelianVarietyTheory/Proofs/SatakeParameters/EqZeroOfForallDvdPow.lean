@@ -66,7 +66,6 @@ end GlobalTheory.Hk3.IntWittBase
 
 namespace GlobalTheory.Hk3.IntWittBase
 
-open Formalism.UG GlobalTheory.Hk3.IntWitt
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 

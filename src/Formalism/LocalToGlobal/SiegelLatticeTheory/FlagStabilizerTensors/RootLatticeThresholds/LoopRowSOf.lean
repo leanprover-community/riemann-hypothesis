@@ -49,13 +49,11 @@ namespace Formalism.L2.SG.LoopsTies
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section SelQ
 
 variable {𝒞 : FamClass} (sel : SSel 𝒞)
 
 variable {eps : ℝ} (Fm : FamP eps) (hc : 𝒞 Fm)
 
-end SelQ
 
 section Closed
 

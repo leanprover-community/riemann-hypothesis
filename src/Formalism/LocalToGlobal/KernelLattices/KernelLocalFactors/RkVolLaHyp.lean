@@ -235,11 +235,9 @@ theorem aa_unit_at (P : HeightOneSpectrum (𝓞 X.E)) (hb : s.PrimeTo D.host.�
 
 end IdealS
 
-section NatS
 
 variable {D : Car} {X : Fields} (s : Seam D X)
 
-end NatS
 
 section Main
 
@@ -273,7 +271,6 @@ theorem laHyp_ambOf_top {δ : ℂ} (B : Base D (⊤ : Ideal (𝓞 D.host.K)) δ)
 
 end Main
 
-section Bad
 
 open Formalism.EigenvalueLevelCeiling (plc)
 
@@ -283,13 +280,10 @@ variable {sel}
 
 variable (sel)
 
-end Bad
 
-section Chain
 
 variable {D : Car} {X : Fields} {Pr : Primes X} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : Formalism.L2.Ker.Cd.TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
-end Chain
 
 end Formalism.L2.Ker.Cd

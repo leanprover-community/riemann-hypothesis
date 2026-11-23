@@ -74,7 +74,6 @@ theorem linkIn_uniM_eq_of_form :
 end GlobalTheory.SeqCx
 
 section
-open GlobalTheory.SeqCx Matrix
 theorem _root_.GlobalTheory.T.linkIn_uniM_eq_shorter_of_form_eq_one : ∀ (R M : Type) [CommRing R] [AddCommGroup M] [Module R M] (φ : M →ₗ[R] R) (S : Set M), (∀ x ∈ S, φ x = 0) → ∀ τ ∈ uniM R M, ∀ v ∈ τ, φ v = 1 → ∃ τ' ∈ uniM R M, τ'.length + 1 = τ.length ∧ linkIn (uniM R M) S τ = linkIn (uniM R M) S τ' := by
   first
   | exact @GlobalTheory.SeqCx.linkIn_uniM_eq_of_form

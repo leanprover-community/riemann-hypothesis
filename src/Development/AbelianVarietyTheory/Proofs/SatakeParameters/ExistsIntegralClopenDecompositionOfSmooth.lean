@@ -78,7 +78,6 @@ end GlobalTheory.SmoothComponents
 
 namespace GlobalTheory.SmoothComponents
 
-open Topology TopologicalSpace
 
 theorem main : ∀ (Z : Scheme.{0}) (s : Z ⟶ Sp ℂ) (d : ℕ) [SmoothOfRelativeDimension d s]
     [CompactSpace Z], ∃ (J : Type) (_ : Fintype J) (V : J → Z.Opens),

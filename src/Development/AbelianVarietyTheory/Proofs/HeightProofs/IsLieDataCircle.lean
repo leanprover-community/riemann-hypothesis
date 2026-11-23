@@ -158,8 +158,6 @@ structure Sized {V : Type} [AddCommGroup V] [Module E V] (h : V →ₗ[E] V →�
   form_le : ∀ x y, house (h x y) ≤ ν x * ν y
   span : Submodule.span E {x | x ∈ Λ ∧ ν x ≤ B} = ⊤
 
-open scoped ContDiff Topology in
-open NumberField Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.SmoothForms.house_star (a : E) : house (star a) = house a := by
   have hs : star a = (NumberField.IsCMField.complexConj E) a := rfl

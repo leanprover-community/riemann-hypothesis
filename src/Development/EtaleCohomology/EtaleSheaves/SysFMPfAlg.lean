@@ -109,7 +109,6 @@ theorem isClosed_basicOpen_idem {X : Scheme.{0}} {s : Γ(X, ⊤)} (hs : IsIdempo
   rw [← isOpen_compl_iff, this]
   exact (X.basicOpen (1 - s)).isOpen
 
-open AlgebraicGeometry in
 theorem isClosedImmersion_basicOpen_idem {X : Scheme.{0}} {s : Γ(X, ⊤)} (hs : IsIdempotentElem s) :
     IsClosedImmersion (X.basicOpen s).ι :=
   IsClosedImmersion.of_isPreimmersion _ (by rw [Scheme.Opens.range_ι]; exact isClosed_basicOpen_idem hs)

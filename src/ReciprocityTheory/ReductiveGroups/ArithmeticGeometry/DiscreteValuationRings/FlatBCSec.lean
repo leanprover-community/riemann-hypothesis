@@ -166,7 +166,6 @@ lemma gs_dfun {f : ∀ k, Γ(Y, V k)} (hf : dfun L V c hVc f = 0) (k l : Fin n) 
   exact e2
 
 
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor in
 theorem exists_glue (hL : L.IsLB) (hcov : ⨆ k, V k = ⊤) (f : ∀ k, Γ(Y, V k)) (hf : dfun L V c hVc f = 0) :
     ∃ σ : LB.Sec L, ev L V c hVc σ = f := by
   classical
@@ -206,7 +205,6 @@ theorem exists_glue (hL : L.IsLB) (hcov : ⨆ k, V k = ⊤) (f : ∀ k, Γ(Y, V 
     show gs (𝟙 Y) y (V k) (rs (hVc k) (F (c k))) = _
     rw [gs_res _ y _ hy, gF (c k) k y (hVc k hy) hy, gm_self hL (𝟙 Y) y (hVc k hy), Units.val_one, one_mul]
 
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor in
 lemma gs_sec (σ : LB.Sec L) (i j : L.ι) (y : Y) (hi : y ∈ L.U i) (hj : y ∈ L.U j) :
     gs (𝟙 Y) y (L.U i) (σ.f i) = (gm (𝟙 Y) y (L.U i ⊓ L.U j) (L.g i j)).val * gs (𝟙 Y) y (L.U j) (σ.f j) := by
   have hy : y ∈ L.U i ⊓ L.U j := ⟨hi, hj⟩
@@ -215,7 +213,6 @@ lemma gs_sec (σ : LB.Sec L) (i j : L.ι) (y : Y) (hi : y ∈ L.U i) (hj : y ∈
   exact e
 
 
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor in
 theorem ev_inj (hcov : ⨆ k, V k = ⊤) {σ τ : LB.Sec L} (h : ev L V c hVc σ = ev L V c hVc τ) : σ = τ := by
   have hf : σ.f = τ.f := by
     funext i
@@ -612,7 +609,6 @@ end IsoRel
 
 section IsoMain
 
-open AlgebraicGeometry CategoryTheory Limits TopologicalSpace ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.DVR
 
 variable {R S : Type} [CommRing R] [CommRing S] [Algebra R S] {X X' : Scheme.{0}}
   (p : X ⟶ Spec (CommRingCat.of R)) (p' : X' ⟶ Spec (CommRingCat.of S)) (φ : X' ⟶ X)

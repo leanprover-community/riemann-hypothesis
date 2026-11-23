@@ -1318,7 +1318,6 @@ end Blocks
 
 section Main
 
-open GroundTheory.Heights₂.Heights.FieldNumbers
 
 variable {K K' : Type} [Fintype K] [DecidableEq K] [Fintype K'] [DecidableEq K'] {j : K ↪ K'}
   {ι' : K' → Type} [∀ k, Fintype (ι' k)]

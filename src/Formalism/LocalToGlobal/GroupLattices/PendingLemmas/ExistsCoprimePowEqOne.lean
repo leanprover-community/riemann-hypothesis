@@ -359,7 +359,6 @@ end LT
 
 section Lin
 
-open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta Formalism.MainNotions.J
 
 variable {p}
 
@@ -425,7 +424,6 @@ end Lin
 
 section ExR
 
-open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta Formalism.MainNotions.J
 
 def ratSub : Subring (PowerSeries ℂ_[p]) := (PowerSeries.map (k0ToC p)).range
 

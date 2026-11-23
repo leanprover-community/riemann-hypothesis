@@ -397,7 +397,6 @@ def SkewLieActionL2 : Prop :=
       inner ℂ h3.toL2 h2.toL2 + inner ℂ h1.toL2 h4.toL2 = 0
 
 
-open scoped GlobalTheory.CuspRep.CuspidalL2GL in
 def SqMem : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ), 1 ≤ a → ∀ (μ : Measure (GA E a)) [μ.IsHaarMeasure] (r : ℝ) (χ : HChar E), IsTw (a := a) r χ →
     ∀ φ ∈ sqSub E a r, IsOpen {k | act (.fin k) (mulChi a χ φ) = mulChi a χ φ} ∧

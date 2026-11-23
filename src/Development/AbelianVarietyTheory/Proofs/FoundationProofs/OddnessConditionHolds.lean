@@ -533,7 +533,6 @@ end Core
 
 section Main
 
-open GlobalTheory.NormSum.VacMove
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {N N' : ℕ}
 

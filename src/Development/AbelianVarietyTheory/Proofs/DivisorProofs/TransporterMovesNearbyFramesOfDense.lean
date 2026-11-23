@@ -193,7 +193,6 @@ open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA GlobalThe
 
 namespace GlobalTheory.ShareOn
 
-open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

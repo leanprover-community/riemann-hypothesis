@@ -75,8 +75,6 @@ private theorem exists_int_mul_isIntegral_of_fg (Λ : Submodule (𝓞 E) (Fin r 
     rw [h]
     exact (RingOfIntegers.isIntegral_coe k).mul (hx a)
 
-open NumberField in
-open scoped ComplexConjugate ComplexOrder Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [IsCMField E] in
 private theorem exists_int_smul_single_mem_of_span_eq_univ (Λ : Submodule (𝓞 E) (Fin r → E))
@@ -101,16 +99,12 @@ private theorem exists_int_smul_single_mem_of_span_eq_univ (Λ : Submodule (𝓞
   rw [← hsum b, Finset.smul_sum]
   exact Λ.sum_mem key
 
-open NumberField in
-open scoped ComplexConjugate ComplexOrder Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private theorem cc_intCast' (n : ℤ) : _root_.ReciprocityTheory.ChartRestriction.G.FD.cc (n : E) = n := by
   obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
   apply φ.injective
   rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.emb_cc, map_intCast, map_intCast]
 
-open NumberField in
-open scoped ComplexConjugate ComplexOrder Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [IsCMField E] in
 private theorem finite_GL_of_integral_bounded_scaled_entries (c : E) (hc : c ≠ 0) (B : ℝ) :
@@ -129,8 +123,6 @@ private theorem finite_GL_of_integral_bounded_scaled_entries (c : E) (hc : c ≠
   exact fun a b => hγ a b
 
 
-open NumberField in
-open scoped ComplexConjugate ComplexOrder Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.Member.LatData.exists_data_lattice : ∀ (E : Type) [Field E] [NumberField E] [NumberField.IsCMField E] (r : ℕ)
     (Λ : Submodule (𝓞 E) (Fin r → E)), Λ.FG → Submodule.span E (Λ : Set (Fin r → E)) = ⊤ →

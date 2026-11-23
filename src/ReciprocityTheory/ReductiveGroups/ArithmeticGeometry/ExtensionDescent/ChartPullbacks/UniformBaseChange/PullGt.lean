@@ -173,7 +173,6 @@ lemma isMonHom_of_grpPullback {G B : Over S} [GrpObj G] [GrpObj B] {G' B' : Over
 
 end MonHom
 
-section Q
 
 variable (hφ e)
 variable {D : DegPre R} {D' : DegPre R'} (eB : D'.P.A ≅ (Over.pullback (specOf φ)).obj D.P.A)
@@ -185,7 +184,6 @@ variable {D : DegPre R} {D' : DegPre R'} (eB : D'.P.A ≅ (Over.pullback (specOf
 
 variable {e} (g : GtCoord I D e G)
 
-end Q
 
 section Torus
 
@@ -272,7 +270,6 @@ lemma IsGrpPullback.one_left {S S' : Scheme.{0}} {f : S' ⟶ S} {G : Over S} [Gr
 
 end Unit
 
-section IK
 
 variable (hφ) {D : DegPre R} {D' : DegPre R'} (eB : D'.P.A ≅ (Over.pullback (specOf φ)).obj D.P.A)
   [IsMonHom eB.hom] (xe : D'.X ≃+ D.X)
@@ -280,6 +277,5 @@ variable (hφ) {D : DegPre R} {D' : DegPre R'} (eB : D'.P.A ≅ (Over.pullback (
   {G' : Over (Spec (CommRingCat.of R'))} [GrpObj G'] [IsCommMonObj G']
   (bc : G' ≅ (Over.pullback (specOf φ)).obj G) [IsMonHom bc.hom] {e : ℕ} (g : GtCoord I D e G)
 
-end IK
 
 end ReciprocityTheory.ChartRestriction.G.Out.PullGtPf

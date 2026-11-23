@@ -41,7 +41,6 @@ open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Fo
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H what₂} {A : NAut N}
 end GlobalTheory.FrobeniusCharacterNorms
 namespace GlobalTheory.FrobeniusCharacterNorms
-open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.SumRepresentations Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
 theorem sixth_weight_purity_alt_alt : _root_.GlobalTheory.StringRepresentationDecomposition.PurityStringWeight' := by
   intro D hA i x P Pa hxP hBC k R hR j hj hv
   have hAut : At.TieAut D.nd D.naut := hA.1.1.1.2.1

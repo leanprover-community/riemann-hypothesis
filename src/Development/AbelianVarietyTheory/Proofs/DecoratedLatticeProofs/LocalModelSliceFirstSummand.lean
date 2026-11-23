@@ -68,7 +68,6 @@ end GlobalTheory.SliceLeft
 
 namespace GlobalTheory.SliceLeft
 
-open GlobalTheory.MixModel.OrthDec GlobalTheory.LocFlat.CFac GlobalTheory.SliceLine
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : Place D k)
 variable {ρ : ℕ} {B : BesLev D ρ} {s : k} {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
@@ -115,7 +114,6 @@ end GlobalTheory.SliceLeft
 
 namespace GlobalTheory.SliceLeft
 
-open GlobalTheory.MixModel.OrthDec GlobalTheory.LocFlat.CFac GlobalTheory.SliceLine
 
 theorem toCols_add_left {k n n' : Type} [Field k] (t : Matrix n (n' ⊕ Unit) k) (x : Matrix n n' k) :
     (t + fromCols x (0 : Matrix n Unit k)).toCols₁ = t.toCols₁ + x ∧

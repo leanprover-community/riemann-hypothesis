@@ -86,14 +86,12 @@ theorem norm_mixedEmbedding_le (x : F) : ‖mixedEmbedding F x‖ ≤ absSum x :
     Real.norm_eq_abs]
   exact abs_le_absSum x _
 
-open scoped Classical in
 theorem absSum_pos {x : F} (hx : x ≠ 0) : 0 < absSum x := by
   have h : 0 < ‖mixedEmbedding F x‖ := norm_pos_iff.2 fun h =>
     hx ((mixedEmbedding F).injective (h.trans (map_zero _).symm))
   exact h.trans_le (norm_mixedEmbedding_le x)
 
 
-open scoped Classical in
 theorem summable_absSum_inv_pow (I : Frac F) {k : ℕ} (hk : Module.finrank ℚ F < k) :
     Summable (fun x : NZ (I : FractionalIdeal (𝓞 F)⁰ F) => ((absSum x.1) ^ k)⁻¹) := by
   let L := mixedEmbedding.idealLattice F I

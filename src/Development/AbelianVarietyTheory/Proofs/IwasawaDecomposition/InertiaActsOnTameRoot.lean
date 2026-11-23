@@ -145,7 +145,6 @@ theorem inert_val {E L : Type} [Field E] [NumberField E] [Field L] [NumberField 
   rw [e, map_sub] at h
   exact h
 
-open ReciprocityTheory.DiscreteGroups.GlobalClassField in
 theorem inert_val_of_le {E L : Type} [Field E] [NumberField E] [Field L] [NumberField L] [Algebra E L] [Algebra L Ω]
     {A : ValuationSubring Ω} {τ : L ≃ₐ[E] L} (hτ : τ ∈ inertiaGroup E L (primeOf (L := L) A)) (x : L)
     (hx : A.valuation (algebraMap L Ω x) ≤ 1) :
@@ -170,7 +169,6 @@ theorem inert_val_of_le {E L : Type} [Field E] [NumberField E] [Field L] [Number
       _ < 1 := by rw [one_mul]; exact hs
   rwa [Valuation.map_mul, hτs, one_mul] at hv
 
-open ReciprocityTheory.DiscreteGroups.GlobalClassField in
 theorem inert_fix_root {E L : Type} [Field E] [NumberField E] [Field L] [NumberField L] [Algebra E L] [Algebra L Ω]
     {A : ValuationSubring Ω} {τ : L ≃ₐ[E] L} (hτ : τ ∈ inertiaGroup E L (primeOf (L := L) A)) (m : ℕ)
     (hm : ¬ A.valuation (m : Ω) < 1) {η : L} (hη : η ^ m = 1) : τ η = η := by
@@ -182,7 +180,6 @@ theorem inert_fix_root {E L : Type} [Field E] [NumberField E] [Field L] [NumberF
   · rw [← map_pow, ← map_pow, hη, map_one, map_one]
   · rw [← map_pow, hη, map_one]
 
-open ReciprocityTheory.DiscreteGroups.GlobalClassField in
 theorem exists_tau {E L : Type} [Field E] [NumberField E] [Field L] [NumberField L] [Algebra E L] [IsGalois E L]
     [Algebra L Ω] (A : ValuationSubring Ω) (P : HeightOneSpectrum (𝓞 E))
     [(primeOf (L := L) A).LiesOver P.asIdeal]

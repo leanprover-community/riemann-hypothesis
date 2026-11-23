@@ -558,12 +558,10 @@ theorem mul_toN (hsec : IsSec pq sc) {N : ℕ} (a : 𝓞 E) (x : Fin N → F) :
   rw [hsec.1] at e2
   rw [e1, mul_left_comm, ← e2]
 
-open PositivityTheory.Xgn.FunctionFamilyIdempotent in
 theorem fromN_mul {N : ℕ} (a : 𝓞 E) (t : TorsT E N p) :
     fromN pq (mulT N p a t) = pq (Ideal.Quotient.mk _ a) • fromN pq t :=
   funext fun i => map_mul pq (Ideal.Quotient.mk _ a) (Multiplicative.toAdd t i)
 
-open PositivityTheory.Xgn.FunctionFamilyIdempotent in
 theorem der_act [IsNoetherianRing (CR O y c')] [IsIntegrallyClosed (CR O y c')] [IsFractionRing (CR O y c') Ω]
     [Finite (TorsT E (D.p + D.q) p)]
     (θ : Module.Dual (CR O y c') P.L →ₗ[CR O y c'] omega (P.Γ₁.btOrder ⊤))

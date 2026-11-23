@@ -71,7 +71,6 @@ omit [Module k V] in
 theorem sh_zero (N : Submodule k⟦X⟧ V) : sh (-0) N = N := by
   ext x; simp [sh]
 
-open scoped LaurentSeries PowerSeries in
 variable {k : Type} [Field k] in
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]
   [IsScalarTower k⟦X⟧ k⸨X⸩ V] in
@@ -79,7 +78,6 @@ private lemma laurentSeriesVariableV_pow_eq_ofPowerSeries_lemma (n : ℕ) :
     _root_.GlobalTheory.PhiGam.vv k ^ n = HahnSeries.ofPowerSeries ℤ k (PowerSeries.X ^ n) := by
   rw [_root_.GlobalTheory.PhiGam.vv_eq_coe_X, map_pow]
 
-open scoped LaurentSeries PowerSeries in
 variable {k : Type} [Field k] in
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]
   [IsScalarTower k⟦X⟧ k⸨X⸩ V] in
@@ -95,7 +93,6 @@ theorem _root_.GlobalTheory.PhiGam.Close.pow_smul_mem {N : Submodule k⟦X⟧ V}
   rw [key]
   exact N.smul_mem _ h
 
-open scoped LaurentSeries PowerSeries in
 variable {k : Type} [Field k] in
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]
   [IsScalarTower k⟦X⟧ k⸨X⸩ V] in
@@ -111,7 +108,6 @@ private lemma exists_laurentVariable_pow_mul_eq_ofPowerSeries_lemma_2 (c : k⸨X
   have h : (((t + ((-t).toNat : ℤ)).toNat : ℕ) : ℤ) = ((-t).toNat : ℤ) + t := by omega
   rw [h]
 
-open scoped LaurentSeries PowerSeries in
 variable {k : Type} [Field k] in
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]
   [IsScalarTower k⟦X⟧ k⸨X⸩ V] in
@@ -175,7 +171,6 @@ private lemma laurentVariable_pow_mul_mem_of_frobenius_lemma_3 {l : ℕ} (hl : 0
   exact hb0 e4
 
 
-open scoped LaurentSeries PowerSeries in
 variable {k : Type} [Field k] in
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]
   [IsScalarTower k⟦X⟧ k⸨X⸩ V] in
@@ -300,7 +295,6 @@ theorem _root_.GlobalTheory.PhiGam.Close.key {l : ℕ} (hl : 0 < l)
   exact Submodule.smul_mem _ _ (b i).2
 
 
-open scoped LaurentSeries PowerSeries in
 variable {k : Type} [Field k] in
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]
   [IsScalarTower k⟦X⟧ k⸨X⸩ V] in
@@ -343,7 +337,6 @@ theorem _root_.GlobalTheory.PhiGam.Close.exists_pow {N N' : Submodule k⟦X⟧ V
     exact N'.smul_mem p hy
 
 
-open scoped LaurentSeries PowerSeries in
 variable {k : Type} [Field k] in
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [Module k V]
   [IsScalarTower k⟦X⟧ k⸨X⸩ V] in

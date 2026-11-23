@@ -117,7 +117,6 @@ end Spaces
 
 section Record
 
-open Formalism.BasicNotions
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

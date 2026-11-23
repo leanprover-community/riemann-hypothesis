@@ -188,7 +188,6 @@ end GlobalTheory.RowTest.ColField
 
 namespace GlobalTheory.RowTest.ColField
 
-open MvPolynomial
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

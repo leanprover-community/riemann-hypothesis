@@ -190,7 +190,6 @@ end GlobalTheory.HTPullEvery
 
 namespace GlobalTheory.HTPullEvery
 
-open ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison (pφ pφ₂ isSquare pφ₂_fst pφ₂_snd adelic_GL2_ext_of_local_components pullback_map_left_fst' isGrpPullback gen_refl)
 
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {R : Type} [CommRing R] {b : Base D R} {N : ℕ}
   {S S' : Scheme.{0}} {s : S ⟶ Sp R}

@@ -94,7 +94,6 @@ end GlobalTheory.EpsAdd
 
 namespace GlobalTheory.EpsAdd
 
-open GlobalTheory.VertSpanZero
 
 variable {S : Type} [CommRing S]
 
@@ -174,7 +173,6 @@ end GlobalTheory.EpsAdd
 
 namespace GlobalTheory.EpsAdd
 
-open GlobalTheory.VertSpanZero
 
 theorem snd_valR_mul_prod : ∀ (X : Scheme.{0}) (G : Over X) [GrpObj G] (S : Type) [CommRing S] (g : Sp S ⟶ G.left)
     (g' : tEpsG (g ≫ G.hom) ⟶ G), g'.left = spMap (algebraMap S (DualNumber S)) ≫ g →

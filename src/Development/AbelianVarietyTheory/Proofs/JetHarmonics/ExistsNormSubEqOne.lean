@@ -84,7 +84,6 @@ theorem _root_.GlobalTheory.SplitEmbSep.norm_le_one_of_isIntegral {C : Type*} [N
   exact absurd h1 (not_le.mpr h2)
 
 
-open NumberField in
 theorem _root_.GlobalTheory.SplitEmbSep.norm_det_lt_one {C ι : Type*} [NormedField C] [IsUltrametricDist C]
     [Fintype ι] [DecidableEq ι] (M : Matrix ι ι C) (hM : ∀ i j, ‖M i j‖ ≤ 1) (k : ι)
     (hk : ∀ i, ‖M i k‖ < 1) : ‖M.det‖ < 1 := by
@@ -101,7 +100,6 @@ theorem _root_.GlobalTheory.SplitEmbSep.norm_det_lt_one {C ι : Type*} [NormedFi
     simpa [hs, Units.smul_def] using hprod
 
 
-open NumberField in
 theorem _root_.GlobalTheory.SplitEmbSep.one_le_norm_intCast {C : Type*} [NormedField C] [IsUltrametricDist C] {g : ℕ}
     (hg : g.Prime) (hgC : ‖(g : C)‖ < 1) {d : ℤ} (hd : ¬ (g : ℤ) ∣ d) : 1 ≤ ‖(d : C)‖ := by
   obtain ⟨a, b, hab⟩ :=
@@ -127,7 +125,6 @@ theorem _root_.GlobalTheory.SplitEmbSep.one_le_norm_intCast {C : Type*} [NormedF
     _ = ‖(d : C)‖ := one_mul _
 
 
-open NumberField in
 theorem _root_.GlobalTheory.SplitEmbSep.not_dvd_discr_of_split {g : ℕ} (hg : g.Prime) (E : Type*) [Field E]
     [NumberField E]
     (h : (Ideal.primesOver (Ideal.span {(g : ℤ)}) (𝓞 E)).ncard = Module.finrank ℚ E) :

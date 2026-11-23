@@ -84,7 +84,6 @@ theorem _root_.GlobalTheory.OnePair.coeff_subst_kill {σ R : Type} [CommRing R] 
 end OnePair
 
 
-open CategoryTheory TensorProduct MvPowerSeries in
 theorem _root_.GlobalTheory.coeff_at2_single_X_inl_inr (R : Type) [CommRing R] (d : ℕ)
     (c : MvPowerSeries (Fin d ⊕ Fin d) R) (m : Fin d) (γ : Fin d ⊕ Fin d →₀ ℕ) :
     coeff γ (_root_.GlobalTheory.Katz.at2 c

@@ -96,7 +96,6 @@ end GlobalTheory.UnipConjIdeal
 
 namespace GlobalTheory.UnipConjIdeal
 
-open Matrix
 
 theorem pow_sub_one_mem_conj_ideal_smul : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : DataX E r) (β : GL (Fin r) E),
     (∀ v w, herm X.Gm (Matrix.mulVec (β : Matrix (Fin r) (Fin r) E) v) (Matrix.mulVec (β : Matrix (Fin r) (Fin r) E) w) =

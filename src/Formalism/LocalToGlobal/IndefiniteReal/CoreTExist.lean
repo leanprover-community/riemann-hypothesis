@@ -59,14 +59,12 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-section Half
 
 variable (P : Formalism.L2.Host.PiBar D.host)
 
 
 variable (hF : OFull D) (hz : OZeta D) (hN : N1ab)
 
-end Half
 
 section Chr
 
@@ -111,7 +109,6 @@ theorem mem_of_latHat {F E : Type} [Field F] [NumberField F] [Field E] [NumberFi
 
 end Chr
 
-section Unif
 
 variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
   {σ : c.F →+* ℂ} {r : ℕ}
@@ -120,17 +117,13 @@ variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : 
 
 variable {U : Unf Xo c σ r} {V : HSp D} {dict : GA D V → Σ k, Frame (U.X k).Ψ r} {mu : GA D V → ℂ}
 
-end Unif
 
-section Core
 
 variable (Q : Par D)
 
 variable {Q}
 
-end Core
 
-section Rec
 
 variable (Q : Par D)
 
@@ -138,22 +131,18 @@ variable (Q : Par D)
 
 variable {Q}
 
-end Rec
 
 section Pg
 
 end Pg
 
-section Rows
 
-section Gen
 
 variable {F E R : Type} [Field F] [CharZero F] [Field E] [Algebra F E] [CommRing R] [Algebra F R] (s : E →ₐ[F] E)
   (hs : ∀ e, ∃ f : F, algebraMap F E f = e + s e)
 
 include hs
 
-end Gen
 
 section H90
 
@@ -161,7 +150,6 @@ end H90
 
 end Rows
 
-section Cover
 
 open CategoryTheory
 
@@ -171,15 +159,12 @@ variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : 
 
 variable {Xo c}
 
-end Cover
 
-section IdMap
 
 open AlgebraicGeometry CategoryTheory MonoidalCategory CartesianMonoidalCategory ReciprocityTheory.ChartRestriction.G.Semi
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-section Cech
 
 variable {X Y : Scheme.{0}}
 
@@ -188,28 +173,22 @@ variable (L : LB X)
 variable {K : Type} [Fintype K] (φ : K → (Y ⟶ X)) (ε : K → ℤ)
 
 
-end Cech
 
 variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E}
 
 
 end IdMap
 
-section Trans
 
 variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c c' : Coeff l} (hle : c.F ≤ c'.F)
 
 include hle
 
-end Trans
 
-section Lat
 
 variable {n : ℕ}
 
-end Lat
 
-section OM
 
 variable {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
 
@@ -220,6 +199,5 @@ variable (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) 
 
 variable {T R i v₀ c' jL lev}
 
-end OM
 
 end Formalism.IndefR.CoreT

@@ -89,7 +89,6 @@ end GlobalTheory.DownLift.GenSplit
 
 namespace GlobalTheory.DownLift.GenSplit
 
-open GlobalTheory.IdemSupport GlobalTheory.DownLift.GenFinite.Inert
 
 
 

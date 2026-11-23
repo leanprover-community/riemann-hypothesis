@@ -515,7 +515,6 @@ end GlobalTheory
 
 namespace GlobalTheory.Published.SemiAbelianHomExtension
 
-open ExtUnique
 
 variable {S U : Scheme.{0}} [IsIntegral S] [AlgebraicGeometry.IsNoetherian S] {j : U ⟶ S}
 

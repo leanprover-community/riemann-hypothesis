@@ -50,7 +50,6 @@ namespace ReciprocityTheory.ChartRestriction.G.Out.GtBCPf
 open Semi Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison (gU unit_ext gU_res gU_pullU exists_gen_transfer germ_pull germ_div)
 
-section Div
 
 variable {X Y : Scheme.{0}}
 
@@ -63,7 +62,6 @@ private theorem mem_pull_of_lemma_2 (M : LB X) (a : Y ⟶ X) (p : PUnit.{1} → 
   show y ∈ (⋂ k, a.base ⁻¹' (M.U (p k) : Set X)) from
     Set.mem_iInter.mpr (fun k => by cases k; exact h)
 
-end Div
 
 section Div2
 

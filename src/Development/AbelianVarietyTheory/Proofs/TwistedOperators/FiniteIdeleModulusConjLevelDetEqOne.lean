@@ -140,7 +140,6 @@ theorem GlobalTheory.DetIdeleUnit.valued_eq_one_of_valuation {D : D7} {w : Pl D.
 
 namespace GlobalTheory.DetIdeleUnit
 
-open Formalism.L2.NTheta (IsIdemAt)
 open GlobalTheory.ExpansionInvariance
 
 variable {D : D7}

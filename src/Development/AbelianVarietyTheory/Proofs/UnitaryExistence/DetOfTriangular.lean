@@ -56,18 +56,12 @@ lemma _root_.GlobalTheory.PerMove.differentiable_det {X : Type*} [NormedAddCommG
   simp only [Matrix.det_apply]
   fun_prop
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 lemma _root_.GlobalTheory.PerMove.inv_mulVec_apply {r : ℕ} (A : Matrix (Fin r) (Fin r) ℂ) (w : Fin r → ℂ) (a : Fin r) :
     (A⁻¹ *ᵥ w) a = (A.det)⁻¹ * (A.updateCol a w).det := by
   rw [Matrix.inv_def, Matrix.smul_mulVec, Pi.smul_apply, smul_eq_mul, Ring.inverse_eq_inv',
     ← Matrix.cramer_eq_adjugate_mulVec, Matrix.cramer_apply]
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 lemma _root_.GlobalTheory.PerMove.det_of_triangular {n α : Type*} [Fintype n] [DecidableEq n] [LinearOrder α] (f : n → α)
     (hf : Function.Injective f) (M : Matrix n n ℂ) (hM : ∀ k l, f l < f k → M k l = 0) :
     M.det = ∏ k, M k k := by
@@ -76,25 +70,16 @@ lemma _root_.GlobalTheory.PerMove.det_of_triangular {n α : Type*} [Fintype n] [
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 lemma _root_.GlobalTheory.PerMove.map_cc (τ : E →+* ℂ) (z : E) : τ (_root_.ReciprocityTheory.ChartRestriction.G.FD.cc z) = conj (τ z) :=
   NumberField.IsCMField.complexEmbedding_complexConj (K := E) τ z
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma hermC_eq_dotProduct' (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (u w : Fin r → ℂ) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.hermC τ G u w = u ⬝ᵥ (G.map τ *ᵥ star w) := by
   simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.hermC, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc]
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma hermC_mulVec_mulVec' (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E)
     (P : Matrix (Fin r) (Fin r) ℂ) (u w : Fin r → ℂ) :
@@ -104,9 +89,6 @@ private lemma hermC_mulVec_mulVec' (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r
   rw [hermC_eq_dotProduct', hstar, Matrix.mulVec_mulVec, ← Matrix.vecMul_transpose,
     ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mul_assoc]
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 lemma _root_.GlobalTheory.PerMove.hermC_unitary (τ : E →+* ℂ) (G γ : Matrix (Fin r) (Fin r) E)
     (hγ : ∀ u v, _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G (γ *ᵥ u) (γ *ᵥ v) = _root_.ReciprocityTheory.ChartRestriction.G.FD.herm G u v) (u w : Fin r → ℂ) :
@@ -125,9 +107,6 @@ lemma _root_.GlobalTheory.PerMove.hermC_unitary (τ : E →+* ℂ) (G γ : Matri
   rw [hermC_mulVec_mulVec', hconj, ← Matrix.transpose_map, ← Matrix.map_mul, ← Matrix.map_mul, hM,
     hermC_eq_dotProduct']
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 lemma _root_.GlobalTheory.PerMove.emb_mulVec (τ : E →+* ℂ) (γ : Matrix (Fin r) (Fin r) E) (v : Fin r → E) :
@@ -136,18 +115,12 @@ lemma _root_.GlobalTheory.PerMove.emb_mulVec (τ : E →+* ℂ) (γ : Matrix (Fi
 
   simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb, Matrix.mulVec, dotProduct, map_sum]
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 lemma _root_.GlobalTheory.PerMove.col_mul (g x : Matrix (Fin r) (Fin r) ℂ) (a : Fin r) :
     _root_.ReciprocityTheory.ChartRestriction.G.FD.col (g * x) a = g *ᵥ _root_.ReciprocityTheory.ChartRestriction.G.FD.col x a := by
   ext i
   simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.col, Matrix.mul_apply, Matrix.mulVec, dotProduct]
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 lemma _root_.GlobalTheory.PerMove.hermC_col_mul (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (x b : Matrix (Fin r) (Fin r) ℂ)
@@ -161,17 +134,11 @@ lemma _root_.GlobalTheory.PerMove.hermC_col_mul (τ : E →+* ℂ) (G : Matrix (
   refine Finset.sum_congr rfl fun k _ => ?_
   ring
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 lemma _root_.GlobalTheory.PerMove.bor_tri {Ψ : Finset (E →+* ℂ)} {b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame Ψ r} (hb : b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor Ψ r) (τ : Ψ) :
     (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat b τ).BlockTriangular id := fun i j h => (hb τ).2 i j h
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 lemma _root_.GlobalTheory.PerMove.bor_diag_ne {Ψ : Finset (E →+* ℂ)} {b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame Ψ r} (hb : b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor Ψ r) (τ : Ψ)
@@ -180,9 +147,6 @@ lemma _root_.GlobalTheory.PerMove.bor_diag_ne {Ψ : Finset (E →+* ℂ)} {b : _
   rw [Matrix.det_of_upperTriangular (_root_.GlobalTheory.PerMove.bor_tri hb τ)] at h
   exact Finset.prod_ne_zero_iff.mp h a (Finset.mem_univ a)
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 lemma _root_.GlobalTheory.PerMove.bor_inv_tri {Ψ : Finset (E →+* ℂ)} {b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame Ψ r} (hb : b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor Ψ r) (τ : Ψ) :
@@ -190,9 +154,6 @@ lemma _root_.GlobalTheory.PerMove.bor_inv_tri {Ψ : Finset (E →+* ℂ)} {b : _
   letI := (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat b τ).invertibleOfIsUnitDet (isUnit_iff_ne_zero.mpr (hb τ).1)
   exact Matrix.blockTriangular_inv_of_blockTriangular (_root_.GlobalTheory.PerMove.bor_tri hb τ)
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 lemma _root_.GlobalTheory.PerMove.bor_inv_diag {Ψ : Finset (E →+* ℂ)} {b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame Ψ r} (hb : b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor Ψ r) (τ : Ψ)
@@ -210,9 +171,6 @@ lemma _root_.GlobalTheory.PerMove.bor_inv_diag {Ψ : Finset (E →+* ℂ)} {b : 
     · rw [show M⁻¹ k a = 0 from _root_.GlobalTheory.PerMove.bor_inv_tri hb τ hlt, mul_zero]
   · intro h; exact absurd (Finset.mem_univ a) h
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 lemma _root_.GlobalTheory.PerMove.rmul_mem_GG {Ψ : Finset (E →+* ℂ)} {G : Matrix (Fin r) (Fin r) E} {q : ℕ}
     {x b : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame Ψ r} (hx : x ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.GG Ψ G q) (hb : b ∈ _root_.ReciprocityTheory.ChartRestriction.G.FD.Bor Ψ r) :
@@ -237,9 +195,6 @@ end GlobalTheory.PerMove
 
 namespace GlobalTheory
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma differentiable_hermC_col_mat {Ψ : Finset (E →+* ℂ)} (G : Matrix (Fin r) (Fin r) E)
     (σ : Ψ) (a : Fin r) (w : Fin r → ℂ) :
@@ -248,9 +203,6 @@ private lemma differentiable_hermC_col_mat {Ψ : Finset (E →+* ℂ)} (G : Matr
   simp only [Matrix.of_apply]
   fun_prop
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 private lemma differentiableOn_mat_inv_mulVec_apply {Ψ : Finset (E →+* ℂ)} (s : Set (_root_.ReciprocityTheory.ChartRestriction.G.FD.Frame Ψ r))
     (hs : ∀ x ∈ s, ∀ σ, (_root_.ReciprocityTheory.ChartRestriction.G.FD.mat x σ).det ≠ 0) (σ : Ψ) (a : Fin r) (w : Fin r → ℂ) :
@@ -265,9 +217,6 @@ private lemma differentiableOn_mat_inv_mulVec_apply {Ψ : Finset (E →+* ℂ)} 
     simp only [Matrix.updateCol_apply, Matrix.of_apply]
     split_ifs <;> fun_prop
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [NumberField E] [IsCMField E] in
 private lemma sum_ite_fst_eq_sum_symm {Ψ : Finset (E →+* ℂ)} [DecidableEq Ψ] {g : ℕ} (idx : Fin g ≃ Ψ × Fin r) (σ : Ψ)
@@ -282,9 +231,6 @@ private lemma sum_ite_fst_eq_sum_symm {Ψ : Finset (E →+* ℂ)} [DecidableEq �
   · intro h; exact absurd (Finset.mem_univ σ) h
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors in
-open scoped ComplexConjugate in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 theorem _root_.GlobalTheory.per_move :
     ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H

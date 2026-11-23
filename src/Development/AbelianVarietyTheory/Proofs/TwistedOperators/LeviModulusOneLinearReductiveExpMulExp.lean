@@ -179,7 +179,6 @@ theorem neg_keeps {A : Matrix (Fin n) (Fin n) ℂ} {V : Submodule ℂ (Fin n →
     ∀ y ∈ V, (-A) *ᵥ y ∈ V := fun y hy => by
   rw [Matrix.neg_mulVec]; exact V.neg_mem (hA y hy)
 
-open scoped Matrix.Norms.L2Operator in
 theorem continuous_exp_smul (X : Matrix (Fin n) (Fin n) ℂ) : Continuous (fun s : ℝ => NormedSpace.exp (s • X)) := by
   letI : NormedAlgebra ℚ (Matrix (Fin n) (Fin n) ℂ) := NormedAlgebra.restrictScalars ℚ ℂ _
   exact NormedSpace.exp_continuous.comp (continuous_id.smul continuous_const)

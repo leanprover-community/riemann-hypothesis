@@ -51,7 +51,6 @@ end GlobalTheory.CompanionTheory.InertiaEigenvalues.LPow
 end
 
 section
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc
 
 private theorem xi_eq_sum_choose_mul_pi_pow_lemma_2 {l : ℕ} [Fact l.Prime] {P : _root_.Formalism.BasicNotions.LocPrime l}
     (AI : _root_.Formalism.BasicNotions.LocAinf l P) :

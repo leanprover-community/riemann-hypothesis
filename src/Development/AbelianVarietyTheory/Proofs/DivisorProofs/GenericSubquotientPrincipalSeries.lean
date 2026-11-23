@@ -94,6 +94,5 @@ end GlobalTheory.CuspDetBlocks
 
 namespace GlobalTheory.CuspDetBlocks
 
-open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.CuspRep GlobalTheory.Whittaker
 
 end GlobalTheory.CuspDetBlocks

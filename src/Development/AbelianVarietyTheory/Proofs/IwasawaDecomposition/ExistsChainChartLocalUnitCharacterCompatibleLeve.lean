@@ -40,7 +40,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Top.KerTwPsi
 
-open Formalism.MainNotions.G Formalism.L2.G Formalism.MainNotions.G.CmpJ Formalism.L2.Forms Formalism.UG
 open scoped TensorProduct
 
 variable {D : D7} {u : D.what₂.Word} {w : D.what₂.places.Pl} {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)}

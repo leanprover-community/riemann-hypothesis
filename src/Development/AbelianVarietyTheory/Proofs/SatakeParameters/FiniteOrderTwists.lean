@@ -53,7 +53,6 @@ end GlobalTheory.RoadU.FinTwist
 
 namespace GlobalTheory.RoadU.FinTwist
 
-open GlobalTheory.ContraPair GlobalTheory.HeightCounting.Blocks
 
 theorem isAlg_zero {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {κ : HChar K} {m : ℕ} (hm : 0 < m)
     (h : κ ^ m = 1) : κ.IsAlg 0 := fun k => isAlgPos_zero_of_orderDvd hm h k fun φ => by

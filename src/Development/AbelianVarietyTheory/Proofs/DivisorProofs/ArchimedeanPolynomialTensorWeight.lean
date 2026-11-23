@@ -164,7 +164,6 @@ end
 
 noncomputable section
 namespace GlobalTheory.FockKStab
-open Matrix
 
 section Tensor
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {V : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]

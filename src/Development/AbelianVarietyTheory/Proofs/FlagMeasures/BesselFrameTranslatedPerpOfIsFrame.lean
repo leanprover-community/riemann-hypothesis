@@ -317,7 +317,6 @@ end Frame
 
 section Dual
 
-open PI.UpqRep PI.HwUniqW GlobalTheory.RealBessel
 
 variable {k : ℕ} {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W]
 

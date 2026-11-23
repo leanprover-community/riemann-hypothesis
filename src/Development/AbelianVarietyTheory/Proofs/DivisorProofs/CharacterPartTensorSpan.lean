@@ -144,7 +144,6 @@ end GlobalTheory.KFixIrr.TensProj
 
 namespace GlobalTheory.KFixIrr.TensProj
 
-open MvPolynomial Formalism.BasicNotions.TH
 
 theorem exists_proj_of_graded {σ : Type} (K : Submodule ℂ (MvPolynomial σ ℂ))
     (hK : ∀ f ∈ K, ∀ n, homogeneousComponent n f ∈ K) :

@@ -252,7 +252,6 @@ end WeylPolynomialAlgebra
 
 namespace WeylPolynomialAlgebra
 
-open Formalism.ShimuraLimitIdentity (Pol)
 
 variable {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ}
 
@@ -377,7 +376,6 @@ end WeylPolynomialAlgebra
 
 namespace WeylPolynomialAlgebra
 
-open Formalism.ShimuraLimitIdentity (Pol)
 
 variable {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ}
 

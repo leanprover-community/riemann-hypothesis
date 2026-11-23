@@ -126,8 +126,6 @@ theorem _root_.GlobalTheory.hasSum_tuple_prod_exp {ι : Type} (z : ι → ℂ) (
     (fun n => ((hasSum_prod_fin_pow z g hz h n).1.div_const (n.factorial : ℂ))) hsum
 
 
-open NumberField IsDedekindDomain NumberField.mixedEmbedding MeasureTheory Complex Classical in
-open scoped ContDiff nonZeroDivisors in
 theorem _root_.GlobalTheory.landau_exp_summable : ∀ (ι : Type) (a l : ι → ℝ) (F : ℂ → ℂ),
     (∀ i, 0 ≤ a i) → (∀ i, 0 ≤ l i) → Differentiable ℂ F →
     (∀ s : ℂ, 1 < s.re → ∃ g : ℂ, HasSum (fun i => (a i : ℂ) * Complex.exp (-(l i : ℂ) * s)) g ∧

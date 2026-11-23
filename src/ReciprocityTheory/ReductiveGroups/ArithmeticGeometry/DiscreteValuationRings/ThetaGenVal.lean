@@ -70,7 +70,6 @@ lemma hasVal_valE (hϖ : Irreducible ϖ) {c : FractionRing V} (hc : c ≠ 0) : H
   exact (hasVal_of_ne_zero hϖ hc).choose_spec
 
 
-open scoped Classical in
 def vK (hϖ : Irreducible ϖ) : AddValuation (FractionRing V) (WithTop ℚ) :=
   AddValuation.of (fun c => if c = 0 then ⊤ else ((valE hϖ c : ℚ) : WithTop ℚ))
     (by simp)

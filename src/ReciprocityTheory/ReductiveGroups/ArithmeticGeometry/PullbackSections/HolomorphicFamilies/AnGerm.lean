@@ -46,11 +46,9 @@ open scoped ContDiff
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-section Pt
 
 variable {K : Type} [Field K] {ι : Type} {m : ℕ}
 
-end Pt
 
 section PullSec
 

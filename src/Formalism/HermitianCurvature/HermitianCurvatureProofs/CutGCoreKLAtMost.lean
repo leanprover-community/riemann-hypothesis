@@ -252,7 +252,6 @@ end Geo
 
 section Fib
 
-open Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq] [NormedSpace ℂ Wq]
 

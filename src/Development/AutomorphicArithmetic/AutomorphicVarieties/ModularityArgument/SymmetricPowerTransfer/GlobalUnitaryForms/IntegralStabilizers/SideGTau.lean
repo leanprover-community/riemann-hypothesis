@@ -70,7 +70,6 @@ private theorem poly_expand {R : Type} [CommRing R] (t : R) :
     ((X - 1) * (X ^ 2 - C t * X + 1) : R[X]) = X ^ 3 - C (1 + t) * X ^ 2 + C (1 + t) * X - 1 := by
   simp only [C_add, C_1]; ring
 
-open Polynomial in
 theorem UpperTheory.V.Z.Sym.Glob.sideGTau :
     (∀ (K : Type) [Field K] (Δ : K) (δ x : U3 Δ) (τ : K), HasTau δ τ → HasTau (x⁻¹ * δ * theta Δ x) τ) ∧
     (∀ (K : Type) [Field K] (Δ : K) (δ : U3 Δ) (τ τ' : K), HasTau δ τ → HasTau δ τ' → τ = τ') ∧

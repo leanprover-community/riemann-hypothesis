@@ -84,8 +84,6 @@ private lemma measurePreserving_update_add_of_indep [DecidableEq ι] (i : ι)
   · simp [e, c, p, hj]
 
 
-open ValuativeRel MeasureTheory ComplexConjugate in
-open scoped ComplexOrder in
 variable {G : Type} [AddGroup G] [MeasurableSpace G] [MeasurableAdd₂ G]
   (μ : Measure G) [SigmaFinite μ] [μ.IsAddRightInvariant]
   {ι : Type} [Fintype ι] in

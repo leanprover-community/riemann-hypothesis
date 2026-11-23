@@ -174,7 +174,6 @@ end GlobalTheory.StringDecomp
 
 namespace GlobalTheory.StringDecomp
 
-open Formalism.MainNotions.SumRepresentations.At Topology
 
 section Frob
 
@@ -291,7 +290,6 @@ end GlobalTheory.StringDecomp
 
 namespace GlobalTheory.StringDecomp
 
-open Formalism.MainNotions.SumRepresentations.At Topology
 
 section Eps
 
@@ -337,7 +335,6 @@ end GlobalTheory.StringDecomp
 
 namespace GlobalTheory.StringDecomp
 
-open Formalism.MainNotions.SumRepresentations.At Topology
 
 theorem placesOver_finite' (E : Type) [Field E] [NumberField E] (p : ℕ) (hp : p ≠ 0) :
     (placesOver E p).Finite := by

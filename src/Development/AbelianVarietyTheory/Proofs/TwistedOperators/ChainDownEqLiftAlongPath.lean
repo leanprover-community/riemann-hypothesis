@@ -113,7 +113,6 @@ end GlobalTheory.RowChainDown
 
 namespace GlobalTheory.RowChainDown
 
-open GlobalTheory.FunObj GlobalTheory.RowChain
 
 theorem chain_down_eq_liftP : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (Wl : G.Weil) (t : T) (M : GlobalTheory.FunObj.Vol G)
     (hM : M.Is t) (d : PureT G (downPath t D.R.m D.R.m)) (F : Fn G (.grid D.R.m D.R.m)),

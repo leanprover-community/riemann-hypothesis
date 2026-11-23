@@ -221,7 +221,6 @@ theorem logX_le (hN : SizeN L) (hK : SizeK L) :
   linarith
 
 
-open Formalism.MainNotions.DIV.Proofs.HHParts in
 theorem ga_le_pol (P : ParameterChoice' D L) (X : Inst D L) (K : Consts) (hK : K.Nonneg)
     (hF : ∀ w, ParametersFill X K w) (hM : Formalism.MainNotions.CornerGLContinuity.MertensBound D) (hS : SizesAt L) :
     L.Ga ≤ 64 * Formalism.MainNotions.DIV.Proofs.szPol L ^ 4 * L.sc.b := by

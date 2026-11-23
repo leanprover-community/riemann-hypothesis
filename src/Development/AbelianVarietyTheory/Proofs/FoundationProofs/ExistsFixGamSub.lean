@@ -82,12 +82,10 @@ end GlobalTheory.K5.MonX
 
 namespace GlobalTheory.K5.MonX
 
-open GlobalTheory.K5 GlobalTheory.KumDlog
 
 end GlobalTheory.K5.MonX
 
 namespace GlobalTheory.K5.MonX
 
-open GlobalTheory.K5 GlobalTheory.KumDlog
 
 end GlobalTheory.K5.MonX

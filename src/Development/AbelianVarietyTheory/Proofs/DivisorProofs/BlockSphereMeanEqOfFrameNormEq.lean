@@ -61,7 +61,6 @@ theorem _root_.GlobalTheory.SphereMeanFrame.eval_linSubst {B N n : ℕ} (M : Mat
 
 
 set_option autoImplicit false in
-open MvPolynomial NumberField Module MeasureTheory in
 theorem _root_.GlobalTheory.SphereMeanFrame.blockSphereMean_linSubst {B N : ℕ} (Q : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ)
     (hQ : ∀ x : EuclideanSpace ℂ (Fin (N + 1)), ‖Matrix.toEuclideanLin Q x‖ = ‖x‖)
     (f : MvPolynomial (Fin B × Fin (N + 1)) ℂ) :
@@ -93,7 +92,6 @@ theorem _root_.GlobalTheory.SphereMeanFrame.blockSphereMean_linSubst {B N : ℕ}
 
 
 set_option autoImplicit false in
-open MvPolynomial NumberField Module MeasureTheory in
 theorem _root_.GlobalTheory.SphereMeanFrame.blockSphereMean_eq_of_frameNorm_eq : ∀ (B N : ℕ) (A A' : Matrix (Fin N) (Fin N) ℂ),
     A.det ≠ 0 → A'.det ≠ 0 → (∀ z, _root_.GlobalTheory.ChowHt.frameNorm A z = _root_.GlobalTheory.ChowHt.frameNorm A' z) →
     ∀ f : MvPolynomial (Fin B × Fin N) ℂ,

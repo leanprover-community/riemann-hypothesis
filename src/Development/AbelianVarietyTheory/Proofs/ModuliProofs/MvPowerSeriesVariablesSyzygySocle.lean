@@ -56,7 +56,6 @@ theorem coeff_mul_X_ite {k : Type} [CommRing k] {g : ℕ} (f : MvPowerSeries (Fi
   congr 1
   simp [Finsupp.single_le_iff, Nat.one_le_iff_ne_zero]
 
-open MvPowerSeries Finsupp in
 theorem mvPowerSeries_X_syzygy {k : Type} [CommRing k] {g : ℕ}
     (r : Fin g → MvPowerSeries (Fin g) k) (hr : ∑ i, r i * X i = 0) :
     ∃ s : Matrix (Fin g) (Fin g) (MvPowerSeries (Fin g) k), s.transpose = -s ∧ (∀ i, s i i = 0) ∧
@@ -130,7 +129,6 @@ theorem mvPowerSeries_X_syzygy {k : Type} [CommRing k] {g : ℕ}
       · exact hj (H.2.2 j h)
     · simp
 
-open MvPowerSeries Finsupp in
 theorem mvPowerSeries_prod_X_pow_notMem {k : Type} [CommRing k] [Nontrivial k] {g : ℕ} (N : ℕ) :
     ∏ i, (X i : MvPowerSeries (Fin g) k) ^ N ∉
       Ideal.span (Set.range fun i => (X i : MvPowerSeries (Fin g) k) ^ (N + 1)) := by

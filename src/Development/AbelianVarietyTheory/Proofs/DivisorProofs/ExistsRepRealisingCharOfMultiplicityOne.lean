@@ -85,7 +85,6 @@ private lemma natCast_smul_eq_trace_smul_one_of_commute {L G : Type} [Field L] [
   subst hT'
   simp [LinearMap.trace_one, mul_comm, smul_smul]
 
-open Module in
 variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G] in
 private lemma natCast_mul_sum_trace_conj_eq_mul_trace {L G : Type} [Field L] [Group G] [Fintype G] {n : ℕ}
     (ρ : Representation L G (Fin n → L)) (h1 : Module.finrank L (ρ.IntertwiningMap ρ) = 1)
@@ -113,7 +112,6 @@ private lemma natCast_mul_sum_trace_conj_eq_mul_trace {L G : Type} [Field L] [Gr
 
   simp only [Finset.mul_sum, map_sum, map_mul, mul_assoc]
 
-open Module in
 variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G] in
 private lemma trace_rep_conj_eq {L G : Type} [Field L] [Group G] {V : Type} [AddCommGroup V] [Module L V]
     (ρ : Representation L G V) (g y : G) :
@@ -121,7 +119,6 @@ private lemma trace_rep_conj_eq {L G : Type} [Field L] [Group G] {V : Type} [Add
   rw [map_mul ρ (g * y), map_mul ρ g, LinearMap.trace_mul_comm L (ρ g * ρ y) (ρ g⁻¹), ← mul_assoc,
     ← map_mul ρ g⁻¹ g, inv_mul_cancel, map_one, one_mul]
 
-open Module in
 variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G] in
 private lemma natCast_mul_sum_trace_inv_mul_trace_mul_eq {L G : Type} [Field L] [Group G] [Fintype G] {n : ℕ}
     (ρ : Representation L G (Fin n → L)) (h1 : Module.finrank L (ρ.IntertwiningMap ρ) = 1)
@@ -149,7 +146,6 @@ private lemma natCast_mul_sum_trace_inv_mul_trace_mul_eq {L G : Type} [Field L] 
   rw [← this, hZdef, Finset.sum_mul, map_sum]
   simp [map_mul, smul_mul_assoc]
 
-open Module in
 variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G] in
 private lemma trace_leftReg_mul_mulRight_eq_sum_coeff {K G : Type} [Field K] [Group G] [Fintype G]
     (f : MonoidAlgebra K G) (t : G) :
@@ -164,7 +160,6 @@ private lemma trace_leftReg_mul_mulRight_eq_sum_coeff {K G : Type} [Field K] [Gr
   simp [MonoidAlgebra.basis, MonoidAlgebra.single_mul_apply, mul_assoc]
 
 
-open Module in
 variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G] in
 theorem _root_.GlobalTheory.MultOneRealised.exists_rep_of_mult_one : ∀ (K : Type) [Field K] [CharZero K] (G : Type) [Group G] [Fintype G] (χ : G → K), _root_.Formalism.L2.DIV.IsAbsIrrChar χ → ∀ (P : Subgroup G) [Fintype P] (ψ : P →* Kˣ), ∑ h : P, χ (h : G) * (((ψ h)⁻¹ : Kˣ) : K) = (Fintype.card P : K) → ∃ (n : ℕ) (τ : Representation K G (Fin n → K)), 0 < n ∧ Function.Surjective τ.asAlgebraHom ∧ ∀ g, LinearMap.trace K (Fin n → K) (τ g) = χ g := by
   intro K _ _ G _ _ χ hχ P _ ψ hsum

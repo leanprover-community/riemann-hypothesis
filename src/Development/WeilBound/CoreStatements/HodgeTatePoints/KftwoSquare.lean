@@ -221,7 +221,6 @@ end Act
 section Triple
 
 open GlobalTheory.CechPic GlobalTheory.HermTensorLB GlobalTheory.HomComb
-open scoped CategoryTheory.Obj
 
 variable {E E' : Type} [Field E] [NumberField E] [IsCMField E] [Field E'] [NumberField E'] [IsCMField E']
   {H : Host E} {H' : Host E'} {S : Scheme.{0}}

@@ -96,7 +96,6 @@ end GlobalTheory.Mem.ThOrth
 
 namespace GlobalTheory.Mem.ThOrth
 
-open Formalism.IndefR.CxPass.LevelOperators
 
 
 

@@ -149,7 +149,6 @@ theorem keeps_one {V : HSp D} {P : HeightOneSpectrum (𝓞 D.host.E)} {e : Forma
 
 end GlobalTheory.HeckeConjPart
 
-open scoped Matrix
 
 
 open GlobalTheory.SplitPlace in

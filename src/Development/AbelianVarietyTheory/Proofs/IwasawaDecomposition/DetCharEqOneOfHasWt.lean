@@ -62,7 +62,6 @@ end Char
 
 section Char
 
-open Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host GlobalTheory.Mem.Chr
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 

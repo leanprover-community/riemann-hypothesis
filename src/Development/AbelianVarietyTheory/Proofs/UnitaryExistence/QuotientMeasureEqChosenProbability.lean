@@ -177,7 +177,6 @@ end Adeles
 section Groups
 
 open scoped TensorProduct Matrix
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -185,7 +184,6 @@ end Groups
 
 section Record
 
-open scoped Matrix
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.Pj Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar

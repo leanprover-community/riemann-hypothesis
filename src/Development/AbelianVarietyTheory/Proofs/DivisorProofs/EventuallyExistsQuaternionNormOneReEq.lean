@@ -72,8 +72,6 @@ private lemma exists_root_monic_quadratic_henselian {R : Type*} [CommRing R] [Is
   exact ⟨a, by simpa only [IsRoot, eval_add, eval_pow, eval_X, eval_mul, eval_C, add_assoc] using ha,
     haa⟩
 
-open IsDedekindDomain NumberField IsLocalRing in
-open Polynomial in
 private lemma exists_binary_form_eq_unit {O : Type*} [CommRing O] [IsLocalRing O]
     [HenselianRing O (maximalIdeal O)] [Finite (ResidueField O)] (t n u : O)
     (hD : IsUnit (t ^ 2 - 4 * n)) (hu : IsUnit u) :
@@ -170,8 +168,6 @@ private lemma exists_binary_form_eq_unit {O : Type*} [CommRing O] [IsLocalRing O
       linear_combination (-c * ω) * hβ + (c * ω ^ 2) * hw + (-c * (w * ω + 1) + c * ω) * hω⟩
 
 
-open NumberField IsDedekindDomain in
-open scoped Quaternion Topology in
 theorem _root_.GlobalTheory.QSA.IntRep.exists_nrm_eq_one_re_eq : ∀ (F : Type) [Field F] [NumberField F] (a b : F), a ≠ 0 → b ≠ 0 →
     ∀ᶠ v in (Filter.cofinite : Filter (HeightOneSpectrum (𝓞 F))), ∀ t ∈ v.adicCompletionIntegers F,
       ∃ u : ℍ[v.adicCompletion F, algebraMap F (v.adicCompletion F) a, algebraMap F (v.adicCompletion F) b],

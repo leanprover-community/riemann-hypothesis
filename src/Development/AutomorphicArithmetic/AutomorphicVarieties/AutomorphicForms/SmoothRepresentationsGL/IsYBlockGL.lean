@@ -47,7 +47,6 @@ private theorem isY_blockGL {K : Type} [Field K] {n k : ℕ} (hk : k < n) (γ : 
   · rw [coe_blockGL, blockMat_apply, dite_eq_right hik, if_neg hj.ne']
 
 
-open GroundTheory.Automorphic.FourierWhittaker in
 open scoped NumberField.AdeleRing in
 private theorem step {K : Type} [Field K] [NumberField K] {n : ℕ} {ϕ : AdelicGLn.AdelicGL K n → ℂ}
     (hc : Continuous ϕ) (hl : IsLeftInvariant ϕ) (hcusp : AutomorphicForm.IsCuspidal ϕ)
@@ -103,7 +102,6 @@ private theorem step {K : Type} [Field K] [NumberField K] {n : ℕ} {ϕ : Adelic
   change partialCoeff ϕ (k + 1) (D * g) = 0
   simpa [F, colGL_zero] using hF0
 
-open GroundTheory.Automorphic.FourierWhittaker in
 theorem UpperTheory.V.Af.Smo.injP :
     UpperTheory.V.Af.Smo.InjP := by
   intro E _ _ n hn f hf X hX hW

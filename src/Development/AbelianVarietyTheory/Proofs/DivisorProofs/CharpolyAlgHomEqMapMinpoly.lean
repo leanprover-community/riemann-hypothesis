@@ -72,7 +72,6 @@ theorem natDegree_minpoly_le_one_tmul {F A : Type} [Field F] [Ring A] [Algebra F
 end GlobalTheory.CsaCharpoly
 
 namespace GlobalTheory
-open Polynomial
 
 theorem charpoly_algHom_eq_map_minpoly : ∀ (F L C : Type) [Field F] [Field L] [Algebra F L] [Ring C]
     [Algebra F C] [Algebra.IsCentral F C] [IsSimpleRing C] [FiniteDimensional F C] (n : ℕ),

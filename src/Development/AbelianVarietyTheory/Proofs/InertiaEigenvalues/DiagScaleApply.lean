@@ -72,7 +72,6 @@ end GlobalTheory.CokerL
 
 namespace GlobalTheory.CokerL
 
-open PowerSeries GlobalTheory.BK
 
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [IsUnitBall O K] {l e a : ℕ} {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]

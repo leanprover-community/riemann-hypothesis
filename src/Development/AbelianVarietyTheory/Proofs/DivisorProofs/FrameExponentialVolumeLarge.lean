@@ -82,6 +82,5 @@ end GlobalTheory.ThinBerg
 
 namespace GlobalTheory.ThinBerg
 
-open MeasureTheory
 
 end GlobalTheory.ThinBerg

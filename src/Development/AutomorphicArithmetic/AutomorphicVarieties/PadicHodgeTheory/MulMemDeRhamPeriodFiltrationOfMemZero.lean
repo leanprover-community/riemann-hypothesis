@@ -753,7 +753,6 @@ end Mats
 
 namespace UpperTheory.V.Loc
 
-open GlobalTheory.Pst Polynomial
 
 variable {l : ℕ} [Fact l.Prime]
 

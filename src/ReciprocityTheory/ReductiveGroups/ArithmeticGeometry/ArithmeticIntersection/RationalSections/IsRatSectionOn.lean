@@ -75,7 +75,6 @@ theorem recR_eq (I : Ideal (MRing ι) → (n : ℕ) → (Fin n → HermLine ι) 
   rfl
 
 
-open scoped Classical in
 def vertR (P : Ideal (MRing ι)) {n : ℕ} (L : Fin n → HermLine ι) (s : MRing ι) : ℝ :=
   ∑ᶠ W ∈ divSupp P s, (multAt (P ⊔ Ideal.span {s}) W : ℝ) *
     (if IsHorizontal W then 0 else (geoNum n W (fun j => (L j).a) : ℝ) * Real.log (charOf W))

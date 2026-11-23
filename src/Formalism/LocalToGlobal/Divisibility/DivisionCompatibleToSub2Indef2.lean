@@ -141,7 +141,6 @@ variable {D A3} {P0 : Subgroup G} {ψ0 : P0 →* D.what₂.LLˣ} {Ps : Subgroup 
 
 end Fam3
 
-section SplitParts
 
 variable (D : Formalism.BasicNotions.D7) {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
   (A : FamIn D.what₂.LL G Pl0 T m)
@@ -190,7 +189,6 @@ structure ColDef3 {Ps : Subgroup G} {ψs : Ps →* D.what₂.LLˣ} {Zs : DefSub 
 
   Nu : ∀ u, HLatTie (D.div.Nu u) (NuC (wU u)) (Dc.Xc (wU u)) (eNu u)
 
-end SplitParts
 
 section Split
 

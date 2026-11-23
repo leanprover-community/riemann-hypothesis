@@ -66,8 +66,6 @@ private lemma integral_Ioc_cexp_two_pi_I_int_mul (j : ℤ) :
     simp [h1]
 
 
-open Complex Matrix in
-open scoped ContDiff BigOperators Real in
 theorem _root_.GlobalTheory.fourier_coeff_eq_zero_of_tsum_eq_zero_fin :
     ∀ (n : ℕ) (c : (Fin n → ℤ) → ℂ), Summable (fun ν => ‖c ν‖) →
       (∀ x : Fin n → ℝ, ∑' ν, c ν * cexp (2 * π * I * ∑ k, (ν k : ℂ) * (x k : ℂ)) = 0) →

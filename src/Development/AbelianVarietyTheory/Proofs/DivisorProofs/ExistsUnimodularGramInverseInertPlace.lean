@@ -124,7 +124,6 @@ end GlobalTheory.InertGram
 noncomputable section
 namespace GlobalTheory.InertGram
 
-open GlobalTheory.InertLocFrame
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {L : Type} [Field L]
 
@@ -181,7 +180,6 @@ end GlobalTheory.InertGram
 
 namespace GlobalTheory.InertGram
 
-open GlobalTheory.InertLocFrame
 
 theorem exists_gram_inv : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E), B.IsGood σ →
     ∀ (v : Pl (F := F)) (w : HeightOneSpectrum (𝓞 E)), Formalism.UG.IsInertAt F E v w →

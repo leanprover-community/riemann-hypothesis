@@ -150,10 +150,8 @@ theorem exists_nat_mul_isIntegral_int (y : ι → Ω) (a : (Polynomial Ω)) (ha 
 
 end Int
 
-section SlopeTestRemainingChoices
 variable {ι : Type*}
 
-end SlopeTestRemainingChoices
 
 
 

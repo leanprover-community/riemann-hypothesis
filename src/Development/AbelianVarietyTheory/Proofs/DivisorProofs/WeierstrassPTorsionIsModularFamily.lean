@@ -46,27 +46,23 @@ private lemma mem_tauPair_lattice_iff (τ : ℍ) (z : ℂ) :
   rw [PeriodPair.mem_lattice]
   simp [_root_.GlobalTheory.QFam.tauPair]
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
 private lemma modularGroup_denom_eq (γ : SL(2, ℤ)) (τ : ℍ) :
     UpperHalfPlane.denom (Matrix.SpecialLinearGroup.toGL
       ((Matrix.SpecialLinearGroup.map (Int.castRingHom ℝ)) γ)) ↑τ =
       ((γ 1 0 : ℤ) : ℂ) * τ + ((γ 1 1 : ℤ) : ℂ) := by
   simp [UpperHalfPlane.denom]
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
 private lemma modularGroup_denom_ne_zero (γ : SL(2, ℤ)) (τ : ℍ) :
     ((γ 1 0 : ℤ) : ℂ) * τ + ((γ 1 1 : ℤ) : ℂ) ≠ 0 := by
   rw [← modularGroup_denom_eq]
   exact UpperHalfPlane.denom_ne_zero _ τ
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
 private lemma coe_modularGroup_smul (γ : SL(2, ℤ)) (τ : ℍ) :
     ((γ • τ : ℍ) : ℂ) = (((γ 0 0 : ℤ) : ℂ) * τ + ((γ 0 1 : ℤ) : ℂ)) /
       (((γ 1 0 : ℤ) : ℂ) * τ + ((γ 1 1 : ℤ) : ℂ)) := by
   rw [UpperHalfPlane.coe_specialLinearGroup_apply]
   simp
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
 private lemma exists_tors_vact_eq_denom_mul_tors_smul_add (N : ℕ) [NeZero N] (x : Fin 2 → ZMod N)
     (γ : SL(2, ℤ)) (τ : ℍ) :
     ∃ l ∈ (_root_.GlobalTheory.QFam.tauPair τ).lattice,
@@ -104,7 +100,6 @@ private lemma exists_tors_vact_eq_denom_mul_tors_smul_add (N : ℕ) [NeZero N] (
   rw [mul_div_assoc', div_add' _ _ _ hN, div_left_inj' hN]
   linear_combination (τ : ℂ) * e0 + e1 - ((x 0).val : ℂ) * hw
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
 private lemma isTauOf_tauPair_denom_smul (γ : SL(2, ℤ)) (τ : ℍ) :
     _root_.ReciprocityTheory.ChartRestriction.L1.IsTauOf (_root_.GlobalTheory.QFam.tauPair τ) (((γ 1 0 : ℤ) : ℂ) * τ + ((γ 1 1 : ℤ) : ℂ))
       (γ • τ) := by
@@ -135,7 +130,6 @@ private lemma isTauOf_tauPair_denom_smul (γ : SL(2, ℤ)) (τ : ℍ) :
     exact ⟨_, _, (key u v).symm⟩
 
 
-open scoped UpperHalfPlane MatrixGroups Matrix ModularForm ComplexConjugate in
 theorem _root_.GlobalTheory.WpFam.isFam_wp_wpd : ∀ (N : ℕ) [NeZero N],
     _root_.GlobalTheory.QFam.IsFam (_root_.GlobalTheory.WpFam.vact N) 2
         (_root_.GlobalTheory.WpFam.wp N) ∧

@@ -94,7 +94,6 @@ private theorem finrank_quadratic_splitting_field (p : ℕ) (hp : 0 < p) (L : Ty
     exact hle hy
   rw [← IntermediateField.finrank_top', ← htop, hfin]
 
-open Polynomial in
 private theorem finrank_kstar (p : ℕ) (hp : 0 < p) : Module.finrank ℚ (Kstar p) = 2 := by
   show Module.finrank ℚ (SplittingField (X ^ 2 + C (p : ℚ))) = 2
   exact @finrank_quadratic_splitting_field p hp _ _ _ (Polynomial.IsSplittingField.splittingField _)

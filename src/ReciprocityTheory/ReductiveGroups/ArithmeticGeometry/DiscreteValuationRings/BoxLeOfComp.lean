@@ -135,7 +135,6 @@ def IsBoxFam {D' D : DegPre R} (pD : IsPowDeg D' D j) (F : Type) [Field F]
 
 end BoxFam
 
-section Prod
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {j : ℕ} {D D' : DegData R I}
   {A A' : PolAV (Spec (CommRingCat.of (FractionRing R)))}
@@ -143,7 +142,6 @@ variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {j : ℕ} {D D' : De
   {pD : IsPowDeg D'.toPre D.toPre j} {pA : IsPowPolAV A' A j} {pG : IsPowGrp G' G j}
   {U' : Unif I D' A' G'} {U : Unif I D A G}
 
-end Prod
 
 section BoxQ
 
@@ -166,7 +164,6 @@ def IsBoxQk {D' D : DegPre R} (pD : IsPowDeg D' D j) (F : Type) [Field F]
 
 end BoxQ
 
-section ProdMap
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {j : ℕ} {D D' : DegData R I}
   {A A' : PolAV (Spec (CommRingCat.of (FractionRing R)))}
@@ -174,6 +171,5 @@ variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {j : ℕ} {D D' : De
   {pD : IsPowDeg D'.toPre D.toPre j} {pA : IsPowPolAV A' A j} {pG : IsPowGrp G' G j}
   {U' : Unif I D' A' G'} {U : Unif I D A G}
 
-end ProdMap
 
 end ReciprocityTheory.ChartRestriction.G.DVR

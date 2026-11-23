@@ -262,7 +262,6 @@ end DictA
 
 section Arch
 
-open ReciprocityTheory.Gal Formalism.ConjugateSelfDual
 
 theorem real_H0_card_eq_fixed_of_gen (K : FiniteSubfield) (S' : Set (HeightOneSpectrum (𝓞 K.1)))
     (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal},

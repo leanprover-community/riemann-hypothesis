@@ -272,12 +272,10 @@ namespace Formalism.L2.Ker
 
 open Formalism.BasicNotions Formalism.L2.Col Formalism.L2.GlobalTheoryTheory.Jets
 
-section OverColDat
 
 variable (d : ColDat)
 
 variable {d} (I : AmbIn d)
 
-end OverColDat
 
 end Formalism.L2.Ker

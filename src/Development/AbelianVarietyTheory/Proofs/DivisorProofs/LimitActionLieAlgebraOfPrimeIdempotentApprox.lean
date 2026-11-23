@@ -168,8 +168,6 @@ end GlobalTheory.IsoTriv.LimAct
 
 namespace GlobalTheory.IsoTriv
 
-open NumberField MvPowerSeries
-open ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Formalism.L2.Pj
 open GlobalTheory.FGDepth GlobalTheory.CharDepth GlobalTheory.FactorDepth GlobalTheory.LawLog GlobalTheory.IsoTriv.LimAct
 
 theorem limActSt_of_epsSt (hε : EpsSt) : LimActSt := by

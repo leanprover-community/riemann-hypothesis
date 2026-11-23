@@ -64,7 +64,6 @@ theorem _root_.GlobalTheory.SplitJump.fil_mono {a b : ℤ} (h : a ≤ b) : PD.Fi
   | succ b _ ih => exact (PD.Fil_anti b).trans ih
 
 
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -88,7 +87,6 @@ variable {LL : Type} [Field LL] [Algebra Qp LL]
 def coord (BdR : Type) [CommRing BdR] [Algebra Qp BdR] : V ⊗[Qp] BdR ≃ₗ[Qp] (Fin n → BdR) :=
   (TensorProduct.comm Qp V BdR).trans ((Algebra.TensorProduct.basis BdR e).equivFun.restrictScalars Qp)
 
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -103,7 +101,6 @@ private lemma coord_tmul_eq_repr_mul (v : V) (b : BdR) (i : Fin n) :
     _root_.GlobalTheory.SplitJump.coord e BdR (v ⊗ₜ b) i = algebraMap Qp BdR (e.repr v i) * b := by
   simp [_root_.GlobalTheory.SplitJump.coord, Algebra.TensorProduct.basis_repr_tmul, mul_comm]
 
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -121,7 +118,6 @@ private lemma sum_basis_tmul_coord_eq (y : V ⊗[Qp] BdR) :
 
   simp [map_sum, coord_tmul_eq_repr_mul, Finsupp.single_apply, Pi.single_apply]
 
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -154,7 +150,6 @@ theorem _root_.GlobalTheory.SplitJump.mem_filV (a : ℤ) (y : V ⊗[Qp] BdR) :
     conv_rhs => rw [← sum_basis_tmul_coord_eq e y]
     rfl
 
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -196,7 +191,6 @@ theorem _root_.GlobalTheory.SplitJump.coord_act (g : G) (x : V ⊗[Qp] BdR) :
     simp
 
 
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
@@ -246,7 +240,6 @@ theorem _root_.GlobalTheory.SplitJump.exists_coord (W W' : Matrix (Fin n) (Fin n
   exact ⟨k, funext hk⟩
 
 
-open Module TensorProduct in
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
     {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]

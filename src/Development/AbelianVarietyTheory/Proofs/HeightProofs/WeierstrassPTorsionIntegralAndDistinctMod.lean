@@ -255,7 +255,6 @@ theorem multiples (L : PeriodPair) (W : ValuationSubring ℂ) (h2 : (2 : ℂ)⁻
       · push_cast; ring
       · rw [div_eq_mul_inv, ← eq_inv_of_mul_eq_one_right hdC]; push_cast; ring
 
-open IsLocalRing in
 theorem integral (L : PeriodPair) (W : ValuationSubring ℂ) (m : ℕ) (h2 : (2 : ℂ)⁻¹ ∈ W)
     (hg2 : L.g₂ ∈ W) (hg3 : L.g₃ ∈ W) (hm0 : m ≠ 0) (hm : (m : ℂ)⁻¹ ∈ W) {t : ℂ}
     (hmt : (m : ℂ) * t ∈ L.lattice) (ht : t ∉ L.lattice) : L.weierstrassP t ∈ W := by
@@ -277,7 +276,6 @@ theorem integral (L : PeriodPair) (W : ValuationSubring ℂ) (m : ℕ) (h2 : (2 
   exact zero_ne_one this
 
 
-open IsLocalRing in
 theorem torsion_integral_distinct : ∀ (L : PeriodPair) (W : ValuationSubring ℂ) (m : ℕ),
     (2 : ℂ)⁻¹ ∈ W → (3 : ℂ)⁻¹ ∈ W → L.g₂ ∈ W → L.g₃ ∈ W → (L.g₂ ^ 3 - 27 * L.g₃ ^ 2)⁻¹ ∈ W →
     Odd m → (m : ℂ)⁻¹ ∈ W →

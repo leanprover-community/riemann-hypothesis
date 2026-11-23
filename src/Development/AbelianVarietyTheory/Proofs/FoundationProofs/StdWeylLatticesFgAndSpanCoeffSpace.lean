@@ -72,7 +72,6 @@ private lemma nabStd_fg' (K : Type) [Field K] [NumberField K] (ι : Type) [Finty
   rw [← hspan]
   exact Submodule.fg_def.mpr ⟨_, Set.finite_range _, rfl⟩
 
-open NumberField MvPolynomial Pointwise in
 variable (K : Type) [Field K] [NumberField K] in
 private lemma prod_image_blockEmb_eq_setOf_prod {K : Type} [Field K] {S : Type} [Fintype S] {k n : ℕ}
     (X : S → Set (MvPolynomial (Fin k × Fin n) K)) :
@@ -88,7 +87,6 @@ private lemma prod_image_blockEmb_eq_setOf_prod {K : Type} [Field K] {S : Type} 
   · rintro ⟨F, hF, rfl⟩
     exact ⟨fun s => _root_.Formalism.GradedWeylDivisibility.blockEmb K s (F s), fun {s} _ => ⟨F s, hF s, rfl⟩, rfl⟩
 
-open NumberField MvPolynomial Pointwise in
 variable (K : Type) [Field K] [NumberField K] in
 private lemma span_setOf_prod_blockEmb_eq_prod_map_span {K : Type} [Field K] {S : Type} [Fintype S] {k n : ℕ}
     (X : S → Set (MvPolynomial (Fin k × Fin n) K)) :
@@ -98,7 +96,6 @@ private lemma span_setOf_prod_blockEmb_eq_prod_map_span {K : Type} [Field K] {S 
   rw [← prod_image_blockEmb_eq_setOf_prod, ← Submodule.prod_span]
   simp only [Submodule.map_span, AlgHom.coe_toLinearMap]
 
-open NumberField MvPolynomial Pointwise in
 variable (K : Type) [Field K] [NumberField K] in
 private lemma span_tensorLat_eq_prod_map_span {R K : Type} [CommRing R] [Field K] [Algebra R K] {S : Type} [Fintype S]
     {k n : ℕ} (L : S → Submodule R (MvPolynomial (Fin k × Fin n) K)) :
@@ -109,7 +106,6 @@ private lemma span_tensorLat_eq_prod_map_span {R K : Type} [CommRing R] [Field K
   exact span_setOf_prod_blockEmb_eq_prod_map_span (K := K) (k := k) (n := n)
     fun s => (L s : Set (MvPolynomial (Fin k × Fin n) K))
 
-open NumberField MvPolynomial Pointwise in
 variable (K : Type) [Field K] [NumberField K] in
 private lemma span_map_toK_nablaSq_eq_nablaSq (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : _root_.Formalism.BasicNotions.DomWeight n) :
     Submodule.span K (Submodule.map (_root_.Formalism.L2.DIV.toK K (Fin n × Fin n)) (_root_.Formalism.BasicNotions.nablaSq (𝓞 K) n μ) : Set _) =
@@ -123,7 +119,6 @@ private lemma span_map_toK_nablaSq_eq_nablaSq (K : Type) [Field K] [NumberField 
   rw [← hspan, Submodule.map_span, Submodule.span_span_of_tower, ← Set.range_comp]
   rfl
 
-open NumberField MvPolynomial Pointwise in
 variable (K : Type) [Field K] [NumberField K] in
 private lemma span_map_toK_delSq_eq_nablaSq (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : _root_.Formalism.BasicNotions.DomWeight n) :
     Submodule.span K (Submodule.map (_root_.Formalism.L2.DIV.toK K (Fin n × Fin n)) (_root_.Formalism.BasicNotions.delSq (𝓞 K) n μ) : Set _) =
@@ -137,7 +132,6 @@ private lemma span_map_toK_delSq_eq_nablaSq (K : Type) [Field K] [NumberField K]
   rw [← _root_.Formalism.GradedWeylDivisibility.lclosedeq_applyWord_map, _root_.Formalism.GradedWeylDivisibility.lclosedeq_hw_map]
 
 
-open NumberField MvPolynomial Pointwise in
 variable (K : Type) [Field K] [NumberField K] in
 theorem _root_.GlobalTheory.StdLatSpan.std_fg_span : ∀ (K : Type) [Field K] [NumberField K] (ι : Type)
     [Fintype ι] (n : ℕ) (lam : ι → _root_.Formalism.BasicNotions.DomWeight n),

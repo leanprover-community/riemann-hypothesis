@@ -80,8 +80,6 @@ theorem _root_.GlobalTheory.TameCharUnique.mem_Ine_of_wild {A : ValuationSubring
 variable [IsAlgClosure E Ω]
 
 
-open NumberField IsDedekindDomain Polynomial Module in
-open scoped Pointwise in
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] in
 variable [IsAlgClosure E Ω] in
 theorem _root_.GlobalTheory.TameCharUnique.mem_of_tameGen {A : ValuationSubring Ω} {γ : _root_.Formalism.ConjugateSelfDual.G E Ω}
@@ -105,8 +103,6 @@ theorem _root_.GlobalTheory.TameCharUnique.mem_of_tameGen {A : ValuationSubring 
     closure_minimal ((SetLike.coe_subset_coe.mpr hle).trans hmapC) hC (hγ.2 σ.2)
   exact (Set.ext_iff.mp hCS σ).mp hσC
 
-open NumberField IsDedekindDomain Polynomial Module in
-open scoped Pointwise in
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] in
 variable [IsAlgClosure E Ω] in
 private lemma exists_pow_fixes_finiteDimensional (K : IntermediateField E Ω)
@@ -127,8 +123,6 @@ private lemma exists_pow_fixes_finiteDimensional (K : IntermediateField E Ω)
   · exact hfix j i h fun x hx => (hij' x hx).symm
 
 
-open NumberField IsDedekindDomain Polynomial Module in
-open scoped Pointwise in
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] in
 variable [IsAlgClosure E Ω] in
 theorem _root_.GlobalTheory.TameCharUnique.eq_zero_of_wild {A : ValuationSubring Ω}
@@ -169,8 +163,6 @@ theorem _root_.GlobalTheory.TameCharUnique.eq_zero_of_wild {A : ValuationSubring
     one_mul] at hnorm
 
 
-open NumberField IsDedekindDomain Polynomial Module in
-open scoped Pointwise in
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] in
 variable [IsAlgClosure E Ω] in
 theorem _root_.GlobalTheory.TameCharUnique.exists_eq_mul : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : _root_.Formalism.ConjugateSelfDual.IsPlaceOver A w) (l : ℕ) [Fact l.Prime], ((l : ℕ) : 𝓞 E) ∉ w.asIdeal → ∀ (t t' : _root_.ReciprocityTheory.Gal.Ine (F := E) A →* Multiplicative ℤ_[l]), Continuous t → Continuous t' → Function.Surjective t' → ∃ c : ℤ_[l], ∀ σ, (t σ).toAdd = c * (t' σ).toAdd := by

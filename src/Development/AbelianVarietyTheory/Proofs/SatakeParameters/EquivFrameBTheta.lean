@@ -493,7 +493,6 @@ end GlobalTheory.FrameB
 
 namespace GlobalTheory.FrameB
 
-open Formalism.L2.KerInert.SecondKernelHermitian
 
 variable {p : ℕ} [Fact p.Prime] {X : Sys p} {D : Formalism.BasicNotions.D7}
 

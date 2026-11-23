@@ -227,7 +227,6 @@ theorem dx_coordN (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {M d n : ℕ} (J :
 end Link
 
 section Meas
-open NumberField IsDedekindDomain MeasureTheory HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW GlobalTheory.CompanionTheory.SW.BB
 open GlobalTheory.CompanionTheory.Hypotheses₂.OneV.DxEuler
 open GroundTheory.Global
 open scoped TensorProduct ENNReal NNReal
@@ -303,9 +302,6 @@ theorem dx_splitN' (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (M : ℕ) (J : Ma
 end Meas
 
 section Euler
-open NumberField IsDedekindDomain MeasureTheory HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW GlobalTheory.CompanionTheory.SW.BB
-open GlobalTheory.CompanionTheory.Hypotheses₂.OneV.DxEuler
-open scoped TensorProduct ENNReal NNReal
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

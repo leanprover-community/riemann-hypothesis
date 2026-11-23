@@ -83,7 +83,6 @@ theorem shift_measurePreserving (hSF : HaarUniqueSF) (hCW : ClosedW) (hHW : Haar
   simp only [Prod.map, rmulF, conjM, Matrix.nonsing_inv_nonsing_inv _ hu]
   rfl
 
-open Formalism.QuantumDeterminants.WeylGroupFacts in
 theorem integrand_shift (hCW : ClosedW) (hCN : ClosedN) (hUN : UWNormal) {z : Fin (2 * r + k + 1) → ℂ}
     (hz : inWb k r z) (c : Fin r → ℂ)
     {π : Lap.Mat k r → (Vp →L[ℂ] Vp)} (hπ : Formalism.MainNotions.S.IsURepOn (UWset k r z) π) (f : Lap.Mat k r → ℂ) (ξ : Vp)

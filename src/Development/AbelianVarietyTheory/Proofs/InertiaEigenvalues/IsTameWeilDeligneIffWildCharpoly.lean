@@ -52,7 +52,6 @@ private theorem eq_one_of_isSemisimple_of_charpoly_eq {V : Type} [AddCommGroup V
     hs.sub_of_commute (Commute.one_right f) Module.End.isSemisimple_id
   exact sub_eq_zero.mp (Module.End.eq_zero_of_isNilpotent_isSemisimple hn hs')
 
-open NumberField IsDedekindDomain ValuativeRel Matrix Polynomial in
 attribute [local instance] _root_.GlobalTheory.LocalData.complRel _root_.GlobalTheory.LocalData.isLocalField in
 theorem _root_.GlobalTheory.LlcTame.isTameWD_iff_charPol : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω]
     [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E))

@@ -101,7 +101,6 @@ end GlobalTheory.GraphLocal
 
 namespace GlobalTheory.GraphLocal
 
-open GlobalTheory.FieldPair
 
 theorem graphIdeal_ne_top : ∀ {K κ κ' : Type} [Field K] [Field κ] [Field κ'] [Algebra ℂ K] [Algebra ℂ κ] [Algebra ℂ κ']
     (R : Subring K) (π : R →+* κ) (ρ : κ →ₐ[ℂ] κ') (E : Place (algebraMap ℂ K)),

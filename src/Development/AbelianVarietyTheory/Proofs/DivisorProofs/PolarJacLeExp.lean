@@ -49,7 +49,6 @@ private lemma shc_nonneg' (x : ℝ) : 0 ≤ _root_.Formalism.MainNotions.SchurIr
     · exact (div_pos_of_neg_of_neg (Real.sinh_neg_iff.mpr h) h).le
     · exact (div_pos (Real.sinh_pos_iff.mpr h) h).le
 
-open MvPolynomial in
 private lemma sinh_div_le_exp_of_pos {y : ℝ} (hy : 0 < y) : Real.sinh y / y ≤ Real.exp y := by
   rw [div_le_iff₀ hy, Real.sinh_eq]
   have h1 : -(2 * y) + 1 ≤ Real.exp (-(2 * y)) := Real.add_one_le_exp _
@@ -59,7 +58,6 @@ private lemma sinh_div_le_exp_of_pos {y : ℝ} (hy : 0 < y) : Real.sinh y / y �
   rw [h2]
   nlinarith [mul_le_mul_of_nonneg_left h1 h3.le]
 
-open MvPolynomial in
 private lemma shc_le_exp_abs (x : ℝ) : _root_.Formalism.MainNotions.SchurIrreducible.shc x ≤ Real.exp |x| := by
   unfold _root_.Formalism.MainNotions.SchurIrreducible.shc
   split_ifs with hx
@@ -71,7 +69,6 @@ private lemma shc_le_exp_abs (x : ℝ) : _root_.Formalism.MainNotions.SchurIrred
     · rw [abs_of_pos h]
       exact sinh_div_le_exp_of_pos h
 
-open MvPolynomial in
 private lemma sum_sum_ite_lt_four_mul_add_eq (m : ℕ) (a : ℕ → ℝ) :
     ∑ i ∈ Finset.range m, ∑ j ∈ Finset.range m, (if i < j then 4 * (a i + a j) else 0) =
       4 * (((m : ℝ) - 1) * ∑ i ∈ Finset.range m, a i) := by
@@ -94,7 +91,6 @@ private lemma sum_sum_ite_lt_four_mul_add_eq (m : ℕ) (a : ℕ → ℝ) :
   simp_rw [t, Finset.sum_sub_distrib, Finset.sum_ite_eq, hi, Finset.sum_const, Finset.card_range]
   simp; ring
 
-open MvPolynomial in
 private lemma sum_norm_sq_diag_eq_sum_range_min (p q : ℕ) (h : ℕ → ℝ) :
     ∑ a : Fin p, ∑ b : Fin q, ‖if (a : ℕ) = b then ((h a : ℝ) : ℂ) else 0‖ ^ 2 =
       ∑ i ∈ Finset.range (min p q), h i ^ 2 := by
@@ -111,7 +107,6 @@ private lemma sum_norm_sq_diag_eq_sum_range_min (p q : ℕ) (h : ℕ → ℝ) :
   congr 1
   ext i; simp [lt_min_iff]
 
-open MvPolynomial in
 private lemma hsNorm_aOf_eq_sqrt_two_mul_sum_sq (p q : ℕ) (h : ℕ → ℝ) :
     _root_.Formalism.BasicNotions.TH.hsNorm (_root_.Formalism.MainNotions.SchurIrreducible.aOf p q h) = Real.sqrt (2 * ∑ i ∈ Finset.range (min p q), h i ^ 2) := by
   simp only [_root_.Formalism.BasicNotions.TH.hsNorm, _root_.Formalism.MainNotions.SchurIrreducible.aOf, _root_.Formalism.MainNotions.SchurIrreducible.pOf]
@@ -120,7 +115,6 @@ private lemma hsNorm_aOf_eq_sqrt_two_mul_sum_sq (p q : ℕ) (h : ℕ → ℝ) :
     Real.sqrt_mul (by norm_num)]
 
 
-open MvPolynomial in
 theorem _root_.GlobalTheory.PolarJacBound.polarJac_le_exp : ∀ (p q : ℕ) (h : ℕ → ℝ), (∏ i ∈ Finset.range (min p q), _root_.Formalism.MainNotions.SchurIrreducible.shc (2 * h i) * _root_.Formalism.MainNotions.SchurIrreducible.shc (h i) ^ (2 * (max p q - min p q))) * (∏ i ∈ Finset.range (min p q), ∏ j ∈ Finset.range (min p q), if i < j then (_root_.Formalism.MainNotions.SchurIrreducible.shc (h i - h j) * _root_.Formalism.MainNotions.SchurIrreducible.shc (h i + h j)) ^ 2 else 1) ≤ Real.exp (((p + q : ℕ) : ℝ) * Real.sqrt (2 * (min p q : ℕ)) * _root_.Formalism.BasicNotions.TH.hsNorm (_root_.Formalism.MainNotions.SchurIrreducible.aOf p q h)) := by
   intro p q h
   set r := Finset.range (min p q) with hr

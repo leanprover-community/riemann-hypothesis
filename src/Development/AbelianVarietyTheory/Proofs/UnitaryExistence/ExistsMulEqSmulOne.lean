@@ -349,7 +349,6 @@ theorem exists_matrix_level {R : Type} [CommRing R] [IsDomain R] [IsDiscreteValu
   simp [Matrix.mul_apply, vecMul, dotProduct, Diag.dualBasis_apply]
 
 
-open IsLocalRing ReciprocityTheory.ChartRestriction.G.Out in
 theorem finrank_le_of_lieMult {R : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
     {D : DegData R (maximalIdeal R)} {P : PolAV (Sp (FractionRing R))} {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G]
     (U : UnifPre (maximalIdeal R) D P G) {O : Type} [CommRing O] [IsDomain O] [StarRing O] [Module.Finite ℤ O]

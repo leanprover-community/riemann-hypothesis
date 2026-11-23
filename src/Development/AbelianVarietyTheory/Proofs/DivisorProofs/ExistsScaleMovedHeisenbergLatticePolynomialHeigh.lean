@@ -57,7 +57,6 @@ theorem finprod_htFin_le {F E : Type} [Field F] [NumberField F] [Field E] [Numbe
 
 end GlobalTheory.MovedLat
 
-open Formalism.UG
 
 theorem GlobalTheory.MovedLat.exists_scale : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n d : ℕ) (κ : Type) [Fintype κ] [DecidableEq κ]
     (e : Matrix (Fin n) (Fin d) (AF F ⊗[F] E) ≃ₗ[AF F] (κ → AF F) × (κ → AF F)) (N : ℕ), 1 ≤ N →

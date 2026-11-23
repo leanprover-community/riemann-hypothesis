@@ -84,8 +84,6 @@ theorem _root_.GlobalTheory.QuadSymbol.eta_eq_one_iff {A : Type} [CommRing A] [A
   · simp only [h, iff_false]
     decide
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable (K L : Type) [Field K] [Field L] [Algebra K L] in
 variable {K L} in
 theorem _root_.GlobalTheory.QuadSymbol.eta_eq_neg_one_iff {A : Type} [CommRing A] [Algebra K A] {x : Aˣ} :
@@ -96,8 +94,6 @@ theorem _root_.GlobalTheory.QuadSymbol.eta_eq_neg_one_iff {A : Type} [CommRing A
     decide
   · simp [h]
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable (K L : Type) [Field K] [Field L] [Algebra K L] in
 variable {K L} in
 private theorem isUnit_of_isUnit_norm' {A S : Type} [CommRing A] [CommRing S] [Algebra A S]
@@ -109,8 +105,6 @@ private theorem isUnit_of_isUnit_norm' {A S : Type} [CommRing A] [CommRing S] [A
   exact IsUnit.of_mul_eq_one _ (by simpa using h2)
 
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable (K L : Type) [Field K] [Field L] [Algebra K L] in
 variable {K L} in
 theorem _root_.GlobalTheory.QuadSymbol.mem_normGroup_iff [FiniteDimensional K L] {A : Type} [CommRing A]
@@ -124,8 +118,6 @@ theorem _root_.GlobalTheory.QuadSymbol.mem_normGroup_iff [FiniteDimensional K L]
     exact ⟨hu.unit, Units.ext (by simp [hz])⟩
 
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable (K L : Type) [Field K] [Field L] [Algebra K L] in
 variable {K L} in
 theorem _root_.GlobalTheory.QuadSymbol.mem_globalNorms_iff [FiniteDimensional K L] {x : Kˣ} :
@@ -137,8 +129,6 @@ theorem _root_.GlobalTheory.QuadSymbol.mem_globalNorms_iff [FiniteDimensional K 
     have hu : IsUnit z := isUnit_of_isUnit_norm' (A := K) (by rw [hz]; exact x.isUnit)
     exact ⟨hu.unit, Units.ext (by simp [hz])⟩
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable (K L : Type) [Field K] [Field L] [Algebra K L] in
 variable {K L} in
 private theorem norm_one_tmul_eq_algebraMap_norm [FiniteDimensional K L] {A : Type} [CommRing A] [Algebra K A]
@@ -149,8 +139,6 @@ private theorem norm_one_tmul_eq_algebraMap_norm [FiniteDimensional K L] {A : Ty
   simp
 
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable (K L : Type) [Field K] [Field L] [Algebra K L] in
 variable {K L} in
 theorem _root_.GlobalTheory.QuadSymbol.toUnits_mem_normGroup [FiniteDimensional K L] (A : Type) [CommRing A]
@@ -161,8 +149,6 @@ theorem _root_.GlobalTheory.QuadSymbol.toUnits_mem_normGroup [FiniteDimensional 
   rw [norm_one_tmul_eq_algebraMap_norm, hz]
   rfl
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable (K L : Type) [Field K] [Field L] [Algebra K L] in
 variable {K L} in
 private theorem norm_smul_add_smul_basis_eq_sq_sub_mul_sq {A S : Type} [CommRing A] [CommRing S]
@@ -180,8 +166,6 @@ private theorem norm_smul_add_smul_basis_eq_sq_sub_mul_sq {A S : Type} [CommRing
   ring
 
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable (K L : Type) [Field K] [Field L] [Algebra K L] in
 variable {K L} in
 theorem _root_.GlobalTheory.QuadSymbol.mem_normGroup_iff_form (e : Module.Basis (Fin 2) K L)
@@ -239,8 +223,6 @@ def etaProd (x : FinFam K) (y : InfFam K) : ℤˣ :=
     ∏ w : InfinitePlace K, eta K L w.Completion (y w)
 
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct in
 variable (K L : Type) [Field K] [NumberField K] [Field L] [Algebra K L] in
 theorem _root_.GlobalTheory.QuadSymbol.AlmostNorm.finite_mulSupport
     {K L : Type} [Field K] [NumberField K] [Field L] [Algebra K L]

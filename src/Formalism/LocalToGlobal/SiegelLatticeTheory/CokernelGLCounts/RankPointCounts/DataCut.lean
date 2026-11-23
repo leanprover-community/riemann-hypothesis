@@ -916,11 +916,9 @@ theorem dom_points (hN : SupportG.NormProd D) {δ : ∀ p : PlF D, (D.s.atP p).F
 
 end RDProof4
 
-section RDProof5
 
 variable {D : Formalism.BasicNotions.D7}
 
-end RDProof5
 
 section Close
 

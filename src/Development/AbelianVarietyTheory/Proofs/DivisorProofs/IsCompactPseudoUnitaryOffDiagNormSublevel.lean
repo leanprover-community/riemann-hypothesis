@@ -98,7 +98,6 @@ end GlobalTheory.UJOffDiag
 
 namespace GlobalTheory.UJOffDiag
 
-open Formalism.REAL
 
 lemma off_sum_eq {n : ℕ} (ε : Fin n → Bool) (M : Matrix (Fin n) (Fin n) ℂ) :
     ∑ z : {z : Fin n × Fin n // ε z.1 = true ∧ ε z.2 = false}, ‖M z.1.1 z.1.2‖ ^ 2 =
@@ -136,7 +135,6 @@ end GlobalTheory.UJOffDiag
 
 namespace GlobalTheory
 
-open Formalism.REAL
 
 theorem isCompact_offDiag_sublevel : ∀ (n : ℕ) (ε : Fin n → Bool) (C : ℝ),
     IsCompact {g : UJ ε | ∑ z : {z : Fin n × Fin n // ε z.1 = true ∧ ε z.2 = false},

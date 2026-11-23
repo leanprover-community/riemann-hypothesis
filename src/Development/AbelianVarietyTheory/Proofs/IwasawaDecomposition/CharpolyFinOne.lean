@@ -145,7 +145,6 @@ end GlobalTheory.HeightCounting.FitRho
 
 namespace GlobalTheory.HeightCounting.FitRho
 
-open Formalism.L2.NR
 
 theorem fracMap_eq {O0 O : Type} [CommRing O0] [IsDomain O0] [ValuationRing O0] [CommRing O] [IsDomain O]
     (f : O0 →+* O) (hf : Function.Injective f) {F : Type} [Field F] (e : F →+* FractionRing O0)
@@ -162,7 +161,6 @@ end GlobalTheory.HeightCounting.FitRho
 
 namespace GlobalTheory.HeightCounting.FitRho
 
-open Formalism.L2.NR
 
 
 end GlobalTheory.HeightCounting.FitRho

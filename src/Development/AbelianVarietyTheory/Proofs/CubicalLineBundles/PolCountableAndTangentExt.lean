@@ -270,7 +270,6 @@ end Geometry
 
 section Tangent
 
-open GlobalTheory.Spread
 
 variable {k : Type} [CommRing k] {C : Type} [CommRing C] [Algebra k C] {A A' : Over (Sp k)} [GrpObj A] [GrpObj A']
 

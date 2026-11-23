@@ -397,7 +397,6 @@ end Prod
 
 section Twists
 
-open CechPic
 
 variable {X Y : Scheme.{0}} (k : Type v) [Field k] [Algebra k Γ(X, ⊤)]
 
@@ -519,7 +518,6 @@ end Twists
 
 section Inter
 
-open CechPic
 
 variable {X Y Z : Scheme.{0}} (k : Type v) [Field k] [Algebra k Γ(X, ⊤)]
   {ι κ : Type} [Fintype ι] [Fintype κ]

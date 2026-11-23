@@ -138,7 +138,6 @@ end GlobalTheory.ConjHalfOnto
 
 namespace GlobalTheory.ConjHalfOnto
 
-open GlobalTheory.SplitHecke GlobalTheory.SplitHomLattice Formalism.L2.NTheta GlobalTheory.LatticeStable GlobalTheory.SplitScalar
 
 
 

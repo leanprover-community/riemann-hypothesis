@@ -96,7 +96,6 @@ private theorem UpperTheory.Reformulated.B.ExistsOrthogonalBasisWithUnitNorms.ex
   · rw [map_smul, hα, smul_eq_mul, inv_mul_cancel₀ hα0]
 
 
-open Formalism.HermitianLattices.Ext.L3.WA in
 private theorem UpperTheory.Reformulated.B.ExistsOrthogonalBasisWithUnitNorms.exists_extend {K V : Type} [Field K] [StarRing K] [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] {S : Subring K} {h : V →ₗ⋆[K] V →ₗ[K] K}
     (hS : IsHermSemilocal S) (hs : h.IsSymm) (hn : h.Nondegenerate)

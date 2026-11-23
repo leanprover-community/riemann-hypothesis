@@ -75,7 +75,6 @@ theorem homogeneousComponent_mem_vanIdeal {R σ Hh : Type} [CommRing R] (d : ℕ
     = homogeneousComponent e F from MvPolynomial.decomposition.decompose'_apply F e] at this
 
 
-open MvPolynomial in
 theorem eval₂_eq_zero_of_forms_le {K σ : Type} [CommRing K] {I J : Ideal (MvPolynomial σ K)} {d : ℕ}
     (hI : ∀ F ∈ I, ∀ e, homogeneousComponent e F ∈ I)
     (hle : ∀ e ≥ d, ∀ F : MvPolynomial σ K, F.IsHomogeneous e → F ∈ I → F ∈ J)
@@ -84,7 +83,6 @@ theorem eval₂_eq_zero_of_forms_le {K σ : Type} [CommRing K] {I J : Ideal (MvP
   apply GlobalTheory.ZM.NearCut.eval₂_eq_zero_of_forms_le <;> assumption
 
 
-open MvPolynomial in
 theorem mem_of_forall_map_mem {S σ : Type} [CommRing S] (J : Ideal (MvPolynomial σ S)) (e : ℕ)
     (hJ : ∀ F ∈ J, homogeneousComponent e F ∈ J)
     (hp : Module.Projective S (↥(homogeneousSubmodule σ S e) ⧸

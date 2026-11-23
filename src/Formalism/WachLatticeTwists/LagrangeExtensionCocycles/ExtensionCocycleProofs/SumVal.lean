@@ -125,7 +125,6 @@ end Formalism.RepresentationBoundsCohomology.N2.SumVal
 
 namespace Formalism.RepresentationBoundsCohomology.N2
 
-open Finset
 
 private theorem sum_padicValInt_sub_le_of_injective_bound (ℓ : ℕ) [Fact ℓ.Prime] (S' : Finset ℤ) (a : ℤ) (f : ℤ → ℤ)
     (n y D : ℕ) (hD : 1 ≤ D) (hf : ∀ b ∈ S', (n : ℤ) < f b ∧ f b ≤ n + (y + 1) ∧ f b ≤ D)

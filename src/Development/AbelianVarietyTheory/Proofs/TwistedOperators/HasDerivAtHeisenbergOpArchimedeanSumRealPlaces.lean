@@ -125,7 +125,6 @@ end GlobalTheory.ArchLineSum
 
 namespace GlobalTheory.ArchLineSum
 
-open GlobalTheory.SplitScalar GlobalTheory.LatVac
 
 
 

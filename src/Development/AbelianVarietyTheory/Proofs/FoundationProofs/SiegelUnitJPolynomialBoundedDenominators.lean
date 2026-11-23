@@ -227,7 +227,6 @@ end GlobalTheory.FracBd
 
 namespace GlobalTheory.FracBd
 
-open GlobalTheory.QFam
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω]
 

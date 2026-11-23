@@ -66,8 +66,6 @@ private lemma norm_le_div_mul_norm_of_schwarz {φ : ℂ → ℂ} {ρ c : ℝ}
     exact hc s hs
   simpa [h0, dist_zero_right] using Complex.dist_le_div_mul_dist_of_mapsTo_ball hd hmap ht
 
-open Complex Matrix Filter Topology Asymptotics in
-open scoped BigOperators Real in
 private lemma isBigO_norm_cube_of_analytic_vanishing_coords {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
     {u : (Fin 3 → V) → ℂ} (ha : AnalyticAt ℂ u 0)
     (hv : ∀ a : Fin 3, ∀ᶠ x in 𝓝 (0 : Fin 3 → V), x a = 0 → u x = 0) :
@@ -192,8 +190,6 @@ private lemma isBigO_norm_cube_of_analytic_vanishing_coords {V : Type*} [NormedA
   calc ‖u y‖ ≤ 1 / ρ / ρ / ρ := hfin
     _ = 1 / R ^ 3 * ‖y‖ ^ 3 := by rw [hρdef]; field_simp
 
-open Complex Matrix Filter Topology Asymptotics in
-open scoped BigOperators Real in
 private lemma isBigO_norm_cube_comp_clm {E F' : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     [NormedAddCommGroup F'] [NormedSpace ℂ F'] {u : F' → ℂ}
     (hu : u =O[𝓝 0] fun z => ‖z‖ ^ 3) (T : E →L[ℂ] F') :
@@ -205,16 +201,12 @@ private lemma isBigO_norm_cube_comp_clm {E F' : Type*} [NormedAddCommGroup E] [N
   rw [← mul_pow]
   exact pow_le_pow_left₀ (norm_nonneg _) (T.le_opNorm x) 3
 
-open Complex Matrix Filter Topology Asymptotics in
-open scoped BigOperators Real in
 private lemma eventually_nhds_zero_comp_of_continuous {E F' : Type*} [TopologicalSpace E] [Zero E]
     [TopologicalSpace F'] [Zero F'] {T : E → F'} (hT : Continuous T) (h0 : T 0 = 0)
     {p : F' → Prop} (h : ∀ᶠ y in 𝓝 0, p y) : ∀ᶠ x in 𝓝 0, p (T x) :=
   (hT.tendsto' 0 0 h0).eventually h
 
 
-open Complex Matrix Filter Topology Asymptotics in
-open scoped BigOperators Real in
 theorem _root_.GlobalTheory.LocalCube.exists_third_difference :
     (∀ (g : ℕ) (h : (Fin g → ℂ) → ℂ), AnalyticAt ℂ h 0 → h =O[𝓝 0] (fun z => ‖z‖ ^ 3) → ∃ k : (Fin g → ℂ) → ℂ, AnalyticAt ℂ k 0 ∧ k =O[𝓝 0] (fun z => ‖z‖ ^ 3) ∧ ∀ᶠ z in 𝓝 0, k ((2 : ℂ) • z) - 3 * k z - k (-z) = h z) → (∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] (F : E → ℂ), F =O[𝓝 0] (fun z => ‖z‖ ^ 3) → (∀ᶠ z in 𝓝 0, F ((2 : ℂ) • z) = 3 * F z + F (-z)) → ∀ᶠ z in 𝓝 0, F z = 0) → (∀ (g : ℕ) (F : (Fin 3 → Fin g → ℂ) → ℂ), AnalyticAt ℂ F 0 → F 0 ≠ 0 → ((∀ a : Fin 3, ∀ᶠ x in 𝓝 (0 : Fin 3 → Fin g → ℂ), x a = 0 → F x = F 0) ∧ (∀ᶠ x in 𝓝 (0 : Fin 3 → Fin g → ℂ), F ((2 : ℂ) • x) * (∏ I : Finset (Fin 3), F ![∑ a ∈ I, x a, ∑ a ∈ I, x a, -∑ a ∈ I, x a] ^ ((-1 : ℤ) ^ (3 - I.card))) * F 0 ^ 3 = F x ^ 3 * F (-x))) → ∃ k : (Fin g → ℂ) → ℂ, AnalyticAt ℂ k 0 ∧ k 0 = 0 ∧ ∀ᶠ x in 𝓝 (0 : Fin 3 → Fin g → ℂ), F x = F 0 * ∏ I : Finset (Fin 3), cexp (k (∑ a ∈ I, x a)) ^ ((-1 : ℤ) ^ (3 - I.card))) := by
   intro hA hB g F hF hF0 hcond

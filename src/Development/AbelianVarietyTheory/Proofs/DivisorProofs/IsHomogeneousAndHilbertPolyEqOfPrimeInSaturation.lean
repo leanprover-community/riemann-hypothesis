@@ -72,7 +72,6 @@ private lemma homogeneousComponent_add_X_pow_mul {K : Type} [Field K] {N : ℕ} 
     rw [Finset.mem_range, not_lt] at hn
     rw [homogeneousComponent_eq_zero n g (by omega), mul_zero, ite_self]
 
-open MvPolynomial Filter in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private lemma homogeneousComponent_mem_of_isPrime_of_X_pow_saturation {K : Type} [Field K] {N : ℕ}
     {I Q : Ideal (MvPolynomial (Fin N) K)}
@@ -121,7 +120,6 @@ private lemma homogeneousComponent_mem_of_isPrime_of_X_pow_saturation {K : Type}
     · exact absurd (hQ.mem_of_pow_mem m h) hj
     · exact h
 
-open MvPolynomial Filter in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private lemma exists_homogeneous_mem_of_X_pow_mul_mem_of_homogeneous {K : Type} [Field K] {N : ℕ}
     {I Q : Ideal (MvPolynomial (Fin N) K)}
@@ -179,7 +177,6 @@ private lemma exists_homogeneous_mem_of_X_pow_mul_mem_of_homogeneous {K : Type} 
       have h4 : (e.sum fun _ => id) = (e.sum fun _ k => k) := rfl
       omega
 
-open MvPolynomial Filter in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private lemma coe_decompose_homogeneousSubmodule_eq_homogeneousComponent {K : Type} [Field K] {N : ℕ}
     (g : MvPolynomial (Fin N) K) (n : ℕ) :
@@ -196,7 +193,6 @@ private lemma coe_decompose_homogeneousSubmodule_eq_homogeneousComponent {K : Ty
     rw [DirectSum.decompose_of_mem_same _ (homogeneousComponent_mem n g),
       homogeneousComponent_eq_zero n g (by omega)]
 
-open MvPolynomial Filter in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private lemma isHomogeneous_of_forall_homogeneousComponent_mem {K : Type} [Field K] {N : ℕ}
     {I : Ideal (MvPolynomial (Fin N) K)} (hI : ∀ g ∈ I, ∀ n : ℕ, homogeneousComponent n g ∈ I) :
@@ -206,7 +202,6 @@ private lemma isHomogeneous_of_forall_homogeneousComponent_mem {K : Type} [Field
   exact hI g hg n
 
 
-open MvPolynomial Filter in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 theorem _root_.GlobalTheory.prime_saturation_homogeneous_and_hilbertPoly_eq (K : Type) [Field K] (N : ℕ)
     (I Q : Ideal (MvPolynomial (Fin N) K))

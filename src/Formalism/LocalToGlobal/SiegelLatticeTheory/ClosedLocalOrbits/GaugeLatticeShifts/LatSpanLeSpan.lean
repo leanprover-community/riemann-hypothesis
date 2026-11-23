@@ -44,7 +44,6 @@ namespace Formalism.L2.SG.Pf.Act
 
 open Formalism.L2.SG.Pf Formalism.L2.SG.Saturated
 
-open Formalism.L2.SG.Pf Formalism.L2.SG.Saturated
 
 section Levi
 

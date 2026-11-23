@@ -93,8 +93,6 @@ theorem _root_.GlobalTheory.LocalQuad.SquareTheorem.isSquare_of_norm_sub_one_lt 
 end SquareTheorem
 
 
-open NumberField IsDedekindDomain in
-open scoped Matrix WithZero in
 theorem _root_.GlobalTheory.LocalQuad.isSquare_of_valued_sub_one_lt (F : Type) [Field F] [NumberField F]
     (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F)
     (h : Valued.v (x - 1) < Valued.v (4 : v.adicCompletion F)) : IsSquare x :=

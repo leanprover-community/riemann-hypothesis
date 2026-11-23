@@ -128,7 +128,6 @@ noncomputable def secMap (K : Type) [CommRing K] (B D : Type) [CommRing B] [Comm
     (Scheme.ΓSpecIso (CommRingCat.of (B ⊗[K] D))).inv.hom
 
 
-open TensorProduct in
 theorem secMap_injective (K : Type) [CommRing K] (B D : Type) [CommRing B] [CommRing D] [Algebra K B]
     [Algebra K D] : Function.Injective (secMap K B D) := by
   let e : ((Spec (CommRingCat.of B)).asOver (Sp K) ⊗ (Spec (CommRingCat.of D)).asOver (Sp K)).left ≅
@@ -146,7 +145,6 @@ theorem secMap_injective (K : Type) [CommRing K] (B D : Type) [CommRing B] [Comm
   rwa [h1, h1, h3, h3] at h2
 
 
-open TensorProduct in
 theorem secMap_lift (K : Type) [CommRing K] (B D : Type) [CommRing B] [CommRing D] [Algebra K B] [Algebra K D]
     (Y : Over (Sp K)) (f : Y ⟶ (Spec (CommRingCat.of B)).asOver (Sp K))
     (h : Y ⟶ (Spec (CommRingCat.of D)).asOver (Sp K)) (b : B) (d : D) :
@@ -176,7 +174,6 @@ theorem secMap_lift (K : Type) [CommRing K] (B D : Type) [CommRing B] [CommRing 
   rfl
 
 
-open TensorProduct in
 theorem prodsec (K : Type) [CommRing K] (B D : Type) [CommRing B] [CommRing D] [Algebra K B] [Algebra K D] :
     ∃ Φ : B ⊗[K] D →+* Γ(((Spec (CommRingCat.of B)).asOver (Sp K) ⊗ (Spec (CommRingCat.of D)).asOver (Sp K)).left, ⊤),
       Function.Injective Φ ∧
@@ -188,7 +185,6 @@ theorem prodsec (K : Type) [CommRing K] (B D : Type) [CommRing B] [CommRing D] [
   ⟨secMap K B D, secMap_injective K B D, secMap_lift K B D⟩
 
 
-open TensorProduct in
 theorem mulsharp (K : Type) [CommRing K] (B : Type) [CommRing B] [HopfAlgebra K B] (Y : Over (Sp K))
     (f g : Y ⟶ (Spec (CommRingCat.of B)).asOver (Sp K)) (b : B) {J : Type} (s : Finset J) (x y : J → B)
     (hb : Coalgebra.comul (R := K) b = ∑ i ∈ s, x i ⊗ₜ[K] y i) :
@@ -225,7 +221,6 @@ theorem algsharp (K : Type) [CommRing K] (A : Type) [CommRing A] [Algebra K A] (
   rw [← hn]
 
 
-open TensorProduct in
 theorem bridge (K : Type) [Field K] (B D : Type) [CommRing B] [HopfAlgebra K B] [CommRing D] [Algebra K D]
   (u : (B ⊗[K] D)ˣ) (hu : IsGroupLikeElem D (TensorProduct.comm K B D (u : B ⊗[K] D))) (h1 : u ≠ 1) :
   ∃ χ : Γ(((Spec (CommRingCat.of B)).asOver (Sp K) ⊗ (Spec (CommRingCat.of D)).asOver (Sp K)).left, ⊤)ˣ,

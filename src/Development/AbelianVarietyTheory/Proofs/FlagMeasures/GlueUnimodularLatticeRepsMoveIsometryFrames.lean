@@ -144,7 +144,6 @@ end GlobalTheory.GlueMove
 
 namespace GlobalTheory.GlueMove
 
-open Formalism.L2.SG.Pf.Cnt
 
 section Gen2
 
@@ -269,7 +268,6 @@ end GlobalTheory.GlueMove
 
 namespace GlobalTheory.GlueMove
 
-open Formalism.L2.SG.Pf.Cnt
 
 variable {D : D7}
 
@@ -342,7 +340,6 @@ end GlobalTheory.GlueMove
 
 namespace GlobalTheory.GlueMove
 
-open Formalism.L2.SG.Pf.Cnt
 
 theorem glue_move : ∀ (D : D7) (T T' : D.host.E) (F G : LFlag (D.sp.Y 0) D.R.rS T) (F' G' : LFlag (D.sp.Y 0) D.R.rS T') (n : GV D), n ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT → (∀ a, frame G a = n (frame F a)) → (∀ a, frame G' a = n (frame F' a)) → ∀ s : Finset (LV D), Glue F F' s → ∃ s' : Finset (LV D), Glue G G' s' ∧ glueSum G G' s' = glueSum F F' s := by
   intro D T T' F G F' G' n hn hG hG' s hs

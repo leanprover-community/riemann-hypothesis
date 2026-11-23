@@ -124,7 +124,6 @@ end GlobalTheory.IsoTriv.CoeffCont
 
 namespace GlobalTheory.IsoTriv
 
-open MvPowerSeries
 
 theorem contSt_holds : ContSt := by
   intro C _ v τ σ ι _ _ _ W g hg α

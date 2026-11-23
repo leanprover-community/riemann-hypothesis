@@ -98,7 +98,6 @@ end GlobalTheory.SmGL.StagesTwo
 
 namespace GlobalTheory.SmGL.StagesTwo
 
-open GlobalTheory.SmGL.MultiIrr
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype n] [DecidableEq n]
@@ -135,7 +134,6 @@ end GlobalTheory.SmGL.StagesTwo
 
 namespace GlobalTheory.SmGL.StagesTwo
 
-open GlobalTheory.SmGL.MultiIrr
 
 section Lex
 
@@ -173,7 +171,6 @@ end GlobalTheory.SmGL.StagesTwo
 
 namespace GlobalTheory.SmGL.StagesTwo
 
-open GlobalTheory.SmGL.MultiIrr
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {β₀ β₁ : Type} [Fintype β₀] [LinearOrder β₀] [Fintype β₁] [LinearOrder β₁]
@@ -246,7 +243,6 @@ end GlobalTheory.SmGL.StagesTwo
 
 namespace GlobalTheory.SmGL.StagesTwo
 
-open GlobalTheory.SmGL.MultiIrr
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {β₀ β₁ : Type} [Fintype β₀] [LinearOrder β₀] [Fintype β₁] [LinearOrder β₁]

@@ -115,9 +115,7 @@ end GlobalTheory.KHwExist
 
 namespace GlobalTheory.KHwExist
 
-open scoped Classical
 
-open MvPolynomial GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators GlobalTheory.LowestKType
 
 variable {D : D7} {n m : ℕ}
 
@@ -149,9 +147,7 @@ end GlobalTheory.KHwExist
 
 namespace GlobalTheory.KHwExist
 
-open scoped Classical
 
-open MvPolynomial GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators GlobalTheory.LowestKType
 
 variable {D : D7} {n m : ℕ}
 
@@ -300,7 +296,6 @@ end GlobalTheory.KHwExist
 
 namespace GlobalTheory.KHwExist
 
-open scoped Classical
 
 open GlobalTheory.LowestKType
 

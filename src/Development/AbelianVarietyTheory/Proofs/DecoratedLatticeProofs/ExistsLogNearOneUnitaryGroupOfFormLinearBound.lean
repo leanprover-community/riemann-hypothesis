@@ -68,7 +68,6 @@ private lemma linftyOp_norm_le_mul_of_entry_le {n : ℕ} (A : Matrix (Fin n) (Fi
   have := (NNReal.coe_le_coe.2 key)
   simpa [nsmul_eq_mul] using this
 
-open Matrix Filter Topology in
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra in
 private lemma norm_entry_le_linftyOp_norm {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
     ‖A i j‖ ≤ ‖A‖ := by
@@ -81,7 +80,6 @@ private lemma norm_entry_le_linftyOp_norm {n : ℕ} (A : Matrix (Fin n) (Fin n) 
       exact_mod_cast Finset.le_sup (f := fun i => ∑ k, ‖A i k‖₊) (Finset.mem_univ i)
 
 
-open Matrix Filter Topology in
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra in
 theorem _root_.GlobalTheory.UnitaryLog.exists_log_unitary (n : ℕ)
     (G : Matrix (Fin n) (Fin n) ℂ) (hG : IsUnit G.det) :

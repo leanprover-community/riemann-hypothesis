@@ -59,7 +59,6 @@ theorem Pres.j_φ' (p : Pres W F ι τ γ) {T A q} (h : Onto T A q) (i : ZMod n)
 end GlobalTheory.Present
 
 namespace GlobalTheory.TopSteps.TopSit
-open scoped LaurentSeries PowerSeries
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.PhiGam GlobalTheory.Models GlobalTheory.Present
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} (S : TopSit P)
 

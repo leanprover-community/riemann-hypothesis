@@ -152,9 +152,6 @@ theorem _root_.GlobalTheory.TestLat.SlopeModel.sumGram_posDef (lam : ι → _roo
     simp at h4
     exact ha h4
 
-open NumberField in
-open scoped Matrix ComplexOrder in
-open scoped Kronecker MatrixOrder in
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {ι : Type} [Fintype ι] {n N : ℕ}
   {C : Type} in
 omit [StarRing K] in
@@ -167,9 +164,6 @@ private lemma exists_isMetric_of_posDef_map (H : Matrix (Fin N) (Fin N) K)
   refine ⟨fun v => ((B v)ᴴ)⁻¹, fun v => ⟨Matrix.isUnit_nonsing_inv_det _ (hu v), ?_⟩⟩
   rw [Matrix.nonsing_inv_nonsing_inv _ (hu v), Matrix.conjTranspose_conjTranspose, ← hT]
 
-open NumberField in
-open scoped Matrix ComplexOrder in
-open scoped Kronecker MatrixOrder in
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {ι : Type} [Fintype ι] {n N : ℕ}
   {C : Type} in
 omit [StarRing K] in
@@ -181,9 +175,6 @@ theorem _root_.GlobalTheory.TestLat.SlopeModel.exists_isMetric (H : Matrix (Fin 
   exact (hH φ).inv.transpose
 
 
-open NumberField in
-open scoped Matrix ComplexOrder in
-open scoped Kronecker MatrixOrder in
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {ι : Type} [Fintype ι] {n N : ℕ}
   {C : Type} in
 omit [StarRing K] in

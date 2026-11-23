@@ -165,7 +165,6 @@ end Ratio
 section Value
 
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism Formalism.IndefR Formalism.IndefR.FWT Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.Pj Formalism.IndefR.Datum
-open scoped TensorProduct Matrix
 open GlobalTheory.GeoLevel GlobalTheory.DatumInverseCharacter GlobalTheory.PinnedClassSum Formalism.L2.Host
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -253,9 +252,6 @@ end Value
 
 section Move
 
-open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism Formalism.IndefR Formalism.IndefR.FWT Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.L2.Pj Formalism.IndefR.Datum
-open scoped TensorProduct Matrix
-open GlobalTheory.GeoLevel GlobalTheory.DatumInverseCharacter GlobalTheory.PinnedClassSum Formalism.L2.Host
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H}

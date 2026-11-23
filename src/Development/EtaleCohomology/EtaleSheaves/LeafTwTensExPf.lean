@@ -110,7 +110,6 @@ theorem dT_tmul (U : Scheme.{0}) (s t w : ℤ) (h : s + t = w) (a : Sec (I.X s) 
 end LateralTheory.E.LeafTwTensExPf
 
 namespace LateralTheory.E.LeafTwTensExPf
-open Classical
 variable {R : Type} [CommRing R] (I J : Cx R)
 
 theorem dd0 {K : Cx R} {U : Scheme.{0}} (s : ℤ) (a : Sec (K.X s) U) :
@@ -140,7 +139,6 @@ theorem dT_dT (U : Scheme.{0}) (w : ℤ) : dT I J U (w + 1) ∘ₗ dT I J U w = 
 end LateralTheory.E.LeafTwTensExPf
 
 namespace LateralTheory.E.LeafTwTensExPf
-open Classical
 variable {R : Type} [CommRing R] (I J : Cx R)
 
 def dTP (w : ℤ) : TP I J w ⟶ TP I J (w + 1) where
@@ -171,7 +169,6 @@ theorem un_d (U : Scheme.{0}) (w : ℤ) (x : Tens I J U w) :
 end LateralTheory.E.LeafTwTensExPf
 
 namespace LateralTheory.E.LeafTwTensExPf
-open Classical
 variable {R : Type} [CommRing R] (I J : Cx R)
 
 def tau : Pair I J (TC I J) where

@@ -149,22 +149,16 @@ def orbEquiv (oB : Quotient (MulAction.orbitRel Γ B)) :
 
 end Fibre
 
-section Sub
 
 variable {Y : Type*} [MulAction Γ Y]
 
-end Sub
 
-section Pair
 
 variable {Y : Type*} [MulAction Γ Y]
 
-end Pair
 
-section Local
 
 variable {T : Type*} [MulAction Γ T]
 
-end Local
 
 end Formalism.L2.SG.Pf.StabilizerMassQuotient

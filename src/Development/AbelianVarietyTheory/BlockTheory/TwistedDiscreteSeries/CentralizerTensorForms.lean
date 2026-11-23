@@ -81,8 +81,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms.ad
   · intro h
     rw [Matrix.mul_assoc, h, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hJ, Matrix.one_mul]
 
-open Matrix NumberField in
-open scoped TensorProduct in
 variable {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms.hform_eq (σ : A →+* A) (J : Matrix n n A) (x y : n → A) :
     _root_.Formalism.UG.hform σ J x y = (fun i => σ (x i)) ⬝ᵥ (J *ᵥ y) := by
@@ -90,8 +88,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms.hf
   simp [dotProduct, mulVec, Finset.mul_sum, mul_assoc]
 
 
-open Matrix NumberField in
-open scoped TensorProduct in
 variable {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms.form_adj (σ : A →+* A) {J : Matrix n n A} (hJ : IsUnit J.det)
     (l : Matrix n n A) (y y' : n → A) :

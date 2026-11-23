@@ -62,8 +62,6 @@ private theorem grp_apply_e (g : V ≃ₗ[E] V) (v : V) :
   show c.e (g (c.e.symm (c.e v))) = _
   simp
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -78,8 +76,6 @@ private theorem mapsTo_and_sub_mem_bot_of_fixes {W : Type} [AddCommGroup W] [Mod
   · rw [hN v hv, sub_self]
     exact zero_mem _
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -120,8 +116,6 @@ private theorem isometry_fixing_frames_iff_grp_mem_H0 (g : V ≃ₗ[E] V) :
       rw [Submodule.mem_bot, sub_eq_zero, c.f'_eq, hT] at h
       exact c.e.injective h
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -144,8 +138,6 @@ private theorem mem_UW0_iff_grp_mem_H0 (g : V ≃ₗ[E] V) :
     have h := (isometry_fixing_frames_iff_grp_mem_H0 c g).2 hg
     exact ⟨h.1, h.2⟩
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -167,8 +159,6 @@ private theorem apply_mem_perp_X_iff_of_isometry_fixing (g : V ≃ₗ[E] V) (his
   refine forall₂_congr fun x hx => ?_
   rw [← hiso v x, hX x hx]
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -205,8 +195,6 @@ private theorem image_setOf_subtype_eq_iff {X : Type} (g : X ≃ X) (K : X → P
         simpa using hv
       exact ⟨g.symm v, ⟨hw, (h ⟨g.symm v, hw⟩ ⟨v, hv⟩ (by simp)).2 hq⟩, by simp⟩
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -240,8 +228,6 @@ private theorem grp_smul_inn_eq_inn_iff (g : V ≃ₗ[E] V) (f : Fin (r + 1) →
   exact image_setOf_subtype_eq_iff g.toEquiv (· ∈ H.perp (H.X f)) hK (fun x => H.mkW f x ∈ L)
     (fun y => H.mkW f y ∈ L')
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -291,8 +277,6 @@ private theorem graph_transport_iff_lemma_11 (g : V ≃ₗ[E] V)
     have hy2 := Prod.ext_iff.1 hy
     exact h ⟨a, ha⟩ ⟨a', ha'⟩ ⟨b, hb⟩ ⟨b', hb'⟩ hy2.1 hy2.2
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -326,8 +310,6 @@ private theorem Datum_moves_iff_grp_smul_dat_eq (g : V ≃ₗ[E] V) (hg : g ∈ 
       simp only [e1, e2, Set.mem_empty_iff_false]
   · simp only [_root_.GlobalTheory.HL.CoordDatum.Q, hs, reduceCtorEq, false_and, false_or]
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -337,8 +319,6 @@ private theorem mkW_surjective (f : Fin (r + 1) → V) : Function.Surjective (H.
   unfold _root_.Formalism.MainNotions.S.Loc.HermSp.mkW
   exact Submodule.mkQ_surjective _
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -366,8 +346,6 @@ private theorem dat_injective : Function.Injective c.dat := by
   subst hLN hLN' hio'
   rfl
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -385,8 +363,6 @@ private theorem Datum_rel_iff_exists_H0_smul_dat_eq (d d' : _root_.Formalism.Mai
     have hg := (mem_UW0_iff_grp_mem_H0 c g).2 hh
     exact ⟨g, hg, (Datum_moves_iff_grp_smul_dat_eq c g hg d d').2 he⟩
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -412,8 +388,6 @@ private theorem Datum_stab_eq_comap_H0_inf_stabilizer (d : _root_.Formalism.Main
       exact ⟨hg', (Datum_moves_iff_grp_smul_dat_eq c g hg' d d).2 hs⟩
   rw [hset, Subgroup.closure_eq]
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in
@@ -425,8 +399,6 @@ private theorem relIndex_comap_mulEquiv {G G' : Type} [Group G] [Group G'] (f : 
   rw [Subgroup.relIndex_comap, Subgroup.map_comap_eq_self_of_surjective f.surjective]
 
 
-open ValuativeRel in
-open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] in
 variable {M : _root_.Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : _root_.Formalism.MainNotions.S.Loc.HermSp M V} {r k : ℕ} in

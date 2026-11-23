@@ -50,7 +50,6 @@ open Formalism.L2.SG.JoinSI Formalism.IndefR.Links Formalism.IndefR.AutomorphicE
 variable {D : D7}
 end GlobalTheory.MiTop.PairingL2
 namespace GlobalTheory.MiTop.PairingL2
-open Formalism.L2.SG.JoinSI Formalism.IndefR.Links Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.RowsJoinPinned
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX}
 theorem pwOf_op_ramCrd_eq_puFun (W : _root_.GlobalTheory.MiS.RealPackAlt ex) (u w : D.what₂.Word) (hwu : w = u) (hc : W.P.I.wU w = W.P.I.wU u)
@@ -78,7 +77,6 @@ theorem pwOf_op_ramCrd_eq_puFun (W : _root_.GlobalTheory.MiS.RealPackAlt ex) (u 
   exact congrArg (fun z : (D.mem w).A.Mram => (z : (D.mem w).C.cls 0 → (D.mem w).C.Y 0 → ℂ)) hr.symm
 end GlobalTheory.MiTop.PairingL2
 namespace GlobalTheory.MiTop.PairingL2
-open Formalism.L2.SG.JoinSI Formalism.IndefR.Links Formalism.IndefR.AutomorphicEvaluation Formalism.L2.SG.RowsJoinPinned
 theorem pairForm_alt : GlobalTheory.Published.DiscreteSeriesClassification → GlobalTheory.Published.CuspRapidDecay → ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Yd cX} (W : _root_.GlobalTheory.MiS.RealPackAlt ex), _root_.GlobalTheory.MiTop.BottomHypotheses W → ∀ v : (W.Q.Rl.MY 0).Vec, ConjVec W.S.X W.Q.instEq W.Q.Rl.θ (W.Q.Rl.MY 0) v → _root_.GlobalTheory.MiTop.PairingFormCondition W v := by
   intro hDS hCusp D L hT Gi Gl Kc Yd cX ex W hB v hv
   have hM := (_root_.GlobalTheory.MiTop.botHyp_match_alt W hB).2.2.2.2.2

@@ -58,7 +58,6 @@ end GlobalTheory.EtC.WSS
 
 namespace GlobalTheory.EtC.WSS
 
-open GlobalTheory.EtC GlobalTheory.Strata
 
 variable (l : ℕ) [Fact l.Prime]
 
@@ -73,7 +72,6 @@ end GlobalTheory.EtC.WSS
 
 namespace GlobalTheory.EtC.WSS
 
-open GlobalTheory.EtC GlobalTheory.Strata
 
 variable (l : ℕ) [Fact l.Prime] {ι : Type} [Fintype ι] [LinearOrder ι] {Z : Scheme.{0}} (J : ι → Z.IdealSheafData)
 
@@ -81,7 +79,6 @@ end GlobalTheory.EtC.WSS
 
 namespace GlobalTheory.EtC.WSS
 
-open GlobalTheory.EtC GlobalTheory.Strata
 
 variable (l : ℕ) [Fact l.Prime] {ι : Type} [Fintype ι] [LinearOrder ι] {Z : Scheme.{0}} (J : ι → Z.IdealSheafData)
 
@@ -89,7 +86,6 @@ end GlobalTheory.EtC.WSS
 
 namespace GlobalTheory.EtC.WSS
 
-open GlobalTheory.EtC GlobalTheory.Strata
 
 variable (l : ℕ) [Fact l.Prime] {ι : Type} [Fintype ι] [LinearOrder ι]
 

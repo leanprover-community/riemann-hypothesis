@@ -205,7 +205,6 @@ end GlobalTheory.SympMod
 namespace GlobalTheory
 
 
-open ReciprocityTheory.ChartRestriction.G.Out in
 theorem exists_stdSymp_of_alternating_pairing :
     ∀ (M g : ℕ) (G : Type) [CommGroup G] (R : Type) [CommRing R] [IsDomain R] (ζ : Rˣ), 0 < M →
     IsPrimitiveRoot ζ M → (∀ x : G, x ^ M = 1) →

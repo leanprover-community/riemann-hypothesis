@@ -91,7 +91,6 @@ end GlobalTheory.TorusNormal
 
 namespace GlobalTheory.TorusNormal
 
-open Formalism.UG.P
 
 variable {L : Type} [Field L]
 
@@ -149,7 +148,6 @@ end GlobalTheory.TorusNormal
 
 namespace GlobalTheory.TorusNormal
 
-open Formalism.UG.P
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 

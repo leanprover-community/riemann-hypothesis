@@ -99,7 +99,6 @@ lemma etale_kummer_chern_cochain_coboundary_triangle_eq_zero_of_qth_roots (q : �
   simp
   abel
 
-open LateralTheory.E.ChernClassRootLocalization in
 theorem etale_kummer_chern_cochain_coboundary_vanishes_on_triangles_of_local_r (hr : LateralTheory.E.ChernClassRootLocalization.LeafRootLoc) : LateralTheory.E.ChernClassExistence.EtaleKummerChernCochainCoboundaryVanishesOnTriangles := by
   intro q _ E L hi α hα U x
   apply sec_sep

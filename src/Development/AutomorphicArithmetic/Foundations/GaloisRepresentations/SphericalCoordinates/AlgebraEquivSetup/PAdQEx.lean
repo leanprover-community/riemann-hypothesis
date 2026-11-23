@@ -66,22 +66,18 @@ private theorem exists_local_ring (w : HeightOneSpectrum ℤ) :
   obtain ⟨f, hf⟩ := ringEquiv_of_algEquiv e
   exact ⟨f, fun x ↦ by rw [hf]; exact he x⟩
 
-open GlobalTheory.NormLevelCompare in
 private noncomputable def eL (w : HeightOneSpectrum ℤ) :
     (primeCorr w).adicCompletion ℚ ≃+* w.adicCompletion ℚ :=
   Classical.choose (exists_local_ring w)
 
-open GlobalTheory.NormLevelCompare in
 private theorem eL_mem (w : HeightOneSpectrum ℤ) (x : (primeCorr w).adicCompletion ℚ) :
     eL w x ∈ w.adicCompletionIntegers ℚ ↔ x ∈ (primeCorr w).adicCompletionIntegers ℚ := Classical.choose_spec (exists_local_ring w) x
 
-open GlobalTheory.NormLevelCompare in
 private theorem eL_mapsTo (w : HeightOneSpectrum ℤ) :
     Set.MapsTo (eL w).toRingHom ((primeCorr w).adicCompletionIntegers ℚ) (w.adicCompletionIntegers ℚ) := fun x hx ↦ (eL_mem w x).2 hx
 
 private theorem finiteAdeleRingAway_ext {p : ℕ} {x y : AfP p} (h : ∀ v, AfP.eval v x = AfP.eval v y) : x = y := RestrictedProduct.ext _ _ h
 
-open GlobalTheory.NormLevelCompare in
 private noncomputable def rho (p : ℕ) : AfQ →+* AfP p :=
   RestrictedProduct.mapAlongRingHom (fun u : HeightOneSpectrum (𝓞 ℚ) ↦ u.adicCompletion ℚ)
     (fun v : AwayP p ↦ v.1.adicCompletion ℚ)
@@ -89,7 +85,6 @@ private noncomputable def rho (p : ℕ) : AfQ →+* AfP p :=
     (fun v ↦ primeCorr v.1) (primeCorr.injective.comp Subtype.val_injective).tendsto_cofinite
     (fun v ↦ (eL v.1).toRingHom) (hφ := .of_forall fun v ↦ eL_mapsTo v.1)
 
-open GlobalTheory.NormLevelCompare in
 private theorem eval_rho {p : ℕ} (a : AfQ) (v : AwayP p) :
     AfP.eval v (rho p a) = eL v.1 (a (primeCorr v.1)) := rfl
 
@@ -159,7 +154,6 @@ private theorem rho_surj (p : ℕ) : Function.Surjective (rho p) := by
   rw [eval_rho, liftA_apply, fL_corr, gL_pos, RingEquiv.apply_symm_apply]
 end
 
-open GlobalTheory.NormLevelCompare in
 private theorem rho_ker (p : ℕ) [Fact p.Prime] (a : AfQ) :
     rho p a = 0 ↔ ∀ v : Plc ℚ, (p : 𝓞 ℚ) ∉ v.asIdeal → a v = 0 := by
   constructor
@@ -172,7 +166,6 @@ private theorem rho_ker (p : ℕ) [Fact p.Prime] (a : AfQ) :
     refine finiteAdeleRingAway_ext fun v ↦ ?_
     rw [eval_rho, map_zero, h _ ((away_iff p v.1).1 v.2), map_zero]
 
-open GlobalTheory.NormLevelCompare in
 private theorem rho_int (p : ℕ) [Fact p.Prime] (a : AfQ) :
     IsIntAf (rho p a) ↔ ∀ v : Plc ℚ, (p : 𝓞 ℚ) ∉ v.asIdeal → Valued.v (a v) ≤ 1 := by
   constructor

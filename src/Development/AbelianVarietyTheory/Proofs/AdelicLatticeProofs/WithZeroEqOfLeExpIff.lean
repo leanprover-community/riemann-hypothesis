@@ -66,8 +66,6 @@ theorem _root_.GlobalTheory.QNorm.intValuation_of_eq_comap {R : Type} [CommRing 
     simp only [WithZero.exp_le_exp, neg_le_neg_iff, Nat.cast_le] at h1 h2
     rw [le_antisymm h1 h2]
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 theorem _root_.GlobalTheory.QNorm.valuation_of_eq_comap {E : Type} [Field E] [NumberField E] (σ : E ≃+* E)
     (w w' : HeightOneSpectrum (𝓞 E))
     (h : w'.asIdeal = w.asIdeal.comap (RingOfIntegers.mapRingEquiv σ)) (y : E) :
@@ -80,8 +78,6 @@ theorem _root_.GlobalTheory.QNorm.valuation_of_eq_comap {E : Type} [Field E] [Nu
   rw [_root_.GlobalTheory.QNorm.intValuation_of_eq_comap _ w w' h a,
     _root_.GlobalTheory.QNorm.intValuation_of_eq_comap _ w w' h b]
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private lemma ringOfIntegers_mapRingEquiv_algebraMap {F E : Type} [Field F] [NumberField F] [Field E]
     [NumberField E] [Algebra F E] (σ : E ≃ₐ[F] E) (n : 𝓞 F) :
     RingOfIntegers.mapRingEquiv (σ : E ≃+* E) (algebraMap (𝓞 F) (𝓞 E) n) =
@@ -90,8 +86,6 @@ private lemma ringOfIntegers_mapRingEquiv_algebraMap {F E : Type} [Field F] [Num
   rw [show ((algebraMap (𝓞 F) (𝓞 E) n : 𝓞 E) : E) = algebraMap F E (n : F) from rfl]
   exact σ.commutes _
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 private lemma exists_algebraMap_eq_mul_conj_of_isQuad {F E : Type} [Field F] [NumberField F] [Field E]
     [NumberField E] [Algebra F E] {δ : F} {θ : E} {σ : E ≃ₐ[F] E}
     (hq : _root_.GlobalTheory.QNorm.IsQuad δ θ σ) (x : 𝓞 E) :
@@ -111,8 +105,6 @@ private lemma exists_algebraMap_eq_mul_conj_of_isQuad {F E : Type} [Field F] [Nu
   ext
   exact hprod.symm
 
-open NumberField IsDedekindDomain in
-open scoped WithZero in
 theorem _root_.GlobalTheory.QNorm.conj_places_transitive : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
     [NumberField E] [Algebra F E] (δ : F) (θ : E) (σ : E ≃ₐ[F] E), _root_.GlobalTheory.QNorm.IsQuad δ θ σ →
     (∀ w : HeightOneSpectrum (𝓞 E), ∃ w' : HeightOneSpectrum (𝓞 E),

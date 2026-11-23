@@ -185,7 +185,6 @@ theorem maj_near (X : Data E r) {x0 : Frame X.Ψ r} (hx0 : x0 ∈ X.dom) {κ : �
   exact hw τ hwd v
 
 
-open Topology Filter in
 theorem firstMinimum_continuousOn (X : Data E r) : ContinuousOn X.la1 X.dom := by
   intro x0 hx0
   have hsq : ContinuousWithinAt X.firstMinimumSq X.dom x0 := by

@@ -150,7 +150,6 @@ end GlobalTheory.HoweD.QuadFockD
 
 namespace GlobalTheory.HoweD.QuadFockD
 
-open GlobalTheory.RealLift.QuadFock
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {P Q R S : ι → ℕ}
 

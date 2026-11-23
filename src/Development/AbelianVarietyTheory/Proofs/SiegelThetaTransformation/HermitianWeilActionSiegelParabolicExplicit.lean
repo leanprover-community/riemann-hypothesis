@@ -58,8 +58,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Finset (E →+
 private lemma isIntegral_int_natCast {E : Type} [Field E] (k : ℕ) : IsIntegral ℤ (k : E) := by
   simpa using isIntegral_algebraMap (R := ℤ) (A := E) (x := (k : ℤ))
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Finset (E →+* ℂ)} {n N : ℕ} in
 private lemma isIntegral_trace_mul_mul_ccT_of_intM {E : Type} [Field E] [NumberField E] [IsCMField E] {n N : ℕ}
     {M P : Matrix (Fin n) (Fin N) E} {β : Matrix (Fin N) (Fin N) E} (hM : _root_.GlobalTheory.SW.IntM M)
@@ -72,8 +70,6 @@ private lemma isIntegral_trace_mul_mul_ccT_of_intM {E : Type} [Field E] [NumberF
   exact IsIntegral.sum _ fun j _ =>
     (IsIntegral.sum _ fun k _ => (hM i k).mul (hβ k j)).mul (_root_.GlobalTheory.SW.Base.isIntegral_cc (hP i j))
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Finset (E →+* ℂ)} {n N : ℕ} in
 private lemma exists_int_sum_embeddings_eq_of_isIntegral {E : Type} [Field E] [NumberField E] (t : E) (ht : IsIntegral ℤ t) :
     ∃ m : ℤ, ∑ σ : E →+* ℂ, σ t = m := by
@@ -85,8 +81,6 @@ private lemma exists_int_sum_embeddings_eq_of_isIntegral {E : Type} [Field E] [N
   rw [← (RingHom.equivRatAlgHom (R := E) (S := ℂ)).sum_comp] at h2
   simpa using h2.symm
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Finset (E →+* ℂ)} {n N : ℕ} in
 private lemma map_trace_mul_mul_ccT_eq_trace_conjTranspose {E : Type} [Field E] [NumberField E] [IsCMField E] {n N : ℕ}
     (τ : E →+* ℂ) (M P : Matrix (Fin n) (Fin N) E) (β : Matrix (Fin N) (Fin N) E) :
@@ -95,16 +89,12 @@ private lemma map_trace_mul_mul_ccT_eq_trace_conjTranspose {E : Type} [Field E] 
 
   simp only [Matrix.trace, Matrix.diag, map_sum, Matrix.map_apply]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Finset (E →+* ℂ)} {n N : ℕ} in
 private lemma matrix_map_natCast_smul {E : Type} [Field E] {a b : Type} (τ : E →+* ℂ) (k : ℕ) (M : Matrix a b E) :
     ((k : E) • M).map τ = (k : ℂ) • M.map τ := by
   ext i j
   simp
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Finset (E →+* ℂ)} {n N : ℕ} in
 private lemma trace_quadratic_form_shift_expand {n N : ℕ} (X Y : Matrix (Fin n) (Fin N) ℂ) (Bh : Matrix (Fin N) (Fin N) ℂ)
     (hB : Bhᴴ = Bh) (r d : ℕ) :
@@ -125,8 +115,6 @@ private lemma trace_quadratic_form_shift_expand {n N : ℕ} (X Y : Matrix (Fin n
   ring
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Finset (E →+* ℂ)} {n N : ℕ} in
 theorem _root_.GlobalTheory.SW.Parab.isSB_chiH (hΨ : _root_.GlobalTheory.SW.IsType Ψ)
     {β : Matrix (Fin N) (Fin N) E} (hβ : _root_.GlobalTheory.SW.ccT β = β) (c : ℂ)
@@ -197,8 +185,6 @@ end
 
 end GlobalTheory.SW.Parab
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma isUnit_det_diag_blocks_of_lower_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {N : ℕ}
     {γ : _root_.GlobalTheory.SW.M2 E N} (hγ : γ ∈ _root_.GlobalTheory.SW.UU E N) (h0 : γ.toBlocks₂₁ = 0) :
     IsUnit γ.toBlocks₁₁.det ∧ IsUnit γ.toBlocks₂₂.det := by
@@ -209,8 +195,6 @@ private lemma isUnit_det_diag_blocks_of_lower_zero {E : Type} [Field E] [NumberF
   rw [hγ', det_fromBlocks_zero₂₁] at h
   exact IsUnit.mul_iff.1 h
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma exists_pos_nat_smul_mul_intM_of_intM {E : Type} [Field E] [NumberField E] {n N : ℕ}
     (M : Matrix (Fin N) (Fin N) E) : ∃ d : ℕ, 0 < d ∧ ∀ x : Matrix (Fin n) (Fin N) E,
       _root_.GlobalTheory.SW.IntM x → _root_.GlobalTheory.SW.IntM (d • (x * M)) := by
@@ -223,8 +207,6 @@ private lemma exists_pos_nat_smul_mul_intM_of_intM {E : Type} [Field E] [NumberF
   rw [← mul_smul_comm]
   exact (hx k i).mul (hM (i, j))
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma isSB_comp_mul_right_of_isUnit_det {E : Type} [Field E] [NumberField E] {n N : ℕ}
     {A : Matrix (Fin N) (Fin N) E} (hA : IsUnit A.det) {φ : Matrix (Fin n) (Fin N) E → ℂ}
     (hφ : _root_.GlobalTheory.SW.IsSB φ) : _root_.GlobalTheory.SW.IsSB fun x => φ (x * A) := by
@@ -239,8 +221,6 @@ private lemma isSB_comp_mul_right_of_isUnit_det {E : Type} [Field E] [NumberFiel
   change _root_.GlobalTheory.SW.IntM (d' • (x * A * A⁻¹)) at this
   rwa [Matrix.mul_assoc, mul_nonsing_inv _ hA, Matrix.mul_one] at this
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma ccT_neg_mul_ccT {E : Type} [Field E] [NumberField E] [IsCMField E] {N : ℕ}
     (A B : Matrix (Fin N) (Fin N) E) :
     _root_.GlobalTheory.SW.ccT (-(B * _root_.GlobalTheory.SW.ccT A)) = -(A * _root_.GlobalTheory.SW.ccT B) := by
@@ -252,8 +232,6 @@ private lemma ccT_neg_mul_ccT {E : Type} [Field E] [NumberField E] [IsCMField E]
   simp only [map_neg, map_mul, RingHom.mapMatrix_apply, _root_.GlobalTheory.SW.HAct.map_ccT,
     conjTranspose_neg, conjTranspose_mul, conjTranspose_conjTranspose]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma toBlocks₁₁_mul_ccT_toBlocks₁₂_comm_of_mem_UU {E : Type} [Field E] [NumberField E] [IsCMField E] {N : ℕ}
     {γ : _root_.GlobalTheory.SW.M2 E N} (hγ : γ ∈ _root_.GlobalTheory.SW.UU E N) (h0 : γ.toBlocks₂₁ = 0) :
     γ.toBlocks₁₁ * _root_.GlobalTheory.SW.ccT γ.toBlocks₁₂ = γ.toBlocks₁₂ * _root_.GlobalTheory.SW.ccT γ.toBlocks₁₁ := by
@@ -277,8 +255,6 @@ private lemma toBlocks₁₁_mul_ccT_toBlocks₁₂_comm_of_mem_UU {E : Type} [F
     _ = A * Dᴴ * B * Aᴴ := by simp only [Matrix.mul_assoc]
     _ = B * Aᴴ := by rw [hAD', Matrix.one_mul]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma map_toBlocks₁₁_conjTranspose_mul_toBlocks₂₂_eq_one {E : Type} [Field E] [NumberField E] [IsCMField E] {N : ℕ}
     {γ : _root_.GlobalTheory.SW.M2 E N} (hγ : γ ∈ _root_.GlobalTheory.SW.UU E N)
     (h0 : γ.toBlocks₂₁ = 0) (τ : E →+* ℂ) :
@@ -289,8 +265,6 @@ private lemma map_toBlocks₁₁_conjTranspose_mul_toBlocks₂₂_eq_one {E : Ty
   simp only [Matrix.map_zero _ (map_zero τ), conjTranspose_zero, Matrix.zero_mul, Matrix.mul_zero, zero_add] at h2 h3
   exact ⟨h2, h3⟩
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma map_trace_mul_mul_ccT_self_eq_sum_dotProduct {E : Type} [Field E] [NumberField E] [IsCMField E] {n N : ℕ}
     (τ : E →+* ℂ) (x : Matrix (Fin n) (Fin N) E) (β : Matrix (Fin N) (Fin N) E) :
     τ (x * β * _root_.GlobalTheory.SW.ccT x).trace =
@@ -303,8 +277,6 @@ private lemma map_trace_mul_mul_ccT_self_eq_sum_dotProduct {E : Type} [Field E] 
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [Finset.sum_comm]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma hermitian_parabolic_exponent_rows_eq {n N : ℕ} (Y z z' : Matrix (Fin n) (Fin N) ℂ) (A B D Z : Matrix (Fin N) (Fin N) ℂ)
     (hAD : Aᴴ * D = 1) (hDA : Dᴴ * A = 1) (k : Fin n) :
     ((Y * Dᴴ) k ⬝ᵥ (-(B * Aᴴ)) *ᵥ star ((Y * Dᴴ) k)) +
@@ -328,8 +300,6 @@ private lemma hermitian_parabolic_exponent_rows_eq {n N : ℕ} (Y z z' : Matrix 
     neg_dotProduct]
   ring
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma transH_chiH_mul_comp_of_toBlocks₂₁_eq_zero {E : Type} [Field E] [NumberField E] [IsCMField E]
     {Ψ : Finset (E →+* ℂ)} {n N : ℕ} {γ : _root_.GlobalTheory.SW.M2 E N}
     (hγ : γ ∈ _root_.GlobalTheory.SW.UU E N) (h0 : γ.toBlocks₂₁ = 0)
@@ -406,8 +376,6 @@ private lemma transH_chiH_mul_comp_of_toBlocks₂₁_eq_zero {E : Type} [Field E
   simp only [hdet]
   ring
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma toBlocks₂₁_mul_inv_eq_zero_of_botSpan_eq {E : Type} [Field E] {N : ℕ} {γ γ' : _root_.GlobalTheory.SW.M2 E N}
     (hdet : IsUnit (Matrix.det γ)) (hspan : _root_.GlobalTheory.SW.botSpan γ = _root_.GlobalTheory.SW.botSpan γ') :
     (γ' * γ⁻¹ : Matrix (Fin N ⊕ Fin N) (Fin N ⊕ Fin N) E).toBlocks₂₁ = 0 := by
@@ -428,8 +396,6 @@ private lemma toBlocks₂₁_mul_inv_eq_zero_of_botSpan_eq {E : Type} [Field E] 
   rw [Finset.sum_comm]
   simp only [← Finset.mul_sum, hid, mul_zero, Finset.sum_const_zero]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 private lemma hFac_eq_prod_det_pow_of_toBlocks₂₁_eq_zero {E : Type} [Field E] [NumberField E] [IsCMField E]
     {Ψ : Finset (E →+* ℂ)} {n N : ℕ} {γ : _root_.GlobalTheory.SW.M2 E N} (h0 : γ.toBlocks₂₁ = 0)
     (Z : _root_.GlobalTheory.SW.CM Ψ N N) (z z' : _root_.GlobalTheory.SW.CM Ψ n N) :
@@ -442,8 +408,6 @@ private lemma hFac_eq_prod_det_pow_of_toBlocks₂₁_eq_zero {E : Type} [Field E
   rfl
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real in
 theorem _root_.GlobalTheory.SW.weil_parabolic : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Finset (E →+* ℂ)), _root_.GlobalTheory.SW.IsType Ψ → ∀ (n N : ℕ), Even n → ∀ φ : Matrix (Fin n) (Fin N) E → ℂ, _root_.GlobalTheory.SW.IsSB φ → (∀ γ ∈ _root_.GlobalTheory.SW.UU E N, γ.toBlocks₂₁ = 0 → ∀ x, _root_.GlobalTheory.SW.weil Ψ γ φ x = (∏ τ : Ψ, τ.1 γ.toBlocks₂₂.det ^ n) * _root_.GlobalTheory.SW.chiH Ψ (-(γ.toBlocks₁₂ * _root_.GlobalTheory.SW.ccT γ.toBlocks₁₁)) x * φ (x * γ.toBlocks₁₁)) ∧ ∀ γ ∈ _root_.GlobalTheory.SW.UU E N, ∀ γ' ∈ _root_.GlobalTheory.SW.UU E N, _root_.GlobalTheory.SW.botSpan γ = _root_.GlobalTheory.SW.botSpan γ' → ∀ Z ∈ _root_.GlobalTheory.SW.Hn Ψ N, ∀ z z', _root_.GlobalTheory.SW.eisTerm Ψ γ φ Z z z' = _root_.GlobalTheory.SW.eisTerm Ψ γ' φ Z z z' := by
   intro E _ _ _ Ψ hΨ n N hn φ hφ
   have hpar : ∀ γ ∈ _root_.GlobalTheory.SW.UU E N, γ.toBlocks₂₁ = 0 →

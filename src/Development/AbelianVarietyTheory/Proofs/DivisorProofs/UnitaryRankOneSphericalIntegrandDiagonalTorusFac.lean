@@ -107,7 +107,6 @@ end GlobalTheory.WeylCell.U21TorusFactor
 
 namespace GlobalTheory.WeylCell.U21TorusFactor
 
-open Formalism.UG
 
 theorem torus_factor : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : L)
     (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q →

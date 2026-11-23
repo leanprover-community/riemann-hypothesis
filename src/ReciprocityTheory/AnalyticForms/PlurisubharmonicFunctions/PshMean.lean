@@ -210,7 +210,6 @@ end
 
 end ReciprocityTheory.AnForm.A.PshMean
 
-open MeasureTheory Metric Set Filter Topology Real
 open scoped ContDiff
 
 namespace ReciprocityTheory.AnForm.A.PshMol

@@ -253,7 +253,6 @@ end Alg
 
 section Alg2
 
-open MvPolynomial
 
 theorem aeval_descPochhammer {R : Type} [CommRing R] [Algebra ℂ R] (z : R) (k : ℕ) :
     Polynomial.aeval z (descPochhammer ℂ k) = (descPochhammer ℤ k).smeval z := by
@@ -324,7 +323,6 @@ end GlobalTheory.MomN.MahlerProd
 namespace GlobalTheory.MomN
 
 open GlobalTheory.MomN.MahlerProd
-open scoped ContDiff
 
 theorem mahler_mul (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] (κ : Type) [Fintype κ] [DecidableEq κ]
     (v : κ → V) (F G : V → ℂ) (hF : ContDiff ℂ ⊤ F) (hG : ContDiff ℂ ⊤ G) (n : κ → ℕ) :

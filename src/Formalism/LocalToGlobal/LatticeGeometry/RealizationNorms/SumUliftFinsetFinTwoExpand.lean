@@ -46,7 +46,6 @@ variable [_root_.NumberField.IsTotallyComplex K]
 
 end Formalism.L2.Geo.Rec.DualLatticeEmbeddings
 
-open NumberField NumberField.InfinitePlace Module Matrix
 
 noncomputable section
 
@@ -63,7 +62,6 @@ variable [StarRing K]
 
 end Formalism.L2.Geo.Rec.DualLatticeEmbeddings
 
-open NumberField NumberField.InfinitePlace Module Matrix
 
 noncomputable section
 

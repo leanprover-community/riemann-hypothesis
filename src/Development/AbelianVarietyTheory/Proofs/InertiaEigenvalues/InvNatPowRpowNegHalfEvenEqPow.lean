@@ -101,7 +101,6 @@ end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
 variable {D : D7} {S T : HSp D}
-open GlobalTheory.SplitHecke
 open Classical
 
 theorem sdiff_erase {Q R : Finset (Pl D.host.E)} {P : Pl D.host.E} (hP : P ∈ Q) (hR : P ∉ R) :
@@ -165,8 +164,6 @@ end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
 variable {D : D7} {S T : HSp D}
-open GlobalTheory.SplitHecke
-open Classical
 
 theorem Y_act (F : Frame S T) {v : HeightOneSpectrum (𝓞 D.host.F)} {π : AE D →+* Fv D.host.F v}
     (φv : Datum.EAf D →+* Fv D.host.F v) (hφ1 : ∀ a, φv (toEAf D a) = π a) (γ : GA D T) (x : WO S T) :
@@ -208,8 +205,6 @@ end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
 variable {D : D7} {S T : HSp D}
-open GlobalTheory.SplitHecke
-open Classical
 
 theorem card_filter_eq {ι : Type} (R : Finset ι) (p : ι → Prop) (C : ℂ) :
     ∑ γ ∈ R, C * (if p γ then 1 else 0) = C * (Nat.card {γ : ι // γ ∈ R ∧ p γ} : ℂ) := by
@@ -323,8 +318,6 @@ end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
 variable {D : D7} {S T : HSp D}
-open GlobalTheory.SplitHecke
-open Classical
 
 theorem finPart_idem_mem {e : AE D} {P : Pl D.host.E} (he : IsIdemAt e P) : finPart D e ∈ intAE D := by
   by_contra hc
@@ -371,8 +364,6 @@ end GlobalTheory.DistRel
 
 namespace GlobalTheory.DistRel
 variable {D : D7} {S T : HSp D}
-open GlobalTheory.SplitHecke
-open Classical
 
 theorem inv_natPow_rpow_neg_half_even_eq_pow (q : ℕ) (hq : 0 < q) (k m : ℕ) :
     ((((q : ℝ) ^ k)⁻¹) ^ (-((2 * m : ℕ) : ℝ) / 2) : ℝ) = (q : ℝ) ^ (k * m) := by

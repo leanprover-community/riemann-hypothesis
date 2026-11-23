@@ -133,7 +133,6 @@ end ReciprocityTheory.ChartRestriction.G.T0
 
 namespace ReciprocityTheory.ChartRestriction.G.T0
 
-open NumberField
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]
   {Ω : ι → Type} [∀ c, Field (Ω c)] [∀ c, Algebra K (Ω c)]
@@ -222,7 +221,6 @@ end ReciprocityTheory.ChartRestriction.G.T0
 
 namespace ReciprocityTheory.ChartRestriction.G.T0
 
-open NumberField
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]
   {Ω : ι → Type} [∀ c, Field (Ω c)] [∀ c, Algebra K (Ω c)]

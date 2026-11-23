@@ -124,7 +124,6 @@ theorem rowAt_disj (x₀ : Matrix n n' k) (e) (u : n' → k) (r : n ⊕ Fin c) (
 end GlobalTheory.LocFlat.UnramFlat
 
 namespace GlobalTheory.LocFlat.UnramFlat
-open GlobalTheory.RootEx.Unram GlobalTheory.LocFlat
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k]
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
@@ -188,7 +187,6 @@ theorem flRow_intInd {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ν : Mea
 end GlobalTheory.LocFlat.UnramFlat
 
 namespace GlobalTheory.LocFlat.UnramFlat
-open GlobalTheory.RootEx.Unram GlobalTheory.LocFlat
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k]
 

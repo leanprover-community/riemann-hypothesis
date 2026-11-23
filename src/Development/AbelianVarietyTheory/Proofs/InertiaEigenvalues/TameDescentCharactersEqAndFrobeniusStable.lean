@@ -75,7 +75,6 @@ private lemma actD_apply_shift_eq_zero_of_apply_eq_zero {P : _root_.GlobalTheory
   rw [_root_.GlobalTheory.BK.ringAct_apply]
   simp [hf]
 
-open PowerSeries Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero a] [_root_.GlobalTheory.BK.TameDescentExponentData K l e a] in
@@ -85,7 +84,6 @@ private lemma actD_apply_shift_eq_of_apply_eq {P : _root_.GlobalTheory.BK.PhiMod
   have hxy := actD_apply_shift_eq_zero_of_apply_eq_zero Δ g (x := x - y) (σ := σ) (by simp [h])
   rwa [map_sub, Pi.sub_apply, sub_eq_zero] at hxy
 
-open PowerSeries Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero a] [_root_.GlobalTheory.BK.TameDescentExponentData K l e a] in
@@ -100,7 +98,6 @@ private lemma tameGal_inertia_root_pow (ζ : rootsOfUnity e K) (n : ℕ) (τ : Z
     rw [pow_succ, map_mul, _root_.GlobalTheory.BK.TameGal.root_mul,
       _root_.GlobalTheory.BK.TameGal.shift_inertia, sub_zero, ih, pow_succ]
 
-open PowerSeries Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero a] [_root_.GlobalTheory.BK.TameDescentExponentData K l e a] in
@@ -134,7 +131,6 @@ private lemma chars_succ_subset_chars {P : _root_.GlobalTheory.BK.PhiMod O K l e
     rw [← Module.End.mul_apply, ← map_mul, hcomm, map_mul, Module.End.mul_apply, hb,
       Pi.smul_apply]
 
-open PowerSeries Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero a] [_root_.GlobalTheory.BK.TameDescentExponentData K l e a] in
@@ -166,7 +162,6 @@ private lemma prime_mul_mem_chars_succ_of_mem [NeZero e] {P : _root_.GlobalTheor
       ZMod.val_mul, ZMod.val_natCast, Nat.mod_mod, Nat.mod_mul_mod]
 
 
-open PowerSeries Matrix in
 variable {O K : Type} [CommRing O] [NormedField K] [IsUltrametricDist K] [Algebra O K]
   [_root_.GlobalTheory.BK.IsUnitBall O K] {l e a : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
   [Fact l.Prime] [NormedAlgebra ℚ_[l] K] [NeZero a] [_root_.GlobalTheory.BK.TameDescentExponentData K l e a] in

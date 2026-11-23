@@ -139,7 +139,6 @@ end Generic
 
 section Host
 
-open GlobalTheory.LatVac (liftV evFin_liftV at_liftV)
 
 variable {D : D7}
 

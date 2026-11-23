@@ -114,9 +114,7 @@ noncomputable section
 
 namespace GlobalTheory.RefTheta
 
-open MeasureTheory Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.RecTie Formalism.IndefR.principalLevelFrame Formalism.L2.Theta
 open Formalism.BasicNotions.TH GlobalTheory.ThetaTri Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.ConjugateSelfDual ReciprocityTheory.Gal
-open scoped Topology
 
 section Cont
 

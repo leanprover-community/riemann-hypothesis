@@ -46,7 +46,6 @@ namespace ReciprocityTheory.PGsh.Up
 
 open ReciprocityTheory.PGsh.L2
 
-section W2c
 
 variable {p : ℕ} [Fact p.Prime] {g : ℕ} {C : Type} [Field C] {v : Valuation C NNReal} {R : Type}
   [CommRing R] [Algebra R C] [Algebra ℤ_[p] R] {O : Type} [CommRing O] [Algebra ℤ_[p] O]
@@ -254,7 +253,6 @@ private lemma p_eq_two_of_valuation_le (hS : HodgeTateSetting p v R O σ cp) (dj
         exact mul_lt_of_lt_one_left (pos_iff_ne_zero.2 hc0) hc1
   exact absurd hle (not_le.2 hlt)
 
-end W2c
 
 theorem restrictedHopfOrderApproximation : RestrictedHopfOrderApproximationStatement := by
   intro p _ g C _ _ _ v R _ _ _ O _ _ σ cp hS H m e π horth hσ hsum hPT hsumL hPTL w hw r Bw hrange hker

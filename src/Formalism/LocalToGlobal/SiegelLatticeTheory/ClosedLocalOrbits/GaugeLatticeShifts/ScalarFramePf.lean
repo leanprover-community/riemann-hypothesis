@@ -65,7 +65,6 @@ end Formalism.L2.SG.Pf.ScalarFramePf
 
 namespace Formalism.L2.SG.Pf
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc
   Formalism.L2.SG.Pf.ScalarFramePf
 
 end Formalism.L2.SG.Pf

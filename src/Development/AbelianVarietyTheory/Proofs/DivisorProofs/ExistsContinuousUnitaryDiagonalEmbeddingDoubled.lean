@@ -153,7 +153,6 @@ end GlobalTheory.DiagEmbU
 
 namespace GlobalTheory.DiagEmbU
 
-open GlobalTheory.WeilSchrodinger.DblTarget
 
 theorem exists_diagEmb : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (n : ℕ) (J : Matrix (Fin n) (Fin n) E),

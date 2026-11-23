@@ -62,8 +62,6 @@ private theorem det_mat_cpt_ne_zero_iff_det_nmat (h : _root_.ReciprocityTheory.C
     Matrix.det_mul]
   exact ⟨fun hne ↦ right_ne_zero_of_mul hne, fun hne ↦ mul_ne_zero hdet hne⟩
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} {x0 x1 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} in
 private theorem dmin_cpt_eq_of_isOrth (h0 : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x0) (h1 : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x1)
@@ -78,8 +76,6 @@ private theorem dmin_cpt_eq_of_isOrth (h0 : _root_.ReciprocityTheory.ChartRestri
   unfold _root_.ReciprocityTheory.ChartRestriction.G.FD.dmin
   rw [hmat, hmat, _root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.gram_mul, _root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.gram_mul, g0, g1]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} {x0 x1 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} in
 theorem _root_.GlobalTheory.Up.PoleValue.OmF_eq (h0 : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x0) (h1 : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x1) :
@@ -89,8 +85,6 @@ theorem _root_.GlobalTheory.Up.PoleValue.OmF_eq (h0 : _root_.ReciprocityTheory.C
   simp only [Set.mem_setOf_eq, det_mat_cpt_ne_zero_iff_det_nmat h0, det_mat_cpt_ne_zero_iff_det_nmat h1,
     dmin_cpt_eq_of_isOrth h0 h1]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} {x0 x1 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} in
 theorem _root_.GlobalTheory.Up.PoleValue.rhF_eq (h0 : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x0) (h1 : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x1) :
@@ -99,8 +93,6 @@ theorem _root_.GlobalTheory.Up.PoleValue.rhF_eq (h0 : _root_.ReciprocityTheory.C
   unfold _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.rhF
   simp only [dmin_cpt_eq_of_isOrth h0 h1]
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 variable {X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r} {x0 x1 : _root_.ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r} in
 theorem _root_.GlobalTheory.Up.PoleValue.muF_eq (h0 : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x0) (h1 : _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x1) :
@@ -117,8 +109,6 @@ namespace GlobalTheory.Up
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 
-open NumberField MeasureTheory Topology in
-open scoped ContDiff ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.Up.polePoint_holds : _root_.GlobalTheory.Up.PolePoint (E := E) := by
   unfold _root_.GlobalTheory.Up.PolePoint

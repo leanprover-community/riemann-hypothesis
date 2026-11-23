@@ -43,7 +43,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
   GlobalTheory.UAut GlobalTheory.SiegelSet GlobalTheory.ThK.SquareIntegrability GlobalTheory.LFun.SplitTie
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open scoped TensorProduct
-open scoped TensorProduct
 
 noncomputable section
 
@@ -96,7 +95,6 @@ noncomputable section
 
 namespace GlobalTheory.BlockArch
 
-open GlobalTheory.CuspRep Formalism.UG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [_root_.NumberField.IsTotallyComplex E]
 
@@ -164,7 +162,6 @@ noncomputable section
 
 namespace GlobalTheory.BlockArch
 
-open GlobalTheory.CuspRep Formalism.UG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -231,7 +228,6 @@ noncomputable section
 
 namespace GlobalTheory.BlockArch
 
-open GlobalTheory.CuspRep Formalism.UG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

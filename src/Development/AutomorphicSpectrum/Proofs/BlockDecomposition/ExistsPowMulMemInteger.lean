@@ -52,7 +52,6 @@ theorem exists_pow_mul_mem_integer (a : F) :
   apply GlobalTheory.CompanionTheory.SatakeBound.LargeLattice.exists_pow_mul_mem <;> assumption
 
 
-open GroundTheory.Automorphic.GLnLocal in
 theorem pow_mul_mem_of_le {M M' : ℕ} (h : M ≤ M') {a : F}
     (ha : (uniformizer F : F) ^ M * a ∈ 𝒪[F]) : (uniformizer F : F) ^ M' * a ∈ 𝒪[F] := by
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le h

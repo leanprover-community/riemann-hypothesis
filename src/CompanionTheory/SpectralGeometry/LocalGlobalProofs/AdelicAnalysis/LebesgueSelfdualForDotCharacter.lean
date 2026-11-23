@@ -93,8 +93,6 @@ end GlobalTheory.CompanionTheory.SW.RealFourier
 
 namespace GlobalTheory.CompanionTheory.SW
 
-open HeckeCharacterZeroLocus.SiegelWeilU GlobalTheory.CompanionTheory.SW NumberField IsDedekindDomain MeasureTheory Topology
-open scoped TensorProduct ENNReal NNReal Matrix
 
 theorem selfDual_real_coord : ∀ (ι : Type) [Fintype ι] (ε : ℝ), ε = 1 ∨ ε = -1 →
     SelfDual (volume : Measure (ι → ℝ))

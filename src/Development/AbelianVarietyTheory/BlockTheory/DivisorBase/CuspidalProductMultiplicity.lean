@@ -50,7 +50,6 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.CuspidalProductMultiplici
   exact Ideal.finiteQuotientOfFreeOfNeBot PP.asIdeal PP.ne_bot
 
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.CuspidalProductMultiplicity.finite_boundedLevelClassGroupFamily (Pg : Finset (_root_.Formalism.L2.DIV.Pl E)) (r : ℕ) :
     Finite (_root_.Formalism.L2.DIV.G0 Pg r) := by
@@ -87,7 +86,6 @@ def MultSharp : Prop :=
       MultNear (PsharpSym Pg r ρ k ψ) χ (nbar Pg k) (8 * f * r / g) ∧
         MultNear (Psharp Pg r k ψ) χ (nbar Pg k) (8 * f * r / g)
 
-open NumberField in
 variable {E : Type} [Field E] [NumberField E] in
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.CuspidalProductMultiplicity.nbar_pos (Pg : Finset (_root_.Formalism.L2.DIV.Pl E)) (k : ℕ) :
     0 < _root_.GlobalTheory.IndefiniteRowSideFullHecke.CuspidalProductMultiplicity.nbar Pg k := by

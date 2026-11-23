@@ -164,7 +164,6 @@ end GlobalTheory.HL.GoodAlmostAll
 
 namespace GlobalTheory.HL.GoodAlmostAll
 
-open GlobalTheory.HL.GoodClass
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {sig : E →ₐ[F] E}

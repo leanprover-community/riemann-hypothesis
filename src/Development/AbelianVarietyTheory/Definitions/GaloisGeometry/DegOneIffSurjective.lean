@@ -79,7 +79,6 @@ theorem _root_.GlobalTheory.HeckeSplit.unrAt_iff (χ : _root_.Formalism.L2.Host.
   rfl
 
 
-open NumberField IsDedekindDomain in
 variable (L : Type) [Field L] [NumberField L] in
 variable {L} in
 variable (L) in
@@ -91,7 +90,6 @@ theorem _root_.GlobalTheory.HeckeSplit.trivAt_iff (χ : _root_.Formalism.L2.Host
   rfl
 
 
-open NumberField IsDedekindDomain in
 variable (L : Type) [Field L] [NumberField L] in
 variable {L} in
 variable (L) in
@@ -100,7 +98,6 @@ variable (L) in
   Units.ext rfl
 
 
-open NumberField IsDedekindDomain in
 variable (L : Type) [Field L] [NumberField L] in
 variable {L} in
 variable (L) in
@@ -110,7 +107,6 @@ variable (L) in
   Units.ext rfl
 
 
-open NumberField IsDedekindDomain in
 variable (L : Type) [Field L] [NumberField L] in
 variable {L} in
 variable (L) in
@@ -120,7 +116,6 @@ variable (L) in
   Units.ext (_root_.Neutral.B1.localIdele_snd_self L v x)
 
 
-open NumberField IsDedekindDomain in
 variable (L : Type) [Field L] [NumberField L] in
 variable {L} in
 variable (L) in
@@ -130,7 +125,6 @@ variable (L) in
   Units.ext rfl
 
 
-open NumberField IsDedekindDomain in
 variable (L : Type) [Field L] [NumberField L] in
 variable {L} in
 variable (L) in

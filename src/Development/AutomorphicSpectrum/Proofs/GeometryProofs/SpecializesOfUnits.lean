@@ -196,7 +196,6 @@ end GlobalTheory.CompanionTheory.Ar.TiePrimes
 
 namespace GlobalTheory.CompanionTheory.Ar.TiePrimes
 
-open MvPolynomial
 
 section Local
 
@@ -261,7 +260,6 @@ end GlobalTheory.CompanionTheory.Ar.TiePrimes
 
 namespace GlobalTheory.CompanionTheory.Ar.TiePrimes
 
-open MvPolynomial
 
 section Chart
 
@@ -426,7 +424,6 @@ end GlobalTheory.CompanionTheory.Ar.TiePrimes
 
 namespace GlobalTheory.CompanionTheory.Ar.TiePrimes
 
-open MvPolynomial
 
 section Points
 

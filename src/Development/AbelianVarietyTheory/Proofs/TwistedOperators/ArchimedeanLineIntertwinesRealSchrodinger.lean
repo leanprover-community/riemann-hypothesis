@@ -124,7 +124,6 @@ end GlobalTheory.ArchFam
 
 namespace GlobalTheory.ArchFam
 
-open scoped Matrix
 
 
 open GlobalTheory.ArchUniq.Coord in

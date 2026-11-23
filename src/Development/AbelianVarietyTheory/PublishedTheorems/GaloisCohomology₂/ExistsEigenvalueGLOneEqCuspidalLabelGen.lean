@@ -61,7 +61,6 @@ def ev : Gn g 1 →* Fbar g where
   map_one' := by simp
   map_mul' x y := by simp [Matrix.mul_apply]
 
-open Polynomial CategoryTheory in
 variable {g : ℕ} [hg : Fact g.Prime] in
 theorem _root_.GlobalTheory.Published.GreenModel.ev_inj :
     Function.Injective (_root_.GlobalTheory.Published.GreenModel.ev (g := g)) := by
@@ -72,27 +71,23 @@ theorem _root_.GlobalTheory.Published.GreenModel.ev_inj :
   rw [Subsingleton.elim i 0, Subsingleton.elim j 0]
   exact h'
 
-open Polynomial CategoryTheory in
 variable {g : ℕ} [hg : Fact g.Prime] in
 theorem _root_.GlobalTheory.Published.GreenModel.alg_pow {b : ZMod g} (hb : b ≠ 0) :
     algebraMap (ZMod g) (_root_.Formalism.CyclotomicNorms.Fbar g) b ^ (g ^ 1 - 1) = 1 := by
   rw [← map_pow, pow_one, ZMod.pow_card_sub_one_eq_one hb, map_one]
 
-open Polynomial CategoryTheory in
 variable {g : ℕ} [hg : Fact g.Prime] in
 private theorem pow_one_sub_one_pos : 0 < g ^ 1 - 1 := by
   have := hg.out.two_le
   rw [pow_one]
   omega
 
-open Polynomial CategoryTheory in
 variable {g : ℕ} [hg : Fact g.Prime] in
 private theorem isPrimitiveRoot_gen_one (L : _root_.GlobalTheory.GLq.LabelDatum g) :
     IsPrimitiveRoot (L.gen 1) (g ^ 1 - 1) := by
   rw [← L.gen_order 1 one_pos]
   exact IsPrimitiveRoot.orderOf _
 
-open Polynomial CategoryTheory in
 variable {g : ℕ} [hg : Fact g.Prime] in
 private theorem gn_one_entry_zero_zero_ne_zero (y : _root_.GlobalTheory.GLq.Gn g 1) :
     (y : _root_.GlobalTheory.GLq.Mt g 1) 0 0 ≠ 0 := by
@@ -101,7 +96,6 @@ private theorem gn_one_entry_zero_zero_ne_zero (y : _root_.GlobalTheory.GLq.Gn g
   rw [Matrix.det_fin_one] at h
   exact h.ne_zero
 
-open Polynomial CategoryTheory in
 variable {g : ℕ} [hg : Fact g.Prime] in
 theorem _root_.GlobalTheory.Published.GreenModel.ev_eq (L : _root_.GlobalTheory.GLq.LabelDatum g) (y : _root_.GlobalTheory.GLq.Gn g 1) :
     ∃ n, _root_.GlobalTheory.Published.GreenModel.ev y = L.gen 1 ^ n := by
@@ -122,14 +116,12 @@ def th (L : LabelDatum g) {b : ZMod g} (hb : b ≠ 0) : Gn g 1 →* ℂ where
     simp only [thetaOf_gen_pow L one_pos (alg_pow hb)]
     rw [pow_add]
 
-open Polynomial CategoryTheory in
 variable {g : ℕ} [hg : Fact g.Prime] in
 theorem _root_.GlobalTheory.Published.GreenModel.lab_eq {P : (ZMod g)[X]}
     (h : _root_.GlobalTheory.GLq.IsPrimeLab 1 P) : P = X - C (-P.coeff 0) := by
   rw [map_neg, sub_neg_eq_add]
   exact h.1.eq_X_add_C h.2.2.2
 
-open Polynomial CategoryTheory in
 variable {g : ℕ} [hg : Fact g.Prime] in
 private theorem exists_ne_zero_gn_one_ev_eq_gen_one (L : _root_.GlobalTheory.GLq.LabelDatum g) :
     ∃ c : ZMod g, c ≠ 0 ∧ ∃ y : _root_.GlobalTheory.GLq.Gn g 1,
@@ -152,7 +144,6 @@ private theorem exists_ne_zero_gn_one_ev_eq_gen_one (L : _root_.GlobalTheory.GLq
   change algebraMap (ZMod g) (_root_.Formalism.CyclotomicNorms.Fbar g) ((y : _root_.GlobalTheory.GLq.Mt g 1) 0 0) = _
   rw [hy, map_pow, hi]
 
-open Polynomial CategoryTheory in
 private theorem character_one_and_mul_of_simple_of_comm {G : Type} [Group G] [Fintype G]
     (hcomm : ∀ a b : G, a * b = b * a) (V : FDRep ℂ G) [Simple V] :
     V.character 1 = 1 ∧ ∀ a b, V.character (a * b) = V.character a * V.character b := by
@@ -193,13 +184,11 @@ private theorem character_one_and_mul_of_simple_of_comm {G : Type} [Group G] [Fi
   rw [hchar, hchar, hchar, hmul, hn]
   simp
 
-open Polynomial CategoryTheory in
 variable {g : ℕ} [hg : Fact g.Prime] in
 private theorem gn_one_mul_comm (x y : _root_.GlobalTheory.GLq.Gn g 1) : x * y = y * x :=
   _root_.GlobalTheory.Published.GreenModel.ev_inj (by rw [map_mul, map_mul, mul_comm])
 
 
-open Polynomial CategoryTheory in
 variable {g : ℕ} [hg : Fact g.Prime] in
 theorem _root_.GlobalTheory.Published.GreenModel.green_one (L : _root_.GlobalTheory.GLq.LabelDatum g) :
     ∃ τ : (ZMod g)[X] → _root_.GlobalTheory.GLq.Gn g 1 → ℂ,

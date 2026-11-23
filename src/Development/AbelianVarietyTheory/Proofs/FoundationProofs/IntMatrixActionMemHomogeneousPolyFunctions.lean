@@ -68,8 +68,6 @@ private lemma const_mem_homF_zero {A : Submodule R M} {x : M} (hx : x ∈ A) :
     (fun _ : Fin 2 → R => x) ∈ _root_.GlobalTheory.KZ.PolAct.homF A 0 :=
   ⟨fun _ => x, fun _ => hx, fun u => by simp⟩
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] in
 private lemma coord_zero_smul_mem_homF_succ {A : Submodule R M} {n : ℕ}
     {b : (Fin 2 → R) → M} (hb : b ∈ _root_.GlobalTheory.KZ.PolAct.homF A n) :
@@ -88,8 +86,6 @@ private lemma coord_zero_smul_mem_homF_succ {A : Submodule R M} {n : ℕ}
     congr 1
     ring
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] in
 private lemma coord_one_smul_mem_homF_succ {A : Submodule R M} {n : ℕ}
     {b : (Fin 2 → R) → M} (hb : b ∈ _root_.GlobalTheory.KZ.PolAct.homF A n) :
@@ -111,8 +107,6 @@ private lemma coord_one_smul_mem_homF_succ {A : Submodule R M} {n : ℕ}
     congr 1
     ring
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] in
 private lemma linear_form_smul_mem_homF_succ {A : Submodule R M} {n : ℕ}
     {b : (Fin 2 → R) → M} (hb : b ∈ _root_.GlobalTheory.KZ.PolAct.homF A n) (α β : R) :
@@ -126,8 +120,6 @@ private lemma linear_form_smul_mem_homF_succ {A : Submodule R M} {n : ℕ}
   funext u
   simp [add_smul, mul_smul]
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] in
 private lemma linear_form_pow_smul_mem_homF_add {A : Submodule R M} {n : ℕ}
     {b : (Fin 2 → R) → M} (hb : b ∈ _root_.GlobalTheory.KZ.PolAct.homF A n) (α β : R) :
@@ -146,8 +138,6 @@ private lemma linear_form_pow_smul_mem_homF_add {A : Submodule R M} {n : ℕ}
       ((α * u 0 + β * u 1) ^ k) (b u)).symm
 
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] in
 theorem _root_.GlobalTheory.KZ.PolAct.subst_mem {A : Submodule R M} {w : ℕ} (φ : M →ₗ[R] M)
     (hφ : ∀ a ∈ A, φ a ∈ A)
@@ -177,8 +167,6 @@ theorem _root_.GlobalTheory.KZ.PolAct.subst_mem {A : Submodule R M} {w : ℕ} (�
   simp [hbu, map_sum, map_smul, Matrix.mulVec, dotProduct, Fin.sum_univ_two, Finset.sum_apply]
 
 
-open scoped MatrixGroups TensorProduct in
-open Matrix in
 variable {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] in
 theorem _root_.GlobalTheory.KZ.PolAct.act_mem_pol {Ω : Type} [Field Ω] [Algebra ℚ Ω]
     {ε : Ω →+* ℂ} (X : _root_.GlobalTheory.KZ.Tower Ω ε) (l w : ℕ) [Fact l.Prime]

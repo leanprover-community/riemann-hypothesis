@@ -74,19 +74,16 @@ theorem idAt_mono {P Q : Pl D → Prop} (h : ∀ w, P w → Q w) : idAt D P ≤ 
   simp only [idAt, Ideal.mem_inf, Ideal.mem_iInf] at ha ⊢
   exact ⟨ha.1, fun w => ha.2 ⟨w.1, fun hp => w.2 (h _ hp)⟩⟩
 
-open GlobalTheory.FinPl in
 theorem idOff_mono {P Q : Pl D → Prop} (h : ∀ w, Q w → P w) : idOff D P ≤ idOff D Q := by
   intro a ha
   simp only [idOff, Ideal.mem_iInf] at ha ⊢
   exact fun w => ha ⟨w.1, h _ w.2⟩
 
-open GlobalTheory.FinPl in
 theorem idAt_le_idOff {P Q : Pl D → Prop} (h : ∀ w, Q w → ¬ P w) : idAt D P ≤ idOff D Q := by
   intro a ha
   simp only [idAt, idOff, Ideal.mem_inf, Ideal.mem_iInf] at ha ⊢
   exact fun w => ha.2 ⟨w.1, h _ w.2⟩
 
-open GlobalTheory.FinPl in
 theorem idAt_inf_idOff {P Q R : Pl D → Prop} (h : ∀ w, P w → ¬ Q w → R w) : idAt D P ⊓ idOff D Q ≤ idAt D R := by
   intro a ha
   simp only [idAt, idOff, Ideal.mem_inf, Ideal.mem_iInf] at ha ⊢

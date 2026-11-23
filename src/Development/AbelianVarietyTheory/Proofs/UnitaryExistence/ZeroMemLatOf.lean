@@ -68,8 +68,6 @@ namespace GlobalTheory.AdLat
 
 open Scale
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix nonZeroDivisors in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem fv_smul' (c : E) (v : Fin n → E) :
     _root_.GlobalTheory.AdLat.fv F (c • v) =
@@ -80,8 +78,6 @@ private theorem fv_smul' (c : E) (v : Fin n → E) :
     ((1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] c) * ((1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] v i)
   rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul]
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix nonZeroDivisors in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem smul_mem_latOf_of_smul_mem {L L' : Set (Fin n → E)} {c : E}
     (h : ∀ x ∈ L, c • x ∈ L') (g : Matrix (Fin n) (Fin n) (_root_.GlobalTheory.AdLat.RA F E))
@@ -91,8 +87,6 @@ private theorem smul_mem_latOf_of_smul_mem {L L' : Set (Fin n → E)} {c : E}
   refine ⟨_, _root_.GlobalTheory.AdLat.Scale.smul_mem_hat h hz, ?_⟩
   rw [Matrix.mulVec_smul, hzv, fv_smul']
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix nonZeroDivisors in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem fv_zero' :
     _root_.GlobalTheory.AdLat.fv F (0 : Fin n → E) = 0 := by
@@ -100,16 +94,12 @@ private theorem fv_zero' :
   change (1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] (0 : E) = 0
   rw [TensorProduct.tmul_zero]
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix nonZeroDivisors in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem zero_mem_latOf' {L : Set (Fin n → E)}
     (g : Matrix (Fin n) (Fin n) (_root_.GlobalTheory.AdLat.RA F E)) :
     (0 : Fin n → E) ∈ _root_.GlobalTheory.AdLat.latOf F g L :=
   ⟨0, zero_mem _, by rw [Matrix.mulVec_zero, fv_zero']⟩
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix nonZeroDivisors in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem fv_add' (v w : Fin n → E) :
     _root_.GlobalTheory.AdLat.fv F (v + w) =
@@ -118,8 +108,6 @@ private theorem fv_add' (v w : Fin n → E) :
   change (1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] (v i + w i) = _ ⊗ₜ[F] v i + _ ⊗ₜ[F] w i
   rw [TensorProduct.tmul_add]
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix nonZeroDivisors in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {n : ℕ} in
 private theorem add_mem_latOf' {L : Set (Fin n → E)}
     (g : Matrix (Fin n) (Fin n) (_root_.GlobalTheory.AdLat.RA F E)) {v w : Fin n → E}
@@ -131,8 +119,6 @@ private theorem add_mem_latOf' {L : Set (Fin n → E)}
   exact ⟨z + y, add_mem hz hy, by rw [Matrix.mulVec_add, hzv, hyw, fv_add']⟩
 
 
-open NumberField IsDedekindDomain in
-open scoped TensorProduct Matrix nonZeroDivisors in
 theorem _root_.GlobalTheory.AdLat.scale_latOf : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n : ℕ) (L : Submodule (𝓞 E) (Fin n → E)) (g : GL (Fin n) (_root_.GlobalTheory.AdLat.RA F E)) (I : FractionalIdeal (𝓞 E)⁰ E) (L' : Submodule (𝓞 E) (Fin n → E)), L.FG → Submodule.span E (L : Set (Fin n → E)) = ⊤ → I ≠ 0 → L' = Submodule.span (𝓞 E) {w | ∃ a ∈ I, ∃ x ∈ L, w = a • x} → ((Submodule.span (𝓞 E) {w | ∃ a ∈ I, ∃ v ∈ _root_.GlobalTheory.AdLat.latOf F (g : Matrix (Fin n) (Fin n) (_root_.GlobalTheory.AdLat.RA F E)) L, w = a • v} : Submodule (𝓞 E) (Fin n → E)) : Set (Fin n → E)) = _root_.GlobalTheory.AdLat.latOf F (g : Matrix (Fin n) (Fin n) (_root_.GlobalTheory.AdLat.RA F E)) L' ∧ (AddSubgroup.closure {w | ∃ a ∈ I, ∃ z ∈ (g : Matrix (Fin n) (Fin n) (_root_.GlobalTheory.AdLat.RA F E)).mulVec '' (_root_.GlobalTheory.AdLat.hat F (L : Set (Fin n → E))), w = fun i => ((1 : FiniteAdeleRing (𝓞 F) F) ⊗ₜ[F] a) * z i} : Set (Fin n → _root_.GlobalTheory.AdLat.RA F E)) = (g : Matrix (Fin n) (Fin n) (_root_.GlobalTheory.AdLat.RA F E)).mulVec '' (_root_.GlobalTheory.AdLat.hat F (L' : Set (Fin n → E))) ∧ L'.FG ∧ Submodule.span E (L' : Set (Fin n → E)) = ⊤ := by
   intro F E _ _ _ _ _ n L g I L' hLfg hLspan hI hL'
   set G : Matrix (Fin n) (Fin n) (_root_.GlobalTheory.AdLat.RA F E) :=

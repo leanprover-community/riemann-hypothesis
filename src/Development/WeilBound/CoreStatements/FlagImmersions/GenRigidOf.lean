@@ -127,8 +127,6 @@ end RootFieldNumerics.Rig
 
 namespace RootFieldNumerics
 
-open AlgebraicGeometry CategoryTheory NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp RootFieldNumerics.Rig
 
 theorem genRigid_of : FrameVals → GenRigid := by

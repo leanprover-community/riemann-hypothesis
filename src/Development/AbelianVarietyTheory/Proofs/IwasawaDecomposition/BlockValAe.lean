@@ -70,7 +70,6 @@ private theorem block_val_mul_sqrt_normV_zpow_neg_eq_mul_inv {E : Type} [Field E
     mul_inv_cancel₀ (pow_ne_zero _ (by exact_mod_cast hs)), mul_one]
 
 
-open NumberField IsDedekindDomain Polynomial in
 theorem _root_.GlobalTheory.BlockVal.block_val_ae : ∀ {E : Type} [Field E] [NumberField E] {K : Type} [Field K] (ε : K →+* ℂ)
     (μ η : _root_.Formalism.L2.Host.HChar E),
     _root_.GlobalTheory.GalChar.AlmostIn ε μ → η.ValuesIn (1 / 2) ε → ∀ {r : ℕ}, Odd r →

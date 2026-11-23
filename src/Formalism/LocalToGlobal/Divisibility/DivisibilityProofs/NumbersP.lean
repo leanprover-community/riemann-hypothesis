@@ -46,11 +46,9 @@ namespace Formalism.L2.DIV
 open Formalism.BasicNotions Formalism.FrobeniusOrbits NumberField IsDedekindDomain
 open scoped BigOperators
 
-section LP
 
 variable (l d : ℕ) [NeZero d] (Ds : ZMod d → ℝ)
 
-end LP
 
 namespace NumDatum
 

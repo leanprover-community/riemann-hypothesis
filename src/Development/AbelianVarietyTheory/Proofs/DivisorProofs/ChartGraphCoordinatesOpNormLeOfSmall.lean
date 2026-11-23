@@ -88,7 +88,6 @@ end GlobalTheory.ChartGraph
 
 namespace GlobalTheory.ChartGraph
 
-open Matrix
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
@@ -118,7 +117,6 @@ end GlobalTheory.ChartGraph
 
 namespace GlobalTheory.ChartGraph
 
-open Matrix
 
 theorem zN_graphCoord_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r)
     (z : V (nd X)), (r : ℝ) ^ 2 * ‖z‖ ≤ 1 / 100 → X.zN (graphCoord X z) ≤ 1 / 50 := by

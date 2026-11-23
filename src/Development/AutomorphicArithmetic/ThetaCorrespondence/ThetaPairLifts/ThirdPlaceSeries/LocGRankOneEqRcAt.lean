@@ -87,7 +87,6 @@ theorem e_locG_eq_rcAt_ofDet_of_isComp {hL : _root_.UpperTheory.Zero.LLC.RecTExi
   rw [hloc, _root_.GlobalTheory.CuspRep.ParLaws.local_parameter_of_hecke_character_eq_reciprocity, _root_.GlobalTheory.NPin.weilDeligneOfLocalIrrep]
   rw [hchar]
   rfl
-open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.SmGL GlobalTheory.PRep GlobalTheory.SplitWeil in
 theorem rankOneUnitary_of_charSide {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {D : D7} {cf : CharFrame D} (T : WDTie D.nd D.naut)
     (cg : _root_.GlobalTheory.HeightCounting.CGTrueT hL D T) (cs : CharSide D cf) : RankOneUnitary T := by
   intro π w σ _ α hα

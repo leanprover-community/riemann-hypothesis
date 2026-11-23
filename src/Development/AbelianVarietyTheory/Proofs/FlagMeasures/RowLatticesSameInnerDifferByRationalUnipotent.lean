@@ -268,7 +268,6 @@ theorem latSpan_le (aa : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E)
   rintro _ ⟨a, x, _, rfl⟩
   exact (Submodule.span E (Set.range v)).smul_mem x (Submodule.subset_span (Set.mem_range_self a))
 
-open Formalism.L2.SG.Saturated in
 theorem map_latSpan (aa : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (v : Fin r → S.V)
     (φ : S.V →ₗ[E] S.V) :
     (latSpan aa v).map (φ.restrictScalars (𝓞 E)) = latSpan aa (fun a => φ (v a)) := by
@@ -305,7 +304,6 @@ theorem of_mem_Lsub {Λ : Submodule (𝓞 E) S.V} {v : S.V} (hv : v ∈ Lsub Λ 
   refine ⟨m, hm, (perp_iff F0).1 hmp, ?_⟩
   simpa [Xsp, FlagG.X] using hx
 
-open Formalism.L2.SG.Saturated in
 theorem split_perp {f : Fin r → S.V} (hd : DualFr F0.e f) {aa aa' : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E}
     {L Λ : Submodule (𝓞 E) S.V} (hL : ∀ x ∈ L, ∀ a, S.hT (F0.e a) x = 0 ∧ S.hT (f a) x = 0)
     (hΛ : Λ = latSpan aa F0.e ⊔ L ⊔ latSpan aa' f) {m : S.V} (hm : m ∈ Λ) (hp : ∀ a, S.hT (F0.e a) m = 0) :
@@ -332,7 +330,6 @@ section Gen4
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E} (F0 : FlagG S r T)
 
-open Formalism.L2.SG.Saturated in
 theorem map_G_eq {aa : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E} {Λa Λb La Lb : Submodule (𝓞 E) S.V}
     {fa fb : Fin r → S.V} (ha : DualFr F0.e fa) (hb : DualFr F0.e fb)
     (hLa : ∀ x ∈ La, ∀ a, S.hT (F0.e a) x = 0 ∧ S.hT (fa a) x = 0)
@@ -465,7 +462,6 @@ section Gen5
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
 
 
-open Formalism.L2.SG.Saturated in
 theorem exists_unip (F0 : FlagG S r T) (aa : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E)
     (Λa Λb : Submodule (𝓞 E) S.V) (σ : S.V ≃ₗ[E] S.V) (hσ : ∀ x y, S.hT (σ x) (σ y) = S.hT x y)
     (hσe : ∀ i : Fin r, σ (F0.e i) - F0.e i ∈ F0.Xa i.val)

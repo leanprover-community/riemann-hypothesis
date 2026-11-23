@@ -39,13 +39,11 @@ namespace Formalism.IndefR.Cx
 
 open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.DIV Formalism.BasicNotions Formalism.L2.Col Formalism.IndefR.Links
 
-section Face
 
 variable {Fl : Fields} {Pr : Primes Fl} {Rk : Ranks} (W : Wts Fl Pr.Word Rk) (Ch : Chars Fl Pr Rk.m)
   (sel : HeightOneSpectrum (𝓞 Fl.F) → HeightOneSpectrum (𝓞 Fl.E)) {Sg : Set ℕ}
   {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
 
-end Face
 
 section Sp
 
@@ -107,10 +105,8 @@ section Seam
 
 end Seam
 
-section FaceSp
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
 
-end FaceSp
 
 end Formalism.IndefR.Cx

@@ -56,15 +56,11 @@ open scoped CategoryTheory.Obj TensorProduct in
 private lemma zeta_isPrimitiveRoot' {k : ℕ} (hk : k ≠ 0) : IsPrimitiveRoot (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.zeta k) k := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.zeta; exact Complex.isPrimitiveRoot_exp k hk
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 lemma _root_.GlobalTheory.ZM.CycBase.zF_prim {k : ℕ} (hk : k ≠ 0) :
     IsPrimitiveRoot (_root_.GlobalTheory.ZM.CycBase.zF k) k :=
   IsPrimitiveRoot.of_map_of_injective (f := (_root_.GlobalTheory.ZM.CycBase.CF k).val)
     (zeta_isPrimitiveRoot' hk) (_root_.GlobalTheory.ZM.CycBase.CF k).val.injective
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 lemma _root_.GlobalTheory.ZM.CycBase.cyc {k : ℕ} [NeZero k] :
     IsCyclotomicExtension {k} ℚ (_root_.GlobalTheory.ZM.CycBase.CF k) := by
   have hζ := zeta_isPrimitiveRoot' (NeZero.ne k)
@@ -74,8 +70,6 @@ lemma _root_.GlobalTheory.ZM.CycBase.cyc {k : ℕ} [NeZero k] :
       ((hζ.isIntegral (NeZero.pos k)).tower_top.isAlgebraic)
   exact IsCyclotomicExtension.equiv _ _ _ (Subalgebra.equivOfEq _ _ h2).symm
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 lemma _root_.GlobalTheory.ZM.CycBase.mem_ZP (p n e : ℕ) (hn : n.Prime) (a : 𝓞 (_root_.GlobalTheory.ZM.CycBase.CF (n ^ e))) :
     ((a : _root_.GlobalTheory.ZM.CycBase.CF (n ^ e)) : ℂ) ∈ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ZP p (n ^ e) := by
   haveI : Fact n.Prime := ⟨hn⟩
@@ -99,15 +93,11 @@ lemma _root_.GlobalTheory.ZM.CycBase.mem_ZP (p n e : ℕ) (hn : n.Prime) (a : �
   | add y z _ _ hy hz => simpa using add_mem hy hz
   | mul y z _ _ hy hz => simpa using mul_mem hy hz
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 private lemma inv_natCast_mem_ZP_of_coprime {p M m : ℕ} (hm : m.Coprime p) :
     ((m : ℂ)⁻¹) ∈ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ZP p M := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ZP
   exact Subring.subset_closure (Or.inr ⟨m, hm, rfl⟩)
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 private lemma snd_eq_zero_of_natCast_mul_eq_one {K : Type} [Field K] {m : ℕ} {v : DualNumber K}
     (h : (m : DualNumber K) * v = 1) : v.snd = 0 ∧ (m : K) ≠ 0 := by
   have h1 := congrArg TrivSqZeroExt.fst h
@@ -116,14 +106,10 @@ private lemma snd_eq_zero_of_natCast_mul_eq_one {K : Type} [Field K] {m : ℕ} {
   have hm : (m : K) ≠ 0 := left_ne_zero_of_mul_eq_one h1
   exact ⟨by simpa [hm] using h2, hm⟩
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 private lemma zeta_mem_ZP (p M : ℕ) : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.zeta M ∈ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ZP p M := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ZP
   exact Subring.subset_closure (Or.inl rfl)
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 private lemma ringHom_ZP_pow_dualNumber_snd_eq_zero {K : Type} [Field K] {p n e : ℕ}
     (hn : n.Coprime p) (hn0 : n ≠ 0) (f : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ZP p (n ^ e) →+* DualNumber K)
     (x : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ZP p (n ^ e)) : (f x).snd = 0 := by
@@ -182,8 +168,6 @@ private lemma ringHom_ZP_pow_dualNumber_snd_eq_zero {K : Type} [Field K] {p n e 
     rw [show (⟨y * z, mul_mem hy hz⟩ : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ZP p (n ^ e)) = ⟨y, hy⟩ * ⟨z, hz⟩ from rfl, map_mul,
       TrivSqZeroExt.snd_mul, ihy, ihz, smul_zero, smul_zero, add_zero]
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 private lemma spec_dualNumber_hom_ZP_eq_constPt {K : Type} [Field K] {p n e : ℕ}
     (hn : n.Coprime p) (hn0 : n ≠ 0)
     (y : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp (DualNumber K) ⟶ _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp (_root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ZP p (n ^ e))) : y = _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.constPt y := by
@@ -197,8 +181,6 @@ private lemma spec_dualNumber_hom_ZP_eq_constPt {K : Type} [Field K] {p n e : �
   · simp [TrivSqZeroExt.algebraMap_eq_inl, ringHom_ZP_pow_dualNumber_snd_eq_zero hn hn0]
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 theorem _root_.GlobalTheory.ZM.CycBase.exists_base : ∀ (n e p k : ℕ), n.Prime → p.Prime → n ≠ p → 1 ≤ e →
     k = n ^ e → ∃ (o : Type) (_ : CommRing o) (b : _root_.GlobalTheory.ZM.TBase o k) (em : o →+* ℂ)
       (j : o →+* _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.ZP p k), _root_.GlobalTheory.ZM.ArBase em ∧ j (b.ζ : o) = _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.zetaZP p k ∧

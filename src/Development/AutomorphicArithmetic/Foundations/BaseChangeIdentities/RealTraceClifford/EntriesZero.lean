@@ -135,7 +135,6 @@ private theorem single_dX {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (
     simp [Matrix.single_apply, hc.symm]
   · simp
 
-open UpperTheory.RealTr.DerivativeAtIdentity in
 private theorem entries_zero {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (D : Fin n → Fin n → V)
     (h : ∀ X : Mat n, Xᴴ = -X → ∑ c, ∑ d, X c d • D c d = 0) (a b : Fin n) : D a b = 0 := by
   have h1 := h (Matrix.single a b 1 - Matrix.single b a 1) (by
@@ -157,7 +156,6 @@ private theorem entries_zero {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V
       _ = 0 := by rw [h1, h3, add_zero]
   exact (smul_eq_zero.1 h4).resolve_left two_ne_zero
 
-open UpperTheory.RealTr.DerivativeAtIdentity in
 theorem UpperTheory.RealTr.derAt :
     ∀ (n : ℕ) (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] (σ : UK n →* (V →ₗ[ℂ] V)) (F : Fin n → Fin n → Module.End ℂ V), IsDerivK σ F →
       (∀ (μ θ : Wt n) (k : UK n) (v : V), k.1 = diagonal (fun a => Complex.exp (Complex.I * θ a)) → v ∈ wsp F μ → σ k v = evT θ (ex μ) • v) ∧

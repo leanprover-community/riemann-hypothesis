@@ -59,7 +59,6 @@ private theorem exists_eigenvector_of_isRoot_charpoly {L : Type} [Field L] {n : 
     sub_eq_zero] at hv
   exact hv.symm
 
-open Matrix Polynomial in
 private theorem isUnit_of_eigenvector_columns_of_injective {L : Type} [Field L] {n : ℕ}
     (y : Matrix (Fin n) (Fin n) L) (μ : Fin n → L) (hμ : Function.Injective μ)
     (v : Fin n → Fin n → L) (hv0 : ∀ j, v j ≠ 0) (hv : ∀ j, y *ᵥ v j = μ j • v j) :
@@ -68,7 +67,6 @@ private theorem isUnit_of_eigenvector_columns_of_injective {L : Type} [Field L] 
   exact Module.End.eigenvectors_linearIndependent' (Matrix.toLin' y) μ hμ v
     (fun j => ⟨Module.End.mem_eigenspace_iff.mpr (by simpa using hv j), hv0 j⟩)
 
-open Matrix Polynomial in
 private theorem eq_diagonal_of_commute_diagonal_injective {L : Type} [Field L] {n : ℕ}
     (μ : Fin n → L) (hμ : Function.Injective μ) (m : Matrix (Fin n) (Fin n) L)
     (hm : m * diagonal μ = diagonal μ * m) : m = diagonal fun i => m i i := by
@@ -83,7 +81,6 @@ private theorem eq_diagonal_of_commute_diagonal_injective {L : Type} [Field L] {
     have : m i j * (μ j - μ i) = 0 := by rw [mul_sub, hij, mul_comm]; ring
     exact (mul_eq_zero.mp this).resolve_right hne
 
-open Matrix Polynomial in
 private theorem commute_of_commute_of_charpoly_separable_of_isAlgClosed {L : Type} [Field L]
     [IsAlgClosed L] {n : ℕ} (y a b : Matrix (Fin n) (Fin n) L) (hy : y.charpoly.Separable)
     (ha : a * y = y * a) (hb : b * y = y * b) : a * b = b * a := by
@@ -135,7 +132,6 @@ private theorem commute_of_commute_of_charpoly_separable_of_isAlgClosed {L : Typ
   rw [key a b, key b a, hAB]
 
 
-open Matrix Polynomial in
 theorem _root_.GlobalTheory.commute_of_commute_separable_charpoly :
     ∀ (K : Type) [Field K] (n : ℕ) (y a b : Matrix (Fin n) (Fin n) K), y.charpoly.Separable →
       a * y = y * a → b * y = y * b → a * b = b * a := by

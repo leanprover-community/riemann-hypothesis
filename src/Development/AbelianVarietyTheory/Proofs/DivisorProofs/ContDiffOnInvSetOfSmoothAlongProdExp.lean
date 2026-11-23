@@ -96,7 +96,6 @@ end GlobalTheory.SecondKind
 
 namespace GlobalTheory.SecondKind
 
-open GlobalTheory.CuspRep
 
 variable {E : Type} [Field E] [NumberField E] {d : ℕ}
 
@@ -143,7 +142,6 @@ end GlobalTheory.SecondKind
 
 namespace GlobalTheory.SecondKind
 
-open GlobalTheory.CuspRep
 
 theorem contDiffOn_of_prodExp : ∀ (E : Type) [Field E] [NumberField E] (d : ℕ) (f : GlobalTheory.CuspRep.Lie E d → ℂ)
     (S : Set (Matrix (Fin d) (Fin d) (GlobalTheory.CuspRep.Cinf E))), Submodule.span ℝ S = ⊤ →

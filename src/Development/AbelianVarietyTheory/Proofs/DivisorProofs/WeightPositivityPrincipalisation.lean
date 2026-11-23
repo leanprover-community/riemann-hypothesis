@@ -123,7 +123,6 @@ end Zeros
 
 section Cancel
 
-open Filter Topology
 
 theorem exists_ringHom_ne_zero_of_not_isNilpotent' {K R : Type} [Field K] [CommRing R] [Algebra K R]
     [Algebra.FiniteType K R] (σ : K →+* ℂ) {b : R} (hb : ¬ IsNilpotent b) :

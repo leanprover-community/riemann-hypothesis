@@ -134,7 +134,6 @@ end GlobalTheory.Mem.ThetaRead3.L0
 
 namespace GlobalTheory.Mem.ThOrth.L0
 open Formalism.IndefR.CxPass.LevelOperators
-open Formalism.IndefR.CxPass.LevelOperators
 
 
 

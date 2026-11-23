@@ -578,7 +578,6 @@ theorem intVal_Kur : IntVal (MaximalUnramifiedExtension l ⊥) := by
   refine ⟨b.valuation, ?_⟩
   rw [e, PadicAlgCl.norm_extends, Padic.norm_eq_zpow_neg_valuation hb, inv_zpow']
 
-open ReciprocityTheory.DiscreteGroups.LocalClassField in
 theorem inert_Kur (σ : PadicAlgCl l ≃ₐ[MaximalUnramifiedExtension l (⊥ : IntermediateField ℚ_[l] (PadicAlgCl l))] PadicAlgCl l)
     (x : PadicAlgCl l) (hx : ‖x‖ ≤ 1) : ‖σ x - x‖ < 1 := by
   have key : ∀ y : PadicAlgCl l, ‖y‖ < 1 → ‖σ y - y‖ < 1 := fun y hy => by

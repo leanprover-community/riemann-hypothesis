@@ -121,7 +121,6 @@ end GlobalTheory.VacRealForm
 
 namespace GlobalTheory.VacRealForm
 
-open GlobalTheory.FockCompare GlobalTheory.VacUnique
 
 variable {D : D7}
 
@@ -170,7 +169,6 @@ end GlobalTheory.VacRealForm
 
 namespace GlobalTheory.VacRealForm
 
-open GlobalTheory.FockCompare GlobalTheory.VacUnique
 
 variable {D : D7}
 

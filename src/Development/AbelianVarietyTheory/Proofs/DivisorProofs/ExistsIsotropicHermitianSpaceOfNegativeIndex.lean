@@ -110,7 +110,6 @@ end GlobalTheory.IsoNegIdx
 
 namespace GlobalTheory.IsoNegIdx
 
-open ReciprocityTheory.ChartRestriction.G GlobalTheory.Inertia
 
 theorem exists_isotropic_of_negIdx : ∀ (D : D7) (S : HSp D) (k : ℕ), NegIdx S k → 1 ≤ k → k + 1 ≤ S.rank → 3 ≤ S.rank →
     ∃ x : S.V, x ≠ 0 ∧ S.hT x x = 0 := by

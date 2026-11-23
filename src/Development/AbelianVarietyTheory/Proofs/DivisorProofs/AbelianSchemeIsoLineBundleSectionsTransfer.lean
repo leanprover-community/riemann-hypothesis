@@ -98,7 +98,6 @@ theorem veryAmpleBy_of_span {R : Type} [CommRing R] {X : Scheme.{0}} (f : X ⟶ 
 end GlobalTheory.BasisMatch
 
 namespace GlobalTheory.BasisMatch
-open GlobalTheory.AbLaw GlobalTheory.Cartier TensorProduct
 
 def basisOfExistsUnique {R V : Type} [CommRing R] [AddCommGroup V] [Module R V] {n : ℕ} (v : Fin n → V)
     (h : ∀ x, ∃! c : Fin n → R, x = ∑ j, c j • v j) : Module.Basis (Fin n) R V :=

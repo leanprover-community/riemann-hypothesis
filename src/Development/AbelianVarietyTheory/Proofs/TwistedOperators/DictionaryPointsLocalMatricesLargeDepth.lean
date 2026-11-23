@@ -126,7 +126,6 @@ end GlobalTheory.FlatPlaceLoc
 
 namespace GlobalTheory.FlatPlaceLoc
 
-open GlobalTheory.FlatPlace GlobalTheory.LocMod
 
 variable {D : D7}
 

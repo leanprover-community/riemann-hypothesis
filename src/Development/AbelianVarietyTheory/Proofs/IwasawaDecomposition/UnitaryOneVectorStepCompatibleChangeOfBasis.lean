@@ -53,7 +53,6 @@ theorem hform_eq {A : Type} [CommRing A] (σ : A →+* A) {n : ℕ} (J : Matrix 
   unfold Formalism.UG.hform
   simp only [dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc]
 
-open Formalism.UG in
 theorem hform_basis {A : Type} [CommRing A] (σ : A →+* A) {n m : ℕ} (J : Matrix (Fin n) (Fin n) A)
     (P : Matrix (Fin n) (Fin m) A) (u w : Fin m → A) :
     hform σ (cT σ P * J * P) u w = hform σ J (P.mulVec u) (P.mulVec w) := by

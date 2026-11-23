@@ -146,7 +146,6 @@ theorem exists_iota_gen {σ : E →ₐ[F] E} {v : HeightOneSpectrum (𝓞 F)} {w
 
 end GlobalTheory.Core.Rk.SplitIota
 
-open scoped TensorProduct
 
 
 open GlobalTheory.Core.Rk.SplitIota in

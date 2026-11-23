@@ -85,7 +85,6 @@ end GlobalTheory.LeviTorus
 
 namespace GlobalTheory.LeviTorus
 
-open Matrix
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

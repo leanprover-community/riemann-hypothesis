@@ -284,7 +284,6 @@ namespace GlobalTheory.ConstBasis
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.L2.Pj.QAt GlobalTheory.ArcQ GlobalTheory.Frames
 open Matrix GlobalTheory.LieEigen
-open ReciprocityTheory.ChartRestriction.G.Chart (prodPts)
 
 theorem vecMul_map {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) {g : ℕ} {u : Fin g → A}
     {M : Matrix (Fin g) (Fin g) A} {s : A} (h : u ᵥ* M = s • u) :

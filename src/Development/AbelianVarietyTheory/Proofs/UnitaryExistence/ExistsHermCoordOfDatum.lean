@@ -75,8 +75,6 @@ namespace GlobalTheory
 
 open DatumCoord
 
-open NumberField Matrix in
-open scoped nonZeroDivisors TensorProduct in
 variable {E : Type} [Field E] [NumberField E] in
 private lemma exists_trace_mul_eq_of_addMonoidHom (f : 𝓞 E →+ ℤ) :
     ∃ z : E, ∀ a : 𝓞 E, Algebra.trace ℚ E ((a : E) * z) = (f a : ℚ) := by
@@ -95,8 +93,6 @@ private lemma exists_trace_mul_eq_of_addMonoidHom (f : 𝓞 E →+ ℤ) :
   exact congrArg (fun w : 𝓞 E →ₗ[ℤ] ℚ => w a) huv
 
 
-open NumberField Matrix in
-open scoped nonZeroDivisors TensorProduct in
 theorem _root_.GlobalTheory.exists_herm_coord_of_datum :
     ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (D : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H) (ξ : E),
       _root_.ReciprocityTheory.ChartRestriction.G.FD.cc ξ = -ξ → ξ ≠ 0 → ∀ r : ℕ, r = D.p + D.q →

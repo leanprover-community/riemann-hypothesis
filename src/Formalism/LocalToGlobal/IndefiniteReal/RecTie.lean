@@ -205,7 +205,6 @@ end ChainReal
 
 def Used0 (D : D7) (μ : D.what₂.Tup) : Prop := μ = D.what₂.mu0 ∨ ∃ w, μ = D.what₂.muAt w
 
-section Rows
 
 variable {D : D7} {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE]
 
@@ -261,7 +260,6 @@ structure RowSideReal (X : RowSide D EE) (C : ChainReal D) (b : Bool) (I : RowId
 
   prt_disj : ∀ π π', π ≠ π' → I.prt π ⊓ I.prt π' = ⊥
 
-end Rows
 
 structure LiftReal (D : D7) (C : ChainReal D) where
 
@@ -340,7 +338,6 @@ def ipWc (i : Fin D.R.m) (x y : L.AmbW i) : ℂ :=
 
 end LiftReal
 
-section Lifts
 
 variable {D : D7} {C : ChainReal D}
 
@@ -374,7 +371,6 @@ structure LiftTie (L : LiftReal D C) (I : LiftIds L) : Prop where
     (∀ y ∈ D.what₂.isot (i + 1) π, D.what₂.thetaP μ (i + 1) (D.what₂.thetaT μ (i + 1) y) = (c : ℂ) • y) →
     D.what₂.lamP μ (i + 1) π = c
 
-end Lifts
 
 structure ColReal (D : D7) where
 

@@ -59,8 +59,6 @@ private lemma re_det_gram_mul_eq_normSq_det_mul {r i : ℕ} (B : Matrix (Fin r) 
         rw [Complex.normSq_eq_conj_mul_self]; ring,
     Complex.re_ofReal_mul]
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 private lemma norm_apply_le_one_of_conjTranspose_mul_self_eq_one {r i : ℕ} (Q : Matrix (Fin r) (Fin i) ℂ)
     (hQ : Qᴴ * Q = 1) (j : Fin r) (k : Fin i) : ‖Q j k‖ ≤ 1 := by
   have h := congrFun (congrFun hQ k) k
@@ -76,8 +74,6 @@ private lemma norm_apply_le_one_of_conjTranspose_mul_self_eq_one {r i : ℕ} (Q 
   rw [Complex.normSq_eq_norm_sq] at hle
   nlinarith [norm_nonneg (Q j k)]
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 private lemma exists_mul_right_orthonormal_of_re_det_gram_pos {r i : ℕ} (M : Matrix (Fin r) (Fin i) ℂ)
     (hM : 0 < (Mᴴ * M).det.re) :
     ∃ X : Matrix (Fin i) (Fin i) ℂ, (M * X)ᴴ * (M * X) = 1 := by
@@ -113,8 +109,6 @@ private lemma exists_mul_right_orthonormal_of_re_det_gram_pos {r i : ℕ} (M : M
   rw [Complex.star_def, map_inv₀, Complex.conj_ofReal, ← hs']
   field_simp
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 private lemma exists_pos_uniform_le_sum_log_ratio_det_gram {r i : ℕ}
     (S : Finset (Matrix (Fin r) (Fin r) ℂ))
     (hpt : ∀ M : Matrix (Fin r) (Fin i) ℂ, 0 < (Mᴴ * M).det.re →
@@ -172,8 +166,6 @@ private lemma exists_pos_uniform_le_sum_log_ratio_det_gram {r i : ℕ}
     exact absurd ⟨M * X, hX⟩ hne
 
 
-open MeasureTheory Topology Matrix in
-open scoped ComplexOrder ENNReal Pointwise in
 theorem _root_.GlobalTheory.uniform_log_expansion_of_pointwise :
     (∀ (r : ℕ) (S : Finset (Matrix (Fin r) (Fin r) ℂ)), (∀ a ∈ S, a.IsHermitian ∧ a.det ≠ 0 ∧ a⁻¹ ∈ S) → (∀ W : Submodule ℂ (Fin r → ℂ), (∀ a ∈ S, ∀ v ∈ W, (a * a).mulVec v ∈ W) → W = ⊥ ∨ W = ⊤) → ∀ (i : ℕ), 0 < i → i < r → ∀ M : Matrix (Fin r) (Fin i) ℂ, 0 < (((M)ᴴ * (M)).det.re) → (∀ a ∈ S, 0 < (((a * M)ᴴ * (a * M)).det.re)) ∧ 0 < ∑ a ∈ S, Real.log ((((a * M)ᴴ * (a * M)).det.re) / (((M)ᴴ * (M)).det.re))) → (∀ (r : ℕ) (S : Finset (Matrix (Fin r) (Fin r) ℂ)), (∀ a ∈ S, a.IsHermitian ∧ a.det ≠ 0 ∧ a⁻¹ ∈ S) → (∀ W : Submodule ℂ (Fin r → ℂ), (∀ a ∈ S, ∀ v ∈ W, (a * a).mulVec v ∈ W) → W = ⊥ ∨ W = ⊤) → ∃ η : ℝ, 0 < η ∧ ∀ (i : ℕ), 0 < i → i < r → ∀ M : Matrix (Fin r) (Fin i) ℂ, 0 < (((M)ᴴ * (M)).det.re) → η ≤ ∑ a ∈ S, Real.log ((((a * M)ᴴ * (a * M)).det.re) / (((M)ᴴ * (M)).det.re))) := by
   intro hpt r S hS hirr

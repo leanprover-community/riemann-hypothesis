@@ -65,13 +65,11 @@ private noncomputable def UpperTheory.V.Af.CuspFin.vermaRep {n : ℕ} (lam : Fin
       r • Submodule.Quotient.mk y
     rw [← Algebra.smul_def, Submodule.Quotient.mk_smul]
 
-open GroundTheory.Automorphic.HarishChandra in
 private theorem UpperTheory.V.Af.CuspFin.vermaRep_one {n : ℕ} (lam : Fin n → ℂ) (x : U n) :
     UpperTheory.V.Af.CuspFin.vermaRep lam x (Submodule.Quotient.mk 1) = Submodule.Quotient.mk x := by
   change Submodule.Quotient.mk (x * 1) = _
   rw [mul_one]
 
-open GroundTheory.Automorphic.HarishChandra in
 private theorem UpperTheory.V.Af.CuspFin.one_notMem_vermaIdeal {n : ℕ} (lam : Fin n → ℂ) :
     (1 : U n) ∉ vermaIdeal lam := by
   intro h

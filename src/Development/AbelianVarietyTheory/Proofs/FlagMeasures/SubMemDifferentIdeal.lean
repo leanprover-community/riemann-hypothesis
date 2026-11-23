@@ -117,9 +117,6 @@ private lemma sub_mem_differentIdeal_of_eq_star (h : _root_.Formalism.BasicNotio
   ring
 
 
-open NumberField Module Matrix in
-open scoped ENNReal in
-open Polynomial in
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] in
 theorem _root_.GlobalTheory.CMDiscrSq.differentIdeal_eq_top (h : _root_.Formalism.BasicNotions.CMData F E) : differentIdeal (𝓞 F) (𝓞 E) = ⊤ := by
   by_contra hne
@@ -130,8 +127,6 @@ theorem _root_.GlobalTheory.CMDiscrSq.differentIdeal_eq_top (h : _root_.Formalis
 end GlobalTheory.CMDiscrSq
 
 
-open NumberField Module Matrix in
-open scoped ENNReal in
 theorem _root_.GlobalTheory.cm_discr_sq : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
     [NumberField E] [StarRing E] [Algebra F E], _root_.Formalism.BasicNotions.CMData F E → |discr E| = discr F ^ 2 ∧
       Ideal.absNorm (Ideal.map (algebraMap (𝓞 F) (𝓞 E)) (differentIdeal ℤ (𝓞 F))) =

@@ -78,7 +78,6 @@ private theorem sylow_normal_of_prime_pow_mem_center (E : Type) [Group E] [Finit
   rw [← Subgroup.normalizer_eq_top_iff, eq_top_iff, ← hS]
   exact sup_le (Subgroup.center_le_normalizer _) Subgroup.le_normalizer
 
-open Polynomial in
 private theorem exists_p_regular_split_of_normal_sylow_commute (E : Type) [Group E] [Finite E] (p : ℕ) [Fact p.Prime] (P : Sylow p E) [(P : Subgroup E).Normal]
     (hcomm : ∀ x y : E, x ∈ (P : Subgroup E) → ¬ p ∣ orderOf y → Commute y x) :
     ∃ H : Subgroup E, ∃ π : E →* H, ¬ p ∣ Nat.card H ∧
@@ -117,7 +116,6 @@ private theorem exists_p_regular_split_of_normal_sylow_commute (E : Type) [Group
     · have := congrArg Subtype.val hm
       simpa using this
 
-open Polynomial in
 private theorem exists_p_regular_split_of_pow_mem_center (E : Type) [Group E] [Finite E] (p : ℕ) [hp : Fact p.Prime]
     (hE : ∃ l, Nat.Prime l ∧ ∀ (y : E), ∃ j, y ^ l ^ j ∈ Subgroup.center E) :
     ∃ H : Subgroup E, ∃ π : E →* H, ¬ p ∣ Nat.card H ∧
@@ -150,7 +148,6 @@ private theorem exists_p_regular_split_of_pow_mem_center (E : Type) [Group E] [F
     intro x y hx _
     exact Subgroup.mem_center_iff.1 (hPc x hx) y
 
-open Polynomial in
 private theorem powerSum_roots_charpoly_complex_mem_virt (G : Type) [Group G] [Finite G] (n : ℕ) (ρ : G →* GL (Fin n) ℂ) (r : ℕ) :
     (fun g => (Multiset.map (fun x => x ^ r) ((ρ g : Matrix (Fin n) (Fin n) ℂ).charpoly.roots)).sum)
       ∈ _root_.GlobalTheory.BI.Virt ℂ ℂ G := by
@@ -184,7 +181,6 @@ private theorem powerSum_roots_charpoly_complex_mem_virt (G : Type) [Group G] [F
       have hi' := Finset.mem_Ioo.1 hi
       exact hmul _ (hmul _ (hconst _) _ (he i)) _ (ih (r - i) (by omega))
 
-open Polynomial in
 private theorem powerSum_roots_charpoly_mem_virt_of_abByP (k : Type) [Field k] [IsAlgClosed k] (θ : k →* ℂ)
     (hθ : ∀ x y : k, x ≠ 0 → y ≠ 0 → θ x = θ y → x = y) (H : Type) [Group H] [Finite H]
     (hab : _root_.GlobalTheory.BI.AbByP H) (hc : (Nat.card H : k) ≠ 0) (n : ℕ) (ρ : H →* GL (Fin n) k) (r : ℕ) :
@@ -202,7 +198,6 @@ private theorem powerSum_roots_charpoly_mem_virt_of_abByP (k : Type) [Field k] [
   rw [h1, h2, map_pow, Units.val_pow_eq_pow_val, Matrix.trace_eq_sum_roots_charpoly,
     _root_.GlobalTheory.CharpolyPow.roots_charpoly_pow]
 
-open Polynomial in
 private theorem powerSum_roots_charpoly_mem_virt_of_split (k : Type) [Field k] [IsAlgClosed k] (p : ℕ) [Fact p.Prime] [CharP k p] (θ : k →* ℂ)
     (hθ : ∀ x y : k, x ≠ 0 → y ≠ 0 → θ x = θ y → x = y) (E : Type) [Group E] [Finite E]
     (hab : _root_.GlobalTheory.BI.AbByP E) (H : Subgroup E) (π : E →* H) (hc : (Nat.card H : k) ≠ 0)
@@ -228,7 +223,6 @@ private theorem powerSum_roots_charpoly_mem_virt_of_split (k : Type) [Field k] [
     exact this
   rw [hc'.mul_pow, ← Units.val_pow_eq_pow_val (ρ s), ← map_pow, hs, map_one, Units.val_one, mul_one]
 
-open Polynomial in
 private theorem rootSum_charpoly_mem_virt_of_pow_mem_center (F : Type) [Field F] [Finite F] (θ : AlgebraicClosure F →* ℂ)
     (hθ : ∀ x y : AlgebraicClosure F, x ≠ 0 → y ≠ 0 → θ x = θ y → x = y) (n k : ℕ)
     (E : Subgroup (GL (Fin n) F)) (hE : ∃ l, Nat.Prime l ∧ ∀ (y : E), ∃ j, y ^ l ^ j ∈ Subgroup.center E) :
@@ -254,7 +248,6 @@ private theorem rootSum_charpoly_mem_virt_of_pow_mem_center (F : Type) [Field F]
   simp [ρ, Matrix.charpoly_map]
 
 
-open Polynomial in
 theorem _root_.GlobalTheory.CuspGL.rootSum_charpoly_mem_virt (F : Type) [Field F] [Finite F] (θ : AlgebraicClosure F →* ℂ)
     (hθ : ∀ x y : AlgebraicClosure F, x ≠ 0 → y ≠ 0 → θ x = θ y → x = y) (n k : ℕ) :
     (fun x : GL (Fin n) F => _root_.GlobalTheory.CuspGL.rootSum θ k (Matrix.charpoly (x : Matrix (Fin n) (Fin n) F)))

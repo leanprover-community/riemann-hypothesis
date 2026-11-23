@@ -64,7 +64,6 @@ theorem _root_.GlobalTheory.Cris.ExpBij.dpFil_anti {m n : ℕ} (h : m ≤ n) :
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 variable (δ : DividedPowers J) in
 theorem _root_.GlobalTheory.Cris.ExpBij.mem_dpFil_zero (a : B) : a ∈ _root_.GlobalTheory.Cris.ExpBij.dpFil δ 0 := by
@@ -74,7 +73,6 @@ theorem _root_.GlobalTheory.Cris.ExpBij.mem_dpFil_zero (a : B) : a ∈ _root_.Gl
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 variable (δ : DividedPowers J) in
 theorem _root_.GlobalTheory.Cris.ExpBij.mul_mem_dpFil {m n : ℕ} {a b : B} (ha : a ∈ _root_.GlobalTheory.Cris.ExpBij.dpFil δ m)
@@ -97,7 +95,6 @@ theorem _root_.GlobalTheory.Cris.ExpBij.mul_mem_dpFil {m n : ℕ} {a b : B} (ha 
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 variable (δ : DividedPowers J) in
 theorem _root_.GlobalTheory.Cris.ExpBij.pow_mem_dpFil {m : ℕ} {a : B} (ha : a ∈ _root_.GlobalTheory.Cris.ExpBij.dpFil δ m)
@@ -110,7 +107,6 @@ theorem _root_.GlobalTheory.Cris.ExpBij.pow_mem_dpFil {m : ℕ} {a : B} (ha : a 
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 variable (δ : DividedPowers J) in
 theorem _root_.GlobalTheory.Cris.ExpBij.dpow_mem_dpFil {a : B} (ha : a ∈ J) (n : ℕ) :
@@ -119,7 +115,6 @@ theorem _root_.GlobalTheory.Cris.ExpBij.dpow_mem_dpFil {a : B} (ha : a ∈ J) (n
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 variable (δ : DividedPowers J) in
 theorem _root_.GlobalTheory.Cris.ExpBij.dpFil_le {m : ℕ} (hm : 1 ≤ m) : _root_.GlobalTheory.Cris.ExpBij.dpFil δ m ≤ J := by
@@ -141,7 +136,6 @@ theorem _root_.GlobalTheory.Cris.ExpBij.dpFil_le {m : ℕ} (hm : 1 ≤ m) : _roo
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 variable (δ : DividedPowers J) in
 theorem _root_.GlobalTheory.Cris.ExpBij.mem_dpFil_one {a : B} (ha : a ∈ J) : a ∈ _root_.GlobalTheory.Cris.ExpBij.dpFil δ 1 := by
@@ -150,7 +144,6 @@ theorem _root_.GlobalTheory.Cris.ExpBij.mem_dpFil_one {a : B} (ha : a ∈ J) : a
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 variable (δ : DividedPowers J) in
 theorem _root_.GlobalTheory.Cris.ExpBij.dpow_mem_dpFil_mul {m : ℕ} (hm : 1 ≤ m) {a : B}
@@ -216,7 +209,6 @@ variable {δ}
 
 
 set_option autoImplicit false in
-open DividedPowers in
 variable {B : Type} [CommRing B] {J : Ideal B} in
 variable (δ : DividedPowers J) in
 variable {δ} in

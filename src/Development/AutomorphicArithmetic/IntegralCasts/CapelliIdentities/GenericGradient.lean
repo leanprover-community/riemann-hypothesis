@@ -100,7 +100,6 @@ private theorem UpperTheory.Reformulated.B.Qf34.taylor {k B : Type*} [CommRing k
       Finset.mem_univ, if_true, map_mul]
     linear_combination - h p (X i)
 
-open MvPolynomial in
 private theorem UpperTheory.Reformulated.B.Qf34.sq_zero_case {k B K ι : Type*} [CommRing k] [CommRing B]
     [Algebra k B] [CommRing K] [Algebra k K] [Fintype ι] {n : ℕ}
     (π : B →ₐ[k] K) (σ : K →ₐ[k] B) (hσ : ∀ x, π (σ x) = x)
@@ -127,7 +126,6 @@ private theorem UpperTheory.Reformulated.B.Qf34.sq_zero_case {k B K ι : Type*} 
   refine hsq _ _ ?_ (hd _)
   simp [hσ, hc]
 
-open MvPolynomial in
 private theorem UpperTheory.Reformulated.B.Qf34.mem_sup_sq {k A K ι : Type*} [CommRing k] [CommRing A]
     [Algebra k A] [CommRing K] [Algebra k K] [Algebra.FormallySmooth k K] [Fintype ι] {n : ℕ}
     (π : A →ₐ[k] K) (hπ : Function.Surjective π)

@@ -54,7 +54,6 @@ private lemma exists_lift {k : Type} [CommRing k] {K L M : CochainComplex (Modul
   rw [← cancel_mono (ι.f j), Category.assoc, Category.assoc, hp, ← ι.comm, ← Category.assoc, hp,
     u.comm]
 
-open CategoryTheory in
 private lemma exists_map {k G : Type} [CommRing k] [Group G] [TopologicalSpace G]
     {A B : Rep.{0, 0, 0} k G} (f : A ⟶ B) {KA KB : CochainComplex (ModuleCat.{0} k) ℕ}
     (ιA : KA ⟶ groupCohomology.inhomogeneousCochains A)

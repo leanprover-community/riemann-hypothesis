@@ -71,7 +71,6 @@ theorem s5a4_torsion_real {F : Type} [Field F] [NumberField F]
       rw [← orderOf_units, CharP.orderOf_eq_two_iff 0 (by decide)] at hi
       simp [← Units.val_inj, Units.val_neg, Units.val_one, hi]
 
-open NumberField.Units in
 theorem units_square_index : UnitsSquareIndex := by
   intro F _ _ hr
   classical

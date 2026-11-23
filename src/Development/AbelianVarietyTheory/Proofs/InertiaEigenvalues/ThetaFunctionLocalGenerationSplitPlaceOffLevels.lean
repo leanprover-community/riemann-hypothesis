@@ -522,7 +522,6 @@ end Average
 
 section Generation
 
-open GlobalTheory.SplitScalar
 
 variable {χS χT : (AE D)ˣ →* Circle} {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
 
@@ -610,7 +609,6 @@ end Generation
 
 section Transfer
 
-open GlobalTheory.SplitScalar
 
 variable {χS χT : (AE D)ˣ →* Circle} {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
 
@@ -713,7 +711,6 @@ theorem rel_of_finsupp {X V ι : Type} [AddCommGroup V] [Module ℂ V] (p : X �
 
 section Real
 
-open GlobalTheory.SplitScalar
 
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {i : Fin D.R.m} {t : T}

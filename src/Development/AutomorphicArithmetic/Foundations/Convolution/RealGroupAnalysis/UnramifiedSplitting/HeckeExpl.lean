@@ -89,8 +89,6 @@ end Cosets
 
 section Cosets2
 
-open GroundTheory.Automorphic GroundTheory.Automorphic.Spherical GLnLocal Iwasawa HeckeAlgebra
-open scoped ValuativeRel
 
 attribute [local instance] GroundTheory.Automorphic.Spherical.fintypeResidue
 

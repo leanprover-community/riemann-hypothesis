@@ -54,7 +54,6 @@ open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat 
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Mat
 
 variable {r : ℕ}
 
@@ -102,9 +101,7 @@ private theorem famSc_one' {n : ℕ} (e : Fin r → Fin n → ℂ) (z : Fin n �
   funext a
   simp only [RealObj.famSc, Complex.ofReal_one, one_pow, inv_one, one_smul]
 
-end Mat
 
-section Uni
 
 variable {r : ℕ}
 
@@ -163,7 +160,6 @@ private theorem cancel {L A B U : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hL : 
   have hUu : IsUnit U := (Matrix.isUnit_iff_isUnit_det U).mpr (isUnit_iff_ne_zero.mpr hU)
   exact hLu.mul_left_cancel (hUu.mul_right_cancel h)
 
-end Uni
 
 section Glob
 

@@ -149,7 +149,6 @@ end GlobalTheory.FinPl.AllBij
 
 namespace GlobalTheory.FinPl.AllBij
 
-open GlobalTheory.FinPl
 
 variable {D : D7}
 
@@ -181,7 +180,6 @@ end GlobalTheory.FinPl.AllBij
 
 namespace GlobalTheory.FinPl.AllBij
 
-open GlobalTheory.FinPl
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {ι : Type}
   {p : ι → SplitPt D k} {n : Type} [Fintype n] [DecidableEq n] {A S : HSp D}

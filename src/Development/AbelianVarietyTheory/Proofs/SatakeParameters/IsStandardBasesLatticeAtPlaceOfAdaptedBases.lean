@@ -175,7 +175,6 @@ noncomputable section
 
 namespace GlobalTheory.KerStd.AdBas
 
-open GlobalTheory.JetTieCompare
 
 variable {p : ℕ} [Fact p.Prime]
 

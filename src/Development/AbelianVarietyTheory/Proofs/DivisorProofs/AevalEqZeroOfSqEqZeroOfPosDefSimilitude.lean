@@ -70,7 +70,6 @@ end GlobalTheory.SimNormSq
 
 namespace GlobalTheory
 
-open Polynomial
 
 theorem aeval_eq_zero_of_mul_self_eq_zero_of_similitude :
     ∀ (n : ℕ) (H M : Matrix (Fin n) (Fin n) ℂ) (s : ℝ), H.PosDef → 0 < s →

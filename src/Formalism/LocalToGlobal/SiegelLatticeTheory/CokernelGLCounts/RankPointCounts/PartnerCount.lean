@@ -946,7 +946,6 @@ end Formalism.L2.SG.Pf.PCount
 
 namespace Formalism.L2.SG.Pf
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

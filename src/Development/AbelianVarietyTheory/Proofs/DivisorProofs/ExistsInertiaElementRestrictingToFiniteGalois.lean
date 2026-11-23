@@ -178,7 +178,6 @@ end GlobalTheory.InertiaRestrict
 
 namespace GlobalTheory.InertiaRestrict
 
-open GlobalTheory.ProlongConj
 
 theorem exists_mem_inertia_eq_on : ∀ (R K Ω : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
     [Field K] [Algebra R K] [IsFractionRing R K] [Field Ω] [Algebra K Ω] [IsSepClosure K Ω]

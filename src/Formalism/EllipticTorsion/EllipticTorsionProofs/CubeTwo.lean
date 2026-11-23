@@ -293,7 +293,6 @@ end Formalism.ELL
 namespace Formalism.ELL
 namespace CubeTwoAlt
 
-open WeierstrassChordSeries
 
 variable {K : Type u} [Field K] {W : WeierstrassCurve K} {w : PowerSeries K}
 

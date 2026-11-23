@@ -107,7 +107,6 @@ end GlobalTheory.PolDeg.TautFrom
 
 namespace GlobalTheory.PolDeg.TautFrom
 
-open GlobalTheory.PolDeg.TautEx GlobalTheory.PrimCocycle
 
 section Iso
 
@@ -119,7 +118,6 @@ end GlobalTheory.PolDeg.TautFrom
 
 namespace GlobalTheory.PolDeg.TautFrom
 
-open GlobalTheory.PolDeg.TautEx GlobalTheory.PrimCocycle
 
 section Val
 
@@ -131,7 +129,6 @@ end GlobalTheory.PolDeg.TautFrom
 
 namespace GlobalTheory.PolDeg.TautFrom
 
-open GlobalTheory.PolDeg.TautEx GlobalTheory.PrimCocycle
 
 section Main
 

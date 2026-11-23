@@ -87,7 +87,6 @@ theorem card_torsion_fixedField {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω
 end UpperTheory.Lit.Nos.C6
 
 namespace UpperTheory.Lit.Nos.C6
-open GlobalTheory
 
 theorem hasGoodReduction_of_infinite_torsionUnramified : ∀ (R K Ω : Type) [CommRing R] [IsDomain R]
     [IsDiscreteValuationRing R] [PerfectField (ResidueField R)] [Field K] [Algebra R K] [IsFractionRing R K]

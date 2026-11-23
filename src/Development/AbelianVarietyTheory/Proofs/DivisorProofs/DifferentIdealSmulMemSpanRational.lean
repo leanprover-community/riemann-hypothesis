@@ -172,7 +172,6 @@ private theorem exists_integral_traceDual_expansion (K L : Type) [Field K] [Numb
     rw [sub_eq_zero]
 
 
-open NumberField in
 theorem _root_.GlobalTheory.differentIdeal_smul_mem_span_rational :
     ∀ (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] [IsGalois K L] (n : ℕ) (M : Submodule (𝓞 L) (Fin n → L)), (∀ (σ : L ≃ₐ[K] L), ∀ x ∈ M, (fun i => σ (x i)) ∈ M) → ∀ d ∈ differentIdeal (𝓞 K) (𝓞 L), ∀ x ∈ M, d • x ∈ Submodule.span (𝓞 L) {y : Fin n → L | y ∈ M ∧ ∃ y0 : Fin n → K, y = fun i => algebraMap K L (y0 i)} := by
   intro K L _ _ _ _ _ _ n M hM d hd x hx

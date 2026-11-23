@@ -141,9 +141,6 @@ private theorem exists_inv_pair_mul_eq_of_mul_eq {K n m : Type*} [Field K] [Fint
     rw [Matrix.toLin'_mul, LinearMap.comp_apply, Matrix.toLin'_toMatrix', Matrix.toLin'_apply,
       Matrix.toLin'_apply, hAφ]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
-open Matrix Module in
 private theorem matrix_eq_of_map_fst_snd {K E p q : Type*} [Field K] [CommRing E]
     (e : E ≃+* K × K) {P Q : Matrix p q E}
     (h₁ : P.map ((RingHom.fst K K).comp e.toRingHom) = Q.map ((RingHom.fst K K).comp e.toRingHom))
@@ -154,9 +151,6 @@ private theorem matrix_eq_of_map_fst_snd {K E p q : Type*} [Field K] [CommRing E
   exact Prod.ext (congrFun (congrFun h₁ a) b) (congrFun (congrFun h₂ a) b)
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
-open Matrix Module in
 theorem _root_.GlobalTheory.HermTuple.exists_matrix_split {K E n m : Type*} [Field K] [CommRing E]
     [Fintype n] [DecidableEq n]
     [Fintype m] [DecidableEq m] (c : E →+* E) (e : E ≃+* K × K) (he : ∀ x, e (c x) = (e x).swap)
@@ -218,18 +212,12 @@ theorem _root_.GlobalTheory.HermTuple.exists_matrix_split {K E n m : Type*} [Fie
       ← Matrix.transpose_mul, hTT', Matrix.transpose_one, Matrix.one_mul, ← Matrix.mul_assoc,
       hGG', Matrix.one_mul]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
-open Matrix Module in
 private theorem transpose_mul_mul_map_apply_eq_sum {R p q q' : Type*} [CommRing R] [Fintype p]
     (c : R →+* R) (G : Matrix p p R) (U : Matrix p q R) (V : Matrix p q' R) (i : q) (j : q') :
     (Uᵀ * G * V.map c) i j = ∑ a, ∑ b, U a i * G a b * c (V b j) := by
   simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Finset.sum_mul]
   rw [Finset.sum_comm]
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
-open Matrix Module in
 private theorem isField_or_exists_swap_ringEquiv {F : Type} [Field F] [ValuativeRel F]
     [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
     (L : _root_.Formalism.MainNotions.S.Loc.LocE F E) : IsField E ∨ ∃ e : E ≃+* F × F, ∀ x, e (L.cj x) = (e x).swap := by
@@ -318,9 +306,6 @@ private theorem isField_or_exists_swap_ringEquiv {F : Type} [Field F] [Valuative
   rw [hcj, hsymm, hsymm]
 
 
-open ValuativeRel MeasureTheory in
-open scoped Pointwise ENNReal Classical in
-open Matrix Module in
 theorem _root_.GlobalTheory.HermTuple.witt_tuples : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : _root_.Formalism.MainNotions.S.Loc.LocE F E), ∀ {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E), _root_.GlobalTheory.HL.IsHermND L Hm → ∀ (m : ℕ) (x y : Fin m → Fin n → E), (∀ i j, _root_.GlobalTheory.HL.hf L Hm (x i) (x j) = _root_.GlobalTheory.HL.hf L Hm (y i) (y j)) → IsUnit (Matrix.of fun i j => _root_.GlobalTheory.HL.hf L Hm (x i) (x j)).det → ∃ g ∈ _root_.GlobalTheory.HL.isomG L Hm, ∀ i, g (x i) = y i := by
   intro F _ _ _ _ _ E _ _ _ L n Hm hHm m x y hxy hunit
   haveI : Nontrivial E := Module.nontrivial_of_finrank_eq_succ L.rank

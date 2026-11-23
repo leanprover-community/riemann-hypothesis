@@ -64,7 +64,6 @@ private lemma cast_prod_pow_sub_pow_eq_prod_pow_mul_prod (q m a : ℕ) (hq : 0 <
   rw [e]
   ring
 
-open Module in
 private lemma gaussBinom_self (q n : ℕ) : _root_.GlobalTheory.IndefiniteRowSideFullHecke.GaussianBinomialFormula.gaussBinom q n n = 1 := by
   induction n with
   | zero => exact _root_.GlobalTheory.IndefiniteRowSideFullHecke.GaussianBinomialFormula.gaussBinom_zero_right q 0
@@ -73,7 +72,6 @@ private lemma gaussBinom_self (q n : ℕ) : _root_.GlobalTheory.IndefiniteRowSid
       Nat.sub_self, pow_zero, ih]
     rfl
 
-open Module in
 private lemma gaussBinom_mul_prod_pow_succ_sub_one (q n a : ℕ) :
     (_root_.GlobalTheory.IndefiniteRowSideFullHecke.GaussianBinomialFormula.gaussBinom q n a : ℤ) * ∏ i ∈ Finset.range a, ((q : ℤ) ^ (i + 1) - 1) =
       ∏ i ∈ Finset.range a, ((q : ℤ) ^ (n - i) - 1) := by
@@ -101,12 +99,10 @@ private lemma gaussBinom_mul_prod_pow_succ_sub_one (q n a : ℕ) :
       push_cast
       linear_combination h1 + (q : ℤ) ^ (n - a) * ((q : ℤ) ^ (a + 1) - 1) * h2 + hB
 
-open Module in
 private lemma prod_pow_succ_sub_one_eq_prod_pow_sub (q n : ℕ) :
     ∏ i ∈ Finset.range n, ((q : ℤ) ^ (i + 1) - 1) = ∏ i ∈ Finset.range n, ((q : ℤ) ^ (n - i) - 1) := by
   simpa [gaussBinom_self] using gaussBinom_mul_prod_pow_succ_sub_one q n n
 
-open Module in
 private lemma prod_pow_succ_sub_one_ne_zero {q : ℕ} (hq : 1 < q) (n : ℕ) :
     ∏ i ∈ Finset.range n, ((q : ℤ) ^ (i + 1) - 1) ≠ 0 := by
   rw [Finset.prod_ne_zero_iff]
@@ -114,7 +110,6 @@ private lemma prod_pow_succ_sub_one_ne_zero {q : ℕ} (hq : 1 < q) (n : ℕ) :
   have : (1 : ℤ) < (q : ℤ) ^ (i + 1) := one_lt_pow₀ (by exact_mod_cast hq) (by omega)
   linarith
 
-open Module in
 private lemma card_submodule_finrank_eq_gaussBinom (k : Type) [Field k] [Finite k] (V : Type) [AddCommGroup V]
     [Module k V] [FiniteDimensional k V] (j : ℕ) :
     Nat.card {L : Submodule k V // finrank k L = j} =
@@ -143,13 +138,11 @@ private lemma card_submodule_finrank_eq_gaussBinom (k : Type) [Field k] [Finite 
     exact Nat.card_of_isEmpty
 
 
-open Module in
 theorem _root_.GlobalTheory.GaussCount.subspaceCount : _root_.GlobalTheory.IndefiniteRowSideFullHecke.GaussianBinomialFormula.SubspaceCount := by
   unfold _root_.GlobalTheory.IndefiniteRowSideFullHecke.GaussianBinomialFormula.SubspaceCount
   intro k _ _ V _ _ _ j
   exact card_submodule_finrank_eq_gaussBinom k V j
 
-open Module in
 private lemma gaussBinom_mul_prod_mul_prod_sub_eq_prod (q n a : ℕ) (h : a ≤ n) :
     (_root_.GlobalTheory.IndefiniteRowSideFullHecke.GaussianBinomialFormula.gaussBinom q n a : ℤ) * (∏ i ∈ Finset.range a, ((q : ℤ) ^ (i + 1) - 1)) *
         (∏ i ∈ Finset.range (n - a), ((q : ℤ) ^ (i + 1) - 1)) =
@@ -162,7 +155,6 @@ private lemma gaussBinom_mul_prod_mul_prod_sub_eq_prod (q n a : ℕ) (h : a ≤ 
   refine Finset.prod_congr rfl fun i _ => ?_
   rw [Nat.sub_sub]
 
-open Module in
 private lemma gaussBinom_sub_eq_gaussBinom {q : ℕ} (hq : 1 < q) (n a : ℕ) (h : a ≤ n) :
     _root_.GlobalTheory.IndefiniteRowSideFullHecke.GaussianBinomialFormula.gaussBinom q n (n - a) = _root_.GlobalTheory.IndefiniteRowSideFullHecke.GaussianBinomialFormula.gaussBinom q n a := by
   have h1 := gaussBinom_mul_prod_mul_prod_sub_eq_prod q n a h
@@ -175,7 +167,6 @@ private lemma gaussBinom_sub_eq_gaussBinom {q : ℕ} (hq : 1 < q) (n a : ℕ) (h
   exact_mod_cast this
 
 
-open Module in
 theorem _root_.GlobalTheory.GaussCount.card_codim (k : Type) [Field k] [Finite k] (V : Type) [AddCommGroup V] [Module k V]
     [FiniteDimensional k V] (j : ℕ) :
     Nat.card {L : Submodule k V // finrank k (V ⧸ L) = j} =
@@ -194,7 +185,6 @@ theorem _root_.GlobalTheory.GaussCount.card_codim (k : Type) [Field k] [Finite k
     exact Nat.card_of_isEmpty
 
 
-open Module in
 theorem _root_.GlobalTheory.GaussCount.gauss_formula (q : ℕ) (R : Type) [CommRing R] (Y : R) (m : ℕ) :
     ∑ j ∈ Finset.range (m + 1),
         (-1 : R) ^ j * (q : R) ^ (j * (j - 1) / 2) * (_root_.GlobalTheory.IndefiniteRowSideFullHecke.GaussianBinomialFormula.gaussBinom q m j : R) * Y ^ j =

@@ -61,7 +61,6 @@ theorem charZero_wittVector (p : ℕ) [hp : Fact p.Prime] (k : Type) [Field k] [
     exact CharP.charP_to_charZero _
 
 
-open Cardinal in
 theorem mk_wittVector_le (p : ℕ) (k : Type) (hk : #k ≤ ℵ₀) : #(WittVector p k) ≤ 𝔠 := by
   have h : Function.Injective (WittVector.coeff : WittVector p k → ℕ → k) :=
     fun x y h => WittVector.ext (fun n => congrFun h n)
@@ -70,7 +69,6 @@ theorem mk_wittVector_le (p : ℕ) (k : Type) (hk : #k ≤ ℵ₀) : #(WittVecto
   exact Cardinal.power_le_power_right hk
 
 
-open Cardinal in
 theorem nonempty_ringHom_complex : ∀ (p : ℕ) [Fact p.Prime], Nonempty (DV.KW p →+* ℂ) := by
   intro p _
   have hk : #(AlgebraicClosure (ZMod p)) ≤ ℵ₀ := by

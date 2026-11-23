@@ -82,21 +82,18 @@ theorem heis_negT {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) (
   funext x
   simp only [heisO, GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger.cj, id_eq, map_mul, conj_psi hψ, symplOH_negT]
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger in
 theorem heis_negS {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) (S T : HSp D) (w : WO S T)
     (f : WO S T → ℂ) :
     heisO ψ (GlobalTheory.ChiGrid.negSp S) T w (cj id f) = cj id (heisO ψ S T w f) := by
   funext x
   simp only [heisO, GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger.cj, id_eq, map_mul, conj_psi hψ, symplOH_negS]
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger in
 theorem heis_negT' {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) (S T : HSp D) (w : WO S T)
     (f : WO S T → ℂ) :
     heisO ψ S T w (cj id f) = cj id (heisO ψ S (GlobalTheory.ChiGrid.negSp T) w f) := by
   funext x
   simp only [heisO, GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger.cj, id_eq, map_mul, conj_psi hψ, symplOH_negT, neg_neg]
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger in
 theorem heis_negS' {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) (S T : HSp D) (w : WO S T)
     (f : WO S T → ℂ) :
     heisO ψ S T w (cj id f) = cj id (heisO ψ (GlobalTheory.ChiGrid.negSp S) T w f) := by
@@ -107,7 +104,6 @@ theorem contDiff_conj {k : ℕ} {g : (Fin k → ℝ) → ℂ} (hg : ContDiff ℝ
     ContDiff ℝ ∞ fun t => starRingEnd ℂ (g t) :=
   Complex.conjCLE.contDiff.comp hg
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger in
 theorem theta_negT {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {S T : HSp D} {f : WO S T → ℂ}
     (hf : IsThetaFunO ψ S T f) : IsThetaFunO ψ S (GlobalTheory.ChiGrid.negSp T) (cj id f) := {
   quasi γ w := by
@@ -119,7 +115,6 @@ theorem theta_negT {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) 
   cont := Complex.continuous_conj.comp hf.cont
   smooth k L hL hL0 w := contDiff_conj (hf.smooth k L hL hL0 w) }
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger in
 theorem theta_negT' {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {S T : HSp D} {f : WO S T → ℂ}
     (hf : IsThetaFunO ψ S (GlobalTheory.ChiGrid.negSp T) f) : IsThetaFunO ψ S T (cj id f) := {
   quasi γ w := by
@@ -132,7 +127,6 @@ theorem theta_negT' {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1))
   cont := Complex.continuous_conj.comp hf.cont
   smooth k L hL hL0 w := contDiff_conj (hf.smooth k L hL hL0 w) }
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger in
 theorem theta_negS {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {S T : HSp D} {f : WO S T → ℂ}
     (hf : IsThetaFunO ψ S T f) : IsThetaFunO ψ (GlobalTheory.ChiGrid.negSp S) T (cj id f) := {
   quasi γ w := by
@@ -144,7 +138,6 @@ theorem theta_negS {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) 
   cont := Complex.continuous_conj.comp hf.cont
   smooth k L hL hL0 w := contDiff_conj (hf.smooth k L hL hL0 w) }
 
-open GlobalTheory.IndefiniteRowSideFullHecke.ConjugateAdjointDagger in
 theorem theta_negS' {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {S T : HSp D} {f : WO S T → ℂ}
     (hf : IsThetaFunO ψ (GlobalTheory.ChiGrid.negSp S) T f) : IsThetaFunO ψ S T (cj id f) := {
   quasi γ w := by

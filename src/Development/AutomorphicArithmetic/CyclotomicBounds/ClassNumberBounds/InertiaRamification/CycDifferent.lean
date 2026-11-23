@@ -86,7 +86,6 @@ private theorem aeval_derivative_minpoly_eq_prod_gal {F L : Type*} [Field F] [Fi
     ← Finset.mul_prod_erase _ _ (Finset.mem_univ (1 : Gal(L/F))), derivative_mul]
   simp [eval_prod]
 
-open Polynomial Classical in
 private theorem differentIdeal_eq_span_of_prod (A F : Type*) {L : Type*} [CommRing A] [IsDomain A]
     [IsIntegrallyClosed A] [Field F] [Field L] [NumberField L] [Algebra A F] [IsFractionRing A F]
     [Algebra F L] [Algebra A L] [Algebra A (𝓞 L)] [IsScalarTower A F L] [IsScalarTower A (𝓞 L) L]
@@ -167,7 +166,6 @@ theorem relDifferent_eq_span_prod (E : IntermediateField ℚ K) {ζ : K} (hζ : 
     rfl
 
 
-open scoped Classical in
 theorem map_differentIdeal_eq_span_prod (E : IntermediateField ℚ K) {ζ : K}
     (hζ : IsPrimitiveRoot ζ N) :
     (differentIdeal ℤ (𝓞 E)).map (algebraMap (𝓞 E) (𝓞 K)) = Ideal.span

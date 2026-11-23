@@ -103,11 +103,9 @@ end VP
 variable {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ} {d : ℕ} [NeZero d]
   {Orb : Type} [Fintype Orb]
 
-section Pairs
 
 variable {I : Orb → Fin 2 → Type} [∀ o g, Fintype (I o g)]
 
-end Pairs
 
 section Self
 

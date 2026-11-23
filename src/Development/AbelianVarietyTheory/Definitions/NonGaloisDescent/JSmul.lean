@@ -81,7 +81,6 @@ structure Pres {l n : ℕ} {R : RingPG k l} (F : DFun R n G) (ι : k⸨X⸩ →�
 end GlobalTheory.Present
 
 namespace GlobalTheory.TopSteps.TopSit
-open scoped LaurentSeries PowerSeries
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.PhiGam GlobalTheory.Models GlobalTheory.Present
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} (S : TopSit P)
 

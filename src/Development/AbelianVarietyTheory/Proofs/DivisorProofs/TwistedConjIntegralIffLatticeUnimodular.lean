@@ -128,7 +128,6 @@ end GlobalTheory.TwOrbUnimod
 
 noncomputable section
 namespace GlobalTheory.TwOrbUnimod
-open GlobalTheory.TwOrbLat
 
 section Herm
 
@@ -175,7 +174,6 @@ theorem herm_crd (c : w.adicCompletion E →+* w.adicCompletion E) (hc : ∀ x, 
 end GlobalTheory.TwOrbUnimod
 
 namespace GlobalTheory.TwOrbUnimod
-open GlobalTheory.TwOrbLat
 
 theorem twist_integral_iff_unimodular : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (w : Pl E), ¬ IsSplitAt w → ∀ (K : GlobalTheory.UnitLemma.UQ) (e : K.E ≃+* w.adicCompletion E), (∀ x, e (K.c x) = cj w (e x)) → (∀ x, x ∈ (algebraMap K.O K.E).range ↔ Valued.v (e x) ≤ 1) → ∀ (a : ℕ) (B : GlobalTheory.UnitLemma.InvAlg K) (β : B.Aˣ) (b : Module.Basis (Fin a) K.E B.A) (δ : GLw a w), (∀ i j, ((δ.val * GlobalTheory.Tw.Phi a (w.adicCompletion E))⁻¹)ᵀ i j = e (B.herm β (b i) (b j))) → ∀ q : GLw a w, (q⁻¹ * δ * thL a w q ∈ GlobalTheory.LFun.KGL w (n := a) ↔ ∀ z, z ∈ GlobalTheory.TwLat.lat e b q ↔ ∀ y ∈ GlobalTheory.TwLat.lat e b q, B.herm β y z ∈ (algebraMap K.O K.E).range) := by
   intro E _ _ _ w hw K e he hO a B β b δ hG q

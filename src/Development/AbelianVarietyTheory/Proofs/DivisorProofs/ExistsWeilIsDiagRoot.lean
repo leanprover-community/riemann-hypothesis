@@ -139,7 +139,6 @@ end GlobalTheory.DiagPairing
 
 namespace GlobalTheory.DiagPairing
 
-open GlobalTheory.CechPic
 
 theorem exists_weilIs_diag_root : ∀ (h n : ℕ) (B : Type) [CommRing B] (ζ : B) (S : Scheme.{0}) (s : S ⟶ Sp B)
     (c : SiegPre h n ζ s) (N : ℕ) (T : Over S) (x y : T ⟶ c.A), Out.RelAmple c.A c.diag → 0 < N →

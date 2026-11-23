@@ -148,8 +148,6 @@ end GlobalTheory.HeckeFrameShift
 
 namespace GlobalTheory.HeckeFrameShift
 
-open NumberField ReciprocityTheory.ChartRestriction.G.FD Matrix GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open scoped ComplexConjugate TensorProduct
 
 section Shift
 
@@ -261,7 +259,6 @@ end GlobalTheory.HeckeFrameShift
 namespace GlobalTheory.HeckeFrameShift
 
 open NumberField ReciprocityTheory.ChartRestriction.G.FD Matrix GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues
-open scoped ComplexConjugate
 
 section Period
 
@@ -370,7 +367,6 @@ end GlobalTheory.HeckeFrameShift
 
 namespace GlobalTheory.HeckeFrameShift
 
-open NumberField ReciprocityTheory.ChartRestriction.G.FD Matrix GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues
 
 theorem hermForm_cast {g g' : ℕ} (hg : g' = g) (Hm : Matrix (Fin g) (Fin g) ℂ) (z w : Fin g → ℂ) :
     hermForm (Hm.submatrix (Fin.cast hg) (Fin.cast hg)) (fun j => z (Fin.cast hg j)) (fun j => w (Fin.cast hg j)) =
@@ -419,7 +415,6 @@ end GlobalTheory.HeckeFrameShift
 
 namespace GlobalTheory.HeckeFrameShift
 
-open NumberField ReciprocityTheory.ChartRestriction.G.FD Matrix GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 section Witness
 

@@ -53,7 +53,6 @@ private theorem two_lt_abs_sub_sub_of_five_le_of_abs_le_two {g b c : ℝ} (h : 5
   have := abs_sub_abs_le_abs_sub (g - b) c
   linarith
 
-open Finset in
 private theorem one_add_inv_pos_and_le_of_five_le_abs {x : ℝ} (hx : 5 ≤ |x|) : 0 < 1 + x⁻¹ ∧ 1 ≤ 5 / 4 * (1 + x⁻¹) := by
   have hx0 : x ≠ 0 := by intro h; rw [h, abs_zero] at hx; norm_num at hx
   have hinv : |x⁻¹| ≤ 1 / 5 := by
@@ -61,7 +60,6 @@ private theorem one_add_inv_pos_and_le_of_five_le_abs {x : ℝ} (hx : 5 ≤ |x|)
   have := abs_le.1 hinv
   constructor <;> nlinarith [this.1, this.2]
 
-open Finset in
 private theorem exists_qw_eq_mul_pos_real_of_five_le_dist {S : Type} (q : ℂ → ℂ) (y : ℝ) :
     ∀ u : List (_root_.Formalism.FourierDecayAlt.Wd.Letter ℂ S), (∀ l ∈ u, ∃ t : ℝ, l.pt = t ∧ (l.plus = true → 5 ≤ |y - t|) ∧
       (l.plus = false → 5 ≤ |t - 1 - y|)) →
@@ -101,7 +99,6 @@ private theorem exists_qw_eq_mul_pos_real_of_five_le_dist {S : Type} (q : ℂ �
         push_cast
         field_simp
 
-open Finset in
 private theorem sum_abs_lagCo_le_one_of_five_separated {d : ℕ} (y : Fin (d + 1) → ℝ)
     (hy : ∀ i j, i ≠ j → 5 ≤ |y i - y j|) : ∑ j, |_root_.Formalism.FourierDecayAlt.F7.lagCo y j| ≤ 1 := by
   have key : ∀ n : ℕ, n + 1 ≤ 5 ^ n := fun n => by
@@ -124,7 +121,6 @@ private theorem sum_abs_lagCo_le_one_of_five_separated {d : ℕ} (y : Fin (d + 1
     _ = ((d : ℝ) + 1) / 5 ^ d := by simp [div_eq_mul_inv]
     _ ≤ 1 := by rw [div_le_one (by positivity)]; exact h2
 
-open Finset in
 private theorem exists_grid_of_layout_lemma {P : _root_.Formalism.FourierDecayAlt.M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp]
     [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp]
     [FiniteDimensional ℂ Wq] (p : _root_.Formalism.FourierDecayAlt.KB.Pl P Wp Wq) (nn : ℝ → ℝ) (Y : Finset ℝ) (Λ Λ₀ : ℝ) (K N : ℕ)
@@ -302,7 +298,6 @@ private theorem exists_grid_of_layout_lemma {P : _root_.Formalism.FourierDecayAl
       _ = Λ ^ K := one_mul _
 
 
-open Finset in
 theorem _root_.GlobalTheory.GridsFromLayout.main : ∀ (P : _root_.Formalism.FourierDecayAlt.M.Par) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (p : _root_.Formalism.FourierDecayAlt.KB.Pl P Wp Wq) (nn : ℝ → ℝ) (Y : Finset ℝ) (Λ Λ₀ : ℝ) (K N : ℕ), (∀ y, 0 < nn y) → ((∀ y ∈ Y, ∀ y' ∈ Y, y ≠ y' → 5 ≤ |y - y'|) ∧ N * (2 * P.r + 1) ≤ Y.card ∧ ∀ y ∈ Y, _root_.Formalism.FourierDecayAlt.I.OnCut P.u P.u' p.l0 y ∧ _root_.Formalism.FourierDecayAlt.I.OnCut P.u P.u' p.l0 (y + 1)) → (∀ y ∈ Y, nn y * nn (y + 1) ≤ Λ₀ ^ 2 * (_root_.Formalism.FourierDecayAlt.M.qC P (y : ℂ)).re) → 0 ≤ Λ → Λ₀ ^ 2 * (5 / 4 : ℝ) ^ N ≤ Λ ^ 2 → _root_.Formalism.FourierDecayAlt.P.TBBx5.WaveGrid p nn Y Λ K N ∧ _root_.Formalism.FourierDecayAlt.P.TBBx5.LiftGrid p nn Y Λ K N := by
   intro P Wp Wq _ _ _ _ _ _ p nn Y Λ Λ₀ K N hnn ⟨hsep, hcard, hcut⟩ hq hΛ hΛ₀
   refine ⟨?_, ?_⟩

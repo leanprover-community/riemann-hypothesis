@@ -106,7 +106,6 @@ end Examples
 
 section Tower
 
-open GlobalTheory.K5
 
 variable {p : ℕ} [Fact p.Prime] {Ω : Type*} [Field Ω] [Algebra (O0 p) Ω]
 

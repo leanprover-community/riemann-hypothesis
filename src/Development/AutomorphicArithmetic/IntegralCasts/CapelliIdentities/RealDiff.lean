@@ -48,7 +48,6 @@ private theorem UpperTheory.Reformulated.B.Qh3.one_side {Ω ι : Type} [Measurab
   refine integral_congr_ae (Filter.Eventually.of_forall fun ω ↦ ?_)
   simp only [NNReal.smul_def, Real.coe_toNNReal', Complex.real_smul, mul_comm]
 
-open MeasureTheory in
 private theorem UpperTheory.Reformulated.B.Qh3.int_mul {Ω ι : Type} [MeasurableSpace Ω] [Fintype ι]
     (ν : Measure Ω) (X : Ω → ι → ℝ) (f : Ω → ℝ) (hX : Measurable X) (hf : Integrable f ν)
     (G : (ι → ℝ) → ℂ) (hG : Measurable G) (hb : ∀ x, ‖G x‖ ≤ (1 : ℝ)) :

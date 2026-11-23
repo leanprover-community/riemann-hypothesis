@@ -81,7 +81,6 @@ theorem mem_lieOf_UH {N : ℕ} (H : Matrix (Fin N) (Fin N) ℂ) (hH : H * H = 1)
     X ∈ lieOf (UH H) ↔ Xᴴ * H + H * X = 0 := by
   apply GlobalTheory.OmegaFrobenius.mem_lieOf_UH <;> assumption
 
-open scoped Matrix.Norms.Operator in
 theorem exp_mul_eq_iff {N : ℕ} (X E : Matrix (Fin N) (Fin N) ℂ) :
     (∀ t : ℝ, NormedSpace.exp (t • X) * E = E) ↔ X * E = 0 := by
   have hd : ∀ t : ℝ, HasDerivAt (fun t : ℝ => NormedSpace.exp (t • X) * E)

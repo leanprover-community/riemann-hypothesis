@@ -258,7 +258,6 @@ section Places
 
 open CategoryTheory NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Pj GlobalTheory.FlatLine GlobalTheory.Frames GlobalTheory.LamT GlobalTheory.KeyFourth
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.IndefiniteRowSideFullHecke.FibreFramesOnModels GlobalTheory.IndefiniteRowSideFullHecke.DifferentConjugateDefects GlobalTheory.KeyIntegralVal
-open scoped Matrix
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}

@@ -128,7 +128,6 @@ end GlobalTheory.InertSph.Invert
 
 noncomputable section
 namespace GlobalTheory.InertSph.Invert
-open GlobalTheory.InertLocField
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -226,7 +225,6 @@ end GlobalTheory.InertSph.Invert
 
 noncomputable section
 namespace GlobalTheory.InertSph.Invert
-open GlobalTheory.InertLocField
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -299,7 +297,6 @@ end GlobalTheory.InertSph.Invert
 
 noncomputable section
 namespace GlobalTheory.InertSph.Invert
-open GlobalTheory.InertLocField
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

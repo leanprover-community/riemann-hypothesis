@@ -55,8 +55,6 @@ theorem _root_.GlobalTheory.LevelAllPrimes.add_rt_mul_sub_rt (H : _root_.Recipro
   linear_combination (-1 : 𝓞 E) * H.rt_sq
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 theorem _root_.GlobalTheory.LevelAllPrimes.isCoprime_add_rt_sub_rt (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) {c : ℕ} (hc : Nat.Coprime c H.d)
     (ho : Odd (c ^ 2 + H.d)) :
@@ -77,8 +75,6 @@ end GlobalTheory.LevelAllPrimes
 
 namespace GlobalTheory
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private theorem host_bar_rt' (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : H.bar H.rt = -H.rt := by
   obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
@@ -103,8 +99,6 @@ private theorem host_bar_rt' (H : _root_.ReciprocityTheory.ChartRestriction.G.Ge
     simpa [IsCMField.complexEmbedding_complexConj] using hconj
   exact RingOfIntegers.coe_injective key
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
 private theorem natCast_add_rt_mem_adjoin_w0 (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (c : ℕ) :
     (c : 𝓞 E) + H.rt ∈ Algebra.adjoin ℤ {H.w0} := by
@@ -114,8 +108,6 @@ private theorem natCast_add_rt_mem_adjoin_w0 (H : _root_.ReciprocityTheory.Chart
     simpa using natCast_mem (Algebra.adjoin ℤ {H.w0}) 2
   exact add_mem (sub_mem (natCast_mem _ c) (one_mem _)) (mul_mem h2 hw)
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 private theorem three_le_mul_div_prime_pow_factorization {a b : ℕ} (p : ℕ) (hab : Nat.Coprime a b)
     (ha : 3 ≤ a) (hb : 3 ≤ b) : 3 ≤ a * b / p ^ (a * b).factorization p := by
   have key : ∀ {x y : ℕ}, 3 ≤ x → 0 < y → x.factorization p = 0 →
@@ -140,8 +132,6 @@ private theorem three_le_mul_div_prime_pow_factorization {a b : ℕ} (p : ℕ) (
     exact key hb (by omega) hbp
 
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField in
-open scoped CategoryTheory.Obj TensorProduct in
 theorem _root_.GlobalTheory.exists_level_goodAt_all_primes_and_idx :
     ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (A : ℕ), 0 < A →
       ∃ l : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H, l.A = A ∧ (∀ p : ℕ, p.Prime → l.GoodAt p) ∧

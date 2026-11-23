@@ -64,7 +64,6 @@ private theorem eg_pow_mem {l : ℕ} [Fact l.Prime] {a : ℕ} (ha : 1 ≤ a) {u 
   simp only [one_pow, one_mul] at hf
   linear_combination hf
 
-open KStar.TotallyRealRoots in
 private theorem eg_exists_not_mem {l : ℕ} [Fact l.Prime] {u : ℤ_[l]ˣ} (hu : u ≠ 1) :
     ∃ a, u ∉ princ l a := by
   by_contra h

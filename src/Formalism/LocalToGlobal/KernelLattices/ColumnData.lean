@@ -613,11 +613,9 @@ open Formalism.L2.Ker.Base (Comm)
 open Formalism.L2.Th1.H (Sesq matH stdH stdLat alphaQ kernel4 tens4 StdData pow4 imgLat inter opU)
 open Formalism.MainNotions
 
-section Gen
 
 variable (L : PeriodPair) (ω₀ : ℂ) (c : ℝ) {n : Type} [Fintype n] [DecidableEq n]
 
-end Gen
 
 section Arith
 

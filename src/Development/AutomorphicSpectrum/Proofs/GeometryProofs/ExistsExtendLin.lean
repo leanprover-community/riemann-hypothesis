@@ -58,7 +58,6 @@ end GlobalTheory.CompanionTheory.Ar.Flat.HTL
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat.HTL
 
-open Module NumberField GlobalTheory.CompanionTheory.Ar.HT
 
 theorem exists_extend_lin {A K V W : Type} [CommRing A] [IsDomain A] [Field K] [Algebra A K] [IsFractionRing A K]
     [AddCommGroup V] [Module K V] [Module A V] [IsScalarTower A K V]

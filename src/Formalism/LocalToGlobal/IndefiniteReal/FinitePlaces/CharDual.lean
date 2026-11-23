@@ -43,11 +43,9 @@ namespace Formalism.IndefR.Fin
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Tate
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
 
-end Tate
 
 section Matrix
 

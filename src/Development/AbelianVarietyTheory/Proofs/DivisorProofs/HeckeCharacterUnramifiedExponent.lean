@@ -81,7 +81,6 @@ private theorem eq_or_eq_of_comp_eq_of_finrank_two {F E : Type} [Field F] [Numbe
   omega
 
 
-open NumberField IsDedekindDomain in
 theorem _root_.GlobalTheory.BotLValue.isCMType_embOver {F E : Type} [Field F] [NumberField F] [Field E]
     [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
     (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, _root_.GlobalTheory.AdelicU.EmbOver E w) :

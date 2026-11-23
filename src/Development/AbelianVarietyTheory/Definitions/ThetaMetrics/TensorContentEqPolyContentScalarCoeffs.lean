@@ -231,7 +231,6 @@ end Poly
 
 section Field
 
-open MvPolynomial
 
 variable {K Γ₀ σ τ : Type*} [Field K]
 
@@ -250,7 +249,6 @@ end Field
 
 section Additive
 
-open MvPolynomial
 
 variable {R Γ σ τ : Type*} [CommRing R] [LinearOrderedAddCommMonoidWithTop Γ]
   (v : AddValuation R Γ)
@@ -271,7 +269,6 @@ end Additive
 
 section Abs
 
-open MvPolynomial
 
 variable {R σ τ : Type*} [CommRing R]
 
@@ -345,7 +342,6 @@ end Lattice
 
 section Tensor
 
-open MvPolynomial Module
 
 variable {O R S Γ₀ ι κ σ : Type*} [CommRing O] [CommRing R] [Algebra O R] [CommRing S]
   [Algebra O S] [LinearOrderedCommMonoidWithZero Γ₀] (v : Valuation R Γ₀)
@@ -355,7 +351,6 @@ end Tensor
 
 section AdditiveContent
 
-open MvPolynomial Module
 
 variable {R Γ ι κ σ : Type*} [CommRing R] [LinearOrderedAddCommMonoidWithTop Γ]
   (v : AddValuation R Γ)
@@ -389,7 +384,6 @@ end More
 
 section Examples
 
-open MvPolynomial
 
 end Examples
 

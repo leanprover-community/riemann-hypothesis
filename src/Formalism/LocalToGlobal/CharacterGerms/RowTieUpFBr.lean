@@ -153,12 +153,10 @@ theorem frobSum_conj_all {d : ℕ} {l : ℕ} (hl : 1 < l) (n j j' : ℕ) (q : ZM
 
 end Sum
 
-section Core
 
 variable {C : Type} [Field C] [CharZero C] {V : VF C} {OE : Type} [CommRing OE] [StarRing OE] {dd : ℕ} {d : ℕ} [NeZero d]
   {I : Fin 2 → Type} [∀ g, Fintype (I g)]
 
-end Core
 
 end UpFBr
 

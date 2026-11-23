@@ -88,7 +88,6 @@ end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.FsLA
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.FsLA
 
-open Formalism.MainNotions.S
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalism.BasicNotions.HSpace E}
 
@@ -180,7 +179,6 @@ end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.FsLA
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.FsLA
 
-open Formalism.MainNotions.S
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalism.BasicNotions.HSpace E}
 

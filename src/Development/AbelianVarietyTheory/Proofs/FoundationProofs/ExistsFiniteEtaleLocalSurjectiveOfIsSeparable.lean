@@ -72,12 +72,10 @@ private lemma mem_smul_top_iff_of_linearEquiv_pi {V M ι : Type*} [CommRing V] [
     rw [hsum]
     exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem_smul (hx i) Submodule.mem_top
 
-open Polynomial IsLocalRing in
 private lemma ideal_smul_top_eq_self {V : Type*} [CommRing V] (J : Ideal V) :
     J • (⊤ : Submodule V V) = J := by
   rw [smul_eq_mul, Ideal.mul_top]
 
-open Polynomial IsLocalRing in
 private lemma isAdicComplete_of_linearEquiv_pi {V M ι : Type*} [CommRing V] [AddCommGroup M]
     [Module V M] [Fintype ι] (e : M ≃ₗ[V] (ι → V)) (J : Ideal V) [IsAdicComplete J V] :
     IsAdicComplete J M := by
@@ -99,7 +97,6 @@ private lemma isAdicComplete_of_linearEquiv_pi {V M ι : Type*} [CommRing V] [Ad
     simpa using hL i n
 
 
-open Polynomial IsLocalRing in
 theorem _root_.GlobalTheory.unramExt : _root_.ReciprocityTheory.ChartRestriction.G.Out.UnramExtSt := by
   unfold _root_.ReciprocityTheory.ChartRestriction.G.Out.UnramExtSt
   intro V _ _ _ _ k' _ _ _ _

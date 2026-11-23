@@ -101,7 +101,6 @@ private lemma card_fin_le_val_eq_sub (d a : ℕ) : Fintype.card {i : Fin d // a 
   · rintro ⟨h1, h2⟩
     exact ⟨⟨n, h2⟩, h1, rfl⟩
 
-open Polynomial in
 variable {F : Type} [Field F] in
 private lemma finrank_lowSub_of_le {d a : ℕ} (had : a ≤ d) :
     Module.finrank F (_root_.GlobalTheory.CuspGL.UnipNilRad.lowSub F d a) = a := by
@@ -114,7 +113,6 @@ private lemma finrank_lowSub_of_le {d a : ℕ} (had : a ≤ d) :
   rw [_root_.GlobalTheory.CuspGL.UnipNilRad.lowSub]
   omega
 
-open Polynomial in
 variable {F : Type} [Field F] in
 private lemma mem_lowSub_iff_apply_eq_zero {d a : ℕ} (v : Fin d → F) :
     v ∈ _root_.GlobalTheory.CuspGL.UnipNilRad.lowSub F d a ↔ ∀ i : Fin d, a ≤ i.val → v i = 0 := by
@@ -126,7 +124,6 @@ private lemma mem_lowSub_iff_apply_eq_zero {d a : ℕ} (v : Fin d → F) :
     funext i
     exact h i.1 i.2
 
-open Polynomial in
 variable {F : Type} [Field F] in
 private lemma toLin'_mem_nilRad_lowSub_iff {d a : ℕ} (N : Matrix (Fin d) (Fin d) F) :
     Matrix.toLin' N ∈ _root_.GlobalTheory.CuspGL.nilRad (_root_.GlobalTheory.CuspGL.UnipNilRad.lowSub F d a) ↔
@@ -163,7 +160,6 @@ private lemma toLin'_mem_nilRad_lowSub_iff {d a : ℕ} (N : Matrix (Fin d) (Fin 
       · simp [hx j hj]
 
 
-open Polynomial in
 variable {F : Type} [Field F] in
 theorem _root_.GlobalTheory.CuspGL.UnipNilRad.exists_unip_bijOn_nilRad :
     ∀ (F : Type) [Field F] [Finite F] (d a : ℕ), a ≤ d → ∃ (A : Submodule F (Fin d → F)) (H : Subgroup (GL (Fin d) F)), Module.finrank F A = a ∧ (H : Set (GL (Fin d) F)) = {u : GL (Fin d) F | ∀ i j : Fin d, (u : Matrix (Fin d) (Fin d) F) i j = (if i = j then 1 else 0) ∨ (i.val < a ∧ a ≤ j.val)} ∧ Set.BijOn (fun u : GL (Fin d) F => Matrix.toLin' (u : Matrix (Fin d) (Fin d) F) - 1) (H : Set (GL (Fin d) F)) (_root_.GlobalTheory.CuspGL.nilRad A) := by

@@ -137,7 +137,6 @@ theorem GlobalTheory.HomStab.isIso_map_ptMap_zero : ∀ (k G H X : Type) [CommRi
         Module.End.one_apply]
 
 section
-open CategoryTheory CategoryTheory.Limits GlobalTheory.HomStab
 theorem _root_.GlobalTheory.T.shapiro_isIso_groupHomology_zero : ∀ (k G H X : Type) [CommRing k] [Group G] [Group H] [MulAction G X] (φ : H →* G) (x : X) (hx : ∀ h, φ h • x = x), φ.range = MulAction.stabilizer G x → (∀ y : X, ∃ g : G, g • x = y) → ∀ A : Rep k G, IsIso (groupHomology.map φ (ptMap φ x hx A) 0) := by
   first
   | exact @GlobalTheory.HomStab.isIso_map_ptMap_zero

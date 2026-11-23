@@ -194,7 +194,6 @@ end GlobalTheory.RealUnipFrame
 
 namespace GlobalTheory.RealUnipFrame
 
-open Formalism.L2.SG.HidaSetting
 
 theorem unip_iff_inN : ∀ (I : Formalism.MainNotions.S.AutInst) (v : InfinitePlace I.F) {ρ : ℕ} (x : Fin ρ → Fin I.n → I.E) (c : Fin ρ → I.E)
     (z : Fin I.n → I.E), (∀ a, c a ≠ 0) → (∀ a, Formalism.UG.hform (starRingEnd I.E) I.J (x a) z = 0) →

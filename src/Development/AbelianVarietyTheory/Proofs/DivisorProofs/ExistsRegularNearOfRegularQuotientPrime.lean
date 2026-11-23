@@ -95,7 +95,6 @@ private lemma spanFinrank_maximalIdeal_le_add (A : Type) [CommRing A] [IsLocalRi
     _ ≤ J.spanFinrank + (maximalIdeal (A ⧸ J)).spanFinrank := by
         rw [hTc, ← hUc]; gcongr; exact Finset.card_image_le
 
-open IsLocalRing TensorProduct in
 private lemma height_add_ringKrullDim_quotient_le' (A : Type) [CommRing A] (I : Ideal A)
     [I.IsPrime] : (I.height : WithBot ℕ∞) + ringKrullDim (A ⧸ I) ≤ ringKrullDim A := by
   let P : PrimeSpectrum A := ⟨I, inferInstance⟩
@@ -109,7 +108,6 @@ private lemma height_add_ringKrullDim_quotient_le' (A : Type) [CommRing A] (I : 
   exact le_iSup (fun a : PrimeSpectrum A => Order.height a + Order.coheight a) P
 
 
-open IsLocalRing TensorProduct in
 theorem _root_.GlobalTheory.RegularAscent.exists_regular_near_of_regular_quotient (B : Type) [CommRing B]
     [IsNoetherianRing B] (p : Ideal B) [p.IsPrime]
     (hp : IsRegularLocalRing (Localization.AtPrime p)) :

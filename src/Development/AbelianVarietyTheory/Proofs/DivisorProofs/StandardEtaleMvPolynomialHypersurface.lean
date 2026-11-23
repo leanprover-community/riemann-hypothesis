@@ -63,7 +63,6 @@ theorem optionEquivLeft_pderiv_none (A : Type) [CommRing A] (n : ℕ)
     · simp [Derivation.leibniz, hp, optionEquivLeft_X_none, mul_comm]
     · simp [Derivation.leibniz, hp, optionEquivLeft_X_some, pderiv_X, mul_comm]
 
-open MvPolynomial in
 theorem eval_map_eq_eval₂_optionEquivLeft (A : Type) [CommRing A] (n : ℕ) {k : Type} [Field k]
     (ψ : A →+* k) (Q : Option (Fin n) → k) (p : MvPolynomial (Option (Fin n)) A) :
     eval Q (map ψ p) = Polynomial.eval₂ (eval₂Hom ψ (Q ∘ some)) (Q none) (optionEquivLeft A (Fin n) p) := by
@@ -75,7 +74,6 @@ theorem eval_map_eq_eval₂_optionEquivLeft (A : Type) [CommRing A] (n : ℕ) {k
   · simp [optionEquivLeft_C]
   · rcases i with _ | j <;> simp [optionEquivLeft_X_none, optionEquivLeft_X_some]
 
-open MvPolynomial in
 theorem optionEquivLeft_map (A : Type) [CommRing A] (n : ℕ) {k : Type} [Field k]
     (ψ : A →+* k) (p : MvPolynomial (Option (Fin n)) A) :
     optionEquivLeft k (Fin n) (map ψ p) = Polynomial.map (map ψ) (optionEquivLeft A (Fin n) p) := by
@@ -87,7 +85,6 @@ theorem optionEquivLeft_map (A : Type) [CommRing A] (n : ℕ) {k : Type} [Field 
   · rcases i with _ | j <;> simp [optionEquivLeft_X_none, optionEquivLeft_X_some]
 
 
-open MvPolynomial in
 theorem standardEtale_mvPolynomial_hypersurface :
     ∀ (A B : Type) [CommRing A] [CommRing B] [Algebra A B] (n : ℕ)
       [Algebra (MvPolynomial (Fin n) A) B] [IsScalarTower A (MvPolynomial (Fin n) A) B],

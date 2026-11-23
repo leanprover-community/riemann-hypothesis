@@ -59,7 +59,6 @@ private theorem conj_ine {k Ω : Type} [Field k] [NumberField k] [Field Ω] [Alg
     rw [e]
     exact ht.2 _ ((B.valuation_le_one_iff _).2 ((hm x).2 ((A.valuation_le_one_iff _).1 hx)))
 
-open scoped Pointwise in
 private theorem res_ine {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
     (A : ValuationSubring Ω) (g : G L Ω) : resP L Ω g ∈ Ine (F := Lp L) A ↔ g ∈ Ine (F := L) A := Iff.rfl
 

@@ -145,7 +145,6 @@ def chainMap {X Z : Scheme.{0}} (t : freeSch R X ⟶ freeSch R Z) : (chains R).o
   (ComplexShape.embeddingDownNat.extendFunctor (Shv R)).map ((AlgebraicTopology.alternatingFaceMapComplex (Shv R)).map (simpMap R t))
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 variable (R : Type) [CommRing R] in
 lemma _root_.GlobalTheory.EtC.Tr.chainMap_free {X Z : Scheme.{0}} (g : X ⟶ Z) :
     _root_.GlobalTheory.EtC.Tr.chainMap R ((_root_.GlobalTheory.EtC.free R).map (yoneda.map g)) =
@@ -162,7 +161,6 @@ lemma _root_.GlobalTheory.EtC.Tr.chainMap_free {X Z : Scheme.{0}} (g : X ⟶ Z) 
 def along {X Z : Scheme.{0}} (F : Shv R) (n : ℤ) (t : freeSch R X ⟶ freeSch R Z) : H R (sch.obj Z) F n →+ H R (sch.obj X) F n :=
   HK.pull R (chainMap R t) F n
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 variable (R : Type) [CommRing R] in
 theorem _root_.GlobalTheory.EtC.Tr.along_id (X : Scheme.{0}) (F : _root_.GlobalTheory.EtC.Shv R) (n : ℤ)
     (x : _root_.GlobalTheory.EtC.H R (_root_.GlobalTheory.EtC.sch.obj X) F n) :
@@ -176,7 +174,6 @@ theorem _root_.GlobalTheory.EtC.Tr.along_id (X : Scheme.{0}) (F : _root_.GlobalT
   exact _root_.GlobalTheory.EtC.pull_id R _ F n x
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 variable (R : Type) [CommRing R] in
 theorem _root_.GlobalTheory.EtC.Tr.along_free {X Z : Scheme.{0}} (g : X ⟶ Z)
     (F : _root_.GlobalTheory.EtC.Shv R) (n : ℤ) :
@@ -223,7 +220,6 @@ def trHl {Z X : Scheme.{0}} (f : Z ⟶ X) (n i : ℤ) :
   pick (IsTrHl l f n i)
 
 
-open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex in
 variable (l : ℕ) [Fact l.Prime] in
 theorem _root_.GlobalTheory.EtC.Tr.trHl_spec {Z X : Scheme.{0}} {f : Z ⟶ X} {n i : ℤ}
     (h : _root_.GlobalTheory.EtC.Tr.RedCompat l f n i) :

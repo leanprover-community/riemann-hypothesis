@@ -96,8 +96,6 @@ private lemma lintegral_nsq_transition_eq_chart_lintegral {n : ℕ} {Y : Type} [
     simp only [Function.comp, hD, A.g_self _ i hs, one_mul]
 
 
-open MeasureTheory Filter Topology Metric in
-open scoped ENNReal ContDiff in
 theorem _root_.GlobalTheory.OTY.ShellZero.shell_near_zero : ∀ (n : ℕ) (Y : Type) [TopologicalSpace Y] [T2Space Y] [SecondCountableTopology Y] [MeasurableSpace Y] [BorelSpace Y] (ι La : Type) [AddCommGroup La] (A : _root_.ReciprocityTheory.L2DbarEstimates.Y.WeightedAtlas n Y ι La), 1 ≤ n → ∀ (E L : La) (s : Fin n → ι → Y → ℂ), (∀ k, A.IsSec L (s k)) → ∀ P ∈ A.zeroSet s, _root_.GlobalTheory.Published.L2Extension.jacAt A s P ≠ 0 → ∀ (c : ℂ) (δ : ℝ), 0 < δ → ∃ N : Set Y, IsOpen N ∧ P ∈ N ∧ N ⊆ (A.chart (A.pick P)).source ∧ (∀ T : ℝ, 2 ≤ T → ∫⁻ y in N ∩ {y | -T - 1 ≤ δ * _root_.GlobalTheory.Published.L2Extension.psi A L s y ∧ δ * _root_.GlobalTheory.Published.L2Extension.psi A L s y ≤ -T + 1}, ENNReal.ofReal (A.nsq (A.kap + E) (fun i y => A.g (A.kap + E) i (A.pick P) y * c) y * Real.exp (-_root_.GlobalTheory.Published.L2Extension.psi A L s y)) ∂A.mu ≤ ENNReal.ofReal (62 / 30 * (Real.pi ^ n / ((n - 1).factorial : ℝ)) / δ * _root_.GlobalTheory.Published.L2Extension.resSq A E L s P c)) ∧ ∫⁻ y in N, ENNReal.ofReal (1 / (1 + (δ * _root_.GlobalTheory.Published.L2Extension.psi A L s y) ^ 2) * A.nsq (A.kap + E) (fun i y => A.g (A.kap + E) i (A.pick P) y * c) y * Real.exp (-_root_.GlobalTheory.Published.L2Extension.psi A L s y)) ∂A.mu < ⊤ := by
   intro n Y _ _ _ _ _ ι La _ A hn E L s hs P hP hJ c δ hδ
   set i := A.pick P with hi

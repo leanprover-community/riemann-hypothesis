@@ -143,7 +143,6 @@ end GlobalTheory.TensorValue
 
 namespace GlobalTheory.TensorValue
 
-open Formalism.L2.LamCM
 
 def bval {n : ℕ} (la : Fin n → ℕ) {S : Type} [CommRing S] (i : Idx la) (w : Matrix (Fin n) (Fin n) S) : S :=
   DualWeyl.evalAt w (map (Int.castRingHom S) (intVec la i))
@@ -297,7 +296,6 @@ end GlobalTheory.TensorValue
 
 namespace GlobalTheory.TensorValue
 
-open Formalism.L2.LamCM
 
 theorem exists_tval_of_triangular : ∀ (T : Type) [Fintype T] [DecidableEq T] (N : T → ℕ) (la : ∀ t, Fin (N t) → ℕ)
     (K : Type) [Field K] [CharZero K] (G : MvPolynomial (Formalism.L2.LamCM.FrVar N) K),

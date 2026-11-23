@@ -87,7 +87,6 @@ end GlobalTheory.KerPoincare
 
 namespace GlobalTheory.KerPoincare
 
-open GlobalTheory.CechPic
 
 attribute [local instance] Over.cartesianMonoidalCategory
 

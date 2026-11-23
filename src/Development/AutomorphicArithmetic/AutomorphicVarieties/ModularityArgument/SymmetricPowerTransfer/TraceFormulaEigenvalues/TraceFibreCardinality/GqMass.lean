@@ -235,7 +235,6 @@ private theorem gq_mass {H T Y : Type} [Group H] [CommGroup T] [MulAction T Y] [
     (fun o ho => by rw [(Finset.mem_filter.mp ho).2]), Finset.sum_const, nsmul_eq_mul, cnt]
   exact key O.out ((memT O).mp hO)
 
-open UpperTheory.V.Z.Sym in
 theorem UpperTheory.V.Z.Sym.Tf.gqMass :
     UpperTheory.V.Z.Sym.Tf.GqMass := by
   intro H T G _ _ _ φ ι H₀ C θ U f δ hf hδ hfin h0 h1 h2 h3 hle

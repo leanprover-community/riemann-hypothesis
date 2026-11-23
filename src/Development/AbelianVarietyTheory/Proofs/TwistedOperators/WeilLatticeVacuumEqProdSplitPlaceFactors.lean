@@ -206,7 +206,6 @@ end GlobalTheory.LatStabScalar
 
 namespace GlobalTheory.LatStabScalar
 
-open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter
 
 variable {D : D7}
 
@@ -268,7 +267,6 @@ end GlobalTheory.LatStabScalar
 
 namespace GlobalTheory.LatStabScalar
 
-open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter
 
 variable {D : D7}
 

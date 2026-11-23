@@ -181,7 +181,6 @@ end Gen
 end GlobalTheory.CenterLocU
 
 namespace GlobalTheory.CenterLocU
-open Matrix Formalism.UG
 
 section Gen2
 

@@ -65,7 +65,6 @@ private theorem natCast_not_isUnit_lemma_3 {F : Type} [Field F] [NumberField F] 
       _ ≤ _ := pow_le_pow_right₀ (by omega) hk
   omega
 
-open NumberField IsDedekindDomain in
 private theorem mem_primeTo_ne_zero_lemma_2 {F : Type} [Field F] [NumberField F] {N : ℕ} (hN : 2 ≤ N)
     {x : 𝓞 F} (hx : x ∈ _root_.GlobalTheory.Mass.primeTo (N : 𝓞 F)) : x ≠ 0 := by
   rintro rfl
@@ -73,7 +72,6 @@ private theorem mem_primeTo_ne_zero_lemma_2 {F : Type} [Field F] [NumberField F]
     (by rw [Ne, Ideal.span_singleton_eq_top]; exact natCast_not_isUnit_lemma_3 hN)
   exact hx Q hQ (hle (Ideal.mem_span_singleton_self _)) Q.zero_mem
 
-open NumberField IsDedekindDomain in
 private theorem primeTo_le_nonZeroDivisors__lemma {F : Type} [Field F] [NumberField F] {N : ℕ}
     (hN : 2 ≤ N) : _root_.GlobalTheory.Mass.primeTo (N : 𝓞 F) ≤ nonZeroDivisors (𝓞 F) :=
   fun _ hx => mem_nonZeroDivisors_of_ne_zero (mem_primeTo_ne_zero_lemma_2 hN hx)

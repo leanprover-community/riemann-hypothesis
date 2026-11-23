@@ -131,7 +131,6 @@ theorem sum_split {M : Type*} [AddCommMonoid M] (m p : ℕ) (f : Fin m → M) :
 end GlobalTheory.JointDict
 
 namespace GlobalTheory.JointDict
-open GlobalTheory.LowestKType GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators MvPolynomial GlobalTheory.Capelli GlobalTheory.HarmLine
 variable {D : D7} {n m : ℕ}
 
 theorem term_lt (p : ℕ) (τ : D.what₂.Tau) (i l : Fin m) (j k : Fin n) (hi : (i : ℕ) < p) (hl : (l : ℕ) < p)
@@ -176,7 +175,6 @@ theorem sop_eq (w : GlobalTheory.ExportSeries.Weight D n) (τ : D.what₂.Tau) (
 end GlobalTheory.JointDict
 
 namespace GlobalTheory.JointDict
-open GlobalTheory.LowestKType GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators MvPolynomial GlobalTheory.Capelli GlobalTheory.HarmLine
 variable {D : D7} {n m : ℕ}
 
 def zRow (p : ℕ) (c : Fin (min p m)) : Fin m := ⟨c, lt_of_lt_of_le c.2 (min_le_right _ _)⟩
@@ -236,7 +234,6 @@ theorem kop_yz (w : GlobalTheory.ExportSeries.Weight D n) (τ : D.what₂.Tau) (
 end GlobalTheory.JointDict
 
 namespace GlobalTheory.JointDict
-open GlobalTheory.LowestKType GlobalTheory.IndefiniteRowSideFullHecke.RaisingLoweringOperators MvPolynomial GlobalTheory.Capelli GlobalTheory.HarmLine
 
 theorem jointTop_of_lowestKType (D : D7) (n m : ℕ) (w : GlobalTheory.ExportSeries.Weight D n) (lam : D.what₂.Tau → Fin n → ℂ)
     (P : PolF D m n) (hH : IsHarm w P) (hN : IsNHw w lam P) (hK : IsKHw w P) (τ : D.what₂.Tau) :

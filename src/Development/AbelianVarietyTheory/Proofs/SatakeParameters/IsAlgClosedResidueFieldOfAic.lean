@@ -121,7 +121,6 @@ end GlobalTheory.GenusTwoPureComparison.Cmp
 
 namespace GlobalTheory.GenusTwoPureComparison.Cmp
 
-open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC
 
 section Torsion
 variable {T : Type} [CommRing T] [IsDomain T] [IsLocalRing T]
@@ -140,7 +139,6 @@ end GlobalTheory.GenusTwoPureComparison.Cmp
 
 namespace GlobalTheory.GenusTwoPureComparison.Cmp
 
-open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC
 
 section Adic
 variable (l : ℕ) [Fact l.Prime]
@@ -177,7 +175,6 @@ end GlobalTheory.GenusTwoPureComparison.Cmp
 
 namespace GlobalTheory.GenusTwoPureComparison.Cmp
 
-open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC
 
 section Main
 variable {T : Type} [CommRing T] [IsDomain T] [IsLocalRing T] (l : ℕ) [Fact l.Prime]

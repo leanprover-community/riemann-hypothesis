@@ -81,8 +81,6 @@ private lemma isSB_dropF'
   · intro x hx k a
     simpa [e, _root_.GlobalTheory.SW.SiegelOp.cons0] using hx k a.succ
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] (Ψ : Finset (E →+* ℂ)) {n N : ℕ} in
 private lemma dropZ_mem_Hn (Z : _root_.GlobalTheory.SW.CM Ψ (N + 1) (N + 1))
     (hZ : Z ∈ _root_.GlobalTheory.SW.Hn Ψ (N + 1)) :
@@ -95,8 +93,6 @@ private lemma dropZ_mem_Hn (Z : _root_.GlobalTheory.SW.CM Ψ (N + 1) (N + 1))
   ext a b
   simp [conjTranspose_apply]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] (Ψ : Finset (E →+* ℂ)) {n N : ℕ} in
 private lemma pushZ_single_zero_mem_Hn_of_nonneg (Z : _root_.GlobalTheory.SW.CM Ψ (N + 1) (N + 1))
     (hZ : Z ∈ _root_.GlobalTheory.SW.Hn Ψ (N + 1)) (t : ℝ) (ht : 0 ≤ t) :
@@ -117,8 +113,6 @@ private lemma pushZ_single_zero_mem_Hn_of_nonneg (Z : _root_.GlobalTheory.SW.CM 
   field_simp
   ring
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] (Ψ : Finset (E →+* ℂ)) {n N : ℕ} in
 private lemma dotProduct_add_smul_vecMulVec_single_zero_mulVec (M : Matrix (Fin (N + 1)) (Fin (N + 1)) ℂ)
     (σ : E →+* ℂ) (u : Fin (N + 1) → ℂ) (c : ℂ) :
@@ -136,8 +130,6 @@ private lemma dotProduct_add_smul_vecMulVec_single_zero_mulVec (M : Matrix (Fin 
   congr 1
   simp [vecMulVec, mulVec, dotProduct, Pi.single_apply, Complex.mul_conj]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] (Ψ : Finset (E →+* ℂ)) {n N : ℕ} in
 private lemma expo_pushZ_single_zero (x : Matrix (Fin n) (Fin (N + 1)) E)
     (Z : _root_.GlobalTheory.SW.CM Ψ (N + 1) (N + 1)) (z z' : _root_.GlobalTheory.SW.CM Ψ n (N + 1))
@@ -153,8 +145,6 @@ private lemma expo_pushZ_single_zero (x : Matrix (Fin n) (Fin (N + 1)) E)
   refine Finset.sum_congr rfl fun k _ => ?_
   ring
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] (Ψ : Finset (E →+* ℂ)) {n N : ℕ} in
 private lemma mul_cexp_expo_pushZ_single_zero (φ : Matrix (Fin n) (Fin (N + 1)) E → ℂ)
     (x : Matrix (Fin n) (Fin (N + 1)) E) (Z : _root_.GlobalTheory.SW.CM Ψ (N + 1) (N + 1))
@@ -172,15 +162,11 @@ private lemma mul_cexp_expo_pushZ_single_zero (φ : Matrix (Fin n) (Fin (N + 1))
   rw [expo_pushZ_single_zero, h, Complex.exp_add, Complex.ofReal_exp]
   ring
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] (Ψ : Finset (E →+* ℂ)) {n N : ℕ} in
 private lemma col_nonneg' (x : Matrix (Fin n) (Fin (N + 1)) E) :
     0 ≤ _root_.GlobalTheory.SW.SiegelOp.col Ψ x :=
   Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => normSq_nonneg _
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] (Ψ : Finset (E →+* ℂ)) {n N : ℕ} in
 private lemma col_eq_zero_iff_exists_eq_cons0 (hΨ : Ψ.Nonempty)
     (x : Matrix (Fin n) (Fin (N + 1)) E) :
@@ -200,8 +186,6 @@ private lemma col_eq_zero_iff_exists_eq_cons0 (hΨ : Ψ.Nonempty)
   · rintro ⟨y, rfl⟩
     simp [_root_.GlobalTheory.SW.SiegelOp.col, _root_.GlobalTheory.SW.SiegelOp.cons0]
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] (Ψ : Finset (E →+* ℂ)) {n N : ℕ} in
 private lemma cons0_injective :
     Function.Injective (_root_.GlobalTheory.SW.SiegelOp.cons0 : Matrix (Fin n) (Fin N) E → _) := by
@@ -209,8 +193,6 @@ private lemma cons0_injective :
   ext k a
   simpa [_root_.GlobalTheory.SW.SiegelOp.cons0] using congrFun (congrFun h k) a.succ
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 variable {E : Type} [Field E] [NumberField E] (Ψ : Finset (E →+* ℂ)) {n N : ℕ} in
 private lemma expo_cons0' (y : Matrix (Fin n) (Fin N) E)
     (Z : _root_.GlobalTheory.SW.CM Ψ (N + 1) (N + 1)) (z z' : _root_.GlobalTheory.SW.CM Ψ n (N + 1)) :
@@ -221,8 +203,6 @@ private lemma expo_cons0' (y : Matrix (Fin n) (Fin N) E)
   simp [dotProduct, mulVec, Fin.sum_univ_succ]
 
 
-open Matrix Complex NumberField Filter Topology in
-open scoped ComplexConjugate ComplexOrder Real Classical in
 theorem _root_.GlobalTheory.SW.thH_siegel_operator : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     (Ψ : Finset (E →+* ℂ)), _root_.GlobalTheory.SW.IsType Ψ → ∀ (n N : ℕ)
     (φ : Matrix (Fin n) (Fin (N + 1)) E → ℂ), _root_.GlobalTheory.SW.IsSB φ →

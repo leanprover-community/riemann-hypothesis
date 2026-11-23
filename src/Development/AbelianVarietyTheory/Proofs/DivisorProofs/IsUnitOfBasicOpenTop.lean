@@ -119,7 +119,5 @@ end GlobalTheory.RescaleLift
 
 namespace GlobalTheory.RescaleLift
 
-open GlobalTheory.ArcPull GlobalTheory.ArcQ
-open GlobalTheory.PsiEvenPull (proj)
 
 end GlobalTheory.RescaleLift

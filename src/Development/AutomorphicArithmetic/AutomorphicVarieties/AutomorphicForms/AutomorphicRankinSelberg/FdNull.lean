@@ -41,7 +41,6 @@ private theorem UpperTheory.V.Af.Rs.line_null (c : ℝ) : volume {z : ℂ | z.re
     Measure.prod_prod]
   simp
 
-open MeasureTheory Set in
 theorem UpperTheory.V.Af.Rs.fdNull :
     UpperTheory.V.Af.Rs.VolMap → UpperTheory.V.Af.Rs.FdNull := by
   intro _

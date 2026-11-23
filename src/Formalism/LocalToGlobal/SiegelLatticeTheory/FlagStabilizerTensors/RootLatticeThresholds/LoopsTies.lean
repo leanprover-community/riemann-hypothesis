@@ -377,7 +377,6 @@ theorem gramDeterminant_of_unipotent_det (h : DetUUC) : GramDeterminantCount :=
 
 end G0
 
-section Cor
 
 open Formalism.L2.SG.LoopsEv
 
@@ -391,6 +390,5 @@ variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ)
   (A : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), AmpDat (X x hx i))
   (hV : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), PvalForm (W x hx i) (hI x hx i) (A x hx i))
 
-end Cor
 
 end Formalism.L2.SG.LoopsTies

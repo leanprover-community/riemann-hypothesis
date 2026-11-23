@@ -92,7 +92,6 @@ end GlobalTheory.OnePlace.Ident
 
 namespace GlobalTheory.OnePlace.Ident
 
-open MvPowerSeries
 
 variable {p : ℕ} [Fact p.Prime]
 
@@ -138,7 +137,6 @@ end GlobalTheory.OnePlace.Ident
 
 namespace GlobalTheory.OnePlace.Ident
 
-open MvPowerSeries
 
 theorem zOm_even (p : ℕ) [Fact p.Prime] (σ : ℂ_[p] →+* ℂ_[p]) {n' : ℕ} {ρ : Type} [Fintype ρ] (om om' : ρ → ℂ_[p])
     (k : ℕ) (hk : k < n') (he : Even k) :

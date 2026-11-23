@@ -201,7 +201,6 @@ end Formalism.L2.FormalSeriesBounds.RF
 
 namespace Formalism.L2.FormalSeriesBounds.RF
 
-open Formalism.IncomingBounds
 
 section G
 

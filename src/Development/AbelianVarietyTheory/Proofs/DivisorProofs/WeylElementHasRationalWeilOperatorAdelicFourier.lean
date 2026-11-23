@@ -190,7 +190,6 @@ end GlobalTheory.WeylFourier
 
 namespace GlobalTheory.WeylFourier
 
-open scoped Classical
 
 section Adelic2
 
@@ -251,7 +250,6 @@ end GlobalTheory.WeylFourier
 
 namespace GlobalTheory.WeylFourier
 
-open scoped Classical
 
 theorem weyl_hasOp : ∀ (F : Type) [Field F] [NumberField F], IsTotallyReal F → ∀ (ψ : AddChar (AF F) ℂ), IsStd ψ →
     ∀ (κ : Type) [Fintype κ] [DecidableEq κ],

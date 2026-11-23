@@ -389,8 +389,6 @@ end Pair
 
 section Main
 
-open PositivityTheory.Rg.BcB.E
-open scoped ENNReal Pointwise
 
 attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 
@@ -486,8 +484,6 @@ end Main
 
 section Growth
 
-open PositivityTheory.Rg.BcB.E
-open scoped ENNReal Pointwise
 
 attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 

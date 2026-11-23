@@ -50,7 +50,6 @@ def IsEmbHom (ι : A.V →ₗ[D.host.E] B.V) (s : GA D A →* GA D B) : Prop :=
 
 end Scalar
 
-section Vec
 
 variable {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
 
@@ -61,7 +60,6 @@ variable (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ
 
 
 
-end Vec
 
 end Formalism.IndefR.Mi
 

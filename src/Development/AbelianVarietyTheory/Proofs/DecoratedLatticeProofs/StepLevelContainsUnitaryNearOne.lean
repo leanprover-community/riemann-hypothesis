@@ -171,7 +171,6 @@ end GlobalTheory.LevelApprox
 
 namespace GlobalTheory.LevelApprox
 
-open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.ColAd
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

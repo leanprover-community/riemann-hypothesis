@@ -80,7 +80,6 @@ theorem tens_ext
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), map_add (f := _), hx, hy]
 
 
-open TensorProduct in
 theorem tens_desc (m n : ℕ)
     (hs : Function.Surjective (Algebra.TensorProduct.lift (IsScalarTower.toAlgHom R S C)
       (IsScalarTower.toAlgHom R T C) (fun _ _ => Commute.all _ _)))
