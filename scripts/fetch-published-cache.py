@@ -74,17 +74,20 @@ def clean_path(name: str) -> str:
 
 def read_manifest(path: Path) -> dict[str, str]:
     expected: dict[str, str] = {}
-    for number, line in enumerate(path.read_text().splitlines(), 1):
-        match = re.fullmatch(r"([0-9a-f]{64}) [ *](.+)", line)
-        if not match:
-            raise ValueError(f"Malformed manifest line {number}")
-        digest, name = match.groups()
-        name = clean_path(name)
-        if not name.startswith(PREFIX) or not name.endswith((".olean", ".ilean")):
-            raise ValueError(f"Unexpected manifest entry: {name!r}")
-        if name in expected:
-            raise ValueError(f"Duplicate manifest path: {name!r}")
-        expected[name] = digest
+    with path.open() as stream:
+        # Preserve splitlines' handling of line separators and line numbers.
+        lines = (line for record in stream for line in record.splitlines())
+        for number, line in enumerate(lines, 1):
+            match = re.fullmatch(r"([0-9a-f]{64}) [ *](.+)", line)
+            if not match:
+                raise ValueError(f"Malformed manifest line {number}")
+            digest, name = match.groups()
+            name = clean_path(name)
+            if not name.startswith(PREFIX) or not name.endswith((".olean", ".ilean")):
+                raise ValueError(f"Unexpected manifest entry: {name!r}")
+            if name in expected:
+                raise ValueError(f"Duplicate manifest path: {name!r}")
+            expected[name] = digest
     if not expected:
         raise ValueError("The published manifest is empty")
     return expected
