@@ -347,11 +347,9 @@ theorem Good.exists_pow [Algebra.IsUnramifiedAt ℤ Q.asIdeal] (h : Good Q i) (h
 
 end Local
 
-section Types
 
 variable {X : Fields} {Kf : Type} [Field Kf] (eK : X.K →+* Kf)
 
-end Types
 
 end GlobalTheory.GO.PlWitt
 

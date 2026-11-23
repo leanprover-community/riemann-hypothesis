@@ -223,13 +223,11 @@ end FieldPeriods
 
 variable (D : D7)
 
-section Place
 
 variable (i : D.nd.Loc) (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i))
 
 variable {k : ℕ} (M : GE D.nd →* Matrix (Fin k) (Fin k) (D.nd.O i))
 
-end Place
 
 variable {D}
 

@@ -155,7 +155,6 @@ theorem nonarchimedeanLocalField_secondCountable_t2Space : SecondCountableTopolo
         MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
   open scoped Valued in
   have : ProperSpace k := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace k
-  open scoped Valued in
   exact ⟨secondCountable_of_proper, inferInstance⟩
 
 theorem vanish {n : Type} [Fintype n] [DecidableEq n] {c p : ℕ} (h1 : 1 ≤ p) (hc : p < c)

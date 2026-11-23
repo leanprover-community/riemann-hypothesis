@@ -38,12 +38,10 @@ namespace GlobalTheory.Proof.ColumnStabilizerTrivialLocal
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col
 open GlobalTheory.IndefiniteRowSideFullHecke
 
-section Generic
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n n' : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-end Generic
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

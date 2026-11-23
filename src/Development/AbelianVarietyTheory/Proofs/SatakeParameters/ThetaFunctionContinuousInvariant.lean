@@ -88,17 +88,13 @@ theorem mem_adForms_one (c : CoefA V) (f : Bridge.Gf V → c.W)
 
 end Frame
 
-section Forms
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {P : Pin hL D} {X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp}
 
-end Forms
 
-section Main
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {P : Pin hL D} {X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp}
 
-end Main
 
 theorem eventually_cong_preF {D : D7} {V : HSp D} {n : ℕ} (PV : principalLevelFrame.RowPsi V n)
     (hF : D.host.F = maximalRealSubfield D.host.E) (hstd : GlobalTheory.NJoin.StdFrame hF PV) {N : ℕ} (hN : 0 < N) :
@@ -117,11 +113,9 @@ theorem eventually_cong_preF {D : D7} {V : HSp D} {n : ℕ} (PV : principalLevel
   rw [e2, GlobalTheory.ThetaFormV.preF_fin]
   exact hx
 
-section Cont
 
 variable {hL : GlobalTheory.Published.LocalLanglandsGL} {D : D7} {P : Pin hL D} {X : GlobalTheory.NJoin.RealAt D P.cf P.C P.tp}
 
-end Cont
 
 end GlobalTheory.ThetaFormV
 

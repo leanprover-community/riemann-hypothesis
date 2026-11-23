@@ -78,10 +78,8 @@ theorem subst_psubst {κ' : Type} {a : κ → MvPowerSeries κ' ℂ_[l]} (ha : H
 theorem cc_lg (k : κ) : constantCoeff (lg k : MvPowerSeries κ ℂ_[l]) = 0 :=
   PowerSeries.constantCoeff_subst_eq_zero (constantCoeff_X k) _ cc_logF
 
-section Frob
 
 variable {σ : ℂ_[l] →+* ℂ_[l]}
 
-end Frob
 
 end GlobalTheory.ThBe0.Inhab

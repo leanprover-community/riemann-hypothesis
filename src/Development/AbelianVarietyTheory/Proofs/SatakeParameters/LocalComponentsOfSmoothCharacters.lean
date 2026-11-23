@@ -74,17 +74,13 @@ noncomputable def valAt (ϖ : kˣ) (y : IrrGL (k := k)) : ℂˣ :=
 
 end Local
 
-section Sph
 
 variable {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E))
 
-end Sph
 
-section Glob
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
-end Glob
 
 end GlobalTheory.SphUnr
 

@@ -44,10 +44,8 @@ open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG For
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section OneByOne
 variable {R : Type} [CommRing R]
 
-end OneByOne
 
 variable {D : D7}
 

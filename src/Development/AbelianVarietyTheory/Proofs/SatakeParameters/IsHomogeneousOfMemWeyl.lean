@@ -145,7 +145,6 @@ theorem coeff_subGen_mem {ν : Fin a → ℕ} {ν' : Fin b → ℕ} (hν : Antit
 
 end Generic
 
-section Integral
 
 variable {p : ℕ} [Fact p.Prime] {lam : Qbar →+* ℂ_[p]}
 
@@ -153,13 +152,10 @@ variable {D : D7} {N : ℕ} {wt : D.what₂.Tau → DomWeight N}
 
 variable {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} {O : LiftObj D (D.chTw u μ)} {i : ℕ}
 
-end Integral
 
-section Subst
 
 variable {D : D7} {N N' : ℕ}
 
-end Subst
 
 section Lift
 

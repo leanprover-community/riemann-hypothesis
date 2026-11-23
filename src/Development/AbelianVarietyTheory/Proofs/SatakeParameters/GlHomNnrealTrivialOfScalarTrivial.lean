@@ -50,7 +50,6 @@ public import Mathlib.Basic.PEquiv
 namespace GlobalTheory
 open Matrix
 
-section HomTriv
 variable {k : Type} [Field k] {N : ℕ}
 
 private lemma hom_ne_zero (φ : GL (Fin N) k →* NNReal) (g : GL (Fin N) k) : φ g ≠ 0 := by
@@ -87,11 +86,9 @@ private lemma diag_perm (φ : GL (Fin N) k →* NNReal) (σ : Equiv.Perm (Fin N)
   rw [hconj, map_mul, map_mul, mul_comm (φ U), mul_assoc, ← map_mul, mul_inv_cancel, map_one,
     mul_one]
 
-end HomTriv
 end GlobalTheory
 
 namespace GlobalTheory
-section HomTriv2
 variable {k : Type} [Field k] {N : ℕ}
 
 private lemma diag_conj_transvection (i j : Fin N) (hij : i ≠ j) (y c : k) :
@@ -134,7 +131,6 @@ private lemma transvection_trivial (φ : GL (Fin N) k →* NNReal) (hx : ∃ x :
   have h0 := hom_ne_zero φ (T c)
   exact (mul_right_eq_self₀.mp key.symm).resolve_right h0
 
-end HomTriv2
 end GlobalTheory
 
 namespace GlobalTheory

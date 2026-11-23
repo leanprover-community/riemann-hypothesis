@@ -44,13 +44,11 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNoti
 
 namespace GlobalTheory.CompareInert
 
-section Letters
 
 variable (D : D7) (p : ℕ) [Fact p.Prime]
 
 variable {D p}
 
-end Letters
 
 section Rings
 
@@ -102,57 +100,43 @@ theorem norm_l_lt : ‖(l : ℂ_[l])‖ < 1 := by
 
 end Rings
 
-section Props
 
 open Formalism.MainNotions.GL3Theta MvPowerSeries
 
 variable {l d : ℕ} [Fact l.Prime] [NeZero d]
 
-end Props
 
-section Sign
 
 
 variable {l d : ℕ} [Fact l.Prime] [NeZero d]
 
-end Sign
 
-section Reps
 
 variable (D : D7) (p : ℕ)
 
-end Reps
 
 section Hyp
 
 end Hyp
 
-section Statements
 
 variable {D : D7} {Dx : DivX D} {Tw : TwForms D}
 
-end Statements
 
-section Units
 
 open MvPowerSeries
 
 variable {D : D7} {p : ℕ} [Fact p.Prime]
 
-end Units
 
-section Direction
 
 open GlobalTheory.InertCompare GlobalTheory.Proof.IdempotentLatticeSequence
 
 variable (D : D7) {l : ℕ} [Fact l.Prime] (lam : TaylorLogMetric.Qbar →+* ℂ_[l])
 
-end Direction
 
-section Main
 
 variable (D : D7) {Dx : DivX D} {Tw : TwForms D}
 
-end Main
 
 end GlobalTheory.CompareInert

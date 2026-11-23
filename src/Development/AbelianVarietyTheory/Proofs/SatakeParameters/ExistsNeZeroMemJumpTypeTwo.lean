@@ -38,11 +38,9 @@ open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.Bas
 instance decThickN {n b η : ℕ} (sz : ZMod n → ℕ) : DecidablePred (ThickN b η sz) := fun i => by
   unfold ThickN; infer_instance
 
-section Input
 
 variable (D : D7) (j : Fin D.R.m) (ε : ℤˣ) {l : ℕ} [Fact l.Prime] {K LL : FinExt l}
   (c : D.host.E →+* ↥K.1) (κ : D.host.E →+* ↥LL.1)
 
-end Input
 
 end GlobalTheory.HTW.Rec.Model

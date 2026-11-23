@@ -45,7 +45,6 @@ noncomputable section
 
 namespace GlobalTheory.PrimeData
 
-section General
 
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ}
 variable {X : PJ D B P j} {E : PtExt X} {hM : IntAtExt X E} {ka wL wF : WeightFamilies.Wt D j}
@@ -68,7 +67,6 @@ private theorem secQ_data_of_real_local (G : GlobalFamilyData (xplus X E hM) ka 
   · exact inLiftSec G la S Gc Prw y (fun ζ => (hw ζ).toSecPt) g0 Tn
       (liftModelSt_of G la (locRing_of h1 h2) y hw g0 Tn hC hg0)
 
-end General
 
 end GlobalTheory.PrimeData
 

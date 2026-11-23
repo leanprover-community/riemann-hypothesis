@@ -139,12 +139,10 @@ def ball (r : ℝ) (hr : 0 ≤ r) : Submodule (𝓞 K) K where
 
 end Local
 
-section Det
 
 variable (D : D7) {l : ℕ} [Fact l.Prime] (ψ : D.host.E →+* ℂ_[l]) {N : ℕ}
   {L₀ L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)} {P : Matrix (Fin N) (Fin N) D.host.E}
 
-end Det
 
 section Power
 
@@ -161,12 +159,10 @@ theorem tauEmb_eq (τ : D.what₂.Tau) : tauEmb D lam τ = lamTau D lam τ := by
 
 end Power
 
-section Main
 
 variable {D : D7} {Dx : DivX D} {Tw : TwForms D}
 
 variable (E : KerEnt D Dx Tw) (O : ∀ u μ, LiftObj D (D.chTw u μ))
 
-end Main
 
 end GlobalTheory.KernelScalarUnit

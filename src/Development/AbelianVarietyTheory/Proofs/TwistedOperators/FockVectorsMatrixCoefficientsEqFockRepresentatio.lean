@@ -140,7 +140,6 @@ theorem family_eq_zero {p q : ℕ} (T : GrpData p q) (hgen : Subgroup.closure (T
       intro g hg u
       rw [← mul_assoc]
       exact hy _ (hx g hg) u
-  open scoped Pointwise in
   have hg : g ∈ Submonoid.closure (T.expt '' upq p q ∪ (T.expt '' upq p q)⁻¹) := by
     rw [← Subgroup.closure_toSubmonoid, hgen]
     simp

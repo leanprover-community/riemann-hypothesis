@@ -40,13 +40,10 @@ noncomputable section
 
 namespace GlobalTheory.KFormsCmp
 
-section Cong
 
 variable {E V : Type} [Field E] [AddCommGroup V] [Module E V]
 
-end Cong
 
-section Red
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {P : HeightOneSpectrum (𝓞 E)}
 
@@ -55,7 +52,6 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {P : Height
 
 
 
-end Red
 
 section Primes
 
@@ -102,13 +98,10 @@ theorem disj (hP : Pr.Ok) (hs : IsSel X sel) (mu : Tup X.F X.E X.K S) (hg : ∀ 
 
 end Primes
 
-section Top
 
 variable {E : Type} [Field E] {a n : ℕ}
 
-end Top
 
-section Levels
 
 variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} (T : ChainData D u μ)
 
@@ -116,7 +109,6 @@ variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} (T : ChainData D u �
 
 variable {T}
 
-end Levels
 
 section Points
 
@@ -129,7 +121,6 @@ variable {T}
 
 end Points
 
-section Moves
 
 variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} (T : ChainData D u μ)
   (abelian₂ : HeightOneSpectrum (𝓞 T.X.E) → Submodule (𝓞 T.X.E) (Sp T.X.E (AmbientLatticeAvoidance.rkTop D.R)))
@@ -137,9 +128,7 @@ variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} (T : ChainData D u �
 
 variable {T abelian₂ dep}
 
-end Moves
 
-section Classes
 
 variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} {T : ChainData D u μ}
   {abelian₂ : HeightOneSpectrum (𝓞 T.X.E) → Submodule (𝓞 T.X.E) (Sp T.X.E (AmbientLatticeAvoidance.rkTop D.R))}
@@ -149,9 +138,7 @@ variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} {T : ChainData D u �
 variable {rep : ∀ i, (D.chTw u μ).cls i → APt T i}
 
 
-end Classes
 
-section Kernels
 
 variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} {T : ChainData D u μ}
   {rep : ∀ i, (D.chTw u μ).cls i → APt T i}
@@ -162,6 +149,5 @@ variable {D : D7} {u : D.what₂.Word} {μ : D.what₂.Tup} {T : ChainData D u �
 variable {abelian₂ : HeightOneSpectrum (𝓞 T.X.E) → Submodule (𝓞 T.X.E) (Sp T.X.E (AmbientLatticeAvoidance.rkTop D.R))}
   {dep : HeightOneSpectrum (𝓞 T.X.E) → ℕ}
 
-end Kernels
 
 end GlobalTheory.KFormsCmp

@@ -385,7 +385,6 @@ theorem intFrExt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : H
   let objOfSABMap {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
       {B : Type} [CommRing B] {b : Base l B} {S S' : Scheme.{0}} {s : S ⟶ Sp B} {f : S' ⟶ S}
       (o : Obj D l b s) {t' : SAB H S'} (m : SABMap t' o.t f) : Obj D l b (f ≫ s) :=
-    open GlobalTheory.ObjPull in
       have hL : LBIso t'.PP.L (o.t.PP.L.pull m.cm.F) := by
         obtain ⟨w, hw, -⟩ := m.lin
         exact ⟨w, hw⟩

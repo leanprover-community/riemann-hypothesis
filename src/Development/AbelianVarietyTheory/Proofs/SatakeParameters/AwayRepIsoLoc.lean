@@ -131,11 +131,9 @@ theorem eta_alg (hAut : TieAut N A) (m : ℤ) (τ : H.E →+* ℂ) :
 
 end Piece
 
-section List
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N) (i : N.Loc)
 
-end List
 
 end GlobalTheory.BCGal
 

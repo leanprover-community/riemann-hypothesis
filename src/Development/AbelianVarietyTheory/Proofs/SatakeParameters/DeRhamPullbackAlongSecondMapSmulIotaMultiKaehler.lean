@@ -42,12 +42,10 @@ open scoped TensorProduct
 
 namespace GlobalTheory.WH.PullCoc
 
-section Gen
 
 variable {k : Type} [Field k] {ι : Type} [LinearOrder ι] {E E' : Type} [AddCommGroup E] [Module k E]
   [AddCommGroup E'] [Module k E']
 
-end Gen
 
 end GlobalTheory.WH.PullCoc
 
@@ -78,49 +76,41 @@ end GlobalTheory.WH.PullCoc
 
 namespace GlobalTheory.WH.PullCoc
 
-section Y
 
 variable {F K K' : Type} [Field F] [Field K] [Field K'] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ K'] [Algebra F K]
   [IsScalarTower ℂ F K] [Algebra K K'] [IsScalarTower ℂ K K'] [Algebra F K'] [IsScalarTower F K K'] [IsScalarTower ℂ F K']
   {d : ℕ} (x : Fin (d + 1) → F)
 
-end Y
 
 end GlobalTheory.WH.PullCoc
 
 namespace GlobalTheory.WH.PullCoc
 
-section Y
 
 variable {F K K' : Type} [Field F] [Field K] [Field K'] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ K'] [Algebra F K]
   [IsScalarTower ℂ F K] [Algebra K K'] [IsScalarTower ℂ K K'] [Algebra F K'] [IsScalarTower F K K'] [IsScalarTower ℂ F K']
   {d : ℕ} (x : Fin (d + 1) → F)
 
-end Y
 
 end GlobalTheory.WH.PullCoc
 
 namespace GlobalTheory.WH.PullCoc
 
-section Y
 
 variable {F K K' : Type} [Field F] [Field K] [Field K'] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ K'] [Algebra F K]
   [IsScalarTower ℂ F K] [Algebra K K'] [IsScalarTower ℂ K K'] [Algebra F K'] [IsScalarTower F K K'] [IsScalarTower ℂ F K']
   {d : ℕ} (x : Fin (d + 1) → F)
 
-end Y
 
 end GlobalTheory.WH.PullCoc
 
 namespace GlobalTheory.WH.PullCoc
 
-section Y
 
 variable {F K K' : Type} [Field F] [Field K] [Field K'] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ K'] [Algebra F K]
   [IsScalarTower ℂ F K] [Algebra K K'] [IsScalarTower ℂ K K'] [Algebra F K'] [IsScalarTower F K K'] [IsScalarTower ℂ F K']
   {d : ℕ} (x : Fin (d + 1) → F)
 
-end Y
 
 end GlobalTheory.WH.PullCoc
 

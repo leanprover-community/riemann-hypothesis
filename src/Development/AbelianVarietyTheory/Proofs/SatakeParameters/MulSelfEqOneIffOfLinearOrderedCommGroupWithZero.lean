@@ -53,7 +53,6 @@ theorem v_two {ϖ : L} {σ : L →+* L} {q : ℕ} (h : IsUnramInv ϖ σ q) (hq :
 
 
 
-section Main
 
 variable {ϖ : L} {σ : L →+* L} {q : ℕ} {δ : L} {ψ : AddChar L ℂ}
 
@@ -63,7 +62,6 @@ variable {ϖ : L} {σ : L →+* L} {q : ℕ} {δ : L} {ψ : AddChar L ℂ}
 
 
 
-end Main
 
 section Laurent
 

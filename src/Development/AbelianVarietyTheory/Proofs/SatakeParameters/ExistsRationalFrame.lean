@@ -66,18 +66,14 @@ variable {R : Ranks} (H : Formalism.BasicNotions.Host R) (φ : H.E →+* ℂ) {N
 
 end Units
 
-section Rescale
 
 variable {D : D7} {Dx : DivX D} {Tw : TwForms D}
 
-end Rescale
 
-section Ties
 
 variable {D : D7} {Dx : DivX D} {Tw : TwForms D} {C : CharFrame D} {nch : NChoice D}
 
 variable (E : KerEnt D Dx Tw) (Tp : TupTied D C nch) (g : ∀ u μ, Reps D u μ) (fr : ∀ u μ, Frames D u μ)
 
-end Ties
 
 end GlobalTheory.UnUnitCmp
