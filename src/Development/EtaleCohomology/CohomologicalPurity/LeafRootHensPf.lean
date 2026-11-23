@@ -11,12 +11,9 @@ namespace LateralTheory.CohomologicalPurity.Hz
 
 theorem hens_isUnit_of_mk {B : Type} [CommRing B] (J : Ideal B) (hJ : J ≤ Ideal.jacobson ⊥) (x : B)
     (hx : IsUnit (Ideal.Quotient.mk J x)) : IsUnit x := by
-  obtain ⟨y, hy⟩ := (Ideal.Quotient.mk_surjective (hx.unit⁻¹ : (B ⧸ J)ˣ).1)
-  have h1 : Ideal.Quotient.mk J (x * y) = Ideal.Quotient.mk J 1 := by
-    rw [map_mul, hy, map_one]; exact hx.mul_val_inv
-  have h2 : x * y - 1 ∈ J := Ideal.Quotient.eq.mp h1
-  have h3 : IsUnit (x * y) := Ideal.isUnit_of_sub_one_mem_jacobson_bot _ (hJ h2)
-  exact isUnit_of_mul_isUnit_left h3
+  rw [Ideal.jacobson_bot] at hJ
+  let : IsLocalHom (Ideal.Quotient.mk J) := isLocalHom_of_le_jacobson hJ
+  exact IsUnit.of_map (Ideal.Quotient.mk J) x hx
 
 theorem hens_isUnit_of_sub {B : Type} [CommRing B] (J : Ideal B) (hJ : J ≤ Ideal.jacobson ⊥) (x y : B)
     (hxy : x - y ∈ J) (hy : IsUnit (Ideal.Quotient.mk J y)) : IsUnit x := by
