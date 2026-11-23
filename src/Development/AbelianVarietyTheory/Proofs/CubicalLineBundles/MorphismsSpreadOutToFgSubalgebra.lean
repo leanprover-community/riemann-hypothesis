@@ -290,11 +290,9 @@ theorem tangent_ext {R A : Type} [CommRing R] [CommRing A] (f : R →+* A) (hf :
 
 end General
 
-section Field
 
 variable {k A : Type} [Field k] [CommRing A] [Algebra k A] {B Z : Scheme.{0}} (pB : B ⟶ Sp k)
 
-end Field
 
 end GlobalTheory.Spread
 

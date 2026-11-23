@@ -103,7 +103,6 @@ def levA (p : GL (Fin (r + c)) F) : GL (Fin r) F :=
   if h : (bAA (p : Matrix (Fin (r + c)) (Fin (r + c)) F)).det ≠ 0 then GeneralLinearGroup.mkOfDetNeZero _ h else 1
 
 def levD (p : GL (Fin (r + c)) F) : GL (Fin c) F :=
-  open Classical in
   if h : (bDD (p : Matrix (Fin (r + c)) (Fin (r + c)) F)).det ≠ 0 then GeneralLinearGroup.mkOfDetNeZero _ h else 1
 
 theorem levA_val {p : GL (Fin (r + c)) F} (hp : bDA (p : Matrix (Fin (r + c)) (Fin (r + c)) F) = 0) :
@@ -161,7 +160,6 @@ def PJset (r c : ℕ) : Set (GL (Fin (r + c)) F) :=
   {g | ∃ p : GL (Fin (r + c)) F, bDA (p : Matrix (Fin (r + c)) (Fin (r + c)) F) = 0 ∧ ∃ k ∈ parJ O ϖ r c, g = p * k}
 
 def fvec (g : GL (Fin (r + c)) F) : V :=
-  open Classical in
   if h : g ∈ PJset O ϖ r c then
     (chiP nrm δ h.choose * lamJ δ h.choose_spec.2.choose) • ρ (levA h.choose, levD h.choose) v₀
   else 0

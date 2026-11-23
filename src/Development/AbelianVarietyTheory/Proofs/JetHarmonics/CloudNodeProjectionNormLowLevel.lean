@@ -133,7 +133,7 @@ theorem cloud_node_projection_norm : ∀ (M : Type) [NormedAddCommGroup M] [Inne
   have hcomp := GlobalTheory.T.unitary_glModule_proj_components_level_add_two M n ε E N F io pr μ j w hM.2.1 (fun s => (hF s).2.1) hA hw
   have heig := GlobalTheory.splitCas_eigenvalue_summand M n ε E N F io pr μ hM hF hA
   have hnb : (n : ℝ) ≤ bv := by
-    have h1 : (1 : ℝ) ≤ n := by exact_mod_cast (by have := hS.2.1; omega : 1 ≤ n)
+    have h1 : (1 : ℝ) ≤ n := by exact_mod_cast (omega : 1 ≤ n)
     have h2 : (n : ℝ) ≤ (n : ℝ) ^ 7 := le_self_pow₀ h1 (by norm_num)
     have h3 := hS.2.2.2.2.2
     have h4 : (0 : ℝ) ≤ (n : ℝ) ^ 7 := by positivity

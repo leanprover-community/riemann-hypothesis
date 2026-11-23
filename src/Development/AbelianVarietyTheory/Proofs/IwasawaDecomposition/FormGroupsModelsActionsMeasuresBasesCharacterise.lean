@@ -42,7 +42,6 @@ namespace GlobalTheory.Mem.R3.Rw.ModWExt
 
 open Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.Mem.R3.Rw.LiftExt
 
-section Comparison₂
 
 variable {B B' : Base} {C : Cols B} {C' : Cols B'} {a : Late B C} {a' : Late B' C'}
   {W : HSp a.D} {W' : HSp a'.D} {S : a.D.what₂.Tau → SPar} {S' : a'.D.what₂.Tau → SPar} {M : DSModel W S} {M' : DSModel W' S'}
@@ -123,9 +122,7 @@ private theorem act_of (hP : B'.toPre = B.toPre) (hW : HEq W' W) (h : DSTie M' M
   subst L'
   exact (by with_unfolding_all exact (h0 :))
 
-end Comparison₂
 
-section Fields
 
 variable {B B' : Base} {C : Cols B} {C' : Cols B'} {a : Late B C} {a' : Late B' C'}
 
@@ -287,7 +284,6 @@ private theorem modW_of (hP : B'.toPre = B.toPre) (hG : G' = G) (hi : HEq iG' iG
   · exact nu_of hP h hβ hPg hν hfd h0.νW
   · exact onb_of hP h hBV (h0.BV i)
 
-end Fields
 
 end GlobalTheory.Mem.R3.Rw.ModWExt
 

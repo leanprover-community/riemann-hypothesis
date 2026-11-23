@@ -109,7 +109,6 @@ theorem _root_.GlobalTheory.LocWeil.DerComm.differentiableAt_oneParameter {A : T
       exact h3
   exact h2.mul_const _
 
-section Alg
 
 variable {S U : Type} [AddCommGroup S] [Module ℂ S]
 
@@ -121,7 +120,6 @@ variable {β b b'}
 
 variable {d : U →ₗ[ℝ] Module.End ℂ S} {κ : ℂ} {Y : U →ₗ[ℝ] U}
 
-section Main
 
 variable {Γ I : Type} [Group Γ] (ω : Γ →* Module.End ℂ S) (G : Γ →* (U →L[ℝ] U)) (ev : I → S →ₗ[ℂ] ℂ) {f : S}
   {N : Submodule ℂ S}
@@ -134,7 +132,6 @@ variable {Γ I : Type} [Group Γ] (ω : Γ →* Module.End ℂ S) (G : Γ →* (
   (hline : ∀ w u, ∃ ℓ : ℝ → S →ₗ[ℂ] ℂ, ℓ 0 = ev w ∧ (∀ Ψ s, HasDerivAt (fun s => ℓ s Ψ) (ℓ s (d u Ψ)) s) ∧
     ∀ s, ∃ (c : ℂ) (w' : I), ∀ Ψ, ℓ s Ψ = c * ev w' Ψ)
 
-end Main
 
 end Alg
 

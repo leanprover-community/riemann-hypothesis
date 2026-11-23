@@ -47,22 +47,18 @@ open GlobalTheory.Points
 
 namespace GlobalTheory.FlagEmb.QuotLine
 
-section Pull
 
 variable {X Z : Scheme.{0}} (f : Z ⟶ X) (L : LB X)
 
 variable {f L} {W V : Z.Opens} {i j k : L.ι}
 
-end Pull
 
-section Three
 
 variable {X X₀ X₁ Z : Scheme.{0}} (f : Z ⟶ X) (f₀ : Z ⟶ X₀) (f₁ : Z ⟶ X₁) (L : LB X) (L₀ : LB X₀) (L₁ : LB X₁)
   {I : Type} (a : I → L.ι) (b : I → L₀.ι) (c : I → L₁.ι)
 
 variable {f f₀ f₁ L L₀ L₁ a b c}
 
-end Three
 
 section Val
 

@@ -61,13 +61,11 @@ theorem decoRaw_mul_levelIwahori_reduction (g z : GL (Fin n) (AfE F E)) (hz : z 
 
 end Gen
 
-section Top
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (V : HSp D) {n : ℕ} (hn : V.rank = n) [NeZero n]
 
-end Top
 
 end GlobalTheory.Mem.ColAd.LevGrp
 

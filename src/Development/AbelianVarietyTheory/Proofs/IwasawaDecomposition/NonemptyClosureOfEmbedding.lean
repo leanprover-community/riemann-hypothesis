@@ -47,13 +47,11 @@ open GlobalTheory.FlagMod (ev ev_spMap le_preimage_comp)
 
 namespace GlobalTheory.SubClosure
 
-section General
 
 variable {O S S' : Type} [CommRing O] [CommRing S] [CommRing S'] {N : ℕ}
 
 instance subsingleton_sp (K : Type) [Field K] : Subsingleton (Sp K) :=
   inferInstanceAs (Subsingleton (PrimeSpectrum K))
 
-end General
 
 end GlobalTheory.SubClosure

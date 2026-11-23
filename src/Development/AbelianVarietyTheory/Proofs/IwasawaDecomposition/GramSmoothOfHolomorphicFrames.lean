@@ -47,19 +47,15 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.GramFamily
 
-section Pull
 
 variable {K : Type} [CommRing K] {Y : Scheme.{0}} {p : Y ⟶ Sp K} {σ : K →+* ℂ} {D : ℕ}
 
-end Pull
 
-section LocalBasis
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {X Y : Scheme.{0}}
 
 variable {K : Type} [CommRing K] {p : Y ⟶ Sp K} {σ : K →+* ℂ}
 
-end LocalBasis
 
 section Family
 

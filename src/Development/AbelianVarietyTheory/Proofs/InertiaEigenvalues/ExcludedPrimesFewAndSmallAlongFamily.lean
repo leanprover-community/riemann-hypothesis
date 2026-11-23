@@ -65,7 +65,7 @@ theorem excOK_at (P : ParameterChoice' D L) (hS : SizesAt L) :
   have hb : 0 < L.sc.b := Real.exp_pos _
   have hη := L.etaSz_pos
   have hSc := L.Sc_pos
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hn1 : (1 : ℝ) ≤ D.R.n := by
     have : 1 ≤ D.R.n := D.R.ord_pos
     exact_mod_cast this

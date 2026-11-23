@@ -101,7 +101,6 @@ variable {Cl : Type} [Fintype Cl] {Vs : Type} [AddCommGroup Vs] [Module c.F Vs]
 
 end Cover
 
-section Core
 
 variable {D : D7}
 
@@ -109,7 +108,6 @@ variable (T : CoreJ D) (i : Fin D.R.m) {c' : Coeff T.Q.l} (hle : T.Q.c.F ≤ c'.
   (hV : T.V ((i : ℕ) + 1) (sigB T hle) = Wc D i)
 
 
-end Core
 
 section Clauses
 
@@ -154,7 +152,6 @@ variable (h : O.Cl' () → GA D (Vc D i))
 
 end Clauses
 
-section Rows
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F} {i : Fin D.R.m}
@@ -163,9 +160,7 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.
 
 
 
-end Rows
 
-section Back
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {T : CoreJ D} [Algebra T.Q.c.F D.what₂.LL] {R : RealDat D A T.Q.c.F} {i : Fin D.R.m}
@@ -182,9 +177,7 @@ variable (κ : WeightFamilies.Wt D ((i : ℕ) + 1))
 
 
 
-end Back
 
-section Closed
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A)
@@ -194,6 +187,5 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.
 
 
 
-end Closed
 
 end GlobalTheory.OneMapRefCompare

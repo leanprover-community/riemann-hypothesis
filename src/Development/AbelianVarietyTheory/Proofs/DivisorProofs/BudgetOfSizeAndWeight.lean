@@ -161,7 +161,7 @@ variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotio
   {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
 
 theorem pp_bounds {PP A : ℝ} (h : HostNum D L PP A 1) : (D.R.f : ℝ) ^ 2 * (D.R.r : ℝ) ^ 5 ≤ PP ∧ PP ≤ L.sc.b := by
-  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by have := h.f8; omega : 1 ≤ D.R.f)
+  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (omega : 1 ≤ D.R.f)
   have hr : (1 : ℝ) ≤ D.R.r := by
     have h1 := D.R.two_le_m
     have h2 := D.R.m_add_three_le_k

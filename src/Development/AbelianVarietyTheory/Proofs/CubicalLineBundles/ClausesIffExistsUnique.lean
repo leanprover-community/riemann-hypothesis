@@ -49,27 +49,21 @@ open GlobalTheory.SecTransport GlobalTheory.SecTieEx
 
 namespace GlobalTheory.FramedCMPointCompare
 
-section Bundles
 
 variable {X X' Y : Scheme.{0}}
 
-end Bundles
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H} {c : Coeff l}
 
-section Letters
 
 variable [StarRing (𝓞 E)] {nΨ n' : ℕ}
 
 variable {o : LamObj c nΨ n'}
 
-end Letters
 
-section Data
 
 variable {Dw : Datum H} {Xo : Moduli Dw l}
 
-end Data
 
 variable {D : D7}
 

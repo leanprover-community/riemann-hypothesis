@@ -169,7 +169,7 @@ theorem degree_fine : ∀ {D : D7} (L : SizeData₂ D), SizesAt L → ParameterC
   obtain ⟨i, rfl⟩ : ∃ i, j = i + 1 := ⟨j - 1, by omega⟩
   have hc : 0 ≤ L.sc.b' / L.sc.x :=
     div_nonneg (GlobalTheory.HCEntries.b'_pos L).le (by linarith [L.sc.one_lt_alt])
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have har := arith D.R.k D.R.m D.R.t (D.R.N D.R.m) L.Sc L.etaSz hm (GlobalTheory.HCEntries.one_le_k D) (ranks_le D).1
     L.t_win.1 L.Sc_pos.le L.etaSz_pos.le
   unfold degPi fockDeg topSum degErr Nm

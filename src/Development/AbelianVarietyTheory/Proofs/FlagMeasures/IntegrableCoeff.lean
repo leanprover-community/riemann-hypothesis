@@ -41,18 +41,14 @@ noncomputable section
 
 namespace GlobalTheory.LevelIdem
 
-section Conv
 
 variable {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
   [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
-end Conv
 
-section Alg
 
 variable {Q : Type} [Group Q] [Fintype Q]
 
-end Alg
 
 section Lev
 

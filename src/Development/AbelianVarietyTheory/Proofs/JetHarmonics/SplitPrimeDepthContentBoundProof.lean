@@ -168,7 +168,7 @@ theorem splitBd_of_supplies (hC : RF.CHSupply) (hM : RF.MONSupply) : SplitBd := 
     rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, hP.card, nsmul_eq_mul]
   have hw : 0 ≤ ∑ z, P.w z := Finset.sum_nonneg fun z _ => (hD.w_pos z).le
   have hm : (0 : ℝ) ≤ P.m := Nat.cast_nonneg _
-  have hmk : (P.m : ℝ) ≤ P.k := by exact_mod_cast (by have := hP.mk_le; omega : P.m ≤ P.k)
+  have hmk : (P.m : ℝ) ≤ P.k := by exact_mod_cast (omega : P.m ≤ P.k)
   have hf : (0 : ℝ) ≤ P.f := Nat.cast_nonneg _
   set A : ℝ := P.m * ∑ z, P.w z with hA
   set B : ℝ := P.f * P.k * P.SE with hB

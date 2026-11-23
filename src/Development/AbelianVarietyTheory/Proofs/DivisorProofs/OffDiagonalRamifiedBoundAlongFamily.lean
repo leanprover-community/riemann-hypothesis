@@ -47,7 +47,7 @@ theorem offDiagonalRamified_bound_const_four (h : SizesAt L) (P : ParameterChoic
   have hL := one_le_scL L
   have hn := one_le_n D
   have hf : (1 : ℝ) ≤ D.R.f := by linarith [f_eq D, one_le_n D]
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hE := abs_EatD_le h P hx j hj
   have hlog : Real.log D.host.d ≤ L.sc.L := by
     obtain ⟨-, -, -, -, -, -, hQ, -⟩ := h

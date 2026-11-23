@@ -89,7 +89,6 @@ scoped instance t2HA : T2Space (HA R σ J) := (GlobalTheory.AdelicUnitaryTop.lcs
 
 end Inst
 
-section AdeleInst
 
 variable (F : Type) [Field F] [NumberField F]
 
@@ -110,7 +109,6 @@ scoped instance t2Space_numberFieldInfiniteAdeles : T2Space (Ainf F) := GlobalTh
 scoped instance properFv (v : HeightOneSpectrum (𝓞 F)) : ProperSpace (Fv F v) :=
   GlobalTheory.AdelicUnitaryTop.properSpace_adicCompletion F v
 
-end AdeleInst
 
 def Nice (R : Type) [CommRing R] [TopologicalSpace R] : Prop :=
   IsArtinianRing R ∧ IsReduced R ∧ IsOpenUnits R ∧

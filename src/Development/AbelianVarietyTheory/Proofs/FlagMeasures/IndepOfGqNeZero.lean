@@ -62,11 +62,9 @@ theorem _root_.GlobalTheory.SgGlob.Iota.one_mem_dInv (j : ℕ) : (1 : E) ∈ _ro
     simpa using pow_le_pow_left' (one_le_inv_differentIdeal (E := E)) j
   exact hpow (FractionalIdeal.one_mem_one _)
 
-section Pair
 
 variable {g : ℕ} {Λ : Submodule (𝓞 E) (Fin n → E)} {P P' : Matrix (Fin n) (Fin (r + 1)) E}
 
-end Pair
 
 section Gram
 

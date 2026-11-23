@@ -471,12 +471,10 @@ theorem congr_of_fromBlocks_congr (h2 : (2 : E) ≠ 0) (hc : ∀ t, c (c t) = t)
 
 end MatrixForm
 
-section CM
 
 open NumberField ReciprocityTheory.ChartRestriction.G
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-end CM
 
 end GlobalTheory.HermWitt

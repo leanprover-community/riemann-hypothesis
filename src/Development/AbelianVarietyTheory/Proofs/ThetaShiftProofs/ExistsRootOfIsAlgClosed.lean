@@ -146,7 +146,6 @@ theorem exists_tateIsoQ_twist [IsAlgClosed F] (hB : D₀.TauBimult) : letI := H.
 
 end Tate
 
-section ThetaShiftProofs
 
 variable {l : Level H} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F} {O' : Type} [CommRing O'] [IsDomain O']
   {b : O →+* O'} (a : ArcIn D l β O' b)
@@ -155,6 +154,5 @@ variable {ρ : a.D₀.X → a.D₀.X → O'ˣ}
 
 variable (hρ : letI := H.starRing; IsScalarForm (𝓞 E) ρ)
 
-end ThetaShiftProofs
 
 end GlobalTheory.TauTwist

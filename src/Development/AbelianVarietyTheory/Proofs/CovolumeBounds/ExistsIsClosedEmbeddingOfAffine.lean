@@ -245,11 +245,9 @@ theorem PtsOver.compactSpace [ProperSpace F] {p : X ⟶ Sp R} (hp : IsProjOver p
 
 end Normed
 
-section Sphere
 
 variable {𝕜 : Type} [RCLike 𝕜] {R : Type} [CommRing R] {N : ℕ}
 
-end Sphere
 
 
 end GlobalTheory.Points

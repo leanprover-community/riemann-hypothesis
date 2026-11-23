@@ -116,7 +116,7 @@ theorem small_le (P : ParameterChoice' D L) (hx : 2 ≤ L.sc.x) :
     L.etaSz ≤ L.sc.w'' D.R.n ∧ (D.R.k : ℝ) * D.R.N D.R.m ≤ L.sc.w'' D.R.n ∧
       L.sc.w'' D.R.n ≤ L.sc.b' / 2 := by
   have hb' := b'_pos L
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have ht : (0 : ℝ) ≤ D.R.t := Nat.cast_nonneg _
   have he : L.etaSz ≤ L.sc.w'' D.R.n :=
     (le_mul_of_one_le_left L.etaSz_pos.le (one_le_mul_of_one_le_of_one_le hm (by linarith))).trans P.mteta

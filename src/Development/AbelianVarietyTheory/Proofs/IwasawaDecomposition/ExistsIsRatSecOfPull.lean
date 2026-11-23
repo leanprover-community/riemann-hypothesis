@@ -44,12 +44,10 @@ namespace GlobalTheory.TrueGeo.SmallSec
 
 variable {F : Type} [Field F] [NumberField F]
 
-section Local
 
 variable {Z : Scheme.{0}} [IsIntegral Z] {D : CartierDiv Z} {x : Z} {u g : Z.functionFieldˣ}
   {f : Z.functionField} {k τ : ℕ}
 
-end Local
 
 variable {C : CxSt F} {Y : Var F} (A : Adl C Y) {k τ : ℕ} {f : Y.Fn}
 

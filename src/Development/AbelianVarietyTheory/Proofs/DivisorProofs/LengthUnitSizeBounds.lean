@@ -77,31 +77,13 @@ theorem one_le_scL (L : SizeData₂ D) : 1 ≤ L.sc.L :=
   Real.one_le_rpow L.sc.one_lt_alt.le L.sc.eps_pos.le
 
 theorem one_le_zBase (L : SizeData₂ D) : 1 ≤ zBase L := by
-  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by have := two_le_f D; omega : 1 ≤ D.R.f)
-  have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by have := six_le_r D; omega : 1 ≤ D.R.r)
-  exact one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le hf hr) (one_le_scL L)
-
-variable {L : SizeData₂ D} {P : ParameterChoice' D L}
-
-theorem pow_le_PP (T : ParamsT D L P) : zBase L ^ 12 ≤ T.PP := by
-  have hZ := one_le_zBase L
-  have h1 : zBase L ^ 12 ≤ zBase L ^ T.eP := by
-    rw [← Real.rpow_natCast]
-    exact Real.rpow_le_rpow_of_exponent_le hZ (by exact_mod_cast T.eP_ge)
-  rw [T.PP_eq]
-  exact h1.trans (le_mul_of_one_le_left (by positivity) T.one_le_CP)
-
-theorem ceil_le_TO (T : ParamsT D L P) :
-    ⌈T.PP ^ 2 * (T.Dp : ℝ) ^ 2 * (D.R.k : ℝ) / (D.R.m : ℝ)⌉₊ ≤ T.TO := by
-  refine Nat.ceil_le.2 (le_trans ?_ T.TO_ge)
-  have hPP : 1 ≤ T.PP := (one_le_pow₀ (one_le_zBase L)).trans (pow_le_PP T)
-  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by have := two_le_f D; omega : 1 ≤ D.R.f)
+  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (omega : 1 ≤ D.R.f)
   have hD : (1 : ℝ) ≤ T.Dp := by
     have h1 : 0 < D.R.r.choose 2 := Nat.choose_pos (by have := six_le_r D; omega)
     have h2 : 0 < T.Dp := by rw [T.Dp_eq]; exact Nat.mul_pos (by have := two_le_f D; omega) h1
     exact_mod_cast h2
   have hx : 1 ≤ L.sc.x ^ T.Cp := Real.one_le_rpow L.sc.one_lt_alt.le T.Cp_nonneg
-  have hm : (0 : ℝ) < D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 0 < D.R.m)
+  have hm : (0 : ℝ) < D.R.m := by exact_mod_cast (omega : 0 < D.R.m)
   have hd := L.thickDensity_pos
   refine div_le_div₀ (by positivity) ?_ (by positivity) (mul_le_of_le_one_right hm.le L.thickDensity_le_one)
   have e : T.PP ^ 4 * (T.Dp : ℝ) ^ 3 * D.R.k * D.R.f * L.sc.x ^ T.Cp =

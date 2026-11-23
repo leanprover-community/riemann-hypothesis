@@ -66,11 +66,9 @@ theorem norm_dotProduct_mulVec_star_le (A : Matrix n n ℂ) (x : n → ℂ) :
 
 end OpNorm
 
-section LogDet
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
-end LogDet
 
 section Inertia
 

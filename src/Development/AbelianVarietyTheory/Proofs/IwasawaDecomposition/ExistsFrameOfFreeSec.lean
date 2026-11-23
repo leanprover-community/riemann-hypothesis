@@ -63,12 +63,10 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 open GlobalTheory.FramePull GlobalTheory.ConstFam
 
-section Move
 
 variable {S Z : Scheme.{0}} {G₀ : Over S} {G : Over Z} {L₀ : LB G₀.left} {L : LB G.left} {F : G.left ⟶ G₀.left}
   {π : Z ⟶ S} {N : ℕ} {w : LB.Iso L (L₀.pull F)}
 
-end Move
 
 theorem exists_pt {S : Scheme.{0}} {G : Over S} (T : Over S) {Y : Scheme.{0}} (a : Y ⟶ T.left) (b : Y ⟶ G.left)
     (h : a ≫ T.hom = b ≫ G.hom) : ∃ ρ : Y ⟶ (T ⊗ G).left, ρ ≫ (fst T G).left = a ∧ ρ ≫ (snd T G).left = b :=

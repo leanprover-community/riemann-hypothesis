@@ -150,11 +150,9 @@ theorem _root_.GlobalTheory.SnMass.VolN.IntG.mem_dInv_two_mul (t : E ≃ₐ[ℚ]
 
 end Field
 
-section Place
 
 variable {E : Type} [Field E]
 
-end Place
 
 variable {E : Type} [Field E] in
 private lemma modelEntry_eq_sq_mul_pairing_lemma_6 (σ : E →+* E) {k r : ℕ}

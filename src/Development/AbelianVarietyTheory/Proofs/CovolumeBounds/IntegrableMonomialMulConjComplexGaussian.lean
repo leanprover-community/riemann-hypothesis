@@ -98,12 +98,10 @@ section Combinatorics
 
 end Combinatorics
 
-section Kernel
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
   [MeasurableSpace E] [BorelSpace E]
 
-end Kernel
 
 section Monomials
 

@@ -42,11 +42,9 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Pieces
 
 variable (D : D7) (u : D.what₂.Word)
 
-end Pieces
 
 section Gmap
 

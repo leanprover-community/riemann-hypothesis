@@ -174,7 +174,7 @@ end Cols
 theorem log_g_le {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) (hL : 1 ≤ L.sc.L) (hf : 1 ≤ D.R.f) (hr : 1 ≤ D.R.r) :
     Real.log (D.host.g 0) + Real.log (D.host.g 1) ≤ (2 + 2 * P.CYL) * zBase L ^ 12 := by
   obtain ⟨Y, h1, -, h3, h4⟩ := P.g_Y
-  have hk : (0 : ℝ) < D.R.k := by exact_mod_cast (by have := D.R.m_add_three_le_k; omega : 0 < D.R.k)
+  have hk : (0 : ℝ) < D.R.k := by exact_mod_cast (omega : 0 < D.R.k)
   have hb : 0 < L.sc.b := Real.exp_pos _
   have hY : 0 < Y := lt_of_lt_of_le (by positivity) h1
   have hg : ∀ i, Real.log (D.host.g i) ≤ L.sc.L + P.CYL * L.sc.L := fun i => by

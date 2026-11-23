@@ -271,7 +271,7 @@ theorem errors_le (h : SizesAt L) (P : ParameterChoice' D L) :
   refine ⟨by linarith [P.kS_le], by linarith [P.mteta], ?_⟩
   have he := (GlobalTheory.HCEntries.eta_k_le hE).1
   have h1 := P.h0_ge.2.2.2.2.1
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have h2 : LevelStarExponents.h0 L ≤ L.etaSz := div_le_self L.etaSz_pos.le hm
   obtain ⟨r1, r2⟩ := ranks_le D
   have hN : (1 : ℝ) ≤ D.R.N D.R.m := by linarith

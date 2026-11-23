@@ -58,11 +58,9 @@ theorem FrameBC.at (hbc : FrameBC Z) {R R' : Type} [CommRing R] [IsLocalRing R] 
   subst hx
   exact hbc R R' φ x f ψ
 
-section Cpt
 
 variable {C : FlagCpt Z e}
 
-end Cpt
 
 section Core
 

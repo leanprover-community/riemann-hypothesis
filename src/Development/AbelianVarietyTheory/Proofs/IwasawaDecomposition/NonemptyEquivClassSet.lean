@@ -58,25 +58,21 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-section Comp
 
 variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
   {σ : c.F →+* ℂ} {V : HSp D} {r : ℕ}
 
-end Comp
 
 section Abstract
 
 end Abstract
 
-section Classes
 
 open GlobalTheory.Mass Formalism.IndefR.Lev Formalism.L2.DIV
 
 variable {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
   {σ : c.F →+* ℂ} {V : HSp D} {r : ℕ}
 
-end Classes
 
 section Local
 
@@ -91,7 +87,6 @@ theorem mem_hatL_iff [Module.Finite (𝓞 E) Λ] (z : Fin n → E ⊗[F] FiniteA
 
 end Local
 
-section LocalLevel
 
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
@@ -99,9 +94,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarR
 
 variable {hc S gp Λ}
 
-end LocalLevel
 
-section Level
 
 open Formalism.L2.Geo.Def Formalism.IndefR.Lev Formalism.L2.DIV
 open Formalism.UG (levelVL levelAfL prV bc stabGL)
@@ -110,6 +103,5 @@ variable (D)
 
 variable {D}
 
-end Level
 
 end GlobalTheory.LevPin

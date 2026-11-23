@@ -76,12 +76,10 @@ theorem ipLev_zOf (x y : Fin (dimP W Ch sel mu P hX) → X.K) :
 
 end Gen
 
-section Fam
 
 variable {B : Base} {px : PreX B.toPre} (I : TC B px) (hX : B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc B px → B.LL))
   (tr : TrI B px) (t : TupU I U)
 
-end Fam
 
 section TC
 

@@ -82,13 +82,10 @@ theorem exists_smul_mem (X : Data E r) (v : Fin r → E) : ∃ n : ℤ, n ≠ 0 
   | (intros; apply @_root_.GlobalTheory.SubmoduleScalarClosure.main <;> first | assumption | infer_instance)
   | (intros; exact _root_.GlobalTheory.SubmoduleScalarClosure.main ..)
 
-section Torus
 
 variable (X : Data E r)
 
-end Torus
 
-section Main
 
 variable (X : DataX E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (hP : X.IsSec la P)
   (hχ : ∀ γ ∈ X.Γ, (∀ v ∈ X.Λ, ∃ y ∈ X.Λ,
@@ -96,7 +93,6 @@ variable (X : DataX E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (hP : X.IsS
 
 include hP hχ
 
-end Main
 
 end
 

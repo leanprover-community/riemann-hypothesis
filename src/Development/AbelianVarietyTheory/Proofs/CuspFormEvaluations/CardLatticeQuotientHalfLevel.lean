@@ -48,7 +48,6 @@ theorem natCard_quot_smul_top_of_projective {R N : Type} [CommRing R] [IsDomain 
     [Module.Finite R N] [Module.Projective R N] (I : Ideal R) [Finite (R ⧸ I)] :
     Nat.card (N ⧸ (I • ⊤ : Submodule R N)) = Nat.card (R ⧸ I) ^ Module.finrank R N := by
   classical
-  open scoped TensorProduct in
   have hA : Finite (Ideal (R ⧸ I)) :=
     Finite.of_injective (fun J : Ideal (R ⧸ I) => (J : Set (R ⧸ I))) SetLike.coe_injective
   have hMS : Finite (MaximalSpectrum (R ⧸ I)) :=

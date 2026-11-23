@@ -35,12 +35,10 @@ namespace GlobalTheory.HeightCounting.Up
 
 namespace PointStatements
 
-section Loc
 
 variable {D : D7} {cf : CharFrame D} {jE : D.host.E →+* Qb} {A : SideA D cf jE} {M : MtFam D} {C : NChoice D}
   {tup : D.what₂.Tup → Fin D.R.m → HChar D.host.E}
 
-end Loc
 
 theorem allSt_mono {p q : ∀ (K : Ctx) (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (P : Pre2 K w), St P → Prop}
     (h : ∀ K B f T w P x, p K B f T w P x → q K B f T w P x) (hp : AllSt p) : AllSt q :=

@@ -48,11 +48,9 @@ namespace GlobalTheory.ShFam.Pad.BCEx
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {p : ℕ} {W : ValuationSubring ℂ}
 
-section Local
 
 variable {Xo : ∀ l : Level H, Moduli Dw l} {Y : LocalSystem Xo p W} {i₀ : Idx H p}
 
-end Local
 
 section Global
 

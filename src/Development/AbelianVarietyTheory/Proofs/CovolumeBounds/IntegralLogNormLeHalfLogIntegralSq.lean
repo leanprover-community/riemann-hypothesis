@@ -113,16 +113,12 @@ theorem measurePreserving_sphereRotation [FiniteDimensional ℂ E] (μ : Measure
 
 end Rotation
 
-section Torus
 
 variable {ι : Type*} [Fintype ι]
 
-end Torus
 
-section Concavity
 
 variable {X V : Type*} [MeasurableSpace X] [NormedAddCommGroup V]
 
-end Concavity
 
 end GlobalTheory

@@ -102,10 +102,8 @@ theorem lift_biinv (μf : Measure I.Gf) (a : MonoidAlgebra ℂ Q) (x : I.Gf) (k 
 
 end Infl
 
-section Tens
 
 variable {ι : Type} [Fintype ι] {G : ι → Type} [∀ i, Group (G i)] [∀ i, Finite (G i)]
 
-end Tens
 
 end GlobalTheory.Mem.RowsBundle

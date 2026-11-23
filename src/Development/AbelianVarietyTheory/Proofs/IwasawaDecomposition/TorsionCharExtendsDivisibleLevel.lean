@@ -54,11 +54,9 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.TorsCharExt
 
-section Ring
 
 variable (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C]
 
-end Ring
 
 theorem sp_id (A : Type) [CommRing A] : spMap (RingHom.id A) = 𝟙 _ := Spec.map_id _
 

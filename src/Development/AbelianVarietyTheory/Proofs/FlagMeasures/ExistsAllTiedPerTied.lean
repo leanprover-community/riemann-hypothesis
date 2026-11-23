@@ -83,7 +83,6 @@ theorem flag_topology (B : HSp D) {ρ : ℕ} {e : Matrix (Fin B.rank) (Fin ρ) D
   exact Function.Injective.countable (f := fun γ : NFlagQ B e => (⟨γ.1.1, γ.2⟩ : GQ B))
     fun a b h => Subtype.ext (Subtype.ext (congrArg (fun x : GQ B => (x : GA D B)) h))
 
-section Invariant
 
 variable {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V} {ρ : ℕ} {e : Matrix (Fin B.rank) (Fin ρ) D.host.E}
 
@@ -95,7 +94,6 @@ structure IsRatInv (ι : A.V →ₗ[D.host.E] B.V) (e : Matrix (Fin B.rank) (Fin
 
 variable {Q : GA D A → GA D B → ℂ}
 
-end Invariant
 
 section Integrands
 
@@ -127,7 +125,6 @@ theorem bes_inv {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) (h�
 
 end Integrands
 
-section Periods
 
 variable {X : ThetaX D} {T : ThetaTied D X} (Wl : WeilTied D X T) {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
 
@@ -160,15 +157,12 @@ include hg
 
 omit hg
 
-end Periods
 
-section Record
 
 variable {X : ThetaX D} {T : ThetaTied D X}
 
 variable (Wl : WeilTied D X T) {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
 
-end Record
 
 end GlobalTheory.Per.Inhab
 

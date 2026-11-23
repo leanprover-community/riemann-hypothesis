@@ -56,8 +56,7 @@ theorem ring_of_covering_descent_alt (_hP : _root_.GlobalTheory.CovTop.Published
   have hb : 391 * zBase (Fm.L x ι) ^ 2 ≤ (Fm.L x ι).sc.b := by
     have hm1 := (Fm.D x ι).R.two_le_m
     have hm2 := (Fm.D x ι).R.m_add_three_le_k
-    have hf : (1 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast (by have := (Fm.D x ι).R.toFrame.ord_pos; show 1 ≤ 2 * (Fm.D x ι).R.toFrame.ord; omega : 1 ≤ (Fm.D x ι).R.f)
-    have hr : (1 : ℝ) ≤ (Fm.D x ι).R.r := by exact_mod_cast (by unfold Ranks.r; omega : 1 ≤ (Fm.D x ι).R.r)
+    have hf : (1 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast (omega : 1 ≤ (Fm.D x ι).R.r)
     have hZ : 1 ≤ zBase (Fm.L x ι) := by
       unfold zBase
       have : (1 : ℝ) ≤ (Fm.D x ι).R.f * (Fm.D x ι).R.r := by nlinarith

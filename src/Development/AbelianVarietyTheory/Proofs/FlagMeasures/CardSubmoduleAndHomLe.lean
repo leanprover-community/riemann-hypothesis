@@ -41,11 +41,9 @@ open scoped Pointwise ENNReal Classical
 
 namespace GlobalTheory.SubmoduleCount
 
-section Abstract
 
 variable {R : Type*} [CommRing R] {D : Type*} [AddCommGroup D] [Module R D]
 
-end Abstract
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in

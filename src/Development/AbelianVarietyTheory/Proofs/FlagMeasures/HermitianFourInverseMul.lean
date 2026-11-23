@@ -57,10 +57,8 @@ theorem hf_sum_right (L : LocE F E) {n : ℕ} (H : Matrix (Fin n) (Fin n) E) {ι
   | empty => simp [hf]
   | cons i s hi ih => rw [Finset.sum_cons, Finset.sum_cons, hf_add_right, ih]
 
-section General
 variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
 
-end General
 
 theorem mem_stdLat (L : LocE F E) {n : ℕ} (x : Fin n → E) : x ∈ stdLat L n ↔ ∀ i, x i ∈ L.O := by
   constructor
@@ -124,9 +122,7 @@ theorem isSD_stdLat (L : LocE F E) {n : ℕ} (H K : Matrix (Fin n) (Fin n) E) (h
       exact Subring.sum_mem _ fun i _ => Subring.sum_mem _ fun j _ =>
         mul_mem (mul_mem (hx i) (hH i j)) (cj_int L (h j))
 
-section Blocks
 variable {s m N : ℕ} (e : Fin s ⊕ Fin m ≃ Fin N)
 
-end Blocks
 
 end GlobalTheory.HL.Inhab

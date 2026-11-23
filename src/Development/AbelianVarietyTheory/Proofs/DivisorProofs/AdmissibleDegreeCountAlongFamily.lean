@@ -52,7 +52,7 @@ theorem admissibleDegree_count_at_parameter_const {D : D7} (L : SizeData₂ D) (
     unfold sizeOffTops
     exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) fun τ _ _ => w0 τ
   have hc := GlobalTheory.LossItemsCompare.cube_le_eta P
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have ht : (1 : ℝ) ≤ D.R.t := GlobalTheory.HCEntries.one_le_letterBlockLength D
   have hk : (1 : ℝ) ≤ D.R.k := GlobalTheory.HCEntries.one_le_k D
   have he := L.etaSz_pos

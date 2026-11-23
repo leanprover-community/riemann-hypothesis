@@ -96,21 +96,17 @@ theorem norm_discEval_le_one [IsUltrametricDist K] (f : O⟦X⟧) : ‖discEval 
 
 end Series
 
-section Away
 
 variable {K : Type*} {O : Type*} [CommRing O] (π : O)
   (A : Type*) [CommRing A] [Algebra O⟦X⟧ A]
   [IsLocalization.Away (PowerSeries.C π * PowerSeries.X : O⟦X⟧) A]
 
-section Laurent
 
 variable [Field K] (i : O →+* K) (hπ : i π ≠ 0)
 
 variable {π A}
 
-end Laurent
 
-section Value
 
 variable [NormedField K] [CompleteSpace K] (i : O →+* K) (hi : ∀ x, ‖i x‖ ≤ 1) (hπ : i π ≠ 0)
   {t : K} (ht0 : t ≠ 0) (ht : ‖t‖ < 1)
@@ -127,19 +123,15 @@ noncomputable def discEvalAway : A →+* K :=
 variable {π A}
 
 
-end Value
 
 end Away
 
-section Coefficients
 
 open MvPolynomial
 
 variable {K : Type*} [Field K] {σ τ : Type*}
 
-end Coefficients
 
-section Core
 
 
 variable {O : Type*} [CommRing O] {π : O}
@@ -150,7 +142,6 @@ variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
 variable [CompleteSpace K]
 
-end Core
 
 section Padic
 

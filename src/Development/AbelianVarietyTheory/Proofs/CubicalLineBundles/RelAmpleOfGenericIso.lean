@@ -51,11 +51,9 @@ namespace GlobalTheory.TripleModel
 
 open GlobalTheory.PrimNorm GlobalTheory.MulPull
 
-section Charts
 
 variable {Y Y' : Scheme.{0}}
 
-end Charts
 
 section Cubical
 
@@ -112,26 +110,19 @@ theorem isPullCubical_of_lbIso (hG : Out.GlobalFnsSt) {S S' : Scheme.{0}} {G' : 
 
 end Cubical
 
-section Ample
 
 variable {R K : Type} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K] [IsFractionRing R K]
 
-end Ample
 
-section Extend
 
 variable {R K : Type} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K] [IsFractionRing R K]
   {A : Over (Sp R)} [GrpObj A] {B : Over (Sp K)} [GrpObj B] {φ : B.left ⟶ A.left} {L : LB A.left} {L' : LB B.left}
 
-end Extend
 
-section Points
 
 variable {S S' : Scheme.{0}} {A : Over S} [GrpObj A] {B : Over S'} [GrpObj B] {j : S' ⟶ S} {φ : B.left ⟶ A.left}
 
-end Points
 
-section Triple
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
   {R K : Type} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K] [IsFractionRing R K]
@@ -141,6 +132,5 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 include hLaws hA gp hL hr i
 
-end Triple
 
 end GlobalTheory.TripleModel

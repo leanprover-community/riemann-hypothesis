@@ -142,7 +142,7 @@ theorem _root_.GlobalTheory.eulerProduct_ne_zero_one_of_entire : ∀ (ι : Type)
     (fun p => ((p.2 : ℝ) + 1) * Real.log (N p.1))
     (fun s => Z s ^ 2 * dslope L 1 s * dslope L' 1 s) ha
     (fun p => mul_nonneg (by positivity)
-      (Real.log_nonneg (by exact_mod_cast (by have := hN p.1; omega : 1 ≤ N p.1))))
+      (Real.log_nonneg (by exact_mod_cast (omega : 1 ≤ N p.1))))
     (((hZ.pow 2).mul (hds L hL)).mul (hds L' hdL')) (by
       intro s hs
       refine ⟨_, _root_.GlobalTheory.LogEulerSeries.hasSum_log_zeta_sq_mul ι N c hN hc hsum s hs, ?_⟩

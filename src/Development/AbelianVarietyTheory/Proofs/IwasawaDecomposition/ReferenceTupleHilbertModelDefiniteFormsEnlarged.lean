@@ -44,7 +44,6 @@ noncomputable section
 
 namespace GlobalTheory.Mem.R3.Rw.ModVExt
 
-section Generic
 
 variable {G Γ W : Type} [Group G] [Group Γ] [NormedAddCommGroup W] [InnerProductSpace ℂ W]
 
@@ -66,9 +65,7 @@ private theorem norm_units_of_finite {H : Type} [Group H] [Finite H] (χ : H →
     rw [← norm_pow, ← Units.val_pow_eq_pow_val, h1, Units.val_one, norm_one]
   exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) Fintype.card_ne_zero).1 h2
 
-end Generic
 
-section Free
 
 variable {D : D7}
 
@@ -115,9 +112,7 @@ private theorem mv_move (V : HSp D) (c : CoefA V) (hc : c.Is) (β : GL (Fin V.ra
   rw [hchi PP hP]
   rfl
 
-end Free
 
-section Comparison₂
 
 variable {B B' : Base} {C : Cols B} {C' : Cols B'} {a : Late B C} {a' : Late B' C'}
 
@@ -218,7 +213,6 @@ private theorem modV_of (hP : B'.toPre = B.toPre) {i : Fin a.D.R.m} {i' : Fin a'
     (xi := R.xiR t) (xi' := R'.xiR t') (y := (R.B.L i t).pres.y) (y' := (R'.B.L i' t').pres.y)
     (R.B.L i t).pres.reps (R'.B.L i' t').pres.reps hHV hν hfd ⟨hm.HV i t, hm.νV i t⟩
 
-end Comparison₂
 
 end GlobalTheory.Mem.R3.Rw.ModVExt
 

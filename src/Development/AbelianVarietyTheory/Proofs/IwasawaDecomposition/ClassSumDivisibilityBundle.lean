@@ -63,14 +63,12 @@ end GlobalTheory.ClassSumPinLink
 namespace GlobalTheory.ClassSumPinLink
 
 
-section Pack
 
 variable {D : D7} {O : Obj D}
 
 
 
 
-end Pack
 
 end GlobalTheory.ClassSumPinLink
 

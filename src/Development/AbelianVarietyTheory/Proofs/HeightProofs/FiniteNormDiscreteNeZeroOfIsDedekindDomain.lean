@@ -101,7 +101,6 @@ theorem finite_zeros_poles_of_trdeg_one :
       (⊤ : IntermediateField F Ω).FG → Algebra.trdeg F Ω = 1 → Transcendental F t →
       ∀ g : Ω, g ≠ 0 → {v : AddValuation Ω (WithTop ℤ) |
         IsNormDiscrete v ∧ IsTrivOn F v ∧ 0 ≤ v t ∧ v g ≠ 0}.Finite := by
-  open scoped IntermediateField.algebraAdjoinAdjoin in
   intro F Ω _ _ _ _ t hfg htr ht g hg
   have hind : AlgebraicIndependent F (fun _ : Unit => t) :=
     algebraicIndependent_unique_type_iff.mpr ht

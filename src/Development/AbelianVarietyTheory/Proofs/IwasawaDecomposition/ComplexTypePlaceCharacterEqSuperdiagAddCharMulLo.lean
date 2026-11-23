@@ -53,7 +53,6 @@ open GlobalTheory.TwistChoice (Reading ReadsAt)
 
 namespace GlobalTheory.XUniRead
 
-section Loc
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
 private theorem red_zero (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) {q : ℕ} (hq : q.Prime)
@@ -167,7 +166,6 @@ private theorem loc_read (s : SplitPlace L) {n r : ℕ} (h : r ≤ n) {q : ℕ} 
     · exact (hr _ _).symm
     · exact map_zero _
 
-end Loc
 
 end GlobalTheory.XUniRead
 

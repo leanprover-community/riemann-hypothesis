@@ -49,12 +49,10 @@ namespace GlobalTheory.Mem.R3.LiftPres
 
 open Formalism.IndefR.Bridge
 
-section Shift
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {S : Formalism.L2.Col.GSD K} {G Γ : Type} [Group G] [Group Γ]
   {ι : Γ →* G} {J : Subgroup G}
 
-end Shift
 
 section Read
 
@@ -113,7 +111,6 @@ end GlobalTheory.Mem.R3.LiftPres
 namespace GlobalTheory.Mem.R3.LiftPres
 
 
-section Assemble
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {S : Formalism.L2.Col.GSD K} {G Γ : Type} [Group G] [Group Γ]
   {ι : Γ →* G} {J : Subgroup G}
@@ -130,7 +127,6 @@ variable (A : AdPts S ι J) (h : S.Ok) (σ : K →+* ℂ) (ρ' : Γ' →* Module
     (hgl : ∀ (γ : Γ) (κ : J) (v : S.V) (hx : eG (k * κ * k⁻¹) ∈ J'),
       coef (S.ρ (A.gl (γ, κ)) v) = ((χ' ⟨_, hx⟩)⁻¹ : ℂˣ) • ρ' (eΓ γ) (coef v))
 
-end Assemble
 
 end GlobalTheory.Mem.R3.LiftPres
 

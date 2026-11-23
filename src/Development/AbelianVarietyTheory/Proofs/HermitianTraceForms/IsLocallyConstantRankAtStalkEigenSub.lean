@@ -604,7 +604,6 @@ theorem charpoly_eq_iff_finrank_eq [IsLocalRing R] (r : ι → ℕ) :
 
 end Charpoly
 
-section Stalk
 
 variable {O : Type*} [CommRing O] {R : Type*} [CommRing R] {ι : Type*} [Fintype ι]
   {N : Type*} [AddCommGroup N] [Module R N]
@@ -612,7 +611,6 @@ variable {O : Type*} [CommRing O] {R : Type*} [CommRing R] {ι : Type*} [Fintype
 include h
 
 
-end Stalk
 
 section Discr
 

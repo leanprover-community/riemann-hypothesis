@@ -611,11 +611,9 @@ theorem card_specialUnitaryGroup [Finite K] {q : ℕ} (hq : Nat.card K = q ^ 2)
   rw [prod_eq _ _ (by positivity), sub_neg_eq_add] at h2
   exact mul_right_cancel₀ (by positivity) h2
 
-section Abstract
 
 variable {V : Type*} [AddCommGroup V] [Module K V] {h : V →ₗ[K] V →ₗ⋆[K] K}
 
-end Abstract
 
 end Groups
 

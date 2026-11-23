@@ -82,7 +82,7 @@ theorem u_bound_off_top (h : SizesAt L) (P : ParameterChoice' D L) (hx : 2 ≤ L
 theorem N_le_b (h : SizesAt L) (P : ParameterChoice' D L) : 5 * (D.R.N D.R.m : ℝ) ≤ L.sc.b := by
   have h1 := (GlobalTheory.FockDegreeGap.errors_le h P).2.2
   have hk : (5 : ℝ) ≤ D.R.k := by
-    exact_mod_cast (by have := D.R.m_add_three_le_k; have := D.R.two_le_m; omega : 5 ≤ D.R.k)
+    have := D.R.two_le_m; omega : 5 ≤ D.R.k)
   have h0 : (0 : ℝ) ≤ D.R.N D.R.m := Nat.cast_nonneg _
   nlinarith
 

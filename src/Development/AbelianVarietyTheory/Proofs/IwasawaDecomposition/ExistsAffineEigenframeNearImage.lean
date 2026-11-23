@@ -109,14 +109,12 @@ variable {S N : Type} [CommRing S] [Algebra K S] [AddCommGroup N] [Module S N] {
 
 end Alg
 
-section Lift
 
 variable {K O ι : Type} [Field K] [CommRing O] [Fintype ι] {χ : ι → O →+* K}
   {R M : Type} [CommRing R] [Algebra K R] [AddCommGroup M] [Module R M] {ρ : O →+* Module.End R M}
   {k N : Type} [Field k] [Algebra K k] [AddCommGroup N] [Module k N] {ρ' : O →+* Module.End k N}
   {φ : R →+* k} (f : M →ₛₗ[φ] N)
 
-end Lift
 
 section Geo
 

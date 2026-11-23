@@ -42,11 +42,9 @@ open scoped TensorProduct ENNReal nonZeroDivisors
 
 namespace GlobalTheory.SnMass.FrameDual
 
-section Det
 
 variable {A : Type} [CommRing A]
 
-end Det
 
 section Ideals
 

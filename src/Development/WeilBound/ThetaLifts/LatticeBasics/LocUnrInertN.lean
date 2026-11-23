@@ -70,7 +70,7 @@ theorem triv {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] [Co
   obtain ⟨h3, h4, -⟩ := (GlobalTheory.CompanionTheory.InertZetaTop.unramDoublingInert L ϖ σ q n hU μ hμ 1 (fun _ _ => rfl) s Φ hΦ α _ hw).1 (by
     rw [y0]
     refine ⟨lt _ (by simp; linarith), fun i => ?_⟩
-    have h5 : 2 * (i.val : ℝ) + 1 ≤ n := by exact_mod_cast (by have := i.2; omega : 2 * i.val + 1 ≤ n)
+    have h5 : 2 * (i.val : ℝ) + 1 ≤ n := by exact_mod_cast (omega : 2 * i.val + 1 ≤ n)
     have h6 : (0 : ℝ) ≤ i.val := Nat.cast_nonneg _
     rw [← norm_mul, ← norm_inv, ← norm_mul, ← div_eq_mul_inv, y1, y2]
     exact ⟨lt _ (by simp; linarith), lt _ (by simp; linarith)⟩)

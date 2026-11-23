@@ -46,7 +46,6 @@ namespace GlobalTheory.Mem.R3.Rw.WeilAtExt
 open Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.WeilFull GlobalTheory.Mem.R3.Rw.LiftExt
 
 
-section Leaves
 
 variable {B B' : Base} {C : Cols B} {C' : Cols B'} (a : Late B C) (a' : Late B' C')
 
@@ -105,9 +104,7 @@ private theorem pairSetup_heq (hP : B'.toPre = B.toPre) : HEq (@Fock.Sk.PairSetu
       exact (by with_unfolding_all exact (h' :))
   exact (by with_unfolding_all exact ((heq_of_eq e) :))
 
-end Leaves
 
-section Comparison₂
 
 variable {B B' : Base} {C : Cols B} {C' : Cols B'} {a : Late B C} {a' : Late B' C'}
   {V W : HSp a.D} {V' W' : HSp a'.D}
@@ -291,9 +288,7 @@ private theorem ioW_of (hP : B'.toPre = B.toPre) (hV : HEq V' V) (hW : HEq W' W)
   subst Δ'
   exact (by with_unfolding_all exact (h0 :))
 
-end Comparison₂
 
-section Fields
 
 variable {B B' : Base} {C : Cols B} {C' : Cols B'} {a : Late B C} {a' : Late B' C'}
 
@@ -368,7 +363,6 @@ private theorem exists_isOrbQuot_of_isHaarOn (hP : B'.toPre = B.toPre) {i : Fin 
   rw [hQ']
   exact thPVec_empty _ (thPVec_of hP hV hW hψ hθ (cart_heq hP hW hM0) l1 l2 l3 l4 hPg hvac hv (thPVec_empty _ w2))
 
-end Fields
 
 end GlobalTheory.Mem.R3.Rw.WeilAtExt
 

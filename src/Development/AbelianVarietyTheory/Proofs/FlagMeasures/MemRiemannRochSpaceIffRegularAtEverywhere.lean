@@ -42,14 +42,12 @@ open scoped Pointwise ENNReal Classical
 
 namespace GlobalTheory.NonGenericCompare
 
-section Place
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [StarRing E]
 variable (o : Type) [CommRing o] [Algebra o F] [Algebra o E]
 
 variable {o}
 
-end Place
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] [StarRing E]

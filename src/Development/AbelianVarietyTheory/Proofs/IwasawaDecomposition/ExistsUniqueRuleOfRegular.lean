@@ -163,7 +163,6 @@ theorem dual_comp {A B D : Type} [CommRing A] [CommRing B] [CommRing D] (f : A �
 
 end Wit
 
-section Global
 
 variable {σ : c.F →+* ℂ} {N : ℕ} {U : Formalism.L2.PjFree.Unf Xo c σ N} (Φ : FlagTor Z e U) (ex : Ix Dw → ℤ)
   (s : ∀ k, Fk (Φ.C k)) {T T' : Type} [CommRing T] [Algebra c.F T] [CommRing T'] [Algebra c.F T']
@@ -176,7 +175,6 @@ variable (hex : ex none = 0)
 include hex hs
 
 
-end Global
 
 end Descent
 

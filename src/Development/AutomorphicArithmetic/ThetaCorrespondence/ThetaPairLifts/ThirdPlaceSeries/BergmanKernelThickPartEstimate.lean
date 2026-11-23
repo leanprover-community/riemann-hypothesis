@@ -67,7 +67,7 @@ theorem exp_neg_B_le_bergOn_of_mem_framesOn : _root_.GlobalTheory.CovTop.Publish
   simp only [Ranks.sigW] at hsig
   have hp1 : 1 ≤ (dat p i).p := by omega
   have hq1 : 1 ≤ (dat p i).q := by omega
-  have hf1 : (1 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast (by have := hHi.f8; omega : 1 ≤ (Fm.D x ι).R.f)
+  have hf1 : (1 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast (omega : 1 ≤ (Fm.D x ι).R.f)
   have hr1 : (1 : ℝ) ≤ (Fm.D x ι).R.r := by exact_mod_cast (omega : 1 ≤ (Fm.D x ι).R.r)
   have hD1 : (1 : ℝ) ≤ (dimFlag (dat p i) : ℝ) := by
     rw [hWi.dim]

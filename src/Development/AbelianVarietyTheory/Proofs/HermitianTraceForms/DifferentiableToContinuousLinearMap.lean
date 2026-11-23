@@ -65,17 +65,14 @@ variable {h}
 
 variable (h)
 
-section Lattice
 
 variable {R₀ : Type*} [CommRing R₀] [Algebra R₀ R] [Module R₀ M] [IsScalarTower R₀ R M]
 
-end Lattice
 
 end isoTransvection
 
 end Defs
 
-section Complex
 
 namespace isoTransvection
 
@@ -91,7 +88,6 @@ variable {W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W] (h : W →ₗ[�
 
 end isoTransvection
 
-end Complex
 
 section Example
 

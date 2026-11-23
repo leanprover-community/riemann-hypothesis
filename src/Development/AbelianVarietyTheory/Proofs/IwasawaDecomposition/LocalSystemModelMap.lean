@@ -145,11 +145,9 @@ theorem frame_push {f' : c'.F →+* R} {f : c.F →+* R} (hf : ∀ τ a, f (embK
 
 end Frames
 
-section Steps
 
 variable {X X' : Scheme.{0}} {t : SAB H X} {t' : SAB H X'} {l : Level H} {c : Coeff l} {p : ℕ}
 
-end Steps
 
 section Models
 
@@ -222,13 +220,10 @@ include hf hT
 
 end Models
 
-section Bundle
 
 variable {X Y : Scheme.{0}} (f : Y ⟶ X)
 
-end Bundle
 
-section Main
 
 variable {Xo : ∀ l : Level H, Moduli Dw l} {p : ℕ} {W : ValuationSubring ℂ} {Y : LocalSystem Xo p W} {i₀ : Idx H p}
   {Z Z' : Mdl Y i₀} {f : Z'.X ⟶ Z.X} {τ : (Y Z'.i).X ⟶ (Y Z.i).X}
@@ -241,6 +236,5 @@ include hf hT hty
 
 
 
-end Main
 
 end GlobalTheory.ShFam.Pad.Pull

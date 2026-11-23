@@ -239,7 +239,7 @@ theorem sizes_at {PP A : ℝ} (hW : WtNum p i PP) (hH : HostNum D L PP A 1) (hS 
     obtain ⟨-, -, hpol⟩ := hH.poly
     have hroom := hH.room
     rw [Real.rpow_one] at hroom
-    have hp : ((dat p i).p : ℝ) ≤ D.R.r := by exact_mod_cast (by have := hW.sig.2.2; omega : (dat p i).p ≤ D.R.r)
+    have hp : ((dat p i).p : ℝ) ≤ D.R.r := by exact_mod_cast (omega : (dat p i).p ≤ D.R.r)
     rw [hcard, hW.cols]
     have hl := abs_lrd_le hH
     have h0 : (0 : ℝ) ≤ (D.R.nV : ℝ) * D.R.f := by positivity

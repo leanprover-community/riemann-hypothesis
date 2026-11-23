@@ -74,7 +74,7 @@ private theorem span_roots (eps cD ch : ℝ) (h0 : 0 < eps) (h1 : eps < 1 / 52) 
     have e : s.x ^ (ch + 7) = s.x ^ ch * s.x ^ (7 : ℕ) := by
       rw [Real.rpow_add hxp]; norm_cast
     unfold h0v; push_cast; linarith
-  have hm : (1 : ℝ) ≤ R.m := by exact_mod_cast (by have := R.two_le_m; omega : 1 ≤ R.m)
+  have hm : (1 : ℝ) ≤ R.m := by exact_mod_cast (omega : 1 ≤ R.m)
   have hf2 : (R.f : ℝ) ^ 2 ≤ s.x ^ (6 : ℕ) := by
     calc (R.f : ℝ) ^ 2 ≤ (s.x ^ (3 : ℕ)) ^ 2 := pow_le_pow_left₀ (by positivity) hf' 2
       _ = _ := by ring

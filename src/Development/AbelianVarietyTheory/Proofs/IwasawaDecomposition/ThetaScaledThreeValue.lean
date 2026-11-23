@@ -44,11 +44,9 @@ noncomputable section
 
 namespace GlobalTheory.RayRosEx.ThetaPull
 
-section Jets
 
 variable {S : Type} [CommRing S] {ρ : Type}
 
-end Jets
 
 section Vals
 

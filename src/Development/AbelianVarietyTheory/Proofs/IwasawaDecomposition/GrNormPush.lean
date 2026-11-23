@@ -149,12 +149,10 @@ theorem Tri.diag (hu : Ind t x u) (hu' : Ind t x u') (h : Tri t x u u') {j : Fin
 
 end Tan
 
-section Norm
 
 variable {t} {C : Type} [NontriviallyNormedField C] [IsUltrametricDist C] {x : Sp C ⟶ X} {m : ℕ}
   {u u' : Fin m → (Sp (DualNumber C) ⟶ t.G.left)}
 
 
-end Norm
 
 end GlobalTheory.ShFam.Pad.Pull

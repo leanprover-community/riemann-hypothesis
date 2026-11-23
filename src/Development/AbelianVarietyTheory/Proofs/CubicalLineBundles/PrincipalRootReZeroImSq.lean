@@ -72,7 +72,6 @@ theorem exists_clear (𝔞 : Submodule (𝓞 E) E) (h : 𝔞.FG) :
     simp only [RingOfIntegers.coe_eq_algebraMap]
     ring
 
-section Act
 
 variable {M : Type} [AddCommGroup M] [Module (𝓞 E) M]
 
@@ -81,7 +80,6 @@ variable {M : Type} [AddCommGroup M] [Module (𝓞 E) M]
 
 
 
-end Act
 
 variable [IsCMField E]
 

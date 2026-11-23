@@ -179,11 +179,9 @@ theorem le_re_trace_smul_one_of_posSemidef {A : Matrix n n 𝕜} (hA : A.PosSemi
   exact le_trace_smul_one_of_posSemidef hA
 
 
-section Gram
 
 variable {E : Type*} [SeminormedAddCommGroup E] [InnerProductSpace 𝕜 E]
 
-end Gram
 
 theorem inv_smul_one_le_inv_of_le_smul_one {A : Matrix n n 𝕜} (hA : A.PosDef) {c : ℝ}
     (hc : 0 < c) (h : A ≤ c • (1 : Matrix n n 𝕜)) : c⁻¹ • (1 : Matrix n n 𝕜) ≤ A⁻¹ := by
@@ -192,7 +190,6 @@ theorem inv_smul_one_le_inv_of_le_smul_one {A : Matrix n n 𝕜} (hA : A.PosDef)
 
 end RCLike
 
-section Rational
 
 variable {K n : Type*} [Field K] [Fintype n] [DecidableEq n]
 
@@ -200,6 +197,5 @@ open NumberField IsCMField
 
 variable [NumberField K] [IsCMField K]
 
-end Rational
 
 end GlobalTheory

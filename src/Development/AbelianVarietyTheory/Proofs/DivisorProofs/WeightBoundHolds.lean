@@ -93,7 +93,7 @@ theorem wtNum_at (P : ParameterChoice' D L) (T : ParamsT D L P) (hS : SizesAt L)
   have h40 : 40 * (L.Sc + L.etaSz) ≤ L.sc.w'' D.R.n := le_trans (mul_le_mul_of_nonneg_right hP (by linarith)) hwid
   have hrη : (D.R.r : ℝ) ≤ L.etaSz := by
     refine le_trans ?_ P.t_le_eta
-    exact_mod_cast (by have := D.R.rank_add_five_le; omega : D.R.r ≤ D.R.t)
+    exact_mod_cast (omega : D.R.r ≤ D.R.t)
   have hr0 : (0 : ℝ) ≤ D.R.r := Nat.cast_nonneg _
   have hlen : lenT p i T.PP ≤ T.TO := by
     unfold lenT; rw [hD]; exact Nat.ceil_le.2 (len_le D L P T)

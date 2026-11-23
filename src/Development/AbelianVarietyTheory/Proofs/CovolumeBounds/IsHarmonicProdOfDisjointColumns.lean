@@ -190,11 +190,9 @@ theorem isHarmonic_minorProd [Fintype T] (c : T → Fin p → ℕ) (c' : T → F
 
 end Perp
 
-section Columns
 
 variable [Fintype κ]
 
-end Columns
 
 noncomputable def blockPoly (R : Type*) [CommRing R] [Fintype T] (c : T → Fin p → ℕ)
     (c' : T → Fin q → ℕ) (col : T → (i : Fin p) → Fin (i.val + 1) → κ)

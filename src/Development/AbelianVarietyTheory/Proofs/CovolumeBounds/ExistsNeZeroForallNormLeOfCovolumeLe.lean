@@ -78,20 +78,17 @@ open InfinitePlace
 
 end TotallyComplex
 
-section CM
 
 open InfinitePlace IsCMField
 open scoped nonZeroDivisors
 
 variable {E : Type*} [Field E] [NumberField E] [IsCMField E]
 
-end CM
 
 section Constant
 
 end Constant
 
-section Balls
 
 variable {ι : Type*} [Fintype ι] {W : ι → Type*} [∀ i, NormedAddCommGroup (W i)]
   [∀ i, InnerProductSpace ℝ (W i)] [∀ i, FiniteDimensional ℝ (W i)]
@@ -100,6 +97,5 @@ variable {ι : Type*} [Fintype ι] {W : ι → Type*} [∀ i, NormedAddCommGroup
 variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V]
 
-end Balls
 
 end GlobalTheory

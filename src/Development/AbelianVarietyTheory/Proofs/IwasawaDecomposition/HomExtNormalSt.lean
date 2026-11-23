@@ -74,11 +74,9 @@ def IsStrict (B : Closeds X) {ι : Type} (E : ι → Closeds X) : Prop :=
 
 end Branches
 
-section Pairs
 
 variable {K F : Type} [Field K] [Field F] {XK X X'K X' : Scheme.{0}}
 
-end Pairs
 
 section Sections
 

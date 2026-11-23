@@ -82,11 +82,9 @@ theorem exists_coord_tens (F E : Type) [Field F] [NumberField F] [IsTotallyReal 
   show e1 (e0 (x + y)) = e1 (e0 x) + e1 (e0 y)
   rw [show e0 (x + y) = e0 x + e0 y from eL.map_add x y, h1]
 
-section Zero
 
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] [MeasurableSpace V] [Subsingleton V]
 
-end Zero
 
 theorem measure_fundamentalDomain_pos (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) (μ) (hμ : IsHaarH F E σ M J μ)

@@ -101,7 +101,7 @@ theorem ranks_le {P : ParameterChoice' D L} (T : ParamsT D L P) :
     have a : zBase L ≤ zBase L ^ T.eP := Real.self_le_rpow_of_one_le hZ1 (by linarith [T.eP_ge])
     exact a.trans (le_mul_of_one_le_left (by linarith) T.one_le_CP)
   have hPP : 1 ≤ T.PP := hZ1.trans hZP
-  have hTO : (1 : ℝ) ≤ T.TO := by exact_mod_cast (by have := T.TO_40; omega : 1 ≤ T.TO)
+  have hTO : (1 : ℝ) ≤ T.TO := by exact_mod_cast (omega : 1 ≤ T.TO)
   have hb : 1 ≤ L.sc.b := Real.one_le_exp (by linarith)
   have hs : (T.TO : ℝ) * T.PP ≤ L.sc.b := T.TO_PP'.trans (Real.rpow_le_self_of_one_le hb (by norm_num))
   have hP2 : T.PP ≤ (T.TO : ℝ) * T.PP := le_mul_of_one_le_left (by linarith) hTO

@@ -38,11 +38,9 @@ open Formalism.BasicNotions NumberField IsDedekindDomain GlobalTheory.Mem
 
 namespace GlobalTheory.Mem.BaseEx
 
-section ext
 
 variable {K K' : Type} [Field K] [Field K'] (f : K →+* K')
 
-end ext
 
 section host
 

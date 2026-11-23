@@ -253,7 +253,7 @@ theorem exists_poly
       push_cast
       rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_neg_distrib]
       exact Finset.sum_congr rfl fun i _ => by field_simp
-    · have n₁ : (d i : ℚ) ≠ 0 := by exact_mod_cast (by have := hd i; omega : d i ≠ 0)
+    · have n₁ : (d i : ℚ) ≠ 0 := by exact_mod_cast (omega : d i ≠ 0)
       simp only [m, y, Option.elim, map_mul, eval_C, eval_X, he i]
       push_cast
       field_simp

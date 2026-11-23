@@ -64,7 +64,6 @@ private theorem core {X X' Y Y' : Type} {aX : AddCommGroup X} {mX : Module ℂ X
   cases hM; cases hN; cases hθ
   exact GlobalTheory.RatSpan.comap_eq_span j j' L (fun v => hinj (eq_of_heq (hL v))) b hb _ hU
 
-section Twist
 
 variable {E F : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [FiniteDimensional ℂ E] [NormedAddCommGroup F]
   [InnerProductSpace ℂ F] [FiniteDimensional ℂ F] {K V : Type} [Field K] [AddCommGroup V] [Module K V] {σ σ' : K →+* ℂ}
@@ -108,7 +107,6 @@ private theorem tw_li (s : Bool) {ι : Type} {v : ι → E}
   have := congrArg (cj s) (h u (fun i => cj s (g i)) h1 i hi)
   rwa [cj_cj, map_zero] at this
 
-end Twist
 
 private theorem cx_rat {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K} {A : DefAmb Bs} (X : CxData A)
     (cv : CrdV A) (hK : X.KFormL) (hJ : X.JIsoL cv) (hT : Formalism.IndefR.Rat.LiftTest X) (j : Bs.J) (t : Bs.Tup) :
@@ -118,7 +116,6 @@ private theorem cx_rat {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : D
   exact Formalism.IndefR.Rat.range_adjoint_rat Bs.v0.embedding (X.jL j t) (cv.hL j t) _ (hK j t).1 (hK j t).2 (hJ j t)
     (X.θ' j t) ψ hψ (fun i x => hr t i x)
 
-section One
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3)
@@ -141,7 +138,6 @@ private theorem li (hM : R.toRealDat.IsModels) (i : Fin D.R.m) (t : T) :
     LinearIndependent ℂ fun k => R.jV i t (Module.Basis.ofVectorSpace D.what₂.LL (A3.A.fam.amb.FL i t) k) :=
   tw_li (twAt D.what₂.embLL A3.A.v0) ((by with_unfolding_all exact ((RealDat3.kFormL_of (F := F) hM i t).1 :)))
 
-end One
 
 
 private theorem gen {D D' : D7} {G G' : Type} [Group G] [Fintype G] [Group G'] [Fintype G'] {Pl0 I0 T Pl0' I0' T' : Type}
@@ -182,7 +178,6 @@ private theorem gen {D D' : D7} {G G' : Type} [Group G] [Fintype G] [Group G'] [
   exact core hX k1 (R.HV i t) (R'.HV i' t') _ _ hV k2 (R.thG i t) (R'.thG i' t') hθ (R.jV i t) (R'.jV i' t') L (hM.HV i t).1
     (fun v => (heq_of_eq (hM'.jV i' t' (L v))).trans ((hL v).trans (heq_of_eq (hM.jV i t v)).symm)) _ hli (rat R F hp hM hT i t)
 
-section Two
 
 variable {B B' : Base} {f : Fr B.toPre} {f' : Fr B'.toPre} {T : TwDat B} {T' : TwDat B'} {w : ColW B f T} {w' : ColW B' f' T'}
   {Z : w.Lt} {Z' : w'.Lt}
@@ -243,7 +238,6 @@ private theorem jL_of {hX : B.fields.Ok} {hX' : B'.fields.Ok} {Wt : Set B.places
   rw [LinearEquiv.symm_apply_apply, LinearEquiv.symm_apply_apply] at h
   with_unfolding_all exact e.jL i i' hi ok ok' y y' h
 
-end Two
 
 end GlobalTheory.Mem.R3.SubExt
 

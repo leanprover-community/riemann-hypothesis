@@ -87,7 +87,6 @@ end Bundles
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
 
-section Tan
 
 variable {X : Scheme.{0}} {t : SAB H X} {S S' : Type} [CommRing S] [CommRing S']
 
@@ -95,7 +94,6 @@ variable {X : Scheme.{0}} {t : SAB H X} {S S' : Type} [CommRing S] [CommRing S']
 
 variable {Z : Scheme.{0}} {π : Z ⟶ X} {U : Z.Opens} {hU : IsAffineOpen U} {κ : Type} [Finite κ]
 
-end Tan
 
 section Atlas
 
@@ -140,12 +138,10 @@ variable {A : Atlas M π ty} {σ : E →+* ℂ} {k r : ℕ}
 
 end Atlas
 
-section Maps
 
 variable {Xo : ∀ l : Level H, Moduli Dw l} {p : ℕ} {W : ValuationSubring ℂ} {Y : LocalSystem Xo p W} {i₀ : Idx H p}
 
 variable {i : Idx H p} {X : Scheme.{0}} {π : X ⟶ (Y i).X} {ty : (E →+* ℂ) → Finset ℕ}
 
-end Maps
 
 end GlobalTheory.DRFlag

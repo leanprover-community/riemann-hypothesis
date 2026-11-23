@@ -44,13 +44,11 @@ open Module
 
 namespace GlobalTheory
 
-section PolynomialFunction
 
 variable (K : Type*) [CommSemiring K] {M : Type*} [AddCommMonoid M] [Module K M]
 
 variable {K}
 
-end PolynomialFunction
 
 section Frames
 
@@ -84,21 +82,17 @@ variable [Fintype ι] {r : ι → ℕ} [Field K] [∀ s, AddCommGroup (V s)] [�
 
 end Frames
 
-section Hadamard
 
 variable {ι : Type*} [Fintype ι] {r : ι → ℕ} {𝕜 : Type*} [RCLike 𝕜] {V : ι → Type*}
   {W : Type*} [NormedAddCommGroup W] [NormedSpace 𝕜 W]
 
-section Inner
 
 variable [∀ s, NormedAddCommGroup (V s)] [∀ s, InnerProductSpace 𝕜 (V s)]
   [∀ s, FiniteDimensional 𝕜 (V s)]
 
-end Inner
 
 end Hadamard
 
-section PolynomialWeight
 
 variable {ι : Type*} [Fintype ι] {r : ι → ℕ} {K : Type*} [Field K]
 
@@ -106,15 +100,11 @@ noncomputable def detProdPoly (R : Type*) [CommRing R] (n : ι → Type*) [∀ s
     [∀ s, DecidableEq (n s)] : MvPolynomial (EntryIndex n n) R :=
   ∏ s, (ofEntries MvPolynomial.X s).det
 
-end PolynomialWeight
 
-section HadamardPolynomial
 
 variable {ι : Type*} [Fintype ι] {r : ι → ℕ} {𝕜 : Type*} [RCLike 𝕜]
 
-end HadamardPolynomial
 
-section Gauss
 
 open MvPolynomial IsLocalRing
 
@@ -125,20 +115,16 @@ variable [IsLocalRing O] [Infinite (ResidueField O)]
 
 variable {ι : Type*} [Fintype ι]
 
-section Matrices
 
 variable {n : ι → Type*} [∀ s, Fintype (n s)] [∀ s, DecidableEq (n s)]
 
-end Matrices
 
-section Lattices
 
 variable {V : ι → Type*} [∀ s, AddCommGroup (V s)] [∀ s, Module K (V s)] [∀ s, Module O (V s)]
   [∀ s, IsScalarTower O K (V s)] {Λ : ∀ s, Submodule O (V s)}
 
 variable {r : ι → ℕ}
 
-end Lattices
 
 end Gauss
 

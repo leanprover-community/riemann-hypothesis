@@ -165,11 +165,9 @@ theorem interNum_eq_sum_length (hf : IsProjOver f) (hL : L.IsLB) (c : X → L.ι
 
 end Sheaf
 
-section Algebra
 
 variable {K R : Type} [Field K] [CommRing R]
 
-end Algebra
 
 section BaseChange
 
@@ -184,17 +182,13 @@ theorem ringKrullDim_stalk {d : ℕ} (h : SmoothOfRelativeDimension d f') {z : X
 
 end BaseChange
 
-section Count
 
 variable {K : Type} [Field K] [IsAlgClosed K] {X : Scheme.{0}} {f : X ⟶ Sp K} {L : LB X}
 
-end Count
 
-section Cut
 
 variable {F : Type} [Field F] (Y : Var F) {Δ : Y.Dv} {n : ℕ} (b : Fin n → Y.H0 Δ)
 
 
-end Cut
 
 end GlobalTheory.CutDegree

@@ -162,14 +162,12 @@ theorem nefFib_of_isGenerated {k : Type} [CommRing k] {X : Scheme.{0}} {p : X �
 
 variable {F : Type} [Field F] [NumberField F]
 
-section Values
 
 variable {K : Type} [Field K] {Y : Var F} (y : Sp K ⟶ Y.X) {τ : F →+* K}
 
 
 
 
-end Values
 
 theorem injective_emb (σ : 𝓞 F →+* ℂ) : Function.Injective σ :=
   (RingHom.injective_iff_ker_eq_bot σ).2 (Ideal.eq_bot_of_comap_eq_bot (R := ℤ) (by

@@ -162,7 +162,6 @@ end FP
 
 
 
-section Dom
 
 variable [IsDomain A]
 
@@ -178,7 +177,6 @@ end FP
 
 variable [IsIntegrallyClosed A] {κ : (Sp (FractionRing A) ⟶ t.G.left) → Aˣ}
 
-end Dom
 
 section Tan
 
@@ -220,11 +218,9 @@ theorem tan_at (P : FP t x₀ q) {φ : A →+* S} {v : Sp (DualNumber S) ⟶ t.G
 
 end Tan
 
-section Char
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {x : A →+* O} {P : FP t x₀ q}
 
-end Char
 
 
 theorem cast_quot (R : Type) [CommRing R] (p n : ℕ) : ((p ^ n : ℕ) : R ⧸ Ideal.span {(p : R) ^ n}) = 0 := by

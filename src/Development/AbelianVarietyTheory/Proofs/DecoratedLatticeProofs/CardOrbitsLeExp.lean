@@ -101,7 +101,7 @@ theorem card_orbits_le_exp {D : D7} {N : NumDatum} {X : Fields} {s : Seam D X} {
       Nat.mul_pos (Nat.mul_pos (N.g_prime 0).pos (N.g_prime 1).pos) (hP.T_prime u).pos
     exact Real.log_nonneg (by exact_mod_cast this)
   have hm : (1 : ℝ) ≤ (N.R.m : ℝ) ^ 2 := by
-    have : (1 : ℝ) ≤ N.R.m := by exact_mod_cast (by have := N.R.two_le_m; omega : 1 ≤ N.R.m)
+    have : (1 : ℝ) ≤ N.R.m := by exact_mod_cast (omega : 1 ≤ N.R.m)
     exact one_le_pow₀ this
   unfold errUnit
   calc 55 * (N.R.f : ℝ) * (N.Nm : ℝ) ^ 2 * Real.log ((N.g 0 : ℝ) * N.g 1 * Pr.T u)

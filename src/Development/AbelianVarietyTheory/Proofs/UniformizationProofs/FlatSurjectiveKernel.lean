@@ -43,14 +43,11 @@ open GlobalTheory.UU GlobalTheory.IndefiniteRowSideFullHecke.CanonicalRigidImage
 
 namespace GlobalTheory.GtCoordCompare
 
-section Calc
 
 variable {Y W W' Z : Scheme.{0}} {L : LB Y} {K : Type} [Fintype K] {ψ : K → (W ⟶ Y)} {ψ' : K → (W' ⟶ Y)}
   {ε ε' : K → ℤ} {r : Z ⟶ W} {r' : Z ⟶ W'}
 
-end Calc
 
-section Image
 
 variable {Y G B : Scheme.{0}} {L : LB Y} {K : Type} [Fintype K] (q : G ⟶ B) {φ : K → (B ⟶ Y)} {φ' : K → (G ⟶ Y)}
   {ε ε' : K → ℤ}
@@ -58,7 +55,6 @@ variable {Y G B : Scheme.{0}} {L : LB Y} {K : Type} [Fintype K] (q : G ⟶ B) {�
 variable {q} {x : LB.Gen (LB.LinComb L φ' ε')} {V : B.Opens}
 
 
-end Image
 
 section Group
 
@@ -85,16 +81,13 @@ theorem isWt_of_gs {V : G.left.Opens} {a : Γ(G.left, V)} {χ : X}
     refine ((gs_pull (𝟙 _) t.left z ⊤ trivial _).trans ?_).symm
     rw [Category.id_comp, gs_unit _ z ⊤ trivial]
 
-section One
 
 variable [IsMonHom q] (hi : i ≫ q = toUnit _ ≫ η[B]) (hL : L.IsLB) {φ : K → (B.left ⟶ Y)} {φ' : K → (G.left ⟶ Y)}
   (hφ : ∀ k, φ' k = q.left ≫ φ k) {x : LB.Gen (LB.LinComb L φ' ε')} (hx : x.IsGen) {χ : X} (hw : WtGen i x χ)
 include hi hL hφ hx hw
 
 
-end One
 
-section All
 
 variable [IsMonHom q] [IsMonHom i] [IsAffineHom q.left] (hL : L.IsLB) (hε : ∀ k, ε' k = -ε k)
   {φ : X → K → (B.left ⟶ Y)} {φ' : X → K → (G.left ⟶ Y)} (hφ : ∀ χ k, φ' χ k = q.left ≫ φ χ k)
@@ -102,7 +95,6 @@ variable [IsMonHom q] [IsMonHom i] [IsAffineHom q.left] (hL : L.IsLB) (hε : ∀
 include hL hε hφ hx hw
 
 
-end All
 
 end Group
 
