@@ -39,7 +39,7 @@ class Fake(batch.GitHub):
 
     def __init__(self, dry_run=False):
         super().__init__(REPO, dry_run)
-        self.pulls, self.refs, self.comments, self.runs = {}, {}, {}, []
+        self.pulls, self.refs, self.comments, self.runs, self.events = {}, {}, {}, [], {}
         self.inside = {MAIN: set()}
         self.commits = {MAIN: {"message": "main", "parents": []}}
         self.conflicting, self.allow_pulls, self.writes, self.after_merge = set(), True, [], None
@@ -72,9 +72,22 @@ class Fake(batch.GitHub):
         self.pulls[number]["sha"] = head
         self.touch(number)
 
-    def label(self, number, add=None, remove=None):
-        self.pulls[number]["labels"] = (self.pulls[number]["labels"] | ({add} if add else set())) - {remove}
+    def stamp(self):
+        return (T0 + datetime.timedelta(seconds=self.clock)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    def event(self, number, kind, login=BOT, **extra):
+        self.events.setdefault(number, []).append(
+            {"event": kind, "actor": {"login": login}, "created_at": self.stamp(), **extra})
+
+    def label(self, number, add=None, remove=None, login=BOT):
+        """A label goes on or comes off. The workflow's jobs act as BOT; pass `login` for a person."""
+        labels = self.pulls[number]["labels"]
+        self.pulls[number]["labels"] = (labels | ({add} if add else set())) - {remove}
         self.touch(number)
+        if add and add not in labels:
+            self.event(number, "labeled", login, label={"name": add})
+        if remove and remove in labels:
+            self.event(number, "unlabeled", login, label={"name": remove})
 
     def say(self, number, body, login=BOT):
         self.comments.setdefault(number, []).append({"user": {"login": login}, "body": body})
@@ -85,10 +98,17 @@ class Fake(batch.GitHub):
         return [item["body"] for item in self.comments.get(number, [])
                 if not item["body"].startswith(("<!-- batch-queue-approved", "<!-- batch-queue-withdrawn"))]
 
-    def close(self, number, merged=False):
+    def close(self, number, merged=False, login="author"):
         self.pulls[number].update(state="closed", merged_at="2026-11-23T05:00:00Z" if merged else None)
         if merged:
             self.inside[MAIN] |= self.inside[self.pulls[number]["sha"]] | {self.pulls[number]["sha"]}
+        self.touch(number)
+        self.event(number, "closed", login)
+
+    def reopen(self, number, login="author"):
+        self.pulls[number].update(state="open", merged_at=None)
+        self.touch(number)
+        self.event(number, "reopened", login)
 
     def view(self, pr):
         return {"number": pr["number"], "state": pr["state"], "merged_at": pr["merged_at"],
@@ -118,9 +138,18 @@ class Fake(batch.GitHub):
     def _pull(self, _, number):
         return 200, self.view(self.pulls[int(number)])
 
-    def _closed_building(self, _):
+    def _closed_with(self, label):
         return 200, [{"number": pr["number"], "pull_request": {}, "body": pr["body"]} for pr in self.pulls.values()
-                     if pr["state"] == "closed" and BUILDING in pr["labels"]]
+                     if pr["state"] == "closed" and label in pr["labels"]]
+
+    def _closed_building(self, _):
+        return self._closed_with(BUILDING)
+
+    def _closed_queued(self, _):
+        return self._closed_with(QUEUED)
+
+    def _events(self, _, number):
+        return 200, list(self.events.get(int(number), []))
 
     def _refs(self, _):
         return 200, [{"ref": f"refs/heads/{name}", "object": {"sha": head}} for name, head in sorted(self.refs.items())]
@@ -214,6 +243,8 @@ class Fake(batch.GitHub):
         (r"GET pulls\?state=all&head=o:(.+)", _pulls_for),
         (r"GET pulls/(\d+)", _pull),
         (r"GET issues\?state=closed&labels=building&per_page=100&page=1", _closed_building),
+        (r"GET issues\?state=closed&labels=batch%20queue&per_page=100&page=1", _closed_queued),
+        (r"GET issues/(\d+)/events\?per_page=100&page=1", _events),
         (r"GET compare/([^.]+)\.\.\.([^?]+)\?per_page=1", _compare),
         (r"GET issues/(\d+)/comments\?per_page=100&page=1", _comments),
         (r"GET issues/(\d+)/labels", _labels),
@@ -694,6 +725,180 @@ class LeavingTheQueue(unittest.TestCase):
         self.assertIn(f"- #11 at `{short('head11')}`\n\nAlso in this branch:\n\n- #12, no longer queued", gh.pulls[112]["body"])
 
 
+class OtherBatchBranches(unittest.TestCase):
+    """A `batch/...` branch this script did not start, such as one assembled by hand, is left alone."""
+
+    def by_hand(self, gh):
+        gh.refs["batch/removals-2026-11-24"] = sha("removals")
+        gh.refs["batch/combined-2026-11-24"] = sha("combined")  # no pull request
+        gh.inside[sha("removals")] = gh.inside[sha("combined")] = set()
+        gh.pulls[413] = {"number": 413, "state": "open", "merged_at": None, "labels": {"extra large"},
+                         "sha": sha("removals"), "ref": "batch/removals-2026-11-24", "own": True, "base": "main",
+                         "body": "Written by the maintainer who assembled it.", "title": "", "updated": 0}
+
+    def test_queued_commits_go_to_a_batch_of_its_own(self):
+        gh = Fake()
+        self.by_hand(gh)
+        queue(gh, 11)
+        log = sync(gh)
+        self.assertEqual(merges(gh), [sha("head11")])
+        self.assertIn(sha("head11"), gh.inside[gh.refs[FIRST]])
+        self.assertIn(f"added #11 at `{short('head11')}` to `{FIRST}`", log)
+        self.assertEqual(gh.pulls[413]["body"], "Written by the maintainer who assembled it.")
+        self.assertEqual((gh.refs["batch/removals-2026-11-24"], gh.refs["batch/combined-2026-11-24"]),
+                         (sha("removals"), sha("combined")))
+        # No pull request is opened for the branch that has none.
+        self.assertEqual([pr["ref"] for pr in gh.pulls.values() if pr["own"]], ["batch/removals-2026-11-24", FIRST])
+
+    def test_with_nothing_queued_its_text_is_left_alone(self):
+        gh = Fake()
+        self.by_hand(gh)
+        gh.add_pull(12, "head12", labels=[QUEUED])  # labelled by hand: queues nothing
+        sync(gh)
+        self.assertEqual(gh.pulls[413]["body"], "Written by the maintainer who assembled it.")
+        self.assertEqual([write for write in gh.writes if write[1] != "issues/12/labels"], [])
+
+    def test_building_does_not_make_it_a_frozen_batch(self):
+        gh = Fake()
+        self.by_hand(gh)
+        gh.label(413, add=BUILDING)  # a build of it was dispatched
+        queue(gh, 11)
+        sync(gh)
+        self.assertEqual(gh.pulls[413]["body"], "Written by the maintainer who assembled it.")
+        self.assertEqual(gh.pulls[11]["labels"], {QUEUED})
+        self.assertIn(sha("head11"), gh.inside[gh.refs[FIRST]])
+
+    def test_its_branch_is_not_deleted_when_its_pull_request_is_closed(self):
+        gh = Fake()
+        self.by_hand(gh)
+        gh.close(413, merged=True)
+        sync(gh)
+        self.assertIn("batch/removals-2026-11-24", gh.refs)
+        self.assertNotIn(("DELETE", "git/refs/heads/batch/removals-2026-11-24", None), gh.writes)
+
+
+class ClosedPullRequests(unittest.TestCase):
+    """A closed pull request is neither waiting for a build nor in one."""
+
+    def test_closing_takes_the_label_off(self):
+        gh = Fake()
+        queue(gh, 11)
+        gh.add_pull(12, "head12", labels=[QUEUED])  # labelled by hand
+        gh.close(12)
+        log = sync(gh)
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), ({QUEUED}, set()))
+        self.assertIn("#12 is closed: `batch queue` removed", log)
+        self.assertEqual(sync(gh), ["nothing to do"])
+
+    def test_merging_by_itself_takes_the_label_off(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        sync(gh)
+        gh.close(12, merged=True)
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], set())
+        self.assertIn("#12, closed since it was merged in", batch_pull(gh)["body"])
+
+    def test_closing_a_pull_request_in_a_frozen_batch_takes_building_off(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        sync(gh)
+        freeze(gh, 112)
+        sync(gh)
+        gh.close(12)
+        log = sync(gh)
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), ({BUILDING}, set()))
+        self.assertIn("#12 is closed: `building` removed", log)
+        # The batch's own pull request keeps `building` while it is open, and is not touched.
+        self.assertEqual(gh.pulls[112]["labels"], {BUILDING})
+        # When the batch is closed without merging, only the open one goes back to the queue.
+        gh.close(112)
+        sync(gh)
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), ({QUEUED}, set()))
+
+    def test_a_merged_batch_is_tidied_up_once(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        sync(gh)
+        freeze(gh, 112)
+        sync(gh)
+        gh.close(11, merged=True)
+        gh.close(12, merged=True)
+        gh.close(112, merged=True)
+        gh.writes = []
+        sync(gh)
+        drops = [path for method, path, _ in gh.writes if method == "DELETE" and "labels" in path]
+        self.assertEqual(sorted(drops), ["issues/11/labels/building", "issues/112/labels/building",
+                                         "issues/12/labels/building"])
+
+
+class Reopening(unittest.TestCase):
+    def closed(self, queued=True):
+        gh = Fake()
+        if queued:
+            queue(gh, 11)
+        else:
+            gh.add_pull(11, "head11", labels=[QUEUED])  # labelled by hand
+        gh.close(11)
+        sync(gh)
+        self.assertEqual(gh.pulls[11]["labels"], set())
+        gh.reopen(11)
+        return gh
+
+    def test_the_label_comes_back(self):
+        for queued in (True, False):
+            gh = self.closed(queued)
+            self.assertEqual(batch.reopened(gh, 11), ["#11 was reopened: `batch queue` put back"])
+            self.assertEqual(gh.pulls[11]["labels"], {QUEUED})
+
+    def test_and_a_queued_commit_is_merged_again_by_the_next_run(self):
+        gh = self.closed()
+        batch.reopened(gh, 11)
+        sync(gh)
+        self.assertEqual(merges(gh), [sha("head11")])
+
+    def test_a_label_a_person_took_off_stays_off(self):
+        gh = Fake()
+        queue(gh, 11)
+        gh.close(11)
+        gh.label(11, remove=QUEUED, login="maintainer")
+        sync(gh)
+        gh.reopen(11)
+        self.assertEqual(batch.reopened(gh, 11), ["#11: `batch queue` was taken off by maintainer, so it stays off"])
+        self.assertEqual(gh.pulls[11]["labels"], set())
+
+    def test_taken_out_of_the_queue_while_closed_stays_out(self):
+        gh = Fake()
+        queue(gh, 11)
+        gh.close(11)
+        sync(gh)  # takes the label off
+        unqueue(gh, 11)  # `-batch` while closed: the withdrawal is recorded, the label is already off
+        gh.reopen(11)
+        self.assertIn("taken out of the queue with `-batch`", batch.reopened(gh, 11)[0])
+        self.assertEqual(gh.pulls[11]["labels"], set())
+
+    def test_a_label_removed_before_the_close_stays_off(self):
+        gh = Fake()
+        queue(gh, 11)
+        unqueue(gh, 11)  # by the label job, before the close
+        gh.close(11)
+        gh.reopen(11)
+        self.assertIn("had no label taken off when it was closed", batch.reopened(gh, 11)[0])
+        self.assertEqual(gh.pulls[11]["labels"], set())
+
+    def test_nothing_happens_to_an_open_labelled_or_batch_pull_request(self):
+        gh = Fake()
+        queue(gh, 11)
+        sync(gh)
+        self.assertIn("already carries", batch.reopened(gh, 11)[0])
+        self.assertIn("holds a batch", batch.reopened(gh, 111)[0])
+        gh.add_pull(12, "head12")
+        gh.close(12)
+        self.assertIn("is not open", batch.reopened(gh, 12)[0])
+        self.assertEqual([write for write in gh.writes if "labels" in write[1] and write[1].startswith("issues/1")
+                          and not write[1].startswith("issues/111")], [])
+
+
 class Requests(unittest.TestCase):
     """The workflow's token is allowed 1,000 requests an hour, shared with every other workflow."""
 
@@ -711,9 +916,10 @@ class Requests(unittest.TestCase):
         gh = self.big()
         first = self.spent(gh)
         self.assertLess(first, 33 * 5 + 15)
-        # The repository, main, open pull requests, batch branches, batches to tidy up: no more.
-        self.assertEqual(self.spent(gh), 5)
-        self.assertEqual(self.spent(gh), 5)
+        # The repository, main, open pull requests, batch branches, and the closed pull requests
+        # still labelled `building` or `batch queue`: no more.
+        self.assertEqual(self.spent(gh), 6)
+        self.assertEqual(self.spent(gh), 6)
 
     def test_one_more_pull_request_costs_a_handful(self):
         gh = self.big()

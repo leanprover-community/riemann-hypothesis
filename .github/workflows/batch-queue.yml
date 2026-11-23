@@ -17,6 +17,15 @@ name: batch queue
 # commit and removes the `batch queue` label, and nothing else. Commits already merged into a
 # batch stay there, and no batch is rebuilt, so a build that is under way is never disturbed.
 #
+# A pull request that is closed, merged or not, loses `batch queue` and `building`. Reopened, it
+# gets `batch queue` back if this workflow took the label off and nobody commented `-batch` on
+# it meanwhile. A label a person took off stays off.
+#
+# The batches are the branches this workflow starts, named after the time they were started:
+# `batch/2026-11-23-041230`, with `-2` and so on after it if that name was taken. A `batch/...`
+# branch under another name, such as one a maintainer assembled by hand, is left alone: nothing
+# is merged into it, its pull request cannot be frozen and its text is not rewritten.
+#
 # Only a comment whose whole text is `batch`, `batch <commit>`, `-batch` or `freeze` counts,
 # letter case and surrounding blank space aside, and only from someone with write access to this
 # repository. Every other comment is ignored. GitHub runs this workflow from the default branch
@@ -25,7 +34,8 @@ name: batch queue
 # only.
 #
 # Queuing also compares the pull request with the others labelled `building` or `batch queue`
-# and comments if git cannot merge it with one of them. That job only reports.
+# and comments if git cannot merge it with one of them, or if one deletes a Lean file the other
+# starts to import. That job only reports.
 #
 # The workflow can be started by hand to assemble the queue again, with a pull request number
 # to repeat the comparison for that pull request.
@@ -37,7 +47,7 @@ on:
     workflows: [Build PR]
     types: [requested]
   pull_request_target:
-    types: [closed]
+    types: [closed, reopened]
   workflow_dispatch:
     inputs:
       pr_number:
@@ -116,16 +126,16 @@ jobs:
           }
 
           if [ "$text" = freeze ]; then
-            # Only a batch can be frozen: an open pull request from a batch/... branch of this
-            # repository. The label is the record that it is frozen.
-            head=$(gh api "repos/$REPO/pulls/$PR" --jq '(.head.repo.full_name // "") + " " + .head.ref + " " + .state')
-            case "$head" in
-              "$REPO batch/"*" open") ;;
-              *)
-                echo "Pull request $PR is not an open batch pull request: nothing to freeze."
-                exit 0
-                ;;
-            esac
+            # Only a batch can be frozen: an open pull request from a branch of this repository
+            # that the sync job started, `batch/` and a time. The label is the record that it is
+            # frozen.
+            head=$(gh api "repos/$REPO/pulls/$PR" --jq '(.head.repo.full_name // "-") + " " + .head.ref + " " + .state')
+            read -r home ref state <<< "$head"
+            own='^batch/[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}(-[0-9]+)?$'
+            if [ "$home" != "$REPO" ] || [ "$state" != open ] || ! [[ "$ref" =~ $own ]]; then
+              echo "Pull request $PR is not an open batch pull request of this workflow: nothing to freeze."
+              exit 0
+            fi
             gh api -X POST "repos/$REPO/issues/$PR/labels" -f "labels[]=$FROZEN" --silent
             echo "Froze batch pull request $PR, as $AUTHOR asked."
             echo "frozen=true" >> "$GITHUB_OUTPUT"
@@ -238,14 +248,15 @@ jobs:
             echo "No pull request number in the run name: nothing to do."
             exit 0
           fi
-          head=$(gh api "repos/$REPO/pulls/$number" --jq '(.head.repo.full_name // "") + " " + .head.ref + " " + .state')
-          case "$head" in
-            "$REPO batch/"*" open") ;;
-            *)
-              echo "Pull request $number is not an open batch pull request: nothing to freeze."
-              exit 0
-              ;;
-          esac
+          # Only a batch the sync job started: a branch of this repository named `batch/` and a
+          # time. A batch assembled by hand under another name is not frozen.
+          head=$(gh api "repos/$REPO/pulls/$number" --jq '(.head.repo.full_name // "-") + " " + .head.ref + " " + .state')
+          read -r home ref state <<< "$head"
+          own='^batch/[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}(-[0-9]+)?$'
+          if [ "$home" != "$REPO" ] || [ "$state" != open ] || ! [[ "$ref" =~ $own ]]; then
+            echo "Pull request $number is not an open batch pull request of this workflow: nothing to freeze."
+            exit 0
+          fi
           gh api -X POST "repos/$REPO/issues/$number/labels" -f "labels[]=$FROZEN" --silent
           echo "Froze batch pull request $number: a build of it was dispatched."
           echo "frozen=true" >> "$GITHUB_OUTPUT"
@@ -272,28 +283,66 @@ jobs:
           sparse-checkout: scripts
       # Pull request commits are fetched as git objects and compared with `git merge-tree`.
       # No pull request file is checked out or run.
-      - name: Report text conflicts with the rest of the queue
+      - name: Report conflicts with the rest of the queue
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           PR: ${{ github.event.issue.number || inputs.pr_number }}
         run: python3 scripts/batch-queue-conflicts.py --repo "$REPO" --pr "$PR" --comment --summary "$GITHUB_STEP_SUMMARY"
 
+  reopened:
+    name: Put `batch queue` back on a reopened pull request
+    # The label comes back only if this workflow took it off when the pull request was closed,
+    # and nobody commented `-batch` meanwhile. The script decides; this only starts it.
+    if: ${{ github.event_name == 'pull_request_target' && github.event.action == 'reopened' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    outputs:
+      restored: ${{ steps.reopened.outputs.restored }}
+    steps:
+      - name: Check out this workflow's own copy of the scripts
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          sparse-checkout: scripts
+      # Reads the pull request's labels, events and comments through the API. Nothing from the
+      # pull request is checked out or run.
+      - name: Put the label back if this workflow took it off
+        id: reopened
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          said=$(python3 scripts/batch-queue-sync.py --repo "$REPO" --reopened "$PR" --summary "$GITHUB_STEP_SUMMARY")
+          printf '%s\n' "$said"
+          if printf '%s\n' "$said" | grep -qF "#$PR was reopened:"; then
+            echo "restored=true" >> "$GITHUB_OUTPUT"
+          fi
+
   sync:
     name: Assemble the batch and keep the labels in step
-    needs: [label, started]
-    # After a pull request was queued or unqueued, after a batch was frozen, merged or closed, or
-    # when started by hand. Tidying up after a merged or closed batch does not depend on the
-    # `pull_request_target` event: every run does it, so it only happens sooner with the event.
+    needs: [label, started, reopened]
+    # After a pull request was queued, unqueued or given its label back, after a batch was
+    # frozen, merged or closed, after a labelled pull request was closed, or when started by
+    # hand. Tidying up does not depend on the `pull_request_target` event: every run does it, so
+    # it only happens sooner with the event.
     if: >-
       ${{ always() && (
           github.event_name == 'workflow_dispatch' ||
           needs.label.outputs.queued == 'true' || needs.label.outputs.unqueued == 'true' ||
           needs.label.outputs.frozen == 'true' ||
           needs.started.outputs.frozen == 'true' ||
-          (github.event_name == 'pull_request_target' &&
-           startsWith(github.event.pull_request.head.ref, 'batch/') &&
-           github.event.pull_request.head.repo.full_name == github.repository)) }}
+          needs.reopened.outputs.restored == 'true' ||
+          (github.event_name == 'pull_request_target' && github.event.action == 'closed' &&
+           ((startsWith(github.event.pull_request.head.ref, 'batch/') &&
+             github.event.pull_request.head.repo.full_name == github.repository) ||
+            contains(github.event.pull_request.labels.*.name, 'batch queue') ||
+            contains(github.event.pull_request.labels.*.name, 'building')))) }}
     runs-on: ubuntu-latest
     # One run at a time. A run still waiting when a newer one arrives can be dropped, and that
     # loses nothing: each run works from what GitHub shows now, not from what started it.

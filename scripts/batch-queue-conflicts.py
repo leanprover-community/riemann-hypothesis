@@ -151,6 +151,19 @@ def lean_files(repo, fork, head, status):
     return {path for path in out.split(b"\0") if path.startswith(SOURCE) and path.endswith(LEAN)}
 
 
+def renamed(repo, fork, head):
+    """Lean files under SOURCE that a pull request renames, as {new name: old name}.
+
+    git pairs a file the pull request deletes with one it adds when their contents are alike,
+    as it does when it merges, so this reads both. In a clone without blobs, `prefetch_imports`
+    fetches them.
+    """
+    _, out = git(repo, "diff", "--name-status", "--find-renames", "--diff-filter=R", "-z", fork, head,
+                 "--", f":(glob){SOURCE.decode()}**/*{LEAN.decode()}")
+    fields = out.split(b"\0")  # "R<score>", old name, new name, and so on
+    return dict(zip(fields[2::3], fields[1::3]))
+
+
 def imports(contents):
     """The files that a Lean file's import header names, as paths under SOURCE.
 
@@ -203,18 +216,22 @@ def read_blobs(repo, ids):
 def added_imports(repo, fork, head, *, limit=IMPORT_LIMIT):
     """What a pull request starts to import, as {file it adds or edits: files newly imported}.
 
-    An import that the file already had where the pull request left main is not new. Returns
-    None if the pull request adds or edits more than `limit` Lean files. In a clone without
-    blobs, `prefetch_imports` fetches what this reads.
+    An import that the file already had where the pull request left main is not new. A file
+    the pull request renames is compared with the file it was renamed from, so imports that
+    move with it are not new either. Renames are only looked for if it also deletes at most
+    `limit` Lean files. Returns None if the pull request adds or edits more than `limit` Lean
+    files. In a clone without blobs, `prefetch_imports` fetches what this reads.
     """
     paths = lean_files(repo, fork, head, "AM")
     if len(paths) > limit:
         return None
-    before, after = blob_ids(repo, fork, paths), blob_ids(repo, head, paths)
+    moved = renamed(repo, fork, head) if len(lean_files(repo, fork, head, "D")) <= limit else {}
+    was = {path: moved.get(path, path) for path in paths}
+    before, after = blob_ids(repo, fork, set(was.values())), blob_ids(repo, head, paths)
     contents = read_blobs(repo, [*before.values(), *after.values()])
     found = {}
     for path in paths:
-        new = imports(contents.get(after.get(path), b"")) - imports(contents.get(before.get(path), b""))
+        new = imports(contents.get(after.get(path), b"")) - imports(contents.get(before.get(was[path]), b""))
         if new:
             found[path] = new
     return found
@@ -264,6 +281,10 @@ def prefetch_imports(repo, ours, others, *, limit=IMPORT_LIMIT):
         paths = lean_files(repo, fork, head, "AM")
         if len(paths) <= limit:
             wanted.update(blob_ids(repo, fork, paths).values(), blob_ids(repo, head, paths).values())
+            # Finding renames compares the files it deletes with the files it adds.
+            gone = lean_files(repo, fork, head, "D")
+            if len(gone) <= limit:
+                wanted.update(blob_ids(repo, fork, gone).values())
     fetch_ids(repo, wanted)
 
 
