@@ -21,7 +21,9 @@ theorem coeq_elem {A S S' : Type} [CommRing A] [CommRing S] [CommRing S'] (φ : 
     (Algebra.FormallyUnramified.iff_exists_tensorProduct (R := A) (S := S)).1 inferInstance
   refine ⟨Algebra.TensorProduct.productMap u' v' t, fun s => ?_, ?_⟩
   · have h := congrArg (Algebra.TensorProduct.productMap u' v') (ht1 s)
-    simpa [map_mul, map_sub, Algebra.TensorProduct.productMap_apply_tmul, u', v'] using h
+    simp only [map_mul, map_sub, Algebra.TensorProduct.productMap_apply_tmul,
+      map_one, map_zero, one_mul, mul_one] at h
+    exact h
   · have hmem : ∀ x ∈ I.map φ, u x ∈ I.map φ' ∧ v x ∈ I.map φ' := fun x hx => by
       refine ⟨?_, ?_⟩
       · have := Ideal.mem_map_of_mem u hx
@@ -34,7 +36,7 @@ theorem coeq_elem {A S S' : Type} [CommRing A] [CommRing S] [CommRing S'] (φ : 
       obtain ⟨a, ha⟩ := hφ.surj s
       have e1 : v s - u s = v (s - φ a) - u (s - φ a) := by
         have h1 : v (φ a) = u (φ a) := (RingHom.congr_fun hv a).trans (RingHom.congr_fun hu a).symm
-        rw [map_sub, map_sub, h1]; ring
+        rw [map_sub, map_sub, h1, sub_sub_sub_cancel_right]
       change Ideal.Quotient.mk _ (v s) = Ideal.Quotient.mk _ (u s)
       rw [Ideal.Quotient.eq, e1]
       exact Ideal.sub_mem _ (hmem _ ha).2 (hmem _ ha).1
@@ -48,8 +50,8 @@ theorem coeq_elem {A S S' : Type} [CommRing A] [CommRing S] [CommRing S'] (φ : 
     have h := AlgHom.congr_fun hprod t
     simp only [AlgHom.comp_apply] at h
     rw [ht2, map_one] at h
-    rw [← Ideal.Quotient.eq]
-    simpa [q] using h
+    rw [← Ideal.Quotient.eq, map_one]
+    exact h
 
 theorem LeafCoeq_of (hInv : LeafInv) (hComp : LeafComp) : LeafCoeq := by
   intro A S S' _ _ _ φ φ' I u v hφ hφ' hu hv
