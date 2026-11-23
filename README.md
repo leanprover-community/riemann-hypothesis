@@ -17,6 +17,7 @@ Please note: we are **not** looking for:
 - adding files which are not necessary for the Riemann Hypothesis proof
 
 This work is taking place on the `main` branch. The `original` branch preserves the first publicly-released version of the proof retrieved on 2026-11-20 from <https://alpo.ge/remark.pdf>.
+
 If you want to open the original proof without compiling it, use
 [riemann-hypothesis-original](https://github.com/homeowmorphism/riemann-hypothesis-original).
 It keeps the published Lean source unchanged and provides a prebuilt cache for it.
@@ -33,10 +34,7 @@ It keeps the published Lean source unchanged and provides a prebuilt cache for i
 | `LFunction_eq_zero_re` | every zero of L(χ, s) with 0 < Re s < 1 has Re s = 1/2 |
 | `LFunction_eq_zero_re_of_isPrimitive` | every zero of L(χ, s) for a Primitive Dirichlet character χ with 0 < Re s < 1 has Re s = 1/2 |
 
-[`src/Challenge.lean`](src/Challenge.lean) states the same five with `sorry` in place of the
-proofs, in a file that imports only Mathlib. Comparator checks that `Main.lean` proves exactly
-those statements, that it uses no axioms other than `propext`, `Quot.sound` and
-`Classical.choice`, and that Lean's kernel and nanoda both accept the proof.
+[`src/Challenge.lean`](src/Challenge.lean) states the same five with `sorry` in place of the proofs, in a file that imports only Mathlib. Comparator checks that `Main.lean` proves exactly those statements, that it uses no axioms other than `propext`, `Quot.sound` and `Classical.choice`, and that Lean's kernel and nanoda both accept the proof.
 
 ## Cache
 
@@ -47,9 +45,7 @@ lake exe cache get
 lake build --no-build
 ```
 
-A full build makes Lean check every proof on your machine. The cache downloads files that were
-compiled elsewhere, so you can read and edit the project within minutes, but Lean does not
-re-check them.
+A full build makes Lean check every proof on your machine. The cache downloads files that were compiled elsewhere, so you can read and edit the project within minutes, but Lean does not re-check them.
 
 ## Checking the proof yourself
 
@@ -61,10 +57,7 @@ MATHLIB_CACHE_GET_URL=https://cache.mathlib.org/mathlib4 lake exe mathlib/cache 
 lake comparator
 ```
 
-The first command fetches Mathlib's compiled files and nothing of ours. Don't use
-`lake exe cache get` here, because that also downloads our prebuilt copy of the submission. The
-second reads `comparator.json`, builds `Challenge` and `Main` in a sandbox with no network, and
-makes the checks described under [Theorem Statements](#theorem-statements).
+The first command fetches Mathlib's compiled files and nothing of ours. Don't use `lake exe cache get` here, because that also downloads our prebuilt copy of the submission. The second reads `comparator.json`, builds `Challenge` and `Main` in a sandbox with no network, and makes the checks described under [Theorem Statements](#theorem-statements).
 
 Compiling the submission runs its code, so you may want to do it in a VM or your own sandbox. To do that, fetch Mathlib's cache as above, then run the check in three steps:
 
@@ -89,14 +82,53 @@ The published source uses Lean 4.33.1, which has neither `lake comparator` nor `
 [An older version of this README](https://github.com/leanprover-community/riemann-hypothesis/blob/7cce738ba719a32964ca3822d0994f4c6952c7ae/README.md#checking-it)
 has the two-toolchain steps for checking it.
 
+## Known limitation: quotient replay in exported-proof verification
+
+[Lean issue #15643](https://github.com/leanprover/lean4/issues/15643) reports a discrepancy between normal Lean proof checking and the verification of exported declarations using `leanchecker --from-export`.
+
+In particular, the issue reports that Lean accepts the following theorem by reflexivity, while the exported proof is rejected with an unknown-constant error for `Quot.lift`:
+
+```lean
+theorem a_append : Quot.lift (· + 1) h (Quot.mk Eq 4) = 5 := rfl
+```
+
+The reported error is:
+
+```text
+(kernel) unknown constant 'Quot.lift'
+```
+
+### Relevance to this repository
+
+This repository uses Comparator to verify exported proof artifacts. Its configuration includes `leanchecker-paranoid --from-export` as an external checker, alongside nanoda.
+
+The quotient case reported in issue #15643 is therefore relevant to the verification infrastructure used by this project. The repository is pinned to Lean `v4.37.0-rc1`, whose [`Lean/Replay.lean`](https://github.com/leanprover/lean4/blob/v4.37.0-rc1/src/Lean/Replay.lean) implementation contains special replay handling for string-literal dependencies but does not contain equivalent explicit handling for quotient-generated constants.
+
+The reported behavior appears consistent with a replay-ordering problem. Quotient declarations generate constants such as `Quot.mk`, `Quot.lift` and `Quot.ind`. If an exported declaration refers to one of these generated constants before the quotient package has been installed in the reconstructed kernel environment, the checker may fail to resolve that reference.
+
+### Potential verification impact
+
+This behavior can produce a **false negative in exported-proof verification**: a declaration accepted by Lean during normal compilation may be rejected by the export checker because the replay environment has not reconstructed the required constants at the point where they are needed.
+
+This is a limitation in the verification tooling, not evidence that the mathematical proof is invalid. It does not demonstrate a kernel soundness failure, nor does it indicate that an invalid theorem has been accepted.
+
+The string-literal component of issue #15643 was addressed separately in [Lean PR #15853](https://github.com/leanprover/lean4/pull/15853). The quotient-related reproducer is also documented in the original issue.
+
+**Scope and current evidence.** We have not demonstrated that the current exported Riemann Hypothesis or Generalized Riemann Hypothesis declarations trigger this exact quotient replay failure. This note records a potential limitation relevant to the verification toolchain; it does not claim that the current proof has failed verification. The quotient reproducer should be tested against the exact checker versions and export configuration used by this repository before any conclusion is drawn about its current proof artifacts.
+
+### Attribution
+
+The original Lean issue and its initial reproducer were reported by Leo0506 in [Lean issue #15643](https://github.com/leanprover/lean4/issues/15643).
+
+The connection between this replay limitation and the Comparator-based verification workflow of this repository was identified by **Lunz Research Group**.
+
+The technical analysis, candidate-fix investigation and documentation were prepared with assistance from **ChatGPT (OpenAI)**. This AI assistance is disclosed for transparency.
+
 ## The formal-conjectures statement
 
-[`comparator/`](comparator/) holds a second Comparator setup. Its challenge states the Riemann
-Hypothesis and the Generalized Riemann Hypothesis the way
+[`comparator/`](comparator/) holds a second Comparator setup. Its challenge states the Riemann Hypothesis and the Generalized Riemann Hypothesis the way
 [formal-conjectures](https://github.com/google-deepmind/formal-conjectures/blob/d8d031d4998c78575159ccab9a7a9e95ce043883/FormalConjectures/Millennium/RiemannHypothesis.lean)
-does, in statements that neither the author nor we wrote, and the files next to it prove them
-from `src/Main.lean`. [NOTES.md](verification/NOTES.md#formal-conjectures) says how to check it
-and what has been checked so far.
+does, in statements that neither the author nor we wrote, and the files next to it prove them from `src/Main.lean`. [NOTES.md](verification/NOTES.md#formal-conjectures) says how to check it and what has been checked so far.
 
 ## CI
 
@@ -106,10 +138,8 @@ To lend a Linux machine with plenty of memory and disk, see
 
 ## License
 
-The submission belongs to its author and was published without a license. It is mirrored here
-so that it can be checked. Commit `40e56bab` is the unmodified copy.
+The submission belongs to its author and was published without a license. It is mirrored here so that it can be checked. Commit `40e56bab` is the unmodified copy.
 
 The declarations in `comparator/` that are copied from
-[formal-conjectures](https://github.com/google-deepmind/formal-conjectures) are copyright The Formal
-Conjectures Authors, under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+[formal-conjectures](https://github.com/google-deepmind/formal-conjectures) are copyright The Formal Conjectures Authors, under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 The files that hold them carry the notice.
