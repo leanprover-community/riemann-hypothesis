@@ -36,7 +36,8 @@ lemma aeval_eq_eval_map {A B : Type} [CommRing A] [CommRing B] [Algebra A B] (p 
 theorem LeafRootStd_of : LeafRootStd := by
   intro A _ I f a hf hfa hu
   set q := f /ₘ (X - C a) with hq
-  let P : StandardEtalePair A := ⟨f, hf, f.derivative * q, ⟨q, 0, 1, by ring⟩⟩
+  let P : StandardEtalePair A :=
+    ⟨f, hf, f.derivative * q, ⟨q, 0, 1, by simp only [mul_zero, add_zero, pow_one]⟩⟩
   set φ := algebraMap A P.Ring with hφ
   have hX := P.hasMap_X
   have hroot : (f.map φ).eval P.X = 0 := by
@@ -49,7 +50,8 @@ theorem LeafRootStd_of : LeafRootStd := by
   have hba : P.X - φ a ∈ I.map φ := by
     have e := std_eval φ f a P.X
     rw [hroot] at e
-    have e2 : (P.X - φ a) * (q.map φ).eval P.X = -φ (f.eval a) := by linear_combination -e
+    have e2 : (P.X - φ a) * (q.map φ).eval P.X = -φ (f.eval a) :=
+      eq_neg_iff_add_eq_zero.mpr e.symm
     obtain ⟨u, hu'⟩ := hqunit
     rw [← hu'] at e2
     have e3 : P.X - φ a = ((P.X - φ a) * u) * ↑u⁻¹ := by simp [mul_assoc]
@@ -100,17 +102,25 @@ theorem LeafRootStd_of : LeafRootStd := by
         rw [← map_mul, ← map_mul, ← map_one π, ← map_one φ]
         exact Ideal.Quotient.eq.mpr (by rw [← map_sub]; exact Ideal.mem_map_of_mem _ hgu)
       change π (φ u) = _
-      linear_combination (-π (φ u)) * e1 + (π (mkP X) * π (φ u)) * hgb + π (mkP X) * h3
+      rw [hgb] at e1
+      exact (IsUnit.of_mul_eq_one _ e1).mul_left_cancel (h3.trans e1.symm)
+    let reduction := π.comp mkP
     have hin : ∀ c : A[X], π (mkP (C c)) ∈ R' := by
       intro c
       refine Polynomial.induction_on c (fun a0 => ⟨a0, rfl⟩) ?_ ?_
-      · intro p1 p2 h1 h2; rw [C_add, map_add (f := _), map_add (f := _)]; exact add_mem h1 h2
+      · intro p1 p2 h1 h2
+        change (reduction.comp C) (p1 + p2) ∈ R'
+        rw [map_add]
+        exact R'.add_mem h1 h2
       · intro n a0 ih
         rw [pow_succ, ← mul_assoc, C_mul, map_mul, map_mul]; exact mul_mem ih hXm
     have hall : ∀ p : A[X][X], π (mkP p) ∈ R' := by
       intro p
       refine Polynomial.induction_on p hin ?_ ?_
-      · intro p1 p2 h1 h2; rw [map_add (f := _), map_add (f := _)]; exact add_mem h1 h2
+      · intro p1 p2 h1 h2
+        change reduction (p1 + p2) ∈ R'
+        rw [map_add]
+        exact R'.add_mem h1 h2
       · intro n a0 ih
         rw [pow_succ, ← mul_assoc, map_mul, map_mul]; exact mul_mem ih hY
     intro s
