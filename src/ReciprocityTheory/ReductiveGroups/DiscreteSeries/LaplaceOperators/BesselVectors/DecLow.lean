@@ -63,10 +63,10 @@ theorem decLow (k r : ℕ) (hk : 1 ≤ k) (ε : Fin (2 * r + k + 1) → Bool) (l
   have hq0 : S7.q0 ε = r + 1 := by unfold S7.q0; rw [hp, hq]; omega
   have hq1 : 1 ≤ S7.q0 ε := by omega
   set N : ℝ := ((2 * r + k + 1 : ℕ) : ℝ) with hN
-  have hN1 : (1 : ℝ) ≤ N := by rw [hN]; exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
-  have hpN : (pOf ε : ℝ) ≤ N := by rw [hN, hp]; exact_mod_cast (by omega : k + r ≤ 2 * r + k + 1)
-  have hqN : (qOf ε : ℝ) ≤ N := by rw [hN, hq]; exact_mod_cast (by omega : r + 1 ≤ 2 * r + k + 1)
-  have hq0N : (S7.q0 ε : ℝ) ≤ N := by rw [hN, hq0]; exact_mod_cast (by omega : r + 1 ≤ 2 * r + k + 1)
+  have hN1 : (1 : ℝ) ≤ N := by rw [hN]; exact_mod_cast (omega : 1 ≤ 2 * r + k + 1)
+  have hpN : (pOf ε : ℝ) ≤ N := by rw [hN, hp]; exact_mod_cast (omega : k + r ≤ 2 * r + k + 1)
+  have hqN : (qOf ε : ℝ) ≤ N := by rw [hN, hq]; exact_mod_cast (omega : r + 1 ≤ 2 * r + k + 1)
+  have hq0N : (S7.q0 ε : ℝ) ≤ N := by rw [hN, hq0]; exact_mod_cast (omega : r + 1 ≤ 2 * r + k + 1)
   have hN3 : (1 : ℝ) ≤ N ^ 3 := one_le_pow₀ hN1
   have hpq : N * (pOf ε : ℝ) * (qOf ε : ℝ) ≤ N ^ 3 := by
     calc N * (pOf ε : ℝ) * (qOf ε : ℝ) ≤ N * N * N := by gcongr

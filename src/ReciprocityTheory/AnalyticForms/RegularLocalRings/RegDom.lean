@@ -186,7 +186,7 @@ theorem isRegularLocalRing_quotient_of_not_mem_sq [IsRegularLocalRing R] {x : R}
       | top => exact le_top
       | coe e =>
         have h6 : k + 1 ≤ e + 1 := by exact_mod_cast h5
-        exact_mod_cast (by omega : k ≤ e)
+        exact_mod_cast (omega : k ≤ e)
   refine ⟨IsRegularLocalRing.mk ?_, le_antisymm ?_ hkrull⟩
   · rw [hk_def]
     exact le_antisymm hle2 hdimQ

@@ -497,7 +497,7 @@ theorem assembly : AssemblyStatement := by
     rw [this]; exact hHCU
   have hcne : ∀ a, cBase r (t : ℝ) a ≠ 0 := by
     intro a
-    have : (t : ℂ) ≠ 0 := by exact_mod_cast (by omega : t ≠ 0)
+    have : (t : ℂ) ≠ 0 := by exact_mod_cast (omega : t ≠ 0)
     simp [cBase, Complex.I_ne_zero, this]
 
   have hemb := chart_embedding hinj hU

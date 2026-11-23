@@ -105,7 +105,7 @@ private theorem gap_lemma {ν : Fin n → ℝ} (h : S7.IsHCParam ν) :
       exact_mod_cast this
     have h2 : (1 : ℝ) ≤ ν ⟨a.val + d, hc⟩ - ν b := by
       rw [hint]
-      exact_mod_cast (by omega : (1 : ℤ) ≤ m2 - m1)
+      exact_mod_cast (omega : (1 : ℤ) ≤ m2 - m1)
     push_cast
     linarith
 
@@ -166,7 +166,7 @@ theorem cns_hc_of_dom {ε : Fin n → Bool} (he : ∀ a b, ε a = ε b) {ν : Fi
   have hk := hdom a b hab (he a b)
   have hba : (1 : ℝ) ≤ ((b.val - a.val : ℕ) : ℝ) := by
     have := Fin.lt_iff_val_lt_val.mp hab
-    exact_mod_cast (by omega : 1 ≤ b.val - a.val)
+    exact_mod_cast (omega : 1 ≤ b.val - a.val)
   linarith
 
 theorem cns_dom_of_hc {ε : Fin n → Bool} {ν : Fin n → ℝ} (h : S7.IsHCParam ν) : HW.KDom ε (lowK ε ν) := by

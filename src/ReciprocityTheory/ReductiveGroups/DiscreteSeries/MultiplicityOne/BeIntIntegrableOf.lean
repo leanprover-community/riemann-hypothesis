@@ -72,7 +72,7 @@ theorem beInt_integrable_of (D : RealPlaceData k r Wp Wp) (X : SigData k r) (hD 
   refine h1' k r Wp D X hD hX (X.a - AG k r - 1) ?_ u u' ⟨C, ?_⟩
   · have hn : (1 : ℝ) ≤ nR k r := by
       unfold nR
-      exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
+      exact_mod_cast (omega : 1 ≤ 2 * r + k + 1)
     unfold AS AG
     unfold aM at ha
     nlinarith [mul_nonneg (sub_nonneg.2 hn) (by positivity : (0 : ℝ) ≤ 3 * nR k r ^ 2 + 2 * nR k r + 2)]

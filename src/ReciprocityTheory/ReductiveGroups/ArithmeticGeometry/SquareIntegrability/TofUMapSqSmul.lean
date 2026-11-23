@@ -108,7 +108,7 @@ theorem t_assemble [IsCMField E] {X : PT E} {DF : ℕ} (P : Par X DF) {I : Submo
     rw [tof_uMap_sq_smul]; ring
   rw [hsum] at hu2
   have hr4 : (0 : ℝ) < (r1 : ℝ) ^ 4 := by
-    have : (0 : ℝ) < r1 := by exact_mod_cast (by omega : 0 < r1)
+    have : (0 : ℝ) < r1 := by exact_mod_cast (omega : 0 < r1)
     positivity
   have h4 : Real.exp (-(Real.pi / 2) * ∑ j, D j) ≤ Real.exp (-(Real.pi * P.ph / (r1 : ℝ) ^ 4)) := by
     apply Real.exp_le_exp.2

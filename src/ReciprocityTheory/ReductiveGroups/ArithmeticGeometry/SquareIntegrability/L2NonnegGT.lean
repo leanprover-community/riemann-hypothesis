@@ -88,7 +88,7 @@ theorem tof_yb_sup [IsCMField E] {X : PT E} {DF : ℕ} {P : Par X DF} {I : Submo
     rw [finrank_euclideanSpace, X.card_idx] at h1
     exact h1
   have hg2 : 2 ≤ g := P.hfr
-  have hgpos : (0 : ℝ) < g := by exact_mod_cast (by omega : 0 < g)
+  have hgpos : (0 : ℝ) < g := by exact_mod_cast (omega : 0 < g)
   have hq : (0 : ℝ) < P.q := by exact_mod_cast P.hq
   have hqth := one_le_sqrt_q_th P
   have hth := Col.th_pos P

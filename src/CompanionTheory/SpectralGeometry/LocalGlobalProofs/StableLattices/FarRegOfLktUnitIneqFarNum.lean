@@ -168,7 +168,7 @@ theorem exists_lev (x : Fin n → ℝ) (hx : Antitone x) {L : ℝ} (hL : 0 ≤ L
       rw [← hk, hya, hya] at h1
       have h2 : (k : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by
         have := b.isLt
-        exact_mod_cast (by omega : k ≤ m + 1)
+        exact_mod_cast (omega : k ≤ m + 1)
       nlinarith
     refine ⟨fun a => levS y L a, fun a b hab => levS_mono y L hab, fun a b h => ?_, fun a b h => ?_⟩
     · have := levS_gap hy h

@@ -128,8 +128,8 @@ theorem gauss_card_arith {a b : Cardinal} {s d : ℕ} (h : ((s + d : ℕ) : Card
   have ha' : a' ≤ d := by exact_mod_cast ha
   have hb' : b' ≤ s := by exact_mod_cast hb
   constructor
-  · exact_mod_cast (by omega : a' = d)
-  · exact_mod_cast (by omega : b' = s)
+  · exact_mod_cast (omega : a' = d)
+  · exact_mod_cast (omega : b' = s)
 
 theorem gauss_aeval_mem {B C : Type} [CommRing B] [CommRing C] [Algebra B C] {σ : Type}
     (g : σ → C) (P : MvPolynomial σ B) (R : Subring C)

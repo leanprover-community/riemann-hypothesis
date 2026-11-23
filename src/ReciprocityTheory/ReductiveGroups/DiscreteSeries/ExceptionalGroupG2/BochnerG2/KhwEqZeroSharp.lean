@@ -62,7 +62,7 @@ theorem two_lt_of_gap {a b : Fin n} (hε : ε a ≠ ε b) {h : ℝ} (hbig : 2 * 
   have ha := a.isLt
   have hb := b.isLt
   have hv : a.val ≠ b.val := fun e => hab (Fin.ext e)
-  have : (2 : ℝ) ≤ n := by exact_mod_cast (by omega : 2 ≤ n)
+  have : (2 : ℝ) ≤ n := by exact_mod_cast (omega : 2 ≤ n)
   linarith
 
 theorem khw_eq_zero_sharp (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hmono : StrictAnti lam) {h : ℝ}

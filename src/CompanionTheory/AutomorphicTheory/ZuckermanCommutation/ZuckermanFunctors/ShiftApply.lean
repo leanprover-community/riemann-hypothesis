@@ -217,7 +217,7 @@ theorem injV (S : Steps) (Lb : Lib t) (b : Bool) {μ : Fin (2 * r + k + 1) → �
     ∃ T : {s // IsHCParam (shift b μ s)} → URep k r, (∀ s, (T s).R.IsDS ε (shift b μ s)) ∧
       JInj (N := M) IsHom (vr k r b, U) (fun s => one (T s)) ∧
       ∀ s, ∃ p, IsHom (vr k r b, U) (one (T s)) p ∧ p ≠ 0 := by
-  have h1 : (1 : ℝ) ≤ (((2 * r + k + 1) ^ 2 + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega)
+  have h1 : (1 : ℝ) ≤ (((2 * r + k + 1) ^ 2 + 2 : ℕ) : ℝ) := by exact_mod_cast (omega)
   obtain ⟨T, hT, hin, hof⟩ := S.zuckH t Lb.zg k r ε μ U b h hU hg (by linarith)
   have hd := Lb.dec k r ε μ U h _ hU hg ht
   exact ⟨T, hT, S.inj k r _ _ T _ (S.okVr k r b) ⟨_, _, hU⟩ (fun s => ⟨_, _, hT s⟩) hd (by show 1 + _ + 1 ≤ _; omega) hin,
@@ -228,7 +228,7 @@ theorem decV (S : Steps) (Lb : Lib t) (hk : 1 ≤ k) (b : Bool) {μ : Fin (2 * r
     (T : Fin (2 * r + k + 1) → URep k r) (hT : ∀ s, (T s).R.IsDS ε (shift b μ s)) :
     ∃ io pr, IsDec (N := M) IsHom (vr k r b, U) (fun s => one (T s)) io pr := by
   have C := S.homCat k r
-  have h1 : (1 : ℝ) ≤ (((2 * r + k + 1) ^ 2 + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega)
+  have h1 : (1 : ℝ) ≤ (((2 * r + k + 1) ^ 2 + 2 : ℕ) : ℝ) := by exact_mod_cast (omega)
   have hsimp := S.schur S.infChar k r ε _ _ T (shift_inj b μ) hT
   have adj' : ∀ U U' : URep k r, ∃ e : (M (vr k r (!b), U) →ₗ[ℂ] M (one U')) ≃ₗ[ℂ] (M (one U) →ₗ[ℂ] M (vr k r b, U')),
       ∀ p, IsHom (vr k r (!b), U) (one U') p ↔ IsHom (one U) (vr k r b, U') (e p) := by
@@ -282,7 +282,7 @@ theorem decW (S : Steps) (Lb : Lib t) (hk : 1 ≤ k) : ∀ (l : ℕ) {μ : Fin (
   | zero =>
     intro μ U h hU hg ht _ T hT
     have C := S.homCat k r
-    have h1 : (1 : ℝ) ≤ (((2 * r + k + 1) ^ 2 + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega)
+    have h1 : (1 : ℝ) ≤ (((2 * r + k + 1) ^ 2 + 2 : ℕ) : ℝ) := by exact_mod_cast (omega)
     have hI : ∀ I : Sub (2 * r + k + 1) 0, I = ⟨∅, rfl⟩ := fun I => Subtype.ext (Finset.card_eq_zero.1 I.2)
     have : Unique (Sub (2 * r + k + 1) 0) := ⟨⟨⟨∅, rfl⟩⟩, hI⟩
     have hc : ∀ (g : Mx k r) I J, cmp 0 g I J = 1 := fun g I J => Matrix.det_isEmpty
@@ -301,7 +301,7 @@ theorem decW (S : Steps) (Lb : Lib t) (hk : 1 ≤ k) : ∀ (l : ℕ) {μ : Fin (
     intro μ U h hU hg ht hD T hT
     classical
     have C := S.homCat k r
-    have h1 : (1 : ℝ) ≤ (((2 * r + k + 1) ^ 2 + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega)
+    have h1 : (1 : ℝ) ≤ (((2 * r + k + 1) ^ 2 + 2 : ℕ) : ℝ) := by exact_mod_cast (omega)
     rw [Nat.cast_succ m] at ht hD
     let P := {ν : Fin (2 * r + k + 1) → ℝ // IsHCParam ν ∧ GapAtLeast ε ν (h - ((m + 1 : ℕ) : ℝ))}
     have hex : ∀ ν : P, ∃ V : URep k r, V.R.IsDS ε ν.1 := fun ν => by

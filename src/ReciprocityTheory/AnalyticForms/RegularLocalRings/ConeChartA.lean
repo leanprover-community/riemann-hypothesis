@@ -261,7 +261,7 @@ theorem ringKrullDim_quotient_le_of_chartIdeal_le {P : Ideal (MvPolynomial (Σ k
   rw [hRdim] at hdimR
   have hsR : sR ≤ e + Fintype.card K := by exact_mod_cast hdimR
   rw [hAdim]
-  exact_mod_cast (by omega : sA ≤ e)
+  exact_mod_cast (omega : sA ≤ e)
 
 
 open Classical in

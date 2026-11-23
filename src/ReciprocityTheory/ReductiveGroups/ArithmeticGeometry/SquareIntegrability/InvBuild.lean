@@ -128,7 +128,7 @@ lemma inv_step [IsCMField E] (hNP : Ext.NearestPlane) {dim : (E →+* ℂ) → �
     rintro rfl
     exact hvW (by rw [map_zero]; exact (Wk σ χ k).zero_mem)
   have hμ1 : 1 ≤ ‖v‖ := hsep v hvX hv0
-  have hρ : (1 : ℝ) ≤ ρ := by exact_mod_cast (by omega : 1 ≤ ρ)
+  have hρ : (1 : ℝ) ≤ ρ := by exact_mod_cast (omega : 1 ≤ ρ)
   have hKμ : 0 < K0 * ‖v‖ := mul_pos hK0 (by linarith)
   have hTpos : 0 < (30 * (ρ : ℝ) ^ 2 + 1) * K0 * ‖v‖ := by
     have : 0 < 30 * (ρ : ℝ) ^ 2 + 1 := by positivity

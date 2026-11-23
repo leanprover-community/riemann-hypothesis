@@ -148,7 +148,7 @@ theorem mem_span_int (hs : ∀ v (a : I.E), I.φ v (star a) = star (I.φ v a)) (
       obtain ⟨w, hw, rfl⟩ := hx
       intro β
       obtain ⟨c, hc, hci⟩ := exists_den w
-      have hc0 : (c : ℂ) ≠ 0 := by exact_mod_cast (by omega : c ≠ 0)
+      have hc0 : (c : ℂ) ≠ 0 := by exact_mod_cast (omega : c ≠ 0)
       let L : (InfinitePlace I.F → ℂ) →ₗ[ℝ] (InfinitePlace I.F → Fin I.n → ℂ) :=
         { toFun := fun γ v' => γ v' • atV I v' ((c : I.E) • w)
           map_add' := fun _ _ => funext fun v' => add_smul _ _ _

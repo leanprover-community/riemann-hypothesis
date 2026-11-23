@@ -185,7 +185,7 @@ theorem mahler_compactness_of : Transp → GamSub → Mahler := by
   obtain ⟨hJ, hs, hh, -, -, -, -, hG⟩ := hT I
   obtain ⟨c, hc, hcJ⟩ := exists_den fun p : Fin I.n × Fin I.n => I.J p.1 p.2
   have hcJ' : IntM ((c : I.E) • I.J) := fun i j => hcJ (i, j)
-  have hc0 : (c : I.E) ≠ 0 := by exact_mod_cast (by omega : c ≠ 0)
+  have hc0 : (c : I.E) ≠ 0 := by exact_mod_cast (omega : c ≠ 0)
   set T : ℝ := I.n * |R| + |R| + 1 with hTd
   have hT0 : 0 ≤ T := by positivity
   set s : ℝ := T + |R|

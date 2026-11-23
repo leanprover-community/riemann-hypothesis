@@ -169,7 +169,7 @@ theorem acycAbs_of (hS : BdSq) : AcycAbs := by
         | zero => exact fun y _ hy => ihk y fun A => by simpa [filt] using hy A
         | succ m ih =>
           intro y hy1 hy2 hs hc
-          have hne : ((m : ℂ) + (j + 1 : ℕ)) ≠ 0 := by exact_mod_cast (by omega : m + (j + 1) ≠ 0)
+          have hne : ((m : ℂ) + (j + 1 : ℕ)) ≠ 0 := by exact_mod_cast (omega : m + (j + 1) ≠ 0)
           have hL : ∀ A, (bd ε E (H y) - Da (H y)) A + H (bd ε E y - Da y) A ∈ G k := fun A =>
             Submodule.add_mem _ (hρ k _ (hHG k y hy1) A) (hHG k _ (hρ (k + 1) y hy1) A)
           have hw : ∀ A, (bd ε E (H y) - ((m : ℂ) + (j + 1 : ℕ)) • y) A =

@@ -78,7 +78,7 @@ theorem orbit_mult (hCL : CutLim) (hAd : DsAd) (hF : Factor) {k r : ℕ} {Wp : T
     have h3 : (0 : ℝ) ≤ r := Nat.cast_nonneg r
     have hn : (1 : ℝ) ≤ nR k r := by
       delta nR
-      exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
+      exact_mod_cast (omega : 1 ≤ 2 * r + k + 1)
     have h4 : B.AB k r ≤ nR k r ^ 2 + 1 := by
       delta B.AB nR
       push_cast

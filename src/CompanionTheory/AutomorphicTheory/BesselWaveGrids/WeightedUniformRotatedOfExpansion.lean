@@ -88,7 +88,7 @@ theorem wLoc1N_of (hW : ∀ Cb, WEnd.WBp Cb) {Cgc : ℝ} (hCC : CoefCC1 Cgc) (Ch
   have hb2 : 2 ≤ b := by
     have h1 := b_ge_of_StdHyp0 hk1 hStd.to0
     have h2 : (1 : ℝ) ≤ ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 7 :=
-      one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * D.R.rS + D.R.k + 1))
+      one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ 2 * D.R.rS + D.R.k + 1))
     nlinarith
   obtain ⟨hlam, hI, hI', hka, hka1, -, -, -, hTle, hTle', hlamb, hub, hub', -, hgap, ⟨bv, hbv, hshape⟩, hcut⟩ := hStd
   have hk2 : 2 ≤ D.R.k := by have := D.R.two_le_m; have := D.R.m_add_three_le_k; omega
@@ -178,7 +178,7 @@ theorem wLoc1N_of (hW : ∀ Cb, WEnd.WBp Cb) {Cgc : ℝ} (hCC : CoefCC1 Cgc) (Ch
     refine (bp_pow hb0 (x := 2) (by rw [Real.rpow_two]; nlinarith [Real.pi_lt_four]) Real.pi_pos.le _).trans
       (bp_mono hb1 ?_)
     have h2 : ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 2 ≤ ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 5 :=
-      pow_le_pow_right₀ (by exact_mod_cast (by omega : 1 ≤ 2 * D.R.rS + 2)) (by norm_num)
+      pow_le_pow_right₀ (by exact_mod_cast (omega : 1 ≤ 2 * D.R.rS + 2)) (by norm_num)
     push_cast at h2 ⊢
     linarith
   have hpc : Real.pi ^ (2 * Formalism.MainNotions.BigCellDensity.pc D.R.rS (γ.1.map Prod.snd)) ≤ Real.pi ^ (2 * (2 * D.R.rS + 2) ^ 2) :=
@@ -337,7 +337,7 @@ theorem weighted_uniform_rotated_of_expansion_alt_alt (hW : ∀ Cb, WEnd.WBp Cb)
   have hb2 : 2 ≤ b := by
     have h1 := b_ge_of_StdHyp0 hk hStd.to0
     have h2 : (1 : ℝ) ≤ ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 7 :=
-      one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * D.R.rS + D.R.k + 1))
+      one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ 2 * D.R.rS + D.R.k + 1))
     nlinarith
   have hb1 : 1 ≤ b := by linarith
   have hka : 0 < kaRe D := hStd.2.2.2.1
@@ -383,7 +383,7 @@ theorem weighted_uniform_rotated_of_expansion_alt_alt (hW : ∀ Cb, WEnd.WBp Cb)
     exact Formalism.L2.SG.Pf.BesselExpansion.gap_mono hStd.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
       (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right g2 (by positivity)) (by positivity))
   set M : ℝ := ((2 * D.R.rS + 2 : ℕ) : ℝ) with hM
-  have hM1 : 1 ≤ M := by rw [hM]; exact_mod_cast (by omega : 1 ≤ 2 * D.R.rS + 2)
+  have hM1 : 1 ≤ M := by rw [hM]; exact_mod_cast (omega : 1 ≤ 2 * D.R.rS + 2)
   have hσ1 : 1 ≤ b ^ ((3 + Ch) * M ^ 2) := Real.one_le_rpow hb1 (by positivity)
   obtain ⟨l, a, ha, hwt⟩ := weight_le (sQ D) (fun l => ‖Dpt (ptLoc D v γ) l‖) (Formalism.MainNotions.TheoremBConstants.NQ D A p) _ hσ1 (sQ_nonneg D)
     fun l => alfProd_inv_le_b D Ch b hCh hb2 hka hk2 _ (by omega)

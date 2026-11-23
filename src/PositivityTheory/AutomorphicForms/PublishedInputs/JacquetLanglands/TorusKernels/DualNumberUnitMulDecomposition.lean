@@ -119,7 +119,7 @@ theorem U_int (h1 : B1a) (h2 : B1b) (h3 : B1c) (h6 : B6) (k : ℕ) (hk : 4 ≤ k
     exact lt_of_le_of_lt (hC iP).1 ENNReal.coe_lt_top
   set K : ℝ := ((k : ℝ) - 1) / (4 * Real.pi) * ((a ^ 2 + b ^ 2) / b ^ 2) ^ ((k : ℝ) / 2)
   have hc0 : 0 ≤ ((k : ℝ) - 1) / (4 * Real.pi) := by
-    have : (1 : ℝ) ≤ k := by exact_mod_cast (by omega : 1 ≤ k)
+    have : (1 : ℝ) ≤ k := by exact_mod_cast (omega : 1 ≤ k)
     have := Real.pi_pos
     apply div_nonneg <;> linarith
   refine (hint.const_mul K).mono' ?_ (ae_of_all _ (fun z => ?_))
@@ -171,7 +171,7 @@ theorem U_integral (h1 : B1a) (h2 : B1b) (h3 : B1c) (h22 : B2) (h6 : B6) (k : �
       rw [cayley_val k m a b h00 h01 h10 h11 hb p.1 p.2 hp.1.1 hp.1.2])
   rw [e, rad_int k (by omega) _ _ _ (eta_sq a b hb).1 (eta_sq a b hb).2]
   have hk1 : ((k : ℂ) - 1) ≠ 0 := by
-    have : (1 : ℝ) < k := by exact_mod_cast (by omega : 1 < k)
+    have : (1 : ℝ) < k := by exact_mod_cast (omega : 1 < k)
     intro h
     have h' := congrArg Complex.re h
     simp at h'

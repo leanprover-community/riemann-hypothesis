@@ -122,7 +122,7 @@ theorem n1a : ValuationMinRepresentatives := by
   refine ⟨fun h α _ => h α, fun h χ => ?_⟩
   obtain ⟨α, hα, m0, rfl⟩ := hS χ
   have H := SectionScalarValuation.fe_move hϖ hQ hv k m0 α s (h α hα)
-  have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+  have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
   have e : r + (Q α : ℚ) / k + ((k * Q m0 + bOf D.toPre Q m0 α : ℤ) : ℚ) = r + (Q (α + k • m0) : ℚ) / k := by
     rw [q_shift hϖ hQ α m0 k]; push_cast; field_simp; ring
   rwa [e] at H

@@ -312,7 +312,7 @@ theorem growth_main (hσ : IsCMExt F E σ) (hJ : IsHermND σ J) (hM : 3 ≤ M) (
       have := v.asIdeal.sub_mem hmem hQm
       simpa [hpdef] using this
     exact v.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h1)
-  have hp0 : (p : 𝓞 F) ≠ 0 := by exact_mod_cast (by omega : p ≠ 0)
+  have hp0 : (p : 𝓞 F) ≠ 0 := by exact_mod_cast (omega : p ≠ 0)
   have hP : {v : HeightOneSpectrum (𝓞 F) | (p : 𝓞 F) ∈ v.asIdeal}.Finite := by
     refine (Ideal.finite_factors (I := Ideal.span {(p : 𝓞 F)}) ?_).subset ?_
     · simpa using hp0

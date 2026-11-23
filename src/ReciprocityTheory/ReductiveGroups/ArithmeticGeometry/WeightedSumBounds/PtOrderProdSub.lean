@@ -155,14 +155,14 @@ theorem pt_subst_agree {σ : Type*} {A A' : σ → MvPowerSeries τ R} (hA : Has
       have h1 := pt_order_prod_pow A hA0 α α.support
       have h1' := pt_order_prod_pow A' hA0' α α.support
       have hlt : ((e.degree : ℕ) : ℕ∞) < ((∑ s ∈ α.support, α s : ℕ) : ℕ∞) := by
-        exact_mod_cast (by omega : e.degree < ∑ s ∈ α.support, α s)
+        exact_mod_cast (omega : e.degree < ∑ s ∈ α.support, α s)
       rw [coeff_of_lt_order (lt_of_lt_of_le hlt h1), coeff_of_lt_order (lt_of_lt_of_le hlt h1')]
     · obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by omega⟩
       have hAA' : ∀ s, ((j + 1 : ℕ) : ℕ∞) ≤ (A s - A' s).order := fun s =>
         nat_le_order fun d hd => by rw [map_sub, hAA s d hd, sub_self]
       have h := pt_order_prod_sub hA0 hA0' hAA' α α.support
       have hlt : ((e.degree : ℕ) : ℕ∞) < ((j + ∑ s ∈ α.support, α s : ℕ) : ℕ∞) := by
-        exact_mod_cast (by omega : e.degree < j + ∑ s ∈ α.support, α s)
+        exact_mod_cast (omega : e.degree < j + ∑ s ∈ α.support, α s)
       have hz := coeff_of_lt_order (lt_of_lt_of_le hlt h)
       rw [map_sub, sub_eq_zero] at hz
       exact hz

@@ -140,7 +140,7 @@ theorem subst_sub_subst_order [Finite σ] (a b : σ → MvPowerSeries σ R)
     · obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.mp htop
       rw [← hm] at hP ⊢
       have hP' : k + d.degree ≤ m + 1 := by exact_mod_cast hP
-      exact_mod_cast (by omega : e.degree < m)
+      exact_mod_cast (omega : e.degree < m)
   rw [hz, smul_zero]
 
 theorem eq_single_of_degree_eq_one {e : σ →₀ ℕ} (h : e.degree = 1) : ∃ j, e = Finsupp.single j 1 := by
@@ -278,7 +278,7 @@ theorem coeff_it_stable (n m : ℕ) (e : σ →₀ ℕ) (he : e.degree ≤ n) (i
     rw [← ih, ← sub_eq_zero, ← map_sub, ← add_assoc]
     apply coeff_of_lt_order
     refine lt_of_lt_of_le ?_ (order_it_step φ L M hnl (n + m) i)
-    exact_mod_cast (by omega : e.degree < n + m + 1)
+    exact_mod_cast (omega : e.degree < n + m + 1)
 
 def lim (i : σ) : MvPowerSeries σ R := fun e => coeff e (it φ L M e.degree i)
 
@@ -317,9 +317,9 @@ theorem subst_lim (hLM : L * M = 1) (i : σ) : subst (lim φ L M) (φ i) = X i :
     refine le_trans (le_min ?_ ?_) min_order_le_add
     · refine le_trans ?_ (subst_sub_subst_order _ _ hc (constantCoeff_it φ L M hnl n) (n + 1)
         (fun l => order_lim_sub φ L M hnl n l) _ (hnl i))
-      exact_mod_cast (by omega : n + 1 ≤ n + 1 + 1)
+      exact_mod_cast (omega : n + 1 ≤ n + 1 + 1)
     · refine order_lin _ _ _ (fun j => le_trans ?_ (order_lim_sub φ L M hnl (n + 1) j)) i
-      exact_mod_cast (by omega : n + 1 ≤ n + 1 + 1)
+      exact_mod_cast (omega : n + 1 ≤ n + 1 + 1)
   ext e
   rw [← sub_eq_zero, ← map_sub]
   apply coeff_of_lt_order

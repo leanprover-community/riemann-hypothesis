@@ -126,7 +126,7 @@ theorem be_rank_one {k r : ℕ} (hk : 1 ≤ k) {ε : Fin (2 * r + k + 1) → Boo
   refine ⟨fun w => ((√(μW Set.univ).toReal : ℝ) : ℂ) • l w, fun w hw v hv => ?_⟩
   have hb : Mult1.AS k r + 1 ≤ aM k r := by
     unfold Mult1.AS aM
-    have : (1 : ℝ) ≤ nR k r := by unfold nR; exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
+    have : (1 : ℝ) ≤ nR k r := by unfold nR; exact_mod_cast (omega : 1 ≤ 2 * r + k + 1)
     have := one_le_pow₀ (n := 3) this
     linarith
   have hI := stBeConv multiplicity_one_hypotheses_hold k r Wp D X hD hS (aM k r) hb w v (dec w hw v hv)

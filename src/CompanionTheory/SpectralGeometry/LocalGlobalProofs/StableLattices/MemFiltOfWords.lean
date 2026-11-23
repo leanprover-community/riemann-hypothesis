@@ -258,7 +258,7 @@ theorem koszul : CAR → Koszul := by
     | succ m ih =>
       intro y hy hdeg hc
       have hne : ((m : ℂ) + (j + 1 : ℕ)) ≠ 0 := by
-        exact_mod_cast (by omega : m + (j + 1) ≠ 0)
+        exact_mod_cast (omega : m + (j + 1) ≠ 0)
       have hw : ∀ A, (bdA a (H y) - ((m : ℂ) + (j + 1 : ℕ)) • y) A =
           (∑ i, a i * d i) (y A) - (m : ℂ) • y A := by
         intro A

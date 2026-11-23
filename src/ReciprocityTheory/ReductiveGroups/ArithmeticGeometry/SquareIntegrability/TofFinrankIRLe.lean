@@ -85,7 +85,7 @@ theorem tof_shell_term (d k : ℕ) (hd : 2 ≤ d) :
             (by linarith : (0 : ℝ) ≤ k)) (by linarith : (0 : ℝ) ≤ k - 1)]
         calc (3 * ((k : ℝ) + 1)) ^ d ≤ (3 * (d : ℝ)) ^ d := h1
           _ ≤ _ := le_mul_of_one_le_right (by positivity) (Real.one_le_exp h2)
-      · have hdk : (d : ℝ) ≤ k := by exact_mod_cast (by omega : d ≤ k)
+      · have hdk : (d : ℝ) ≤ k := by exact_mod_cast (omega : d ≤ k)
         have hk2 : (2 : ℝ) ≤ k := le_trans hd' hdk
         have h1 : ((k : ℝ) + 1) ^ d ≤ Real.exp ((k : ℝ) * k) := by
           calc ((k : ℝ) + 1) ^ d ≤ (Real.exp k) ^ d :=

@@ -194,7 +194,7 @@ theorem UpperTheory.Esk.diagonal_integrand_vanishes_proof : UpperTheory.Esk.Diag
       exact_mod_cast this.ne'
     have hE0 : E ≠ 0 := by
       have hk1 : (k : ℂ) - 1 ≠ 0 := by
-        have : (1 : ℂ) ≠ k := by exact_mod_cast (by omega : (1 : ℕ) ≠ k)
+        have : (1 : ℂ) ≠ k := by exact_mod_cast (omega : (1 : ℕ) ≠ k)
         exact sub_ne_zero.2 this.symm
       have hpi : (4 * (Real.pi : ℂ)) ≠ 0 := mul_ne_zero (by norm_num) (by exact_mod_cast Real.pi_ne_zero)
       have hr' : (r : ℂ) ≠ 0 := by exact_mod_cast hr0.ne'

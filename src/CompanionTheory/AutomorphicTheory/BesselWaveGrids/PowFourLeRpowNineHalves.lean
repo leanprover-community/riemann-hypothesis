@@ -68,7 +68,7 @@ def gapY (k r : ℕ) : ℝ :=
 
 theorem pow_four_le_rpow_nine_halves (r : ℕ) : ((2 * r + 2 : ℕ) : ℝ) ^ 4 ≤ ((2 * r + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) := by
   rw [← Real.rpow_natCast]
-  exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast (by omega : 1 ≤ 2 * r + 2)) (by norm_num)
+  exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast (omega : 1 ≤ 2 * r + 2)) (by norm_num)
 
 theorem thrX_le_gapY (k r : ℕ) : thrX k r ≤ gapY k r := by
   unfold thrX gapY
@@ -83,11 +83,11 @@ theorem mul_le_gapY (k r : ℕ) : ((2 * r + 2 : ℕ) : ℝ) ^ 4 * ((2 * r + k + 
 
 theorem fourth_power_le_gap (k r : ℕ) : ((2 * r + 2 : ℕ) : ℝ) ^ 4 ≤ gapY k r :=
   le_trans (le_mul_of_one_le_right (by positivity)
-    (one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)))) (mul_le_gapY k r)
+    (one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ 2 * r + k + 1)))) (mul_le_gapY k r)
 
 theorem cube_le_gap (k r : ℕ) : ((2 * r + k + 1 : ℕ) : ℝ) ^ 3 ≤ gapY k r :=
   le_trans (le_mul_of_one_le_left (by positivity)
-    (one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * r + 2)))) (mul_le_gapY k r)
+    (one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ 2 * r + 2)))) (mul_le_gapY k r)
 
 theorem num_of {k r : ℕ} (hk : 1 ≤ k) {lam : Fin (2 * r + k + 1) → ℝ} {u : ℕ → ℝ} {b bv ga h : ℝ} {q0 : ℕ}
     (hlam : IsHCParam lam) (hu : HypType k r lam u b)

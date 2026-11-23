@@ -68,7 +68,7 @@ theorem exists_vorFun_cells : ∀ (O : Type) [CommRing O] [IsDedekindDomain O] [
       have h2 := hPp j i (r a'.1)
       have h3 := hPp j i (r a)
       simp only at h1
-      exact_mod_cast (by omega : P j i (r a'.1) (r a'.1) ≤ P j i (r a) (r a))
+      exact_mod_cast (omega : P j i (r a'.1) (r a'.1) ≤ P j i (r a) (r a))
   choose F hFred hFmin using hcls
   have hred : ∀ (j : Fin k) (c : ∀ y, ↥(F j y)) (y : Fin n → ZMod (1 + 1)), redV 1 (c y).1 = y :=
     fun j c y => hFred j y _ (c y).2

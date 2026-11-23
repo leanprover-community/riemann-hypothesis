@@ -126,7 +126,7 @@ theorem galois_fixed_adelic_matrices_descend (hL : Laws) (hTW : TWStatement) : F
   by_cases hc0 : c = 0
   · have h := hc s t s' hst hts' r
     rwa [hc0, add_zero] at h
-  · have hd : (M : ℚ) * c ≠ 0 := mul_ne_zero (by exact_mod_cast (by omega : M ≠ 0)) hc0
+  · have hd : (M : ℚ) * c ≠ 0 := mul_ne_zero (by exact_mod_cast (omega : M ≠ 0)) hc0
     have hmono : ∀ r r' : ℚ, r' ≤ r → NuGe D Q F v k s r → NuGe D Q F v k s r' :=
       fun r r' h hp => NuGe.mono (h := hp) (hr := h)
     constructor

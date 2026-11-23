@@ -355,7 +355,7 @@ theorem k3V (n : ℕ) : QuotientHighestWeightTensorStandard n := by
     have hlt : kUnitWtLin ν' < kUnitWtLin ν0 := by
       rw [hν', unitWeightSum_sub, unitWeightSum_finset_sum hab]
       have hab' : (a : ℕ) < b := hab
-      have : (0 : ℝ) < (((b : ℕ) - (a : ℕ) : ℕ) : ℝ) := by exact_mod_cast (by omega : 0 < (b : ℕ) - (a : ℕ))
+      have : (0 : ℝ) < (((b : ℕ) - (a : ℕ) : ℕ) : ℝ) := by exact_mod_cast (omega : 0 < (b : ℕ) - (a : ℕ))
       linarith
     exact absurd (hmin ν' hgood') (not_le.2 hlt)
 

@@ -205,7 +205,7 @@ theorem trdeg_residue_le {K Ω : Type} [Field K] [Field Ω] [Algebra K Ω] (D : 
   have hrD : r + 1 ≤ D := by exact_mod_cast hcardle
   have hfin : Algebra.trdeg k κ ≤ ((D - 1 : ℕ) : Cardinal) := by
     rw [hr]
-    exact_mod_cast (by omega : r ≤ D - 1)
+    exact_mod_cast (omega : r ≤ D - 1)
   exact hfin
 
 theorem trdeg_eq_of_card {F E C : Type} [Field F] [Field E] [Field C] [Algebra F E] [Algebra E C]

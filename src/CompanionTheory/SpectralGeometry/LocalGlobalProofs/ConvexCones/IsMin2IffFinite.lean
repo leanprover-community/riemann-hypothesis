@@ -55,6 +55,6 @@ theorem isMin2_iff_finite : ∀ (X : Type) [AddCommGroup X] (m : ℕ) (u : Fin m
   have h2 := hu i (y + (x' + x'))
   have h3 := hu i (y + (x + x))
   simp only at h1
-  exact_mod_cast (by omega : u i (y + (x' + x')) (y + (x' + x')) ≤ u i (y + (x + x)) (y + (x + x)))
+  exact_mod_cast (omega : u i (y + (x' + x')) (y + (x' + x')) ≤ u i (y + (x + x)) (y + (x + x)))
 
 end GlobalTheory.CompanionTheory.Ar.Fan

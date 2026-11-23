@@ -74,9 +74,9 @@ theorem infinite_residueField [IsAlgClosed C] :
     omega
   have hdeg : (Polynomial.X ^ q - (Polynomial.X + Polynomial.C 1) : Polynomial C).degree ≠ 0 := by
     rw [Polynomial.degree_sub_eq_left_of_degree_lt] <;> rw [Polynomial.degree_X_pow]
-    · exact_mod_cast (by omega : q ≠ 0)
+    · exact_mod_cast (omega : q ≠ 0)
     · rw [Polynomial.degree_X_add_C]
-      exact_mod_cast (by omega : 1 < q)
+      exact_mod_cast (omega : 1 < q)
   obtain ⟨α, hα⟩ := IsAlgClosed.exists_root _ hdeg
   simp only [Polynomial.IsRoot, Polynomial.eval_sub, Polynomial.eval_pow, Polynomial.eval_X,
     Polynomial.eval_add, Polynomial.eval_C] at hα

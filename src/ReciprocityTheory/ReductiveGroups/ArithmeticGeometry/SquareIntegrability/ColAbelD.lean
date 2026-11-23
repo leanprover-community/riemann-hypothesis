@@ -417,7 +417,7 @@ theorem cab_R (hI : IsSplit P I) (hP : Ext.PackingCount) (hA : Ext.GaussianTailB
         2 * P.q * Real.pi * ‖v‖ * ‖Col.uc (IR I) (cabOut (a : Col.Qc X I) : Vsp X.dim)‖) := by
   have hq : (0 : ℝ) < P.q := by
     have := P.hq
-    exact_mod_cast (by omega : 0 < P.q)
+    exact_mod_cast (omega : 0 < P.q)
   obtain ⟨g', -, hs, -⟩ := cab_sum_nz hP hA hI
   have huc : ‖Col.uc (IR I) v‖ ≤ ‖v‖ := by
     have hU := isU_uc' (I := I) v
@@ -554,7 +554,7 @@ theorem cab_YB_abs (hI : IsSplit P I) (hP : Ext.PackingCount) (q : ℕ) :
   have hth : |P.R0| ≤ Real.sqrt (P.q * Real.pi) * P.th := by
     have hq : (0 : ℝ) < P.q := by
       have := P.hq
-      exact_mod_cast (by omega : 0 < P.q)
+      exact_mod_cast (omega : 0 < P.q)
     have hqne : (P.q : ℝ) ≠ 0 := hq.ne'
     have hf1 : (1 : ℝ) ≤ PT.f E := by
       have h2 : 1 ≤ PT.f E := le_trans (Nat.one_le_pow _ _ (by have := P.hm1; omega)) P.hmf

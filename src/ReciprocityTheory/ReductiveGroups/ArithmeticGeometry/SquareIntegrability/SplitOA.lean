@@ -95,7 +95,7 @@ theorem so_sum_sq_ge [IsCMField E] (w : E) (hw0 : w ≠ 0)
     have h1 := NumberField.IsTotallyComplex.finrank E
     have h2 : 0 < Module.finrank ℚ E := Module.finrank_pos
     omega
-  have hnR : (0 : ℝ) < Module.finrank ℚ E := by exact_mod_cast (by omega : 0 < Module.finrank ℚ E)
+  have hnR : (0 : ℝ) < Module.finrank ℚ E := by exact_mod_cast (omega : 0 < Module.finrank ℚ E)
   have hwt : ∑ _σ ∈ (Finset.univ : Finset (E →+* ℂ)), (1 / (Module.finrank ℚ E : ℝ)) = 1 := by
     rw [Finset.sum_const, hcard, nsmul_eq_mul]
     field_simp

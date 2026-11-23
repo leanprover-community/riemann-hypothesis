@@ -130,7 +130,7 @@ theorem le_natSub_of_add_le {k n : ℕ} {x : ℕ∞} (h : (k : ℕ∞) + x ≤ n
   | top => simp at h
   | coe m =>
     have h1 : k + m ≤ n := by exact_mod_cast h
-    exact_mod_cast (by omega : m ≤ n - k)
+    exact_mod_cast (omega : m ≤ n - k)
 
 theorem dim_quot_add_height [IsNoetherianRing A] [IsJacobsonRing A] [FiniteRingKrullDim A]
     (hA : ∀ M N : Ideal A, M.IsMaximal → N.IsMaximal → M.height = N.height) (q : Ideal A)
@@ -203,7 +203,7 @@ theorem dim_quot_add_height [IsNoetherianRing A] [IsJacobsonRing A] [FiniteRingK
       | coe y =>
         rw [h] at h2
         have : n ≤ y + k := by exact_mod_cast h2
-        exact_mod_cast (by omega : n - k ≤ y)
+        exact_mod_cast (omega : n - k ≤ y)
     have : (Ideal.map (Ideal.Quotient.mk q) M).IsPrime := isPrime_map_mk hqM
     calc ((n - k : ℕ) : WithBot ℕ∞) ≤ ((Ideal.map (Ideal.Quotient.mk q) M).height : WithBot ℕ∞) := by
           rw [← WithBot.coe_natCast]; exact WithBot.coe_le_coe.mpr h3

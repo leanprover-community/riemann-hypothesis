@@ -384,7 +384,7 @@ theorem up_count (hd : d.AxH 𝒜) (hdel : 1 ≤ d.del) :
   have hcpos : 0 < cardUX d.D d.N n d.n96' := by
     unfold cardUX
     exact Nat.mul_pos (Nat.choose_pos (by omega)) (Nat.choose_pos (by omega))
-  have hnR : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+  have hnR : (0 : ℝ) < n := by exact_mod_cast (omega : 0 < n)
   have hMR : (1 : ℝ) ≤ M := by exact_mod_cast hM1
   have htR : (1 : ℝ) ≤ t := by exact_mod_cast ht1
   have hlog1 : Real.log (cardUX d.D d.N n d.n96') ≤ (4 * M : ℕ) * Real.log n := by

@@ -224,7 +224,7 @@ theorem terms_vanish [IsDiscreteValuationRing R] {ϖ : R} (hϖ : Irreducible ϖ)
     have hn1 : 1 ≤ n := by
       have : ((0 : ℚ) + ((1 * Q mu + 0 : ℤ) : ℚ)) ≤ (n : ℚ) := by exact_mod_cast h1
       rw [zero_add] at this
-      have : (1 : ℚ) ≤ n := le_trans (by exact_mod_cast (by omega : (1 : ℤ) ≤ 1 * Q mu + 0)) this
+      have : (1 : ℚ) ≤ n := le_trans (by exact_mod_cast (omega : (1 : ℤ) ≤ 1 * Q mu + 0)) this
       exact_mod_cast this
     obtain ⟨u, hu⟩ := hn
     obtain ⟨d, hd⟩ : ∃ d : ℕ, n = d + 1 := ⟨(n - 1).toNat, by omega⟩

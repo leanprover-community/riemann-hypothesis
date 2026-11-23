@@ -61,11 +61,9 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 
 variable {D : D7}
 
-section Lin
 
 variable {ψ : AddChar (AF D.host.F) ℂ} {T₀ : HSp D}
 
-end Lin
 
 theorem unitN_unique {S : HSp D} {ρ : ℕ} {e : Matrix (Fin S.rank) (Fin ρ) D.host.E} (he : IsIsoSub S e)
     {ν ν' : Measure (NFlag S e)} {𝓝 𝓝' : Set (NFlag S e)} (h : GlobalTheory.Per.IsUnitN S e ν 𝓝) (h' : GlobalTheory.Per.IsUnitN S e ν' 𝓝') :
