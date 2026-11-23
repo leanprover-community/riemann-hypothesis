@@ -303,18 +303,14 @@ theorem existsUnique_lift_spec_of_isLocalization [IsIntegrallyClosed R] (M : Sub
 
 end Affine
 
-section Normalization
 
 variable {X Y : Scheme.{u}} (f : X ⟶ Y) [QuasiCompact f] [QuasiSeparated f]
 
 variable {R R' : Type u} [CommRing R] [CommRing R'] [Algebra R R']
 
-end Normalization
 
-section Sections
 
 variable {U T Z : Scheme.{u}}
 
-end Sections
 
 end GlobalTheory

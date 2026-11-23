@@ -45,10 +45,8 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open GlobalTheory.KeyKa
 
 namespace GlobalTheory.KeyKa.KoszulTors
-section Alg
 variable {R : Type} [CommRing R] {g d : ℕ} {N : ℕ → ℕ}
 
-end Alg
 
 variable {R : Type} [CommRing R] {g d : ℕ} {N : ℕ → ℕ} in
 private lemma kosD_inl_indep_ev

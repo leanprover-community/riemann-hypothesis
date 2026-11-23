@@ -53,7 +53,6 @@ namespace GlobalTheory.SemiRigid
 
 open SplitTorus
 
-section Affine
 
 variable {S : Scheme.{0}}
 
@@ -61,13 +60,10 @@ variable {R : CommRingCat.{0}} (X : Type) [AddCommGroup X] (t : Spec R ⟶ S)
 
 variable [Module.Free ℤ X] [Module.Finite ℤ X] [IsDomain R]
 
-end Affine
 
-section Field
 
 variable {K : Type} [Field K]
 
-end Field
 
 section Descent
 
@@ -184,11 +180,9 @@ theorem exists_torus_and_quotient_hom {G H : Over (Spec (.of K))} [GrpObj G] [Gr
 
 end Main
 
-section Family
 
 variable {S : Scheme.{0}}
 
-end Family
 
 end GlobalTheory.SemiRigid
 

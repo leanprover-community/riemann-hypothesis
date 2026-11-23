@@ -44,25 +44,21 @@ universe u
 
 namespace GlobalTheory
 
-section Generisation
 
 variable {Z : Scheme.{u}} (η : Z) [IsDomain (Z.presheaf.stalk η)]
 
 variable [IsDiscreteValuationRing (Z.presheaf.stalk η)]
 
-end Generisation
 
 section ResidueCharacteristic
 
 end ResidueCharacteristic
 
-section LocalSource
 
 variable {Z : Scheme.{u}} {R : CommRingCat.{u}} [IsLocalRing R]
 
 variable {η ξ : Z} [IsDomain (Z.presheaf.stalk η)] [IsDiscreteValuationRing (Z.presheaf.stalk η)]
 
-end LocalSource
 
 section ThetaShiftProofs
 

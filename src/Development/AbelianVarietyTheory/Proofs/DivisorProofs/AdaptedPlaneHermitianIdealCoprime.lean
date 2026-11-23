@@ -75,11 +75,9 @@ theorem det_ne_zero_of_hasSig {n r s : ℕ} {J : Matrix (Fin n) (Fin n) E} (φ :
   rw [Fintype.card_sum, Fintype.card_fin, Fintype.card_fin] at h1
   omega
 
-section Split
 
 variable {v : HeightOneSpectrum (𝓞 F)} {n : ℕ} {L : Submodule (𝓞 E) (Fin n → E)}
 
-end Split
 
 end GlobalTheory.AdaptedPlaneIdeal
 
@@ -87,11 +85,9 @@ namespace GlobalTheory.AdaptedPlaneIdeal
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-section Split
 
 variable {v : HeightOneSpectrum (𝓞 F)} {n : ℕ} {L : Submodule (𝓞 E) (Fin n → E)}
 
-end Split
 
 end GlobalTheory.AdaptedPlaneIdeal
 

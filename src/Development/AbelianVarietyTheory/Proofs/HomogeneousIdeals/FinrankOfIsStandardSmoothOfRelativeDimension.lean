@@ -329,7 +329,6 @@ lemma exact_kerMap_map (φ : A →ₐ[R] B) (h : εB.comp φ = εA) (hφ : Funct
     have : φ x = 0 := x.2
     simp [this]
 
-section Tower
 
 variable [Algebra A B] [IsScalarTower R A B]
 
@@ -337,7 +336,6 @@ variable [Algebra A B] [IsScalarTower R A B]
 
 
 
-end Tower
 
 
 variable (εA εB) in
@@ -587,13 +585,11 @@ lemma locally_iff_smoothOfRelativeDimension :
 
 end RelDim
 
-section Affine
 
 variable {R σ : Type*} [CommRing R] (x : σ → R)
 
 open MvPolynomial
 
-end Affine
 
 end AugCot
 

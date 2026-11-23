@@ -44,12 +44,10 @@ namespace GlobalTheory.Doubling
 
 noncomputable section
 
-section Rigidity
 
 variable {E G : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedAddCommGroup G]
   [NormedSpace ℂ G]
 
-end Rigidity
 
 section Series
 
@@ -76,18 +74,14 @@ theorem eq_cexp_fderiv_of_map_add {f : E → ℂ} (hf : DifferentiableAt ℂ f 0
 
 end Character
 
-section Alternating
 
 variable {V : Type*} [AddCommGroup V] [Module ℂ V]
 
-end Alternating
 
-section Lattice
 
 variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V] [FiniteDimensional ℂ V]
   (L : Submodule ℤ V) [DiscreteTopology L] [IsZLattice ℝ L]
 
-end Lattice
 
 end
 

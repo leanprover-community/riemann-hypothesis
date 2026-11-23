@@ -43,7 +43,6 @@ noncomputable section
 
 namespace GlobalTheory.WeilEx.Jac
 
-section Alg
 
 variable {R : Type} [CommRing R] {A : Type} [CommRing A] [Algebra R A] {α β ν X : Type} [Fintype β] [DecidableEq β]
   [AddCommGroup X] [Module R X] {e : ν ⊕ ν ≃ α}
@@ -54,7 +53,6 @@ variable [Invertible (2 : R)] {D : Matrix α β A ≃ₗ[R] X × X}
   (hN : ∀ w, GlobalTheory.SWLit.LinAct.Nab e w → (D w).2 = 0)
 include hΔ hN
 
-end Alg
 
 section Main
 
