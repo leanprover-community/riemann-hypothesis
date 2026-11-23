@@ -50,20 +50,16 @@ open UpperTheory.V.Base (galOf galEmb galEmbTop range_galEmb galEmb_mem)
 open Formalism.L2.Host (IsUnitAt IsUnifAt aboveF)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele (ideleMap finiteCompletionMap infiniteAdeleMap)
 
-section Group
 
 variable {Γ B : Type} [Group Γ] [CommGroup B] {H : Subgroup Γ} [H.FiniteIndex] (φ : H →* B)
 
-end Group
 
-section Places
 
 variable {K L Ω : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Field Ω] [Algebra K Ω] [Algebra L Ω]
 
 
 variable [Algebra K L] [IsScalarTower K L Ω]
 
-end Places
 
 section Ideles
 
@@ -85,7 +81,6 @@ theorem ideleMap_apply (a : Ideles K) (w : HeightOneSpectrum (𝓞 L)) :
 
 end Ideles
 
-section Artin
 
 variable {K L Ω B : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Field Ω] [Algebra K Ω] [Algebra L Ω]
   [CommGroup B]
@@ -95,7 +90,6 @@ variable [Algebra K L]
 
 variable [IsScalarTower K L Ω] [IsAlgClosure K Ω] [IsAlgClosure L Ω]
 
-end Artin
 
 end GlobalTheory.ArtinTransfer
 

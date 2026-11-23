@@ -81,13 +81,11 @@ variable {W L : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Fie
 
 end Valuations
 
-section Clauses
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
 variable [StarRing (𝓞 E)]
 
-end Clauses
 
 end GlobalTheory.ThetaValueIdentityCompare

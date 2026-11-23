@@ -43,11 +43,9 @@ namespace GlobalTheory.NablaExpConj
 
 variable {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
 
-section Lift
 
 variable (k : Type) [CommRing k]
 
-end Lift
 
 variable (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k]
 
