@@ -126,7 +126,6 @@ theorem char_integral {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F 
     exact (mul_eq_zero.1 this).resolve_right (sub_ne_zero.2 hy₀)
 
 
-open Classical in
 theorem zero : PositivityTheory.GramSchwartzFunctions.EC.Zero := by
   intro D ψ hψ θ hθ V n μ 𝓕 hμ Φ hΦ
   obtain ⟨i1, i2, i3, i4, i5, -⟩ := GlobalTheory.TowerRestrict.lattice_Mx D V.rank n

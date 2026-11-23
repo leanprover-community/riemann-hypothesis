@@ -434,25 +434,21 @@ open IsDedekindDomain in
 abbrev EP (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) : Type := P.adicCompletion D.host.E
 
 
-open IsDedekindDomain in
 def SplitP (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) : Prop :=
   ∃ a b : 𝓞 D.host.E, (b : D.host.E) = D.host.conj (a : D.host.E) ∧ a ∈ P.asIdeal ∧ b ∉ P.asIdeal
 
 
-open IsDedekindDomain in
 def EqOff (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) {N : ℕ}
     (L L₀ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) : Prop :=
   ∃ m : ℕ, ∀ a b : 𝓞 D.host.E, (b : D.host.E) = D.host.conj (a : D.host.E) → a ∈ P.asIdeal ^ m →
     (∀ x ∈ L, (a * b) • x ∈ L₀) ∧ ∀ x ∈ L₀, (a * b) • x ∈ L
 
 
-open IsDedekindDomain in
 def EqOffSplit (D : D7) {N : ℕ} (L L₀ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) : Prop :=
   ∃ a : 𝓞 D.host.E, a ≠ 0 ∧ (∀ Q : HeightOneSpectrum (𝓞 D.host.E), a ∈ Q.asIdeal → SplitP D Q) ∧
     (∀ x ∈ L, a • x ∈ L₀) ∧ ∀ x ∈ L₀, a • x ∈ L
 
 
-open IsDedekindDomain in
 def YP (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) {N N' : ℕ}
     (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) :
     AddSubgroup (Matrix (Fin N') (Fin N) (EP D P)) :=
@@ -460,13 +456,11 @@ def YP (D : D7) (P : HeightOneSpectrum (𝓞 D.host.E)) {N N' : ℕ}
     ((algebraMap D.host.E (EP D P)).toAddMonoidHom.mapMatrix)).topologicalClosure
 
 
-open IsDedekindDomain in
 def volP {D : D7} {P : HeightOneSpectrum (𝓞 D.host.E)} {N N' : ℕ}
     (Y₀ Y₁ : AddSubgroup (Matrix (Fin N') (Fin N) (EP D P))) : ℝ :=
   ((Y₀.addSubgroupOf Y₁).index : ℝ) / ((Y₁.addSubgroupOf Y₀).index : ℝ)
 
 
-open IsDedekindDomain in
 def modelXi (D : D7) : Prop :=
   ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), IsCurveIdeal D cc → IsDiscriminantTwelfthRootOfIdealLattice D cc δ →
     ∀ (N N' : ℕ) (L₀ : Submodule (𝓞 D.host.E) (Fin N → D.host.E))

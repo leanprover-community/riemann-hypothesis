@@ -573,7 +573,6 @@ theorem uwG_zero (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (F : B.Mat k r
 end lev0
 
 section analysis
-open Formalism.FourierDecayAlt.Q
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -1362,11 +1361,9 @@ end
 section
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.D Formalism.REAL Formalism.QuantumDeterminants Finset
-open scoped ComplexConjugate Matrix
 
 namespace Formalism.FourierDecayAlt.P.Dx1.Rel
 noncomputable section
-open Classical
 
 theorem ptSize_cons (s : ℕ) (t : ℂ) (rest : C.LPt) : ptSize ((s, t) :: rest) = s + ptSize rest := by
   simp only [ptSize, List.map_cons, List.sum_cons]

@@ -160,7 +160,6 @@ end Formalism.GM.M.FB
 
 namespace Formalism.GM.M.FB
 
-open MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -227,7 +226,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.GM.M.FB
 
-open MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -324,7 +322,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.GM.M.FB
 
-open MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -413,7 +410,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.GM.M.FB
 
-open MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 

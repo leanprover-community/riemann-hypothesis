@@ -370,7 +370,6 @@ abbrev Crv : Type := Curve ct.Fbar ct.YY.X
 abbrev CrvQ : Type := Curve (AlgebraicClosure κ.c.F) ct.YY.X
 
 
-open Classical in
 def indWt (τ : PsiT D) (i : ℕ) : PsiT D → ℕ → ℤ := fun τ' i' => if τ' = τ ∧ i' = i then 1 else 0
 
 def degPiece {k : Type} [Field k] (c : Curve k ct.YY.X) (τ : PsiT D) (i : ℕ) : ℤ :=
@@ -413,7 +412,6 @@ namespace At
 variable (ct : At S κ p)
 
 
-open Classical in
 theorem expo_indWt_apply (τ : PsiT D) (i : ℕ) (σ : D.host.E →+* ℂ) (a : Fin (S.Dw.mult σ)) :
     ct.expo (indWt τ i) σ a = (if σ = embOf D τ ∧ (a : ℕ) + 1 = i then 1 else 0) -
       if σ = conjEmb (embOf D τ) ∧ N - a = i then 1 else 0 := by

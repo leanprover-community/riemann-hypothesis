@@ -160,7 +160,6 @@ theorem rep_one (M : DSModel V S) (τ : D.what₂.Tau) : M.σ τ (inFr M τ 1) =
   rw [inFr_one]
   exact (M.ds τ).2.2.1.1.1
 
-open Classical in
 theorem map_update (M : DSModel V S) (τ : D.what₂.Tau) (g : Matrix (Fin V.rank) (Fin V.rank) ℂ) :
     PiTensorProduct.map (fun ρ => (M.σ ρ (inFr M ρ (Function.update (fun _ => (1 : Matrix (Fin V.rank) (Fin V.rank) ℂ)) τ g ρ)) : M.H ρ →ₗ[ℂ] M.H ρ)) =
       actT M τ g := by
@@ -182,7 +181,6 @@ theorem map_one' (M : DSModel V S) :
   rw [rep_one]
   rfl
 
-open Classical in
 theorem update_mem (τ : D.what₂.Tau) {g : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hg : g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ))
     (ρ : D.what₂.Tau) : Function.update (fun _ => (1 : Matrix (Fin V.rank) (Fin V.rank) ℂ)) τ g ρ ∈
       Formalism.QuantumDeterminants.UH (gramAt D V ρ) := by
@@ -193,7 +191,6 @@ theorem update_mem (τ : D.what₂.Tau) {g : Matrix (Fin V.rank) (Fin V.rank) �
     exact GlobalTheory.PointAtPlaceHom.one_mem_UH _
 
 
-open Classical in
 theorem exists_it (k : Fin D.R.m) (hk : (k : ℕ) + 1 = D.R.m) (a : ℕ) (ha : a = k) (hV : V.SigOK) (hW : W.SigOK)
     (rV : V.rank = D.R.r + k * D.R.t) (rW : W.rank = V.rank + D.R.t)
     (M : DSModel V (parB (Ptw D) a)) (M' : DSModel W (parB (Ptw D) D.R.m)) (θ : InfFam D) (hθ : IsInfFam θ)

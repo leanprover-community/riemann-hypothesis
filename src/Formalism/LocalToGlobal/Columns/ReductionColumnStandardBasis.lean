@@ -215,7 +215,6 @@ end R1
 
 section Tgt
 
-open Classical
 
 variable {E : Type} [Field E] [NumberField E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
@@ -237,7 +236,6 @@ end Tgt
 
 section TgtMain
 
-open Classical
 
 variable {E : Type} [Field E] [NumberField E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
@@ -284,7 +282,6 @@ end TgtMain
 
 section TgtThm
 
-open Classical
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 

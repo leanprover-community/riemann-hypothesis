@@ -163,7 +163,6 @@ theorem splitByLastSize : Formalism.FourierDecayAlt.TB.SplitBySize := by
     (fun p q => D.Kr i p q * D.gram ε i w p q)] at h
   exact h
 
-open Classical in
 theorem diagStep : Formalism.FourierDecayAlt.TB.DiagStep := by
   intro E W _ D hG hK hW hA T ε hε i s hs hsi hir w R hR
   obtain ⟨_, hdom, hper, _⟩ := hA i s hs hsi hir

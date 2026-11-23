@@ -213,7 +213,6 @@ theorem vieta' {A : Type*} [CommRing A] {a1 a2 a3 a4 a6 l n z1 z2 z3 : A}
   unfold c3 c2 at hQ0 he1
   linear_combination h1 + (z3 - z1) * hQ0 + (z3 - z1) * (z3 - z2) * he1
 
-open Formalism.ELL.WeierstrassChordSeries in
 theorem weq_iff (W : WeierstrassCurve R) (s v : MvPowerSeries (Fin 2) R) :
     Formalism.ELL.WEqAt W s v ↔ G (MvPowerSeries.C W.a₁) (MvPowerSeries.C W.a₂) (MvPowerSeries.C W.a₃)
       (MvPowerSeries.C W.a₄) (MvPowerSeries.C W.a₆) s v = 0 := by

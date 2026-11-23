@@ -1040,7 +1040,6 @@ section Surj
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
-open Formalism.MainNotions.S.Lat
 
 theorem gmap_symm_mem (g : (VS D).V ≃ₗ[D.host.E] (VS D).V) (L : Submodule (𝓞 D.host.E) (VS D).V) (y : (VS D).V) :
     y ∈ Formalism.HermitianLatticesTheory.gmap g.symm L ↔ g y ∈ L := by
@@ -1138,7 +1137,6 @@ section Surj2
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
-open Formalism.MainNotions.S.Lat
 
 theorem dlt_inj {f' : Fin D.R.rS → (VS D).V} (hff : ∀ a b, (VS D).hT (f' a) (f' b) = 0)
     (hef : ∀ a b, (VS D).hT (X.eX a) (f' b) = if a = b then 1 else 0) : Function.Injective (dlt X f') := by

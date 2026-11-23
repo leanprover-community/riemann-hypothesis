@@ -97,7 +97,6 @@ end Blocks
 
 section Comparison₂
 
-open Formalism.IrreducibleCountingLemmas.TYPES
 
 def castIrr {g : ℕ} (L : LzData g) {a a' : ℕ} (h : a = a') (τ : L.Irr a) : L.Irr a' := h ▸ τ
 
@@ -123,7 +122,6 @@ end Comparison₂
 
 section HC
 
-open Formalism.IrreducibleCountingLemmas.TYPES
 
 def HCBody {g : ℕ} (L : LzData g) : Prop :=
   ∀ (a b : ℕ) (τ : L.Irr a) (τ' : L.Irr b),
@@ -139,7 +137,6 @@ end HC
 
 section Row
 
-open Formalism.IrreducibleCountingLemmas.TYPES
 
 variable {D : D7}
 
@@ -153,7 +150,6 @@ end Row
 
 section Refute
 
-open Formalism.IrreducibleCountingLemmas.TYPES
 
 end Refute
 

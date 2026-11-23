@@ -79,7 +79,6 @@ private theorem partIn (hIn : CountIn) {k H P : Type} [Field k] [AddCommGroup H]
   · intro D hD
     rfl
 
-open Classical in
 private theorem partZero (hIn : CountIn) {k H : Type} [Field k] [AddCommGroup H] [Module k H]
     [Module.Finite k H] (C : Submodule k H) (hC : Module.finrank k C = 1)
     [Fintype (Submodule k H)] :
@@ -91,7 +90,6 @@ private theorem partZero (hIn : CountIn) {k H : Type} [Field k] [AddCommGroup H]
   have := Submodule.finrank_mono hCD
   omega
 
-open Classical in
 private theorem partOut (hIn : CountIn) (hOut : CountOut) {k H P : Type} [Field k] [Finite k]
     [AddCommGroup H] [Module k H] [Module.Finite k H] (C : Submodule k H)
     (hC : Module.finrank k C = 1)

@@ -300,7 +300,6 @@ theorem lie_comm (X Y : Lie E a) :
   ring
 
 
-open Classical in
 def Eop (v : InfinitePlace E) (i j : Fin a) : Module.End ℂ (Sm E a) :=
   lie E a (toL (Matrix.single i j (Pi.single v 1)))
 

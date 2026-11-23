@@ -120,7 +120,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LiftBCoh
 
@@ -212,7 +211,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LiftBLocal
 
@@ -579,7 +577,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LiftAAvg
 
@@ -759,7 +756,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LiftADss
 
@@ -851,7 +847,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LiftACore
 
@@ -1304,7 +1299,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LiftOne
 
@@ -1660,7 +1654,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
 
 section LiftExt
 
@@ -2041,7 +2034,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
 
 section LiftKer
 
@@ -2368,7 +2360,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LiftReg
 
@@ -2548,7 +2539,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 def liftBOpen (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
@@ -2738,7 +2728,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section HStrRing
 
@@ -2931,7 +2920,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem hstr_ps_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) :
     IsAdicComplete (hstrI₀ ↥(OL LL) ((D.loc l).PD K).p) (PowerSeries ↥(OL LL)) := by
@@ -2957,7 +2945,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section HStrAbs
 
@@ -3290,7 +3277,6 @@ end Formalism.MainNotions.CrystallineLiftingBounds
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LqbAbs
 
@@ -3569,7 +3555,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LqbLocal
 
@@ -3820,7 +3805,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LqaLocal
 
@@ -4174,7 +4158,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem opnJumpsQuot_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a22 : adm22 D HW F) (a23 : adm23 D HW F) : opnJumpsQuot D HW F :=
   opnJumpsQuot_of D HW F a23 (fun l _ K s LL h => lker_HKer_D D HW F a22 l K s LL h)
@@ -4208,7 +4191,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.CrystallineLiftingBounds
 
-open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
 
 theorem admitted_iff_base_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) : Formalism.MainNotions.LiftingTheory.admitted D HW F Cm := h
 

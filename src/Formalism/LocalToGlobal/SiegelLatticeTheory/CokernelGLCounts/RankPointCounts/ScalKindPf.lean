@@ -85,9 +85,6 @@ end Formalism.L2.SG.Pf.ScalKindPf
 
 namespace Formalism.L2.SG.Pf.ScalKindPf
 
-open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
-open PI.ScalarPairDr.W
-open scoped Matrix
 
 section ZetaNonvanishing₂
 
@@ -299,7 +296,6 @@ namespace Formalism.L2.SG.Pf.ScalKindPf
 
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut
 open Formalism.L2.SG.LsDatumB
-open scoped Matrix
 
 section D7
 

@@ -555,7 +555,6 @@ lemma integral_inverse_cube_plateau (H : ℝ) (hH : 0 < H) :
       rw [measureReal_def, Complex.volume_ball]; simp
     rw [hb]; simp; ring
 
-open MeasureTheory Metric in
 theorem lattice_sum_alt : LatticeSum := by
   intro ι _ Λ H hH hΛ
   have hH0 : 0 < H := by linarith

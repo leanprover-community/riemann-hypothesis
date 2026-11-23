@@ -111,7 +111,6 @@ open Classical in
 def filt (P : ℕ → Prop) (f : PowerSeries C) : PowerSeries C :=
   PowerSeries.mk fun m => if P m then PowerSeries.coeff m f else 0
 
-open Classical in
 theorem coeff_filt (P : ℕ → Prop) (f : PowerSeries C) (m : ℕ) :
     PowerSeries.coeff m (filt P f) = if P m then PowerSeries.coeff m f else 0 := by
   simp [filt]

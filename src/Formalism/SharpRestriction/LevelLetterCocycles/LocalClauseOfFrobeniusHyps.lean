@@ -662,7 +662,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
     [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ} [NeZero n] {W : LocWach PD LL O v n}
 
-open Formalism.MainNotions.UnusedSlot80 Formalism.MainNotions.UnusedSlot80.SatW Formalism.MainNotions.UnusedSlot80.WachFrobeniusLattice Formalism.MainNotions.WachCoordinates.Br
 
 theorem cc_γ₀ (g : W.Gam) (a : PowerSeries O) :
     PowerSeries.constantCoeff (W.γ₀ g a) = PowerSeries.constantCoeff a := by
@@ -864,7 +863,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR} {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
     [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ} [NeZero n]
 
-open Formalism.MainNotions.UnusedSlot80 Formalism.MainNotions.UnusedSlot80.SatW Formalism.MainNotions.UnusedSlot80.WachFrobeniusLattice Formalism.MainNotions.WachCoordinates.Br
 
 theorem FTool_of (W : LocWach PD LL O v n)
     (h5 : Formalism.MainNotions.DeltaInvariantLattices.P5W W) (h7 : Formalism.MainNotions.DeltaInvariantLattices.WachCrystallineExtension W) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W)

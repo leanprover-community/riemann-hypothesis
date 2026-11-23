@@ -264,7 +264,6 @@ def eps (P : ℕ → Prop) : 𝒜 := (1 : E) ⊗ₜ[ℚ] idem P
 
 theorem eps_mem (P : ℕ → Prop) : eps E P ∈ 𝒮 := one_tmul_mem (mkInt_mem _ _)
 
-open Classical in
 theorem prV_eps (P : ℕ → Prop) (v : HeightOneSpectrum (𝓞 ℚ)) :
     prV (E := E) v (eps E P) = if P (pr v) then 1 else 0 := by
   rw [eps, afsplit_prV_tmul, idem, mkInt_apply]

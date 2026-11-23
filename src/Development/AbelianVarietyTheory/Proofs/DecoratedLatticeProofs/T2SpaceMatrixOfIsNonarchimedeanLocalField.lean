@@ -250,7 +250,6 @@ private theorem measurableSet_of_isCompact_of_mem_nhds_of_add_mem (G : Set (n �
   exact MeasurableSet.biUnion hbfin.countable fun g _ => hcmeas g
 
 
-open Classical in
 theorem fpair_ne_zero (χ : AddChar k Circle) (hχ : Continuous χ) (ε : k) (hε : ε = 1 ∨ ε = -1) (μ : Measure (n → k))
     [μ.IsAddHaarMeasure] (L : Submodule 𝒪[k] (n → k)) [L.IsFullLattice k] : fpair χ ε μ (vecInd L) (dualInd L) ≠ 0 := by
   obtain ⟨s, hs⟩ := exists_cball_addChar_eq_one χ hχ

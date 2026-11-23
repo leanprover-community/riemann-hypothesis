@@ -79,8 +79,6 @@ end RowsLemmas
 
 section RowsAbstract
 
-open Finset
-open scoped ComplexOrder
 
 variable {P ι : Type}
 
@@ -147,8 +145,6 @@ theorem Dmin_top_ne (w : Point D.host.E (D.R.rS + 1)) : LocalSplitGroups.Dmin w 
 
 section RowsStep
 
-open Finset
-open scoped ComplexOrder
 
 variable (D) (large₂ : SizeData₂ D) (X : TermTie D) (Cw : ℝ) (Y : ∀ u u', LoopTie D large₂ X u u' Cw) (Z : TermLocs D X)
   (cN : D.what₂.Word → D.what₂.Word → ℝ) (Vm : ValMap D.R.k D.R.rS)

@@ -166,11 +166,9 @@ end Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.A
 
 namespace Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.B
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 
 section
 
-open Finset
 open Classical
 
 variable {Cl Nu : Type}
@@ -304,8 +302,6 @@ end
 
 section
 
-open Finset
-open Classical
 
 theorem t_MeanAmpJoint : Formalism.FourierDecayAlt.PN.MeanAmpJoint := by
   intro hS4 _ Cl Nu L C1 C0 r k hb hN hM hU S
@@ -356,11 +352,9 @@ end Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.B
 
 namespace Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.C
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 
 section
 
-open Finset
 
 theorem fin_bound (hW : Formalism.HermitianLatticeCounting.S4.WeightedCS) {Cl J V : Type} [NormedAddCommGroup V] (U : Cl → J → V)
     (W : J → ℝ) (y : Cl → J → ℝ) (S1 M : ℝ) (hS1 : 0 ≤ S1)
@@ -446,7 +440,6 @@ end
 
 section
 
-open Finset
 
 section
 variable {ι V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [CompleteSpace V]
@@ -534,12 +527,9 @@ end Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.C
 
 namespace Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.D1
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 
 section
 
-open Finset
-open Classical
 
 theorem t_ExponentSum : ExponentSum := by
   intro C1 C0 A r hA
@@ -592,12 +582,9 @@ end Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.D1
 
 namespace Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.D2
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 
 section
 
-open Finset
-open Classical
 
 theorem t_SecondBracket : SecondBracket := by
   intro Cl Γ Nu isPt a2 w Jloc JB n NG ND Hh ngen κ2 cSt AAre e1 gf Pc TB e7 eN Aexp
@@ -676,12 +663,9 @@ end Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.D2
 
 namespace Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.D3
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 
 section
 
-open Finset
-open Classical
 
 lemma hpow {b x c : ℝ} (hb : 1 < b) (hx0 : 0 ≤ x) (hx : x ≤ b ^ c) (n : ℕ) {K M : ℝ}
     (h : c * n ≤ K * M) : x ^ n ≤ Real.exp (K * M * Real.log b) := by
@@ -812,13 +796,11 @@ end Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.D3
 
 namespace Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.E
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 
 section
 
 open Finset NumberField Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 open scoped ComplexOrder ComplexConjugate
-open Classical
 
 theorem t_RowFromClasses : Formalism.FourierDecayAlt.PN.RowFromClasses := by
   intro hCS τ Rw I H H₁ _ _ _ _ _ _ X E _ r Cl Nu N hAbs hCl
@@ -953,12 +935,10 @@ end Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.E
 
 namespace Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 
 section
 
 open Finset NumberField
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PN
 
 lemma pos_facts {P : Type} [Fintype P] (B : S3.MassData P) (h : B.Pos) :
     0 < B.AA ∧ 0 < B.d * B.d' / B.Dstar := by
@@ -1017,7 +997,6 @@ end Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.F
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt
 
 theorem norm_of_lemmas : Formalism.FourierDecayAlt.PN.NormOfLemmas := HermitianFormNormLemmas.A.t_NormOfLemmas
 

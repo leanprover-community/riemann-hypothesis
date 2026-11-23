@@ -194,7 +194,6 @@ end Abstract
 
 section Lemma2
 
-open NumberField IsDedekindDomain
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
@@ -205,7 +204,6 @@ end Lemma2
 
 section Lemma4
 
-open NumberField IsDedekindDomain
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
 
@@ -337,7 +335,6 @@ theorem mapDomain_mulSingle (i : ι) (a : MonoidAlgebra ℂ (G i)) :
 variable {P : ι → Type} [∀ i, Fintype (P i)]
 
 
-open Classical in
 def eGood (E : ∀ i, P i → MonoidAlgebra ℂ (G i)) (good : (∀ i, P i) → Prop) :
     MonoidAlgebra ℂ (∀ i, G i) :=
   ∑ p : ∀ i, P i, if good p then tens (fun i => E i (p i)) else 0
@@ -348,7 +345,6 @@ end Ten
 
 section Record
 
-open NumberField IsDedekindDomain
 
 @[instance_reducible] def finiteLevelGroupFintype (D : D7) : Fintype (G0g D.nd) := by
   haveI : ∀ k, NeZero (D.host.g k) := fun k => ⟨(D.host.g_prime k).ne_zero⟩
@@ -500,7 +496,6 @@ end Record
 
 section Herm
 
-open NumberField IsDedekindDomain
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
 

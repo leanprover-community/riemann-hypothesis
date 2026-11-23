@@ -252,7 +252,6 @@ def IsHSProj (L : Lev) (P : L.Hom →L[ℂ] L.Hom) (S : Set L.Hom) : Prop :=
   P.comp P = P ∧ (∀ A B, Formalism.MainNotions.S.hsInner (P A) B = Formalism.MainNotions.S.hsInner A (P B)) ∧
     (∀ A, P A ∈ S) ∧ ∀ A ∈ S, P A = A
 
-open Classical in
 def lineP (L : Lev) (g : Mat L.k0 L.r) (ρ : Fin L.k0 → ℝ) : L.Hom →L[ℂ] L.Hom :=
   if h : ∃ P, L.IsHSProj P (L.lineSet g ρ) then Classical.choose h else 0
 

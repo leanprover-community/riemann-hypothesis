@@ -133,14 +133,12 @@ theorem ew_orth {w w' : HeightOneSpectrum (𝓞 E)} (h : w ≠ w') : ew F w * ew
     · exact absurd (h1.symm.trans h2) h
     all_goals simp
 
-open Classical in
 theorem cw_idem (w : HeightOneSpectrum (𝓞 E)) (v : Pl F) : cw w (io (idem F v) : AE F E) = if w.under (𝓞 F) = v then 1 else 0 := by
   rw [cw_io]
   split_ifs with h
   · subst h; rw [evFin_idem_self_k, map_one]
   · rw [evFin_idem_ne_k h, map_zero]
 
-open Classical in
 theorem cw_rest (w : HeightOneSpectrum (𝓞 E)) (T : Finset (Pl F)) :
     cw w (io (rest T) : AE F E) = if w.under (𝓞 F) ∈ T then 0 else 1 := by
   rw [cw_io, evFin_rest]; split_ifs <;> simp

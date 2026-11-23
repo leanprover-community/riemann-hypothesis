@@ -504,7 +504,6 @@ theorem xiConn_of (h1 : EtLoc) (h2 : ScalarConst) (h3 : XiSwap) : XiConn := by
   rw [hser]
   exact hE.1
 
-open XiConnection in
 theorem split_bound_of_xi_lemmas (h1 : XiEt) (h2 : XiConn) : SelfDualLatticeThetaPadicIntegrality := by
   intro a₀ b₀ c₀ dK ha hdK lam hlam hcm n _ _ h Λ hHerm hPos hLat hSD hSt θ hθ p _ hp2 hpd ι hIC hLN π hπ hππ
     Sa Sb hSa hSb Ψ hΨ κx _ r t N hr hN hpN hNt J _ v hv ν _ A hA

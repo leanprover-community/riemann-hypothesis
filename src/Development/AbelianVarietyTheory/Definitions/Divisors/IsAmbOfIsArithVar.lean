@@ -105,7 +105,6 @@ def resArch {q : Y ⟶ Sp k} {e : ℕ} (L : Fin e → HermLB q) (N : HermLB q) (
     mixArch (fun a => (L a).restr (cloι z)) (N.restr (cloι z)) (isRatSec_ratOfSec _ h) else 0
 
 
-open Classical in
 def resCyc [IsLocallyNoetherian Y] {B : LB Y} (hB : B.IsLB) (t : B.Sec) (g : Y → ℝ) (z : Y) : ℝ :=
   if h : genericPoint (clo z) ∈ nonzeroLocus (secPull t (cloι z)) then
     ∑ᶠ w, ((divOfSec (LB.isLB_pull hB (cloι z)) _ h).mult w : ℝ) * g (cloι z w) else 0

@@ -75,7 +75,6 @@ end Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
 namespace Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta
 
 section Tor0
 
@@ -90,7 +89,6 @@ end Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
 namespace Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta
 
 section Sums
 
@@ -106,7 +104,6 @@ end Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
 namespace Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta
 
 section StepA
 
@@ -126,7 +123,6 @@ end Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
 namespace Formalism.L2.PairingIndexBounds.Xf.XiOneP
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta
 
 variable {D : D7} {N N' : ℕ} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 

@@ -610,7 +610,6 @@ def ePlus (X : LocW D T) (τ : D.what₂.Tau) : Prop :=
   0 < ((tauE D τ) D.host.xi0).im ↔ X.sR = true
 
 
-open Classical in
 structure LocP {D : D7} {T : ThetaX D} (X : LocW D T) where
   PiT : HS D → HS D → HS D → T.Chr → T.Chr → Pl D → Type
   [piA : ∀ V V' W α β v, AddCommGroup (PiT V V' W α β v)]

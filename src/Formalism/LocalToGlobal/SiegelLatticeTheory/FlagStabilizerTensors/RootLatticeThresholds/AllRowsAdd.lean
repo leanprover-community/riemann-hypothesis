@@ -81,7 +81,6 @@ theorem Ea_zero (a : CV D) (h : tupOf a ∉ labT (D := D)) : Ea a = 0 := by
   rfl
 
 
-open Classical in
 theorem ES_split (S : Set (Tup2 D)) : ES S = ∑ t ∈ (labT (D := D)).filter (· ∈ S), ES {t} := by
   simp only [ES_eq]
   have e1 : ∑ a ∈ Finset.univ.filter (fun a : CV D => tupOf a ∈ S), Ea a =
@@ -136,7 +135,6 @@ theorem hat_sum {ι : Type} (F : Finset ι) (f : ι → X.B.I.Gf → ℂ) (γ : 
   unfold hat; rw [Finset.mul_sum]
 
 
-open Classical in
 theorem eT_split (S : Set (Tup2 D)) :
     eT X S = fun x => ∑ t ∈ (labT (D := D)).filter (· ∈ S), eT X {t} x := by
   refine hat_inj hS (biInv_eT X S) (biInv_sum _ _ fun t => biInv_eT X {t}) fun γ => ?_
@@ -197,7 +195,6 @@ theorem isRConvF_sum {ι : Type} (F : Finset ι) (f : ι → X.B.I.Gf → ℂ)
   exact Finset.sum_congr rfl fun i _ => (h i).2 x y
 
 
-open Classical in
 theorem reT_split (S : Set (Tup2 D)) : ReT X S = ∑ t ∈ (labT (D := D)).filter (· ∈ S), ReT X {t} := by
   have h := isRConvF_sum X ((labT (D := D)).filter (· ∈ S)) (fun t => eT X {t}) (fun t => ReT X {t})
     (fun t => reT_spec X (etInt_holds X) {t})
@@ -321,7 +318,6 @@ theorem reT_univ' : ReT X Set.univ = X.B.Re :=
     (Formalism.L2.SG.Pf.AllRowsRedKer.redKerP_holds X 1)))) (etInt_holds X)
 
 
-open Classical in
 theorem rowsAdd_of (hFD : FiniteDimensional ℂ (X.B.I.eHom X.B.σs X.B.μf X.B.fund X.B.R X.B.Re)) : RowsAdd X := by
   intro S
   set W := X.B.I.HomS X.B.σs X.B.μf X.B.fund X.B.R

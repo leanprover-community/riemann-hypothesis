@@ -766,7 +766,6 @@ end Final
 
 section Left
 
-open Formalism.MainNotions.BridgeLemma Formalism.MainNotions.PlaceDegreeData Formalism.BasicNotions
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 variable {Hm Pc : Matrix (Fin n) (Fin n) ℂ}
@@ -776,7 +775,6 @@ end Left
 
 section PK
 
-open Formalism.MainNotions.BridgeLemma Formalism.MainNotions.PlaceDegreeData Formalism.BasicNotions
 
 end PK
 
@@ -1103,7 +1101,6 @@ end SmoothVec
 
 section SmoothVecH
 
-open Formalism.MainNotions.BridgeLemma Formalism.BasicNotions
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 

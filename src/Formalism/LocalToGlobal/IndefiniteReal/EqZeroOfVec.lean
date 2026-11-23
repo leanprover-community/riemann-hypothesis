@@ -54,7 +54,6 @@ structure EqCont (M : DSModel V S) (T : MMap M) : Prop where
 variable {θ}
 
 
-open Classical in
 theorem eqCont_of_mem {M : DSModel V S} {J : Set (GA D V)} {χ : GA D V → ℂ} {T : MMap M}
     (hT : T ∈ Mult θ M J χ) : EqCont θ M T := by
   induction hT using Submodule.span_induction with

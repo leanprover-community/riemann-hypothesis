@@ -242,7 +242,6 @@ end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P.TBBx5
 
-open Formalism.FourierDecayAlt Filter Topology MeasureTheory
 open scoped ComplexConjugate ENNReal
 
 noncomputable section
@@ -384,12 +383,9 @@ end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P.TBBx5
 
-open Formalism.FourierDecayAlt Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal ComplexOrder
 
 noncomputable section
 
-open Classical
 
 section lift
 
@@ -437,11 +433,9 @@ end Formalism.FourierDecayAlt.P.TBBx5
 namespace Formalism.FourierDecayAlt.P.TBBx5
 
 open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal ComplexOrder
 
 noncomputable section
 
-open Classical
 
 section wave
 
@@ -538,12 +532,9 @@ end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P.TBBx5
 
-open Formalism.FourierDecayAlt Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal ComplexOrder
 
 noncomputable section
 
-open Classical
 
 section germ
 
@@ -573,6 +564,5 @@ end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt
 
 end Formalism.FourierDecayAlt.P

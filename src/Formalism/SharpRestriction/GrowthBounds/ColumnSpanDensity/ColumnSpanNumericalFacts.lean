@@ -132,7 +132,6 @@ theorem sum_of_meanN {ι : Type} [Fintype ι] [DecidableEq ι] (Sa Sb : Finset �
   rwa [div_le_iff₀ hD] at h
 
 
-open Classical in
 theorem sum_first {ι : Type} [Fintype ι] [DecidableEq ι] (a ua lb ub c : ℕ) (kf : (ι → ℕ) → (ι → ℕ) → ℝ)
     (hkf : ∀ A B, 0 ≤ kf A B) :
     ∑ A ∈ Fintype.piFinset (fun _ : ι => Finset.Icc a ua), ∑ B ∈ Fintype.piFinset (fun _ : ι => Finset.Icc lb ub),

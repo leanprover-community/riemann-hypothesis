@@ -285,7 +285,6 @@ omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
 theorem val_mem_invSet (y : GL (Fin a) (Cinf E)) : (toL y.val) ∈ invSet E a := y.isUnit
 
 
-open Classical in
 def chart (φ : GA E a → ℂ) (g : GA E a) (x : Lie E a) : ℂ :=
   if h : IsUnit (Matrix.of x) then φ (g * infGL E a h.unit) else 0
 

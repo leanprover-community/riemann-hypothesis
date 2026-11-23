@@ -199,8 +199,6 @@ def h90 (σ : E →ₐ[F] E) : (AfE F E)ˣ →* (AfE F E)ˣ := MonoidHom.id _ / 
 def U1 (σ : E →ₐ[F] E) : Subgroup (AfE F E)ˣ := (MonoidHom.id _ * conjId σ).ker
 
 
-open scoped Classical in
-open Classical in
 def tilde (σ : E →ₐ[F] E) (ξ : Chr F E L) : (h90 σ).range →* Lˣ :=
   if h : (h90 σ).ker ≤ ξ.ker then
     (h90 σ).rangeRestrict.liftOfSurjective (h90 σ).rangeRestrict_surjective
@@ -208,8 +206,6 @@ def tilde (σ : E →ₐ[F] E) (ξ : Chr F E L) : (h90 σ).range →* Lˣ :=
   else 1
 
 
-open scoped Classical in
-open Classical in
 def detTw (σ : E →ₐ[F] E) (ξ : Chr F E L) {n : ℕ} (g : GL (Fin n) (AfE F E)) : Lˣ :=
   if h : Matrix.GeneralLinearGroup.det g ∈ (h90 σ).range then tilde σ ξ ⟨_, h⟩ else 1
 

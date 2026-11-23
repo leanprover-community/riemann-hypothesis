@@ -364,7 +364,6 @@ end Formalism.L2.SG.Pf.AtPt
 
 namespace Formalism.L2.SG.Pf.AtPt
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc ValuativeRel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -513,7 +512,6 @@ end Formalism.L2.SG.Pf.AtPt
 
 namespace Formalism.L2.SG.Pf.AtPt
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc ValuativeRel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -609,7 +607,6 @@ end Formalism.L2.SG.Pf.AtPt
 
 namespace Formalism.L2.SG.Pf.AtPt
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc ValuativeRel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -714,7 +711,6 @@ end Formalism.L2.SG.Pf.AtPt
 
 namespace Formalism.L2.SG.Pf.AtPt
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermLoc ValuativeRel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

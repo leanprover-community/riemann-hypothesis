@@ -59,12 +59,10 @@ noncomputable def rowAdd (t : T) (r r' : Fin p ⊕ Fin q) (s : R) :
   bind₁ fun v => X v + ∑ k : κ, if v = (t, r', k) then C s * X (t, r, k) else 0
 
 
-open Classical in
 noncomputable def rowAddX (t : T) (a b : Fin p) (s : R) : Poly R T p q κ →ₐ[R] Poly R T p q κ :=
   bind₁ fun v => X v + ∑ k : κ, if v = xVar t b k then C s * X (xVar t a k) else 0
 
 
-open Classical in
 noncomputable def rowAddY (t : T) (a b : Fin q) (s : R) : Poly R T p q κ →ₐ[R] Poly R T p q κ :=
   bind₁ fun v => X v + ∑ k : κ, if v = yVar t b k then C s * X (yVar t a k) else 0
 
@@ -273,7 +271,6 @@ end RowAdd
 section RowDegree
 
 
-open Classical in
 noncomputable def rowInd (t : T) (r : Fin p ⊕ Fin q) : Var T p q κ → ℕ :=
   rowWeight fun t' r' => if t' = t ∧ r' = r then 1 else 0
 

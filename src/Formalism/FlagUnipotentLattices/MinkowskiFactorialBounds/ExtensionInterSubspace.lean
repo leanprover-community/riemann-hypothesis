@@ -50,7 +50,6 @@ end Frob
 noncomputable def n2 {N : ℕ} (v : Fin N → ℂ) : ℝ := Real.sqrt (∑ i, ‖v i‖ ^ 2)
 
 section FrobG
-open scoped Matrix.Norms.Frobenius
 
 end FrobG
 

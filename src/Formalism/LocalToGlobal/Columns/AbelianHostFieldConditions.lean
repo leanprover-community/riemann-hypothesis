@@ -202,7 +202,6 @@ def vT (u : Pr.Word) : Finset (HeightOneSpectrum (𝓞 X.E)) := divs (Pr.piT u)
 def vG (i : Fin 2) : Finset (HeightOneSpectrum (𝓞 X.E)) := divs (X.conjO (Pr.piG i))
 
 
-open Classical in
 def vGs : Finset (HeightOneSpectrum (𝓞 X.E)) := open Classical in Pr.vG 0 ∪ Pr.vG 1
 
 structure Ok : Prop where
@@ -371,7 +370,6 @@ theorem spread_shiftW {N : ℕ} (lam : DomWeight N) (c : ℤ) : (shiftW lam c).s
   · rfl
 
 
-open Classical in
 def ofQ {N : ℕ} (x : Fin N → ℚ) : DomWeight N :=
   if h : Antitone x then ⟨fun i => ⌊x i⌋, fun _ _ hij => Int.floor_mono (h hij)⟩ else ⟨fun _ => 0, fun _ _ _ => le_rfl⟩
 
@@ -550,7 +548,6 @@ instance normal_sqQ (m : ℤ) : Normal ℚ (sqQ m) := normal_adjoin fun s x hx =
   rw [← map_pow, show x ^ 2 = (m : Qb) from hx, map_intCast]
 
 
-open Classical in
 def embQ {φ : Formalism.HC.Frame} (H : Formalism.HC.HostRaw φ) (g : φ.GG) : H.EQ →ₐ[ℚ] Qb :=
   if h : ∃ s : H.EQ →ₐ[ℚ] Qb, H.ActsAs s g then h.choose else H.EQ.val
 

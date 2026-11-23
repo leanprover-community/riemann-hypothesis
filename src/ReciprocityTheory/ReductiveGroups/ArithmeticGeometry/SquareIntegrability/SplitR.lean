@@ -119,7 +119,6 @@ def rkQ (τ : E →+* ℂ) : (Fin (dim τ) → ℂ) →ₗ[ℂ] Vsp dim where
   map_add' y z := by simp [add_smul, Finset.sum_add_distrib]
   map_smul' c y := by simp [Finset.smul_sum, smul_smul]
 
-open Classical in
 theorem rkQP_apply (τ : E →+* ℂ) (v : Vsp dim) (i : Idx dim) :
     rkQ τ (rkP τ v) i = if i.1 = τ then v i else 0 := by
   obtain ⟨σ, b⟩ := i

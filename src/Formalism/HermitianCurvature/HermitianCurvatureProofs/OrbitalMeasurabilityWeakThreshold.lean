@@ -109,7 +109,6 @@ end Formalism.FourierDecayAlt.P.WeakThresholdClauses
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.Asm
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 open Formalism.FourierDecayAlt.P.WeakDominationMajorants
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
@@ -253,7 +252,6 @@ end Formalism.FourierDecayAlt.P.WeakDominationMajorants.Asm
 
 namespace Formalism.FourierDecayAlt.P.JFxDs2
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -414,7 +412,6 @@ end Formalism.FourierDecayAlt.P.WeakDominationWordBounds
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

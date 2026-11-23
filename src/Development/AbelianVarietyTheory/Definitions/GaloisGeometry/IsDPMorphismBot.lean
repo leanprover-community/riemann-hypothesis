@@ -456,7 +456,6 @@ theorem J_sq : J ^ 2 = 0 := by
 
 
 open scoped Classical in
-open Classical in
 def δJ : DividedPowers J := RatAlgebra.dividedPowers J
 
 def T : Thick nodeL where

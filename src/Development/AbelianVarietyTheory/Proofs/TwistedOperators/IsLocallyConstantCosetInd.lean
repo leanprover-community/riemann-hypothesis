@@ -67,7 +67,6 @@ def cosetInd (K : Subgroup G) (ho : IsOpen (K : Set G)) (hK : IsCompact (K : Set
         fun x hx => if_neg fun h => hx ⟨x * g⁻¹, h, by change (x * g⁻¹) * g = x; group⟩⟩
 
 
-open Classical in
 theorem cosetInd_apply (K : Subgroup G) (ho : IsOpen (K : Set G)) (hK : IsCompact (K : Set G))
     (g x : G) : (cosetInd K ho hK g).1 x = if x * g⁻¹ ∈ K then 1 else 0 := rfl
 
@@ -76,7 +75,6 @@ variable [MeasurableSpace G] [BorelSpace G] {μ : Measure G} [μ.IsHaarMeasure]
   {Y : Type} [AddCommGroup Y] [Module ℂ Y]
 
 
-open Classical in
 theorem _root_.GlobalTheory.InvBilinTest.integral_ite (K : Subgroup G) (ho : IsOpen (K : Set G)) (c : ℂ) :
     ∫ g, (if g ∈ K then c else 0) ∂μ = (μ.real K : ℂ) * c := by
   classical

@@ -80,7 +80,6 @@ private def fT {K : Type} [Field K] (w : Pl F) (e : K) : Module.End K (Idx F →
     funext n
     by_cases h : ∃ 𝔫, n.1 = w.asIdeal * 𝔫 <;>
       simp only [h, dif_pos, dif_neg, not_false_eq_true, Pi.smul_apply, smul_eq_mul, RingHom.id_apply] <;> ring
-open Classical in
 omit [NumberField F] in
 private theorem fT_apply {K : Type} [Field K] (w : Pl F) (e : K) (v : Idx F → K) (𝔪 : Idx F) :
     fT w e v 𝔪 = v ⟨w.asIdeal * 𝔪.1, mul_ne_zero w.ne_bot 𝔪.2⟩ +

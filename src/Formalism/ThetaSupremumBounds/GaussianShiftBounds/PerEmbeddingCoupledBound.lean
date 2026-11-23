@@ -170,7 +170,6 @@ theorem sharp_norm : SharpNorm := by
   unfold liftNormSq
   exact csInf_le ⟨0, fun X hX => hX.1⟩ ⟨hcb0, bound⟩
 
-open Formalism.DivisionValues.OperatorNormFrames in
 theorem chain_coupled_bound : ChainCB := by
   intro K _ _ _ m c Xc Kj AA Cl _ _ W _ _ γ Φ ε T hcl tmax hyp kU hkU
   obtain ⟨hX, hγ, hΦ, hint, hε, hT, ht0, hh⟩ := hyp

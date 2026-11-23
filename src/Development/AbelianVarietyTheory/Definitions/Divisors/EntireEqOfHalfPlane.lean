@@ -149,7 +149,6 @@ def beta (E : Type) [Field E] [NumberField E] (d s : ℕ) (κ : I → ℕ) (Λ :
   ((C0 E d (2 * s) κ : ℂ) * T) ^ 12 / latDisc Λ ^ Formalism.PairingDivisionLocalBalance.wtM (2 * s) κ
 
 
-open Classical in
 theorem single_apply (v : HeightOneSpectrum (𝓞 E)) (x : (v.adicCompletion E)ˣ) (w : HeightOneSpectrum (𝓞 E)) :
     (single v x : Af E) w = Function.update (fun w : HeightOneSpectrum (𝓞 E) => (1 : w.adicCompletion E)) v x w := rfl
 

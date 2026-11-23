@@ -231,8 +231,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.PBI
 
-open Finset MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -321,7 +319,6 @@ end Formalism.FourierDecayAlt.P.PBI
 
 namespace Formalism.FourierDecayAlt.P
 
-open Finset Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 theorem head_correspondence_of_parts : PBI.HeadCorrOfParts := by
   intro hLF hVec hTy Wp Wq _ _ _ _ _ _ P p F w X μ L st Cb hD hdd hF hcut x hx

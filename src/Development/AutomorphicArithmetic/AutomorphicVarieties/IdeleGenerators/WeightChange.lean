@@ -43,7 +43,6 @@ open Classical in
 def levL {F : Type} [Field F] (l : ℕ) (c : Pl F → ℕ) (w : Pl F) : ℕ := if ((l : ℕ) : 𝓞 F) ∈ w.asIdeal then 1 else c w
 
 
-open Classical in
 def eisT {F : Type} [Field F] [NumberField F] (l : ℕ) (ω : HChar F) (c : Pl F → ℕ) (P : Set (Pl F)) (w : Pl F) : ℂ :=
   if ((l : ℕ) : 𝓞 F) ∈ w.asIdeal then (if w ∈ P then ((ω.val w : ℂˣ) : ℂ) else 1) else if c w = 0 then 1 + ((ω.val w : ℂˣ) : ℂ) else 1
 
@@ -75,7 +74,6 @@ def HolMul : Prop :=
       ∀ 𝔪, 𝔪 ≠ ⊥ → ‖ι.symm (a' 𝔪 - a 𝔪)‖ < 1
 
 
-open Classical in
 def HolB : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (c : Pl F → ℕ) (ω : HChar F) (φ : TR.Sm F 2) c₀ a (w : Pl F),
     IsHol k c ω φ → HasExp φ.1 k c₀ a → ∃ (ψ : TR.Sm F 2) (u : (Af F)ˣ), IsHol k (Function.update c w (c w + 1)) ω ψ ∧

@@ -430,7 +430,6 @@ theorem mulVecLin_ne_zero {K : Type} [Field K] {a b : ℕ} (N : Matrix (Fin b) (
 
 end OperatorNormFrames
 
-open OperatorNormFrames in
 theorem composition_norm_at_place : CompNormAt := by
   intro K _ _ _ m c Xc hX Kj
   have key : ∀ v, Formalism.HN.opNormAt (Pi.basisFun K (Fin (c 0))) (Xc 0)
@@ -776,7 +775,6 @@ theorem place_bound {K : Type} [Field K] [NumberField K] [StarRing K] {n D a b :
 
 end OperatorNormFrames
 
-open OperatorNormFrames in
 theorem height_constant_first : HeightBoundConstant := by
   unfold HeightBoundConstant
   intro K _ _ _ n D m c Xc hXc Kj H X0 h0 P hP XQ hQ XE hE ι hι Ix J _ _ _ Qp hsup κ lam lamL

@@ -190,7 +190,6 @@ end Word
 
 section Clauses
 
-open Formalism.BasicNotions
 
 theorem htMap_le_of_bound {K : Type} [Field K] [NumberField K] {a n : ℕ} (Xc : InfinitePlace K → Matrix (Fin a) (Fin a) ℂ)
     (XE : InfinitePlace K → Matrix (Fin n) (Fin n) ℂ) (B : (Fin a → K) →ₗ[K] Module.Dual K (Fin n → K)) (h k : ℝ)
@@ -262,7 +261,6 @@ end Clauses
 
 section PartB
 
-open Formalism.BasicNotions
 
 structure NumRecTie (Nd : NumDatum) {D : D7} (L : SizeData₂ D) (u : D.what₂.Word) (Tl : ℕ) (Nc : ℝ) : Prop where
   mainT : Nd.mainT Tl = L.MAIN u
@@ -351,7 +349,6 @@ end PartC
 
 section PartD
 
-open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions
 
 structure DivisionRows {D : D7} (L : SizeData₂ D) : Type 1 where
 
@@ -516,7 +513,6 @@ end PartD
 
 section PartE
 
-open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions
 
 structure DivisionRowsFace {D : D7} (L : SizeData₂ D) : Type 1 where
   Bs : DefBase D.what₂.LL

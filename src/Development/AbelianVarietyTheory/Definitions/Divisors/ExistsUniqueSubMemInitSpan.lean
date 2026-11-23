@@ -266,7 +266,6 @@ def detOm : LB Z := ⟨F.J, F.U, fun k k' => (Units.map
   (π.appLE ((F.M k).U ⊓ (F.M k').U) (F.U k ⊓ F.U k') (inf_le_inf (F.le k) (F.le k'))).hom.toMonoidHom
     (detChg (F.M k).toMChart (F.M k').toMChart))⁻¹⟩
 
-open Classical in
 theorem ev_LL_g (e : Ix Dw → ℤ) (k k' : F.J) (z : Sp S ⟶ Z) (h : ⊤ ≤ z ⁻¹ᵁ (F.U k ⊓ F.U k')) :
     ev z _ h ((F.LL e).g k k').val = (∏ ix, F.TAt k k' z h ix ^ (-e ix)).val := by
   show (Units.map (ev z _ h).toMonoidHom (∏ ix, F.T k k' ix ^ (-e ix))).val = _

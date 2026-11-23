@@ -246,8 +246,6 @@ end Formalism.L2.SG.Pf.LocModel.LM.DeltaC
 
 namespace Formalism.L2.SG.Pf.LocModel.LM
 
-open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
-open Classical ValuativeRel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -308,8 +306,6 @@ end Formalism.L2.SG.Pf.LocModel.LM
 
 namespace Formalism.L2.SG.Pf.LocModel.LM
 
-open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
-open Classical ValuativeRel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -384,8 +380,6 @@ end Formalism.L2.SG.Pf.LocModel.LM
 
 namespace Formalism.L2.SG.Pf.LocModel.LM
 
-open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
-open Classical ValuativeRel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -529,8 +523,6 @@ end Formalism.L2.SG.Pf.LocModel.LM
 
 namespace Formalism.L2.SG.Pf.LocModel.LM
 
-open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
-open Classical ValuativeRel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -738,8 +730,6 @@ end Formalism.L2.SG.Pf.LocModel.LM
 
 namespace Formalism.L2.SG.Pf.LocModel.LM
 
-open NumberField Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal IsDedekindDomain
-open Classical ValuativeRel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -796,7 +786,6 @@ end Formalism.L2.SG.Pf.LocModel.LM
 
 namespace Formalism.L2.SG.Pf.LocModel
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
 open Classical
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -864,8 +853,6 @@ end Formalism.L2.SG.Pf.LocModel
 
 namespace Formalism.L2.SG.Pf.LocModel
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
-open Classical
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -956,8 +943,6 @@ end Formalism.L2.SG.Pf.LocModel
 
 namespace Formalism.L2.SG.Pf.LocModel
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
-open Classical
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -1165,7 +1150,6 @@ end Formalism.L2.SG.Pf.LocModel
 namespace Formalism.L2.SG.Pf.LocModel
 
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups MeasureTheory
-open Classical
 
 section Triv
 
@@ -1367,8 +1351,6 @@ end Formalism.L2.SG.Pf.LocModel
 
 namespace Formalism.L2.SG.Pf.LocModel
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
-open Classical
 
 section Alp
 
@@ -1539,7 +1521,6 @@ end Formalism.L2.SG.Pf.LocModel
 namespace Formalism.L2.SG.Pf.LocModel
 
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.FourierDecayAlt Formalism.L2.SG.DataInst
-open Classical
 
 section LMK
 
@@ -1825,7 +1806,6 @@ end Formalism.L2.SG.Pf
 
 namespace Formalism.L2.SG.Pf
 
-open Classical
 
 theorem localModelK_holds (D : Formalism.BasicNotions.D7) : Formalism.L2.SG.DataCut.LocalModelK D := by
   intro Wp Wq _ _ _ _ S δ M hA u u' _ i Y

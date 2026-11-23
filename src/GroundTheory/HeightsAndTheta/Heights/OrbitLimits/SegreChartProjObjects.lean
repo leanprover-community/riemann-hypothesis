@@ -86,7 +86,6 @@ theorem mem_chartLiftDom_of_coord {m : ℕ} {σ : Fin m ≃ ((k : K) → ι k)} 
   chartLift_blockNonzero σ i hx
 
 
-open Classical in
 def chartWeight {m : ℕ} (σ : Fin m ≃ ((k : K) → ι k)) (i : (k : K) → ι k)
     (g : ((Σ k, ι k) → ℂ) → ℝ) : (Fin m → ℂ) → ℝ :=
   (chartLiftDom σ i).piecewise (g ∘ chartLift σ i) 0

@@ -131,7 +131,6 @@ def WinOK (s : Scale) (K : G.Consts) (H : Host R) (a b : R.A → ℤ) : Prop :=
     s.b' ≤ (b t : ℝ) ∧ (b t : ℝ) ≤ s.b' + 2 * (R.n : ℝ) * s.delta1 * s.x ^ s.eps * G.La K s * s.b' / (R.k : ℝ)
 
 
-open Classical in
 def WOK (s : Scale) (cD ch : ℝ) (K : G.Consts) (H : Host R) (a b : R.A → ℤ) : Prop :=
   let B := baseOf s cD ch H
   ∑ p ∈ (Finset.range ⌈s.X'⌉₊).filter (fun p => Arith.Loc.Cand B K (hPH H p) p), Real.log p / p *

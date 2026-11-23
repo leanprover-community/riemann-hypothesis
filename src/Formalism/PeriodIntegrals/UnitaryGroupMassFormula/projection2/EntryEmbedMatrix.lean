@@ -197,7 +197,6 @@ theorem prod_blocks [DecidableEq k] {k₀ m t j n' c n : ℕ} (hN : Nums k₀ m 
   rw [hM, Matrix.det_one, chiV_one]
 
 
-open Classical in
 theorem top_block [DecidableEq k] {k₀ m t j n' c n : ℕ} (hN : Nums k₀ m t j n' c n) (χ : ℕ → kˣ →* ℂˣ)
     (τ : FC n' (c + 1) n c → k)
     (hC : (∀ p', p' < k₀ + m - 1 → ent k₀ (c + 1) n' c n (xx1 (xj0 k₀ n' n) τ) p' p' = 1) ∧
@@ -232,7 +231,6 @@ theorem top_block [DecidableEq k] {k₀ m t j n' c n : ℕ} (hN : Nums k₀ m t 
 
 local instance (p : Prop) : Decidable p := Classical.propDecidable p
 
-open Classical in
 theorem term_eq [DecidableEq k] {k₀ m t j n' c n : ℕ} (hN : Nums k₀ m t j n' c n) (ψ₀ : AddChar k ℂ) (χ : ℕ → kˣ →* ℂˣ)
     (τ : FC n' (c + 1) n c → k) :
     PhiS ψ₀ χ k₀ m t j n' c n (xx1 (xj0 k₀ n' n) τ) *

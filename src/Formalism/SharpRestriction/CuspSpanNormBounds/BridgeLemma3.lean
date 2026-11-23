@@ -494,13 +494,11 @@ end PartCal
 
 section PartCal2
 
-open Matrix Filter Topology
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P
 
 section Frob
 
@@ -521,7 +519,6 @@ end PartCal2
 
 section PartCCI
 
-open Matrix Filter Topology
 
 noncomputable section
 
@@ -573,7 +570,6 @@ end PartAdj0
 
 section PartAdj1
 
-open Matrix MeasureTheory Filter Topology
 open scoped ComplexConjugate ENNReal
 
 noncomputable section
@@ -583,7 +579,6 @@ namespace Formalism.MainNotions.BridgeLemma₃
 section partA
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -625,8 +620,6 @@ end PartAdj1
 
 section PartAdj2a
 
-open Matrix MeasureTheory Filter Topology
-open scoped ContDiff
 
 noncomputable section
 
@@ -647,7 +640,6 @@ end PartAdj2a
 
 section PartAdj2b
 
-open Matrix MeasureTheory Filter Topology
 open scoped InnerProductSpace
 
 noncomputable section
@@ -667,14 +659,11 @@ end PartAdj2b
 
 section PartAdj2
 
-open Matrix MeasureTheory Filter Topology
-open scoped ContDiff
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -688,7 +677,6 @@ end core
 
 section packet
 
-open Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
 
 end packet
 
@@ -700,14 +688,12 @@ end PartAdj2
 
 section PartAdj3
 
-open Matrix MeasureTheory Filter Topology
 open scoped ContDiff ENNReal ComplexConjugate
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -728,7 +714,6 @@ end adj
 
 section helpers
 
-open Formalism.FourierDecayAlt.P
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -739,7 +724,6 @@ end helpers
 
 section core
 
-open Formalism.FourierDecayAlt.P
 
 variable {k r : ℕ}
 
@@ -750,7 +734,6 @@ end core
 
 section core2
 
-open Formalism.FourierDecayAlt.P
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
@@ -759,7 +742,6 @@ end core2
 
 section core3
 
-open Formalism.FourierDecayAlt.P
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
@@ -780,14 +762,11 @@ end PartAdj3
 
 section PartAdj6a
 
-open Matrix MeasureTheory
-open scoped ContDiff
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -816,8 +795,6 @@ end PartCont
 
 section PartAdj6bP
 
-open Matrix MeasureTheory
-open scoped ContDiff
 
 noncomputable section
 
@@ -835,14 +812,11 @@ end PartAdj6bP
 
 section PartRad0
 
-open Matrix MeasureTheory Filter Topology
-open scoped ContDiff ENNReal ComplexConjugate
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -854,7 +828,6 @@ end gen
 
 section adj
 
-open Formalism.FourierDecayAlt.P
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
@@ -863,7 +836,6 @@ end adj
 
 section helpers
 
-open Formalism.FourierDecayAlt.P
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -880,14 +852,11 @@ end PartRad0
 
 section PartRad1
 
-open Matrix MeasureTheory Filter Topology
-open scoped ContDiff ENNReal ComplexConjugate
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -902,14 +871,11 @@ end PartRad1
 
 section PartRad2
 
-open Matrix MeasureTheory Filter Topology
-open scoped ContDiff ENNReal ComplexConjugate
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -924,8 +890,6 @@ end PartRad2
 
 section PartRad3
 
-open Matrix MeasureTheory Filter Topology
-open scoped ContDiff ENNReal ComplexConjugate
 
 noncomputable section
 
@@ -943,14 +907,12 @@ end PartRad3
 
 section PartOrb0
 
-open Matrix MeasureTheory
 open scoped ENNReal
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -962,7 +924,6 @@ end PartOrb0
 
 section PartOrbGD
 
-open Matrix MeasureTheory
 
 noncomputable section
 
@@ -984,13 +945,11 @@ end PartOrbGD
 
 section PartOrbCB
 
-open Matrix MeasureTheory
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
 variable {k r : ℕ}
 
@@ -1002,13 +961,11 @@ end PartOrbCB
 
 section PartOrbNB
 
-open Matrix
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
 variable {k r : ℕ}
 
@@ -1020,8 +977,6 @@ end PartOrbNB
 
 section PartOrbNI
 
-open Matrix MeasureTheory
-open scoped ENNReal NNReal
 
 noncomputable section
 
@@ -1041,14 +996,11 @@ end PartOrbNI
 
 section PartOrbOD1
 
-open Matrix MeasureTheory Filter Topology
-open scoped ENNReal
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1062,14 +1014,11 @@ end PartOrbOD1
 
 section PartOrbOD2
 
-open Matrix MeasureTheory Filter Topology
-open scoped ENNReal
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1083,14 +1032,11 @@ end PartOrbOD2
 
 section PartOrbOD
 
-open Matrix MeasureTheory Filter Topology
-open scoped ENNReal
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1106,7 +1052,6 @@ section PartPX
 
 namespace Formalism.MainNotions.BridgeLemma₃
 
-open Formalism.MainNotions Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.BridgeLemma₅
 
 end Formalism.MainNotions.BridgeLemma₃
 

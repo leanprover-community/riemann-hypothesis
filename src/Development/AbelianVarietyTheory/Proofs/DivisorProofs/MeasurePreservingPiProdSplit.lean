@@ -202,7 +202,6 @@ theorem continuous_keptPt : Continuous (keptPt : (KeptVar n c n' → k) → _) :
 variable [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [MeasurableSpace k] [BorelSpace k]
 
 
-open Classical in
 omit [DecidableEq n] [DecidableEq n'] in
 theorem integrable_step {ψ : AddChar k Circle} (hψ : Continuous ψ) (ν : Measure k) [ν.IsAddHaarMeasure]
     {Φ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ} (hΦ : Φ ∈ SB _) (x₀ : Matrix n n' k) :
@@ -318,7 +317,6 @@ theorem continuous_pairPhase (x : ColArgs G) : Continuous (pairPhase x) := by
 variable [MeasurableSpace k] [BorelSpace k] (ψ : AddChar k Circle) (ν : Measure k)
 
 
-open Classical in
 variable (G) in
 def keptVol : Measure (KeptVars G) := Measure.pi fun _ => Measure.pi fun _ => ν
 

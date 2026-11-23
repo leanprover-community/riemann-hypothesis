@@ -120,11 +120,9 @@ def ellExp (l : Fin n' × Fin (r + K) →₀ ℕ) (j : ℤ) : ℤ × Fin (r + K)
       by_contra h
       exact hv (if_neg h))
 
-open Classical in
 theorem ellExp_apply (l : Fin n' × Fin (r + K) →₀ ℕ) (j : ℤ) (v : ℤ × Fin (r + K)) :
     ellExp X p K l j v = if v.1 ∈ X.toLate j then l (posOf n' v.1, v.2) / p ^ X.F.dist j v.1 else 0 := rfl
 
-open Classical in
 theorem img_ellExp (l : Fin n' × Fin (r + K) →₀ ℕ) (j : ℤ) (t : Fin n') (c : Fin (r + K)) :
     imgMon (fun v : ℤ × Fin (r + K) => (posOf n' v.1, v.2)) (fun v => p ^ X.F.dist j v.1) (ellExp X p K l j) (t, c) =
       ∑ x ∈ X.toLate j, if posOf n' x = t then p ^ X.F.dist j x * (l (t, c) / p ^ X.F.dist j x) else 0 := by

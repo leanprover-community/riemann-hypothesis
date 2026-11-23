@@ -493,10 +493,8 @@ structure LevFam.Split {SG0 SG : Finset (HeightOneSpectrum (𝓞 X.E))} (ι : GL
 variable {SG0 Q : Finset (HeightOneSpectrum (𝓞 X.E))}
 
 
-open Classical in
 def inlSG (w : SG0) : uSG SG0 Q := ⟨w.1, Finset.mem_union_left _ w.2⟩
 
-open Classical in
 theorem prod_uSG {M : Type} [CommMonoid M] (f : SG0 → M) :
     (∏ w : uSG SG0 Q, if hw : w.1 ∈ SG0 then f ⟨w.1, hw⟩ else 1) = ∏ w : SG0, f w := by
   symm
@@ -512,7 +510,6 @@ theorem prod_uSG {M : Type} [CommMonoid M] (f : SG0 → M) :
     rfl
 
 
-open Classical in
 theorem LevFam.glue_split (h : r ≤ n) (TP TK : LevFam X.E X.K n SG0) (P : LevFam X.E X.K r SG0)
     (B : LevFam X.E X.K n Q) (H : ∀ w : SG0, Lev.Split (diagEmb _ h) (TP w) (TK w) (P w)) :
     LevFam.Split ((extGLG Q).comp (diagonalEmbeddingProduct SG0 h)) (TP.glue B) (TK.glue B) P := by

@@ -354,7 +354,6 @@ lemma s1c2_S_cols (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z
   obtain ⟨U, h1, h2, h3⟩ := S_F hz hs
   exact ⟨U, ⟨h2, h1⟩, (gj_cols _ _ _).1 h3⟩
 
-open Formalism.QuantumDeterminants.WeylGroupFacts in
 lemma s1c2_N3xM_S (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : inWb k r z')
     (g s s' : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (hs : s ∈ Sset k r z) (hs' : s' ∈ Sset k r z') :
     formalDeterminantVectorOnGroup k r z z' (s * g * s') = s'⁻¹ *ᵥ formalDeterminantVectorOnGroup k r z z' g := by
@@ -472,7 +471,6 @@ lemma s1c2_UW_sub_S (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ)
     (h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (hh : h ∈ UWset k r z) : h ∈ Sset k r z :=
   ⟨h, hh, 1, Formalism.QuantumDeterminants.WeylGroupFacts.mem_n_one, (Matrix.mul_one h).symm⟩
 
-open Formalism.QuantumDeterminants.WeylGroupFacts in
 theorem dual_vector_unipotent_invariant : DualVectorUnipotentInvariant := by
   intro k r z z' hz hz' g hg n hn n' hn'
   have hx := s1c2_N3xM_S k r z z' hz hz' g n n' (s1c2_N_sub_S k r z hz n hn) (s1c2_N_sub_S k r z' hz' n' hn')
@@ -500,7 +498,6 @@ theorem dual_vector_unipotent_invariant : DualVectorUnipotentInvariant := by
   rw [s1c2_om_eq k r z z' hz', s1c2_om_eq k r z z' hz', hx, hP, ← s1c2_herm_Pm k r z' (n'⁻¹ *ᵥ X) hz', hP,
     s1c2_herm_Pm k r z' X hz']
 
-open Formalism.QuantumDeterminants.WeylGroupFacts in
 theorem dual_vector_equivariant : DualVectorEquivariant := by
   intro k r z z' hz hz' g hg h hh h' hh'
   have hx := s1c2_N3xM_S k r z z' hz hz' g h h' (s1c2_UW_sub_S k r z h hh) (s1c2_UW_sub_S k r z' h' hh')
@@ -536,7 +533,6 @@ lemma s1c2_det_map_star {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n 
   rw [show star A.det = (starRingEnd ℂ) A.det from rfl, this]
   rfl
 
-open Formalism.QuantumDeterminants.WeylGroupFacts in
 theorem dual_vector_norm_on_group : DualVectorNormOnGroup := by
   intro k r z z' hz hz' hT' g hg
   have hgu : IsUnit g.det := isUnit_of_uh hg
@@ -596,7 +592,6 @@ lemma s1c2_exp_add {ι : Type*} [Fintype ι] [DecidableEq ι] (Y : Matrix ι ι 
   simp only [add_mul, mul_add, smul_mul_assoc, mul_smul_comm, one_mul, mul_one, h3, h3', h4, smul_zero, add_zero]
   module
 
-open Formalism.QuantumDeterminants.WeylGroupFacts in
 theorem nilpotent_model_computation_holds : RankTwoNilpotentGroup := by
   intro k r z hz a e v he hv
   set H := Hpk k r with hHdef

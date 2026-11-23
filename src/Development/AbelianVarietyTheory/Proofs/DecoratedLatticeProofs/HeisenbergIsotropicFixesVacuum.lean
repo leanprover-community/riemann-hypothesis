@@ -76,7 +76,6 @@ def halfOff (P : Pl D → Prop) : Af D.host.F :=
       · exact two_inv_int w h.2
       · exact zero_mem _)
 
-open Classical in
 theorem evalV_halfOff (P : Pl D → Prop) (w : Pl D) :
     evalV D.host.F w (halfOff P) = if P w ∧ (2 : 𝓞 D.host.F) ∉ w.asIdeal then (2⁻¹ : Fv D.host.F w) else 0 := rfl
 

@@ -421,7 +421,6 @@ def locOp (v : Pl F) (T : ((κ → AF F) → ℂ) → ((κ → AF F) → ℂ)) (
   if h : ∃ φ₁, φ₁ ∈ SB (κ → Fv F v) ∧ Acts (evFin F v) T φ φ₁ then h.choose else 0
 
 
-open Classical in
 def locOpInf (T : ((κ → AF F) → ℂ) → ((κ → AF F) → ℂ)) (f : SInf F κ) : SInf F κ :=
   if h : ∃ f₁ : SInf F κ, Acts (evI F) T f f₁ then h.choose else 0
 
@@ -581,7 +580,6 @@ def coneInfFun (f : SInf F (Fin n × Fin d)) : (Fin n₁ × Fin d₁ → mixedEm
   fun y => ∫ k, ∫ l, coneInfInt B M om ei u ν z f k.1 l.1 y ∂μ ∂μK
 
 
-open Classical in
 def coneInf (f : SInf F (Fin n × Fin d)) : SInf F (Fin n₁ × Fin d₁) :=
   if h : ∃ g : SInf F (Fin n₁ × Fin d₁), ⇑g = coneInfFun B M om ei K μK μ u ν z f then h.choose else 0
 

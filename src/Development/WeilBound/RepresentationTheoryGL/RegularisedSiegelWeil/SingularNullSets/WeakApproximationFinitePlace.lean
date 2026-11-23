@@ -59,7 +59,6 @@ def IsIdem (S : Finset (Pl D)) (e : AE D) : Prop :=
 def IntOff (S : Finset (Pl D)) (x : Mx D a b) : Prop := ∀ v ∉ S, ∀ i j, cv D v (x i j) ∈ intLoc D.host.F D.host.E v
 
 
-open Classical in
 def Good (S : Finset (Pl D)) (e : AE D) (Φ : Mx D a b → ℂ) : Prop := ∀ x, Φ x = if IntOff S x then Φ (e • x) else 0
 
 abbrev KOff (D : D7) (n : ℕ) (S : Finset (Pl D)) : Subgroup (G D n) :=

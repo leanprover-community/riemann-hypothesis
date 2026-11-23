@@ -234,8 +234,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -381,8 +379,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -395,8 +391,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -415,8 +409,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -424,8 +416,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -434,7 +424,6 @@ theorem twistedIdem_def {G : Type} [Group G] [Fintype G] (J : Subgroup G) (χ : 
     twistedIdem J χ =
       ∑ u : J, ((Nat.card J : ℂ)⁻¹ * (((χ u)⁻¹ : ℂˣ) : ℂ)) • MonoidAlgebra.of ℂ G (u : G) := rfl
 
-open Classical in
 theorem of_mul_twistedIdem {G : Type} [Group G] [Fintype G] (J : Subgroup G) (χ : J →* ℂˣ)
     (v : J) : MonoidAlgebra.of ℂ G (v : G) * twistedIdem J χ
       = ((χ v : ℂˣ) : ℂ) • twistedIdem J χ := by
@@ -458,8 +447,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -467,8 +454,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -476,8 +461,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -485,8 +468,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -494,8 +475,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -542,8 +521,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -617,8 +594,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -664,8 +639,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -673,8 +646,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -683,8 +654,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -692,8 +661,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
-open scoped ComplexOrder
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -815,7 +782,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -986,7 +952,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Polynomial
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -1054,7 +1019,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -1064,7 +1028,6 @@ end
 section
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
-open Polynomial
 
 noncomputable def wtOf {α : Type} [Fintype α] (μ : α → ℝ) (S : Set α) : ℝ := ∑ x, S.indicator μ x
 
@@ -1168,7 +1131,6 @@ end
 section
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
-open Polynomial
 
 theorem propW_of (h1 : SqMassLower) (h3 : LocalEstimateII) (h4 : LocalEstimateIII)
     (h5 : LocalEstimateIV) (h6 : LocalEstimateV) : PropW := by

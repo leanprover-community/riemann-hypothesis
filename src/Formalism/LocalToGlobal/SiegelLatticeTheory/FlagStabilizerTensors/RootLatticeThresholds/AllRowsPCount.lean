@@ -236,7 +236,6 @@ end Dlev
 
 section Cyl
 
-open Classical
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.ArithmeticCylinders Formalism.L2.SG.AllRowsOf Formalism.L2.SG.Pf.AllRowsES Formalism.L2.SG.Pf.AllRowsTr
 
 variable {D : D7}
@@ -271,7 +270,6 @@ theorem sumW_all (k : Fin 2) (g : GL (Fin D.R.r) (ZMod (D.host.g k))) :
   rw [← Formalism.L2.SG.AllRowsOf.sum_eSer' k, MonoidAlgebra.coeff_sum, Finsupp.finsetSum_apply]
 
 
-open Classical in
 theorem ES_cyl_pA (k : Fin 2) (S : Finset (Tup D k)) : ES (cyl D k (S : Set (Tup D k))) = ∑ t ∈ S, pA (Gt k t) := by
   apply MonoidAlgebra.ext; ext γ
   rw [ES_eq, MonoidAlgebra.coeff_sum, Finset.sum_apply', MonoidAlgebra.coeff_sum, Finset.sum_apply']
@@ -330,7 +328,6 @@ end Cyl
 
 section Char
 
-open Classical
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.ArithmeticCylinders Formalism.L2.SG.AllRowsOf Formalism.L2.SG.Pf.AllRowsTr Formalism.L2.SG.Pf.AllRowsWt
   Formalism.L2.SG.Pf.AllRowsEtOne Formalism.L2.SG.Pf.AllRowsKpp Formalism.L2.SG.Pf.AllRowsGA
 
@@ -383,8 +380,6 @@ end Char
 
 section CharIdem
 
-open Classical
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.ArithmeticCylinders Formalism.L2.SG.AllRowsOf Formalism.L2.SG.Pf.AllRowsTr Formalism.L2.SG.Pf.AllRowsWt
   Formalism.L2.SG.Pf.AllRowsEtOne Formalism.L2.SG.Pf.AllRowsKpp Formalism.L2.SG.Pf.AllRowsGA
 
 variable {D : D7} (P : G0g D.nd) (ψ : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), AddChar (ZMod (D.host.g kv.1)) ℂ)
@@ -467,8 +462,6 @@ end CharIdem
 
 section CharIdem2
 
-open Classical
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.ArithmeticCylinders Formalism.L2.SG.AllRowsOf Formalism.L2.SG.Pf.AllRowsTr Formalism.L2.SG.Pf.AllRowsWt
   Formalism.L2.SG.Pf.AllRowsEtOne Formalism.L2.SG.Pf.AllRowsKpp Formalism.L2.SG.Pf.AllRowsGA
 
 variable {D : D7} (P : G0g D.nd) (ψ : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), AddChar (ZMod (D.host.g kv.1)) ℂ)
@@ -576,7 +569,6 @@ end Gen2
 
 section Assemble
 
-open Classical
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.ArithmeticCylinders Formalism.L2.SG.HidaSetting Formalism.L2.SG.AllRowsOf Formalism.L2.SG.Pf.AllRowsTr
   Formalism.L2.SG.Pf.AllRowsEtOne Formalism.L2.SG.Pf.AllRowsKpp Formalism.L2.SG.Pf.AllRowsGA Formalism.L2.SG.Pf.AllRowsES
   Formalism.L2.SG.Pf.AllRowsRhoX Formalism.L2.SG.Pf.AllRowsFin Formalism.L2.SG.Pf.AllRowsEtAlg
@@ -611,8 +603,6 @@ end Assemble
 
 section Main
 
-open Classical
-open scoped TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.ArithmeticCylinders Formalism.L2.SG.HidaSetting Formalism.L2.SG.AllRowsOf Formalism.L2.SG.Pf.AllRowsTr Formalism.L2.SG.Pf.AllRowsWt
   Formalism.L2.SG.Pf.AllRowsEtOne Formalism.L2.SG.Pf.AllRowsKpp Formalism.L2.SG.Pf.AllRowsGA Formalism.L2.SG.Pf.AllRowsES
   Formalism.L2.SG.Pf.AllRowsRhoX Formalism.L2.SG.Pf.AllRowsFin Formalism.L2.SG.Pf.AllRowsEtAlg

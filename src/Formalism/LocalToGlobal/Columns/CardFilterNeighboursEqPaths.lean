@@ -70,7 +70,6 @@ def decorationPathCount (P Q : Ideal (𝓞 E)) (i j : ℕ) (d f : DecoSet (E := 
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {S : GSD K}
 
-open Classical in
 theorem card_filter_neighbours_eq_paths (c : DecoPts S E n ST SG) (P Q : Ideal (𝓞 E)) (i j : ℕ) (d f : S.D) :
     ((c.nb P i d).filter fun e => f ∈ c.nb Q j e).card = decorationPathCount P Q i j (c.pts d) (c.pts f) := by
   show ((((c.pts d).heckeNb P i).map c.pts.symm.toEmbedding).filter fun e => f ∈ c.nb Q j e).card = _

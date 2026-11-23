@@ -52,7 +52,6 @@ def ExpGood (D : D7) (I : TwIn D) (A : Finset (PlE D.host)) (i : D.ntw.Tw) (p : 
   IntegralHeckeForms.GoodTw D.nexp (BlochKatoReduction.bk0 D) I.E I.N0 i (twEps D i) (I.S i) A p.1 p.2.1 p.2.2
 
 
-open Classical in
 theorem expGood_anti {D : D7} {I : TwIn D} {A A' : Finset (PlE D.host)} (hA : A ⊆ A') {i : D.ntw.Tw} {p : TwPick D i}
     (h : ExpGood D I A' i p) : ExpGood D I A i p := by
   obtain ⟨⟨h1, h2, h3⟩, h4⟩ := h

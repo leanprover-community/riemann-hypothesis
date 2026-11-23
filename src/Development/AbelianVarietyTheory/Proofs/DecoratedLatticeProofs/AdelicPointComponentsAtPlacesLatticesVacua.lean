@@ -67,7 +67,6 @@ def ePl (D : D7) (P : Pl D → Prop) : Af D.host.F :=
       · exact one_mem _
       · exact zero_mem _)
 
-open Classical in
 theorem evalV_ePl (P : Pl D → Prop) (v : Pl D) : evalV D.host.F v (ePl D P) = if P v then 1 else 0 := rfl
 
 def idem (D : D7) (P : Pl D → Prop) : AE D := pairA D.host.F 0 (ePl D P) ⊗ₜ[D.host.F] (1 : D.host.E)
@@ -127,7 +126,6 @@ theorem compAt_pair (w : Pl D) (α : Af D.host.F) (e : D.host.E) :
   rw [Algebra.TensorProduct.map_tmul]
   rfl
 
-open Classical in
 theorem compAt_idem (P : Pl D → Prop) (w : Pl D) : compAt D w (idem D P) = if P w then 1 else 0 := by
   classical
   unfold idem

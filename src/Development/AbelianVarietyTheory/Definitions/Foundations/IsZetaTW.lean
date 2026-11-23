@@ -94,7 +94,6 @@ def wkMu (X : Tower Ω ε) (l n r N : ℕ) (x : ZMod N) (c d : ℕ) (σ : Ω ≃
     (topEta X M (topChar X M l n u) (topChar X M l n v)) (topLift X M σ)⁻¹ : topL X M) : X.K)
 
 
-open Classical in
 def clsBmu (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n r N : ℕ) [NeZero N] (x : ZMod N) (c d k : ℕ) (g : (ZMod l)ˣ → SL(2, ℤ))
     (σ : Ω ≃ₐ[ℚ] Ω) : X.Fn l :=
   let M : ℕ := topMu l n r N
@@ -121,7 +120,6 @@ def wkTmu (X : Tower Ω ε) (l n r N l' : ℕ) (x : ZMod N) (c d : ℕ) (σ : Ω
     (topEta X M (topChar X M l n u) (topChar X M l n v)) (topLift X M σ)⁻¹ : topL X M) : X.K)
 
 
-open Classical in
 def clsBTmu (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n r N l' : ℕ) [NeZero N] [NeZero l'] (x : ZMod N) (c d k : ℕ)
     (g : (ZMod l)ˣ → SL(2, ℤ)) (σ : Ω ≃ₐ[ℚ] Ω) : X.Fn l :=
   let M : ℕ := topMT l n r N l'
@@ -145,7 +143,6 @@ def cycT (l r l' : ℕ) [Fact l.Prime] (s : Ω ≃ₐ[ℚ] Ω) : (ZMod l')ˣ × 
   ((cycM l' s)⁻¹, (cycMod (F := ℚ) (Ω := Ω) l r s)⁻¹)
 
 
-open Classical in
 def lsqInv (l l' r : ℕ) : (ZMod l')ˣ :=
   if h : IsUnit ((l : ZMod l') ^ (2 * r)) then h.unit⁻¹ else 1
 

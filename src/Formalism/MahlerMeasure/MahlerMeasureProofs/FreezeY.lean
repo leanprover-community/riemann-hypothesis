@@ -195,7 +195,6 @@ end Formalism.GM.FrozenVariableComponents
 
 namespace Formalism.GM.FrozenVariableComponents
 
-open MvPolynomial Finset
 
 section Coeff2
 variable {K : Type*} [CommRing K] {N r : ℕ}
@@ -424,7 +423,6 @@ end Formalism.GM.FrozenVariableComponents
 
 namespace Formalism.GM.FrozenVariableComponents
 
-open MvPolynomial Finset Formalism.GM.M
 
 section Ops
 variable {K : Type*} [CommRing K] {σ : Type*}
@@ -646,7 +644,6 @@ end Formalism.GM.FrozenVariableComponents
 
 namespace Formalism.GM.FrozenVariableComponents
 
-open MvPolynomial Finset Formalism.GM.M
 
 section Freeze
 variable (p : ℕ) [Fact p.Prime] {N r : ℕ}
@@ -724,7 +721,6 @@ end Formalism.GM.FrozenVariableComponents
 
 namespace Formalism.GM.FrozenVariableComponents
 
-open MvPolynomial Finset Formalism.GM.M
 
 section Base
 variable (p : ℕ) [Fact p.Prime] {N r : ℕ}
@@ -899,7 +895,6 @@ end Formalism.GM.FrozenVariableComponents
 
 namespace Formalism.GM.FrozenVariableComponents
 
-open MvPolynomial Finset Formalism.GM.M
 
 section Pol
 variable {K : Type*} [CommRing K]

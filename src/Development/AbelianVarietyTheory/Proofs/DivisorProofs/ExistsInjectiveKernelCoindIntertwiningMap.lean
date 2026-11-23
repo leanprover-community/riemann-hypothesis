@@ -68,7 +68,6 @@ noncomputable def delta : V →ₗ[ℂ] Representation.coindV P.subtype σ where
     ext x
     by_cases hx : x ∈ P <;> simp [hx]
 
-open Classical in
 theorem delta_apply (v : V) (x : G) :
     (delta P σ v).1 x = if h : x ∈ P then σ ⟨x, h⟩ v else 0 := rfl
 
@@ -87,7 +86,6 @@ theorem coind_delta (p : P) (v : V) :
   · have h1 : x * (p : G) ∉ P := fun h => hx ((P.mul_mem_cancel_right p.2).1 h)
     rw [dif_neg hx, dif_neg h1]
 
-open Classical in
 theorem sum_delta [Fintype G] (f : Representation.coindV P.subtype σ) :
     ∑ g : G, Representation.coind P.subtype σ g⁻¹ (delta P σ (f.1 g)) =
       ((Finset.univ.filter (· ∈ P)).card : ℂ) • f := by

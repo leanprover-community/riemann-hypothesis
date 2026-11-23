@@ -222,7 +222,6 @@ section Real
 
 variable {D : Formalism.BasicNotions.D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting
 
 def ZE (u u' : D.what₂.Word) (M : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E) :
     Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) X.B.I.E :=
@@ -308,7 +307,6 @@ namespace Formalism.L2.SG.Pf.RowForm
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Pf.RowForm.ClassFrameOO2Aux
 
-open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -364,9 +362,7 @@ end Formalism.L2.SG.Pf.RowForm
 
 namespace Formalism.L2.SG.Pf.RowForm
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Pf.RowForm.ClassFrameOO2Aux
 
-open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

@@ -68,7 +68,6 @@ def pOp (l : Fin m) (f : (Fin m → ℂ) → E) : (Fin m → ℂ) → E := by
   exact fun x => if x ∈ OmX m then x l • wirt l f x else 0
 
 
-open Classical in
 def pbOp (l : Fin m) (f : (Fin m → ℂ) → E) : (Fin m → ℂ) → E := by
   classical
   exact fun x => if x ∈ OmX m then star (x l) • wirtBar l f x else 0

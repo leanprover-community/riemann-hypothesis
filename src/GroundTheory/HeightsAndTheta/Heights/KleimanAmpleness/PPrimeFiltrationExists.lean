@@ -238,7 +238,6 @@ theorem exists_primeFiltSeq_eq_top [IsNoetherianRing S] [Module.Finite (Poly S N
 
 
 open scoped Classical in
-open Classical in
 def primeFilt [IsNoetherianRing S] [Module.Finite (Poly S N) M] : PrimeFilt 𝓜 where
   n := Nat.find 𝓜.exists_primeFiltSeq_eq_top
   step i := 𝓜.primeFiltSeq i

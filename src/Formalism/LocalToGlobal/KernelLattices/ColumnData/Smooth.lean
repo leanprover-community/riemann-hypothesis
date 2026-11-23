@@ -226,7 +226,6 @@ end SeamLat
 
 section Analytic
 
-open Formalism.MainNotions
 
 variable {D : Car} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ)
 
@@ -251,7 +250,6 @@ end Analytic
 
 section AmbE
 
-open Formalism.MainNotions
 
 variable {D : Car} {X : Fields} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ)
 

@@ -315,8 +315,6 @@ end Conc
 
 section Bad
 
-open Formalism.L2.Host
-open Classical
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {Ch : Chars X Pr R.m}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
@@ -409,8 +407,6 @@ end Bad
 
 section Law
 
-open Formalism.L2.Host
-open Classical
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Ch : Chars X Pr R.m}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
@@ -605,7 +601,6 @@ end Law
 section More
 
 open Formalism.L2.Host Formalism.EigenvalueLevelCeiling
-open Classical
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Ch : Chars X Pr R.m}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}

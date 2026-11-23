@@ -209,7 +209,6 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {SG : Finse
 
 end WmPUp
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
 section WmPK
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
@@ -242,21 +241,18 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {SG : Finse
 
 end WmPCountUp
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
 section WmPCountDown
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {SG : Finset (HeightOneSpectrum (𝓞 E))}
 
 end WmPCountDown
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
 section WmPMain
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {SG : Finset (HeightOneSpectrum (𝓞 E))}
 
 end WmPMain
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module
 
 section LemU
 

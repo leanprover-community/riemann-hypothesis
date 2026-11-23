@@ -121,13 +121,11 @@ theorem pPart_add (τ : Ψ) (y y' : Fin (j + j') → ℂ) :
   simp only [LatEmb.pPart, smul_add, Pi.single_add, map_add (f := _)]
   module
 
-open Classical in
 theorem pBar_add (τ : Ψ) (y y' : Fin (j + j') → ℂ) :
     C.pBar R τ (y + y') = C.pBar R τ y + C.pBar R τ y' := by
   simp only [LatEmb.pBar, smul_add, Pi.single_add, map_add (f := _)]
   module
 
-open Classical in
 theorem pPart_add_pBar (τ : Ψ) (y : Fin (j + j') → ℂ) :
     C.pPart R τ y + C.pBar R τ y = C.perExt R (Pi.single τ y) := by
   simp only [LatEmb.pPart, LatEmb.pBar]

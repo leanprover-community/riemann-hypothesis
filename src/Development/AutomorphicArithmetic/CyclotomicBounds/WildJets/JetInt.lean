@@ -123,7 +123,6 @@ private theorem jetLin_zmem (k : DVar ι a b →₀ ℕ)
   rw [MvPolynomial.map_monomial, hz]
   split_ifs <;> simp
 
-open Classical in
 private theorem jetLin_split (p : MvPolynomial ((ι × Fin b × Fin b) ⊕ DVar ι a b) ℂ) :
     ∃ S : Finset (DVar ι a b →₀ ℕ), ∀ J : (DVar ι a b →₀ ℕ) → ℂ,
       jetLin J p = ∑ k ∈ S, J k • jetLin (fun m => if m = k then (1 : ℂ) else 0) p := by

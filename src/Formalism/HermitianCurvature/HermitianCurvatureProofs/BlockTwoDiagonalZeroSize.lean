@@ -110,7 +110,6 @@ end Formalism.FourierDecayAlt.P.PBJ.Frz
 
 namespace Formalism.FourierDecayAlt.P.PBJ.Frz
 
-open MeasureTheory Filter Topology Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
@@ -218,7 +217,6 @@ end Formalism.FourierDecayAlt.P.PBJ.Frz
 
 namespace Formalism.FourierDecayAlt.P.PBJ.Frz
 
-open MeasureTheory Filter Topology Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
@@ -332,7 +330,6 @@ end Formalism.FourierDecayAlt.P.PBJ.Frz
 
 namespace Formalism.FourierDecayAlt.P.PBJ.Frz
 
-open MeasureTheory Filter Topology Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
@@ -414,7 +411,6 @@ end Formalism.FourierDecayAlt.P.PBJ.Frz
 
 namespace Formalism.FourierDecayAlt.P.PBJ.Frz
 
-open MeasureTheory Filter Topology Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U
 open scoped Convolution
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]

@@ -81,7 +81,6 @@ theorem sum_target :
     exact ⟨h1 ▸ ((hm _).1 h3).1, h2 ▸ cross_hasVal q h1.symm ((hm _).1 h3).2⟩
 
 
-open Classical in
 theorem sum_source :
     midInd q P₁.ker e₁ Q x = ∑ P ∈ withLat P₁.ker with cross q P₁ P = 1, phiOne P Q x := by
   rw [midInd]

@@ -124,7 +124,6 @@ noncomputable def dir {m : ℕ} (τ : Ψ) (k : Fin m) (a : Fin N) : CF Ψ m N :=
   fun σ i j => if σ = τ ∧ k = i ∧ a = j then 1 else 0
 
 
-open Classical in
 theorem heat_iff {D : CM Ψ N N → CM Ψ n N → CM Ψ n N → ℂ}
     (hD : DifferentiableOn ℂ (fun p : CF Ψ N N × CF Ψ n N × CF Ψ n N => D p.1 p.2.1 p.2.2)
       {p | (p.1 : CM Ψ N N) ∈ Hn Ψ N}) :

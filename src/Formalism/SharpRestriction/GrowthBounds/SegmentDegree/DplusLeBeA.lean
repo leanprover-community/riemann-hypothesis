@@ -87,7 +87,6 @@ theorem pieri_vec (D : Formalism.BasicNotions.D7) (h5 : GenericProjectionCriteri
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
   exact (h5 m ν b hd).1
 
-open Classical in
 theorem pieri_cov (D : Formalism.BasicNotions.D7) (h5 : GenericProjectionCriterion D) (n : ℕ) (hn : 0 < n) (ν : Fin n → ℤ) (b : ℕ) (hd : Dominant ν) :
     stCount n ν * Nat.choose (b + n - 1) (n - 1) =
       ∑ μ ∈ (Fintype.piFinset fun i : Fin n => Finset.Icc (ν i - b) (ν i)).filter (fun μ => HStrip μ ν b),
@@ -192,7 +191,6 @@ theorem vp_le {s : ℕ} {μ : Fin (N + 1) → Fin (r + K) → ℤ} (h : VP LL n0
         exact le_trans h2 (ih (by omega) (by omega) _)
 
 
-open Classical in
 theorem vp_update {s : ℕ} (hs : s < N) {μ : Fin (N + 1) → Fin (r + K) → ℤ} (h : VP LL n0 B s μ)
     (la' : Fin (r + K) → ℤ) (hd : Dominant la')
     (hst : StepOK LL n0 B ⟨s, hs⟩ (μ (⟨s, hs⟩ : Fin N).castSucc) la') :

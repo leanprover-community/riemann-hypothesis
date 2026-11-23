@@ -68,7 +68,6 @@ end Gen
 
 variable {d : ColDat} (a : ColArgs d)
 
-open Classical in
 theorem valuation_pos_iff_mem_seen (hH : HostHyp d) (u : d.what₂.Word) (w : d.what₂.places.Pl) (hT : (d.Pr.T u : 𝓞 d.X.K) ∈ (d.plEq w).asIdeal)
     (v : {P // P ∈ d.Pr.vT u}) (x : 𝓞 d.X.E) :
     (0 : WithTop ℤ) < d.what₂.places.val w ((d.X.embO (tauOfR d.hX d.hPr u (d.plEq w) v) x : 𝓞 d.X.K) : d.X.K) ↔

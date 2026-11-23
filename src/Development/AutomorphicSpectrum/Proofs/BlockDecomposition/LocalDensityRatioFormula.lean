@@ -92,7 +92,6 @@ theorem exists_not_ge {v : HeightOneSpectrum (𝓞 F)} (s : Fv F v) : ∃ N : �
   have := Int.self_le_toNat (-(Valued.v s).log)
   omega
 
-open Classical in
 theorem summable_ge (v : HeightOneSpectrum (𝓞 F)) (e : ℝ) (s : Fv F v) :
     Summable fun i : ℕ => if Ge v i s then e ^ i else 0 := by
   obtain ⟨N, hN⟩ := exists_not_ge s
@@ -101,7 +100,6 @@ theorem summable_ge (v : HeightOneSpectrum (𝓞 F)) (e : ℝ) (s : Fv F v) :
   exact hi (if_neg (hN i (not_le.1 h)))
 
 
-open Classical in
 theorem rv_form {v : HeightOneSpectrum (𝓞 F)} (s : Fv F v) :
     (¬ Ge v 0 s ∧ ∀ e, rv v e s = 0) ∨
       ∃ n : ℕ, (∀ i, Ge v i s ↔ i ≤ n) ∧ ∀ e, rv v e s = ∑ i ∈ Finset.range (n + 1), e ^ i := by
@@ -202,7 +200,6 @@ theorem rv_congr {v : HeightOneSpectrum (𝓞 F)} (e : ℝ) {s s' : Fv F v} (h :
   refine tsum_congr fun i => ?_
   simp only [ge_congr (i := i) h]
 
-open Classical in
 theorem rv_zero (v : HeightOneSpectrum (𝓞 F)) (s : Fv F v) : rv v 0 s = if Ge v 0 s then 1 else 0 := by
   rcases rv_form s with ⟨h, h'⟩ | ⟨n, hn, h'⟩
   · rw [h', if_neg h]
@@ -221,7 +218,6 @@ theorem ge_shift {v : HeightOneSpectrum (𝓞 F)} {u : (Fv F v)ˣ} (hu : Valued.
     ring
   rw [h2, mul_le_mul_iff_right₀ (WithZero.exp_pos)]
 
-open Classical in
 theorem rv_rec {v : HeightOneSpectrum (𝓞 F)} {u : (Fv F v)ˣ} (hu : Valued.v (u : Fv F v) = WithZero.exp (1 : ℤ))
     (e : ℝ) (s : Fv F v) : rv v e s = rv v 0 s + e * rv v e ((u : Fv F v) * s) := by
   rw [rv_eq v e s, (summable_ge v e s).tsum_eq_zero_add, rv_zero, rv_eq v e, ← tsum_mul_left]
@@ -241,7 +237,6 @@ theorem ge_pow {v : HeightOneSpectrum (𝓞 F)} {u : (Fv F v)ˣ} (hu : Valued.v 
     rw [ge_shift hu, ih, pow_succ, Units.val_mul, mul_assoc]
 
 
-open Classical in
 theorem rv_one_series {v : HeightOneSpectrum (𝓞 F)} {u : (Fv F v)ˣ} (hu : Valued.v (u : Fv F v) = WithZero.exp (1 : ℤ))
     (s : Fv F v) : rv v 1 s = ∑' k : ℕ, rv v 0 ((((u ^ k : (Fv F v)ˣ)) : Fv F v) * s) := by
   rw [rv_eq]
@@ -251,7 +246,6 @@ theorem rv_one_series {v : HeightOneSpectrum (𝓞 F)} {u : (Fv F v)ˣ} (hu : Va
   · rw [if_pos h, if_pos ((ge_pow hu k s).1 h), one_pow]
   · rw [if_neg h, if_neg fun h' => h ((ge_pow hu k s).2 h')]
 
-open Classical in
 theorem summable_rv_shift {v : HeightOneSpectrum (𝓞 F)} {u : (Fv F v)ˣ} (hu : Valued.v (u : Fv F v) = WithZero.exp (1 : ℤ))
     (s : Fv F v) : Summable fun k : ℕ => rv v 0 ((((u ^ k : (Fv F v)ˣ)) : Fv F v) * s) := by
   refine (summable_ge v 1 s).congr fun k => ?_
@@ -533,7 +527,6 @@ variable {S : Finset (HeightOneSpectrum (𝓞 F))} {G : Ainf F → ℝ} {g : ∀
   {e : HeightOneSpectrum (𝓞 F) → ℝ}
 
 
-open Classical in
 def wT (e : HeightOneSpectrum (𝓞 F) → ℝ) (S : Finset (HeightOneSpectrum (𝓞 F))) (T : Finset (Off S))
     (v : HeightOneSpectrum (𝓞 F)) : Fv F v → ℝ :=
   if ∃ hv : v ∉ S, (⟨v, hv⟩ : Off S) ∈ T then rv v (e v) else rv v 0

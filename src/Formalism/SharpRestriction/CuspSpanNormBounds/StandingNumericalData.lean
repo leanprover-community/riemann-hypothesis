@@ -85,7 +85,6 @@ def gaG : ℝ :=
   ∏ᶠ p ∈ typedPl D, ∏ i ∈ Finset.Icc 1 D.R.k, ((Ideal.absNorm p.asIdeal : ℝ) ^ i - 1)
 
 
-open Classical in
 def genScal (u u' : D.what₂.Word) : ℝ :=
   (∏ᶠ p ∈ typedPl D, (1 + 3 / (Ideal.absNorm p.asIdeal : ℝ))) * gaG D *
     (∑' P : D.s.Pair u u',

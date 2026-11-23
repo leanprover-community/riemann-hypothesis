@@ -58,7 +58,6 @@ theorem prod_X_chartUpd (p : (k : K) → ι k) (q : Σ k, ι k) :
     rw [chartUpd, Function.update_of_ne (Finset.ne_of_mem_erase hk)]
   · rw [chartUpd, Function.update_self]
 
-open Classical in
 theorem segre_rename_chartUpd (p : (k : K) → ι k) {f : MvPolynomial (Σ k, ι k) ℂ} {a : K → ℕ}
     (hf : IsMultiHomog f a) :
     segreMap (rename (chartUpd p) f) =
@@ -93,7 +92,6 @@ theorem segre_rename_chartUpd (p : (k : K) → ι k) {f : MvPolynomial (Σ k, ι
     _ = ∑ m ∈ f.support, (∏ k, c k ^ a k) * monomial m (AddMonoidAlgebra.coeff f m) := Finset.sum_congr rfl key
     _ = (∏ k, c k ^ a k) * f := by rw [← Finset.mul_sum, ← f.as_sum]
 
-open Classical in
 theorem mk_prod_chartUpd {P : Ideal (MvPolynomial (Σ k, ι k) ℂ)} (p p' : (k : K) → ι k) :
     Ideal.Quotient.mk (segreIdeal P) (∏ k, X (chartUpd p ⟨k, p' k⟩)) =
       Ideal.Quotient.mk (segreIdeal P) (X p' * X p ^ (Fintype.card K - 1)) := by

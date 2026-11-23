@@ -349,7 +349,6 @@ def ciPsi {SB : Finset (HeightOneSpectrum (𝓞 X.E))} (P : SB) (x : X.E) : X.K 
   if IntAt P.1 ((qOf P.1 : X.E) * x) then psi0P Ch P.1 (redP P.1 ((qOf P.1 : X.E) * x)) else 1
 
 
-open Classical in
 def ciSq (P : HeightOneSpectrum (𝓞 X.E)) : X.K :=
   if h : P ∈ Pr.vGs ∧ Finite (𝓞 X.E ⧸ P.asIdeal) then
     haveI := h.2
@@ -482,7 +481,6 @@ section Lift
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
 
-open Classical in
 def ciLift (P : HeightOneSpectrum (𝓞 E)) (c : 𝓞 E ⧸ P.asIdeal) : 𝓞 E :=
   if c = 0 then 0 else if c = 1 then 1 else (Ideal.Quotient.mk_surjective c).choose
 
@@ -797,7 +795,6 @@ def ciPhiCond (q : ℕ) (sharp : Bool) (k₀ r t j c n : ℕ) (M : ℕ → ℕ �
     (∀ p p', r ≤ p' → p' < r + (j - 1) * t → p < r + (j - 1) * t → (p' - r) / t < (p - r) / t → redP P (M p p') = 0) ∧
     (sharp = true → ∀ p, p < n + c → redP P (M p k₀) = if p = k₀ then 1 else 0)
 
-open Classical in
 theorem ciPhiG_eq (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (sharp : Bool)
     (k₀ r t j c' n' c n : ℕ) (x : HomE E (n' + c') (n + c)) :
     LocE.PhiG (P := P) q ψ₀ χ sharp k₀ r t j c' n' c n x =
@@ -811,7 +808,6 @@ theorem ciPhiG_eq (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞
   split_ifs <;> rfl
 
 
-open Classical in
 theorem ciPhiG_congr (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hq0 : (q : E) ≠ 0) (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K)
     (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (sharp : Bool) {k₀ r t j c' n' c n : ℕ} (x x' : HomE E (n' + c') (n + c))
     (hk : k₀ < r + (j - 1) * t) (hr1 : 1 ≤ r) (hra : r ≤ r + (j - 1) * t) (han : r + (j - 1) * t ≤ n + c)
@@ -870,7 +866,6 @@ theorem ciPhiG_congr (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hq0 : (q : E) �
       exact (htrip s.1 s'.1 s.2 s'.2).2.2
   · rw [if_neg (fun h => hC (hc.1 h)), if_neg hC]
 
-open Classical in
 theorem ciPhiG_int (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (sharp : Bool)
     {k₀ r t j c' n' c n : ℕ} (x : HomE E (n' + c') (n + c)) (h : LocE.PhiG (P := P) q ψ₀ χ sharp k₀ r t j c' n' c n x ≠ 0) :
     ∀ p p', p < n + c → p' < r + (j - 1) * t →
@@ -916,11 +911,9 @@ section Tied
 variable {X : Fields} {Pr : Primes X}
 
 
-open Classical in
 def ciQU (P : HeightOneSpectrum (𝓞 X.E)) : X.Eˣ := if h : (qOf P : X.E) ≠ 0 then Units.mk0 _ h else 1
 
 
-open Classical in
 def ciMuqG {m : ℕ} (G : ChGlob X m) (i : ℕ) (P : HeightOneSpectrum (𝓞 X.E)) : X.K :=
   if h : ∃ (hi : i < m) (y : X.K), G.σ₀ y = ((((G.mu0 ⟨i, hi⟩).locK P (ciQU P)) : ℂˣ) : ℂ)⁻¹ then h.choose_spec.choose else 1
 

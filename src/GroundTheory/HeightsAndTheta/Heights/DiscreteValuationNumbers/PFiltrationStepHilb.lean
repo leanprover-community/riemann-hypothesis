@@ -86,7 +86,6 @@ theorem component_mul {f : MRing ι F} {s : K → ℕ} (hf : IsMultiHomog f s) (
   exact h
 
 
-open Classical in
 theorem mem_sup_span {L : Ideal (MRing ι F)} {f : MRing ι F} {s : K → ℕ}
     (hL : IsMultiHomogIdeal L) (hf : IsMultiHomog f s) {n : K → ℕ} {x : MRing ι F}
     (hx : x ∈ weightedHomogeneousSubmodule F (blockWeight ι) n) (hx' : x ∈ L ⊔ Ideal.span {f}) :
@@ -101,7 +100,6 @@ theorem mem_sup_span {L : Ideal (MRing ι F)} {f : MRing ι F} {s : K → ℕ}
   exact hL l hl n
 
 
-open Classical in
 theorem finrank_step (L : Ideal (MRing ι F)) (f : MRing ι F) (s : K → ℕ)
     (hL : IsMultiHomogIdeal L) (hf : IsMultiHomog f s) (n : K → ℕ) :
     Module.finrank F (gradedPiece L n) =

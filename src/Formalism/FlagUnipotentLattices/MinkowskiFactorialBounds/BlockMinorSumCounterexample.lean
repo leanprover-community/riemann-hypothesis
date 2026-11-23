@@ -85,7 +85,6 @@ theorem prod_max_inv_le_prod_max' : Formalism.HermitianLatticeCounting.Expansion
 end G0
 
 section G1
-open Finset Real MeasureTheory NumberField Formalism.HermitianLatticeCounting.ExpansionTerms
 
 theorem disjointness_of_supports_holds : Formalism.HermitianLatticeCounting.ExpansionTerms.SeparatedPolydiscsDisjoint := by
   intro ι _ ro D D' hro hne hprod
@@ -400,7 +399,6 @@ theorem gaussian_lattice_cutoff_sum_of_separated_cutoff_sum (h : SeparatedCutoff
 end G2
 
 section G3
-open Finset Real MeasureTheory NumberField Formalism.HermitianLatticeCounting.ExpansionTerms
 
 lemma absNorm_le_abs_norm_of_mem' (E : Type) [Field E] [NumberField E]
     (aa : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (haa : aa ≠ 0) (x : E) (hx : x ∈ aa) (hx0 : x ≠ 0) :
@@ -505,7 +503,6 @@ lemma embedded_ideal_points_separated (hn : IdealNormProductLowerBound) (E : Typ
   simp_rw [norm_placeEmbedding_sub]
   exact hn E aa haa (x - y) hmem hxy
 
-open Classical in
 theorem ideal_inverse_power_sum_of_norm_separated (hn : IdealNormProductLowerBound) (hs : SeparatedSetSumBound) : Formalism.HermitianLatticeCounting.ExpansionTerms.IdealInversePowerSum := by
   intro E _ _ _ aa haa h1 S hS
   have hp := absNorm_pos_of_ne_zero E aa haa
@@ -518,7 +515,6 @@ theorem ideal_inverse_power_sum_of_norm_separated (hn : IdealNormProductLowerBou
 end G3
 
 section G4
-open Finset Real MeasureTheory NumberField Formalism.HermitianLatticeCounting.ExpansionTerms
 
 lemma le_exp_div_e (x : ℝ) : x ≤ Real.exp (x / Real.exp 1) := by
   have h := Real.add_one_le_exp (x / Real.exp 1 - 1)
@@ -594,7 +590,6 @@ theorem block_end_minor_fibre_finite' : Formalism.HermitianLatticeCounting.Expan
 end G4
 
 section G5
-open Finset Real MeasureTheory NumberField Formalism.HermitianLatticeCounting.ExpansionTerms
 
 lemma exp_div_e_le_two_pow (n : ℕ) : Real.exp ((n : ℝ) / Real.exp 1) ≤ 2 ^ n := by
   have h1 : Real.exp (1 / Real.exp 1) ≤ 2 := by
@@ -757,7 +752,6 @@ theorem block_minor_sum_explicit_of_fibre_finite_of_prod_bound (hf : BlockEndMin
 end G5
 
 section G6
-open Finset Real MeasureTheory NumberField Formalism.HermitianLatticeCounting.ExpansionTerms
 
 theorem integral_norm_application_holds : Formalism.HermitianLatticeCounting.ExpansionTerms.NormGeOneMaxBound := by
   intro ι _ G D A hG h1 hD
@@ -775,7 +769,6 @@ theorem integral_norm_application_holds : Formalism.HermitianLatticeCounting.Exp
 end G6
 
 section G7
-open Finset Real MeasureTheory Formalism.HermitianLatticeCounting.ExpansionTerms
 open scoped ENNReal
 
 lemma holder_lintegral_prod_le {Ω ι : Type} [MeasurableSpace Ω] (μ : Measure Ω) [IsProbabilityMeasure μ] (s : Finset ι)
@@ -913,7 +906,6 @@ theorem corollary_product_estimate_holds : Formalism.HermitianLatticeCounting.Ex
 end G7
 
 section G8
-open Finset Real MeasureTheory Formalism.HermitianLatticeCounting.ExpansionTerms
 
 noncomputable def lOneNorm {P : Type} (a : P →₀ ℂ) : ℝ := a.sum fun _ c => ‖c‖
 

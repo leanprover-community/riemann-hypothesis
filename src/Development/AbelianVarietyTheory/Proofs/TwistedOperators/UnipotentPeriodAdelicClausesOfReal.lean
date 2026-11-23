@@ -202,7 +202,6 @@ theorem coef_split (θ : InfFam D) {Y V : HSp D} (d : HermitianOrthogonalExtensi
   split_ifs <;> simp
 
 
-open Classical in
 theorem one_clause (θ : InfFam D) {Y V : HSp D} (d : HermitianOrthogonalExtensionData Y V 1 1) {S : D.what₂.Tau → SPar} (M : DSModel V S)
     (K : Subgroup (GL (Fin V.rank) (Lev.EAf D))) (u : ∀ τ, M.H τ) (φ : GA D Y → ℂ) (ν : Measure (GA D Y))
     [ν.IsMulLeftInvariant] (m : Measure (GinfC Y)) (μ : Measure (GfC Y)) [SigmaFinite m] [SigmaFinite μ]
@@ -277,7 +276,6 @@ namespace GlobalTheory.SepPer.AdelicFromReal
 variable {D : D7}
 
 
-open Classical in
 theorem term_clause (θ : InfFam D) (hθ : IsInfFam θ) {Y V : HSp D} (d : HermitianOrthogonalExtensionData Y V 1 1) {S : D.what₂.Tau → SPar}
     (M : DSModel V S) (u : ∀ τ, M.H τ) (B : Fr V) (Q : ℝ) (Λ : Lat V) (𝔪 : Ideal (𝓞 D.host.E)) (hΛ : IsSelfDualC V Λ)
     (hz : zv d ∈ Λ) (ν : Measure (GA D Y)) (m : Measure (GinfC Y)) (μ : Measure (GfC Y)) [SigmaFinite m] [SigmaFinite μ]

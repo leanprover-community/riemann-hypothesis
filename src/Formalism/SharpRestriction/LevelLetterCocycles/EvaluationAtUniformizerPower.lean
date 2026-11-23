@@ -225,12 +225,9 @@ section
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh.BT
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc PowerSeries
-open Formalism.MainNotions.CrystallineLiftingInputs (DL pullJ)
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -392,12 +389,9 @@ end
 section
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh.BT
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc PowerSeries
-open Formalism.MainNotions.CrystallineLiftingInputs (DL pullJ)
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -868,12 +862,9 @@ section
 
 noncomputable section
 
-open Classical PowerSeries
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh.DT
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
-open Formalism.MainNotions.CrystallineLiftingInputs (DL pullJ)
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -990,12 +981,9 @@ section
 
 noncomputable section
 
-open Classical PowerSeries
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh.DT
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
-open Formalism.MainNotions.CrystallineLiftingInputs (DL pullJ)
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -1168,7 +1156,6 @@ section
 
 noncomputable section
 
-open Classical PowerSeries
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh.DT
 
@@ -1212,8 +1199,6 @@ theorem coeff_X_pow_mul_lt (e j : ℕ) (hj : j < e) (f : PowerSeries L) : coeff 
 
 end CV
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
-open Formalism.MainNotions.CrystallineLiftingInputs (DL pullJ)
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -1344,7 +1329,6 @@ end
 section
 noncomputable section
 
-open Classical PowerSeries
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh.DT
 
@@ -1400,12 +1384,10 @@ section
 
 noncomputable section
 
-open Classical PowerSeries
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh.DT
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
-open Formalism.MainNotions.CrystallineLiftingInputs (DL pullJ)
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -1637,11 +1619,9 @@ section
 
 noncomputable section
 
-open Classical PowerSeries
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh.DT
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
 
 theorem sum_alpha {d : ℕ} (α : Fin d → ℤ) (lo top : ℤ) (hα : ∀ k, lo ≤ α k ∧ α k < top) (f : ℤ → ℕ)
     (hcount : ∀ a, ((Finset.univ.filter fun k => a ≤ α k).card : ℕ) = f a) :
@@ -1667,11 +1647,9 @@ section
 
 noncomputable section
 
-open Classical PowerSeries
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]

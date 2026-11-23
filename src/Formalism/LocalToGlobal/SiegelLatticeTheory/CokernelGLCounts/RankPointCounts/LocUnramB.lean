@@ -152,7 +152,6 @@ end Formalism.L2.SG.Pf.LocUnramB
 namespace Formalism.L2.SG.Pf.LocUnramB
 
 open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups MeasureTheory Formalism.L2.SG.Pf.AtPt
-open Classical
 
 section Blocks
 
@@ -303,9 +302,7 @@ end Formalism.L2.SG.Pf.LocUnramB
 
 namespace Formalism.L2.SG.Pf.LocUnramB
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups MeasureTheory Formalism.L2.SG.Pf.AtPt
 open Formalism.L2.SG.LsDatumB
-open Classical
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -379,9 +376,6 @@ end Formalism.L2.SG.Pf.LocUnramB
 
 namespace Formalism.L2.SG.Pf.LocUnramB
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups MeasureTheory Formalism.L2.SG.Pf.AtPt
-open Formalism.L2.SG.LsDatumB
-open Classical
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -498,9 +492,6 @@ end Formalism.L2.SG.Pf.LocUnramB
 
 namespace Formalism.L2.SG.Pf.LocUnramB
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups MeasureTheory Formalism.L2.SG.Pf.AtPt
-open Formalism.L2.SG.LsDatumB
-open Classical
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -797,9 +788,7 @@ end Formalism.L2.SG.Pf.LocUnramB
 
 namespace Formalism.L2.SG.Pf.LocUnramB
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups MeasureTheory Formalism.L2.SG.Pf.AtPt
 open Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut Formalism.MainNotions.S.Lat
-open Classical
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

@@ -141,7 +141,6 @@ theorem pTest_embInf (v : InfinitePlace E) (d : G n) : embInf n v d = infGL E n 
   simp only [embInf, MonoidHom.comp_apply]
   congr 1
 
-open Classical in
 theorem pTest_gInf_embInf (v w : InfinitePlace E) (d : G n) : gInf w (embInf n v d) = Pi.mulSingle (M := fun _ : InfinitePlace E => G n) v d w := by
   rw [pTest_embInf, pTest_gInf_infGL]
 

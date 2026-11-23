@@ -165,7 +165,6 @@ end Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
 namespace Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -253,7 +252,6 @@ end Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
 namespace Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -303,7 +301,6 @@ end Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
 namespace Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -540,7 +537,6 @@ end Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
 namespace Formalism.FourierDecayAlt.P.PartialBesselLeftWordLemmas
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

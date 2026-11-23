@@ -176,7 +176,6 @@ theorem cutG_mem_Q (V : HSp D) (Q : Finset (Pl D)) (g : GA D V) :
   rw [mt_cutG, cut_sub_one, mem_idAt_Q_iff, Matrix.smul_apply, smul_eq_mul, ← mul_assoc]
   exact congrArg (· * _) (eQ_mul_self Q)
 
-open Classical in
 theorem cutG_mem_Qc (V : HSp D) (Q : Finset (Pl D)) {g : GA D V} (hg : g ∈ GfC V) :
     cutG V _ (one_sub_idemQ_mul_self Q) g ∈ grpAt V (· ∉ Q) := by
   rw [mem_grpAt_iff_parts]

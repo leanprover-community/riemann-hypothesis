@@ -489,14 +489,11 @@ theorem Formalism.FourierDecayAlt.P.actual_pre_level : Formalism.FourierDecayAlt
   intro Wp Wq _ _ _ _ _ _ P z z' π π' hpl X
   exact ⟨Formalism.FourierDecayAlt.P.NFx1.APL.preOf X (Formalism.FourierDecayAlt.P.Qx5.place_alt_alt hpl), Formalism.FourierDecayAlt.P.NFx1.APL.preOf_actual X _⟩
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 noncomputable section
 
 namespace Formalism.FourierDecayAlt.P.NFx1.TC
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.NF
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

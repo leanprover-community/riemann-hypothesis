@@ -166,7 +166,6 @@ theorem sum_shift_out {G : Type} [AddCommGroup G] (F : G → ℂ) (H L : AddSubg
 
 
 open scoped Classical in
-open Classical in
 theorem sum_ite_out {G : Type} [AddCommGroup G] (H H' : AddSubgroup G) [Fintype (H' ⧸ H.addSubgroupOf H')]
     (hHH' : H ≤ H') (c : ℂ) (x : G) :
     ∑ q : H' ⧸ H.addSubgroupOf H', (if x + ((q.out : H') : G) ∈ H then c else 0) = if x ∈ H' then c else 0 := by

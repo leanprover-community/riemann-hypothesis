@@ -52,7 +52,6 @@ def eps0 (χ : DirichletCharacter ℂ N) : ℂ := by
   exact if χ.Even ∧ χ ≠ 1 then 1 else 0
 
 
-open Classical in
 def del1 (χ : DirichletCharacter ℂ N) : ℂ := if χ = 1 then 1 else 0
 
 def psiRaw (χ : DirichletCharacter ℂ N) (u : ℝ) : ℂ :=

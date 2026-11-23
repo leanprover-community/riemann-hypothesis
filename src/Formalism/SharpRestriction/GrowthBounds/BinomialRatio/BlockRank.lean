@@ -268,7 +268,6 @@ theorem range_le_span : LinearMap.range (Ltot (O := O) D) ≤ Submodule.span (KK
   rw [Ltot_apply]
   exact Submodule.sum_mem _ fun i _ => IF_range_le_span D i (v i).1 (v i).2
 
-open Classical in
 theorem finsum_lv (f : (Fin D.T.t → ℕ) × ℕ → ℕ) :
     (∑ᶠ x : (Fin D.T.t → ℕ) × ℕ, if D.LevelOK x.1 x.2 then f x else 0) = ∑ x ∈ Lv D, f x := by
   rw [finsum_eq_sum_of_support_subset (s := Lv D)]

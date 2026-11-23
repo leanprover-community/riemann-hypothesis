@@ -65,7 +65,6 @@ private lemma valR_one_degeneration {L : Type} [Field L] {X : Scheme} (x : _root
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
-open Classical in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {M : _root_.GlobalTheory.ZH.RatModel o Ω} in
 theorem _root_.GlobalTheory.ZH.RatModel.exists_isCl_of_isProjOver (h : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsProjOver M.s) :
@@ -108,7 +107,6 @@ variable {J : Type} [Fintype J] [DecidableEq J]
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
-open Classical in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {M : _root_.GlobalTheory.ZH.RatModel o Ω} in
 private theorem mem_span_range_iff_vecMul_inv_mem {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
@@ -159,7 +157,6 @@ private theorem mem_span_range_iff_vecMul_inv_mem {o Ω : Type} [CommRing o] [Fi
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in
 attribute [local instance] Over.cartesianMonoidalCategory in
-open Classical in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {M : _root_.GlobalTheory.ZH.RatModel o Ω} in
 variable {J : Type} [Fintype J] [DecidableEq J] in

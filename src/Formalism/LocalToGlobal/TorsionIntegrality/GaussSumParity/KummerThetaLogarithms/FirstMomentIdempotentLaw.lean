@@ -269,7 +269,6 @@ theorem BeTilXY_of (hE : ExpSpec) : BeTilXY := by
 
 namespace TranslateJetMomentLawAnyIdempotentLevel
 
-open Pair KernelCokernelKilling
 
 section Gen
 
@@ -358,7 +357,6 @@ open Classical in
 def keep {τ : Type} (P : τ → Prop) (f : MvPowerSeries τ K) : MvPowerSeries τ K :=
   rescale (fun x => if P x then (1 : K) else 0) f
 
-open Classical in
 lemma coeff_keep {τ : Type} (P : τ → Prop) (f : MvPowerSeries τ K)
     (n : τ →₀ ℕ) :
     coeff n (keep P f) = if ∀ x, n x ≠ 0 → P x then coeff n f else 0 := by
@@ -374,7 +372,6 @@ lemma coeff_keep {τ : Type} (P : τ → Prop) (f : MvPowerSeries τ K)
     rw [if_neg hPx, zero_pow hx]
 
 
-open Classical in
 def keepX {τ : Type} (P : τ → Prop) : τ → MvPowerSeries τ K :=
   (fun x => if P x then (1 : K) else 0) • X
 
@@ -461,7 +458,6 @@ end TranslateJetMomentLawAnyIdempotentLevel
 
 namespace TranslateJetMomentLawAnyIdempotentLevel
 
-open Pair KernelCokernelKilling
 
 section Shift
 

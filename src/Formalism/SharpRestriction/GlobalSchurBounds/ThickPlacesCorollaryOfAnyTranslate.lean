@@ -110,7 +110,6 @@ end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 theorem card_GL_subtype_eq_card_matrix {F : Type} [Field F] {n : ℕ} (P : Matrix (Fin n) (Fin n) F → Prop)
     (hP : ∀ A, P A → A.det = 1) :
@@ -666,7 +665,6 @@ end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 theorem column_param_apply (D : D7) (u : D.what₂.Word) (ρ : D.what₂.Tau) (i : Fin D.R.k) : uColR D u ρ i = uN D u ρ i.val := by
   unfold uColR uN; rw [dite_eq_left i.2]
@@ -733,7 +731,6 @@ end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 theorem standard_form_eq_telescope_form (K : Type) [Field K] [NumberField K] [StarRing K] (M : ℕ) :
     stdForm K M = Formalism.HermitianLatticesTheory.massTelescope_form K M := by
@@ -826,13 +823,11 @@ end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 section Transport
 
@@ -1040,7 +1035,6 @@ end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 structure ColCount (D : D7) (u : D.what₂.Word) where
 
@@ -1071,7 +1065,6 @@ end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 theorem vandermonde_fin_eq_nat (x : ℕ → ℝ) (N : ℕ) : vand (fun i : Fin N => x i.val) = Formalism.LogVandermondeBounds.StandardLattice.vandN x N := by
   unfold vand Formalism.LogVandermondeBounds.StandardLattice.vandN
@@ -1268,7 +1261,6 @@ end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 def ratioH (D : D7) (M : ℕ) : ℝ :=
   letI := D.host.cmStar
@@ -1353,7 +1345,6 @@ end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 theorem dim_weyl_line_eq (D : D7) (ρ : D.what₂.Tau) : dimV (rowLam D ρ) =
     Formalism.LogVandermondeBounds.StandardLattice.dimVN (Formalism.LogVandermondeBounds.StandardLattice.rowPar D.R.k (vN D ρ) (bN D ρ)) (D.R.k - 1 + D.R.m) := by
@@ -1369,18 +1360,14 @@ end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 end Formalism.MainNotions.StandardLattice
 
 namespace Formalism.MainNotions.StandardLattice
 
-open NumberField Formalism.BasicNotions Finset
 
 section T3
 
-open Formalism.MainNotions.S MeasureTheory
-open scoped InnerProductSpace
 
 theorem formalDegreeFactor_pos_of_strictAnti {N : ℕ} (s : Fin N → Bool) (lam : Fin N → ℝ) (h : StrictAnti lam) : 0 < dTau s lam := by
   unfold dTau

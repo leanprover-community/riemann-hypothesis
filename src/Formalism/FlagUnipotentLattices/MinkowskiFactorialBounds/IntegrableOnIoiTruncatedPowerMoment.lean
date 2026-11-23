@@ -320,7 +320,6 @@ end Formalism.HermitianLatticeCounting.P
 
 namespace Formalism.HermitianLatticeCounting.P
 section GF
-open Formalism.HermitianLatticeCounting.ExpansionTerms Finset Matrix
 
 lemma gf_lower_sub {R : Type*} [CommRing R] {d : ℕ} {α β β' : Type*} [Fintype α] (ρ : α → Fin d)
     (hinj : Function.Injective ρ) (hdown : ∀ a x, x ≤ ρ a → ∃ b, ρ b = x)
@@ -530,7 +529,6 @@ end Formalism.HermitianLatticeCounting.P
 
 namespace Formalism.HermitianLatticeCounting.P
 section GH
-open Formalism.HermitianLatticeCounting.ExpansionTerms Finset Matrix
 
 section abs
 variable {n β K : Type*} [Fintype n] [DecidableEq n] [LinearOrder n] [LinearOrder β] [Field K]
@@ -550,7 +548,6 @@ end Formalism.HermitianLatticeCounting.P
 namespace Formalism.HermitianLatticeCounting.P
 
 section GI
-open Formalism.HermitianLatticeCounting.ExpansionTerms Finset Matrix
 open scoped ComplexConjugate
 
 lemma gi_lead_eq {R : Type*} [CommRing R] (r : ℕ) (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) R) :
@@ -717,7 +714,6 @@ end Formalism.HermitianLatticeCounting.P
 namespace Formalism.HermitianLatticeCounting.P
 
 section GD
-open Formalism.HermitianLatticeCounting.ExpansionTerms
 open Finset Matrix Polynomial
 open scoped ComplexConjugate TensorProduct
 
@@ -729,7 +725,6 @@ namespace Formalism.HermitianLatticeCounting.P
 
 section GE
 open Formalism.HermitianLatticeCounting.ExpansionTerms Finset Matrix Polynomial
-open scoped ComplexConjugate
 
 lemma ge_coeff_top_det {K : Type*} [CommRing K] {i : ℕ} (M : Matrix (Fin i) (Fin i) K) :
     (det (1 + (X : K[X]) • M.map C)).coeff i = M.det := by
@@ -774,7 +769,6 @@ end Formalism.HermitianLatticeCounting.P
 namespace Formalism.HermitianLatticeCounting.P
 section GB
 open Formalism.HermitianLatticeCounting.ExpansionTerms Finset
-open scoped ComplexConjugate
 
 lemma gb_norm_theta {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] {θ : V →ₗ[ℂ] V}
     (h : IsSelfAdjointInvolution θ) (x : V) : ‖θ x‖ = ‖x‖ := by
@@ -830,7 +824,6 @@ end Formalism.HermitianLatticeCounting.P
 namespace Formalism.HermitianLatticeCounting.P
 section GC
 open Formalism.HermitianLatticeCounting.ExpansionTerms Finset Matrix InnerProductSpace
-open scoped ComplexConjugate
 
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
 

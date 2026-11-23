@@ -72,7 +72,6 @@ def ContAt {V : HSp D} {S : D.what₂.Tau → SPar} (M : Mult.DSModel V S) (T : 
   ∀ τ (v : M.Vec) (x : GA D V), ∃ ℓ : M.H τ →ₗ[ℂ] ℂ, Sobolev₂ (lieAt V τ) (M.rep τ) ℓ ∧
     ∀ w : M.sm τ, ℓ w = T (Function.update v τ w) x
 
-open Classical in
 theorem contAt_of_mem {V : HSp D} {S : D.what₂.Tau → SPar} {M : Mult.DSModel V S}
     {θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {J : Set (GA D V)} {χ : GA D V → ℂ}
     {T : Mult.MMap M} (hT : T ∈ Mult.Mult θ M J χ) : ContAt M T := by
@@ -91,7 +90,6 @@ theorem contAt_of_mem {V : HSp D} {S : D.what₂.Tau → SPar} {M : Mult.DSModel
     obtain ⟨ℓ, hc, he⟩ := h τ v x
     exact ⟨c • ℓ, sobCont_smul c hc, fun w => by simp [he]⟩
 
-open Classical in
 theorem ioUniqueAt_holds (D : D7) : IoUniqueAt D := by
   intro V S M θ J χ Kf Sinf Ds _ _ _ _ T hdense hspan u hu hvan
   rw [Mult.mem_multT] at hu

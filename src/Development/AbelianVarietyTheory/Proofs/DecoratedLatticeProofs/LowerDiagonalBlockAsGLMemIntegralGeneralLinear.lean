@@ -291,7 +291,6 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 variable {A D : Type} [Fintype A] [DecidableEq A] [Fintype D] [DecidableEq D]
 
 
-open Classical in
 theorem card_filter_eq {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniformizer k) (s : Finset D)
     {R : Finset (GL (A ⊕ D) k)} {d : GL (A ⊕ D) k → kˣ} (hR : IsReps (mtor ϖ (-indic s)) R d)
     {RK : Finset (GL D k)} (hRK : IsRepsK (torusElt k D ϖ (-indic s)) RK) {D' : Type}
@@ -449,7 +448,6 @@ theorem unip_int {x : Matrix (A ⊕ D') (A ⊕ D) k} (hx : InSupp x) : IsIntM (x
   exact isIntM_mul (isIntM_inv i11 hx.2.1) i12
 
 
-open Classical in
 theorem term_eq {ξ : kˣ →* ℂˣ} (hξ : IsTame ξ) {x : Matrix (A ⊕ D') (A ⊕ D) k} (hx : InSupp x) {j : GL (A ⊕ D) k}
     (hj : j ∈ parahoric k A D) {d : kˣ} (hd : (d : k) = j.val.toBlocks₂₂.det) (T : GL D k) :
     ((ξ (GeneralLinearGroup.det j) * (ξ d)⁻¹ : ℂˣ) : ℂ) * datum ξ (x * (j * dg A T).val) =

@@ -133,7 +133,6 @@ section Hk
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {W : Type} [AddCommGroup W] [Module ℂ W]
 
 
-open Classical in
 theorem heckeD_eq_sum (J : Subgroup (GAf L n)) (Dset : Set (GAf L n))
     (hfin : ((fun x : GAf L n => (x : GAf L n ⧸ J)) '' Dset).Finite) (f : GAf L n → W) :
     NG.heckeD J Dset f = ∑ c ∈ hfin.toFinset,

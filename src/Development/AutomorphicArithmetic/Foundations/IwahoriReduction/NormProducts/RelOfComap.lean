@@ -285,7 +285,6 @@ variable {A B : Type*} (K L : Type*) [CommRing A] [CommRing B] [IsDedekindDomain
   [FiniteDimensional K L] [IsGalois K L] [Module.Finite A B] [Module.IsTorsionFree A B]
   [PerfectField (FractionRing A)] [IsFractionRing B L]
 
-open Classical in
 private theorem dvd_count {m : ℕ} (n : A) (hn : n ≠ 0) (h : ∀ v : HeightOneSpectrum A, ∃ z : K, z ≠ 0 ∧
       v.valuation K (algebraMap A K n) = (v.valuation K z) ^ m) (p : Ideal A) :
     m ∣ Multiset.count p (normalizedFactors (Ideal.span {n})) := by

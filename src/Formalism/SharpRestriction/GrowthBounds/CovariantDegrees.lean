@@ -175,7 +175,6 @@ def detA {R : Type} [CommRing R] {ι : Type} {r : ℕ} (A : Fin r → ι) : MvPo
   (Matrix.of fun i j : Fin r => (X (A i, j) : MvPolynomial (ι × Fin r) R)).det
 
 
-open Classical in
 def degOther {ι : Type} [Fintype ι] {r : ℕ} (LL : Letters ι) (S : Set ι) (A : Fin r → ι) (d : ι → ℕ) : ℕ :=
   ∑ l, if l ∈ S ∧ LL.vec l = true ∧ l ∉ Set.range A then d l else 0
 
@@ -252,12 +251,10 @@ def UnitProductSecondLemma (D : Formalism.BasicNotions.D7) : Prop := FactorialUn
 def UnitProductLemmas (D : Formalism.BasicNotions.D7) : Prop := UnitFunctionExpansion D ∧ UnitProductSecondLemma D
 
 
-open Classical in
 def vecDeg {ι : Type} {n : ℕ} (LL : Letters ι) (S : Set ι) (al : ι × Fin n →₀ ℕ) : ℕ :=
   ∑ v ∈ al.support, if v.1 ∈ S ∧ LL.vec v.1 = true then al v else 0
 
 
-open Classical in
 def covDeg {ι : Type} {n : ℕ} (LL : Letters ι) (S : Set ι) (al : ι × Fin n →₀ ℕ) : ℕ :=
   ∑ v ∈ al.support, if v.1 ∈ S ∧ LL.vec v.1 = false then al v else 0
 
@@ -278,7 +275,6 @@ def DerivativeDigitExpansion (_D : Formalism.BasicNotions.D7) : Prop :=
         ((∏ k, (((rho k + p ^ t * e' k).choose (M k) : ℕ) : ℤ)) - ∑ l ∈ T, γ l * ∏ k, (((e' k).choose (l k) : ℕ) : ℤ))
 
 
-open Classical in
 def TrueDerivativeDigitClass (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (R : Type) [CommRing R] (σ : Type) (P : σ → ℕ), (∀ k, 1 ≤ P k) → ∀ (rho : σ → ℕ) (k : σ)
     (F : MvPolynomial σ R), F ∈ DigitClassL R P rho →

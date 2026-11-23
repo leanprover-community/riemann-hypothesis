@@ -94,20 +94,16 @@ open Classical in
 def sgl {F : Type} [Field F] (v : InfinitePlace F) (t : v.Completion) : InfiniteAdeleRing F :=
   Pi.single v t
 
-open Classical in
 theorem sgl_add {F : Type} [Field F] (v : InfinitePlace F) (x y : v.Completion) :
     sgl v (x + y) = sgl v x + sgl v y :=
   Pi.single_add v x y
 
-open Classical in
 theorem sgl_zero {F : Type} [Field F] (v : InfinitePlace F) : sgl v (0 : v.Completion) = 0 :=
   Pi.single_zero v
 
-open Classical in
 theorem continuous_sgl {F : Type} [Field F] (v : InfinitePlace F) : Continuous (sgl v) :=
   continuous_single v
 
-open Classical in
 theorem sum_sgl {F : Type} [Field F] [NumberField F] (x : InfiniteAdeleRing F) :
     ∑ v, sgl v (x v) = x := by
   simp only [sgl]

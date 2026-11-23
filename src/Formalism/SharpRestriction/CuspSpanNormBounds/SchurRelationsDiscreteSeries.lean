@@ -297,8 +297,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 
-open MeasureTheory Filter Topology
-open scoped InnerProductSpace ENNReal
 
 section Ortho2
 
@@ -439,7 +437,6 @@ noncomputable section
 namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 
 open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ENNReal
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -460,9 +457,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 
-open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ENNReal
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants
 
 section Tr
 
@@ -607,8 +601,6 @@ noncomputable section
 namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 
 open MeasureTheory Matrix
-open scoped InnerProductSpace ENNReal
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants
 
 section Fdeg
 
@@ -708,9 +700,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 
-open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ENNReal
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants
 
 section Homog
 
@@ -736,8 +725,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 
-open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ENNReal
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants Formalism.MainNotions.UniformConstantsAndStatements ValuativeRel IsDedekindDomain NumberField
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -787,9 +774,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 
-open MeasureTheory Matrix Finset
-open scoped InnerProductSpace ENNReal
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants Formalism.MainNotions.UniformConstantsAndStatements ValuativeRel IsDedekindDomain NumberField
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

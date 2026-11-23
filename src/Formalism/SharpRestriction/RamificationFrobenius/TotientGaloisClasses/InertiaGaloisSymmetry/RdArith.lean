@@ -230,7 +230,6 @@ def rho (U : Subgroup (ZMod N)ˣ) (f : ℕ) : ℝ := by
   classical
   exact (((KK N f).filter fun u => u ∉ U).card : ℝ) * f.totient / N.totient
 
-open Classical in
 theorem abel (U : Subgroup (ZMod N)ˣ) :
     ∑ u ∈ (univ : Finset (ZMod N)ˣ).filter (fun u => u ∉ U),
         vonMangoldt (addOrderOf ((u : ZMod N) - 1)) / ((addOrderOf ((u : ZMod N) - 1)).totient : ℝ) =
@@ -280,7 +279,6 @@ theorem rho_nonneg (U : Subgroup (ZMod N)ˣ) (f : ℕ) : 0 ≤ rho U f := by
   · positivity
   · exact le_of_lt (by exact_mod_cast (Nat.totient_pos).2 (Nat.pos_of_ne_zero (NeZero.ne N)))
 
-open Classical in
 theorem rho_eq (U : Subgroup (ZMod N)ˣ) {f : ℕ} (hf : f ∣ N) :
     rho U f = 1 - (((KK N f).filter fun u => u ∈ U).card : ℝ) * f.totient / N.totient := by
   have card_outside_add_card_inside_lemma_12 {N : ℕ} [NeZero N] (U : Subgroup (ZMod N)ˣ) (f : ℕ) :

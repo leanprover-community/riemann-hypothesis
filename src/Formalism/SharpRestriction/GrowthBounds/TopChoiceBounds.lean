@@ -637,7 +637,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.TopChoiceBounds
 
-open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions.CornerGLContinuity
 
 section Seg
 
@@ -1104,11 +1103,9 @@ end
 
 noncomputable section
 
-open scoped BigOperators
 
 namespace Formalism.MainNotions.G.TopChoiceBounds
 
-open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions
 
 variable {D : D7} {L : SizeData₂ D}
 
@@ -1180,7 +1177,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.TopChoiceBounds
 
-open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions
 
 end Formalism.MainNotions.G.TopChoiceBounds
 
@@ -1190,7 +1186,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.TopChoiceBounds
 
-open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions
 
 end Formalism.MainNotions.G.TopChoiceBounds
 
@@ -1198,11 +1193,9 @@ end
 
 noncomputable section
 
-open scoped BigOperators
 
 namespace Formalism.MainNotions.G.TopChoiceBounds
 
-open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions
 
 section Scaled
 
@@ -1445,11 +1438,9 @@ end
 
 noncomputable section
 
-open scoped BigOperators
 
 namespace Formalism.MainNotions.G.TopChoiceBounds
 
-open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions
 
 theorem scaled_upper_length_eq (s : Scale) (n : ℕ) (hn : 0 < n) : s.X'' n = s.x * n * s.X' := by
   have hx : s.x ≠ 0 := (lt_trans one_pos s.one_lt_alt).ne'
@@ -1903,7 +1894,6 @@ end
 
 noncomputable section
 
-open scoped BigOperators
 
 namespace Formalism.MainNotions.G.TopChoiceBounds
 
@@ -1926,7 +1916,6 @@ end Sharp
 
 section Num
 
-open Formalism.G0 Formalism.G0.TopsConditionalProbabilityWindows
 
 end Num
 
@@ -1946,11 +1935,9 @@ end
 
 noncomputable section
 
-open scoped BigOperators
 
 namespace Formalism.MainNotions.G.TopChoiceBounds
 
-open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions
 
 theorem bt_chain {S : ℝ} (h : 40 ≤ S) (i : ℕ) : 40 * S ^ i ≤ S ^ (i + 1) := by
   have : 0 < S ^ i := pow_pos (by linarith) i
@@ -3028,11 +3015,9 @@ end
 
 noncomputable section
 
-open scoped BigOperators
 
 namespace Formalism.MainNotions.G.TopChoiceBounds
 
-open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions
 
 section Large
 
@@ -3315,7 +3300,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.TopChoiceBounds
 
-open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions
 
 theorem family_master_orbit_holds {eps : ℝ} (Fm : FamP eps) : CornerGLContinuity.FamilyOrbitPositionsAndSizeBounds Fm := fun x i => master_orbit_lemma_holds (Fm.D x i)
 theorem orbit_positions_admitted_holds (D : D7) : tableLineDegreeFive.adm1 D := orbit_positions_of_master D (master_orbit_lemma_holds D)

@@ -61,14 +61,11 @@ end PartDefs
 
 section PartDefs2
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -87,14 +84,11 @@ end PartDefs2
 
 section PartE0
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -120,14 +114,11 @@ end PartE0
 
 section PartP72
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -154,14 +145,11 @@ end PartP72
 
 section PartP74
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -182,14 +170,11 @@ end PartP74
 
 section PartP73
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -214,14 +199,11 @@ end PartP73
 
 section PartPPo0
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -239,14 +221,11 @@ end PartPPo0
 
 section PartPPo
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -267,14 +246,11 @@ end PartPPo
 
 section PartVec
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -293,14 +269,11 @@ end PartVec
 
 section PartClosed
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -312,14 +285,11 @@ end PartClosed
 
 section PartR0
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -343,14 +313,11 @@ end PartR0
 
 section PartR0b
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -374,14 +341,11 @@ end PartR0b
 
 section PartR1
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -393,14 +357,11 @@ end PartR1
 
 section PartU
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -412,14 +373,11 @@ end PartU
 
 section PartPoPi
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -439,7 +397,6 @@ end Maps
 
 section Main
 
-open scoped FourierTransform
 
 variable {ι : Type} [Fintype ι]
 
@@ -453,14 +410,11 @@ end PartPoPi
 
 section PartLat1
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -518,14 +472,11 @@ end PartLat1
 
 section PartLat2a
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -543,20 +494,16 @@ end PartLat2a
 
 section PartLat2b
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
 section Geo
 
-open NumberField
 
 variable (D : D7)
 
@@ -586,20 +533,16 @@ end PartLat2b
 
 section PartLat2c
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
 section Main
 
-open NumberField
 open scoped Pointwise
 
 variable (D : D7)
@@ -614,20 +557,16 @@ end PartLat2c
 
 section PartLat2
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
 section Dens
 
-open NumberField
 
 end Dens
 
@@ -639,14 +578,11 @@ end PartLat2
 
 section PartDefs3
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -723,14 +659,11 @@ end PartDefs3
 
 section PartN1
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -753,14 +686,11 @@ end PartN1
 
 section PartN2
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -772,14 +702,11 @@ end PartN2
 
 section PartNum0
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -809,14 +736,11 @@ end PartNum0
 
 section PartNum1
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -844,14 +768,11 @@ end PartNum1
 
 section PartNum2
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -879,14 +800,11 @@ end PartNum2
 
 section PartNum3
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -915,14 +833,11 @@ end PartNum3
 
 section PartVal0
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -940,14 +855,11 @@ end PartVal0
 
 section PartVal
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -970,14 +882,11 @@ end PartVal
 
 section PartOuter
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
@@ -989,14 +898,11 @@ end PartOuter
 
 section PartPack
 
-open Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
 
 noncomputable section
 
 namespace Formalism.MainNotions.BlockEstimateWords
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.FourierDecayAlt Formalism.MainNotions.InterlacingSignCuts Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 

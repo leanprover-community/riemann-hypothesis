@@ -1008,7 +1008,6 @@ theorem sum_boxLoc {n' : ℕ} (TT : Finset (Fin n')) (W : Finset ℤ) (f : (TT �
   · intro a _
     rfl
 
-open Classical in
 theorem card_boxLoc {n' : ℕ} (TT : Finset (Fin n')) (W : Finset ℤ) :
     (boxLoc n' TT W).card = W.card ^ TT.card := by
   simp [boxLoc, Fintype.card_piFinset, apply_ite Finset.card, Finset.prod_ite,
@@ -1026,7 +1025,6 @@ theorem meanLoc_eq (D : Formalism.BasicNotions.D7) (K : Consts) (s : Formalism.B
   refine Finset.sum_congr rfl fun aw _ => ?_
   exact sum_boxLoc TT (Formalism.MainNotions.flipOneThree.IbZ bl bu) (fun bb => κ (fun t => aw t) bb)
 
-open Formalism.MainNotions.G Formalism.BasicNotions
 
 def ibW (D : D7) (K : Consts) (s : Scale) : ℝ := Nstar D s * s.x ^ s.eps * La K s * s.b' / D.R.k
 
@@ -1181,7 +1179,6 @@ theorem hypI_69_to_13 (D : D7) (L : SizeData₂ D) (K : Consts) (C₀ CH : ℝ) 
     exact mul_le_mul (mul_le_mul_of_nonneg_right hCHk hA) hBB hB0 (mul_nonneg (hCH0.trans hCHk) hA)
 
 
-open Classical in
 theorem tI_le_tIf (D : D7) (L : SizeData₂ D) (K : Consts) (C : ℝ) (hK : K.Nonneg) (hC0 : 0 ≤ C)
     (hCt1 : 2 * C ≤ K.kappaThresholdOne) (hCt2 : C ≤ K.kappaThresholdTwo) (hc : 0 ≤ cG L) (p n' : ℕ) (TT : Finset (Fin n'))
     (a b : Fin n' → ℤ) (hE : ∃ x ∈ TT, IsTypeV x) (hp1 : (1 : ℝ) < p) (hpb : (p : ℝ) < L.sc.a / L.sc.b')
@@ -1609,7 +1606,6 @@ theorem weylSandwich_of_model (D : D7) (h : ModelSandwichG D) : WeylSandwichG D 
     rw [(Submodule.mem_bot _).1 hx, smul_zero]
     exact Submodule.zero_mem _
 
-open Formalism.MainNotions.G Formalism.BasicNotions
 
 theorem foldr_map_comp {α β : Type*} (f : α → β → β) (l : List α) (x : β) :
     (l.map f).foldr (fun g h => g ∘ h) id x = l.foldr (fun a y => f a y) x := by
@@ -1655,7 +1651,6 @@ theorem type_one_hypothesis_of_bounds (D : D7) (L : SizeData₂ D) (X : Inst D L
 theorem isotypic_multiplicity_of_reducibility_alt (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) : Formalism.MainNotions.PlaneGramData.adm1 D :=
   isotypic_multiplicity_of_reducibility D h (polIsoDecompB_of D h2)
 
-open Formalism.MainNotions.G Formalism.BasicNotions
 
 theorem expBound_of (D : D7) (L : SizeData₂ D) (X : Inst D L) (Ce : ℝ) (hCe : 1 ≤ Ce) (hEp : EpDef X Ce)
     (P : ParameterChoice' D L) (T : GatTies D) : ExpBoundG D X := by
@@ -1735,7 +1730,6 @@ theorem expBound_of (D : D7) (L : SizeData₂ D) (X : Inst D L) (Ce : ℝ) (hCe 
         mul_le_mul_of_nonneg_right hCe hx
     _ = _ := by ring
 
-open Formalism.MainNotions.G Formalism.BasicNotions
 
 theorem LPprime_cast {W Qq O Kf : Type*} [CommRing W] [Field Qq] [Algebra W Qq] [CommRing O] [Field Kf]
     [Algebra O Kf] {p : ℕ} {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {w : O} {r t Dd : ℕ} {κ : ℝ} {cStar : ℕ}
@@ -1848,7 +1842,6 @@ def HypIIAt (D : D7) (L : SizeData₂ D) (X : Inst D L) (K : Consts) : Prop :=
 
 
 
-open Classical in
 theorem linear_programming_input_of_hypotheses (D : D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst D) (K : Consts)
     (h6 : Formalism.MainNotions.AuxBlock8.adm6 D L K) (h7 : Formalism.MainNotions.AuxBlock8.adm7 D L X K) (hStd : StdSubAt D) (hBC : LPBaseChange)
     (hI : HypIAt D L X K) (hII : HypIIAt D L X K) (hrho : rho D K L.sc ≤ rhoB D K L.sc) :

@@ -73,7 +73,6 @@ theorem sum_val_le {D : D7} (L : SizeData₂ D) (N : ℕ) (hN : N ≠ 0) :
         · rw [(TwistedPlaces.mem_twAt.1 hw).2.2]; ring
     _ ≤ _ := mul_le_mul_of_nonneg_left hm (Nat.cast_nonneg _)
 
-open Classical in
 theorem etaSum_le_add {D : D7} (L : SizeData₂ D) (j : ℕ) (η : D.what₂.places.Pl → ℝ) (d : ℝ) (hd : 0 ≤ d) (N : ℕ) (hN : N ≠ 0)
     (h : ∀ w, D.what₂.muAt w ≠ D.what₂.mu0 →
       (D.what₂.etaJ j w : ℝ) ≤ η w + d * (padicValNat (D.what₂.places.resChar w) N : ℝ)) :

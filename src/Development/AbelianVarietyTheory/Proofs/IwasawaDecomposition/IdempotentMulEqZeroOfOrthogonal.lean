@@ -567,7 +567,6 @@ theorem omegaQ_congr {a b : ℕ} (Q : Finset (Formalism.L2.DIV.Pl D.host.E)) (r 
   · rw [dite_eq_right hy, dite_eq_right fun h' => hy (hiff.2 h')]
 
 
-open Classical in
 def omegaTop {a : ℕ} (L : Formalism.L2.DIV.LevDat D.host.E ℂ a) (χj : ∀ PP : Formalism.L2.DIV.Pl D.host.E, (Formalism.L2.DIV.kP PP)ˣ →* ℂˣ)
     (A : Prop) (z : ∀ PP : ↥L.Pg, Matrix (Fin a) (Fin a) (Formalism.L2.DIV.kP PP.1)) : ℂ :=
   if h : A ∧

@@ -280,7 +280,6 @@ theorem eGood_central (hcen : ∀ i p a, E i p * a = a * E i p) (x : MonoidAlgeb
 variable {W : Type} [AddCommGroup W] [Module ℂ W]
 
 
-open Classical in
 def onC {A : Type} [Ring A] [Algebra ℂ A] (Φ : Subalgebra.center ℂ A →ₐ[ℂ] Module.End ℂ W) (z : A) :
     Module.End ℂ W :=
   if h : z ∈ Subalgebra.center ℂ A then Φ ⟨z, h⟩ else 0
@@ -467,7 +466,6 @@ end Record
 
 section Record2
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Polynomial
 
 variable (D : D7)
 
@@ -515,7 +513,6 @@ end Record2
 
 section ClauseA
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Polynomial
 
 theorem pp_arith (l n : ℕ) (hl : l.Prime) (hn : 0 < n) :
     l ^ n.factorization l * (((l ^ n.factorization l : ℕ) : ZMod (n / l ^ n.factorization l))⁻¹).val ≡
@@ -671,7 +668,6 @@ end ClauseA
 
 section DualAmb
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Polynomial
 
 section Poly
 
@@ -685,7 +681,6 @@ end DualAmb
 
 section RecordA
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Polynomial
 
 variable (D : D7)
 

@@ -299,7 +299,6 @@ end SM
 
 section SMC
 
-open Formalism.L2.SG.TermDef Formalism.L2.SG.FourParts
 
 theorem sMemLeft_holds (hGen : ∀ D : D7, Saturated.GenIso (VS D) D.R.rS (gS D))
     (hPD : ∀ D : D7, Saturated.PDIso D) : SMemLeft := by

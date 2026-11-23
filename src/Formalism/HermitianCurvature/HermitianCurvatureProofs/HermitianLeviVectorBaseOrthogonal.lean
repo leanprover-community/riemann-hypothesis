@@ -262,7 +262,6 @@ end Formalism.FourierDecayAlt.P.B2x9
 
 namespace Formalism.FourierDecayAlt.P.B2x9
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r r' : ℕ}
 
@@ -484,7 +483,6 @@ end Formalism.FourierDecayAlt.P.B2x9
 
 namespace Formalism.FourierDecayAlt.P.B2x9
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r' : ℕ}
 
@@ -619,7 +617,6 @@ end Formalism.FourierDecayAlt.P.B2x9
 
 namespace Formalism.FourierDecayAlt.P.B2x9
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r' : ℕ}
 
@@ -915,7 +912,6 @@ end Formalism.FourierDecayAlt.P.B2x9
 
 namespace Formalism.FourierDecayAlt.P.B2x9.S1
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r' : ℕ}
 
@@ -1016,7 +1012,6 @@ end Formalism.FourierDecayAlt.P.B2x9.S1
 
 namespace Formalism.FourierDecayAlt.P.B2x9.S2
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem sigmaFinite_of_haar {k r : ℕ} {U : Set (Mat k r)} {μ : Measure (Mt k r)} (h : IsHaarOn U μ) : SigmaFinite μ := by
   haveI : IsFiniteMeasureOnCompacts μ := ⟨@fun K hK => h.finite_compact K hK⟩

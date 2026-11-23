@@ -23,6 +23,20 @@ Multi-tier fallback strategy:
 Blob comparison uses dual-repo lookup: first tries upstream (`$REPO/contents`), falls back to fork (`$fork_owner/$REPO/contents`) when upstream returns 404.
 Fork owner extracted from: `echo "${{ github.event.pull_request.head.repo.full_name }}" | cut -d/ -f1`
 
+## Batch 2 — Structural Improvements (2026-11-23)
+
+### Proof simplifications
+Replaced 35 occurrences of `:= by exact <term>` with `:= <term>` across 35 files in all directories. Semantically identical, reduces boilerplate. Also individually fixed several patterns like `Iff.rfl` in Formalism/LenEqPlaces.lean.
+
+### Dead section Helpers removal
+Removed 3 empty `section Helpers` blocks that only contained unused `variable` declarations:
+- PropsKfin.lean (ReciprocityTheory): `{H : Type*} [NormedAddCommGroup H] [...]` never referenced after block
+- ILiescalar.lean (Development): `{ι : Type} [Fintype ι] [...]` never referenced  
+- IrrUnitaryTraceNeZeroCopyFinDSX.lean (Development): `{G : Type} [Group G] [...]` never referenced
+
+### Workflow fixes confirmed working
+Both label-pr.yml and challenge-files.yml now pass on fork PRs (see above). Push of batch 2 completed at `8ce0acc68ff`.
+
 ## PR Conventions
 
 ### Attribution Requirement

@@ -109,7 +109,6 @@ end GlobalTheory.FinPl.VertexExactCount
 namespace GlobalTheory.FinPl.VertexExactCount
 
 
-open Classical in
 theorem vertexExact (D : D7) : VertexExact D := by
   intro k _ _ _ _ p q ψ χ hχ hIs
   letI : MeasurableSpace k := borel k

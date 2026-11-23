@@ -116,7 +116,6 @@ def finiteAdeleSingle (v : HeightOneSpectrum (𝓞 K)) :
     w.adicCompletion K) v)
   map_mul' x y := Subtype.ext (Pi.mulSingle_mul v x y)
 
-open Classical in
 theorem finiteAdeleSingle_apply (v w : HeightOneSpectrum (𝓞 K)) (x : v.adicCompletion K) :
     finiteAdeleSingle v x w = Pi.mulSingle (M := fun u : HeightOneSpectrum (𝓞 K) ↦
       u.adicCompletion K) v x w := rfl
@@ -205,12 +204,10 @@ section Infinite
 variable {K}
 
 
-open Classical in
 def infiniteAdeleSingle (w : InfinitePlace K) : w.Completion →* InfiniteAdeleRing K :=
   MonoidHom.mulSingle (fun u : InfinitePlace K ↦ u.Completion) w
 
 omit [NumberField K] in
-open Classical in
 theorem infiniteAdeleSingle_apply (w u : InfinitePlace K) (x : w.Completion) :
     infiniteAdeleSingle w x u = Pi.mulSingle (M := fun u : InfinitePlace K ↦ u.Completion) w x u :=
   rfl

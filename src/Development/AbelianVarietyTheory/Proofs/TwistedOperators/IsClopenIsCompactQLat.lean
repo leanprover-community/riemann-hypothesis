@@ -131,7 +131,6 @@ section Decomposition
 variable [Fintype n'] {L : Submodule 𝒪[k] (n' → k)} {LY : Submodule 𝒪[k] (n → k)} {x₀ : Matrix n n' k}
 
 
-open Classical in
 theorem exists_pull (h : ∀ z ∈ L, x₀ *ᵥ z ∈ LY) (fW : Module.Dual 𝓀[k] (Red LY)) :
     ∃ f₀ : Module.Dual 𝓀[k] (Red L), (∀ z : L, f₀ (Red.mk L z) = fW (Red.mk LY ⟨x₀ *ᵥ z, h z z.2⟩)) ∧
       ∀ w : Module.Dual 𝓀[k] (Red L) → ℂ, ∑ᶠ f', w f' * compInd L LY f' fW x₀ = w f₀ := by
@@ -350,7 +349,6 @@ theorem volQ_pos : 0 < volQ μ q L := by
 include hψ
 
 
-open Classical in
 theorem integrable_qLat (η : n → k) :
     Integrable (fun y => (if q.inv • y ∈ L then (1 : ℂ) else 0) * (ψ (η ⬝ᵥ y) : ℂ)) μ := by
   haveI := secondCountable k
@@ -361,7 +359,6 @@ theorem integrable_qLat (η : n → k) :
   exact continuous_subtype_val.comp (hψ.continuous.comp (continuous_const.dotProduct continuous_id))
 
 
-open Classical in
 theorem integral_qLat (η : n → k) :
     ∫ y, (if q.inv • y ∈ L then (1 : ℂ) else 0) * (ψ (η ⬝ᵥ y) : ℂ) ∂μ =
       if InDual L (q.1 • η) then (volQ μ q L : ℂ) else 0 := by
@@ -504,7 +501,6 @@ theorem lastPair_hasVal [Fintype n''] (q : Unif k) (L : Submodule 𝒪[k] (n'' �
 
 
 omit [Fintype n'] in
-open Classical in
 theorem phiOne_last [Fintype n] [Fintype n''] (q : Unif k) (LY : Submodule 𝒪[k] (n → k)) [LY.IsFullLattice k]
     (L : Submodule 𝒪[k] (n'' → k)) [L.IsFullLattice k] (fW : {f : Module.Dual 𝓀[k] (Red LY) // f ≠ 0})
     (x' : Matrix n'' n k) (η : n → k) :

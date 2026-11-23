@@ -80,7 +80,6 @@ def xiAd : AdDatum St := fun i hi β β' x x' z =>
 
 
 variable (t u μ) in
-open Classical in
 def muOf (j : ℕ) (x : (AfE D.host.F D.host.E)ˣ) : ℂ :=
   if h : ∃ y : Formalism.L2.Herm.unitaryOneFiniteAdeles D.sp.cm, Matrix.GeneralLinearGroup.det y.1 = x then (((t.O u μ).mt j (dtU h.choose) : ℂˣ) : ℂ) else 0
 

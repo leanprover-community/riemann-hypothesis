@@ -141,7 +141,6 @@ def wcomp (j : X) : MvPowerSeries σ O →ₗ[O] MvPowerSeries σ O where
     show (if _ then _ else _) = c • (if _ then _ else (0 : O))
     split_ifs <;> simp
 
-open Classical in
 theorem coeff_wcomp (j : X) (f : MvPowerSeries σ O) (n : σ →₀ ℕ) :
     coeff n (wcomp O wt j f) = if Finsupp.weight wt n = j then coeff n f else 0 := rfl
 

@@ -743,7 +743,6 @@ theorem descent_cm_field : DescentCM := by
 
 namespace ConjugateWeightGram
 
-open StepBAux
 
 section Restrict
 

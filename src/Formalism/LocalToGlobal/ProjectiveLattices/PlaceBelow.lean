@@ -128,14 +128,12 @@ open Classical in
 def cP (DF : ℕ) (p : ℕ) : ℕ := if Q.IsRam p then ⌈Q.vd p * (DF : ℝ)⌉.toNat else 0
 
 
-open Classical in
 def nuN (DFL : ℕ) (nu : ℝ) (p : ℕ) : ℝ :=
   if p = Q.g1 then (DFL : ℝ) / ((Q.g1 : ℝ) - 1)
   else if p = Q.g2 then (DFL : ℝ) / ((Q.g2 : ℝ) - 1)
   else nu + (Q.cP DFL p : ℝ)
 
 
-open Classical in
 def eLam (eL : ℕ) (nuStar : ℝ) (p : ℕ) : ℕ :=
   ⌈(eL : ℝ) * (Q.T : ℝ) * (nuStar + if Q.IsBad p then 1 else 0)⌉.toNat
 

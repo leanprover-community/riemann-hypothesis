@@ -199,7 +199,6 @@ def wT (G : Matrix κ κ ℤ) (k t : ℕ) (a c : F) (T : Finset (κ → F)) (Φ 
   if (a / c) • y ∈ dualL F G then wC k t a c * ∑ x ∈ T, Φ x * et (BF G y x / c) else 0
 
 
-open Classical in
 def oneL (x : κ → F) : ℂ := if x ∈ LL F κ then 1 else 0
 
 variable [IsTotallyReal F]

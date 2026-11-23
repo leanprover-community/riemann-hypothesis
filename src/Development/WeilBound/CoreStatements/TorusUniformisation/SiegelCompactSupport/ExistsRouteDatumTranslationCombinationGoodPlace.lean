@@ -742,7 +742,6 @@ theorem pure_update (f : SInf F κ) {φ : ∀ u : HeightOneSpectrum (𝓞 F), (�
   rw [key, key, Pi.one_apply]
   ring
 
-open Classical in
 theorem indep_pure (f : SInf F κ) (φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ) :
     Indep v (pure f (Function.update φ v 1)) := by
   intro x t
@@ -761,7 +760,6 @@ theorem indep_pure (f : SInf F κ) (φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ
       rw [Pi.add_apply, map_add (f := _)]
       exact add_eq_left.2 (evalV_singleFin_ne h _)
 
-open Classical in
 theorem Good.update {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ} (hφ : Good φ) {φ' : (κ → Fv F v) → ℂ}
     (h : φ' ∈ SB (κ → Fv F v)) : Good (Function.update φ v φ') := by
   refine ⟨fun u => ?_, ?_⟩
@@ -771,7 +769,6 @@ theorem Good.update {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) �
   · filter_upwards [hφ.2, (Set.finite_singleton v).compl_mem_cofinite] with u hu e
     rwa [Function.update_of_ne e]
 
-open Classical in
 theorem lift_pure (S : Module.End ℂ ((κ → Fv F v) → ℂ)) (f : SInf F κ)
     {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ} (hφ : Good φ) :
     lift v S (pure f φ) = pure f (Function.update φ v (S (φ v))) := by
@@ -1095,7 +1092,6 @@ theorem cont_at : Continuous (atPlace (F := F) v) := continuous_const.prodMk (co
 
 
 
-open Classical in
 theorem exists_bump : ∃ f : SInf F κ, HasCompactSupport f ∧ f 0 = 1 := by
   let b : ContDiffBump (0 : κ → mixedEmbedding.mixedSpace F) := ⟨1, 2, one_pos, one_lt_two⟩
   have h1 : HasCompactSupport fun x => (b x : ℂ) := b.hasCompactSupport.comp_left (g := fun x : ℝ => (x : ℂ)) (by simp)
@@ -1103,7 +1099,6 @@ theorem exists_bump : ∃ f : SInf F κ, HasCompactSupport f ∧ f 0 = 1 := by
   show (b 0 : ℂ) = 1
   rw [b.one_of_mem_closedBall (Metric.mem_closedBall_self zero_le_one), Complex.ofReal_one]
 
-open Classical in
 theorem rest_zero {f : SInf F κ} (hf : f 0 = 1) : pure f (Function.update (stdF κ) v 1) 0 = 1 := by
   unfold GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure
   rw [finprod_eq_one_of_forall_eq_one, mul_one, ← hf]

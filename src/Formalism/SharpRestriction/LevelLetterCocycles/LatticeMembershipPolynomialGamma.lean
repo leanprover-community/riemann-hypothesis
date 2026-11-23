@@ -661,7 +661,6 @@ theorem invNL_outside (hCA : Formalism.MainNotions.LiftingTheory.CaseA W) (h5 : 
 
 end W
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.UnusedSlot80.KL
 
 section Core
 

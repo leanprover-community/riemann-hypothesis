@@ -108,7 +108,6 @@ end Facts
 
 section K1
 
-open Classical Formalism.L2.SG.Pf.WFL
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 

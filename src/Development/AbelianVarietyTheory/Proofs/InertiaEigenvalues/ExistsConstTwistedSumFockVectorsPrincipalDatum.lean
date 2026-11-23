@@ -173,7 +173,6 @@ theorem flat_mul_right {k R : Type} [CommRing k] [CommRing R] {n r : ℕ} (hr : 
   rw [e, flat_mul_inv hr ν (inv_mem hK), show upperLeftBlock hr K⁻¹ = (upperLeftBlock hr K)⁻¹ from extendOne_inv _ hK, map_inv, map_inv, inv_inv,
     ← e]
 
-open Classical in
 theorem locFn_right (B : Base S T) (ψ : Twist D Circle) (K : ∀ PP : Pl D.host.E, GL (Fin S.rank) (kP PP))
     (hK : ∀ PP ∈ B.de.Q ∪ ψ.Q, K PP ∈ blockTri (blk2 T.rank)) (y : Reds D T.rank S.rank) :
     B.locFn ψ.Q (fun PP => flat (ψ.resC PP.1)) (fun PP => y PP * (K PP).val) =
@@ -192,7 +191,6 @@ end Datum
 theorem alg4 {G : Type} [CommGroup G] (a b c d : G) : a * b * (c⁻¹ * d⁻¹) * (c * d) = a * b := by
   rw [← mul_inv, inv_mul_cancel_right]
 
-open Classical in
 theorem term_eq (B : Base S T) {ψ : Twist D Circle} (hQ : B.admitted ψ.Q) {g : GA D S}
     (hk : Lev.finE S g ∈ lev D.sp.cm S.gram B.F.βS (B.levS ψ)) (y : Reds D S.rank T.rank) (y' : Reds D T.rank S.rank) :
     ((levFn B.F.βS (B.levS ψ) (Lev.finE S g) * vacC B ψ g 1 : ℂˣ) : ℂ) *
@@ -233,7 +231,6 @@ theorem term_eq (B : Base S T) {ψ : Twist D Circle} (hQ : B.admitted ψ.Q) {g :
   · simp
 
 
-open Classical in
 theorem datum_sum (B : Base S T) {ψ : Twist D Circle} (hQ : B.admitted ψ.Q) {ι : Type} [Fintype ι] (g : ι → GA D S)
     (hk : ∀ i, Lev.finE S (g i) ∈ lev D.sp.cm S.gram B.F.βS (B.levS ψ))
     (inj : ∀ i j, rTup B.F.βS (B.levS ψ) (Lev.finE S (g i)) = rTup B.F.βS (B.levS ψ) (Lev.finE S (g j)) → i = j)
@@ -291,7 +288,6 @@ theorem datum_sum (B : Base S T) {ψ : Twist D Circle} (hQ : B.admitted ψ.Q) {�
         exact hy ⟨h0, _, h1, (hk i).2⟩
 
 
-open Classical in
 theorem om_princ_move {B : Base S T} (hB : B.Good) (hS : S.SigOK) {ψ : Twist D Circle} (hψ : ψ.Good) (hQ : B.admitted ψ.Q)
     {ω : PairRep S T} (hω : B.IsWeil ψ.chi ω) {g : GA D S} (hg : g ∈ GfC S) (sg : Lev.finE S g ∈ St B.F.βS) :
     ω (g, 1) ((GlobalTheory.FlatVecSum.princ B).vecFlat ψ) = (((vacC B ψ g 1 : ℂˣ) : ℂ) * 1) •
@@ -320,7 +316,6 @@ theorem om_princ_move {B : Base S T} (hB : B.Good) (hS : S.SigOK) {ψ : Twist D 
   rw [one_mul, this]
 
 
-open Classical in
 theorem vec_sum {B : Base S T} (hB : B.Good) (hS : S.SigOK) {ψ : Twist D Circle} (hψ : ψ.Good) (hQ : B.admitted ψ.Q)
     {ω : PairRep S T} (hω : B.IsWeil ψ.chi ω) {ι : Type} [Fintype ι] (g : ι → GA D S) (hg : ∀ i, g i ∈ GfC S)
     (hk : ∀ i, Lev.finE S (g i) ∈ lev D.sp.cm S.gram B.F.βS (B.levS ψ))

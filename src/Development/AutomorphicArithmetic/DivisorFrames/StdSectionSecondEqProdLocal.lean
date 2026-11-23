@@ -95,7 +95,6 @@ private theorem cball_sub {F : Type} [Field F] [NumberField F] (v : Pl F) (c : �
   rw [Units.val_pow_eq_pow_val, map_pow, h]
   exact pow_le_one₀ zero_le' uniformizer_lt_one.le
 
-open Classical in
 private theorem core (D : D7) (ε : AE D) (Pw : Finset (Pl D.host.E)) (hε : IsIdemSum ε Pw) (ι : Type) [Fintype ι]
     (pl : ι → Pl D.host.F) (τ : ∀ i, D.host.E →ₐ[D.host.F] Fv D.host.F (pl i))
     (hP : ∀ w, w ∈ Pw ↔ ∃ i, splitPrime (τ i) = w) (hinj : Function.Injective (fun i => splitPrime (τ i)))

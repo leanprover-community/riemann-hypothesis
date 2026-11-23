@@ -312,7 +312,6 @@ def dualForm (w : ℂ) : (A.X →+ ℂ) →ₗ[ℂ] (A.X →+ ℂ) →ₗ⋆[ℂ
     (fun _ _ _ => by rw [map_smul, star_smul, mulVec_smul, dotProduct_smul]; rfl)
 
 
-open Classical in
 theorem dualForm_apply (w : ℂ) (r r' : A.X →+ ℂ) :
     A.dualForm w r r' = A.coord r ⬝ᵥ ((A.BwMat w)⁻¹.map Complex.ofReal) *ᵥ star (A.coord r') := rfl
 

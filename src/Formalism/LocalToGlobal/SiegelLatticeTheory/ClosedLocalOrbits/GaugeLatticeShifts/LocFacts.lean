@@ -300,7 +300,6 @@ end LocFacts
 
 namespace LocFacts
 
-open PI.CntNotIntW
 open scoped nonZeroDivisors
 
 variable {D : D7}

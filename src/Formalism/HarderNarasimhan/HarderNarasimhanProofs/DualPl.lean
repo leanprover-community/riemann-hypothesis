@@ -354,7 +354,6 @@ end Formalism.HN.DualPolygon
 
 namespace Formalism.HN.DualPolygon
 
-open Formalism.HN
 
 section Zlat
 
@@ -540,7 +539,6 @@ end Formalism.HN.DualPolygon
 
 namespace Formalism.HN.DualPolygon
 
-open Formalism.HN
 
 section Twist
 
@@ -769,7 +767,6 @@ end Formalism.HN.DualPolygon
 
 namespace Formalism.HN.DualPolygon
 
-open Formalism.HN
 
 section Main
 
@@ -883,7 +880,6 @@ end Formalism.HN.DualPolygon
 
 namespace Formalism.HN.DualPolygon
 
-open Formalism.HN
 
 theorem eq_mul_of_log_eq_add {a b c : ℝ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c)
     (h : Real.log a = Real.log b + Real.log c) : a = b * c := by
@@ -1037,7 +1033,6 @@ end Formalism.HN.DualPolygon
 
 namespace Formalism.HN.DualPolygon
 
-open Formalism.HN
 
 theorem rpow_neg_half_nat_pow {D : ℝ} (hD : 0 < D) (k : ℕ) :
     D ^ (-(k : ℝ) / 2) = (D ^ (-(1 : ℝ) / 2)) ^ k := by
@@ -1120,7 +1115,6 @@ end Formalism.HN.DualPolygon
 
 namespace Formalism.HN.DualPolygon
 
-open Formalism.HN
 
 section DD
 
@@ -1249,7 +1243,6 @@ end Formalism.HN.DualPolygon
 
 namespace Formalism.HN.DualPolygon
 
-open Formalism.HN
 
 section HNDual
 

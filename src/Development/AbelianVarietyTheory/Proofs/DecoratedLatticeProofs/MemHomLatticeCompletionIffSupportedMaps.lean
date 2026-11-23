@@ -56,7 +56,6 @@ def indP (F : Type) [Field F] [NumberField F] (P : HeightOneSpectrum (𝓞 F) �
     · exact (v.adicCompletionIntegers F).one_mem
     · exact (v.adicCompletionIntegers F).zero_mem⟩
 
-open Classical in
 theorem evalV_indP (F : Type) [Field F] [NumberField F] (P : HeightOneSpectrum (𝓞 F) → Prop)
     (v : HeightOneSpectrum (𝓞 F)) : evalV F v (indP F P) = if P v then 1 else 0 := rfl
 

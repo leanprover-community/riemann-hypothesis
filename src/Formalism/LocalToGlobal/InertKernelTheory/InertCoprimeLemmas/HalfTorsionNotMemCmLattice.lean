@@ -357,8 +357,6 @@ end Formalism.L2.KerInert
 
 namespace Formalism.L2.KerInert
 
-open Formalism.MainNotions Formalism.FrobeniusOrbits
-open Formalism.L2.Th1.H (cmL CmOK)
 
 theorem delta_ne_of_base {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Formalism.L2.Ker.Base D cc δ) : δ ≠ 0 := by
   intro hδ

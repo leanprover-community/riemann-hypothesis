@@ -493,7 +493,6 @@ theorem col_eq {n : ℕ} {μ : Fin n → ℤ} {I : ℤ → Finset (Fin n)} (hI :
 
 end A3comb
 
-open A3comb in
 theorem index_weights_dominance : IndexWeightsDominance := by
   intro n μ I hμ hI
   obtain ⟨M, hM⟩ := exists_bound μ
@@ -615,7 +614,6 @@ theorem monSet_eq (n N : ℕ) (B : ℕ → ℕ) :
 
 end A3comb
 
-open A3comb in
 theorem polynomial_b_rank : PolBRank := by
   intro n N B
   have hcard : ∀ k : ℕ, ((univ : Finset (Fin n)).finsuppAntidiag k).card = (n + k - 1).choose k := by
@@ -711,7 +709,6 @@ theorem path_bound' {n N : ℕ} {isVec : ℕ → Bool} {B : ℕ → ℕ} {μ : �
 
 end A3comb
 
-open A3comb in
 theorem path_index_finite : PathIdxFinite := by
   intro n N isVec B
   have hb : ∀ x : PathIdx n N isVec B, ∀ i : Fin (N + 1), ∀ m,

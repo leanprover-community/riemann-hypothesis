@@ -82,7 +82,6 @@ def bdet (s : Set ι) (g : GL ι R) : Rˣ :=
     exact if h : IsUnit ((g : Matrix ι ι R).submatrix (Subtype.val : s → ι) Subtype.val).det then h.unit else 1
 
 
-open Classical in
 def ext {G : Type} [Group G] (K P : Subgroup G) (f : G → ℝ) (g : G) : ℝ :=
   by classical
     exact if h : ∃ k : K, g * (k : G)⁻¹ ∈ P then f (g * (h.choose : G)⁻¹) else 0
@@ -233,7 +232,6 @@ def LeviS : Prop := ForAd fun {_} {R} _ _ _ _ A => ∀ (ι : Type) [Fintype ι] 
     ∀ s : Set ι, PullHt (A.uK ε ι) (A.uQ ε Set.univ) π (A.uH ε s) (A.htGL s)
 
 
-open Classical in
 def LeviQ : Prop := by classical
   exact ForAd fun {_} {_} _ _ _ _ A => ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (ε : ℤˣ) (s : Set ι),
   Iwa (A.uQ ε s ⊓ A.uQ ε Set.univ) (A.uK ε ι) →

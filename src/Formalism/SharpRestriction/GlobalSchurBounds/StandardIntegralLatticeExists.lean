@@ -130,7 +130,6 @@ end ReadsSec
 
 section FrobSec
 
-open Formalism.FrobeniusOrbits
 open scoped Pointwise
 
 end FrobSec

@@ -209,7 +209,6 @@ def blockGram (d : HSMBlockDatum D K ι Ω) (n : ℕ) {r : ℕ} (b : Fin r → M
     (∫ x, pairValH d.A n (b k) (b l) (conjPt (blockPt d x)) ∂d.dV).re)
 
 
-open Classical in
 def blockChi (d : HSMBlockDatum D K ι Ω) (n : ℕ) : ℝ :=
   if h : ∃ p : (Σ r : ℕ, Fin r → MvPolynomial (Σ k, ι k) ℚ), IsSecBasisM d.y d.k₀ n p.2 then
     -(1 / 2) * Real.log (blockGram d n h.choose.2).det

@@ -279,7 +279,6 @@ theorem cV_sInf (w : InfinitePlace E) (x : Cinf E) : cV w (sInf E x) = x w := by
   change (infEq E).symm (infEq E x) w = _
   rw [RingEquiv.symm_apply_apply]
 
-open Classical in
 theorem map_cV_embInf (v w : InfinitePlace E) (y : GL (Fin n) ℂ) :
     GeneralLinearGroup.map (cV w) (embInf n v y) =
       (Pi.mulSingle v y : InfinitePlace E → GL (Fin n) ℂ) w := by
@@ -307,7 +306,6 @@ theorem q₁_qAd (h : v₁ ≠ v₂) : q₁ (qAd h) = cV v₁ := RingHom.ext fun
 
 theorem q₂_qAd (h : v₁ ≠ v₂) : q₂ (qAd h) = cV v₂ := RingHom.ext fun _ => rfl
 
-open Classical in
 theorem q₃_embInf (h : v₁ ≠ v₂) {v : InfinitePlace E} (hv : v = v₁ ∨ v = v₂) (y : GL (Fin n) ℂ) :
     GeneralLinearGroup.map (q₃ (qAd h)) (embInf n v y) = 1 := by
   refine Units.ext (Matrix.ext fun i j => ?_)
@@ -340,7 +338,6 @@ theorem t2Space_finiteAdeleRing_cmField : T2Space (Af E) := by
 end Field
 
 
-open Classical in
 theorem splitAt2 : SplitAt2 := by
   intro E _ _ _ n v₁ v₂ hne _ _ μ _
   haveI : T2Space (Af E) := t2Space_finiteAdeleRing_cmField

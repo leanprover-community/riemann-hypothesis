@@ -736,7 +736,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.G0
 
 variable {p : ℕ}
 
@@ -979,7 +978,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.G0
 
 variable {p : ℕ}
 
@@ -1598,7 +1596,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.GradedWeylDivisibility MvPolynomial
 
 theorem lb_basis (R : Type) [CommRing R] [IsDomain R] (k n : ℕ) (ν : Fin n → ℕ) :
     ∃ b : ssIdx k n ν → MvPolynomial (Fin k × Fin n) R,
@@ -2015,7 +2012,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G
 
 theorem smith_normal_form_card {W : Type} [CommRing W] [IsDomain W] [IsPrincipalIdealRing W] (p k : ℕ) (hp0 : (p : W) ≠ 0)
     (N : Submodule W (Fin k → W)) (hpN : ∀ x, (p : W) • x ∈ N) :
@@ -2257,7 +2253,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.GradedWeylDivisibility MvPolynomial
 
 variable {p : ℕ}
 
@@ -2397,7 +2392,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.G0
 
 variable {p : ℕ}
 
@@ -2496,7 +2490,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.G0
 
 variable {p : ℕ}
 
@@ -2788,7 +2781,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.G0
 
 variable {p : ℕ}
 
@@ -3216,7 +3208,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.G0
 
 variable {p : ℕ}
 
@@ -3814,7 +3805,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.G0
 
 open Pointwise
 
@@ -4060,7 +4050,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.GradedWeylDivisibility MvPolynomial Formalism.G0
 
 variable {p : ℕ}
 
@@ -4234,7 +4223,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.G0
 
 variable {p : ℕ}
 
@@ -4398,7 +4386,6 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.G0
 
 variable {p : ℕ}
 
@@ -4416,6 +4403,5 @@ end Formalism.MainNotions.G.LatticeSystems
 
 namespace Formalism.MainNotions.G.LatticeSystems
 
-open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas
 
 end Formalism.MainNotions.G.LatticeSystems

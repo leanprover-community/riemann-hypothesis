@@ -59,7 +59,6 @@ def ShiftCore : Prop :=
     ∫ x in Ω, f x ∂μ = ∫ x in (fun x => h⁻¹ * x) '' Ω, f x ∂μ
 
 
-open Formalism.L2.SG.TermOp.Vanish in
 def FixNormC : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word)
     (t : GTerm X u u' (X.Fu u) (X.Fu u') (Y.what₂ u) (Y.what₂ u')),

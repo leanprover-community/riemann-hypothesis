@@ -372,7 +372,6 @@ end Over
 variable [IsAlgClosed C] [CharZero C] [Algebra ℤ_[p] C] [Algebra ℤ_[p] O] [IsScalarTower ℤ_[p] O C]
 
 
-open Classical in
 variable (c) in
 def htLat (τ : E →+* ℂ) : Submodule O P.V :=
   if τ (H.rt : E) = H.rt0 then

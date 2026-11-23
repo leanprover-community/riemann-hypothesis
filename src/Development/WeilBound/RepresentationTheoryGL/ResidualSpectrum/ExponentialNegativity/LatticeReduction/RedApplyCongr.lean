@@ -342,7 +342,6 @@ theorem step_coset (hϖ : IsUnifV E w ϖ) (n : ℕ) (jj : Fin (n + 1)) (γ : GLi
       simp only [f1, fj]
       rw [if_neg (fun h => ha (Fin.ext (by rw [Fin.val_zero]; omega))), if_neg hbj, one_mul, mul_one]
 
-open Classical in
 theorem Tj_apply (hϖ : IsUnifV E w ϖ) {N : ℕ} (j : ℕ) (g : GL (Fin N) (w.adicCompletion E)) :
     Tj ℂ N (Ov E w) ϖ j g =
       if ∃ a ∈ GLint (Fin N) (Ov E w), ∃ b ∈ GLint (Fin N) (Ov E w), g = a * dd hϖ N j * b then 1 else 0 := by
@@ -359,7 +358,6 @@ theorem Tj_apply (hϖ : IsUnifV E w ϖ) {N : ℕ} (j : ℕ) (g : GL (Fin N) (w.a
   · rfl
 
 
-open Classical in
 theorem hecke_eq_sum (hϖ : IsUnifV E w ϖ) {V : Type} [AddCommGroup V] [Module ℂ V] {N : ℕ}
     (ρ : Representation ℂ (GL (Fin N) (w.adicCompletion E)) V) (x : V)
     (hx : ∀ κ ∈ GLint (Fin N) (Ov E w), ρ κ x = x) (j : ℕ) (hj : j ≤ N) :

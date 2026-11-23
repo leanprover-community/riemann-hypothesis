@@ -338,7 +338,6 @@ theorem avgDataExists_main : AvgDataExists := by
         ← hKH K R ψ (addBlock h' s hu.unit) (addBlock h s hu.unit)]
     rw [e1, e2]
 
-open Classical in
 theorem intLat_eq_sum {K : Type} [CommRing K] (R : Subring K) (Λ : AddSubgroup K) (Om : Set K)
     (hfin : {y : K ⧸ Λ | (Quotient.out y : K) ∈ Om}.Finite) (g : K → ℂ) :
     intLat R Λ Om g = (volL R Λ : ℂ) * ∑ y ∈ hfin.toFinset, g (Quotient.out y) := by
@@ -355,7 +354,6 @@ theorem intLat_eq_sum {K : Type} [CommRing K] (R : Subring K) (Λ : AddSubgroup 
     simp only [Finset.mem_coe, Set.Finite.mem_toFinset] at hyT
     exact if_neg hyT
 
-open Classical in
 theorem mean_prod {K : Type} [CommRing K] (hCM : CharMean) (R : Subring K) (ψ : AddChar K ℂ)
     (L₁ L₂ : AddSubgroup K) (A B : Finset K) (le₁ : L₁ ≤ R.toAddSubgroup)
     (le₂ : R.toAddSubgroup ≤ L₂) (hA : IsReps A L₂ R.toAddSubgroup)

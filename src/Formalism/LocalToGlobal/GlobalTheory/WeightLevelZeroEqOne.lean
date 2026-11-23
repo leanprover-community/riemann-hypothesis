@@ -91,7 +91,6 @@ theorem exists_single (hst : ∀ c, Subsingleton ((D.mem u).C.stab 0 c)) (x : ((
   · subst h; rw [Pi.single_eq_same]; exact coefficient_map_mem_span T x c'
   · rw [Pi.single_eq_of_ne h]; exact Submodule.zero_mem _
 
-open Classical in
 theorem termN_single (v : InfinitePlace D.what₂.LL) (x xc : ((D.fm u).lat 0).V) (c : (D.mem u).C.cls 0)
     (hxc : co0 T xc = Pi.single c (co0 T x c)) (o : Frames (gramC (gramN D 0 (Nat.zero_le _)) (embS D v.embedding))) :
     ∑ c', termN T v xc c' o = termN T v x c o := by

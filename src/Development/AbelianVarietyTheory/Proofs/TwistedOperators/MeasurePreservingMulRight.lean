@@ -146,7 +146,6 @@ theorem realAll_mul (hθ : IsInfFam θ) {M M' : D.what₂.Tau → Matrix (Fin V.
   rw [GlobalTheory.PointAtPlaceHom.infMat_mul, (realAll_spec hθ hM).2 ρ, (realAll_spec hθ hM').2 ρ]
 
 
-open Classical in
 theorem realAll_eq_atTau_mul (hθ : IsInfFam θ) {M : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ}
     (hM : ∀ ρ, M ρ ∈ Formalism.QuantumDeterminants.UH (gramAt D V ρ)) (τ : D.what₂.Tau) :
     realAll θ V M = atTau θ V τ (M τ) * realAll θ V (Function.update M τ 1) := by
@@ -251,7 +250,6 @@ theorem onbConj_mul {W : G.Weil} {X : Node} (hX : PosOnb W X) (u v : UG D.what�
     _ = _ := by simp only [Matrix.mul_assoc]
 
 
-open Classical in
 def vtxPt (W : G.Weil) (X : Node) : UG D.what₂.Tau (G.V X).rank →* GA D (G.V X) where
   toFun u := if PosOnb W X then realAll W.θ (G.V X) (onbConj W X u) else 1
   map_one' := by

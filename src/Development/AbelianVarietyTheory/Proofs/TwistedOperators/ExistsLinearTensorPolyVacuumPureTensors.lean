@@ -92,7 +92,6 @@ def multiL (M : Model σ Y W) (T : Finset (Pl F)) :
     ring
 
 
-open Classical in
 theorem finprod_split (M : Model σ Y W)
     (hstd : ∀ᶠ v in Filter.cofinite, M.vac v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1)
     (T : Finset (Pl F)) (φ : ∀ v : T, ↥(SB (Fin n × Fin d → Fv F v.1)))

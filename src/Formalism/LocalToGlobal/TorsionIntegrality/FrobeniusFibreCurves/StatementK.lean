@@ -53,7 +53,6 @@ def TwoTorsionKernelUnique : Prop :=
 
 
 
-open Classical in
 def TorsBound : Prop :=
   ∀ (K : Type) [NormedField K] [IsUltrametricDist K] (W : WeierstrassCurve K), IntCurve W →
     ‖(2 : K)‖ = 2⁻¹ → ∀ (P : W.toAffine.Point) (k : ℕ), (2 ^ k) • P = 0 → P + P ≠ 0 →

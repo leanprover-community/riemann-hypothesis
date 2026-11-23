@@ -153,7 +153,6 @@ def IOsum : ℝ := ∑ w ∈ L.supp, SizeData₂.lwP w * (D.what₂.places.ramId
 def askPrimes (a : ℤ) : Finset ℕ := (Finset.range (a.toNat + 1)).filter Nat.Prime
 
 
-open Classical in
 def ASK : ℝ :=
   ∑ j ∈ SizeData₂.lifts D, ∑ t : D.host.TT,
     ((∑ p ∈ (askPrimes (L.aT t)).filter (fun p => InertK D p),
@@ -208,7 +207,6 @@ def FrobeniusExpansionCongruence (C : ℝ) : Prop :=
         Real.log ((D.mem u).A.T : ℝ)) + C * D.R.f * (D.R.k : ℝ) ^ 2 * L.sc.L
 
 
-open Classical in
 def adm26 (C : ℝ) : Prop :=
   ∀ u,
     ((D.mem u).A.du : ℝ) = (1 - 1 / (((D.mem u).A.T : ℝ) - 1)) ^ D.R.f * (D.duS u : ℝ) ∧

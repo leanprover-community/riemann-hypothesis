@@ -182,7 +182,6 @@ namespace Formalism.MainNotions.OnePlaceEstimates
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.LevR
 open Filter Topology
-open scoped ContDiff
 
 export Formalism.MainNotions.S.UnitaryLevelOperators (levOf cutF Msq)
 

@@ -192,7 +192,6 @@ theorem xtPhiGS_congr (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hq0 : (q : E) �
   · exact absurd (imp _ _ fwd h2) h1
   · rfl
 
-open Classical in
 theorem xtPhiGS_int (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ)
     {k₀ rS r t j c' n' c n : ℕ} (x : HomE E (n' + c') (n + c)) (h : LocE.PhiGS (P := P) q ψ₀ χ k₀ rS r t j c' n' c n x ≠ 0) :
     ∀ p p', p < n + c → p' < r + (j - 1) * t →
@@ -228,7 +227,6 @@ theorem xtTilH_mem (hN : N = n + 1) (d : DecoSet (E := E) (n := n) (ST := ∅) (
   rfl
 
 
-open Classical in
 theorem xtTilH_be (hN : N = n + 1) (d : DecoSet (E := E) (n := n) (ST := ∅) (SG := SG)) {pi : 𝓞 E} (hT : ∀ P : ST, cO E pi ∉ P.1.asIdeal) (hG : ∀ w : SG, pi ∉ w.1.asIdeal)
     (w : SG) (v : Sp E N) (hv : v ∈ (DecoSet.tilH (ST := ST) hN pi d).1.at w.1) (i : Fin N) :
     (DecoSet.tilH (ST := ST) hN pi d).1.be w v i =

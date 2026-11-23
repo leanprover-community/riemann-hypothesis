@@ -91,7 +91,6 @@ theorem modF_idl : ∀ I : Ideal (𝓞 E), I ≠ ⊥ → modF (idl I) = ((Ideal.
     push_cast
     rw [mul_inv]
 
-open Classical in
 theorem val_idl (w : HeightOneSpectrum (𝓞 E)) : ∀ I : Ideal (𝓞 E), I ≠ ⊥ →
     Valued.v ((idl I : Af E) w) = WithZero.exp (-((normalizedFactors I).count w.asIdeal : ℤ)) := by
   refine ind ?_ ?_
@@ -120,7 +119,6 @@ theorem mem_nf {w : HeightOneSpectrum (𝓞 E)} {I : Ideal (𝓞 E)} (hI : I ≠
     w.asIdeal ∈ normalizedFactors I :=
   (mem_normalizedFactors_iff hI).2 ⟨w.prime, h⟩
 
-open Classical in
 theorem exists_count (n : HeightOneSpectrum (𝓞 E) → ℕ) (S : Finset (HeightOneSpectrum (𝓞 E))) :
     ∃ I : Ideal (𝓞 E), I ≠ ⊥ ∧ ∀ w : HeightOneSpectrum (𝓞 E),
       (normalizedFactors I).count w.asIdeal = if w ∈ S then n w else 0 := by

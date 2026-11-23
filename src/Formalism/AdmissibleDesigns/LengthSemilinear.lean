@@ -269,7 +269,6 @@ end Formalism.MainNotions.N.K.Sel
 
 namespace Formalism.MainNotions.N.K.Sel
 
-open Formalism.NG Formalism.RepresentationBoundsCohomology.BR Formalism.RepresentationBoundsCohomology.LocallyConstantCohomology Formalism.RepresentationBoundsCohomology.FIN NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions Formalism.MainNotions.N
   Formalism.MainNotions.N.K Formalism.BasicNotions
 
 section ResCompat
@@ -333,7 +332,6 @@ end Formalism.MainNotions.N.K.Sel
 
 namespace Formalism.MainNotions.N.K.Sel
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.N.K Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
 
 section LenUnit
 

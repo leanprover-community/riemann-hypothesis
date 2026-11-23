@@ -312,7 +312,6 @@ section Side
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K} (Df : DefSide Bs)
 
 
-open Classical in
 def locBasisOf {D : ℕ} (L : Submodule (𝓞 K) (Fin D → K)) (w : HeightOneSpectrum (𝓞 K)) :
     Fin D → Fin D → K :=
   if h : ∃ e, IsLocBasis L w e then h.choose else 0
@@ -323,7 +322,6 @@ def ebOf (t : Bs.Tup) (w : HeightOneSpectrum (𝓞 K)) : Fin (Df.dQ t) → Fin (
 def GmOf (t : Bs.Tup) (w : HeightOneSpectrum (𝓞 K)) : K := Df.Gm (ebOf Df) t w
 
 
-open Classical in
 def partPr (t : Bs.Tup) (p : Bs.Ix) : Matrix (Fin (Df.dQ t)) (Fin (Df.dQ t)) K :=
   if h : IsCompl (Df.Qp t p) (⨆ (p' : Bs.Ix) (_ : p' ≠ p), Df.Qp t p') then
     LinearMap.toMatrix' ((Df.Qp t p).subtype ∘ₗ Submodule.projectionOnto _ _ h)

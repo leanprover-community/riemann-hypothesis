@@ -168,7 +168,6 @@ theorem range_incl : (incl Ch sel mu P).range = (blkMap Ch sel mu P).ker := by
         exact x.2.2 w (Set.mem_univ _)
     exact ⟨(x.1, ⟨x.2.1, hmem⟩), rfl⟩
 
-open Classical in
 theorem range_blkMap : (blkMap Ch sel mu P).range = P.grp := by
   ext p
   constructor

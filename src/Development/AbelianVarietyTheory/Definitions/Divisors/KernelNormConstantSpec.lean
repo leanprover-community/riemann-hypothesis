@@ -324,7 +324,6 @@ def kkMap (c : D.what₂.Tau → ℂ) (d : FinDatum G t p) (x : FinPt G p.small)
   Z.scal c p • fockComp W N.frC p (Z.vec d) (x * N.u _) (y * N.u _)
 
 
-open Classical in
 def kkIn (c : D.what₂.Tau → ℂ) (d : FinDatum G t p) (x : FinPt G p.small) (y : FinPt G p.big) :
     Matrix (VVIdx (wt G p.big)) (VVIdx (wt G p.small)) ℂ :=
   LinearMap.toMatrix (bVV ℂ _) (bVV ℂ _) (Z.kkMap c d x y)

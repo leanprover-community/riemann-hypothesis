@@ -178,7 +178,6 @@ end Glob
 
 section One
 
-open Formalism.MainNotions.S.LocalSplitGroups
 
 def FamilyExpansionSecond (D : D7) (large₂ : SizeData₂ D) (C0 C' Cl Cg cb Cu cT CT : ℝ) : Prop :=
   FamilySchurFormalDegree D → GL5LogLValueBoundByZeta D → FamilyMidVolume D → hyp D large₂ C0 C' Cl Cg cb Cu cT CT → projection_sandwich_lattice D
@@ -191,7 +190,6 @@ end One
 
 section Family
 
-open Formalism.MainNotions.S.LocalSplitGroups
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
@@ -216,7 +214,6 @@ end Family
 
 section Closed
 
-open Formalism.MainNotions.S.LocalSplitGroups
 
 end Closed
 

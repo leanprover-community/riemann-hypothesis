@@ -339,8 +339,6 @@ end Formalism.MainNotions.ModuliIntegralCharts.H1.ExpTiePf
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField Formalism.L2.Pj
 open MvPowerSeries ExpTieAlg ExpTieGerm ExpTiePf
 
 attribute [local instance] Over.cartesianMonoidalCategory

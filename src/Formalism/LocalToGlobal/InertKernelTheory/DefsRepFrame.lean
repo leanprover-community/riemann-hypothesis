@@ -105,11 +105,7 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D Formalism.L2.Th1.Top Formalism.L2.KerInert.K1
-open Formalism.InvariantFactorPaths.G7 (UnrOK)
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
 open Formalism.L2.G.Pend (Frm)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 section Coord
 
@@ -121,7 +117,6 @@ def lamBc (k : D.what₂.Tau × Fin N' × Fin N) (i : Fin r) : ℂ_[p] :=
   lamC lam (embT D k.1 (D.host.conj (b i k.2.1 k.2.2)))
 
 
-open Classical in
 def LamONB : Prop :=
   ∀ k k' : D.what₂.Tau × Fin N' × Fin N, ∑ i, lamB D lam b k i * lamBc D lam b k' i = if k = k' then 1 else 0
 
@@ -144,14 +139,12 @@ end Formalism.L2.KerInert.RepFrame
 namespace Formalism.L2.KerInert.RepFrame
 
 open Formalism.MainNotions.FormalGroupSystem
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (D : D7)
     (large₂ : ∀ j, X.Lt j → X.Lt (j + 1) → Submodule (𝓞 D.host.E) (Fin ((X.Pj j).m + 1) → D.host.E))
     (Lg' : ∀ j, X.Lt j → X.Lt (j + 1) → Submodule (𝓞 D.host.E) (Fin ((X.Pj (j + 1)).m + 1) → D.host.E))
 
 
-open Classical in
 def ColTie (lam : Qbar →+* ℂ_[p]) : Prop :=
   ∀ j (L0 : X.Lt j), L0 ∈ Formalism.L2.G.Pend.repOf X.Lv hfin j → ∀ La' : X.Lt (j + 1), (X.Pj (j + 1)).IsLatTup La'.2 →
     ∀ (r : ℕ) (b : Fin r → Matrix (Fin ((X.Pj (j + 1)).m + 1)) (Fin ((X.Pj j).m + 1)) D.host.E),
@@ -162,7 +155,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 def TraceTau (D : D7) : Prop :=
   ∀ y : D.host.E, ∑ τ : D.what₂.Tau, embT D τ y = D.host.φ₀ ((Algebra.trace D.host.K D.host.E y : D.host.K) : D.host.E)

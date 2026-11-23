@@ -574,7 +574,6 @@ end Fam
 
 section Bridge
 
-open Loc
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -650,7 +649,6 @@ end PullPD
 
 section PC
 
-open Loc
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -703,7 +701,6 @@ end PC
 
 section BridgeDefs
 
-open Loc
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -858,7 +855,6 @@ end Formalism.BasicNotions
 
 namespace Formalism.BasicNotions
 
-open Loc
 
 namespace Loc
 
@@ -1144,7 +1140,6 @@ end Formalism.BasicNotions
 
 namespace Formalism.BasicNotions
 
-open Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct
 
 section Generic
 

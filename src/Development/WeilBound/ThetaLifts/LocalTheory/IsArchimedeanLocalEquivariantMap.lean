@@ -54,7 +54,6 @@ def opF {κ : Type} [Fintype κ] (v : Pl F) (T : ((κ → AF F) → ℂ) → (κ
   if h : ∃ φ₁ ∈ SB (κ → Fv F v), Acts (evFin F v) T φ φ₁ then h.choose else 0
 
 
-open Classical in
 def opI {κ : Type} [Fintype κ] (T : ((κ → AF F) → ℂ) → (κ → AF F) → ℂ) (f : SInf F κ) : SInf F κ :=
   if h : ∃ f₁ : SInf F κ, Acts (evI F) T f f₁ then h.choose else 0
 

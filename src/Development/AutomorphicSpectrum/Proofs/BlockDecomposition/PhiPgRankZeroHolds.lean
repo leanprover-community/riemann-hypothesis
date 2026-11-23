@@ -130,7 +130,6 @@ theorem exists_bump (ρ : Representation ℂ (LH k n) E) (hρ : IsSmooth ρ) (s 
       restr ρ b v = if Multiplicative.ofAdd v ∈ polyBall (k := k) n s then e else 0 :=
   GlobalTheory.T.exists_induced_ball_indicator k n E ρ hρ s e
 
-open Classical in
 theorem exists_reps (φ : (Fin n → k) → E) (s S : kˣ)
     (hper : ∀ v a : Fin n → k, Multiplicative.ofAdd a ∈ polyBall (k := k) n s → φ (v + a) = φ v)
     (hsupp : ∀ v : Fin n → k, φ v ≠ 0 → Multiplicative.ofAdd v ∈ polyBall (k := k) n S) :
@@ -138,7 +137,6 @@ theorem exists_reps (φ : (Fin n → k) → E) (s S : kˣ)
       φ v = ∑ x ∈ R, if Multiplicative.ofAdd (v - x) ∈ polyBall (k := k) n s then φ x else 0 :=
   GlobalTheory.T.locally_constant_finite_ball_sum k n E φ s S hper hsupp
 
-open Classical in
 theorem exists_strictHenselian_absolutely_closed_local_ring (ψ : AddChar k Circle) (hψ : Continuous ψ) (N : ℕ) (ρ : Representation ℂ (LH k (N + 1)) E) :
     ∃ T : cIndSpace (LH k (N + 1)) ρ →ₗ[ℂ] E,
       (∀ (a : Fin (N + 1) → k) (f), T (cInd (LH k (N + 1)) ρ (uv (N + 1) a) f) = ((ψ (a (Fin.last N)) : Circle) : ℂ) • T f) ∧
@@ -255,7 +253,6 @@ theorem T_mirChar (ψ : AddChar k Circle) (N : ℕ) (ρ : Representation ℂ (LH
     ((hT1 _ g).trans ((congrArg (· • T g) (mirChar_uv' ψ N _).symm).trans
       (congrArg (fun w : MirUin k (N + 1) => ((mirChar k ψ N w : ℂˣ) : ℂ) • T g) e.symm)))
 
-open Classical in
 theorem ker_eq (ψ : AddChar k Circle) (hψ : Continuous ψ) (N : ℕ) (ρ : Representation ℂ (LH k (N + 1)) E) (hρ : IsSmooth ρ)
     (T : cIndSpace (LH k (N + 1)) ρ →ₗ[ℂ] E)
     (hT1 : ∀ (a : Fin (N + 1) → k) (f), T (cInd (LH k (N + 1)) ρ (uv (N + 1) a) f) = ((ψ (a (Fin.last N)) : Circle) : ℂ) • T f)

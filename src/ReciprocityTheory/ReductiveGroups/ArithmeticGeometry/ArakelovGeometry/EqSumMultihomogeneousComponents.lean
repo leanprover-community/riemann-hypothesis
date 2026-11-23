@@ -55,7 +55,6 @@ open Classical in
 def i2comp (a : K → ℕ) (h : MRing ι) : MRing ι :=
   ∑ m ∈ h.support.filter (fun m => i2bdeg m = a), monomial m (AddMonoidAlgebra.coeff h m)
 
-open Classical in
 theorem coeff_i2comp (a : K → ℕ) (h : MRing ι) (m : (Σ k, ι k) →₀ ℕ) :
     AddMonoidAlgebra.coeff (i2comp a h) m = if i2bdeg m = a then AddMonoidAlgebra.coeff h m else 0 := by
   unfold i2comp
@@ -166,7 +165,6 @@ theorem i2bdeg_apply_add (m n : (Σ k, ι k) →₀ ℕ) (k : K) :
     i2bdeg (m + n) k = i2bdeg m k + i2bdeg n k := by
   simp [i2bdeg, Finset.sum_add_distrib]
 
-open Classical in
 theorem i2comp_mul_right {f : MRing ι} {c : K → ℕ} (hf : IsMultiHomog f c) (a : K → ℕ)
     (g : MRing ι) : i2comp a (g * f) = if c ≤ a then i2comp (a - c) g * f else 0 := by
   rw [isMultiHomog_iff_coeff] at hf
@@ -224,7 +222,6 @@ theorem i2comp_mul_right {f : MRing ι} {c : K → ℕ} (hf : IsMultiHomog f c) 
       · simp [e]
   · simp
 
-open Classical in
 theorem i2comp_mem {F : Ideal (MRing ι)} (hF : IsMultiHomogIdeal F) (a : K → ℕ) {u : MRing ι}
     (hu : u ∈ F) : i2comp a u ∈ F := by
   classical

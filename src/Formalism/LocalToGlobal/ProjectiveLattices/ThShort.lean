@@ -124,7 +124,6 @@ def InZh {n : ℕ} (Λ : GenLat E n) (N : ℕ) {T : Over Xo.X} (a : Fin n → (T
 def Mfr (l : Level H) : Ideal (𝓞 E) := l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E)
 
 
-open Classical in
 def cSep (l : Level H) : 𝓞 E := if h : ∃ c, c ∈ Mfr l ∧ c - 1 ∈ l.Mb then h.choose else 0
 
 def pairL {n : ℕ} (x0 x : Fin n → Dw.La) : ℤ := ∑ b, Dw.EF (x0 b) (cSep l • x b)
@@ -220,7 +219,6 @@ def DeltaDat.IsLev {n : ℕ} (d : DeltaDat Xo c n) : Prop :=
     (∀ (k : Type) [Field k] [IsAlgClosed k] [Algebra d.c₂.F k] (y₂ : FrPt d.Xo₂ d.c₂ k), evR d.Xo₂ d.c₂ d.cδ y₂ ≠ 0)
 
 
-open Classical in
 def cHalf (H : Host E) (I : Ideal (𝓞 E)) : 𝓞 E :=
   if h : ∃ c, c ∈ I.map (H.bar : 𝓞 E →+* 𝓞 E) ∧ c - 1 ∈ I then h.choose else 0
 

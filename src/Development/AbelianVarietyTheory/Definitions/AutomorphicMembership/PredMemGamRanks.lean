@@ -321,19 +321,16 @@ abbrev lv (P : ST) (c : S.Cl) : Type := Red (A.N c.1 (S.rep c)) P.1
 abbrev lk (P : ST) (c : S.Cl) : Type := Red (A.dnN c.1 (S.rep c) P) P.1
 
 
-open Classical in
 def fv (P : ST) (c : S.Cl) : Module.Dual (Res P.1) (A.lv P c) :=
   if h : ∃ φ : Module.Dual (Res P.1) (A.lv P c), ∀ x : A.N c.1 (S.rep c),
     φ (Submodule.Quotient.mk x) = A.f c.1 (S.rep c) P x then h.choose else 0
 
 
-open Classical in
 def te (T : ℕ) (P : ST) (c : S.Cl) : A.lk P c :=
   if h : ∃ t : A.dnN c.1 (S.rep c) P, ∃ e ∈ A.N c.1 (S.rep c), A.f c.1 (S.rep c) P e = 1 ∧ (t : Fin n → E) = (T : 𝓞 E) • e
   then Submodule.Quotient.mk h.choose else 0
 
 
-open Classical in
 def extF (M : Submodule (𝓞 E) (Fin n → E)) (P : HeightOneSpectrum (𝓞 E)) (g : Module.Dual (Res P) (Red M P))
     (y : Fin n → E) : Res P :=
   if h : ∃ a : Res P, ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ ∃ z : M, (z : Fin n → E) = s • y ∧
@@ -368,7 +365,6 @@ def gamOrd (R : Ranks) : Set ℕ := ⋃ n ∈ gamRanks R, autOrd E n
 
 
 variable (E) in
-open Classical in
 def DGam (R : Ranks) : ℕ := if h : (gamOrd E R).Finite then h.toFinset.lcm id else 0
 
 theorem autO_finite (hE : PosStar E) {N : Submodule (𝓞 E) (Sp E n)} (hN : Submodule.IsFullLattice E N) : Finite (autO N) :=
@@ -893,7 +889,6 @@ def PtY (y : Ys X n) : Type := {p : DecoF X.E n ST SG Q × Set (Sp X.E n) // p.2
     rw [map_mul, mul_smul]) (Set.image_image (fun v => g.1.1 v) (fun v => h.1.1 v) p.1.2).symm)
 
 
-open Classical in
 def prefRep {G D : Type} [Group G] [MulAction G D] (pref : D → Prop) (q : MulAction.orbitRel.Quotient G D) : D :=
   if h : ∃ p, Quotient.mk (MulAction.orbitRel G D) p = q ∧ pref p then h.choose else Quotient.out q
 
@@ -920,7 +915,6 @@ variable (ST) in
   rp_spec b := @prefRep_spec _ _ _ (ptYAct y (Λ b) (Θ b)) fun p => pref p.1.1
 
 
-open Classical in
 def PtY.mv {y : Ys X n} (p : PtY ST SG Q y) (d : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)) : PtY ST SG Q y :=
   if h : (∀ (P : Q) (x : Sp X.E n), p.1.1.1.2 P x ∈ d.1.at P.1 ↔ x ∈ stdAt X.E n P.1) ∧ p.1.2 ∈ y.ys d.1.N
   then ⟨(⟨(d, p.1.1.1.2), h.1⟩, p.1.2), h.2⟩ else p
@@ -965,7 +959,6 @@ structure TopLev.Ok {X : Fields} {Pr : Primes X} {R : Ranks} {Q : Finset (Height
 
 
 variable (R) in
-open Classical in
 def ysAt (j : ℕ) : Ys X (R.N j) :=
   if j + 1 = R.m then ⟨ybSet sel mu cst, fun N γ Y => ybSet_gmap sel mu cst N γ Y⟩ else Ys.triv X _
 

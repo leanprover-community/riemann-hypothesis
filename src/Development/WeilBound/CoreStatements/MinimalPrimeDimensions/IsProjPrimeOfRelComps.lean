@@ -169,7 +169,6 @@ theorem vertTerm_eq (hP : P.IsPrime) (h0 : P.comap CC = ⊥) (hi : Function.Inje
     have h2 : (Pt z).comap CC = w.asIdeal := by by_contra h; exact hw (if_neg h)
     exact h1.symm.trans h2
 
-open Classical in
 theorem divCycle_eq (hi : Function.Injective Pt)
     (hS : ∀ W, W ∈ relComps (P ⊔ Ideal.span {linForm u}) ↔ ∃ z ∈ S, Pt z = W)
     (hμ : ∀ z ∈ S, μ z = localMult (P ⊔ Ideal.span {linForm u}) (Pt z)) (hμ0 : ∀ z ∈ S, μ z ≠ 0) :

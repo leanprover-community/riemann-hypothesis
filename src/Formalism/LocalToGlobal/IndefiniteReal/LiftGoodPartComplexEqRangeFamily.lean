@@ -272,7 +272,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
   {P1 : Subgroup G} {ψ1 : P1 →* Kˣ} {Dc : ∀ Zs : DefSub A3.fam3.amb3, DefCols (A3.side3 P1 ψ1 Zs)}
   {Sp : ∀ Zs : DefSub A3.fam3.amb3, SPer (Dc Zs)} {Zsc : DefSub A3.fam3.amb3 → IndefScale A3.fam3.base3}
 
-open LevelOperators
 
 theorem lift_good_part_complex_eq_range_family {j : A3.fam3.base3.J} {t : A3.fam3.base3.Tup} {ρ : G → X.FLC j t →ₗ[ℂ] X.FLC j t}
     {gW : Representation ℂ G (X.W j)}
@@ -416,7 +415,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
   {P1 : Subgroup G} {ψ1 : P1 →* Kˣ} {Dc : ∀ Zs : DefSub A3.fam3.amb3, DefCols (A3.side3 P1 ψ1 Zs)}
   {Sp : ∀ Zs : DefSub A3.fam3.amb3, SPer (Dc Zs)} {Zsc : DefSub A3.fam3.amb3 → IndefScale A3.fam3.base3} {s : ℕ}
 
-open LevelOperators
 
 theorem rationality_at_level_of_equivariance (hok : A3.fam3.Ok3 s) (hK : X.KFormR) (hJ : X.JIsoR (cvOf3 A3 P0 ψ0 P1 ψ1)) (hRZ : X.RatZ)
     {gE : Representation ℂ G X.EE} (hU : GUnit3 X gE) (hG : GEquiv3 A3 X gE) (b : Bool) :

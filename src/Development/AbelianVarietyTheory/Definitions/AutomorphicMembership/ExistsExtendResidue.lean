@@ -154,12 +154,10 @@ def IsRedFlag {Z : ct.Mdl} (x : ct.SpPt Z) (F : ct.FlP) : Prop :=
     ∀ τ i, F.sub τ i = ct.redSub y ρ (ct.htStep y τ i)
 
 
-open Classical in
 def redFlag {Z : ct.Mdl} (x : ct.SpPt Z) : ct.FlP :=
   if h : ∃ F, ct.IsRedFlag x F then h.choose else Classical.arbitrary _
 
 
-open Classical in
 def diffExpo (_ct : At S κ p) (l : PsiT D → ℕ → ℤ) (σ : D.host.E →+* ℂ) : ℤ :=
   ∑ t : D.what₂.Tau, if σ = DV.tauEmb D t then ∑ i ∈ Finset.Icc (j + 1) N, l (D.eTau t) i else 0
 

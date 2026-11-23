@@ -138,11 +138,9 @@ open Classical in
 def singleI (w : InfinitePlace F) (y : w.Completion) : Ainf F :=
   (Pi.single (M := fun u : InfinitePlace F => u.Completion) w y : ∀ u : InfinitePlace F, u.Completion)
 
-open Classical in
 theorem singleI_self (w : InfinitePlace F) (y : w.Completion) : (singleI w y : ∀ u : InfinitePlace F, u.Completion) w = y :=
   Pi.single_eq_same (M := fun u : InfinitePlace F => u.Completion) w y
 
-open Classical in
 theorem singleI_ne {w u : InfinitePlace F} (h : u ≠ w) (y : w.Completion) :
     (singleI w y : ∀ u : InfinitePlace F, u.Completion) u = 0 :=
   Pi.single_eq_of_ne (M := fun u : InfinitePlace F => u.Completion) h y
@@ -151,7 +149,6 @@ theorem ainf_ext {x y : Ainf F} (h : ∀ u, (x : ∀ u : InfinitePlace F, u.Comp
   funext h
 
 
-open Classical in
 def placeMapInf (w : InfinitePlace F) : PlaceMap F w.Completion where
   proj := (Pi.evalAlgHom F (fun u : InfinitePlace F => u.Completion) w).comp (fstA F)
   inj :=

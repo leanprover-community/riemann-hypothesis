@@ -68,7 +68,6 @@ open Classical in
 def bcomp (g : MRing J) (d : K → ℕ) : MRing J :=
   ∑ m ∈ g.support.filter (fun m => bdeg m = d), monomial m (AddMonoidAlgebra.coeff g m)
 
-open Classical in
 theorem coeff_bcomp (g : MRing J) (d : K → ℕ) (m : (Σ k, J k) →₀ ℕ) :
     AddMonoidAlgebra.coeff (bcomp g d) m = if bdeg m = d then AddMonoidAlgebra.coeff g m else 0 := by
   rw [bcomp, coeff_sum]

@@ -132,14 +132,12 @@ theorem ptW_neg (hU : Unif 2 L ι W) (t : ℂ) : ptW 2 L ι W (-t) = - ptW 2 L �
   rw [← Formalism.L2.Th1.E.ptWAdd 2 L ι W hU, neg_add_cancel]
   exact (Formalism.L2.Th1.E.ptWZero 2 L ι W hU 0).2 L.lattice.zero_mem
 
-open Classical in
 theorem kernel_subgroup_add_mem (hU : Unif 2 L ι W) (hW : IntCurve W) (s t : ℂ) (hs : InFormalGroupPoints (ptW 2 L ι W s))
     (ht : InFormalGroupPoints (ptW 2 L ι W t)) : InFormalGroupPoints (ptW 2 L ι W (s + t)) := by
   obtain ⟨a1, a2, a3, a4, a6, hΔ⟩ := hW
   rw [Formalism.L2.Th1.E.ptWAdd 2 L ι W hU]
   exact (Formalism.ELL.formal_group_points_subgroup.{0} ℂ_[2] W ⟨a1, a2, a3, a4, a6⟩ hΔ _ _ hs ht).1
 
-open Classical in
 theorem kernel_subgroup_neg_mem (hU : Unif 2 L ι W) (hW : IntCurve W) (t : ℂ) (ht : InFormalGroupPoints (ptW 2 L ι W t)) :
     InFormalGroupPoints (ptW 2 L ι W (-t)) := by
   obtain ⟨a1, a2, a3, a4, a6, hΔ⟩ := hW
@@ -222,7 +220,6 @@ theorem kernel_stable_of_integral_kernel (hK : KernelIntegral) : KernelStableUnd
     exact nle_mul hB hB
   exact absurd ht (not_lt.2 this)
 
-open Classical in
 theorem PointsTwoFinal_of (hK : KernelIntegral) (hS : KernelStableUnderMultiplier) (hU2 : TwoTorsionKernelUnique) :
     PointsTwoFinal := by
   intro L ι W hU hW ha1 α ω₀ b b' hα hmul hb hb' hnb hnb' hω hc

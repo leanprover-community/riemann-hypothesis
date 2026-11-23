@@ -50,13 +50,11 @@ section
 variable {D : D7} (X : HidaSetting D)
 
 
-open Classical in
 def Alin : EuclideanSpace ℝ (KapI X) →ₗ[ℝ] EuclideanSpace ℝ (KapI X) :=
   ((EuclideanSpace.equiv (KapI X) ℝ).toLinearEquiv.symm : (KapI X → ℝ) →ₗ[ℝ] EuclideanSpace ℝ (KapI X)) ∘ₗ
     Matrix.toLin' (matI X) ∘ₗ
     ((EuclideanSpace.equiv (KapI X) ℝ).toLinearEquiv.symm.symm : EuclideanSpace ℝ (KapI X) →ₗ[ℝ] (KapI X → ℝ))
 
-open Classical in
 theorem det_Alin : LinearMap.det (Alin X) = (matI X).det := by
   rw [Alin, LinearMap.det_conj, LinearMap.det_toLin']
 

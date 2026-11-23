@@ -83,7 +83,6 @@ theorem _root_.GlobalTheory.MainTerm.chainStartIndex_lt_chainLength_of_odd {i : 
   unfold _root_.Formalism.BaseCaseIdentities.s0 _root_.Formalism.BaseCaseIdentities.Kn
   omega
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 theorem _root_.GlobalTheory.MainTerm.two_mul_chainStartIndex_add_one_of_odd {i : ℕ} (hi : Odd i) : 2 * _root_.Formalism.BaseCaseIdentities.s0 i + 1 = i := by
@@ -91,7 +90,6 @@ theorem _root_.GlobalTheory.MainTerm.two_mul_chainStartIndex_add_one_of_odd {i :
   unfold _root_.Formalism.BaseCaseIdentities.s0
   omega
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 theorem _root_.GlobalTheory.MainTerm.Kn_eq {i : ℕ} (hi : Odd i) :
@@ -104,7 +102,6 @@ section
 
 variable {G : Cart V d I J} {S : Sys G} {Z : Type} {D : Data C Z I} {a : ZMod d} {i : ℕ}
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}
@@ -114,7 +111,6 @@ theorem _root_.GlobalTheory.MainTerm.tan_int (S : _root_.Formalism.L2.FormalSeri
   rw [S.cur_zero_inl] at h
   simpa using h
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}
@@ -124,7 +120,6 @@ theorem _root_.GlobalTheory.MainTerm.tan_pure (S : _root_.Formalism.L2.FormalSer
   rw [← S.cur_zero_inl]
   exact S.pure c 0 (Sum.inl x) (by simpa using h)
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}
@@ -135,7 +130,6 @@ theorem _root_.GlobalTheory.MainTerm.Adapted.al_one
   rw [hal c 1 x le_rfl]
   simp [D.al_one c hc]
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}
@@ -146,7 +140,6 @@ theorem _root_.GlobalTheory.MainTerm.Adapted.good (h : _root_.GlobalTheory.MainT
   unfold _root_.Formalism.L2.FormalSeriesBounds.Cart.Good
   exact ⟨S.curve c, fun x => _root_.GlobalTheory.MainTerm.Adapted.al_one h hc x⟩
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}
@@ -164,7 +157,6 @@ theorem _root_.GlobalTheory.MainTerm.Adapted.l_mul_al_two_int
   rw [hl]
   exact hge.l_mul.mono (by norm_num)
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}
@@ -174,7 +166,6 @@ theorem _root_.GlobalTheory.MainTerm.l_mul_be_one_int (S : _root_.Formalism.L2.F
   have h := G.bound0 1 (S.cur c) (S.mem c) (Sum.inr κ)
   exact h.l_mul.mono (by norm_num)
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}
@@ -196,7 +187,6 @@ theorem _root_.GlobalTheory.MainTerm.Adapted.chainMat_int
     exact _root_.Formalism.L2.FormalSeriesBounds.VF.Ge.mul_int
       (_root_.GlobalTheory.MainTerm.Adapted.l_mul_al_two_int h hgood e) ((ih c).pow _)
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}
@@ -212,7 +202,6 @@ theorem _root_.GlobalTheory.MainTerm.Adapted.mainVec_int
   rw [h.2.1]
   exact _root_.GlobalTheory.MainTerm.l_mul_be_one_int S c κ
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}
@@ -241,7 +230,6 @@ theorem _root_.GlobalTheory.MainTerm.Adapted.mainVec_pure
   rw [hbe]
   simp
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}
@@ -263,7 +251,6 @@ theorem _root_.GlobalTheory.MainTerm.Adapted.mainVec_level_one
     simp [hc] at hc0
 
 
-open Classical in
 variable {C : Type} [Field C] in
 variable {V : _root_.Formalism.L2.FormalSeriesBounds.VF C} {d : ℕ} {I J : Type} [Fintype I] [Fintype J] in
 variable {G : _root_.Formalism.L2.FormalSeriesBounds.Cart V d I J} {S : _root_.Formalism.L2.FormalSeriesBounds.Sys G} {Z : Type} {D : _root_.Formalism.BaseCaseIdentities.Data C Z I} {a : ZMod d}

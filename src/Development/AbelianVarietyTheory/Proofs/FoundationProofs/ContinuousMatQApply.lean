@@ -271,7 +271,6 @@ def ordCond (c : Coef l) (n : ℕ) (W : R2 Ω l) (hint : ∀ s i j, mat W s i j 
     (Submodule.mkQ _)
 
 
-open Classical in
 def Lc (c : Coef l) (n : ℕ) (W : R2 Ω l) (hint : ∀ s i j, mat W s i j ∈ c.O) (S : Finset Pl)
     (hN : ∀ a ∈ NS Ω (S : Set Pl), W a = 1) (A : ValuationSubring Ω) :
     LocCond (rhoS c n W hint S hN) (locFam S (Av A S)) := fun v =>

@@ -52,19 +52,16 @@ end Formalism.MainNotions.GL3Theta
 
 namespace Formalism.MainNotions.GL3Theta
 
-open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric NumberField
 
 end Formalism.MainNotions.GL3Theta
 
 namespace Formalism.MainNotions.GL3Theta
 
-open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric NumberField
 
 end Formalism.MainNotions.GL3Theta
 
 namespace Formalism.MainNotions.GL3Theta
 
-open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric NumberField
 
 instance instUltraCp (p : ℕ) [Fact p.Prime] : IsUltrametricDist ℂ_[p] :=
   IsUltrametricDist.isUltrametricDist_of_isNonarchimedean_norm (PadicComplex.isNonarchimedean p)
@@ -97,13 +94,11 @@ end Formalism.MainNotions.GL3Columns
 
 namespace Formalism.MainNotions.GL3Theta
 
-open Formalism.BasicNotions
 
 end Formalism.MainNotions.GL3Theta
 
 namespace Formalism.MainNotions.GL3Columns
 
-open Formalism.BasicNotions
 
 end Formalism.MainNotions.GL3Columns
 

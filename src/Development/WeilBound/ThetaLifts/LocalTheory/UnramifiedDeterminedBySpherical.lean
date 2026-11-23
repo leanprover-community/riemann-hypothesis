@@ -63,7 +63,6 @@ def ConeFacB : Prop :=
               pure (L f) fun v => if v ∈ T then Λ v (φ v) else G₁.M'.vac v
 
 
-open Classical in
 def ConeFacA : Prop :=
   ∃ e₁ e₂ : ℤˣ, ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (b a' : ℕ) (G : Geo σ (b + 2) a') (G₁ : Geo σ b a') (H : Plane E (b + 2) b) (H' : Plane E (b + 2 + a') (b + a')), CfgA B G G₁ H H' →
     ∀ e ei ev, IsEv B G.M G₁.M H.ι H'.ι (isoA H H') e → IsEvLoc G.M G₁.M e ei ev →

@@ -185,7 +185,6 @@ def JetWt : Prop :=
 
 section UnfG
 
-open MvPolynomial Formalism.L2.DIV
 
 variable {ι : Type} [Fintype ι] {a b : ℕ} {Y Y' : Type}
 
@@ -336,7 +335,6 @@ def KerCombOf : Prop :=
 
 section Ent
 
-open Formalism.L2.Col Formalism.HermitianLatticesTheory Formalism.L2.DIV
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {K : G.Consts} {Y : DivX D} {cX : ExtraC}
 
@@ -430,7 +428,6 @@ def AmbOfHyp : Prop :=
 
 section ReadBack
 
-open Formalism.L2.Col Formalism.HermitianLatticesTheory Formalism.L2.DIV
 
 end ReadBack
 

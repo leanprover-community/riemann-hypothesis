@@ -55,21 +55,17 @@ abbrev uSG (SG Q : Finset (HeightOneSpectrum (𝓞 E))) : Finset (HeightOneSpect
 variable {SG Q : Finset (HeightOneSpectrum (𝓞 E))}
 
 
-open Classical in
 def LevFam.glue (A : LevFam E K n SG) (B : LevFam E K n Q) : LevFam E K n (uSG SG Q) := fun w =>
   if h : w.1 ∈ SG then A ⟨w.1, h⟩ else B ⟨w.1, (Finset.mem_union.mp w.2).resolve_left h⟩
 
-open Classical in
 theorem LevFam.glue_of_mem (A : LevFam E K n SG) (B : LevFam E K n Q) (w : uSG SG Q) (h : w.1 ∈ SG) :
     A.glue B w = A ⟨w.1, h⟩ := dif_pos h
 
-open Classical in
 theorem LevFam.glue_of_not (A : LevFam E K n SG) (B : LevFam E K n Q) (w : uSG SG Q) (h : w.1 ∉ SG) :
     A.glue B w = B ⟨w.1, (Finset.mem_union.mp w.2).resolve_left h⟩ := dif_neg h
 
 
 variable (Q) in
-open Classical in
 def extGLG : GLG (E := E) (n := n) (SG := SG) →* GLG (E := E) (n := n) (SG := uSG SG Q) where
   toFun g w := if h : w.1 ∈ SG then g ⟨w.1, h⟩ else 1
   map_one' := by
@@ -200,7 +196,6 @@ def IsSel (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) 
 variable {X}
 
 
-open Classical in
 def QE (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (ξ : Chr X.F X.E X.K) :
     Finset (HeightOneSpectrum (𝓞 X.E)) :=
   open Classical in

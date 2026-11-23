@@ -93,15 +93,12 @@ namespace Places
 variable {L : LevCh D T} (P : Places L)
 
 
-open Classical in
 def S0 : Finset (Pl D.host.F) := insert P.v0 (S1 D)
 
 
-open Classical in
 def W0 : Finset (Pl D.host.E) := P.S0.image P.w
 
 
-open Classical in
 def depth (sc : Consts) (v : Pl D.host.F) : ℕ := if v = P.v0 then depth0 D sc.cDep sc.b else 2
 
 def modul (sc : Consts) : Ideal (𝓞 D.host.E) := ∏ v ∈ P.S0, (P.w v).asIdeal ^ P.depth sc v

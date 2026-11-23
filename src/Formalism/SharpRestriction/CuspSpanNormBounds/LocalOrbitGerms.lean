@@ -344,7 +344,6 @@ theorem sc_F (hF : IsNonarchimedeanLocalField F) : SecondCountableTopology F := 
         MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
   open scoped Valued in
   have : ProperSpace F := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace F
-  open scoped Valued in
   exact inferInstance
 
 end Top
@@ -371,7 +370,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -718,7 +716,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -1582,7 +1579,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
 open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
@@ -1612,8 +1608,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -1642,8 +1636,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -1669,8 +1661,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -1694,8 +1684,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures Formalism.MainNotions.S.Loc Formalism.MainNotions.LocalModelPeriodLattices Formalism.FourierDecayAlt
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -1717,8 +1705,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures Formalism.MainNotions.S.Loc Formalism.MainNotions.LocalModelPeriodLattices Formalism.FourierDecayAlt
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -1741,8 +1727,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures Formalism.MainNotions.S.Loc Formalism.MainNotions.LocalModelPeriodLattices Formalism.FourierDecayAlt
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -1765,8 +1749,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures Formalism.MainNotions.S.Loc Formalism.MainNotions.LocalModelPeriodLattices Formalism.FourierDecayAlt
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -1789,8 +1771,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures Formalism.MainNotions.S.Loc Formalism.MainNotions.LocalModelPeriodLattices Formalism.FourierDecayAlt
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 

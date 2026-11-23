@@ -133,7 +133,6 @@ def FinGradedSub.tildeCone (I : Chart x) : (M.tildeSys c).sub I →ₗ[S] ConeLa
   (coneSingle S x c).comp (((M.tildeSys c).sub I).subtype.restrictScalars S)
 
 
-open Classical in
 def FinGradedSub.embedC (n : ℕ) :
     Cech.Cochain (fun I : Chart x => (M.tildeSys c).sub I) n →ₗ[S]
       Cech.Cochain (fun _ : StdCell N => ConeLaurent S x) n where

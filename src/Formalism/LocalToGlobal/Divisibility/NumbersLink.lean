@@ -732,13 +732,11 @@ end NumInst
 
 namespace NumInst
 
-open Formalism.BasicNotions.Examples₂
 
 end NumInst
 
 namespace NumInst
 
-open Formalism.BasicNotions.Examples₂
 
 end NumInst
 

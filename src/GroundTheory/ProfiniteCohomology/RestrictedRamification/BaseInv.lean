@@ -184,14 +184,12 @@ omit [NeZero n] [Fintype S] in
 theorem injective_inr_val : Function.Injective fun v : S => (Sum.inr (v : HeightOneSpectrum (𝓞 K.1)) : Place K.1) :=
   fun _ _ h => Subtype.ext (Sum.inr_injective h)
 
-open Classical in
 omit [NeZero n] in
 theorem gsBrauerFamily_inr (ξ : ∀ v : S, cohomology (Rep.res (gsFinFamily S ιs v).toMonoidHom (gsRoots S n)) 2)
     (v : S) : gsBrauerFamily S n ιs ξ (.inr (v : HeightOneSpectrum (𝓞 K.1))) = gsLocalBrauerRoots S n ιs v (ξ v) :=
   sum_of_apply_of_injective (fun v : S => (Sum.inr (v : HeightOneSpectrum (𝓞 K.1)) : Place K.1)) (injective_inr_val S)
     (fun v => gsLocalBrauerRoots S n ιs v (ξ v)) v
 
-open Classical in
 omit [NeZero n] in
 theorem gsBrauerFamily_inr_of_not_mem
     (ξ : ∀ v : S, cohomology (Rep.res (gsFinFamily S ιs v).toMonoidHom (gsRoots S n)) 2)

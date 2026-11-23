@@ -53,12 +53,10 @@ def kill : MvPolynomial σ R →ₐ[R] MvPolynomial σ R :=
   aeval fun v => if v ∈ S then 0 else MvPolynomial.X v
 
 
-open Classical in
 def scaleS : MvPolynomial σ R →ₐ[R] Polynomial (MvPolynomial σ R) :=
   aeval fun v => if v ∈ S then Polynomial.X * Polynomial.C (MvPolynomial.X v) else Polynomial.C (MvPolynomial.X v)
 
 
-open Classical in
 def offDeg : (σ →₀ ℕ) →+ ℕ := Finsupp.liftAddHom fun v => if v ∈ S then AddMonoidHom.id ℕ else 0
 
 theorem scaleS_monomial (m : σ →₀ ℕ) :

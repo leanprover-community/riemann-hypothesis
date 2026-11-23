@@ -68,7 +68,6 @@ def cElt (g1 g2 : ℕ) : Af I.F :=
     RestrictedProduct (fun v : HeightOneSpectrum (𝓞 I.F) => v.adicCompletion I.F)
       (fun v => v.adicCompletionIntegers I.F) Filter.cofinite)
 
-open Classical in
 theorem Cst_apply (g1 g2 : ℕ) (v : HeightOneSpectrum (𝓞 I.F)) :
     cElt I g1 g2 v = if IsTyped I.F g1 g2 v then 0 else (((g1 * g2 : ℕ) : Fv I.F v))⁻¹ := rfl
 

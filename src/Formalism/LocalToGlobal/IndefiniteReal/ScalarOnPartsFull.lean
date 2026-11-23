@@ -120,7 +120,6 @@ def IsMultIP (M : DSModel V S) (μ : Measure (GA D V)) (𝓕 : Set (GA D V)) (T 
     ∫ g in 𝓕, star (T v g) * T' v' g ∂μ = c * ∏ τ, ⟪(v τ : M.H τ), (v' τ : M.H τ)⟫_ℂ
 
 
-open Classical in
 def ipM (M : DSModel V S) (μ : Measure (GA D V)) (𝓕 : Set (GA D V)) (T T' : MMap M) : ℂ :=
   if h : ∃ c, IsMultIP M μ 𝓕 T T' c then h.choose else 0
 

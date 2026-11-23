@@ -520,7 +520,6 @@ theorem coef_spMap (s : X.SecO e) (k : X.F.J) (φ : S →+* S') (w : Sp S ⟶ X.
   rfl
 
 
-open Classical in
 def IsValAt (s : X.SecO e) (P : FrPt Xo c S) (a : S) : Prop :=
   ∀ (k : X.F.J) (hz : ⊤ ≤ (X.pt P ≫ X.inc) ⁻¹ᵁ X.F.U k) (Q : FrPt Xo c S) (t : Ix Dw → Sˣ),
     X.F.ChartFr k (X.pt P ≫ X.inc) hz Q → FrBor t Q P → a = (∏ ix, t ix ^ e ix).val * coef s k (X.pt P) hz
@@ -538,7 +537,6 @@ theorem exists_chartFr_frBor (P : FrPt Xo c S) (k : X.F.J) (hz : ⊤ ≤ (X.pt P
   exact ⟨Q, t, hQ, ht⟩
 
 
-open Classical in
 theorem isValAt_of_chart (s : X.SecO e) {P Q : FrPt Xo c S} {k : X.F.J} {hz : ⊤ ≤ (X.pt P ≫ X.inc) ⁻¹ᵁ X.F.U k}
     {t : Ix Dw → Sˣ} (hQ : X.F.ChartFr k (X.pt P ≫ X.inc) hz Q) (ht : FrBor t Q P) :
     IsValAt s P ((∏ ix, t ix ^ e ix).val * coef s k (X.pt P) hz) := by
@@ -602,7 +600,6 @@ theorem IsVal.eq_val {s : X.SecO e} {P : FrPt Xo c S} {a : S} (h : IsVal s P a) 
   (existsUnique_isVal s P).unique h (isVal_val s P)
 
 
-open Classical in
 theorem val_eq (s : X.SecO e) {P Q : FrPt Xo c S} {k : X.F.J} {hz : ⊤ ≤ (X.pt P ≫ X.inc) ⁻¹ᵁ X.F.U k}
     {t : Ix Dw → Sˣ} (hQ : X.F.ChartFr k (X.pt P ≫ X.inc) hz Q) (ht : FrBor t Q P) :
     val s P = (∏ ix, t ix ^ e ix).val * coef s k (X.pt P) hz :=
@@ -617,7 +614,6 @@ theorem val_frMap (s : X.SecO e) {ψ : S →ₐ[c.F] S'} {P : FrPt Xo c S} {P' :
     val s P' = ψ (val s P) :=
   (IsVal.eq_val fun S'' _ _ χ P'' h' => isVal_val s P S'' (χ.comp ψ) P'' (PullbackSections.frMap_trans ψ χ h h')).symm
 
-open Classical in
 theorem val_frBor (s : X.SecO e) {t : Ix Dw → Sˣ} {P P₁ : FrPt Xo c S} (h : FrBor t P P₁) :
     val s P₁ = (∏ ix, t ix ^ e ix).val * val s P := by
   refine (IsVal.eq_val fun S' _ _ ψ P₁' h₁ k hz Q t' hQ ht' => ?_).symm

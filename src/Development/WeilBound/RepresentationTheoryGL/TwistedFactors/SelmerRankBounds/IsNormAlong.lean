@@ -125,7 +125,6 @@ def Ell (σ : E ≃ₐ[F] E) (f : G1 E n → ℂ) : Prop :=
     f y ≠ 0 → EllElt σ δ
 
 
-open Classical in
 def ext0 (f : G1 E n → ℂ) (g : AdelicGLn.AdelicGL E n) : ℂ := if h : g ∈ normOneGL (K := E) (n := n) then f ⟨g, h⟩ else 0
 
 def GMatch (σ : E ≃ₐ[F] E) (μE : Measure (G1 E n)) (μF : Measure (G1 F n)) (c : ℂ) (fE : G1 E n → ℂ) (fF : G1 F n → ℂ) : Prop :=

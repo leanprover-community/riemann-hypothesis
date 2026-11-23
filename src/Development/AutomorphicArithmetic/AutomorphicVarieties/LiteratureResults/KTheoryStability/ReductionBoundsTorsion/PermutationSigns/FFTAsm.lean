@@ -79,7 +79,6 @@ def fTL (Y : Fin q → HS L N) :
   map_smul' a T := by
     simp only [fT, Matrix.smul_apply, smul_eq_mul, Finset.mul_sum, mul_assoc, RingHom.id_apply]
 
-open Classical in
 theorem fT_sum {ι : Type} [Fintype ι] (c : ι → ℂ)
     (M : ι → Matrix (Fin q → Ix (InfinitePlace L) N) (Fin q → Ix (InfinitePlace L) N) ℂ)
     (Y : Fin q → HS L N) : fT (∑ p, c p • M p) Y = ∑ p, c p * fT (M p) Y := by
@@ -87,7 +86,6 @@ theorem fT_sum {ι : Type} [Fintype ι] (c : ι → ℂ)
     _ = ∑ p, fTL Y (c p • M p) := map_sum _ _ _
     _ = ∑ p, c p * fT (M p) Y := by simp only [map_smul, smul_eq_mul]; rfl
 
-open Classical in
 theorem fT_perm' (σ : Equiv.Perm (Fin q)) (w : Fin q → InfinitePlace L) (Y : Fin q → HS L N) :
     fT (perm' (m := N) σ w) Y = tmC σ w Y := by
   unfold fT perm' tmC
@@ -128,7 +126,6 @@ theorem sign_sq_one (π : Equiv.Perm (Fin q)) :
 end FourierAssembly
 
 open FourierAssembly in
-open Classical in
 theorem fft_of (hC : Cplx) (h1 : PlacePermOperatorBicommutantSpan) (h2 : PlacePermOperatorCommutantSpan) : FFT := by
   intro L _ _ N q β hβ
   obtain ⟨T, hT, hTc⟩ := hC L N q β.toContinuousMultilinearMap (by

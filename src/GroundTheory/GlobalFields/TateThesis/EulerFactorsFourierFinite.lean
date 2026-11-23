@@ -337,7 +337,6 @@ theorem finiteFourier_eq_zero_of_le {y : FiniteAdeleRing (𝓞 K) K} {v : Height
   exact (mul_eq_zero.1 h2).resolve_left (sub_ne_zero.2 fun h ↦ ha1 (Circle.coe_eq_one.1 h))
 
 
-open Classical in
 def unitOrOne {F : Type*} [GroupWithZero F] (x : F) : Fˣ :=
   if h : x = 0 then 1 else Units.mk0 x h
 

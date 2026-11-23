@@ -53,7 +53,6 @@ def vecDeg {ι : Type} {n : ℕ} (LL : Letters ι) (S : Set ι) (al : ι × Fin 
   exact ∑ v ∈ al.support, if v.1 ∈ S ∧ LL.vec v.1 = true then al v else 0
 
 
-open Classical in
 def covDeg {ι : Type} {n : ℕ} (LL : Letters ι) (S : Set ι) (al : ι × Fin n →₀ ℕ) : ℕ := by
   classical
   exact ∑ v ∈ al.support, if v.1 ∈ S ∧ LL.vec v.1 = false then al v else 0

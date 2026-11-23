@@ -66,7 +66,6 @@ theorem twist_embedding (w : InfinitePlace E) : twist w.embedding = RingHom.id �
 theorem coord_eq (τ : E →+* ℂ) (z : Cinf E) : coord τ z = twist τ (z (InfinitePlace.mk τ)) := by
   unfold coord twist; split_ifs <;> rfl
 
-open Classical in
 theorem atEmb_apply (τ : E →+* ℂ) (z : ℂ) (w : InfinitePlace E) :
     atEmb τ z w = if w = InfinitePlace.mk τ then twist τ z else 0 := by
   unfold atEmb twist
@@ -94,7 +93,6 @@ theorem continuous_sN (τ : E →+* ℂ) : Continuous (sN τ) := by
 
 def yG (τ : E →+* ℂ) : GL (Fin n) ℂ →* GL (Fin n) (Cinf E) := cornerGL n (sN τ)
 
-open Classical in
 theorem yG_apply (τ : E →+* ℂ) (g : GL (Fin n) ℂ) (i j : Fin n) (w : InfinitePlace E) :
     (yG τ g).val i j w =
       if w = InfinitePlace.mk τ then twist τ (g.val i j) else (1 : Matrix (Fin n) (Fin n) ℂ) i j := by

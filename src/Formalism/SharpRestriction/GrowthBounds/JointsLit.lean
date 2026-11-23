@@ -286,7 +286,6 @@ theorem foldr_smul {R M ι : Type*} [Semiring R] [AddCommMonoid M] [Module R M] 
 
 
 
-open Classical in
 theorem NPDesc_of (c : LatCmp D) {L : SizeData₂ D} (hT : GatTies D) (X : Inst D L) (Y : LatInst D) (K : Consts)
     (hv : c.VramDef Y) (hy : YvRat c) : c.NPDesc X Y K := by
   intro u w hg _

@@ -300,7 +300,6 @@ theorem degree_set_cardinality_bound : Formalism.HermitianLatticeCounting.Expans
 end G5
 
 section G6
-open Finset
 
 lemma le_exp_mul_of_near_bound (N D A δ c : ℝ) (hNA : N ≤ A) (hD : A - δ ≤ D) (hc : 0 < c) (hcA : c ≤ A) (hδ : 0 ≤ δ)
     (h2 : 2 * δ ≤ A) : N ≤ Real.exp (2 * δ / c) * D := by
@@ -620,12 +619,10 @@ theorem first_operator_norm_bound : Formalism.HermitianLatticeCounting.Expansion
 end G6
 
 section G8
-open Finset
 
 end G8
 
 section G7
-open Finset
 
 end G7
 

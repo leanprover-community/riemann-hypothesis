@@ -122,7 +122,6 @@ theorem fK_apply (x : EuclideanSpace ℝ (KapI X)) (k : KapI X) : fK X x k = bL 
 open Classical in
 def Bq : Matrix (KapI X) (KapI X) ℝ := fun k l => bL X (EuclideanSpace.single l 1) ((eI X).symm k)
 
-open Classical in
 theorem toMatrix_fK : LinearMap.toMatrix (EuclideanSpace.basisFun (KapI X) ℝ).toBasis
     (EuclideanSpace.basisFun (KapI X) ℝ).toBasis (fK X) = Bq X := by
   ext k l
@@ -133,7 +132,6 @@ theorem toMatrix_fK : LinearMap.toMatrix (EuclideanSpace.basisFun (KapI X) ℝ).
 theorem det_fK : LinearMap.det (fK X) = (Bq X).det := by
   rw [← LinearMap.det_toMatrix (EuclideanSpace.basisFun (KapI X) ℝ).toBasis, toMatrix_fK]
 
-open Classical in
 theorem matI_eq : matI X = (Bq X)ᵀ * Matrix.diagonal (fun k => qD X ((eI X).symm k)) * Bq X := by
   ext k l
   rw [Matrix.mul_apply]
@@ -176,7 +174,6 @@ end PI.AprimeInfW.MuB
 namespace PI.AprimeInfW
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.TypedSets
-open Classical
 
 theorem muBridge_holds : MuBridge := by
   intro D X u' ψ hT μinf νinf fibInf hP

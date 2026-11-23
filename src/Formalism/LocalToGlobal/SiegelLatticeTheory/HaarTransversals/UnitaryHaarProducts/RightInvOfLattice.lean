@@ -164,7 +164,6 @@ theorem frameAt (v : InfinitePlace X.B.I.F) :
       have h1 := X.n_eq; have h2 := D.R.r_eq; have h3 := D.R.rS_two; omega }
 
 
-open PI.SchurPlaces.LeviLA in
 theorem levi {t : X.B.I.Ginf} (ht : t ∈ X.SinfU u) : ∃ h ∈ Hinf X u, ∃ n ∈ X.NinfU u, t = h * n := by
   have hS : ∀ v, InS (fun a => rv X.B.I v (X.eR a)) (rv X.B.I v (X.zR u)) (uMat (t v)) := ht
   choose V hVu hVe hVf hVz hVw hVN using fun v =>

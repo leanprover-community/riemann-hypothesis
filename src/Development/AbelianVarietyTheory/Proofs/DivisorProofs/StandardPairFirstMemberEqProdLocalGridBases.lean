@@ -239,7 +239,6 @@ theorem valuation_unifAt_le (w : Pl D.host.E) : ValuativeRel.valuation (Kw w) (u
   omega
 
 
-open Classical in
 theorem std_eq_prod (ν : (AE D)ˣ →* Circle) {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S) (c : Pl D.host.E → ℕ)
     {a b : ℕ} (N : Matrix (Fin b) (Fin a) (EAf D)) (h0 : ∀ w ∉ S, ∀ i j, cpt (D := D) w (N i j) = 0) :
     (if IsIntM N ∧ ∀ i j, a ≤ i.1 → InId (∏ w ∈ S, w.asIdeal ^ c w) (N i j) then unitChar ν e (topL a N) else 0) =

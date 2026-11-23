@@ -462,7 +462,6 @@ end Formalism.L2.SG.Pf
 
 namespace Formalism.L2.SG.Pf.RowDictPf
 
-open Formalism.MainNotions.S
 
 theorem schur_orthogonality_discrete_series : DSSchurOrth := by
   intro n ε H _ _ _ σ hN hU hI hS

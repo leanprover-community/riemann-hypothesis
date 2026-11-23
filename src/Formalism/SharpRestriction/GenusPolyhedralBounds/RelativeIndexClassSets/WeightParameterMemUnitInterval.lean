@@ -114,7 +114,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -199,7 +198,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -642,7 +640,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -717,13 +714,11 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
 namespace Formalism.MainNotions.Gaps.LocalGlobalPassage
 
-open Formalism.HermitianLatticesTheory (lidx localization₂ locLen locS)
 open Formalism.EigenvalueLevelCeiling.ThreeFormsAlt (OO isDVR_OO mem_localization_iff_mem_span)
 
 section LocBasis
@@ -798,7 +793,6 @@ end StructureSheafH2BaseChange
 
 section Main
 
-open Formalism.HermitianLatticesTheory
 
 variable {K0 K : Type} [Field K0] [NumberField K0] [Field K] [NumberField K] [Algebra K0 K]
   {Z0 : Type} [AddCommGroup Z0] [Module K0 Z0] [FiniteDimensional K0 Z0] [Module (𝓞 K0) Z0] [IsScalarTower (𝓞 K0) K0 Z0]
@@ -888,7 +882,6 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
@@ -998,14 +991,12 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
 namespace Formalism.MainNotions.Gaps.LocalGlobalPassage
 
 open Formalism.BasicNotions Formalism.MainNotions
-open Formalism.HermitianLatticesTheory (lidx localization₂ locLen locS)
 open Formalism.EigenvalueLevelCeiling
 
 theorem span_of_fin {R K V : Type} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K] [IsFractionRing R K]
@@ -1138,13 +1129,11 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
 namespace Formalism.MainNotions.Gaps.LocalGlobalPassage
 
-open Formalism.HermitianLatticesTheory (lidx localization₂ locLen locS)
 open Formalism.EigenvalueLevelCeiling Formalism.DivisionValues
 open Formalism.EigenvalueLevelCeiling.ThreeFormsAlt (mem_sc_inv isLatIn_cut qlen_anti_right)
 
@@ -1284,15 +1273,11 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
 namespace Formalism.MainNotions.Gaps.LocalGlobalPassage
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Indef Formalism.L2.Indef.Tree
-open Formalism.DivisionValues (vw conjPl)
-open Formalism.EigenvalueLevelCeiling (lix cut sc IsLatIn plc)
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {Bs : DefBase K} {Df : DefSide Bs} {S : IndefData Df} {P' : Type} [Group P'] [Finite P'] {c : OnConst}
@@ -1305,15 +1290,11 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
 namespace Formalism.MainNotions.Gaps.LocalGlobalPassage
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Indef Formalism.L2.Indef.Tree
-open Formalism.DivisionValues (vw conjPl)
-open Formalism.EigenvalueLevelCeiling (lix cut sc IsLatIn plc)
 
 section Rem
 
@@ -1335,13 +1316,11 @@ end
 
 section
 
-open Module NumberField IsDedekindDomain
 
 noncomputable section
 
 namespace Formalism.MainNotions.Gaps.LocalGlobalPassage
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Indef Formalism.L2.Indef.Tree
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {Bs : DefBase K} {Df : DefSide Bs} {S : IndefData Df} {P' : Type} [Group P'] [Finite P'] {c : OnConst}

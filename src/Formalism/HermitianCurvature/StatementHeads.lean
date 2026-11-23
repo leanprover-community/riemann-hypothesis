@@ -73,11 +73,9 @@ end
 
 section
 open MeasureTheory Matrix Filter Topology
-open scoped ComplexConjugate
 
 namespace Formalism.FourierDecayAlt.P.PBN
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -133,7 +131,6 @@ end
 
 section
 open Matrix MeasureTheory
-open scoped ComplexConjugate
 
 namespace Formalism.FourierDecayAlt.P.PBP
 

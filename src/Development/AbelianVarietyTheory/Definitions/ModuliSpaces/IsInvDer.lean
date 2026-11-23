@@ -41,7 +41,6 @@ namespace GlobalTheory.KS
 open Classical in
 def rsT {Y : Scheme.{0}} {O₀ : Y.Opens} (s : Γ(Y, O₀)) (O : Y.Opens) : Γ(Y, O) := if h : O ≤ O₀ then resG Y h s else 0
 
-open Classical in
 def pbT {Z Y : Scheme.{0}} (f : Z ⟶ Y) {O₀ : Y.Opens} (s : Γ(Y, O₀)) (O : Z.Opens) : Γ(Z, O) :=
   if h : O ≤ f ⁻¹ᵁ O₀ then (f.appLE O₀ O h).hom s else 0
 variable {K : Type} [Field K] {Y X : Scheme.{0}} {I : Type} {g : ℕ}

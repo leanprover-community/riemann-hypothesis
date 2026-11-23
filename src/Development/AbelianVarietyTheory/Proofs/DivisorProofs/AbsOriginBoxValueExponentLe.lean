@@ -160,7 +160,6 @@ theorem card_stepVar_le (G : Grid k) (hs : 1 ≤ G.s) (N : ℕ)
   simp only [Fintype.card_prod, Fintype.card_sum, Fintype.card_fin]
   exact Nat.mul_le_mul (by omega) (by omega)
 
-open Classical in
 theorem abs_boxSum_le (G : Grid k) (hs : 1 ≤ G.s) (a a' : ℤ) (N : ℕ)
     (hN : ∀ i j, i ≤ G.m → j ≤ G.m → G.rank (i, j) ≤ N) :
     |∑ j, ∑ v, boxExp G a a' j v| ≤ ((G.m - 1 : ℕ) : ℤ) * ((N : ℤ) * N * ((2 * (G.m : ℤ) + 1) * (|a| + |a'|))) := by

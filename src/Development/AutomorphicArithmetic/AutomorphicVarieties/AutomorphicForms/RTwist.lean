@@ -123,7 +123,6 @@ theorem dchi_eq_of_exp (χ : HChar E) (d : Rinf E →ₗ[ℝ] ℂ)
   rfl
 
 
-open Classical in
 def expo (χ : HChar E) (v : InfinitePlace E) : ℂ := dchi χ (Pi.single v 1)
 
 theorem dchi_eq_sum (χ : HChar E) (z : Rinf E) : dchi χ z = ∑ v, expo χ v * (z v : ℂ) := by
@@ -140,7 +139,6 @@ theorem chiInf_expU_eq (χ : HChar E) (z : Rinf E) :
   rw [chiInf_expU, dchi_eq_sum]
 
 
-open Classical in
 theorem expo_eq_of_exp (χ : HChar E) (v : InfinitePlace E) (p : ℂ)
     (h : ∀ t : ℝ, ((chiInf χ (expU (Pi.single v t)) : ℂˣ) : ℂ) = Complex.exp (p * t)) : expo χ v = p := by
   have h1 : HasDerivAt (fun t : ℝ => Complex.exp (t * expo χ v)) (expo χ v) 0 := by

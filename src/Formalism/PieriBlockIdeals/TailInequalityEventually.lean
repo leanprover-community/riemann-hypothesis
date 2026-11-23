@@ -132,8 +132,6 @@ def LargeOfRows : Prop :=
 
 section Real7Ev
 
-open TensorProduct MvPolynomial
-open Formalism.UG Formalism.RankGapBounds.FormsTensorLocalization Formalism.GradedWeylDivisibility Formalism.CohomologicalDescent.LD Formalism.CohomologicalDescent.UnitNormBounds Formalism.CohomologicalDescent.DepthNonnegative Formalism.CohomologicalDescent.ShortWeightBounds
 
 def CorollaryOfRecord7Ev : Prop :=
   LA.LemmaAZ → PrimeCountingBound → ∀ ε C : ℝ, 0 < ε → ∃ x0 : ℝ, ∀ P : Par, P.Hyp → x0 ≤ P.x → P.L = P.x ^ ε →

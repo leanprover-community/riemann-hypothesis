@@ -78,7 +78,6 @@ def starLab (lab w : InvFun O) : InvFun O where
     rw [if_neg this, lab.zero, Real.exp_zero, sub_self]
 
 
-open Classical in
 theorem starLab_eval (lab w : InvFun O) {X : Type} [AddCommGroup X] [Module O X] [Module.Finite O X]
     [Module.Projective O X] (B : X → X → ℝ) :
     (starLab lab w).eval X B = if IsCentreRay w X B then -1 else Real.exp (lab.eval X B) - 1 := by
@@ -89,7 +88,6 @@ theorem starLab_eval (lab w : InvFun O) {X : Type} [AddCommGroup X] [Module O X]
 variable {X : Type} [AddCommGroup X]
 
 
-open Classical in
 theorem starLab_evalZ_of_eq_one (lab w : InvFun O) [Module O X] [Module.Finite O X] [Module.Projective O X]
     {β : LinearMap.BilinForm ℤ X} (h : w.evalZ β = 1) : (starLab lab w).evalZ β = -1 := by
   rw [InvFun.evalZ, starLab_eval, if_pos ⟨1, one_pos, β, h, fun a b => one_mul _⟩]

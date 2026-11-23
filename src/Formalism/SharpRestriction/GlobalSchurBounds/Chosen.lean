@@ -55,7 +55,6 @@ def largeOrderResiduePrimes : Finset ℕ :=
 variable {L}
 
 
-open Classical in
 def badTops (X : G.Inst D L) (p : ℕ) : Finset (G.HH D) :=
   D.host.TT.filter (fun t => ¬ G.Good X p (X.bs (G.stepP D p) t))
 

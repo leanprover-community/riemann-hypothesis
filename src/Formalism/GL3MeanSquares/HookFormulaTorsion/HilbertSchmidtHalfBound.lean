@@ -51,20 +51,17 @@ open Finset
 end A
 
 section B
-open Finset
 open scoped ComplexOrder
 
 end B
 
 section C
 open Finset MeasureTheory
-open scoped ComplexOrder
 
 
 end C
 
 section D
-open Finset
 open scoped Nat
 
 end D
@@ -75,7 +72,6 @@ open Finset Matrix Unitary
 end E
 
 section F
-open Finset
 
 def bb (k rS : ℕ) (i : ℕ) : ℕ := if i < rS then i else if i < rS + (k + 1) then rS else i - k
 def cc (k rS : ℕ) (j : ℕ) : ℕ := if j < rS then j else if j < rS + (k + 1) then rS else j

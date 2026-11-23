@@ -60,16 +60,13 @@ open Classical in
 def PsiA (A0 : AddSubgroup H) : Finset (AddChar (E0 × H) ℂ) := univ.filter fun ψ => ∀ s ∈ A0, ψ (0, s) = 1
 
 
-open Classical in
 def wtA (c : ℝ) (ψ : AddChar (E0 × H) ℂ) : ℝ := if ∀ h : H, ψ (0, h) = 1 then 1 else c
 
 
-open Classical in
 def GmA (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (Kp : Finset (AddChar (E0 × H) ℂ)) (c y : ℝ) : ℝ :=
   ∑ ψ ∈ Kp, wtA c ψ * (GPsi D ell ψ y).re
 
 
-open Classical in
 def SigA (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)) (y : ℝ) : ℝ :=
   ∑ ψ ∈ PsiA A0 \ Kp, ‖GPsi D ell ψ y‖
 
@@ -86,7 +83,6 @@ def gapA (D : ArithData H) (N : ℕ) (ell : AddChar (E0 × H) ℂ → ℂ) {m : 
   ∑ t ∈ TT, ∑ j : Fin m, (ASK D N (a t) t (w u0 j) - (MAIN ell (a t) (w u0 j)).re)
 
 
-open Classical in
 def CharsA (ell : AddChar (E0 × H) ℂ → ℂ) (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)) (TT : Finset H)
     (c M Ko CE ε x : ℝ) : Prop :=
   0 ∈ Kp ∧ (∀ ψ ∈ Kp, ψ ∈ PsiA A0 ∧ ψ sgc0 = 1) ∧ ((PsiA A0).card : ℝ) ≤ M ∧

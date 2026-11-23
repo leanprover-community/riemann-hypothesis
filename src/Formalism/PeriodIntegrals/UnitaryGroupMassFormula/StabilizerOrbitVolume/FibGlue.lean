@@ -122,7 +122,6 @@ variable {V X Y : Type} [TopologicalSpace V] [MeasurableSpace V] [TopologicalSpa
   [MeasurableSpace X] {μ : Measure V} {ν : Measure X} {f : V → Y} {ι : X → Y} {U : Set V}
 
 
-open Classical in
 def G (hD : DensAll μ f ι ν U) (φ : V → ℝ) : X → ℝ :=
   if h : IsCcOn U φ then Classical.choose (hD φ h.1 h.2.1 h.2.2) else 0
 

@@ -527,7 +527,6 @@ theorem opMat_adj (hH : B.OkH) (i : B.Pl × ℕ) : ∃ i', (B.opMat i)ᴴ * B.S.
 
 end CyclotomicLifting
 
-open CyclotomicLifting
 
 namespace DefFam
 
@@ -791,7 +790,6 @@ end Formalism.L2.DIV.LiftTest
 
 namespace Formalism.L2.DIV
 
-open Formalism.DivisionValues Formalism.L2.Indef
 
 namespace BlockDat
 
@@ -804,7 +802,6 @@ end Formalism.L2.DIV
 
 namespace Formalism.L2.DIV.LiftTest
 
-open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.Col Formalism.L2.DIV.Test
 
 variable (G : Type) [Group G] [Fintype G]
 

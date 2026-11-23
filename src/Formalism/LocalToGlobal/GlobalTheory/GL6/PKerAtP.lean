@@ -211,7 +211,6 @@ end SFGen
 
 section SFGen2
 
-open Matrix Formalism.UG IsDedekindDomain
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

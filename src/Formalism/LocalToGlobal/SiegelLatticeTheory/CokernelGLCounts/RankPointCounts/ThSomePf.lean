@@ -106,9 +106,6 @@ end Formalism.L2.SG.Pf.ThSomePf
 
 namespace Formalism.L2.SG.Pf.ThSomePf
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB
-open Formalism.L2.SG.LsDatumB
-open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -223,9 +220,7 @@ end Formalism.L2.SG.Pf.ThSomePf
 
 namespace Formalism.L2.SG.Pf.ThSomePf
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB
 open Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermLoc
-open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -306,9 +301,6 @@ end Formalism.L2.SG.Pf.ThSomePf
 
 namespace Formalism.L2.SG.Pf.ThSomePf
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB
-open Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermLoc
-open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -344,9 +336,6 @@ end Formalism.L2.SG.Pf.ThSomePf
 
 namespace Formalism.L2.SG.Pf.ThSomePf
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB
-open Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermLoc
-open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -413,9 +402,6 @@ end Formalism.L2.SG.Pf.ThSomePf
 
 namespace Formalism.L2.SG.Pf.ThSomePf
 
-open NumberField IsDedekindDomain ValuativeRel Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB
-open Formalism.L2.SG.LsDatumB Formalism.L2.SG.TermLoc
-open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -525,7 +511,6 @@ namespace Formalism.L2.SG.Pf.ThSomePf
 
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut
 open Formalism.L2.SG.LsDatumB Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB Formalism.L2.SG.TermLoc
-open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -694,9 +679,6 @@ end Formalism.L2.SG.Pf.ThSomePf
 
 namespace Formalism.L2.SG.Pf.ThSomePf
 
-open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.DataCut
-open Formalism.L2.SG.LsDatumB Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.LocUnramB Formalism.L2.SG.TermLoc
-open scoped Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

@@ -130,8 +130,6 @@ end FiniteGroups
 
 section TextTau
 
-open MeasureTheory NumberField IsDedekindDomain
-open scoped TensorProduct ENNReal Matrix
 
 namespace Size
 
@@ -174,7 +172,6 @@ end TextTau
 
 section SpectralGap₂
 
-open Finset Matrix MeasureTheory
 
 section GapStatementAlt
 

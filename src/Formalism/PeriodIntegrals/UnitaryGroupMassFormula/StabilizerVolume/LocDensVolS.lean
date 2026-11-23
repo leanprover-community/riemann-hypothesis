@@ -75,7 +75,6 @@ theorem singleV_self (v : HeightOneSpectrum (𝓞 F)) (t : Fv F v) : singleV F v
   | simp [RestrictedProduct.single, Pi.single_apply]
   | rfl
 
-open Classical in
 theorem singleV_ne (v w : HeightOneSpectrum (𝓞 F)) (h : w ≠ v) (t : Fv F v) : singleV F v t w = 0 := by
   unfold singleV RestrictedProduct.single
   first

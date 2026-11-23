@@ -661,7 +661,6 @@ open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B4
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -919,11 +918,9 @@ end ck
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U Formalism.REAL Formalism.QuantumDeterminants
 
 section cont
 
@@ -1132,7 +1129,6 @@ end cd
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
@@ -1234,11 +1230,9 @@ theorem slice_bound (hM : SliceMem) (hR : RadicalParam) (hZh : ZhSlice) (hC : De
 
 end Formalism.FourierDecayAlt.P.Ux10
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.Ux10
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.B4
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

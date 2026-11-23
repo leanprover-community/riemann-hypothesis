@@ -55,7 +55,6 @@ def nz (la : Fin n' → Fin (r + K) → ℕ) (j x : ℤ) : ℕ :=
   (X.a' p K (posOf n' x) - ∑ c, la (posOf n' x) c) / X.Pz p K j x
 
 
-open Classical in
 def EE (la : Fin n' → Fin (r + K) → ℕ) : Finset (Fin X.F.J → Fin r → ℕ) :=
   Fintype.piFinset fun j : Fin X.F.J => Fintype.piFinset fun i : Fin r =>
     (Finset.range (r * X.Qc p K (j.val : ℤ))).filter fun e =>
@@ -67,7 +66,6 @@ def eZ (e : Fin X.F.J → Fin r → ℕ) (j : ℤ) : Fin r → ℕ :=
   if h : 0 < X.F.J then e ⟨(j % (X.F.J : ℤ)).toNat % X.F.J, Nat.mod_lt _ h⟩ else 0
 
 
-open Classical in
 def bfam (la : Fin n' → Fin (r + K) → ℕ) (e : Fin X.F.J → Fin r → ℕ) (j : ℤ) : ℤ → ℕ := fun x =>
   if x ∈ X.F.letters j then
     if X.F.IsW j x then
@@ -78,7 +76,6 @@ def bfam (la : Fin n' → Fin (r + K) → ℕ) (e : Fin X.F.J → Fin r → ℕ)
   else 0
 
 
-open Classical in
 def setTau (j : ℤ) (b : ℤ → ℕ) (e : Fin r → ℕ) : ℤ → ℕ := fun x =>
   if X.F.fr j 0 ≤ x ∧ x ≤ X.F.fr j (r - 1) then ∑ i : Fin r, if x = X.F.fr j i.val then e i else 0 else b x
 
@@ -93,7 +90,6 @@ def segBound (j : ℤ) (b : ℤ → ℕ) : ℝ :=
     (((X.Qc p K j : ℕ) : ℝ) ^ (r - 1) * max 0 (1 - (r : ℝ) / (2 * X.Y))) ^ r
 
 
-open Classical in
 def SegOK [NeZero r] [NeZero K] (O : Type) [CommRing O] (j : ℤ) (G : (ℤ → ℕ) → ℝ) : Prop :=
   (∀ b, 0 ≤ G b) ∧
   (∀ b b' : ℤ → ℕ, (∀ x ∈ X.toLate j, b x = b' x) → G b = G b') ∧

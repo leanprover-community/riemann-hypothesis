@@ -284,7 +284,6 @@ end Forms
 
 section Local
 
-open NumberField IsDedekindDomain ReciprocityTheory.Aut Formalism.AUTREP
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
@@ -332,8 +331,6 @@ def redMat (v : HeightOneSpectrum (𝓞 L⁺)) {ι R : Type} [CommRing R] (red :
   fun a b => red (intLift v (x a b))
 
 
-open scoped Classical in
-open Classical in
 def glOf {ι R : Type} [Fintype ι] [DecidableEq ι] [CommRing R] (M : Matrix ι ι R) : GL ι R :=
   if h : IsUnit M.det then M.nonsingInvUnit h else 1
 

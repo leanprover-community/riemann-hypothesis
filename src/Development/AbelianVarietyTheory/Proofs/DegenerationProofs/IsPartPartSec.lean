@@ -85,7 +85,6 @@ def part (χ : X) (s : R) : R := f (cf hb χ s) * m (Multiplicative.ofAdd χ)
 theorem part_eq_zero {χ : X} {s : R} (h : cf hb χ s = 0) : part hb χ s = 0 := by
   rw [part, h, map_zero, zero_mul]
 
-open Classical in
 theorem part_mono (χ ψ : X) (b : A) :
     part hb χ (f b * m (Multiplicative.ofAdd ψ)) =
       if ψ = χ then f b * m (Multiplicative.ofAdd ψ) else 0 := by
@@ -202,7 +201,6 @@ def partSec (φ : (Φ.H d).Sec) (α : Φ.E.X) : (Φ.H d).Sec where
     refine (rr _ _ _).trans (e₁.trans ((congrArg _ e₄).trans (e₂.symm.trans ?_)))
     exact ((map_mul (resG _ (q.preimage_mono W.2)) _ _).trans (congrArg₂ (· * ·) hw (rr _ _ _))).symm
 
-open Classical in
 theorem wt_partSec (φ : (Φ.H d).Sec) (α β : Φ.E.X) (l : Φ.N₀.ι) :
     Φ.wt (partSec Φ φ α) β l = if α = β then Φ.wt φ α l else 0 :=
   cf_mono (Φ.D.coord (Φ.ch l) (Φ.N₀.U l) (Φ.aff l) (Φ.le l)) β α _

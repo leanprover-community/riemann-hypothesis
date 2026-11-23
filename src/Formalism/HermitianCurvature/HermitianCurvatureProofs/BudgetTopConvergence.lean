@@ -180,22 +180,13 @@ theorem derivBoundOfDecay : DerivBoundOfDecay := by
 end Formalism.FourierDecayAlt.P.Ux7
 
 open Formalism.FourierDecayAlt.P.Ux7 in
-open Formalism.FourierDecayAlt.P.Ux7 in
-open Formalism.FourierDecayAlt.P.Ux7 in
 theorem Formalism.FourierDecayAlt.P.budget_second_corollary : Formalism.FourierDecayAlt.U.DerivativeBudgetCount := by
   exact budget_second_corollary_holds
-open Formalism.FourierDecayAlt.P.Ux7 in
 theorem Formalism.FourierDecayAlt.P.thresholds_second_corollary : Formalism.FourierDecayAlt.U.GermThresholds := by
   exact thresholds_second_corollary_holds
-open Formalism.FourierDecayAlt.P.Ux7 in
-open Formalism.FourierDecayAlt.P.Ux7 in
-open Formalism.FourierDecayAlt.P.Ux7 in
-open Formalism.FourierDecayAlt.P.Ux7 in
 theorem Formalism.FourierDecayAlt.P.scale_matching : Formalism.FourierDecayAlt.U.ScaleMatch := by
   exact scaleMatch
-open Formalism.FourierDecayAlt.P.Ux7 in
 theorem Formalism.FourierDecayAlt.P.power_matching : Formalism.FourierDecayAlt.U.PowerMatch := by
   exact powerMatch
-open Formalism.FourierDecayAlt.P.Ux7 in
 theorem Formalism.FourierDecayAlt.P.derivative_bound_of_decay : Formalism.FourierDecayAlt.U.DerivBoundOfDecay := by
   exact derivBoundOfDecay

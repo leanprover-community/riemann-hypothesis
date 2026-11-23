@@ -69,7 +69,6 @@ lemma sum_single_embedding_extend_le {E : Type} [Field E] [NumberField E] (e : E
   · intro h
     exact absurd (Finset.mem_univ e) h
 
-open Classical in
 lemma DF_wtA_le {D : D7} {j : ℕ} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} (Dw : Datum H)
     (w : WeightFamilies.Wt D j) :
     DF Dw (wtA w) ≤ ∑ t, ((∑ i, w.aP t i) + ∑ i, w.aM t i) := by

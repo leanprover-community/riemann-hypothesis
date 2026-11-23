@@ -61,7 +61,6 @@ theorem an_cntT_eq [Fintype L] {n m q : ℕ} (M : Matrix (Fin n) (Fin n) L)
   ext X
   simp [anP]
 
-open Classical in
 theorem an_fiber [Fintype L] {n m q : ℕ} {M : Matrix (Fin n) (Fin n) L}
     (hadd : ∀ a b : L, (a + b) ^ q = a ^ q + b ^ q) (hinv : ∀ a : L, (a ^ q) ^ q = a)
     (hM : IsHerm q M) (W : Submodule L (Fin n → L)) (b : L) (w : Fin m → L) (x : Fin n → L)

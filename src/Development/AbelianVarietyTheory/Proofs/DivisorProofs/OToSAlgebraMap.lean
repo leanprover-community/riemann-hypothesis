@@ -95,7 +95,6 @@ def ind (S : Finset (HeightOneSpectrum (𝓞 F))) : FiniteAdeleRing (𝓞 F) F :
     · exact one_mem _
     · exact zero_mem _⟩
 
-open Classical in
 theorem ind_apply (S : Finset (HeightOneSpectrum (𝓞 F))) (v : HeightOneSpectrum (𝓞 F)) :
     ind S v = if v ∈ S then 1 else 0 := rfl
 

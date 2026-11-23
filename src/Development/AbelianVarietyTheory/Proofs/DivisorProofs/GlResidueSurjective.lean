@@ -227,7 +227,6 @@ theorem Q_base (h : L.Is μ₀) : L.Q μ₀ = ∅ := by
   exact h1 fun _ _ => rfl
 
 
-open Classical in
 theorem not_conj (h : L.Is μ₀) (t : T) : ∀ P ∈ L.Pg ∪ L.Q t, ∀ P' ∈ L.Pg ∪ L.Q t, ¬ Lev.IsConjPl P P' := by
   intro P hP P' hP' hc
   rcases Finset.mem_union.1 hP with hP | hP <;> rcases Finset.mem_union.1 hP' with hP' | hP'

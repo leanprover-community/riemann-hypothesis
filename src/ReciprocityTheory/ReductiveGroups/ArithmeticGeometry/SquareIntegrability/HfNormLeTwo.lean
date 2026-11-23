@@ -72,7 +72,6 @@ theorem norm_sgnT {dim : (E →+* ℂ) → ℕ} {n nb : ℕ} (bs : Fin nb → Bl
   rcases Int.units_eq_one_or (Equiv.Perm.sign (T j r)) with h | h <;> simp [h]
 
 
-open Classical in
 theorem jof_core (hx : Ext.All) (hs : SplitStatement) (hc : CharStatement) (ht : ColTorusStatement)
     (ha : ColAbelStatement) (he : ColEmptyStatement) [IsCMField E] (X : PT E) {n nb : ℕ}
     (bs : Fin nb → Block E n X.dim) (hD : Disj bs) (P : Par X (DF bs)) :

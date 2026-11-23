@@ -70,7 +70,6 @@ def Nm (x : Γ) : M2 R := !![aa k u x, bb k u x; bb k u x, aa k u x]
 open Classical in
 def xg (g : Γ) : Γ := if g ∈ H then g else g * g0⁻¹
 
-open Classical in
 def sg (g : Γ) : R := if g ∈ H then 1 else -1
 
 def tauF (g : Γ) : M2 R :=
@@ -193,7 +192,6 @@ theorem form (hy : Hyp H k u g0) (g : Γ) :
     split_ifs <;> ring
   exact form_of _ _ _ hab hs
 
-open Classical in
 theorem cont_ite {X Y : Type} [Group X] [TopologicalSpace X] [TopologicalSpace Y] (H : Subgroup X)
     (hs : IsClopen (H : Set X)) {f g : X → Y} (hf : Continuous f) (hg : Continuous g) :
     Continuous fun x => if x ∈ H then f x else g x := by
@@ -285,7 +283,6 @@ def PP (e : ℤ) (A : ValuationSubring Ω) : Prop :=
   ∀ h : G K' Ω, resQ K' h ∈ Ine (F := ℚ) A → κ h = cycBar K' Ω l h ^ e
 
 
-open Classical in
 def sA (m : ℕ) (A : ValuationSubring Ω) : c.O := if PP K' κ (m : ℤ) A then 1 else -1
 
 end Kap

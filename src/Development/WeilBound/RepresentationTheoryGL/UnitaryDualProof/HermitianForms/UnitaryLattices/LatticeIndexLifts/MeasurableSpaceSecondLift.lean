@@ -131,7 +131,6 @@ theorem sect_spec {ξ : Fin (m + 1) → k} (h : ξ ≠ 0) :
   exact Classical.choose_spec (GlobalTheory.T.exists_GL_last_basis_vecMul_eq k m ξ h)
 
 
-open Classical in
 def Df (ξ : Fin (m + 1) → k) : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ := if ξ = 0 then 0 else Ct gl s C (sect ξ)
 
 theorem Df_zero : Df gl s C (0 : Fin (m + 1) → k) = 0 := by

@@ -52,10 +52,7 @@ end
 end Formalism.FourierDecayAlt.P.CutBP.GT
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate InnerProductSpace
 noncomputable section
-open Classical
 
 noncomputable def _root_.Formalism.FourierDecayAlt.P.CutBP.GLFibreCpt : Prop :=
   P5.ThmPActualCpt → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -70,10 +67,7 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate InnerProductSpace
 noncomputable section
-open Classical
 
 noncomputable def _root_.Formalism.FourierDecayAlt.P.CutBP.GLGramCpt : Prop :=
   P5.ThmPActualCpt → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -88,10 +82,8 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
 open scoped ComplexConjugate ENNReal InnerProductSpace
 noncomputable section
-open Classical
 
 noncomputable def _root_.Formalism.FourierDecayAlt.P.CutBP.GermDataLowAllCpt : Prop :=
   P5.ThmPActualCpt → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -104,10 +96,7 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate InnerProductSpace
 noncomputable section
-open Classical
 
 noncomputable def _root_.Formalism.FourierDecayAlt.P.CutBP.GLContCpt : Prop :=
   P5.ThmPActualCpt → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -125,7 +114,6 @@ namespace Formalism.FourierDecayAlt.KB
 open Finset Filter Topology NumberField MeasureTheory Matrix Formalism.QuantumDeterminants
 open scoped ComplexConjugate
 noncomputable section
-open Classical
 
 noncomputable def _root_.Formalism.FourierDecayAlt.KB.PStdCpt : Prop :=
   P5.ThmPActualCpt → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -153,7 +141,6 @@ noncomputable def _root_.Formalism.FourierDecayAlt.P.TBBx5.CurvatureIntegralOfPa
 end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P.TBBx5
-open Formalism.FourierDecayAlt
 
 noncomputable def _root_.Formalism.FourierDecayAlt.P.TBBx5.IntegralFourFromComponentsCpt : Prop :=
   P5.ThmPActualCpt → KB.SizeStdCpt → KB.DegLift → PBL.FormPosCpt →
@@ -165,10 +152,7 @@ noncomputable def _root_.Formalism.FourierDecayAlt.P.TBBx5.IntegralFourFromCompo
 end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate InnerProductSpace
 noncomputable section
-open Classical
 
 noncomputable def _root_.Formalism.FourierDecayAlt.P.CutBP.GLGermCpt : Prop :=
   P5.ThmPActualCpt → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -189,7 +173,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
 noncomputable section
 
 noncomputable def _root_.Formalism.FourierDecayAlt.P.CutBP.NFTopFormAllCpt : Prop :=
@@ -203,10 +186,7 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal InnerProductSpace
 noncomputable section
-open Classical
 
 noncomputable def _root_.Formalism.FourierDecayAlt.P.CutBP.GermDataTopAllCpt : Prop :=
   P5.ThmPActualCpt → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]

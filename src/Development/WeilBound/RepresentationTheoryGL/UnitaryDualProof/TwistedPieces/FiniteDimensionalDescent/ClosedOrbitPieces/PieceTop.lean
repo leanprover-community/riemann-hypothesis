@@ -55,7 +55,6 @@ def re {d r : ℕ} (γ : Fin d → Fin r → k) (s : Fin r → Matrix (Fin N) (F
   ∑ l, ∑ j, γ l j • (s j * ε ^ (l : ℕ))
 
 
-open Classical in
 structure SData (Z : Subalgebra k (Matrix (Fin N) (Fin N) k)) (χ : k[X]) (q : ℕ) where
   r : ℕ
   d : ℕ

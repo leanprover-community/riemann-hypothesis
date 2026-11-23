@@ -116,7 +116,6 @@ def IsV {y : Lc.Pt Lc.Xm} {La : Lc.Unim} (x : D.host.E) (l : G.Lt y La) : Prop :
   ‖G.sgE y (G.ltype y La l) x‖ < 1
 
 
-open Classical in
 def subV {y : Lc.Pt Lc.Xm} {La : Lc.Unim} (x : D.host.E) (yy : G.Lt y La → (Lc.fld y).C)
     (P : MvPolynomial (G.Lt y La) (Lc.fld y).C) : MvPolynomial (G.Lt y La) (Lc.fld y).C :=
   MvPolynomial.bind₁ (fun l => if G.IsV x l then MvPolynomial.C (yy l) else MvPolynomial.X l) P

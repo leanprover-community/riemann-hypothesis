@@ -519,7 +519,6 @@ end RecD
 
 section LaPS
 
-open Formalism.MainNotions.S.LocalSplitGroups Formalism.MainNotions.JointEigenvalueBoundsFromAnyDatum Formalism.MainNotions.LocalModelPeriodLattices
 
 section G
 

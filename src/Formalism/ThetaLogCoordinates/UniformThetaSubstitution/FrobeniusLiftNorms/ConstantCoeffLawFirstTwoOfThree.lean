@@ -69,7 +69,6 @@ theorem continuous_pderiv {R τ : Type} [CommRing R] [TopologicalSpace R] [IsTop
   exact (WithPiTopology.continuous_coeff R _).mul continuous_const
 
 
-open MvPowerSeries in
 theorem pderiv_subst {R σ τ : Type} [CommRing R] [Fintype σ] {a : σ → MvPowerSeries τ R}
     (ha : HasSubst a) (e : τ) (H : MvPowerSeries σ R) :
     pderiv (R := R) e (subst a H) = ∑ i, subst a (pderiv (R := R) i H) * pderiv (R := R) e (a i) := by
@@ -222,7 +221,6 @@ end Alg
 
 section Norm
 
-open MvPowerSeries
 
 variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
@@ -372,7 +370,6 @@ theorem FirstDeriv_of (hL : LawSymm) : FirstDeriv := by
   rw [hfin, ← hC]
   exact LogarithmEquivalence.integral_mul' (integral_single_log_derivative hp hnp 0) hI
 
-open GramFrameCompositionLinFacts MvPowerSeries in
 theorem CobLin_of (_hL : LawSymm) : CobLin := by
   intro K _ _ _ p _ _ F hF G hG hS
   obtain ⟨hF0, -, -⟩ := hF
@@ -446,7 +443,6 @@ theorem not_one_modEq {p : ℕ} (hp : 2 ≤ p) : ¬ 1 ≡ p [MOD p ^ 2 - 1] := b
 
 end GramFrameCompositionLinFacts
 
-open GramFrameCompositionLinFacts MvPowerSeries in
 theorem StepI_of (h1 : LemmaOne) (hF : FirstDeriv) (hC : CobLin) : StepI := by
   intro K _ _ _ _ p σ hU F hLaw G hS hd1 hd2
   have hp : p.Prime := hU.1

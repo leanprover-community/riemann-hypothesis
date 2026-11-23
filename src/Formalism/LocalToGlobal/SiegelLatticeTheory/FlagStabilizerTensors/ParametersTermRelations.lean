@@ -234,7 +234,6 @@ end Data
 
 section SOf
 
-open Formalism.L2.SG.Full
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} (hF : FinX Y)
 
@@ -346,7 +345,6 @@ end Iso
 
 section Ties
 
-open Formalism.L2.SG.Full
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} (hF : FinX Y)
 
@@ -374,7 +372,6 @@ end Ties
 
 section Link
 
-open Formalism.L2.SG.Full
 
 def ParametersTermRelations (D : D7) (L : SizeData₂ D) : Prop :=
   0 ≤ L.sc.b → IsoNorm →

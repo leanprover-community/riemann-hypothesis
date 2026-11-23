@@ -110,7 +110,6 @@ noncomputable def lo (S : Finset (Fin m → SignType)) : Fin m → SignType :=
   if h : S.Nonempty then (S.exists_min_image rk h).choose else 0
 
 
-open Classical in
 noncomputable def hi (S : Finset (Fin m → SignType)) : Fin m → SignType :=
   if h : S.Nonempty then (S.exists_max_image rk h).choose else 0
 

@@ -658,7 +658,6 @@ theorem exists_index_le_two {δ : Fˣ} (hns : ¬ IsSquare (δ : F))
 def hsLeft (p : Place F) (b : Fˣ) : Fˣ →* ℤˣ := MonoidHom.mk' (fun a => hs p a b)
   fun a a' => hs_mul_left p a a' b
 
-open Classical in
 theorem hs_prod (L : Finset (Place F)) (c : Place F → Fˣ) (q : Place F) (b : Fˣ)
     (h1 : q ∈ L → c q ∉ nrm q b) (h2 : ∀ p ∈ L, p ≠ q → c p ∈ nrm q b) :
     hs q (∏ p ∈ L, c p) b = if q ∈ L then -1 else 1 := by

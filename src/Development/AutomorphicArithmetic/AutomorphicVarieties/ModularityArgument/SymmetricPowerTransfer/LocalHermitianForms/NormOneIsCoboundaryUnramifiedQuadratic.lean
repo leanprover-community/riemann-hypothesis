@@ -91,7 +91,6 @@ def cls (S : Set (Etau K τ)) : Set (Set (Etau K τ)) := {S' | ∃ s : Kˣ, S' =
     simp [← Set.image_comp, Function.comp_def, mul_assoc]
 
 
-open Classical in
 def vcount (x : Etau K τ) : ℂ := by
   classical
   letI := mulAct τ

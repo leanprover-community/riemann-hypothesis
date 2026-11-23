@@ -188,7 +188,6 @@ def DegLeftActC : Prop :=
       (Aset Y.TR (Y.cs u))
 
 
-open Formalism.L2.SG.NormCut in
 def DegRightActC : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word), ConcTie X Y →
     OOIntAll X u u (X.Fu u) (X.Fu u) (Y.what₂ u) (Y.what₂ u) → AmpWellDef (X.Fu u) (X.Fu u) (Y.cs u) (Y.cs u) →
@@ -197,11 +196,9 @@ def DegRightActC : Prop :=
       (Aset Y.TR (Y.cs u))
 
 
-open Formalism.L2.SG.NormCut in
 def ChiNBiC : Prop := ∀ (D : D7) (X : HidaSetting D), ChiNBi X
 
 
-open Formalism.L2.SG.NormCut in
 def ColFreeC : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word), ConcTie X Y →
     ColFree (X.Fu u) Y.TR (Y.cs u) (Aset Y.TR (Y.cs u)) (scOf Y.TR (Y.cs u))
@@ -328,7 +325,6 @@ namespace Formalism.L2.SG.Pf
 open Formalism.L2.SG.Pf.MainEqCut
 
 
-open Formalism.L2.SG.NormCut in
 theorem normExpDegC_of (hHS : HSBlocks) (hFo : FoldOKC) (hO : OOIntAllC) (hA : AbsConvC) (hAW : AmpWellDefC)
     (hOF : OOFundIndepC) (hB : ChiNBiC) (hF : ColFreeC) (hLA : DegLeftActC) (hRA : DegRightActC) : NormExpDegC := by
   intro D X Y u hT
@@ -357,7 +353,6 @@ end Formalism.L2.SG.Pf
 
 namespace Formalism.L2.SG.Pf.MainEqCut
 
-open Finset
 
 variable {Cl Nu : Type}
 
@@ -508,7 +503,6 @@ end Formalism.L2.SG.Pf.MainEqCut
 
 namespace Formalism.L2.SG.Pf
 
-open Formalism.L2.SG.Pf.MainEqCut
 
 theorem typedCountC_of (hS : Formalism.L2.SG.Pf.SatGramLoc.SplitPrimeLoc) (hRC : Formalism.L2.SG.Pf.SatGramLoc.RedCore) :
     TypedCountC := by

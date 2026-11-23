@@ -127,7 +127,6 @@ def hxPr (i : ℕ) (v : (D.mem u).A.vT) (c : (D.mem u).C.cls i) : ↥(CH.Ld D u 
   if hi : i ≤ D.R.m then ((P i hi).pr v c).comp (hxLd i hi c) else 0
 
 
-open Classical in
 def hxPrk (i : ℕ) (v : (D.mem u).A.vT) (c : (D.mem u).C.cls i) : ↥(CH.Lk D u (A.Pv v) i c) →+ (D.fm u).lk i v c :=
   if hi : i ≤ D.R.m then ((P i hi).prk v c).comp (hxLk A i hi v c) else 0
 

@@ -405,7 +405,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Qx8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -474,7 +473,6 @@ end Formalism.FourierDecayAlt.P.Qx8
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -482,7 +480,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Qx8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -588,7 +585,6 @@ end Formalism.FourierDecayAlt.P.Qx8
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -602,7 +598,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Qx8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1144,7 +1139,6 @@ end Formalism.FourierDecayAlt.P.Qx8
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1243,7 +1237,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Qx8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1626,7 +1619,6 @@ end CDentries
 
 section Germ
 
-open Topology
 
 variable {m : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -1634,7 +1626,6 @@ end Germ
 
 section FamMod
 
-open Topology
 
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp]
   [NormedAddCommGroup Wq] [NormedSpace ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
@@ -1680,7 +1671,6 @@ end FamRing
 
 section Step
 
-open Topology Formalism.YangianSpanCharacter.T
 
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp]
   [NormedAddCommGroup Wq] [NormedSpace ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
@@ -1691,7 +1681,6 @@ end Step
 
 section Final
 
-open Topology Formalism.YangianSpanCharacter.T
 
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp]
   [NormedAddCommGroup Wq] [NormedSpace ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
@@ -1718,7 +1707,6 @@ end Formalism.FourierDecayAlt.P.Qx8
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1726,7 +1714,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Qx8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1744,7 +1731,6 @@ end OneParam
 
 section RepDer
 
-open Topology
 
 def IsLin {W : Type*} [AddCommGroup W] [Module ℂ W] (T : W → W) : Prop :=
   ∀ (a b : W) (c : ℂ), T (a + c • b) = T a + c • T b
@@ -2353,7 +2339,6 @@ end Params
 
 section Spectral
 
-open Formalism.FourierDecayAlt.M
 
 theorem frame_sub {k r m : ℕ} {vs vs' : List (Fin (2 * r + k + 1) → ℂ)} {Bs : Fin m → Fin (2 * r + k + 1) → ℂ}
     (h : IsFrameOf k r vs Bs) (hsub : ∀ v ∈ vs', v ∈ vs) : IsFrameOf k r vs' Bs :=
@@ -2363,7 +2348,6 @@ end Spectral
 
 section Core
 
-open Formalism.FourierDecayAlt.M
 
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp]
   [NormedAddCommGroup Wq] [NormedSpace ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
@@ -2372,7 +2356,6 @@ end Core
 
 section Core2
 
-open Formalism.FourierDecayAlt.M
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq] [NormedSpace ℂ Wq]
 
@@ -2382,7 +2365,6 @@ end Formalism.FourierDecayAlt.P.Qx8
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx8
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

@@ -250,7 +250,6 @@ theorem card_basis_eq (htf : ∀ (n : ℕ) (x : Λ), n ≠ 0 → n • x = 0 →
 
 
 omit [IsCMField E] in
-open Classical in
 theorem det_gram_index (f : Λ →+ Λ →+ ℝ) {I : Submodule (𝓞 E) Λ} {ρ : ℕ} {v : Fin ρ → Λ}
     (hv : IsNzFamily I ρ v) {m : ℕ} (b : Module.Basis (Fin m) ℤ I) (hm : m = ρ * Module.finrank ℚ E) :
     (Matrix.of fun p q => f (towerZBasis hv.2.2.1 p : Λ) (towerZBasis hv.2.2.1 q : Λ)).det =

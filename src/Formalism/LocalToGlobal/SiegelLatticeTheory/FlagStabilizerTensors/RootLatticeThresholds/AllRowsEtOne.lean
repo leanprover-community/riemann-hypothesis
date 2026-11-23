@@ -169,7 +169,6 @@ def Nc (k : Fin 2) (f : Polynomial (ZMod (D.host.g k))) : ℂ := (eJk D k (ψ₀
 
 def Zc (k : Fin 2) : ℂ := (eJk D k (ψ₀ k)).coeff 1
 
-open Classical in
 include hS in
 theorem val_eT_sum (P : G0g D.nd) (ψ : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), AddChar (ZMod (D.host.g kv.1)) ℂ)
     (hψ : ∀ kv, ψ kv ≠ 1) (hψ₀ : ∀ k, ψ₀ k ≠ 1)
@@ -239,7 +238,6 @@ section Cyl
 variable (ψ₀ : ∀ k : Fin 2, AddChar (ZMod (D.host.g k)) ℂ)
 
 
-open Classical in
 theorem sum_cyl (k : Fin 2) (S : Finset (Tup D k)) :
     ∑ a ∈ Finset.univ.filter (fun a : CV D => tupOf a ∈ cyl D k (S : Set (Tup D k))),
         ∏ kv : (Σ k : Fin 2, D.nd.PlG k), Nc ψ₀ kv.1 (Formalism.CyclotomicNorms.monicOf (a kv)) =

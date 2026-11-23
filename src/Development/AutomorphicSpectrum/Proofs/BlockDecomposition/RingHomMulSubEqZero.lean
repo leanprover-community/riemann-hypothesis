@@ -159,7 +159,6 @@ theorem ring_hom_mul_sub_eq_zero {A B : Type*} [CommRing A] [CommRing B] (f : A 
   rw [map_sub, map_mul, hc, h, sub_self]
 
 
-open Classical in
 theorem tensor_key {E : Type} [Field E] [Algebra F E] (S : Finset (HeightOneSpectrum (𝓞 F)))
     (e : AF F ⊗[F] E) (hi : ∀ w, compInf F E w e = 1)
     (hf : ∀ v, compFin F E v e = if v ∈ S then 1 else 0) (q : F) :

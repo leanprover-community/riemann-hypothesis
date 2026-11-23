@@ -74,7 +74,6 @@ theorem sum_mul_conj (χ ψ : G →* ℂˣ) :
 noncomputable def dif (A B : Finset (G →* ℂˣ)) (z : G) : ℂ :=
   ∑ χ ∈ A, ((χ z : ℂˣ) : ℂ) - ∑ χ ∈ B, ((χ z : ℂˣ) : ℂ)
 
-open Classical in
 theorem inner_dif (A B : Finset (G →* ℂˣ)) (ψ : G →* ℂˣ) :
     ∑ z, dif A B z * conj ((ψ z : ℂˣ) : ℂ) =
       (Fintype.card G : ℂ) * ((if ψ ∈ A then 1 else 0) - (if ψ ∈ B then 1 else 0)) := by

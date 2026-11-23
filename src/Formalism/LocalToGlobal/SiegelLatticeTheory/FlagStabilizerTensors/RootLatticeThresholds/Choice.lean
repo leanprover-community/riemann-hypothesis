@@ -744,7 +744,6 @@ end Formalism.L2.SG.Pf.Choice
 
 namespace Formalism.L2.SG.Pf
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.Choice
 
 theorem cfS_ne (D : D7) : cfS D ≠ 0 := by
   unfold Formalism.L2.SG.LocWSOf.cfS
@@ -859,7 +858,6 @@ end Cols
 
 section Cols2
 
-open Formalism.L2.SG.HidaSetting Formalism.L2.SG.Pf.WFL
 
 variable {k r : ℕ}
 
@@ -884,7 +882,6 @@ end Cols2
 
 section Cols3
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf
 
 variable {D : D7} (X : HidaSetting D)
 
@@ -935,7 +932,6 @@ end Formalism.L2.SG.Pf.Choice
 
 namespace Formalism.L2.SG.Pf
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.Choice
 
 theorem colsTypeTr {D : D7} {X : HidaSetting D} {θ : ℝ} (C : Choice X θ) (u : D.what₂.Word) (τ : D.what₂.Tau) :
     ColsTypeTr C u τ := by
@@ -949,7 +945,6 @@ namespace Formalism.L2.SG.Pf.Choice
 
 section Psi
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf
 
 theorem hJ_QQ {n N : ℕ} (ε : Fin n → Bool) (Q : Matrix (Fin n) (Fin N) ℂ) (H : Matrix (Fin N) (Fin N) ℂ)
     (hg : Qᴴ * Formalism.REAL.Jm ε * Q = H) (y x : Fin N → ℂ) : hJ ε (Q *ᵥ y) (Q *ᵥ x) = star y ⬝ᵥ (H *ᵥ x) := by
@@ -1028,7 +1023,6 @@ end Formalism.L2.SG.Pf.Choice
 
 namespace Formalism.L2.SG.Pf
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.Choice
 
 theorem psiTr {D : D7} {X : HidaSetting D} {θ : ℝ} (C : Choice X θ) (u : D.what₂.Word) (τ : D.what₂.Tau) : PsiTr C u τ := by
   intro m _
@@ -1062,7 +1056,6 @@ namespace Formalism.L2.SG.Pf.Choice
 
 section DSConj
 
-open Formalism.MainNotions.S
 open scoped InnerProductSpace
 
 variable {n : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
@@ -1157,7 +1150,6 @@ end DSConj
 
 section DSTr
 
-open Formalism.MainNotions.S
 
 variable {k r : ℕ}
 
@@ -1226,7 +1218,6 @@ end Formalism.L2.SG.Pf.Choice
 
 namespace Formalism.L2.SG.Pf
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.Choice
 
 theorem dsTr {D : D7} {X : HidaSetting D} {θ : ℝ} (C : Choice X θ) (τ : D.what₂.Tau) :
     IsDSHpk D.R.k D.R.rS (epsSH D.R) (lamD D τ) (sigB X (C.Q τ) (C.Qi τ) τ) := by

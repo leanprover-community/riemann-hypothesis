@@ -63,7 +63,6 @@ def DependsOn (k : ℕ) (θ : Ω) (φ : LCRing K Ω k) : Prop :=
   ∀ g g' : Fin k → (Ω ≃ₐ[K] Ω), (∀ i, g i θ = g' i θ) → φ g = φ g'
 
 
-open Classical in
 def pick (k : ℕ) (θ : Ω) (t : Fin k → Ω) : Fin k → (Ω ≃ₐ[K] Ω) := by
   classical
   exact if h : ∃ g : Fin k → (Ω ≃ₐ[K] Ω), ∀ i, g i θ = t i then h.choose else 1
@@ -72,7 +71,6 @@ variable {K Ω}
 variable {B : Type} [CommRing B]
 
 
-open Classical in
 def idem (g₀ : Ω →+* B) (θ : Ω) (b : B) (s : conj K Ω θ) : B := by
   classical
   exact g₀ (∏ j ∈ (Finset.univ : Finset (conj K Ω θ)).erase s, ((s : Ω) - (j : Ω)))⁻¹ *

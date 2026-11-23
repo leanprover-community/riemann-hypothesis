@@ -77,11 +77,9 @@ def tuOf (U : Set I.ι) : Finset (Tup B.fields.F B.fields.E B.fields.K I.S) :=
 abbrev TupU (U : Set I.ι) : Type := TupF (X := B.fields) (tuOf I U)
 
 
-open Classical in
 def ixOf (U : Set I.ι) (t : TupU I U) : I.ι := if h : ∃ a, I.tup a = t.1 then h.choose else I.mu0
 
 
-open Classical in
 def xiValOf (τ : Tup B.fields.F B.fields.E B.fields.K I.S) (P : HeightOneSpectrum (𝓞 B.fields.E)) : B.LLˣ :=
   if h : ∃ z : B.LLˣ, ∃ a, I.tup a = τ ∧ B.embLL (z : B.LL) = (((I.xi a).val P : ℂˣ) : ℂ) then h.choose else 1
 
@@ -93,7 +91,6 @@ def famC (hX : B.fields.Ok) (U : Set I.ι) (Xg : Finset (Gc B px → B.LL)) (tr 
   colIn3 (X := B.fields) (Pr := B.primes px) B.wts I.Ch I.sel hX (InfinitePlace.mk B.embLL) (tuOf I U) Xg ∅ (xiValOf I) tr
 
 
-open Classical in
 def psiC : ∀ PP : Pl B.host.E, AddChar (kP PP) B.LL :=
   fun PP => if h : PP ∈ (B.primes px).vGs then I.Ch.psi0 ⟨PP, h⟩ else 1
 

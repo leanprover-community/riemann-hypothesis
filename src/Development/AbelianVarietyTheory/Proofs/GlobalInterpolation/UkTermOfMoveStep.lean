@@ -407,7 +407,6 @@ theorem exists_up_of_dn {d₀ : Deco E a ST SG} (hd₀ : d₀.Ok) (h₀ : d₀.I
 
 end Count
 
-open Classical in
 theorem sum_ite_unique {α K : Type} [Field K] (s : Finset α) (p : α → Prop) (h : ∀ u ∈ s, ∀ v ∈ s, p u → p v → u = v) :
     (∑ u ∈ s, if p u then (1 : K) else 0) = if ∃ u ∈ s, p u then 1 else 0 := by
   split_ifs with he

@@ -89,7 +89,6 @@ def infMat : GInf σ J →* Matrix (Fin n × Σ w : InfinitePlace F, EmbOver E w
     (MonoidHom.pi fun t => (archMat σ J t.2).comp (projInfArch σ J t.1))
 
 
-open Classical in
 variable (σ) in
 theorem ccInf_eq : CcInf σ J = CcMat (infMat σ J) := by
   refine le_antisymm (ccSmooth_le (p := fun (y : (Fin n × Σ w : InfinitePlace F, EmbOver E w) → (Fin n × Σ w : InfinitePlace F, EmbOver E w) → ℂ) w τ i j => y (i, ⟨w, τ⟩) (j, ⟨w, τ⟩)) (by fun_prop) fun g => ?_)
@@ -103,7 +102,6 @@ theorem ccInf_eq : CcInf σ J = CcMat (infMat σ J) := by
     · exact contDiff_const
 
 
-open Classical in
 theorem isEmbedding_infMat (h : IsCMExt F E σ) : Topology.IsEmbedding (matCoord (infMat σ J)) := by
   let τ : ∀ w : InfinitePlace F, EmbOver E w := fun _ => Classical.arbitrary _
   have h1 := (Topology.IsEmbedding.piMap fun w => isEmbedding_archMat J h (τ w)).comp

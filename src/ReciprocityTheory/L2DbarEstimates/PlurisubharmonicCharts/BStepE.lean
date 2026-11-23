@@ -120,7 +120,6 @@ theorem bsE_sqn_s_pos (hD : A.D0 L w w0 s) (hF : A.Flat w0 s De)
   obtain ⟨ha, -, hZ, -, -⟩ := bsD_pos A hD hF hσ hX x hx
   rw [bsC_sqn_ratio A L s w0 x hx.1]; positivity
 
-open Classical in
 theorem bsE_meas (hD : A.D0 L w w0 s) (hF : A.Flat w0 s De)
     (hσ : A.IsFrameOn mu0 (A.Mset w0 s De) σ) (hX : ∃ i0 : Fin n, MvPolynomial.X i0 ∣ De)
     (T' : ℕ) (h : A.Mset w0 s De → ℂ) (hh : Holo n (flatStein A hD hF).z h) :
@@ -139,7 +138,6 @@ theorem bsE_meas (hD : A.D0 L w w0 s) (hF : A.Flat w0 s De)
   exact ContinuousOn.measurable_piecewise
     (ENNReal.continuous_ofReal.comp_continuousOn (h1.mul h2)) continuousOn_const hMo.measurableSet
 
-open Classical in
 theorem bsE_int (hD : A.D0 L w w0 s) (hF : A.Flat w0 s De)
     (hσ : A.IsFrameOn mu0 (A.Mset w0 s De) σ) (hX : ∃ i0 : Fin n, MvPolynomial.X i0 ∣ De)
     (T' : ℕ) (hT : 1 ≤ T') (hh : Fin n → A.Mset w0 s De → ℂ)
@@ -161,7 +159,6 @@ theorem bsE_int (hD : A.D0 L w w0 s) (hF : A.Flat w0 s De)
   have h3 := Real.exp_pos (-bsPh0 A w w0 s mu0 σ x)
   gcongr
 
-open Classical in
 theorem bsE_loc (hD : A.D0 L w w0 s) (hF : A.Flat w0 s De)
     (hσ : A.IsFrameOn mu0 (A.Mset w0 s De) σ) (hX : ∃ i0 : Fin n, MvPolynomial.X i0 ∣ De)
     (T' : ℕ) (hT : 2 ≤ T') (h : A.Mset w0 s De → ℂ) (hh : Holo n (flatStein A hD hF).z h)

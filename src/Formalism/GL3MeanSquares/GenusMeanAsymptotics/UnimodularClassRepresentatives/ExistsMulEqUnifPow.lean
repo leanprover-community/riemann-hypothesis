@@ -164,7 +164,6 @@ theorem nO_mul {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {z w : K} (hz : 
   rw [mul_comm (nO 𝔭 z)]
   exact h1.symm
 
-open NO in
 theorem nO_star (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) (z : K) :
     nO 𝔭 (star z) = nO 𝔭 z := by
   have hs : ∀ a : K, star a ∈ pK K 𝔭 0 ↔ a ∈ pK K 𝔭 0 := fun a =>
@@ -191,7 +190,6 @@ theorem nO_star (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaxima
   rw [h1, h2] at h3
   exact h3
 
-open NO in
 theorem nO_unit {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {z : K} (hz : z ∈ pK K 𝔭 0)
     (hz' : z⁻¹ ∈ pK K 𝔭 0) (hz0 : z ≠ 0) : nO 𝔭 z = 1 := by
   have h1 : zR 𝔭 z = (pK K 𝔭 0).toAddSubgroup := by
@@ -201,7 +199,6 @@ theorem nO_unit {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {z : K} (hz : z
   show (zR 𝔭 z).relIndex _ = 1
   rw [h1, AddSubgroup.relIndex_self]
 
-open NO in
 theorem nO_unif_pow (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)
     {π : 𝓞 F} (hπ : π ∈ 𝔭) (hπ' : π ∉ 𝔭 ^ 2) (k : ℕ) :
     nO 𝔭 (algebraMap F K (π : F) ^ k) = Ideal.absNorm 𝔭 ^ (2 * k) := by
@@ -358,7 +355,6 @@ theorem comap_scal {κ : Type} {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) 
 
 end NO
 
-open NO in
 theorem relIndex_matL (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)
     {κ : Type} [Fintype κ] (f g : κ → κ → K) (hf : ∀ i j, f i j ∈ pK K 𝔭 0 ∧ f i j ≠ 0)
     (hg : ∀ i j, g i j ∈ pK K 𝔭 0 ∧ g i j ≠ 0) (k c : ℕ)

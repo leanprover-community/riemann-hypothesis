@@ -245,11 +245,9 @@ def sing (v : HeightOneSpectrum (𝓞 F)) (x : Fv F v) : Af F :=
     rw [Function.update_of_ne hw]
     exact zero_mem _⟩
 
-open Classical in
 theorem sing_self (v : HeightOneSpectrum (𝓞 F)) (x : Fv F v) : evalV F v (sing v x) = x :=
   Function.update_self v x _
 
-open Classical in
 theorem sing_ne {v w : HeightOneSpectrum (𝓞 F)} (x : Fv F v) (h : w ≠ v) : evalV F w (sing v x) = 0 :=
   Function.update_of_ne h x _
 

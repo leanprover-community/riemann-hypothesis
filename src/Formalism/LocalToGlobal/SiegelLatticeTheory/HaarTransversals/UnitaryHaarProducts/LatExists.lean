@@ -190,13 +190,11 @@ end Gen
 end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
 namespace Formalism.L2.SG.Pf.LatEx
 
 section Gen2
 
-open Formalism.L2.SG.Saturated
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E}
 
@@ -273,13 +271,11 @@ end Gen2
 end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
 namespace Formalism.L2.SG.Pf.LatEx
 
 section GF
 
-open Formalism.L2.SG.Saturated
 
 theorem fi_neg {E : Type} [Field E] [NumberField E] {I : FractionalIdeal (nonZeroDivisors (𝓞 E)) E} {u : E}
     (hu : u ∈ I) : -u ∈ I :=
@@ -303,7 +299,6 @@ end GF
 end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain
 
 namespace Formalism.L2.SG.Pf.LatEx
 
@@ -637,7 +632,6 @@ end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated
 
 namespace Formalism.L2.SG.Pf.LatEx
 
@@ -711,7 +705,6 @@ end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated
 
 namespace Formalism.L2.SG.Pf.LatEx
 
@@ -733,7 +726,6 @@ end Formalism.L2.SG.Pf.LatEx
 
 noncomputable section
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat IsDedekindDomain Formalism.L2.SG.Saturated
 
 namespace Formalism.L2.SG.Pf.LatEx
 

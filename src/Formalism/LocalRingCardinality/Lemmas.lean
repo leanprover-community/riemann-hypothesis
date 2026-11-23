@@ -598,7 +598,6 @@ end Ext2
 
 section Ext3
 
-open IsDedekindDomain IsDiscreteValuationRing
 
 variable {A K : Type*} [CommRing A] [IsDedekindDomain A] [Field K] [Algebra A K] [IsFractionRing A K]
   (w : HeightOneSpectrum A)
@@ -713,7 +712,6 @@ theorem li_of_basis_li {K Kf V W ι₀ ι : Type*} [Field K] [Field Kf] [AddComm
 
 section Ext4
 
-open IsDedekindDomain IsDiscreteValuationRing
 
 variable {A K : Type*} [CommRing A] [IsDedekindDomain A] [Field K] [Algebra A K] [IsFractionRing A K]
   (w : HeightOneSpectrum A)
@@ -743,7 +741,6 @@ end Ext4
 
 section Fin
 
-open IsDedekindDomain IsDiscreteValuationRing
 
 theorem length_ne_top_of_smul {O Q : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [AddCommGroup Q]
     [Module O Q] [Module.Finite O Q] (t : O) (ht : t ≠ 0) (h : ∀ q : Q, t • q = 0) : Module.length O Q ≠ ⊤ := by
@@ -815,7 +812,6 @@ end Fin
 
 section Same
 
-open IsDedekindDomain IsDiscreteValuationRing
 
 variable {A K : Type*} [CommRing A] [IsDedekindDomain A] [Field K] [Algebra A K] [IsFractionRing A K]
   (w : HeightOneSpectrum A)
@@ -928,7 +924,6 @@ end LatCmp
 
 namespace LatCmp
 
-open Formalism.MainNotions.G IsDedekindDomain IsDiscreteValuationRing
 
 variable {D : D7} (c : LatCmp D)
 
@@ -1021,7 +1016,6 @@ end D7
 
 namespace LatCmp
 
-open Formalism.MainNotions.G IsDedekindDomain IsDiscreteValuationRing
 
 variable {D : D7} (c : LatCmp D)
 
@@ -1099,7 +1093,6 @@ theorem DV.lenLoc_eq_zero {K : Type} [Field K] [NumberField K] {V : Type} [AddCo
 
 namespace LatCmp
 
-open Formalism.MainNotions.G IsDedekindDomain IsDiscreteValuationRing
 
 variable {D : D7}
 
@@ -1145,7 +1138,6 @@ end LatCmp
 
 namespace LatCmp
 
-open Formalism.MainNotions.G IsDedekindDomain IsDiscreteValuationRing
 
 variable {D : D7} (c : LatCmp D)
 
@@ -1434,7 +1426,6 @@ theorem InLoc.map_iff {K : Type} [Field K] [NumberField K] {V W : Type} [AddComm
 
 namespace D7
 
-open IsDedekindDomain
 
 variable (D : D7)
 

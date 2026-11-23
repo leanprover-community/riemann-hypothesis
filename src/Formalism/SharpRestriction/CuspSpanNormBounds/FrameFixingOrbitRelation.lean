@@ -71,9 +71,6 @@ end Cnt
 
 section Cnt2
 
-open IsDedekindDomain MeasureTheory Formalism.MainNotions.S.LocalSplitGroups
-open scoped BigOperators
-open Classical
 
 variable {D : D7} {X : TermTie D} {δ : ∀ p : PlF D, (D.s.atP p).Fp}
   {M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep} {u u' : D.what₂.Word}
@@ -82,7 +79,6 @@ end Cnt2
 
 section FromLoc
 
-open Formalism.MainNotions.S.LocalSplitGroups
 
 end FromLoc
 

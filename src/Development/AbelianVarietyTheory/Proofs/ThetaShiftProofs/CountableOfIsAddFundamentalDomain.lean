@@ -460,7 +460,6 @@ theorem partialCoeff_eq_zero_iff (L : Submodule ℤ W) [DiscreteTopology L] [IsZ
   by_cases h : χ ∘ₗ j = ν <;> simp [h]
 
 
-open Classical in
 theorem partialCoeff_spec_map (L : Submodule ℤ W) [DiscreteTopology L] [IsZLattice ℝ L]
     {D : Set W} (hD : IsAddFundamentalDomain L D μ) {L₁ : AddSubgroup W₁} {D₁ : Set W₁}
     (hD₁ : IsAddFundamentalDomain L₁ D₁ μ₁) (h0 : μ₁ D₁ ≠ 0) (h1 : μ₁ D₁ ≠ ⊤)
@@ -489,7 +488,6 @@ theorem partialCoeff_spec_map (L : Submodule ℤ W) [DiscreteTopology L] [IsZLat
 
 
 omit [MeasurableSpace W] [BorelSpace W] in
-open Classical in
 theorem partialCoeff_spec_cube {ι : Type*} [Fintype ι] (ω : Basis ι ℝ W)
     {L₁ : AddSubgroup W₁} {D₁ : Set W₁}
     (hD₁ : IsAddFundamentalDomain L₁ D₁ μ₁) (h0 : μ₁ D₁ ≠ 0) (h1 : μ₁ D₁ ≠ ⊤)

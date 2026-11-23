@@ -101,7 +101,6 @@ def JSeg : Prop := ∀ Z : ∀ Δ : Segment k, IrrCl (GL (Fin (Δ.len * Δ.d)) k
     ∀ S ∈ vSets Δ, S ≠ ∅ → jmL (vWord Δ S) (IrrGL.rep (⟨Δ.len * Δ.d, Z Δ⟩ : IrrGL (k := k))) = 0
 
 
-open Classical in
 def AltSum : Prop := ∀ (Δ : Segment k) (h : ℕ) (Γ : Fin h → Segment k),
   ∑ S ∈ vSets Δ, (-1 : ℤ) ^ S.card * (shuffleCount (vWord Δ S) (fun i => decWord (Γ i)) : ℤ) =
     if Finset.univ.val.map Γ = {Δ} then (-1) ^ (Δ.len - 1) else 0

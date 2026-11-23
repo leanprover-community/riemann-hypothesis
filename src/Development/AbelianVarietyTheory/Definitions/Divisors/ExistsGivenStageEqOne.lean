@@ -155,7 +155,6 @@ open Classical in
 def locPl (G : GridData L sc) (t : T) : Finset (Pl D.host.E) := G.pl.W0 ∪ L.Q t
 
 
-open Classical in
 def cosExp (G : GridData L sc) (w : Pl D.host.E) : ℕ := if w ∈ G.pl.W0 then G.pl.depth sc (w.under (𝓞 D.host.F)) else 0
 
 def depthAt (G : GridData L sc) (w : Pl D.host.E) : ℕ := max (cosExp G w) 1
@@ -218,11 +217,9 @@ theorem isTame_muBase (w : Pl D.host.E) (j : ℕ) : IsTame ((muBase L j).loc w)�
   rw [MonoidHom.inv_apply, isTame_loc this x hx, inv_one]
 
 
-open Classical in
 def atPl (w : Pl D.host.E) (x : Kw w) : AE D := ((comp_toAd D).surj (RestrictedProduct.single _ w x)).choose
 
 
-open Classical in
 theorem atPl_spec (w : Pl D.host.E) (x : Kw w) :
     infPart D (atPl w x) = 0 ∧ ∀ Q, cpt (D := D) Q (toEAf D (atPl w x)) = (Pi.single w x : ∀ Q, Kw Q) Q :=
   have h := ((comp_toAd D).surj (RestrictedProduct.single _ w x)).choose_spec
@@ -358,7 +355,6 @@ theorem ixFin_val (j : ℕ) : (∀ a, (ixFin G t w j (.inl a)).val = a.val) ∧
 
 
 variable (L) in
-open Classical in
 def stepGroup (j : ℕ) : Subgroup (GL (Ix (Fin D.R.r) (Fin D.R.t) j) (Kw w)) :=
   if w ∈ L.Pg then
     ((TypeDatum.principal (Kw w) (Fin D.R.r)).iter (Fin D.R.t) (fun c => ((muBase L c).loc w)⁻¹) (isTame_muBase w) j).J
@@ -366,7 +362,6 @@ def stepGroup (j : ℕ) : Subgroup (GL (Ix (Fin D.R.r) (Fin D.R.t) j) (Kw w)) :=
 
 
 variable (L) in
-open Classical in
 def stepFn (j : ℕ) : Matrix (Ix (Fin D.R.r) (Fin D.R.t) (j + 1)) (Ix (Fin D.R.r) (Fin D.R.t) j) (Kw w) → ℂ :=
   if w ∈ L.Pg then
     (TypeDatum.principal (Kw w) (Fin D.R.r)).iterPhi (Fin D.R.t) (fun c => ((muBase L c).loc w)⁻¹) (isTame_muBase w) j

@@ -323,7 +323,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM
 
 section
 variable {K σ : Type} [Field K] [CharZero K] [Fintype σ] [DecidableEq σ] {r : ℕ} {w e : Fin r → σ}
@@ -523,7 +522,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM
 
 noncomputable def kap0 (o n z t r : ℕ) : ℝ :=
   ((z + t).choose t : ℝ) / ((o + n + r + z - 1).choose t : ℝ) *
@@ -751,7 +749,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM
 
 section gen
 variable (K : Type) [Field K]
@@ -798,7 +795,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM
 
 section bh
 variable {K σ : Type} [Field K] [DecidableEq σ] {r : ℕ} {w e : Fin r → σ}
@@ -933,7 +929,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM
 
 section
 variable {K : Type} [Field K] {N r : ℕ} (LL : M.Letters (N + 1)) (ρ : Fin r)
@@ -1045,7 +1040,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM
 
 section gen
 variable {K σ : Type} [Field K] [Fintype σ] [DecidableEq σ]
@@ -1323,7 +1317,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM
 
 section
 variable {K : Type} [Field K] {N r : ℕ} (LL : M.Letters (N + 1)) (ρ : Fin r) (e : ℕ)
@@ -1573,7 +1566,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM Filter Topology
 
 section
 variable {N r : ℕ} (LL : M.Letters (N + 1)) (ρ : Fin r)
@@ -1635,7 +1627,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM Filter Topology
 
 section
 variable {N r : ℕ} (LL : M.Letters (N + 1)) (ρ : Fin r)
@@ -1756,7 +1747,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM
 
 section
 variable (K : Type) [Field K] [CharZero K]
@@ -1834,7 +1824,6 @@ end Formalism.GM.leadingTermLemmas
 
 namespace Formalism.GM.leadingTermLemmas
 
-open MvPolynomial Finset Formalism.GM
 
 section
 variable {K : Type} [Field K]

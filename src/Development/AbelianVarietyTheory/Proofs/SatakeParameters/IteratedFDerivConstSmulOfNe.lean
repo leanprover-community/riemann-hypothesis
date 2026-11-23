@@ -301,7 +301,6 @@ theorem frameGL_val (fd : FData X D) (j : ℕ) (La : X.Lt j) (v : X.Pl) (h : IsU
   rfl
 
 
-open Classical in
 def vMat (Kc : Type) [Field Kc] [Algebra (Formalism.L2.G.Pend.K0 p) Kc] [Algebra X.G.Kf Kc] (fd : FData X D) (c : Kc) (j : ℕ)
     (La' : X.Lt (j + 1)) (x y : X.ZA j) : Kc :=
   if (⟨y.1, y.2.1⟩ : Σ v : X.Pl, Fin (X.G.P.n' v)) = ⟨x.1, x.2.1⟩ ∧ y.2.2.1 = x.2.2.1 then
@@ -446,7 +445,6 @@ theorem subB_split (X : Sys p) (E : CEmb X.G) (pos : (Σ v : X.Pl, Fin (X.G.P.n'
     have h2 := LkB_ne X ℂ_[p] j (frameInv fd j La) z _ (right_ne_zero_of_mul hz)
     exact h (h2.trans h1)
 
-open Classical in
 theorem cz_tPull' (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {N N' : ℕ} (e : Matrix (Fin N) (Fin N) D.host.E)
     (x y : D.what₂.Tau × Fin N' × Fin N) :
     Formalism.L2.KerInert.PullbackComparison.cz D (Formalism.L2.KerInert.PullbackComparison.tPullL cc δ e (1 : Matrix (Fin N') (Fin N') D.host.E) (TaylorLogMetric.coordV D y)) x =

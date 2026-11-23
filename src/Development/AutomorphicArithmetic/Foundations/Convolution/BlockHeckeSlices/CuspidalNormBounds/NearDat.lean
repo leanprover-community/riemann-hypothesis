@@ -49,7 +49,6 @@ private def glue (r s : ℕ) (p : ((E →+* ℂ) → Fin r → ℂ) × (Pl E →
   (x.1 + 1, {y | ∃ z : ℂ, ∃ q ∈ x.2, y = (fun a => Fin.addCases (fun i => p.1 a.1 i + z) (fun i => q.1 (a.1, i)) a.2,
     fun w => ((p.2 w).map fun b : ℂˣ => (b : ℂ) * ((Formalism.UG.qV E w : ℕ) : ℂ) ^ (-z)) + q.2 w)})
 
-open Classical in
 private theorem pt_cons {r s : ℕ} (b : Blo S r) (d : Dat S s) (z₀ : ℂ) (z : Fin d.len → ℂ) :
     (((Dat.cons b d).ptL (Fin.cons z₀ z : Fin (d.len + 1) → ℂ),
       fun w => if w ∈ S then 0 else (Dat.cons b d).ptS (Fin.cons z₀ z : Fin (d.len + 1) → ℂ) w) : Pt E (r + s)) =
@@ -71,7 +70,6 @@ private theorem pt_cons {r s : ℕ} (b : Blo S r) (d : Dat S s) (z₀ : ℂ) (z 
     · simp
     · exact Fin.sum_univ_succ (n := d.len) _
 
-open Classical in
 private theorem inv_cons {r s : ℕ} (b : Blo S r) (d : Dat S s) :
     inv (Dat.cons b d) = glue r s (b.Λ, fun w => if w ∈ S then 0 else b.sat w) (inv d) := by
   refine Prod.ext rfl (Set.ext fun y => ⟨?_, ?_⟩)

@@ -344,7 +344,6 @@ theorem two_im_pos (τ : D.what₂.Tau) : (0 : ℂ) < ((2 * (tauE D τ D.host.xi
   have := xi_zero_im_pos D τ
   exact Complex.zero_lt_real.2 (by linarith)
 
-open Classical in
 theorem HM_det : (HM S T).det ≠ 0 := by
   have : HM S T * blk (fun τ => ((2 * (tauE D τ D.host.xi0).im : ℝ) : ℂ)⁻¹ • (gramAt D T τ)⁻¹) (gramAt D S) = 1 := by
     unfold HM
@@ -356,7 +355,6 @@ theorem HM_det : (HM S T).det ≠ 0 := by
   exact (isUnit_det_of_right_inverse this).ne_zero
 
 
-open Classical in
 def mM (θ : InfFam D) (S T : HSp D) : GA D S × GA D T →* Matrix (Ix S T) (Ix S T) ℂ where
   toFun p := blk (fun τ => compAt θ τ (Formalism.L2.Theta.mt T p.2)) fun τ => compAt θ τ (Formalism.L2.Theta.mt S p.1⁻¹)
   map_one' := by
@@ -366,7 +364,6 @@ def mM (θ : InfFam D) (S T : HSp D) : GA D S × GA D T →* Matrix (Ix S T) (Ix
     rw [blk_mul]
     simp only [Prod.snd_mul, Prod.fst_mul, _root_.mul_inv_rev, GlobalTheory.WeilVacMove.mt_mul, GlobalTheory.WeilVacMove.compAt_mul]
 
-open Classical in
 theorem mM_apply (g : GA D S) (h : GA D T) : mM θ S T (g, h) =
     blk (fun τ => compAt θ τ (Formalism.L2.Theta.mt T h)) fun τ => compAt θ τ (Formalism.L2.Theta.mt S g⁻¹) := rfl
 
@@ -374,7 +371,6 @@ theorem compAt_unitary (hθ : IsInfFam θ) (V : HSp D) (g : GA D V) (τ : D.what
     (compAt θ τ (Formalism.L2.Theta.mt V g))ᴴ * gramAt D V τ * compAt θ τ (Formalism.L2.Theta.mt V g) = gramAt D V τ :=
   GlobalTheory.FockCompare.RealAction.infMat_mem_UH hθ V g τ
 
-open Classical in
 theorem mM_unitary (hθ : IsInfFam θ) (p : GA D S × GA D T) : (mM θ S T p)ᴴ * HM S T * mM θ S T p = HM S T := by
   obtain ⟨g, h⟩ := p
   unfold HM
@@ -398,7 +394,6 @@ theorem continuous_mt (V : HSp D) : Continuous (Formalism.L2.Theta.mt V) ∧ Con
 theorem continuous_compAt (hθ : IsInfFam θ) (τ : D.what₂.Tau) (m n : ℕ) : Continuous fun x : Mx D m n => compAt θ τ x :=
   continuous_id.matrix_map (continuous_comp hθ τ)
 
-open Classical in
 theorem continuous_mM (hθ : IsInfFam θ) : Continuous (mM θ S T) := by
   have h1 : Continuous fun p : GA D S × GA D T => Formalism.L2.Theta.mt T p.2 := (continuous_mt T).1.comp continuous_snd
   have h2 : Continuous fun p : GA D S × GA D T => Formalism.L2.Theta.mt S p.1⁻¹ := (continuous_mt S).2.comp continuous_fst
@@ -412,13 +407,11 @@ theorem compAt_fin {V : HSp D} {g : GA D V} (hg : g ∈ GfC V) (τ : D.what₂.T
   have h2 : compAt θ τ (Formalism.L2.Theta.mt V g) = ((Formalism.L2.Theta.mt V g).map (infPart D)).map (θ τ) := rfl
   rw [h2, h1, Matrix.map_one _ (map_zero _) (map_one _)]
 
-open Classical in
 theorem mM_fin {g : GA D S} {h : GA D T} (hg : g ∈ GfC S) (hh : h ∈ GfC T) : mM θ S T (g, h) = 1 := by
   rw [mM_apply]
   simp only [compAt_fin hh, compAt_fin (inv_mem hg)]
   exact blk_one
 
-open Classical in
 theorem actO_iotaV (hc : Chart θ σ) (g : GA D S) (h : GA D T) (v : Ix S T → ℂ) :
     actO S T g h (iotaV σ S T v) = iotaV σ S T (mM θ S T (g, h) *ᵥ v) := by
   refine hc.real_ext (V := T) (W := S) ?_ (real_iotaV hc _) ?_
@@ -448,7 +441,6 @@ theorem actO_fin (hc : Chart θ σ) {g : GA D S} {h : GA D T} (hg : g ∈ GinfC 
   · have : infPart D (actO S T g h u i j) = infPart D (u i j) := congrFun (congrFun h4 i) j
     rw [RingHom.map_sub, this, sub_self, RingHom.map_zero]
 
-open Classical in
 theorem HM_cartan {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ}
     {sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ} (hS : ∀ τ, IsCartanInv (gramAt D S τ) (sS τ))
     (hT : ∀ τ, IsCartanInv (gramAt D T τ) (sT τ)) :

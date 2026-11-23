@@ -303,7 +303,6 @@ theorem integral_double_step (hψ : Continuous ψ) {c c' : ℕ} (hc : Even c) (h
   rfl
 
 
-open Classical in
 theorem integral_last_step {c : ℕ} (hc : Even c) (Φ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ) (x : Matrix n n' k)
     (z : n → k) :
     ∫ w : KeptVar n c n' → k, flatStep ψ ν Φ x w * (ψ (-∑ r, z r * w (colIx hc r)) : ℂ) ∂(Measure.pi fun _ => ν) =

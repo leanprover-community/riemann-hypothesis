@@ -191,7 +191,6 @@ def IsConjEmb (i : X.Tw) (v v' : HeightOneSpectrum (𝓞 D.host.E))
     IsFrac bkP i v' hv' (τ' (cE bkP i v' hv' x)) n d ↔ IsFrac bkP i v hv (τ (cE bkP i v hv (D.host.conj x))) n d
 
 
-open Classical in
 def bk (i : X.Tw) (s : X.Sig i) (k : ℕ) (ψ : GE N →* (X.Ok i k)ˣ)
     (v : HeightOneSpectrum (𝓞 D.host.E)) :
     Submodule (X.Ok i k) (H1 ((Trep i s k ψ).comp (DecV N v).subtype)) :=
@@ -300,7 +299,6 @@ def NoJump (i : X.Tw) (s : X.Sig i) : Prop :=
     Formalism.WeaklyAdmissibleFiltrations.IsJumpV (PDv bkP i v hv) (repV bkP i v hv (Tgl i s)) τ a → a < -1 ∨ (D.R.t : ℤ) < a
 
 
-open Classical in
 def PsiOk (i : X.Tw) (A Q : Finset (HeightOneSpectrum (𝓞 D.host.E))) (k' : ℕ)
     (ψ' : X.RCG i Q →* (X.Ok i k')ˣ) : Prop :=
   (∀ P ∈ Q, Formalism.BasicNotions.IsSplitPl D.host P ∧ P.asIdeal.inertiaDeg ℤ = 1 ∧ Formalism.BasicNotions.eWL D.host.E P = 1) ∧
@@ -430,7 +428,6 @@ def eq' {K : Type} [Field K] (Y qms : K) (q : ℕ) : K :=
   (1 - Y * qms) * (1 - Y⁻¹ * qms) + ((q : K) - 1) * qms ^ 2
 
 
-open Classical in
 def adm10 : Prop :=
   ∀ i, X.NonzeroIndexPlace i → ∀ (Q : Finset (HeightOneSpectrum (𝓞 D.host.E))), QOk X i Q →
     ∀ (lam : X.abelian₂ i) (s : ℤ), SOk X i lam s → ∀ (P Pb : HeightOneSpectrum (𝓞 D.host.E)) (_hP : P ∈ Q) (_hPb : Pb ∈ Q),

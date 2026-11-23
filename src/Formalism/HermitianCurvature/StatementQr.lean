@@ -160,7 +160,6 @@ theorem SV_ext {φ ψ : SV k r i D E} (h : ∀ g ∈ Glev k r i ∩ D, φ.1 g = 
   · rw [φ.2.2 g hg, ψ.2.2 g hg]
 
 
-open Classical in
 def opV (k r : ℕ) (i : Fin (r + 1)) (D : Set (Mx k r)) (T : (Mx k r → E) → Mx k r → E) : Module.End ℂ (SV k r i D E) :=
   if h : IsOpen D ∧ Qx2.Good k r i D T then
     { toFun := fun φ => ⟨cutF k r i D (T φ.1), cutF_mem h.1 (h.2.sm _ φ.2.1)⟩

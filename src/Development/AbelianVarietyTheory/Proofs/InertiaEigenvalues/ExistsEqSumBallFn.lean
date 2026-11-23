@@ -59,7 +59,6 @@ def ballFn (a r : k) : OnePoint k → ℂ := fun x =>
   x.elim 0 fun y => if valuation k (y - a) ≤ valuation k r then 1 else 0
 
 
-open Classical in
 theorem ballFn_coe (a r x : k) :
     ballFn a r x = if valuation k (x - a) ≤ valuation k r then 1 else 0 := rfl
 

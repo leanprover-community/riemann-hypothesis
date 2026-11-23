@@ -236,7 +236,6 @@ theorem integral_psi_O {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ν : M
 variable {n : Type} [Fintype n] [DecidableEq n]
 
 
-open Classical in
 theorem integral_psi_box {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ν : Measure k} (hν : IsUnitVol ν) (u : n → k) :
     ∫ y, (if ∀ r, y r ∈ 𝒪[k] then (1 : ℂ) else 0) * (ψ (-1 * (u ⬝ᵥ y)) : ℂ) ∂(Measure.pi fun _ : n => ν) =
       if ∀ r, u r ∈ 𝒪[k] then 1 else 0 := by
@@ -250,7 +249,6 @@ theorem integral_psi_box {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ν :
   rw [e, integral_fintype_prod_eq_prod (fun r t => (if t ∈ 𝒪[k] then (1 : ℂ) else 0) * (ψ (-1 * (u r * t)) : ℂ))]
   simp only [integral_psi_O hψ hν, Finset.prod_boole, Finset.mem_univ, true_imp_iff]
 
-open Classical in
 theorem ind_eq_ite {m m' : Type} (x : Matrix m m' k) :
     Set.indicator {x : Matrix m m' k | ∀ r q, x r q ∈ 𝒪[k]} (fun _ => (1 : ℂ)) x = if IntM x then 1 else 0 := by
   rw [Set.indicator_apply]

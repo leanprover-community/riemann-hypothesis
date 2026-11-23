@@ -96,7 +96,6 @@ theorem sum_eq_tsum {R : ι → ℕ → ℝ} (hR0 : ∀ i, R i 0 = 1) (val : X �
   rw [lhs, (hasSum_sum_of_ne_finset_zero hzero).tsum_eq]
   exact Finset.sum_congr rfl fun v _ => (rhs v).symm
 
-open scoped Classical in
 theorem tendsto_weighted (hq : ∀ i, 2 ≤ q i) (hsum : Summable fun i => (q i ^ 2)⁻¹)
     (S : Finset ι) {R : ι → ℕ → ℝ} (hR0 : ∀ i, R i 0 = 1) (hRS : ∀ i ∈ S, ∀ j, R i j = 1)
     (hRb : ∀ i j, |R i (j + 1) - R i j| ≤ 8 * ((j : ℝ) + 2) ^ 2 / q i)
@@ -144,7 +143,6 @@ theorem tendsto_weighted (hq : ∀ i, 2 ≤ q i) (hsum : Summable fun i => (q i 
   exact Tendsto.congr heq hlim
 
 
-open scoped Classical in
 def cut (ρ : ι → ℕ → ℝ) (S' : Finset ι) (i : ι) (j : ℕ) : ℝ := if i ∈ S' then ρ i j else 1
 
 theorem prod_cut {ρ : ι → ℕ → ℝ} (hρ0 : ∀ i, ρ i 0 = 1) (S' : Finset ι) (w : ι →₀ ℕ) :
@@ -159,7 +157,6 @@ theorem prod_cut {ρ : ι → ℕ → ℝ} (hρ0 : ∀ i, ρ i 0 = 1) (S' : Fins
     _ = ∏ i ∈ w.support ∪ S', cut ρ S' i (w i) :=
         Finset.prod_subset Finset.subset_union_right fun i _ hiS => by simp [cut, hiS]
 
-open scoped Classical in
 theorem prod_dif_cut (ρ : ι → ℕ → ℝ) (S' : Finset ι) (v : ι →₀ ℕ) :
     v.prod (dif (cut ρ S')) = if v.support ⊆ S' then v.prod (dif ρ) else 0 := by
   split_ifs with h
@@ -179,7 +176,6 @@ theorem prod_dif_cut (ρ : ι → ℕ → ℝ) (S' : Finset ι) (v : ι →₀ �
     show cut ρ S' i (k + 1) - cut ρ S' i k = 0
     simp [cut, hiS]
 
-open scoped Classical in
 theorem euler_identity (hq : ∀ i, 2 ≤ q i) (hsum : Summable fun i => (q i ^ 2)⁻¹)
     (S : Finset ι) {ρ : ι → ℕ → ℝ} (hρ0 : ∀ i, ρ i 0 = 1) (hρS : ∀ i ∈ S, ∀ j, ρ i j = 1)
     (hρb : ∀ i j, |ρ i (j + 1) - ρ i j| ≤ 8 * ((j : ℝ) + 2) ^ 2 / q i)
@@ -249,7 +245,6 @@ theorem euler_identity (hq : ∀ i, 2 ≤ q i) (hsum : Summable fun i => (q i ^ 
       exact h1.congr' h2
     rw [hP.tprod_eq, mul_div_assoc', mul_comm c0, mul_div_assoc, div_self hc0, mul_one]
 
-open scoped Classical in
 theorem tendsto_weighted_tprod (hq : ∀ i, 2 ≤ q i) (hsum : Summable fun i => (q i ^ 2)⁻¹)
     (S : Finset ι) {ρ : ι → ℕ → ℝ} (hρ0 : ∀ i, ρ i 0 = 1) (hρS : ∀ i ∈ S, ∀ j, ρ i j = 1)
     (hρb : ∀ i j, |ρ i (j + 1) - ρ i j| ≤ 8 * ((j : ℝ) + 2) ^ 2 / q i)

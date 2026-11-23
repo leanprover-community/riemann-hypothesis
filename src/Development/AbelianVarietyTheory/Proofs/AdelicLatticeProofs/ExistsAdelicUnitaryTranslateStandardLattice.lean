@@ -162,7 +162,6 @@ def idem (F : Type) [Field F] [NumberField F] (k : ℕ) : FiniteAdeleRing (𝓞 
     · exact (v.adicCompletionIntegers F).one_mem
     · exact (v.adicCompletionIntegers F).zero_mem⟩
 
-open Classical in
 theorem idem_apply (k : ℕ) (v : HeightOneSpectrum (𝓞 F)) :
     idem F k v = if (k : 𝓞 F) ∈ v.asIdeal then 1 else 0 := rfl
 

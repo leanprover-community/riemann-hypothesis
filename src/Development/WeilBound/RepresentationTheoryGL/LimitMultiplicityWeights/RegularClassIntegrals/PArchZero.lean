@@ -109,7 +109,6 @@ open Classical in
 def rest (fa : ∀ w, GArch σ J w → ℂ) (ff : ∀ v, GLoc σ J v → ℂ) (w : InfinitePlace F) (g : GAd σ J) : ℂ :=
   (∏ u ∈ Finset.univ.erase w, fa u (projArch σ J u g)) * ∏ᶠ v, ff v (proj σ J v g)
 
-open Classical in
 theorem tensor_update (fa : ∀ w, GArch σ J w → ℂ) (ff : ∀ v, GLoc σ J v → ℂ) (w : InfinitePlace F)
     (φ : GArch σ J w → ℂ) :
     tensor σ J (Function.update fa w φ) ff = fun g => rest fa ff w g * φ (projArch σ J w g) := by
@@ -139,7 +138,6 @@ theorem continuous_rest {L : Submodule (𝓞 E) (Fin n → E)} [Submodule.IsFull
   exact (continuous_finsetProd _ fun u _ =>
     (continuous_of_mem_ccSmooth (continuous_archCoord σ J u) (hfa u)).comp (continuous_projArch σ J u)).mul h1
 
-open Classical in
 theorem update_mem {fa : ∀ w, GArch σ J w → ℂ} (hfa : ∀ w, fa w ∈ CcArch σ J w) (w : InfinitePlace F)
     {φ : GArch σ J w → ℂ} (hφ : φ ∈ CcArch σ J w) : ∀ u, Function.update fa w φ u ∈ CcArch σ J u := fun u => by
   by_cases h : u = w

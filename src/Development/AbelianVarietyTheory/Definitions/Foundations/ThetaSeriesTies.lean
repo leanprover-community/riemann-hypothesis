@@ -113,7 +113,6 @@ def IsKernel (ξ : Formalism.L2.Host.HChar D.host.E) (Q : Finset (Pl D.host.E)) 
       R.Pg Q ξR (R.vacP i) φ
 
 
-open Classical in
 def placesOver (t : T0) (p : ℕ) : Finset (Pl D.host.E) := (R.Q t).filter fun PP => (p : 𝓞 D.host.E) ∈ PP.asIdeal
 
 def thetaBase (U : Subgroup G) (ψ : U →* D.what₂.LLˣ) (ph : ℂ) (v : HeightOneSpectrum (𝓞 D.what₂.LL)) (p : ℕ) :
@@ -420,7 +419,6 @@ theorem OnTie.rho_eq_of_actionPin (t : OnTie h fw hinj EX p ι wL wF nT O v i z 
 end Use
 
 
-open Classical in
 def charInt {K : Type} [Field K] [NumberField K] {P : Type} [Group P] (inc : P →* G) (U : Subgroup G) (ψ : U →* Kˣ) (g : P) :
     𝓞 K :=
   if hg : inc g ∈ U then

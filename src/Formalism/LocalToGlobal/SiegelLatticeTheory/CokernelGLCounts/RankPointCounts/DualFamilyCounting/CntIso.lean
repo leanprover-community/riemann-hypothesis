@@ -64,7 +64,6 @@ theorem ci_EZ_map {D : Formalism.BasicNotions.D7} {β : (VS D).V ≃ₗ[D.host.E
     FrameOK_map hβ hF, hZ'⟩
 
 
-open PI.RepsIndep.Tr in
 theorem ci_rel_map {D : Formalism.BasicNotions.D7} {β : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hβ : β ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT)
     {T T' : D.host.E} {F0 : FlagG (VS D) D.R.rS T} {Λ : Submodule (𝓞 D.host.E) (VS D).V}
     {F' F'' : LFlag (D.sp.Y 0) D.R.rS T'} (h : NilradicalFlagMoved F0 Λ F' F'') :
@@ -83,12 +82,10 @@ theorem ci_rel_map {D : Formalism.BasicNotions.D7} {β : (VS D).V ≃ₗ[D.host.
   · show β (n (β.symm (β F'.fl.z))) = β F''.fl.z
     rw [LinearEquiv.symm_apply_apply, h2]
 
-open PI.RepsIndep.Tr in
 theorem ci_mapF_symm {D : Formalism.BasicNotions.D7} {β : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hβ : β ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT)
     {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) : mapF β.symm (iso_symm hβ) (mapF β hβ F0) = F0 :=
   flag_ext (funext fun a => LinearEquiv.symm_apply_apply β (F0.e a)) (LinearEquiv.symm_apply_apply β F0.z)
 
-open PI.RepsIndep.Tr in
 theorem counting_iso_inverse : CntIsoInv := by
   intro D β hβ T T' F0 Λ Z
   have hβ' := iso_symm hβ

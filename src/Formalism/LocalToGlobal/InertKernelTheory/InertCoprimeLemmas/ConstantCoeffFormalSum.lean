@@ -480,7 +480,6 @@ end Formalism.L2.KerInert.K1
 
 namespace Formalism.L2.KerInert.K1
 
-open Formalism.MainNotions.FormalGroupSystem
 
 section Calc
 

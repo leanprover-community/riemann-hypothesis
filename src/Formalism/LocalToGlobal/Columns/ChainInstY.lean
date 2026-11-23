@@ -84,7 +84,6 @@ def prXpG (E : Type) [Field E] (n : ℕ) : Sp E n →ₗ[E] Sp E ((n - 1) + 0) :
   LinearMap.funLeft E E fun i : Fin ((n - 1) + 0) => (⟨i.1, by have := i.2; omega⟩ : Fin n)
 
 
-open Classical in
 def frsG {n : ℕ} {ST : Finset (HeightOneSpectrum (𝓞 X.E))} (p : DecoF X.E n ST Pr.vGs (QE sel (mu : Chr X.F X.E X.K))) :
     Frs X.E n (rowSG Pr sel mu) := fun P =>
   if h : P.1 ∈ Pr.vGs then p.deco.1.liftFr ⟨P.1, h⟩ else p.fr ⟨P.1, (Finset.mem_union.mp P.2).resolve_left h⟩

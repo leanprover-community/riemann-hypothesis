@@ -76,7 +76,6 @@ end Genus
 
 section Counting
 
-open NumberField Formalism.HermitianLatticesTheory Formalism.BasicNotions
 
 def wSeq {n : ℕ} (lam : DomWeight n) : ℕ → ℝ := fun i => if h : i < n then ((lam.w ⟨i, h⟩ : ℤ) : ℝ) - i else 0
 

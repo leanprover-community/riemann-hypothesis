@@ -244,7 +244,6 @@ theorem envRepAll_ι_of_tmul (R : RealPoints θ V) (τ : D.what₂.Tau) (c : ℂ
   have : c ⊗ₜ[ℝ] X = c • ((1 : ℂ) ⊗ₜ[ℝ] X) := by rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
   rw [this, map_smul, map_smul, envRep_ι]
 
-open Classical in
 theorem envRepAll_ι_mem (R : RealPoints θ V) (x : GlobalTheory.AutFinLit.LieC V) :
     envRepAll R (UniversalEnvelopingAlgebra.ι ℂ x) ∈ Algebra.adjoin ℂ (Set.range (opInf R)) := by
   induction x using DirectSum.induction_on with

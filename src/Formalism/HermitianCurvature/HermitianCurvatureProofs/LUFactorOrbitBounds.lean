@@ -207,8 +207,6 @@ lemma sum_split_Es {M : Type*} [AddCommMonoid M] (f : Fin (2 * r + k + 1) → M)
 
 end Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
-open Matrix MeasureTheory Filter Topology
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
@@ -469,7 +467,6 @@ lemma mn_lower_mul (L Y : Matrix (Fin r) (Fin r) ℂ) (hL : IsLU L) (a b : Fin r
 
 end Formalism.FourierDecayAlt.P.WeakDominationMajorants.LU
 
-open Matrix
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.LU
 
@@ -584,8 +581,6 @@ lemma norm_mul_entry {m n p : Type*} [Fintype n] (A : Matrix m n ℂ) (B' : Matr
 
 end Formalism.FourierDecayAlt.P.WeakDominationMajorants.LU
 
-open Matrix MeasureTheory Filter Topology
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
@@ -662,12 +657,9 @@ lemma U_bd (L Y U : Matrix (Fin r) (Fin r) ℂ) (hL : IsLU L) (hU : IsUU U) {Γ 
 
 end Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
-open Matrix MeasureTheory Filter Topology
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
-open Formalism.FourierDecayAlt.P.WeakDominationMajorants.LU
 
 variable {k r : ℕ}
 
@@ -775,12 +767,9 @@ end main
 
 end Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
-open Matrix MeasureTheory Filter Topology
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
-open Formalism.FourierDecayAlt.P.WeakDominationMajorants.LU
 
 variable {k r : ℕ}
 
@@ -990,12 +979,9 @@ end main
 
 end Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
-open Matrix MeasureTheory Filter Topology
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
-open Formalism.FourierDecayAlt.P.WeakDominationMajorants.LU
 
 variable {k r : ℕ}
 
@@ -1081,12 +1067,9 @@ lemma det_eq_Dmin (z z' : Fin (2 * r + k + 1) → ℂ) (g : Mat k r) :
 
 end Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
-open Matrix MeasureTheory Filter Topology
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
-open Formalism.FourierDecayAlt.P.WeakDominationMajorants.LU
 
 variable {k r : ℕ}
 
@@ -1143,7 +1126,6 @@ theorem orbit (z z' : Fin (2 * r + k + 1) → ℂ) (K : Set (Mat k r)) (hK : IsC
 
 end Formalism.FourierDecayAlt.P.WeakDominationMajorants.Orb
 
-open Matrix MeasureTheory Filter Topology
 open scoped ENNReal NNReal
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.NInt
@@ -1413,8 +1395,6 @@ end main
 
 end Formalism.FourierDecayAlt.P.WeakDominationMajorants.NInt
 
-open Matrix MeasureTheory Filter Topology
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.Asm
 
@@ -1518,14 +1498,11 @@ lemma haar_finite {U : Set (Mat k r)} {μ : Measure (Mt k r)} (h : IsHaarOn U μ
 
 end Formalism.FourierDecayAlt.P.WeakDominationMajorants.Asm
 
-open Matrix MeasureTheory Filter Topology
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 namespace Formalism.FourierDecayAlt.P.WeakDominationMajorants.Asm
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-open Formalism.FourierDecayAlt.P.WeakDominationMajorants
 
 theorem nnMaj : Formalism.FourierDecayAlt.P.JFxDs2.NNMaj := by
   intro k r Wp Wq _ _ _ _ D A m hThr K hK hKO

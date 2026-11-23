@@ -130,10 +130,8 @@ def coefL (R : Type*) [CommRing R] (n : ℕ) : R →+* GLLaurent R n :=
   (LaurentPolynomial.C).comp ((algebraMap (MvPolynomial (Fin n × Fin n) R) (GLCoord R n)).comp MvPolynomial.C)
 
 
-open Classical in
 def twistSub {R : Type*} [CommRing R] {ι : Type*} {n : ℕ} (LL : Letters ι) (S : Set ι) (j : Fin n) :
     MvPolynomial (ι × Fin n) R →+* MvPolynomial (ι × Fin n) (GLLaurent R n) :=
-  open Classical in
   MvPolynomial.eval₂Hom (MvPolynomial.C.comp (coefL R n)) fun v =>
     if v.1 ∈ S then
       (if LL.vec v.1 then ∑ b : Fin n, MvPolynomial.C (twistMat R n j 1 b v.2) * X (v.1, b)
@@ -159,10 +157,8 @@ def ASet {R : Type*} [CommRing R] {ι : Type*} {n : ℕ} [NeZero n] (LL : Letter
   {F | ((th : ℤ) : WithTop ℤ) ≤ valS LL S F}
 
 
-open Classical in
 def glAct (R : Type*) [CommRing R] {ι : Type*} [Fintype ι] {n : ℕ} (LL : Letters ι) (S : Set ι) (a b : Fin n) :
     MvPolynomial (ι × Fin n) R →ₗ[R] MvPolynomial (ι × Fin n) R :=
-  open Classical in
   ∑ l : ι,
     if l ∈ S then
       (if LL.vec l then (LinearMap.mulLeft R (X (l, a))) ∘ₗ (pderiv (l, b)).toLinearMap
@@ -184,14 +180,11 @@ def divDer {R : Type*} [CommSemiring R] {σ : Type*} (be : σ →₀ ℕ) (F : M
     MvPolynomial.monomial (m - be) (F.coeff m * ((be.prod fun k j => (m k).choose j : ℕ) : R)) else 0
 
 def wtS {ι : Type*} [Fintype ι] {n : ℕ} (LL : Letters ι) (S : Set ι) (m : ι × Fin n →₀ ℕ) : Fin n → ℤ :=
-  open Classical in
   fun a => ∑ l : ι, if l ∈ S then (if LL.vec l then (m (l, a) : ℤ) else -(m (l, a) : ℤ)) else 0
 
 
-open Classical in
 def divPowMono (R : Type*) [CommRing R] {ι : Type*} [Fintype ι] {n : ℕ} (LL : Letters ι) (S : Set ι)
     (a b : Fin n) (k : ℕ) (m : ι × Fin n →₀ ℕ) : MvPolynomial (ι × Fin n) R :=
-  open Classical in
   ∑ f ∈ Finset.finsuppAntidiag (Finset.univ.filter (· ∈ S)) k,
     MvPolynomial.monomial
       ((m - ∑ l ∈ f.support, Finsupp.single (if LL.vec l then (l, b) else (l, a)) (f l))
@@ -348,7 +341,6 @@ def sigMat (p f : ℕ) [Fact p.Prime] (O : Type*) [CommRing O] [IsDomain O] [Alg
 def IsGLW {k : ℕ} (g : Matrix (Fin k) (Fin k) (WF p f)) : Prop := IsUnit g.det
 
 
-open Classical in
 def liftSubst (p f : ℕ) [Fact p.Prime] (O : Type*) [CommRing O] [IsDomain O] [Algebra (WF p f) O]
     (w : O) (r : ℕ) {ι : Type*} {k : ℕ} (LL : LiftLetters ι) (g : Matrix (Fin k) (Fin k) (WF p f)) :
     MvPolynomial (ι × Fin k) (KK O) →ₐ[KK O] MvPolynomial (ι × Fin k) (KK O) :=
@@ -406,9 +398,7 @@ def NormalOrder (n : ℕ) (ord : List (Fin n × Fin n)) : Prop :=
       (ord.idxOf (b, c) < ord.idxOf (a, c) ∧ ord.idxOf (a, c) < ord.idxOf (a, b))
 
 
-open Classical in
 def degIn {ι : Type*} [Fintype ι] (d : ι → ℕ) (S : Set ι) : ℕ :=
-  open Classical in
   ∑ l, if l ∈ S then d l else 0
 
 def glOps (K : Type*) [Field K] {ι : Type*} [Fintype ι] (n : ℕ) (LL : Letters ι) (S : Set ι) :
@@ -519,9 +509,7 @@ def IsCostly (mu : Fin (N + 1) → Fin (r + K) → ℤ) (c : ℤ) (i : Fin N) : 
   (colH (mu i.succ) c < colH (mu i.castSucc) c ∧ colH (mu i.castSucc) c ≤ r)
 
 
-open Classical in
 def oc (om : Fin N → ℕ) (mu : Fin (N + 1) → Fin (r + K) → ℤ) (c : ℤ) : ℕ :=
-  open Classical in
   ∑ i : Fin N, if IsCostly mu c i then om i else 0
 
 def IsUsed {n : ℕ} (mu : Fin (N + 1) → Fin n → ℤ) (c : ℤ) (i : Fin N) : Prop :=
@@ -534,7 +522,6 @@ section Lifts
 variable (p f : ℕ) [Fact p.Prime] {O : Type*} [CommRing O] [IsDomain O] [Algebra (WF p f) O] {k : ℕ}
 
 
-open Classical in
 def degUS {ι : Type*} (LL : LiftLetters ι) (r : ℕ) (m : ι × Fin k →₀ ℕ) : ℕ :=
   ∑ v ∈ m.support, if (LL.vec v.1 = true ∧ r ≤ v.2.val) ∨ (LL.vec v.1 = false ∧ v.2.val < r) then m v else 0
 

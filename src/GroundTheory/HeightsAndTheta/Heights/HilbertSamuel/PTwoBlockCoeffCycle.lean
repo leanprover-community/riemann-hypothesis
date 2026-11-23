@@ -217,7 +217,6 @@ theorem cycR_split {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι 
   split_ifs <;> ring
 
 
-open Classical in
 theorem horiz_eq (hH : TwoBlockHorizDiv.Statement) {x : Ix κ → Ω} {B : Matrix (Ix κ) (Ix κ) ℚ} {c : κ}
     {l : Ix κ → ℤ} (hsp : Submodule.span ℤ (Set.range x) ≤ Submodule.span ℤ (Set.range (matAct B x)))
     (hl : x ⟨(), c⟩ = ∑ j, (l j : Ω) * matAct B x j) (f : Ideal (MRing (FinTwoTypeFamily κ)) → ℝ) :

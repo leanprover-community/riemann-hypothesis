@@ -66,7 +66,6 @@ private theorem isUnit_of_isUnit_norm' {R S : Type} [CommRing R] [CommRing S] [A
 
 
 open IsDedekindDomain NumberField MeasureTheory Matrix in
-open Classical in
 open scoped TensorProduct ComplexConjugate in
 attribute [local instance] _root_.Formalism.BasicNotions.Host.cmStar _root_.GlobalTheory.LocalData.complRel
   _root_.GlobalTheory.LocalData.isLocalField _root_.GlobalTheory.FunObj.borelKw

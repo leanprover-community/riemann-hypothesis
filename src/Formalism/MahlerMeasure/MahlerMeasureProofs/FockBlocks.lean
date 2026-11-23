@@ -115,7 +115,6 @@ end Formalism.GM.FockB
 
 namespace Formalism.GM.FockB
 
-open MvPolynomial Finset
 
 section Pair
 variable {k σ : Type} [Field k] {r : ℕ}
@@ -264,7 +263,6 @@ end Formalism.GM.FockB
 
 namespace Formalism.GM.FockB
 
-open MvPolynomial Finset
 
 section Chain
 variable {k σ α : Type} [Field k] {r : ℕ} (w e : α → Fin r → σ) (zv sv : α → σ) (z : α → ℕ)
@@ -531,7 +529,6 @@ end Formalism.GM.FockB
 
 namespace Formalism.GM.FockB
 
-open MvPolynomial Finset Formalism.GM.M
 
 section Block2
 variable {N r : ℕ} {D : BlockData N}
@@ -616,7 +613,6 @@ end Formalism.GM.FockB
 
 namespace Formalism.GM.FockB
 
-open MvPolynomial Finset Formalism.GM.M
 
 section Block3
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
@@ -730,7 +726,6 @@ end Formalism.GM.FockB
 
 namespace Formalism.GM.FockB
 
-open MvPolynomial Finset Formalism.GM.M
 
 theorem fock_blocks_of_weights : M.FockBlocks := by
   intro p _ N r _ D hB hr

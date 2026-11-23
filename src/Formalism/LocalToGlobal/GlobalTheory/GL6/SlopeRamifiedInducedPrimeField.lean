@@ -353,7 +353,6 @@ section AtDSlice
 
 variable (D : D7) (u : D.what₂.Word)
 
-open Classical
 
 theorem embedding_mem_forms_level_zero (x : ((D.fm u).lat 0).V) : (D.fm u).emb 0 x ∈ (D.mem u).A.Mu0 := by
   rw [← (D.fm u).Fi_zero, ← ((D.fm u).emb_basis 0).2]
@@ -486,7 +485,6 @@ section Classes
 
 variable {D : D7} {u : D.what₂.Word}
 
-open Classical Formalism.L2.Forms
 
 def t2sDv (v : (D.mem u).A.vT) : ((D.mem u).A.Fv v)ˣ →* Function.End ((D.mem u).C.cls 0) where
   toFun a := (D.fm u).dil 0 v a
@@ -570,7 +568,6 @@ section SliceTied
 
 variable {D : D7} {u : D.what₂.Word}
 
-open Classical Formalism.L2.Forms
 
 theorem restriction_rational_form (Tf : FormsTied D u) (hS : Formalism.MainNotions.product_first_zeroth_parts.admS D u) (x : ((D.fm u).lat 0).V)
     (S : (D.mem u).C.cls 0 → Prop) :
@@ -783,7 +780,6 @@ section AtDTied
 
 variable (D : D7) (u : D.what₂.Word)
 
-open Classical Formalism.L2.Forms
 
 theorem slope_formula_of_compatible_slice (hS : Formalism.MainNotions.product_first_zeroth_parts.HidaSetting D u) (Tf : FormsTied D u) (hE : DiamondElementsExist Tf)
     (W : Submodule D.what₂.LL ((D.fm u).lat 0).V)
@@ -803,7 +799,6 @@ section Final
 
 variable (D : D7) (u : D.what₂.Word)
 
-open Classical Formalism.L2.Forms
 
 def MetricOrthogonalClasses : Prop :=
   ∀ (v : InfinitePlace D.what₂.LL) (x y : ((D.fm u).lat 0).V),

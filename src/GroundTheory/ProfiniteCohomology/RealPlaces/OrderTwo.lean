@@ -294,7 +294,6 @@ variable {k G : Type} [CommRing k] [Group G] [TopologicalSpace G] [IsTopological
   (hG : ∀ g : G, g = 1 ∨ g = c) (hc : c ≠ 1)
 
 
-open Classical in
 def cochainTwo (c : G) (a : A) : (Fin 2 → G) → A := fun v => if v 0 = c ∧ v 1 = c then a else 0
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] [DiscreteTopology G] in

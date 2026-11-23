@@ -197,7 +197,6 @@ theorem pull_norm (A : HermLine ι) {z : (Σ k, Q.ιW k) → ℂ} {c : ℂ} (hc 
     simp [hb]
   · simp
 
-open Classical in
 theorem key (n : ℕ) (i : ι k₀) (hi0 : (X (Q.v 0 ⟨k₀, i⟩) : MRing Q.ιW) ∉ Q.Δ)
     (hi1 : (X (Q.v 1 ⟨k₀, i⟩) : MRing Q.ιW) ∉ Q.Δ) (B₀ B₁ : HermLine Q.ιW)
     (hdeg : ∀ k, B₀.a k - B₁.a k = (if k = Q.κ 0 k₀ then (n : ℤ) else 0) - (if k = Q.κ 1 k₀ then (n : ℤ) else 0))

@@ -137,7 +137,6 @@ theorem exists_prime_mem (w : HeightOneSpectrum (𝓞 K)) :
   apply GlobalTheory.Mem.FewPrimes.exists_prime_mem <;> assumption
 
 
-open Classical in
 def resCharW (w : HeightOneSpectrum (𝓞 K)) : ℕ := Nat.find (exists_prime_mem w)
 
 theorem resCharW_prime (w : HeightOneSpectrum (𝓞 K)) : (resCharW w).Prime := by

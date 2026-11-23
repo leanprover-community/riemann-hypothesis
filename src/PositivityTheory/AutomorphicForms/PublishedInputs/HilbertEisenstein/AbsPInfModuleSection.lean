@@ -208,7 +208,6 @@ theorem exists_bound_inf {K : Set (Ideles F)} (hK : IsCompact K) : ∃ B : ℝ, 
   constructor <;> nlinarith [norm_nonneg (((a : Ideles F) : Ad F).1 v), norm_nonneg (((a⁻¹ : Ideles F) : Ad F).1 v),
     le_max_left C 1]
 
-open Classical in
 theorem abs_pInf_moduleSection (t : {r : ℝ // 0 < r}) (v : InfinitePlace F) :
     |UpperTheory.V.TR.pInf F ((moduleSection (w0 F) t : Ideles F) : Ad F) v| = if v = w0 F then (t : ℝ) else 1 := by
   rw [abs_pInf, norm_moduleSection_apply]

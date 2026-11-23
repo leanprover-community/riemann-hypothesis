@@ -214,7 +214,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section PartR
 
@@ -347,7 +346,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section PartH1
 
@@ -894,7 +892,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section PartH3
 
@@ -1066,7 +1063,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section Frame
 
@@ -1511,7 +1507,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section FrameS
 
@@ -1741,7 +1736,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section FrameA
 
@@ -1783,7 +1777,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem gamma_sub_solutions_exist (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) : GammaSubSolutionsExist D HW F := fun l _ K s LL h hA T hT i _ b hb z hz c₀ =>
   coreH_sol_exists _ (fun y => ((D.loc l).v_O LL _).2 y.2)
@@ -1797,7 +1790,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem arith_JSet_eq (jumps : Finset ℤ) (M : ℕ) : JSet jumps M = Formalism.RepresentationBoundsCohomology.N2.JSet jumps M := by
   unfold JSet Formalism.RepresentationBoundsCohomology.N2.JSet Formalism.RepresentationBoundsCohomology.N2.eigSet
@@ -1945,7 +1937,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LagLocal
 
@@ -2020,7 +2011,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section DescGen
 
@@ -2247,7 +2237,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section TruncPart
 
@@ -2667,7 +2656,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem gen_ceil_eq (l s : ℕ) (hl : 3 ≤ l) :
     ⌈(s : ℝ) / ((l : ℝ) - 1)⌉₊ = (s + (l - 2)) / (l - 1) := by
@@ -3089,7 +3077,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section LiftBRing
 
@@ -3245,7 +3232,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 open Formalism.RepresentationBoundsCohomology.N2 (GBase GPair IsGen Letters lagrange_and_w_all descent_cost_all dual_w_by_letters dual_w_by_letters_extended cost cW)
 
 section WMap
@@ -3772,7 +3758,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 open Formalism.RepresentationBoundsCohomology.N2 (GBase GPair lagrange_and_w_all)
 
 section WK1
@@ -4196,7 +4181,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section PhiB
 
@@ -4465,7 +4449,6 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 section PhiI1
 
@@ -4752,6 +4735,5 @@ end Formalism.MainNotions.LiftingTheory
 
 namespace Formalism.MainNotions.LiftingTheory
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 end Formalism.MainNotions.LiftingTheory

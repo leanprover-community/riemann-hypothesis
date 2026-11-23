@@ -246,7 +246,6 @@ section GlobV
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
@@ -333,7 +332,6 @@ section Comparison₂
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
@@ -385,7 +383,6 @@ section Built
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
@@ -465,7 +462,6 @@ section Carrier
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 

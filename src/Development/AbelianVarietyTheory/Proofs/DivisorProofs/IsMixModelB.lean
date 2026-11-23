@@ -147,7 +147,6 @@ def prodA (ε : AE D) (Ξ : ∀ w, MatA G t i j w → ℂ) (x : WO (spW G i j) (
   if IsHalf ε x then ∏ w ∈ locPl G t, Ξ w (linA B t i j w x) else 0
 
 
-open Classical in
 def prodB (ε : AE D) (Ψ : ∀ w, MatB G t i j w → ℂ) (y : WO (spW₁ G i j) (spX G i j)) : ℂ :=
   if IsHalf (cA D ε) y then ∏ w ∈ locPl G t, Ψ w (linB B t i j w y) else 0
 

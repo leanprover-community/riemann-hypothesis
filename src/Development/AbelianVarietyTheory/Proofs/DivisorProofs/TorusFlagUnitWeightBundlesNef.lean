@@ -202,7 +202,6 @@ theorem exOf_unitWt (τ : Psi H) (a : ℤ) : AllWt.exOf Dw (NefWt.unitWt τ a) 0
         rw [← AllWt.conjEmb_conjEmb τ'.1, h, AllWt.conjEmb_conjEmb]))
       simp [NefWt.unitWt, e, h1, hc]
 
-open Classical in
 theorem prod_unitWt {R : Type} [CommRing R] (τ : Psi H) (a : ℤ) (t : Ix Dw → Rˣ) :
     ∏ ix, t ix ^ (-AllWt.exOf Dw (NefWt.unitWt τ a) 0 ix) =
       (∏ i, t (some ⟨τ.1, i⟩)) ^ (-a) * (∏ i, t (some ⟨conjEmb τ.1, i⟩)) ^ a := by

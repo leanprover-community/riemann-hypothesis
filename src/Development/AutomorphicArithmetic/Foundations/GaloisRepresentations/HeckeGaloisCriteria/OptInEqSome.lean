@@ -142,7 +142,6 @@ def ndCut (N : NData R H what₂) (keep : N.Loc → Prop) (Xs : ∀ i, Set (N.X 
         exact ⟨v, k, a, b, c, d, e, g, rfl⟩ }
 
 
-open Classical in
 def optIn {X : Type} (S : Set X) (o : Option X) : Option S := o.bind fun x => if h : x ∈ S then some ⟨x, h⟩ else none
 
 theorem optIn_eq_some {X : Type} {S : Set X} {o : Option X} {x : S} : optIn S o = some x ↔ o = some x.1 := by

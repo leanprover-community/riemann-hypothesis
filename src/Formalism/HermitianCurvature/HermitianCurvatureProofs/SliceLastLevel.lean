@@ -117,7 +117,6 @@ set_option linter.style.haveILetI false
 
 namespace Formalism.FourierDecayAlt.P.SliceLastLevel
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -339,7 +338,6 @@ open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.SliceLastLevel
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -368,11 +366,9 @@ end PartCd
 
 section PartM
 
-open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.SliceLastLevel
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -416,14 +412,11 @@ end PartM
 
 section PartE
 
-open Matrix MeasureTheory Filter Topology
-open scoped ContDiff
 
 set_option linter.style.haveILetI false
 
 namespace Formalism.FourierDecayAlt.P.SliceLastLevel
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

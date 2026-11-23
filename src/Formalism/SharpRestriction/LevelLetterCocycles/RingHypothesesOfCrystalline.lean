@@ -315,13 +315,10 @@ end Conv
 
 end Formalism.MainNotions.RamifiedCoefficientChains.Sh.ZT
 
-open Classical
 
 namespace Formalism.MainNotions.RamifiedCoefficientChains.Sh.ZT
 
-open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct Module
 open Formalism.MainNotions.CrystallineLiftingInputs (DL InPN pullJ fMX TCase IsTrunc InI IsSer IsRem eY PolesFin TTool2 THor)
-open Formalism.MainNotions.LiftingTheory (qp pk CaseA)
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]

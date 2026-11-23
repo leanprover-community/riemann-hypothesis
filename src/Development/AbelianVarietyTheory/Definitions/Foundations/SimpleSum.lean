@@ -124,7 +124,6 @@ def exDown (ν : Measure k) (p : ℕ) (σ : Representation ℂ (GL (n ⊕ Fin c)
   ∫ β : n → k, l (σ (colE c (p + 1) β) v) ∂(Measure.pi fun _ => ν)
 
 
-open Classical in
 def opE (ψ : AddChar k Circle) (ν : Measure k) (p : ℕ) (Φ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ)
     (x₀ : Matrix n n' k) : ℂ :=
   by
@@ -132,7 +131,6 @@ def opE (ψ : AddChar k Circle) (ν : Measure k) (p : ℕ) (Φ : Matrix (n ⊕ F
     exact ∫ e, Φ (affPt p x₀ e) * (ψ (-ch (affPt p x₀ e)) : ℂ) ∂(Measure.pi fun _ => ν)
 
 
-open Classical in
 def volN (ν : Measure k) (n : Type*) [Fintype n] [DecidableEq n] (c p : ℕ) : Measure (N k n c p) :=
   (Measure.pi fun _ : {rs : (n ⊕ Fin c) × (n ⊕ Fin c) // lev p rs.1 < lev p rs.2} => ν).comap
     fun g rs => (g : GL (n ⊕ Fin c) k).val rs.1.1 rs.1.2

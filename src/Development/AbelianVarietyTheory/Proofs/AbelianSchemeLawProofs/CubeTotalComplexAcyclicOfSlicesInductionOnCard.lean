@@ -137,7 +137,6 @@ theorem comap_supp {κ : Type} (g : Finset κ → Finset ι) (hg : Monotone g) (
     comap g hg (supp A P hP) = supp (comap g hg A) (g ⁻¹' P) (hP.preimage_mono hg) := rfl
 
 
-open Classical in
 noncomputable def suppMapApp (φ : A ⟶ B) (hP : P.OrdConnected) (hP' : P'.OrdConnected)
     (s : Finset ι) : (supp A P hP).obj s →ₗ[R] (supp B P' hP').obj s := by
   classical
@@ -195,7 +194,6 @@ noncomputable def suppIsoSelf (A : Cube.{v} ι R) (hP : P.OrdConnected) (h : ∀
   isoMk (fun s => suppEquiv A hP (h s)) fun hst x => suppEquiv_res hst _ _ x
 
 
-open Classical in
 noncomputable def suppIncl (A : Cube.{v} ι R) (hP : P.OrdConnected) (hU : IsUpperSet P) :
     supp A P hP ⟶ A := by
   classical

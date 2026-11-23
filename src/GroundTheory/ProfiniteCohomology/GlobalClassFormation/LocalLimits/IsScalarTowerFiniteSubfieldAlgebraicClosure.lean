@@ -145,12 +145,10 @@ theorem exists_unique_tensorLift_single :
 def placeOfEmbedding : PlacesOver F.1 v :=
   (exists_unique_tensorLift_single ι F).exists.choose
 
-open Classical in
 theorem tensorLift_single_placeOfEmbedding :
     tensorLift ι F (Pi.single (placeOfEmbedding ι F) 1) = 1 := by
   exact (exists_unique_tensorLift_single ι F).exists.choose_spec
 
-open Classical in
 theorem eq_placeOfEmbedding_of_tensorLift {w : PlacesOver F.1 v}
     (h : tensorLift ι F (Pi.single w 1) = 1) : w = placeOfEmbedding ι F :=
   (exists_unique_tensorLift_single ι F).unique h (tensorLift_single_placeOfEmbedding ι F)
@@ -166,7 +164,6 @@ theorem pi_single_algebraMap_eq {w : PlacesOver F.1 v} [DecidableEq (PlacesOver 
   · simp [hu]
 
 
-open Classical in
 def completionEmbedding :
     (placeOfEmbedding ι F).1.adicCompletion F.1 →ₐ[v.adicCompletion K.1]
       AlgebraicClosure (v.adicCompletion K.1) where

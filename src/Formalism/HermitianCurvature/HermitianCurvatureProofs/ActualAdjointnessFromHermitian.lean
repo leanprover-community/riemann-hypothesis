@@ -658,7 +658,6 @@ end Nat
 
 section Adj
 
-open Qx2
 
 variable {k r : ℕ}
 
@@ -1212,7 +1211,6 @@ end Alg4
 
 section GlLev
 
-open Qx2
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {i : Fin (r + 1)} {D : Set (Mx k r)}
 
@@ -1409,7 +1407,6 @@ end GlLev
 
 section Leib
 
-open Qx2
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {i : Fin (r + 1)} {D : Set (Mx k r)}
 
@@ -1507,7 +1504,6 @@ end Leib
 
 section OpRing
 
-open Qx2
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {i : Fin (r + 1)} {D : Set (Mx k r)}
 
@@ -1650,7 +1646,6 @@ end OpRing
 
 section Concrete
 
-open Qx2
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {i : Fin (r + 1)} {D : Set (Mx k r)}
 
@@ -1920,7 +1915,6 @@ end Comb
 
 section Final
 
-open Qx2
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {i : Fin (r + 1)} {D : Set (Mx k r)}
 
@@ -2150,7 +2144,6 @@ end Formalism.FourierDecayAlt.P.Qx5
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

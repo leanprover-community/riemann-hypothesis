@@ -219,7 +219,6 @@ lemma det_block_norm {F : Type} [NormedField F] {n : ℕ} (B G : Matrix (Fin n) 
 end Formalism.GM.MeanGammaLemmas
 
 namespace Formalism.GM.MeanGammaLemmas
-open Finset
 
 lemma legendre' (p : ℕ) [hp : Fact p.Prime] (n : ℕ) :
     (n : ℝ) / ((p : ℝ) - 1) - (padicValNat p n.factorial : ℝ) ≤ (Nat.log p n : ℝ) + 1 := by
@@ -319,7 +318,6 @@ lemma splits_form {L : Type} [Field L] [IsAlgClosed L] (Dk : L[X]) :
 end Formalism.GM.MeanGammaLemmas
 
 namespace Formalism.GM.MeanGammaLemmas
-open Polynomial Finset Formalism.GM.M
 
 noncomputable def betaT (p : ℕ) [Fact p.Prime] (m z o S e : ℕ) : ℚ_[p] :=
   (p : ℚ_[p]) ^ m * ((e.factorial * (z + e).choose e : ℕ) : ℚ_[p]) / ((o.factorial * S.factorial : ℕ) : ℚ_[p])
@@ -486,7 +484,6 @@ lemma lead_part (hDeg : GamDeg) (hLead : GamLead) {p : ℕ} [hp : Fact p.Prime] 
 end Formalism.GM.MeanGammaLemmas
 
 namespace Formalism.GM.MeanGammaLemmas
-open Polynomial Finset Formalism.GM.M
 
 lemma lead_bound (p : ℕ) [hp : Fact p.Prime] {n : ℕ} (β : Fin n → ℝ) (dgs : Fin n → ℕ) (κ La Lnorm : ℝ)
     (hβ : ∀ b, 0 < β b) (hprod : ∏ b, (β b * (p : ℝ) ^ (-κ)) ≤ Lnorm)

@@ -246,7 +246,6 @@ end
 
 noncomputable section
 
-open Formalism.MainNotions.G MvPolynomial
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -879,8 +878,6 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Formalism.MainNotions.G
-open Classical
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -1215,8 +1212,6 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Formalism.MainNotions.G
-open Classical
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -1372,8 +1367,6 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Formalism.MainNotions.G
-open Classical
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -1594,8 +1587,6 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Formalism.MainNotions.G
-open Classical
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -1778,7 +1769,6 @@ end
 
 noncomputable section
 
-open Formalism.MainNotions.G
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -1842,7 +1832,6 @@ end
 
 noncomputable section
 
-open Formalism.MainNotions.G
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -1957,7 +1946,6 @@ end
 
 noncomputable section
 
-open Formalism.MainNotions.G
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -2156,7 +2144,6 @@ end
 
 noncomputable section
 
-open Formalism.MainNotions.G
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -2239,8 +2226,6 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Formalism.MainNotions.G
-open Classical
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -2414,7 +2399,6 @@ end
 
 noncomputable section
 
-open Formalism.MainNotions.G
 
 namespace Formalism.MainNotions.G.Joints
 
@@ -2451,7 +2435,6 @@ end
 
 noncomputable section
 
-open Formalism.MainNotions.G
 
 namespace Formalism.MainNotions.G.Joints
 

@@ -131,7 +131,6 @@ def idemAt (F : Type) [Field F] [NumberField F] (P : HeightOneSpectrum (𝓞 F) 
     · simp only [h, if_true]; exact one_mem _
     · simp only [h, if_false]; exact zero_mem _⟩
 
-open Classical in
 theorem evalV_idemAt (F : Type) [Field F] [NumberField F] (P : HeightOneSpectrum (𝓞 F) → Prop)
     (v : HeightOneSpectrum (𝓞 F)) : evalV F v (idemAt F P) = if P v then 1 else 0 := rfl
 

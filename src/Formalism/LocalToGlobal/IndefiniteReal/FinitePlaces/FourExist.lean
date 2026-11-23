@@ -456,7 +456,6 @@ theorem coef_ne_zero {Φ : W → ℂ} (h : IsSB L X Φ) {k : ℕ} (hk : 0 < k) (
     exact inv_eq_one.1 h1
 
 include hχl hχr hχ0 hLL hdY hoY hfinX hfinY htf in
-open Classical in
 theorem term_support_finite {Φ : W → ℂ} (h : IsSB L X Φ) :
     (Function.support fun q : QX L X × QY L Y =>
       if q.2.out ∈ Y then term ρ χ L X f₀ Φ q.1.out q.2.out else 0).Finite := by

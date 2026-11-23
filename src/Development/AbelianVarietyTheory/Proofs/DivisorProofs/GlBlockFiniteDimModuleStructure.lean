@@ -184,7 +184,6 @@ lemma rho_lt {a b : Ix p q} (h : posC a b) : rho p q b < rho p q a := by
     simp [h, h1, posC_asymm h]
 
 
-open Classical in
 def casVal (μ : Ix p q → ℚ) : ℚ :=
   ∑ a, ∑ b, ((if a = b then μ a * μ a else 0) + (if posC a b then μ a - μ b else 0))
 

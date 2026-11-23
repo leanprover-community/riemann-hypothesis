@@ -162,7 +162,6 @@ theorem theoremS_rec2P
     exact hRNG
 
 
-open Formalism.L2.SG.AdBridge Formalism.L2.SG.CntLocal Formalism.L2.SG.DataInst Formalism.L2.SG.RowsConc in
 theorem theoremS_rec3P
     (hLMA : ∀ D : D7, LocalModelAt D) (hDIA : ∀ D : D7, Formalism.L2.SG.Pf.LocCP.LocTied D → DensInputAt D) (hRIA : ∀ D : D7, RowsInputP D)
     (hNG : Formalism.L2.SG.RowsPos.RowNGP) (hCar : CarrierP) (Cthr : ℝ) :

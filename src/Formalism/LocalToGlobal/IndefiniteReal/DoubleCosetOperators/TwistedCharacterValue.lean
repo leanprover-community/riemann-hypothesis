@@ -185,7 +185,6 @@ section Pq
 variable (D : D7)
 
 
-open Classical in
 def qpOf (Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host) (S : Finset (PlE D.host)) :
     Finset (PlE D.host) :=
   S.filter fun P => ∀ v, NG.OverPl P v → P = Pq v ∨ Pq v ∉ S

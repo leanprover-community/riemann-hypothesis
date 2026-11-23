@@ -70,7 +70,6 @@ theorem rowLie_X (τ : ι) (k l : Fin m) (v : ι × Fin m × Fin n) :
   · simp
 
 
-open Classical in
 theorem rowLie_diag_comm (t t' : ι) (i k l : Fin m) :
     rowLie n t i i * rowLie n t' k l - rowLie n t' k l * rowLie n t i i =
       (if t = t' then ((if i = k then 1 else 0) - (if i = l then 1 else 0) : ℂ) else 0) •

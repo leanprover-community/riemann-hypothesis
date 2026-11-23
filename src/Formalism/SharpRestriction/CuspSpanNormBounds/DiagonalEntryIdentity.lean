@@ -45,8 +45,6 @@ end Gauge
 
 section LevelR
 
-open Matrix MeasureTheory TensorProduct
-open scoped ContDiff
 open Formalism.QuantumDeterminants Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.LevR
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
@@ -69,7 +67,6 @@ end LevelR
 section Further
 
 open Matrix MeasureTheory Filter Topology Polynomial
-open scoped ContDiff
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.LevR
 
 def IsKFinCoefT {k r : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]

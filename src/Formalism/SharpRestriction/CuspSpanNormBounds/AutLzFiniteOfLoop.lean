@@ -64,7 +64,6 @@ end Formalism.MainNotions.S.Lem.Comparison₂
 end A
 
 section B
-open Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.BasicNotions NumberField
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

@@ -236,7 +236,6 @@ theorem isWhitTest_deltaFun {K : Subgroup (GL (Fin m) k)} (hK : Good ψ K) : IsW
     exact hg (deltaFun_eq_zero h)
 
 
-open Classical in
 variable (ψ) in
 def delta (K : Subgroup (GL (Fin m) k)) : WT (m := m) ψ :=
   if h : Good ψ K then ⟨deltaFun ψ K, isWhitTest_deltaFun h⟩ else 0

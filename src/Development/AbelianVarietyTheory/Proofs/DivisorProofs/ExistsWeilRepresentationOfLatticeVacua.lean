@@ -79,7 +79,6 @@ private theorem eq_zero_of_sum_eigenvectors_eq_zero_of_injective {M ι α : Type
     · exact hj0
     · exact hs i hi
 
-open Classical in
 open scoped BigOperators in
 private theorem isHeis_apply_apply_eq_smul_of_fixes {R X M : Type} [CommRing R] [AddCommGroup X]
     [Module R X] [AddCommGroup M] [Module ℂ M] {σ : R →+* R} {w : R} {γ : X → X → ℂ}
@@ -99,7 +98,6 @@ private theorem isHeis_apply_apply_eq_smul_of_fixes {R X M : Type} [CommRing R] 
   congr 1
   rw [hsm w a x, hswap a (w • x), inv_inv, ← hadd, ← add_smul, add_comm (σ w) w, hw, one_smul]
 
-open Classical in
 open scoped BigOperators in
 private theorem isHeis_sum_filter_quotient_eq_zero_of_sum_eq_zero {R X M : Type} [CommRing R] [AddCommGroup X]
     [Module R X] [AddCommGroup M] [Module ℂ M] {σ : R →+* R} {w : R} {γ : X → X → ℂ}
@@ -144,7 +142,6 @@ private theorem isHeis_sum_filter_quotient_eq_zero_of_sum_eq_zero {R X M : Type}
     rw [← hiq]
     exact Finset.mem_image_of_mem _ his
 
-open Classical in
 open scoped BigOperators in
 private theorem eq_zero_of_isHeis_apply_eq_zero {R X M : Type} [CommRing R] [AddCommGroup X]
     [Module R X] [AddCommGroup M] [Module ℂ M] {σ : R →+* R} {w : R} {γ : X → X → ℂ}
@@ -156,7 +153,6 @@ private theorem eq_zero_of_isHeis_apply_eq_zero {R X M : Type} [CommRing R] [Add
   rw [hv, map_zero, neg_add_cancel, h0] at h
   exact (smul_eq_zero.1 h.symm).resolve_left hne
 
-open Classical in
 open scoped BigOperators in
 private theorem isHeis_apply_add_eq_inv_smul_of_fixes {R X M : Type} [CommRing R] [AddCommGroup X]
     [Module R X] [AddCommGroup M] [Module ℂ M] {σ : R →+* R} {w : R} {γ : X → X → ℂ}
@@ -169,7 +165,6 @@ private theorem isHeis_apply_add_eq_inv_smul_of_fixes {R X M : Type} [CommRing R
   rw [he d hd] at h
   rw [h, smul_smul, inv_mul_cancel₀ hne, one_smul]
 
-open Classical in
 open scoped BigOperators in
 private theorem isHeis_sum_map_eq_zero_of_sum_eq_zero {R X M : Type} [CommRing R] [AddCommGroup X]
     [Module R X] [AddCommGroup M] [Module ℂ M] {σ : R →+* R} {w : R} {γ : X → X → ℂ}
@@ -219,7 +214,6 @@ private theorem isHeis_sum_map_eq_zero_of_sum_eq_zero {R X M : Type} [CommRing R
     _ = 0 := by rw [hu, map_zero, map_zero]
 
 
-open Classical in
 open scoped BigOperators in
 theorem _root_.GlobalTheory.FinWeil.exists_weil_rep_of_vacua : ∀ {R X M : Type} [CommRing R]
     [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] {σ : R →+* R} {w : R}

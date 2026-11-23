@@ -54,14 +54,12 @@ def FormalGroupPointsSubgroup' : Prop :=
     ∀ P Q : W.toAffine.Point, InFormalGroupPoints P → InFormalGroupPoints Q → InFormalGroupPoints (P + Q) ∧ InFormalGroupPoints (-P)
 
 
-open Classical in
 def FormalGroupPointsTorsionFree : Prop :=
   ∀ (K : Type u) [NormedField K] [IsUltrametricDist K] (W : WeierstrassCurve K),
     IntegralModel W → ‖W.Δ‖ = 1 →
     ∀ (n : ℕ), ‖(n : K)‖ = 1 → ∀ P : W.toAffine.Point, InFormalGroupPoints P → n • P = 0 → P = 0
 
 
-open Classical in
 def TorsionIntegral : Prop :=
   ∀ (K : Type u) [NormedField K] [IsUltrametricDist K] (W : WeierstrassCurve K),
     IntegralModel W → ‖W.Δ‖ = 1 →

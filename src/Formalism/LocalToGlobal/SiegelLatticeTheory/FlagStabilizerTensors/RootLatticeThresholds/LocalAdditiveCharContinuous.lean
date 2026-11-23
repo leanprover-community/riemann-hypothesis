@@ -270,7 +270,6 @@ end Formalism.L2.SG.Pf.LocCP
 
 namespace Formalism.L2.SG.Pf.LocCP
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel MeasureTheory
 
 attribute [local instance] factRes
 
@@ -369,7 +368,6 @@ end Formalism.L2.SG.Pf.LocCP
 
 namespace Formalism.L2.SG.Pf.LocCP
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel MeasureTheory
 
 attribute [local instance] factRes
 
@@ -421,7 +419,6 @@ end Formalism.L2.SG.Pf.LocCP
 
 namespace Formalism.L2.SG.Pf.LocCP
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel MeasureTheory
 
 attribute [local instance] factRes
 
@@ -546,7 +543,6 @@ end Formalism.L2.SG.Pf.LocCP
 
 namespace Formalism.L2.SG.Pf.LocCP
 
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel MeasureTheory
 
 attribute [local instance] factRes
 

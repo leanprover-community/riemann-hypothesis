@@ -304,7 +304,6 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))} {S : GSD K}
 
 
-open Classical in
 theorem hi_commute (c : DecoPts S E n ST SG) (A B : LocOp S S)
     (a b : DecoSet (E := E) (n := n) (ST := ST) (SG := SG) → Finset (DecoSet (E := E) (n := n) (ST := ST) (SG := SG)))
     (hA : ∀ (φ : S.EqFun) (d : S.D), ((A.op φ : S.EqFun) : S.D → S.V) d =

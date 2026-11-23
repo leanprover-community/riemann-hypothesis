@@ -62,7 +62,6 @@ def faceSign {K : Type*} [Fintype K] [LinearOrder K] {ι : K → Type*} [∀ k, 
   (-1) ^ (((I k).filter (· < i)).card + ∑ l ∈ Finset.univ.filter (· < k), ((I l).card - 1))
 
 
-open Classical in
 def cechD (S : Type*) [CommRing S] {K : Type*} [Fintype K] [LinearOrder K] (ι : K → Type*)
     [∀ k, LinearOrder (ι k)] (M : Type*) [AddCommGroup M] [Module (MRingOver S ι) M] (n : ℕ) :
     CechC S ι M n →ₗ[MRingOver S ι] CechC S ι M (n + 1) :=

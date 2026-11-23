@@ -54,7 +54,6 @@ theorem evalV_singleV_same (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) : evalV
   unfold singleV
   exact RestrictedProduct.single_eq_same _ _ _
 
-open Classical in
 theorem evalV_singleV_ne {v w : HeightOneSpectrum (𝓞 F)} (h : w ≠ v) (y : Fv F v) : evalV F w (singleV F v y) = 0 := by
   rw [evalV_apply]
   unfold singleV

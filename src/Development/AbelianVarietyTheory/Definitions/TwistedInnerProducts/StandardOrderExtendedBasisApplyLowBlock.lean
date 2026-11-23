@@ -322,7 +322,6 @@ theorem step_lam_eq (μ : kˣ →* ℂˣ) (hμ : IsTame μ) (h : P.stepJ t) (g :
   rw [P.step_lam μ hμ h g hg, tame_det_blocks hμ h.2.1 h.2.2.2.2.1 hg hD, mul_assoc, inv_mul_cancel_left]
 
 
-open Classical in
 variable (t) in
 def Phi (μ : kˣ →* ℂˣ) : Matrix (a ⊕ t) a k → ℂ := fun x =>
   if MaxM x.toRows₂ then extZ P.J (P.rho μ) x.toRows₁ else 0
@@ -350,7 +349,6 @@ theorem extZ_add {μ : kˣ →* ℂˣ} (hμ : IsTame μ) (M : Matrix a a k) {Y :
     exact h (P.exists_of_congr hg (by simpa [e] using hY.neg))
 
 
-open Classical in
 omit [Fintype t] [DecidableEq t] in
 theorem Phi_add {μ : kˣ →* ℂˣ} (hμ : IsTame μ) (x : Matrix (a ⊕ t) a k) {y : Matrix (a ⊕ t) a k} (hy : MaxM y) :
     P.Phi t μ (x + y) = P.Phi t μ x := by
@@ -436,7 +434,6 @@ theorem parahoric_lam {δ : kˣ →* ℂˣ} {hδ : IsTame δ} (h : (parahoric r 
   exact this.trans (one_mul _)
 
 
-open Classical in
 def parPhi (δ : kˣ →* ℂˣ) : Matrix (r ⊕ s) (r ⊕ s') k → ℂ := fun x =>
   if MaxM x.toBlocks₂₁ ∧ IntM x.toBlocks₁₂ ∧ IntM x.toBlocks₂₂ then
     extZ (KO k r) (δ.comp (Matrix.GeneralLinearGroup.det.comp (KO k r).subtype))⁻¹ x.toBlocks₁₁ else 0
@@ -461,7 +458,6 @@ theorem parPhi_ne_zero_iff (δ : kˣ →* ℂˣ) {x : Matrix (r ⊕ s) (r ⊕ s'
   unfold parPhi
   split_ifs with h <;> simp [h, extZ_ne_zero_iff]
 
-open Classical in
 omit [DecidableEq s] in
 theorem parPhi_mem_SB [Fintype s'] {δ : kˣ →* ℂˣ} (hδ : IsTame δ) :
     parPhi δ ∈ SB (Matrix (r ⊕ s) (r ⊕ s') k) := by

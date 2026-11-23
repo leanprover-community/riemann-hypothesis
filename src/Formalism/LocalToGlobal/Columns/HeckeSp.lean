@@ -375,7 +375,6 @@ end Block
 
 section Example
 
-open Polynomial
 
 end Example
 
@@ -432,7 +431,6 @@ end Nbr
 
 section NbrAct
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
@@ -481,7 +479,6 @@ end NbrAct
 
 section HeckeD
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
@@ -631,7 +628,6 @@ end NbrLemmas
 
 section Exist
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
@@ -795,7 +791,6 @@ end Exist
 
 section Fam
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
@@ -836,7 +831,6 @@ end Fam
 
 section Triv
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K]
 variable (E : Type) [Field E] [NumberField E] [StarRing E] (n : ℕ)
@@ -846,7 +840,6 @@ end Triv
 
 section NonZero
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 

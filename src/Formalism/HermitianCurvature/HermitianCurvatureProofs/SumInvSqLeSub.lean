@@ -449,7 +449,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Sz4
 
-open Finset Formalism.FourierDecayAlt.Sz
 
 lemma v_one_nonneg (c : Cfg) (hc : c.Ok) : 0 ≤ c.v 1 := by
   have hk : (4 : ℝ) ≤ c.k := by exact_mod_cast hc.hk
@@ -580,7 +579,6 @@ end Formalism.FourierDecayAlt.P.Sz4
 
 namespace Formalism.FourierDecayAlt.P
 
-open Finset Formalism.FourierDecayAlt.Sz Formalism.FourierDecayAlt.P.Sz4
 
 theorem edgeFactors : Formalism.FourierDecayAlt.Sz.EdgeFactors := by
   intro c de hc hw
@@ -609,7 +607,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Sz4
 
-open Finset Formalism.FourierDecayAlt.Sz
 
 lemma u_last (c : Cfg) (de : ℕ → ℝ) (hc : c.Ok) : c.u de c.k = c.ulast := by
   have : c.k ≠ 1 := by have := hc.hk; omega
@@ -751,7 +748,6 @@ end Formalism.FourierDecayAlt.P.Sz4
 
 namespace Formalism.FourierDecayAlt.P
 
-open Finset Formalism.FourierDecayAlt.Sz Formalism.FourierDecayAlt.P.Sz4
 
 theorem vandermondeWords : Formalism.FourierDecayAlt.Sz.VandWords := by
   intro c de de' hc hv hw hw'

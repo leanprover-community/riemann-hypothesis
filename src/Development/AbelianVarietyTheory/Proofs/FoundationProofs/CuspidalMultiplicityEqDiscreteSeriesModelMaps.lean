@@ -177,7 +177,6 @@ def stab (w : W) : Subgroup (GfC V) where
     conv_lhs => rw [← ha]
     rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
 
-open Classical in
 theorem toHom_surjective (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfFam θ) (hσ : GlobalTheory.PRep.IsSmooth σ) :
     Function.Surjective (toHom (σ := σ) (M := M) μ hP hθ) := by
   intro Ψ

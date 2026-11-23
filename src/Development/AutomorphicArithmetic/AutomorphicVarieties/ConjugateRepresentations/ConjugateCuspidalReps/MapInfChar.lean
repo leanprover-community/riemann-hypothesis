@@ -99,7 +99,6 @@ private theorem eF_coord (t τ : E →+* ℂ) (k l i j : Fin a) :
     exact coord_hol τ t
   · simp [h3]
 
-open Classical in
 private theorem eF_det (t τ : E →+* ℂ) (i j : Fin a) :
     eF (fun y : GL (Fin a) (Cinf E) => (coord t y.val.det)⁻¹) τ i j = if t = τ ∧ i = j then -1 else 0 := by
   have h0 := (coordL t).hasFDerivAt.comp (oneL E a) (contDiff_det.differentiable (by simp) (oneL E a)).hasFDerivAt

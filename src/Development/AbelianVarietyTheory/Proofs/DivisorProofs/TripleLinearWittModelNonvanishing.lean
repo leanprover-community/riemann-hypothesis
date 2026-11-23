@@ -154,7 +154,6 @@ theorem expand (μ : Measure T) [IsFiniteMeasureOnCompacts μ] {V : Type} [AddGr
   rw [hP]
   split_ifs <;> ring
 
-open Classical in
 theorem cind_eq_of_sub_mem {V : Type} [AddGroup V] (L : AddSubgroup V) {y y' : V} (h : y - y' ∈ L) :
     cind L y = cind L y' := by
   funext Y
@@ -179,7 +178,6 @@ namespace GlobalTheory.LinearModelL2
 open GlobalTheory.LinSchur
 
 
-open Classical in
 theorem ip_cind {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] [MeasurableSpace V]
     [BorelSpace V] (ν : Measure V) [ν.IsAddRightInvariant] (L : AddSubgroup V) (y y' : V) :
     ip ν (cind L y) (cind L y') = if y - y' ∈ L then ip ν (cind L 0) (cind L 0) else 0 := by
@@ -199,7 +197,6 @@ theorem ip_cind {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalA
     rw [e, integral_zero]
 
 
-open Classical in
 theorem ip_cosets {T : Type} [TopologicalSpace T] [MeasurableSpace T] [OpensMeasurableSpace T]
     {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n d : ℕ}
     (μ : Measure T) (ψ0 : AddChar k ℂ) (hψ : Continuous ψ0)

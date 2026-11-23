@@ -305,7 +305,6 @@ open Classical in
 def frame (hg : IsCoc U κ g) (β : ι) (k : κ β) : Γ(toMod U κ g, U β) :=
   show secGroup U κ g (U β) from ofCoord hg le_rfl (Pi.single k 1)
 
-open Classical in
 theorem isFrame_frame (hg : IsCoc U κ g) (β : ι) : GlobalTheory.VB.IsFrame (frame (U := U) hg β) := by
   refine GlobalTheory.VB.isFrame_of_basis
     (fun V h => (Module.Basis.ofEquivFun (secEquiv hg h) : Module.Basis (κ β) Γ(X, V) (secGroup U κ g V)))
@@ -349,7 +348,6 @@ theorem mul_g_tuple {n : ℕ} (a b c : Fin (n + 1)) (i : Fin (n + 1) → ι) (k 
   exact h1
 
 
-open Classical in
 theorem g_self_tuple {n : ℕ} (a : Fin (n + 1)) (i : Fin (n + 1) → ι) (k m : V.κ (i a)) :
     rs (le_inf (capO_le U i a) (capO_le U i a)) (V.g (i a) (i a) k m) = if k = m then 1 else 0 := by
   classical

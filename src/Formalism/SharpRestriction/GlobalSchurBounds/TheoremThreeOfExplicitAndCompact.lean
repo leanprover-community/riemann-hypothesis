@@ -307,8 +307,6 @@ theorem part_five_family_of_explicit {eps : ℝ} (Fm : Formalism.MainNotions.Fam
 
 section DS
 
-open Formalism.MainNotions.S MeasureTheory Matrix
-open scoped InnerProductSpace ComplexOrder
 
 end DS
 

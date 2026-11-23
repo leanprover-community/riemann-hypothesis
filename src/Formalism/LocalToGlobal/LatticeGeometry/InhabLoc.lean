@@ -543,7 +543,6 @@ variable (D : D7) (r j p : ℕ) (c : CF p) (ρ : ℕ)
     (abs_le_pmM D d (r + j) τ _ (Finset.Icc_subset_Icc (by omega) (by omega)))
 
 
-open Classical in
 @[reducible] def locBT (hp : 2 ≤ p ∨ ρ = 0) (hd : ρ * (2 * D.R.f) ≤ D.R.f * r) :
     BoundaryLocalData.LocB D (locT D r j p c ρ) where
   chX := fun {_} y => XT D (Fin (rkB ρ y) → 𝓞 D.host.E)

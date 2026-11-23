@@ -99,7 +99,6 @@ def resL {d : ℕ} (ρ : KA E (r + s) → Matrix (Fin d) (Fin d) ℂ) (k : KA E 
   if h : lev (Ad E) r s ((k : GA E r), 1) ∈ KA E (r + s) then ρ ⟨_, h⟩ else 0
 
 
-open Classical in
 def resR {d : ℕ} (ρ : KA E (r + s) → Matrix (Fin d) (Fin d) ℂ) (k : KA E s) : Matrix (Fin d) (Fin d) ℂ :=
   if h : lev (Ad E) r s (1, (k : GA E s)) ∈ KA E (r + s) then ρ ⟨_, h⟩ else 0
 

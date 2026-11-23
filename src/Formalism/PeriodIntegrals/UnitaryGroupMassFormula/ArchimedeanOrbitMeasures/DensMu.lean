@@ -51,7 +51,6 @@ def matI {D : D7} (X : HidaSetting D) : Matrix (KapI X) (KapI X) ℝ :=
   fun i j => betaI X (EuclideanSpace.single i 1) (EuclideanSpace.single j 1)
 
 
-open Classical in
 def DensMu : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
     PushHyp X u' ψ hT μinf νinf fibInf →
     μinf.map (tupCoord X) = ENNReal.ofReal (Real.sqrt |(matI X).det|) • volume

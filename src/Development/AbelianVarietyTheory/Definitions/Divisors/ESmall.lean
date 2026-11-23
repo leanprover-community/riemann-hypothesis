@@ -63,7 +63,6 @@ def eSmall (F N m : ℕ) (Mb Sm : ℝ) (M p : ℕ) : ℝ :=
   (F * m * Mb * (4 + Real.logb p M / 2) + Sm) / ((p : ℝ) - 1) + F * (m + 1) * (N : ℝ) ^ 2 * (Real.logb p M + 1)
 
 
-open Classical in
 def eOf (F N k m : ℕ) (Mb Sm : ℝ) (vd : ℕ → ℝ) (M : ℕ) (S R : Finset ℕ) (p : ℕ) : ℝ :=
   if M < p then 0 else if p ∈ S then F * m * (1 + vd p / 2) * Mb + Sm
   else if p ∈ R then (F * N * Mb + Sm) / ((p : ℝ) - 1)

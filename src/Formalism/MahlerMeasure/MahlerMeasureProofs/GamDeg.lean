@@ -133,7 +133,6 @@ end Formalism.GM.GammaExpansion
 
 namespace Formalism.GM.GammaExpansion
 
-open MvPolynomial Finset
 
 section
 variable (p : ℕ) [Fact p.Prime] {σ : Type} [Fintype σ] [DecidableEq σ]
@@ -276,7 +275,6 @@ end Formalism.GM.GammaExpansion
 
 namespace Formalism.GM.GammaExpansion
 
-open MvPolynomial Finset
 
 section
 variable {k σ : Type} [Field k] [CharZero k] {r : ℕ} {w e : Fin r → σ}
@@ -460,7 +458,6 @@ end Formalism.GM.GammaExpansion
 
 namespace Formalism.GM.GammaExpansion
 
-open MvPolynomial Finset
 
 section
 variable {k σ : Type} [Field k] [CharZero k] {r : ℕ} {w e : Fin r → σ}
@@ -601,7 +598,6 @@ end Formalism.GM.GammaExpansion
 
 namespace Formalism.GM.GammaExpansion
 
-open MvPolynomial Finset
 
 theorem sum_range_eq_of_zero {M : Type} [AddCommMonoid M] (f : ℕ → M) (a b : ℕ)
     (ha : ∀ i, a ≤ i → f i = 0) (hb : ∀ i, b ≤ i → f i = 0) :
@@ -885,7 +881,6 @@ end Formalism.GM.GammaExpansion
 
 namespace Formalism.GM.GammaExpansion
 
-open MvPolynomial Finset
 
 section
 variable {R σ : Type} [CommSemiring R]
@@ -1075,7 +1070,6 @@ end Formalism.GM.GammaExpansion
 
 namespace Formalism.GM.GammaExpansion
 
-open MvPolynomial Finset
 
 section
 variable (p : ℕ) [Fact p.Prime] {σ : Type} [Fintype σ] [DecidableEq σ] {r : ℕ} {w e : Fin r → σ}
@@ -1203,7 +1197,6 @@ end Formalism.GM.GammaExpansion
 
 namespace Formalism.GM
 
-open MvPolynomial Finset
 
 theorem gamma_degree_bound : M.GamDeg := by
   intro p _ N r LL ρ z e e' f f' hr hvec hf hf' ho ho'

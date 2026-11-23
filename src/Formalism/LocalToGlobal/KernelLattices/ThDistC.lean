@@ -88,7 +88,6 @@ def jetC (cD : ι → ℂ) (G : VCx ι a b → ℂ) (m : DVar ι a b →₀ ℕ)
   (m.prod fun k n => cD k.1 ^ n) * derivAt0 G m
 
 
-open Classical in
 def desc {K : Type} [Field K] (σ : K →+* ℂ) (z : ℂ) : K := if h : ∃ k : K, σ k = z then h.choose else 0
 
 end Table
@@ -139,7 +138,6 @@ def ordDet {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (𝓞 E))
   ordE P ((LinearEquiv.det (frameAt P N) : Eˣ) : E)
 
 
-open Classical in
 def muOff (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (SB : Finset (HeightOneSpectrum (𝓞 X.E)))
     (mU : HeightOneSpectrum (𝓞 X.E) → X.Kˣ) (N : Submodule (𝓞 X.E) (Sp X.E n)) : X.K :=
   ∏ᶠ v : HeightOneSpectrum (𝓞 X.F),
@@ -178,7 +176,6 @@ def IsUnifVal (ξ : Chr F E L) (P : HeightOneSpectrum (𝓞 E)) (k : Lˣ) : Prop
     (∀ P' : HeightOneSpectrum (𝓞 E), P' ≠ P → y₀ - 1 ∈ P'.asIdeal.map (toRInt F E)) → ξ y = k
 
 
-open Classical in
 def unifVal (ξ : Chr F E L) (P : HeightOneSpectrum (𝓞 E)) : Lˣ := if h : ∃ k, IsUnifVal ξ P k then h.choose else 1
 
 def IsQVal (ξ : Chr F E L) (P : HeightOneSpectrum (𝓞 E)) (k : Lˣ) : Prop := IsQValC ξ P k
@@ -201,12 +198,10 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
 def nuLast (u : Pr.Word) (i : ℕ) (τ : X.Tau) : ℕ := (W.nuW u (i + 1) τ).detShift.toNat
 
 
-open Classical in
 def mUof (i : ℕ) (P : HeightOneSpectrum (𝓞 X.E)) : X.Kˣ :=
   (if h : i < R.m then Ch.muVal ⟨i, h⟩ P else 1)⁻¹ * (unifVal (mu : Chr X.F X.E X.K) P)⁻¹
 
 
-open Classical in
 def muqT (i : ℕ) (P : HeightOneSpectrum (𝓞 X.E)) : X.Kˣ :=
   (if h : i < R.m then Ch.muVal ⟨i, h⟩ P else 1)⁻¹ * (qVal (mu : Chr X.F X.E X.K) P)⁻¹
 
@@ -219,7 +214,6 @@ def MuqTieG (σ₀ : X.K →+* ℂ) (m0 : Fin R.m → Formalism.L2.Host.HChar X.
       ((((m0 ⟨i, h⟩).locK P.1 qu : ℂˣ) : ℂ))⁻¹ * σ₀ (((qVal (mu : Chr X.F X.E X.K) P.1)⁻¹ : X.Kˣ) : X.K)
 
 
-open Classical in
 def muAtT (i : ℕ) (P : rowSG Pr sel mu) : X.E → X.K :=
   LocE.locChar (Col.qOf P.1) (if P.1 ∈ Pr.vGs then cst.muq (i + 1) P else ((muqT Ch mu i P.1 : X.Kˣ) : X.K))
     (if P.1 ∈ Pr.vGs then chiP Ch P.1 i else (resChar (mu : Chr X.F X.E X.K) P.1)⁻¹)
@@ -271,7 +265,6 @@ def Amb.IndSmooth : Prop :=
     ∀ k : ℕ, ContDiff ℂ k (A.thInd Sall N N' c x)
 
 
-open Classical in
 def cosInd {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ} (S : Finset (HeightOneSpectrum (𝓞 E)))
     (N : Submodule (𝓞 E) (Sp E a)) (N' : Submodule (𝓞 E) (Sp E b)) (c : ℕ) (x t : HomE E a b) : ℂ :=
   if t - x ∈ mulLat c (homAt S N N') then 1 else 0
@@ -374,7 +367,6 @@ def matK (i : ℕ) (al : L.β i) (be : L.β (i + 1)) (p : ChPt (R := R) sel mu u
     p'.deco.1.N (frsF sel mu p') (XiEntry Ch sel mu cst L i al be p p')
 
 
-open Classical in
 def cp1K (al : L.β m2) (p₀ : ChPt (R := R) sel mu u m2) (p : ChPt (R := R) sel mu u (m2 + 1)) (Y : Set (Sp X.E (R.N (m2 + 1)))) :
     (colValF W sel mu u m2).V →ₗ[X.K] (colValF W sel mu u (m2 + 1)).V :=
   if Y ∈ ybSet sel mu cst p.deco.1.N then
@@ -383,7 +375,6 @@ def cp1K (al : L.β m2) (p₀ : ChPt (R := R) sel mu u m2) (p : ChPt (R := R) se
   else 0
 
 
-open Classical in
 def cp2K (p : ChPt (R := R) sel mu u (m2 + 1)) (Y : Set (Sp X.E (R.N (m2 + 1)))) (d : RowPt Pr R sel mu) :
     (colValF W sel mu u (m2 + 1)).V →ₗ[X.K] (colVal W u R.m (Pr.vT u) (rowSG Pr sel mu)).V :=
   if Y ∈ ybSet sel mu cst p.deco.1.N then
@@ -429,7 +420,6 @@ def zeroKer {K : Type} [Field K] [NumberField K] [StarRing K] (S S' : GSD K) : C
   ⟨fun _ _ => 0, fun _ _ _ _ => by rw [LinearMap.zero_comp, LinearMap.comp_zero]⟩
 
 
-open Classical in
 def chKer (P : LevFam X.E X.K R.r Pr.vGs) (hM : MatEquiv W Ch sel mu cst L T) (h1 : Cp1Equiv W Ch sel mu cst L T b hY)
     (h2 : Cp2Equiv W Ch sel mu cst L T b hY P) : ChKer W Ch sel mu cst L P u m2 b hY where
   kk i al be := if h : i < m2 then ClsKer.mk (matK W Ch sel mu cst L T i al be) (hM i h al be) else zeroKer _ _

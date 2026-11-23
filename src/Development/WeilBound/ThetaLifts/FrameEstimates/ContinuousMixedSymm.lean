@@ -283,7 +283,6 @@ theorem pure_update (f : SInf F κ) {φ : ∀ u : HeightOneSpectrum (𝓞 F), (�
   rw [key, key, Pi.one_apply]
   ring
 
-open Classical in
 theorem indep_pure (f : SInf F κ) (φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ) :
     Indep v (pure f (Function.update φ v 1)) := by
   intro x t
@@ -302,7 +301,6 @@ theorem indep_pure (f : SInf F κ) (φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ
       rw [Pi.add_apply, map_add (f := _)]
       exact add_eq_left.2 (evalV_singleFin_ne h _)
 
-open Classical in
 theorem Good.update {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ} (hφ : Good φ) {φ' : (κ → Fv F v) → ℂ}
     (h : φ' ∈ SB (κ → Fv F v)) : Good (Function.update φ v φ') := by
   refine ⟨fun u => ?_, ?_⟩
@@ -313,7 +311,6 @@ theorem Good.update {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) �
     rwa [Function.update_of_ne e]
 
 
-open Classical in
 variable (v) in
 def psv (ψ : AddChar (AF F) ℂ) : AddChar (Fv F v) ℂ := ψ.compAddMonoidHom (atPlace v).toAddMonoidHom
 

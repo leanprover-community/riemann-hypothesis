@@ -130,7 +130,6 @@ def Rm (S : Finset ι) : Measure (∀ i : {i // i ∈ S}, W i) :=
   Measure.pi (fun i : {i // i ∈ S} => (m i.1).restrict (L i.1)ᶜ)
 
 
-open Classical in
 def eS (S : Finset ι) : (∀ i, W i) ≃ᵐ (∀ i : {i // i ∈ S}, W i) × (∀ i : {i // i ∉ S}, W i) :=
   MeasurableEquiv.piEquivPiSubtypeProd W (fun i => i ∈ S)
 
@@ -138,11 +137,9 @@ def kap [∀ i, SigmaFinite (m i)] (S : Finset ι) : Measure (∀ i, W i) :=
   ((Rm m L S).prod (Qm m L S)).map (eS S).symm
 
 
-open Classical in
 def mu (S : Finset ι) (i : ι) : Measure (W i) :=
   if i ∈ S then (m i).restrict (L i)ᶜ else (m i).restrict (L i)
 
-open Classical in
 lemma eS_symm_apply (S : Finset ι) (p : (∀ i : {i // i ∈ S}, W i) × (∀ i : {i // i ∉ S}, W i))
     (i : ι) : (eS S).symm p i = if h : i ∈ S then p.1 ⟨i, h⟩ else p.2 ⟨i, h⟩ := by
   rfl

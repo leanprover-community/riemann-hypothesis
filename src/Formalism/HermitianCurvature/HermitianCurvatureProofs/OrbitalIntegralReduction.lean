@@ -539,7 +539,6 @@ theorem tk_out_sub_mem {M' M : AddSubgroup V} (h : M' ≤ M) (y : V ⧸ M') :
 def tk_S (V₀ M : AddSubgroup V) (f : V → ℂ) : ℂ :=
   (gi M V₀ : ℂ) * ∑ᶠ y : V ⧸ M, f (Quotient.out y)
 
-open Classical in
 theorem tk_ind_sum (N : AddSubgroup V) (c : V) :
     ∑ᶠ y : V ⧸ N, (if (Quotient.out y : V) - c ∈ N then (1 : ℂ) else 0) = 1 := by
   rw [finsum_eq_single _ ((c : V) : V ⧸ N)]
@@ -590,7 +589,6 @@ theorem tk_S_refine {V₀ M M' : AddSubgroup V} (h0 : Lat V₀) (hM : Lat M) (hM
   push_cast
   ring
 
-open Classical in
 theorem tk_S_ind {V₀ N M' : AddSubgroup V} (h0 : Lat V₀) (hN : Lat N) (hM' : Lat M')
     (hle : M' ≤ N) (c : V) :
     tk_S V₀ M' (fun v => if v - c ∈ N then (1 : ℂ) else 0) = (gi N V₀ : ℂ) := by
@@ -604,7 +602,6 @@ theorem tk_S_ind {V₀ N M' : AddSubgroup V} (h0 : Lat V₀) (hN : Lat N) (hM' :
       exact N.add_mem_cancel_right hl
     simp only [this]
 
-open Classical in
 theorem tk_ind_fin {V₀ N M' : AddSubgroup V} (h0 : Lat V₀) (hN : Lat N) (hM' : Lat M')
     (hle : M' ≤ N) (c : V) :
     (Function.support fun y : V ⧸ M' =>

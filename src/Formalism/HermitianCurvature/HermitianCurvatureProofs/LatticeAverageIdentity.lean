@@ -317,7 +317,6 @@ end
 
 section
 
-open Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Matrix
 
 namespace Formalism.FourierDecayAlt.P.A5x9
 
@@ -480,11 +479,9 @@ end
 
 section
 
-open Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Matrix
 
 namespace Formalism.FourierDecayAlt.P.A5x9
 
-open Formalism.DoubleCosetMeasures.P Formalism.DoubleCosetMeasures.P.Phase
 
 section Mat
 
@@ -684,7 +681,6 @@ end
 
 section
 
-open Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Matrix
 
 namespace Formalism.FourierDecayAlt.P.A5x9
 
@@ -853,7 +849,6 @@ end
 
 section
 
-open Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Matrix
 
 namespace Formalism.FourierDecayAlt.P.A5x9
 
@@ -1145,7 +1140,6 @@ end
 
 section
 
-open Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Matrix
 
 namespace Formalism.FourierDecayAlt.P.A5x9
 
@@ -1396,7 +1390,6 @@ end
 
 section
 
-open Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Matrix
 
 namespace Formalism.FourierDecayAlt.P.A5x9
 
@@ -1438,7 +1431,6 @@ end
 
 section
 
-open Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Matrix
 
 namespace Formalism.FourierDecayAlt.P.A5x9
 
@@ -1614,7 +1606,6 @@ end
 
 section
 
-open Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Matrix
 open scoped ComplexConjugate
 
 namespace Formalism.FourierDecayAlt.P.A5x9
@@ -1633,7 +1624,6 @@ def badN (k : ℕ) (w w' : Point K) (q : Cos R w × Cos R w') : ℕ :=
 
 
 open scoped Classical in
-open Classical in
 theorem fib_core (ψ : AddChar K ℂ) (hsd : ∀ a : K, (∀ r ∈ R, ψ (a * r) = 1) ↔ a ∈ R)
     (hun : ∀ x : K, conj (ψ x) = ψ (-x))
     (hfin : ∀ (m : ℕ) (Z : Matrix (Fin m) (Fin m) K), IsInt R Z → IsUnit Z.det →
@@ -1729,8 +1719,6 @@ theorem fib_core (ψ : AddChar K ℂ) (hsd : ∀ a : K, (∀ r ∈ R, ψ (a * r)
   exact key
 
 
-open scoped Classical in
-open Classical in
 theorem fibre_zero (ψ : AddChar K ℂ) (hsd : ∀ a : K, (∀ r ∈ R, ψ (a * r) = 1) ↔ a ∈ R)
     (hun : ∀ x : K, conj (ψ x) = ψ (-x))
     (hfin : ∀ (m : ℕ) (Z : Matrix (Fin m) (Fin m) K), IsInt R Z → IsUnit Z.det →
@@ -1761,8 +1749,6 @@ end
 
 section
 
-open Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Matrix
-open scoped ComplexConjugate
 
 namespace Formalism.FourierDecayAlt.P.A5x9
 

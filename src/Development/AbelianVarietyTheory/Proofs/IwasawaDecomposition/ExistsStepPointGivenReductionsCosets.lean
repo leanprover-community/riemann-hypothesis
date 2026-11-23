@@ -136,7 +136,6 @@ theorem frsF_symm_mem (p : ChPt (R := R) sel mu u j) (P : rowSG Pr sel mu) (hP :
   rw [← frsF_mem p P hP, LinearEquiv.apply_symm_apply]
 
 
-open Classical in
 theorem cosetIn_eq {cst : LocCst X (rowSG Pr sel mu)} (q : PtAt R sel mu cst u j) {y : Sp X.E (R.N j)}
     (hY : q.1.2 = {z | z - y ∈ locLat (rowSG Pr sel mu) q.1.1.deco.1.N (fun P => if P.1 ∈ Pr.vGs then 0 else (cst.M : ℤ))})
     (P : rowSG Pr sel mu) (hP : P.1 ∉ Pr.vGs) :

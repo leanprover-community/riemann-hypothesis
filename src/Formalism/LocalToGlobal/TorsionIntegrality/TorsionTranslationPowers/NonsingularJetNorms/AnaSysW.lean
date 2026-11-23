@@ -677,7 +677,6 @@ theorem weierstrass_series_eq_transported (l : ℕ) [Fact l.Prime] (L : PeriodPa
   exact AnaSysW.wpBridge hU
 
 
-open Classical in
 theorem analytic_translate_system_model : AnalyticSysW := by
   unfold AnalyticSysW
   intro l _ L ι W hU π hπ

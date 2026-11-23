@@ -157,7 +157,6 @@ def URep.sig (U : URep k r) (g : Mx k r) : Module.End ℂ U.R.smSub :=
   else 0
 
 
-open Classical in
 def URep.dsig (U : URep k r) (X : Mx k r) : Module.End ℂ U.R.smSub :=
   if hX : InLieHpk k r X then
     { toFun := fun v => ⟨ds U.R.σ X v, IsSm.dsW U.repOn (W := [X]) v.2

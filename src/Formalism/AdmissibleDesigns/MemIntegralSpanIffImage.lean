@@ -953,8 +953,6 @@ end Rec
 
 section RecRank
 
-open Formalism.MainNotions Formalism.MainNotions.N Formalism.RepresentationBoundsCohomology.SF NumberField IsDedekindDomain
-open Formalism.RepresentationBoundsCohomology.ringDataObjects (RingData)
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   (Dd : RingData (D.nd.O i) (D.nd.X i) (Fin D.R.nV) (GE D.nd) D.R.t (RepresentationBoundsCohomology.blk D.R))
@@ -1030,8 +1028,6 @@ end RecX
 
 section Final
 
-open Formalism.MainNotions Formalism.MainNotions.N Formalism.RepresentationBoundsCohomology.SF NumberField IsDedekindDomain
-open Formalism.RepresentationBoundsCohomology.ringDataObjects (RingData)
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   (Dd : RingData (D.nd.O i) (D.nd.X i) (Fin D.R.nV) (GE D.nd) D.R.t (RepresentationBoundsCohomology.blk D.R))
@@ -1046,7 +1042,6 @@ end Final
 
 section FinalX
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.NG
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   {X' : Type} {d : Type} [Fintype d] [DecidableEq d]
@@ -1061,8 +1056,6 @@ end FinalX
 
 section RecOrb
 
-open Formalism.MainNotions Formalism.MainNotions.N Formalism.RepresentationBoundsCohomology.SF NumberField IsDedekindDomain
-open Formalism.RepresentationBoundsCohomology.ringDataObjects (RingData)
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))) (π : D.nd.X i) (g0 : GE D.nd)
@@ -1139,8 +1132,6 @@ end IsoH1f
 
 section RecIso
 
-open Formalism.MainNotions Formalism.MainNotions.N Formalism.RepresentationBoundsCohomology.SF NumberField IsDedekindDomain
-open Formalism.RepresentationBoundsCohomology.ringDataObjects (RingData)
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   (Dd : RingData (D.nd.O i) (D.nd.X i) (Fin D.R.nV) (GE D.nd) D.R.t (RepresentationBoundsCohomology.blk D.R))

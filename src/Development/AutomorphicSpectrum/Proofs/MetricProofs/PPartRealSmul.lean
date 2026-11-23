@@ -52,7 +52,6 @@ theorem pPart_add (y y' : Fin (j + j') → ℂ) : C.pPart R τ (y + y') = C.pPar
   simp only [LatEmb.pPart, smul_add, Pi.single_add, map_add (f := _), smul_sub]
   abel
 
-open Classical in
 theorem pPart_real_smul (r : ℝ) (y : Fin (j + j') → ℂ) : C.pPart R τ (r • y) = (r : ℂ) • C.pPart R τ y := by
   have h1 : ∀ y : Fin (j + j') → ℂ, C.perExt R (Pi.single τ (r • y)) = (r : ℂ) • C.perExt R (Pi.single τ y) := by
     intro y
@@ -63,7 +62,6 @@ theorem pPart_real_smul (r : ℝ) (y : Fin (j + j') → ℂ) : C.pPart R τ (r �
   simp only [smul_smul]
   congr 2 <;> ring_nf
 
-open Classical in
 theorem pPart_I_smul (y : Fin (j + j') → ℂ) : C.pPart R τ (Complex.I • y) = Complex.I • C.pPart R τ y := by
   have h : Complex.I • Complex.I • y = -y := by simp [smul_smul]
   have h2 : C.perExt R (Pi.single τ (-y)) = - C.perExt R (Pi.single τ y) := by

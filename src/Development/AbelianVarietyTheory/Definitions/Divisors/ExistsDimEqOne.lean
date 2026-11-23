@@ -180,7 +180,6 @@ def IsCharpoly {A : AbVar K} (f : End A) (P : Polynomial ℤ) : Prop :=
   P.Monic ∧ P.natDegree = 2 * A.dim ∧ ∀ n : ℤ, P.eval n = (deg ((n : End A) - f).asHom : ℤ)
 
 
-open Classical in
 def charpoly {A : AbVar K} (f : End A) : Polynomial ℤ := if h : ∃ P, IsCharpoly f P then h.choose else 0
 
 def trace {A : AbVar K} (f : End A) : ℤ := -(charpoly f).nextCoeff

@@ -120,7 +120,6 @@ end Pos
 
 section ColPos
 
-open ComplexOrder
 
 variable {X : Fields}
 
@@ -165,7 +164,6 @@ end OfSizes
 
 section InstThms
 
-open ComplexOrder
 
 end InstThms
 

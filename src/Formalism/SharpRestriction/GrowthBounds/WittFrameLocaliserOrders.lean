@@ -301,9 +301,7 @@ end Formalism.MainNotions.G.WittFrameLocaliserOrders
 end
 
 noncomputable section
-open MvPolynomial Finset Classical
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 def entrywisePowerMinor {R : Type} [CommRing R] {r k : ℕ} (x : Fin r → Fin k → R) (e : Fin r → ℕ) (cols : Fin r → Fin k) : R :=
   (Matrix.of fun l i : Fin r => x l (cols i) ^ e l).det
@@ -803,7 +801,6 @@ open MvPolynomial Finset Classical Pointwise
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 theorem first_columns_card {r k : ℕ} (h : r ≤ k) : (Ifirst r k).card = r := by
   have : Ifirst r k = (Finset.univ : Finset (Fin r)).image (Fin.castLE h) := by
@@ -1185,11 +1182,9 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Classical
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 section MaximumPrincipleVar
 
@@ -1730,11 +1725,9 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Classical
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 theorem bs_det_mem {R A : Type*} [CommRing R] [CommRing A] [Algebra R A] (S : Subalgebra R A) {n : ℕ}
     (M : Matrix (Fin n) (Fin n) A) (h : ∀ i j, M i j ∈ S) : M.det ∈ S := by
@@ -1839,11 +1832,9 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Classical
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 theorem bd_goodU_pos {de : ℝ} (h : 0 < de) : 1 ≤ goodU de := by
   unfold goodU
@@ -2230,7 +2221,6 @@ open Finset Classical
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 section Tiles
 
@@ -2921,11 +2911,9 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Classical
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 section B3gen
 
@@ -3705,11 +3693,9 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Classical
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 theorem bk_shift (n' : ℕ) [NeZero n'] (a : ℤ) (R : ℕ) (h : 0 ≤ a + (n' : ℤ) * R) :
     ∃ t : ℕ, (a + (n' : ℤ) * R).toNat = (a % (n' : ℤ)).toNat + n' * t := by
@@ -3860,11 +3846,9 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Classical
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 section C0
 
@@ -4002,11 +3986,9 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Classical Pointwise
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 section Generic
 
@@ -4691,11 +4673,9 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Classical
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 def letterDeterminant (R : Type) [CommRing R] {ι : Type} {r : ℕ} (A : Fin r → ι) : MvPolynomial (ι × Fin r) R :=
   (Matrix.of fun i j : Fin r => (X (A i, j) : MvPolynomial (ι × Fin r) R)).det
@@ -5493,11 +5473,9 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Classical
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 section BaseChange
 
@@ -5642,11 +5620,9 @@ end
 
 noncomputable section
 
-open MvPolynomial Finset Classical
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 theorem multideg_unique {R : Type*} [CommRing R] {n' k : ℕ} {P : MvPolynomial (TV n' k) R} (hP : P ≠ 0)
     {d d' : Fin n' → ℕ} (h : HasMultideg P d) (h' : HasMultideg P d') : d' = d := by
@@ -5664,7 +5640,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.WittFrameLocaliserOrders
 
-open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning
 
 theorem theta_kernel_expansion (D : Formalism.BasicNotions.D7) : Conclusion1 D := localiser_vanishing_off_plane D
 

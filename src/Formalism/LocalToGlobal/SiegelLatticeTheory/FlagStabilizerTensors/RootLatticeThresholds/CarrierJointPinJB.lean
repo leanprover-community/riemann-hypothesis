@@ -352,7 +352,6 @@ theorem tens_cancel (w0 : D.what₂.Word) (v : InfinitePlace X.B.I.F) (a b : ∀
   exact sub_eq_zero.1 (inner_self_eq_zero.1 hz)
 
 
-open Classical in
 theorem wlocEqv_holds : WlocEqv X := by
   intro w0 v s hs x
   obtain ⟨x0, hx0⟩ := Formalism.L2.SG.Pf.Carrier.EnergyPfLoc.wu_ne X w0

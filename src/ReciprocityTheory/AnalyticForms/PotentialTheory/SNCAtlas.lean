@@ -133,7 +133,6 @@ def sliceChart {e : ℕ} (ψ : OpenPartialHomeomorph X (Fin (e + 1) → ℂ)) (i
     have hz' : Fin.insertNth (α := fun _ => ℂ) i 0 z ∈ ψ.target := hz
     simp only [Function.comp_apply, dif_pos hz']
 
-open Classical in
 theorem sliceChart_symm_val {e : ℕ} (ψ : OpenPartialHomeomorph X (Fin (e + 1) → ℂ))
     (i : Fin (e + 1)) (S : Set X) (hS : ∀ y ∈ ψ.source, y ∈ S ↔ ψ y i = 0) (w0 : S)
     {z : Fin e → ℂ} (hz : Fin.insertNth (α := fun _ => ℂ) i 0 z ∈ ψ.target) :

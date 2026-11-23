@@ -67,7 +67,6 @@ end Norms
 
 section Adj
 
-open Formalism.HermitianLatticesTheory
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {Γ : Type} [Group Γ] [Finite Γ] {n : ℕ}
   (X : InfinitePlace K → Matrix (Fin n) (Fin n) ℂ)
@@ -76,7 +75,6 @@ end Adj
 
 section Lat
 
-open Formalism.HermitianLatticesTheory
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {D0 D1 : ℕ} (A : LevelAmb K D0 D1)
 
@@ -84,7 +82,6 @@ end Lat
 
 section Gen
 
-open Formalism.HermitianLatticesTheory
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {D0 D1 : ℕ} (A : LevelAmb K D0 D1)
 

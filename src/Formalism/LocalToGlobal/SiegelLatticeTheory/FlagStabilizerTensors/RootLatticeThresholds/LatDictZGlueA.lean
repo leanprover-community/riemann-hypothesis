@@ -171,7 +171,6 @@ theorem eT_of_not {T : Set (HeightOneSpectrum (𝓞 F))} {v : HeightOneSpectrum 
     eT T v = 0 := by
   simp [eT, mkI_apply, h]
 
-open Classical in
 theorem eT_orth (i j : HeightOneSpectrum (𝓞 F)) :
     eT {i} * eT {j} = if i = j then eT {i} else 0 := by
   apply RestrictedProduct.ext

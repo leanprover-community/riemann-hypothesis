@@ -63,7 +63,6 @@ def harmZ (lam : Fin n → ℤ) : Finset (Fin n → ℤ) :=
   ((univ : Finset (Fin n → Fin n)).filter fun lev => IsLev lam fun a => (lev a : ℕ)).image
     fun lev => muZ lam fun a => (lev a : ℕ)
 
-open Classical in
 theorem harmSet_eq (lam : Fin n → ℤ) : harmSet lam = (harmZ lam).image wtR := by
   unfold harmSet harmZ
   rw [Finset.image_image]

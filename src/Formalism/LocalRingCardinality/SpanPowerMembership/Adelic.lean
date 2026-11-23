@@ -333,8 +333,6 @@ end Global
 
 section Main
 
-open Formalism.FrobeniusOrbits Formalism.TwoAdicCyclotomicDecomposition
-open scoped TensorProduct
 
 variable {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R)
 
@@ -398,8 +396,6 @@ end Main
 
 section Final
 
-open Formalism.FrobeniusOrbits Formalism.TwoAdicCyclotomicDecomposition
-open scoped TensorProduct
 
 variable {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R)
 
@@ -474,8 +470,6 @@ end Final
 
 section Adele
 
-open Formalism.FrobeniusOrbits Formalism.TwoAdicCyclotomicDecomposition
-open scoped TensorProduct
 
 variable {R : Formalism.BasicNotions.Ranks} (H : Formalism.BasicNotions.Host R)
 

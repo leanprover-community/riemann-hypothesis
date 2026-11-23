@@ -188,7 +188,6 @@ theorem dEll_eq_ell (z' : Fin (2 * r + k + 1) → ℂ) (X : B.Mat k r) (hr : 1 �
     omega
   rw [dite_eq_left this, dite_eq_left this]
 
-open Formalism.FourierDecayAlt.Q.QRR in
 theorem pat_inNp {l : Fin r} {X : B.Mat k r} (hX : Pat k r l X) : ∀ a b, ¬ C3.InNp k r a b → X a b = 0 := by
   intro a b hab
   by_contra hne
@@ -198,7 +197,6 @@ theorem pat_inNp {l : Fin r} {X : B.Mat k r} (hX : Pat k r l X) : ∀ a b, ¬ C3
   · refine ⟨by omega, fun h => ?_⟩; omega
   · refine ⟨by omega, fun h => ?_⟩; omega
 
-open Formalism.FourierDecayAlt.Q.QRR in
 theorem exists_pat (p q : Fin (2 * r + k + 1)) (h : C3.InNp k r p q) :
     ∃ l : Fin r, Pat k r l (Matrix.single p q (1 : ℂ)) := by
   obtain ⟨hpq, hW⟩ := h

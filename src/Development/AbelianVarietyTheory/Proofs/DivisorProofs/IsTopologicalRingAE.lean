@@ -218,7 +218,6 @@ def compAtF (θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)) (w : Infinite
   x.map ((θ w).comp (infPartF F E))
 
 
-open Classical in
 def mMF (θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)) :
     GAF σ JS × GAF σ JT →* Matrix (IxF F nS nT) (IxF F nS nT) ℂ where
   toFun p := GlobalTheory.RealWeil.blk (fun w => compAtF θ w (mtF σ JT p.2)) fun w => compAtF θ w (mtF σ JS p.1⁻¹)
@@ -238,7 +237,6 @@ def mMF (θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)) :
     rw [GlobalTheory.RealWeil.blk_mul]
     simp only [Prod.snd_mul, Prod.fst_mul, _root_.mul_inv_rev, h1]
 
-open Classical in
 theorem mMF_apply (θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)) (g : GAF σ JS) (h : GAF σ JT) :
     mMF σ JS JT θ (g, h) =
       GlobalTheory.RealWeil.blk (fun w => compAtF θ w (mtF σ JT h)) fun w => compAtF θ w (mtF σ JS g⁻¹) := rfl
@@ -277,7 +275,6 @@ theorem compAtF_fin (θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)) {n : 
   have h2 : compAtF θ w (mtF σ J g) = ((mtF σ J g).map (infPartF F E)).map (θ w) := rfl
   rw [h2, h1, Matrix.map_one _ (map_zero _) (map_one _)]
 
-open Classical in
 theorem mMF_fin (θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)) {g : GAF σ JS} {h : GAF σ JT}
     (hg : g ∈ GlobalTheory.WeilPartsF.GfCF σ JS) (hh : h ∈ GlobalTheory.WeilPartsF.GfCF σ JT) : mMF σ JS JT θ (g, h) = 1 := by
   rw [mMF_apply]

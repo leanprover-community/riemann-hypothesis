@@ -154,7 +154,6 @@ namespace ComponentData
 def SB (D : ComponentData II Ψ K ι Ω E) (B : ℕ) : Finset ℕ := D.S.filter (· ≤ B)
 
 
-open Classical in
 def vertFactor (D : ComponentData II Ψ K ι Ω E) (p : ℕ) (z : (Σ k, ι k) → ℂ) : ℝ :=
   if hc : ∃ c : (k : K) → ι k, ∀ k, z ⟨k, c k⟩ ≠ 0 then
     ‖valAt D.y (aeval D.y (D.vnum p) / aeval D.y (D.vden p) * chartMono D.y hc.choose (-D.vdeg p)) z‖ *

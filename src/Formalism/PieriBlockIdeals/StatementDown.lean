@@ -43,8 +43,6 @@ end SLD
 
 section SLD2
 
-open MvPolynomial
-open Formalism.GradedWeylDivisibility Formalism.CohomologicalDescent.LD
 
 end SLD2
 

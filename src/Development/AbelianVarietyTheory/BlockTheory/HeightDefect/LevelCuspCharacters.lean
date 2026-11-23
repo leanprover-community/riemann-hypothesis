@@ -197,7 +197,6 @@ def rootChar (s : SSParam p K r) (x : Σ c : Cyc s.1, Fin (cycLen s.1 c)) : Tor 
   cycChar s x.1 ^ (p ^ x.2.val)
 
 
-open Classical in
 def typeChar (s : SSParam p K r) (x : GL (Fin r) (ZMod p)) : K :=
   haveI := Fintype.ofFinite (GL (Fin r) (ZMod p))
   ((Nat.card {y : GL (Fin r) (ZMod p) // (y : Matrix (Fin r) (Fin r) (ZMod p)).BlockTriangular s.1} : ℕ) : K)⁻¹ *

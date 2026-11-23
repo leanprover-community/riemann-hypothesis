@@ -127,7 +127,6 @@ def perLt (x : Frame X.Ψ r) (v : Fin r → E) (τ : X.Ψ) : X.Ψ × Fin r → �
   if p.1 = τ ∧ (p.2 : ℕ) < X.p0 then per X x v p else 0
 
 
-open Classical in
 def perGe (x : Frame X.Ψ r) (v : Fin r → E) (τ : X.Ψ) : X.Ψ × Fin r → ℂ := fun p =>
   if p.1 = τ ∧ X.p0 ≤ (p.2 : ℕ) then per X x v p else 0
 

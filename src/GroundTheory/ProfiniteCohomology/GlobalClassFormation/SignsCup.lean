@@ -276,7 +276,6 @@ theorem placeInv_brauerLocal_globalCupClass_iChar_of_isComplex (v : InfinitePlac
   rwa [Units.coe_map, MonoidHom.coe_coe] at h
 
 
-open Classical in
 theorem placeInv_brauerLocal_globalCupClass_iChar (v : InfinitePlace K.1) :
     placeInv (.inl v) (brauerLocal ι (globalCupClass (iChar K) a) (.inl v)) =
       if h : v.IsReal then (if v.embedding_of_isReal h (a : K.1) < 0 then QZ.mk (1 / 2) else 0) else 0 := by

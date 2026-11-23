@@ -146,7 +146,6 @@ theorem evalV_singleV (v u : HeightOneSpectrum (𝓞 F)) (y : Fv F v) :
     Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u (singleV F v y) = (Pi.single v y : ∀ t : HeightOneSpectrum (𝓞 F), Fv F t) u := rfl
 
 
-open Classical in
 def singleFin (v : HeightOneSpectrum (𝓞 F)) : Fv F v →ₗ[F] Af F where
   toFun := singleV F v
   map_add' a b := Subtype.ext (Pi.single_add v a b)

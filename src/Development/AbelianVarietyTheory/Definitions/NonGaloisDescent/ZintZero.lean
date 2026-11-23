@@ -62,7 +62,6 @@ def natLat (N : ℕ) : Set (Af E) :=
   {x | ∃ z : Af E, (∀ v : HeightOneSpectrum (𝓞 E), z v ∈ v.adicCompletionIntegers E) ∧ x = (N : Af E) * z}
 
 
-open Classical in
 def indN (N : ℕ) (y : Fin a → Af E) : ℂ :=
   if ∀ i : Fin a, y i - (if (i : ℕ) + 1 = a then 1 else 0) ∈ natLat E N then 1 else 0
 

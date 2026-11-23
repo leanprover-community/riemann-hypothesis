@@ -273,7 +273,6 @@ theorem lintegral_eq_of_norms (hψ : IsStdChar D ψ (-1)) (μ : Measure (WO S T)
   rw [← enorm_sq_inj, ← lintegral_norm_sq_eq_toL2, ← lintegral_norm_sq_eq_toL2]
   exact lintegral_rhoB hψ μ 𝓕 hμ h𝓕 _ G
 
-open Classical in
 theorem blk_comm_mM {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ}
     {sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ} {g : GA D S} {k : GA D T}
     (cS : ∀ τ, sS τ * compAt θ τ (Formalism.L2.Theta.mt S g) = compAt θ τ (Formalism.L2.Theta.mt S g) * sS τ)
@@ -289,7 +288,6 @@ theorem blk_comm_mM {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ
           rw [Matrix.mul_assoc, Matrix.mul_assoc, h1, Matrix.mul_one]
       _ = _ := by rw [cS τ, ← Matrix.mul_assoc, h2, Matrix.one_mul]
 
-open Classical in
 theorem detPlus_pairMatrix (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ)
     (sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ) (g : GA D S) (k : GA D T) :
     dP (blk sT sS) (mM θ S T (g, k)) = ∏ τ, GlobalTheory.WeilParts.detPlus (sS τ) (sT τ) (compAt θ τ (Formalism.L2.Theta.mt S g⁻¹))
@@ -298,7 +296,6 @@ theorem detPlus_pairMatrix (sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.ra
   exact detPlus_blockDiagonal _ _ _ _
 
 
-open Classical in
 theorem exists_isInfWeil : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ θ : InfFam D, IsInfFam θ →
     ∀ S T : HSp D, ∃ om, GlobalTheory.WeilParts.IsInfWeil ψ θ S T om := by
   intro D ψ hψ θ hθ S T

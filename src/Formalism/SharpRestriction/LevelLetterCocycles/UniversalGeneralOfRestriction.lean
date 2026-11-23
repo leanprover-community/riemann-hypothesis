@@ -552,7 +552,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -769,7 +768,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -1026,7 +1024,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -1219,11 +1216,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup
 
 section Lift
 
@@ -1393,11 +1388,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup
 
 theorem frame_inv_poly2 {O LL : Type} [CommRing O] [Field LL] [Algebra O LL] (p : ℕ)
     (hinj : Function.Injective (algebraMap O LL)) {d : ℕ}
@@ -1488,7 +1481,6 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
@@ -1592,11 +1584,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.WachCoordinates.Br
 
 section Uq3
 
@@ -1743,11 +1733,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.WachCoordinates.Br
 
 section SecM
 
@@ -1847,11 +1835,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.WachCoordinates.Br
 
 section SecR
 
@@ -2003,11 +1989,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.WachCoordinates.Br
 
 section L32a
 
@@ -2099,11 +2083,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.WachCoordinates.Br
 
 def eMM {n : ℕ} (A : ArcP n) : Formalism.MainNotions.LocalTheoryWindows.LT → ℕ
   | .thin => A.G₀
@@ -2197,11 +2179,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.WachCoordinates.Br
 
 section L32c
 
@@ -2264,11 +2244,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.WachCoordinates.Br
 
 section L32d
 
@@ -2331,11 +2309,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.WachCoordinates.Br
 
 section L32e
 
@@ -2468,11 +2444,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.WachCoordinates.Br
 
 section L32f
 
@@ -2552,11 +2526,9 @@ end Formalism.MainNotions.UnusedSlot80.UnivF
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.UnivF
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module TensorProduct Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.WachCoordinates.Br
 
 section L32g
 
@@ -2691,7 +2663,6 @@ end Formalism.MainNotions.UnusedSlot80
 
 namespace Formalism.MainNotions.UnusedSlot80
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.UnusedSlot80.UnivC
 
 def SecRestL (D : D7) (HW : HWOf D.loc) : Prop :=
   AtCaseA fun l _ K LL hG => ∀ [Fintype (↥K.1 →ₐ[ℚ_[l]] ↥LL.1)],
@@ -2719,7 +2690,6 @@ end Formalism.MainNotions.UnusedSlot80
 
 namespace Formalism.MainNotions.UnusedSlot80
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.UnusedSlot80.UnivC
 
 def KillWinL (D : D7) (HW : HWOf D.loc) : Prop :=
   AtCaseA fun l _ K LL hG => UnivF.KillWinCore ((HW l).W K 1 LL hG)

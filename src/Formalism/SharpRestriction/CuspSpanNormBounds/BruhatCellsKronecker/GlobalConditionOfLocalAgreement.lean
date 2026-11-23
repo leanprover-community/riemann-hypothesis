@@ -735,7 +735,6 @@ end Rec
 
 section Rec2
 
-open Formalism.MainNotions.S.LocalSplitGroups Formalism.MainNotions.JointEigenvalueBoundsFromAnyDatum Formalism.MainNotions.LocalModelPeriodLattices
 
 variable {D : Formalism.BasicNotions.D7}
 
@@ -893,7 +892,6 @@ end Rec2
 
 section Rec3
 
-open Formalism.MainNotions.S.LocalSplitGroups Formalism.MainNotions.JointEigenvalueBoundsFromAnyDatum Formalism.MainNotions.LocalModelPeriodLattices
 
 variable {D : Formalism.BasicNotions.D7}
 

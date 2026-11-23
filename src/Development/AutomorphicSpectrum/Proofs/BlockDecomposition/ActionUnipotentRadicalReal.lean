@@ -258,7 +258,6 @@ theorem sum_letters {M : Type} [AddCommGroup M] (H : Lr n → Lr n → Lr n → 
   refine Finset.sum_congr rfl fun s _ => ?_
   exact Finset.sum_comm
 
-open Classical in
 theorem Phi_bd (S : Lr n → Prop) (E1 E2 : Fin n → Fin n → Module.End ℂ V) {x : Finset (Lr n) → V} (hx : SuppL S x) :
     Phi (bdL S E1 E2 x) = bdq E1 E2 (Phi x) := by
 

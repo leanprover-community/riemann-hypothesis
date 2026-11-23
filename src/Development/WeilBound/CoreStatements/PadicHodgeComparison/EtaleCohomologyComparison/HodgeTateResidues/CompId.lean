@@ -112,7 +112,6 @@ theorem down (hC : CoEx l K) (hR : HomRho l K) (hμ : HomMu l K) (hF : KForm) {m
 variable (S : ∀ m, Lv Y (m + 1))
 
 
-open Classical in
 def gam {M : Model l K} {r j : ℕ} (x : Y.Fam M r j) : ∀ a, Module.Dual K (Hdg M.q a j) →+ ℂ_[l] :=
   if h : ∃ w, (S r).Rho x w then coL (S r) M r j h.choose else 0
 

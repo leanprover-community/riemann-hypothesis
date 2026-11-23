@@ -266,12 +266,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -394,12 +391,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -566,12 +560,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -758,12 +749,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -939,12 +927,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1050,12 +1035,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1198,12 +1180,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1375,12 +1354,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1637,12 +1613,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1961,12 +1934,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -2086,12 +2056,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -2272,12 +2239,9 @@ end
 
 section
 
-open Matrix Finset Filter Topology
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.Qx6
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

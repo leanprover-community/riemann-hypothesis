@@ -50,7 +50,6 @@ namespace Idx
 
 open Formalism.IrreducibleCountingLemmas.TW (relLen)
 open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
 section Comm
 
@@ -62,9 +61,6 @@ end Idx
 
 namespace Idx
 
-open Formalism.IrreducibleCountingLemmas.TW (relLen)
-open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
 section BaseChange
 
@@ -87,9 +83,6 @@ end Idx
 
 namespace Idx
 
-open Formalism.IrreducibleCountingLemmas.TW (relLen)
-open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
 section Transfer
 
@@ -105,9 +98,6 @@ end Idx
 
 namespace Idx
 
-open Formalism.IrreducibleCountingLemmas.TW (relLen)
-open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
 section More
 
@@ -243,7 +233,6 @@ end Lat
 
 section BC
 
-open Formalism.IrreducibleCountingLemmas
 
 theorem full_span {R U : Type*} [CommRing R] [IsDomain R] [AddCommGroup U] [Module R U]
     (N' : Submodule R U) (s : Set U) (hs : ∀ x ∈ s, ∃ c : R, c ≠ 0 ∧ c • x ∈ N') :

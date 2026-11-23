@@ -137,7 +137,6 @@ def FrobeniusClassCompatibility (D : D7) : Prop := ∀ p : ℕ, p.Prime → IsRe
   p ≠ 2 ∧ D.R.h (hP D p) = Additive.ofMul (iotaH _ (Formalism.MainNotions.GlobalTheoryTheory.hOf D.R.e p))
 
 
-open Classical in
 def OrdersLargePrimeBound (D : D7) (L : SizeData₂ D) (K : Consts) : Prop :=
   rho D K L.sc ≤ L.sc.x ^ (-2 : ℝ) ∧
   ∑ p ∈ (Finset.range ⌈L.sc.X'⌉₊).filter (fun p => p.Prime ∧ InBand0 D K L.sc p), Real.log p / p ≤
@@ -161,7 +160,6 @@ def ServiceLowerValuation (D : D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatIn
         ((∑ j ∈ SizeData₂.lifts D, gainP X K (aL L) (bL L) (D.what₂.places.resChar w) j) + lowFE L u w)
 
 
-open Classical in
 def IMP {D : D7} {L : SizeData₂ D} (X : Inst D L) (Y : LatInst D) (K : Consts) (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) :
     Submodule (D.gat u w hg).O (D.gat u w hg).Fn :=

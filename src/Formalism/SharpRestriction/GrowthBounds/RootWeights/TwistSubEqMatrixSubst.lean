@@ -65,7 +65,6 @@ theorem matrixSubst_C (φ : R →+* B) (m m' : Matrix (Fin n) (Fin n) B) (c : R)
     matrixSubst LL S φ m m' (C c) = C (φ c) := by
   simp [matrixSubst]
 
-open Classical in
 theorem matrixSubst_X (φ : R →+* B) (m m' : Matrix (Fin n) (Fin n) B) (v : ι × Fin n) :
     matrixSubst LL S φ m m' (X v) = if v.1 ∈ S then
       (if LL.vec v.1 then ∑ b : Fin n, MvPolynomial.C (m b v.2) * X (v.1, b)

@@ -72,7 +72,6 @@ def c_vp (𝔣 : Ideal (OF E)) (l : ℕ) : ℝ :=
 variable {I : Type} [Fintype I]
 
 
-open Classical in
 def n_vp (d s : ℕ) (κ : I → ℕ) (𝔣 : Ideal (OF E)) (l : ℕ) : ℝ :=
   if c_vp 𝔣 l = 0 then 0
   else Formalism.PairingDivisionLocalBalance.nl ((2 * s * Fintype.card I : ℕ) : ℝ) (Formalism.PairingDivisionLocalBalance.absK κ : ℝ) (c_vp 𝔣 l)

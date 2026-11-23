@@ -464,7 +464,6 @@ theorem cosLoc_of_ne_zero {e : AE D} {r x : Mx D b a} (h : cosLoc P e β' β n r
   · exact h'
   · exact absurd rfl h
 
-open Classical in
 theorem cosLoc_eq_ite {e : AE D} {r x : Mx D b a} (hx : IsHalf e x) :
     cosLoc P e β' β n r x = if IsSmall P β' β n (x - r) then 1 else 0 := by
   unfold cosLoc

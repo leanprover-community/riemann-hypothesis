@@ -135,7 +135,6 @@ private theorem late_index_map_injective (hX : X.Hyp p K) (j x : ℤ) (hx : x �
   ext
   omega
 
-open Classical in
 theorem Et_le (hOcc : LeadingLetterInAtMostTwoSegments) (hX : X.Hyp p K) (t : Fin n') :
     (X.Et p K t : ℝ) ≤ 4 * (X.Ns : ℝ) * X.a / (Dat.k (r := r) K ^ 2 * X.Y) := by
   have B := basics hX

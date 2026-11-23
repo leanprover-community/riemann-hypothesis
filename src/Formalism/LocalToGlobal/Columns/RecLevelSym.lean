@@ -90,7 +90,6 @@ end ColsSym
 
 section SymTies
 
-open Formalism.BasicNotions (Ranks)
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (hc : Formalism.BasicNotions.CMData X.F X.E) (Ch : Chars X Pr R.m)
 
@@ -241,7 +240,6 @@ end SymDivTies
 
 section SymRanks
 
-open Formalism.BasicNotions (Ranks)
 
 theorem r_eq_sym (R : Ranks) : R.r = R.k + 2 * R.rS + 1 := by
   have h1 := Ranks.r_eq (R := R)

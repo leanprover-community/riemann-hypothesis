@@ -154,7 +154,6 @@ theorem lev_flat_le (c : Com D) (w : Twist D) (hw : w.Is c) (j : ℕ) {n : ℕ} 
       rw [← map_prod, prod_diagonal_block_dets_eq_lower_block_det hn (h3' PP (hQ PP hP))]
 
 
-open Classical in
 theorem flatLe : ∀ D : D7, FlatLe D := by
   intro D c w hw j _ s hs hr
   obtain ⟨hr', hL, hflat⟩ := hs

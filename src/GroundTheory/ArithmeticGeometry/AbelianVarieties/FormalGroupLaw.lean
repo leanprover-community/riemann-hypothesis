@@ -334,7 +334,6 @@ theorem pointOf_injective {u u' : MvPowerSeries τ R} (hu : MvPowerSeries.consta
 
 
 open scoped Classical in
-open Classical in
 theorem pointOf_add [Nonempty τ] {u₁ u₂ : MvPowerSeries τ R}
     (h₁ : MvPowerSeries.constantCoeff u₁ = 0) (h₂ : MvPowerSeries.constantCoeff u₂ = 0)
     (hu₁ : u₁ ≠ 0) (hu₂ : u₂ ≠ 0) (hx : u₁ * wAt W u₂ ≠ u₂ * wAt W u₁) :
@@ -498,7 +497,6 @@ attribute [local instance] isDomain_mvPowerSeries
 
 
 open scoped Classical in
-open Classical in
 theorem pointOf_add_of_coeff {τ : Type*} [Nonempty τ] {u₁ u₂ : MvPowerSeries τ R}
     (h₁ : MvPowerSeries.constantCoeff u₁ = 0) (h₂ : MvPowerSeries.constantCoeff u₂ = 0)
     {i₁ i₂ i₃ i₄ : τ} (hi₁ : MvPowerSeries.coeff (Finsupp.single i₁ 1) u₁ ≠ 0)

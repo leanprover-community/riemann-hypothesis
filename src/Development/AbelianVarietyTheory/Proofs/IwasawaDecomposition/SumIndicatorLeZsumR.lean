@@ -67,7 +67,6 @@ theorem sum_indicator_le_zsumR {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ
     exact Nat.cast_nonneg _
 
 
-open Classical in
 theorem recip_le_sum_windows {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (T : ℝ) (ρ : ℂ)
     (hρ : ρ ∈ zerosIn χ 0 T) :
     (if 1 < |ρ.im| then 1 / ‖ρ‖ else 0 : ℝ) ≤

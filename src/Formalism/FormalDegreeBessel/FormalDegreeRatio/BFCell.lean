@@ -166,7 +166,6 @@ theorem big_cell_mem_holds : BigCellMem := by
 
 namespace BruhatBigCell
 
-open GBasic
 
 lemma star_bvec_dot {m : ℕ} (e : Fin m) (w : Fin m → ℂ) : star (bvec e) ⬝ᵥ w = w e := by
   rw [dotProduct, Finset.sum_eq_single e]
@@ -188,7 +187,6 @@ lemma dmin_diag {k r : ℕ} (z z' : Fin (2 * r + k + 1) → ℂ)
 
 end BruhatBigCell
 
-open GBasic BruhatBigCell in
 theorem big_cell_coordinate_holds : BigCellZhat := by
   intro k r z z' c μ hz hz'
   ext a b
@@ -244,7 +242,6 @@ theorem big_cell_coordinate_holds : BigCellZhat := by
       have hfa : fvec k r z a = z := by unfold fvec; rw [dite_eq_right ha1]
       rw [hfa, if_pos rfl, dite_eq_right ha1]
 
-open GBasic BruhatBigCell in
 theorem big_cell_minors_holds : BigCellMinors := by
   intro k r z z' c μ hz hz'
   have hZ := big_cell_coordinate_holds k r z z' c μ hz hz'

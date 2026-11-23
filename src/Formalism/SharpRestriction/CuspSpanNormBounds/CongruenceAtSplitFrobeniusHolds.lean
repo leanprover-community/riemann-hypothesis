@@ -393,7 +393,6 @@ def volU (j : ℕ) : ℝ := ∏ i ∈ Finset.range j, (2 * Real.pi) ^ (i + 1) / 
 
 section Loc2
 
-open MeasureTheory Finset Formalism.QuantumDeterminants
 
 variable (D : D7) (large₂ : SizeData₂ D)
 
@@ -418,7 +417,6 @@ end Loc2
 
 section Amp
 
-open MeasureTheory Finset Formalism.QuantumDeterminants
 
 variable (D : D7) (large₂ : SizeData₂ D)
 

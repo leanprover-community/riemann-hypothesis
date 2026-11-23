@@ -123,7 +123,6 @@ noncomputable def idemAt (F : Type) [Field F] [NumberField F] (q : ℕ) : AF F :
     · exact (v.adicCompletionIntegers F).one_mem
     · exact (v.adicCompletionIntegers F).zero_mem⟩)
 
-open Classical in
 theorem evFin_idemAt (q : ℕ) (v : HeightOneSpectrum (𝓞 F)) :
     evFin F v (idemAt F q) = if (q : 𝓞 F) ∈ v.asIdeal then 1 else 0 := rfl
 

@@ -212,7 +212,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.FrobeniusOrbits
 
 variable (D : D7)
 
@@ -306,7 +305,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.FrobeniusOrbits
 
 variable (D : D7)
 
@@ -748,7 +746,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric MeasureTheory
 
 theorem theta_unitary_linkage : LinkThU := by
   intro D cc hcc δ hδ N N' L L' hA G hG x

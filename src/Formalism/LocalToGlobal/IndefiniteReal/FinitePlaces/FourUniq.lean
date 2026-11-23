@@ -177,7 +177,6 @@ theorem chi_out_add {k : ℕ} {t : W} (ht : t ∈ L ⊓ X) (g g' : Gk L Y k) :
   rw [hsum, he, hχr, hχr, hLL t ht l hl, mul_one]
 
 include hχl hχr hχ0 hLL hdX hdivX hdivY hfinY htf in
-open Classical in
 theorem chi_sum {k : ℕ} (hk : 0 < k) {t : W} (ht : t ∈ L ⊓ X) :
     ∑ᶠ g : Gk L Y k, χ t (g : QY L Y).out =
       if t ∈ smulSub k (L ⊓ X) then (Nat.card (Gk L Y k) : ℂ) else 0 := by
@@ -228,7 +227,6 @@ theorem chi_sum {k : ℕ} (hk : 0 < k) {t : W} (ht : t ∈ L ⊓ X) :
     exact (mul_eq_zero.mp h3).resolve_left (sub_ne_zero.mpr (Ne.symm hg₀))
 
 include hχl hχr hχ0 hLL hdX hdivX hdivY hfinY htf in
-open Classical in
 theorem indk_eq {k : ℕ} (hk : 0 < k) (t : W) :
     indk L X k t = (Nat.card (Gk L Y k) : ℂ)⁻¹ * ∑ᶠ g : Gk L Y k,
       χ t (g : QY L Y).out * (if t ∈ L ∧ t ∈ X then (1 : ℂ) else 0) := by
@@ -251,7 +249,6 @@ theorem indk_eq {k : ℕ} (hk : 0 < k) (t : W) :
     rw [if_neg hnot, if_neg htLX]
     simp
 
-open Classical in
 theorem isSB_indk {k : ℕ} (hk : 0 < k) : IsSB L X (indk L X k) := by
   have hmem : ∀ t, indk L X k t ≠ 0 → t ∈ L ⊓ X := by
     intro t ht
@@ -272,7 +269,6 @@ theorem isSB_indk {k : ℕ} (hk : 0 < k) : IsSB L X (indk L X k) := by
   · rw [if_neg (mt hiff.mp h), if_neg h]
 
 include hχl hχr hχ0 hLL hdX hdivX hdivY hfinY htf in
-open Classical in
 theorem T_indk (T : (W → ℂ) →ₗ[ℂ] V)
     (hmo : ∀ Φ, IsSB L X Φ → ∀ y ∈ Y, T (fun t => χ t y * Φ t) = ρ y (T Φ))
     (hva : T (fun t => if t ∈ L ∧ t ∈ X then (1 : ℂ) else 0) = f₀) {k : ℕ} (hk : 0 < k) :
@@ -329,7 +325,6 @@ variable {ρ : W → Module.End ℂ V} {χ : W → W → ℂ} {L X Y : AddSubgro
 include hχl hχr hχ0 hLL hdX hdivX hdivY hfinX hfinY htf
 
 include hχl hχr hχ0 hLL hdX hdivX hdivY hfinX hfinY htf in
-open Classical in
 theorem T_formula (T : (W → ℂ) →ₗ[ℂ] V)
     (htr : ∀ Φ, IsSB L X Φ → ∀ x ∈ X, T (fun t => Φ (t + x)) = ρ x (T Φ))
     (hmo : ∀ Φ, IsSB L X Φ → ∀ y ∈ Y, T (fun t => χ t y * Φ t) = ρ y (T Φ))
@@ -402,7 +397,6 @@ theorem T_formula (T : (W → ℂ) →ₗ[ℂ] V)
 
 
 include hχl hχr hχ0 hLL hdX hdivX hdivY hfinX hfinY htf in
-open Classical in
 theorem model_unique (T T' : (W → ℂ) →ₗ[ℂ] V)
     (htr : ∀ Φ, IsSB L X Φ → ∀ x ∈ X, T (fun t => Φ (t + x)) = ρ x (T Φ))
     (hmo : ∀ Φ, IsSB L X Φ → ∀ y ∈ Y, T (fun t => χ t y * Φ t) = ρ y (T Φ))
@@ -417,7 +411,6 @@ theorem model_unique (T T' : (W → ℂ) →ₗ[ℂ] V)
 
 
 include hχl hχr hχ0 hLL hdX hdivX hdivY hfinX hfinY htf in
-open Classical in
 theorem model_mem_span (T : (W → ℂ) →ₗ[ℂ] V)
     (htr : ∀ Φ, IsSB L X Φ → ∀ x ∈ X, T (fun t => Φ (t + x)) = ρ x (T Φ))
     (hmo : ∀ Φ, IsSB L X Φ → ∀ y ∈ Y, T (fun t => χ t y * Φ t) = ρ y (T Φ))

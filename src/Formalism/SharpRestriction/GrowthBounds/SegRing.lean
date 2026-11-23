@@ -59,7 +59,6 @@ def letters (j : ℤ) : Finset ℤ :=
 def IsW (j x : ℤ) : Prop := x ≤ F.fr (j - 1) (r - 1)
 
 
-open Classical in
 def LLset (j : ℤ) : Finset ℤ :=
   (Finset.Ioo (F.fr (j - 1) (r - 1)) (F.fr j 0)).filter fun x => posOf n' x ∈ F.TT
 
@@ -69,13 +68,11 @@ def GapGt (L : ℕ) (j x : ℤ) : Prop :=
   ∀ y ∈ F.letters j, y < x → (∀ z ∈ F.letters j, z < x → z ≤ y) → (L : ℤ) < x - y
 
 
-open Classical in
 def oldest (j x : ℤ) : ℤ :=
   let l := ((F.letters j).filter fun z => Even z ∧ z < x).sort (· ≤ ·)
   l.getD (l.length - r) 0
 
 
-open Classical in
 def Valid (L₁ N₁ : ℕ) : Prop :=
   1 ≤ F.J ∧
   (∀ j : ℤ, ∀ i, F.fr (j + F.J) i = F.fr j i + n') ∧

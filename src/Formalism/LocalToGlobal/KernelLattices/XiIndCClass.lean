@@ -154,7 +154,6 @@ def perO (AA0 : Submodule (𝓞 E) E) (N : Submodule (𝓞 E) (Sp E a)) (N' : Su
   Submodule.span (𝓞 E) {z | ∃ r ∈ AA0, ∃ x ∈ homO N N', z = r • x}
 
 
-open Classical in
 def expS (SS : Finset (HeightOneSpectrum (𝓞 E))) (Q : HeightOneSpectrum (𝓞 E)) : ℤ :=
   if Q ∈ SS then 1 else if conjPrime₂ Q ∈ SS then -1 else 0
 

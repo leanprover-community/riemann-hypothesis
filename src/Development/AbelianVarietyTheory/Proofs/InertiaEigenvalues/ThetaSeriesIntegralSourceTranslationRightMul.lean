@@ -251,7 +251,6 @@ namespace GlobalTheory.SourceTrans
 
 variable {D : D7} {S T : HSp D} {B : Base S T}
 
-open Classical in
 theorem om_src_move (hB : B.Good) (hS : S.SigOK) {ω : PairRep S T} (hω : B.IsWeil 1 ω)
     {Q : Finset (Pl D.host.E)} (hQ : B.admitted Q) (hb : ∀ PP : ↥Q, GL (Fin S.rank) (kP PP.1))
     {k : GA D S} (hk : k ∈ GfC S) (sk : Lev.finE S k ∈ St B.F.βS) (hs : SuppAt (idem Q) S k)
@@ -298,7 +297,6 @@ theorem om_src_move (hB : B.Good) (hS : S.SigOK) {ω : PairRep S T} (hω : B.IsW
   rw [hv, Units.val_one, one_mul, one_smul]
   rfl
 
-open Classical in
 theorem om_src_fock (hB : B.Good) (hS : S.SigOK) {ω : PairRep S T} (hω : B.IsWeil 1 ω)
     {Q : Finset (Pl D.host.E)} (hQ : B.admitted Q) (hb : ∀ PP : ↥Q, GL (Fin S.rank) (kP PP.1))
     {k : GA D S} (hk : k ∈ GfC S) (sk : Lev.finE S k ∈ St B.F.βS) (hs : SuppAt (idem Q) S k)

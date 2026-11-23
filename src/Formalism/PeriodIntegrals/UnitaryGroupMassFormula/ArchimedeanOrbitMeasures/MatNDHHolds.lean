@@ -135,7 +135,6 @@ theorem matNDH_holds : MatNDH := by
   simp only [this]
   simp
 
-open Classical in
 theorem densMu_holds : DensMu := by
   intro D X u' ψ hT μinf νinf fibInf hP
   haveI : FiniteDimensional X.B.I.F X.B.I.E := fd_of X

@@ -116,7 +116,6 @@ end Formalism.L2.SG.Pf.BH.VL
 
 namespace Formalism.L2.SG.Pf.BH.VL
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.Pf Formalism.L2.SG.Pf.BH
 
 variable {k r : ℕ}
 
@@ -180,7 +179,6 @@ end Formalism.L2.SG.Pf.BH.VL
 
 namespace Formalism.L2.SG.Pf.BH.VL
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.Pf Formalism.L2.SG.Pf.BH
 
 variable {k r : ℕ}
 
@@ -254,7 +252,6 @@ end Formalism.L2.SG.Pf.BH.VL
 
 namespace Formalism.L2.SG.Pf.BH.VL
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.Pf Formalism.L2.SG.Pf.BH
 
 variable {k r : ℕ}
 
@@ -294,7 +291,6 @@ end Formalism.L2.SG.Pf.BH.VL
 
 namespace Formalism.L2.SG.Pf.BH.VL
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.Pf Formalism.L2.SG.Pf.BH
 
 variable {k r : ℕ}
 
@@ -351,7 +347,6 @@ end Formalism.L2.SG.Pf.BH.VL
 
 namespace Formalism.L2.SG.Pf.BH.VL
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.Pf Formalism.L2.SG.Pf.BH
 
 variable {k r : ℕ}
 

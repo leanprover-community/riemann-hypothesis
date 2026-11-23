@@ -67,7 +67,6 @@ open Classical in
 def wF {N : ℕ} (τ : D.what₂.Tau) : GL3Theta.FrV D N → ℕ := fun k => if k.1 = τ then 1 else 0
 
 
-open Classical in
 def wI {N N' : ℕ} (τ : D.what₂.Tau) : GL3Theta.Idx D N N' → ℕ := fun k => if k.1 = τ then 1 else 0
 
 theorem aeval_CX_monomial {σ R : Type} [CommRing R] (c : σ → R) (s : σ →₀ ℕ) (a : R) :
@@ -165,7 +164,6 @@ end Deg
 
 section Deg2
 
-open MvPolynomial
 
 theorem weight_wI {D : D7} {N N' : ℕ} (τ : D.what₂.Tau) (α : GL3Theta.Idx D N N' →₀ ℕ) :
     Finsupp.weight (wI (N := N) (N' := N') τ) α = ∑ b : Fin N', ∑ a : Fin N, α (τ, b, a) := by

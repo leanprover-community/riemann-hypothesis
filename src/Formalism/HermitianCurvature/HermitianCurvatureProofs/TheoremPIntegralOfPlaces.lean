@@ -64,7 +64,6 @@ theorem norm_σ {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : Infi
 
 end Formalism.FourierDecayAlt.P.JCx1
 
-open Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P
 
@@ -72,7 +71,6 @@ end Formalism.FourierDecayAlt.P
 
 section cutf
 
-open Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P.JCx1
 
@@ -674,7 +672,6 @@ end Formalism.FourierDecayAlt.P.JCx1.needs
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
 theorem orbital_integral_cutoff_scalar : Formalism.FourierDecayAlt.JC.OrbJCutScalar := by
   intro k r Wp Wq _ _ _ _ Bs γ μR χ f ε _ _ _

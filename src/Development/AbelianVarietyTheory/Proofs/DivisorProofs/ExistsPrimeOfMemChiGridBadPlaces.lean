@@ -183,7 +183,6 @@ theorem lt_one_iff_le (t : v.adicCompletion L) : Valued.v t < 1 ↔ Valued.v t �
   simp
 
 
-open Classical in
 def resInt (t : v.adicCompletion L) : 𝓞 L ⧸ v.asIdeal :=
   if h : Valued.v t ≤ 1 then Ideal.Quotient.mk v.asIdeal (ReciprocityTheory.Aut.adic_exists_approx v t h).choose else 0
 

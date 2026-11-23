@@ -371,7 +371,6 @@ theorem ftY_add (hc : cst.Ok) (P : rowSG Pr sel mu) (hD : P.1 ∉ Pr.vGs → 2 *
         h (fun i => intAt_div_pow_le hq0 hc.M_le_B (hζ i)) hy]
     · rfl
 
-open Classical in
 theorem repY_mem {n : ℕ} (N : Submodule (𝓞 X.E) (Sp X.E n)) (Y : Set (Sp X.E n)) (hY : Y ∈ ybSet sel mu cst N)
     (P : rowSG Pr sel mu) :
     ((qOf P.1 : X.E) ^ (if P.1 ∈ Pr.vGs then 1 else cst.M)) • repY Y ∈ localization₂ P.1.asIdeal N := by

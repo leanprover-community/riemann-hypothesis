@@ -312,7 +312,6 @@ end NGEq
 
 section BB
 
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
@@ -330,7 +329,6 @@ end BB
 
 section Frames
 
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
@@ -533,7 +531,6 @@ end Frames
 
 section GramInv
 
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
@@ -637,7 +634,6 @@ end GramInv
 
 section NGAsm
 
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
@@ -651,7 +647,6 @@ end NGAsm
 
 section NGAll
 
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 section One
 

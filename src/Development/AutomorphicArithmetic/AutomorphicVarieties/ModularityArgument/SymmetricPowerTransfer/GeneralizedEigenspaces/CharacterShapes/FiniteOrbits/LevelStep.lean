@@ -131,7 +131,6 @@ private theorem ddf_self {B : Bridge L} (T : Spl B) (w : Plc L) (h : IsSplitAt w
     ddf T w h d (un w) = pull T w h d := by
   simp [ddf]
 
-open Classical in
 private theorem ddf_ne {B : Bridge L} (T : Spl B) (w : Plc L) (h : IsSplitAt w) (d : Fin 3 → (Kw w)ˣ)
     {v : Pl (Lp L)} (hv : v ≠ un w) : ddf T w h d v = 1 := by
   simp [ddf, Function.update_of_ne hv]

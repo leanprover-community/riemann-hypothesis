@@ -289,8 +289,6 @@ end Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
 namespace Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
-open scoped ContDiff
 
 section Frob
 
@@ -327,8 +325,6 @@ end Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
 namespace Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -627,8 +623,6 @@ end Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
 namespace Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -884,7 +878,6 @@ end Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
 namespace Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -949,8 +942,6 @@ end Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
 namespace Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1008,7 +999,6 @@ end Formalism.FourierDecayAlt.P.BetaSesquilinearity
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1121,7 +1111,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1531,7 +1520,6 @@ end Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity
 
 theorem assemble_equality_identity : Formalism.FourierDecayAlt.B.AssembleEq := by
   intro hC hAe hFa hL hDC hJ1 k r Wp Wq _ _ _ _ _ _ D A hA hRB hRA hU hJ hDB

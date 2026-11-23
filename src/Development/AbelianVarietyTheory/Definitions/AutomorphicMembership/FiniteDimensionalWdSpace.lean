@@ -263,7 +263,6 @@ variable [IsAlgClosure E Ω] {A : ValuationSubring Ω} {w : HeightOneSpectrum (�
   (r : ↥(Dec (F := E) A) →* GL (Fin a) (Om l))
 
 
-open Classical in
 def wdAt : WD h :=
   if hr : IsPstAt P Bw r then wdPst P ι Bw h hj (Bw.repE hr.choose hr.choose_spec.choose) else trivWD h a
 
@@ -296,7 +295,6 @@ def IsJumpsW (τ : E →+* Om l) (J : Multiset ℤ) : Prop :=
   ∃ w hw, IsJumpsAt P (br w hw) (resDec pl r w) τ J
 
 
-open Classical in
 def jumpsW (τ : E →+* Om l) : Multiset ℤ :=
   if hJ : ∃ J, IsJumpsW P pl br r τ J then hJ.choose else 0
 

@@ -153,7 +153,6 @@ def IsConjOnto {E W H : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E] 
 
 section Comparison₂
 
-open Formalism.L2.SG.ProjRows
 
 variable {D : D7} (X : HidaSetting D)
 

@@ -68,7 +68,6 @@ theorem coord_algebraMap (τ : E →+* ℂ) (x : E) : coord τ (pInf E (algebraM
     simp
 
 
-open Classical in
 def atEmb (τ : E →+* ℂ) (z : ℂ) : Cinf E :=
   Pi.single (InfinitePlace.mk τ) (if (InfinitePlace.mk τ).embedding = τ then z else starRingEnd ℂ z)
 

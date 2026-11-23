@@ -386,7 +386,6 @@ theorem dc_rep {s : TT Y u u'} {t : RT Y u u'} (h : s.toTerm = t) :
   exact (Formalism.L2.SG.Closed.TermEqIff_holds D u u' (X.Fu u) s.lam hrow ⟨s.frame, s.rep.2.2.2.2⟩
     (Quot.out s.toTerm.cls)).1 (Quot.out_eq _).symm
 
-open Formalism.L2.SG.TermTieOf in
 theorem mv_spec {s : TT Y u u'} {t : RT Y u u'} (h : s.toTerm = t) :
     s.lam = t.lam ∧ ∃ n ∈ NLam t.lam (lf D (X.Fu u)), ∃ m ∈ NLam t.lam s.frame,
       (∀ a, frame (repF t) a = n (m (frame s.frame a))) ∧ (repF t).zt = n (m s.frame.zt) ∧
@@ -447,13 +446,11 @@ theorem rp_data (q : RP Y u u') :
   ⟨q.2.choose.2, q.2.choose_spec.choose.2, q.2.choose_spec.choose_spec⟩
 
 
-open Formalism.L2.SG.TermTieOf in
 def Bof (q : RP Y u u') : (VS D).V ≃ₗ[D.host.E] (VS D).V :=
   mvOf q.1.2.lam (lf D (X.Fu u)) q.l2.frame (repF q.1.2) * (q.l2.lin * q.l1.lin⁻¹) *
     (mvOf q.1.1.lam (lf D (X.Fu u)) q.l1.frame (repF q.1.1))⁻¹
 
 
-open Formalism.L2.SG.TermTieOf in
 theorem rp_moves (q : RP Y u u') :
     ∃ n₁ n₂ m₁ m₂ : (VS D).V ≃ₗ[D.host.E] (VS D).V,
       n₁ ∈ NLam q.l1.lam (lf D (X.Fu u)) ∧ n₂ ∈ NLam q.l1.lam (lf D (X.Fu u)) ∧
@@ -475,7 +472,6 @@ theorem rp_moves (q : RP Y u u') :
   rw [hmv₁, hmv₂]
   group
 
-open Formalism.L2.SG.TermTieOf in
 theorem representative_s0_eq (q : RP Y u u') :
     Lat.s0 q.1.1.lam (lf D (X.Fu u)) (repF q.1.1) (repF q.1.2) (Bof q) D.R.k = s0T q.l1 q.l2 := by
   obtain ⟨n₁, n₂, m₁, m₂, hn₁, hn₂, hm₁, hm₂, hf₁, hz₁, hf₂, hz₂, hB, E1, hl, hl', hr⟩ := rp_moves q
@@ -490,7 +486,6 @@ theorem representative_s0_eq (q : RP Y u u') :
   exact congrArg (fun q : ℕ => D.R.k - q) ((congrArg (fun M : Submodule D.host.E (VS D).V => Module.finrank D.host.E M)
     hT).trans (LinearEquiv.finrank_map_eq n₁ _))
 
-open Formalism.L2.SG.TermTieOf in
 theorem rp_scal (q : RP Y u u') :
     IsScalar q.1.1.lam (lf D (X.Fu u)) (repF q.1.1) (repF q.1.2) (Bof q) ↔ liftScalar q.l1 q.l2 := by
   obtain ⟨n₁, n₂, m₁, m₂, hn₁, hn₂, hm₁, hm₂, hf₁, hz₁, hf₂, hz₂, hB, E1, hl, hl', hr⟩ := rp_moves q
@@ -504,7 +499,6 @@ theorem rp_scal (q : RP Y u u') :
   · exact scal_move hn₁ hn₂ hm₁ hm₂ hf₁ hz₁ hf₂ hz₂ (lift_F q.l1) (lift_frame q.l1) hL₂ hβ
       (beta_Xsp q.l1 q.l2) (τ := 1) (fun x hx => hx) (fun x _ => by simp)
 
-open Formalism.L2.SG.TermTieOf in
 theorem rp_pair (hι : IotaRowC) (q : RP Y u u') :
     IsPair q.1.1.lam (lf D (X.Fu u)) (repF q.1.1) (repF q.1.2) (Bof q) (gS D) := by
   obtain ⟨n₁, n₂, m₁, m₂, hn₁, hn₂, hm₁, hm₂, hf₁, hz₁, hf₂, hz₂, hB, E1, hl, hl', hr⟩ := rp_moves q
@@ -534,7 +528,6 @@ theorem rp_pair (hι : IotaRowC) (q : RP Y u u') :
 end Rec
 
 
-open Formalism.L2.SG.TermTieOf in
 
 theorem pairTies_of (hι : IotaRowC) : Formalism.L2.SG.TermTieOf.PairTiesAll := by
   intro D X Y hF W hI

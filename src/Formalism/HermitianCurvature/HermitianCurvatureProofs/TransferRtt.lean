@@ -76,7 +76,6 @@ end Formalism.FourierDecayAlt.P.Mx6
 
 namespace Formalism.FourierDecayAlt.P.Mx6
 
-open Matrix Finset Polynomial Formalism.FourierDecayAlt.M
 
 noncomputable section
 
@@ -807,7 +806,6 @@ end Formalism.FourierDecayAlt.P.Mx6.PC
 
 namespace Formalism.FourierDecayAlt.P.Mx6.L3
 
-open Matrix Finset Polynomial Formalism.FourierDecayAlt.M
 
 noncomputable section
 
@@ -1011,7 +1009,6 @@ end Formalism.FourierDecayAlt.P.Mx6.L3
 
 namespace Formalism.FourierDecayAlt.P.Mx6.L4
 
-open Matrix Finset Polynomial Formalism.FourierDecayAlt.M
 
 noncomputable section
 
@@ -1172,7 +1169,6 @@ end Formalism.FourierDecayAlt.P.Mx6.L4
 
 namespace Formalism.FourierDecayAlt.P.Mx6
 
-open Matrix Finset Polynomial Formalism.FourierDecayAlt.M
 
 section Abs
 variable {B : Type*} [Ring B] [Algebra ℂ B]
@@ -1330,7 +1326,6 @@ end Formalism.FourierDecayAlt.P.Mx6
 
 namespace Formalism.FourierDecayAlt.P.Mx6
 
-open Matrix Finset Polynomial Formalism.FourierDecayAlt.M
 
 section Abs2
 variable {B : Type*} [Ring B] [Algebra ℂ B]
@@ -1454,7 +1449,6 @@ end Formalism.FourierDecayAlt.P.Mx6
 
 namespace Formalism.FourierDecayAlt.P.Mx6
 
-open Matrix Finset Polynomial Formalism.FourierDecayAlt.M
 
 section Abs3
 variable {B : Type*} [Ring B] [Algebra ℂ B]

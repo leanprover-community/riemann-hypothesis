@@ -80,7 +80,6 @@ def tens {m : ℕ} (θ : InfFam D) (τ : D.what₂.Tau) (fr : Matrix (Fin m) (Fi
 def fP {m : ℕ} (c : ℝ) (P : PX m n) : (Fin m → Fin n → ℂ) → ℂ := fun u => evX P u * gs c u
 
 
-open Classical in
 def phiS {m : ℕ} (θ : InfFam D) (τ : D.what₂.Tau) (fr : Matrix (Fin m) (Fin m) ℂ) (c : ℝ) (Ψ : Mx D m n → ℂ)
     (P : PX m n) : schwartzA θ m n :=
   if h : tens θ τ fr (fP c P) Ψ ∈ schwartzA θ m n then ⟨_, h⟩ else 0

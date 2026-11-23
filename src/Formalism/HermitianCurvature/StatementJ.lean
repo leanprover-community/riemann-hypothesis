@@ -405,7 +405,6 @@ def PhaseOk : Prop :=
     (phaseSys d S).Ok F
 
 
-open scoped Classical in
 open Classical in
 def OutsideOk : Prop :=
   ∀ (E α : Type) [Field E] (L : AddSubgroup E) (F : Finset α),
@@ -415,8 +414,6 @@ def OutsideOk : Prop :=
       TB.PSDOn F (fun _ _ : α => (1 : ℂ) - ∑ t ∈ R, if t ∈ L then (1 : ℂ) else 0))
 
 
-open scoped Classical in
-open Classical in
 def OutsideSysOk : Prop :=
   ∀ (E α : Type) [Field E] (N : E → E → α → α → ℂ) (L L' : AddSubgroup E) (F : Finset α),
     (∀ t t' : E, t ≠ 0 → t' ≠ 0 → ∀ h ∈ F, ∀ h' ∈ F, N t t' h h' ≠ 0 → t⁻¹ - t'⁻¹ ∈ L') →
@@ -425,8 +422,6 @@ def OutsideSysOk : Prop :=
     (LocSys.mk N (fun t _ _ => if t ∈ L then 1 else 0) (fun _ _ => 1) L L').Ok F
 
 
-open scoped Classical in
-open Classical in
 def OutsideDomination : Prop :=
   ProductDomination →
   ∀ (E α P : Type) [Field E] [Fintype P] (k : P → α → α → ℂ) (L : P → AddSubgroup E) (t : E)
@@ -446,7 +441,6 @@ def UniformMajorantOn : Prop :=
       (∀ t h h', ¬ (h ∈ A ∧ h' ∈ A) → Th t h h' = 0) ∧ ∀ t (F : Finset α), TB.PSDOn F (Th t)
 
 
-open Classical in
 def pullSys {E α K : Type} [Field E] [CommRing K] (R : Subring K) (ψ : AddChar K ℂ) (s : ℕ)
     (σ : E →+* K) (u : Kˣ) (η : α → A5.Point K) (Θ : K → A5.Point K → A5.Point K → ℂ) :
     LocSys E α where
@@ -462,7 +456,6 @@ def pullSys {E α K : Type} [Field E] [CommRing K] (R : Subring K) (ψ : AddChar
   L' := R.toAddSubgroup.comap ((AddMonoidHom.mulLeft ((u⁻¹ : Kˣ) : K)).comp σ.toAddMonoidHom)
 
 
-open Classical in
 def LocalPullback : Prop :=
   PSDAgree → A5.A2 →
   ∀ (K : Type) [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] (R : Subring K)
@@ -473,7 +466,6 @@ def LocalPullback : Prop :=
       (pullSys R ψ s σ u η Θ).Ok F
 
 
-open Classical in
 def LocalUnitHeads : Prop :=
   PSDAgree → A5.BaseKernelOne →
   ∀ (K : Type) [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] (R : Subring K)
@@ -485,7 +477,6 @@ def LocalUnitHeads : Prop :=
         (if t ∈ (pullSys R ψ s σ u η Θ).L then (1 : ℂ) else 0) - (pullSys R ψ s σ u η Θ).N t t h h')
 
 
-open Classical in
 def topSys {E α K : Type} [Field E] [CommRing K] (R : Subring K) (ψ : AddChar K ℂ) (σ : E →+* K)
     (u : Kˣ) (τ₀ : K) (η : α → A5.Point K) (Θ : K → A5.Point K → A5.Point K → ℂ) : LocSys E α where
   N := fun t t' h h' => if t = t' then Θ ((u : K) * σ t - τ₀) (η h) (η h') else 0
@@ -495,7 +486,6 @@ def topSys {E α K : Type} [Field E] [CommRing K] (R : Subring K) (ψ : AddChar 
   L' := ⊥
 
 
-open Classical in
 def TopPullback : Prop :=
   PSDAgree →
   ∀ (K : Type) [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] (R : Subring K)
@@ -633,7 +623,6 @@ def PullLiftTypedUnit : Prop :=
             x ∈ S6.locAt E P (S6.liftLat E g ν s)
 
 
-open Classical in
 def TopUnitHeads : Prop :=
   PSDAgree → A5.BaseKernelOne →
   ∀ (K : Type) [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] (R : Subring K)

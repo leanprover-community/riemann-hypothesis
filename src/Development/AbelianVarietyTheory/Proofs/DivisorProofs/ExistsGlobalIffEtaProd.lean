@@ -122,7 +122,6 @@ theorem prod_sign_eq {K : Type} [Field K] [NumberField K] (S : Finset {w : Infin
   rw [this, Finset.card_map]
 
 
-open Classical in
 theorem exists_signs_iff_even (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L]
     [Algebra K L] [Algebra.IsQuadraticExtension K L] (hL : IsTotallyComplex L)
     (S : Finset {w : InfinitePlace K // w.IsReal}) :

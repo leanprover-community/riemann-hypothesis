@@ -65,7 +65,6 @@ def ind (S : Finset (Pl F)) : Af F :=
     · simp only [h, if_true]; exact one_mem _
     · simp only [h, if_false]; exact zero_mem _⟩
 
-open Classical in
 theorem ev_ind (S : Finset (Pl F)) (u : Pl F) : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u (ind S) = if u ∈ S then 1 else 0 := rfl
 
 theorem fin_ext {a b : Af F} (h : ∀ u, Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u a = Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F u b) : a = b :=

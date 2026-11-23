@@ -77,7 +77,6 @@ def gaugeU : ℝ := ∏ v : NumberField.InfinitePlace I.F, Gauge.gaugeU (I.ε v)
 
 end Formalism.MainNotions.S.AutInst
 
-open MeasureTheory Filter Topology
 open scoped ENNReal Kronecker Matrix
 
 noncomputable section
@@ -124,7 +123,6 @@ section ExpD
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-open scoped Matrix.Norms.Operator in
 theorem exp_entry (X : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
     HasDerivAt (fun t : ℝ => (NormedSpace.exp ((t : ℂ) • X)) i j) (X i j) 0 := by
   have h := hasDerivAt_exp_smul_const (𝕂 := ℝ) X (0 : ℝ)

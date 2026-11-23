@@ -112,7 +112,6 @@ end Formalism.L2.SG.Pf.BH.Sw
 
 namespace Formalism.L2.SG.Pf.BH.Sw
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.Pf Formalism.L2.SG.Pf.BH Formalism.MainNotions.BridgeCSB Formalism.QuantumDeterminants.WeylGroupFacts
 
 variable {k r : ℕ}
 
@@ -217,7 +216,6 @@ end Formalism.L2.SG.Pf.BH.Sw
 
 namespace Formalism.L2.SG.Pf.BH.Sw
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.Pf Formalism.L2.SG.Pf.BH Formalism.MainNotions.BridgeCSB Formalism.QuantumDeterminants.WeylGroupFacts
 
 variable {k r : ℕ}
 
@@ -323,7 +321,6 @@ end Formalism.L2.SG.Pf.BH.Sw
 
 namespace Formalism.L2.SG.Pf.BH.Sw
 
-open Formalism.QuantumDeterminants Formalism.L2.SG.Pf Formalism.L2.SG.Pf.BH Formalism.MainNotions.BridgeCSB Formalism.QuantumDeterminants.WeylGroupFacts
 
 variable {k r : ℕ}
 

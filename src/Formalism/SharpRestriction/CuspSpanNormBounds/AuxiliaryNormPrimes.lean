@@ -53,7 +53,6 @@ end B3
 
 section Mass
 
-open Formalism.MainNotions.S.Lat
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -89,7 +88,6 @@ end BR
 
 section Rows
 
-open Formalism.MainNotions.S.Lat
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

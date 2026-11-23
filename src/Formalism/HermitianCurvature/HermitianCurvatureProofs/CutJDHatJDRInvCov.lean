@@ -151,7 +151,6 @@ end Formalism.FourierDecayAlt.P.CutMP.RInvCov
 
 namespace Formalism.FourierDecayAlt.P.CutMP.RInvCov
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.CapelliWordSumExpansion Formalism.FourierDecayAlt.P.LieDecompositionLocal Formalism.FourierDecayAlt.P.FourTermExpansion
   Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
@@ -171,7 +170,6 @@ theorem sum_sortM {M : Type*} [AddCommGroup M] [Module ℂ M] {t N : ℕ} (F : (
   · rw [if_neg h, if_neg (show ¬ StrictMono fun l => ((C l : Fin N) : ℕ) from h)]
 
 
-open Classical in
 theorem collapse2 {M : Type*} [AddCommGroup M] [Module ℂ M] {t N : ℕ}
     (D : (Fin t → Fin N) → (Fin t → Fin N) → M) (A B : (Fin t → Fin N) → ℂ)
     (hr : ∀ c d (τ : Equiv.Perm (Fin t)), D (c ∘ τ) d = ((Equiv.Perm.sign τ : ℤ) : ℂ) • D c d)
@@ -209,7 +207,6 @@ theorem det_cols {t N : ℕ} (S : Matrix (Fin N) (Fin N) ℂ) (b d : Fin t → F
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 
-open Classical in
 theorem qminor_right (S : Mat k r) (hS : S ∈ GV k r) {t : ℕ} (a b : Fin t → Fin (2 * r + k + 1)) (u : ℂ)
     (f : Mat k r → E) (x : Mat k r) (hx : x * S ∈ GV k r) (hloc : Loc (t : ℕ∞) f (x * S)) :
     qminorOp (Q.EH k r) a b u (fun y => f (y * S)) x =

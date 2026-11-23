@@ -123,7 +123,6 @@ end Gen
 
 section Trans
 
-open Classical
 
 variable {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool}
   {e f : Fin r → Fin (2 * r + k + 1) → ℂ} {wf : Fin k → Fin (2 * r + k + 1) → ℂ}
@@ -168,7 +167,6 @@ end Trans
 
 section TransEq
 
-open Classical
 
 variable {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool}
   {e f : Fin r → Fin (2 * r + k + 1) → ℂ} {wf : Fin k → Fin (2 * r + k + 1) → ℂ}
@@ -205,7 +203,6 @@ end TransEq
 
 section TransRep
 
-open Classical
 
 variable {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool}
   {e f : Fin r → Fin (2 * r + k + 1) → ℂ} {wf : Fin k → Fin (2 * r + k + 1) → ℂ}
@@ -459,7 +456,6 @@ end Main
 
 section Inst
 
-open Classical Formalism.L2.SG.SplitPrimeNormLemmas Formalism.L2.SG.WuDecay
 
 theorem lowGap_of_gapHyp (D : Formalism.BasicNotions.D7) (hG : Formalism.L2.SG.ConcreteSettingExists.GapHyp D) (τ : D.what₂.Tau) :
     LowGapGe (16 * (D.R.r : ℝ) ^ 19) D.R.rS (Formalism.MainNotions.b48 D τ) := by
@@ -587,7 +583,6 @@ end Inst
 
 section InstN
 
-open Classical Formalism.L2.SG.SplitPrimeNormLemmas Formalism.L2.SG.WuDecay
 
 theorem locUniq_n (hBW : Formalism.L2.SG.LocWSOf.BesselOfW) (hM1 : Formalism.L2.SG.LitS.BesselMultOne)
     (hB : BesselNVGap) (hCW : CoefWeightedLoc) (hWl : WlocExists) (hHN : LocHNProps)
@@ -718,7 +713,6 @@ end InstN
 
 section Step
 
-open Classical Formalism.L2.SG.SplitPrimeNormLemmas Formalism.L2.SG.WuDecay
 
 theorem local_uniqueness_reduction : LocUniqStep := by
   intro hB hCW hWl hBW hM1 D hG X u μS νl C hQW v W hWc hWe hWr hL0 hLt

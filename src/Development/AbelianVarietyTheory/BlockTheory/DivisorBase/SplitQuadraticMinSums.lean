@@ -60,7 +60,6 @@ open Classical in
 def sumBig (k : ℕ) (cx : Lt1 Dw → ℕ) : ℕ := ∑ f ∈ Finset.univ.filter (IsBig k), cx f
 
 
-open Classical in
 def sumSmallSpread (k : ℕ) (cx : Lt1 Dw → ℕ) : ℕ :=
   ∑ f ∈ Finset.univ.filter (fun f => IsSmall f ∨ IsSpread k f), rk f * cx f
 

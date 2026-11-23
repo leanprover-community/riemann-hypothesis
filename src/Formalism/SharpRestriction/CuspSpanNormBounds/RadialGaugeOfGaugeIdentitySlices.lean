@@ -70,7 +70,6 @@ section PartSl2
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -112,7 +111,6 @@ section PartT22b
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -124,7 +122,6 @@ section PartBlk
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
 
 section GlobalTheory
 
@@ -143,7 +140,6 @@ section PartLv
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
 
 section Lv
 
@@ -159,7 +155,6 @@ section PartHd
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
 open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
@@ -180,7 +175,6 @@ section PartBc
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
 
 variable {k r' : ℕ}
 
@@ -192,8 +186,6 @@ section PartSlI
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -217,8 +209,6 @@ section PartSlJ
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -230,7 +220,6 @@ section PartRp
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -259,7 +248,6 @@ noncomputable section PartWd2
 namespace Formalism.MainNotions.BridgeLemma₅
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -279,7 +267,6 @@ noncomputable section PartWd3
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
 
 section WdScalars
 
@@ -313,8 +300,6 @@ noncomputable section PartWd6
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -326,8 +311,6 @@ noncomputable section PartWd8
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -369,7 +352,6 @@ section PartLc
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -492,7 +474,6 @@ open MeasureTheory
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -500,11 +481,9 @@ end PartLb2
 
 section PartLb3
 
-open MeasureTheory
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -514,11 +493,9 @@ end PartLb3
 
 section PartLb4
 
-open MeasureTheory
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -545,7 +522,6 @@ section PartLb5
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -563,11 +539,9 @@ end PartLb6
 
 section PartLb7
 
-open MeasureTheory
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.QuantumDeterminants Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -608,8 +582,6 @@ end PartTa1
 
 section PartTa2
 
-open NumberField Finset Filter Topology
-open scoped nonZeroDivisors ComplexConjugate ComplexOrder InnerProductSpace
 
 noncomputable section
 
@@ -633,8 +605,6 @@ end PartTa2
 
 section PartTa3
 
-open NumberField Finset Filter Topology
-open scoped nonZeroDivisors ComplexConjugate ComplexOrder InnerProductSpace
 
 noncomputable section
 
@@ -648,7 +618,6 @@ end PartTa3
 
 section PartTa3b
 
-open NumberField Finset Filter Topology
 
 noncomputable section
 
@@ -664,8 +633,6 @@ end PartTa3b
 
 section PartTa4
 
-open NumberField Finset Filter Topology
-open scoped nonZeroDivisors ComplexConjugate ComplexOrder InnerProductSpace
 
 noncomputable section
 
@@ -714,14 +681,11 @@ end PartTa5
 
 section PartTa6
 
-open NumberField Finset Filter Topology
-open scoped nonZeroDivisors ComplexConjugate ComplexOrder InnerProductSpace
 
 noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.MainNotions.InterlacingSignCuts
 
 attribute [local instance] Classical.propDecidable
 

@@ -74,19 +74,16 @@ theorem det_blk_mul (s : Set ι) (p : GL ι R) {q : GL ι R} (hq : q ∈ stab R 
         ((q : Matrix ι ι R).submatrix (Subtype.val : s → ι) Subtype.val).det := by
   rw [Units.val_mul, blk_mul s _ _ fun r hr c hc => (hq r hr c hc).1, Matrix.det_mul]
 
-open Classical in
 theorem det_blk_mul_inv (s : Set ι) {p : GL ι R} (hp : p ∈ stab R s) :
     ((p : Matrix ι ι R).submatrix (Subtype.val : s → ι) Subtype.val).det *
       (((p⁻¹ : GL ι R) : Matrix ι ι R).submatrix (Subtype.val : s → ι) Subtype.val).det = 1 := by
   rw [← det_blk_mul s p (inv_mem hp), mul_inv_cancel, Units.val_one,
     Matrix.submatrix_one _ Subtype.val_injective, Matrix.det_one]
 
-open Classical in
 theorem isUnit_det_blk (s : Set ι) {p : GL ι R} (hp : p ∈ stab R s) :
     IsUnit ((p : Matrix ι ι R).submatrix (Subtype.val : s → ι) Subtype.val).det :=
   IsUnit.of_mul_eq_one _ (det_blk_mul_inv s hp)
 
-open Classical in
 theorem bdet_val (s : Set ι) {p : GL ι R} (hp : p ∈ stab R s) :
     ((bdet s p : Rˣ) : R) = ((p : Matrix ι ι R).submatrix (Subtype.val : s → ι) Subtype.val).det := by
   rw [bdet, dite_eq_left (isUnit_det_blk s hp), IsUnit.unit_spec]
@@ -155,7 +152,6 @@ section Places
 variable {E : Type} [Field E]
 
 
-open Classical in
 theorem bdet_rat (A : Ad E R) (hi : Function.Injective A.i) (s : Set ι) {p : GL ι R}
     (hp : p ∈ stab R s) (hr : p ∈ A.ratGL ι) : ∃ x, bdet s p = Units.map A.i.toMonoidHom x := by
   classical
@@ -177,7 +173,6 @@ theorem bdet_rat (A : Ad E R) (hi : Function.Injective A.i) (s : Set ι) {p : GL
   rfl
 
 
-open Classical in
 theorem norm_det_blk (M : Matrix ι ι ℂ) (hM : M ∈ Matrix.unitaryGroup ι ℂ) (s : Set ι)
     (h0 : ∀ r, r ∉ s → ∀ c ∈ s, M r c = 0) :
     ‖(M.submatrix (Subtype.val : s → ι) Subtype.val).det‖ = 1 := by
@@ -249,7 +244,6 @@ theorem lg_eq_zero (A : Ad E R) (hA : A.GoodL) (u : Rˣ) (h1 : (u : R) ∈ A.O)
   linarith
 
 
-open Classical in
 theorem lg_bdet (A : Ad E R) (hA : A.GoodL) (s : Set ι) {p : GL ι R} (hp : p ∈ stab R s)
     (hk : p ∈ A.kGL ι) : A.lg (bdet s p) = 0 := by
   classical

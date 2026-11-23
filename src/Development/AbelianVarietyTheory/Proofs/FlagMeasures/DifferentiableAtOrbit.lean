@@ -135,7 +135,6 @@ theorem hasDerivAt_orbit_sum {P k : ℕ} (E : gInf B) (u : Fin k → ∀ v, B.H 
     (fun v => (hd v P _ (hu l v) _ (E v).2).hasDerivAt) (fun v => (hU v).1.1)
 
 
-open Classical in
 theorem dAct_atPlace_sum {P k : ℕ} (v : InfinitePlace B.I.F) (X : gLie (B.I.ε v))
     (u : Fin k → ∀ v, B.H v) (hu : ∀ l v, u l v ∈ stepSpace (B.I.ε v) (B.lam v) (B.σ v) P) :
     dAct B (atPlace B v X) (∑ l, B.tens (u l)) =
@@ -157,7 +156,6 @@ theorem dAct_atPlace_sum {P k : ℕ} (v : InfinitePlace B.I.F) (X : gLie (B.I.ε
     simp
   · simp
 
-open Classical in
 theorem dAct_atPlace_tens {P : ℕ} (v : InfinitePlace B.I.F) (X : gLie (B.I.ε v))
     (u : ∀ v, B.H v) (hu : ∀ v, u v ∈ stepSpace (B.I.ε v) (B.lam v) (B.σ v) P) :
     dAct B (atPlace B v X) (B.tens u) =

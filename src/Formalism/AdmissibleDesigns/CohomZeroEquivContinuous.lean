@@ -466,7 +466,6 @@ end Rec
 
 section Main
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.NG Classical
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   {X' : Type} {d : Type} [Fintype d] [DecidableEq d]
@@ -522,7 +521,6 @@ end Main
 
 section Dr
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.NG Classical
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   {X' : Type} {d : Type} [Fintype d] [DecidableEq d]
@@ -601,7 +599,6 @@ end Dr
 
 section Main2
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.NG Classical
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   {X' : Type} {d : Type} [Fintype d] [DecidableEq d]
@@ -637,7 +634,6 @@ end EvalU
 
 section Ident
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.NG Classical
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i) {bl : Fin D.R.nV → Fin (D.R.t + 1)}
   (Dd : Formalism.RepresentationBoundsCohomology.ringDataObjects.RingData (D.nd.O i) (D.nd.X i) (Fin D.R.nV) (GE D.nd) D.R.t bl)

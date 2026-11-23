@@ -172,12 +172,9 @@ end Formalism.FourierDecayAlt.P.PBC.GlobalTheory
 
 namespace Formalism.FourierDecayAlt.P.PBC.GlobalTheory
 
-open Formalism.FourierDecayAlt Finset Filter Topology NumberField MeasureTheory
-open scoped ComplexConjugate RealInnerProductSpace
 
 noncomputable section
 
-open Classical
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePlace E → Type}
   [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]
@@ -318,12 +315,10 @@ end Formalism.FourierDecayAlt.P.PBC.GlobalTheory
 
 namespace Formalism.FourierDecayAlt.P.PBC.GlobalTheory
 
-open Formalism.FourierDecayAlt Finset Filter Topology NumberField MeasureTheory
 open scoped ComplexConjugate nonZeroDivisors
 
 noncomputable section
 
-open Classical
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePlace E → Type}
   [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)]

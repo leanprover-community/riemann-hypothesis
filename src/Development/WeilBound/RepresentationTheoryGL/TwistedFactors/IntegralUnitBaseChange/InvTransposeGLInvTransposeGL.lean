@@ -355,7 +355,6 @@ section ComplexValued
 variable {G : Type*} [Group G] [MeasurableSpace G]
 
 
-open Classical in
 def quotIntegral (μG : Measure G) (H : Subgroup G) (μH : Measure H) (F : G → ℂ) : ℂ := by
   classical
   exact if hρ : ∃ ρ, IsQuotNormaliser H μH ρ then ∫ g, F g * ((hρ.choose g).toReal : ℂ) ∂μG else 0

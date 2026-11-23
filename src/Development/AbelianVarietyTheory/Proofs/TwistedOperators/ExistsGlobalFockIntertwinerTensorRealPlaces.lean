@@ -80,7 +80,6 @@ theorem glue_update {a b : ℕ} (P : D.what₂.Tau → LPol b a) (τ : D.what₂
   · simp
   · exact Finset.prod_congr rfl fun ρ hρ => by simp [Finset.ne_of_mem_erase hρ]
 
-open Classical in
 theorem glue_update_add_smul {a b : ℕ} (P : D.what₂.Tau → LPol b a) (τ : D.what₂.Tau) (p : LPol b a) (c : ℂ) :
     glue (Function.update P τ p) + c • glue P = glue (Function.update P τ (p + c • P τ)) := by
   have h0 : glue P = glue (Function.update P τ (P τ)) := by rw [Function.update_eq_self]
@@ -94,7 +93,6 @@ theorem ellT_tprod' (M : DSModel V S) (w v : ∀ τ, M.H τ) :
   rw [PiTensorProduct.lift.tprod]
   simp
 
-open Classical in
 theorem ellT_update (M : DSModel V S) (w v : ∀ τ, M.H τ) (τ : D.what₂.Tau) (u : M.H τ) :
     ellT M w (PiTensorProduct.tprod ℂ (Function.update v τ u)) =
       ⟪w τ, u⟫_ℂ * ∏ ρ ∈ Finset.univ.erase τ, ⟪w ρ, v ρ⟫_ℂ := by
@@ -103,7 +101,6 @@ theorem ellT_update (M : DSModel V S) (w v : ∀ τ, M.H τ) (τ : D.what₂.Tau
   · simp
   · exact Finset.prod_congr rfl fun ρ hρ => by simp [Finset.ne_of_mem_erase hρ]
 
-open Classical in
 theorem actT_tprod (M : DSModel V S) (τ : D.what₂.Tau) (g : Matrix (Fin V.rank) (Fin V.rank) ℂ) (v : ∀ τ, M.H τ) :
     actT M τ g (PiTensorProduct.tprod ℂ v) = PiTensorProduct.tprod ℂ (Function.update v τ (M.rep τ g (v τ))) := by
   unfold actT
@@ -121,7 +118,6 @@ theorem der_inner {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {c
   exact h1.mul_const k
 
 
-open Classical in
 theorem exists_globIt : ∀ (D : D7) (V W : HSp D) (S S' : D.what₂.Tau → SPar) (M : DSModel V S) (M' : DSModel W S') (aS aT : D.what₂.Tau → ℚ) (A : ∀ τ, LPol W.rank V.rank →ₗ[ℂ] M'.H τ →ₗ[ℂ] M.H τ), GlobalTheory.IndefiniteRowSideFullHecke.ContractionTensorModels.ContrTensor → GlueLaw D V.rank W.rank → (∀ τ, LocIt M M' τ (aS τ) (aT τ) (A τ)) → ∃ It I, GlobIt M M' aS aT It I := by
   intro D V W S S' M M' aS aT A hC hG hL
   have hs := hG.1

@@ -367,7 +367,6 @@ theorem delOf_ch {l : ℕ} (hl : l.Prime) {w : Formalism.PairingDivisionLocalBal
 end IsSqOf
 
 
-open Classical in
 theorem exists_isSqOf {W : G.Weil} {B : Frames G} {ρ : RealMatch W} {C : ℝ} {μ₀ : T} {μ : Formalism.PairingDivisionLocalBalance.Pl D.what₂.LL → T}
     {rq : T → Fin D.R.m × Fin D.R.m → D.what₂.LL} {zA zA' : Fin D.R.m × Fin D.R.m → D.what₂.LL} {dl}
     (h1 : ∀ ij : Fin D.R.m × Fin D.R.m, ∃ c : T → ℂ, c μ₀ ≠ 0 ∧ ∀ t, (t = μ₀ ∨ ∃ w, μ w = t) →

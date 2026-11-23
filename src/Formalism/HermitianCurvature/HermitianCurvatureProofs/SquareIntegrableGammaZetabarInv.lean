@@ -99,10 +99,7 @@ set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-open Formalism.FourierDecayAlt.MA
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -122,10 +119,8 @@ set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-open Formalism.FourierDecayAlt.MA
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -182,10 +177,8 @@ set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-open Formalism.FourierDecayAlt.MA
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -196,7 +189,6 @@ end
 end Formalism.FourierDecayAlt.P.MAx2.R2
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-open Formalism.FourierDecayAlt.MA
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.YangianSpanCharacter.T Matrix
 
@@ -293,7 +285,6 @@ end Formalism.FourierDecayAlt.P.MAx2
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA
 
 theorem roots_outside_of_parts_alt : Formalism.FourierDecayAlt.MA.RootsOutQOfParts := by
   intro hJ P l L j lam α β Lb c Ntot hH
@@ -472,7 +463,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx2.Jet
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -847,7 +837,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.Jet
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr
 
 noncomputable section
 
@@ -955,7 +944,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx2.J0
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -1007,7 +995,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx2.J0
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -1052,8 +1039,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.J0
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -1071,8 +1056,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.J0
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -1097,8 +1080,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.Adj
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -1611,7 +1592,6 @@ end Formalism.FourierDecayAlt.P.MAx2.Adj
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Adj MeasureTheory
-open scoped ComplexConjugate
 
 theorem adjoint_closed : Formalism.FourierDecayAlt.MA.AdjClosed := fun _ _ =>
   ⟨isAdj_one, fun _ _ ha hb => ⟨isAdj_add ha hb, isAdj_mul ha hb⟩, fun z _ ha => isAdj_smul z ha,

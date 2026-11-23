@@ -494,7 +494,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
@@ -653,7 +652,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
@@ -904,7 +902,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
@@ -957,7 +954,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
@@ -1046,7 +1042,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
@@ -1101,7 +1096,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
@@ -1168,7 +1162,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
@@ -1185,7 +1178,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
@@ -1198,7 +1190,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
@@ -1244,7 +1235,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
@@ -1288,7 +1278,6 @@ end Formalism.GM.gammaIntegralityLemmas
 
 namespace Formalism.GM.gammaIntegralityLemmas
 
-open MvPolynomial Finset Formalism.GM.M
 
 end Formalism.GM.gammaIntegralityLemmas
 

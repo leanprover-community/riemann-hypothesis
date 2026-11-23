@@ -209,7 +209,6 @@ private noncomputable def mask (w : ι → X) (j : X) : Matrix ι ι k →+ Matr
   map_zero' := by ext a b; simp
   map_add' Y Z := by ext a b; simp only [of_apply, Matrix.add_apply]; split_ifs <;> simp
 
-open Classical in
 omit [Fintype ι] [DecidableEq ι] in
 private theorem mask_apply (j : X) (Y : Matrix ι ι k) (a b : ι) :
     mask w j Y a b = if w a - w b = j then Y a b else 0 := rfl

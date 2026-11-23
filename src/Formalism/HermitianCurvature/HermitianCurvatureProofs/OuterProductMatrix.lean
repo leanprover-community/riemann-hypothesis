@@ -170,7 +170,6 @@ end Formalism.FourierDecayAlt.P.PBH
 
 namespace Formalism.FourierDecayAlt.P.PBH
 
-open Dx2.Split Dx2.SplitM
 
 variable {k j ρ : ℕ}
 
@@ -314,7 +313,6 @@ end Formalism.FourierDecayAlt.P.PBH
 
 namespace Formalism.FourierDecayAlt.P.PBH
 
-open Dx2.Split Dx2.SplitM
 
 variable {k j ρ : ℕ}
 
@@ -420,7 +418,6 @@ end Formalism.FourierDecayAlt.P.PBH
 
 namespace Formalism.FourierDecayAlt.P.PBH
 
-open Dx2.Split Dx2.SplitM
 
 variable {k j ρ : ℕ}
 

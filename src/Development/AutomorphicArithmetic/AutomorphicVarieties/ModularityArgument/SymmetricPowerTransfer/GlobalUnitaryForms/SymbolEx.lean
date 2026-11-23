@@ -62,7 +62,6 @@ abbrev TA (τ : F) : Type := RP (fun v : Pl F => (Etau (Kv v) (cv v τ))ˣ) fun 
 def IsDiagT (τ : F) (φ : (Etau F τ)ˣ →* TA τ) : Prop := ∀ z v, ((φ z).1 v : Etau (Kv v) (cv v τ)) = emap (cv v) τ z
 
 
-open Classical in
 def ms (τ : F) : ℂ := by
   classical
   exact if h : ∃ φ, IsDiagT τ φ then

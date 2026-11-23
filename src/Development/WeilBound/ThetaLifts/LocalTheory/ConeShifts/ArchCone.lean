@@ -56,7 +56,6 @@ def uLoc (v : Pl F) (x : @Measure (idAt E (evFin F v)) (borel _)) (𝔞 : Fracti
   @integral _ _ _ _ (borel _) x fun l => (if InAt 𝔞 v (l.1 : AE F E) then 1 else 0) * wt ν z l.1
 
 
-open Classical in
 def IdeleFub : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n : ℕ) (X : Spc F E n) (K : Subgroup (UA σ X.J)) (m : LocMeas K) (μ : Measure (AE F E)ˣ), B.IsGood σ → m.Is → μ.IsHaarMeasure →
     ∀ (𝔞 : FractionalIdeal (𝓞 E)⁰ E) (z : ℕ), 𝔞 ≠ 0 → 2 ≤ z →
@@ -123,7 +122,6 @@ def ArchCone : Prop :=
 
 
 
-open Classical in
 def PureFac : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d n₁ d₁ : ℕ) (X : Spc F E n) (W : Spc F E d) (X₁ : Spc F E n₁) (W₁ : Spc F E d₁)
     (M : Model σ X W) (M₁ : Model σ X₁ W₁) (H : Plane E n n₁) (H' : Plane E d d₁) e u ei ev, Cfg B M M₁ H H' e u → IsEvLoc M M₁ e ei ev →

@@ -162,7 +162,6 @@ end Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 
 namespace Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B5 Formalism.FourierDecayAlt.P.CapelliWordSumExpansion Formalism.FourierDecayAlt.P.LieDecompositionLocal
   Formalism.FourierDecayAlt.P.FourTermExpansion
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
@@ -238,7 +237,6 @@ end Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 
 namespace Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B5 Formalism.FourierDecayAlt.P.CapelliWordSumExpansion Formalism.FourierDecayAlt.P.LieDecompositionLocal
   Formalism.FourierDecayAlt.P.FourTermExpansion
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
@@ -301,7 +299,6 @@ end Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 
 namespace Formalism.FourierDecayAlt.P.FiniteSumLocalExpansion
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.B5 Formalism.FourierDecayAlt.P.CapelliWordSumExpansion Formalism.FourierDecayAlt.P.LieDecompositionLocal
   Formalism.FourierDecayAlt.P.FourTermExpansion
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace

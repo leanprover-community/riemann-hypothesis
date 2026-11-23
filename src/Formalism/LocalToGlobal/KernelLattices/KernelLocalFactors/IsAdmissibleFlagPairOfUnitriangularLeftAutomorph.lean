@@ -652,7 +652,6 @@ end Base
 end Rec
 
 section Isom
-open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 variable {D : D7}
 

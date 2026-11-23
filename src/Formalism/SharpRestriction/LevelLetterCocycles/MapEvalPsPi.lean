@@ -628,7 +628,6 @@ section abelian₂
 variable {hR : Ring9 W} {T : LocLat G Qp LL O}
 
 
-open Classical in
 def lamOf (C : Coord W (baseIdOf hR) T) (c : ZMod n) (ell : ℕ) {r : ℕ} (e : Fin r → C.V) (k : Fin r) :
     Dc W T c :=
   if h : C.t (c - (ell : ZMod n)) (e k) ∈ W.N T then

@@ -222,7 +222,6 @@ open Classical in
 abbrev inG (w : Pr.vGs) : rowSG Pr sel mu := ⟨w.1, Finset.mem_union_left _ w.2⟩
 
 
-open Classical in
 variable (Pr) in
 abbrev inQ (w : QE sel (mu : Chr X.F X.E X.K)) : rowSG Pr sel mu := ⟨w.1, Finset.mem_union_right _ w.2⟩
 
@@ -289,7 +288,6 @@ theorem tilFr_isLiftFr (H : TilOk Pr sel mu u) (d : RowPt Pr R sel mu) (P : rowS
   isLiftFr_tilH (N_m_succ R) d H.1 H.2.1 P (liftFr_spec d.2 P) _ rfl
 
 
-open Classical in
 def tilTop (H : TilOk Pr sel mu u) (d : RowPt Pr R sel mu) : TopPt R sel mu u := by
   let q := tilQ sel mu u d
   have hq : (Deco.res Finset.subset_union_left q.1 : Deco X.E (R.N R.m) (Pr.vT u) Pr.vGs).Ok :=
@@ -442,7 +440,6 @@ def XiTop {u : Pr.Word} (m2 : ℕ) (p : ChPt (R := R) sel mu u (m2 + 1)) (Y : Se
 variable {u : Pr.Word} {m2 : ℕ} (T : ChTh W sel mu u m2)
 
 
-open Classical in
 def topDegreeKTwo (p : ChPt (R := R) sel mu u (m2 + 1)) (Y : Set (Sp X.E (R.N (m2 + 1)))) (p' : TopPt R sel mu u) :
     (colValF W sel mu u (m2 + 1)).V →ₗ[X.K] (colValF W sel mu u R.m).V :=
   if Y ∈ ybSet sel mu cst p.deco.1.N then
@@ -680,7 +677,6 @@ def topCpl (h1 : Cp1Equiv W Ch sel mu cst L T b hY) (h2 : TopEquiv W Ch sel mu c
   CplKer.mk (cp1K W Ch sel mu cst L T al) (topDegreeKTwo W Ch sel mu cst T) (h1 al) h2
 
 
-open Classical in
 def matFam (hM : MatEquiv W Ch sel mu cst L T) : KerFam (chF W sel mu L u) := fun i al be =>
   if h : i < m2 then ClsKer.mk (matK W Ch sel mu cst L T i al be) (hM i h al be) else zeroKer _ _
 

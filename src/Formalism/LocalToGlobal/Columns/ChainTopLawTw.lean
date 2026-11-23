@@ -74,7 +74,6 @@ end Core
 
 section Core2
 
-open Classical
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
@@ -98,7 +97,6 @@ end Core2
 
 section Core3
 
-open Classical
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
@@ -106,7 +104,6 @@ end Core3
 
 section K1
 
-open Classical
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] (P : HeightOneSpectrum (𝓞 E))
 
@@ -264,7 +261,6 @@ end RedBlk
 
 section Gen2
 
-open Classical
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 

@@ -164,8 +164,6 @@ end Formalism.BasicNotions.V1
 
 namespace Formalism.BasicNotions.V1
 
-open IsLocalRing MvPowerSeries
-open scoped Classical
 
 structure LiftProb where
   l : ℕ
@@ -340,7 +338,6 @@ end Formalism.BasicNotions.V1
 namespace Formalism.MainNotions.UnusedSlot38
 
 open Formalism.BasicNotions.V1 IsLocalRing MvPowerSeries
-open scoped Classical
 
 section Prob
 

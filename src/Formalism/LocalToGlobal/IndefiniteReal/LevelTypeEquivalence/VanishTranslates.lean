@@ -72,7 +72,6 @@ theorem mult_equiv {T : MMap M} (hT : T ∈ Mult θ M J χ) (τ : D.what₂.Tau)
     rfl
 
 
-open Classical in
 theorem vanish_KfLow {T : MMap M} (hT : T ∈ Mult θ M J χ)
     (hlow : ∀ v : ∀ ρ, lowT M ρ, T (fun ρ => v ρ) = 0) :
     ∀ (s : Finset D.what₂.Tau) (v : M.Vec), (∀ τ ∈ s, v τ ∈ KfLow M τ) →
@@ -91,7 +90,6 @@ def DensLow : Prop :=
       (∀ w ∈ KfLow (R.MW i (sg0 D A)) τ, ℓ (w : (R.MW i (sg0 D A)).H τ) = 0) →
         ∀ w : (R.MW i (sg0 D A)).sm τ, ℓ (w : (R.MW i (sg0 D A)).H τ) = 0
 
-open Classical in
 theorem spanP_of (h : DensLow R) : Formalism.IndefR.Eqv.Act.SpanP R := by
   intro i F hS hlow
   let M := R.MW i (sg0 D A)

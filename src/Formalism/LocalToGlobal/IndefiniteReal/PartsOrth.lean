@@ -62,7 +62,6 @@ def lin {E : Type} [AddCommGroup E] [Module ℂ E] {n : ℕ} (v : Fin n → E) :
   Fintype.linearCombination ℂ v
 
 
-open Classical in
 def solve {E : Type} [AddCommGroup E] [Module ℂ E] {n : ℕ} (f : (Fin n → ℂ) →ₗ[ℂ] E) (e : E) : Fin n → ℂ :=
   if h : ∃ y, f y = e then h.choose else 0
 

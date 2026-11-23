@@ -224,7 +224,6 @@ end Tied
 
 section Ext
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 variable {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i}
 
@@ -262,7 +261,6 @@ end Ext
 
 section ExtU
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 variable {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i}
 
@@ -409,7 +407,6 @@ end Inv
 
 section Main
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 variable {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i}
 
@@ -499,7 +496,6 @@ end Main
 
 section ExtUA
 
-open Formalism.MainNotions.product_first_zeroth_parts TensorProduct
 
 variable {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i}
 
@@ -583,7 +579,6 @@ end ExtUA
 
 section ExtOff
 
-open Formalism.MainNotions.product_first_zeroth_parts TensorProduct
 
 variable {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i}
 

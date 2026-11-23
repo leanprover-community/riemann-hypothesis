@@ -73,7 +73,6 @@ def tameVal {M : Type} [Monoid M] (φ : G E Ω →* M) (P : HeightOneSpectrum (�
 end Tame
 
 
-open Classical in
 def resRep {L : Type} [Field L] [NumberField L] [IsCMField L] (s : SplitPlace L) (P : HeightOneSpectrum (𝓞 L))
     (x : s.v.adicCompletion (maximalRealSubfield L)) : 𝓞 L :=
   if h : ∃ u : 𝓞 L, u ∉ P.asIdeal ∧ Valued.v (s.i (u : L) - x) < 1 then h.choose else 1
@@ -95,18 +94,15 @@ def ringHomOfBaseOrderToFraction (D : D7) (i : D.ntw.Tw) : D.ntw.O0 i →+* Frac
 abbrev pG (D : D7) (kv : Σ k : Fin 2, D.nd.PlG k) : PlE D.host := D.naut.plGw kv.1 kv.2
 
 
-open Classical in
 def xiRed (D : D7) (kv : Σ k : Fin 2, D.nd.PlG k) : ZMod (D.host.g kv.1) :=
   if h : ∃ x : ZMod (D.host.g kv.1), ∃ a c : 𝓞 D.host.E, c ∉ (pG D kv).asIdeal ∧ (a : D.host.E) = D.host.xi0 * c ∧
       ((x.val : 𝓞 D.host.E) * c - a) ∈ (pG D kv).asIdeal then h.choose else 0
 
 
-open Classical in
 def psiUTot (D : D7) (i : D.ntw.Tw) (b : Bool) (u : G0g D.nd) : FractionRing (D.ntw.O i) :=
   if h : u ∈ D.nexp.U then ((D.nexp.psiU i b ⟨u, h⟩ : (FractionRing (D.ntw.O i))ˣ) : FractionRing (D.ntw.O i)) else 1
 
 
-open Classical in
 def gVal (D : D7) (i : D.ntw.Tw) (k : ℕ) (b : Bool) (kv : Σ k : Fin 2, D.nd.PlG k) (s : SplitPlace D.host.E)
     (red : s.v.adicCompletionIntegers (maximalRealSubfield D.host.E) →+* ZMod (D.host.g kv.1))
     (τ : (ZMod (D.host.g kv.1))ˣ →* (FractionRing (D.ntw.O i))ˣ)
@@ -179,7 +175,6 @@ section HW
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {K : Type} [Field K]
 
 
-open Classical in
 def evPtF (c : L →+* L) (τ : L →+* K) (B : GL (Fin n) K) : (L →+* K) × Fin n × Fin n → K := fun p =>
   if p.1 = τ then B.val p.2.1 p.2.2
   else if p.1 = τ.comp c then (B⁻¹).val p.2.2 p.2.1

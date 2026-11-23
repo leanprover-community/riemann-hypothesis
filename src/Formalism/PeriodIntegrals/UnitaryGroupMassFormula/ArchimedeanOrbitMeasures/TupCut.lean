@@ -105,7 +105,6 @@ theorem loc_glue {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [Finite
   · rw [hd]
     exact Φ.coe_symm_comp_coe
 
-open Classical in
 theorem tupJac_of_pieces {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT
     (μinf : Measure (TupI X)) (νinf : Measure (HmI X)) fibInf (hP : PushHyp X u' ψ hT μinf νinf fibInf)
     (Ω : Set (HmI X)) (a : HmI X → MfI X) (hC : IsChart X u' hT Ω a) {ι : Type} [Fintype ι]

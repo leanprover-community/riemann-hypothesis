@@ -49,7 +49,6 @@ def idemF (v : Pl D) : Af D.host.F :=
     · exact one_mem _
     · exact zero_mem _⟩
 
-open Classical in
 theorem evalV_idemF (v w : Pl D) : evalV D.host.F w (idemF v) = if w = v then 1 else 0 := rfl
 
 theorem pairA_mul (α β : Af D.host.F) :

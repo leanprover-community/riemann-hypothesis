@@ -149,7 +149,6 @@ theorem pull_restrict_small_injective (P : ObjectProperty C) (hP : ∀ S S', (S 
   exact hh S S' S'' PUnit.unit ψ χ trivial
 
 
-open Classical in
 theorem descent_H2_surjective (P : ObjectProperty C) (hP : ∀ S S', (S ⟶ S') → P S → P S')
     (sep : ∀ T, Sep F fun S (_ : T ⟶ S) ↦ P S) (glue : ∀ T, Glue F fun S (_ : T ⟶ S) ↦ P S)
     (van : ∀ T, Van1 F fun S (_ : T ⟶ S) ↦ P S) (van2 : ∀ T, Van2 F fun S (_ : T ⟶ S) ↦ P S) :
@@ -301,7 +300,6 @@ theorem exists_initial : ∃ (T' : C) (l : T ⟶ T') (p : ∀ S (u : T ⟶ S), P
     rw [← Category.assoc, hp]
 
 
-open Classical in
 include H hP in
 theorem vanishing_H1_inverting_morphisms : Van1 F P := by
   obtain ⟨T', l, p, hl, h1, h2⟩ := exists_initial H hP
@@ -312,7 +310,6 @@ theorem vanishing_H1_inverting_morphisms : Van1 F P := by
   rw [ha _ _ _ _ _ _ hl, h1, add_sub_cancel_left]
 
 
-open Classical in
 include H hP in
 theorem vanishing_H2_inverting_morphisms : Van2 F P := by
   obtain ⟨T', l, p, hl, h1, h2⟩ := exists_initial H hP
@@ -500,7 +497,6 @@ theorem isUnit_comp {S S' : C} {u : T ⟶ S} (ψ : S ⟶ S') {x : F.obj T} (h : 
   rw [mp_comp]; exact h.map _
 
 
-open Classical in
 include H hb in
 theorem vanishing_H1_standard_cover : Van1 F fun S (u : T ⟶ S) ↦ ∃ i, IsUnit (mp F u (b i)) := by
   intro a ha
@@ -523,7 +519,6 @@ theorem vanishing_H1_standard_cover : Van1 F fun S (u : T ⟶ S) ↦ ∃ i, IsUn
   linear_combination hβ i S S' u ψ hi
 
 
-open Classical in
 include H hb in
 theorem vanishing_H2_standard_cover : Van2 F fun S (u : T ⟶ S) ↦ ∃ i, IsUnit (mp F u (b i)) := by
   intro z hz

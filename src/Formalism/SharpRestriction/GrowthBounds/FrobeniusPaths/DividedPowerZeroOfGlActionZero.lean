@@ -301,7 +301,6 @@ theorem gl_action_eq_sum_derivations (LL : Letters ι) (S : Set ι) (a b : Fin n
   · by_cases hv : LL.vec l = true <;> simp [hS, hv, dividedPowerDerivation, dividedPowerSign, dividedPowerSource, dividedPowerTarget]
   · simp [hS]
 
-open Classical in
 theorem divided_power_monomial_eq_sum (LL : Letters ι) (S : Set ι) (a b : Fin n) (k : ℕ) (m : ι × Fin n →₀ ℕ) :
     divPowMono R LL S a b k m =
       dividedPowerSum (dividedPowerSign R LL) (dividedPowerSource LL a b) (dividedPowerTarget LL a b) (Finset.univ.filter (· ∈ S)) k m := by

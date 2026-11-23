@@ -127,11 +127,9 @@ open Classical in
 def chs (S : StepIn M i hi G) : Finset S.Ch :=
   Finset.univ.image S.chOf ∪ Finset.univ.image fun a : G.comp => (S.eC.symm a).1
 
-open Classical in
 theorem chOf_mem (S : StepIn M i hi G) (c : C.cls i) : S.chOf c ∈ chs S :=
   Finset.mem_union_left _ (Finset.mem_image_of_mem _ (Finset.mem_univ c))
 
-open Classical in
 theorem cmpt_mem (S : StepIn M i hi G) (β : S.Ch) (a : S.cmpt β) : β ∈ chs S :=
   Finset.mem_union_right _ (Finset.mem_image.2 ⟨S.eC ⟨β, a⟩, Finset.mem_univ _, by rw [Equiv.symm_apply_apply]⟩)
 

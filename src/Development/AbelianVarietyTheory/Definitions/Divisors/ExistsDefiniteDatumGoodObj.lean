@@ -184,7 +184,6 @@ theorem conj_mem_type_iff (H : Host E) (τ : E →+* ℂ) :
     rw [(sq_eq_sq_iff_eq_or_eq_neg.mp hsq).resolve_left h, neg_neg]
 
 
-open Classical in
 theorem sum_mult_eq (D : Geo.Tor.Datum H) (a : E) :
     ∑ τ : E →+* ℂ, (D.mult τ : ℂ) * τ a =
       ∑ τ ∈ Finset.univ.filter (fun τ : E →+* ℂ => τ (H.rt : E) = H.rt0),

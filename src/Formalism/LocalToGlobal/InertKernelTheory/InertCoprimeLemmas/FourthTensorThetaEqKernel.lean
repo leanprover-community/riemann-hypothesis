@@ -254,8 +254,6 @@ noncomputable section
 
 namespace Formalism.L2.KerInert
 
-open NumberField Formalism.BasicNotions Classical
-open Formalism.L2.Th1.H (taylorMv tens4)
 
 namespace AlgP
 
@@ -409,8 +407,6 @@ noncomputable section
 
 namespace Formalism.L2.KerInert
 
-open NumberField Formalism.BasicNotions Classical
-open Formalism.L2.Th1.H (taylorMv tens4)
 
 namespace AlgP
 
@@ -525,7 +521,6 @@ noncomputable section
 
 namespace Formalism.L2.KerInert
 
-open NumberField Formalism.BasicNotions Classical
 open Formalism.L2.Th1.H (taylorMv tens4 matH stdH)
 
 namespace AlgP
@@ -695,7 +690,6 @@ noncomputable section
 
 namespace Formalism.L2.KerInert
 
-open NumberField Formalism.BasicNotions Classical
 
 namespace AlgP
 
@@ -738,7 +732,6 @@ namespace Formalism.L2.KerInert
 
 namespace AlgP
 
-open NumberField Formalism.BasicNotions Classical
 
 theorem algFact_of_trans (hSS : StdStep)
     (h : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (B : Ker.Base D cc δ),

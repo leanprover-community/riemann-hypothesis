@@ -170,7 +170,6 @@ theorem elt_stair (G : GridData L sc) (t : T) (w : Pl D.host.E)
 end Grid0
 
 
-open Classical in
 theorem scal : Big fun ch => ScalP ch := by
   refine ⟨0, fun ε CF _ => ⟨0, fun D large₂ _ _ Γ _ _ Pl0 T A Ks _ _ _ R F s ch hch _ => ?_⟩⟩
   have hL : R.toLevCh.Is A.μ0 := s.core.lev

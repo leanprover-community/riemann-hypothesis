@@ -79,7 +79,6 @@ end PartF
 
 section PartA
 
-open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset Polynomial
 
 section Poly
 
@@ -98,7 +97,6 @@ end PartA
 
 section PartB
 
-open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset
 
 section abs2
 
@@ -115,13 +113,11 @@ end PartB
 
 section PartC
 
-open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset
 
 end PartC
 
 section PartD
 
-open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset Polynomial
 
 end PartD
 

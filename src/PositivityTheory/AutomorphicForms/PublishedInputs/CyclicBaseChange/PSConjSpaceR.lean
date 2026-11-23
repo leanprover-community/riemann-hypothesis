@@ -420,7 +420,6 @@ theorem pull_act (o : Op M a) (φ : Sm M a) :
   rw [this]
   exact (pullE a hs hp).apply_symm_apply _
 
-open Classical in
 theorem Eop_pullE (v : InfinitePlace M) (i j : Fin a) (φ : Sm M a) :
     Eop v i j (pullE a hs hp φ) = pullE a hs hp (Eop (p.symm v) i j φ) :=
   Eop_pull (good_alt hs hp) v i j φ

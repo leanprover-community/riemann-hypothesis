@@ -171,7 +171,6 @@ def hatT (Y : ℂ) : M2 (SlopeTestRemainingChoices S A) := if Y ∈ f.reg then (
 
 
 open scoped Classical in
-open Classical in
 def hatQ (Y : ℂ) : ℂ := if Y ∈ f.reg ∧ Y + 1 ∈ f.reg then f.q Y else 0
 
 end FrameData

@@ -258,7 +258,6 @@ lemma chartBall_mono (B : FinHolAtlas e X) (j : Fin B.n) {ρ ρ' : ℝ} (h : ρ 
   Set.inter_subset_inter_right _ (Set.preimage_mono (ball_subset_ball h))
 
 
-open Classical in
 def glueArg (B : FinHolAtlas e X) (f η : Fin B.n → X → ℝ) (δ Mb : ℝ) (j : Fin B.n) (y : X) : ℝ := by
   classical
   exact if y ∈ chartBall B j (5 / 4) then f j y + 4 * δ * η j y else -Mb - 10

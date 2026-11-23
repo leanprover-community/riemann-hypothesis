@@ -191,11 +191,9 @@ def SameCoset {n : ℕ} (P : rowSG Pr sel mu) (y y' : Sp X.E n) : Prop :=
   ∀ l, IntAt P.1 (((qOf P.1 : X.E) ^ (if P.1 ∈ Pr.vGs then 0 else cst.M))⁻¹ * (y - y') l)
 
 
-open Classical in
 def topDep (P : rowSG Pr sel mu) : ℕ := if P.1 ∈ Pr.vGs then 1 else 2 * cst.M
 
 
-open Classical in
 def rowLevTop (Pr : Primes X) (R : Ranks) (sharp : Bool) (n : ℕ) (P : HeightOneSpectrum (𝓞 X.E)) :
     Subgroup (Sp X.E ((n - 1) + 0) ≃ₗ[X.E] Sp X.E ((n - 1) + 0)) :=
   if P ∈ Pr.vGs then
@@ -203,7 +201,6 @@ def rowLevTop (Pr : Primes X) (R : Ranks) (sharp : Bool) (n : ℕ) (P : HeightOn
   else LocE.JQ P (qOf P) R.r (n - 1) 0
 
 
-open Classical in
 def rowChrTop (sharp : Bool) (j n : ℕ) (P : HeightOneSpectrum (𝓞 X.E)) (h : HomE X.E ((n - 1) + 0) ((n - 1) + 0)) : X.K :=
   if P ∈ Pr.vGs then
     (if sharp then LocE.lamGBS (qOf P) (psi0P Ch P) (chiP Ch P) R.k R.r R.t j (n - 1) 0 h

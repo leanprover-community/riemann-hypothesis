@@ -147,7 +147,6 @@ private theorem glue_trace {J : Type} [Fintype J] [DecidableEq J] {M : Type} [Ad
   · intro h
     exact absurd (Finset.mem_univ j) h
 
-open Classical in
 private theorem final_sum {J T : Type} [Fintype J] (D : Finset ℕ) (t : ℕ → ℂ)
     (tj : J → ℕ → ℂ) (ht : ∀ b, t b = ∑ j, tj j b) (F : Finset T) (R : J → Set T)
     (hp : ∀ y ∈ F, ∃! j, y ∈ R j) (g : T → ℂ)
@@ -207,12 +206,10 @@ private theorem pull_bij {Z : Scheme.{0}} (s : Z ⟶ Sp ℂ) {J : Type} (V : J �
   rw [← he']
   exact hc
 
-open Classical in
 private theorem sum_pre {S T : Type} (φ : S → T) (hφ : Function.Injective φ) (F : Finset T)
     (g : T → ℂ) : ∑ y ∈ F.preimage φ hφ.injOn, g (φ y) = ∑ y ∈ F with y ∈ Set.range φ, g y :=
   Finset.sum_preimage' φ F hφ.injOn g
 
-open Classical in
 private theorem block_fixed {Z Y : Scheme.{0}} {s : Z ⟶ Sp ℂ} {s' : Y ⟶ Sp ℂ} {c1 c2 : Y ⟶ Z}
     (h1 : c1 ≫ s = s') (h2 : c2 ≫ s = s') (d : ℕ) [SmoothOfRelativeDimension d s]
     (hproj : IsProjOver s) (V : Z.Opens) (hV : IsClosed (V : Set Z)) [IsIntegral V.toScheme]

@@ -136,7 +136,6 @@ section Ones
 variable {a b c : Type} [Fintype a] [DecidableEq a] [Fintype b] [Fintype c]
 
 
-open Classical in
 theorem cosetInd_zero (y : a → k) :
     cosetInd (box a (1 : kˣ)) (Submodule.Quotient.mk 0) y = if ∀ i, y i ∈ 𝒪[k] then 1 else 0 := by
   have hy : (Submodule.Quotient.mk y : (a → k) ⧸ box a (1 : kˣ)) = Submodule.Quotient.mk 0 ↔ ∀ i, y i ∈ 𝒪[k] := by
@@ -149,7 +148,6 @@ theorem cosetInd_zero (y : a → k) :
       (mt hy.1 h), if_neg h]
 
 
-open Classical in
 theorem intInd_fromCols (q : Matrix a b k) (y : a → k) :
     Set.indicator {x : Matrix a (b ⊕ Unit) k | ∀ r c, x r c ∈ 𝒪[k]} (fun _ => (1 : ℂ))
         (fromCols q (Matrix.of fun r _ => y r)) =
@@ -175,7 +173,6 @@ theorem intInd_fromCols (q : Matrix a b k) (y : a → k) :
     · rw [Set.indicator_of_notMem (s := {x : Matrix a b k | ∀ r c, x r c ∈ 𝒪[k]}) (a := q) hq, zero_mul]
 
 
-open Classical in
 theorem intInd_rows (q : Matrix (c ⊕ Unit) a k) :
     Set.indicator {x : Matrix (c ⊕ Unit) a k | ∀ r c, x r c ∈ 𝒪[k]} (fun _ => (1 : ℂ)) q =
       Set.indicator {x : Matrix c a k | ∀ r c, x r c ∈ 𝒪[k]} (fun _ => (1 : ℂ)) q.toRows₁ *

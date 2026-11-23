@@ -279,7 +279,6 @@ theorem exists_embQbar : ∃ ρ : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ, ∀ x : 
   exact GlobalTheory.Glob.rhoOf_imEquiv σ₀ s x
 
 
-open Classical in
 def embQbar : TaylorLogMetric.Qbar →ₐ[ℚ] ℂ := if s = σ₀ then TaylorLogMetric.Qbar.val else (exists_embQbar σ₀ s).choose
 
 variable {ι : Type} [Fintype ι] {a b : ℕ}

@@ -221,7 +221,6 @@ open Classical in
 def kerNum (j k : ℕ) (P : PlE D.host) : ℕ := if h : ∃ n, KerCard YS iC j k P n then h.choose else 0
 
 
-open Classical in
 def allMove (j k : ℕ) (P : PlE D.host) (c : Fin (kerNum YS iC j k P)) (y : AllPts YS iC j) : AllPts YS iC j :=
   if h : Nonempty (Fin (kerNum YS iC j k P) ≃ HkKer P.asIdeal (charAt P) k y.2.1) ∧
       ∀ C, ∃ z' : Pts YS iC y.1 j, IsHkQuot P.asIdeal (charAt P) k y.2.1 C z'.1 then ⟨y.1, (h.2 (h.1.some c)).choose⟩ else y
@@ -231,7 +230,6 @@ theorem allMove_fst (j k : ℕ) (P : PlE D.host) (c) (y : AllPts YS iC j) : (all
   split_ifs <;> rfl
 
 
-open Classical in
 def hkUnit (j : Fin D.R.m) (b : Bool) (k : ℕ) (P : PlE D.host) : ℂ_[D.ntw.l i] :=
   if h : ∃ s : T0.Q.c.F, ‖embC YS iC b s‖ = 1 ∧ HeckeIs YS fw iC b j k P (embC YS iC b s) then embC YS iC b h.choose else 1
 

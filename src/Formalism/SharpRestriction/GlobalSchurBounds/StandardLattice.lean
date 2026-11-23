@@ -130,8 +130,6 @@ end SW
 
 section Vol
 
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory IsDedekindDomain
-open scoped TensorProduct
 
 def intAf (F : Type) [Field F] [NumberField F] : Set (Af F) :=
   {a | ∀ v : HeightOneSpectrum (𝓞 F), evalV F v a ∈ v.adicCompletionIntegers F}
@@ -180,7 +178,6 @@ def IsVolMeas (D : D7) : letI := D.host.cmStar; ∀ (W : HSpace D.host.E) (_P _Q
       ∏ ρ, D.cd.cd P Q (B ρ)
 
 
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory in
 def VolTie (D : D7) : Prop :=
   letI := D.host.cmStar
   ∀ (W : HSpace D.host.E) (P Q : ℕ), W.SigOK → (∀ τ, W.sig τ = (P, Q)) →

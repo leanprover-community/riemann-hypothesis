@@ -89,7 +89,6 @@ end Formalism.MainNotions.N.KillingConditions
 
 namespace Formalism.MainNotions.N.KillingConditions
 
-open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
 section C6
 
@@ -101,7 +100,6 @@ end Formalism.MainNotions.N.KillingConditions
 
 namespace Formalism.MainNotions.LatticeVariant
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
 open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO TwOK T3 IsLatIn sIdx specU)
 open Formalism.MainNotions.BlochKatoReduction.Gen (psiAt nval SetHyp PsiOk partA partAT partC partD)
 open scoped TensorProduct
@@ -119,8 +117,6 @@ end Formalism.MainNotions.LatticeVariant
 
 namespace Formalism.MainNotions.IntegralHeckeForms
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
-open scoped TensorProduct
 
 section All
 
@@ -160,8 +156,6 @@ end Formalism.MainNotions.N.TwAll
 
 namespace Formalism.MainNotions.N.KillingConditions
 
-open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal
-open Formalism.MainNotions.N.TwAll
 
 section DensityAveraging
 

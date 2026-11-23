@@ -65,9 +65,6 @@ end Formalism.FourierDecayAlt.P.S3x1
 
 namespace Formalism.FourierDecayAlt.P.S3x1
 
-open Matrix Finset
-open Formalism.DoubleCosetMeasures (IsUpUni upUniG isUpUni_mul isUpUni_inv isUpUni_one isUpUni_det)
-open Formalism.FourierDecayAlt.S3
 
 section Count
 
@@ -133,9 +130,6 @@ end Formalism.FourierDecayAlt.P.S3x1
 
 namespace Formalism.FourierDecayAlt.P.S3x1
 
-open Matrix Finset
-open Formalism.DoubleCosetMeasures (IsUpUni upUniG isUpUni_mul isUpUni_inv isUpUni_one isUpUni_det)
-open Formalism.FourierDecayAlt.S3
 
 section Count2
 

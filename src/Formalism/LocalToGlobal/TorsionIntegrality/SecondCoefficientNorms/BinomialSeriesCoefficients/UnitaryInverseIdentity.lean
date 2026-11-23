@@ -169,7 +169,6 @@ theorem adjoint_from_norm_form : AdjFromNorm := by
   rw [e2] at c2
   exact cong_trans c1 c2
 
-open Pts Calc in
 theorem adjoint_additive_alt : AdjAdd := by
   intro K _ _ R l linv ph a b a' b' hFr hF1 hEa hEb hEa' hEb' hA hA' σ x y hx hy
   obtain ⟨h, hF, -⟩ := hFr
@@ -492,7 +491,6 @@ theorem norm_adjoint_all_places : NormAdjAll := by
   rw [e] at key
   exact key
 
-open Pts Calc Formalism.HermitianLattices.IntegralLatticeDensity in
 theorem unitary_inverse_identity : UnitaryInv := by
   intro K _ _ R l linv ph hFr O _ _ τ hE hB hF1 hN hA n _ _ δ hδ σ u hu
   have D : Data R l linv τ := ⟨hFr.1, hFr.2.1, hE, hB⟩
@@ -505,7 +503,6 @@ theorem unitary_inverse_identity : UnitaryInv := by
   rw [← cls_sum, ← cls_sum, cls_eq] at key
   exact key
 
-open Pts Calc Formalism.HermitianLattices.IntegralLatticeDensity in
 theorem hyperbolic_sum_identity : HyperbolicSum := by
   intro K _ _ R l linv ph hFr O _ _ τ hE hB hF1 hN hA n ι _ _ _ f f' hf hf' hff σ t t' ht ht'
   have D : Data R l linv τ := ⟨hFr.1, hFr.2.1, hE, hB⟩

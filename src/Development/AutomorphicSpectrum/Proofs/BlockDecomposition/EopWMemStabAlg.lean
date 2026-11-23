@@ -76,7 +76,6 @@ theorem one_apply_pi (i j : Fin n) (v : InfinitePlace E) :
   · simp [Matrix.one_apply_ne hij]
 
 omit [NumberField E] [IsCMField E] in
-open Classical in
 theorem locInf_apply (w : InfinitePlace E) (g : PositivityTheory.RgTw.G n) (i j : Fin n) (v : InfinitePlace E) :
     ((locInf w g : GL (Fin n) (Cinf E)) : Matrix (Fin n) (Fin n) (Cinf E)) i j v =
       if v = w then (g : Matrix (Fin n) (Fin n) ℂ) i j else (1 : Matrix (Fin n) (Fin n) ℂ) i j := by

@@ -72,7 +72,6 @@ private theorem mem_dotDual_iff' (N : Submodule S (J → Ω)) (v : J → Ω) :
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in
-open Classical in
 open Matrix in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : Subalgebra o Ω) {J : Type}
   [Fintype J] in
@@ -100,7 +99,6 @@ theorem _root_.GlobalTheory.ZH.DualLattice.mem_dotDual_span {I : Type} (a : I �
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in
-open Classical in
 open Matrix in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : Subalgebra o Ω) {J : Type}
   [Fintype J] in
@@ -123,7 +121,6 @@ variable [DecidableEq J]
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in
-open Classical in
 open Matrix in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : Subalgebra o Ω) {J : Type}
   [Fintype J] in
@@ -149,7 +146,6 @@ theorem _root_.GlobalTheory.ZH.DualLattice.dotDual_span_rows {A B : Matrix J J �
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in
-open Classical in
 open Matrix in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : Subalgebra o Ω) {J : Type}
   [Fintype J] in
@@ -200,7 +196,6 @@ theorem _root_.GlobalTheory.ZH.DualLattice.span_eq_span_minor {n : ℕ} (g : Fin
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in
-open Classical in
 open Matrix in
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : Subalgebra o Ω) {J : Type}
   [Fintype J] in
@@ -216,7 +211,6 @@ end Algebra
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry in
 open scoped CategoryTheory.Obj in
-open Classical in
 open Matrix in
 theorem _root_.GlobalTheory.ZH.DualLattice.exists_lat_dual : ∀ (o Ω : Type) [CommRing o] [Field Ω]
     [Algebra o Ω] (M : _root_.GlobalTheory.ZH.RatModel o Ω) (J : Type) [Fintype J]

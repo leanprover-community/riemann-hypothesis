@@ -278,7 +278,6 @@ section Amp
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.L2.SG.Full Formalism.L2.SG.HidaSetting
 
 variable {D : D7} (X : HidaSetting D)
 
@@ -345,7 +344,6 @@ section AmpC
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.L2.SG.Full Formalism.L2.SG.HidaSetting
 
 def RatPt : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (n : (VS D).V ≃ₗ[D.host.E] (VS D).V), n ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT →
@@ -462,7 +460,6 @@ section LemV
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.L2.SG.Full Formalism.L2.SG.HidaSetting
 
 def AvgCore : Prop :=
   ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [T2Space G]
@@ -611,7 +608,6 @@ section Chi
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.L2.SG.Full Formalism.L2.SG.HidaSetting
 
 end Chi
 

@@ -87,7 +87,6 @@ theorem pa_int_dvd_of_mem_span {E : Type*} [Field E] [NumberField E] (N a : ℤ)
   exact_mod_cast this
 
 
-open NumberField in
 theorem pa_norm_congr_one {E : Type*} [Field E] [NumberField E] (c : E ≃ₐ[ℚ] E) (T M : ℕ) (pz : 𝓞 E)
     (hpz : (pz : E) * c (pz : E) = (T : E)) (hcong : (pz - 1) ∈ Ideal.span {(M : 𝓞 E)}) :
     (M : ℤ) ∣ (T : ℤ) - 1 := by
@@ -318,7 +317,6 @@ noncomputable section
 
 namespace Formalism.L2.GlobalTheoryTheory.Loss
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.LFunctionChainParameters.DeficitSplitLemmas Formalism.LFunctionChainParameters.PrimeWindowSizeBounds
 
 section AtRecord
 
@@ -371,7 +369,6 @@ theorem pb_toNat_lt (t : D.host.TT) : (L.aT t).toNat < bndP L := by
   have h2 := le_max_left ⌊L.sc.a + L.sc.a / ((D.R.k : ℝ) * L.sc.x ^ (Scale.A / 2))⌋₊ ⌊L.sc.X'' D.R.n⌋₊
   omega
 
-open Classical in
 theorem pb_primes (H : PtH X K Cr) (j : ℕ) (hj : j ∈ SizeData₂.lifts D) (t : D.host.TT) :
     ∑ p ∈ PsAt L, 2 * Real.log p *
       askAt ((ldAt X K C bo).Iex j (t : D.R.A).val p) ((ldAt X K C bo).at_ (t : D.R.A).val) p
@@ -532,7 +529,6 @@ noncomputable section
 
 namespace Formalism.L2.GlobalTheoryTheory.Loss
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.LFunctionChainParameters.DeficitSplitLemmas Formalism.LFunctionChainParameters.PrimeWindowSizeBounds
 
 section AtRecordC
 
@@ -1180,7 +1176,6 @@ noncomputable section
 
 namespace Formalism.L2.GlobalTheoryTheory.Loss
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.LFunctionChainParameters.DeficitSplitLemmas Formalism.LFunctionChainParameters.PrimeWindowSizeBounds
 
 section AtRecord
 
@@ -1610,7 +1605,6 @@ noncomputable section
 
 namespace Formalism.L2.GlobalTheoryTheory.Loss
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.LFunctionChainParameters.DeficitSplitLemmas Formalism.LFunctionChainParameters.PrimeWindowSizeBounds
 
 section AtRecord
 

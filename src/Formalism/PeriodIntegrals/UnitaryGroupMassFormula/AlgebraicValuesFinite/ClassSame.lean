@@ -68,7 +68,6 @@ def ClassPow : Prop :=
 
 
 open scoped Classical in
-open Classical in
 def ClassSame : Prop :=
   ∃ (ι : Type) (_ : Finite ι) (c : HeightOneSpectrum (𝓞 L) → ι),
     ∀ v w, c v = c w → ∃ k : Lˣ, ∀ u : HeightOneSpectrum (𝓞 L),

@@ -266,7 +266,6 @@ noncomputable def zuInd (v : {v : HeightOneSpectrum (𝓞 K.1) // v ∉ S})
     (Classical.propDecidable _) 1 0
 
 
-open Classical in
 theorem good_single_of_base {ℓ : ℕ} (v : {v : HeightOneSpectrum (𝓞 K.1) // v ∉ S})
     (U : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) [hUn : U.Normal]
     (hU : IsOpen (U : Set (galUnramifiedOutside K.1 ℚ̄ S)))
@@ -380,7 +379,6 @@ theorem exists_normal_level (φ : galUnramifiedOutside K.1 ℚ̄ S → ℤ) (hφ
   exact ⟨E, hEf, hEn, fun x u hu => hVφ x u (hEV hu)⟩
 
 
-open Classical in
 theorem eq_sum_single (f : {v : HeightOneSpectrum (𝓞 K.1) // v ∉ S} → galUnramifiedOutside K.1 ℚ̄ S → ℤ)
     (T : Finset {v : HeightOneSpectrum (𝓞 K.1) // v ∉ S}) (hT : ∀ v ∉ T, f v = 0) :
     f = ∑ v ∈ T, Pi.single v (f v) := by
@@ -391,7 +389,6 @@ theorem eq_sum_single (f : {v : HeightOneSpectrum (𝓞 K.1) // v ∉ S} → gal
   · exact hT v h
 
 
-open Classical in
 theorem good_single {ℓ : ℕ}
     (hbase : ∀ (v : {v : HeightOneSpectrum (𝓞 K.1) // v ∉ S})
       (L : IntermediateField K.1 (maxUnramifiedOutside K.1 ℚ̄ S)) [FiniteDimensional K.1 L] [Normal K.1 L],

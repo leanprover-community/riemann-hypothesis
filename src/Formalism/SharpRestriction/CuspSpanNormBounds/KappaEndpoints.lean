@@ -319,7 +319,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.BridgeLemma Formalism.MainNotions.LatticeGluingRadicals
 
 section Schur
 
@@ -362,7 +361,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 section HS
 
@@ -475,7 +473,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.MainNotions.BridgeLemma
 open scoped nonZeroDivisors NumberField
 
 section Rec
@@ -633,7 +630,6 @@ end
 
 noncomputable section
 
-open NumberField
 
 namespace Formalism.MainNotions.KappaEndpoints
 
@@ -682,7 +678,6 @@ end
 
 noncomputable section
 
-open NumberField
 
 namespace Formalism.MainNotions.KappaEndpoints
 
@@ -710,7 +705,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.MainNotions.BridgeLemma
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -1044,7 +1038,6 @@ theorem two_le_residue_card (hOK : M.OK) : 2 ≤ qF F := by
   have : Finite 𝓀[F] := inferInstance
   exact Finite.one_lt_card
 
-open MeasureTheory in
 theorem ng_modK_nonunit (hOK : M.OK) (a : 𝒪[F]) (ha0 : (a : F) ≠ 0) (hau : ¬ IsUnit a) :
     M.modK (algebraMap F E a) ≤ (((qF F : ℝ)) ^ 2)⁻¹ := by
   have := hOK.loc
@@ -1831,8 +1824,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 section NGb
 
@@ -1867,8 +1858,6 @@ end Pt
 
 section NGc
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
@@ -1885,8 +1874,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 section NGc
 
@@ -1923,7 +1910,6 @@ end Grp
 
 section Lat
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
 open Formalism.MainNotions.S.Loc ValuativeRel
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
@@ -1936,8 +1922,6 @@ end Lat
 
 section Left
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc ValuativeRel
 
 end Left
 
@@ -1949,8 +1933,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 section NGe
 
@@ -1969,8 +1951,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 section NGf
 

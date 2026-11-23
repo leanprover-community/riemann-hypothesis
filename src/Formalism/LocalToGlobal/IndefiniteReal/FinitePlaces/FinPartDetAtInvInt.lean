@@ -439,7 +439,6 @@ section Det
 variable {D : D7}
 
 
-open Classical in
 def detAt (e : AE D) (V : HSp D) (g : GA D V) : (AE D)ˣ :=
   if he : e * e = e then
     ⟨e * (mt V g).det + (1 - e), e * (mt V g⁻¹).det + (1 - e),
@@ -639,7 +638,6 @@ theorem isIdemAt_conj {e : AE D} {PP : Formalism.L2.DIV.Pl D.host.E} (h : Formal
     · intro hn hm; exact hn (cF_int hm)
 
 
-open Classical in
 theorem isIdemSum_conj {e : AE D} {P : Finset (Formalism.L2.DIV.Pl D.host.E)} (h : IsIdemSum e P) :
     IsIdemSum (cA D e) (P.image Formalism.L2.DIV.conjPl) := by
   classical

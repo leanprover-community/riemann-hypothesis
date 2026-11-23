@@ -150,7 +150,6 @@ theorem sum_halve {K : Type} [Field K] [NumberField K] (φK : K →+* ℂ) (hK2 
   · intro a _; exact (hf a).symm
 
 
-open Classical in
 theorem cover {K : Type} [Field K] [NumberField K] (φK : K →+* ℂ) (j₀ : ℂ)
     (𝔞 : (ℂ ≃+* ℂ) → (FractionalIdeal (𝓞 K)⁰ K)ˣ) (hE : Equidistributed φK j₀ 𝔞)
     (L : IntermediateField ℚ ℂ) [FiniteDimensional ℚ L] [IsGalois ℚ L] [NumberField L] (hK : ∀ x : K, φK x ∈ L)

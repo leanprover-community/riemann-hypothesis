@@ -62,7 +62,6 @@ def eT (S : Set (Tup2 D)) : X.B.I.Gf → ℂ :=
   X.B.I.convF X.B.μf X.B.e (egA X (ES S))
 
 
-open Classical in
 def ReT (S : Set (Tup2 D)) : X.B.I.L2 X.B.μf X.B.fund →L[ℂ] X.B.I.L2 X.B.μf X.B.fund :=
   if h : ∃ T, X.B.I.IsRConvF X.B.μf X.B.fund X.B.R (eT X S) T then Classical.choose h else 0
 
