@@ -135,7 +135,7 @@ theorem exists_monic_of_idem_mod {A : Type} [CommRing A] (I : Ideal A) (B : Type
     exact ⟨p, 0, hpm, Subsingleton.elim _ _, Subsingleton.elim _ _⟩
   have hqm : (X * X - X : A[X]).Monic := by
     rw [show (X * X - X : A[X]) = X ^ 2 - X by ring]
-    exact monic_X_pow_sub (by rw [degree_X]; exact_mod_cast (by norm_num : 1 < 2))
+    exact monic_X_pow_sub (by rw [degree_X]; exact_mod_cast (norm_num : 1 < 2))
   have hq : (X * X - X : A[X]).natDegree = 2 := by
     rw [show (X * X - X : A[X]) = X ^ 2 - X by ring]
     compute_degree!

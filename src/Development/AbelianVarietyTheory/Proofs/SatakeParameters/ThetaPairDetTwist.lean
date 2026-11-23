@@ -97,17 +97,14 @@ theorem _root_.GlobalTheory.GodementJacquet.parab_mul_eMat
 
 end Mat
 
-section Coef
 
 variable {σ : Representation ℂ (GL (Fin r) k) V} {Bf : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ}
 
-end Coef
 
 section Law
 
 end Law
 
-section Int
 
 variable [MeasurableSpace (GL (Fin r) k)] [BorelSpace (GL (Fin r) k)] [SecondCountableTopology (GL (Fin r) k)]
   {m : Measure (GL (Fin r) k)} {μ : kˣ →* ℂˣ} {σ : Representation ℂ (GL (Fin r) k) V}
@@ -121,9 +118,7 @@ include hσ hs hp hu
 
 
 
-end Int
 
-section Family
 
 variable [MeasurableSpace (GL (Fin r) k)] [BorelSpace (GL (Fin r) k)] [SecondCountableTopology (GL (Fin r) k)]
   {m : Measure (GL (Fin r) k)} {μ : kˣ →* ℂˣ} {σ : Representation ℂ (GL (Fin r) k) V}
@@ -138,15 +133,11 @@ variable [m.IsMulLeftInvariant] (hσ : IsSmooth σ) (hs : ∀ v w, Bf w v = star
 
 
 
-end Family
 
-section Abstract
 
 variable {Bf : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ}
 
-end Abstract
 
-section Pairing
 
 variable [MeasurableSpace (GL (Fin r) k)] [BorelSpace (GL (Fin r) k)] [SecondCountableTopology (GL (Fin r) k)]
   {m : Measure (GL (Fin r) k)} {μ : kˣ →* ℂˣ} {σ : Representation ℂ (GL (Fin r) k) V}
@@ -159,9 +150,7 @@ variable [MeasurableSpace (GL (Fin r) k)] [BorelSpace (GL (Fin r) k)] [SecondCou
     Integrable (fun g : GL (Fin r) k => om μ g h Φ (eMat k r t)) m)
 
 
-end Pairing
 
-section NonVanishing
 
 variable [MeasurableSpace (GL (Fin r) k)] [BorelSpace (GL (Fin r) k)] [SecondCountableTopology (GL (Fin r) k)]
   {m : Measure (GL (Fin r) k)} {μ : kˣ →* ℂˣ} {σ : Representation ℂ (GL (Fin r) k) V}
@@ -173,7 +162,6 @@ variable [MeasurableSpace (GL (Fin r) k)] [BorelSpace (GL (Fin r) k)] [SecondCou
     Φ ∈ SB (Matrix (Fin (r + t)) (Fin r) k) →
     Integrable (fun g : GL (Fin r) k => om μ g h Φ (eMat k r t)) m)
 
-end NonVanishing
 
 end GlobalTheory.GodementJacquet
 

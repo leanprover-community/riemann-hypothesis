@@ -202,11 +202,9 @@ end GlobalTheory.RowReal
 
 namespace GlobalTheory.RowReal
 
-section Outer
 
 variable {X : Type} [MeasurableSpace X] {μ : Measure X} {s : Set X}
 
-end Outer
 
 section Multi
 

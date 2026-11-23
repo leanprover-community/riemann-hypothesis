@@ -87,7 +87,7 @@ theorem exists_root_field {D : Type} [CommRing D] [IsDomain D] (p : ℕ)
     have h2 := Polynomial.eq_zero_of_dvd_of_degree_lt h1 (by
       rw [Polynomial.degree_eq_natDegree hmonic.ne_zero, hdeg]
       compute_degree
-      exact_mod_cast (by norm_num : 1 < 2))
+      exact_mod_cast (norm_num : 1 < 2))
     have hu := congrArg (fun t => _root_.AddMonoidAlgebra.coeff (M := ℕ) t 0) h2
     have hv := congrArg (fun t => _root_.AddMonoidAlgebra.coeff (M := ℕ) t 1) h2
     simp at hu hv

@@ -138,7 +138,7 @@ theorem ManifoldZerosComplementConnected.isPreconnected_inter_ne_zero_of_complex
         · exact hr'φ w (Metric.ball_subset_ball (min_le_right _ _) hb) hwz
     rw [heq]
     exact ManifoldZerosComplementConnected.isPreconnected_ball_diff_countable
-      (by rw [Complex.rank_real_complex]; exact_mod_cast (by norm_num : (1 : ℕ) < 2)) z hρ ((countable_singleton z).mono sdiff_subset)
+      (by rw [Complex.rank_real_complex]; exact_mod_cast (norm_num : (1 : ℕ) < 2)) z hρ ((countable_singleton z).mono sdiff_subset)
 
 theorem ManifoldZerosComplementConnected.isPreconnected_convex_inter_ne_zero {E : Type*}
     [NormedAddCommGroup E] [NormedSpace ℂ E] {U : Set E} (hUo : IsOpen U) (hUc : Convex ℝ U)

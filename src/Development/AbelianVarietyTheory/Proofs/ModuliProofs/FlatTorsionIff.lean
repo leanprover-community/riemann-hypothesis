@@ -54,25 +54,19 @@ theorem tors_of_isPull [IsNoetherianRing R] {D : DegPre R} {k : ℕ} {T T' : Ove
   rw [tors_iff hΦ] at hg ⊢
   rw [← hp, ← MonObj.comp_pow, hg, MonObj.comp_one]
 
-section Flat
 
 variable [IsLocalRing R] [IsNoetherianRing R] {t : SAB H (Sp R)}
 
-end Flat
 
-section Move
 
 variable {I : Ideal R} {t t' : SAB H (Sp R)}
 
-end Move
 
-section Products
 
 variable {I : Ideal R} {t t' : SAB H (Sp R)}
 
 variable [IsLocalRing R] [IsNoetherianRing R] [IsIntegrallyClosed R]
 
-end Products
 
 variable {D : Datum H} {l : Level H} {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
 

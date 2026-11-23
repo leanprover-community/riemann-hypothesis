@@ -44,14 +44,12 @@ namespace GlobalTheory.SiegUnram
 
 open GlobalTheory.FamRep
 
-section Group
 
 variable {S S' : Scheme.{0}} {G : Over S} {G' : Over S'} [GrpObj G] [GrpObj G'] [IsCommMonObj G] [IsCommMonObj G']
   {f : S' ⟶ S} {φ : G'.left ⟶ G.left} (h : IsGrpPullback G' G f φ) {L : LB G.left} {L' : LB G'.left}
 
 
 
-end Group
 
 variable {o : Type} [CommRing o] {S S' : Scheme.{0}} {g k : ℕ} {J : Type} {b : TBase o k} {s : S ⟶ Sp o}
   {s' : S' ⟶ Sp o}

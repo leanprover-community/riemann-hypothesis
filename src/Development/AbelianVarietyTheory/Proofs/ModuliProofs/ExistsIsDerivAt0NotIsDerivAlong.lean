@@ -268,24 +268,18 @@ theorem isTypeFn_of_isPeriod {D : Datum H} {g : ℕ} {ty : Fin g → (E →+* �
 
 end Period
 
-section Hol
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] {X : Scheme.{0}}
 
 
-end Hol
 
-section Theta
 
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] {g m : ℕ}
 
-end Theta
 
-section Family
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H} {Xo : Moduli D l}
   {σ : KA l →+* ℂ} {g : ℕ} {ty : Fin g → (E →+* ℂ)} (Fu : FamilyUnif Xo σ ty) (i : Fin Fu.n)
 
-end Family
 
 end GlobalTheory.PeriodCompare

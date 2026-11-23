@@ -79,7 +79,7 @@ def dvr5 : UniformizedDVR 5 ℤ_[5] where
   p_mem := by
     rw [PadicInt.maximalIdeal_eq_span_p]
     exact Ideal.mem_span_singleton_self _
-  p_ne := by exact_mod_cast (by norm_num : (5 : ℕ) ≠ 0)
+  p_ne := by exact_mod_cast (norm_num : (5 : ℕ) ≠ 0)
   complete := inferInstance
 
 theorem chainDim_of (hY : DimYAt) : ChainDimAt := by

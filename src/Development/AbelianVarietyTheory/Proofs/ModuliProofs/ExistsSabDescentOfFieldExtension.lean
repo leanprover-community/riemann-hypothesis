@@ -44,12 +44,10 @@ open GlobalTheory.ModelCompare GlobalTheory.Models
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
 
-section Dominates
 
 variable {O' : Type} [CommRing O'] {β' : O' →+* c.F} (Y : Model Xo c β) (Y' : Model Xo c β') (b : O →+* O')
   (hb : β'.comp b = β)
 
-end Dominates
 
 section Dense
 
@@ -68,19 +66,16 @@ theorem densePart (h : IsDedFrac β) : IsLocallyNoetherian Y.X ∧ IsReduced Y.X
 
 end Dense
 
-section Transition
 
 variable {l₂ : Level H} {Xo₂ : Moduli D l₂} {c₂ : Coeff l₂} {O₂ : Type} [CommRing O₂] {β₂ : O₂ →+* c₂.F}
   (Y : Model Xo c β) (Y₂ : Model Xo₂ c₂ β₂) (hl : l.Dvd l₂) (hF : c.F ≤ c₂.F) (b : O →+* O₂)
   (hb : β₂.comp b = (IntermediateField.inclusion hF).toRingHom.comp β) (π : Y₂.X ⟶ Y.X)
 
-end Transition
 
 section Algebra
 
 end Algebra
 
-section Action
 
 variable (Y : Model Xo c β)
 
@@ -88,6 +83,5 @@ variable {Y}
 
 variable (Y)
 
-end Action
 
 end GlobalTheory.ModelRelCompare

@@ -58,11 +58,9 @@ noncomputable section
 
 namespace GlobalTheory.BCOffT
 
-section Local
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-end Local
 
 section Rep
 

@@ -64,16 +64,12 @@ def omSecEquiv (s : X ⟶ Sp k) (q : ℕ) (U : X.affineOpens) :
       rw [toOm_smul_k, sectionsOn.toΓ_smul]
       rfl) }
 
-section Pair
 
 variable {s : X ⟶ Sp k} {s' : X' ⟶ Sp k} {f : X' ⟶ X}
 
-end Pair
 
-section PairSec
 
 variable {s : X ⟶ Sp k} {s' : X' ⟶ Sp k} {f : X' ⟶ X}
 
-end PairSec
 
 end GlobalTheory.HodgeCoh

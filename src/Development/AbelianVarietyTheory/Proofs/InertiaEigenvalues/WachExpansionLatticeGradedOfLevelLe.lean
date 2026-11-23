@@ -117,7 +117,7 @@ theorem pow_ne_one {l : ℕ} (hl : l.Prime) (hv : v (l : L) = 1) {s : ℕ} (hs :
   have y1 : (1 : WithTop ℚ) ≤ v y := s1.trans hy
   have hB : (1 + 1 : WithTop ℚ) ≤ v (y * y * z) := val_mul_ge_left v (val_mul_ge v y1 y1) hz0
   have lt12 : (1 : WithTop ℚ) < 1 + 1 := by
-    exact_mod_cast (by norm_num : (1 : ℚ) < 1 + 1)
+    exact_mod_cast (norm_num : (1 : ℚ) < 1 + 1)
   by_cases hpl : p = l
   · subst hpl
     have hA : (1 + 1 : WithTop ℚ) ≤ v (((p.choose 2 : ℕ) : L) * y) := by

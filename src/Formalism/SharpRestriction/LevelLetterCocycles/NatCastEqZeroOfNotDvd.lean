@@ -132,7 +132,7 @@ theorem val_pow_sub_one_coprime {p : ℕ} (hp : p.Prime) (hv : v (p : K) = 1) {x
   rw [← geom_sum_mul x m, AddValuation.map_mul, hS, zero_add]
 
 private theorem withTop_one_lt_one_add_one : (1 : WithTop ℚ) < 1 + 1 := by
-  exact_mod_cast (by norm_num : (1 : ℚ) < 1 + 1)
+  exact_mod_cast (norm_num : (1 : ℚ) < 1 + 1)
 
 private theorem one_le_v_natCast_of_dvd {p : ℕ} (hv : v (p : K) = 1) {n : ℕ} (h : p ∣ n) :
     1 ≤ v (n : K) := by

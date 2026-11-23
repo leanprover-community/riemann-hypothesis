@@ -63,7 +63,7 @@ private theorem withBot_le_of_add_two (k : ℕ) (d : WithBot ℕ∞) (h : (k : W
 
 private theorem withBot_add_one_le_add_two (d : WithBot ℕ∞) : d + ((1 : ℕ) : WithBot ℕ∞) ≤ d + 2 := by
   gcongr
-  exact_mod_cast (by norm_num : (1 : ℕ) ≤ 2)
+  exact_mod_cast (norm_num : (1 : ℕ) ≤ 2)
 
 theorem UpperTheory.V.AlgebraTools.Conn.hyper :
     ∀ {R : Type} [CommRing R] [IsLocalRing R] [IsNoetherianRing R], CohenType R → ∀ (p : Ideal R) (f : R) (k : ℕ), p.IsPrime →

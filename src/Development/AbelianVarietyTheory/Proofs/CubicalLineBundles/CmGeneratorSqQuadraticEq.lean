@@ -51,7 +51,7 @@ theorem cm_generator_sq_quadratic_eq (H : ReciprocityTheory.ChartRestriction.G.G
     rw [h5, h2, mul_sub, ← h4]
     push_cast
     linear_combination h3 - 2 * h2
-  have h4ne : (4 : 𝓞 E) ≠ 0 := by exact_mod_cast (by norm_num : (4 : ℕ) ≠ 0)
+  have h4ne : (4 : 𝓞 E) ≠ 0 := by exact_mod_cast (norm_num : (4 : ℕ) ≠ 0)
   exact mul_left_cancel₀ h4ne h1
 
 theorem main : ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E]

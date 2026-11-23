@@ -88,10 +88,8 @@ theorem isGrpPullback_id_iff {B B' : Over S} [GrpObj B] [GrpObj B'] (β : B.left
 
 end Clauses
 
-section At
 variable (X : Type) [AddCommGroup X]
 
-end At
 
 end GlobalTheory.TQCompare
 end

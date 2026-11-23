@@ -67,13 +67,11 @@ namespace GlobalTheory.TorsRepMap
 
 open ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.TorsionFormCompare GlobalTheory.TorusModel GlobalTheory.FieldRestrictionTest
 
-section Points
 
 variable {R : Type} [CommRing R] [IsDomain R] {D : DegPre R}
 
 variable {Gt : Over (Sp R)} [GrpObj Gt] {Φ : ∀ T, (T ⟶ Gt) ≃ GtPt D T}
 
-end Points
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
   {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {t : SAB H (Sp R)}

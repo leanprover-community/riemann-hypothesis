@@ -62,7 +62,7 @@ theorem ccle_five_four {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {A
   refine ⟨?_, fun u v hu hv hl g hg => h2 u v hu hv (by omega) g hg⟩
   intro g₀ hg₀
   obtain ⟨U, f', hU, hg, hf, he⟩ := h1 g₀ hg₀
-  exact ⟨U, f', hU, hg, hf.of_le (by exact_mod_cast (by norm_num : (4 : ℕ) ≤ 5)), he⟩
+  exact ⟨U, f', hU, hg, hf.of_le (by exact_mod_cast (norm_num : (4 : ℕ) ≤ 5)), he⟩
 
 theorem inCC_five_four {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {A : ℝ} {F : Mat k r → E}
     (h : InCC A 5 F) : InCC A 4 F := by

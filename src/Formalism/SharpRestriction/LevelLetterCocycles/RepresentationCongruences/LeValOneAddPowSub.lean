@@ -51,7 +51,7 @@ variable {LL : Type*} [Field LL] (v : AddValuation LL (WithTop ℚ))
 
 theorem zero_lt_one' : (0 : WithTop ℚ) < 1 := by exact_mod_cast (zero_lt_one : (0 : ℚ) < 1)
 
-theorem one_lt_two' : (1 : WithTop ℚ) < 1 + 1 := by exact_mod_cast (by norm_num : (1 : ℚ) < 1 + 1)
+theorem one_lt_two' : (1 : WithTop ℚ) < 1 + 1 := by exact_mod_cast (norm_num : (1 : ℚ) < 1 + 1)
 
 theorem natCast_nonneg (n : ℕ) : 0 ≤ v (n : LL) := by
   induction n with

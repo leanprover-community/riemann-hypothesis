@@ -39,13 +39,11 @@ open GlobalTheory.WeilDeligne Formalism.CyclotomicNorms
 
 namespace GlobalTheory.LabLaws
 
-section WDLaws
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
 variable {B : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver B w}
 variable {g : ℕ} [Fact g.Prime]
 
-end WDLaws
 
 section Comparison₂
 
@@ -69,10 +67,8 @@ theorem tieLab_of_labTie {T : GlobalTheory.RowTie.WDTie N A} {τ : ∀ k, Fb (H.
 
 end Comparison₂
 
-section Inhabited
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R}
 
-end Inhabited
 
 end GlobalTheory.LabLaws

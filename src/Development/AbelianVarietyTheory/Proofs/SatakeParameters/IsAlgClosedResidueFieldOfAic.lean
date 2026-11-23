@@ -176,10 +176,8 @@ end GlobalTheory.GenusTwoPureComparison.Cmp
 namespace GlobalTheory.GenusTwoPureComparison.Cmp
 
 
-section Main
 variable {T : Type} [CommRing T] [IsDomain T] [IsLocalRing T] (l : ℕ) [Fact l.Prime]
 
-end Main
 
 end GlobalTheory.GenusTwoPureComparison.Cmp
 

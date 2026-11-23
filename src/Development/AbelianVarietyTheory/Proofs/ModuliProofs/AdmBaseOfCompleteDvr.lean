@@ -79,26 +79,20 @@ theorem exists_point_of_fixed {F F' : Type} [Field F] [Field F'] [Algebra F F'] 
   congr 2
   exact CommRingCat.hom_ext (RingHom.ext hg)
 
-section Totality
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D D' : DegData R I}
   {A A' : PolAV (Spec (CommRingCat.of (FractionRing R)))} {G : Over (Spec (CommRingCat.of R))} [GrpObj G]
   [IsCommMonObj G]
 
-end Totality
 
-section HidaSetting
 
 variable {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] {A : PolAV (Spec (CommRingCat.of (FractionRing V)))}
   {G : Over (Spec (CommRingCat.of V))} [GrpObj G] [IsCommMonObj G]
 
-end HidaSetting
 
-section Triples
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-end Triples
 
 end GlobalTheory.UnifDvrCompare
 end

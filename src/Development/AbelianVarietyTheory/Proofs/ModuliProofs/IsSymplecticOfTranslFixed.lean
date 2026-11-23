@@ -355,12 +355,10 @@ theorem isSymplectic_of_translFixed {ζ : Bˣ} (hM : M ≠ 0) (hζ : ζ ^ M = 1)
 
 end Symplectic
 
-section Along
 
 variable {h M : ℕ} {B B' : Type} [CommRing B] [CommRing B'] {S S' : Scheme.{0}} {s : S ⟶ Sp B} {s' : S' ⟶ Sp B'}
   {ζ : B} {ζ' : B'}
 
-end Along
 
 section Clauses
 
@@ -372,10 +370,8 @@ theorem spMap_comp {R₁ R₂ R₃ : Type} [CommRing R₁] [CommRing R₂] [Comm
 
 end Clauses
 
-section Main
 
 variable {h p M : ℕ}
 
-end Main
 
 end GlobalTheory.SiegelTypings

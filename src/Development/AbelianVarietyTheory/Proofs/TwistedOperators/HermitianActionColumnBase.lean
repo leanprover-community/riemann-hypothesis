@@ -85,13 +85,10 @@ theorem piW_cA_plcC (y) : piW τ (cA D (plcC τ y)) = y := by
 
 theorem idem_mul_self : idem τ * idem τ = idem τ := (GlobalTheory.EmbChart.isSplitIdem_idem τ).1
 
-section Frame
 
 variable (V : HSp D) {ι : Type} [Fintype ι] [DecidableEq ι] (β : LatFrame (Fv D.host.F v) ι (Fin V.rank))
 
-end Frame
 
-section FJ
 
 variable {V V₀ : HSp D} {σ : ℕ} (d : HypDec V V₀ (σ + 1)) {n : Type} [Fintype n] [DecidableEq n]
   {γ : LatFrame (Fv D.host.F v) n (Fin V₀.rank)} {β : LatFrame (Fv D.host.F v) (n ⊕ Fin (2 * (σ + 1))) (Fin V.rank)}
@@ -103,11 +100,8 @@ variable {τ}
 variable (hβ : IsScaled V V₀ τ d.i₀ (fourierJacobiVectors d) γ β t)
 include hβ
 
-end FJ
 
-section Jac
 
 variable {V V₀ L : HSp D} {σ : ℕ} (d : HypDec V V₀ (σ + 1)) (ζ : Fin L.rank → D.host.E)
 
-end Jac
 end GlobalTheory.SrcHalfOne

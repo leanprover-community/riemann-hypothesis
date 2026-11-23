@@ -76,7 +76,6 @@ theorem exp_kronecker_one (Y : Matrix m m ℂ) :
 
 theorem exp_one_kronecker (Z : Matrix n n ℂ) :
     NormedSpace.exp ((1 : Matrix m m ℂ) ⊗ₖ Z) = (1 : Matrix m m ℂ) ⊗ₖ NormedSpace.exp Z := by
-  open Norms.Operator in
   exact (NormedSpace.map_exp (kronRightHom m n) continuous_kronRightHom Z).symm
 
 end general

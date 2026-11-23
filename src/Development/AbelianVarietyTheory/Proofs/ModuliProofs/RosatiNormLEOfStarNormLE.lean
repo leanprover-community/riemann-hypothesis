@@ -64,7 +64,6 @@ namespace GlobalTheory.ThetaDetCompare
 
 open GlobalTheory.IndefiniteRowSideFullHecke
 
-section AdjRing
 
 open CechPic MulOpposite
 
@@ -74,9 +73,7 @@ variable {K : Type} [Field K] {P : PolAV (Sp K)}
 
 
 
-end AdjRing
 
-section Trace
 
 open ThetaCoord
 
@@ -85,12 +82,9 @@ variable {K : Type} [Field K] {P : PolAV (Sp K)} {M : â„•} {y : Fin (2 * P.g) â†
 
 variable [IsAlgClosed K]
 
-end Trace
 
-section Positive
 
 variable {K : Type} [Field K] [IsAlgClosed K] {P : PolAV (Sp K)} {O : Type} [Ring O] [StarRing O]
 
-end Positive
 
 end GlobalTheory.ThetaDetCompare

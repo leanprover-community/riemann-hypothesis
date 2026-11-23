@@ -175,7 +175,7 @@ private theorem withTop_rat_zero_lt_one : (0 : WithTop ℚ) < 1 := by
 private theorem withTop_rat_one_lt_one_add_one : (1 : WithTop ℚ) < 1 + 1 := by
   first
   | exact WithTop.coe_lt_coe.mpr (by norm_num : (1 : ℚ) < 1 + 1)
-  | exact_mod_cast (by norm_num : (1 : ℚ) < 1 + 1)
+  | exact_mod_cast (norm_num : (1 : ℚ) < 1 + 1)
   | (rw [← WithTop.coe_one, ← WithTop.coe_add, WithTop.coe_lt_coe]; norm_num)
 
 private theorem exists_eq_two_mul_add_one_of_prime_ne_two (p : ℕ) (hp : p.Prime) (hodd : p ≠ 2) : ∃ k, p = 2 * k + 1 := by

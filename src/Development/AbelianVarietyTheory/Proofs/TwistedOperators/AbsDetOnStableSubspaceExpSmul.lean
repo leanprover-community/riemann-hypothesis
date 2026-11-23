@@ -70,7 +70,6 @@ theorem detOn_exp_smul : ∀ (n : ℕ) (A : Matrix (Fin n) (Fin n) ℂ) (V : Sub
     intro v
     open scoped Matrix.Norms.Operator in
     have h1 := NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) (s • A)
-    open scoped Matrix.Norms.Operator in
     have h2 := NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) (s • B)
     let g1 : Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] (Fin n → ℂ) :=
       LinearMap.applyₗ (v : Fin n → ℂ) ∘ₗ Matrix.toLin'.toLinearMap

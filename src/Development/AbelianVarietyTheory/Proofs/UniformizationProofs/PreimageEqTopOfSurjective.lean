@@ -385,13 +385,10 @@ theorem main : ∀ (A : Type) [CommRing A] [IsLocalRing A] (J : Ideal A), IsNilp
   have hmon : IsMonHom (i * f'⁻¹) := by
     rw [Hom.mul_def]
     infer_instance
-  open CategoryTheory.GrpObj in
   have hmap : (Over.pullback (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk J)))).map (i * f'⁻¹) =
       (Over.pullback (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk J)))).map (toUnit _ ≫ η[G]) := by
     rw [Functor.map_mul, Functor.map_inv', hi2, hf'2, hf, mul_inv_cancel, ← Hom.one_def, Functor.map_one]
-  open CategoryTheory.GrpObj in
   have key := GlobalTheory.splitTorus_hom_eq_one_of_nilpotent A J hJ X G (i * f'⁻¹) hmon hmap
-  open CategoryTheory.GrpObj in
   rw [← Hom.one_def, mul_inv_eq_one] at key
   exact key
 

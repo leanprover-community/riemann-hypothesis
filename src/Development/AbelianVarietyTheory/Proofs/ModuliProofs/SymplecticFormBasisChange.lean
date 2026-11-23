@@ -53,11 +53,9 @@ namespace GlobalTheory.SiegelOfTheta
 
 open GlobalTheory.CechPic
 
-section Algebra
 
 variable {G U : Type} [CommGroup G] [CommGroup U]
 
-end Algebra
 
 section Classes
 
@@ -171,10 +169,8 @@ theorem relAmple_of_pow {A : Over S} [GrpObj A] (hA : IsAbelianScheme A) {L M : 
 
 end Principal
 
-section Level
 
 variable {o : Type} [CommRing o] {S : Scheme.{0}} {g k : ℕ} {J : Type} {b : TBase o k} {s : S ⟶ Sp o}
 
-end Level
 
 end GlobalTheory.SiegelOfTheta

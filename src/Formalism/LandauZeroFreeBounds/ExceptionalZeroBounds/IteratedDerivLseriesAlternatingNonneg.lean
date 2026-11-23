@@ -56,7 +56,7 @@ lemma one_le_lseries_at_two {a : ℕ → ℂ} (ha0 : ∀ n, 0 ≤ a n) (ha1 : a 
   have hlt : LSeries.abscissaOfAbsConv a < ((2 : ℂ).re : EReal) := by
     have e : ((2 : ℂ).re : EReal) = ((2 : ℝ) : EReal) := by norm_num
     rw [e]
-    exact lt_of_le_of_lt habs (by exact_mod_cast (by norm_num : (1 : ℝ) < 2))
+    exact lt_of_le_of_lt habs (by exact_mod_cast (norm_num : (1 : ℝ) < 2))
   have hs : LSeriesSummable a 2 := LSeriesSummable_of_abscissaOfAbsConv_lt_re hlt
   have h1 : LSeries.term a 2 1 = 1 := by simp [LSeries.term, ha1]
   have hnn : ∀ j, 0 ≤ LSeries.term a 2 j := fun j => by simpa using LSeries.term_nonneg (ha0 j) 2
@@ -67,7 +67,7 @@ lemma iteratedDeriv_lseries_alternating_nonneg {a : ℕ → ℂ} (ha0 : ∀ n, 0
     (habs : LSeries.abscissaOfAbsConv a ≤ 1) (n : ℕ) :
     0 ≤ (-1 : ℂ) ^ n * iteratedDeriv n (LSeries a) 2 := by
   have hlt : LSeries.abscissaOfAbsConv a < ((2 : ℝ) : EReal) :=
-    lt_of_le_of_lt habs (by exact_mod_cast (by norm_num : (1 : ℝ) < 2))
+    lt_of_le_of_lt habs (by exact_mod_cast (norm_num : (1 : ℝ) < 2))
   have h := LSeries.iteratedDeriv_alternating (a := a) (fun m => ha0 m) (x := 2) hlt n
   simpa using h
 
