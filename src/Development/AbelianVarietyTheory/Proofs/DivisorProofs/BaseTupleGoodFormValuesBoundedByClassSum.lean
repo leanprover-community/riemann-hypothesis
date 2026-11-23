@@ -189,7 +189,6 @@ private theorem pairK_neg_one (lam : ι → DomWeight n) : ∃ c : ℂ, c * c = 
   have h2 := (GlobalTheory.CoefModel.pairK_pos lam posDef_one x hx).ne'
   exact (mul_left_eq_self₀.1 h1.symm).resolve_right h2
 
-section Idem
 
 variable {G : Type} [Group G] [Fintype G]
 
@@ -252,9 +251,7 @@ private theorem idem_mem_cmMax {K : Type} [Field K] [StarRing K] (σ₀ : K →+
   rw [h1]
   exact (conj_of_idem (fun g => σ (c g)) (fun u => by rw [← hi' u]; simp) (fun g h => congrArg σ (σ₀.injective (hc g h))) g).symm
 
-end Idem
 
-section ClassSum
 
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryAtAllPlaces Formalism.DivisionValues
 
@@ -343,9 +340,7 @@ private theorem term_le (f : S.Cl → S.V) (h : ∀ c, 0 ≤ (pairAt S σ (f c) 
   rw [inv_mul_le_iff₀ hw'] at h1
   exact h1.trans (mul_le_mul_of_nonneg_right (by exact_mod_cast hD) h0)
 
-end ClassSum
 
-section Comparison₂
 
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryAtAllPlaces Formalism.DivisionValues Formalism.IndefR.Bridge
 
@@ -425,9 +420,7 @@ private theorem ext_val {J : Subgroup G} {χ : J →* ℂˣ} (P : ClassPres ι S
   rw [map_smulₛₗ, ha, hv, ← he]
   rfl
 
-end Comparison₂
 
-section Value
 
 variable {D : D7}
 
@@ -501,9 +494,7 @@ private theorem gram_one {Λ : Submodule (𝓞 D.host.E) (Fin D.sp.X'.rank → D
   subst hY
   exact h
 
-end Value
 
-section Main
 
 
 variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
@@ -596,7 +587,6 @@ private theorem value_nonneg_and_norm_bound (ch : Choice R) (large₂ : SizeData
   rw [map_smulₛₗ, LinearMap.map_smulₛₗ₂, map_smul, smul_smul, hn, one_smul, pair_rhoV σ _ _ hγu, ← hpa]
   exact hle _
 
-end Main
 
 end GlobalTheory.FormNorm
 

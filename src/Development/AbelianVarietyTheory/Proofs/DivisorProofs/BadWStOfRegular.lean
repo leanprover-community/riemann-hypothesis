@@ -74,13 +74,11 @@ theorem model_bound {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
       _ ≤ 2 * (Nat.card P * finrank ℂ (eig ρ P lam)) := by linarith
       _ = 2 * Nat.card P * finrank ℂ (eig ρ P lam) := by ring
 
-section Point
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
 
 
-end Point
 
 end GlobalTheory.BadWOn
 

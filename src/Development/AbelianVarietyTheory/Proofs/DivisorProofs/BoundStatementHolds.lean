@@ -90,14 +90,12 @@ theorem pairV_bLie_inclT (x : LieG P.Gt) (y : O ⊗[ℤ_[p]] P.T) :
 
 end Gen2
 
-section Discr
 
 variable {p : ℕ} [Fact p.Prime] {C : Type} [Field C] [IsAlgClosed C] [CharZero C]
   {v : Valuation C ℝ≥0} {O : Type} [CommRing O] [Algebra O C]
   [Algebra ℤ_[p] O] [Algebra ℤ_[p] C] [IsScalarTower ℤ_[p] O C]
   {E : Type} [Field E] [NumberField E] [StarRing (𝓞 E)] (P : Point p v O (𝓞 E))
 
-end Discr
 
 end GlobalTheory.FlatModel.BoundProof
 

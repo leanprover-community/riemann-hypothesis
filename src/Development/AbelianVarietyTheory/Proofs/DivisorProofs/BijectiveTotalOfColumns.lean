@@ -490,11 +490,9 @@ theorem bijective_total_of_terms : ∀ (R : Type) [CommRing R] (D : HomologicalC
 
 end Sheaves
 
-section Totals
 universe v u
 variable {C : Type u} [Category.{v} C] [Preadditive C]
 
-end Totals
 
 end GlobalTheory.ColFilt
 
