@@ -136,6 +136,16 @@ revisionEndpoint = "https://example.invalid/revisions"
         objects.pop(index)
         assert client.find_record(root, identity, fetcher=fetch) == record
 
+        # An ancestor can have the same config bytes but a different file mode.
+        run(root, "git", "update-index", "--chmod=+x", "lakefile.toml")
+        run(root, "git", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "-qm", "mode change")
+        mode_change = run(root, "git", "rev-parse", "HEAD")
+        run(root, "git", "update-index", "--chmod=-x", "lakefile.toml")
+        run(root, "git", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "-qm", "restore mode")
+        requests.clear()
+        assert client.find_record(root, identity, fetcher=fetch) == record
+        assert f"ci/revisions/{mode_change}.json" not in requests
+
         failed = {**record, "build_exit_code": 1}
         assert client.matching_record(client.canonical(failed), identity) is None
         stale = {**record, "lakefile_sha256": "0" * 64}

@@ -24,6 +24,7 @@ PUBLIC_BASE = "https://rh-cache.taucetiproject.org"
 REPOSITORY = "leanprover-community/riemann-hypothesis"
 BOOTSTRAP = "e50d09817ad81469f737e8f637561e6ccf86c670"
 FIELDS = ("source_tree", "build_roots", "lakefile_sha256", "manifest_sha256", "toolchain")
+BUILD_INPUT_PATHS = ("src", "lakefile.toml", "lake-manifest.json", "lean-toolchain")
 SHA40 = re.compile(r"[0-9a-f]{40}\Z")
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 HASH = re.compile(r"[0-9a-f]{16}\Z")
@@ -149,6 +150,35 @@ def matching_record(data, identity):
     return record
 
 
+def equivalent_revisions(root, ancestor_limit):
+    revisions = git(root, "rev-list", f"--max-count={ancestor_limit}", "HEAD").splitlines()
+    if BOOTSTRAP in revisions:
+        revisions = revisions[:revisions.index(BOOTSTRAP) + 1]
+    if not revisions:
+        return []
+
+    # Compare each commit directly to HEAD, including merge commits. All inputs
+    # are top-level paths, so comparing the src tree ID covers its whole subtree.
+    head = revisions[0]
+    comparisons = "".join(f"{revision} {head}\n" for revision in revisions)
+    output = subprocess.check_output(
+        ["git", "-C", str(root), "diff-tree", "--stdin", "--always", "--format=%H", "--name-only",
+         "--no-ext-diff", "--no-textconv", "--no-renames", "--", *BUILD_INPUT_PATHS],
+        input=comparisons, text=True,
+    )
+    seen, changed = [], set()
+    for line in output.splitlines():
+        if not line:
+            continue
+        if line in BUILD_INPUT_PATHS and seen:
+            changed.add(seen[-1])
+        else:
+            seen.append(line)
+    if seen != revisions:
+        raise ValueError("could not compare ancestor build inputs")
+    return [revision for revision in revisions if revision not in changed]
+
+
 def find_record(root, identity, ancestor_limit=100, fetcher=fetch):
     lookup = f"ci/inputs/{fingerprint(identity)}.json"
     data = fetcher(lookup, MAX_RECEIPT)
@@ -156,23 +186,14 @@ def find_record(root, identity, ancestor_limit=100, fetcher=fetch):
         record = matching_record(data, identity)
         if record is not None:
             return record
-    revisions = git(root, "rev-list", f"--max-count={ancestor_limit}", "HEAD").splitlines()
-    for revision in revisions:
-        # Do not issue HTTP requests for ancestors whose build inputs already differ.
-        same = subprocess.run(["git", "-C", str(root), "diff", "--no-ext-diff", "--quiet", "HEAD", revision,
-                               "--", "src", "lakefile.toml", "lake-manifest.json", "lean-toolchain"]).returncode
-        if same == 0:
-            data = fetcher(f"ci/revisions/{revision}.json", MAX_RECEIPT)
-            if data is not None:
-                record = matching_record(data, identity)
-                if record is not None:
-                    if record["candidate_head"] != revision:
-                        raise ValueError("CI revision index names a different candidate")
-                    return record
-        elif same != 1:
-            raise ValueError("could not compare ancestor build inputs")
-        if revision == BOOTSTRAP:
-            break
+    for revision in equivalent_revisions(root, ancestor_limit):
+        data = fetcher(f"ci/revisions/{revision}.json", MAX_RECEIPT)
+        if data is not None:
+            record = matching_record(data, identity)
+            if record is not None:
+                if record["candidate_head"] != revision:
+                    raise ValueError("CI revision index names a different candidate")
+                return record
     return None
 
 
