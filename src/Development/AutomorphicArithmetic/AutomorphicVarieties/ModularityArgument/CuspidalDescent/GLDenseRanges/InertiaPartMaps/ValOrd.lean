@@ -51,7 +51,6 @@ open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.
 
 namespace UpperTheory.V.Z.Desc.V0
 
-section Avg
 
 variable {G W : Type} [Group G] [AddCommGroup W] [Module ℂ W]
 
@@ -102,9 +101,7 @@ private theorem avg (ρ : Representation ℂ G W) (A B : Subgroup G) (hfin : B.r
     congr 1
     simp [Subgroup.relIndex, Subgroup.index, Nat.card_eq_fintype_card, C]
 
-end Avg
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -266,7 +263,6 @@ private theorem dom {ψ : AddChar k Circle} {t : Fin n → k} (hnt : ∃ x : k, 
   rw [hval] at key
   exact hψx0 (Circle.coe_injective (key.trans Circle.coe_one.symm))
 
-end Loc
 
 private theorem isoNe_lemma {k : Type} [Field k] {n : ℕ} (ψ : AddChar k Circle) (t : Fin n → k)
     {a b : GL (Fin n) k} (ha : a ∈ unipB k (Fin n)) (hb : b ∈ unipB k (Fin n)) :

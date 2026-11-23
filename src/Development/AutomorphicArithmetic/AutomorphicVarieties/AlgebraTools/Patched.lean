@@ -44,7 +44,6 @@ import Mathlib.Topology.Sheaves.Init
 open Filter UpperTheory.V.AlgebraTools
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 variable {R : Type} [CommRing R] (S : Type) [CommRing S] [Algebra R S]
   {X X' : Type} [AddCommGroup X] [Module R X] [AddCommGroup X'] [Module R X']
@@ -121,7 +120,6 @@ private theorem ker_tensor (a : Ideal R) (t : X →ₗ[R] X') (ht : Function.Sur
         exact (Submodule.mem_bot S).mp hm
       exact hle hw
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.AlgebraTools.exists_patched_module :
     ∀ (R σ : Type) [CommRing R] [Finite σ] (F : Filter ℕ), F ≤ atTop → ∀ (y : σ → R) (m : Ideal R) (f : R) (M : ℕ → Type) [∀ i, AddCommGroup (M i)] [∀ i, Module R (M i)]

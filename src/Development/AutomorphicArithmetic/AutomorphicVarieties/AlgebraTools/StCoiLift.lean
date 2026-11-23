@@ -43,7 +43,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Polynomial Matrix IsLocalRing TensorProduct UpperTheory.V.AlgebraTools
 
-section aux
 
 variable {B E : Type} [CommRing B] [Ring E] [Algebra B E]
 
@@ -174,7 +173,6 @@ private theorem scl_step (T : TrInv B E) (I : Ideal B) [IsAdicComplete I E] {F :
       rw [map_mul, map_sub, map_mul, hrz, hy.eq, sub_self, zero_mul]
     rw [h0, map_add (f := _), h3, add_zero, hrz]
 
-end aux
 
 theorem UpperTheory.V.AlgebraTools.st_coi_lift :
     ∀ {B E : Type} [CommRing B] [Ring E] [Algebra B E] (T : TrInv B E) (I : Ideal B) [IsAdicComplete I E] {F : Type} [CommRing F] [Algebra B F] {ι : Type} [Fintype ι] [DecidableEq ι] (r : E →ₐ[B] Matrix ι ι F), IsUnit (2 : B) → I ≤ RingHom.ker (algebraMap B F) → (∀ x, r x = 0 → ∃ M : ℕ, x ^ M ∈ I • (⊤ : Submodule B E)) → (∀ x, r (T.st x) = (r x)ᵀ) → (∀ i, ∃ y, r y = single i i 1) → ∃ ep : ι → E, CompleteOrthogonalIdempotents ep ∧ (∀ i, T.st (ep i) = ep i) ∧ ∀ i, r (ep i) = single i i 1 := by

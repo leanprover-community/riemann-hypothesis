@@ -61,7 +61,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Mult
 
-section Generic
 
 variable {G H V : Type} [Group G] [Group H] [AddCommGroup V] [Module ℂ V]
 
@@ -167,9 +166,7 @@ private theorem smIrr_nonempty [TopologicalSpace G] : Nonempty (SmIrr G) :=
      smooth := fun v => by simp
      irred := (GlobalTheory.CuspRep.isIrreducible_iff _).2 ⟨inferInstance, fun W _ => eq_bot_or_eq_top W⟩ }⟩
 
-end Generic
 
-section Local
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {w : Pl E}
 
@@ -238,7 +235,6 @@ private theorem trace_test_function_eq (hs : IsSplitAt w) (σ : SmIrr (UL n w)) 
   rw [← h1]
   exact trSph exAct splitLine E n w (toGL hs σ) B hB e
 
-end Local
 
 private theorem tr_dec {E : Type} [Field E] [NumberField E] [IsCMField E] (hU : GlobalTheory.BCT.Unr E) {n : ℕ} (hn : 1 ≤ n)
     {S : Set (Pl E)} (hS : IsSection S) {lam : InfinitePlace E → DomWeight n} {K' : ∀ w : Pl E, Subgroup (UL n w)}

@@ -46,7 +46,6 @@ open GlobalTheory.TypeTwo.PowIrrProof
 
 namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -158,7 +157,6 @@ private theorem prinSeries_irreducible {n : ℕ} (ω : Fin n → kˣ →* ℂˣ)
   obtain ⟨E3⟩ := he (GlobalTheory.PrinProd.isSubquotient_prinSeries_multiProd k n ω) hM
   exact GlobalTheory.Parabolic.isIrreducible_of_equiv E3 hM
 
-end Loc
 
 theorem unlFull : UnlFull := by
   intro k _ _ _ _ _ n V _ _ π ω hω hs hu

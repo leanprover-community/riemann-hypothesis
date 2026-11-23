@@ -47,7 +47,6 @@ private theorem locO {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] 
   (inferInstance : IsDiscreteValuationRing 𝒪[k]).toIsLocalRing
 attribute [local instance] locO
 
-section SlopeTestRemainingChoices
 
 variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ)
 
@@ -110,7 +109,6 @@ private theorem iA_onto {u : GL (Fin n) k} (hu : u ∈ unipB k (Fin n) ∧ u ∈
   obtain ⟨h1, h2⟩ := (mem_unipB _).1 h
   exact ⟨⟨y, (mem_unipB _).2 ⟨fun i j hij => Subtype.ext (h1 i j hij), fun i => Subtype.ext (h2 i)⟩⟩, rfl⟩
 
-end SlopeTestRemainingChoices
 
 theorem eOp : EOp := by
   intro k _ _ _ _ n

@@ -52,7 +52,6 @@ open Matrix IsLocalRing UpperTheory.V.Alg Topology
 
 variable {O : Type} [CommRing O] [IsLocalRing O]
 
-section Tools
 
 variable {Γ : Type} [Group Γ] [TopologicalSpace Γ] {η : Γ →* ℤˣ} {Ψ : Γ →* Oˣ}
   {R R' R'' : Type} [CommRing R] [Algebra O R] [IsCO O R] [CommRing R'] [Algebra O R'] [IsCO O R']
@@ -97,7 +96,6 @@ private theorem ker_closed (hη : IsLocallyConstant η) (r : GLift O η Ψ R) : 
   rw [this]
   exact isClosed_iInter fun n => (r.locConst hη n).isClosed_fiber 1
 
-end Tools
 
 theorem boxPres_abs (hP : LemmaP) (l : ℕ) [Fact l.Prime] [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O]
     [Finite (ResidueField O)] [CharP (ResidueField O) l] (hl : l ≠ 2) {G Γ H : Type} [Group G] [TopologicalSpace G]

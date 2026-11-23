@@ -41,7 +41,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups
 
 open Matrix IsLocalRing UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.U3.Mop
 
-section SlopeTestRemainingChoices
 
 open MvPowerSeries
 
@@ -262,7 +261,6 @@ private theorem pf_factor [DecidableEq X] (hι : Function.Injective ι)
   rw [hval]
   exact pf_agree W ξ ι t g hι hg J hJ h0 j F hF x hFx.symm
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.weightedPres_exists_algHom_extension_of_adicComplete :
     ∀ {O X R : Type} [CommRing O] [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] [DecidableEq X] [CommRing R] [Algebra O R] (W : WPres O X R)

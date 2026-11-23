@@ -47,7 +47,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -70,7 +69,6 @@ private theorem exists_family {n : ℕ} {s : Multiset (IrrGL (k := k))} (h1 : �
   choose α hα using key
   exact ⟨α, congrArg (fun f => Multiset.map f Finset.univ.val) (funext hα)⟩
 
-end Loc
 
 theorem winSph : WinSph := by
   intro K _ _ _ n hn π t v hw hu

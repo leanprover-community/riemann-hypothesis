@@ -44,7 +44,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 
 
-section Abstract
 
 variable {M : Type} [AddCommGroup M] [Module ℂ M] {J : Type} [Fintype J]
 
@@ -145,9 +144,7 @@ private theorem ze_opE {G W : Type} [Group G] [AddCommGroup W] [Module ℂ W] (�
   · rw [Module.End.natCast_apply]
     exact nsmul_mem hy N
 
-end Abstract
 
-section Gen
 
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
   {c : Coef l} (H : HSet L Ω l n c) (ι : Qbar l ≃+* ℂ) {d : ℕ} (ξ : GV n H.Sl →* GL (Fin d) ℂ)
@@ -176,9 +173,7 @@ private theorem ze_big (g : H.Ga) (hg : Norm H g) : ∀ F ∈ H.Big ι ξ, trF H
     rw [e4, ← e3]
     exact h
 
-end Gen
 
-section U
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   {s : HidaSetting l L Ω} {n : ℕ}
@@ -219,9 +214,7 @@ private theorem ze_tr (hn : 1 ≤ n) (Q : QData V) (c : Coef l) {m : ℕ} (τ₀
   rw [hk', ze_form hn Q c τ₀ hξ k.2 (F i) ℓ]
   exact hσ.stable _ _ (hw i ℓ)
 
-end U
 
-section GenE
 
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
   {c : Coef l} (H : HSet L Ω l n c) {d : ℕ}
@@ -234,7 +227,6 @@ private theorem ze_H {J : Type} [Fintype J] (Y : J → Submodule ℂ (Fin H.m �
       ∑ i, Module.finrank ℂ ↥(Y i ⊓ Z ⊓ ePart ((trF H d).comp β) a N) :=
   ze_main Y hY Z hZ _ fun i => ze_opE ((trF H d).comp β) a (Y i) (hP i) N
 
-end GenE
 
 theorem UpperTheory.V.Z.Desc.V0.zDecE :
     UpperTheory.V.Z.J.D.ZEq → NormS → ZDecE := by

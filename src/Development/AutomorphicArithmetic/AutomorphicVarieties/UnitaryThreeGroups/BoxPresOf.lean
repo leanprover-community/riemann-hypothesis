@@ -48,7 +48,6 @@ import Mathlib.Topology.Connected.Separation
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.GalOfCusp Matrix IsLocalRing
 open UpperTheory.V UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.Alg UpperTheory.V.U3
 
-section SlopeTestRemainingChoices
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {Γ : Type} [Group Γ] (η : Γ →* ℤˣ) (Ψ : Γ →* Oˣ)
 
@@ -83,7 +82,6 @@ private theorem locCond (l : ℕ) [Fact l.Prime] [IsNoetherianRing O] [IsAdicCom
     fun j => exists_locallyConstant_dOne_eq_cocycle_of_tame_inertia l _ Γ _ (adBar O η Ψ j) (adBar_open η Ψ hη hΨ j) I N hI hN hNI
       (fun n hn => adBar_eq_one η Ψ j (by rw [← baseLift_map_residue, h0 n hn, map_one])) hi hf hU
 
-end SlopeTestRemainingChoices
 
 private theorem lc_desc {X Y Z : Type} [TopologicalSpace X] [TopologicalSpace Y] {π : X → Y}
     (hq : Topology.IsQuotientMap π) {f : Y → Z} (h : IsLocallyConstant fun x => f (π x)) : IsLocallyConstant f :=

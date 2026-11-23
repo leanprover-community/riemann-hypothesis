@@ -38,7 +38,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section Abs
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
 
@@ -90,7 +89,6 @@ private theorem coset_integral (μ : Measure G) [μ.IsMulLeftInvariant] {K : Sub
     refine (integrable_indicator_iff (hco q).measurableSet).2 ?_
     exact integrableOn_const (by rw [hmeas q]; exact hfin)
 
-end Abs
 
 theorem heckeSum_pf : HeckeSum := by
   intro E _ _ _ n K hKo hKc μf _ h hh y hy

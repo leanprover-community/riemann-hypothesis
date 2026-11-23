@@ -96,7 +96,6 @@ private theorem dcs_hecke {H : Type} [Group H] [TopologicalSpace H] [IsTopologic
     exact (hc.prod hc).image (by fun_prop)
   exact HasCompactSupport.intro hcomp fun x hx => Set.indicator_of_notMem hx _
 
-section Abs
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V) (K : Subgroup G)
 
@@ -125,9 +124,7 @@ private theorem Lv_add {f f' : G → ℂ} (c : ℂ) (h1 : (cs K f).Finite) (h2 :
   refine finsum_congr fun q => ?_
   rw [add_smul, mul_smul]
 
-end Abs
 
-section Gen
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V) (K : Subgroup G)
 
@@ -204,9 +201,7 @@ private theorem gen_abs [TopologicalSpace G] [IsTopologicalGroup G] (hK : IsOpen
     ∀ y ∈ Wm, Lv ρ K h y ∈ Wm :=
   gen_ind ρ K hK Wm Hg _ h hh.2 (cs_finite K hK hh.1) rfl
 
-end Gen
 
-section Slots
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -356,7 +351,6 @@ private theorem list_mem {V : Type} [AddCommGroup V] [Module ℂ V] (Wm : Submod
     rw [List.prod_cons, Module.End.mul_apply]
     exact hL T (by simp) _ (ih (fun T' hT' => hL T' (List.mem_cons_of_mem _ hT')) y hy)
 
-end Slots
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.two_block_test_function_reduce
 

@@ -50,7 +50,6 @@ noncomputable section
 
 namespace UpperTheory.V.ZK.Trans
 
-section Abstract
 
 variable (A : Type) [CommRing A] {G H X Y M : Type} [Group G] [Group H] [CommGroup M]
 
@@ -199,9 +198,7 @@ private theorem tr_cob [Fintype X] {a : G → X → X} {c c' : G → X → M} (h
   refine hW.tr_Bd ⟨prism A β (m + 1) (cm A (ρ h) (m + 1) z), ?_⟩
   rw [← sPrism A W β m, s2, show bd A G m z = 0 from hz, map_zero, map_zero, add_zero]
 
-end Abstract
 
-section Lines
 
 variable {k : Type} [Field k] {V W : Type} [AddCommGroup V] [Module k V] [AddCommGroup W] [Module k W]
   {G : Type} [Group G] {A : Type} [CommRing A]
@@ -449,7 +446,6 @@ private theorem main : STrans := fun k _ _ A _ hk m t ht =>
   ⟨theta k t, ⟨fun V _ _ _ z hz => ht _ ((isCoc _ lam_homog).tr_Bd hz), fun V W _ _ _ _ _ _ φ z hz => theta_iso ht φ hz,
     fun G V W _ _ _ _ _ _ _ ρ σ z hz => theta_add hk ht ρ σ hz⟩, fun z hz => theta_one ht hz⟩
 
-end Lines
 
 end UpperTheory.V.ZK.Trans
 

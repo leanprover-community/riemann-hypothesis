@@ -48,7 +48,6 @@ noncomputable section
 
 namespace UpperTheory.V.X.FrameOb
 
-section Lin
 
 variable {k A W L O S : Type} [Field k] [AddCommGroup A] [Module k A] [AddCommGroup W] [Module k W]
   [AddCommGroup L] [Module k L] [AddCommGroup O] [Module k O] [AddCommGroup S] [Module k S]
@@ -84,7 +83,6 @@ private theorem rk {I J : Type} [Fintype I] [Fintype J] (P : I → Type) (Q : J 
     ← Finset.sum_add_distrib]
   exact congrArg _ (Finset.sum_congr rfl fun q _ => Submodule.finrank_quotient_add_finrank _)
 
-end Lin
 
 variable {k Γ M : Type} [Field k] [Group Γ] [TopologicalSpace Γ] [AddCommGroup M] [Module k M]
   [TopologicalSpace M] [DiscreteTopology M] (F : Alg.Frame Γ) (ρ : Representation k Γ M)

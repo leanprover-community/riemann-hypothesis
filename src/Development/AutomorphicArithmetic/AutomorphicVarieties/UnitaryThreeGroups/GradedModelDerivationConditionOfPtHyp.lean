@@ -45,7 +45,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open Matrix IsLocalRing UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.HV
 
-section SlopeTestRemainingChoices
 
 variable {O A K : Type} [CommRing O] [CommRing A] [Algebra O A] (𝒜 : ℤ → Submodule O A) [GradedAlgebra 𝒜]
   [Field K] [Algebra O K]
@@ -147,7 +146,6 @@ private theorem isUnit_zeta {O : Type} [CommRing O] [IsLocalRing O] {Γ : Type} 
   have h3 : res O R (zeta c g₁ r.hom) = 0 := (res_eq_zero_iff O R _).2 hn
   exact h1.ne_zero h3
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.U3.gradedModel_derivationCondition_of_ptHyp :
     ∀ {l : ℕ} [Fact l.Prime] {c : Coef l} {Γ H : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [Group H] [TopologicalSpace H] [IsTopologicalGroup H]

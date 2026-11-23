@@ -48,7 +48,6 @@ open TensorProduct IsLocalRing Polynomial UpperTheory.V.W UpperTheory.V.Alg Uppe
 
 namespace UpperTheory.V.CA
 
-section Fac
 
 variable {k : ℕ} {F : Type} [Ring F]
 
@@ -154,9 +153,7 @@ private theorem am_univ (k N : ℕ) :
   refine List.map_congr_left fun p _ => ?_
   simp only [Function.comp, map_add (f := _), map_one, map_zsmul, hw]
 
-end Fac
 
-section Pol
 
 variable {k : ℕ}
 
@@ -248,7 +245,6 @@ private theorem am_one {n : ℕ} {A E B : Type} [CommRing A] [Ring E] [Algebra A
   rw [this, Finset.sum_range_succ', h0, add_comm]
   simp
 
-end Pol
 
 end UpperTheory.V.CA
 

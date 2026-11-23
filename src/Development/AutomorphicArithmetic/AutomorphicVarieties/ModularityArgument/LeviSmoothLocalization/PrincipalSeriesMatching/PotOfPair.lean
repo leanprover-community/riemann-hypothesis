@@ -36,7 +36,6 @@ import Mathlib.Tactic.ReduceModChar
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter UpperTheory.V.Af
 open scoped Pointwise
 
-section Mat
 
 variable {Γ k : Type} [Group Γ] [Field k] {n : ℕ}
 
@@ -108,9 +107,7 @@ private theorem flag_rev (r : Γ →* GL (Fin n) k) {H H' : Subgroup Γ} (f : �
   · rw [e', (hh ((f u)⁻¹)).2]
     simp [div_eq_mul_inv]
 
-end Mat
 
-section Gal
 
 private theorem pow_flag {U : Type} [CommGroup U] (x y : U) (m : ℤ) (k : ℕ) (h : (x * y ^ (-m)) ^ k = 1) :
     x ^ k = (y ^ m) ^ k := by
@@ -267,7 +264,6 @@ private theorem FlagAt.dual {ρ : G L Ω →* GL (Fin n) (Qbar l)} {A : Valuatio
     rw [e]
     exact pow_dual _ _ _ _ _ h2
 
-end Gal
 
 theorem UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.potOfPair :
     UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.PotOfPair := by

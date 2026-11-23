@@ -50,7 +50,6 @@ noncomputable section
 
 namespace UpperTheory.V.AlgebraTools.FactBlock
 
-section Blocks
 
 variable {R : Type} [CommRing R] {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α]
   [∀ a, Fintype (m a)] [∀ a, DecidableEq (m a)] [Fintype n] [DecidableEq n]
@@ -92,9 +91,7 @@ private theorem levi_entry [LinearOrder α] (e : (Σ a, m a) ≃ n) (p : parab R
     simp
   · exact leviEmb_apply_ne R e _ h i j
 
-end Blocks
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
   {C : Subgroup 𝓀[k]ˣ}
@@ -220,9 +217,7 @@ private theorem unif_val {x : kˣ} (hx : IsUnif x) :
   rw [← h]
   exact (Valuation.integer.integers (valuation k)).le_of_dvd h1
 
-end Loc
 
-section Main
 
 variable {n : ℕ} (i j : Fin n)
 
@@ -394,7 +389,6 @@ private theorem conj_swap (h : (j : ℕ) = i + 1) {x : kˣ} (hx : IsUnif x) (s :
       rw [(mem_Mf C h g).1 hg.1 _ _ hb]
       simp
 
-end Main
 
 end UpperTheory.V.AlgebraTools.FactBlock
 

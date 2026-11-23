@@ -38,7 +38,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open Matrix IsLocalRing UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.HV
 
-section SlopeTestRemainingChoices
 
 variable {O R K : Type} [CommRing O] [CommRing R] [Algebra O R] [IsLocalRing R] [IsNoetherianRing R]
   [NormedField K] [IsUltrametricDist K] [Algebra O K]
@@ -130,9 +129,7 @@ private theorem eq_of_dense {f f' : R →ₐ[O] K} (hf : IsLocPt f) (hf' : IsLoc
   have a4 : ε / (‖s‖ + 1) + ‖s‖ * (ε / (‖s‖ + 1)) = ε := by field_simp; ring
   linarith
 
-end SlopeTestRemainingChoices
 
-section Mon
 
 variable {O R K Γ : Type} [CommRing O] [CommRing R] [Algebra O R] [Field K] [Algebra O K] [Group Γ]
 
@@ -170,7 +167,6 @@ private theorem mat_ker (η : Γ →* ℤˣ) (r : Γ →* GG (m := 3) (R := R)) 
     conv_lhs => rw [e]
     rw [map_mul r _ c, GG.mat, GG.mat, SemidirectProduct.mul_left, hl, map_one, mul_one]
 
-end Mon
 
 theorem UpperTheory.V.U3.model_signs :
     ∀ {l : ℕ} [Fact l.Prime] {c : Coef l} {Γ H : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [Group H] [TopologicalSpace H] [IsTopologicalGroup H]

@@ -99,7 +99,6 @@ private def ce_mk {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField 
 private theorem ce_ne {M : Type} [AddCommGroup M] [Module ℂ M] {Y Z : Submodule ℂ M} (h : Y ⊓ Z ≠ ⊥) : Y ≠ ⊥ :=
   fun h' => h (by rw [h', bot_inf_eq])
 
-section Set
 
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime] {n : ℕ} {c : Coef l}
   {H : HSet L Ω l n c} {A : Type} [CommRing A] [Algebra c.O A] [IsLocalRing A] {θ : H.X.I.T →* Aˣ} {ι : Qbar l ≃+* ℂ}
@@ -121,9 +120,7 @@ private theorem ce_one (hSl : Slope) (hO1 : Ord1) (hEP : EigPi) (N : GlobalTheor
     (hSl L Ω l n c H hAx ι lam v (fun j => ev (.inr (v, j))) (hev v))
   rw [hsp.triv v i y hy, map_one, inv_one]
 
-end Set
 
-section Stg
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   (s : HidaSetting l L Ω)
@@ -146,7 +143,6 @@ private theorem ce_irr (V : s.Lev) {n : ℕ} (ρ : V.frame.G₀ →* GL (Fin n) 
   obtain ⟨g, rfl⟩ := hpr g
   exact hI g
 
-end Stg
 
 private theorem eigenpart_zero_eq_top {G R W : Type} [Group G] [CommRing R] [AddCommGroup W] [Module R W] (ρ : Representation R G W) :
     ePart ρ (0 : G →₀ ℤ) 0 = ⊤ := by

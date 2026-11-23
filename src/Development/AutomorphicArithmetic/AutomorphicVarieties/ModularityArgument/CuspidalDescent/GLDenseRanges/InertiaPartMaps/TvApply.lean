@@ -44,7 +44,6 @@ open ValuativeRel GlobalTheory.CuspRep GlobalTheory.LocGL GlobalTheory.SplitWeil
 
 namespace UpperTheory.V.Z.Desc.V0
 
-section Rank
 
 variable {R : Type} [CommRing R] {n : ℕ}
 
@@ -76,9 +75,7 @@ private theorem tv_apply (y w : Fin n → R) (c : R) (h : c * (1 + w ⬝ᵥ y) =
     (tv y w c h : Matrix (Fin n) (Fin n) R) a b = (1 : Matrix (Fin n) (Fin n) R) a b + y a * w b := by
   simp [tv, vecMulVec_apply]
 
-end Rank
 
-section Loc
 
 variable {k : Type} [Field k] {n : ℕ}
 
@@ -170,9 +167,7 @@ private theorem conj_eq (p : GL (Fin n) k) (x : Fin n → k) (c : Fin n) :
     · simp [hb, Matrix.one_apply_ne hb.symm]
   rw [Matrix.mul_add, mul_one, Matrix.mul_vecMulVec, Matrix.add_mul, one_mul, Matrix.vecMulVec_mul, hrow]
 
-end Loc
 
-section Val
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -412,7 +407,6 @@ private theorem descent {W : Type} [AddCommGroup W] [Module ℂ W] (τ : Represe
     rw [← e]
     exact ih (by omega) (p * κ) (fun a ha => hpk a (Fin.le_def.2 ha))
 
-end Val
 
 theorem isoLe : IsoLe := by
   intro k _ _ _ _ n W _ _ τ ψ t l hψ ht hK v hv hlv

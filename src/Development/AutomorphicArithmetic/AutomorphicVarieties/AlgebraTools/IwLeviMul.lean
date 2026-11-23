@@ -39,7 +39,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi UpperTheory.V.AlgebraTools
 
-section SlopeTestRemainingChoices
 
 variable {G : Type} [Group G]
 
@@ -94,7 +93,6 @@ private theorem split_mem {I : Subgroup G} (F : LeviFact I) {u j : G} (hu : u �
   have h3 : j ∈ I := h2 ▸ hj'.2
   exact ⟨by simpa using mul_mem h (inv_mem h3), h3⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.AlgebraTools.leviMul :
     ∀ (A G M : Type) [CommRing A] [Group G] [AddCommGroup M] [Module A M] (ρ : Representation A G M) (I : Subgroup G) (F : LeviFact I) (m m' : G), HeckePair I → F.Pos m → F.Pos m' → (F.NormJ m ∨ F.NormJ m') → F.Pos (m * m') ∧ hk ρ I m * hk ρ I m' = hk ρ I (m * m') := by

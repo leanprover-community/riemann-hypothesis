@@ -40,7 +40,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open NumberField IsDedekindDomain UpperTheory.V UpperTheory.V.ZK UpperTheory.V.ZK.Ct
 
-section SlopeTestRemainingChoices
 
 variable {Y I : Type} [AddCommGroup Y] [AddCommGroup I] (D : Dat Y I)
 
@@ -96,7 +95,6 @@ private theorem exists_psi : ∃ ψ : D.U →ₗ[ℤ] I, ∀ u : D.U, D.delI (ψ
   rw [LinearEquiv.apply_symm_apply] at h
   exact h.symm
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.ZK.Ct.cardW :
     ∀ (Y I : Type) [AddCommGroup Y] [AddCommGroup I] (D : Dat Y I), Finite (I ⧸ LinearMap.range D.d) → Finite D.EQ → Finite D.ClQ ∧ Finite D.W ∧ Nat.card D.W = Nat.card D.EQ * Nat.card D.ClQ := by

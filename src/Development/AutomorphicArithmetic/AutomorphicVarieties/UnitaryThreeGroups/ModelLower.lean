@@ -57,7 +57,6 @@ namespace UpperTheory.V.U3
 
 open TrivSqZeroExt
 
-section Cont
 
 variable {Γ R : Type} [TopologicalSpace Γ] [CommRing R] {I : Ideal R}
 
@@ -79,9 +78,7 @@ private theorem ac_alg {O : Type} [CommRing O] [IsLocalRing O] [Algebra O R] [Is
     exact fun h => hy (IsLocalHom.map_nonunit y h)
   exact (hf N).comp (Ideal.quotientMap _ (algebraMap O R) hle)
 
-end Cont
 
-section Base
 
 variable {O : Type} [CommRing O] {Γ : Type} [Group Γ] (η : Γ →* ℤˣ) (Ψ : Γ →* Oˣ)
   (R : Type) [CommRing R] [Algebra O R]
@@ -160,9 +157,7 @@ private def ptHom {S : Type} [CommRing S] [Algebra O S] (x : S →ₐ[O] O) (D :
     rw [Algebra.algebraMap_eq_smul_one, map_smul, map_smul, h0]
     simp [algebraMap_eq_inl]
 
-end Base
 
-section Lifts
 
 variable {O : Type} [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O]
   {Γ : Type} [Group Γ] [TopologicalSpace Γ] {η : Γ →* ℤˣ} {Ψ : Γ →* Oˣ}
@@ -234,9 +229,7 @@ private theorem der_uniq {P : GCond O η Ψ} (U : Univ P) (x : U.R →ₐ[O] O) 
   have := congrArg snd (DFunLike.congr_fun e f)
   simpa [ptHom] using this
 
-end Lifts
 
-section Loc
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   {H : Type} [Group H] [TopologicalSpace H] {η : H →* ℤˣ} {Ψ : H →* Oˣ}
@@ -328,9 +321,7 @@ private theorem loc_pt (U : Univ (GCond.noCondition O η Ψ)) (I : Ideal U.R) (h
       rw [hI hf, map_zero]⟩
   exact ⟨x, F, hx, hFI, hF ▸ hr⟩
 
-end Loc
 
-section Main
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O]
   {K : Type} [NormedField K] [Algebra O K] {Γ H : Type} [Group Γ] [TopologicalSpace Γ] [Group H] [TopologicalSpace H]
@@ -408,7 +399,6 @@ private theorem main_der (S : SRing N hι U I cc g₁) (M : Model S K) (hc : Ψ 
   · rw [hD₁e, hDe, ← hred, Algebra.smul_def, Algebra.smul_def, map_mul]
     rfl
 
-end Main
 
 end UpperTheory.V.U3
 

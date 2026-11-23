@@ -46,7 +46,6 @@ public import Mathlib.Algebra.Polynomial.Derivative
 
 open Matrix UpperTheory.V.U3
 
-section SlopeTestRemainingChoices
 
 open IsLocalRing
 
@@ -193,7 +192,6 @@ private theorem anti_shape (M : Matrix (Fin 3) (Fin 3) R) :
   ext i j
   fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_three, Jmat, Fin.rev]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.U3.exists_normalised :
     ∀ {G R : Type} [Group G] [CommRing R] [IsLocalRing R] [IsAdicComplete (IsLocalRing.maximalIdeal R) R]

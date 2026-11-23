@@ -47,7 +47,6 @@ namespace UpperTheory.V.Z.Kato.Nb.LineCohomology
 
 open UpperTheory.V.Z.Kato.Nb.TrConj
 
-section Cg
 variable {K : Type} [Field K] {m : ℕ}
 
 private theorem cg_refl (a : Kˣ) : Cgr m a a := ⟨1, by simp⟩
@@ -73,7 +72,6 @@ private theorem cg_prod {ι : Type} (S : Finset ι) {a b : ι → Kˣ} (h : ∀ 
 
 private theorem cg_pow {a b : Kˣ} (k : ℕ) (h : Cgr m a b) : Cgr m (a ^ k) (b ^ k) := cgr_map (powMonoidHom k) h
 
-end Cg
 
 private def sc {M : ℕ} (k : ZMod M) (u : Row M) : Row M := ![u 0, k * u 1]
 

@@ -55,7 +55,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Desc.V0
 
-section Comp
 
 variable {G M : Type} [Group G] [AddCommGroup M] [Module ℂ M] {m : ℕ}
   {ρ : Representation ℂ G M} {ρF : Representation ℂ G (Fin m → M)}
@@ -76,9 +75,7 @@ private theorem ePart_pi (h : ∀ g F i, ρF g F i = ρ g (F i)) (a : G →₀ �
     funext i
     rw [opE_pi h, e i, hn]
 
-end Comp
 
-section U
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   {n : ℕ} {s : HidaSetting l L Ω} {V : s.Lev} {lam : Wt L l n} {d : ℕ}
@@ -316,7 +313,6 @@ private theorem part_eqE (hS : SecS) (hn : 1 ≤ n) (hV : V.S' = s.S) (Q : QData
   rw [hPart, eC_eq, invE]
   exact inf_right_comm _ _ _
 
-end U
 
 end UpperTheory.V.Z.Desc.V0
 

@@ -36,7 +36,6 @@ open NumberField IsDedekindDomain Polynomial UpperTheory.V UpperTheory.V.Z.Gam U
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel
 open scoped Classical
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -218,7 +217,6 @@ private theorem pol_comp (s : Multiset (IrrGL (k := k))) (χ μ : kˣ →* ℂˣ
   | empty => rw [pol_zero, pol_zero, one_comp]
   | cons y s ih => rw [pol_cons, pol_cons, mul_comp, ih, fac_comp χ μ hμ]
 
-end Loc
 
 theorem UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.polFacts :
     UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.PolFacts := fun _ _ _ _ _ =>

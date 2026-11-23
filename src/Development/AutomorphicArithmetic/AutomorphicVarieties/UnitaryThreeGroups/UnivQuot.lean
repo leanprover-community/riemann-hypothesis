@@ -42,7 +42,6 @@ open Matrix IsLocalRing UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.HV
 
 namespace UpperTheory.V.U3
 
-section Quot
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {Γ : Type} [Group Γ] [TopologicalSpace Γ]
   {η : Γ →* ℤˣ} {Ψ : Γ →* Oˣ}
@@ -126,7 +125,6 @@ private theorem univ_box {H : Type} [Group H] [TopologicalSpace H] {N : Set Γ} 
     exact fun y hy => hI hy
   · exact fun h => ⟨(V.rep R).1 f, f.comp φ, hf, fun y hy => h hy⟩
 
-end Quot
 
 end UpperTheory.V.U3
 

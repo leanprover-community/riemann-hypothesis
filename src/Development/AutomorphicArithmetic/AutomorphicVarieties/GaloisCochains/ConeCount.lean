@@ -50,7 +50,6 @@ noncomputable section
 
 namespace UpperTheory.V.GC.ConeCnt
 
-section Lin
 
 variable {k A W L O S : Type} [Field k] [AddCommGroup A] [Module k A] [AddCommGroup W] [Module k W]
   [AddCommGroup L] [Module k L] [AddCommGroup O] [Module k O] [AddCommGroup S] [Module k S]
@@ -81,7 +80,6 @@ private theorem count [Module.Finite k A] [Module.Finite k L] [Module.Finite k S
   have a4 := e.finrank_eq
   omega
 
-end Lin
 
 variable {k Γ M V : Type} [Field k] [Group Γ] [TopologicalSpace Γ] [AddCommGroup M] [Module k M]
   [TopologicalSpace M] [DiscreteTopology M] {Gv : V → Type} [∀ v, Group (Gv v)] [∀ v, TopologicalSpace (Gv v)]

@@ -49,7 +49,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open Matrix IsLocalRing UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.HV
 
-section Alg
 
 variable {O R κ Γ : Type} [CommRing O] [CommRing R] [Algebra O R] [CommRing κ] [Algebra O κ] [Group Γ]
 
@@ -150,7 +149,6 @@ private theorem tan_norm (F : R →ₐ[O] DualNumber κ) (r : Γ →* GG (m := 3
     simp only [Matrix.sub_apply, Matrix.map_apply, map_sub]
   exact ⟨tan_zero F r c h.atc, by rw [hz, h.z12, map_zero], by rw [hz, h.z21, map_zero]⟩
 
-end Alg
 
 private theorem fin_gen {O R : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R] [IsCO O R]
     [IsAdicComplete (maximalIdeal O) O] [Finite (ResidueField O)] (J : Ideal R) (a : O) (ha : a ∈ maximalIdeal O)
@@ -192,7 +190,6 @@ private theorem sup_pow_le {R : Type} [CommRing R] (I J : Ideal R) (k : ℕ) : (
     exact sup_le (sup_le le_sup_left (le_sup_of_le_right (Ideal.mul_le_inf.trans inf_le_right)))
       (le_sup_of_le_right (Ideal.mul_le_inf.trans inf_le_left))
 
-section Fin
 
 variable {l : ℕ} [Fact l.Prime] {c : Coef l} {R : Type} [CommRing R] [Algebra c.O R] [IsCO c.O R]
 
@@ -317,7 +314,6 @@ private theorem cont_of {X : Type} [TopologicalSpace X] {f : R →ₐ[c.O] Padic
   rw [dist_eq_norm, ← map_sub]
   exact hN _ (Ideal.Quotient.eq.1 hy)
 
-end Fin
 
 private theorem span_top {O Γ : Type} [CommRing O] [IsLocalRing O] [Group Γ] [TopologicalSpace Γ] {η : Γ →* ℤˣ}
     {Ψ : Γ →* Oˣ} {P : GCond O η Ψ} (U : Univ P) (T : Submodule O U.R) (h1 : (1 : U.R) ∈ T)
@@ -382,7 +378,6 @@ private theorem span_top {O Γ : Type} [CommRing O] [IsLocalRing O] [Group Γ] [
   have h4 : δ x₀ = 0 := by simpa [F₁, F₀] using h3
   exact hφ h4
 
-section Main
 
 variable {l : ℕ} [Fact l.Prime] {c : Coef l} {R : Type} [CommRing R] [Algebra c.O R]
 
@@ -449,7 +444,6 @@ private theorem der_zero {Γ : Type} [Group Γ] [TopologicalSpace Γ] {η : Γ �
   have : y₀ ∈ T := hT ▸ Submodule.mem_top
   exact lt_irrefl _ (show ‖D y₀‖ < ‖D y₀‖ from this)
 
-end Main
 
 theorem UpperTheory.V.U3.tanCoc_determines :
     ∀ {l : ℕ} [Fact l.Prime] {c : Coef l} {Γ H : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [Group H] [TopologicalSpace H] [IsTopologicalGroup H]

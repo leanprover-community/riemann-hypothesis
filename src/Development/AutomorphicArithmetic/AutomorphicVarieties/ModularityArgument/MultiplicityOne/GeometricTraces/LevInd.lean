@@ -42,7 +42,6 @@ open UpperTheory.V.Z.Tf.GlobalTraceComparison UpperTheory.V.Z.Tf.GlobalTraceComp
 
 namespace UpperTheory.V.Z.Mult
 
-section Generic
 
 variable {G V : Type} [Group G]
 
@@ -146,7 +145,6 @@ private theorem compact_of_map (U : Subgroup G) (K : Subgroup U)
   rw [Subgroup.coe_map] at hc
   exact Topology.IsInducing.subtypeVal.isCompact_iff.2 hc
 
-end Generic
 
 end UpperTheory.V.Z.Mult
 

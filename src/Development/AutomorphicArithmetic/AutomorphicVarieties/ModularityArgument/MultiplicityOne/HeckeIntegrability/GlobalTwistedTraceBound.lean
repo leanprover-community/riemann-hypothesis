@@ -80,7 +80,6 @@ private theorem trOn_smul {U : Type} [AddCommGroup U] [Module ℂ U] (F : Submod
     rfl
   rw [trOn, trOn, dif_pos h, dif_pos hf, e, map_smul, smul_eq_mul]
 
-section Conc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -138,7 +137,6 @@ private theorem exists_hecke (hM : HeckeMem) (π : CuspSub E n) {K : Subgroup (G
     refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
     exact mul_left_comm (h g) c (a.1.1 _)
 
-end Conc
 
 end UpperTheory.V.Z.GSp4Splitting
 

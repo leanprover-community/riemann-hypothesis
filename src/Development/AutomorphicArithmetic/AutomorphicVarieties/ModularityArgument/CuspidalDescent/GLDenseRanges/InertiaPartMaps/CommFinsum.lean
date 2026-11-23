@@ -46,7 +46,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Desc.V0
 
-section Gen
 
 variable {A M : Type} [CommRing A] [AddCommGroup M] [Module A M]
 
@@ -74,9 +73,7 @@ private theorem iSup_pres {T : Module.End A M} {P : ℕ → Module.End A M} {S :
     simp only [map_add (f := _)]
     exact Submodule.add_mem _ hy hz
 
-end Gen
 
-section Fr
 
 variable {Γ Ga Gp : Type} [Group Γ] [Group Ga] [Group Gp] (X : Frame Γ Ga Gp) {A : Type} [CommRing A] {m : ℕ}
 
@@ -156,9 +153,7 @@ private theorem ord_pres (τ : X.Ub →* GL (Fin m) A) (θ : X.I.T →* Aˣ) (U 
   refine iSup_pres (fun n => ?_) (fun x hx => valIn_pres X g k hx) (h3 k)
   exact ((comm_U X g X.I.z).pow_right (n + 1)).sub_right (Commute.one_right _)
 
-end Fr
 
-section Set
 
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
   {c : Coef l} (H : HSet L Ω l n c) (A : Type) [CommRing A] [Algebra c.O A]
@@ -221,7 +216,6 @@ private theorem tr_fix {g : H.Ga} (h : ∃ u ∈ H.UQ, (u : H.Ga) = g ∧ H.τ u
   rw [hτ', Units.val_one, Matrix.one_mulVec, e1] at hx
   exact hx
 
-end Set
 
 private theorem opE_eq {G R W : Type} [Group G] [CommRing R] [AddCommGroup W] [Module R W] (ρ : Representation R G W) (a : G →₀ ℤ)
     (x : W) : opE ρ a x = ∑ g ∈ a.support, a g • ρ g x := by

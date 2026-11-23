@@ -42,7 +42,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -87,9 +86,7 @@ private theorem chars_tw (s : Multiset (IrrGL (k := k))) (χ ζ : kˣ →* ℂˣ
   · rintro ⟨ξ, ⟨hξ, hy⟩, rfl⟩
     exact ⟨hξ.mul hχ, Multiset.mem_map.2 ⟨_, hy, IrrGL.tw_ofChar _ _ _ _⟩⟩
 
-end Loc
 
-section Glob
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -102,7 +99,6 @@ private theorem supp_twist [_root_.NumberField.IsTotallyComplex K] {v : HeightOn
       (s.map (·.tw (χ.loc v) (smooth_loc χ v))) :=
   h.tw (χ.loc v) (smooth_loc χ v)
 
-end Glob
 
 end UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 

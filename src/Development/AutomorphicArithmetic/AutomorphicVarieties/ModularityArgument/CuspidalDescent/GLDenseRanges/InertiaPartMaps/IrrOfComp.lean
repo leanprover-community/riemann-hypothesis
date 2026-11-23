@@ -47,7 +47,6 @@ set_option synthInstance.maxHeartbeats 200000
 
 open UpperTheory.V.Z.Desc.V0
 
-section SlopeTestRemainingChoices
 
 open Formalism.MainNotions.N
 
@@ -145,7 +144,6 @@ private theorem datTop {O A B : Type} [CommRing O] [CommRing A] [CommRing B] [Al
   ⟨fun _ _ => rfl, Module.Free.of_subsingleton A PUnit, ⟨⟨∅, Subsingleton.elim _ _⟩⟩, le_top, fun p _ => by
     rw [Module.annihilator_eq_top_iff.2 ⟨fun _ _ => rfl⟩], fun _ _ _ _ => Submodule.mem_top⟩
 
-end SlopeTestRemainingChoices
 
 private theorem unitN {l : ℕ} [Fact l.Prime] {c : Coef l} {A : Type} [CommRing A] [Algebra c.O A] {N : ℕ} (h : ¬ l ∣ N) :
     IsUnit (N : A) := by

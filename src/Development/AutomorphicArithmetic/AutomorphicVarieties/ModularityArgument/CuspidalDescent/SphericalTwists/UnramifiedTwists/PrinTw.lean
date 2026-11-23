@@ -42,7 +42,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Desc.W
 
-section Lc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -61,7 +60,6 @@ private theorem ps_tw {n : ℕ} (ω : Fin n → kˣ →* ℂˣ) {μ : kˣ →* �
   rw [e]
   exact ⟨prinTw _ hμ⟩
 
-end Lc
 
 end UpperTheory.V.Z.Desc.W
 

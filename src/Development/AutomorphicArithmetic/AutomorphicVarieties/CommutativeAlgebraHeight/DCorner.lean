@@ -44,7 +44,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra
 
 open TensorProduct IsLocalRing Polynomial UpperTheory.V.W UpperTheory.V.Alg UpperTheory.V.CA
 
-section aux
 
 variable {A E : Type} [CommRing A] [Ring E] [Algebra A E]
 
@@ -99,9 +98,7 @@ private lemma add_of_homog (f : ∀ (B : Type) [CommRing B] [Algebra A B], B ⊗
     add_zero, zero_add, ← smul_add, ← map_add, ev] at k1 k2 k3
   rw [← k1, ← k2, ← k3]
 
-end aux
 
-section aux2
 
 variable {n : ℕ} {A E : Type} [CommRing A] [Ring E] [Algebra A E] (D : Det n A E) (e : E)
 
@@ -240,7 +237,6 @@ private lemma corner_eq (hD : D.IsCH) (he : IsIdempotentElem e) (h1 : D.D A[X] (
   have h5 := congrArg (fun w => TensorProduct.lid A E ((TrivSqZeroExt.sndHom A A).rTensor E w)) h4
   simpa [s, sub_eq_zero] using h5
 
-end aux2
 
 theorem UpperTheory.V.CA.d_corner :
     ∀ {n : ℕ} {A E : Type} [CommRing A] [Ring E] [Algebra A E] (D : Det n A E) (e : E), D.IsCH → IsIdempotentElem e → D.D A[X] (1 + X ⊗ₜ e) = 1 + X → 1 ≤ n → (∀ x, e * x * e = D.tr (e * x) • e) ∧ D.tr e = 1 ∧ (∀ a : A, a • e = 0 → a = 0) ∧ ∀ a : A, D.D A[X] (1 + X ⊗ₜ (a • e)) = 1 + C a * X := by

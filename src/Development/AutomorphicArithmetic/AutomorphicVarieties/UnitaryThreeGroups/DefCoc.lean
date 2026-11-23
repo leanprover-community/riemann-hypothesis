@@ -40,7 +40,6 @@ public import Mathlib.RingTheory.Ideal.BigOperators
 
 open Matrix UpperTheory.V.U3
 
-section SlopeTestRemainingChoices
 
 variable {C : Type} [CommRing C] {m : ℕ}
 
@@ -98,7 +97,6 @@ private theorem sgnAct_one_add (I : Ideal C) (hI : I * I = ⊥) (q : GL (Fin m) 
     rw [hinv, Matrix.transpose_sub, Matrix.transpose_one, mul_sub, sub_mul, mul_one, Jmat_mul_Jmat, thetaLie,
       sub_eq_add_neg]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.U3.exists_isCoc :
     ∀ {G C : Type} [Group G] [CommRing C] {m : ℕ} (I : Ideal C) (r r' : G →* GG (m := m) (R := C)), I * I = ⊥ →

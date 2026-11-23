@@ -52,7 +52,6 @@ open Matrix IsLocalRing UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.HV
 
 namespace UpperTheory.V.U3
 
-section Emb
 
 variable {m : ℕ} {A B : Type} [CommRing A] [CommRing B]
 
@@ -145,9 +144,7 @@ private theorem lc_gg {Γ : Type} [TopologicalSpace Γ] (x : Γ → GG (m := m) 
   filter_upwards [hr, hm] with g' h1' h2'
   exact SemidirectProduct.ext (Units.ext (Matrix.ext h2')) h1'
 
-end Emb
 
-section Desc
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
   {η : Γ →* ℤˣ} {Ψ : Γ →* Oˣ}
@@ -315,7 +312,6 @@ private theorem transfer (hη : IsLocallyConstant η) (N : Set Γ) (M : Subgroup
         rfl
     exact ⟨f, fwd f hf, fun f' hf' => huniq f' (bwd f' hf')⟩
 
-end Desc
 
 private theorem totDisc_quot {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
     [TotallyDisconnectedSpace G] (N : Subgroup G) [N.Normal] (hN : IsClosed (N : Set G)) :
@@ -346,7 +342,6 @@ private theorem totDisc_quot {G : Type} [Group G] [TopologicalSpace G] [IsTopolo
     have hmul := K.mul_mem hk (hNK hkN)
     simpa using hmul
 
-section Quot
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {Γ ι : Type} [Group Γ] [TopologicalSpace Γ] [Fintype ι]
   [DecidableEq ι] {rb : Γ →* Matrix ι ι (ResidueField O)}
@@ -381,7 +376,6 @@ private theorem rep_quot {Q : Cond O rb} {R : Type} [CommRing R] [Algebra O R] [
     · have hg' : g.comp (Ideal.Quotient.mkₐ O J) = f := huniq _ ((hcomp g).symm.trans hg)
       exact Ideal.Quotient.algHom_ext O (hg'.trans e.symm)
 
-end Quot
 
 end UpperTheory.V.U3
 

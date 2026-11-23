@@ -41,10 +41,8 @@ public import Mathlib.Data.FunLike.Fintype
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module UpperTheory.V UpperTheory.V.Fr UpperTheory.V.GC
 
-section SlopeTestRemainingChoices
 open UpperTheory.V.Loc GlobalTheory.Published GlobalTheory.Published.PoitouTate
 
-section Transport
 
 variable {R R' Γ M : Type} [CommRing R] [CommRing R'] [Group Γ] [TopologicalSpace Γ]
   [AddCommGroup M] [Module R M] [Module R' M] [TopologicalSpace M] [DiscreteTopology M]
@@ -78,7 +76,6 @@ private theorem nonempty_sha2_equiv_sha2 {I : Type} {D : I → Type} [∀ i, Gro
     rw [Submodule.Quotient.mk_eq_zero, Submodule.Quotient.mk_eq_zero, Submodule.mem_comap, Submodule.mem_comap]
     exact mem_B2_iff (ρ.comp (φ i)) (ρ'.comp (φ i)) (fun g m => h _ m) _
 
-end Transport
 
 private theorem card_ker_range {R A B : Type} [Ring R] [AddCommGroup A] [Module R A] [AddCommGroup B] [Module R B]
     (f : A →ₗ[R] B) : Nat.card A = Nat.card (LinearMap.ker f) * Nat.card (LinearMap.range f) := by

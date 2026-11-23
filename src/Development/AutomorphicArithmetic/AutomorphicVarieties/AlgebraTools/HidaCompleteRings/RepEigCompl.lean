@@ -46,7 +46,6 @@ open scoped ComplexOrder
 
 namespace UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite
 
-section SlopeTestRemainingChoices
 
 variable {k H V : Type} [Field k] [Group H] [AddCommGroup V] [Module k V]
 
@@ -137,7 +136,6 @@ private theorem ec_fin [TopologicalSpace G] [IsTopologicalGroup G] (ρ : Represe
   haveI := Subgroup.quotient_finite_of_isOpen _ ho
   exact Subgroup.finiteIndex_of_finite_quotient
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite
 

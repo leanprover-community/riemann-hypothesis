@@ -56,7 +56,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Kato.WeilSphericalRecords.SphericalReciprocity
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -82,9 +81,7 @@ private theorem unr_eq {a b : ℂˣ} (h : (a : ℂ) = (resCard k : ℂ) * b) : u
   push_cast
   field_simp
 
-end Loc
 
-section WD
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
@@ -108,7 +105,6 @@ private theorem eq_one_of_root {x : WD h} (hu : x.unr) (t : Ine (F := E) A) {z :
   have h3 := hv.apply_eq_smul
   exact smul_left_injective ℂ hv.2 (by simpa using h3.symm)
 
-end WD
 
 end UpperTheory.V.Z.Kato.WeilSphericalRecords.SphericalReciprocity
 

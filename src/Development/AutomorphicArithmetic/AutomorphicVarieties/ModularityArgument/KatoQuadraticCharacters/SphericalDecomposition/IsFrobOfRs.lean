@@ -31,7 +31,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open UpperTheory.V UpperTheory.V.Af UpperTheory.V.Z.Win UpperTheory.V.Z.Kato UpperTheory.V.Z.Kato.WeilSphericalRecords UpperTheory.Zero.LLC
 open scoped Pointwise
 
-section Res
 
 variable {K Ω : Type} [Field K] [NumberField K] [Field Ω] [Algebra ℚ Ω] [Algebra ℚ K] [Algebra K Ω] [IsScalarTower ℚ K Ω]
 
@@ -93,7 +92,6 @@ private theorem frobIn_res {l : ℕ} [Fact l.Prime] {ι : Qbar l ≃+* ℂ} {e q
   rw [← h4]
   exact he
 
-end Res
 
 theorem UpperTheory.V.Z.Kato.WeilSphericalRecords.locQ :
     PlainRec → PlainOf → RecTExists → BcSplit → PotOf → LocK → LocQ := by

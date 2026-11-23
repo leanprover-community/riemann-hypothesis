@@ -51,7 +51,6 @@ open scoped Pointwise
 
 open UpperTheory.V.Z.Bc
 
-section Grp
 
 variable {Γ Γ' k : Type} [Group Γ] [Group Γ'] [Field k] {e : Γ' →* Γ} {δ : Γ →* kˣ}
 
@@ -88,9 +87,7 @@ private theorem ker_ind [CharZero k] (h : ∀ s, δ s = 1 ↔ s ∈ e.range) (h'
   rw [← map_one R]
   exact Units.ext (sub_eq_zero.1 h0)
 
-end Grp
 
-section Places
 
 variable {F E Ω : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Field Ω] [Algebra F E] [Algebra F Ω] [Algebra E Ω]
   [IsScalarTower F E Ω]
@@ -221,7 +218,6 @@ private theorem place_ne {t : G F Ω} {x y : 𝓞 E} (hxy : t (algebraMap E Ω x
   rw [val_lt, e, map_sub, hxy, AlgEquiv.commutes, ← e, hA] at h1
   simpa using w.asIdeal.sub_mem h1 hc
 
-end Places
 
 private theorem algSat_eq (n q : ℕ) (B : Multiset ℂˣ) :
     algSat n q B = B.map fun α : ℂˣ => (((q : ℝ) ^ (((n : ℝ) - 1) / 2) : ℝ) : ℂ) * (α : ℂ) := by

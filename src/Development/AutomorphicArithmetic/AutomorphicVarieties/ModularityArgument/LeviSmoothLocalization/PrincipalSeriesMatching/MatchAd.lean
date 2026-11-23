@@ -56,7 +56,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.Ad
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -66,7 +65,6 @@ private theorem unr_mul {a b : kˣ →* ℂˣ} (ha : IsUnram a) (hb : IsUnram b)
 private theorem unr_inv {a : kˣ →* ℂˣ} (ha : IsUnram a) : IsUnram a⁻¹ := fun x hx => by
   rw [MonoidHom.inv_apply, ha x hx, inv_one]
 
-end Loc
 
 end UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.Ad
 

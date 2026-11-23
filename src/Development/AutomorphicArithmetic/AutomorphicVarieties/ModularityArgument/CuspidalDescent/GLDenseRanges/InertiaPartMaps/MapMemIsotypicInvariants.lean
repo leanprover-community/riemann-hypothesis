@@ -43,7 +43,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Desc.V0
 
-section Abs
 
 variable {G W W' : Type} [Group G] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
 
@@ -74,9 +73,7 @@ private theorem rank_isotypic_invariants_eq {m : ℕ} (K₁ : Subgroup G) (τ₀
       exact e.apply_symm_apply (F i)
   exact (LinearEquiv.ofSubmodules E _ _ hE).rank_eq
 
-end Abs
 
-section Fam
 
 variable {I : Type} {Gi Wi Wi' : I → Type} [∀ i, Group (Gi i)]
   [∀ i, AddCommGroup (Wi i)] [∀ i, Module ℂ (Wi i)] [∀ i, AddCommGroup (Wi' i)] [∀ i, Module ℂ (Wi' i)]
@@ -90,7 +87,6 @@ private theorem congr_piRep (τ : ∀ i, Representation ℂ (Gi i) (Wi i)) (τ' 
     exact congrArg (fun t => r • PiTensorProduct.tprod ℂ t) (funext fun i => h i (f i))
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
-end Fam
 
 theorem invEq1 : InvEq1 := by
   intro l _ L Ω _ _ _ _ _ _ s n _ V _ c ι m τ₀ σ σ' C C' hu

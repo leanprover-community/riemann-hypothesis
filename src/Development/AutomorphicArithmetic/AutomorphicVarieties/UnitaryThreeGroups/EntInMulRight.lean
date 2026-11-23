@@ -40,7 +40,6 @@ public import Mathlib.RingTheory.Ideal.BigOperators
 
 open Matrix UpperTheory.V.U3
 
-section SlopeTestRemainingChoices
 
 variable {C : Type} [CommRing C] {m : ℕ} {I : Ideal C}
 
@@ -89,7 +88,6 @@ private theorem act_onePlus (s : ℤˣ) (X : Matrix (Fin m) (Fin m) C) (h : X * 
     unfold thetaLie
     rw [sub_eq_add_neg]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.U3.exists_isDeform :
     ∀ {G C : Type} [Group G] [CommRing C] {m : ℕ} (I : Ideal C)

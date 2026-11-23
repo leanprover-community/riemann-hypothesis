@@ -63,7 +63,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -159,7 +158,6 @@ private theorem exponent_of_unl [CharZero k] {N : ℕ} {V : Type} [AddCommGroup 
   rw [Real.rpow_neg hq.le]
   exact eq_inv_of_mul_eq_one_left h4
 
-end Loc
 
 end UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 

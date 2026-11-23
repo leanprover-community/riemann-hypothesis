@@ -49,10 +49,8 @@ def copies (ρ : Representation k G V) (Y : Submodule k V) (σ : Representation 
 
 end Alg
 
-section Mass
 
 variable {G : Type} [Group G]
 
-end Mass
 
 end UpperTheory.V.AlgebraTools.AnnihilatorQuotientFinite

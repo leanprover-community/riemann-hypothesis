@@ -35,7 +35,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra
 
 open TensorProduct IsLocalRing Polynomial UpperTheory.V.W UpperTheory.V.Alg UpperTheory.V.CA
 
-section SlopeTestRemainingChoices
 
 variable {n : ℕ} {A E : Type} [CommRing A] [Ring E] [Algebra A E]
 
@@ -125,7 +124,6 @@ private theorem op_mem_CH (D : Det n A E) {x : E} (h : x ∈ D.CH) : MulOpposite
   | left_absorb a x _ hx => exact D.op.CH.mul_mem_right _ _ hx
   | right_absorb b x _ hx => exact D.op.CH.mul_mem_left _ _ hx
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.CA.d_op :
     ∀ {n : ℕ} {A E : Type} [CommRing A] [Ring E] [Algebra A E] (D : Det n A E), (∀ x, D.op.chi (MulOpposite.op x) = D.chi x) ∧ (∀ x, MulOpposite.op x ∈ D.op.ker ↔ x ∈ D.ker) ∧ ∀ x, MulOpposite.op x ∈ D.op.CH ↔ x ∈ D.CH := by

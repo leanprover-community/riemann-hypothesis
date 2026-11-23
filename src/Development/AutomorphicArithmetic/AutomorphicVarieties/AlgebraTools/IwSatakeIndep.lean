@@ -51,7 +51,6 @@ public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.
 
 open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi UpperTheory.V.AlgebraTools
 
-section SlopeTestRemainingChoices
 
 variable {A G M : Type} [CommRing A] [Group G] [AddCommGroup M] [Module A M]
 
@@ -178,7 +177,6 @@ private theorem satInd_abs {I K : Subgroup G} (h : I ≤ K) (hI : HeckePair I) (
   simp [key2] at hc
   simpa [hi] using hc
 
-end SlopeTestRemainingChoices
 
 private theorem satInd_diag {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {n : ℕ} {x : kˣ} (hx : IsUnif x) {a b : Fin n → ℤ} {u : GL (Fin n) k} (hu : u ∈ unipB k (Fin n))

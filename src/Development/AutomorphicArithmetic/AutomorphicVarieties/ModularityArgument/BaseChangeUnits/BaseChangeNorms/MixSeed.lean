@@ -52,7 +52,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Automorphic
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Af.Bc UpperTheory.V.Sd
 
-section Real
 
 variable {E : Type} [Field E] [NumberField E] [IsTotallyReal E]
 
@@ -138,7 +137,6 @@ private theorem expo_abs (k : ℕ) (v : InfinitePlace E) : TR.expo (Model.absPow
     simp [Pi.single_eq_of_ne e]
   · simp
 
-end Real
 
 private theorem charEig_cyc_pow {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ}
     [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (k : ℕ) (w : HeightOneSpectrum (𝓞 F)) (hw : ((l : ℕ) : 𝓞 F) ∉ w.asIdeal) :
@@ -184,7 +182,6 @@ private theorem attR_tw_cyc {F Ω : Type} [Field F] [NumberField F] [IsTotallyRe
     push_cast
     ring
 
-section Local
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -362,7 +359,6 @@ private theorem irrOpen_of (hl : l ≠ 2) {r : G F Ω →* GL (Fin 2) (Qbar l)} 
     simpa using Units.ext h
   exact ⟨h1.1, fun _ _ _ => Submodule.mem_top, fun W hW hI => h1.2.2 W hW fun g v hv => hI ⟨g, H.normalCore_le g.2⟩ v hv⟩
 
-end Local
 
 private theorem cont_units {Γ R : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [Monoid R]
     [TopologicalSpace R] (f : Γ →* Rˣ) (h : Continuous fun s => (f s : R)) : Continuous f := by

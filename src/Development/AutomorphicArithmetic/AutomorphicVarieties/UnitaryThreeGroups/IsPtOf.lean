@@ -32,7 +32,6 @@ import Mathlib.Tactic.ReduceModChar
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.GalOfCusp Matrix IsLocalRing
 open UpperTheory.V UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.Alg UpperTheory.V.U3
 
-section SlopeTestRemainingChoices
 
 variable {O R K : Type} [CommRing O] [CommRing R] [Algebra O R] [IsLocalRing R] [IsNoetherianRing R]
   [NormedField K] [IsUltrametricDist K] [Algebra O K]
@@ -119,7 +118,6 @@ private theorem ipo_cont {f : R →ₐ[O] K} (hf : IsLocPt f) {X : Type} [Topolo
   rw [dist_eq_norm, ← map_sub]
   exact hn _ heq
 
-end SlopeTestRemainingChoices
 
 private theorem ipo_le_one {l : ℕ} [Fact l.Prime] {c : Coef l} {R : Type} [CommRing R] [Algebra c.O R] [IsCO c.O R]
     {f : R →ₐ[c.O] PadicAlgCl l} (hf : IsLocPt f) (x : R) : ‖f x‖ ≤ 1 := by

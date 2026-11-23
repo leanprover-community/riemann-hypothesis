@@ -49,7 +49,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi UpperTheory.V.AlgebraTools GlobalTheory.PRep
 
-section SlopeTestRemainingChoices
 
 private theorem jq_gen {T W J : Type} [CommGroup T] [AddCommGroup W] [Module ℂ W] [AddCommGroup J] [Module ℂ J]
     (θ : T →* (Module.End ℂ W)ˣ) (σ : Representation ℂ T J) (δ : T →* ℂˣ) (q : W →ₗ[ℂ] J) :
@@ -242,7 +241,6 @@ private theorem anti_diff (a : Fin n → ℤ) : ∃ b : Fin n → ℤ, Antitone 
       have hj := abs_le.mp (hle j)
       nlinarith [hi.1, hi.2, hj.1, hj.2]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.AlgebraTools.jqTheta :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (C : Subgroup 𝓀[k]ˣ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V), ∀ θ : (Fin n → kˣ) →* (Module.End ℂ (fixd π (iwC k n C)))ˣ, (∀ t, Dom t → (θ t : Module.End ℂ (fixd π (iwC k n C))) = hk π (iwC k n C) (diagT k (Fin n) t)) → ∀ (t : Fin n → kˣ) (v : fixd π (iwC k n C)), (Submodule.Quotient.mk ((θ t : Module.End ℂ (fixd π (iwC k n C))) v : V) : Jacquet π (unipB k (Fin n))) = (((((deltaHalf k fun _ : Fin n => Unit).comp (leviTorus k (Fin n)).toMonoidHom) t)⁻¹ : ℂˣ) : ℂ) • jacB π t (Submodule.Quotient.mk (v : V) : Jacquet π (unipB k (Fin n))) := by

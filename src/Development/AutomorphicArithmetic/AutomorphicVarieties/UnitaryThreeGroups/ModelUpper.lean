@@ -68,7 +68,6 @@ private theorem exists_irred {α : Type} (R : α → α → Prop) (htr : ∀ a b
         exact ⟨f, Finset.mem_erase.2 ⟨hne, hf⟩, htr _ _ _ hR hg'R⟩
       · exact ⟨g', Finset.mem_erase.2 ⟨he, hg'T⟩, hg'R⟩
 
-section Act
 
 variable {O A K : Type} [CommRing O] [CommRing A] [Algebra O A] (𝒜 : ℤ → Submodule O A) [GradedAlgebra 𝒜]
   [Field K] [Algebra O K]
@@ -108,7 +107,6 @@ private theorem twoSigned_act (t : Kˣ) {ξ : A →ₐ[O] K} (h : TwoSigned 𝒜
   exact ⟨fun hn => h.1 fun j hj f hf => (key j f hf).1 (hn j hj f hf),
     fun hp => h.2 fun j hj f hf => (key j f hf).1 (hp j hj f hf)⟩
 
-end Act
 
 private theorem isNVal (l : ℕ) [Fact l.Prime] (c : Coef l) :
     IsNVal c.O (PadicAlgCl l) fun x => ((UpperTheory.V.Base.eO l c.O).toNat : ℝ) * vl l x := by

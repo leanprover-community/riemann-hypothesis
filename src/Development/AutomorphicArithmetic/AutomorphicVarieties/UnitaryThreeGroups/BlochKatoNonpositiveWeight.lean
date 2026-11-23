@@ -188,7 +188,6 @@ private theorem unr_zero (K Ω : Type) [Field K] [NumberField K] [Field Ω] [Alg
   refine hpow g (Nat.card (ClassGroup (𝓞 K))) Nat.card_pos.ne' (key _ ?_)
   rw [MonoidHom.mem_ker, map_pow, pow_card_eq_one']
 
-section Char
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime]
 
@@ -324,7 +323,6 @@ private theorem zero_case (hP : CohInp) (K : Type) [Field K] [NumberField K] [Al
   · obtain ⟨m, hm⟩ := h3 A
     rw [hm _ ((hIne A ⟨_, galEmb_mem ℚ K Ω s⟩).1 hs), h4, Units.val_one, one_mul, sub_self]
 
-end Char
 
 private theorem wt_rev (a b : Fin 3) : wt b.rev a.rev = wt a b := by
   revert a b

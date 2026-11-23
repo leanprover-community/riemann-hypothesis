@@ -86,7 +86,6 @@ private theorem tanBK_avg {k G W : Type} [Field k] [CharZero k] [Group G] [AddCo
   rw [e2, e, map_sub, map_smul, smul_sub]
   abel
 
-section Coc
 
 variable {O Γ R κ : Type} [CommRing O] [Group Γ] [CommRing R] [Algebra O R] [CommRing κ] [Algebra O κ]
 
@@ -158,7 +157,6 @@ private theorem tan_coc (F : R →ₐ[O] DualNumber κ) (r : Γ →* GG (m := 3)
       Matrix.mul_assoc, hJ, hc']
     rw [add_comm]
 
-end Coc
 
 private theorem tan_cont {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O]
     [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] [Algebra O (PadicAlgCl l)] [IsScalarTower ℤ_[l] O (PadicAlgCl l)]

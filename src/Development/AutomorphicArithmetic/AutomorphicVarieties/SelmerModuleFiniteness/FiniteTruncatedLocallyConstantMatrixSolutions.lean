@@ -48,7 +48,6 @@ import ReciprocityTheory.GaloisValuations.GlobalA
 
 open Matrix Filter ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa UpperTheory.V.Pa.B2
 
-section aux
 open PowerSeries
 
 private theorem fc_img {G H : Type} [AddCommGroup G] [AddCommGroup H] (ψ : G →+ H) (S : AddSubgroup G) :
@@ -240,7 +239,6 @@ private theorem fc_sol {J : Type} (Φ : (Y → Matrix (Fin n) (Fin n) K⟦X⟧) 
     · ext y i j
       exact (fc_mk m _ _).2 (e y i j)
 
-end aux
 
 theorem UpperTheory.finite_truncated_locallyConstant_matrix_solutions :
     ∀ (K : Type) [Field K] [Finite K] (n : ℕ) (Γ X J : Type) [TopologicalSpace Γ] (φ : Γ → X) (Φ : (X → Matrix (Fin n) (Fin n) (PowerSeries K)) →ₗ[PowerSeries K] (J → PowerSeries K)) (B : Submodule (PowerSeries K) (X → Matrix (Fin n) (Fin n) (PowerSeries K))) (Sol : ∀ m : ℕ, Set (X → Matrix (Fin n) (Fin n) (PowerSeries K ⧸ Ideal.span {(PowerSeries.X : PowerSeries K) ^ m}))), (∀ m fb, fb ∈ Sol m ↔ (∀ i j, IsLocallyConstant fun g => fb (φ g) i j) ∧ ∃ f : X → Matrix (Fin n) (Fin n) (PowerSeries K), (∀ y, (f y).map (Ideal.Quotient.mk (Ideal.span {(PowerSeries.X : PowerSeries K) ^ m})) = fb y) ∧ ∀ j, Φ f j ∈ Ideal.span {(PowerSeries.X : PowerSeries K) ^ m}) → (Sol 1).Finite → (∀ f ∈ B, (∀ i j, AdicCont (Ideal.span {(PowerSeries.X : PowerSeries K)}) fun g => f (φ g) i j) ∧ Φ f = 0) → (∀ f : X → Matrix (Fin n) (Fin n) (PowerSeries K), (∀ i j, AdicCont (Ideal.span {(PowerSeries.X : PowerSeries K)}) fun g => f (φ g) i j) → Φ f = 0 → ∃ s : ℕ, (PowerSeries.X : PowerSeries K) ^ s • f ∈ B) → ∃ e : ℕ, ∀ m : ℕ, (Sol m).Finite ∧ ((fun fb => fb ∘ φ) '' Sol m).ncard ≤ ((fun (f : X → Matrix (Fin n) (Fin n) (PowerSeries K)) (g : Γ) => (f (φ g)).map (Ideal.Quotient.mk (Ideal.span {(PowerSeries.X : PowerSeries K) ^ m}))) '' (B : Set _)).ncard * Nat.card K ^ e := by

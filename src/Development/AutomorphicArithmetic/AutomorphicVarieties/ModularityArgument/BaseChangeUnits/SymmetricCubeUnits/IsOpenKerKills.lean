@@ -39,7 +39,6 @@ open scoped Matrix
 
 namespace UpperTheory.V.Sd
 
-section CongLemmas
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -72,15 +71,11 @@ variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω]
 private theorem cyc_val (s : G F Ω) :
     ((cycBar F Ω l s : (Qbar l)ˣ) : Qbar l) = algebraMap ℚ_[l] (Qbar l) ((cycZ F Ω l s : ℤ_[l]) : ℚ_[l]) := rfl
 
-end CongLemmas
 
-section Gal
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
-end Gal
 
-section Shape
 
 variable {l : ℕ} [Fact l.Prime] {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
 
@@ -130,12 +125,9 @@ private theorem ordAt_tw {n : ℕ} {r : G F Ω →* GL (Fin n) (Qbar l)} {m : Fi
   refine ⟨_, (shapeFacts l _ n r δ).2.2.1 _ κ h1, fun i s hs => ?_, fun i s => cong_mul_right (h3 i s) _ (hn _)⟩
   rw [zpow_add, ← h2 i s hs, ← hδ s hs]; rfl
 
-end Shape
 
-section Up
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
-end Up
 
 end UpperTheory.V.Sd

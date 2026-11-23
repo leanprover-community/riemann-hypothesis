@@ -38,7 +38,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial GlobalTheory.CuspRep GlobalTheory.HeckeGal
   GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Published UpperTheory.V.Base UpperTheory.V.Sd
 
-section SlopeTestRemainingChoices
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -145,4 +144,3 @@ private theorem gal_of (hA : GlobalTheory.Published.GlobalArtinReciprocity) (ι 
       L₂.frob_unr ha (Or.inr rfl) u₂ hB hτ]
     exact hh.imp (fun t => inv_cong (by rwa [inv_inv])) fun t => inv_cong (by rwa [inv_inv])
 
-end SlopeTestRemainingChoices

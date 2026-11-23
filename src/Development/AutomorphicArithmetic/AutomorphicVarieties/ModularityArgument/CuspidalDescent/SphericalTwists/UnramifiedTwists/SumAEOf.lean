@@ -30,7 +30,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.UnitaryBC
 open UpperTheory.V.Af UpperTheory.V.Af.Gu UpperTheory.V.Z.Desc.W
 
-section Coeff
 
 variable {T R : Type} [TopologicalSpace T] [CommRing R] [TopologicalSpace R] [IsTopologicalRing R]
 
@@ -59,7 +58,6 @@ private theorem cc_charpoly {a : ℕ} (M : T → Matrix (Fin a) (Fin a) R) (hM :
   · simpa [e] using continuous_neg.comp' h
 
 
-end Coeff
 
 private theorem algSat_eq' (n q : ℕ) (B : Multiset ℂˣ) :
     algSat n q B = B.map fun α : ℂˣ => (((q : ℝ) ^ (((n : ℝ) - 1) / 2) : ℝ) : ℂ) * (α : ℂ) := by

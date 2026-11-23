@@ -93,7 +93,6 @@ private theorem comb {W : Type} [Fintype W] {α : W → Type 1} (r : Setoid (Fin
   obtain ⟨c, hc⟩ := Multiset.filter_eq_self.1 h4 y hy
   exact ⟨_, hc⟩
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -123,7 +122,6 @@ private theorem lin_root {ξ : kˣ →* ℂˣ} {x : ℂ} (h : (lin ξ).eval x = 
     exact (sub_eq_zero.1 h).symm
   · simp at h
 
-end Loc
 
 private theorem core {K : Type} [Field K] [NumberField K] {v : HeightOneSpectrum (𝓞 ℚ)}
     (a : Fin 3 → (v.adicCompletion ℚ)ˣ →* ℂˣ) (ha : ∀ i, IsSmoothChar (a i)) (e : ℕ → (v.adicCompletion ℚ)ˣ →* ℂˣ)

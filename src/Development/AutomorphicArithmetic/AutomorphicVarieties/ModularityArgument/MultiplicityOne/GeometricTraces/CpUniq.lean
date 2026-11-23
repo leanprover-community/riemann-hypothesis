@@ -42,7 +42,6 @@ private theorem trc_of_equiv {G V V' : Type} [Group G] [AddCommGroup V] [Module 
   rw [hid] at h
   exact h.symm
 
-section Split
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} {w : Pl E}
 
@@ -68,7 +67,6 @@ private theorem isCompU_toUL (hw : IsSplitAt w) {σ : Submodule ℂ (UA E n → 
 private noncomputable def equivOfUL (hw : IsSplitAt w) {τ τ' : SmIrr (GLw n w)} (e : (toUL hw τ).ρ.Equiv (toUL hw τ').ρ) : τ.ρ.Equiv τ'.ρ :=
   Representation.Equiv.mk e.toLinearEquiv fun g => e.isIntertwining' ⟨g, mem_UL hw g⟩
 
-end Split
 
 theorem UpperTheory.V.Z.Mult.cpUniq :
     UpperTheory.V.Z.Mult.CpUniq := by

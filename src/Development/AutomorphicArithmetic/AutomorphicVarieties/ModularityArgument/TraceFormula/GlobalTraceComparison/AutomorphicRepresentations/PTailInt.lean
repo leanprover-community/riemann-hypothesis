@@ -44,7 +44,6 @@ attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 
-section Meas
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -79,7 +78,6 @@ private theorem measurable_cnt {Ω : Set (H E n 0)} (hΩ : IsCompact Ω) :
       (continuous_inv.mul continuous_const).mul continuous_id
     exact (measurable_one.indicator hm).comp hc.measurable
 
-end Meas
 
 end UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
 

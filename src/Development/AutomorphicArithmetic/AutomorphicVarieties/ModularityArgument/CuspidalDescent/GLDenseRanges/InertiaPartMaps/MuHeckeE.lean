@@ -131,7 +131,6 @@ private theorem ord_tr {Γ Ga Gp : Type} [Group Γ] [Group Ga] [Group Gp] (X : F
 
 end Frame
 
-section Main
 
 variable {O A B K : Type} [CommRing O] [CommRing A] [CommRing B] [Field K] [Algebra O A] [Algebra O B] [Algebra O K]
   (lam : A →ₐ[O] B) (M : Type) [AddCommGroup M] [Module B M] [Module A M] (hs : ∀ (a : A) (m : M), a • m = lam a • m)
@@ -257,7 +256,6 @@ private theorem mu_eqE [Module.Free A M] {I : Type} (g : I → B)
   rw [Submodule.mem_inf, Submodule.mem_inf, Submodule.mem_inf, q1, q2]
   exact ⟨fun h => ⟨⟨(hr _).2 ⟨v, rfl⟩, h.1⟩, h.2⟩, fun h => ⟨h.1.2, h.2⟩⟩
 
-end Main
 
 section Hecke
 

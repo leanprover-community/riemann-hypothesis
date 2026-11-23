@@ -48,7 +48,6 @@ public import Mathlib.RingTheory.MatrixAlgebra
 
 open TensorProduct IsLocalRing Polynomial UpperTheory.V.W UpperTheory.V.Alg UpperTheory.V.CA
 
-section SlopeTestRemainingChoices
 
 variable {n : ℕ} {k : Type} [Field k] {ι : Type} [Fintype ι] [DecidableEq ι]
   (F : ∀ (S : Type) [CommRing S] [Algebra k S], Matrix ι ι S →* S)
@@ -170,7 +169,6 @@ private theorem dm_rep (S : Type) [CommRing S] [Algebra k S] (y : S ⊗[k] Matri
     ext a b
     simp
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.CA.d_matrix :
     ∀ {n d : ℕ} {k : Type} [Field k] (D : Det n k (Matrix (Fin (d + 1)) (Fin (d + 1)) k)), ∃ m, n = m * (d + 1) ∧ ∀ (S : Type) [CommRing S] [Algebra k S] (y : S ⊗[k] Matrix (Fin (d + 1)) (Fin (d + 1)) k), D.D S y = (Det.repS (AlgHom.id k _) S y).det ^ m := by

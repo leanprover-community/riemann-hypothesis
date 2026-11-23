@@ -46,7 +46,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Mult.LevelTrace
 
-section Generic
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
 
@@ -208,9 +207,7 @@ private theorem trOn_levOp_eq (ρ : Representation ℂ G V) (K U₂ U₁ : Subgr
     trOn M₂ (levOp ρ K U₂ F LinearMap.id) = trOn M₁ (levOp ρ K U₁ F LinearMap.id) :=
   trOn_eq_of_range M₂ M₁ hM _ _ hmap fun _ hv => levOp_eq ρ K U₂ U₁ F hle hK hN hr (hfix hv)
 
-end Generic
 
-section Global
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -262,7 +259,6 @@ private theorem hop_mem_forms (S : Set (Pl E)) (hS : IsSection S) (lam : Infinit
     exact h3 (Submodule.mem_inf.2 ⟨(Submodule.mem_inf.1 h1).1, h2⟩)
   exact fun v hv => hmap hv
 
-end Global
 
 end UpperTheory.V.Z.Mult.LevelTrace
 

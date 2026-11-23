@@ -42,7 +42,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -91,7 +90,6 @@ private theorem link_iff {ξ ξ' : kˣ →* ℂˣ} (hξ : IsSmoothChar ξ) (hξ'
       field_simp at hA
       rw [mul_comm, hA]
 
-end Loc
 
 end UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 

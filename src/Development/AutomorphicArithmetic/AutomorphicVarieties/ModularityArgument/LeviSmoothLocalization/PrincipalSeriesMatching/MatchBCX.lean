@@ -65,7 +65,6 @@ namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
 
 namespace BaseChangeUnramifiedMatching
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -107,7 +106,6 @@ private theorem pol_one (s : Multiset (IrrGL (k := k))) (h : cnt s 1 = 0) : pol 
 private theorem cnt_of_pol {s s' : Multiset (IrrGL (k := k))} {a b : kˣ →* ℂˣ} (h : pol s a = pol s' b) : cnt s a = cnt s' b := by
   rw [← ((polFacts k).2.2.2 s a).2.1, h, ((polFacts k).2.2.2 s' b).2.1]
 
-end Loc
 
 private theorem comp_cancel {a : ℂ} (ha : a ≠ 0) {A B : ℂ[X]} (h : A.comp (C a * X) = B.comp (C a * X)) : A = B := by
   have e : (C a * X : ℂ[X]).comp (C a⁻¹ * X) = X := by
@@ -168,7 +166,6 @@ private theorem unr_pow {F : Type} [Field F] [NumberField F] (η : HChar F) (j :
     change (η ^ j).loc v x * η.loc v x = 1
     rw [ih x hx, h x hx, one_mul]
 
-section Core
 
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
 
@@ -293,7 +290,6 @@ private theorem core (hd : (Module.finrank K L).Prime) {n : ℕ} (hn : 2 ≤ n) 
     rw [eval_comp, eval_pow, eval_X, zero_pow (normVal K L v w 1).2.2.1.ne']
     exact ((polFacts _).2.2.2 _ 1).1
 
-end Core
 
 private theorem norm_units (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] [IsGalois K L]
     (hd : (Module.finrank K L).Prime) :
