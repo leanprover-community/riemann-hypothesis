@@ -57,16 +57,12 @@ theorem mem_GLint_iff_entries (O : Subring L) (g : GL (Fin n) L) :
     · simp only [Matrix.map_mul, Matrix.map_one _ (map_zero _) (map_one _)]
       exact g.inv_mul
 
-section Comb
 
 variable {n : ℕ}
 
-end Comb
 
-section Hyps
 
 variable {n : ℕ}
 
-end Hyps
 
 end GlobalTheory.GKFactor.UnitaryInt

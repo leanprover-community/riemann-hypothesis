@@ -46,11 +46,9 @@ open GlobalTheory.ChartGlue
 
 variable {n : ℕ}
 
-section Null
 
 variable {X ι : Type} [TopologicalSpace X] [T2Space X] [MeasurableSpace X] [BorelSpace X]
 
-end Null
 
 section Cover
 
