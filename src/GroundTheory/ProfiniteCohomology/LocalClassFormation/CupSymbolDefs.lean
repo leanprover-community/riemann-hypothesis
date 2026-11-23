@@ -38,7 +38,6 @@ namespace GroundTheory.ProfCoh
 
 open CategoryTheory
 
-section Transfer
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   (A : Rep.{0} (ULift.{0} ℤ) G) [IsDiscreteRep A]
@@ -74,7 +73,6 @@ private theorem ClassFormation.toInt_inv (F : ClassFormation A) (U : OpenSubgrou
       ((cohomologyULiftIntAddEquiv (Rep.res (U : Subgroup G).subtype A) 2).symm x) :=
   rfl
 
-end Transfer
 
 section Local
 

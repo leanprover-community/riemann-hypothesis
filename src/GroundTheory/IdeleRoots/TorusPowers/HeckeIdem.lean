@@ -45,12 +45,10 @@ namespace GroundTheory.BlockD
 
 namespace ThmBHecke
 
-section Single
 
 variable {K : Type} [Field K] [NumberField K]
 
 
-end Single
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -60,11 +58,9 @@ theorem adeleMap_snd_apply (a : AF F) (w : HeightOneSpectrum (𝓞 E)) :
   rfl
 
 
-section Conj
 
 variable {σ : E →ₐ[F] E}
 
-end Conj
 
 end ThmBHecke
 

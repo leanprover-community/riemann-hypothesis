@@ -191,7 +191,6 @@ open scoped Polynomial
 
 end RatFunc
 
-section RingOfIntegers
 
 open scoped Polynomial
 
@@ -201,7 +200,6 @@ variable [IsFunctionField k K] [Algebra k[X] K] [Algebra (RatFunc k) K]
 
 
 
-end RingOfIntegers
 
 section Separating
 

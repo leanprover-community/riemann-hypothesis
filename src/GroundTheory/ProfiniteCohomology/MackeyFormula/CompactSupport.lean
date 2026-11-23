@@ -43,7 +43,6 @@ open CategoryTheory HomologicalComplex
 
 universe u
 
-section PiHomotopy
 
 variable {k : Type u} [CommRing k] {J : Type u} {M : CochainComplex (ModuleCat.{u} k) ℕ}
   {K : J → CochainComplex (ModuleCat.{u} k) ℕ}
@@ -69,7 +68,6 @@ noncomputable def piLiftHomotopy {g g' : ∀ j, M ⟶ K j} (h : ∀ j, Homotopy 
     erw [piComplex_d_hom_apply']
     exact e
 
-end PiHomotopy
 
 variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [CompactSpace G] {ι : Type u} {Hv : ι → Type u} [∀ v, Group (Hv v)]

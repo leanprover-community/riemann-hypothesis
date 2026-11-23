@@ -384,11 +384,9 @@ theorem relIndex_valueGroupRat :
 
 end Rat
 
-section Check
 
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   (L : IntermediateField K (SeparableClosure K)) [FiniteDimensional K L]
 
-end Check
 
 end GroundTheory.LocalField

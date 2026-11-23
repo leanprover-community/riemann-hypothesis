@@ -294,7 +294,6 @@ end Sequence
 
 section Zero
 
-section NormClass
 
 variable {F' : Type u} [Group F'] [TopologicalSpace F'] [IsTopologicalGroup F'] [Fintype F']
 
@@ -302,7 +301,6 @@ noncomputable def normClass (B : Rep.{u} k F') [IsDiscreteRep B] (m : B) : cohom
   ((cochainsComplex B).homologyπ 0).hom ((cochainsComplex B).cyclesMk
     (zeroCochain B (B.ρ.norm m)) 1 (by simp) (d_zeroCochain_norm B m))
 
-end NormClass
 
 theorem localCohomologyIso_homologyMap_normCochains
     (y : (degZeroComplex (ModuleCat.of k (∀ w, Aᵣ w))).homology 0) :

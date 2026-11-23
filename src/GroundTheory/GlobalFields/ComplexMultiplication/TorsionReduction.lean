@@ -175,16 +175,13 @@ theorem eq_of_reductionHom_eq_of_nsmul {n : ℕ} (hn : (n : ResidueField 𝒪) �
 
 end Good
 
-section Localization
 
 open IsDedekindDomain
 
 variable {R : Type*} [CommRing R] [IsDedekindDomain R] {F : Type*} [Field F] [Algebra R F]
   [IsFractionRing R F] (v : HeightOneSpectrum R)
 
-end Localization
 
-section NumberField
 
 open NumberField IsDedekindDomain
 
@@ -192,7 +189,6 @@ variable {F : Type*} [Field F] [NumberField F] (𝔮 : HeightOneSpectrum (𝓞 F
   (W : WeierstrassCurve (𝔮.valuationSubringAtPrime F)) [W.IsElliptic] [DecidableEq F]
   [DecidableEq (ResidueField (𝔮.valuationSubringAtPrime F))]
 
-end NumberField
 
 end
 

@@ -371,7 +371,6 @@ end Generated
 
 end Root
 
-section AdjoinRoot
 
 variable {K L : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K]
   [IsNonarchimedeanLocalField K]
@@ -384,9 +383,7 @@ include hf hα
 
 include hn
 
-end AdjoinRoot
 
-section Converse
 
 variable {K L : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K]
   [IsNonarchimedeanLocalField K]
@@ -395,6 +392,5 @@ variable {K L : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K]
   (h : (_root_.Ideal.ramificationIdx (_root_.IsLocalRing.maximalIdeal (_root_.Valuation.integer (_root_.ValuativeRel.valuation L))) (_root_.Valuation.integer (_root_.ValuativeRel.valuation K))) = Module.finrank K L) {ϖ : 𝒪[L]} (hϖ : Irreducible ϖ)
 include h hϖ
 
-end Converse
 
 end GroundTheory.LocalField

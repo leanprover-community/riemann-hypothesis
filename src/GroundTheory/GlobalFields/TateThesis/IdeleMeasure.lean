@@ -100,7 +100,6 @@ instance countable_quotient_standardOpenSubgroup :
 
 end IdeleGroup
 
-section SecondCountable
 
 instance secondCountableTopology_units {M : Type*} [Monoid M]
     [TopologicalSpace M] [SecondCountableTopology M] : SecondCountableTopology Mˣ :=
@@ -154,7 +153,6 @@ instance secondCountableTopology_finite :
 
 end IdeleGroup
 
-end SecondCountable
 
 section Borel
 

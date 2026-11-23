@@ -101,7 +101,6 @@ theorem compactCup_localToCompact {r s n : ℕ} (h : r + s = n) (h' : r + 1 + s 
 
 end Left
 
-section Right
 
 variable {A B C : Rep.{u} k G} [IsDiscreteRep A] [IsDiscreteRep B] [IsDiscreteRep C]
   {Bᵥ Cᵥ : ∀ v, Rep.{u} k (H v)} [∀ v, IsDiscreteRep (Bᵥ v)] [∀ v, IsDiscreteRep (Cᵥ v)]
@@ -123,7 +122,6 @@ noncomputable def compactCupRight (μ : A ⊗ B ⟶ C)
     cohomology A r →ₗ[k] compactCohomology φ B Bᵥ b s →ₗ[k] compactCohomology φ C Cᵥ c n :=
   (compactCupRightLeibniz φ μ μᵥ' hμ').homology h
 
-end Right
 
 section Symmetry
 

@@ -43,11 +43,9 @@ noncomputable section
 
 universe u
 
-section Split
 
 variable {K K' : Type}
 
-end Split
 
 def RenameMultiHomog.Statement : Prop :=
   ∀ (R : Type u) [CommRing R] (K K' : Type) [DecidableEq K] [DecidableEq K'] (j : K ↪ K')

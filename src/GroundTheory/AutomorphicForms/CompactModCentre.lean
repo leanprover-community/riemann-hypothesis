@@ -75,14 +75,11 @@ variable [LocallyCompactSpace G] [T2Space G] [TotallyDisconnectedSpace G]
 
 variable [MeasurableSpace (G ⧸ Z)] [BorelSpace (G ⧸ Z)] {ν : Measure (G ⧸ Z)}
 
-section Characters
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   {V W : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
 
-end Characters
 
-section Orthogonality
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [LocallyCompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] [SecondCountableTopology G]
@@ -92,7 +89,6 @@ variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   {π : Representation ℂ G V} {σ : Representation ℂ G W}
 
 
-end Orthogonality
 
 end SchurOrthogonality
 

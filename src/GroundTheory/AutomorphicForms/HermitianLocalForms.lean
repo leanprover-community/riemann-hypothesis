@@ -44,11 +44,9 @@ namespace GroundTheory.Automorphic
 
 open Module Matrix TensorProduct
 
-section QuadConj
 
 variable {F : Type*} [Field F] (a : F)
 
-end QuadConj
 
 section Coordinates
 
@@ -150,25 +148,19 @@ theorem tensorQuadEquiv_conjBase (hψ : ∀ x, ψ (conj K E x) = star (ψ x)) (z
 
 end BaseChange
 
-section Congr
 
 variable {A : Type*} [CommRing A] (s : A →+* A) {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 variable {s}
 
-end Congr
 
-section Bridge
 
 variable {F A : Type*} [Field F] [Field A] [Algebra F A] [Algebra.IsQuadraticExtension F A]
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-end Bridge
 
-section LocalQuad
 
 variable {F : Type*} [Field F] (d : F) {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-end LocalQuad
 
 end GroundTheory.Automorphic

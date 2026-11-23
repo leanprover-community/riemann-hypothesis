@@ -57,7 +57,6 @@ universe w' v u
 variable {C : Type u} [Category.{v} C] (J : GrothendieckTopology C)
   [HasSheafify J AddCommGrpCat.{v}] (U : C)
 
-section Exact
 
 instance overPullback_additive : (J.overPullback AddCommGrpCat.{v} U).Additive where
   map_add := rfl
@@ -119,7 +118,6 @@ instance overPullback_preservesFiniteColimits :
   have := hS.epi_g
   exact ⟨(h.1 inferInstance S hS).1, (J.overPullback AddCommGrpCat.{v} U).map_epi S.g⟩
 
-end Exact
 
 section Const
 
@@ -247,7 +245,6 @@ noncomputable def cohomologyPresheafOverAddEquiv [EnoughInjectives (Sheaf J AddC
 
 end Main
 
-section Small
 
 variable {C : Type v} [SmallCategory C] (J : GrothendieckTopology C) (U : C)
   [HasExt.{w'} (Sheaf J AddCommGrpCat.{v})] [HasExt.{w'} (Sheaf (J.over U) AddCommGrpCat.{v})]
@@ -256,6 +253,5 @@ noncomputable def cohomologyPresheafOverAddEquivOfSmall (F : Sheaf J AddCommGrpC
     (F.cohomologyPresheaf n).obj (op U) ≃+ Sheaf.H (F.over U) n :=
   cohomologyPresheafOverAddEquiv J U F n
 
-end Small
 
 end GroundTheory.Arith.SchemeCoh

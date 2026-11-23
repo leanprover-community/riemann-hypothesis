@@ -196,10 +196,8 @@ lemma PrimeDivisor.valuation_le_exp_iff (Z : PrimeDivisor X) {f : X.functionFiel
 
 end
 
-section Basis
 
 variable [IsIntegral X] [IsNoetherian X] [IsLocallyFactorial X]
 
-end Basis
 
 end GroundTheory.Arith.SchemeCoh

@@ -49,7 +49,6 @@ attribute [local instance] MvPolynomial.gradedAlgebra
 
 noncomputable section
 
-section Res
 
 variable {X : Scheme.{u}}
 
@@ -63,7 +62,6 @@ private lemma resF_injective_of_le (F : X.Modules) {U V : X.Opens} (h : V ≤ U)
   have := congrArg (resF F h') hab
   rwa [resF_resF, resF_resF, resF_refl, resF_refl] at this
 
-end Res
 
 namespace ProjSpace
 

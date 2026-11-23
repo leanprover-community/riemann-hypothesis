@@ -126,10 +126,8 @@ theorem isValueAt_one_self (y : (Σ k, ι k) → Ω) (z : (Σ k, ι k) → ℂ) 
 
 end Cone
 
-section Trivial
 
 variable {Ω : Type} [Field Ω] {κ : Type}
 
-end Trivial
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree

@@ -92,7 +92,6 @@ theorem cohomologyMap_cohomologyMapAlong_apply (φ : H →* G) (hφ : Continuous
 
 end Square
 
-section Descend
 
 variable {k H G Q Q' : Type u} [CommRing k] [Group H] [Group G] [Group Q] [Group Q'] [TopologicalSpace H]
   [TopologicalSpace G] [TopologicalSpace Q] [TopologicalSpace Q']
@@ -102,7 +101,6 @@ variable {D : Rep.{u} k G} {DQ : Rep.{u} k Q}
 
 variable {DQ' : Rep.{u} k Q'}
 
-end Descend
 
 end
 

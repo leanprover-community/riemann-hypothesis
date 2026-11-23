@@ -52,7 +52,6 @@ universe u
 
 variable {k G H : Type u} [CommRing k] [Group G] [Group H]
 
-section Additive
 
 variable {Γ : Type u} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
   {A B : Rep.{u} k Γ} [IsDiscreteRep A] [IsDiscreteRep B]
@@ -76,7 +75,6 @@ private theorem cohomologyMap_sum_alt {J : Type*} (s : Finset J) (f : J → (A �
     cohomologyMap (∑ j ∈ s, f j) n = ∑ j ∈ s, cohomologyMap (f j) n :=
   map_sum (cohomologyMapAddHom n) f s
 
-end Additive
 
 section Conj
 

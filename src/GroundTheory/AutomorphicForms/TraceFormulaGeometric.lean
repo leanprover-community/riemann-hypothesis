@@ -42,11 +42,9 @@ noncomputable section
 
 namespace RightCosetSpace
 
-section Algebra
 
 variable {G : Type*} [Group G]
 
-end Algebra
 
 section Geometric
 

@@ -42,11 +42,9 @@ namespace Cyclotomic
 
 open GroundTheory.LocalField.Abstract
 
-section Padic
 
 variable {ℓ : ℕ} [hℓ : Fact ℓ.Prime]
 
-end Padic
 
 section ProfiniteInteger
 

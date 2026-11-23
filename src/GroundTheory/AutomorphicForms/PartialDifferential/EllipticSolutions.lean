@@ -45,12 +45,10 @@ noncomputable section
 
 variable {n : ℕ}
 
-section Integrable
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
   [MeasurableSpace E] [BorelSpace E]
 
-end Integrable
 
 theorem integrable_smul_of_locallyIntegrableOn {E : Type*} [NormedAddCommGroup E]
     [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]

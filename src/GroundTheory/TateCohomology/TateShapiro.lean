@@ -430,7 +430,6 @@ lemma homologyMap_tateShapiroMap_comp_tateCoindIso_hom (B : Rep.{u} k S) (n : â„
 
 end Main
 
-section Ind
 
 variable {k G : Type u} [CommRing k] [Group G] (S : Subgroup G) [Fintype G] [Fintype S]
 
@@ -446,6 +445,5 @@ noncomputable def tateIndIso (B : Rep.{u} k S) (n : â„¤) :
   (tateIndNatIso S n).app B
 
 
-end Ind
 
 end GroundTheory.GroupCoh

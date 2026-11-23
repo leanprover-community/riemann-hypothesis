@@ -59,12 +59,10 @@ theorem cohomologyMapAlong_id_eq_cohomologyMap (f : A ⟶ B) (n : ℕ) :
 
 end Identity
 
-section Comparison
 
 variable {H : Type u} [Group H] [TopologicalSpace H] [IsTopologicalGroup H]
   {A : Rep.{u} k G} {B : Rep.{u} k H} [IsDiscreteRep A] [IsDiscreteRep B]
 
-end Comparison
 
 section Restriction
 

@@ -44,7 +44,6 @@ namespace GroundTheory.LocalField
 open ValuativeRel IsLocalRing Polynomial
 open scoped _root_.IntermediateField
 
-section Base
 
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
 
@@ -54,7 +53,6 @@ instance henselianLocalRing_integer : HenselianLocalRing 𝒪[K] where
     have := isAdicComplete_integer K
     exact HenselianRing.is_henselian f hf a₀ h₁ (h₂.map _)
 
-end Base
 
 section Residue
 

@@ -41,12 +41,10 @@ open WeierstrassCurve.Affine (Point equation_iff)
 
 universe u
 
-section AlgClosed
 
 variable {K : Type u} [Field K] [IsAlgClosed K] [DecidableEq K]
   {A B C : WeierstrassCurve K} [A.IsElliptic] [B.IsElliptic] [C.IsElliptic]
 
-end AlgClosed
 
 section DualOver
 

@@ -150,12 +150,10 @@ def adelicTensorRep {W : HeightOneSpectrum (𝓞 K) → Type*} [∀ v, AddCommGr
     Representation ℂ (FiniteAdelicGL K n) (restrictedTensor ξ) :=
   (restrictedTensorRep π ξ hξ).comp (toRestricted K n)
 
-section Local
 
 variable {W : HeightOneSpectrum (𝓞 K) → Type*} [∀ v, AddCommGroup (W v)] [∀ v, Module ℂ (W v)]
   {π : ∀ v, Representation ℂ (GL (Fin n) (v.adicCompletion K)) (W v)} {ξ : ∀ v, W v}
 
-end Local
 
 variable {V : Type u} [AddCommGroup V] [Module ℂ V]
 

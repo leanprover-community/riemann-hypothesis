@@ -43,7 +43,6 @@ public import Mathlib.Algebra.MvPolynomial.Eval
 
 namespace GroundTheory.Arith.Abelian
 
-section Step
 
 variable {R : Type*} [CommRing R] [IsDomain R]
 
@@ -87,7 +86,6 @@ private theorem step_odd (b c d am2 am1 a0 a1 a2 a3 e0 e2 o1 om1 o3 : R)
   · refine eq_of_mul_sub_eq_zero (M := a2^14*am1^2*b^4*c^6) (by simp [hb, hc, ham1, ha2]) ?_
     linear_combination (a0^2*a1^2*a2^17*am1^2*am2*b^2*c^7 - a0^2*a1*a2^14*a3*am1^2*b^6*c^6*o1 - a0^2*a1*a2^14*a3*am1^2*b^2*c^6*d*o1 - a0^2*a2^18*am1^4*b^2*c^7 - a0*a1^5*a2^14*a3*am1^2*am2*b^2*c^7 + a0*a1^3*a2^15*a3*am1^4*b^2*c^7 - a0*a2^17*am1^2*b^3*c^7*e0 + a1^3*a2^14*a3*am1^2*b^3*c^7*e0 + a1*a2^16*am1^3*b^6*c^6*o1 + a1*a2^16*am1^3*b^2*c^6*d*o1) * hE0 + (a0^2*a1*a2^14*a3*am1^2*b^2*c^7*om1 - a1*a2^16*am1^3*b^2*c^7*om1 - a2^14*am1^2*b^7*c^6*e0*o1 + a2^14*am1^2*b^3*c^7*e2*om1 - a2^14*am1^2*b^3*c^6*d*e0*o1) * hE2 + (a0^6*a2^16*am1^2*b^6*c^7 - 2*a0^3*a1^3*a2^15*am1^3*b^6*c^7 + a0^3*a1^3*a2^14*a3*am1^2*am2*b^6*c^6 + a0^3*a1^3*a2^14*a3*am1^2*am2*b^2*c^6*d - a0^3*a1*a2^15*a3*am1^4*b^6*c^6 - a0^3*a1*a2^15*a3*am1^4*b^2*c^6*d + a0^3*a2^15*am1^2*b^6*c^7*o1 - a0*a1^3*a2^16*am1^3*am2*b^6*c^6 - a0*a1^3*a2^16*am1^3*am2*b^2*c^6*d + a0*a1*a2^17*am1^5*b^6*c^6 + a0*a1*a2^17*am1^5*b^2*c^6*d + a1^6*a2^14*am1^4*b^6*c^7 - a1^3*a2^14*am1^3*b^6*c^7*o1 + a2^14*am1^2*b^6*c^7*o1^2) * hO1 + (a0^4*a1^2*a2^14*a3^2*am1^2*b^2*c^7 - 2*a0^2*a1^2*a2^16*a3*am1^3*b^2*c^7 + a1^2*a2^18*am1^4*b^2*c^7) * hOm1 + (a2^14*am1^2*b^4*c^7*e0^2) * hO3 + (-a0^9*a1^2*a2^15*b^6*c^7 + a0^8*a1^4*a2^14*b^4*c^8 + a0^7*a1^3*a2^15*am1*b^8*c^6 + a0^7*a1^3*a2^15*am1*b^4*c^6*d - a0^6*a1^5*a2^14*am1*b^2*c^7*d + a0^6*a1^2*a2^16*am1^2*b^4*c^7 - a0^5*a1^7*a2^13*am1*b^4*c^8 + a0^5*a1^4*a2^15*am1^2*b^2*c^8 - a0^4*a1^6*a2^14*am1^2*b^8*c^6 - a0^4*a1^6*a2^14*am1^2*b^4*c^6*d - a0^4*a1^3*a2^16*am1^3*b^6*c^6 - a0^4*a1^3*a2^16*am1^3*b^2*c^6*d + a0^3*a1^8*a2^13*am1^2*b^6*c^7 + a0^3*a1^8*a2^13*am1^2*b^2*c^7*d + a0^3*a1^7*a2^14*am1*am2*b^4*c^7 - 3*a0^3*a1^5*a2^15*am1^3*b^4*c^7 - a0^3*a1^4*a2^16*am1^2*am2*b^2*c^7 + 2*a0^3*a1^2*a2^17*am1^4*b^2*c^7 - a0^2*a1^9*a2^13*am1*am2*b^2*c^8 + a0*a1^6*a2^15*am1^4*b^6*c^6 + a0*a1^6*a2^15*am1^4*b^2*c^6*d + a1^8*a2^14*am1^4*b^4*c^7 - a1^5*a2^16*am1^5*b^2*c^7) * hS0 + (-a0^8*a1^2*a2^15*am2*b^4*c^7 + a0^7*a1^4*a2^14*am2*b^2*c^8 - a0^7*a1^2*a2^14*a3*am1*am2*b^2*c^7 + a0^6*a1^3*a2^15*am1*am2*b^6*c^6 + a0^6*a1^3*a2^15*am1*am2*b^2*c^6*d - a0^6*a1*a2^16*am1^3*b^6*c^6 - a0^6*a1*a2^16*am1^3*b^2*c^6*d + a0^5*a1^3*a2^15*am1^3*b^4*c^7 + 2*a0^5*a1^2*a2^16*am1^2*am2*b^2*c^7 - a0^4*a1^5*a2^14*am1^3*b^2*c^8 + a0^4*a1^3*a2^14*a3*am1^4*b^2*c^7 - a0^3*a1^6*a2^14*am1^2*am2*b^6*c^6 - a0^3*a1^6*a2^14*am1^2*am2*b^2*c^6*d + a0^3*a1^4*a2^15*am1^4*b^6*c^6 + a0^3*a1^4*a2^15*am1^4*b^2*c^6*d + a0^2*a1^7*a2^14*am1*am2^2*b^2*c^7 - 2*a0^2*a1^5*a2^15*am1^3*am2*b^2*c^7 - a0^2*a1^3*a2^16*am1^5*b^2*c^7) * hS1 + (a0^8*a1^2*a2^15*b^4*c^7 - a0^7*a1^4*a2^14*b^2*c^8 - a0^6*a1^3*a2^15*am1*b^6*c^6 + a0^6*a2^17*am1^2*b^4*c^6 - 2*a0^5*a1^2*a2^16*am1^2*b^2*c^7 + a0^4*a1^7*a2^13*am1*b^2*c^8 + a0^3*a1^6*a2^14*am1^2*b^6*c^6 - a0^3*a2^18*am1^4*b^2*c^6 - a0^2*a1^8*a2^13*am1^2*b^4*c^7 + 2*a0^2*a1^5*a2^15*am1^3*b^2*c^7 - a1^6*a2^15*am1^4*b^4*c^6 + a1^3*a2^17*am1^5*b^2*c^6) * hI0
 
-end Step
 
 private def SomosAt {R : Type*} [CommRing R] (w : ℤ → R) (b c : R) (n : ℤ) : Prop :=
   w (n + 2) * w (n - 2) = b ^ 2 * w (n + 1) * w (n - 1) - c * w n ^ 2
@@ -96,7 +94,6 @@ private def InvAt {R : Type*} [CommRing R] (w : ℤ → R) (b c d : R) (n : ℤ)
   c * (w (n + 2) * w (n - 1) ^ 2 + w (n - 2) * w (n + 1) ^ 2) =
     (b ^ 4 + d) * w (n - 1) * w n * w (n + 1) - b ^ 2 * c * w n ^ 3
 
-section Induction
 
 variable {R : Type*} [CommRing R] [IsDomain R] (b c d : R)
 
@@ -157,7 +154,6 @@ private theorem step_seq (hb : b ≠ 0) (hc : c ≠ 0) (h : ℤ)
       show 2 * h + 1 + 1 = 2 * h + 2 by ring, show 2 * h + 1 - 1 = 2 * h by ring]
     exact o2
 
-end Induction
 
 section Universal
 

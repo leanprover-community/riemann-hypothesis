@@ -74,7 +74,6 @@ def centralSplitting (φ : G →* P) (hφ : Continuous φ) (s : P →* G) (hs : 
 
 end Splitting
 
-section Section
 
 variable {K : Type*} [Field K]
 
@@ -85,6 +84,5 @@ variable [NumberField K]
 
 
 
-end Section
 
 end GroundTheory.Variant₂.N1

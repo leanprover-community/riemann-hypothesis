@@ -48,14 +48,12 @@ universe u
 
 open GroundTheory.LocalField ValuativeRel IsLocalRing
 
-section MonoidAlgebra
 
 instance finite_monoidAlgebra {R M : Type*} [Semiring R] [Finite R] [Finite M] :
     Finite (MonoidAlgebra R M) :=
   Finite.of_injective (fun x : MonoidAlgebra R M ↦ (x.coeff : M → R))
     (fun _ _ h ↦ MonoidAlgebra.coeff_injective (DFunLike.coe_injective h))
 
-end MonoidAlgebra
 
 section ModNEquiv
 

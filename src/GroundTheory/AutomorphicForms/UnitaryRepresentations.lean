@@ -57,11 +57,9 @@ lemma IsInvariant.iSup {ι : Sort*} {V : ι → Submodule ℂ H} (h : ∀ i, π.
     (fun x y hx hy => by simpa using add_mem hx hy)
 
 
-section decomposition
 
 variable {J : Type*} {V : J → Submodule ℂ H} [∀ j, CompleteSpace (V j)]
 
-end decomposition
 
 end UnitaryRep
 

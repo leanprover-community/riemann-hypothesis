@@ -169,7 +169,6 @@ def cuspHom : V.toAffine.Point →+ F :=
 
 end Cusp
 
-section Node
 
 variable {F : Type*} [Field F] [DecidableEq F] (V : WeierstrassCurve F) (h3 : V.a₃ = 0)
   (h4 : V.a₄ = 0) (h6 : V.a₆ = 0) {L : Type*} [Field L] [Algebra F L] (α β : L)
@@ -177,18 +176,14 @@ variable {F : Type*} [Field F] [DecidableEq F] (V : WeierstrassCurve F) (h3 : V.
 
 include h3 h4 h6 hs hp
 
-end Node
 
-section NodeSplit
 
 variable {F : Type*} [Field F] [DecidableEq F] (V : WeierstrassCurve F) (h3 : V.a₃ = 0)
   (h4 : V.a₄ = 0) (h6 : V.a₆ = 0) (α β : F) (hs : algebraMap F F V.a₁ = -(α + β))
   (hp : algebraMap F F V.a₂ = -(α * β))
 include h3 h4 h6 hs hp
 
-end NodeSplit
 
-section Torus
 
 variable {F : Type*} [Field F] [DecidableEq F] (V : WeierstrassCurve F) (h3 : V.a₃ = 0)
   (h4 : V.a₄ = 0) (h6 : V.a₆ = 0) {L : Type*} [Field L] [Algebra F L] (α β : L)
@@ -196,7 +191,6 @@ variable {F : Type*} [Field F] [DecidableEq F] (V : WeierstrassCurve F) (h3 : V.
 
 include h3 h4 h6 hs hp
 
-end Torus
 
 end
 

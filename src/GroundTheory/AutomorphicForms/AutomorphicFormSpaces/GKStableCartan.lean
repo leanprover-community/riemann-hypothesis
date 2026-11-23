@@ -137,7 +137,6 @@ def mat (X : ArchMatrix K n) : Matrix (Fin n) (Fin n) (mixedSpace K) := X
 @[simp] theorem mat_zero : mat (0 : ArchMatrix K n) = 0 := rfl
 @[simp] theorem mat_one : mat (1 : ArchMatrix K n) = 1 := rfl
 
-section Coe
 variable (X Y : (isExpLieAlgebra K n).lieSubalgebra) (r : ℝ)
 @[simp] theorem mat_coe_add : mat ((X + Y : (isExpLieAlgebra K n).lieSubalgebra) : ArchMatrix K n) =
     mat (X : ArchMatrix K n) + mat (Y : ArchMatrix K n) := rfl
@@ -145,7 +144,6 @@ variable (X Y : (isExpLieAlgebra K n).lieSubalgebra) (r : ℝ)
     mat (X : ArchMatrix K n) - mat (Y : ArchMatrix K n) := rfl
 @[simp] theorem mat_coe_smul : mat ((r • X : (isExpLieAlgebra K n).lieSubalgebra) : ArchMatrix K n) =
     r • mat (X : ArchMatrix K n) := rfl
-end Coe
 
 theorem mat_injective : Function.Injective (mat : ArchMatrix K n → _) := fun _ _ h => h
 

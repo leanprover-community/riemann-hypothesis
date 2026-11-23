@@ -139,10 +139,8 @@ theorem tateAcyclic_free (α : Type u) : TateAcyclic (free k G α) := by
 
 end Tensor
 
-section Free
 
 variable (M : Rep.{u} k G)
 
-end Free
 
 end GroundTheory.GroupCoh

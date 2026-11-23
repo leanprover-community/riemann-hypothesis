@@ -43,11 +43,9 @@ namespace GroundTheory.BlockD
 
 namespace SatakeBound
 
-section Group
 
 variable {G : Type} [Group G] {K : Subgroup G} {α : G} {R : Finset G}
 
-end Group
 
 open GroundTheory.Automorphic GroundTheory.Automorphic.Spherical GLnLocal Iwasawa Finset Matrix
 open scoped ValuativeRel

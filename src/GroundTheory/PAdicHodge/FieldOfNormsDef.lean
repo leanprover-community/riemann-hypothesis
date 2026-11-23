@@ -71,7 +71,6 @@ def FieldOfNorms : Type _ :=
 
 end Def
 
-section Tower
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
@@ -87,15 +86,11 @@ variable {t L}
 
 end NormTower
 
-end Tower
 
-section GaloisNorm
 
 variable {K : Type*} [Field K] {Ω : Type*} [Field Ω] [Algebra K Ω]
 
-end GaloisNorm
 
-section APF
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
@@ -108,6 +103,5 @@ variable (d : APFData L)
 
 end APFData
 
-end APF
 
 end GroundTheory.PAdicHodge

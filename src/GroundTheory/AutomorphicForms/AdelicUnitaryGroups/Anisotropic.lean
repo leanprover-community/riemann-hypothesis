@@ -82,7 +82,6 @@ theorem hermValue_smul (c : R) (x : ι → R ⊗[K] E) :
 
 end Form
 
-section Compact
 
 attribute [local instance] tensorTopology finite_of_isQuadraticExtension isModuleTopology_tensor
   isTopologicalRing_tensor
@@ -99,7 +98,6 @@ variable {H R b}
 
 variable (H R)
 
-end Compact
 
 section RealPlace
 

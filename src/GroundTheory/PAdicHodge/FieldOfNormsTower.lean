@@ -147,16 +147,13 @@ variable [TopologicalSpace Ω] [IsValuativeTopology Ω]
 
 end Nrm
 
-section Estimates
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
 variable {Ω : Type*} [Field Ω] [Algebra K Ω] [Algebra.IsAlgebraic K Ω]
 
 variable {p : ℕ}
 
-end Estimates
 
-section Tower
 
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   (Ω : Type*) [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
@@ -196,6 +193,5 @@ variable {K Ω p} (t : NormTower K Ω p)
 
 end NormTower
 
-end Tower
 
 end GroundTheory.PAdicHodge

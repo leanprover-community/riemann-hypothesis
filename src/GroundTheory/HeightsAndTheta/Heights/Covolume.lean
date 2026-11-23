@@ -46,7 +46,6 @@ noncomputable section
 
 variable {K : Type*} [Field K] [NumberField K]
 
-section Real
 
 variable {E : Type*} [AddCommGroup E] [Module (𝓞 K) E] [Module.Finite (𝓞 K) E]
   [Module.Projective (𝓞 K) E] (h : HermitianMetric K E)
@@ -55,7 +54,6 @@ namespace RealSpace
 
 end RealSpace
 
-end Real
 
 open scoped Classical in
 open Classical in
@@ -67,14 +65,11 @@ theorem basisMatrix_apply' (τ σ : K →+* ℂ) :
   simp [basisMatrix, canonicalEmbedding.latticeBasis_apply, integralBasis_apply,
     canonicalEmbedding.apply_at]
 
-section Gram
 
 variable {E : Type*} [AddCommGroup E] [Module (𝓞 K) E] [Module.Finite (𝓞 K) E]
   [Module.Projective (𝓞 K) E] (h : HermitianMetric K E) {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-end Gram
 
-section RiemannRoch
 
 variable {E : Type*} [AddCommGroup E] [Module (𝓞 K) E] [Module.Finite (𝓞 K) E]
   [Module.Projective (𝓞 K) E] (h : HermitianMetric K E) {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -82,7 +77,6 @@ variable {E : Type*} [AddCommGroup E] [Module (𝓞 K) E] [Module.Finite (𝓞 K
 
 
 
-end RiemannRoch
 
 namespace HermitianExtension
 

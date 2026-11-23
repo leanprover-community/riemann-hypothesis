@@ -194,12 +194,10 @@ theorem tensorBasisMap_bijective (hs : IsBasisOn ((preMod X).obj L) U s) (h : V 
     congr 1
     exact hg ⟨x, hx⟩
 
-section General
 
 variable {C D : Type*} [Category C] [Category D] [MonoidalCategory C] [MonoidalCategory D]
   {F : C ⥤ D} [F.Monoidal] {G : D ⥤ C} (adj : F ⊣ G) [IsIso adj.counit]
 
-end General
 
 def tensorDualIso (hL : IsInvertibleSheaf L) : L ⊗ dualSheaf L ≅ 𝟙_ X.Modules :=
   β_ L (dualSheaf L) ≪≫ @asIso _ _ _ _ (dualEval L) (isIso_dualEval hL)

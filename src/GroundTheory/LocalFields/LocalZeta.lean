@@ -226,11 +226,9 @@ theorem localZeta_comp_neg (f : K → ℂ) (χ : Kˣ →* ℂˣ) (s : ℂ) :
 
 end Epsilon
 
-section Uniqueness
 
 variable {f : K → ℂ} {χ : Kˣ →* ℂˣ}
 
-end Uniqueness
 
 section FunctionalEquation
 

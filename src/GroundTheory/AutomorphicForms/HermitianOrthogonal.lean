@@ -104,11 +104,9 @@ namespace Isometric
 
 end Isometric
 
-section Separable
 
 variable [Algebra.IsSeparable F E]
 
-end Separable
 
 end HermitianForm
 

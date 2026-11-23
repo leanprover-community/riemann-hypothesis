@@ -58,11 +58,9 @@ theorem finite_of_finite_addMonoidHom_zmod {A : Type*} [AddCommGroup A] {n : ℕ
   change zmodToQZ n (zmodOfQZ χ hn a) - zmodToQZ n (zmodOfQZ χ hn b) = 0
   rw [show zmodOfQZ χ hn a = zmodOfQZ χ hn b from h, sub_self]
 
-section NormZero
 
 variable {k F : Type} [CommRing k] [Group F] [TopologicalSpace F] [IsTopologicalGroup F] [Fintype F]
 
-end NormZero
 
 section Hypotheses
 
@@ -190,13 +188,11 @@ theorem ptTCompactDualMap_ptTLocalToCompact {r s : ℕ} (h : r + s = 2) (h' : r 
 
 end TatePoitouTateHypotheses
 
-section DegreeZero
 
 variable {φ ψ}
 
 
 
-end DegreeZero
 
 namespace TatePoitouTateHypotheses
 

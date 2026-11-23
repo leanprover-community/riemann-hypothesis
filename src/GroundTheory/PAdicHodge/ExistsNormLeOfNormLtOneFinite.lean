@@ -42,13 +42,11 @@ namespace GroundTheory.PAdicHodge
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-section Span
 
 variable (K : IntermediateField ℚ_[p] (PadicAlgCl p))
 
 variable {K}
 
-end Span
 
 section Contradiction
 

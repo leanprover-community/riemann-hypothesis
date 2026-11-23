@@ -41,7 +41,6 @@ open CategoryTheory groupCohomology
 
 universe u
 
-section Tower
 
 variable (K E F : Type u) [Field K] [Field E] [Field F] [Algebra K E] [Algebra K F] [Algebra E F]
   [IsScalarTower K E F] [Normal K E]
@@ -58,7 +57,6 @@ noncomputable def unitsInflationTower (n : ℕ) :
     groupCohomology (galUnits.{u} K E) n ⟶ groupCohomology (galUnits.{u} K F) n :=
   groupCohomology.map (AlgEquiv.restrictNormalHom E) (unitsTowerHom K E F) n
 
-end Tower
 
 section LE
 

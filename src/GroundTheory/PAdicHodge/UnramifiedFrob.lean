@@ -46,11 +46,9 @@ namespace ACris
 
 variable {p : ℕ} [hp : Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p))
 
-section Frob
 
 variable [FiniteDimensional ℚ_[p] K]
 
-end Frob
 
 section Valuation
 
@@ -68,11 +66,9 @@ theorem norm_p_algCl_pos : 0 < ‖(p : PadicAlgCl p)‖ :=
 
 end Valuation
 
-section FrobValuation
 
 variable [FiniteDimensional ℚ_[p] K]
 
-end FrobValuation
 
 end ACris
 

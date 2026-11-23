@@ -90,18 +90,14 @@ theorem ringKrullDim_eq_of_isIntegral (hinj : Function.Injective (algebraMap R A
 
 end IntegralDim
 
-section Trdeg
 
 variable {k G : Type u} [CommRing k] [IsDomain k] [AddCommGroup G] [Module.Free ℤ G]
 
 variable [Module.Finite ℤ G]
 
-end Trdeg
 
-section Dim
 
 variable {k N : Type u} [Field k] [AddCommGroup N] [Module.Free ℤ N] [Module.Finite ℤ N]
 
-end Dim
 
 end GroundTheory.Arith.Toric

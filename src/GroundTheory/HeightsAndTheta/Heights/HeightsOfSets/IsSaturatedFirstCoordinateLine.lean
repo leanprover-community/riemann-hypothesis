@@ -77,13 +77,11 @@ def DenseBoundedHeight.Statement : Prop :=
     ∃ (C : ℝ) (F : Set (Ideal (MRing ι))), IsZariskiDense P F ∧
       ∀ W ∈ F, IsArithVar W 1 ∧ P ≤ W ∧ height I H W ≤ C
 
-section Lattices
 
 open NumberField Matrix
 
 variable {K : Type*} [Field K] [NumberField K] (E : HermitianBundle K)
 
-end Lattices
 
 section Inhabitants
 

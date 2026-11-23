@@ -51,7 +51,6 @@ def NbarChartSemipos.Statement : Prop :=
       (q : ℝ) * δ ≤ p * c →
       IsSemipositiveH (mCoordIdeal D.y) (X.NbarQ B p q t)
 
-section Inhabitants
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
   {II : IntersectionSystem} {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {Ω : Type} [Field Ω] [Algebra ℚ Ω]
@@ -63,6 +62,5 @@ namespace Line
 
 end Line
 
-end Inhabitants
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree

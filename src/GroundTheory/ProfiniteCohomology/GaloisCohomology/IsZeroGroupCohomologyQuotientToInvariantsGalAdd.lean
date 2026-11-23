@@ -184,10 +184,8 @@ theorem subsingleton_cohomology_one_galUnits : Subsingleton (cohomology (galUnit
 
 end Hilbert90
 
-section SeparableClosure
 
 variable (K) (Ksep : Type u) [Field Ksep] [Algebra K Ksep] [IsSepClosure K Ksep]
 
-end SeparableClosure
 
 end GroundTheory.ProfCoh

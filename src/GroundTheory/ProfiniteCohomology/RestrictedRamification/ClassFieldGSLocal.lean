@@ -165,12 +165,10 @@ theorem placeInv_galCupClass_decompHomS {K : FiniteSubfield} {S : Set (HeightOne
 
 end Cup
 
-section Frobenius
 
 variable {K : FiniteSubfield} {S : Set (HeightOneSpectrum (𝓞 K.1))} {n : ℕ}
 
 
-end Frobenius
 
 end
 

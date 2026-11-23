@@ -82,13 +82,10 @@ theorem exists_line_of_add_eq_zero {x₁ y₁ x₂ y₂ x₃ y₃ : F} (h₁ : W
 
 end Line
 
-section Counting
 
 variable {G : Type*} [AddCommGroup G] (H : AddSubgroup G)
 
-end Counting
 
-section DVR
 
 open IsLocalRing
 
@@ -96,7 +93,6 @@ variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing
   (K : Type*) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)
 
 
-section Origin
 
 variable {π : 𝒪} (hπ : Irreducible π)
 include hπ
@@ -105,7 +101,6 @@ include hπ
 
 
 
-end Origin
 
 
 

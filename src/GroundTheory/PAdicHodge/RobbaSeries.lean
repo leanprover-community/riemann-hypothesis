@@ -90,11 +90,9 @@ theorem ConvergesAt.finite_le (h : ConvergesAt a ρ) {ε : ℝ} (hε : 0 < ε) :
 
 end Basic
 
-section Product
 
 variable [CompleteSpace K]
 
-end Product
 
 section Dominant
 
@@ -154,14 +152,12 @@ theorem ne_zero_of_mem_domSet {n : ℤ} (hn : n ∈ domSet a ρ) : a n ≠ 0 := 
 
 end Attained
 
-section Multiplicative
 
 variable [CompleteSpace K]
 
 variable (hρ : 0 < ρ) (ha : ConvergesAt a ρ) (hb : ConvergesAt b ρ) (ha0 : a ≠ 0) (hb0 : b ≠ 0)
 include hρ ha hb ha0 hb0
 
-end Multiplicative
 
 end Dominant
 

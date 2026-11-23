@@ -217,12 +217,10 @@ theorem PrimeDivisor.finite_ord_ne_zero {f : X.functionField} (hf : f ≠ 0) :
 
 end Finite
 
-section Divisor
 
 variable [IsIntegral X] [IsNoetherian X] [IsNormalScheme X]
 
 
 
-end Divisor
 
 end GroundTheory.Arith.SchemeCoh

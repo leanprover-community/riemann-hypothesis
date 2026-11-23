@@ -48,7 +48,6 @@ universe w' v u
 
 variable {C : Type u} [Category.{v} C] {J : GrothendieckTopology C}
 
-section ExtIso
 
 variable {𝒜 : Type*} [Category 𝒜] [Abelian 𝒜] [HasExt.{w'} 𝒜]
 
@@ -65,15 +64,12 @@ private lemma extAddEquiv₀_comp_mk₀ {X Y Z : 𝒜} (x : Ext X Y 0) (f : Y �
   apply (Ext.mk₀_bijective X Z).injective
   rw [Ext.mk₀_addEquiv₀_apply, ← Ext.mk₀_comp_mk₀, Ext.mk₀_addEquiv₀_apply]
 
-end ExtIso
 
-section Terminal
 
 variable [HasSheafify J AddCommGrpCat.{v}]
 
 variable [HasExt.{w'} (Sheaf J AddCommGrpCat.{v})]
 
-end Terminal
 
 section Zero
 

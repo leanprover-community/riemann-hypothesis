@@ -91,7 +91,6 @@ def haarProb (H : Type*) [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [
     [MeasurableSpace H] [BorelSpace H] : Measure H :=
   Measure.haarMeasure (⊤ : TopologicalSpace.PositiveCompacts H)
 
-section Prob
 
 variable (H : Type*) [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [CompactSpace H]
   [MeasurableSpace H] [BorelSpace H]
@@ -105,7 +104,6 @@ instance : IsProbabilityMeasure (haarProb H) := by
   rw [← TopologicalSpace.PositiveCompacts.coe_top (α := H)]
   exact Measure.haarMeasure_self
 
-end Prob
 
 def finAvgFun (g : normOneGL (K := K) (n := n) → ℂ) (x : normOneGL (K := K) (n := n)) : ℂ :=
   have := compactSpace_of_isOpen U hU

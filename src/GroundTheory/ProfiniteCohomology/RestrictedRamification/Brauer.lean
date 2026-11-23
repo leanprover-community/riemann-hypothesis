@@ -151,7 +151,6 @@ theorem cohomologyMapAlong_cohomologyMap_apply {H : Type u} [Group H] [Topologic
 
 end LES
 
-section Instances
 
 variable (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) (ιs : LocalEmbeddings K)
 
@@ -176,7 +175,6 @@ instance isDiscreteRep_galUnitsModSUnits_finiteSubfield :
     IsDiscreteRep (galUnitsModSUnits K.1 ℚ̄ S) :=
   isDiscreteRep_sUnitsQuotSequence_X₃ K.1 ℚ̄ S
 
-end Instances
 
 section SUnits
 

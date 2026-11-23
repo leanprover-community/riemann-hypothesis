@@ -50,7 +50,6 @@ universe u
 
 attribute [local instance 2000] Rep.hV2
 
-section Finite
 
 variable {k Γ : Type u} [CommRing k] [Group Γ] (W : Subgroup Γ) (V : Type u) [AddCommGroup V]
   [Module k V]
@@ -66,7 +65,6 @@ instance finite_coind_trivial [Finite V] [W.FiniteIndex] :
   rwa [← Subgroup.coe_inv, coind_trivial_apply_mul W V f w⁻¹ x,
     coind_trivial_apply_mul W V f' w⁻¹ x] at h
 
-end Finite
 
 section Formula
 

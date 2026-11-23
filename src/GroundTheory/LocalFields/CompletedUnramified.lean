@@ -594,10 +594,8 @@ theorem completedFrobenius_integerToCompleted {L : IntermediateField K Ω}
 
 end FiniteFrobenius
 
-section Check
 
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
 
-end Check
 
 end GroundTheory.LocalField

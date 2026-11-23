@@ -59,10 +59,8 @@ def PushDown.Statement : Prop :=
         (∀ j, IsPullHerm Sum.inl Pl.xV (L j) (L' j)) → (∀ j, IsSmoothHerm (N j)) →
         II _ Pl.ιY (Pl.flagPrime B) (d + r) (Fin.append L' N) = 0)
 
-section Bot
 
 variable {K : Type} {ι : K → Type} {K' : Type} {ι' : K' → Type}
 
-end Bot
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree

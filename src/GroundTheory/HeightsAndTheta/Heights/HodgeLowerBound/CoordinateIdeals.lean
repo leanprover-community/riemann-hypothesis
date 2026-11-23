@@ -104,7 +104,6 @@ def SncChart.logR {P : Ideal (MRing ι)} {n : ℕ} {Bd : Set ((Σ k, ι k) → �
 
 end Charts
 
-section Metric
 
 variable {Ω : Type} [Field Ω] {E : Type} [AddCommGroup E] [Module Ω E] {N : ℕ}
 
@@ -146,7 +145,6 @@ structure HermMetric (y : (Σ k, ι k) → Ω) (W : ChartBundle ℤ (segreCoord 
       ∀ p q, ‖fderiv ℝ (fun t' => gram l ((χ a).γ t') p q) t‖ ≤
         C * Real.exp ((χ a).logR t / 2)
 
-end Metric
 
 section Divisors
 

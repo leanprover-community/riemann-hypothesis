@@ -45,11 +45,9 @@ namespace GroundTheory.Automorphic
 
 open Module TensorProduct
 
-section QuadAlg
 
 variable {R : Type*} [CommRing R]
 
-end QuadAlg
 
 section BaseChange
 
@@ -130,7 +128,6 @@ theorem quadTensorEquiv_tmul (r : R) (z : QuadraticAlgebra L d 0) :
 
 end BaseChange
 
-section Bridge
 
 open NumberField IsDedekindDomain GroundTheory.Global GroundTheory.Global.SemiLocal
 open scoped NumberField.LiesOver
@@ -139,9 +136,7 @@ variable {L : Type*} [Field L] [NumberField L] (d : L) [Fact (âˆ€ r : L, r ^ 2 â
 
 
 
-end Bridge
 
-section HasseNorm
 
 open NumberField IsDedekindDomain GroundTheory.Global GroundTheory.Global.SemiLocal Filter
 
@@ -149,6 +144,5 @@ universe u
 
 variable {L : Type u} [Field L] [NumberField L]
 
-end HasseNorm
 
 end GroundTheory.Automorphic

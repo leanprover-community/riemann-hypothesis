@@ -248,7 +248,6 @@ theorem map_unitsEquivOfForall_range_norm (K' L' : OpenSubgroup (Ω ≃ₐ[K] Ω
 
 end Relative
 
-section NormSquare
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [Algebra K Ω] [IsSepClosure K Ω]
@@ -256,9 +255,7 @@ variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchi
   [IsGalois E (IntermediateField.extendScalars h)]
   (L : IntermediateField K Ω) [FiniteDimensional K L] [IsGalois K L]
 
-end NormSquare
 
-section ConjSquare
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [Algebra K Ω] [IsSepClosure K Ω]
@@ -275,6 +272,5 @@ variable {E F : IntermediateField K Ω} (h : E ≤ F) [FiniteDimensional K F]
 
 
 
-end ConjSquare
 
 end GroundTheory.LocalField

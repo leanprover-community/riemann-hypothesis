@@ -77,7 +77,6 @@ theorem isOpen_of_forall_apply_eq_mem [Algebra.IsIntegral K L] (H : Subgroup Gal
 
 end Open
 
-section Discrete
 
 variable [Algebra.IsIntegral K L]
 
@@ -112,12 +111,9 @@ instance isDiscreteRep_galRootsOfUnity (n : ℕ) : IsDiscreteRep (galRootsOfUnit
     congr 1
     exact Subtype.ext (Units.ext h)⟩
 
-end Discrete
 
-section Galois
 
 variable (K L) [IsGalois K L]
 
-end Galois
 
 end GroundTheory.ProfCoh

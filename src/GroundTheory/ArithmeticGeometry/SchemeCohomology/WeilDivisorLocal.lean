@@ -88,47 +88,35 @@ lemma ord_nonneg_iff (x : PrimeDivisor X) {f : X.functionField} (hf : f ≠ 0) :
 
 end PrimeDivisor
 
-section Algebra
 
 variable {A : Type*} [CommRing A] [IsDomain A] (p : Ideal A) [p.IsPrime]
 
-end Algebra
 
 section Hartogs
 
 end Hartogs
 
-section Affine
 
 variable {U : X.Opens} (hU : IsAffineOpen U)
 
 
 variable [IsIntegral X] [IsLocallyNoetherian X] [IsNormalScheme X]
 
-end Affine
 
-section Uniformizer
 
 variable [IsIntegral X] [IsLocallyNoetherian X] [IsLocallyFactorial X]
 
-end Uniformizer
 
-section LocallyPrincipal
 
 variable [IsIntegral X] [IsNoetherian X] [IsLocallyFactorial X]
 
-end LocallyPrincipal
 
-section Regular
 
 variable [IsIntegral X] [IsLocallyNoetherian X] [IsLocallyFactorial X]
 
-end Regular
 
-section Regular
 
 variable [IsIntegral X] [IsLocallyNoetherian X] [IsLocallyFactorial X]
 
-end Regular
 
 end GroundTheory.Arith.SchemeCoh

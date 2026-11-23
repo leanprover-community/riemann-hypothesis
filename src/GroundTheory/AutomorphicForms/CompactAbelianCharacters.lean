@@ -130,13 +130,11 @@ theorem span_charCM_dense :
   have hf : f ∈ (charAlgebra (C := C)).topologicalClosure := by rw [h]; trivial
   exact hf
 
-section L2
 
 variable [MeasurableSpace C] [BorelSpace C] (μ : Measure C) [μ.IsHaarMeasure]
 
 variable [IsProbabilityMeasure μ]
 
-end L2
 
 end
 

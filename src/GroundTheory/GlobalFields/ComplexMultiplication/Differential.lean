@@ -48,7 +48,6 @@ open WeierstrassCurve.Affine (Point equation_iff nonsingular_iff')
 
 universe u v
 
-section Identities
 
 variable {R : Type*} [CommRing R]
 
@@ -111,7 +110,6 @@ private theorem tangent_identities {a₁ a₂ a₃ a₄ x₁ y₁ x₃ y₃ l : 
   · linear_combination (-a₁^2*l + a₁*a₂ - 3*a₁*l^2 + 6*a₁*x₁ + 2*a₂*l + 3*a₃ - 2*l^3 + 6*l*x₁ +
       6*y₁) * hl
 
-end Identities
 
 section AtPoint
 

@@ -118,11 +118,9 @@ abbrev WIdx : T.WBlk → Type := T.wwIdx S.ι S.ν S.κ
 
 end ProjectiveLineBundle
 
-section Diag
 
 variable {ι ν κ : Type} [Fintype ι] [Fintype ν] [Fintype κ]
 
-end Diag
 
 section Powers
 

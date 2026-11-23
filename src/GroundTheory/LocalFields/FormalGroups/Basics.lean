@@ -338,7 +338,6 @@ theorem add_comp [H.IsComm] (g₁ g₂ : Hom G H) (f : Hom F G) :
 
 end Comm
 
-section Ring
 
 variable [F.IsComm]
 
@@ -352,7 +351,6 @@ noncomputable instance : Ring (Hom F F) :=
       rw [mul_def, toPoint_comp]
       exact (apply_zero f).trans rfl) }
 
-end Ring
 
 end Hom
 

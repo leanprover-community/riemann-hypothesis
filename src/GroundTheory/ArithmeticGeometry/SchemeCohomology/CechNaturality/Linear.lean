@@ -41,7 +41,6 @@ open CategoryTheory Opposite TopologicalSpace AlgebraicGeometry Limits
 
 universe w' w v u
 
-section EndAction
 
 variable {C : Type u} [Category.{v} C] {J : GrothendieckTopology C}
   [HasSheafify J AddCommGrpCat.{w}] [HasExt.{w'} (Sheaf J AddCommGrpCat.{w})]
@@ -65,7 +64,6 @@ noncomputable def H.endRingHom (G : Sheaf J AddCommGrpCat.{w}) (n : ℕ) :
       Sheaf.H.map f.asHom n x + Sheaf.H.map g.asHom n x
     exact Sheaf.H.map_add_apply f.asHom g.asHom x
 
-end EndAction
 
 section Scalar
 

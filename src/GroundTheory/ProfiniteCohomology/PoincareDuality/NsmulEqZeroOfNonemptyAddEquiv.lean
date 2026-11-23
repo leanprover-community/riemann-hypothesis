@@ -106,7 +106,6 @@ def toDualDual (D M : Rep.{u} k G) : M ⟶ dualRep D (dualRep D M) :=
 
 end Dual
 
-section Discrete
 
 variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
@@ -125,7 +124,6 @@ instance isDiscreteRep_dualRep (D M : Rep.{u} k G) [IsDiscreteRep D] [IsDiscrete
   have hm : M.ρ σ⁻¹ m = m := (stabilizer M.ρ m).inv_mem (hσ m).1
   rw [dualRep_ρ_apply, hm, (hσ m).2]
 
-end Discrete
 
 section Pairing
 
@@ -243,7 +241,6 @@ theorem zmodMulPairing_tmul (n : ℕ) (D : Rep.{u} (ULift.{u} ℤ) G) (hD : ∀ 
 
 end ZModMul
 
-section Hypotheses
 
 variable {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
 
@@ -270,6 +267,5 @@ structure DualityHypotheses (n : ℕ) (D : Rep.{u} (ULift.{u} ℤ) G) [IsDiscret
         (nsmul_eq_zero_of_nonempty_addEquiv nonempty_addEquiv)) (show 1 + 1 = 2 from rfl)))
       (t U).toAddMonoidHom
 
-end Hypotheses
 
 end GroundTheory.ProfCoh

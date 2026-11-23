@@ -48,21 +48,17 @@ variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchi
   {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω] [IsGalois K Ω]
 
-section GaloisAPF
 
 variable {L : IntermediateField K Ω} [IsGalois K L]
 
 variable (hL : IsAPF K Ω L)
 include hL
 
-end GaloisAPF
 
-section Tower
 
 variable {L : IntermediateField K Ω} [IsGalois K L] (hL : IsAPF K Ω L)
 include hL
 
-end Tower
 
 section Construction
 

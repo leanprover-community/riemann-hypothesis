@@ -45,19 +45,15 @@ namespace GroundTheory.LocalField
 
 open Module Representation
 
-section Basics
 
 variable {G : Type*} [Group G]
 
 variable [Fintype G]
 
-end Basics
 
-section IndFunMore
 
 variable {G H H' : Type*} [Group G] [Group H] [Group H'] [Fintype G] [Fintype H] [Fintype H']
 
-end IndFunMore
 
 section Conj
 
@@ -103,11 +99,9 @@ def inertia (θ : A → ℂ) : Subgroup G where
 
 end Conj
 
-section Clifford
 
 variable {G : Type*} [Group G] [Fintype G] {A : Subgroup G} [A.Normal]
 
 
-end Clifford
 
 end GroundTheory.LocalField

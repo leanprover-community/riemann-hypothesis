@@ -57,7 +57,6 @@ theorem cupRightProf_apply (h : p + q = n) (b : cohomology B q) (a : cohomology 
 
 end Generic
 
-section Profinite
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
   [TotallyDisconnectedSpace G]
@@ -69,7 +68,6 @@ noncomputable def cupCharClassProf (A : Rep ℤ G) [IsDiscreteRep A] (χ : Addit
   (H0Iso A).inv ≫ cupRightProf (A := A) (B := Rep.trivial ℤ G ℤ) (zero_add 2) (charClassProf χ) ≫
     cohomologyMap (A := A ⊗ Rep.trivial ℤ G ℤ) (B := A) (ρ_ A).hom 2
 
-end Profinite
 
 section Galois
 

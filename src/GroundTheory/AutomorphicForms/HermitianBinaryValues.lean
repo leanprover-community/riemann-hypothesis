@@ -43,11 +43,9 @@ namespace GroundTheory.Automorphic
 
 open NumberField IsDedekindDomain GroundTheory.Global Filter
 
-section Algebra
 
 variable {K : Type*} [Field K]
 
-end Algebra
 
 section Archimedean
 
@@ -65,7 +63,6 @@ theorem continuous_ringEquivRealOfIsReal (hv : v.IsReal) :
 
 end Archimedean
 
-section Main
 
 open NumberField.InfinitePlace.Completion
 
@@ -73,14 +70,12 @@ universe u
 
 variable {K : Type u} [Field K] [NumberField K]
 
-section AtL
 
 open scoped NumberField.LiesOver
 open GroundTheory.Global.SemiLocal GroundTheory.Global.AdeleBaseChange
 
 variable {γ t : K} [Fact (∀ r : K, r ^ 2 ≠ -γ + t * r)]
 
-end AtL
 
 end Main
 

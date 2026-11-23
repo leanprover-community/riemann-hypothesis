@@ -43,7 +43,6 @@ set_option linter.unusedSectionVars false
 
 attribute [local instance 100] LieRing.ofAssociativeRing
 
-section TraceForm
 
 variable {𝕜 : Type*} [RCLike 𝕜] {ι : Type*} [Fintype ι] [DecidableEq ι]
 
@@ -51,13 +50,10 @@ variable (L : LieSubalgebra ℝ (Matrix ι ι 𝕜))
 
 variable {L}
 
-end TraceForm
 
-section Positivity
 
 variable {𝕜 : Type*} [RCLike 𝕜] {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-end Positivity
 
 section Cartan
 

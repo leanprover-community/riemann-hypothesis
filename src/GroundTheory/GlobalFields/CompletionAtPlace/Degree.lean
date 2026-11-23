@@ -139,13 +139,11 @@ theorem finrank_adicCompletion :
 
 end Degree
 
-section Check
 
 open AdicLiesOver
 
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
   (v : HeightOneSpectrum (𝓞 K)) (w : HeightOneSpectrum (𝓞 L)) [w.asIdeal.LiesOver v.asIdeal]
 
-end Check
 
 end GroundTheory.Global

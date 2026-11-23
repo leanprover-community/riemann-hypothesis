@@ -72,7 +72,6 @@ theorem normalBasis_repr_apply_smul (σ τ : Gal(L/K)) (y : L) :
 
 end NormalBasis
 
-section Coinduced
 
 variable (k : Type u) (K L : Type u) [CommRing k] [Field K] [Field L] [Algebra K L]
   [Algebra k K] [Algebra k L] [IsScalarTower k K L] [FiniteDimensional K L] [IsGalois K L]
@@ -97,7 +96,6 @@ noncomputable def galoisCoindIso :
     (IsGalois.normalBasis K L).repr y (h * σ)⁻¹
   rw [normalBasis_repr_apply_smul, mul_inv_rev]
 
-end Coinduced
 
 section Vanishing
 
@@ -124,10 +122,8 @@ theorem isZero_groupCohomology_galois {n : ℕ} (hn : n ≠ 0) :
 
 end Vanishing
 
-section Integral
 
 variable (K L : Type) [Field K] [Field L] [Algebra K L] [FiniteDimensional K L] [IsGalois K L]
 
-end Integral
 
 end GroundTheory.ProfCoh

@@ -189,11 +189,9 @@ theorem tateTraceHat_smul (n : ℕ) (σ : Gal(PadicAlgCl p/K)) {x : ℂ_[p]}
 
 end Completion
 
-section Gamma
 
 variable {K}
 
-end Gamma
 
 end
 

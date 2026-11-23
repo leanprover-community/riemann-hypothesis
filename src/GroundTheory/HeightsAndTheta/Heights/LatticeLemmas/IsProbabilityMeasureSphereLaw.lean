@@ -40,17 +40,13 @@ open MvPolynomial NumberField MeasureTheory ProbabilityTheory TensorProduct Comp
 
 noncomputable section
 
-section GaussNorms
 
 variable {L : Type*} [Field L]
 
-end GaussNorms
 
-section Sphere
 
 variable {n : ℕ}
 
-end Sphere
 
 section HeightsOfPoints
 

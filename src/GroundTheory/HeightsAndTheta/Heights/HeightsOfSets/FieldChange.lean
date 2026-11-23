@@ -217,13 +217,11 @@ theorem support_log_iSup_place_finite {F : Type*} [Field F] [NumberField F] {ι 
   change Real.log (⨆ i, w (y i)) = 0
   rw [h1', Real.log_one]
 
-section Cone
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {n : ι → ℕ}
 
 
 
-end Cone
 
 end
 

@@ -233,7 +233,6 @@ theorem two_y_pow_four_add {x y : R} (h : W.toAffine.Equation x y) :
 
 end Values
 
-section Algebra
 
 variable {F : Type*} [Field F]
 
@@ -265,7 +264,6 @@ private theorem step_alg_zero {b c wp2 wp1 w0 wm2 wm3 wm4 : F}
   linear_combination (b ^ 2 * w0 * wm3 ^ 2) * s0 + (-c * wm2 * (b ^ 2 * w0 * wm2 + wm3 * wp1)) * s1 +
     (-b ^ 4 * w0 ^ 2 * wm2) * s2 + (-b ^ 2 * w0 ^ 3) * s3
 
-end Algebra
 
 section Points
 
@@ -349,7 +347,6 @@ theorem two_smul_some {x y : F} (h : W.toAffine.Nonsingular x y) :
 
 end Points
 
-section Main
 
 variable {F : Type*} [Field F] [DecidableEq F] (W : WeierstrassCurve F)
   {x₀ y₀ : F} (h₀ : W.toAffine.Nonsingular x₀ y₀)
@@ -548,7 +545,6 @@ private theorem good_succ (n : ℤ) (hn : 2 ≤ n) (ih : ∀ j, 1 ≤ j → j �
   rw [eq_sub_iff_add_eq, ← eq_sub_iff_add_eq', div_eq_iff (pow_ne_zero 2 hwp)]
   linear_combination key
 
-end Main
 
 section Statements
 

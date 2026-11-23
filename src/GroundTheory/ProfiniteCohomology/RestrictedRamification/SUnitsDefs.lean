@@ -151,7 +151,6 @@ theorem sUnitsKummerSequence_g : (sUnitsKummerSequence S E n).g = n • 𝟙 (ga
 
 end SUnits
 
-section Max
 
 variable (F : Type u) [Field F] [NumberField F] (Ω : Type u) [Field Ω] [Algebra F Ω]
 variable (S : Set (HeightOneSpectrum (𝓞 F)))
@@ -162,6 +161,5 @@ noncomputable abbrev sUnitsMax : Subgroup (maxUnramifiedOutside (F := F) (Ω := 
 noncomputable abbrev galSUnitsMax : Rep.{u} (ULift.{u} ℤ) (galUnramifiedOutside (F := F) (Ω := Ω) S) :=
   galSUnits S (maxUnramifiedOutside (F := F) (Ω := Ω) S)
 
-end Max
 
 end GroundTheory.ProfCoh

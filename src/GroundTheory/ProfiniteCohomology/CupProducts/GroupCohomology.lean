@@ -46,11 +46,9 @@ universe u
 
 variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
-section Comparison
 
 variable {A B : Rep.{u} k G} [IsDiscreteRep A] [IsDiscreteRep B] {p q n : ℕ}
 
-end Comparison
 
 section Levels
 

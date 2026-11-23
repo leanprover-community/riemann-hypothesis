@@ -343,7 +343,6 @@ theorem realDualityPairingZeroTwo_flip_bijective :
 
 end Duality
 
-section Values
 
 variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] [FiniteDimensional F Ω] [IsGalois F Ω]
   (h2 : Module.finrank F Ω ≤ 2)
@@ -356,7 +355,6 @@ variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] [FiniteDimensional F 
   (hroots : ∀ k : ℕ, 0 < k → Nonempty (galRootsOfUnity.{0} F Ω k ≃+ ZMod k))
   (M : Rep.{0} (ULift.{0} ℤ) Gal(Ω/F)) [IsDiscreteRep M] [Finite M]
 
-end Values
 
 section Bundle
 

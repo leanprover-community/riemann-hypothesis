@@ -49,7 +49,6 @@ open MvPolynomial
 
 noncomputable section
 
-section Helpers
 
 variable {F : Type*} [Field F] {n k : ℕ}
 
@@ -94,7 +93,6 @@ private theorem mem_support_fundCycle_iff {J : Ideal (MvPolynomial (Fin n) F)} (
     rw [if_pos h, localMult_eq_one_of_isRadical hJ h.1]
     exact one_ne_zero
 
-end Helpers
 
 theorem ChowFormReduced.proof_of_prime_separate (hPrime : IncIdealPrime.Statement) (hSep : IncIdealSeparate.Statement) :
     ChowFormReduced.Statement := by

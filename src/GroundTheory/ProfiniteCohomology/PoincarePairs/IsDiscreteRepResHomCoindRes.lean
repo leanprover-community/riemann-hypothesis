@@ -97,7 +97,6 @@ theorem compactDualityMap_apply (D : Rep.{u} k G) [IsDiscreteRep D] {n m r s : �
 
 end CupRes
 
-section Cores
 
 variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [CompactSpace G] {ι : Type u} {Hv : ι → Type u} [∀ v, Group (Hv v)]
@@ -123,7 +122,6 @@ noncomputable def compactCores (V : OpenSubgroup G) (A : Rep.{u} k G) [IsDiscret
       (fun v => (Rep.resFunctor (φ v).toMonoidHom).map (coindTrace (V : Subgroup G) A))
       (fun _ => (Category.id_comp _).trans (Category.comp_id _).symm) n
 
-end Cores
 
 section Hypotheses
 

@@ -40,20 +40,16 @@ noncomputable section
 
 namespace CyclotomicSymbol
 
-section Roots
 
 variable {K : Type*} [Field K] [NumberField K] {L : Type*} [Field L] [NumberField L] [Algebra K L]
   [IsGalois K L] [IsMulCommutative (L ≃ₐ[K] L)]
 
-end Roots
 
-section Sub
 
 variable {K : Type*} [Field K] [NumberField K] (L M : Type*) [Field L] [NumberField L] [Field M]
   [NumberField M] [Algebra K L] [Algebra L M] [Algebra K M] [IsScalarTower K L M]
   [IsGalois K L] [IsGalois K M] [IsMulCommutative (L ≃ₐ[K] L)] [IsMulCommutative (M ≃ₐ[K] M)]
 
-end Sub
 
 section ClassSymbol
 

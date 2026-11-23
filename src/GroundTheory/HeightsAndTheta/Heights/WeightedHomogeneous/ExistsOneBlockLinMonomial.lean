@@ -46,11 +46,9 @@ open ReciprocityTheory.ChartRestriction.G.Geo (IsMultiHomog IsArithVar mCoordIde
 
 noncomputable section
 
-section Values
 
 variable {K : Type} [Field K] {d : ℕ} (om : Module.Basis (Fin d) ℤ (𝓞 K)) (i : ℕ)
 
-end Values
 
 end
 

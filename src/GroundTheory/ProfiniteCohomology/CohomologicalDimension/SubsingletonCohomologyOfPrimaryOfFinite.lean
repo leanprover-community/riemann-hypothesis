@@ -512,10 +512,8 @@ theorem cdp_le_iff_forall_simple {p : ℕ} (hp : p.Prime) (n : ℕ) :
 
 end Criteria
 
-section Strict
 
 variable {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
-end Strict
 
 end GroundTheory.ProfCoh

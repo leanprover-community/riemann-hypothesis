@@ -86,14 +86,12 @@ noncomputable def kummerSequence : ShortComplex (Rep.{u} (ULift.{u} ℤ) Gal(L/K
 
 end Kummer
 
-section Brauer
 
 variable [IsGalois K L]
 
 noncomputable abbrev galoisBrauerGroup : ModuleCat.{u} (ULift.{u} ℤ) :=
   cohomology (galUnits.{u} K L) 2
 
-end Brauer
 
 section Inflation
 

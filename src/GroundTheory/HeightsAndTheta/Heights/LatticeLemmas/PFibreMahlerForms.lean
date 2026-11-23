@@ -44,17 +44,13 @@ noncomputable section
 
 namespace FibreMahlerForms
 
-section Dual
 
 variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V] {ι : Type*} [Fintype ι]
 
-end Dual
 
-section Mahler
 
 variable {d : ℕ}
 
-end Mahler
 
 section Fibre
 

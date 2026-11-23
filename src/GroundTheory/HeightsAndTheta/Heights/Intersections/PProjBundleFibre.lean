@@ -115,22 +115,18 @@ theorem ker_linSubst (ℓ : σ → Fin n → Φ) (ν : Fin n → σ → Φ)
 
 end LinSubst
 
-section Main
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 
 
 
-end Main
 
-section Fibre
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 
 
 
-end Fibre
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter

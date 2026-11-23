@@ -112,12 +112,10 @@ theorem continuous_gsRes (h : T ⊆ S) : Continuous (gsRes (Ω := Ω) h) := by
 def gsResCont (h : T ⊆ S) : galUnramifiedOutside K Ω S →ₜ* galUnramifiedOutside K Ω T :=
   ⟨gsRes h, continuous_gsRes h⟩
 
-section Local
 
 variable {Kv Ωv : Type u} [Field Kv] [Field Ωv] [Algebra K Kv] [Algebra Kv Ωv] [Algebra K Ωv]
   [IsScalarTower K Kv Ωv]
 
-end Local
 
 end
 

@@ -52,11 +52,9 @@ variable {u : ι → H}
 
 end FinProj
 
-section Limits
 
 variable [CompleteSpace H]
 
-end Limits
 
 end
 

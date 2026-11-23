@@ -132,11 +132,9 @@ theorem continuous_expUnit : Continuous (expUnit 𝕂 𝔸) :=
 
 end ExpChart
 
-section UnitsChart
 
 variable (𝕂 : Type*) [RCLike 𝕂] {𝔸 : Type*} [NormedRing 𝔸] [NormedAlgebra 𝕂 𝔸] [CompleteSpace 𝔸]
 
-end UnitsChart
 
 section GeneralLinear
 

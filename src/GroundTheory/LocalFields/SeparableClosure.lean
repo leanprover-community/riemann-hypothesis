@@ -241,7 +241,6 @@ theorem algebraicTopology_isValuativeTopology :
 
 end Existence
 
-section SeparableClosure
 
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
 
@@ -257,7 +256,6 @@ instance separableClosure_valuativeExtension : ValuativeExtension K (SeparableCl
 instance separableClosure_isValuativeTopology : IsValuativeTopology (SeparableClosure K) :=
   algebraicTopology_isValuativeTopology K (SeparableClosure K)
 
-end SeparableClosure
 
 section Topology
 
@@ -380,11 +378,9 @@ theorem continuous_algEquiv_of_isAlgebraic (σ : Ω ≃ₐ[K] Ω) : Continuous �
 
 end Finite
 
-section Check
 
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   (L : IntermediateField K (SeparableClosure K)) [FiniteDimensional K L]
 
-end Check
 
 end GroundTheory.LocalField

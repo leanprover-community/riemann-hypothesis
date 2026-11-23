@@ -44,7 +44,6 @@ open scoped GroundTheory.Global.SemiLocal Pointwise
 
 namespace GroundTheory.Global
 
-section Transport
 
 variable {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   {L₁ : Type*} [Field L₁] [ValuativeRel L₁] [TopologicalSpace L₁] [IsNonarchimedeanLocalField L₁]
@@ -52,7 +51,6 @@ variable {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchi
   {L₂ : Type*} [Field L₂] [ValuativeRel L₂] [TopologicalSpace L₂] [IsNonarchimedeanLocalField L₂]
   [Algebra F L₂] [ValuativeExtension F L₂] [FiniteDimensional F L₂] [IsGalois F L₂]
 
-end Transport
 
 section Local
 
@@ -68,7 +66,6 @@ variable {V : Type*} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
 
 end Local
 
-section Ideal
 
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
   [IsGalois K L] {V : Type*} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
@@ -77,6 +74,5 @@ variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Alge
 
 
 
-end Ideal
 
 end GroundTheory.Global

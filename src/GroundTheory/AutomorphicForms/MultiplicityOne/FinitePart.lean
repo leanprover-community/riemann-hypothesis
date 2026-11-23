@@ -93,7 +93,6 @@ def finRep : Representation ℂ (AdelicGLn.FiniteAdelicGL K n) (HomSpace σ V₀
       σ (finProj K n w) ∘L (σ (finProj K n w') ∘L (S : homArch σ V₀ hV₀).1)
     rw [map_mul, UnitaryRep.map_mul, ContinuousLinearMap.mul_def, ContinuousLinearMap.comp_assoc]
 
-section Admissible
 
 variable {σ V₀}
 variable {U₀ : Subgroup (AdelicGLn.FiniteAdelicGL K n)} (hV₀U : V₀ ≤ fixedSubspace σ U₀)
@@ -101,7 +100,6 @@ variable {U₀ : Subgroup (AdelicGLn.FiniteAdelicGL K n)} (hV₀U : V₀ ≤ fix
 
 variable {μ : Measure (normOneGL (K := K) (n := n))} [μ.IsHaarMeasure]
 
-end Admissible
 
 end MultiplicityOne
 

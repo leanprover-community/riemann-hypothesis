@@ -42,14 +42,12 @@ open Polynomial IntermediateField ValuativeRel
 
 namespace GroundTheory.LocalField
 
-section Definition
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [Algebra K Ω]
 
 
 
-end Definition
 
 section Valued
 
@@ -67,23 +65,18 @@ theorem isUnramifiedSubextension_iff' (E : IntermediateField K Ω) [FiniteDimens
 
 end Valued
 
-section SlopeTestRemainingChoices
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
 
 variable {Ω : Type*} [Field Ω] [Algebra K Ω]
 
-end SlopeTestRemainingChoices
 
-section Valued
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω]
 
-end Valued
 
-section Structure
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
 
@@ -91,9 +84,7 @@ variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchi
 variable {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
   [Algebra K Ω] [ValuativeExtension K Ω] [Algebra.IsAlgebraic K Ω]
 
-end Structure
 
-section Union
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
@@ -101,9 +92,7 @@ variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchi
 
 variable [IsSepClosed Ω]
 
-end Union
 
-section Galois
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [ValuativeRel Ω] [TopologicalSpace Ω] [IsValuativeTopology Ω]
@@ -111,13 +100,10 @@ variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchi
 
 
 
-end Galois
 
-section SeparableClosure
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {Ω : Type*} [Field Ω] [Algebra K Ω] [IsSepClosure K Ω]
 
-end SeparableClosure
 
 end GroundTheory.LocalField

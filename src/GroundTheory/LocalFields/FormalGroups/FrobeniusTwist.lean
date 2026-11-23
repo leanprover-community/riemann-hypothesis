@@ -209,7 +209,6 @@ theorem exists_units_eq_mul [IsAdicComplete (maximalIdeal B) B] (v : Bˣ) :
 
 end Solve
 
-section Kernel
 
 variable {A B : Type*} [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
   [CommRing B] [IsDomain B] [IsDiscreteValuationRing B] [Algebra A B]

@@ -82,12 +82,10 @@ def weightRegRef : WeightReg (PBlk 2) where
 
 end Reg
 
-section Heights
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
   {II : IntersectionSystem} {Ψ : Type} [Fintype Ψ] {Ω : Type} [Field Ω] [Algebra ℚ Ω]
   {E : Ψ → Type} [∀ τ, AddCommGroup (E τ)] [∀ τ, Module Ω (E τ)]
 
-end Heights
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree

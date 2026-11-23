@@ -214,11 +214,9 @@ theorem cupPairing_h0Class (μ : A ⊗ B ⟶ C) (b : B) (hb : ∀ g : K, B.ρ g 
 
 end ZeroClasses
 
-section ZModZero
 
 variable {K : Type u} [Group K] {n : ℕ} [NeZero n] (D' : Rep.{u} (ULift.{u} ℤ) K) (hD : ∀ d : D', n • d = 0)
 
-end ZModZero
 
 section Instances
 
@@ -323,7 +321,6 @@ theorem zmodToCyclic_tensor_zmodMulPairingRight [NeZero n] :
 
 end Cyclic
 
-section Main
 
 variable {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
   [TotallyDisconnectedSpace G]
@@ -365,7 +362,6 @@ structure BaseDualityHypotheses (t : ∀ v, cohomology (Rep.res (φ v).toMonoidH
       T (compactCupRes φ (zmodMulPairing n D hD) (show 2 + 1 = 3 from rfl) xc
         ((compactToGlobal φ D (fun v => Rep.res (φ v).toMonoidHom D) (fun _ => 𝟙 _) 1).hom yc))
 
-end Main
 
 section MainProofs
 

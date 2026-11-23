@@ -95,7 +95,6 @@ theorem normalizedAbv_of_irreducible {ϖ : v.adicCompletionIntegers K} (hϖ : Ir
 
 end AbsoluteValue
 
-section LocalField
 
 variable {R : Type*} [CommRing R] [IsDedekindDomain R] {K : Type*} [Field K] [Algebra R K]
   [IsFractionRing R K] (v : HeightOneSpectrum R)
@@ -112,7 +111,6 @@ instance : IsValuativeTopology (v.adicCompletion K) :=
 instance : ValuativeRel.IsNontrivial (v.adicCompletion K) :=
   (ValuativeRel.isNontrivial_iff_isNontrivial Valued.v).2 inferInstance
 
-end LocalField
 
 section Bridge
 
@@ -128,12 +126,10 @@ theorem mem_valuationInteger_iff (x : v.adicCompletion K) :
 
 end Bridge
 
-section NumberField
 
 variable {K : Type*} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K))
 
 instance : IsNonarchimedeanLocalField (v.adicCompletion K) where
 
-end NumberField
 
 end GroundTheory.Global

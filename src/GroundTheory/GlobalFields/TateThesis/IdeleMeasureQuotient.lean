@@ -335,11 +335,9 @@ theorem integral_ideleMeasure_eq_integral_fundamentalDomain {E : Type*} [NormedA
 
 end Unfolding
 
-section Volume
 
 variable {K : Type*} [Field K] [NumberField K]
 
-end Volume
 
 end
 

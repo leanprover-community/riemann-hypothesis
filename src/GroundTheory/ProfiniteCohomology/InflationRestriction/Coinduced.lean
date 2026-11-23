@@ -44,7 +44,6 @@ open CategoryTheory Filter Topology
 
 universe u
 
-section Iso
 
 variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
@@ -55,7 +54,6 @@ noncomputable def cohomologyIsoOfIso {A B : Rep.{u} k G} [IsDiscreteRep A] [IsDi
   hom_inv_id := by rw [← cohomologyMap_comp, e.hom_inv_id, cohomologyMap_id]
   inv_hom_id := by rw [← cohomologyMap_comp, e.inv_hom_id, cohomologyMap_id]
 
-end Iso
 
 variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [CompactSpace G] (X : Type u) [AddCommGroup X] [Module k X]

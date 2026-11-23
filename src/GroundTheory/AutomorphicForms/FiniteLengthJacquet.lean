@@ -162,11 +162,9 @@ end Jacquet
 
 end Parabolic
 
-section Irreducible
 
 variable {G : Type*} [Group G] {V W : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
   [Module ℂ W] {ρ : Representation ℂ G V} {π : Representation ℂ G W}
 
-end Irreducible
 
 end GroundTheory.Automorphic

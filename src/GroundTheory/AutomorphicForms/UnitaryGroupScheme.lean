@@ -158,7 +158,6 @@ noncomputable def unitaryMap (f : R →ₐ[F] S) : unitaryPoints F E H R →* un
 
 end Points
 
-section Functor
 
 open CategoryTheory
 
@@ -167,7 +166,6 @@ universe u
 variable (F E : Type u) [Field F] [CommRing E] [Algebra F E] [Algebra.IsQuadraticExtension F E]
   {ι : Type u} [Fintype ι] [DecidableEq ι]
 
-end Functor
 
 section Rational
 

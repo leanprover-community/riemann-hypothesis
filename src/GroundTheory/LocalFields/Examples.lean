@@ -84,13 +84,11 @@ open _root_.LaurentSeries HahnSeries
 
 variable (K : Type*) [Field K]
 
-section Finite
 
 variable {K}
 
 variable (K) [Finite K]
 
-end Finite
 
 end LaurentSeries
 

@@ -62,11 +62,9 @@ theorem ratio_mul_ratio {u v w : A} (hu : u ∈ 𝒜 1) (hv : v ∈ 𝒜 1) (hw 
 
 end ProjTwist
 
-section Iso
 
 variable {X : Scheme.{u}}
 
-end Iso
 
 namespace ProjSpace
 

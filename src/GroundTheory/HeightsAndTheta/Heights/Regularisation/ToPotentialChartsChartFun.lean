@@ -121,11 +121,9 @@ variable [T2Space X] (hW : ∀ j, R.W j ⊆ ball 0 1)
 
 end RegCharts
 
-section RoundTrip
 
 variable [CompactSpace X] [T2Space X]
 
-end RoundTrip
 
 namespace PotentialCharts
 

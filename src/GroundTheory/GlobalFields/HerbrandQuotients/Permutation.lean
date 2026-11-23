@@ -321,10 +321,8 @@ theorem cyclicHerbrand_ofMulAction [Fintype (orbitRel.Quotient G X)]
 
 end Cohomology
 
-section Quotient
 
 variable {G : Type*} [Group G] [Fintype G]
 
-end Quotient
 
 end GroundTheory.Global

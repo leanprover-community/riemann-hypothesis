@@ -44,20 +44,16 @@ open IsDedekindDomain NumberField Filter Topology ComplexConjugate
 
 namespace GroundTheory.Global
 
-section Average
 
 variable {G : Type*} [Group G]
 
-end Average
 
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
   [IsGalois K L]
 
-section LocalAverage
 
 variable (v : HeightOneSpectrum (𝓞 K))
 
-end LocalAverage
 
 
 

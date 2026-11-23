@@ -60,7 +60,6 @@ theorem ideleSymbol_apply_algEquiv (e : L ≃ₐ[K] L') (x : IdeleGroup K) (l : 
 
 end Transport
 
-section Bridge
 
 variable {K : FiniteSubfield} (E : FiniteSubfield) [hKE : Fact (K ≤ E)]
 
@@ -68,18 +67,15 @@ variable [(E.1.fixingSubgroup.subgroupOf K.1.fixingSubgroup).Normal] [IsMulCommu
 
 attribute [local instance] FiniteSubfield.isGalois_of_normal
 
-end Bridge
 
 variable {K : FiniteSubfield} (ι : LocalEmbeddings K)
 
-section Symbols
 
 variable (E : FiniteSubfield) [Fact (K ≤ E)]
   [(E.1.fixingSubgroup.subgroupOf K.1.fixingSubgroup).Normal] [IsMulCommutative (E.1 ≃ₐ[K.1] E.1)]
 
 attribute [local instance] FiniteSubfield.isGalois_of_normal galCommGroup
 
-end Symbols
 
 end
 

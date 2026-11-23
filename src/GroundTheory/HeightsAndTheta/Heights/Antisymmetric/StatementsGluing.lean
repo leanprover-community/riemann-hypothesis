@@ -40,11 +40,9 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial TensorProduct
 
-section Lattices
 
 variable {Ω : Type*} [Field Ω]
 
-end Lattices
 
 section Join
 

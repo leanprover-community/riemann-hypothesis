@@ -99,7 +99,6 @@ theorem bijective_nsmul_of_dvd {A : Type*} [AddCommGroup A] {m n : ℕ} (hmn : m
 
 end Nsmul
 
-section Instances
 
 variable {k G : Type u} [CommRing k] [Group G] [TopologicalSpace G]
 
@@ -115,7 +114,6 @@ instance isDiscreteRep_res_toMonoidHom_res_subtype {H' : Type u} [Group H'] [Top
   haveI := IsDiscreteRep.res (continuous_subgroup_subtype S) B
   IsDiscreteRep.res (continuous_toMonoidHom ψ) _
 
-end Instances
 
 section Descent
 

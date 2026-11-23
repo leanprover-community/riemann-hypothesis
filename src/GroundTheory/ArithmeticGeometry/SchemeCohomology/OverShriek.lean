@@ -250,7 +250,6 @@ instance : (shriekFunctor U).PreservesMonomorphisms where
     intro a b hab
     exact (DFinsupp.mapRange_injective _ (fun s => map_zero _)).2 (fun s => hφ _) hab
 
-section Sheaf
 
 variable (J : GrothendieckTopology C) [HasSheafify J AddCommGrpCat.{v}]
 
@@ -274,6 +273,5 @@ instance (U : C) : (J.overPullback AddCommGrpCat.{v} U).PreservesInjectiveObject
   Functor.preservesInjectiveObjects_of_adjunction_of_preservesMonomorphisms
     (sheafShriekAdjunction J U)
 
-end Sheaf
 
 end GroundTheory.Arith.SchemeCoh

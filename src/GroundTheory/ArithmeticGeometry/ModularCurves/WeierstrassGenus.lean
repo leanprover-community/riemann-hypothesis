@@ -95,11 +95,9 @@ section CoverFacts
 
 end CoverFacts
 
-section Genus
 
 variable {K : Type u} [Field K] (W : WeierstrassCurve K)
 
-end Genus
 
 end Weierstrass
 

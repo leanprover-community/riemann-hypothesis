@@ -53,11 +53,9 @@ noncomputable section
 
 universe u
 
-section VectorBundle
 
 variable {X : Scheme.{u}}
 
-end VectorBundle
 
 section OverZ
 
@@ -71,34 +69,26 @@ def IsFiniteTypeOverZ (X : Scheme.{0}) : Prop :=
 
 end OverZ
 
-section Pullbacks
 
 variable {A B C D : Scheme.{u}}
 
-end Pullbacks
 
-section Generic
 
 variable {X : Scheme.{u}} [IrreducibleSpace X]
 
-end Generic
 
 section Opens
 
 end Opens
 
-section Generic
 
 variable {X : Scheme.{u}} [IrreducibleSpace X]
 
-end Generic
 
-section Unit
 
 variable {X Y : Scheme.{u}}
 
 
-end Unit
 
 section SchemeStatements
 

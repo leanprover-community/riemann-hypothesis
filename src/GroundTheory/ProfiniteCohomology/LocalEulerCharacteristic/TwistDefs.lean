@@ -65,7 +65,6 @@ theorem cohomologyMap_smul (c : k) (f : A ⟶ B) (n : ℕ) :
 
 end Smul
 
-section Morphisms
 
 variable (T : Rep.{u} k G) {M : Rep.{u} k G}
 
@@ -86,7 +85,6 @@ noncomputable def tensorFormMor (f : M →ₗ[k] k) (hf : ∀ (g : G) (m : M), f
     simp [Representation.tprod_apply, hf g]⟩
 
 
-end Morphisms
 
 section TwistMap
 

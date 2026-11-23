@@ -142,7 +142,6 @@ theorem cartierDualIsoHomRootsOfUnityOfNsmul_hom_apply (M : Rep.{u} (ULift.{u} â
 
 end RootsOfUnity
 
-section Finite
 
 
 instance isDiscreteRep_cartierDual [Algebra.IsIntegral K L] (M : Rep.{u} (ULift.{u} â„¤) Gal(L/K))
@@ -166,14 +165,11 @@ instance isDiscreteRep_cartierDual [Algebra.IsIntegral K L] (M : Rep.{u} (ULift.
       exact (isOpen_stabilizer M m).inter (isOpen_stabilizer (galUnits.{u} K L) (f' m))
 
 
-end Finite
 
-section Pairing
 
 variable (K L) [Algebra.IsIntegral K L]
 
 
-end Pairing
 
 section Biduality
 

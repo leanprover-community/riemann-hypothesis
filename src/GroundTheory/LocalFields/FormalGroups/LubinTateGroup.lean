@@ -115,7 +115,6 @@ theorem subst_substEach_unit (g : PowerSeries A) (φ : MvPowerSeries Unit A) :
 
 end Composition
 
-section FormalModule
 
 variable {A : Type*} [CommRing A]
 
@@ -125,7 +124,6 @@ structure FormalModule (F : FormalGroup A) [F.IsComm] where
 
   linearCoeff_smul : ∀ a, PowerSeries.coeff 1 (smul a).toPowerSeries = a
 
-end FormalModule
 
 section LubinTate
 

@@ -342,7 +342,6 @@ theorem existsUnique_of_dvd_defect {ℓ : MvPowerSeries σ A} (hℓ : constantCo
 
 end Construction
 
-section LocalRing
 
 variable {A : Type*} [CommRing A] [IsLocalRing A]
 
@@ -352,7 +351,6 @@ structure IsLubinTateSeries (π : A) (f : PowerSeries A) : Prop where
   dvd_coeff_sub : ∀ n : ℕ,
     π ∣ PowerSeries.coeff n (f - PowerSeries.X ^ Nat.card (IsLocalRing.ResidueField A))
 
-end LocalRing
 
 section DVR
 

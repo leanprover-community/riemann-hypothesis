@@ -74,17 +74,6 @@ section FiniteSets
 
 end FiniteSets
 
-section ShortBasis
-
-variable {K : Type*} [Field K] [NumberField K]
-variable {E : Type*} [CommRing E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
-variable {ι : Type*} [Fintype ι] [DecidableEq ι] {H : Matrix ι ι E}
-variable {κ : Type*} [Fintype κ] [DecidableEq κ] (b : Basis κ K E)
-
-
-end ShortBasis
-
-section Coordinates
 
 variable {K : Type*} [Field K] [NumberField K]
 variable {E : Type*} [CommRing E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
@@ -94,13 +83,19 @@ variable {κ : Type*} [Fintype κ] [DecidableEq κ] (b : Basis κ K E)
 
 
 
+variable {K : Type*} [Field K] [NumberField K]
+variable {E : Type*} [CommRing E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
+variable {ι : Type*} [Fintype ι] [DecidableEq ι] {H : Matrix ι ι E}
+variable {κ : Type*} [Fintype κ] [DecidableEq κ] (b : Basis κ K E)
 
 
 
 
-end Coordinates
 
-section EBound
+
+
+
+
 
 variable {K : Type*} [Field K] [NumberField K]
 variable {E : Type*} [CommRing E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
@@ -109,6 +104,5 @@ variable {κ : Type*} [Fintype κ] (b : Basis κ K E)
 
 
 
-end EBound
 
 end GroundTheory.Automorphic

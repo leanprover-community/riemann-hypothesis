@@ -100,22 +100,18 @@ theorem mem_minimalPrimes_iff {J J₁ W : Ideal S} (hJ : J ≤ J₁) {t : S} (ht
 
 end Local
 
-section Cycle
 
 variable {K : Type*} {κ : K → Type*} {R : Type*} [CommRing R]
 
-end Cycle
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {n : ι → ℕ}
 
-section AddBlock
 
 variable {P : ArithVariety n} (D : AddBlockData P)
 
 variable {d : ι → ℕ} {g : ((k : ι) → Fin (n k + 1)) → Fin (D.size + 1) → MvPolynomial (Coord n) ℤ}
 
 
-end AddBlock
 
 end SectionCycle
 

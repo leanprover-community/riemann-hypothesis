@@ -46,7 +46,6 @@ variable {k : Type u} [CommRing k]
 
 namespace LeibnizPairing
 
-section Prod
 
 variable {M₁ M₂ N₁ N₂ P₁ P₂ N : CochainComplex (ModuleCat.{u} k) ℕ}
 
@@ -76,7 +75,6 @@ noncomputable def prodLeft (μ₁ : LeibnizPairing M₁ N P₁) (μ₂ : Leibniz
     rw [prodComplex_d_hom_apply, prodComplex_d_hom_apply]
     exact Prod.ext (μ₁.leibniz h x.1 y) (μ₂.leibniz h x.2 y)
 
-end Prod
 
 section DegZero
 

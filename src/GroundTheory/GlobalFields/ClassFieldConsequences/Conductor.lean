@@ -155,7 +155,6 @@ end Modulus
 
 end Conductor
 
-section RayClassField
 
 variable {K : Type u} [Field K] [NumberField K] {Ω : Type u} [Field Ω] [Algebra K Ω] [IsAlgClosed Ω]
   (L : IntermediateField K Ω) [FiniteDimensional K L] [IsAbelianGalois K L]
@@ -164,7 +163,6 @@ namespace Modulus
 
 end Modulus
 
-end RayClassField
 
 end
 

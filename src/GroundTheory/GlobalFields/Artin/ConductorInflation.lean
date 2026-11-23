@@ -44,7 +44,6 @@ open scoped GroundTheory.Global.SemiLocal Pointwise
 
 namespace GroundTheory.Global
 
-section LocalInflation
 
 variable {K L : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   [Field L] [ValuativeRel L] [TopologicalSpace L] [IsNonarchimedeanLocalField L]
@@ -54,7 +53,6 @@ variable {M : Type*} [Field M] [ValuativeRel M] [TopologicalSpace M] [IsNonarchi
   [Algebra K M] [ValuativeExtension K M] [FiniteDimensional K M] [IsGalois K M] [Algebra M L]
   [IsScalarTower K M L]
 
-end LocalInflation
 
 section GlobalInflation
 

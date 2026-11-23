@@ -43,7 +43,6 @@ open GroundTheory.Heights₂.Heights.Regular (RegChartData BoundedPshData)
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-section Ties
 
 variable {P : Ideal (MRing ι)} {d : ℕ} {M : CxModel P d} {Xo : Set ((Σ k, ι k) → ℂ)}
 
@@ -59,7 +58,6 @@ structure BoundedRegularisationSetting.IsTied {a : K → ℤ} {w : ((Σ k, ι k)
   compare : ∀ᶠ t in 𝓝[>] 0, ∀ j k : Fin S.B.N, ∀ x ∈ S.B.mid j ∩ S.B.mid k,
     |S.B.phReg S.ρ t j x - S.B.phReg S.ρ t k x| ≤ S.e1 t
 
-end Ties
 
 
 open Classical in

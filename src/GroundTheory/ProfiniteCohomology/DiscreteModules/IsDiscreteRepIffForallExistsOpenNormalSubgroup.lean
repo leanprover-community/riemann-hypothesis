@@ -151,7 +151,6 @@ theorem mem_smoothSubmodule_of_isDiscreteRep (A : Rep.{w} k G) [IsDiscreteRep A]
 
 end Smooth
 
-section Closure
 
 instance isDiscreteRep_subrepresentation (A : Rep.{w} k G) [IsDiscreteRep A] (W : Submodule k A)
     (le_comap : ∀ g, W ≤ W.comap (A.ρ g)) : IsDiscreteRep (A.subrepresentation W le_comap) :=
@@ -189,7 +188,6 @@ instance isDiscreteRep_directSum {ι : Type w} (A : ι → Rep.{w} k G) [∀ i, 
   change DirectSum.lmap (fun j => (A j).ρ g) (DirectSum.of _ i (x i)) = DirectSum.of _ i (x i)
   rw [DirectSum.lmap_of, hg]
 
-end Closure
 
 section Subcategory
 

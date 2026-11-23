@@ -43,7 +43,6 @@ universe u
 
 variable {k G : Type u} [CommRing k] [Group G]
 
-section Additive
 
 variable [Fintype G]
 
@@ -52,7 +51,6 @@ instance tateCohomologyFunctor_additive (n : ℤ) :
   unfold tateCohomologyFunctor
   infer_instance
 
-end Additive
 
 section Rep
 

@@ -210,7 +210,6 @@ theorem bijective_compactDualityMap_of_level
 
 end Level
 
-section Primary
 
 variable {N : ℕ} [NeZero N] (D : Rep.{u} (ULift.{u} ℤ) G) [IsDiscreteRep D]
   (t : compactCohomologyRes φ D 3 →+ ZMod N)
@@ -218,7 +217,6 @@ variable {N : ℕ} [NeZero N] (D : Rep.{u} (ULift.{u} ℤ) G) [IsDiscreteRep D]
   (tp : ∀ p, compactCohomologyRes φ (Dp p) 3 →+ ZMod (p ^ N.factorization p))
   (jp : ∀ p, Dp p ⟶ D)
 
-end Primary
 
 section Primary
 

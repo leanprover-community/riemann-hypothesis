@@ -113,7 +113,6 @@ theorem length_map (V W : Ideal R) [W.IsPrime] [(W.map (φ : R →+* R')).IsPrim
 
 end RingEquiv
 
-section MRing
 
 variable {F : Type*} [Field F] {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
   {K' : Type*} [Fintype K'] {ι' : K' → Type*} [∀ k, Fintype (ι' k)]
@@ -136,7 +135,6 @@ include hσ
 
 
 
-end MRing
 
 end ExistsUniqueRelabel
 

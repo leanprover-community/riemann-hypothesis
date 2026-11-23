@@ -276,7 +276,6 @@ theorem tateCompactDualityMap_apply (D : Rep.{u} k G) [IsDiscreteRep D] {n m r s
 
 end CupRes
 
-section Hypotheses
 
 variable {G : Type u} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
   {ι : Type u} {H : ι → Type u} [∀ v, Group (H v)] [∀ v, TopologicalSpace (H v)]
@@ -297,6 +296,5 @@ structure TateCompactDualityHypotheses (n : ℕ) [NeZero n] (D : Rep.{u} (ULift.
     Function.Bijective (tateCompactDualityMap φ ψ D h t
       (Rep.coind (U : Subgroup G).subtype (zmodRep.{u} (U : Subgroup G) n)))
 
-end Hypotheses
 
 end GroundTheory.ProfCoh

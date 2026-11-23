@@ -70,23 +70,19 @@ theorem lamS_comp_of_mem_iff {N : ℕ} {A B : Finset (Fin N)} {σ : Equiv.Perm (
   funext x
   simp only [Function.comp_apply, lamS, hσ]
 
-section Values
 
 variable {n : ℕ} {ω : GL (Fin n) F → ℂ}
   (hR : ∀ g, ∀ k ∈ integralGL F n, ω (g * k) = ω g)
   (hL : ∀ g, ∀ k ∈ integralGL F n, ω (k * g) = ω g)
 include hR hL
 
-end Values
 
-section ValuesCons
 
 variable {N : ℕ} {ω : GL (Fin (N + 1)) F → ℂ}
   (hR : ∀ g, ∀ k ∈ integralGL F (N + 1), ω (g * k) = ω g)
   (hL : ∀ g, ∀ k ∈ integralGL F (N + 1), ω (k * g) = ω g)
 include hR hL
 
-end ValuesCons
 
 variable {n : ℕ} [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)]
 

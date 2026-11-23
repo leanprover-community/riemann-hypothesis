@@ -42,12 +42,10 @@ open scoped ComplexOrder
 
 noncomputable section
 
-section Embedding
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {n : ι → ℕ}
 
 
-end Embedding
 
 end
 

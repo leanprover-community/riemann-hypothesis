@@ -437,12 +437,10 @@ theorem exists_norm_eq_uniformizer (hf : IsLubinTateSeries π f) {n : ℕ} (hn :
 
 end Main
 
-section SeparableClosure
 
 variable (K : Type*) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   {π : 𝒪[K]} (hπ : Irreducible π) {f : PowerSeries 𝒪[K]} (hf : IsLubinTateSeries π f)
 
-end SeparableClosure
 
 end FormalGroup
 

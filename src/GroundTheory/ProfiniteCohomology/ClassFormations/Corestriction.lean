@@ -100,7 +100,6 @@ theorem inv_cohomologyCoresLE (x : H2Open C V) :
 
 end ClassFormation
 
-section Quot
 
 variable {U V : Subgroup G} [(V.subgroupOf U).Normal]
 
@@ -108,7 +107,6 @@ instance compactSpace_quotientGroup {H : Type*} [Group H] [TopologicalSpace H] [
     (N : Subgroup H) : CompactSpace (H ⧸ N) :=
   Quotient.compactSpace
 
-end Quot
 
 namespace ClassFormation
 

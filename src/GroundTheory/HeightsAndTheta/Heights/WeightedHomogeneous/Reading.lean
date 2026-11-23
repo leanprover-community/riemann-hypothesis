@@ -70,7 +70,6 @@ variable {P : ArithVariety n} (D : AddBlockData P)
 
 end AddBlockData
 
-section Examples
 
 variable (n)
 
@@ -83,7 +82,6 @@ variable (n)
 
 
 
-end Examples
 
 end
 

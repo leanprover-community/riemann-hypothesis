@@ -77,14 +77,12 @@ def classLevelInfl (n : ℕ) : cohomology (ideleClassRep K.1 F.1) n ⟶ cohomolo
 
 end Level
 
-section Transition
 
 variable {F E : FiniteSubfield} [Fact (K ≤ F)] [Fact (K ≤ E)] [Fact (F ≤ E)]
   [F.1.fixingSubgroup.Normal] [E.1.fixingSubgroup.Normal]
 
 
 
-end Transition
 
 section Colimit
 

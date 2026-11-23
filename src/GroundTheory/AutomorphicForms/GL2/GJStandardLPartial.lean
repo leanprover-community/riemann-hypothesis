@@ -115,11 +115,9 @@ theorem hasProd_compl_of_hasProd {ι : Type*} {f : ι → ℂ} {a : ℂ} (h : Ha
   rw [heq, Finset.prod_inv_distrib, ← div_eq_mul_inv] at hfg
   exact (hasProd_subtype_iff_mulIndicator (s := {i | i ∉ S})).2 hfg
 
-section Partial
 
 variable {K : Type*} [Field K] [NumberField K] {n : ℕ}
 
-end Partial
 
 section Main
 

@@ -74,11 +74,9 @@ variable {𝕜 : Type*} [RCLike 𝕜]
   {X Y : Type*} [MeasurableSpace X] [MeasurableSpace Y] {μ : Measure X} {ν : Measure Y}
   [SFinite μ] [SFinite ν]
 
-section Kernel
 
 variable (k : Lp 𝕜 2 (μ.prod ν))
 
-end Kernel
 
 end
 

@@ -180,7 +180,6 @@ theorem bDeRhamPlus_fixed (b : 𝔹) (hb : ∀ σ : Gal(PadicAlgCl p/K), σ • 
 
 end Invariants
 
-section DeRham
 
 variable (K : IntermediateField ℚ_[p] (PadicAlgCl p))
 
@@ -191,9 +190,7 @@ variable [FiniteDimensional ℚ_[p] K] [FiniteDimensional ℚ_[p] V]
 
 
 
-end DeRham
 
-section Filtration
 
 variable (K : IntermediateField ℚ_[p] (PadicAlgCl p)) (V : Type*) [AddCommGroup V]
   [Module ℚ_[p] V]
@@ -212,6 +209,5 @@ variable [FiniteDimensional ℚ_[p] K]
 
 
 
-end Filtration
 
 end GroundTheory.PAdicHodge

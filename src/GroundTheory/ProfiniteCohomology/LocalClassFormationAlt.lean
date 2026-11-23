@@ -215,7 +215,6 @@ noncomputable def localClassFormation : ClassFormation (galUnits.{0} K Ksep) whe
 
 end Formation
 
-section SepClosure
 
 variable (K Ksep : Type) [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
   [Field Ksep] [Algebra K Ksep] [IsSepClosure K Ksep]
@@ -227,6 +226,5 @@ noncomputable def localClassFormationOfIsSepClosure : ClassFormation (galUnits.{
   haveI := algebraicValuativeRel_valuativeExtension K Ksep
   localClassFormation K Ksep
 
-end SepClosure
 
 end GroundTheory.ProfCoh

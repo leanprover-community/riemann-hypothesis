@@ -264,12 +264,10 @@ instance isSimpleRing_tensorProduct_of_right [Algebra.IsCentral K A] [IsSimpleRi
 
 end Simple
 
-section CSA
 
 universe u v
 
 variable {K : Type u} [Field K]
 
-end CSA
 
 end GroundTheory.Brauer

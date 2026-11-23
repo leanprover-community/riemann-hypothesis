@@ -42,7 +42,6 @@ variable (F : Type*) [Field F]
 
 variable {F}
 
-section Split
 
 variable (F) (R : Type*) [CommRing R] [Algebra F R]
 
@@ -65,9 +64,7 @@ variable (H : Matrix ι ι (F × F))
 
 
 
-end Split
 
-section SplitFunctor
 
 open CategoryTheory
 
@@ -77,6 +74,5 @@ variable (F : Type u) [Field F] (ι : Type u) [Fintype ι] [DecidableEq ι]
 
 variable {F ι}
 
-end SplitFunctor
 
 end GroundTheory.Automorphic

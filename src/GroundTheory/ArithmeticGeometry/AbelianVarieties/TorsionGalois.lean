@@ -71,15 +71,12 @@ theorem galPointsHom_some_eq_self {σ : Gal(L/K)} {x y : L}
 
 end Action
 
-section Discrete
 
 variable {K L : Type u} [Field K] [Field L] [Algebra K L] [DecidableEq L] (W : WeierstrassCurve K)
 
 variable [Algebra.IsIntegral K L]
 
-end Discrete
 
-section SepClosed
 
 instance isElliptic_baseChange {R A : Type*} [CommRing R] [CommRing A] [Algebra R A]
     (W : WeierstrassCurve R) [W.IsElliptic] : (W.baseChange A).IsElliptic :=
@@ -88,6 +85,5 @@ instance isElliptic_baseChange {R A : Type*} [CommRing R] [CommRing A] [Algebra 
 variable {K L : Type u} [Field K] [Field L] [Algebra K L] [DecidableEq L] [IsSepClosed L]
   (W : WeierstrassCurve K) [W.IsElliptic]
 
-end SepClosed
 
 end GroundTheory.Arith.Abelian

@@ -278,12 +278,10 @@ theorem exists_jacobian_minor_not_mem_charZero {F : Type} [Field F] [CharZero F]
   rw [hM']
   exact h1
 
-section Minors
 
 open ReciprocityTheory.ChartRestriction.G.Geo
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {R : Type} [CommRing R]
 
-end Minors
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter

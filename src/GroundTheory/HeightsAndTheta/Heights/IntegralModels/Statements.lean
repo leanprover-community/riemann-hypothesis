@@ -49,14 +49,12 @@ open CategoryTheory Limits AlgebraicGeometry TopologicalSpace Opposite
 
 noncomputable section
 
-section VectorBundle
 
 universe u
 
 variable {X : Scheme.{u}}
 
 
-end VectorBundle
 
 section OverZ
 
@@ -66,19 +64,15 @@ variable {X : Scheme.{0}}
 
 end OverZ
 
-section Maps
 
 variable {X : Scheme.{0}}
 
-end Maps
 
-section Pullback
 
 universe u
 
 variable {T Y Z : Scheme.{u}}
 
-end Pullback
 
 section Normal
 
@@ -207,14 +201,12 @@ def FiniteNormalization.Statement : Prop :=
     (L : Type) [Field L] [Algebra Z.functionField L] [FiniteDimensional Z.functionField L],
     IsFinite (genericSpecMap Z L).fromNormalization
 
-section Transport
 
 universe u
 
 variable {X Y : Scheme.{u}}
 
 
-end Transport
 
 section Inhabitants
 

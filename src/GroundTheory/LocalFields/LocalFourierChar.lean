@@ -192,18 +192,14 @@ section Residue
 
 end Residue
 
-section Duality
 
 variable {ψ : AddChar K Circle} (hψ : Continuous ψ) (hψ1 : ψ ≠ 1)
 include hψ hψ1
 
-end Duality
 
-section SelfDual
 
 variable {ψ : AddChar K Circle} (hψ : Continuous ψ) (hψ1 : ψ ≠ 1)
 
 
-end SelfDual
 
 end GroundTheory.LocalField

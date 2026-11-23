@@ -43,11 +43,9 @@ open IsDedekindDomain NumberField IntermediateField WithZero
 
 noncomputable section
 
-section Circle
 
 variable {G : Type*} [Group G] [Finite G]
 
-end Circle
 
 section CharField
 
@@ -59,12 +57,10 @@ abbrev charField : IntermediateField K L :=
 
 end CharField
 
-section Hecke
 
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
   [IsGalois K L] (χ : Gal(L/K) →* ℂˣ)
 
-end Hecke
 
 section Places
 

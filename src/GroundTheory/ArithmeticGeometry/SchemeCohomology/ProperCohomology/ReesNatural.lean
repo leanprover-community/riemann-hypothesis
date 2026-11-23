@@ -148,12 +148,10 @@ theorem reesSectionsEquiv_res (x : Γ(reesSheaf I F, reesPr I X ⁻¹ᵁ V)) :
 
 end
 
-section Base
 
 variable {A : Type u} [CommRing A] (I : Ideal A) (X : Scheme.{u}) [X.Over (Spec (.of A))]
 
 variable {I X}
 
-end Base
 
 end GroundTheory.Arith.SchemeCoh

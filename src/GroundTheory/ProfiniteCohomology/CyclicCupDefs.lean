@@ -39,7 +39,6 @@ namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory groupCohomology GroundTheory.GroupCoh
 
-section Generic
 
 universe u
 
@@ -49,7 +48,6 @@ noncomputable def cupRight (h : p + q = n) (b : groupCohomology B q) :
     groupCohomology A p ⟶ groupCohomology (A ⊗ B) n :=
   ModuleCat.ofHom ((cupH h).flip b)
 
-end Generic
 
 variable {G : Type} [Group G]
 

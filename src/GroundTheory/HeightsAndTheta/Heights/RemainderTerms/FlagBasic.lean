@@ -136,17 +136,13 @@ open MvPolynomial Finset
 
 noncomputable section
 
-section Deriv
 
 variable {σ ι : Type*}
 
-end Deriv
 
-section Indices
 
 variable {f r a : ℕ}
 
-end Indices
 
 section Rest
 
