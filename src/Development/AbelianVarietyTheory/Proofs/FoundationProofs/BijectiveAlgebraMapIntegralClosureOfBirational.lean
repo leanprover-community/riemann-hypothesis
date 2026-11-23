@@ -317,10 +317,8 @@ section Constructible
 
 end Constructible
 
-section Etale
 
 variable {X Y : Scheme.{u}} {K : Type u} [Field K] [IsAlgClosed K]
 
-end Etale
 
 end GlobalTheory

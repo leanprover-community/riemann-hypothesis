@@ -42,11 +42,9 @@ open MvPowerSeries IsLocalRing Formalism.BasicNotions.V1
 
 namespace GlobalTheory.PsCNL
 
-section Division
 
 variable {σ : Type} {O : Type} [CommRing O]
 
-end Division
 
 section
 

@@ -65,7 +65,6 @@ theorem secondCountable_and_t2_local_field : SecondCountableTopology k ∧ T2Spa
         MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
   open scoped Valued in
   have : ProperSpace k := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace k
-  open scoped Valued in
   exact ⟨secondCountable_of_proper, inferInstance⟩
 
 theorem nabs_pos (x : kˣ) : 0 < nabs k x := by

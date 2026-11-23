@@ -85,12 +85,10 @@ theorem isWild_of_isWildAt {E Ω : Type} [Field E] [NumberField E] [Field Ω] [A
     · simp
     · exact (h1 x hx0).trans_le hx
 
-section Wild
 
 variable {E Ω R : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [TopologicalSpace R] [IsTopologicalRing R]
   {r : ℕ} {A : ValuationSubring Ω} {v : HeightOneSpectrum (𝓞 E)}
 
-end Wild
 
 end GlobalTheory.InertiaTypePrimes

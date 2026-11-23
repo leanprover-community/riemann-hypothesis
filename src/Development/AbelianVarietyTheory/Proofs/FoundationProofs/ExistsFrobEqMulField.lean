@@ -43,11 +43,9 @@ namespace GlobalTheory.LangWitt
 
 open Matrix
 
-section Field
 
 variable {p : ℕ} [hp : Fact p.Prime] {k : Type} [Field k] [CharP k p] [IsAlgClosed k]
 
-end Field
 
 section Witt
 

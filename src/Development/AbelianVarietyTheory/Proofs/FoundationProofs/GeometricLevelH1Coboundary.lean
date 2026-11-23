@@ -51,7 +51,6 @@ namespace GlobalTheory.K5.Reb
 
 def RebT {p : ℕ} [Fact p.Prime] (Ω : Type) [Field Ω] (_ψ : O0 p →+* Ω) : Type := Ω
 
-section Inst
 
 variable {p : ℕ} [Fact p.Prime] {Ω : Type} [Field Ω]
 
@@ -59,7 +58,6 @@ instance (ψ : O0 p →+* Ω) : Field (RebT Ω ψ) := inferInstanceAs (Field Ω)
 
 instance (ψ : O0 p →+* Ω) : Algebra (O0 p) (RebT Ω ψ) := ψ.toAlgebra
 
-end Inst
 
 variable {p : ℕ} [Fact p.Prime] {Ω : Type} [Field Ω] [Algebra (O0 p) Ω]
 variable {T : GlobalTheory.K5.Tower p Ω} {L : ℕ} {ψ : O0 p →+* Ω}

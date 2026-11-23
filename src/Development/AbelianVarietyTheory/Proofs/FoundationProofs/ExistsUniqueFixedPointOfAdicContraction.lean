@@ -172,10 +172,8 @@ theorem mvPowerSeries_algHom_ext_of_isHausdorff (J : Ideal S) [IsHausdorff J S]
 
 end Eval
 
-section Contraction
 
 variable {A S τ ι : Type*} [CommRing A] [CommRing S] [Algebra A S]
 
-end Contraction
 
 end GlobalTheory

@@ -55,11 +55,9 @@ namespace GlobalTheory.ValConj
 open Finset
 open scoped Pointwise
 
-section tails
 
 variable {L : Type} [Field L]
 
-end tails
 
 variable {F L : Type} [Field F] [Field L] [Algebra F L]
 
