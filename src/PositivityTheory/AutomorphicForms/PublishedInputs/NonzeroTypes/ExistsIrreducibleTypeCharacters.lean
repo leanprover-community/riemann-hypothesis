@@ -30,7 +30,6 @@ import Mathlib.Tactic.NormNum.LegendreSymbol
 import Mathlib.Tactic.NormNum.ModEq
 import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.ArtinTransferDecompositionHolds
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.CharacterConductor
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.CharacterConductorBound
