@@ -811,13 +811,11 @@ theorem cls_eq_iff : P.cls = P'.cls ↔ IsIsom P P' := by
   rw [← h₂.resG_f, mul_left_comm, ← h₁.resG_f, hw.2.on p q]
   rfl
 
-section Pull
 
 variable {Z₁ : Model O} {f : Z₁.X ⟶ Z.X} (hf : f ≫ Z.str = Z₁.str)
 
 
 
-end Pull
 
 end VertDiv
 

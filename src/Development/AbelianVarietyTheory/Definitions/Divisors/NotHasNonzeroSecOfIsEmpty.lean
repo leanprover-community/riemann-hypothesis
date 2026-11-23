@@ -53,10 +53,8 @@ theorem genericPoint_mem [IsIntegral X] (hd : topologicalKrullDim X = 1) {Z : Cl
   rw [hZ.2] at h'
   exact absurd h' (by decide)
 
-section Space
 open ProjSpace
 variable (k) (D : ℕ)
 
-end Space
 
 end GlobalTheory.PositivityModel

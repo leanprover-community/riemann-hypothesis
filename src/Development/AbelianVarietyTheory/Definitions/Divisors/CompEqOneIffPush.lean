@@ -179,10 +179,8 @@ variable {A' : Over S'} [GrpObj A'] [IsCommMonObj A'] {ρ' : RingAct A' O} {ρ :
 
 end ChainMap
 
-section Unitary
 
 variable {F : Type} [Field F] [NumberField F] [NumberField.IsCMField F] {D : UPel.Datum F} {p N : ℕ}
 
-end Unitary
 
 end GlobalTheory.IwLevel

@@ -42,21 +42,15 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 noncomputable section
 namespace GlobalTheory.ZM.Model
 
-section Away
 variable {F : Type} [Field F] [NumberField F] (φ : F →+* ℂ) {n : ℕ} (hn : n ≠ 0)
 
-end Away
 
-section Basis
 variable (h : ℕ)
 
-end Basis
 
-section Use
 open AlgebraicGeometry CategoryTheory MonObj
 variable {o : Type} [CommRing o] {S : Scheme.{0}} {g k : ℕ} {J : Type} {b : TBase o k} {s : S ⟶ Sp o}
 
-end Use
 
 section Zero
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj

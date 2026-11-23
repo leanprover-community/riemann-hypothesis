@@ -54,7 +54,6 @@ def IsLevN (E : ExpSet D) (N : ℕ) : Prop :=
 
 def LevN (E : ExpSet D) : Type := {N : ℕ // IsLevN E N}
 
-section Fields
 
 variable (E : ExpSet D) {O : Type} [CommRing O] (C : CoefLat E O) (Base : Set (GA D E.W → ℂ))
   (LQ : LevN E → Subfield ℂ) (Rat : ∀ N : LevN E, Submodule (LQ N) (GA D E.W → ℂ))
@@ -62,7 +61,6 @@ variable (E : ExpSet D) {O : Type} [CommRing O] (C : CoefLat E O) (Base : Set (G
 
 variable {E C Base LQ Rat Λ BaseInt Int}
 
-end Fields
 
 section Covers
 

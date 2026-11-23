@@ -38,7 +38,6 @@ open GlobalTheory.RunJoin GlobalTheory.FinalJoin GlobalTheory.FinalJoin2 GlobalT
 
 namespace GlobalTheory.Plug
 
-section Record
 
 variable {D : D7}
 
@@ -55,7 +54,6 @@ structure CF (D : D7) : Type 1 where
   J : CoreJ D
   C : CharFrame D
 
-end Record
 
 def CoreSlot (𝒮 : Slots) : Prop :=
   ∀ (K : Ctx) (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt) (Wt : Set B.places.Pl) (p0 : BaseLevelRowSide (w.D Z))

@@ -55,7 +55,6 @@ structure TwoRuns (J : CoreJ D) (G : Type) : Type 1 where
 def TwoRuns.used {J : CoreJ D} (r : TwoRuns J G) (v : HeightOneSpectrum (𝓞 D.what₂.LL)) : RunData J :=
   if plc v = D.host.pde then r.second else r.first
 
-section Rec
 
 variable {L : SizeData₂ D} {Pm : ParameterChoice' D L}
 variable {J : CoreJ D} [inst : Algebra J.Q.c.F D.what₂.LL] {R : RealDat D A J.Q.c.F}
@@ -91,7 +90,6 @@ structure IsRec (Tp : ParamsT D L Pm) (hK : DV.KapDef D) (EX : ErrX D) (F : Face
   realisedChain_torus_eq : O.T2 = D.host.T2.card
   pde_eq : O.pde = D.host.pde
 
-end Rec
 
 section Leaves
 

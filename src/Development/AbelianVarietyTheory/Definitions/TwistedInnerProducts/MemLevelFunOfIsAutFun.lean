@@ -46,11 +46,9 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LocFrame
 
-section Inst
 
 variable {F : Type} [Field F] [NumberField F]
 
-end Inst
 
 section Bases
 
@@ -76,23 +74,18 @@ theorem piW_incA (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) (x : D.host.E) :
   change splitProj τ (GlobalTheory.AdelicU.evFin D.host.F v 1 ⊗ₜ x) = _
   rw [map_one, GlobalTheory.AdelicU.splitProj_tmul, one_mul]
 
-section Loc
 
 variable (V : HSp D) (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) {ι : Type} [Fintype ι] [DecidableEq ι]
   (β : LatFrame (Fv D.host.F v) ι (Fin V.rank))
 
-end Loc
 
-section Rep
 
 variable (V : HSp D)
 
 variable (τ : D.host.E →ₐ[D.host.F] Fv D.host.F v) {ι : Type} [Fintype ι] [DecidableEq ι]
   (β : LatFrame (Fv D.host.F v) ι (Fin V.rank))
 
-end Rep
 
-section Position
 
 open GlobalTheory.RootEx
 
@@ -103,9 +96,7 @@ variable {k : Type} [Field k] [MeasurableSpace k] {n : Type} [Fintype n] [Decida
 variable [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [BorelSpace k] [ν.IsAddHaarMeasure]
   {ψ : AddChar k Circle} {σ}
 
-end Position
 
-section Positions
 
 
 variable {I : Type} {k : I → Type} [∀ i, Field (k i)] [∀ i, MeasurableSpace (k i)] {n : Type} [Fintype n] [DecidableEq n]
@@ -115,7 +106,6 @@ variable {I : Type} {k : I → Type} [∀ i, Field (k i)] [∀ i, MeasurableSpac
 variable [∀ i, ValuativeRel (k i)] [∀ i, TopologicalSpace (k i)] [∀ i, IsNonarchimedeanLocalField (k i)]
   [∀ i, BorelSpace (k i)] [∀ i, (ν i).IsAddHaarMeasure] {ψ : ∀ i, AddChar (k i) Circle} {σ}
 
-end Positions
 
 end GlobalTheory.LocFrame
 

@@ -350,7 +350,6 @@ def Cx.fnMap (K : Cx C) : CxMap K (Cx.single K.M0) where
   comp_commutes_diffOne _ _ := rfl
   comp_commutes_diffTwo _ _ := rfl
 
-section Alg
 
 open GlobalTheory.CatCoh GlobalTheory.CechDR KaehlerDifferential
 
@@ -362,7 +361,6 @@ variable {R : Type} [CommRing R] (F : C ⥤ CommAlgCat.{0} R)
   map_id := mp_id F
   map_comp := mp_comp F
 
-end Alg
 
 def JoinedOne.{a, b} : Prop := ∀ {C : Type a} [Category.{0} C] {C' : Type b} [Category.{0} C'] {K : Cx C} {K' : Cx C'}
   (m m' : CxMap K K') (θ : m.G ⟶ m'.G), m.Joined m' θ → (∀ c, m.h0 c = m'.h0 c) ∧ ∀ c, m.h1 c = m'.h1 c

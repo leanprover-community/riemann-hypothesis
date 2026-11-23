@@ -385,12 +385,10 @@ theorem productRule (χ : HChar F) : χ.ProductRule := by
 
 end Product
 
-section HostData
 
 open Formalism.BasicNotions Formalism.FrobeniusOrbits
 
 variable {R : Ranks} (H : Formalism.BasicNotions.Host R)
 
-end HostData
 
 end GlobalTheory.Mem.Chr.CharModel

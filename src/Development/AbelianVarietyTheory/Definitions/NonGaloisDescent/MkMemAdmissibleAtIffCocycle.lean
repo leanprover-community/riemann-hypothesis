@@ -679,7 +679,6 @@ def finiteSelmer : Submodule O (H1 (twCoef (latRep L) χ X) ⊤) :=
 
 end Tens
 
-section Shortcut
 
 instance (priority := high) modTens {O M X : Type} [CommRing O] [AddCommGroup M] [Module O M] [AddCommGroup X]
     [Module O X] : Module O (M ⊗[O] X) :=
@@ -711,7 +710,6 @@ instance (priority := high) moduleH1Alt {M : Type} [AddCommGroup M] [Module O M]
     Module O (H1 π ⊤) :=
   Submodule.Quotient.module _
 
-end Shortcut
 
 def Standing {l : ℕ} [Fact l.Prime] (P : LocPrime l) (K LL : Loc.FinExt l) {n : ℕ}
     (emb : ZMod n → (↥(Loc.K0 K) →ₐ[ℚ_[l]] ↥LL.1)) (lam : ↥(Loc.OL LL)) : Prop :=

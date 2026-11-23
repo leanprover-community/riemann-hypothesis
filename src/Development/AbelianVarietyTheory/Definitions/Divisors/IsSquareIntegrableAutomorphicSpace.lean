@@ -65,11 +65,9 @@ def nu (t : ℝ) : HChar E := GlobalTheory.HeckeGal.Model.absPow E t
 
 
 
-section Passive
 
 variable {M : Type} [AddCommGroup M] [Module ℂ M]
 
-end Passive
 
 
 variable (E) in

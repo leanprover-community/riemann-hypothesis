@@ -40,11 +40,9 @@ open scoped TensorProduct Classical
 
 namespace GlobalTheory.LKRes
 
-section Generic
 
 variable {G : Type} [Group G]
 
-end Generic
 
 variable (p : ℕ) [Fact p.Prime]
 

@@ -70,14 +70,12 @@ theorem sig_all_of (hN : NoFormsOff D) (hM : MeetsAll D) (hC : CommAll D)
     exact ⟨s, e1, e2, fun k P p q r t => e3 k P ⟨p, q, r, t⟩⟩
   · exact absurd ((hN i j hj b).elim x 0) hx
 
-section Laws
 
 open GlobalTheory.SupLaw.Model
 
 variable (D) (A : ∀ (i : D.ntw.Tw) (j : ℕ), ℕ → PlE D.host → Module.End (KK D i) (Pt D j → KK D i))
   (s : ∀ i : D.ntw.Tw, ℕ → KK D i)
 
-end Laws
 
 end GlobalTheory.TwInputs.EigModel
 

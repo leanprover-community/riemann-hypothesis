@@ -81,7 +81,6 @@ structure TiesG (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat3 D A3 
   oneMap : ∀ i, OneMapRowR T R.toRealDat κ v₀ O (fun i => cj (twAt D.what₂.embLL A3.A.v0) (R.phs i)) i
   cover : GlobalTheory.TwistField.CoverField T R.toRealDat
 
-section Real
 
 open Formalism.L2 Formalism.L2.Rows
 
@@ -91,13 +90,10 @@ variable {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst
   {Spf : ∀ Zs : DefSub P.A3.fam3.amb3, SPer (Dcf Zs)} {Zscf : DefSub P.A3.fam3.amb3 → IndefScale P.A3.fam3.base3}
   {S : Formalism.L2.SG.SpectralTiesReal.STiesR Rc}
 
-end Real
 
-section Api
 
 variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat3 D A3 Ks} {F : Face3 D A3}
 
-end Api
 
 end GlobalTheory.PrimIn
 

@@ -265,23 +265,19 @@ end GlobalTheory.EtC.Psi
 
 namespace GlobalTheory.EtC.Psi
 
-section AdicGal
 
 variable (R : Type) [CommRing R]
 variable {O : Type} [CommRing O] [HenselianLocalRing O] {K : Type} [Field K] [Algebra O K]
   {Ω : Type} [Field Ω] [Algebra K Ω] [Algebra O Ω] [IsScalarTower O K Ω]
   {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of O))
 
-end AdicGal
 end GlobalTheory.EtC.Psi
 
 namespace GlobalTheory.EtC.Psi
 
-section Examples
 
 variable (R : Type) [CommRing R] (O : Type) [CommRing O] [HenselianLocalRing O] (K : Type) [Field K] [Algebra O K]
   (Ω : Type) [Field Ω] [Algebra K Ω] [Algebra O Ω] [IsScalarTower O K Ω]
 
-end Examples
 
 end GlobalTheory.EtC.Psi

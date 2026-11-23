@@ -73,7 +73,6 @@ variable {ι : Type} [LinearOrder ι]
 
 end Smooth
 
-section Scheme
 
 variable {k : Type} [Field k] {X : Scheme.{0}} (p : X ⟶ Sp k) (σ : k →+* ℂ) (d : ℕ)
 
@@ -93,7 +92,6 @@ structure IsAffCover {ι : Type} (U : ι → X.Opens) (B : Finset ι → Subalge
   ne : ∀ I : Finset ι, genericPoint X ∈ I.inf U
   ring : ∀ I : Finset ι, I.Nonempty → ∀ y, y ∈ B I ↔ ∃ f : Γ(X, I.inf U), (X.presheaf.germ (I.inf U) (genericPoint X) (ne I)).hom f = y
 
-end Scheme
 
 section Compare
 
@@ -162,11 +160,9 @@ def hsmEquiv (k : ℕ) : HSm A k ≃ₗ[ℂ] A.HSm k :=
 
 end Compare
 
-section Basic₂
 
 variable {M : Type} [TopologicalSpace M] {n : ℕ} (A : HolAtlas M n)
 
-end Basic₂
 
 section Inhab
 

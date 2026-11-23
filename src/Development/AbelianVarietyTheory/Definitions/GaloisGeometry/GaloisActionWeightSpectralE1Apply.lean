@@ -89,13 +89,11 @@ namespace GlobalTheory.EtC.WSS
 
 variable (l : ℕ) [Fact l.Prime] {ι : Type} [Fintype ι] [LinearOrder ι]
 
-section Galois
 
 variable {k : Type} [Field k] (Ω : Type) [Field Ω] [Algebra k Ω] {V : Scheme.{0}} (p : V ⟶ Spec (CommRingCat.of k))
   (I : ι → V.IdealSheafData)
 
 variable (a b w : ℤ)
 
-end Galois
 
 end GlobalTheory.EtC.WSS

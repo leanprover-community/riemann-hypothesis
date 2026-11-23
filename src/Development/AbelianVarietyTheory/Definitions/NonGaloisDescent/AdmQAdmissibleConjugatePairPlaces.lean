@@ -178,7 +178,6 @@ theorem delU_eq_spread (hQ : TWSet X i Q) {ch : Set (Pl D.host.E)} (hch : IsChoi
 
 end Univ
 
-section Full
 
 variable {ρ : Setup X} (hρ : ρ.Good) {Y : NExp D.R D.host D.what₂ D.LL0 N X} (rd : Rds Y ρ)
 
@@ -195,7 +194,6 @@ variable (hF : ∀ i j b, Faithful (rd i j b))
 
 variable (hL : ρ.LatFG)
 
-end Full
 
 end GlobalTheory.SeriesTie
 

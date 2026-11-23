@@ -48,11 +48,9 @@ open GlobalTheory.PD
 
 variable (k : Type) [Field k] (d : ℕ)
 
-section Bundle
 
 variable (k : Type) [Field k] {F : Type} [Field F] [Algebra k F] {d : ℕ} (x : Fin (d + 1) → F)
 
-end Bundle
 
 section Cover
 

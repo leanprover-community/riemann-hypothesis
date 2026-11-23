@@ -37,7 +37,6 @@ noncomputable section
 
 namespace GlobalTheory.AlmostEt
 
-section General
 
 variable {A S M : Type*} [CommRing A] [CommRing S] [Algebra A S] [AddCommGroup M] [Module S M]
 
@@ -58,7 +57,6 @@ structure IsTrData (B C : Subalgebra A S) (tr : S → S) {n : ℕ} (a b : Fin n 
   right : ∀ x ∈ C, ∑ i, b i * tr (a i * x) = e * x
   sum : ∑ i, a i * b i = e
 
-end General
 
 section Tower
 
@@ -94,21 +92,17 @@ end GlobalTheory.AlmostEt
 
 namespace GlobalTheory.AlmostEt.Inhab
 
-section General
 
 variable {A S M : Type*} [CommRing A] [CommRing S] [Algebra A S] [AddCommGroup M] [Module S M]
 
-end General
 
 section Examples
 
 end Examples
 
-section Tower
 
 
 variable {p : ℕ} [Fact p.Prime] {Ω : Type*} [Field Ω] [Algebra (O0 p) Ω]
 
-end Tower
 
 end GlobalTheory.AlmostEt.Inhab

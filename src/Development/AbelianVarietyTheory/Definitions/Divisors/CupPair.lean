@@ -105,10 +105,8 @@ def cupPair [Fintype ι] {E' : Type} [AddCommGroup E'] [Module k E'] (β : E →
 
 end Cech
 
-section Alg
 
 variable {k : Type} [Field k] {ι : Type} [LinearOrder ι] {E : Type} [Ring E] [Algebra k E]
 
-end Alg
 
 end GlobalTheory.PD

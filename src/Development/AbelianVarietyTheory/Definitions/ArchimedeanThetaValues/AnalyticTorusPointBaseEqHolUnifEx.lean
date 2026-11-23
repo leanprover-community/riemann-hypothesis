@@ -532,11 +532,9 @@ def toDict (Λ : letI := H.starRing; GtAn a) : letI := H.starRing; GtDict a.D₀
 
 end Bridge
 
-section Test
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H} (c : Coeff l)
   [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ]
 
-end Test
 
 end GlobalTheory.GtAnModel

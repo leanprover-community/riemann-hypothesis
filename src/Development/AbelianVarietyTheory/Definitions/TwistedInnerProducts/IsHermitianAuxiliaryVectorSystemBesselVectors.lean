@@ -331,7 +331,6 @@ theorem cmHost_imaginaryGenerator_ne_zero : D.host.xi0 ≠ 0 := fun h => by
 
 end Table
 
-section Normal
 
 open GlobalTheory.RootEx (N)
 
@@ -345,17 +344,13 @@ variable {V X : HSp D} {τ : D.host.E →ₐ[D.host.F] Fv D.host.F v}
 
 variable {V₀ A L L' : HSp D} {ρ : ℕ} (d : HypDec V V₀ ρ) (o : OrthDec V₀ A L) {ζ : Fin L.rank → D.host.E}
 
-section Bes
 
 variable {γ : LatFrame (Fv D.host.F v) n (Fin A.rank)}
 
-end Bes
 
-section FJ
 
 variable {γ : LatFrame (Fv D.host.F v) n (Fin V₀.rank)}
 
-end FJ
 
 end Normal
 

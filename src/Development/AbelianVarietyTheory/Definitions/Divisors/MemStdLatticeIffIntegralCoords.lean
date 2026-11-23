@@ -225,7 +225,6 @@ theorem stdPsi_unitPsi {V : HSp D} (h : OrthFrame V) : StdPsi (hostF_eq D) (unit
     change sw D ((sw D).symm (κ.1.1 i j)) ∈ _ at this
     rwa [RingEquiv.apply_symm_apply] at this
 
-section Conj
 
 variable (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ)
 
@@ -233,7 +232,6 @@ open ReciprocityTheory.Aut
 
 variable {L}
 
-end Conj
 
 end GlobalTheory.StdFrameModel
 

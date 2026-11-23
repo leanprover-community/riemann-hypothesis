@@ -71,11 +71,9 @@ namespace GlobalTheory.AscFinWit
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {P : GlobalTheory.FinPl.Pl D → Prop}
 
-section Frames
 
 variable {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc)
 
-end Frames
 
 theorem mxAt_mul {l m n : ℕ} (A : Mx D l m) {u : Mx D m n} (hu : MxAt P u) : MxAt P (A ⬝ u) := fun i j => by
   rw [Matrix.mul_apply]

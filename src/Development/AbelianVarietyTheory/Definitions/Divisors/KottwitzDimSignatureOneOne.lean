@@ -57,10 +57,8 @@ namespace GlobalTheory.UPel.Sm.Model
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel
 
-section Univ
 variable {F : Type} [Field F] [NumberField F] [IsCMField F] {D : Datum F} {p N : ℕ}
 
-end Univ
 
 section KS
 variable {k H O : Type*} [Field k] [AddCommGroup H] [Module k H] [Ring O]
@@ -124,9 +122,7 @@ theorem KSDim.unique {d e : ℕ} (h : KSDim ρ φ Fil Z d) (h' : KSDim ρ φ Fil
 
 end KS
 
-section Examples
 variable (k : Type) [Field k]
 
-end Examples
 
 end GlobalTheory.UPel.Sm.Model

@@ -151,24 +151,18 @@ attribute [instance] Secs.grp
 
 namespace TraitWit
 
-section Tensor
 open GlobalTheory.ToricData InhTate
 variable {K : Type} [CommRing K] [IsDomain K] {X : Type} [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X]
 
-end Tensor
 
-section Cover
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R]
 
-end Cover
 
-section Sections
 variable {X Y Y' : Scheme.{0}}
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R]
 
 
-end Sections
 
 end TraitWit
 

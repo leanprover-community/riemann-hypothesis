@@ -68,13 +68,11 @@ theorem exists_bridge (τ : E →+* Qbar l) : ∃ (w : HeightOneSpectrum (𝓞 E
 
 end Jumps
 
-section RankOne
 
 variable (l : ℕ) [Fact l.Prime]
 
 variable {E Ω : Type} [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
 
-end RankOne
 
 section Small
 

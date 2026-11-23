@@ -106,16 +106,12 @@ theorem typeFrame_inv (ϖ : kˣ) (o : ι ≃ n ⊕ Fin c) :
 
 end B
 
-section C
 variable [MeasurableSpace k] [BorelSpace k] {κ t : Type*} [Fintype κ] [DecidableEq κ] [Fintype t] [DecidableEq t]
 
 
-end C
 
-section D
 variable {κ t : Type*} [Fintype κ] [DecidableEq κ] [Fintype t] [DecidableEq t]
 
 
-end D
 
 end GlobalTheory.StepData.Model

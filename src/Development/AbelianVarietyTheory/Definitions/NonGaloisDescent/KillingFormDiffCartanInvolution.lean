@@ -42,10 +42,8 @@ noncomputable section
 
 namespace GlobalTheory.Tw
 
-section Alg
 variable {a b : ℕ} {R : Type} [CommRing R] [StarRing R]
 
-end Alg
 
 variable {a b : ℕ}
 

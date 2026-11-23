@@ -35,16 +35,13 @@ open NumberField MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMas
 
 namespace GlobalTheory.TowU
 
-section Coord
 
 variable {R : Type} [CommRing R] {κ κ₁ : Type}
 
 variable [Fintype κ] [Fintype κ₁] {W W₁ : Type} [AddCommGroup W] [Module R W] [AddCommGroup W₁] [Module R W₁]
   {B : W → W → R} {B₁ : W₁ → W₁ → R}
 
-end Coord
 
-section Frame
 
 variable {R : Type} [CommRing R] {A : Type} [CommRing A] [Algebra R A] (c : A →ₐ[R] A)
   {α α₁ ν : Type} [Fintype α] [DecidableEq α] [Fintype α₁] [DecidableEq α₁] [Fintype ν] [DecidableEq ν]
@@ -60,7 +57,6 @@ structure IsFrame (J : Matrix α α A) (C D : Matrix α ν A) (ι : Matrix α α
   basis : ∃ M : Matrix ((ν ⊕ ν) ⊕ α₁) α A, Matrix.fromCols (Matrix.fromCols C D) ι * M = 1 ∧
     M * Matrix.fromCols (Matrix.fromCols C D) ι = 1
 
-end Frame
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

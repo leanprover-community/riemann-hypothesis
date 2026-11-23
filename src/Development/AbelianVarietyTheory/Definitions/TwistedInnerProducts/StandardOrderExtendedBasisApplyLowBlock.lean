@@ -1126,10 +1126,8 @@ theorem Chain.ofTwist_laws (δ : kˣ →* ℂˣ) (hδ : IsTame δ) (ν : ℕ →
 
 end Laws
 
-section Nonempty
 variable {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 variable {n n' : Type*} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ}
 
-end Nonempty
 
 end GlobalTheory.StepData

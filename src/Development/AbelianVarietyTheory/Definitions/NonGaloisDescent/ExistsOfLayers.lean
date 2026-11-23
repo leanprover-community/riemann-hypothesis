@@ -141,7 +141,6 @@ structure WIo (R : WSer Γ) (RA RW : Type) [CommRing RA] [CommRing RW] [Algebra 
 
 variable {R : WSer Γ}
 
-section Et
 
 variable {RA RW : Type} [CommRing RA] [CommRing RW] [Algebra O RA]
     [Algebra O RW] {inclR : RA →ₐ[O] RW} {φR : RW →ₐ[O] RW} {gR : G → (RW →ₐ[O] RW)} {πA : RA}
@@ -228,7 +227,6 @@ structure WCl (E : WEt I) where
         (Γ.resΓ g = Γ.gamK →
           (1 : RW) ⊗ₜ[O] t = E.jD T (pr : E.DD T × E.DD T).2 - (TWact (gR g) T g b - b))
 
-end Et
 
 section Cmp
 

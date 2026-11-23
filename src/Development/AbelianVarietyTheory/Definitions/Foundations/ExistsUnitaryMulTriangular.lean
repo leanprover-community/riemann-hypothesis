@@ -404,11 +404,9 @@ theorem dim_pos {la : Fin N → ℕ} (hla : Antitone la) : 0 < dim la := by
   have : Nontrivial (nabla la ℂ) := Submodule.nontrivial_iff_ne_bot.mpr (nabla_ne_bot hla)
   exact Module.finrank_pos
 
-section Fields
 
 variable {K L : Type} [Field K] [CharZero K] [Field L] [CharZero L] {la : Fin N → ℕ}
 
-end Fields
 
 abbrev UN (N : ℕ) : Type := Matrix.unitaryGroup (Fin N) ℂ
 
@@ -643,13 +641,11 @@ end Space
 def onBasis (la : Fin N → ℕ) : OrthonormalBasis (Idx la) ℂ (Space la) :=
   (stdOrthonormalBasis ℂ (Space la)).reindex (Fintype.equivFinOfCardEq (dim_eq_card la).symm).symm
 
-section Frames
 
 variable {K : Type} [Field K] {la : Fin N → ℕ}
 
 variable [NumberField K]
 
-end Frames
 
 section Lattices
 

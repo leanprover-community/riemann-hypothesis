@@ -55,13 +55,11 @@ theorem notMem_l {k : Fin 2} (hk : X.l i ≠ D.host.g k) (v : D.nd.PlG k) :
 
 end Indep
 
-section Tame
 
 variable (C : CharFrame D) (art : Ideles D.host.E →* Gab D.host.E D.nd.Om)
 
 variable {C art}
 
-end Tame
 
 section Record
 

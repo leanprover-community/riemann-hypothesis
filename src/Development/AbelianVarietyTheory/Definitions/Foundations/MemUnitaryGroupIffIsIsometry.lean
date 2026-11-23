@@ -160,20 +160,16 @@ end unitaryGroup
 
 end Ring
 
-section Field
 
 variable {K V : Type*} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] {h : HermForm K V}
 
-end Field
 
-section Complex
 
 variable {V : Type*} [AddCommGroup V] [Module ℂ V] (h : HermForm ℂ V)
 
 variable {h}
 
-end Complex
 
 end HermForm
 
@@ -207,7 +203,6 @@ class IsStarFixed (F E : Type*) [CommSemiring F] [CommSemiring E] [StarRing E] [
 
 attribute [simp] IsStarFixed.star_algebraMap
 
-section IsStarFixed
 
 variable (F E : Type*) [CommSemiring F] [CommSemiring E] [StarRing E] [Algebra F E]
 
@@ -215,14 +210,12 @@ variable [IsStarFixed F E]
 
 variable {F E}
 
-end IsStarFixed
 
 def StarTensor (F E A : Type*) [CommRing F] [CommRing E] [CommRing A] [Algebra F E]
     [Algebra F A] : Type _ := E ⊗[F] A
 
 namespace StarTensor
 
-section NoStar
 
 variable (F E A : Type*) [CommRing F] [CommRing E] [CommRing A] [Algebra F E] [Algebra F A]
 
@@ -234,9 +227,7 @@ variable {B C : Type*} [CommRing B] [CommRing C] [Algebra F B] [Algebra F C]
 
 
 
-end NoStar
 
-section Star
 
 variable {F E A : Type*} [CommRing F] [CommRing E] [CommRing A] [Algebra F E] [Algebra F A]
   [StarRing E] [IsStarFixed F E]
@@ -244,16 +235,13 @@ variable {F E A : Type*} [CommRing F] [CommRing E] [CommRing A] [Algebra F E] [A
 
 variable {B : Type*} [CommRing B] [Algebra F B]
 
-end Star
 
 end StarTensor
 
-section RingOfIntegers
 
 variable (K : Type*) [Field K] (V : Type*) [AddCommGroup V] [Module K V]
 
 
-end RingOfIntegers
 
 section CM
 

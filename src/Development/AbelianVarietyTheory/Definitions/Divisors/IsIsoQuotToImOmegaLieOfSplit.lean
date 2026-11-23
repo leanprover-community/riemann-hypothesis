@@ -302,11 +302,9 @@ theorem isVB_omega_of_isGrpPullback (h : IsGrpPullback G' G f φ) {g : ℕ} (hg 
 
 end Base
 
-section DualIm
 
 variable {O : Type} [CommRing O] {F : S.Modules} (ρ : O →+* End F) (σ : O →+* Γ(S, ⊤)) {g r : ℕ}
 
-end DualIm
 
 section Act
 
@@ -352,7 +350,6 @@ variable {G' : Over S'} [GrpObj G'] [QuasiSeparated G'.hom] {i' : OAct O G'} {f 
   (w : ∀ a, (i'.act a).left ≫ φ = φ ≫ (i.act a).left)
 include w
 
-section ImBase
 
 variable {σ} {g : ℕ} (hg : IsVB (omega G) g) {D : Γ(S, ⊤)} (hf : IsRegularFn (f.appTop D))
 
@@ -371,7 +368,6 @@ include hg
 
 end
 
-end ImBase
 
 end Act
 

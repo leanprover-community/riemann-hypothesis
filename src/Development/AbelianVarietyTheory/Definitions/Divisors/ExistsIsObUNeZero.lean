@@ -43,7 +43,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 
 namespace GlobalTheory.LBObs.Model
 
-section Alg
 
 variable {R R₀ : Type} [CommRing R] [CommRing R₀] {I : Ideal R} {π : R →+* R₀} {R₁ : Type} [CommRing R₁] [Algebra R₀ R₁]
 variable {C : Type} [Category.{0} C] {F : C ⥤ CommAlgCat.{0} R₀}
@@ -53,7 +52,6 @@ variable (hI : I ^ 2 = 0)
 
 
 
-end Alg
 
 section Example
 

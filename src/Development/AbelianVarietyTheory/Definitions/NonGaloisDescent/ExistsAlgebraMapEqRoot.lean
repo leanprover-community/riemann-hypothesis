@@ -420,7 +420,6 @@ def splitDat (χ : TameGal K l e a →* O) : BKDat O K l e a (Unit ⊕ Unit) η 
 
 end Examples
 
-section Omega
 
 omit [NeZero a] [TameDescentExponentData K l e a]
 
@@ -429,6 +428,5 @@ variable [TameDescentExponentData K l e 1]
 
 
 
-end Omega
 
 end GlobalTheory.BK

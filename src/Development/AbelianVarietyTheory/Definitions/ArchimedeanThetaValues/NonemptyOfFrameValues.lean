@@ -73,10 +73,8 @@ theorem nonempty_of_frameValues (Λ : letI := H.starRing; ArcPts.GtAn a) : Nonem
 
 end Bridge
 
-section Determined
 variable {O : Type} [CommRing O] [StarRing O] [Algebra (FractionRing ℂ) ℂ] [IsScalarTower ℂ (FractionRing ℂ) ℂ]
   {D₀ : Out.DegPre ℂ} [Module O D₀.X] {oa : D₀.OAct O} (d : GtDict D₀ oa)
 
-end Determined
 
 end GlobalTheory.ArcDictModel

@@ -53,13 +53,11 @@ theorem isProjOver_powObj {R : Type} [CommRing R] (A : Over (Sp R)) (h : IsProjO
 
 end Model
 
-section Zero
 
 variable {D : Datum H} {n N : ℕ}
 
 open RankZero
 
-end Zero
 
 end GlobalTheory.Models.FamInh
 

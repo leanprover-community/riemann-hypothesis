@@ -432,10 +432,8 @@ theorem posDef_quotGram (h : H.PosDef) : (quotGram H).PosDef := by
 
 end Blocks
 
-section FinFrame
 
 variable {N : ℕ}
 
-end FinFrame
 
 end GlobalTheory.HermFrame

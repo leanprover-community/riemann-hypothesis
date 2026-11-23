@@ -40,13 +40,11 @@ namespace GlobalTheory.GO
 
 open NumberField Formalism.L2.Col Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Forms
 
-section Exp
 
 open MvPolynomial Formalism.L2.Ker GlobalTheory.IndefiniteRowSideFullHecke.SubstitutionAdjoint
 
 variable {ι : Type} [Fintype ι] {a b : ℕ}
 
-end Exp
 
 namespace ChSrc
 

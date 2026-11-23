@@ -45,13 +45,11 @@ namespace GlobalTheory.VolBr.Model
 
 variable {k : Type} [CommRing k] {X : Scheme.{0}} [IsIntegral X] {p : X ⟶ Sp k}
 
-section Two
 
 variable (A : HermLB p) (u : A.B.Sec) (hu : genericPoint X ∈ nonzeroLocus u)
 
 variable {A u hu}
 
-end Two
 
 
 omit [IsIntegral X] in

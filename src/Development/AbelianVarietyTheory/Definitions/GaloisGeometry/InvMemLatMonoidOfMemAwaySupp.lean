@@ -380,10 +380,8 @@ theorem dosetInd_mem_heckeAway {N : ℕ} {S : Finset ℕ} {h : G.GAf} (hS : h �
 
 end Away
 
-section Basic₂
 
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p} (L : _root_.GlobalTheory.LKGeo.Link D G) {gb : GBase D.toG ℂ} {N : ℕ}
 
-end Basic₂
 
 end GlobalTheory.W2

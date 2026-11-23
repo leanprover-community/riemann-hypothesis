@@ -43,7 +43,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.NJoin.Inh
 
-section Frame
 
 variable {D : D7} {V : HSp D} {n : ℕ} (P : RowPsi V n)
 
@@ -60,9 +59,7 @@ variable (hc : ∀ h ∈ GfC V, c.ρ h = 1) (ρ : Representation ℂ (Reciprocit
 include hc rat wt
 
 
-end Frame
 
-section Algebraic
 
 open MvPolynomial ReciprocityTheory.Aut
 open scoped Matrix
@@ -71,7 +68,6 @@ variable {ι : Type} [Fintype ι] {n : ℕ}
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
-end Algebraic
 
 section Weight
 
@@ -121,21 +117,16 @@ variable {V : HSp D} (c : CoefA V)
 
 end Weight
 
-section Agreement
 
 variable {D : D7} {cf : CharFrame D} {nch : NChoice D} {tp : TupTied D cf nch} (X : RealAt D cf nch tp)
 
-end Agreement
 
-section Reading
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {cf : CharFrame D} {nch : NChoice D}
 
 
-end Reading
 
-section Record
 
 open Formalism.MainNotions Formalism.L2.Rows
 
@@ -146,7 +137,6 @@ variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotio
   {S : Formalism.L2.SG.SpectralTiesReal.STiesR Rc} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
   {Q : RealT Rc P Dcf Spf Zscf S Ks}
 
-end Record
 
 end GlobalTheory.NJoin.Inh
 

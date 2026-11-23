@@ -72,14 +72,12 @@ def IsOrbitProd {u : HeightOneSpectrum (𝓞 L)} (Y : (L ≃ₐ[K] L) → IrrGL 
 
 end Cyc
 
-section Loc
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)}
 
 
 
-end Loc
 
 structure LocalBCAt {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
     {v : HeightOneSpectrum (𝓞 K)} {u : HeightOneSpectrum (𝓞 L)}
@@ -113,13 +111,11 @@ def StrongBC (BC : BCRel) : Prop :=
     HasSupport τ.ρ (Finset.univ.val.map x) → (∀ j, BC K L v u (x j) (X j) ∧ HasSupport (X j).rep (S j)) →
     (∀ i, HasSupport (T i).ρ (S' i)) → ∑ i, S' i = ∑ j, S j
 
-section Ind
 
 variable (K : Type) {L Ω : Type} [Field K] [Field L] [NumberField L] [Field Ω] [Algebra K Ω] [Algebra L Ω]
   [IsAlgClosure L Ω] [Algebra K L] [IsScalarTower K L Ω]
 
 
-end Ind
 
 end GlobalTheory.FunExt
 

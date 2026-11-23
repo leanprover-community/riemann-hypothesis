@@ -34,12 +34,10 @@ namespace GlobalTheory.DefPt.Model
 open NumberField IsDedekindDomain Module Formalism.BasicNotions Formalism.L2.Pj GlobalTheory.DualWeyl MvPolynomial GlobalTheory.DefPt
 open scoped Matrix
 
-section Adelic
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] [DecidableEq ι]
 
 
-end Adelic
 
 section Tensor
 

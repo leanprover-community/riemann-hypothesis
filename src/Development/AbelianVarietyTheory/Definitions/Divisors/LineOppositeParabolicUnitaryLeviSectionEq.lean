@@ -664,12 +664,10 @@ theorem locallyCompact_GU_of_unram [CompleteSpace L] {ϖ : L} {σ : L →+* L} {
 
 end Examples
 
-section Coinv
 variable {A G H V W : Type} [Group A] [Group G] [Group H] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
 
 variable [TopologicalSpace G] [IsTopologicalGroup G]
 
-end Coinv
 
 namespace LeviDatum
 variable {G M : Type} [Group G] [TopologicalSpace G] [Group M] [TopologicalSpace M] (P : LeviDatum G M)

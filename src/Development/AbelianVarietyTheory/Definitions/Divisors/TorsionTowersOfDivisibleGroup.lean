@@ -622,11 +622,9 @@ end Lie
 
 end TorsionTower
 
-section Values
 
 variable (p O) [Fact p.Prime]
 
-end Values
 
 end PDivGroup
 

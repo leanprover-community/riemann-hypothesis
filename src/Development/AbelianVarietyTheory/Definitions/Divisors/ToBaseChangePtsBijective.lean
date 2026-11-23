@@ -516,11 +516,9 @@ def semiHomEquiv (G' : PDivGroup p O') :
 
 end BaseChange
 
-section Examples
 
 variable [Fact p.Prime]
 
-end Examples
 
 end PDivGroup
 

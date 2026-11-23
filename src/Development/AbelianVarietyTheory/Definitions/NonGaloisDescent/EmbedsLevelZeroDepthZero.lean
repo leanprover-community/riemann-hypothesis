@@ -319,18 +319,14 @@ theorem deltaHalf_of_mem_leviK {g : Levi k m} (hg : g ∈ leviK k m) : deltaHalf
   rw [deltaHalf_apply]
   exact Finset.prod_eq_one fun a _ => detChar_of_mem_KO (isUnram_absPow k _) (hg a trivial)
 
-section Two
 
 variable {a b : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
 
 
-end Two
 
-section Finite
 
 variable {R : Type} [Field R] {N h : ℕ} {d : Fin h → ℕ}
 
-end Finite
 
 
 variable (k) in

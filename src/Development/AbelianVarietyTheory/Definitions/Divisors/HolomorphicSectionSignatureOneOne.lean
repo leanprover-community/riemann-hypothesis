@@ -51,13 +51,11 @@ namespace GlobalTheory.HolDictModel
 
 open GlobalTheory.HolDict
 
-section Local
 
 open ReciprocityTheory.ChartRestriction.G.FD
 
 variable {n : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
 
-end Local
 
 section Adelic
 
@@ -75,20 +73,16 @@ theorem fix_iff (τ : D.host.E →+* ℂ) :
 
 end Adelic
 
-section Dict
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.Member
 
 variable {D : D7}
 
 
-end Dict
 
-section Forms
 
 variable {D : D7}
 
 
-end Forms
 
 end GlobalTheory.HolDictModel

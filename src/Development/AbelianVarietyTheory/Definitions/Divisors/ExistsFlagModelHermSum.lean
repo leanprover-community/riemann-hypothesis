@@ -95,11 +95,9 @@ variable {L M}
 
 end HermLB
 
-section Sum
 
 variable {E₁ E₂ : X.Modules} {r s : ℕ}
 
-end Sum
 
 namespace VMetric
 

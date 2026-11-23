@@ -309,11 +309,9 @@ theorem hodgeTrace_id (j q : ℕ) (x : hodgeH s j q) :
 
 end Identity
 
-section Degree
 
 variable {k : Type} [CommRing k] {X X' : Scheme.{0}} {s : X ⟶ Sp k} {s' : X' ⟶ Sp k}
   {f : X' ⟶ X} [IsFinite f] [Etale f]
 
-end Degree
 
 end GlobalTheory.HodgeCoh

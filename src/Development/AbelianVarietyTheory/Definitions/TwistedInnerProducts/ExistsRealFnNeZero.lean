@@ -310,11 +310,9 @@ theorem isBlock_invTrK_realAt (h : GA D (G.V (.grid D.R.m D.R.m))) (τ : D.what�
 
 end Top
 
-section Examples
 
 variable {L : LevCh D T} {sc : Consts} {G : GridData L sc} {U : Set T} (θ : InfFam D) (N : Std G U) (X : Node)
 
-end Examples
 
 end GlobalTheory.RealType
 

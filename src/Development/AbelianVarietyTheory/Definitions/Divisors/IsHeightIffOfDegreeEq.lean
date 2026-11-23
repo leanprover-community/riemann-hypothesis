@@ -201,13 +201,11 @@ def baseChange (E : Type) [Field E] [NumberField E] [Algebra F E] : HermSys E wh
   A τ := T.A (τ.comp (algebraMap F E))
   abelian₂ := T.abelian₂
 
-section Norms
 
 variable {K : Type} [Field K] {φ : F →+* K} {σ : F →+* ℂ}
 
 variable {T}
 
-end Norms
 
 def ptHeight {Ω : Type} [Field Ω] [Algebra F Ω] [Algebra.IsAlgebraic F Ω] (x : T.Pt Ω) : ℝ :=
   vecHeight T.w T.A (T.coords x.1)

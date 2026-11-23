@@ -301,10 +301,8 @@ def j : Φ.O →+* R.B := R.lam.comp (MvPowerSeries.C : Φ.O →+* Φ.abelian₂
 
 end Pair
 
-section CH
 variable {n : ℕ} {Γ B : Type} [Group Γ] [CommRing B] (D : DetG n Γ B)
 
-end CH
 
 namespace Pair
 variable {Φ : Frame} {G : PolGp Φ} (R : Pair G)

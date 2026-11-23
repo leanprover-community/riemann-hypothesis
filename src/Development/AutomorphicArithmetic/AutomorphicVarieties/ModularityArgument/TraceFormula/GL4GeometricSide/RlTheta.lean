@@ -182,7 +182,6 @@ end
 
 theorem rlTheta : RlTheta := by
   intro E _ _ _ n _ π _ K _ _ _ _ _ μf _ D
-  open Matrix in
   have map_thetaR {R S : Type} [CommRing R] [CommRing S] (p : R →+* S) (c : R →+* R) (c' : S →+* S)
       (h : ∀ x, p (c x) = c' (p x)) (g : GL (Fin n) R) :
       GeneralLinearGroup.map p (thetaR c n g) = thetaR c' n (GeneralLinearGroup.map p g) := by

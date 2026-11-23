@@ -306,13 +306,11 @@ structure Lift (D : Data) : Type 1 where
 
 namespace Inhab
 
-section Sections
 
 variable (D : Data) (δ : ∀ U : D.X.affineOpens, DividedPowers (D.I.map (algebraMap D.R (Sec D.s U.1))))
   (hn : ∀ U, IsNilDP (δ U)) (hd : ∀ U, IsDPMorphism D.κ (δ U) (algebraMap D.R (Sec D.s U.1)))
 
 
-end Sections
 
 end Inhab
 

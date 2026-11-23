@@ -113,11 +113,9 @@ theorem ioE_γ (hO : Function.Injective (algebraMap O LL))
 
 end Generic
 
-section Concrete
 
 variable {l : ℕ} [Fact l.Prime]
 
 
-end Concrete
 
 end GlobalTheory.HWL.Back

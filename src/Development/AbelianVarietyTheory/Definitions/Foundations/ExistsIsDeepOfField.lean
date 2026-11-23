@@ -44,7 +44,6 @@ open GlobalTheory.LevDesc GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspChara
 
 variable {D : D7} {L : SizeData₂ D} {P : ParameterChoice' D L} (Q : ParamsT D L P)
 
-section Deep
 
 variable (T : CoreJ D) (j : ℕ) {l : Level T.Q.H} (Xo : Moduli (T.Q.Dw j) l) (c : Coeff l)
   (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (dict : ∀ σ, GA D (D.sp.W j) → Σ k, Frame ((U σ).X k).Ψ D.R.r)
@@ -53,7 +52,6 @@ variable (T : CoreJ D) (j : ℕ) {l : Level T.Q.H} (Xo : Moduli (T.Q.Dw j) l) (c
 
 variable {Q T j Xo c U dict}
 
-end Deep
 
 section Restrict
 

@@ -343,12 +343,10 @@ theorem countAt_of_trace_eq_zero {g₁ g₂ N : ℕ} [Fact g₁.Prime] [Fact g�
     · rw [h γ hγ (hu.imp (fun H => H γ h0) fun H => H γ h0), mul_zero]
   · simp
 
-section Reg
 variable (G : Type) [Group G] [Fintype G]
 
 variable {G}
 
-end Reg
 
 theorem isNilpotent_of_isUp {u : GG g N} (hu : IsUp g N u) : IsNilpotent (u.val - 1) := by
   have ht : (u.val - 1).BlockTriangular id := by

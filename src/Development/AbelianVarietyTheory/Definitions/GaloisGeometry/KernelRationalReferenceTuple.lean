@@ -320,13 +320,11 @@ theorem kmapRat_of_vqAll (t : KerEntTied ex) (hVQ : t.VQTie (lam (antitone_kerne
 
 end Rat
 
-section Fi
 
 variable {R : Ranks} {LL : Type} [Field LL] [NumberField LL] [StarRing LL] {embLL : LL →+* ℂ}
   {Pl : Rows.Places LL} {Tau : Type} [Fintype Tau] {hc : Tau → HCParam R}
   {C : ColumnChain R Tau hc} {A : ColumnsAtT R C} {P : PeriodMap R C}
 
-end Fi
 
 section VQ
 

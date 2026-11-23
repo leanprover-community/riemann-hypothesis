@@ -59,7 +59,6 @@ def JointApprox {k Γ : Type} [NormedField k] [Group Γ] {a : ℕ} (r : Γ →* 
     (t : Set (Γ →* GL (Fin a) k)) ⊆ C ∧ (∀ g : Γ, ‖trc r g - ∑ ρ ∈ t, c ρ * trc ρ g‖ ≤ ε) ∧
       ∀ j ≤ n, ‖S j - ∑ ρ ∈ t, c ρ * s ρ j‖ ≤ ε
 
-section Local
 
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -73,7 +72,6 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
 
 
 
-end Local
 
 section Om
 

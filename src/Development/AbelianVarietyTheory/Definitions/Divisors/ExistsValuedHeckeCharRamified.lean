@@ -66,23 +66,17 @@ section Integrality
 
 end Integrality
 
-section Symmetry
 
 variable {E : Type} [Field E] [NumberField E]
 
-end Symmetry
 
-section Twist
 
 variable {E : Type} [Field E] [NumberField E]
 
-end Twist
 
-section CM
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-end CM
 
 section Cyclotomic
 

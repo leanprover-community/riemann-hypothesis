@@ -99,14 +99,12 @@ open scoped WithZero
 open IsDedekindDomain GroundTheory.FunctionField
 
 
-section Line
 
 variable (k)
 
 
 variable {k}
 
-end Line
 
 section Product
 

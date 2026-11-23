@@ -262,12 +262,10 @@ def FonD {P : LocPrime l} (AI : LocAinf l P) (K LL : FinExt l)
     LinearMap.eqLocus (TWact (AI.gRW LL (g.1 : GQ l)) T g.1)
       (LinearMap.id : TW (RW LL) T →ₗ[↥(OL LL)] TW (RW LL) T)
 
-section Fon
 
 variable {P : LocPrime l} {AI : LocAinf l P} {K LL : FinExt l}
   {io : PowerSeries ℤ_[l] →ₐ[ℤ_[l]] Ainf l} {T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)}
 
 
-end Fon
 
 end GlobalTheory.Cyc

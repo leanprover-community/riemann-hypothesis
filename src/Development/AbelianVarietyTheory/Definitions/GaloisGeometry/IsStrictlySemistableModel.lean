@@ -37,11 +37,9 @@ open CategoryTheory Limits AlgebraicGeometry Opposite
 
 namespace GlobalTheory.Et
 
-section Transfer
 
 variable (R : Type) [CommRing R] [TopologicalSpace R] [IsTopologicalRing R]
 
-end Transfer
 
 section Semistable
 
