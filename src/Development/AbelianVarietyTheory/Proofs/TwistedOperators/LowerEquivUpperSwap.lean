@@ -53,19 +53,15 @@ theorem smInd_equiv_of_eq [TopologicalSpace G] [IsTopologicalGroup G] {H H' : Su
 
 end General
 
-section Blocks
 
 variable (R : Type) [CommRing R] {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
   [Fintype n] [DecidableEq n]
 
-end Blocks
 
-section Local
 
 variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {a b : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b]
 
-end Local
 
 open ValuativeRel MeasureTheory in
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] in

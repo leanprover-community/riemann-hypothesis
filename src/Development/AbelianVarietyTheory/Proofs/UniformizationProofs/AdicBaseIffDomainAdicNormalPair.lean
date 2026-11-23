@@ -43,13 +43,11 @@ namespace GlobalTheory.DegCompare
 
 open GlobalTheory.PsiInPull GlobalTheory.PsiInPow
 
-section Generic
 
 variable {X Y Z : Scheme.{0}} (f : Z ⟶ Y) (z : Z)
 
 variable {L : LB X} {K : Type} [Fintype K] (φ : K → (Y ⟶ X)) (ε : K → ℤ)
 
-end Generic
 
 variable {R : Type} [CommRing R] [IsDomain R]
 

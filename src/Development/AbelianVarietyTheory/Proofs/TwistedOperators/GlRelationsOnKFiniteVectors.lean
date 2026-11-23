@@ -82,12 +82,10 @@ end GlobalTheory.GKLie
 
 namespace GlobalTheory.GKLie
 
-section Main
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {ρ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}
 
-end Main
 
 end GlobalTheory.GKLie
 

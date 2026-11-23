@@ -80,7 +80,7 @@ theorem ct_tail (hI : IsSplit P I) (hP : Ext.PackingCount) (hGT : Ext.GaussianTa
   set a := ctA x0 P.q with ha
   set q := P.q with hqdef
   have hq0 : (0 : ℝ) < q := by exact_mod_cast P.hq
-  have hq0' : (q : ℂ) ≠ 0 := by exact_mod_cast (by have := P.hq; omega : q ≠ 0)
+  have hq0' : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   set K := (ctC I q a)⁻¹ * Complex.exp (q * Real.pi * Hf v a - q * Real.pi * Hf a a / 2) with hK
 
   have hsum := Col.summable_Tc hI hP hGT hB0 hBβ (v - a)
@@ -208,7 +208,7 @@ theorem ct_deriv (hP : Ext.PackingCount) (hGT : Ext.GaussianTailBound) (hI : IsS
   have hK := Col.hK_of hI
   set q := P.q with hqdef
   have hq0 : (0 : ℝ) < q := by exact_mod_cast P.hq
-  have hq0' : (q : ℂ) ≠ 0 := by exact_mod_cast (by have := P.hq; omega : q ≠ 0)
+  have hq0' : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   set a := ctA x0 q with ha
   set C := ctC I q a with hC
   have hC0 : C ≠ 0 := Complex.exp_ne_zero _
@@ -308,7 +308,7 @@ theorem ct_core (hP : Ext.PackingCount) (hGT : Ext.GaussianTailBound) (hA : Prop
   have hu' : u = Col.uc (IR I) x0 := hu.unique (Col.isU_uc x0)
   set q := P.q with hqdef
   have hq0 : (0 : ℝ) < q := by exact_mod_cast P.hq
-  have hq0' : (q : ℂ) ≠ 0 := by exact_mod_cast (by have := P.hq; omega : q ≠ 0)
+  have hq0' : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   set w := Col.wmap (IR I) x0 with hw
   obtain ⟨βt, hβt, hb0, hbj, hl2t, hsupt⟩ := ct_beta hA hS hI hP w c hc
   set b : EuclideanSpace ℂ (Fin (Col.gB (IR I))) := -((1 / (q : ℂ)) • w) with hb

@@ -305,7 +305,6 @@ theorem isNormSymm_iff (L : RigLB G) (sy : SymGen L.L (ι[G]).left) :
 
 end GroupNorm
 
-section Pow
 
 variable {S : Scheme.{0}}
 
@@ -313,13 +312,10 @@ variable {G' G : Over S} [GrpObj G'] [GrpObj G] {j : ℕ}
 
 variable [IsCommMonObj G'] [IsCommMonObj G]
 
-end Pow
 
-section Clauses
 
 variable {S : Scheme.{0}} {G' G : Over S} [GrpObj G'] [IsCommMonObj G'] [GrpObj G]
   [IsCommMonObj G] {j : ℕ}
 
-end Clauses
 
 end GlobalTheory.BoxCompare

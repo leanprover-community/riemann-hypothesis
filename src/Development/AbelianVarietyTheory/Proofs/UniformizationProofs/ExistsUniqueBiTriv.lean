@@ -106,19 +106,15 @@ theorem Rep.eq_one (hL : L.IsLB) (hY : Function.Surjective Y.hom.appTop.hom) (h 
 
 end Rep
 
-section Quad
 variable {S S' : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G]
 
 variable {H : Over S} [GrpObj H] [IsCommMonObj H] {P : CP G} {i : H ⟶ G} [IsMonHom i]
 
-end Quad
 
-section DVR
 variable {V K : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Field K] [Algebra V K]
   [IsFractionRing V K] {G : Over (Spec (CommRingCat.of V))} [GrpObj G] [IsCommMonObj G]
   [Smooth G.hom] [IsSeparated G.hom] [GeometricallyConnected G.hom]
 
-end DVR
 
 end GlobalTheory.EvenCub
 end

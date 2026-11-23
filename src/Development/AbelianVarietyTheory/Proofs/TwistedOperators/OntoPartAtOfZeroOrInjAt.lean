@@ -132,13 +132,10 @@ theorem exists_opsV (hL : R.toLevCh.Is A.μ0) (hM : R.IsModels) (i : Fin D.R.m) 
   choose h hh using key
   exact ⟨h, fun w hw c x => hh w c hw x⟩
 
-section Levels
 
 variable (i : Fin D.R.m) (t : T) (P : LevelP R.Pg D.R.r ℂ)
 
-end Levels
 
-section Compare
 
 variable (R) (F : Face D A)
 
@@ -146,7 +143,6 @@ variable {R}
 
 variable (R)
 
-end Compare
 
 end GlobalTheory.LiftOntoCompare
 

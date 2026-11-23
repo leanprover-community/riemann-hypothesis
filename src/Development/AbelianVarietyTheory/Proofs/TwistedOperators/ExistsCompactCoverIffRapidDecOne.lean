@@ -52,13 +52,11 @@ variable {X : Type} [NormedAddCommGroup X]
 
 end Height
 
-section Quot
 
 variable {G : Type} [Group G] [MeasurableSpace G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G]
   [BorelSpace G] [LocallyCompactSpace G] [T2Space G] {R : Subgroup G} {μR : Measure R} {μG : Measure G} [SFinite μG]
   [μG.IsMulLeftInvariant] [μR.IsHaarMeasure] [μR.IsInvInvariant]
 
-end Quot
 
 theorem quotientIntegral_trivial_count {G : Type} [Group G] [Fintype G] [MeasurableSpace G] [MeasurableSingletonClass G]
     (f : G → ℂ) : IsQuotIntL1 (R := ⊥) (Measure.dirac 1) Measure.count f (∑ g, f g) := by

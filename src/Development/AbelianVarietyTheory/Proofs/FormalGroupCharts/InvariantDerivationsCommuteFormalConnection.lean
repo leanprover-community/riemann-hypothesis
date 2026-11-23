@@ -322,23 +322,18 @@ end Transfer
 
 end Part2
 
-section Part3
 
 variable {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
 variable (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k]
 
-end Part3
 
-section Part4
 
 variable {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
 variable (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k]
 
-section Inter
 
 variable {k}
 
-end Inter
 
 end Part4
 

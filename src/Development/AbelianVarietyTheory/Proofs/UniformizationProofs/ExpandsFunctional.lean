@@ -85,13 +85,11 @@ theorem IsComb.unique {s s' : LB.Sec M} {c : Λ → K} {t : Λ → LB.Sec M}
 
 end Comb
 
-section Box
 
 variable {R : Type} [CommRing R] [IsDomain R] {j : ℕ}
   {G G' : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G] [GrpObj G'] [IsCommMonObj G']
   {LG : LB G.left} {LG' : LB G'.left}
 
-end Box
 
 section Exp
 

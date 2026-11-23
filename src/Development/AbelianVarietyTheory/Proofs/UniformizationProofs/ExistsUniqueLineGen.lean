@@ -82,11 +82,9 @@ theorem weilQkIs_of_equiv (hB : D.TauBimult) {p p' q q' : QkPt D F k} (h : QkPt.
 
 variable {P : PolAV (Spec (CommRingCat.of (FractionRing R)))} {E : SecA F P k → Fam D F k → Prop}
 
-section Unif
 
 variable {I : Ideal R} {Dd : DegData R I} {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
   (U : Unif I Dd P G)
 
-end Unif
 
 end GlobalTheory.PhiOperatorCompare

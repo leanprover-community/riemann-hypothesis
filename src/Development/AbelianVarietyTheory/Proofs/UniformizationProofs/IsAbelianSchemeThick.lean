@@ -70,18 +70,14 @@ theorem isGen_one : (LB.oneGen L (Y := Y)).IsGen :=
 
 end Refine
 
-section Present
 
 variable {S : Scheme.{0}}
 
 
-end Present
 
-section Data
 
 variable {R : Type} [CommRing R] [IsDomain R] (I : Ideal R) (D : DegPre R) (e : ℕ)
 
-end Data
 
 section
 
@@ -103,7 +99,6 @@ theorem gm_res_pull_top {X Y Z : Scheme.{0}} (r : Z ⟶ Y) (z : Z) (f : Y ⟶ X)
     gm r z V (res h (pullU f ⊤ c)) = gm (r ≫ f) z ⊤ c :=
   (gm_res r z h hz _).trans (gm_pull r f z ⊤ trivial c)
 
-section Datum
 
 variable {S : Scheme.{0}}
 
@@ -111,6 +106,5 @@ variable {E : SplitExt S} {G : Over S} [GrpObj G] (d : E.GtDatum G)
 
 attribute [local instance] SplitExt.free SplitExt.finite
 
-end Datum
 
 end GlobalTheory.GtCoordCompare

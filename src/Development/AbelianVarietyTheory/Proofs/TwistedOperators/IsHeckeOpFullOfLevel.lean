@@ -141,7 +141,6 @@ theorem sum_lvlIdem {σ : K →+* ℂ} (π : Representation ℂ G E) (P : Subgro
 
 end Abstract
 
-section Hecke
 
 open GlobalTheory.HeckeModel GlobalTheory.SphericalOps
 
@@ -149,7 +148,6 @@ variable {D : D7}
 
 variable {V : HSp D} {S : D.what₂.Tau → SPar} {β : GL (Fin V.rank) (Lev.EAf D)}
 
-end Hecke
 
 section Rows
 

@@ -74,21 +74,13 @@ theorem polyProper5 (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (γ : B.Mat
       B.gN σ + B.gN s' ≤ C * B.gN (σ⁻¹ * γ * s') ^ (5 * (r + 1) ^ 2) := by
   open PI.PolynomialProperness in
   have hS := frameS_of Formalism.FourierDecayAlt.P.unipotent_map_frame gvGroup
-  open PI.PolynomialProperness in
   have hSg := frameSg_of Formalism.FourierDecayAlt.P.unipotent_map_frame (tauMem_of mxFacts TauN.neFacts) gvGroup
-  open PI.PolynomialProperness in
   have hA := unitriangular_inverse_bound second_order_norm_bound
-  open PI.PolynomialProperness in
   have hC := coreInst_of isoCore hpkInvol gnFacts frameInd
-  open PI.PolynomialProperness in
   have hG := gvGroup
-  open PI.PolynomialProperness in
   have hN := normInv
-  open PI.PolynomialProperness in
   have hNF := gnFacts
-  open PI.PolynomialProperness in
   have hF := fmulBound
-  open PI.PolynomialProperness in
   have hZ := zhatMove
   obtain ⟨CA, hA1, -⟩ := hA k r z z' γ hmono
   obtain ⟨Cc, hCc⟩ := hC k r z z' γ hstd hpos
