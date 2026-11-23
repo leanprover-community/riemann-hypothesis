@@ -58,9 +58,13 @@ open Classical
 
 namespace GlobalTheory.PrimeRecip
 
-noncomputable def noSmallDiv (p : ℕ) : ℕ → Bool
-  | 0 => true
-  | d + 1 => (p < (d + 1) * (d + 1) || d + 1 < 2 || p % (d + 1) != 0) && noSmallDiv p d
+/-- Check that no integer from `2` through `min D p.sqrt` divides `p`. -/
+noncomputable def noSmallDiv (p D : ℕ) : Bool :=
+  go (min D p.sqrt - 1)
+where
+  go : ℕ → Bool
+    | 0 => true
+    | n + 1 => (p % (n + 2) != 0) && go n
 
 noncomputable def sortedB : List ℕ → Bool
   | a :: b :: t => a < b && sortedB (b :: t)
@@ -76,22 +80,21 @@ noncomputable def okAll : ℕ → List (ℕ × ℕ × ℕ × ℕ × List ℕ) �
 
 theorem noSmallDiv_spec (p : ℕ) : ∀ D, noSmallDiv p D = true →
     ∀ d, 2 ≤ d → d ≤ D → d * d ≤ p → p % d ≠ 0 := by
-  intro D
-  induction D with
-  | zero => intro _ d h2 hD; omega
-  | succ D ih =>
-    intro h d h2 hD hdd
-    simp only [noSmallDiv, Bool.and_eq_true] at h
-    rcases Nat.lt_or_ge d (D + 1) with hlt | hge
-    · exact ih h.2 d h2 (by omega) hdd
-    · have hd : d = D + 1 := by omega
-      subst hd
-      have h1 := h.1
-      simp only [Bool.or_eq_true, decide_eq_true_eq, bne_iff_ne, ne_eq] at h1
-      rcases h1 with (h1 | h1) | h1
-      · omega
-      · omega
-      · exact h1
+  have go_spec : ∀ n, noSmallDiv.go p n = true →
+      ∀ d, 2 ≤ d → d ≤ n + 1 → p % d ≠ 0 := by
+    intro n
+    induction n with
+    | zero => intro _ d h2 hD; omega
+    | succ n ih =>
+      intro h d h2 hD
+      simp only [noSmallDiv.go, Bool.and_eq_true, bne_iff_ne] at h
+      by_cases he : d = n + 2
+      · subst d
+        exact h.1
+      · exact ih h.2 d h2 (by omega)
+  intro D h d h2 hD hdd
+  have hd : d ≤ min D p.sqrt := le_min hD (Nat.le_sqrt.2 hdd)
+  exact go_spec _ h d h2 (by omega)
 
 theorem prime_of_check {p : ℕ} (h2 : 2 ≤ p) (hp : p < 17161) (h : noSmallDiv p 130 = true) :
     p.Prime := by
