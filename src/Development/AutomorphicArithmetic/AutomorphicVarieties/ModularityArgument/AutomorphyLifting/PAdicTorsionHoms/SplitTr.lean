@@ -52,7 +52,6 @@ namespace UpperTheory.V.Z.Win.SplitTorusFixedPoints
 
 open Matrix
 
-section Transport
 
 variable {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [Field k'] [ValuativeRel k'] [TopologicalSpace k'] [IsNonarchimedeanLocalField k']
@@ -100,9 +99,7 @@ private theorem plainTor_of_iso (i : k ≃+* k') (hi : Continuous i) (hi' : Cont
       GlobalTheory.LocalFieldIso.absPow_map i hi] at h4
     exact h4
 
-end Transport
 
-section Fixed
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
 
@@ -138,7 +135,6 @@ private theorem hasFixed_of_iso {v : HeightOneSpectrum (𝓞 F)} {w : HeightOneS
   rw [hx _ hm, hg] at this
   exact this.symm
 
-end Fixed
 
 end UpperTheory.V.Z.Win.SplitTorusFixedPoints
 

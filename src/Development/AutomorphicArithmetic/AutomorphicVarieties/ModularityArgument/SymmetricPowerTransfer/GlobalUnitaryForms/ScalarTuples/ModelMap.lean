@@ -46,7 +46,6 @@ namespace UpperTheory.V.Z.Sym.Glob
 
 open Loc Matrix QuadraticAlgebra
 
-section Generic
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -95,9 +94,7 @@ private lemma semi_add (d : EL Δ τ) (x y : Sp Δ τ) : semi d (x + y) = semi d
 private lemma semi_smul (d : EL Δ τ) (a : Lsq K Δ) (x : Sp Δ τ) : semi d (a • x) = star a • semi d x := by
   simp [semi, sigL_smul, mul_smul_comm]
 
-end Generic
 
-section Torus
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -187,9 +184,7 @@ private lemma mtor_mem {c : K} {m : EL Δ τ} (P : Sp Δ τ ≃ₗ[Lsq K Δ] (Fi
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [Matrix.star_apply, col, col, mul_comm]
 
-end Torus
 
-section Nat
 
 variable {K K' : Type} [Field K] [Field K'] (f : K →+* K') {Δ τ : K}
 
@@ -266,9 +261,7 @@ private lemma isDat_map {c : K} {d m : EL Δ τ} (h : IsDat c d m) : IsDat (f c)
   · rw [← elmap_sigL, ← elmap_star, h.m_star]
   · rw [← elmap_sigL, h.m_sig, ← elmap_sigL, ← elmap_star, elmap_mul, elmap_mul]
 
-end Nat
 
-section Main
 
 variable {K K' : Type} [Field K] [Field K'] (f : K →+* K') {Δ τ : K}
 
@@ -363,7 +356,6 @@ private def torHom {c : K'} {Δ' τ' : K'} {m : EL Δ' τ'} (P : Sp Δ' τ' ≃�
   map_one' := Subtype.ext (mtor_one P)
   map_mul' a b := Subtype.ext (mtor_mul P a b)
 
-end Main
 
 private theorem model_map_exists : ModelMap := by
   intro K K' _ _ f Δ τ c d m hD

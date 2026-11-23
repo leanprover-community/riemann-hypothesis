@@ -39,7 +39,6 @@ open scoped Classical nonZeroDivisors
 
 namespace UpperTheory.V.Z.Int
 
-section SlopeTestRemainingChoices
 
 variable {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {E : Type} [Field E] [NumberField E]
 
@@ -153,7 +152,6 @@ private theorem prod_emb (α : 𝓞 E) :
   rw [h3]
   exact Fintype.prod_equiv (RingHom.equivRatAlgHom E ℂ) _ _ (fun τ => rfl)
 
-end SlopeTestRemainingChoices
 
 theorem prodNorm : ProdNorm := by
   intro l _ ι E _ _ w

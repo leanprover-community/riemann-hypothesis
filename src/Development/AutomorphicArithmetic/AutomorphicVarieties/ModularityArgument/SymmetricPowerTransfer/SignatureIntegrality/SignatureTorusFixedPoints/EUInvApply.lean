@@ -40,7 +40,6 @@ namespace UpperTheory.V.Z.Sym.Sig
 
 open Classical Loc Glob
 
-section Alg
 
 variable {K : Type} [Field K] {Δ s : K}
 
@@ -97,9 +96,7 @@ private theorem eU_theta (hs : s * s = Δ) (g : U3 Δ) : eU hs (theta Δ g) = th
   show _ = ((eU hs g)⁻¹ : GL (Fin 3) K) j i
   rw [eU_inv_apply, Matrix.map_apply, Matrix.map_apply, proj_star]
 
-end Alg
 
-section Alg2
 
 variable {K : Type} [Field K] {Δ s : K}
 
@@ -199,9 +196,7 @@ private theorem hasTau_iff (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (hs : s * s = Δ)
     · rw [proj_alg, ← Polynomial.coeff_map, h1, h]
     · rw [proj_alg, ← Polynomial.coeff_map, h2', h]
 
-end Alg2
 
-section Int
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {O : Type} [CommRing O] [Algebra O k] {Δ s : k}
@@ -266,7 +261,6 @@ private theorem comap_KO (hO : IsInts k O) (h2 : (2 : k) ≠ 0) (h0 : s ≠ 0) (
     · rw [eU_inv_apply, ← proj_star hs, Valuation.mem_integer_iff]
       exact val_of_int hO (int_proj hs (hg' j i).2)
 
-end Int
 
 theorem eU_facts : EU := by
   intro k _ _ _ _ O _ _ hO h2 Δ s hs h0

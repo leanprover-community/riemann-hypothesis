@@ -40,7 +40,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Automorphic
 section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.HeckeGal UpperTheory.V UpperTheory.V.Af
-section Real
 variable {E : Type} [Field E] [NumberField E] [IsTotallyReal E]
 private noncomputable def diagR (E : Type) [Field E] [NumberField E] [IsTotallyReal E] : E →+* TR.Rinf E :=
   (TR.pInf E).comp (algebraMap E (Ad E))
@@ -113,7 +112,6 @@ private theorem expo_intR {χ : HChar E} {n : (E →+* ℂ) → ℤ} (h : IsAlgP
   split_ifs with e
   · rw [e, Pi.single_eq_same]
   · simp [Pi.single_eq_of_ne e]
-end Real
 private theorem expo_intC {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {χ : HChar E} {n : (E →+* ℂ) → ℤ}
     (h : IsAlgPos χ n) (τ : E →+* ℂ) : expo χ τ = n τ := by
   refine (GlobalTheory.CuspRep.InfType.expo_of_infType E χ).1 n (fun k => h k fun φ => ?_) τ

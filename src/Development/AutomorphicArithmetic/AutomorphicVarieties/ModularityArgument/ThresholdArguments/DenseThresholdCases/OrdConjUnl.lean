@@ -50,7 +50,6 @@ open UpperTheory.V.Z UpperTheory.V.Z.Ord
 open scoped Matrix
 open scoped Pointwise
 namespace UpperTheory.V.Z.Ord.CU
-section Abs
 variable {H H' k : Type} [Group H] [Group H'] [Field k] {n : ℕ}
 private theorem trace_of_flag {r : H →* GL (Fin n) k} {ψ : Fin n → H →* kˣ} (h : W.HasFlag r ψ) (s : H) :
     (r s : Matrix (Fin n) (Fin n) k).trace = ∑ i, (ψ i s : k) := by
@@ -202,11 +201,9 @@ private theorem abs_main {r₁ : H →* GL (Fin n) k} {r₂ : H' →* GL (Fin n)
       have e1 : ((ψ (Fin.rev a) (f t))⁻¹ * μ t) ^ m = ((ψ (Fin.rev b) (f t))⁻¹ * μ t * ε (f t)) ^ m := by
         simpa [hε] using DFunLike.congr_fun e t
       simpa using aux₂ e1
-end Abs
 end UpperTheory.V.Z.Ord.CU
 namespace UpperTheory.V.Z.Ord.CU
 open UpperTheory.V.Af UpperTheory.V.Af.Bc UpperTheory.V.Af.Gu GlobalTheory.MonoConj
-section Conc
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
 private theorem cycBar_conjGal {τ : E ≃+* E} {σ : Ω ≃+* Ω} (h : IsLift τ σ) (g : G E Ω) :
     cycBar E Ω l (conjGal h g) = cycBar E Ω l g := by
@@ -286,7 +283,6 @@ private theorem rel_conj [IsCMField E] {τ : E ≃+* E} {σ : Ω ≃+* Ω} (h : 
   rw [e1, ht]
   simp only [Units.val_mul (ρ u * ρ s'), Units.val_mul (ρ u), hQ]
   simp only [Units.val_mul, Matrix.mul_smul, Matrix.smul_mul]
-end Conc
 end UpperTheory.V.Z.Ord.CU
 namespace UpperTheory.V.Z.Ord.CU
 variable {E Ω : Type} [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}

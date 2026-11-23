@@ -45,7 +45,6 @@ open GlobalTheory.CuspRep GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af 
 
 namespace UpperTheory.V.Z.Win.Birth
 
-section Count
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -158,7 +157,6 @@ private theorem indSys_indSat (h2 : Module.finrank F E = 2) (hex : ∀ᶠ w in F
     exact hnp ⟨w', w, hc, hu, rfl⟩
   exact ⟨_, B', hs, he, Or.inr ⟨hnp, rfl⟩⟩
 
-end Count
 
 private theorem algSat_val (n q : ℕ) (B : Multiset ℂˣ) :
     algSat n q B = B.map fun α : ℂˣ => (((q : ℝ) ^ (((n : ℝ) - 1) / 2) : ℝ) : ℂ) * (α : ℂ) := by
@@ -172,7 +170,6 @@ private theorem eig_unique {F Ω : Type} [Field F] [NumberField F] [Field Ω] [A
   have e := congrArg Polynomial.roots (((h A hA).2 σ hσ).symm.trans ((h' A hA).2 σ hσ))
   rwa [roots_multiset_prod_X_sub_C, roots_multiset_prod_X_sub_C] at e
 
-section Tw
 
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {a : ℕ}
 
@@ -190,7 +187,6 @@ private theorem sat_tw {π : CuspSub K a} {w : HeightOneSpectrum (𝓞 K)} {B : 
     (CG.mk (π.twist (GlobalTheory.HeckeGal.Model.absPow K s))).HasSat w (B.map (· * (GlobalTheory.HeckeGal.Model.absPow K s).val w)) :=
   GlobalTheory.SphGal.hasSatGL_twist K a π _ w B ((GlobalTheory.HeckeGal.Model.absPow_isAbsPow K s).1 w) h
 
-end Tw
 
 private theorem indSys_of_att {K M Ω : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] [Field M] [NumberField M] [_root_.NumberField.IsTotallyComplex M] [Field Ω]
     [Algebra K M] [Algebra K Ω] [Algebra M Ω] [IsScalarTower K M Ω] [IsAlgClosure M Ω] (h2 : Module.finrank K M = 2)

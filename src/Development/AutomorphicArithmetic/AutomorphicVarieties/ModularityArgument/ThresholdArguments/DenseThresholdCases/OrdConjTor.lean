@@ -59,7 +59,6 @@ open UpperTheory.V.HV (Coef)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z UpperTheory.V.Z.Ord
 namespace UpperTheory.V.Z.Ord
-section Loc
 variable {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [Field k'] [ValuativeRel k'] [TopologicalSpace k'] [IsNonarchimedeanLocalField k']
 private theorem hasSupport_contra {N : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
@@ -182,7 +181,6 @@ private theorem unl_of_map (i : k ≃+* k') (hi : Continuous i) (q : ℕ) (s : M
     (by rw [e]; exact isUnram_comp i hi hun)
   rw [e, MonoidHom.comp_apply] at this
   rwa [unram_unif i hi _ hun] at this
-end Loc
 theorem conj_torsion_of_printed_results :
     _root_.UpperTheory.V.Af.Hypotheses' → ConjTor := by
   intro _ E _ _ _ n hn π hd w w' hu hT

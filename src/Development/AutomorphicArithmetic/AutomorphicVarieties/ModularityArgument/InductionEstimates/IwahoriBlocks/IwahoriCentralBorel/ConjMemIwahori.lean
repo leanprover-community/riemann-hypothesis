@@ -39,7 +39,6 @@ open scoped TensorProduct Classical
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.IwahoriInjection
 
-section Abstract
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
 
@@ -95,9 +94,7 @@ private theorem mem_twKer_of_sum (π : Representation ℂ G V) (I N : Subgroup G
   rw [Submodule.mem_comap, ← Module.End.mul_apply, ← map_mul] at h5
   simpa using h5
 
-end Abstract
 
-section Local
 
 open ValuativeRel Matrix
 
@@ -200,7 +197,6 @@ private theorem local_inj {V : Type} [AddCommGroup V] [Module ℂ V]
     (Subtype.ext ((Submodule.Quotient.mk_eq_zero _).2 hker))
   exact congrArg (fun a : fixed π (iwahori F (Fin n)) => ((a : Z) : V)) h2
 
-end Local
 
 end UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.IwahoriInjection
 

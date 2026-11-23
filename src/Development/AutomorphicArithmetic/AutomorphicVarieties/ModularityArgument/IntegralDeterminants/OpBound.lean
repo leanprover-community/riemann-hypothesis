@@ -54,7 +54,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Int
 
-section Tens
 
 variable {V : Type} [Fintype V] {d : V → ℕ} [DecidableEq (∀ v, Fin (d v))] {H : Type} [Group H]
 
@@ -83,9 +82,7 @@ private noncomputable def tens (M : ∀ v, H →* Matrix (Fin (d v)) (Fin (d v))
 private theorem tens_apply (M : ∀ v, H →* Matrix (Fin (d v)) (Fin (d v)) ℂ) (g : H) (i j : ∀ v, Fin (d v)) :
     tens M g i j = ∏ v, M v g⁻¹ (j v) (i v) := rfl
 
-end Tens
 
-section Nu
 
 variable {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ)
 
@@ -139,9 +136,7 @@ private theorem nu_of_val (w : HeightOneSpectrum (𝓞 E)) (ψ : w.adicCompletio
     rw [hy, mul_assoc, inv_mul_cancel₀ (pow_ne_zero _ hp0), mul_one]
   rw [hxy, map_mul, nu_mul, h4, one_mul, map_pow, nu_pow, hτ]
 
-end Nu
 
-section Words
 
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
@@ -171,9 +166,7 @@ private theorem intDet_of_KGL {w : HeightOneSpectrum (𝓞 E)} {g : GL (Fin n) (
   ⟨((GlobalTheory.BCT.GlobLev.mem_KGL_iff_val w g).1 hg).1, by
     simpa using GlobalTheory.HenQ.valued_det_of_KGL hg⟩
 
-end Words
 
-section Places
 
 variable {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -211,9 +204,7 @@ private theorem exists_places (w : HeightOneSpectrum (𝓞 E)) (hw : IsSplitAt w
     have h5 := hφw v ⟨_, h4, by rw [InfinitePlace.mk_conjugate_eq, hφ]⟩
     exact hne ((h3 v w).1 h5).symm
 
-end Places
 
-section Rep
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -273,9 +264,7 @@ private theorem cLoc_finPt (γ₀ : GlobalTheory.BCT.UE E n) (u : HeightOneSpect
   refine Units.ext (Matrix.ext fun i j => ?_)
   rfl
 
-end Rep
 
-section Forms
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -337,9 +326,7 @@ private theorem F_aut {V : Type} [Fintype V] {lamv : V → DomWeight n} {φ : V 
     expand f e (fun v => GlobalTheory.Branching.sqRep ℂ n (lamv v) (cEmb (φ v) (k⁻¹).1)) i]
   simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Matrix.mulVec, dotProduct, tens_apply, mv_apply, hmi]
 
-end Forms
 
-section Core
 
 variable {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -453,9 +440,7 @@ private theorem core (hn : 1 ≤ n) (σ : Submodule ℂ (UA E n → ℂ)) (hσ :
     rw [Finset.sum_apply]
     exact (Finset.sum_subtype_of_mem (fun x => RU E n x (f fun v => e v (i v)) g.1) hsF).trans h1
 
-end Core
 
-section Words2
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -480,7 +465,6 @@ private theorem intDet_prod_inv {w : HeightOneSpectrum (𝓞 E)} {j : ℕ} (L : 
 private theorem zpow_pow_pow (x : ℝ) (z : ℤ) (j m : ℕ) : ((x ^ z) ^ j) ^ m = (x ^ (j * m)) ^ z := by
   rw [← pow_mul, ← zpow_natCast, ← zpow_natCast, ← _root_.zpow_mul, ← _root_.zpow_mul, mul_comm]
 
-end Words2
 
 end UpperTheory.V.Z.Int
 

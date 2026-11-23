@@ -45,7 +45,6 @@ open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob UpperT
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Gl2
 
 open Matrix
 
@@ -116,9 +115,7 @@ private theorem hom_trivial_on_det_one (h : (2 : K) ≠ 0) (g : GL (Fin 2) K) (h
     rwa [map_mul, D_loU D h, mul_one] at h2
   · exact D_of_ne D h g hg hc
 
-end Gl2
 
-section Lev
 
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -143,7 +140,6 @@ private theorem det_in_H (V : Lev k) (g : GL (Fin 2) k) (hg : g ∈ V.J 2) : Gen
 private theorem dg_comm {n : ℕ} (a b : Fin n → kˣ) : Sig.dg a * Sig.dg b = Sig.dg b * Sig.dg a := by
   rw [Sig.dg, Sig.dg, ← map_mul, ← map_mul, mul_comm]
 
-end Lev
 
 private theorem two_ne {L : Type} [Field L] [NumberField L] (w : Plc L) : (2 : Kw w) ≠ 0 := by
   have h : algebraMap L (Kw w) 2 ≠ 0 := (map_ne_zero _).2 two_ne_zero

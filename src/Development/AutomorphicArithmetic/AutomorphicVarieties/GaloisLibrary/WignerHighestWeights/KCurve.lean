@@ -50,7 +50,6 @@ theorem UpperTheory.V.AlgRepEndIrreducible.kCurve :
       ← Matrix.exp_add_of_commute _ _ (Commute.refl (t • Z)).neg_right]
     simp
   refine ⟨fun t => ⟨NormedSpace.exp (t • Z), hm t⟩, Subtype.ext (by simp), ?_⟩
-  open scoped Matrix.Norms.Operator in
   have h := hasDerivAt_exp_smul_const (𝕂 := ℝ) Z 0
   rw [zero_smul, NormedSpace.exp_zero, one_mul] at h
   exact h

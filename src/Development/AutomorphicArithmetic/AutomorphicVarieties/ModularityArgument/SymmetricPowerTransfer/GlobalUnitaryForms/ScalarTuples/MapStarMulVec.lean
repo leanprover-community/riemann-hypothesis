@@ -49,7 +49,6 @@ namespace UpperTheory.V.Z.Sym.Glob
 
 open QuadraticAlgebra Matrix Loc
 
-section Vec
 
 variable {R : Type} [CommRing R] [StarRing R]
 
@@ -78,9 +77,7 @@ private theorem unitary_of_map (T : (Fin 3 → R) →ₗ[R] (Fin 3 → R))
   simp only [← hM, Matrix.mulVec_single_one] at this
   simpa [Matrix.mul_apply, Matrix.star_apply, mul_comm, Pi.single_apply, Matrix.one_apply, eq_comm, apply_ite (star : R → R)] using this
 
-end Vec
 
-section Shape
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -212,9 +209,7 @@ private theorem shape [CharZero K] {c₁ c₂ t₁ t₂ : K} {d m n : EL Δ τ} 
       exact h)
     exact (mul_left_cancel₀ two_ne_zero h4).symm
 
-end Shape
 
-section Main
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -272,7 +267,6 @@ private theorem bwd {c c' : K} {d m m' : EL Δ τ} {δ δ' : U3 Δ} {ι ι' P P'
   rw [mul_assoc, ← key]
   simp
 
-end Main
 
 theorem conjG : ConjG := by
   intro K _ _ Δ τ d m hΔ hD c c' t t' δ δ' ι ι' P P' h h'

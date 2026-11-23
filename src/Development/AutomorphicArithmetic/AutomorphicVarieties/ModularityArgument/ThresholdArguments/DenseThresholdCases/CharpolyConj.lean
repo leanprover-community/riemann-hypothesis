@@ -37,7 +37,6 @@ set_option synthInstance.maxHeartbeats 200000
 section
 open UpperTheory.GalN.V
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
-section SlopeTestRemainingChoices
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
 private theorem ps_wt_any {D : Raw Ω c} (h : D.Good) {A : ValuationSubring Ω} (hA : A.valuation (l : Ω) < 1) (i : Fin 4)
     {s : G ℚ Ω} (hs : s ∈ Ine (F := ℚ) A) (h1 : s ∈ D.ψ.ker) (h2 : s ∈ D.om.ker) :
@@ -57,7 +56,6 @@ private theorem charpoly_conj {H K K' : Type} [Group H] [Field K] [Field K'] (f 
   obtain ⟨u, hu⟩ := h
   show ((r g).map f).charpoly = ((r' g).map f).charpoly
   rw [Matrix.charpoly_map, Matrix.charpoly_map, hu, Matrix.coe_units_inv, Matrix.charpoly_units_conj]
-end SlopeTestRemainingChoices
 theorem UpperTheory.V.Ws.pureW_of_proModular_of_isZero :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ (ι : PadicAlgCl l ≃+* ℂ) (𝔞 : Amb l) (e : 𝔞.K ≃+* PadicAlgCl l), 𝔞.IsZero e → ∀ r, _root_.UpperTheory.V.Ws.ProModAlt D ι 𝔞 r → PureW ι (mapRep ((e : 𝔞.K →+* PadicAlgCl l).comp 𝔞.toK) r) := by
   intro Ω _ _ _ l _ c D hD ι 𝔞 e he r hr

@@ -40,7 +40,6 @@ namespace UpperTheory.V.Z.Sym.Glob
 
 open NumberField Matrix Loc
 
-section Abs
 
 variable {I G : Type} [Group G] {Gv : I → Type} [∀ v, Group (Gv v)] {K : ∀ v, Subgroup (Gv v)}
 
@@ -79,9 +78,7 @@ private theorem quot_fin (P : RPG G Gv K) (f : ∀ v, Gv v → ℂ) (S : Finset 
     · exact QuotientGroup.eq.1 (congrFun h ⟨v, hv⟩)
     · exact mul_mem (inv_mem (h2 v hv _ (hne _ hx v))) (h2 v hv _ (hne _ hx' v))
 
-end Abs
 
-section Local
 
 variable {K : Type} [Field K] {Δ : K}
 
@@ -162,7 +159,6 @@ private theorem sup_dec' {J : Subgroup (DX Δ)} {u : DX Δ} (hu : u ∈ ZD Δ �
   · obtain ⟨z, s, hs⟩ := sup_dec hu
     exact ⟨z, s, hs, fun h' => (h h').elim⟩
 
-end Local
 
 theorem finK_test : ∀ (F : Type) [Field F] [NumberField F] (Δ : F) (D : Dat Δ), D.Ok → ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (ch : F → ℂ)
     (B : Base (DX Δ) (DA Δ) V), D.IsBK ch B → ∀ t, D.Cone t → (Base.Tw.one B).IsTest (D.FK t) := by

@@ -45,7 +45,6 @@ noncomputable section
 
 namespace UpperTheory.V.Z.Sym.W.RetractionModules
 
-section Rep
 
 private theorem mod_retr {R S M : Type} [Ring R] [AddCommGroup S] [Module R S] [AddCommGroup M] [Module R M]
     [IsSimpleModule R S] (h : ⨆ f : S →ₗ[R] M, LinearMap.range f = ⊤) (x : M) (hx : x ≠ 0) :
@@ -110,7 +109,6 @@ private theorem map_dc (σ : Representation ℂ Γ X) (τ : Representation ℂ �
     · rw [Function.support_eq_univ fun _ => ne_zero_rep τ hx0 _]
       exact Set.infinite_univ
 
-end Rep
 
 open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial ValuativeRel
 open GlobalTheory.CuspRep GlobalTheory.GalOfCusp GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.SmGL UpperTheory.V.Af UpperTheory.V.Sd
@@ -182,12 +180,10 @@ private theorem exists_ps {k : Type} [Field k] [ValuativeRel k] [TopologicalSpac
     rw [h1]
     simp [torusChar_apply]
 
-section Gal
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 F)} {h : IsPlaceOver A w}
 
-end Gal
 
 end UpperTheory.V.Z.Sym.W.RetractionModules
 

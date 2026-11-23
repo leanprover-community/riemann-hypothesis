@@ -61,7 +61,6 @@ open UpperTheory.V.Z UpperTheory.V.Z.Ord
 
 namespace UpperTheory.V.Z.Ord.OrdinaryPolarizedFromFlag
 
-section Tri
 
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : LocAinf l P} {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
   [IsAlgClosure E Ω] {A : ValuationSubring Ω} {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]
@@ -120,9 +119,7 @@ private theorem flag_jumps (T : LocTied l P AI) (Bw : LocBridge l E Ω (Dec (F :
   obtain ⟨a, rfl⟩ := Multiset.card_eq_one.1 (h1.trans ((hrk hdr').trans (finrank_fin_fun _)))
   exact ⟨a, L, c₂ i, hm' i, hdr, τ₂, hτ, h2⟩
 
-end Tri
 
-section Loc
 
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 L)}
@@ -191,7 +188,6 @@ private theorem pol_of_flag (N : GlobalTheory.Mem.LiteralAutomorphy.LitN) (ι : 
   rw [(F₂ hp).2 s]
   exact Finset.prod_congr rfl fun i _ => (hc i).2.2 s
 
-end Loc
 
 private theorem mem_of_prod {M : Type} [Monoid M] {n : ℕ} (f g : Fin n → (M →* ℂ))
     (h : ∀ x, ∏ j, (X - C (f j x)) = ∏ j, (X - C (g j x))) (j : Fin n) : ∃ i, g i = f j := by

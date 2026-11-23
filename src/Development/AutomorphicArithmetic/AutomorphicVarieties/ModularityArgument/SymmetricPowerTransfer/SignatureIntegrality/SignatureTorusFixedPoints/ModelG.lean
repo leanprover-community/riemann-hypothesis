@@ -42,7 +42,6 @@ namespace UpperTheory.V.Z.Sym.Sig
 
 open Classical Loc Glob
 
-section Alg
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -135,9 +134,7 @@ private theorem hasTau_of (hd : IsDat c d m) (h : Models c d m δ ι Q) : HasTau
   unfold HasTau
   rw [h4, Matrix.coe_units_inv, Matrix.charpoly_units_conj, companion_charpoly_factor]
 
-end Alg
 
-section Mid
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -181,9 +178,7 @@ private theorem id2 (hd : IsDat c d m) (h : Models c d m δ ι Q) (t : (Etau K �
   rw [← Matrix.mulVec_mulVec, e, ← h.tor, tor_of_snd]
   ext <;> simp [Am, ofE] <;> ring
 
-end Mid
 
-section Lin
 
 variable {K : Type} [Field K]
 
@@ -243,9 +238,7 @@ private theorem conj_ids {G Gi T D₀ Dm : Matrix (Fin 3) (Fin 3) K} {re im τ :
           simp only [mul_assoc]; rw [← hC]
       _ = _ := by rw [h2, mul_assoc Gi, hC, cancel]
 
-end Lin
 
-section Proj
 
 variable {K : Type} [Field K] {Δ s τ : K}
 
@@ -277,9 +270,7 @@ private theorem id2K (hs : s * s = Δ) (hd : IsDat c d m) (h : Models c d m δ �
   rw [map_mul, map_add (f := _), map_sub, map_mul, pm_smul, map_one, pm_coe, pm_coe] at h1
   exact h1
 
-end Proj
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -309,7 +300,6 @@ private theorem conj_form {g₀ : GL (Fin 3) k} {T Dm : Matrix (Fin 3) (Fin 3) k
   simp only [mul_assoc]
   rw [hGG, mul_one, ← mul_assoc, hGG, one_mul]
 
-end Loc
 
 theorem modelG : ModelG := by
   intro k _ _ _ _ O _ _ hO h2 Δ s hs hs0

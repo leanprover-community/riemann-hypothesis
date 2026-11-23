@@ -40,7 +40,6 @@ open GroundTheory.Automorphic.CuspidalSpectrum GroundTheory.Automorphic.ArchWhit
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA
 open scoped ComplexConjugate Classical InnerProductSpace
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]
 
@@ -203,7 +202,6 @@ private theorem un_eq (C : Co K ι) (i : ι) (m : U2) : C.un i m = C.gl i (kC m)
   · subst h; simp
   · simp [h]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.coLaws :
     ∀ (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (ι : Type) [Fintype ι] (C : Co K ι), IsHaarK C.κ₂ ∧ (∀ μ, Haar4 μ → IsHaarK (C.κ₄ μ)) ∧ (∀ i m, C.un i m = C.gl i (kC m)) ∧ (∀ i, Continuous (C.gl i)) ∧

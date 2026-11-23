@@ -42,7 +42,6 @@ open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalS
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg.Tf.IntegralApplyAeEq UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial UpperTheory.V.Z.IntegralApplyAeEq UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.K
 open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 
-section SlopeTestRemainingChoices
 
 variable {R : Type} [CommRing R]
 
@@ -133,7 +132,6 @@ private theorem blk_diag (d : Fin (2 + 2) → Rˣ) :
     Matrix.fromBlocks_diagonal, Matrix.diagonal_apply, EmbeddingLike.apply_eq_iff_eq]
   rcases i with i | i <;> simp only [Sum.elim_inl, Sum.elim_inr] <;> rfl
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.redEx :
     ∀ {K : Type} [Field K] [NumberField K], ∃ (ω : Set (AdelicGLn.AdelicGL K (2 + 2))) (t : ℝ), Red ω t := by

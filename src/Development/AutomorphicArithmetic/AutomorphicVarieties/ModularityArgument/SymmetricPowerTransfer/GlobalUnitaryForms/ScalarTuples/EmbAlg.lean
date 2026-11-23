@@ -47,7 +47,6 @@ namespace UpperTheory.V.Z.Sym.Glob
 
 open Matrix
 
-section Coord
 
 variable {K : Type} [Field K] {Δ : K}
 
@@ -395,7 +394,6 @@ private theorem conj_main {τ : K} (hτ : τ ^ 2 - 4 ≠ 0) (h2 : (2 : K) ≠ 0)
     · linear_combination q3
   rw [mul_assoc, hc, inv_mul_cancel_left]
 
-end Coord
 
 end UpperTheory.V.Z.Sym.Glob
 

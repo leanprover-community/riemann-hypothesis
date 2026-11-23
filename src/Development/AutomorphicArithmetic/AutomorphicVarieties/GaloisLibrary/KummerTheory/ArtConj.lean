@@ -54,13 +54,10 @@ private theorem conjGal_mem_decompositionSubgroup_comap {K Ω : Type} [Field K] 
     conjGal h g ∈ ValuationSubring.decompositionSubgroup K (A.comap (σ : Ω →+* Ω)) := by
   open scoped Pointwise in
   rw [ValuationSubring.decompositionSubgroup, MulAction.mem_stabilizer_iff] at hg ⊢
-  open scoped Pointwise in
   ext x
-  open scoped Pointwise in
   rw [ValuationSubring.mem_pointwise_smul_iff_inv_smul_mem, ValuationSubring.mem_comap,
     ValuationSubring.mem_comap, ← map_inv, AlgEquiv.smul_def, conjGal_apply]
   simp only [RingEquiv.coe_toRingHom, RingEquiv.apply_symm_apply]
-  open scoped Pointwise in
   rw [← AlgEquiv.smul_def, ← ValuationSubring.mem_pointwise_smul_iff_inv_smul_mem, hg]
 
 private theorem valuation_comap_le_one_iff {Ω : Type} [Field Ω] (A : ValuationSubring Ω) (σ : Ω ≃+* Ω) (x : Ω) :

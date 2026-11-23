@@ -45,7 +45,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Typ
 open GlobalTheory.TypeTwo.PowIrrProof
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.V.Z.Sym.W
-section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 private theorem prinSeries_irreducible {n : ℕ} (ω : Fin n → kˣ →* ℂˣ) (hω : ∀ i, IsSmoothChar (ω i))
     (h : ∀ i j, ω j ≠ ω i * absPow k 1) : (prinSeries ω).IsIrreducible := by
@@ -93,7 +92,6 @@ private theorem prinSeries_irreducible {n : ℕ} (ω : Fin n → kˣ →* ℂˣ)
       exact absurd this hy
   obtain ⟨E⟩ := equiv_local (GlobalTheory.PrinProd.isSubquotient_prinSeries_multiProd k n ω) hM
   exact GlobalTheory.Parabolic.isIrreducible_of_equiv E hM
-end Loc
 theorem principal_series_of_statement_w : _root_.UpperTheory.V.Z.Sym.W.PsOfAlt := by
   intro _ L _ _ n w τ hT
   haveI : CharZero (w.adicCompletion L) := charZero_of_injective_algebraMap (algebraMap L _).injective

@@ -40,7 +40,6 @@ import Mathlib.Tactic.ReduceModChar
 open NumberField IsDedekindDomain Matrix Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual Formalism.BasicNotions Formalism.MainNotions.N GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.GalOfCusp UpperTheory.V.Af
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 open GlobalTheory.LFun
 open Formalism.UG (IsUnifV Tj Ov diagJ GLint qV)
@@ -222,7 +221,6 @@ private theorem tj_int {w : HeightOneSpectrum (𝓞 E)} {ϖ : w.adicCompletion E
     show _ = ((Multiplicative.ofAdd (-(j : ℤ)) : Multiplicative ℤ) : WithZero (Multiplicative ℤ))
     simp
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.Int.eigAll :
     UpperTheory.V.Z.Int.EigAll := by

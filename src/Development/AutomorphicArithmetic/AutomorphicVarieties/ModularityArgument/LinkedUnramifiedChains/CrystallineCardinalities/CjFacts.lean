@@ -45,7 +45,6 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr Uppe
 
 namespace UpperTheory.V.Z.J.ConjugationUpperEntries
 
-section Abs
 
 variable {C : Type} [CommRing C]
 
@@ -170,7 +169,6 @@ private theorem up_map (φ : O →+* C) {A : Matrix (Fin 3) (Fin 3) O} (h : UpT 
 private theorem smul_q (I : Ideal O) (a : O) (x : O ⧸ I) : a • x = Ideal.Quotient.mk I a * x := by
   rw [Algebra.smul_def]; rfl
 
-end Abs
 
 end UpperTheory.V.Z.J.ConjugationUpperEntries
 

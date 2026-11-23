@@ -52,7 +52,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Win.LocalCharacterData
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -128,13 +127,11 @@ private theorem unlinked_of_gen (ψ : Fin n → kˣ →* ℂˣ) (hψ : ∀ i, Is
     exact hq1 this.symm
   · exact (hgen j i hij).2 e3
 
-end Loc
 
 end UpperTheory.V.Z.Win.LocalCharacterData
 
 namespace UpperTheory.V.Z.Win.LocalCharacterData
 
-section WD
 
 open Polynomial
 
@@ -203,7 +200,6 @@ private theorem nuCharV (L : LawsV a ha ε rc) (σ : SmIrr (GL (Fin n) (w.adicCo
   linear_combination ((resCard (w.adicCompletion E) : ℂ) ^ (((i : ℕ) : ℤ) * ord (w.adicCompletion E) (a g)) *
     (χ (Pi.mulSingle i (a g)) : ℂ)) * e2
 
-end WD
 
 end UpperTheory.V.Z.Win.LocalCharacterData
 

@@ -96,7 +96,6 @@ private theorem eig_gen {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace 
     rw [map_mul, map_inv, map_zpow, ht, ← div_eq_mul_inv]
     exact GlAx.val_div_ord _
   rw [e, map_mul, map_mul Q, h1 _ h3, map_zpow, map_zpow, h2 t ht]
-section Pow
 variable {F : Type} [Field F] [NumberField F] {l : ℕ} [Fact l.Prime] (w : HeightOneSpectrum (𝓞 F))
 private theorem eig_ne (hh : (F →+* Qbar l) → ℤ) (x : (w.adicCompletion F)ˣ) : algPow w hh (x : w.adicCompletion F) ≠ 0 := by
   haveI := GlobalTheory.HeckeGal.finite_contEmb (l := l) w
@@ -122,7 +121,6 @@ private theorem eig_ht {n : ℕ} (lam : Wt F l n) (i : Fin n) (x : (w.adicComple
   have h0 : j.1 (x : w.adicCompletion F) ≠ 0 := (map_ne_zero j.1).2 x.ne_zero
   rw [zpow_one, ← zpow_natCast, ← zpow_add₀ h0, ← zpow_add₀ h0]
   simp [htW]
-end Pow
 private theorem eig_loc (hG : GlobalTheory.Published.GlobalArtinReciprocity) {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
     [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime] {n : ℕ} {B : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 F)} (h : IsPlaceOver B w)
     (hl : ((l : ℕ) : 𝓞 F) ∈ w.asIdeal) (a : Weil h →* (w.adicCompletion F)ˣ) (ha : IsLocalArtin h a) (ι : Qbar l ≃+* ℂ)

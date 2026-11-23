@@ -142,7 +142,6 @@ private theorem int_nhds {K : Type} [NontriviallyNormedField K] [CompleteSpace K
   rw [e2]
   exact (hm i).smul s
 
-section Coord
 
 variable {K : Type} [Field K] (Δ : K)
 
@@ -242,7 +241,6 @@ private theorem mem_KD (O : Type) [CommRing O] [Algebra O K] (g : DX Δ) (h : �
   intro i j
   rfl
 
-end Coord
 
 private theorem loc_open {K : Type} [NontriviallyNormedField K] [CompleteSpace K] [CharZero K] (O : Type) [CommRing O] [IsDomain O] [Algebra O K]
     [IsFractionRing O K] (hO : ∀ᶠ s in 𝓝 (0 : K), s ∈ (algebraMap O K).range) (Δ : K) (J : Subgroup (DX Δ))

@@ -54,9 +54,7 @@ section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial
 open GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Base UpperTheory.V.Published
 namespace UpperTheory.V.Sd.EG
-section Norm
 variable {l : ℕ} [hl : Fact l.Prime]
-end Norm
 private theorem primRam_lift (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (N : ℕ) [NeZero N] (r : ℕ) (hr : r.Prime)
     (A : ValuationSubring Ω) (hA : A.valuation (r : Ω) < 1) (u : (ZMod N)ˣ)
     (hu : u ∈ (ZMod.unitsMap (Nat.ordCompl_dvd N r)).ker) :

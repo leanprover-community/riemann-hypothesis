@@ -43,7 +43,6 @@ open GlobalTheory.HenQ.DetDParts (top_add_one_le fderiv_fderiv_comm integrable_m
 
 namespace UpperTheory.V.Z.Inf
 
-section General
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [MeasurableSpace E] [BorelSpace E]
@@ -171,9 +170,7 @@ private theorem integral_hW_mul {U : Set E} (hU : IsOpen U) {Φ : E → ℂ}
     rw [step, ih _ (contDiffOn_hD hU u hf), e, List.length_cons, pow_succ]
     ring
 
-end General
 
-section Specific
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -199,7 +196,6 @@ private theorem length_word (τ : K →+* ℂ) (p : Equiv.Perm (Fin n)) :
     (word τ p (List.finRange n)).length = n := by
   simp [word]
 
-end Specific
 
 end UpperTheory.V.Z.Inf
 

@@ -41,7 +41,6 @@ import Mathlib.Tactic.NormNum.Prime
 section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial GlobalTheory.CuspRep GlobalTheory.HeckeGal
   GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Published UpperTheory.V.Base UpperTheory.V.Sd
-section SlopeTestRemainingChoices
 variable {l : ℕ} [Fact l.Prime]
 private theorem sm_add {x y : Qbar l} (hx : ‖x‖ < 1) (hy : ‖y‖ < 1) : ‖x + y‖ < 1 :=
   (IsUltrametricDist.norm_add_le_max x y).trans_lt (max_lt hx hy)
@@ -133,7 +132,6 @@ private theorem gal_of (hA : GlobalTheory.Published.GlobalArtinReciprocity) (ι 
     simp only [Set.mem_union, Set.mem_preimage, mem_ball_iff_norm, L₁.frob_unr ha (Or.inr rfl) u₁ hB hτ,
       L₂.frob_unr ha (Or.inr rfl) u₂ hB hτ]
     exact hh.imp (fun t => inv_cong (by rwa [inv_inv])) fun t => inv_cong (by rwa [inv_inv])
-end SlopeTestRemainingChoices
 theorem UpperTheory.V.Z.Bc.propMHolZ_alt :
     _root_.UpperTheory.V.Z.Bc.Hypotheses4Z' → UpperTheory.V.Sd.PropMHol := by
   intro PP F _ _ _ l _ hl ι ω c hω hodd hc hne hcl P hP hQ B

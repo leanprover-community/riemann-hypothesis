@@ -49,7 +49,6 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.Bas
 
 namespace UpperTheory.V.Z.Keep.PotentialOfUnlocked
 
-section Alg
 
 variable {Γ E : Type} [Group Γ] [Field E]
 
@@ -170,7 +169,6 @@ private theorem h0dual_none {V : Type} [AddCommGroup V] [Module E V] {ρ : Repre
   rw [hn, top_le_iff, LinearMap.ker_eq_top] at this
   simp [this]
 
-end Alg
 
 private theorem res_cont {l : ℕ} {Γ E V : Type} [Group Γ] [TopologicalSpace Γ] [CommRing E] [AddCommGroup V]
     [Module E V] [TopologicalSpace V] (H : Subgroup Γ) (π : Representation E Γ V) (hπ : ContAction π) :

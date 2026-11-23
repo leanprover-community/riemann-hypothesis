@@ -42,7 +42,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Win
 
-section Abstract
 
 variable {Γ Γ' k : Type} [Group Γ] [Group Γ'] [Field k] {n : ℕ}
 
@@ -118,9 +117,7 @@ private theorem flag_mem [CharZero k] {r : Γ →* GL (Fin n) k} {H : Subgroup �
   simp only [c, h1, Finset.card_empty, Nat.cast_zero, sub_zero, Nat.cast_eq_zero] at h0
   omega
 
-end Abstract
 
-section Gal
 
 open scoped Pointwise
 
@@ -422,7 +419,6 @@ private theorem unl_down [IsAlgClosure K Ω] {r : G K Ω →* GL (Fin n) (Qbar l
   · simpa only [pow_one] using hne a b
   · simpa only [pow_one] using e
 
-end Gal
 
 theorem flagLaws : FlagLaws := by
   intro K Ω _ _ _ _ _ l _ n r

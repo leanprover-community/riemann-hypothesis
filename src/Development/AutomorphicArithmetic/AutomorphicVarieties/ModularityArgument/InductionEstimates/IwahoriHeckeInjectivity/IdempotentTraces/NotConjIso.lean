@@ -121,7 +121,6 @@ private theorem pow_expo {E : Type} [Field E] [NumberField E] [_root_.NumberFiel
 
 end Pow
 
-section Places
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -163,7 +162,6 @@ private theorem gal_two (h2 : Module.finrank F E = 2) : ∃ σ : E ≃ₐ[F] E, 
   obtain ⟨y, hy, hy'⟩ := (Nat.card_eq_two_iff' (1 : E ≃ₐ[F] E)).1 hcard
   exact ⟨y, hy, fun τ => (em (τ = 1)).imp_right (hy' τ)⟩
 
-end Places
 
 section Conj
 

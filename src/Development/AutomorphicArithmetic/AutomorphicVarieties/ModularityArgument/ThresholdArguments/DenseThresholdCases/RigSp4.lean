@@ -46,13 +46,8 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Recip
 section Alg
 open Matrix
 end Alg
-section Gal
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
-end Gal
-section Core
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
-end Core
-section Rg
 open scoped Matrix TensorProduct
 private theorem rg_twist {Γ k V : Type} [Group Γ] [CommRing k] [AddCommGroup V] [Module k V] (A : Representation k Γ V)
     (p : V →ₗ[k] V) (hp : ∀ x, p (p x) = p x) (hA : ∀ g x, p (A g x) = A g (p x)) (η : Γ →* kˣ) :
@@ -103,7 +98,6 @@ private theorem rg_sign {K Ω : Type} [Field K] [NumberField K] [IsCMField K] (h
       rw [hj, hd, ← map_neg (algebraMap K Ω), ← hδc]
       exact (IsCMField.complexEmbedding_complexConj K (j.comp (algebraMap K Ω)) δ).symm
     simp [this, hne]
-section BK
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {l : ℕ} [Fact l.Prime]
   {C V : Type} [CommRing C] [Algebra ℚ_[l] C] [AddCommGroup V] [Module C V] [Module ℚ_[l] V]
   [IsScalarTower ℚ_[l] C V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousConstSMul C V]
@@ -128,7 +122,6 @@ private theorem rg_bk {ρ ρ' : Representation C (G F Ω) V} (f : V →ₗ[C] V)
       | add a b ha hb => simp only [map_add (f := _), ha, hb]
     rw [← key, ← map_sub, ← hx g, LinearMap.rTensor_tmul]
     simp [hz]
-end BK
 private def rgJ (k : Type) [CommRing k] : GL (Fin 4) k where
   val := !![0, 0, 0, 1; 0, 0, 1, 0; 0, -1, 0, 0; -1, 0, 0, 0]
   inv := !![0, 0, 0, -1; 0, 0, -1, 0; 0, 1, 0, 0; 1, 0, 0, 0]

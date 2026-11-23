@@ -41,7 +41,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Recip
 
 namespace UpperTheory.V.Keep
 
-section linear
 
 variable {k : Type} [Field k] [IsAlgClosed k]
 
@@ -140,9 +139,7 @@ private theorem chars_of_gl {Γ : Type} [Group Γ] {n : ℕ} (ρ : Γ →* Matri
   show _ = (LinearMap.toMatrix' (Matrix.toLin' _)).charpoly
   rw [LinearMap.toMatrix'_toLin']
 
-end linear
 
-section extend
 
 variable {k : Type} [Field k] [IsAlgClosed k] [CharZero k]
 
@@ -218,7 +215,6 @@ private theorem descend [TopologicalSpace k] {Γ : Type} [Group Γ] [Topological
     rw [← hψ i]
     rfl
 
-end extend
 
 theorem ineOf : IneOf := by
   intro Ω _ _ _ l _ n r H hH hc ht v hv A hA

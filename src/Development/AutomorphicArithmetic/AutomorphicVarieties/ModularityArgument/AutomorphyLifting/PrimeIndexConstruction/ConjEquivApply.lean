@@ -35,7 +35,6 @@ open UpperTheory.V.Af
 
 namespace UpperTheory.V.Z.Win.Birth
 
-section Conj
 
 variable {Γ k : Type} [Group Γ] [Field k] {n : ℕ}
 
@@ -77,7 +76,6 @@ private theorem ss_of_conj {r r' : Γ →* GL (Fin n) k} (h : RepIso r r') (H : 
     rw [hW2] at hm
     exact hm
 
-end Conj
 
 private theorem frob_of_conj {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
     {ι : Qbar l ≃+* ℂ} {r r' : G F Ω →* GL (Fin n) (Qbar l)} (h : RepIso r r')

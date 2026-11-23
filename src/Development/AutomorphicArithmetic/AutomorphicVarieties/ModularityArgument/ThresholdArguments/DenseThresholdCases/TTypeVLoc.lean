@@ -90,7 +90,6 @@ private theorem multiset_eq_of_sum {Γ : Type} [Monoid Γ] (s t : Multiset (Γ �
   ext f
   have h2 := (cnt s f).symm.trans ((congrArg (fun u => u f) h1).trans (cnt t f))
   exact_mod_cast h2
-section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 private theorem prinSeries_irreducible {n : ℕ} (ω : Fin n → kˣ →* ℂˣ) (hω : ∀ i, IsSmoothChar (ω i))
     (h : ∀ i j, ω j ≠ ω i * absPow k 1) : (prinSeries ω).IsIrreducible := by
@@ -136,7 +135,6 @@ private theorem prinSeries_irreducible {n : ℕ} (ω : Fin n → kˣ →* ℂˣ)
       exact absurd this hy
   obtain ⟨E⟩ := equiv_local (GlobalTheory.PrinProd.isSubquotient_prinSeries_multiProd k n ω) hM
   exact GlobalTheory.Parabolic.isIrreducible_of_equiv E hM
-end Loc
 section WD
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}

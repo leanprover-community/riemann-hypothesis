@@ -42,7 +42,6 @@ open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob UpperT
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -84,7 +83,6 @@ private theorem proj_int {O : Type} [CommRing O] [Algebra O k] (hO : IsInts k O)
     simp [proj, e])
   exact hv.mem_of_integral h
 
-end Loc
 
 private theorem mem_KD {K O : Type} [Field K] [CommRing O] [Algebra O K] {Δ : K} (x : DX Δ) (hd : (mt x).det = 1)
     (hi : ∀ i j, IsIntegral O (mt x i j)) : x ∈ KD Δ O := by

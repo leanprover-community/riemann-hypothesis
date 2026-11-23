@@ -75,7 +75,6 @@ private theorem unit_norm {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Compac
   rw [map_inv, Units.val_inv_eq_inv_val, norm_inv] at h2
   exact (inv_le_one₀ (norm_pos_iff.2 (χ s).ne_zero)).1 h2
 
-section Local
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -84,9 +83,7 @@ private theorem ord_unif : ord k (ImaginaryQuadraticEtaCharacter.unif k) = 1 := 
   obtain ⟨p, hp⟩ := valuation_surjective (uniformizer k : ValueGroupWithZero k)
   exact ord_eq_one (le_antisymm (le_uniformizer_iff.2 hs.1) (hp ▸ hs.2 p (hp ▸ uniformizer_lt_one)))
 
-end Local
 
-section Gal
 
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime]
   {w : Plc L} {A : ValuationSubring Ω} {h : IsPlaceOver A w} {a : Weil h →* (w.adicCompletion L)ˣ}
@@ -145,9 +142,7 @@ private theorem gap_zero [Fintype (W.Emb l w)] {n : ℕ} {hh : Fin n → (L →+
       exact absurd hs (Finset.sum_neg (fun t _ => hneg t) ⟨t, Finset.mem_univ _⟩).ne
   exact finprod_eq_one_of_forall_eq_one fun t => by rw [key t, zpow_zero]
 
-end Gal
 
-section Near
 
 open Filter Topology
 
@@ -189,9 +184,7 @@ private theorem near_one (hw : ((l : ℕ) : 𝓞 L) ∈ w.asIdeal) {U : Set (w.a
   rw [Valuation.map_one_add_of_lt _ hvM]
   simp
 
-end Near
 
-section Tw
 
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime]
   {w : Plc L} {A : ValuationSubring Ω} {h : IsPlaceOver A w} {a : Weil h →* (w.adicCompletion L)ˣ}
@@ -305,9 +298,7 @@ private theorem tors (H : GlobalTheory.Published.GlobalArtinReciprocity) (ι : Q
   rw [← h5]
   field_simp
 
-end Tw
 
-section Top
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
   {w : HeightOneSpectrum (𝓞 F)} {A : ValuationSubring Ω} {h : IsPlaceOver A w} {a : Weil h →* (w.adicCompletion F)ˣ}
@@ -343,4 +334,3 @@ private theorem supp_ps [_root_.NumberField.IsTotallyComplex F] {n : ℕ} (hn : 
     obtain ⟨i, -, e⟩ := Multiset.mem_map.1 hm
     exact ⟨i, ((ImaginaryQuadraticEtaCharacter.polFacts _).2.2.1 _ _ _ _ e).symm⟩
 
-end Top

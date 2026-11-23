@@ -90,7 +90,6 @@ private theorem exp_inj_int {a b : ℤ} (h : ∀ t : ℝ, Complex.exp (Complex.I
   rw [h3, Complex.exp_pi_mul_I] at h2
   norm_num at h2
 
-section Abstract
 
 variable {G : Type*} [Group G] [TopologicalSpace G] {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [CompleteSpace H] (R : UnitaryRep G H) (u : U2 → G)
@@ -146,7 +145,6 @@ private theorem occ_abs (hu : ∀ a b, u (a * b) = u a * u b) (hc : Continuous u
     rw [e' t] at e1
     exact smul_left_injective ℂ hw0' e1
 
-end Abstract
 
 section
 

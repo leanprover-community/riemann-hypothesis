@@ -45,7 +45,6 @@ open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.UnipotentUpperLower
 
-section Ring
 
 variable {R : Type} [CommRing R]
 
@@ -125,7 +124,6 @@ private theorem top_blk (a b : GL (Fin 2) R) : top ⟨blk a b, blk_mem a b⟩ = 
   simp only [Matrix.reindex_apply, Matrix.submatrix_apply,
     finSumFinEquiv_symm_apply_castAdd, Matrix.fromBlocks_apply₁₁]
 
-end Ring
 
 variable {K : Type} [Field K] [NumberField K]
 

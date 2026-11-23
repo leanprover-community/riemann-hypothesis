@@ -46,7 +46,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Win.Birth
 
-section Local
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -66,7 +65,6 @@ private theorem plainTor_tw {x : IrrGL (k := k)} (h : GlobalTheory.RoadU.PlainTo
     simp only [IrrGL.tw_tw, mul_inv_cancel, IrrGL.tw_one] at e2
     exact hu y' hy' z' hz' e2
 
-end Local
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {n : ℕ}
 

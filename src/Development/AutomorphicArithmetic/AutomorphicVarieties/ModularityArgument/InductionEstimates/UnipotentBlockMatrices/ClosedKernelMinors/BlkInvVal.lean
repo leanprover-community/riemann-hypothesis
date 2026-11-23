@@ -42,7 +42,6 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg
 open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-section SlopeTestRemainingChoices
 
 variable {R S : Type} [CommRing R] [CommRing S] {a b : ℕ}
 
@@ -122,7 +121,6 @@ private theorem vec_l (M : Matrix (Fin a ⊕ Fin b) (Fin a ⊕ Fin b) S) (y : Fi
   rw [← finSumFinEquiv.sum_comp, Fintype.sum_sum_type]
   simp only [Equiv.symm_apply_apply]
 
-end SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K]
 

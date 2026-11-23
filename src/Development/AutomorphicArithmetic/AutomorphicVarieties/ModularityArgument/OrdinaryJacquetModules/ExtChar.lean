@@ -58,7 +58,6 @@ open UpperTheory.V.Z UpperTheory.V.Z.Ord
 
 namespace UpperTheory.V.Z.Ord.ExtensionCharacterAlt
 
-section Poly
 
 variable {C : Type*} [Field C]
 
@@ -114,9 +113,7 @@ private theorem sum_eq_zero_of_prod {J : Type*} [Fintype J] (a : J → C) (e : J
   simp_rw [this]
   rw [Finset.sum_sub_distrib, c1, sub_self]
 
-end Poly
 
-section Emb
 
 variable {L : Type} [Field L] [NumberField L] {l : ℕ} [Fact l.Prime]
 
@@ -177,9 +174,7 @@ private theorem exp_eq_zero (w : HeightOneSpectrum (𝓞 L)) (hl : ((l : ℕ) : 
   funext j
   exact_mod_cast this j
 
-end Emb
 
-section Grp
 
 variable {J T M : Type*} [Fintype J] [Fintype T] [DecidableEq T] [CommGroup M]
 
@@ -217,9 +212,7 @@ private theorem prod_collect (r : J → T) (p : J → M) (q : T → M)
   congr 1
   ring
 
-end Grp
 
-section Ker
 
 variable {K Ω : Type} [Field K] [NumberField K] [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω]
   {A : ValuationSubring Ω} {v : HeightOneSpectrum (𝓞 K)} {C : Type} [CommGroup C] [TopologicalSpace C] [T2Space C]
@@ -272,9 +265,7 @@ private theorem ker_art (h : IsPlaceOver A v) {a : Weil h →* (v.adicCompletion
   have := DFunLike.congr_fun e s
   simpa [ξ, hs] using this
 
-end Ker
 
-section Nm
 
 open GroundTheory.Global.SemiLocal
 
@@ -318,9 +309,7 @@ private theorem nm_eq_normU : UpperTheory.V.Z.Gam.nm w = GlobalTheory.BCChar.nor
   unfold UpperTheory.V.Z.Gam.nm GlobalTheory.BCChar.normU
   rw [key]
 
-end Nm
 
-section Pow
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -342,9 +331,7 @@ private theorem algPow_eq {F : Type} [Field F] [NumberField F] (w : HeightOneSpe
   unfold algPow
   rw [finprod_eq_prod_of_fintype]
 
-end Pow
 
-section Const
 
 
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] {l : ℕ} [Fact l.Prime]
@@ -408,9 +395,7 @@ private theorem exists_const [Fintype (UpperTheory.V.W.Emb l w.1)] [Fintype (Upp
   rw [h1, prod_fib (resE w) (p y) (q y) (hq y) c0]
   rfl
 
-end Const
 
-section Res
 
 variable {K L Ω : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Field Ω] [Algebra K L] [Algebra K Ω]
   [Algebra L Ω] [IsScalarTower K L Ω] [IsAlgClosure K Ω] [IsAlgClosure L Ω]
@@ -435,7 +420,6 @@ private theorem isOpenMap_res : IsOpenMap (AlgEquiv.restrictScalarsHom K : G L �
       exact hσ ⟨_, y, rfl⟩
   exact (Topology.IsOpenEmbedding.mk (hc.isClosedEmbedding hinj).isEmbedding (hr ▸ hE)).isOpenMap
 
-end Res
 
 end UpperTheory.V.Z.Ord.ExtensionCharacterAlt
 

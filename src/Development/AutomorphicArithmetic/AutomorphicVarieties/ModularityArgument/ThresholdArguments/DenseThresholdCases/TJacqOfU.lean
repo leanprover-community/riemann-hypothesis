@@ -133,7 +133,6 @@ private theorem quot_of_sub {T J : Type} [CommGroup T] [AddCommGroup J] [Module 
   refine ⟨L, hL, fun t x => ?_⟩
   have := hk (Submodule.subset_span ⟨t, x, rfl⟩)
   rwa [LinearMap.mem_ker, map_sub, map_smul, sub_eq_zero, smul_eq_mul] at this
-section Gen
 variable {K : Type} [Field K]
 private theorem aff_mul (y y' : Kˣ) (x x' : K) : aff y x * aff y' x' = aff (y * y') (x + y * x') := by
   apply Units.ext
@@ -347,7 +346,6 @@ private theorem gen (O : Subring K) (hO : ∀ x : K, x ∈ O ∨ x⁻¹ ∈ O) (
   · simp only [map_mul, Module.End.mul_apply, hω, map_smul, LinearMap.comp_apply, hq, hL', _root_.map_div, MonoidHom.div_apply,
       smul_eq_mul, Units.val_mul, Units.val_div_eq_div_val]
     ring
-end Gen
 private theorem affine_mem_iwahori_level {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F)) (c : ℕ)
     (u : (w.adicCompletionIntegers F)ˣ) (x : w.adicCompletionIntegers F) :
     aff (Units.map (w.adicCompletionIntegers F).subtype.toMonoidHom u) (x : w.adicCompletion F) ∈ K1 w c := by
@@ -368,7 +366,6 @@ private theorem cont_uni {K : Type} [Field K] [TopologicalSpace K] [IsTopologica
   · refine continuous_matrix fun i j => ?_
     change Continuous fun x : K => (aff (1 : Kˣ) x).inv i j
     fin_cases i <;> fin_cases j <;> simp [aff] <;> fun_prop
-section Loc
 variable {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F))
 private theorem cent (σ : SmIrr (GL (Fin 2) (w.adicCompletion F))) : ∃ ω : (w.adicCompletion F)ˣ →* ℂˣ,
     ∀ z y, σ.ρ (Matrix.GeneralLinearGroup.scalar (Fin 2) z) y = (ω z : ℂ) • y := by
@@ -441,7 +438,6 @@ private theorem unit_mem (c : ℕ) (u : (w.adicCompletion F)ˣ) (hu : IsUnitAt w
   have e : Units.map (w.adicCompletionIntegers F).subtype.toMonoidHom u' = u := Units.ext rfl
   have := affine_mem_iwahori_level w c u' 0
   rwa [e] at this
-end Loc
 end UpperTheory.V.Sd
 open UpperTheory.V.Sd in
 theorem UpperTheory.V.Sd.jacqOfU_alt :

@@ -44,7 +44,6 @@ section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V UpperTheory.V.Hi
 open UpperTheory.V.HV (Coef)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-section Abs
 open TensorProduct
 universe u
 variable {A K M W ι : Type} [CommRing A] [Field K] [Algebra A K] [AddCommGroup M] [Module A M]
@@ -225,7 +224,6 @@ private theorem pa_inst {J : Type u} (Y0 Y : Submodule A M) [Module.Finite A Y] 
     refine ⟨z, RingHom.ext fun b => ?_, fun t F hF => hz t F hF⟩
     refine smul_left_injective K (m := (⟨v, hv.2⟩ : E)) (fun h => hv0 (congrArg Subtype.val h)) ?_
     exact (hz _ ⟨v, hv.2⟩ hv.1).symm.trans (b3 b _)
-end Abs
 universe u in
 private theorem pa_main {A K M W ι : Type} [CommRing A] [Field K] [AddCommGroup M] [Module A M]
     [AddCommGroup W] [Module K W] {J : Type u} (Y0 Y : Submodule A M) [Module.Free A Y0] [Module.Finite A Y] (hle : Y ≤ Y0)

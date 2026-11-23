@@ -43,7 +43,6 @@ open scoped TensorProduct Classical
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.HeckeOperatorExistence
 
-section Abs
 
 variable {G X : Type} [Group G] [Group X]
 
@@ -151,9 +150,7 @@ private theorem rep_in (P : Subgroup G) (hh : h ∈ P)
   choose r h2 h3 using h1
   exact ⟨r, h2, h3⟩
 
-end Abs
 
-section Con
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -187,7 +184,6 @@ private theorem norm_one_adelic_split_arch_finite (g : G1 K n) (hu : finPart K n
   rw [Subgroup.coe_mul, ← retract_infEmb, coe_retractOne, MultiplicityOne.coe_finProj, h1, h3, map_one, inv_one, mul_one, mul_one]
   exact h2.symm
 
-end Con
 
 end UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.HeckeOperatorExistence
 

@@ -48,7 +48,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section
 open ValuativeRel GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.PRep UpperTheory.V.Hi
 namespace UpperTheory.V.Z.J.D.OrdinaryOrderOne
-section General
 variable {G V : Type} [CommGroup G] [AddCommGroup V] [Module ℂ V]
 private theorem gen_map {V' : Type} [AddCommGroup V'] [Module ℂ V'] (F : Submodule ℂ V) {f : Module.End ℂ V}
     {g : Module.End ℂ V'} (p : V →ₗ[ℂ] V') (hF : ∀ v ∈ F, f v ∈ F) (h : ∀ v ∈ F, p (f v) = g (p v)) {c : ℂ} {v : V}
@@ -171,7 +170,6 @@ private theorem exists_form {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (h
     have h := hle g v
     rw [hg'] at h
     exact Units.ext (mul_right_cancel₀ hv (h.symm.trans (one_mul _).symm))
-end General
 private theorem inj {G M J : Type} [Group G] (I : Iwa G) [AddCommGroup M] [Module ℂ M] (π : Representation ℂ G M)
     (hs : I.Smooth π) (a : J → G) (ha : ∀ j, a j ∈ I.P) (μ : J → ℂ) (hμ : ∀ j, μ j ≠ 0) (l : List G)
     (hz : I.z = l.prod) (hl : ∀ x ∈ l, x = 1 ∨ ∃ j, x = a j) {v : M} (hv : v ∈ fixd π I.N)
@@ -205,7 +203,6 @@ private theorem inj {G M J : Type} [Group G] (I : Iwa G) [AddCommGroup M] [Modul
       rw [pow_succ, Module.End.mul_apply] at h
       exact hg.2 v hv (ih _ (st _ hg.1 v hv) h)
   exact key m v ⟨hv, hv'⟩ hm
-section Num
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 private theorem num (ω : Fin n → kˣ →* ℂˣ) {j : ℕ} (hj : j ≤ n) :
     ((Nat.card 𝓀[k] ^ (j * (n - j)) : ℕ) : ℂ) *
@@ -251,7 +248,6 @@ private theorem num (ω : Fin n → kˣ →* ℂˣ) {j : ℕ} (hj : j ≤ n) :
   simp only [hd, h1]
   rw [Finset.prod_mul_distrib, hp, h2, psEig, Finset.prod_filter, Nat.cast_pow, _root_.zpow_neg, zpow_natCast]
   field_simp
-end Num
 end UpperTheory.V.Z.J.D.OrdinaryOrderOne
 open UpperTheory.V.Z.J.D
 theorem UpperTheory.V.Z.J.D.dense_threshold_order_one :

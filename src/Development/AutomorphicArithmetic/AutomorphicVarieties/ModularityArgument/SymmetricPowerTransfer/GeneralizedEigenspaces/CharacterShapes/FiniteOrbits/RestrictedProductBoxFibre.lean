@@ -38,7 +38,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So
 
-section Box
 
 variable {I G : Type} [Group G] {Gv : I → Type} [∀ v, Group (Gv v)] {K U : ∀ v, Subgroup (Gv v)}
 
@@ -49,7 +48,6 @@ private theorem memBox (P : RPG G Gv K) (U : ∀ v, Subgroup (Gv v)) (g : G) :
 private theorem smulMk {A : Type} [Group A] (W W' : Subgroup A) (u : W) (x : A) :
     u • (x : A ⧸ W') = (((u : A) * x : A) : A ⧸ W') := rfl
 
-end Box
 
 end UpperTheory.V.Z.Sym.So
 

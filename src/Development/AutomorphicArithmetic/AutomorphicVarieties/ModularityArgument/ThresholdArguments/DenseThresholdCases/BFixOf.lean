@@ -142,7 +142,6 @@ private theorem fx_ord {H K : Type} [Group H] [Field K] {n : ℕ} (I : Subgroup 
       exact hI g hg i
     rw [this, zero_mul]
 end Fx
-section Tw
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
   {F : Fr.Frame l (ResidueField O)} {n : ℕ} {G : W.GFrame l} {r : W.Resid G O n} (K : TwLink F r)
 include K in
@@ -199,8 +198,6 @@ private theorem fx_coc (ρD : Fr.NRep F n (DualNumber Q)) (a b : G.G₀) :
   congr 1
   · rw [← Matrix.mul_assoc, Matrix.mul_assoc _ ((ρD.map (dF Q)).r (K.π b)), fx_rr', Matrix.mul_one]
   · simp only [Matrix.mul_assoc]
-end Tw
-section Core
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
   {F : Fr.Frame l (ResidueField O)} {n : ℕ} {G : W.GFrame l} {r : W.Resid G O n} (K : TwLink F r)
   {Q : Type} [Field Q] [Algebra O Q]
@@ -276,8 +273,6 @@ private theorem fx_core (ρD : Fr.NRep F n (DualNumber Q))
     rw [fxY, Matrix.mul_assoc, fx_rr, Matrix.mul_one]
   rw [e2, h1, Matrix.sub_mul, Matrix.mul_assoc _ _ ((ρD.map (dF Q)).r (K.π g)), fx_rr, Matrix.mul_one, Matrix.neg_mul, Matrix.mul_neg]
   abel
-end Core
-section Sp
 private noncomputable def fxD {O A Q : Type} [CommRing O] [CommRing A] [Algebra O A] [Field Q] [Algebra O Q]
     (ξ : A →ₐ[O] Q) (D : A →ₗ[O] Q) (hD : D ∈ PtDer ξ Q) : A →ₐ[O] DualNumber Q :=
   have h1 : D 1 = 0 := by
@@ -345,7 +340,6 @@ private theorem fx_ineS [CharP (ResidueField O) l] {C : Type} [CommRing C] [Alge
   change algebraMap O C (K.κ g) * φ (S.u.r (K.π g) i j) = _
   rw [← φ.commutes, ← map_mul, h1]
   by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
-end Sp
 theorem UpperTheory.V.J.fixOf_alt :
     _root_.UpperTheory.V.Th.DenseThresholdMainCase → ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (c : Coef l)
         [CharP (ResidueField c.O) l] (N : ℕ) [NeZero N] (e : ℕ) (ψ : DirichletCharacter c.O N)

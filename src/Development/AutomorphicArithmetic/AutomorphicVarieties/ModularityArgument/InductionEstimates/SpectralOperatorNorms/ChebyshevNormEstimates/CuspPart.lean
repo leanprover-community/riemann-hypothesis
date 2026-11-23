@@ -46,7 +46,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Ci PositivityTheory.Rg.Fx
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg.Tf.IntegralApplyAeEq UpperTheory.V.Z.IntegralApplyAeEq UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-section SlopeTestRemainingChoices
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
@@ -179,7 +178,6 @@ private theorem reassoc (P A G Q U X T : H →L[ℂ] H) (hc : Commute X A) :
 
 private theorem reassoc' (A G Q U T : H →L[ℂ] H) : (A ∘L Q ∘L U ∘L G) ∘L T = A ∘L Q ∘L U ∘L G ∘L T := rfl
 
-end SlopeTestRemainingChoices
 
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.cuspPart :

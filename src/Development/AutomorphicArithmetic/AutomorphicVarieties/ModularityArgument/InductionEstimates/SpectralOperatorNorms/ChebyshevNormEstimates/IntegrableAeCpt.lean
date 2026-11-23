@@ -40,7 +40,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-section General
 
 open MeasureTheory GroundTheory.Automorphic
 open scoped Pointwise
@@ -190,14 +189,12 @@ private theorem two_sided [μ.IsMulRightInvariant] (hU : IsCompact (U : Set G)) 
       simp only [mul_assoc]
     · rw [h4, h2, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hE, hE]
 
-end General
 
 open MeasureTheory NumberField IsDedekindDomain MvPolynomial Filter Topology
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Ci PositivityTheory.Rg.Fx
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg.Tf.IntegralApplyAeEq UpperTheory.V.Z.IntegralApplyAeEq UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-section Amp
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} {μ : Measure (normOneGL (K := K) (n := n))} [μ.IsHaarMeasure]
 
@@ -254,7 +251,6 @@ private theorem amp_fix [_root_.NumberField.IsTotallyComplex K] (𝔞 : Amp μ) 
     rw [mul_sub, ← mul_assoc, (amp_move 𝔞 m y β hβ).2, mul_assoc, h2, sub_self]
   rw [sub_eq_zero.1 e2, sub_eq_zero.1 e1]
 
-end Amp
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.genZk :
     ∀ {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {μ : Measure (normOneGL (K := E) (n := (2 + 2)))} [μ.IsHaarMeasure] {θ : Twist μ} {𝔢 : Side θ 2} (𝔵 : _root_.UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.Fam 𝔢) (y : Ix E (2 + 2)), ∃ f : CC E (2 + 2), 𝔵.D.Hecke f ∧ Rop μ f = 𝔢.toAmp.Z y := by

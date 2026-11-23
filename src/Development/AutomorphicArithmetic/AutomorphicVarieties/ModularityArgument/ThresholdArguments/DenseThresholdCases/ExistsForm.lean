@@ -54,7 +54,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.V.Hi.OrdB
 open GlobalTheory.PRep
-section General
 variable {G V : Type} [CommGroup G] [AddCommGroup V] [Module ℂ V]
 private theorem pow_comm (ρ : Representation ℂ G V) (t g : G) (c : ℂ) (m : ℕ) (v : V) :
     ((ρ t - c • (1 : Module.End ℂ V)) ^ m) (ρ g v) = ρ g (((ρ t - c • (1 : Module.End ℂ V)) ^ m) v) := by
@@ -211,8 +210,6 @@ private theorem exists_form {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (h
     have h2 := hlM (hTM (hm v))
     rw [LinearMap.mem_ker, h1] at h2
     exact sub_eq_zero.1 (pow_eq_zero_iff'.1 ((mul_eq_zero.1 h2).resolve_right hv)).1
-end General
-section Abs
 variable {G M : Type} [Group G] (I : Iwa G) [AddCommGroup M] [Module ℂ M] (π : Representation ℂ G M) (c : ℕ)
   (φ : I.T →* ℂˣ)
 private theorem eig_le (hφ : ∀ t : I.T, (t : G) ∈ I.Tc c → φ t = 1) : I.eig π c φ ≤ fixd π (I.I1 c) := by
@@ -259,8 +256,6 @@ private theorem inv_inj (hφ : ∀ t : I.T, (t : G) ∈ I.Tc c → φ t = 1) (hs
     exact ⟨⟨w, hw⟩, Subtype.ext ((hf j _).trans e)⟩
   exact congrArg Subtype.val
     ((Submodule.disjoint_def.1 (LinearMap.isCompl_iSup_ker_pow_iInf_range_pow f).disjoint) _ h1 h2)
-end Abs
-section Num
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 private theorem tc_single (ψ : Fin n → kˣ →* ℂˣ) (i : Fin n) (x : kˣ) : torusChar ψ (Pi.mulSingle i x) = ψ i x := by
   rw [torusChar_apply, Finset.prod_eq_single i (fun j _ hj => by simp [Pi.mulSingle_eq_of_ne hj]) (by simp)]
@@ -309,7 +304,6 @@ private theorem num (ω : Fin n → kˣ →* ℂˣ) {j : ℕ} (hj : j ≤ n) :
   simp only [hd, h1]
   rw [Finset.prod_mul_distrib, hp, h2, psEig, Finset.prod_filter, Nat.cast_pow, _root_.zpow_neg, zpow_natCast]
   field_simp
-end Num
 end UpperTheory.V.Hi.OrdB
 open GlobalTheory.PRep in
 theorem UpperTheory.V.Hi.exists_principal_series_of_distinct_inv_ne_bot :

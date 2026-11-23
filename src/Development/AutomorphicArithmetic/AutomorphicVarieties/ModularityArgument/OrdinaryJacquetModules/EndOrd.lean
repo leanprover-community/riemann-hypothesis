@@ -50,7 +50,6 @@ open UpperTheory.V.Z UpperTheory.V.Z.Ord
 
 set_option synthInstance.maxHeartbeats 200000
 
-section SlopeTestRemainingChoices
 
 variable {Γ Γ' k : Type} [Group Γ] [Group Γ'] [Field k] {n : ℕ}
 
@@ -113,7 +112,6 @@ private theorem push_comp {A T K Γ : Type} [CommRing A] [CommRing T] [CommRing 
   obtain rfl : x = y.comp f := RingHom.ext fun b => (h b).symm
   rfl
 
-end SlopeTestRemainingChoices
 
 set_option maxHeartbeats 1000000 in
 private theorem absPt (hC : CoreOrd) {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime]

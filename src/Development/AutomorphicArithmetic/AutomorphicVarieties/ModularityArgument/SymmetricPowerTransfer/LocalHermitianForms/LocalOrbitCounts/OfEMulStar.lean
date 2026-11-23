@@ -55,7 +55,6 @@ noncomputable section
 
 namespace UpperTheory.V.Z.Sym.Loc.CG
 
-section Alg
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -116,9 +115,7 @@ private theorem h90E (h2 : (2 : K) ≠ 0) (β : (Etau K τ)ˣ) (hβ : QuadraticA
   · obtain ⟨z, hz⟩ := key β hβ hn
     exact ⟨z, Or.inl hz⟩
 
-end Alg
 
-section Int
 
 variable {O : Type} [CommRing O] {K : Type} [Field K] [Algebra O K] {Δ τ : K}
 
@@ -227,9 +224,7 @@ private theorem lat_unit (hτ : τ ∈ (algebraMap O K).range) (r : K) (y w : (E
     simp only [mul_inv, Units.val_mul, ofE_mul]
     ring
 
-end Int
 
-section Lat
 
 variable {O : Type} [CommRing O] {K : Type} [Field K] [Algebra O K] {Δ τ : K}
 
@@ -346,9 +341,7 @@ private theorem lat_fg [IsDomain O] [IsDiscreteValuationRing O] (hl : IsLoc O Δ
       rw [← mul_assoc, ofE_inv, one_mul]
       exact ⟨by simpa [QuadraticAlgebra.re_one] using (hR _).1 hb, by simpa [QuadraticAlgebra.im_one] using (hR _).1 hb'⟩
 
-end Lat
 
-section Fix
 
 variable {O : Type} [CommRing O] {K : Type} [Field K] [Algebra O K] {Δ τ : K} {c : K} {d d' m : EL Δ τ} {S : Set (Sp Δ τ)}
 
@@ -514,9 +507,7 @@ private theorem fx_gen [IsDomain O] [IsDiscreteValuationRing O] (hl : IsLoc O Δ
   rw [hbot, Submodule.mem_bot] at h1
   exact one_ne_zero h1
 
-end Fix
 
-section Main
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {K : Type} [Field K] [Algebra O K] {Δ τ : K}
 
@@ -658,7 +649,6 @@ private theorem main (hl : IsLoc O Δ) (hτ : τ ∈ (algebraMap O K).range) (u 
       linear_combination (t : K) * hinv y
     simp [lcount, wcount, hno]
 
-end Main
 
 end UpperTheory.V.Z.Sym.Loc.CG
 

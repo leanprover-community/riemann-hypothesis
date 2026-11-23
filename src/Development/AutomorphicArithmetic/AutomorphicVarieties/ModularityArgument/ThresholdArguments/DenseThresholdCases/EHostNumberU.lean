@@ -171,7 +171,6 @@ private theorem totDisc_quot {G : Type} [Group G] [TopologicalSpace G] [IsTopolo
   have hV : IsClopen (V : Set (G ⧸ N)) := ⟨V.isClosed_of_isOpen hVo, hVo⟩
   obtain ⟨u, hu, hux⟩ := hV.connectedComponent_subset V.one_mem hy
   exact hU (U.toSubgroup.inv_mem hu) (QuotientGroup.eq.1 hux)
-section Host
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} {N : ℕ} [NeZero N]
   {e : ℕ} {ψ : DirichletCharacter c.O N} {o₁ : ℕ} {S : Finset Pl} {A : S → ValuationSubring Ω}
   {F : Frame c.O (Formalism.ConjugateSelfDual.G ℚ Ω) (Gam Ω S) S}
@@ -430,7 +429,6 @@ private theorem key (hP : _root_.UpperTheory.V.Af.HypothesesH') (hU : UpperTheor
   rw [Finset.sum_neg_distrib, neg_le_neg_iff, ← Real.log_prod fun i his => norm_ne_zero_iff.2 (sub_ne_zero.2 (hne i his)),
     htr]
   exact Real.log_le_log (norm_pos_iff.2 (by exact_mod_cast hN0)) H2
-end Host
 private theorem final_bound (a b l N e p : ℕ) (hl : 3 ≤ l) (hN : 2 ≤ N) (he : 1 ≤ e) (hp : p ≤ 12 * (l * N)) :
     2 * (a * N.totient * ((N : ℝ) * (e + 1)) ^ b * Real.log p) ≤ ((l : ℝ) * N * e) ^ (2 * a + 1 + b + 3) := by
   have hlN : 6 ≤ l * N := Nat.mul_le_mul hl hN

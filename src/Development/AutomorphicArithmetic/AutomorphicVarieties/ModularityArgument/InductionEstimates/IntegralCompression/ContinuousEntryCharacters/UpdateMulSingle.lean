@@ -45,7 +45,6 @@ open scoped ComplexConjugate Classical InnerProductSpace
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA
 
-section Gen
 
 variable {ι : Type} [Fintype ι] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
   [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [IsProbabilityMeasure μ]
@@ -165,7 +164,6 @@ private theorem aboveSlice {ι : Type} {j : U2 → U4} {n : ℕ} {q : ℤ} {Φ :
   have := h n' q' hn l (Function.update k c y)
   simpa only [single_mul_eq, Function.update_self, Function.update_idem] using this
 
-end Gen
 
 private theorem continuous_alt (n : ℕ) (q : ℤ) : Continuous (T n q) := by
   unfold T

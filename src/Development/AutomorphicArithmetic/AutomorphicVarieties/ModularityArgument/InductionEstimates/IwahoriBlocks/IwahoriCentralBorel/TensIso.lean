@@ -38,7 +38,6 @@ open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C PositivityThe
 open GlobalTheory.PRep GlobalTheory.SmGL Formalism.BasicNotions GlobalTheory.CuspRep
 open scoped TensorProduct Classical
 
-section SlopeTestRemainingChoices
 
 variable {P : Type} [Group P] {Γ : Type} [Group Γ] {V : Type} [AddCommGroup V] [Module ℂ V]
   {Y : Type} [AddCommGroup Y] [Module ℂ Y]
@@ -189,7 +188,6 @@ private theorem tensIso_span (ρ : Representation ℂ P V) (y : Representation �
       exact hx
     exact this
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.tensIso :
     ∀ {P : Type} [Group P] {Γ : Type} [Group Γ] {V : Type} [AddCommGroup V] [Module ℂ V] {Y : Type} [AddCommGroup Y] [Module ℂ Y] (ρ : Representation ℂ P V) (y : Representation ℂ (P × Γ) Y) (f : V →ₗ[ℂ] Y), ρ.IsIrreducible → Schur ρ →

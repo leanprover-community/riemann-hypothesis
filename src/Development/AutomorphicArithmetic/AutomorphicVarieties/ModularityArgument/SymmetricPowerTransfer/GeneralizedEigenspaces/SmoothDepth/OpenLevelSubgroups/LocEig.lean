@@ -42,7 +42,6 @@ open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
 
-section LocEigAux
 
 open UpperTheory.V.Hi UpperTheory.V.AlgebraTools
 
@@ -280,4 +279,3 @@ private theorem uOp_upow {T : Type} [AddCommGroup T] [Module ℂ T] (τ : Repres
     exact h3
   exact (antitone_mem M hfund hneg a ha).2
 
-end LocEigAux

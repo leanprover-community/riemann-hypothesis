@@ -43,7 +43,6 @@ noncomputable section
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks
 
-section Tools
 
 variable {G V Y H : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup Y] [Module ℂ Y] [Group H]
 
@@ -101,9 +100,7 @@ private theorem indMk {j : H →* G} {y : Representation ℂ H Y} {f : G → Y} 
     (h2 : {g : G | rightReg ℂ G Y g f = f} ∈ nhds (1 : G)) : f ∈ IndF j y ⊤ :=
   Submodule.mem_inf.2 ⟨⟨fun _ => trivial, h1⟩, smNhds _ _ h2⟩
 
-end Tools
 
-section Trans
 
 variable {G₁ G₂ H₁ H₂ Γ Y : Type} [Group G₁] [Group G₂] [Group H₁] [Group H₂] [AddCommGroup Y] [Module ℂ Y]
   [TopologicalSpace G₁] [IsTopologicalGroup G₁] [TopologicalSpace G₂] [IsTopologicalGroup G₂]
@@ -171,9 +168,7 @@ private theorem simpleTrans (e : G₁ ≃* G₂) (he : Continuous e) (he' : Cont
     rw [Submodule.mem_comap, hsurj] at this
     exact this
 
-end Trans
 
-section Base
 
 variable {G H Γ Y : Type} [Group G] [Group H] [Group Γ] [AddCommGroup Y] [Module ℂ Y]
   [TopologicalSpace G] [IsTopologicalGroup G]
@@ -200,9 +195,7 @@ private theorem simpleBase [Subsingleton G] [Subsingleton H] (j : H →* G) (y :
     obtain ⟨ψ, hψ, e⟩ := this
     rwa [← hext ψ φ e]
 
-end Base
 
-section Prod
 
 variable {A B H L Γ Y V : Type} [Group A] [Group B] [Group H] [Group L] [Group Γ] [AddCommGroup Y] [Module ℂ Y]
   [AddCommGroup V] [Module ℂ V]
@@ -447,7 +440,6 @@ private theorem prodStep (P : Subgroup A) (j : H →* B) (hj : Topology.IsEmbedd
     rw [Submodule.mem_comap, e] at this
     exact this
 
-end Prod
 
 section Fin
 

@@ -47,7 +47,6 @@ open UpperTheory.V.HV (Coef)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z UpperTheory.V.Z.Ord
 set_option synthInstance.maxHeartbeats 200000
-section SlopeTestRemainingChoices
 variable {Γ Γ' k : Type} [Group Γ] [Group Γ'] [Field k] {n : ℕ}
 private theorem inv_comp {φ : Γ' →* Γ} (hφ : Function.Surjective φ) (r : Γ →* GL (Fin n) k) (M : Submodule k (Fin n → k)) :
     IsInv (r.comp φ) M ↔ IsInv r M :=
@@ -100,7 +99,6 @@ private theorem push_comp {A T K Γ : Type} [CommRing A] [CommRing T] [CommRing 
     (f : A →+* T) (y : T →+* K) (x : A →+* K) (h : ∀ b, y (f b) = x b) : W.pushCh y (W.pushCh f χ) = W.pushCh x χ := by
   obtain rfl : x = y.comp f := RingHom.ext fun b => (h b).symm
   rfl
-end SlopeTestRemainingChoices
 set_option maxHeartbeats 1000000 in
 private theorem absPt (hC : _root_.UpperTheory.V.Z.Ord.CoreOrdAlt) {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime]
     {n : ℕ} {c : Coef l} (H : HSet L Ω l n c) (hA : H.Ax) {A : Type} [CommRing A] [Algebra c.O A] [Alg.IsCO c.O A] (θ : H.X.I.T →* Aˣ)

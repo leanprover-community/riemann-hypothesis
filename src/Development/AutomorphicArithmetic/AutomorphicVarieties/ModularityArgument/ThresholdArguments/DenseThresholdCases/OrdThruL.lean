@@ -72,7 +72,6 @@ open UpperTheory.V.HV (Coef)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z UpperTheory.V.Z.Ord
 namespace UpperTheory.V.Z.Ord.OrdinaryPolarizedFromFlag
-section Tri
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : LocAinf l P} {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
   [IsAlgClosure E Ω] {A : ValuationSubring Ω} {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]
 private theorem tri_dR (T : LocTied l P AI) (Bw : LocBridge l E Ω (Dec (F := E) A) O) (LL : FinExt l) (n : ℕ) :
@@ -127,8 +126,6 @@ private theorem flag_jumps (T : LocTied l P AI) (Bw : LocBridge l E Ω (Dec (F :
   obtain ⟨J', h1, h2⟩ := @GlobalTheory.HtCardProof.exists_count _ _ _ _ _ T _ _ ((c₂ i).comp Bw.e.symm.toMonoidHom) τ₂ hfin
   obtain ⟨a, rfl⟩ := Multiset.card_eq_one.1 (h1.trans ((hrk hdr').trans (finrank_fin_fun _)))
   exact ⟨a, L, c₂ i, hm' i, hdr, τ₂, hτ, h2⟩
-end Tri
-section Loc
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 L)}
 private theorem emb_norm (j : W.Emb l w) (x : 𝓞 L) : ‖j.1.comp (algebraMap L _) (x : L)‖ < 1 ↔ x ∈ w.asIdeal := by
@@ -191,7 +188,6 @@ private theorem pol_of_flag (N : _root_.GlobalTheory.Mem.LiteralAutomorphy.Liter
     (fun g => (hM g).1) (fun g i => ((hM g).2 i).trans (by simp [rk1]))
   rw [(F₂ hp).2 s]
   exact Finset.prod_congr rfl fun i _ => (hc i).2.2 s
-end Loc
 private theorem mem_of_prod {M : Type} [Monoid M] {n : ℕ} (f g : Fin n → (M →* ℂ))
     (h : ∀ x, ∏ j, (X - C (f j x)) = ∏ j, (X - C (g j x))) (j : Fin n) : ∃ i, g i = f j := by
   have hc := GlobalTheory.CharDeg.card_fiber_eq_of_sum_eq f g (fun x => GlobalTheory.CharDeg.sum_eq_of_prod_eq _ _ (h x)) (f j)

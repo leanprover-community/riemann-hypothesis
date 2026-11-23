@@ -54,7 +54,6 @@ open scoped Matrix
 
 namespace UpperTheory.V.Sd
 
-section CongLemmas
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -140,9 +139,7 @@ private theorem cong_cyc_pow (s : G F Ω) (j t : ℕ) : Cong (cycBar F Ω l s ^ 
     (norm_pow_one (norm_cyc s) j) (by simp)
   simpa using this
 
-end CongLemmas
 
-section Gal
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -208,9 +205,7 @@ private theorem isOpen_ker_kills {C : Type} [Group C] {M : ℕ} (hM : 0 < M) {φ
   · simp only [Set.mem_iInter] at hs
     exact hφ s fun ζ hζ => hs ζ hζ
 
-end Gal
 
-section Shape
 
 variable {l : ℕ} [Fact l.Prime] {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
 
@@ -305,9 +300,7 @@ private theorem ordAt_tw {n : ℕ} {r : G F Ω →* GL (Fin n) (Qbar l)} {m : Fi
   refine ⟨_, (shapeFacts l _ n r δ).2.2.1 _ κ h1, fun i s hs => ?_, fun i s => cong_mul_right (h3 i s) _ (hn _)⟩
   rw [zpow_add, ← h2 i s hs, ← hδ s hs]; rfl
 
-end Shape
 
-section Up
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -366,6 +359,5 @@ private theorem mkSeed {n : ℕ} {l : ℕ} [Fact l.Prime] {L : Type} [Field L] [
     (h7 : (∀ A : ValuationSubring Ω, A.valuation (l : Ω) < 1 → OrdAt r m ψ A) → IsAutCsd ι (tw r ka)) : IsSeed ι c ψ τ m ka r :=
   ⟨h1, h2, h3, h4, h5, h6, h7 h6⟩
 
-end Up
 
 end UpperTheory.V.Sd

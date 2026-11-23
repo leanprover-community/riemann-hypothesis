@@ -45,7 +45,6 @@ open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
 
-section SlopeTestRemainingChoices
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 
@@ -165,7 +164,6 @@ private theorem op_unit {R : Representation ℂ (InfinitePlace L → GL (Fin n) 
   rw [e1, e2] at e3
   simpa using e3.symm
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.Sym.Al.afOps :
     ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (R : Representation ℂ (InfinitePlace L → GL (Fin n) ℂ) V) (U : Subgroup (UA L n)), U ≤ Kall L n → ∀ S : Finset (Plc L), Places (S : Set (Plc L)) →

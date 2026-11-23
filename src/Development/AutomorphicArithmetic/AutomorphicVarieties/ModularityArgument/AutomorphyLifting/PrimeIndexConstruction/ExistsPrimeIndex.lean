@@ -58,7 +58,6 @@ private theorem window_pow {N M f : ℕ} (hf : 0 < f) (hM : M = N ^ f) {a b x y 
   rw [key, key, hy]
   exact ⟨pow_lt_pow_left₀ h.1 (Real.rpow_nonneg hN _) hf.ne', pow_lt_pow_left₀ h.2 hx hf.ne'⟩
 
-section Norm
 
 variable {K M : Type} [Field K] [NumberField K] [Field M] [NumberField M] [Algebra K M]
 
@@ -149,9 +148,7 @@ private theorem win_one (h1 : Module.finrank K M = 1) {n : ℕ} (hn : 1 ≤ n) (
     rw [hc]
     exact window_pow hv.2.2.1 hv.2.2.2 (norm_nonneg _) (hv.2.1 hχ) hb
 
-end Norm
 
-section Step
 
 variable {F E Ω : Type} [Field F] [NumberField F] [_root_.NumberField.IsTotallyComplex F] [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] [Field Ω]
   [Algebra F E] [Algebra F Ω] [Algebra E Ω] [IsScalarTower F E Ω] [IsAlgClosure E Ω] {l : ℕ} [Fact l.Prime] {ι : Qbar l ≃+* ℂ} {n : ℕ}
@@ -185,7 +182,6 @@ private theorem allW_step [IsAlgClosure F Ω] [IsGalois F E] (hp : (Module.finra
   have hlo : w.asIdeal.LiesOver (w.under (𝓞 F)).asIdeal := ⟨rfl⟩
   exact (((winUpDown F E hp n hn π P hbc t (w.under (𝓞 F))).1 (ht _)) ⟨w, hlo⟩).1
 
-end Step
 
 private theorem exists_prime_index (Γ : Type) [Group Γ] [Finite Γ] [Nontrivial Γ] [Group.IsSolvable Γ] :
     ∃ M : Subgroup Γ, M.Normal ∧ M.index.Prime := by

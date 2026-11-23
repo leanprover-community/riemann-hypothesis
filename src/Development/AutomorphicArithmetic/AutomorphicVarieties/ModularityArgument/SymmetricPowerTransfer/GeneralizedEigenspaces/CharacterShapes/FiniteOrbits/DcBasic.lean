@@ -39,7 +39,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So
 
-section SlopeTestRemainingChoices
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
 
@@ -80,7 +79,6 @@ private theorem dcF_apply (U : Subgroup G) (a : G) (h : (MulAction.orbit U (a : 
   rw [dcF_eq_mem, finsum_mem_eq_finite_toFinset_sum _ h]
   simp [LinearMap.sum_apply, Finset.sum_apply, rightReg, LinearMap.funLeft]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.Sym.So
 

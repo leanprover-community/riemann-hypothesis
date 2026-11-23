@@ -52,7 +52,6 @@ open scoped SchwartzMap ContDiff Topology
 
 namespace UpperTheory.V.Z.Inf
 
-section Abs
 
 variable {P α V ι : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] [MeasurableSpace α] {ν : Measure α}
   [IsFiniteMeasure ν] [Fintype ι] {U : Set P} {D : ι → V → V} {f : V → P → α → ℂ} {A : ι → P → P →L[ℝ] ℝ}
@@ -96,9 +95,7 @@ private theorem abs_smooth {G : V → P → ℂ} (hU : IsOpen U) (hA : ∀ b, Co
       fun y hy => (hd v y hy).hasFDerivWithinAt⟩
     exact ContDiffOn.sum fun b _ => ((hA b).of_le (by exact_mod_cast le_top)).smulRight (ih _)
 
-end Abs
 
-section Con
 
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {n : ℕ}
 
@@ -152,9 +149,7 @@ private theorem cf_one (b : Fin (Module.finrank ℝ (Lie K n))) (X : Lie K n) :
   have : lm K n (oneL K n) = ContinuousLinearMap.id ℝ _ := ContinuousLinearMap.ext fun X => Matrix.one_mul (Matrix.of X)
   simp [cf, this]
 
-end Con
 
-section Main
 
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {n : ℕ}
 
@@ -285,7 +280,6 @@ private theorem cap_comm {σ : CuspSub K n} (T : σ.V →ₗ[ℂ] Sm K n)
   obtain ⟨a, ha, ha'⟩ := hc φ
   rw [← ha', Subtype.ext (e.trans ha.symm)]
 
-end Main
 
 end UpperTheory.V.Z.Inf
 

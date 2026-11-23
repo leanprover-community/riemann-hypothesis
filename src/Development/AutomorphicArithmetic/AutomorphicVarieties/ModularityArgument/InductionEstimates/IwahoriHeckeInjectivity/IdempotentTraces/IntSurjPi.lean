@@ -163,7 +163,6 @@ private theorem int_surj_pi {A K : Type} [Group A] [TopologicalSpace A] [IsTopol
     ∫ k, f k ∂κ = ∫ x, f (s x) ∂(Measure.pi fun _ => α) :=
   int_surj (Measure.pi fun _ => α) κ s hs hm ho hf
 
-section Tens
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [_root_.NumberField.IsTotallyComplex F]
   {σ : E ≃ₐ[F] E} (D : InfD σ 1) {n : ℕ}
@@ -223,7 +222,6 @@ private theorem tens_cv {νE : Measure (archGroup E n)} {νF : Measure (archGrou
   rw [hs.sq]
   rfl
 
-end Tens
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.ampEx :
     AmpEx := by

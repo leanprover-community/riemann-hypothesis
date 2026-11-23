@@ -38,7 +38,6 @@ open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob UpperT
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Dominance
 
 variable {k : Type} [Field k] [ValuativeRel k]
 
@@ -65,7 +64,6 @@ private theorem dom_of_val {n : ℕ} {a : Fin n → kˣ} (h : ∀ i, valuation k
   intro i j _
   rw [h i, h j]
 
-end Dominance
 
 private theorem dom_cone {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {t y : kˣ} (ht : valuation k (t : k) < valuation k (unif k : k) ^ 2)

@@ -59,9 +59,7 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Recip
 section Alg
 open Matrix
 end Alg
-section Gal
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
-end Gal
 section Core
 open scoped Matrix
 
@@ -259,12 +257,9 @@ theorem adjoint_vanishing_gsp4_rigid_point (hU : _root_.UpperTheory.V.Ws.Unramif
           ring
         rw [e, div_pow, hmk v i g hg, hmk v j g hg, div_one])
 end Core
-section Rg
 open scoped Matrix TensorProduct
-section BK
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {l : ℕ} [Fact l.Prime]
   {C V : Type} [CommRing C] [Algebra ℚ_[l] C] [AddCommGroup V] [Module C V] [Module ℚ_[l] V]
   [IsScalarTower ℚ_[l] C V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousConstSMul C V]
-end BK
 end Rg
 end

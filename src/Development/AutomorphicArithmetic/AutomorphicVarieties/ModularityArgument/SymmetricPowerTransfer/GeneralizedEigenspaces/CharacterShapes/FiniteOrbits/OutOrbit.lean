@@ -41,7 +41,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So
 
-section SlopeTestRemainingChoices
 
 variable {G : Type} [Group G]
 
@@ -77,7 +76,6 @@ private theorem one_neg {p : Prop} (h : ¬p) : one p = 0 := by
   classical
   simp [one, h]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.Sym.So
 

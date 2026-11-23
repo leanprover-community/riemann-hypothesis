@@ -40,7 +40,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So
 
-section SlopeTestRemainingChoices
 
 variable {G : Type} [Group G]
 
@@ -124,7 +123,6 @@ private theorem finOrb_of_cover (U : Subgroup G) (a : G) (R : Finset G)
   refine Finset.mem_coe.2 (Finset.mem_image.2 ⟨r, hr, ?_⟩)
   exact QuotientGroup.eq.2 hr'
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.Sym.So
 

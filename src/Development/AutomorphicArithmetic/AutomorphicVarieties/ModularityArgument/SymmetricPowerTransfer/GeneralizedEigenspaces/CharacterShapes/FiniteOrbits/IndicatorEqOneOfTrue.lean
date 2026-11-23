@@ -104,7 +104,6 @@ private theorem form_inv {Γ G V : Type} [Group Γ] [Group G] [AddCommGroup V] [
 
 end Grp
 
-section Local
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -139,9 +138,7 @@ private theorem dom_pair {t : kˣ} (h : valuation k (t : k) < valuation k (unif 
   · exact absurd hij (by decide)
   · exact le_rfl
 
-end Local
 
-section Glob
 
 variable {F : Type} [Field F] [NumberField F] {Δ : F}
 
@@ -283,7 +280,6 @@ private theorem p3 {V : Type} [AddCommGroup V] [Module ℂ V] (A : SD Δ) (hA : 
   refine LinearMap.ext fun φ => Subtype.ext ?_
   exact p3a A hA ch x B hx hB t t' ht ht' ⟨g, hElS g t hg⟩ ⟨g', hElS g' t' hg'⟩ hg hg' hm φ
 
-end Glob
 
 theorem UpperTheory.V.Z.Sym.So.sOps :
     UpperTheory.V.Z.Sym.So.SOps := by

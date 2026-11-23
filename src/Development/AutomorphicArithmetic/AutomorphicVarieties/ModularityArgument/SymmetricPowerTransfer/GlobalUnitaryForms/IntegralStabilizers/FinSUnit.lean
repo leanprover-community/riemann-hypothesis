@@ -124,7 +124,6 @@ theorem su_abs {Γ G X : Type} [Group Γ] [Group G] [Finite X] (ι : Γ →* G) 
   obtain ⟨s, hs, δ, hδ, u, hu, e⟩ := hS g
   exact ⟨δ, hδ, s, hs, u, hu, e⟩
 
-section Local
 
 variable {K : Type} [Field K] {Δ : K}
 
@@ -172,7 +171,6 @@ private theorem scal_KD {O : Type} [CommRing O] [Algebra O K] (u : Oˣ) (g : DX 
   ext i j : 1
   fin_cases i <;> fin_cases j <;> simp
 
-end Local
 
 private theorem loc_glob {F : Type} [Field F] [NumberField F] (t : F) (h : ∀ v : Pl F, IsIntegral (Ov v) (cv v t)) :
     t ∈ (algebraMap (𝓞 F) F).range := by

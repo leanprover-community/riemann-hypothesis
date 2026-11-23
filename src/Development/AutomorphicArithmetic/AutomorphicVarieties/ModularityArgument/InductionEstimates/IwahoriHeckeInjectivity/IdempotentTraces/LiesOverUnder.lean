@@ -55,7 +55,6 @@ open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial UpperTheory.V.Z.Invariant
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.IwahoriHeckeOperatorComm
 
-section One
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} {μ : Measure (G1 K n)} [μ.IsHaarMeasure]
 
@@ -97,9 +96,7 @@ private theorem hop_amp (hn : 0 < n) (𝔞 : Amp μ) (w : Pl K) (J : Subgroup (G
   change Commute _ (Oinf μ 𝔞.ν 𝔞.a₀ * prj (fixF μ 𝔞.U))
   exact Commute.mul_right hO.symm hP
 
-end One
 
-section Two
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -171,7 +168,6 @@ private theorem finprod_ind (S : Finset (Pl F)) (U : ∀ v : Pl F, Subgroup (GL 
         exact h
       exact this
 
-end Two
 
 end UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.IwahoriHeckeOperatorComm
 

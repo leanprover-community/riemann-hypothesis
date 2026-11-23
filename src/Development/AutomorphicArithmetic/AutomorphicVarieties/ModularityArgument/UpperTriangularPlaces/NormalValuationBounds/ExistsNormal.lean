@@ -37,7 +37,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Recip
 
 namespace UpperTheory.V.Keep
 
-section tri
 
 variable {k : Type} [Field k]
 
@@ -94,9 +93,7 @@ private theorem tri_step {Γ : Type} [Group Γ] (hU : UpTri) (r : Γ →* GL (Fi
   have := congrArg (Units.val) hBX
   simpa only [Units.val_mul] using this
 
-end tri
 
-section gal
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -123,7 +120,6 @@ private theorem ine_res (F : IntermediateField ℚ Ω) [NumberField F] (A : Valu
   obtain ⟨h1, h2⟩ := h
   exact ⟨h1, h2⟩
 
-end gal
 
 end UpperTheory.V.Keep
 

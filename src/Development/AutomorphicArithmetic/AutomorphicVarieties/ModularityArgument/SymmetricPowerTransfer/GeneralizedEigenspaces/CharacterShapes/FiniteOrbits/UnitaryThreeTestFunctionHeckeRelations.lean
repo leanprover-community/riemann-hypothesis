@@ -47,7 +47,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So
 
-section Abs
 
 private theorem one_congr {p q : Prop} (h : p ↔ q) : one p = one q := by rw [propext h]
 
@@ -229,13 +228,11 @@ private theorem ops (h : TwOk s w) (a : G) (hfa : AlgebraTools.FinOrb B.U B.U a)
     rw [tw_mul_one, conv_right h] at e
     exact e.symm
 
-end Abs
 
 end UpperTheory.V.Z.Sym.So
 
 namespace UpperTheory.V.Z.Sym.So
 
-section Conc
 
 private theorem fp_one {I : Type} (p : I → Prop) (h : ∀ᶠ v in Filter.cofinite, p v) :
     ∏ᶠ v, one (p v) = one (∀ v, p v) := by
@@ -461,7 +458,6 @@ private theorem FG_eq (t : Dat.Par F) (g : GA Δ) : A.dat.FG t g = ∑ y ∈ A.Y
   rw [Finset.prod_univ_sum]
   rfl
 
-end Conc
 
 end UpperTheory.V.Z.Sym.So
 

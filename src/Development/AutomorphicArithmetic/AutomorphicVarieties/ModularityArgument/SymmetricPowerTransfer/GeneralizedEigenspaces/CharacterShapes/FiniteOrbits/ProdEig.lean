@@ -46,7 +46,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So
 
-section Grp
 
 variable {G H : Type} [Group G] [Group H]
 
@@ -134,7 +133,6 @@ private theorem uf_split (j : H →* G) (p : G →* H) (U : Subgroup G) (hpj : �
       _ = u * v * j d * (j (p m) * b) * s' := by simp only [map_mul, mul_assoc]
       _ = u * v * (j d * b) * (j (p m) * s') := by rw [← hbm]; simp only [mul_assoc]
 
-end Grp
 
 end UpperTheory.V.Z.Sym.So
 

@@ -51,7 +51,6 @@ noncomputable section Helpers
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V UpperTheory.V.Z.J
 
-section Count
 
 variable {k G M : Type} [CommRing k] [Group G] [TopologicalSpace G] [AddCommGroup M] [Module k M]
   [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation k G M)
@@ -93,7 +92,6 @@ private theorem finite_z1_of_finite_h1 [Finite M] [Finite (H1 ρ)] : Finite (Z1 
 private theorem zc_iff (τ : Representation ℤ G M) (e : ∀ g m, ρ g m = τ g m) (z : G → M) : z ∈ Zc τ ↔ z ∈ Z1 ρ :=
   and_congr (IsLocallyConstant.iff_continuous z) (by simp only [← e])
 
-end Count
 
 private theorem ex_cls {n : ℕ} {G M : Type} [Group G] [TopologicalSpace G] [AddCommGroup M] [Module (ZMod n) M]
     [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation (ZMod n) G M) (N : AddSubgroup (G → M))

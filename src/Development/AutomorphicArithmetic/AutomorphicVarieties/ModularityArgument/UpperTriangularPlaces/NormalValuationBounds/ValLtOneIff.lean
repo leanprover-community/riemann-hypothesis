@@ -39,7 +39,6 @@ open scoped Pointwise
 
 namespace UpperTheory.V.Keep
 
-section Place
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
 
@@ -78,7 +77,6 @@ private theorem conj_ine {A B : ValuationSubring Ω} {g : G F Ω} (hg : ∀ x, g
     rw [← map_inv₀, ← hg] at h2
     simpa using h2
 
-end Place
 
 section Mat
 

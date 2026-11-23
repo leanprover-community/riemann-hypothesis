@@ -53,14 +53,12 @@ private theorem one_of_sq {a b : ℂ} (h : (X - 1 : ℂ[X]) ^ 2 = (X - C a) * (X
   simp only [eval_pow, eval_sub, eval_X, eval_one, eval_mul, eval_C, sub_self, zero_mul, mul_zero] at ha hb
   exact ⟨sub_eq_zero.1 (pow_eq_zero_iff (two_ne_zero)|>.1 ha), sub_eq_zero.1 (pow_eq_zero_iff (two_ne_zero)|>.1 hb)⟩
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 private theorem absPow_int_val (m : ℤ) (x : kˣ) : (absPow k (m : ℂ) x : ℂ) = (absPow k 1 x : ℂ) ^ m := by
   rw [val_absPow, val_absPow, Complex.cpow_intCast, Complex.cpow_one]
 
-end Loc
 
 end UpperTheory.V.Z.Sym.W.GoodWeilCharpoly
 

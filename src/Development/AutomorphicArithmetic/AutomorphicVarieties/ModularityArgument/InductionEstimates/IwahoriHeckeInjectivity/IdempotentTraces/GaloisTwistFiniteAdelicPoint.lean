@@ -47,7 +47,6 @@ open scoped ComplexConjugate Classical
 
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -143,9 +142,7 @@ private theorem split_level (v : Pl F) (hv : GM.Split E v) (u₀ : PlacesOver E 
     rw [← he, ← he] at h
     rwa [← (e u).injective h]
 
-end SlopeTestRemainingChoices
 
-section Key
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -171,9 +168,7 @@ private structure LevelAt (σ : E ≃ₐ[F] E) (q : Pl F) (S : Finset (Pl F)) (U
         (∀ y ∈ UF, ∀ g, f (y * g) = f g) ∧
         GM.MatchAt σ v c ((UE : Set (GL (Fin n) (CompletionsOver E v))).indicator 1) f)
 
-end Key
 
-section Key
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsGalois F E] [_root_.NumberField.IsTotallyComplex F]
   [_root_.NumberField.IsTotallyComplex E] {n : ℕ}
@@ -214,9 +209,7 @@ private theorem level_at (σ : E ≃ₐ[F] E) (hσ : ∀ τ, τ ∈ Subgroup.zpo
       rw [← SetLike.mem_coe, o3]
       exact Iff.rfl
 
-end Key
 
-section Build
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -254,9 +247,7 @@ private theorem exists_loc (σ : E ≃ₐ[F] E) (q : Pl F) (w₀ : PlacesOver E 
     change (UE v : Set (GL (Fin n) (CompletionsOver E v))).indicator 1 = _
     rw [e1]
 
-end Build
 
-section Lev
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -317,7 +308,6 @@ private theorem twist_stable (σ : E ≃ₐ[F] E) (hn : 0 < n) (SE : Finset (Pl 
     rw [cmp_atFin]; exact h1 u.1) ⟨w, ⟨rfl⟩⟩
   rwa [← h3, cmp_atFin] at h4
 
-end Lev
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.locSm :
     LocSm := by

@@ -53,7 +53,6 @@ namespace UpperTheory.V.Z.Sym.Glob
 
 open Loc
 
-section Gram
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -163,9 +162,7 @@ private theorem gram_diag [CharZero K] {c : K} {d m : EL Δ τ} (h : IsDat c d m
   · rw [map_mul, mul_comm]
     exact hG2
 
-end Gram
 
-section Main
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -213,7 +210,6 @@ private theorem norm_pos_part {Δ : F} (hneg : ∀ σ : F →+* ℝ, σ Δ < 0) 
   simp only [map_add (f := _), map_sub, map_mul, map_zero, zero_mul, add_zero]
   nlinarith [sq_nonneg (σ y.re), sq_nonneg (σ y.im), mul_nonneg (neg_nonneg.mpr h.le) (sq_nonneg (σ y.im))]
 
-end Main
 
 theorem exG : ExG := by
   intro F _ _ Δ D hok τ c d m hdat hpos hev

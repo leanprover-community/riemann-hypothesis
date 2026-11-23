@@ -41,7 +41,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Ci PositivityTheory.Rg.Fx
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg.Tf.IntegralApplyAeEq UpperTheory.V.Z.IntegralApplyAeEq UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-section SlopeTestRemainingChoices
 
 variable {H V : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] [NormedAddCommGroup V]
   [InnerProductSpace ℂ V] [FiniteDimensional ℂ V] [CompleteSpace V]
@@ -111,7 +110,6 @@ private theorem good_poly {σ τ : Type} (f : MvPolynomial σ (MvPolynomial τ �
   | add p q hp hq => simpa only [map_add (f := _)] using good_add hp hq
   | mul_X p t hp => simpa only [map_mul] using good_mul hp (hs t)
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.evzEx :
     ∀ {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {μ : Measure (normOneGL (K := E) (n := (2 + 2)))} [μ.IsHaarMeasure] {θ : Twist μ} {𝔢 : Side θ 2} (𝔵 : Fam 𝔢) (ev : PR E (2 + 2) →+* (LL μ →L[ℂ] LL μ)), 𝔢.toAmp.IsEv ev → ∃ evz, 𝔵.IsEvz ev evz := by

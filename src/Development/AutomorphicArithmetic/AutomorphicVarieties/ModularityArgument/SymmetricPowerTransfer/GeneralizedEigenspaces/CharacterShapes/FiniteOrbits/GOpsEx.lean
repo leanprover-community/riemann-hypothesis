@@ -51,7 +51,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So
 
-section Local
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -67,7 +66,6 @@ private theorem dg_mem (V : Lev k) (d : Fin 3 → kˣ) (hd : ∀ i, d i ∈ V.H)
   refine Subgroup.mem_sup_left (Subgroup.mem_sup_right ?_)
   exact ⟨d, by simpa [Subgroup.mem_pi] using hd, rfl⟩
 
-end Local
 
 variable {F : Type} [Field F] [NumberField F] {Δ : F}
 

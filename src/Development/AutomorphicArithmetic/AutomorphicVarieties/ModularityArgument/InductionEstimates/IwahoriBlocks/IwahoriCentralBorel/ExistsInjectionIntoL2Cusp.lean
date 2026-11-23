@@ -49,7 +49,6 @@ open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C PositivityThe
 open GlobalTheory.PRep GlobalTheory.SmGL Formalism.BasicNotions GlobalTheory.CuspRep
 open scoped TensorProduct Classical
 
-section Avg
 
 open Function Set
 open scoped InnerProductSpace
@@ -173,9 +172,7 @@ private theorem avg_rep {Y : Type*} [TopologicalSpace Y] [T2Space Y] [SecondCoun
   refine hy.trans ?_
   rw [hΨQ, quotFun_mk]
 
-end Avg
 
-section Proj
 
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} {μ : Measure (G1 K n)} [μ.IsHaarMeasure]
@@ -363,7 +360,6 @@ private theorem rep_in {τ : Submodule ℂ (L2 μ)} (hcl : IsClosed (τ : Set (L
     _ = ε / 2 := by field_simp
     _ < ε := by linarith
 
-end Proj
 
 
 

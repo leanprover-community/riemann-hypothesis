@@ -47,7 +47,6 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeckeGal GlobalTheory.GalOfCusp Filter Topology
-section Lem
 variable {E : Type} [Field E] [NumberField E] {l : ℕ} [Fact l.Prime]
 private theorem norm_pow_sub_le {K : Type} [NormedField K] [IsUltrametricDist K] {y : K} (hy : ‖y - 1‖ ≤ 1) (m : ℕ) :
     ‖y ^ m - 1‖ ≤ ‖y - 1‖ := by
@@ -297,7 +296,6 @@ private theorem pos_conn (k : Eˣ) (hk : ∀ φ : E →+* ℝ, 0 < φ (k : E)) :
     refine key (e ⁻¹' {0}ᶜ) ((InfinitePlace.Completion.isometryEquivComplexOfIsComplex hw).toHomeomorph.isPreconnected_preimage.2
       (isConnected_compl_singleton_of_one_lt_rank (by simp) 0).isPreconnected) (by simp) (by simp) ?_
     exact (map_ne_zero e).2 ((map_ne_zero _).2 k.ne_zero)
-end Lem
 section
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] {l : ℕ} [Fact l.Prime]
 private theorem cyc_loc [IsAlgClosure E Ω] {art : Ideles E →* Gab E Ω} (ha : IsGlobalArtin art) (ι : Qbar l ≃+* ℂ)

@@ -71,7 +71,6 @@ open scoped Matrix
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Tri
 
 variable {k : Type} [Field k]
 
@@ -128,4 +127,3 @@ private def triSub : Subgroup (GL (Fin 2) k) where
     simp only [Set.mem_ofPred_eq] at ha ⊢
     simp [Matrix.coe_units_inv, Matrix.inv_def, Matrix.adjugate_fin_two, ha]
 
-end Tri

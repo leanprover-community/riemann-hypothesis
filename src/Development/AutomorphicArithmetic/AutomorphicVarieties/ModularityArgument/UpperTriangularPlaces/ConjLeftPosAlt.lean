@@ -208,7 +208,6 @@ private theorem conj_left_neg {k : Type} [CommRing k] (x y : GG (m := 3) (R := k
     (x * y * x⁻¹).left = x.left * theta y.left * x.left⁻¹ := by
   simp [SemidirectProduct.mul_left, SemidirectProduct.inv_left, h1, h2, sgnAct_neg_one, theta_theta]
 
-section Mv
 
 variable {Γ k : Type} [Group Γ] [Field k]
 
@@ -252,9 +251,7 @@ private theorem below_move {Ω : Type} [Field Ω] [CharZero Ω] {A A' : Valuatio
   have e2 : u ((n : Ω)⁻¹) = (n : Ω)⁻¹ := by rw [map_inv₀, e1]
   rwa [hA, hA, e1, e2]
 
-end Mv
 
-section Move
 
 variable {Ω K : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] [Field K] [NumberField K] [Algebra K Ω] [IsAlgClosure K Ω]
   {l : ℕ} [Fact l.Prime]
@@ -331,7 +328,6 @@ private theorem move_link (ρ : G K Ω →* GL (Fin 3) (Qbar l)) (R : G ℚ Ω �
       rw [this]
       simp [mul_comm]
 
-end Move
 
 end UpperTheory.V.Z.Keep.KatoThreePlus
 

@@ -56,7 +56,6 @@ open GlobalTheory.GalOfCusp UpperTheory.V.Af UpperTheory.V.Base UpperTheory.V.Pu
 
 namespace UpperTheory.V.Sd.EG
 
-section Norm
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
@@ -131,9 +130,7 @@ private theorem trace_inv {K : Type} [Field K] (g : GL (Fin 2) K) (d : Kˣ) (h :
     Matrix.adjugate_fin_two, Matrix.trace_fin_two, Matrix.trace_fin_two]
   simp [add_comm]
 
-end Norm
 
-section Gal
 
 variable {l : ℕ} [hl : Fact l.Prime] {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -270,7 +267,6 @@ private theorem dirG_ne_one {M : ℕ} [NeZero M] {O : Type} [CommRing O] {χ : D
   refine h (MonoidHom.ext fun s => ?_)
   rw [Chr.dirG, MonoidHom.comp_apply, Subsingleton.elim (Chr.cls ℚ Ω 1 s) 1, map_one, MonoidHom.one_apply]
 
-end Gal
 
 private theorem exists_mul {M w : ℕ} [NeZero (M * w)] (φ : DirichletCharacter ℂ M) (θ : DirichletCharacter ℂ w) :
     ∃ χ : DirichletCharacter ℂ (M * w), ∀ n : ℕ, χ (n : ZMod (M * w)) = φ (n : ZMod M) * θ (n : ZMod w) := by

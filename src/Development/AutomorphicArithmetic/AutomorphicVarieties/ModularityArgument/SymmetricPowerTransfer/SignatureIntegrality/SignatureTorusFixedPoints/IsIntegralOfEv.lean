@@ -37,7 +37,6 @@ namespace UpperTheory.V.Z.Sym.Sig
 
 open Loc Glob
 
-section Alg
 
 variable {K : Type} [Field K] {τ a b : K}
 
@@ -111,7 +110,6 @@ private theorem isIntegral_of_ev (ha : a * a = τ * a - 1) (hb : b * b = τ * b 
   · rw [map_mul, map_sub, map_sub, ev_algebraMap, ev_algebraMap, h1, sub_self, zero_mul, map_zero]
   · rw [map_mul, map_sub, map_sub, ev_algebraMap, ev_algebraMap, h2, sub_self, mul_zero, map_zero]
 
-end Alg
 
 theorem roots : Roots := by
   intro k _ _ _ _ O _ _ hO a ha1

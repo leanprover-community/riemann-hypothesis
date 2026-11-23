@@ -80,7 +80,6 @@ private theorem gqOn_surj {H' H G : Type} [Group H'] [Group H] [Group G] (e : H'
       ext x; simp only [mem_stabilizer_iff, Subgroup.mem_comap, hs]
     rw [this, Subgroup.relIndex_comap, Subgroup.map_comap_eq_self_of_surjective he]
 
-section Field
 
 variable {K : Type} [Field K] {Δ : K}
 
@@ -292,9 +291,7 @@ private theorem term_eq [CharZero K] {G V : Type} [Group G] [AddCommGroup V] [Mo
   rw [← key]
   rfl
 
-end Field
 
-section Global
 
 variable {F : Type} [Field F] [NumberField F] {Δ : F} {D : Dat Δ}
 
@@ -341,7 +338,6 @@ private theorem cover_glob (hD : D.Ok) {ι : DX Δ →* DA Δ} (hι : IsIotaD ι
   obtain ⟨γ, hγ, r⟩ := cover h1 h2 hb (two_add_ne hreg) (by field_simp; ring)
   exact ⟨_, ⟨(embEx F Δ D hD _).2 γ hγ hreg, hadm⟩, γ, hγ, r⟩
 
-end Global
 
 end UpperTheory.V.Z.Sym.Glob
 

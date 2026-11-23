@@ -154,7 +154,6 @@ private theorem cf_scale (j : ℕ) (k : Fin (j + 1)) (s a b : ℂ) : cf j k (s *
   simp only [cf, ← mul_neg, mul_pow, h]
   ring
 
-section Places
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] (lam : InfinitePlace L → DomWeight 2) {j : ℕ}
   (hj : ∀ v, (lam v).w 0 - (lam v).w 1 = j)
@@ -216,7 +215,6 @@ private theorem cv_ne : ∃ x, cv lam hj x ≠ 0 := by
   refine Finset.prod_ne_zero_iff.2 (fun v _ => ?_) this
   simpa using hl v
 
-end Places
 
 end UpperTheory.V.Z.Sym.Al.InfV
 

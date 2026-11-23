@@ -37,7 +37,6 @@ noncomputable section
 open NumberField IsDedekindDomain Formalism.L2.Host Matrix GlobalTheory.PRep GlobalTheory.CuspRep.LocEx
 open GlobalTheory.CuspRep (SmIrr Af locGL pLoc finGL)
 namespace UpperTheory.V.Af.RealLocalComponent
-section Gen
 variable {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V]
 private def orb (κ : Representation ℂ K V) (x : V) : (K →₀ ℂ) →ₗ[ℂ] V := Finsupp.linearCombination ℂ fun k => κ k x
 private theorem orb_comm (κ : Representation ℂ K V) (T : Module.End ℂ V) (hT : ∀ k x, T (κ k x) = κ k (T x)) (x : V)
@@ -91,7 +90,6 @@ private theorem exists_type (κ : Representation ℂ K V) (φ : V)
     simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply, key, orb_act]
   · simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply, key]
     simp [orb]
-end Gen
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {n : ℕ}
 private theorem smooth_fin (π : TR.CuspSub F n) : IsSmooth π.finPart := fun v => by
   convert (π.cusp v.1 v.2).1.level using 1

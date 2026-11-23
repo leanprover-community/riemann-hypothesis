@@ -36,7 +36,6 @@ open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalS
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg.Tf.IntegralApplyAeEq UpperTheory.V.Z.IntegralApplyAeEq UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 open scoped InnerProductSpace
 
-section Abstract
 
 variable {H V W : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
   [NormedAddCommGroup V] [InnerProductSpace ℂ V] [NormedAddCommGroup W] [InnerProductSpace ℂ W]
@@ -114,7 +113,6 @@ private theorem abs_main (J : L V →ₗᵢ[ℂ] H) (J' : L W →ₗᵢ[ℂ] H) 
         rw [b, a hx, map_zero]
       · rw [e, map_add (f := _), hs u v' hv', ht v u' hu', add_comm]
 
-end Abstract
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.twistP :
     ∀ {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]

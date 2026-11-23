@@ -40,7 +40,6 @@ open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C PositivityThe
 open GlobalTheory.PRep GlobalTheory.SmGL Formalism.BasicNotions GlobalTheory.CuspRep
 open scoped TensorProduct Classical
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -138,7 +137,6 @@ private theorem sec_add {μ₂ : Measure (G1 K 2)} [μ₂.IsHaarMeasure] {τ₁ 
     (hf : IsSec τ₁ τ₂ f) (hf' : IsSec τ₁ τ₂ f') (c : ℂ) : IsSec τ₁ τ₂ (f + c • f') :=
   _root_.UpperTheory.Reformulated.B.Glb3.sec_add hf hf' c
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.secTr :
     ∀ {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (μ₂ : Measure (G1 K 2)) [μ₂.IsHaarMeasure] (τ₁ τ₂ : Submodule ℂ (L2 μ₂)) (κ : Measure (archCompact K (2 + 2))) (e : archCompact K (2 + 2) → ℂ), IdemA κ e → (IsSec τ₁ τ₂ 0 ∧ ∀ f f', IsSec τ₁ τ₂ f → IsSec τ₁ τ₂ f' → ∀ c : ℂ, IsSec τ₁ τ₂ (f + c • f')) ∧

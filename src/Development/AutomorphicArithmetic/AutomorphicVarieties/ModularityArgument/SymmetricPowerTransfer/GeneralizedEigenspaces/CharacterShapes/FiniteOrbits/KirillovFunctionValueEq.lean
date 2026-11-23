@@ -109,7 +109,6 @@ private theorem coset_sum {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
   change c • φ (h * y.out) = f (Quotient.out ((y.out : G) : G ⧸ W)) • φ (h * Quotient.out ((y.out : G) : G ⧸ W))
   rw [hu, hinv, hval _ hy]
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -145,9 +144,7 @@ private theorem gl_uniq (V : Lev k) (d : Fin 2 → kˣ) (hd : Dom d) {Y u : GL (
   refine mul_mem ?_ hj
   exact le_sup_left (b := (glIwa k 2).Nm V.c) (le_sup_right (a := (glIwa k 2).N) ⟨fun _ => z, fun i _ => h3, rfl⟩)
 
-end Loc
 
-section Loc2
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -187,9 +184,7 @@ private theorem kirillov_function_support (V : Lev k) (χ : kˣ →* ℂˣ) {t :
   apply hY
   rw [Lev.twistedCentralTestFunction, Lev.fZ, dif_neg h, mul_zero]
 
-end Loc2
 
-section Glb
 
 variable {F : Type} [Field F] [NumberField F] {Δ : F} (A : SD Δ)
 
@@ -336,7 +331,6 @@ private theorem fk_uniq (hA : A.Ok) {t : Dat.Par F} (ht : A.Cone t) {g : DA Δ} 
   · rw [level_two_outside_sigma A v hv]
     exact (mul_mem_cancel_left (a' v hv)).1 (b' v hv)
 
-end Glb
 
 end UpperTheory.V.Z.Sym.So.KO
 

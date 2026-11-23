@@ -40,7 +40,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So
 
-section SlopeTestRemainingChoices
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {B : Bridge L} (T : Spl B)
   {S : Finset (Plc L)} {VL : ∀ w : Plc L, Lev (Kw w)} {A : SD B.Δ}
@@ -150,9 +149,7 @@ private theorem expo_map {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSp
   simp only [Dict.expo]
   rw [h1, h2]
 
-end SlopeTestRemainingChoices
 
-section Main
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {B : Bridge L} (hB : B.Ok) (T : Spl B)
   {S : Finset (Plc L)} {VL : ∀ w : Plc L, Lev (Kw w)} {A : SD B.Δ} (hF : Fit T S VL A)
@@ -194,7 +191,6 @@ private theorem cl4 (g : SA B.Δ) (d : ParN (Lp L) 2) : A.IsElD g d ↔ OnS S (B
   elCore T hF _ (hfS g) (fun v => (g : DA B.Δ).1 v = 1) (fun v h => eD (A.hs v h) ((g : DA B.Δ).1 v)) d
     (fun v => hB.oneS g v) (fun w hw h hv => hsS hB T hF w hw h hv g)
 
-end Main
 
 
 theorem levG : LevG := by

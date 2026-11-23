@@ -176,13 +176,11 @@ end UpperTheory.V.Z.Sym.So.OS
 
 namespace UpperTheory.V.Z.Sym.So.OS
 
-section PrimeReciprocalSums
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
 instance suaNormal : (SUA L).Normal := by unfold SUA; infer_instance
 
-end PrimeReciprocalSums
 
 end UpperTheory.V.Z.Sym.So.OS
 

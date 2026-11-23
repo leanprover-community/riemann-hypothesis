@@ -31,7 +31,6 @@ open NumberField IsDedekindDomain ValuativeRel GlobalTheory.CuspRep GlobalTheory
 open UpperTheory.V UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict UpperTheory.V.Z.Sym.Dict.Br UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob
 open UpperTheory.V.W (Plc Lp)
 
-section SlopeTestRemainingChoices
 
 variable {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [Field k'] [ValuativeRel k'] [TopologicalSpace k'] [IsNonarchimedeanLocalField k'] {i : k ≃+* k'}
@@ -107,7 +106,6 @@ private theorem Uc_fwd (h : IsoOk i) (c : ℕ) (a : kˣ) (ha : a ∈ UpperTheory
     simpa using Ideal.Quotient.eq.2 e
   · exact Units.ext rfl
 
-end SlopeTestRemainingChoices
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 

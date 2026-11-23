@@ -41,7 +41,6 @@ open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob UpperT
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Local
 
 open Matrix
 
@@ -101,7 +100,6 @@ private theorem loc {O : Type} [CommRing O] [Algebra O k] (hO : IsInts k O) (h2 
   · rw [map_mul, map_inv, map_mul, map_inv, hec, mul_inv_cancel]
   · rw [map_mul, map_inv, map_mul, map_inv, hec, inv_mul_cancel]
 
-end Local
 
 theorem UpperTheory.V.Z.Sym.So.torPart :
     UpperTheory.V.Z.Sym.So.TorPart := by

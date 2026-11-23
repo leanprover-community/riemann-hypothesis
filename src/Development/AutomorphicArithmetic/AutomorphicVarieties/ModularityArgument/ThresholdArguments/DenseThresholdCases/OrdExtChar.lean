@@ -57,7 +57,6 @@ open UpperTheory.V.HV (Coef)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z UpperTheory.V.Z.Ord
 namespace UpperTheory.V.Z.Ord.ExtensionCharacterAlt
-section Poly
 variable {C : Type*} [Field C]
 private theorem coeff_pow_lin (a : C) (n : ℕ) :
     ((1 + Polynomial.C a * X) ^ n).coeff 0 = 1 ∧ ((1 + Polynomial.C a * X) ^ n).coeff 1 = (n : C) * a := by
@@ -108,8 +107,6 @@ private theorem sum_eq_zero_of_prod {J : Type*} [Fintype J] (a : J → C) (e : J
     exact_mod_cast congrArg (Int.cast : ℤ → C) this.symm
   simp_rw [this]
   rw [Finset.sum_sub_distrib, c1, sub_self]
-end Poly
-section Emb
 variable {L : Type} [Field L] [NumberField L] {l : ℕ} [Fact l.Prime]
 private theorem tendsto_pow (w : HeightOneSpectrum (𝓞 L)) (hl : ((l : ℕ) : 𝓞 L) ∈ w.asIdeal) :
     Filter.Tendsto (fun m : ℕ => ((l : ℕ) : w.adicCompletion L) ^ m) Filter.atTop (nhds 0) := by
@@ -166,8 +163,6 @@ private theorem exp_eq_zero (w : HeightOneSpectrum (𝓞 L)) (hl : ((l : ℕ) : 
     simpa [Finset.sum_apply] using hlin z)
   funext j
   exact_mod_cast this j
-end Emb
-section Grp
 variable {J T M : Type*} [Fintype J] [Fintype T] [DecidableEq T] [CommGroup M]
 private theorem prod_zpow_sum {S : Type*} (F : Finset S) (a : M) (c : S → ℤ) :
     ∏ j ∈ F, a ^ c j = a ^ ∑ j ∈ F, c j := by
@@ -199,8 +194,6 @@ private theorem prod_collect (r : J → T) (p : J → M) (q : T → M)
   rw [← zpow_mul, ← zpow_neg, ← zpow_add]
   congr 1
   ring
-end Grp
-section Ker
 variable {K Ω : Type} [Field K] [NumberField K] [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω]
   {A : ValuationSubring Ω} {v : HeightOneSpectrum (𝓞 K)} {C : Type} [CommGroup C] [TopologicalSpace C] [T2Space C]
 private theorem ker_art (h : IsPlaceOver A v) {a : Weil h →* (v.adicCompletion K)ˣ} (ha : IsLocalArtin h a)
@@ -250,8 +243,6 @@ private theorem ker_art (h : IsPlaceOver A v) {a : Weil h →* (v.adicCompletion
   apply hφ
   have := DFunLike.congr_fun e s
   simpa [ξ, hs] using this
-end Ker
-section Nm
 open GroundTheory.Global.SemiLocal
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] {l : ℕ} [Fact l.Prime]
   {v : HeightOneSpectrum (𝓞 K)} (w : PlacesOver L v)
@@ -289,8 +280,6 @@ private theorem nm_eq_normU : UpperTheory.V.Z.Gam.nm w = GlobalTheory.BCChar.nor
       IsScalarTower.algebraMap_apply K L (w.1.adicCompletion L)]
   unfold UpperTheory.V.Z.Gam.nm GlobalTheory.BCChar.normU
   rw [key]
-end Nm
-section Pow
 variable {l : ℕ} [Fact l.Prime]
 private noncomputable def powU {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F))
     [Fintype (UpperTheory.V.W.Emb l w)] (c : UpperTheory.V.W.Emb l w → ℤ) : (w.adicCompletion F)ˣ →* (Qbar l)ˣ :=
@@ -307,8 +296,6 @@ private theorem algPow_eq {F : Type} [Field F] [NumberField F] (w : HeightOneSpe
   rw [coe_powU]
   unfold algPow
   rw [finprod_eq_prod_of_fintype]
-end Pow
-section Const
 variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L] {l : ℕ} [Fact l.Prime]
   {v : HeightOneSpectrum (𝓞 K)} (w : PlacesOver L v)
 private theorem exists_const [Fintype (UpperTheory.V.W.Emb l w.1)] [Fintype (UpperTheory.V.W.Emb l v)]
@@ -368,8 +355,6 @@ private theorem exists_const [Fintype (UpperTheory.V.W.Emb l w.1)] [Fintype (Upp
     Finset.prod_congr rfl fun j _ => by rw [← hc]
   rw [h1, prod_fib (resE w) (p y) (q y) (hq y) c0]
   rfl
-end Const
-section Res
 variable {K L Ω : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Field Ω] [Algebra K L] [Algebra K Ω]
   [Algebra L Ω] [IsScalarTower K L Ω] [IsAlgClosure K Ω] [IsAlgClosure L Ω]
 private theorem isOpenMap_res : IsOpenMap (AlgEquiv.restrictScalarsHom K : G L Ω →* G K Ω) := by
@@ -391,7 +376,6 @@ private theorem isOpenMap_res : IsOpenMap (AlgEquiv.restrictScalarsHom K : G L �
       refine ⟨AlgEquiv.ofRingEquiv (f := (σ : Ω ≃+* Ω)) fun y => ?_, AlgEquiv.ext fun z => rfl⟩
       exact hσ ⟨_, y, rfl⟩
   exact (Topology.IsOpenEmbedding.mk (hc.isClosedEmbedding hinj).isEmbedding (hr ▸ hE)).isOpenMap
-end Res
 end UpperTheory.V.Z.Ord.ExtensionCharacterAlt
 open UpperTheory.V.Z.Ord.ExtensionCharacterAlt GroundTheory.Global.SemiLocal in
 theorem UpperTheory.V.Z.Ord.ext_character_of_literal_automorphy_n :

@@ -61,7 +61,6 @@ open scoped Pointwise
 
 namespace UpperTheory.V.Z.Ord.CU
 
-section Abs
 
 variable {H H' k : Type} [Group H] [Group H'] [Field k] {n : ℕ}
 
@@ -230,7 +229,6 @@ private theorem abs_main {r₁ : H →* GL (Fin n) k} {r₂ : H' →* GL (Fin n)
         simpa [hε] using DFunLike.congr_fun e t
       simpa using aux₂ e1
 
-end Abs
 
 end UpperTheory.V.Z.Ord.CU
 
@@ -238,7 +236,6 @@ namespace UpperTheory.V.Z.Ord.CU
 
 open UpperTheory.V.Af UpperTheory.V.Af.Bc UpperTheory.V.Af.Gu GlobalTheory.MonoConj
 
-section Conc
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
 
@@ -326,7 +323,6 @@ private theorem rel_conj [IsCMField E] {τ : E ≃+* E} {σ : Ω ≃+* Ω} (h : 
   simp only [Units.val_mul (ρ u * ρ s'), Units.val_mul (ρ u), hQ]
   simp only [Units.val_mul, Matrix.mul_smul, Matrix.smul_mul]
 
-end Conc
 
 end UpperTheory.V.Z.Ord.CU
 

@@ -43,7 +43,6 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg
 open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-section Ring
 
 variable {R : Type} [CommRing R]
 
@@ -109,7 +108,6 @@ private theorem low_inv_unip_blk (X : UPos (2 + 2) 2 → R) (a b : GL (Fin 2) R)
   rw [mul_inv_rev, Units.val_mul, coe_unipGL_inv, unip_eq]
   exact low_mul (low_blocks _ _ _) (low_blocks _ _ _)
 
-end Ring
 
 private theorem low_decomp {K : Type} [Field K] (g : GL (Fin (2 + 2)) K) (hg : Low g.val) :
     ∃ (X : UPos (2 + 2) 2 → K) (a b : GL (Fin 2) K), g = unipGL X * blk a b := by

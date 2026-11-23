@@ -42,13 +42,10 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So.CS
 
-section One
 
 variable {G : Type} [CommGroup G]
 
-end One
 
-section Main
 
 variable {I : Type}
 
@@ -73,21 +70,17 @@ variable {L}
 
 variable {χ : (∀ v, Fin 3 → G v) → ℂ}
 
-section X
 
 variable {X : (∀ v, Fin 3 → G v) →* ℂˣ}
 
-end X
 
 end D
 
 end Main
 
-section Ord
 
 variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-end Ord
 
 end UpperTheory.V.Z.Sym.So.CS
 

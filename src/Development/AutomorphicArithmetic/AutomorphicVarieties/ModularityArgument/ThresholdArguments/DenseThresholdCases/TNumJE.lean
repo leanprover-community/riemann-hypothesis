@@ -52,7 +52,6 @@ open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 set_option synthInstance.maxHeartbeats 200000
 open UpperTheory.V.Z.Desc.V0
-section SlopeTestRemainingChoices
 open Formalism.MainNotions.N
 variable {Γ Γ' k : Type} [Group Γ] [Group Γ'] [Field k] {n : ℕ}
 private theorem inv_comp {φ : Γ' →* Γ} (hφ : Function.Surjective φ) (r : Γ →* GL (Fin n) k) (M : Submodule k (Fin n → k)) :
@@ -136,7 +135,6 @@ private theorem datTop {O A B : Type} [CommRing O] [CommRing A] [CommRing B] [Al
     UpperTheory.V.J.Dat j ⊤ PUnit :=
   ⟨fun _ _ => rfl, Module.Free.of_subsingleton A PUnit, ⟨⟨∅, Subsingleton.elim _ _⟩⟩, le_top, fun p _ => by
     rw [Module.annihilator_eq_top_iff.2 ⟨fun _ _ => rfl⟩], fun _ _ _ _ => Submodule.mem_top⟩
-end SlopeTestRemainingChoices
 private theorem unitN {l : ℕ} [Fact l.Prime] {c : Coef l} {A : Type} [CommRing A] [Algebra c.O A] {N : ℕ} (h : ¬ l ∣ N) :
     IsUnit (N : A) := by
   have h0 : IsUnit (N : ℤ_[l]) := by

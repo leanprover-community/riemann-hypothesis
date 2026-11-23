@@ -49,7 +49,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V.Af UpperTheory.V.Base UpperTheory.V.Published
 open scoped Matrix
 namespace UpperTheory.V.Sd
-section CongLemmas
 variable {l : ℕ} [Fact l.Prime]
 private theorem cong_refl (a : (Qbar l)ˣ) : Cong a a := by simp [Cong]
 private theorem cong_symm {a b : (Qbar l)ˣ} (h : Cong a b) : Cong b a := by
@@ -116,8 +115,6 @@ private theorem cong_cyc_pow (s : G F Ω) (j t : ℕ) : Cong (cycBar F Ω l s ^ 
   have := cong_mul (cong_refl (cycBar F Ω l s ^ j)) (cong_pow (cong_cyc (l := l) s) (by simp) t)
     (norm_pow_one (norm_cyc s) j) (by simp)
   simpa using this
-end CongLemmas
-section Gal
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 private theorem finOrder_of_kills {C : Type} [CommGroup C] {N : ℕ} (hN : 0 < N) {φ : G ℚ Ω →* C} (h : KillsMu N φ) :
     IsOfFinOrder φ := by
@@ -160,8 +157,6 @@ private theorem sq_mem_galOf (K : Type) [Field K] [NumberField K] [Algebra K Ω]
   rw [h2]; rfl
 private theorem algClosure (K : Type) [Field K] [NumberField K] [Algebra K Ω] : IsAlgClosure K Ω :=
   ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) K⟩
-end Gal
-section Shape
 variable {l : ℕ} [Fact l.Prime] {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
 private theorem ordAt_change {n : ℕ} {r : G F Ω →* GL (Fin n) (Qbar l)} {m : Fin n → ℤ} {ψ ψ' : Fin n → G F Ω →* (Qbar l)ˣ}
     {A : ValuationSubring Ω} (h : OrdAt r m ψ A) (h' : ∀ i s, Cong (ψ' i s) (ψ i s)) : OrdAt r m ψ' A := by
@@ -212,7 +207,6 @@ private theorem adjoint_zero_twist {Γ k : Type} [Group Γ] [Field k] (ρ : Γ �
   congr 1
   simp only [Fintype.card_fin]
   field_simp
-end Shape
 end UpperTheory.V.Sd
 open UpperTheory.V.Sd in
 theorem UpperTheory.V.Z.Sym.W.adjoint_lift_from_eisenstein_of_propagation :

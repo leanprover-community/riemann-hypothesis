@@ -148,7 +148,6 @@ private theorem tw_aut (P : _root_.GlobalTheory.Mem.LiteralAutomorphy.Literature
   · let τ := τ'.twist (CuspSub.locDet n (ν * ν) w)⁻¹ (by simpa using CuspSub.isOpen_ker_locDet (a := n) (ν * ν) w)
     have e : twRep τ.ρ (CuspSub.locDet n (ν * ν) w) = τ'.ρ := twRep_inv _ _
     exact ⟨τ, (a4 w hw _ _).2 (e ▸ hτ'), ⟨e ▸ .refl _⟩⟩
-section Lev
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   {s : HidaSetting l L Ω}
 private theorem place_under {A : ValuationSubring Ω} {w : Plc L} (h : IsPlaceOver A w) :
@@ -178,7 +177,6 @@ private theorem pr_conj (V : s.Lev) {g g' : G L Ω}
   change toGS Ω V.S' (g'.restrictScalars (Lp L)) =
     toGS Ω V.S' s.c * toGS Ω V.S' (g.restrictScalars (Lp L)) * (toGS Ω V.S' s.c)⁻¹
   rw [h, map_mul, map_mul, map_inv]
-end Lev
 private theorem ss_comp {Γ H k : Type} [Group Γ] [Group H] [Field k] {n : ℕ} {r : Γ →* GL (Fin n) k} {φ : H →* Γ}
     (hφ : Function.Surjective φ) (h : Formalism.MainNotions.N.IsSSRep r) : Formalism.MainNotions.N.IsSSRep (r.comp φ) := fun U hU => by
   obtain ⟨U', h1, h2⟩ := h U fun g v hv => by

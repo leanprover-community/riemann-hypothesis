@@ -41,7 +41,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-section Lie
 
 open MeasureTheory Set Filter Topology GroundTheory.Automorphic
 open scoped ContDiff Manifold
@@ -133,7 +132,6 @@ private theorem smooth_family {S : Type*} [TopologicalSpace S] [T2Space S] [Seco
       (((hq.comp continuous_snd).mul continuous_const).prodMk ((hr.comp continuous_snd).mul (hβ.comp continuous_snd)))))
   · exact ⟨univ, univ_mem, univ, isCompact_univ, fun _ _ _ h => absurd trivial h⟩
 
-end Lie
 
 open MeasureTheory NumberField Set Filter Topology
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
@@ -142,7 +140,6 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg
 open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-section Adel
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -196,7 +193,6 @@ private theorem smooth_avg {S : Type*} [TopologicalSpace S] [T2Space S] [SecondC
   obtain ⟨u, hu, e⟩ := hs
   exact (congrArg (fun t => b (archP K n A * t)) e).trans (slide hinv _ _ hu (y s₀))
 
-end Adel
 
 section Gen
 
@@ -227,7 +223,6 @@ private theorem inv_preserved {G : Type*} [Group G] [MeasurableSpace G] [Measura
 
 end Gen
 
-section Typ
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (D : TypeDat K n)
 
@@ -277,9 +272,7 @@ private theorem idem_int {Φ : G1 K n → ℂ} (hΦ : Continuous Φ) :
     simp only [← mul_assoc]
     rw [integral_mul_const, D.idem k hk]
 
-end Typ
 
-section Ops
 
 open scoped Pointwise
 
@@ -387,7 +380,6 @@ private theorem exL (f : CC K n) : ∃ c : CC K n, (∀ g, c g = ∫ k, D.e k * 
       beta_reduce
       rw [← mul_assoc, hφ, mul_assoc, hinv _ (hN (N.isNormal'.conj_mem u hu φ))]
 
-end Ops
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.heckify :
     ∀ {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (G1 K n)) [μ.IsHaarMeasure] (D : TypeDat K n) (a₀ : CC K n), CuspidalProjection.ccStar a₀ = a₀ → UpperTheory.ConvolutionTheory.C.IsLeftSmooth a₀ →

@@ -51,7 +51,6 @@ open scoped Matrix
 
 namespace UpperTheory.V.Sd
 
-section CongLemmas
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -137,9 +136,7 @@ private theorem cong_cyc_pow (s : G F Ω) (j t : ℕ) : Cong (cycBar F Ω l s ^ 
     (norm_pow_one (norm_cyc s) j) (by simp)
   simpa using this
 
-end CongLemmas
 
-section Gal
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -189,9 +186,7 @@ private theorem sq_mem_galOf (K : Type) [Field K] [NumberField K] [Algebra K Ω]
 private theorem algClosure (K : Type) [Field K] [NumberField K] [Algebra K Ω] : IsAlgClosure K Ω :=
   ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) K⟩
 
-end Gal
 
-section Shape
 
 variable {l : ℕ} [Fact l.Prime] {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
 
@@ -248,6 +243,5 @@ private theorem adjoint_zero_twist {Γ k : Type} [Group Γ] [Field k] (ρ : Γ �
   simp only [Fintype.card_fin]
   field_simp
 
-end Shape
 
 end UpperTheory.V.Sd

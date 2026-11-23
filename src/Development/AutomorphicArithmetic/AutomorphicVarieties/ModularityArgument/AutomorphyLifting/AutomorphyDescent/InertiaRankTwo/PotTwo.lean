@@ -40,7 +40,6 @@ open scoped Pointwise
 
 namespace UpperTheory.V.Z.Win.Dn.PotentialDiagonalRankTwo
 
-section Abstract
 
 variable {Γ k : Type} [Group Γ] [Field k]
 
@@ -118,7 +117,6 @@ private theorem flag_core (r : Γ →* GL (Fin 2) k) (α : Fin 2 → Γ →* kˣ
     rw [diagChar_val]
     exact (hN d hd).2 i
 
-end Abstract
 
 private theorem ne_one_zpow {C : Type} [Group C] {x : C} (h : ¬ IsOfFinOrder x) {z : ℤ} (hz : z ≠ 0) : x ^ z ≠ 1 :=
   fun e => h (isOfFinOrder_iff_zpow_eq_one.2 ⟨z, hz, e⟩)

@@ -36,7 +36,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open GlobalTheory.GalOfCusp
 open scoped Matrix
 namespace UpperTheory.V.Af
-section admitted
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
 structure AdmRAlt [IsTotallyReal F] (ι : Qbar l ≃+* ℂ) (M : ℕ) (m : Fin n → ℤ) (wt : ℤ)
     (r : G F Ω →* GL (Fin n) (Qbar l)) : Prop where
@@ -45,15 +44,12 @@ structure AdmRAlt [IsTotallyReal F] (ι : Qbar l ≃+* ℂ) (M : ℕ) (m : Fin n
   level : Level l M m r
   dual : ∃ θ, IsCycWt l wt θ ∧ DualTw r θ
   safe : _root_.UpperTheory.V.Z.Win.A4.SafeRA l M m r
-end admitted
-section U3
 variable {K Ω : Type} [Field K] [NumberField K] [Field Ω] [Algebra ℚ Ω] [Algebra K Ω] [IsScalarTower ℚ K Ω]
   {l : ℕ} [Fact l.Prime]
 structure Adm3Alt [IsCMField K] (ι : Qbar l ≃+* ℂ) (e N : ℕ) (ρ : G K Ω →* GL (Fin 3) (Qbar l)) : Prop where
   irr : IsIrr ρ
   aut : _root_.UpperTheory.V.Z.Win.IsAutCsdA ι (tw ρ (cycBar K Ω l)⁻¹)
   level : Level l N ![(e : ℤ), 0, -(e : ℤ)] ρ
-end U3
 def NumberSp4Alt : Prop :=
   ∃ c A : ℕ, ∀ e : ℕ, 2 ≤ e → ∀ M : ℕ, 1 ≤ M → ∀ (p : ℕ) (w : HeightOneSpectrum (𝓞 ℚ)), p.Prime → (p : 𝓞 ℚ) ∈ w.asIdeal →
     5 ≤ p → ¬ p ∣ M → ∀ k : ℕ, 0 < k → ∀ z₁ z₂ z₃ : ℂ, z₁ ^ k = 1 → z₂ ^ k = 1 → z₃ ^ k = 1 →
@@ -64,10 +60,8 @@ def NumberSp4Alt : Prop :=
           (∀ r ∈ X, _root_.UpperTheory.V.Af.AdmRAlt ι M ![(e : ℤ) + 1, e, 1, 0] (e + 1) r) → (∀ r ∈ X, ∀ r' ∈ X, RepIso r r' → r = r') →
           (∀ r ∈ X, (r σ).val.trace ≠ ι.symm (eis4 p e z₁ z₂ z₃)) ∧
           ‖((NN : ℤ) : Qbar l)‖ ≤ ∏ r ∈ X, ‖(r σ).val.trace - ι.symm (eis4 p e z₁ z₂ z₃)‖
-section Ad
 variable {F₀ F Ω : Type} [Field F₀] [Field F] [Field Ω] [Algebra F₀ F] [Algebra F₀ Ω] [Algebra F Ω] [IsScalarTower F₀ F Ω]
   {k : Type} [Field k] {n : ℕ}
-end Ad
 end UpperTheory.V.Af
 end
 end

@@ -45,7 +45,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Int
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -112,9 +111,7 @@ private theorem isUnitAt_atFin (v : HeightOneSpectrum (𝓞 E)) (y : Eˣ) (hy : 
     IsUnitAt v (atFin v y) :=
   (HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v (y : E)).trans hy
 
-end SlopeTestRemainingChoices
 
-section Nu
 
 variable {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ)
 
@@ -140,7 +137,6 @@ private theorem nu_eq_one {E : Type} [Field E] [NumberField E] {φ : E →+* ℂ
   have h4 : 0 ≤ nu ι (φ (y : E)) := norm_nonneg _
   nlinarith
 
-end Nu
 
 end UpperTheory.V.Z.Int
 

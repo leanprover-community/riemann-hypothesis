@@ -39,7 +39,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Int
 
-section Nu
 
 variable {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ)
 
@@ -64,7 +63,6 @@ private theorem roots_le {q : ℂ} (hq : nu ι q ≤ 1) {c : ℝ} (hc : 0 ≤ c)
         mul_le_mul_of_nonneg_right (pow_le_one₀ (nu_nonneg' ι q) hq) (nu_nonneg' ι a)
     _ ≤ c ^ j := by rwa [one_mul]
 
-end Nu
 
 private theorem weight_bounds {n : ℕ} (hn : 1 ≤ n) (lam : DomWeight n) {lo hi : ℤ}
     (h : Within n (infOfWeight lam) lo hi) (i : Fin n) :

@@ -51,7 +51,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Loc
 open UpperTheory.V UpperTheory.V.Z.Win UpperTheory.V.Z.Kato UpperTheory.V.Z.Kato.WeilSphericalRecords
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.V.Z.Kato.WeilSphericalRecords.SphericalReciprocity
-section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 private theorem exists_unr {ξ : kˣ →* ℂˣ} (h : IsUnram ξ) : ∃ a : ℂˣ, ξ = unrChar k a := by
   obtain ⟨ϖ, hϖ⟩ := GlobalTheory.PrinTwo.NoFix.exists_unif k
@@ -73,8 +72,6 @@ private theorem unr_eq {a b : ℂˣ} (h : (a : ℂ) = (resCard k : ℂ) * b) : u
   rw [hn]
   push_cast
   field_simp
-end Loc
-section WD
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
 private theorem unr_of_level {n : ℕ} {x : WD h} (hL : IsLevelWD 1 n x) : x.unr := by
@@ -94,7 +91,6 @@ private theorem eq_one_of_root {x : WD h} (hu : x.unr) (t : Ine (F := E) A) {z :
   obtain ⟨v, hv⟩ := hz.exists_hasEigenvector
   have h3 := hv.apply_eq_smul
   exact smul_left_injective ℂ hv.2 (by simpa using h3.symm)
-end WD
 end UpperTheory.V.Z.Kato.WeilSphericalRecords.SphericalReciprocity
 open UpperTheory.V.Z.Kato.WeilSphericalRecords.SphericalReciprocity in
 theorem UpperTheory.V.Z.Kato.WeilSphericalRecords.recSph_alt :

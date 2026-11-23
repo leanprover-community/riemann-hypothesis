@@ -49,7 +49,6 @@ open UpperTheory.V.W (Plc Lp)
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open UpperTheory.V.Z.Sym.Al
-section LocEigAux
 open UpperTheory.V.Hi UpperTheory.V.AlgebraTools
 private theorem antitone_mem : ∀ {n : ℕ} (M : AddSubmonoid (Fin n → ℤ)), (∀ j ≤ n, fund n j ∈ M) → (-1 : Fin n → ℤ) ∈ M →
     ∀ a : Fin n → ℤ, Antitone a → a ∈ M := by
@@ -267,7 +266,6 @@ private theorem uOp_upow {T : Type} [AddCommGroup T] [Module ℂ T] (τ : Repres
     rw [Units.val_inv_eq_inv_val, eq_inv_smul_iff₀ (Units.ne_zero _)]
     exact h3
   exact (antitone_mem M hfund hneg a ha).2
-end LocEigAux
 theorem UpperTheory.V.Z.Sym.Al.exists_fixd_dc_eq_expo_smul_of_equiv_prinSeries :
     _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (W : Sig.Lev k) (ψ : Fin n → kˣ →* ℂˣ), (∀ i, IsSmoothChar (ψ i)) → (∀ i, ∀ u ∈ W.H, ψ i u = 1) →
         ∀ (T : Type) [AddCommGroup T] [Module ℂ T] (τ : Representation ℂ (GL (Fin n) k) T), Nonempty (τ.Equiv (prinSeries ψ)) →

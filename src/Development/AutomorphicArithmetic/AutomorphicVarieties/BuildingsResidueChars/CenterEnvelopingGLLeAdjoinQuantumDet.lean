@@ -62,7 +62,6 @@ private theorem hc_qdet (n : ℕ) (u : ℂ) :
 theorem UpperTheory.center_envelopingGL_le_adjoin_quantumDet :
     ∀ n : ℕ, Subalgebra.center ℂ (GroundTheory.Automorphic.HarishChandra.U n) ≤ Algebra.adjoin ℂ (Set.range fun u : ℂ => Formalism.REAL.qdet (fun i j : Fin n => GroundTheory.Automorphic.HarishChandra.e (i, j)) u) := by
   intro n z hz
-  open GroundTheory.Automorphic.HarishChandra in
   let A : Subalgebra ℂ (Subalgebra.center ℂ (U n)) :=
     Algebra.adjoin ℂ (Set.range fun u : ℂ => ⟨_, qdet_mem_center n u⟩)
   have hle : MvPolynomial.symmetricSubalgebra (Fin n) ℂ ≤

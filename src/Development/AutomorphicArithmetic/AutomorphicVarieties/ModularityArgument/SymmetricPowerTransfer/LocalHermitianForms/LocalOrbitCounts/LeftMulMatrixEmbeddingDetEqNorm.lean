@@ -52,7 +52,6 @@ open QuadraticAlgebra UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc Matrix
 
 noncomputable section
 
-section Mat
 
 variable {O : Type} [CommRing O] {K : Type} [Field K] [Algebra O K]
 
@@ -143,9 +142,7 @@ private theorem ent_of_zk [IsDomain O] [IsDiscreteValuationRing O] [IsFractionRi
   obtain ⟨a, ha⟩ := kg_ent hk s t
   exact ⟨r * a, by simp [sc_val, hr, ha]⟩
 
-end Mat
 
-section LL
 
 variable {O : Type} [CommRing O] {K : Type} [Field K] [Algebra O K] {τ : K}
 
@@ -300,9 +297,7 @@ private theorem cls_lat [IsFractionRing O K] {g g' : GL (Fin 2) K} :
       rwa [← e', _root_.mul_inv_rev, inv_inv] at this
     rw [this, lat_sc, cls_smul]
 
-end LL
 
-section Main
 
 variable {O : Type} [CommRing O] {K : Type} [Field K] [Algebra O K] {τ : K}
 
@@ -356,7 +351,6 @@ private theorem q_mul (t : (Etau K τ)ˣ) (x : Etau K τ) [IsDomain O] [IsDiscre
   · rintro _ ⟨y, hy, rfl⟩
     exact ⟨_, hs y hy, mul_left_comm _ _ _⟩
 
-end Main
 
 end
 

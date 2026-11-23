@@ -136,7 +136,6 @@ private theorem ordA_abs {G V : Type} [Group G] (I : Iwa G) [AddCommGroup V] [Mo
         exact this) (w := ⟨w, hw⟩) hl
   exact ⟨v, v.2, fun h => hv0 (Subtype.ext h), fun t ht => congrArg Subtype.val (hv (.inl ⟨t, ht⟩)),
     fun a ha => congrArg Subtype.val (hv (.inr ⟨a, ha⟩))⟩
-section SlopeTestRemainingChoices
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 private theorem exists_torus_eq_diagT_eq_prod_eT_and_mem_Uc_of_mem_Tc (t : (glIwa k n).T) : ∃ y : Fin n → Uo k, (t : GL (Fin n) k) = diagT k (Fin n) (fun i => y i) ∧
     t = (List.ofFn fun i => eT k n i (y i)).prod ∧ ∀ c, (t : GL (Fin n) k) ∈ (glIwa k n).Tc c → ∀ i, (y i : kˣ) ∈ Uc k (c + 1) := by
@@ -193,7 +192,6 @@ private theorem ordA_val (ω : Fin n → kˣ →* ℂˣ) (j : ℕ) (hj : j ≤ n
     Finset.prod_inv_distrib, Finset.prod_pow_eq_pow_sum, Finset.prod_pow_eq_pow_sum, h3 fun i => n - 1 - i, h3 fun i => i,
     h2 j hj, pow_add, Nat.cast_pow]
   field_simp
-end SlopeTestRemainingChoices
 theorem UpperTheory.V.Hi.exists_ne_zero_mem_eig_uOp_eq_psEig_smul_of_equiv_ps :
     _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V) (ω : Fin n → kˣ →* ℂˣ), Nonempty (π.Equiv (PS ω)) → ∀ c : ℕ, (∀ i, ∀ y ∈ Uc k (c + 1), ω i y = 1) → ∀ φ : (glIwa k n).T →* ℂˣ, IsInvOn φ ω → ∃ v ∈ (glIwa k n).eig π c φ, v ≠ 0 ∧ ∀ j ≤ n, (glIwa k n).uOp π (al k n j) v = psEig ω j • v := by
   intro _ k _ _ _ _ n V _ _ π ω ⟨e⟩ c hω φ hφ

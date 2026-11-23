@@ -123,7 +123,6 @@ private theorem coset_tr {G H : Type*} [Group G] [Group H] (f : G →* H) (hf : 
 
 end SlopeTestRemainingChoices
 
-section Hop
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -155,9 +154,7 @@ private theorem flat_fix {μ₂ : Measure (G1 K 2)} {τ₁ τ₂ : Submodule ℂ
   have hh : HP 2 2 (g * fin1 u) = HP 2 2 g := ((hpSpec (K := K)).2.1 _ hk).2 g
   simp only [flat, hh, hF u hu g]
 
-end Hop
 
-section Lines
 
 variable {K : Type} [Field K] [NumberField K] {μ₂ : Measure (G1 K 2)} [μ₂.IsHaarMeasure] {τ₁ τ₂ : Submodule ℂ (L2 μ₂)}
   {μ : Measure (G1 K (2 + 2))} [μ.IsHaarMeasure] {D : TypeDat K (2 + 2)} {d d' : ℕ}
@@ -205,7 +202,6 @@ private theorem hecke_N (hp : Pair μ₂ τ₁ τ₂) [_root_.NumberField.IsTota
   rw [e1, e2]
   exact hN Y s s' hs hs' w
 
-end Lines
 
 section Tr
 

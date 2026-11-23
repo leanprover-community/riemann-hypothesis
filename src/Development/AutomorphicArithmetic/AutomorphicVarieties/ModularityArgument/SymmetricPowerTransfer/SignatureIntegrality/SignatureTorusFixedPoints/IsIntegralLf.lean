@@ -40,7 +40,6 @@ open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.
 
 namespace UpperTheory.V.Z.Sym.Sig
 
-section Alg
 
 variable {K : Type} [Field K] {Δ s : K}
 
@@ -225,9 +224,7 @@ private theorem comap_scalar (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 
   rw [Units.ext_iff, eq_comm]
   simp
 
-end Alg
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {O : Type} [CommRing O] [Algebra O k] {Δ s : k}
@@ -308,7 +305,6 @@ private theorem comap_KO (hO : IsInts k O) (hs : s * s = Δ) (h2 : (2 : k) ≠ 0
     rw [← map_inv]
     exact key _ (hI' i j)
 
-end Loc
 
 end UpperTheory.V.Z.Sym.Sig
 

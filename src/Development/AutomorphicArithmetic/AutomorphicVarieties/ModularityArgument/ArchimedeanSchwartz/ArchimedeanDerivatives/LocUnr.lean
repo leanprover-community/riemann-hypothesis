@@ -48,7 +48,6 @@ open GroundTheory.Automorphic.GLnLocal GroundTheory.Automorphic.Iwasawa GroundTh
 
 namespace UpperTheory.V.Z.Inf.LocalUnramifiedTorus
 
-section Alg
 
 variable {F : Type} [Field F] {n : ℕ}
 
@@ -233,7 +232,6 @@ private theorem lfun_contra [NeZero n] {V : Type} [AddCommGroup V] [Module ℂ V
   refine Fintype.prod_equiv σ _ _ fun i => ?_
   simp only [Function.comp_apply, Pi.inv_apply, Units.val_inv_eq_inv_val]
 
-end Alg
 
 end UpperTheory.V.Z.Inf.LocalUnramifiedTorus
 

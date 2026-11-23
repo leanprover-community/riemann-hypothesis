@@ -73,11 +73,9 @@ private theorem conj_deriv {E : Type} [Field E] [NumberField E] {a : ℕ} (k : �
     HasDerivAt (fun t => toL ((k t).1 * Y * star (k t).1)) (toL (Z * Y - Y * Z)) 0 := by
   open scoped Matrix.Norms.Operator in
   have h1 : HasDerivAt (fun t => (k t).1) Z 0 := hk
-  open scoped Matrix.Norms.Operator in
   have h2 : HasDerivAt (fun t => star (k t).1) (star Z) 0 :=
     (hasDerivAt_pi.2 fun i => hasDerivAt_pi.2 fun j => (hasDerivAt_pi.1 (hasDerivAt_pi.1 hk j) i).star :
       HasDerivAt (fun t => toL (star (k t).1)) (toL (star Z)) 0)
-  open scoped Matrix.Norms.Operator in
   have h := (h1.mul_const Y).mul h2
   simp only [h0, hZ, OneMemClass.coe_one, star_one, mul_one, one_mul, mul_neg, ← sub_eq_add_neg] at h
   exact h

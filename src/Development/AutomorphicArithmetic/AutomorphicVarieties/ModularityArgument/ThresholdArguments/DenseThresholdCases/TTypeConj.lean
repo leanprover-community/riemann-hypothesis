@@ -40,21 +40,13 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Hi.TypeConj
 open GlobalTheory.PRep
-section General
 variable {G V V' W W' : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
   [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
 variable [TopologicalSpace G] [IsTopologicalGroup G]
-end General
-section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-end Loc
-section Loc2
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
-end Loc2
-section Gal
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w} {n : ℕ}
-end Gal
 end UpperTheory.V.Hi.TypeConj
 open UpperTheory.V.Hi.TypeConj in
 abbrev _root_.UpperTheory.V.Hi.typeConj_s_ty : Prop :=

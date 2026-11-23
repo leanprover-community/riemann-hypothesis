@@ -40,7 +40,6 @@ noncomputable section
 
 open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi UpperTheory.V.AlgebraTools UpperTheory.V.Z.Sym.Sig
 
-section Gen
 
 variable {G : Type} [Group G]
 
@@ -164,9 +163,7 @@ private theorem hk_eq_uOp (D : Iwa G) {I : Subgroup G} (F : LeviFact I) (a : G) 
       rw [QuotientGroup.out_eq'] at h3
       rw [h3]
 
-end Gen
 
-section Lin
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -239,7 +236,6 @@ private theorem normJ (V : Lev k) (d : Fin n → kˣ) : (lf V n).NormJ (dg d) :=
   · rw [mul_assoc, ← hc, inv_mul_cancel_left]
     exact hj
 
-end Lin
 
 theorem UpperTheory.V.Z.Sym.Sig.hkMul :
     UpperTheory.V.Z.Sym.Sig.HkMul := by

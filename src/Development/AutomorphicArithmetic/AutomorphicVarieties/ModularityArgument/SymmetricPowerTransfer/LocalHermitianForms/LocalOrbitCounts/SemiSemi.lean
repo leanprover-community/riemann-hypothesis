@@ -52,7 +52,6 @@ namespace UpperTheory.V.Z.Sym.Loc.FU
 private def Bd (O : Type) [CommRing O] {ι A : Type} [CommRing A] [Algebra O A] (f : ι → A) : Prop :=
   ∃ N : O, N ≠ 0 ∧ ∀ i, IsIntegral O (N • f i)
 
-section Bd
 
 variable {O : Type} [CommRing O] [IsDomain O] {ι A B : Type} [CommRing A] [Algebra O A] [CommRing B] [Algebra O B]
   {f g : ι → A}
@@ -125,7 +124,6 @@ private theorem Bd.fin {κ : Type} [Finite κ] {F : κ → ι → A} (h : ∀ k,
   rw [← Finset.prod_erase_mul _ _ (Finset.mem_univ p.1), mul_smul]
   exact (hF p.1 p.2).smul _
 
-end Bd
 
 variable {O K : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] {Δ τ : K} {ι : Type}
 

@@ -50,7 +50,6 @@ namespace UpperTheory.V.Z.Sym.Glob
 
 open Matrix Loc Polynomial
 
-section Abs
 
 variable {O : Type} [CommRing O]
 
@@ -99,9 +98,7 @@ private theorem isInt_inter {L R : Type} [CommRing L] [Algebra O L] [CommRing R]
   rw [aeval_def, h0, Matrix.zero_mulVec, mul_one] at this
   exact hinj _ (by rw [aeval_def] at this; exact this.symm)
 
-end Abs
 
-section DSide
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -286,9 +283,7 @@ private theorem int_D (O : Type) [CommRing O] [Algebra O K] (hr : τ ^ 2 - 4 ≠
   rw [eT] at hTI
   exact (isIntegral_algHom_iff ((jA γ hγ).restrictScalars O) (jA_inj γ hγ hr)).1 hTI
 
-end DSide
 
-section USide
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -339,7 +334,6 @@ private theorem int_U (O : Type) [CommRing O] [Algebra O K] {c : K} {d m : EL Δ
     rw [← hM.tor s]
     simp [tor, ofE_mul]
 
-end USide
 
 end UpperTheory.V.Z.Sym.Glob
 

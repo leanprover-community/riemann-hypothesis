@@ -23,7 +23,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks
 
-section Abs
 
 variable {A B H H₁ H₂ V : Type} [Group A] [Group B] [Group H] [Group H₁] [Group H₂] [AddCommGroup V] [Module ℂ V]
 
@@ -138,9 +137,7 @@ private theorem tens_simple (θ₁ : H₁ →* A) (θ₂ : H₂ →* B) (X₁ : 
     rw [h]
     exact Submodule.mem_top
 
-end Abs
 
-section Glob
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -183,7 +180,6 @@ private theorem L_surj {r : ℕ} (w : Fin r → Pl K) (g₁ g₂ : GS 2 w) : ∃
 private theorem xS_eq {r : ℕ} {w : Fin r → Pl K} (ι : GS 2 w →* FA K 2) (p : ∀ i, PW (w i)) (F : G1 K 2 × G1 K 2 → ℂ) :
     xS ι p F = ((dS w p : ℂˣ) : ℂ) • tr (fin1 (ι (L₁ w p))) (fin1 (ι (L₂ w p))) F := rfl
 
-end Glob
 
 end UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks
 

@@ -63,7 +63,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Gal
 open scoped commutatorElement
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.V.Z.Desc.W.GaloisCompatibilityAlmostEverywhere
-section Loc
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
 private theorem rc_chars (hE : GlobalTheory.Published.LanglandsExhaustionGL) (hZ : GlobalTheory.Published.ZelevinskyPolynomialRing)
@@ -139,7 +138,6 @@ private theorem rc_chars (hE : GlobalTheory.Published.LanglandsExhaustionGL) (hZ
       exact congrArg Multiset.prod (Multiset.map_congr rfl fun j _ => (hpol1 j g).symm)
     rw [r1, he, hsupp, Multiset.map_map, ← Multiset.prod_coe, ← Multiset.map_coe, Multiset.coe_toList]
     rfl
-end Loc
 private theorem norm_absPow_unif (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E))
     (ϖ : (w.adicCompletion E)ˣ) (hϖ : Valued.v (ϖ : w.adicCompletion E) = WithZero.exp (-1 : ℤ)) :
     ‖((GlobalTheory.SmGL.absPow (w.adicCompletion E) (1 : ℂ) ϖ : ℂˣ) : ℂ)‖ = (Ideal.absNorm w.asIdeal : ℝ)⁻¹ := by

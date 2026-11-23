@@ -57,7 +57,6 @@ private theorem uc_eq (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     exact ⟨u, Ideal.Quotient.eq.1 (congrArg Units.val hu), rfl⟩
   · rintro ⟨u, hu, rfl⟩
     exact ⟨u, Units.ext (Ideal.Quotient.eq.2 hu), rfl⟩
-section Loc
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
   {A : ValuationSubring Ω} {w : Plc F} {h : IsPlaceOver A w} {a : Weil h →* (w.adicCompletion F)ˣ}
 private theorem artin_unique (H : GlobalTheory.Published.GlobalArtinReciprocity) {a' : Weil h →* (w.adicCompletion F)ˣ}
@@ -159,8 +158,6 @@ private theorem emb_inj (j j' : W.Emb l w) (e : j.1.comp (algebraMap F _) = j'.1
   refine (HeightOneSpectrum.denseRange_algebraMap (K := F) (v := w)).equalizer j.2 j'.2 ?_
   funext x
   exact DFunLike.congr_fun e x
-end Loc
-section Glob
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   (s : HidaSetting l L Ω)
 private theorem mem_w (v : Plc (Lp L)) (x : 𝓞 (Lp L)) :
@@ -200,7 +197,6 @@ private theorem wt_ex {n : ℕ} (h : s.Wt n) (hh : h.Incr) : ∃ lam, WtOf h lam
   simp only [htW, lowW, dif_pos H]
   rw [e]
   simp [μ]
-end Glob
 theorem UpperTheory.V.Hi.arith_good_iff_hset_of_theta_incr_weight :
     _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ), 1 ≤ n →
     ∀ (V : s.Lev) (Q : QData V) (c : Coef l), ∀ (m : ℕ) (τ₀ : KT n (wt s) →* GL (Fin m) c.O), ∀ (r : Resid V.frame c.O n) (B : UniversalOrdinaryDeterminantRing r) (Λ : LamObj r) (θ : (hset Q τ₀).X.I.T →* Λ.Λˣ), IsTheta Q τ₀ Λ θ → ∀ h : s.Wt n, h.Incr → (∃ lam, WtOf h lam) ∧ ∀ lam, WtOf h lam → ∀ x : B.Pt, (x.Arith h ↔ (hset Q τ₀).Arith θ (x.comp (Λ.toPair B.u)).toRingHom lam) ∧ (x.Good h ↔ (hset Q τ₀).Good θ (x.comp (Λ.toPair B.u)).toRingHom lam) := by

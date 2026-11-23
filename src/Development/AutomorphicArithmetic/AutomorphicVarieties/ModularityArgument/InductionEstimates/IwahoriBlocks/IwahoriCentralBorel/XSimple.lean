@@ -50,7 +50,6 @@ open scoped TensorProduct Classical
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks
 
-section Abs
 
 variable {G : Type} [Group G] [TopologicalSpace G]
   {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -112,9 +111,7 @@ private lemma mem_of_closure (π : UnitaryRep G H) (L : Subgroup G) (M E : Submo
     rw [Metric.mem_ball, id, dist_comm, dist_eq_norm, ← hfix a ha, ← map_sub, UnitaryRep.norm_map, ← dist_eq_norm]
     exact hd
 
-end Abs
 
-section Cl
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -155,7 +152,6 @@ private lemma isClosed_inH (μ : Measure (G1 K n)) [μ.IsHaarMeasure] {τ : Subm
     exact isClosed_iInter fun v => isClosed_iInter fun _ => hf _
   exact hτ.closed.inter ((isClosed_eq (continuous_pOp μ hp) continuous_id).inter hs)
 
-end Cl
 
 end UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks
 

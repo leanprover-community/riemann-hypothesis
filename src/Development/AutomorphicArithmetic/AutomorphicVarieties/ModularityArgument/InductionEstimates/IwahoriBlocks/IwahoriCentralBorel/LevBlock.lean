@@ -38,7 +38,6 @@ open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C PositivityThe
 open GlobalTheory.PRep GlobalTheory.SmGL Formalism.BasicNotions GlobalTheory.CuspRep
 open scoped TensorProduct Classical
 
-section SlopeTestRemainingChoices
 
 variable {R S : Type} [CommRing R] [CommRing S] {a b : ℕ}
 
@@ -79,9 +78,7 @@ private theorem bHom_ent (O : Subring S) (x : GL (Fin a) S) (y : GL (Fin b) S) (
   simp only [bval, Matrix.reindex_apply, Matrix.submatrix_apply]
   rcases finSumFinEquiv.symm i with i | i <;> rcases finSumFinEquiv.symm j with j | j <;> simp [hx, hy]
 
-end SlopeTestRemainingChoices
 
-section Glob
 
 variable {K : Type} [Field K] [NumberField K] {a b : ℕ}
 
@@ -130,7 +127,6 @@ private theorem zt0 : zt K 0 = 1 := by
   rw [zt, ← map_one (centralSection K 2)]
   exact congrArg _ (Subtype.ext Real.exp_zero)
 
-end Glob
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.levBlock :
     ∀ {K : Type} [Field K] [NumberField K] {r : ℕ} (w : Fin r → Pl K) (ι₄ : GS (2 + 2) w →* FA K (2 + 2)), Function.Injective w → IsEmb w ι₄ →

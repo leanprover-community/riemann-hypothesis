@@ -35,7 +35,6 @@ import Mathlib.Tactic.NormNum.Prime
 
 section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Sd
-section Hecke
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
 private theorem isAlgPos_mul {χ χ' : HChar F} {n n' : (F →+* ℂ) → ℤ} (h : IsAlgPos χ n) (h' : IsAlgPos χ' n') :
     IsAlgPos (χ * χ') (n + n') := fun k hk => by
@@ -68,7 +67,6 @@ private theorem alg_cyc (H : GlobalTheory.Published.GlobalArtinReciprocity) (ι 
   obtain ⟨hc, χ, art, a, h⟩ := UpperTheory.exists_algebraic_heckeChar_cyclotomic H F Ω l ι j (cycBar F Ω l ^ j)
     ⟨1, 1, le_rfl, fun _ _ => rfl, (mul_one _).symm⟩
   exact ⟨hc, art, χ, a, h⟩
-end Hecke
 theorem UpperTheory.V.Sd.alg_cyclotomic_of_printed_results :
     _root_.UpperTheory.V.Af.Hypotheses' → UpperTheory.V.Sd.AlgCyc := by
   intro P F Ω _ _ _ _ _ l _ ι

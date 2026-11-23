@@ -68,7 +68,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Win
 
-section Places
 
 variable {F K : Type} [Field F] [NumberField F] [Field K] [NumberField K] [Algebra F K]
 
@@ -105,9 +104,7 @@ private theorem under_under {E : Type} [Field E] [NumberField E] [Algebra F E] [
   simp only [Ideal.mem_comap]
   rw [← IsScalarTower.algebraMap_apply]
 
-end Places
 
-section One
 
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K]
 
@@ -138,9 +135,7 @@ private theorem win_one (hO : ImaginaryQuadraticEtaCharacter.WinOf) (π : CuspSu
   have h2 : Ideal.absNorm v.asIdeal = 1 := by exact_mod_cast h.symm
   exact v.isPrime.ne_top (Ideal.absNorm_eq_one_iff.1 h2)
 
-end One
 
-section Pol
 
 variable {K Ω : Type} [Field K] [NumberField K] [IsCMField K] [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
 
@@ -165,7 +160,6 @@ private theorem polarized_of_att (H : HypothesesH) {ι : Qbar l ≃+* ℂ} (hn :
   rw [locInf_pow, hm, quadChar_locInf, ← pow_add, ← add_assoc, pow_add, ← two_mul, pow_mul]
   simp
 
-end Pol
 
 private structure Hyp : Prop where
   pr : HypothesesH
@@ -177,7 +171,6 @@ private structure Hyp : Prop where
   ud : WinUpDown
   wo : ImaginaryQuadraticEtaCharacter.WinOf
 
-section Two
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
 
@@ -192,9 +185,7 @@ private theorem second_condition_trivial_extension [IsCMField F] (h : Hyp) (ι :
   let ⟨t, ht⟩ := win_one h.wo π
   ⟨t, fun v _ => ht v⟩
 
-end Two
 
-section Step
 
 variable {F K Ω : Type} [Field F] [NumberField F] [IsCMField F] [Field K] [NumberField K] [IsCMField K] [Field Ω]
   [Algebra F K] [Algebra F Ω] [Algebra K Ω] [IsScalarTower F K Ω] [IsAlgClosure F Ω] [IsAlgClosure K Ω]
@@ -254,7 +245,6 @@ private theorem aut_up (hE : Sol.Equi F Ω K) (H : HypothesesH) (hn : 1 ≤ n) (
     (hpol : Sol.Pol ι r) (ha : IsRegAlgAutomorphicAttached ι r) : IsRegAlgAutomorphicAttached ι (r.comp (resG F K Ω)) :=
   ((autBridge H K Ω l ι n _).2.1).1 ((hE l ι n hn r hr hirr hpol).1 (((autBridge H F Ω l ι n r).2.1).2 ha))
 
-end Step
 
 section SlopeTestRemainingChoices
 
@@ -293,7 +283,6 @@ private theorem exists_cm_field_tower (F K Ω : Type) [Field F] [NumberField F] 
 
 end SlopeTestRemainingChoices
 
-section One2
 
 variable {F K Ω : Type} [Field F] [NumberField F] [IsCMField F] [Field K] [NumberField K] [IsCMField K] [Field Ω]
   [Algebra F K] [Algebra F Ω] [Algebra K Ω] [IsScalarTower F K Ω] [IsAlgClosure F Ω] [IsAlgClosure K Ω]
@@ -345,9 +334,7 @@ private theorem second_condition_down_trivial (h : Hyp) (h1 : Module.finrank F K
   rw [e] at hW'
   exact second_condition_down (K := M) h pF hn hr hI (UpperTheory.solvable_polarized_restriction F M Ω l ι n r hpol) aM hW'
 
-end One2
 
-section Tower
 
 private def Good (F K Ω : Type) [Field F] [NumberField F] [IsCMField F] [Field K] [NumberField K] [IsCMField K] [Field Ω]
     [Algebra F K] [Algebra F Ω] [Algebra K Ω] [IsScalarTower F K Ω] : Prop :=
@@ -382,7 +369,6 @@ private theorem good_one (h : Hyp) (h1 : Module.finrank F K = 1) (hE : Sol.Equi 
     · exact second_condition_trivial_extension h ι _
     · exact second_condition_down_trivial h h1 h2 hr hirr hpol ha hfK haK hI hW.2
 
-end Tower
 
 private theorem good_trans (h : Hyp) (F E K Ω : Type) [Field F] [NumberField F] [IsCMField F] [Field E] [NumberField E] [IsCMField E]
     [Field K] [NumberField K] [IsCMField K] [Field Ω] [Algebra F E] [Algebra E K] [Algebra F K] [IsScalarTower F E K]

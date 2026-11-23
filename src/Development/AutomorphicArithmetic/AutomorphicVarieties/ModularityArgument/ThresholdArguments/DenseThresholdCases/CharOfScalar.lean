@@ -45,7 +45,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 
 section
-section General
 open UpperTheory.V.Hi Polynomial
 private theorem onto_inf {M : Type} [AddCommGroup M] [Module ℂ M] (T : Module.End ℂ M) (Y S : Submodule ℂ M)
     [FiniteDimensional ℂ S] (hS : S.map T = S) (hY : ∀ F ∈ Y ⊓ S, T F ∈ Y) :
@@ -198,7 +197,6 @@ private theorem into_inv {V : Type} [AddCommGroup V] [Module ℂ V] (π : Repres
     refine ⟨w, hw, ?_⟩
     rw [pow_succ', Module.End.mul_apply, e]
     exact (uOpNat _ I ℂ M ρ ℂ V π p.toAddMonoidHom _ I.z_mem F' fun u _ => hp _ F' (hEY m)).symm
-end General
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.SmGL UpperTheory.V UpperTheory.V.Hi
 open UpperTheory.V.HV (Coef)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField

@@ -60,7 +60,6 @@ open UpperTheory.V.HV (Coef)
 open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Ball
 variable {l : ℕ} [Fact l.Prime]
 private theorem du_nrm {x : Qbar l} (h : ‖x - 1‖ < 1) : ‖x‖ = 1 := by
   have := IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm (x := x - 1) (y := 1) (by rw [norm_one]; exact h.ne)
@@ -190,8 +189,6 @@ private theorem du_sets {σ : Type} {n : ℕ} (idx : σ → Fin n) (u : σ → Q
     have := congrArg (· % n) (k2 _ _ _ _ e)
     simp only [Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt (Fin.is_lt _)] at this
     exact hs (Fin.ext this.symm)
-end Ball
-section Grp
 variable {l : ℕ} [Fact l.Prime] {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ]
 private theorem du_pow (Φ : Γ →* (Qbar l)ˣ) (hΦ : Continuous Φ) : ∃ M, 0 < M ∧ ∀ g, ‖(Φ g : Qbar l) ^ M - 1‖ < 1 := by
   let H := (du_ball l 1 one_pos le_rfl).comap Φ
@@ -287,8 +284,6 @@ private theorem du_cont (c : Coef l) (R : Type) [CommRing R] [Algebra c.O R] [Al
   have := ha k _ (Ideal.Quotient.eq.1 hg')
   rw [map_sub] at this
   exact this.trans_lt hk
-end Grp
-section Loc
 private theorem du_Uc (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (U : Subgroup kˣ) (hU : IsOpen (U : Set kˣ)) : ∃ e, ∀ e', e ≤ e' → Uc k e' ≤ U := by
   obtain ⟨e, he⟩ := (glBridge k 1 ℂ 1).2.2.2.1 (U.comap Matrix.GeneralLinearGroup.det) (hU.preimage continuous_glDet)
@@ -388,7 +383,6 @@ private theorem du_pos {E : Type} [Field E] [NumberField E] [Algebra E Ω] [IsAl
   have h3 := congrArg Units.val (h1 g ((b4 g).1 hg))
   simp [cycBar] at h3 ⊢
   exact h3
-end Loc
 private theorem du_box {l : ℕ} [Fact l.Prime] (c : Coef l) {σ : Type} [Fintype σ] {n : ℕ} (idx : σ → Fin n) (u : σ → Qbar l)
     (h : ∀ s, ∃ M, 0 < M ∧ ‖u s ^ M - 1‖ < 1) (f : MvPowerSeries σ c.O)
     (hf : ∀ (y : MvPowerSeries σ c.O →ₐ[c.O] Qbar l) (η : σ → Qbar l), (∀ s, IsOfFinOrder (η s)) →

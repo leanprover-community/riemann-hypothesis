@@ -47,7 +47,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So
 
-section Scalar
 
 variable {k : Type} [Field k]
 
@@ -60,7 +59,6 @@ private theorem dg_comm (z : kˣ) (x : GL (Fin 2) k) : dg ![z, z] * x = x * dg !
   ext i j
   rw [Matrix.diagonal_mul, Matrix.mul_diagonal, mul_comm]
 
-end Scalar
 
 variable {F : Type} [Field F] [NumberField F] {Δ : F} (A : SD Δ)
 

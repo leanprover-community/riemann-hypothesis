@@ -81,7 +81,6 @@ private theorem qm_star {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {
     qm f h (star x) = star (qm f h x) := by
   ext <;> simp [qm]
 
-section Ten
 
 variable {F : Type} [Field F] (Δ : F) (R : Type) [CommRing R] [Algebra F R]
 
@@ -127,7 +126,6 @@ private theorem rho_star (x : Lsq R (algebraMap F R Δ)) :
   change _ + _ = Algebra.TensorProduct.map (AlgHom.id F R) (sg Δ) (_ + _)
   simp [h, TensorProduct.neg_tmul, TensorProduct.tmul_neg]
 
-end Ten
 
 private theorem int_star {O K : Type} [CommRing O] [Field K] [Algebra O K] {Δ : K} {x : Lsq K Δ} (h : IsIntegral O x) :
     IsIntegral O (star x) :=
@@ -149,7 +147,6 @@ private theorem int_coord {O K : Type} [CommRing O] [Field K] [Algebra O K] {Δ 
   convert h1 _ (hω.mul h) using 1
   simp [mul_assoc]
 
-section Adel
 
 open PI.UJClassFin
 
@@ -230,9 +227,7 @@ private theorem exists_mat (hΔ : Δ ≠ 0) (g : GA Δ) :
   · exact FiniteAdeleRing.ext _ fun v => congrArg QuadraticAlgebra.re (b2 v)
   · exact FiniteAdeleRing.ext _ fun v => congrArg QuadraticAlgebra.im (b2 v)
 
-end Adel
 
-section Main
 
 
 variable {F : Type} [Field F] [NumberField F] (Δ : F) [Fact (∀ r : F, r ^ 2 ≠ Δ + 0 * r)]
@@ -334,7 +329,6 @@ private theorem emb_star [IsTotallyReal F] (hneg : ∀ σ : F →+* ℝ, σ Δ <
   simp only [map_add (f := _), map_sub, map_mul, h0, Complex.conj_ofReal]
   apply Complex.ext <;> simp [h2]
 
-end Main
 
 theorem finG_cls {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {Δ : F} (hneg : ∀ σ : F →+* ℝ, σ Δ < 0)
     (ι : U3 Δ →* GA Δ) (hι : IsIotaG ι) :

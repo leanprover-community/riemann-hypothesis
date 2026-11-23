@@ -57,7 +57,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Mod
 
 namespace GlobalTheory.OrdLoc.TangentDual
 
-section Dual
 
 variable {G E : Type} [Group G] [CommRing E]
 
@@ -139,9 +138,7 @@ private theorem dualCoc (r : G →* GG (m := 3) (R := E)) (r' : G →* GG (m := 
   rw [mR_add, ← ad_mR, ← congrFun e, ← congrFun e, ← congrFun e]
   exact h2 g h
 
-end Dual
 
-section Main
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O]
   [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] [IsAdicComplete (maximalIdeal O) O] (D : Dat3 l O) (U : _root_.UpperTheory.V.U3.Univ (_root_.UpperTheory.V.U3.GCond.noCondition O D.η D.Ψ))
@@ -156,7 +153,6 @@ private theorem push_base : push ((Algebra.ofId O E).comp x) U.r.hom = D.rz E :=
   rw [← (show push x U.r.hom = r0 D.η D.Ψ from hx)]
   rfl
 
-section Pro
 
 variable {B : Type} [CommRing B] [Algebra ℚ_[l] B] [Module.Finite ℚ_[l] B] [Algebra O B] [Algebra ℤ_[l] B]
   [IsScalarTower ℤ_[l] O B] [IsScalarTower ℤ_[l] ℚ_[l] B]
@@ -199,7 +195,6 @@ private theorem exists_push (r : GQ l →* GG (m := 3) (R := B)) (hr : D.InDcr (
       rfl)
   exact DFunLike.congr_fun h a
 
-end Pro
 
 include hx hCP in
 private theorem le_ker [IsFractionRing O E] : GlobalTheory.OrdLoc.IY D U ≤ RingHom.ker x := fun a ha => by

@@ -57,7 +57,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Win.T2.TypeConj
 open GlobalTheory.PRep
-section General
 variable {G V V' W W' : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
   [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
 private def Cj (γ : ℂ ≃+* ℂ) (π : Representation ℂ G V) (π' : Representation ℂ G V') (f : V ≃+ V') : Prop :=
@@ -136,8 +135,6 @@ private theorem smInd_conj {γ : ℂ ≃+* ℂ} {P : Subgroup G} {σ : Represent
      right_inv := fun φ => Subtype.ext (Subtype.ext (funext fun x => j.apply_symm_apply _))
      map_add' := fun φ ψ => Subtype.ext (Subtype.ext (funext fun x => map_add j _ _)) },
    fun z φ => Subtype.ext (Subtype.ext (funext fun x => h.1 _ _)), fun g φ => rfl⟩
-end General
-section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 private def cj {Γ : Type} [Group Γ] (γ : ℂ ≃+* ℂ) (χ : Γ →* ℂˣ) : Γ →* ℂˣ := (Units.map (γ : ℂ →* ℂ)).comp χ
 private theorem cj_val {Γ : Type} [Group Γ] (γ : ℂ ≃+* ℂ) (χ : Γ →* ℂˣ) (g : Γ) : (cj γ χ g : ℂ) = γ (χ g) := rfl
@@ -176,8 +173,6 @@ private theorem prod_conj (γ : ℂ ≃+* ℂ) {n : ℕ} (e : (Σ _ : Fin n, Fin
       rw [← h3, absPow_add, MonoidHom.mul_apply, Units.val_mul]
       ring
     rw [MonoidHom.mul_apply, MonoidHom.mul_apply, Units.val_mul, Units.val_mul, h4, h4, map_mul, cj_abs, cj_val]
-end Loc
-section Loc2
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 private theorem exists_order (ω : Fin n → kˣ →* ℂˣ) :
     ∃ p : Equiv.Perm (Fin n), ∀ i j, i < j → ω (p j) ≠ ω (p i) * absPow k 1 := by
@@ -249,8 +244,6 @@ private theorem cosocle_main (γ : ℂ ≃+* ℂ) {V V' : Type} [AddCommGroup V]
   have h2 := cosocle_conj hF hf hi h3
   have h4 := h2.of_equiv (.refl σ') E'.symm
   exact cosocle_move' h4 e1
-end Loc2
-section Gal
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w} {n : ℕ}
 private theorem exists_basis {Γ : Type} (f : Γ → Module.End ℂ (Fin n → ℂ)) (hs : ∀ g, (f g).IsSemisimple)
@@ -367,7 +360,6 @@ private theorem type_conj (γ : ℂ ≃+* ℂ) (b : WDRep h (Fin n → ℂ)) (B 
   show γ (B.equivFun.symm (fun j => γ.symm ((WDRep.ofChars h (fun j => cj γ (ξ j)) hξ).ρ (ineIncl h s) v j)) i) = _
   rw [h4, ← h3, Matrix.toLin'_apply, Matrix.toLin'_apply, Matrix.mulVec_diagonal, Matrix.mulVec_diagonal, map_mul]
   rfl
-end Gal
 end UpperTheory.V.Z.Win.T2.TypeConj
 open UpperTheory.V.Z.Win.T2.TypeConj in
 theorem UpperTheory.V.Z.Win.T2.typeConj_alt :

@@ -180,7 +180,6 @@ private theorem irr_conj {Γ : Type} [Group Γ] {n : ℕ} (r r' : Γ →* GL (Fi
     (h : ∀ x, r' x = g * r x * g⁻¹) (hr : IsIrr r') : IsIrr r :=
   _root_.UpperTheory.Reformulated.B.IrreducibleInvariantSubspaces.irr_conj r r' g h hr
 
-section Neumann
 
 open scoped Pointwise
 
@@ -264,7 +263,6 @@ private theorem exists_full [TopologicalSpace H] [IsTopologicalGroup H] [Topolog
   · exact n10 hfi
   · exact n01 hfi
 
-end Neumann
 
 private theorem sym_four_diagonal (a b : k) :
     symmetricFourthPowerMatrix k !![a, 0; 0, b] = Matrix.diagonal ![a ^ 4, a ^ 3 * b, a ^ 2 * b ^ 2, a * b ^ 3, b ^ 4] := by

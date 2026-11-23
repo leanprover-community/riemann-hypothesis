@@ -61,7 +61,6 @@ open UpperTheory.V.Z UpperTheory.V.Z.Ord
 
 namespace UpperTheory.V.Z.Ord
 
-section Loc
 
 variable {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [Field k'] [ValuativeRel k'] [TopologicalSpace k'] [IsNonarchimedeanLocalField k']
@@ -203,6 +202,5 @@ private theorem unl_of_map (i : k ≃+* k') (hi : Continuous i) (q : ℕ) (s : M
   rw [e, MonoidHom.comp_apply] at this
   rwa [unram_unif i hi _ hun] at this
 
-end Loc
 
 end UpperTheory.V.Z.Ord

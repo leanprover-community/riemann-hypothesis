@@ -43,7 +43,6 @@ open NumberField IsDedekindDomain Polynomial GlobalTheory.HenQ Formalism.Conjuga
 
 namespace UpperTheory.V.Z.Inf
 
-section Primes
 
 variable {K M : Type} [Field K] [NumberField K] [Field M] [NumberField M] [Algebra K M]
 
@@ -225,7 +224,6 @@ private theorem ind_key (hE : Module.finrank K M = 2) (sat : HeightOneSpectrum (
     refine ⟨hN2, hgood.2 ?_⟩
     rw [normV_absNorm, normV_absNorm, hN2]
 
-end Primes
 
 section Main
 

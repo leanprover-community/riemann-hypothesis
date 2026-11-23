@@ -43,7 +43,6 @@ open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C PositivityThe
 open GlobalTheory.PRep GlobalTheory.SmGL Formalism.BasicNotions GlobalTheory.CuspRep
 open scoped TensorProduct Classical NumberField.AdeleRing
 
-section Ring
 
 variable {R : Type} [CommRing R]
 
@@ -96,7 +95,6 @@ private theorem eq_unip_blk (g : GL (Fin (2 + 2)) R) (a b : GL (Fin 2) R)
   rcases i with i | i <;> rcases j with j | j <;>
     simp [h₁, h₂, h₃, Matrix.reindex_apply, Matrix.submatrix_apply]
 
-end Ring
 
 variable {K : Type} [Field K] [NumberField K]
 

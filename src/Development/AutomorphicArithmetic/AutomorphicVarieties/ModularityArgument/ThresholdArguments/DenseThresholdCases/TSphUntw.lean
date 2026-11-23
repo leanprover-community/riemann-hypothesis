@@ -49,7 +49,6 @@ open UpperTheory.V.Af UpperTheory.V.Z.Win UpperTheory.Zero.LLC
 open scoped commutatorElement
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.V.Z.Desc.W
-section WD
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
 private theorem comm_one {G H : Type} [Group G] [CommGroup H] (f : G →* H) (s t : G) : f ⁅s, t⁆ = 1 := by
@@ -64,8 +63,6 @@ private theorem gd_lpTwist {x : WD h} (hx : Gd x) (ξ : Weil h →* ℂˣ) (hξ 
   show WD.charPol _ _ = _
   rw [GlobalTheory.GalCut.SsTwist.charPol_lpTwist, comm_one ξ s t, lpDim_lpTwist, h1]
   simp
-end WD
-section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 private theorem good_chars {n : ℕ} {x : IrrGL (k := k)} (ξ : Fin n → kˣ →* ℂˣ) (hξ : ∀ j, IsSmoothChar (ξ j))
     (hs : HasSupport x.rep (GlobalTheory.RoadU.chars ξ hξ)) : Good x := by
@@ -79,7 +76,6 @@ private theorem good_zero (τ : SmIrr (GL (Fin 0) k)) : Good (IrrGL.of τ.ρ τ.
   have h0 := (Finset.sum_eq_zero_iff.1 hx) a (Finset.mem_univ a)
   have h1 := (hc a).1
   omega
-end Loc
 theorem sphUntw_alt : _root_.UpperTheory.V.Z.Desc.W.SphUntwAlt := by
   intro _ K Ω _ _ _ _ _ n κ w τ τ' B hB ⟨e⟩
   have hχ : IsSmoothChar (κ.loc w) := GlobalTheory.HeckeComp.smooth_loc κ w

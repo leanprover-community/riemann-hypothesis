@@ -39,7 +39,6 @@ open scoped Classical
 
 namespace UpperTheory.V.Z.Int
 
-section SlopeTestRemainingChoices
 
 variable {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ)
 
@@ -67,7 +66,6 @@ private lemma nu_mulVec_le {I : Type} [Fintype I] (A : Matrix I I ℂ) (v : I �
   rw [nu_mul']
   exact mul_le_mul (hA i j) (hv j) (nu_nonneg' ι _) hp
 
-end SlopeTestRemainingChoices
 
 theorem absBound :
     UpperTheory.V.Z.Int.AbsBound := by

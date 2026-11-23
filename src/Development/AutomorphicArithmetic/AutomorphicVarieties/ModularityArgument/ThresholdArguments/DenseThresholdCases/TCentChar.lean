@@ -45,7 +45,6 @@ noncomputable section
 open NumberField IsDedekindDomain Formalism.L2.Host Matrix GlobalTheory.PRep Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR UpperTheory.V.TR Topology
 open GlobalTheory.CuspRep (Af GA Ad finGL finId pFin sFin cornerGL corner ratGL)
 namespace UpperTheory.V.Sd.Wc.CentralCharacter
-section Gen
 variable {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V]
 private def orb (κ : Representation ℂ K V) (x : V) : (K →₀ ℂ) →ₗ[ℂ] V := Finsupp.linearCombination ℂ fun k => κ k x
 private theorem orb_comm (κ : Representation ℂ K V) (T : Module.End ℂ V) (hT : ∀ k x, T (κ k x) = κ k (T x)) (x : V)
@@ -99,8 +98,6 @@ private theorem exists_type (κ : Representation ℂ K V) (φ : V)
     simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply, key, orb_act]
   · simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply, key]
     simp [orb]
-end Gen
-section Scal
 variable {R S : Type} [CommRing R] [CommRing S]
 private abbrev sc (y : Rˣ) : GL (Fin 2) R := GeneralLinearGroup.scalar (Fin 2) y
 private theorem corner_scalar (s : R →ₙ+* S) (y : Rˣ) : cornerGL 2 s (sc y) = sc (Units.map (corner s) y) := by
@@ -115,7 +112,6 @@ private theorem continuous_sc [TopologicalSpace R] : Continuous (sc : Rˣ → GL
   · exact (continuous_pi fun _ => Units.continuous_val : Continuous fun (y : Rˣ) (_ : Fin 2) => (y : R)).matrix_diagonal
   · exact (continuous_pi fun _ => Units.continuous_coe_inv :
       Continuous fun (y : Rˣ) (_ : Fin 2) => ((y⁻¹ : Rˣ) : R)).matrix_diagonal
-end Scal
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 private def cptPart (π : CuspSub F 2) : Representation ℂ (Kinf F 2) π.V :=
   sub (cptRep F 2) π.V fun k => π.stable (.cpt k)

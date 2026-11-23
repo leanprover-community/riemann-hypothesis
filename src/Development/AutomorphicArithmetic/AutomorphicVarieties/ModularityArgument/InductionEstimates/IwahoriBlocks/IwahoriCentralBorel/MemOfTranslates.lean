@@ -47,7 +47,6 @@ open scoped TensorProduct Classical
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks
 
-section Abs
 
 variable {G H : Type} [Group G] [TopologicalSpace G] [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
@@ -126,9 +125,7 @@ private theorem mem_of_translates (π : UnitaryRep G H) {τ Q : Submodule ℂ H}
   rw [hQc.closure_eq, hE] at hm
   exact hm
 
-end Abs
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (G1 K n)) [μ.IsHaarMeasure]
 
@@ -274,7 +271,6 @@ private theorem cut_translate {τ : Submodule ℂ (L2 μ)} (hτ : CuspIrr μ τ)
   rw [e1]
   exact cut_step μ hR.1 hw hι T hT g _ h' c c' (hc q hq.1 hq.2.2) (hc' q hq.1 hq.2.1)
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks
 

@@ -97,7 +97,6 @@ private def ce_mk {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField 
   ho := h _ (hS _ (Or.inr (Or.inr rfl)))
 private theorem ce_ne {M : Type} [AddCommGroup M] [Module ℂ M] {Y Z : Submodule ℂ M} (h : Y ⊓ Z ≠ ⊥) : Y ≠ ⊥ :=
   fun h' => h (by rw [h', bot_inf_eq])
-section Set
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime] {n : ℕ} {c : Coef l}
   {H : HSet L Ω l n c} {A : Type} [CommRing A] [Algebra c.O A] [IsLocalRing A] {θ : H.X.I.T →* Aˣ} {ι : Qbar l ≃+* ℂ}
   {x : A →+* Qbar l} {lam : Wt L l n} {d : ℕ} {ξ : GV n H.Sl →* GL (Fin d) ℂ} {c0 : ℕ}
@@ -115,8 +114,6 @@ private theorem ce_one (hSl : Slope) (hO1 : _root_.UpperTheory.V.Z.J.D.Ord1Alt) 
   refine hO1 N _ n _ _ (τ _).smooth (τ _).irred c0 _ _ (fun i y hy => ?_)
     (hSl L Ω l n c H hAx ι lam v (fun j => ev (.inr (v, j))) (hev v))
   rw [hsp.triv v i y hy, map_one, inv_one]
-end Set
-section Stg
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   (s : HidaSetting l L Ω)
 private theorem ce_w (v : Plc (Lp L)) : (s.w v).under (𝓞 (Lp L)) = v := by
@@ -133,7 +130,6 @@ private theorem ce_irr (V : s.Lev) {n : ℕ} (ρ : V.frame.G₀ →* GL (Fin n) 
   refine ⟨hi.1, fun _ _ _ => Submodule.mem_top, fun M hM hI => hi.2.2 M hM fun g => ?_⟩
   obtain ⟨g, rfl⟩ := hpr g
   exact hI g
-end Stg
 private theorem eigenpart_zero_eq_top {G R W : Type} [Group G] [CommRing R] [AddCommGroup W] [Module R W] (ρ : Representation R G W) :
     ePart ρ (0 : G →₀ ℤ) 0 = ⊤ := by
   simp [ePart, opE]

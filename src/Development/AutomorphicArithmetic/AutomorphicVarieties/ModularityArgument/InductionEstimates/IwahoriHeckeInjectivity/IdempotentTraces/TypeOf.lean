@@ -45,7 +45,6 @@ open scoped ComplexConjugate Classical
 
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E
 
-section General
 
 private theorem swapC {X Y : Type} [TopologicalSpace X] [TopologicalSpace Y] [MeasurableSpace X] [MeasurableSpace Y]
     [BorelSpace X] [BorelSpace Y] [SecondCountableTopology X] [CompactSpace X] [T2Space X] [T2Space Y]
@@ -89,9 +88,7 @@ private theorem pushT (m : A × B →* G) (hm : Continuous m) (κ : Measure A) [
     rw [integral_fun_fst]
     simp
 
-end General
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -176,7 +173,6 @@ private theorem kbar_swap (κ : Measure (AutomorphicForm.archCompact K n)) [IsPr
     refine ⟨(s * detA K n (F k), k), ⟨mem_of_kernel_ne_zero hn (right_ne_zero_of_mul hne), trivial⟩, ?_⟩
     simp only [mul_inv_cancel_right]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.typeOf :
     TypeOf := by

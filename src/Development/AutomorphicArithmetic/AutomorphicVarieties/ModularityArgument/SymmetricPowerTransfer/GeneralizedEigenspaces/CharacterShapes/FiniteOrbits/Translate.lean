@@ -46,7 +46,6 @@ open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob UpperT
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Comm
 
 variable {K G : Type} [Field K] [CommGroup G]
 
@@ -123,9 +122,7 @@ private theorem D_one (D : GL (Fin 2) K →* G) (t : K) (h0 : t ≠ 0) (h1 : t �
     exact h
   · exact D_ne D t h0 h1 g hd hc
 
-end Comm
 
-section Ad
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L]
 
@@ -194,7 +191,6 @@ private theorem sec_SU (w : Plc L) (hw : IsSplitAt w) (g : GL (Fin 2) (Kw w)) (h
     norm_num at this
   exact D_one (((GeneralLinearGroup.det.comp (UA L 2).subtype)).comp (secW 2 w)) _ h2 h3 g hg
 
-end Ad
 
 theorem UpperTheory.V.Z.Sym.So.translate :
     UpperTheory.V.Z.Sym.So.Translate := by

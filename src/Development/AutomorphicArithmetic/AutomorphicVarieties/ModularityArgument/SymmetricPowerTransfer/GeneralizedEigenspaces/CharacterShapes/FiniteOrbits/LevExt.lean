@@ -37,7 +37,6 @@ open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob UpperT
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Gen
 variable {F : Type} [Field F] [NumberField F] {Δ : F}
 
 private theorem eD_congr {K : Type} [Field K] {Δ s s' : K} (h : s * s = Δ) (h' : s' * s' = Δ) (e : s = s') :
@@ -65,9 +64,7 @@ private theorem up (A A₀ : SD Δ) (hA : A.Ok) (hA₀ : A₀.Ok) (hE : A.Ext A�
   · rw [hE.iw v hv h]
     exact hn v hv h
 
-end Gen
 
-section Br
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {B : Bridge L}
 
 private theorem spl (hB : B.Ok) (w : Plc L) (R : B.toRingBr.Split w) (g : SA B.Δ)
@@ -83,7 +80,6 @@ private theorem lev_mem {n : ℕ} {U : Subgroup (UA L n)} {S : Finset (Plc L)} {
   simp only [Subgroup.mem_iInf] at h2
   exact h2 w hw
 
-end Br
 
 
 theorem UpperTheory.V.Z.Sym.So.levExt :

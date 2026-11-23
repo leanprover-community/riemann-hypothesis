@@ -58,7 +58,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Win.MonodromyFreeReciprocity
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -114,9 +113,7 @@ private theorem isL_chars {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (
   exact ⟨n, y, hd, ⟨fun i => Segment.single (y i) (hy i), ⟨Fin.univ_val_map _, fun i j _ hp => hnl i j hp.1⟩,
     fun i => (single_spec (hy i)).2.1⟩, (isCosocle_self hρ).of_equiv (.refl _) φ⟩
 
-end Loc
 
-section WD
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
@@ -151,7 +148,6 @@ private theorem tor_sum {n : ℕ} (c : Fin n → Weil h →* ℂˣ) (hc : ∀ i,
     simp
   simp [h1, List.prod_ofFn]
 
-end WD
 
 end UpperTheory.V.Z.Win.MonodromyFreeReciprocity
 

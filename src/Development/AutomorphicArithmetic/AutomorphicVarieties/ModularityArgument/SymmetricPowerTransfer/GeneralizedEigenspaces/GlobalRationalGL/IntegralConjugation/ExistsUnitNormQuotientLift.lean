@@ -56,7 +56,6 @@ open UpperTheory.V.W (Plc Lp)
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section H90
 
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {Δ : K}
 
@@ -207,7 +206,6 @@ private theorem conj_two {A : Type} [CommRing A] (m : Matrix (Fin 2) (Fin 2) A) 
   rw [Matrix.eta_fin_two m]
   simp [Matrix.mul_fin_two]
 
-end H90
 
 theorem UpperTheory.V.Z.Sym.Dict.Br.h90 :
     ∀ (O K : Type) [CommRing O] [Field K] [Algebra O K] (Δ : K), (2 : K) ≠ 0 → Δ ≠ 0 → ∀ x : Matrix (Fin 2) (Fin 2) (Lsq K Δ), star x * x = 1 → ∃ (y : DX Δ) (c : (Lsq K Δ)ˣ), x = (c : Lsq K Δ) • mt y ∧ (x = 1 → y = 1) ∧ (∀ [IsLocalRing O] [IsIntegrallyClosed O] [IsFractionRing O K], IsUnit (2 : O) → (∃ u : Oˣ, algebraMap O K u = Δ) → (∀ i j, IsIntegral O (x i j)) → y ∈ KD Δ O) := by

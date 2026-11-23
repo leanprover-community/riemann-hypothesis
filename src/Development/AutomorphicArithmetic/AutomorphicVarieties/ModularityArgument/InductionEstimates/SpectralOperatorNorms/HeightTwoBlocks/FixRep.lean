@@ -40,7 +40,6 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg
 open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-section General
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
   [T2Space G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
@@ -97,7 +96,6 @@ private theorem rconv_fix (ν : Measure G) [IsProbabilityMeasure ν] {U : Set G}
         rw [integral_mul_const, hH (g⁻¹ * h)]
     _ = rconv Γ μ a y g := rfl
 
-end General
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.KX.fixRep :
     ∀ {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (G1 K n)) [μ.IsHaarMeasure] (D : TypeDat K n) (a : CC K n), D.Hecke a →

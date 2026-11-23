@@ -43,7 +43,6 @@ namespace UpperTheory.V.Z.Sym.Glob
 
 open NumberField IsDedekindDomain Matrix Loc
 
-section Int
 
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K]
 
@@ -68,9 +67,7 @@ private theorem int_qa {p q : K} (hp : p ∈ (algebraMap O K).range) (hq : q ∈
   rw [hx]
   exact (isIntegral_algebraMap).add ((isIntegral_algebraMap).mul hw)
 
-end Int
 
-section Closure
 
 variable {R A : Type} [CommRing R] [CommRing A] [Algebra R A]
 
@@ -105,9 +102,7 @@ private theorem unit_int (z : Aˣ) (h1 : IsIntegral R (z : A)) (h2 : IsIntegral 
     z ∈ (Units.map ((integralClosure R A).val : integralClosure R A →* A)).range :=
   ⟨⟨⟨_, h1⟩, ⟨_, h2⟩, Subtype.ext (by simp), Subtype.ext (by simp)⟩, Units.ext rfl⟩
 
-end Closure
 
-section Maps
 
 variable {K K' : Type} [Field K] [Field K'] (f : K →+* K') (Δ : K)
 
@@ -144,9 +139,7 @@ private def mapD : DX Δ →* DX (f Δ) :=
     rw [c, h]
     simp [MulAut.conj_apply, map_wJ]
 
-end Maps
 
-section Places
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -203,7 +196,6 @@ private theorem ae_E (τ : F) (z : (Etau F τ)ˣ) : ∀ᶠ v : Pl F in Filter.co
   filter_upwards [ae_et τ (z : Etau F τ), ae_et τ ((z⁻¹ : (Etau F τ)ˣ) : Etau F τ)] with v h1 h2
   exact unit_int _ h1 h2
 
-end Places
 
 private def toRP {I H : Type} [Group H] {Gv : I → Type} [∀ v, Group (Gv v)] {K : ∀ v, Subgroup (Gv v)} (p : ∀ v, H →* Gv v)
     (h : ∀ g, ∀ᶠ v in Filter.cofinite, p v g ∈ K v) : H →* RP Gv K :=

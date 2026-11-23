@@ -141,7 +141,6 @@ private theorem narrow (F : Type) [Field F] [NumberField F] : ∃ (C : Type) (_ 
     rw [map_div₀, WithZero.log_div ((map_ne_zero _).2 (hz _)) ((map_ne_zero _).2 (hz _))]
     omega
 
-section Loc
 
 variable {K : Type} [Field K] {Δ : K}
 
@@ -225,9 +224,7 @@ private theorem split_ex [CharZero K] (h0 : Δ ≠ 0) (h : IsSquare Δ) (u : Oˣ
     field_simp
     ring
 
-end Loc
 
-section Place
 
 variable {F : Type} [Field F] [NumberField F] {v : Pl F} {Δ : Kv v} {N : DX Δ →* (Kv v)ˣ}
 
@@ -254,7 +251,6 @@ private theorem of_val_one (hN : ∀ g : DX Δ, (Glob.mt g).det = algebraMap _ _
   rw [QuadraticAlgebra.algebraMap_injective e, hu]
   rfl
 
-end Place
 
 theorem UpperTheory.V.Z.Sym.Glob.classRep :
     UpperTheory.V.Z.Sym.Glob.ClassRep := by

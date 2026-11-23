@@ -38,7 +38,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.CuspidalSpectrum PositivityTheory.Rg.Fx UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.BW
 open PositivityTheory.Rg.Tf.Core
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {S : Set (BW.Pl E)}
 
@@ -177,7 +176,6 @@ private theorem core (τ₁ τ₂ : Submodule ℂ (LL (mu1 E 2))) (m₁ m₂ : (
   · exact Or.inl ⟨form_mem b₁ hi smo₁, form_mem b₂ hj smo₂⟩
   · exact Or.inr ⟨form_mem b₁ hj smo₂, form_mem b₂ hi smo₁⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.KX.exempt :
     ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (μ : Measure (normOneGL (K := E) (n := (2 + 2)))) [μ.IsHaarMeasure] (θ : Twist μ)

@@ -56,7 +56,6 @@ open Module TensorProduct GlobalTheory.Pst.DpstMap
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Split
 
 variable {l : ℕ} [Fact l.Prime] (P : LocPrime l) {K LL : FinExt l}
   {V₀ V₁ V₂ : Type} [AddCommGroup V₀] [Module ↥LL.1 V₀] [Module ℚ_[l] V₀] [IsScalarTower ℚ_[l] ↥LL.1 V₀]
@@ -110,9 +109,7 @@ private theorem isPst_split {AI : LocAinf l P} (T : LocTied l P AI) {i : V₀ �
     finrank_top] at e'
   exact (isPst_iff P ρ₁).2 ⟨f₁, by omega⟩
 
-end Split
 
-section Sum
 
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {AI : LocAinf l P} {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω]
   {Gw : Subgroup (Ω ≃ₐ[E] Ω)} {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]
@@ -167,4 +164,3 @@ private theorem isPstAt_sum (T : LocTied l P AI) {r : ↥Gw →* GL (Fin a) (Om 
   exact ⟨supExt L₁ L₂, _, ⟨n₁.1, by rw [GlobalTheory.Pst.SumParam.mapRep_sumRep, n₁.2, n₂.2]⟩,
     isPst_sum Bw T _ _ (GlobalTheory.T.isPotentiallySemistable_coefficientField_enlarge P Bw l₁ r₁ p₁) (GlobalTheory.T.isPotentiallySemistable_coefficientField_enlarge P Bw l₂ r₂ p₂)⟩
 
-end Sum

@@ -44,7 +44,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp
 open UpperTheory.V UpperTheory.V.Af UpperTheory.V.Published UpperTheory.V.Z.Bc
-section SlopeTestRemainingChoices
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 private theorem lie_central {π : CuspSub E a} {ω : HChar E} (hω : π.HasCentral ω) (z : Cinf E) {ψ : Sm E a} (hψ : ψ ∈ π.V) :
     ∑ i, lieS E a i i z ψ = dchi ω z • ψ := by
@@ -108,7 +107,6 @@ private theorem gap_of_sum {x y : ℂ} (hne : x ≠ y) {i j : ℤ} (hi : x = i +
     have : ((i - j : ℤ) : ℂ) = k := by rw [hk]; simp
     push_cast at this
     rw [show y + k = x by linear_combination hj - hi - this, Multiset.pair_comm]
-end SlopeTestRemainingChoices
 theorem UpperTheory.V.Z.Bc.gapTwo_alt :
     _root_.UpperTheory.V.Af.HypothesesH' → UpperTheory.V.Z.Bc.GapTwo := by
   intro _ F Ω _ _ _ _ _ _ l _ ι r P hreg hatt ⟨N, hN, hdet⟩ τ

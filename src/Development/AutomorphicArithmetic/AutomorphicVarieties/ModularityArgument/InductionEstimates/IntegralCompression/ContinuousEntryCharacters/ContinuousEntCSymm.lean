@@ -41,7 +41,6 @@ namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA
 
 open mixedEmbedding
 
-section mk
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type}
 
@@ -138,9 +137,7 @@ private def mkCo (c : mixedSpace K ≃+* (ι → ℂ)) (hc : Continuous c) (hs :
   Ψ_val n g i a b := rfl
   Φ_val n k i := rfl
 
-end mk
 
-section co
 
 private def cF (F : Type) [Field F] [NumberField F] [_root_.NumberField.IsTotallyComplex F] : mixedSpace F ≃+* (InfinitePlace F → ℂ) where
   toFun a w := a.2 ⟨w, IsTotallyComplex.isComplex w⟩
@@ -226,7 +223,6 @@ private theorem unitary_cE (D : InfD σ 1) (n : ℕ) (g : archGroup E n) : g ∈
     rw [ent_comp D n g s u]
     exact h (s, u)
 
-end co
 
 end UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA
 

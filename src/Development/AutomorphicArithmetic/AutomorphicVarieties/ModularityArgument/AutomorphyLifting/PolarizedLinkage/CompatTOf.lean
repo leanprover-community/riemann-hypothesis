@@ -62,7 +62,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Win.UnramifiedSatakeFrobeniusCompatibility
 
-section Local
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
@@ -119,9 +118,7 @@ private theorem satWD_unr (n : ℕ) (B : Multiset ℂˣ) : (satWD h n B).unr := 
   rw [WD.unr_tw]
   exact (WD.unr_mk _).2 (WDRep.unr_diag _)
 
-end Local
 
-section Global
 
 variable {E Ω : Type} [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {l : ℕ} [Fact l.Prime] {n : ℕ}
@@ -169,9 +166,7 @@ private theorem frobEig_of {ι : Qbar l ≃+* ℂ} {r : G E Ω →* GL (Fin n) (
   push_cast
   ring
 
-end Global
 
-section Main
 
 variable {F Ω : Type} [Field F] [NumberField F] [IsCMField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
   {n : ℕ}
@@ -197,7 +192,6 @@ private theorem gd_of (H : PlainRec) (hn : 1 ≤ n) {π : CuspSub F n} {w : Heig
   obtain ⟨t, ht⟩ := UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.winOf F n hn π
   exact (H F Ω A w h rc hrc n π t (ht w h1 h2) σ hσ).2
 
-end Main
 
 end UpperTheory.V.Z.Win.UnramifiedSatakeFrobeniusCompatibility
 

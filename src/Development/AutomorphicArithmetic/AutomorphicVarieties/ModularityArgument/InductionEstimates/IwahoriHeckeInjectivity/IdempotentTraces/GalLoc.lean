@@ -47,7 +47,6 @@ open scoped ComplexConjugate Classical
 
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -128,7 +127,6 @@ private theorem pE_loc {v v' : Pl F} (h : v' ≠ v) (w : PlacesOver E v) (x : Gw
   apply HeightOneSpectrum.ext
   rw [u.2.over, w.2.over, h']
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.galLoc :
     GalLoc := by

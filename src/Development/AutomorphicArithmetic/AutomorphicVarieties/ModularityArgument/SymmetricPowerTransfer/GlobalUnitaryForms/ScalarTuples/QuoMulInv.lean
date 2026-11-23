@@ -61,7 +61,6 @@ noncomputable section
 
 namespace UpperTheory.V.Z.Sym.Glob.GP
 
-section Alg
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -81,9 +80,7 @@ private theorem tor_inv (z : (Etau K τ)ˣ) (x : Sp Δ τ) : tor Δ z (tor Δ z�
   simp only [tor]
   rw [← mul_assoc, ← ofE_mul, quo_mul_inv, ofE_one, one_mul]
 
-end Alg
 
-section Lat
 
 variable {O : Type} [CommRing O] {K : Type} [Field K] [Algebra O K] {Δ τ : K}
 
@@ -279,9 +276,7 @@ private theorem gen_loc (hl : IsLoc O Δ) (hu : ∃ u : Oˣ, algebraMap O K u = 
   · rw [if_neg (fun h => ht ((hsNE O K Δ τ hl hD t).2 h))]
     simp [one, ht]
 
-end Lat
 
-section Elmap
 
 variable {K K' : Type} [Field K] [Field K']
 
@@ -297,9 +292,7 @@ private theorem elmap_mul (f : K →+* K') {Δ τ : K} (x y : EL Δ τ) : elmap 
 private theorem elmap_one (f : K →+* K') {Δ τ : K} : elmap f (1 : EL Δ τ) = 1 := by
   ext1 <;> simp [elmap, QuadraticAlgebra.re_one, QuadraticAlgebra.im_one]
 
-end Elmap
 
-section Int
 
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {Δ : K}
 
@@ -321,9 +314,7 @@ private theorem int_L {a b : K} (ha : a ∈ (algebraMap O K).range) (hb : b ∈ 
   rw [e]
   exact (int_of a₀).add ((int_of b₀).mul hw)
 
-end Int
 
-section Global
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -354,7 +345,6 @@ private theorem ae_ib {Δ τ : F} (x : EL Δ τ) :
   filter_upwards [ae_int Δ, ae_int x.re.re, ae_int x.re.im, ae_int x.im.re, ae_int x.im.im] with v h0 h1 h2 h3 h4
   exact ⟨int_L h1 h2 h0, int_L h3 h4 h0⟩
 
-end Global
 
 end UpperTheory.V.Z.Sym.Glob.GP
 

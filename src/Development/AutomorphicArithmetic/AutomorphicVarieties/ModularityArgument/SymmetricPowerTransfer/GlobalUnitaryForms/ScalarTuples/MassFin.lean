@@ -51,7 +51,6 @@ namespace UpperTheory.V.Z.Sym.Glob
 open NumberField IsDedekindDomain Loc Polynomial
 open scoped nonZeroDivisors
 
-section Gen
 
 variable {O K : Type} [CommRing O] [Field K] [Algebra O K] {a b : K}
 
@@ -142,7 +141,6 @@ private theorem relIndex_of_fin {G M : Type} [Group G] [Monoid M] (f : G →* M)
   haveI := Finite.of_injective c hc
   exact Subgroup.index_ne_zero_of_finite
 
-end Gen
 
 private theorem index_of_classes (E : Type) [Field E] [NumberField E] {G : Type} [Group G] (H : Subgroup G) (P : G → E → Prop)
     (h0 : ∀ x, P x 0) (hadd : ∀ x a b, P x a → P x b → P x (a + b))
@@ -185,7 +183,6 @@ private theorem index_of_classes (E : Type) [Field E] [NumberField E] {G : Type}
   haveI : Finite (G ⧸ H) := Finite.of_injective c hc
   exact Subgroup.index_ne_zero_of_finite
 
-section Glo
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -406,7 +403,6 @@ private theorem part1 [IsTotallyReal F] (hτ : IsCM τ) (φ : (Etau F τ)ˣ →*
     rw [h4]
     exact Subgroup.mul_mem_sup ⟨e, rfl⟩ h3
 
-end Glo
 
 end UpperTheory.V.Z.Sym.Glob
 

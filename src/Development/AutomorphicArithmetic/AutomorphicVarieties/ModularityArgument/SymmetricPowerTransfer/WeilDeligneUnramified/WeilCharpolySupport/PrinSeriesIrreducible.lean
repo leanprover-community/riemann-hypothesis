@@ -45,7 +45,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.W
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -101,7 +100,6 @@ private theorem prinSeries_irreducible {n : ℕ} (ω : Fin n → kˣ →* ℂˣ)
   obtain ⟨E⟩ := equiv_sub (GlobalTheory.PrinProd.isSubquotient_prinSeries_multiProd k n ω) hM
   exact GlobalTheory.Parabolic.isIrreducible_of_equiv E hM
 
-end Loc
 
 theorem psOf : PsOf := by
   intro _ L _ _ n w τ hT

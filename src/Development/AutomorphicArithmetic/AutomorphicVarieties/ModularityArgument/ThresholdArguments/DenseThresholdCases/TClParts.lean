@@ -44,7 +44,6 @@ section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V UpperTheory.V.Hi
 open UpperTheory.V.HV (Coef)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-section Abstract
 variable {M : Type} [AddCommGroup M] [Module ℂ M]
 private def clE {G : Type} [Group G] (ρ : Representation ℂ G M) (K : Subgroup G) (F : M) : Submodule ℂ M where
   carrier := {y | ∀ k ∈ K, ∀ a : ℂ, ρ k F = a • F → ρ k y = a • y}
@@ -215,7 +214,6 @@ private theorem cl_uOp {G : Type} [Group G] (I : Iwa G) (π : Representation ℂ
   unfold Iwa.uOp
   refine finsum_induction (fun φ : Module.End ℂ M => ∀ y ∈ Y, φ y ∈ Y) (fun y _ => by simp)
     (fun φ ψ h h' y hy => add_mem (h y hy) (h' y hy)) fun q => hY _
-end Abstract
 private def clSub {G M : Type} [Group G] [AddCommGroup M] [Module ℂ M] (π : Representation ℂ G M) (y : M) : Subgroup G where
   carrier := {g | π g y = y}
   one_mem' := by simp

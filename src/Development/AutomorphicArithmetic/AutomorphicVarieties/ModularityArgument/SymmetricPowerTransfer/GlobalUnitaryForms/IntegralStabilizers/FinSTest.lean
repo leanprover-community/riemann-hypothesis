@@ -45,14 +45,12 @@ namespace UpperTheory.V.Z.Sym.Glob
 
 open NumberField IsDedekindDomain Matrix Loc
 
-section Generic
 
 variable {I G : Type} [Group G] {Gv : I → Type} [∀ v, Group (Gv v)] {K : ∀ v, Subgroup (Gv v)} (P : RPG G Gv K)
 
 private theorem mem_box (U : ∀ v, Subgroup (Gv v)) (g : G) : g ∈ P.box U ↔ ∀ v, P.p v g ∈ U v := by
   simp [RPG.box, Subgroup.mem_iInf]
 
-end Generic
 
 variable {F : Type} [Field F] [NumberField F] {Δ : F}
 

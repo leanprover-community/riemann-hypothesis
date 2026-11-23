@@ -43,7 +43,6 @@ open GroundTheory.Automorphic.CuspidalSpectrum GroundTheory.Automorphic.ArchWhit
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA
 open scoped ComplexConjugate Classical InnerProductSpace
 
-section Hilbert
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
@@ -75,9 +74,7 @@ private theorem integral_mem_fd (Y : Submodule ℂ H) [FiniteDimensional ℂ Y] 
   · rw [integral_undef hi]
     exact Y.zero_mem
 
-end Hilbert
 
-section Forms
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (G1 K n)) [μ.IsHaarMeasure]
 
@@ -110,7 +107,6 @@ private theorem lev_max (S : Finset (Pl K)) (U : ∀ w : Pl K, Subgroup (Gw n w)
   rw [e] at h2
   exact h2
 
-end Forms
 
 set_option maxHeartbeats 1600000 in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.vecEx :

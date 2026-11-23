@@ -140,7 +140,6 @@ private theorem prod_char {I : Type} (Gv : I → Type) [∀ v, Group (Gv v)] (K 
     rw [← e]
     exact MonoidHom.map_finprod (Units.coeHom ℂ) (hfin u)
 
-section Local
 
 variable {K : Type} [Field K] (Δ : K)
 
@@ -232,7 +231,6 @@ private theorem loc_char [IsDomain O] [IsIntegrallyClosed O] [IsFractionRing O K
   rw [(hs z s).mp hzs] at hu
   exact h1 u z hu
 
-end Local
 
 theorem baseK : BaseK := by
   intro F _ _ Δ D hD V _ _ W ch hW htr

@@ -57,7 +57,6 @@ open UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Hi UpperTheory.V.AlgebraToo
 open GlobalTheory.PRep
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.V.Z.Win.LocalCharacterData
-section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 private theorem psi_val (ψ : Fin n → kˣ →* ℂˣ) (χ : (Fin n → kˣ) →* ℂˣ)
     (hχ : torusChar ψ = χ * ((deltaHalf k fun _ : Fin n => Unit).comp (leviTorus k (Fin n)).toMonoidHom))
@@ -129,10 +128,8 @@ private theorem unlinked_of_gen (ψ : Fin n → kˣ →* ℂˣ) (hψ : ∀ i, Is
     have : (1 : ℂ) = resCard k := mul_right_cancel₀ hne ((one_mul _).trans e3)
     exact hq1 this.symm
   · exact (hgen j i hij).2 e3
-end Loc
 end UpperTheory.V.Z.Win.LocalCharacterData
 namespace UpperTheory.V.Z.Win.LocalCharacterData
-section WD
 open Polynomial
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
@@ -203,7 +200,6 @@ private theorem nuCharV (L : _root_.UpperTheory.V.Z.Win.LawsV a ha ε rc) (σ : 
   rw [psi_val ψ χ hχ (a g) i]
   linear_combination ((resCard (w.adicCompletion E) : ℂ) ^ (((i : ℕ) : ℤ) * ord (w.adicCompletion E) (a g)) *
     (χ (Pi.mulSingle i (a g)) : ℂ)) * e2
-end WD
 end UpperTheory.V.Z.Win.LocalCharacterData
 open UpperTheory.V.Z.Win.LocalCharacterData in
 theorem UpperTheory.V.Z.Win.locDataT_alt :

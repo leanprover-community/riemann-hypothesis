@@ -49,7 +49,6 @@ open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C PositivityThe
 open GlobalTheory.PRep GlobalTheory.SmGL Formalism.BasicNotions GlobalTheory.CuspRep
 open scoped TensorProduct Classical InnerProductSpace
 
-section Hil
 variable {G H : Type*} [Group G] [TopologicalSpace G] [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 private lemma prjMem (Z : Submodule ℂ H) (hZ : IsClosed (Z : Set H)) (u : H) : prj Z u ∈ Z :=
@@ -152,9 +151,7 @@ private lemma avgComm {A : Type*} [MeasurableSpace A] (π : UnitaryRep G H) (κ 
   show p k • π (a k) (π b v) = π b (p k • π (a k) v)
   rw [map_smul, ← UnitaryRep.map_mul_apply, ← UnitaryRep.map_mul_apply, hcm]
 
-end Hil
 
-section Conc
 variable {K : Type} [Field K] [NumberField K]
 
 private lemma pInt (μ : Measure (G1 K 2)) [μ.IsHaarMeasure] {κ : Measure (archCompact K 2)} {p : archCompact K 2 → ℂ}
@@ -217,7 +214,6 @@ private lemma splitAt (v : Pl K) (y : G1 K 2) :
   · rw [e, hg, map_mul, mul_assoc, comm']
   · rw [mul_assoc, comm', ← mul_assoc, ← mul_assoc, ← MultiplicityOne.finProj_mul_archProj_comm]
 
-end Conc
 
 set_option maxHeartbeats 1000000 in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.xOcc :

@@ -53,7 +53,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 section
 open NumberField IsDedekindDomain ValuativeRel Matrix GlobalTheory.CuspRep GlobalTheory.PRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL Formalism.BasicNotions
 open UpperTheory.V.Hi UpperTheory.V.AlgebraTools UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Dict
-section General
 variable {G V : Type} [CommGroup G] [AddCommGroup V] [Module ℂ V]
 private theorem pow_comm_rep (ρ : Representation ℂ G V) (t g : G) (c : ℂ) (m : ℕ) (v : V) :
     ((ρ t - algebraMap ℂ (Module.End ℂ V) c) ^ m) (ρ g v) =
@@ -156,14 +155,12 @@ private theorem exists_form {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (h
   have h := hle g v
   rw [hg'] at h
   exact Units.ext (mul_right_cancel₀ hv (h.symm.trans (one_mul _).symm))
-end General
 private theorem smul_cancel {M : Type} [AddCommGroup M] [Module ℂ M] {c : ℂ} (hc : c ≠ 0) {a b : M}
     (h : c • a = c • b) : a = b :=
   smul_right_injective M hc h
 private theorem val_nontrivial {k : Type} [Field k] [ValuativeRel k] : Nontrivial (ValueGroupWithZero k) :=
   GroupWithZero.toNontrivial
 attribute [local instance] val_nontrivial
-section Lev
 open GlobalTheory.IwahoriInj GlobalTheory.IwahoriTraceProof
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 private theorem sdom_of_step {k : Type} [Field k] [ValuativeRel k] {n : ℕ} (s : Fin n → kˣ) (c : kˣ)
@@ -425,7 +422,6 @@ private theorem mk_ne {T : Type} [AddCommGroup T] [Module ℂ T] (V : Sig.Lev k)
     exact GlobalTheory.IwahoriInj.apply_mem_twKer (V.N_le (hsN u hu)) hm
   have h6 : e _ • v = 0 := ((hE _ hsd).symm.trans h3.symm).trans h5
   exact hv0 ((smul_eq_zero.1 h6).resolve_left (he _))
-end Lev
 theorem UpperTheory.V.Z.Sym.W.local_sub_d_statement :
     _root_.UpperTheory.V.Z.Sym.W.LocSubDAlt := by
   intro H k _ _ _ _ n V ψ hψ T _ _ τ hs hi v hv0 hvJ heig

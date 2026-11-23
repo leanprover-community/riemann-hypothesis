@@ -39,7 +39,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.Sym.So
 
-section SlopeTestRemainingChoices
 
 variable {G : Type} [Group G] {S U : Subgroup G}
 
@@ -219,7 +218,6 @@ private theorem reps_sub {a : S} (ha : ∀ u ∈ U, ∃ c ∈ U, c * (a : G) = a
             group)
       rw [e]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Z.Sym.So
 

@@ -43,7 +43,6 @@ open scoped ComplexConjugate Classical InnerProductSpace
 
 namespace UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.RI
 
-section Avg
 
 variable {A : Type*} [Group A] [TopologicalSpace A] [IsTopologicalGroup A] [CompactSpace A]
   [SecondCountableTopology A] [MeasurableSpace A] [BorelSpace A]
@@ -120,9 +119,7 @@ private theorem avg_avg (hl : ∀ k, MeasurePreserving (k * ·) κ κ) (he : Con
   show ∫ h, (e h * e (h⁻¹ * k)) • π k v ∂κ = e k • π k v
   rw [integral_smul_const, hi]
 
-end Avg
 
-section Window
 
 variable {G : Type*} [Group G] [TopologicalSpace G]
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -323,7 +320,6 @@ private theorem places {X ι : Type*} [Group X] (R : UnitaryRep G H) (τ : Submo
     rw [h1, h2, inner_smul_right, sub_self]
   exact sub_eq_zero.1 (inner_self_eq_zero.1 h3)
 
-end Window
 
 end UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.EA.RI
 

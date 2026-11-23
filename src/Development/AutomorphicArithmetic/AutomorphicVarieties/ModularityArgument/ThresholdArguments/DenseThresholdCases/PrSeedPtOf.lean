@@ -48,7 +48,6 @@ open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.
 open Polynomial
 open scoped Matrix
 set_option linter.overlappingInstances false
-section SlopeTestRemainingChoices
 variable {l : ℕ} [Fact l.Prime]
 private theorem tri {a b c : Qbar l} (h : ‖a - b‖ < 1) (h' : ‖b - c‖ < 1) : ‖a - c‖ < 1 := by
   rw [← sub_add_sub_cancel a b c]
@@ -285,7 +284,6 @@ private theorem main (H : GlobalTheory.Published.GlobalArtinReciprocity) (ι : Q
   · refine ⟨β i g.1, hβ1 i g.1, ?_⟩
     rw [hβ2]
     exact near_mul (a' := (ka g.1).val) (tri (hκc v i g) (hX i g.1)) (by simp) (hzn _ _) (hkn _)
-end SlopeTestRemainingChoices
 theorem UpperTheory.V.Pr.seedPtOf_alt :
     GlobalTheory.Published.GlobalArtinReciprocity → _root_.UpperTheory.V.Pr.SeedPtOfAlt := by
   intro H Ω _ _ _ l _ ι c _ N _ e ψ η σ g₁ B M hL L _ _ _ _ _ Φ k c₁ _ f n ka R hka χ' j hχ hc m hm r hr J hJ
