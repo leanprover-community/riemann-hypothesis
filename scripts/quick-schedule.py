@@ -6,6 +6,7 @@ An uncertain POST or monitor outcome is held for operator recovery, never retrie
 """
 import argparse,concurrent.futures,fcntl,json,os,re,subprocess,threading,time
 from pathlib import Path
+from tempfile import mkdtemp
 REPO='leanprover-community/riemann-hypothesis'
 PRIORITY={134,150}
 
@@ -74,15 +75,27 @@ def main():
      break
     run=gh('repos/'+REPO+'/actions/runs/'+state['run_id']);save(directory/'run.json',run)
     if run['event']!='workflow_dispatch'or run['head_branch']!='main'or run['path']!='.github/workflows/build-pr.yml'or str(run['id'])!=state['run_id']or run['status']!='completed':raise RuntimeError('foreign/nonterminal run; preserve same run for recovery')
-    subprocess.run(['gh','run','download',state['run_id'],'--repo',REPO,'--name','quick-result-'+state['run_id']+'-'+str(run['run_attempt']),'--dir',str(directory/'result')],check=False)
-    subprocess.run(['gh','run','download',state['run_id'],'--repo',REPO,'--name','quick-input-'+state['run_id']+'-'+str(run['run_attempt']),'--dir',str(directory/'input')],check=True)
-    controls=json.loads((directory/'input/quick-request.json').read_text())
+    attempt = f"{state['run_id']}-{run['run_attempt']}"
+    artifacts = Path(mkdtemp(prefix=f'attempt-{attempt}-', dir=directory))
+    result_download = subprocess.run(
+     ['gh', 'run', 'download', state['run_id'], '--repo', REPO,
+      '--name', 'quick-result-' + attempt, '--dir', str(artifacts / 'result')], check=False)
+    subprocess.run(
+     ['gh', 'run', 'download', state['run_id'], '--repo', REPO,
+      '--name', 'quick-input-' + attempt, '--dir', str(artifacts / 'input')], check=True)
+    controls = json.loads((artifacts / 'input' / 'quick-request.json').read_text())
     if controls['pr_number']!=pr['number']or controls.get('quick_runner')!=host:raise RuntimeError('foreign diagnostic control artifact')
-    result=directory/'result/result.json'
-    outcome=json.loads(result.read_text())if result.exists()else({'status':'deferred','reason':controls.get('reason',''),'full_build':False}if controls.get('quick_status')=='deferred'else{'status':'infrastructure_or_outer_budget_failure','full_build':False})
+    result = artifacts / 'result' / 'result.json'
+    has_result = result_download.returncode == 0 and result.is_file()
+    if has_result:
+     outcome = json.loads(result.read_text())
+    elif controls.get('quick_status') == 'deferred':
+     outcome = {'status': 'deferred', 'reason': controls.get('reason', ''), 'full_build': False}
+    else:
+     outcome = {'status': 'infrastructure_or_outer_budget_failure', 'full_build': False}
     if outcome.get('full_build')is not False:raise RuntimeError('diagnostic claims a full build')
     if controls.get('quick_status')=='resolved'and controls['pr_head']!=pr['headRefOid']:raise RuntimeError('PR head changed despite pinned dispatch')
-    if result.exists()and outcome.get('candidate_head')!=controls['expected']['candidate_head']:raise RuntimeError('foreign diagnostic result identity')
+    if has_result and outcome.get('candidate_head')!=controls['expected']['candidate_head']:raise RuntimeError('foreign diagnostic result identity')
     state.update(phase='terminal',conclusion=run['conclusion'],result=outcome);persist();print(json.dumps(state),flush=True)
    except Exception as error:
     state.update(phase='held',error=str(error));persist();print(json.dumps(state),flush=True)

@@ -61,6 +61,45 @@ class QueuePolicy(unittest.TestCase):
   self.assertFalse(self.queue.eligible({'number':151,'mergeable':'MERGEABLE','changedFiles':9})[0])
  def test_small_pr_eligible(self):
   self.assertTrue(self.queue.eligible({'number':152,'mergeable':'MERGEABLE','changedFiles':1})[0])
+ def test_resumed_run_cannot_use_previous_attempt_result(self):
+  from types import SimpleNamespace
+  from unittest.mock import patch
+
+  host = q.runner('gcp-small')
+  head, candidate = 'a' * 40, 'b' * 40
+  state = {'phase': 'watching', 'pr': 152, 'pr_head': head, 'run_id': '123'}
+  run = {'id': 123, 'event': 'workflow_dispatch', 'head_branch': 'main',
+         'path': '.github/workflows/build-pr.yml', 'status': 'completed',
+         'run_attempt': 2, 'conclusion': 'failure'}
+  controls = {'pr_number': 152, 'quick_runner': host, 'quick_status': 'resolved',
+              'pr_head': head, 'expected': {'candidate_head': candidate}}
+
+  def subprocess_run(args, **kwargs):
+   if args[2] == 'download':
+    artifact = args[args.index('--name') + 1]
+    if artifact == 'quick-result-123-2':
+     return SimpleNamespace(returncode=1)
+    self.assertEqual(artifact, 'quick-input-123-2')
+    destination = Path(args[args.index('--dir') + 1])
+    q.write(destination / 'quick-request.json', controls)
+   return SimpleNamespace(returncode=0)
+
+  with tempfile.TemporaryDirectory() as tmp:
+   root = Path(tmp)
+   host_state = root / 'host-gcp-small.json'
+   q.write(host_state, state)
+   q.write(root / f'152:{head}' / 'result' / 'result.json', {
+    'status': 'changed_roots_pass', 'full_build': False, 'candidate_head': candidate})
+   with patch.object(sys, 'argv', ['quick-schedule', '--state', tmp, '--once']), \
+        patch.object(self.queue, 'command', return_value='[]'), \
+        patch.object(self.queue, 'gh', side_effect=[
+         {'resources': {'core': {'remaining': 5000}}}, {'runners': []}, run]), \
+        patch.object(self.queue.subprocess, 'run', side_effect=subprocess_run):
+    self.queue.main()
+   saved = json.loads(host_state.read_text())
+   self.assertEqual(saved['phase'], 'terminal')
+   self.assertEqual(saved['result']['status'], 'infrastructure_or_outer_budget_failure')
+
  def test_foreign_base_rejected_before_git(self):
   with self.assertRaisesRegex(ValueError,'main as base'):q.plan(Path('/unused'),{'expected':{},'base_ref':'feature'})
  def test_many_roots_rejected_before_elaboration(self):
