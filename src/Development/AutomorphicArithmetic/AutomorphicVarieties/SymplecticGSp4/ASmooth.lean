@@ -42,7 +42,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement
 
-section PartA
 open MvPowerSeries
 
 variable {O R : Type} [CommRing O] [CommRing R] [Algebra O R]
@@ -387,9 +386,7 @@ private lemma ker_le (W : WPres O (ℤ × ℤ) R) (h : W.HasOrigin)
   intro y hy hy0
   exact hA1 y hy (by rw [pow_one]; exact hy0)
 
-end PartA
 
-section PartB
 
 variable {O A X τ : Type} [CommRing O] [IsDomain O] [CommRing A] [Algebra O A] [AddCommGroup X]
   {𝒜 : X → Submodule O A} {x : A →ₐ[O] O} {wt : τ → X} {φ : A →ₐ[O] MvPowerSeries τ (FractionRing O)}
@@ -699,7 +696,6 @@ private theorem coeff_two {E : Type} [CommRing E] [IsDomain E] [DecidableEq τ] 
     exact absurd (Finset.HasAntidiagonal.mem_antidiagonal (A := τ →₀ ℕ) (n := Finsupp.single j 1 + Finsupp.single b 1)
       (a := (Finsupp.single j 1, Finsupp.single b 1)) |>.mpr rfl) hmem
 
-end PartB
 
 section PartC
 

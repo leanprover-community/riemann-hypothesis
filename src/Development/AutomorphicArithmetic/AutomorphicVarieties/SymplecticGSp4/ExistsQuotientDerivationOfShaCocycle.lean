@@ -46,7 +46,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 noncomputable section SlopeTestRemainingChoices
 
-section Abs
 
 variable {O Q H : Type} [CommRing O] [CommRing Q] [Algebra O Q] [Module Oᵐᵒᵖ Q] [IsCentralScalar O Q] [Group H]
 
@@ -168,7 +167,6 @@ private def twRep (ps : Fin 4 → H →* Oˣ) (u : H → O) (h2 : ∀ g, (ps 2 g
     rw [← mul_assoc, ← mul_assoc, ← smul_mul_assoc]
     exact congrArg (· * diagRep ps h) this
 
-end Abs
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} {D : Raw Ω c}
 

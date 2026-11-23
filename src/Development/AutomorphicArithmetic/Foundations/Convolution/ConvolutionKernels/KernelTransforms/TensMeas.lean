@@ -44,7 +44,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum
 open scoped TensorProduct InnerProductSpace ComplexConjugate Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -75,7 +74,6 @@ private theorem integral_indicator_kbar_shift (hn : 0 < n) {κ : archGroup K n �
   simp only
   rw [zInf_mul_comm, kbar_mul_zInf, hΨz, map_mul, detA_zInf hn]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.Tf.tensMeas :
     ∀ (K : Type) [Field K] [NumberField K] (n : ℕ), 0 < n → ∀ (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure]

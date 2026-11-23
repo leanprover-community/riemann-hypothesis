@@ -82,7 +82,6 @@ private theorem isFac_prod {ι : Type} (S : Finset ι) (v : ι) (hv : v ∈ S) (
   obtain ⟨c, t, h1⟩ := h1
   exact ⟨c, t, fun s => by rw [← h1 s]; exact (Finset.mul_prod_erase S (fun u => f u s) hv).symm⟩
 
-section Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
 
@@ -111,7 +110,6 @@ private theorem gamma_factor_rank_three_form [MeasurableSpace F] [BorelSpace F] 
     (IsFac.mul (UpperTheory.local_gamma_factor_exponential_form F ψ _ (unit_mul h h').1) (UpperTheory.local_gamma_factor_exponential_form F ψ _ h'.1))
     (UpperTheory.local_gamma_factor_exponential_form F ψ _ (unit_mul (unit_inv h) h').1)
 
-end Loc
 
 private theorem loc_unit (c : HeckeCharacter ℚ) (v : Ad3.Pl) : Ad3.IsUnit1 (localChar c v) :=
   ⟨GroundTheory.Automorphic.GodementSection.continuous_localChar c v, fun x => by

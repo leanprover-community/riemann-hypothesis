@@ -44,7 +44,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 open scoped Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ Ω}
 
@@ -152,7 +151,6 @@ private theorem exists_open [NumberField K] (f : G K Ω → PadicAlgCl l) (hf : 
     by_contra hne
     exact hH hs ⟨hsn, hne⟩
 
-end SlopeTestRemainingChoices
 
 private theorem padicInt_norm_units_mul_sub_one_lt_one {l : ℕ} [Fact l.Prime] {a b : ℤ_[l]ˣ} (ha : ‖(a : ℤ_[l]) - 1‖ < 1)
     (hb : ‖(b : ℤ_[l]) - 1‖ < 1) : ‖((a * b : ℤ_[l]ˣ) : ℤ_[l]) - 1‖ < 1 := by

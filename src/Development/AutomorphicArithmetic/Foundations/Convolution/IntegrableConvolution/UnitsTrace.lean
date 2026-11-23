@@ -42,7 +42,6 @@ noncomputable section
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section Units
 
 variable {W : Type} [AddCommGroup W] [Module ℂ W] {m d : ℕ}
 
@@ -443,7 +442,6 @@ private theorem core [FiniteDimensional ℂ W] [Nontrivial W] (o : Fin d)
   rw [h1, h2, Finset.sum_congr rfl (fun a _ => h3 a), ← Finset.mul_sum]
   field_simp
 
-end Units
 
 end UpperTheory.ConvolutionTheory.L1
 

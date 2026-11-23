@@ -42,7 +42,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace UpperTheory.Kd.C7
 
-section Closure
 
 variable {S K : Type} [CommRing S] [NormedField K] [IsUltrametricDist K] {p : ℕ} (i : S →+* K)
 
@@ -271,7 +270,6 @@ private theorem Gd.cl_closed [Nontrivial S] (h : Gd p i)
   Polynomial.eval_mul, Polynomial.eval_C, map_add, map_pow, map_sum, map_mul, sub_mul, Finset.sum_sub_distrib]
   ring
 
-end Closure
 
 private def act {Ω : Type} [Field Ω] [Algebra ℚ Ω] {A : ValuationSubring Ω} {g : G ℚ Ω} (hg : g ∈ Dec (F := ℚ) A) :
     R0 A →+* R0 A :=

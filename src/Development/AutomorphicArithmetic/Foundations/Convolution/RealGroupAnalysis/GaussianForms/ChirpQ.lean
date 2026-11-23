@@ -40,7 +40,6 @@ open scoped Classical
 open UpperTheory.ConvolutionTheory.R2.C
 open GroundTheory.Heights₂.Theta
 
-section ChirpQ
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -115,7 +114,6 @@ private theorem chirp_poly (p : MvPolynomial (Fin 4) (A F)) (φ : V4 F → ℂ)
     simp only [Pi.smul_apply, smul_eq_mul]
     ring
 
-end ChirpQ
 
 theorem UpperTheory.ConvolutionTheory.R2.C.chirpQ :
     ∀ (F : Type) [Field F] [NumberField F] (δ : F) (b : A F) (y : V4 F) (φ : V4 F → ℂ), φ ∈ schwartzBruhatPi (K := F) (ι := Fin 4) →

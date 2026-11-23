@@ -45,7 +45,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.Gal.KunnethLefschetz.G
 
-section alg
 variable {R B : Type} [CommRing R] [CommRing B] [Algebra R B]
 
 private theorem alg_core {D : ℕ} (u : Fin D → B)
@@ -137,7 +136,6 @@ private theorem alg2 {T : Type} [CommRing T] [Algebra R T] (a b : B →ₐ[R] T)
     simp
   rw [e] at this
   simpa using this
-end alg
 
 section geo
 variable {R : Type} [CommRing R]

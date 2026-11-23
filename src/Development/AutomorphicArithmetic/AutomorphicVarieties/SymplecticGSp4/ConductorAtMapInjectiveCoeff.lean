@@ -50,7 +50,6 @@ import Mathlib.Tactic.NormNum.Prime
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement
 
-section Transfer
 
 variable {O O' : Type} [CommRing O] [CommRing O'] {N : ℕ} (f : O →+* O')
 
@@ -111,7 +110,6 @@ private theorem chHom_even (hf : Function.Injective f) (e : ℕ) (χ : Dirichlet
   show f (χ (-1)) = _ ↔ χ (-1) = _
   rw [← hf.eq_iff (a := χ (-1)), map_pow, map_neg f, map_one f]
 
-end Transfer
 
 private theorem enough_of_le {l : ℕ} [Fact l.Prime] {c c' : Coef l} (h : c.O ≤ c'.O) (n : ℕ) [NeZero n]
     [HasEnoughRootsOfUnity c.O n] : HasEnoughRootsOfUnity c'.O n := by

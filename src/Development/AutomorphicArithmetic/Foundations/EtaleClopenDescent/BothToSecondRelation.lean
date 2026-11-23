@@ -139,11 +139,9 @@ def fstV (d : ℕ) : (L2 D d).Hom (Vec D d) where
   nat _ _ := rfl
 
 
-section Formal
 open LateralTheory.E.t_E6Cut
 variable {R : Type} [CommRing R] (F : Shv R)
 
-end Formal
 
 end UpperTheory.Aff
 

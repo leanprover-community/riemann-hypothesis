@@ -41,7 +41,6 @@ open PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory.C UpperTheory.Conv
 
 namespace UpperTheory.ConvolutionTheory.T
 
-section Rep
 variable {G H : Type} [Group G] [Group H] [TopologicalSpace G] [TopologicalSpace H]
 
 private def pull (e : G ≃ₜ* H) (τ : SmIrr H) : SmIrr G where
@@ -58,9 +57,7 @@ private def pull (e : G ≃ₜ* H) (τ : SmIrr H) : SmIrr G where
     have := S.apply_mem_toSubmodule (e.symm g) hv
     simpa using this
 
-end Rep
 
-section Trace
 variable {G H V : Type} [Group G] [Group H] [TopologicalSpace G] [TopologicalSpace H]
   [MeasurableSpace G] [BorelSpace G] [MeasurableSpace H] [BorelSpace H] [AddCommGroup V] [Module ℂ V]
 
@@ -93,7 +90,6 @@ private theorem hasTrace_map (e : G ≃ₜ* H) (mF : Measure G) (mE : Measure H)
   rw [integral_smul_nnreal_measure, hme.integral_map, LinearMap.smul_apply, map_smul, hl]
   simp [NNReal.smul_def]
 
-end Trace
 
 end UpperTheory.ConvolutionTheory.T
 

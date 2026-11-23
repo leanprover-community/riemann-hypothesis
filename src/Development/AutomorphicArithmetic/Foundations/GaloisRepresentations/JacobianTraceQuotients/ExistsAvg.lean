@@ -36,7 +36,6 @@ open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.C
 open UpperTheory.Gal.LocD UpperTheory.Gal.InertialTypesAlt.G UpperTheory.Gal.Join
 open scoped Classical
 
-section Mean
 
 open GroundTheory.Automorphic (stabilizerOf mem_stabilizerOf)
 
@@ -169,7 +168,6 @@ private theorem exists_avg (hfin : ∀ v, (stabilizerOf ρ v).FiniteIndex) : ∃
     haveI := hfin v
     exact mean_lin ρ _ p hp
 
-end Mean
 
 theorem UpperTheory.Gal.Join.avgEx :
     UpperTheory.Gal.Join.AvgEx := by

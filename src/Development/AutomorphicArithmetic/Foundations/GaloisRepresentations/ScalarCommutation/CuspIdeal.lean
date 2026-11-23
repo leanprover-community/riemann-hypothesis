@@ -38,7 +38,6 @@ open MeasureTheory Matrix
 
 namespace UpperTheory.Gal.Spc
 
-section Abstract
 
 variable {Γ A H : Type} [Group Γ] [Group A] [Group H] [TopologicalSpace A] [TopologicalSpace H]
   [IsTopologicalGroup A] [IsTopologicalGroup H]
@@ -103,9 +102,7 @@ private theorem slice_cont (hK : K.map e.toMonoidHom = K₀.prod K') (o₀ : IsO
   rw [mul_inv_cancel_left] at hx'
   exact hx'.symm
 
-end Abstract
 
-section Unipotent
 
 variable {k : Type} [Field k] [TopologicalSpace k] [IsTopologicalRing k] [T2Space k] [MeasurableSpace k]
   [BorelSpace k] [SecondCountableTopology k] {n a b : ℕ} (ε : Fin n ≃ Fin a ⊕ Fin b)
@@ -160,9 +157,7 @@ private theorem integrable_slice {F : GL (Fin n) k → ℂ} (hc : Continuous F) 
   rw [show h * (g⁻¹ * (g * (h⁻¹ * u X * h))) * h⁻¹ = u X by group]
   exact hπu X
 
-end Unipotent
 
-section Main
 
 variable {Γ H : Type} [Group Γ] [Group H] [TopologicalSpace H] [IsTopologicalGroup H]
   {k : Type} [Field k] [TopologicalSpace k] [IsTopologicalRing k] [T2Space k] [MeasurableSpace k]
@@ -233,7 +228,6 @@ private theorem noConst_conv (hK : K.map e.toMonoidHom = K₀.prod K') (o₀ : I
     have hi := hecke_integrable e hK o₀ c₀ c' hf ((e q.out⁻¹).2 * h') ε μ u hu ((e q.out⁻¹).1 * g) h
     simpa only [mul_assoc] using hi
 
-end Main
 
 theorem cuspIdeal : CuspIdeal := by
   intro p _ G _ Lv k _ _ _ _ _ _ _ P H _ _ _ _ S k₁ _ _ P₁

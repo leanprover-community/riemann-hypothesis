@@ -55,7 +55,6 @@ import Mathlib.Topology.Separation.CompletelyRegular
 
 open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia Module
 
-section Abs
 
 variable {k D M : Type} [Field k] [Group D] [TopologicalSpace D] [AddCommGroup M] [Module k M] [Module.Finite k M]
   [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation k D M)
@@ -83,7 +82,6 @@ private theorem invariants_zero_of_scalar {x : D} {a : k} (hx : ∀ m, ρ x m = 
   have h : (a - 1) • m = 0 := by rw [sub_smul, ← hx, hm x, one_smul, sub_self]
   exact (smul_eq_zero.1 h).resolve_left (sub_ne_zero.2 ha)
 
-end Abs
 
 private theorem hc_avg {k D M : Type} [Field k] [Group D] [AddCommGroup M] [Module k M] (ρ : Representation k D M)
     (N : Subgroup D) (hN : ((N.index : ℕ) : k) ≠ 0) (z : D → M) (hz : ∀ g h, z (g * h) = z g + ρ g (z h))
@@ -180,7 +178,6 @@ private theorem hc_pow {k : Type} [Field k] {a : kˣ} (ha : (a : k) ^ 2 - 1 ≠ 
   have h4 : a ^ 2 = 1 := by exact_mod_cast h3
   rw [← Units.val_pow_eq_pow_val, h4, Units.val_one]
 
-section Fr
 
 variable {O : Type} [CommRing O] [IsLocalRing O] [Finite (ResidueField O)] {G Γ ι : Type} [Group G] [TopologicalSpace G]
   [IsTopologicalGroup G] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] {F : Frame O G Γ ι}
@@ -322,7 +319,6 @@ private theorem hc_count [Fintype ι] (hF : F.Ok) (hV : F.LocVan) (j : ℤ)
     rw [abs_of_pos hj] at d1 d3
     split_ifs at d3 ⊢ <;> omega
 
-end Fr
 
 theorem UpperTheory.V.UnitaryThreeInertia.hostFrame_count :
     LocalFiniteness → LocalTateDuality → LocalEulerChar → GlobalFiniteness → GlobalEulerChar → GlobalTheory.Published.PoitouTateNormalised → ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] (c : Coef l) {N : ℕ} [NeZero N] (e : ℕ) (ψ : DirichletCharacter c.O N) (o₁ : ℕ), HostData l e ψ o₁ →

@@ -57,7 +57,6 @@ private theorem kill_of_len {O M : Type} [CommRing O] [IsDomain O] [IsDiscreteVa
   have : (p ^ n • LinearMap.id : M →ₗ[O] M) x ∈ (⊥ : Submodule O M) := h2 ▸ ⟨x, rfl⟩
   simpa using this
 
-section Abs
 
 variable {O W Γ : Type} [CommRing O] [AddCommGroup W] [Module O W] [TopologicalSpace W] [DiscreteTopology W]
   [IsTopologicalAddGroup W] [ContinuousConstSMul O W] [Group Γ] [TopologicalSpace Γ]
@@ -189,9 +188,7 @@ private theorem main_abs [IsDomain O] (θ : Γ →* Oˣ) (hc : ∀ m : W, Contin
     refine ⟨j m, fun g hg => hι ?_⟩
     rw [hZ, map_sub, hmul, hj m h1, hm g hg]
 
-end Abs
 
-section Conc
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c)
 
@@ -256,7 +253,6 @@ private theorem conc (hD : D.Good) (ρ : Representation c.O (G ℚ Ω) (QO l c.O
   rw [MonoidHom.inv_apply, inv_eq_one]
   exact hU A hA g hg hr
 
-end Conc
 
 theorem UpperTheory.V.GradeZeroInterpolatingElement.shaCoc :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → SoFin Ω l → D.sha ≠ ⊤ ∧ ∃ a : c.O, a ≠ 0 ∧ ∃ Z : ShaU (Chr.rho l D.e D.ψ) (∏ p ∈ D.S, p) ⊤ →+ (G ℚ Ω → c.O ⧸ Ideal.span {a}), Function.Injective Z ∧ ∀ x, D.ShaCoc a (Z x) := by

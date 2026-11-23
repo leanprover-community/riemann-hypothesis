@@ -54,7 +54,6 @@ namespace UpperTheory.V.Hi.OrdB
 
 open GlobalTheory.PRep
 
-section General
 
 variable {G V : Type} [CommGroup G] [AddCommGroup V] [Module ℂ V]
 
@@ -271,9 +270,7 @@ private theorem exists_form {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (h
     refine ⟨φ ∘ₗ π0, fun h => hφ (by simpa using LinearMap.congr_fun h v0), fun g v => ?_⟩
     simp only [LinearMap.comp_apply, hπ0, map_smul, smul_eq_mul]
 
-end General
 
-section Abs
 
 variable {G M : Type} [Group G] (I : Iwa G) [AddCommGroup M] [Module ℂ M] (π : Representation ℂ G M) (c : ℕ)
   (φ : I.T →* ℂˣ)
@@ -337,9 +334,7 @@ private theorem inv_inj (hφ : ∀ t : I.T, (t : G) ∈ I.Tc c → φ t = 1) (hs
   rw [key.inf_eq_bot] at h3
   exact congrArg Subtype.val ((Submodule.mem_bot ℂ).1 h3)
 
-end Abs
 
-section Num
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -425,7 +420,6 @@ private theorem num (ω : Fin n → kˣ →* ℂˣ) {j : ℕ} (hj : j ≤ n) :
     rw [← pow_mul, ← pow_add, ← pow_add, hexp]]
   field_simp
 
-end Num
 
 end UpperTheory.V.Hi.OrdB
 

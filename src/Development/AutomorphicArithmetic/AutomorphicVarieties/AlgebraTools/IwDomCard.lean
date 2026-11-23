@@ -52,7 +52,6 @@ public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.
 
 open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi UpperTheory.V.AlgebraTools
 
-section SlopeTestRemainingChoices
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -213,7 +212,6 @@ private theorem hk_norm {G : Type} [Group G] (I : Subgroup G) (hI : HeckePair I)
   rw [(hkNorm ℤ G ℤ _ I u hI hu).1 v]
   simp
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.AlgebraTools.domCard :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (C : Subgroup 𝓀[k]ˣ) (x : kˣ), IsUnif x → ∀ a : Fin n → ℤ, Antitone a → (MulAction.orbit (iwC k n C) ((pw x a : GL (Fin n) k) : GL (Fin n) k ⧸ iwC k n C)).ncard = resCard k ^ (∑ p ∈ Finset.univ.filter (fun p : Fin n × Fin n => p.1 < p.2), (a p.1 - a p.2).toNat) := by

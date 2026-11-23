@@ -38,7 +38,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Automorphic
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.HeckeGal UpperTheory.V UpperTheory.V.Af
 
-section Real
 
 variable {E : Type} [Field E] [NumberField E] [IsTotallyReal E]
 
@@ -121,7 +120,6 @@ private theorem expo_intR {χ : HChar E} {n : (E →+* ℂ) → ℤ} (h : IsAlgP
   · rw [e, Pi.single_eq_same]
   · simp [Pi.single_eq_of_ne e]
 
-end Real
 
 private theorem ev_notMem {K : Type} [Field K] [NumberField K] (l : ℕ) [Fact l.Prime] :
     ∀ᶠ v : HeightOneSpectrum (𝓞 K) in Filter.cofinite, ((l : ℕ) : 𝓞 K) ∉ v.asIdeal := by

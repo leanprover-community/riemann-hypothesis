@@ -35,7 +35,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.Ff
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -81,7 +80,6 @@ private theorem differentiable_schwartz_translate (v : V4 F) {Φ : V4 F → ℂ}
   | add G H _ _ hG hH => exact hG.add hH
   | smul c G _ hG => exact hG.const_smul c
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.R2.Ff.sDiff :
     ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (O : Fo.Ops F), SDiff O := by

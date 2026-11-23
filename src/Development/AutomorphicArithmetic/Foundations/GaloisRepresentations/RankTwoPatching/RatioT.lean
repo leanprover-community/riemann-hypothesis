@@ -45,7 +45,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Z.
 
 namespace UpperTheory.Gal.SV.GlobalSectionsBijection
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -63,9 +62,7 @@ private theorem norm_neg_one (ξ : kˣ →* ℂˣ) (hξ : IsSmoothChar ξ) {x : 
   rw [map_mul, Units.val_mul, norm_mul] at h1
   exact eq_inv_of_mul_eq_one_left h1
 
-end Loc
 
-section WD
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
@@ -91,7 +88,6 @@ private theorem eig_sum {n : ℕ} (c : Fin n → Weil h →* ℂˣ) (hc : ∀ i,
   simp only [eval_sub, eval_X, eval_C] at hi
   rw [sub_eq_zero.1 hi]
 
-end WD
 
 end UpperTheory.Gal.SV.GlobalSectionsBijection
 

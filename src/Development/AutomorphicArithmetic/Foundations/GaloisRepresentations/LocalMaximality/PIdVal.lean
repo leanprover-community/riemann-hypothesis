@@ -49,7 +49,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.Gal.productCup_of_system
 
-section Vals
 variable {L : Type} [Field L] [Algebra ℂ L] {B : Subalgebra ℂ L} {e : B →ₐ[ℂ] ℂ}
 
 private lemma val_mul (hV : ValBasic) {v v' : L} {c c' : ℂ} (h : Val B e v c) (h' : Val B e v' c') :
@@ -91,7 +90,6 @@ private lemma val_of_mem (hV : ValBasic) {v : L} (h : v ∈ loc B e) : ∃ c, Va
   obtain ⟨-, ⟨ev, hev⟩, -, -⟩ := hV L B e
   exact ⟨_, (hev _ _).2 ⟨h, rfl⟩⟩
 
-end Vals
 
 section
 variable {F K : Type} [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K]

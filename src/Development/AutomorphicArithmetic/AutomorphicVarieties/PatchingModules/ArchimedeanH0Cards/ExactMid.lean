@@ -35,7 +35,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open ReciprocityTheory.Gal UpperTheory.V.Pa UpperTheory.V.Pa.B2
 
-section SlopeTestRemainingChoices
 
 variable {A Γ : Type} [CommRing A] [Group Γ] [TopologicalSpace Γ] {P : Pl Γ}
 
@@ -128,7 +127,6 @@ private theorem cocycle_descends_short_exact {D' D D'' : Dat A P} (f : D'.Hom D)
     rw [f.comm, ha, (hpw w).2 u v, d1_apply, d1_apply]
     simp only [map_sub, map_add (f := _), f.equivq, hc]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Pa.B2.exactMid :
     ∀ (A Γ : Type) [CommRing A] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] (P : Pl Γ) (D' D D'' : Dat A P) (f : D'.Hom D) (g : D.Hom D''), Dat.SES f g → (∀ w, ∀ y'' ∈ D''.abelian₂ w, ∃ y ∈ D.abelian₂ w, ∀ s, g.fq w (y s) = y'' s) → LinearMap.ker g.h2 ≤ LinearMap.range f.h2 := by

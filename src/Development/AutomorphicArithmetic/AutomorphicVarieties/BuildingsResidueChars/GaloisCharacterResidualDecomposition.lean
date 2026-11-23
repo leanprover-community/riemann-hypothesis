@@ -41,7 +41,6 @@ open GlobalTheory.GalOfCusp UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.Gr
 
 noncomputable section
 
-section SlopeTestRemainingChoices
 
 variable {l : ℕ} [Fact l.Prime] (c : Coef l)
 
@@ -158,7 +157,6 @@ private theorem rb_ps (hD : D.Good) (g : G T.F Ω) (n : ℕ) : T.rb wPs g ^ n = 
   · simp [wPs, h0, h2, mul_inv_cancel_comm]
   · simp [wPs, h0, h2, mul_comm (bU c (D.ξ _))]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.galois_character_residual_decomposition :
     UpperTheory.V.Sd.S2.Chars := by

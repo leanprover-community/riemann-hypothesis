@@ -32,7 +32,6 @@ import Mathlib.Tactic.NormNum.Prime
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Sd
 
-section Hecke
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
 
@@ -72,7 +71,6 @@ private theorem alg_cyc (H : GlobalTheory.Published.GlobalArtinReciprocity) (ι 
     ⟨1, 1, le_rfl, fun _ _ => rfl, (mul_one _).symm⟩
   exact ⟨hc, art, χ, a, h⟩
 
-end Hecke
 
 theorem UpperTheory.V.Sd.algCyc :
     UpperTheory.V.Af.Hypotheses₂ → UpperTheory.V.Sd.AlgCyc := by

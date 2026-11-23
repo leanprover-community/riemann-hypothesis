@@ -49,7 +49,6 @@ open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 set_option synthInstance.maxHeartbeats 200000
 
-section SlopeTestRemainingChoices
 
 open Formalism.MainNotions.N
 
@@ -132,7 +131,6 @@ private theorem map_comp {n : ℕ} {A T K Γ : Type} [CommRing A] [CommRing T] [
   obtain rfl : x = y.comp f := RingHom.ext fun b => (h b).symm
   rfl
 
-end SlopeTestRemainingChoices
 
 private theorem absPt {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime]
     {n : ℕ} {c : Coef l} (H : HSet L Ω l n c) {A : Type} [CommRing A] [Algebra c.O A] [IsLocalRing A] (θ : H.X.I.T →* Aˣ)

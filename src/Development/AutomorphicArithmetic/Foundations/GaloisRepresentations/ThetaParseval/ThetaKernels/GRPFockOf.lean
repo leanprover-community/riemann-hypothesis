@@ -110,7 +110,6 @@ private theorem sumPl_tprod_pk {ι : Type} [Fintype ι] [DecidableEq ι] {V : ι
     · simp [Function.update_of_ne hj]
   rw [e, MultilinearMap.map_update_smul, Function.update_eq_self]
   rfl
-section Gen
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {n d P Q R S r s : ℕ} {β : Type} [Fintype β] [DecidableEq β]
 private theorem exp_gen_pk {τ : ∀ w : InfinitePlace F, EmbOver E w} {J : Matrix β β (AE F E)}
@@ -161,8 +160,6 @@ private theorem mem_uat_of_closure_pk {N : ℕ} {W : Spc F E N} {k : UA σ W.J} 
         simp [mat]
       rw [mul_sub, h1, mul_one]; abel
     rw [e, smul_neg, ← Matrix.mul_smul, hx u hu, Matrix.mul_zero, neg_zero]
-end Gen
-section CM
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n d P Q R S : ℕ}
 private theorem acts_of_k_pk (hcm : IsCMExt (maximalRealSubfield E) E (UpperTheory.TP.cj E)) {B : Base (maximalRealSubfield E) E} {N : ℕ}
     {W : Spc (maximalRealSubfield E) E N} {e : GlobalTheory.UnitaryBC.UA E N ≃ₜ* UA (UpperTheory.TP.cj E) W.J} (he : UpperTheory.TP.IsBr W e) {b : ℂ}
@@ -293,7 +290,6 @@ private theorem parity_of_pk (hcm : IsCMExt (maximalRealSubfield E) E (UpperTheo
   have h3 : ((D : ℂ) + m w) / 2 = a := mul_right_cancel₀ hz (by simpa [μ, z] using ha)
   have h4 : (2 * a : ℂ) = D + m w := by rw [← h3]; ring
   exact_mod_cast h4
-end CM
 end UpperTheory.TP.RP.FockModelActions
 end
 open UpperTheory.TP.RP.FockModelActions in

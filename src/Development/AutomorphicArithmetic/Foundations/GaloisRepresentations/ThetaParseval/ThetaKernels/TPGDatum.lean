@@ -54,7 +54,6 @@ open GlobalTheory.Doubling (absE)
 open PositivityTheory.ThKG.Loc (idem)
 open PositivityTheory.ThKG.Loc.Cone
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
-section Supp
 private def triv_pk (σ : E →ₐ[F] E) {m : ℕ} (J : Matrix (Fin m) (Fin m) E) (c : AF F) : Subgroup (UA σ J) where
   carrier := {g | c • (mat g - 1) = 0}
   one_mem' := by
@@ -108,8 +107,6 @@ private theorem gInf_le_pk (S : Finset (Pl F)) : gInf σ X ≤ triv_pk σ X.J (1
   (Subgroup.closure_le _).2 fun _ hg => hg _ (by rw [evI_sub, evI_one, evI_aS_pk, sub_self])
 private theorem loc_le_pk {S : Finset (Pl F)} {v : Pl F} (h : v ∈ S) : locGrp σ X v ≤ triv_pk σ X.J (1 - aS F S) :=
   (Subgroup.closure_le _).2 fun _ hg => hg _ (by rw [map_sub, map_one, evFin_aS_pk h, sub_self])
-end Supp
-section Cut
 variable {Y : Spc F E n}
 private theorem comm_of_pk {ι : Type} [Fintype ι] [DecidableEq ι] {c : AF F} {A B : Matrix ι ι (AE F E)} (h1 : c • (A - 1) = A - 1)
     (h2 : c • (B - 1) = 0) : A * B = B * A := by
@@ -157,8 +154,6 @@ private theorem cut_iwa_pk {B : Base F E} {K : Subgroup (G2 σ Y)} (hK : IsStab2
   · rw [idempotentCut_mem_stabilizer, Euler.cut_sub, smul_smul, hc]
   · rw [← map_mul]
     exact Subtype.ext (Units.ext (Euler.cut_eq.2 hx).symm)
-end Cut
-section Fix
 variable {Y : Spc F E n}
 private theorem cut_add_pk {S R k : Type} [CommRing S] [CommRing R] [Algebra S R] [Fintype k] [DecidableEq k] {c₁ c₂ : S} (h : c₁ * c₂ = 0)
     (A : Matrix k k R) : Euler.cut (c₁ + c₂) A = Euler.cut c₁ A * Euler.cut c₂ A := by
@@ -215,7 +210,6 @@ private theorem fix_off_pk {B : Base F E} {K : Subgroup (G2 σ Y)} (hK : IsStab2
       exact at_idem v _
   refine funext fun x => tendsto_nhds_unique (((hc x).tendsto k).comp (tendsto_cutG_pk S k)) (tendsto_const_nhds.congr fun T => ?_)
   exact (congrFun (step T) x).symm
-end Fix
 section Main
 variable {X : Spc F E n}
 private theorem triv_idem_pk {S : Finset (Pl F)} {v : Pl F} (h : v ∈ S) : triv_pk σ X.J (aS F S) ≤ triv_pk σ X.J (idem F v) := fun g hg => by

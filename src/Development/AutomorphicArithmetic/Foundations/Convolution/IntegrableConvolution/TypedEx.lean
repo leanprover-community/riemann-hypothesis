@@ -46,7 +46,6 @@ open UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section Abs
 
 variable {G L H : Type} [Group G] [TopologicalSpace G] [Group L] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [CompleteSpace H]
@@ -178,9 +177,7 @@ private theorem exists_fixed_abs {Γ : Type} [Group Γ] [TopologicalSpace Γ] [I
   rw [h0, zero_sub, norm_neg] at hle
   linarith
 
-end Abs
 
-section Conc
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -330,7 +327,6 @@ private theorem step {V : Submodule ℂ (LL μ)} (hV : IsSummand μ V) (J : ∀ 
       exact hc _ (fun g => hphi w hwb x g) u
     exact comm_eig_abs h4 h3
 
-end Conc
 
 end UpperTheory.ConvolutionTheory.L1
 

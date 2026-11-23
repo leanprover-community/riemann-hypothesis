@@ -105,7 +105,6 @@ private theorem sig_hecke (k : ℕ) {N : ℕ} (χ : DirichletCharacter ℂ N) {p
     (by intro a b; push_cast; rw [map_mul, mul_pow]; ring) hp n hn
   simpa only [sigChi] using h
 
-section Int
 
 variable {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ)
 
@@ -147,7 +146,6 @@ private theorem int_sig (k : ℕ) {N : ℕ} [NeZero N] (χ : DirichletCharacter 
   exact Finset.sum_induction _ (fun x => ‖ι.symm x‖ ≤ 1) (fun a b ha hb => int_add ι ha hb)
     (by simp) (fun j _ => int_term ι k χ j)
 
-end Int
 
 private theorem chi_neg_one {l M w : ℕ} (hl : l.Prime) {φ θ χ} (h : EDat l M w φ θ χ) : χ (-1) = φ (-1) := by
   have hM := h.one_lt

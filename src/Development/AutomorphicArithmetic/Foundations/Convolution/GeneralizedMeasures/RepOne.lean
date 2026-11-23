@@ -52,7 +52,6 @@ open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.Automorphic.
 open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.GM
 open scoped InnerProductSpace
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -148,9 +147,7 @@ private theorem ofin_left (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaa
   simp_rw [h1]
   exact integral_mul_left_eq_self (fun h => e h * ⟪a, rhoF μ h v⟫_ℂ) u
 
-end SlopeTestRemainingChoices
 
-section Aux2
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -228,7 +225,6 @@ private theorem comm_ev (𝔞 : Amp μ) {ev : PR K n →+* (LL μ →L[ℂ] LL �
     rw [hev.hecke w hw i]
     exact (comm_hop B hB w _ _ (GLnLocal.isOpen_integralGL _ n) (GLnLocal.isCompact_integralGL _ n)).smul_right _
 
-end Aux2
 
 
 theorem UpperTheory.ConvolutionTheory.GM.repOne :

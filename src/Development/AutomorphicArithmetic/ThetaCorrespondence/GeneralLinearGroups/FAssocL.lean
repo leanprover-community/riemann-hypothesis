@@ -40,7 +40,6 @@ open Filter Topology GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL 
 
 
 
-section SlopeTestRemainingChoices
 
 open GlobalTheory.ParIndExact GlobalTheory.ProdReorder
 
@@ -200,7 +199,6 @@ private theorem pair_eqv (y z : IrrGL (k := k)) {N : ℕ} (hN : y.1 + z.1 = N) (
 private theorem sum_pair (y z : IrrGL (k := k)) : ∑ a, (![y, z] a).1 = y.1 + z.1 := by
   simp [Fin.sum_univ_two]
 
-end SlopeTestRemainingChoices
 
 open GlobalTheory.ParIndExact GlobalTheory.ProdReorder in
 theorem UpperTheory.Lit.Full.assocL :

@@ -51,7 +51,6 @@ import ReciprocityTheory.GaloisValuations.GlobalA
 
 open Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-section aux
 variable {A C C' : Type} [CommRing A] [AddCommGroup C] [Module A C] [AddCommGroup C'] [Module A C']
 
 private theorem sc_mem (a : A) (x : C) :
@@ -356,7 +355,6 @@ private theorem sc_unif {t : A} (K B : Submodule A C) [Module.Finite A K]
     | smul a x _ hx => rw [Submodule.coe_smul, smul_comm]; exact B.smul_mem a hx
   exact key ⟨z, hz⟩ (hS ▸ Submodule.mem_top)
 
-end aux
 
 theorem UpperTheory.V.Pa.solCnt :
     ∀ (A C C' : Type) [CommRing A] [IsDomain A] [IsDiscreteValuationRing A] [Finite (IsLocalRing.ResidueField A)] [AddCommGroup C] [Module A C] [AddCommGroup C'] [Module A C'] (t : A) (Φ : C →ₗ[A] C') (B : Submodule A C), Irreducible t → (∀ y : C, t • y = 0 → y = 0) → (∀ y : C', t • y = 0 → y = 0) → IsAdicComplete (Ideal.span {t}) A → IsAdicComplete (Ideal.span {t}) C → IsHausdorff (Ideal.span {t}) C' → Finite (((Ideal.span {t} • ⊤ : Submodule A C').comap Φ).map (Ideal.span {t} • ⊤ : Submodule A C).mkQ) → B ≤ LinearMap.ker Φ → (∀ z, Φ z = 0 → ∃ s : ℕ, t ^ s • z ∈ B) → Module.Finite A (LinearMap.ker Φ) ∧ ∃ e : ℕ, ∀ m : ℕ, Finite (((Ideal.span {t ^ m} • ⊤ : Submodule A C').comap Φ).map (Ideal.span {t ^ m} • ⊤ : Submodule A C).mkQ) ∧ Nat.card (((Ideal.span {t ^ m} • ⊤ : Submodule A C').comap Φ).map (Ideal.span {t ^ m} • ⊤ : Submodule A C).mkQ) ≤ Nat.card (B.map (Ideal.span {t ^ m} • ⊤ : Submodule A C).mkQ) * Nat.card (IsLocalRing.ResidueField A) ^ e := by

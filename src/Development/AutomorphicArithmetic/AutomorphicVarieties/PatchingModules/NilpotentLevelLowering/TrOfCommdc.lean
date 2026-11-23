@@ -42,7 +42,6 @@ open UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Hi UpperTheory.V.AlgebraToo
 open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -234,7 +233,6 @@ private theorem trOf_gen {δ : kˣ} {C : Subgroup 𝓀[k]ˣ} (h : IsGenMod k C �
   · rw [(memIwC k n ⊤).2.1]
     exact GlobalTheory.SmGL.diagT_mem_iwahori (show _ ∈ GlobalTheory.SmGL.torusO k (Fin n) from hv)
 
-end Loc
 
 private theorem trOf_ext {T A M₁ M₂ : Type} [Group T] [CommRing A] [AddCommGroup M₁] [Module A M₁]
     [AddCommGroup M₂] [Module A M₂] (Θ : T →* (Module.End A M₁)ˣ) (θ : T →* (Module.End A M₂)ˣ) (ι : M₁ → M₂)
@@ -306,7 +304,6 @@ private theorem trOf_smul {A M₁ M₂ : Type} [CommRing A] [AddCommGroup M₁] 
     f ((c • φ) m) = (c • ψ) (f m) := by
   rw [LinearMap.smul_apply, LinearMap.smul_apply, map_smul, h]
 
-section Prod
 
 variable {L : Type} [Field L] [NumberField L] {n q : ℕ} {w : Fin q → Plc L} {A M : Type} [CommRing A] [AddCommGroup M] [Module A M]
   (ρ : Representation A (GV n w) M) (C : ∀ j, Subgroup 𝓀[(w j).adicCompletion L]ˣ)
@@ -408,7 +405,6 @@ private theorem trOf_main (Θ1) (h1 : IsThetaQ ρ C Θ1) (Θw) (hw : IsThetaQ ρ
   exact trOf_ext (Θ1 j) (Θw j) (hk2 ρ (UC n w fun _ => ⊤) (UC n w C) 1) t b
     (fun m => hdom j b hb m) (fun m => hdom j (b * t) hbt m) m
 
-end Prod
 
 theorem UpperTheory.V.Pa.Lev.trOf :
     ∀ (L : Type) [Field L] [NumberField L] (n q : ℕ) (w : Fin q → Plc L) (l : ℕ) (A M : Type) [CommRing A] [AddCommGroup M] [Module A M] (ρ : Representation A (GV n w) M) (x δ : ∀ j, ((w j).adicCompletion L)ˣ) (T : ThData l ρ x δ), (∀ j, IsGenMod _ (ellC l _) (δ j)) → (∀ j i (m : fixd ρ (UC n w fun _ => ellC l _)), (T.act1 (1 + yV A j i) m : M) = ρ (atJ n w j (diagT _ (Fin n) (Pi.mulSingle i (δ j)))) m) ∧ ∃ tr : fixd ρ (UC n w fun _ => ellC l _) →ₗ[A] fixd ρ (UC n w fun _ => ⊤), (∀ m, (tr m : M) = dc ρ (UIw n w) (UIw1 l n w) 1 m) ∧ ∀ j i m, tr (T.act1 (uV A j i) m) = T.actw (MvPolynomial.X (j, i)) (tr m) := by

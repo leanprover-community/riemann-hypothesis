@@ -52,7 +52,6 @@ open scoped Classical
 
 namespace UpperTheory.ConvolutionTheory.T
 
-section Gen
 
 variable {G : Type*} [Group G] [TopologicalSpace G]
 
@@ -116,9 +115,7 @@ private theorem exists_left_inv [IsTopologicalGroup G] [LocallyCompactSpace G] [
       exact this.symm
     · rw [image_eq_zero_of_notMem_tsupport hg, image_eq_zero_of_notMem_tsupport hbg]
 
-end Gen
 
-section Semi
 
 variable {ι : Type*} [Fintype ι] {R : ι → Type*} [∀ i, CommRing (R i)] [∀ i, TopologicalSpace (R i)]
   [∀ i, IsTopologicalRing (R i)] {n : ℕ}
@@ -202,9 +199,7 @@ private theorem compact_ev_one (i₀ : ι) (h : ∀ i, i = i₀) (K : Set (GL (F
   · intro hg
     simpa using hg i₀
 
-end Semi
 
-section Scale
 
 variable {n : ℕ} {R S : Type*} [CommRing R] [CommRing S] [TopologicalSpace R]
   [MeasurableSpace (GL (Fin n) R)] [MeasurableSpace (GL (Fin n) S)]
@@ -228,9 +223,7 @@ private theorem match_scale (ι : R →+* S) (s : S →+* S) (l : ℕ) (μS : Me
     rw [orb_scale] at this
     exact (mul_eq_zero.1 this).resolve_left ha
 
-end Scale
 
-section Conv
 
 variable {G : Type*} [Group G] [MeasurableSpace G]
 
@@ -275,7 +268,6 @@ private theorem cvAll_ind (μ : Measure G) (U : Subgroup G) (hU : MeasurableSet 
     rw [cv_ind μ U hU, pow_succ]
     ring
 
-end Conv
 
 private theorem ball_nhds {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (n : ℕ) (ρ : ValueGroupWithZero k) (h : 0 < ρ) : UpperTheory.ConvolutionTheory.Loc.ball n ρ ∈ nhds (1 : GL (Fin n) k) := by
@@ -302,7 +294,6 @@ private theorem small_level {k : Type} [Field k] [ValuativeRel k] [TopologicalSp
   obtain ⟨K, hK, hs⟩ := exists_openSubgroup_isCompact_subset hm
   exact ⟨K.toSubgroup, hK, K.isOpen, fun x hx => (hs hx).1.1, fun x hx => (hs hx).1.2, fun x hx => (hs hx).2⟩
 
-section Pack
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -457,7 +448,6 @@ private theorem pack_split [IsGalois F E] (σ : E ≃ₐ[F] E) (hσ : ∀ τ : E
   · rw [hφ]
     exact fun u hu g => ind_left UE hu g
 
-end Pack
 
 theorem locUp : UpperTheory.ConvolutionTheory.T.LocUp := by
   intro F E _ _ _ _ _ _ _ _ σ hσ hp n hn q w₀ S hq hS U₀ hU₀

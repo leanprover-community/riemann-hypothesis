@@ -36,7 +36,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.Fo
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
@@ -101,7 +100,6 @@ private theorem p_apply (O : Ops F) (δ : F) (w : InfinitePlace F) (i : Fin 4) (
     simp [hs, O.x_apply]
     ring
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.R2.Fo.dN :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] (D : Dat F E) (W : Weil D) (O : Ops F) w i b, O.d w i * W.Om (nU b) = W.Om (nU b) * (O.d w i + cw w b • O.p D.δ w i) ∧

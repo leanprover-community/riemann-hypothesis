@@ -51,7 +51,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 variable {X : Type} [CommRing X] {g n : ℕ}
 
 private theorem sub_a (x y : DD X g) : (x - y).a = x.a - y.a := by simp [sub_eq_add_neg]
@@ -214,7 +213,6 @@ private theorem mem_second_order_of_reductions {M : Matrix (Fin n) (Fin n) (DD X
   · obtain ⟨pa, pe⟩ := h2 e
     exact ⟨fun _ => pa, fun _ => funext ie, fun _ => funext pe, nofun⟩
 
-end SlopeTestRemainingChoices
 
 private theorem first_order_lift_apply {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} {x : NP F n} (k : Kap x) (X : Type) [CommRing X]
     [Algebra x.A X] (γ : F.G₀) (a b : Fin n) :

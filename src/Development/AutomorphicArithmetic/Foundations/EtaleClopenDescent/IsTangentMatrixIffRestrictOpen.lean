@@ -107,7 +107,6 @@ private theorem Wit.equiv {B B' : Type} [CommRing B] [CommRing B'] [Algebra ℂ 
         rw [this]⟩ }
   exact Wit.loc ⊥ e e' he hc h
 
-section Geo
 
 variable {Z Y : Scheme.{0}} {s : Z ⟶ Sp ℂ} {s' : Y ⟶ Sp ℂ}
 
@@ -311,7 +310,6 @@ private theorem wit_iff {d : ℕ} (FinalForm : Z.Opens) (Wo : Y.Opens) {c1 c2 : 
       (evS_algebraMap y hyV) h
     simpa only [AlgEquiv.symm_apply_apply] using key
 
-end Geo
 
 end UpperTheory.TanRes
 

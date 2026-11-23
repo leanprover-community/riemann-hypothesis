@@ -37,7 +37,6 @@ open GlobalTheory.CuspRep (Cinf Lie chart infGL pInf sInf toL lmul invSet)
 open scoped SchwartzMap FourierTransform RealInnerProductSpace ContDiff Topology
 open UpperTheory.V UpperTheory.V.Af.StrongMultiplicityOne
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
@@ -145,7 +144,6 @@ private theorem inner_eta (b' : Module.Basis (Fin d) ℝ (Cinf E))
     simp [eta, h, repr_crd, mul_comm]
   · simp [eta, h]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Af.StrongMultiplicityOne.archStep :
     UpperTheory.V.Af.StrongMultiplicityOne.TrDual → UpperTheory.V.Af.Smo.SchTw → UpperTheory.V.Af.Smo.PftSch → UpperTheory.V.Af.Smo.BetaSch → UpperTheory.V.Af.Smo.BetaInt → UpperTheory.V.Af.StrongMultiplicityOne.ArchStep := by

@@ -41,7 +41,6 @@ open scoped Matrix
 
 namespace UpperTheory.V.Sd
 
-section Rel
 
 variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
@@ -62,6 +61,5 @@ private theorem Rl.mul {x y z w : K} (h : Rl x y) (h' : Rl z w) : Rl (x * z) (y 
   · rw [norm_mul]
     exact mul_lt_one_of_nonneg_of_lt_one_left (norm_nonneg _) h.2 h'.1
 
-end Rel
 
 end UpperTheory.V.Sd

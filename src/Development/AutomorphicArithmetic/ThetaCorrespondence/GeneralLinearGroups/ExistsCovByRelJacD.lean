@@ -57,7 +57,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSubqu
 
 open Filter Topology GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult UpperTheory.Lit.Cas UpperTheory.Lit.Red
 
-section SlopeTestRemainingChoices
 
 open GlobalTheory.JacStages GlobalTheory.JacStagesExact GlobalTheory.ParIndExact GlobalTheory.CompanionTheory.Hypotheses₂.TD GlobalTheory.SplitRead
 
@@ -282,7 +281,6 @@ private theorem cell (hG : GlobalTheory.Published.GeometricLemma) (hBZ : GlobalT
     have k6 := jhMult_ne_zero_iff.2 (k4.trans k5)
     exact k6
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Lit.Full.diag3 :
     GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.BernsteinZelevinskyFiniteness → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (J : Set (IrrGL (k := k))) (ρ : IrrGL (k := k)) (w : Fin 3 → IrrGL (k := k)) (N : ℕ) (hd : ∑ a, (w a).1 = N), LastIn (w 0) Jᶜ → SuppIn (w 1) (J \ {ρ}) → SuppIn (w 2) J → FirstIn (w 2) {ρ} → jm w hd (prodIrr w hd) ≤ 1 := by

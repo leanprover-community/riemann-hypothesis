@@ -69,7 +69,6 @@ private theorem regOk_field (k : Type) [Field k] [TopologicalSpace k] [IsTopolog
     ((GroundTheory.Automorphic.ContragredientTranspose.continuous_charpoly_coeff i).comp Units.continuous_val)
     continuous_const
 
-section Pi
 
 variable {I : Type} {k : I → Type} [∀ i, Field (k i)] {n : ℕ}
 
@@ -106,7 +105,6 @@ private theorem ev_asm (x : ∀ i, GL (Fin n) (k i)) (i : I) : ev i (asm x) = x 
   refine Units.ext (Matrix.ext fun a b => ?_)
   rfl
 
-end Pi
 
 private theorem regOk_pi (I : Type) (k : I → Type) [∀ i, Field (k i)] [∀ i, TopologicalSpace (k i)]
     [∀ i, IsTopologicalRing (k i)] [∀ i, T2Space (k i)] (n : ℕ) : RegOk (∀ i, k i) n := by

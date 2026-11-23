@@ -39,7 +39,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -91,9 +90,7 @@ private theorem mul_bar (D : Dat F E) (α : (A E)ˣ) :
   rw [hu, Finset.prod_pair (Ne.symm (sigma_ne D))]
   simp [Dat.bar]
 
-end SlopeTestRemainingChoices
 
-section Aux2
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -135,7 +132,6 @@ private theorem integral_scale (a : (A F)ˣ) (G : A F → ℂ) :
   rw [h2, ← h, ENNReal.toReal_ofReal (inv_pos.2 (IdeleGroup.ideleModule F a).2).le, Complex.real_smul]
   rfl
 
-end Aux2
 
 theorem UpperTheory.ConvolutionTheory.R2.D.hatAE :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] (D : Dat F E) (W : Weil D), ∀ (α : (A E)ˣ) φ y x z₀ z₁, hat (W.L (aE α) φ).1 ![y, x, z₀, z₁] =

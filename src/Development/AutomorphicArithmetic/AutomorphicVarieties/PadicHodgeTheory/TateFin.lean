@@ -159,7 +159,6 @@ theorem UpperTheory.V.Loc.exists_dec {v : ℕ} [Fact v.Prime] {G : Type} [Group 
     rw [hc, ha, map_pow] at hb
     exact (ZMod.val_injective _ (hζ'.pow_inj (ZMod.val_lt _) (ZMod.val_lt _) hb)).symm
 
-section Transport
 
 variable {R R' Γ Γ' M : Type} [CommRing R] [CommRing R'] [Group Γ] [TopologicalSpace Γ] [Group Γ']
   [TopologicalSpace Γ'] [AddCommGroup M] [Module R M] [Module R' M] [TopologicalSpace M] [DiscreteTopology M]
@@ -226,7 +225,6 @@ private theorem second_cohomology_equiv : Nonempty (H2 ρ ≃ H2 ρ') := by
     show a.1 (e (e.symm g), e (e.symm g')) - b.1 (e (e.symm g), e (e.symm g')) = a.1 (g, g') - b.1 (g, g')
     rw [e.apply_symm_apply, e.apply_symm_apply]
 
-end Transport
 
 private theorem card_H0dual {R k Γ Γ' M : Type} [Field R] [Field k] [Finite k] [Algebra R k] [Group Γ] [Group Γ']
     [AddCommGroup M] [Module R M] [Module k M] [IsScalarTower R k M] [Finite M]

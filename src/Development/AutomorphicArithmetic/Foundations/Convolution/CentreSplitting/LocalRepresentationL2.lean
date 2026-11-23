@@ -70,7 +70,6 @@ def locOn {V : Submodule ℂ (LL μ)} (hV : IsSummand μ V) (w : HeightOneSpectr
 
 end General
 
-section Complex
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {n : ℕ}
   (μ : Measure (normOneGL (K := E) (n := n))) [μ.IsHaarMeasure]
@@ -79,7 +78,6 @@ structure Carries (π : CuspSub E n) (V : Submodule ℂ (LL μ)) : Prop where
   summand : IsSummand μ V
   carrier_eq : Cm.carrier π = formsIn μ V
 
-end Complex
 
 def SumT : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (V : Submodule ℂ (LL μ)),

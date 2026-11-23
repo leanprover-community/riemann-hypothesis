@@ -39,7 +39,6 @@ import Mathlib.Tactic.NormNum.Prime
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.Base UpperTheory.V.Odd UpperTheory.V.Stick UpperTheory.V.ML
 open scoped nonZeroDivisors Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω]
 
@@ -161,7 +160,6 @@ private theorem unit_opP {r M : ℕ} (hM : M ≠ 0) {Y : Ω} (h : ∀ A : Valuat
     exact (pow_eq_one_iff_of_nonneg zero_le hM).1 this
   rw [opP, map_div₀, map_pow, unit_gal h1 δ A hA, h1 A hA, one_pow, div_one]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.ML.kolStep :
     ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (l M F r a : ℕ) [NeZero M], F ≠ 0 → M ∣ F → r.Prime → ∀ (ζ : Ω), IsPrimitiveRoot ζ M → ∀ δ : G ℚ Ω, Pows M a δ →

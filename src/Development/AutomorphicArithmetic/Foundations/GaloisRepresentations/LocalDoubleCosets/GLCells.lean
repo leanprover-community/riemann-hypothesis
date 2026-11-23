@@ -43,7 +43,6 @@ open DoubleCoset (doubleCoset mem_doubleCoset)
 
 namespace UpperTheory.Gal.LocD
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] {n : ℕ}
 
@@ -96,7 +95,6 @@ private theorem sg_permGL (σ : E ≃+* E) (w : Equiv.Perm (Fin n)) : sg σ (per
   rw [sg_val, permGL_apply]
   split_ifs <;> simp
 
-end SlopeTestRemainingChoices
 
 theorem gLCells : GLCells := by
   intro E _ _ _ _ n σ

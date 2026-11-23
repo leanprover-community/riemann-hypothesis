@@ -41,7 +41,6 @@ import Mathlib.Tactic.ReduceModChar
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 open UpperTheory.V
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -108,7 +107,6 @@ private theorem psi_exp (h : Host) {O : Type} [CommRing O] [IsDomain O] (ψ : Di
         exact Nat.mul_le_mul (Nat.mul_le_mul (Nat.mul_le_mul hp v2) hlpow)
           (Nat.one_le_pow _ _ hq)
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Ws.exists_decomposition_element_at_l_xi_pow_four_ne_one :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), Ctx2 D → ∀ (κ : G ℚ Ω →* c.Oˣ) (j : ℕ), κ ^ l ^ j = 1 → ∀ A : ValuationSubring Ω, A.valuation (l : Ω) < 1 → ∃ g ∈ Dec (F := ℚ) A, Raw.bar D.Psi g = 1 ∧ κ g = 1 ∧ Raw.bar D.ξ g ^ 4 ≠ 1 := by

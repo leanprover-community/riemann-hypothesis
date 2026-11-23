@@ -90,7 +90,6 @@ private theorem wdAt_of_model {l : ℕ} [Fact l.Prime] (P : LocPrime l) (ι : Om
   rw [e] at a₁
   exact e₁.trans (a₁.symm.trans a₂)
 
-section Blocks
 
 variable {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω] {Gw : Subgroup (Ω ≃ₐ[E] Ω)}
   {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] (B : LocBridge l E Ω Gw O)
@@ -156,7 +155,6 @@ private theorem blocks {n : ℕ} (r : ↥Gw →* GL (Fin (n + 1)) (Om l)) (r' : 
     funext i
     simp
 
-end Blocks
 
 
 theorem UpperTheory.deRham_rational_of_extension_by_character :

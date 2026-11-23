@@ -40,7 +40,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.Gal.Ord
 
-section Helpers
 
 variable {k : Type*} [Field k] {C : Type*} {P : Type*} [AddCommGroup P] [Module k P]
 
@@ -197,7 +196,6 @@ private theorem pow_ne_chi [CommRing C] {p : ℕ} [Fact p.Prime] (χ : C →+* k
     h1.trans ((Multiset.toFinset_card_le _).trans ((Polynomial.card_roots' Q).trans hQd.le))
   exact absurd h2 (not_le.2 (Nat.pow_lt_pow_right hp1 hjf))
 
-end Helpers
 
 end UpperTheory.Gal.Ord
 

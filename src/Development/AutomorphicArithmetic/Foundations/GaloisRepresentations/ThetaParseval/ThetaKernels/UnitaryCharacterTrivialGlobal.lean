@@ -48,15 +48,9 @@ open GlobalTheory.UnRep GlobalTheory.SplitIdem
 open GlobalTheory.SplitCharTrivial (cut cutH cut_val cT_add cT_smul rf tendsto_UJ tendsto_rf norm_cut cut_rf exists_seq map_sub_one map_cut)
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {n : ℕ} {c : E ≃ₐ[F] E} {J : Matrix (Fin n) (Fin n) E}
-section Char
 variable {ν : GAF (c : E →ₐ[F] E) J →* Circle}
-end Char
-section Refl
 variable {P : Matrix (Fin n) (Fin n) E} (hP : P * P = P) (hJ : Formalism.UG.cT ((c : E →ₐ[F] E) : E →+* E) P * J = J * P)
-end Refl
-section Char
 variable {ν : GAF (c : E →ₐ[F] E) J →* Circle}
-end Char
 end PositivityTheory.ThKW.SplitChar
 open PositivityTheory.ThKW.SplitChar Filter Topology GlobalTheory.UnRep
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes

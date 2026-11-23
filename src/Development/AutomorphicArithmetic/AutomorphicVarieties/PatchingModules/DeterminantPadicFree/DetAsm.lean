@@ -61,7 +61,6 @@ private theorem clr {K : Type} [Field K] {ι : Type} [Finite ι] (y : ι → Fra
   rw [map_mul, hr i, Algebra.smul_def, hu, map_mul, ← mul_assoc, ← map_mul]
   simp
 
-section Mp
 
 variable {A B : Type} [CommRing A] [CommRing B] {n a : ℕ} (f : A →+* B)
 
@@ -147,7 +146,6 @@ private theorem transpose_mem_symmetric_deformation (h : P ∈ pairedDualFirstOr
   · intro hij
     exact hji.2 (fun e => hij e.symm)
 
-end Mp
 
 private theorem isKap {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} {x : NP F n} (k : Kap x)
     (D : DetFr (FractionRing x.A) F.G₀ n) (ha : D.a = x.a) (hσ : D.σ = F.conj)

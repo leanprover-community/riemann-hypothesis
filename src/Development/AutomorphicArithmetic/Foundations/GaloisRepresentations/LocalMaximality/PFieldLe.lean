@@ -203,7 +203,6 @@ private lemma edge_id' {ι κ E : Type} [LinearOrder ι] [LinearOrder κ] [AddCo
     abel
   · simp [hs]
 
-section Forms
 variable {K L : Type} [Field K] [Field L] [Algebra ℂ K] [Algebra ℂ L] [Algebra K L] [IsScalarTower ℂ K L]
 
 private lemma mapDR_ιMulti' (q : ℕ) (v : Fin q → K) :
@@ -251,7 +250,6 @@ private lemma mapC_Z' {ι : Type} [LinearOrder ι] (B : Finset ι → Subalgebra
 
     simpa only [map_sum, map_zsmul, map_zero, mapL_apply] using h2
 
-end Forms
 
 theorem UpperTheory.Gal.productCup_of_system.fieldLe_of :
     ZFam → ZEx → ZId → PrB → YMain → GMap → LCupRel → EdgeB → TrTop → ResidueOfTraceIsFiberSum → TrLin → SysBasic → RYBasic → OmLoc → FieldLe := by

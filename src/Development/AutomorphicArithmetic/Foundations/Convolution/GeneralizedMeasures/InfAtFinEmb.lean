@@ -51,7 +51,6 @@ open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalS
 open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.Automorphic.Spherical
 open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.GM
 
-section SlopeTestRemainingChoices
 open scoped Pointwise
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -215,7 +214,6 @@ private theorem ind_inv {G : Type*} [Group G] (H : Subgroup G) {k : G} (hk : k �
     rfl
   · rw [Set.indicator_of_notMem (show k * x ∉ (H : Set G) from fun h' => hx ((Subgroup.mul_mem_cancel_left _ hk).1 h')),
       Set.indicator_of_notMem (show x ∉ (H : Set G) from hx)]
-end SlopeTestRemainingChoices
 theorem UpperTheory.ConvolutionTheory.GM.termF :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsGalois F E] [_root_.NumberField.IsTotallyComplex F] [_root_.NumberField.IsTotallyComplex E] (σ : E ≃ₐ[F] E),
     (∀ τ, τ ∈ Subgroup.zpowers σ) → (Module.finrank F E).Prime → ∀ n : ℕ, 0 < n →

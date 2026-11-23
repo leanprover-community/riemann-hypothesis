@@ -101,7 +101,6 @@ private theorem tb_avg {k G W : Type} [Field k] [CharZero k] [Group G] [AddCommG
   rw [e2, e, map_sub, map_smul, smul_sub]
   abel
 
-section Alg
 
 variable {E H : Type} [CommRing E] [Group H]
 
@@ -175,7 +174,6 @@ private theorem tb_chars (r : H →* M4 E) (u : (M4 E)ˣ)
         simp only [mul_assoc, Units.inv_mul_cancel_left] }
   exact ⟨fun i => (k i).toHomUnits, fun g i => rfl⟩
 
-end Alg
 
 private theorem tb_upper {K : Type} [Field K] (T T' P : M4 K) (hT : ∀ i j, j < i → T i j = 0)
     (hT' : ∀ i j, j < i → T' i j = 0) (hd : ∀ i j, i ≠ j → T i i ≠ T' j j) (h : T * P = P * T') :
@@ -260,7 +258,6 @@ private theorem tb_loc (hP : Loc.LocalPublishedTheorems) {l : ℕ} [Fact l.Prime
   · obtain ⟨g, hg, hg'⟩ := h4 i j hij
     exact ⟨⟨g, hg⟩, hg'⟩
 
-section Main
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
 
@@ -416,7 +413,6 @@ private theorem tb_atL (D : Raw Ω c) (hD : D.Good) (hP : Loc.LocalPublishedTheo
   rw [← hr₀, ← hs₀]
   exact Matrix.map_mul (f := (K.val : K →+* PadicAlgCl l))
 
-end Main
 
 theorem UpperTheory.V.GradeZeroInterpolatingElement.tanBK :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → Loc.LocalPublishedTheorems → ∀ r, D.EPt r → ∀ r' : G ℚ Ω →* M4 (DualNumber (PadicAlgCl l)), D.PtIn _ r' → (∀ g i j, (r' g i j).fst = r g i j) → (fun g => (Matrix.of fun i j => (r' g i j).snd) * r g⁻¹) ∈ Z1 (Loc.adGL r.toHomUnits) ∧ Af.IsBK l (Loc.adGL r.toHomUnits) (fun g => (Matrix.of fun i j => (r' g i j).snd) * r g⁻¹) ∧ ∀ g, (Matrix.of fun i j => (r' g i j).snd) * r g⁻¹ ∈ sp4 (PadicAlgCl l) := by

@@ -41,7 +41,6 @@ open scoped Classical
 
 namespace UpperTheory.ConvolutionTheory.R2.Ff
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E]
 
@@ -94,7 +93,6 @@ private theorem dE_sum (D : Dat F E) (O : Fo.Ops F) (τ : E →+* ℂ) :
   simp only [mul_add, add_mul, mul_sub, sub_mul, smul_add, smul_sub, smul_mul_assoc, mul_smul_comm, smul_smul]
   match_scalars <;> field_simp <;> ring
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.R2.Ff
 

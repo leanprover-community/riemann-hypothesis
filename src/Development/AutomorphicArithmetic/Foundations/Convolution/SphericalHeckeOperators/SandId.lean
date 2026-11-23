@@ -51,7 +51,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open MeasureTheory GroundTheory.Automorphic GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.GLnLocal GroundTheory.Automorphic.Iwasawa UpperTheory.ConvolutionTheory.H
 
-section SlopeTestRemainingChoices
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
   [LocallyCompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] (μ : Measure G) [μ.IsHaarMeasure]
@@ -100,9 +99,7 @@ private theorem cv_mul_left {a b : G → ℂ} {k : G} (hk : ∀ g, a (k * g) = a
   rw [← integral_mul_left_eq_self (fun y => a y * b (y⁻¹ * (k * x))) k]
   simp [hk, mul_assoc]
 
-end SlopeTestRemainingChoices
 
-section Aux2
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
 
@@ -121,7 +118,6 @@ private theorem dom_monomial {a : Fin n → ℤ} (ha : Antitone a) : Dom (monomi
   rw [Finset.mem_singleton.1 (Finsupp.support_single_subset hb)]
   exact ha
 
-end Aux2
 
 private theorem dPol_ne_zero (n : ℕ) (t : ℂ) : dPol n t ≠ 0 := by
   refine Finset.prod_ne_zero_iff.2 fun p hp h => ?_

@@ -44,7 +44,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.HV UpperTheory.V.Base IsLocalRing
 
-section Core
 
 variable {H E : Type} [Group H] [Field E]
 
@@ -457,7 +456,6 @@ private theorem dim_core [CharZero E] (χ : Fin 4 → H →* Eˣ) (I : H → Pro
       rw [hbot]
       exact finrank_bot E _
 
-end Core
 
 private theorem cont_of_open {H O E : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [Group O]
     [TopologicalSpace E] (φ : H →* O) (h : IsOpen (φ.ker : Set H)) (f : O → E) : Continuous fun g => f (φ g) := by

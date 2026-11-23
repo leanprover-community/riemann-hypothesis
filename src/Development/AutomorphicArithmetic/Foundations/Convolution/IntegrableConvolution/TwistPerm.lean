@@ -48,7 +48,6 @@ open GroundTheory.Global GroundTheory.Global.SemiLocal PositivityTheory.Rg.Tf.Co
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section TwB
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 private theorem gal_central (σ : E ≃ₐ[F] E) (n : ℕ) (t : {r : ℝ // 0 < r}) :
@@ -332,7 +331,6 @@ private theorem pt_local {n : ℕ} {v : Pl F} (u : PlacesOver E v) (y : GL (Fin 
       rw [pE_pt]
     · rw [pE_pt_ne hv, pE_local_ne hv]
 
-section Types
 variable {σ : E ≃ₐ[F] E} {n : ℕ} {q : Pl F} {w₀ : PlacesOver E q}
 variable (μ : Measure (normOneGL (K := E) (n := n))) [μ.IsHaarMeasure]
 
@@ -423,9 +421,7 @@ private theorem exists_pre [FiniteDimensional F E] (T : Ty σ n q w₀) {v : Pl 
 private theorem under_eq {v : Pl F} (u : PlacesOver E v) : u.1.under (𝓞 F) = v :=
   HeightOneSpectrum.ext u.2.over.symm
 
-end Types
 
-section Commute
 variable {σ : E ≃ₐ[F] E} {n : ℕ} {q : Pl F} {w₀ : PlacesOver E q}
 
 private theorem commute_of_stable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -507,7 +503,6 @@ private theorem clause3 [IsGalois F E] (μ : Measure (normOneGL (K := E) (n := n
   have h := commute_of_stable _ hcl U hfw hbw
   rwa [hU] at h
 
-end Commute
 
 end TwB
 end UpperTheory.ConvolutionTheory.L1

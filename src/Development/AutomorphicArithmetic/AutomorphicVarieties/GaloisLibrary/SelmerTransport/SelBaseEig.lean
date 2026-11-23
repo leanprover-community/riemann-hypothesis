@@ -43,7 +43,6 @@ namespace UpperTheory.V.Base.SelmerBaseEigenCoordinates
 
 open TensorProduct
 
-section Abstract
 
 variable {R O ι : Type} [CommRing R] [CommRing O] [Algebra R O] [Fintype ι] (b : Module.Basis ι R O)
   {N N' : Type} [AddCommGroup N] [Module R N] [AddCommGroup N'] [Module O N']
@@ -118,9 +117,7 @@ private theorem Coords.length [IsLocalRing R] [IsLocalRing O] [IsLocalHom (algeb
         conv_lhs => rw [← hφψ y, ← hφs, hψφ] }
   rw [e.length_eq, IsLocalRing.length_baseChange]
 
-end Abstract
 
-section Coh
 
 variable {G : Type} [Group G] [TopologicalSpace G]
   {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
@@ -148,7 +145,6 @@ private def hMap : H1U ρ U →+ H1U ρ' U :=
 private theorem hMap_mk (z : Z1U ρ U) :
     hMap ρ ρ' u hu U (Submodule.Quotient.mk z) = Submodule.Quotient.mk (zMap ρ ρ' u hu U z) := rfl
 
-end Coh
 
 end UpperTheory.V.Base.SelmerBaseEigenCoordinates
 

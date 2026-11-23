@@ -42,7 +42,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C
 open scoped TensorProduct InnerProductSpace ComplexConjugate Pointwise
 
-section Abstract
 
 variable {G : Type*} [Group G]
 
@@ -145,9 +144,7 @@ private theorem cos_rng (hF : Fac J B L) (hx : Dom J B L x) (hy : Dom J B L y) (
     convert hi using 1
     group
 
-end Abstract
 
-section Conc
 
 open Parabolic Cartan Iwasawa GLnLocal ValuativeRel
 
@@ -209,9 +206,7 @@ private theorem iw_dom {ν : Fin n → ℤ} (hν : Antitone ν) :
         exact nz ((mem_oppositeUnipotentRadical.1 hzN).1 i j (not_le.1 hlt))
       simpa using hν hji
 
-end Conc
 
-section Op
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
   (w : Pl K)
@@ -287,7 +282,6 @@ private theorem uiw_mul (a b : Fin n → ℤ) (ha : Antitone a) (hb : Antitone b
     (fun _ _ _ _ h1 h2 h3 h4 e => cos_inj iw_fac (iw_dom ha) (iw_dom hb) h1 h2 h3 h4 e)
     (cos_rng iw_fac (iw_dom ha) (iw_dom hb))
 
-end Op
 
 theorem UpperTheory.ConvolutionTheory.Tf.uiwPow :
     ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (w : Pl K) (ν ν' : Fin n → ℤ), Antitone ν → Antitone ν' →

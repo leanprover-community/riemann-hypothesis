@@ -42,7 +42,6 @@ open GlobalTheory.UPel.HT GlobalTheory.UPel.HT.EtLev
 
 namespace UpperTheory.Gal.FiniteEtaleModels.O
 
-section Core
 
 variable {A M : Type} [CommRing A] [AddCommGroup M] [Module A M]
 
@@ -192,7 +191,6 @@ private theorem lev_step (𝔟 : Ideal A) (ε b : A) (h1 : 1 - ε ∈ 𝔟) (h2 
   rw [e]
   exact sub_mem (Submodule.smul_mem_smul h2 Submodule.mem_top) (Submodule.smul_mem_smul h1 Submodule.mem_top)
 
-end Core
 
 private theorem lift_of_eq (A M : Type) [CommRing A] [IsDedekindDomain A] [AddCommGroup M] [Module A M]
     [Module.Finite A M] [Module.Projective A M] (u 𝔞 : Ideal A) (hu : u ≠ ⊥) (hf : ∃ f : ℕ, u ^ f ≤ 𝔞)

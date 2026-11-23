@@ -47,7 +47,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.Gal.KunnethLefschetz.G
 
-section Alg
 variable {R B : Type} [CommRing R] [CommRing B] [Algebra R B] {D : ℕ}
 
 private def shear (u : Fin D → B) : MvPolynomial (Fin D) B ≃ₐ[B] MvPolynomial (Fin D) B :=
@@ -119,9 +118,7 @@ private theorem etale_diff (u : Fin D → B)
     (Algebra.TensorProduct.comm R B B).bijective)
   exact RingHom.Etale.stableUnderComposition _ _ (RingHom.Etale.of_bijective
     (shear u).bijective) hE
-end Alg
 
-section Geo
 variable {R : Type} [CommRing R]
 
 private theorem fromSpec_hom (Z : Sch R) {U : Z.left.Opens} (hU : IsAffineOpen U) :
@@ -187,7 +184,6 @@ private theorem etale_prod (Z : Sch R) {U : Z.left.Opens} (hU : IsAffineOpen U) 
     rw [← key, Category.assoc, Iso.inv_hom_id, Category.comp_id]
   have hE : Etale (Spec.map (CommRingCat.ofHom φ)) := by rw [key']; infer_instance
   exact (HasRingHomProperty.Spec_iff (P := @Etale)).mp hE
-end Geo
 
 theorem dCoord : DCoord := by
   intro R _ Z D c

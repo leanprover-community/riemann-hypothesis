@@ -261,7 +261,6 @@ theorem UpperTheory.V.Loc.unrFil {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [
   simp only [h1, h2] at this
   exact ⟨fun h => this.1 fun g => h _, fun h => this.2 fun g => h _⟩
 
-section Ext
 
 variable {l : ℕ} [Fact l.Prime] {G : Type} [Group G] (φ : G →* GQ l)
 
@@ -412,7 +411,6 @@ private theorem rat_case [TopologicalSpace G] [IsTopologicalGroup G] (hφ : IsOp
   · intro h
     exact crUnr φ hφ _ hρ' 0 fun g hg x => by simp [extRep_apply, hI g hg, h g hg]
 
-end Ext
 
 theorem UpperTheory.V.Loc.z1fUnr :
     LocalPublishedTheorems → ∀ {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : G →* GQ l) (hφ : IsOpenEmbedding φ) {A : Type} [CommRing A] [Algebra ℚ_[l] A] {V : Type} [AddCommGroup V] [Module A V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] [IsTopologicalAddGroup V] [ContinuousConstSMul A V] (ρ : Representation A G V), ContAction ρ → (∀ g, φ g ∈ Iq l → ρ g = 1) → ∀ c ∈ Z1 ρ, (c ∈ UpperTheory.V.Loc.finiteCocycles φ ρ ↔ ∀ g, φ g ∈ Iq l → c g = 0) := by

@@ -40,7 +40,6 @@ open scoped Classical
 
 namespace UpperTheory.ConvolutionTheory.R2.I
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (D : Dat F E) (v : P F) (θ : Kv v)
@@ -265,7 +264,6 @@ private theorem nu_J {J : GLv v →* GL (Fin 2) (A E)} (hs : Splt D v θ J) (x :
   rw [t, s]
   ring
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.R2.I
 

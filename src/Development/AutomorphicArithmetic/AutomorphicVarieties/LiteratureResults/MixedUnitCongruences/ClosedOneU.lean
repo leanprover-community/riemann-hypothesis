@@ -44,7 +44,6 @@ import ReciprocityTheory.NeutralLocalFields.Reciprocity
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.MainNotions.N Polynomial
 open GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Base UpperTheory.V.Sd
 
-section SlopeTestRemainingChoices
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -91,4 +90,3 @@ private theorem cyc_mem (s : G F Ω) : cycBar F Ω l s ^ (l - 1) ∈ oneU l := b
     map_one, ZMod.pow_card_sub_one_eq_one, sub_self]
   exact ((cycZ F Ω l s).isUnit.map _).ne_zero
 
-end SlopeTestRemainingChoices

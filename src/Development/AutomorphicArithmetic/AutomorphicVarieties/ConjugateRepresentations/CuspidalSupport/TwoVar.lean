@@ -44,7 +44,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.V.Cj.S
 
-section SlopeTestRemainingChoices
 
 variable {X Y V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
 
@@ -54,7 +53,6 @@ private noncomputable def sl1 (jW : W →ₗ[ℂ] (Y → ℂ)) (y : Y) : V ⊗[�
 private theorem slice_first_tmul (jW : W →ₗ[ℂ] (Y → ℂ)) (y : Y) (v : V) (w : W) : sl1 jW y (v ⊗ₜ[ℂ] w) = jW w y • v := by
   simp [sl1]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Cj.S
 

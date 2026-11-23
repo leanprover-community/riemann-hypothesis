@@ -41,7 +41,6 @@ open MeasureTheory GroundTheory.Automorphic.Spherical UpperTheory.Gal.Gen
 
 namespace UpperTheory.Gal.CongruenceSubgroupGeneration
 
-section Val
 
 variable {F Γ : Type*} [Field F] [LinearOrderedCommGroupWithZero Γ] (v : Valuation F Γ) {a : ℕ}
 
@@ -152,7 +151,6 @@ private theorem Jc_pow {c r : Γ} {hc : c ≤ 1} {hrc : r * c ≤ 1} (hcr : c �
   rw [← inv_pow]
   exact pow_sub_mem hcr hl ((Jc v c hc).inv_mem hx)
 
-end Val
 
 end UpperTheory.Gal.CongruenceSubgroupGeneration
 

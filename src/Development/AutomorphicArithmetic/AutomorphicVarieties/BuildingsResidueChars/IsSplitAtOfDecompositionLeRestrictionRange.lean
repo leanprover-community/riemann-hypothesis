@@ -35,7 +35,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open UpperTheory.V.W (Plc Lp resP)
 open scoped Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {F E Ω : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Field Ω] [Algebra F E] [Algebra F Ω] [Algebra E Ω]
   [IsScalarTower F E Ω]
@@ -70,7 +69,6 @@ private theorem place_between {A : ValuationSubring Ω} {v : HeightOneSpectrum (
     exact Ideal.comap_bot_of_injective _ (FaithfulSMul.algebraMap_injective _ _)
   exact ⟨⟨P, inferInstance, hne⟩, hP, HeightOneSpectrum.ext hu.symm⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.isSplitAt_of_decomposition_le_restriction_range :
     ∀ (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (A : ValuationSubring Ω) (v : Plc (Lp L)), IsPlaceOver A v → Dec (F := Lp L) A ≤ (resP L Ω).range → ∀ w : Plc L, w.under (𝓞 (Lp L)) = v → IsSplitAt w := by

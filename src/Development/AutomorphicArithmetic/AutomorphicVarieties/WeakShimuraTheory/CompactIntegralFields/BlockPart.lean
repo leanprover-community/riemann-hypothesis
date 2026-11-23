@@ -38,7 +38,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
-section SlopeTestRemainingChoices
 
 variable {R : Type} [CommRing R]
 
@@ -219,7 +218,6 @@ private theorem span_bp {H K : Type} [Group H] [Field K] (ρ : H →* M4 R) (y :
     have : (a • x).map y = y a • x.map y := by ext i j; simp
     rw [this, bp_smul]; exact Submodule.smul_mem _ _ hx
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Ws.blockPart :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ (𝔞 : Amb l) r, VPt D 𝔞 r → ∀ u, KPair D 𝔞 r u → Ge r 0 2 → Ge r 2 0 → ((∀ i j, lamW i < lamW j → ¬ Ge r i j) ∨ ∀ i j, lamW j < lamW i → ¬ Ge r i j) →

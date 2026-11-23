@@ -44,7 +44,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.CA UpperTheory.V.Pa Polynomial
 open scoped TensorProduct
 
-section aux
 
 variable {B N : Type} [CommRing B] [AddCommGroup N] [Module B N] (Φ : OddForm B N)
 
@@ -80,7 +79,6 @@ private theorem compl_oddPart : _root_.IsCompl (1 : Submodule B Φ.Ext) (oddPart
     · change 0 + z.od = z.od
       simp
 
-end aux
 
 private theorem oB_eq_iff {n a : ℕ} (h1 : 1 ≤ a) (h2 : a < n) (i j : Fin n) :
     oB n a i = oB n a j ↔ (((i : ℕ) < a) ↔ ((j : ℕ) < a)) := by

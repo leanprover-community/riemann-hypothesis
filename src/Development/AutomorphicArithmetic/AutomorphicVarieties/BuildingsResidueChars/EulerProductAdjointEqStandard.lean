@@ -40,7 +40,6 @@ open scoped Classical
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -80,7 +79,6 @@ private theorem unr_inv {a : kˣ →* ℂˣ} (ha : IsUnramifiedChar a) : IsUnram
   isUnramifiedChar_iff.2 fun u hu => by
     rw [MonoidHom.inv_apply, isUnramifiedChar_iff.1 ha u hu, inv_one]
 
-end Loc
 
 private theorem tri_inv (a x : ℂˣ) : (tri a x).map (·⁻¹) = tri a x⁻¹ := by
   simp only [tri, Multiset.insert_eq_cons, Multiset.map_cons, Multiset.map_singleton, Units.val_mul,

@@ -52,7 +52,6 @@ open scoped MatrixGroups Matrix
 open GlobalTheory.KZ GlobalTheory.K4 GlobalTheory.Glue GlobalTheory.KummerEisensteinGalois UpperTheory.Kd.L
 
 namespace UpperTheory.Kd.L
-section Helpers
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω]
 
 private theorem cg_mul {A : ValuationSubring Ω} {l n : ℕ} {x y : Ω} (a : Ω) (ha : a ∈ A) (h : CgA A l n x y) :
@@ -151,7 +150,6 @@ private theorem exists_series (A : ValuationSubring Ω) (f : ℚ → Ω) (hf : �
     · exact A.zero_mem
   · exact if_pos ⟨i, rfl⟩
 
-end Helpers
 
 section Fib
 
@@ -211,7 +209,6 @@ private theorem sum_fib {M : Type*} [AddCommMonoid M] (l n m N : ℕ) [Fact l.Pr
 
 end Fib
 
-section Th
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω]
 
 private theorem appr_one (l n : ℕ) [Fact l.Prime] (hn : 1 ≤ n) : (1 : ℤ_[l]).appr n = 1 := by
@@ -295,7 +292,6 @@ private theorem final_step {A : ValuationSubring Ω} {l n c cc e c₀ m : ℕ} {
   rw [e1] at s1
   exact cg_trans s1 (cg_trans s2 s3)
 
-end Th
 end UpperTheory.Kd.L
 
 theorem UpperTheory.Kd.L.law :

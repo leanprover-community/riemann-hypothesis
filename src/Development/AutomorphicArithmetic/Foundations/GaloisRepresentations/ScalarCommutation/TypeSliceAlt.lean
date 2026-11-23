@@ -87,7 +87,6 @@ private theorem finite_cosets {G : Type} [Group G] [TopologicalSpace G] [IsTopol
   intro q hq
   exact ⟨q.out, subset_tsupport _ hq, QuotientGroup.out_eq' q⟩
 
-section Core
 
 variable {G A : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [MeasurableSpace A]
 
@@ -175,9 +174,7 @@ private def noTerm (e : G → ℂ) (hc : Continuous e) (hs : HasCompactSupport e
     have := h2 (g⁻¹ * x)
     simpa only [lreg_apply, mul_assoc] using this⟩
 
-end Core
 
-section Core2
 
 variable {G A : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [MeasurableSpace A]
 
@@ -387,9 +384,7 @@ private theorem core (μ : Measure A) (U : A → G)
 
     simpa only [map_sum, map_smul, smul_eq_mul, map_zero] using this
 
-end Core2
 
-section Slice
 
 variable {k : Type} [Field k] [TopologicalSpace k] [IsTopologicalRing k] {n a b : ℕ}
 
@@ -447,7 +442,6 @@ private theorem slice_compact (ε : Fin n ≃ Fin a ⊕ Fin b) (u : (Fin a → F
   simp only [ψ, h2, hu, Matrix.reindex_apply, Matrix.submatrix_apply, Equiv.symm_symm, Equiv.apply_symm_apply,
     Matrix.fromBlocks_apply₁₂, Matrix.of_apply]
 
-end Slice
 
 theorem typeSlice : TypeSlice := by
   intro k _ _ _ _ _ n J hJo hJc χ hχ hcusp a b ε ha hb u hu h

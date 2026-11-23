@@ -41,7 +41,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.Gal.Ord
 
-section SlopeTestRemainingChoices
 
 open GlobalTheory.Published.AbelianDeRham
 
@@ -106,9 +105,7 @@ private theorem no_up (p : ℕ) [Fact p.Prime] (hR : (p : R) = 0) (hR' : (p : R'
   | add a b _ _ ha hb => rw [map_add (f := _)]; exact Submodule.add_mem _ ha hb
   | smul r a _ ha => rw [map_smul]; exact Submodule.smul_mem _ _ ha
 
-end SlopeTestRemainingChoices
 
-section Down
 
 
 variable {K L : Type} [Field K] [Field L] [Algebra K L] {A : Over (Sp K)} [GrpObj A]
@@ -190,7 +187,6 @@ private theorem no_down (p : ℕ) [Fact p.Prime] (hK : (p : K) = 0) (hL : (p : L
   have h6 := hbij.1 h5
   exact mem_of_subtype_baseChange_eq_one_tmul W _ s h6
 
-end Down
 
 end UpperTheory.Gal.Ord
 

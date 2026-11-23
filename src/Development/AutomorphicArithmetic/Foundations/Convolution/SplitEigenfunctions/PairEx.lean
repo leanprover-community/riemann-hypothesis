@@ -45,7 +45,6 @@ open UpperTheory.ConvolutionTheory.RankTwoDescent
 
 namespace UpperTheory.ConvolutionTheory.RankTwoDescent
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -63,7 +62,6 @@ private theorem ii_smul (N : MeasE E) {Ψ : GL (Fin 2) (A E) → ℂ} (h : Bd Ψ
     (II N fun x => c * Ψ x) = c * II N Ψ := by
   simpa [ii_zero] using (iiLaws E N _ bd_zero).1 Ψ h c
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.RankTwoDescent
 

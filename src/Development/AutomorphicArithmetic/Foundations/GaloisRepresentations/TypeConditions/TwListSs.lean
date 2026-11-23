@@ -35,11 +35,9 @@ namespace GlobalTheory.EigenPoint
 
 open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
 
-section Alg
 
 variable {Γ : Type} [Group Γ] {K : Type} [Field K]
 
-end Alg
 
 variable (D : D7) (i : D.nd.Loc)
 

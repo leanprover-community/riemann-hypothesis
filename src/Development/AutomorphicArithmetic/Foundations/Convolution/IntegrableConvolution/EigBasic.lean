@@ -42,7 +42,6 @@ open scoped ComplexConjugate InnerProductSpace
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section Abs
 
 variable {G : Type} [Group G] [TopologicalSpace G]
   {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -168,7 +167,6 @@ private lemma oloc_abs (π : UnitaryRep G H) {J : Subgroup G} {χ : G → ℂ} (
   rw [prj_eq_avg π hJ hχ m hm, avg, ← integral_inner (integrableOn_avg π hJ hχ m v) u, e,
     integral_indicator hmeas]
 
-end Abs
 
 end UpperTheory.ConvolutionTheory.L1
 

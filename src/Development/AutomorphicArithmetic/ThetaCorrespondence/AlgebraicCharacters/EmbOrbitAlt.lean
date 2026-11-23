@@ -34,7 +34,6 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 open UpperTheory.Lit.CharWD GlobalTheory.Published
 
-section SlopeTestRemainingChoices
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual UpperTheory.V.W
 
@@ -108,7 +107,6 @@ private theorem eo_abs {k K Ω : Type} [Field k] [Field K] [Field Ω] [CharZero 
     obtain ⟨u, hu⟩ := hmem
     exact ⟨u, hu.symm⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Lit.CharWD.embOrbit :
     EmbOrbit := by

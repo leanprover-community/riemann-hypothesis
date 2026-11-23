@@ -31,7 +31,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.GalOfCusp TensorProduct Module
 open UpperTheory.Gal.crystallineComparison
 
-section Abstract
 
 variable {L M : Type} [Field L] [AddCommGroup M] [Module L M]
 
@@ -117,7 +116,6 @@ private theorem nil_abs {U : Type} (D S : Submodule L M) (hSD : S ≤ D) (T : En
   obtain ⟨hy, e⟩ := key x.1 (hcl x)
   exact e
 
-end Abstract
 
 theorem UpperTheory.Gal.crystallineComparison.nilWeil_of :
     NilWeil := by

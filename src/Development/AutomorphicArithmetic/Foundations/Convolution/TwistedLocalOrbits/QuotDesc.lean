@@ -54,7 +54,6 @@ open scoped ENNReal NNReal Pointwise
 
 namespace UpperTheory.ConvolutionTheory.Loc
 
-section Meas
 
 variable {G T : Type} [Group G] [MeasurableSpace G] [MeasurableMul₂ G] [MeasurableInv G]
   [Group T] [MeasurableSpace T] [MeasurableInv T] {i : T →* G}
@@ -174,7 +173,6 @@ private theorem integral_desc {j : H →* G} (hj : Measurable j) {ι : T →* H}
   simp only [mul_comm (Φ _), mul_comm (∫ κ in (K : Set G), Φ (j _ * κ) ∂μG)]
   exact h2
 
-end Meas
 
 private theorem mass_ne_top {G T : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [SecondCountableTopology G]
     [MeasurableSpace G] [BorelSpace G] [Group T] [TopologicalSpace T] [IsTopologicalGroup T] [LocallyCompactSpace T] [T2Space T]

@@ -33,7 +33,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open MeasureTheory NumberField IsDedekindDomain MvPolynomial Filter Topology UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Ci
 
-section SlopeTestRemainingChoices
 
 open scoped InnerProductSpace
 
@@ -137,7 +136,6 @@ private theorem abs_form (hE : ExpForm) (l : ℕ) (hl : 0 < l) (V : Submodule �
   | zero => rw [pow_zero, pow_zero, one_mul]; rfl
   | succ j ih => rw [pow_succ', pow_succ', mul_assoc, ← ih, cprs_mul_left _ _ _ (hc 0)]; rfl
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.Ci.trExp :
     ExpForm → TrExp := by

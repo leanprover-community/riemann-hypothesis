@@ -39,7 +39,6 @@ open MeasureTheory NumberField IsDedekindDomain Filter GroundTheory.Automorphic 
 open GroundTheory.Automorphic.CuspidalSpectrum GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets GlobalTheory.PRep Formalism.BasicNotions GlobalTheory.CuspRep GlobalTheory.SmGL UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.C.Sf
 open scoped InnerProductSpace
 
-section Abs
 
 variable {G X : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup X] [Module ℂ X]
 
@@ -141,7 +140,6 @@ private theorem trace_ne [MeasurableSpace G] [BorelSpace G] (m : Measure G) [m.I
   rw [hres, map_smul, LinearMap.trace_id, smul_eq_mul]
   exact mul_ne_zero hc (Nat.cast_ne_zero.2 Module.finrank_pos.ne')
 
-end Abs
 
 theorem UpperTheory.ConvolutionTheory.T.unitTrace :
     UpperTheory.ConvolutionTheory.T.UnitTrace := by

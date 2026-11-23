@@ -41,7 +41,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
 
-section SlopeTestRemainingChoices
 
 variable {C : Type} [CommRing C] {m : ℕ} {I M : Ideal C}
 
@@ -172,7 +171,6 @@ private theorem near_of {x y : GG (m := m) (R := C)} {X : Matrix (Fin m) (Fin m)
   change x.mat * _ = _
   rw [hm, GG.mat, Matrix.mul_assoc, Units.mul_inv, Matrix.mul_one]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.UnitaryThreeInertia.lt_corr :
     ∀ {O R D : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R] [IsCO O R] [Finite R] [Group D] [TopologicalSpace D] [IsTopologicalGroup D] (η : D →* ℤˣ) (Ψ : D →* Oˣ) (K : Ideal R) (j : ℤ),

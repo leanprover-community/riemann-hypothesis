@@ -42,7 +42,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 
 variable {F G : Type} [Field F] [Group G] {n : ℕ}
 
@@ -202,7 +201,6 @@ private theorem evP_sah (D : DetFr F G n) (z : G → Matrix (Fin n) (Fin n) F)
     show D.χF g • z D.g₀ - z D.g₀ = (D.χF g - 1) • z D.g₀ by rw [sub_smul, one_smul], ← e2,
     smul_smul, inv_mul_cancel₀ hne, one_smul]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Pa.Det.evenPart :
     ∀ {F G : Type} [Field F] [Group G] {n : ℕ} (D : DetFr F G n) (s : F) (ph : G → Matrix (Fin n) (Fin n) F), s * s = 1 → TwCoc D.χF D.r Set.univ ph → (∀ g, ph g ∈ Ev F F n D.a) → (∀ g, ph (D.σ g) = s • (ph g)ᵀ) → (∀ g ∈ D.G', (ph g * D.r g).trace = 0) → ∃ Y ∈ Ev F F n D.a, s • Yᵀ = Y ∧ ∀ g, ph g = dTw D.χF D.r Y g := by

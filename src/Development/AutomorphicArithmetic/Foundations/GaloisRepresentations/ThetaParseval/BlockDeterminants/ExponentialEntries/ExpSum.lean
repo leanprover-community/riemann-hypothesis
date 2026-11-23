@@ -45,7 +45,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH GlobalTheory.RealLift Uppe
 
 namespace UpperTheory.TP.RP
 
-section FiniteDim
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
@@ -85,9 +84,7 @@ private theorem Ex_add {A B : Module.End ℂ V} (h : Commute A B) : Ex (A + B) =
   simp only [Ex, map_add (f := _)]
   exact (congrArg em.symm (NormedSpace.exp_add_of_commute hc)).trans (map_mul _ _ _)
 
-end FiniteDim
 
-section Stable
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
@@ -132,9 +129,7 @@ private theorem isExp_add {A B U W : Module.End ℂ V} (hU : IsExp A U) (hW : Is
   rw [e]
   exact hasSum_compat cS (isExp_Ex _) ⟨v, hv⟩ l
 
-end Stable
 
-section Tensor
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {V : ι → Type} [∀ i, AddCommGroup (V i)]
   [∀ i, Module ℂ (V i)]
@@ -244,7 +239,6 @@ private theorem isExp_partial (L U : ∀ i, Module.End ℂ (V i)) (hL : ∀ i, L
       rw [LinearMap.sum_apply]
       exact Submodule.sum_mem _ fun w _ => hN w y hy
 
-end Tensor
 
 end UpperTheory.TP.RP
 

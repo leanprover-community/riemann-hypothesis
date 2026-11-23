@@ -46,7 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 open MeasureTheory NumberField IsDedekindDomain Filter GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
 open GroundTheory.Automorphic.CuspidalSpectrum GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets GlobalTheory.PRep Formalism.BasicNotions GlobalTheory.CuspRep GlobalTheory.SmGL UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C
 
-section Abs
 
 variable {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
   [AddCommGroup V] [Module ℂ V]
@@ -154,7 +153,6 @@ private theorem hasTrace_hk (m : Measure G) [IsFiniteMeasureOnCompacts m] [m.IsM
   rw [h1, h2]
   exact (LinearMap.trace_comp_comm' s j).symm
 
-end Abs
 
 section Eig
 
@@ -186,7 +184,6 @@ private theorem exists_powerSums {W : Type} [AddCommGroup W] [Module ℂ W] [Fin
 
 end Eig
 
-section Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
 
@@ -241,7 +238,6 @@ private theorem iw_local [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n
   rw [hpow, hZ, ← hdiag] at h
   exact h
 
-end Loc
 
 theorem UpperTheory.ConvolutionTheory.C.iwPow :
     UpperTheory.ConvolutionTheory.C.IwPow := by

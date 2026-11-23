@@ -81,7 +81,6 @@ private theorem rt_injective : Function.Injective (rt : ℚ → A ℚ) := by
 private theorem rp_injective : Function.Injective (rp : (Fin 4 → ℚ) → V4 ℚ) := fun _ _ h =>
   funext fun i => rt_injective (congrFun h i)
 
-section Act
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {D : Dat ℚ E}
   {ρ : GL (Fin 2) (A E) →* GL (Fin 4) (A ℚ)}
@@ -139,7 +138,6 @@ private theorem term_le (hact : ∀ h v, D.act h v = (ρ h).val *ᵥ v) {K K' : 
   exact (hlin _).trans ((mul_le_mul_of_nonneg_right (le_abs_self _) hw1).trans
     (mul_le_mul_of_nonneg_left (hz _) (abs_nonneg _)))
 
-end Act
 
 private theorem pow_bound {C₀ C₂ H t : ℝ} (n : ℕ) (hH : 0 ≤ H) (ht : 0 < t) (h : H ≤ C₂ * t) :
     (C₀ * H ^ 2) ^ n ≤ (|C₀| * |C₂| ^ 2) ^ n * t ^ (2 * n) := by

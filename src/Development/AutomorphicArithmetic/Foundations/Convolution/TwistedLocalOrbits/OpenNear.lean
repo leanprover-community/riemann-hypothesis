@@ -42,7 +42,6 @@ import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.Iwahor
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Matrix GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets UpperTheory.ConvolutionTheory.Loc
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E]
 
@@ -176,9 +175,7 @@ private theorem lin_ex (σ : E ≃+* E) (q : ℕ) (hi : ∀ x, valuation E (σ x
     rw [map_mul, hiv]
     exact mul_le_of_le_one_left' (hn j)
 
-end SlopeTestRemainingChoices
 
-section Bd
 
 variable {E : Type} [Field E] [ValuativeRel E] {n : ℕ}
 
@@ -221,7 +218,6 @@ private theorem Bd.isUnit [TopologicalSpace E] [IsNonarchimedeanLocalField E] (h
     rw [this, hN, sub_self, add_zero]
   exact IsUnit.of_mul_eq_one _ this
 
-end Bd
 
 theorem UpperTheory.ConvolutionTheory.Loc.openNear :
     ∀ (E : Type) [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E] (n : ℕ) (σ : E ≃+* E) (q : ℕ), Cyc σ q → ∀ r ρ : ValueGroupWithZero E, r < valuation E (q : E) → ρ ≤ r →

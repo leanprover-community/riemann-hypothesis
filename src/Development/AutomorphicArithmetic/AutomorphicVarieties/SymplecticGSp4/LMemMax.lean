@@ -51,7 +51,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -320,7 +319,6 @@ private theorem rbar_ph (h : D.Good) : D.rbar D.ph = D.rbar (D.sg l) := by
   obtain ⟨k, hk⟩ := Nat.dvd_factorial f.pos hn'
   rw [map_pow, map_pow, Units.val_pow_eq_pow_val, hk, pow_mul, ← hf, FiniteField.pow_card_pow]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.GradeZeroInterpolatingElement.facts :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → (∀ p ∈ D.Sb, p.Prime ∧ p ≠ l ∧ l ∣ p - 1 ∧ ∀ g ∈ D.Gp p, Raw.bar D.om g = 1) ∧ (∀ v ∈ D.T, D.sg v ∈ D.Gp v ∧ Raw.bar D.om (D.sg v) = 1 ∧ ∀ i j, lamW i ≠ lamW j → Raw.bar (D.ps i) (D.sg v) ≠ Raw.bar (D.ps j) (D.sg v)) ∧ (∀ i, D.UnrT (D.ps i) 1) ∧ (∀ i, ∀ s ∈ D.Ip l ⊓ D.ψ.ker ⊓ D.om.ker, D.ps i s = chiO ℚ Ω l c.O s ^ D.wts4 i) ∧ (∀ p ∈ D.Sb, ∀ s ∈ D.Ip p, D.al s = 1 ∧ D.Psi s = D.ψ s ∧ D.th s = D.ψ s) ∧ (∀ i, D.ps i * D.ps i.rev = D.th) ∧ Function.Injective (fun i => (D.ps i D.s0 : c.O)) ∧ (D.al D.cc = -1 ∧ D.be D.cc = -1 ∧ D.th D.cc = -1) ∧ D.ph ∈ D.Gp l ∧ D.rbar D.ph = D.rbar (D.sg l) ∧ (∀ i, AdicCont (maximalIdeal c.O) fun g => (D.ps i g : c.O)) ∧ IsOpen (D.rbar.ker : Set (G ℚ Ω)) ∧ IsOpen (D.om.ker : Set (G ℚ Ω)) ∧ (∀ i A, Raw.Away D.S A → Ine (F := ℚ) A ≤ (D.ps i).ker) := by

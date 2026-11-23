@@ -39,7 +39,6 @@ open scoped ContDiff
 
 namespace UpperTheory.V.Lit
 
-section Comp
 
 variable {E : Type} [Field E] [NumberField E] [IsTotallyReal E]
 
@@ -55,9 +54,7 @@ private theorem split (x : Ad E) : x = TR.sInf E (TR.pInf E x) + zf (pFin E x) :
 variable {σ : E ≃+* E} {s : Ad E →+* Ad E} (hs : IsAdExt (σ : E →+* E) s)
 include hs
 
-end Comp
 
-section Pull
 
 variable {E : Type} [Field E] [NumberField E] [IsTotallyReal E] {a : ℕ}
 
@@ -67,6 +64,5 @@ variable {σ : E ≃+* E} {s : Ad E →+* Ad E} (hs : IsAdExt (σ : E →+* E) s
 include hs
 
 
-end Pull
 
 end UpperTheory.V.Lit

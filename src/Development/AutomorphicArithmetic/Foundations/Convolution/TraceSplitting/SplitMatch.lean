@@ -48,7 +48,6 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.Convolut
 
 namespace UpperTheory.ConvolutionTheory.T
 
-section Vol
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
@@ -151,9 +150,7 @@ private theorem cvAll_ind (hU : MeasurableSet (U : Set G)) (m : ℕ) : ∀ (f : 
     rw [integral_const_mul, hx]
     ring
 
-end Vol
 
-section Scale
 
 variable {n : ℕ} {R S : Type*} [CommRing R] [CommRing S] [TopologicalSpace R]
   [MeasurableSpace (GL (Fin n) R)] [MeasurableSpace (GL (Fin n) S)]
@@ -176,7 +173,6 @@ private theorem match_scale (ι : R →+* S) (s : S →+* S) (l : ℕ) (μS : Me
     rw [orb_mul] at this
     exact (mul_eq_zero.1 this).resolve_left hr
 
-end Scale
 
 private theorem cmp_eq' {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E ≃ₐ[F] E} {m n : ℕ}
     {v : HeightOneSpectrum (𝓞 F)} (D : UpperTheory.ConvolutionTheory.L1.Split (incFin E v) (galFin σ v) m)

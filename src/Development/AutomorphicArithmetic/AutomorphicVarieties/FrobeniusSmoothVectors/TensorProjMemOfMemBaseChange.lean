@@ -43,7 +43,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 variable {k K : Type} [Field k] [Field K] [Algebra k K]
 
@@ -249,7 +248,6 @@ private theorem rank_H1_baseChange_eq [CompactSpace G] [Finite V] :
       rw [← cocycles_baseChange_eq_span loc ρ b ρ' hρ] at hx'
       exact Submodule.smul_mem _ a (hx hx')
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Fr.n4 :
     ∀ {k K G W V : Type} [Field k] [Field K] [Algebra k K] [Group G] [TopologicalSpace G] [CompactSpace G] [AddCommGroup W] [Module k W] [Module.Finite k W] {Gv : V → Type} [∀ v, Group (Gv v)] [Finite V] (loc : ∀ v, Gv v →* G) (ρ : Representation k G W) (b : V → Submodule k W) (ρ' : Representation K G (TensorProduct k K W)), (∀ g, ρ' g = (ρ g).baseChange K) → Z1C loc ρ' (fun v => (b v).baseChange K) = Submodule.span K ((fun y : (G → W) × (V → W) => (fun g => (1 : K) ⊗ₜ y.1 g, fun v => (1 : K) ⊗ₜ y.2 v)) '' (Z1C loc ρ b : Set ((G → W) × (V → W)))) ∧ Module.rank K (H1C loc ρ' fun v => (b v).baseChange K) = Module.rank k (H1C loc ρ b) := by

@@ -41,7 +41,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section SlopeTestRemainingChoices
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -358,7 +357,6 @@ private theorem br_index (j : ℕ) (hj : j ≤ n) :
   rw [← h4, ← Subgroup.index_comap, h1, Subgroup.index_ker, h2, Subgroup.card_top, ← h3]
   exact Nat.card_fun
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Hi.glBridge :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V), ((glIwa k n).jacKer π = GlobalTheory.PRep.twKer π (unipB k (Fin n)) 1) ∧ (GlobalTheory.PRep.IsSmooth π → (glIwa k n).Smooth π) ∧ (∀ c, IsOpen ((glIwa k n).I1 c : Set (GL (Fin n) k)) ∧ IsCompact ((glIwa k n).I1 c : Set (GL (Fin n) k))) ∧ (∀ U : Subgroup (GL (Fin n) k), IsOpen (U : Set (GL (Fin n) k)) → ∃ c, Kc k n c ≤ U) ∧ (∀ c, Kc k n (c + 1) ≤ (glIwa k n).I1 c) ∧ (glIwa k n).Iw 0 = iwahori k (Fin n) ∧ valuation k (unif k : k) = uniformizer k ∧ (∀ j ≤ n, ((glIwa k n).Nconj (al k n j)).relIndex (glIwa k n).N = Nat.card 𝓀[k] ^ (j * (n - j))) ∧ (glIwa k n).z = ((List.range n).map (al k n)).prod ∧ ∀ t : (glIwa k n).T, ∃ y : Fin n → Uo k, (t : GL (Fin n) k) = (List.ofFn fun i => (eT k n i (y i) : GL (Fin n) k)).prod ∧ ∀ c, (t : GL (Fin n) k) ∈ (glIwa k n).Tc c → ∀ i, (y i : kˣ) ∈ Uc k (c + 1) := by

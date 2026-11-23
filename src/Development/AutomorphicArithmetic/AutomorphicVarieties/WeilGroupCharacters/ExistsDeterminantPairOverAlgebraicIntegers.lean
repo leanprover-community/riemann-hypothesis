@@ -95,7 +95,6 @@ private theorem qb_fdmod {l : ℕ} [Fact l.Prime] {M : Type} [AddCommGroup M] [M
     ∃ K : IntermediateField ℚ_[l] (PadicAlgCl l), FiniteDimensional ℚ_[l] K ∧ ∀ x, f x ∈ K :=
   _root_.UpperTheory.Reformulated.B.FiniteModuleImageInFiniteExtension.qb_fdmod f
 
-section Ring
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O]
   [Algebra O (PadicAlgCl l)] [IsScalarTower ℤ_[l] O (PadicAlgCl l)]
@@ -232,7 +231,6 @@ private theorem qb_res (A : Subalgebra O (PadicAlgCl l)) [IsCO O A]
   have h1 := (res_eq_zero_iff O A _).2 ((hm (a - algebraMap O A c)).2 (h c rfl))
   rwa [map_sub, AlgHom.commutes, sub_eq_zero] at h1
 
-end Ring
 
 private theorem qb_field {l : ℕ} [Fact l.Prime] (F : GFrame l) {n : ℕ} (ρ : F.G₀ →* GL (Fin n) (PadicAlgCl l))
     (ψ : ∀ v, Fin n → F.Gv v →* (PadicAlgCl l)ˣ) (hρ : ∀ a b, Continuous fun g => mat ρ g a b)

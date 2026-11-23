@@ -75,7 +75,6 @@ private theorem irr_pull_pk {G H V : Type} [Group G] [Group H] [AddCommGroup V] 
   refine ⟨h.1, fun U hU => h.2 U fun g v hv => ?_⟩
   obtain ⟨x, rfl⟩ := hq g
   exact hU x v hv
-section CM
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 private theorem isSplit_prime_pk (hc : IsCMExt (maximalRealSubfield E) E (cj E)) {v : Pl (maximalRealSubfield E)}
     (t : E →ₐ[maximalRealSubfield E] Fv (maximalRealSubfield E) v) : GlobalTheory.UnitaryBC.IsSplitAt (splitPrime t) :=
@@ -115,7 +114,6 @@ private theorem read_pair_pk {n d : ℕ} (w : HeightOneSpectrum (𝓞 E)) (hw : 
     exact hp0
   obtain ⟨i, -, hi⟩ := Finset.exists_ne_zero_of_sum_ne_zero hs
   exact ⟨c i, p, x i, hcU i, fun h y => hce i h y, fun h y hy => hpe h y hy, hi⟩
-end CM
 section Main
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n d : ℕ}
   {B : Base (maximalRealSubfield E) E} {X : Spc (maximalRealSubfield E) E n} {W : Spc (maximalRealSubfield E) E d}
@@ -164,7 +162,6 @@ theorem real_part_k (hP : _root_.GlobalTheory.ThK.IsPair_k B M χX χW om n 0 d 
     rw [← (hp _ (hΘ (Ψ x) φ hφ).2.1).2 k.1, ← h2]
     rfl
 end Main
-section Split
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n d : ℕ}
   {B : Base (maximalRealSubfield E) E} {X : Spc (maximalRealSubfield E) E n} {W : Spc (maximalRealSubfield E) E d}
   {M : Model (cj E) X W} {χX χW : Chr (maximalRealSubfield E) E} {om : Rep (cj E) X W}
@@ -185,7 +182,6 @@ private theorem read_point_pk {a : ℕ} {Y : Spc (maximalRealSubfield E) E a} {�
     rw [hx'] at h1
     have hinj : Function.Injective (complMap (splitPrime_under t)) := (complMap (splitPrime_under t)).injective
     exact Matrix.map_injective hinj h1.symm
-end Split
 section Split2
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n d : ℕ}
   {B : Base (maximalRealSubfield E) E} {X : Spc (maximalRealSubfield E) E n} {W : Spc (maximalRealSubfield E) E d}

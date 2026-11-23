@@ -39,7 +39,6 @@ open NumberField
 
 namespace UpperTheory.Gal.FiniteEtaleModels.O
 
-section Congruences
 
 variable {M : Type} [AddCommGroup M]
 
@@ -122,7 +121,6 @@ private theorem cg_bil {n : ℕ} (B : LinearMap.BilinForm ℤ M) {x x' y y' : M}
   simp [nsmul_eq_mul]
   ring
 
-end Congruences
 
 private theorem cop_pow {q n : ℕ} (hq : q.Prime) (hn : n ≠ 0) :
     (q ^ n.factorization q).Coprime (n / q ^ n.factorization q) :=

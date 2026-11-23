@@ -45,7 +45,6 @@ noncomputable section
 
 namespace UpperTheory.Gal.Int.Geo.Pl.Tj.LocalIndices
 
-section Lin
 
 variable {κ : Type} [Field κ] {n j : ℕ}
 
@@ -181,9 +180,7 @@ private theorem map_stdU_iff (g : GL (Fin n) κ) (hj : j ≤ n) :
     apply Submodule.eq_of_le_of_finrank_eq (stdU_map_le g j h)
     rw [map_finrank]
 
-end Lin
 
-section Idx
 
 variable {κ : Type} [Field κ] {n j : ℕ}
 
@@ -211,9 +208,7 @@ private theorem index_stabS (hj : j ≤ n) :
   unfold stabS
   rw [MulAction.index_stabilizer, MulAction.orbit_eq_univ, Set.ncard_univ]
 
-end Idx
 
-section Loc
 
 open Formalism.UG Formalism.UG.P
 
@@ -305,9 +300,7 @@ private theorem relIndex_eq (n j : ℕ) (hj : j ≤ n) (ϖ : L) (hϖ : ϖ ≠ 0)
   rw [Subgroup.relIndex, hEq, Subgroup.index_comap_of_surjective _ (red_surjective O e n),
     index_stabS]
 
-end Loc
 
-section Adic
 
 
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) [v.asIdeal.IsMaximal]
@@ -348,7 +341,6 @@ private def resEquiv : IsLocalRing.ResidueField (Ov F v) ≃+* (𝓞 F ⧸ v.asI
   have hi : Function.Injective ψ := RingHom.injective ψ
   exact (RingEquiv.ofBijective ψ ⟨hi, hs⟩).symm
 
-end Adic
 
 end UpperTheory.Gal.Int.Geo.Pl.Tj.LocalIndices
 

@@ -36,7 +36,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.Fo
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
@@ -162,7 +161,6 @@ private theorem chain_step (δ : F) (O : Ops F) (φ : S4 F)
     linear_combination (gauss δ v) * hs +
       (gauss δ (v + ∑ p ∈ s, Pi.single p.1 (at1 p.2 (c p)) + Pi.single p.1 (at1 p.2 (c p)))) * ih
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.R2.Fo.annVac :
     ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (δ : F) (O : Ops F) (φ : S4 F), (∀ w i, O.d w i φ = (-2 * Real.pi * kap δ w i) • O.x w i φ) → φ ∈ Vac δ := by

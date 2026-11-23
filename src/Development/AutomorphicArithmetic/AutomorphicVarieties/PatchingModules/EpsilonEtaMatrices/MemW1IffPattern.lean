@@ -45,7 +45,6 @@ import ReciprocityTheory.GaloisValuations.GlobalA
 
 open Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 
 variable {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g n : ℕ}
 
@@ -187,7 +186,6 @@ private theorem key (wi r ri w : Matrix (Fin n) (Fin n) A) (Y K : Fin g → Matr
     _ = a * c * b + a * (Q - (c * P * d - P)) * (b * a) * c * b := by rw [i1]; noncomm_ring
     _ = _ := by noncomm_ring
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Pa.tri :
     ∀ (l : ℕ) [Fact l.Prime] (F : GFrame l) (n : ℕ) (x : NP F n) (k : Kap x) (X : Type) [CommRing X] [Algebra x.A X] (v : F.Vl), (∀ g : F.Gv v, (∀ i j, j < i → (k.wi1 X v * k.ρ1 X (F.φ v g) * k.w1 X v) i j = 0) ∧ (∀ i, (k.wi1 X v * k.ρ1 X (F.φ v g) * k.w1 X v) i i = algebraMap x.A (DD X k.g) (x.ψ v i g : x.A)) ∧ TyPat (x.ty v) (k.wi1 X v * k.ρ1 X (F.φ v g) * k.w1 X v)) ∧ ∀ Z : Matrix (Fin n) (Fin n) (DD X k.g), Z ∈ k.M1 X ↔ TyPat (x.ty v) (k.wi1 X v * Z * k.w1 X v) := by

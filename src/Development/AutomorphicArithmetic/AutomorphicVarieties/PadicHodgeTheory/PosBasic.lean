@@ -44,7 +44,6 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.Bas
 
 namespace UpperTheory.V.Loc
 
-section SlopeTestRemainingChoices
 
 variable {l : ℕ} [Fact l.Prime] {G : Type} [Group G] {E : Type} [Field E] [Algebra ℚ_[l] E]
   {V : Type} [AddCommGroup V] [Module E V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] E V]
@@ -138,7 +137,6 @@ private theorem H0_eq_bot_of_filD_zero_eq_bot (φ : G →* GQ l) (ρ : Represent
   have := congrArg (fun z => TensorProduct.rid ℚ_[l] V (TensorProduct.map LinearMap.id f z)) hm
   simpa [hf] using this
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Loc
 

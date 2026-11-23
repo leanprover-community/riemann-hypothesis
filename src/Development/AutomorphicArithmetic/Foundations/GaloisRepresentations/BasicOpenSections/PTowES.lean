@@ -44,7 +44,6 @@ open Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
 namespace UpperTheory.Gal.Mod.EtaleTowerBaseChange
 
-section Lin
 variable {R : Type*} [CommSemiring R] {ι : Type*} {M : ι → Type*} [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)]
 
 private theorem directSum_lmap_pow_apply (G : ∀ i, Module.End R (M i)) (m : ℕ) (x : DirectSum ι fun i => M i) (i : ι) :
@@ -64,9 +63,7 @@ private theorem lmap_sum_zero {J : Type*} [Fintype J] (c : J → R) (A : J → �
   refine Eq.trans (Finset.sum_congr rfl fun j _ => ?_) hk
   rw [DFinsupp.smul_apply, DirectSum.lmap_apply, directSum_lmap_pow_apply]
 
-end Lin
 
-section Core
 variable {Q L A B : Type*} [Field Q] [Field L] [Algebra Q L] [CharZero L]
   [AddCommGroup A] [Module Q A] [AddCommGroup B] [Module Q B]
 
@@ -133,9 +130,7 @@ private theorem core {n : ℕ} (P : B →ₗ[Q] A) (G : A →ₗ[Q] A) (G' : Mod
   rw [mul_smul, key j, LinearMap.baseChange_smul, LinearMap.smul_apply, Int.cast_smul_eq_zsmul Q, map_zsmul,
     Int.cast_smul_eq_zsmul L]
 
-end Core
 
-section Geo
 variable {k : Type} [Field k] (Ω : Type) [Field Ω] [Algebra k Ω]
 
 private theorem gm_fst {X Y : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) {q : Y ⟶ Spec (CommRingCat.of k)} (u : X ⟶ Y)
@@ -155,7 +150,6 @@ private theorem gm_gal {X Y : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) {q
   · rw [Category.assoc, Category.assoc, galMap_snd, gm_snd Ω p u hu, ← Category.assoc, gm_snd Ω p u hu,
       galMap_snd]
 
-end Geo
 
 private theorem pi_gal (l : ℕ) [Fact l.Prime] {k L : Type} [Field k] [Field L] {H : HTower k} {θ : H.Γ → L} {O : Type}
     [CommRing O] [Algebra O k] (C : Cover H θ O) (Ω : Type) [Field Ω] [Algebra k Ω] (τ : Ω ≃ₐ[k] Ω)

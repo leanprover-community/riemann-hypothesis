@@ -41,7 +41,6 @@ noncomputable section
 
 namespace UpperTheory.Gal.G3.HeckeTraceSheaves
 
-section Two
 variable {k k' : Type} [CommRing k] [CommRing k'] {φ : k →+* k'}
 
 private theorem omegaPullS_app_toOm {X X' : Scheme.{0}} {s : X ⟶ Sp k} {s' : X' ⟶ Sp k'} {g : X' ⟶ X}
@@ -57,9 +56,7 @@ private theorem formRes_formPullS_eq {X Y' : Scheme.{0}} {s : X ⟶ Sp k} {r' : 
   have h := formRes_refl r' (u ⁻¹ᵁ U) (formPullS hu U j x)
   rw [h]
 
-end Two
 
-section Sheaf
 
 variable {k k' : Type} [CommRing k] [CommRing k'] {φ : k →+* k'}
   {X X' Y Y' : Scheme.{0}} {s : X ⟶ Sp k} {s' : X' ⟶ Sp k'} {g : X' ⟶ X}
@@ -141,7 +138,6 @@ private theorem sheaf_id [IsFinite f] [Etale f] [IsFinite f'] [Etale f'] [IsAffi
   · erw [map_add, map_add, map_add]; exact congrArg₂ (· + ·) hy hz
   · rw [sheaf_lhs hg hf a hU, sheaf_rhs hg he hf hf' w a hV hle, hT U hU hV hle b']
 
-end Sheaf
 
 section Coh
 

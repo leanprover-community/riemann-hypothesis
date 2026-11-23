@@ -44,7 +44,6 @@ open GlobalTheory.Parabolic (mem_fixed)
 
 namespace UpperTheory.Gal.InertialTypesAlt.TensorFixedVectors
 
-section Rep
 
 variable {Γ X : Type} [Group Γ] [AddCommGroup X] [Module ℂ X]
 
@@ -66,9 +65,7 @@ private theorem idem_comm [TopologicalSpace Γ] [IsTopologicalGroup Γ] {π : Re
     rw [← mul_apply_eq_comp (π u), ← map_mul, e1, map_mul, mul_apply_eq_comp]
   rw [h4, mem_fixed.1 (idem_mem hπ hH v) _ hu']
 
-end Rep
 
-section Tensor
 
 variable {s : ℕ} {G V : Fin s → Type} [∀ a, Group (G a)] [∀ a, AddCommGroup (V a)] [∀ a, Module ℂ (V a)]
 
@@ -155,7 +152,6 @@ private theorem map_fix (e : ∀ a, V a →ₗ[ℂ] V a) (w : PiTensorProduct �
       rw [this, ih]
   simpa using key Finset.univ
 
-end Tensor
 
 end UpperTheory.Gal.InertialTypesAlt.TensorFixedVectors
 

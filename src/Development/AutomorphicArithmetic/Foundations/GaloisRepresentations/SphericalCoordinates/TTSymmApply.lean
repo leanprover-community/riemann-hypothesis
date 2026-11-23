@@ -43,7 +43,6 @@ open UpperTheory.Gal.W2
 
 namespace UpperTheory.Gal.W2
 
-section Lin
 
 variable {n : ℕ}
 
@@ -119,13 +118,11 @@ private theorem dec_place (M S : Matrix (Fin n) (Fin n) ℂ) (z : Fin n → ℂ)
     · rw [hp i h, mul_zero]
   · rw [e2, Matrix.mulVec_sub, Matrix.mulVec_smul, hz]
 
-end Lin
 
 end UpperTheory.Gal.W2
 
 namespace UpperTheory.Gal.W2
 
-section Place
 
 variable {n : ℕ}
 
@@ -168,9 +165,7 @@ private theorem place_eq_pos {M : Matrix (Fin n) (Fin n) ℂ} (h : M.IsHermitian
       linear_combination (-((Complex.normSq a : ℂ) * hv M z z - hv M x' x')) * Complex.I_sq
   rw [this, Complex.sub_re, Complex.re_ofReal_mul]
 
-end Place
 
-section Arch
 
 variable {n : ℕ}
 
@@ -239,7 +234,6 @@ private theorem TT_apply {P : Type} (v : P) (S : Matrix (Fin n) (Fin n) ℂ) (hS
 private theorem TT_symm_apply {P : Type} (v : P) (S : Matrix (Fin n) (Fin n) ℂ) (hS : S.det ≠ 0)
     (x : P → Fin n → ℂ) : (TT v S hS).symm x = Function.update x v (S *ᵥ x v) := rfl
 
-end Arch
 
 end UpperTheory.Gal.W2
 

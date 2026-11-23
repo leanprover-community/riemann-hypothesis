@@ -31,7 +31,6 @@ import Mathlib.Tactic.NormNum.Prime
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Af.Bc UpperTheory.V.Published
 
-section Hecke
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
 
@@ -92,7 +91,6 @@ private theorem continuous_cyc {art : Ideles F →* Gab F Ω} (ha : IsGlobalArti
   rw [pow_one] at e
   exact e ▸ hμ
 
-end Hecke
 
 theorem UpperTheory.exists_algebraic_heckeChar_cyclotomic :
     UpperTheory.V.Af.Bc.CycHecke := by

@@ -50,7 +50,6 @@ set_option autoImplicit false
 
 namespace UpperTheory.Gal.productCup_of_system
 
-section Forms
 variable {L : Type} [Field L] [Algebra ℂ L]
 
 private def den (B C : Subalgebra ℂ L) (hBC : B ≤ C) (e : B →ₐ[ℂ] ℂ) : Subalgebra ℂ L where
@@ -186,7 +185,6 @@ private lemma locM_le_locM (B C C' : Subalgebra ℂ L) (hBC : B ≤ C) (hBC' : B
   rw [smul_smul] at hm'
   simpa using hm'
 
-end Forms
 
 private lemma cone_exact {σ V : Type} [LinearOrder σ] [AddCommGroup V] [Module ℂ V] (A : Finset σ → Submodule ℂ V) (j : σ)
     (hA : ∀ J, A (insert j J) ≤ A J) (hw : ∀ c, wd (fun _ : σ => (1 : Module.End ℂ V)) c = GlobalTheory.DI.delta c) (n : ℤ) :

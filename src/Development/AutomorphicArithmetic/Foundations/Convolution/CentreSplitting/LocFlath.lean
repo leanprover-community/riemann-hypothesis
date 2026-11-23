@@ -33,7 +33,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-section SlopeTestRemainingChoices
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.BasicNotions GlobalTheory.CuspRep
 open Filter Topology Matrix GroundTheory.Automorphic GroundTheory.Automorphic.RestrictedTensor GroundTheory.Automorphic.AdelicGLn
@@ -87,7 +86,6 @@ private theorem exists_emb (D : TensorDecomposition F n ρ) (w : HeightOneSpectr
     rw [Function.update_idem, Function.update_self] at h3
     exact h3.symm
 
-end SlopeTestRemainingChoices
 
 open MeasureTheory NumberField IsDedekindDomain
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace

@@ -40,7 +40,6 @@ open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
 namespace UpperTheory.V.Pa.Det
 
-section Quad
 
 variable {F : Type} [Field F] {n m : ℕ}
 
@@ -48,7 +47,6 @@ private abbrev Quad (F : Type) (n m : ℕ) :=
   Matrix (Fin n) (Fin n) F × (Fin m → Matrix (Fin n) (Fin n) F) × (Fin m → Matrix (Fin n) (Fin n) F) ×
     Matrix (Fin n) (Fin n) F
 
-end Quad
 
 end UpperTheory.V.Pa.Det
 

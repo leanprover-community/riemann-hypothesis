@@ -48,7 +48,6 @@ namespace UpperTheory.V.Lit.Geo
 
 open UpperTheory.V.Lit.Dr
 
-section Hom
 
 variable {Γ M N : Type} [AddCommGroup M] [Module ℂ M] [AddCommGroup N] [Module ℂ N]
 
@@ -118,9 +117,7 @@ private theorem lift_equiv (ρ : Representation ℂ Γ M) (ρ' : Representation 
   · rw [hf, hp _ (by rw [List.length_map, hx]), hu _ _ hx, ← Module.End.mul_apply, ← map_mul, mul_inv_cancel, map_one,
       Module.End.one_apply]
 
-end Hom
 
-section Zig
 
 variable {Γ V S : Type} [Group Γ] [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] {d : ℕ}
   (G : Dr.Geo Γ V S d)
@@ -180,7 +177,6 @@ private theorem zig_lin (s t : ℂ) (q : ℕ) : ∀ (k : ℕ) (u u' : List Γ �
     · rw [hd_lin]
       exact ih _ _ _ _ _ h3 h3'
 
-end Zig
 
 private theorem hd_const {Γ M : Type} [AddCommGroup M] (w : M) (x : List Γ) (hx : x.length = 0 + 2) :
     hd (fun _ => w) x = 0 := by

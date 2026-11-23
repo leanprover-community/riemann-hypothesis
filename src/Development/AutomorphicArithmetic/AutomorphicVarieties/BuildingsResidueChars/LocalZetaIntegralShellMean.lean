@@ -57,7 +57,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.V.Z.Gam
 
-section Mean
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   {m : ℕ}
@@ -79,7 +78,6 @@ private def shellForm (ν : Measure (GL (Fin m) F)) (σ : Representation ℂ (GL
     simp only [map_smul, smul_eq_mul, RingHom.id_apply]
     exact integral_const_mul _ _
 
-end Mean
 
 end UpperTheory.V.Z.Gam
 

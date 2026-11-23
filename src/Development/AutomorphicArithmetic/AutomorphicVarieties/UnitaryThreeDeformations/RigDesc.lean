@@ -48,7 +48,6 @@ import ReciprocityTheory.GaloisValuations.GlobalA
 
 open NumberField Matrix IsLocalRing Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.Aut UpperTheory.V.UnitaryThreeInertia
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E]
 
@@ -122,7 +121,6 @@ private theorem of_ents {A : Matrix (Fin 3) (Fin 3) (DualNumber E)} {K : Interme
     (h : ents A ⊆ K) (a b : Fin 3) : (A a b).fst ∈ K ∧ (A a b).snd ∈ K :=
   ⟨h (Or.inl ⟨(a, b), rfl⟩), h (Or.inr ⟨(a, b), rfl⟩)⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.UnitaryThreeInertia.rig_desc :
     ∀ {l : ℕ} [Fact l.Prime] {Γ : Type} [Group Γ] [TopologicalSpace Γ]

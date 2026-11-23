@@ -46,7 +46,6 @@ noncomputable section
 
 namespace UpperTheory.V.Sd.OrdinaryAwayPlaces
 
-section Alg
 
 variable {K : Type} [Field K]
 
@@ -127,9 +126,7 @@ private theorem diag_all [CharZero K] {H : Type} [Group H] (r : H →* GL (Fin 2
   ext i j
   fin_cases i <;> fin_cases j <;> simp [h3, h4, h5, h6]
 
-end Alg
 
-section Rep
 
 private theorem mod_retr {R S M : Type} [Ring R] [AddCommGroup S] [Module R S] [AddCommGroup M] [Module R M]
     [IsSimpleModule R S] (h : ⨆ f : S →ₗ[R] M, LinearMap.range f = ⊤) (x : M) (hx : x ≠ 0) :
@@ -194,7 +191,6 @@ private theorem map_dc (σ : Representation ℂ Γ X) (τ : Representation ℂ �
     · rw [Function.support_eq_univ fun _ => ne_zero_rep τ hx0 _]
       exact Set.infinite_univ
 
-end Rep
 
 open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Polynomial ValuativeRel
 open GlobalTheory.CuspRep GlobalTheory.GalOfCusp GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.SmGL UpperTheory.V.Af
@@ -259,7 +255,6 @@ private theorem exists_ps {k : Type} [Field k] [ValuativeRel k] [TopologicalSpac
     rw [h1]
     simp [torusChar_apply]
 
-section Gal
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 F)} {h : IsPlaceOver A w}
@@ -313,7 +308,6 @@ private theorem diag_of_wd (hl : ((l : ℕ) : 𝓞 F) ∉ w.asIdeal) (ι : Qbar 
     ext i
     fin_cases i <;> rfl
 
-end Gal
 
 private theorem iwahori_level_zero_eq {F : Type} [Field F] [NumberField F] (w : Pl F) : K1 w 0 = GlobalTheory.LFun.KGL w (n := 2) := by
   ext g

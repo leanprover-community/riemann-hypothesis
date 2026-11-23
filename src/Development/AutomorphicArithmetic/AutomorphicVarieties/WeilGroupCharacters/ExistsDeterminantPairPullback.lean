@@ -39,7 +39,6 @@ open IsLocalRing UpperTheory.V.Alg UpperTheory.V.W
 
 namespace UpperTheory.V.W.FramePullback
 
-section Det
 
 variable {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H]
 
@@ -90,7 +89,6 @@ private theorem ofRep_comap (ρ : G →* Matrix (Fin n) (Fin n) A) (φ : H →* 
   | add a b ha hb => simp only [map_add (f := _), ha, hb]
   | single g r => simp [GDet.repAlg]
 
-end Det
 
 private theorem adic_comp {Γ Γ' R : Type} [TopologicalSpace Γ] [TopologicalSpace Γ'] [CommRing R] {I : Ideal R}
     {f : Γ → R} (hf : AdicCont I f) {φ : Γ' → Γ} (hφ : Continuous φ) : AdicCont I fun x => f (φ x) :=

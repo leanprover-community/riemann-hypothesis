@@ -54,7 +54,6 @@ open scoped Matrix MatrixGroups
 
 namespace UpperTheory.Kd.K4.BoundedComplement
 
-section Abs
 
 variable {R : Type*} [CommRing R] (p : R) {M : Type*} [AddCommGroup M] [Module R M]
 
@@ -126,9 +125,7 @@ private theorem IsS.fsum {ι : Type*} (S : Finset ι) {x : ι → ℕ → M} {s 
 private theorem IsS.smul {x : ℕ → M} {s : M} (r : R) (h : IsS p x s) :
     IsS p (fun k => r • x k) (r • s) := h.map p (r • LinearMap.id)
 
-end Abs
 
-section Conc
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ}
 
@@ -192,7 +189,6 @@ private theorem sfun (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (N w : ℕ) (d :
   rw [e] at h1
   exact h1.eq' _ (hsum u)
 
-end Conc
 
 end UpperTheory.Kd.K4.BoundedComplement
 

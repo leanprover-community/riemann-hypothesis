@@ -39,7 +39,6 @@ open Matrix Topology
 
 namespace UpperTheory.V.Af.Smo
 
-section Alg
 
 variable {R : Type} [CommRing R] {n : ℕ}
 
@@ -104,9 +103,7 @@ private theorem dlt_single (m : Fin n) (ξ : Fin n → R) (j : Fin n) (hj : j �
     simp [Pi.single_eq_of_ne hk]
   · simp
 
-end Alg
 
-section Top
 
 variable {K : Type} [NormedField K] [CompleteSpace K] {n : ℕ}
 
@@ -242,7 +239,6 @@ private theorem step_gen (hA : AvgChar) (ψ : AddChar K ℂ) (hψ : ∀ᶠ x in 
       simp only [AddChar.compAddMonoidHom_apply] at this
       rw [this, mul_zero]
 
-end Top
 
 end UpperTheory.V.Af.Smo
 

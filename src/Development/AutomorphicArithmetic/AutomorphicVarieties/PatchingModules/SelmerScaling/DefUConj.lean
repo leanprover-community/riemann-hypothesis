@@ -45,7 +45,6 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraT
 
 namespace UpperTheory.V.Pa
 
-section Comp
 
 variable {X : Type} [CommRing X] {e n : ℕ}
 
@@ -296,9 +295,7 @@ private theorem even_P (a : ℕ) (Y : Fin e → Matrix (Fin n) (Fin n) X) (hY : 
     · funext k
       simp [Matrix.one_apply, DD.epM, hne, dd_ep'_add, dd_ep'_zero]
 
-end Comp
 
-section Bnd
 
 variable {K G : Type} [Field K] [TopologicalSpace G] [Group G] [IsTopologicalGroup G] {n e : ℕ}
 
@@ -353,7 +350,6 @@ private theorem bnd_mul (M N : G → Matrix (Fin n) (Fin n) (DD (FractionRing (P
       (fun m _ => hadd _ _ (hmul _ _ ((hM i k).2.1 m) ((hN k j).2.2.1 m))
         (hmul _ _ ((hM i k).2.2.1 m) ((hN k j).2.1 m)))
 
-end Bnd
 
 end UpperTheory.V.Pa
 

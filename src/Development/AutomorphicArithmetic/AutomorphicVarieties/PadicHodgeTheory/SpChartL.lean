@@ -43,7 +43,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.HV UpperTheory.V.Base IsLocalRing
 
-section Gen
 
 variable {R K H : Type} [CommRing R] [CommRing K] [Group H]
 
@@ -143,7 +142,6 @@ private theorem cl_tor (t : Multiplicative (ℤ × ℤ) →* Rˣ) (I : Subgroup 
       ring
     rw [this, Polynomial.map_id, Matrix.coe_units_inv, Matrix.charpoly_units_conj]
 
-end Gen
 
 private theorem cl_count {n : ℕ} (u : Fin n → ℤ × ℤ) (h : ∀ j, Nat.card {i // u i = j} = dimsL j) : n = 14 := by
   classical

@@ -38,7 +38,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.Ff
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
@@ -99,7 +98,6 @@ private theorem character_placeEmbed_exp (w : InfinitePlace F) (t : ℝ) (q : A 
     simp [Fo.at1, pInf_sInf, hv]
   · simp
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.R2.Ff.curveE :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] (D : Dat F E) (O : Fo.Ops F) (W : Weil D), CurveE O W := by

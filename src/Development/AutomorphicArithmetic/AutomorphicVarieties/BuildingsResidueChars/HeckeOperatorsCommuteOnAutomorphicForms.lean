@@ -39,7 +39,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Base UpperTheory.V.Sd
 open scoped Matrix
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {a : ℕ}
 
@@ -161,7 +160,6 @@ private theorem automorphic_form_linear_combination (φ ψ : TR.Sm F a) (c : ℂ
     rw [norm_mul, add_mul, mul_assoc]
     exact add_le_add b1 (mul_le_mul_of_nonneg_left b2 (norm_nonneg c))
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.hecke_operators_commute_on_automorphic_forms :
     ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (a : ℕ), TR.IsAutForm (0 : TR.Sm F a) ∧ (∀ (φ : TR.Sm F a) (g : GL (Fin a) (Af F)), TR.IsAutForm φ → TR.IsAutForm (TR.finRep F a g φ)) ∧ ∀ (φ ψ : TR.Sm F a) (z : ℂ), TR.IsAutForm φ → TR.IsAutForm ψ → TR.IsAutForm (φ + z • ψ) := by

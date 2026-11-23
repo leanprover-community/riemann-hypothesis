@@ -55,7 +55,6 @@ noncomputable section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual Polynomial UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd Matrix
 open GlobalTheory.CuspRep (SmIrr Af invT finId pFin locGL finGL GA chiDet)
 
-section Proj
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {a : ℕ}
 
 private theorem stable_iSup (S : Set (TR.CuspSub F a)) : TR.IsStable (⨆ π ∈ S, π.V) := fun o φ hφ => by
@@ -165,9 +164,7 @@ private theorem exists_sat (P : Af.Hypotheses₂) (π : TR.CuspSub F a) (w : Hei
     (GlobalTheory.LFun.KGL w (n := a) : Set _) x hx0 hx (hi.2 ▸ Submodule.mem_top))
   exact ⟨B, (h4 _ _ hi B).2 hB⟩
 
-end Proj
 
-section Loc
 open GlobalTheory.LFun Formalism.UG
 
 private theorem hecke_eq_dc {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ G V) (K : Subgroup G)
@@ -283,9 +280,7 @@ private theorem unit_det {c : ℕ} {k : GL (Fin 2) (w.adicCompletion F)} (hk : k
   rw [IsUnitAt, GlobalTheory.CuspRep.det_map]
   exact HeightOneSpectrum.adicCompletionIntegers.isUnit_iff_valued_eq_one.1 (Units.isUnit _)
 
-end Loc
 
-section Inf
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 open GlobalTheory.HeckeGal.Model GlobalTheory.Mem.Chr.CharModel
 
@@ -318,9 +313,7 @@ private theorem sign_abs (s : ℝ) (v : InfinitePlace F) : (absPow F s).locInf v
   rw [show logNorm F x = 0 by linarith]
   simp
 
-end Inf
 
-section Sign
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
 private def rot (θ : TR.Rinf F) : GL (Fin 2) (TR.Rinf F) where
@@ -404,7 +397,6 @@ private theorem sign_hol {k c} {ω : HChar F} {φ : TR.Sm F 2} (hφ : IsHol k c 
     mul_eq_right₀ hg, mul_inv_eq_one₀ (Complex.exp_ne_zero _)] at h2
   exact h2
 
-end Sign
 
 theorem UpperTheory.V.Sd.holRep :
     UpperTheory.V.Af.HypothesesH → UpperTheory.V.Sd.HolRep := by

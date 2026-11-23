@@ -43,7 +43,6 @@ import ReciprocityTheory.GaloisValuations.GlobalA
 
 open Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-section Gen
 
 variable {A R : Type} [CommRing A] [CommRing R] [Algebra A R] {n a : ℕ}
 
@@ -97,9 +96,7 @@ private theorem alg_smul_mem {V : Submodule A (Matrix (Fin n) (Fin n) R)} (c : A
   rw [algebraMap_smul]
   exact V.smul_mem c hZ
 
-end Gen
 
-section Parts
 
 variable {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g : ℕ}
 
@@ -126,7 +123,6 @@ private theorem act2 : Act (ddPart A X g true false false false) (ddPart A X g f
     (ddPart A X g false false true false) (ddPart A X g false false false true) := by
   refine ⟨?_, ?_, ?_, ?_⟩ <;> intro u hu v hv <;> rw [mem_part] at hu hv ⊢ <;> simp_all
 
-end Parts
 
 private theorem galois_lift_mem_first_order_deformations {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} {x : NP F n} (k : Kap x) (X : Type)
     [CommRing X] [Algebra x.A X] (g : F.G₀) : k.ρ1 X g ∈ W1 n x.A X k.g x.a := by

@@ -48,7 +48,6 @@ open UpperTheory.V.Af.Smo (Eig EigAt)
 open UpperTheory.ConvolutionTheory.RankTwoDescent
 open scoped Classical Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -76,9 +75,7 @@ private theorem norm_central (s : {r : ℝ // 0 < r}) :
     fin_cases i <;> fin_cases j <;> simp [Matrix.GeneralLinearGroup.scalar]
   · rw [ideleNorm_ideleEmbedding, map_pow, ← hy, ← map_pow, hs₀]
 
-end SlopeTestRemainingChoices
 
-section Span
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {D : Dat ℚ E}
 
@@ -105,7 +102,6 @@ private theorem span_pos (W : Weil D) (M : Meas ℚ) (π : TR.CuspSub ℚ 2) (h�
   | add x y _ _ ix iy => exact fun g => congrArg₂ (· + ·) (ix g) (iy g)
   | smul c x _ ix => exact fun g => congrArg (c • ·) (ix g)
 
-end Span
 
 theorem UpperTheory.ConvolutionTheory.RankTwoDescent.prodBd :
     ProdBd := by

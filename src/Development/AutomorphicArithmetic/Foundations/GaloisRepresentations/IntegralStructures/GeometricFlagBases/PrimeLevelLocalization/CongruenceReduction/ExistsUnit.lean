@@ -40,7 +40,6 @@ open UpperTheory.Gal.W2.Seed (Arith Setup)
 open UpperTheory.Gal.Int.Geo UpperTheory.Gal.Int.Geo.Pl UpperTheory.Gal.Int.Geo.Pl.Tj
 attribute [local instance] Ideal.Quotient.field
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -99,7 +98,6 @@ private theorem exists_unit (s : AfQˣ) {c : ℕ} (hc : c ≠ 0)
     exact mul_right_cancel₀ (val_nat_ne v hc) (h.trans (one_mul _).symm)
   · rw [← hcu, ← Units.val_mul, mul_comm cu, inv_mul_cancel_right]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Gal.Int.Geo.Pl.Tj.tMult :
     UpperTheory.Gal.Int.Geo.Pl.Tj.TMult := by

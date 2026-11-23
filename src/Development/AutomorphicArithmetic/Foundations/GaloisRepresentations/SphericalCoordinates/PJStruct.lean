@@ -41,7 +41,6 @@ open GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKGe
 open scoped Matrix TensorProduct Classical
 open UpperTheory.Gal.W2
 
-section Core
 
 variable {P : Type} [Fintype P] [DecidableEq P] {n g : ℕ}
 
@@ -232,7 +231,6 @@ private theorem core (R : (P → Fin n → ℂ) ≃ₗ[ℝ] (Fin g → ℂ)) (Hm
       rw [← h1]; simpa [Complex.mul_im] using h2
     exact (mul_pos_iff_of_pos_left (hr v)).1 h3
 
-end Core
 
 theorem UpperTheory.Gal.W2.jStruct_of :
     UpperTheory.Gal.W2.ArchSpan → UpperTheory.Gal.W2.JStruct := by

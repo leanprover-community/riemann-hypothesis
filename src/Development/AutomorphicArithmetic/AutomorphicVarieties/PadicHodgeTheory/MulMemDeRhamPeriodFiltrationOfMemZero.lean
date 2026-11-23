@@ -252,7 +252,6 @@ private theorem wt_matFix (K : FinExt l) {d : ℕ} (M M' : Matrix (Fin d) (Fin d
 
 end UpperTheory.V.Loc
 
-section Coord
 
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -406,7 +405,6 @@ private theorem core
       exact Submodule.smul_mem _ _ PD.one_mem
     simpa using PD.Fil_mul _ _ _ _ h5 h6
 
-end Coord
 
 section GenMat
 
@@ -540,7 +538,6 @@ private theorem exists_log (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAi
 
 end Log
 
-section DrMat
 
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -596,9 +593,7 @@ private theorem drMat (hF : IsField BdR) (ρ : Representation Qp G V)
     obtain ⟨c, hc⟩ := hF.mul_inv_cancel hb
     exact IsUnit.of_mul_eq_one c hc) v _ hw hi
 
-end DrMat
 
-section Mats
 
 open GlobalTheory.Pst Polynomial
 
@@ -749,7 +744,6 @@ private theorem coeff_mem_fil0_of_invertible_period (P : LocPrime l) (K : FinExt
     simp only [Matrix.mul_apply, Matrix.map_apply, map_sum]
     exact Finset.sum_congr rfl fun x _ => by rw [mul_comm, hE1, mul_comm]
 
-end Mats
 
 namespace UpperTheory.V.Loc
 

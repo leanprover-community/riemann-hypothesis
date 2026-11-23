@@ -134,7 +134,6 @@ private theorem exists_dual_map {G K Γ V W : Type} [Group G] [TopologicalSpace 
     rw [map_smul, ← e, Representation.dual_apply, map_mul, Module.End.mul_apply]
     rfl
 
-section Finite
 
 open GlobalTheory.GLq Formalism.MainNotions.ArithmeticCylinders
 
@@ -325,7 +324,6 @@ private theorem isRegularChar_inv {n : ℕ} {K : Type} [Field K] {θ : Kˣ →* 
     GlobalTheory.Published.IsRegularChar g n θ⁻¹ := fun i j hi hj e =>
   h i j hi hj (inv_injective (by simpa [inv_pow] using e))
 
-end Finite
 
 end UpperTheory.Zero.LLC.ParameterDuality
 

@@ -57,7 +57,6 @@ open IsLocalRing MvPowerSeries UpperTheory.V.Alg
 
 namespace UpperTheory.V.UnitaryThreeInertia.Abs
 
-section Transfer
 
 variable {O R K : Type} [CommRing O] [CommRing R] [Algebra O R] (W : WPres O ℤ R) [Field K] [Algebra O K]
 
@@ -111,7 +110,6 @@ private theorem alg_ext (ξ ξ' : FA O W.wt →ₐ[O] K) (h : ∀ j, ∀ f ∈ F
   rw [← DirectSum.sum_support_decompose (Fgr O W.wt) f, map_sum, map_sum]
   exact Finset.sum_congr rfl fun i _ => h i _ (SetLike.coe_mem _)
 
-end Transfer
 
 theorem coord_count (hM : LemmaM) (hM' : LemmaM') (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [IsAdicComplete (maximalIdeal O) O] [CharZero O] [Finite (ResidueField O)]

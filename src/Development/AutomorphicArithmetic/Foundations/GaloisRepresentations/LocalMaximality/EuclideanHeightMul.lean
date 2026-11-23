@@ -44,7 +44,6 @@ noncomputable section
 
 namespace UpperTheory.Gal.productCup_of_system
 
-section SlopeTestRemainingChoices
 
 variable {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [Module ℂ E]
   (act : S →ₐ[ℂ] Module.End ℂ E) (R : Subalgebra ℂ S) (M : Submodule ℂ E)
@@ -195,7 +194,6 @@ private theorem koszulExact_of_regular (hK : KoszulExactBelowLengthOfWeaklyRegul
       congrArg (fun z : Finset κ → M => ((z t : M) : E)) hyc
     exact h1.symm.trans h2
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.Gal.productCup_of_system
 

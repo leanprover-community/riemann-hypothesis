@@ -102,7 +102,6 @@ def S5 : Prop :=
       IsCplAt Λ ((q i).comap (s.comp MvPowerSeries.C)) La ∧ IsRegularLocalRing La ∧ ringKrullDim La = d) →
     Nonempty (PatchedSupportCompletions s ii (Module.annihilator R X) q (d + Fintype.card σ))
 
-section URep
 
 variable {l : ℕ} [Fact l.Prime] {L : Loc} {G G0 : Glob l L} (h : G.Hom G0) {n : ℕ} (x : NP G0.frame n)
   {B : Type} [CommRing B] [IsLocalRing B] (D : GDet n B G.G₀) (I : Set (MonoidAlgebra B G.G₀))
@@ -134,7 +133,6 @@ structure URep : Type 1 where
 
 attribute [instance] URep.ring URep.alg URep.algB URep.tower
 
-end URep
 
 section Oo
 

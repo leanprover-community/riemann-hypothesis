@@ -37,7 +37,6 @@ open UpperTheory.Gal.Gen
 
 namespace UpperTheory.Gal.Gen
 
-section CoefLeLemmas
 
 variable {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {σ : Type}
 
@@ -100,7 +99,6 @@ private lemma coefLe_monomial_image {τ : Type} {y : σ → MvPolynomial τ ℂ}
     (fun _ => pow_nonneg hR _) (fun v _ => coefLe_pow ι hR (hy v) (m v))
   rwa [Finset.prod_pow_eq_pow_sum] at h
 
-end CoefLeLemmas
 
 end UpperTheory.Gal.Gen
 

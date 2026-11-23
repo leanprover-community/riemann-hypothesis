@@ -54,17 +54,13 @@ open GlobalTheory.KZ GlobalTheory.K4 GlobalTheory.Glue GlobalTheory.KummerEisens
 
 namespace UpperTheory.Kd.L
 
-section Series
 
 variable {K : Type} [Field K] [CharZero K]
 
-end Series
 
-section Root
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] [CharZero Ω]
 
-end Root
 
 end UpperTheory.Kd.L
 

@@ -42,7 +42,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] {n : ℕ}
 
@@ -104,7 +103,6 @@ private theorem sgnM_dTw {G : Type} [Group G] (D : DetFr F G n) (χ : G → F) (
   simp only [dTw, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_smul, Matrix.smul_mul, sgnM_mul,
     sgnM_ev D.a (D.ev g), sgnM_ev D.a (D.ev g⁻¹)]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Pa.Det.infres :
     ∀ {F G : Type} [Field F] [Group G] {n : ℕ} (D : DetFr F G n) (χ : G → F) (z : G → Matrix (Fin n) (Fin n) F) (Y : Matrix (Fin n) (Fin n) F), (∀ g h, χ (g * h) = χ g * χ h) → (∀ g ∈ D.G', χ g = 1) → TwCoc χ D.r Set.univ z → (∀ g, z g ∈ Od F F n D.a) → (∀ g ∈ D.G', z g = dTw χ D.r Y g) → ∃ Y' ∈ Od F F n D.a, ∀ g, z g = dTw χ D.r Y' g := by

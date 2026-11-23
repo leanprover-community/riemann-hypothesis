@@ -34,7 +34,6 @@ set_option autoImplicit false
 
 namespace UpperTheory.Gal.FiniteEtaleModels.O
 
-section Form
 
 variable {M : Type} [AddCommGroup M] (B : LinearMap.BilinForm ℤ M)
 
@@ -131,7 +130,6 @@ private lemma third {n : ℕ} (hn : 0 < n) [Module.Finite ℤ M] (g : M →+ M)
   obtain ⟨z, hz⟩ := (memN _).1 hu
   exact ⟨y, -z, by rw [smul_neg, hz]; abel⟩
 
-end Form
 
 theorem adj : UpperTheory.Gal.FiniteEtaleModels.O.Adj := by
   intro q _ D e

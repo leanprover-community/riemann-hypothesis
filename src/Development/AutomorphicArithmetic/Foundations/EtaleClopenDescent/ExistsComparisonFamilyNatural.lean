@@ -239,13 +239,11 @@ theorem pullC_delta (τ : κ → ι) (φ : E →ₗ[k] E') (c : Finset ι → E)
 
 end Signs
 
-section Field
 
 variable {B B' K L : Type} [CommRing B] [CommRing B'] [IsDomain B] [IsDomain B'] [Field K] [Field L]
   [Algebra B B'] [Algebra B K] [Algebra K L] [Algebra B' L] [Algebra B L]
   [IsScalarTower B K L] [IsScalarTower B B' L] [IsFractionRing B K] [IsFractionRing B' L]
 
-end Field
 
 section Germ
 
@@ -866,7 +864,6 @@ theorem trL_isMap (hc : c ≫ p = p') (hinst : inst = ffAlg p) (hinst' : inst' =
 
 end TraceCmp
 
-section TraceMain
 
 
 variable {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] {p : Z ⟶ Sp ℂ} {p' : Y ⟶ Sp ℂ}
@@ -875,12 +872,9 @@ variable {Z Y : Scheme.{0}} [IsIntegral Z] [IsIntegral Y] {p : Z ⟶ Sp ℂ} {p'
   {B : Finset ι → Subalgebra ℂ Z.functionField} {B' : Finset ι → Subalgebra ℂ Y.functionField}
   [Algebra Z.functionField Y.functionField] [IsScalarTower ℂ Z.functionField Y.functionField]
 
-end TraceMain
 
-section Quot
 
 variable {k : Type} [Field k] {M M' : Type} [AddCommGroup M] [Module k M] [AddCommGroup M'] [Module k M']
 
-end Quot
 
 end UpperTheory.PullbackConnectingMap

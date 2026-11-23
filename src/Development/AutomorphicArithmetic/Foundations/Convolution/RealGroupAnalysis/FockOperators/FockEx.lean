@@ -36,7 +36,6 @@ open scoped Classical
 
 namespace UpperTheory.ConvolutionTheory.R2.Fo
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
@@ -85,7 +84,6 @@ private theorem PF.poly {δ : F} {O : Ops F} {p : V4 F → ℂ} (hp : p ∈ poly
     rw [mul_assoc]
     exact ha _ (hb f hf)
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.R2.Fo
 

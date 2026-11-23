@@ -49,7 +49,6 @@ open scoped ComplexConjugate
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section One
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -120,9 +119,7 @@ private theorem pow_word (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (α :
     rw [h, conv_apply, funext ih.2]
     rfl
 
-end One
 
-section Two
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E ≃ₐ[F] E} {m : ℕ} {D : InfD σ m} {n : ℕ} {νE : Measure (archGroup E n)} [νE.IsHaarMeasure]
@@ -224,7 +221,6 @@ private theorem word_main (hs : ArchSlot D νE νF b a aE aF) (w : List (Option 
       exact (lact_step νF aF _ (GM.word νF aF (List.replicate (w.length + 1) none)) hA (pow_word νF aF hA _).1
         (conv_apply νF _ _) _ _ (Subtype.property _) _).symm
 
-end Two
 
 end UpperTheory.ConvolutionTheory.L1
 

@@ -50,7 +50,6 @@ open scoped Matrix
 open NumberField IsDedekindDomain Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 namespace UpperTheory.TP.BA
-section Schr
 variable {R : Type} [CommRing R] [Invertible (2 : R)] {κ : Type} [Fintype κ]
 private theorem schr_comp_pk (ψ : AddChar R ℂ) (w w' : (κ → R) × (κ → R)) (f : (κ → R) → ℂ) :
     schr ψ w (schr ψ w' f) = ψ (⅟(2 : R) * (w.1 ⬝ᵥ w'.2 - w'.1 ⬝ᵥ w.2)) • schr ψ (w + w') f := by
@@ -76,7 +75,6 @@ private theorem schr_zero_pk (ψ : AddChar R ℂ) (f : (κ → R) → ℂ) : sch
 private theorem schr_neg_pk (ψ : AddChar R ℂ) (w : (κ → R) × (κ → R)) (f : (κ → R) → ℂ) :
     schr ψ (-w) (schr ψ w f) = f := by
   rw [← schr_add_of_pk ψ (by simp [dotProduct_comm]), neg_add_cancel, schr_zero_pk]
-end Schr
 section Alg
 private theorem cong_key_pk {A : Type} [Ring A] {e s m m' α β q q' : A} (hs : ∀ a : A, s * a = a * s)
     (h : m * (e - s * β) = e + s * α) (hmm : m' * m = 1) (hq : (e - s * β) * q = e) (hq' : (e + s * α) * q' = e)
@@ -116,7 +114,6 @@ private theorem cong_key_pk {A : Type} [Ring A] {e s m m' α β q q' : A} (hs : 
       _ = (e - s * (α * q')) - s * (β - s * (β * (α * q'))) - e := by rw [a4, ← a2]
       _ = _ := by simp only [mul_add, mul_sub, mul_neg]; abel
 end Alg
-section Geo
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n d : ℕ}
 private theorem sg_mul_pk (v : Pl F) (a b : Fv F v) : sg v a * sg v b = sg v (a * b) := by
   rw [PositivityTheory.ThKH.Iwas.mul_sg, PositivityTheory.ThKH.Iwas.ev_sg]
@@ -173,8 +170,6 @@ private def cong_pk (v : Pl F) (Λ : AddSubgroup (Matrix (Fin n) (Fin n) (AE F E
     rw [mul_inv_rev]
     exact key _ _ _ _ eb' ea'
   inv_mem' := fun {g} ⟨a1, p, q⟩ => ⟨at_mat_inv_pk a1, q, by rw [inv_inv]; exact p⟩
-end Geo
-section Main
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n d : ℕ}
   {σ : E →ₐ[F] E} {X : Spc F E n} {W : Spc F E d}
 private abbrev Sc_pk (M : Model σ X W) (ψ : AddChar (AF F) ℂ) (v : Pl F) (u : Matrix (Fin n) (Fin d) (AE F E))
@@ -210,7 +205,6 @@ private theorem symp_g_pk (ξ : AE F E) (g : UA σ X.J) (u y : Matrix (Fin n) (F
       symp (R := AF F) (cA σ) ξ (incM F X.J) (incM F W.J) u y := by
   have := PositivityTheory.KCo.symp_act (R := AF F) (cA σ) ξ (incM F X.J) (incM F W.J) (g, (1 : UA σ W.J)) u y
   simpa [actAB, mat] using this
-end Main
 section Thm
 open UpperTheory.TP
 theorem _root_.UpperTheory.TP.bumpAny_k : _root_.UpperTheory.TP.Tools_k → _root_.UpperTheory.TP.BumpAny_k := by

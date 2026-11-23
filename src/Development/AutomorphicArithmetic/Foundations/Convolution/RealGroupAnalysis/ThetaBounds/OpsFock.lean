@@ -40,7 +40,6 @@ open scoped Classical
 
 namespace UpperTheory.ConvolutionTheory.R2.Ff
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
@@ -200,7 +199,6 @@ private lemma span_d (δ : F) (w : InfinitePlace F) (i : Fin 4) {f : V4 F → �
     obtain ⟨x', hxm, hx⟩ := hx
     exact ⟨c • x', Submodule.smul_mem _ _ hxm, fun v => (hx v).const_mul c⟩
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.R2.Ff
 

@@ -33,7 +33,6 @@ open GlobalTheory.BlockSum (blockRep vecComp vecComp_mulVec)
 
 namespace UpperTheory.Gal.Int.Div
 
-section Bridge
 
 variable {Γ k : Type} [Group Γ] [Field k] {n : ℕ}
 
@@ -59,7 +58,6 @@ private theorem isSSRep_iff (ρ : Γ →* GL (Fin n) k) : IsSSRep ρ ↔ (colRep
       disjoint_iff.2 (congrArg Subrepresentation.toSubmodule hb.inf_eq_bot),
       codisjoint_iff.2 (congrArg Subrepresentation.toSubmodule hb.sup_eq_top)⟩
 
-end Bridge
 
 theorem sSBlock_of : SSBlock := by
   intro Γ k _ _ a m n e r hr

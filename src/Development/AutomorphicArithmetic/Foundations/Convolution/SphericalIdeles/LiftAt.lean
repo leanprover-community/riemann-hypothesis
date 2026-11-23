@@ -51,7 +51,6 @@ open GroundTheory.Automorphic.CuspidalSpectrum GroundTheory.Global GroundTheory.
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.L1 UpperTheory.ConvolutionTheory.T
 open scoped Classical
 
-section Hilb
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
@@ -79,7 +78,6 @@ private theorem pow_zero_of (B : H →L[ℂ] H) (m : ℕ) : ∀ x : H, ((B * sta
 private theorem prj_of_mem (V : Submodule ℂ H) {x : H} (h : x ∈ V) : prj V x = x :=
   Submodule.starProjection_eq_self_iff.2 (V.le_topologicalClosure h)
 
-end Hilb
 
 private theorem oinf_congr {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
     (ν ν' : Measure (archGroup K n)) [ν.IsHaarMeasure] [ν'.IsHaarMeasure] (h : ν = ν') (a : TI K n) : Oinf μ ν a = Oinf μ ν' a := by

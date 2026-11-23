@@ -41,7 +41,6 @@ open GlobalTheory.BI GlobalTheory.Shin
 
 namespace UpperTheory.Gal.InertialTypesAlt
 
-section Group
 
 variable {G : Type} [Group G] [Finite G]
 
@@ -123,9 +122,7 @@ private theorem pair_self_ne {x : G → ℂ} (hx : IsChar ℂ ℂ x) (h : x 1 �
   rw [hpn]
   exact_mod_cast hn.ne'
 
-end Group
 
-section Hc
 
 variable {F : Type} [Field F] [Finite F]
 
@@ -147,7 +144,6 @@ private theorem hc_add_right (a b n : ℕ) (α : GL (Fin a) F → ℂ) (β β' :
   refine finsum_congr fun y => ?_
   split_ifs <;> simp [mul_add]
 
-end Hc
 
 theorem hcPair : HcChar → HcOne → HcPair := by
   intro hC hO F _ _ a b n hn α A β B hα hA hβ hB hAα hBβ

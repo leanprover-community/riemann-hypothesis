@@ -48,7 +48,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.ConvolutionTheory.D
 
-section SlopeTestRemainingChoices
 
 variable {k R : Type} [CommRing k] [CommRing R] [Algebra k R]
 
@@ -154,7 +153,6 @@ private lemma norm_pi {q : ℕ} (f : Fin q → R) : Algebra.norm R f = ∏ j, f 
   · simp [hij]
   · simp [hij]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.D
 

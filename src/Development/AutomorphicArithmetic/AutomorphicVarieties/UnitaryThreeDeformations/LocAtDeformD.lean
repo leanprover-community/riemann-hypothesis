@@ -43,7 +43,6 @@ public import Mathlib.FieldTheory.Finite.Basic
 
 open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
 
-section SlopeTestRemainingChoices
 
 variable {R : Type} [CommRing R]
 
@@ -138,9 +137,7 @@ private theorem key {I : Ideal R} {h h' ρ D γ N : Matrix (Fin 3) (Fin 3) R} (h
       rw [hNA, hAN, hNγ, hγDN, mul_assoc N D N, hNDN]
       noncomm_ring
 
-end SlopeTestRemainingChoices
 
-section Aux2
 
 private theorem gRep_entry {k D : Type} [CommRing k] [Group D] (η : D →* ℤˣ) (Ψ : D →* kˣ) (j : ℤ) (g : D)
     (hg : η g = 1) (X : Gb (k := k) j) (a b : Fin 3) :
@@ -257,7 +254,6 @@ private theorem condD_of (η : D →* ℤˣ) (Ψ : D →* Oˣ) (I : Subgroup D) 
     rw [hmain g hg a b (Or.inl hne)]
     exact hdi.low g hg a b hab
 
-end Aux2
 
 theorem UpperTheory.V.UnitaryThreeInertia.locAt_deform_d :
     ∀ {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] [CharZero O] [Finite (ResidueField O)]

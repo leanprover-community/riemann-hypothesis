@@ -52,7 +52,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.TP
 
-section Dict
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -94,9 +93,7 @@ private theorem toAdele_cj (z : AE (maximalRealSubfield E) E) :
     rw [GlobalTheory.UnitaryHeckeBaseChange.toAdele_tmul, GlobalTheory.UnitaryHeckeBaseChange.toAdele_tmul, map_mul, conjAd_adeleMap,
       GlobalTheory.UnitaryBC.conjAd_algebraMap]
 
-end Dict
 
-section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
@@ -186,9 +183,7 @@ private theorem compInf_iff (h : IsCMExt F E σ) (z : AE F E) :
   · intro k w
     rw [← hw, (smul_zero_iff h b z).2 (by rw [e, k]; rfl), map_zero]
 
-end Gen
 
-section Read
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -231,9 +226,7 @@ private theorem piW_eq {v : Pl (F := F)} (t : E →ₐ[F] Fv F v) (z : AE F E) :
     rw [e, map_mul, GlobalTheory.LFun.SplitTie.complMap_apply_emb t, complMap_at, GlobalTheory.UnitaryHeckeBaseChange.toAdele_tmul, map_mul, map_mul]
     rfl
 
-end Read
 
-section Grp
 
 private theorem map_eq_one_iff {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {n : ℕ} (M : Matrix (Fin n) (Fin n) R) :
     M.map φ = 1 ↔ ∀ i j, φ ((M - 1 : Matrix (Fin n) (Fin n) R) i j) = 0 := by
@@ -341,9 +334,7 @@ private theorem mem_iff (J : Matrix (Fin n) (Fin n) E) (δ : E) (hδ : δ ≠ 0)
     · subst e; simp
     · simp [Matrix.one_apply_ne e]
 
-end Grp
 
-section Main
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -437,7 +428,6 @@ private theorem brE_isBr : IsBr X (brE X δ hδ hJ) := by
     rw [mat_brE, toAdele_symm]
     rfl
 
-end Main
 
 end UpperTheory.TP
 

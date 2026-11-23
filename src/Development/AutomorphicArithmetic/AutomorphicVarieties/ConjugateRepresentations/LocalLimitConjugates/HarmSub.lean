@@ -40,7 +40,6 @@ open UpperTheory.V.Lit UpperTheory.V.Lit.Geo UpperTheory.V.Lit.Bor UpperTheory.V
 open scoped TensorProduct GlobalTheory.CuspRep.CuspidalL2GL
 open UpperTheory.V.Cj UpperTheory.V.Cj.H
 
-section SlopeTestRemainingChoices
 
 open UpperTheory.V
 
@@ -66,7 +65,6 @@ private theorem sq_fin (ha : 1 ≤ a) (r : ℝ) (g : GL (Fin a) (Af E)) {φ : Sm
     Submodule.span_le.2 fun ψ hψ => Submodule.subset_span ((petInv E a ha r).1 g ψ hψ)
   exact this h
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Cj.H.harmSub :
     UpperTheory.V.Cj.H.HarmSub := by

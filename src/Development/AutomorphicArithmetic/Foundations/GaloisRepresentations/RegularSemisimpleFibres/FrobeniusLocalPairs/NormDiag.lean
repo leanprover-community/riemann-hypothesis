@@ -44,7 +44,6 @@ open scoped Classical
 
 namespace UpperTheory.Gal.InertialTypesAlt.L
 
-section Alg
 
 variable {k E : Type} [Field k] [Field E] [Algebra k E] {n : ℕ}
 
@@ -131,9 +130,7 @@ private theorem h90 [FiniteDimensional k E] [IsGalois k E] (σ : E ≃ₐ[k] E)
   simp [sgT]
   ring
 
-end Alg
 
-section Top
 
 variable {k E : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E]
@@ -235,7 +232,6 @@ private theorem near_compact {r : ValueGroupWithZero E} (hr : r < 1) :
       exact (not_le.mpr hr) hy
     exact ⟨Units.mk0 _ hne, by simpa using hy, rfl⟩
 
-end Top
 
 end UpperTheory.Gal.InertialTypesAlt.L
 

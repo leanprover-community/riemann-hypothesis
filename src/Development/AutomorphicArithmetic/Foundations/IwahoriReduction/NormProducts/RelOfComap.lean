@@ -66,7 +66,6 @@ open scoped Matrix MatrixGroups
 
 namespace UpperTheory.Kd.K4.Ns
 
-section core
 
 variable {A B : Type*} (K L : Type*) [CommRing A] [CommRing B] [IsDedekindDomain A] [IsDedekindDomain B]
   [Field K] [Field L] [Algebra A B] [Algebra A K] [IsFractionRing A K] [Algebra K L] [Algebra A L]
@@ -141,9 +140,7 @@ private theorem rel_of_comap {m : ℕ} (hC : ∀ c : ClassGroup B, ∃ d, c = d 
         rw [hxy]; ring
     _ = _ := by rw [← h2]; ring
 
-end core
 
-section core2
 
 variable {A B : Type*} (K L : Type*) [CommRing A] [CommRing B] [IsDedekindDomain A] [IsDedekindDomain B]
   [Field K] [Field L] [Algebra A B] [Algebra A K] [IsFractionRing A K] [Algebra K L] [Algebra A L]
@@ -220,9 +217,7 @@ private theorem core {m : ℕ} (hC : ∀ c : ClassGroup B, ∃ d, c = d ^ m)
     rfl
   rwa [hm, Multiset.prod_nsmul] at hR
 
-end core2
 
-section fin
 
 variable {B L : Type*} [CommRing B] [IsDedekindDomain B] [Field L] [Algebra B L]
 
@@ -273,9 +268,7 @@ private theorem val_of {m : ℕ} (hm : 0 < m) (hinj : Function.Injective (algebr
   rw [map_mul, W.valuation_unit u, mul_one, map_one] at h3
   exact h3
 
-end fin
 
-section abs
 
 open IsDedekindDomain
 
@@ -357,7 +350,6 @@ private theorem abs_fin {m : ℕ} (hm : 0 < m) (hC : ∀ c : ClassGroup B, ∃ d
     congr 1
     field_simp
 
-end abs
 
 private theorem mem_of_int {R L : Type*} [CommRing R] [Field L] [Algebra R L] (W : ValuationSubring L)
     (hW : ∀ p : R, algebraMap R L p ∈ W) {x : L} (hx : IsIntegral R x) : x ∈ W := by

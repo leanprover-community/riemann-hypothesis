@@ -34,7 +34,6 @@ open GroundTheory.Global GroundTheory.Global.SemiLocal UpperTheory.V.Published U
 open scoped Classical
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section ParConsAux
 
 variable {F : Type} [Field F]
 
@@ -125,7 +124,6 @@ private theorem brG_entry {s n b : ℕ} (d : Fin (s + 1) → ℕ) (hd : ∑ i, d
   rw [toG_coe (units_of hn p h).2]
   exact br_entry _ _ _ _ _ (svS d hd hb c i) (svS d hd hb c' j)
 
-end ParConsAux
 
 theorem UpperTheory.Gal.InertialTypesAlt.parCons :
     ParCons := by

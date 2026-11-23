@@ -54,7 +54,6 @@ def RatioW (x : WD h) : Prop :=
   ∀ φ : ↥(Weil h), deg φ = 1 → ∀ α ∈ x.eig φ, ∀ β ∈ x.eig φ, ‖α‖ < ((normV w : ℕ) : ℝ) * ‖β‖
 end Local
 
-section Real
 variable {F Ω : Type} [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
   {l : ℕ} [Fact l.Prime] {a : ℕ}
 
@@ -82,7 +81,6 @@ structure IsGalRU (π : TR.CuspSub F a) (ι : Qbar l ≃+* ℂ) (r : G F Ω →*
           (∀ g : ↥(Weil h), (wdAt P ι Bw h hj (r.comp (Dec (F := F) A).subtype)).charPol g = (rc (algNorm σ)).charPol g) ∧
           ((rc (algNorm σ)).mono0 → (wdAt P ι Bw h hj (r.comp (Dec (F := F) A).subtype)).mono0)) ∧
       ∀ σ, π.IsLocComp w σ → GlobalTheory.SmGL.IsSpherical σ.ρ → IsCrysAt P Bw (r.comp (Dec (F := F) A).subtype)
-end Real
 
 def ExRN : Prop :=
   ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime]

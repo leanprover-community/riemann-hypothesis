@@ -36,7 +36,6 @@ open CategoryTheory Limits AlgebraicGeometry
 
 namespace UpperTheory.Gal.KunnethLefschetz.Di
 
-section Sq
 variable {C : Type*} [Category C] [HasPullbacks C]
 
 private theorem sq_left {X Y B B' : C} (p : X ⟶ B) (q : Y ⟶ B) (s : B' ⟶ B) (u : X ⟶ Y) (hu : u ≫ q = p)
@@ -58,7 +57,6 @@ private theorem sq_right {X P B B' : C} (p : X ⟶ B) (q : P ⟶ B) (s : B' ⟶ 
   rw [← e₁, pullback.condition] at outer
   exact IsPullback.of_right outer (e₁'.trans e₂'.symm) (IsPullback.of_hasPullback p s)
 
-end Sq
 
 theorem geoPB_holds : GeoPB := by
   intro K Ω _ _ _

@@ -41,7 +41,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace UpperTheory.Gal.Seam
 
-section Place
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω]
   {w : HeightOneSpectrum (𝓞 E)} {A : ValuationSubring Ω}
@@ -125,7 +124,6 @@ private theorem le_one_of_mem (hA : IsPlaceOver A w) {x : E} (hx : algebraMap E 
   rw [map_inv₀, map_inv₀, inv_lt_one₀ (zero_lt_iff.2 h4)] at h3
   exact absurd ((A.valuation_le_one_iff _).2 hx) (not_le.2 h3)
 
-end Place
 
 private theorem mem_OK_iff {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} (x : ↥K) :
     x ∈ OK l K ↔ ‖(x : PadicAlgCl l)‖ ≤ 1 :=

@@ -46,7 +46,6 @@ open scoped InnerProductSpace
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section Hilbert
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 private lemma prj_mem {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) (x : H) : prj M x ∈ M := by
@@ -147,9 +146,7 @@ private lemma trOn_eq (W : Submodule ℂ H) [FiniteDimensional ℂ W] (B : H →
   simp only [Function.comp, hbf, ContinuousLinearMap.comp_apply]
   rw [prj_of_mem hcl (e k).2, Submodule.coe_inner, coe_cmp]
 
-end Hilbert
 
-section Slots
 variable {Γ G H : Type} [Group Γ] [TopologicalSpace Γ] [Group G] [NormedAddCommGroup H]
   [InnerProductSpace ℂ H] [CompleteSpace H] {π : UnitaryRep Γ H} {V : Submodule ℂ H} {m : ℕ}
   {ι : Fin (m + 1) → G →* Γ} {E : H →L[ℂ] H} {A : Fin (m + 1) → H →L[ℂ] H} {U : H ≃ₗᵢ[ℂ] H}
@@ -414,7 +411,6 @@ private lemma aux (h : Slots π V m ι E A U) (y : ℝ) [FiniteDimensional ℂ (
   rw [trOn_eq, trOn_eq, ← hcS i₀ _ hcomm]
   rfl
 
-end Slots
 
 end UpperTheory.ConvolutionTheory.L1
 

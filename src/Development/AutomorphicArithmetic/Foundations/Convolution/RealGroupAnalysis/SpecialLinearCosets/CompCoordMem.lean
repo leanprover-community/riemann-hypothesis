@@ -33,7 +33,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.H UpperTheory.ConvolutionTheory.R2.I
 open scoped Classical
 
-section Gen
 
 variable {K : Type} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
 
@@ -153,7 +152,6 @@ private theorem PG_mem' {ψ : AddChar K Circle} (hψ : Continuous ψ) (hψ1 : ψ
     simp
   rwa [he] at h
 
-end Gen
 
 private theorem Pt_eq_PG {F : Type} [Field F] [NumberField F] (v : P F) (a : M2 v → ℂ) :
     Pt a = PG (localAdelicChar F v) a := by

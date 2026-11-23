@@ -41,7 +41,6 @@ import Mathlib.Tactic.NormNum.Prime
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-section ResValAux
 variable {F K : Type} [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K] {d : ℕ}
 
 private noncomputable def mono (x : Fin (d + 1) → F) (a : Fin d → ℕ) : F := ∏ l, (x l.succ / x 0) ^ a l
@@ -96,7 +95,6 @@ private lemma rho_mono (x : Fin (d + 1) → F) (hx : x 0 ≠ 0) (ρ : F →ₗ[�
   rw [heq]
   exact hρ2 m hsum hne
 
-end ResValAux
 
 theorem UpperTheory.Gal.productCup_of_system.resVal_of :
     ValBasic → ResVal := by

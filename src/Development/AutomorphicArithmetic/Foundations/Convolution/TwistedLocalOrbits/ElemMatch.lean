@@ -154,7 +154,6 @@ private theorem quot_dcoset {G : Type} [Group G] [TopologicalSpace G] [IsTopolog
   rw [integral_congr_ae (Filter.Eventually.of_forall this), integral_const_mul, integral_complex_ofReal,
     integral_toReal hm2.aemeasurable (ae_lt_top hm2 hfin), key, ENNReal.toReal_mul, ENNReal.toReal_inv, div_eq_inv_mul]
 
-section One
 
 open GlobalTheory.SmGL hiding iwahori
 
@@ -311,9 +310,7 @@ private theorem val_dec {π : E} (h : valuation E π < 1) (hm : ∀ x, valuation
     simpa using (zpow_le_zpow_iff_right_of_lt_one₀ h0 h1 (m := a) (n := 1)).2 this
   exact ⟨hπ, fun y hy => by simpa only [map_zpow₀, e] using dec y hy⟩
 
-end One
 
-section Two
 
 
 variable {k E : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -384,7 +381,6 @@ private theorem up {σ : E ≃ₐ[k] E} {q : ℕ} (hσ : Unram (σ : E ≃+* E) 
   choose s h1 h2 using fun i => unitNorm E _ q hσ _ ((val_one _).2 (hs i)) (σ.commutes _)
   exact ⟨fun i => Units.mk0 (s i) (fun e => by simpa [e] using h1 i), h1, h2⟩
 
-end Two
 
 open GlobalTheory.SmGL hiding iwahori in
 theorem UpperTheory.ConvolutionTheory.Loc.elemMatch :

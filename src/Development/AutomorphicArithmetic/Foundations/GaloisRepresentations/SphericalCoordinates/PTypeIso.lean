@@ -161,7 +161,6 @@ private theorem rootsW {p : ℕ} [Fact p.Prime] (D : Datum p) (hne : (starRingEn
   · exact Or.inl (sub_eq_zero.1 h)
   · exact Or.inr (sub_eq_zero.1 h)
 
-section Count
 
 variable {F F' : Type} [Field F] [Field F'] [NumberField F] [NumberField F'] (e : F ≃+* F') (w : F) (r : ℂ)
   (v : InfinitePlace F') {n : ℕ} (i₀ : Fin n)
@@ -325,7 +324,6 @@ private theorem cmType_card_fiber (t₀ : F →+* ℂ) (hr : ∀ τ : F →+* �
       rw [typeMult, if_neg h0, if_neg h1, if_neg hτ, Finset.erase_eq_of_notMem (by simp [h2])]
       simp
 
-end Count
 
 theorem UpperTheory.Gal.W2.typeIso_of :
     UpperTheory.Gal.W2.SimDiag → UpperTheory.Gal.W2.ExtendEmb → UpperTheory.Gal.W2.TypeCount → UpperTheory.Gal.W2.PlaceT → UpperTheory.Gal.W2.TypeIso := by

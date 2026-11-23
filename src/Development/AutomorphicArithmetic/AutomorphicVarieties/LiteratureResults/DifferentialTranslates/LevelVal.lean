@@ -39,7 +39,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.V.Lit.Dr
 
-section Components
 
 variable {S : Type} [AddCommGroup S] [Module ℂ S] {d : ℕ}
 
@@ -69,7 +68,6 @@ private theorem cmp_sum (L : Module.End ℂ S) (c : ℂ) (j : Fin d) (m : S ⊗[
   | tmul φ v => simp [cmp_tmul, smul_smul]
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy, map_add (f := _), map_add (f := _), smul_add]; abel
 
-end Components
 
 private theorem cmp_apply {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a d : ℕ}
     (m : Sm E a ⊗[ℂ] (Fin d → ℂ)) (j : Fin d) (g : GA E a) : (cmp j m).1 g = ev m g j := by

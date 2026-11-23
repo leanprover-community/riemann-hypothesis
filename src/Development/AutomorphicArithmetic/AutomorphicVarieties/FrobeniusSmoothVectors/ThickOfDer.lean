@@ -52,7 +52,6 @@ public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr
 
-section Th
 
 variable {R Q : Type} [CommRing R] [CommRing Q] (π : R →+* Q) (D : R →+ Q)
 
@@ -120,7 +119,6 @@ private theorem ac_map {Γ : Type} [TopologicalSpace Γ] {I : Ideal R} {J : Idea
   rw [← map_sub]
   exact hT N _ (Ideal.Quotient.eq.1 (h g' hg'))
 
-end Th
 
 private theorem ord_star {l : ℕ} [Fact l.Prime] {k : Type} [Field k] {F : Frame l k} {R : Type} [CommRing R]
     (ρ : NRep F 3 R) (v : F.V) (g : Fin 3 → F.Gv v) :

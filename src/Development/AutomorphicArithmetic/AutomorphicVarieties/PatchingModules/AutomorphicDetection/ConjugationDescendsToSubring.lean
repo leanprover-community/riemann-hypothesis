@@ -51,7 +51,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 
 variable {R S : Type} [CommRing R] [CommRing S] {n a : ℕ}
 
@@ -161,7 +160,6 @@ private theorem det_of_charpoly {G : Type} [Group G] (ρ : G →* Matrix (Fin n)
   rw [GDet.lam, GDet.lam, chi_ofRep, chi_ofRep, h, ← Matrix.charpoly_map]
   rfl
 
-end SlopeTestRemainingChoices
 
 private theorem conj_surj {l : ℕ} [Fact l.Prime] (F : GFrame l) : Function.Surjective F.conj := by
   intro g

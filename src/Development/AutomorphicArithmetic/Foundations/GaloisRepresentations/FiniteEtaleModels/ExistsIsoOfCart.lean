@@ -41,7 +41,6 @@ open UpperTheory.Gal.FiniteEtaleModels
 
 namespace UpperTheory.Gal.FiniteEtaleModels
 
-section Grp
 
 variable {X : Scheme.{0}}
 
@@ -77,7 +76,6 @@ private theorem comp_iso_eq_one {A B T : Over X} [GrpObj A] [GrpObj B] (e : A �
   · rintro rfl
     exact MonObj.one_comp _
 
-end Grp
 
 private theorem lbIso_move {Y Y₁ Z Z₁ : Scheme.{0}} {P : LB Y} {P₁ : LB Y₁} {Q : LB Z} {Q₁ : LB Z₁}
     (hP : P.IsLB) (hP₁ : P₁.IsLB) (hQ : Q.IsLB) (hQ₁ : Q₁.IsLB) (f : Y ⟶ Y₁) [IsIso f] (g : Z ⟶ Z₁) (a : Y ⟶ Z) (a₁ : Y₁ ⟶ Z₁)

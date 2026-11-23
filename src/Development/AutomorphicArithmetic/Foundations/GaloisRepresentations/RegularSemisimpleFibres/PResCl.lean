@@ -35,7 +35,6 @@ open GlobalTheory.Shin
 
 namespace UpperTheory.Gal.InertialTypesAlt
 
-section Blocks
 
 variable {F : Type} [Field F] {a b : ℕ}
 
@@ -153,7 +152,6 @@ private theorem brG_conj (z : GL (Fin b) F) (p : GL (Fin (a + b)) F) :
   unfold brG
   rw [br_eq, br_eq, blk_conj, Matrix.toBlocks_fromBlocks₂₂, toG_conj]
 
-end Blocks
 
 theorem resCl : ResCl := by
   intro F _ _ a b n hn T hT x y z

@@ -39,7 +39,6 @@ open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNo
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.Doubling (absE)
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
-section Pair
 variable {n d n₁ d₁ : ℕ} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁}
 structure IsPair_k (B : Base F E) (M : Model σ X W) (χX χW : Chr F E) (om : Rep σ X W) (r s r' s' : ℕ) : Prop where
   base : _root_.UpperTheory.TP.W.GoodK σ B
@@ -51,7 +50,6 @@ structure IsPair_k (B : Base F E) (M : Model σ X W) (χX χW : Chr F E) (om : R
   resX : ResEtaPow (Units.map (algebraMap F (AF F)).toMonoidHom).range χX n
   resW : ResEtaPow (Units.map (algebraMap F (AF F)).toMonoidHom).range χW d
   weil : M.IsWeil B.ψ χX χW om
-end Pair
 variable {a a' : ℕ}
 def ThetaBasic_k : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d)

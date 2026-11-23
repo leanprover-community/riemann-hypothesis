@@ -39,7 +39,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing Polynomial UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
-section SlopeTestRemainingChoices
 
 variable {R : Type} [CommRing R]
 
@@ -105,7 +104,6 @@ private theorem bd_zero {S : M4 R} (h : IsBlock S) : S 0 1 = 0 ∧ S 0 3 = 0 ∧
     S 2 3 = 0 ∧ S 3 0 = 0 ∧ S 3 2 = 0 := by
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> exact h _ _ (by decide)
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Ws.blockDet :
     ∀ {R : Type} [CommRing R] [IsDomain R] [CharZero R] (m : Ideal R) [m.IsPrime] (a : Fin 4 → R) (u v S X : M4 R), v * u = 1 →

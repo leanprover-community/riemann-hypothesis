@@ -41,7 +41,6 @@ import Mathlib.Topology.Sheaves.Init
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-section LocDAux
 variable {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [Module ℂ E]
 
 private lemma geo_mem {W : Type} [AddCommGroup W] [Module ℂ W] (φ : S →+* Module.End ℂ W)
@@ -145,7 +144,6 @@ private lemma map_unit_eq (act : S →ₐ[ℂ] Module.End ℂ E) (M' : Submodule
     rw [← Module.End.mul_apply, ← map_mul, Units.mul_inv, map_one]
     rfl
 
-end LocDAux
 
 theorem UpperTheory.Gal.productCup_of_system.locD_of :
     RS → Htpy → LocD := by

@@ -56,7 +56,6 @@ private theorem list_prod_apply {H : Type*} [NormedAddCommGroup H] [InnerProduct
     rw [List.prod_cons, ContinuousLinearMap.mul_apply, h1, map_smul, h A List.mem_cons_self, smul_smul, List.length_cons,
       pow_succ]
 
-section One
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 private theorem mem_eigL' (w : Pl K) (J : Subgroup (Gw n w)) (χ : Gw n w → ℂ) (v : LL μ) :
@@ -79,9 +78,7 @@ private theorem archP_finProj_comm (a : archGroup K n) (h : AdelicGLn.FiniteAdel
     archP K n a * MultiplicityOne.finProj K n h = MultiplicityOne.finProj K n h * archP K n a :=
   (MultiplicityOne.finProj_mul_archProj_comm h a).symm
 
-end One
 
-section Grp
 variable {G : Type} [Group G] [TopologicalSpace G]
 
 private theorem chr_one {J : Subgroup G} {χ : G → ℂ} (h : IsChr J χ) : χ 1 = 1 := by
@@ -112,9 +109,7 @@ private theorem kerS_co {J : Subgroup G} {χ : G → ℂ} (hJ : CO J) (h : IsChr
   rw [CO, e]
   exact ⟨hJ.1.inter_right hc, hJ.2.inter ho⟩
 
-end Grp
 
-section Two
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {σ : E ≃ₐ[F] E} {n m : ℕ} {q : Pl F} {w₀ : PlacesOver E q}
 variable (μ : Measure (normOneGL (K := E) (n := n))) [μ.IsHaarMeasure]
@@ -202,9 +197,7 @@ private theorem Y_eq (hq : GM.Split E q) (T : Ty σ n q w₀) (V : Submodule ℂ
     · exact (hfix w hw).symm ▸ h4 w hw
     · exact h3 w hw
 
-end Two
 
-section Three
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {σ : E ≃ₐ[F] E} {n m : ℕ} {q : Pl F} {w₀ : PlacesOver E q}
 
@@ -261,7 +254,6 @@ private theorem Z_fin (hn : 0 < n) (μ : Measure (normOneGL (K := E) (n := n))) 
       refine (mem_fixL' μ _ _ _).2 fun x hx => ?_
       rw [(mem_eigL' μ _ _ _ _).1 (h3 w hw) x hx.1, hx.2, one_smul]
 
-end Three
 
 end UpperTheory.ConvolutionTheory.L1
 

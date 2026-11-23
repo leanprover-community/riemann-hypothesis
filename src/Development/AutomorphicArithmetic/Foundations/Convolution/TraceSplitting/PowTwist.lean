@@ -127,7 +127,6 @@ private theorem pow_val {χ : HChar K} {s : ℂ} (h : UpperTheory.ConvolutionThe
       exact Real.pi_pos.ne), Complex.cpow_neg]
   simp
 
-section Expo
 
 variable [_root_.NumberField.IsTotallyComplex K]
 
@@ -166,9 +165,7 @@ private theorem pow_expo {χ : HChar K} {s : ℂ} (h : UpperTheory.ConvolutionTh
     Real.log_prod (fun w _ => (pow_pos (hp w) 2).ne'), mul_comm]
   simp [Real.log_pow]
 
-end Expo
 
-section Twist
 
 variable {n : ℕ} [_root_.NumberField.IsTotallyComplex K]
 
@@ -186,9 +183,7 @@ private theorem inf_twist_iff {χ : HChar K} {s : ℂ} (h : UpperTheory.Convolut
     rw [pow_expo h, Multiset.map_map] at this
     simpa using this
 
-end Twist
 
-section Lift
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   [_root_.NumberField.IsTotallyComplex F] [_root_.NumberField.IsTotallyComplex E] {n : ℕ}
@@ -217,9 +212,7 @@ private theorem isLift_twist {χ : HChar F} {χ' : HChar E} {s : ℂ} (h : Upper
     rw [inf_twist_iff h, inf_twist_iff h']
     exact H.2 τ _
 
-end Lift
 
-section Local
 
 open scoped GroundTheory.Global.AdeleBaseChange GroundTheory.Global.SemiLocal
 open GroundTheory.Global
@@ -286,9 +279,7 @@ private theorem locIso_twist {χ : HChar F} {χ' : HChar E} {s : ℂ} (h : Upper
   rw [map_smul, ← locDet_map (IsPow.inv h) (IsPow.inv h') v w hs g] at h3
   exact smul_right_injective _ (Units.ne_zero _) h3
 
-end Local
 
-section Conj
 
 open scoped NumberField.AdeleRing
 open Formalism.L2.Host
@@ -411,7 +402,6 @@ private theorem conj_twist {χ : HChar K} {s : ℂ} (h : UpperTheory.Convolution
       rw [mulChi_apply, mulChi_apply, key]
       exact congrArg (· * _) e'
 
-end Conj
 
 end UpperTheory.ConvolutionTheory.T.Pw
 

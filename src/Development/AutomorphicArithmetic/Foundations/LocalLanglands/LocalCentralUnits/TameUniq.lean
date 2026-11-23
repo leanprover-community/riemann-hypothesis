@@ -49,7 +49,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.Zero.LLC
 
-section Fields
 
 variable {g n : ℕ} [Fact g.Prime] {K : Type} [Field K] [Algebra (ZMod g) K]
 
@@ -119,7 +118,6 @@ private theorem orbit_of_sums (hn : 0 < n) (θ θ' : Kˣ →* ℂˣ)
     exact_mod_cast this
   exact h2 (he ▸ h1)
 
-end Fields
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}

@@ -55,7 +55,6 @@ noncomputable section
 
 namespace UpperTheory.V.Loc
 
-section Generic
 
 variable {G : Type} [Group G] {Q V V' W : Type} [Field Q] [AddCommGroup V] [Module Q V] [AddCommGroup V']
   [Module Q V'] [AddCommGroup W] [Module Q W] [FiniteDimensional Q V]
@@ -80,9 +79,7 @@ private theorem exists_inj_dual_tprod (ρ : Representation Q G V) (ρ' : Represe
   rw [key]
   simp [hb]
 
-end Generic
 
-section Transport
 
 variable {l : ℕ} [Fact l.Prime] {G H A V : Type} [Group G] [Group H] [CommRing A] [Algebra ℚ_[l] A]
   [AddCommGroup V] [Module A V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V]
@@ -107,9 +104,7 @@ private theorem admissible_transport_equiv (ψ : H →* GQ l) (e : G ≃* H) (ρ
   rw [hr, h1, h2]
   exact ⟨Iff.rfl, Iff.rfl⟩
 
-end Transport
 
-section Field
 
 variable {l : ℕ} [Fact l.Prime] (K : FinExt l) {V V' W : Type} [AddCommGroup V] [Module ℚ_[l] V]
   [AddCommGroup V'] [Module ℚ_[l] V'] [AddCommGroup W] [Module ℚ_[l] W] [FiniteDimensional ℚ_[l] V]
@@ -146,7 +141,6 @@ private theorem dR_hom (h : IsDR ((PP l).PD K) ρ) (h' : IsDR ((PP l).PD K) ρ')
   obtain ⟨h1, h2⟩ := GlobalTheory.Per.FontaineBound.ddR_finite_le ((PP l).PD K) hF π
   exact le_antisymm h2 (GlobalTheory.DRFil.finrank_mul_le_finrank_DdR_of_spans _ π h1 sw)
 
-end Field
 
 end UpperTheory.V.Loc
 

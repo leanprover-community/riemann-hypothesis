@@ -44,7 +44,6 @@ open GlobalTheory.CuspRep (Af GA Ad finGL finId pFin sFin cornerGL corner ratGL)
 
 namespace UpperTheory.V.Sd.Wc.CentralCharacter
 
-section Gen
 
 variable {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V]
 
@@ -105,9 +104,7 @@ private theorem exists_type (κ : Representation ℂ K V) (φ : V)
   · simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply, key]
     simp [orb]
 
-end Gen
 
-section Scal
 
 variable {R S : Type} [CommRing R] [CommRing S]
 
@@ -128,7 +125,6 @@ private theorem continuous_sc [TopologicalSpace R] : Continuous (sc : Rˣ → GL
   · exact (continuous_pi fun _ => Units.continuous_coe_inv :
       Continuous fun (y : Rˣ) (_ : Fin 2) => ((y⁻¹ : Rˣ) : R)).matrix_diagonal
 
-end Scal
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 

@@ -43,7 +43,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing Polynomial UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws UpperTheory.V.Ws.Pp
 
-section Gen
 
 variable {R K H : Type} [CommRing R] [CommRing K] [Group H] (f : R →+* K)
 
@@ -106,7 +105,6 @@ private theorem gt_tr_diag (c a : Fin 4 → R) (i : Fin 4) :
     rw [Finset.prod_eq_zero (i := b) (by simp [hb]) (sub_self _), zero_mul]
   · simp
 
-end Gen
 
 private theorem gt_int {B K : Type} [CommRing B] [Field K] [Algebra B K] (Y : M4 B) {a b : M4 K} (hab : a * b = 1)
     (hM : IsUp (a * (algebraMap B K).mapMatrix Y * b)) (i : Fin 4) :

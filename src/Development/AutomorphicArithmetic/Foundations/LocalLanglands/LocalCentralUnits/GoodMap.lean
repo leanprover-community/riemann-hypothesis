@@ -49,7 +49,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.Zero.LLC
 
-section Classes
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [CharZero k]
 
@@ -73,7 +72,6 @@ private theorem eq_tw_of_tw_eq {y y' : IrrGL (k := k)} {χ χ' : kˣ →* ℂˣ}
     y' = y.tw (χ * χ'⁻¹) (hχ.mul hχ'.inv) := by
   rw [← tw_tw y hχ hχ'.inv, e, tw_tw_inv']
 
-end Classes
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}

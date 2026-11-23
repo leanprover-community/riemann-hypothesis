@@ -41,7 +41,6 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual UpperTheory.V UpperTheory.V.Af UpperTheory.V.Af.Bc
 open scoped Matrix
 
-section General
 
 open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
 
@@ -94,7 +93,6 @@ private theorem exists_fixed_pair [TopologicalSpace G] [IsTopologicalGroup G] (h
   rw [Finset.sum_congr rfl fun q _ => h1 q, Finset.sum_const, Finset.card_univ, ← Nat.card_eq_fintype_card,
     ← Subgroup.index, nsmul_eq_mul, smul_eq_mul, inv_mul_cancel_left₀ hc]
 
-end General
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.PRep GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LFun.ConjPlace in
 private theorem sat_eq_of_pair {E : Type} [Field E] [NumberField E] {n : ℕ} {w : HeightOneSpectrum (𝓞 E)} {V W : Type}

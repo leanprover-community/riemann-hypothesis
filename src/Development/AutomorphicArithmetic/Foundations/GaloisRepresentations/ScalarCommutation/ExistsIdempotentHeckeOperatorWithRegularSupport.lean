@@ -55,7 +55,6 @@ open scoped Classical
 
 namespace UpperTheory.Gal.Spc
 
-section Abstract
 
 variable {X : Type} [Group X]
 
@@ -129,7 +128,6 @@ private theorem tf_supp {M : Type} [Group M] (T : TyLev X M) {h g : X} (e : T.tf
   apply e
   simp [TyLev.tf, dosetInd, Set.indicator_of_notMem hn]
 
-end Abstract
 
 private theorem locT (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) :
     ∃ t : GL (Fin n) k,

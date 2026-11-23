@@ -36,7 +36,6 @@ open UpperTheory.V UpperTheory.V.Af.Smo
 open UpperTheory.V.TR (Rinf Lie chart infGL pInf sInf toL lmul oneL invSet CuspSub)
 open scoped SchwartzMap FourierTransform RealInnerProductSpace ContDiff Topology
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
@@ -121,7 +120,6 @@ private theorem inner_eta (m : Fin n) (ξ : Fin n → Rinf E) (u : EuclideanSpac
   refine Finset.sum_congr rfl fun j _ => ?_
   by_cases h : j ≤ m <;> simp [eta, h, mul_comm]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Af.Smo.archStep :
     UpperTheory.V.Af.Smo.SchTw → UpperTheory.V.Af.Smo.PftSch → UpperTheory.V.Af.Smo.BetaSch → UpperTheory.V.Af.Smo.BetaInt → UpperTheory.V.Af.Smo.ArchStep := by

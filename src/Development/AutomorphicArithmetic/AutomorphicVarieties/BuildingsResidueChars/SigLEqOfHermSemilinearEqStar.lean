@@ -38,7 +38,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument
 
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob Matrix
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] {Δ τ : K}
 
@@ -69,7 +68,6 @@ private theorem eq_zero_of_trace (hτ : τ ^ 2 - 4 ≠ 0) {w : EL Δ τ}
   · refine hu.mul_right_eq_zero.1 ?_
     linear_combination 2 * h2 - (algebraMap K (Lsq K Δ) τ) * h1
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.sigL_eq_of_herm_semilinear_eq_star :
     ∀ (K : Type) [Field K] [CharZero K] (Δ τ c : K) (d m : EL Δ τ), τ ^ 2 - 4 ≠ 0 →

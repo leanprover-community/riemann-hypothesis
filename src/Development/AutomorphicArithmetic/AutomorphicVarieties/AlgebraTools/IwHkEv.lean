@@ -38,7 +38,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi UpperTheory.V.AlgebraTools
 
-section SlopeTestRemainingChoices
 
 variable {A G M : Type} [CommRing A] [Group G] [AddCommGroup M] [Module A M]
 
@@ -143,7 +142,6 @@ private theorem hkEv_ex (ρ : Representation A G M) (I : Subgroup G) (hI : Hecke
     obtain ⟨E', h'⟩ := h'
     exact ⟨_, hkEv_mul h h'⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.AlgebraTools.hkEv :
     ∀ (A G M : Type) [CommRing A] [Group G] [AddCommGroup M] [Module A M] (ρ : Representation A G M) (I : Subgroup G), HeckePair I → ∃ ev : HkAlg A I →ₐ[A] Module.End A (fixd ρ I), ∀ x : G, ev (hT A I x) = hk ρ I x := by

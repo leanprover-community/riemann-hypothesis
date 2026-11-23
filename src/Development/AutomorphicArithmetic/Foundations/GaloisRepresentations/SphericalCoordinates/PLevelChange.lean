@@ -40,7 +40,6 @@ open UpperTheory.Gal.W2
 
 namespace UpperTheory.Gal.W2.levelStructure
 
-section Group
 
 variable {Γ : Type} [Group Γ]
 
@@ -125,9 +124,7 @@ private theorem count_eq {K K' : Subgroup Γ} {h : Γ} (hle : K' ≤ GlobalTheor
     refine ⟨((u.out : K) : Γ), (u.out).2, h * ((((u.out : K) : Γ))⁻¹ * g * ((u.out : K) : Γ)) * (((u.out : K) : Γ))⁻¹,
       K.mul_mem hu (K.inv_mem (u.out).2), by group⟩
 
-end Group
 
-section Form
 
 variable {p : ℕ} [Fact p.Prime] {G : HTGroup p} {v : InfinitePlace G.F}
 
@@ -454,7 +451,6 @@ private theorem form_eq (hE : EigSame) (c : G.F[X] → ℂ → ℂ) {K K' : Subg
         congr 1
         exact finsum_congr fun q => (term_eq c K _ B _ (hst _)).symm
 
-end Form
 
 end UpperTheory.Gal.W2.levelStructure
 

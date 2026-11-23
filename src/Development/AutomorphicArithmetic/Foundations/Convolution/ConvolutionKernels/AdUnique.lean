@@ -38,7 +38,6 @@ import GroundTheory.AutomorphicForms.ReductionBlock
 
 open NumberField IsDedekindDomain GroundTheory.Automorphic GroundTheory.Automorphic.Reduction Formalism.L2.Host
 
-section SlopeTestRemainingChoices
 
 open Filter Topology
 
@@ -154,7 +153,6 @@ private theorem adMap_algebraMap (σ : K ≃+* K) (x : K) :
     rw [RingEquiv.symm_apply_apply] at h
     exact h
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.K.adUnique :
     ∀ (K : Type) [Field K] [NumberField K] (σ : K ≃+* K) (s : AdeleRing (𝓞 K) K →+* AdeleRing (𝓞 K) K), Continuous s →

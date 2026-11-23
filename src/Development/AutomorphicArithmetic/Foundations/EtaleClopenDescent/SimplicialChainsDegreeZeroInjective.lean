@@ -140,7 +140,6 @@ private lemma lift_of_top {K L I : CochainComplex C ℤ} (φ : K ⟶ L) (k n : �
       simp
     · exact (hL p hkp).eq_of_src _ _
 
-section Host
 
 open AlgebraicGeometry Opposite Simplicial GlobalTheory.EtC LateralTheory.E.DiscLvlPf
 
@@ -190,7 +189,6 @@ private lemma sec_chains {Z : PSh} {X : Spc} (a : disc.obj Z ⟶ X) (hX : IsZero
     Category.assoc, Iso.inv_hom_id, Category.comp_id]
   rfl
 
-end Host
 
 end UpperTheory.Cb.ConeApexLifts
 

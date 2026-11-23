@@ -45,7 +45,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-section Gen
 
 open IsLocalRing MvPowerSeries UpperTheory.V.Alg
 
@@ -94,7 +93,6 @@ private theorem ts_vanish {O X σ S : Type} [CommRing O] [AddCommGroup X] [Finit
   have := GlobalTheory.algHom_mem_pow_of_le_order φ hφ hs
   simpa [h] using this
 
-section Core
 
 variable {O X R K : Type} [CommRing O] [AddCommGroup X] [CommRing R] [Algebra O R] (W : WPres O X R)
   [CommRing K] [Algebra O K] (ξ : W.A →ₐ[O] K)
@@ -214,7 +212,6 @@ private theorem ts_factor [DecidableEq X] (hι : Function.Injective ι)
     rw [← key j F hF x hFx', ← hf, ← hFx']
     rfl
 
-end Core
 
 end Gen
 

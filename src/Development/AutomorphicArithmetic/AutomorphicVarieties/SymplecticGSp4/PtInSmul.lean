@@ -38,7 +38,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace UpperTheory.V.GradeZeroInterpolatingElement
 
-section Gen
 
 variable {R K H : Type} [CommRing R] [CommRing K] [Group H] (f : R →+* K)
 
@@ -97,7 +96,6 @@ private theorem ptIn_span (r : H →* M4 R) {X : M4 R} (h : X ∈ Submodule.span
     exact add_mem hx hy
   | smul a x _ hx => rw [ptIn_smul]; exact Submodule.smul_mem _ _ hx
 
-end Gen
 
 end UpperTheory.V.GradeZeroInterpolatingElement
 

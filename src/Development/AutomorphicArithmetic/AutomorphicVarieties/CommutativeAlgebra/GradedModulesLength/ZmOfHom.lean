@@ -49,7 +49,6 @@ open IsLocalRing Filter Formalism.MainNotions.V.Pf.V2.Calc UpperTheory.V.Alg Upp
 
 namespace UpperTheory.V.Alg.M
 
-section Abs
 
 variable {O A R : Type} [CommRing O] [CommRing A] [Algebra O A] [CommRing R]
 
@@ -129,7 +128,6 @@ private theorem zm_abs (hp : p.IsPrime) (h0 : ∀ (n : ℕ) j a, a ∈ 𝒜 j �
     · exact hbp h
     · exact hfp (hp.mem_of_pow_mem _ h)
 
-end Abs
 
 private theorem zm_lat {B A : Type} [CommRing B] [CommRing A] [Algebra B A] {k : ℕ} (N : Fin k → Submodule B A)
     (i : Fin k) (n : ℕ) : lat N (Finsupp.single i n) = N i ^ n := by

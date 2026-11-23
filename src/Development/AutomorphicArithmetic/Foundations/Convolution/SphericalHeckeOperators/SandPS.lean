@@ -58,7 +58,6 @@ open GroundTheory.Automorphic.HeckeAlgebra GroundTheory.Automorphic.Parabolic
 
 noncomputable section
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
 
@@ -344,7 +343,6 @@ private theorem key (hK : μ (integralGL F n : Set (GL (Fin n) F)) = 1) {ν₁ �
     rw [if_neg hσ, mul_zero, zero_smul]
   · simp
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.H.sandPS :
     ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (n : ℕ)

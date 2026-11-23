@@ -43,7 +43,6 @@ open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.
 
 namespace UpperTheory.V.AlgebraTools
 
-section Ring
 
 variable {R n : Type} [CommRing R] [Fintype n] [DecidableEq n] [LinearOrder n]
 
@@ -73,9 +72,7 @@ private theorem q_map_diagT {S : Type} [CommRing S] (f : R →+* S) (d : n → R
   · rfl
   · simp
 
-end Ring
 
-section Loc
 
 variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ)
 
@@ -104,7 +101,6 @@ private theorem q_exF : ∃ F : iwC k n ⊤ →* (Fin n → 𝓀[k]ˣ), ∀ (h :
   rw [this, hD]
   rfl
 
-end Loc
 
 end UpperTheory.V.AlgebraTools
 

@@ -48,7 +48,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.Zero.LLC
 
-section Abs
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -99,7 +98,6 @@ private theorem exponent_mul_absPow {χ χ' : kˣ →* ℂˣ} (hχ : IsSmoothCha
   field_simp
   ring
 
-end Abs
 
 theorem expo : Expo := by
   intro E Ω _ _ _ _ _ A w h a ha

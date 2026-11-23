@@ -49,7 +49,6 @@ open NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.ResW GlobalT
 
 namespace UpperTheory.ConvolutionTheory.RankTwoDescent
 
-section Loc
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -174,9 +173,7 @@ private theorem loc_sat (w : HeightOneSpectrum (𝓞 E)) {V : Type} [AddCommGrou
       have := sq_le_of_bound ht1 hr (by simpa using k1 |>.trans (by push_cast; rw [ht2]))
       rwa [ht2] at this
 
-end Loc
 
-section Glob
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
@@ -234,7 +231,6 @@ private theorem exists_norm {P : CuspSub E 2} (hu : P.IsUnitary) :
     rw [(hv v).2, Complex.norm_natCast_cpow_of_pos hq, Complex.neg_re, hzre]
     simp
 
-end Glob
 
 end UpperTheory.ConvolutionTheory.RankTwoDescent
 

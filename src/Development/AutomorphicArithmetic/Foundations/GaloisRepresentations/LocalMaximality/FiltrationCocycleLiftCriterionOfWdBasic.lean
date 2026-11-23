@@ -42,7 +42,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 variable {σ E : Type} [LinearOrder σ] [AddCommGroup E] [Module ℂ E]
 
 private lemma wd_apply' (w : σ → Module.End ℂ E) (c : Finset σ → E) (t : Finset σ) :
@@ -102,7 +101,6 @@ private lemma wd_compl_lev [Fintype σ] {Q : Finset σ} {w : σ → Module.End �
     rw [h (s.erase i) (by rw [hQ]; exact hs), map_zero, smul_zero]
   · rw [LinearMap.zero_apply, smul_zero]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Gal.productCup_of_system.filtrationCocycleLiftCriterion_of_wdBasic :
     WdBasic → FiltrationCocycleLiftCriterion := by

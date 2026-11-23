@@ -50,7 +50,6 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.Inde
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.TP
 open GlobalTheory.ThK.Dbl.Euler (cut cut_mul cut_form cut_sub cut_eq cut_one mm cont_mat prj)
-section Cut
 variable {S R k : Type} [CommRing S] [CommRing R] [Algebra S R] [Fintype k] [DecidableEq k]
 private theorem cut_add_pk {a b : S} (ha : a * a = a) (hb : b * b = b) (hab : a * b = 0) (A : Matrix k k R) :
     cut a A * cut b A = cut (a + b) A := by
@@ -63,7 +62,6 @@ private theorem cut_add_pk {a b : S} (ha : a * a = a) (hb : b * b = b) (hab : a 
   abel
 private theorem cut_zero_pk (A : Matrix k k R) : cut (0 : S) A = 1 := by simp [cut]
 private theorem cut_self_pk (A : Matrix k k R) : cut (1 : S) A = A := by simp [cut]
-end Cut
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
   {X : Spc F E n}
 private def pr_pk (e : AF F) (he : e * e = e) : UA σ X.J →* UA σ X.J :=

@@ -55,7 +55,6 @@ open GroundTheory.Automorphic.GLnLocal GroundTheory.Automorphic.HeckeAlgebra Gro
 open ValuativeRel (valuation)
 open scoped ValuativeRel
 
-section Local
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
 
@@ -200,9 +199,7 @@ private theorem heckeAct_eq_finsum {V : Type*} [AddCommGroup V] [Module ℂ V]
   refine finsum_congr fun c => ?_
   simp [hΦ]
 
-end Local
 
-section Loc2
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
   [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)]
@@ -228,9 +225,7 @@ private theorem eq_aeval (hm : m.real (integralGL F n : Set (GL (Fin n) F)) = 1)
   rw [hS]
   exact (DFunLike.congr_fun e p).symm
 
-end Loc2
 
-section Glob
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (w : Pl K)
 
@@ -282,9 +277,7 @@ private theorem scal_eq (N : ℕ) :
   congr 1
   ring
 
-end Glob
 
-section Main
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (w : Pl K)
   [MeasurableSpace (GL (Fin n) (w.adicCompletion K))] [BorelSpace (GL (Fin n) (w.adicCompletion K))]
@@ -357,7 +350,6 @@ private theorem core (hm : m.real (integralGL (w.adicCompletion K) n : Set (GL (
     rw [h1, h2, map_mul, hev.hecke w hw i]
     rfl
 
-end Main
 
 theorem UpperTheory.ConvolutionTheory.GM.sphAct :
     SphAct := by

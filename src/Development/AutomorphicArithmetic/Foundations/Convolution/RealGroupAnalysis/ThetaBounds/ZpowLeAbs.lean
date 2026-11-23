@@ -135,7 +135,6 @@ private theorem term_le {B M : ℝ} {m n : ℕ} (hB : 0 ≤ B) (hM : 0 < M) (h1 
 
 end SlopeTestRemainingChoices
 
-section Idele
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -269,9 +268,7 @@ private theorem decomp {K₁ K₂ : Set (FiniteAdeleRing (𝓞 F) F)} (a : Idele
   · change ((IdeleGroup.toFinite F (τ⁻¹ * a)⁻¹ : (FiniteAdeleRing (𝓞 F) F)ˣ) : FiniteAdeleRing (𝓞 F) F) ∈ K₁
     rw [hfi]; exact h₁
 
-end Idele
 
-section Main
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -330,7 +327,6 @@ private theorem h_bound {B : ℝ} {n : ℕ} (hB1 : 1 ≤ B) (hb : ∀ i : Infini
   calc (ab (rho v))⁻¹ ^ k v * (Mx ^ n)⁻¹ ≤ B ^ (k v).natAbs * (Mx ^ n)⁻¹ := by gcongr
     _ ≤ _ := term_le (by linarith) hM0 h3 hn
 
-end Main
 
 theorem UpperTheory.ConvolutionTheory.R2.Ff.wtId :
     ∀ (F : Type) [Field F] [NumberField F], WtId F := by

@@ -54,7 +54,6 @@ open PositivityTheory.ThKW PositivityTheory.ThKW.AutEtaA
 
 namespace UpperTheory.TP.W
 
-section Abstract
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -132,9 +131,7 @@ private theorem hom_fix_all {G : Type} [CommGroup G]
   rw [hi, hk, HeightOneSpectrum.valuation_of_algebraMap, HeightOneSpectrum.intValuation_if_neg _ hu,
     Ideal.count_associates_factors_eq hI Q.isPrime Q.ne_bot]
 
-end Abstract
 
-section Local
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -206,9 +203,7 @@ private theorem exists_local (P : HeightOneSpectrum (𝓞 E)) :
       (u0 : HeightOneSpectrum.adicCompletion E P)) Q) = _
     rw [RestrictedProduct.mulSingle_eq_of_ne (h := hQ), map_one]
 
-end Local
 
-section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -508,7 +503,6 @@ private theorem eta_prod_all {σ : E →ₐ[F] E} {B : Base F E} (hcm : IsCMExt 
     linear_combination ((Real.sqrt k : ℂ) * (∏ w, (‖tauB B w x‖ : ℂ)) * ((κ y : ℂ) * (κ y : ℂ))) * hX +
       ((Real.sqrt k : ℂ) * (∏ w, (‖tauB B w x‖ : ℂ))) * hY
 
-end Main
 
 end UpperTheory.TP.W
 

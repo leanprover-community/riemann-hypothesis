@@ -46,7 +46,6 @@ open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalS
 open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.Automorphic.Spherical
 open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.GM
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -90,7 +89,6 @@ private theorem hf_ex (w : Pl K) (h : GL (Fin n) (w.adicCompletion K) → ℂ) (
     · simp only [map_inv, mul_inv_cancel_left]
   exact ⟨⟨⟨_, h1⟩, h2⟩, fun _ => rfl⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.GM.heckeFin :
     HeckeFin := by

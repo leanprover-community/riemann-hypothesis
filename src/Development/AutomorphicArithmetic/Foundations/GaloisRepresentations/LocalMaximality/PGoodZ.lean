@@ -40,7 +40,6 @@ import Mathlib.Tactic.NormNum.Prime
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-section Tensor
 variable {S S' E E' : Type} [CommRing S] [CommRing S'] [Algebra ℂ S] [Algebra ℂ S']
   [AddCommGroup E] [Module ℂ E] [AddCommGroup E'] [Module ℂ E']
 
@@ -83,9 +82,7 @@ private theorem units_ratio {F : Type} [Field F] (f : F →+* S) (u v : Fˣ) :
     ((Units.map (f : F →* S) u * (Units.map (f : F →* S) v)⁻¹ : Sˣ) : S) = f ((u : F) / v) := by
   simp [div_eq_mul_inv]
 
-end Tensor
 
-section Forms
 variable {K : Type} [Field K] [Algebra ℂ K]
 
 private theorem omB_mono' {B B' : Subalgebra ℂ K} (h : B ≤ B') (q : ℕ) : omB ℂ K B q ≤ omB ℂ K B' q := by
@@ -104,9 +101,7 @@ private theorem omB_smul (B : Subalgebra ℂ K) (q : ℕ) {c : K} (hc : c ∈ B)
   | add y z _ _ hy hz => rw [smul_add]; exact add_mem hy hz
   | smul r y _ hy => rw [smul_comm]; exact Submodule.smul_mem _ r hy
 
-end Forms
 
-section Chart
 variable {F : Type} (K : Type) [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K] {d : ℕ}
   (x : Fin (d + 1) → Fˣ)
 
@@ -144,7 +139,6 @@ private theorem sysP_Y (a : ℕ) (b i : Fin (d + 1)) :
   unfold sysP
   exact (units_ratio _ (x b) (x i)).trans rfl
 
-end Chart
 
 theorem UpperTheory.Gal.productCup_of_system.goodZ_of :
     GoodZ := by

@@ -86,7 +86,6 @@ private theorem powMap_ext' {S S' : Scheme.{0}} {A : Over S} {A' : Over S'} (π 
 
 end SlopeTestRemainingChoices
 
-section Lat
 
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p}
 
@@ -116,7 +115,6 @@ private theorem exists_deeper_normal_level (hK : KNBasic) (L : Link D G) (j : Lv
     have hd : x.1.1 * c x.1.1 x.2 ∣ M := dvd_mul_of_dvd_right (Finset.dvd_prod_of_mem _ hx) _
     exact hadm x.1.1 x.2 u (UpperTheory.Gal.Int.Geo.KN_anti hd hu)
 
-end Lat
 
 private theorem comp_univ_hom_eq_of_wit {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p} {L : Link D G} {R : Type}
     [CommRing R] [Algebra ℚ R] {gb : GBase D.toG R} {h : G.GAf} {N N' : ℕ} {X' : GenModel gb N'}

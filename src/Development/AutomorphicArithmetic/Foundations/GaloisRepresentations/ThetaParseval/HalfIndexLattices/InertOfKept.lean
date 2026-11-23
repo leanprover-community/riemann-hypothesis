@@ -48,7 +48,6 @@ open PositivityTheory.ThKW.AutEtaA
 
 namespace UpperTheory.TP.W
 
-section FF
 
 variable {k : Type} [Field k] [Finite k] {q : ℕ} [Fact q.Prime] [CharP k q]
 
@@ -153,9 +152,7 @@ private theorem invol_data (hq : q ≠ 2) {s a : ℤ} (hs : (a : ZMod q) ^ (q / 
     rw [h7, h6] at hsj
     exact h21 hsj
 
-end FF
 
-section Arith
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
@@ -396,7 +393,6 @@ private theorem even_deg {a : ℕ} {y : 𝓞 E} (hy : y ^ 2 = -(a : 𝓞 E)) (P 
   obtain ⟨hyb, hy0⟩ := res_root hy P hq hqP hnd
   exact even_of_neg h2 hs hyb hy0 hc
 
-end Arith
 
 theorem normK : NormK := by
   intro F E _ _ _ _ _ σ B hG

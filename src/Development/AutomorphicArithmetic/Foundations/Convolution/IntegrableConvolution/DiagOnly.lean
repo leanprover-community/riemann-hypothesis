@@ -46,7 +46,6 @@ open scoped InnerProductSpace
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section SlopeTestRemainingChoices
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 private theorem prj_fd (Z : Submodule ℂ H) [FiniteDimensional ℂ Z] : prj Z = Z.starProjection := by
@@ -171,9 +170,7 @@ private theorem trace_cut {Z : Type} [NormedAddCommGroup Z] [InnerProductSpace �
     _ = LinearMap.trace ℂ Z (T * Q) := by
         rw [Finset.sum_eq_zero hzero, zero_add, hQc]
 
-end SlopeTestRemainingChoices
 
-section Aux2
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 private theorem mem_eigIn (W : Submodule ℂ H) (A : H →L[ℂ] H) (x : ℝ) (v : H) :
@@ -289,7 +286,6 @@ private theorem cycle_const {X : Type} {m : ℕ} (f : Fin (m + 1) → X) (i₀ :
   rw [Fin.cast_val_eq_self] at hj
   rwa [add_sub_cancel] at hj
 
-end Aux2
 
 end UpperTheory.ConvolutionTheory.L1
 

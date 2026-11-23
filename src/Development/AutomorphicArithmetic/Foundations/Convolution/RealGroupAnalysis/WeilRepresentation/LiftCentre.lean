@@ -37,7 +37,6 @@ open NumberField IsDedekindDomain MeasureTheory Matrix Topology Filter
 open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Published GroundTheory.Global GroundTheory.Automorphic.GJMatrix
 open UpperTheory.ConvolutionTheory.R2
 
-section Fund
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -89,9 +88,7 @@ private theorem int_cD (M : Meas F) (u : G1 F → ℂ) (hu : ∀ γ g, u (ratS F
       rw [cD_mul, l2]
   exact int_comp M e.toEquiv (UpperTheory.ConvolutionTheory.R2.M.cdMeas F M t) e.measurableEmbedding hfd u hu
 
-end Fund
 
-section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -193,7 +190,6 @@ private theorem lift_centre (W : Weil D) (M : Meas F) {f : GL (Fin 2) (A F) → 
   congr 1
   exact int_right M (U W f φ h) (U_inv W hl φ h) _
 
-end Main
 
 theorem UpperTheory.ConvolutionTheory.R2.equiv :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [IsTotallyComplex E] (D : Dat F E) (W : Weil D) (M : Meas F) (π : TR.CuspSub F 2), St.Equiv W M π := by

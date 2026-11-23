@@ -84,7 +84,6 @@ private theorem ev_rel {O H E : Type} [CommRing O] [Ring H] [Algebra O H] [Ring 
     {a y z : H} {c : O} {y' z' : E} (h : a * y = c • z) (hy : ev y = y') (hz : ev z = z') : ev a * y' = c • z' := by
   rw [← hy, ← hz, ← map_mul, h, map_smul]
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -228,7 +227,6 @@ private theorem locA (O A M V : Type) [CommRing O] [IsDomain O] [CommRing A] [Al
     refine tf _ _ (relIndex_ne _ _ (hP.2.2 ⊤).2) ?_
     rw [← map_nsmul, h2, map_zero]
 
-end Loc
 
 private theorem comm_dc {A H M : Type} [CommRing A] [Group H] [AddCommGroup M] [Module A M]
     (ρ : Representation A H M) (K K' : Subgroup H) (x : H) (φ : Module.End A M) (h : ∀ g, Commute φ (ρ g)) :

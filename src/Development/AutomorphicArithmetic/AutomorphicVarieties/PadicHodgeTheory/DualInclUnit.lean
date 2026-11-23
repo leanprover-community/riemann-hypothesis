@@ -55,7 +55,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace UpperTheory.V.Loc.DualInclusionBarsotti
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E] {n : ℕ}
 
@@ -121,7 +120,6 @@ private theorem of_ents {A : Matrix (Fin n) (Fin n) (DualNumber E)} {K : Interme
     (h : ents A ⊆ K) (a b : Fin n) : (A a b).fst ∈ K ∧ (A a b).snd ∈ K :=
   ⟨h (Or.inl ⟨(a, b), rfl⟩), h (Or.inr ⟨(a, b), rfl⟩)⟩
 
-end SlopeTestRemainingChoices
 
 private theorem desc {l : ℕ} [Fact l.Prime] {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
     [CompactSpace Γ] [T2Space Γ] {n : ℕ} (r' : Γ →* GL (Fin n) (DualNumber (PadicAlgCl l)))

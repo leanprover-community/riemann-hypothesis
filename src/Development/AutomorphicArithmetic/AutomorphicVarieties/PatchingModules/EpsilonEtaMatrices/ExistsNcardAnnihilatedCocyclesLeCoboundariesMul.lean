@@ -175,7 +175,6 @@ private theorem dg_abs (A P G ι : Type) [CommRing A] [IsDomain A] [IsDiscreteVa
   rintro _ ⟨b, hb, rfl⟩
   exact (hB _ hb).2 m
 
-section red
 variable {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} (x : NP F n)
 
 private theorem dg_smul {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g : ℕ} (c : A) (y : DD X g) :
@@ -394,7 +393,6 @@ private noncomputable def dgB : Submodule x.A (F.G₀ → Matrix (Fin n) (Fin n)
     · rw [Matrix.transpose_smul, smul_comm, ← smul_neg, a2]
     · simp only [Pi.smul_apply, Matrix.mul_smul, Matrix.smul_mul, smul_sub, smul_comm c (epsD k x.A _)]
 
-end red
 
 theorem UpperTheory.V.Pa.exists_ncard_annihilated_cocycles_le_coboundaries_mul :
     ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G0 : Glob l L) (n : ℕ) (x : NP G0.frame n) (k : Kap x) (q : ℕ) (sg : Fin q → G0.G₀), PhiCond G0.Γ l → (∀ j, sg j ∈ G0.frame.G') → Detects k (Set.range sg) → ∃ C : ℕ, ∀ m, {z | z ∈ TwZ k (x.Am m) ∧ ∀ j, ell k (x.Am m) (sg j) z = 0}.ncard ≤ (TwB k (x.Am m)).ncard * Nat.card x.K ^ C := by

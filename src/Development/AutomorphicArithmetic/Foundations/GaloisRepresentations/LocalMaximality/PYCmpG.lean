@@ -42,7 +42,6 @@ open scoped TensorProduct
 
 set_option autoImplicit false
 
-section Abs
 variable {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [Module ℂ E] (act : S →ₐ[ℂ] Module.End ℂ E)
 
 private theorem pyc_inSp_act {κ : Type} [Fintype κ] {R : Subalgebra ℂ S} {M : Submodule ℂ E} (hst : Stab act R M)
@@ -97,7 +96,6 @@ private theorem pyc_kstep (k2 : KoszulBoundaryOfComponentMemIdeal) (k3 : K3) {κ
   rw [e1]
   exact hsm (sub_mem hy q)
 
-end Abs
 
 private theorem pyc_val {L : Type} [Field L] [Algebra ℂ L] (hVB : ValBasic) (B : Subalgebra ℂ L) (e : B →ₐ[ℂ] ℂ)
     {s a b : L} {cs ca cb : ℂ} (hs : Val B e s cs) (ha : Val B e a ca) (hb : Val B e b cb) (hc : cs = ca * cb) :
@@ -110,7 +108,6 @@ private theorem pyc_val {L : Type} [Field L] [Algebra ℂ L] (hVB : ValBasic) (B
   have e1 : (⟨s - a * b, sub_mem ms (mul_mem ma mb)⟩ : loc B e) = ⟨s, ms⟩ - ⟨a, ma⟩ * ⟨b, mb⟩ := rfl
   rw [e1, map_sub, map_mul, hc, sub_self]
 
-section Conc
 variable {F K K' : Type} [Field F] [Field K] [Field K'] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ K'] [Algebra F K]
   [IsScalarTower ℂ F K] [Algebra K K'] [IsScalarTower ℂ K K'] [Algebra F K'] [IsScalarTower F K K'] [IsScalarTower ℂ F K'] {d : ℕ}
   (x : Fin (d + 1) → Fˣ) (j2 : K →ₐ[ℂ] K')
@@ -200,9 +197,7 @@ private theorem pyc_local (hYC : YCols) (hFL : FixLoc) (k1 : K1) (k2 : KoszulBou
   exact pyc_kstep (sysY x j2 d).act k2 k3 _ _ ((sysY x j2 d).r (app (app n11 n) n10) (app (gG x j2 z) (gT x j2)) 0 0)
     ((dj 0 : Fin d ↪o Mi d).trans (inlE : Mi d ↪o Mi d ⊕ₗ κ)) N hst hρ hN hrel (by rw [ht]; exact hKt) hKr hsm hv hw hy hwt
 
-end Conc
 
-section Idx
 variable {β γ : Type} [LinearOrder β] [LinearOrder γ]
 
 private theorem pyc_img_uni {d : ℕ} (e : Fin d ↪o β) :
@@ -216,7 +211,6 @@ private theorem pyc_img_map {δ : Type} [LinearOrder δ] {d : ℕ} (e : Fin d �
   ext t
   simp [img]
 
-end Idx
 
 private theorem pyc_colZ (hSB : SysBasic) {d : ℕ} {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [Module ℂ E]
     (T : Sys d S E) {κ : Type} [LinearOrder κ] [Fintype κ] (n : κ → ℕ × ℕ) (z : κ → S)
@@ -234,7 +228,6 @@ private theorem pyc_colZ (hSB : SysBasic) {d : ℕ} {S E : Type} [CommRing S] [A
     rw [hI, hJ]; push_cast; ring
   rwa [e1] at h5
 
-section Conc2
 variable {F K K' : Type} [Field F] [Field K] [Field K'] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ K'] [Algebra F K]
   [IsScalarTower ℂ F K] [Algebra K K'] [IsScalarTower ℂ K K'] [Algebra F K'] [IsScalarTower F K K'] [IsScalarTower ℂ F K'] {d : ℕ}
   (x : Fin (d + 1) → Fˣ) (j2 : K →ₐ[ℂ] K')
@@ -267,9 +260,7 @@ private theorem pyc_prodG' {κ : Type} [LinearOrder κ] (n : κ → ℕ × ℕ) 
   refine (Finset.prod_congr rfl fun a _ => e1 a).trans ?_
   simp
 
-end Conc2
 
-section Col
 variable {F K K' : Type} [Field F] [Field K] [Field K'] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ K'] [Algebra F K]
   [IsScalarTower ℂ F K] [Algebra K K'] [IsScalarTower ℂ K K'] [Algebra F K'] [IsScalarTower F K K'] [IsScalarTower ℂ F K'] {d : ℕ}
   (x : Fin (d + 1) → Fˣ) (j2 : K →ₐ[ℂ] K')
@@ -354,7 +345,6 @@ private theorem collapsed_column_origin (hYC : YCols) (hYKE : YKE) (hPtG : PtG) 
       exact Units.inv_mul _
     linear_combination ((-1) ^ d * s) * hG
 
-end Col
 
 theorem UpperTheory.Gal.productCup_of_system.yCmpG_of :
     YCols → YKE → PtG → FixLoc → K1 → KoszulBoundaryOfComponentMemIdeal → K3 → LocReg → LocMax → LocForms → CechKoszulSystemBoundaryCriterion → SysBasic → SysOk → RS → ValBasic → RYBasic → OmLoc → WdUni → YCmpG := by

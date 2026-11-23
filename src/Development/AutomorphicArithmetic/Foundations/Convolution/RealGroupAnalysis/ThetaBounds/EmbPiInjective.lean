@@ -41,7 +41,6 @@ namespace UpperTheory.ConvolutionTheory.R2.Ff
 open scoped nonZeroDivisors
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -210,7 +209,6 @@ private theorem wt_le {K : Set (Fin 4 → FiniteAdeleRing (𝓞 F) F)} {J : (Fra
     rw [if_neg h]
     exact mul_nonneg (by positivity) (lw_nonneg _ _ _)
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.R2.Ff
 

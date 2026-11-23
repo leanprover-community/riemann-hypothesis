@@ -40,7 +40,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob Matrix
 
-section Abs
 
 variable {L A : Type} [CommRing L] [Ring A] [Algebra L A]
 
@@ -56,9 +55,7 @@ private theorem Psi_mul {t : L} {n e : A} (hee : e * e = e) (hc : n * e = e * n)
     smul_mul_smul_comm, hee, h1, h2, h3]
   module
 
-end Abs
 
-section Core
 
 variable {L : Type} [CommRing L] [StarRing L]
 
@@ -239,7 +236,6 @@ private theorem core (t c : L) (ht : star t = t) (hc' : star c = c) (hc : c * (2
         Matrix.smul_mulVec, ← Matrix.mulVec_mulVec, hEw]
       abel
 
-end Core
 
 theorem UpperTheory.exists_hermitian_conjugation_of_unitary_tau :
     ∀ (K : Type) [Field K] [CharZero K] (Δ τ : K), τ ^ 2 - 4 ≠ 0 → ∀ d : EL Δ τ, d * sigL d = ofE Δ (QuadraticAlgebra.omega : Etau K τ) →

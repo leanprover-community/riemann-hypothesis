@@ -40,7 +40,6 @@ open scoped Matrix MatrixGroups
 
 namespace UpperTheory.Kd.K4
 
-section Adic
 
 variable {R : Type*} [CommRing R] {I : Ideal R} {M : Type*} [AddCommGroup M] [Module R M]
 
@@ -81,7 +80,6 @@ private lemma lim_exists (d : ℕ → AdicCompletion I M) (n : ℕ)
   rw [map_sub, sub_eq_zero, add_comm k n] at h
   rw [map_sub, sub_eq_zero, hLe, h]
 
-end Adic
 
 private lemma vand (l : ℕ) [Fact l.Prime] (w : ℕ) : ∃ (c : ℕ) (E : Fin (w + 1) → Fin (w + 1) → ℤ_[l]),
     ∀ i i' : Fin (w + 1), ∑ j : Fin (w + 1), E i j * (((j : ℕ) : ℤ_[l]) ^ (i' : ℕ)) =

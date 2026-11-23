@@ -42,7 +42,6 @@ open UpperTheory.Gal.crystallineComparison.Mod (Std TjD KerAt)
 open scoped TensorProduct
 open UpperTheory.Gal.FiniteEtaleModels
 
-section LatBProof
 
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p} (L : Link D G)
 
@@ -198,7 +197,6 @@ private theorem gen_rep {a : 𝓞 D.F} {N : ℕ} {𝔟 : Ideal (𝓞 D.F)} (hN :
   refine ⟨x, mulF D a w'' + w', add_mem (mulF_mem _ hw'') hw', ?_⟩
   rw [e, ex, map_add (f := _), map_nsmul, mulF_inAf, smul_add, add_assoc]
 
-end LatBProof
 
 theorem UpperTheory.Gal.FiniteEtaleModels.latB_holds :
     LatB := by

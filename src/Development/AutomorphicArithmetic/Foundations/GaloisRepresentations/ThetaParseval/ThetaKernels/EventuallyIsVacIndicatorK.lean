@@ -52,19 +52,15 @@ variable {F : Type} [Field F] [NumberField F]
 end Tw.VacIndic
 namespace Tw.VacIndic
 variable {F : Type} [Field F] [NumberField F]
-section AtLemmas
 variable {v : HeightOneSpectrum (𝓞 F)}
-end AtLemmas
 end Tw.VacIndic
 namespace Tw.VacIndic
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {n d : ℕ}
 end Tw.VacIndic
 namespace Tw.VacIndic
-section SympAdd
 variable {R E' : Type} [CommRing R] [CommRing E'] [Algebra R E'] (c : E' →ₐ[R] E') (ξ : E')
   {α β : Type} [Fintype α] [Fintype β] (JA : Matrix α α E') (JB : Matrix β β E')
-end SympAdd
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 end Tw.VacIndic
 namespace Tw.VacIndic

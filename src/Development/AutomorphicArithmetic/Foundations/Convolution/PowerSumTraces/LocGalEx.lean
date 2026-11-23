@@ -48,7 +48,6 @@ open GroundTheory.Global.AdeleBaseChange
 
 noncomputable section
 
-section SlopeTestRemainingChoices
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 private theorem gal_central (σ : E ≃ₐ[F] E) (n : ℕ) (t : {r : ℝ // 0 < r}) :
@@ -260,7 +259,6 @@ private def twRep {G : Type} [Group G] [TopologicalSpace G] (τ : SmIrr G) (s : 
     obtain ⟨g, rfl⟩ := s.surjective g
     exact hW g x hx
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.C.locGalEx :
     UpperTheory.ConvolutionTheory.C.LocGalEx := by

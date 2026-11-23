@@ -40,7 +40,6 @@ open scoped Classical
 
 namespace UpperTheory.Gal.InertialTypesAlt.L
 
-section Alg
 
 variable {n : ℕ}
 
@@ -75,9 +74,7 @@ private theorem conj_aeval {R : Type} [CommRing R] (g : GL (Fin n) R)
     rw [aeval_monomial, aeval_monomial, Units.conj_pow']
     simp only [← Algebra.smul_def, mul_smul_comm, smul_mul_assoc]
 
-end Alg
 
-section Int
 
 variable {K : Type} [Field K] [ValuativeRel K]
 
@@ -93,7 +90,6 @@ private theorem lift_aeval {n : ℕ} (Y : Matrix (Fin n) (Fin n) 𝒪[K]) {q : K
   obtain ⟨q', rfl⟩ := (Polynomial.mem_lifts _).1 h
   exact ⟨aeval Y q', map_aeval_matrix _ Y q'⟩
 
-end Int
 
 end UpperTheory.Gal.InertialTypesAlt.L
 

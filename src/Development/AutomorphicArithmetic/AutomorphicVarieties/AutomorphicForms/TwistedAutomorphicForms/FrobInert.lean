@@ -32,7 +32,6 @@ import Mathlib.Tactic.NormNum.Prime
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual UpperTheory.V.Af UpperTheory.V.Af.Tw
 open scoped Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {K L Ω : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Field Ω] [Algebra K L] [Algebra L Ω]
   [Algebra K Ω] [IsScalarTower K L Ω]
@@ -99,7 +98,6 @@ private theorem frob_sq {A : ValuationSubring Ω} {q : ℕ} (hq : q ≠ 0) {σ :
   rw [e]
   exact Valuation.map_add_lt _ h2 h3
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Af.Tw.frobInert :
     UpperTheory.V.Af.Tw.FrobInert := by

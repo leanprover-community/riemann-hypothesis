@@ -43,7 +43,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
 
-section SlopeTestRemainingChoices
 
 variable {R : Type} [CommRing R] {m : Ideal R}
 
@@ -176,7 +175,6 @@ private theorem condT_deform {O D : Type} [CommRing O] [IsLocalRing O] [Group D]
     rw [map_sub, map_add (f := _), map_mul, map_mul, map_mul, hc, h2 s hs a]
     ring
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.UnitaryThreeInertia.triangular_condition_at_l_of_first_order_deformation :
     ∀ {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] [CharZero O] [Finite (ResidueField O)]

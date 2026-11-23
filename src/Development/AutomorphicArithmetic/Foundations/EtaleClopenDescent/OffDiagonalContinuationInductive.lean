@@ -125,7 +125,6 @@ private theorem pull_inv_inj (q : ℕ) (i n : ℤ) {A B : Spc} (e : A ≅ B) :
     Function.Injective (pull _ e.inv (tw q i) n) := fun x y h => by
   rw [← pull_inv_hom _ _ e n x, h, pull_inv_hom]
 
-section ex
 variable {q : ℕ} {i n : ℤ} {X : Scheme.{0}} {U V W P : X.Opens} (c : Sq U V W P)
 
 private theorem ex1 {G : Type 1} [AddCommGroup G]
@@ -178,7 +177,6 @@ private theorem ex3
   · rintro ⟨x, h⟩
     exact ⟨x, congrArg Prod.fst h, congrArg Prod.snd h⟩
 
-end ex
 
 private theorem pb_sq {X' X : Scheme.{0}} (f : X' ⟶ X) {U' V' W' P' : X'.Opens} {U V W P : X.Opens}
     (c' : Sq U' V' W' P') (c : Sq U V W P) (hU : U' ≤ f ⁻¹ᵁ U) (hV : V' ≤ f ⁻¹ᵁ V) (hW : W' ≤ f ⁻¹ᵁ W)
@@ -229,18 +227,14 @@ theorem mv (q : ℕ) (i : ℤ) : ∃ d : ∀ {X : Scheme.{0}} {U V W P : X.Opens
     refine (hnat _ _ _ _ _ _ _ eu ev (c'.cover _) (c.cover _) n _).trans ?_
     exact congrArg (D _ _ _ n) (nat_pull q i n _ _ _ _ (pb_sq f c' c hU hV hW hP eu ev) x)
 
-section sys
 variable {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) {J : Type} [SmallCategory J]
   (D : J ⥤ CommRingCat.{0}) (s : (Functor.const J).obj (CommRingCat.of A) ⟶ D)
   (t : D ⟶ (Functor.const J).obj (CommRingCat.of B))
 
-end sys
 
-section final
 variable {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) {J : Type} [SmallCategory J]
   (D : J ⥤ CommRingCat.{0}) (s : (Functor.const J).obj (CommRingCat.of A) ⟶ D)
   (t : D ⟶ (Functor.const J).obj (CommRingCat.of B))
 
-end final
 
 end UpperTheory.Cb.OffDiagonalContinuation

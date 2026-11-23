@@ -43,7 +43,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Matrix Filter ReciprocityTheory.Gal UpperTheory.V.W UpperTheory.V.Pa UpperTheory.V.Pa.B2
 
-section SlopeTestRemainingChoices
 
 variable {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {n a : ℕ}
 
@@ -234,7 +233,6 @@ private theorem od_dec {K : Type} [Field K] {X : Type} [CommRing X] [Algebra (Po
   · simp only [hij, if_false]
     rw [← hb i j, hcd i j, map_add (f := _), Algebra.smul_def, map_mul]
 
-end SlopeTestRemainingChoices
 
 private theorem card_zmod_nsmul_eq_zero_le (l : ℕ) [Fact l.Prime] (N : ℕ) (hN : 0 < N) :
     Nat.card {y : ZMod l // N • y = 0} ≤ N := by

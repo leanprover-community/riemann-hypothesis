@@ -41,7 +41,6 @@ open UpperTheory.V.Lit UpperTheory.V.Lit.Geo UpperTheory.V.Lit.Bor UpperTheory.V
 open scoped TensorProduct GlobalTheory.CuspRep.CuspidalL2GL
 open UpperTheory.V.Cj UpperTheory.V.Cj.H
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] {a : ℕ}
   {N : Type} [AddCommGroup N] [Module ℂ N] [Module ℝ N] [IsScalarTower ℝ ℂ N]
@@ -90,7 +89,6 @@ private theorem hol_der_end (τ : E →+* ℂ) (u : Module.End ℂ M) (L : Lie E
   rw [h0, zero_add] at h1
   exact h1
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Cj.H.wigAlpha :
     UpperTheory.V.Cj.H.WigAlpha := by

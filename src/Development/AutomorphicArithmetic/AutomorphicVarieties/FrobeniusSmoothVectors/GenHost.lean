@@ -48,7 +48,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Pr UpperTheory.V.Fr UpperTheory.V
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -254,7 +253,6 @@ private theorem gh_teich (l : ℕ) [hl : Fact l.Prime] (c : Coef l) {N : ℕ} [N
   · rw [← residue_eq_zero_iff, map_sub, Units.val_one, map_one, sub_eq_zero]
     exact congrArg Units.val h
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Fr.gen_host :
     ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (c : Coef l) [CharP (ResidueField c.O) l] (N : ℕ) [NeZero N] (e : ℕ) (ψ : DirichletCharacter c.O N) (o₁ : ℕ), UnitaryThreeInertia.HostData l e ψ o₁ → ∀ σ : G ℚ Ω, IsCC σ → ∀ B : ValuationSubring Ω, B.valuation (l : Ω) < 1 → ∃ Hb, Gen l (UnitaryThreeInertia.eta4 Ω) (Chr.Psi l e (Chr.dirG ℚ Ω ψ)) σ B (l * N) Hb := by

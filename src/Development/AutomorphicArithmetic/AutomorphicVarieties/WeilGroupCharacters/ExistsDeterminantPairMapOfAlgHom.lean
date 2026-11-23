@@ -37,7 +37,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing UpperTheory.V.Alg UpperTheory.V.W
 
-section SlopeTestRemainingChoices
 
 open Polynomial
 
@@ -75,7 +74,6 @@ private theorem pm_lam_single (D : GDet n A G) (f : A →+* A') (i : ℕ) (g : G
     (D.map f).lam i (MonoidAlgebra.single g 1) = f (D.lam i (MonoidAlgebra.single g 1)) := by
   rw [← pm_lam_map]; simp
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.W.exists_determinantPair_map_of_algHom :
     ∀ (l : ℕ) [Fact l.Prime] (F : GFrame l) (O : Type) [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] (n : ℕ) (r : Resid F O n) (R : Type) [CommRing R] [Algebra O R] [IsCO O R] (R' : Type) [CommRing R'] [Algebra O R'] [IsCO O R'] (f : R →ₐ[O] R') (p : Pair r R), ∃ p' : Pair r R', p.Maps (f : R →+* R') p'.D p'.ψ := by

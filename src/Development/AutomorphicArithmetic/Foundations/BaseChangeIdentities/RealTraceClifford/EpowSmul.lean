@@ -47,7 +47,6 @@ open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.R
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section SlopeTestRemainingChoices
 
 variable {n : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
@@ -131,7 +130,6 @@ private theorem gel_smul (s : Bool) (m : ℕ) (c : ℂ) {f : Mat n → V} (h : C
   simp only [gel, Finset.sum_apply, Finset.smul_sum]
   exact Finset.sum_congr rfl fun a _ => epow_smul s m a a c h hg
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.RealTr.zEig :
     ∀ (n : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℂ V] (χ : Inf n) (f : Mat n → V), ContDiffOn ℝ ∞ f (GLs n) → IsEig χ f →

@@ -50,7 +50,6 @@ open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.
 
 namespace UpperTheory.V.AlgebraTools.JqMult
 
-section Lin
 
 variable {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
 
@@ -161,9 +160,7 @@ private theorem Tri.eig {ρ : Representation ℂ G V} {N : ℕ} {χ : Fin N → 
     rw [hm, zero_sub, neg_mem_iff] at h5
     refine (Submodule.smul_mem_iff _ (pow_ne_zero m (sub_ne_zero.2 fun h => hg (Units.ext h.symm)))).1 h5
 
-end Lin
 
-section Cell
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -365,7 +362,6 @@ private theorem tri_jacB (hG : JacquetOfInducedFiltration k) {n : ℕ} {ψ : Fin
   simp only [MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom, MulEquiv.symm_apply_apply] at this
   exact this
 
-end Cell
 
 end UpperTheory.V.AlgebraTools.JqMult
 

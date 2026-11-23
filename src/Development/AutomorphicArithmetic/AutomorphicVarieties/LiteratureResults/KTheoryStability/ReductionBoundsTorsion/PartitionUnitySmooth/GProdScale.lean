@@ -47,7 +47,6 @@ open scoped ComplexOrder
 
 namespace PositivityTheory.KB.SmoothPartitionUnityBasic
 
-section GNrmHelpers
 
 set_option linter.unusedSectionVars false
 
@@ -140,7 +139,6 @@ private theorem g_gP_cd : ContDiff ℝ (⊤ : ℕ∞) (gP : HS L N → ℝ) := b
   have := Complex.reCLM.contDiff.comp (cd_det (k := (⊤ : ℕ∞)) (fun h : HS L N => mat h w) (fun i j => g_ent w i j))
   simpa [Function.comp_def] using this
 
-end GNrmHelpers
 
 theorem pf_GNrm : GNrm := by
   intro hB L _ _ N hN

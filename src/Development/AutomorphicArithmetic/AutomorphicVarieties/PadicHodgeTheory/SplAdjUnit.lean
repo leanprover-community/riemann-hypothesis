@@ -47,7 +47,6 @@ open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module UpperTheory.V.Loc 
 
 namespace UpperTheory.V.Loc
 
-section Gen
 
 variable {R K H : Type} [CommRing R] [CommRing K] [Group H] (f : R →+* K)
 
@@ -132,9 +131,7 @@ private theorem spl_conj {ν : R} {X : M4 R} (h : IsGSp ν X) (u v : M4 R) (hv :
 private theorem spl_adj_unit (u : (M4 R)ˣ) : IsUnit (adj (u : M4 R)) :=
   IsUnit.of_mul_eq_one (adj ((u⁻¹ : (M4 R)ˣ) : M4 R)) (by rw [← spl_adj_mul, Units.inv_mul, spl_adj_one])
 
-end Gen
 
-section Fld
 
 variable {K : Type} [Field K]
 
@@ -200,7 +197,6 @@ private theorem spl_int {B : Type} [CommRing B] [Algebra B K] (X : M4 B) (u : (M
     Polynomial.eval_prod]
   exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
 
-end Fld
 
 
 private theorem spl_near {l : ℕ} [Fact l.Prime] {O B : Type} [CommRing O] [Algebra ℤ_[l] O]

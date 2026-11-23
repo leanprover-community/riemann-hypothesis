@@ -50,7 +50,6 @@ open scoped ENNReal
 
 namespace UpperTheory.ConvolutionTheory.L1.CosetQuotientIntegrals
 
-section Grp
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
 
@@ -171,7 +170,6 @@ private theorem cvAll_ind (μ : Measure G) [μ.IsMulLeftInvariant] (I : Subgroup
     change cv μ (φ 0) (cvAll μ m (Fin.tail φ)) x = _
     rw [ht, h0, cv_ind μ I hI A hA, pow_succ]
 
-end Grp
 
 section Quot
 
@@ -202,7 +200,6 @@ private theorem match_of_scale {n : ℕ} {R S : Type*} [CommRing R] [CommRing S]
 
 end Quot
 
-section Coset
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -245,7 +242,6 @@ private theorem iwCoset_test (w : Pl K) (ν : Fin n → ℤ) :
   exact ⟨IsClopen.continuous_indicator ⟨hc.isClosed, ho⟩ continuous_const,
     HasCompactSupport.intro hc fun g hg => Set.indicator_of_notMem hg _⟩
 
-end Coset
 
 end UpperTheory.ConvolutionTheory.L1.CosetQuotientIntegrals
 

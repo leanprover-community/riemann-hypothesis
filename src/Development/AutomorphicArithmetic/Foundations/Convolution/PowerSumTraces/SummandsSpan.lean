@@ -35,7 +35,6 @@ import Mathlib.Topology.Sheaves.Init
 open MeasureTheory NumberField GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory.C
 
-section Generic
 
 variable {G H : Type*} [Group G] [TopologicalSpace G] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [CompleteSpace H] (π : UnitaryRep G H) (W : Submodule ℂ H) [CompleteSpace W]
@@ -107,7 +106,6 @@ private theorem closure_iSup_summands (hWc : IsClosed (W : Set H))
     intro x hx
     exact htop (Submodule.mem_top : (⟨x, hx⟩ : W) ∈ ⊤)
 
-end Generic
 
 theorem UpperTheory.ConvolutionTheory.C.summandsSpan :
     UpperTheory.ConvolutionTheory.C.SummandsSpan := by

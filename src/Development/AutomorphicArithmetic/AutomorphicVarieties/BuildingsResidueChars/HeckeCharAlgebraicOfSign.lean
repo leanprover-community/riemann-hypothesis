@@ -33,7 +33,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory.CuspRep GlobalTheory.HeckeGal GlobalTheory.GalOfCusp UpperTheory.V.Published
 open UpperTheory.V UpperTheory.V.Af UpperTheory.V.Af.Bc
 
-section Real
 
 variable {E : Type} [Field E] [NumberField E] [IsTotallyReal E]
 
@@ -168,7 +167,6 @@ private theorem chiInf_all {χ : HChar E} {b : ℤ} (h : IsAlgPos χ fun _ => b)
   rw [← mul_zpow, ← Complex.ofReal_mul]
   rfl
 
-end Real
 
 theorem UpperTheory.heckeChar_algebraic_of_sign :
     UpperTheory.V.Af.Cr.AlgOfSign := by

@@ -42,7 +42,6 @@ noncomputable section
 
 namespace UpperTheory.Gal.TP.Sub
 
-section SplitLineAux
 
 variable {Γ k : Type} [Group Γ] [Field k] {m : ℕ}
 
@@ -122,7 +121,6 @@ private lemma col_indep {W' : Submodule k (Fin (m + 1) → k)} (b : Module.Basis
     exact (b j).2
   · rw [Set.range_const]
 
-end SplitLineAux
 
 end UpperTheory.Gal.TP.Sub
 

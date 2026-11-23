@@ -44,7 +44,6 @@ noncomputable section
 
 namespace UpperTheory.Gal.W2
 
-section SlopeTestRemainingChoices
 
 variable {p : ℕ} [Fact p.Prime] {G : HTGroup p}
 
@@ -289,7 +288,6 @@ private lemma perf_core (A : PFrame L β) (g : Gp G) (d : ∀ w : Fin G.m, G.Fw 
       refine nm_sub (nm_sub (err hk2 (hC1 _ hb')) (err hk3 ?_)) hh
       rw [pairL_comm]; exact hC2 _ ha'
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.Gal.W2
 

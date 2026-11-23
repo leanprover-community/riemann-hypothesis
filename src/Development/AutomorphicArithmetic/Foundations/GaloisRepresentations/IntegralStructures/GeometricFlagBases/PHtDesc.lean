@@ -41,7 +41,6 @@ noncomputable section
 
 namespace UpperTheory.Gal.Int.Geo.HeightDescentDirectedColimits
 
-section Alg
 variable (k Ω : Type) [Field k] [Field Ω] [Algebra k Ω]
 
 private abbrev FI : Type := {L : IntermediateField k Ω // FiniteDimensional k L}
@@ -82,9 +81,7 @@ private def cgColim [Algebra.IsAlgebraic k Ω] : IsColimit (cg k Ω) := by
     apply Subtype.ext
     exact h
 
-end Alg
 
-section Geo
 variable {k Ω : Type} [Field k] [Field Ω] [Algebra k Ω] {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k))
 
 private def tr {L L' : IntermediateField k Ω} (h : L ≤ L') : geom L' p ⟶ geom L p :=
@@ -146,7 +143,6 @@ private def cn : Cone (Gd k Ω p) where
 
 private def bt : FI k Ω := ⟨⊥, inferInstance⟩
 
-section Lim
 variable {T : Scheme.{0}} (a : ∀ L : FI k Ω, T ⟶ geom L.1 p)
   (ha : ∀ (L L' : FI k Ω) (h : L.1 ≤ L'.1), a L' ≫ tr p h = a L)
 
@@ -212,7 +208,6 @@ private theorem gl_uniq (m : T ⟶ geom Ω p) (hm : ∀ L : FI k Ω, m ≫ Later
     refine lf_uniq p a ha _ fun L => ?_
     rw [← hm L, Category.assoc, Category.assoc, pj_snd]
 
-end Lim
 
 private def cnLim [Algebra.IsAlgebraic k Ω] : IsLimit (cn k Ω p) where
   lift s := gl p (fun L => s.π.app (op L)) fun L L' h => s.w (homOfLE (show L ≤ L' from h)).op

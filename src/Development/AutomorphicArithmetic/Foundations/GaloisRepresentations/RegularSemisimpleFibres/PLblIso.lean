@@ -38,7 +38,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 noncomputable section
 
-section SlopeTestRemainingChoices
 
 open GlobalTheory.Parabolic (mem_fixed)
 
@@ -152,7 +151,6 @@ private theorem trace_level (γ : GL (Fin n) 𝓀[k]) :
     rw [LinearEquiv.conj_apply_apply, LinearEquiv.symm_apply_apply, fixEquiv_level]
   rw [h, LinearMap.trace_conj']
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Gal.InertialTypesAlt.lblIso :
     JDIso → LblIso := by

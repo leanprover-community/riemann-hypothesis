@@ -46,7 +46,6 @@ open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.RankTwoDesce
 open UpperTheory.ConvolutionTheory.R2.G (FS2 nE)
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
@@ -118,9 +117,7 @@ private theorem pow_bound (D : Dat ℚ E) (P : CuspSub E 2) (hL : ∀ f ∈ P.V,
           have h4 : 0 ≤ |re (y : A ℚ)| ^ r * ‖Wo D (lie E 2 (b i) f).1 (em E (aE y) * k)‖ := by positivity
           exact mul_le_mul (h3.trans (le_abs_self _)) (h2.trans (le_abs_self _)) h4 (abs_nonneg _)
 
-end SlopeTestRemainingChoices
 
-section Main
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
@@ -260,7 +257,6 @@ private theorem admissible_two_sided_translate (hD : DecE) (D : Dat ℚ E) (P : 
     simp only [wo_translate, mul_assoc]
     simpa only [mul_assoc] using hB' y (k * h) ⟨k, hk, rfl⟩
 
-end Main
 
 theorem UpperTheory.ConvolutionTheory.RankTwoDescent.trAdm_of :
     DecE → TrAdm := by

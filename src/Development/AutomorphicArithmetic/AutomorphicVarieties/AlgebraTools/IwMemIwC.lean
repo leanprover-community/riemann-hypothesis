@@ -42,7 +42,6 @@ open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.
 
 namespace UpperTheory.V.AlgebraTools
 
-section Ring
 
 variable {R n : Type} [CommRing R] [Fintype n] [DecidableEq n] [LinearOrder n]
 
@@ -159,9 +158,7 @@ private theorem factor [IsLocalRing R] (C : Subgroup (IsLocalRing.ResidueField R
   rw [← hc']
   exact hc
 
-end Ring
 
-section Loc
 
 variable (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ)
 
@@ -200,7 +197,6 @@ private theorem iwC_eq (C : Subgroup 𝓀[k]ˣ) :
       exact ⟨_, fun i _ => ⟨d i, hd i, rfl⟩, rfl⟩
     · exact ⟨map_unipB _ hu, u, rfl⟩
 
-end Loc
 
 end UpperTheory.V.AlgebraTools
 

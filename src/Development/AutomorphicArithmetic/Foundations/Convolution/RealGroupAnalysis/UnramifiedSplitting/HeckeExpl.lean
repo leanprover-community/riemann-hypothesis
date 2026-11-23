@@ -87,7 +87,6 @@ private theorem coset_sum {K : Type} [Field K] [NumberField K] (v : P K) (n : �
 
 end Cosets
 
-section Cosets2
 
 
 attribute [local instance] GroundTheory.Automorphic.Spherical.fintypeResidue
@@ -209,7 +208,6 @@ private theorem sat_two (q : ℕ) (α β : ℂˣ) :
 private theorem card_res (v : P K) : Fintype.card 𝓀[Kv v] = Ideal.absNorm v.asIdeal := by
   rw [← Nat.card_eq_fintype_card, GroundTheory.Global.natCard_residueField_integer, Ideal.absNorm_apply, Submodule.cardQuot_apply]
 
-end Cosets2
 
 section Main
 

@@ -35,7 +35,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.H UpperTheory.ConvolutionTheory.R2.I
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
@@ -170,7 +169,6 @@ private theorem core {V : Type} [AddCommGroup V] [Module ℂ V] (hL : Lgrp G) (a
       LinearMap.smul_apply, smul_eq_mul]
   exact ⟨⟨⟨Λ₀, hadd⟩, fun c f => by simpa using hsmul c f⟩, key⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.R2.I.lamEx :
     ∀ (F : Type) [Field F] [NumberField F] (v : P F) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GLv v) V), (∀ f, IsOpen {g | ρ g f = f}) →

@@ -52,7 +52,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Af
 
-section Sat
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
@@ -87,7 +86,6 @@ private theorem mem_eig {rc : IrrGL (k := w.adicCompletion E) → WD h} (H : IsR
   rw [val_inv_eq']
   simp
 
-end Sat
 
 private theorem norm_root {l : ℕ} [Fact l.Prime] {x y : Om l} (hy : aeval y (minpoly ℚ_[l] x) = 0) : ‖y‖ = ‖x‖ := by
   have hx : IsIntegral ℚ_[l] x := Algebra.IsIntegral.isIntegral x

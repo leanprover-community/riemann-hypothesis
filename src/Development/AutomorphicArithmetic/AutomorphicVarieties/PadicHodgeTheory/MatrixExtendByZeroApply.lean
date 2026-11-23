@@ -195,7 +195,6 @@ private theorem cont_twist (l : ℕ) [Fact l.Prime] {G : Type} [Group G] [Topolo
     (hρ : ReciprocityTheory.Gal.ContAction ρ) : ReciprocityTheory.Gal.ContAction (twist κ ρ) :=
   (cont_smul l (A := A) (V := V)).comp ((hκ.comp continuous_fst).prodMk hρ)
 
-section Twist
 
 variable {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     {A : Type} [CommRing A] [Algebra ℚ_[l] A] [Module.Finite ℚ_[l] A]
@@ -233,7 +232,6 @@ private theorem isCr_inv (φ : G →* GQ l) (hφ : IsOpenEmbedding φ) (κ : G �
   · intro a b h
     simpa using LinearMap.congr_fun h 1
 
-end Twist
 
 end UpperTheory.V.Loc.CrExt
 

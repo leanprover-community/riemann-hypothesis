@@ -50,14 +50,12 @@ open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH Glo
 open RingTheory.Sequence
 open scoped TensorProduct
 
-section LocRegAux
 
 variable {L : Type} [Field L] [Algebra ℂ L]
 
 private lemma le_loc (B : Subalgebra ℂ L) (e : B →ₐ[ℂ] ℂ) : B ≤ loc B e := fun b hb =>
   ⟨1, by simp, by simpa using hb⟩
 
-end LocRegAux
 
 private theorem isWeaklyRegular_mvPolynomial_X (k : Type) [Field k] (d : ℕ) :
     IsWeaklyRegular (MvPolynomial (Fin d) k)

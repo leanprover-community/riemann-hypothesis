@@ -52,7 +52,6 @@ namespace UpperTheory.V.Hi.TypeConj
 
 open GlobalTheory.PRep
 
-section General
 
 variable {G V V' W W' : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
   [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
@@ -143,9 +142,7 @@ private theorem smInd_conj {γ : ℂ ≃+* ℂ} {P : Subgroup G} {σ : Represent
      map_add' := fun φ ψ => Subtype.ext (Subtype.ext (funext fun x => map_add j _ _)) },
    fun z φ => Subtype.ext (Subtype.ext (funext fun x => h.1 _ _)), fun g φ => rfl⟩
 
-end General
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -191,9 +188,7 @@ private theorem prod_conj (γ : ℂ ≃+* ℂ) {n : ℕ} (e : (Σ _ : Fin n, Fin
       ring
     rw [MonoidHom.mul_apply, MonoidHom.mul_apply, Units.val_mul, Units.val_mul, h4, h4, map_mul, cj_abs, cj_val]
 
-end Loc
 
-section Loc2
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -264,9 +259,7 @@ private theorem cosocle_main (γ : ℂ ≃+* ℂ) {V V' : Type} [AddCommGroup V]
   have h4 := h2.of_equiv (.refl σ') E'.symm
   exact cosocle_move' h4 e1
 
-end Loc2
 
-section Gal
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w} {n : ℕ}
@@ -391,7 +384,6 @@ private theorem type_conj (γ : ℂ ≃+* ℂ) (b : WDRep h (Fin n → ℂ)) (B 
   rw [h4, ← h3, Matrix.toLin'_apply, Matrix.toLin'_apply, Matrix.mulVec_diagonal, Matrix.mulVec_diagonal, map_mul]
   rfl
 
-end Gal
 
 end UpperTheory.V.Hi.TypeConj
 

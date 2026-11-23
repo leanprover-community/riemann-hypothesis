@@ -48,7 +48,6 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.Bas
 
 namespace UpperTheory.V.Loc.DualInvariantFiltration
 
-section Filt
 
 variable {G E V : Type} [Group G] [Field E] [AddCommGroup V] [Module E V]
 
@@ -185,9 +184,7 @@ private theorem filt_tri {A : Type} [CommRing A] [Algebra E A] [Module.Finite E 
   rw [hn] at this
   exact this
 
-end Filt
 
-section Mat
 
 variable {G A : Type} [Group G] [CommRing A]
 
@@ -238,7 +235,6 @@ private theorem tri_apply {n : ℕ} (M : G →* Matrix (Fin n) (Fin n) A) (h : �
     · rw [h g i k hk, zero_mul]
     · rw [hx k hk, mul_zero]
 
-end Mat
 
 private theorem isCr_of_top {l : ℕ} [Fact l.Prime] {G A V : Type} [Group G] [CommRing A] [Algebra ℚ_[l] A]
     [AddCommGroup V] [Module A V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] (φ : G →* GQ l)

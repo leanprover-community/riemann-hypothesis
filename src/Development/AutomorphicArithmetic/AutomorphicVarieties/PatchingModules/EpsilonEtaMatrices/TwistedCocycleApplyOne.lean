@@ -48,7 +48,6 @@ import ReciprocityTheory.GaloisValuations.GlobalA
 
 open Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-section Abs
 
 variable {K R M : Type} [Group K] [CommRing R] [Ring M] [Module R M] (ρ z : K → M) (χ : K → R)
   (h1 : ρ 1 = 1) (hm : ∀ g h, ρ (g * h) = ρ g * ρ h) (c1 : χ 1 = 1) (cm : ∀ g h, χ (g * h) = χ g * χ h)
@@ -113,7 +112,6 @@ private theorem tw_U [TopologicalSpace K] (cρ : IsLocallyConstant ρ) (cχ : Is
     rw [mul_assoc, hz, e1, ← hz, mul_inv_cancel, twisted_cocycle_apply_one (ρ := ρ) (z := z) (χ := χ) h1 c1 hz]
   exact ⟨⟨⟨S, hSo⟩, hSn⟩, fun g => Iff.rfl⟩
 
-end Abs
 
 private theorem tw_lc {Γ R : Type} [TopologicalSpace Γ] {n : ℕ} (f : Γ → Matrix (Fin n) (Fin n) R)
     (h : ∀ i j, IsLocallyConstant fun g => f g i j) : IsLocallyConstant f := by

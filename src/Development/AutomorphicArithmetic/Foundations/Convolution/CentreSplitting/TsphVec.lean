@@ -43,7 +43,6 @@ open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalS
 open GlobalTheory.CuspRep (CuspSub GA Af Ad finGL locGL)
 open UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Dp UpperTheory.V
 
-section SlopeTestRemainingChoices
 
 open UpperTheory.ConvolutionTheory GlobalTheory.LFun Formalism.UG
 
@@ -175,7 +174,6 @@ private theorem tsph_iff {V : Submodule ℂ (LL μ)} (hV : IsSummand μ V) (B : 
   rw [Tsph, ContinuousLinearMap.smul_apply, scal, kgl_eq, hop_apply μ w _ _ (Final.GLintComm K w n) hv, ← ht]
   exact ⟨fun h' => Subtype.ext (e.trans h'), fun h' => e.symm.trans (congrArg Subtype.val h')⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.Dp.tsphVec :
     UpperTheory.ConvolutionTheory.Dp.TsphVec := by

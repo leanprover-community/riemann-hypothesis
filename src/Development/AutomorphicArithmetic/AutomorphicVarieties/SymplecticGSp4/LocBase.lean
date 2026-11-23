@@ -60,7 +60,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeT
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement
 
-section Series
 
 open MvPowerSeries
 
@@ -154,9 +153,7 @@ private theorem lb_chart [IsDomain O] [Finite τ] {R Y : Type} [CommRing R] [Alg
     rw [this, sq]
     exact Ideal.mul_mem_mul (by simp [RingHom.mem_ker]) hxp
 
-end Series
 
-section Abstract
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O]
 
@@ -260,9 +257,7 @@ private theorem pk_sum {T : Type} [Fintype T] {Γ : T → Type} [∀ v, Group (�
   · refine (card_sigma (fun v => (K v).τ) (fun v => (K v).u) j).trans ?_
     exact Finset.sum_congr rfl fun v _ => (K v).card j
 
-end Abstract
 
-section Eqs
 
 variable {R R' : Type} [CommRing R] [CommRing R']
 
@@ -355,9 +350,7 @@ private theorem gsp_conj (s : Rˣ × Rˣ) {ν : R} {g : GradeZeroInterpolatingEl
   ext i j
   exact mul_left_comm _ _ _
 
-end Eqs
 
-section Stable
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {Γ : Type} [Group Γ] [TopologicalSpace Γ]
   {rbar : Γ →* GradeZeroInterpolatingElement.M4 (ResidueField O)}
@@ -397,7 +390,6 @@ private theorem tstable {P : Cond O rbar} {R : Type} [CommRing R] [Algebra O R] 
   rw [hf', w4_sub_w4_eq_wt, ← hs]
   rfl
 
-end Stable
 
 private theorem phi_emb {Γ Δ : Type} [Group Γ] [TopologicalSpace Γ] [Group Δ] [TopologicalSpace Δ] (φ : Γ →* Δ)
     (hφ : Topology.IsOpenEmbedding φ) {l : ℕ} (h : PhiCond Δ l) : PhiCond Γ l := fun H hH => by
@@ -432,7 +424,6 @@ private theorem union_iff {α : Type} {S T : Set α} {p : α → Prop} :
     ((∀ x ∈ S, p x) ∧ ∀ x ∈ T, p x) ↔ ∀ x ∈ S ∪ T, p x :=
   ⟨fun h x hx => hx.elim (h.1 x) (h.2 x), fun h => ⟨fun x hx => h x (.inl hx), fun x hx => h x (.inr hx)⟩⟩
 
-section Main
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [hl : Fact l.Prime] {c : Coef l} (D : Raw Ω c)
 
@@ -532,7 +523,6 @@ private theorem pkP (hD : D.Good) (hP : Loc.LocalPublishedTheorems) (p : ℕ) (h
   · rw [hr, h.2 g hg]
     exact (grp R').2.2.2.2.2.2.2.2.2.1 s
 
-end Main
 
 theorem UpperTheory.V.GradeZeroInterpolatingElement.locBase :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → Loc.LocalPublishedTheorems → Nonempty (LocBase D) := by

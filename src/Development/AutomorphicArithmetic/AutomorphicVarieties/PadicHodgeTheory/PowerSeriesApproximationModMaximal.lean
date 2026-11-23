@@ -44,7 +44,6 @@ private theorem mem_span_X {O σ : Type} [CommRing O] [Fintype σ] (f : MvPowerS
     (hf : constantCoeff f = 0) : f ∈ Ideal.span (Set.range (MvPowerSeries.X : σ → MvPowerSeries σ O)) :=
   _root_.UpperTheory.Reformulated.B.MemSpanVariable.mem_span_X f hf
 
-section Abstract
 
 variable {O R A : Type} [CommRing O] [IsDomain O] [CommRing R] [Algebra O R] [CommRing A] [Algebra O A]
 
@@ -113,7 +112,6 @@ private theorem appr_all {φ : R →ₐ[O] A} {m : Ideal A} (h : ∀ N, ∀ f �
     rw [this]
     exact hb
 
-end Abstract
 
 theorem UpperTheory.power_series_approximation_mod_maximal :
     ∀ (O E : Type) [CommRing O] [IsDomain O] [Field E] [Algebra O E] [IsFractionRing O E] (R : Type) [CommRing R] [Algebra O R] (n : ℕ) (φ : R →ₐ[O] MvPowerSeries (Fin n) E) (t : Fin n → R) (c : O), c ≠ 0 → (∀ i, φ (t i) - c • MvPowerSeries.X i ∈ maximalIdeal (MvPowerSeries (Fin n) E) ^ 2) → ∀ (N : ℕ) (f : MvPowerSeries (Fin n) E), ∃ (a : R) (e : O), e ≠ 0 ∧ e • f - φ a ∈ maximalIdeal (MvPowerSeries (Fin n) E) ^ N := by

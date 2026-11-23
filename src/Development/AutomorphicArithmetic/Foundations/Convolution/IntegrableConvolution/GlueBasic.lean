@@ -42,7 +42,6 @@ open scoped Fin.NatCast Fin.CommRing
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section SlopeTestRemainingChoices
 
 variable {R S : Type} [CommRing R] [CommRing S] [TopologicalSpace R] [TopologicalSpace S]
   {ι : R →+* S} {s : S →+* S} {m : ℕ} (D : Split ι s m) (n : ℕ)
@@ -133,7 +132,6 @@ private theorem norm_shift {G : Type} [Group G] (c : Fin (m + 1) → G) (j : Fin
     rw [add_assoc, add_comm 1, Fin.last_add_one, add_zero]
   simp only [h1, h2, mul_assoc]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.L1
 

@@ -88,7 +88,6 @@ private noncomputable def mv {p : ℕ} [Fact p.Prime] {G : HTGroup p} (A : ∀ w
     (a : Loc G) : Loc G :=
   fun w => A w *ᵥ a w
 
-section SlopeTestRemainingChoices
 
 variable {p : ℕ} [Fact p.Prime] {G : HTGroup p}
 
@@ -240,7 +239,6 @@ private theorem core (hPL : PLatOf) {D : Datum p} (T T' : VQ D →+ Loc G)
     rw [e]
     exact nsmul_mem hc _
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Gal.W2.pkLat_of :
     UpperTheory.Gal.W2.OOnto → UpperTheory.Gal.W2.MemDual → UpperTheory.Gal.W2.PLatOf → UpperTheory.Gal.W2.PkLat := by

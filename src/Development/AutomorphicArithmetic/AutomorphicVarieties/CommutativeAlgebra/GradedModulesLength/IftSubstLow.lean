@@ -41,7 +41,6 @@ import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.Quo
 
 open IsLocalRing Filter Formalism.MainNotions.V.Pf.V2.Calc UpperTheory.V.Alg UpperTheory.V.Alg.M
 
-section SlopeTestRemainingChoices
 
 open MvPowerSeries Formalism.FG.SolveVAux
 
@@ -116,7 +115,6 @@ private theorem ift_expand [Fintype σ] (g : MvPowerSeries σ E) :
 
   simp [map_sum, ift_coeff_X, coeff_one]
 
-end SlopeTestRemainingChoices
 
 private theorem ift_span {E ι κ M : Type} [Field E] [Fintype ι] [Fintype κ] [DecidableEq κ] [AddCommGroup M]
     [Module E M] (hc : Fintype.card κ = Fintype.card ι) (c : Matrix κ ι E) (L : Matrix ι κ E) (h : c * L = 1)

@@ -70,7 +70,6 @@ private theorem totDisc_quot {G : Type} [Group G] [TopologicalSpace G] [IsTopolo
   obtain ⟨u, hu, hux⟩ := hV.connectedComponent_subset V.one_mem hy
   exact hU (U.toSubgroup.inv_mem hu) (QuotientGroup.eq.1 hux)
 
-section Form
 
 variable {O R : Type} [CommRing O] [CommRing R] [Algebra O R]
 
@@ -155,7 +154,6 @@ private theorem z_mem_max {X : Type} [AddCommGroup X] [IsLocalRing O] [IsNoether
     W.z s ∈ maximalIdeal R := by
   rw [← res_eq_zero_iff O, ← res_map (W.origin h), WPres.z, W.origin_π, MvPowerSeries.constantCoeff_X, map_zero]
 
-end Form
 
 end UpperTheory.V.GradeZeroInterpolatingElement.SymplecticFrames
 

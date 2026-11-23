@@ -42,7 +42,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.Zero.LLC
 
-section Res
 
 variable {Ω : Type} [Field Ω]
 
@@ -114,7 +113,6 @@ private theorem exists_equiv {κ K K' : Type} [Field κ] [Field K] [Field K'] (�
     exact this
   exact h2 (RingEquiv.subringCongr hr (e1 y))
 
-end Res
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}

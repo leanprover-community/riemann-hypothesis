@@ -46,7 +46,6 @@ noncomputable section
 
 namespace UpperTheory.Gal.Int.Div
 
-section SubSplitAux
 
 variable {Γ k : Type} [Group Γ] [Field k] {n a b : ℕ}
 
@@ -120,7 +119,6 @@ private lemma col_indep (A : Matrix (Fin n) (Fin a) k) (hA : A.rank = a)
       rintro _ ⟨j, rfl⟩
       exact (c j).2
 
-end SubSplitAux
 
 theorem subSplit_of : SubSplit := by
   intro Γ k _ _ a b r ρ hss ⟨A, hA, hAg⟩

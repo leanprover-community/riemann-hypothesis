@@ -54,7 +54,6 @@ private theorem infGL_scalarE {E : Type} [Field E] [NumberField E] [_root_.Numbe
     ext i j
     by_cases e : i = j <;> simp [Matrix.diagonal_apply, e, h2]
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -174,7 +173,6 @@ private theorem continuous_sc :
     rw [e]
     exact Continuous.matrix_diagonal (continuous_pi fun _ => Units.continuous_val.comp continuous_inv)
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.R2.Ff.dec :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] (_D : Dat F E), Dec F E := by

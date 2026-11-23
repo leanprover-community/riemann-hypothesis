@@ -44,7 +44,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL ValuativeRel Matrix 
 
 namespace UpperTheory.Gal.LocD
 
-section Abstract
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
@@ -165,7 +164,6 @@ private theorem iota_inj {B : Subgroup G} {χ : B →* ℂˣ} {π : Representati
     have := congrArg (fun φ : indF B χ => (φ : G → ℂ) 1) h0
     simpa [iota_apply] using this
 
-end Abstract
 
 theorem core : FunInv → GLCells → GLFacts → Core := by
   intro hF hC hG E _ _ _ _ n σ q hq V _ _ π hπ hirr A hA χ hχ l c hl hlb hlA

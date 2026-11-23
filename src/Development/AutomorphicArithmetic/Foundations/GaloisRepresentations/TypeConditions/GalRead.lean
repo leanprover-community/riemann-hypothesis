@@ -90,13 +90,11 @@ section
 section
 namespace GlobalTheory.Triple
 variable {D : D7}
-section API
 variable {C : CharFrame D} {art : Ideles D.host.E →* Gab D.host.E D.nd.Om} {X : NTw D.R D.host D.what₂ D.LL0 D.nd}
   {i : X.Tw} {b : Bool} {ρ : Reading X i b} {s : X.Sig i} {σ : D.what₂.FT} {π : D.naut.CG D.R.r}
   {r : GalE D →* GL (Fin D.R.r) (Qbar (X.l i))} {ν : GalE D →* (X.O0 i)ˣ} {w : D.what₂.places.Pl}
   {red : Zbar (X.l i) →+* FbAt D w}
 
-end API
 end GlobalTheory.Triple
 end
 end
@@ -338,9 +336,7 @@ end
 section
 namespace GlobalTheory.TripleAdm
 variable {D : D7}
-section Row
 variable {σ : D.what₂.FT} {π : D.naut.CG D.R.r} {w : D.what₂.places.Pl}
 
-end Row
 end GlobalTheory.TripleAdm
 end

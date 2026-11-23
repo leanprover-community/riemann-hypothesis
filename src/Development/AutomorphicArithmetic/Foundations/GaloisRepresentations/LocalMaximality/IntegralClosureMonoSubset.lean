@@ -44,7 +44,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-section ValuationRepresentative
 variable {L : Type} [Field L] [Algebra ℂ L] {B : Subalgebra ℂ L} {e : B →ₐ[ℂ] ℂ}
 
 private theorem val_add (hV : ValBasic) {v w : L} {a b : ℂ} (h : Val B e v a) (h' : Val B e w b) :
@@ -103,9 +102,7 @@ private theorem val_loc (hV : ValBasic) {v : L} {c : ℂ} (h : Val B e v c) : v 
   obtain ⟨ev, hev⟩ := (hV L B e).2.1
   exact ((hev _ _).1 h).1
 
-end ValuationRepresentative
 
-section Mono
 variable {F K K' : Type} [Field F] [Field K] [Field K'] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ K'] [Algebra F K]
   [IsScalarTower ℂ F K] {d : ℕ}
 
@@ -123,9 +120,7 @@ private theorem integralClosure_mono_subset (x : Fin (d + 1) → F) (j2 : K →�
   have hy' : IsIntegral ((rB ℂ K x J).map j2) y := hy
   exact IsIntegral.map_of_comp_eq (Subalgebra.inclusion hA).toRingHom (RingHom.id K') (by ext; rfl) hy'
 
-end Mono
 
-section Main
 variable {F K K' : Type} [Field F] [Field K] [Field K'] [Algebra ℂ F] [Algebra ℂ K] [Algebra ℂ K'] [Algebra F K]
   [IsScalarTower ℂ F K] [Algebra K K'] [IsScalarTower ℂ K K'] [Algebra F K'] [IsScalarTower F K K'] [IsScalarTower ℂ F K']
   {d : ℕ} (x : Fin (d + 1) → Fˣ) (j2 : K →ₐ[ℂ] K')
@@ -260,7 +255,6 @@ private theorem core (hL : LocEq) (hV : ValBasic) (hR : RYBasic)
   rw [hc]
   exact (hval _ _).1 hc2
 
-end Main
 
 theorem UpperTheory.Gal.productCup_of_system.ptG_of :
     LocEq → ValBasic → RYBasic → PtT → PtG := by

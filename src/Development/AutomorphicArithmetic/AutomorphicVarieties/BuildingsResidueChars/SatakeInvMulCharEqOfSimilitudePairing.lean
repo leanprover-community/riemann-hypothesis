@@ -49,7 +49,6 @@ open NumberField IsDedekindDomain Formalism.L2.Host Formalism.ConjugateSelfDual 
 open GlobalTheory.CuspRep (SmIrr Af invT finId pFin)
 open scoped Matrix
 
-section General
 
 open Formalism.UG GlobalTheory.PRep GlobalTheory.LFun
 
@@ -103,7 +102,6 @@ private theorem exists_fixed_pair [TopologicalSpace G] [IsTopologicalGroup G] (h
   rw [Finset.sum_congr rfl fun q _ => h1 q, Finset.sum_const, Finset.card_univ, ← Nat.card_eq_fintype_card,
     ← Subgroup.index, nsmul_eq_mul, smul_eq_mul, inv_mul_cancel_left₀ hc]
 
-end General
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.UG GlobalTheory.PRep GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.LFun.ConjPlace in
 theorem UpperTheory.satake_inv_mul_char_eq_of_similitude_pairing :

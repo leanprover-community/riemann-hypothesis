@@ -45,7 +45,6 @@ open scoped TensorProduct
 
 set_option autoImplicit false
 
-section Forms
 variable {k K L : Type} [Field k] [Field K] [Field L] [Algebra k K] [Algebra k L] [Algebra K L] [IsScalarTower k K L]
 
 private theorem mapDR_smul' (c : K) (w : DR k K) :
@@ -73,9 +72,7 @@ private theorem omB_deg {B : Subalgebra k K} {q : ℕ} {w : DR k K} (hw : w ∈ 
     exact Submodule.smul_mem _ _ (ExteriorAlgebra.ιMulti_range K q ⟨_, rfl⟩)
   exact h hw
 
-end Forms
 
-section Pr2
 variable {K K' : Type} [Field K] [Field K'] [Algebra ℂ K] [Algebra ℂ K']
 
 private theorem pullback_kahler_smul (j2 : K →ₐ[ℂ] K') (c : K) (w : DR ℂ K) :
@@ -90,7 +87,6 @@ private theorem pullback_kahler_degree (j2 : K →ₐ[ℂ] K') {q : ℕ} {w : DR
   haveI : IsScalarTower ℂ K K' := IsScalarTower.of_algebraMap_eq fun c => (j2.commutes c).symm
   exact mapDR_deg hw
 
-end Pr2
 
 private theorem exists_sum {E E' : Type} [AddCommGroup E] [Module ℂ E] [AddCommGroup E'] [Module ℂ E']
     (P : Submodule ℂ E) (Q : Submodule ℂ E') {m : E ⊗[ℂ] E'}
@@ -153,7 +149,6 @@ private theorem sum_delta {ι : Type} [DecidableEq ι] (P : Finset ι) (n : ℕ)
         rw [Finset.sum_congr rfl fun S hS => by rw [hδ S hS T hT]]
         simp [ite_mul, hT]
 
-section Term
 variable {K K' : Type} [Field K] [Field K'] [Algebra ℂ K] [Algebra ℂ K'] [Algebra K K'] [IsScalarTower ℂ K K']
 
 private theorem gY_term {ι : Type} (j2 : K →ₐ[ℂ] K') (dK : ι → DR ℂ K) (dL : ι → DR ℂ K') (U : ι) (P : Finset ι)
@@ -179,7 +174,6 @@ private theorem gY_deg (j2 : K →ₐ[ℂ] K') {p q : ℕ} {w' w : DR ℂ K} (h'
   rw [pow_add]
   exact Submodule.mul_mem_mul h2 h3
 
-end Term
 
 theorem UpperTheory.Gal.productCup_of_system.valG_of :
     IdVal → RedK → FixZ → DtPull → MinorSum → DtBasic → ValBasic → ValG := by

@@ -40,7 +40,6 @@ noncomputable section
 
 namespace UpperTheory.ConvolutionTheory.R2.I
 
-section Fin
 
 variable {F : Type} [Field F] [NumberField F] (v : P F)
 
@@ -217,9 +216,7 @@ private theorem coset_ten (hθ : θ ≠ 0) (J : (FractionalIdeal (𝓞 F)⁰ F)�
       · rw [if_pos h1, one_mul, if_neg fun h2 => h (hm.2 ⟨h1, h2⟩)]
       · rw [if_neg h1, zero_mul]
 
-end Fin
 
-section Main
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (v : P F)
 
@@ -260,7 +257,6 @@ private theorem good (θ : Kv v) (hθ : θ ≠ 0) (δ : F) (hδ : ∀ φ : F →
   funext X
   exact (ten_eq v θ δ p hp g b X).symm
 
-end Main
 
 end UpperTheory.ConvolutionTheory.R2.I
 

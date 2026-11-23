@@ -53,7 +53,6 @@ private theorem uc_eq (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
   · rintro ⟨u, hu, rfl⟩
     exact ⟨u, Units.ext (Ideal.Quotient.eq.2 hu), rfl⟩
 
-section Loc
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
   {A : ValuationSubring Ω} {w : Plc F} {h : IsPlaceOver A w} {a : Weil h →* (w.adicCompletion F)ˣ}
@@ -169,9 +168,7 @@ private theorem emb_inj (j j' : W.Emb l w) (e : j.1.comp (algebraMap F _) = j'.1
   funext x
   exact DFunLike.congr_fun e x
 
-end Loc
 
-section Glob
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   (s : HidaSetting l L Ω)
@@ -217,7 +214,6 @@ private theorem wt_ex {n : ℕ} (h : s.Wt n) (hh : h.Incr) : ∃ lam, WtOf h lam
   rw [e]
   simp [μ]
 
-end Glob
 
 theorem UpperTheory.V.Hi.wtBridge :
     GlobalTheory.Mem.LiteralAutomorphy.LitN → ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ), 1 ≤ n →

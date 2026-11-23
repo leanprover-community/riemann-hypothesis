@@ -46,7 +46,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.T GlobalTheory.CuspRep Formalism.L2.Host Formalism.ConjugateSelfDual
 open UpperTheory.V.Published UpperTheory.CBC PositivityTheory.RgJS
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   [_root_.NumberField.IsTotallyComplex F] [_root_.NumberField.IsTotallyComplex E] {n : ℕ}
@@ -83,7 +82,6 @@ private theorem same_sat [IsGalois F E] (hp : (Module.finrank F E).Prime) (π : 
   obtain rfl := hB.unique hC
   exact ⟨_, hB', hC'⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.Sph.norm :
     UpperTheory.ConvolutionTheory.Sph.Norm := by

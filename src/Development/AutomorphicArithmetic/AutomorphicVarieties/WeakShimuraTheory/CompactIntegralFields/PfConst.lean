@@ -38,7 +38,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticG
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws GlobalTheory.GalOfCusp
 
-section Abstract
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {R : Type} [CommRing R] [Algebra O R] [IsCO O R]
 
@@ -143,9 +142,7 @@ private theorem pf_unit {u : Oˣ} {y : R} (h : IsIntegral O (algebraMap O R u * 
   have h1 := (isIntegral_algebraMap (R := O) (A := R) (x := (u⁻¹ : Oˣ))).mul h
   rwa [← mul_assoc, ← map_mul, Units.inv_mul, map_one, one_mul] at h1
 
-end Abstract
 
-section Galois
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} {D : Raw Ω c} (T : Tower D)
 
@@ -168,4 +165,3 @@ private theorem pf_sqK (g : G ℚ Ω) : g ^ 2 ∈ T.K.fixingSubgroup := by
     exact (IntermediateField.finrank_eq_fixingSubgroup_index Ω T.K).symm
   exact Subgroup.sq_mem_of_index_two hi g
 
-end Galois

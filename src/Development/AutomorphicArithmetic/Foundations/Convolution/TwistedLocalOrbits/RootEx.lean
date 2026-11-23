@@ -44,7 +44,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Mat
 
 namespace UpperTheory.ConvolutionTheory.Loc.RootExistence
 
-section Bound
 
 variable {E : Type} [Field E] [ValuativeRel E] {n : ℕ}
 
@@ -117,7 +116,6 @@ private theorem val_nat_le_one (q : ℕ) : valuation E (q : E) ≤ 1 := by
     rw [Nat.cast_succ]
     exact Valuation.map_add_le _ ih (by simp)
 
-end Bound
 
 variable {E : Type} [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E] {n : ℕ}
 

@@ -46,11 +46,9 @@ open NumberField IsDedekindDomain UpperTheory.V.Kum
 
 namespace UpperTheory.V.CF
 
-section Art
 
 variable (K H : Type) [Field K] [NumberField K] [Field H] [NumberField H] [Algebra K H]
 
-end Art
 
 section Tower
 

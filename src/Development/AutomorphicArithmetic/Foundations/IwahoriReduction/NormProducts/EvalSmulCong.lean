@@ -40,7 +40,6 @@ open scoped Matrix MatrixGroups TensorProduct
 
 namespace UpperTheory.Kd.K4
 
-section Calc
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
@@ -348,7 +347,6 @@ private theorem polMod_tr [IsAlgClosure ℚ Ω] {X : Tower Ω ε} {l : ℕ} [Fac
     rw [mul_pow, mul_pow]
     ring
 
-end Calc
 
 end UpperTheory.Kd.K4
 

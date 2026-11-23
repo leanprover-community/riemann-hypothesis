@@ -184,7 +184,6 @@ private theorem internal_of {O R : Type} [CommRing O] [CommRing R] [Algebra O R]
 private theorem gg_ext {R : Type} [CommRing R] {x y : GG (m := 3) (R := R)} (h1 : x.right = y.right) (h2 : x.mat = y.mat) :
     x = y := SemidirectProduct.ext (Units.ext h2) h1
 
-section Push
 
 variable {O A B D : Type} [CommRing O] [IsLocalRing O] [CommRing A] [CommRing B] [Algebra O A] [Algebra O B] [Group D]
 
@@ -242,7 +241,6 @@ private theorem exists_gl (S : Subalgebra O A) (h : GL (Fin 3) A) (h1 : ∀ a b,
   exact ⟨⟨X, Y, inj (by rw [map_mul, map_one, eX, eY]; simp), inj (by rw [map_mul, map_one, eX, eY]; simp)⟩,
     Units.ext rfl⟩
 
-end Push
 
 private theorem adFun_map {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (x : GG (m := 3) (R := A))
     (X : Matrix (Fin 3) (Fin 3) A) : (GG.map f x).adFun (X.map f) = (x.adFun X).map f := by

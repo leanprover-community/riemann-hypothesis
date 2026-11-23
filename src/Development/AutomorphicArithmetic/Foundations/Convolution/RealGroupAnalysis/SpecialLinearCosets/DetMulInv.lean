@@ -37,7 +37,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.H UpperTheory.ConvolutionTheory.R2.I
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F] {v : P F}
 
@@ -167,7 +166,6 @@ private lemma one_term {V : Type} [AddCommGroup V] [Module ℂ V] (ρ : Represen
     rfl
   rw [← h2, h3, hΛ (ρ w f) Uc a1 hUco h1 h4, h6]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.R2.I.absS :
     ∀ (F : Type) [Field F] [NumberField F] (v : P F) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GLv v) V), (∀ f, IsOpen {g | ρ g f = f}) →

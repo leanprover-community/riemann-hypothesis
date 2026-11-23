@@ -41,7 +41,6 @@ namespace UpperTheory.Gal.TP.Loc
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] {w : HeightOneSpectrum (𝓞 K)}
   {c : (w.adicCompletion K)ˣ →* ℂˣ}
@@ -68,7 +67,6 @@ private theorem unram_unif (hc : IsUnram c) {a b : (w.adicCompletion K)ˣ} (ha :
   rw [map_mul, map_inv] at h
   exact mul_inv_eq_one.1 h
 
-end SlopeTestRemainingChoices
 
 theorem satTwist : SatTwist := by
   intro K _ _ w n c V _ _ ρ hc ϖ₀ h₀ B h

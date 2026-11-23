@@ -217,7 +217,6 @@ private theorem equiv_of_typeMaps [Nontrivial W] {T : Representation ℂ (GL (Fi
   rw [Representation.prod_apply_apply]
   rfl
 
-section Bridge
 
 variable {E : Type} [Field E] [NumberField E] {w : HeightOneSpectrum (𝓞 E)} {g : ℕ} [Fact g.Prime]
   (i : ℚ_[g] ≃+* w.adicCompletion E) (hi : Continuous i)
@@ -311,7 +310,6 @@ private theorem isTypeMap_of {n : ℕ} (τ : FDRep ℂ (Gn g n)) (hτ : IsCusp �
     rw [glMap_redK, hφ]
     rfl
 
-end Bridge
 
 end UpperTheory.Zero.LLC.DetT
 

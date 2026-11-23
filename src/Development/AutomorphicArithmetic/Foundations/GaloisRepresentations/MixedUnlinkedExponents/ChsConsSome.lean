@@ -40,7 +40,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 open UpperTheory.Gal.GamX
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -59,7 +58,6 @@ private theorem chs_cons_not {y : IrrGL (k := k)} (hy : ¬ ∃ ξ : kˣ →* ℂ
   unfold chs
   rw [Multiset.filterMap_cons_none _ _ (by rw [dite_eq_right hy])]
 
-end Loc
 
 theorem UpperTheory.Gal.GamX.chsTr :
     UpperTheory.Gal.GamX.ChsTr := by

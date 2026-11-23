@@ -38,7 +38,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.Gal.TP.Sub
 
-section Alg
 
 variable {Γ : Type} [Group Γ] {k k' : Type} [CommRing k] [CommRing k']
 
@@ -85,7 +84,6 @@ private theorem descend {n : ℕ} (f : k →+* k') (hf : Function.Injective f) (
   ext g i j
   simpa [mapRep, M] using hA g i j
 
-end Alg
 
 variable {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω]
   {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]

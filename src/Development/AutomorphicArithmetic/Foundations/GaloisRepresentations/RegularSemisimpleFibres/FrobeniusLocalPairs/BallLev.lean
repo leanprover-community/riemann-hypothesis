@@ -41,7 +41,6 @@ open GlobalTheory.SmGL hiding iwahori
 
 namespace UpperTheory.Gal.InertialTypesAlt.L
 
-section Mat
 
 variable {k : Type} [Field k] {n : ℕ}
 
@@ -93,9 +92,7 @@ private theorem conj_entry' (t : Fin n → kˣ) (u : GL (Fin n) k) (i j : Fin n)
   simp
   ring
 
-end Mat
 
-section Val
 
 variable {k : Type} [Field k] [ValuativeRel k]
 
@@ -113,9 +110,7 @@ private theorem val_le {x z : kˣ} (h : valuation k (x : k) ≤ valuation k (z :
   rw [← div_eq_mul_inv]
   exact (div_le_one₀ hz).2 h
 
-end Val
 
-section Fact
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -265,7 +260,6 @@ private theorem nat_mul_factorial_bound {r : ValueGroupWithZero k} (hr : r < 1) 
     calc g = U * (U⁻¹ * g * L⁻¹) * L := by group
       _ = U * u * diagT k (Fin n) d * (c * L) := by rw [e]; group
 
-end Fact
 
 end UpperTheory.Gal.InertialTypesAlt.L
 

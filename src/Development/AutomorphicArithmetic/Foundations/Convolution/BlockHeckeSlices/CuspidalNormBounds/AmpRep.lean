@@ -42,7 +42,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open NumberField
 
-section SlopeTestRemainingChoices
 
 open MeasureTheory IsDedekindDomain GlobalTheory.CuspRep
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
@@ -108,7 +107,6 @@ private theorem ampRep_killed {f : TG E n} {v : LL μ} {d : ℕ} {ρ : KA E n �
   simp only [mul_inv_rev, mul_assoc (Subgroup.inclusion maxCompact_le_normOneGL _)⁻¹, ← mul_assoc (x _),
     ← Finset.sum_mul, this, zero_mul, Pi.zero_apply]
 
-end SlopeTestRemainingChoices
 
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.V in
 theorem UpperTheory.ConvolutionTheory.BW.ampRep :

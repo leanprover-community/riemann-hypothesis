@@ -62,7 +62,6 @@ private lemma nt_expand {R : Type*} [Ring R] (y : R) (m : ℕ) :
       mul_smul_comm, mul_assoc]
     abel
 
-section TF
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianRing R] {p : ℕ}
 
@@ -137,9 +136,7 @@ private lemma nt_mat (hp : p.Prime) (hp2 : p ≠ 2) (hp0 : (p : R) ≠ 0) (hpm :
     rw [mul_comm, pow_mul, hz] at h
     rw [hz, nt_prime hp hp2 hp0 hpm q hq _ h, add_zero]
 
-end TF
 
-section Loc
 
 variable {L : Type} [Field L] [NumberField L] {n : ℕ}
 
@@ -269,9 +266,7 @@ private theorem nt_char (w : Plc L) (M : GL (Fin n) L) (g : GLw n w)
   rw [map_one] at h1
   exact h1
 
-end Loc
 
-section Glob
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
@@ -390,12 +385,10 @@ private theorem nt_rat (γ : ratU L n) : ∃ M : GL (Fin n) L, ratGL L n M = γ.
     rw [show γ.1.1 = _ from hM.symm]
     rfl
 
-end Glob
 
 private theorem nt_conj {G : Type} [Group G] (a b : G) (k : ℕ) : (a⁻¹ * b * a) ^ k = a⁻¹ * b ^ k * a := by
   simpa using conj_pow (a := a⁻¹) (b := b) (i := k)
 
-section Lev
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   {s : HidaSetting l L Ω} {n : ℕ}
@@ -441,7 +434,6 @@ private theorem nt_Q (q : Q.Q) :
       · exact Subgroup.mem_comap.2 ((congrArg (· ∈ K.1 q) h).mpr (one_mem _))
     · have := Subgroup.mem_iInf.1 (Subgroup.mem_iInf.1 (nt_sec (s := s) (Q.wq q') g).1 (Q.wq q)) fun h => e (Q.inj h)
       exact Subgroup.mem_comap.2 ((MonoidHom.mem_ker.1 this).symm ▸ one_mem _)
-end Lev
 
 private theorem nt_Iw {L : Type} [Field L] [NumberField L] {n : ℕ} {V : Type} [Fintype V] (S : V → Plc L) :
     (iwS n S).Iw 0 ≤ Subgroup.pi Set.univ fun v => KO ((S v).adicCompletion L) (Fin n) := by

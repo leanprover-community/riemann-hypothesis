@@ -204,7 +204,6 @@ private theorem fix_point {O : Type} [CommRing O] [IsLocalRing O] {ι X : Type} 
     abel
   · rw [Matrix.map_add _ (map_add p), b1, Z3, add_zero]
 
-section Good
 
 variable {O X A S : Type} [CommRing O] [AddCommGroup X] [CommRing A] [Algebra O A] [TopologicalSpace S]
   {I : Ideal A} {W : WPres O X A}
@@ -245,7 +244,6 @@ private theorem good_sum {ι : Type} (T : Finset ι) {j : X} {f : ι → S → A
   | empty => simpa using good_zero j
   | insert a T ha ih => simpa only [Finset.sum_insert ha] using good_add (hf a) ih
 
-end Good
 
 theorem UpperTheory.V.Alg.hh_section :
     ∀ (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O] (ι X : Type) [Fintype ι] [DecidableEq ι] [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] (w : ι → X) (Φ : FormData O w), IsUnit (2 : O) → ∀ (A : Type) [CommRing A] [Algebra O A] [IsCO O A] (R : Type) [CommRing R] [Algebra O R] [IsCO O R] (p : A →ₐ[O] R), Function.Surjective p → maximalIdeal A * RingHom.ker p = ⊥ → ∀ (W : WPres O X A), (∀ s, W.z s ∈ maximalIdeal A) →

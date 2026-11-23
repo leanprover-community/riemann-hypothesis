@@ -96,7 +96,6 @@ private theorem dirX {O : Type} [CommRing O] [IsDomain O] {l d N p n c : ℕ} [N
     rw [← hv a ha, X.prodX, MulChar.mul_apply, DirichletCharacter.changeLevel_eq_cast_of_dvd' _ _ ha',
       DirichletCharacter.changeLevel_eq_cast_of_dvd' _ _ ha']
 
-section Gal
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -387,7 +386,6 @@ private theorem core (hX : X.CorX) (h : Host) (e : ℕ) (hl2 : l ≠ 2) (he : 2 
           rw [show D.th g = D.al g * D.Psi g from rfl, map_mul, rPsi, ral, mul_comm]
         exact congrArg Units.val this
 
-end Gal
 
 private theorem pow_cond {O : Type} [CommRing O] {N : ℕ} [NeZero N] (χ : DirichletCharacter O N) {k : ℕ}
     (h : χ.conductor = 2 ^ k) : χ ^ 2 ^ k = 1 := by

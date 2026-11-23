@@ -45,7 +45,6 @@ namespace UpperTheory.Zero.ConvolutionTheory.EB
 
 attribute [local instance] borelG borelF borelA borelH
 
-section AlgExPf
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
@@ -80,7 +79,6 @@ private theorem keepQ {Q : Submodule ℂ H} {Γ : Type} {op : Γ → (H →L[ℂ
     rw [this]
     exact hx.1 f hf
 
-end AlgExPf
 
 end UpperTheory.Zero.ConvolutionTheory.EB
 

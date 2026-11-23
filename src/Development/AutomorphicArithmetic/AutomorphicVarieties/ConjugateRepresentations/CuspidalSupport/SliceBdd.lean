@@ -48,7 +48,6 @@ open UpperTheory.V.Af.Fin (emb e1 e2 blk Bdd)
 open GlobalTheory.PRep (fixed)
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 open GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm UpperTheory.V.Af.Fin
 
@@ -99,7 +98,6 @@ private theorem exists_slice {a n : ℕ} (e : Fin a ↪ Fin n) (Γ : Set (Adelic
   obtain ⟨f, hf, -⟩ := UpperTheory.exists_restriction_blockEmbedding_intertwines_lie K a n e g
   exact ⟨f ψ, Submodule.subset_span ⟨ψ, hψ, g, hg, hf ψ⟩, hf ψ⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Cj.S.sliceBdd :
     UpperTheory.V.Cj.S.SingleBdd → UpperTheory.V.Cj.S.SliceBdd := by

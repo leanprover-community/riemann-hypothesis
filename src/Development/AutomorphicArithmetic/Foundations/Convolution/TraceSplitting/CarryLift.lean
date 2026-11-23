@@ -46,7 +46,6 @@ open MeasureTheory NumberField IsDedekindDomain Filter
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.T UpperTheory.ConvolutionTheory.Dp
 open GlobalTheory.CuspRep Formalism.ConjugateSelfDual Formalism.L2.Host UpperTheory.V.Published UpperTheory.CBC
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {n : ℕ} {μ : Measure (normOneGL (K := K) (n := n))} [μ.IsHaarMeasure]
 
@@ -105,9 +104,7 @@ private theorem pull_trans (g g' : K ≃+* K) : pull n (g.trans g') = pull n g �
   refine congrArg f (Matrix.GeneralLinearGroup.ext fun i j => ?_)
   exact (UpperTheory.ConvolutionTheory.K.adBasic K).2.2 g g' _
 
-end SlopeTestRemainingChoices
 
-section Two
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -140,7 +137,6 @@ private theorem weak [IsGalois F E] (hp : (Module.finrank F E).Prime) {sat : Pl 
     exact Multiset.map_congr rfl fun b _ => by simp
   rwa [this]
 
-end Two
 
 theorem UpperTheory.ConvolutionTheory.T.carryLift :
     UpperTheory.ConvolutionTheory.T.CarryLift := by

@@ -263,7 +263,6 @@ private theorem eq_of {M N : Matrix (Fin n) (Fin n) (DD X g)} (hM : M ∈ SM X g
   refine Matrix.ext fun i j => zero_of (sub_mem hM hN) (by rw [map_sub, ha, sub_self]; rfl) fun k => ?_
   rw [smul_sub, he k, sub_self]; rfl
 
-section K
 
 variable {l : ℕ} [Fact l.Prime] {F : GFrame l} {x : NP F n} (k : Kap x) (R : Type) [CommRing R] [Algebra x.A R]
 
@@ -315,7 +314,6 @@ private theorem corr_conj (v) (Q : Fin k.g → Matrix (Fin n) (Fin n) R) :
     (1 - EY k R v)) * (x.wX R v).map DD.C := by simp only [Matrix.mul_assoc]
     _ = _ := by rw [h1, mul_one, mul_one]
 
-end K
 
 end UpperTheory.V.Pa.Lift1
 

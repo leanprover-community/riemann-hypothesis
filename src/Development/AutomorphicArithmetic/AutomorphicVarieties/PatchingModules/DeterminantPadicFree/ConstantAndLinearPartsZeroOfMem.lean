@@ -45,7 +45,6 @@ open Matrix UpperTheory.V.Alg UpperTheory.V.W
 
 namespace UpperTheory.V.Pa.Det
 
-section Comp
 
 variable {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g n a : ℕ}
 
@@ -61,7 +60,6 @@ variable {M}
 
 variable {P}
 
-end Comp
 
 end UpperTheory.V.Pa.Det
 

@@ -48,7 +48,6 @@ import ReciprocityTheory.GaloisValuations.GlobalA
 
 open Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 
 variable {X : Type} [CommRing X] {g n : ℕ}
 
@@ -112,7 +111,6 @@ private theorem card_pat (ty : Fin n → Bool) :
   refine Finset.prod_congr rfl fun p _ => ?_
   exact card_cnd _ _
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Pa.bCard :
     ∀ (l : ℕ) [Fact l.Prime] (F : GFrame l) (n : ℕ) (x : NP F n) (k : Kap x) (m : ℕ) (v : F.Vl), Nat.card (k.b1 (x.Am m) v) = Nat.card x.K ^ (m * (n + nu n x.a k.g)) := by

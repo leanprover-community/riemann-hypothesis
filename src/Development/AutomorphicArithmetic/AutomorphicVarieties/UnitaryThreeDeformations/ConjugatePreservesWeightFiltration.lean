@@ -46,7 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.UnitaryThreeInertia
 
-section SlopeTestRemainingChoices
 
 variable {O : Type} [CommRing O]
 
@@ -266,7 +265,6 @@ private theorem exists_cocycle_of_dual_lift {Γ : Type} [Group Γ] (η : Γ →*
       by_cases h : a = b <;> simp [ms, Matrix.one_apply, h]
     rw [(h3 g).2, ms_mul, a1, a2, a3, Matrix.mul_zero, zero_add]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.UnitaryThreeInertia.eq_rz_of_vanE :
     ∀ {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] [CharZero O] [Finite (ResidueField O)]

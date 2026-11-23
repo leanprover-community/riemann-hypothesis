@@ -42,7 +42,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ProfD
 
 open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
 
-section Cont
 
 variable {Γ R : Type} [TopologicalSpace Γ] [CommRing R] {I : Ideal R}
 
@@ -83,7 +82,6 @@ private theorem lc_mat {n : ℕ} {f : Γ → Matrix (Fin n) (Fin n) R} (hf : ∀
     eventually_all.2 fun i => eventually_all.2 fun j => (hf i j).eventually_eq a
   exact this.mono fun b hb => Matrix.ext hb
 
-end Cont
 
 private theorem epM_entry {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g n : ℕ}
     (Z : Fin g → Matrix (Fin n) (Fin n) A) (a b : Fin n) :

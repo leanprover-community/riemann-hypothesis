@@ -35,7 +35,6 @@ open NumberField Matrix MeasureTheory Formalism.L2.Host GlobalTheory.CuspRep Glo
 open UpperTheory.V.Lit UpperTheory.V.Lit.Dr UpperTheory.V.Lit.Bor UpperTheory.V.Lit.Geo UpperTheory.V.Lit.Geo.Pf
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 
@@ -68,7 +67,6 @@ private theorem sum_val {ι : Type} (s : Finset ι) (f : ι → Sm E a) (g : GA 
     (∑ i ∈ s, f i).1 g = ∑ i ∈ s, (f i).1 g := by
   rw [AddSubmonoidClass.coe_finsetSum, Finset.sum_apply]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Lit.Geo.Pf.ptDiv :
     UpperTheory.V.Lit.Geo.Pf.PtDiv := by

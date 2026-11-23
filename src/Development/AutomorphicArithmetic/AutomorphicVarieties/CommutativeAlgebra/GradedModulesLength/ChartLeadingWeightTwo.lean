@@ -48,7 +48,6 @@ open IsLocalRing Filter Formalism.MainNotions.V.Pf.V2.Calc UpperTheory.V.Alg Upp
 
 namespace UpperTheory.V.Alg.M
 
-section Comb
 
 variable {τ : Type}
 
@@ -188,9 +187,7 @@ private theorem Lead.one {E : Type} [Field E] (wt : τ → ℤ) : Lead wt (1 : M
   refine ⟨fun ν hν => by simp at hν, by simp, fun ν' _ h => ?_⟩
   rw [MvPowerSeries.coeff_one, if_neg h]
 
-end Comb
 
-section Chart
 
 variable {O A τ : Type} [CommRing O] [IsDomain O] [CommRing A] [Algebra O A] {𝒜 : ℤ → Submodule O A}
   [GradedAlgebra 𝒜] {x : A →ₐ[O] O} {wt : τ → ℤ} {φ : A →ₐ[O] MvPowerSeries τ (FractionRing O)}
@@ -418,7 +415,6 @@ private theorem sp_main [Fintype τ] (H : IsChart0 𝒜 x wt φ) (a b : ℕ) :
     · rw [map_mul]
       exact Lead.mul hf1l hgl
 
-end Chart
 
 end UpperTheory.V.Alg.M
 

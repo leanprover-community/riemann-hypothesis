@@ -43,7 +43,6 @@ open UpperTheory.V UpperTheory.V.Af.Smo
 open UpperTheory.V.TR (Rinf Lie chart infGL pInf sInf toL lmul oneL invSet CuspSub)
 open scoped SchwartzMap FourierTransform RealInnerProductSpace ContDiff Topology
 
-section General
 
 open GroundTheory.Automorphic.Spherical GLnLocal Iwasawa HeckeAlgebra
 open scoped ValuativeRel
@@ -140,7 +139,6 @@ private theorem minuscule_mem (z : Fin n → ℂˣ) {f : GL (Fin n) F → ℂ}
     Complex.real_smul, evalAt_satakeTransform_minusculeHecke z hr, mul_assoc, mul_assoc, ← mul_assoc (sqrtQ F ^ _), ← h g]
   rfl
 
-end General
 
 theorem UpperTheory.V.Af.Smo.sphZero :
     UpperTheory.V.Af.Smo.SphDict → UpperTheory.V.Af.Smo.TjSet → UpperTheory.V.Af.Smo.CentLoc → UpperTheory.V.Af.Smo.SphZero := by

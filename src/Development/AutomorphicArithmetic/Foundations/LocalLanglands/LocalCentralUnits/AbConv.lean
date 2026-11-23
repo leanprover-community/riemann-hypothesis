@@ -50,7 +50,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.Zero.LLC.AbC
 
-section LinAlg
 
 variable {G V : Type*} [Group G] [AddCommGroup V] [Module ℂ V]
 
@@ -87,7 +86,6 @@ private theorem scalar_of_commute [FiniteDimensional ℂ V] {ρ : Representation
   have hv : v ∈ f.eigenspace μ := hS ▸ Submodule.mem_top
   exact Module.End.mem_eigenspace_iff.1 hv
 
-end LinAlg
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}

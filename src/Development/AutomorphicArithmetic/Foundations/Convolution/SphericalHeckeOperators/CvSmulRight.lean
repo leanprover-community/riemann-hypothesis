@@ -43,7 +43,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open MeasureTheory GroundTheory.Automorphic GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.GLnLocal GroundTheory.Automorphic.Iwasawa UpperTheory.ConvolutionTheory.H
 
-section SlopeTestRemainingChoices
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
   [LocallyCompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] (μ : Measure G) [μ.IsHaarMeasure]
@@ -80,9 +79,7 @@ private theorem cv_sum_left {ι : Type*} (S : Finset ι) {a : G → ℂ} {b : ι
   exact integral_finsetSum _ fun i hi => integrable_mul_of_mem (hb i hi)
     (ha.1.continuous.comp (continuous_inv.mul continuous_const))
 
-end SlopeTestRemainingChoices
 
-section Aux2
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
 
@@ -101,9 +98,7 @@ private theorem dom_monomial {a : Fin n → ℤ} (ha : Antitone a) : Dom (monomi
   rw [Finset.mem_singleton.1 (Finsupp.support_single_subset hb)]
   exact ha
 
-end Aux2
 
-section Aux3
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
   [MeasurableSpace (GL (Fin n) F)] (μ : Measure (GL (Fin n) F))
@@ -128,7 +123,6 @@ private theorem oneK_mul (hK : μ (integralGL F n : Set (GL (Fin n) F)) = 1) :
   exact congrArg (fun x : HeckeAlgebra μ => (x : GL (Fin n) F → ℂ))
     (HeckeAlgebra.isIdempotentElem_idem (μ := μ) (isCompact_integralGL F n) (isOpen_integralGL F n)).eq
 
-end Aux3
 
 theorem UpperTheory.ConvolutionTheory.H.core :
     ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] (n : ℕ)

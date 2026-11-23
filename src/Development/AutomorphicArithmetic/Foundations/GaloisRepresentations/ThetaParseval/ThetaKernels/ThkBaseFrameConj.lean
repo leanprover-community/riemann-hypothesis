@@ -42,9 +42,7 @@ namespace GlobalTheory.ThK.Dbl.Frame
 open scoped Matrix TensorProduct
 open NumberField IsDedekindDomain GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Doubling
 open Formalism.UG (bc)
-section Generic
 variable {S R β : Type} [CommRing S] [CommRing R] [Fintype β] [DecidableEq β]
-end Generic
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ} {Y : Spc F E n}
 end GlobalTheory.ThK.Dbl.Frame
 namespace GlobalTheory.ThK.Dbl

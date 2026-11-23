@@ -42,7 +42,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-section LocFormsAux
 
 private def Hs {L V ι : Type} [Field L] [Algebra ℂ L] [AddCommGroup V] [Module L V]
     (B : Subalgebra ℂ L) (P : Finset ι) (g : ι → V) (w : V) : Prop :=
@@ -101,7 +100,6 @@ private lemma alt_expand {V : Type} [AddCommGroup V] [Module L V] {q d : ℕ} (t
   refine Finset.sum_congr rfl fun f _ => ?_
   exact (ExteriorAlgebra.ιMulti L q (M := V)).toMultilinearMap.map_smul_univ _ _
 
-end LocFormsAux
 
 theorem UpperTheory.Gal.productCup_of_system.locForms_of :
     LocOne → LocForms := by

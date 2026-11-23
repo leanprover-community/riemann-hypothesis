@@ -45,25 +45,19 @@ noncomputable section
 namespace GlobalTheory.ThetaTransformF
 open Formalism.IndefR.DatumF GlobalTheory.ThetaTransform GlobalTheory.SWQ
 open scoped ContDiff
-section Phase
 variable {F : Type} [Field F] [NumberField F] {N : ℕ} [Invertible (2 : AF F)] {ψ : AddChar (AF F) ℂ}
-end Phase
 end GlobalTheory.ThetaTransformF
 end
 noncomputable section
 namespace GlobalTheory.ThetaTransformF
-section Crit
 variable {F : Type} [Field F] [NumberField F] {N : ℕ} [Invertible (2 : AF F)] {ψ : AddChar (AF F) ℂ}
-end Crit
 end GlobalTheory.ThetaTransformF
 end
 noncomputable section
 namespace GlobalTheory.ThetaTransformF
-section Main
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [Invertible (2 : AF F)]
   {σ : E →ₐ[F] E} {nS nT N : ℕ} {JS : Matrix (Fin nS) (Fin nS) E} {JT : Matrix (Fin nT) (Fin nT) E} {ξ₀ : E}
   {ψ : AddChar (AF F) ℂ} {e : WOF F E nS nT ≃ₗ[AF F] VA F N}
-end Main
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels in
 theorem isThetaFunOF_thV_k : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E),
     _root_.UpperTheory.TP.W.GoodK σ B → ∀ (nS nT : ℕ) (JS : Matrix (Fin nS) (Fin nS) E) (JT : Matrix (Fin nT) (Fin nT) E),

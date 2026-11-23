@@ -78,7 +78,6 @@ private theorem continuous_mapGL' {m : ℕ} {R S : Type*} [CommRing R] [CommRing
 
 end Gen
 
-section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -221,7 +220,6 @@ private theorem pv_finPart (v : Pl F) (g : AdelicGLn.AdelicGL E n) :
   rw [finEmb_entry]
   rfl
 
-end Main
 
 end UpperTheory.ConvolutionTheory.GM.CompactClopenAverage
 

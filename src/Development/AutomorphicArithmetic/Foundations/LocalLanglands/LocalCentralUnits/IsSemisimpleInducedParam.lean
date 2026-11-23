@@ -192,7 +192,6 @@ private theorem det_shift {n : ℕ} (hn : 0 < n) {b : ℂ} (hb : b ≠ 0) (S : M
   rw [hdet, hM, LinearMap.det_toLin', Matrix.det_permute, Matrix.det_diagonal, sign_finRotate]
   simp [wt, Finset.prod_ite_eq']
 
-section Weil
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
@@ -279,7 +278,6 @@ private def rho0 {φ : Weil h} (hφ : deg φ = 1) {η : ℤ → (Ine (F := E) A 
     rw [tau_mul, map_mul, deg_mul, ← add_assoc, ← e1, Units.val_mul]
     ring)
 
-section Rho
 
 variable {φ : Weil h} (hφ : deg φ = 1) {η : ℤ → (Ine (F := E) A →* ℂˣ)} {n : ℕ} {b : ℂ}
   (h1 : ∀ (j : ℤ) (t t' : Ine (F := E) A), ineIncl h t' = φ * ineIncl h t * φ⁻¹ → η j t' = η (j + 1) t)
@@ -345,7 +343,6 @@ private theorem isSemisimple_inducedParam (hn : 0 < n) (hb : b ≠ 0) (hs : IsSm
     rw [pow_mul, ← map_pow, hτ, map_mul, e1, smul_mul_assoc, one_mul, _root_.smul_pow, e2]
   exact isSemisimple_of_pow_eq _ (by positivity) (pow_ne_zero _ (zpow_ne_zero _ hb)) e3
 
-end Rho
 
 end Weil
 

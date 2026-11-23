@@ -47,7 +47,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C
 open scoped TensorProduct InnerProductSpace ComplexConjugate Pointwise
 
-section Abstract
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
   [T2Space G] [TotallyDisconnectedSpace G] [MeasurableSpace G] [BorelSpace G]
@@ -183,9 +182,7 @@ private theorem comm_abstract (hJc : IsCompact (J : Set G)) (hJo : IsOpen (J : S
     ax _ (hmy v hv), ay _ (hmx v hv)] at e1
   exact smul_right_injective V hc (smul_right_injective V hc e1)
 
-end Abstract
 
-section Concrete
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (w : Pl K)
 
@@ -290,7 +287,6 @@ private theorem rhoL_comm {w w' : Pl K} (h : w ≠ w') (g : GL (Fin n) (w.adicCo
   unfold rhoL at *
   rw [hc]
 
-end Concrete
 
 theorem UpperTheory.ConvolutionTheory.Tf.tsphComm :
     ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (w w' : Pl K),

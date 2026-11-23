@@ -38,7 +38,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 private lemma mem_lft' {ι κ : Type} [LinearOrder ι] [LinearOrder κ] (s : Finset (ι ⊕ₗ κ)) (a : ι) :
     a ∈ lft s ↔ toLex (Sum.inl a) ∈ s := by
@@ -157,7 +156,6 @@ private lemma mix_step (hT : T.Good) (n : κ → ℕ × ℕ) (z : κ → S) (hA 
     rw [if_neg h, hm, map_zero]
     exact zero_mem _
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Gal.productCup_of_system.sysOk_of :
     WdUni → SysOk := by

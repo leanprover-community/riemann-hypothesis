@@ -41,7 +41,6 @@ open scoped Classical
 
 namespace UpperTheory.Gal.InertialTypesAlt.L
 
-section Alg
 
 variable {k : Type} [Field k] [ValuativeRel k] {F₀ : Type} [Field F₀] {n : ℕ}
 
@@ -104,7 +103,6 @@ private theorem rd_eq_zero (rd : 𝒪[k] →+* F₀) (hrd : Function.Surjective 
   rw [map_mul, hxy, zero_mul, map_one] at this
   exact zero_ne_one this
 
-end Alg
 
 theorem inflFacts :
     UpperTheory.Gal.InertialTypesAlt.L.InflFacts := by

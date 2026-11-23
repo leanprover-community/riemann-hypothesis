@@ -36,7 +36,6 @@ open GlobalTheory.SplitPts (conjE)
 
 namespace UpperTheory.Gal.Spc
 
-section LinAlg
 
 variable {K : Type*} [Field K] {m : ℕ}
 
@@ -106,7 +105,6 @@ private theorem sep_of_mul {M N : Matrix (Fin m) (Fin m) K} {a : K} (ha : a ≠ 
   rw [Matrix.charpoly_map] at h2
   exact (Polynomial.separable_map _).1 h2
 
-end LinAlg
 
 end UpperTheory.Gal.Spc
 

@@ -41,7 +41,6 @@ noncomputable section
 
 namespace UpperTheory.V.Pa.B2
 
-section Pull
 
 variable {A Γ Γ' : Type} [CommRing A] [Group Γ] [TopologicalSpace Γ] [Group Γ'] [TopologicalSpace Γ']
 
@@ -134,9 +133,7 @@ private theorem onto_iso (l : ℕ) (h : SecondCohomologyRightExactModL l Γ) : S
   refine ⟨x, (restriction_two_bijective p hp hq M').1 ?_⟩
   rw [key, hx']
 
-end Pull
 
-section Gl
 
 variable {l : ℕ} [Fact l.Prime] {L : Loc} {G G' : Glob l L} (e : G.Hom G') {A : Type} [CommRing A]
 
@@ -155,7 +152,6 @@ private def pullD (D : Dat A (plOf G')) : Dat A (plOf G) where
     rw [← pl_φ e w g] at h
     exact h
 
-end Gl
 
 end UpperTheory.V.Pa.B2
 

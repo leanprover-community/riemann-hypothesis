@@ -49,7 +49,6 @@ open scoped TensorProduct Classical
 
 namespace UpperTheory.Gal.Spc
 
-section Abstract
 
 variable {H : Type} [Group H] {K : Subgroup H} {M : Type} [AddCommGroup M] [Module ℂ M]
   {T : (H → ℂ) → Module.End ℂ M} {J : Type}
@@ -161,7 +160,6 @@ private theorem hecke_relation_image (hmul : ∀ f ∈ Hecke ℂ K, ∀ f' ∈ H
   · have h := congrArg T hrel.inv
     rwa [hmul _ hu' _ hB, hmul _ hu _ he] at h
 
-end Abstract
 
 private theorem forms_fin {Γ H V : Type} [Group Γ] [Group H] [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
     (ι : Γ →* H) (K : Subgroup H) (ξ : Representation ℂ Γ V)

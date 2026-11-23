@@ -39,7 +39,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr
 
-section Av
 
 variable {O C' C : Type} [CommRing O] [CommRing C'] [Algebra O C'] [CommRing C] [Algebra O C]
 
@@ -55,7 +54,6 @@ variable [IsLocalRing O] [IsCO O C']
 
 variable [IsCO O C]
 
-end Av
 
 private theorem sg_sub_eq_mul {R : Type} [CommRing R] (j k : ZMod 2) : sg R (j - k) = sg R j * sg R k := by
   obtain rfl | rfl : j = 0 ∨ j = 1 := by revert j; decide

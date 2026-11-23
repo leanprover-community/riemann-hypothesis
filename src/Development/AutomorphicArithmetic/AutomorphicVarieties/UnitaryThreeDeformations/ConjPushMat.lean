@@ -35,7 +35,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.UnitaryThreeInertia
 
-section SlopeTestRemainingChoices
 
 variable {O R R' D : Type} [CommRing O] [CommRing R] [Algebra O R] [CommRing R'] [Algebra O R'] [Group D]
 
@@ -122,7 +121,6 @@ private theorem adicCont_push [TopologicalSpace D] (φ : R →ₐ[O] R') [IsLoca
   rw [hfun]
   exact (H n).comp _
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.UnitaryThreeInertia.isPt_push :
     ∀ {O : Type} [CommRing O] [IsLocalRing O] {G Γ ι : Type} [Group G] [Group Γ] [TopologicalSpace Γ]

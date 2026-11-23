@@ -54,7 +54,6 @@ open UpperTheory.Zero.ConvolutionTheory.EB PositivityTheory.Rg.BcB.F.RS
 
 attribute [local instance] borelG borelF borelA borelH
 
-section SlopeTestRemainingChoices
 
 open GlobalTheory.LGrp GlobalTheory.LFun.SatCompare GlobalTheory.LocGL GlobalTheory.WeylGL
 
@@ -98,7 +97,6 @@ private theorem tj_top_ne (w : Pl E) (n : ℕ) {V : Type} [AddCommGroup V] [Modu
     rw [← tor_const_comm, mul_assoc, inv_mul_cancel_left]
     exact mul_mem ha hb
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Zero.ConvolutionTheory.EB.sat2Ex :
     ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a b : ℕ) (w : Pl E) (V ι : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GLw a w × GLw b w) V) (x : ι → V)

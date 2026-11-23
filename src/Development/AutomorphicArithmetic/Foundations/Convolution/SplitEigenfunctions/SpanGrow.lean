@@ -49,7 +49,6 @@ open scoped Classical
 
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -185,9 +184,7 @@ private theorem arith {C H M τ s h : ℝ} {e N d : ℕ} (hd : d ≠ 0) (hτ : 1
         mul_le_mul_of_nonneg_left (h3.trans (mul_le_mul_of_nonneg_left h4 (pow_nonneg hH N))) (abs_nonneg C)
     _ = _ := by rw [mul_pow τ, ← pow_mul s]; ring
 
-end SlopeTestRemainingChoices
 
-section Span
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {D : Dat ℚ E} (W : Weil D) (M : Meas ℚ)
 
@@ -204,7 +201,6 @@ private theorem mg (π : TR.CuspSub ℚ 2) {Φ : Sm E 2} (hΦ : Φ ∈ span W M 
   | add x y _ _ ix iy => exact ix.add iy
   | smul c x _ ix => exact ix.smul c
 
-end Span
 
 theorem UpperTheory.ConvolutionTheory.RankTwoDescent.spanGrow :
     SpanGrow := by

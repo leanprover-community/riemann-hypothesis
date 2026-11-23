@@ -45,7 +45,6 @@ open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial UpperTheory.V.Z.Invariant
 open scoped ComplexConjugate Classical InnerProductSpace
 open scoped NumberField.AdeleRing
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -120,9 +119,7 @@ private theorem lv_fin (d₁ d₂ : AdelicGLn.integralFiniteGL K 2) :
   rw [e3, archimedean_projection_one, one_mul] at e
   exact e
 
-end SlopeTestRemainingChoices
 
-section Aux2
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -204,9 +201,7 @@ private theorem psi_cont {m : ℕ} {α : KG K m → archCompact K m} {β : KG K 
   rw [e]
   exact (hf.comp hα).mul (hχ.comp hβ)
 
-end Aux2
 
-section Aux3
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -309,9 +304,7 @@ private theorem value (κ : Measure (archCompact K 2)) (ν : Measure (AdelicGLn.
     rwa [← hdec₂ v₁] at this
   simp only [e, integral_const_mul, hX, integral_mul_const]
 
-end Aux3
 
-section PrimeReciprocalSums
 
 variable {K : Type} [Field K] [NumberField K]
 
@@ -381,7 +374,6 @@ private theorem cEx (ν : Measure (AdelicGLn.integralFiniteGL K 2)) [IsProbabili
     exact integral_congr_ae (Eventually.of_forall fun d₂ => hre _)
   · exact integral_complex_ofReal
 
-end PrimeReciprocalSums
 
 theorem UpperTheory.exists_level_and_KTypeVector_for_leviInduction :
     ∀ (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (ι : Type) [Fintype ι] (C : Co K ι) (μ : Measure U4) (e : ι → U4 → ℂ) n q n' q' (x : ι → U4), Haar4 μ → ExtP μ e n q n' q' x → ∀ (S : Finset (Pl K)) (U₁ U₂ : ∀ w : Pl K, Subgroup (Gw 2 w)), Lev U₁ → Lev U₂ → ∃ (U : ∀ w : Pl K, Subgroup (Gw (2 + 2) w)) (ρ : Measure (KG K 2)) (Ψ : G1 K (2 + 2) → ℂ) (c : ℝ), Lev U ∧ IsProbabilityMeasure ρ ∧ (∀ u : KG K 2, MeasurePreserving (· * u) ρ ρ) ∧ (Continuous fun k : KG K (2 + 2) => Ψ k) ∧ (∀ X, nn X ∈ KG K (2 + 2) → ∀ k ∈ KG K (2 + 2), Ψ (nn X * k) = Ψ k) ∧ (∀ k ∈ KG K (2 + 2), ∫ a, C.e e a * Ψ (k * arc1 a) ∂C.κ₄ μ = Ψ k) ∧ (∀ k ∈ KG K (2 + 2), ∀ u ∈ levOn S U, Ψ (k * fin1 u) = Ψ k) ∧ 0 < c ∧ ∀ φ₁ φ₂ : G1 K 2 → ℂ, Continuous φ₁ → Continuous φ₂ → FixA C.κ₂ (C.p n q) φ₁ → FixA C.κ₂ (C.p n' q') φ₂ → FixF (levOn S U₁) φ₁ → FixF (levOn S U₂) φ₂ → ∀ m₁ m₂, (∫ v₁ : KG K 2, ∫ v₂ : KG K 2, Ψ (lv (v₁ : G1 K 2) (v₂ : G1 K 2) 0 * arc1 ((C.Φ (2 + 2)).symm x)) * φ₁ (m₁ * (v₁ : G1 K 2)⁻¹) * φ₂ (m₂ * (v₂ : G1 K 2)⁻¹) ∂ρ ∂ρ) = c * φ₁ m₁ * φ₂ m₂ := by

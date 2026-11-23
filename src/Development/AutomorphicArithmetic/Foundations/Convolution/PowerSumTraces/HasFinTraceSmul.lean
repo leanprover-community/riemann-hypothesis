@@ -88,7 +88,6 @@ private theorem prod_mem_of {H : Type*} [NormedAddCommGroup H] [InnerProductSpac
     rw [List.prod_cons]
     exact h B (by simp) _ (ih (fun B' hB' => h B' (by simp [hB'])) v hv)
 
-section Loc
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 private theorem rhoL_comm' {w w' : Pl K} (h : w ≠ w') (g : Gw n w) (g' : Gw n w') :
@@ -137,7 +136,6 @@ private theorem trOn_bot {H : Type*} [NormedAddCommGroup H] [InnerProductSpace �
     simp [prj]
   simp [trOn, this, GroundTheory.Automorphic.trace]
 
-end Loc
 
 private theorem under_over' {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {v : Pl F}
     (w : PlacesOver E v) : w.1.under (𝓞 F) = v :=

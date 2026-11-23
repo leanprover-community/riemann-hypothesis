@@ -37,7 +37,6 @@ open scoped Classical
 
 namespace UpperTheory.ConvolutionTheory.R2.D.SL2BruhatGenerators
 
-section Gen
 
 variable {F : Type} [Field F]
 
@@ -95,9 +94,7 @@ private theorem specialLinearGroup_two_induction_on_unipotent_weyl (P : Matrix.S
     exact neg_ne_zero.mpr hd
   · exact key γ hc
 
-end Gen
 
-section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] {D : Dat F E} (W : Weil D)
@@ -171,7 +168,6 @@ private theorem good_w : Good W (wF F) := by
 private theorem good_all (γ : Matrix.SpecialLinearGroup (Fin 2) F) : Good W γ :=
   specialLinearGroup_two_induction_on_unipotent_weyl (Good W) (good_mul W) (good_n W) (good_w W) γ
 
-end Main
 
 end UpperTheory.ConvolutionTheory.R2.D.SL2BruhatGenerators
 

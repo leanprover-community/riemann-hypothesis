@@ -41,7 +41,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open MeasureTheory NumberField IsDedekindDomain MvPolynomial Filter Topology UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C UpperTheory.ConvolutionTheory.Ci
 
-section SlopeTestRemainingChoices
 
 open GroundTheory.Automorphic GroundTheory.Automorphic.CuspidalSpectrum PositivityTheory.Rg.Fx PositivityTheory.Rg.Tf.Core
 
@@ -205,7 +204,6 @@ private theorem final_arith (C τ u q r k zN zN' x y : ℝ) (hτ : 0 ≤ τ) (hu
   have h4 : τ * u * q ≤ τ * u * (zN * (q + k * r) + k * zN' * q) := by gcongr
   nlinarith
 
-end SlopeTestRemainingChoices
 
 
 open GroundTheory.Automorphic GroundTheory.Automorphic.CuspidalSpectrum PositivityTheory.Rg.Fx PositivityTheory.Rg.Tf.Core in

@@ -43,7 +43,6 @@ open PositivityTheory.Rg.Tf.Loc PositivityTheory.Rg.Tf.Geo
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E] [IsGalois F E]
 
@@ -135,7 +134,6 @@ private theorem phi_shift (σ : E ≃ₐ[F] E) (hσ : ∀ τ : E ≃ₐ[F] E, τ
     rw [Algebra.TensorProduct.map_tmul, phi_tmul, phi_tmul, hv, ← pow_eq_pow_mod _ h1, pow_succ]
     rfl
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.L1
 

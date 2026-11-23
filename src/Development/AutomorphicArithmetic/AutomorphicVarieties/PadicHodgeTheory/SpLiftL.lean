@@ -110,7 +110,6 @@ private theorem nonres {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω
     simp only [Raw.th, MonoidHom.mul_apply, map_mul, h1, h4, map_one] at this
     rwa [zpow_one]
 
-section Alg
 
 variable {B : Type} [CommRing B]
 
@@ -175,7 +174,6 @@ private theorem unit_of {E : Type} [Field E] [Algebra E B] (π : B →ₐ[E] E) 
     ((IsUnit.mk0 _ hx).map (algebraMap E B)) (Commute.all _ _)
   simpa using h
 
-end Alg
 
 theorem UpperTheory.V.Loc.spLiftL :
     LocalPublishedTheorems → ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c) (hD : D.Good) (E : Type) [Field E] [Algebra ℚ_[l] E] [Module.Finite ℚ_[l] E] [Algebra ↥c.O E] [Algebra ℤ_[l] E] [IsScalarTower ℤ_[l] ↥c.O E] [IsScalarTower ℤ_[l] ℚ_[l] E] [IsFractionRing ↥c.O E] (B : Type) [CommRing B] [Algebra ℚ_[l] B] [Module.Finite ℚ_[l] B] [Algebra ↥c.O B] [Algebra ℤ_[l] B] [IsScalarTower ℤ_[l] ↥c.O B] [IsScalarTower ℤ_[l] ℚ_[l] B] [Algebra E B] [IsScalarTower ↥c.O E B] [IsScalarTower ℚ_[l] E B] (π : B →ₐ[E] E) (hπ : ∀ a, π a = 0 → IsNilpotent a) (B' : Type) [CommRing B'] [Algebra ℚ_[l] B'] [Module.Finite ℚ_[l] B'] [Algebra ↥c.O B'] [Algebra ℤ_[l] B'] [IsScalarTower ℤ_[l] ↥c.O B'] [IsScalarTower ℤ_[l] ℚ_[l] B'] [Algebra E B'] [IsScalarTower ↥c.O E B'] [IsScalarTower ℚ_[l] E B'] (π' : B' →ₐ[E] E) (hπ' : ∀ a, π' a = 0 → IsNilpotent a) (p : B →ₐ[E] B'), Function.Surjective p → π'.comp p = π → ∀ r' : D.Gp l →* M4 B', IsContinuousLiftOfRZero D (π' : B' →+* E) l r' → EqL D r' → ∃ r : D.Gp l →* M4 B, IsContinuousLiftOfRZero D (π : B →+* E) l r ∧ EqL D r ∧ mapRep (p : B →+* B') r = r' := by

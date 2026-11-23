@@ -40,7 +40,6 @@ open MeasureTheory
 
 namespace UpperTheory.Gal.LocD
 
-section Stable
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 
@@ -63,7 +62,6 @@ private def homeoOf (s : G →* G) (p : ℕ) (hp : 0 < p) (hs : Continuous s) (h
   continuous_toFun := hs
   continuous_invFun := hs.iterate _
 
-end Stable
 
 theorem funInv (hBi : BiInv) (hMem : PrMem) (hLeft : PrLeft) (hAuto : PrAuto) (hSurj : PrSurj) (hEta : EtaEx) :
     FunInv := by

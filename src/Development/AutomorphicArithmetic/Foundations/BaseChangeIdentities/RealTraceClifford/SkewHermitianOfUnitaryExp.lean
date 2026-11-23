@@ -97,7 +97,6 @@ private theorem skew_of (X : Matrix (Fin n) (Fin n) ℂ)
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section Sub
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
@@ -193,7 +192,6 @@ private theorem top_of [FiniteDimensional ℂ H] {σ : Matrix (Fin n) (Fin n) �
   rw [eq_bot_iff, ← Submodule.inf_orthogonal_eq_bot S]
   exact le_inf hWS hWT
 
-end Sub
 
 private def sgm (E : KMod n) (g : Matrix (Fin n) (Fin n) ℂ) : E.V →L[ℂ] E.V := by
   classical exact if h : g ∈ Matrix.unitaryGroup (Fin n) ℂ then E.ρ ⟨g, h⟩ else 0

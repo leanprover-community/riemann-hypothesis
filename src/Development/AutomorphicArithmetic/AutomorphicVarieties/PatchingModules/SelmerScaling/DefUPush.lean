@@ -47,7 +47,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
 
-section Gen
 variable {X : Type} [CommRing X] {e g n : ℕ}
 
 private def TT (X : Type) [CommRing X] (g : ℕ) : DD X g →+* DD X g where
@@ -156,7 +155,6 @@ private noncomputable def pushU {H : Type} [Group H] (c : Fin e → Fin g → X)
 private theorem pushU_val {H : Type} [Group H] (c : Fin e → Fin g → X) (ψ : H →* (DD X e)ˣ)
     (hψ : ∀ t, (ψ t : DD X e).ep = 0) (t : H) : (pushU c ψ hψ t : DD X g) = PP c (ψ t) 0 := rfl
 
-end Gen
 
 theorem UpperTheory.V.Pa.defUPush :
     ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G G0 : Glob l L) (h : G.Hom G0) (n : ℕ) (x : NP G0.frame n), ∀ (k : Kap x), ∀ (e : ℕ) (u : G.G₀ → Matrix (Fin n) (Fin n) (DD x.Fr e)) (ψ : ∀ v, Fin n → L.Gv v →* (DD x.Fr e)ˣ) (c : Fin e → Fin k.g → x.Fr), DefU h x u ψ → (∀ a, epC h x u a = ∑ j, c a j • kapF h k j) → ∃ (u' : G.G₀ → Matrix (Fin n) (Fin n) (DD x.Fr k.g)) (ψ' : ∀ v, Fin n → L.Gv v →* (DD x.Fr k.g)ˣ), DefU h x u' ψ' ∧ (∀ j, epC h x u' j = kapF h k j) ∧ ∀ j, epC' h x u' j = ∑ a, c a j • epC' h x u a := by

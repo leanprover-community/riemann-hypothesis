@@ -40,7 +40,6 @@ open scoped nonZeroDivisors Pointwise
 
 namespace UpperTheory.V.ML.PlaceBasics
 
-section Rat
 
 variable (l : ℕ) [hl : Fact l.Prime]
 
@@ -112,9 +111,7 @@ private theorem isPlaceOver_vQ [Algebra ℚ Ω] (A : ValuationSubring Ω) (hA : 
   rw [intCast_mem_vQ, ← val_intCast_lt_one_iff A hA]
   simp
 
-end Rat
 
-section Roots
 
 variable {Ω : Type} [Field Ω] (A : ValuationSubring Ω)
 
@@ -160,9 +157,7 @@ private theorem root_eq {m : ℕ} (hv : ¬ A.valuation (m : Ω) < 1) {ξ ζ : Ω
     rw [e, map_div₀, h1, div_one]; exact h
   exact (div_eq_one_iff_eq h0).1 this
 
-end Roots
 
-section Conj
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] (A : ValuationSubring Ω) (g : G ℚ Ω)
 
@@ -192,7 +187,6 @@ private theorem pow_iff (x : G ℚ Ω) (q : ℕ) :
       AlgEquiv.mul_apply]
   rw [e, smul_le, smul_lt]
 
-end Conj
 
 end UpperTheory.V.ML.PlaceBasics
 

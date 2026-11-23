@@ -38,7 +38,6 @@ open UpperTheory.Gal.W2
 
 namespace UpperTheory.Gal.W2
 
-section SlopeTestRemainingChoices
 
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p} (L : Link D G)
 
@@ -120,7 +119,6 @@ private theorem congOne_of_gen {N : ℕ} {g : G.GAf}
     obtain ⟨w, hw, e⟩ := hy
     exact ⟨-w, neg_mem hw, by rw [map_neg, e, neg_add, smul_neg]⟩
 
-end SlopeTestRemainingChoices
 
 theorem coordKN_of : RdDense → CoordKN := by
   intro hd p _ D G L x N hN hcop D' t j h₁ h₂ hc1

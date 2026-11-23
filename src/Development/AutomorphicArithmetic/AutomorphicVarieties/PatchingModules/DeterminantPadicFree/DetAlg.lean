@@ -44,7 +44,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] {n : ℕ}
 
@@ -91,7 +90,6 @@ private theorem dA_oe {a : ℕ} {N N' : Matrix (Fin n) (Fin n) F} (h : N ∈ Od 
   · rw [h i k c, zero_mul]
   · rw [h' k j (by tauto), mul_zero]
 
-end SlopeTestRemainingChoices
 
 private theorem smul_commutator_conj_mul_eq_add_add {F : Type} [Field F] {n : ℕ}
     (P Pi Q Qi K1 K2 PoissonCutoffFormula Y L PQ PQi : Matrix (Fin n) (Fin n) F) (a b : F)

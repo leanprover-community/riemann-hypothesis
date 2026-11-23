@@ -36,7 +36,6 @@ import Mathlib.Topology.UniformSpace.Uniformizable
 open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.GKCoh UpperTheory.V.Af GlobalTheory.UnitaryBC UpperTheory.V.Lit.Geo
 open scoped ContDiff Topology
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 
@@ -71,7 +70,6 @@ private theorem cut_unif (φ : Sm E a) (h : BddDer φ) :
   exact ⟨K, (norm_nonneg _).trans (hK 1), fun X g =>
     ((fderiv ℝ (chart φ.1 g) (oneL E a)).le_opNorm X).trans (mul_le_mul_of_nonneg_right (hK g) (norm_nonneg _))⟩
 
-end SlopeTestRemainingChoices
 
 private theorem cut_lip : ∃ M : NNReal, LipschitzWith M Real.smoothTransition := by
   have hs : ContDiff ℝ 1 Real.smoothTransition := Real.smoothTransition.contDiff

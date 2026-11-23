@@ -119,7 +119,6 @@ private theorem ifnAbs {G : Type} [CommGroup G] [TopologicalSpace G] [IsTopologi
   rw [key]
   ring
 
-section Meas
 variable {F : Type} [Field F] [NumberField F] {v : P F}
 
 private def colsH : ((Fin 2 → Kv v) × (Fin 2 → Kv v)) ≃ₜ M2 v where
@@ -156,7 +155,6 @@ private noncomputable def IMl : SB (M2 v) →ₗ[ℂ] ℂ where
     simp only [IM, RingHom.id_apply, smul_eq_mul]
     exact integral_const_mul c _
 
-end Meas
 
 theorem UpperTheory.ConvolutionTheory.R2.I.invFn :
     ∀ (F : Type) [Field F] [NumberField F] (v : P F) (ℓ : SB (M2 v) →ₗ[ℂ] ℂ), (∀ (y : M2 v) (a a' : SB (M2 v)), (∀ m, a'.1 m = a.1 (m + y)) → ℓ a' = ℓ a) →

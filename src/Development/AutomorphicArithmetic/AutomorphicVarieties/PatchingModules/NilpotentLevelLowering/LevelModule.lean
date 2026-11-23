@@ -56,7 +56,6 @@ def TwoMaps {R B M V : Type} [CommRing R] [CommRing B] [AddCommGroup M] [Module 
     (∀ (t : PU R q n) v, ψ (act t v) = Ideal.Quotient.mk (mSplitIdeal P n) (MvPolynomial.map β t) • ψ v) ∧
     (∀ v, φ (ψ v) = act f v) ∧ ∀ z, ψ (φ z) = Ideal.Quotient.mk (mSplitIdeal P n) (MvPolynomial.map β f) • z
 
-section Op
 
 variable {l : ℕ} [Fact l.Prime] {L : Loc} {G0 : Glob l L} {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] {n : ℕ}
   {r : Resid G0.frame O n} {B : Type} [CommRing B] [Algebra O B] [IsCO O B] {u : Pair r B} {J : Ideal B} {D : ℕ}
@@ -110,7 +109,6 @@ structure OpRel : Prop where
   rel2 : ∀ j i (g : G.G₀), A.act1 ((fEl Nq (uV A.R) * (A.p.D.map (MvPolynomial.C : A.R →+* PUY A.R q n)).tr
     (MonoidAlgebra.single g 1 * q2El (ph j) (ta j) (uV A.R j) i (yV A.R j i))) ^ ex) = 0
 
-end Op
 
 section Loc
 

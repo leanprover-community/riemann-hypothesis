@@ -45,7 +45,6 @@ open Formalism.L2.Host UpperTheory.V.Published UpperTheory.CBC
 open scoped Classical
 open UpperTheory.Gal.InertialTypesAlt.G
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -142,7 +141,6 @@ private theorem hom_twNorm {G : Type*} [Group G] (N : G → ℝ) (h0 : N 1 = 1) 
   | zero => simp [h0]
   | succ m ih => rw [PositivityTheory.Rg.Tf.Loc.twNorm_succ, h1, ih, hp, pow_succ]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Gal.InertialTypesAlt.G.matchPow :
     UpperTheory.Gal.InertialTypesAlt.G.MatchPow := by

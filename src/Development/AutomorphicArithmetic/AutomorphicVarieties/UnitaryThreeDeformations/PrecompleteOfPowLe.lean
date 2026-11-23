@@ -55,7 +55,6 @@ open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg
 
 namespace UpperTheory.V.UnitaryThreeInertia.MP
 
-section Tsz
 
 variable {O M : Type} [CommRing O] [AddCommGroup M] [Module O M] [Module Oᵐᵒᵖ M] [IsCentralScalar O M]
 
@@ -97,9 +96,7 @@ private theorem tsz_isCO [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (m
           isLocalHom := ⟨fun a ha => by simpa [TrivSqZeroExt.isUnit_iff_isUnit_fst, TrivSqZeroExt.algebraMap_eq_inl] using ha⟩
           res_surj := fun x => ⟨x.fst, by rw [tsz_mem_max]; simp [TrivSqZeroExt.algebraMap_eq_inl]⟩ }
 
-end Tsz
 
-section PS
 
 variable {O A σ : Type} [CommRing O] [CommRing A] [Algebra O A] [Fintype σ]
 
@@ -172,9 +169,7 @@ private theorem map_lin (φ : MvPowerSeries σ O →ₐ[O] A)
 
   simp only [map_add (f := _), map_sum, AlgHom.commutes, h1, h2]
 
-end PS
 
-section Point
 
 private def Tm (C : Type) [CommRing C] : Matrix (Fin 3) (Fin 3) C := !![0, 0, 0; 1, 0, 0; 0, -1, 0]
 
@@ -218,7 +213,6 @@ private theorem ad_Tm (g : Γ) (x : C) :
     rfl
   · simp [Tm_wt C a b hw]
 
-end Point
 
 private theorem exists_pt
     {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] [CharZero O] [Finite (ResidueField O)]

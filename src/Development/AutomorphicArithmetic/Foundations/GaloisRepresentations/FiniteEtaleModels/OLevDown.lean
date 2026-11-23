@@ -39,7 +39,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 namespace UpperTheory.Gal.FiniteEtaleModels.O
 
-section Generic
 
 variable {A B M : Type} [CommRing A] [Ring B] [Algebra A B] [AddCommGroup M] [Module B M]
 
@@ -150,7 +149,6 @@ private theorem smul_mem_of_eps {ε c : A} {𝔟 : Ideal A} {y : M} (hc : c ∈ 
   rw [map_add (f := _), add_smul, map_mul, ← smul_smul]
   exact Submodule.add_mem _ (Submodule.smul_mem _ _ hy) (smul_mem_idealSub hv y)
 
-end Generic
 
 private theorem wSub_one {q : ℕ} [Fact q.Prime] (D : Datum q) (𝔟 : Ideal (𝓞 D.F)) :
     wSub D 𝔟 1 = idealSub D.O D.La 𝔟 := by

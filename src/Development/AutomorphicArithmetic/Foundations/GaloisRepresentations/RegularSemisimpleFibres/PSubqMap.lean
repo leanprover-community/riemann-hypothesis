@@ -34,7 +34,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.
 
 namespace UpperTheory.Gal.InertialTypesAlt.SubquotientMaps
 
-section SlopeTestRemainingChoices
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL ValuativeRel Matrix UpperTheory.Gal.TypesAndIwahori
 open GlobalTheory.Parabolic (mem_fixed)
@@ -191,7 +190,6 @@ private theorem main (hPF : ParaFactor) {π : Representation ℂ (GL (Fin N) k) 
           congrArg (fun w => Φ (evalOne S w)) (hs _ _)
       _ = _ := h3
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.Gal.InertialTypesAlt.SubquotientMaps
 

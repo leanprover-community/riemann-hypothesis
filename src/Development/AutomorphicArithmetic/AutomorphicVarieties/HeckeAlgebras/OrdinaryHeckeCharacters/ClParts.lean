@@ -42,7 +42,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open UpperTheory.V.HV (Coef)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Abstract
 
 variable {M : Type} [AddCommGroup M] [Module ℂ M]
 
@@ -223,7 +222,6 @@ private theorem cl_uOp {G : Type} [Group G] (I : Iwa G) (π : Representation ℂ
   refine finsum_induction (fun φ : Module.End ℂ M => ∀ y ∈ Y, φ y ∈ Y) (fun y _ => by simp)
     (fun φ ψ h h' y hy => add_mem (h y hy) (h' y hy)) fun q => hY _
 
-end Abstract
 
 private def clSub {G M : Type} [Group G] [AddCommGroup M] [Module ℂ M] (π : Representation ℂ G M) (y : M) : Subgroup G where
   carrier := {g | π g y = y}
@@ -252,7 +250,6 @@ private theorem cl_pi {J M : Type} [Fintype J] [DecidableEq J] {G : J → Type} 
   have : g ∈ S := Subgroup.pi_mem_of_mulSingle_mem g fun j => ⟨h j _, by rw [← Pi.mulSingle_inv]; exact h j _⟩
   exact this.1
 
-section Concrete
 
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
   {c : Coef l} (H : HSet L Ω l n c) (ι : Qbar l ≃+* ℂ) {d : ℕ}
@@ -392,7 +389,6 @@ private theorem cl_one (hH : H.Ax) {κ : Type 1} (Y : κ → H.Part ι lam ξ) (
   exact ⟨hy.1.1, cl_back H ι θ x lam ξ K e F y hF ((Y i).le hy.1.1) ((Submodule.mem_iInf _).1 hy.1.2)
     ((Submodule.mem_iInf _).1 hy.2)⟩
 
-end Concrete
 
 theorem UpperTheory.V.Hi.clParts :
     ∀ (L Ω : Type) [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (l : ℕ) [Fact l.Prime] (n : ℕ) (c : Coef l) (H : HSet L Ω l n c), H.Ax →

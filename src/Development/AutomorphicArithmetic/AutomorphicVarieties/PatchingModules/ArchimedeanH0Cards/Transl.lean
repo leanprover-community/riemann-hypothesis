@@ -54,7 +54,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Matrix Filter ReciprocityTheory.Gal UpperTheory.V.W UpperTheory.V.Pa UpperTheory.V.Pa.B2
 
-section SlopeTestRemainingChoices
 
 variable {l : ℕ} [Fact l.Prime] {L : Loc} {G G0 : Glob l L}
 
@@ -195,7 +194,6 @@ private theorem sum_diag {A X ι : Type} [CommRing A] [CommRing X] [Algebra A X]
   simp only [add_zero, Matrix.mul_sum, Matrix.sum_mul, Matrix.mul_smul, Matrix.smul_mul, Matrix.sum_apply,
     Matrix.smul_apply, h, smul_zero, Finset.sum_const_zero]
 
-end SlopeTestRemainingChoices
 
 
 theorem UpperTheory.V.Pa.B2.transl :

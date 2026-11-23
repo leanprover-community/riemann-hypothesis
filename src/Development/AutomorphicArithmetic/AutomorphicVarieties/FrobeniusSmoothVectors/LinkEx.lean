@@ -45,7 +45,6 @@ open scoped Pointwise
 private theorem tf (F Ω : Type) [Field F] [Field Ω] [Algebra F Ω] : Module.IsTorsionFree F Ω :=
   DivisionSemiring.to_moduleIsTorsionFree
 
-section SlopeTestRemainingChoices
 
 attribute [local instance 10000] DivisionSemiring.to_moduleIsTorsionFree
 
@@ -183,7 +182,6 @@ private theorem equiv_ex (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ 
   funext s
   exact congrArg Subtype.val (e.apply_symm_apply s)
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Fr.link_ex :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [CharP (ResidueField O) l] (η : G ℚ Ω →* ℤˣ) (Ψ : G ℚ Ω →* Oˣ) (σ : G ℚ Ω) (B : ValuationSubring Ω) (M : ℕ) (Hb : Subgroup (G ℚ Ω)), Gen l η Ψ σ B M Hb → ∀ (m : ℕ) (L : Type) [Field L] [NumberField L] [IsCMField L] [Algebra L Ω] (g₁ : G ℚ Ω), UFacts l η Ψ M m (upl Ω L) → IsAbelianGalois ℚ L → galOf ℚ L Ω = upl Ω L ⊓ η.ker → g₁ ∈ galOf ℚ L Ω → ∃ Φ : Frame l (ResidueField O), Linked l η Ψ σ g₁ B M L Φ := by

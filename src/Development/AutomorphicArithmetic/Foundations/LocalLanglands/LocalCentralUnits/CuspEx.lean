@@ -53,7 +53,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.Zero.LLC
 
-section SlopeTestRemainingChoices
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
@@ -194,7 +193,6 @@ private theorem Gm.tw_inj (H : Gm a ha r) {u v : IrrGL (k := w.adicCompletion E)
   rw [((clBasic _ v).2.1 _ hψ).2.2.2.1 χ hχ (hψ.mul hχ)]
   exact tw_congr v _ _ (by rw [inv_mul_cancel_right])
 
-end SlopeTestRemainingChoices
 
 theorem cuspEx : CuspEx := by
   intro E Ω _ _ _ _ _ A w h a ha

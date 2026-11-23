@@ -44,7 +44,6 @@ open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.H UpperTh
 open UpperTheory.V.Af.Smo (Eig EigAt)
 open UpperTheory.ConvolutionTheory.RankTwoDescent
 
-section Abs
 open GroundTheory.Automorphic.CompactAbelianFourier
 open scoped Pointwise
 
@@ -161,9 +160,7 @@ private lemma transl (μ : Measure G) [μ.IsHaarMeasure] (N : Subgroup G) [Count
   simp_rw [mul_comm _ d]
   exact h2.symm
 
-end Abs
 
-section AbsB
 variable {G : Type} [CommGroup G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [MeasurableSpace G] [BorelSpace G]
   [SecondCountableTopology G]
 
@@ -240,9 +237,7 @@ private theorem char_sel (μ : Measure G) [μ.IsHaarMeasure] (N : Subgroup G) [C
   simp_rw [e3, hJ]
   simp
 
-end AbsB
 
-section Conc
 open GroundTheory.Automorphic.Reduction GroundTheory.Automorphic GroundTheory.Global.AdeleBaseChange
 
 variable (E : Type) [Field E] [NumberField E]
@@ -334,7 +329,6 @@ private lemma gal_fix_pos (σ : E ≃ₐ[ℚ] E) (t : {r : ℝ // 0 < r}) : σ �
   refine Units.ext ?_
   rw [coe_smul_idele, ← h4, smul_adeleMap]
 
-end Conc
 
 theorem UpperTheory.ConvolutionTheory.RankTwoDescent.charSel :
     CharSel := by

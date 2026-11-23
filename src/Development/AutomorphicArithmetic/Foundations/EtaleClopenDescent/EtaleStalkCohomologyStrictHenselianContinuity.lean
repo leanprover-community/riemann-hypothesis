@@ -42,7 +42,6 @@ open LateralTheory.E.E4 LateralTheory.E.LeafGhostCut LateralTheory.E.EtaleTopolo
 
 namespace UpperTheory.Cb.etale_stalk_cohomology_strictHenselian_continuity.SlopeTestRemainingChoices
 
-section DiagramChase₂
 variable (R : Type) [CommRing R]
 
 private abbrev bd {Z E : Spc} (f : Z ⟶ E) (F : Shv R) (n : ℤ) : H R Z F n →+ Hrel R f F (n + 1) :=
@@ -134,7 +133,6 @@ private theorem relCont {J : Type} [SmallCategory J] [IsFiltered J] (F : Shv R) 
     exact h6
   rw [h7, ← pull_comp, ← sq g4, pull_comp, bd_pull]
 
-end DiagramChase₂
 
 section Transport
 

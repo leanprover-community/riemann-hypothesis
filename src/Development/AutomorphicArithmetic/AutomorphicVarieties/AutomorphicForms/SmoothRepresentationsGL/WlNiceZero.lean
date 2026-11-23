@@ -37,7 +37,6 @@ open UpperTheory.V UpperTheory.V.Af.Smo
 open UpperTheory.V.TR (Rinf Lie chart infGL pInf sInf toL lmul oneL invSet CuspSub)
 open scoped SchwartzMap FourierTransform RealInnerProductSpace ContDiff Topology
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
@@ -138,7 +137,6 @@ private theorem wl_fop (c : GL (Fin n) (Af E) →₀ ℂ) (f : GA E n → ℂ) :
   funext g
   simp [fop, Finsupp.sum, Finset.sum_apply]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Af.Smo.whLin :
     UpperTheory.V.Af.Smo.WhLin := by

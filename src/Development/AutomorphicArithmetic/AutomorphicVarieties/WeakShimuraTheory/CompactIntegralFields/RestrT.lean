@@ -43,7 +43,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -182,7 +181,6 @@ private theorem killW (hD : D.Good) (T : Tower D) {k : Type} [Field k] (a : c.O 
   have hgθ : θ ⟨g, hg⟩ = 1 := hFθ hF
   exact Rt.tameExp T.F Ω l A hl (UpperTheory.V.GradeZeroInterpolatingElement.M4 k) φ hφlc hφl θ hθo' hθne' ⟨g, hg⟩ hgθ
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Ws.restrT :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ (T T' : Tower D) (hT : T.Le T'), T.Fit → ∀ (k : Type) [Field k] (a : c.O →+* k), (∀ x ∈ maximalIdeal c.O, a x = 0) → ∀ W : Finset ℕ, (∀ w ∈ W, w.Prime ∧ T.Splits w) → (∀ w ∈ W, Dies l w T'.F) →

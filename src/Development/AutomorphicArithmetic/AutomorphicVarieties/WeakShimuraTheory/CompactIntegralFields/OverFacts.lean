@@ -40,7 +40,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC Recip
 
 namespace UpperTheory.V.Ws.OvF
 
-section Mat
 variable {k : Type} [Field k]
 
 private theorem low_l {n : M4 k} (h : IsLow n) : adj n * n = 1 := by
@@ -50,19 +49,14 @@ private theorem low_l {n : M4 k} (h : IsLow n) : adj n * n = 1 := by
 
 private theorem low_r {n : M4 k} (h : IsLow n) : n * adj n = 1 := mul_eq_one_comm.1 (low_l h)
 
-end Mat
 
-section Grp
 variable {k Γ : Type} [Field k] [Group Γ]
 
-end Grp
 
-section Gal
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
 
 variable {D : Raw Ω c} {T T' : Tower D} {hT : T.Le T'} {k : Type} [Field k] {a : c.O →+* k}
 
-end Gal
 
 end UpperTheory.V.Ws.OvF
 

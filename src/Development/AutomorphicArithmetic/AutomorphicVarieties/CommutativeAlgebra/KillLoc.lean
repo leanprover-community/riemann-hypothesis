@@ -53,7 +53,6 @@ namespace UpperTheory.V.Alg.KillLoc
 
 open Matrix
 
-section MC
 
 variable {Γ R ι : Type} [TopologicalSpace Γ] [CommRing R] [Fintype ι] [DecidableEq ι] {I : Ideal R}
 
@@ -92,7 +91,6 @@ private theorem MC.comp {Δ : Type} [TopologicalSpace Δ] {f : Γ → Matrix ι 
 
 private theorem MC.of_lc {f : Γ → Matrix ι ι R} (hf : IsLocallyConstant f) : MC I f := fun _ => hf.comp _
 
-end MC
 
 private theorem ker_inf {R : Type} [CommRing R] [IsLocalRing R] [IsNoetherianRing R] (K : Ideal R)
     (hK : maximalIdeal R * K = ⊥) : ∃ N, ∀ k ∈ K, k ∈ maximalIdeal R ^ N → k = 0 := by
@@ -198,7 +196,6 @@ private theorem ker_mat (O : Type) [CommRing O] [IsLocalRing O] {R : Type} [Comm
   · rw [hΨ, map_eq_zero_iff ψ h1, funext_iff]
     rfl
 
-section Mask
 
 variable {O : Type} [CommRing O] {ι X : Type} [Fintype ι] [DecidableEq ι] [AddCommGroup X] {w : ι → X}
   {k : Type} [CommRing k] [Algebra O k]
@@ -312,9 +309,7 @@ private theorem cob_all (Φ : FormData O w) {Γ : Type} [Group Γ] [TopologicalS
       ← Finset.sum_sub_distrib]
     exact Finset.sum_congr rfl fun j _ => congrArg Subtype.val (congrFun (a3 j) (s, t))
 
-end Mask
 
-section Small
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {ι X : Type} [Fintype ι] [DecidableEq ι] [AddCommGroup X] {w : ι → X}
   (Φ : FormData O w) {R : Type} [CommRing R] [Algebra O R] [IsCO O R] {R' : Type} [CommRing R'] [Algebra O R']
@@ -474,7 +469,6 @@ private theorem absorb (K : Ideal R) (hK : maximalIdeal R * K = ⊥) {h Z : Matr
   rw [p4, p5, hh]
   simp
 
-end Small
 
 end UpperTheory.V.Alg.KillLoc
 

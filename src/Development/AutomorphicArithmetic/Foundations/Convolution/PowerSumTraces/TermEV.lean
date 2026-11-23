@@ -125,7 +125,6 @@ private theorem ker_inv {G : Type} [Group G] [TopologicalSpace G] {J : Subgroup 
   · have : u * g ∉ J := fun hh => hg ((Subgroup.mul_mem_cancel_left J h1).1 hh)
     rw [Set.indicator_of_notMem (by exact this), Set.indicator_of_notMem (by exact hg)]
 
-section Hil
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 private theorem prj_mem' {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (v : H) : prj V v ∈ V := by
@@ -148,9 +147,7 @@ private theorem trOn_congr {Y : Submodule ℂ H} (hY : IsClosed (Y : Set H)) {A 
   simp only [ContinuousLinearMap.comp_apply]
   rw [h _ (prj_mem' hY v)]
 
-end Hil
 
-section Ops
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 private theorem oloc_comm {w : Pl K} [MeasurableSpace (Gw n w)] {m : Measure (Gw n w)} {ψ : Gw n w → ℂ}
@@ -208,9 +205,7 @@ private theorem oinf_congr {ν₁ ν₂ : Measure (archGroup K n)} [ν₁.IsHaar
     Oinf μ ν₁ β = Oinf μ ν₂ β := by
   subst h; rfl
 
-end Ops
 
-section Loc
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
 private theorem under_over' {v : Pl F} (w : PlacesOver E v) : w.1.under (𝓞 F) = v :=
@@ -256,7 +251,6 @@ private theorem stabV (T : Ty σ n q w₀) (v : Pl F) (h : ∀ u : PlacesOver E 
   rw [← ha]
   exact ⟨h1 _, h2⟩
 
-end Loc
 
 end UpperTheory.ConvolutionTheory.C.TraceVanishing
 

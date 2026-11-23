@@ -79,7 +79,6 @@ private theorem lift_hol : LiftHol := by
   exact ⟨φ, hφ, ⟨haut, fun w u hu => hfix _ (kLocal M hM w u hu), hc, fun v => (hlie v).1, fun v => (hlie v).2⟩,
     haut, cuspCrit φ hl hlev (liftCT k M hM f φ₀ hφ)⟩
 
-section Gen
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -131,7 +130,6 @@ private theorem chi_prime (ω : HChar F) (c : Pl F → ℕ) (w : Pl F) :
       exact hv (HeightOneSpectrum.ext (associated_iff_eq.1 ((v.prime.dvd_prime_iff_associated w.prime).1 h1)))
     rw [this, pow_zero]
 
-end Gen
 
 private theorem lev_eq (M : ℕ) (hM : 1 ≤ M) (w : Pl ℚ) : lev M w = M.factorization (normV w) := by
   obtain ⟨hp, hw, -, h0⟩ := places w

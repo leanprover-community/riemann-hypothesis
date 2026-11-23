@@ -38,7 +38,6 @@ open UpperTheory.V.Af.Fin (emb e1 e2 blk Bdd)
 open GlobalTheory.PRep (fixed)
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 open UpperTheory.V.Af.Fin GroundTheory.Automorphic.AutomorphicForm
 
@@ -88,7 +87,6 @@ private theorem emb_mem {L : Type} [Field L] (O : Subring L) {a n : ℕ} (e : Fi
   obtain ⟨k, rfl⟩ := hk
   exact ⟨emb e k, emb_map e O.subtype k⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Cj.S.gl2_local_to_adelic_embedding :
     UpperTheory.V.Cj.S.HeckeLocalBlock := by

@@ -36,11 +36,9 @@ open NumberField Formalism.REAL
 
 namespace UpperTheory.V.Lit
 
-section Alg
 
 variable {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
 
-end Alg
 
 variable {E : Type} [Field E] [NumberField E] [IsTotallyReal E] {a : ℕ}
 

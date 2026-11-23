@@ -50,7 +50,6 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.Bas
 
 namespace UpperTheory.V.Loc.CharFil
 
-section Generic
 
 open GlobalTheory.SplitJump
 
@@ -93,7 +92,6 @@ private theorem split_fil (a : ℤ) (W W' : Matrix (Fin n) (Fin n) BdR) (hWW : W
     funext i
     simp [hk0, Matrix.mulVec, dotProduct]
 
-end Generic
 
 variable {l : ℕ} [Fact l.Prime] {E : Type} [Field E] [Algebra ℚ_[l] E] [FiniteDimensional ℚ_[l] E]
   [Algebra ℤ_[l] E] [IsScalarTower ℤ_[l] ℚ_[l] E] [TopologicalSpace E] [IsModuleTopology ℚ_[l] E]

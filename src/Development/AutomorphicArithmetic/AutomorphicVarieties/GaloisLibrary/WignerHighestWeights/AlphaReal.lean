@@ -40,7 +40,6 @@ import Mathlib.Topology.Sheaves.Init
 open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.GKCoh UpperTheory.V.AlgRepEndIrreducible
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] {a : ℕ}
   {N : Type} [AddCommGroup N] [Module ℂ N] [Module ℝ N] [IsScalarTower ℝ ℂ N]
@@ -102,7 +101,6 @@ private theorem hol_der_end (τ : E →+* ℂ) (u : Module.End ℂ M) (L : Lie E
   rw [h0, zero_add] at h1
   exact h1
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.AlgRepEndIrreducible.alphaReal :
     ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (M : Type) [AddCommGroup M] [Module ℂ M] [Module ℝ M] [IsScalarTower ℝ ℂ M] (κ : Kinf E a → Module.End ℂ M) (LA LB : Lie E a →ₗ[ℝ] Module.End ℂ M),

@@ -36,7 +36,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open NumberField
 
-section SlopeTestRemainingChoices
 
 open MeasureTheory GlobalTheory.CuspRep UpperTheory.ConvolutionTheory.BW UpperTheory.ConvolutionTheory.C
 
@@ -83,7 +82,6 @@ private theorem norm_pow_apply_le (T : H →L[ℂ] H) (c : ℝ) (hc : 0 ≤ c) (
       _ ≤ c * (c ^ k * ‖v‖) := mul_le_mul hT ih (norm_nonneg _) hc
       _ = c ^ (k + 1) * ‖v‖ := by ring
 
-end SlopeTestRemainingChoices
 
 open MeasureTheory GlobalTheory.CuspRep GroundTheory.Automorphic UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.BW UpperTheory.ConvolutionTheory.C in
 theorem UpperTheory.ConvolutionTheory.BW.bandRep :

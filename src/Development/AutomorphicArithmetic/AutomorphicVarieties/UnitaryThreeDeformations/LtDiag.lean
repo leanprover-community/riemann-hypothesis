@@ -46,7 +46,6 @@ open Matrix IsLocalRing ReciprocityTheory.Gal UpperTheory.V.U3 UpperTheory.V.Alg
 
 namespace UpperTheory.V.UnitaryThreeInertia
 
-section SlopeTestRemainingChoices
 
 variable {R : Type} [CommRing R]
 
@@ -161,7 +160,6 @@ private def dgHom (R : Type) [CommRing R] : Bor R →* GG (m := 3) (R := R) :=
         (congrArg (dgl x.1.left x.2 * ·) (dgl_sgn (g := y.1.left) y.2 _))
     · rfl)
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.UnitaryThreeInertia
 

@@ -40,7 +40,6 @@ import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.Iwahor
 
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Matrix GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets UpperTheory.ConvolutionTheory.Loc
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] {Γ : Type} [LinearOrderedCommGroupWithZero Γ] {n : ℕ}
 
@@ -117,7 +116,6 @@ private lemma intertwine (v : Valuation E Γ) {A B g : Matrix (Fin n) (Fin n) E}
   rw [h0, le_zero_iff, v.zero_iff] at this
   simpa using this
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.Loc.rootConj :
     ∀ (E : Type) [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E] (n : ℕ) (q : ℕ) (r : ValueGroupWithZero E), r < valuation E (q : E) →

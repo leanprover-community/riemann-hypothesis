@@ -182,7 +182,6 @@ private theorem exists_norm {G C : Type} [Group G] [CommRing C] (η : G →* ℤ
     simp only [Matrix.of_apply, Matrix.cons_val, ← hp, ← hq]
     linear_combination (-(γ g₁ 1 0 * p - γ (gstar c g₁) 1 0 * q)) * hv - (p - q) * ht
 
-section Main
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] [CharZero O] [Finite (ResidueField O)]
   {G Γ ι : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [T2Space G] [TotallyDisconnectedSpace G]
@@ -502,7 +501,6 @@ private theorem eq_zero_of_coord (hF : F.Ok) (hV : F.LocVan) (g₁ : Γ) {R : Ty
   rw [TrivSqZeroExt.snd_inr, TrivSqZeroExt.snd_zero, Units.mul_left_eq_zero] at h3
   exact h3
 
-end Main
 
 private theorem finrank_quot_le {k V U : Type} [Field k] [AddCommGroup V] [Module k V] [AddCommGroup U] [Module k U]
     [Module.Finite k U] (B N : Submodule k V) (φ : V →ₗ[k] U) (h1 : ∀ x, ∃ b ∈ B, x + b ∈ N)

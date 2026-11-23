@@ -58,7 +58,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Irr
 
 open Filter Topology GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult UpperTheory.Lit.Cas UpperTheory.Lit.Red
 
-section SlopeTestRemainingChoices
 
 open GlobalTheory.JacStages GlobalTheory.LocGL.SupportUnique
 
@@ -223,7 +222,6 @@ private theorem wd_exists (hG : GlobalTheory.Published.GeometricLemma) (hBZ : Gl
   exact ⟨s, u, hd, hu, ENat.one_le_iff_ne_zero.1 h1,
     hasSupport_of_isSubquotient x.2.rep.irr hu (.of_injective f hf)⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Lit.Full.piece :
     GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.BernsteinZelevinskyFiniteness → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (x : IrrGL (k := k)) (P : Set (IrrGL (k := k))) (q : Fin 2 → IrrGL (k := k)) (hq : ∑ a, (q a).1 = x.1), jm q hq x.rep ≠ 0 → (FirstIn x P → 0 < (q 0).1 → ∃ A, HasSupport (q 0).rep A ∧ ∃ y ∈ A, y ∈ P) ∧ (LastIn x P → 0 < (q 1).1 → ∃ A, HasSupport (q 1).rep A ∧ ∃ y ∈ A, y ∈ P) := by

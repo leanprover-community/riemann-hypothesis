@@ -35,7 +35,6 @@ open NumberField IsDedekindDomain Matrix Formalism.L2.Host GlobalTheory.CuspRep 
 open UpperTheory.V.Af UpperTheory.V.AlgRepEndIrreducible UpperTheory.V.Lit UpperTheory.V.Lit.Geo UpperTheory.V.Lit.Bor UpperTheory.V.Cj
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ} {Ξ : AlgRep E a}
 
@@ -84,7 +83,6 @@ private theorem cocl_trans {q : ℕ} (x : GL (Fin a) (Af E)) {ω : Geo.Co Ξ q} 
 
     simp only [ap, ← rT_adj, ← map_sum, h1, map_zero]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Cj.harmSub :
     UpperTheory.V.Cj.HarmSub := by

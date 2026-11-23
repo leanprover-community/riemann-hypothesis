@@ -54,7 +54,6 @@ open Filter Topology GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL 
 
 namespace UpperTheory.Lit.Full.EmbR
 
-section Abstract
 
 variable {G H V W : Type} [Group G] [Group H] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
 
@@ -137,7 +136,6 @@ private theorem wf_of_surj {μ : Representation ℂ G V} {ν : Representation �
   rw [← e] at h1
   exact h1
 
-section Min
 
 variable {ψ : H →* G} {A : Representation ℂ H W} {ν : Representation ℂ G V} (hAi : A.IsIrreducible)
   (hA : IsSubquotient A (ν.comp ψ : Representation ℂ H V))
@@ -195,7 +193,6 @@ private theorem map_eq_zero' {X : Subrepresentation ν} (hX : X ≠ ⊥)
   · exact absurd (hmin _ _ _ (quoMap_surj ν X) (.of_surjective _ h)) (quoMap_not_inj hX)
   · exact congrArg (fun F => F (Submodule.Quotient.mk v)) h
 
-end Min
 
 end Abstract
 

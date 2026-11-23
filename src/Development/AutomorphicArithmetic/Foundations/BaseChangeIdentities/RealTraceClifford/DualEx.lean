@@ -44,7 +44,6 @@ open PositivityTheory.RgTw (Mat)
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD UpperTheory.RealTr
 open Formalism.REAL (GlRel IsWeight KHighest Cas)
 
-section SlopeTestRemainingChoices
 
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V]
 
@@ -117,7 +116,6 @@ private theorem trace_pr (A : V →L[ℂ] V) :
     (A (stdOrthonormalBasis ℂ V i)) = _
   simp [PiLp.single_apply]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.RealTr.dualEx :
     ∀ (n : ℕ) (E : KMod n) (T : E.V →L[ℂ] E.V), (∀ k, T * E.ρ k = E.ρ k * T) → ∃ (E' : KMod n) (e : (E.V →L[ℂ] ℂ) ≃ₗ[ℂ] E'.V) (T' : Module.End ℂ E'.V),

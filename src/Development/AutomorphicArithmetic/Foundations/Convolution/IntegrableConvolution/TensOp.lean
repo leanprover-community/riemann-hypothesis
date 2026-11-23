@@ -39,7 +39,6 @@ open scoped InnerProductSpace
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section General
 
 variable {G Γ : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G]
   [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
@@ -136,7 +135,6 @@ private theorem inner_ofFn_prod (μ : Measure G) [SigmaFinite μ] [IsFiniteMeasu
     rw [UnitaryRep.map_mul_apply, UnitaryRep.inner_map_right π (s 0 x) w]
     ring
 
-end General
 
 end UpperTheory.ConvolutionTheory.L1
 

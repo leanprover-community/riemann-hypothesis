@@ -57,7 +57,6 @@ def BorelInjC : Prop :=
     ∀ (Ξ : GlobalTheory.GKCoh.AlgRep E a) (S : Finset (CuspSub E a)), (∀ π ∈ S, ∀ π' ∈ S, π.Iso π' → π = π') →
       (∀ π ∈ S, GlobalTheory.GKCoh.IsCohFor π Ξ ∧ HasFixed π.finPart U) → (S.card : Cardinal) ≤ cohDim ⊤ U (ratC Ξ)
 
-section Real
 
 variable {F Ω : Type} [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω]
   {l : ℕ} [Fact l.Prime] {a : ℕ}
@@ -85,7 +84,6 @@ structure IsGalRepOfR (π : TR.CuspSub F a) (ι : Qbar l ≃+* ℂ) (r : G F Ω 
           ∀ rc, IsRec h rc → wdAt P ι Bw h hj (r.comp (Dec (F := F) A).subtype) = rc (algNorm σ)) ∧
       ∀ σ, π.IsLocComp w σ → GlobalTheory.SmGL.IsSpherical σ.ρ → IsCrysAt P Bw (r.comp (Dec (F := F) A).subtype)
 
-end Real
 
 def StrongMultOneReal : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (a : ℕ), 1 ≤ a → ∀ π π' : TR.CuspSub F a,

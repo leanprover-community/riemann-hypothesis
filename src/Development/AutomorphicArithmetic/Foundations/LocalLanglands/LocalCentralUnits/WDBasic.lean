@@ -43,7 +43,6 @@ open NumberField IsDedekindDomain Polynomial Formalism.ConjugateSelfDual Recipro
 
 namespace UpperTheory.Zero.LLC.WDB
 
-section LinAlg
 
 variable {G V V' : Type*} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
 
@@ -132,9 +131,7 @@ private theorem charpoly_inv_prod {n : ℕ} (f g : Module.End ℂ (Fin n → ℂ
   rw [← h1]
   exact (e g).symm
 
-end LinAlg
 
-section WDFacts
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
@@ -174,7 +171,6 @@ private theorem irr_twist (b : WDRep h V) (ξ : Weil h →* ℂˣ) (hξ : IsSmoo
   have h1 := S.smul_mem ((ξ σ : ℂ)⁻¹) (hS σ v hv)
   simpa [smul_smul] using h1
 
-end WDFacts
 
 end UpperTheory.Zero.LLC.WDB
 

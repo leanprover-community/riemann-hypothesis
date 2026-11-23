@@ -67,7 +67,6 @@ open GlobalTheory.Pst GlobalTheory.TripleGal Formalism.WeaklyAdmissibleFiltratio
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Char
 
 variable {F : Type} [Field F] [NumberField F] {l : ℕ} [Fact l.Prime] {w : Plc F}
 
@@ -140,7 +139,6 @@ private theorem exists_char (wt : Emb l w → ℤ) : ∃ ξ : (w.adicCompletion 
       rw [h3, h2, zpow_zero, mul_one]
     rw [MonoidHom.comp_apply, this, hα', finprod_eq_prod_of_fintype]
 
-end Char
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
   {A : ValuationSubring Ω} {w : Plc F}

@@ -41,7 +41,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open scoped MatrixGroups Matrix
 open GlobalTheory.KZ GlobalTheory.K4 GlobalTheory.Glue GlobalTheory.KummerEisensteinGalois UpperTheory.Kd.L
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
@@ -235,7 +234,6 @@ private theorem eval_term (X : Tower Ω ε) (l n w : ℕ) [Fact l.Prime] (W : X.
   rw [map_smul, map_smul, hv, toGQ_coe_SL, KmapA.eval_kmap X l _ n _ W hcl, cls_pow']
   exact smul_eq_nsmul_of_dvd X _ _ (ex_dvd l n w g) _
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Kd.L.wit :
     ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] [CharZero Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (N : ℕ) [NeZero N] (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)), Par l N c d gm → ∀ (x : ZMod N) (w m n c₀ : ℕ), Odd w → 1 ≤ m → ∀ (σ : Ω ≃ₐ[ℚ] Ω) (b : X.Fn l), LiftB X l N w n c₀ (clsBmu X l n m N x c d (w + 2) gm σ) b → ∃ f : X.Kˣ, (f : X.K) = FF X l n m N x c d w gm σ ^ l ^ c₀ ∧ IsWit X N l n b f := by

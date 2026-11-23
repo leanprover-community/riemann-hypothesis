@@ -39,7 +39,6 @@ universe u
 
 namespace UpperTheory.Gal.G3
 
-section Maps
 
 open GlobalTheory.UPel.HT.Hecke
 
@@ -72,7 +71,6 @@ private theorem exists_map_comp {b : GBase G R} {N : ℕ} {S₁ S₂ S₃ : Sche
     LBIso.trans o₁.isLB (pull_isLB o₂.isLB _) (pull_isLB o₃.isLB _) h₁.pol H'
   exact ⟨⟨h₁.φ ≫ h₂.φ, h₁.φ₂ ≫ h₂.φ₂, h₁.cart.comp h₂.cart, sq, act, pol, eta⟩, rfl⟩
 
-end Maps
 
 end UpperTheory.Gal.G3
 

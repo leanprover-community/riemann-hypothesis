@@ -43,7 +43,6 @@ import Mathlib.Tactic.NormNum.Prime
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-section LocEqAux
 variable {L : Type} [Field L] [Algebra ℂ L]
 
 private def locRes {R B : Subalgebra ℂ L} (h : R ≤ B) (e : B →ₐ[ℂ] ℂ) : R →ₐ[ℂ] ℂ :=
@@ -86,7 +85,6 @@ private lemma loc_val_eq {R B : Subalgebra ℂ L} (h : R ≤ B) (e : B →ₐ[�
   · rintro ⟨r, hr, hrv, hr0, hval⟩
     exact ⟨r, h hr, h hrv, hr0, hval⟩
 
-end LocEqAux
 
 section LocEqAux2
 

@@ -34,7 +34,6 @@ open MeasureTheory NumberField GroundTheory.Automorphic GroundTheory.Automorphic
 open GroundTheory.Automorphic.CuspidalProjection PositivityTheory.Rg.Tf.Core UpperTheory.ConvolutionTheory.K
 open scoped InnerProductSpace
 
-section Kernel
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
   [T2Space G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
@@ -72,7 +71,6 @@ private theorem rconv_eq_integral_kernel (μ : Measure G) [μ.IsMulLeftInvariant
   simp_rw [Subgroup.smul_def, smul_eq_mul, ← mul_assoc]
   exact tsum_eq_finsum (finite_support_automorphicKernel Γ f (a, b))
 
-end Kernel
 
 theorem UpperTheory.ConvolutionTheory.K.kvAe :
     ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (μ : Measure (G1 K n)) [μ.IsHaarMeasure] (f : CC K n) (x : G1 K n),

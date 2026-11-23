@@ -39,7 +39,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement
 
-section Alg
 
 variable {B : Type} [CommRing B]
 
@@ -117,9 +116,7 @@ private def cjL {O : Type} [CommRing O] [IsLocalRing O] [Algebra O B] [IsCO O B]
       rw [cj_apply, Matrix.map_mul, Matrix.map_mul, h1, h2, one_mul, mul_one]
     exact (congrFun (congrFun this a) b).trans (r.red g a b)
 
-end Alg
 
-section Dual
 
 variable {O : Type} [CommRing O]
 
@@ -215,7 +212,6 @@ private theorem dU_res [IsLocalRing O] [IsCO O (DualNumber O)] (Y : M4 O) :
   · rw [dU_val, Matrix.map_add _ (map_add _), Matrix.map_one _ (map_zero _) (map_one _), hE, add_zero]
   · rw [dU_inv, Matrix.map_sub _ (map_sub _), Matrix.map_one _ (map_zero _) (map_one _), hE, sub_zero]
 
-end Dual
 
 private theorem cjL_hom_eq_conj {B : Type} [CommRing B] {O : Type} [CommRing O] [IsLocalRing O] [Algebra O B]
     [IsCO O B] {H : Type} [Group H] [TopologicalSpace H] {rb : H →* M4 (ResidueField O)} (h : (M4 B)ˣ)

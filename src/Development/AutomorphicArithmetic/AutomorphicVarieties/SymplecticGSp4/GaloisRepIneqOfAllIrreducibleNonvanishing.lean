@@ -56,7 +56,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement
 
-section Gen
 
 variable {O A K : Type} [CommRing O] [CommRing A] [Algebra O A] (𝒜 : ℤ → Submodule O A) [GradedAlgebra 𝒜]
   [Field K] [Algebra O K]
@@ -93,7 +92,6 @@ private theorem exists_minimal_orbit_cover (I : Ideal A) (h : ∃ T : Finset (A 
       exact ⟨ξ, Finset.mem_erase.2 ⟨hne, hξ⟩, same_orbit_trans 𝒜 ho hyx⟩
     · exact ⟨y, Finset.mem_erase.2 ⟨e, hy⟩, hyx⟩
 
-end Gen
 
 private theorem torus_conj_mul {R : Type} [CommRing R] (s t : Rˣ × Rˣ) (X : M4 R) :
     tconj s (tconj t X) = tconj (s * t) X := by
@@ -130,7 +128,6 @@ private theorem real_ratio_bound (s n e L S : ℝ) (he : 0 < e) (hL : 0 < L) (h1
   rw [div_mul_eq_mul_div, div_le_iff₀ he]
   exact h3
 
-section Pts
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} {D : Raw Ω c}
 
@@ -184,7 +181,6 @@ private theorem covers_and_cotangent_length_bounds (hD : D.Good) (M : Model D) [
   exact hM c.O (PadicAlgCl l) _ (nval c) M.A M.gr M.x0 (aW D hD M) _ _ _ _ _ M.eqns a
     ⟨M.one_le, aSmooth D hD M, h1, h2, h3⟩ (m2 D hD M h0) (m3 D hD M hL hV h0) (m4 D hD M hL hV h0 hNE hR) h5
 
-end Pts
 
 theorem UpperTheory.V.GradeZeroInterpolatingElement.galoisRep_ineq_of_allIrreducible_nonvanishing :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ M : Model D, LemmaM → LemmaM' → Loc.LocalPublishedTheorems → SoV Ω l → SoFin Ω l → D.Fin0 → D.NoEnd → D.AllIrr D.RigidAt → ∀ g, D.AllIrr (fun r => D.aVal g r ≠ 0) → D.Ineq g := by

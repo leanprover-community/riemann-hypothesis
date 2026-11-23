@@ -36,7 +36,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing Filter Formalism.MainNotions.V.Pf.V2.Calc UpperTheory.V.Alg UpperTheory.V.Alg.M
 
-section SlopeTestRemainingChoices
 
 variable {O A : Type} [CommRing O] [CommRing A] [Algebra O A] (𝒜 : ℤ → Submodule O A) [GradedAlgebra 𝒜]
 
@@ -146,7 +145,6 @@ private theorem pow_eps [IsLocalRing O] {x : A →ₐ[O] O} (hx : IsWRing 𝒜 x
       rw [mem_oz, e]
       exact SetLike.GradedMul.mul_mem (A := 𝒜) hp hq
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Alg.M.oz_two_mul_eq_pow :
     ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] [CharZero O]

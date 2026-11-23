@@ -41,7 +41,6 @@ open scoped Classical
 
 namespace UpperTheory.Gal.InertialTypesAlt.L
 
-section Val
 
 variable {k K : Type} [Field k] [ValuativeRel k] [Field K] [ValuativeRel K] [Algebra k K]
   [ValuativeExtension k K]
@@ -58,9 +57,7 @@ private theorem val_eq_one_of_alg {x : k} (hx : valuation K (algebraMap k K x) =
     ← (ValuativeExtension.mapValueGroupWithZero k K).map_one] at hx
   exact ValuativeExtension.mapValueGroupWithZero_strictMono.injective hx
 
-end Val
 
-section Int
 
 variable {k K : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] [Algebra k K]
@@ -108,9 +105,7 @@ private theorem intEl_of_conj (n : ℕ) (γ : GL (Fin n) k) (g : GL (Fin n) K)
     rw [hdet]
     exact (Valuation.integer.integers _).one_of_isUnit (y.isUnit.map Matrix.detMonoidHom)
 
-end Int
 
-section Norm
 
 variable {k K : Type} [Field k] [Field K] [Algebra k K]
 
@@ -138,9 +133,7 @@ private theorem norm_twConj [FiniteDimensional k K] (s : K ≃ₐ[k] K) (n : ℕ
   unfold GlobalTheory.LBC.norm
   rw [ofFn_twConj, aut_pow_finrank, galAct_one, MonoidHom.id_apply]
 
-end Norm
 
-section Lift
 
 variable {K : Type} [Field K] [ValuativeRel K] {k F₀ F₁ : Type} [Field k] [Algebra k K] [Field F₀]
   [Field F₁] [Algebra F₀ F₁] {rK : 𝒪[K] →+* F₁} {s : K ≃ₐ[k] K} {sb : F₁ ≃ₐ[F₀] F₁} {n : ℕ}
@@ -181,7 +174,6 @@ private theorem lift_prod
     · simp only [List.ofFn_succ', List.prod_concat, Fin.coe_castSucc, Fin.val_last, map_mul, h1, h3]
     · simp only [List.ofFn_succ', List.prod_concat, Fin.coe_castSucc, Fin.val_last, map_mul, h2, h4]
 
-end Lift
 
 end UpperTheory.Gal.InertialTypesAlt.L
 

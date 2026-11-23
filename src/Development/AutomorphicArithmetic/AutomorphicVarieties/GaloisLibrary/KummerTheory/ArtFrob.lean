@@ -36,7 +36,6 @@ import Mathlib.Tactic.NormNum.Prime
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.LDataCardLeFinrank UpperTheory.V.Base UpperTheory.V.Kum
 
-section SlopeTestRemainingChoices
 
 variable {K L Ω : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Field Ω] [Algebra K L] [Algebra L Ω]
   [Algebra K Ω] [IsScalarTower K L Ω]
@@ -109,7 +108,6 @@ private theorem res_frob {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 
   simp only [MulSemiringAction.toAlgHom_apply, map_sub, map_pow, coe_res_smul]
   exact hσ.2 _ ((A.valuation_le_one_iff _).mpr (int_mem' A x))
 
-end SlopeTestRemainingChoices
 
 open GroundTheory.Global in
 theorem UpperTheory.V.Kum.artFrob :

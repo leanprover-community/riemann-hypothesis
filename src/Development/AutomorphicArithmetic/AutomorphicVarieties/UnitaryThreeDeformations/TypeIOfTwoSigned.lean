@@ -213,7 +213,6 @@ private theorem coc_zero {O : Type} [CommRing O] [IsLocalRing O] {G Γ ι : Type
   rw [hval g, hm0]
   ring
 
-section Int
 
 variable {O A D : Type} [CommRing O] [IsLocalRing O] [CommRing A] [IsLocalRing A] [Algebra O A] [Group D]
   {η : D →* ℤˣ} {Ψ : D →* Oˣ} {r : D →* GG (m := 3) (R := A)}
@@ -365,7 +364,6 @@ private theorem loc_rel [IsDomain A] (hr : Red η Ψ r) (h21 : ∀ g, (r g).mat 
   field_simp
   linear_combination F
 
-end Int
 
 private theorem exists_dvd {A D : Type} [CommRing A] [IsDomain A] [IsDiscreteValuationRing A] [Nonempty D] (a : D → A) :
     ∃ g, ∀ h, a g ∣ a h := by

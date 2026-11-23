@@ -48,7 +48,6 @@ open scoped NNReal Classical ValuativeRel
 
 attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
 
@@ -82,7 +81,6 @@ private theorem isCompact_tile_one : IsCompact (tile F 1 0) := by
   simp only [Set.mem_ofPred_eq, pow_zero, one_mul, mem_tile_one]
   exact ⟨fun h0 => ⟨(integral_iff_one g).2 h0.ge, h0⟩, fun h => h.2⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.local_zeta_integral_tate_comparison :
     UpperTheory.V.Z.Gam.LdTate := by

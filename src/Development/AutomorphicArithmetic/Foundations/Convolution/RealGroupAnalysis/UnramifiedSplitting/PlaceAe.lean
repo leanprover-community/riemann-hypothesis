@@ -68,7 +68,6 @@ private theorem sq_of_near {K : Type} [Field K] [NumberField K] (v : P K) (δ c 
     rw [hz]; field_simp; ring
   rw [this, ← hs']; ring
 
-section Ext
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 private theorem finrank_two (D : Dat F E) : Module.finrank F E = 2 := by
@@ -263,9 +262,7 @@ private theorem split_of (he : w.asIdeal.ramificationIdx (𝓞 F) = 1)
   change ι _ = _
   rw [completionMap_algebraMap, IsScalarTower.algebraMap_apply F E (Kv w)]
 
-end Ext
 
-section Final
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 private theorem ev_val (x : E) (hx : x ≠ 0) : ∀ᶠ w : P E in cofinite, w.valuation E x = 1 := by
@@ -286,7 +283,6 @@ private theorem ev_unram : ∀ᶠ w : P E in cofinite, w.asIdeal.ramificationIdx
   haveI : Algebra.IsUnramifiedAt (𝓞 F) w.asIdeal := not_dvd_differentIdeal_iff.1 hw
   exact Ideal.ramificationIdx_eq_one_of_isUnramifiedAt
 
-end Final
 
 end UpperTheory.ConvolutionTheory.R2.H.nearSquareValuations
 

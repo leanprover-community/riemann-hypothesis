@@ -55,7 +55,6 @@ private theorem norm_det_inv {R : Type*} [NormedField R] {n : ℕ} (h : GL (Fin 
     rw [← Matrix.det_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.det_one])
   rwa [norm_mul, H, one_mul, norm_one] at this
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -132,7 +131,6 @@ private theorem module_le (q : Pl F) (x : AdelicGLn.FiniteAdelicGL E n)
   · rw [if_pos hb]
     exact norm_det_le_pow _
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.GM.tensHt : TensHt := by
   classical

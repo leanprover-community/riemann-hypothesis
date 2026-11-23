@@ -47,7 +47,6 @@ open scoped Classical
 
 namespace UpperTheory.ConvolutionTheory.RankTwoDescent
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -156,7 +155,6 @@ private theorem der_curve (Φ : Sm E 2) (X : Lie E 2) (y : GL (Fin 2) (A E)) (s 
   show Φ.1 (y * infGL E 2 (ex X u)) = Φ.1 (y * infGL E 2 (ex X s) * infGL E 2 (ex X (u - s)))
   rw [mul_assoc, ← map_mul, ← (exPar E X).1, add_sub_cancel]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.RankTwoDescent
 

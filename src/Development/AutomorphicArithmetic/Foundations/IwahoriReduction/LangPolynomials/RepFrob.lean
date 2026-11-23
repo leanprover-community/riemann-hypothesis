@@ -36,7 +36,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace UpperTheory.Kd.C7
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω]
 
@@ -55,14 +54,11 @@ private def decompositionInvRingHom (A : ValuationSubring Ω) (t : G ℚ Ω) (ht
 private theorem residueInverse_coe (A : ValuationSubring Ω) (t : G ℚ Ω) (ht : t ∈ Dec (F := ℚ) A) (y : R0 A) :
     ((decompositionInvRingHom A t ht y : R0 A) : Ω) = (t⁻¹ : G ℚ Ω) (y : Ω) := rfl
 
-end SlopeTestRemainingChoices
 
-section Frame
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {l : ℕ} [Fact l.Prime] {A : ValuationSubring Ω}
   {j : Ω →+* Qbar l} (Φ : Fr l A j)
 
-end Frame
 
 private theorem apply_root_eq_of_cycBar_eq_one {Ω : Type} [Field Ω] [Algebra ℚ Ω] {l : ℕ} [Fact l.Prime] (s : G ℚ Ω)
     (hs : cycBar ℚ Ω l s = 1) (ζ : ℕ → Ω) (hζ : Roots l ζ) (m : ℕ) : s (ζ m) = ζ m := by

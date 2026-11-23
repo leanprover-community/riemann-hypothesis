@@ -34,7 +34,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField IsDedekindDomain IsLocalRing UpperTheory.V UpperTheory.V.Sd Formalism.L2.Host Formalism.ConjugateSelfDual
 
-section Gen
 
 variable {O K : Type} [CommRing O] [IsLocalRing O] [Field K]
 
@@ -156,7 +155,6 @@ private theorem gen (φ : O →+* K) (π : Kˣ) (p : O) (hp : φ p = π) (hm : m
       ← Nat.cast_smul_eq_nsmul ℂ, ← hqdef, smul_smul, mul_div_cancel₀ _ hq, smul_sub, smul_smul, add_smul, mul_div_assoc]
     abel
 
-end Gen
 
 private theorem span_unif {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F))
     (p : w.adicCompletionIntegers F) (hp : Valued.v (p : w.adicCompletion F) = WithZero.exp (-1 : ℤ)) :

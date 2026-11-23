@@ -39,7 +39,6 @@ open PositivityTheory.RgTw (Mat)
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD UpperTheory.RealTr
 open Formalism.REAL (GlRel IsWeight KHighest Cas)
 
-section SlopeTestRemainingChoices
 
 variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 
@@ -130,7 +129,6 @@ private theorem hw_comp (F : Fin n → Fin n → Module.End ℂ V) {S₁ S₂ : 
     rw [map_add (f := _)] at h0
     exact (parts_zero hd (s1 a b _ h₁) (s2 a b _ h₂) h0).2
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.RealTr.isoSplit :
     ∀ (n : ℕ) (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] (F : Fin n → Fin n → Module.End ℂ V), UF F → ∀ S : Submodule ℂ V, FiniteDimensional ℂ S → Stb F S → S ≠ ⊥ → ∃ (ν : Wt n) (S₁ S₂ : Submodule ℂ V), S₁ ≠ ⊥ ∧ hw F ν ⊓ S₁ ≠ ⊥ ∧ S₁ ⊔ S₂ = S ∧ Disjoint S₁ S₂ ∧ Stb F S₁ ∧ Stb F S₂ ∧

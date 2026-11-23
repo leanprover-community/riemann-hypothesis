@@ -41,7 +41,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open UpperTheory.V.GradeZeroInterpolatingElement
 
-section SlopeTestRemainingChoices
 
 variable {R R' : Type} [CommRing R] [CommRing R']
 
@@ -84,7 +83,6 @@ private theorem isUnit_of_res {E B : Type} [Field E] [CommRing B] [Algebra E B] 
   have := h2.isUnit_add_left_of_commute h1 (Commute.all _ _)
   simpa using this
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.lift_symplectic_similitude_nilpotent :
     ∀ {E B B' : Type} [Field E] [CharZero E] [CommRing B] [CommRing B'] [Algebra E B] [Algebra E B'] (π : B →ₐ[E] E) (hπ : ∀ a, π a = 0 → IsNilpotent a) (π' : B' →ₐ[E] E) (hπ' : ∀ a, π' a = 0 → IsNilpotent a) (p : B →ₐ[E] B'), Function.Surjective p → π'.comp p = π → ∀ h' : (M4 B')ˣ, IsGSp 1 (h' : M4 B') → (h' : M4 B').map π' = 1 → ∃ h : (M4 B)ˣ, IsGSp 1 (h : M4 B) ∧ (h : M4 B).map π = 1 ∧ (h : M4 B).map p = (h' : M4 B') := by

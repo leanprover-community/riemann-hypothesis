@@ -42,7 +42,6 @@ open scoped Classical
 
 namespace UpperTheory.ConvolutionTheory.R2.Ff
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E]
 
@@ -78,7 +77,6 @@ private theorem trI_smul (c : ℝ) (a : Cinf E) : trI F (c • a) = c • trI F 
   · simp; ring
   · simp
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.R2.Ff
 

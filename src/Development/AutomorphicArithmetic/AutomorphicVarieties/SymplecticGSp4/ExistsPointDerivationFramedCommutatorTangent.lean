@@ -41,7 +41,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing UpperTheory.V UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement
 
-section Dual
 
 variable {O : Type} [CommRing O]
 
@@ -194,7 +193,6 @@ private theorem dm_lift {Γ : Type} [Group Γ] [TopologicalSpace Γ] {rbar : Γ 
     change res O (DualNumber O) (dm (r.hom g) (Y * r.hom g - r.hom g * Y) a b) = rbar g a b
     rw [dm_res, ← res_self, r.red]
 
-end Dual
 
 
 theorem UpperTheory.exists_pointDerivation_framed_commutator_tangent :

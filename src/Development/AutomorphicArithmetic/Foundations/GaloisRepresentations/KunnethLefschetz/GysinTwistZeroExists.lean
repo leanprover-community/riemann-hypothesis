@@ -39,7 +39,6 @@ open scoped TensorProduct DirectSum
 
 namespace UpperTheory.Gal.KunnethLefschetz
 
-section Tw
 variable {k : Type} [Field k]
 
 private theorem twMul_add (q : ℕ) {X : Scheme.{0}} (p : X ⟶ S k) {i j w : ℤ} (hw : i + j = w)
@@ -141,7 +140,6 @@ private def mkGys0 (hIn : In) {l : ℕ} [Fact l.Prime] (GT : GysT k) (hu : ∀ j
     rw [gZ_apply, gZ_apply, GT.red (l ^ (j + 1)) (l ^ j) (hu _) (dvd_succ l j) h hn _ _,
       twMul_red hIn.a11 _ _ (dvd_succ l j), hw]
 
-end Tw
 
 theorem gysinTwistZero_exists : GysinCondition := by
   intro hI hB l _ k _ _ hl hT hG

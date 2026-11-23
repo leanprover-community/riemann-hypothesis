@@ -127,7 +127,6 @@ private abbrev coverOpen (U : (D.obj j₀).directedAffineCover.I₀) : (D.obj j�
 private lemma coverOpen_le {U V : (D.obj j₀).directedAffineCover.I₀} (f : U ⟶ V) :
     coverOpen D j₀ U ≤ coverOpen D j₀ V := leOfHom f
 
-section Glue
 
 variable [∀ U : (D.obj j₀).directedAffineCover.I₀, HasLimit (opensDiagram D j₀ U.1)]
 
@@ -241,7 +240,6 @@ private lemma gl_hom_ext {Y : Scheme.{0}} (a b : Y ⟶ (gd D j₀).glued)
     simp only [Category.assoc]
     rw [h j]
 
-section Lift
 
 variable (s : Cone (Over.forget j₀ ⋙ D))
 
@@ -304,7 +302,6 @@ private lemma glLift_glπ (j : Over j₀) : glLift D j₀ s ≫ glπ D j₀ j = 
     fun U => ?_
   rw [glLift, Scheme.Cover.ι_glueMorphisms_assoc, locLift_glπ]
 
-end Lift
 
 private def isLimitGlCone : IsLimit (glCone D j₀) where
   lift s := glLift D j₀ s

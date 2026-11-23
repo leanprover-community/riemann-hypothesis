@@ -46,7 +46,6 @@ open MeasureTheory NumberField IsDedekindDomain Filter GroundTheory.Automorphic 
 open GroundTheory.Automorphic.CuspidalSpectrum GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets GlobalTheory.PRep Formalism.BasicNotions GlobalTheory.CuspRep GlobalTheory.SmGL PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.GM UpperTheory.ConvolutionTheory.C
 open scoped Classical NNReal
 
-section Abs
 
 variable {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V]
 
@@ -129,7 +128,6 @@ private theorem ex_norm (m : Measure G) [m.IsHaarMeasure] {U : Subgroup G} (hU :
       ENNReal.inv_mul_cancel h0 h1]
   · rw [smul_smul, mul_inv_cancel₀ hc, one_smul]
 
-end Abs
 
 private theorem amp_eq {K : Type} [Field K] [NumberField K] {n : ℕ} {μ : Measure (normOneGL (K := K) (n := n))} [μ.IsHaarMeasure]
     (𝔞 : Amp μ) (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (h1 : 𝔞.ν = ν) :

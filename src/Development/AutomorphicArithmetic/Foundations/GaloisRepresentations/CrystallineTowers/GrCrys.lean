@@ -39,7 +39,6 @@ open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.Weakl
 
 namespace UpperTheory.Gal.Seam
 
-section Block
 
 variable {F : Type} [Field F] {d : ℕ} (c : Fin d → ℕ)
 
@@ -87,9 +86,7 @@ private def eqEquiv : (Fin d → F) ≃ₗ[F] (∀ v : ↥(Set.range c), ↥(eqS
     · rw [if_neg h]
       exact ((y v).2 i h).symm
 
-end Block
 
-section Crys
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -176,7 +173,6 @@ private theorem isCrys_gr (P : LocPrime l) (AI : LocAinf l P) (T : LocTied l P A
       · rw [if_neg fun h => hi (hj.trans h), mul_zero]
       · rw [if_neg hj, zero_mul]
 
-end Crys
 
 end UpperTheory.Gal.Seam
 

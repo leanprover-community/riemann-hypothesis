@@ -49,7 +49,6 @@ open UpperTheory.ConvolutionTheory UpperTheory.Gal.Join
 
 namespace UpperTheory.Gal.InertialTypesAlt.L
 
-section Local
 
 variable {k k' : Type} [Field k] [Field k'] [Algebra k k'] [FiniteDimensional k k']
 
@@ -80,9 +79,7 @@ private theorem norm_of_prod [IsGalois k k'] (s : k' ≃ₐ[k] k') (hs : ∀ τ,
   rw [h, Algebra.norm_eq_prod_automorphisms, prod_aut s hs]
   exact Finset.prod_congr rfl fun i _ => iter_aut s i x
 
-end Local
 
-section Val
 
 variable {k k' : Type} [Field k] [ValuativeRel k] [Field k'] [ValuativeRel k'] [Algebra k k'] [ValuativeExtension k k']
 
@@ -109,9 +106,7 @@ private theorem val_near {r : ValueGroupWithZero k'} (h1 : r < 1) {x : k'} (hx :
   have h := Valuation.map_one_add_of_lt (valuation k') (lt_of_le_of_lt hx h1)
   simpa using h
 
-end Val
 
-section Glob
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -137,7 +132,6 @@ private theorem sig_eq {n : ℕ} (hn : 0 < n) (σ : E ≃ₐ[F] E) {v : Pl F} (w
   rw [h2, hgal, he] at h1
   exact h1.symm
 
-end Glob
 
 end UpperTheory.Gal.InertialTypesAlt.L
 

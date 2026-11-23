@@ -67,7 +67,6 @@ private theorem Rel.scal {G : Type} [Group G] {φ ψ : G → ℂ} (h : Rel φ ψ
   rw [e, map_smul, hΛ] at this
   simpa using (congrFun this g).symm
 
-section Aff
 variable {R S : Type} [CommRing R] [CommRing S]
 
 private theorem aff_mul (y y' : Rˣ) (x x' : R) : aff y x * aff y' x' = aff (y * y') (y * x' + x) := by
@@ -100,7 +99,6 @@ private theorem continuous_aff [TopologicalSpace R] [IsTopologicalRing R] : Cont
   · fin_cases i <;> fin_cases j <;> simp [aff] <;> fun_prop
   · fin_cases i <;> fin_cases j <;> simp [aff] <;> fun_prop
 
-end Aff
 
 variable {F : Type} [Field F] [NumberField F]
 

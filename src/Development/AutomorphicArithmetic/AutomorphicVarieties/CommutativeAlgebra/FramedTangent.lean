@@ -57,7 +57,6 @@ noncomputable section
 
 namespace UpperTheory.V.Alg.FramedTangent
 
-section Abstract
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {R : Type} [CommRing R] [Algebra O R] [IsCO O R]
   {B : Type} [CommRing B] [Algebra O B] [IsCO O B] (i : B →ₐ[O] R)
@@ -259,9 +258,7 @@ private theorem abstract {S X : Type} (z : S → R) (hz : ∀ s, z s ∈ maximal
       obtain rfl : j' = j := (a j' t).2.symm.trans e
       exact ⟨t, rfl⟩
 
-end Abstract
 
-section Mat
 
 open Matrix TrivSqZeroExt
 
@@ -398,9 +395,7 @@ private theorem mask_mem (j : X) {Y : Matrix ι ι k} (hY : Y ∈ Φ.g k) : mask
       · rw [if_neg (fun m => e (by rw [← m, ← n]; abel)), zero_mul]
       · simp [hJ _ _ n]
 
-end Mat
 
-section Dual
 
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {ι X : Type} [Fintype ι] [DecidableEq ι] [AddCommGroup X] {w : ι → X}
@@ -484,9 +479,7 @@ private theorem loc_iff {N : Subgroup Γ} {L : Cond O rbar} (hL : Φ.IsLocCond r
   · refine Lift.ext (MonoidHom.ext fun s => ?_)
     exact (lift_fst _ s).trans (lift_fst r s).symm
 
-end Dual
 
-section Framed
 
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {ι X : Type} [Fintype ι] [DecidableEq ι] [AddCommGroup X] {w : ι → X}
@@ -561,7 +554,6 @@ private def liftOf (j : X) (x : F.H1c (FormData.adRep hbar j)) : Lift O rbar (Du
     Ideal.Quotient.mk (maximalIdeal (DualNumber (ResidueField O)) ^ N) (mk p.2 (p.1.1 * p.2) a b)
   red s a b := res_dual _
 
-end Framed
 
 end UpperTheory.V.Alg.FramedTangent
 

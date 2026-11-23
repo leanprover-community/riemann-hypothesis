@@ -84,7 +84,6 @@ private theorem quadratic_charpoly_coeff_difference {S : Type} [CommRing S] [Non
   · simp only [coeff_add, coeff_sub, coeff_X_pow, coeff_C_mul, coeff_X_zero, coeff_C]
     simp
 
-section Rel
 
 variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
@@ -128,7 +127,6 @@ private theorem adjoint_charpoly_coeff_close {u u' : K} (h : ‖u - u'‖ < 1) (
   · simp
   · simp
 
-end Rel
 
 private theorem adjoint_square_apply {Γ k : Type} [Group Γ] [Field k] (ρ : Γ →* GL (Fin 2) k) (s : Γ) :
     (ad0 ρ s : Matrix (Fin 3) (Fin 3) k) =

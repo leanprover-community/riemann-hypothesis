@@ -52,7 +52,6 @@ private noncomputable def eB (l j : ℕ) : ℕ := pden l (Polynomial.bernoulli j
 
 private noncomputable def eD (j : ℕ) : ℕ := j + (Polynomial.bernoulli j).natDegree
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] {A : ValuationSubring Ω} {l : ℕ}
 
@@ -238,7 +237,6 @@ private theorem not_dvd_of_coprime (hl : l.Prime) {c N : ℕ} (h : Nat.Coprime c
   rw [h] at h1
   exact hl.one_lt.ne' (Nat.dvd_one.1 h1)
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.Kd.L
 

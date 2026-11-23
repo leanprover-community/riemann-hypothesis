@@ -42,19 +42,15 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraT
 
 namespace UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 
 variable {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g n : ℕ}
 
 private theorem alg_eq (c : A) : algebraMap A (DD X g) c = DD.C (algebraMap A X c) := rfl
 
-end SlopeTestRemainingChoices
 
-section Conj
 
 variable {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} {x : NP F n} (k : Kap x) (X : Type) [CommRing X] [Algebra x.A X]
 
-end Conj
 
 end UpperTheory.V.Pa
 

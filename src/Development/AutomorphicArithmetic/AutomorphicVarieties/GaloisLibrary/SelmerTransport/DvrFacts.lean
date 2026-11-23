@@ -39,7 +39,6 @@ import Mathlib.Tactic.NormNum.Prime
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.Base
 
-section Alg
 
 variable {l : ℕ} [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O]
@@ -66,7 +65,6 @@ private theorem length_quot [Module.Free ℤ_[l] O] : Module.length ℤ_[l] (O �
   rw [← Module.length_eq_finrank]
   exact Module.length_eq_of_surjective Ideal.Quotient.mk_surjective
 
-end Alg
 
 theorem UpperTheory.V.Base.dvrFacts :
     ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O],

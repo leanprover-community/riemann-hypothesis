@@ -46,7 +46,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Mod
 
 namespace UpperTheory.V.Loc.OrdinaryDeformation
 
-section Alg
 
 variable {G R S : Type} [Group G] [CommRing R] [CommRing S] {m : ℕ}
 
@@ -164,7 +163,6 @@ private theorem exists_conj (r : G →* GG (m := m) (R := R)) (r' : G →* GG (m
     rw [(hd g).2, e, Matrix.add_mul, Matrix.one_mul, ep_mul, ← GG.map_mat, hg, hγ g, Matrix.add_mul (γ g), ep_add,
       add_assoc]
 
-end Alg
 
 theorem rz_eq {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] (D : Dat3 l O)
     (E : Type) [CommRing E] [Algebra O E] :

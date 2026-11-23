@@ -101,7 +101,6 @@ private theorem w_split {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [Number
     exact hc (inv_mem_iff.1 h5)
   · exact ⟨u, h, hu'.trans (w_under s v.1).symm⟩
 
-section Grp
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
@@ -174,7 +173,6 @@ private theorem cEmb_rat {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (w : P
   rw [e, coord_algebraMap]
   rfl
 
-end Grp
 
 private theorem cont_multi {ι X : Type} [Finite ι] [TopologicalSpace X] {M : ι → Type} [∀ i, AddCommGroup (M i)]
     [∀ i, Module ℂ (M i)] [∀ i, FiniteDimensional ℂ (M i)] (m : MultilinearMap (RingHom.id ℂ) M ℂ) (y : ∀ i, X → M i)

@@ -35,7 +35,6 @@ namespace UpperTheory.Gal.LocalSmoothExtension
 
 open GlobalTheory.LKDef
 
-section Transport
 
 variable {Γ H V V' : Type} [Group Γ] [Group H] [AddCommGroup V] [Module ℂ V]
   [AddCommGroup V'] [Module ℂ V']
@@ -123,7 +122,6 @@ private theorem hecke_unique {ι : Γ →* H} {K : Subgroup H} {ξ : Representat
   apply Subtype.ext; funext g
   rw [h φ g, h' φ g]
 
-end Transport
 
 theorem heckeTraceSemi_of :
     TraceSemi → HeckeTraceSemi := by

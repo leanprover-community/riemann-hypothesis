@@ -39,7 +39,6 @@ open CategoryTheory Limits AlgebraicGeometry CrystallineSemistableComparison
 
 namespace UpperTheory.Gal.Seam
 
-section Ring
 
 variable (O : Type) [CommRing O] (ϖ : O) (n : ℕ)
 
@@ -100,7 +99,6 @@ private theorem chartEquiv_algebraMap (o : O) :
   change toPoly O ϖ n (Ideal.Quotient.mk _ (MvPolynomial.C o)) = _
   simp [toPoly, evalFirst]
 
-end Ring
 
 theorem goodOf : GoodOf := by
   intro l _ K _ M hs hp

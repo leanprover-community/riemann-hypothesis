@@ -41,7 +41,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.Gal.GamX
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -116,7 +115,6 @@ private theorem pol_eq_lp (s : Multiset (IrrGL (k := k))) (θ : kˣ →* ℂˣ) 
         exact hy ⟨ξ, h2⟩
       rw [dif_neg h, one_mul, chs_cons_none hy]
 
-end Loc
 
 theorem chsFacts : ChsFacts := by
   unfold ChsFacts

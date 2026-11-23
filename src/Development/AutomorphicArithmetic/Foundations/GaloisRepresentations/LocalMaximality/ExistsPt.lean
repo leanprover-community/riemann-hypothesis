@@ -42,13 +42,11 @@ open scoped TensorProduct
 
 namespace UpperTheory.Gal.productCup_of_system
 
-section IntegralMvPolynomialLemmas
 variable {L V σ : Type} [Field L] [Algebra ℂ L] (B : Subalgebra ℂ L)
   [AddCommGroup V] [Module L V] [Module ℂ V] [IsScalarTower ℂ L V]
 
 variable [LinearOrder σ]
 
-end IntegralMvPolynomialLemmas
 
 end UpperTheory.Gal.productCup_of_system
 

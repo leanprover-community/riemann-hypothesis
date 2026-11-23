@@ -32,7 +32,6 @@ import Mathlib.Tactic.NormNum.Prime
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} {D : Raw Ω c}
 
@@ -255,7 +254,6 @@ private theorem two_up (h : T.Le T') (ht : T.Two) : T'.Two := by
 private theorem three_up (h : T.Le T') (ht : T.Three) : T'.Three :=
   ⟨ht.five, ht.sb, ht.psi, fun g => by rw [rb_resLe h, rb_resLe h]; exact ht.sq _⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Ws.leFit :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c), D.Good → ∀ T T' : Tower D, T.Le T' → (T.Ok → T'.Ok) ∧ (T.Two → T'.Two) ∧ (T.Three → T'.Three) ∧ (T.Deep → T'.Deep) ∧ (T.Fit → T'.Fit) ∧

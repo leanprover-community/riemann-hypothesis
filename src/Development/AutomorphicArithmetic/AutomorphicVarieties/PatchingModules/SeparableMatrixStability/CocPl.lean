@@ -40,7 +40,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ProfD
 
 open IsLocalRing Matrix Filter UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
 
-section Abs
 
 variable {K M : Type} [Group K] [Ring M] (ρ z : K → M) (h1 : ρ 1 = 1) (hm : ∀ g h, ρ (g * h) = ρ g * ρ h)
   (hz : ∀ g h, z (g * h) = z g + ρ g * z h * ρ g⁻¹)
@@ -94,7 +93,6 @@ private theorem cp_U [TopologicalSpace K] (cρ : IsLocallyConstant ρ) (cz : IsL
     · rw [mul_assoc, hz, cp_add ρ z h1 hm hz ha, hza, zero_add, ← hz, mul_inv_cancel, cocycle_apply_one_eq_zero ρ z h1 hz]
   exact ⟨{ toOpenSubgroup := ⟨S, hS⟩, isNormal' := hN }, fun g => Iff.rfl⟩
 
-end Abs
 
 private theorem cp_lc {K R : Type} [TopologicalSpace K] [CommRing R] {n : ℕ} (I : Ideal R)
     (f : K → Matrix (Fin n) (Fin n) R) (hf : ∀ i j, AdicCont I fun g => f g i j) (m : ℕ) :

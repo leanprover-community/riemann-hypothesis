@@ -60,7 +60,6 @@ private theorem et_of_pb {A B C D : Scheme.{0}} {u : A ⟶ B} {s : A ⟶ C} {p :
     (h : IsPullback u s p e) [Etale p] : Etale s :=
   MorphismProperty.of_isPullback (P := @Etale) h ‹_›
 
-section Geo
 variable {k : Type} [Field k] (Ω : Type) [Field Ω] [Algebra k Ω]
 
 private theorem gm_fst {X Y : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of k)) {q : Y ⟶ Spec (CommRingCat.of k)} (u : X ⟶ Y)
@@ -139,7 +138,6 @@ private theorem splits_geom {Z Y : Scheme.{0}} (qZ : Z ⟶ Spec (CommRingCat.of 
   rw [heq]
   infer_instance
 
-end Geo
 
 private theorem splits_fin {Z Y W : Scheme.{0}} {s : Y ⟶ Z} {c : W ⟶ Z} {J : Type} {σ : J → (W ⟶ Y)} (h : Splits s c σ)
     {m : ℕ} (e : Fin m ≃ J) : Splits s c fun i => σ (e i) := by

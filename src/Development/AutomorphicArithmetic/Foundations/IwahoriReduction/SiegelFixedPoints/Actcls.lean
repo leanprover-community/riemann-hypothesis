@@ -38,7 +38,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open scoped MatrixGroups Matrix
 open GlobalTheory.KZ GlobalTheory.K4 GlobalTheory.Glue GlobalTheory.KummerEisensteinGalois UpperTheory.Kd.L
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
@@ -187,7 +186,6 @@ private theorem par_mul {l : ℕ} [Fact l.Prime] {N c d : ℕ} {gm : (ZMod l)ˣ 
     rw [h0l, h]
     ring
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Kd.L.actcls :
     ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] [CharZero Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (N : ℕ) [NeZero N] (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)), Par l N c d gm → ∀ g₀ ∈ CongruenceSubgroup.Gamma0 N ⊓ CongruenceSubgroup.Gamma0 l, Par l N c d (fun r => gm r * g₀) ∧ ∀ (x : ZMod N) (w m n c₀ : ℕ), Odd w → 1 ≤ m → ∀ (σ : Ω ≃ₐ[ℚ] Ω) (b : X.Fn l), LiftB X l N w n c₀ (clsBmu X l n m N x c d (w + 2) gm σ) b → LiftB X l N w n c₀ (clsBmu X l n m N x c d (w + 2) (fun r => gm r * g₀) σ) (X.act l (g₀ : Matrix (Fin 2) (Fin 2) ℤ) b) := by

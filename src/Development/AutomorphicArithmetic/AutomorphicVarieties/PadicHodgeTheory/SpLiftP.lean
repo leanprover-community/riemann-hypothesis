@@ -53,7 +53,6 @@ namespace UpperTheory.V.Loc.RankFourLocalLifting
 
 open IsNilpotent
 
-section Exp
 
 variable {B B' H : Type} [CommRing B] [Algebra ℚ B] [CommRing B'] [Algebra ℚ B']
 
@@ -133,9 +132,7 @@ private theorem liftChar [Group H] {m : Ideal B} {n : ℕ} (hm : m ^ n = ⊥) {m
   · show p (exp (s (y g))) = u g
     rw [map_exp (n2 g), hps, h2]
 
-end Exp
 
-section Mat
 
 variable {R R' E : Type} [CommRing R] [CommRing R'] [Field E]
 
@@ -388,7 +385,6 @@ private theorem liftSp [CharZero E] [Algebra E R'] (π' : R' →ₐ[E] E) (hπ' 
       rwa [adj_mul, adj_sub, adj_one, hY5, sub_neg_eq_add] at this
     rw [adj_mul, adj_add, adj_one, hY5, one_smul, mul_assoc, ← mul_assoc (1 + -Y), e, mul_assoc, hZ, mul_one, e2]
 
-end Mat
 
 private theorem core {l : ℕ} [Fact l.Prime] {H E B B' : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H]
     [Field E] [Algebra ℚ_[l] E] [Module.Finite ℚ_[l] E]

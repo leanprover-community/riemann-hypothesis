@@ -43,7 +43,6 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr
 
 namespace UpperTheory.V.Fr
 
-section SlopeTestRemainingChoices
 
 variable {l : ℕ} [Fact l.Prime] {k : Type} [Field k] {F : Frame l k} {n : ℕ} {C C' : Type} [CommRing C] [CommRing C']
 
@@ -147,7 +146,6 @@ private theorem star_mat (hc : F.del F.c = -1) (B : Box F n C) (h1 : (B.r F.c).m
   simp [GG.mat, SemidirectProduct.mul_left, SemidirectProduct.inv_left, map_inv, sgnAct_neg_one, sgnAct_one, theta_inv_val]
   rw [t1, t1, Units.val_one, mul_one, ← Matrix.coe_units_inv, theta_inv_val]
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.V.Fr
 

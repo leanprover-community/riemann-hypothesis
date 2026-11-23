@@ -47,11 +47,9 @@ open GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Base Up
 
 namespace UpperTheory.V.Sd.EG
 
-section Norm
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
-end Norm
 
 private theorem primRam_lift (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (N : ℕ) [NeZero N] (r : ℕ) (hr : r.Prime)
     (A : ValuationSubring Ω) (hA : A.valuation (r : Ω) < 1) (u : (ZMod N)ˣ)
@@ -73,7 +71,6 @@ private theorem primRam_lift (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure 
   · have hc : cyclotomicCharacter Ω r σ.toRingEquiv = w := hσw
     rw [hc, hw]
 
-section Gal
 
 variable {l : ℕ} [hl : Fact l.Prime] {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -92,6 +89,5 @@ private theorem ram {N : ℕ} [NeZero N] {χ : DirichletCharacter ℂ N} (hχ : 
   have := Nat.div_lt_self (NeZero.pos N) (Nat.one_lt_pow (hp.factorization_pos_of_dvd (NeZero.ne N) hpN).ne' hp.one_lt)
   omega
 
-end Gal
 
 end UpperTheory.V.Sd.EG

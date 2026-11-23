@@ -48,7 +48,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.V.T.GamFac
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -86,7 +85,6 @@ private theorem ord_unif_eq : ord ((UpperTheory.V.Z.ImaginaryQuadraticEtaCharact
   rw [ord_units_mul, ord_units_inv, ord_unifUnit] at d
   omega
 
-end Loc
 
 private theorem alg (a A q X : ℂ) (n : ℤ) (hA : A ≠ 0) (hq : q ≠ 0) (hX : X ≠ 0) :
     a * X ^ n * (1 - A⁻¹ * (q * X)⁻¹)⁻¹ / (1 - A * X)⁻¹ =

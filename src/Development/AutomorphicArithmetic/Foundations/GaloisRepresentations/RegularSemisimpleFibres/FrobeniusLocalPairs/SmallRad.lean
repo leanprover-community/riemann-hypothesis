@@ -38,7 +38,6 @@ open GlobalTheory.SmGL hiding iwahori
 
 namespace UpperTheory.Gal.InertialTypesAlt.L
 
-section SlopeTestRemainingChoices
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -151,7 +150,6 @@ private theorem compact_units (r : ValueGroupWithZero k) (h1 : r < 1) :
     MulOpposite.op_injective.mem_set_image]
   exact ⟨fun hx => ⟨hx, near_inv' h1 x hx⟩, fun hx => hx.1⟩
 
-end SlopeTestRemainingChoices
 
 theorem smallRad :
     UpperTheory.Gal.InertialTypesAlt.L.SmallRad := by

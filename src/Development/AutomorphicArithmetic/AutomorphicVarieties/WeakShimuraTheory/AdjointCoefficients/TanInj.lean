@@ -46,7 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing UpperTheory.V UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
-section Dual
 
 variable {k : Type} [CommRing k]
 
@@ -160,7 +159,6 @@ private def dRep {Γ : Type} [Group Γ] (r : Γ →* M4 k) (X : Γ → M4 k)
     rw [dm_mul, h, map_mul, add_mul, mul_assoc (r s * X t), ← mul_assoc (r s⁻¹), ← map_mul r s⁻¹, inv_mul_cancel, map_one,
       one_mul, add_comm, mul_assoc, mul_assoc]
 
-end Dual
 
 private theorem res_dual (Λ : Type) [CommRing Λ] [IsLocalRing Λ] [IsCO Λ (DualNumber (ResidueField Λ))]
     (x : DualNumber (ResidueField Λ)) : res Λ (DualNumber (ResidueField Λ)) x = x.fst := by

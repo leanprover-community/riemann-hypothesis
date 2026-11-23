@@ -39,7 +39,6 @@ open Formalism.UG GlobalTheory.LKDef
 
 namespace UpperTheory.Gal.Spc
 
-section Abstract
 
 variable {H₁ H₂ Γ V : Type} [Group H₁] [Group H₂] [Group Γ] [AddCommGroup V] [Module ℂ V]
   (ι : Γ →* H₁ × H₂) (K₁ : Subgroup H₁) (K₂ : Subgroup H₂) (ξ : Representation ℂ Γ V)
@@ -249,7 +248,6 @@ private theorem abs_main (hK : IsCommensurated K₁) :
     refine finsum_congr fun x => ?_
     simp [add_smul, mul_smul]
 
-end Abstract
 
 private theorem comm_of_open {H : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] (K : Subgroup H)
     (ho : IsOpen (K : Set H)) (hc : IsCompact (K : Set H)) : IsCommensurated K := by

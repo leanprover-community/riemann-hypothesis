@@ -43,7 +43,6 @@ namespace UpperTheory.V.Loc.AdmRes
 
 variable {l : ℕ} [Fact l.Prime]
 
-section Transport
 
 variable {G G' A A' V : Type} [Group G] [Group G'] [CommRing A] [Algebra ℚ_[l] A] [CommRing A'] [Algebra ℚ_[l] A']
   [AddCommGroup V] [Module A V] [Module A' V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] [IsScalarTower ℚ_[l] A' V]
@@ -76,7 +75,6 @@ private theorem transport (e : G → G') (he : Function.Surjective e) (h1 : ∀ 
   rw [hr, hc, hd]
   exact ⟨Iff.rfl, Iff.rfl⟩
 
-end Transport
 
 private theorem field_case (K K' LL : FinExt l) (h : K.1 ≤ K'.1) {V : Type} [AddCommGroup V] [Module ↥LL.1 V]
     [Module ℚ_[l] V] [IsScalarTower ℚ_[l] ↥LL.1 V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V]

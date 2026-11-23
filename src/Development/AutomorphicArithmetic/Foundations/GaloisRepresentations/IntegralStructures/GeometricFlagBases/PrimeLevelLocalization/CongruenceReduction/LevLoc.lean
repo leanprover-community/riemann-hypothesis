@@ -42,7 +42,6 @@ attribute [local instance] Ideal.Quotient.field
 
 namespace UpperTheory.Gal.Int.Geo.Pl.Tj
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -83,9 +82,7 @@ private theorem int_of_mem {u : Plc E} {x : GLw n u} (h : x ∈ KGL u (n := n)) 
   · exact one_mem _
   · exact zero_mem _
 
-end SlopeTestRemainingChoices
 
-section Site
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {A : Arith E} {n p : ℕ} [Fact p.Prime] {S : Setup A n p}
 
@@ -177,7 +174,6 @@ private theorem core (hS : Sides) (hD : Dict) {x : E} (hx : Gen A x) (F : Frame 
     rw [e]
     exact ((hD E A n p S F k₀).2.2.1 _ (site_ne σ)).1 h0.2 u hpu i l
 
-end Site
 
 end UpperTheory.Gal.Int.Geo.Pl.Tj
 

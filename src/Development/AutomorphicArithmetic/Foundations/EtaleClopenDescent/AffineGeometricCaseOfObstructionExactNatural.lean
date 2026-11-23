@@ -42,7 +42,6 @@ open LateralTheory.E.E4 LateralTheory.E.Bridge_yfiPf LateralTheory.E.EtaleTopolo
 
 namespace UpperTheory.Cb.MorphismCompositionLaws
 
-section Maps
 variable {Y B W : Scheme.{0}} (p : Y ⟶ B) (ι : W ⟶ B)
 
 private abbrev mY {S S' : Scheme.{0}} {s : S ⟶ B} {s' : S' ⟶ B} (g : S' ⟶ S) (h : g ≫ s = s') :
@@ -104,7 +103,6 @@ private theorem mW_fst {S S' : Scheme.{0}} {s : S ⟶ B} {s' : S' ⟶ B} (g : S'
     pullback.fst _ _ ≫ mY p g h = mW p ι g h ≫ pullback.fst _ _ := by
   rw [mW_comp_fst_eq_fst_comp_mY]
 
-end Maps
 
 section Transfer
 
@@ -146,7 +144,6 @@ private theorem transfer {q : ℕ} {i n : ℤ} {J : Type} [Category J] {E E' : J
 
 end Transfer
 
-section Isos
 variable {Y B W C : Scheme.{0}} (p : Y ⟶ B) (ι : W ⟶ B) (π : C ⟶ B)
 
 private def eY {S : Scheme.{0}} (g : S ⟶ C) (s : S ⟶ B) (h : g ≫ π = s) :
@@ -161,9 +158,7 @@ private theorem eY_hom_fst {S : Scheme.{0}} (g : S ⟶ C) (s : S ⟶ B) (h : g �
     (eY p π g s h).hom ≫ pullback.snd _ _ = pullback.snd _ _ := by
   subst h; simp [eY]
 
-end Isos
 
-section IsosW
 variable {Y B W C : Scheme.{0}} (p : Y ⟶ B) (ι : W ⟶ B) (π : C ⟶ B)
 
 private theorem eY_inv_snd {S : Scheme.{0}} (g : S ⟶ C) (s : S ⟶ B) (h : g ≫ π = s) :
@@ -214,9 +209,7 @@ private def eW {S : Scheme.{0}} (g : S ⟶ C) (s : S ⟶ B) (h : g ≫ π = s) :
       apply pullback.hom_ext <;> simp [pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc]
     · simp [pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc]
 
-end IsosW
 
-section Nat
 variable {Y B W C : Scheme.{0}} (p : Y ⟶ B) (ι : W ⟶ B) (π : C ⟶ B)
 variable {S S' : Scheme.{0}} {g : S ⟶ C} {g' : S' ⟶ C} {s : S ⟶ B} {s' : S' ⟶ B}
 
@@ -274,9 +267,7 @@ private theorem eW_nat (h : g ≫ π = s) (h' : g' ≫ π = s') (k : S' ⟶ S) (
       reassoc_of% hA, Category.assoc, eW_hom_comp_fst_eq_aW_comp_eY]
   · rw [Category.assoc, mW_comp_pullback_snd, eW_hom_comp_snd, Category.assoc, eW_hom_comp_snd, reassoc_of% (bc_comp_pullback_fst (p2 p ι π) k hg)]
 
-end Nat
 
-section Cont
 variable {q : ℕ} [NeZero q] {R : CommRingCat.{0}} {J : Type} [SmallCategory J] [IsFiltered J]
   {D : J ⥤ CommRingCat.{0}} {c : Cocone D} (hc : IsColimit c) {u : ∀ j, R ⟶ D.obj j}
   (hu : ∀ {j k : J} (f : j ⟶ k), u j ≫ D.map f = u k) {v : R ⟶ c.pt} (hv : ∀ j, u j ≫ c.ι.app j = v)
@@ -289,9 +280,7 @@ private theorem contOf (hA : A2) (hB : B1) {X : Scheme.{0}} (P : X ⟶ Spec R) [
       (fun {j k} f => sch.map (LateralTheory.KummerTheory.bcMap P (u j) (u k) (D.map f) (hu f))) :=
   LateralTheory.Fin.Cont.intersectionNumber_baseChange hA hB q P hq D c hc u hu v hv n i
 
-end Cont
 
-section Cont2
 variable {q : ℕ} [NeZero q] {R : CommRingCat.{0}} {J : Type} [SmallCategory J] [IsFiltered J]
   {D : J ⥤ CommRingCat.{0}} {c : Cocone D} (hc : IsColimit c) {u : ∀ j, R ⟶ D.obj j}
   (hu : ∀ {j k : J} (f : j ⟶ k), u j ≫ D.map f = u k) {v : R ⟶ c.pt} (hv : ∀ j, u j ≫ c.ι.app j = v)
@@ -338,7 +327,6 @@ private theorem contW (hA : A2) (hB : B1) [QuasiCompact (p2 p ι π)] [IsSeparat
     congr 1
     exact eW_nat p ι π (hs j) (hs k) (Spec.map (D.map f)) (h2 f) (by rw [← Spec.map_comp, hu f])
 
-end Cont2
 
 section Main
 

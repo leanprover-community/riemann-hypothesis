@@ -38,7 +38,6 @@ open TensorProduct Module
 
 namespace UpperTheory.Gal.crystallineComparison
 
-section Comm
 variable {L M N : Type} [Field L] [AddCommGroup M] [Module L M] [AddCommGroup N] [Module L N]
 
 private theorem pow_comm (φ : M →ₗ[L] N) (A : End L M) (A' : End L N) (h : ∀ y, φ (A y) = A' (φ y)) (n : ℕ) (y : M) :
@@ -51,7 +50,6 @@ private theorem aeval_comm (φ : M →ₗ[L] N) (A : End L M) (A' : End L N) (h 
     φ (Polynomial.aeval A Q y) = Polynomial.aeval A' Q (φ y) :=
   _root_.UpperTheory.Reformulated.B.Qk66.aeval_comm φ A A' h Q y
 
-end Comm
 
 section
 variable {F G B : Type} [Field F] [Group G] [AddCommGroup B] [Module F B] (σ : G → End F B) (ψ : End F B)

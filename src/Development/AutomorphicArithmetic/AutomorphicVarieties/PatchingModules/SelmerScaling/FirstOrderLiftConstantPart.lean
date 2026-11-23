@@ -46,7 +46,6 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraT
 
 namespace UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 
 variable {X : Type} [CommRing X] {g n : ℕ}
 
@@ -107,7 +106,6 @@ private theorem sub_mapep (P Q : Matrix (Fin n) (Fin n) (DD X g)) (m : Fin g) :
   ext a b
   simp [sub_ep]
 
-end SlopeTestRemainingChoices
 
 private theorem first_order_lift_constant_part {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} {x : NP F n} (k : Kap x) (X : Type) [CommRing X]
     [Algebra x.A X] (γ : F.G₀) : (k.ρ1 X γ).map (fun u => u.a) = x.ρX X γ := by

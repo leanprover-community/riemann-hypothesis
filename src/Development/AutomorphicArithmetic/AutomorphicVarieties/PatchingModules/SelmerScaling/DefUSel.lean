@@ -54,7 +54,6 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraT
 
 namespace UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 
 variable {F R : Type} [CommRing F] [CommRing R] {n : ℕ}
 
@@ -145,7 +144,6 @@ private theorem snd_1 : (1 : Matrix (Fin n) (Fin n) (DualNumber F)).map TrivSqZe
   rw [Matrix.map_apply, Matrix.one_apply]
   split_ifs <;> simp
 
-end SlopeTestRemainingChoices
 
 private theorem locDual {F R H : Type} [Field F] [Infinite F] [CommRing R] [Group H] {n : ℕ}
     (a : R →+* F) (d : R →+ F) (hd : ∀ y z, d (y * z) = a y * d z + d y * a z) (h1 : d 1 = 0)

@@ -52,7 +52,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace UpperTheory.V.GradeZeroInterpolatingElement.TangentGlobal
 
-section Coc
 
 variable {H K : Type} [Group H] [Field K] (θ : H →* K) (z : H → K) (hz : ∀ g h, z (g * h) = z g + θ g * z h)
 include hz
@@ -95,7 +94,6 @@ private theorem cob_fin [CharZero K] (I U : Subgroup H) (hU : U.index ≠ 0) (h 
   field_simp
   linear_combination -h2
 
-end Coc
 
 private theorem cont_of_adic {Γ R K : Type} [TopologicalSpace Γ] [CommRing R] [NormedRing K] (I : Ideal R)
     (y : R →+* K) (a : ℝ) (ha1 : a < 1) (hy : ∀ n, ∀ x ∈ I ^ n, ‖y x‖ ≤ a ^ n)

@@ -40,7 +40,6 @@ open GroundTheory.Global GroundTheory.Global.SemiLocal UpperTheory.V.Published U
 open scoped Classical
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Semi
 
 variable {F F' : Type} [Field F] [Field F'] (r : F ≃+* F')
   {V V' : Type} [AddCommGroup V] [Module F V] [AddCommGroup V'] [Module F' V']
@@ -144,7 +143,6 @@ private theorem charpoly_semi [FiniteDimensional F V] [FiniteDimensional F' V']
   show (Finsupp.mapRange r (map_zero r) (b.repr (e.symm (e (g (b j)))))) i = _
   simp
 
-end Semi
 
 private theorem semilinear_equiv_conjugate_endomorphism {F F' : Type} [Field F] [Field F'] (r : F ≃+* F') (s : F[X] → ℂ) (s' : F'[X] → ℂ)
     (hs : ∀ P, s' (P.map r.toRingHom) = s P) (n : ℕ) :

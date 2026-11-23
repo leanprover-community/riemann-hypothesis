@@ -33,7 +33,6 @@ open AlgebraicGeometry CategoryTheory Limits
 
 namespace UpperTheory.Gal.FixZ
 
-section Coord
 
 variable {C : Type*} [Category C] {A : C} {k : ℕ} [HasProduct (fun _ : Fin k => A)]
 
@@ -68,7 +67,6 @@ private lemma coordMap_isPullback (j : Fin k) (φ : A ⟶ A) :
     · have := congrArg (· ≫ Pi.π (fun _ : Fin k => A) i) h₁
       simpa [coordMap_π, h] using this
 
-end Coord
 
 private lemma pow_prop (P : MorphismProperty Scheme.{0}) [P.IsMultiplicative]
     [P.IsStableUnderBaseChange] {S : Scheme.{0}} (A : Over S) (k : ℕ) (f : Fin k → (A ⟶ A))

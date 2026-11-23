@@ -42,7 +42,6 @@ open scoped TensorProduct Quaternion
 
 namespace UpperTheory.V.Af.PQuat
 
-section Alg
 
 variable {F : Type} [Field F] (R : Type) [CommRing R] [Algebra F R] (a b : F)
 
@@ -184,7 +183,6 @@ private theorem definite (τ : F →+* ℝ) (ha : τ a < 0) (hb : τ b < 0) :
     · exact Or.inr ((isUnit_of_neg _ _ (RingHom.id ℝ) ha hb x hx).mul_right_eq_zero.1 hxy)⟩
   exact h.noZeroDivisors _ (map_zero _) (map_mul _)
 
-end Alg
 
 open GlobalTheory.QuadSymbol GlobalTheory.IdeleNormChar in
 private theorem arith (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (h : Even (Module.finrank ℚ F)) :

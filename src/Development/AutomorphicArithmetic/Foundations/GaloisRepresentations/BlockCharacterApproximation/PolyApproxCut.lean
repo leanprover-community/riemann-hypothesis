@@ -54,11 +54,9 @@ def PolyApproxAt (ε : ℝ) (θ : J → k) (S : Set (J → k)) : Prop :=
 
 end Approx
 
-section Ring
 
 variable (O : Type) [CommRing O] (l N m : ℕ)
 
-end Ring
 
 abbrev Ch (n : ℕ) : Type := Multiplicative (ZMod n) →* ℂˣ
 

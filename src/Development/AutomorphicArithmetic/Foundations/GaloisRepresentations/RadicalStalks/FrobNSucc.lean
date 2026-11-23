@@ -41,7 +41,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.Gal.Ord
 
-section Va
 
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k]
 
@@ -293,7 +292,6 @@ private theorem vaGen [IsAlgClosed k] (hk : (p : k) = 0) {A : Over (Sp k)} [GrpO
   obtain ⟨σ, ψ, hb, m, -, hψ⟩ := key f le_rfl
   exact ⟨σ, ψ, hb, m, hψ⟩
 
-end Va
 
 end UpperTheory.Gal.Ord
 

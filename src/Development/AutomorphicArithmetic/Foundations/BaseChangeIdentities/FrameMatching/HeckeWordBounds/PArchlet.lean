@@ -50,7 +50,6 @@ open UpperTheory.BaseChangeIdentities.FrameWordIdentity
 
 attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Val
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ} {l₁ : InfinitePlace E → DomWeight a}
   {l₂ : InfinitePlace E → DomWeight b} {μ₁ : Measure (GA E a)} {μ₂ : Measure (GA E b)} {μa : Measure (G a)}
@@ -84,7 +83,6 @@ private theorem val_der {κ : Type} [Fintype κ] (v : InfinitePlace E) (s : Bool
   simp only [zVal_ite]
   cases side <;> simp
 
-end Val
 
 theorem _root_.UpperTheory.BaseChangeIdentities.FrameWordIdentity.archlet_pf :
     BlockOperatorsProductAdjoint → FBL.HermInf → ArchLet := by

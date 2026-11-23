@@ -40,7 +40,6 @@ import Mathlib.Tactic.ReduceModChar
 open KaehlerDifferential GlobalTheory.CechDR GlobalTheory.PD GlobalTheory.WH GlobalTheory.W1 UpperTheory.Gal.productCup_of_system
 open scoped TensorProduct
 
-section OmLocAux
 variable {L : Type} [Field L] [Algebra ℂ L]
 
 private noncomputable def om1 (B : Subalgebra ℂ L) : Submodule ℂ Ω[L⁄ℂ] :=
@@ -117,7 +116,6 @@ private lemma common_den (B : Subalgebra ℂ L) (e : B →ₐ[ℂ] ℂ) {q : ℕ
     push_cast
     ring
 
-end OmLocAux
 
 theorem UpperTheory.Gal.productCup_of_system.omLoc_of :
     OmLoc := by

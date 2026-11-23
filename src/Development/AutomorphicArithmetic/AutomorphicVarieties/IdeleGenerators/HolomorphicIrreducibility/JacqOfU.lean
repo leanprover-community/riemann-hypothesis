@@ -135,7 +135,6 @@ private theorem quot_of_sub {T J : Type} [CommGroup T] [AddCommGroup J] [Module 
   have := hk (Submodule.subset_span ⟨t, x, rfl⟩)
   rwa [LinearMap.mem_ker, map_sub, map_smul, sub_eq_zero, smul_eq_mul] at this
 
-section Gen
 
 variable {K : Type} [Field K]
 
@@ -362,7 +361,6 @@ private theorem gen (O : Subring K) (hO : ∀ x : K, x ∈ O ∨ x⁻¹ ∈ O) (
       smul_eq_mul, Units.val_mul, Units.val_div_eq_div_val]
     ring
 
-end Gen
 
 private theorem affine_mem_iwahori_level {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F)) (c : ℕ)
     (u : (w.adicCompletionIntegers F)ˣ) (x : w.adicCompletionIntegers F) :
@@ -386,7 +384,6 @@ private theorem cont_uni {K : Type} [Field K] [TopologicalSpace K] [IsTopologica
     change Continuous fun x : K => (aff (1 : Kˣ) x).inv i j
     fin_cases i <;> fin_cases j <;> simp [aff] <;> fun_prop
 
-section Loc
 
 variable {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F))
 
@@ -471,7 +468,6 @@ private theorem unit_mem (c : ℕ) (u : (w.adicCompletion F)ˣ) (hu : IsUnitAt w
   have := affine_mem_iwahori_level w c u' 0
   rwa [e] at this
 
-end Loc
 
 end UpperTheory.V.Sd
 

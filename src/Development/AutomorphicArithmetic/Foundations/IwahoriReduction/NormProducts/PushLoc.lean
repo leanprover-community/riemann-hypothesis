@@ -44,7 +44,6 @@ open scoped Matrix MatrixGroups Topology
 
 namespace UpperTheory.Kd.K4.CocycleShiftCongruenceModPower
 
-section Shapiro
 
 variable {R G V U A : Type*} [Ring R] [Group G] [AddCommGroup V] [Module R V] [CommGroup U] [Fintype U]
   [CommGroup A] [DecidableEq A]
@@ -101,7 +100,6 @@ private theorem push_coc (g : G → V →ₗ[R] V) (hg : ∀ s t v, g (s * t) v 
   rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
   exact AddSubgroup.sum_mem _ fun y _ => sh_coc g hg c rep hr P hP z H s t y
 
-end Shapiro
 
 private theorem ev_agree {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (E : Finset Ω) (s : Ω ≃ₐ[ℚ] Ω) :
     ∀ᶠ t in 𝓝 s, ∀ a ∈ E, t a = s a := by
@@ -122,7 +120,6 @@ private theorem ev_agree {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure �
     _ = s ((s⁻¹ * t) a) := rfl
     _ = s a := by rw [h]
 
-section Loc
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] {R V A : Type*} [Ring R] [AddCommGroup V] [Module R V]
   [DecidableEq A]
@@ -181,9 +178,7 @@ private theorem push_loc (g : (Ω ≃ₐ[ℚ] Ω) → V →ₗ[R] V) (M : ℕ) [
   rw [← Finset.sum_sub_distrib]
   exact AddSubgroup.sum_mem _ hs'
 
-end Loc
 
-section Good
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) (l : ℕ) [Fact l.Prime]
   (N w c j : ℕ)
@@ -311,7 +306,6 @@ private theorem tf {k : ℕ} {f g : X.Fn l} (h : (l : ℤ_[l]) ^ k • f = (l : 
   rw [← sub_eq_zero, ← smul_sub] at h1
   exact sub_eq_zero.1 (key k _ h1)
 
-end Good
 
 end UpperTheory.Kd.K4.CocycleShiftCongruenceModPower
 

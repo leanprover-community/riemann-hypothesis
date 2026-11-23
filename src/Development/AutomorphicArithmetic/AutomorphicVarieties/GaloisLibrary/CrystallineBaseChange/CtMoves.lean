@@ -49,7 +49,6 @@ open NumberField IsDedekindDomain MeasureTheory Topology Neutral.B1 Formalism.L2
 
 namespace UpperTheory.V.Br
 
-section Aff
 variable {R : Type} [CommRing R]
 
 private theorem cm_aff_mul (y y' : Rˣ) (x x' : R) : aff y x * aff y' x' = aff (y * y') (y * x' + x) := by
@@ -62,7 +61,6 @@ private theorem cm_scalar_comm (y : Rˣ) (g : GL (Fin 2) R) :
     g * Matrix.GeneralLinearGroup.scalar (Fin 2) y = Matrix.GeneralLinearGroup.scalar (Fin 2) y * g := by
   ext i j; fin_cases i <;> fin_cases j <;> simp [Matrix.GeneralLinearGroup.scalar, Matrix.mul_apply, Fin.sum_univ_succ, mul_comm]
 
-end Aff
 
 private theorem cm_ode {f : ℝ → ℂ} {κ : ℂ} (h : ∀ t, HasDerivAt f (κ * f t) t) : f 1 = Complex.exp κ * f 0 := by
   have h1 : ∀ t : ℝ, HasDerivAt (fun t : ℝ => Complex.exp (-κ * t) * f t) 0 t := fun t => by

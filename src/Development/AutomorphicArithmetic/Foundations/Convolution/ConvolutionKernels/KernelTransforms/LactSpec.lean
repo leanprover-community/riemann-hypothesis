@@ -35,7 +35,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C
 open scoped TensorProduct InnerProductSpace ComplexConjugate Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -99,7 +98,6 @@ private theorem lact_smooth {β : TI K n} (h : (fun g => β g⁻¹) ∈ (isExpLi
   exact (isExpLieAlgebra K n).mem_smoothFuns.1
     (UpperTheory.ConvolutionTheory.Tf.invSmooth K n _ (rUC u ⟨fun g => β g⁻¹, h⟩).2).1
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.Tf.lactSpec :
     ∀ (K : Type) [Field K] [NumberField K] (n : ℕ) (β : TI K n), SmoothT β → ∃ h : (fun g => β g⁻¹) ∈ (isExpLieAlgebra K n).smoothFuns (F := ℂ),

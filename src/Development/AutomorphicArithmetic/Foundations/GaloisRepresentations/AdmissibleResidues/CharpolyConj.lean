@@ -40,7 +40,6 @@ import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.Admis
 open UpperTheory.GalN.V
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
 
@@ -65,4 +64,3 @@ private theorem charpoly_conj {H K K' : Type} [Group H] [Field K] [Field K'] (f 
   show ((r g).map f).charpoly = ((r' g).map f).charpoly
   rw [Matrix.charpoly_map, Matrix.charpoly_map, hu, Matrix.coe_units_inv, Matrix.charpoly_units_conj]
 
-end SlopeTestRemainingChoices

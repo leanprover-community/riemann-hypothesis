@@ -42,7 +42,6 @@ open UpperTheory.V.Cj UpperTheory.V.Cj.H
 
 open scoped ContDiff
 
-section General
 
 variable {P Q α : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] [NormedAddCommGroup Q] [NormedSpace ℝ Q]
   [TopologicalSpace α]
@@ -137,9 +136,7 @@ private theorem smooth_nat (hf : LocallyIntegrable f μ) (hS : IsOpen S) (n : �
     exact (ih _ _ (fun x hx y => (hH x hx y).fderiv) fun x hx => supp_fderiv (hs x hx)).congr
       fun x hx => (hasFD hf hS hx hH (hs x hx)).fderiv
 
-end General
 
-section Adelic
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 
@@ -204,7 +201,6 @@ private theorem supp_chart {ψ : GA E a → ℂ} (hψ : HasCompactSupport ψ) (g
   by_contra h
   exact hy ⟨(v, y⁻¹ * g * infGL E a v), ⟨hv, subset_tsupport _ h⟩, by simp only; group⟩
 
-end Adelic
 
 theorem UpperTheory.V.Cj.H.cvSm :
     UpperTheory.V.Cj.H.CvSm := by

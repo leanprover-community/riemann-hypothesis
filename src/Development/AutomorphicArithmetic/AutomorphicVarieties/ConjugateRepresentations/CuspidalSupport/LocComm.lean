@@ -35,7 +35,6 @@ open UpperTheory.V.Af.Fin (emb e1 e2 blk Bdd)
 open GlobalTheory.PRep (fixed)
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] {a : ℕ}
 
@@ -59,7 +58,6 @@ private theorem loc_comm (w : Pl E) (g : GL (Fin a) (w.adicCompletion E)) {u : G
   ext i j : 2
   exact FiniteAdeleRing.ext _ fun v => congrArg (fun x : GL (Fin a) (v.adicCompletion E) => x i j) (H v)
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Cj.S.rtK :
     UpperTheory.V.Cj.S.CapAct → UpperTheory.V.Cj.S.RtK := by

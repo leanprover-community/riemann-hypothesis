@@ -44,7 +44,6 @@ open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 
-section SlopeTestRemainingChoices
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -104,7 +103,6 @@ private theorem nh_Kc_open (c : ℕ) : IsOpen (Kc k n c : Set (GL (Fin n) k)) :=
   · have h0 : (valuation k).restrict ((unif k : k) ^ c) ≠ 0 := by simp
     simpa only [Valuation.restrict_le_iff, map_pow (valuation k), nh_unif] using Valuation.isOpen_closedBall h0
 
-end SlopeTestRemainingChoices
 
 private theorem nh_open {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ} : IsOpen ((⨅ w : Plc L, (KO (w.adicCompletion L) (Fin n)).comap (cLoc w) : Subgroup (UA L n)) : Set (UA L n)) := by
   let p : UA L n →* GL (Fin n) (Af L) := (Matrix.GeneralLinearGroup.map (pFin L)).comp (UA L n).subtype

@@ -32,7 +32,6 @@ open NumberField IsDedekindDomain Matrix Formalism.L2.Host GlobalTheory.CuspRep 
 open UpperTheory.V.Af UpperTheory.V.AlgRepEndIrreducible UpperTheory.V.Lit UpperTheory.V.Lit.Geo UpperTheory.V.Lit.Bor UpperTheory.V.Cj
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ} {Ξ : AlgRep E a}
 
@@ -54,7 +53,6 @@ private theorem lev_comb {U : Subgroup (GL (Fin a) (Af E))} {q : ℕ} (s : ℂ) 
 private theorem lev_zero {U : Subgroup (GL (Fin a) (Af E))} {q : ℕ} : Geo.IsLev U Ξ (0 : Geo.Co Ξ q) :=
   ⟨fun k X => by simp, fun X i _ => rfl, fun X => Submodule.zero_mem _⟩
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Cj.levSub :
     UpperTheory.V.Cj.LevSub := by

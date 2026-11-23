@@ -62,7 +62,6 @@ private theorem reg_congr {S S' E : Type} [CommRing S] [CommRing S'] [Algebra �
   rw [← sm_image_congr act act' M f g h]
   exact hr k m hm hk
 
-section SysLem
 variable {d : ℕ} {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [Module ℂ E] (T : Sys d S E)
 
 private theorem r_eq (i j : Fin (d + 1)) (l : Fin d) :
@@ -85,9 +84,7 @@ private theorem r_mem (hG : T.Good) {I J : Finset (Fin (d + 1))} {i j : Fin (d +
   exact sub_mem (hG.memX I J ⟨j, hj⟩ i hi _)
     (mul_mem (hG.memX I J ⟨j, hj⟩ i hi _) (hG.memY I J ⟨i, hi⟩ j hj _))
 
-end SysLem
 
-section Forms
 variable {F K : Type} [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K]
 
 private theorem omB_le_fixed (B : Subalgebra ℂ K) (q : ℕ) {y : DR ℂ K} (hy : y ∈ omB ℂ K B q) :
@@ -122,7 +119,6 @@ private theorem ctrF_eq (τ : DR ℂ K →ₗ[K] K) (ψ : DR ℂ K →ₗ[F] F) 
     simp [ctrF, muP, mulP, h y hy, algebraMap_smul]
   exact key hm
 
-section Sz
 variable {d : ℕ} (x : Fin (d + 1) → Fˣ)
 
 private theorem xe (K : Type) [Field K] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K] (a : ℕ) (p j : Fin (d + 1)) :
@@ -229,7 +225,6 @@ private theorem loc_M (a : ℕ) (hc : IsFinCover ℂ K (xv x)) (hG : (sysZ K x a
     rw [map_smul]
     exact Submodule.smul_mem _ c h
 
-end Sz
 
 end Forms
 

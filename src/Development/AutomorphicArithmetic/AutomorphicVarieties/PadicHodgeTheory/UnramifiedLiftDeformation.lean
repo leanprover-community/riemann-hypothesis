@@ -183,7 +183,6 @@ private theorem evCongr {l : ℕ} [Fact l.Prime] {V M X : Type} [AddCommGroup V]
   rw [← hcc j, mul_comm]
   rfl
 
-section Ring
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [Algebra ℤ_[l] O]
   [Module.Finite ℤ_[l] O] {R : Type} [CommRing R] [Algebra O R] [IsCO O R]
@@ -305,7 +304,6 @@ private theorem coSub [IsAdicComplete (maximalIdeal O) O] [Nontrivial B] (f f' :
   have : c' = c := Subtype.ext h2
   exact (hS c).1 (this ▸ h1)
 
-end Ring
 
 private theorem ggmap_inj {C B : Type} [CommRing C] [CommRing B] (ι : C →+* B) (hι : Function.Injective ι) :
     Function.Injective (GG.map (m := 3) ι) := fun x y h => by
@@ -320,14 +318,12 @@ private theorem descend {C B G : Type} [CommRing C] [CommRing B] [Group G] (ι :
   have h : ∀ g, GG.map ι (u g) = r g := fun g => SemidirectProduct.ext (Units.ext (hA g)) rfl
   exact ⟨MonoidHom.mk' u fun g g' => ggmap_inj ι hι (by rw [map_mul, h, h, h, map_mul]), MonoidHom.ext h, fun g => rfl⟩
 
-section Main
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {Γ : Type} [Group Γ] [TopologicalSpace Γ] {η : Γ →* ℤˣ} {Ψ : Γ →* Oˣ}
 
 private theorem push_val {R B : Type} [CommRing R] [Algebra O R] [CommRing B] [Algebra O B] (C : Subalgebra O B)
     (f : R →ₐ[O] C) (r : Γ →* GG (m := 3) (R := R)) : push (C.val.comp f) r = (GG.map (C.val : C →+* B)).comp (push f r) := rfl
 
-end Main
 
 theorem UpperTheory.V.Loc.unramified_lift_deformation :
     ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O] [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] [IsAdicComplete (maximalIdeal O) O] (D : Dat3 l O) (U : _root_.UpperTheory.V.U3.Univ (_root_.UpperTheory.V.U3.GCond.noCondition O D.η D.Ψ)) (E : Type) [Field E] [Algebra ℚ_[l] E] [Module.Finite ℚ_[l] E] [Algebra O E] [Algebra ℤ_[l] E] [IsScalarTower ℤ_[l] O E] [IsScalarTower ℤ_[l] ℚ_[l] E] (B : Type) [CommRing B] [Algebra ℚ_[l] B] [Module.Finite ℚ_[l] B] [Algebra O B] [Algebra ℤ_[l] B] [IsScalarTower ℤ_[l] O B] [IsScalarTower ℤ_[l] ℚ_[l] B] [Algebra E B] [IsScalarTower O E B] [IsScalarTower ℚ_[l] E B] (π : B →ₐ[E] E) (hπ : ∀ a, π a = 0 → IsNilpotent a) (x : U.R →ₐ[O] E) (r : GQ l →* GG (m := 3) (R := B)), HasMult D.η r → (GG.map (π : B →+* E)).comp r = push x U.r.hom → (∀ a b, QCont l fun g => (r g).mat a b) → ∃! f : U.R →ₐ[O] B, push f U.r.hom = r := by

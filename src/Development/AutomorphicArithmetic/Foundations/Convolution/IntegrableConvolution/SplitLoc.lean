@@ -39,7 +39,6 @@ open GroundTheory.Automorphic GroundTheory.Global GroundTheory.Global.SemiLocal 
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section Unif
 
 variable (A : Type*) [Field A] [ValuativeRel A] [TopologicalSpace A] [IsNonarchimedeanLocalField A]
 
@@ -51,9 +50,7 @@ private theorem val_le_unif {x : A} (hx : valuation A x < 1) :
     exact (GLnLocal.residue_eq_zero_iff_valuation_lt_one A y).2 hx
   simpa using (GLnLocal.mem_maximalIdeal_pow_iff A (m := 1)).1 hy
 
-end Unif
 
-section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (v : Pl F) (w : HeightOneSpectrum (𝓞 E)) [w.asIdeal.LiesOver v.asIdeal]
@@ -236,7 +233,6 @@ private theorem main (hs : Function.Surjective (completionMap v w)) :
       fun _ => rfl⟩, integral_iff v w n hs, iw_iff v w n hs, fun ν => coset_iff v w n hs ν hsurj,
     norm_eq v w hs⟩
 
-end Main
 
 end UpperTheory.ConvolutionTheory.L1
 

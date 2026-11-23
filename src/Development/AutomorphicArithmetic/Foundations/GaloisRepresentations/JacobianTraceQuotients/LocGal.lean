@@ -43,7 +43,6 @@ open UpperTheory.Gal.LocD UpperTheory.Gal.InertialTypesAlt.G UpperTheory.Gal.Joi
 open PositivityTheory.Rg.Tf.Geo
 open scoped Classical NNReal ENNReal Pointwise
 
-section Local
 
 variable {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [Field k'] [ValuativeRel k'] [TopologicalSpace k'] [IsNonarchimedeanLocalField k'] [Algebra k k'] [FiniteDimensional k k']
@@ -120,9 +119,7 @@ private theorem iter_aut (s : k' ≃ₐ[k] k') (i : ℕ) (x : k') :
     rw [Function.iterate_succ_apply', ih, pow_succ', AlgEquiv.mul_apply]
     rfl
 
-end Local
 
-section Global
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -167,7 +164,6 @@ private theorem galFin_eq (σ : E ≃ₐ[F] E) {v : Pl F} (w : PlacesOver E v) (
     simp only [map_add (f := _), Pi.add_apply] at ha hb ⊢
     rw [ha, hb]
 
-end Global
 
 open scoped Valued in
 theorem UpperTheory.Gal.Join.locGal :

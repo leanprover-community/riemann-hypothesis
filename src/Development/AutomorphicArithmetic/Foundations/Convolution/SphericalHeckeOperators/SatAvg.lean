@@ -47,7 +47,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open MeasureTheory GroundTheory.Automorphic GroundTheory.Automorphic.Spherical GroundTheory.Automorphic.GLnLocal GroundTheory.Automorphic.Iwasawa UpperTheory.ConvolutionTheory.H
 
-section SlopeTestRemainingChoices
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
   [LocallyCompactSpace G] [T2Space G] [TotallyDisconnectedSpace G] (μ : Measure G) [μ.IsHaarMeasure]
@@ -96,9 +95,7 @@ private theorem cv_mul_left {a b : G → ℂ} {k : G} (hk : ∀ g, a (k * g) = a
   rw [← integral_mul_left_eq_self (fun y => a y * b (y⁻¹ * (k * x))) k]
   simp [hk, mul_assoc]
 
-end SlopeTestRemainingChoices
 
-section Aux2
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
 
@@ -117,7 +114,6 @@ private theorem dom_monomial {a : Fin n → ℤ} (ha : Antitone a) : Dom (monomi
   rw [Finset.mem_singleton.1 (Finsupp.support_single_subset hb)]
   exact ha
 
-end Aux2
 
 private theorem dPol_ne_zero (n : ℕ) (t : ℂ) : dPol n t ≠ 0 := by
   refine Finset.prod_ne_zero_iff.2 fun p hp h => ?_
@@ -143,7 +139,6 @@ private theorem inj_of_dPol {n : ℕ} {z : Fin n → ℂˣ} (h : evalAt z (dPol 
   · exact h
   · exact absurd e.symm (key _ _ h)
 
-section Aux3
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
   [MeasurableSpace (GL (Fin n) F)] (μ : Measure (GL (Fin n) F))
@@ -168,7 +163,6 @@ private theorem oneK_mul (hK : μ (integralGL F n : Set (GL (Fin n) F)) = 1) :
   exact congrArg (fun x : HeckeAlgebra μ => (x : GL (Fin n) F → ℂ))
     (HeckeAlgebra.isIdempotentElem_idem (μ := μ) (isCompact_integralGL F n) (isOpen_integralGL F n)).eq
 
-end Aux3
 
 private theorem int_sandwich {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] {n : ℕ}
     [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)] (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure]

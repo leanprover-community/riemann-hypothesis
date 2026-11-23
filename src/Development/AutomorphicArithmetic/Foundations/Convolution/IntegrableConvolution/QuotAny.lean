@@ -37,7 +37,6 @@ open scoped ENNReal
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section QuotAnyAux
 
 variable {X T : Type} [Group X] [MeasurableSpace X] [MeasurableMul₂ X] [Group T] [MeasurableSpace T]
   [MeasurableInv T]
@@ -71,9 +70,7 @@ private theorem lint_eq {μ : Measure X} [μ.IsMulLeftInvariant] [SFinite μ] {�
       (hi.comp (measurable_snd.inv)).mul measurable_fst
     exact (((hF.comp measurable_fst).mul (hρ'.comp measurable_fst)).mul (hρ.comp hm)).aemeasurable
 
-end QuotAnyAux
 
-section QuotAnyReal
 
 variable {X : Type} [MeasurableSpace X]
 
@@ -106,9 +103,7 @@ private theorem int_of {μ : Measure X} {g : X → ℝ} (hg : Measurable g) {ρ 
   gcongr
   exact ENNReal.ofReal_toReal_le
 
-end QuotAnyReal
 
-section QuotAnyMain
 
 variable {X T : Type} [Group X] [MeasurableSpace X] [MeasurableMul₂ X] [Group T] [MeasurableSpace T]
   [MeasurableInv T]
@@ -192,7 +187,6 @@ private theorem cpx_eq {μ : Measure X} [μ.IsMulLeftInvariant] [SFinite μ] {ν
     rw [← a, ← b]
     exact real_eq hi (Complex.measurable_im.comp hΦ) (fun t x => by simp [hΦi]) hρ hρ1 hρ' hρ'1 bim
 
-end QuotAnyMain
 
 end UpperTheory.ConvolutionTheory.L1
 

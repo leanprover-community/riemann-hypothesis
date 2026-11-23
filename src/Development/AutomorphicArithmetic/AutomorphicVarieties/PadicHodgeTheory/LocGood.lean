@@ -43,7 +43,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.U3 UpperTheory.V.Alg IsLocalRing Polynomial
 
-section Series
 
 variable {E σ : Type} [Field E]
 
@@ -118,7 +117,6 @@ private theorem mem_sq_of_coeff [Fintype σ] {f : MvPowerSeries σ E} (h0 : MvPo
   exact Ideal.sum_mem _ fun i _ =>
     Ideal.mul_mem_mul ((mem_max_iff _).2 (MvPowerSeries.constantCoeff_X i)) ((mem_max_iff _).2 (hg i))
 
-end Series
 
 private theorem zl_inj (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra ℤ_[l] O] [Module.Finite ℤ_[l] O] : Function.Injective (algebraMap ℤ_[l] O) := by

@@ -37,7 +37,6 @@ open UpperTheory.Gal.LocalSmoothExtension (wordFn polyFn)
 
 namespace UpperTheory.Gal.Spc
 
-section Abstract
 
 variable {H J : Type} [Group H] {K : Subgroup H}
 
@@ -136,7 +135,6 @@ private theorem poly_supp {ψ : J → H → ℂ} {f : H → ℂ} {R : Set H} (hR
     exact hgR (word_supp (K := K) hR hf w g hne)
   rw [hw, mul_zero]
 
-end Abstract
 
 theorem words : Words := by
   intro p _ G Lv J ψ e u u' hψ he hu hrel n

@@ -198,7 +198,6 @@ private theorem pf_vanish {O X σ S : Type} [CommRing O] [AddCommGroup X] [Finit
   have := GlobalTheory.algHom_mem_pow_of_le_order φ hφ hs
   simpa [h] using this
 
-section Core
 
 variable {O X R K : Type} [CommRing O] [AddCommGroup X] [CommRing R] [Algebra O R] (W : WPres O X R)
   [Field K] [Algebra O K] (ξ : W.A →ₐ[O] K)
@@ -358,7 +357,6 @@ private theorem pf_factor [DecidableEq X] (hι : Function.Injective ι)
     rw [← key j F hF x hFx', ← hf, ← hFx']
     rfl
 
-end Core
 
 theorem UpperTheory.V.Alg.points_finite :
     ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (maximalIdeal O) O] (X : Type) [AddCommGroup X] [Module.Free ℤ X] [Module.Finite ℤ X] [DecidableEq X] (R : Type) [CommRing R] [Algebra O R] [IsCO O R] (W : WPres O X R), (∀ s, W.z s ∈ maximalIdeal R) → ∀ (K : Type) [Field K] [IsAlgClosed K] [Algebra O K] [FaithfulSMul O K] [Algebra.IsAlgebraic O K] (ξ : W.A →ₐ[O] K),

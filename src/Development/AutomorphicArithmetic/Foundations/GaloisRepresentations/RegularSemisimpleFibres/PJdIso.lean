@@ -35,7 +35,6 @@ open GroundTheory.Global GroundTheory.Global.SemiLocal UpperTheory.V.Published U
 open scoped Classical
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Transport
 
 variable {F F' : Type} [Field F] [Field F'] (r : F ≃+* F')
 
@@ -153,7 +152,6 @@ private theorem detc_phi (j : AlgebraicClosure F ≃+* AlgebraicClosure F')
   rw [coe_phi, e, ← hj]
   rfl
 
-end Transport
 
 theorem UpperTheory.Gal.InertialTypesAlt.jdIso :
     CuspIso → JDIso := by

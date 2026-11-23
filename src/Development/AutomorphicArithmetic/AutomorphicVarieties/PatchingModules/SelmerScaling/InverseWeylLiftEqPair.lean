@@ -44,7 +44,6 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraT
 
 namespace UpperTheory.V.Pa
 
-section P
 
 variable {A : Type} (R : Type) [CommRing A] [CommRing R] [Algebra A R] {e n : ℕ}
 
@@ -139,9 +138,7 @@ private theorem tri_mul {M N : Matrix (Fin n) (Fin n) A} (hM : ∀ i j, j < i �
   · rw [hM i k hk, zero_mul]
   · rw [hN k j (lt_of_lt_of_le hij (not_lt.1 hk)), mul_zero]
 
-end P
 
-section K
 
 variable {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} {x : NP F n} (k : Kap x) (R : Type) [CommRing R] [Algebra x.A R]
 
@@ -157,7 +154,6 @@ private theorem inverse_weyl_lift_eq_pair (v) : k.wi1 R v = PP R (x.wiX x.A v) (
   have : x.wiX (DD R k.g) v = PP R (x.wiX x.A v) (fun _ => 0) := by rw [← PP_map]; rfl
   rw [Kap.wi1, PP_add, this, congruenceCondition_mul]; simp
 
-end K
 
 end UpperTheory.V.Pa
 

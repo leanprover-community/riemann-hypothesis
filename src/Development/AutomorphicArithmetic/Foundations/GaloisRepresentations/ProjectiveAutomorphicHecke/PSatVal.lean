@@ -38,7 +38,6 @@ open NumberField IsDedekindDomain Matrix Neutral.B1 Formalism.L2.Host Formalism.
 open GlobalTheory.DefU GlobalTheory.PRep GlobalTheory.HeckeGal UpperTheory.Gal.CertificateRingHomMap
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 open GlobalTheory.LFun
 open Formalism.UG (IsUnifV Tj Ov diagJ GLint qV)
@@ -151,7 +150,6 @@ private theorem satVec_of_mem {σ : Submodule ℂ (UA E n → ℂ)} (hσ : IsAut
   rw [hpe]
   exact hk
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Gal.CertificateRingHomMap.pSatVal_of :
     UpperTheory.Gal.CertificateRingHomMap.SatVal := by

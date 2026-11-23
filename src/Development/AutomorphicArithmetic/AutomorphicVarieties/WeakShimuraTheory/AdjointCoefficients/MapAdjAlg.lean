@@ -42,7 +42,6 @@ public import Mathlib.RingTheory.Filtration
 
 open IsLocalRing UpperTheory.V UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws
 
-section Co
 
 variable {A k ι : Type} [CommRing A] [CommRing k] [Fintype ι] [DecidableEq ι] {K : Ideal A} {σ co : A → k}
 
@@ -90,9 +89,7 @@ private theorem co_add (h1 : ∀ x ∈ K, ∀ y ∈ K, co (x + y) = co x + co y)
   ext a b
   exact h1 _ (hZ _ _) _ (hZ' _ _)
 
-end Co
 
-section LC
 
 variable {T A ι : Type} [TopologicalSpace T] [CommRing A] [Fintype ι] [DecidableEq ι]
 
@@ -128,7 +125,6 @@ private theorem lc_ker [IsNoetherianRing A] {I K : Ideal A} (hs : I * K = ⊥) {
   have := congrFun (congrFun hy a) b
   exact sub_eq_zero.1 (e2 _ (K.sub_mem (hf _ _ _) (hf _ _ _)) (Ideal.Quotient.eq.1 this))
 
-end LC
 
 section G
 

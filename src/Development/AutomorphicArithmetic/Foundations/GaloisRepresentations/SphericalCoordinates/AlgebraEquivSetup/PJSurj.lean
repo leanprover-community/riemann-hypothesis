@@ -42,7 +42,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.Gal.W2.Seed
 
-section Core
 variable {R R' : Type} [CommRing R] [CommRing R'] {n : ℕ}
 
 private theorem mulG {ε : R} (he : ε * ε = ε) (A B : Matrix (Fin n) (Fin n) R) :
@@ -133,9 +132,7 @@ private theorem conj_part (Φ : R →+* R') {ε : R} (hΦe : Φ ε = 0)
   ext i k
   simp [Matrix.map_apply, Matrix.add_apply, Matrix.smul_apply, hΦe]
 
-end Core
 
-section Applications
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {A : Arith E} {n p : ℕ} [Fact p.Prime]
 
 private theorem mem_conj_iff (p : ℕ) (w : Plc E) :
@@ -157,7 +154,6 @@ private theorem mx_inv (S : Setup A n p) (h : S.G.GAf) : S.mx h * S.mx h⁻¹ = 
 private theorem mx_inv' (S : Setup A n p) (h : S.G.GAf) : S.mx h⁻¹ * S.mx h = 1 :=
   Units.inv_mul (h : (AfP p ⊗[ℚ] S.G.C)ˣ × (AfP p)ˣ).1
 
-end Applications
 
 end UpperTheory.Gal.W2.Seed
 

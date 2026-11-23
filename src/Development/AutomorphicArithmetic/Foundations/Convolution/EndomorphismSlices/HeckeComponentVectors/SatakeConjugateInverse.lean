@@ -48,7 +48,6 @@ open UpperTheory.Zero.ConvolutionTheory.EB PositivityTheory.Rg.BcB.F.RS
 
 attribute [local instance] borelG borelF borelA borelH
 
-section Back
 
 open PositivityTheory.Rg.BcB.F.RS.JetMatrixAlgebra GlobalTheory.ThetaSatake
 open GlobalTheory.LFun.ConjPlace (dGL invT dGL_comm invT_dGL)
@@ -100,7 +99,6 @@ private theorem satake_conjugate_inverse {a b : ℕ} (x : Pl E) {G : H E a b →
       (cloc_symm_v x ϖ').trans hϖ', fun i hi j hj g => ?_⟩
     exact congrArg₂ (· * ·) (Tj_fx_symm x a hϖ' hp0 hi g.1) (Tj_fx_symm x b hϖ' hp0 hj g.2)
 
-end Back
 
 theorem UpperTheory.Zero.ConvolutionTheory.EB.sat2Back :
     ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a b : ℕ) (w : Pl E) (G : H E a b → ℂ) (B₁ B₂ : Multiset ℂˣ), IsSplitAt w → IsSat2 w (pairRtT a b w) G B₁ B₂ →

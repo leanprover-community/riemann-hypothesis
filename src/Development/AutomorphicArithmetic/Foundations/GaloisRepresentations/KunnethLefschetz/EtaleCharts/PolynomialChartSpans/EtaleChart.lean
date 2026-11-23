@@ -378,7 +378,6 @@ private theorem dim_unique {X Y : Scheme.{0}} (f : X ⟶ Y) {a b : ℕ} (x : X)
   have rb := Algebra.IsStandardSmoothOfRelativeDimension.rank_kaehlerDifferential (R := Γ(Y, U)) (S := Localization.Away t) b
   exact Nat.cast_injective (R := Cardinal) (ra.symm.trans rb)
 
-section Charts
 
 variable {K : Type} [CommRing K]
 
@@ -458,7 +457,6 @@ private theorem chartT {T : Scheme.{0}} [IsClosedImmersion i] {d : ℕ} (c : Cry
   rw [hw]
   exact hm
 
-end Charts
 
 theorem blowE : BlowE := by
   intro K _ W Z Y T p i π D d e hB hsm hpr j r hpb

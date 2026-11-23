@@ -42,7 +42,6 @@ open Matrix UpperTheory.V.Alg UpperTheory.V.W
 
 namespace UpperTheory.V.Pa.Det
 
-section Ep
 
 variable {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {g n : ℕ}
 
@@ -98,9 +97,7 @@ private theorem add_mul_sub_epM (Z : Fin g → Matrix (Fin n) (Fin n) X) : (1 + 
 private theorem sub_mul_add_epM (Z : Fin g → Matrix (Fin n) (Fin n) X) : (1 - DD.epM Z) * (1 + DD.epM Z) = 1 := by
   rw [sub_mul, one_mul, mul_add, mul_one, epM_mul_epM]; abel
 
-end Ep
 
-section Rho
 
 variable {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} (x : NP F n) (X : Type) [CommRing X] [Algebra x.A X]
 
@@ -152,7 +149,6 @@ private theorem ρ1_mul (g h : F.G₀) : k.ρ1 X (g * h) = k.ρ1 X g * k.ρ1 X h
     _ = r * r' + P * r * r' + r * Q * r' + P * r * Q * r' := by rw [i, z]; noncomm_ring
     _ = _ := by noncomm_ring
 
-end Rho
 
 end UpperTheory.V.Pa.Det
 

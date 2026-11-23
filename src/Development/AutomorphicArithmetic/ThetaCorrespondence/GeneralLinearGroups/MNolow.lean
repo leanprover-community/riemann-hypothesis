@@ -49,7 +49,6 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.GeneralLinea
 
 open Filter Topology GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult UpperTheory.Lit.Cas
 
-section SlopeTestRemainingChoices
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -101,7 +100,6 @@ private theorem scalarBy_nu (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ) (z : k
   rw [e]
   exact scalarBy_ofChar _ _ z
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.Lit.Mix.nolow :
     GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.BernsteinZelevinskyFiniteness → GlobalTheory.Published.ZelevinskyPolynomialRing → ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (r t : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (σ : Representation ℂ (GL (Fin r) k) V) (A : Multiset (IrrGL (k := k))) (χ : kˣ →* ℂˣ) (hχ : IsSmoothChar χ), r < t → HasSupport σ A → IsUnitarisable σ → IsUnitaryChar χ → (IrrGL.ofChar χ hχ).nu (-((t : ℂ) - 1) / 2) ∉ A := by

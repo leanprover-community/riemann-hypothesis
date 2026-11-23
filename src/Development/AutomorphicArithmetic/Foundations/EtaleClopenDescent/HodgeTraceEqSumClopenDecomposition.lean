@@ -40,7 +40,6 @@ open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.T
 
 namespace UpperTheory.TrSum
 
-section Alg
 
 variable {R M N : Type*} [CommRing R] [AddCommGroup M] [Module R M] [Module.Finite R M]
   [Module.Projective R M] [AddCommGroup N] [Module R N] [Module.Finite R N] [Module.Projective R N]
@@ -94,7 +93,6 @@ private theorem algTrace_eq_sum {ι : Type*} [Fintype ι] {B B' : Type*} {C : ι
   ext y
   simp [h1]
 
-end Alg
 
 private theorem res_pi_bijective {Y : Scheme.{0}} {M : Type} (A : Y.Opens) (D : M → Y.Opens)
     (hD : ∀ m, D m ≤ A) (hc : A ≤ iSup D) (hd : ∀ i j, i ≠ j → D i ⊓ D j = ⊥) :
@@ -117,7 +115,6 @@ private theorem res_pi_bijective {Y : Scheme.{0}} {M : Type} (A : Y.Opens) (D : 
       (fun m ↦ homOfLE (hD m)) hc y hcomp
     exact ⟨x, funext hx⟩
 
-section Geo
 
 variable {k : Type} [CommRing k] {Z Y : Scheme.{0}}
 
@@ -259,7 +256,6 @@ private theorem hodgeTrace_eq_sum {s : Z ⟶ Sp k} {s' : Y ⟶ Sp k} {c : Y ⟶ 
   rw [Category.comp_id, Category.id_comp]
   rfl
 
-end Geo
 
 end UpperTheory.TrSum
 

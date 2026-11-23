@@ -161,7 +161,6 @@ end UpperTheory.Gal.Ord
 
 namespace UpperTheory.Gal.Ord
 
-section ArtB
 
 open Polynomial IsLocalRing
 open scoped Classical
@@ -394,7 +393,6 @@ private lemma art_map [Module.Finite k B] (π : B →ₐ[k] k)
   rw [hX] at this
   rw [this, aeval_X]
 
-end ArtB
 
 end UpperTheory.Gal.Ord
 

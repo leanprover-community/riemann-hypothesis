@@ -97,7 +97,6 @@ private theorem rg_sign {K Ω : Type} [Field K] [NumberField K] [IsCMField K] (h
       exact (IsCMField.complexEmbedding_complexConj K (j.comp (algebraMap K Ω)) δ).symm
     simp [this, hne]
 
-section BK
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {l : ℕ} [Fact l.Prime]
   {C V : Type} [CommRing C] [Algebra ℚ_[l] C] [AddCommGroup V] [Module C V] [Module ℚ_[l] V]
@@ -125,7 +124,6 @@ private theorem rg_bk {ρ ρ' : Representation C (G F Ω) V} (f : V →ₗ[C] V)
     rw [← key, ← map_sub, ← hx g, LinearMap.rTensor_tmul]
     simp [hz]
 
-end BK
 
 private def rgJ (k : Type) [CommRing k] : GL (Fin 4) k where
   val := !![0, 0, 0, 1; 0, 0, 1, 0; 0, -1, 0, 0; -1, 0, 0, 0]

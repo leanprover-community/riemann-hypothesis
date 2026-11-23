@@ -44,7 +44,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C
 open scoped TensorProduct InnerProductSpace ComplexConjugate Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 
@@ -172,7 +171,6 @@ private theorem uAct_tmul (c : ℂ) (a : UEnv K n) (f : archSmooth K n) :
       (uAction : UEnv K n →ₐ[ℝ] Module.End ℂ (archSmooth K n))
       (fun c _ => Algebra.commute_algebraMap_left c _) c a)
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.Tf.rconvSlice :
     ∀ (K : Type) [Field K] [NumberField K] (n : ℕ), 0 < n → ∀ (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure] (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (m : Measure (AdelicGLn.FiniteAdelicGL K n)) [m.IsHaarMeasure], Compat μ ν m →

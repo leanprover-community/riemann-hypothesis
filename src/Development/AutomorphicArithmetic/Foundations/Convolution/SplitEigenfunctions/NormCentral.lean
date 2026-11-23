@@ -45,7 +45,6 @@ open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.H UpperTh
 open UpperTheory.V.Af.Smo (Eig EigAt)
 open UpperTheory.ConvolutionTheory.RankTwoDescent
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -80,7 +79,6 @@ private theorem norm_central (s : {r : ℝ // 0 < r}) :
     fin_cases i <;> fin_cases j <;> simp [Matrix.GeneralLinearGroup.scalar]
   · rw [ideleNorm_ideleEmbedding, map_pow, ← hy, ← map_pow, hs₀]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.RankTwoDescent.toII :
     ToII := by

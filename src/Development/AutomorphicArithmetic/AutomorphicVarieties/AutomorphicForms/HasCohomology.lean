@@ -71,14 +71,12 @@ def AlgRep.HasInfChar (Ξ : AlgRep E a) (v : InfinitePlace E) (m : Multiset ℂ)
 
 
 
-section Complex
 
 omit [NumberField E]
 
 variable {M : Type} [AddCommGroup M] [Module ℂ M] [Module ℝ M] [IsScalarTower ℝ ℂ M]
   (κ : Kinf E a → Module.End ℂ M) (L : Lie E a →ₗ[ℝ] Module.End ℂ M)
 
-end Complex
 
 variable [IsTotallyReal E]
 

@@ -41,7 +41,6 @@ open ValuativeRel Matrix GlobalTheory.DZA
 
 namespace UpperTheory.Gal.InertialTypesAlt.L
 
-section Alg
 
 variable {R S : Type} [CommRing R] [CommRing S] {n : ℕ}
 
@@ -138,9 +137,7 @@ private theorem lift_red (r : R →+* S) (τ : R →+* R) (t : S →+* S) (hr : 
   simp only [h1]
   rw [← Finset.sum_smul, ha, one_smul]
 
-end Alg
 
-section Fin
 
 variable {F₀ F₁ : Type} [Field F₀] [Field F₁] [Algebra F₀ F₁] {n : ℕ}
 
@@ -272,9 +269,7 @@ private theorem isGal_frob [Fintype F₀] [Fintype F₁] (sb : F₁ ≃ₐ[F₀]
     Subgroup.eq_top_of_card_eq _ (by rw [Nat.card_zpowers, ho, hc])
   exact UpperTheory.ConvolutionTheory.D.galField F₀ F₁ sb fun τ => by rw [htop]; trivial
 
-end Fin
 
-section Loc
 
 variable {k K : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
@@ -406,7 +401,6 @@ private theorem lat_main [IsGalois k K] {F₀ F₁ : Type} [Field F₀] [Fintype
   apply Units.ext
   exact hMH.symm
 
-end Loc
 
 end UpperTheory.Gal.InertialTypesAlt.L
 

@@ -39,10 +39,8 @@ import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
-section Helpers
 open IsLocalRing Matrix UpperTheory.V.Hi
 
-section Gen
 
 variable {A M ι : Type} [CommRing A] [AddCommGroup M] [Module A M]
 
@@ -145,9 +143,7 @@ private theorem pb_locInf [IsNoetherianRing A] {Y Y' : Submodule A M} [Module.Fi
   rintro _ ⟨y, hy, rfl⟩
   exact hy.2
 
-end Gen
 
-section Fr
 
 variable {Γ Ga Gp : Type} [Group Γ] [Group Ga] [Group Gp] (X : Frame Γ Ga Gp) {A : Type} [CommRing A] {m : ℕ}
   (τ : X.Ub →* GL (Fin m) A) (θ : X.I.T →* Aˣ)
@@ -176,9 +172,7 @@ private theorem pb_ordMap [IsCNL A] (hθ : X.I.ContChar θ) (u : X.Ub) {U V : Su
   simp only [mulVec, dotProduct]
   exact Submodule.sum_mem _ fun j _ => Ideal.mul_mem_left _ _ (hy _ trivial j trivial)
 
-end Fr
 
-section Grp
 
 variable {B C : Type} [Group B] [Group C] (J : B →* C) (UQ : Subgroup C) (hc : ∀ u ∈ UQ, ∀ g, Commute u (J g))
 include hc
@@ -219,9 +213,7 @@ private theorem pb_equiv (K K' : Subgroup B) [(K'.subgroupOf K).Normal]
     rw [e, (hc u hu k).eq, inv_mul_cancel_left]
     exact Subgroup.mem_sup_left hu
 
-end Grp
 
-section Main
 
 variable {Γ Ga Gp : Type} [Group Γ] [Group Ga] [Group Gp] (X : Frame Γ Ga Gp) {A : Type} [CommRing A] [IsCNL A] {m : ℕ}
   (τ : X.Ub →* GL (Fin m) A) (θ : X.I.T →* Aˣ)
@@ -337,7 +329,6 @@ private theorem pb_main (hθ : X.I.ContChar θ) {B Lev ι : Type} [Group B] [Non
     change (ε (ρ0 _ x) : X.Fn A m) = X.ra τ (J k) (ε x)
     rw [← hρe, ← Module.End.mul_apply, ← this, Module.End.mul_apply]
 
-end Main
 
 private theorem pb_idx {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {K K' : Subgroup G}
     (hK : IsCompact (K : Set G)) (hK' : IsOpen (K' : Set G)) : K'.relIndex K ≠ 0 := by
@@ -346,7 +337,6 @@ private theorem pb_idx {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalG
   haveI : Finite (K ⧸ K'.subgroupOf K) := finite_of_compact_of_discrete
   exact Subgroup.index_ne_zero_of_finite
 
-section Top
 
 variable {Q : Type} [Fintype Q] [DecidableEq Q] {G : Q → Type} [∀ q, Group (G q)] [∀ q, TopologicalSpace (G q)]
   [∀ q, IsTopologicalGroup (G q)]
@@ -394,7 +384,6 @@ private theorem pb_J {C : Type} [Group C] (s : ∀ q, G q →* C) (h : ∀ q q',
     simp only [J, MonoidHom.noncommPiCoprod_apply]
     exact Subgroup.noncommProd_mem _ (fun q _ q' _ hq => h q q' hq _ _) fun q _ => Subgroup.mem_iSup_of_mem q ⟨g q, hg q trivial, rfl⟩
 
-end Top
 
 private theorem pb_dc {A H H' M : Type} [CommRing A] [Group H] [Group H'] [AddCommGroup M] [Module A M]
     (ρ : Representation A H M) (s : H' →* H) (u : H) (h : ∀ g, Commute u (s g)) (K K' : Subgroup H') (x : H') :

@@ -71,7 +71,6 @@ private theorem smul_of_finrank_one {V : Type} [AddCommGroup V] [Module ℂ V] [
 
 end Fin
 
-section Key
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -136,7 +135,6 @@ private theorem val_of_inflates {i : ℚ_[g] ≃+* k} {θ : Kˣ →* ℂˣ} {τ 
   rw [h4] at h2
   exact (Units.ext (smul_left_injective ℂ hv h2)).symm
 
-end Key
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}

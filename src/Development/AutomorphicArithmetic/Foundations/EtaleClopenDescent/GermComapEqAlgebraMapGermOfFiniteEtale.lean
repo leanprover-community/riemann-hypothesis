@@ -45,7 +45,6 @@ open CategoryTheory AlgebraicGeometry GlobalTheory.HodgeCoh GlobalTheory.CechDR 
 noncomputable section
 namespace UpperTheory.Cb
 
-section Alg
 
 variable {B B' K L : Type} [CommRing B] [CommRing B'] [IsDomain B] [IsDomain B'] [Field K] [Field L]
   [Algebra B B'] [Algebra B K] [Algebra K L] [Algebra B' L] [Algebra B L]
@@ -96,7 +95,6 @@ private theorem algebraMap_etTrace [Module.Finite B B'] [Algebra.Etale B B'] (b 
   rw [← algTrace_eq_trace, algTrace_of_isPushout (B := B) (B' := B') b]
   rfl
 
-end Alg
 
 theorem germ_comap_eq_algebraMap_germ_of_finite_etale : ∀ (Z Y : Scheme.{0}) [IsIntegral Z] [IsIntegral Y] (p : Z ⟶ Sp ℂ) (p' : Y ⟶ Sp ℂ)
     (c : Y ⟶ Z) (hc : c ≫ p = p') [IsFinite c] [Etale c] [Algebra Z.functionField Y.functionField],

@@ -48,7 +48,6 @@ import ReciprocityTheory.GaloisValuations.GlobalA
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc ReciprocityTheory.Gal TensorProduct Module UpperTheory.V.Loc UpperTheory.V.U3
 
-section Gen
 
 variable {Q A V V' : Type} [Field Q] [CommRing A] [Algebra Q A] [AddCommGroup V] [Module A V] [Module Q V]
   [IsScalarTower Q A V] [AddCommGroup V'] [Module A V'] [Module Q V'] [IsScalarTower Q A V']
@@ -81,12 +80,9 @@ private theorem tr_smul {K : Type} [AddCommGroup K] [Module Q K] (s : K →ₗ[Q
     | tmul v c => simp [tr]
     | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
-end Gen
 
-section Per
 
 variable {l : ℕ} [Fact l.Prime] {A V V' : Type} [CommRing A] [Algebra ℚ_[l] A] [AddCommGroup V] [Module A V]
   [Module ℚ_[l] V] [IsScalarTower ℚ_[l] A V] [AddCommGroup V'] [Module A V'] [Module ℚ_[l] V']
   [IsScalarTower ℚ_[l] A V'] (e : V ≃ₗ[A] V')
 
-end Per

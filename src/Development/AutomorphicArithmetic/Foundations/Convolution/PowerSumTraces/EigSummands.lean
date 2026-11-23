@@ -36,7 +36,6 @@ import Mathlib.Topology.Sheaves.Init
 open MeasureTheory NumberField GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.RightCosetSpace
 open GroundTheory.Automorphic.AutomorphicForm GroundTheory.Automorphic.CuspidalSpectrum UpperTheory.ConvolutionTheory.C
 
-section SlopeTestRemainingChoices
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
@@ -80,7 +79,6 @@ private theorem prj_comm {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) {A : 
     rw [← map_add (f := _)]; congr 1; abel
   rw [h, map_add (f := _), prj_eq_zero hAu, add_zero, prj_self (hinv _ (prj_mem hV v))]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.ConvolutionTheory.C.eigSummands :
     UpperTheory.ConvolutionTheory.C.EigSummands := by

@@ -41,7 +41,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.Gal.InertialTypesAlt.TameReduction
 
-section Res
 
 variable {Ω : Type} [Field Ω]
 
@@ -77,7 +76,6 @@ private theorem residue_eq_toRes {A : ValuationSubring Ω} {F : Type} [Field F] 
   rw [RingHom.comp_apply, ← sub_eq_zero, ← map_sub, IsLocalRing.residue_eq_zero_iff]
   exact (A.valuation_lt_one_iff _).2 h
 
-end Res
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}

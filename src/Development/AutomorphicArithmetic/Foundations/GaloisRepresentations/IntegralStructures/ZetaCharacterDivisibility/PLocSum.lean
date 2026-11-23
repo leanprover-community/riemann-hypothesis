@@ -45,7 +45,6 @@ open UpperTheory.Gal.Int.Div
 
 namespace UpperTheory.Gal.Int.Div.LocalSums
 
-section Alg
 
 variable {Γ : Type} [Group Γ] {k k' : Type} [CommRing k] [CommRing k']
 
@@ -92,7 +91,6 @@ private theorem descend {n : ℕ} (f : k →+* k') (hf : Function.Injective f) (
   ext g i j
   simpa [mapRep, M] using hA g i j
 
-end Alg
 
 variable {l : ℕ} [Fact l.Prime] {E Ω : Type} [Field E] [Field Ω] [Algebra E Ω]
   {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O]

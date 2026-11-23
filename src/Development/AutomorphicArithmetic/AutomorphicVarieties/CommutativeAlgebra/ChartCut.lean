@@ -46,7 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing MvPowerSeries UpperTheory.V.Alg
 
-section SlopeTestRemainingChoices
 
 open MvPowerSeries Formalism.FG.SolveVAux
 
@@ -274,7 +273,6 @@ private theorem cc_ift {κ τ' : Type} [Fintype σ] [Fintype κ] [Fintype τ'] [
     simp [hGl, hGr, cc_coeff_X, hb]
     ring
 
-end SlopeTestRemainingChoices
 
 private theorem exists_columns_det_ne_zero_of_rows_linearIndependent {E τ κ : Type} [Field E] [Fintype τ] [Fintype κ] [DecidableEq κ]
     (l : Matrix κ τ E) (hl : LinearIndependent E l.row) :

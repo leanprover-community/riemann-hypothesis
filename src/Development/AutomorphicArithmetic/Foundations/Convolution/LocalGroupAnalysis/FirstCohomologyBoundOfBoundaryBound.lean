@@ -44,7 +44,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.ConvolutionTheory.G
 
-section Abstract
 
 variable {n : ℕ}
 
@@ -177,9 +176,7 @@ private theorem abstract_hilbert90 (σ : R ≃ₐ[k] R) (q : ℕ) (hσ : IsGal �
     conv_lhs => rw [← h1]
     group
 
-end Abstract
 
-section Concrete
 
 open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.Global.AdeleBaseChange GroundTheory.Automorphic GroundTheory.Automorphic.Reduction
 open PositivityTheory.Rg.Tf.Loc ValuativeRel
@@ -337,7 +334,6 @@ private theorem intGL_map {S R : Type} [CommRing S] [CommRing R] {n : ℕ} (j : 
     IntGL T (mapGL n j g) :=
   ⟨h, by rw [← map_inv]; exact h'⟩
 
-end Concrete
 
 end UpperTheory.ConvolutionTheory.G
 

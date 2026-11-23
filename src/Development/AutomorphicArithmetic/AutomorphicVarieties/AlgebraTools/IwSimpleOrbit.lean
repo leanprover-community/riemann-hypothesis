@@ -44,7 +44,6 @@ public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.
 
 open ValuativeRel Matrix GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi UpperTheory.V.AlgebraTools
 
-section SlopeTestRemainingChoices
 
 private noncomputable def elem {R : Type} [CommRing R] {n : ℕ} {i j : Fin n} (h : i ≠ j) (a : R) : GL (Fin n) R :=
   ⟨1 + single i j a, 1 - single i j a,
@@ -131,7 +130,6 @@ private theorem elem_mem {i j : Fin n} (h : i < j) (a : 𝒪[k]) :
     simp only [Matrix.add_apply, Matrix.one_apply, single_apply, map_add (f := _)]
     split_ifs <;> simp
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.AlgebraTools.simpleOrbit :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (C : Subgroup 𝓀[k]ˣ) (i j : Fin n), (j : ℕ) = i + 1 → ∀ (r : 𝓀[k] → 𝒪[k]), (∀ c, IsLocalRing.residue 𝒪[k] (r c) = c) → ∃ x : 𝓀[k] → GL (Fin n) k, (∀ c, (x c : Matrix (Fin n) (Fin n) k) = 1 + Matrix.single i j (algebraMap 𝒪[k] k (r c))) ∧ (∀ c, x c ∈ unipO k n) ∧ (∀ q : GL (Fin n) k ⧸ iwC k n C, q ∈ MulAction.orbit (iwC k n C) ((pm k n (Equiv.swap i j) : GL (Fin n) k) : GL (Fin n) k ⧸ iwC k n C) ↔ ∃! c, ((x c * pm k n (Equiv.swap i j) : GL (Fin n) k) : GL (Fin n) k ⧸ iwC k n C) = q) ∧ ∀ g ∈ iwC k n C, ∃ c, ∃ b ∈ iwC k n C, pm k n (Equiv.swap i j) * g = b * (pm k n (Equiv.swap i j) * x c) := by

@@ -121,7 +121,6 @@ private theorem quot_const_mul {G : Type} [Group G] [MeasurableSpace G] (μ : Me
     simp only [mul_assoc]
   · simp
 
-section Alg
 
 variable {k E : Type} [Field k] [Field E] [Algebra k E] {n : ℕ}
 
@@ -175,9 +174,7 @@ private theorem mem_twCent_conj {G : Type} [Group G] (θ : Monoid.End G) (δ g x
     calc _ = g * ((g⁻¹ * x * g)⁻¹ * (g⁻¹ * δ * θ g) * ((θ g)⁻¹ * θ x * θ g)) * (θ g)⁻¹ := by group
       _ = _ := by rw [h]; group
 
-end Alg
 
-section Loc
 
 variable {k E : Type} [Field k] [CharZero k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [Field E] [ValuativeRel E] [TopologicalSpace E] [IsNonarchimedeanLocalField E]
@@ -277,7 +274,6 @@ private theorem exists_push (hr0 : 0 < r) {a : GL (Fin n) k → ℂ} (ha : IsLoc
   rw [e]
   exact (isOpen_ball (mul_pos hr0 (hr0.trans hr)).ne').preimage hj.continuous
 
-end Loc
 
 end UpperTheory.ConvolutionTheory.Loc.NearIdentityDescent
 

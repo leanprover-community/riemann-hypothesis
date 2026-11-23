@@ -41,12 +41,10 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.AlgebraTools UpperTheory.V.Pa
 
-section SlopeTestRemainingChoices
 variable {A Fr G : Type} [CommRing A] [CommRing Fr] [Algebra A Fr] [TopologicalSpace G] {I : Ideal A} {t : A}
 
 private theorem ac_const (c : A) : AdicCont I fun _ : G => c := fun _ => IsLocallyConstant.const _
 
-end SlopeTestRemainingChoices
 
 private theorem adicCont_add_and_adicCont_mul {R G : Type} [CommRing R] [TopologicalSpace G] {I : Ideal R} {φ ψ : G → R}
     (hφ : AdicCont I φ) (hψ : AdicCont I ψ) :

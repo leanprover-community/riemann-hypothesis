@@ -45,7 +45,6 @@ namespace UpperTheory.V.GradeZeroInterpolatingElement.DescentNormaliser
 
 open Matrix
 
-section Abstract
 
 variable {O : Type} [CommRing O] [IsLocalRing O] {Γ Γ' ι : Type} [Group Γ] [TopologicalSpace Γ] [Group Γ']
   [TopologicalSpace Γ'] [Fintype ι] [DecidableEq ι] {R : Type} [CommRing R] [Algebra O R] [IsCO O R]
@@ -98,9 +97,7 @@ private theorem exists_up {rbar : Γ →* Matrix ι ι (ResidueField O)} {rb : �
   subst hb
   exact ⟨⟨r.hom.comp φ, fun a b N => (r.cont a b N).comp_continuous hφ, fun g a b => r.red (φ g) a b⟩, rfl⟩
 
-end Abstract
 
-section Form
 
 variable {O R : Type} [CommRing O] [CommRing R] [Algebra O R]
 
@@ -211,9 +208,7 @@ private theorem hh_iff [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (max
   rw [JR_eq]
   exact ⟨fun hh => hh.1, fun hh => ⟨hh, fun a b hab => absurd rfl hab, hC⟩⟩
 
-end Form
 
-section Places
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c)
 
@@ -323,7 +318,6 @@ private theorem kill_iff (hD : D.Good) {M : Type} [Monoid M] (f : D.Gam →* M) 
     obtain ⟨hg1, hg2⟩ := Subgroup.mem_inf.mp hg
     exact hU (D.pl q) hAw g hg1 (MonoidHom.mem_ker.mp hg2)
 
-end Places
 
 end UpperTheory.V.GradeZeroInterpolatingElement.DescentNormaliser
 

@@ -73,7 +73,6 @@ private theorem common_majorant {F : Type} [Field F] [NumberField F] {n : ℕ} (
         mul_le_mul_of_nonneg_right (Finset.single_le_sum (fun i _ => hB i) (Finset.mem_univ i))
           (wt_nonneg _ N v)
 
-section Pointwise
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] {D : Dat F E}
@@ -102,7 +101,6 @@ private theorem norm_term (W : Weil D) {y : GL (Fin 2) (Cinf E)} (hy : One F y) 
   rw [Complex.norm_real, Real.norm_of_nonneg (by positivity)]
   rfl
 
-end Pointwise
 
 theorem UpperTheory.ConvolutionTheory.R2.Ff.thMaj :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsTotallyReal F] [_root_.NumberField.IsTotallyComplex E] (D : Dat F E) (W : Weil D), ThMaj W := by

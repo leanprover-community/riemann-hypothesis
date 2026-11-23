@@ -46,12 +46,10 @@ open GlobalTheory.WeilDeligne GlobalTheory.Cong
 
 namespace UpperTheory.Gal.NearKilling
 
-section Weil
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
 
-end Weil
 
 def KillTransfer : Prop :=
   ∀ (I V V' : Type) [Group I] [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] [AddCommGroup V'] [Module ℂ V']

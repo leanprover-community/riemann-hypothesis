@@ -186,7 +186,6 @@ private theorem sphScalar_fin {W κ : Type} [AddCommGroup W] [Module ℂ W] (act
     exact h4.trans (sub_self c)
   · rw [map_pow, AlgHom.comp_apply, ← AlgHom.comp_apply dn up, hud, AlgHom.id_apply, map_sub, AlgHom.commutes]
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -218,7 +217,6 @@ private theorem sphScalar_loc (hBZ : GlobalTheory.Published.BernsteinZelevinskyF
   exact sphScalar_gen σ.ρ π _ _ hle hI b (fun w => pm k n w) hb.1 ev hev (sphEq k n ℂ σ.V σ.ρ hreg)
     (sphLine hBZ k n σ) (isoFix k n Y π σ _ GlobalTheory.SplitFlip.isCompact_KO hs) z hz _ htie
 
-end Loc
 
 theorem UpperTheory.V.Pa.Lev.sphScalar :
     GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.BernsteinZelevinskyFiniteness → ∀ (L : Type) [Field L] [NumberField L] (n q : ℕ) (w : Fin q → Plc L) (Y : Type) [AddCommGroup Y] [Module ℂ Y] (π : Representation ℂ (GV n w) Y) (Θ), IsThetaQ π (fun _ => ⊤) Θ → ∀ (j : Fin q) (σ : SmIrr (GLw n (w j))), IsoSum (π.comp (atJ n w j)) ⊤ σ → ∀ (x : ((w j).adicCompletion L)ˣ), IsUnif x → ∀ (act : MvPolynomial (Fin n) ℂ →ₐ[ℂ] Module.End ℂ (fixd π (UC n w fun _ => ⊤))), (∀ i : Fin n, act (MvPolynomial.X i) = ((qj w j : ℂ) ^ (i : ℕ)) • (Θ j (Pi.mulSingle i x) : Module.End ℂ _)) → ∀ (z : MvPolynomial (Fin n) ℂ) (c : ℂ), z.IsSymmetric → (∀ θ, IsTheta σ.ρ ⊤ θ → ∀ χ : (Fin n → ((w j).adicCompletion L)ˣ) →* ℂˣ, (⨅ t, Module.End.maxGenEigenspace (θ t : Module.End ℂ (fixd σ.ρ (iwC _ n ⊤))) (χ t : ℂ)) ≠ ⊥ → MvPolynomial.eval (fun i : Fin n => (qj w j : ℂ) ^ (i : ℕ) * (χ (Pi.mulSingle i x) : ℂ)) z = c) → ∀ m : fixd π (UC n w fun _ => ⊤), (m : Y) ∈ fixd (π.comp (atJ n w j)) (KO _ (Fin n)) → act z m = c • m := by

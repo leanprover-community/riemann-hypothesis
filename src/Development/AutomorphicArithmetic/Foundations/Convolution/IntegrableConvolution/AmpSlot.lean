@@ -48,7 +48,6 @@ open scoped ComplexConjugate
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section Ops
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
@@ -74,7 +73,6 @@ private lemma pow_ok {T : H →L[ℂ] H} (h : 0 ≤ T ∧ ‖T‖ ≤ 1) (k : �
   | zero => simpa using one_ok (H := H)
   | succ k ih => rw [pow_succ]; exact mul_ok ih h ((Commute.refl T).pow_left k)
 
-end Ops
 
 private lemma smooth_pow {F : Type} [Field F] [NumberField F] [_root_.NumberField.IsTotallyComplex F] {n : ℕ}
     (ν : Measure (archGroup F n)) [ν.IsHaarMeasure] (a : TI F n) (h1 : SmoothT a) (h2 : LeftFin a) (k : ℕ) :

@@ -43,7 +43,6 @@ noncomputable section
 
 namespace UpperTheory.V.Pa.BC
 
-section swap
 variable (K A σ : Type) [CommRing K] [CommRing A] [Algebra K A]
 
 private def swF (f : PowerSeries (MvPowerSeries σ A)) : MvPowerSeries σ (PowerSeries A) :=
@@ -95,9 +94,7 @@ private theorem sw_bij : Function.Bijective (sw K A σ) := by
     exact congrArg (MvPowerSeries.coeff n) (PowerSeries.coeff_mk (R := MvPowerSeries σ A) k
       (fun k => (fun n => PowerSeries.coeff k (MvPowerSeries.coeff n g) : MvPowerSeries σ A)))
 
-end swap
 
-section tens
 variable (O O' : Type) [CommRing O] [CommRing O'] [Algebra O O'] (R : Type) [CommRing R] [Algebra O R] (σ : Type)
 
 private def ph : O' ⊗[O] MvPowerSeries σ R →ₐ[O'] MvPowerSeries σ (O' ⊗[O] R) :=
@@ -177,7 +174,6 @@ private theorem coeff_zero' (k : ℕ) : Til.coeff O O' R k 0 = 0 :=
 private theorem coeff_map' {R' : Type} [CommRing R'] [Algebra O R'] (f : R →ₐ[O] R') (a : Til O O' R) (k : ℕ) :
     Til.coeff O O' R' k (Til.map O' f a) = Algebra.TensorProduct.map (AlgHom.id O' O') f (Til.coeff O O' R k a) := rfl
 
-end tens
 
 end UpperTheory.V.Pa.BC
 

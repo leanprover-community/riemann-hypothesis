@@ -43,7 +43,6 @@ open GlobalTheory.CuspRep (SmIrr Af locGL pLoc finGL)
 
 namespace UpperTheory.V.Af.Nf.LocalComponentIsotypic
 
-section Gen
 
 variable {K V : Type} [Group K] [AddCommGroup V] [Module ℂ V]
 
@@ -104,7 +103,6 @@ private theorem exists_type (κ : Representation ℂ K V) (φ : V)
   · simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply, key]
     simp [orb]
 
-end Gen
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {n : ℕ}
 

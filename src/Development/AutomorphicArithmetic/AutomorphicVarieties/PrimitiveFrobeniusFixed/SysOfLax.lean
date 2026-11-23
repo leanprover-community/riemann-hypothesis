@@ -36,7 +36,6 @@ import Mathlib.Tactic.NormNum.Prime
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.Base UpperTheory.V.Odd UpperTheory.V.Stick UpperTheory.V.ML
 open scoped nonZeroDivisors Pointwise
 
-section SlopeTestRemainingChoices
 
 variable {Ω : Type} [Field Ω]
 
@@ -101,7 +100,6 @@ private theorem nrm_opP (δ τ : G ℚ Ω) (a q n : ℕ) (u : Ω) (h : ∀ g : G
   simp only [nrm, map_pow, opP, map_div₀, h, map_prod]
   rw [Finset.prod_pow, Finset.prod_div_distrib, Finset.prod_pow]
 
-end SlopeTestRemainingChoices
 
 private theorem admissible_of_integral_conj_le {l F r q d : ℕ} (h : ML.admitted l F r (q * d)) : ML.admitted l F r d :=
   ⟨h.1.squarefree_of_dvd (Dvd.intro_left q rfl), fun p hp hd => h.2 p hp (hd.mul_left q)⟩

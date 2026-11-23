@@ -39,7 +39,6 @@ open scoped RestrictedProduct Topology Classical
 
 namespace UpperTheory.ConvolutionTheory.C
 
-section SlopeTestRemainingChoices
 
 private theorem mem_of_finite_places {ι : Type*} {G : ι → Type*} [∀ v, Group (G v)] {A : ∀ v, Subgroup (G v)}
     (H : Subgroup (Πʳ v, [G v, A v])) (L C : ∀ v, Subgroup (G v))
@@ -104,7 +103,6 @@ private theorem equiv_localEmbedding (w : Pl K) (g : Gw n w) :
       RestrictedTensor.singleHom (fun v : Pl K => GLnLocal.integralGL (v.adicCompletion K) n) w g :=
   ContinuousMulEquiv.apply_symm_apply _ _
 
-end SlopeTestRemainingChoices
 
 end UpperTheory.ConvolutionTheory.C
 

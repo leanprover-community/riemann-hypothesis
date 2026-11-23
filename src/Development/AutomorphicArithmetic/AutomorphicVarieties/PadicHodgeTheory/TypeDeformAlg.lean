@@ -51,7 +51,6 @@ variable [IsScalarTower Q B X] [IsScalarTower Q E X']
 
 end
 
-section Sm
 
 variable {A V : Type} [CommRing A] [Algebra Q A] [AddCommGroup V] [Module A V] [Module Q V] [IsScalarTower Q A V]
   {F P : Type} [Field F] [Algebra Q F] [CommRing P] [Algebra Q P] [Algebra F P] [IsScalarTower Q F P]
@@ -66,6 +65,5 @@ noncomputable def sm : A ⊗[Q] F →ₗ[Q] Module.End Q (V ⊗[Q] P) :=
 variable {A' V' : Type} [CommRing A'] [Algebra Q A'] [AddCommGroup V'] [Module A' V'] [Module Q V']
   [IsScalarTower Q A' V']
 
-end Sm
 
 end UpperTheory.V.Loc.Thick

@@ -42,7 +42,6 @@ open scoped TensorProduct Classical
 
 namespace UpperTheory.Gal.Spc
 
-section Ring
 
 variable {S A : Type*} [Ring S] [CommRing A] [Algebra A S]
 
@@ -101,7 +100,6 @@ private theorem sim_conj (σ : S →+* Sᵐᵒᵖ) (b b' : S) (z y : Sˣ) (T : A
         rw [← h3]; simp only [mul_assoc]
     _ = r • b := by rw [Units.inv_mul, h1, one_mul, mul_one]
 
-end Ring
 
 private theorem mem_forms_move {A H V : Type} [Group A] [Group H] [AddCommGroup V] [Module ℂ V]
     (ξ : Representation ℂ A V) (Γ Γ' : Subgroup A) (ι : Γ →* H) (ι' : Γ' →* H) (K : Subgroup H) (y : A) (d : H)

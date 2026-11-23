@@ -44,7 +44,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.GalOfCusp Matrix IsLocalRing
 open UpperTheory.V UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.Alg UpperTheory.V.U3
 
-section Transfer
 
 variable {O O' : Type} [CommRing O] [CommRing O'] {N : ℕ} (f : O →+* O')
 
@@ -87,7 +86,6 @@ private theorem gd_chHom (hf : Function.Injective f) [NeZero N] {Ω : Type} [Fie
     fun h => ⟨h.l_odd, h.e_pos, h.N_even, h1 ▸ h.ord, h2.2 h.ine, h3.2 h.par, h.quad, h.imag, h.l_cop, h.cop,
       h4 ▸ h.eta, h.gen⟩⟩
 
-end Transfer
 
 private theorem exists_unram {l : ℕ} [Fact l.Prime] (c : Coef l) {N : ℕ} [NeZero N] (ψ : DirichletCharacter c.O N)
     (h : ¬ l ∣ orderOf ψ) : ∃ (c' : Coef l) (ψ' : DirichletCharacter c'.O N), eO l c'.O = 1 ∧

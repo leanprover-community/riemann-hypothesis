@@ -45,7 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr UpperTheory.V.Fr.PF
 
-section Sub
 
 variable {O R : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R] [IsCO O R] (A : Subalgebra O R)
   [IsCO O A]
@@ -107,7 +106,6 @@ private theorem sqrt_mem (h2 : IsUnit (2 : A)) {ζ : R} (hζ : IsUnit ζ) (h : 2
     exact h4 ((IsUnit.of_mul_eq_one_right _ hu').mul hζ)
   exact sub_eq_zero.1 (e2.mul_right_eq_zero.1 e1) ▸ d.2
 
-end Sub
 
 private theorem w_facts {n : ℕ} (hn : n = 2 ∨ n = 3) :
     (∀ i, w n i = 1 ∨ w n i = 0 ∨ w n i = -1) ∧ (∀ i j, w n i = w n j → i = j) ∧ (∀ i, w n i.rev = - w n i) ∧
@@ -169,7 +167,6 @@ private theorem trace_mem {G C K : Type} [Monoid G] [CommRing C] [CommRing K] [A
     obtain ⟨c, h1⟩ := hx
     exact ⟨a * c, by rw [map_mul, h1, trace_smul, Algebra.smul_def]⟩
 
-section Mon
 
 variable {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] {F : Frame l k} {C₀ : ℕ} {n : ℕ}
 
@@ -239,7 +236,6 @@ private theorem z_diag (hF : F.Ok C₀) (hn : n = 2 ∨ n = 3) {K : Type} [CommR
     · rw [← w2 i.rev i₀ (by omega), h]; simp
   · rw [ρ.diag i j h, diagonal_apply_ne _ h, smul_zero]
 
-end Mon
 
 theorem UpperTheory.V.Fr.B_gen :
     ∀ {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsCoef l O] {F : Frame l (ResidueField O)} {C₀ : ℕ} {n : ℕ}, F.Ok C₀ → (n = 2 ∨ n = 3) → ∀ S : Space O F n, ∀ (C : Type) [CommRing C] [Algebra O C] [IsCO O C] (φ : C →ₐ[O] S.R), (∀ g, (S.ρ.r g).trace ∈ φ.range) → (∀ v i g, (S.ρ.ψ v i g : S.R) ∈ φ.range) → S.B ≤ φ.range := by

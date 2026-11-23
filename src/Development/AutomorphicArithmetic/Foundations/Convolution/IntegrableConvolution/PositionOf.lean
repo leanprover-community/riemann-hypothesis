@@ -43,7 +43,6 @@ open scoped ComplexConjugate NumberField.LiesOver
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section co
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K]
 
 private theorem cpx (w : InfinitePlace K) : IsComplex w := IsTotallyComplex.isComplex w
@@ -178,9 +177,7 @@ private theorem archC_iff {n : ℕ} (x : archGroup K n) :
     rw [e] at h1
     exact h1
 
-end co
 
-section ext
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [_root_.NumberField.IsTotallyComplex F]
 
 private theorem totC (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [_root_.NumberField.IsTotallyComplex F] :
@@ -216,9 +213,7 @@ private theorem co_iota (τ : E →+* ℂ) (y : InfiniteAdeleRing F) :
     rfl
   exact congrArg (fun f => f (y ((mk τ).comap (algebraMap F E)))) h
 
-end ext
 
-section intersection_update_fsHerm_neg_one
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K]
 
 private def P (τ : K →+* ℂ) (z : ℂ) : InfiniteAdeleRing K := (InfiniteAdeleRing.ringEquiv_mixedSpace K).symm (along τ z)
@@ -254,9 +249,7 @@ private theorem idem_eq (τ : K →+* ℂ) {x : InfiniteAdeleRing K} (hx : P τ 
     exact absurd e h0
   · rwa [h] at e
 
-end intersection_update_fsHerm_neg_one
 
-section main
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [_root_.NumberField.IsTotallyComplex F]
   [_root_.NumberField.IsTotallyComplex E] {σ : E ≃ₐ[F] E} {m : ℕ}
 
@@ -357,7 +350,6 @@ private theorem exists_over (D : InfD σ m) (i : Fin (m + 1)) (τ₀ : F →+* �
   · rw [Pi.single_eq_of_ne hki, map_zero] at h1
     exact absurd h1.symm hτ
 
-end main
 
 theorem _root_.UpperTheory.ConvolutionTheory.L1.positionOf :
     UpperTheory.ConvolutionTheory.L1.PositionOf := by

@@ -45,7 +45,6 @@ open UpperTheory.Gal.FiniteEtaleModels
 
 namespace UpperTheory.Gal.FiniteEtaleModels
 
-section Dv
 
 variable {L : Type} [AddCommGroup L]
 
@@ -97,7 +96,6 @@ private theorem Dv.comb {P Q : ℕ} {w : L} (h : Nat.Coprime P Q) (hP : Dv P w) 
       push_cast
       module
 
-end Dv
 
 private theorem isCoprime_of_dvd_sub {a b m : ℤ} (h : IsCoprime a m) (hd : m ∣ b - a) : IsCoprime b m := by
   obtain ⟨t, ht⟩ := hd
@@ -105,7 +103,6 @@ private theorem isCoprime_of_dvd_sub {a b m : ℤ} (h : IsCoprime a m) (hd : m �
   rw [hb]
   exact h.add_mul_left_left t
 
-section Form
 
 variable {G : GDatum}
 
@@ -127,7 +124,6 @@ private theorem dvd_EF_sub {n : ℕ} {A A₀ B B₀ : G.La} (hA : Dv n (A - A₀
   rw [e]
   exact dvd_add (dvd_EF_left hA B) (dvd_EF_right hB A₀)
 
-end Form
 
 private theorem sys_ext_of_split {G : GDatum} {p : ℕ} {f : ℕ → G.La →+ G.La} {u : ℕ → ℤ} {c c' κ : ℕ}
     (hcc : c * c' = κ ^ 2) (hs : Sys G p f u c κ) (P Q : ℕ → ℕ) (e₁ e₂ : ℕ → ℤ)

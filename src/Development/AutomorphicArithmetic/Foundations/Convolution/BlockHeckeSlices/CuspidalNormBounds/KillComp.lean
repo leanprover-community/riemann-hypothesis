@@ -116,7 +116,6 @@ private theorem vars_of_gen {τ κ : Type} [Fintype τ] {n : ℕ} {F : KF (τ ×
   rw [← h, MvPolynomial.coeff_map] at h1
   exact MvPolynomial.mem_support_iff.1 hβ ((injective_iff_map_eq_zero _).1 (aeval_blockE_injective τ n) _ h1)
 
-section Ops
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {n : ℕ}
 
@@ -199,7 +198,6 @@ private theorem Op_app {k : KA E n} (hh : HkOps E) (hb : BandOps E) (hC : 0 ≤ 
   obtain ⟨p, hp, rfl⟩ := List.mem_map.1 hT
   exact Op_pow hh hb hC (Op_hk hh hb hC (hG β hβ p (Finset.mem_toList.1 hp)) _) _
 
-end Ops
 
 end UpperTheory.ConvolutionTheory.BW
 

@@ -38,7 +38,6 @@ import Mathlib.Tactic.TypeStar
 open scoped MatrixGroups Matrix
 open GlobalTheory.KZ GlobalTheory.K4 GlobalTheory.Glue GlobalTheory.KummerEisensteinGalois UpperTheory.Kd.L
 
-section Gen
 open GlobalTheory.KEdge GlobalTheory.NeedB GlobalTheory.K4.TopW
 
 variable {F K Ω : Type*} [Field F] [Field K] [Field Ω] [Algebra F K] [Algebra F Ω] [Algebra K Ω] [IsScalarTower F K Ω]
@@ -113,7 +112,6 @@ private theorem wcoc_gen [NeZero N] (hζ : IsPrimitiveRoot ζ N) (hC : CobOn (ge
     rw [map_mul, e1, e3, key, pow_val_add hζ]
     ring
 
-end Gen
 
 section Top
 attribute [local instance] algMdl

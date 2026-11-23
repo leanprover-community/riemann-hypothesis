@@ -31,7 +31,6 @@ import Mathlib.Tactic.ReduceModChar
 open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.GKCoh UpperTheory.V.Af UpperTheory.V.AlgRepEndIrreducible UpperTheory.V.Lit UpperTheory.V.Lit.Bor
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ} {Ξ : AlgRep E a}
 
@@ -80,7 +79,6 @@ private theorem harm_comb {q : ℕ} (c : ℂ)
       rw [del_apply, AlternatingMap.zero_apply] at h1 h2 ⊢
       simp only [ap, map_add (f := _), map_smul, Finset.sum_add_distrib, h2, add_zero, ← Finset.smul_sum, h1, smul_zero]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Lit.Bor.harmLin :
     UpperTheory.V.Lit.Bor.HarmLin := by

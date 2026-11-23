@@ -46,7 +46,6 @@ open PositivityTheory.Rg.Tf.Geo
 
 namespace UpperTheory.ConvolutionTheory.L1
 
-section Group
 
 variable {G : Type} [Group G] [MeasurableSpace G]
 
@@ -86,7 +85,6 @@ private theorem cvAll_unit (μ : Measure G) (K : Subgroup G) (hK : MeasurableSet
     rw [ih (Fin.tail φ) (fun i => hφ _), hφ 0]
     exact cv_unit μ K hK h1
 
-end Group
 
 private theorem ind_props {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (K : Subgroup G)
     (ho : IsOpen (K : Set G)) (hc : IsCompact (K : Set G)) :

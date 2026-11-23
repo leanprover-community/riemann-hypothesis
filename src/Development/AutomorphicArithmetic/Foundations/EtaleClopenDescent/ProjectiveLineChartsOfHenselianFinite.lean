@@ -41,7 +41,6 @@ open CategoryTheory Limits AlgebraicGeometry HomogeneousLocalization
 
 namespace UpperTheory.Cb.ChartsOfProjectiveLine
 
-section General
 
 variable {σ : Type*} {R : Type} [CommRing R] [SetLike σ R] [AddSubgroupClass σ R]
 variable (𝒜 : ℕ → σ) [GradedRing 𝒜]
@@ -146,7 +145,6 @@ private theorem charts_gen {f g : R} (hf : f ∈ 𝒜 1) (hg : g ∈ 𝒜 1)
     sections_mul_one 𝒜 hf hg, section_surjective 𝒜 hf hg one_pos h1,
     section_surjective 𝒜 hg hf one_pos h2⟩
 
-end General
 
 section Line
 

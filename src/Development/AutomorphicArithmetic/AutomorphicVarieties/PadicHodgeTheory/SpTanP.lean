@@ -41,7 +41,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.HV UpperTheory.V.Base IsLocalRing
 
-section Core
 
 variable {H E : Type} [Group H] [Field E]
 
@@ -174,9 +173,7 @@ private theorem core [CharZero E] (χ : Fin 4 → H →* Eˣ) (θ : H → E) (I 
     · rw [hX g a b h, hN g hn, hN g hn]
       simp
 
-end Core
 
-section Loc
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω]
 
@@ -273,7 +270,6 @@ private theorem ex_psi {q : ℕ} (hq : q ∈ D.Sb) : ∃ s ∈ D.Ip q, D.ψ s �
   rw [(Subgroup.map_eq_bot_iff _).2 h, Subgroup.card_bot] at h3
   exact (Fact.out : l.Prime).not_dvd_one h3
 
-end Loc
 
 theorem UpperTheory.V.Loc.spTanP :
     ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c) (hD : D.Good) (q : ℕ), q ∈ D.Sb → ∀ (E : Type) [Field E] [Algebra ℚ_[l] E] [Module.Finite ℚ_[l] E] [Algebra ↥c.O E] [Algebra ℤ_[l] E] [IsScalarTower ℤ_[l] ↥c.O E] [IsScalarTower ℤ_[l] ℚ_[l] E] [IsFractionRing ↥c.O E] (γ : D.Gp q → M4 E) (r' : D.Gp q →* M4 (DualNumber E)), IsFirstOrderDeformationOfRZero D q γ r' → (∀ a b, QCont l fun g => γ g a b) → (EqP D q r' ↔ (∀ g, γ g ∈ sp4 E) ∧ (∃ X ∈ sp4 E, ∀ (g : D.Gp q) a b, a ≠ b → γ g a b = (1 - algebraMap c.O E ((D.ps a g * (D.ps b g)⁻¹ : c.Oˣ) : c.O)) * X a b) ∧ ∀ s : D.Gp q, (s : G ℚ Ω) ∈ D.Ip q → ∀ a, γ s a a = 0) := by

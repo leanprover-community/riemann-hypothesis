@@ -40,7 +40,6 @@ open scoped Classical
 
 namespace UpperTheory.ConvolutionTheory.R2.I
 
-section Alg
 variable {R : Type} [CommRing R]
 
 private def pe (e : R) (he : e * e = e) : Matrix (Fin 2) (Fin 2) R →* Matrix (Fin 2) (Fin 2) R where
@@ -84,9 +83,7 @@ private theorem split (e : R) (he : e * e = e) (M : Matrix (Fin 2) (Fin 2) R) :
   rw [sub_smul, one_smul]
   abel
 
-end Alg
 
-section Ad
 variable {E : Type} [Field E] [NumberField E]
 
 private theorem fin_of_inf (g : GL (Fin 2) (A E))
@@ -103,9 +100,7 @@ private theorem fin_of_inf (g : GL (Fin 2) (A E))
     split_ifs <;> rfl
   · exact (congrArg (fun x : GL (Fin 2) (Af E) => x.val i j) h2).symm
 
-end Ad
 
-section Main
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 private theorem two_ne (v : P F) : (2 : Kv v) ≠ 0 := by
@@ -163,7 +158,6 @@ private theorem ee_fst (D : Dat F E) (v : P F) (θ : Kv v) : (ee D v θ).1 = 0 :
   change (AdeleBaseChange.adeleMap F E _).1 + (AdeleBaseChange.adeleMap F E _).1 * (rt D.θ).1 = 0
   rw [h, h, zero_mul, add_zero]
 
-end Main
 
 end UpperTheory.ConvolutionTheory.R2.I
 

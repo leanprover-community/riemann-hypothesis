@@ -206,7 +206,6 @@ private theorem fix_count {l : ℕ} [Fact l.Prime] {F : GFrame l} {n : ℕ} (x :
   · rw [Nat.card_fun, Nat.card_fun, Nat.card_fin, ← pow_mul, pow_mul (Nat.card x.K)]
     exact Nat.pow_le_pow_left h1 _
 
-section Coc
 
 variable {A Γ : Type} [CommRing A] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] (M : FRep A Γ)
 
@@ -322,7 +321,6 @@ private theorem descend {Γ0 : Type} [Group Γ0] [TopologicalSpace Γ0] [IsTopol
     apply θ.injective
     rw [← map_mul, h, map_add (f := _), h, hθ, h, hz.2]
 
-end Coc
 
 private theorem exists_core {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ]
     (K P : Subgroup Γ) [P.Normal] (hK : IsOpen (K : Set Γ)) (hP : P ≤ K) :
@@ -334,7 +332,6 @@ private theorem exists_core {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopo
   exact ⟨{ toSubgroup := K.normalCore, isOpen' := ho, isNormal' := inferInstance },
     Subgroup.normal_le_normalCore.2 hP, K.normalCore_le⟩
 
-section Main
 
 variable {l : ℕ} [Fact l.Prime] {L : Loc} {G0 : Glob l L} {n : ℕ}
 
@@ -427,7 +424,6 @@ private theorem th_sel (z0 : Z1 D0.M.ρ) (z : Z1 D.M.ρ) (e : ∀ g, (o0.e.trans
     rw [e1] at this
     exact (congrArg (D0.π (.inr u)) this).trans (map_zero _)
 
-end Main
 
 theorem UpperTheory.V.Pa.B2.selN :
     ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G0 : Glob l L) (T : TWGrp G0) (n : ℕ) (x : NP G0.frame n) (al : Fin T.q → Fin n → x.A), (∀ g : G0.G₀, (g : G0.Γ) ∈ PL l T.H.toSubgroup → x.ρ g = 1) → T.Eig x al → ∃ C : ℕ, ∀ m, ∀ᶠ N in atTop, ∀ e ≤ m, ∀ (D : Dat x.A (plOf (T.GN N))) (D0 : Dat x.A (plOf G0)), IsOd (T.h N) x (x.Am e) D → IsOd (Glob.Hom.refl G0) x (x.Am e) D0 → Finite (H1 D0.M.ρ) → Nat.card D.Sel ≤ Nat.card D0.Sel * Nat.card x.K ^ C := by

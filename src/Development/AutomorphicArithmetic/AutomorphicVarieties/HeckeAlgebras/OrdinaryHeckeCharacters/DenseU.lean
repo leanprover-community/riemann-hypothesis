@@ -57,7 +57,6 @@ open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 
-section Ball
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -201,9 +200,7 @@ private theorem du_sets {σ : Type} {n : ℕ} (idx : σ → Fin n) (u : σ → Q
     simp only [Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt (Fin.is_lt _)] at this
     exact hs (Fin.ext this.symm)
 
-end Ball
 
-section Grp
 
 variable {l : ℕ} [Fact l.Prime] {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ]
 
@@ -306,9 +303,7 @@ private theorem du_cont (c : Coef l) (R : Type) [CommRing R] [Algebra c.O R] [Al
   rw [map_sub] at this
   exact this.trans_lt hk
 
-end Grp
 
-section Loc
 
 private theorem du_Uc (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (U : Subgroup kˣ) (hU : IsOpen (U : Set kˣ)) : ∃ e, ∀ e', e ≤ e' → Uc k e' ≤ U := by
@@ -416,7 +411,6 @@ private theorem du_pos {E : Type} [Field E] [NumberField E] [Algebra E Ω] [IsAl
   simp [cycBar] at h3 ⊢
   exact h3
 
-end Loc
 
 private theorem du_box {l : ℕ} [Fact l.Prime] (c : Coef l) {σ : Type} [Fintype σ] {n : ℕ} (idx : σ → Fin n) (u : σ → Qbar l)
     (h : ∀ s, ∃ M, 0 < M ∧ ‖u s ^ M - 1‖ < 1) (f : MvPowerSeries σ c.O)

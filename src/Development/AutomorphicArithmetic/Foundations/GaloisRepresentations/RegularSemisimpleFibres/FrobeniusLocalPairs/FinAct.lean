@@ -43,7 +43,6 @@ open scoped Classical
 
 namespace UpperTheory.Gal.InertialTypesAlt.L.FiniteActions
 
-section Gen
 
 variable {G H Γ V : Type} [Group G] [Group H] [Group Γ] [AddCommGroup V] [Module ℂ V]
 
@@ -183,9 +182,7 @@ private theorem tr_eq [Finite Γ] (ρ : Representation ℂ G V) (ι : H →* G) 
   rw [lev_eq ρ ι hι p hp f fb hf1 hf0 A (hA v hv)]
   rfl
 
-end Gen
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {F₀ : Type} [Field F₀]
@@ -235,7 +232,6 @@ private theorem infl_off (rd : 𝒪[k] →+* F₀) {n : ℕ} (fb : GL (Fin n) F�
   unfold infl
   rw [dite_eq_right (fun h => hx (MonoidHom.mem_range.2 h))]
 
-end Loc
 
 end UpperTheory.Gal.InertialTypesAlt.L.FiniteActions
 

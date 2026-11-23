@@ -55,7 +55,6 @@ private theorem test_ind {G : Type} [Group G] [TopologicalSpace G] [IsTopologica
     filter_upwards [hcl.isOpen_compl.mem_nhds hx] with y hy
     rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]
 
-section Loc
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
 private theorem cmp_surj {v : Pl F} (w : PlacesOver E v) (h : ∀ u : PlacesOver E v, u = w) :
@@ -93,7 +92,6 @@ private theorem stabV (T : Ty σ n q w₀) (v : Pl F) (h : ∀ u : PlacesOver E 
   rw [← ha]
   exact ⟨h1 _, h2⟩
 
-end Loc
 
 end UpperTheory.Gal.InertialTypesAlt.G.StableBaseChangeTwists
 

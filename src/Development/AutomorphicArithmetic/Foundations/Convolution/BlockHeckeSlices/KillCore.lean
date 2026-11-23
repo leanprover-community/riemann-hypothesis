@@ -50,7 +50,6 @@ namespace UpperTheory.ConvolutionTheory.BW
 
 open Op
 
-section Abs
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
@@ -212,7 +211,6 @@ private theorem core_abs {M : Type} [AddCommGroup M] [Module ℂ M] (S : Set (Up
   refine (norm_mul_le _ _).trans ((mul_le_of_le_one_left (norm_nonneg _) ?_).trans (norm_mul_le _ _))
   exact (norm_pow_le' _ (Nat.succ_pos d)).trans (pow_le_one₀ (norm_nonneg _) hA1)
 
-end Abs
 
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {n : ℕ} {μ : Measure (normOneGL (K := K) (n := n))} [μ.IsHaarMeasure]
 

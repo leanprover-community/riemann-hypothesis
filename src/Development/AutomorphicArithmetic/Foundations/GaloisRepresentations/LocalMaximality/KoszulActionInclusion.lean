@@ -43,7 +43,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.Gal.productCup_of_system.KoszulColumns
 
-section Gen
 variable {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [Module ℂ E] (act : S →ₐ[ℂ] Module.End ℂ E)
 
 private lemma sm_image {ι : Type} (M : Submodule ℂ E) (f : ι → S) (A : Set ι) :
@@ -54,9 +53,7 @@ private lemma sm_range {ι : Type} (M : Submodule ℂ E) (f : ι → S) :
     sm act M (Set.range f) = ⨆ k, M.map (act (f k)) := by
   exact iSup_range (f := f) (g := fun r => M.map (act r))
 
-end Gen
 
-section Sysx
 variable {d : ℕ} {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [Module ℂ E] (T : Sys d S E)
 
 private lemma r_formula (i j a : Fin (d + 1)) :
@@ -66,9 +63,7 @@ private lemma r_formula (i j a : Fin (d + 1)) :
   simp only [Sys.r, Sys.u, n11, Sys.mu, pow_one, mul_inv, Units.val_mul, ofLex_toLex]
   linear_combination ((T.X a : S) * (((T.X i)⁻¹ : Sˣ) : S)) * h
 
-end Sysx
 
-section Inst
 variable {F K : Type} [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K] {d : ℕ}
   (x : Fin (d + 1) → Fˣ)
 
@@ -99,9 +94,7 @@ private lemma ctrF_eq (ψ : F →ₗ[F] F) (m : F ⊗[ℂ] DR ℂ K) :
       AlgHom.toLinearMap_apply, Algebra.lsmul_coe, Algebra.linearMap_apply, LinearMap.restrictScalars_apply]
     rw [h1, algebraMap_smul, smul_smul, mul_comm]
 
-end Inst
 
-section Sysy
 variable {d : ℕ} {S E : Type} [CommRing S] [Algebra ℂ S] [AddCommGroup E] [Module ℂ E] (T : Sys d S E)
 
 private lemma r_mem (hg : T.Good) {I J : Finset (Fin (d + 1))} {i j : Fin (d + 1)} (hi : i ∈ I) (hj : j ∈ J)
@@ -124,9 +117,7 @@ private lemma koszulEntry_diagonal (i j : Fin (d + 1)) :
   rw [r_formula]
   simp
 
-end Sysy
 
-section Main
 variable {F K : Type} [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K] {d : ℕ}
   (x : Fin (d + 1) → Fˣ)
 
@@ -218,7 +209,6 @@ private lemma loc_step (hA : LatA) (hc : IsFinCover ℂ K (xv x)) (a : ℕ) (hg 
     exact Submodule.apply_mem_map₂ _ hN hw
   exact fun m hm => hle hm
 
-end Main
 
 end UpperTheory.Gal.productCup_of_system.KoszulColumns
 

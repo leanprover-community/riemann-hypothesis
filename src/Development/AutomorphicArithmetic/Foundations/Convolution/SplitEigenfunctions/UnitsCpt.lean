@@ -44,7 +44,6 @@ open scoped Classical
 
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Automorphic.AutomorphicForm
 
-section SlopeTestRemainingChoices
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -186,7 +185,6 @@ private theorem arith {C H M τ s s₀ h : ℝ} {e N d r : ℕ} (hs₀ : 0 < s�
         field_simp
     _ ≤ _ := by gcongr
 
-end SlopeTestRemainingChoices
 
 
 theorem UpperTheory.ConvolutionTheory.RankTwoDescent.decE :

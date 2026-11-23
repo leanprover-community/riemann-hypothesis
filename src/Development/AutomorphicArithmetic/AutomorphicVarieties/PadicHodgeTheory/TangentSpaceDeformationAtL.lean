@@ -45,7 +45,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.HV UpperTheory.V.Base IsLocalRing
 
-section Core
 
 variable {H E : Type} [Group H] [Field E]
 
@@ -311,7 +310,6 @@ private theorem dim_core [CharZero E] (χ : Fin 4 → H →* Eˣ) (I : H → Pro
     refine (congrArg (fun T : Submodule E (H → M4 E) => finrank E T) (eq_bot_iff.2 fun γ hγ => ?_)).trans (finrank_bot _ _)
     exact funext fun g => Matrix.ext fun a b => ((hQ γ).1 hγ).2.2.2.2.2 g a b fun h => h1 (h ▸ wt_mem a b)
 
-end Core
 
 private theorem cont_of_open {H O E : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [Group O]
     [TopologicalSpace E] (φ : H →* O) (h : IsOpen (φ.ker : Set H)) (f : O → E) : Continuous fun g => f (φ g) := by
