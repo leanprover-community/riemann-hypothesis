@@ -78,10 +78,8 @@ theorem mem_tors_of_weilIs {S : Scheme.{0}} (P : PolAV S) (k : ℕ) {T : Over S}
     obtain ⟨V, hV, ⟨θx, θy, -, hy⟩, -⟩ := h p
     exact ⟨V, hV, θy, hy⟩
 
-section Clauses
 
 variable {S : Scheme.{0}} (P : PolAV S) (k : ℕ) (T : Over S)
 
-end Clauses
 
 end GlobalTheory.PairingLawsCompare

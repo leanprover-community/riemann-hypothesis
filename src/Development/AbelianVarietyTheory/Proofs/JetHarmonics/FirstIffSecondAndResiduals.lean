@@ -137,27 +137,21 @@ variable {Xo c} {nab : NabV Xo c} {n : ℕ}
 
 end Values
 
-section Clauses
 
 variable {Xo : Moduli Dw l} {c : Coeff l} [StarRing (𝓞 E)] {nab : NabV Xo c} {n : ℕ}
 
 
 
 
-end Clauses
 
-section Cover
 
 variable {Xo : Moduli Dw l} {c : Coeff l} {n : ℕ}
 
-end Cover
 
-section Main
 
 variable [StarRing (𝓞 E)] (Dw) (n : ℕ)
 
 variable {Dw n}
 
-end Main
 
 end GlobalTheory.RepCompare

@@ -821,7 +821,6 @@ end Sum
 
 end Cube
 
-section Main
 
 
 variable {ι κ : Type} [LinearOrder ι] [LinearOrder κ] {R : Type u} [Ring R]
@@ -864,7 +863,6 @@ noncomputable def trunc₂HomologyIsoFstSingleton [Finite κ] (k : κ) (A : Cube
     (fun t ht ht' => (cubeComplex_trunc₁_acyclic_iff _).2 (hA t ht ht')) (n + 1) ≪≫
   truncHomologyIso _ n
 
-end Main
 
 section Three
 

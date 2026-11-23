@@ -64,19 +64,15 @@ theorem geometricallyConnected_of_isAlgClosed {X S : Scheme.{u}} (f : X ⟶ S)
 
 end General
 
-section Exact
 
 variable {S : Scheme.{u}} {X : Type u} [AddCommGroup X] {G B : Over S} [GrpObj G] [GrpObj B]
   {i : Semi.splitTorus S X ⟶ G} {q : G ⟶ B}
 
-end Exact
 
-section Field
 
 variable {k : Type u} [Field k] {G : Over (Spec (CommRingCat.of k))} [GrpObj G]
 
 
-end Field
 
 end GlobalTheory.SemiAbelianCompare
 

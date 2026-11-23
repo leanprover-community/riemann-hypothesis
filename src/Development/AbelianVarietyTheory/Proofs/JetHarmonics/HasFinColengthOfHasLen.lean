@@ -61,13 +61,11 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AvChartCompare
 
-section Charts
 
 variable {R : Type} [CommRing R]
 
 variable {G : Over (Sp R)} {d : ℕ}
 
-end Charts
 
 section Series
 
@@ -126,14 +124,11 @@ theorem hasLen_le_of_surjective (hv : v.Integers O) {M N : Type} [AddCommGroup M
 
 end Series
 
-section Emb
 
 variable {E : Type} [Field E] [NumberField E] {C : Type} [Field C] [CharZero C]
   {v : Valuation C NNReal} {O : Type} [CommRing O] [Algebra O C]
 
-end Emb
 
-section Places
 
 variable {p : ℕ} [Fact p.Prime] {E : Type} [Field E] [NumberField E] [StarRing (𝓞 E)]
   {C : Type} [Field C] [CharZero C] {v : Valuation C NNReal} {O : Type} [CommRing O]
@@ -141,7 +136,6 @@ variable {p : ℕ} [Fact p.Prime] {E : Type} [Field E] [NumberField E] [StarRing
 
 variable {w : AvDefs.Place p (𝓞 E)} {P : Ideal (𝓞 E)}
 
-end Places
 
 
 

@@ -73,31 +73,23 @@ theorem cubical_unique {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G]
   obtain rfl : t = t' := h
   rfl
 
-section Scale
 variable {R : Type} [CommRing R] {G : Over (Spec (CommRingCat.of R))}
 
-end Scale
 
-section Bound
 variable {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] {ϖ : V}
   {D : DegData V (maximalIdeal V)} {F : Type} [Field F] [Algebra (FractionRing V) F] {v : AddValuation F (WithTop ℚ)}
 
-end Bound
 
-section Cast
 variable {R : Type} [CommRing R] {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G] {L L' : RigLB G}
 
-end Cast
 
 open GlobalTheory.FamGerm
 
-section Data
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {V : Type} [CommRing V] [IsDomain V]
   [IsDiscreteValuationRing V] {F : Type} [Field F] [Algebra (FractionRing V) F]
 
 variable [CharZero F]
 
-end Data
 
 section Statements
 

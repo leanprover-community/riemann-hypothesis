@@ -58,23 +58,17 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.TwistCompare
 
-section Basis
 
 variable {A : Type} [CommRing A] {X Y Y' : Scheme.{0}} {L : LB X} {K K' : Type} [Fintype K] [Fintype K']
 
-end Basis
 
-section Hyp
 
 variable {S : Scheme.{0}} (B : Over S) [GrpObj B] [IsCommMonObj B]
 
-end Hyp
 
-section Conclusion
 
 variable {R : Type} [CommRing R] [IsDomain R] (D : Out.DegPre R)
 
-end Conclusion
 
 theorem cube : Out.CubeSt :=
   GlobalTheory.AbLaw.Cube.cube_of_gen GlobalTheory.laws_without_cohomology.1 (GlobalTheory.AbLaw.exists_gen_theta

@@ -56,18 +56,14 @@ theorem theta_entire {W : UnfAt U k x} (Wu : UnitAt W) : Differentiable ℂ Wu.�
 
 end Pins
 
-section Bound
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {Z : FD.Data E r} {x : FD.Frame Z.Ψ r}
 
-end Bound
 
-section Record
 
 open Formalism.BasicNotions Formalism.MainNotions
 
 variable {D : D7} {T : Top D}
 
-end Record
 
 end GlobalTheory.EtaPinnedCompare

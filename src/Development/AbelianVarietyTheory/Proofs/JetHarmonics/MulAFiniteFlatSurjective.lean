@@ -72,11 +72,9 @@ theorem mulA_finite_flat_surjective (S : Scheme.{0}) (P : PolAV S) (n : ℕ) (hn
     inferInstance hf fun K _ _ t => (hgeo K t).1,
     GlobalTheory.AbLaw.MulN.surjective_of_geomFibres _ fun K _ _ t => (hgeo K t).2⟩
 
-section Alg
 
 variable {A U : Type} [CommGroup A] [CommGroup U] {θ : A → A → A → U}
 
-end Alg
 
 variable {S : Scheme.{0}} {G : Over S} [GrpObj G] [IsCommMonObj G] {L : RigLB G} (c : CubicalStr G L)
 

@@ -73,7 +73,6 @@ theorem tr_comm (e : ι → M) (c : ι → M →ₗ[A] A) (h : ∀ m, ∑ i, c i
 
 end Trace
 
-section Ev
 variable {R Λ : Type*} [CommRing R] [AddCommGroup Λ] [Module R Λ]
 
 noncomputable def ev (B : Type*) [CommRing B] [Algebra R B] (f : Λ →ₗ[R] R) :
@@ -84,7 +83,6 @@ noncomputable def ev (B : Type*) [CommRing B] [Algebra R B] (f : Λ →ₗ[R] R)
     ev B f (b ⊗ₜ x) = f x • b := by
   simp [ev]
 
-end Ev
 
 section Integral
 variable {R Λ ι : Type*} [CommRing R] [CommRing Λ] [HopfAlgebra R Λ] [Fintype ι]

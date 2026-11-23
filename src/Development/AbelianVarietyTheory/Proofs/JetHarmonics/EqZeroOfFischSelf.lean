@@ -42,17 +42,13 @@ open MvPolynomial Formalism.L2.Pj
 
 variable {T : Type} {r : T → ℕ} {n : ℕ} {k : Type} [Field k]
 
-section Fischer
 
 variable {σ : Type}
 
-end Fischer
 
-section Lower
 
 variable {σ : Type} (w : σ → ℕ)
 
-end Lower
 
 theorem rowInv_map [Infinite k] {K : Type} [Field K] (φ : k →+* K) {P : MvPolynomial (Letter T r n) k}
     (hP : RowInv r n k P) : RowInv r n K (map φ P) := by

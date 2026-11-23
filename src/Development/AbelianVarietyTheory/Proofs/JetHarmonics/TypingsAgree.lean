@@ -53,11 +53,9 @@ namespace GlobalTheory.TorsionFactsCompare
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
-section Operators
 
 variable {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {F : Type} [Field F] [Algebra (FractionRing R) F]
 
-end Operators
 
 section Data
 
@@ -90,12 +88,10 @@ theorem bOf_balance {ϖ : V} (hϖ : Irreducible ϖ) {Q : D.toPre.X → ℤ} {O :
 
 end Data
 
-section Unif
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
   {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] {t : SAB H (Sp V)}
   (P : PELUnif (maximalIdeal V) t) (F : Type) [Field F] [Algebra (FractionRing V) F]
 
-end Unif
 
 end GlobalTheory.TorsionFactsCompare

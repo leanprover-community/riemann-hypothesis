@@ -152,7 +152,6 @@ variable [Algebra ℚ S]
 
 end Jets
 
-section Frames
 
 open MvPolynomial (X)
 
@@ -164,14 +163,11 @@ variable {F : Fin d → MvPowerSeries (Fin 2 × Fin d) S} {act : 𝓞 E → Fin 
   {ph1 ph2 : MvPowerSeries (Fin 3 × Fin d) S} {sy : MvPowerSeries (Fin 2 × Fin d) S}
   {ad : 𝓞 E → MvPowerSeries (Fin 2 × Fin d) S} {e e' : ∀ m, FrTy y d x m}
 
-end Frames
 
-section Clauses
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable {Xo : Moduli Dw l} {c : Coeff l} {S : Type} [CommRing S] [Algebra c.F S] [Algebra ℚ S] [StarRing (𝓞 E)]
 variable (y : FrPt Xo c S) (C : ChartAt Xo c y)
 
-end Clauses
 
 end GlobalTheory.FrameTwistCompare
