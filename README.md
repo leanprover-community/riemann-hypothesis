@@ -51,6 +51,18 @@ A full build makes Lean check every proof on your machine. The cache downloads f
 compiled elsewhere, so you can read and edit the project within minutes, but Lean does not
 re-check them.
 
+After restoring the cache, pass an edited file to Lake to check that module and build any
+imports that need rebuilding. This also works when `lake build --no-build` reports stale
+artifacts elsewhere in the project.
+
+```bash
+lake build src/Development/EtaleCohomology/CohomologicalPurity/LeafCoeqPf.lean
+```
+
+You can pass several source paths in the same command, including downstream modules you
+want to check. For details on which artifacts the project cache fetches, see the
+[cache notes](verification/CACHE.md#public-cache-reads).
+
 ## Checking the proof yourself
 
 Take a fresh clone on a Linux machine with
