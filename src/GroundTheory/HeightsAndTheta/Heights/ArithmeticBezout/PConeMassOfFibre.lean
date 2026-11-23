@@ -324,7 +324,7 @@ theorem ConeMassOfFibre.proof (hA : ConeFibreAverage.Statement) : ConeMassOfFibr
   swap
   · have hlt : (finrank ℝ (EuclideanSpace ℂ (Fin n)) : ℝ) < ((2 * m : ℕ) : ℝ) := by
       rw [finrank_real_of_complex, finrank_euclideanSpace_fin]
-      exact_mod_cast (by omega : 2 * n < 2 * m)
+      exact_mod_cast (omega : 2 * n < 2 * m)
     rw [Real.hausdorffMeasure_of_finrank_lt hlt]
     simp
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hmn

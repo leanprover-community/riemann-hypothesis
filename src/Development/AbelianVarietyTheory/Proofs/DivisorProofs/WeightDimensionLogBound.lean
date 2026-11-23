@@ -94,8 +94,8 @@ theorem spread_range_le {PP A : ℝ} (hW : WtNum p i PP) (hH : HostNum D L PP A 
         linarith)
     rwa [Nat.card_Ico, nsmul_eq_mul] at this
   have e4 : ((D.R.r - (D.R.k - 1) : ℕ) : ℝ) = D.R.m := by rw [hr]; congr 1; omega
-  have e5 : ((D.R.k - 1 : ℕ) : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : D.R.k - 1 ≤ D.R.r)
-  have e6 : ((D.R.k - 1 : ℕ) : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : D.R.k - 1 ≤ D.R.k)
+  have e5 : ((D.R.k - 1 : ℕ) : ℝ) ≤ D.R.r := by exact_mod_cast (omega : D.R.k - 1 ≤ D.R.r)
+  have e6 : ((D.R.k - 1 : ℕ) : ℝ) ≤ D.R.k := by exact_mod_cast (omega : D.R.k - 1 ≤ D.R.k)
   have hm2 : (2 : ℝ) ≤ D.R.m := by exact_mod_cast hm
   rw [e4] at a2
   have h0 : (0 : ℝ) ≤ ((D.R.k - 1 : ℕ) : ℝ) := Nat.cast_nonneg _

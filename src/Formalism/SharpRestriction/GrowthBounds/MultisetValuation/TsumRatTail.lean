@@ -86,7 +86,7 @@ theorem tsum_rat (P N : ℕ) (hP : 2 ≤ P) (hN : 0 < N) (α : ℤ) (c : ℕ →
   by_cases hs : Summable (fun e => (fqT P α c Ds e : ℝ))
   swap
   · exact ⟨0, by rw [tsum_eq_zero_of_not_summable hs]; simp⟩
-  have hP0 : (0 : ℚ) < P := by exact_mod_cast (by omega : 0 < P)
+  have hP0 : (0 : ℚ) < P := by exact_mod_cast (omega : 0 < P)
   have h1 : ∀ e, Ds.sup id + α.natAbs + 1 ≤ e → 2 * e + 1 ∉ Ds := fun e he hmem => by
     have := Finset.le_sup (f := id) hmem
     simp only [id] at this
@@ -148,7 +148,7 @@ theorem tsum_rat (P N : ℕ) (hP : 2 ≤ P) (hN : 0 < N) (α : ℤ) (c : ℕ →
       have c2 := abs_lt.1 (h2' _ he')
       rw [max_eq_right (by linarith [c2.2]), max_eq_right (by linarith [c1.2]), zero_div]
   have hQ1 : (1 : ℚ) < (P : ℚ) ^ (2 * N) := by
-    have : (1 : ℚ) < P := by exact_mod_cast (by omega : 1 < P)
+    have : (1 : ℚ) < P := by exact_mod_cast (omega : 1 < P)
     exact one_lt_pow₀ this (by omega)
   exact tsum_rat_tail _ hs _ N _ hQ1 h4
 

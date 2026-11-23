@@ -74,7 +74,7 @@ theorem absEv_split : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
   have hq0 : (qV F v : ℝ) ≠ 0 := by
     have := NumberField.HeightOneSpectrum.one_lt_absNorm v
     unfold qV
-    exact_mod_cast (by omega)
+    exact_mod_cast (omega)
   rw [absEv_apply, coe_nnnorm, hN, norm_mul, hq, e1, e2, neg_add, zpow_add₀ hq0,
     norm_eq_zpow v (x.isUnit.map (splitProj τ)).ne_zero, norm_eq_zpow v (x.isUnit.map (splitProj (τ.comp σ))).ne_zero]
 

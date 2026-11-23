@@ -276,7 +276,7 @@ theorem thetaRule_sum_lower : ChartIndepSt2 → ∀ (E : Type) [Field E] [Number
   obtain ⟨W⟩ := nonempty_unfAt hU k x
   have hu := norm_dmin (U.X k) hx
   obtain ⟨Wu⟩ := nonempty_unitAt W hu
-  have hM0 : (0 : ℝ) < l.M := by have := l.three_le; exact_mod_cast (by omega : 0 < l.M)
+  have hM0 : (0 : ℝ) < l.M := by have := l.three_le; exact_mod_cast (omega : 0 < l.M)
   have hxR0 : 0 < xR := by
     obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
     rw [← hxR τ]

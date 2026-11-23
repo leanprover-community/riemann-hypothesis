@@ -347,6 +347,6 @@ theorem ringKrullDim_stalk_eq_of_isTaut {E : Type} [Field E] [NumberField E] [Is
   have h1 : m + e + b = Dw.dim := by exact_mod_cast htaut'
   rw [ha]
   congr 1
-  exact_mod_cast (by omega : a = m + e)
+  exact_mod_cast (omega : a = m + e)
 
 end GlobalTheory.UChart

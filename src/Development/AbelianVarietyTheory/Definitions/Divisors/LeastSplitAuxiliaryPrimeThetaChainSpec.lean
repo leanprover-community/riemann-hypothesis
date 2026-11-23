@@ -80,7 +80,7 @@ theorem cloudHalf_lt {x : ℚ} (hx : x ∈ G.cloudHalf) : x < G.a G.m := by
   rw [G.a_m, GridData.vHalf]; linarith
 
 theorem card_weightX_zero (hm : G.NearMid) (hs : 1 ≤ G.s) (hg : G.s < G.ga) : (G.weightX 0).card = G.nTop := by
-  have hga : (0 : ℚ) < G.ga := by exact_mod_cast (by omega : 0 < G.ga)
+  have hga : (0 : ℚ) < G.ga := by exact_mod_cast (omega : 0 < G.ga)
   have hle : ∀ {i j : ℕ}, i ≤ j → G.a j ≤ G.a i := fun h => by
     rcases h.eq_or_lt with rfl | h
     · exact le_rfl

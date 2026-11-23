@@ -175,7 +175,7 @@ theorem sub_le_sum (x : Fin n → ℝ) {t : ℝ} (ht0 : 0 ≤ t) (ht : ∀ r, -t
       refine mul_le_mul_of_nonneg_right ?_ ht0
       rw [Nat.card_Ioc]
       have := l.2
-      exact_mod_cast (by omega : (l : ℕ) - m ≤ n)
+      exact_mod_cast (omega : (l : ℕ) - m ≤ n)
     linarith
 
 theorem count_core (hn : 0 < n) {Q' ω Q : Set (AdelicGLn.AdelicGL K n)} (t₀ : ℝ) (hQ' : IsCompact Q')

@@ -412,7 +412,7 @@ theorem discrep_eq [IsLocallyNoetherian X] [GlobalTheory.IsNormalScheme X]
   have a := reg u fun z hz F hF => (h0 z hz F hF).ge
   have b := reg u⁻¹ fun z hz F hF => by rw [F.ord_inv, h0 z hz F hF, neg_zero]
   rw [E.ord_inv] at b
-  have hE0 : (E.ord u : ℚ) = 0 := by exact_mod_cast (by omega : E.ord u = 0)
+  have hE0 : (E.ord u : ℚ) = 0 := by exact_mod_cast (omega : E.ord u = 0)
   rw [key] at hE0
   rw [discrep, discrep, E.formOrd_smul hn hη]
   push_cast

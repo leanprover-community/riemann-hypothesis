@@ -338,7 +338,7 @@ private theorem size_le (large₂ : SizeData₂ D) (hs : GlobalTheory.Indefinite
     have a3 : D.R.k ≤ D.R.t := by omega
     unfold bigN
     nlinarith
-  have t1 : (1 : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : 1 ≤ D.R.t)
+  have t1 : (1 : ℝ) ≤ D.R.t := by exact_mod_cast (omega : 1 ≤ D.R.t)
   have tf : (D.R.f : ℝ) ≤ D.R.t := by exact_mod_cast nf
   have tn : (nRk D : ℝ) ≤ D.R.t := by exact_mod_cast nn
   have tN : (bigN D : ℝ) ≤ 5 * (D.R.t : ℝ) ^ 2 := by exact_mod_cast nN

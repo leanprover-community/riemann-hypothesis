@@ -58,7 +58,7 @@ theorem exists_weights_in_windows : ∀ (eps : ℝ) (C : FC), 0 < eps → eps < 
   have hk5 : (R.k : ℝ) ≤ s.x ^ (5 : ℝ) := le_trans (by exact_mod_cast hkr) hr
   have hk0 : (0 : ℝ) < R.k := by
     have := R.m_add_three_le_k
-    exact_mod_cast (by omega : 0 < R.k)
+    exact_mod_cast (omega : 0 < R.k)
   have hX : 1 ≤ s.X' := Real.one_le_exp (Real.rpow_nonneg hxp.le _)
   rw [Real.rpow_one] at hb
   rw [sub_self, Real.rpow_zero, one_mul] at hb'

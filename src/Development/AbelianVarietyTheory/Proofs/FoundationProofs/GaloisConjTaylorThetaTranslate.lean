@@ -218,7 +218,7 @@ theorem galois_translate_sgStar : ∀ D : D7, gal1 D := by
   generalize lamOf D cc δ = Λ at *
   obtain ⟨L, hL⟩ := exists_periodPair hlat
   obtain ⟨L', hL', hg⟩ := exists_periodPair_lamConj hL ρ h2 h3
-  have hm2 : ((2 * m : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (by omega : 2 * m ≠ 0)
+  have hm2 : ((2 * m : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (omega : 2 * m ≠ 0)
   have hm3 : ((2 * m ^ 2 : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (by positivity : 2 * m ^ 2 ≠ 0)
   unfold Adp1 at hA
   obtain ⟨u, rfl⟩ : ∃ u, x = (2 * m : ℕ) * u := ⟨x / (2 * m : ℕ), by field_simp⟩

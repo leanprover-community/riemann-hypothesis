@@ -115,7 +115,7 @@ theorem standard_stabiliser_bound (hst : ∀ {n r : ℕ} {ε : Fin n → Bool} {
   intro n r ε ε' ι z hz A B _ _ _ _ _ _ π σ μ _ ν _ dπ dσ hπ hσ fπ fσ i hi v₀ w hv hw Y₁ K D hY hK hM hV hD
   obtain ⟨⟨hc, hne⟩, -, hsur⟩ := hst ι z hz
   obtain ⟨Fr, hFr, -, -, hz1⟩ := hz
-  have hn : (1 : ℝ) ≤ n := by have := hFr.codim; exact_mod_cast (by omega : 1 ≤ n)
+  have hn : (1 : ℝ) ≤ n := by have := hFr.codim; exact_mod_cast (omega : 1 ≤ n)
   have cu : Continuous fun g : UJ ε => umat g := Formalism.MainNotions.BridgeCSchur.continuous_umat
   have cu' : Continuous fun g : UJ ε' => umat g := Formalism.MainNotions.BridgeCSchur.continuous_umat
   by_contra hcon

@@ -226,9 +226,9 @@ theorem depth_le_over_level : (∀ (p : ℕ) [Fact p.Prime], Pdiv.ChartF.HTFSt p
   · by_cases hlt : j < D.R.m
     · have hm := D.R.two_le_m
       have hf' : (0 : ℝ) < D.R.f := by exact_mod_cast hf1
-      have hm' : (0 : ℝ) < D.R.m := by exact_mod_cast (by omega : 0 < D.R.m)
+      have hm' : (0 : ℝ) < D.R.m := by exact_mod_cast (omega : 0 < D.R.m)
       refine lattice_terms_le (rr0 D) (2 * D.R.f * D.R.m) _ Φ e w.n _ r _ _ c ?_ (by positivity) he hΦ hΦe
-        (Nat.cast_nonneg _) (by exact_mod_cast (by omega : D.R.r ≤ w.n)) (Nat.cast_nonneg _) (by exact_mod_cast hr)
+        (Nat.cast_nonneg _) (by exact_mod_cast (omega : D.R.r ≤ w.n)) (Nat.cast_nonneg _) (by exact_mod_cast hr)
         (by exact_mod_cast hD1) hg' (hc hlt i').2
       unfold rr0
       have hd : (0 : ℝ) < |(NumberField.discr D.host.E : ℝ)| :=

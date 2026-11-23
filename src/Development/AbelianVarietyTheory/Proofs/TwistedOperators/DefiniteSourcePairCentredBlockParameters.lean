@@ -182,7 +182,7 @@ theorem num_bound {n q m N : ℕ} (hn : n ≤ N) (hq : q ≤ m) (hN : 8 * m ≤ 
     · rw [← Real.rpow_natCast]
       exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hq0) (by norm_num)
   have hn' : (n : ℝ) ≤ N := by exact_mod_cast hn
-  have hq' : 8 * (q : ℝ) ≤ N := by exact_mod_cast (by omega : 8 * q ≤ N)
+  have hq' : 8 * (q : ℝ) ≤ N := by exact_mod_cast (omega : 8 * q ≤ N)
   have h2 : 60 * (q : ℝ) ^ 2 ≤ (N : ℝ) ^ 2 := by
     have : (8 * (q : ℝ)) ^ 2 ≤ (N : ℝ) ^ 2 := by gcongr
     nlinarith [sq_nonneg (q : ℝ)]

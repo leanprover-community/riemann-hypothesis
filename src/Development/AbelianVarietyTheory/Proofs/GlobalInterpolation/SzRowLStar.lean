@@ -122,7 +122,7 @@ theorem szRow_lStar : SzRow (fun _ D L => (L.sc.b' + L.Sc + L.etaSz + L.sc.b / l
   rw [← hV.eta_eq] at c3
   have hm1 : (1 : ℝ) ≤ D.R.m := by
     have := D.R.two_le_m
-    exact_mod_cast (by omega : 1 ≤ D.R.m)
+    exact_mod_cast (omega : 1 ≤ D.R.m)
   have hn0 : (0 : ℝ) < D.R.n := by
     have hm := D.R.two_le_m
     have hf := D.R.m_le_f
@@ -130,7 +130,7 @@ theorem szRow_lStar : SzRow (fun _ D L => (L.sc.b' + L.Sc + L.etaSz + L.sc.b / l
     exact_mod_cast hn
   have ht0 : (0 : ℝ) < D.R.t := by
     have := D.R.three_m_lt_t
-    exact_mod_cast (by omega : 0 < D.R.t)
+    exact_mod_cast (omega : 0 < D.R.t)
   have hSc0 : 0 ≤ L.Sc := by rw [hSc]; positivity
   unfold lStar
   exact lstar_ineqs_of_le _ _ _ _ _ _ _ (Q ^ 7) hm1 (by positivity) c1 c2 c3 c4 c5 hb2 hb1

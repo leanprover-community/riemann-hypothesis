@@ -1260,7 +1260,7 @@ theorem eq_of_le_le {x : WithBot ℕ∞} {N : ℕ} (h1 : x + 1 ≤ ((N + 1 : ℕ
     | coe a =>
       have h3 : a + 1 ≤ N + 1 := by exact_mod_cast h1
       have h4 : N + 1 ≤ a + 1 := by exact_mod_cast h2
-      exact_mod_cast (by omega : a = N)
+      exact_mod_cast (omega : a = N)
 
 variable {j ι'} {P' : Ideal (MRing ι' O)} {d : ℕ}
 

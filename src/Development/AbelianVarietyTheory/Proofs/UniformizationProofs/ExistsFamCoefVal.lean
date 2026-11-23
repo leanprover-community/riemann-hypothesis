@@ -170,7 +170,7 @@ theorem exists_fam_coef_val : LL → TwistBCSpanStatement → TWM.VRatioGtStatem
     · exact ⟨1, by rw [h, QForm.Q_zero hϖ D hQ, AddValuation.map_one]; simp⟩
     · have h1 := QForm.Q_pos hϖ D hQ h
       obtain ⟨ζ, -, e⟩ := exists_val_eq hv (r := (Q a₀ : ℚ) / k)
-        (div_pos (by exact_mod_cast (by omega : (0 : ℤ) < Q a₀)) (by exact_mod_cast (by omega : 0 < k)))
+        (div_pos (by exact_mod_cast (omega : (0 : ℤ) < Q a₀)) (by exact_mod_cast (omega : 0 < k)))
       exact ⟨ζ, e⟩
   have hsm : Fam.IsSmul D.toPre F ζ s₀ (ζ • s₀) := (isSmul_iff _ _ _).2 rfl
   have hz : ∀ β, (∀ z : D.toPre.X, β ≠ a₀ + k • z) → ∀ j, ((ζ • s₀).s β).f j = 0 := fun β hβ j => by
@@ -179,7 +179,7 @@ theorem exists_fam_coef_val : LL → TwistBCSpanStatement → TWM.VRatioGtStatem
   · by_cases h : ∃ z : D.toPre.X, χ = a₀ + k • z
     · obtain ⟨z, rfl⟩ := h
       have H := SectionScalarValuation.fe_move hϖ hQ hv k z a₀ (ζ • s₀) (hσ.smul hζ.ge (hsm a₀))
-      have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+      have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
       have e : 0 + (Q a₀ : ℚ) / k + ((k * Q z + QForm.bOf D.toPre Q z a₀ : ℤ) : ℚ) =
           0 + (Q (a₀ + k • z) : ℚ) / k := by
         rw [q_shift hϖ hQ a₀ z k]; push_cast; field_simp; ring

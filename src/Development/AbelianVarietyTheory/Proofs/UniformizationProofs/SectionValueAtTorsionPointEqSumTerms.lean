@@ -269,7 +269,7 @@ theorem frame_eq : LL → AllUV fun {V} _ _ _ {ϖ} hϖ {D} Q {F} _ _ {v} hv {A} 
   obtain ⟨E, eG, eA, eB, eh, eAct⟩ := (GlobalTheory.IntEnd.exists_nsmul_and_neg hL V _ hA D A G hG U).1 n
   have hinj : Function.Injective E.h := fun a b h => by
     rw [eh, eh, ← natCast_zsmul, ← natCast_zsmul] at h
-    exact smul_right_injective _ (by exact_mod_cast (by omega : n ≠ 0)) h
+    exact smul_right_injective _ (by exact_mod_cast (omega : n ≠ 0)) h
   obtain ⟨⟨κ, hκ⟩, hpull⟩ := GlobalTheory.T.expansion_pullback_section_endomorphism hL V _ hA D A G hG U F E hinj (4 * n ^ 2) 4 (by norm_num) hpos
     (by rw [eG]; exact exists_gen_mulPull_pow_unif V _ D A G U.toUnifPre n 4 _ rfl)
   rw [← eB]

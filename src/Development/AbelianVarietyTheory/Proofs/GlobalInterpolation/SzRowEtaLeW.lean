@@ -111,7 +111,7 @@ theorem szRow_eta_le_w : SzRow (fun C D L => ((D.R.m : ℝ) * (L.Sc + L.etaSz) �
   refine eta_rows_of_pow_bounds hM8 hkM ?_ (hm.trans hxM) (Nat.cast_nonneg _) hrM
     (hN.trans (key _ (by linarith))) hL1 (hL.trans hxM) ?_ ?_ ?_ ?_ (hdp.le.trans hd) ?_ hW
   · have := D.R.two_le_m
-    exact_mod_cast (by omega : 1 ≤ D.R.m)
+    exact_mod_cast (omega : 1 ≤ D.R.m)
   · rw [hSc]; positivity
   · rw [hSc]
     have := hceil cD hcD (by linarith)

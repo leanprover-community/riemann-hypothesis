@@ -245,7 +245,7 @@ theorem letters_place (L : SizeData₂ D) (hK : KapDef D) (i : ℕ) (hi : i < D.
   have s3 := abs_le.1 (abs_sum_range_sub (fun r => |aMinus D (i + 1) τ r|) (D.R.m - (i + 1)) 0
     (L.etaSz + 2 * D.R.N D.R.m) (fun r hr => by
       have hb : i + 1 + r < D.R.m := by omega
-      have hr2 : (r : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : r ≤ D.R.m)
+      have hr2 : (r : ℝ) ≤ D.R.m := by exact_mod_cast (omega : r ≤ D.R.m)
       have c := abs_le.1 (L.be_close τ ⟨_, hb⟩ ⟨i, hi⟩)
       simp only [sub_zero, abs_abs]
       unfold aMinus aMinusQ

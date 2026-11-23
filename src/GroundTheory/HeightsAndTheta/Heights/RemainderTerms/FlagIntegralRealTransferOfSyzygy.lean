@@ -58,7 +58,7 @@ theorem summable_signed (p : ℕ) (hp : 2 ≤ p) (k : ℕ) (hk : 1 ≤ k) (R : �
     (hε : ∀ n, ε n = 1 ∨ ε n = -1) :
     Summable (fun n : ℕ => ((p : ℝ) ^ ((n + 1) * k))⁻¹ * ((ε n * R : ℚ) : ℝ)) := by
   set q : ℝ := ((p : ℝ) ^ k)⁻¹ with hq
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast (omega : 1 < p)
   have hq0 : 0 ≤ q := by positivity
   have hq1 : q < 1 := inv_lt_one_of_one_lt₀ (one_lt_pow₀ hp1 (by omega))
   have hpow : ∀ n : ℕ, ((p : ℝ) ^ ((n + 1) * k))⁻¹ = q * q ^ n := fun n => by
@@ -188,7 +188,7 @@ theorem syzygy_term_zero (hA : RestBound.Statement) (f r a : ℕ) (c : SmallBloc
   set R₀ : ℝ := ((restTerm f (r + a) Q₀ m τ (smallPowerSum f r a c (m - 1) τ') : ℚ) : ℝ)
   set K : ℝ := Real.log p * (2 * ((p : ℝ) ^ m)⁻¹)
   have hK : 0 < K := by
-    have : 0 < Real.log p := Real.log_pos (by exact_mod_cast (by omega : 1 < p))
+    have : 0 < Real.log p := Real.log_pos (by exact_mod_cast (omega : 1 < p))
     positivity
   have hslope : restTerm f (r + a) S m τ (smallPowerSum f r a c (m - 1) τ') = 0 := by
     by_contra hne
@@ -220,7 +220,7 @@ theorem syzygy_term_zero (hA : RestBound.Statement) (f r a : ℕ) (c : SmallBloc
       rw [div_lt_iff₀ hK] at this; linarith
     nlinarith
   simp only [restTerm] at hslope
-  have hm0 : (m : ℚ) ≠ 0 := by exact_mod_cast (by omega : m ≠ 0)
+  have hm0 : (m : ℚ) ≠ 0 := by exact_mod_cast (omega : m ≠ 0)
   exact (mul_eq_zero.1 hslope).resolve_left hm0
 
 theorem flagIntegralReal_transfer_of_syzygy (f N j k : ℕ) (h : N = j + k) (F : RootRing f N)

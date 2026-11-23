@@ -182,7 +182,7 @@ theorem htLow : HtLow := by
     have h2 : Real.log ((N - 1 : ℕ) : ℝ) ≤ Real.log n := by
       rcases Nat.eq_zero_or_pos (N - 1) with h0 | h0
       · rw [h0, Nat.cast_zero, Real.log_zero]; exact Real.log_nonneg hn1
-      · exact Real.log_le_log (by exact_mod_cast h0) (by exact_mod_cast (by omega : N - 1 ≤ n))
+      · exact Real.log_le_log (by exact_mod_cast h0) (by exact_mod_cast (omega : N - 1 ≤ n))
     linarith
   have hdeg0 : 0 ≤ deg := Finset.sum_nonneg fun b _ => Nat.cast_nonneg _
   rw [hmean] at key

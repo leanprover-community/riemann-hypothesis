@@ -79,7 +79,7 @@ theorem szRow_rankSizes : SzRow (fun _ _ L => SizeN L ∧ SizeM L ∧ SizeK L �
     linarith
   · exact m2.trans (mul_le_mul_of_nonneg_right h2 hs)
   · have h := D.R.rank_add_five_le
-    exact_mod_cast (by omega : 1 ≤ D.R.t)
+    exact_mod_cast (omega : 1 ≤ D.R.t)
   · exact L.t_win.2.trans (Real.rpow_le_rpow_of_exponent_le hx1.le (by linarith))
   · have := mul_le_mul_of_nonneg_right hneg (mul_nonneg hn.le hd1)
     calc L.sc.x ^ (-szTh L) * D.R.n * L.sc.delta1 = L.sc.x ^ (-szTh L) * (D.R.n * L.sc.delta1) := by ring

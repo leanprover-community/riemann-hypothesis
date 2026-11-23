@@ -123,7 +123,7 @@ theorem exists_min_period (T : PT E) (Λ' : Submodule (𝓞 E) (Fin n → E)) (h
   have hf : (0 : ℝ) < fdeg E := by
     have h1 := ShortVectors.finrank_eq (E := E)
     have h2 : 0 < Module.finrank ℚ E := Module.finrank_pos
-    exact_mod_cast (by omega : 0 < fdeg E)
+    exact_mod_cast (omega : 0 < fdeg E)
   have hr : 0 < rdE E := Real.rpow_pos_of_pos
     (abs_pos.mpr (by exact_mod_cast NumberField.discr_ne_zero E)) _
   have hρ : 0 < 2 * (fdeg E : ℝ) ^ ((3 : ℝ) / 2) * n ^ 2 * rdE E := by positivity

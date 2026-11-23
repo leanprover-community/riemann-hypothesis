@@ -79,7 +79,7 @@ theorem gapB_ev (eps C3 C0 : ℝ) (heps : 0 < eps) :
   have hL : 9 * max C3 0 * C0 ≤ sc.L := by unfold Scale.L; rw [he]; exact hx0 sc.x hx
   have hr : (1 : ℝ) ≤ D.R.r := by
     have := D.R.k_ge; have := D.R.r_eq; have := D.R.two_le_m
-    exact_mod_cast (by omega : 1 ≤ D.R.r)
+    exact_mod_cast (omega : 1 ≤ D.R.r)
   have hf : (1 : ℝ) ≤ D.R.f := by
     have h2 : 2 ≤ D.R.f := le_trans D.R.two_le_m D.R.m_le_f
     exact_mod_cast le_trans one_le_two h2
@@ -104,7 +104,7 @@ theorem family_of_global_statements (D : D7) (h2b : MassRatio₂ D) (h41 : BaseV
     have er : D.R.r = D.R.k + D.R.m - 1 := rfl
     omega
   have hf : (0 : ℝ) < D.R.f := by exact_mod_cast degree_pos_alt D
-  have hkR : (0 : ℝ) < D.R.k := by exact_mod_cast (by omega : 0 < D.R.k)
+  have hkR : (0 : ℝ) < D.R.k := by exact_mod_cast (omega : 0 < D.R.k)
   have hg : ∀ i : Fin 2, (2 : ℝ) ≤ (D.host.g i : ℝ) := fun i => by exact_mod_cast (D.host.g_prime i).two_le
   have hfac : ∀ (i : Fin 2) (j : ℕ), 1 ≤ j → 0 < 1 - ((D.host.g i : ℝ) ^ j)⁻¹ := by
     intro i j hj
@@ -215,7 +215,7 @@ theorem upper_weight_bound_eventually (D : D7) (sc : Scale) (C0 CY : ℝ)
   have hK0 : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
 
   have he : Real.exp (-(D.R.r : ℝ)) ≤ 1 / 3 := by
-    have hr : (2 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 2 ≤ D.R.r)
+    have hr : (2 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 2 ≤ D.R.r)
     have h1 : (D.R.r : ℝ) + 1 ≤ Real.exp (D.R.r : ℝ) := Real.add_one_le_exp _
     rw [Real.exp_neg, one_div]
     exact inv_anti₀ (by norm_num) (by linarith)
@@ -393,7 +393,7 @@ theorem part_five_family_of_mass_volume (eps C0 CY : ℝ) (heps : 0 < eps) :
   have h2v0 : 0 ≤ Real.log (2 * D.host.v) := Real.log_nonneg (by linarith)
 
   have hcard : ((Finset.Ioc D.R.k D.R.r).card : ℝ) ≤ D.R.m := by
-    rw [Nat.card_Ioc]; exact_mod_cast (by omega : D.R.r - D.R.k ≤ D.R.m)
+    rw [Nat.card_Ioc]; exact_mod_cast (omega : D.R.r - D.R.k ≤ D.R.m)
   have hSL : ∑ M ∈ Finset.Ioc D.R.k D.R.r, Real.log (Formalism.HermitianLatticesTheory.lValEta D.host.E M) ≤ (D.R.f : ℝ) * D.R.m := by
     have h1 : ∀ M ∈ Finset.Ioc D.R.k D.R.r, Real.log (Formalism.HermitianLatticesTheory.lValEta D.host.E M) ≤ (D.R.f : ℝ) := by
       intro M hM
@@ -429,12 +429,12 @@ theorem part_five_family_of_mass_volume (eps C0 CY : ℝ) (heps : 0 < eps) :
   have hrR : (D.R.r : ℝ) ≤ 2 * D.R.k := by
     have : D.R.r ≤ 2 * D.R.k := by omega
     exact_mod_cast this
-  have hr1 : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 1 ≤ D.R.r)
+  have hr1 : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 1 ≤ D.R.r)
   have hlr : Real.log (D.R.r : ℝ) ≤ sc.L := le_trans (Real.log_le_log (by linarith) hrR) r6
   have hlr0 : 0 ≤ Real.log (D.R.r : ℝ) := Real.log_nonneg hr1
   have hrlr : (D.R.r : ℝ) * Real.log (D.R.r : ℝ) ≤ 2 * D.R.k * sc.L :=
     mul_le_mul hrR hlr hlr0 (by linarith)
-  have hrk : ((D.R.r - D.R.k : ℕ) : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : D.R.r - D.R.k ≤ D.R.m)
+  have hrk : ((D.R.r - D.R.k : ℕ) : ℝ) ≤ D.R.m := by exact_mod_cast (omega : D.R.r - D.R.k ≤ D.R.m)
   have hS6 : ∑ ρ, Real.log (D.dsig ρ * facProd D.R.r / vand (uColR D u ρ)) ≤
       (D.R.f : ℝ) * ((D.R.k : ℝ) * D.R.m * (2 + 5 * sc.L + 5 * sc.L + 10) + D.R.m * (2 * D.R.k * sc.L)) := by
     have h1 : ∀ ρ ∈ (Finset.univ : Finset D.what₂.Tau),

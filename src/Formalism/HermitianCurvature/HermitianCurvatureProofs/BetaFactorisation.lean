@@ -530,7 +530,7 @@ theorem Sz6.positionsBefore_of (H1 : PositionBefore) (H2 : ProdOneAddTwoDivLeSqr
     refine (H2 p hp).trans ?_
     apply mul_le_mul_of_nonneg_left _ (by norm_num)
     apply Real.sqrt_le_sqrt
-    exact_mod_cast (by omega : p ≤ c.k)
+    exact_mod_cast (omega : p ≤ c.k)
 
 theorem positionsBefore : PositionsBefore :=
   Sz6.positionsBefore_of positionBefore positionProduct

@@ -391,7 +391,7 @@ theorem heis_eq {X : Data E r} {bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ
 theorem root_mem (l : Geo.Tor.Level H) {L : Lt E r} {mk : Dw.La →ₗ[𝓞 E] (Fin r → E)} (h : IsMark l L mk)
     {a : Dw.La} (ha : a ∈ (Mfr l • ⊤ : Submodule (𝓞 E) Dw.La)) {y : Fin r → E}
     (hy : y - ((l.M : E)⁻¹) • mk a ∈ L) {t : 𝓞 E} (ht : t ∈ l.Mb) : t • y ∈ L := by
-  have hM : (l.M : E) ≠ 0 := by have := l.three_le; exact_mod_cast (by omega : l.M ≠ 0)
+  have hM : (l.M : E) ≠ 0 := by have := l.three_le; exact_mod_cast (omega : l.M ≠ 0)
   obtain ⟨b, hb⟩ := modN_smul l l.prod ht ha
   have : t • y = t • (y - ((l.M : E)⁻¹) • mk a) + mk b := by
     rw [smul_sub, smul_comm t, ← map_smul, hb, map_nsmul, ← Nat.cast_smul_eq_nsmul E, smul_smul,
@@ -419,7 +419,7 @@ theorem gphi_move : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : 
   obtain ⟨kI, σ, hσ, hw⟩ := datum_move d hM hb ph ψ x₀ hpin f f'
     (fun a => ⟨comp_inv d.l₂ hm₂ hf1 hf2 hf1' hf2' a, comp_inv d.l₂ hm₃ hf1' hf2' hf1 hf2 a⟩)
     (comp_base hd hm o₂ o₃ hf2)
-  have hM0 : (d.l₂.M : E) ≠ 0 := by have := d.l₂.three_le; exact_mod_cast (by omega : d.l₂.M ≠ 0)
+  have hM0 : (d.l₂.M : E) ≠ 0 := by have := d.l₂.three_le; exact_mod_cast (omega : d.l₂.M ≠ 0)
   refine ⟨algebraMap d.c₂.F ℂ (d.eF (((ψ kI)⁻¹ : c.Fˣ) : c.F)), ?_, ?_⟩
   · haveI := finite_half d hb
     haveI : Finite (LaI Xo c d ≃ₗ[𝓞 E] LaI Xo c d) := Finite.of_injective _ DFunLike.coe_injective

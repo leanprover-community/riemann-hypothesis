@@ -61,7 +61,7 @@ theorem goodPage_run : ∀ (D : D7) (L : SizeData₂ D) (Pm : ParameterChoice' D
     unfold Scale.w'' Scale.b' Scale.a Scale.b Scale.X'
     have : (0 : ℝ) < D.R.n := by exact_mod_cast hn
     positivity
-  have hm0 : (0 : ℝ) < D.R.m := by exact_mod_cast (by omega : 0 < D.R.m)
+  have hm0 : (0 : ℝ) < D.R.m := by exact_mod_cast (omega : 0 < D.R.m)
   have hwj : ∀ z, (numOf D L).w j z = wj D j (plOf D z) := by
     intro z
     have h1 : j - 1 < D.R.m := by omega
@@ -73,19 +73,19 @@ theorem goodPage_run : ∀ (D : D7) (L : SizeData₂ D) (Pm : ParameterChoice' D
     fun z => (hgap z).2, ⟨by positivity, ?_⟩, ?_, hr0, hr1⟩, fun τ _ => hfirst τ, ?_, ?_, hlog, ?_, ?_⟩
   · exact_mod_cast TO_pos Tp
   · rw [div_le_one hTpos]
-    exact_mod_cast (by omega : Tp.Dp + 4 ≤ Tp.TO)
+    exact_mod_cast (omega : Tp.Dp + 4 ≤ Tp.TO)
   · show ((D.R.k : ℝ) - 1) * (((Tp.Dp : ℝ) + 4) / Tp.TO) ≤ 5 * D.R.m
     have h := Tp.TO_Dk
     rw [div_le_iff₀ hm0] at h
     rw [← mul_div_assoc, div_le_iff₀ hTpos]
     have hD : (1 : ℝ) ≤ Tp.Dp := by exact_mod_cast hDp
-    have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+    have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
     nlinarith [mul_nonneg (sub_nonneg.2 hD) (sub_nonneg.2 hk)]
   · refine le_trans ?_ Tp.nW_win.1
     show 10 * (D.R.r : ℝ) * (D.R.f + (D.R.f : ℝ) ^ 2 * ((D.R.k : ℝ) - 1) ^ 3 * L.sc.L ^ 2 / D.R.m) ≤ _
     unfold LevelStarExponents.nW
     have hk : (0 : ℝ) ≤ (D.R.k : ℝ) - 1 := by
-      have : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+      have : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
       linarith
     gcongr
   · refine le_trans h5 ?_

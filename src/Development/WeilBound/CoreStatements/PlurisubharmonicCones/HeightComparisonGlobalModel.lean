@@ -132,7 +132,7 @@ theorem height_comparison_global_model : (Top.Given → Fl.FlatDegree → FlatSa
     · exact _root_.Or.inl (Finset.mem_filter.1 h).2
   have hrd0 : 0 < hostRd E := by linarith
   have hlrd : 0 ≤ Real.log (hostRd E) := Real.log_nonneg (by linarith)
-  have hB0 : (0 : ℝ) < B := by exact_mod_cast (by omega : 0 < B)
+  have hB0 : (0 : ℝ) < B := by exact_mod_cast (omega : 0 < B)
   have hB16' : (16 : ℝ) ≤ B := by exact_mod_cast hB16
   have hLam : abelian₂ B (hostRd E) (hostLval H) = Real.log B + Real.log (hostRd E) + |hostLval H| := by
     unfold GroundTheory.Heights₂.Heights.LowerBoundFree.abelian₂

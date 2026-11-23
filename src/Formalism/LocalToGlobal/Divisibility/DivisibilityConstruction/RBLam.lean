@@ -59,8 +59,8 @@ theorem two_r_sq_le_b (L : SizeData₂ D) (hSC : SizeCond L) : 2 * (D.R.r : ℝ)
     have := D.R.rank_add_five_le
     unfold Ranks.r
     omega
-  have ht5 : (5 : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : 5 ≤ D.R.t)
-  have hrt' : (D.R.r : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.r ≤ D.R.t)
+  have ht5 : (5 : ℝ) ≤ D.R.t := by exact_mod_cast (omega : 5 ≤ D.R.t)
+  have hrt' : (D.R.r : ℝ) ≤ D.R.t := by exact_mod_cast (omega : D.R.r ≤ D.R.t)
   have ht0 : (0 : ℝ) ≤ D.R.t := by linarith
   have hr0 : (0 : ℝ) ≤ D.R.r := Nat.cast_nonneg _
 

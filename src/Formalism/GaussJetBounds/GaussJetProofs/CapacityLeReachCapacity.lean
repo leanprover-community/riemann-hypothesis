@@ -53,7 +53,7 @@ open Formalism.IncomingBounds
 
 theorem asmA_odd_hasSum (l : ℕ) (hl : 2 ≤ l) :
     HasSum (fun e : ℕ => if Odd e then ((l : ℝ) ^ e)⁻¹ else 0) (gam l) := by
-  have hl0 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl0 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   set r : ℝ := ((l : ℝ) ^ 2)⁻¹ with hr
   have hr0 : 0 ≤ r := by positivity
   have hr1 : r < 1 := inv_lt_one_of_one_lt₀ (one_lt_pow₀ hl0 (by norm_num))
@@ -89,7 +89,7 @@ theorem asmA_top_core (l : ℕ) (hl : 2 ≤ l) (A : ℝ) (cap h : ℕ → ℝ)
     (hT : A / (l : ℝ) ^ T ≤ h T) (hR : ∀ j ∈ R, j < T → cap j ≤ h j) :
     A * ((l : ℝ) ^ T)⁻¹ + ∑ j ∈ R, cap j * max (1 - (l : ℝ) ^ j * ((l : ℝ) ^ T)⁻¹) 0 ≤
       ∑' e, h e := by
-  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (by omega : 1 ≤ l)
+  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (omega : 1 ≤ l)
   have hterm : ∀ j ∈ R, cap j * max (1 - (l : ℝ) ^ j * ((l : ℝ) ^ T)⁻¹) 0 ≤
       if j < T then h j else 0 := by
     intro j hj
@@ -128,7 +128,7 @@ theorem asmA_top_choice (l : ℕ) (hl : 2 ≤ l) (A : ℝ) (cap h : ℕ → ℝ)
     ∃ ε : ℝ, 0 ≤ ε ∧ (∀ e : ℕ, D = e → ((l : ℝ) ^ e)⁻¹ ≤ ε) ∧
       A * ε + ∑ j ∈ R, cap j * max (1 - (l : ℝ) ^ j * ε) 0 ≤ ∑' e, h e := by
   classical
-  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (by omega : 1 ≤ l)
+  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (omega : 1 ≤ l)
   have hcapj : ∀ j : ℕ, Odd j → (j : ℕ∞) < D → ¬ (A / (l : ℝ) ^ j ≤ h j) → cap j ≤ h j :=
     fun j hj hjD hn => (min_le_iff.mp (hmin j hj hjD)).resolve_left hn
   by_cases hS : ∃ e : ℕ, Odd e ∧ (e : ℕ∞) < D ∧ A / (l : ℝ) ^ e ≤ h e

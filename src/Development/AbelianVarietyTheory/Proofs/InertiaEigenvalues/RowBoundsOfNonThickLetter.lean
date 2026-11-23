@@ -167,7 +167,7 @@ theorem main : ∀ (D : D7) (L : SizeData₂ D) (P : ParameterChoice' D L) (HW :
     unfold coreE
     exact GlobalTheory.NLink.RowNT.lift_shape_le hl hB1 (Nat.cast_nonneg _) hHm hO'
   have hh : (TruncatedSeriesCountingBounds.hB Wd.b Wd.w Wd.S Wd.η Wd.sz : ℝ) ≤ TwistedPlaces.hB L := by
-    have hwb : (Wd.w : ℝ) ≤ Wd.b := by have := hN.w20; exact_mod_cast (by omega : Wd.w ≤ Wd.b)
+    have hwb : (Wd.w : ℝ) ≤ Wd.b := by have := hN.w20; exact_mod_cast (omega : Wd.w ≤ Wd.b)
     have hle := hb.h_le
     unfold TruncatedSeriesCountingBounds.hB
     split_ifs

@@ -207,7 +207,7 @@ theorem deg_le (C : ℝ) (P : M.Par) (N : ℕ) :
   set n := ((2 * P.r + P.k + 1 : ℕ) : ℝ) with hn_def
   have hn : 1 ≤ n := by
     rw [hn_def]
-    exact_mod_cast (by omega : 1 ≤ 2 * P.r + P.k + 1)
+    exact_mod_cast (omega : 1 ≤ 2 * P.r + P.k + 1)
   have hr : (0 : ℝ) ≤ P.r := Nat.cast_nonneg _
   have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg _
   have hX : 0 ≤ ((P.r : ℝ) + 1) * n * ((N : ℝ) + 1) := by

@@ -375,7 +375,7 @@ theorem normTie_bdOf {large₂ : SizeData₂ D} {C1 Ca Ch Cg Cβ Cb Cn Cfac Ire 
     rw [hc, hE, hB, Real.log_rpow hb0, Real.rpow_def_of_pos hb0, Real.rpow_def_of_pos hb0, ← Real.exp_nat_mul,
       ← Real.exp_add, ← Real.exp_add, Real.exp_le_exp, hcard, hm]
     have := expo_le (Real.log large₂.sc.b) (D.R.f : ℝ) (D.R.m : ℝ) Ca Cn Cb Cβ hlog (Nat.cast_nonneg _)
-      (by have := D.R.two_le_m; exact_mod_cast (by omega : 1 ≤ D.R.m)) hβ
+      (by have := D.R.two_le_m; exact_mod_cast (omega : 1 ≤ D.R.m)) hβ
     nlinarith [this]
   unfold Formalism.L2.SG.ThmBUse.NormTie
   rw [one_mul, hprod, ENNReal.ofReal_mul hCfac, ENNReal.ofReal_mul hK0]

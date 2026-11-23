@@ -239,8 +239,8 @@ theorem partners_le : ∀ Cg cb Cu cT CT C0 A : ℝ, ∃ C : ℝ, ∀ (D : D7) (
     exact Real.one_le_exp (Real.rpow_nonneg (by linarith [large₂.sc.one_lt_alt]) _)
   have hTu : ((Tu D u : ℕ) : ℝ) ≤ large₂.sc.b ^ (CT * (D.R.m : ℝ)) := (hTr u).2
   have hTu' : ((Tu D u' : ℕ) : ℝ) ≤ large₂.sc.b ^ (CT * (D.R.m : ℝ)) := (hTr u').2
-  have hT1 : (1 : ℝ) ≤ (Tu D u : ℕ) := by exact_mod_cast (by omega : 1 ≤ Tu D u)
-  have hT1' : (1 : ℝ) ≤ (Tu D u' : ℕ) := by exact_mod_cast (by omega : 1 ≤ Tu D u')
+  have hT1 : (1 : ℝ) ≤ (Tu D u : ℕ) := by exact_mod_cast (omega : 1 ≤ Tu D u)
+  have hT1' : (1 : ℝ) ≤ (Tu D u' : ℕ) := by exact_mod_cast (omega : 1 ≤ Tu D u')
   have hTne : ((Tu D u : ℕ) : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 (by omega)
   have hTne' : ((Tu D u' : ℕ) : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 (by omega)
   have hg : gS D ≠ 0 := by

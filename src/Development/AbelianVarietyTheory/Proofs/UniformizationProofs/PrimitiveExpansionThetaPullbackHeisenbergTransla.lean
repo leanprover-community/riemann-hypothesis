@@ -227,7 +227,7 @@ theorem prim_of_coefPull : LL → TwistBCSpanStatement → TWM.VRatioGtStatement
   have hA : AdmBase V (maximalIdeal V) := ⟨inferInstance, inferInstance, inferInstance, hc⟩
   have CV := GlobalTheory.UT.CoefVal.main hL h₁ h₂ h₃ h₄ V hc ϖ hϖ D Q hQ F v hv
   have hm2 : 1 ≤ m ^ 2 := Nat.one_le_pow _ _ hm
-  have hm0 : (m : ℚ) ≠ 0 := by exact_mod_cast (by omega : m ≠ 0)
+  have hm0 : (m : ℚ) ≠ 0 := by exact_mod_cast (omega : m ≠ 0)
   refine ⟨fun β => ?_, fun r hr hs => ?_⟩
   · by_cases hβ : ∃ χ, m • χ = β
     · obtain ⟨χ, rfl⟩ := hβ

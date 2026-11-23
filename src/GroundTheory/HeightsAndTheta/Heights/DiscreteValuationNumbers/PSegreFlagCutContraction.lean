@@ -75,7 +75,7 @@ theorem withBot_le_of_lt_succ (a : WithBot ℕ∞) (m : ℕ) (h : a < ((m + 1 : 
       have h' : (((c : ℕ) : ℕ∞) : WithBot ℕ∞) < (((m + 1 : ℕ) : ℕ∞) : WithBot ℕ∞) := h
       have hc : c < m + 1 := by exact_mod_cast WithBot.coe_lt_coe.mp h'
       show (((c : ℕ) : ℕ∞) : WithBot ℕ∞) ≤ (((m : ℕ) : ℕ∞) : WithBot ℕ∞)
-      exact WithBot.coe_le_coe.mpr (by exact_mod_cast (by omega : c ≤ m))
+      exact WithBot.coe_le_coe.mpr (by exact_mod_cast (omega : c ≤ m))
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   {K' : Type} [Fintype K'] [DecidableEq K'] {ι' : K' → Type} [∀ o, Fintype (ι' o)]

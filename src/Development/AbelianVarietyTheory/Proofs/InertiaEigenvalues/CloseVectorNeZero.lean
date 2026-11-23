@@ -344,7 +344,7 @@ theorem _root_.GlobalTheory.PhiGam.Close.le_sg {l : ℕ} (hl : 1 < l) {n : ℕ} 
     (h a : ZMod n → ℕ) (ha : ∀ i, l * a i ≤ a (i + 1) + h (i + 1)) (i : ZMod n) :
     a i ≤ _root_.GlobalTheory.PhiGam.sg l h i := by
   unfold _root_.GlobalTheory.PhiGam.sg
-  have hl0 : (0 : ℝ) < l := by exact_mod_cast (by omega : 0 < l)
+  have hl0 : (0 : ℝ) < l := by exact_mod_cast (omega : 0 < l)
   have hsum := _root_.GlobalTheory.PhiGam.summable_sg (l := l) (by omega) h i
   have step : ∀ J : ℕ, ∀ i : ZMod n, (a i : ℝ) ≤ a (i + J) / (l : ℝ) ^ J +
       ∑ j ∈ Finset.range J, (h (i + ((j + 1 : ℕ) : ZMod n)) : ℝ) / (l : ℝ) ^ (j + 1) := by

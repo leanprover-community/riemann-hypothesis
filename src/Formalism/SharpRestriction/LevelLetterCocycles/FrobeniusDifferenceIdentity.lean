@@ -52,7 +52,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 theorem sigma_bound_le (l h η : ℕ) (hl : 11 ≤ l) :
     ((2 * S9.sigC l h η : ℕ) : ℝ) ≤ S9.ExtensionLemmaAlt.B2 l h η := by
-  have hl' : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl' : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hx : 0 ≤ (((Formalism.MainNotions.CrystallineLiftingInputs.Mpar l h : ℕ) : ℝ) + (η : ℝ)) / ((l : ℝ) - 1) + 1 := by
     have : 0 ≤ (((Formalism.MainNotions.CrystallineLiftingInputs.Mpar l h : ℕ) : ℝ) + (η : ℝ)) / ((l : ℝ) - 1) :=
       div_nonneg (by positivity) (by linarith)

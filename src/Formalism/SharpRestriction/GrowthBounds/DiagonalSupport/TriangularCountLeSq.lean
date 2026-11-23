@@ -44,7 +44,7 @@ section Reals
 
 theorem natlog_le_three (p M : ℕ) (a : ℝ) (hp : 2 ≤ p) (ha : 1 ≤ a) (hM : (M : ℝ) ≤ a ^ 3) :
     ((Nat.log p M : ℕ) : ℝ) ≤ 3 * Real.logb p a := by
-  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (omega : 1 < p)
   have hℓ : 0 ≤ Real.logb p a := Real.logb_nonneg hp1 ha
   by_cases h0 : M = 0
   · subst h0
@@ -122,7 +122,7 @@ theorem mult_level_real (p : ℕ) [hp : Fact p.Prime] {ι : Type} [Fintype ι] {
     (padicValNat p (∏ x, (d x).factorial) : ℝ) - (padicValNat p (expFact be) : ℝ) ≤
       (N : ℝ) * ((n : ℝ) * (3 * Real.logb p a)) := by
   have hp2 : 2 ≤ p := hp.out.two_le
-  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (omega : 1 < p)
   have hℓ : 0 ≤ Real.logb p a := Real.logb_nonneg hp1 (by linarith)
   have h := mult_level p d be hbe
   have h' : (padicValNat p (∏ x, (d x).factorial) : ℝ) ≤
@@ -173,7 +173,7 @@ theorem DnoOf_le (p : ℕ) (hp : 2 ≤ p) (nL : ZMod J → ℕ) (dNo : TL J nL r
     (hK : K ≤ k) (hcard : Fintype.card (TL J nL r) ≤ N) (hd : ∀ x, (dNo x : ℝ) ≤ 2 * a) (ha2 : 2 ≤ a)
     (h4N : 4 * (N : ℝ) ≤ a) (hka : (k : ℝ) ≤ a) :
     (DnoOf (K := K) p nL dNo : ℝ) ≤ 2 * (N : ℝ) * ((k : ℝ) ^ 2 * (3 * Real.logb p a)) := by
-  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (omega : 1 < p)
   have hℓ : 0 ≤ Real.logb p a := Real.logb_nonneg hp1 (by linarith)
   have hcard' : (Fintype.card (TL J nL r) : ℝ) ≤ (N : ℝ) := by exact_mod_cast hcard
   have hsum : ((∑ x, dNo x : ℕ) : ℝ) ≤ (N : ℝ) * (2 * a) := by

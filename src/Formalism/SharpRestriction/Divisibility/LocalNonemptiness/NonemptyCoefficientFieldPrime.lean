@@ -98,7 +98,7 @@ theorem cf_of_norm_lt_one (K : Type) [NormedField K] [IsUltrametricDist K] [IsAl
   have hp0 : (p : K) ≠ 0 := Nat.cast_ne_zero.2 (by omega)
   have ht : 0 < ‖(p : K)‖ := norm_pos_iff.2 hp0
   have hlt : Real.log ‖(p : K)‖ < 0 := Real.log_neg ht h1
-  have hpR : (1 : ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+  have hpR : (1 : ℝ) < p := by exact_mod_cast (omega : 1 < p)
   have hlp : 0 < Real.log p := Real.log_pos hpR
   set s : ℝ := Real.log p / (-Real.log ‖(p : K)‖) with hsdef
   have hs : 0 < s := div_pos hlp (by linarith)

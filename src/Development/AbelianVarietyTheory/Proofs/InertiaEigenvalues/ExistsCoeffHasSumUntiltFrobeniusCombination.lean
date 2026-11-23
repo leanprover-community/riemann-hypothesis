@@ -57,7 +57,7 @@ def reCoef (l : ℕ) [Fact l.Prime] (h : ℕ) (hh : 1 ≤ h) (μ : Fin h → ℂ
 theorem reCoef_add (l : ℕ) [Fact l.Prime] (h : ℕ) (hh : 1 ≤ h) (μ : Fin h → ℂ_[l]) (k : ℤ) :
     reCoef l h hh μ k = (l : ℂ_[l]) * reCoef l h hh μ (k + h) := by
   have hl : (l : ℂ_[l]) ≠ 0 := by exact_mod_cast (Fact.out : l.Prime).ne_zero
-  have h0 : (h : ℤ) ≠ 0 := by exact_mod_cast (by omega : h ≠ 0)
+  have h0 : (h : ℤ) ≠ 0 := by exact_mod_cast (omega : h ≠ 0)
   have e1 : (k + h) / (h : ℤ) = k / h + 1 := by
     have := Int.add_mul_ediv_right k 1 h0; simpa using this
   have e2 : (k + h) % (h : ℤ) = k % h := by simp
@@ -68,7 +68,7 @@ theorem reCoef_add (l : ℕ) [Fact l.Prime] (h : ℕ) (hh : 1 ≤ h) (μ : Fin h
 
 theorem reCoef_at (l : ℕ) [Fact l.Prime] (h : ℕ) (hh : 1 ≤ h) (μ : Fin h → ℂ_[l]) (n : ℤ) (i : Fin h) :
     reCoef l h hh μ (n * h + i) = (l : ℂ_[l]) ^ (-n) * μ i := by
-  have h0 : (h : ℤ) ≠ 0 := by exact_mod_cast (by omega : h ≠ 0)
+  have h0 : (h : ℤ) ≠ 0 := by exact_mod_cast (omega : h ≠ 0)
   have hi0 : (0 : ℤ) ≤ (i : ℤ) := by positivity
   have hih : (i : ℤ) < h := by exact_mod_cast i.isLt
   have e1 : (n * h + i) / (h : ℤ) = n := by
@@ -91,7 +91,7 @@ theorem exists_coef_hasSum_lam : ∀ (l : ℕ) [Fact l.Prime] (h : ℕ) (μ : Fi
       ∀ x : Fl l, ‖sh x‖ < 1 →
         HasSum (fun k : ℤ => m k * sh (pw k x)) (∑ i : Fin h, μ i * lam h i x) := by
   intro l _ h μ hh hμ
-  have h0 : (h : ℤ) ≠ 0 := by exact_mod_cast (by omega : h ≠ 0)
+  have h0 : (h : ℤ) ≠ 0 := by exact_mod_cast (omega : h ≠ 0)
   refine ⟨reCoef l h hh μ, reCoef_add l h hh μ, ?_, ?_⟩
   · obtain ⟨i, hi⟩ : ∃ i, μ i ≠ 0 := by
       by_contra H; push_neg at H; exact hμ (funext H)

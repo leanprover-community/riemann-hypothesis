@@ -143,7 +143,7 @@ theorem linkCore (Fm : FamP eps) (Cabs CH eL C5 c6 : ℝ) (hCabs : 0 ≤ Cabs) (
     show 1 ≤ Real.exp (Fm.L x i0).sc.L
     rw [hLx]; exact Real.one_le_exp (by linarith)
   have hk5 := (Fm.D x i0).R.k_ge
-  have hk1 : (1 : ℝ) ≤ ((Fm.D x i0).R.k : ℝ) := by exact_mod_cast (by omega : 1 ≤ (Fm.D x i0).R.k)
+  have hk1 : (1 : ℝ) ≤ ((Fm.D x i0).R.k : ℝ) := by exact_mod_cast (omega : 1 ≤ (Fm.D x i0).R.k)
   have hnod := fun u0 : M.e.A => hO x hxO (M.pt u0) M.e M.m M.T2 u0 (M.w u0) (M.he u0) (M.hm u0)
     (fun h => by rw [M.mem_thick_set_model_iff, Fm.realisedChain_torus_eq x M.i0 (M.pt u0)]) (M.point_base_value u0) (M.w_tie u0) (M.w_off u0)
   have hcut : ∀ (u0 : M.e.A) (j : Fin M.m) (t : M.e.A) (ρ : E0 × M.e.A), t ∈ M.TT → InPhi ρ →

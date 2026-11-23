@@ -50,7 +50,7 @@ theorem pgC_le_two_at_record : ∀ (C' Cl Cg cb Cw cT CT C0 : ℝ) (D : D7) (lar
   have hg := hP.2.1
   have hb := Formalism.MainNotions.KappaEndpoints.two_le_scale_b D large₂
   have hk : (1 : ℝ) ≤ D.R.k := by
-    have := D.R.m_add_three_le_k; exact_mod_cast (by omega : 1 ≤ D.R.k)
+    have := D.R.m_add_three_le_k; exact_mod_cast (omega : 1 ≤ D.R.k)
   have hf : (D.R.f : ℝ) ≤ D.R.k := by exact_mod_cast hfk
   have h0 := Formalism.L2.SG.KappaOffDiagonal.PgLe.one_factor (D.R.k : ℝ) large₂.sc.b (D.host.g 0 : ℝ) D.R.f hk hb (hg 0).1 hf
   have h1 := Formalism.L2.SG.KappaOffDiagonal.PgLe.one_factor (D.R.k : ℝ) large₂.sc.b (D.host.g 1 : ℝ) D.R.f hk hb (hg 1).1 hf

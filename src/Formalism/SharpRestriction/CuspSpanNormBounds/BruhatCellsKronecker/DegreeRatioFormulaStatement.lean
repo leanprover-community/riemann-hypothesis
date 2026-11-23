@@ -287,7 +287,7 @@ theorem sza_tcritPow (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) :
     Tcrit D u τ ^ D.R.k = (szaData D u).TcritPow τ := by
   have hk0 : (D.R.k : ℝ) ≠ 0 := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : D.R.k ≠ 0)
+    exact_mod_cast (omega : D.R.k ≠ 0)
   have hka := sza_ka_pos D
   have hv := sza_v_pos D
   have hrv : D.host.rdE = 2 * D.host.v := by unfold Formalism.BasicNotions.Host.v; ring
@@ -372,7 +372,7 @@ theorem sza_g_ge {D : D7} {large₂ : SizeData₂ D} {C' Cl Cg cb Cu cT CT : ℝ
   have hk : (5 : ℝ) ≤ (D.R.k : ℝ) := by
     have h1 := D.R.m_add_three_le_k
     have h2 := D.R.two_le_m
-    exact_mod_cast (by omega : 5 ≤ D.R.k)
+    exact_mod_cast (omega : 5 ≤ D.R.k)
   have hkb : (5 : ℝ) ≤ (D.R.k : ℝ) * large₂.sc.b := by nlinarith
   have h8 : (4 : ℝ) ≤ ((D.R.k : ℝ) * large₂.sc.b) ^ 8 := by
     calc (4 : ℝ) ≤ 5 ^ 8 := by norm_num
@@ -423,7 +423,7 @@ theorem sza_tcrit_pos (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) : 0 < T
 theorem sza_Tr_pos (D : D7) (u : D.what₂.Word) : 0 < Tr D u := by
   have h : 2 ≤ (D.mem u).A.T := (szaData_ok D u).hT
   unfold Formalism.MainNotions.S.Tr
-  exact_mod_cast (by omega : 0 < (D.mem u).A.T)
+  exact_mod_cast (omega : 0 < (D.mem u).A.T)
 
 theorem level_ratio_bound (D : D7) (C0 C1 : ℝ) (hD : StandingNumericalData D C0) (hC0 : 1 ≤ C0) (ha : LocalBesselAndTopKernel.projection_sandwich_lattice D) (hb : LocalBesselAndTopKernel.MassRatio₂ D C1) :
     LocalBesselAndTopKernel.kernel_index_full_lattice D (C1 * (C0 * Real.exp 1)) := by
@@ -575,7 +575,7 @@ theorem family_level_ratio_bound {eps : ℝ} (Fm : FamP eps) (C0 Cg cb Cu cT CT 
 theorem sza_zeta (M : ℕ) (hM : 2 ≤ M) : (riemannZeta (M : ℂ)).re = ∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ M := by
   have h1 : 1 < ((M : ℂ)).re := by
     rw [Complex.natCast_re]
-    exact_mod_cast (by omega : 1 < M)
+    exact_mod_cast (omega : 1 < M)
   rw [zeta_eq_tsum_one_div_nat_add_one_cpow h1]
   have e : ∀ n : ℕ, (1 : ℂ) / ((n : ℂ) + 1) ^ (M : ℂ) = (((1 : ℝ) / ((n : ℝ) + 1) ^ M : ℝ) : ℂ) := by
     intro n

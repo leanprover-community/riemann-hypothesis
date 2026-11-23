@@ -40,7 +40,7 @@ theorem thinSize_dominates : ∀ eps : ℝ, 0 < eps → ∃ x0 : ℝ, ∀ (D : D
   refine ⟨10000, fun D L P _ hx => ?_⟩
   have hm : (2 : ℝ) ≤ D.R.m := by exact_mod_cast D.R.two_le_m
   have ht : (7 : ℝ) ≤ D.R.t := by
-    have := D.R.three_m_lt_t; have := D.R.two_le_m; exact_mod_cast (by omega : 7 ≤ D.R.t)
+    have := D.R.three_m_lt_t; have := D.R.two_le_m; exact_mod_cast (omega : 7 ≤ D.R.t)
   have hn1 : (1 : ℝ) ≤ D.R.n := by exact_mod_cast D.R.ord_pos
   have hx0 : 0 < L.sc.x := by linarith
   have hb : 0 < L.sc.b := Real.exp_pos _

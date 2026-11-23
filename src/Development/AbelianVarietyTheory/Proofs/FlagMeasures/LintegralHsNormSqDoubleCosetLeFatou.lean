@@ -166,7 +166,7 @@ theorem GlobalTheory.SgInf.lintegral_hsNormSq_Iint_le : ∀ (k r : ℕ) {H : Typ
   have ha : 2 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 < a := by
     have h1 : (2 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by
       have := hStd.1
-      exact_mod_cast (by omega : 2 ≤ 2 * r + k + 1)
+      exact_mod_cast (omega : 2 ≤ 2 * r + k + 1)
     have h2 : ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 < ((2 * r + k + 1 : ℕ) : ℝ) ^ 5 :=
       pow_lt_pow_right₀ (by linarith) (by norm_num)
     have := hStd.2.2.2.2.2.2.1

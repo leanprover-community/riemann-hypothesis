@@ -110,9 +110,9 @@ theorem arithCondition_of_one_le (C CLa : ℝ) (hC : 1 ≤ C) : RestArithStep C 
   obtain ⟨t1, t2, _, t5, _, _⟩ := hS
   obtain ⟨s, hs⟩ := seg_shift hV t1 (jj - 1)
   rw [sub_add_cancel jj 1] at hs
-  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 0 < p)
-  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (by omega : 1 ≤ p)
-  have hp3 : (3 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (by omega : 3 ≤ p)
+  have hp0 : (0 : ℝ) < (p : ℝ) := by exact_mod_cast (omega : 0 < p)
+  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (omega : 1 ≤ p)
+  have hp3 : (3 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (omega : 3 ≤ p)
   set q : ℝ := (p : ℝ)⁻¹ with hq
   have hq0 : 0 ≤ q := by positivity
   have hq13 : q ≤ 1 / 3 := by
@@ -214,7 +214,7 @@ theorem arithCondition_of_one_le (C CLa : ℝ) (hC : 1 ≤ C) : RestArithStep C 
     apply pow_le_pow_right₀ hp1
     omega
   have hkk : ((r + K : ℕ) : ℝ) = ((m + 1 : ℕ) : ℝ) := by rw [hk]
-  have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ m + 1)
+  have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ m + 1)
   have hrr : (1 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr1
   have hNN : (1 : ℝ) ≤ (TT.card : ℝ) := by exact_mod_cast hB.N_pos
   have hY2 := hB.two_le_Y
@@ -222,7 +222,7 @@ theorem arithCondition_of_one_le (C CLa : ℝ) (hC : 1 ≤ C) : RestArithStep C 
   have hden : 0 < Y * ((r + K : ℕ) : ℝ) ^ 2 := by rw [hkk]; positivity
   have hQ1 : (1 : ℝ) ≤ (p : ℝ) ^ goodG' r de h x := one_le_pow₀ hp1
   have hQ0 : (0 : ℝ) < (p : ℝ) ^ goodG' r de h x := by linarith
-  have hcS : (1 : ℝ) ≤ (cStar : ℝ) := by exact_mod_cast (by omega : 1 ≤ cStar)
+  have hcS : (1 : ℝ) ≤ (cStar : ℝ) := by exact_mod_cast (omega : 1 ≤ cStar)
   have hsz := le_trans (Ar.size_le_monomial_product C ((m + 1 : ℕ) : ℝ) r TT.card ((p : ℝ) ^ goodG' r de h x) cStar
     ((r : ℝ) * TT.card * c0 + 2 * r * n' * cpp) Y hC hk1 hrr hNN hQ1 hcS (by positivity) hY0.le) h12
   have hDG : Dd ≤ goodG' r de h x := by

@@ -175,8 +175,8 @@ theorem ContD.mem_iff_le (ϖ : O) (g f : O⟦X⟧) (k : ℕ) :
           rw [show C ϖ ^ j = C ϖ ^ (j - k) * C ϖ ^ k by rw [← pow_add, Nat.sub_add_cancel hjk]]
           exact Ideal.mul_mem_left _ _ (Ideal.subset_span (by simp))
         exact hsub hj
-      exact_mod_cast (by omega : j ≤ k - 1)
-    have hlt : ((k - 1 : ℕ) : ℕ∞) < (k : ℕ∞) := by exact_mod_cast (by omega : k - 1 < k)
+      exact_mod_cast (omega : j ≤ k - 1)
+    have hlt : ((k - 1 : ℕ) : ℕ∞) < (k : ℕ∞) := by exact_mod_cast (omega : k - 1 < k)
     exact absurd (lt_of_le_of_lt hle hlt) (not_lt.2 h)
 
 theorem ContD.enat_le_of_forall {a b : ℕ∞} (h : ∀ k : ℕ, (k : ℕ∞) ≤ a → (k : ℕ∞) ≤ b) : a ≤ b := by

@@ -149,7 +149,7 @@ theorem isRegularLocalRing_quotient [IsRegularLocalRing R] {x : R} (hx : x ∈ m
   have hk' : (maximalIdeal (R ⧸ span {x})).spanFinrank = k := by omega
   refine ⟨(isRegularLocalRing_iff _).mpr (by rw [hk, hk']), ?_⟩
   rw [hR]
-  exact_mod_cast (by omega : k + 1 = (maximalIdeal R).spanFinrank)
+  exact_mod_cast (omega : k + 1 = (maximalIdeal R).spanFinrank)
 
 theorem IsRegularLocalRing.isDomain [IsRegularLocalRing R] : IsDomain R := by
   apply PI.UnitaryGroupMassFormula.RLRS.IsRegularLocalRing.isDomain <;> assumption

@@ -276,12 +276,12 @@ theorem weyl_factor {n : ℕ} {nu : Fin (n + 1) → ℤ} (h : Antitone nu) (p : 
   have hl : nu (Fin.last n) ≤ nu b := h (Fin.le_last b)
   have hn : (1:ℝ) ≤ n := by
     have := b.isLt
-    exact_mod_cast (by omega : 1 ≤ n)
+    exact_mod_cast (omega : 1 ≤ n)
   have hd1 : ((a : ℕ) : ℝ) + 1 ≤ ((b : ℕ) : ℝ) := by exact_mod_cast hab
   have hDr : (0:ℝ) ≤ ((nu a - nu b : ℤ) : ℝ) := by
-    exact_mod_cast (by omega : (0:ℤ) ≤ nu a - nu b)
+    exact_mod_cast (omega : (0:ℤ) ≤ nu a - nu b)
   have hM : ((nu a - nu b : ℤ) : ℝ) ≤ ((nu 0 - nu (Fin.last n) : ℤ) : ℝ) := by
-    exact_mod_cast (by omega : nu a - nu b ≤ nu 0 - nu (Fin.last n))
+    exact_mod_cast (omega : nu a - nu b ≤ nu 0 - nu (Fin.last n))
   have hdpos : (0:ℝ) < ((b : ℕ) : ℝ) - ((a : ℕ) : ℝ) := by linarith
   constructor
   · rw [le_div_iff₀ hdpos]; linarith

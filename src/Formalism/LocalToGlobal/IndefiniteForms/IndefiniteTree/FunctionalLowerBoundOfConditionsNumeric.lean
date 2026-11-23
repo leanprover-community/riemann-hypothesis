@@ -457,7 +457,7 @@ theorem size_le (O : FunData K Df) (C x CH b : ℝ) (hC : 1 ≤ C) (hx : 1 ≤ x
   have hCS' : O.cS ≤ 45 * O.f * Real.log b := hCS
   have hm4 : 1 ≤ O.m ^ 4 := Nat.one_le_pow _ _ (by omega)
   have hf1n : 1 ≤ O.f := le_trans hm4 hmf4
-  have hm : (1 : ℝ) ≤ O.m := by exact_mod_cast (by omega : 1 ≤ O.m)
+  have hm : (1 : ℝ) ≤ O.m := by exact_mod_cast (omega : 1 ≤ O.m)
   have hm2r : (2 : ℝ) ≤ O.m := by exact_mod_cast hm2
   have hk : (O.m : ℝ) + 3 ≤ O.k := by exact_mod_cast hmk
   have hf : (1 : ℝ) ≤ O.f := by exact_mod_cast hf1n

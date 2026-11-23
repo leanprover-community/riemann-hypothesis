@@ -77,7 +77,7 @@ theorem cloud_add_node_le_ten_b : ∀ (C : Formalism.MainNotions.Inhab.FC) (cD c
     have hD := hDel.2.2.2.2.1
     have hth : (1 : ℝ) ≤ L.sc.x ^ szTh L :=
       Real.one_le_rpow hx.le (by unfold szTh; linarith [L.sc.eps_pos])
-    have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+    have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
     have h5 : (1 : ℝ) ≤ L.sc.x ^ szTh L * D.R.m := by nlinarith
     have hkD0 : (0 : ℝ) ≤ (D.R.k : ℝ) * (D.s.Del : ℝ) := le_trans (by positivity) h4
     have h6 := le_mul_of_one_le_left hkD0 h5
@@ -128,7 +128,7 @@ theorem cloud_add_node_le_ten_b : ∀ (C : Formalism.MainNotions.Inhab.FC) (cD c
     have hm : 0 < D.R.m := j.pos
     have hB := hBm τ hm
     rw [hbR, hbR] at hB
-    have hj : (j.1 : ℝ) ≤ ((D.R.m - 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : j.1 ≤ D.R.m - 1)
+    have hj : (j.1 : ℝ) ≤ ((D.R.m - 1 : ℕ) : ℝ) := by exact_mod_cast (omega : j.1 ≤ D.R.m - 1)
     have := mul_le_mul_of_nonneg_right hj hh0
     simp only [Nat.cast_zero, zero_mul, add_zero] at hB
     linarith
@@ -150,7 +150,7 @@ theorem cloud_add_node_le_ten_b : ∀ (C : Formalism.MainNotions.Inhab.FC) (cD c
       have e : (L.sc.x ^ szTh L * D.R.m) * ((D.R.k : ℝ) * (Delv L.sc cD : ℝ)) =
           L.sc.x ^ szTh L * D.R.m * D.R.k * (Delv L.sc cD : ℝ) := by ring
       linarith
-    have hki : ((D.R.k - 2 - i.1 : ℕ) : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast (by omega : D.R.k - 2 - i.1 ≤ D.R.k)
+    have hki : ((D.R.k - 2 - i.1 : ℕ) : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast (omega : D.R.k - 2 - i.1 ≤ D.R.k)
     simp only [Rat.cast_mul, Rat.cast_natCast, Rat.cast_ofNat]
     have := mul_le_mul_of_nonneg_right hki (by positivity : (0:ℝ) ≤ 4 * (Delv L.sc cD : ℝ))
     have := hspan j

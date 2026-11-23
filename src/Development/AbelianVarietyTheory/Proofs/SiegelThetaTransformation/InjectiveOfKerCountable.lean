@@ -136,7 +136,7 @@ theorem exists_isometry [Algebra c.F ℂ] {r g g' : ℕ} {X : Data E r} {bas : (
       ring
     change (((F.Di i).EF (gam a) (gam b) : ℤ) : ℚ) = _
     exact_mod_cast this.symm
-  · have hM : (l.M : ℂ) ≠ 0 := by have := l.three_le; exact_mod_cast (by omega : l.M ≠ 0)
+  · have hM : (l.M : ℂ) ≠ 0 := by have := l.three_le; exact_mod_cast (omega : l.M ≠ 0)
     have h1 : F.ex i P ((l.M : ℂ)⁻¹ • P (F.t i a)) = F.ex i P ((l.M : ℂ)⁻¹ • P (gam ⟨mk a, hm a⟩)) := by
       rw [← F.ex_eta i P hP a ha, hgam, ← map_smul, ← hh]
       refine (hmk a ha).trans (congrArg A.ex ?_)

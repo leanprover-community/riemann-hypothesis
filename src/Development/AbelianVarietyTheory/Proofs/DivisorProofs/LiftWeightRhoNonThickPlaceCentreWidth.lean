@@ -73,7 +73,7 @@ theorem other_of_not_thick (L : Formalism.BasicNotions.SizeData₂ D) (P5 : Form
       have hb : 0 < L.sc.b := by unfold Scale.b; positivity
       unfold Scale.b' Scale.a
       positivity
-    have hk0 : (0 : ℝ) < D.R.k := by exact_mod_cast (by omega : 0 < D.R.k)
+    have hk0 : (0 : ℝ) < D.R.k := by exact_mod_cast (omega : 0 < D.R.k)
     have hLa : 0 < L.LaG := by
       have h1 := P5.S_le
       have h2 := L.Sc_pos

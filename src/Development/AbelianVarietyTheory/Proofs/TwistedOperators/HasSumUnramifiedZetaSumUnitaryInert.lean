@@ -141,7 +141,7 @@ theorem varXY_eq (q r t : ℕ) (hq : 2 ≤ q) (z : ℂ) :
 
 theorem tb_triv : ∀ (q r : ℕ), 2 ≤ q → ∀ α : Fin (r / 2) → ℂˣ, (∀ i, (α i : ℂ) = (q : ℂ) ^ ((r : ℤ) - 1 - 2 * (i.val : ℤ))) → GlobalTheory.IndefiniteRowSideFullHecke.TrivialParameterBound.TrivialBound q r α := by
   intro q r hq α hα i
-  have hq1 : (1:ℝ) ≤ q := by exact_mod_cast (by omega : 1 ≤ q)
+  have hq1 : (1:ℝ) ≤ q := by exact_mod_cast (omega : 1 ≤ q)
   have hn : ‖(α i : ℂ)‖ = (q:ℝ) ^ ((((r:ℤ) - 1 - 2 * (i.val:ℤ) : ℤ)) : ℝ) := by
     rw [hα, norm_zpow, Complex.norm_natCast, Real.rpow_intCast]
   have hi : 2 * i.val + 1 ≤ r := by have := i.2; omega
@@ -152,8 +152,8 @@ theorem tb_triv : ∀ (q r : ℕ), 2 ≤ q → ∀ α : Fin (r / 2) → ℂˣ, (
 
 theorem dom_of_tb : ∀ (q r t : ℕ), 2 ≤ q → r ≤ t → ∀ (z : ℂ), ‖z‖ = 1 → ∀ α : Fin (r / 2) → ℂˣ, GlobalTheory.IndefiniteRowSideFullHecke.TrivialParameterBound.TrivialBound q r α → GlobalTheory.IndefiniteRowSideFullHecke.SphericalSectionVariables.Domain (GlobalTheory.IndefiniteRowSideFullHecke.SphericalSectionVariables.varY q z ((t : ℂ) / 2)) α := by
   intro q r t hq hrt z hz α hα
-  have hq1 : (1:ℝ) ≤ q := by exact_mod_cast (by omega : 1 ≤ q)
-  have hq1' : (1:ℝ) < q := by exact_mod_cast (by omega : 1 < q)
+  have hq1 : (1:ℝ) ≤ q := by exact_mod_cast (omega : 1 ≤ q)
+  have hq1' : (1:ℝ) < q := by exact_mod_cast (omega : 1 < q)
   have hq0 : (0:ℝ) < q := by linarith
   rw [(varXY_eq q r t hq z).2]
   have hy : ‖z * ((q:ℂ)^(t+1))⁻¹‖ = ((q:ℝ)^(t+1))⁻¹ := by

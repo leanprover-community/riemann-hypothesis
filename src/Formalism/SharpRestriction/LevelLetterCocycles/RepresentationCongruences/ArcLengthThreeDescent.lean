@@ -158,7 +158,7 @@ theorem arc_length_three_descent [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomai
   have hhB : Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size = b + η + S := by
     unfold Formalism.MainNotions.TruncatedSeriesCountingBounds.hB; rw [if_pos ⟨c - 1, hth⟩]
   rw [hh]
-  have hp1 : (1 : ℝ) < PD.p := by exact_mod_cast (by omega : 1 < PD.p)
+  have hp1 : (1 : ℝ) < PD.p := by exact_mod_cast (omega : 1 < PD.p)
   have hlog0 : 0 ≤ Real.logb PD.p (2 * (Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size : ℝ)) := by
     apply Real.logb_nonneg hp1
     rw [hhB]; push_cast
@@ -203,7 +203,7 @@ theorem arc_length_three_descent [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomai
       constructor <;> linarith
     rw [hband, mul_one]
     have hlb : Real.logb PD.p (size (c - 1) : ℝ) ≤ Real.logb PD.p (2 * (Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size : ℝ)) := by
-      apply Real.logb_le_logb_of_le hp1 (by exact_mod_cast (by omega : 0 < size (c - 1)))
+      apply Real.logb_le_logb_of_le hp1 (by exact_mod_cast (omega : 0 < size (c - 1)))
       rw [hhB]; push_cast
       have : (0 : ℝ) ≤ S := Nat.cast_nonneg _
       have : (1 : ℝ) ≤ (size (c - 1) : ℝ) := by exact_mod_cast hb1

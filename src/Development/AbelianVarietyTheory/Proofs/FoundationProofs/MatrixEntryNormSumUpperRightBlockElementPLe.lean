@@ -284,7 +284,7 @@ theorem integrand_le {c : ℝ} (hc : 2 * (((p + q : ℕ) : ℝ) - 1) < c) {k : U
     refine Finset.prod_le_prod₀ (fun i _ => (Real.rpow_pos_of_pos (Real.cosh_pos _) _).le) fun i hi => ?_
     have hi' := Finset.mem_range.1 hi
     have hc0 : 0 ≤ c := by
-      have : (1 : ℝ) ≤ ((p + q : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ p + q)
+      have : (1 : ℝ) ≤ ((p + q : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ p + q)
       linarith
     set s := singVal (Matrix.of B) i
     have b1 : Real.exp s / 2 ≤ Real.cosh s := by
@@ -344,7 +344,7 @@ theorem coshLocUnif : CoshLocUnif := by
 
 theorem coshBound : CoshBound := by
   intro p q m hm n t hn
-  have hn' : ((p + q : ℕ) : ℝ) ≤ n := by exact_mod_cast (by omega : p + q ≤ n)
+  have hn' : ((p + q : ℕ) : ℝ) ≤ n := by exact_mod_cast (omega : p + q ≤ n)
   have hi := coshFinite p q m hm (2 * n) (by linarith)
   have hc : 2 * (((p + q : ℕ) : ℝ) - 1) < 2 * ((p + q : ℕ) : ℝ) := by linarith
   have hi' := coshFinite p q m hm _ hc

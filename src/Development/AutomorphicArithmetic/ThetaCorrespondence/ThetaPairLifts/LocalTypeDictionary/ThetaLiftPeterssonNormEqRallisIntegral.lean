@@ -126,7 +126,7 @@ theorem petersson_norm_bottom_theta_lift_eq (hP : _root_.GlobalTheory.FunPr.Thet
   have hd := GlobalTheory.T.localIndex_localNorm_normalizingFactor_eq_partial D (modT G t) (sfB G t) hm P.a (P.d - P.a) (by omega)
   rw [Nat.add_sub_cancel' P.a_le] at hd
   have hre : 0 < (((P.d - P.a : ℕ) : ℂ) / 2).re := by
-    have : (0 : ℝ) < ((P.d - P.a : ℕ) : ℝ) := by exact_mod_cast (by omega : 0 < P.d - P.a)
+    have : (0 : ℝ) < ((P.d - P.a : ℕ) : ℝ) := by exact_mod_cast (omega : 0 < P.d - P.a)
     rw [show (((P.d - P.a : ℕ) : ℂ) / 2) = ((((P.d - P.a : ℕ) : ℝ) / 2 : ℝ) : ℂ) by push_cast; ring, Complex.ofReal_re]
     positivity
   have hprod : ∏ k ∈ Finset.range P.a, Λ (((P.d - P.a : ℕ) : ℂ) / 2 + (P.a : ℂ) / 2 - k) =

@@ -106,7 +106,7 @@ theorem purityFree_of_ringKrullDim (n : ℕ) : ∀ (S : Type) [CommRing S] [IsRe
         exact_mod_cast hdim
       omega
     refine hyperplane S' hc ?_ f hf hf2 (ih _ ?_)
-    · rw [hd']; exact_mod_cast (by omega : 3 ≤ n + 1)
+    · rw [hd']; exact_mod_cast (omega : 3 ≤ n + 1)
     · rw [← hsp, hk]
 
 theorem free_of_etale_punctured : ∀ (R A : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [IsDomain R] [CommRing A] [IsDomain A] [IsIntegrallyClosed A] [Algebra R A] [Module.Finite R A] [FaithfulSMul R A], (((maximalIdeal R).spanFinrank : WithBot ℕ∞) = ringKrullDim R) → 3 ≤ ringKrullDim R → (∀ (p : Ideal R) [p.IsPrime], p ≠ maximalIdeal R → Algebra.Etale (Localization.AtPrime p) (TensorProduct R (Localization.AtPrime p) A)) → Module.Free R A := by

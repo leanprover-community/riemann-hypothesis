@@ -116,7 +116,7 @@ theorem le_growth_of_frequently {D δ k₀ : ℕ} (hδ : 0 < δ) (a : ℝ) (rk :
     have hτ' : (0 : ℝ) < (τ : ℝ) + k₀ := by positivity
     have hne0 : (((τ + k₀ : ℕ) : ℝ≥0∞)) ^ D ≠ 0 := by
       have : ((τ + k₀ : ℕ) : ℝ≥0∞) ≠ 0 := by
-        exact_mod_cast (by omega : τ + k₀ ≠ 0)
+        exact_mod_cast (omega : τ + k₀ ≠ 0)
       exact pow_ne_zero _ this
     have hnet : (((τ + k₀ : ℕ) : ℝ≥0∞)) ^ D ≠ ⊤ := ENNReal.pow_ne_top (ENNReal.natCast_ne_top _)
     rw [ENNReal.le_div_iff_mul_le (Or.inl hne0) (Or.inl hnet)]

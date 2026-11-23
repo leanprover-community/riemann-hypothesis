@@ -140,7 +140,7 @@ theorem proviso_e (L : SizeData₂ D) (h4f : LinkB.RankM D) (hDu : StandardLatti
       rw [← pow_succ']; congr 1; omega
     omega
   have hfR : (0 : ℝ) < D.R.f := by exact_mod_cast hf
-  have hkR : (0 : ℝ) < D.R.k := by exact_mod_cast (by omega : 0 < D.R.k)
+  have hkR : (0 : ℝ) < D.R.k := by exact_mod_cast (omega : 0 < D.R.k)
   have hX : Real.exp (StandardLattice.logXuD D u) ^ (D.R.f * D.R.k) = StandardLattice.DstarD D / StandardLattice.duStarU D u := by
     rw [← Real.exp_nat_mul]
     unfold StandardLattice.logXuD StandardLattice.logXu

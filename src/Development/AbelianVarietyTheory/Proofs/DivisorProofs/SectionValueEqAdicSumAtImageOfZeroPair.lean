@@ -268,7 +268,7 @@ theorem exists_sumF (hB : AdmBase R I) (hG : IsSemiAbelian G) (U : Unif I D A G)
   obtain ⟨E, eG, eA, eB, eh, eAct⟩ := (GlobalTheory.IntEnd.exists_nsmul_and_neg hL R _ hB D A G hG U).1 n
   have hinj : Function.Injective E.h := fun a b h => by
     rw [eh, eh, ← natCast_zsmul, ← natCast_zsmul] at h
-    exact smul_right_injective _ (by exact_mod_cast (by omega : n ≠ 0)) h
+    exact smul_right_injective _ (by exact_mod_cast (omega : n ≠ 0)) h
   obtain ⟨⟨κ, hκ⟩, hpull⟩ := coef_twistPull hL R _ hB D A G hG U F E hinj (k * n ^ 2) k hk hpos
     (by rw [eG]; exact exists_gen_mulPull_pow_unif R _ D A G U.toUnifPre n k _ rfl)
   have hAct : E.Act h p.g := (eAct F _ _).2 hh

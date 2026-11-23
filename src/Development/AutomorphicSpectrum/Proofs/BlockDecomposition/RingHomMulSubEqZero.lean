@@ -69,7 +69,7 @@ theorem exists_nat_mem (S : Finset (HeightOneSpectrum (𝓞 F))) :
 def tau (N k : ℕ) : ℚ := (N : ℚ) ^ k / (1 + ((N : ℚ) ^ k) ^ 2)
 
 theorem tau_pos {N : ℕ} (hN : 2 ≤ N) (k : ℕ) : 0 < tau N k := by
-  have : (0 : ℚ) < N := by exact_mod_cast (by omega : 0 < N)
+  have : (0 : ℚ) < N := by exact_mod_cast (omega : 0 < N)
   unfold tau
   positivity
 

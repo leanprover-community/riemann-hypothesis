@@ -111,7 +111,7 @@ private theorem chart_eq {e : ℤ → D} (e0 : e 0 = 1) (ea : ∀ a b, e (a + b)
       rintro _ ⟨b, j, hj, hb, rfl⟩
       refine Submodule.subset_span ⟨a + k + b, j, hj, ?_, ?_⟩
       · have h2 : (k : ℤ) * j ≤ k * i :=
-          mul_le_mul_of_nonneg_left (by exact_mod_cast (by omega : j ≤ i)) (by positivity)
+          mul_le_mul_of_nonneg_left (by exact_mod_cast (omega : j ≤ i)) (by positivity)
         have h3 : -(k : ℤ) ≤ b := by omega
         linarith
       · rw [ea (a + k) b]

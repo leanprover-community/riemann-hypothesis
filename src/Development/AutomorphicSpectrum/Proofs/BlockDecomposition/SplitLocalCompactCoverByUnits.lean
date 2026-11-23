@@ -155,7 +155,7 @@ theorem exists_scale {ϖ : Fv F v} (hϖ : ‖ϖ‖ = (Ideal.absNorm v.asIdeal : 
   have hq : 1 < (Ideal.absNorm v.asIdeal : ℝ) := by
     have h1 : Ideal.absNorm v.asIdeal ≠ 1 := fun h => v.isPrime.ne_top (Ideal.absNorm_eq_one_iff.1 h)
     have h0 : Ideal.absNorm v.asIdeal ≠ 0 := fun h => v.ne_bot (Ideal.absNorm_eq_zero_iff.1 h)
-    exact_mod_cast (by omega : 1 < Ideal.absNorm v.asIdeal)
+    exact_mod_cast (omega : 1 < Ideal.absNorm v.asIdeal)
   have hq0 : (Ideal.absNorm v.asIdeal : ℝ) ≠ 0 := by positivity
   have hϖ0 : ϖ ≠ 0 := fun e => by
     rw [e, norm_zero] at hϖ
@@ -214,7 +214,7 @@ theorem neg_lt_of_norm_lt {ϖ : Fv F v} (hϖ : ‖ϖ‖ = (Ideal.absNorm v.asIde
   have hq : 1 < (Ideal.absNorm v.asIdeal : ℝ) := by
     have h1 : Ideal.absNorm v.asIdeal ≠ 1 := fun h => v.isPrime.ne_top (Ideal.absNorm_eq_one_iff.1 h)
     have h0 : Ideal.absNorm v.asIdeal ≠ 0 := fun h => v.ne_bot (Ideal.absNorm_eq_zero_iff.1 h)
-    exact_mod_cast (by omega : 1 < Ideal.absNorm v.asIdeal)
+    exact_mod_cast (omega : 1 < Ideal.absNorm v.asIdeal)
   rw [e, hϖ, inv_zpow', ← zpow_natCast] at hx
   have := (zpow_lt_zpow_iff_right₀ hq).1 hx
   omega
@@ -239,7 +239,7 @@ theorem cover (h : IsCMExt F E σ) (hM : 2 ≤ M) (τ : E →ₐ[F] Fv F v)
   have hq : 1 < (Ideal.absNorm v.asIdeal : ℝ) := by
     have h1 : Ideal.absNorm v.asIdeal ≠ 1 := fun h => v.isPrime.ne_top (Ideal.absNorm_eq_one_iff.1 h)
     have h0 : Ideal.absNorm v.asIdeal ≠ 0 := fun h => v.ne_bot (Ideal.absNorm_eq_zero_iff.1 h)
-    exact_mod_cast (by omega : 1 < Ideal.absNorm v.asIdeal)
+    exact_mod_cast (omega : 1 < Ideal.absNorm v.asIdeal)
   have hq0 : (Ideal.absNorm v.asIdeal : ℝ) ≠ 0 := by positivity
   have hϖ0 : ϖ ≠ 0 := fun e => by
     rw [e, norm_zero] at hϖ

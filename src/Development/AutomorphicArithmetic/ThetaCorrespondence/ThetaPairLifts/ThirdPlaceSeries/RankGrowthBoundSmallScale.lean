@@ -112,8 +112,8 @@ theorem rk_le_alt_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.
     refine le_trans ?_ (Nat.le_ceil _)
     have c1 := (Fm.D x ι).R.two_le_m
     have c2 := (Fm.D x ι).R.m_add_three_le_k
-    have c3 : (0 : ℝ) < (Fm.D x ι).R.m := by exact_mod_cast (by omega : 0 < (Fm.D x ι).R.m)
-    have c4 : ((Fm.D x ι).R.m : ℝ) ≤ (Fm.D x ι).R.k := by exact_mod_cast (by omega : (Fm.D x ι).R.m ≤ (Fm.D x ι).R.k)
+    have c3 : (0 : ℝ) < (Fm.D x ι).R.m := by exact_mod_cast (omega : 0 < (Fm.D x ι).R.m)
+    have c4 : ((Fm.D x ι).R.m : ℝ) ≤ (Fm.D x ι).R.k := by exact_mod_cast (omega : (Fm.D x ι).R.m ≤ (Fm.D x ι).R.k)
     have c5 : 1000 ≤ PP ^ 2 := by nlinarith
     rw [le_div_iff₀ c3]
     gcongr

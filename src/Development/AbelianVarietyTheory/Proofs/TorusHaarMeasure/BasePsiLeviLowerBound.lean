@@ -267,11 +267,9 @@ theorem curvDe_nonneg (X : Data E r) {x0 : Frame X.Ψ r} {z : V (nd X)} (hz : cp
   simp only [de2, sgn]
   split_ifs <;> first | omega | norm_num
 
-section Weights
 
 variable {X : Data E r} (w : Weights X)
 
-end Weights
 
 theorem isInv_iff (X : Data E r) (u : Frame X.Ψ r → ℝ) : IsInv X u ↔ IsInvFn X u := by
   constructor
@@ -344,11 +342,9 @@ theorem card_pos {X : Data E r} (h : 2 ≤ nd X) : 0 < X.Ψ.card := by
   obtain ⟨e⟩ := Fintype.card_pos_iff.1 this
   exact Finset.card_pos.2 ⟨e.1.1, e.1.2⟩
 
-section Clauses
 
 variable {X : Data E r} (I : ThetaInputs X)
 
-end Clauses
 
 end
 

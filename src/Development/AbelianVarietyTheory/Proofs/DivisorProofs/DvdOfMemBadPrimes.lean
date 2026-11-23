@@ -58,7 +58,7 @@ theorem log_level_le (P : ParameterChoice' D L) :
   have h2 := D.R.m_add_three_le_k
   have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by unfold Ranks.f; omega : 1 ≤ D.R.f)
   have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by unfold Ranks.r; omega : 1 ≤ D.R.r)
-  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
   have hL : 1 ≤ L.sc.L := Real.one_le_rpow L.sc.one_lt_alt.le L.sc.eps_pos.le
   have hb : 0 < L.sc.b := Real.exp_pos _
   have hc0 : LevelStarExponents.condE D ≠ 0 := by

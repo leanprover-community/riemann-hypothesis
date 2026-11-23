@@ -45,7 +45,6 @@ open TensorProduct Coalgebra AddMonoidAlgebra
 
 namespace GlobalTheory
 
-section Units
 
 variable {A : Type*} [CommRing A] {X : Type*} [AddCommGroup X]
 
@@ -54,7 +53,6 @@ variable [IsDomain A]
 variable [Module.Free ℤ X]
 
 
-end Units
 
 section Coordinates
 
@@ -141,7 +139,6 @@ theorem addMonoidAlgebra_existsUnique_coboundary (f : A[X × X])
 
 end Ring
 
-section Tensor
 
 variable {R : Type*} [CommRing R] {H : Type*} [Ring H] [Bialgebra R H]
 variable {M : Type*} [AddCommGroup M] [Module R M]
@@ -150,7 +147,6 @@ variable {M : Type*} [AddCommGroup M] [Module R M]
 variable {X : Type*} [AddMonoid X]
 
 
-end Tensor
 
 universe u v w
 

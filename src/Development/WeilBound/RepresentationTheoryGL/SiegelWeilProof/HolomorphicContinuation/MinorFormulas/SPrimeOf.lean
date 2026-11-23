@@ -100,7 +100,7 @@ theorem sPrime_of' (hB : ClsBound) (hGain : ClsGain) (hIBP : IBP) (hI : Integr) 
     intro N N' hNN'
     have hsub : U N ⊆ U N' := fun z hz => by
       simp only [U, Set.mem_ofPred_eq] at hz ⊢
-      have : ((m + 0 + N : ℕ) : ℝ) ≤ ((m + 0 + N' : ℕ) : ℝ) := by exact_mod_cast (by omega)
+      have : ((m + 0 + N : ℕ) : ℝ) ≤ ((m + 0 + N' : ℕ) : ℝ) := by exact_mod_cast (omega)
       linarith
     have hA : AnalyticOnNhd ℂ (WN N) (U N) := (hWdiff N).analyticOnNhd (hUopen N)
     have hA' : AnalyticOnNhd ℂ (WN N') (U N) := ((hWdiff N').mono hsub).analyticOnNhd (hUopen N)

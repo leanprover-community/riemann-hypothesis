@@ -65,7 +65,7 @@ theorem dim_le_of_ne_univ [IrreducibleSpace S] {C : Set S} (hC : IsClosed C) (hn
   have h2 : ((q.length + 1 : ℕ) : WithBot ℕ∞) ≤ ((D + 1 : ℕ) : WithBot ℕ∞) := by
     simpa [q'] using h1.trans hS
   have h3 : q.length + 1 ≤ D + 1 := by exact_mod_cast h2
-  exact_mod_cast (by omega : q.length ≤ D)
+  exact_mod_cast (omega : q.length ≤ D)
 
 theorem dim_le_of_closedPoint_notMem [T0Space S] [CompactSpace S] {T : Set S}
     (hT : ∀ s : S, IsClosed ({s} : Set S) → s ∉ T) {D : ℕ}
@@ -88,7 +88,7 @@ theorem dim_le_of_closedPoint_notMem [T0Space S] [CompactSpace S] {T : Set S}
   have h2 : ((q.length + 1 : ℕ) : WithBot ℕ∞) ≤ ((D + 1 : ℕ) : WithBot ℕ∞) := by
     simpa [q'] using h1.trans hS
   have h3 : q.length + 1 ≤ D + 1 := by exact_mod_cast h2
-  exact_mod_cast (by omega : q.length ≤ D)
+  exact_mod_cast (omega : q.length ≤ D)
 
 end Dim
 

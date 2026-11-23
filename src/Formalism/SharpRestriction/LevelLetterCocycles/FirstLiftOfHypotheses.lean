@@ -72,7 +72,7 @@ theorem first_lift_of_hypotheses [NeZero n] (W : LocWach PD LL O v n) (hV : Form
   have hT₂ : IsCrys PD T₂.ρ := hS.2.2.2.2.2.1.2.1
   have hR := Formalism.MainNotions.LiftingTheory.lifta_ring_of W h9
   set a := ⌈aR PD.p (hpar n b S + η)⌉₊ with ha_def
-  have hp1 : (1 : ℝ) < PD.p := by exact_mod_cast (by omega : 1 < PD.p)
+  have hp1 : (1 : ℝ) < PD.p := by exact_mod_cast (omega : 1 < PD.p)
   have hpos : (0 : ℝ) < (PD.p : ℝ) - 1 := by linarith
   have haR : 0 ≤ aR PD.p (hpar n b S + η) := by
     have hlam := lam_nonneg_of_one_lt PD.p (hpar n b S + η) (by omega)

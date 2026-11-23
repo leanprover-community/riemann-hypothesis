@@ -139,7 +139,7 @@ theorem UpperTheory.Gal.Int.Core.oneUs_holds :
     exact complexConj_eq_neg_of_sq_eq_neg_natCast E d hd0 x hx
   have hne : Ideal.span {((2 * d : ℕ) : 𝓞 E)} ≠ 0 := by
     rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
-    exact_mod_cast (by omega : 2 * d ≠ 0)
+    exact_mod_cast (omega : 2 * d ≠ 0)
   rw [Filter.eventually_cofinite]
   refine (Ideal.finite_factors hne).subset ?_
   intro w hw

@@ -245,7 +245,7 @@ theorem exists_poly
   have key := eval_eq_of_ample dom va uniq mono pow
     (fun η' h' => (poly (Option I) η' h').imp fun _ h => h.2) hη hΦ hV hε hδ hN hm
   have e₁ : (fun o => (m o : ℚ)) = fun o => ((d₀ * D : ℕ) : ℚ) * eval (fun i => (ε i : ℚ)) (y o) := by
-    have n₀ : (d₀ : ℚ) ≠ 0 := by exact_mod_cast (by omega : d₀ ≠ 0)
+    have n₀ : (d₀ : ℚ) ≠ 0 := by exact_mod_cast (omega : d₀ ≠ 0)
     funext o
     rcases o with _ | i
     · set_option synthInstance.maxHeartbeats 100000 in

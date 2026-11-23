@@ -256,7 +256,7 @@ theorem rhs_eq {q r : ℕ} (hq : 1 < q) (α : Fin r → ℂˣ) (s X : ℂ) (hX :
       eulerFac (Finset.univ.val.map α) ((q : ℂ) ^ (((r : ℂ) - 1) / 2) * X) *
         eulerFac ((Finset.univ.val.map α).map (·⁻¹)) ((q : ℂ) ^ (((r : ℂ) - 1) / 2) * X) *
           ∏ i ∈ Finset.range r, (1 - (q : ℂ) ^ i * X ^ 2) := by
-  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (by omega : q ≠ 0)
+  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   have h1 : (q : ℂ) ^ (-(s + 1 / 2)) = (q : ℂ) ^ (((r : ℂ) - 1) / 2) * X := by
     rw [← hX, ← Complex.cpow_add _ _ hq0]
     congr 1
@@ -361,7 +361,7 @@ theorem hasSum_hecke_eigenvalues : GlobalTheory.Published.UnramifiedDoublingGL �
   have hqr : resCard (w.adicCompletion E) = qV E w := by
     simpa only [Formalism.ConjugateSelfDual.normV, Formalism.UG.qV, Ideal.absNorm_apply,
       Submodule.cardQuot_apply] using GlobalTheory.LocLanglands.resCard_eq_normV w
-  have hq0 : (0 : ℝ) < qV E w := by exact_mod_cast (by omega : 0 < qV E w)
+  have hq0 : (0 : ℝ) < qV E w := by exact_mod_cast (omega : 0 < qV E w)
   have hlq : 0 < Real.log (qV E w) := Real.log_pos (by exact_mod_cast hq1)
   refine ⟨Real.exp (-(s₀ + r / 2) * Real.log (qV E w)), Real.exp_pos _, fun X hX0 hXδ => ?_⟩
   obtain ⟨s, hsd⟩ : ∃ s : ℝ, s = -Real.log X / Real.log (qV E w) - r / 2 := ⟨_, rfl⟩

@@ -472,7 +472,7 @@ theorem core : BallSt → RkSt → CoreSt := by
       one_lt_pow₀ (by exact_mod_cast hq1) (by omega)
     rw [← Real.rpow_natCast]
     exact Real.rpow_lt_rpow_of_exponent_lt hQ (by
-      rw [lt_div_iff₀ two_pos]; exact_mod_cast (by omega : j * 2 < n))
+      rw [lt_div_iff₀ two_pos]; exact_mod_cast (omega : j * 2 < n))
   have hom : ∀ ρ (f : Matrix (Fin n) (Fin r) k → ℂ) x,
       om μ (g ρ) 1 f x = s * f (x * PositivityTheory.Rg.Ming.CoreX.Mr j (ϖ : k)⁻¹ (c : k) L ρ) := by
     intro ρ f x

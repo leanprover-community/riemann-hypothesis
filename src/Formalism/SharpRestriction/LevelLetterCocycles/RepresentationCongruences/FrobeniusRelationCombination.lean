@@ -209,7 +209,7 @@ theorem arc_length_three_final_bound [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
         have hAh : ((arcOf b w S η up size).h : ℕ) = b + η + S := hhB
         have hBle : ((size c + S : ℕ) : ℝ) ≤ ((b + η + S : ℕ) : ℝ) := by
           have := ht0.2
-          exact_mod_cast (by omega : size c + S ≤ b + η + S)
+          exact_mod_cast (omega : size c + S ≤ b + η + S)
         have hv' : ((size (c - 2) : ℝ) + S - size (c - 1)) + ((size c + S : ℕ) : ℝ) / PD.p -
             ((size c + S : ℕ) : ℝ) / (PD.p : ℝ) ^ 2 - 2 - Real.logb PD.p (2 * ((b + η + S : ℕ) : ℝ)) ≤
             (rX : ℝ) - κ₀ := by

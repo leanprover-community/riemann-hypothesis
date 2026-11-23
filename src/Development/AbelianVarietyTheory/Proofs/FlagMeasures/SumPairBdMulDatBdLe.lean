@@ -46,7 +46,7 @@ theorem parith_small (k f g : ℕ) (b e : ℝ) (hb : 2 ≤ b) (hk : 9 ≤ k) (hf
     (he : 42 * (e * Real.log b) ≤ k) (hg : ((k : ℝ) * b) ^ 8 ≤ g) :
     (32 / (g : ℝ)) ^ (k * f) * ((4 * k * f : ℕ) : ℝ) ^ (4 * f) * (b ^ (e * f)) ^ 42 ≤ 1 / 2 := by
   have hb0 : 0 < b := by linarith
-  have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast (by omega : 1 ≤ k)
+  have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast (omega : 1 ≤ k)
   have hfk' : (f : ℝ) ≤ k := by exact_mod_cast hfk
   have h1 : (b ^ (e * f)) ^ 42 = (Real.exp (42 * (e * Real.log b))) ^ f := by
     rw [Real.rpow_def_of_pos hb0, ← Real.exp_nat_mul, ← Real.exp_nat_mul]
@@ -343,7 +343,7 @@ theorem sum_pairBd_mul_datBd_le : ∀ Ca : ℝ, 1 ≤ Ca → ∃ Ch Cl : ℝ, 0 
   have hm4 : 42 ^ 4 ≤ m ^ 4 := by gcongr
   have hr4 : r ^ 4 ≤ m ^ 4 := by gcongr
   have hc : cf K ≤ 4 * r := by
-    have hf0 : (0 : ℝ) < Formalism.HermitianLatticesTheory.fDeg K := by exact_mod_cast (by omega : 0 < Formalism.HermitianLatticesTheory.fDeg K)
+    have hf0 : (0 : ℝ) < Formalism.HermitianLatticesTheory.fDeg K := by exact_mod_cast (omega : 0 < Formalism.HermitianLatticesTheory.fDeg K)
     unfold cf
     rw [hfin]
     push_cast

@@ -127,7 +127,7 @@ theorem nonzeroFlagBound : VolumeStep → NonzeroFlagBound := by
   have h2q : 2 * q + 2 ≤ I.n := by nlinarith
   set X : ℝ := I.n * I.f * Real.log I.n with hX
   have hX15 : 15 ≤ X := by
-    have h1 : (1 : ℝ) ≤ I.n := by exact_mod_cast (by omega : 1 ≤ I.n)
+    have h1 : (1 : ℝ) ≤ I.n := by exact_mod_cast (omega : 1 ≤ I.n)
     have h2 : (1 : ℝ) ≤ I.f := by exact_mod_cast hf1
     have h3 : (1 : ℝ) ≤ I.n * I.f := one_le_mul_of_one_le_of_one_le h1 h2
     rw [hX]; nlinarith

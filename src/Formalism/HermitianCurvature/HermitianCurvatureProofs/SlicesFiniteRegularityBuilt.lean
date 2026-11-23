@@ -1337,9 +1337,9 @@ theorem intG : IntG := by
     set R : ℝ := ((ph + (n + 1) + ρ : ℕ) : ℝ) with hR
     set a : ℝ := A₁ / (8 * (2 * R + 1)) with ha_def
     have hden : 0 < 8 * (2 * R + 1) := by positivity
-    have hR1 : (1 : ℝ) ≤ R := by rw [hR]; exact_mod_cast (by omega : 1 ≤ ph + (n + 1) + ρ)
+    have hR1 : (1 : ℝ) ≤ R := by rw [hR]; exact_mod_cast (omega : 1 ≤ ph + (n + 1) + ρ)
     have hnd : R ≤ ((2 * (ph + (n + 1) + ρ) + k + 1 : ℕ) : ℝ) := by
-      rw [hR]; exact_mod_cast (by omega : ph + (n + 1) + ρ ≤ 2 * (ph + (n + 1) + ρ) + k + 1)
+      rw [hR]; exact_mod_cast (omega : ph + (n + 1) + ρ ≤ 2 * (ph + (n + 1) + ρ) + k + 1)
     have ha : 2 * R * ((2 * (ph + (n + 1) + ρ) + k + 1 : ℕ) : ℝ) < a := hA
     have ha0 : 0 < a := lt_of_le_of_lt (by positivity) ha
     have hA0 : 0 ≤ A₁ := by
@@ -1353,7 +1353,7 @@ theorem intG : IntG := by
         rw [Module.finrank_pi_fintype]
         simp [Complex.finrank_real_complex]
       have e2 := two_mul_card_UT_succ n
-      have hnR : ((n + 1 : ℕ) : ℝ) ≤ R := by rw [hR]; exact_mod_cast (by omega : n + 1 ≤ ph + (n + 1) + ρ)
+      have hnR : ((n + 1 : ℕ) : ℝ) ≤ R := by rw [hR]; exact_mod_cast (omega : n + 1 ≤ ph + (n + 1) + ρ)
       have e3 : ((Module.finrank ℝ (G.UT (n + 1) → ℂ) : ℕ) : ℝ) = ((n + 1 : ℕ) : ℝ) * (n : ℝ) := by
         rw [e1]; exact_mod_cast (by rw [mul_comm]; exact e2)
       rw [e3]

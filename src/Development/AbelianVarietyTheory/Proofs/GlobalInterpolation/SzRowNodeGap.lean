@@ -147,7 +147,7 @@ theorem szRow_nodeGap : SzRow (fun C D L => (12 * L.sc.b / lStar L + 2 * D.R.t +
     have : D.R.n ≤ D.R.f := by unfold Ranks.f; omega
     exact_mod_cast this
   have hm2 := D.R.two_le_m
-  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hMN : (Mrt D : ℝ) ≤ D.R.N D.R.m := by
     have : Mrt D ≤ D.R.N D.R.m := by
       unfold Mrt Ranks.N Ranks.r

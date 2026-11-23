@@ -55,13 +55,13 @@ theorem leg (l n : ℕ) (hp : l.Prime) (hl : l ≠ 2) :
 
 theorem logA (l h h' S : ℕ) (h3 : 3 ≤ l) (h1 : 1 ≤ h') (h2 : h' ≤ h + S + 1) :
     Real.logb l h' ≤ Real.logb l h + S + 1 := by
-  have hL : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hL : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hpow : S + 1 < l ^ (S + 1) := Nat.lt_pow_self (by omega)
   have hp : Real.logb l ((l : ℝ) ^ (S + 1)) = S + 1 := by
     rw [Real.logb_pow, Real.logb_self_eq_one hL]; push_cast; ring
   have hh' : (0 : ℝ) < h' := by exact_mod_cast h1
   rcases Nat.eq_zero_or_pos h with rfl | h0
-  · have : (h' : ℝ) ≤ (l : ℝ) ^ (S + 1) := by exact_mod_cast (by omega : h' ≤ l ^ (S + 1))
+  · have : (h' : ℝ) ≤ (l : ℝ) ^ (S + 1) := by exact_mod_cast (omega : h' ≤ l ^ (S + 1))
     have := Real.logb_le_logb_of_le hL hh' this
     simp only [Nat.cast_zero, Real.logb_zero]
     linarith

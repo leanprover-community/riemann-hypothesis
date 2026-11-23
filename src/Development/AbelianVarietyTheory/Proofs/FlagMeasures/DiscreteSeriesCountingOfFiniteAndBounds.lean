@@ -96,7 +96,7 @@ theorem countingTheorem_of_finite_of_bounds :
       have h1 := h32 v
       rw [hrk v] at h1 ⊢
       have hs : 0 < Real.sqrt q := Real.sqrt_pos.2 (by exact_mod_cast hq)
-      have hqn : (q : ℝ) < B.I.n := by exact_mod_cast (by omega : q < B.I.n)
+      have hqn : (q : ℝ) < B.I.n := by exact_mod_cast (omega : q < B.I.n)
       have hn0 : (0 : ℝ) < B.I.n := by exact_mod_cast hn1
       have := mul_lt_mul_of_pos_left hqn (mul_pos hs hn0)
       nlinarith))

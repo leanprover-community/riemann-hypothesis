@@ -88,7 +88,7 @@ theorem root_of_hw {p q r s : ℕ} (c : ℂ) (c0 : ℚ) (hc : c = c0) (La : Ix r
       have hC' := polChi_low c hcd hC
       refine polChi_small c c0 hc e ?_ hD' hC'
       rw [← hd]
-      exact_mod_cast (by omega : e < e + 2)
+      exact_mod_cast (omega : e < e + 2)
   have hw1 := hw.1
   have hhw := hw.2
   simp only [hwSub, wtSub, Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker] at hhw

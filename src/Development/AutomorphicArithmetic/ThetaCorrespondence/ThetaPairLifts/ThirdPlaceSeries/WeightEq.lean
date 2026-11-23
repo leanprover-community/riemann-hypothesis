@@ -100,7 +100,7 @@ theorem weight_eq_alt_alt {E Ω : Type} [Field E] [NumberField E] [IsCMField E] 
   have hcX : (X.card : ℂ) = a := by rw [hX, Multiset.card_map, hcard]
   have e := congrArg Multiset.sum (hY.symm.trans hZ)
   rw [sum_map_affine, sum_map_affine, hcX, hX, sum_map_affine, hcard] at e
-  have ha0 : (a : ℂ) ≠ 0 := by exact_mod_cast (by omega : a ≠ 0)
+  have ha0 : (a : ℂ) ≠ 0 := by exact_mod_cast (omega : a ≠ 0)
   have h : (wt : ℂ) = (a : ℂ) - 1 - 2 * (s : ℂ) := by
     apply mul_left_cancel₀ ha0
     linear_combination e

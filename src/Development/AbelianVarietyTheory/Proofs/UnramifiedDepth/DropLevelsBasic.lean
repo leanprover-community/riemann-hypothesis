@@ -132,7 +132,7 @@ lemma basic {ι κ : Type} [DecidableEq ι] [Fintype κ] (s : Finset ι)
 lemma entry_le (l d : ℕ) [NeZero d] (hl : 2 ≤ l) (W : ZMod d → ℝ) (x : ZMod d → ℕ → ℝ)
     (hx : IsFlow l d W x) (a : ZMod d) (i : ℕ) (hi : i ∈ oddLevels d) : x a i ≤ W a := by
   obtain ⟨h0, h2⟩ := hx
-  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (by omega : 1 ≤ l)
+  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (omega : 1 ≤ l)
   have e1 : (l : ℝ) ^ i * x a i ≤ ∑ i ∈ oddLevels d, (l : ℝ) ^ i * x a i :=
     Finset.single_le_sum (f := fun i => (l : ℝ) ^ i * x a i)
       (fun j _ => mul_nonneg (by positivity) (h0 a j)) hi
@@ -177,7 +177,7 @@ lemma truncate (l d : ℕ) [NeZero d] (hl : 2 ≤ l) (W : ZMod d → ℝ) (i0 : 
       (∀ a i, (i0 ≤ i ∨ i ∉ oddLevels d) → x' a i = 0) ∧
       flowVal d x ≤ flowVal d x' + (∑ a, W a) / (l : ℝ) ^ i0 := by
   obtain ⟨h0, h2⟩ := hx
-  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (by omega : 1 ≤ l)
+  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (omega : 1 ≤ l)
   let y : ZMod d → ℕ → ℝ := fun a i => if i0 ≤ i ∨ i ∉ oddLevels d then 0 else x a i
   have hy : ∀ a i, y a i ≤ x a i := fun a i => by
     simp only [y]; split_ifs

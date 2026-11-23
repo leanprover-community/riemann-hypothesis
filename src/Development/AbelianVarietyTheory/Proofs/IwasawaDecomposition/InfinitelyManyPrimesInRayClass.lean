@@ -126,7 +126,7 @@ theorem continuousOn_logSum (hs : ∀ s : ℝ, 1 < s → Summable fun v => (n v 
       refine ContinuousOn.neg (ContinuousOn.clog ?_ ?_)
       · have h0 : (n v : ℂ) ≠ 0 := by
           have := hn v
-          exact_mod_cast (by omega : n v ≠ 0)
+          exact_mod_cast (omega : n v ≠ 0)
         refine (continuous_const.sub (continuous_const.mul ?_)).continuousOn
         exact Continuous.const_cpow (by fun_prop) (Or.inl h0)
       · intro x hx

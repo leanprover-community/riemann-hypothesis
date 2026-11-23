@@ -88,7 +88,7 @@ theorem lenI_big (CDel Cb Cq : ℝ) (hCDel : 4 < CDel) (hCb : 0 < Cb) :
 
   have hkexp : Real.exp (M0 / Cb) ≤ (G.k : ℝ) := by
     have h1 : Real.exp (M0 / Cb) ≤ (⌈Real.exp (M0 / Cb)⌉₊ : ℝ) := Nat.le_ceil _
-    have h2 : ((⌈Real.exp (M0 / Cb)⌉₊ : ℕ) : ℝ) ≤ (G.k : ℝ) := by exact_mod_cast (by omega : ⌈Real.exp (M0 / Cb)⌉₊ ≤ G.k)
+    have h2 : ((⌈Real.exp (M0 / Cb)⌉₊ : ℕ) : ℝ) ≤ (G.k : ℝ) := by exact_mod_cast (omega : ⌈Real.exp (M0 / Cb)⌉₊ ≤ G.k)
     linarith
   have hlogk : M0 / Cb ≤ Real.log (G.k : ℝ) := by
     rw [← Real.exp_le_exp, Real.exp_log hkpos]; exact hkexp

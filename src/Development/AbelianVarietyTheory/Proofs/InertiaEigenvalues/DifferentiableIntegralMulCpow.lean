@@ -174,7 +174,7 @@ theorem IsSmallKernel.tsum_le {Ψ : GA E a → (Fin a → Ad E) → ℂ} (hΨ : 
   have hD1 : 1 ≤ D := Nat.mul_pos ha Module.finrank_pos
   obtain ⟨C, hC⟩ := hb _ (isCompact_latt J) N (D * N + D + 1)
   obtain ⟨K, hK, hlat⟩ := GlobalTheory.LatticeCount.tsum_one_add_norm_rpow_neg_le_regimes (V := Fin a → Cinf E)
-    (by rwa [finrank_pi_Cinf]) (M := ((D * N + D + 1 : ℕ) : ℝ)) (by rw [finrank_pi_Cinf]; exact_mod_cast (by omega))
+    (by rwa [finrank_pi_Cinf]) (M := ((D * N + D + 1 : ℕ) : ℝ)) (by rw [finrank_pi_Cinf]; exact_mod_cast (omega))
   rw [finrank_pi_Cinf, ← hD] at hlat
   refine ⟨|C| * 2 ^ (D * N) * K, fun g => ?_⟩
   set Δ : ℝ := (ideleModule E (GeneralLinearGroup.det g) : ℝ) with hΔ

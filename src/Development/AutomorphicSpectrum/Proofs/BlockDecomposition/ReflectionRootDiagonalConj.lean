@@ -230,7 +230,7 @@ theorem torus_step : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicativ
     exact zero_ne_one this
   have hq : (q : ℂ) ≠ 0 := by
     have : 2 ≤ q := hU.2.2.2.2.2.1
-    exact_mod_cast (by omega : q ≠ 0)
+    exact_mod_cast (omega : q ≠ 0)
   have hsv := sR_conj_val σ hσ a h t d ht
   refine ⟨d (cI n a h 1) * (d (cI n a h 0))⁻¹, mul_ne_zero (hd _) (inv_ne_zero (hd _)),
     sR σ hσ a h * t * sR σ hσ a h, ?_, ?_, ?_⟩

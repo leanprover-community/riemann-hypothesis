@@ -135,11 +135,9 @@ theorem span_map_rowHighest [Module.Free R S] :
 
 end Free
 
-section Scale
 
 variable {R : Type*} [CommRing R] {T : Type*} {p q : ℕ} {κ : Type*}
 
-end Scale
 
 section Lattice
 

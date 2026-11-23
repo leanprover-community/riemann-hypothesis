@@ -50,7 +50,7 @@ theorem MultigradedHilbertPolynomial.proof (h : EventualPolynomial.Statement) :
   intro F _ K _ _ ι _ q d hq hdim
   have hlt : ringKrullDim (MRing ι F ⧸ q) < (((d + 1) + Fintype.card K : ℕ) : WithBot ℕ∞) := by
     rw [hdim]
-    exact_mod_cast (by omega : d + Fintype.card K < d + 1 + Fintype.card K)
+    exact_mod_cast (omega : d + Fintype.card K < d + 1 + Fintype.card K)
   have hdeg : DegLT (hilbFn q) (d + 1) :=
     HilbDegBound.full F K ι (d + 1) q hq.isPrime hq.multiHomog hlt
   exact h K d (hilbFn q) hdeg

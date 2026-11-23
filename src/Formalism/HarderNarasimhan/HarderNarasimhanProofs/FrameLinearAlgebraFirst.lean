@@ -178,7 +178,7 @@ theorem frame_linear_algebra_first : FrameLA1 := by
     have hk : (finrank ℂ (Nτ i)ᗮ : ℝ) = finrank ℂ (V i) - finrank ℂ (Nτ i) := by
       have := Submodule.finrank_add_finrank_orthogonal (Nτ i)
       rw [eq_sub_iff_add_eq]
-      exact_mod_cast (by omega : finrank ℂ (Nτ i)ᗮ + finrank ℂ (Nτ i) = finrank ℂ (V i))
+      exact_mod_cast (omega : finrank ℂ (Nτ i)ᗮ + finrank ℂ (Nτ i) = finrank ℂ (V i))
     rw [hk] at h2
     have h3 := (abs_le.mp h2).2
     have h4 := mul_le_mul_of_nonneg_left h1 (hc i).le

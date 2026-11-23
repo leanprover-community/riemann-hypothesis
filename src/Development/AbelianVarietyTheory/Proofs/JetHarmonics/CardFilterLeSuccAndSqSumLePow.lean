@@ -56,8 +56,8 @@ theorem card_filter_le_succ_and_sq_sum_le_pow : ∀ (n kk : ℕ) (bv : ℝ), 1 �
     simp only
     omega
   · have e1 : n + 1 - kk = (n - kk) + 1 := by omega
-    have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast (by omega : 2 ≤ n)
-    have hM : ((n + 1 - kk : ℕ) : ℝ) ≤ n := by exact_mod_cast (by omega : n + 1 - kk ≤ n)
+    have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast (omega : 2 ≤ n)
+    have hM : ((n + 1 - kk : ℕ) : ℝ) ≤ n := by exact_mod_cast (omega : n + 1 - kk ≤ n)
     have hb : (2 : ℝ) ≤ bv := hn2.trans h3
     have hX : (1 : ℝ) ≤ (6 * bv) ^ (n - kk) := one_le_pow₀ (by linarith)
     have e2 : (6 * bv) ^ (2 * (n + 1 - kk)) = 36 * bv ^ 2 * ((6 * bv) ^ (n - kk)) ^ 2 := by

@@ -151,7 +151,7 @@ lemma dhl_triv (hCau : DHCauchy) (K : ℝ) (hK : 10400 ≤ K) (M : ℕ) [NeZero 
     intro z hz
     obtain ⟨hre, hn⟩ := dhl_geom t z hz
     have h1 := dhl_triv_growth M z hre
-    have hM1 : (1 : ℝ) ≤ M := by exact_mod_cast (by omega : 1 ≤ M)
+    have hM1 : (1 : ℝ) ≤ M := by exact_mod_cast (omega : 1 ≤ M)
     have h2 : ‖DirichletCharacter.LFunctionTrivChar₁ M z‖ ≤ 16 * M * (|t| + 2) ^ 2 := by
       have hsq : (1 + ‖z‖) ^ 2 ≤ (2 * (|t| + 2)) ^ 2 := by
         have : 0 ≤ 1 + ‖z‖ := by positivity

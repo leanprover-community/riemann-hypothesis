@@ -126,7 +126,7 @@ theorem ramified_valuation_inequality : RamifiedValuationInequality := by
   have hbl : (b : ℝ) / (ℓ : ℝ) ≤ (i₀ : ℝ) + 1 := by
     rw [div_le_iff₀ (by exact_mod_cast hℓpos)]
     exact_mod_cast (by linarith [hbi] : b ≤ (i₀ + 1) * ℓ)
-  have hepos : (0 : ℝ) < (e : ℝ) := by exact_mod_cast (by omega : 0 < e)
+  have hepos : (0 : ℝ) < (e : ℝ) := by exact_mod_cast (omega : 0 < e)
   have hte : (t : ℝ) / (e : ℝ) ≤ ((vv i₀ + (y - i₀) : ℕ) : ℝ) := by
     rw [div_le_iff₀ hepos]
     have : (t : ℝ) ≤ ((e * (vv i₀ + (y - i₀)) : ℕ) : ℝ) := by exact_mod_cast htm

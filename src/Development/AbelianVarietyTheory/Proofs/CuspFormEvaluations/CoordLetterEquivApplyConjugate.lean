@@ -149,7 +149,6 @@ theorem rowDegree_le_of_rowAdd_eq {R : Type*} [CommRing R] [IsDomain R] [CharZer
 
 end General
 
-section Rows
 
 variable {ι : Type*} {σ : ι → ι} {Ψ : ι → Prop} {dim : ι → ℕ} {p q : ℕ}
 
@@ -175,15 +174,12 @@ noncomputable def halfRowEquiv (hσ : Function.Involutive σ) (hΨ : ∀ τ, ¬ 
     · have h' : ¬ Ψ (σ τ) := fun e => (hΨ τ).2 e h
       exact (dif_neg h').trans (Prod.ext (Subtype.ext (hσ τ)) rfl)
 
-end Rows
 
-section Coord
 
 variable {E : Type} [Field E] {Ψ : (E →+* ℂ) → Prop} {dim : (E →+* ℂ) → ℕ}
   {p q : ℕ} (n : ℕ) (hΨ : ∀ τ, ¬ Ψ τ ↔ Ψ (ComplexEmbedding.conjugate τ))
   (hp : ∀ τ, Ψ τ → dim τ = p) (hq : ∀ τ, Ψ τ → dim (ComplexEmbedding.conjugate τ) = q)
 
-end Coord
 
 section Host
 

@@ -48,7 +48,7 @@ theorem sizes_of (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : 
   have hm : D.R.m = 2 * D.R.rS + 2 := by
     have := D.R.two_le_m; obtain ⟨a, ha⟩ := D.R.m_even; unfold Ranks.rS; omega
   have hr : D.R.r = 2 * D.R.rS + D.R.k + 1 := by unfold Ranks.r; omega
-  have hk : (1 : ℝ) ≤ D.R.k := by have := D.R.m_add_three_le_k; exact_mod_cast (by omega : 1 ≤ D.R.k)
+  have hk : (1 : ℝ) ≤ D.R.k := by have := D.R.m_add_three_le_k; exact_mod_cast (omega : 1 ≤ D.R.k)
   have hkb : (1 : ℝ) ≤ D.R.k * large₂.sc.b := by nlinarith
   have h8 : (1 : ℝ) ≤ (D.R.k * large₂.sc.b) ^ 8 := one_le_pow₀ hkb
   have hrd : D.host.rdE = 2 * D.host.v := by unfold Host.v; ring

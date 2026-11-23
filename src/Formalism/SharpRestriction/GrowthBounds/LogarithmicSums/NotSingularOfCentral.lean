@@ -666,7 +666,7 @@ theorem gain_bound_at_of_star (P : ParameterChoice' D L) (X : Inst D L) (K : Con
   have hm0 : (0 : ℝ) ≤ (D.R.m : ℝ) := Nat.cast_nonneg _
   have hm1 : (1 : ℝ) ≤ (D.R.m : ℝ) := by
     have := D.R.two_le_m
-    exact_mod_cast (by omega : 1 ≤ D.R.m)
+    exact_mod_cast (omega : 1 ≤ D.R.m)
   have hgain0 : 0 ≤ ∑ j ∈ SizeData₂.lifts D, gainP X K a b p j :=
     Finset.sum_nonneg (fun j hj => (gain_bounds P X K hK a b hW p hp j hj).1)
   by_cases hVV : VV X K a b p = ∅

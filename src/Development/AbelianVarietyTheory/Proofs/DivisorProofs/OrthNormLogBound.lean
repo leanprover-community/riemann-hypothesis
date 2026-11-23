@@ -176,7 +176,7 @@ theorem c_bounds (h : Br.Interlace rfl lam sg) {A : ℝ} (hA : ((lam.spread : �
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp
   have h0 := lam.anti (Fin.zero_le (Fin.last n))
-  refine pow_le_pow_left₀ (by exact_mod_cast (by omega : (0 : ℤ) ≤ lam.w 0 - lam.w (Fin.last n) + (n : ℤ) - 1)) ?_ _
+  refine pow_le_pow_left₀ (by exact_mod_cast (omega : (0 : ℤ) ≤ lam.w 0 - lam.w (Fin.last n) + (n : ℤ) - 1)) ?_ _
   rw [spread_eq] at hA
   push_cast at hA ⊢
   linarith

@@ -435,7 +435,7 @@ theorem good_bad_split : GoodBadCut := by
   have hNgfg : Ng.FG := Submodule.FG.of_le hN inf_le_left
   have hNbfg : Nb.FG := Submodule.FG.of_le hN inf_le_left
   have hf : (0 : ℝ) < (nPl K : ℝ) := lt_of_le_of_ne (Nat.cast_nonneg _) (Ne.symm nPl_ne_zero)
-  have hg0 : (g : K) ≠ 0 := by exact_mod_cast (by omega : g ≠ 0)
+  have hg0 : (g : K) ≠ 0 := by exact_mod_cast (omega : g ≠ 0)
   have hgR : (0 : ℝ) < (g : ℝ) := by exact_mod_cast hg
   refine ⟨rk_add b e g N hg hee hint, ?_, ?_⟩
   · set φ : V →ₗ[K] V := (g : K) • (LinearMap.id - e) with hφ

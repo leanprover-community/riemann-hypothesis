@@ -142,7 +142,7 @@ lemma leastCongruentPos_le {l : ℕ} (D : ℤ) (d : ℕ) (h1 : 1 ≤ d) (hd : (l
 lemma label_harm_le {l h : ℕ} (hl0 : 0 < l) (hlh : l ≤ 2 * h) :
     ((harmonic (h / l) : ℚ) : ℝ) ≤ 1 + Real.log ((h : ℝ) / (l : ℝ)) := by
   have hl : (0 : ℝ) < l := by exact_mod_cast hl0
-  have hhR : (0 : ℝ) < h := by exact_mod_cast (by omega : 0 < h)
+  have hhR : (0 : ℝ) < h := by exact_mod_cast (omega : 0 < h)
   rcases Nat.eq_zero_or_pos (h / l) with h0 | hpos
   · rw [h0, harmonic_zero, Rat.cast_zero]
     have hx : (0 : ℝ) < (h : ℝ) / l := div_pos hhR hl
@@ -197,7 +197,7 @@ lemma label_second {l k t h : ℕ} {i : ℝ} {xm mB : ℤ} (hl : l.Prime) (hi : 
   have hc : ∀ ct ∈ Finset.Ioo mB xm, 0 ≤ min (min (k : ℝ) (t : ℝ)) (i / ((xm - ct : ℤ) : ℝ)) := by
     intro ct hct
     rw [Finset.mem_Ioo] at hct
-    have hpos : (0 : ℝ) < ((xm - ct : ℤ) : ℝ) := by exact_mod_cast (by omega : (0 : ℤ) < xm - ct)
+    have hpos : (0 : ℝ) < ((xm - ct : ℤ) : ℝ) := by exact_mod_cast (omega : (0 : ℤ) < xm - ct)
     exact le_min hm0 (div_nonneg hi hpos.le)
   have hr : ∀ ct ∈ Finset.Ioo mB xm, 0 < ct - mB ∧ ct - mB < (l : ℤ) ^ 2 := by
     intro ct hct
@@ -312,7 +312,7 @@ theorem labelSumLe_holds : LabelSum := by
         exact hex ⟨x, hx.1, hx.2, hd⟩
       rw [hempty, Finset.card_empty, Nat.cast_zero, add_zero]
       apply div_nonneg
-      · exact_mod_cast (by omega : (0 : ℤ) ≤ xp - xm)
+      · exact_mod_cast (omega : (0 : ℤ) ≤ xp - xm)
       · exact Nat.cast_nonneg _
   have hC := label_second (k := k) (t := t) hl hi hmB hmx (by omega) hh hlh
   have hkB := mul_le_mul_of_nonneg_left hB hk

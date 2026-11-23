@@ -117,7 +117,7 @@ theorem norm_le_of_mem_bcParam {q n : ℕ} (hq : 2 ≤ q) {α : Fin (n / 2) → 
     calc ‖(α i : ℂ)‖⁻¹ ≤ (((q : ℝ) ^ 2) ^ (-(((n : ℝ) - 1) / 2)))⁻¹ := inv_anti₀ hpos (hα i).1
       _ = _ := by rw [Real.rpow_neg hq2.le, inv_inv]
   · simp only [Units.val_one, norm_one]
-    have h1 : (1 : ℝ) ≤ n := by exact_mod_cast (by omega : 1 ≤ n)
+    have h1 : (1 : ℝ) ≤ n := by exact_mod_cast (omega : 1 ≤ n)
     exact Real.one_le_rpow (by nlinarith) (by linarith)
 
 theorem exists_param_at (D : D7) (V : HSp D) (J : Set (GA D V)) (χ : GA D V → ℂ)

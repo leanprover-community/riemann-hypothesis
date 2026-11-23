@@ -98,7 +98,7 @@ theorem UpperTheory.Top.eventually_rank_le_rpow_of_lt_one_div_fiftytwo :
   have hk5 : (5:ℝ) ≤ R.k := by
     have := R.m_add_three_le_k
     have := R.two_le_m
-    exact_mod_cast (by omega : 5 ≤ R.k)
+    exact_mod_cast (omega : 5 ≤ R.k)
   have hk0 : (0:ℝ) ≤ (R.k : ℝ) - 1 := by linarith
   have hk' : (R.k : ℝ) - 1 ≤ 2 * Y ^ 470 := by linarith
   have hf0 : (0:ℝ) ≤ R.f := by positivity

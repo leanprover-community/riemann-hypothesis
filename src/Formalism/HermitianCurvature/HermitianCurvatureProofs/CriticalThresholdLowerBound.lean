@@ -525,7 +525,7 @@ lemma mu_bound (c : Cfg) (h : c.Ok) (bb : ℝ) (hs : c.Small bb) :
     Real.exp (-(2 * c.m * Real.log bb / c.k)) ^ c.k * c.prodb ≤ 1 := by
   have hk : (0:ℝ) < (c.k:ℝ) := by
     have := h.hk
-    exact_mod_cast (by omega : 0 < c.k)
+    exact_mod_cast (omega : 0 < c.k)
   have hbb0 : 0 < bb := by linarith [hs.hbb]
   have e1 : Real.exp (-(2 * c.m * Real.log bb / c.k)) ^ c.k = Real.exp (-(2 * c.m * Real.log bb)) := by
     rw [← Real.exp_nat_mul]

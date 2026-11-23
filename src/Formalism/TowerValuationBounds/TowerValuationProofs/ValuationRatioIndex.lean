@@ -109,7 +109,7 @@ theorem grid_index_bound : GridValuationBoundIndexed := by
     have h5 : (hh ij : ℝ) ≤ N := by
       have := hdd ij
       have := hddN ij
-      exact_mod_cast (by omega : hh ij ≤ N)
+      exact_mod_cast (omega : hh ij ≤ N)
     have := hBN0 ij
     nlinarith
   have hT3 : ∑ w ∈ W0, lam w * ((ell w : ℝ) ^ 2)⁻¹ ≤ 1 := by

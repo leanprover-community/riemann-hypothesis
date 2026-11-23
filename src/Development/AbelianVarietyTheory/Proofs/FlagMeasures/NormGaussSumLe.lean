@@ -157,7 +157,7 @@ theorem norm_gauss_sum_le : ∀ {F : Type} [Field F] [ValuativeRel F] [Topologic
   · rw [Finset.sum_preimage Subtype.val R hιinj.injOn (fun u => ψ (t * nrm u) * χ u)
       (fun u hu h => (h (hrange u hu)).elim), Finset.card_preimage, hidx,
       Finset.filter_true_of_mem hrange, Nat.cast_pow, ← mul_pow] at key
-    have hq0 : (0 : ℝ) < resQ ϖ := by exact_mod_cast (by omega : 0 < resQ ϖ)
+    have hq0 : (0 : ℝ) < resQ ϖ := by exact_mod_cast (omega : 0 < resQ ϖ)
     have h := (sq_le_sq₀ (by positivity) (by positivity)).1 key
     rw [zpow_neg, ← div_eq_mul_inv, le_div_iff₀ (by positivity)]
     exact_mod_cast h

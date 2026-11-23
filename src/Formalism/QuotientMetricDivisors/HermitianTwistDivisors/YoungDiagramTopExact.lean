@@ -116,9 +116,9 @@ theorem off_core {n wr T : ℕ} {Sc Bl sh : ℝ} (νr : Fin (n + 2) → ℕ) (ar
     have := H1 i; have := H2 i; have := lo i.succ; have := lo i.castSucc
     constructor
     · simp only
-      exact_mod_cast (by omega : ar i - (wr + T) ≤ νr i.castSucc - wr)
+      exact_mod_cast (omega : ar i - (wr + T) ≤ νr i.castSucc - wr)
     · simp only
-      exact_mod_cast (by omega : νr i.succ - wr ≤ ar i - (wr + T))
+      exact_mod_cast (omega : νr i.succ - wr ≤ ar i - (wr + T))
   · intro i
     have h1 : ((ar i - (wr + T) : ℕ) : ℝ) = (ar i : ℝ) - ((wr : ℝ) + (T : ℝ)) := by
       rw [Nat.cast_sub (loa i)]; push_cast; ring
@@ -177,9 +177,9 @@ theorem top_core {n wr T aT : ℕ} {Sc Bl sh : ℝ} (νr : Fin (n + 2) → ℕ) 
     have := lo i; have := loa i.succ; have := loa i.castSucc
     constructor
     · simp only
-      exact_mod_cast (by omega : νr i.castSucc.succ - wr ≤ ar i.castSucc - (wr + T))
+      exact_mod_cast (omega : νr i.castSucc.succ - wr ≤ ar i.castSucc - (wr + T))
     · simp only
-      exact_mod_cast (by omega : ar i.succ - (wr + T) ≤ νr i.castSucc.succ - wr)
+      exact_mod_cast (omega : ar i.succ - (wr + T) ≤ νr i.castSucc.succ - wr)
   · intro i
     have h1 : ((ar i - (wr + T) : ℕ) : ℝ) = (ar i : ℝ) - ((wr : ℝ) + (T : ℝ)) := by
       rw [Nat.cast_sub (loa i)]; push_cast; ring

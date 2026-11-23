@@ -447,7 +447,7 @@ open ReciprocityTheory.PTheta ReciprocityTheory.ChartRestriction.G.Key Koecher i
 theorem phKoecher : PhKoecherStatement := by
   intro g hg N hN F hF hper hinv c hc
   have hNpos : (0 : ℝ) < N := by exact_mod_cast hN
-  have hgpos : (0 : ℝ) < g := by exact_mod_cast (by omega : 0 < g)
+  have hgpos : (0 : ℝ) < g := by exact_mod_cast (omega : 0 < g)
   obtain ⟨hbd, a, ha0, ha1, ha2⟩ := exists_siegel_fourierCoeff hN hF hper
   have hc2 : 0 < c / 2 := by positivity
   obtain ⟨M, hM⟩ := hbd ((c / 2) • 1) (Matrix.PosDef.one.smul hc2)

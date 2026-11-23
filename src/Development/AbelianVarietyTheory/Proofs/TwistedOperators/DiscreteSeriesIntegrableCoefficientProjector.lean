@@ -222,7 +222,7 @@ theorem exponent_le {h : ℝ} (hh : rangeOfSeventhSum p q ≤ h) : ∃ C a : ℝ
       ((p + q : ℕ) : ℝ) * Real.sqrt (2 * (min p q : ℕ)) * hsNorm (pOf B) ≤ C - a * hsNorm (pOf B) := by
   rcases Nat.eq_zero_or_pos (min p q) with h0 | h0
   · exact ⟨0, 1, one_pos, fun B => by simp [hsNorm_eq_zero h0]⟩
-  have hn : (1 : ℝ) ≤ ((p + q : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ p + q)
+  have hn : (1 : ℝ) ≤ ((p + q : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ p + q)
   have hm : (1 : ℝ) ≤ ((min p q : ℕ) : ℝ) := by exact_mod_cast h0
   unfold rangeOfSeventhSum at hh
   generalize ((p + q : ℕ) : ℝ) = n at *

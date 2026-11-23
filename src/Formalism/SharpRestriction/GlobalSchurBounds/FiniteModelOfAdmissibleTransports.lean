@@ -798,7 +798,7 @@ theorem twist_le {τ : D.what₂.Tau} (hτ : τ ∈ tops D) :
     ((wsum ((D.fm u).lam 0 τ) : ℝ) + (D.R.k : ℝ) * ((D.fm u).bTop τ : ℝ)) / (D.R.k : ℝ) ≤
       (amax D u : ℝ) / D.R.k + 2 * (Wt D u τ : ℝ) := by
   have hk2 : 2 ≤ D.R.k := by have := two_le_N D.R 0; rwa [D.R.N_zero] at this
-  have hk : (0 : ℝ) < (D.R.k : ℝ) := by exact_mod_cast (by omega : 0 < D.R.k)
+  have hk : (0 : ℝ) < (D.R.k : ℝ) := by exact_mod_cast (omega : 0 < D.R.k)
   have h1 : (wsum ((D.fm u).lam 0 τ) : ℝ) ≤ (amax D u : ℝ) + ((D.R.k : ℝ) - 1) * (Wt D u τ : ℝ) := by
     have := wsum_le (u := u) hτ
     rw [show ((D.R.N 0 - 1 : ℕ) : ℤ) = ((D.R.k - 1 : ℕ) : ℤ) from by rw [D.R.N_zero]] at this

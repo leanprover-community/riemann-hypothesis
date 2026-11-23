@@ -46,7 +46,7 @@ theorem Tj_complex_ne_zero_iff {L : Type} [Field L] (n : ℕ) (O : Subring L) (�
 theorem prod_le_pow (q n j : ℕ) (hq : 2 ≤ q) (hj : j ≤ n) :
     0 < ∏ i ∈ Finset.range j, ((q : ℤ) ^ (n - i) - 1) ∧
     ∏ i ∈ Finset.range j, ((q : ℤ) ^ (n - i) - 1) ≤ (q : ℤ) ^ (n * j) := by
-  have hq1 : (1 : ℤ) < q := by exact_mod_cast (by omega : 1 < q)
+  have hq1 : (1 : ℤ) < q := by exact_mod_cast (omega : 1 < q)
   have hpos : ∀ i ∈ Finset.range j, (0 : ℤ) < (q : ℤ) ^ (n - i) - 1 := by
     intro i hi
     rw [Finset.mem_range] at hi
@@ -62,7 +62,7 @@ theorem prod_le_pow (q n j : ℕ) (hq : 2 ≤ q) (hj : j ≤ n) :
     _ = (q : ℤ) ^ (n * j) := by rw [Finset.prod_const, Finset.card_range, ← pow_mul]
 
 theorem one_le_prod (q j : ℕ) (hq : 2 ≤ q) : 1 ≤ ∏ i ∈ Finset.range j, ((q : ℤ) ^ (i + 1) - 1) := by
-  have hq1 : (1 : ℤ) < q := by exact_mod_cast (by omega : 1 < q)
+  have hq1 : (1 : ℤ) < q := by exact_mod_cast (omega : 1 < q)
   have h1 : ∀ i ∈ Finset.range j, (1 : ℤ) ≤ (q : ℤ) ^ (i + 1) - 1 := by
     intro i _
     have : (q : ℤ) ≤ (q : ℤ) ^ (i + 1) := by

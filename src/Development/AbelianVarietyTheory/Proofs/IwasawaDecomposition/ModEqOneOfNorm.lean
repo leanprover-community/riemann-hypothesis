@@ -56,8 +56,8 @@ theorem mod_eq_one_of_norm {E : Type} [Field E] [NumberField E] (c : E →+* E) 
   have hci : IsIntegral ℤ (c (a : E)) := hai.map c.toIntAlgHom
   have hmi : IsIntegral ℤ ((m : ℕ) : E) := by
     simpa using (isIntegral_algebraMap (R := ℤ) (A := E) (x := (m : ℤ)))
-  have hm0 : (m : E) ≠ 0 := by exact_mod_cast (by omega : m ≠ 0)
-  have hm0' : (m : ℚ) ≠ 0 := by exact_mod_cast (by omega : m ≠ 0)
+  have hm0 : (m : E) ≠ 0 := by exact_mod_cast (omega : m ≠ 0)
+  have hm0' : (m : ℚ) ≠ 0 := by exact_mod_cast (omega : m ≠ 0)
   have hx : algebraMap ℚ E (((p : ℚ) - 1) / m) = (a : E) + c a + (m : E) * ((a : E) * c a) := by
     rw [map_div₀, map_sub, map_natCast, map_natCast, map_one, ← hn, hπ, map_add (f := _), map_one, map_mul, map_natCast]
     field_simp

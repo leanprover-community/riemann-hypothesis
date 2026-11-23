@@ -103,7 +103,7 @@ theorem heightTie : HtMul → HeightTie := by
   have hlog : Real.log (T.N - 1 : ℕ) ≤ Real.log T.n := by
     rcases Nat.eq_zero_or_pos (T.N - 1) with h0 | h0
     · rw [h0, Nat.cast_zero, Real.log_zero]; exact Real.log_natCast_nonneg _
-    · exact Real.log_le_log (by exact_mod_cast h0) (by exact_mod_cast (by omega : T.N - 1 ≤ T.n))
+    · exact Real.log_le_log (by exact_mod_cast h0) (by exact_mod_cast (omega : T.N - 1 ≤ T.n))
   linarith
 
 end GlobalTheory.HeightTieProof

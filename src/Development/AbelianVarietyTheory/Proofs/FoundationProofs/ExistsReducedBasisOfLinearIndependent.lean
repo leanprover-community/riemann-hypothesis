@@ -284,7 +284,7 @@ theorem exists_reduced_basis_unique_min_of_le [Module.Free ℤ X] [Module.Finite
     exact nsmul_nonneg (hp.nonneg μ) 2
   refine ⟨e, h1', fun N hN α hα i => (h2 N hN α hα i).trans ?_, fun N hN i w hw =>
     lt_add_smul_of_abs_polar_le q (by positivity) hN (hp w hw) (h1' i w)⟩
-  exact mul_le_mul_of_nonneg_right (coordinate_const_mono hg) (by exact_mod_cast (by omega))
+  exact mul_le_mul_of_nonneg_right (coordinate_const_mono hg) (by exact_mod_cast (omega))
 
 end Lattice
 

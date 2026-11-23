@@ -48,7 +48,7 @@ theorem cm1 : Formalism.L2.Th1.CM.JInvariantIntegrality := by
   rw [Formalism.L2.Th1.CM.jInv, g₂_cube_div_eq_modularJ ha h]
   refine isIntegral_modularJ_of_mul_mem (α := Formalism.L2.Th1.CM.omegaK d) (fun m hm => ?_) fun x hx ↦ ?_
   · have := congrArg Complex.im hm
-    have h0 : (0:ℝ) < Real.sqrt d := Real.sqrt_pos.mpr (by exact_mod_cast (by omega : 0 < d))
+    have h0 : (0:ℝ) < Real.sqrt d := Real.sqrt_pos.mpr (by exact_mod_cast (omega : 0 < d))
     simp [Formalism.L2.Th1.CM.omegaK] at this
     omega
   · have key : ∀ y : ℂ, y ∈ Submodule.span ℤ {(τ : ℂ), 1} ↔ a * y ∈ L.lattice := fun y ↦ by

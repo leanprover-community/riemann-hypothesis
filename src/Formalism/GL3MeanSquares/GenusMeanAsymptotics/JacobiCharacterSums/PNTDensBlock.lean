@@ -105,7 +105,7 @@ lemma offdiag_term {M : ℕ} [NeZero M] (σ T : ℝ) (U : ℕ) (hU : 1 ≤ U) (h
           _ = 1 := by norm_num
       refine (sum_le_sum this).trans ?_
       rw [sum_const, Nat.card_Ioc, nsmul_eq_mul, mul_one]
-      exact_mod_cast (by omega : 2 * U - U ≤ U)
+      exact_mod_cast (omega : 2 * U - U ≤ U)
     linarith
   · rw [if_neg h1]
     by_cases h2 : p'.1 = p.1
@@ -204,7 +204,7 @@ theorem dyadic_block_count : BlockCnt := by
   have hbv : ∀ p, ∀ n ∈ Ioc U (2 * U), b n * v p n = mco Y N n * f p n * (n : ℂ) ^ (-ρ p) := by
     intro p n hn
     have hn0 : (n : ℂ) ≠ 0 := by
-      have := (mem_Ioc.1 hn).1; exact_mod_cast (by omega : n ≠ 0)
+      have := (mem_Ioc.1 hn).1; exact_mod_cast (omega : n ≠ 0)
     have : (n : ℂ) ^ (-(σ : ℂ)) * (n : ℂ) ^ (-(ρ p - (σ : ℂ))) = (n : ℂ) ^ (-ρ p) := by
       rw [← Complex.cpow_add _ _ hn0]; congr 1; ring
     simp only [hb, hv]
@@ -217,7 +217,7 @@ theorem dyadic_block_count : BlockCnt := by
     intro p p'
     refine sum_congr rfl (fun n hn => ?_)
     have hn0 : (n : ℂ) ≠ 0 := by
-      have := (mem_Ioc.1 hn).1; exact_mod_cast (by omega : n ≠ 0)
+      have := (mem_Ioc.1 hn).1; exact_mod_cast (omega : n ≠ 0)
     simp only [hv]
     rw [map_mul, conj_natCast_cpow_neg']
     have : (n : ℂ) ^ (-(ρ p - (σ : ℂ))) * (n : ℂ) ^ (-(starRingEnd ℂ) (ρ p' - (σ : ℂ))) =

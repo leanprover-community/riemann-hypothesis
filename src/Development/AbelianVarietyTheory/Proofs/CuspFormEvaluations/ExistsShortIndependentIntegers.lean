@@ -54,11 +54,9 @@ namespace GlobalTheory
 
 namespace ShortIntegers
 
-section Pairing
 
 variable {V : Type} [AddCommGroup V] [Module ℚ V]
 
-end Pairing
 
 variable {K : Type} [Field K] [NumberField K]
 

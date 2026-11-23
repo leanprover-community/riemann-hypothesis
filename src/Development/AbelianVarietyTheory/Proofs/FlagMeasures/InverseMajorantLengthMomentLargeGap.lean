@@ -55,7 +55,7 @@ theorem inv_len_moment_gap : GlobalTheory.GapIn.Hyp → ∀ (k r : ℕ) (Wp : Ty
     obtain ⟨hk, -, -, -, -, -, h7, h8, -, -, -, -, -, -, h15⟩ := hN
     have e1 := h7 (Fin.last _) (by simp only [Fin.val_last]; omega)
     have e2 := h8 (Fin.last _)
-    have e3 : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
+    have e3 : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ 2 * r + k + 1)
     have e4 : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ 7 := one_le_pow₀ e3
     have e5 := neg_abs_le (lam (Fin.last _))
     linarith [e1.2]

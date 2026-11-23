@@ -120,7 +120,7 @@ theorem sum_muF_le (hT : TubeSt) (D : D7) (V : HSp D) (r : ℕ) (hr : V.rank = r
     have h2' : (1 : ℝ) ≤ (2 * Real.pi) ^ (V.rank - 1) := one_le_pow₀ (by linarith [Real.pi_gt_three])
     have h3 : (1 : ℝ) ≤ Real.sqrt V.rank := by
       rw [show (1 : ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]
-      exact Real.sqrt_le_sqrt (by exact_mod_cast (by omega : 1 ≤ V.rank))
+      exact Real.sqrt_le_sqrt (by exact_mod_cast (omega : 1 ≤ V.rank))
     exact one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le h1 h2') h3
   rw [Finset.sum_congr rfl (fun k _ => hμ k)]
   refine le_trans (Finset.sum_le_sum fun k _ => ?_) hTube

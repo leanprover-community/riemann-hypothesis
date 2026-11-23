@@ -147,19 +147,19 @@ theorem exists_integral_lift {Ω X : Type} [Field Ω] (S : Set X) (hS : S.Finite
   · by_cases hxw : x = w
     · subst hxw
       rw [wa_div _ (hm x hx) h1w]
-      exact_mod_cast (by omega : (0 : ℤ) ≤ m x - 0)
+      exact_mod_cast (omega : (0 : ℤ) ≤ m x - 0)
     · have hsx : v x s = ((min (m x) 0 - 1 : ℤ) : WithTop ℤ) := by
         have := hs x hx
         rwa [if_neg hxw] at this
       have h1x : v x (1 + s) = ((min (m x) 0 - 1 : ℤ) : WithTop ℤ) := by
         rw [AddValuation.map_add_eq_of_lt_right _ (by
           rw [AddValuation.map_one, hsx]
-          exact_mod_cast (by omega : min (m x) 0 - 1 < (0 : ℤ))), hsx]
+          exact_mod_cast (omega : min (m x) 0 - 1 < (0 : ℤ))), hsx]
       rw [wa_div _ (hm x hx) h1x]
-      exact_mod_cast (by omega : (0 : ℤ) ≤ m x - (min (m x) 0 - 1))
+      exact_mod_cast (omega : (0 : ℤ) ≤ m x - (min (m x) 0 - 1))
   · have : a - a / (1 + s) = a * s / (1 + s) := by field_simp; ring
     rw [this, wa_div _ (wa_mul _ (hm w hw) hsw) h1w]
-    exact_mod_cast (by omega : (0 : ℤ) < m w + 1 - 0)
+    exact_mod_cast (omega : (0 : ℤ) < m w + 1 - 0)
 
 variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]
   {Ω : ι → Type} [∀ c, Field (Ω c)] [∀ c, Algebra K (Ω c)]

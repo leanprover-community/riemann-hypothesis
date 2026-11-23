@@ -67,11 +67,11 @@ theorem shellMass_nonneg (q : ℕ) (hq : 2 ≤ q) (j : ℕ) : 0 ≤ shellMass q 
   | zero => simp [shellMass]
   | succ j =>
     simp only [shellMass, sub_nonneg]
-    exact pow_le_pow_right₀ (by exact_mod_cast (by omega : 1 ≤ q)) (Nat.le_succ j)
+    exact pow_le_pow_right₀ (by exact_mod_cast (omega : 1 ≤ q)) (Nat.le_succ j)
 
 theorem hasSum_shell (q : ℕ) (hq : 2 ≤ q) (b : ℂ) (hb : ‖b‖ < 1) :
     HasSum (fun j => shellVal q b j * (shellMass q j : ℂ)) (cSL q b) := by
-  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (by omega : q ≠ 0)
+  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   have h1 : HasSum (fun j : ℕ => b ^ j * (b * (1 - (q : ℂ)⁻¹))) ((1 - b)⁻¹ * (b * (1 - (q : ℂ)⁻¹))) :=
     (hasSum_geometric_of_norm_lt_one hb).mul_right _
   have hb1 : (1 - b) ≠ 0 := by
@@ -157,7 +157,7 @@ theorem integral_geom_on_shells {X : Type} [MeasurableSpace X] (μ : Measure X) 
     filter_upwards [ae_restrict_mem (hSm j)] with x hx
     exact (hSF j x hx).symm
   set s : ℝ := (1 - (q : ℝ)⁻¹ * ‖a‖) / (1 - ‖a‖) with hsdef
-  have hq1 : (q : ℝ)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (by exact_mod_cast (by omega : 1 ≤ q))
+  have hq1 : (q : ℝ)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (by exact_mod_cast (omega : 1 ≤ q))
   have hs0 : 0 ≤ s := by
     apply div_nonneg
     · have : (q : ℝ)⁻¹ * ‖a‖ ≤ 1 := mul_le_one₀ hq1 (norm_nonneg a) ha.le

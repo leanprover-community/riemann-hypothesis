@@ -169,7 +169,7 @@ theorem exists_mem_maximalIdeal_exp_le_norm_val :
   have he' := mul_left_cancel₀ τ.δ_pos.ne' he
   have hN : (0 : ℝ) < S.N := by
     have := S.N_ge
-    exact_mod_cast (by omega : 0 < S.N)
+    exact_mod_cast (omega : 0 < S.N)
   have hlt : ‖M.val (gPt p ≫ y) (S.FF _ (τ.wt α) k / S.th j)‖ < 1 := by
     rw [he']
     exact Real.exp_lt_one_iff.2 (neg_neg_of_pos (div_pos hpos hN))

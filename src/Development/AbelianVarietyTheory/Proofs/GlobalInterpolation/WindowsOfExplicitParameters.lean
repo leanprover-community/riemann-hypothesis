@@ -99,7 +99,7 @@ theorem windows_scale_facts (eps ch : ℝ) (he : 0 < eps) (he' : eps < 1 / 52) (
       linarith
     have hm1 : (1 : ℝ) ≤ R.m := by
       have := R.two_le_m
-      exact_mod_cast (by omega : 1 ≤ R.m)
+      exact_mod_cast (omega : 1 ≤ R.m)
     calc (R.n : ℝ) * R.N R.m / R.m ≤ (R.n : ℝ) * R.N R.m := div_le_self (by positivity) hm1
       _ ≤ s.x ^ (3 : ℝ) * s.x ^ (402 : ℝ) :=
         mul_le_mul hn hN (Nat.cast_nonneg _) (by positivity)
@@ -275,7 +275,7 @@ theorem windows_of_large_scale : ∀ eps cD ch C8 : ℝ, 0 < eps → eps < 1 / 5
   · intro τ i
     rw [hv τ i]
     have a1 : ((D.R.k - 2 - i.1 : ℕ) : ℝ) ≤ D.R.k := by
-      exact_mod_cast (by omega : D.R.k - 2 - i.1 ≤ D.R.k)
+      exact_mod_cast (omega : D.R.k - 2 - i.1 ≤ D.R.k)
     simp only [Rat.cast_mul, Rat.cast_natCast, Rat.cast_ofNat]
     exact ⟨by positivity, mul_le_mul_of_nonneg_right a1 (by positivity)⟩
   · intro τ i j
@@ -286,7 +286,7 @@ theorem windows_of_large_scale : ∀ eps cD ch C8 : ℝ, 0 < eps → eps < 1 / 5
     have a4 := hj0 j
     constructor <;> linarith
   · have := D.R.rank_add_five_le
-    exact_mod_cast (by omega : 1 ≤ D.R.t)
+    exact_mod_cast (omega : 1 ≤ D.R.t)
   · rw [hLw]
     exact ten_ceil_logb_le_Lwv s _ (by positivity) hnN
   · have a1 : 0 < s.x ^ (-s.eps) * (D.R.n : ℝ) := mul_pos (Real.rpow_pos_of_pos hxp _) (by linarith)

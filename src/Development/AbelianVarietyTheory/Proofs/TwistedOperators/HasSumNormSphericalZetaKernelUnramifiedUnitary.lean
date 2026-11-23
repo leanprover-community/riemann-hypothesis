@@ -55,7 +55,7 @@ theorem hasSum_norm_kerU : ∀ (L : Type) [Field L] [Valued L (WithZero (Multipl
     intro i
     have hi := i.2
     have h2 : 2 * i.val + 2 ≤ r := by omega
-    have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast (by omega : 1 ≤ q)
+    have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast (omega : 1 ≤ q)
     have hn : ‖(GlobalTheory.IndefiniteRowSideFullHecke.TrivialParameterBound.trivParam q r hq0 i : ℂ)‖ = (q : ℝ) ^ ((r : ℝ) - 1 - 2 * (i.val : ℝ)) := by
       rw [GlobalTheory.IndefiniteRowSideFullHecke.TrivialParameterBound.trivParam, Units.val_zpow_eq_zpow_val, norm_zpow, Units.val_mk0, Complex.norm_natCast,
         ← Real.rpow_intCast]

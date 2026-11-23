@@ -208,7 +208,7 @@ theorem hasSum_localZeta : GlobalTheory.Published.UnramifiedDoublingGL → ∀ (
         have := one_lt_absNorm v
         have : (0 : ℝ) < (qV D.host.F v : ℝ) := by
           show (0 : ℝ) < ((Ideal.absNorm v.asIdeal : ℕ) : ℝ)
-          exact_mod_cast (by omega : 0 < Ideal.absNorm v.asIdeal)
+          exact_mod_cast (omega : 0 < Ideal.absNorm v.asIdeal)
         positivity
       intro i
       have h1 := (hB w h).2 (α i) (by rw [hBw]; simp [bcParam])

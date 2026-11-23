@@ -56,7 +56,7 @@ private theorem root_diag {n : ℕ} (α : Fin n → ℂˣ) (y : WD h)
   have hq : (((normV w : ℕ) : ℂ) ^ ((((1 : ℝ) - n) / 2 : ℝ) : ℂ)) * ((((normV w : ℕ) : ℝ) ^ (((n : ℝ) - 1) / 2) : ℝ) : ℂ) = 1 := by
     have h0 : ((normV w : ℕ) : ℂ) ≠ 0 := by
       have := GlobalTheory.WeilDeligne.one_lt_normV w
-      exact_mod_cast (by omega : (normV w : ℕ) ≠ 0)
+      exact_mod_cast (omega : (normV w : ℕ) ≠ 0)
     rw [Complex.ofReal_cpow (Nat.cast_nonneg _), Complex.ofReal_natCast, ← Complex.cpow_add _ _ h0]
     have : ((((1 : ℝ) - n) / 2 : ℝ) : ℂ) + ((((n : ℝ) - 1) / 2 : ℝ) : ℂ) = 0 := by
       push_cast

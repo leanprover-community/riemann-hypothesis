@@ -58,7 +58,7 @@ private theorem logAbs_det_centre (τ : ℝ) :
 
 private theorem ldet_ac (hn : 1 ≤ n) (t : ℝ) : ldet (ac E n t) = t := by
   have hd : (Module.finrank ℚ E : ℝ) ≠ 0 := by exact_mod_cast (Module.finrank_pos (R := ℚ) (M := E)).ne'
-  have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast (omega : n ≠ 0)
   change logAbs (splitCentre E n (t / (n * Module.finrank ℚ E))).val.det = t
   rw [logAbs_det_centre]
   field_simp

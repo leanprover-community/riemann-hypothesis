@@ -71,7 +71,7 @@ theorem bilinForm_bijective_of_nondegenerate_mod (X : Type) [AddCommGroup X] [Mo
     rw [hm, hn] at h1
     rw [hm]
     have : m + n = n := by exact_mod_cast h1
-    exact_mod_cast (by omega : m = 0)
+    exact_mod_cast (omega : m = 0)
   refine ⟨hinj, fun f => ?_⟩
   obtain ⟨c, hc0, hcf⟩ := rank_eq_zero_iff.1 hrank (Submodule.Quotient.mk f)
   rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero] at hcf

@@ -95,7 +95,7 @@ theorem dim_closure_of_coheight_field {K : Type} [Field K] {X : Scheme.{0}} [IsI
     | top => exact_mod_cast le_top
     | coe u =>
       have : n + 1 ≤ 1 + u := by exact_mod_cast hdimX
-      exact_mod_cast (by omega : n ≤ u)
+      exact_mod_cast (omega : n ≤ u)
 
 theorem dim_closure_of_coheight {k : Type} [CommRing k] {X Z : Scheme.{0}} {p : X ⟶ Sp k} {D : ℕ} (hX : IsArithVar p D)
     (i : Z ⟶ X) [IsClosedImmersion i] [IsIntegral Z] {n : ℕ} (hZ : topologicalKrullDim Z = (n + 1 : ℕ)) {w : Z}

@@ -98,7 +98,7 @@ theorem step_down (q : ℕ) (hq : 1 < q) (B₀ : Multiset ℂ)
     rw [← hhalf, zpow_neg_one, mul_assoc, mul_inv_cancel₀ hQ0.ne', mul_one] at this
     linarith
   · have hx' : x = u - 1 := by
-      have : (n : ℝ) = -1 := by exact_mod_cast (by omega : n = -1)
+      have : (n : ℝ) = -1 := by exact_mod_cast (omega : n = -1)
       linarith
     rw [← hx']; exact hx
   · exfalso

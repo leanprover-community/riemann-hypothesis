@@ -105,7 +105,7 @@ theorem tower_T2_of_inputs : ∀ II : IntersectionSystem, ∀ (Ψ : Type) [Finty
   intro II Ψ _ _ N T hh frob K C' rd Lval hK hC hrd hprop hshape hI9 hP6 hBA hF hA0 u g hW B hB128 hB0 hbad
   have hN2 : 2 ≤ N := by
     have := T.j_pos; have := T.j_lt; omega
-  have hNpos : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast (omega : 0 < N)
   rcases isEmpty_or_nonempty Ψ with hΨ | hΨ
   · have h0 : (linRoot u : RP Ψ N) = 0 := by simp [linRoot]
     have hPB : T.PB II B u = 0 := by
@@ -142,7 +142,7 @@ theorem tower_T2_of_inputs : ∀ II : IntersectionSystem, ∀ (Ψ : Type) [Finty
   have hLam : 0 ≤ bigLam B rd Lval := by
     unfold bigLam
     have h1 : (1 : ℝ) ≤ (B : ℝ) * rd := by
-      have : (1 : ℝ) ≤ B := by exact_mod_cast (by omega : 1 ≤ B)
+      have : (1 : ℝ) ≤ B := by exact_mod_cast (omega : 1 ≤ B)
       nlinarith
     have := Real.log_nonneg h1
     have := abs_nonneg Lval

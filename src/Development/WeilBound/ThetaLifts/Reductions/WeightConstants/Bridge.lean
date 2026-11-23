@@ -241,7 +241,7 @@ theorem heckeL_ne_zero [_root_.NumberField.IsTotallyComplex E] {I : Type} [Finty
   rcases le_or_gt 1 z with hz1 | hz1
   · exact μ.continuation_ne_zero_of_one_le_re h1 hG1 (hL μ) (by simpa using (by exact_mod_cast hz1 : (1 : ℝ) ≤ z))
   have h3 : G μ⁻¹ (1 - z) ≠ 0 := μ⁻¹.continuation_ne_zero_of_one_le_re h2 hG2 (hL μ⁻¹) (by
-    have : (z : ℝ) ≤ 0 := by exact_mod_cast (by omega : z ≤ 0)
+    have : (z : ℝ) ≤ 0 := by exact_mod_cast (omega : z ≤ 0)
     simp only [sub_re, one_re, intCast_re]; linarith)
   have hW : μ.rootNumber ≠ 0 := left_ne_zero_of_mul_eq_one μ.rootNumber_mul_rootNumber_inv
   refine mul_ne_zero (mul_ne_zero (μ.discrNormConductor_cpow_ne_zero _) (inv_ne_zero ?_)) ?_

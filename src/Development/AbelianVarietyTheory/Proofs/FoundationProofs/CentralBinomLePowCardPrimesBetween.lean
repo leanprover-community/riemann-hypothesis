@@ -187,7 +187,7 @@ theorem _root_.GlobalTheory.BadShare.inv_log_le_sum_inv_primes_between :
           gcongr
           omega
       _ = N ^ (s + 5 + k) * 4 ^ q := by ring
-  have hN0 : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (omega : 0 < N)
   have hreal : (m : ℝ) * Real.log 4 < (s + 5 + k) * Real.log N + q * Real.log 4 := by
     have h' : (4 : ℝ) ^ m < (N : ℝ) ^ (s + 5 + k) * (4 : ℝ) ^ q := by exact_mod_cast hnat
     have h2 := Real.log_lt_log (by positivity) h'
@@ -195,8 +195,8 @@ theorem _root_.GlobalTheory.BadShare.inv_log_le_sum_inv_primes_between :
       Real.log_pow] at h2
     push_cast at h2
     linarith
-  have hq3 : (3 : ℝ) * q ≤ 2 * m := by exact_mod_cast (by omega : 3 * q ≤ 2 * m)
-  have hmN : (N : ℝ) ≤ 2 * m + 1 := by exact_mod_cast (by omega : N ≤ 2 * m + 1)
+  have hq3 : (3 : ℝ) * q ≤ 2 * m := by exact_mod_cast (omega : 3 * q ≤ 2 * m)
+  have hmN : (N : ℝ) ≤ 2 * m + 1 := by exact_mod_cast (omega : N ≤ 2 * m + 1)
   have hs2 : (s : ℝ) ^ 2 ≤ N := by
     have : s ^ 2 ≤ N := le_trans (Nat.sqrt_le' (2 * m)) (by omega)
     exact_mod_cast this
@@ -230,7 +230,7 @@ theorem _root_.GlobalTheory.BadShare.inv_log_le_sum_inv_primes_between :
     obtain ⟨h1, h2, _⟩ := Finset.mem_filter.mp hp
     rw [Finset.mem_range] at h1
     apply one_div_le_one_div_of_le (by exact_mod_cast h2.pos)
-    exact_mod_cast (by omega : p ≤ N)
+    exact_mod_cast (omega : p ≤ N)
   have hA : ((m : ℝ) - q) * 1.386 ≤ (m : ℝ) * Real.log 4 - q * Real.log 4 := by
     nlinarith
   have hB : ((s : ℝ) + 5) * Real.log N ≤ (t + 5) * (7.72 + t / 50) :=

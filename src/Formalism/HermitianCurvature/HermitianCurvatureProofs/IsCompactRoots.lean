@@ -135,7 +135,7 @@ theorem germ_core (m p : ℕ) (σh : Equiv.Perm (Fin p)) (dh : Fin p → ℂ) (h
 
   have hm2 : ((m : ℂ) + 2) ≠ 0 := by
     have h : ((m : ℂ) + 2) = ((m + 2 : ℕ) : ℂ) := by push_cast; ring
-    rw [h]; exact_mod_cast (by omega : m + 2 ≠ 0)
+    rw [h]; exact_mod_cast (omega : m + 2 ≠ 0)
   have hneg : ((-1 : ℂ)) ^ (m + 3) ≠ 0 := pow_ne_zero _ (by norm_num)
   have hl2 : l2 ≠ 0 := by
     intro h0

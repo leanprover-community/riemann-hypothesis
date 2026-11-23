@@ -110,7 +110,7 @@ theorem sum_primes_le (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) (n : ℕ) (X 
   have c1 : ((Finset.Ioo 1 (⌊X⌋₊ + 1)).card : ℝ) ≤ X := by
     refine le_trans ?_ (Nat.floor_le hX)
     rw [Nat.card_Ioo]
-    exact_mod_cast (by omega : ⌊X⌋₊ + 1 - 1 - 1 ≤ ⌊X⌋₊)
+    exact_mod_cast (omega : ⌊X⌋₊ + 1 - 1 - 1 ≤ ⌊X⌋₊)
   have c2 : ∑ p ∈ Finset.Ioo 1 (⌊X⌋₊ + 1), ((p : ℝ) ^ 2)⁻¹ ≤ 1 := by
     have := sum_Ioo_inv_sq_le (α := ℝ) 1 (⌊X⌋₊ + 1)
     norm_num at this ⊢

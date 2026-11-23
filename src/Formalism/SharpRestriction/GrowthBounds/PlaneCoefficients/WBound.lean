@@ -193,9 +193,9 @@ theorem wordBoundStep (C CLa : ℝ) (hC : 16 ≤ C) : WordBoundStep C CLa := by
     exact (flatDeg_bounds omega ha0 h5 s hs).1
   have hBo := Bo_ge hV hr1 p (by omega) (flatDeg lam0) a hdeg (goodG' r de h x) jz xx (le_of_lt (hG jz)) hx hW
 
-  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (by omega : 1 ≤ p)
+  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (omega : 1 ≤ p)
   have hQ1 : (1 : ℝ) ≤ (p : ℝ) ^ goodG' r de h x := one_le_pow₀ hp1
-  have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ m + 1)
+  have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ m + 1)
   have hrr : (1 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr1
   have hNN : (1 : ℝ) ≤ (TT.card : ℝ) := by exact_mod_cast hB.N_pos
   have hY0 : (0 : ℝ) < Y := by linarith [hB.two_le_Y]

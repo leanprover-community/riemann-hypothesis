@@ -129,7 +129,7 @@ theorem mfh_of : ∃ C₁ : ℝ, 0 < C₁ ∧ ∀ C : ℝ, C₁ ≤ C → ∀ CL
   rw [hk] at cg0
   have A0 := (H0 p r TT.card (orbitWindowCount r de h x) 0 1 (r + K) n' L₁ (goodG' r de h x) Y a 0 c0 cpp Dp cStar cg0
     le_rfl (by unfold Formalism.CountingSumsFrames.QII; positivity)).2.1
-  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (by omega : 1 ≤ p)
+  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (omega : 1 ≤ p)
   refine ⟨hpF.out, h2, hF, ?_, ?_, ?_⟩
   · intro s hs
     rw [hF.1] at hs

@@ -354,7 +354,7 @@ theorem rate_low (p : KB.Pl P Wp Wq) {nn : ℝ → ℝ} (hnn : ∀ y, 0 < nn y) 
         ring
       rw [hpi]
       have hzn : ((‖z‖ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast norm_ne_zero_iff.2 hz0
-      have hm2 : (m : ℂ) + 2 ≠ 0 := by exact_mod_cast (by omega : m + 2 ≠ 0)
+      have hm2 : (m : ℂ) + 2 ≠ 0 := by exact_mod_cast (omega : m + 2 ≠ 0)
       push_cast
       field_simp
       ring
@@ -624,7 +624,7 @@ theorem top_core (p : KB.Pl P Wp Wq) (nn : ℝ → ℝ) (w : List C.Letter) {F' 
         rw [show D.ptSize H + (m + 2) = P.r + 1 by omega]; unfold C.Mlev; rw [hj]; push_cast; ring),
       show m + 2 - 1 = m + 1 from rfl, hzs, hKh]
     have hzn : ((‖z‖ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast norm_ne_zero_iff.2 hz0
-    have hm2 : (m : ℂ) + 2 ≠ 0 := by exact_mod_cast (by omega : m + 2 ≠ 0)
+    have hm2 : (m : ℂ) + 2 ≠ 0 := by exact_mod_cast (omega : m + 2 ≠ 0)
     push_cast
     field_simp
     ring

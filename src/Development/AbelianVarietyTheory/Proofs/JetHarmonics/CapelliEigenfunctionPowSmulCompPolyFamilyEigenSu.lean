@@ -242,7 +242,7 @@ private lemma isEigenSum_poly_smul {k r : ℕ} {Wp Wq : Type} [NormedAddCommGrou
     · have : (Multiset.card m.toMultiset : ℝ) ≤ e := by exact_mod_cast hcard
       linarith
     · have : ((d + Multiset.card m.toMultiset : ℕ) : ℝ) ≤ ((d + e : ℕ) : ℝ) := by
-        exact_mod_cast (by omega : d + Multiset.card m.toMultiset ≤ d + e)
+        exact_mod_cast (omega : d + Multiset.card m.toMultiset ≤ d + e)
       linarith
   · show c g • F g = _
     rw [hcq g, MvPolynomial.eval_eq, Finset.sum_smul]

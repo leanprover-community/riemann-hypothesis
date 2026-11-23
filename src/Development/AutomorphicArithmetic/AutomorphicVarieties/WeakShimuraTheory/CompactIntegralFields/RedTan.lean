@@ -294,12 +294,12 @@ private theorem rank_of_oneOdd : ∀ {O Γ : Type} [CommRing O] [Group Γ] [Topo
     haveI := Fintype.ofFinite Φ.ι
     rw [rank_fun', Fintype.card_prod, show Fintype.card Q = 6 by decide, ← Nat.card_eq_fintype_card]
     have := hb.card
-    exact_mod_cast (by omega : Nat.card Φ.ι * 6 ≤ 6 * C)
+    exact_mod_cast (omega : Nat.card Φ.ι * 6 ≤ 6 * C)
   have r4 := LinearMap.rank_le_of_injective F hF
   rw [rank_prod'] at r4
   rw [← LinearMap.rank_range_add_rank_ker (E i₀ j₀)]
   refine le_trans (add_le_add r1 (r4.trans (add_le_add r2 r3))) ?_
-  exact_mod_cast (by omega : d + C + (10 * C + 6 * C) ≤ d + 20 * C)
+  exact_mod_cast (omega : d + C + (10 * C + 6 * C) ≤ d + 20 * C)
 
 private theorem limR {O Γ : Type} [CommRing O] [Group Γ] {Φ : Fr O Γ} {k : Type} [Field k] {a : O →+* k} {c : PD Φ.ι Γ k}
     (h : Φ.Res a c) {S : Finset (ℤ × ℤ)} (hS : Supp S c.r) {m : Fin 4 → ℤ}

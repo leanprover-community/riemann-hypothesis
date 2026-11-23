@@ -236,7 +236,7 @@ theorem main : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWState
     exact this ▸ hr
   refine ⟨part1, fun m hm p w hw g' hg' κ hκ w' hw' hval => ?_⟩
   have hm2 : 1 ≤ m ^ 2 := Nat.one_le_pow _ _ hm
-  have hm0 : (m : ℚ) ≠ 0 := by exact_mod_cast (by omega : m ≠ 0)
+  have hm0 : (m : ℚ) ≠ 0 := by exact_mod_cast (omega : m ≠ 0)
   have A₁ : GenV hϖ hv w' ((Q p.y : ℚ) / (m ^ 2 : ℕ)) := by
     obtain ⟨r, hr, -⟩ := (CV g').2.1 1 w' hw'
     obtain ⟨b, hb⟩ := exists_liftO hϖ hv p.g.b

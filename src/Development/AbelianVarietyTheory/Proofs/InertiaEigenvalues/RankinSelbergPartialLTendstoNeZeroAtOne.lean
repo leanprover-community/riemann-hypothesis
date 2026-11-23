@@ -210,7 +210,7 @@ theorem tendsto_partialL_ne_zero : ∀ (E : Type) [Field E] [NumberField E] [_ro
     · refine hs.congr fun p => ?_
       have hq : (0 : ℝ) < (Ideal.absNorm p.1.1.asIdeal : ℝ) := by
         have := NumberField.HeightOneSpectrum.one_lt_absNorm p.1.1
-        have : (0 : ℝ) < ((Ideal.absNorm p.1.1.asIdeal : ℕ) : ℝ) := by exact_mod_cast (by omega : 0 < Ideal.absNorm p.1.1.asIdeal)
+        have : (0 : ℝ) < ((Ideal.absNorm p.1.1.asIdeal : ℕ) : ℝ) := by exact_mod_cast (omega : 0 < Ideal.absNorm p.1.1.asIdeal)
         exact this
       simp only [dcoef, dexp]
       rw [Real.rpow_def_of_pos hq]

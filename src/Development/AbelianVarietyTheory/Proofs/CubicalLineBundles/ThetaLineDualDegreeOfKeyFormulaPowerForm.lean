@@ -69,7 +69,7 @@ theorem thetaLine_dual_deg_of_keyFormulaPow : GlobalTheory.KeyFormulaPow → ∀
   obtain ⟨N, hN, κ, hH, hF, hU1, -, hU2⟩ := hKF
   obtain ⟨n, hn⟩ : ∃ n, n = N x.P.g := ⟨_, rfl⟩
   have hn1 : 1 ≤ n := hn ▸ hN _
-  have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast (omega : n ≠ 0)
   set k : K := (κ K x : K) with hkdef
   have hk : k ≠ 0 := (κ K x).ne_zero
   have hloc' : ∀ p : HeightOneSpectrum (𝓞 K), ∃ ca cd : K, IsLocGen p ca T.I ∧ IsLocGen p cd abelian₂.I ∧

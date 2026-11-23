@@ -112,8 +112,8 @@ theorem typePrime_sizes_le_budget_single {L : SizeData₂ D} (h : SizesAt L) (P 
   have hmn := D.R.two_le_m
   have hkn := D.R.m_add_three_le_k
   have hmfn : D.R.m ≤ D.R.f := D.R.m_le_f
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
-  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
+  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
   have hmf : (D.R.m : ℝ) ≤ D.R.f := by exact_mod_cast hmfn
   have hf : (1 : ℝ) ≤ D.R.f := hm.trans hmf
   have ht : (1 : ℝ) ≤ D.R.t := L.t_win.1

@@ -100,7 +100,7 @@ theorem le_of_add_one_le' {a : WithBot ℕ∞} {n : ℕ} (h : a + 1 ≤ ((n + 1 
     | top => exact absurd h' (by simp)
     | coe m =>
       have : m + 1 ≤ n + 1 := by exact_mod_cast h'
-      exact_mod_cast (by omega : m ≤ n)
+      exact_mod_cast (omega : m ≤ n)
 
 end TwoBlockModuleFinite
 

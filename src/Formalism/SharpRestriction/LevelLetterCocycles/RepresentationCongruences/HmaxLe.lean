@@ -106,7 +106,7 @@ theorem aI_le [NeZero n] [Fintype (K →ₐ[Qp] LL)] (W : LocWach PD LL O v n)
       show _ + _ + _ ≤ _
       rw [e1, hwid, hcW]
       have : ((size (c + 1) + S + η : ℕ) : ℝ) ≤ ((w + S + η : ℕ) : ℝ) := by
-        exact_mod_cast (by omega : size (c + 1) + S + η ≤ w + S + η)
+        exact_mod_cast (omega : size (c + 1) + S + η ≤ w + S + η)
       linarith)
     (fun a _ => by
       have := hmax_le' Mi' hi' (c - 1 + ((a + 1 : ℕ) : ZMod n))

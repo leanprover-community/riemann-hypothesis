@@ -129,7 +129,7 @@ theorem vNumL_add_of_divCycle_ne_zero {O : Type} [CommRing O] [IsDomain O] [IsDi
       ((l.length + 2 + Fintype.card K : ℕ) : WithBot ℕ∞) := by
     rw [SpecialQuotDim.full O ϖ hϖ K ι W hϖW]
     refine lt_of_lt_of_le (lt_natCast_of_add_one_le hdrop) ?_
-    exact_mod_cast (by omega : e + 1 + 1 + Fintype.card K ≤ l.length + 2 + Fintype.card K)
+    exact_mod_cast (omega : e + 1 + 1 + Fintype.card K ≤ l.length + 2 + Fintype.card K)
   have key := IntNumAddFirst.full (IsLocalRing.ResidueField O) K ι l.length (specialIdeal W)
     (SpecialIdealCorresp.full O ϖ hϖ K ι P W hWp hϖW).1 (SpecialIdealMultiHomog.full O K ι W hWm)
     hdim a₁ a₂ l.get

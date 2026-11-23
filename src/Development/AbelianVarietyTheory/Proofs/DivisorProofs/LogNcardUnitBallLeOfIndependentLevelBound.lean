@@ -46,14 +46,14 @@ theorem log_ncard_unit_ball_le_of_indep_bound :
   classical
   intro G _ _ Λ B hB hfin q T hq hT hbound
   set S : ℕ → Set G := fun i => B ((2 / q : ℝ) ^ i) with hS
-  have hqpos : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+  have hqpos : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
   have hmono := (isBallFam_mono_neg_add G Λ B hB).1
   have hSdec : ∀ i, S (i + 1) ⊆ S i := by
     intro i
     apply hmono
     have h0 : (0 : ℝ) ≤ 2 / q := by positivity
     have h1 : (2 / q : ℝ) ≤ 1 := by
-      rw [div_le_one hqpos]; exact_mod_cast (by omega : 2 ≤ q)
+      rw [div_le_one hqpos]; exact_mod_cast (omega : 2 ≤ q)
     exact pow_le_pow_of_le_one h0 h1 (Nat.le_succ i)
   set K : ℕ := ⌊T⌋₊ with hK
 
@@ -127,7 +127,7 @@ theorem log_ncard_unit_ball_le_of_indep_bound :
   have hncard : (B 1).ncard ≤ q ^ M := by
     rw [← hfin.cast_ncard_eq] at hcard
     exact_mod_cast hcard
-  have hlogq : 0 ≤ Real.log q := Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ q))
+  have hlogq : 0 ≤ Real.log q := Real.log_nonneg (by exact_mod_cast (omega : 1 ≤ q))
   rcases Nat.eq_zero_or_pos (B 1).ncard with h0 | hpos
   · rw [h0]; simp; positivity
   · have hpos' : (0 : ℝ) < (B 1).ncard := by exact_mod_cast hpos

@@ -54,7 +54,7 @@ theorem nearB_nonneg {u T : ℝ} (hu : 0 < u) (hT : 0 < T) (n : ℕ) : 0 ≤ nea
     linarith
   · norm_num
   · apply div_nonneg h4
-    have h5 : (⌊u⌋₊ : ℝ) + 1 < n := by exact_mod_cast (by omega : ⌊u⌋₊ + 1 < n)
+    have h5 : (⌊u⌋₊ : ℝ) + 1 < n := by exact_mod_cast (omega : ⌊u⌋₊ + 1 < n)
     linarith
 
 theorem sum_inv_le (n : ℕ) : ∑ j ∈ range n, 1 / ((j : ℝ) + 1) ≤ 1 + Real.log n := by

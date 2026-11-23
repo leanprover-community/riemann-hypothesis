@@ -86,7 +86,7 @@ theorem exists_cells : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
         have h2 := hPp j i (r a'.1)
         have h3 := hPp j i (r a)
         simp only at h1
-        exact_mod_cast (by omega : P j i (r a'.1) (r a'.1) ≤ P j i (r a) (r a))
+        exact_mod_cast (omega : P j i (r a'.1) (r a'.1) ≤ P j i (r a) (r a))
   choose F hFred hFmin using hcls
   let toA : ∀ j, (∀ M : 𝓜, ∀ y : Fin n → ZMod (M.1 + 1), ↥(F j M.1 y)) → ∀ M : ℕ, (Fin n → ZMod (M + 1)) → Fin n → ℤ :=
     fun j c M y => if h : M ∈ 𝓜 then (c ⟨M, h⟩ y).1 else (redV_surjective M n y).choose

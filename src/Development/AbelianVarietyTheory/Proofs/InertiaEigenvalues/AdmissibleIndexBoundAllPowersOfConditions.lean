@@ -243,7 +243,7 @@ theorem admissibleIndexBoundAllPowers_of_conditions (D : Formalism.BasicNotions.
   · have hc : ((Q M hM).card : ℝ) ≤ 4 * R := by
       have := hQc M hM
       rw [Fintype.card_sum, Fintype.card_fin] at this
-      exact_mod_cast (by omega : (Q M hM).card ≤ 4 * R)
+      exact_mod_cast (omega : (Q M hM).card ≤ 4 * R)
     refine (mul_le_mul_of_nonneg_left (hD.trans (mul_le_mul_of_nonneg_right hc hε.le)) (Nat.cast_nonneg _)).trans ?_
     rw [← mul_assoc]
     exact hle _ (by linarith)

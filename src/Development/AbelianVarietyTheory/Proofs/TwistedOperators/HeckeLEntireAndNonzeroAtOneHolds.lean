@@ -88,7 +88,7 @@ theorem eulerFactor_mul_normChar (χ : HChar K) (t : ℝ) (s : ℂ) :
   unfold eulerFactor
   by_cases h : χ.UnrAt v
   · rw [if_pos h, if_pos (hiff.2 h), Formalism.L2.Host.HChar.val_mul, Units.val_mul, val_normChar, mul_assoc,
-      ← Complex.cpow_add _ _ (by exact_mod_cast (by omega : Ideal.absNorm v.asIdeal ≠ 0))]
+      ← Complex.cpow_add _ _ (by exact_mod_cast (omega : Ideal.absNorm v.asIdeal ≠ 0))]
     congr 4; ring
   · rw [if_neg h, if_neg (mt hiff.1 h)]
 

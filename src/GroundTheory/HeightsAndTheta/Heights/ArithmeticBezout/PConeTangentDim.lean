@@ -169,7 +169,7 @@ theorem ConeTangentDim.proof (hDim : ConeKrullDimLe.Statement) (hNull : NullSmal
           ringKrullDim ((MvPolynomial (Fin n) ℂ ⧸ J) ⧸ Ideal.span {Ideal.Quotient.mk J (s * D)}) + 1 := by
         gcongr; exact not_lt.1 hge
       have h3 := h2.trans h1
-      exact absurd h3 (by exact_mod_cast (by omega : ¬ m + 1 ≤ m))
+      exact absurd h3 (by exact_mod_cast (omega : ¬ m + 1 ≤ m))
     refine measure_mono_null (fun y hy => ?_)
       (hausdorffMeasure_pointOf_preimage_null h (by positivity) (hNull n m _ hdim))
     obtain ⟨hyC, hyT⟩ := Classical.not_imp.1 hy

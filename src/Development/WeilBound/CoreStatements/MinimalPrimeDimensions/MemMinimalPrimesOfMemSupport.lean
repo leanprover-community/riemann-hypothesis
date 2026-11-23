@@ -97,7 +97,7 @@ theorem hausdorffMeasure_zero (e : ℕ) :
     (NNReal.coe_natCast _).symm]
   refine hausdorffMeasure_of_dimH_lt ?_
   rw [dimH_singleton, ENNReal.coe_natCast]
-  exact_mod_cast (by omega : 0 < 2 * (e + 1))
+  exact_mod_cast (omega : 0 < 2 * (e + 1))
 
 theorem setIntegral_finset_biUnion_ae {ι X : Type*} [MeasurableSpace X] {μ : Measure X} {f : X → ℝ}
     (t : Finset ι) {s : ι → Set X} (hs : ∀ i ∈ t, MeasurableSet (s i))

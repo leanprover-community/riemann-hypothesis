@@ -122,7 +122,7 @@ theorem relDim_nonneg_of_card_le (I : Ideal (MRing ι F))
       have he : Fintype.card K ≤ e := by exact_mod_cast h
       have : (0 : WithTop ℤ) ≤ WithTop.map (fun e : ℕ => (e : ℤ) - Fintype.card K) (e : ℕ∞) := by
         change (0 : WithTop ℤ) ≤ (((e : ℤ) - Fintype.card K : ℤ) : WithTop ℤ)
-        exact_mod_cast (by omega : (0 : ℤ) ≤ (e : ℤ) - Fintype.card K)
+        exact_mod_cast (omega : (0 : ℤ) ≤ (e : ℤ) - Fintype.card K)
       exact WithBot.coe_le_coe.mpr this
 
 theorem hilbFn_eventually_zero_of_not_relevant (I : Ideal (MRing ι F)) (hI : ¬ IsRelevant I) :

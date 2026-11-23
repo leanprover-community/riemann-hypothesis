@@ -193,7 +193,7 @@ theorem le_mul_of {a b : ℤ} {x y : F} (hx : (a : WithTop ℤ) ≤ w x) (hy : (
 theorem exists_lower (x : F) : ∃ m : ℕ, ((-(m : ℤ) : ℤ) : WithTop ℤ) ≤ w x := by
   induction h : w x using WithTop.recTopCoe with
   | top => exact ⟨0, le_top⟩
-  | coe a => exact ⟨a.natAbs, by exact_mod_cast (by omega : -(a.natAbs : ℤ) ≤ a)⟩
+  | coe a => exact ⟨a.natAbs, by exact_mod_cast (omega : -(a.natAbs : ℤ) ≤ a)⟩
 
 theorem approx_mul {r s a b : F} {m : ℕ} {n : ℤ} (hr : ((-(m : ℤ) : ℤ) : WithTop ℤ) ≤ w r)
     (hs : ((-(m : ℤ) : ℤ) : WithTop ℤ) ≤ w s) (ha : (((n.natAbs + m : ℕ) : ℤ) : WithTop ℤ) ≤ w (r - a))
@@ -478,12 +478,12 @@ theorem exists_sep (v v' : AddValuation Ω (WithTop ℤ)) (h : ∃ a, v a = 1) (
       AddValuation.map_one, WithTop.coe_zero]
   have t2 : v' (1 + s) = ((-1 : ℤ) : WithTop ℤ) := by
     rw [AddValuation.map_add_eq_of_lt_right _ (by
-      rw [AddValuation.map_one, s2]; exact_mod_cast (by omega : (-1 : ℤ) < 0)), s2]
+      rw [AddValuation.map_one, s2]; exact_mod_cast (omega : (-1 : ℤ) < 0)), s2]
   have h0 : 1 + s ≠ 0 := wa_ne_zero_of_coe _ t1
   refine ⟨s / (1 + s), ?_, ?_⟩
-  · rw [wa_div _ s1 t1]; exact_mod_cast (by omega : (0 : ℤ) < 1 - 0)
+  · rw [wa_div _ s1 t1]; exact_mod_cast (omega : (0 : ℤ) < 1 - 0)
   · have : s / (1 + s) - 1 = -(1 + s)⁻¹ := by field_simp; ring
-    rw [this, AddValuation.map_neg, wa_inv _ t2]; exact_mod_cast (by omega : (0 : ℤ) < - -1)
+    rw [this, AddValuation.map_neg, wa_inv _ t2]; exact_mod_cast (omega : (0 : ℤ) < - -1)
 
 end Both
 

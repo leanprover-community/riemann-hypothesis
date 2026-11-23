@@ -51,8 +51,8 @@ theorem page_two_le_L_and_signs : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : 
     obtain ⟨-, -, -, -, hlf, -, -, -, hln⟩ := hc
     by_contra hL
     push_neg at hL
-    have hf0 : (0 : ℝ) < D.R.f := by exact_mod_cast (by omega : 0 < D.R.f)
-    have hr0 : (0 : ℝ) < D.R.r := by exact_mod_cast (by omega : 0 < D.R.r)
+    have hf0 : (0 : ℝ) < D.R.f := by exact_mod_cast (omega : 0 < D.R.f)
+    have hr0 : (0 : ℝ) < D.R.r := by exact_mod_cast (omega : 0 < D.R.r)
     have hrn : (D.R.r : ℝ) ≤ ka.n := by
       rw [hn]; exact_mod_cast (by unfold Ranks.nV; omega : D.R.r ≤ D.R.nV)
     have he : Real.exp 1 ≤ 3 := (Real.exp_one_lt_d9.trans (by norm_num)).le

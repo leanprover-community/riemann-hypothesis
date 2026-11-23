@@ -44,7 +44,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 theorem exists_periodPair (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) :
     ∃ L : PeriodPair, ∀ x, x ∈ L.lattice ↔ ∃ s, x = wC H s := by
   have hd : 7 ≤ H.d := by have := H.d_mod; omega
-  have hs : √(H.d : ℝ) ≠ 0 := (Real.sqrt_pos.2 (by exact_mod_cast (by omega : 0 < H.d))).ne'
+  have hs : √(H.d : ℝ) ≠ 0 := (Real.sqrt_pos.2 (by exact_mod_cast (omega : 0 < H.d))).ne'
   refine ⟨⟨1, (1 + Complex.I * Real.sqrt H.d) / 2, LinearIndependent.pair_iff.2 fun a b h => ?_⟩, fun x => ?_⟩
   · have h1 := congrArg Complex.re h
     have h2 := congrArg Complex.im h

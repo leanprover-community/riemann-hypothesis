@@ -83,7 +83,7 @@ theorem torChar_unique : ∀ (I : Type) (X₁ : GlobalTheory.GSep.GSet) (z₁ : 
   rw [hy, hy', zero_add] at hz
   have hz0 : z = 0 := by
     have : ((X₁.S.r * X₁.S.N : ℕ) : ℤ) • z = 0 := by rw [natCast_zsmul]; exact hz.symm
-    exact (smul_eq_zero.1 this).resolve_left (by exact_mod_cast (by omega))
+    exact (smul_eq_zero.1 this).resolve_left (by exact_mod_cast (omega))
   rw [hz0, map_zero, add_zero, hg, hg'] at he
   exact (Additive.ofMul.injective (GlobalTheory.TorusExt.torusPt_injective he)).symm
 

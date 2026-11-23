@@ -61,7 +61,7 @@ theorem inv_pred_le_of_sqrt_lt (y s p : ℕ) (hy : 2 ≤ y) (hs : y < (s + 1) * 
     1 / ((p : ℝ) - 1) ≤ 2 / Real.log y * (Real.log p / ((p : ℝ) - 1)) := by
   have hp2 : (2:ℝ) ≤ p := by exact_mod_cast hp.two_le
   have ha : (0:ℝ) < (p:ℝ) - 1 := by linarith
-  have hl : 0 < Real.log (y:ℝ) := Real.log_pos (by exact_mod_cast (by omega : 1 < y))
+  have hl : 0 < Real.log (y:ℝ) := Real.log_pos (by exact_mod_cast (omega : 1 < y))
   have hyp : y ≤ p ^ 2 := by
     have := Nat.mul_le_mul (show s + 1 ≤ p from hps) (show s + 1 ≤ p from hps)
     rw [sq]; omega
@@ -111,7 +111,7 @@ theorem sum_inv_pred_le : ∀ y : ℕ, 3 ≤ y →
       have := Real.exp_one_lt_d9
       have e2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
       rw [e2]; nlinarith [Real.exp_pos 1]
-    have h9 : (9:ℝ) ≤ y := by exact_mod_cast (by omega : 9 ≤ y)
+    have h9 : (9:ℝ) ≤ y := by exact_mod_cast (omega : 9 ≤ y)
     have := Real.log_lt_log (Real.exp_pos 2) (by linarith : Real.exp 2 < y)
     rwa [Real.log_exp] at this
   have htail : ∑ p ∈ ((range (y + 1)).filter Nat.Prime).filter (fun p => ¬ p ≤ s),
@@ -137,12 +137,12 @@ theorem sum_inv_pred_le : ∀ y : ℕ, 3 ≤ y →
   have hfrac : 2 / Real.log y * (Real.log y + 2.2) ≤ 4.2 := by
     rw [div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
     linarith
-  have hslog : 0 < Real.log (s:ℝ) := Real.log_pos (by exact_mod_cast (by omega : 1 < s))
+  have hslog : 0 < Real.log (s:ℝ) := Real.log_pos (by exact_mod_cast (omega : 1 < s))
   have hslog2 : 2 * Real.log (s:ℝ) ≤ Real.log y := by
     have h : ((s:ℝ)) ^ 2 ≤ y := by
       have : s ^ 2 ≤ y := by rw [sq]; exact hss
       exact_mod_cast this
-    have hs0 : (0:ℝ) < s := by exact_mod_cast (by omega : 0 < s)
+    have hs0 : (0:ℝ) < s := by exact_mod_cast (omega : 0 < s)
     have := Real.log_le_log (by positivity) h
     rw [Real.log_pow] at this
     push_cast at this

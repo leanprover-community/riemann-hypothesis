@@ -215,8 +215,8 @@ theorem drops {T : Type} {P : Par} {W : Wts T} (hP : P.Hyp) (hL : P.Large) (hW :
   have ht := hP.t_ge
   have hm := hP.m_pos
   have hk := hP.m_le
-  have htr : (6 : ℝ) ≤ P.t := by exact_mod_cast (by omega : 6 ≤ P.t)
-  have hkr : (1 : ℝ) ≤ P.k := by exact_mod_cast (by omega : 1 ≤ P.k)
+  have htr : (6 : ℝ) ≤ P.t := by exact_mod_cast (omega : 6 ≤ P.t)
+  have hkr : (1 : ℝ) ≤ P.k := by exact_mod_cast (omega : 1 ≤ P.k)
   have hl : 0 ≤ 2 * P.b / P.lstar := by
     have := hL.L_ge
     have := hP.S_nonneg

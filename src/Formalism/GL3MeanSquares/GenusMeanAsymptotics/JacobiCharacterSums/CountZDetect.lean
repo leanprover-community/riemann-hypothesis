@@ -188,7 +188,7 @@ theorem zero_detection : DetectOf := by
     rfl
   by_contra hcon
   push_neg at hcon
-  have hJpos : (0 : ℝ) < pJ Q := by exact_mod_cast (by omega : 0 < pJ Q)
+  have hJpos : (0 : ℝ) < pJ Q := by exact_mod_cast (omega : 0 < pJ Q)
   have hlt : ‖D‖ < 1 / 2 := by
     rw [hsplit]
     refine (norm_sum_le _ _).trans_lt ?_

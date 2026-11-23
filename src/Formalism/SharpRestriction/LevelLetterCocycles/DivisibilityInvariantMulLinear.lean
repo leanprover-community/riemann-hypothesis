@@ -288,7 +288,7 @@ theorem killerKap_of_le {C : ℝ} (hC : 8 ≤ C) : KillerKap C := by
   have h8 := killerKap_holds l hl hl5 G S h ell ro a hGh hh ha
   dsimp only at h8 ⊢
   have hlog : 0 ≤ Real.logb l h :=
-    Real.logb_nonneg (by exact_mod_cast (by omega : 1 < l)) (by exact_mod_cast hh)
+    Real.logb_nonneg (by exact_mod_cast (omega : 1 < l)) (by exact_mod_cast hh)
   have hX : 0 ≤ ((G : ℝ) + ro * S + 1) * (ell + 1) + (ro + 1) * Real.logb l h :=
     add_nonneg (by positivity) (mul_nonneg (by positivity) hlog)
   exact h8.trans (mul_le_mul_of_nonneg_right hC hX)

@@ -178,7 +178,7 @@ theorem prime_share (hH : IsHermND L Hm) (ϖ : 𝒪[F]) (hϖ : Irreducible ϖ)
     rw [← Real.norm_eq_abs, ← Complex.norm_real]
     push_cast; rfl
   have h2 := (GlobalTheory.two_geometric_sums_index_bound (resQ ϖ) ρ a hq hρ).2 j
-  have hq0 : (0 : ℝ) < resQ ϖ := by exact_mod_cast (by omega : 0 < resQ ϖ)
+  have hq0 : (0 : ℝ) < resQ ϖ := by exact_mod_cast (omega : 0 < resQ ϖ)
   have h3 := mul_le_mul_of_nonneg_left h2
     (by positivity : (0 : ℝ) ≤ (R.card : ℝ) * (resQ ϖ : ℝ) ^ (-(j * ρ : ℤ)))
   rw [mul_add, mul_one, Finset.mul_sum] at h3
@@ -206,7 +206,7 @@ theorem leak_share (hH : IsHermND L Hm) (ϖ : 𝒪[F]) (hϖ : Irreducible ϖ)
     ((R.filter fun u => Z u ∧ ¬ ∃ y ∈ W, hf L Hm u y = 1).card : ℝ) * (resQ ϖ : ℝ) ^ a ≤
       16 / 7 * (resQ ϖ : ℝ) ^ (1 - (ρ : ℤ)) * R.card := by
   obtain ⟨-, hcj, -, -, hint, -, hq, -⟩ := GlobalTheory.UnramOrder.order_facts L ϖ hϖ
-  have hq1 : (1 : ℝ) ≤ resQ ϖ := by exact_mod_cast (by omega : 1 ≤ resQ ϖ)
+  have hq1 : (1 : ℝ) ≤ resQ ϖ := by exact_mod_cast (omega : 1 ≤ resQ ϖ)
   have hp : algebraMap F E ϖ ∈ L.O := (hint _).2 ϖ.2
   have hps := prime_share L Hm hH ϖ hϖ UU hUU ρ hρ e (fun a => hW (he a)) hee a N (by omega) R hRU hR
     Z hZ
@@ -366,7 +366,7 @@ theorem shares : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] 
   have hcs := char_share L S.Hm S.herm S.ϖ S.ϖ_irr UU hUU ρ hρ e (fun i => hW (heW i)) hee a N
     (by omega) R hRU' hR' Z hZ
   have hqa : (0 : ℝ) < (S.q : ℝ) ^ a := by
-    have : (0 : ℝ) < S.q := by exact_mod_cast (by omega : 0 < resQ S.ϖ)
+    have : (0 : ℝ) < S.q := by exact_mod_cast (omega : 0 < resQ S.ϖ)
     positivity
   refine ⟨?_, ?_, fun y hy ⟨u₀, hu₀, hne⟩ => ?_⟩
   · have h := hcs 1 (by simp) (by simp)

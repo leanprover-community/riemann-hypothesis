@@ -357,7 +357,7 @@ theorem cK_ne_zero (D : D7) : cK D ≠ 0 := by
   refine inv_ne_zero (Complex.ofReal_ne_zero.2 (Real.sqrt_ne_zero'.2 ?_))
   have h1 : (0 : ℝ) < (D.host.d : ℝ) := by
     have := D.host.qd_big.2
-    exact_mod_cast (by omega : 0 < D.host.d)
+    exact_mod_cast (omega : 0 < D.host.d)
   positivity
 
 theorem dOp_const_mul {ι : Type} [Fintype ι] {a b : ℕ} (δ : ℂ) (l : DVar ι a b) (c : ℂ) (Φ : VCx ι a b → ℂ)

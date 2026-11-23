@@ -120,7 +120,7 @@ theorem torus_factor : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicat
   have hσv : ∀ z, Valued.v (σ z) = Valued.v z := hU.2.1
   have hq : (q : ℂ) ≠ 0 := by
     have := hU.2.2.2.2.2.1
-    exact_mod_cast (by omega : q ≠ 0)
+    exact_mod_cast (omega : q ≠ 0)
   have hs : simpleU k = Equiv.swap (lo k) (lo k).rev := by
     rw [simpleU, if_neg hk]
   set a : Fin n := lo k with ha

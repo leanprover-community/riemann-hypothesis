@@ -94,7 +94,7 @@ theorem clauses_at_shifted_gap (T : ParamsT D L P) (hK : DV.KapDef D) (h1 : 1 �
       (LevelStarExponents.h0 L - 4) / 2 - ((D.R.t : ℝ) + 1) / 2 ≤ ((Cons.kaR T hK j).aM τ i : ℝ)) := by
   have ht : (5 : ℝ) ≤ D.R.t := by
     have := D.R.rank_add_five_le
-    exact_mod_cast (by omega : 5 ≤ D.R.t)
+    exact_mod_cast (omega : 5 ≤ D.R.t)
   refine ⟨by have := T.heightBound_ge_order_sq; linarith, fun τ i hi => ?_, fun τ i hi => ?_⟩
   · have hc := abs_le.1 (P.e_centred τ ⟨j - 1, by omega⟩)
     unfold Cons.kaR

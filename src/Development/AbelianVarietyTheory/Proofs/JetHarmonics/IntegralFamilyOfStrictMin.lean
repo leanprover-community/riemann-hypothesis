@@ -93,7 +93,7 @@ theorem le_ordFn_iff (hϖ : Irreducible ϖ) (c : FractionRing V) (n : ℤ) :
     · rw [hb, map_zero, mul_zero, ordFn_zero]; exact le_top
     obtain ⟨d, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hb hϖ
     rw [ordFn_of_hasVal hϖ (n := n + d) ⟨u, by rw [zpow_add₀ hπ, zpow_natCast, map_mul, map_pow]; ring⟩]
-    exact_mod_cast (by omega : n ≤ n + d)
+    exact_mod_cast (omega : n ≤ n + d)
 
 def ordVal (hϖ : Irreducible ϖ) : AddValuation (FractionRing V) (WithTop ℚ) :=
   AddValuation.of (ordFn hϖ) (ordFn_zero hϖ)
@@ -137,7 +137,7 @@ theorem exists_eq_of_pos (hϖ : Irreducible ϖ) {c : FractionRing V} (h : 0 < or
     change 0 < ordFn hϖ c at h
     rw [ordFn_of_hasVal hϖ hm] at h ⊢
     have : (0 : ℤ) < m := by exact_mod_cast h
-    exact_mod_cast (by omega : (1 : ℤ) ≤ m)
+    exact_mod_cast (omega : (1 : ℤ) ≤ m)
   obtain ⟨b, hb⟩ := (le_ordFn_iff hϖ c 1).1 h1
   exact ⟨b, by rw [hb, zpow_one, map_mul]⟩
 

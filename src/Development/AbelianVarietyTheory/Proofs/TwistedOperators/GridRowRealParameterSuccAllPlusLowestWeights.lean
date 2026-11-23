@@ -220,7 +220,7 @@ theorem shape_below {n T : ℕ} (c : ℝ) (lam : Fin n → ℝ) (hl : StrictAnti
     · have := hb ⟨a, h2⟩
       have : (0 : ℝ) ≤ (((b : ℕ) - n : ℕ) : ℝ) := Nat.cast_nonneg _
       linarith
-    · have : (((a : ℕ) - n : ℕ) : ℝ) < (((b : ℕ) - n : ℕ) : ℝ) := by exact_mod_cast (by omega : (a : ℕ) - n < b - n)
+    · have : (((a : ℕ) - n : ℕ) : ℝ) < (((b : ℕ) - n : ℕ) : ℝ) := by exact_mod_cast (omega : (a : ℕ) - n < b - n)
       linarith
   have key : lam' = L := by
     rw [← StrictAnti.range_inj_of_wellFoundedGT h' hL]

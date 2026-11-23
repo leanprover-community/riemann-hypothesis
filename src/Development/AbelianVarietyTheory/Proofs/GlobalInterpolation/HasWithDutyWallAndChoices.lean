@@ -67,7 +67,7 @@ theorem has_withDuty_wall_and_choices {Q : PtProp} {C : FC} {cD ch C8 C5 c6 Cb :
     rw [← eg, ← hi] at hg
     have hk : (1 : ℝ) ≤ p.D.R.k := by
       have := p.D.R.m_add_three_le_k
-      exact_mod_cast (by omega : 1 ≤ p.D.R.k)
+      exact_mod_cast (omega : 1 ≤ p.D.R.k)
     have hb1 : 1 ≤ p.L.sc.b := Real.one_le_exp (Real.rpow_nonneg (by linarith [p.L.sc.one_lt_alt]) _)
     have h5 : p.L.sc.b ≤ (p.D.R.k : ℝ) * p.L.sc.b := le_mul_of_one_le_left (by linarith) hk
     have h6 : (p.D.R.k : ℝ) * p.L.sc.b ≤ ((p.D.R.k : ℝ) * p.L.sc.b) ^ 8 := le_self_pow₀ (by linarith) (by norm_num)

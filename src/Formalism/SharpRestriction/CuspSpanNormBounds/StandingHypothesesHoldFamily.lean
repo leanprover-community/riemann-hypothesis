@@ -113,7 +113,7 @@ variable {D : D7} (L : SizeData₂ D)
 theorem five_le_k : (5 : ℝ) ≤ D.R.k := by
   have h1 := D.R.two_le_m
   have h2 := D.R.m_add_three_le_k
-  exact_mod_cast (by omega : 5 ≤ D.R.k)
+  exact_mod_cast (omega : 5 ≤ D.R.k)
 
 theorem one_le_log_of_five_le {t : ℝ} (h : 5 ≤ t) : 1 ≤ Real.log t := by
   rw [Real.le_log_iff_exp_le (by linarith)]

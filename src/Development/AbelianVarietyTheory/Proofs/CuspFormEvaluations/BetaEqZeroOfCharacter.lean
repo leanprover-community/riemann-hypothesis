@@ -235,13 +235,11 @@ theorem beta_secH_secL {τ : Matrix (Fin g) (Fin g) ℂ} (hτ : τ.IsSymm)
 
 end Concrete
 
-section General
 
 variable {R M V : Type*} [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup V] [Module R V]
   {ω : LinearMap.BilinForm R M} {π : M →ₗ[R] V} {σ σ' σ'' : V →ₗ[R] M}
 
 variable {O : Type*} [CommRing O] [StarRing O] [Module O M] [Module O V]
 
-end General
 
 end GlobalTheory.LagSplit

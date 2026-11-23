@@ -56,7 +56,7 @@ theorem ConeBallFinite.proof (hMass : ConeIntegralMass.Statement) : ConeBallFini
   change (∫ y in coneBall h W, (1 : ℝ) ∂(Measure.hausdorffMeasure ((2 * (e + 1) : ℕ) : ℝ))) / _ =
     (δ : ℝ) at hm
   rw [setIntegral_const, measureReal_def, hinf, ENNReal.toReal_top, zero_smul, zero_div] at hm
-  have hδ0 : (δ : ℝ) ≠ 0 := by exact_mod_cast (by omega : δ ≠ 0)
+  have hδ0 : (δ : ℝ) ≠ 0 := by exact_mod_cast (omega : δ ≠ 0)
   exact hδ0 hm.symm
 
 end

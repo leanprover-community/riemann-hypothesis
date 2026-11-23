@@ -178,5 +178,5 @@ theorem _root_.GlobalTheory.UPoinc.ideal_orders_of_proper_model : ∀ (E : Type)
   refine ⟨b, ?_, hI⟩
   have h1 : (e : ℝ) * b = e * (ι * φ.evalZ be) := by
     rw [← Nat.cast_mul, hb, ha', hval2]; ring
-  have h2 : (e : ℝ) ≠ 0 := by exact_mod_cast (by omega : e ≠ 0)
+  have h2 : (e : ℝ) ≠ 0 := by exact_mod_cast (omega : e ≠ 0)
   exact mul_left_cancel₀ h2 h1

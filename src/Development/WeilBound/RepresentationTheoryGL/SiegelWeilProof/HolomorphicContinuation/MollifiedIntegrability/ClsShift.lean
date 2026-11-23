@@ -127,7 +127,7 @@ theorem wr_of : Gauss → ClsBound → ClsGain → IBP → Integr → Dens → W
     intro N N' hNN'
     have hsub : U N ⊆ U N' := fun z hz => by
       simp only [U, Set.mem_ofPred_eq] at hz ⊢
-      have : ((p + q + N : ℕ) : ℝ) ≤ ((p + q + N' : ℕ) : ℝ) := by exact_mod_cast (by omega)
+      have : ((p + q + N : ℕ) : ℝ) ≤ ((p + q + N' : ℕ) : ℝ) := by exact_mod_cast (omega)
       linarith
     have hA : AnalyticOnNhd ℂ (WN N) (U N) := (hWdiff N).analyticOnNhd (hUopen N)
     have hA' : AnalyticOnNhd ℂ (WN N') (U N) := ((hWdiff N').mono hsub).analyticOnNhd (hUopen N)

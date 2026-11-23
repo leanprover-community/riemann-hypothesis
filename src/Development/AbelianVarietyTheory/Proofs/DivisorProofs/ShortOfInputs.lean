@@ -150,8 +150,8 @@ theorem weight_rows {PP A : ℝ} (h : HostNum D L PP A 1) (hw : WtNum p i PP) (h
   have hL := h.big.2.1
   have hf : (8 : ℝ) ≤ D.R.f := by exact_mod_cast f8
   have hr : (2 : ℝ) ≤ D.R.r := by exact_mod_cast (by unfold Ranks.r; omega : 2 ≤ D.R.r)
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
-  have hmk : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
+  have hmk : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (omega : D.R.m ≤ D.R.k)
   have hb : 0 < L.sc.b := Real.exp_pos _
   have hcard : Fintype.card (Psi p.T.Q.H) = D.R.f := by rw [← hw.card, Nat.card_eq_fintype_card]
   have hDd : (1 : ℝ) ≤ dimFlag (dat p i) := by
@@ -159,7 +159,7 @@ theorem weight_rows {PP A : ℝ} (h : HostNum D L PP A 1) (hw : WtNum p i PP) (h
     exact_mod_cast Nat.mul_pos (by omega) (Nat.choose_pos (by unfold Ranks.r; omega))
   have hT : (1 : ℝ) ≤ lenT p i PP := by
     have : 4 * dimFlag (dat p i) + 4 ≤ lenT p i PP := hW.h1
-    exact_mod_cast (by omega : 1 ≤ lenT p i PP)
+    exact_mod_cast (omega : 1 ≤ lenT p i PP)
   have hP : ((D.R.f : ℝ) * D.R.r * L.sc.L) ^ 12 ≤ PP := h.ppLow
   have hZ : (160 : ℝ) ≤ (D.R.f : ℝ) * D.R.r * L.sc.L := by
     calc (160 : ℝ) = 8 * 2 * 10 := by norm_num

@@ -111,7 +111,7 @@ theorem hilbertSamuel_of_component_estimates_alt : GlobalTheory.CovTop.Hypothese
   have hlb : Real.log (Fm.L x ι).sc.b ≤ PP := by
     rw [Formalism.BasicNotions.Scale.b, Real.log_exp]
     linarith
-  have hT1 : (1 : ℝ) ≤ (lenT p i PP : ℝ) := by exact_mod_cast (by omega : 1 ≤ lenT p i PP)
+  have hT1 : (1 : ℝ) ≤ (lenT p i PP : ℝ) := by exact_mod_cast (omega : 1 ≤ lenT p i PP)
   have hsq : Real.sqrt (Fm.L x ι).sc.b ≤ (Fm.L x ι).sc.b := by
     have := Real.sq_sqrt (show (0 : ℝ) ≤ (Fm.L x ι).sc.b by linarith)
     have := Real.one_le_sqrt.2 hb1

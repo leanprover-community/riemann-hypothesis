@@ -329,9 +329,9 @@ theorem sumGP4 (large₂ : SizeData₂ D) (X : PJ D B P j) (h1 : 1 ≤ j) (K : K
     have h1 : D.R.f = 2 * D.R.toFrame.ord := rfl
     omega
   have hf1 : (1 : ℝ) ≤ (D.R.f : ℝ) := by exact_mod_cast hfN
-  have hk1 : (1 : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast (by omega : 1 ≤ D.R.k)
-  have hm1 : (1 : ℝ) ≤ (D.R.m : ℝ) := by exact_mod_cast (by omega : 1 ≤ D.R.m)
-  have hmk : (D.R.m : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+  have hk1 : (1 : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast (omega : 1 ≤ D.R.k)
+  have hm1 : (1 : ℝ) ≤ (D.R.m : ℝ) := by exact_mod_cast (omega : 1 ≤ D.R.m)
+  have hmk : (D.R.m : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast (omega : D.R.m ≤ D.R.k)
   have hg : (1 : ℝ) ≤ (g0 D : ℝ) := by
     have : 1 ≤ g0 D := by
       unfold g0 Ranks.r

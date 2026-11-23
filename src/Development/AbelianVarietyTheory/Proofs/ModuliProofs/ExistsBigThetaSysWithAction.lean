@@ -72,10 +72,10 @@ theorem exists_big (g n : ℕ) (hn : 2 ≤ n) : ∃ k j₁ : ℕ, 2 ≤ k ∧ 1 
   have hj' := lt j
   unfold ThetaSys.Big
   rw [hg, hS, hr, ← hN]
-  refine ⟨hk₀.trans (by exact_mod_cast (by omega : k₀ < N)), ?_, ?_⟩
+  refine ⟨hk₀.trans (by exact_mod_cast (omega : k₀ < N)), ?_, ?_⟩
   · rw [Nat.cast_mul (n ^ j)]
-    exact mul_lt_mul_of_pos_right (hj₀.trans (by exact_mod_cast (by omega : j₀ < n ^ j)))
-      (by exact_mod_cast (by omega : 0 < N))
+    exact mul_lt_mul_of_pos_right (hj₀.trans (by exact_mod_cast (omega : j₀ < n ^ j)))
+      (by exact_mod_cast (omega : 0 < N))
   · exact lt_of_lt_of_le (by omega) (Nat.le_mul_of_pos_right _ (by omega))
 
 theorem exists_level {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (R : Subalgebra o Ω) {g k : ℕ} [NeZero k]

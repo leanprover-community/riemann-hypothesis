@@ -118,7 +118,7 @@ theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.SelfDualUnramifiedPlaces.
   have h0 : Ideal.absNorm v.asIdeal ≠ 0 := by
     rw [Ne, Ideal.absNorm_eq_zero_iff]
     exact v.ne_bot
-  exact_mod_cast (by omega : 1 < Ideal.absNorm v.asIdeal)
+  exact_mod_cast (omega : 1 < Ideal.absNorm v.asIdeal)
 
 
 theorem _root_.GlobalTheory.IndefiniteRowSideFullHecke.SelfDualUnramifiedPlaces.density_factor_pos (F E : Type) [Field F] [NumberField F] [Field E]

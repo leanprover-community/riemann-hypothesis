@@ -353,7 +353,7 @@ theorem lemma_model_of_parts : Formalism.FourierDecayAlt.MA.LemmaEModelOfParts :
   intro P l L j lam α β c Ntot hSet hD hA hE hN hI w hAdm hw
   set C₂ := 64 * (1 + 2 * Real.exp 1 * √(LE.C7 CR Cd CP)) with hC₂
   have hC2 : 64 ≤ C₂ := by rw [hC₂]; nlinarith
-  have hN1 : (1 : ℝ) ≤ Ntot := by exact_mod_cast (by omega : 1 ≤ Ntot)
+  have hN1 : (1 : ℝ) ≤ Ntot := by exact_mod_cast (omega : 1 ≤ Ntot)
   have hr : (1 : ℝ) ≤ ((P.r : ℝ) + 1) ^ 2 := by
     have : (0 : ℝ) ≤ P.r := Nat.cast_nonneg _
     nlinarith

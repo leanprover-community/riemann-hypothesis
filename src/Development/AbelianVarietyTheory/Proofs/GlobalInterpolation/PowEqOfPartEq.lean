@@ -91,7 +91,7 @@ theorem dvd_of_pow_eq {g m : ℕ} (w : (ZMod g)ˣ) {o o' : Option (Fin m × Bool
 theorem tameDistinct_gen : ∀ (r g m : ℕ) [Fact g.Prime] (w : (ZMod g)ˣ), orderOf w = g - 1 → 4 * (m : ℝ) * (g : ℝ) ^ ((1 : ℝ) / 4) < (g : ℝ) - 1 → 1 ≤ r → DC.TameDistinct r g (fun j : Fin m => w ^ (2 * (j.1 + 1))) := by
   intro r g m hg w hw hlt hr
   have hg2 : 2 ≤ g := hg.out.two_le
-  have hgR : (1 : ℝ) ≤ g := by exact_mod_cast (by omega : 1 ≤ g)
+  have hgR : (1 : ℝ) ≤ g := by exact_mod_cast (omega : 1 ≤ g)
   have hcast : ((g - 1 : ℕ) : ℝ) = (g : ℝ) - 1 := by
     rw [Nat.cast_sub (by omega)]; simp
   have hq : (1 : ℝ) ≤ (g : ℝ) ^ ((1 : ℝ) / 4) := Real.one_le_rpow hgR (by norm_num)

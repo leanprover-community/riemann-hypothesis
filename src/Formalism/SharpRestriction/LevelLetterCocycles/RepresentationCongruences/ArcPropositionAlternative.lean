@@ -201,7 +201,7 @@ theorem arc_proposition_alternative [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDo
       · apply Real.logb_nonneg
         · have : (2 : ℝ) ≤ PD.p := by
             have h11 : 11 ≤ PD.p := hB.1
-            exact_mod_cast (by omega : 2 ≤ PD.p)
+            exact_mod_cast (omega : 2 ≤ PD.p)
           linarith
         · have : (1 : ℝ) ≤ (TruncatedSeriesCountingBounds.hB b w S η size : ℝ) := by exact_mod_cast hpos
           linarith

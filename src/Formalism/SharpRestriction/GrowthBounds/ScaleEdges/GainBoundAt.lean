@@ -108,7 +108,7 @@ theorem hyps_basic {C : ℝ} (hC : 1 ≤ C) {p n' m r : ℕ} {TT : Finset (Fin n
       _ ≤ (orbitSmallMultiplicity r h x + 5) * ((6 * r + 1) * goodU de) :=
         Nat.mul_le_mul (by omega) (Nat.mul_le_mul_right _ (by omega))
   have hY : (2 : ℝ) ≤ Y := le_trans (by exact_mod_cast hr) hrY
-  have hmk : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ m + 1)
+  have hmk : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ m + 1)
   have hc1 : (1 : ℝ) ≤ (TT.card : ℝ) := by exact_mod_cast hcard
   have hk2 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) ^ 2 := by
     rw [sq]
@@ -119,7 +119,7 @@ theorem hyps_basic {C : ℝ} (hC : 1 ≤ C) {p n' m r : ℕ} {TT : Finset (Fin n
     rw [hL0] at hL1
     have hz : (p : ℝ) ^ (((0 : ℕ) : ℤ) - 1) = (p : ℝ)⁻¹ := by norm_num
     rw [hz] at hL1
-    have hp0 : (0 : ℝ) < p := by exact_mod_cast (by omega : 0 < p)
+    have hp0 : (0 : ℝ) < p := by exact_mod_cast (omega : 0 < p)
     have hinv : (p : ℝ)⁻¹ * p = 1 := inv_mul_cancel₀ hp0.ne'
     have hinv0 : 0 ≤ (p : ℝ)⁻¹ := inv_nonneg.mpr hp0.le
     have hp13 : (13 : ℝ) ≤ p := by exact_mod_cast hp
@@ -143,7 +143,7 @@ theorem hyps_basic {C : ℝ} (hC : 1 ≤ C) {p n' m r : ℕ} {TT : Finset (Fin n
     have : 1 ≤ (p ^ goodG' r de h x) ^ 5 := Nat.one_le_pow _ _ (Nat.one_le_pow _ _ (by omega))
     exact_mod_cast this
   have hcs : (8 : ℝ) ≤ (cStar : ℝ) + ((r : ℝ) * TT.card * c0 + 2 * r * n' * cpp) := by
-    have h9 : (8 : ℝ) ≤ cStar := by exact_mod_cast (by omega : 8 ≤ cStar)
+    have h9 : (8 : ℝ) ≤ cStar := by exact_mod_cast (omega : 8 ≤ cStar)
     have h10 : (0 : ℝ) ≤ (r : ℝ) * TT.card * c0 + 2 * r * n' * cpp := by positivity
     linarith
   have e1 := mul_le_mul hC hk3 zero_le_one (le_trans zero_le_one hC)
@@ -164,7 +164,7 @@ theorem hyps_mono {C C' : ℝ} (hC : 1 ≤ C) (hCC : C ≤ C') {p n' m r : ℕ} 
   have ha2 : (2 : ℝ) ≤ a := hB.two_le_a
   have hY0 : (0 : ℝ) ≤ Y := le_trans (by norm_num) hB.two_le_Y
   have hlog : 0 ≤ Real.log a := Real.log_nonneg (by linarith)
-  have hlogb : 0 ≤ Real.logb p a := Real.logb_nonneg (by exact_mod_cast (by omega : 1 < p)) (by linarith)
+  have hlogb : 0 ≤ Real.logb p a := Real.logb_nonneg (by exact_mod_cast (omega : 1 < p)) (by linarith)
   have hd : 0 ≤ C' - C := by linarith
   unfold Hyps
   refine ⟨hp, hr, hOrb, hNsq, hW, hrY, le_trans ?_ hLa, hNm, hL1, le_trans ?_ hDp, hcS, le_trans ?_ ha⟩
@@ -503,7 +503,7 @@ theorem hypII_at (CLa' CD Csz : ℝ) :
     push_cast at h3
     linarith
   have hlogc0 : 0 ≤ Real.log (⌈a⌉₊ : ℝ) := Real.log_nonneg (by linarith)
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast (omega : 1 < p)
   have hlp : 0 < Real.log p := Real.log_pos hp1
   have hlogbc : Real.logb p (⌈a⌉₊ : ℝ) ≤ 2 * Real.logb p a := by
     unfold Real.logb

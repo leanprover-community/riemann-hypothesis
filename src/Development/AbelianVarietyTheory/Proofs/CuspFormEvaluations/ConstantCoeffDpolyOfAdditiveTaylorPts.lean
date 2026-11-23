@@ -123,7 +123,6 @@ theorem taylorDir_comp (u : τ → W) {φ : W → σ → ℂ} (hφ : AnalyticAt 
 
 end Comp
 
-section Points
 
 variable {n d : ℕ} {W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W]
 
@@ -131,17 +130,13 @@ variable (e : Fin 1 × Fin d → W) {f : W → ℂ}
 
 variable {ι : Type} [Fintype ι]
 
-end Points
 
-section Curried
 
 variable {m n d d' : ℕ}
 
-section Algebra
 
 variable {F G : (Fin n → Fin d → ℂ) → ℂ}
 
-end Algebra
 
 end Curried
 

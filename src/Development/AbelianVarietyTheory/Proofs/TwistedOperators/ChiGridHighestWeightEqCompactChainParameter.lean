@@ -62,7 +62,7 @@ theorem psiPar_props (D : D7) (C : ℝ) (τ : D.what₂.Tau) :
   have hg : (num D C τ).s < (num D C τ).ga := sLen_lt_gap D C
   have hGm : (num D C τ).m = D.R.m := rfl
   have hGk : (num D C τ).k = D.R.k := rfl
-  have hga : (0 : ℚ) < (num D C τ).ga := by exact_mod_cast (by omega : 0 < (num D C τ).ga)
+  have hga : (0 : ℚ) < (num D C τ).ga := by exact_mod_cast (omega : 0 < (num D C τ).ga)
   have hle : ∀ {i j : ℕ}, i ≤ j → (num D C τ).a j ≤ (num D C τ).a i := fun h => by
     rcases h.eq_or_lt with rfl | h
     · exact le_rfl

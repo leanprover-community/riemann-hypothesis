@@ -116,14 +116,14 @@ theorem BranchGermDimOne.proof (h₀ : LocalDimComponentBound.Statement) (h₁ :
     by_contra hlt
     have h2 : 2 ≤ d := by
       by_contra h
-      exact hlt (by exact_mod_cast (by omega : d ≤ 1))
+      exact hlt (by exact_mod_cast (omega : d ≤ 1))
     have hpos := h₂ n d W hW hd q (interior N) isOpen_interior (mem_interior_iff_mem_nhds.2 hN) hqW
     have hsub : zeroSet W ∩ interior N ⊆ zeroSet I ∩ N :=
       fun x hx ↦ ⟨fun f hf ↦ hx.1 f (hIW hf), interior_subset hx.2⟩
     have hlt' : dimH (zeroSet W ∩ interior N) < (((2 * d : ℕ) : ℝ≥0) : ℝ≥0∞) := by
       refine ((dimH_mono hsub).trans hdimH).trans_lt ?_
       rw [ENNReal.coe_natCast]
-      exact_mod_cast (by omega : 2 < 2 * d)
+      exact_mod_cast (omega : 2 < 2 * d)
     have h0 := hausdorffMeasure_of_dimH_lt hlt'
     rw [NNReal.coe_natCast] at h0
     exact hpos.ne' h0

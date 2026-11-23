@@ -317,7 +317,7 @@ lemma neg_one_le_meromorphicOrderAt_addDefect_neg {w : ℂ} (hw : w ∉ L.lattic
   | top => exact le_top
   | coe n =>
     have : (0 : ℤ) ≤ 1 + n := by exact_mod_cast hord
-    exact_mod_cast (by omega : (-1 : ℤ) ≤ n)
+    exact_mod_cast (omega : (-1 : ℤ) ≤ n)
 
 theorem weierstrassP_add_of_two_mul_notMem {z w : ℂ} (hw : w ∉ L.lattice)
     (h2w : 2 * w ∉ L.lattice) (hz : z ∉ L.lattice) (hzw : z - w ∉ L.lattice)

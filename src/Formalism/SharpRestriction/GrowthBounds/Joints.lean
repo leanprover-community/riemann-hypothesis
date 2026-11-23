@@ -1387,7 +1387,7 @@ theorem logVal_clause1 (p : ℕ) (hp : p.Prime) (t s : ℕ) :
   apply padicGe_sum
   intro y hy
   rw [Finset.mem_Ico] at hy
-  have hy0 : (y : ℚ) ≠ 0 := by exact_mod_cast (by omega : y ≠ 0)
+  have hy0 : (y : ℚ) ≠ 0 := by exact_mod_cast (omega : y ≠ 0)
   have hP : ((p ^ (t + 1) : ℕ) : ℚ) ≠ 0 := by exact_mod_cast pow_ne_zero _ hp.ne_zero
   right
   rw [padicValRat.mul (pow_ne_zero _ hP) (inv_ne_zero (pow_ne_zero _ hy0)), padicValRat.inv,
@@ -1508,7 +1508,7 @@ theorem fk_logb_ge_one (D : D7) (L : SizeData₂ D) (p : ℕ) (hp : p.Prime) (hp
     exact_mod_cast this
   have hk : (1 : ℝ) ≤ (D.R.k : ℝ) ^ 2 := by
     have h5 := D.R.five_le_k
-    have : (1 : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+    have : (1 : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast (omega : 1 ≤ D.R.k)
     nlinarith
   calc (1 : ℝ) = 1 * 1 * 1 := by ring
     _ ≤ _ := mul_le_mul (mul_le_mul hf hk zero_le_one (by linarith)) hlog zero_le_one (by positivity)

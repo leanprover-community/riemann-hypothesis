@@ -132,19 +132,14 @@ theorem exists_reps_of_relIndex_ne_zero {M : Type*} [AddCommGroup M] {A B : AddS
     obtain ⟨q, -, rfl⟩ := Finset.mem_image.1 hr
     rw [(key q).1 h]
 
-section Period
 
 variable {E : Type} [Field E] [NumberField E]
 
-end Period
 
-section Index
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-end Index
 
-section Modulus
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -152,7 +147,6 @@ variable [IsGalois ℚ E]
 
 variable {K : Type*} [Field K] [Algebra E K]
 
-end Modulus
 
 section IndexIdeal
 

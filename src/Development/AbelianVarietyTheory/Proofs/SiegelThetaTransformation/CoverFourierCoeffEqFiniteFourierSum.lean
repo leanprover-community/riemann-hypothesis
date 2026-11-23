@@ -368,7 +368,7 @@ theorem natCast_mem (l : Geo.Tor.Level H) : (l.M : 𝓞 E) ∈ l.Mb ∧ (l.M : �
 theorem root_mem {l : Geo.Tor.Level H} {L : Lt E r} {mk : Dw.La →ₗ[𝓞 E] (Fin r → E)} (hmk : IsMark l L mk)
     {Y : Fin r → E} {a : Dw.La} (ha : a ∈ Mfr l • (⊤ : Submodule (𝓞 E) Dw.La))
     (hY : Y - ((l.M : E)⁻¹) • mk a ∈ L) {t : 𝓞 E} (ht : t ∈ l.Mb) : t • Y ∈ L := by
-  have hM : (l.M : E) ≠ 0 := by have := l.three_le; exact_mod_cast (by omega : l.M ≠ 0)
+  have hM : (l.M : E) ≠ 0 := by have := l.three_le; exact_mod_cast (omega : l.M ≠ 0)
   have h1 : t • a ∈ Ideal.span {(l.M : 𝓞 E)} • (⊤ : Submodule (𝓞 E) Dw.La) := by
     rw [← l.prod, Submodule.mul_smul]; exact Submodule.smul_mem_smul ht ha
   rw [Submodule.ideal_span_singleton_smul] at h1

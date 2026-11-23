@@ -100,7 +100,7 @@ theorem IsRayL.eqOn {ε : Ideal (𝓞 K) → ℚ} {L L' : ℂ → ℂ} (h : IsRa
 theorem IsRayValue.eq {ε : Ideal (𝓞 K) → ℚ} {k : ℕ} {r : ℚ} (hk : 1 ≤ k) (h : IsRayValue 𝔣 ε k r) {L : ℂ → ℂ}
     (hL : IsRayL 𝔣 ε L) : L (1 - (k : ℂ)) = (r : ℂ) := by
   obtain ⟨L', hL', e⟩ := h
-  have : (k : ℂ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+  have : (k : ℂ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
   rw [← e]
   exact hL.eqOn hL' (by simpa using this)
 

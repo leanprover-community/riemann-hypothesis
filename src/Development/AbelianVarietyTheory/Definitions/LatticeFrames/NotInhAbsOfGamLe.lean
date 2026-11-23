@@ -89,8 +89,8 @@ theorem one_le_mfL {D : D7} {L C' Cl Cg cb Cu cT CT : ℝ} (hH : Deg.HypL D L C'
   obtain ⟨h1, -, h3, h4, -⟩ := hH
   have hm := D.R.two_le_m
   have h16 : 2 ^ 4 ≤ D.R.m ^ 4 := Nat.pow_le_pow_left hm 4
-  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by omega : 1 ≤ D.R.f)
-  have hm' : (1 : ℝ) ≤ (D.R.m : ℝ) ^ 5 := one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ D.R.m))
+  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (omega : 1 ≤ D.R.f)
+  have hm' : (1 : ℝ) ≤ (D.R.m : ℝ) ^ 5 := one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ D.R.m))
   refine ⟨?_, by omega, by omega⟩
   unfold mfL
   exact one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le hm' hf) h1.le

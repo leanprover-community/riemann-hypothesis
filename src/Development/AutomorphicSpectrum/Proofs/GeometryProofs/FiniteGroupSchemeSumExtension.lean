@@ -68,7 +68,7 @@ theorem exists_root_in_ext (K : Type) [Field K] [NumberField K] (n : ℕ) (hn : 
   let P : Polynomial K := Polynomial.X ^ n - Polynomial.C (c : K)
   have hdeg : P.degree ≠ 0 := by
     rw [Polynomial.degree_X_pow_sub_C (by omega)]
-    exact_mod_cast (by omega : n ≠ 0)
+    exact_mod_cast (omega : n ≠ 0)
   have : FiniteDimensional ℚ P.SplittingField := Module.Finite.trans K _
   obtain ⟨ρ, hρ⟩ := (Polynomial.IsSplittingField.splits P.SplittingField P).exists_eval_eq_zero
     (by rwa [Polynomial.degree_map])

@@ -115,7 +115,7 @@ private theorem loc_sat (w : HeightOneSpectrum (𝓞 E)) {V : Type} [AddCommGrou
   have ht2 : t ^ 2 = q := by
     rw [ht, ← Real.rpow_natCast, ← Real.rpow_mul hq0]
     norm_num
-  have ht1 : 1 ≤ t := Real.one_le_rpow (by exact_mod_cast (by omega : 1 ≤ q)) (by norm_num)
+  have ht1 : 1 ≤ t := Real.one_le_rpow (by exact_mod_cast (omega : 1 ≤ q)) (by norm_num)
   have e : ‖satEig q 2 {a, b} 1‖ = t * ‖(a + b : ℂ)‖ := by
     unfold satEig
     rw [norm_mul, Complex.norm_natCast_cpow_of_pos (by omega)]

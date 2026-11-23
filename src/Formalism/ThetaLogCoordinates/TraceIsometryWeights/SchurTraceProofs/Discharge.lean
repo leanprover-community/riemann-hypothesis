@@ -87,7 +87,7 @@ theorem kapC_le_real (p : ℕ) [Fact p.Prime] (r d a : ℕ) (h : d + r ≤ p ^ 2
   · subst hr
     simp [kapC]
   have hp1 : (1 : ℝ) < p := by exact_mod_cast (Fact.out : p.Prime).one_lt
-  have hx : (1 : ℝ) ≤ 8 * a + r := by exact_mod_cast (by omega : 1 ≤ 8 * a + r)
+  have hx : (1 : ℝ) ≤ 8 * a + r := by exact_mod_cast (omega : 1 ≤ 8 * a + r)
   have hlg : 0 ≤ lgV2 p a r := by
     unfold lgV2
     have := Real.logb_nonneg hp1 hx

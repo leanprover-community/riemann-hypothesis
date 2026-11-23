@@ -215,7 +215,7 @@ private lemma bracket_product_le_of_neg_between_lemma (k r l : ℕ) (b c Y : ℝ
       prod_range_reflect (fun j => |(Y + 1 / 2 + u (1 + j)) * (Y + 1 / 2 + u' (1 + j))|) _
     rw [← r1, ← r2]
     have hn : ((l - 1 - 1 : ℕ) : ℝ) ≤ b := by
-      have : ((l - 1 - 1 : ℕ) : ℝ) ≤ k := by exact_mod_cast (by omega : l - 1 - 1 ≤ k)
+      have : ((l - 1 - 1 : ℕ) : ℝ) ≤ k := by exact_mod_cast (omega : l - 1 - 1 ≤ k)
       linarith
     apply prod_le_cube_mul_prod_of_bracket_chain b c (l - 1 - 1) hn hc hcb _
       (fun j => Y + lam (1 + (l - 1 - 1 - 1 - j)))
@@ -241,7 +241,7 @@ private lemma bracket_product_le_of_neg_between_lemma (k r l : ℕ) (b c Y : ℝ
       b ^ 3 * ∏ i ∈ Ico (l + 2) (k + 1), |(Y + 1 / 2 + u i) * (Y + 1 / 2 + u' i)| := by
     rw [prod_Ico_eq_prod_range, prod_Ico_eq_prod_range, show k + 1 - (l + 2) = k - (l + 1) by omega]
     have hn : ((k - (l + 1) : ℕ) : ℝ) ≤ b := by
-      have : ((k - (l + 1) : ℕ) : ℝ) ≤ k := by exact_mod_cast (by omega : k - (l + 1) ≤ k)
+      have : ((k - (l + 1) : ℕ) : ℝ) ≤ k := by exact_mod_cast (omega : k - (l + 1) ≤ k)
       linarith
     apply prod_le_cube_mul_prod_of_bracket_chain b c (k - (l + 1)) hn hc hcb _
       (fun j => -Y - lam (l + 1 + j) - 1)

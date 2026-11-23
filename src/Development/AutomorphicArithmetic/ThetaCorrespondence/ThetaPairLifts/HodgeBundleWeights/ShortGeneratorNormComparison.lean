@@ -59,7 +59,7 @@ theorem short_generator_comparison : _root_.GlobalTheory.CovTop.PublishedHodgeBu
   refine ⟨2000 + Cb + C2, by positivity, ?_⟩
   intro D T hT j hp hq hE hj Y e o hY Lb hLb hM hfs hfr ho c₁ hc₁ hc₁b la hla hgap hsz Z
   have hgood := (_root_.GlobalTheory.T.covering_domain_lattice_regularity hP D T hT j hp hq hE hj Y e o hY la hla fun τ =>
-    le_trans (by exact_mod_cast (by omega : 1 ≤ 8 * D.R.f * D.R.r + 10)) (hgap τ)).2 Z
+    le_trans (by exact_mod_cast (omega : 1 ≤ 8 * D.R.f * D.R.r + 10)) (hgap τ)).2 Z
   obtain ⟨s, hsL, hsp, hsn⟩ := h2 D T hT j hp hq hE hj Y e o hY Lb hLb hM hfs hfr ho c₁ hc₁ hc₁b la hla hgap hsz Z
   haveI : FiniteDimensional Y.d.c₂.F (cuspOn Y.U Z (wtOf (T.Q.Dw j) la 0)) :=
     hgood.1.some.2.1.1.finiteDimensional_of_finite

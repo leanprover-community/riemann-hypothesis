@@ -460,7 +460,7 @@ theorem len_le (D : D7) (L : SizeData₂ D) (P : ParameterChoice' D L) (T : Para
     have : 1 ≤ D.R.f := by unfold Ranks.f Ranks.n; have := And.intro (Nat.one_le_two_pow (n := D.R.e)) (show 0 < D.R.ord from D.R.ord_pos); omega
     exact_mod_cast this
   have hr2 : 2 ≤ D.R.r := by unfold Ranks.r; have := D.R.m_add_three_le_k; have := D.R.two_le_m; omega
-  have hr1 : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 1 ≤ D.R.r)
+  have hr1 : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 1 ≤ D.R.r)
   have hD1 : (1 : ℝ) ≤ (T.Dp : ℝ) := by
     have : 1 ≤ T.Dp := by
       rw [T.Dp_eq]

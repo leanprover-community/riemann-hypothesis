@@ -67,7 +67,7 @@ theorem _root_.GlobalTheory.BI.isChar_of_isChar_of_mem_virt (K L : Type) [Field 
       obtain ⟨n₃, h₃⟩ := hnat c φ hc hφc
       have hne : _root_.GlobalTheory.BI.pair a φ ≠ 0 := by
         rw [h, hadd, hadd, h₁, h₂, h₃]
-        exact_mod_cast (by omega : n₁ + (n₂ + n₃) ≠ 0)
+        exact_mod_cast (omega : n₁ + (n₂ + n₃) ≠ 0)
       obtain ⟨a', ha', ha'eq⟩ := _root_.GlobalTheory.BI.exists_isChar_eq_add_of_pair_ne_zero K L G φ a hφ ha hne
       refine ih a' ha' ?_
       have : φ + a' = φ + (χ + c) := by

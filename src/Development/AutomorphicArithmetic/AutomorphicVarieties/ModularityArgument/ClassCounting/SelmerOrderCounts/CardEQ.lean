@@ -140,9 +140,9 @@ theorem UpperTheory.V.ZK.Ct.cardEQ :
         simp only [Prod.fst_add, toMul_add, Units.val_mul, map_mul, Prod.snd_add, Int.cast_add, Pi.add_apply]
         rw [Real.log_mul (Units.pos_at_place _ _).ne' (Units.pos_at_place _ _).ne']; ring }
   obtain ⟨u1, u2, u3⟩ := unitLat F hF lam fun _ _ _ => rfl
-  have hdet := permDet (InfinitePlace F) (MulAction.toPerm γ) (orderOf γ) _ (a : ℝ) hn (by exact_mod_cast (by omega : 1 ≤ a)) hc
+  have hdet := permDet (InfinitePlace F) (MulAction.toPerm γ) (orderOf γ) _ (a : ℝ) hn (by exact_mod_cast (omega : 1 ≤ a)) hc
     fun k w => by rw [← hfree, ← MulAction.toPermHom_apply, ← map_pow]; rfl
-  have h1 : (1 : ℝ) < (a : ℝ) ^ orderOf γ := one_lt_pow₀ (by exact_mod_cast (by omega : 1 < a)) hn.ne'
+  have h1 : (1 : ℝ) < (a : ℝ) ^ orderOf γ := one_lt_pow₀ (by exact_mod_cast (omega : 1 < a)) hn.ne'
   obtain ⟨f1, f2⟩ := latDet _ _ lam (δ.prodMap ((-((a - 1 : ℕ) : ℤ)) • LinearMap.id))
     (LinearMap.funLeft ℝ ℝ (MulAction.toPerm γ : Equiv.Perm (InfinitePlace F)) - (a : ℝ) • LinearMap.id) (by
       rintro ⟨u, m⟩

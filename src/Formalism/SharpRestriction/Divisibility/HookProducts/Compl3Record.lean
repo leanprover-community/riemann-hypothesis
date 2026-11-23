@@ -83,7 +83,7 @@ theorem sc_add_wj_le (D : D7) (L : SizeData₂ D) (S : SizesAt L) (i : ℕ) (hi 
   have hb1 : 1 ≤ L.sc.b := Real.one_le_exp hL0.le
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hn0 : (0 : ℝ) < D.R.n := lt_of_lt_of_le (Real.rpow_pos_of_pos hx0 _) hN.1
   have hn1 : (1 : ℝ) ≤ D.R.n := by
     have : 0 < D.R.n := by exact_mod_cast hn0
@@ -270,7 +270,7 @@ theorem compl3_record (D : D7) (L : SizeData₂ D) (Z : DivX D) (Csz : ℝ) (P :
     linarith
   have hm1 : (1 : ℝ) ≤ D.R.m := by
     have := D.R.two_le_m
-    exact_mod_cast (by omega : 1 ≤ D.R.m)
+    exact_mod_cast (omega : 1 ≤ D.R.m)
   have hf0 : (0 : ℝ) ≤ D.R.f := Nat.cast_nonneg _
   have hm0 : (0 : ℝ) ≤ D.R.m := Nat.cast_nonneg _
   have hb0 : 0 ≤ L.sc.b := by linarith

@@ -46,10 +46,10 @@ theorem two_le_rdE (D : D7) : 2 ≤ D.host.rdE := by
     (UpperTheory.KR.log_qd_le_rd D.host.toHostAx D.host.flPS).2.2.1
   have hq : (2 : ℝ) ≤ D.host.q := by
     have := D.host.qd_big.1
-    exact_mod_cast (by omega : 2 ≤ D.host.q)
+    exact_mod_cast (omega : 2 ≤ D.host.q)
   have hd : (2 : ℝ) ≤ D.host.d := by
     have := D.host.qd_big.2
-    exact_mod_cast (by omega : 2 ≤ D.host.d)
+    exact_mod_cast (omega : 2 ≤ D.host.d)
   have h4 : (2 : ℝ) ≤ Real.sqrt ((D.host.q : ℝ) * D.host.d) := by
     rw [Real.le_sqrt' (by norm_num)]; nlinarith
   linarith

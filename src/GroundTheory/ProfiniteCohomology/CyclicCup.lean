@@ -438,7 +438,7 @@ theorem exists_generator_sum_charCocycle [IsCyclic G] (χ : Additive G →+ AddC
     rw [← mem_powers_iff_mem_zpowers] at hx
     obtain ⟨j, hj⟩ := hx
     exact ⟨j, hj⟩
-  · have hmpos : (0 : ℚ) < m := by exact_mod_cast (by omega : 0 < m)
+  · have hmpos : (0 : ℚ) < m := by exact_mod_cast (omega : 0 < m)
     have hbezQ : (r : ℚ) * s + m * t = 1 := by exact_mod_cast hbez
     have hχg : χ (Additive.ofMul (σ ^ s)) = (((1 : ℚ) / m : ℚ) : AddCircle (1 : ℚ)) := by
       rw [ofMul_zpow, map_zsmul, ← hre, ← AddCircle.coe_zsmul, ← sub_eq_zero, ← AddCircle.coe_sub,
@@ -452,7 +452,7 @@ theorem exists_generator_sum_charCocycle [IsCyclic G] (χ : Additive G →+ AddC
       rw [hχg, reprIco_coe]
       refine ⟨by positivity, ?_⟩
       rw [div_lt_one hmpos]
-      exact_mod_cast (by omega : 1 < m)
+      exact_mod_cast (omega : 1 < m)
     have := sum_charCocycle_cast χ (σ ^ s)
     rw [hy, mul_one_div_cancel hmpos.ne'] at this
     exact_mod_cast this

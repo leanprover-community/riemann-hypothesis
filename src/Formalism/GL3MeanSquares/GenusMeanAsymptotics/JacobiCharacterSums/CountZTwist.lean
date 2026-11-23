@@ -47,7 +47,7 @@ lemma norm_cpow_neg_le_one {n : ℕ} (hn : 1 ≤ n) {w : ℂ} (hw : 0 ≤ w.re) 
 
 lemma norm_cpow_step_le {i U : ℕ} (hU : 1 ≤ U) (hi : U ≤ i) {w : ℂ} (hw : 0 < w.re) :
     ‖(((i + 1 : ℕ) : ℂ) ^ (-w) - (i : ℂ) ^ (-w))‖ ≤ ‖w‖ / U := by
-  have hi0 : (0 : ℝ) < i := by exact_mod_cast (by omega : 0 < i)
+  have hi0 : (0 : ℝ) < i := by exact_mod_cast (omega : 0 < i)
   have h := Formalism.FX.LFunctionPartialSum.norm_cpow_sub_le' hi0 hw
   have e1 : (((i : ℝ) : ℂ)) = (i : ℂ) := by push_cast; rfl
   have e2 : ((((i : ℝ) + 1 : ℝ)) : ℂ) = ((i + 1 : ℕ) : ℂ) := by push_cast; rfl
@@ -56,7 +56,7 @@ lemma norm_cpow_step_le {i U : ℕ} (hU : 1 ≤ U) (hi : U ≤ i) {w : ℂ} (hw 
   have hUi : (U : ℝ) ≤ i := by exact_mod_cast hi
   have hU0 : (0 : ℝ) < U := by exact_mod_cast hU
   have h1 : (i : ℝ) ^ (-w.re - 1) ≤ (i : ℝ) ^ (-1 : ℝ) :=
-    Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast (by omega : 1 ≤ i)) (by linarith)
+    Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast (omega : 1 ≤ i)) (by linarith)
   have h2 : (i : ℝ) ^ (-1 : ℝ) ≤ 1 / U := by
     rw [Real.rpow_neg_one, one_div]
     exact inv_anti₀ hU0 hUi
@@ -96,7 +96,7 @@ theorem pair_twist_bound : PairTwistOf := by
     refine (sum_le_sum hterm).trans ?_
     rw [sum_const, Nat.card_Ioc, nsmul_eq_mul]
     have hU0 : (0 : ℝ) < U := by exact_mod_cast hU
-    have hcnt : ((2 * U - 1 - U : ℕ) : ℝ) ≤ U := by exact_mod_cast (by omega : 2 * U - 1 - U ≤ U)
+    have hcnt : ((2 * U - 1 - U : ℕ) : ℝ) ≤ U := by exact_mod_cast (omega : 2 * U - 1 - U ≤ U)
     calc ((2 * U - 1 - U : ℕ) : ℝ) * (‖w‖ / U * m) ≤ U * (‖w‖ / U * m) :=
           mul_le_mul_of_nonneg_right hcnt (by positivity)
       _ = m * ‖w‖ := by field_simp

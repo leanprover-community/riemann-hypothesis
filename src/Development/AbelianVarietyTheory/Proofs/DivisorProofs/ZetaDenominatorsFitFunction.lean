@@ -71,7 +71,7 @@ theorem scLeB {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) : L.Sc ≤
   have hk := P.kS_le
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hn : (1 : ℝ) ≤ D.R.n := by
     unfold Ranks.n
     exact_mod_cast (show 1 ≤ D.R.ord from D.R.ord_pos)

@@ -79,7 +79,7 @@ theorem eq_of_pow_eq_self_of_thB_eq {l : ℕ} [Fact l.Prime] {q : ℕ} (hq : 2 �
           rw [← pow_succ, Nat.sub_add_cancel (by omega), hζ, one_mul]
         exact mul_right_cancel₀ h0 e
       rw [h1, mul_one, sub_ne_zero]
-      exact_mod_cast (by omega : q ≠ 1)
+      exact_mod_cast (omega : q ≠ 1)
   have hu := isUnit_BdRp_of_thB hne
   exact sub_eq_zero.1 ((hu.mul_left_eq_zero).1 hkey)
 

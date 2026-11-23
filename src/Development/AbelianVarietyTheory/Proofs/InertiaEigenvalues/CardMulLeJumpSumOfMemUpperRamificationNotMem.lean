@@ -66,7 +66,7 @@ theorem card_mul_le_jumpSum_of_mem_upper_not_mem : ∀ (F L : Type) [Field F] [V
     have hmem : σ ∈ wild F L n := by
       rw [wild, show ((n : ℤ) + 1) = ((n + 1 : ℕ) : ℤ) by push_cast; ring,
         mem_lowerRamificationGroup_natCast_iff_lowerIndex, ← hm]
-      exact_mod_cast (by omega : n + 1 + 1 ≤ m)
+      exact_mod_cast (omega : n + 1 + 1 ≤ m)
     have : ¬ (⊤ ⊓ wild F L n ≤ B) := fun h ↦ hσB (h ⟨Subgroup.mem_top σ, hmem⟩)
     exact lt_irrefl n ((hn n).mpr this)
   have hcard : (0 : ℝ) ≤ (Nat.card (L ≃ₐ[F] L) : ℝ) := Nat.cast_nonneg _

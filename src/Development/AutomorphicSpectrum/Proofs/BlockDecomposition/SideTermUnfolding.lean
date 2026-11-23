@@ -83,7 +83,7 @@ theorem sideUnfold : EpConv → Unfold → Lines → Term → ZetaK → SideUnfo
   intro hE hU hL hT hZ G _ _ _ _ _ W _ _ _ K ρ hK hρ _ _ μ hμ hP k _ _ ι _ _ π Γ P i ω d c η hS Ψ hΨ s hs g w
   have hcard : (1 : ℝ) < (Fintype.card ι : ℝ) := by
     have := hS.two
-    exact_mod_cast (by omega : 1 < Fintype.card ι)
+    exact_mod_cast (omega : 1 < Fintype.card ι)
   have hs1 : 1 < s.re := hcard.trans hs
   obtain ⟨e, he⟩ := hL G K hK k ι π Γ P i ω d c η hS
   obtain ⟨hT1, hT2⟩ := hT G K hK k ι π Γ P i ω d c η hS

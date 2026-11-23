@@ -56,7 +56,7 @@ theorem UpperTheory.V.Af.Nf.places :
     unfold UpperTheory.V.Af.Nf.lev ordI
     have hne : Ideal.span {(M : 𝓞 ℚ)} ≠ 0 := by
       rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
-      exact_mod_cast (by omega : M ≠ 0)
+      exact_mod_cast (omega : M ≠ 0)
     by_contra hc
     rw [← Ne, Associates.count_ne_zero_iff_dvd hne w.irreducible, Ideal.dvd_iff_le,
       Ideal.span_singleton_le_iff_mem] at hc

@@ -62,7 +62,7 @@ theorem g_big (eps : ℝ) (h0 : 0 < eps) (h1 : eps < 1 / 52) : ∃ x0 : ℝ, ∀
     calc 10 * s.x ^ 3 ≤ s.x * s.x ^ 3 := mul_le_mul_of_nonneg_right y5 (by positivity)
       _ = s.x ^ 4 := by ring
       _ ≤ s.b := hb'
-  have hk1 : (1 : ℝ) ≤ R.k := by exact_mod_cast (by omega : 1 ≤ R.k)
+  have hk1 : (1 : ℝ) ≤ R.k := by exact_mod_cast (omega : 1 ≤ R.k)
   have c1 : (R.k : ℝ) * s.b ≤ g :=
     (le_self_pow₀ (one_le_mul_of_one_le_of_one_le hk1 (by linarith)) (by norm_num)).trans hg
   have c3 : ((2 * R.f * R.k + 1 : ℕ) : ℝ) < g := by

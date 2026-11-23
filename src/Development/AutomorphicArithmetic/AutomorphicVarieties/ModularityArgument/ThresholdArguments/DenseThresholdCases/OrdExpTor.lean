@@ -244,7 +244,7 @@ private theorem tors (H : GlobalTheory.Published.GlobalArtinReciprocity) (ι : Q
     have h5 := congrArg (fun z => ‖ι z‖) h2
     simp only [map_pow, map_zpow₀, map_natCast, map_one, norm_pow, norm_zpow, norm_one, Complex.norm_natCast] at h5
     have h6 := (pow_eq_one_iff_of_nonneg (zpow_nonneg (Nat.cast_nonneg _) _) (by omega)).1 h5
-    exact (zpow_eq_one_iff_right₀ (Nat.cast_nonneg _) (by exact_mod_cast (by omega : N ≠ 1))).1 h6
+    exact (zpow_eq_one_iff_right₀ (Nat.cast_nonneg _) (by exact_mod_cast (omega : N ≠ 1))).1 h6
   have hone := gap_zero hm h3
   obtain ⟨s0, hs0⟩ := ha.surj (ImaginaryQuadraticEtaCharacter.unif (w.adicCompletion L))
   have hd0 : deg s0 = -1 := by

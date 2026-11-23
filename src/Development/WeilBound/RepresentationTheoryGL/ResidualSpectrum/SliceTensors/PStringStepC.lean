@@ -53,7 +53,7 @@ theorem map_fsum {α β ι : Type} (f : α → β) (s : Finset ι) (g : ι → M
 omit [_root_.NumberField.IsTotallyComplex E] in
 theorem absNorm_ne_zero (w : HeightOneSpectrum (𝓞 E)) : ((Ideal.absNorm w.asIdeal : ℕ) : ℂ) ≠ 0 := by
   have := NumberField.HeightOneSpectrum.one_lt_absNorm w
-  exact_mod_cast (by omega : Ideal.absNorm w.asIdeal ≠ 0)
+  exact_mod_cast (omega : Ideal.absNorm w.asIdeal ≠ 0)
 
 theorem hinv_absC (w : HeightOneSpectrum (𝓞 E)) (x : ℂ) :
     (star ((GlobalTheory.CuspRep.Model.absC E x).val w))⁻¹ = (GlobalTheory.CuspRep.Model.absC E (-conj x)).val w := by

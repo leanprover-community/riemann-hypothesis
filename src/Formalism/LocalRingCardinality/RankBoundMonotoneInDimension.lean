@@ -1007,7 +1007,7 @@ theorem nPl_two_mul (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsT
     | simp
     | (simp only [NumberField.InfinitePlace.nrRealPlaces, Fintype.card_eq_zero_iff]
        exact ⟨fun w => (NumberField.InfinitePlace.not_isReal_iff_isComplex.mpr (NumberField.IsTotallyComplex.isComplex w.1)) w.2⟩)
-  exact_mod_cast (by omega : Fintype.card (NumberField.InfinitePlace K) * 2 = Module.finrank ℚ K)
+  exact_mod_cast (omega : Fintype.card (NumberField.InfinitePlace K) * 2 = Module.finrank ℚ K)
 
 theorem HLat.L_ne_bot {K : Type} [Field K] [NumberField K] [StarRing K] (A : HLat K)
     (hr : 0 < A.rank) : A.L ≠ ⊥ := by

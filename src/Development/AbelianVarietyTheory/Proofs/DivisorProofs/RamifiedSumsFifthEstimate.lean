@@ -72,7 +72,7 @@ theorem Sc_le_scale_b {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) : 
   have hk := P.kS_le
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hn : (1 : ℝ) ≤ D.R.n := by
     unfold Ranks.n
     exact_mod_cast D.R.ord_pos
@@ -147,7 +147,7 @@ theorem design_lines_of_ranks (x eps B : ℝ) (c k m f t : ℕ) (hx : 20480 ≤ 
       rw [Real.rpow_natCast] at e
       linarith
     have hmk : (m : ℝ) ≤ k := by exact_mod_cast (le_trans hmf hfk)
-    have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast (by omega : 1 ≤ m)
+    have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast (omega : 1 ≤ m)
     have hr0 : 0 ≤ (k : ℝ) + m - 1 := by linarith
     have hr : (k : ℝ) + m - 1 ≤ 4 * x ^ 15 := by linarith
     have hr4 : ((k : ℝ) + m - 1) ^ 4 ≤ (4 * x ^ 15) ^ 4 := pow_le_pow_left₀ hr0 hr 4

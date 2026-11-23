@@ -83,7 +83,7 @@ theorem add_le (l k i : ℕ) (hl : 5 ≤ l) (hk : 4 ≤ k) (hi : (i : ℝ) ≤ 5
   have hL : 1 ≤ Real.log k := one_le_log (by linarith)
   have h1 : Real.logb l ((k : ℝ) - 1) ≤ Real.log k := logb_le hl (by linarith) (by linarith)
   have h2 : Real.logb l ((k : ℝ) - 1 + 1) ≤ Real.log k := logb_le hl (by linarith) (by linarith)
-  have h5 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have h5 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have h3 : 0 ≤ Real.logb l ((k : ℝ) - 1 + 1) := Real.logb_nonneg h5 (by linarith)
   have h4 : (S0 l i (k - 1) : ℝ) ≤
       64 * ((k : ℝ) - 1) ^ 2 * ((i : ℝ) + 3 + 3 * Real.logb l ((k : ℝ) - 1 + 1)) + 1 := by

@@ -180,7 +180,7 @@ theorem GlobalTheory.Poinc.Sep.sepSt : SepSt := by
   let ga : Fin m → LinearMap.BilinForm ℤ Q.X := fun k => (ε (.inl k) : LinearMap.BilinForm ℤ Q.X)
   let t : Fin m → V := fun k => s (.inl k)
   let δ : Fin m → LinearMap.BilinForm ℤ Q.X := fun k => (n : ℤ) • ga k
-  have hn0 : (0 : ℤ) < n := by exact_mod_cast (by omega : 0 < n)
+  have hn0 : (0 : ℤ) < n := by exact_mod_cast (omega : 0 < n)
   have hsymm : ∀ k a b, δ k a b = δ k b a := fun k a b => by
     simp only [δ, LinearMap.smul_apply, smul_eq_mul]; rw [(hcone.mem k).1 a b]
   have hpsd : ∀ k a, 0 ≤ δ k a a := fun k a => by

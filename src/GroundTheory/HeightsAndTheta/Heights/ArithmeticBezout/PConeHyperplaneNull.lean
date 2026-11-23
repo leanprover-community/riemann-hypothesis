@@ -70,7 +70,7 @@ theorem ConeHyperplaneNull.proof (hZ : ZeroLocusDimH.Statement) (hC : ChowFormDi
       | top => exact absurd h3 (by norm_cast)
       | coe m =>
         have : m + 1 ≤ e + 1 := by exact_mod_cast h3
-        exact_mod_cast (by omega : m ≤ e)
+        exact_mod_cast (omega : m ≤ e)
 
   let g : EuclideanSpace ℂ (Fin n) →ₗ[ℂ] (Fin n → ℂ) :=
     (Matrix.transpose h.mat).mulVecLin.comp (WithLp.linearEquiv 2 ℂ (Fin n → ℂ)).toLinearMap
@@ -99,7 +99,7 @@ theorem ConeHyperplaneNull.proof (hZ : ZeroLocusDimH.Statement) (hC : ChowFormDi
       (((2 * (e + 1) : ℕ) : NNReal) : ENNReal) := by
     refine hdimH.trans_lt ?_
     rw [ENNReal.coe_natCast]
-    exact_mod_cast (by omega : 2 * e < 2 * (e + 1))
+    exact_mod_cast (omega : 2 * e < 2 * (e + 1))
   rw [show ((2 * (e + 1) : ℕ) : ℝ) = (((2 * (e + 1) : ℕ) : NNReal) : ℝ) from
     (NNReal.coe_natCast _).symm]
   exact hausdorffMeasure_of_dimH_lt hlt

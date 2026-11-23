@@ -229,7 +229,7 @@ theorem le_v_term (hQ : QForm.IsQ D.toPre ϖ Q) (hk : 1 ≤ k) (hw : w.IsGen) (h
     (hω : GenV hϖ hv w ω) {s : Fam D.toPre F k} {α₀ : D.toPre.X} (hs : VGe D F v k α₀ (s.s α₀) 0) (m : D.toPre.X) :
     ((((Q (α₀ + k • m) : ℚ) - Q α₀) / k + l (α₀ + k • m) + ω : ℚ) : WithTop ℚ) ≤ v (coef s g w (α₀ + k • m)) := by
   have H := SectionScalarValuation.fe_move hϖ hQ hv k m α₀ s hs
-  have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+  have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
   have e : 0 + ((k * Q m + QForm.bOf D.toPre Q m α₀ : ℤ) : ℚ) = ((Q (α₀ + k • m) : ℚ) - Q α₀) / k := by
     rw [q_shift hϖ hQ α₀ m k]; push_cast; field_simp; ring
   rw [e] at H

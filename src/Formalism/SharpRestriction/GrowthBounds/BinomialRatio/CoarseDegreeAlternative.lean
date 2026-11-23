@@ -140,7 +140,7 @@ variable {C0 Cde CE1 CE2 H : ℝ} {X : Loc}
 
 theorem Std.p1 (h : Std C0 Cde CE1 CE2 H X) : (1 : ℝ) ≤ X.p := by
   have := h.p5
-  exact_mod_cast (by omega : 1 ≤ X.p)
+  exact_mod_cast (omega : 1 ≤ X.p)
 
 def eps (X : Loc) (C0 : ℝ) : ℝ := X.N1 * X.La C0 / X.k
 

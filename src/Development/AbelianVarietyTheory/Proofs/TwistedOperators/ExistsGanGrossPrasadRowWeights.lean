@@ -98,7 +98,7 @@ theorem follows_block_append (c : ℤ) {s : ℕ} (hs : Odd s) {a : ℚ} (ha : �
   have hb : ∀ x ∈ block (c : ℚ) (2 * r + 1 - 1), (c : ℚ) - r ≤ x ∧ x ≤ c + r - 1 / 2 := by
     intro x hx
     obtain ⟨i, hi, rfl⟩ := mem_block.1 hx
-    have h1 : ((i + 1 : ℕ) : ℚ) ≤ ((2 * r : ℕ) : ℚ) := by exact_mod_cast (by omega : i + 1 ≤ 2 * r)
+    have h1 : ((i + 1 : ℕ) : ℚ) ≤ ((2 * r : ℕ) : ℚ) := by exact_mod_cast (omega : i + 1 ≤ 2 * r)
     have h2 : (0 : ℚ) ≤ i := by positivity
     rw [Nat.add_sub_cancel]
     push_cast at h1 ⊢
@@ -142,7 +142,7 @@ theorem follows_cons_block_succ (b e : ℤ) {t : ℕ} (ht : Odd t) :
   have hbot : (-e - r : ℚ) ∈ block (-e) (2 * r + 1) := mem_block.2 ⟨2 * r, by omega, by push_cast; ring⟩
   refine ⟨block_pairwise _ _, fun x hx => ⟨_, List.mem_cons_of_mem _ hbot, ?_⟩, fun x hx => ⟨_, List.mem_cons_self, ?_⟩⟩
   · obtain ⟨i, hi, rfl⟩ := mem_block.1 hx
-    have h1 : ((i : ℕ) : ℚ) ≤ ((2 * r + 1 : ℕ) : ℚ) := by exact_mod_cast (by omega : i ≤ 2 * r + 1)
+    have h1 : ((i : ℕ) : ℚ) ≤ ((2 * r + 1 : ℕ) : ℚ) := by exact_mod_cast (omega : i ≤ 2 * r + 1)
     push_cast at h1 ⊢
     linarith
   · obtain ⟨i, hi, rfl⟩ := mem_block.1 hx

@@ -107,7 +107,7 @@ theorem jets_on_copies : Laws → Laws2 → Laws4 → TwistBaseChangeStatement �
   have hD' : (D : ℝ) * max M0 0 < q := by
     rcases le_total M0 0 with h | h
     · rw [max_eq_right h, mul_zero]
-      exact_mod_cast (by omega : 0 < q)
+      exact_mod_cast (omega : 0 < q)
     · rwa [max_eq_left h]
   obtain ⟨s, σ', g, lam, a1, a2, a3, a4, a5, a6⟩ := GlobalTheory.UnifJets.jets L1 L2 L4 TB T.V ϖ hϖ D' A' G' U' (Fin n × Fin (chD C.ch))
     (zV pG C.xT) hu τ hτ (htrunc htr) (sumQ pD.xe Q) (GlobalTheory.QBox.main T.V ϖ hϖ n P.D D' pD Q hQ) Φ (max M0 0) r' b' hΦ0

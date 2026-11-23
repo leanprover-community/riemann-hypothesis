@@ -141,7 +141,7 @@ theorem Dbl.prod_dim (Y : Var F) : topologicalKrullDim (Dbl.prod Y).Z = (Y.dim +
 theorem Dbl.prod_small (Y : Var F) (h : Y.dim ≤ 1) : (Dbl.prod Y).Small := by
   unfold Dbl.Small
   rw [Dbl.prod_dim]
-  exact_mod_cast (by omega : Y.dim + Y.dim ≤ Y.dim + 1)
+  exact_mod_cast (omega : Y.dim + Y.dim ≤ Y.dim + 1)
 
 theorem Dbl.prod_ne (Y : Var F) (h : 0 < Y.dim) : (Dbl.prod Y).p₁ ≠ (Dbl.prod Y).p₂ := fun e => by
   have e' : pullback.fst Y.str Y.str = pullback.snd Y.str Y.str := e

@@ -99,7 +99,7 @@ theorem langX_root (q : ℕ) (hq : 1 < q) (a : ℕ → k) (i : ℕ) (h : langX q
     rw [degree_mul, degree_X_pow]
     have h0 : 0 ≤ T.degree := zero_le_degree_iff.2 hT0
     have h1 : (0 : WithBot ℕ) < ((q - 1 : ℕ) : WithBot ℕ) := by
-      exact_mod_cast (by omega : 0 < q - 1)
+      exact_mod_cast (omega : 0 < q - 1)
     exact add_pos_of_pos_of_nonneg h1 h0
   obtain ⟨y, hy⟩ := IsAlgClosed.exists_root (X ^ (q - 1) * T - C 1)
     (by rw [degree_sub_C hdeg]; exact hdeg.ne')
@@ -123,7 +123,7 @@ theorem as_root (q : ℕ) (hq : 1 < q) (c : k) : ∃ z : k, z ^ q - z = c := by
     rw [degree_X_pow, degree_X_add_C]
     exact_mod_cast hq
   obtain ⟨z, hz⟩ := IsAlgClosed.exists_root (X ^ q - (X + C c) : k[X]) (by
-    rw [hdeg]; exact_mod_cast (by omega : q ≠ 0))
+    rw [hdeg]; exact_mod_cast (omega : q ≠ 0))
   have h2 : (X ^ q - (X + C c) : k[X]).eval z = 0 := hz
   simp only [eval_sub, eval_add, eval_pow, eval_X, eval_C] at h2
   exact ⟨z, by linear_combination h2⟩

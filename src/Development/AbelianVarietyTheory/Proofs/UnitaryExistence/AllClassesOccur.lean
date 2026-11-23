@@ -106,7 +106,7 @@ theorem GlobalTheory.all_classes_occur :
   refine ⟨i, gam, hiso, fun a ha => ?_⟩
   have hM : (l.M : ℂ) ≠ 0 := by
     have := l.three_le
-    exact_mod_cast (by omega : l.M ≠ 0)
+    exact_mod_cast (omega : l.M ≠ 0)
   have k₁ : U.ex i P ((l.M : ℂ)⁻¹ • P (gam (f l.M a))) = U.ex i P ((l.M : ℂ)⁻¹ • P (U.t i a)) := by
     apply Over.OverMorphism.ext
     rw [← U.ex_eta i P hP a ha, hgam, ← map_smul, ← hh, hn, ← Category.assoc, hm a ha, om.eta, Over.comp_left]

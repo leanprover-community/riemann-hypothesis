@@ -72,7 +72,7 @@ theorem tan_std {I J : Type} [Fintype I] [Fintype J] (X : Cart V d I J)
     refine Finset.sum_eq_zero fun s _ => Finset.sum_eq_zero fun c _ => ?_
     have h3 := le_order_pow_of_constantCoeff_eq_zero (V.l ^ (s + 1)) (ht.1 c)
     have h4 := Sys.two_le_pow (V := V) s
-    rw [coeff_of_lt_order (lt_of_lt_of_le (by exact_mod_cast (by omega)) h3), mul_zero]
+    rw [coeff_of_lt_order (lt_of_lt_of_le (by exact_mod_cast (omega)) h3), mul_zero]
   have h5 : (GlobalTheory.CharBlock.stdSys X).Mt = 1 := by
     ext a b
     simp [Sys.Mt, GlobalTheory.CharBlock.stdSys, Matrix.one_apply, Pi.single_apply, eq_comm]

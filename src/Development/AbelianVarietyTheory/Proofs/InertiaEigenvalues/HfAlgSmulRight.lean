@@ -173,7 +173,7 @@ theorem _root_.GlobalTheory.HermNbr.graph_sum {X : Type} (S : Set X) (i : X → 
     ∑ Λ ∈ C, (i L Λ : ℝ) ^ (-s) ≤
       D * (Q : ℝ) ^ (-s) / (1 - D * (Q : ℝ) ^ (-s)) := by
   classical
-  have hQpos : (0 : ℝ) < Q := by exact_mod_cast (by omega : 0 < Q)
+  have hQpos : (0 : ℝ) < Q := by exact_mod_cast (omega : 0 < Q)
   have hq0 : 0 ≤ (Q : ℝ) ^ (-s) := Real.rpow_nonneg hQpos.le _
   generalize hq : (Q : ℝ) ^ (-s) = q at hρ hq0 ⊢
   obtain ⟨B, hBdef⟩ : ∃ B, B = D * q / (1 - D * q) := ⟨_, rfl⟩

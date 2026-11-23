@@ -90,7 +90,7 @@ theorem hasSum_series : ∀ (q : ℕ), 2 ≤ q → ∀ z : ℂ, ‖z‖ < 1 →
     HasSum (fun j : ℕ => (z / (q : ℂ) ^ 2) ^ j *
       ((q : ℂ) ^ (j + 2 * (j / 2)) - (if j = 0 then 0 else (q : ℂ) ^ (j - 1 + 2 * ((j - 1) / 2))))) (cSU q z) := by
   intro q hq z hz
-  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (by omega : q ≠ 0)
+  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   have hA := hasSum_weighted (q : ℂ) z hq0 hz
   set w : ℂ := z / (q : ℂ) ^ 2 with hw
   set S : ℂ := (1 + (q : ℂ)⁻¹ * z) / (1 - z ^ 2) with hS

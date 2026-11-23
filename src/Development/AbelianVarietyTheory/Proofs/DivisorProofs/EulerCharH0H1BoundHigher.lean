@@ -48,7 +48,7 @@ theorem abs_chi_sub_hdim_zero_add_hdim_one_le : ∀ (k : Type) [Field k] [Infini
   haveI : IsFiniteQC (twist F (lbPow L m)) := isFiniteQC_twist hM
   have hv : ∀ i, n + 2 ≤ i → Subsingleton (coh (twist F (lbPow L m)) i) := fun i hi =>
     subsingleton_coh_of_isProjOver hp _
-      (((suppDim_twist hM).trans_le hF).trans_lt (by exact_mod_cast (by omega : n < i)))
+      (((suppDim_twist hM).trans_le hF).trans_lt (by exact_mod_cast (omega : n < i)))
   rw [chi_eq_sum_range k (n + 2) hv, Finset.sum_range_succ', Finset.sum_range_succ']
   have h : ∀ a b c : ℤ, a + (-1 : ℤ) ^ (0 + 1) * b + (-1 : ℤ) ^ 0 * c - c + b = a := by
     intro a b c; ring

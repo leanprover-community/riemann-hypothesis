@@ -513,7 +513,7 @@ theorem yc_bound (l : ℕ) [hl : Fact l.Prime] (b B η h : ℕ) (hb : b ≤ h)
       rw [Real.le_logb_iff_rpow_le hl1 hh, Real.rpow_natCast]
       exact_mod_cast hpow
   have hcl := Nat.le_ceil ((η : ℝ) + 1 / 2 + Real.logb l h)
-  have h1 : ((b - B : ℕ) : ℝ) ≤ 2 * η := by exact_mod_cast (by omega : b - B ≤ 2 * η)
+  have h1 : ((b - B : ℕ) : ℝ) ≤ 2 * η := by exact_mod_cast (omega : b - B ≤ 2 * η)
   have key : ((b - B + 1 + 2 * v : ℕ) : ℝ) ≤ ((2 * ⌈(η : ℝ) + 1 / 2 + Real.logb l h⌉₊ : ℕ) : ℝ) := by
     push_cast
     linarith

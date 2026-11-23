@@ -43,7 +43,7 @@ namespace Formalism.KernelCokernelLengths.RowDegreeJointLemmas
 
 lemma aR_nonneg (ℓ : ℕ) (hℓ : 11 ≤ ℓ) (H : ℕ) : 0 ≤ Formalism.TruncatedSeriesCounting.RamifiedCoefficientChains.aR ℓ H := by
   unfold Formalism.TruncatedSeriesCounting.RamifiedCoefficientChains.aR Formalism.TruncatedSeriesCounting.RamifiedCoefficientChains.lam
-  have hl : (1:ℝ) < ℓ := by exact_mod_cast (by omega : 1 < ℓ)
+  have hl : (1:ℝ) < ℓ := by exact_mod_cast (omega : 1 < ℓ)
   have t1 : 0 ≤ (H : ℝ) * (2 * (ℓ : ℝ) - 1) / ((ℓ : ℝ) - 1) ^ 2 :=
     div_nonneg (mul_nonneg (Nat.cast_nonneg _) (by linarith)) (sq_nonneg _)
   have t2 : 0 ≤ Real.logb (ℓ : ℝ) (2 * (H : ℝ)) := by

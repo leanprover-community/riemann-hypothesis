@@ -98,7 +98,7 @@ private lemma withTop_int_neg_nonneg_of_neg {a : WithTop ℤ} (h : a < 0) : 0 �
     have hz : z < 0 := by exact_mod_cast h
     have hneg : (-(z : WithTop ℤ)) = ((-z : ℤ) : WithTop ℤ) := rfl
     rw [hneg]
-    exact_mod_cast (by omega : (0 : ℤ) ≤ -z)
+    exact_mod_cast (omega : (0 : ℤ) ≤ -z)
 
 attribute [local instance] _root_.ReciprocityTheory.ChartRestriction.G.T0.resAlg in
 private lemma case_two_finite_lemma

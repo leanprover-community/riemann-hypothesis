@@ -116,7 +116,7 @@ theorem genV_of_pow : AllDV fun {V} _ _ _ {ϖ} hϖ D Q {F} _ _ {v} hv => ∀ (n 
   obtain ⟨q, hq⟩ := TWM.wt_coe_of_ne (v := v) hx0
   rw [AddValuation.map_mul, AddValuation.map_pow, AddValuation.map_pow, hu, hv _ _ hc, hq] at k
   have k' : (4 * n ^ 2) • q + 0 = 4 • ((Q p.y : ℤ) : ℚ) := by exact_mod_cast k
-  have hn0 : (n : ℚ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  have hn0 : (n : ℚ) ≠ 0 := by exact_mod_cast (omega : n ≠ 0)
   rw [hq, WithTop.coe_inj, eq_div_iff (pow_ne_zero 2 hn0)]
   simp only [nsmul_eq_mul] at k'
   push_cast at k'

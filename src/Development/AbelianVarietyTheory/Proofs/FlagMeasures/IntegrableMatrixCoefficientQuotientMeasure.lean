@@ -135,7 +135,7 @@ theorem integrable_Afun_quotMeas : ∀ (k r : ℕ) {H : Type} [NormedAddCommGrou
   have hfin : ∫⁻ x, f x ∂μG < ⊤ := by
     have hn : 2 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 < a := by
       have h2 : (1 : ℝ) < ((2 * r + k + 1 : ℕ) : ℝ) := by
-        exact_mod_cast (by omega : 1 < 2 * r + k + 1)
+        exact_mod_cast (omega : 1 < 2 * r + k + 1)
       have := pow_lt_pow_right₀ h2 (by norm_num : 2 < 5)
       linarith
     have hN := GlobalTheory.T.besselOpNormPowerIntegral_lt_top_closedSubgroup k r (GG k r) μG a hG hHaar hn

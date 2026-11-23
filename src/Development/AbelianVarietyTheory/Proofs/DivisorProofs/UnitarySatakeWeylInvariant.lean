@@ -137,7 +137,7 @@ theorem satWeyl_of_coeff (hswap : CoeffSwap) (hneg : CoeffNeg) : SatWeyl := by
   choose T hT using fun a : Fin m → ℤ => P.fSatake_tMat_exists (n := n) hU hm a
   have hq : (q : ℂ) ≠ 0 := by
     have := hU.2.2.2.2.2.1
-    exact_mod_cast (by omega : q ≠ 0)
+    exact_mod_cast (omega : q ≠ 0)
   have hp : ∀ f : Fin m → ℤ, ∏ i, (q : ℂ) ^ f i = (q : ℂ) ^ ∑ i, f i := fun f =>
     (map_prod (zpowersHom ℂˣ (Units.mk0 (q : ℂ) hq)) (fun i => Multiplicative.ofAdd (f i)) Finset.univ) |>
       congrArg (Units.coeHom ℂ) |> fun e => by

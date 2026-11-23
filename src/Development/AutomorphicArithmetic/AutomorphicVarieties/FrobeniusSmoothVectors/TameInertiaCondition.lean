@@ -313,5 +313,5 @@ theorem UpperTheory.V.Fr.l52 :
           add_le_add (hdim.trans (add_le_add hm1 le_rfl)) le_rfl
       _ = ((m + 1 + F.dv v : ℕ) : WithBot ℕ∞) := by push_cast; rfl
   refine ⟨key.trans ?_, fun _ => key.trans ?_⟩
-  · exact_mod_cast (by omega)
-  · exact_mod_cast (by omega)
+  · exact_mod_cast (omega)
+  · exact_mod_cast (omega)

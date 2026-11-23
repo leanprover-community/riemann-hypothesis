@@ -174,7 +174,7 @@ theorem ampSq_le_height_mul_mass : ∀ {F : Type} [Field F] [ValuativeRel F] [To
         (mul_le_mul_left (ENNReal.ofReal_le_ofReal ?_) _)
       have hi' : (i : ℝ) ≤ A := by
         have := Finset.mem_range.1 hi
-        exact_mod_cast (by omega : i ≤ A)
+        exact_mod_cast (omega : i ≤ A)
       have h4 : (4 : ℝ) ≤ S.Hp ^ 2 := by nlinarith
       have h5 : (i : ℝ) + 1 ≤ S.Hp := by linarith
       gcongr)

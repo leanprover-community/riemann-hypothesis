@@ -54,7 +54,7 @@ theorem le_of_succ_le_add_one {x : WithBot ℕ∞} {d : ℕ} (h : ((d + 1 : ℕ)
     | top => exact_mod_cast le_top
     | coe n =>
       have : d + 1 ≤ n + 1 := by exact_mod_cast h
-      exact_mod_cast (by omega : d ≤ n)
+      exact_mod_cast (omega : d ≤ n)
 
 theorem exists_irreducible_diff_NV : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (D : ℕ),
     IsArithVar p D → ∀ (P : Pair p), IsAmpleLB P.L.B → ∀ (ℓ d e : ℕ) (C : Set X) (f : X.functionField), ℓ.Prime →

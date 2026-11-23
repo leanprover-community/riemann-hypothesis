@@ -227,7 +227,7 @@ theorem degFlEsymm : DegFlEsymm := by
     obtain ⟨ha1, ha2⟩ := Finset.mem_filter.mp ha
     rw [Finset.HasAntidiagonal.mem_antidiagonal] at ha1
     omega
-  have hk0 : (k : ℝ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+  have hk0 : (k : ℝ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
   have hCC : C (k : ℝ) * C (k : ℝ)⁻¹ = (1 : MvPolynomial (ι × Fin N) ℝ) := by
     rw [← map_mul, mul_inv_cancel₀ hk0, map_one]
   have e1 : rename (fun i : Fin N => (τ, i)) (esymm (Fin N) ℝ k) * P =

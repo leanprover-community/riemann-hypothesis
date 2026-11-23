@@ -139,7 +139,7 @@ theorem prod_bounds (n : ℕ) (hn : n ≤ T.TO) :
     rw [hlb] at c1
     have c3 : (1 : ℝ) ≤ T.TO := by
       have := T.TO_40
-      exact_mod_cast (by omega : 1 ≤ T.TO)
+      exact_mod_cast (omega : 1 ≤ T.TO)
     have c4 : T.PP ≤ L.sc.b ^ (1 / 2 : ℝ) := le_trans (le_mul_of_one_le_left hP0 c3) c2
     have c5 : (n : ℝ) * (T.Dp : ℝ) ^ 2 * L.sc.L ≤ L.sc.b ^ (1 / 2 : ℝ) := le_trans (by gcongr) c1
     have c6 : L.sc.b ^ (1 / 2 : ℝ) * L.sc.b ^ (1 / 2 : ℝ) = L.sc.b := by
@@ -182,7 +182,7 @@ theorem entR_cloud (L : SizeData₂ D) (i : Fin D.R.m) (t : D.what₂.Tau) (n : 
   unfold entR
   rw [if_pos (by omega), sgR_cloud D t n hn]
   obtain ⟨v0, v1⟩ := L.cloud_v t ⟨n, hn⟩
-  have c1 : (n : ℝ) + 2 ≤ D.R.k := by exact_mod_cast (by omega : n + 2 ≤ D.R.k)
+  have c1 : (n : ℝ) + 2 ≤ D.R.k := by exact_mod_cast (omega : n + 2 ≤ D.R.k)
   have c3 : ((i : ℕ) : ℝ) + 1 ≤ D.R.m := by exact_mod_cast i.2
   have c4 : (0 : ℝ) ≤ n := Nat.cast_nonneg _
   have c5 : (0 : ℝ) ≤ ((i : ℕ) : ℝ) := Nat.cast_nonneg _
@@ -193,7 +193,7 @@ theorem entR_cloud (L : SizeData₂ D) (i : Fin D.R.m) (t : D.what₂.Tau) (n : 
 theorem entR_node (L : SizeData₂ D) (i : Fin D.R.m) (t : D.what₂.Tau) (n : ℕ) (hn : D.R.k - 1 ≤ n) (hr : n < D.R.r) :
     |entR D i t n| ≤ L.etaSz + D.R.r := by
   obtain ⟨a1, a2⟩ := abs_le.1 (sgR_be D L ((i : ℕ) + 1) (Nat.le_add_left _ _) i.2 t n hn hr)
-  have c1 : (D.R.k : ℝ) ≤ (n : ℝ) + 1 := by exact_mod_cast (by omega : D.R.k ≤ n + 1)
+  have c1 : (D.R.k : ℝ) ≤ (n : ℝ) + 1 := by exact_mod_cast (omega : D.R.k ≤ n + 1)
   have c2 : (n : ℝ) + 1 ≤ D.R.r := by exact_mod_cast hr
   have c3 : ((i : ℕ) : ℝ) + 1 ≤ D.R.m := by exact_mod_cast i.2
   have c5 : (0 : ℝ) ≤ ((i : ℕ) : ℝ) := Nat.cast_nonneg _
@@ -217,7 +217,7 @@ theorem entR_cloud_sub (L : SizeData₂ D) (i : Fin D.R.m) (t : D.what₂.Tau)
     0 ≤ entR D i t n - entR D i t (D.R.k - 1 - 1) ∧ entR D i t n - entR D i t (D.R.k - 1 - 1) ≤ L.Sc := by
   have hr : D.R.r = D.R.k + D.R.m - 1 := rfl
   have h1 := steps_sum (sgR D t) 0 D.R.r 1 (fun a _ ha => hs a ha) n (Nat.zero_le _) (D.R.k - 1 - 1) (by omega) (by omega)
-  have h2 : (n : ℝ) ≤ ((D.R.k - 1 - 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : n ≤ D.R.k - 1 - 1)
+  have h2 : (n : ℝ) ≤ ((D.R.k - 1 - 1 : ℕ) : ℝ) := by exact_mod_cast (omega : n ≤ D.R.k - 1 - 1)
   have h3 := (L.cloud_v t ⟨n, hn⟩).2
   have h4 := (L.cloud_v t ⟨D.R.k - 1 - 1, by omega⟩).1
   rw [← sgR_cloud] at h3 h4

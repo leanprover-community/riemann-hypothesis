@@ -47,10 +47,10 @@ theorem UpperTheory.Ram.cond_le_four_n_sq :
   have hn : (R.n : ℝ) = (R.ord : ℝ) := by simp [Ranks.n]
   have hq1 : (1 : ℝ) ≤ H.q := by
     have := H.qd_big.1
-    exact_mod_cast (by omega : 1 ≤ H.q)
+    exact_mod_cast (omega : 1 ≤ H.q)
   have hd1 : (1 : ℝ) ≤ H.d := by
     have := H.qd_big.2
-    exact_mod_cast (by omega : 1 ≤ H.d)
+    exact_mod_cast (omega : 1 ≤ H.d)
   have hQSr : (H.QS : ℝ) ≤ (R.n : ℝ) ^ 2 := by exact_mod_cast hQS
   have h2r : 2 * (R.n : ℝ) ≤ H.QS := by
     rw [hn]; exact_mod_cast h2

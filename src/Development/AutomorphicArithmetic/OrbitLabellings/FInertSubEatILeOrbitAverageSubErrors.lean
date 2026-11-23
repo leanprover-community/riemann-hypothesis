@@ -42,7 +42,7 @@ theorem UpperTheory.fInert_sub_eatI_le_orbit_average_sub_errors :
         3 * (D.R.f : ℝ) * Nm D ^ 2 * Real.logb p L.sc.a := by
   intro D L X K E ce C6 C hS hC hL p _ hp5 hcs _ i hi
   have hc6 : (12 : ℝ) ≤ ce.c6 := hL.1
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast (omega : 1 < p)
   have hp0 : (0 : ℝ) < p := by linarith
   have ha : 1 < L.sc.a := hS.xa.2
   have hns : ¬ IsSg D p := fun h => by

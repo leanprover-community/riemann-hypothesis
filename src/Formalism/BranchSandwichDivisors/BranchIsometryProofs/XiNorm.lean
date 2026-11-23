@@ -755,7 +755,7 @@ lemma xnC_nonneg (M : ℕ) (m : ℕ → ℕ) (p : ℕ) (hp : p ≤ M) : 0 ≤ xn
   unfold xnC
   refine Finset.prod_nonneg fun q hq => ?_
   have hq' : q < p := Finset.mem_range.1 hq
-  have h1 : (q : ℝ) ≤ M := by exact_mod_cast (by omega : q ≤ M)
+  have h1 : (q : ℝ) ≤ M := by exact_mod_cast (omega : q ≤ M)
   have h2 : (0 : ℝ) ≤ m q := Nat.cast_nonneg _
   linarith
 

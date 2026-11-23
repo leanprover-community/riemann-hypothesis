@@ -83,7 +83,7 @@ theorem lt_of_add_one_le_natCast {a : WithBot ℕ∞} {n : ℕ} (h : a + 1 ≤ n
     | coe m =>
       have : ((m + 1 : ℕ) : WithBot ℕ∞) ≤ n := by exact_mod_cast h
       have : m + 1 ≤ n := by exact_mod_cast this
-      exact_mod_cast (by omega : m < n)
+      exact_mod_cast (omega : m < n)
 
 open QCoh
 

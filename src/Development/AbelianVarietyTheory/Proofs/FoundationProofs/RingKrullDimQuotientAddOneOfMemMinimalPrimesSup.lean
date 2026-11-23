@@ -215,7 +215,7 @@ theorem degree_idealHilbertPoly_anti {I J : Ideal (MvPolynomial ι k)}
       finrank k (J.restrictScalars k ⊓ homogeneousSubmodule ι k n : Submodule k _) :=
     Submodule.finrank_mono (inf_le_inf_right _ fun x hx => h hx)
   rw [← h1, ← h2]
-  exact_mod_cast (by omega)
+  exact_mod_cast (omega)
 
 theorem idealHilbertPoly_eq_zero_of_forall_X_mem {I : Ideal (MvPolynomial ι k)}
     (hI : I.IsHomogeneous (homogeneousSubmodule ι k))
@@ -279,7 +279,7 @@ theorem degree_eq_of_degree_sub_comp {P : ℚ[X]} {m : ℕ}
   rw [degree_eq_natDegree hP0, Nat.cast_lt] at hlt
   obtain ⟨e, he⟩ : ∃ e, P.natDegree = e + 1 := ⟨P.natDegree - 1, by omega⟩
   have h1 := (coeff_sub_comp_X_sub_C P 1 e (by rw [← he]; exact degree_le_natDegree)).2
-  rw [coeff_eq_zero_of_degree_lt (h.trans_le (by exact_mod_cast (by omega : m ≤ e))), ← he,
+  rw [coeff_eq_zero_of_degree_lt (h.trans_le (by exact_mod_cast (omega : m ≤ e))), ← he,
     one_mul, eq_comm, mul_eq_zero] at h1
   rcases h1 with h1 | h1
   · exact absurd h1 (by positivity)
@@ -362,7 +362,7 @@ theorem degree_idealHilbertPoly_eq_of_isPrime {P : Ideal (MvPolynomial ι k)} [h
     have : ¬ ∀ i, (X i : MvPolynomial ι k) ∈ P := fun h => by
       have := ringKrullDim_quotient_le_zero_of_forall_X_mem h
       rw [he] at this
-      exact absurd this (by exact_mod_cast (by omega))
+      exact absurd this (by exact_mod_cast (omega))
     push Not at this
     obtain ⟨i, hi⟩ := this
     have hJ := isHomogeneous_sup_span_singleton hI (isHomogeneous_X k i)

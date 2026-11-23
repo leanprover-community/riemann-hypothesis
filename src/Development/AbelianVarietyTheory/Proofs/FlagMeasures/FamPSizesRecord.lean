@@ -46,7 +46,7 @@ theorem sizes_record_at {D : D7} (L : SizeData₂ D) (h : SizesAt L) (Cs : ℝ) 
   have hmk := D.R.m_add_three_le_k
   have hm2 := D.R.two_le_m
   have hfk : D.R.f ≤ D.R.k := D.R.f_le_k
-  have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+  have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
   have hkb : (D.R.k : ℝ) ≤ L.sc.x ^ (19 / 4 : ℝ) := by
     refine hK.2.trans (Real.rpow_le_rpow_of_exponent_le hx1.le ?_)
     unfold szTh
@@ -73,7 +73,7 @@ theorem sizes_record_at {D : D7} (L : SizeData₂ D) (h : SizesAt L) (Cs : ℝ) 
     refine hn.trans ?_
     exact_mod_cast (by unfold Ranks.f; omega : D.R.n ≤ D.R.f)
   have hfk' : (D.R.f : ℝ) ≤ D.R.k := by exact_mod_cast hfk
-  have hmk' : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+  have hmk' : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (omega : D.R.m ≤ D.R.k)
   have hr : (D.R.r : ℝ) ≤ 2 * (D.R.k : ℝ) := by
     exact_mod_cast (by unfold Ranks.r; omega : D.R.r ≤ 2 * D.R.k)
   have hf100 : 100 ≤ D.R.f := by
@@ -90,10 +90,10 @@ theorem sizes_record_at {D : D7} (L : SizeData₂ D) (h : SizesAt L) (Cs : ℝ) 
     exact pow_le_pow_left₀ hb.le (le_mul_of_one_le_left hb.le hk1) 8
   · have hq : (0 : ℝ) < D.host.q := by
       have := D.host.qd_big.1
-      exact_mod_cast (by omega : 0 < D.host.q)
+      exact_mod_cast (omega : 0 < D.host.q)
     have hd : (0 : ℝ) < D.host.d := by
       have := D.host.qd_big.2
-      exact_mod_cast (by omega : 0 < D.host.d)
+      exact_mod_cast (omega : 0 < D.host.d)
     rw [Nat.cast_min]
     refine le_min ((Real.le_log_iff_exp_le hq).1 hQ.1) ((Real.le_log_iff_exp_le hd).1 ?_)
     refine le_trans (Real.rpow_le_rpow_of_exponent_le hx1.le ?_) hQ.2.2.2.1

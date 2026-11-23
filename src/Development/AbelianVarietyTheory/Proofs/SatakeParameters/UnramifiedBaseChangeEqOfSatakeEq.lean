@@ -161,7 +161,7 @@ theorem ne_zero_of_dosetInd (hU : IsUnramInv ϖ σ q) (α : Fin (n / 2) → ℂ�
   classical
   have hq : (q : ℂ) ≠ 0 := by
     have := hU.2.2.2.2.2.1
-    exact_mod_cast (by omega : q ≠ 0)
+    exact_mod_cast (omega : q ≠ 0)
   let x : (Fin (n / 2) → ℤ) → ℂ := fun a => ∏ i, (q : ℂ) ^ (-(a i) * ((n : ℤ) - 1 - 2 * (i.val : ℤ)))
   have hx : ∀ a, x a ≠ 0 := fun a => Finset.prod_ne_zero_iff.2 fun i _ => zpow_ne_zero _ hq
   have hex : ∀ d : Fin (n / 2) → ℤ, ∃ c : (Fin (n / 2) → ℤ) →₀ ℂ, Dom d →

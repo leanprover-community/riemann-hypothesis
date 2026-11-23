@@ -171,7 +171,7 @@ private theorem exists_pos_rat_valuation_one_away {p : ℕ} [Fact p.Prime] (K : 
   obtain ⟨K', rfl⟩ := hlK
   have hK' : 0 < K' := Nat.pos_of_ne_zero (by rintro rfl; simp at hK)
   have hK'lt : K' < l * K' := by nlinarith
-  have hl0 : (l : ℚ) ≠ 0 := by exact_mod_cast (by omega : l ≠ 0)
+  have hl0 : (l : ℚ) ≠ 0 := by exact_mod_cast (omega : l ≠ 0)
   have hlu : IsUnit (algebraMap ℚ (AfP p) (l : ℚ)⁻¹) :=
     (isUnit_iff_ne_zero.mpr (inv_ne_zero hl0)).map _
   have hy'val : ((y * hlu.unit : (AfP p)ˣ) : AfP p) = algebraMap ℚ (AfP p) (l : ℚ)⁻¹ * y := by

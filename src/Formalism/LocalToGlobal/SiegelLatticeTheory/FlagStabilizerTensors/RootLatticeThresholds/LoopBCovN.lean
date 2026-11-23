@@ -143,7 +143,7 @@ theorem eN_le (D : D7) : eN D ≤ (D.R.m : ℝ) ^ 2 / 2 := by
     have : (2 * D.R.rS : ℝ) ≤ D.R.m := by exact_mod_cast this
     linarith
   have h0 : (0 : ℝ) ≤ D.R.rS := by positivity
-  have hm : (1 : ℝ) ≤ D.R.m := by have := D.R.two_le_m; exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ D.R.m := by have := D.R.two_le_m; exact_mod_cast (omega : 1 ≤ D.R.m)
   nlinarith
 
 theorem covWinN_sizes (hF : CovNFormula) {D : D7} {X : HidaSetting D} {Y : Full X} (C : Choice X 1) (large₂ : SizeData₂ D)

@@ -67,7 +67,7 @@ theorem ChartDimLt.proof : ChartDimLt.Statement := by
         fun Z hZ => ?_) hn
     obtain ⟨s, hs, hsn⟩ := key Z hZ
     rw [hs]
-    exact_mod_cast (by omega : s ≤ n)
+    exact_mod_cast (omega : s ≤ n)
 
 end
 

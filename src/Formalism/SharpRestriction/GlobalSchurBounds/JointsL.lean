@@ -61,7 +61,7 @@ theorem count_at_of (D : D7) (L : SizeData₂ D) (C0 C Δ : ℝ)
   have hx := L.sc.one_lt_alt
   have hk3 : (3 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 3 ≤ D.R.k)
+    exact_mod_cast (omega : 3 ≤ D.R.k)
   have hf1 : (1 : ℝ) ≤ D.R.f := by
     have : 1 ≤ D.R.f := by
       unfold Ranks.f Ranks.n
@@ -202,7 +202,7 @@ theorem logGam_le {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm
   obtain ⟨-, -, -, ⟨-, hG, -⟩, -⟩ := Fm.sizes x hx i
   have hk3 : (3 : ℝ) ≤ (Fm.D x i).R.k := by
     have := (Fm.D x i).R.m_add_three_le_k
-    exact_mod_cast (by omega : 3 ≤ (Fm.D x i).R.k)
+    exact_mod_cast (omega : 3 ≤ (Fm.D x i).R.k)
   have hf1 : (1 : ℝ) ≤ (Fm.D x i).R.f := by
     have : 1 ≤ (Fm.D x i).R.f := by
       unfold Ranks.f Ranks.n
@@ -245,7 +245,7 @@ theorem lowB_ge (D : D7) (sc : Scale) (C0 C Δ : ℝ) (w : ℕ → D.what₂.Tau
   have hx := sc.one_lt_alt
   have hk : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hbpos : 0 < sc.b := Real.exp_pos _
   have hb : ∀ ρ j, j < D.R.m → 4 ≤ StandardLattice.bN D ρ j := by
     intro ρ j
@@ -558,9 +558,9 @@ theorem db_rk (D : D7) : (3 : ℝ) ≤ D.R.k ∧ (2 : ℝ) ≤ D.R.m ∧ (D.R.k 
   have h2 := D.R.two_le_m
   have h3 := D.R.rank_add_five_le
   have hn : 1 ≤ D.R.n := D.R.toFrame.ord_pos
-  refine ⟨by exact_mod_cast (by omega : 3 ≤ D.R.k), by exact_mod_cast h2,
-    by exact_mod_cast (by omega : D.R.k ≤ D.R.t), ?_, by exact_mod_cast hn, ?_,
-    by exact_mod_cast (by omega : D.R.m ≤ D.R.k)⟩
+  refine ⟨by exact_mod_cast (omega : 3 ≤ D.R.k), by exact_mod_cast h2,
+    by exact_mod_cast (omega : D.R.k ≤ D.R.t), ?_, by exact_mod_cast hn, ?_,
+    by exact_mod_cast (omega : D.R.m ≤ D.R.k)⟩
   · have : D.R.k ≤ D.R.r := by unfold Ranks.r; omega
     exact_mod_cast this
   · unfold Ranks.f; push_cast; ring
@@ -580,7 +580,7 @@ theorem db_pi_le_v (D : D7) : Real.pi ≤ D.host.v := by
     linarith
   have hd : (7 : ℝ) ≤ D.host.d := by
     have := D.host.hyp.2.2.2.1
-    exact_mod_cast (by omega : 7 ≤ D.host.d)
+    exact_mod_cast (omega : 7 ≤ D.host.d)
   have h3 : (2 : ℝ) ≤ Real.sqrt (D.host.d : ℝ) := by
     apply Real.le_sqrt_of_sq_le
     nlinarith
@@ -1336,7 +1336,7 @@ theorem slopesM_at_of (D : D7) (L : SizeData₂ D) (Cn C5 C6 cL Cc : ℝ)
   have hk0 : (0 : ℝ) < D.R.k := by linarith
   have hmk : (D.R.m : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+    exact_mod_cast (omega : D.R.m ≤ D.R.k)
   have hm0 : (0 : ℝ) ≤ D.R.m := Nat.cast_nonneg _
   have hf0 : (0 : ℝ) ≤ D.R.f := Nat.cast_nonneg _
   have hnT : (0 : ℝ) ≤ D.host.TT.card := Nat.cast_nonneg _

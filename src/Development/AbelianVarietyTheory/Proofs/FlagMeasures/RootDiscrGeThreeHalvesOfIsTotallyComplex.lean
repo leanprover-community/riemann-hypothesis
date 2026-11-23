@@ -86,7 +86,7 @@ theorem _root_.GlobalTheory.rootDiscr_ge_three_halves_of_totallyComplex :
           Real.rpow_le_rpow (by positivity) hbound (by positivity)
   · rw [hv, ← Real.rpow_natCast, ← Real.rpow_mul hD0, Real.sqrt_eq_rpow]
     congr 1
-    have : (_root_.Formalism.HermitianLatticesTheory.fDeg K : ℝ) ≠ 0 := by exact_mod_cast (by omega : _root_.Formalism.HermitianLatticesTheory.fDeg K ≠ 0)
+    have : (_root_.Formalism.HermitianLatticesTheory.fDeg K : ℝ) ≠ 0 := by exact_mod_cast (omega : _root_.Formalism.HermitianLatticesTheory.fDeg K ≠ 0)
     field_simp
 
 end GlobalTheory

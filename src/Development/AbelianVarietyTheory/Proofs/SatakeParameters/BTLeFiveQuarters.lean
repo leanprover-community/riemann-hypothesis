@@ -41,7 +41,7 @@ theorem bT_le_five_quarters {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D
   have hb' : 0 < L.sc.b' := div_pos (mul_pos hx hb) (Real.exp_pos _)
   have hk : (0 : ℝ) < D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 0 < D.R.k)
+    exact_mod_cast (omega : 0 < D.R.k)
   have hLa : 0 ≤ L.LaG := by
     have h1 := P.S_le
     have h2 := L.Sc_pos

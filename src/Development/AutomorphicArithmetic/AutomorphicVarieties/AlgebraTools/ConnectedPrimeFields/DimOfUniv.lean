@@ -89,9 +89,9 @@ theorem UpperTheory.V.AlgebraTools.Conn.main :
         ReciprocityTheory.CA.ConnInDim (R ⧸ a) k := by
   intro R _ _ _ _ hC a h k ha ⟨s, hs, hrad⟩ hdim
   have h1 : ((k + s.card + 1 : ℕ) : WithBot ℕ∞) ≤ ringKrullDim R :=
-    le_trans (by exact_mod_cast (by omega : k + s.card + 1 ≤ k + h + 1)) hdim
+    le_trans (by exact_mod_cast (omega : k + s.card + 1 ≤ k + h + 1)) hdim
   have h0 : ((k + s.card : ℕ) : WithBot ℕ∞) ≤ ringKrullDim R :=
-    le_trans (by exact_mod_cast (by omega : k + s.card ≤ k + s.card + 1)) h1
+    le_trans (by exact_mod_cast (omega : k + s.card ≤ k + s.card + 1)) h1
   have hm : ∀ f ∈ s, f ∈ maximalIdeal R := by
     intro f hf
     have h2 : f ∈ a.radical := hrad ▸ Ideal.le_radical (Ideal.subset_span hf)

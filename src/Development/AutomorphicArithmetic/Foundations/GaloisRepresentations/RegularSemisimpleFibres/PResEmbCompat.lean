@@ -53,7 +53,7 @@ private theorem exists_preimage {F F' R : Type} [Field F] [Field F'] [IsAlgClose
   have hmon : (X ^ c - X : Polynomial F').Monic := by
     apply monic_X_pow_sub
     rw [degree_X]
-    exact_mod_cast (by omega : 1 < c)
+    exact_mod_cast (omega : 1 < c)
   have hroots := hmon.roots_map_of_card_eq_natDegree e' IsAlgClosed.card_roots_eq_natDegree
   have hmem : e x ∈ ((X ^ c - X : Polynomial F').map e').roots := by
     rw [mem_roots (map_monic_ne_zero hmon)]

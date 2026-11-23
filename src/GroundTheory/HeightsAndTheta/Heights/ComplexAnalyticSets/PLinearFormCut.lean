@@ -108,7 +108,7 @@ theorem LinearFormCut.proof : LinearFormCut.Statement := by
     have hlen := (Order.LTSeries.length_le_krullDim ((l.map f hf).cons q0 hq)).trans hI
     simp only [RelSeries.cons_length] at hlen
     have : l.length + 1 ≤ e + 1 := by exact_mod_cast hlen
-    exact_mod_cast (by omega : l.length ≤ e)
+    exact_mod_cast (omega : l.length ≤ e)
 
 end
 

@@ -132,7 +132,7 @@ theorem ShiftQuotientBound.proof (hfin : SectionLatticeFinite.Statement) (hQ : H
     have ha' : a k < (N : ℤ) :=
       calc a k ≤ (a k).natAbs := Int.le_natAbs
         _ ≤ ((∑ j, (a j).natAbs : ℕ) : ℤ) := by exact_mod_cast ha
-        _ < (N : ℤ) := by rw [hN]; exact_mod_cast (by omega : ∑ j, (a j).natAbs < 1 + ∑ j, (a j).natAbs)
+        _ < (N : ℤ) := by rw [hN]; exact_mod_cast (omega : ∑ j, (a j).natAbs < 1 + ∑ j, (a j).natAbs)
     have hb' : b k ≤ (M : ℤ) :=
       calc b k ≤ (b k).natAbs := Int.le_natAbs
         _ ≤ (M : ℤ) := by rw [hM]; exact_mod_cast hb

@@ -155,7 +155,7 @@ theorem ev_preX_frame : StandardLattice.SiegelMassRatioCM → Ev fun K => ∀ B 
   have hkN : (P.R.k : ℝ) ≤ P.R.N P.R.m := by
     have : P.R.k ≤ P.R.N P.R.m := Nat.le_add_right _ _
     exact_mod_cast this
-  have hk1 : (1 : ℝ) ≤ P.R.k := by exact_mod_cast (by omega : 1 ≤ P.R.k)
+  have hk1 : (1 : ℝ) ≤ P.R.k := by exact_mod_cast (omega : 1 ≤ P.R.k)
   have hbb : 1000 * s.b ≤ s.b * s.b := by nlinarith
   have hxb : 100 * (s.x * s.b) ≤ s.b * s.b := by nlinarith
   choose πg g1 g2 g3 using ok.gnorm

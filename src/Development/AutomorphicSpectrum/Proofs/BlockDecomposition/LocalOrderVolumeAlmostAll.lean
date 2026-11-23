@@ -90,7 +90,7 @@ theorem norm_le_of_val_lt {F : Type} [Field F] [NumberField F] (v : HeightOneSpe
   rw [FinitePlace.norm_def, hv, WithZeroMulInt.toNNReal_neg_apply _ WithZero.exp_ne_zero]
   push_cast
   change ((Ideal.absNorm v.asIdeal : ℕ) : ℝ) ^ n ≤ _
-  have h1 : (1 : ℝ) ≤ ((Ideal.absNorm v.asIdeal : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ Ideal.absNorm v.asIdeal)
+  have h1 : (1 : ℝ) ≤ ((Ideal.absNorm v.asIdeal : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ Ideal.absNorm v.asIdeal)
   calc ((Ideal.absNorm v.asIdeal : ℕ) : ℝ) ^ n ≤ ((Ideal.absNorm v.asIdeal : ℕ) : ℝ) ^ (-1 : ℤ) :=
         zpow_le_zpow_right₀ h1 (by omega)
     _ = _ := by rw [zpow_neg_one, one_div]

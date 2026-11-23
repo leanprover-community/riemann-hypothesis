@@ -82,7 +82,7 @@ theorem perp_prim (H : HermSpace K V) [_root_.NumberField.IsTotallyComplex K] {M
       Nonempty ((↥(dual H (M ⊓ rs (𝓞 K) W)) ⧸ (M ⊓ rs (𝓞 K) W).comap (dual H (M ⊓ rs (𝓞 K) W)).subtype) ≃ₗ[𝓞 K]
         (𝓞 K ⧸ Ideal.span {(T : 𝓞 K)})) := by
   obtain ⟨a, b⟩ := DelScale.le_of_latMod hM.1
-  have hT0 : (T : K) ≠ 0 := by exact_mod_cast (by omega : T ≠ 0)
+  have hT0 : (T : K) ≠ 0 := by exact_mod_cast (omega : T ≠ 0)
   have hzM : z ∈ M := by simpa using (hp 1).2 (Submodule.mem_one.2 ⟨1, map_one _⟩)
   have hzS : z ∈ S := b hzM
   have o1 : ∀ i ∈ I, ∀ y ∈ S, H.B i y = 0 := fun i hi => (hrad i (hIS hi)).2 hi

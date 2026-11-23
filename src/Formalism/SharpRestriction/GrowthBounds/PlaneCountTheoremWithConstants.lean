@@ -356,7 +356,7 @@ theorem Nm_le_Sc (P : ParameterChoice' D L) : (5 : ℝ) ≤ (D.R.k : ℝ) ∧ (D
   have hk : (5 : ℝ) ≤ (D.R.k : ℝ) := by
     have := D.R.m_add_three_le_k
     have h2 := D.R.two_le_m
-    exact_mod_cast (by omega : 5 ≤ D.R.k)
+    exact_mod_cast (omega : 5 ≤ D.R.k)
   have hNk : (D.R.k : ℝ) ≤ (D.R.N D.R.m : ℝ) := by
     have : D.R.k ≤ D.R.N D.R.m := by unfold Ranks.N; omega
     exact_mod_cast this

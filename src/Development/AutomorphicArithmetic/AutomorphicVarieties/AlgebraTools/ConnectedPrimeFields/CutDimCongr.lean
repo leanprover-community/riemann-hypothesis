@@ -173,7 +173,7 @@ theorem UpperTheory.V.AlgebraTools.Conn.cut :
         exact_mod_cast h'
       have h2 : 2 ≤ ringKrullDim (A ⧸ Ideal.ofList xs) := by
         rw [ha]
-        exact_mod_cast (by omega : 2 ≤ a)
+        exact_mod_cast (omega : 2 ≤ a)
       exact base hCM xs b c hxs hdim h2 hrad hmax (by rwa [hd0] at hlt1) (by rwa [hd0] at hlt2)
     | succ d ih =>
       intro xs b c hxs hdim hrad hb hc hlt1 hlt2 hd
@@ -237,7 +237,7 @@ theorem UpperTheory.V.AlgebraTools.Conn.cut :
         exact_mod_cast h'
       have hdim' : ringKrullDim (A ⧸ Ideal.ofList (x :: xs)) + (x :: xs).length = ringKrullDim A := by
         rw [ha', hN, List.length_cons]
-        exact_mod_cast (by omega : a' + (xs.length + 1) = N)
+        exact_mod_cast (omega : a' + (xs.length + 1) = N)
       have hrad' : ((b ⊔ Ideal.span {algebraMap A R x}) ⊓ (c ⊔ Ideal.span {algebraMap A R x})).radical =
           ((Ideal.ofList (x :: xs)).map (algebraMap A R)).radical := by
         rw [hJ', cut_rad_iff]
@@ -249,12 +249,12 @@ theorem UpperTheory.V.AlgebraTools.Conn.cut :
       have h1' : ringKrullDim (R ⧸ ((b ⊔ Ideal.span {algebraMap A R x}) ⊔ (c ⊔ Ideal.span {algebraMap A R x}))) <
           ringKrullDim (R ⧸ (b ⊔ Ideal.span {algebraMap A R x})) := by
         rw [he, hkb']
-        exact_mod_cast (by omega : e < kb')
+        exact_mod_cast (omega : e < kb')
       have h2' : ringKrullDim (R ⧸ ((b ⊔ Ideal.span {algebraMap A R x}) ⊔ (c ⊔ Ideal.span {algebraMap A R x}))) <
           ringKrullDim (R ⧸ (c ⊔ Ideal.span {algebraMap A R x})) := by
         rw [he, hkc']
-        exact_mod_cast (by omega : e < kc')
-      have hfin := ih (x :: xs) _ _ hxs' hdim' hrad' hb' hc' h1' h2' (by rw [he]; exact_mod_cast (by omega : e = d))
+        exact_mod_cast (omega : e < kc')
+      have hfin := ih (x :: xs) _ _ hxs' hdim' hrad' hb' hc' h1' h2' (by rw [he]; exact_mod_cast (omega : e = d))
       have heq : ((d : WithBot ℕ∞) + 1 + ((x :: xs).length : WithBot ℕ∞)) =
           ((d + 1 : ℕ) : WithBot ℕ∞) + 1 + (xs.length : WithBot ℕ∞) := by
         rw [List.length_cons]

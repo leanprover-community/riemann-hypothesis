@@ -117,7 +117,7 @@ theorem chain (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [
     · rw [hk, Finset.coe_image, Finset.coe_univ, Set.image_univ]
   have hdimle : ((D + b + 1 : ℕ) : WithBot ℕ∞) ≤ ringKrullDim (MvPowerSeries (Fin a) O) := by
     rw [hdim]
-    exact_mod_cast (by omega : D + b + 1 ≤ a + 1)
+    exact_mod_cast (omega : D + b + 1 ≤ a + 1)
   have hp : Function.Surjective (π : MvPowerSeries (Fin a) O →+* R) := hπ
   have hmin : (RingHom.ker π).minimalPrimes =
       Ideal.comap (π : MvPowerSeries (Fin a) O →+* R) '' (⊥ : Ideal R).minimalPrimes := by

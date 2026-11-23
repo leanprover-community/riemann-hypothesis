@@ -139,7 +139,7 @@ theorem GlobalTheory.HermNbr.selfDual_sum_le : ∀ (O K : Type) [CommRing O] [Is
   set D : ℝ := (Q : ℝ) ^ r * Q / ((Q : ℝ) - 1) with hD
   set y : ℝ := (Q : ℝ) ^ (-(2 : ℝ)) with hy
   have hs0 : 0 < s := by
-    have : (5 : ℝ) ≤ n := by exact_mod_cast (by omega : 5 ≤ n)
+    have : (5 : ℝ) ≤ n := by exact_mod_cast (omega : 5 ≤ n)
     rw [hs]; linarith
   have hD0 : 0 ≤ D := by positivity
   have hy0 : 0 < y := Real.rpow_pos_of_pos hQ0 _

@@ -63,11 +63,11 @@ def H0 (k r : ℕ) : ℝ :=
 
 theorem explicit_gap_le_polynomial (k r : ℕ) (hk : 1 ≤ k) : H0 k r ≤ 1000 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 8 := by
   unfold H0
-  have hN1 : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
-  have haN : ((2 * r + 2 : ℕ) : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 2 * r + 2 ≤ 2 * r + k + 1)
+  have hN1 : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ 2 * r + k + 1)
+  have haN : ((2 * r + 2 : ℕ) : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 2 * r + 2 ≤ 2 * r + k + 1)
   have ha0 : (0 : ℝ) ≤ ((2 * r + 2 : ℕ) : ℝ) := by positivity
   have h3 : ((3 * (r + 1) : ℕ) : ℝ) ≤ 2 * ((2 * r + k + 1 : ℕ) : ℝ) := by
-    exact_mod_cast (by omega : 3 * (r + 1) ≤ 2 * (2 * r + k + 1))
+    exact_mod_cast (omega : 3 * (r + 1) ≤ 2 * (2 * r + k + 1))
   have hpow : ((2 * r + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ 5 := by
     calc ((2 * r + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) :=
           Real.rpow_le_rpow ha0 haN (by norm_num)

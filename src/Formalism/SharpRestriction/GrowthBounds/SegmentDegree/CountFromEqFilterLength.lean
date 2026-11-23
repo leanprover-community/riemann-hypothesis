@@ -248,7 +248,7 @@ theorem toL_TData (H : HypT N n0 r K LL B od bb a La p) : (toL r K LL B).TData 1
   have hN := H.hN
   have hp : (0 : ℝ) < p := by
     have := H.p13
-    exact_mod_cast (by omega : 0 < p)
+    exact_mod_cast (omega : 0 < p)
   refine ⟨H.La_pos, fun i h1 h2 => ?_⟩
   simp only [toL] at h1 h2
   have hi : 1 ≤ i ∧ i ≤ N := ⟨by omega, h2⟩

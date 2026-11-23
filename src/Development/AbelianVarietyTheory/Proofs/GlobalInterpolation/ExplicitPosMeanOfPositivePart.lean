@@ -41,7 +41,7 @@ theorem bound_eq (D : D7) : SignedLogMeans.bound D = AbsoluteLogMeanBounds.kronB
 
 theorem one_le_d (D : D7) : (1 : ℝ) ≤ D.host.d := by
   have h := D.host.qd_big.2
-  exact_mod_cast (by omega : 1 ≤ D.host.d)
+  exact_mod_cast (omega : 1 ≤ D.host.d)
 
 theorem two_sqrt_le_rd (D : D7) : 2 * Real.sqrt D.host.d ≤ D.host.rdE := by
   refine le_trans ?_ (factRd D.R D.host).1

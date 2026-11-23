@@ -120,7 +120,7 @@ theorem lt_cRec {D : D7} (L : SizeData₂ D) : 4 * L.Sc - 1 < (cRec L : ℝ) := 
 theorem ktl_le_Del {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) :
     (D.R.k : ℝ) + D.R.t + 1 ≤ (D.s.Del : ℝ) := by
   have h := P.Del_ge.2.2.2
-  have hm : (1 : ℝ) ≤ (D.R.m : ℝ) := by have := D.R.two_le_m; exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ (D.R.m : ℝ) := by have := D.R.two_le_m; exact_mod_cast (omega : 1 ≤ D.R.m)
   have hm10 : (1 : ℝ) ≤ (D.R.m : ℝ) ^ 10 := one_le_pow₀ hm
   have hN : (D.R.k : ℝ) + D.R.t + 1 ≤ (D.R.N D.R.m : ℝ) := by
     simp only [Ranks.N]
@@ -133,7 +133,7 @@ theorem ktl_le_Del {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) :
 theorem five_le_k (R : Ranks) : (5 : ℝ) ≤ (R.k : ℝ) := by
   have h1 := R.two_le_m
   have h2 := R.m_add_three_le_k
-  exact_mod_cast (by omega : 5 ≤ R.k)
+  exact_mod_cast (omega : 5 ≤ R.k)
 
 theorem ktl_le_Sc {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) : 20 * ((D.R.k : ℝ) + D.R.t + 1) ≤ L.Sc := by
   have h1 := ktl_le_Del P

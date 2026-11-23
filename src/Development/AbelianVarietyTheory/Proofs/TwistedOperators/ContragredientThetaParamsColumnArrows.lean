@@ -297,10 +297,10 @@ theorem parPi_pairPar : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.Cusp
   have hN3 : 1 ≤ bigN D ^ 3 := Nat.one_le_pow _ _ (by omega)
   have hγq : ((grid D τ).s : ℚ) + 4 ≤ (grid D τ).ga := by
     show (sLen D : ℚ) + 4 ≤ (gap D : ℚ)
-    exact_mod_cast (by omega : sLen D + 4 ≤ gap D)
+    exact_mod_cast (omega : sLen D + 4 ≤ gap D)
   have hγ2 : 2 * (bigN D : ℚ) ^ 3 < (grid D τ).ga := by
     show 2 * (bigN D : ℚ) ^ 3 < (gap D : ℚ)
-    exact_mod_cast (by omega : 2 * bigN D ^ 3 < gap D)
+    exact_mod_cast (omega : 2 * bigN D ^ 3 < gap D)
   have hsγ : ((grid D τ).s : ℚ) ≤ (grid D τ).ga := by linarith
   have hs0 : (0 : ℚ) ≤ (grid D τ).s := by positivity
   have hcastT : ((sLen D - 1 : ℕ) : ℚ) = (sLen D : ℚ) - 1 := simp [Nat.cast_sub (show 1 ≤ sLen D by omega)]

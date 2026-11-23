@@ -52,7 +52,7 @@ private lemma log_nat_le (h : ℕ) : Real.log h ≤ (h : ℝ) / 1000 + 998 := by
 
 private lemma mpar_le (ℓ g h : ℕ) (hℓ : 11 ≤ ℓ) :
     (Mpar ℓ g h : ℝ) ≤ ((h:ℝ) + 2 * g) / 10 + 1 := by
-  have hk : (10 : ℝ) ≤ ((ℓ - 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 10 ≤ ℓ - 1)
+  have hk : (10 : ℝ) ≤ ((ℓ - 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 10 ≤ ℓ - 1)
   have h1 : (((h + 2 * g) / (ℓ - 1) : ℕ) : ℝ) ≤ ((h + 2 * g : ℕ) : ℝ) / ((ℓ - 1 : ℕ) : ℝ) := Nat.cast_div_le
   have h2 : ((h + 2 * g : ℕ) : ℝ) / ((ℓ - 1 : ℕ) : ℝ) ≤ ((h + 2 * g : ℕ) : ℝ) / 10 :=
     div_le_div_of_nonneg_left (by positivity) (by norm_num) hk
@@ -118,18 +118,18 @@ theorem exists_constant_exponent_inequalities : AprimeArith := by
     exact_mod_cast this
   have hb1r : (b : ℝ) ≤ b₁ := by exact_mod_cast hb1
   have hb0r : (b₀ : ℝ) ≤ b + η := by exact_mod_cast hb0'
-  have hηG : (η : ℝ) ≤ ((w + S + η : ℕ) : ℝ) := by exact_mod_cast (by omega : η ≤ w + S + η)
+  have hηG : (η : ℝ) ≤ ((w + S + η : ℕ) : ℝ) := by exact_mod_cast (omega : η ≤ w + S + η)
   have hlb : (11 : ℝ) * b₁ ≤ ℓ * b₁ := mul_le_mul_of_nonneg_right hl (by positivity)
   refine ⟨by omega, by omega, by linarith, by linarith, ?_⟩
   have hs := sig_lt ℓ (max (w + S + η) 1) (b + η + S) j hℓ
   have hr := rr_le ℓ (w + S + η) (b + η + S) j rr hℓ hj hrr
   have hg : ((max (w + S + η) 1 : ℕ) : ℝ) ≤ ((w + S + η : ℕ) : ℝ) + 1 := by
-    exact_mod_cast (by omega : max (w + S + η) 1 ≤ w + S + η + 1)
+    exact_mod_cast (omega : max (w + S + η) 1 ≤ w + S + η + 1)
   have hg0 : (0 : ℝ) ≤ ((max (w + S + η) 1 : ℕ) : ℝ) := Nat.cast_nonneg _
   have hellr : (ell : ℝ) ≤ 3 * j + 1 := by exact_mod_cast hell
   have hge : ((max (w + S + η) 1 : ℕ) : ℝ) * ell ≤ (((w + S + η : ℕ) : ℝ) + 1) * (3 * j + 1) :=
     mul_le_mul hg hellr (Nat.cast_nonneg _) (by positivity)
   have hH : ((b + η + S : ℕ) : ℝ) ≤ b + ((w + S + η : ℕ) : ℝ) := by
-    exact_mod_cast (by omega : b + η + S ≤ b + (w + S + η))
+    exact_mod_cast (omega : b + η + S ≤ b + (w + S + η))
   unfold a0E
   nlinarith

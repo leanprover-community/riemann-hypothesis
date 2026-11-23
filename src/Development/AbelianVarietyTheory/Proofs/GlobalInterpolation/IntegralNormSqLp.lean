@@ -211,7 +211,7 @@ theorem gallagher : ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) (a : ℕ → ℂ) (T : 
     refine Finset.sum_congr rfl fun n hn => ?_
     have hn0 : (n : ℂ) ≠ 0 := by
       have := (Finset.mem_Icc.1 hn).1
-      exact_mod_cast (by omega : n ≠ 0)
+      exact_mod_cast (omega : n ≠ 0)
     rw [cpow_def_of_ne_zero hn0, ← Complex.natCast_log]
     congr 2
     push_cast
@@ -227,7 +227,7 @@ theorem gallagher : ∃ C : ℝ, 0 < C ∧ ∀ (N : ℕ) (a : ℕ → ℂ) (T : 
     refine Finset.sum_congr rfl fun n hn => ?_
     have hn0 : (0 : ℝ) < n := by
       have := (Finset.mem_Icc.1 hn).1
-      exact_mod_cast (by omega : 0 < n)
+      exact_mod_cast (omega : 0 < n)
     rw [Set.indicator_apply, ← Real.exp_add]
     refine if_congr ?_ rfl rfl
     rw [Set.mem_Ico, ← Real.lt_log_iff_exp_lt hn0, ← Real.log_le_iff_le_exp hn0]

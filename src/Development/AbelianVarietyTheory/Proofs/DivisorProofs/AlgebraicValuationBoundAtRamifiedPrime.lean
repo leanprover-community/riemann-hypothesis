@@ -114,7 +114,7 @@ theorem main : ∀ (l : ℕ) [Fact l.Prime] (lam : algebraicClosure ℚ ℂ →+
     have e : p = (12 * p) / ((12 : ℕ) : ℂ) := by push_cast; ring
     rw [e]
     exact div_mem hp (natCast_mem _ 12)
-  have hl0 : (0 : ℝ) < l := by exact_mod_cast (by omega : 0 < l)
+  have hl0 : (0 : ℝ) < l := by exact_mod_cast (omega : 0 < l)
   have hw0 : w ≠ 0 := by
     rintro rfl
     have : (l : ℂ) = 0 := by linear_combination hw

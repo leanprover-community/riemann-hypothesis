@@ -101,7 +101,7 @@ theorem lpack (hLO : LOrd) {F E : Type} [Field F] [NumberField F] [Field E] [Num
     ring
   have hqne : ∀ v : HeightOneSpectrum (𝓞 F), (Ideal.absNorm v.asIdeal : ℂ) ≠ 0 := fun v => by
     have := NumberField.HeightOneSpectrum.one_lt_absNorm v
-    exact_mod_cast (by omega : Ideal.absNorm v.asIdeal ≠ 0)
+    exact_mod_cast (omega : Ideal.absNorm v.asIdeal ≠ 0)
   have hnc : ∀ (v : HeightOneSpectrum (𝓞 F)) (k : ℤ), ‖eSp E v ^ k‖ ≤ 1 := fun v k => by
     rw [norm_zpow, norm_eSp, one_zpow]
   refine ⟨fun z => ∏ i : Fin (m + 1), Zc i (2 * z + ((m + 1 : ℕ) : ℂ) - (i : ℕ)), ?_, ?_, ?_, ?_⟩

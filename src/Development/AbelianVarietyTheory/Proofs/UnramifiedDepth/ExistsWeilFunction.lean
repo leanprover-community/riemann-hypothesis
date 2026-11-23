@@ -112,7 +112,7 @@ theorem exists_weil_function : ∀ (C : Type) [Field C] [IsAlgClosed C] [CharZer
     have h2 := (he (k * l) s z hs hz' _).1 (by exact_mod_cast h1)
     rw [hskew _ z s hz' hs, hskew _ z _ hz hs', h2]
   · intro κ hκ
-    have hkC : (k : C) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+    have hkC : (k : C) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
     obtain ⟨b, ⟨hb1, hb2⟩, hbu⟩ := hP C A k hkC (fun x => unitOn (κ x.1)) (fun x y => by
       change unitOn (κ (x.1 * y.1)) = _
       rw [hκ _ _ x.2 y.2, unitOn_mul'])

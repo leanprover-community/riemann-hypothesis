@@ -66,7 +66,7 @@ theorem isCyclic_of_injective_char [Finite G] (χ : Additive G →+ AddCircle (1
     obtain ⟨n, hn⟩ := (AddCircle.coe_eq_zero_iff _).1 h0
     rw [zsmul_one] at hn
     simp only [Set.mem_Ico] at hy01
-    have hmpos : (0 : ℚ) < m := by exact_mod_cast (by omega : 0 < m)
+    have hmpos : (0 : ℚ) < m := by exact_mod_cast (omega : 0 < m)
     have hn0 : 0 ≤ n := by
       have : (0 : ℚ) ≤ n := by rw [hn]; exact mul_nonneg hmpos.le hy01.1
       exact_mod_cast this

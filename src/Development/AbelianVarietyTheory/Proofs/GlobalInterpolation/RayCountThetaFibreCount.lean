@@ -86,8 +86,8 @@ theorem rayCountTheta : ∀ (K : Type) [Field K] [NumberField K] (d M : ℕ) (x 
   intro K _ _ d M x hd hd4 hd100 hx hK hM D g
   obtain ⟨α, γ, l, θ₁, θ₂, hα, hγ, hαγ, hQ, ha⟩ := GlobalTheory.T.rayClassIdealCount_eq_ncard_shiftedBinaryForm K d M x hd hd4 hd100 hx hK hM D g
   choose q hq1 hq using hQ
-  have hd0 : (0 : ℝ) < d := by exact_mod_cast (by omega : 0 < d)
-  have hM0 : (0 : ℝ) < M := by exact_mod_cast (by omega : 0 < M)
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast (omega : 0 < d)
+  have hM0 : (0 : ℝ) < M := by exact_mod_cast (omega : 0 < M)
   have hC : Real.pi / Real.sqrt (α * γ) = 2 * Real.pi / (Real.sqrt d * (M : ℝ) ^ 2) := by
     have hs : Real.sqrt (α * γ) = Real.sqrt d * (M : ℝ) ^ 2 / 2 := by
       rw [hαγ, show (d : ℝ) * (M : ℝ) ^ 4 / 4 = (Real.sqrt d * (M : ℝ) ^ 2 / 2) ^ 2 by
@@ -120,8 +120,8 @@ theorem rayCountTheta : ∀ (K : Type) [Field K] [NumberField K] (d M : ℕ) (x 
     have hsq0 : 0 < Real.sqrt (α * γ) := by linarith
     have hCπ : Real.pi / Real.sqrt (α * γ) ≤ Real.pi := div_le_self Real.pi_pos.le hsq
     have hC0 : 0 ≤ Real.pi / Real.sqrt (α * γ) := by positivity
-    have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast (by omega : 1 ≤ d)
-    have hM1 : (1 : ℝ) ≤ M := by exact_mod_cast (by omega : 1 ≤ M)
+    have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast (omega : 1 ≤ d)
+    have hM1 : (1 : ℝ) ≤ M := by exact_mod_cast (omega : 1 ≤ M)
     have key : 3 * Real.pi * (α * γ) ^ 2 ≤ (4 * (d : ℝ) * (M : ℝ) ^ 2) ^ 10 := by
       rw [hαγ]
       have h1 : (d : ℝ) ^ 2 ≤ (d : ℝ) ^ 10 := pow_le_pow_right₀ hd1 (by norm_num)

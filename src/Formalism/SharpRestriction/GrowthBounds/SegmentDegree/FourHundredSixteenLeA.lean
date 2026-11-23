@@ -121,7 +121,7 @@ theorem a_big (hX : X.Hyp p K) : 416 * (X.Ns : ℝ) ≤ X.a := by
   have hY := hX.Y1
   have hk : (1 : ℝ) ≤ ((r + K : ℕ) : ℝ) := by
     have h0 := hX.r2
-    exact_mod_cast (by omega : 1 ≤ r + K)
+    exact_mod_cast (omega : 1 ≤ r + K)
   have hmem := frj_mem hX.valid 1 0 omega
   have hQ : 1 ≤ X.Q := (one_le_pow₀ (by linarith : (1 : ℝ) ≤ p)).trans (hX.twist 1 _ hmem)
   have hE : (1 : ℝ) ≤ (X.E₀ : ℝ) + X.mStar + 1 := by
@@ -159,7 +159,7 @@ theorem c_bounds (hX : X.Hyp p K) (h41 : ∀ t ∈ X.F.TT, (9 / 10 : ℝ) * (X.d
       (9 / 10 : ℝ) * X.a ≤ (X.a' p K (posOf n' y) : ℝ) ∧ (X.a' p K (posOf n' y) : ℝ) ≤ 2 * X.a := by
   have hV := hX.valid
   have hr2 := hX.r2
-  have hp1 : (1 : ℝ) ≤ p := by have := hX.p13; exact_mod_cast (by omega : 1 ≤ p)
+  have hp1 : (1 : ℝ) ≤ p := by have := hX.p13; exact_mod_cast (omega : 1 ≤ p)
   have hyL := hy
   simp only [Frames.letters, Finset.mem_filter, Finset.mem_Icc] at hy
   obtain ⟨⟨hy1, hy2⟩, hyT⟩ := hy
@@ -187,7 +187,7 @@ theorem c_bounds (hX : X.Hyp p K) (h41 : ∀ t ∈ X.F.TT, (9 / 10 : ℝ) * (X.d
   have hQ1 : 1 ≤ X.Q := (one_le_pow₀ hp1).trans hQ0
   have hY := hX.Y1
   have hNs : (6 : ℝ) ≤ X.Ns := by exact_mod_cast six_le_Ns hX
-  have hk1 : (1 : ℝ) ≤ ((r + K : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ r + K)
+  have hk1 : (1 : ℝ) ≤ ((r + K : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ r + K)
   have hE : (1 : ℝ) ≤ (X.E₀ : ℝ) + X.mStar + 1 := by
     have h1 : (0 : ℝ) ≤ X.E₀ := Nat.cast_nonneg _
     have h2 : (0 : ℝ) ≤ X.mStar := Nat.cast_nonneg _

@@ -163,7 +163,7 @@ theorem dualRadiiInequalities : ThmARadii := by
   unfold ThmARadii
   intro l d _ hl hd2 hd TT sig eps hdual hsig heps hT
   unfold IsDualAll at hdual
-  have hL : (1 : ℝ) ≤ l := by exact_mod_cast (by omega : 1 ≤ l)
+  have hL : (1 : ℝ) ≤ l := by exact_mod_cast (omega : 1 ≤ l)
   have hL0 : (0 : ℝ) < l := by linarith
   refine ⟨?_, ?_, ?_, ?_⟩
   · intro s s' α β τ τ' hτ hτ' hodd heq

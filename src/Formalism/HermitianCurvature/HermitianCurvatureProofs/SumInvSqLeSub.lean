@@ -102,7 +102,7 @@ lemma harm_log (h n : ℕ) (hh : 1 ≤ h) (hn : h ≤ n) :
   | base => simp
   | succ n hn ih =>
     rw [Finset.sum_Ioc_succ_top hn]
-    have hnpos : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+    have hnpos : (0 : ℝ) < n := by exact_mod_cast (omega : 0 < n)
     have := Real.one_sub_inv_le_log_of_pos (x := ((n : ℝ) + 1) / n) (by positivity)
     rw [Real.log_div (by positivity) (by positivity)] at this
     have e : 1 - (((n : ℝ) + 1) / n)⁻¹ = 1 / ((n : ℝ) + 1) := by field_simp; ring
@@ -116,7 +116,7 @@ lemma sum_inv_sq_le_sub (n : ℕ) (hn : 2 ≤ n) : ∑ d ∈ Ioc 0 n, (1 : ℝ) 
     norm_num
   | succ n hn ih =>
     rw [Finset.sum_Ioc_succ_top (by omega)]
-    have hnpos : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+    have hnpos : (0 : ℝ) < n := by exact_mod_cast (omega : 0 < n)
     have : (1 : ℝ) / ((n : ℝ) + 1) ^ 2 ≤ 1 / n - 1 / ((n : ℝ) + 1) := by
       rw [div_sub_div _ _ (by positivity) (by positivity), div_le_div_iff₀ (by positivity) (by positivity)]
       nlinarith
@@ -190,7 +190,7 @@ lemma lin_bound (J : ℕ) (hJ : 1 ≤ J) (de : ℕ → ℝ) (h01 : ∀ i, de i =
           have := shift_bound1 de h01 (J - d) d
           linarith
         · rw [mem_Ioc] at hd
-          have hd0 : (0 : ℝ) < d := by exact_mod_cast (by omega : 0 < d)
+          have hd0 : (0 : ℝ) < d := by exact_mod_cast (omega : 0 < d)
           rw [abs_div, abs_of_pos (by positivity : (0 : ℝ) < 4 * d), div_le_iff₀ (by positivity)]
           have := shift_bound2 de h01 (J - d) d
           rw [Nat.cast_sub hd.2] at this
@@ -467,7 +467,7 @@ lemma edge_factor (c : Cfg) (de : ℕ → ℝ) (hc : c.Ok) (hw : IsWord c.k de) 
     · left; omega
     · right; exact h
   rw [u_succ c de hw l (by omega) hik h']
-  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (by omega : 1 ≤ l)
+  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (omega : 1 ≤ l)
   have hlk : (l : ℝ) + 1 ≤ c.k := by exact_mod_cast hik
   have hD := hc.hDel
   have ha := hc.ha
@@ -548,7 +548,7 @@ lemma u_mid_nonneg (c : Cfg) (de : ℕ → ℝ) (hc : c.Ok) (hw : IsWord c.k de)
   rw [mem_Icc] at hi
   have hD := hc.hDel
   have hv0 := hc.hv0
-  have hiR : ((i - 1 : ℕ) : ℝ) + 2 ≤ c.k := by exact_mod_cast (by omega : i - 1 + 2 ≤ c.k)
+  have hiR : ((i - 1 : ℕ) : ℝ) + 2 ≤ c.k := by exact_mod_cast (omega : i - 1 + 2 ≤ c.k)
   have m : 0 ≤ c.Del * ((c.k : ℝ) - 2 - ((i - 1 : ℕ) : ℝ)) := mul_nonneg (by linarith) (by linarith)
   unfold Cfg.v
   rcases hw.1 (i - 1) with e | e <;> rw [e] <;> nlinarith

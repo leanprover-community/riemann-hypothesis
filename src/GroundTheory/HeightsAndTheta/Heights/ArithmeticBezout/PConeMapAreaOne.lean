@@ -264,7 +264,7 @@ theorem hausdorff_eq_zero_of_lt {n d : ℕ} (h : n < d) :
   have hd : dimH (Set.univ : Set (EuclideanSpace ℂ (Fin n))) < (((2 * d : ℕ) : ℝ≥0) : ℝ≥0∞) := by
     rw [Real.dimH_univ_eq_finrank (EuclideanSpace ℂ (Fin n)), finrank_real_of_complex,
       finrank_euclideanSpace_fin]
-    exact_mod_cast (by omega : 2 * n < 2 * d)
+    exact_mod_cast (omega : 2 * n < 2 * d)
   simpa using hausdorffMeasure_of_dimH_lt hd
 
 theorem volume_ball_E (e : ℕ) :

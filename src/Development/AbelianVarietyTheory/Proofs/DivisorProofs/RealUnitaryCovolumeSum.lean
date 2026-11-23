@@ -150,7 +150,7 @@ theorem sum_covolume_le : GlobalTheory.Published.TamagawaSpecialUnitary → ∀ 
     · exfalso
       rw [← h, mul_zero, zero_mul, ENNReal.ofReal_zero, mul_zero] at hP1
       exact zero_ne_one hP1
-  have hr0 : 0 < Real.sqrt r := Real.sqrt_pos.2 (by exact_mod_cast (by omega : 0 < r))
+  have hr0 : 0 < Real.sqrt r := Real.sqrt_pos.2 (by exact_mod_cast (omega : 0 < r))
   have hcpos : c ≠ 0 := by
     rw [hc, ne_eq, ENNReal.ofReal_eq_zero, not_le]; positivity
   have hriem : riemHaar X.Ψ X.Gm x = c • μ := by

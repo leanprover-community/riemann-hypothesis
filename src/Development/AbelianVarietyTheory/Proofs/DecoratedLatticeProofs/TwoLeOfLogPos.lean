@@ -50,7 +50,7 @@ theorem two_le_rdE' (D : D7) (hq : 2 ≤ D.host.q) (hd : 2 ≤ D.host.d) : 2 ≤
   have hf : (2 : ℝ) ≤ D.R.f := by
     have := D.host.four_le_n'
     have h2 : D.R.f = 2 * D.R.n := rfl
-    exact_mod_cast (by omega : 2 ≤ D.R.f)
+    exact_mod_cast (omega : 2 ≤ D.R.f)
   have h0 : 0 ≤ D.host.rdE := by unfold Host.rdE; positivity
   nlinarith
 

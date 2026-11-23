@@ -63,7 +63,7 @@ theorem chain' (t : ℕ → ℝ) {τ : ℝ} (hτ : 0 ≤ τ) {n : ℕ} (h : ∀ 
     {i j : ℕ} (hij : i ≤ j) (hj : j ≤ n) : t j ≤ t i + n * τ := by
   have h1 := chain t h (j - i) i (by omega)
   rw [show i + (j - i) = j by omega] at h1
-  have hle : ((j - i : ℕ) : ℝ) ≤ n := by exact_mod_cast (by omega : j - i ≤ n)
+  have hle : ((j - i : ℕ) : ℝ) ≤ n := by exact_mod_cast (omega : j - i ≤ n)
   have h2 : ((j - i : ℕ) : ℝ) * τ ≤ n * τ := mul_le_mul_of_nonneg_right hle hτ
   linarith
 

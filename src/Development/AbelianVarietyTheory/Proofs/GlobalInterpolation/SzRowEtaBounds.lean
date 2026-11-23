@@ -62,10 +62,10 @@ theorem szRow_eta_bounds : SzRow (fun C D L => (L.etaSz ≤ L.sc.b / ((D.R.t : �
   have hm2 : (2 : ℝ) ≤ D.R.m := by exact_mod_cast D.R.two_le_m
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have ht1 : (1 : ℝ) ≤ D.R.t := by
     have := D.R.three_m_lt_t
-    exact_mod_cast (by omega : 1 ≤ D.R.t)
+    exact_mod_cast (omega : 1 ≤ D.R.t)
   have rk' : (D.R.k : ℝ) ≤ L.sc.x ^ (5 : ℝ) := le_trans (by exact_mod_cast rk) rr
   rw [hE]
   generalize L.sc.x = x at *

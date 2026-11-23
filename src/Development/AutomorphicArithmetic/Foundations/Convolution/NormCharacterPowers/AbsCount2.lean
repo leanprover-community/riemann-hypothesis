@@ -59,7 +59,7 @@ theorem ps {ι M : Type} [Fintype ι] [AddCommMonoid M] {d : ι → ℕ} {m : �
 
 theorem logsum {m : ℕ} {a : Fin m → ℂ} (h : ‖∏ i, a i‖ = 1) (q f : ℕ) (hq : 2 ≤ q) (t : ℝ) :
     ∑ i, Real.log ‖(a i * (q : ℂ) ^ (-(t : ℂ))) ^ f‖ = f * m * (-t * Real.log q) := by
-  have h0 : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+  have h0 : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
   have hne : ∀ i, ‖a i‖ ≠ 0 := fun i hi => by
     rw [norm_prod, Finset.prod_eq_zero (Finset.mem_univ i) hi] at h
     exact zero_ne_one h
@@ -75,14 +75,14 @@ theorem logsum {m : ℕ} {a : Fin m → ℂ} (h : ‖∏ i, a i‖ = 1) (q f : �
 
 theorem shift (q : ℕ) (hq : 2 ≤ q) (s t : ℝ) :
     (q : ℂ) ^ (-(s : ℂ)) * (q : ℂ) ^ (-((-t : ℝ) : ℂ)) = (q : ℂ) ^ (-((s - t : ℝ) : ℂ)) := by
-  rw [← Complex.cpow_add _ _ (by exact_mod_cast (by omega : q ≠ 0))]
+  rw [← Complex.cpow_add _ _ (by exact_mod_cast (omega : q ≠ 0))]
   congr 1
   push_cast
   ring
 
 theorem cancel (q f : ℕ) (hq : 2 ≤ q) (t : ℝ) :
     ((q : ℂ) ^ (-(t : ℂ))) ^ f * ((q ^ f : ℕ) : ℂ) ^ (-((-t : ℝ) : ℂ)) = 1 := by
-  have h0 : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+  have h0 : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
   rw [Common0Aux.cpow_real, Common0Aux.cpow_real, ← Complex.ofReal_pow, ← Complex.ofReal_mul, Nat.cast_pow,
     ← Real.rpow_natCast, ← Real.rpow_natCast, ← Real.rpow_mul h0.le, ← Real.rpow_mul h0.le, ← Real.rpow_add h0]
   simp [mul_comm]

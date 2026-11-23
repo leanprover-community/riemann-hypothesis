@@ -108,7 +108,7 @@ theorem sections_separate_fibre : GlobalTheory.Published.NadelVanishingAndNonKlt
         exact_mod_cast h3
       have h4 : (((c₀ : ℕ) : ℝ) * 2) ^ e < ((2 * c₀ + 1 : ℕ) : ℝ) ^ e := by
         refine pow_lt_pow_left₀ ?_ (by positivity) (by omega)
-        exact_mod_cast (by omega : c₀ * 2 < 2 * c₀ + 1)
+        exact_mod_cast (omega : c₀ * 2 < 2 * c₀ + 1)
       rw [lt_div_iff₀ (by positivity), ← mul_pow]
       push_cast at h4 h3' ⊢
       linarith)

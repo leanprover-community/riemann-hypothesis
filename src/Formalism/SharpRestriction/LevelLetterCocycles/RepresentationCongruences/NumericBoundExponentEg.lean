@@ -71,7 +71,7 @@ theorem numeric_bound_exponent_eg (l : ℕ) (hl : 11 ≤ l) (b wm S η b₁ H : 
     (hwm : 20 * wm ≤ b) (hb₁ : b ≤ b₁) (hb₁' : b₁ ≤ b + η) (hH : H ≤ b + 2 * η + S) (A : ℕ)
     (ha : (A : ℝ) ≤ (H : ℝ) * (2 * l - 1) / ((l : ℝ) - 1) ^ 2 + cW l H + 1) :
     (EG l A S η b₁ : ℝ) ≤ 8 * Formalism.MainNotions.N.FrobeniusPowerSeries.Sg l (b + η + S) wm S η := by
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hl0 : (0 : ℝ) < l - 1 := by linarith
   have hcW : (0 : ℝ) ≤ (cW l H : ℝ) := Nat.cast_nonneg _
   have hHl : (0 : ℝ) ≤ (H : ℝ) * (2 * l - 1) / ((l : ℝ) - 1) ^ 2 := by

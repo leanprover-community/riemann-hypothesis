@@ -63,7 +63,7 @@ private theorem norm_add_le_max_maxUnramified_lemma (l : ℕ) [Fact l.Prime] (a 
   IsUltrametricDist.norm_add_le_max (a : ℂ_[l]) (b : ℂ_[l])
 
 private theorem inv_prime_lt_one_lemma_2 (l : ℕ) (hl : 1 < l) : (l : ℝ)⁻¹ < 1 := by
-  have hpos : (0 : ℝ) < l := by exact_mod_cast (by omega : 0 < l)
+  have hpos : (0 : ℝ) < l := by exact_mod_cast (omega : 0 < l)
   have h1 : (l : ℝ)⁻¹ * l = 1 := inv_mul_cancel₀ hpos.ne'
   have h2 : (1 : ℝ) < l := by exact_mod_cast hl
   nlinarith [inv_pos.2 hpos]
@@ -92,7 +92,7 @@ private theorem norm_frobenius_eq_lemma_4 (l : ℕ) [Fact l.Prime] (σ : Formali
   · simp [hx]
   obtain ⟨k, hk⟩ := hU.2.2.2.1 x hx
   have hl2 : 2 < l := hU.2.1
-  have hlpos : (0 : ℝ) < l := by exact_mod_cast (by omega : 0 < l)
+  have hlpos : (0 : ℝ) < l := by exact_mod_cast (omega : 0 < l)
   have hkpos : (0 : ℝ) < (l : ℝ) ^ k := zpow_pos hlpos k
   have hcn : ‖((l : Formalism.L2.Th1.Top.FrP.MaximalUnramifiedExtension l) ^ k)‖ = ((l : ℝ) ^ k)⁻¹ := by
     rw [norm_zpow, hU.2.2.1, inv_zpow]

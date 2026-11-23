@@ -80,7 +80,7 @@ private theorem exists_ev (d : ℕ) [NeZero d] (hd : Odd d) :
 
 private theorem levels_nonempty (k l : ℕ) (hl : 2 ≤ l) :
     {i : ℕ | Odd i ∧ 3 ≤ i ∧ (k : ℝ) ^ ((3 : ℝ) / 2) < (l : ℝ) ^ i}.Nonempty := by
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt ((k : ℝ) ^ ((3 : ℝ) / 2)) hl1
   refine ⟨2 * n + 3, ⟨⟨n + 1, by ring⟩, by omega, ?_⟩⟩
   exact lt_of_lt_of_le hn (pow_le_pow_right₀ hl1.le (by omega))
@@ -92,7 +92,7 @@ private theorem thlEq : ∀ k l : ℕ, 1 ≤ k → 2 ≤ l →
   have hmem : i0 k l ∈ {i : ℕ | Odd i ∧ 3 ≤ i ∧ (k : ℝ) ^ ((3 : ℝ) / 2) < (l : ℝ) ^ i} :=
     Nat.sInf_mem hne
   refine ⟨hmem.1, hmem.2.1, hmem.2.2, ?_⟩
-  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (by omega : 1 ≤ l)
+  have hl1 : (1 : ℝ) ≤ l := by exact_mod_cast (omega : 1 ≤ l)
   have hgr : IsGreatest {t : ℝ | ∃ i, Odd i ∧ 3 ≤ i ∧ (k : ℝ) ^ ((3 : ℝ) / 2) < (l : ℝ) ^ i ∧
       t = ((l : ℝ) ^ i)⁻¹} ((l : ℝ) ^ i0 k l)⁻¹ := by
     refine ⟨⟨i0 k l, hmem.1, hmem.2.1, hmem.2.2, rfl⟩, ?_⟩
@@ -121,8 +121,8 @@ private theorem levelBound : ∀ k l : ℕ, 1 ≤ k → 5 ≤ l → ((i0 k l : �
     have hle : (l : ℝ) ^ (i0 k l - 2) ≤ (k : ℝ) ^ ((3 : ℝ) / 2) := by
       by_contra hc
       exact hnot ⟨hodd2, by omega, lt_of_not_ge hc⟩
-    have hl0 : (0 : ℝ) < l := by exact_mod_cast (by omega : 0 < l)
-    have hk0 : (0 : ℝ) < k := by exact_mod_cast (by omega : 0 < k)
+    have hl0 : (0 : ℝ) < l := by exact_mod_cast (omega : 0 < l)
+    have hk0 : (0 : ℝ) < k := by exact_mod_cast (omega : 0 < k)
     have hlog := Real.log_le_log (pow_pos hl0 _) hle
     rw [Real.log_pow, Real.log_rpow hk0] at hlog
     have hlogl : 1 ≤ Real.log l := by
@@ -157,7 +157,7 @@ private theorem exists_good {S : ℕ} {G : Set ℕ} (h : Windows S G) {r : ℝ} 
       exact ⟨Nat.lt_succ_of_le (Nat.le_floor hc'), hy'G⟩
     have := F.le_max' y' hy'F
     omega
-  have : (y' : ℝ) ≤ y + S := by exact_mod_cast (by omega : y' ≤ y + S)
+  have : (y' : ℝ) ≤ y + S := by exact_mod_cast (omega : y' ≤ y + S)
   linarith
 
 section
@@ -218,7 +218,7 @@ private theorem blockBd_le {l n m i y I S : ℕ} {x : ℝ} (hl : 5 ≤ l) (hn : 
     blockBd l n m i y ≤ n * gam l * ((l : ℝ) ^ i * y) + n * gam l * y - x +
       (if x ≠ 0 then (n : ℝ) * ((S : ℝ) + Real.logb l n + 1) else 0) +
       2 * (I : ℝ) * m / ((l : ℝ) - 1) * ((l : ℝ) ^ i * y) := by
-  have hl1 : (1:ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1:ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hlm : (0:ℝ) < (l:ℝ) - 1 := by linarith
   have hnR : (1:ℝ) ≤ n := by exact_mod_cast hn
   have hlog : 0 ≤ Real.logb l n := Real.logb_nonneg hl1 hnR
@@ -264,7 +264,7 @@ private theorem exists_plan : ∀ (l d : ℕ) [NeZero d], 5 ≤ l → ∀ (n m k
       m * (∑ a, (W a : ℝ)) / ((l : ℝ) - 1) + 2 * (i0 k l : ℝ) * m * (∑ a, Ws a) / ((l : ℝ) - 1) + d * (i0 k l : ℝ) * (n * ((S : ℝ) + Real.logb l n + 1)) := by
   intro l d _ hl n m k S hn hk W Ws Good hWs hG
   obtain ⟨_, hI3, _, hthl⟩ := thlEq k l hk (by omega)
-  have hl1 : (1:ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1:ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hnR : (1:ℝ) ≤ n := by exact_mod_cast hn
   have hn0 : (0:ℝ) < n := by linarith
   have hD0 : 0 ≤ (fun a => (n:ℝ) * Ws a) := by
@@ -373,7 +373,7 @@ private theorem exists_plan : ∀ (l d : ℕ) [NeZero d], 5 ≤ l → ∀ (n m k
       have hc : (((Finset.univ ×ˢ oddLevels d).filter (fun q : ZMod d × ℕ => ys q.1 q.2 ≠ 0)).card : ℝ) ≤ d := by
         exact_mod_cast hcard
       have hdI : (d:ℝ) ≤ d * (i0 k l : ℝ) := by
-        have : (1:ℝ) ≤ (i0 k l : ℝ) := by exact_mod_cast (by omega : 1 ≤ i0 k l)
+        have : (1:ℝ) ≤ (i0 k l : ℝ) := by exact_mod_cast (omega : 1 ≤ i0 k l)
         nlinarith [Nat.cast_nonneg (α := ℝ) d]
       calc _ ≤ (d:ℝ) * ((n : ℝ) * ((S : ℝ) + Real.logb l n + 1)) := mul_le_mul_of_nonneg_right hc hB
         _ ≤ _ := mul_le_mul_of_nonneg_right hdI hB

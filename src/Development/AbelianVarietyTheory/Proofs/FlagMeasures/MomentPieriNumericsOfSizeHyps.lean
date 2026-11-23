@@ -199,7 +199,7 @@ theorem num_of_size : ∀ (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
   have hr : D.R.r = D.R.k + D.R.m - 1 := rfl
   have hdim : 2 * D.R.rS + D.R.k + 1 = D.R.r := (two_mul_rS_add_k_add_one_eq D.R).trans hr.symm
   have hmR : (1000 : ℝ) ≤ D.R.m := hCl.trans hClm
-  have hMK : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+  have hMK : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (omega : D.R.m ≤ D.R.k)
   have hNr : (D.R.r : ℝ) = D.R.k + D.R.m - 1 := by
     have h : D.R.r + 1 = D.R.k + D.R.m := by rw [hr]; omega
     have h' : ((D.R.r + 1 : ℕ) : ℝ) = ((D.R.k + D.R.m : ℕ) : ℝ) := by rw [h]

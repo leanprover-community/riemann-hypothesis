@@ -151,7 +151,7 @@ theorem arc_length_two_case_down [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomai
   have hSg1 : 1 ≤ Sg' := by
     rw [hSg']; unfold Formalism.MainNotions.N.FrobeniusPowerSeries.Sg
     have hh1 : (1 : ℝ) ≤ ((b + η + S : ℕ) : ℝ) := by
-      have := hηs c; have := hct.2; exact_mod_cast (by omega : 1 ≤ b + η + S)
+      have := hηs c; have := hct.2; exact_mod_cast (omega : 1 ≤ b + η + S)
     have h1 : 0 ≤ ((b + η + S : ℕ) : ℝ) / (PD.p : ℝ) ^ 2 := by positivity
     have h2 : 0 ≤ ((w : ℝ) + S + η) / PD.p := by positivity
     have h3 : 0 ≤ Real.logb PD.p (2 * ((b + η + S : ℕ) : ℝ)) :=

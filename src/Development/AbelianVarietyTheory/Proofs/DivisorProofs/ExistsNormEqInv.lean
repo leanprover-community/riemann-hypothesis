@@ -45,7 +45,7 @@ theorem absNorm_gt_one (F : Type) [Field F] [NumberField F] (v : IsDedekindDomai
     1 < (Ideal.absNorm v.asIdeal : ℝ) := by
   have h1 : Ideal.absNorm v.asIdeal ≠ 1 := fun h => v.isPrime.ne_top (Ideal.absNorm_eq_one_iff.1 h)
   have h0 : Ideal.absNorm v.asIdeal ≠ 0 := fun h => v.ne_bot (Ideal.absNorm_eq_zero_iff.1 h)
-  exact_mod_cast (by omega : 1 < Ideal.absNorm v.asIdeal)
+  exact_mod_cast (omega : 1 < Ideal.absNorm v.asIdeal)
 
 theorem norm_eq_zpow (F : Type) [Field F] [NumberField F] (v : IsDedekindDomain.HeightOneSpectrum (𝓞 F))
     (x : Fv F v) (hx : x ≠ 0) : ∃ k : ℤ, ‖x‖ = (Ideal.absNorm v.asIdeal : ℝ) ^ k := by

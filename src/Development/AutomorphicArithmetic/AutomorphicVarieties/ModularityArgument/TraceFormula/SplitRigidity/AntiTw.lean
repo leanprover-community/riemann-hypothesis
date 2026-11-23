@@ -73,7 +73,7 @@ theorem UpperTheory.V.Z.Tf.SR.antiTw :
     have h := congrArg (fun P : CG E n => (P.infChar v.embedding).sum) hij'
     simp only [(hinf n _ π v).1, Multiset.sum_map_add, Multiset.map_const', Multiset.sum_replicate,
       Multiset.map_id', Multiset.card_map, CG.card_infChar, nsmul_eq_mul] at h
-    have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+    have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast (omega : n ≠ 0)
     have he0 : (e v : ℂ) ≠ 0 := by
       have : e v ≠ 0 := fun h0 => by
         have := hμ.2.2.2.1 v

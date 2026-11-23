@@ -200,7 +200,7 @@ theorem moderate_growth_of : D0 → N0 → P2 → U0 → U2 → V1 → ThetaDeca
     have hNs : s + 1 ≤ (N : ℝ) := by rw [hN]; push_cast; linarith [Nat.le_ceil s]
     obtain ⟨C1, hC1⟩ := hG4b _ hΦc.isCompact k le_rfl
     obtain ⟨C2, hC2⟩ := hG4b _ hΦc.isCompact (k * N) (Nat.le_mul_of_pos_right k (by omega))
-    have hkR : (k : ℝ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+    have hkR : (k : ℝ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
     have e1 : -((k : ℕ) : ℝ) / k = -1 := by field_simp
     have e2 : -(((k * N : ℕ)) : ℝ) / k = -(N : ℝ) := by push_cast; field_simp
     rw [e1] at hC1; rw [e2] at hC2

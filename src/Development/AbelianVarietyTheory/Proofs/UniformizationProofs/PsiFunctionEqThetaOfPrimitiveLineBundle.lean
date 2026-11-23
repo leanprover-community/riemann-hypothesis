@@ -85,7 +85,7 @@ theorem star_smul_injective {O : Type} [CommRing O] [StarRing O] {X : Type} [Add
     (h : star a • x = star a • y) : x = y := by
   have h2 := congrArg (a • ·) h
   simp only [smul_smul, hN, Nat.cast_smul_eq_nsmul] at h2
-  have hN0 : (N : ℤ) ≠ 0 := by exact_mod_cast (by omega : N ≠ 0)
+  have hN0 : (N : ℤ) ≠ 0 := by exact_mod_cast (omega : N ≠ 0)
   have h3 : (N : ℤ) • (x - y) = 0 := by
     rw [smul_sub, natCast_zsmul, natCast_zsmul, h2, sub_self]
   exact sub_eq_zero.1 ((smul_eq_zero.1 h3).resolve_left hN0)

@@ -292,7 +292,7 @@ theorem mid_bound (m A c D X Y : ℝ) (g n s k f j x x' : ℕ) (hm : 0 ≤ m) (h
     m * X ^ ((k : ℝ) / 2) * Y ^ (6 * (j : ℝ) + 9 + 4 * c) * A *
       ((32 / (g : ℝ)) ^ (k * f) * ((4 * k * f : ℕ) : ℝ) ^ (4 * f) * Y ^ 7) ^ s := by
   have n0 : (0 : ℝ) < n := by exact_mod_cast hn
-  have g0 : (0 : ℝ) < g := by exact_mod_cast (by omega : 0 < g)
+  have g0 : (0 : ℝ) < g := by exact_mod_cast (omega : 0 < g)
   have D0 : 0 < D := by linarith
   have X0 : 0 < X := by linarith
   have hXY : X ≤ Y := by rw [hY]; exact le_mul_of_one_le_right X0.le (one_le_pow₀ hD)

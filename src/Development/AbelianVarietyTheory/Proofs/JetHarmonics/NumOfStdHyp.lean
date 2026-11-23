@@ -176,7 +176,7 @@ theorem num_of_stdHyp : ∀ Cq : ℝ, 0 ≤ Cq → ∃ Cg₀ : ℝ, ∀ (Ch Cg :
   set ga : ℝ := max (Cg * ((2 * P.r + 2 : ℕ) : ℝ) ^ 3) (200 * d) with hgadef
   have hall : AllGaps lam ga := fun s s' hs => max_le (hga s s' hs) (hgd s s' hs)
   have hm3 : (1 : ℝ) ≤ ((2 * P.r + 2 : ℕ) : ℝ) ^ 3 :=
-    one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * P.r + 2))
+    one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ 2 * P.r + 2))
   have hq' : 100 * ((q0 : ℝ) + 1) ≤ ga := by
     have h1 : Cg * ((2 * P.r + 2 : ℕ) : ℝ) ^ 3 ≤ ga := le_max_left _ _
     have h2 : 200 * d ≤ ga := le_max_right _ _

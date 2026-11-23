@@ -43,7 +43,7 @@ theorem b_ge_one_section_B (D : D7) (sc : Scale) (C0 Δ : ℝ) (w : ℕ → D.wh
   obtain ⟨hpi, hlogv, hf, hmk, hk, hg, hΔ, hv1, hv2, hu1, hu2, hu3, hw, hinc, hb0, hgap⟩ := hB
   have hL := scale_one_le_L sc
   have hkpos : (0 : ℝ) < D.R.k := by
-    have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+    have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
     nlinarith
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have : 0 < D.R.k := by exact_mod_cast hkpos
@@ -95,7 +95,7 @@ theorem log_weight_minus_log_b_bound (D : D7) (sc : Scale) (C0 Δ : ℝ) (w : �
   have hL := scale_one_le_L sc
   have hx := sc.one_lt_alt
   have hkpos : (0 : ℝ) < D.R.k := by
-    have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+    have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
     nlinarith
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have : 0 < D.R.k := by exact_mod_cast hkpos
@@ -170,7 +170,7 @@ theorem place_dimension_lower_bound (D : D7) (sc : Scale) (C0 Δ : ℝ) (w : ℕ
       Real.log_mul (by linarith) (Real.exp_pos _).ne', Real.log_exp, hLd]
     ring
   rw [h8] at hVV
-  have hkpos : (0 : ℝ) < D.R.k := by exact_mod_cast (by omega : 0 < D.R.k)
+  have hkpos : (0 : ℝ) < D.R.k := by exact_mod_cast (omega : 0 < D.R.k)
   have hlogk : Real.log D.R.k ≤ sc.L := le_trans (Real.log_le_log hkpos (by linarith)) h2k
   have hm1 := mul_le_mul_of_nonneg_left hx hkpos.le
   have hm2' := mul_le_mul_of_nonneg_left hlogk hkpos.le

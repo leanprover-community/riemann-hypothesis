@@ -92,7 +92,7 @@ theorem intersected_integral : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
     rw [← WithZero.log_one]
     exact (WithZero.log_le_log (valV_ne_zero hx) one_ne_zero).2 hv
   have h0v : (0 : ℝ) ≤ (vV T.V (io (s * ∏ τ : E →+* ℂ, embK c τ A.p.det ^ Dw.mult τ)) : ℝ) := by
-    simp only [vV]; exact_mod_cast (by omega)
+    simp only [vV]; exact_mod_cast (omega)
   exact EReal.coe_nonneg.2 (div_nonneg h0v (Nat.cast_nonneg _))
 
 end GlobalTheory.LatticeIndex

@@ -152,10 +152,10 @@ theorem rank_mul_conductor_div_le_one {C : ℝ} (hC : 2 ≤ C) {p n' m r : ℕ} 
     · exact h0
   have hr' : (2 : ℝ) ≤ r := by exact_mod_cast hr
   have hY' : (2 : ℝ) ≤ Y := hr'.trans hY
-  have hp' : (1 : ℝ) ≤ p := by exact_mod_cast (by omega : 1 ≤ p)
+  have hp' : (1 : ℝ) ≤ p := by exact_mod_cast (omega : 1 ≤ p)
   have hQ : (1 : ℝ) ≤ (p : ℝ) ^ goodG' r de h x := one_le_pow₀ hp'
-  have hcS' : (8 : ℝ) ≤ cStar := by exact_mod_cast (by omega : 8 ≤ cStar)
-  have hk : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ m + 1)
+  have hcS' : (8 : ℝ) ≤ cStar := by exact_mod_cast (omega : 8 ≤ cStar)
+  have hk : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ m + 1)
   have hN : (1 : ℝ) ≤ (TT.card : ℝ) := by exact_mod_cast hcard
   obtain ⟨ha, hkc⟩ := num_size C ((m + 1 : ℕ) : ℝ) r TT.card (p ^ goodG' r de h x) cStar c0
     (2 * r * n' * cpp) Y a hC hk hr' hN hQ hcS' (Nat.cast_nonneg _) (by positivity) hY' hsz

@@ -173,7 +173,7 @@ theorem room_four : ∃ C₀ : ℝ → ℝ → ℝ → ℝ, (∀ a b c, 0 ≤ C�
     have := Nat.one_le_two_pow (n := D.R.e)
     omega
   have hf1 : (1 : ℝ) ≤ D.R.f := by exact_mod_cast hfN
-  have hr1 : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 1 ≤ D.R.r)
+  have hr1 : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 1 ≤ D.R.r)
   have hm2 := D.R.two_le_m
   have hmk := D.R.m_add_three_le_k
   have hkr : (D.R.k : ℝ) ≤ D.R.r := by
@@ -218,8 +218,8 @@ theorem room_four : ∃ C₀ : ℝ → ℝ → ℝ → ℝ, (∀ a b c, 0 ≤ C�
   have hg0 := (D.host.g_prime 0).one_le
   have hg1 := (D.host.g_prime 1).one_le
   have hlg : Real.log ((D.host.g 0 * D.host.g 1 : ℕ) : ℝ) ≤ K * z := by
-    have e0 : ((D.host.g 0 : ℕ) : ℝ) ≠ 0 := by exact_mod_cast (by omega : D.host.g 0 ≠ 0)
-    have e1 : ((D.host.g 1 : ℕ) : ℝ) ≠ 0 := by exact_mod_cast (by omega : D.host.g 1 ≠ 0)
+    have e0 : ((D.host.g 0 : ℕ) : ℝ) ≠ 0 := by exact_mod_cast (omega : D.host.g 0 ≠ 0)
+    have e1 : ((D.host.g 1 : ℕ) : ℝ) ≠ 0 := by exact_mod_cast (omega : D.host.g 1 ≠ 0)
     rw [Nat.cast_mul, Real.log_mul e0 e1]
     have := hg 0
     have := hg 1

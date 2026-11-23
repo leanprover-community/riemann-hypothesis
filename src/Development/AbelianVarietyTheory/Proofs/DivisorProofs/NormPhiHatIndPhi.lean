@@ -305,8 +305,8 @@ theorem homN_raw_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (T : CoreJ D) (j : �
   have he2 : 2 ≤ Real.exp Lb := by have := Real.add_one_le_exp Lb; linarith
   have hpow : ∀ (x : ℝ) (m : ℕ), 0 < x → Real.log x ≤ m * Lb → x ≤ Real.exp Lb ^ m := fun x m h1 h2 => by
     rw [← Real.exp_nat_mul]; exact (Real.log_le_iff_le_exp h1).1 h2
-  have hM0 : (0 : ℝ) < Y.d.l₂.M := by have := Y.d.l₂.three_le; exact_mod_cast (by omega : 0 < Y.d.l₂.M)
-  have hdd : (0 : ℝ) < D.host.d := by have := D.host.qd_big.2; exact_mod_cast (by omega : 0 < D.host.d)
+  have hM0 : (0 : ℝ) < Y.d.l₂.M := by have := Y.d.l₂.three_le; exact_mod_cast (omega : 0 < Y.d.l₂.M)
+  have hdd : (0 : ℝ) < D.host.d := by have := D.host.qd_big.2; exact_mod_cast (omega : 0 < D.host.d)
   have hrde := hpow (ReciprocityTheory.ChartRestriction.G.FD.rdE D.host.E) 3 (by linarith) (by exact_mod_cast hrdL)
   have hep : (Real.exp Lb ^ 57)⁻¹ ≤ LevGeo.epsLev D.host.E D.host.d Y.d.l₂.M (3 * sizeK (T.Q.Dw j) a n) := by
     refine inv_pow_le_epStar he2 hM0 (hpow _ 30 hM0 (by exact_mod_cast hM)) (Real.sqrt_pos.2 hdd)

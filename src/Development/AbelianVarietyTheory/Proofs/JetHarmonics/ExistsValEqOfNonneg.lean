@@ -77,7 +77,7 @@ theorem nuGe_of_single (hϖ : Irreducible ϖ) (hQ : QForm.IsQ D.toPre ϖ Q) (hv 
   by_cases hβ : ∃ mu, α + k • mu = β
   · obtain ⟨m0, rfl⟩ := hβ
     have H := SectionScalarValuation.fe_move hϖ hQ hv k m0 α s h
-    have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+    have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
     have e : r + (Q α : ℚ) / k + ((k * Q m0 + QForm.bOf D.toPre Q m0 α : ℤ) : ℚ) = r + (Q (α + k • m0) : ℚ) / k := by
       rw [q_shift hϖ hQ α m0 k]; push_cast; field_simp; ring
     rwa [e] at H
@@ -118,7 +118,7 @@ theorem main : Laws → TwistBCSpanStatement → TWM.VRatioGtStatement → UUSta
   have hQ0 : (0 : ℚ) ≤ Q χ₀ := by
     by_cases hχ : χ₀ = 0
     · subst hχ; rw [QForm.Q_zero hϖ D hQ]; simp
-    · have := QForm.Q_pos hϖ D hQ hχ; exact_mod_cast (by omega : (0 : ℤ) ≤ Q χ₀)
+    · have := QForm.Q_pos hϖ D hQ hχ; exact_mod_cast (omega : (0 : ℤ) ≤ Q χ₀)
   obtain ⟨c, hc⟩ := exists_val_eq_of_nonneg hv (div_nonneg hQ0 (Nat.cast_nonneg k))
   obtain ⟨s₀, rfl, hs₀⟩ := GlobalTheory.FamFree.exists_fam_single hG D.tau_bimult hk1 χ₀ σ
   have hsupp : ∀ β : D.toPre.X, (∀ mu, χ₀ + k • mu ≠ β) → ∀ j, ((c • s₀).s β).f j = 0 := fun β hβ j => by
@@ -150,8 +150,8 @@ theorem main : Laws → TwistBCSpanStatement → TWM.VRatioGtStatement → UUSta
     obtain ⟨y, hy, hvy⟩ := GlobalTheory.PhiValue.main hL hTW hVR hUU V ϖ hϖ D Q hQ F v hv (k * N) hkN p w hw ζ hζ hfin
       s' t h hΦ hsm (star a • χ₀) m hm _ hpull
     refine ⟨y, hy, hvy.trans (congrArg _ ?_)⟩
-    have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
-    have hN0 : (N : ℚ) ≠ 0 := by exact_mod_cast (by omega : N ≠ 0)
+    have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
+    have hN0 : (N : ℚ) ≠ 0 := by exact_mod_cast (omega : N ≠ 0)
     rw [QuadraticAlgebraValuation.qAl_of hL V ϖ hϖ D Q hQ O oa a N haa haa' χ₀]
     push_cast
     field_simp

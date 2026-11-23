@@ -55,7 +55,7 @@ theorem mellin_Gchi_of_ne_one_int (n : ℕ) (hn : 1 ≤ n) (s : ℂ) (hs : 1 < s
   obtain ⟨h0, h1⟩ := mellin_Gchi_of_ne_one_ne hs
   apply Integrable.of_integral_ne_zero
   rw [mellin_ramp n hn s hs]
-  have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  have hnC : (n : ℂ) ≠ 0 := by exact_mod_cast (omega : n ≠ 0)
   exact div_ne_zero (cpow_ne_zero_iff.mpr (Or.inl hnC)) (mul_ne_zero h0 h1)
 
 theorem mellin_Gchi_of_ne_one_norm (n : ℕ) (hn : 1 ≤ n) (s : ℂ) (hs : 1 < s.re) :

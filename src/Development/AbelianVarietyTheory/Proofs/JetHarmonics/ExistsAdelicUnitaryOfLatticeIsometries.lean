@@ -63,7 +63,7 @@ theorem exists_adelic_of_isometry : ∀ (D : D7) (V : HSp D) (H : ReciprocityThe
       rw [h] at this
       have hd : (D.host.d : D.host.E) ≠ 0 := by
         have := D.host.qd_big.2
-        exact_mod_cast (by omega : D.host.d ≠ 0)
+        exact_mod_cast (omega : D.host.d ≠ 0)
       apply hd
       linear_combination this
     exact div_ne_zero (by norm_num) (mul_ne_zero h1 h2)

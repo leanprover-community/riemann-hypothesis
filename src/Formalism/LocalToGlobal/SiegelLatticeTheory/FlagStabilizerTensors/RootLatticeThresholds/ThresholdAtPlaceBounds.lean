@@ -122,7 +122,7 @@ theorem first_size_lower_bound {large₂ : SizeData₂ D} {C0 C' Cl Cg cb Cu cT 
   have hk3 := D.R.m_add_three_le_k
   have h1m : (1 : ℕ) ≤ D.R.m := by omega
   have hb := h8 τ 1 le_rfl h1m
-  have hkpos : (0 : ℝ) < (D.R.k : ℝ) := by exact_mod_cast (by omega : 0 < D.R.k)
+  have hkpos : (0 : ℝ) < (D.R.k : ℝ) := by exact_mod_cast (omega : 0 < D.R.k)
   have hk : (0 : ℝ) < (D.R.k : ℝ) ^ Cl := Real.rpow_pos_of_pos hkpos _
   have hkb : (D.R.k : ℝ) ^ Cl ≤ bOne D τ 1 := le_trans (le_max_left _ _) (h16 τ 1 le_rfl h1m).1
   dsimp only [Formalism.MainNotions.BridgeLemma.cfgOf]
@@ -155,7 +155,7 @@ theorem thrSet_pos_at {large₂ : SizeData₂ D} {C0 C' Cl Cg cb Cu cT CT : ℝ}
   have hrk : (D.R.rS : ℝ) + 1 ≤ D.R.k := by
     have h1 := Formalism.MainNotions.BridgeLemma.m_eq D
     have h2 := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : D.R.rS + 1 ≤ D.R.k)
+    exact_mod_cast (omega : D.R.rS + 1 ≤ D.R.k)
   have hN : (Formalism.L2.SG.SpectralTiesReal.gOf D e).N = 4 * 5 * ((D.R.rS : ℝ) + 1) := rfl
   have hr0 : (0 : ℝ) ≤ D.R.rS := Nat.cast_nonneg _
   have hN3 : (Formalism.L2.SG.SpectralTiesReal.gOf D e).N ^ 3 ≤ D.s.Del / 2 := by

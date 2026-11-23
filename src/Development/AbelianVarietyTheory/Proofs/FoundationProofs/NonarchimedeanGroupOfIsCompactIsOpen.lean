@@ -61,14 +61,12 @@ theorem nonarchimedeanGroup_of_isCompact_isOpen {H : Type} [Group H] [Topologica
     exact ⟨N.toOpenSubgroup, hN.trans interior_subset⟩⟩
   NonarchimedeanGroup.nonarchimedean_of_emb K.subtype ho.isOpenEmbedding_subtypeVal
 
-section General
 
 variable {G : Type} [Group G] {K : Subgroup G} {Φ : G → ℂ}
 
 
 variable [TopologicalSpace G] [ContinuousMul G]
 
-end General
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
 

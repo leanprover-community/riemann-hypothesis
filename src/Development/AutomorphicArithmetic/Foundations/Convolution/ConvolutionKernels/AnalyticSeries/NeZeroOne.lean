@@ -80,7 +80,7 @@ theorem norm_eq_re (hS : Sys q X d A) {ι : Type} [Fintype ι] (x : ι → X) (�
     ‖∑ i, ∑ j, ∑' p, lterm q (A (x i)) (A (x j)) σ p‖ = (∑ i, ∑ j, ∑' p, lterm q (A (x i)) (A (x j)) σ p).re := by
   have hq : ∀ w, (0 : ℝ) < q w := fun w => by
     have := hS.primes.two w
-    exact_mod_cast (by omega : 0 < q w)
+    exact_mod_cast (omega : 0 < q w)
   have hs : ∀ i j, Summable fun p => lterm q (A (x i)) (A (x j)) σ p := fun i j =>
     ((conv1 W q X d A hS (x i) (x j)).1 σ hσ).of_norm
   have e : ∑ i, ∑ j, ∑' p, lterm q (A (x i)) (A (x j)) σ p =

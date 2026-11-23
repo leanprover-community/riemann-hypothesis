@@ -124,7 +124,7 @@ theorem scalar_majorant_weak_threshold : Formalism.FourierDecayAlt.P.WeakThresho
   set c := max cW cW' with hc_def
   set C4 := max 1 (C3 * c ^ (6 * r)) with hC4_def
   set NN : ℝ := ((2 * r + k + 1 : ℕ) : ℝ) with hNN
-  have hNN1 : 1 ≤ NN := by rw [hNN]; exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
+  have hNN1 : 1 ≤ NN := by rw [hNN]; exact_mod_cast (omega : 1 ≤ 2 * r + k + 1)
   set Λ1 := max 1 (NN * c ^ 2 * C4 ^ 2) with hΛ1_def
   have hΛ1 : 1 ≤ Λ1 := le_max_left _ _
   set A1 := A - 6 * (r : ℝ) * (m : ℝ) with hA1_def

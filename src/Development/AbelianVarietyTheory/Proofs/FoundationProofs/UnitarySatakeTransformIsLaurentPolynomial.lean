@@ -116,7 +116,7 @@ theorem satU_laurent : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicat
   intro L _ _ ϖ σ q n hU h hh
   have hq : (q : ℂ) ≠ 0 := by
     have := hU.2.2.2.2.2.1
-    exact_mod_cast (by omega : q ≠ 0)
+    exact_mod_cast (omega : q ≠ 0)
   let f : (Fin (n / 2) → ℤ) → ℂ := fun a =>
     (∏ i : Fin (n / 2), (q : ℂ) ^ (-(a i) * ((n : ℤ) - 1 - 2 * (i.val : ℤ)))) * cellSum ϖ h a
   have hf : (Function.support f).Finite := (finite_cellSum hU hh).subset fun a ha => right_ne_zero_of_mul ha

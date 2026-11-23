@@ -164,7 +164,7 @@ theorem keyDegree_of_keyFormulaPow (h : KeyFormulaPow) : KeyDegreeSt := by
   obtain ⟨N, hN, κ, hH, hF, hU, -, hA⟩ := h
   intro K _ _ x oa od nth nη hloc harch
   have hn : 1 ≤ N x.P.g := hN _
-  have hn' : (N x.P.g : ℝ) ≠ 0 := by exact_mod_cast (by omega : N x.P.g ≠ 0)
+  have hn' : (N x.P.g : ℝ) ≠ 0 := by exact_mod_cast (omega : N x.P.g ≠ 0)
   have hval : ∀ 𝔭 : HeightOneSpectrum (𝓞 K), 𝔭.valuation K (κ K x : K) =
       WithZero.exp (-(N x.P.g * (8 * oa 𝔭 - 4 * od 𝔭))) := fun 𝔭 => by
     obtain ⟨a, M, ⟨R, _, _, _, _, _, y, th', hth', v', hv', hR, ha, hM, hPB⟩, hoa, hod⟩ := hloc 𝔭

@@ -217,7 +217,6 @@ theorem exists_theta (hH : Hm.PosDef) (Λ : AddSubgroup (Fin g → ℂ)) [hd : D
     ThetaTranslSpan.span_eq_top hH Λ fun v => (hΛ v).1
   haveI : IsZLattice ℝ L := ⟨hsp⟩
   have hfactor : ∃ B : Matrix (Fin g) (Fin g) ℂ, IsUnit B ∧ Hm = star B * B := by
-    open scoped MatrixOrder in
       exact CStarAlgebra.isStrictlyPositive_iff_eq_star_mul_self.mp hH.isStrictlyPositive
   obtain ⟨B, hB, hY⟩ := hfactor
   let Φ : (Fin g → ℂ) ≃ₗ[ℂ] EuclideanSpace ℂ (Fin g) :=

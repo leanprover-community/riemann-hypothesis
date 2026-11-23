@@ -114,7 +114,7 @@ theorem _root_.GlobalTheory.WeylCell.WeylUnipotentShell.integral_depth_cell : �
     rw [hlev, hvol j, ENNReal.ofReal_pow (Nat.cast_nonneg q), ENNReal.ofReal_natCast]
   obtain ⟨hf, hlv⟩ := level_sets μ f V hmeas hV hV0
   let w : ℕ → ℝ := fun j => V j - if j = 0 then 0 else V (j - 1)
-  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast (by omega : 1 ≤ q)
+  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast (omega : 1 ≤ q)
   have hw0 : ∀ j, 0 ≤ w j := fun j => by
     simp only [w, V]
     split_ifs with h

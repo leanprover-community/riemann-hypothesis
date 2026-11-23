@@ -73,11 +73,11 @@ theorem nb_of {C : ℝ} (hC1 : 1 ≤ C) {p n' m r : ℕ} {TT : Finset (Fin n')} 
   obtain ⟨h1, h2, _, _, _, _, _, _, _, _, h11, h12⟩ := H
   have hr1 : 1 ≤ r := by omega
   have ha2 := hB.two_le_a
-  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (by omega : 1 ≤ p)
-  have hp1' : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (omega : 1 ≤ p)
+  have hp1' : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (omega : 1 < p)
   have hk7 : (7 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by
     have := hB.m_ge
-    exact_mod_cast (by omega : 7 ≤ m + 1)
+    exact_mod_cast (omega : 7 ≤ m + 1)
   have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by linarith
   have hN1 : (1 : ℝ) ≤ (TT.card : ℝ) := by exact_mod_cast hB.N_pos
   have hrr : (1 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr1
@@ -87,7 +87,7 @@ theorem nb_of {C : ℝ} (hC1 : 1 ≤ C) {p n' m r : ℕ} {TT : Finset (Fin n')} 
     omega
   have hQ1 : (1 : ℝ) ≤ (p : ℝ) ^ goodG' r de h x := one_le_pow₀ hp1
   have hcc : (1 : ℝ) ≤ (cStar : ℝ) + ((r : ℝ) * TT.card * c0 + 2 * r * n' * cpp) := by
-    have h8' : (1 : ℝ) ≤ (cStar : ℝ) := by exact_mod_cast (by omega : 1 ≤ cStar)
+    have h8' : (1 : ℝ) ≤ (cStar : ℝ) := by exact_mod_cast (omega : 1 ≤ cStar)
     have : (0 : ℝ) ≤ (r : ℝ) * TT.card * c0 + 2 * r * n' * cpp := by positivity
     linarith
   obtain ⟨z1, z2, z3⟩ := factor_le_product_seven C (((m + 1 : ℕ) : ℝ) ^ 3) ((r : ℝ) ^ 2) (TT.card : ℝ)
@@ -117,8 +117,8 @@ theorem kapFl_le {p n' m : ℕ} (hp : 2 ≤ p) {TT : Finset (Fin n')} {lam0 : Fi
     (ha2 : 2 ≤ a) (hℓ1 : 1 ≤ Real.logb p a)
     (hfd : ∀ s ∈ TT, a ≤ (flatDeg lam0 s : ℝ) ∧ (flatDeg lam0 s : ℝ) ≤ 2 * a) :
     (kapFl p (m + 1) (dT TT lam0) : ℝ) ≤ 20 * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a) := by
-  have hp1' : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 1 < p)
-  have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ m + 1)
+  have hp1' : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (omega : 1 < p)
+  have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ m + 1)
   unfold kapFl
   rw [Nat.cast_sum]
   simp only [Nat.cast_mul]

@@ -55,7 +55,7 @@ theorem sizes_large_of_power_bounds {D : D7} (L : SizeData₂ D) (h : SizesAt L)
     linarith
   · have hk1 : (1 : ℝ) ≤ D.R.k := by
       have := D.R.m_add_three_le_k
-      exact_mod_cast (by omega : 1 ≤ D.R.k)
+      exact_mod_cast (omega : 1 ≤ D.R.k)
     have hk5 : (D.R.k : ℝ) ≤ L.sc.x ^ (5 : ℝ) := by
       refine hK.2.trans (Real.rpow_le_rpow_of_exponent_le hx1.le ?_)
       unfold szTh

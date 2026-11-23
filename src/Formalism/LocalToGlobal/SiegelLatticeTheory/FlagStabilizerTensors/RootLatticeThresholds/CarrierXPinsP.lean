@@ -170,7 +170,7 @@ theorem carrierXSideP_of_leaves (Cb : ℝ) (hLift : LiftAt3 Cb) (hX : XLeavesP) 
     have : 1801 ≤ (gOf D e).k := le_trans (le_max_right _ _) hk
     have e1 : (gOf D e).k = D.R.k := rfl
     omega
-  have hn1 : (1 : ℝ) ≤ (D.R.r : ℝ) := by rw [hr]; exact_mod_cast (by omega : 1 ≤ 2 * D.R.rS + D.R.k + 1)
+  have hn1 : (1 : ℝ) ≤ (D.R.r : ℝ) := by rw [hr]; exact_mod_cast (omega : 1 ≤ 2 * D.R.rS + D.R.k + 1)
   have hn19 : 0 ≤ (D.R.r : ℝ) ^ 19 := by positivity
 
   have hh16 : 16 * Cl * (D.R.r : ℝ) ^ 19 ≤ Cl * (D.R.r : ℝ) ^ 19 * (D.R.f : ℝ) ^ 5 * L.sc.L := by

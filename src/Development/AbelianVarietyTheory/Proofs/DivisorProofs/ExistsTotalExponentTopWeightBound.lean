@@ -179,7 +179,7 @@ private theorem entries_top_bound (D : D7) (large₂ : SizeData₂ D) (hS : Glob
       le_trans (le_trans (Nat.le_add_right _ _) (Nat.le_add_right _ _)) (Nat.le_mul_of_pos_left _ (by omega))
     exact le_trans h1 (Nat.le_add_left _ _)
   have hScpos := large₂.Sc_pos
-  have htga : (D.R.t : ℝ) + 3 ≤ (gap D 1 : ℝ) := by exact_mod_cast (by omega : D.R.t + 3 ≤ gap D 1)
+  have htga : (D.R.t : ℝ) + 3 ≤ (gap D 1 : ℝ) := by exact_mod_cast (omega : D.R.t + 3 ≤ gap D 1)
   have hm1 : (3 : ℝ) ≤ (D.R.m : ℝ) + 1 := by
     have : (2 : ℝ) ≤ D.R.m := by exact_mod_cast hm2
     linarith
@@ -319,7 +319,7 @@ private theorem exponent_bound : ∃ CF0 : ℝ, ∀ CF : ℝ, CF0 ≤ CF → ∃
   have hm2 := D.R.two_le_m
   have hga : 2 * bigN D ^ 3 + 2 * sLen D + 3 ≤ gap D 1 := le_trans (le_max_right _ _) (le_max_left _ _)
   have hN3 : bigN D ≤ bigN D ^ 3 := Nat.le_self_pow (by norm_num) _
-  have hNga : (bigN D : ℝ) + 3 ≤ (gap D 1 : ℝ) := by exact_mod_cast (by omega : bigN D + 3 ≤ gap D 1)
+  have hNga : (bigN D : ℝ) + 3 ≤ (gap D 1 : ℝ) := by exact_mod_cast (omega : bigN D + 3 ≤ gap D 1)
   have hm1 : (3 : ℝ) ≤ (D.R.m : ℝ) + 1 := by
     have : (2 : ℝ) ≤ D.R.m := by exact_mod_cast hm2
     linarith

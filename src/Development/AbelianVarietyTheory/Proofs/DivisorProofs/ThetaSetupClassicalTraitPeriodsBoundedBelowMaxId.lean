@@ -181,7 +181,7 @@ theorem main : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix (Fin 8) (
   have hW : (0 : ℝ) ≤ W 0 0 := by exact_mod_cast (isE8_apply_zero_zero_pos hE).le
   have hNpos : (0 : ℝ) < X₁.S.N := by
     have := X₁.S.N_ge
-    exact_mod_cast (by omega : 0 < X₁.S.N)
+    exact_mod_cast (omega : 0 < X₁.S.N)
   have hb : (c.T.β x' x' : ℝ) ≤ c.T.β x x := by exact_mod_cast hle
   have h1 : τ.q (α₀ + X₁.S.N • v) ≤ (W 0 0 : ℝ) * (c.sc * c.T.β x x) :=
     hqle.trans (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hb hsc.le) hW)

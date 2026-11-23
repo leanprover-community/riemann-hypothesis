@@ -1489,7 +1489,7 @@ theorem D_gau_integrable (d : ℕ) (β : ℂ) (hβ : β ≠ 0) (δ : ℝ) (hδ :
       have : Module.finrank ℝ (Fin d → ℂ) = 2 * d := by
         simp [Module.finrank_pi_fintype, Complex.finrank_real_complex, mul_comm]
       rw [this]
-      exact_mod_cast (by omega : 2 * d < 2 * (d + 1))
+      exact_mod_cast (omega : 2 * d < 2 * (d + 1))
     have hint := (integrable_one_add_norm (μ := muPi β (Fin d)) hfin).const_mul
       (2 ^ (d + 1) * ((d + 1).factorial : ℝ) * Real.exp 1)
     refine hint.mono' (D_gau_continuous d 1).aestronglyMeasurable (Filter.Eventually.of_forall fun x => ?_)
@@ -1968,7 +1968,7 @@ theorem E_P_sym {φ : E → ℝ} {n : ℕ} (h3n : 3 ≤ n) (hφ : ContDiff ℝ n
     (hb : ∀ x ∈ Metric.closedBall (0 : E) r, ∀ i : ℕ, i ≤ n → ‖iteratedFDeriv ℝ i φ x‖ ≤ Γ) :
     Sym (Metric.closedBall (0 : E) r) (wt σ) 3 n ((Γ + Γ * (r + 1) ^ 2) * (r + 1) ^ n) (E_P φ) := by
   have h := Sym.of_vanish (f := E_P φ) 3 hr hσ hσ1 h3n (E_P_contDiff hφ) (E_P_bound (by omega) hφ hr hb)
-    (E_P_vanish (hφ.of_le (by exact_mod_cast (by omega : 2 ≤ n))) hc)
+    (E_P_vanish (hφ.of_le (by exact_mod_cast (omega : 2 ≤ n))) hc)
   exact_mod_cast h
 
 theorem E_P_fderiv_le {φ : E → ℝ} {n : ℕ} (h3n : 3 ≤ n) (hφ : ContDiff ℝ n φ) {r Γ : ℝ} (hr : 0 < r)
@@ -2010,7 +2010,7 @@ theorem E_Pe_sym {φ : E → ℝ} {n : ℕ} (h4n : 4 ≤ n) (hφ : ContDiff ℝ 
     (hσ : 0 < σ) (hσ1 : σ ≤ 1) (hc : fderiv ℝ φ 0 = 0)
     (hb : ∀ x ∈ Metric.closedBall (0 : E) r, ∀ i : ℕ, i ≤ n → ‖iteratedFDeriv ℝ i φ x‖ ≤ Γ) :
     Sym (Metric.closedBall (0 : E) r) (wt σ) 4 n ((Γ + Γ * (r + 1) ^ 2) * (r + 1) ^ n) (E_Pe φ) := by
-  have hv := E_P_vanish (hφ.of_le (by exact_mod_cast (by omega : 2 ≤ n))) hc
+  have hv := E_P_vanish (hφ.of_le (by exact_mod_cast (omega : 2 ≤ n))) hc
   have h := Sym.of_vanish (f := E_Pe φ) (M := Γ + Γ * (r + 1) ^ 2) 4 hr hσ hσ1 h4n (E_Pe_contDiff hφ) ?_ ?_
   · exact_mod_cast h
   · intro x hx i hi
@@ -2086,7 +2086,7 @@ theorem E_ph_sym {φ : E → ℝ} {N : ℕ} (hN : 1 ≤ N) (hφ : ContDiff ℝ (
     {s : ℝ} (hs : s ∈ Set.Icc (0 : ℝ) 1) :
     Sym (Metric.closedBall (0 : E) r) (wt σ) 1 N (Γ + Γ * (r + 1) ^ N)
       (fderiv ℝ (fun y => quad φ y + s * E_P φ y)) := by
-  have hφ2 : ContDiff ℝ 2 φ := hφ.of_le (by exact_mod_cast (by omega : 2 ≤ N + 1))
+  have hφ2 : ContDiff ℝ 2 φ := hφ.of_le (by exact_mod_cast (omega : 2 ≤ N + 1))
   rw [E_ph_fderiv hφ2]
   have h1 := Sym.const_smul (1 - s)
     (Sym.clm (A := Metric.closedBall (0 : E) r) (N := N) (fderiv ℝ (fderiv ℝ φ) 0) hσ)
@@ -2119,7 +2119,7 @@ theorem E_ph_low {d : ℕ} {φ : (Fin d → ℂ) → ℝ} {n : ℕ} (h3n : 3 ≤
   have hxρ : ‖x‖ ≤ ρ := by simpa using hx
   obtain ⟨l, hl⟩ := hl x hxr
   refine ⟨l, ?_⟩
-  rw [E_ph_fderiv' (hφ.of_le (by exact_mod_cast (by omega : 2 ≤ n)))]
+  rw [E_ph_fderiv' (hφ.of_le (by exact_mod_cast (omega : 2 ≤ n)))]
   have h1 := E_P_fderiv_le h3n hφ hr hc hb hxr
   set K := (Γ + Γ * (r + 1) ^ 2) * (r + 1) ^ n with hK
   have hK0 : 0 ≤ K := by
@@ -2179,7 +2179,7 @@ theorem E_est {q : ℕ} {C : ℝ} (hq : q ≤ 4) (hOB : E_OB d q β (Γ + Γ * (
     (hb : Sym (Metric.closedBall (0 : Fin d → ℂ) ρ) (wt (Real.sqrt τ)) (2 * (q : ℤ)) (d + 1 + q) K b) :
     ‖∫ x, osc (fun y => quad φ y + s * E_P φ y) τ x • b x ∂(muPi β (Fin d))‖ ≤ C * K * τ ^ (d + q) := by
   refine hOB (Metric.closedBall (0 : Fin d → ℂ) ρ) _ τ hτ ?_ ?_ ?_ V b K hK hbc hbs hb
-  · exact E_ph_contDiff (hph.smooth.of_le (by exact_mod_cast (by omega : d + 2 + q ≤ d + 6))) s
+  · exact E_ph_contDiff (hph.smooth.of_le (by exact_mod_cast (omega : d + 2 + q ≤ d + 6))) s
   · have h := E_ph_sym (N := d + 5) (by omega) hph.smooth hr (E_sqrt_pos hτ) (E_sqrt_le_one hτ1) hph.crit
       hph.bd hs
     exact (h.subset (Metric.closedBall_subset_closedBall hρr)).mono (fun x _ => E_wt_pos (E_sqrt_pos hτ) x)
@@ -2199,7 +2199,7 @@ theorem E_est_u {C : ℝ} (hOB : E_OB d 1 β (Γ * (r + 1) ^ (d + 5)) c₁ C)
     (hb : Sym (Metric.closedBall (0 : Fin d → ℂ) r) (wt (Real.sqrt τ)) 2 (d + 2) K b) :
     ‖∫ x, osc φ τ x • b x ∂(muPi β (Fin d))‖ ≤ C * K * τ ^ (d + 1) := by
   refine hOB (Metric.closedBall (0 : Fin d → ℂ) r) _ τ hτ ?_ ?_ hph.low V b K hK hbc hbs ?_
-  · exact hph.smooth.of_le (by exact_mod_cast (by omega : d + 2 + 1 ≤ d + 6))
+  · exact hph.smooth.of_le (by exact_mod_cast (omega : d + 2 + 1 ≤ d + 6))
   · have h := E_dphi_sym (N := d + 5) (by omega) hph.smooth hr (E_sqrt_pos hτ) (E_sqrt_le_one hτ1) hph.crit
       hph.bd
     exact h.mono (fun x _ => E_wt_pos (E_sqrt_pos hτ) x) (by omega) le_rfl
@@ -2477,7 +2477,7 @@ theorem E_u_sym (hr : 0 < r) (hρ0 : 0 < ρ) (hτ : 0 < τ) (hτ1 : τ ≤ 1) (h
   have hl := E_a_fderiv_le hbd
   have hS : 0 ≤ S := (norm_nonneg _).trans ha0
   have hA1 := model_amplitude_symbol (N := d + 2) hρ0 (fun i hi => hC i (by omega)) hr one_pos le_rfl ha0 hl
-  have had : ContDiff ℝ (d + 2 : ℕ) a := ha.of_le (by exact_mod_cast (by omega : d + 2 ≤ 2 * d + 2))
+  have had : ContDiff ℝ (d + 2 : ℕ) a := ha.of_le (by exact_mod_cast (omega : d + 2 ≤ 2 * d + 2))
   have hu : E_u d ρ a = a - modelAmplitude d ρ (a 0) (fderiv ℝ a 0) := rfl
   have h := Sym.of_vanish (f := E_u d ρ a) (M := S + 2 ^ (d + 2) * (Cχ * (r + 1) ^ (d + 2)) * (r + 2) * S) 2 hr
     (E_sqrt_pos hτ) (E_sqrt_le_one hτ1) (by omega) (had.sub hA1.1) ?_ ?_

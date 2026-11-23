@@ -45,7 +45,7 @@ private theorem gap_pow {C : Type} [CommGroup C] (x : C) (a b : ℤ) (m : ℕ)
 
 private theorem exp_ne (e : ℕ) (he : 1 ≤ e) (m : ℕ) (hm : 1 ≤ m) (i j : Fin 2) :
     (m : ℤ) * ((![(e : ℤ), -(e : ℤ)] : Fin 2 → ℤ) i - (![(e : ℤ), -(e : ℤ)] : Fin 2 → ℤ) j - 1) ≠ 0 := by
-  refine mul_ne_zero (by exact_mod_cast (by omega : m ≠ 0)) ?_
+  refine mul_ne_zero (by exact_mod_cast (omega : m ≠ 0)) ?_
   fin_cases i <;> fin_cases j <;> simp <;> omega
 
 private def decConj {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]

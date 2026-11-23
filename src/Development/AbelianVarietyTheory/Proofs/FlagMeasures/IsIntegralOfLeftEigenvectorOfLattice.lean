@@ -114,7 +114,7 @@ theorem trace_mem_of_nilpotent_mod_radical (E : Type) [Field E] [NumberField E] 
   let K := AlgebraicClosure E
   let f : E →+* K := algebraMap E K
   let R := integralClosure (𝓞 E) K
-  have hgE : (g : E) ≠ 0 := by exact_mod_cast (by omega : g ≠ 0)
+  have hgE : (g : E) ≠ 0 := by exact_mod_cast (omega : g ≠ 0)
   have hgK : (g : K) ≠ 0 := by
     have : f (g : E) ≠ 0 := by simpa only [map_ne_zero] using hgE
     simpa using this

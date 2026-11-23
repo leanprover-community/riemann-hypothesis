@@ -141,7 +141,7 @@ theorem card_isometric_embeddings : ∀ (E : Type) [CommRing E] (τ : E →+* E)
     rw [Nat.card_fun, hR.card, Nat.card_eq_fintype_card, Fintype.card_fin, pow_mul]
   have hq : (q : ℝ) ≠ 0 := by
     have := hR.one_lt
-    exact_mod_cast (by omega : q ≠ 0)
+    exact_mod_cast (omega : q ≠ 0)
   rw [card_eq_card_one S T g hg hgT, card_one_eq_orthonormal hR.inv S hS hSd,
     GlobalTheory.T.card_orthonormal_frames_hermitian_space E τ q ε hR n m hnm (Fin m → E) (HermSp.ofMatrix hR.inv S hS hSd) hcard,
     Finset.prod_mul_distrib, prod_pow_div _ hq n m hnm]

@@ -598,7 +598,7 @@ theorem segHyp_of {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (St : Std C0 Cde CE1 CE2 H 
       show (X.p : ℝ) ^ (segG X.TT j) ≤ (X.p : ℝ) ^ X.G'
       have hp : (1 : ℝ) ≤ (X.p : ℝ) := by
         have := St.p5
-        exact_mod_cast (by omega : 1 ≤ X.p)
+        exact_mod_cast (omega : 1 ≤ X.p)
       exact pow_le_pow_right₀ hp (St.segB j).1 }
 
 theorem ord_all {C0 Cde CE1 CE2 H Ct : ℝ} {X : Loc} (St : Std C0 Cde CE1 CE2 H X) (hCt : 30 ≤ Ct)
@@ -610,7 +610,7 @@ theorem ord_all {C0 Cde CE1 CE2 H Ct : ℝ} {X : Loc} (St : Std C0 Cde CE1 CE2 H
     ⟨_, rfl⟩
   have hp0 : (0 : ℝ) < (X.p : ℝ) := by
     have := St.p5
-    exact_mod_cast (by omega : 0 < X.p)
+    exact_mod_cast (omega : 0 < X.p)
   have hLa : 0 ≤ X.La C0 := by linarith [St.La1]
   have hb := St.bpos
   have hQ0 : 0 ≤ X.Q := by

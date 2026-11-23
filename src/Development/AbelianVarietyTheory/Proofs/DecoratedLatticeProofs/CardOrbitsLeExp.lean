@@ -85,7 +85,7 @@ theorem card_orbits_le_exp {D : D7} {N : NumDatum} {X : Fields} {s : Seam D X} {
   have hb : 1 ≤ Real.exp N.sc.L := Real.one_le_exp (by linarith)
   have hg0 : Real.exp N.sc.L ≤ N.g 0 := by
     refine le_trans ?_ (s2 0).1
-    have hk' : (1 : ℝ) ≤ N.R.k := by exact_mod_cast (by omega : 1 ≤ N.R.k)
+    have hk' : (1 : ℝ) ≤ N.R.k := by exact_mod_cast (omega : 1 ≤ N.R.k)
     have h1 : Real.exp N.sc.L ≤ (N.R.k : ℝ) * Real.exp N.sc.L := by nlinarith
     exact h1.trans (le_self_pow₀ (hb.trans h1) (by norm_num))
   have hlog := GlobalTheory.ColumnClassLog.log_le_of_count (Nat.card (MulAction.orbitRel.Quotient G' D')) N.R.f n N.Nm (N.g 0) (N.g 1)

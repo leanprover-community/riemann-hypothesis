@@ -87,7 +87,7 @@ theorem sumCls_le (S : Frames L r k) (φ : Set S.FrP → ℝ≥0∞) (c : ℝ≥
 theorem q_pow_le (S : Frames L r k) (e : ℤ) (he0 : 0 ≤ e) (he : e ≤ S.vth + S.a + S.vD) (m : ℕ) :
     (S.q : ℝ≥0∞) ^ (m * e.toNat) ≤ ENNReal.ofReal (S.Hp ^ m) := by
   have hq : 2 ≤ S.q := (GlobalTheory.UnramOrder.order_facts L S.ϖ S.ϖ_irr).2.2.2.2.2.2.1
-  have hq1 : (1 : ℝ) ≤ S.q := by exact_mod_cast (by omega : 1 ≤ S.q)
+  have hq1 : (1 : ℝ) ≤ S.q := by exact_mod_cast (omega : 1 ≤ S.q)
   rw [← ENNReal.ofReal_natCast, ← ENNReal.ofReal_pow (by positivity)]
   refine ENNReal.ofReal_le_ofReal ?_
   rw [mul_comm, pow_mul]

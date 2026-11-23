@@ -92,7 +92,7 @@ theorem two_le_gg_of_count_hypotheses {C' Cl Cg cb Cu cT CT C0 : ℝ} (hH : Cnt.
   have hb := d_two_le_b D large₂
   have hk : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have h0 : (2 : ℝ) ≤ ((D.R.k : ℝ) * large₂.sc.b) ^ 8 := by
     have : (2 : ℝ) ≤ (D.R.k : ℝ) * large₂.sc.b := by nlinarith
     calc (2 : ℝ) ≤ (D.R.k : ℝ) * large₂.sc.b := this

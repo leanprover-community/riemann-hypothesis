@@ -227,7 +227,7 @@ theorem CutDimLower.proof : CutDimLower.Statement.{u, w} := by
       | coe h =>
         have h1 : h ≤ 1 := by exact_mod_cast hQ
         have h2 : h + m = n + 1 + 1 := by exact_mod_cast key'
-        exact_mod_cast (by omega : n + 1 ≤ m)
+        exact_mod_cast (omega : n + 1 ≤ m)
 
 end
 

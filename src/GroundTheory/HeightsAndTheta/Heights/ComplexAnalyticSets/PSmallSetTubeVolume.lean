@@ -66,7 +66,7 @@ theorem withBot_enat_le_pred {x : WithBot ℕ∞} {d : ℕ} (h0 : 0 ≤ x) (h : 
       have hm : m < d := by exact_mod_cast h
       refine ⟨by omega, ?_⟩
       rw [← WithBot.coe_natCast]
-      exact WithBot.coe_le_coe.2 (by exact_mod_cast (by omega : m ≤ d - 1))
+      exact WithBot.coe_le_coe.2 (by exact_mod_cast (omega : m ≤ d - 1))
 
 theorem minimalPrime_tube_bound (h : PrimeTubeVolume.Statement) {n d : ℕ}
     {I : Ideal (MvPolynomial (Fin n) ℂ)} {K : Set (Fin n → ℂ)}

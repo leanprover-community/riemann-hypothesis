@@ -51,7 +51,7 @@ theorem core (m : ℕ) [Fact (∀ r : ℚ, r ^ 2 ≠ -(m : ℚ) + 1 * r)] (d : �
   classical
   obtain ⟨k, hk⟩ := hme
   have hk' : (m : ℤ) = 2 * k := by push_cast [hk]; ring
-  have hm1 : (1 : ℤ) ≤ m := by exact_mod_cast (by omega : 1 ≤ m)
+  have hm1 : (1 : ℤ) ≤ m := by exact_mod_cast (omega : 1 ≤ m)
   set w : 𝓞 (Kq m) := mkO m 0 1 with hw
   set v : 𝓞 (Kq m) := mkO m 1 (-1) with hv
   set P : Ideal (𝓞 (Kq m)) := Ideal.span {2, w} with hP

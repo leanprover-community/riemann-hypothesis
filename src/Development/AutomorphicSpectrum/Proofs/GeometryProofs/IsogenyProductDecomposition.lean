@@ -136,7 +136,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.isogeny_product_decomposition 
     obtain ⟨m, hmN⟩ : ∃ m, N = m + 1 := ⟨N - 1, by omega⟩
     have e := GlobalTheory.CMClaims.card_torsion_eq F (fun y => (onto y).imp fun _ h => h.symm) m
       (fun x hx => hmN ▸ kerN x hx)
-    have h0 : ((m + 2 : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (by omega : m + 2 ≠ 0)
+    have h0 : ((m + 2 : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (omega : m + 2 ≠ 0)
     rw [(GlobalTheory.CMClaims.laws.mulN _ Q (m + 2) (by omega)).2.2.2.2 ℂ t h0,
       (GlobalTheory.CMClaims.laws.mulN _ B (m + 2) (by omega)).2.2.2.2 ℂ t h0] at e
     have := Nat.pow_right_injective (by omega : 2 ≤ m + 2) e

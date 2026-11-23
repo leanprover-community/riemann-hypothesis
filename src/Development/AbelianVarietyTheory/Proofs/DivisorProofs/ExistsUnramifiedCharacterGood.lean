@@ -57,7 +57,7 @@ theorem chrW_pow_not_real {F E : Type} [Field F] [NumberField F] [Field E] [Numb
     rw [norm_pow, hn, one_pow, Complex.norm_real, Real.norm_eq_abs] at e
     exact e.symm
   have hsq : r ^ 2 = 1 := by rw [← sq_abs, hr1, one_pow]
-  apply h ((2 * m : ℕ) : ℤ) (by exact_mod_cast (by omega : 2 * m ≠ 0))
+  apply h ((2 * m : ℕ) : ℤ) (by exact_mod_cast (omega : 2 * m ≠ 0))
   apply Units.ext
   rw [zpow_natCast, Units.val_pow_eq_pow_val, Units.val_one, pow_mul', hr]
   exact_mod_cast hsq

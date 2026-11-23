@@ -86,7 +86,7 @@ theorem eFirst_ge_of_uLast_nonpos {R : Ranks} (P : HCParam R) (h : uLast P ≤ 0
   have h2 := P.gap_be ⟨0, m_pos R⟩
   have h5 : (R.k : ℚ) ≤ R.t := by
     have := R.rank_add_five_le
-    exact_mod_cast (by omega : R.k ≤ R.t)
+    exact_mod_cast (omega : R.k ≤ R.t)
   unfold uLast at h
   unfold eFirst
   linarith

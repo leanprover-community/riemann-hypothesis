@@ -90,7 +90,7 @@ theorem marked_of_congr {Xo : Moduli Dw l} {c : Coeff l} [Algebra c.F ℂ] {g : 
     A.Marked mk' := by
   intro a ha
   obtain ⟨u, hu, e'⟩ := hc a ha
-  have hM : (l.M : E) ≠ 0 := by have := l.three_le; exact_mod_cast (by omega : l.M ≠ 0)
+  have hM : (l.M : E) ≠ 0 := by have := l.three_le; exact_mod_cast (omega : l.M ≠ 0)
   have hadd : ∀ u v, pv X idx x (u + v) = pv X idx x u + pv X idx x v := fun u v => by
     unfold pv; rw [per_add]; rfl
   rw [h a ha, e', smul_add, ← Nat.cast_smul_eq_nsmul E, inv_smul_smul₀ hM, hadd, A.ex_add,

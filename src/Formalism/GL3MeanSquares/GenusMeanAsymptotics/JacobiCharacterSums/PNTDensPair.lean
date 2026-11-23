@@ -85,7 +85,7 @@ lemma norm_natCast_cpow_neg_le_one {n : ℕ} (hn : 1 ≤ n) {w : ℂ} (hw : 0 �
 
 lemma norm_cpow_step_le' {i U : ℕ} (hU : 1 ≤ U) (hi : U ≤ i) {w : ℂ} (hw : 0 ≤ w.re) :
     ‖(((i + 1 : ℕ) : ℂ) ^ (-w) - (i : ℂ) ^ (-w))‖ ≤ ‖w‖ / U := by
-  have hi1 : (1 : ℝ) ≤ i := by exact_mod_cast (by omega : 1 ≤ i)
+  have hi1 : (1 : ℝ) ≤ i := by exact_mod_cast (omega : 1 ≤ i)
   have h := norm_cpow_neg_sub_le (a := i) (b := (i : ℝ) + 1) hi1 (by linarith) hw
   have e1 : (((i : ℝ) : ℂ)) = (i : ℂ) := by push_cast; rfl
   have e2 : ((((i : ℝ) + 1 : ℝ)) : ℂ) = ((i + 1 : ℕ) : ℂ) := by push_cast; rfl
@@ -129,7 +129,7 @@ lemma norm_sum_twist_le (g : ℕ → ℂ) {m : ℝ} (hGs : ∀ k, ‖∑ i ∈ r
     refine (sum_le_sum hterm).trans ?_
     rw [sum_const, Nat.card_Ioc, nsmul_eq_mul]
     have hU0 : (0 : ℝ) < U := by exact_mod_cast hU
-    have hcnt : ((2 * U - 1 - U : ℕ) : ℝ) ≤ U := by exact_mod_cast (by omega : 2 * U - 1 - U ≤ U)
+    have hcnt : ((2 * U - 1 - U : ℕ) : ℝ) ≤ U := by exact_mod_cast (omega : 2 * U - 1 - U ≤ U)
     calc ((2 * U - 1 - U : ℕ) : ℝ) * (‖w‖ / U * m) ≤ U * (‖w‖ / U * m) :=
           mul_le_mul_of_nonneg_right hcnt (by positivity)
       _ = m * ‖w‖ := by field_simp

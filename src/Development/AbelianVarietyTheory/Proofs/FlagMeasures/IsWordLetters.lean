@@ -402,7 +402,7 @@ theorem tcrit_low (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 :
   have hk := D.R.m_add_three_le_k
   have hm2 := D.R.two_le_m
   have hm := m_eq D.R
-  have hkR : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 5 ≤ D.R.k)
+  have hkR : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 5 ≤ D.R.k)
   have hmR : (40 : ℝ) ≤ D.R.m := hCl.trans hClm
   have hf : (1 : ℝ) ≤ D.R.f := by
     have : 1 ≤ D.R.f := le_trans (by omega) D.R.m_le_f

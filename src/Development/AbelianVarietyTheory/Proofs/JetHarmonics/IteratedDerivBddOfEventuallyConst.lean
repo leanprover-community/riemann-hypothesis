@@ -289,7 +289,7 @@ private theorem inCC_real_smul_comp_Gf_of_inCC {k r : ℕ} {Wp Wq : Type} [Norme
       obtain ⟨U, f', hU, hgU, hf', hff⟩ := hf.1 g₀ hg₀
       refine ⟨U, f', hU, hgU, hf'.of_le ?_, hff⟩
       rw [hlen]
-      exact_mod_cast (by omega : u.length + v.length + w.length ≤ mm₀)
+      exact_mod_cast (omega : u.length + v.length + w.length ≤ mm₀)
     have hbound : ∀ w₁ w₂ : List (Bool × B.Mat k (j + ρ)), w₁.Sublist (wL u ++ wR (v ++ w.map nrm)) →
         w₂.Sublist (wL u ++ wR (v ++ w.map nrm)) → w₁.length + w₂.length = (wL u ++ wR (v ++ w.map nrm)).length →
         ‖Dw w₁ a g‖ * ‖Dw w₂ f g‖ ≤ Cφ * c * B.gN g ^ ((j : ℝ) * o + d * ((Q + o : ℕ) : ℝ) - A₀) := by

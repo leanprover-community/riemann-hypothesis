@@ -65,7 +65,7 @@ theorem dSfun_twist_restore : ∀ (D : D7) (c : Com D) (w : Twist D), w.Is c →
   obtain ⟨hS, hQS₀, hinj, hsplit, -⟩ := GlobalTheory.T.chainTwistPlaces_split_unramifiedQuotients D c w hw
   have ht : 0 < ((D.R.t : ℂ) / 2).re := by
     have h3 := D.R.three_m_lt_t
-    have h1 : (1 : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : 1 ≤ D.R.t)
+    have h1 : (1 : ℝ) ≤ D.R.t := by exact_mod_cast (omega : 1 ≤ D.R.t)
     simp only [Complex.div_ofNat_re, Complex.natCast_re]
     linarith
   set s : ℂ := (D.R.t : ℂ) / 2 with hs_def

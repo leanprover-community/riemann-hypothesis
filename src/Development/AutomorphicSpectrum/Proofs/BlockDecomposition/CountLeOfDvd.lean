@@ -227,8 +227,8 @@ lemma rel_of_pair (S : Multiset ℂ) (n : ℕ) (hS : Multiset.card S = n + 1) (q
 
 theorem gapPoly : PositivityTheory.Rg.Rs.GapPoly := by
   intro q n hq V _ _ B W U Z S hpos hcard h0S hZ0 hUW hZW hexp hZtop hrec hpair z hz
-  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (by omega : q ≠ 0)
-  have hqR : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
+  have hqR : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
 
   obtain ⟨s, hsdef⟩ : ∃ s : ℂ, s = (q : ℂ) ^ (((2 : ℕ) : ℂ)⁻¹) := ⟨_, rfl⟩
   have hs2 : s ^ 2 = q := by rw [hsdef]; exact Complex.cpow_nat_inv_pow _ (by norm_num)

@@ -212,7 +212,7 @@ theorem GlobalTheory.coeff_recovery_by_torsion_averages : ∀ (F : Type) [Field 
   choose j hj using hB
   refine ⟨(ha q).toFinset.sup j, fun k hk => ?_⟩
   have hN : 0 < n ^ k := pow_pos (by omega) k
-  have hn0 : (n : F) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  have hn0 : (n : F) ≠ 0 := by exact_mod_cast (omega : n ≠ 0)
   have key : ∀ α : X, (∃ z, α = c k + n ^ k • z) → (¬ ∀ k, ∃ z, α = c k + n ^ k • z) →
       (q : WithTop ℚ) ≤ v (a α) := by
     intro α h1 h2

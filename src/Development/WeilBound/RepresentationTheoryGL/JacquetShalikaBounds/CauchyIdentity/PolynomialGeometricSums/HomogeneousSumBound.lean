@@ -86,7 +86,7 @@ theorem entry_le (hG : HGen) {m m' : ℕ} (α : Fin m → ℂ) (A : ℝ) (hA : 0
     refine (hb p).trans ?_
     rw [mul_assoc]
     refine mul_le_mul ?_ (pow_le A hA p (l j) m' e1 e2) (by positivity) (by positivity)
-    exact pow_le_pow_left₀ (by positivity) (by exact_mod_cast (by omega : p + 1 ≤ l j + m' + 1)) m
+    exact pow_le_pow_left₀ (by positivity) (by exact_mod_cast (omega : p + 1 ≤ l j + m' + 1)) m
 
 theorem jt_le (hG : HGen) {m m' : ℕ} (α : Fin m → ℂ) (A : ℝ) (hA : 0 < A) (hα : ∀ i, ‖α i‖ ≤ A)
     (l : Fin m' → ℕ) : ‖jt α l‖ ≤ cjt m A l := by

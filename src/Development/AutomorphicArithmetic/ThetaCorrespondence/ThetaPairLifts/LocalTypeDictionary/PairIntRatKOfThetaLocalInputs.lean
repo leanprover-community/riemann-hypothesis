@@ -61,7 +61,7 @@ theorem _root_.GlobalTheory.T.pairIntRatK_of_thetaLocalInputs : _root_.GlobalThe
   refine ⟨_, ⟨l1, l2, fun s => (l3 s).trans ?_⟩, ?_⟩
   · have hlog : 0 ≤ Real.log large₂.sc.b := Real.log_nonneg (by linarith)
     have hsig : 0 ≤ sig ch.G := Finset.sum_nonneg fun v _ => mul_nonneg (Nat.cast_nonneg _) (Real.log_natCast_nonneg _)
-    have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+    have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
     have hCC : C0 ≤ C := le_of_max_le_left hC
     have h1 : C0 ≤ C * D.R.m := by nlinarith
     have h2 : (0 : ℝ) ≤ D.R.f * (bigN D : ℝ) ^ 2 * (Real.log large₂.sc.b + sig ch.G) * large₂.sc.b := by

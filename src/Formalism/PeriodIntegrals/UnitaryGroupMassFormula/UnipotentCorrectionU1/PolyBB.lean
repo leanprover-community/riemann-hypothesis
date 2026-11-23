@@ -135,7 +135,7 @@ lemma pb_Dw_clm {K : ℝ} (hK : 0 ≤ K) (w : List (Bool × B.Mat k r))
 lemma pb_clm (Λ : B.Mat k r →L[ℝ] ℂ) (hΛ : ∀ g, ‖Λ g‖ ≤ 1 * ‖g‖) : PG 1 (fun g => Λ g) := by
   refine ⟨Λ.contDiff, fun n => ?_⟩
   have hK1 : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by
-    exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
+    exact_mod_cast (omega : 1 ≤ 2 * r + k + 1)
   refine ⟨((2 * r + k + 1 : ℕ) : ℝ) ^ n, fun w hw hn g _ => ?_⟩
   obtain ⟨Λ', hΛ', hb⟩ := pb_Dw_clm (by linarith) w (fun x hx g => pb_dirL_le (hw x hx) g)
     Λ 1 zero_le_one hΛ

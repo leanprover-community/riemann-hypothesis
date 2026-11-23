@@ -168,7 +168,7 @@ theorem integral_comp_mul_left (h : IsUnramInv ϖ σ q) (μ : Measure L) [μ.IsA
     ∫ x, F (c * x) ∂μ = (q : ℂ) ^ (2 * ordL c) * ∫ x, F x ∂μ := by
   have hq : (q : ℝ) ≠ 0 := by
     have := h.2.2.2.2.2.1
-    exact_mod_cast (by omega : q ≠ 0)
+    exact_mod_cast (omega : q ≠ 0)
   have h1 := (Homeomorph.mulLeft₀ c hc).measurableEmbedding.integral_map (μ := μ) F
   have e : ⇑(Homeomorph.mulLeft₀ c hc) = fun x => c * x := rfl
   rw [e] at h1

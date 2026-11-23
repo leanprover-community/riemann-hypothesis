@@ -202,7 +202,7 @@ theorem half_prod {l l₂ : Level H} {pd : ℕ} {I : Ideal (𝓞 E)} (hM : l₂.
   have h0 : Ideal.span {(l.M : 𝓞 E)} ≠ 0 := by
     rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
     have := l.three_le
-    exact_mod_cast (by omega : l.M ≠ 0)
+    exact_mod_cast (omega : l.M ≠ 0)
   exact mul_left_cancel₀ h0 h1
 
 

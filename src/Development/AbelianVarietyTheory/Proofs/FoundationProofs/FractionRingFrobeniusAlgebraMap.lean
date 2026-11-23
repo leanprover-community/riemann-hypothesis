@@ -44,11 +44,9 @@ open IsLocalRing QuadraticAlgebra
 
 namespace GlobalTheory.SqrtUnif
 
-section Quadratic
 
 variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] {π : R}
 
-end Quadratic
 
 section Squares
 

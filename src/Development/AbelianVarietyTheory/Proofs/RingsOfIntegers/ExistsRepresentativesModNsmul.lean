@@ -49,8 +49,8 @@ theorem _root_.GlobalTheory.exists_representatives_mod_nsmul : ∀ (X : Type) [A
   classical
   set n := Module.finrank ℤ X
   let b : Basis (Fin n) ℤ X := Module.finBasis ℤ X
-  have hk0 : (k : ℤ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
-  have hkpos : (0 : ℤ) < k := by exact_mod_cast (by omega : 0 < k)
+  have hk0 : (k : ℤ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
+  have hkpos : (0 : ℤ) < k := by exact_mod_cast (omega : 0 < k)
   have coord : ∀ (x y : X) (j : Fin n), b.repr (x + k • y) j = b.repr x j + k * b.repr y j := by
     intro x y j
     rw [← Nat.cast_smul_eq_nsmul ℤ]

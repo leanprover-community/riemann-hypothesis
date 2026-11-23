@@ -75,7 +75,7 @@ private lemma exists_pos_le_norm_add_intCast_of_im_eq_zero {w : ℂ} (hw : w.im 
     push_cast at h'
     rw [abs_of_nonneg (by linarith)]
     exact (min_le_left _ _).trans (by linarith)
-  · have h' : ((⌊w.re⌋ + m : ℤ) : ℝ) ≤ -1 := by exact_mod_cast (by omega : ⌊w.re⌋ + m ≤ -1)
+  · have h' : ((⌊w.re⌋ + m : ℤ) : ℝ) ≤ -1 := by exact_mod_cast (omega : ⌊w.re⌋ + m ≤ -1)
     push_cast at h'
     rw [abs_of_neg (by linarith)]
     exact (min_le_right _ _).trans (by linarith)
@@ -88,7 +88,7 @@ private lemma tsum_one_div_add_int_pow_of_real_of_continuousAt {w : ℂ} (hw : w
   have hsum : Summable fun m : ℤ => 2 ^ k * (1 / ‖w + m‖ ^ k) := by
     refine Summable.mul_left _ ?_
     have h := (Real.summable_one_div_int_add_rpow w.re (k : ℝ)).2
-      (by exact_mod_cast (by omega : 1 < k))
+      (by exact_mod_cast (omega : 1 < k))
     refine h.congr fun m => ?_
     rw [Real.rpow_natCast, norm_add_intCast_eq_abs_of_im_eq_zero hw m]
   have hlow : ∀ (m : ℤ) (x : ℂ), x ∈ Metric.closedBall w (δ / 2) → ‖w + m‖ / 2 ≤ ‖x + m‖ := by

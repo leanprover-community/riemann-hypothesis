@@ -129,7 +129,7 @@ private theorem sf_loc {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberF
       omega
     have hea : (e : ℤ).natAbs = e := rfl
     rw [hea]
-    exact_mod_cast (by omega : 2 + padicValNat l (LDataCardLeFinrank.decImage L l (D.A v)).index + padicValNat l e ≤
+    exact_mod_cast (omega : 2 + padicValNat l (LDataCardLeFinrank.decImage L l (D.A v)).index + padicValNat l e ≤
       2 + Nat.log l n + e)
   calc _ ≤ ∑ _v : D.S, ((2 + Nat.log l n + e : ℕ) : ℕ∞) := Finset.sum_le_sum fun v _ => hv v
     _ ≤ _ := by

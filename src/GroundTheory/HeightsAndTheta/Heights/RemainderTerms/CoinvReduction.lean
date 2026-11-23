@@ -162,7 +162,7 @@ theorem exists_reduction (b : Fin f) (k : Fin n) :
     rw [hSh', Polynomial.leadingCoeff_divByMonic_of_monic hA'm]
     · simp
     · rw [Polynomial.degree_eq_natDegree hA'm.ne_zero, Polynomial.degree_X_pow, hA'deg]
-      exact_mod_cast (by omega : n - 1 - (k : ℕ) ≤ n)
+      exact_mod_cast (omega : n - 1 - (k : ℕ) ≤ n)
 
   set I := psumIdeal K f n
   have : Nontrivial (MvPolynomial (Fin f × Fin n) K ⧸ I) :=

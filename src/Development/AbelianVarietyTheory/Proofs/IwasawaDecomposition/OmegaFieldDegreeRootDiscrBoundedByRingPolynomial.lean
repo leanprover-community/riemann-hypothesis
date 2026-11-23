@@ -106,7 +106,7 @@ theorem sz_Om_poR : RayField → ∀ (P : Pre) (δ : FieldDat P) (L : ℝ), Host
   change Sz (δ.M' ⊔ δ.ray ⊔ cycField (rootOrder P) ⊔ δ.V) _ _
 
   obtain ⟨hG, -, hf8, -⟩ := roots_sizes P L hL
-  have hf0 : (0 : ℝ) < P.R.f := by have : 8 ≤ P.R.f := hf8; exact_mod_cast (by omega : 0 < P.R.f)
+  have hf0 : (0 : ℝ) < P.R.f := by have : 8 ≤ P.R.f := hf8; exact_mod_cast (omega : 0 < P.R.f)
   have hcl := GlobalTheory.log_classNumber_le_log_abs_discr_div P.host.E P.R.f hdeg
   rw [← hlE'] at hcl
   have hh0 : 0 < classNumber P.host.E := classNumber_pos _

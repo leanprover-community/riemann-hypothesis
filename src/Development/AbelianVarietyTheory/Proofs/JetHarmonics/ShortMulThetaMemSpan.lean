@@ -77,7 +77,7 @@ theorem card_quot (Dw : Datum H) {I : Ideal (𝓞 E)} (hI : I ≠ ⊥) :
 theorem mb_ne_bot (l : Level H) : l.Mb ≠ ⊥ ∧ Mfr l ≠ ⊥ := by
   have hM : (l.M : 𝓞 E) ≠ 0 := by
     have := l.three_le
-    exact_mod_cast (by omega : l.M ≠ 0)
+    exact_mod_cast (omega : l.M ≠ 0)
   have h : l.Mb * Mfr l ≠ ⊥ := by
     rw [Mfr, l.prod, Ne, Ideal.span_singleton_eq_bot]; exact hM
   exact ⟨fun e => h (by rw [e, Ideal.bot_mul]), fun e => h (by rw [e, Ideal.mul_bot])⟩

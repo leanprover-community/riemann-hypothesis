@@ -153,7 +153,7 @@ namespace GlobalTheory.SepReal
 open GlobalTheory.SepReal.PowDec in
 theorem decPow : DecPow := by
   intro m ε lam B hm hlam hgap _ H _ _ π hπ v₀ hv₀ g hg
-  have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast (by omega : 1 ≤ m)
+  have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast (omega : 1 ≤ m)
   have hdec := (GlobalTheory.DecGapBound.decGap_of_formulaGap GlobalTheory.Jet.FormGapFree.formulaGap m ε lam H π hlam hπ
     (1000 * (m : ℝ) ^ 3) hgap (gap_ok (by omega) ε) g hg v₀ hv₀.2 v₀ hv₀.2).1
   rw [hv₀.1, mul_one, mul_one] at hdec

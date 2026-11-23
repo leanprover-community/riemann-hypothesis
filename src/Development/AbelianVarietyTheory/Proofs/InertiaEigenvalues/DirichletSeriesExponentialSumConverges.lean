@@ -50,7 +50,7 @@ theorem powSum_conj (B : Multiset ℂ) (r : ℕ) :
 
 theorem natCast_cpow_eq_exp (q : ℕ) (hq : 1 < q) (r : ℕ) (x : ℝ) :
     (q : ℂ) ^ (-(((r : ℂ) + 1) * (x : ℂ))) = Complex.exp (-((((r : ℝ) + 1) * Real.log q : ℝ) : ℂ) * (x : ℂ)) := by
-  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (by omega : q ≠ 0)
+  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   rw [Complex.cpow_def_of_ne_zero hq0, ← Complex.natCast_log]
   congr 1
   push_cast

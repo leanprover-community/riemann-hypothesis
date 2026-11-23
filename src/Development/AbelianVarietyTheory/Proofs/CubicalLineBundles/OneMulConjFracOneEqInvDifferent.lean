@@ -251,7 +251,7 @@ theorem chowla_selberg_of_mean_log (h2 : finrank ℚ K = 2) (hD : discr K = -d) 
   rw [Finset.sum_neg_distrib, neg_div, ← neg_eq_iff_eq_neg] at h3
   rw [← h3] at h1
   refine ⟨h1, fun E _ _ _ _ 𝔄 h𝔄 L _ _ j τ => ?_⟩
-  have h4 : (0 : ℝ) < √d := Real.sqrt_pos.2 (by exact_mod_cast (by omega : 0 < d))
+  have h4 : (0 : ℝ) < √d := Real.sqrt_pos.2 (by exact_mod_cast (omega : 0 < d))
   have h5 : 0 < rootDiscr E := by
     rw [rootDiscr_def]
     exact Real.rpow_pos_of_pos (by exact_mod_cast abs_pos.2 (discr_ne_zero E)) _

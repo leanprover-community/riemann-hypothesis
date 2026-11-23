@@ -54,7 +54,7 @@ theorem powMul_bound_le {B L : ℝ} (hB : 0 ≤ B) (hL : 1 ≤ L) {p q i : ℕ} 
     (p : ℝ) ^ i * (B * L ^ q * (q : ℝ) ^ q) ≤ B * L ^ (p - 1) * (p : ℝ) ^ p := by
   have hp' : (1 : ℝ) ≤ p := by exact_mod_cast hp
   have h1 : (q : ℝ) ^ q ≤ (p : ℝ) ^ q :=
-    pow_le_pow_left₀ (Nat.cast_nonneg _) (by exact_mod_cast (by omega : q ≤ p)) _
+    pow_le_pow_left₀ (Nat.cast_nonneg _) (by exact_mod_cast (omega : q ≤ p)) _
   have h2 : (p : ℝ) ^ i * (p : ℝ) ^ q ≤ (p : ℝ) ^ p := by
     rw [← pow_add]; exact pow_le_pow_right₀ hp' (by omega)
   have h3 : L ^ q ≤ L ^ (p - 1) := pow_le_pow_right₀ hL (by omega)
@@ -76,7 +76,7 @@ theorem coefTerm_le {B L Ma : ℝ} (hB : 0 ≤ B) (hL : 1 ≤ L) (hMa : 0 ≤ Ma
     exact_mod_cast this
   have hiq : i ≤ p := by omega
   have h1 : (q : ℝ) ^ q ≤ (p : ℝ) ^ q :=
-    pow_le_pow_left₀ (Nat.cast_nonneg _) (by exact_mod_cast (by omega : q ≤ p)) _
+    pow_le_pow_left₀ (Nat.cast_nonneg _) (by exact_mod_cast (omega : q ≤ p)) _
   have h2 : (p : ℝ) ^ i * (p : ℝ) ^ q ≤ (p : ℝ) ^ p := by
     rw [← pow_add]; exact pow_le_pow_right₀ hp' (by omega)
   have h3 : L ^ q ≤ L ^ (p - i) := pow_le_pow_right₀ hL (by omega)

@@ -63,7 +63,7 @@ theorem glue_ranges : GlueOf := by
   have hη : 0 ≤ etaOf M := (etaOf_pos M hM).le
   have hy0 : 0 ≤ y := by linarith
   have hL : 0 ≤ Real.log y := Real.log_nonneg (by linarith)
-  have hlM : 0 < Real.log M := Real.log_pos (by exact_mod_cast (by omega : 1 < M))
+  have hlM : 0 < Real.log M := Real.log_pos (by exact_mod_cast (omega : 1 < M))
   have hA0 : 0 ≤ max A 0 := le_max_right _ _
   have hA0' : 0 ≤ max A' 0 := le_max_right _ _
   by_cases hr : Real.log M ≤ cA * Real.sqrt (Real.log y)

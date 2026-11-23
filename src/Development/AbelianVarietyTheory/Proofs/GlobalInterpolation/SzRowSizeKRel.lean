@@ -82,7 +82,7 @@ theorem sizeKRel_of_rankVal {D : D7} (L : SizeData₂ D) (hR : RankVal L.sc D.R)
   have hfk : (R.f : ℝ) ≤ R.k := by exact_mod_cast R.f_le_k
   have hfn : (R.f : ℝ) = 2 * R.n := by unfold Ranks.f; push_cast; ring
   have h2m' : (2 : ℝ) ≤ R.m := by exact_mod_cast h2m
-  have k5 : (5 : ℝ) ≤ R.k := by exact_mod_cast (by omega : 5 ≤ R.k)
+  have k5 : (5 : ℝ) ≤ R.k := by exact_mod_cast (omega : 5 ≤ R.k)
   have n0 : (0 : ℝ) ≤ R.n := by positivity
   have f0 : (0 : ℝ) ≤ R.f := by positivity
   have m0 : (0 : ℝ) ≤ R.m := by positivity

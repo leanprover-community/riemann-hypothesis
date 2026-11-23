@@ -121,7 +121,7 @@ theorem depth_bound_of_chars : Laws → Laws2 → Laws4 → TwistBaseChangeState
     Cc M₀ hred a p k hp' (by omega) haa hcop hpk (Σ t : {t // isV t}, Fin (rk t.1)) (fun l => e ⟨l.1.1, l.2⟩)
     (fun l => y₁ (l, b)) (fun l => τ l.1.1 a) (fun l => hV _ l.1.2) (fun l => he a ⟨l.1.1, l.2⟩) (hy₁ b) h hh ω hω1 hω
   have hD₁ : ((∑ t, ∑ s : Fin (rk t), m₁ t s * (s.val + 1) : ℕ) : ℚ) * θ ≤ D * θ :=
-    mul_le_mul_of_nonneg_right (by exact_mod_cast (by omega)) hθ0.le
+    mul_le_mul_of_nonneg_right (by exact_mod_cast (omega)) hθ0.le
   have hF₁ := val_eigen_columns y.v _ (fO_comp_eq y) y.B h hh H.w0 a p k hp'.ne_zero hpu hcop ω hω1 hω τ e he isV hV
     S col m₁ (fun t i ht => (hS t i).2 ht) hm₁ yy f₁ (fun b _ => hf₁ b)
     (fun b _ l hl mo => by

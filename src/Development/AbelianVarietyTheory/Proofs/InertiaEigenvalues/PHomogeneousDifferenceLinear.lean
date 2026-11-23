@@ -167,8 +167,8 @@ lemma slopes_const {p h s m : ℕ} (hp : 2 ≤ p) (hs : s < h) (hm : 1 ≤ m) (a
     (hbq : ∀ r : ℝ, 0 < r → r < 1 → b (r / (p:ℝ) ^ h) = b r + s)
     (hg : ∀ r : ℝ, 0 < r → r < 1 / (p:ℝ) → a (p * r) - m * b (p * r) = a r - m * b r) :
     ∀ r t : ℝ, 0 < r → r < 1 → 0 < t → t < 1 → a t - m * b t = a r - m * b r := by
-  have hp0 : (0:ℝ) < p := by exact_mod_cast (by omega : 0 < p)
-  have hp1 : (1:ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+  have hp0 : (0:ℝ) < p := by exact_mod_cast (omega : 0 < p)
+  have hp1 : (1:ℝ) < p := by exact_mod_cast (omega : 1 < p)
   obtain ⟨g, hgdef⟩ : ∃ g : ℝ → ℤ, ∀ r, g r = a r - m * b r := ⟨_, fun _ => rfl⟩
   have hper : ∀ r : ℝ, 0 < r → r < 1 → ∀ i : ℕ, g (r / (p:ℝ) ^ i) = g r := by
     intro r hr hr1 i
@@ -250,8 +250,8 @@ lemma slopes_const {p h s m : ℕ} (hp : 2 ≤ p) (hs : s < h) (hm : 1 ≤ m) (a
 
 theorem p_homogeneous_difference_linear : ∀ (p h s m : ℕ), 2 ≤ p → s < h → 1 ≤ m → ∀ A B : ℝ → ℝ, ConcaveOn ℝ (Set.Ioc 0 1) A → ConcaveOn ℝ (Set.Ioc 0 1) B → ContinuousOn A (Set.Ioc 0 1) → ContinuousOn B (Set.Ioc 0 1) → (∀ r ∈ Set.Ioo (0 : ℝ) 1, ∃ (k : ℤ) (δ : ℝ), 0 < δ ∧ r + δ ≤ 1 ∧ ∀ t ∈ Set.Icc r (r + δ), A t = A r + k * (t - r)) → (∀ r ∈ Set.Ioo (0 : ℝ) 1, ∃ (k : ℤ) (δ : ℝ), 0 < δ ∧ r + δ ≤ 1 ∧ ∀ t ∈ Set.Icc r (r + δ), B t = B r + k * (t - r)) → (∀ r ∈ Set.Ioc (0 : ℝ) 1, (p : ℝ) ^ h * B (r / (p : ℝ) ^ h) = B r + s * r) → (∀ r ∈ Set.Ioc (0 : ℝ) (1 / p), A (p * r) - m * B (p * r) = p * (A r - m * B r)) → ∃ n : ℤ, ∀ r ∈ Set.Ioc (0 : ℝ) 1, A r - m * B r = n * r := by
   intro p h s m hp hs hm A B hAc hBc hAcont hBcont hA hB hBq hG
-  have hp0 : (0:ℝ) < p := by exact_mod_cast (by omega : 0 < p)
-  have hp1 : (1:ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+  have hp0 : (0:ℝ) < p := by exact_mod_cast (omega : 0 < p)
+  have hp1 : (1:ℝ) < p := by exact_mod_cast (omega : 1 < p)
   have hq0 : (0:ℝ) < (p:ℝ) ^ h := by positivity
   have hq1 : (1:ℝ) ≤ (p:ℝ) ^ h := one_le_pow₀ hp1.le
   choose! kA δA hδA hδA1 hA' using hA

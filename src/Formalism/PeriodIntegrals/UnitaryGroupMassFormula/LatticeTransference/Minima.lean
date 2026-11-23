@@ -97,7 +97,7 @@ theorem minima_of_key (h : TransferenceKey) : TransferenceMinima := by
     omega
   obtain ⟨u0, hu0W, hu0ne⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
   have hu0pos : 0 < ‖u0‖ := norm_pos_iff.2 hu0ne
-  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast (by omega : 1 ≤ N)
+  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast (omega : 1 ≤ N)
   suffices hAB : A ≤ N / B by rwa [le_div_iff₀ hB] at hAB
   apply le_of_forall_pos_le_add
   intro ε hε

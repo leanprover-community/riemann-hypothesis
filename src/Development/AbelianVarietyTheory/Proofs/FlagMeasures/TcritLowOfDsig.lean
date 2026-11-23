@@ -70,7 +70,7 @@ theorem err_le (D : D7) {δ : ℝ} (hδ : 0 < δ) (h : 8 / Real.log (1 + δ) ≤
     Real.exp ((D.R.f : ℝ) * (2 : ℝ) ^ ((3 : ℝ) - D.R.k)) - 1 ≤ δ := by
   have hk := D.R.m_add_three_le_k
   have hm := D.R.two_le_m
-  have hkR : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 5 ≤ D.R.k)
+  have hkR : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 5 ≤ D.R.k)
   have hl : 0 < Real.log (1 + δ) := Real.log_pos (by linarith)
   have hf : (D.R.f : ℝ) ≤ D.R.k := by exact_mod_cast (show D.R.f ≤ D.R.k from D.R.f_le_k)
   have h2 : (D.R.k : ℝ) ^ 2 ≤ 2 ^ D.R.k := by exact_mod_cast sq_le_two_pow D.R.k (by omega)
@@ -139,7 +139,7 @@ theorem along_family :
       have hk : (5 : ℝ) ≤ (Fm.D x i).R.k := by
         have := (Fm.D x i).R.m_add_three_le_k
         have := (Fm.D x i).R.two_le_m
-        exact_mod_cast (by omega : 5 ≤ (Fm.D x i).R.k)
+        exact_mod_cast (omega : 5 ≤ (Fm.D x i).R.k)
       have hb : 1 ≤ (Fm.L x i).sc.b :=
         Real.one_le_exp (Real.rpow_nonneg (zero_le_one.trans (Fm.L x i).sc.one_lt_alt.le) _)
       have h1 : (4 : ℝ) ≤ (((Fm.D x i).R.k : ℝ) * (Fm.L x i).sc.b) ^ 8 :=

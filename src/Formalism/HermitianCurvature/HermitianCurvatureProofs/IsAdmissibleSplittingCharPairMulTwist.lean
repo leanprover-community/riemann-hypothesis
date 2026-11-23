@@ -4016,10 +4016,10 @@ theorem weightRatio : WeightRatioQ := by
   have hnn : ((P.k + 2 * P.r + 1 : ℕ) : ℝ) * Lb ≤ β - α := hn
   have hcardx : (((Finset.Icc 1 (P.k - 1)).card : ℕ) : ℝ) * Lb ≤ β - α := by
     refine le_trans (mul_le_mul_of_nonneg_right ?_ hLpos.le) hnn
-    rw [Nat.card_Icc]; exact_mod_cast (by omega)
+    rw [Nat.card_Icc]; exact_mod_cast (omega)
   have hcardq : (((Finset.Icc 1 P.k).card : ℕ) : ℝ) * Lb ≤ β - α := by
     refine le_trans (mul_le_mul_of_nonneg_right ?_ hLpos.le) hnn
-    rw [Nat.card_Icc]; exact_mod_cast (by omega)
+    rw [Nat.card_Icc]; exact_mod_cast (omega)
 
   have hrx : ∀ t ∈ Finset.Icc 1 (P.k - 1), -(M.rho P π t) ∉ Set.Ioo α β := fun t ht hin => by
     have h := (hsx _ ⟨hin.1.le, hin.2.le⟩).1
@@ -5519,7 +5519,7 @@ theorem sides (k l : ℕ) (u u' ρ : ℕ → ℝ) (α β : ℝ) (hk : 1 ≤ k) (
   have hinc : ∀ i ∈ Icc 1 (k - 1), ∀ j ∈ Icc 1 (k - 1), i < j → ρ j < ρ i := by
     intro i hi j hj hij
     have := rho_le k u u' ρ h i j (mem_Icc.1 hi).1 hij.le (mem_Icc.1 hj).2
-    have : (1 : ℝ) ≤ ((j - i : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ j - i)
+    have : (1 : ℝ) ≤ ((j - i : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ j - i)
     linarith
   constructor
   · refine ⟨fun j hj => ?_, fun i hi j hj hij => ?_, fun i h1 h2 => ?_, fun i h1 h2 => ?_, ?_, fun j h1 h2 => ?_,
@@ -6945,12 +6945,12 @@ theorem sep_of_up (P : M.Par) (hOK : P.OK) (πs πt : M.Ty P) (m : ℕ) (hm : m 
   rcases lt_trichotomy j m with hlt | heq | hgt
   · have h1 := rho_le P.k P.u P.u' (M.rho P πt) ht j m hj'.1 hlt.le hm'.2
     rw [hrho j hj, if_neg (ne_of_lt hlt), hrho m hm, if_pos rfl] at h1
-    have : (1 : ℝ) ≤ ((m - j : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ m - j)
+    have : (1 : ℝ) ≤ ((m - j : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ m - j)
     rw [abs_of_pos (by linarith)]; linarith
   · subst heq
     rw [show -M.rho P πs j - 1 - -M.rho P πs j = -1 by ring]; simp
   · have h1 := rho_le P.k P.u P.u' (M.rho P πs) hs m j hm'.1 hgt.le hj'.2
-    have : (1 : ℝ) ≤ ((j - m : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ j - m)
+    have : (1 : ℝ) ≤ ((j - m : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ j - m)
     rw [abs_of_neg (by linarith)]; linarith
 
 end
@@ -7044,7 +7044,7 @@ theorem Ctx.ss_bound (h : Ctx P l α β Lb Ntot w Y s) (q : Qp P.r P.TT) (v : Io
       rw [card_univ, Fintype.card_fin]
       have := h.hn
       have hL0 : 0 ≤ Lb := by linarith [h.hL2]
-      have : ((P.k - 1 : ℕ) : ℝ) ≤ ((P.k + 2 * P.r + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega)
+      have : ((P.k - 1 : ℕ) : ℝ) ≤ ((P.k + 2 * P.r + 1 : ℕ) : ℝ) := by exact_mod_cast (omega)
       nlinarith
     have h6L : 6 * Lb ≤ β - α := by
       have h1 : (1 : ℝ) ≤ Ntot := by exact_mod_cast h.hNpos
@@ -10831,7 +10831,7 @@ theorem jbox_facts (c : LE.Cut) (hH : Hyps P l L j lam α β Lb Ntot) (w : List 
   have hBF := Formalism.FourierDecayAlt.P.boxes_fit (sysQ P l L j lam α β Lb c Ntot) hL2 h6
   have hYb : Y ∈ (sysQ P l L j lam α β Lb c Ntot).box w.length := hY
   have hYm : α + (β - α) / 3 ≤ Y ∧ Y ≤ β - (β - α) / 3 := hBF.1 w.length hl hYb
-  have hN1 : (1 : ℝ) ≤ Ntot := by exact_mod_cast (by omega : 1 ≤ Ntot)
+  have hN1 : (1 : ℝ) ≤ Ntot := by exact_mod_cast (omega : 1 ≤ Ntot)
   have hβα : 12 ≤ β - α := by nlinarith
   refine ⟨fun p hp => ?_, ⟨by linarith [hYm.1], by linarith [hYm.2]⟩, ⟨by linarith [hYm.1], by linarith [hYm.2]⟩, hL2⟩
   obtain ⟨a, ha, hpa⟩ := MAx3.R.onBoxes_mem _ w hw p hp

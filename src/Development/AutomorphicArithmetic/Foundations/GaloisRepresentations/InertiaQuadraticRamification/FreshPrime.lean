@@ -64,7 +64,7 @@ theorem UpperTheory.Gal.UnramifiedFromSplittingCriterion.freshPrime :
   intro F Ω _ _ _ _ _ U hU T hT n hn
   haveI : IsAlgClosed Ω := IsAlgClosure.isAlgClosed F
   haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap F Ω).injective
-  haveI : NeZero (((2 * n : ℕ)) : Ω) := ⟨by exact_mod_cast (by omega : 2 * n ≠ 0)⟩
+  haveI : NeZero (((2 * n : ℕ)) : Ω) := ⟨by exact_mod_cast (omega : 2 * n ≠ 0)⟩
   obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω (2 * n)
   have hroot : ∀ t : HeightOneSpectrum (𝓞 F), ∃ x : Ω, x ^ n = (normV t : Ω) :=
     fun t => IsAlgClosed.exists_pow_nat_eq _ hn

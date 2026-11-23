@@ -131,7 +131,7 @@ theorem szRow_sizeDel : SzRow (fun _ _ L => SizeDel L) := by
     linarith
   · have hmk : (D.R.m : ℝ) ≤ D.R.k := by
       have := D.R.m_add_three_le_k
-      exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+      exact_mod_cast (omega : D.R.m ≤ D.R.k)
     calc L.sc.x ^ szTh L * D.R.m * D.R.k * (D.s.Del : ℝ)
         ≤ L.sc.x ^ szTh L * D.R.k * D.R.k * (D.s.Del : ℝ) := by gcongr
       _ ≤ _ := by linarith

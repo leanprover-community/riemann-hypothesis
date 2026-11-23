@@ -95,10 +95,10 @@ theorem discriminant_pow_eight_le_sqrt (P : ParameterChoice' D L) (S : SizesAt L
   push_cast at hc
   have hq : (1 : ℝ) ≤ D.host.q := by
     have := D.host.qd_big.1
-    exact_mod_cast (by omega : 1 ≤ D.host.q)
+    exact_mod_cast (omega : 1 ≤ D.host.q)
   have hd : (1 : ℝ) ≤ D.host.d := by
     have := D.host.qd_big.2
-    exact_mod_cast (by omega : 1 ≤ D.host.d)
+    exact_mod_cast (omega : 1 ≤ D.host.d)
   have hQS : (1 : ℝ) ≤ D.host.QS := by exact_mod_cast D.host.QS_pos
   have hqd : (1 : ℝ) ≤ (D.host.q : ℝ) * D.host.d := by nlinarith
   have hs0 : 0 ≤ Real.sqrt ((D.host.q : ℝ) * D.host.d) := Real.sqrt_nonneg _
@@ -141,7 +141,7 @@ theorem rn_of (T : ParamsT D L P) (S : SizesAt L) (hZ : 10 ^ 60 ≤ zBase L) :
       mul_le_mul hZ hAZ (by positivity) (by linarith)
     nlinarith
   have hTO40 := T.TO_40
-  have hTOpos : (0 : ℝ) < T.TO := by exact_mod_cast (by omega : 0 < T.TO)
+  have hTOpos : (0 : ℝ) < T.TO := by exact_mod_cast (omega : 0 < T.TO)
   have hb := b_pos L
   have hrd1 : (1 : ℝ) ≤ D.host.rdE := by
     have hd : (1 : ℝ) ≤ |(NumberField.discr D.host.E : ℝ)| := by
@@ -187,7 +187,7 @@ theorem rn_of (T : ParamsT D L P) (S : SizesAt L) (hZ : 10 ^ 60 ≤ zBase L) :
       PPA := hPPA
       h32 := T.precision_cube_order_sq_le_sqrt
       hTP := T.TO_PP'
-      one_le_order_alt := by exact_mod_cast (by omega : 1 ≤ T.TO)
+      one_le_order_alt := by exact_mod_cast (omega : 1 ≤ T.TO)
       rd1 := hrd1
       rd8 := discriminant_pow_eight_le_sqrt P S
       r6 := hr6

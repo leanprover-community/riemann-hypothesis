@@ -323,10 +323,10 @@ lemma tcritPow_pos {ι : Type} [Fintype ι] (S : SizeData ι) (hOk : S.Ok)
   have hv := hOk.hv
   have hg10 : (0 : ℝ) < S.g1 := by
     have := hOk.hg1
-    exact_mod_cast (by omega : 0 < S.g1)
+    exact_mod_cast (omega : 0 < S.g1)
   have hg20 : (0 : ℝ) < S.g2 := by
     have := hOk.hg2
-    exact_mod_cast (by omega : 0 < S.g2)
+    exact_mod_cast (omega : 0 < S.g2)
   have h1 : 0 < S.ka := by unfold SizeData.ka; have := Real.pi_pos; positivity
   have h2 : 0 < S.rd := by unfold SizeData.rd; positivity
   have h3 : 0 < S.g := by unfold SizeData.g; positivity
@@ -351,7 +351,7 @@ theorem corA_of_propA (hPA : PropA) : CorA := by
   have hkne : S.k ≠ 0 := by omega
   have hT0 : (0 : ℝ) < S.T := by
     have := hOk.hT
-    exact_mod_cast (by omega : 0 < S.T)
+    exact_mod_cast (omega : 0 < S.T)
   have hmfL : 0 ≤ (S.m : ℝ) ^ 5 * S.f * L := by positivity
   have hX0 : 0 ≤ X := by
     have := mul_nonneg hCG hmfL

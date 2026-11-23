@@ -61,7 +61,7 @@ theorem lamAt_anti_fin {Rk : Ranks} (h : HCParam Rk) {n : ℕ} (hn : n ≤ Rk.r)
   have hab' : (a : ℕ) < b := hab
   have h1 := Formalism.L2.NTheta.lamAt_add_add_le h ((b : ℕ) - a) a (by omega)
   rw [show (a : ℕ) + ((b : ℕ) - a) = b by omega] at h1
-  have h2 : (1 : ℚ) ≤ (((b : ℕ) - a : ℕ) : ℚ) := by exact_mod_cast (by omega : 1 ≤ (b : ℕ) - a)
+  have h2 : (1 : ℚ) ≤ (((b : ℕ) - a : ℕ) : ℚ) := by exact_mod_cast (omega : 1 ≤ (b : ℕ) - a)
   show Formalism.L2.NTheta.lamAt h b < Formalism.L2.NTheta.lamAt h a
   linarith
 

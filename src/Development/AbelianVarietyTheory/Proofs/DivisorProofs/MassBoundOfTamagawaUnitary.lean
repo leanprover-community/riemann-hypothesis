@@ -53,7 +53,7 @@ theorem massBound_of_tamagawa : GlobalTheory.Published.TamagawaSpecialUnitary �
   set R : ℝ := rdE E ^ ((fdeg E : ℝ) * ((r : ℝ) ^ 2 - 1) / 2) with hR
   set K : ℝ := (M : ℝ) ^ (2 * fdeg E * r ^ 2) * R * P0 with hK
   have hCpos : 0 < Cc := pow_pos (mul_pos (mul_pos (by positivity) (by positivity))
-    (Real.sqrt_pos.2 (by exact_mod_cast (by omega : 0 < r)))) _
+    (Real.sqrt_pos.2 (by exact_mod_cast (omega : 0 < r)))) _
   have hprod : 0 ≤ ∏ i ∈ Finset.Icc 2 r, ∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ i :=
     Finset.prod_nonneg fun i _ => tsum_nonneg fun n => by positivity
   have hP0nn : 0 ≤ P0 := pow_nonneg (mul_nonneg (Real.sqrt_nonneg _) hprod) _

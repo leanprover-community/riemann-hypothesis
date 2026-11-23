@@ -98,7 +98,7 @@ theorem brun_titchmarsh_const : ∃ C : ℝ, 0 < C ∧ ∀ (q a : ℕ) (x y : �
   have hs2 : s * s ≤ ⌊z⌋₊ := hs ▸ Nat.sqrt_le _
   have hs3 : ⌊z⌋₊ < (s + 1) * (s + 1) := hs ▸ Nat.lt_succ_sqrt _
   obtain ⟨Q, hQ⟩ : ∃ Q, Q = s + 1 := ⟨_, rfl⟩
-  have hQ2 : (2 : ℝ) ≤ Q := by exact_mod_cast (by omega : 2 ≤ Q)
+  have hQ2 : (2 : ℝ) ≤ Q := by exact_mod_cast (omega : 2 ≤ Q)
   have hQz : (Q : ℝ) ^ 2 ≤ 4 * z := by
     have : Q ^ 2 ≤ 4 * ⌊z⌋₊ := by rw [hQ]; nlinarith
     have : (Q : ℝ) ^ 2 ≤ 4 * ⌊z⌋₊ := by exact_mod_cast this
@@ -138,7 +138,7 @@ theorem brun_titchmarsh_const : ∃ C : ℝ, 0 < C ∧ ∀ (q a : ℕ) (x y : �
   obtain ⟨B, hB⟩ : ∃ B : ℝ, B = ((P.filter fun p => Q < p).card : ℝ) := ⟨_, rfl⟩
   have hB0 : 0 ≤ B := hB ▸ Nat.cast_nonneg _
   have hcard : (P.card : ℝ) ≤ B + Q := by
-    rw [hB]; exact_mod_cast (by omega)
+    rw [hB]; exact_mod_cast (omega)
   rw [← hB] at hbig
   push_cast at hbig
   have hpi := Real.pi_lt_four

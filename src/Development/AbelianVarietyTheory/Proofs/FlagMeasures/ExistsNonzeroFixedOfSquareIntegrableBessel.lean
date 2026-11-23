@@ -190,7 +190,7 @@ theorem integrable_eFun {σ : Mat k r → (H →L[ℂ] H)} {w : H} {a d : ℝ} {
     have := mem_DD σ w hG.2.2.1
     rwa [hσ.1.1] at this
   obtain ⟨C, hC⟩ := hdec w hwD w hwD
-  have hn : (2 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 2 ≤ 2 * r + k + 1)
+  have hn : (2 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 2 ≤ 2 * r + k + 1)
   have hA : 2 * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 < a := by
     refine lt_of_lt_of_le ?_ ha
     have := pow_lt_pow_right₀ (a := ((2 * r + k + 1 : ℕ) : ℝ)) (by linarith) (by norm_num : 2 < 5)

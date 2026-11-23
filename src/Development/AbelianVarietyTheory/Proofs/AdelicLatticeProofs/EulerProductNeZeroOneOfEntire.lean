@@ -98,7 +98,7 @@ private lemma norm_mul_natCast_cpow_neg_le {n : ℕ} (hn : 2 ≤ n) {c : ℂ} (h
 
 private lemma natCast_rpow_neg_le_half {n : ℕ} (hn : 2 ≤ n) {σ : ℝ} (hσ : 1 < σ) :
     (n : ℝ) ^ (-σ) ≤ 1 / 2 := by
-  have h1 : (1 : ℝ) ≤ n := by exact_mod_cast (by omega : 1 ≤ n)
+  have h1 : (1 : ℝ) ≤ n := by exact_mod_cast (omega : 1 ≤ n)
   calc (n : ℝ) ^ (-σ) ≤ (n : ℝ) ^ (-1 : ℝ) := Real.rpow_le_rpow_of_exponent_le h1 (by linarith)
     _ = 1 / n := by rw [Real.rpow_neg_one, one_div]
     _ ≤ 1 / 2 := by

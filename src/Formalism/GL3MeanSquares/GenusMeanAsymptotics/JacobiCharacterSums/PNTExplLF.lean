@@ -146,11 +146,11 @@ theorem exLF_prod_le (M : ℕ) [NeZero M] (s : ℂ) (hs : 1 / 2 ≤ s.re) :
     rw [norm_prod]
     refine Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) (fun p hp => ?_)
     have hp2 : 2 ≤ p := (Nat.prime_of_mem_primeFactors hp).two_le
-    have hp0 : (0 : ℝ) < p := by exact_mod_cast (by omega : 0 < p)
+    have hp0 : (0 : ℝ) < p := by exact_mod_cast (omega : 0 < p)
     have hn : ‖(p : ℂ) ^ (-s)‖ ≤ 1 := by
       rw [← Complex.ofReal_natCast, Complex.norm_cpow_eq_rpow_re_of_pos hp0]
       apply Real.rpow_le_one_of_one_le_of_nonpos
-      · exact_mod_cast (by omega : 1 ≤ p)
+      · exact_mod_cast (omega : 1 ≤ p)
       · simp only [Complex.neg_re]; linarith
     calc ‖1 - (p : ℂ) ^ (-s)‖ ≤ ‖(1 : ℂ)‖ + ‖(p : ℂ) ^ (-s)‖ := norm_sub_le _ _
       _ ≤ 1 + 1 := by rw [norm_one]; linarith

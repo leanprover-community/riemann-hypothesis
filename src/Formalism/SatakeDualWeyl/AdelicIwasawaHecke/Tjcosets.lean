@@ -89,7 +89,7 @@ theorem tjcosets_arith (q n j C : ℕ) (hq : 2 ≤ q) (hj : j ≤ n)
   have hq1 : 1 ≤ q := by omega
   have h' := congrArg (Nat.cast : ℕ → ℤ) h
   rw [Nat.cast_mul, tjcosets_cast_gl q m m hq1 le_rfl, tjcosets_cast_gl q (j + m) m hq1 (by omega)] at h'
-  have hqs : ((q : ℤ) ^ (∑ i ∈ Finset.range m, i)) ≠ 0 := pow_ne_zero _ (by exact_mod_cast (by omega : q ≠ 0))
+  have hqs : ((q : ℤ) ^ (∑ i ∈ Finset.range m, i)) ≠ 0 := pow_ne_zero _ (by exact_mod_cast (omega : q ≠ 0))
   have hAm : ∏ i ∈ Finset.range m, ((q : ℤ) ^ (m - i) - 1) = ∏ i ∈ Finset.range m, ((q : ℤ) ^ (i + 1) - 1) := by
     simpa using tjcosets_prod_shift (q : ℤ) 0 m
   have hX : (C : ℤ) * ∏ i ∈ Finset.range m, ((q : ℤ) ^ (i + 1) - 1) =
@@ -103,7 +103,7 @@ theorem tjcosets_arith (q n j C : ℕ) (hq : 2 ≤ q) (hj : j ≤ n)
   have hAm0 : ∏ i ∈ Finset.range m, ((q : ℤ) ^ (i + 1) - 1) ≠ 0 := by
     rw [Finset.prod_ne_zero_iff]
     intro i _
-    have : (1 : ℤ) < (q : ℤ) ^ (i + 1) := one_lt_pow₀ (by exact_mod_cast (by omega : 1 < q)) (by omega)
+    have : (1 : ℤ) < (q : ℤ) ^ (i + 1) := one_lt_pow₀ (by exact_mod_cast (omega : 1 < q)) (by omega)
     linarith
   apply mul_left_cancel₀ hAm0
   calc (∏ i ∈ Finset.range m, ((q : ℤ) ^ (i + 1) - 1)) * ((C : ℤ) * ∏ i ∈ Finset.range j, ((q : ℤ) ^ (i + 1) - 1))

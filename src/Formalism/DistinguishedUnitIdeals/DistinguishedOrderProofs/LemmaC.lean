@@ -71,7 +71,7 @@ theorem lemma_C_valuation_real : LemmaCValR := by
     convert this using 1
     rw [hpow, map_mul]
     ring
-  have hepos : (0 : ℝ) < e := by exact_mod_cast (by omega : 0 < e)
+  have hepos : (0 : ℝ) < e := by exact_mod_cast (omega : 0 < e)
   have h1' : 2 * (((e * a : ℕ) : ℝ) + 2 * e * g * ell) < e * b₁ := by
     push_cast
     nlinarith

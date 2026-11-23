@@ -119,7 +119,7 @@ theorem eq_of_liesOver : ∀ (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V
     letI := GlobalTheory.TorusExt.gtGroup D.toPre (AlgebraicClosure (FractionRing V))
     have hz₁ : p'.y = p.y + N • z := hz
     rw [hy, hy', zero_add, ← natCast_zsmul] at hz₁
-    obtain rfl : z = 0 := (smul_eq_zero.1 hz₁.symm).resolve_left (by exact_mod_cast (by omega : N ≠ 0))
+    obtain rfl : z = 0 := (smul_eq_zero.1 hz₁.symm).resolve_left (by exact_mod_cast (omega : N ≠ 0))
     rw [map_zero, add_zero] at hz'
     exact GlobalTheory.Balanced.gtExt_injective _ hf D.toPre hz'.symm
   obtain ⟨y, g, hg₁⟩ := p

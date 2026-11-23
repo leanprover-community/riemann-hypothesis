@@ -91,7 +91,7 @@ theorem lgF_deriv_int {l : ℕ} (hl : 2 ≤ l) (n : ℕ) :
   rw [PowerSeries.coeff_mk, Finset.sum_mul]
   refine R.sum_mem fun j _ => ?_
   split_ifs with h
-  · have hp : (l : K) ≠ 0 := by exact_mod_cast (by omega : l ≠ 0)
+  · have hp : (l : K) ≠ 0 := by exact_mod_cast (omega : l ≠ 0)
     have e : ((n : K) + 1) = (l : K) ^ j * (l : K) ^ j := by
       rw [← pow_add, ← two_mul, pow_mul]
       exact_mod_cast h

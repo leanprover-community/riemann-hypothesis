@@ -612,7 +612,7 @@ theorem sum_exc (tb : Tab L) (hE : LargePrimeLengthVanishing L tb) (hX : Excepti
       have : 7 < l := by exact_mod_cast this
       omega
     have h3b := hX l hle
-    have hl0 : (0 : ℝ) < l := by exact_mod_cast (by omega : 0 < l)
+    have hl0 : (0 : ℝ) < l := by exact_mod_cast (omega : 0 < l)
     have hlog : Real.log l ≤ 3 * U := by
       have := Real.log_le_log hl0 h3b
       rw [Real.log_mul (by norm_num) (by linarith [one_le_b L]), b_eq, Real.log_exp] at this

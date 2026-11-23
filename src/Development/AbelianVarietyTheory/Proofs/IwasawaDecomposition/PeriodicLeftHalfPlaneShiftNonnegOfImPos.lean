@@ -109,7 +109,7 @@ theorem periodic_strip_shift_nonneg (c : ℝ) (f : ℂ → ℂ) (m : ℤ)
       linarith [hz.1.2]
   by_contra hm
   push_neg at hm
-  have hm1 : (m : ℝ) ≤ -1 := by exact_mod_cast (by omega : m ≤ -1)
+  have hm1 : (m : ℝ) ≤ -1 := by exact_mod_cast (omega : m ≤ -1)
   set a := (∫ y : ℝ in (0:ℝ)..(2 * Real.pi), f ((c - 1 : ℝ) + y * I)).im with ha
   have ha0 : 0 ≤ a := hVim (c - 1) (by linarith)
   have h1 := key (c - 1 - (a + 1)) (c - 1) (by linarith) (by linarith)

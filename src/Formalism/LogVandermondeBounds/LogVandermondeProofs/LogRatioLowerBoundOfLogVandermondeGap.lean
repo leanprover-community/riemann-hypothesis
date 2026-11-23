@@ -101,7 +101,7 @@ lemma place_bound (hV : VandPlace) (ε x C₀ : ℝ) (hε : 0 < ε) (hx : 1 ≤ 
   set L := x ^ ε with hLdef
   have hx0 : 0 < x := by linarith
   have hL1 : 1 ≤ L := Real.one_le_rpow hx hε.le
-  have hk0 : (0 : ℝ) < k := by exact_mod_cast (by omega : 0 < k)
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast (omega : 0 < k)
   have hk2 : (2 : ℝ) ≤ k := by exact_mod_cast hk
   have hlogx : Real.log x ≤ L / ε := by
     have h1 := Real.add_one_le_exp (Real.log x * ε)
@@ -211,9 +211,9 @@ theorem logRatioLowerBound_of_logVandermondeGap (hV : VandPlace) : LogRatioLower
   have hK0 : 0 ≤ K := by positivity
   have hx0 : 0 < x := by linarith
   have hL1 : 1 ≤ L := Real.one_le_rpow hx hε.le
-  have hf0 : (0 : ℝ) < f := by exact_mod_cast (by omega : 0 < f)
+  have hf0 : (0 : ℝ) < f := by exact_mod_cast (omega : 0 < f)
   have hf1 : (1 : ℝ) ≤ f := by exact_mod_cast hf
-  have hk0 : (0 : ℝ) < k := by exact_mod_cast (by omega : 0 < k)
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast (omega : 0 < k)
   have hk2 : (2 : ℝ) ≤ k := by exact_mod_cast hk
   have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast hm
   have hvE0 : 0 < vE := by linarith [Real.pi_pos]
@@ -265,7 +265,7 @@ theorem logRatioLowerBound_of_logVandermondeGap (hV : VandPlace) : LogRatioLower
         ≤ f * M * lv - f / 2 * Real.log (2 * vE) + Real.log (Lval M) := by
     intro M hM
     have hM' := Finset.mem_Ico.mp hM
-    have hMk : (k : ℝ) ≤ M := by exact_mod_cast (by omega : k ≤ M)
+    have hMk : (k : ℝ) ≤ M := by exact_mod_cast (omega : k ≤ M)
     have h1 : (f : ℝ) * k * lv ≤ f * M * lv := by
       have := mul_nonneg (mul_nonneg hf0.le hlv0) (sub_nonneg.mpr hMk)
       nlinarith

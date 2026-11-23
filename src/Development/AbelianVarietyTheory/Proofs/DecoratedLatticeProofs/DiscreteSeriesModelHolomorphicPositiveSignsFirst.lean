@@ -82,7 +82,7 @@ theorem holShape_signs_first : ∀ (D : D7) (σ : D.what₂.LL →+* ℂ), (∀ 
       intro m n hmn hn
       have h1 := Formalism.L2.NTheta.lamAt_add_add_le (D.hc (Formalism.IndefR.Links.lab σ ρ)) (n - m) m (by omega)
       rw [show m + (n - m) = n by omega] at h1
-      have h2 : (1 : ℚ) ≤ ((n - m : ℕ) : ℚ) := by exact_mod_cast (by omega : 1 ≤ n - m)
+      have h2 : (1 : ℚ) ≤ ((n - m : ℕ) : ℚ) := by exact_mod_cast (omega : 1 ≤ n - m)
       linarith
     have mem1 : ∀ a : Fin (Wc D i).rank, ∃ n : Fin (Wc D i).rank,
         f a = Formalism.L2.NTheta.lamAt (D.hc (Formalism.IndefR.Links.lab σ ρ)) n ∧ M.ε ρ a = decide ((n : ℕ) < ((Wc D i).sig (tauE D ρ)).1) := by

@@ -82,7 +82,7 @@ theorem dataNW_of_val {C : Formalism.MainNotions.Inhab.FC} {cD ch : ℝ} (hC : S
       have h3 := (L.aT_win t).1
       have h4 := Formalism.MainNotions.FormalGroupSystem.Pf.nd_Sc_le hS
       have h5 := L.Sc_pos
-      have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+      have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
       rw [h1]
       linarith
     · have := (L.cloud_gap τ (by omega) (fun h => ht ((isTop_iff τ).2 h))).1
@@ -124,7 +124,7 @@ theorem dataNW_of_val {C : Formalism.MainNotions.Inhab.FC} {cD ch : ℝ} (hC : S
     have hx1 := Formalism.MainNotions.FormalGroupSystem.Pf.nd_x_ge (L := L)
     have hbx : L.sc.b' / L.sc.x ≤ L.sc.b' := div_le_self hb'0 hx1
     have hbT := L.bT_ge t
-    have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+    have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
     rw [eb, et]
     constructor <;> linarith
 

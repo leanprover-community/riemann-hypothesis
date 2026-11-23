@@ -435,7 +435,7 @@ theorem secondEisensteinAlgebraic : SecondEisensteinAlgebraic := by
   have hN : (((Fintype.card S + 1 : ℕ) : ℂ) - -(D.host.d : ℂ)) = ((Fintype.card S + 1 + D.host.d : ℕ) : ℂ) := by
     push_cast; ring
   rw [hN] at hc
-  have hN0 : ((Fintype.card S + 1 + D.host.d : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (by omega : Fintype.card S + 1 + D.host.d ≠ 0)
+  have hN0 : ((Fintype.card S + 1 + D.host.d : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (omega : Fintype.card S + 1 + D.host.d ≠ 0)
   have e : Formalism.L2.Th1.F.s2 L = (((Fintype.card S + 1 + D.host.d : ℕ) : ℂ))⁻¹ *
       (((Fintype.card S + 1 + D.host.d : ℕ) : ℂ) * Formalism.L2.Th1.F.s2 L) := by
     rw [← mul_assoc, inv_mul_cancel₀ hN0, one_mul]

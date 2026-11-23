@@ -72,7 +72,7 @@ theorem typePrime_exceeds_constant :
     have hgi := (hg i).1
     have hm := D.R.m_add_three_le_k
     have hm2 := D.R.two_le_m
-    have hk5 : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 5 ≤ D.R.k)
+    have hk5 : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 5 ≤ D.R.k)
     have hnV : D.R.nV + 1 ≤ 2 * D.R.k + D.R.t := by
       unfold Ranks.nV Ranks.r
       omega

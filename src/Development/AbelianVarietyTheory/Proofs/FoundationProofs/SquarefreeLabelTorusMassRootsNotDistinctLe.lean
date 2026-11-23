@@ -281,7 +281,7 @@ private theorem pair_ratio_le_of_not_bb {g : ℕ} [Fact g.Prime] (hg : 2 ^ 12 �
       _ ≤ g ^ (2 * (d + e)) * g ^ e * g ^ d := by gcongr
       _ = g ^ (3 * (d + e)) := by rw [← pow_add, ← pow_add]; ring_nf
   set q : ℝ := (g : ℝ) ^ ((1 : ℝ) / 4) with hq
-  have hg0 : (0 : ℝ) < g := by exact_mod_cast (by omega : 0 < g)
+  have hg0 : (0 : ℝ) < g := by exact_mod_cast (omega : 0 < g)
   have hq0 : 0 < q := Real.rpow_pos_of_pos hg0 _
   have hq4 : q ^ 4 = g := by
     rw [hq, ← Real.rpow_natCast, ← Real.rpow_mul hg0.le]; norm_num
@@ -294,7 +294,7 @@ private theorem pair_ratio_le_of_not_bb {g : ℕ} [Fact g.Prime] (hg : 2 ^ 12 �
     intro k hk
     have hgk : g ≤ g ^ k := Nat.le_self_pow (by omega) g
     rw [Nat.cast_sub (Nat.one_le_pow _ _ (by omega)), Nat.cast_pow, Nat.cast_one, pow_mul, hq4]
-    have : (4096 : ℝ) ≤ (g : ℝ) ^ k := by exact_mod_cast (by omega : 4096 ≤ g ^ k)
+    have : (4096 : ℝ) ≤ (g : ℝ) ^ k := by exact_mod_cast (omega : 4096 ≤ g ^ k)
     linarith
   have hDd := hden d hd1
   have hDe := hden e he1
@@ -403,7 +403,7 @@ theorem _root_.GlobalTheory.BadShare.mass_not_rootsApart_le : ∀ (g : ℕ) [Fac
     _root_.GlobalTheory.BadShare.mass_samePart_one_factor g N hg
   have hTwo : ∑ t ∈ s, _root_.GlobalTheory.BadShare.mass g N (B (some t)) ≤ 7 / 2 * Real.logb 2 g / Real.sqrt g := by
     set q : ℝ := (g : ℝ) ^ ((1 : ℝ) / 4) with hq
-    have hg0 : (0 : ℝ) < g := by exact_mod_cast (by omega : 0 < g)
+    have hg0 : (0 : ℝ) < g := by exact_mod_cast (omega : 0 < g)
     have hq0 : 0 < q := Real.rpow_pos_of_pos hg0 _
     have hq4 : q ^ 4 = g := by rw [hq, ← Real.rpow_natCast, ← Real.rpow_mul hg0.le]; norm_num
     have hq2 : q ^ 2 = Real.sqrt g := by
@@ -458,7 +458,7 @@ theorem _root_.GlobalTheory.BadShare.mass_not_rootsApart_le : ∀ (g : ℕ) [Fac
   have hlog : Real.logb 2 g = Real.log g / Real.log 2 := rfl
   have hl2 := Real.log_two_gt_d9
   have hlg : 0 ≤ Real.log g := Real.log_nonneg (by exact_mod_cast hg1.le)
-  have hsq : 0 < Real.sqrt g := Real.sqrt_pos.2 (by exact_mod_cast (by omega : 0 < g))
+  have hsq : 0 < Real.sqrt g := Real.sqrt_pos.2 (by exact_mod_cast (omega : 0 < g))
   calc _ ≤ 12 * Real.logb 2 g / Real.sqrt g + 7 / 2 * Real.logb 2 g / Real.sqrt g := add_le_add hOne' hTwo
     _ = 31 / 2 / Real.log 2 * Real.log g / Real.sqrt g := by rw [hlog]; ring
     _ ≤ 23 * Real.log g / Real.sqrt g := by

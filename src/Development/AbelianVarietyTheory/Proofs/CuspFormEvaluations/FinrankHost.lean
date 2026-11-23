@@ -135,7 +135,7 @@ theorem numbers : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : ModuliIntegralCh
     refine core _ _ (D.R.m : ℝ) _ _ _ _ _ (g0 D : ℝ) _ _ ?_ (Nat.cast_nonneg _) ?_ (by linarith) (by linarith)
       (Nat.cast_nonneg _) ?_ hrd hPP hq hc hql hgP
     · unfold g0; push_cast; norm_num
-    · exact_mod_cast (by omega : D.R.r ≤ Tn)
+    · exact_mod_cast (omega : D.R.r ≤ Tn)
     · have : WeightFamilies.rho D j ≤ D.R.m := by unfold WeightFamilies.rho Ranks.sigW; simp only; omega
       exact_mod_cast this
   · obtain ⟨f1, f2, f3⟩ := hF

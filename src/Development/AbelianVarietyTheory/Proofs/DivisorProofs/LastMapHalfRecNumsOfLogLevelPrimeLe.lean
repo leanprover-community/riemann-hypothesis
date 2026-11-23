@@ -102,7 +102,7 @@ theorem lastSide_of_logT_le : ∀ (CY CT : ℝ) (N : NumDatum) (X : Fields) (Pr 
     have hv0 := hcloud z ⟨0, by omega⟩
     rw [← (hrow z).1] at hv0
     have hv0' : (((W.hc u (pl z)).v ⟨0, by omega⟩ : ℚ) : ℝ) ≤ N.Sc := hv0.2
-    have hkR' : (5 : ℝ) ≤ N.R.k := by exact_mod_cast (by omega : 5 ≤ N.R.k)
+    have hkR' : (5 : ℝ) ≤ N.R.k := by exact_mod_cast (omega : 5 ≤ N.R.k)
     show ((Br.d0 (N_m_succ N.R) (W.lamTrue u N.R.m (pl z)) (W.sgTrue (pl z)) : ℤ) : ℝ) ≤ _
     split_ifs with htop
     · obtain ⟨h1, h2⟩ := (hR.tops z).1 htop
@@ -142,9 +142,9 @@ theorem lastSide_of_logT_le : ∀ (CY CT : ℝ) (N : NumDatum) (X : Fields) (Pr 
     rw [← (hrow z).2.1, ← (hrow z).2.2] at hn
     have hn' := neg_abs_le ((((W.hc u (pl z)).b ⟨0, by omega⟩ - (W.hc u (pl z)).e ⟨N.R.m - 1, by omega⟩ : ℚ) : ℝ))
     push_cast at hn hn'
-    have hkR' : (5 : ℝ) ≤ N.R.k := by exact_mod_cast (by omega : 5 ≤ N.R.k)
+    have hkR' : (5 : ℝ) ≤ N.R.k := by exact_mod_cast (omega : 5 ≤ N.R.k)
     have hmt : (0 : ℝ) ≤ ((N.R.m : ℝ) - 1) * ((N.R.t : ℝ) + 1) := by
-      have : (1 : ℝ) ≤ N.R.m := by exact_mod_cast (by omega : 1 ≤ N.R.m)
+      have : (1 : ℝ) ≤ N.R.m := by exact_mod_cast (omega : 1 ≤ N.R.m)
       have : (0 : ℝ) ≤ N.R.t := Nat.cast_nonneg _
 
       have : (0 : ℝ) ≤ N.R.t := Nat.cast_nonneg _

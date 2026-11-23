@@ -102,11 +102,11 @@ theorem jetNum_of_sizes {D : D7} {L : SizeData₂ D} (S : SizesAt L) {dF : ℕ}
   have a3 : D.R.r + 5 ≤ D.R.t := D.R.rank_add_five_le
   have a4 : D.R.f ≤ D.R.k := D.R.f_le_k
   have a5 : D.R.k ≤ D.R.r ∧ D.R.m ≤ D.R.r ∧ 6 ≤ D.R.r := by unfold Ranks.r; omega
-  have ht : (11 : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : 11 ≤ D.R.t)
-  have hf : (D.R.f : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.f ≤ D.R.t)
-  have hm : (D.R.m : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.m ≤ D.R.t)
-  have hr : (D.R.r : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.r ≤ D.R.t)
-  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+  have ht : (11 : ℝ) ≤ D.R.t := by exact_mod_cast (omega : 11 ≤ D.R.t)
+  have hf : (D.R.f : ℝ) ≤ D.R.t := by exact_mod_cast (omega : D.R.f ≤ D.R.t)
+  have hm : (D.R.m : ℝ) ≤ D.R.t := by exact_mod_cast (omega : D.R.m ≤ D.R.t)
+  have hr : (D.R.r : ℝ) ≤ D.R.t := by exact_mod_cast (omega : D.R.r ≤ D.R.t)
+  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
   have hL : 0 ≤ L.sc.L := Real.rpow_nonneg (by linarith [L.sc.one_lt_alt]) _
   have hb1 : 1 ≤ L.sc.b := Real.one_le_exp hL
   have hsb : Real.sqrt L.sc.b ≤ L.sc.b := Real.sqrt_le_iff.2 ⟨by linarith, by nlinarith⟩

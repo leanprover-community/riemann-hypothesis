@@ -192,7 +192,7 @@ theorem exists_root_same_value : ∀ (D : D7) (c : (AE D)ˣ →* Circle), IsHeck
   have h2m : (2 : AE D) * algebraMap D.host.F (AE D) (2 : D.host.F)⁻¹ = 1 := by
     rw [show (2 : AE D) = algebraMap D.host.F (AE D) 2 from (map_ofNat _ 2).symm, ← map_mul,
       mul_inv_cancel₀ hF2, map_one]
-  have hKne : ((2 * N : ℕ) : D.host.F) ≠ 0 := by exact_mod_cast (by omega : 2 * N ≠ 0)
+  have hKne : ((2 * N : ℕ) : D.host.F) ≠ 0 := by exact_mod_cast (omega : 2 * N ≠ 0)
   have hKm : ((2 * N : ℕ) : AE D) * algebraMap D.host.F (AE D) ((2 * N : ℕ) : D.host.F)⁻¹ = 1 := by
     have e0 : ((2 * N : ℕ) : AE D) = algebraMap D.host.F (AE D) ((2 * N : ℕ) : D.host.F) :=
       (map_natCast (algebraMap D.host.F (AE D)) (2 * N)).symm

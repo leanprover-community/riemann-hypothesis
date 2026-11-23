@@ -62,7 +62,7 @@ theorem size_rel_at {D : D7} (L : SizeData₂ D) (hs : SizesAt L) (h4 : 4 ≤ L.
   have he' := L.sc.eps_lt
   have hm : (1 : ℝ) ≤ D.R.m := by
     have := D.R.two_le_m
-    exact_mod_cast (by omega : 1 ≤ D.R.m)
+    exact_mod_cast (omega : 1 ≤ D.R.m)
   have hn : (1 : ℝ) ≤ D.R.n := by
     have : 1 ≤ D.R.n := by
       unfold Ranks.n

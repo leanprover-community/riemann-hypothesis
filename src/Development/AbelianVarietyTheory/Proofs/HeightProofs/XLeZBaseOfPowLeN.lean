@@ -59,7 +59,7 @@ theorem x_le_zBase_of_pow_le_n {D : D7} (L : SizeData₂ D) (hn : L.sc.x ^ (2 + 
     calc L.sc.x = L.sc.x ^ (1 : ℝ) := (Real.rpow_one _).symm
       _ ≤ _ := Real.rpow_le_rpow_of_exponent_le hx.le (by linarith)
   have hf : (D.R.n : ℝ) ≤ D.R.f := by
-    unfold Ranks.f; exact_mod_cast (by omega : D.R.n ≤ 2 * D.R.n)
+    unfold Ranks.f; exact_mod_cast (omega : D.R.n ≤ 2 * D.R.n)
   have hr : (1 : ℝ) ≤ D.R.r := by
     have h1 := D.R.two_le_m
     have h2 := D.R.m_add_three_le_k

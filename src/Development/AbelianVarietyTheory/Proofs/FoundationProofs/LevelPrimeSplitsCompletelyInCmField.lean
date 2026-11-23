@@ -154,9 +154,9 @@ theorem levelPrime_mod (D : D7) (u : D.what₂.Word) :
   set z : D.host.E := y + D.conjF y + M * (y * D.conjF y) with hz
   have hzi : IsIntegral ℤ z :=
     (hyi.add hci).add ((isIntegral_natCast (R := ℤ) (B := D.host.E) M).mul (hyi.mul hci))
-  have hM0 : (M : ℚ) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
+  have hM0 : (M : ℚ) ≠ 0 := by exact_mod_cast (omega : M ≠ 0)
   have h4 : z = algebraMap ℚ D.host.E ((((D.mem u).A.T : ℚ) - 1) / M) := by
-    have hM0' : (M : D.host.E) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
+    have hM0' : (M : D.host.E) ≠ 0 := by exact_mod_cast (omega : M ≠ 0)
     rw [map_div₀, map_sub, map_one, map_natCast, map_natCast, eq_div_iff hM0', hz]
     linear_combination hn
   rw [h4, isIntegral_algebraMap_iff ] at hzi

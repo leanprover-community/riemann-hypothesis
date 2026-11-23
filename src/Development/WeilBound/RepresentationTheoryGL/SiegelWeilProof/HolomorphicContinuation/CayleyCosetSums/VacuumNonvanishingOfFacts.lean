@@ -281,12 +281,12 @@ theorem vacuum_nonvanishing_of_facts (hFd : FdProps) (hDj : DjFd) (hKS : KSplit)
       intro i hi
       rw [Finset.mem_range] at hi
       have : ((m : ℤ) : ℂ) - n + i = (((m : ℤ) - n + i : ℤ) : ℂ) := by push_cast; ring
-      rw [this]; exact_mod_cast (by omega : (m : ℤ) - n + i ≠ 0)
+      rw [this]; exact_mod_cast (omega : (m : ℤ) - n + i ≠ 0)
     · rw [Finset.prod_ne_zero_iff]
       intro i hi
       rw [Finset.mem_range] at hi
       have : ((0 : ℤ) : ℂ) - n + i = (((0 : ℤ) - n + i : ℤ) : ℂ) := by push_cast; ring
-      rw [this]; exact_mod_cast (by omega : (0 : ℤ) - n + i ≠ 0)
+      rw [this]; exact_mod_cast (omega : (0 : ℤ) - n + i ≠ 0)
   have stepG : ∫ k, (((‖minorOn (blkA j) (wM (ι k))‖ ^ 2 * ‖minorOn (blkB j) (wM (ι k))‖ ^ 2 : ℝ)) : ℂ) ∂μ = 0 := by
     have e : ∀ k, hF j (m : ℤ) 0 (ι k) * detD (fun T : Matrix (blkA (n := n) j) (blkA j) ℂ =>
         detD (fun S : Matrix (blkB (n := n) j) (blkB j) ℂ =>

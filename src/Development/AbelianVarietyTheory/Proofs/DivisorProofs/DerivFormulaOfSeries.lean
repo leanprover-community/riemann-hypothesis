@@ -66,7 +66,7 @@ theorem risingFactor_ne_zero {I : Type} [Fintype I] (k : ℕ) (hk : 1 ≤ k) (κ
   intro j _
   have : ((k : ℂ) + j) = ((k + j : ℕ) : ℂ) := by push_cast; ring
   rw [this]
-  exact_mod_cast (by omega : k + j ≠ 0)
+  exact_mod_cast (omega : k + j ≠ 0)
 
 theorem term_origin {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I]
     (φ : I → E →+* ℂ) (k : ℕ) (κ : I → ℕ) (x : E) :

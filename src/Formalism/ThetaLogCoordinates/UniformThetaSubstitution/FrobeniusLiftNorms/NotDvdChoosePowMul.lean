@@ -271,7 +271,7 @@ theorem norm_coeff_mul_choose {F : MvPowerSeries (Fin 2) K}
       rw [MvPowerSeries.coeff_of_lt_order, smul_zero]
       refine lt_of_lt_of_le ?_ (MvPowerSeries.le_order_pow_of_constantCoeff_eq_zero d hF0)
       rw [hdeg]
-      exact_mod_cast (by omega : n < d)
+      exact_mod_cast (omega : n < d)
   have htop : MvPowerSeries.coeff e (F ^ n) = (n.choose i : K) := by
     rw [he]; exact coeff_pow_top hF0 hF1 n i hin.le
   have hc := hcob e

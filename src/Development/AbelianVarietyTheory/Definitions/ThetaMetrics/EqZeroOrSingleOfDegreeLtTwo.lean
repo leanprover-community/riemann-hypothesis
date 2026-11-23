@@ -201,7 +201,7 @@ private theorem natCast_lt_of_le_add_one_of_add_two_le {x : ℕ∞} {n m : ℕ} 
   | top => exact ENat.natCast_lt_top m
   | coe x =>
     have h' : n ≤ x + 1 := by exact_mod_cast h
-    exact_mod_cast (by omega : m < x)
+    exact_mod_cast (omega : m < x)
 
 theorem le_order_subst_sub_subst [Finite σ] {a b : σ → MvPowerSeries τ S}
     (ha : ∀ s, constantCoeff (a s) = 0) (hb : ∀ s, constantCoeff (b s) = 0) {k : ℕ}
@@ -255,7 +255,7 @@ private theorem coeff_single_subst_eq_zero_of_linear_coeff_zero [Finite σ] {a :
     · obtain ⟨hcl, -, -⟩ := Close.prod hc d
       have hlt : ((Finsupp.single k 1 : τ →₀ ℕ).degree : ℕ∞) < (d.prod fun s e => a s ^ e).order := by
         rw [Finsupp.degree_single]
-        exact lt_of_lt_of_le (by exact_mod_cast (by omega : 1 < d.degree)) hcl
+        exact lt_of_lt_of_le (by exact_mod_cast (omega : 1 < d.degree)) hcl
       rw [coeff_of_lt_order hlt, smul_zero]
 
 theorem coeff_single_subst [Fintype σ] {a : σ → MvPowerSeries τ S}

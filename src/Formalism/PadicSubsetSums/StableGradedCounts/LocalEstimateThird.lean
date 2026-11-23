@@ -85,9 +85,9 @@ theorem harm_part (M : ℕ) :
 theorem term_le (q δ b : ℕ) (hq : 2 ≤ q) (hδ : 2 ≤ δ)
     (h : δ * b ≤ δ * (q - 1) + (q ^ δ - 1) / (q - 1)) :
     (b : ℝ) * ((q : ℝ) ^ δ - 1)⁻¹ ≤ ((q : ℝ) ^ (δ - 1))⁻¹ + ((δ : ℝ))⁻¹ * ((q : ℝ) - 1)⁻¹ := by
-  have hq1 : (1:ℝ) < q := by exact_mod_cast (by omega : 1 < q)
+  have hq1 : (1:ℝ) < q := by exact_mod_cast (omega : 1 < q)
   have hB : (0:ℝ) < (q:ℝ) - 1 := by linarith
-  have hD : (0:ℝ) < δ := by exact_mod_cast (by omega : 0 < δ)
+  have hD : (0:ℝ) < δ := by exact_mod_cast (omega : 0 < δ)
   have hP1 : (1:ℝ) ≤ (q:ℝ) ^ (δ - 1) := one_le_pow₀ hq1.le
   have hP0 : (q:ℝ) ^ (δ - 1) ≠ 0 := by positivity
   have hpow : (q:ℝ) ^ δ = (q:ℝ) * (q:ℝ) ^ (δ - 1) := by
@@ -131,7 +131,7 @@ theorem arith (q N : ℕ) (hN : 1 ≤ N) (hq : 2 ≤ q) (b : ℕ → ℕ) (m : �
     ∑ δ ∈ Finset.Icc 1 N, (b δ : ℝ) * ((q : ℝ) ^ δ - 1)⁻¹ ≤
       m + (1 + Real.log N) / ((q : ℝ) - 1) := by
   obtain ⟨M, rfl⟩ : ∃ M, N = M + 1 := ⟨N - 1, by omega⟩
-  have hQ : (1 : ℝ) < (q : ℝ) := by exact_mod_cast (by omega : 1 < q)
+  have hQ : (1 : ℝ) < (q : ℝ) := by exact_mod_cast (omega : 1 < q)
   have hQ1 : (0 : ℝ) < (q : ℝ) - 1 := by linarith
   rw [← Finset.add_sum_Ioc_eq_sum_Icc (by omega : 1 ≤ M + 1)]
   have hI : Finset.Ioc 1 (M + 1) = Finset.Icc 2 (M + 1) := by

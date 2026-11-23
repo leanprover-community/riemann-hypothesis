@@ -94,7 +94,7 @@ theorem vK_le_zero_of_not_int (S : UniformizedDVR p O) (a : KK O)
     push_neg at hc
     exact absurd h2 (not_lt.2 (div_nonneg hc hepos.le))
   have h4 : k < 1 := by exact_mod_cast (by linarith : (k : ℚ) < 1)
-  have h5 : (k : ℚ) ≤ 0 := by exact_mod_cast (by omega : k ≤ 0)
+  have h5 : (k : ℚ) ≤ 0 := by exact_mod_cast (omega : k ≤ 0)
   exact div_nonpos_of_nonpos_of_nonneg h5 hepos.le
 
 theorem be_sum_left (be : V → V → KK O) (hsm : ∀ (a : KK O) (u v : V), be (a • u) v = a * be u v)

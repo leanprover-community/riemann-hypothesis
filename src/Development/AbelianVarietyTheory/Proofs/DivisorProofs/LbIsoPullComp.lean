@@ -62,10 +62,10 @@ theorem big_ge (g n : ℕ) (hn : 2 ≤ n) (B : ℕ) : ∃ k j₁ : ℕ, 2 ≤ k 
   unfold ThetaSys.Big
   rw [hg, hS, hr, ← hN]
   have hk₀K : k₀ ≤ K := le_max_left _ _
-  refine ⟨hk₀.trans (by exact_mod_cast (by omega : k₀ < N)), ?_, ?_⟩
+  refine ⟨hk₀.trans (by exact_mod_cast (omega : k₀ < N)), ?_, ?_⟩
   · rw [Nat.cast_mul (n ^ j)]
-    exact mul_lt_mul_of_pos_right (hj₀.trans (by exact_mod_cast (by omega : j₀ < n ^ j)))
-      (by exact_mod_cast (by omega : 0 < N))
+    exact mul_lt_mul_of_pos_right (hj₀.trans (by exact_mod_cast (omega : j₀ < n ^ j)))
+      (by exact_mod_cast (omega : 0 < N))
   · exact lt_of_lt_of_le (by omega) (Nat.le_mul_of_pos_right _ (by omega))
 
 theorem lbIso_pull_comp' {X Y Z : Scheme.{0}} {L : LB X} {M : LB Y} {a : Y ⟶ X} (h : LBIso M (L.pull a)) (j : Z ⟶ Y)

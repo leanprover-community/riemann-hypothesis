@@ -115,7 +115,7 @@ private theorem sum_inv_torusCard_irreducible_le (g : ℕ) [Fact g.Prime] {d : �
   have hpow : 1 < g ^ d := Nat.one_lt_pow hd.ne' hg
   rw [Finset.sum_congr rfl (g := fun _ => ((g ^ d - 1 : ℕ) : ℝ)⁻¹), Finset.sum_const,
     nsmul_eq_mul]
-  · have hq : (0 : ℝ) < ((g ^ d - 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 0 < g ^ d - 1)
+  · have hq : (0 : ℝ) < ((g ^ d - 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 0 < g ^ d - 1)
     have hc : ((_root_.GlobalTheory.BadShare.sqSet g d).filter Irreducible).card * d ≤ g ^ d - 1 := by
       rw [Nat.mul_comm]; omega
     rw [← div_eq_mul_inv, div_le_iff₀ hq, inv_mul_eq_div, le_div_iff₀ (by positivity)]

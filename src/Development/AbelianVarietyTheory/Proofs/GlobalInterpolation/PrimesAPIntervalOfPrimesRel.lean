@@ -55,7 +55,7 @@ theorem _root_.GlobalTheory.Lin.primesAPInterval_of_primesRel (h : _root_.Global
     intro m a hm ha
     haveI : NeZero m := ⟨by omega⟩
     obtain ⟨huniq, hgap, hcount⟩ := hmain m hm
-    have hm1 : (1 : ℝ) < m := by exact_mod_cast (by omega : 1 < m)
+    have hm1 : (1 : ℝ) < m := by exact_mod_cast (omega : 1 < m)
     have hlogm : 0 < Real.log m := Real.log_pos hm1
     have hlog4m : Real.log m ≤ Real.log (4 * m) :=
       Real.log_le_log (by positivity) (by linarith)

@@ -53,7 +53,7 @@ theorem amplitudeNormDegree_along_family_of_kFiniteIdentity : GlobalTheory.GapIn
   obtain ⟨-, hm0, -, -, hrd, -⟩ := hx0 x hx i
   have hm2 : (1 : ℝ) ≤ ((Fm.D x i).R.m : ℝ) := by
     have := (Fm.D x i).R.two_le_m
-    exact_mod_cast (by omega : 1 ≤ (Fm.D x i).R.m)
+    exact_mod_cast (omega : 1 ≤ (Fm.D x i).R.m)
   have hbig : GlobalTheory.Amp.Big (Fm.D x i) (Fm.L x i) (sCl Fm) m₀ :=
     ⟨hrd, by nlinarith, hm0⟩
   exact hm (Fm.D x i) (Fm.L x i) (sC' Fm) (sCl Fm) hCl hbig (Fm.ties x i).cdScale_tie hZ

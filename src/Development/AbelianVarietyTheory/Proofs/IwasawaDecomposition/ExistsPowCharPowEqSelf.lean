@@ -104,7 +104,7 @@ theorem exists_pow_eq_self_cong [IsAlgClosed Ω] (A : ValuationSubring Ω) {N : 
   have hdeg : P.natDegree = N := by
     rw [hP, natDegree_sub_eq_left_of_natDegree_lt] <;> simp; omega
   have hmon : P.Monic := by
-    rw [hP]; exact monic_X_pow_sub (by rw [degree_X]; exact_mod_cast (by omega : 1 < N))
+    rw [hP]; exact monic_X_pow_sub (by rw [degree_X]; exact_mod_cast (omega : 1 < N))
   have hsplit : P = (P.roots.map fun a => X - C a).prod :=
     (prod_multiset_X_sub_C_of_monic_of_roots_card_eq hmon
       (by rw [IsAlgClosed.card_roots_eq_natDegree])).symm

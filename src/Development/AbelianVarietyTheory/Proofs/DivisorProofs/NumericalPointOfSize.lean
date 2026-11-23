@@ -44,7 +44,7 @@ theorem r_log_div_le (r t q : ℕ) (hr : 1 ≤ r) (ht : 1 ≤ t) (hq : 4 * t * r
   have hr' : (1:ℝ) ≤ r := by exact_mod_cast hr
   have ht' : (1:ℝ) ≤ t := by exact_mod_cast ht
   set Q : ℝ := 4 * t * r + 2 with hQ
-  have hqQ : Q ≤ q := by rw [hQ]; exact_mod_cast (by omega : 4 * t * r + 2 ≤ q)
+  have hqQ : Q ≤ q := by rw [hQ]; exact_mod_cast (omega : 4 * t * r + 2 ≤ q)
   have hQ6 : (6:ℝ) ≤ Q := by rw [hQ]; nlinarith
   have he : Real.exp 1 ≤ Q := by have := Real.exp_one_lt_d9; linarith
   have hant : Real.log q / q ≤ Real.log Q / Q :=
@@ -133,8 +133,8 @@ theorem lenT_mul_le {P : ParameterChoice' D L} (T : ParamsT D L P) :
     · exact h
   have hsq' : (D.R.r : ℝ) ^ 2 ≤ D.R.m * T.Dp := by exact_mod_cast hsq
   have hD : (1 : ℝ) ≤ T.Dp := by exact_mod_cast hD1
-  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hPP := (ranks_le T).1
   have hW : (1 : ℝ) ≤ T.PP ^ 2 * (T.Dp : ℝ) ^ 2 * D.R.k :=
     one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le (one_le_pow₀ hPP) (one_le_pow₀ hD)) hk
@@ -167,7 +167,7 @@ theorem numAt {P : ParameterChoice' D L} (T : ParamsT D L P) (hll : 1 ≤ Real.l
   have hr1 : 1 ≤ D.R.r := by unfold Ranks.r; omega
   have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by unfold Ranks.f; omega : 1 ≤ D.R.f)
   have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast hr1
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hL := one_le_L L.sc
   have hb : 1 ≤ L.sc.b := Real.one_le_exp (by linarith)
   have hlb : Real.log L.sc.b = L.sc.L := Real.log_exp _
@@ -186,8 +186,8 @@ theorem numAt {P : ParameterChoice' D L} (T : ParamsT D L P) (hll : 1 ≤ Real.l
     positivity
   · have hx := L.sc.one_lt_alt
     have hlx : 0 < Real.log L.sc.x := Real.log_pos hx
-    have hk : (2 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 2 ≤ D.R.k)
-    have hkt : (D.R.k : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.k ≤ D.R.t)
+    have hk : (2 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 2 ≤ D.R.k)
+    have hkt : (D.R.k : ℝ) ≤ D.R.t := by exact_mod_cast (omega : D.R.k ≤ D.R.t)
     have a : Real.log D.R.k ≤ L.Ct * Real.log L.sc.x := by
       rw [← Real.log_rpow (by linarith)]
       exact Real.log_le_log (by linarith) (hkt.trans L.t_win.2)

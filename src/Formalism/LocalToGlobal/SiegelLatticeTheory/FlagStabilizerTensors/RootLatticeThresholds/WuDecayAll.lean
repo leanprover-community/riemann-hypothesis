@@ -88,8 +88,8 @@ theorem gapBig_of_gapHyp (D : D7) (hG : Formalism.L2.SG.ConcreteSettingExists.Ga
   · simp only [Formalism.MainNotions.CayleySignature.rk48]; omega
   · simp only [Formalism.MainNotions.CayleySignature.rk48]; omega
   · intro j hj
-    have hN : (6 : ℝ) ≤ (D.R.r : ℝ) := by exact_mod_cast (by omega : 6 ≤ D.R.r)
-    have hmN : ((2 * D.R.rS + 2 : ℕ) : ℝ) ≤ (D.R.r : ℝ) := by exact_mod_cast (by omega : 2 * D.R.rS + 2 ≤ D.R.r)
+    have hN : (6 : ℝ) ≤ (D.R.r : ℝ) := by exact_mod_cast (omega : 6 ≤ D.R.r)
+    have hmN : ((2 * D.R.rS + 2 : ℕ) : ℝ) ≤ (D.R.r : ℝ) := by exact_mod_cast (omega : 2 * D.R.rS + 2 ≤ D.R.r)
     have key := Formalism.MainNotions.numNV (D.R.r : ℝ) ((2 * D.R.rS + 2 : ℕ) : ℝ) ((D.R.r + 6 : ℕ) : ℝ) hN hmN (by positivity)
       (by push_cast; ring)
     have hrk : Formalism.MainNotions.CayleySignature.rk48 D.R.k D.R.rS = D.R.r := by simp only [Formalism.MainNotions.CayleySignature.rk48]; omega

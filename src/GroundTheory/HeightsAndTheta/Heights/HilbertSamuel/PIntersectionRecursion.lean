@@ -65,7 +65,7 @@ theorem IntersectionRecursion.proof : IntersectionRecursion.Statement.{u} := by
 
   have hlt : ringKrullDim (MRing ι F ⧸ q) < ((d + 2 + Fintype.card K : ℕ) : WithBot ℕ∞) := by
     rw [hdim]
-    exact_mod_cast (by omega : d + 1 + Fintype.card K < d + 2 + Fintype.card K)
+    exact_mod_cast (omega : d + 1 + Fintype.card K < d + 2 + Fintype.card K)
   have hcut := CutByForm.full F K ι d q hq.isPrime hq.multiHomog hlt x (blockWeight ι ⟨b, i⟩) hx hX bs
   rw [blockWeight_cast_eq_unitDeg] at hcut
   rw [hcut, cycEval]

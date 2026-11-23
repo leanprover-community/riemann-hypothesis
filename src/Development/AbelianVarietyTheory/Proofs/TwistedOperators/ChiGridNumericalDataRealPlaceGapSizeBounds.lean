@@ -76,7 +76,7 @@ theorem num_real_bounds : ∀ (D : D7) (large₂ : SizeData₂ D), SizeRows larg
     have hN : (2 : ℝ) ≤ (D.R.N D.R.m : ℝ) := by
       have : 2 ≤ D.R.N D.R.m := by unfold Ranks.N; exact le_trans (by omega) (Nat.le_add_right _ _)
       exact_mod_cast this
-    have hm1 : (1 : ℝ) ≤ (D.R.m : ℝ) ^ 10 := one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ D.R.m))
+    have hm1 : (1 : ℝ) ≤ (D.R.m : ℝ) ^ 10 := one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ D.R.m))
     nlinarith
 
   have hgap : 1000 * X ^ 3 ≤ (G.ga : ℝ) := by

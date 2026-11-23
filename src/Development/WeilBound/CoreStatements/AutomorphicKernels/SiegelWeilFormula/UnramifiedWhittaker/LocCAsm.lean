@@ -125,7 +125,7 @@ theorem f_lev (hNP : NuPow) (hJ : JtLev) (hNL : NuLev) (hPL : PsiLev) (hT : ∀ 
     hNP S σS hG.pS _ ε hG.quad n k B.1 B.2
   have hq0 : (Ideal.absNorm v.asIdeal : ℂ) ≠ 0 := by
     have := hG.quad.one_lt
-    exact_mod_cast (by omega : Ideal.absNorm v.asIdeal ≠ 0)
+    exact_mod_cast (omega : Ideal.absNorm v.asIdeal ≠ 0)
   simp only [whI]
   rw [e1, e2, e3]
   congr 1

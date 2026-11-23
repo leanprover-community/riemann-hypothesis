@@ -97,7 +97,7 @@ theorem one_le_log {B : ℕ} (h : 3 ≤ B) : 1 ≤ Real.log B := by
 
 theorem log_div_le {B : ℕ} (h : 3 ≤ B) (a : ℝ) (ha : 1 ≤ a) :
     Real.log (B / (a / B) ^ 2) ≤ 3 * Real.log B := by
-  have hB : (0 : ℝ) < B := by exact_mod_cast (by omega : 0 < B)
+  have hB : (0 : ℝ) < B := by exact_mod_cast (omega : 0 < B)
   have ha0 : 0 < a := by linarith
   have h1 : (B : ℝ) / (a / B) ^ 2 ≤ (B : ℝ) ^ 3 := by
     rw [div_pow, div_div_eq_mul_div, div_le_iff₀ (by positivity)]
@@ -172,7 +172,7 @@ theorem thmW_tower : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Kl
   have hf : (1 : ℝ) ≤ Fintype.card Ψ := by
     have : 0 < Fintype.card Ψ := Fintype.card_pos_iff.mpr ⟨τ₀⟩
     exact_mod_cast this
-  have hBpos : (0 : ℝ) < B := by exact_mod_cast (by omega : 0 < B)
+  have hBpos : (0 : ℝ) < B := by exact_mod_cast (omega : 0 < B)
   set θ : ℝ := 5 * (Fintype.card Ψ : ℝ) / B with hθdef
   set lam : Wt Ψ N := fun τ i => l τ i + (if τ = τ₀ ∧ (i : ℕ) < T.j then 2 * θ else 0) with hlamdef
   let s : ℚ := (5 * (Fintype.card Ψ : ℚ) / B) ^ 2
@@ -222,7 +222,7 @@ theorem thmW_tower : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Kl
     have hLs0 : 0 ≤ Real.log (B / (s : ℝ)) := by
       refine Real.log_nonneg ?_
       rw [le_div_iff₀ hs0, hs]
-      have hB1 : (1 : ℝ) ≤ B := by exact_mod_cast (by omega : 1 ≤ B)
+      have hB1 : (1 : ℝ) ≤ B := by exact_mod_cast (omega : 1 ≤ B)
       nlinarith
     have hq : T.PPc II B c (linRoot l ^ (dimFl Ψ N + 1)) = (T.M B c).PP II (linA l 0 ^ (dimFl Ψ N + 1)) := by
       simp only [RootTower.PPc, toA_linRoot_pow]

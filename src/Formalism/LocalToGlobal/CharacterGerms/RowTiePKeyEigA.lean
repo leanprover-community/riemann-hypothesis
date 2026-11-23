@@ -166,7 +166,7 @@ theorem P_idem : K.P * K.P = K.P := by
       exact this
     have h3 : ((0 : ℝ) : WithTop ℝ) ≤ V.v (K.ρ (z k) i j) := K.ρ_int _ i j
     have h4r : w ≤ ((k + 1 : ℕ) : ℝ) :=
-      (Nat.le_ceil w).trans (by exact_mod_cast (by omega : ⌈w⌉₊ ≤ k + 1))
+      (Nat.le_ceil w).trans (by exact_mod_cast (omega : ⌈w⌉₊ ≤ k + 1))
     have h4 : (w : WithTop ℝ) ≤ (((k + 1 : ℕ) : ℝ) : WithTop ℝ) := WithTop.coe_le_coe.mpr h4r
     calc (w : WithTop ℝ) ≤ (((k + 1 : ℕ) : ℝ) : WithTop ℝ) := h4
       _ = (((k + 1 : ℕ) : ℝ) : WithTop ℝ) + ((0 : ℝ) : WithTop ℝ) := by

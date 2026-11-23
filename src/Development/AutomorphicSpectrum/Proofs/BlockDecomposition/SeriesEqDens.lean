@@ -75,7 +75,7 @@ theorem gauss_full {R : Type} [CommRing R] {σ : R →+* R} {ϖ : R} {q : ℕ} {
   obtain ⟨p, p', e, hpp, hpp', he, hpe⟩ := GlobalTheory.T.hermitian_matrix_diagonalizable R σ ϖ q ε hR m S hS.1
   have hq0 : (q : ℂ) ≠ 0 := by
     have := hR.one_lt
-    exact_mod_cast (by omega : q ≠ 0)
+    exact_mod_cast (omega : q ≠ 0)
   have hunit : ∀ l, e l ∉ lev ϖ 1 := by
     intro l hl
     have h1 : IsUnit p.det := Matrix.isUnit_det_of_right_inverse hpp

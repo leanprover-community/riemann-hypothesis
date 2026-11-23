@@ -54,7 +54,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Num
 theorem co_series_three_step : (∀ (Sg : Type) [Fintype Sg] [DecidableEq Sg] (φ : Equiv.Perm Sg) (p k : ℕ), 2 ≤ p → 1 ≤ k → ∀ (La : Sg → ℝ) (τ : Sg), ∑ σ, co φ p k τ σ * La σ = (∑' n : ℕ, ((p : ℝ) ^ k)⁻¹ ^ (n + 1) * La ((φ ^ (n + 1)) τ)) - La τ / ((p : ℝ) - 1)) ∧ (∀ (Sg : Type) (φ : Equiv.Perm Sg) (p k : ℕ), 2 ≤ p → ∀ (La : Sg → ℝ) (q : ℕ → Sg → ℝ), (∀ r τ, q r τ = ((p : ℝ) ^ ((r + 1) * k))⁻¹ * La ((φ ^ (r + 1)) τ) + q (r + 1) τ) → (∀ r τ, q (r + 1) τ = ((p : ℝ) ^ k)⁻¹ * q r (φ τ)) → ∀ τ, (p : ℝ) ^ k * q 0 τ = q 0 (φ τ) + La (φ τ)) := by
   refine ⟨?_, ?_⟩
   · intro Sg _ _ φ p k hp hk La τ
-    have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 1 < p)
+    have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (omega : 1 < p)
     have hpk1 : (1 : ℝ) < (p : ℝ) ^ k := one_lt_pow₀ hp1 (by omega)
     have hpk0 : (0 : ℝ) < (p : ℝ) ^ k := by linarith
     set r : ℝ := ((p : ℝ) ^ k)⁻¹ with hr
@@ -98,7 +98,7 @@ theorem co_series_three_step : (∀ (Sg : Type) [Fintype Sg] [DecidableEq Sg] (�
     simp only [co, sub_mul]
     rw [Finset.sum_sub_distrib, hswap, hlast]
   · intro Sg φ p k hp La q h1 h2 τ
-    have hp0 : (p : ℝ) ^ k ≠ 0 := pow_ne_zero _ (by exact_mod_cast (by omega : p ≠ 0))
+    have hp0 : (p : ℝ) ^ k ≠ 0 := pow_ne_zero _ (by exact_mod_cast (omega : p ≠ 0))
     have a := h1 0 τ
     have b := h2 0 τ
     simp only [zero_add, one_mul, pow_one] at a b

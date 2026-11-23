@@ -138,7 +138,7 @@ theorem Stable.ballFn_mem_and_one_mem_of_sub_mem (k : Type) [Field k] [Valuative
     exact_mod_cast (hT2 hlt).ne
   have hq2 : (1 + q) ≠ 0 := by
     rw [hqdef]
-    exact_mod_cast (by omega : 1 + T.card ≠ 0)
+    exact_mod_cast (omega : 1 + T.card ≠ 0)
   have h2 : ballFn (0 : k) (ϖ * ϖ) ∈ S := by
     have h3 := S.sub_mem (S.add_mem (S.sub_mem R4 R3) (S.smul_mem q R1)) (S.smul_mem (q + 1 - q ^ 2) R2)
     have h4 : -((1 - q) * (1 - q) * (1 + q)) ≠ 0 := neg_ne_zero.2 (mul_ne_zero (mul_ne_zero hq1 hq1) hq2)

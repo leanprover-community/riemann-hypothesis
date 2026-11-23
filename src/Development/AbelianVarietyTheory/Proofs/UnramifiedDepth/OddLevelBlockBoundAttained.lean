@@ -98,7 +98,7 @@ theorem jetAt0_one' {σ : Type} (G : MvPowerSeries σ K) : jetAt0 1 G = constant
 
 theorem mono_resι_var {l i n0 n : ℕ} (hl : 5 ≤ l) (hn : n0 ≤ n) : S0 l i n0 ≤ S0 l i n := by
   unfold S0
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hn' : (n0 : ℝ) ≤ n := by exact_mod_cast hn
   have h0 : 0 ≤ Real.logb l ((n0 : ℝ) + 1) := Real.logb_nonneg hl1 (by linarith [Nat.cast_nonneg (α := ℝ) n0])
   have h1 : Real.logb l ((n0 : ℝ) + 1) ≤ Real.logb l ((n : ℝ) + 1) :=
@@ -108,7 +108,7 @@ theorem mono_resι_var {l i n0 n : ℕ} (hl : 5 ≤ l) (hn : n0 ≤ n) : S0 l i 
 
 theorem sum_positive_of_five_le {l i n : ℕ} (hl : 5 ≤ l) (hn : 1 ≤ n) : 0 < S0 l i n := by
   unfold S0
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hn' : (0 : ℝ) < n := by exact_mod_cast hn
   have h0 : 0 ≤ Real.logb l ((n : ℝ) + 1) := Real.logb_nonneg hl1 (by linarith)
   refine Nat.ceil_pos.2 ?_
@@ -154,7 +154,7 @@ theorem window_letterDet (X : RowData K V d I J) (hA : X.Alt) (hl : 5 ≤ V.l) (
   rcases Nat.eq_zero_or_pos n0 with h0 | h0
   · subst h0
     refine ⟨Y0, ⟨S, t, hSt, hgood Y0 (Or.inl ?_)⟩, le_rfl, Nat.lt_add_of_pos_right (sum_positive_of_five_le hl hn1)⟩
-    have hl1 : (1 : ℝ) < V.l := by exact_mod_cast (by omega : 1 < V.l)
+    have hl1 : (1 : ℝ) < V.l := by exact_mod_cast (omega : 1 < V.l)
     rw [GlobalTheory.T.blockValue_on_rows_eq K V.l i 0 X.n hn hr tt tt' _ hB Y0]
     refine (GlobalTheory.OddBlock.content_and_window.1 K V.v V.l V.l_prime hl V.v_l i X.n 0 Y0 hi hn1 hn _ ?_).trans ?_
     · have : LamP K V.l i 0 (X.restrictedCurveSystemSeries g a i hn e v') Y0 = 1 := by

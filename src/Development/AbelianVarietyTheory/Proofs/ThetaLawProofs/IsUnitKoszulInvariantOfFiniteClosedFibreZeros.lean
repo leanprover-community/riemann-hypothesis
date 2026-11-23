@@ -168,7 +168,7 @@ theorem mul_transpose_of_transpose_mul {al : Matrix (Fin 4) (Fin 4) ℤ} {m : �
   have hd : al.det ≠ 0 := fun h0 => by
     have := congrArg Matrix.det h
     rw [Matrix.det_mul, h0, mul_zero, Matrix.det_smul, Matrix.det_one, _root_.mul_one] at this
-    exact pow_ne_zero _ (by exact_mod_cast (by omega : m ≠ 0)) this.symm
+    exact pow_ne_zero _ (by exact_mod_cast (omega : m ≠ 0)) this.symm
   have e : (al * al.transpose - (m : ℤ) • 1) * al = 0 := by
     rw [Matrix.sub_mul, Matrix.mul_assoc, h, Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_one, Matrix.one_mul, sub_self]
   have e' := congrArg (· * al.adjugate) e
@@ -550,7 +550,7 @@ theorem isUnit_of_finite_zeros : Out.Laws → ∀ (O : Type) [CommRing O] [IsDom
   choose z' hz' using fun a => hA (z a) (Or.inl ⟨a, rfl⟩)
   obtain ⟨ch₁, E₁⟩ := etZ_pull hg₁ H₁ hs₁ (z' := fun a => u₁ (z a)) (fun a => (hu₁' _ _).1 rfl) E
   have hO : ∀ m : ℕ, 1 ≤ m → IsUnit (m : O') := fun m hm => by
-    have := (isUnit_iff_ne_zero.2 (by exact_mod_cast (by omega : m ≠ 0) : (m : ℚ) ≠ 0)).map (j.comp (algebraMap ℚ O))
+    have := (isUnit_iff_ne_zero.2 (by exact_mod_cast (omega : m ≠ 0) : (m : ℚ) ≠ 0)).map (j.comp (algebraMap ℚ O))
     rwa [map_natCast] at this
   haveI : CharZero Ω := (RingHom.charZero_iff ((i.comp f).comp (algebraMap ℚ O)).injective).1 inferInstance
   obtain ⟨u, hu⟩ : ∃ u : O'ˣ, KaVal y n l l' al s₁ (Units.map g.toMonoidHom u) := by

@@ -177,10 +177,10 @@ theorem third_hypothesis_of_params : H3 L (NonvanishingSectionCondition T) T.CP 
   have hfk : (D.R.f : ℝ) ≤ D.R.k := by exact_mod_cast f_le_k D
   have hmk : (D.R.m : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+    exact_mod_cast (omega : D.R.m ≤ D.R.k)
   have hm0 : (0 : ℝ) < D.R.m := by
     have := D.R.two_le_m
-    exact_mod_cast (by omega : 0 < D.R.m)
+    exact_mod_cast (omega : 0 < D.R.m)
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
   · rw [Real.rpow_zero, one_mul, eRR, WeightFamilies.PPv_rec T]
     exact hR.h3a hd0 hd hq

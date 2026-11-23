@@ -72,7 +72,7 @@ lemma a_mxS_eq_zero (ha0 : a 0 = 0) (x : ℝ) (n : ℕ) (hn : n ∉ Finset.Icc 1
     subst h0
     simp [ha0]
   · have hx : x < n := Nat.lt_of_floor_lt hn
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast (omega : 0 < n)
     have hle : x / n - 1 ≤ 0 := by
       rw [sub_nonpos, div_le_one hn0]
       exact hx.le
@@ -83,7 +83,7 @@ lemma Sa_eq_tsum (ha0 : a 0 = 0) (x : ℝ) : Sa a x = ∑' n, a n * mxS n x := b
   unfold Sa
   refine Finset.sum_congr rfl fun n hn => ?_
   rw [Finset.mem_Icc] at hn
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (omega : 0 < n)
   have hx : (n : ℝ) ≤ x := by
     have hx0 : 0 ≤ x := by
       by_contra hneg

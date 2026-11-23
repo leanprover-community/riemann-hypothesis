@@ -187,7 +187,7 @@ theorem dividedPowerValuations_cESum : Formalism.PairingDivisionLocalBalance.CES
   have hn : (((X / 2 + 1 : ℕ)) : ℝ) * 2 ≤ X + 2 := by
     have : (X / 2 + 1) * 2 ≤ X + 2 := by omega
     exact_mod_cast this
-  have hf : (f : ℝ) * 2 ≤ X := by exact_mod_cast (by omega : f * 2 ≤ X)
+  have hf : (f : ℝ) * 2 ≤ X := by exact_mod_cast (omega : f * 2 ≤ X)
   rw [h4] at hs
   have p1 : 0 ≤ ((X : ℝ) - 2 * f) * Real.log 2 := mul_nonneg (by linarith) hlog2
   have p2 : 0 ≤ ((X : ℝ) + 2 - ((X / 2 + 1 : ℕ) : ℝ) * 2) * Real.log 2 :=

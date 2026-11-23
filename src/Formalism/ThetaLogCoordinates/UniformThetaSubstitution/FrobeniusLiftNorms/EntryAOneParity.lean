@@ -218,7 +218,7 @@ theorem entryExcessBound_of (hS : EntryStar) (hC : HitsCapPos) (hA : ExcessGainB
     exact Real.rpow_nonneg (Nat.cast_nonneg _) _
   classical
   have hp : 2 < p := hyp.2.1
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast (omega : 1 < p)
   have hcharge : ∀ φ : PhiI ν r0 r1 E, ∃ s s' : ZMod (2 * ν),
       ((s = pairFirst φ ∧ s' = pairSecond φ) ∨ (s = pairSecond φ ∧ s' = pairFirst φ)) ∧
       (s' - s).val % 2 = 1 ∧ s'.val % 2 ≠ s.val % 2 ∧

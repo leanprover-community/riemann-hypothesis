@@ -99,7 +99,7 @@ theorem kapT_at {PP A : ℝ} (hH : HostNum D L PP A 18) (hW : WtNum p i PP) :
   have hr1' : (1 : ℝ) ≤ D.R.r := by exact_mod_cast hr1
   have hn1' : (1 : ℝ) ≤ D.R.nV := by exact_mod_cast hn1
   have hkr' : (D.R.k : ℝ) ≤ D.R.r := by exact_mod_cast hkr
-  have hm' : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hm' : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hfr : (8 : ℝ) ≤ (D.R.f : ℝ) * D.R.r := by nlinarith
   have h10 : (D.R.f : ℝ) * D.R.r * 10 ≤ y := by
     refine le_trans ?_ hfy

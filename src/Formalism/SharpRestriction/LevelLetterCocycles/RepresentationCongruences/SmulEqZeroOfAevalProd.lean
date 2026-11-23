@@ -252,8 +252,8 @@ private theorem sum_card_le_div_sub_one_add_mul_of_mul_pow_le (l : ℕ) (hl : 2 
 private theorem natLog_le_logb_of_one_le_of_two_le (l : ℕ) (hl : 2 ≤ l) (N : ℕ) (hN : 1 ≤ N) :
     (Nat.log l N : ℝ) ≤ Real.logb l N := by
   have hpow : l ^ Nat.log l N ≤ N := Nat.pow_log_le_self l (by omega)
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
-  have hN' : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
+  have hN' : (0 : ℝ) < N := by exact_mod_cast (omega : 0 < N)
   have hpow' : (l : ℝ) ^ Nat.log l N ≤ N := by exact_mod_cast hpow
   first
     | (rw [Real.le_logb_iff_rpow_le hl1 hN', Real.rpow_natCast]; exact hpow')
@@ -306,7 +306,7 @@ theorem lemmaG_exp (l : ℕ) [Fact l.Prime] (a S η b : ℕ) (ha : 1 ≤ a) (hb 
       ((((AA.erase m).filter (fun t => (l : ℤ) ^ (k + 1) ∣ m - t)).card : ℕ) : ℝ) * (l : ℝ) ^ (k + 1) ≤
         ((S : ℝ) + 2 * a - 1) + 0 * (l : ℝ) ^ (k + 1) := by
     intro k _
-    have hq : (0 : ℤ) < (l : ℤ) ^ (k + 1) := pow_pos (by exact_mod_cast (by omega : 0 < l)) _
+    have hq : (0 : ℤ) < (l : ℤ) ^ (k + 1) := pow_pos (by exact_mod_cast (omega : 0 < l)) _
     have h1 := card_filter_dvd_sub_mul_le_Icc_length_add ((l : ℤ) ^ (k + 1)) hq ((b : ℤ) - a + 1) ((b : ℤ) + S + a) m
       (by omega)
     rw [← hAA] at h1
@@ -329,7 +329,7 @@ theorem lemmaG_exp (l : ℕ) [Fact l.Prime] (a S η b : ℕ) (ha : 1 ≤ a) (hb 
       (((IB.filter (fun t => (l : ℤ) ^ (k + 1) ∣ m - t)).card : ℕ) : ℝ) * (l : ℝ) ^ (k + 1) ≤
         (2 * (η : ℝ) + a - 1) + 1 * (l : ℝ) ^ (k + 1) := by
     intro k _
-    have hq : (0 : ℤ) < (l : ℤ) ^ (k + 1) := pow_pos (by exact_mod_cast (by omega : 0 < l)) _
+    have hq : (0 : ℤ) < (l : ℤ) ^ (k + 1) := pow_pos (by exact_mod_cast (omega : 0 < l)) _
     have h1 := card_filter_dvd_sub_mul_le_Icc_length_add ((l : ℤ) ^ (k + 1)) hq (1 - (η : ℤ)) ((η : ℤ) + a) m (by omega)
     rw [← hIB] at h1
     generalize (IB.filter (fun t => (l : ℤ) ^ (k + 1) ∣ m - t)).card = c' at h1 ⊢

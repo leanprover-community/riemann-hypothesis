@@ -147,7 +147,7 @@ theorem TToolAlg_holds : TToolAlg := by
     · intro ht
       have htc : t ≤ e * (l * y - X) := nat_le_of_real ht (by
         have : ((l * y : ℕ) : ℝ) ≤ ((l * y - X : ℕ) : ℝ) + X := by
-          exact_mod_cast (by omega : l * y ≤ (l * y - X) + X)
+          exact_mod_cast (omega : l * y ≤ (l * y - X) + X)
         push_cast at this ⊢; linarith)
       have e1 : (u₁ * PowerSeries.X * (PowerSeries.X + ((l : ℕ) : PowerSeries O)) ^ (l - 1)) ^ y =
           u₁ ^ y * (PowerSeries.X * (PowerSeries.X + ((l : ℕ) : PowerSeries O)) ^ (l - 1)) ^ y := by
@@ -168,7 +168,7 @@ theorem TToolAlg_holds : TToolAlg := by
       have hR := rem_M (R := PowerSeries O) l hl PowerSeries.X y M η (l * y - η - M)
       have htc : t ≤ e * (l * y - η - M) := nat_le_of_real ht (by
         have : ((l * y : ℕ) : ℝ) ≤ ((l * y - η - M : ℕ) : ℝ) + η + M := by
-          exact_mod_cast (by omega : l * y ≤ (l * y - η - M) + η + M)
+          exact_mod_cast (omega : l * y ≤ (l * y - η - M) + η + M)
         push_cast at this ⊢; linarith)
       have e1 : (u₁ * PowerSeries.X * (PowerSeries.X + ((l : ℕ) : PowerSeries O)) ^ (l - 1)) ^ y =
           u₁ ^ y * (PowerSeries.X * (PowerSeries.X + ((l : ℕ) : PowerSeries O)) ^ (l - 1)) ^ y := by

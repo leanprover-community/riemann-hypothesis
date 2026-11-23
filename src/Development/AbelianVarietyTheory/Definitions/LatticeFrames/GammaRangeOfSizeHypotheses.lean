@@ -53,7 +53,7 @@ theorem pow_five_mul_f_pos (D : D7) : (0 : ℝ) < (D.R.m : ℝ) ^ 5 * D.R.f := b
     have : 1 ≤ D.R.n := Formalism.HC.Frame.ord_pos _
     unfold Ranks.f; omega
   have hm : 2 ≤ D.R.m := D.R.two_le_m
-  have : (0 : ℝ) < D.R.m := by exact_mod_cast (by omega : 0 < D.R.m)
+  have : (0 : ℝ) < D.R.m := by exact_mod_cast (omega : 0 < D.R.m)
   have : (0 : ℝ) < D.R.f := by exact_mod_cast hf
   positivity
 

@@ -78,8 +78,8 @@ theorem covering_gmin_of_gram_deep_size : _root_.GlobalTheory.CovTop.PublishedHo
     ((Int.even_coe_nat _).2 (p.κ i).n_even)
   refine gminAt_of_gens p i Y (by omega) d1.coprime k1 k2 (a4 i hi Y hY).1 _ _ d2 s e1 e2 _ _ (fun y hy σ => (e3 y hy σ).1)
     (num_step hC (hL.trans ?_) (one_le_kap p i b1) c10 d3)
-  have f1 : (1 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast (by omega : 1 ≤ (Fm.D x ι).R.f)
-  have f2 : (1 : ℝ) ≤ (Fm.D x ι).R.r := by exact_mod_cast (by omega : 1 ≤ (Fm.D x ι).R.r)
+  have f1 : (1 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast (omega : 1 ≤ (Fm.D x ι).R.f)
+  have f2 : (1 : ℝ) ≤ (Fm.D x ι).R.r := by exact_mod_cast (omega : 1 ≤ (Fm.D x ι).R.r)
   exact le_mul_of_one_le_left (by linarith) (one_le_mul_of_one_le_of_one_le f1 f2)
 end GlobalTheory.CovGminTop
 end

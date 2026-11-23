@@ -64,10 +64,10 @@ theorem nums {D : D7} {L : SizeData₂ D} (h : SizesAt L) :
   have hmn := D.R.two_le_m
   have hkn := D.R.m_add_three_le_k
   have hmfn : D.R.m ≤ D.R.f := D.R.m_le_f
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
-  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
-  have hmk : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : D.R.m ≤ D.R.k)
-  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by omega : 1 ≤ D.R.f)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
+  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
+  have hmk : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (omega : D.R.m ≤ D.R.k)
+  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (omega : 1 ≤ D.R.f)
   have hn : (1 : ℝ) ≤ D.R.n := by exact_mod_cast D.R.ord_pos
   have ht : (1 : ℝ) ≤ D.R.t := L.t_win.1
   have hN : (1 : ℝ) ≤ D.R.N D.R.m := by
@@ -155,7 +155,7 @@ theorem wPl_bounds {D : D7} {L : SizeData₂ D} (h : SizesAt L) {j : ℕ} (hj : 
   have hb' : 0 < L.sc.b' := div_pos (mul_pos hx hb) (Real.exp_pos _)
   have hmn := D.R.two_le_m
   have hmfn : D.R.m ≤ D.R.f := D.R.m_le_f
-  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by omega : 1 ≤ D.R.f)
+  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (omega : 1 ≤ D.R.f)
   have hη := L.etaSz_pos
   have hηb : L.etaSz ≤ L.sc.b := (le_mul_of_one_le_left hη.le hf).trans hfη
   have hq : L.sc.b' / L.sc.x ≤ L.sc.b' := div_le_self hb'.le hx1.le
@@ -207,10 +207,10 @@ theorem gam_bounds {p : ℕ} (hp : 2 ≤ p) : 0 ≤ gam p ∧ gam p ≤ 2 / p :=
 theorem first_term {D : D7} {L : SizeData₂ D} (h : SizesAt L) {j : ℕ} (hj : j ∈ SizeData₂.lifts D) {p : ℕ} (hp : 2 ≤ p) :
     max 0 ((∑ z ∈ kindA D p, FOrb D j p z) / (nP D p : ℝ)) ≤ 6 * (D.R.f * D.R.m * L.sc.b) / p := by
   have hb : 0 < L.sc.b := Real.exp_pos _
-  have hp' : (0 : ℝ) < p := by exact_mod_cast (by omega : 0 < p)
+  have hp' : (0 : ℝ) < p := by exact_mod_cast (omega : 0 < p)
   have hnP : (0 : ℝ) < nP D p := by exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne _)
   have hkn := D.R.m_add_three_le_k
-  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
   obtain ⟨g0, g1⟩ := gam_bounds hp
   refine max_le (by positivity) ?_
   have key : ∀ z ∈ kindA D p, FOrb D j p z ≤ 6 * (D.R.m * L.sc.b) / p * nP D p := by
@@ -251,8 +251,8 @@ theorem eatI_bound {D : D7} {L : SizeData₂ D} (h : SizesAt L) {K : Consts} {c 
   have hmn := D.R.two_le_m
   have hkn := D.R.m_add_three_le_k
   have hmfn : D.R.m ≤ D.R.f := D.R.m_le_f
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
-  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by omega : 1 ≤ D.R.f)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
+  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (omega : 1 ≤ D.R.f)
   have hN : (1 : ℝ) ≤ Nm D := by
     unfold Nm
     exact_mod_cast (by unfold Ranks.N; omega : 1 ≤ D.R.N D.R.m)
@@ -423,7 +423,7 @@ theorem eatX_bound {D : D7} {L : SizeData₂ D} (h : SizesAt L) {c : ErrC}
   have hL : 1 ≤ L.sc.L := Real.one_le_rpow L.sc.one_lt_alt.le L.sc.eps_pos.le
   have hη := L.etaSz_pos
   have hkn := D.R.m_add_three_le_k
-  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+  have hk : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
   have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp
   have hp0 : (0 : ℝ) < p := by linarith
   have hl0 : 0 < Real.log p := Real.log_pos (by linarith)
@@ -486,7 +486,7 @@ theorem sum_eatI {D : D7} {L : SizeData₂ D} (h : SizesAt L) {K : Consts} {c : 
   have hb : 0 < L.sc.b := Real.exp_pos _
   have hL : 1 ≤ L.sc.L := Real.one_le_rpow L.sc.one_lt_alt.le L.sc.eps_pos.le
   have hmn := D.R.two_le_m
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hη := L.etaSz_pos
   have hX0 : 0 ≤ L.sc.X'' D.R.n := div_nonneg (mul_nonneg (by linarith) hb.le) hw0.le
   have hXb : L.sc.X'' D.R.n ≤ L.sc.b := (le_mul_of_one_le_right hX0 (by linarith)).trans hX

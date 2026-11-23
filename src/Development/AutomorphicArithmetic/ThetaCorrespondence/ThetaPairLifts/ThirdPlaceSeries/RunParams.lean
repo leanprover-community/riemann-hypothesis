@@ -72,9 +72,9 @@ theorem run_params_alt : _root_.GlobalTheory.CovTop.SizeCondition → _root_.Glo
   have hfR : (8 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast hf8
   have hrR : (6 : ℝ) ≤ (Fm.D x ι).R.r := by exact_mod_cast a5.2.2
   have hmR : (2 : ℝ) ≤ (Fm.D x ι).R.m := by exact_mod_cast a1
-  have ht : (11 : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (by omega : 11 ≤ (Fm.D x ι).R.t)
-  have hft : ((Fm.D x ι).R.f : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (by omega : (Fm.D x ι).R.f ≤ (Fm.D x ι).R.t)
-  have hrt : ((Fm.D x ι).R.r : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (by omega : (Fm.D x ι).R.r ≤ (Fm.D x ι).R.t)
+  have ht : (11 : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (omega : 11 ≤ (Fm.D x ι).R.t)
+  have hft : ((Fm.D x ι).R.f : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (omega : (Fm.D x ι).R.f ≤ (Fm.D x ι).R.t)
+  have hrt : ((Fm.D x ι).R.r : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (omega : (Fm.D x ι).R.r ≤ (Fm.D x ι).R.t)
   have hb1 : 1 ≤ (Fm.L x ι).sc.b := Real.one_le_exp (by linarith)
   have hb0' : 0 < (Fm.L x ι).sc.b := Real.exp_pos _
   have hq : (1 : ℝ) ≤ (Fm.D x ι).host.q := by exact_mod_cast (Fm.D x ι).host.hyp.1.one_lt.le
@@ -171,7 +171,7 @@ theorem run_params_alt : _root_.GlobalTheory.CovTop.SizeCondition → _root_.Glo
       _ ≤ 200000 * unitE p := by linarith
   ·
     have hDF1 : (1 : ℝ) ≤ DF := by exact_mod_cast hDF
-    have hk : (1 : ℝ) ≤ (Fm.D x ι).R.k := by exact_mod_cast (by omega : 1 ≤ (Fm.D x ι).R.k)
+    have hk : (1 : ℝ) ≤ (Fm.D x ι).R.k := by exact_mod_cast (omega : 1 ≤ (Fm.D x ι).R.k)
     have hg : ∀ k, (Fm.L x ι).sc.b ^ 8 ≤ ((Fm.D x ι).host.g k : ℝ) := fun k =>
       (pow_le_pow_left₀ (by linarith) (le_mul_of_one_le_left (by linarith) hk) 8).trans (sG k k).1
     have key := size_inequality_real (Fm.D x ι).host.rdE (szCond (Fm.L x ι)) (Fm.D x ι).R.t (Fm.L x ι).sc.b (Fm.D x ι).R.f

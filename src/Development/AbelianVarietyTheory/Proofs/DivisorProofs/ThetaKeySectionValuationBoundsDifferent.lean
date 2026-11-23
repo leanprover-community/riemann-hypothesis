@@ -134,7 +134,7 @@ theorem nval_bounds {F : Type} [Field F] [NumberField F] {w : HeightOneSpectrum 
   have h2 : (0 : ℝ) ≤ vV T.V (algebraMap T.V T.Fr D) := by exact_mod_cast nn D
   have h3 : (vV T.V (algebraMap T.V T.Fr D) : ℝ) ≤ ∑ i, (n i : ℝ) * (e * (vLa w (x i) : ℝ)) := by
     have := nn q
-    exact_mod_cast (by omega : vV T.V (algebraMap T.V T.Fr D) ≤ ∑ i, n i * (e * vLa w (x i)))
+    exact_mod_cast (omega : vV T.V (algebraMap T.V T.Fr D) ≤ ∑ i, n i * (e * vLa w (x i)))
   refine ⟨EReal.coe_nonneg.2 (by push_cast; positivity), EReal.coe_le_coe_iff.2 ?_⟩
   rw [div_le_iff₀ he, mul_assoc, Finset.sum_mul]
   push_cast

@@ -87,7 +87,7 @@ abbrev A (K : Type) [Field K] [NumberField K] {d : ℕ} (hd : 2 ≤ d) : Subalge
   Localization.subalgebra.ofField K (primeTo (d : 𝓞 K)) (primeTo_le hd)
 
 theorem primes_finite {d : ℕ} (hd : 2 ≤ d) : {P : Ideal (A K hd) | P.IsPrime}.Finite := by
-  have hd0 : (d : 𝓞 K) ≠ 0 := by exact_mod_cast (by omega : d ≠ 0)
+  have hd0 : (d : 𝓞 K) ≠ 0 := by exact_mod_cast (omega : d ≠ 0)
   have hfin : {P : Ideal (𝓞 K) | P.IsMaximal ∧ (d : 𝓞 K) ∈ P}.Finite := by
     have h0 : Ideal.span {(d : 𝓞 K)} ≠ 0 := by
       simpa [Ideal.span_singleton_eq_bot] using hd0

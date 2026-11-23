@@ -92,7 +92,7 @@ private theorem eventually_sub_mem_maxIdeal_pow_of_const_mul {Γ K' : Type} [Top
   · obtain ⟨r, hr⟩ := ENat.ne_top_iff_exists.1 h3
     rw [← hr] at h1 ⊢
     have h4 : N + k ≤ k + r := by exact_mod_cast h1
-    exact_mod_cast (by omega : m < r)
+    exact_mod_cast (omega : m < r)
 
 theorem UpperTheory.V.Pa.Det.conjCont :
     ∀ {K K' G : Type} [Field K] [Field K'] [TopologicalSpace G] {n : ℕ} (j : PowerSeries K →+* PowerSeries K') (ρ : G → Matrix (Fin n) (Fin n) (PowerSeries K)) (Q : GL (Fin n) (FractionRing (PowerSeries K'))) (ρ' : G → Matrix (Fin n) (Fin n) (PowerSeries K')), IsLocalHom j → (∀ a b, AdicCont (maximalIdeal (PowerSeries K)) fun g => ρ g a b) → (∀ g, (ρ g).map ((algebraMap (PowerSeries K') (FractionRing (PowerSeries K'))).comp j) * (Q : Matrix (Fin n) (Fin n) (FractionRing (PowerSeries K'))) = (Q : Matrix (Fin n) (Fin n) (FractionRing (PowerSeries K'))) * (ρ' g).map (algebraMap (PowerSeries K') (FractionRing (PowerSeries K')))) → ∀ a b, AdicCont (maximalIdeal (PowerSeries K')) fun g => ρ' g a b := by

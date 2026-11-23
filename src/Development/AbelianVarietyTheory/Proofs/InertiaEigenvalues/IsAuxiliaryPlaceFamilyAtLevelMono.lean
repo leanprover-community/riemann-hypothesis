@@ -224,7 +224,7 @@ theorem totient_bound {l k e : ℕ} (hl : l.Prime) (he : e < k) :
   have h1 : (l : ℝ) ≠ 0 := by exact_mod_cast hl.ne_zero
   have h2 : ((l - 1 : ℕ) : ℝ) ≠ 0 := by
     have := hl.two_le
-    exact_mod_cast (by omega : l - 1 ≠ 0)
+    exact_mod_cast (omega : l - 1 ≠ 0)
   push_cast
   field_simp
   ring

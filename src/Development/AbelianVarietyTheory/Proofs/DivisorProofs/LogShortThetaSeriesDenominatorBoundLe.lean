@@ -156,7 +156,7 @@ theorem intZ_log_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (T : CoreJ D) (j : �
     have h3 : (0 : ℝ) ≤ D.R.f := Nat.cast_nonneg _
     rw [h2] at h1
     nlinarith
-  have hMpos : (0 : ℝ) < Y.d.l₂.M := by exact_mod_cast (by omega : 0 < Y.d.l₂.M)
+  have hMpos : (0 : ℝ) < Y.d.l₂.M := by exact_mod_cast (omega : 0 < Y.d.l₂.M)
   have hq0 : (0 : ℝ) < D.host.q := by exact_mod_cast hqp.pos
   have hd0 : (0 : ℝ) < D.host.d := by exact_mod_cast hdp.pos
   have hZpos : (0 : ℝ) < (intZ D (T.Q.Dw j) Y.d.l₂ n a : ℝ) := by rw [hZ]; positivity
@@ -185,9 +185,9 @@ theorem intZ_log_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (T : CoreJ D) (j : �
   have hf : 1 ≤ D.R.f := by have : 0 < D.R.n := D.R.ord_pos; unfold Formalism.BasicNotions.Ranks.f; omega
   have hr : 1 ≤ D.R.r := by
     have := D.R.two_le_m; have := D.R.m_add_three_le_k; unfold Formalism.BasicNotions.Ranks.r; omega
-  have hf1 : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by omega : 1 ≤ D.R.f)
+  have hf1 : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (omega : 1 ≤ D.R.f)
   have hr1 : (1 : ℝ) ≤ D.R.r := by exact_mod_cast hr
-  have hlM0 : 0 ≤ Real.log Y.d.l₂.M := Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ Y.d.l₂.M))
+  have hlM0 : 0 ≤ Real.log Y.d.l₂.M := Real.log_nonneg (by exact_mod_cast (omega : 1 ≤ Y.d.l₂.M))
   have hdF0 : (0 : ℝ) ≤ dF := Nat.cast_nonneg _
   have hB0 : (0 : ℝ) ≤ (m : ℝ) * (((T.Q.Dw j).p : ℝ) + (T.Q.Dw j).q) * t := by positivity
   have hS0 : 0 ≤ S := by rw [hSe]; positivity

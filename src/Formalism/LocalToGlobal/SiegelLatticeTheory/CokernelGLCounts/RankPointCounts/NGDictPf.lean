@@ -71,7 +71,7 @@ theorem residue_le_height_nonprime (hOK : M.OK) (hR : P.RelG (theta M))
   obtain ⟨⟨a0, a1⟩, ⟨b0, b1⟩, c0, c1⟩ := ng_factors hOK hG ht
   have hq : (0 : ℝ) < qF F := by
     have := two_le_residue_card hOK
-    exact_mod_cast (by omega : 0 < qF F)
+    exact_mod_cast (omega : 0 < qF F)
   have hnt := Formalism.MainNotions.LocalModelPeriodLattices.nontrivial_E M.L
   have hm1 : ((-1 : F) ^ (r + 1)) ∈ 𝒪[F] := pow_mem (neg_mem (one_mem _)) _
   unfold StepHp FPair.Hp

@@ -697,7 +697,7 @@ theorem unrCorr_inert : GlobalTheory.Hk3.HoweUnram → ∀ (D : D7) (G : Type) [
     obtain ⟨-, ⟨c0, hc0, -⟩, -, -, hch⟩ := (exists_isInertChart _ (isCMExt_host D) _).2 w rfl hin
     obtain ⟨ϖ0, hU0⟩ := (hch c0 hc0).1
     have := hU0.2.2.2.2.2.1
-    exact_mod_cast (by omega : qV D.host.F (w.under (𝓞 D.host.F)) ≠ 0)
+    exact_mod_cast (omega : qV D.host.F (w.under (𝓞 D.host.F)) ≠ 0)
   have E1 := param_down hH hW (by omega) rfl hin uS uT U hUs fk hfk ρX xk (B w) hxB
     ((GlobalTheory.PRep.rightReg ℂ (GA D (Wc D i)) ℂ).comp (embV (Wc D i) (w.under (𝓞 D.host.F)))) b hb (B' w)
     (by rw [hzsum]; exact hz) (qu := Units.mk0 _ hq0) rfl

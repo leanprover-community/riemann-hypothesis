@@ -154,7 +154,7 @@ theorem maj_rho (u : Wt Ψ N) (τ' : Ψ) (i : Fin N) (g : ℝ) (hg : 0 < g)
   refine div_le_div_of_nonneg_right ?_ hg.le
   rw [Fin.card_Ioi, Fin.card_Iio]
   have := i.2
-  exact_mod_cast (by omega : N - 1 - (i : ℕ) + (i : ℕ) ≤ N)
+  exact_mod_cast (omega : N - 1 - (i : ℕ) + (i : ℕ) ≤ N)
 
 theorem flagDeg_coeff (u : Wt Ψ N) (x0 : Ψ × Fin N) :
     flagDeg u = ((dimFl Ψ N).factorial : ℝ) * (∏ τ, gdet (rho τ) (vv u x0 τ)).coeff 0 := by

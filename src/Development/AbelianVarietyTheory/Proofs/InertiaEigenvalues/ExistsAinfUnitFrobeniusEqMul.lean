@@ -102,7 +102,7 @@ theorem lang_unit
       (monic_X_pow_sub (by
         refine (degree_add_le _ _).trans_lt (max_lt ?_ ?_)
         · exact (degree_C_mul_X_le _).trans_lt (by exact_mod_cast hp1)
-        · exact (degree_C_le).trans_lt (by exact_mod_cast (by omega : 0 < p))))
+        · exact (degree_C_le).trans_lt (by exact_mod_cast (omega : 0 < p))))
       (by
         have hlow : (C ω₀ * X + C (Y.coeff 0)).natDegree < p := by
           refine (natDegree_add_le _ _).trans_lt (max_lt ?_ ?_)

@@ -101,7 +101,7 @@ theorem nrmM_le_one_iff (j : ℕ) (la : HeightOneSpectrum (𝓞 T.Q.c.F)) (y : T
       rw [Ne, Ideal.absNorm_eq_zero_iff]; exact la.ne_bot
     have h1 : Ideal.absNorm la.asIdeal ≠ 1 := by
       rw [Ne, Ideal.absNorm_eq_one_iff]; exact la.isPrime.ne_top
-    exact_mod_cast (by omega : 1 < Ideal.absNorm la.asIdeal)
+    exact_mod_cast (omega : 1 < Ideal.absNorm la.asIdeal)
   rw [key]
   by_cases hz : evI y' f = 0
   · simp [hz]

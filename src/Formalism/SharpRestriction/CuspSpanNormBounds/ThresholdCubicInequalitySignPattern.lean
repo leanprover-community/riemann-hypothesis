@@ -649,7 +649,7 @@ theorem numeric_setting_of_datum (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg c
       by simp only [CayleySignature.rk48]; omega, fun j hj => ?_⟩
     refine lt_of_lt_of_le ?_ (hN19.trans (hgap j hj))
     have hmle : ((2 * D.R.rS + 2 : ℕ) : ℝ) ≤ (D.R.r : ℝ) := by
-      rw [← hNc]; exact_mod_cast (by omega : 2 * D.R.rS + 2 ≤ 2 * D.R.rS + D.R.k + 1)
+      rw [← hNc]; exact_mod_cast (omega : 2 * D.R.rS + 2 ≤ 2 * D.R.rS + D.R.k + 1)
     have := numNV' (D.R.r : ℝ) ((2 * D.R.rS + 2 : ℕ) : ℝ) ((D.R.r : ℝ) + 1800) hN6 hmle (by positivity) rfl
     have e1 : ((CayleySignature.rk48 D.R.k D.R.rS + (2 * D.R.rS + 2) * (2 * D.R.rS + D.R.k + 1 + 1800) : ℕ) : ℝ) =
         (D.R.r : ℝ) + ((2 * D.R.rS + 2 : ℕ) : ℝ) * ((D.R.r : ℝ) + 1800) := by

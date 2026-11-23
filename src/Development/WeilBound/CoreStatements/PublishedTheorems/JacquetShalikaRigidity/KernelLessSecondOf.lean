@@ -166,7 +166,7 @@ theorem kernel_less_second_of : D0 → N0 → H0 → RowsInCompactSet → K1 →
       _ = _ := by ring
   · obtain ⟨C5, hC5⟩ := hK5c E m k hk hkm ι hι
     obtain ⟨Cφ, hCφ⟩ := hprep.dec
-    have hm2 : (2 : ℝ) ≤ m := by exact_mod_cast (by omega : 2 ≤ m)
+    have hm2 : (2 : ℝ) ≤ m := by exact_mod_cast (omega : 2 ≤ m)
     have hkm' : (k : ℝ) < m := by exact_mod_cast hkm
     have hm0 : (m : ℝ) ≠ 0 := by linarith
     have hm1 : (m : ℝ) - 1 ≠ 0 := by linarith

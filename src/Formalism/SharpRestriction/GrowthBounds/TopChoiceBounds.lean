@@ -2248,7 +2248,7 @@ theorem one_le_first_length_at_scale (D : D7) (s : Scale) {p : ℕ} (hp : (1 : �
 theorem bt_k (D : D7) : (5 : ℝ) ≤ (D.R.k : ℝ) := by
   have := D.R.m_add_three_le_k
   have h2 := D.R.two_le_m
-  exact_mod_cast (by omega : 5 ≤ D.R.k)
+  exact_mod_cast (omega : 5 ≤ D.R.k)
 
 theorem initial_constant_bounds (K : Consts) (Ce S : ℝ) (H : bt_H D L K Ce S) : c0num L ≤ 3 * L.sc.b' ∧ 0 ≤ c0num L ∧ 0 ≤ cG L := by
   have hc0' : 0 ≤ cG L := by unfold cG; have := L.Sc_pos; linarith
@@ -3044,7 +3044,7 @@ theorem bl_Nm_le_Sc (P : ParameterChoice' D L) : (5 : ℝ) ≤ (D.R.k : ℝ) ∧
   have hk : (5 : ℝ) ≤ (D.R.k : ℝ) := by
     have := D.R.m_add_three_le_k
     have h2 := D.R.two_le_m
-    exact_mod_cast (by omega : 5 ≤ D.R.k)
+    exact_mod_cast (omega : 5 ≤ D.R.k)
   have hNk : (D.R.k : ℝ) ≤ (D.R.N D.R.m : ℝ) := by
     have : D.R.k ≤ D.R.N D.R.m := by unfold Ranks.N; omega
     exact_mod_cast this

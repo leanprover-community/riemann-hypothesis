@@ -159,7 +159,7 @@ theorem right_chart_holds : RwChart := by
     intro Vs hVs hl x hx
     have hc := vfW_contDiffOn hO Vs (2 * r + k + 1) _ (h1 _ le_rfl) hVs (by omega)
     have hle : (1 : WithTop ℕ∞) ≤ ((2 * r + k + 1 - Vs.length : ℕ) : WithTop ℕ∞) := by
-      exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1 - Vs.length)
+      exact_mod_cast (omega : 1 ≤ 2 * r + k + 1 - Vs.length)
     exact ((hc.differentiableOn (by
       exact ne_of_gt (lt_of_lt_of_le (by norm_num) hle))).differentiableAt (hO.mem_nhds hx))
   intro Xs hXs hl

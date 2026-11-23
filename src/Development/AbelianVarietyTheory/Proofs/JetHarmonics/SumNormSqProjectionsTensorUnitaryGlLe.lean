@@ -64,7 +64,7 @@ theorem sum_normSq_proj_single_le : ∀ (M : Type) [NormedAddCommGroup M] [Inner
     hproj.1
     (fun s hs => hproj.2 s (by simpa using hs))
   obtain ⟨h1, h2, -, -, -, hb⟩ := hS
-  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast (by omega : 1 ≤ n)
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast (omega : 1 ≤ n)
   have hnb : (n : ℝ) ≤ bv := by
     have h7 : (n : ℝ) ≤ (n : ℝ) ^ 7 := le_self_pow₀ hn1 (by norm_num)
     have : (0 : ℝ) ≤ (n : ℝ) ^ 7 := by positivity

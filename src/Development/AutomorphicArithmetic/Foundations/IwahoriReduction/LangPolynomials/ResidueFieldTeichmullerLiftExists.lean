@@ -132,7 +132,7 @@ private theorem exists_r0_valuation_sub_lt_one_of_isAlgebraic {Ω : Type} [Field
     ∃ w ∈ R0 A, A.valuation (w - a) < 1 := by
   obtain ⟨q, hq2, hq, haq⟩ := fin_lemma_3 A hl a halg
   set T : Polynomial Ω := Polynomial.X ^ q - Polynomial.X with hT
-  have hTm : T.Monic := Polynomial.monic_X_pow_sub (by rw [Polynomial.degree_X]; exact_mod_cast (by omega : 1 < q))
+  have hTm : T.Monic := Polynomial.monic_X_pow_sub (by rw [Polynomial.degree_X]; exact_mod_cast (omega : 1 < q))
   have hprod := (Polynomial.prod_multiset_X_sub_C_of_monic_of_roots_card_eq hTm (Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits T))).symm
   have hroot : ∀ w ∈ T.roots, w ^ q = w := by
     intro w hw

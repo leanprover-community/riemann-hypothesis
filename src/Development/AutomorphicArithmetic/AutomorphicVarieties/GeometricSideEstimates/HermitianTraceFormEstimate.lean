@@ -80,7 +80,7 @@ theorem UpperTheory.hermitian_trace_form_estimate :
     DevFacts := by
   intro E _ _ _ a ha L hL
   obtain ⟨-, hM⟩ := UpperTheory.hermitian_space_geometric_estimate E a ha L hL
-  have h1 : (a : ℝ) ≠ 0 := by exact_mod_cast (by omega : a ≠ 0)
+  have h1 : (a : ℝ) ≠ 0 := by exact_mod_cast (omega : a ≠ 0)
   have h2 : (Fintype.card (InfinitePlace E) : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
   have hone : ell E a (toL (1 : Matrix (Fin a) (Fin a) (Cinf E))) = 1 := (UpperTheory.V.Lit.Bor.ellFacts E a).1 ha
   have hdev : ∀ g, (dev L g).1 = (mom L g).1 - ell E a (toL (mom L g).1) • (1 : Matrix (Fin a) (Fin a) (Cinf E)) := fun g => rfl

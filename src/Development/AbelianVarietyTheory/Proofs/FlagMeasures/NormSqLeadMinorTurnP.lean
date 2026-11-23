@@ -745,7 +745,7 @@ theorem gap_near {n : ℕ} {ε : Fin n → Bool} {lam lam0 : Fin n → ℝ} {x y
 
 theorem size_le (k r : ℕ) : (k : ℝ) * ((2 * r + 2 : ℕ) : ℝ) ^ 3 ≤ ((2 * r + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) *
     (((3 * (r + 1) : ℕ) : ℝ) * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 + ((2 * r + k + 1 : ℕ) : ℝ) ^ 3) := by
-  have h1 : (1 : ℝ) ≤ ((2 * r + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ 2 * r + 2)
+  have h1 : (1 : ℝ) ≤ ((2 * r + 2 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ 2 * r + 2)
   have h2 : ((2 * r + 2 : ℕ) : ℝ) ^ 3 ≤ ((2 * r + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) := by
     rw [← Real.rpow_natCast]
     exact Real.rpow_le_rpow_of_exponent_le h1 (by norm_num)
@@ -808,7 +808,7 @@ theorem frameChange_of_frames : ∀ Ch Cgf Cf : ℝ, 0 ≤ Ch → 0 ≤ Cf → �
   rw [GPoint_turnP] at hG
   rw [ptWeight_turnP] at hw
   set M : ℝ := ((2 * D.R.rS + 2 : ℕ) : ℝ) with hM
-  have hrM : (D.R.rS : ℝ) ≤ M := by rw [hM]; exact_mod_cast (by omega : D.R.rS ≤ 2 * D.R.rS + 2)
+  have hrM : (D.R.rS : ℝ) ≤ M := by rw [hM]; exact_mod_cast (omega : D.R.rS ≤ 2 * D.R.rS + 2)
   have hM0 : 0 ≤ M := by positivity
   have hs : ka⁻¹ ^ (2 * D.R.rS * (D.R.rS + 1)) * (ka ^ D.R.rS) ^ (4 * (D.R.rS + 1)) = ka ^ (2 * D.R.rS * (D.R.rS + 1)) := by
     have : D.R.rS * (4 * (D.R.rS + 1)) = 2 * D.R.rS * (D.R.rS + 1) + 2 * D.R.rS * (D.R.rS + 1) := by ring

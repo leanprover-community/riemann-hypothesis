@@ -48,8 +48,8 @@ theorem gap_near : ∀ Cn : ℝ, ∃ m₀ : ℝ, ∀ (D : D7) (large₂ : SizeDa
   have hnR : (D.R.r : ℝ) = 2 * D.R.rS + D.R.k + 1 := by rw [← hdim]; push_cast; ring
   have hmC : Cn ≤ (D.R.m : ℝ) := le_trans (le_max_left _ _) hm₀
   have hm1000 : (1000 : ℝ) ≤ D.R.m := le_trans (le_max_right _ _) hm₀
-  have hkr : (D.R.k : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : D.R.k ≤ D.R.r)
-  have hmr : (D.R.m : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : D.R.m ≤ D.R.r)
+  have hkr : (D.R.k : ℝ) ≤ D.R.r := by exact_mod_cast (omega : D.R.k ≤ D.R.r)
+  have hmr : (D.R.m : ℝ) ≤ D.R.r := by exact_mod_cast (omega : D.R.m ≤ D.R.r)
   have hr1000 : (1000 : ℝ) ≤ D.R.r := le_trans hm1000 hmr
   have hk0 : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
 

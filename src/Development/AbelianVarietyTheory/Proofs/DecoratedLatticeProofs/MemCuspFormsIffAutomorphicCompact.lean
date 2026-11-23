@@ -41,13 +41,11 @@ open GlobalTheory.Core.Rk.IP (WRep up wcoef rcoef)
 open GlobalTheory.Mem.Th (CptF)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Lattices
 
 open Formalism.L2.DIV
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-end Lattices
 
 variable {D : D7}
 
@@ -90,12 +88,10 @@ theorem frameLat_reset (V : HSp D) (L : Lat V) (h : IsSelfDualC V L) (s : (D.hos
   ext x
   exact (mem_latIn (V := V) (L := L) (x := V.frame.equivFun.symm x)).trans (by rw [V.frame.equivFun.apply_symm_apply x]; rfl)
 
-section Transport
 
 variable {ψ : AddChar (AF D.host.F) ℂ} {A W : HSp D} {LA : Lat A} {LW : Lat W} (hA : IsSelfDualC A LA) (hW : IsSelfDualC W LW)
   (sA sW : (D.host.E →+* ℂ) → ℕ × ℕ)
 
-end Transport
 
 end GlobalTheory.Core.Rk.DownCompare
 

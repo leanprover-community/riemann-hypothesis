@@ -83,7 +83,7 @@ theorem SliceDim.proof : SliceDim.Statement := by
       norm_cast at key
     | coe m =>
       have : m + 1 ≤ e + 1 := by exact_mod_cast key
-      exact_mod_cast (by omega : m ≤ e)
+      exact_mod_cast (omega : m ≤ e)
 
 end
 

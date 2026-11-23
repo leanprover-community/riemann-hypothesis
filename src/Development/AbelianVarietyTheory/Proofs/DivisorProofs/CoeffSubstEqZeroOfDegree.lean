@@ -51,7 +51,7 @@ theorem coeff_subst_eq_zero_of_degree {R : Type} [CommRing R] {σ τ : Type} [Fi
   by_cases h : α.degree < N
   · rw [hf α h, zero_smul]
   · rw [coeff_of_lt_order (f := α.prod fun s e => a s ^ e) (d := β) ?_, smul_zero]
-    refine lt_of_lt_of_le (b := ((α.degree : ℕ) : ℕ∞)) (by exact_mod_cast (by omega : β.degree < α.degree)) ?_
+    refine lt_of_lt_of_le (b := ((α.degree : ℕ) : ℕ∞)) (by exact_mod_cast (omega : β.degree < α.degree)) ?_
     rw [Finsupp.prod]
     refine le_trans ?_ (le_order_prod _ _)
     show ((∑ i ∈ α.support, α i : ℕ) : ℕ∞) ≤ _

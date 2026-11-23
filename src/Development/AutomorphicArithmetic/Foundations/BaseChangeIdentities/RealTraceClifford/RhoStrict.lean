@@ -324,7 +324,7 @@ theorem UpperTheory.RealTr.divEx :
         rw [hk'']
         have h2 : k' < k := by exact_mod_cast h1
         have h3 : k < N + 1 := by exact_mod_cast hlt
-        exact_mod_cast (by omega : k' < N)
+        exact_mod_cast (omega : k' < N)
       choose! χ hχS hχ using hterm
       set S : Finset (Equiv.Perm (Fin n)) := Finset.univ.filter (fun w => κ ∘ w = κ) with hS
       have hc : ((S.card : ℂ)) ≠ 0 := by

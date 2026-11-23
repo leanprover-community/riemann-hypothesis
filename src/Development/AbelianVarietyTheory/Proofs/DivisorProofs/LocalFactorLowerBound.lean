@@ -179,7 +179,7 @@ theorem prod_le_locFactor_of_isPrime (E : Type) [Field E] [NumberField E] [IsCMF
   have h := GlobalTheory.FiniteOrders.card_specialUnitaryGroup hK hs (Fin r) (Fintype.card_fin r) hr
   have h' := congrArg (Rat.cast : ℚ → ℝ) h
   push_cast at h'
-  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast (by omega : 1 ≤ q)
+  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast (omega : 1 ≤ q)
   have hq0 : (0 : ℝ) < q := by linarith
   rw [le_div_iff₀ (by positivity)]
   refine le_of_le_of_eq ?_ h'.symm

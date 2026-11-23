@@ -146,7 +146,7 @@ theorem okIv_sound {a b j c : ℕ} {L : List ℕ} (h : okIv a b j c L = true) (N
         refine Finset.sum_le_sum fun p hp => ?_
         rw [List.mem_toFinset] at hp
         obtain ⟨⟨⟨⟨⟨h2, -⟩, -⟩, -⟩, -⟩, h7⟩ := hall p hp
-        have : (0 : ℝ) < p := by exact_mod_cast (by omega : 0 < p)
+        have : (0 : ℝ) < p := by exact_mod_cast (omega : 0 < p)
         exact one_div_le_one_div_of_le this (by exact_mod_cast h7)
     _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => by positivity)
 
@@ -325,7 +325,7 @@ theorem inv_five_log_le_sum_inv_primes_of_large (N : ℕ) (hN : 16900 ≤ N) :
         refine Finset.sum_le_sum fun p hp => ?_
         obtain ⟨-, hp1, -, hp2⟩ := Finset.mem_filter.1 hp
         have : (0 : ℝ) < p := by exact_mod_cast hp1.pos
-        have h' : (p : ℝ) ≤ N := by exact_mod_cast (by omega : p ≤ N)
+        have h' : (p : ℝ) ≤ N := by exact_mod_cast (omega : p ≤ N)
         exact one_div_le_one_div_of_le this h'
 
 def table : List (ℕ × ℕ × ℕ × ℕ × List ℕ) := [

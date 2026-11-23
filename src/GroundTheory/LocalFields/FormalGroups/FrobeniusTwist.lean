@@ -136,12 +136,12 @@ theorem exists_residue_sub_mul_add_eq_zero (v w : B) :
   have hlow : (C b - C a * X : (ResidueField B)[X]).degree < (X ^ q : (ResidueField B)[X]).degree := by
     rw [degree_X_pow]
     refine lt_of_le_of_lt (degree_sub_le _ _) (max_lt ?_ ?_)
-    · exact lt_of_le_of_lt degree_C_le (by exact_mod_cast (by omega : 0 < q))
+    · exact lt_of_le_of_lt degree_C_le (by exact_mod_cast (omega : 0 < q))
     · exact lt_of_le_of_lt (degree_C_mul_X_le a) (by exact_mod_cast hq)
   have hdeg : (X ^ q + (C b - C a * X) : (ResidueField B)[X]).degree = q := by
     rw [degree_add_eq_left_of_degree_lt hlow, degree_X_pow]
   obtain ⟨z, hz⟩ := IsAlgClosed.exists_root (X ^ q + (C b - C a * X) : (ResidueField B)[X])
-    (by rw [hdeg]; exact_mod_cast (by omega : q ≠ 0))
+    (by rw [hdeg]; exact_mod_cast (omega : q ≠ 0))
   obtain ⟨z', rfl⟩ := residue_surjective z
   refine ⟨z', ?_⟩
   simp only [IsRoot, eval_add, eval_sub, eval_pow, eval_X, eval_C, eval_mul] at hz

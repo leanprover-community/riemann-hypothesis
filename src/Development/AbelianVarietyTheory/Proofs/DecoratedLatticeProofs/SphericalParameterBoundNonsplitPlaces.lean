@@ -88,7 +88,7 @@ theorem paramBoundOn_nonsplit (hUDI : GlobalTheory.IndefiniteRowSideFullHecke.Sp
   have hqv : (qV D.host.F v : ℝ) = (Ideal.absNorm v.asIdeal : ℝ) := rfl
   rw [hnorm, Nat.cast_pow, ← hqv]
   refine hle.trans (Real.rpow_le_rpow_of_exponent_le ?_ ?_)
-  · have : (1 : ℝ) ≤ qV D.host.F v := by exact_mod_cast (by omega : 1 ≤ qV D.host.F v)
+  · have : (1 : ℝ) ≤ qV D.host.F v := by exact_mod_cast (omega : 1 ≤ qV D.host.F v)
     nlinarith
   · linarith
 

@@ -131,7 +131,7 @@ theorem bound_pos (A B C D : List ℚ) (m : ℚ) (hA : A.Nodup) (hAm : ∀ e ∈
   push_cast
   have h1' : ((A.countP (fun e => decide (e < x)) : ℕ) : ℚ) ≤ N := by exact_mod_cast h1
   have h2' : (A.length : ℚ) ≤ (A.countP (fun e => decide (e < x)) : ℕ) +
-      (A.countP (fun e => decide (x < e)) : ℕ) + 1 := by exact_mod_cast (by omega)
+      (A.countP (fun e => decide (x < e)) : ℕ) + 1 := by exact_mod_cast (omega)
   have h4' : ((B.countP (fun e => decide (e < x)) : ℕ) : ℚ) ≤ B.length := by exact_mod_cast h4
   have h7' : ((C.countP (fun e => decide (x < e)) : ℕ) : ℚ) ≤ C.length := by exact_mod_cast h7
   have h8 : (0 : ℚ) ≤ (C.countP (fun e => decide (e < x)) : ℕ) := Nat.cast_nonneg _
@@ -163,7 +163,7 @@ theorem bound_neg (A B C D : List ℚ) (m : ℚ) (hB : B.Nodup) (hBm : ∀ e ∈
   push_cast
   have h1' : ((B.countP (fun e => decide (x < e)) : ℕ) : ℚ) ≤ N := by exact_mod_cast h1
   have h2' : (B.length : ℚ) ≤ (B.countP (fun e => decide (e < x)) : ℕ) +
-      (B.countP (fun e => decide (x < e)) : ℕ) + 1 := by exact_mod_cast (by omega)
+      (B.countP (fun e => decide (x < e)) : ℕ) + 1 := by exact_mod_cast (omega)
   have h4' : ((A.countP (fun e => decide (x < e)) : ℕ) : ℚ) ≤ A.length := by exact_mod_cast h4
   have h7' : ((D.countP (fun e => decide (e < x)) : ℕ) : ℚ) ≤ D.length := by exact_mod_cast h7
   have h8 : (0 : ℚ) ≤ (D.countP (fun e => decide (x < e)) : ℕ) := Nat.cast_nonneg _

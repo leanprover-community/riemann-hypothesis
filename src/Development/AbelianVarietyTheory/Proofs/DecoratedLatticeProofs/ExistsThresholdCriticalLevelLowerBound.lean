@@ -96,7 +96,7 @@ theorem tcrit_low_of_sizes (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu c
   have hk := D.R.m_add_three_le_k
   have hm2 := D.R.two_le_m
   have hm := GlobalTheory.CritLevel.m_eq D.R
-  have hkR : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 5 ≤ D.R.k)
+  have hkR : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 5 ≤ D.R.k)
   have hmR : (40 : ℝ) ≤ D.R.m := hCl40.trans hClm
   have hme : 2 * e + 40 ≤ D.R.m := by
     have : ((2 * e + 40 : ℕ) : ℝ) ≤ D.R.m := by push_cast; linarith

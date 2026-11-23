@@ -52,7 +52,7 @@ theorem rel_shift (hq : ∀ w, 2 ≤ q w) {ι κ : Type} [Fintype ι] [Fintype �
   intro w k
   have hq0 : (q w : ℂ) ≠ 0 := by
     have := hq w
-    exact_mod_cast (by omega : q w ≠ 0)
+    exact_mod_cast (omega : q w ≠ 0)
   have e : ∀ (a : ℂ) (t : ℝ), (a * (q w : ℂ) ^ (-((t - τ : ℝ) : ℂ))) ^ k =
       ((q w : ℂ) ^ (τ : ℂ)) ^ k * (a * (q w : ℂ) ^ (-(t : ℂ))) ^ k := by
     intro a t

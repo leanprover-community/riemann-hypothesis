@@ -92,7 +92,7 @@ theorem mertens_upper_psi_bound (N : ℕ) (hN : 1 ≤ N) :
         ≤ ∑ n ∈ Finset.Ioc 0 N, Real.log n :=
       Finset.sum_le_sum fun n _ => ArithmeticFunction.vonMangoldt_le_log
     have h2 := mertens_upper_sum_log N hN
-    have h24 : (N : ℝ) ≤ 24 := by exact_mod_cast (by omega : N ≤ 24)
+    have h24 : (N : ℝ) ≤ 24 := by exact_mod_cast (omega : N ≤ 24)
     by_cases h3 : 3 ≤ N
     · have h3' : (3 : ℝ) ≤ N := by exact_mod_cast h3
       have hl := mertens_upper_log_le N 16 (by linarith) (by norm_num)
@@ -100,7 +100,7 @@ theorem mertens_upper_psi_bound (N : ℕ) (hN : 1 ≤ N) :
       have h5 : ((N : ℝ) + 2) * Real.log N ≤ (N + 2) * (1.78 + N / 16) :=
         mul_le_mul_of_nonneg_left hl' (by linarith)
       nlinarith
-    · have h2' : (N : ℝ) ≤ 2 := by exact_mod_cast (by omega : N ≤ 2)
+    · have h2' : (N : ℝ) ≤ 2 := by exact_mod_cast (omega : N ≤ 2)
       have hl := Real.log_le_sub_one_of_pos (show (0 : ℝ) < N by linarith)
       have h5 : ((N : ℝ) + 2) * Real.log N ≤ (N + 2) * (N - 1) :=
         mul_le_mul_of_nonneg_left hl (by linarith)

@@ -114,7 +114,7 @@ theorem lemmaBT_of_characters : Laws → Laws2 → Laws4 → TwistBaseChangeStat
       by_cases hz : z = 0
       · rw [hz, Q_zero hϖ P.D hQ, Int.cast_zero]
       · have h3 := Q_pos hϖ P.D hQ hz
-        exact_mod_cast (by omega : 0 ≤ Q z)
+        exact_mod_cast (omega : 0 ≤ Q z)
     exact h1.trans (mul_le_mul_of_nonneg_right (le_max_left _ _) h2)
   obtain ⟨s, s', t, f, gm, hs, hgm, hle⟩ := GlobalTheory.T.depth_bound_from_characters_pointDatum L1 L2 L4 TB hch g E H T.V F
     (FamGerm.Pt1.mk ϖ hϖ T.cpl C.I.G P tors Q hQ v hv (chD C.ch) x hx j hj u hu B hB ρ hρ)

@@ -308,7 +308,7 @@ theorem dom_sum (n : ℕ) (ν L : ℕ → ℝ) (C : ℝ) (hν : ∀ i, i + 1 < n
     intro a ha
     refine c4 1 (fun j h1 h2 => ?_) a (Nat.zero_le _) ha
     have := cnt_le I (Nat.zero_le j)
-    have h3 : (cnt I 0 j : ℝ) ≤ j := by exact_mod_cast (by omega : cnt I 0 j ≤ j)
+    have h3 : (cnt I 0 j : ℝ) ≤ j := by exact_mod_cast (omega : cnt I 0 j ≤ j)
     simpa using h3
 
   have a1 := abel_le n ν (fun i => if i ∈ I then 1 else 0) c hν

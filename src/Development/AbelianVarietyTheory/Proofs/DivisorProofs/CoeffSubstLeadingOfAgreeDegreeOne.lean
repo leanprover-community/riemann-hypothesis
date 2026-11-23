@@ -116,7 +116,7 @@ theorem coeff_subst_leading :
     refine finsum_eq_zero_of_forall_eq_zero fun d => ?_
     by_cases hd : d.degree < N
     · rw [hf d hd, zero_smul]
-    · rw [coeff_of_lt_order (lt_of_lt_of_le (by exact_mod_cast (by omega : γ.degree < d.degree))
+    · rw [coeff_of_lt_order (lt_of_lt_of_le (by exact_mod_cast (omega : γ.degree < d.degree))
         (LeadSubst.Near.prod hn d).1), smul_zero]
   · rw [coeff_subst (hasSubst_of_constantCoeff_zero hu),
       coeff_subst (hasSubst_of_constantCoeff_zero hv)]
@@ -125,7 +125,7 @@ theorem coeff_subst_leading :
     · rw [hf d hd, zero_smul, zero_smul]
     · congr 1
       have h := coeff_of_lt_order (d := γ) (lt_of_lt_of_le
-        (by exact_mod_cast (by omega : γ.degree < d.degree + 1)) (LeadSubst.Near.prod hn d).2.2)
+        (by exact_mod_cast (omega : γ.degree < d.degree + 1)) (LeadSubst.Near.prod hn d).2.2)
       rwa [map_sub, sub_eq_zero] at h
 
 end GlobalTheory

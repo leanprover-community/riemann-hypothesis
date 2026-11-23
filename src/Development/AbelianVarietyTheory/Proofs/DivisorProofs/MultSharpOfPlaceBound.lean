@@ -201,7 +201,7 @@ theorem places (H : PlaceBound) {K : Type} [Field K] (s : K →+* ℂ) (Pg : Fin
   · simp only [hcl]
     exact hn PP
   · have := Formalism.BranchingDeterminantCap.multiplicity_product ↥Pg (fun PP => (Nat.card (kP PP.1) : ℝ)) (fun PP => (n PP : ℝ)) k f r g
-      (by rw [Fintype.card_coe, hf]; push_cast; rfl) (by exact_mod_cast (by omega : 1 ≤ r)) (by exact_mod_cast hg)
+      (by rw [Fintype.card_coe, hf]; push_cast; rfl) (by exact_mod_cast (omega : 1 ≤ r)) (by exact_mod_cast hg)
       (fun PP => by exact_mod_cast hq PP.1 PP.2) (by exact_mod_cast hfg) hb
     have e : (nbar Pg k : ℝ) = ∏ PP : ↥Pg, (Nat.card (kP PP.1) : ℝ) ^ k := by
       unfold nbar

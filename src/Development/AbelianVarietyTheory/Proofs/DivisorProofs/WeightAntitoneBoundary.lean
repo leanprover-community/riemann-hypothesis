@@ -132,8 +132,8 @@ theorem cols_le_len (PP A M : ℝ) (hw : WtNum p i PP) (hh : HostNum D L PP A M)
     have h13 : (45 : ℝ) ≤ 13 * D.R.r - 33 := by linarith
     have : (48 : ℝ) * 45 ≤ ((D.R.f : ℝ) * D.R.r) * (13 * D.R.r - 33) := mul_le_mul FR h13 (by norm_num) (by linarith)
     nlinarith
-  have hm0 : (0 : ℝ) < D.R.m := by exact_mod_cast (by omega : 0 < D.R.m)
-  have hkm : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+  have hm0 : (0 : ℝ) < D.R.m := by exact_mod_cast (omega : 0 < D.R.m)
+  have hkm : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (omega : D.R.m ≤ D.R.k)
   have hT : 1600 * Dd ^ 2 ≤ (lenT p i PP : ℝ) := by
     have h1 : 1600 * Dd ^ 2 ≤ PP ^ 2 * Dd ^ 2 * (D.R.k : ℝ) / (D.R.m : ℝ) := by
       rw [le_div_iff₀ hm0]

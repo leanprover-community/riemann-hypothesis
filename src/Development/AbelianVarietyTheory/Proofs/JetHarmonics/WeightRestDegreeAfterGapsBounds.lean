@@ -225,9 +225,9 @@ theorem restAt_bounds (hj : InR D j) (τ : D.what₂.Tau) :
   change (Tp.TO : ℝ) * (ext0 ((lR Tp hK j).aM τ) 0 : ℝ) ≤ _ at t3
   have c0 : (5 : ℝ) ≤ D.R.k := by exact_mod_cast hk
   have c1 : ((D.R.k - 2 : ℕ) : ℝ) ≤ D.R.k := by exact_mod_cast Nat.sub_le _ _
-  have c2 : ((D.R.sigW j).1 : ℝ) ≤ 2 * D.R.k := by exact_mod_cast (by omega : (D.R.sigW j).1 ≤ 2 * D.R.k)
-  have c3 : ((D.R.sigW j).2 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : (D.R.sigW j).2 ≤ D.R.k)
-  have c4 : (j : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : j ≤ D.R.k)
+  have c2 : ((D.R.sigW j).1 : ℝ) ≤ 2 * D.R.k := by exact_mod_cast (omega : (D.R.sigW j).1 ≤ 2 * D.R.k)
+  have c3 : ((D.R.sigW j).2 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : (D.R.sigW j).2 ≤ D.R.k)
+  have c4 : (j : ℝ) ≤ D.R.k := by exact_mod_cast (omega : j ≤ D.R.k)
   have c5 : (0 : ℝ) ≤ j := Nat.cast_nonneg _
   have c6 : (0 : ℝ) ≤ ((D.R.sigW j).2 : ℝ) := Nat.cast_nonneg _
   have hT : (0 : ℝ) ≤ Tp.TO := Nat.cast_nonneg _

@@ -64,7 +64,7 @@ private theorem one_sub_mul_natCast_cpow_neg_ne_zero {c : ℂ} (hc : ‖c‖ ≤
   have h1 : c * (n : ℂ) ^ (-s) = 1 := (sub_eq_zero.mp h).symm
   have h2 : ‖(n : ℂ) ^ (-s)‖ < 1 := by
     rw [Complex.norm_natCast_cpow_of_pos (by omega), Complex.neg_re]
-    exact Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast (by omega : 1 < n)) (by linarith)
+    exact Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast (omega : 1 < n)) (by linarith)
   have h3 := congrArg norm h1
   rw [norm_mul, norm_one] at h3
   nlinarith [norm_nonneg c, norm_nonneg ((n : ℂ) ^ (-s))]

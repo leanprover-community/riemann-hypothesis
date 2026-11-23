@@ -60,7 +60,7 @@ theorem nuD_card_le_a_sq : ∀ {eps : ℝ} (Fm : FamP eps), ∃ x0 : ℝ, ∀ x 
     exact_mod_cast this
   have hk : (1 : ℝ) ≤ (Fm.D x i).R.k := by
     have := (Fm.D x i).R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ (Fm.D x i).R.k)
+    exact_mod_cast (omega : 1 ≤ (Fm.D x i).R.k)
   have hN0 : (0 : ℝ) ≤ (Fm.D x i).R.N (Fm.D x i).R.m := Nat.cast_nonneg _
   have hNk := le_mul_of_one_le_left hN0 hk
   have heta := (Fm.L x i).etaSz_pos

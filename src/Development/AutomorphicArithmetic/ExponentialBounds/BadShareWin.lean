@@ -92,7 +92,7 @@ theorem fm_div_min_le {D : D7} (L : SizeData₂ D) (hP : ParameterChoice' D L) (
   have sq : ∀ (y : ℕ) (a b : ℝ), D.R.k ≤ y → (y : ℝ) ≤ L.sc.x ^ a → a + a ≤ b → (D.R.f : ℝ) * D.R.m ≤ L.sc.x ^ b := by
     intro y a b hy ha hb
     have a1 : (D.R.f : ℝ) ≤ y := by exact_mod_cast h3.trans hy
-    have a2 : (D.R.m : ℝ) ≤ y := by exact_mod_cast (by omega : D.R.m ≤ y)
+    have a2 : (D.R.m : ℝ) ≤ y := by exact_mod_cast (omega : D.R.m ≤ y)
     calc (D.R.f : ℝ) * D.R.m ≤ L.sc.x ^ a * L.sc.x ^ a :=
           mul_le_mul (a1.trans ha) (a2.trans ha) (Nat.cast_nonneg _) (Real.rpow_pos_of_pos hx0 _).le
       _ = L.sc.x ^ (a + a) := (Real.rpow_add hx0 _ _).symm

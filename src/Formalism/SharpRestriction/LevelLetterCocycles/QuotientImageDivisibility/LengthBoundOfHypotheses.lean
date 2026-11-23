@@ -238,7 +238,7 @@ theorem length_bound_of_hypotheses [NeZero n] (h3 : Formalism.MainNotions.DeltaI
 
   have hbh : (b c : ℝ) ≤ (Formalism.MainNotions.RamifiedCoefficientChains.hpar n b S : ℝ) := by
     have : b c ≤ Finset.univ.sup b := Finset.le_sup (Finset.mem_univ c)
-    rw [Formalism.MainNotions.RamifiedCoefficientChains.hpar]; push_cast; exact_mod_cast (by omega : b c ≤ Finset.univ.sup b + S)
+    rw [Formalism.MainNotions.RamifiedCoefficientChains.hpar]; push_cast; exact_mod_cast (omega : b c ≤ Finset.univ.sup b + S)
   have hEge : (ec : ℤ) + κ - hh ≤ (E : ℤ) := by
     have hreal : ((ec : ℤ) + κ - hh : ℝ) ≤ Bd := by
       rw [hBd, Formalism.MainNotions.RamifiedCoefficientChains.S9.wachVectorLiftingExponent]

@@ -121,7 +121,7 @@ theorem coeff_exp_lin [CharZero C] (w : τ → ℕ) {D : MvPowerSeries τ C}
       have h1 := nat_le_weightedOrder w hD
       refine lt_of_lt_of_le ?_ (nsmul_le_nsmul_right h1 k)
       rw [hm, nsmul_eq_mul, ← Nat.cast_mul]
-      exact_mod_cast (by omega : 1 < k * 1)
+      exact_mod_cast (omega : 1 < k * 1)
 
 def inj (col : Fin 2) (a : Fin dd → MvPowerSeries τ C) : Fin 2 × Fin dd → MvPowerSeries τ C :=
   fun x => (if col = x.1 then a else 0) x.2

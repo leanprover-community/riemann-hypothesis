@@ -116,8 +116,8 @@ theorem short_vectors_span_uc_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBun
       exact_mod_cast hN
     push_cast at hN' ⊢
     linarith
-  have hf1 : (1 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast (by omega : 1 ≤ (Fm.D x ι).R.f)
-  have hr1 : (1 : ℝ) ≤ (Fm.D x ι).R.r := by exact_mod_cast (by omega : 1 ≤ (Fm.D x ι).R.r)
+  have hf1 : (1 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast (omega : 1 ≤ (Fm.D x ι).R.f)
+  have hr1 : (1 : ℝ) ≤ (Fm.D x ι).R.r := by exact_mod_cast (omega : 1 ≤ (Fm.D x ι).R.r)
   have hfr1 : (1 : ℝ) ≤ (Fm.D x ι).R.f * (Fm.D x ι).R.r := by nlinarith
   have hS0 : 0 ≤ ∑ τ, ∑ k, |(P.wt 0 τ k : ℝ)| := by positivity
   have hw0 := hwt 0 (Nat.zero_le _)
@@ -154,7 +154,7 @@ theorem short_vectors_span_uc_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBun
           _ = _ := by ring
       calc _ ≤ zBase (Fm.L x ι) ^ 2 := by push_cast; exact b
         _ ≤ _ := le_mul_of_one_le_right (by positivity) hX
-    have hDc : (1 : ℝ) ≤ (FlagTan.dimFlag (dat p i) : ℝ) := by exact_mod_cast (by omega : 1 ≤ FlagTan.dimFlag (dat p i))
+    have hDc : (1 : ℝ) ≤ (FlagTan.dimFlag (dat p i) : ℝ) := by exact_mod_cast (omega : 1 ≤ FlagTan.dimFlag (dat p i))
     have hSs := sum_le (sum_abs_weightZero_le_components (dat p i) P) hK (hu12 _ (Set.mem_insert _ _))
       (hu12 _ (Set.mem_insert_of_mem _ (Set.mem_singleton _))) hDc hW
     have hZL : (Fm.L x ι).sc.L ≤ zBase (Fm.L x ι) := le_mul_of_one_le_left (by linarith) hfr1

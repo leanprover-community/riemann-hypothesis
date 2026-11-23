@@ -455,7 +455,7 @@ theorem chGood_of_host (eps C5 c6 Cb cD ch : ℝ) (C : FC) (he : 0 < eps) (he1 :
     have hXb := X'_le_b s
     have hk : (1 : ℝ) ≤ R.k := by
       have := R.m_add_three_le_k
-      exact_mod_cast (by omega : 1 ≤ R.k)
+      exact_mod_cast (omega : 1 ≤ R.k)
     have hb1 : 1 ≤ s.b := Real.one_le_exp (Real.rpow_nonneg (by linarith [s.one_lt_alt]) _)
     have h5 : s.b ≤ (R.k : ℝ) * s.b := le_mul_of_one_le_left (by linarith) hk
     have h6 : (R.k : ℝ) * s.b ≤ ((R.k : ℝ) * s.b) ^ 8 := le_self_pow₀ (by linarith) (by norm_num)

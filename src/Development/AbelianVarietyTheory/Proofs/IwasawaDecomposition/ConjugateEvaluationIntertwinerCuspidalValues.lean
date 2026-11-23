@@ -71,7 +71,7 @@ theorem gap_of_sign {D : D7} (hG : Formalism.L2.SG.ConcreteSettingExists.GapHyp 
     exact_mod_cast hg
   rw [GlobalTheory.Core.Rk.HdNc.lamS_node D.R (D.hc τ) j (by omega) (by omega)] at h1
   rw [e1, GlobalTheory.Core.Rk.HdNc.lamS_node D.R (D.hc τ) (j + 1) hj1 (by omega)]
-  have hr7 : (7 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 7 ≤ D.R.r)
+  have hr7 : (7 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 7 ≤ D.R.r)
   have h5 : (D.R.r : ℝ) ^ 5 ≤ (D.R.r : ℝ) ^ 19 := pow_le_pow_right₀ (by linarith) (by norm_num)
   have h4 : (0 : ℝ) ≤ (D.R.r : ℝ) ^ 4 := by positivity
   have h6 : 7 * (D.R.r : ℝ) ^ 4 ≤ (D.R.r : ℝ) ^ 5 := by

@@ -153,7 +153,7 @@ theorem kloostermanCosetSum_le {D : D7} (hNT : KTwoMinorIntegrality.NormLB) (hLS
     have hfe := frameExp_le hlr
     refine max_le hB1 (mul_le_mul ?_ (pow_le_pow_left₀ (by positivity) (le_max_right _ _) _) (by positivity)
       (Real.rpow_nonneg (by linarith) _))
-    exact Real.rpow_le_rpow_of_exponent_le (by linarith) (by exact_mod_cast (by omega : 2 * frameExp D.R.rS l ≤ 2 * (D.R.rS * D.R.rS)))
+    exact Real.rpow_le_rpow_of_exponent_le (by linarith) (by exact_mod_cast (omega : 2 * frameExp D.R.rS l ≤ 2 * (D.R.rS * D.R.rS)))
   have hprod : ∏ l ∈ Finset.Icc 1 j, (64 * Rl (D := D) H1 l) ^ (2 * Fintype.card D.what₂.Tau) ≤
       ((64 * B) ^ (2 * Fintype.card D.what₂.Tau)) ^ j := by
     calc ∏ l ∈ Finset.Icc 1 j, (64 * Rl (D := D) H1 l) ^ (2 * Fintype.card D.what₂.Tau)

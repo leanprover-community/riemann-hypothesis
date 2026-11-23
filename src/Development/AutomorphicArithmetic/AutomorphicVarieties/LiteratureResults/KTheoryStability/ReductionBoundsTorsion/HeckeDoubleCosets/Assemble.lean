@@ -228,7 +228,7 @@ theorem assemble (hCh : SChain) (hEv : SEv) (hSt : SStab) (hFin : SFin) (hAff : 
     push_cast at h2 hiN
     linarith
   have hiNpos : 0 < iN := by
-    have h1 : (1 : ℝ) ≤ ((n + r : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ n + r)
+    have h1 : (1 : ℝ) ≤ ((n + r : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ n + r)
     linarith
   set a : ℝ := i0 / iN with ha
   have ha0 : 0 ≤ a := div_nonneg hi0 hiNpos.le

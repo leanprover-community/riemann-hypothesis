@@ -67,7 +67,7 @@ theorem norm_term (K : FinExt l) (ζ : Om l) (hζ : IsPrimitiveRoot ζ l)
     ∃ n : ℤ, ‖z‖ = (l : ℝ) ^ n ∧ ∀ a : ℕ, ‖z * (ζ - 1) ^ a‖ =
         (l : ℝ) ^ (((n * (l - 1) - a : ℤ) : ℝ) / ((l : ℝ) - 1)) := by
   have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hl0 : (0 : ℝ) < l := by linarith
   have hm : (l : ℝ) - 1 ≠ 0 := by linarith
   obtain ⟨n, hn⟩ := GlobalTheory.UnramValue.norm_of_mem_unramified_subfield l K z hz h0
@@ -83,7 +83,7 @@ theorem term_le (K : FinExt l) (ζ : Om l) (hζ : IsPrimitiveRoot ζ l)
     (z : ℕ → Om l) (hz : ∀ a, z a ∈ K0 K) (a : ℕ) (ha : a < l - 1) :
     ‖z a * (ζ - 1) ^ a‖ ≤ ‖∑ b ∈ Finset.range (l - 1), z b * (ζ - 1) ^ b‖ := by
   have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hm : (0 : ℝ) < (l : ℝ) - 1 := by linarith
   refine norm_le_norm_sum (Finset.range (l - 1)) (fun b => z b * (ζ - 1) ^ b) ?_ a
     (Finset.mem_range.2 ha)
@@ -121,7 +121,7 @@ theorem coeff_le (K : FinExt l) (ζ : Om l) (hζ : IsPrimitiveRoot ζ l)
   · rw [h0, norm_zero]
     exact zero_le_one
   have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hm : (0 : ℝ) < (l : ℝ) - 1 := by linarith
   obtain ⟨n, hn, hna⟩ := GlobalTheory.Cyc.FirstLevel.norm_term K ζ hζ z hz h0
   rw [hna a] at h

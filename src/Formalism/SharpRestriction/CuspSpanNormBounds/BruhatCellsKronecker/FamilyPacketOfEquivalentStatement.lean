@@ -156,7 +156,7 @@ theorem parameters_of_hypotheses {C' Cl Cg cb Cu cT CT C0 C K₀ : ℝ} (h : Cnt
   have hb1 : (1 : ℝ) ≤ large₂.sc.b := by linarith
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hkb : (1 : ℝ) ≤ (D.R.k : ℝ) * large₂.sc.b := by nlinarith
   have hkb8 : (1 : ℝ) ≤ ((D.R.k : ℝ) * large₂.sc.b) ^ 8 := one_le_pow₀ hkb
   have hT1 : (1 : ℝ) ≤ ((D.mem u).A.T : ℝ) := by exact_mod_cast (D.mem u).A.T_prime.one_lt.le
@@ -208,7 +208,7 @@ theorem xiHyp_of_stX {u u' : D.what₂.Word} {C' Cl Cg cb Cu cT CT C0 A CX cX C 
     exact h19
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hkv : 0 < (D.R.k : ℝ) * D.host.v := by positivity
   have hCX : 0 ≤ |CX| := abs_nonneg _
   have hcX : 0 ≤ |cX| := abs_nonneg _

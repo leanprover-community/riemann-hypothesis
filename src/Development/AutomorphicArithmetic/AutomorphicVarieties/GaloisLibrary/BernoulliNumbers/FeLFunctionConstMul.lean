@@ -78,7 +78,7 @@ theorem UpperTheory.V.Bern.b_fe :
       rw [h1, map_one] at hpar
       norm_num at hpar
     · right
-      exact_mod_cast (by omega : m + 1 ≠ 1)
+      exact_mod_cast (omega : m + 1 ≠ 1)
   have hfe := ZMod.LFunction_one_sub (χ : ZMod N → ℂ) hs hs'
   rw [hF, hF', fe_LFunction_const_mul, fe_LFunction_const_mul] at hfe
   have he1 : Complex.exp ((Real.pi : ℂ) * Complex.I * ((m + 1 : ℕ) : ℂ) / 2) = Complex.I ^ (m + 1) := by

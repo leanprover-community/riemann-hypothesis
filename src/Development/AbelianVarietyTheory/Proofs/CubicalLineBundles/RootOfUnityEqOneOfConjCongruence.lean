@@ -118,7 +118,7 @@ theorem root_of_unity_eq_one_of_isIntegral_div {E : Type} [Field E] [NumberField
     (hM : 3 ≤ M) (hn : 0 < n) {u : E} (hu : u ^ n = 1) (h : IsIntegral ℤ ((u - 1) / M)) :
     u = 1 := by
   have hM3 : (3 : ℝ) ≤ M := by exact_mod_cast hM
-  have hM0 : (M : E) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
+  have hM0 : (M : E) ≠ 0 := by exact_mod_cast (omega : M ≠ 0)
   have hlt : ∀ φ : E →+* ℂ, ‖φ ((u - 1) / M)‖ < 1 := by
     intro φ
     have h1 : ‖φ u‖ = 1 := by
@@ -142,7 +142,7 @@ theorem root_of_unity_eq_one_of_isIntegral_div {E : Type} [Field E] [NumberField
 theorem root_of_unity_eq_one_of_conj_congruence :
     ∀ (E : Type) [Field E] [NumberField E] (r M n : ℕ) (Λ Λ' : Submodule (𝓞 E) (Fin r → E)) (γ δ : Matrix (Fin r) (Fin r) E) (u : E) (τ : E →+* ℂ) (Q : Matrix (Fin r) (Fin r) ℂ), 0 < r → 3 ≤ M → 0 < n → u ^ n = 1 → Λ.FG → Λ'.FG → Submodule.span E (Λ : Set (Fin r → E)) = ⊤ → Submodule.span E (Λ' : Set (Fin r → E)) = ⊤ → (∀ x ∈ Λ, ∃ y ∈ Λ, Matrix.mulVec (γ : Matrix (Fin r) (Fin r) E) x - x = (M : E) • y) → (∀ x ∈ Λ', ∃ y ∈ Λ', Matrix.mulVec (δ : Matrix (Fin r) (Fin r) E) x - x = (M : E) • y) → Q.det ≠ 0 → (u • γ).map τ * Q = Q * δ.map τ → u = 1 := by
   intro E _ _ r M n Λ Λ' γ δ u τ Q hr hM hn hu hfg hfg' hsp hsp' hγ hδ hQ hconj
-  have hM0 : (M : ℂ) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
+  have hM0 : (M : ℂ) ≠ 0 := by exact_mod_cast (omega : M ≠ 0)
   have : Nonempty (Fin r) := ⟨⟨0, hr⟩⟩
   obtain ⟨l, hl⟩ := Module.End.exists_eigenvalue (Matrix.toLin' (γ.map τ)ᵀ)
   obtain ⟨w, hw⟩ := hl.exists_hasEigenvector

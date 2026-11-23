@@ -66,9 +66,9 @@ theorem exists_gapCond : ∃ γ, GapCond D γ := by
     Real.sqrt (((gridOf D 0 0 τ).v 2 - (gridOf D 0 0 τ).v D.R.k : ℤ) : ℝ)).bddAbove
   refine ⟨⌈B⌉₊ + (2 * bigN D ^ 3 + 2 * sLen D + 3) + ⌈48 * ((D.R.r : ℝ) + 1) ^ 2 * Real.sqrt D.R.m⌉₊, fun τ => ?_, by omega, ?_⟩
   · refine ((hB ⟨τ, rfl⟩).trans (Nat.le_ceil B)).trans ?_
-    exact_mod_cast (by omega)
+    exact_mod_cast (omega)
   · refine (Nat.le_ceil _).trans ?_
-    exact_mod_cast (by omega)
+    exact_mod_cast (omega)
 
 theorem isLeast_gap : IsLeast {γ | GapCond D γ} (gap D) :=
   ⟨Nat.sInf_mem (exists_gapCond D), fun _ h => Nat.sInf_le h⟩

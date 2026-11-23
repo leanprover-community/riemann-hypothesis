@@ -100,7 +100,7 @@ theorem loop_evaluation_threshold_zero (hLC : PN.LoopCores) (hSub : PB.SubFamily
   have hb0 : (0 : ℝ) < (Fm.L x i).sc.b := by linarith
   have hk0 : (0 : ℝ) < (Fm.D x i).R.k := by
     have := (Fm.D x i).R.m_add_three_le_k
-    exact_mod_cast (by omega : 0 < (Fm.D x i).R.k)
+    exact_mod_cast (omega : 0 < (Fm.D x i).R.k)
   have hg : 0 < ((Cc x hx i).X.B.g : ℝ) := by
     have h5 : (((Fm.D x i).R.k : ℝ) * (Fm.L x i).sc.b) ^ 8 ≤ ((Cc x hx i).X.B.g : ℝ) := hP.2.2.2.2.1
     have h8 : 0 < (((Fm.D x i).R.k : ℝ) * (Fm.L x i).sc.b) ^ 8 := by positivity

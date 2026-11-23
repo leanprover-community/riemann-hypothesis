@@ -110,7 +110,7 @@ theorem setCrofton : ∀ (n e δ : ℕ) (h : HermNorm n) (W : Ideal (MvPolynomia
     (Metric.measure_ball_pos _ _ one_pos).ne'
   have hVtop : volume (Metric.ball (0 : EuclideanSpace ℂ (Fin (e + 1))) 1) ≠ ⊤ :=
     measure_ball_lt_top.ne
-  have hδ0 : (δ : ℝ≥0∞) ≠ 0 := by exact_mod_cast (by omega : δ ≠ 0)
+  have hδ0 : (δ : ℝ≥0∞) ≠ 0 := by exact_mod_cast (omega : δ ≠ 0)
   have hδtop : (δ : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top δ
 
   have hVΓ : volume (Metric.ball (0 : EuclideanSpace ℂ (Fin (e + 1))) 1) * gaussM (e + 1) n Set.univ =

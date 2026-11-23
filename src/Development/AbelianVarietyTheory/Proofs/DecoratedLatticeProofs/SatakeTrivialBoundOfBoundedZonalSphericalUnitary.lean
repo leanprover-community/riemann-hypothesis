@@ -55,7 +55,7 @@ namespace GlobalTheory.ZonalBound
 theorem trivialBound_iff {q n : ℕ} (hq : 1 ≤ q) (hn : 1 ≤ n) (β : Fin (n / 2) → ℂˣ) :
     GlobalTheory.IndefiniteRowSideFullHecke.TrivialParameterBound.TrivialBound q n β ↔
       ∀ i, ‖(β i : ℂ)‖ ≤ (q : ℝ) ^ (n - 1) ∧ ‖(β i : ℂ)‖⁻¹ ≤ (q : ℝ) ^ (n - 1) := by
-  have hq0 : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
   have e : ((q : ℝ) ^ 2) ^ (((n : ℝ) - 1) / 2) = (q : ℝ) ^ (n - 1) := by
     rw [GlobalTheory.IndefiniteRowSideFullHecke.TrivialParameterBound.bound_eq, ← Real.rpow_natCast, Nat.cast_sub hn, Nat.cast_one]
   have e' : ((q : ℝ) ^ 2) ^ (-(((n : ℝ) - 1) / 2)) = ((q : ℝ) ^ (n - 1))⁻¹ := by
@@ -74,12 +74,12 @@ theorem trivialBound_of_ne_zero {q n : ℕ} (hq : 1 ≤ q) (β : Fin (n / 2) →
   · intro i; exact absurd i.2 (by omega)
   rw [trivialBound_iff hq (by omega)]
   intro i
-  have hq0 : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
   set c : ℝ := (q : ℝ) ^ (n - 1) with hc
   have hc0 : 0 < c := by positivity
   have hcc : (q : ℝ) ^ (2 * (n - 1)) = c * c := by rw [hc, ← pow_add]; ring_nf
   have hcC : ‖((q : ℂ) ^ (n - 1))‖ = c := by rw [norm_pow, Complex.norm_natCast]
-  have hcC0 : ((q : ℂ) ^ (n - 1)) ≠ 0 := pow_ne_zero _ (by exact_mod_cast (by omega : q ≠ 0))
+  have hcC0 : ((q : ℂ) ^ (n - 1)) ≠ 0 := pow_ne_zero _ (by exact_mod_cast (omega : q ≠ 0))
   have hp : 0 < ‖(β i : ℂ)‖ := norm_pos_iff.2 (β i).ne_zero
   have hb0 : (β i : ℂ) ≠ 0 := (β i).ne_zero
   constructor
@@ -198,7 +198,7 @@ theorem trivialBound_of_bounded : GlobalTheory.IndefiniteRowSideFullHecke.Spheri
   rcases Nat.lt_or_ge n 2 with hn | hn
   · intro i; exact absurd i.2 (by omega)
   have hq2 : 2 ≤ q := hU.2.2.2.2.2.1
-  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast (by omega : 1 ≤ q)
+  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast (omega : 1 ≤ q)
   obtain ⟨deg, hdeg⟩ := exists_deg ϖ hU (by omega : 1 ≤ n)
   letI : MeasurableSpace (GU σ n) := borel _
   haveI : BorelSpace (GU σ n) := ⟨rfl⟩

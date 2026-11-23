@@ -175,7 +175,7 @@ theorem exists_mem_maximalIdeal {C : UCompact Xo c} (X₁ : USetup C) (p : ℕ) 
   have hsc := sc_pos t
   have hNpos : (0 : ℝ) < X₁.S.N := by
     have := X₁.S.N_ge
-    exact_mod_cast (by omega : 0 < X₁.S.N)
+    exact_mod_cast (omega : 0 < X₁.S.N)
   have hb : (t.T.be x' x' : ℝ) ≤ t.T.be x x := by exact_mod_cast hle
   have h1 : τ.q (α₀ + X₁.S.N • v) ≤ t.sc * t.T.be x x / 2 :=
     hqle.trans (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hb hsc.le) zero_le_two)

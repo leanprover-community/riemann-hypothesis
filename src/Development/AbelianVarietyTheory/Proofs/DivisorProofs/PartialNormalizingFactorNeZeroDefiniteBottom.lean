@@ -49,7 +49,7 @@ theorem dSfun_bottom_ne_zero : GBig fun {D} T Lc _ G _ _ _ _ => ∀ (W : G.Weil)
   intro W i j A A' WW X h t
   apply GlobalTheory.LFun.dSfun_ne_zero_of_re_pos
   have h2 := (GlobalTheory.FunObj.SqNum.Model.bot_ranks (D := D) i j).1
-  have hp : (0 : ℝ) < A'.rank := by rw [h.rank']; exact_mod_cast (by omega : 0 < SqNum.botSmall D i j)
+  have hp : (0 : ℝ) < A'.rank := by rw [h.rank']; exact_mod_cast (omega : 0 < SqNum.botSmall D i j)
   rw [show ((A'.rank : ℂ) / 2) = (((A'.rank : ℝ) / 2 : ℝ) : ℂ) by push_cast; ring, Complex.ofReal_re]
   positivity
 

@@ -444,7 +444,7 @@ theorem gap_bound_mono (D : D7) (C C' ep0 : ℝ) (h : C ≤ C') : gap3 D C ep0 �
   unfold gap3
   have hr : (1 : ℝ) ≤ D.R.r := by
     have := D.R.k_ge; have := D.R.r_eq; have := D.R.two_le_m
-    exact_mod_cast (by omega : 1 ≤ D.R.r)
+    exact_mod_cast (omega : 1 ≤ D.R.r)
   have hl : 0 ≤ Real.log (D.R.r : ℝ) := Real.log_nonneg hr
   gcongr
 
@@ -461,7 +461,7 @@ theorem gap_bound_at_one_third (D : D7) (C : ℝ) (hC : 0 ≤ C) : gap3 D C (1 /
   have er : D.R.r = D.R.k + D.R.m - 1 := rfl
   have ep : pY D ≤ D.R.r := by unfold pY; simp only [Ranks.sigY0]; omega
   have eq : qY D ≤ D.R.r := by unfold qY; simp only [Ranks.sigY0]; omega
-  have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 1 ≤ D.R.r)
+  have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 1 ≤ D.R.r)
   have hl0 : 0 ≤ Real.log (D.R.r : ℝ) := Real.log_nonneg hr
   have hl : Real.log (D.R.r : ℝ) ≤ D.R.r := by
     have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < (D.R.r : ℝ) by linarith)
@@ -493,7 +493,7 @@ theorem parameter_gap_under_section_B (D : D7) (sc : Scale) (C0 Δ : ℝ) (w : �
   have hb0 : 0 < bN D ρ 0 := by
     have h1 := (h15 ρ).1
     have h2 : 0 < (D.R.k : ℝ) * (4 * Δ) := by
-      have : (0 : ℝ) < D.R.k := by exact_mod_cast (by omega : 0 < D.R.k)
+      have : (0 : ℝ) < D.R.k := by exact_mod_cast (omega : 0 < D.R.k)
       positivity
     have h3 : 0 < bN D ρ 0 / sc.x := lt_of_lt_of_le h2 h1
     by_contra hn

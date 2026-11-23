@@ -185,7 +185,7 @@ theorem quad_count {B : Type} [CommRing B] [Fintype B] (c : B →+* B) (hc : ∀
     rw [← pow_add]; congr 1; omega
   rw [hF, hG, hE, ← sub_mul, norm_mul] at hS
   have hq' : (0 : ℝ) < (q : ℝ) ^ (2 * k + 2) := by
-    have : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+    have : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
     positivity
   have h5 : ‖(q : ℂ) ^ (2 * k + 2)‖ = (q : ℝ) ^ (2 * k + 2) := by simp
   have h6 : ‖(N : ℂ) - (q : ℂ) ^ (2 * n - (2 * k + 1))‖ =

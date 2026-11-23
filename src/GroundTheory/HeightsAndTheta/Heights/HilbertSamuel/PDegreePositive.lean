@@ -157,7 +157,7 @@ theorem pos (D : ℕ) : ∀ q : Ideal (MRing (fun _ : Unit => ι₀) F), IsMulti
     have hlt : ringKrullDim (MRing (fun _ : Unit => ι₀) F ⧸ q) <
         ((D + 2 + Fintype.card Unit : ℕ) : WithBot ℕ∞) := by
       rw [hd, Fintype.card_unit]
-      exact_mod_cast (by omega : D + 1 + 1 < D + 2 + 1)
+      exact_mod_cast (omega : D + 1 + 1 < D + 2 + 1)
     have hcut := CutByForm.full F Unit (fun _ => ι₀) D q hqp hq.multiHomog hlt x _ hx hX
       (fun _ : Fin D => fun _ : Unit => (1 : ℤ))
     have e1 : Matrix.vecCons (fun k => ((blockWeight (fun _ : Unit => ι₀) ⟨(), i⟩ k : ℕ) : ℤ))

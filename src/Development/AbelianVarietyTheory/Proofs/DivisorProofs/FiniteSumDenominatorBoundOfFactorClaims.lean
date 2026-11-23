@@ -546,7 +546,7 @@ theorem fin_at (F : Face D A) (ch : Choice R) (C b : ℝ) (hO : ∀ t a, ch.S.Su
   obtain ⟨dF, lF, hF⟩ := hF
   have hm1 : (1 : ℝ) ≤ D.R.m := by
     have := D.R.two_le_m
-    exact_mod_cast (by omega : 1 ≤ D.R.m)
+    exact_mod_cast (omega : 1 ≤ D.R.m)
   have hL := loss_comb hm1 lS lC lD lG lT lR lF lP
   have e : (D.R.m : ℝ) * bOne ch.G C b / 2 = 8 * D.R.m * bOne ch.G (C / 16) b := by
     simp only [bOne]

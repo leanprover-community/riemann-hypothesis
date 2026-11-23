@@ -62,7 +62,7 @@ theorem exists_box {ι : Type} [Fintype ι] {X : ι → Type} [∀ i, Group (X i
 theorem exp_le (f r : ℕ) (dd : ℝ) (hf : 1 ≤ f) (hr : 2 ≤ r) (hd : 1 ≤ dd) :
     Real.exp (-(3 * ((f : ℝ) * (r : ℝ) ^ 2 * (Real.log ((f : ℝ) * r + 3) + 1) + Real.log dd))) ≤
       (((r : ℝ) ^ (r ^ 2))⁻¹) ^ f * ((3 : ℝ) ^ (2 * f * r ^ 2))⁻¹ := by
-  have hr0 : (0 : ℝ) < r := by exact_mod_cast (by omega : 0 < r)
+  have hr0 : (0 : ℝ) < r := by exact_mod_cast (omega : 0 < r)
   have hpos : 0 < (((r : ℝ) ^ (r ^ 2))⁻¹) ^ f * ((3 : ℝ) ^ (2 * f * r ^ 2))⁻¹ := by positivity
   rw [← Real.exp_log hpos]
   apply Real.exp_le_exp.2
@@ -144,7 +144,7 @@ theorem low : VolSt → StabSt → NumSt → LowSt := by
   have hlow : (((D.R.r : ℝ) ^ (D.R.r ^ 2))⁻¹) ^ D.R.f * ((3 : ℝ) ^ (2 * D.R.f * D.R.r ^ 2))⁻¹ ≤ X := by
     rw [hX, hrk]
     have hr0 : (0 : ℝ) < ((D.R.r : ℝ) ^ (D.R.r ^ 2))⁻¹ := by
-      have : (0 : ℝ) < D.R.r := by exact_mod_cast (by omega : 0 < D.R.r)
+      have : (0 : ℝ) < D.R.r := by exact_mod_cast (omega : 0 < D.R.r)
       positivity
     have hv0 : 0 ≤ ReciprocityTheory.ChartRestriction.DS.volU D.R.r := hr0.le.trans hn1
     exact mul_le_mul (pow_le_pow_left₀ hr0.le hn1 _) hmass (by positivity) (pow_nonneg hv0 _)

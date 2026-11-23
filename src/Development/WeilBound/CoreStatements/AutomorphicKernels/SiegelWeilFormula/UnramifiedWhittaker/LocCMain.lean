@@ -48,7 +48,7 @@ theorem locC_of_steps (hP : UnrPoly) (hCI : CosetInt) (hTE : TsumExhaust) (hNP :
   set q : ℕ := Ideal.absNorm v.asIdeal with hq
   have hR : IsUnrQuad S σS hG.pS q ε := hG.quad
   have hq1 : 1 < q := hR.one_lt
-  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (by omega : q ≠ 0)
+  have hq0 : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   have hfin : ∀ k, Finite (S ⧸ lev hG.pS k) := fun k => Nat.finite_of_card_ne_zero (by
     rw [GlobalTheory.T.unramified_quotient_card S σS hG.pS q ε hR k]; exact pow_ne_zero _ (by omega))
   letI : ∀ k, Fintype (S ⧸ lev hG.pS k) := fun k => Fintype.ofFinite _
@@ -100,7 +100,7 @@ theorem locC_of_steps (hP : UnrPoly) (hCI : CosetInt) (hTE : TsumExhaust) (hNP :
     rw [ht, norm_mul, norm_pow, hε1, one_pow, one_mul, Complex.norm_natCast_cpow_of_pos (by omega)]
     simp
   have hlt : (q : ℝ) ^ (n ^ 2) * ‖t‖ < 1 := by
-    rw [htn, ← Real.rpow_natCast, ← Real.rpow_add (by exact_mod_cast (by omega : 0 < q))]
+    rw [htn, ← Real.rpow_natCast, ← Real.rpow_add (by exact_mod_cast (omega : 0 < q))]
     apply Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast hq1)
     push_cast
     nlinarith [sq_nonneg (n : ℝ), (Nat.cast_nonneg n : (0 : ℝ) ≤ n)]

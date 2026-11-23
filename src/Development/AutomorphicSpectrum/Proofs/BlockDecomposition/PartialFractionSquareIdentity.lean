@@ -106,7 +106,7 @@ lemma prod_eq_pfPoly (d : Fin (m + 1) → ℝ) (d' : Fin m → ℝ)
       monic_prod_of_monic _ _ fun i _ => monic_X_sub_C _
     rw [degree_eq_natDegree hM.ne_zero, natDegree_prod_of_monic _ _ fun i _ => monic_X_sub_C _]
     simp
-    exact_mod_cast (by omega : m - 1 < m + 1)
+    exact_mod_cast (omega : m - 1 < m + 1)
   have hsum : (∑ j, C (pfR d d' j) * ∏ k ∈ univ.erase j, (X - C (d' k)) : ℝ[X]).degree
       < ((m + 1 : ℕ) : WithBot ℕ) := by
     refine (degree_sum_le _ _).trans_lt ?_

@@ -80,7 +80,7 @@ theorem exists_bound (d : ℕ) : ∃ N : WithBot ℕ∞, N < (d : WithBot ℕ∞
         | top => simp at h1
         | coe y =>
           have h3 : y + 1 ≤ k + 1 := by exact_mod_cast h1
-          exact_mod_cast (by omega : y ≤ k)
+          exact_mod_cast (omega : y ≤ k)
       exact_mod_cast h2
 
 theorem dim_sup_add_one_le {n d : ℕ} {J W W' : Ideal (MvPolynomial (Fin n) ℂ)} [J.IsPrime] {u : Fin n → ℂ}

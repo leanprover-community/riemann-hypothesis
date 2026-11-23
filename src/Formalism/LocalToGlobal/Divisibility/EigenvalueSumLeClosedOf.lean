@@ -597,14 +597,14 @@ theorem t_five : (5 : ℝ) ≤ D.R.t := by
     have := D.R.rank_add_five_le
     unfold Ranks.r
     omega
-  exact_mod_cast (by omega : 5 ≤ D.R.t)
+  exact_mod_cast (omega : 5 ≤ D.R.t)
 
 theorem r_le_alt_alt : (D.R.r : ℝ) ≤ D.R.t := by
   have hrt : D.R.r + 5 ≤ D.R.t := by
     have := D.R.rank_add_five_le
     unfold Ranks.r
     omega
-  exact_mod_cast (by omega : D.R.r ≤ D.R.t)
+  exact_mod_cast (omega : D.R.r ≤ D.R.t)
 
 theorem nf_eta (hS : SizesAt L) (hh0 : L.etaSz = (D.R.m : ℝ) * (h0 : ℝ)) :
     ((ofRecord D L Del h0).R.m : ℝ) * (ofRecord D L Del h0).eta * ((ofRecord D L Del h0).Nm : ℝ) *
@@ -1975,7 +1975,7 @@ theorem q_rec (hS : SizesAt L) (hFD : L.FDef)
       have := D.R.rank_add_five_le
       unfold Ranks.r
       omega
-    have hr : (D.R.r : ℝ) ≤ szPol L := le_trans (by exact_mod_cast (by omega : D.R.r ≤ D.R.t)) ht
+    have hr : (D.R.r : ℝ) ≤ szPol L := le_trans (by exact_mod_cast (omega : D.R.r ≤ D.R.t)) ht
     have h0f : (0:ℝ) ≤ D.R.f := Nat.cast_nonneg _
     have h0r : (0:ℝ) ≤ D.R.r := Nat.cast_nonneg _
     have a1 : (D.R.f : ℝ) * D.R.r ≤ szPol L * szPol L := mul_le_mul hf hr h0r (by linarith)

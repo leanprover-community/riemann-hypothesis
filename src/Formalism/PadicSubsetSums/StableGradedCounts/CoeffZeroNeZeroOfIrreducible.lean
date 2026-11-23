@@ -198,7 +198,7 @@ theorem same_factor_count : SameFactorCount := by
   set v := padicValNat l n with hv
   have hgd : 2 ≤ g ^ δ := hg.trans (Nat.le_self_pow (by omega) g)
   have hn0 : n ≠ 0 := by omega
-  have hg1 : (1 : ℝ) ≤ g := by exact_mod_cast (by omega : 1 ≤ g)
+  have hg1 : (1 : ℝ) ≤ g := by exact_mod_cast (omega : 1 ≤ g)
   have hlv : ((l ^ v : ℕ) : ℝ) ≤ (g : ℝ) ^ ((δ : ℝ) / 4) := lpow_le_rpow_quarter hBB
   set B : ℝ := (g : ℝ) ^ ((δ : ℝ) / 2) * (g : ℝ) ^ ((δ : ℝ) / 4) with hB
   set I := (Finset.range δ).filter (fun e => e ∣ δ) with hI
@@ -313,7 +313,7 @@ theorem same_factor_count : SameFactorCount := by
       _ ≤ ∑ _e ∈ I, B := Finset.sum_le_sum hTe
       _ = (I.card : ℝ) * B := by rw [Finset.sum_const, nsmul_eq_mul]
       _ ≤ δ * B := mul_le_mul_of_nonneg_right hIcard hB0
-  have hδR : (0 : ℝ) < δ := by exact_mod_cast (by omega : 0 < δ)
+  have hδR : (0 : ℝ) < δ := by exact_mod_cast (omega : 0 < δ)
   have hfin : (δ : ℝ) * (F.card : ℝ) ≤ δ * B := by
     refine le_trans ?_ hS
     exact_mod_cast hcount

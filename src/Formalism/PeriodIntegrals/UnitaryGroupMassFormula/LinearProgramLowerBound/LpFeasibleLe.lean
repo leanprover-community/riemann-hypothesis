@@ -54,7 +54,7 @@ theorem lp_shift_sum (d : ℕ) [NeZero d] (xs : ZMod d → ℕ → ℝ) :
 theorem lp_feasible_le (l d : ℕ) [NeZero d] (Ds : ZMod d → ℝ) (hl : 2 ≤ l)
     {y : ℝ} (hy : y ∈ lpFeasible l d Ds) : y ≤ (∑ s, Ds s) / ((l : ℝ) + 1) := by
   obtain ⟨xs, h0, hsupp, hc, rfl⟩ := hy
-  have hl1 : (1 : ℝ) ≤ (l : ℝ) := by exact_mod_cast (by omega : 1 ≤ l)
+  have hl1 : (1 : ℝ) ≤ (l : ℝ) := by exact_mod_cast (omega : 1 ≤ l)
   have hsum : ∑ s, ((∑ i ∈ range d, (l : ℝ) ^ i * xs s i) +
       (∑ i ∈ range d, xs (s - (i : ZMod d)) i)) ≤ ∑ s, Ds s :=
     Finset.sum_le_sum fun s _ => hc s

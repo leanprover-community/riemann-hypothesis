@@ -71,7 +71,7 @@ private theorem pair_add_ne {a u b v : G → ℂ} (ha : IsChar ℂ ℂ a) (hu : 
     rintro rfl
     exact h (by rw [hsymm, h1]; simp)
   rw [e, h1, h2, h3, h4]
-  exact_mod_cast (by omega : n1 + n2 + (n3 + n4) ≠ 0)
+  exact_mod_cast (omega : n1 + n2 + (n3 + n4) ≠ 0)
 
 private theorem isChar_of_irr {φ : G → ℂ} (h : IsIrrChar ℂ ℂ φ) : IsChar ℂ ℂ φ := by
   obtain ⟨n, ρ, -, e⟩ := h

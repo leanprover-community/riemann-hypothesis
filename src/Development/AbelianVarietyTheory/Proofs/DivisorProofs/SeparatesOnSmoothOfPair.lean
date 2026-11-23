@@ -195,7 +195,7 @@ theorem separate_complex (hS : SeparatesOnSmooth) (hNN : GlobalTheory.Published.
   have h1 := hpos Z e hZ hx he hd
   have h2 := GlobalTheory.mixExp_interNumRed hNN ℂ X q hq N N' B hN hN' hB m 1 Z e hNn hN'n hBc' hd
   have h3 : (((D + 2).choose 2 - 1 : ℕ) : ℤ) ^ e < (m : ℤ) ^ e :=
-    pow_lt_pow_left₀ (by exact_mod_cast (by omega : (D + 2).choose 2 - 1 < m)) (by positivity) (by omega)
+    pow_lt_pow_left₀ (by exact_mod_cast (omega : (D + 2).choose 2 - 1 < m)) (by positivity) (by omega)
   have h4 : (0 : ℤ) ≤ (m : ℤ) ^ e := by positivity
   nlinarith
 
@@ -377,7 +377,7 @@ theorem separatesOnSmooth_of_pair (h : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLo
   have hc : (0 : ℝ) < (((D + 2).choose 2 - 1 : ℕ) : ℝ) := by
     have h1 : (D + 2).choose 2 = (D + 1).choose 1 + (D + 1).choose 2 := Nat.choose_succ_succ' (D + 1) 1
     rw [Nat.choose_one_right] at h1
-    exact_mod_cast (by omega : 0 < (D + 2).choose 2 - 1)
+    exact_mod_cast (omega : 0 < (D + 2).choose 2 - 1)
   have h0 : qWeil (0 : CartierDiv X) 1 = 0 := funext fun z => by
     have := CartierDiv.mult_add (0 : CartierDiv X) 0 z
     rw [add_zero] at this

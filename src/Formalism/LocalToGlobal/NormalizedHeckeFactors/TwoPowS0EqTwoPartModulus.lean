@@ -203,7 +203,7 @@ theorem embK_OtoLL_mem (D : D7) (i : D.nd.Loc) (y : D.what₂.O) :
           WithZero.exp (0 : ℤ) := by
         rw [WithZero.exp_log hne']; simpa using hle'
       exact WithZero.exp_le_exp.mp h2
-    exact_mod_cast (by omega : (0:ℤ) ≤ -WithZero.log ((D.plEq (D.nd.w i)).valuation D.what₂.LL (D.what₂.OtoLL y)))
+    exact_mod_cast (omega : (0:ℤ) ≤ -WithZero.log ((D.plEq (D.nd.w i)).valuation D.what₂.LL (D.what₂.OtoLL y)))
 
 def fracRangeEquiv (O : Type) [CommRing O] [IsDomain O] :
     O ≃+* (algebraMap O (FractionRing O)).range :=

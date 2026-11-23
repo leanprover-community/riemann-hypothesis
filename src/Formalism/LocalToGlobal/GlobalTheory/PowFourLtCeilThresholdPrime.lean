@@ -1041,7 +1041,7 @@ theorem loss_constant_le_prime_pow (tie : ParTie P L K C bo Cr) :
   have hx : 0 < L.sc.x := lt_trans one_pos L.sc.one_lt_alt
   have hk : (0 : ℝ) < (D.R.k : ℝ) := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 0 < D.R.k)
+    exact_mod_cast (omega : 0 < D.R.k)
   have hy : 0 < (D.R.k : ℝ) ^ 2 * L.sc.x ^ (3 * Scale.A) := mul_pos (pow_pos hk 2) (Real.rpow_pos_of_pos hx _)
   show P.K₀ ≤ (p : ℝ) ^ ((leastPowerExponent L p : ℝ) - 1)
   rw [tie.K₀]

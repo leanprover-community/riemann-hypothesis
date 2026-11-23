@@ -42,7 +42,7 @@ namespace UpperTheory.V.Af.Nf
 
 private theorem dvd_of_ohat {M : ℕ} (hM : 1 ≤ M) (n : ℤ) {y : Af ℚ} (hy : y ∈ Ohat ℚ)
     (h : (n : Af ℚ) = M * y) : (M : ℤ) ∣ n := by
-  have hM' : (M : ℚ) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
+  have hM' : (M : ℚ) ≠ 0 := by exact_mod_cast (omega : M ≠ 0)
   have e : algebraMap ℚ (Af ℚ) ((n : ℚ) / M) = y := by
     have h1 : algebraMap ℚ (Af ℚ) ((M : ℚ)⁻¹) * (M : Af ℚ) = 1 := by
       rw [← map_natCast (algebraMap ℚ (Af ℚ)), ← map_mul, inv_mul_cancel₀ hM', map_one]

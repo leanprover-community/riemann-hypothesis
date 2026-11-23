@@ -168,7 +168,7 @@ theorem tendsto_mean_alphaN (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
   classical
   obtain ⟨C0, hC0⟩ := nkCount_le hK hF hs hd (by first | exact hL | exact hL.toIsLattice) hLi hm h𝔭
   have hN1 := MeanC.one_lt_absNorm h𝔭
-  have hNpos : (0:ℝ) < (Ideal.absNorm 𝔭 : ℝ) := by exact_mod_cast (by omega : 0 < Ideal.absNorm 𝔭)
+  have hNpos : (0:ℝ) < (Ideal.absNorm 𝔭 : ℝ) := by exact_mod_cast (omega : 0 < Ideal.absNorm 𝔭)
   have hCnn : (0:ℝ) ≤ max C0 0 := le_max_right _ _
   have hratio : ∀ (k : ℕ) (n : 𝓞 F), (nkCount h L 𝔭 k n : ℝ) /
       (Ideal.absNorm 𝔭 : ℝ) ^ (k * (2 * finrank K V - 1)) ≤ max C0 0 := fun k n => by

@@ -71,7 +71,7 @@ theorem MertensUpper.proof : MertensUpper.Statement := by
   set N := ⌊B⌋₊ with hN
   set P := (Finset.Iic N).filter Nat.Prime with hP
   have hN2 : 2 ≤ N := Nat.le_floor (by exact_mod_cast hB)
-  have hNpos : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast (omega : 0 < N)
   have hNB : (N : ℝ) ≤ B := Nat.floor_le (by linarith)
   have hpos : ∀ p ∈ P, (1 : ℝ) ≤ p := fun p hp => by
     exact_mod_cast (Finset.mem_filter.1 hp).2.one_lt.le

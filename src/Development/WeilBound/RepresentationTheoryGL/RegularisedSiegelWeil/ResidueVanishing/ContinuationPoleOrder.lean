@@ -172,7 +172,7 @@ theorem continuation_pole_order : PositivityTheory.Rg.Rsw.Kplug.K2 := by
       rw [ho] at h0
       have : (0 : WithTop ℤ) ≤ ((1 + n : ℤ) : WithTop ℤ) := by exact_mod_cast h0
       have h1 : (0 : ℤ) ≤ 1 + n := by exact_mod_cast this
-      exact_mod_cast (by omega : (-(1 : ℕ) : ℤ) ≤ n)
+      exact_mod_cast (omega : (-(1 : ℕ) : ℤ) ≤ n)
 
 end PositivityTheory.Rg.Rsw.Kplug
 

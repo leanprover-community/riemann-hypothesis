@@ -151,7 +151,7 @@ theorem UpperTheory.V.HV.sumIn :
   have hlN : (l : ℕ) ≤ h.N := by omega
   set M : ℝ := (h.N : ℝ) * t with hMdef
   set L : ℝ := Real.log ((l : ℕ) : ℝ) with hLdef
-  have hN1 : (1 : ℝ) ≤ h.N := by exact_mod_cast (by omega : 1 ≤ h.N)
+  have hN1 : (1 : ℝ) ≤ h.N := by exact_mod_cast (omega : 1 ≤ h.N)
   have hM3 : 3 ≤ M := by
     have a1 : (16 : ℝ) ≤ h.N := by exact_mod_cast h16
     have a2 : (2 : ℝ) ≤ t := by exact_mod_cast ht2
@@ -164,7 +164,7 @@ theorem UpperTheory.V.HV.sumIn :
     have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < ((l : ℕ) : ℝ) by linarith)
     linarith
   have hNM : (h.N : ℝ) ≤ M := by
-    have a2 : (1 : ℝ) ≤ t := by exact_mod_cast (by omega : 1 ≤ t)
+    have a2 : (1 : ℝ) ≤ t := by exact_mod_cast (omega : 1 ≤ t)
     rw [hMdef]
     nlinarith
   have hlM : ((l : ℕ) : ℝ) ≤ M := le_trans (by exact_mod_cast hlN) hNM

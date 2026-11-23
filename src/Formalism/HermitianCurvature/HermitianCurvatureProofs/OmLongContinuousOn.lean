@@ -63,7 +63,7 @@ theorem lastBlock_decay (β : ℂ) (p s : ℕ) (hs : 1 ≤ s) (σ : Equiv.Perm (
     ∃ K : ℝ, Continuous (U.PhiTop (p := p) (s := s) β σ d Ψ) ∧
       ∀ Z, ‖U.PhiTop (p := p) (s := s) β σ d Ψ Z‖ ≤ K * (1 + ‖Z‖) ^ (-a) := by
   set N : ℝ := ((p + s : ℕ) : ℝ) with hN
-  have hN0 : 0 < N := by rw [hN]; exact_mod_cast (by omega : 0 < p + s)
+  have hN0 : 0 < N := by rw [hN]; exact_mod_cast (omega : 0 < p + s)
   set E : ℝ := 5 * N * (|a| + 2 * N ^ 2 + 1) with hE
   have hEq : E / (5 * N) = |a| + 2 * N ^ 2 + 1 := by
     rw [hE]; field_simp

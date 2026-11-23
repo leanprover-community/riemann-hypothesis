@@ -324,7 +324,7 @@ theorem map_mono_eq_zero {O : Type} [CommRing O] {bar : O → O} {q s : ℕ} {W 
     have h2 := le_addVal_of_mem_pow _ _ h1
     rw [AddValuation.map_neg] at h2
     refine le_trans ?_ h2
-    exact_mod_cast (by omega : q₀ + 1 ≤ q₀ + 1 + (∑ i, qW W (Φ.δ y i) mu₀).toNat)
+    exact_mod_cast (omega : q₀ + 1 ≤ q₀ + 1 + (∑ i, qW W (Φ.δ y i) mu₀).toNat)
   have hrest : ∀ mu ∈ S.erase mu₀, ((q₀ + 1 : ℕ) : ℕ∞) ≤ addVal R (φ (Φ.term y mu c)) := by
     intro mu hmu
     obtain ⟨hne, hmuS⟩ := Finset.mem_erase.1 hmu

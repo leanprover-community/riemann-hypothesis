@@ -113,7 +113,7 @@ theorem RatioAlgDep.proof : RatioAlgDep.Statement := by
       simp at hA'
     rw [hn] at hA' ⊢
     have : d + Fintype.card K = n + Fintype.card K + 1 := by exact_mod_cast hA'
-    exact_mod_cast (by omega : n < d)
+    exact_mod_cast (omega : n < d)
   have hdep : ¬ AlgebraicIndependent ℤ (fun j : Fin d ↦ y (p j) / y ⟨(p j).1, c (p j).1⟩) :=
     fun hind ↦ by
       have h := hind.cardinalMk_le_trdeg

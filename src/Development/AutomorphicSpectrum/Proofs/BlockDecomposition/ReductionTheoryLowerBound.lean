@@ -294,7 +294,7 @@ theorem simple_bound : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
   have hb : Bm σ J X Y ω⁻¹ 0 0 * (Bm σ J X Y ω⁻¹ 0 j * Bm σ J X Y ω 0 0) = Bm σ J X Y ω⁻¹ 0 j := by
     rw [mul_left_comm, hu1, mul_one]
   obtain ⟨q, hq1, hqN, c, hc⟩ := hN (Bm σ J X Y ω⁻¹ 0 j * Bm σ J X Y ω 0 0)
-  have hq0 : (q : E) ≠ 0 := by exact_mod_cast (by omega : q ≠ 0)
+  have hq0 : (q : E) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
 
   have hj0 : j ≠ 0 := fun e0 => by rw [e0] at hj; simp at hj
   have hyx : cT (σ : E →+* E) Y * J * X = 1 :=

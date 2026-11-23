@@ -41,7 +41,7 @@ theorem window_pos {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) (W : 
     (hn : n ∈ window L W) : 0 < n := by
   have hm : (2 : ℝ) ≤ D.R.m := by exact_mod_cast D.R.two_le_m
   have ht : (7 : ℝ) ≤ D.R.t := by
-    have := D.R.three_m_lt_t; have := D.R.two_le_m; exact_mod_cast (by omega : 7 ≤ D.R.t)
+    have := D.R.three_m_lt_t; have := D.R.two_le_m; exact_mod_cast (omega : 7 ≤ D.R.t)
   have hn1 : (1 : ℝ) ≤ D.R.n := by exact_mod_cast (show 1 ≤ D.R.n from D.R.ord_pos)
   have hx : 1 < L.sc.x := L.sc.one_lt_alt
   have hb : 0 < L.sc.b := Real.exp_pos _

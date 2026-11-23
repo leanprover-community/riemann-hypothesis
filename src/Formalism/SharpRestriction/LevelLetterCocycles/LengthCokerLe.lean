@@ -177,7 +177,7 @@ theorem lemmaDN_core {d : ℕ} {T₁ T₂ : LocLat G Qp LL O} {F : LatHom T₁.L
       _ = ((V * k : ℕ) : ℕ∞) := by rw [hlenp, Nat.cast_mul]
   · unfold Formalism.WeaklyAdmissibleFiltrations.lenOl
     exact hlenp
-  · have hp1 : (1 : ℝ) < (PD.p : ℝ) := by exact_mod_cast (by omega : 1 < PD.p)
+  · have hp1 : (1 : ℝ) < (PD.p : ℝ) := by exact_mod_cast (omega : 1 < PD.p)
     have hcD : 0 ≤ Formalism.MainNotions.RamifiedCoefficientChains.cD PD.p (hpar n b S + η) := by
       unfold Formalism.MainNotions.RamifiedCoefficientChains.cD
       have h1 : 0 < (PD.p : ℝ) - 1 := by linarith

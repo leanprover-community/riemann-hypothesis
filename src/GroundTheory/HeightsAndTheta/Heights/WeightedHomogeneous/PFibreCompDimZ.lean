@@ -176,6 +176,6 @@ theorem FibreCompDimZ.proof : FibreCompDimZ.Statement := by
   rw [hm]
   have h1' : m + 1 ≤ d + 1 := by exact_mod_cast h1
   have h2' : d + 1 ≤ m + 1 := by exact_mod_cast h2
-  exact_mod_cast (by omega : m = d)
+  exact_mod_cast (omega : m = d)
 
 end GroundTheory.Heights₂.Heights

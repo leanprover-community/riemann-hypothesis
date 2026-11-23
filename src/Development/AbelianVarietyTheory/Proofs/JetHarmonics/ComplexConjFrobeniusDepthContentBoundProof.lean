@@ -66,7 +66,7 @@ theorem one_le_log (x : ℝ) (hx : 4 ≤ x) : 1 ≤ Real.log x := by
   linarith
 
 theorem logb_le_log (l : ℕ) (hl : 5 ≤ l) (x : ℝ) (hx : 1 ≤ x) : Real.logb l x ≤ Real.log x := by
-  have h1 : 1 ≤ Real.log l := one_le_log _ (by exact_mod_cast (by omega : 4 ≤ l))
+  have h1 : 1 ≤ Real.log l := one_le_log _ (by exact_mod_cast (omega : 4 ≤ l))
   have h2 : 0 ≤ Real.log x := Real.log_nonneg hx
   unfold Real.logb
   exact div_le_self h2 h1
@@ -314,7 +314,7 @@ theorem of_supplies (hB : RF.BiSupply) (hC : RF.CHSupply) (hM : RF.MONSupply) : 
   have hkr : (P.k : ℝ) = n + 1 := by exact_mod_cast hn
   have hl' : (5 : ℝ) ≤ l := by exact_mod_cast hl
   have hn' : (3 : ℝ) ≤ n := by exact_mod_cast hn3
-  have hmn : (P.m : ℝ) ≤ n := by have := hP.mk_le; exact_mod_cast (by omega : P.m ≤ n)
+  have hmn : (P.m : ℝ) ≤ n := by have := hP.mk_le; exact_mod_cast (omega : P.m ≤ n)
   rw [hn1] at h1 hu
   have hT : 0 < T := by linarith [hD.T_one]
   have hSE := hP.SE_nonneg

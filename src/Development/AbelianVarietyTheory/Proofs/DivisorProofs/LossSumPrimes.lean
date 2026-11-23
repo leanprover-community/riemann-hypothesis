@@ -59,8 +59,8 @@ theorem bound_one {D : D7} {L : SizeData₂ D} {c : ErrC}
   have hmn := D.R.two_le_m
   have hkn := D.R.m_add_three_le_k
   have hmfn : D.R.m ≤ D.R.f := D.R.m_le_f
-  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
-  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by omega : 1 ≤ D.R.f)
+  have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
+  have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (omega : 1 ≤ D.R.f)
   have hN : (1 : ℝ) ≤ D.R.N D.R.m := by
     exact_mod_cast (by unfold Ranks.N; omega : 1 ≤ D.R.N D.R.m)
   have hη0 := L.etaSz_pos.le

@@ -580,7 +580,7 @@ theorem real_bound {l : ℕ} (hl : 5 ≤ l) {L E n s K : ℕ} (hL : 1 ≤ L)
     have hlog2 : Real.logb l K ≤ Real.logb l (n * s) :=
       Real.logb_le_logb_of_le (by linarith) (by linarith) (by exact_mod_cast hK)
     have h3 := mul_le_mul_of_nonneg_left hlog2 hn2
-    have h4 : (s : ℝ) ≤ ((s - K : ℕ) : ℝ) + K := by exact_mod_cast (by omega : s ≤ s - K + K)
+    have h4 : (s : ℝ) ≤ ((s - K : ℕ) : ℝ) + K := by exact_mod_cast (omega : s ≤ s - K + K)
     have h5 : (0 : ℝ) ≤ ((s - K : ℕ) : ℝ) := by positivity
     have h1 : (l : ℝ) - 1 ≠ 0 := by linarith
     have h2 : (l : ℝ) + 1 ≠ 0 := by linarith

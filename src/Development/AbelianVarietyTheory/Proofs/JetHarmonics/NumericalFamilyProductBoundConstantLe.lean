@@ -41,7 +41,7 @@ theorem mom_num : ∀ (k r : ℕ) (lam : Fin (2 * r + k + 1) → ℝ) (u : ℕ �
   have ha := (h7 ⟨k, by omega⟩ (by simp)).2
   have hb := (abs_le.mp (h8 ⟨k, by omega⟩)).1
   have hbv : bv ≤ b := by linarith
-  have hn1 : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ 2 * r + k + 1)
+  have hn1 : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ 2 * r + k + 1)
   have hn7 : ((2 * r + k + 1 : ℕ) : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ 7 := le_self_pow₀ hn1 (by norm_num)
   have hcast : ((2 * r + k + 1 : ℕ) : ℝ) = ((2 * r + k + 1) : ℝ) := by push_cast; ring
   rw [hcast] at hn1 hn7 h15

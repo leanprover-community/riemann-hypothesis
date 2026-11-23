@@ -47,11 +47,9 @@ noncomputable section
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X : Data E r} {g : ℕ}
   (idx : Fin g ≃ X.Ψ × Fin r)
 
-section Coord
 
 variable (bas bas' : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ)
 
-end Coord
 
 section Series
 

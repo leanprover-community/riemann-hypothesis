@@ -1083,11 +1083,11 @@ theorem clause_of_regularized_limit : Formalism.FourierDecayAlt.B.StepClause := 
       apply CkOn_trn _ ha hb
       refine sCkOn_mono ?_ hFk
       simp only [wR, List.length_map, zero_add]
-      exact_mod_cast (by omega : (T.word.drop j).length ≤ opOrder Θ + 5)
+      exact_mod_cast (omega : (T.word.drop j).length ≤ opOrder Θ + 5)
     have hb₂ : ∀ g ∈ GV k r, ‖f₂ g‖ ≤ ‖Lp D p‖ * K₂ := by
       intro g hg
       rw [hf₂, rho_eq_trn, Rw_trn _ ha hb _ hlie2
-        (sCkOn_mono (by exact_mod_cast (by omega : (T.word.drop j).length ≤ opOrder Θ + 5)) hFk) g hg]
+        (sCkOn_mono (by exact_mod_cast (omega : (T.word.drop j).length ≤ opOrder Θ + 5)) hFk) g hg]
       exact ((Lp D p).le_opNorm _).trans (mul_le_mul_of_nonneg_left
         (CC_bdd hAd0 hK₂ _ (gv_mul (gv_mul ha hg) hb)) (norm_nonneg _))
     set G : Mat k r → (Wq →L[ℂ] Wp) := fun g => ((‖f₂ g‖ : ℝ) : ℂ) • f₁ g with hG

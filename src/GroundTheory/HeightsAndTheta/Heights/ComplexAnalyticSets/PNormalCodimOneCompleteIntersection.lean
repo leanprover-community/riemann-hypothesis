@@ -127,7 +127,7 @@ theorem NormalCodimOneCompleteIntersection.proof : NormalCodimOneCompleteInterse
     rw [hq, hdQ, hdP, hk] at h
     have h' : e + k = e + 1 := by exact_mod_cast h
     rw [hk]
-    exact_mod_cast (by omega : k = 1)
+    exact_mod_cast (omega : k = 1)
 
   have hdR : ringKrullDim (Localization.AtPrime Q) = (hgt : WithBot ℕ∞) := by
     rw [IsLocalization.AtPrime.ringKrullDim_eq_height Q (Localization.AtPrime Q), hhgt]

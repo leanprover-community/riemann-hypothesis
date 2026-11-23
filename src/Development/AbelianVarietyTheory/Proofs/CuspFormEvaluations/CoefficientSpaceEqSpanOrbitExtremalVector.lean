@@ -108,7 +108,7 @@ theorem isUnit_elem {K : Type} [Field K] [CharZero K] {r : ℕ} (a b : Fin r) (c
     IsUnit (1 + Matrix.single b a (c : K)) := by
   by_cases h : a = b
   · subst h
-    have hc : (1 + c : K) ≠ 0 := by exact_mod_cast (by omega : 1 + c ≠ 0)
+    have hc : (1 + c : K) ≠ 0 := by exact_mod_cast (omega : 1 + c ≠ 0)
     refine IsUnit.of_mul_eq_one (1 + Matrix.single a a (-(c : K) / (1 + c))) ?_
     rw [add_mul, mul_add, mul_add, one_mul, one_mul, mul_one, Matrix.single_mul_single_same, add_assoc,
       ← Matrix.single_add, ← Matrix.single_add]

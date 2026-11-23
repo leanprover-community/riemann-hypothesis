@@ -124,9 +124,9 @@ theorem cover_dimension_size_bounds_alt : _root_.GlobalTheory.CovTop.SizeConditi
   have hL10 : 10 ≤ (Fm.L x ι).sc.L := hN.big.2.1
   have hfR : (8 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast hf8
   have hrR : (6 : ℝ) ≤ (Fm.D x ι).R.r := by exact_mod_cast a5.2.2
-  have ht : (11 : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (by omega : 11 ≤ (Fm.D x ι).R.t)
-  have hft : ((Fm.D x ι).R.f : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (by omega : (Fm.D x ι).R.f ≤ (Fm.D x ι).R.t)
-  have hrt : ((Fm.D x ι).R.r : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (by omega : (Fm.D x ι).R.r ≤ (Fm.D x ι).R.t)
+  have ht : (11 : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (omega : 11 ≤ (Fm.D x ι).R.t)
+  have hft : ((Fm.D x ι).R.f : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (omega : (Fm.D x ι).R.f ≤ (Fm.D x ι).R.t)
+  have hrt : ((Fm.D x ι).R.r : ℝ) ≤ (Fm.D x ι).R.t := by exact_mod_cast (omega : (Fm.D x ι).R.r ≤ (Fm.D x ι).R.t)
   have hb : 1000 ≤ (Fm.L x ι).sc.b := by
     have e1 : Real.exp 10 ≤ (Fm.L x ι).sc.b := Real.exp_le_exp.2 hL10
     have e2 : (2 : ℝ) ^ 10 ≤ Real.exp 1 ^ 10 := by gcongr; linarith [Real.add_one_le_exp 1]
@@ -156,7 +156,7 @@ theorem cover_dimension_size_bounds_alt : _root_.GlobalTheory.CovTop.SizeConditi
       8 * ((Fm.D x ι).R.f * (Fm.D x ι).R.r) + 8 := by exact_mod_cast GlobalTheory.LiftGaps.nCol_le p i _ _ _ hW hN
   have hfrn : ((Fm.D x ι).R.f : ℝ) * (Fm.D x ι).R.r * GlobalTheory.RefSum.nCol (dat p i) ≤ (Fm.L x ι).sc.b :=
     (frn_le_pow_of_bounds_copy ht (by positivity) (by positivity) hft hrt hnle).trans htb
-  have hk : (1 : ℝ) ≤ (Fm.D x ι).R.k := by exact_mod_cast (by omega : 1 ≤ (Fm.D x ι).R.k)
+  have hk : (1 : ℝ) ≤ (Fm.D x ι).R.k := by exact_mod_cast (omega : 1 ≤ (Fm.D x ι).R.k)
   have hg : ∀ k, (Fm.L x ι).sc.b ^ 8 ≤ ((Fm.D x ι).host.g k : ℝ) := fun k =>
     (pow_le_pow_left₀ (by linarith) (le_mul_of_one_le_left (by linarith) hk) 8).trans (sG k k).1
   have hg' : ∀ k, ((Fm.D x ι).host.g k : ℝ) ≤ (Fm.L x ι).sc.b ^ 35 := fun k => by
@@ -176,7 +176,7 @@ theorem cover_dimension_size_bounds_alt : _root_.GlobalTheory.CovTop.SizeConditi
   · push_cast
     rw [show 70 = 35 + 35 from rfl, pow_add]
     exact mul_le_mul (hg' 0) (hg' 1) (by positivity) (by positivity)
-  · have h5 : (5 : ℝ) ≤ GlobalTheory.RefSum.nCol (dat p i) := by exact_mod_cast (by omega : 5 ≤ GlobalTheory.RefSum.nCol (dat p i))
+  · have h5 : (5 : ℝ) ≤ GlobalTheory.RefSum.nCol (dat p i) := by exact_mod_cast (omega : 5 ≤ GlobalTheory.RefSum.nCol (dat p i))
     have h6 : ((Fm.D x ι).R.f : ℝ) * (Fm.D x ι).R.r * 5 ≤ (Fm.L x ι).sc.b :=
       (mul_le_mul_of_nonneg_left h5 (by positivity)).trans hfrn
     calc ((Fm.D x ι).R.f : ℝ) * (Fm.D x ι).R.r * (2 * (2 * (Fm.L x ι).sc.b) + 1)

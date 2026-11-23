@@ -164,7 +164,7 @@ theorem proof (hG : GramChiDerivative.Statement) (hBI : BergmanIntegrable.Statem
   have hderiv' : ∀ n, 1 ≤ n → ∀ t, HasDerivAt (χ n) ((n : ℝ) ^ (D + 1) / 2 * F n t) t := by
     intro n hn t
     convert hderiv n t using 1
-    have : (n : ℝ) ^ D ≠ 0 := pow_ne_zero _ (by exact_mod_cast (by omega : n ≠ 0))
+    have : (n : ℝ) ^ D ≠ 0 := pow_ne_zero _ (by exact_mod_cast (omega : n ≠ 0))
     rw [hF]; field_simp; ring
   have hFmeas : ∀ n, 1 ≤ n → Measurable (F n) := by
     intro n hn

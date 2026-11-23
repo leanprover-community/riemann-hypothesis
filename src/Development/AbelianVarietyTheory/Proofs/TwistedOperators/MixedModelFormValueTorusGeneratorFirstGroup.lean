@@ -383,7 +383,7 @@ theorem value_torus_first : ∀ (L : Type) [Field L] [Valued L (WithZero (Multip
     convert card_sum_vanish (F := ResF L) n' (n' / 2) (Nat.div_le_self _ _)
   rw [Fintype.card_eq_nat_card, card_resF hU] at hc
   rw [hc]
-  have hq : (q : ℂ) ≠ 0 := by have := hU.2.2.2.2.2.1; exact_mod_cast (by omega : q ≠ 0)
+  have hq : (q : ℂ) ≠ 0 := by have := hU.2.2.2.2.2.1; exact_mod_cast (omega : q ≠ 0)
   have h1 : ((-1 : ℂ) ^ n')⁻¹ = (-1) ^ n' := by rw [← inv_pow, inv_neg, inv_one]
   rw [_root_.zpow_neg_one, zpow_sub₀ hq, show (2 * ((n' / 2 : ℕ) : ℤ)) = ((2 * (n' / 2) : ℕ) : ℤ) by push_cast; ring,
     zpow_natCast, zpow_natCast, mul_inv, h1, pow_mul]

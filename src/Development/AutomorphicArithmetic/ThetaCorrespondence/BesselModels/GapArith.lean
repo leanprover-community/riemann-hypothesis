@@ -226,7 +226,7 @@ end Gap
 theorem size_arith {k m r : ℕ} (hr : r + 1 = k + m) (hk : m + 3 ≤ k) (hm : 44 ≤ m) {Den Del : ℝ}
     (hDel : (k : ℝ) * (m : ℝ) ^ 10 ≤ Del) (hDen : (k : ℝ) * ((k : ℝ) * (4 * Del)) ≤ Den) :
     120 * ((r + m * (r + 6) : ℕ) : ℝ) ^ 3 ≤ 12 * Den / m := by
-  have hm0 : (0 : ℝ) < m := by exact_mod_cast (by omega : 0 < m)
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast (omega : 0 < m)
   have hk0 : (0 : ℝ) ≤ k := by positivity
   have h1 : r + m * (r + 6) ≤ 6 * m * k := by
     have a1 : r + 6 ≤ 3 * k := by omega
@@ -256,7 +256,7 @@ theorem lowsOver_of_sizeRows {D : D7} (large₂ : SizeData₂ D) (hs : SizeRows 
   obtain ⟨⟨Pm, _, _⟩, _, _, hm44, _⟩ := hs
   have hb : 0 < large₂.sc.b := Real.exp_pos _
   have hL : 0 < large₂.sc.L := Real.rpow_pos_of_pos (by linarith [large₂.sc.one_lt_alt]) _
-  have hm0 : (0 : ℝ) < D.R.m := by exact_mod_cast (by omega : 0 < D.R.m)
+  have hm0 : (0 : ℝ) < D.R.m := by exact_mod_cast (omega : 0 < D.R.m)
   have hn : (1 : ℝ) ≤ D.R.n := by
     have : 1 ≤ D.R.n := by
       have h1 := D.R.m_le_f
@@ -288,7 +288,7 @@ theorem lowsOver_of_sizeRows {D : D7} (large₂ : SizeData₂ D) (hs : SizeRows 
     rw [hDen]
     have hkp : (0 : ℝ) < D.R.k := by
       have := D.R.m_add_three_le_k
-      exact_mod_cast (by omega : 0 < D.R.k)
+      exact_mod_cast (omega : 0 < D.R.k)
     have : 0 < (D.R.k : ℝ) * (D.R.n : ℝ) ^ 2 * (large₂.Sc + D.R.t + large₂.sc.L) := by positivity
     have a1 : 0 ≤ (D.R.n : ℝ) * (D.R.t : ℝ) ^ 2 * ((D.R.N D.R.m : ℝ) + D.R.t) * large₂.sc.L ^ 2 := by positivity
     linarith

@@ -468,7 +468,7 @@ theorem frobenius_trace_count_bound_of_cm_eigensystem_count_alt :
   have hq : 1 ≤ normV w := by
     rw [normV, ← Ideal.absNorm_eq_natCard]
     exact (NumberField.HeightOneSpectrum.one_lt_absNorm w).le
-  have hqC : ((normV w : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (by omega : normV w ≠ 0)
+  have hqC : ((normV w : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (omega : normV w ≠ 0)
   obtain ⟨D, hcard, hcl⟩ := hK ![(e : ℤ) - 1, -1, -(e : ℤ) - 1]
     (by
       refine Fin.strictAnti_iff_succ_lt.2 fun i => ?_

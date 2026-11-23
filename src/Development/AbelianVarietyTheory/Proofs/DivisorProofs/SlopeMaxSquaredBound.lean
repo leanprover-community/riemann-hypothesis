@@ -143,7 +143,7 @@ theorem slopeMax_le (h6 : GlobalTheory.Published.TamagawaSpecialUnitary) {PP A :
     have h1 := D.R.two_le_m
     have h2 := D.R.m_add_three_le_k
     unfold Ranks.r; omega
-  have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 1 ≤ D.R.r)
+  have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 1 ≤ D.R.r)
   have hnV : (1 : ℝ) ≤ D.R.nV := by exact_mod_cast (by unfold Ranks.nV; omega : 1 ≤ D.R.nV)
   have hbL : L.sc.b = Real.exp L.sc.L := rfl
   have hb : 1 ≤ L.sc.b := by rw [hbL]; exact Real.one_le_exp (by linarith)

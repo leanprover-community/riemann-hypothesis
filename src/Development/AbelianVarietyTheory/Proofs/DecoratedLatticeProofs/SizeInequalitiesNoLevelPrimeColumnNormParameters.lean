@@ -55,7 +55,7 @@ theorem sizeRowsS_numRec : ∀ (D : D7) (L : SizeData₂ D) (CY : ℝ), HtRowsS 
     show (D.R.k : ℝ) * (4 * ((⌊D.s.Del⌋₊ : ℕ) : ℝ)) = _
     rw [← Rat.cast_natCast, ← Rat.cast_natCast (α := ℝ) ⌊D.s.Del⌋₊, hDel]
   have hk : 5 ≤ D.R.k := by have := D.R.m_add_three_le_k; have := D.R.two_le_m; omega
-  have hm : (0 : ℝ) < D.R.m := by have := D.R.two_le_m; exact_mod_cast (by omega : 0 < D.R.m)
+  have hm : (0 : ℝ) < D.R.m := by have := D.R.two_le_m; exact_mod_cast (omega : 0 < D.R.m)
   have hn0 : 0 < D.R.n := D.R.n_pos'
   have hq := D.host.hyp.1.pos
   have hd := D.host.hyp.2.1.pos

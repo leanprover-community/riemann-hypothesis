@@ -64,7 +64,7 @@ theorem supConst_size_rows : ∀ (D : D7) (M : ℕ) (Lb w : ℝ), 1 ≤ M → 1 
   have hd1 : 1 ≤ D.host.d := by omega
   have hq1 : 1 ≤ D.host.q := by omega
   have hfR : (1 : ℝ) ≤ D.R.f := by exact_mod_cast hf0
-  have hrR : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 1 ≤ D.R.r)
+  have hrR : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 1 ≤ D.R.r)
   have hnR : (Module.finrank ℚ D.host.E : ℝ) = 2 * D.R.f := by exact_mod_cast D.host.finrank_E'
   have hnpos : (0 : ℝ) < Module.finrank ℚ D.host.E := by rw [hnR]; linarith
   have hrd := (GlobalTheory.CovTop.log_rd_le_fieldSz D.host.E).trans hsz

@@ -226,7 +226,7 @@ theorem core (hjsz : EisExp → ∀ (F : Type) [Field F] [NumberField F] [IsTota
       (Nat.mul_pos hMpos hD0) hLm hg hu
     obtain ⟨hω, hj, hst⟩ := GlobalTheory.SzTau.main l lam d Λ 1 Ω τ hd h4 hΛ htau hΩ
     haveI : IsGalois ℚ (FR E) := (IsAbelianGalois.tower_bot ℚ (FR E) E).toIsGalois
-    have hfpos : (0 : ℝ) < Module.finrank ℚ (FR E) := by exact_mod_cast (by omega : 0 < Module.finrank ℚ (FR E))
+    have hfpos : (0 : ℝ) < Module.finrank ℚ (FR E) := by exact_mod_cast (omega : 0 < Module.finrank ℚ (FR E))
     have ha0 : (0 : ℝ) ≤ a0 𝔣 l := Nat.cast_nonneg _
     have hv0 : (0 : ℝ) ≤ padicValNat l D := Nat.cast_nonneg _
     have hJ := hjsz hEis (FR E) hf2 s _ L hs hL z hz l lam (fun j => κ (e.symm j)) t M' M₀ (padicValNat l D + a0 𝔣 l)

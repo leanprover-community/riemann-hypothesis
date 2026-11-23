@@ -121,7 +121,7 @@ theorem nuGood : NuGoodSt := by
     have := hl.two_le
     have := ne_two_of_not_small h2
     omega
-  have hlpos : (0 : ℝ) < l := by exact_mod_cast (by omega : 0 < l)
+  have hlpos : (0 : ℝ) < l := by exact_mod_cast (omega : 0 < l)
   obtain ⟨R1, R2, R3, R4⟩ := GlobalTheory.RowBudgets.main N.R.r N.R.f (N.R.k - 1) N.R.m nW T l N.R.k b L w (by omega) (by omega) (by omega)
     hf2 hT1' (by omega) hG.L_ge hG.log_le (by rw [hn]; exact hG.what₂)
   have R5 := UpperTheory.f_mul_leastAdmissibleLevel_rows_le N.R.r N.R.f (N.R.k - 1) N.R.m nW l N.R.k L (by omega) (by omega) (by omega)

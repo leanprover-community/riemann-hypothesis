@@ -121,7 +121,7 @@ theorem exists_good_level (H : Host E) : ∃ l : Level H, l.A = 1 ∧ ∀ p : �
       have h6 : (φ (H.rt : E)).im = 0 := Complex.conj_eq_iff_im.1 h4.symm
       have h7 := congrArg Complex.re h5
       simp [sq, h6] at h7
-      have : (0 : ℝ) < H.d := by exact_mod_cast (by omega : 0 < H.d)
+      have : (0 : ℝ) < H.d := by exact_mod_cast (omega : 0 < H.d)
       nlinarith [mul_self_nonneg (φ (H.rt : E)).re]
     · exact h
   set r := H.rt with hr

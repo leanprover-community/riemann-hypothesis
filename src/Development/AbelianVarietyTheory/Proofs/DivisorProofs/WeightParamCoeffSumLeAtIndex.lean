@@ -365,8 +365,8 @@ theorem sum_abs_wt_le_point {PP C A M : ℝ} (hS : SizeAt p i PP C) (hH : HostNu
     exact le_trans (one_le_pow₀ this) hPP
   have hTle : PP ^ 2 ≤ (lenT p i PP : ℝ) := by
     refine le_trans ?_ (Nat.le_ceil _)
-    have hm0 : (0 : ℝ) < D.R.m := by exact_mod_cast (by omega : 0 < D.R.m)
-    have hkm : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+    have hm0 : (0 : ℝ) < D.R.m := by exact_mod_cast (omega : 0 < D.R.m)
+    have hkm : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (omega : D.R.m ≤ D.R.k)
     rw [le_div_iff₀ hm0]
     have h1 : (1 : ℝ) ≤ (CompHt.dimFlag (dat p i) : ℝ) ^ 2 := one_le_pow₀ hDd1
     have h2 : PP ^ 2 * 1 ≤ PP ^ 2 * (CompHt.dimFlag (dat p i) : ℝ) ^ 2 := mul_le_mul_of_nonneg_left h1 (by positivity)

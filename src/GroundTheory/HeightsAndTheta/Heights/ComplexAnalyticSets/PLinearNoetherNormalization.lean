@@ -123,7 +123,7 @@ theorem LinearNoetherNormalization.proof : LinearNoetherNormalization.Statement 
           obtain ⟨e, he, he'⟩ := hdim P hP
           have hne' : e ≠ d' + 1 := fun h => hne P hP (by rw [he', h])
           rw [he']
-          exact_mod_cast (by omega : e ≤ d'))
+          exact_mod_cast (omega : e ≤ d'))
       rw [hJ] at hle
       exact absurd hle (by norm_cast; omega)
   obtain ⟨P₀, hP₀, hP₀d⟩ := htop

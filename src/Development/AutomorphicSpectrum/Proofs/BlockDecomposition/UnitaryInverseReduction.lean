@@ -152,7 +152,7 @@ theorem spherical_cell (h : IsUnramInv ϖ σ q) (k : Fin (n / 2)) (hk : ¬ k.val
 
 theorem cSimpleU_ne_zero (hq : 2 ≤ q) (k : Fin (n / 2)) (hk : ¬ k.val + 1 < n / 2) (α : Fin (n / 2) → ℂˣ)
     (hαk : ‖(α k : ℂ)‖ < 1) : cSimpleU q k α ≠ 0 := by
-  have hq1 : (1 : ℝ) < q := by exact_mod_cast (by omega : 1 < q)
+  have hq1 : (1 : ℝ) < q := by exact_mod_cast (omega : 1 < q)
   have hq0 : (q : ℂ) ≠ 0 := by
     have : q ≠ 0 := by omega
     exact_mod_cast this

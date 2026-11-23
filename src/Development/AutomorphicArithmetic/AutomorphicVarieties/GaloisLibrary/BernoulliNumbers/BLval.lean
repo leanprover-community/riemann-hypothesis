@@ -69,7 +69,7 @@ theorem UpperTheory.V.Bern.b_lval :
   have hx1 : (a:ℝ) / N ≤ 1 := (div_le_one hN).mpr (by exact_mod_cast ha.2)
   rw [ZMod.toAddCircle_natCast, hurwitzZeta_one_sub_eq_bernoulli k hk _ hx0 hx1, bcoef, map_mul, map_zpow₀,
     map_natCast, ← Polynomial.eval₂_at_apply, ← Polynomial.eval_map]
-  have hk0 : (k:ℂ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+  have hk0 : (k:ℂ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
   have hq : (algebraMap ℚ ℂ) ((a:ℚ) / N) = (((a:ℝ) / N : ℝ) : ℂ) := by push_cast; rfl
   rw [hq]
   field_simp

@@ -489,7 +489,7 @@ theorem exponent_mul_log_le_choose_mul_log (N l w e : ℕ) (y : ℝ) (he : e ≤
         calc ((Nat.log l w : ℕ) : ℝ) * Real.log l
             = Real.log (((l ^ Nat.log l w : ℕ) : ℝ)) := by rw [Nat.cast_pow, Real.log_pow]
           _ ≤ Real.log y := Real.log_le_log hpos h1
-    have hlogl : 0 ≤ Real.log (l : ℝ) := Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ l))
+    have hlogl : 0 ≤ Real.log (l : ℝ) := Real.log_nonneg (by exact_mod_cast (omega : 1 ≤ l))
     calc (e : ℝ) * Real.log l ≤ ((N.choose 2 * Nat.log l w : ℕ) : ℝ) * Real.log l :=
           mul_le_mul_of_nonneg_right (by exact_mod_cast he) hlogl
       _ = (N.choose 2 : ℝ) * (((Nat.log l w : ℕ) : ℝ) * Real.log l) := by push_cast; ring

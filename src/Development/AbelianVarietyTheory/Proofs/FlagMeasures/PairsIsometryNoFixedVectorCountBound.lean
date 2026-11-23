@@ -139,7 +139,7 @@ theorem main : MinkowskiBound → ∀ (K V : Type) [Field K] [NumberField K] [St
   rw [← ENNReal.ofReal_natCast, ← ENNReal.ofReal_pow (by positivity), ← ENNReal.ofReal_mul (by positivity),
     ← ENNReal.ofReal_mul (by positivity)]
   refine ENNReal.ofReal_le_ofReal ?_
-  have hg0 : (0 : ℝ) < g := by exact_mod_cast (by omega : 0 < g)
+  have hg0 : (0 : ℝ) < g := by exact_mod_cast (omega : 0 < g)
   exact arith _ _ _ _ hcf _ _ _ _ _ (by exact_mod_cast hx) (by exact_mod_cast hx') (by exact_mod_cast hD1)
     (by positivity) (by positivity) h43 _ (by push_cast; ring)
 

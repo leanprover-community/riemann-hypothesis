@@ -65,7 +65,7 @@ theorem factor_nonneg {n : ℕ} {L : Fin (n + 1) → ℤ} {M : Fin n → ℤ} (h
     have h1 : L l ≤ L j.succ := hA.antitone (Fin.castSucc_lt_iff_succ_le.mp hj)
     have h2 : L l < L j.castSucc := hA hj
     have h3 := (h j).1
-    have h4 : (L l : ℝ) + 1 ≤ M j := by exact_mod_cast (by omega : L l + 1 ≤ M j)
+    have h4 : (L l : ℝ) + 1 ≤ M j := by exact_mod_cast (omega : L l + 1 ≤ M j)
     have h5 : (L l : ℝ) < L j.castSucc := by exact_mod_cast h2
     apply div_nonneg <;> linarith
   · rw [Fin.succAbove_of_le_castSucc l j hj]

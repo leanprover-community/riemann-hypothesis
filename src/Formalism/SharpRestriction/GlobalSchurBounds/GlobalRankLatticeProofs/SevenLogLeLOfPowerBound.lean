@@ -115,10 +115,10 @@ theorem base_sizes {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L) :
   have ht1 : (1 : ℝ) ≤ D.R.t := by
     have := D.R.three_m_lt_t
     have := D.R.two_le_m
-    exact_mod_cast (by omega : 1 ≤ D.R.t)
+    exact_mod_cast (omega : 1 ≤ D.R.t)
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hn1 : (1 : ℝ) ≤ D.R.n := by
     have : 1 ≤ D.R.n := D.R.ord_pos
     exact_mod_cast this

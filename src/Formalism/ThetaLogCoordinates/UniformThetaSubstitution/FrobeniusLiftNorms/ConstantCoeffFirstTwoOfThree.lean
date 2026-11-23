@@ -263,7 +263,7 @@ theorem eq_zero_of_div {p : ℕ} (hp : 2 ≤ p) (hnp : ‖(p : K)‖ = (p : ℝ)
     (h : ∀ i : ℕ, ‖x * ((p : K) ^ (i + 1))⁻¹‖ ≤ 1) : x = 0 := by
   by_contra hx
   have hx0 : 0 < ‖x‖ := norm_pos_iff.2 hx
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast (omega : 1 < p)
   have hq : ((p : ℝ)⁻¹) < 1 := inv_lt_one_of_one_lt₀ hp1
   have hq0 : (0 : ℝ) ≤ (p : ℝ)⁻¹ := by positivity
   obtain ⟨i, hi⟩ := exists_pow_lt_of_lt_one hx0 hq

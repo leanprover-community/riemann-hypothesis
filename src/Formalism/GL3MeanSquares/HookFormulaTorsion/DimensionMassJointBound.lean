@@ -192,7 +192,7 @@ theorem least_noncompact_gap : LeastNoncompactGap := by
       simp only [rowPar, hi, hj', if_true, if_false]
       have hst := increments_sum_lower_bound m b h₀ hb 0 (j - (k - 1)) (by omega)
       simp only [zero_add] at hst
-      have h1 : (1 : ℝ) ≤ ((j - (k - 1) : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ j - (k - 1))
+      have h1 : (1 : ℝ) ≤ ((j - (k - 1) : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ j - (k - 1))
       have := hv i hi
       nlinarith [mul_le_mul_of_nonneg_right h1 hh]
   · have hj' : ¬ j < k - 1 := by omega
@@ -201,7 +201,7 @@ theorem least_noncompact_gap : LeastNoncompactGap := by
     have e : i - (k - 1) + (j - (k - 1) - (i - (k - 1))) = j - (k - 1) := by omega
     rw [e] at hst
     have h1 : (1 : ℝ) ≤ ((j - (k - 1) - (i - (k - 1)) : ℕ) : ℝ) := by
-      exact_mod_cast (by omega : 1 ≤ j - (k - 1) - (i - (k - 1)))
+      exact_mod_cast (omega : 1 ≤ j - (k - 1) - (i - (k - 1)))
     nlinarith [mul_le_mul_of_nonneg_right h1 hh]
 
 end Formalism.HermitianLattices.GenusMassVolumes

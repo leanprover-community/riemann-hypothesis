@@ -389,7 +389,7 @@ theorem main : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWState
     obtain ⟨y', hy'0, hy'⟩ := exists_ev G₀ hG₀ ρ'
     have h₁ := A 4 _ (by omega) rfl ρ' ρ x' x y' y hx' hx hy' hy hy0
     have h₂ : (0 : WithTop ℚ) < v (x' * y - x * y') :=
-      lt_of_lt_of_le (by exact_mod_cast (by omega : 0 < k * 4)) h₁
+      lt_of_lt_of_le (by exact_mod_cast (omega : 0 < k * 4)) h₁
     by_contra hne
     have h₃ : 0 < v (x * y') := by
       rw [v.map_mul]; exact add_pos_of_pos_of_nonneg (lt_of_le_of_ne hx0' (Ne.symm hne)) hy'0

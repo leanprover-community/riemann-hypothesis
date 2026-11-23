@@ -348,7 +348,7 @@ theorem loss_factor_le_rpow {k r : ℕ} (b CPT Cc C : ℝ) (m : ℕ) (z z' : Fin
   set G := Gf k r z z' γ with hGdef
   set y := max G G⁻¹ with hy
   have hy1 : 1 ≤ y := one_le_max_self_inv hG
-  have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast (by omega : 1 ≤ m)
+  have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast (omega : 1 ≤ m)
   have hm2 : (1 : ℝ) ≤ (m : ℝ) ^ 2 := one_le_pow₀ hm1
   have hm4 : (m : ℝ) ^ 2 ≤ (m : ℝ) ^ 4 := pow_le_pow_right₀ hm1 (by norm_num)
   have hb0 : 0 < b := by linarith
@@ -878,9 +878,9 @@ theorem rank_parameters_le : (D.R.rS : ℝ) ≤ D.R.m ∧ ((D.R.rS + 1 : ℕ) : 
   have h2 := D.R.two_le_m
   have e : D.R.rS = D.R.m / 2 - 1 := rfl
   refine ⟨?_, ?_, ?_⟩
-  · exact_mod_cast (by omega : D.R.rS ≤ D.R.m)
-  · exact_mod_cast (by omega : D.R.rS + 1 ≤ D.R.m)
-  · exact_mod_cast (by omega : 1 ≤ D.R.m)
+  · exact_mod_cast (omega : D.R.rS ≤ D.R.m)
+  · exact_mod_cast (omega : D.R.rS + 1 ≤ D.R.m)
+  · exact_mod_cast (omega : 1 ≤ D.R.m)
 
 theorem one_le_size_volume {k r : ℕ} (H : ℝ) (z z' : Fin (2 * r + k + 1) → ℂ) (γ : MatKR k r) : 1 ≤ sizeV H z z' γ :=
   one_le_finset_prod _ _ (fun _ _ => le_max_left _ _)
@@ -1314,7 +1314,7 @@ theorem local_error_term_le (k r : ℕ) (Ca C δ ν t g : ℝ) (hk : r + 2 ≤ k
     (hδ : (r : ℝ) + 2 ≤ δ * k) (hν : 0 ≤ ν) (ht : 0 ≤ t) (hg : 0 ≤ g) :
     Formalism.HermitianLatticeCounting.LatticeSumBounds.xv k r Ca ν t g ≤ ν * t * g⁻¹ ^ (2 * r + 2) * (C / k) ^ (2 * (r : ℝ) * (1 - δ)) := by
   unfold Formalism.HermitianLatticeCounting.LatticeSumBounds.xv Formalism.HermitianLatticeCounting.LatticeSumBounds.expo
-  have hk0 : (0 : ℝ) < k := by exact_mod_cast (by omega : 0 < k)
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast (omega : 0 < k)
   have hC : 0 < C := lt_of_lt_of_le hCa hCaC
   have hcast : ((2 * r * (k - 2 - r) : ℕ) : ℝ) = 2 * (r : ℝ) * ((k : ℝ) - 2 - r) := by
     have : k - 2 - r = k - (2 + r) := by omega
@@ -1338,7 +1338,7 @@ theorem numerical_bound_first_case (k r : ℕ) (Ca C δ G T g v t Dr la lc pa pc
     (hABS : Jop ≤ pa * (Ca / (k * v)) ^ (r * (k - 2 - r)) * Dr⁻¹ ^ (k - 2 - r)) (hrank : hs ≤ dim * Jop ^ 2) :
     nv k r G T g v * hs / dim ≤
       lc * pc ^ 2 * t⁻¹ ^ k * (min 1 (G / (T * Dr ^ 2) * t * g⁻¹ ^ (2 * r + 2) * (C / k) ^ (2 * (r : ℝ) * (1 - δ)))) ^ k := by
-  have hk0 : (0 : ℝ) < k := by exact_mod_cast (by omega : 0 < k)
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast (omega : 0 < k)
   have hv0 : 0 < v := by linarith
   have hcond : (Real.exp 1 * Real.pi / (k * v)) ^ k * v⁻¹ ^ (2 * r * (k - 2 - r)) ≤ 1 := by
     refine mul_le_one₀ (pow_le_one₀ (by positivity) ?_) (by positivity)
@@ -1377,7 +1377,7 @@ theorem numerical_bound_second_case (k r : ℕ) (Ca C A G T T' g v t Dr sh ch la
     (hL2 : nv k r G T g v * hs / dim ≤ la * t⁻¹ ^ k)
     (hABS : Jop ≤ pa * (Ca / (k * v)) ^ (r * (k - 2 - r)) * Dr⁻¹ ^ (k - 2 - r)) (hrank : hs ≤ dim * Jop ^ 2) :
     nv k r G T g v * hs * ((1 + ch) / sh) ^ (2 * k) * T⁻¹ ^ k / dim ≤ lc * pc ^ 2 * (C / k) ^ k := by
-  have hk0 : (0 : ℝ) < k := by exact_mod_cast (by omega : 0 < k)
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast (omega : 0 < k)
   have hv0 : 0 < v := by linarith
   have hg0 : 0 < g := by linarith
   have hA0 : 0 < A := lt_of_lt_of_le (by positivity) hTA
@@ -1409,7 +1409,7 @@ theorem numericVolume_bound_ii (k r : ℕ) (C A G T T' g v t la lc pa pc hs dim 
     (hTA : T' / T ≤ A) (hlow : (k : ℝ) ^ (3 * r) ≤ g⁻¹ ^ (2 * r + 2) * T' * t)
     (hL2 : nv k r G T g v * hs / dim ≤ la * t⁻¹ ^ k) :
     nv k r G T g v * hs * T⁻¹ ^ k / dim ≤ lc * pc ^ 2 * (C / k) ^ k := by
-  have hk0 : (0 : ℝ) < k := by exact_mod_cast (by omega : 0 < k)
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast (omega : 0 < k)
   have hg0 : 0 < g := by linarith
   have hA0 : 0 < A := lt_of_lt_of_le (by positivity) hTA
   have h := Formalism.HermitianLatticeCounting.P.minBoundSecondZero k r A G T T' g v t la (Real.sqrt hs) dim hr hk hG hT hT' hg hv ht hla hdim hTA hlow
@@ -1505,12 +1505,12 @@ theorem lossStatement_of_bounds (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb
   have hb := one_le_scale_base_local large₂
   have hm := rank_eq_two_mul_add_two D
   have hm0 : 0 < D.R.m := by omega
-  have hk0 : (0 : ℝ) < D.R.k := by exact_mod_cast (by omega : 0 < D.R.k)
+  have hk0 : (0 : ℝ) < D.R.k := by exact_mod_cast (omega : 0 < D.R.k)
   have hT : 0 < Tr D w := by unfold Tr; exact_mod_cast hTT.1.pos
   have hT' : 0 < Tr D w' := by unfold Tr; exact_mod_cast hTT.2.1.pos
   have hG : 0 < Gf D.R.k D.R.rS W.z W.z' γ := cell_G_pos D hRel hz hz' (hTz ▸ hT) (hTz' ▸ hT')
   have hkb : (1 : ℝ) ≤ ((D.R.k : ℝ) * large₂.sc.b) ^ 8 := by
-    have : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+    have : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
     exact one_le_pow₀ (one_le_mul_of_one_le_of_one_le this hb)
   have hg : 1 ≤ gg D := by
     unfold gg
@@ -1957,7 +1957,7 @@ theorem L2_decay_of_admissible (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb 
   have hle : (l : ℕ) ≤ D.R.rS + 1 := Nat.le_of_lt_succ l.isLt
   have hlm : ((l : ℕ) : ℝ) ≤ D.R.m := by
     have := rank_eq_two_mul_add_two D
-    exact_mod_cast (by omega : (l : ℕ) ≤ D.R.m)
+    exact_mod_cast (omega : (l : ℕ) ≤ D.R.m)
   have hrange : (q : ℝ) * ((l : ℕ) : ℝ) ≤ Cn * D.R.k * (D.R.m : ℝ) ^ 3 := by
     have h1 : (q : ℝ) ≤ Cn * D.R.k * (D.R.m : ℝ) ^ 2 :=
       le_trans hq (by gcongr)
@@ -2035,13 +2035,13 @@ theorem decayProp_of_l2AbsDecay (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb
   have hb := one_le_scale_base_local large₂
   have hm := rank_eq_two_mul_add_two D
   have hm0 : 0 < D.R.m := by omega
-  have hk0 : (0 : ℝ) < D.R.k := by exact_mod_cast (by omega : 0 < D.R.k)
+  have hk0 : (0 : ℝ) < D.R.k := by exact_mod_cast (omega : 0 < D.R.k)
   have hv0 : 0 < D.host.v := lt_of_lt_of_le one_pos hv
   have hT : 0 < Tr D w := by unfold Tr; exact_mod_cast hTT.1.pos
   have hT' : 0 < Tr D w' := by unfold Tr; exact_mod_cast hTT.2.1.pos
   have hG : 0 < Gf D.R.k D.R.rS W.z W.z' γ := cell_G_pos D hRel hz hz' (hTz ▸ hT) (hTz' ▸ hT')
   have hkb : (1 : ℝ) ≤ ((D.R.k : ℝ) * large₂.sc.b) ^ 8 := by
-    have : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+    have : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
     exact one_le_pow₀ (one_le_mul_of_one_le_of_one_le this hb)
   have hg : 1 ≤ gg D := by
     unfold gg

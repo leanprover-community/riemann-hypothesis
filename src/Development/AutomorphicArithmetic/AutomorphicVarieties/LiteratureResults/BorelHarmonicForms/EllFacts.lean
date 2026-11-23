@@ -48,7 +48,7 @@ theorem UpperTheory.V.Lit.Bor.ellFacts :
     UpperTheory.V.Lit.Bor.EllFacts := by
   intro E _ _ _ a
   refine ⟨fun ha => ?_, ell_br, fun k X => ?_, fun A _ _ _ _ L r hL X Y => ?_⟩
-  · have h1 : (a : ℝ) ≠ 0 := by exact_mod_cast (by omega : a ≠ 0)
+  · have h1 : (a : ℝ) ≠ 0 := by exact_mod_cast (omega : a ≠ 0)
     have h2 : (Fintype.card (InfinitePlace E) : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
     change ell E a (toL 1) = 1
     rw [ell_toL, div_eq_one_iff_eq (mul_ne_zero h1 h2)]

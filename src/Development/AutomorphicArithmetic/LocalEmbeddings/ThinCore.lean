@@ -106,7 +106,7 @@ theorem theta_sup_le (hLw : Laws D j Xo c U dict) {σ : c.F →+* ℂ} (hσ : Go
   have he2 : 2 ≤ Real.exp L := by have := Real.add_one_le_exp L; linarith
   have hpow : ∀ (x : ℝ) (m : ℕ), 0 < x → Real.log x ≤ m * L → x ≤ Real.exp L ^ m := fun x m h1 h2 => by
     rw [← Real.exp_nat_mul]; exact (Real.log_le_iff_le_exp h1).1 h2
-  have hM0 : (0 : ℝ) < l.M := by have := l.three_le; exact_mod_cast (by omega : 0 < l.M)
+  have hM0 : (0 : ℝ) < l.M := by have := l.three_le; exact_mod_cast (omega : 0 < l.M)
   have hdd : (0 : ℝ) < D.host.d := by exact_mod_cast D.host.hyp.2.1.pos
   have hrde := hpow (rdE D.host.E) 3 (by linarith) (by exact_mod_cast hrdL)
   have hep : (Real.exp L ^ 57)⁻¹ ≤ epsLev D.host.E D.host.d l.M (3 * κ) := by
@@ -195,7 +195,7 @@ theorem theta_lower (hLw : Laws D j Xo c U dict) {σ : c.F →+* ℂ} (hσ : Goo
     D.host.E H Dw l Xo c σ D.R.r (U σ) k ⟨_, hbd⟩ (xiR D) nab hnab hσ hUn (hLw.unTest σ hσ k _) hbo (hLw.xiAbs σ hσ k)
     α hα hMb a n P hP hB R0 m (hdeg ▸ hrun) (Or.inr hm)
   have hxR := GlobalTheory.SupDict.xiR_pos D
-  have hM1 : (1 : ℝ) ≤ l.M := by have := l.three_le; exact_mod_cast (by omega : 1 ≤ l.M)
+  have hM1 : (1 : ℝ) ≤ l.M := by have := l.three_le; exact_mod_cast (omega : 1 ≤ l.M)
   have hfin := GlobalTheory.SupDict.finrank_host D
   have hfd : fdeg D.host.E = D.R.f := by unfold fdeg; omega
   obtain ⟨hfinQ, hcard⟩ := GlobalTheory.card_levQ D.host.E H Dw l

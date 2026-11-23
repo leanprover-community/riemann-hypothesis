@@ -47,7 +47,7 @@ theorem normPrimes_unconditional : NormPrimes := by
   refine ⟨x0, fun s R N d hs hx hR hq => ?_⟩
   have hk : (1 : ℝ) ≤ R.k := by
     have := R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ R.k)
+    exact_mod_cast (omega : 1 ≤ R.k)
   have hb : 0 < s.b := Real.exp_pos _
   have hY : 0 < ((R.k : ℝ) * s.b) ^ 8 := by positivity
   have hlog : 8 * s.x ^ eps ≤ Real.log (((R.k : ℝ) * s.b) ^ 8) := by
@@ -75,7 +75,7 @@ theorem levelPrime_unconditional : LevelPrime := by
   have hn : 1 ≤ R.n := R.toFrame.ord_pos
   have hk : (1 : ℝ) ≤ R.k := by
     have := R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ R.k)
+    exact_mod_cast (omega : 1 ≤ R.k)
   have hf1 : (1 : ℝ) ≤ R.f := by
     exact_mod_cast (by unfold Ranks.f; omega : 1 ≤ R.f)
   have hL : s.L = s.x ^ eps := by rw [← hs]; rfl

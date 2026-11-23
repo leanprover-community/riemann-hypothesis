@@ -475,7 +475,7 @@ theorem cph_step (B t o' n' z : ℕ) (hB : B = o' + n' + r + z) (ht : t ≤ o') 
   have hf : (t.factorial : k) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero t
   have hne : (B : k) + 1 - t ≠ 0 := by
     rw [← Nat.cast_add_one, ← Nat.cast_sub (by omega : t ≤ B + 1)]
-    exact_mod_cast (by omega : B + 1 - t ≠ 0)
+    exact_mod_cast (omega : B + 1 - t ≠ 0)
   have hd : (((B + 1).choose (t + 1) : ℕ) : k) = ((B : k) + 1) * (B.choose t : k) / ((t : k) + 1) := by
     rw [eq_div_iff ht1]
     have h := Nat.add_one_mul_choose_eq B t

@@ -87,7 +87,7 @@ theorem sg_mul_le (hX : X.Hyp p K) (j x : ℤ) (hx : x ∈ X.toLate j) (i : Fin 
   have hK0 : 0 < K := Nat.pos_of_ne_zero (NeZero.ne K)
   have hkpos : (0:ℝ) < Dat.k (r := r) K := by
     unfold Dat.k
-    exact_mod_cast (by omega : 0 < r + K)
+    exact_mod_cast (omega : 0 < r + K)
   have hY := hX.Y1
   have hk : 0 < Dat.k (r := r) K ^ 2 * X.Y := by positivity
   have hpd : (0:ℝ) < (p:ℝ) ^ X.F.dist j (X.F.oldest j x) := pow_pos hp0 _

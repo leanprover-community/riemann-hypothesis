@@ -250,7 +250,7 @@ theorem tr_le_of (C : Formalism.MainNotions.Inhab.FC) (hC : C.CTu = 25) (cD ch :
   have er : D.R.r = D.R.k + D.R.m - 1 := rfl
   have hf : (0 : ℝ) < D.R.f := by exact_mod_cast hfN
   have hf1 : (1 : ℝ) ≤ D.R.f := by exact_mod_cast hfN
-  have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+  have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
   have hm2 : (2 : ℝ) ≤ D.R.m := by exact_mod_cast hmN
   have hL1 : 1 ≤ L.sc.L := by linarith
   have hb : L.sc.b = Real.exp L.sc.L := rfl
@@ -282,7 +282,7 @@ theorem tr_le_of (C : Formalism.MainNotions.Inhab.FC) (hC : C.CTu = 25) (cD ch :
     unfold Formalism.BasicNotions.Host.v; linarith
 
   have hcard : ((Finset.Ioc D.R.k D.R.r).card : ℝ) ≤ D.R.m := by
-    rw [Nat.card_Ioc]; exact_mod_cast (by omega : D.R.r - D.R.k ≤ D.R.m)
+    rw [Nat.card_Ioc]; exact_mod_cast (omega : D.R.r - D.R.k ≤ D.R.m)
   have hSL : ∑ M ∈ Finset.Ioc D.R.k D.R.r, Real.log (Formalism.HermitianLatticesTheory.lValEta D.host.E M) ≤ (D.R.f : ℝ) * D.R.m := by
     have h1 : ∀ M ∈ Finset.Ioc D.R.k D.R.r, Real.log (Formalism.HermitianLatticesTheory.lValEta D.host.E M) ≤ (D.R.f : ℝ) := by
       intro M hM

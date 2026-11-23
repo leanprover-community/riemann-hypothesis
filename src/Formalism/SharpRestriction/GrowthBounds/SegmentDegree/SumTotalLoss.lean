@@ -162,7 +162,7 @@ theorem restSum_of (hF : ∀ (p n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K] 
   have hk5 : (5 : ℝ) ≤ Dat.k (r := r) K := by
     unfold Dat.k
     have := hX.NsK; have := hX.r2
-    exact_mod_cast (by omega : 5 ≤ r + K)
+    exact_mod_cast (omega : 5 ≤ r + K)
   obtain ⟨h5, h1, hr0, -, h1', hr1, htot⟩ := sum_total_loss r X.F.J X.F.TT.card (Dat.k (r := r) K) X.Y X.firstSumFactor hX.r2 hk5 hX.Y1
     F.JN (hJ1.trans F.JN) hA0l hA01 hb
 

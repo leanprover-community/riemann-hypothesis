@@ -197,7 +197,7 @@ theorem k_le_x_pow_six {D : D7} (L : SizeData₂ D) (hS : Formalism.MainNotions.
 
 theorem one_le_k (D : D7) : (1 : ℝ) ≤ (D.R.k : ℝ) := by
   have := D.R.m_add_three_le_k
-  exact_mod_cast (by omega : 1 ≤ D.R.k)
+  exact_mod_cast (omega : 1 ≤ D.R.k)
 
 theorem xpow_le_exp (x N y : ℝ) (hx : 0 < x) (h : N * Real.log x ≤ y) : x ^ N ≤ Real.exp y := by
   rw [Real.rpow_def_of_pos hx]

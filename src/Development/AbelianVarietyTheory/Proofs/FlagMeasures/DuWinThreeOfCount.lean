@@ -51,7 +51,7 @@ theorem window {S T : ℝ} {f k : ℕ} (hS : 0 < S) (hT : 2 ≤ T) (hf : 1 ≤ f
     have : j < 2 ^ j := Nat.lt_two_pow_self
     rw [pow_succ]; omega
   have hTk : (2 * f : ℝ) ≤ T ^ k := by
-    calc (2 * f : ℝ) ≤ (2 : ℝ) ^ k := by exact_mod_cast (by omega : 2 * f ≤ 2 ^ k)
+    calc (2 * f : ℝ) ≤ (2 : ℝ) ^ k := by exact_mod_cast (omega : 2 * f ≤ 2 ^ k)
       _ ≤ T ^ k := pow_le_pow_left₀ (by norm_num) hT k
   have hf' : (1 : ℝ) ≤ f := by exact_mod_cast hf
   have hP : 0 < T ^ k := by linarith

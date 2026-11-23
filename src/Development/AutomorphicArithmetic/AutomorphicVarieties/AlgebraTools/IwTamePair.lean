@@ -168,7 +168,7 @@ private theorem tamePair_nil {K A : Type} [Field K] [Ring A] [Algebra K A]
 theorem UpperTheory.V.AlgebraTools.tamePair :
     ∀ (K : Type) [Field K] [CharZero K] (n q : ℕ) (P T : GL (Fin n) K) (a : Fin n → K), 2 ≤ q → P * T * P⁻¹ = T ^ q → (P : Matrix (Fin n) (Fin n) K).charpoly = ∏ i, (Polynomial.X - Polynomial.C (a i)) → (∀ i j, a i ≠ (q : K) * a j) → IsNilpotent (((T ^ (q - 1) : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) - 1) → T ^ (q - 1) = 1 ∧ P * T = T * P := by
   intro K _ _ n q P T a hq hPT hP ha hN
-  have hq0 : (q : K) ≠ 0 := by exact_mod_cast (by omega : q ≠ 0)
+  have hq0 : (q : K) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   have h1 : P * T ^ (q - 1) = (T ^ (q - 1)) ^ q * P := by
     rw [← pow_mul, mul_comm (q - 1) q, pow_mul, ← hPT, conj_pow, inv_mul_cancel_right]
   have h2 := tamePair_nil (K := K) q (P : Matrix (Fin n) (Fin n) K)

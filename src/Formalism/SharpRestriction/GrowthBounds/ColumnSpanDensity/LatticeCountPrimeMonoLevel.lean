@@ -143,7 +143,7 @@ theorem rho_inf_mem (t c : ℕ) (D : ℝ) :
     linarith
   have h4 : ⌈Xs⌉₊ < n + 1 := by exact_mod_cast h3
   calc Xs ≤ (⌈Xs⌉₊ : ℝ) := Nat.le_ceil _
-    _ ≤ n := by exact_mod_cast (by omega : ⌈Xs⌉₊ ≤ n)
+    _ ≤ n := by exact_mod_cast (omega : ⌈Xs⌉₊ ≤ n)
 
 end Clean
 

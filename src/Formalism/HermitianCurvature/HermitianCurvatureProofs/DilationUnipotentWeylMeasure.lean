@@ -1217,10 +1217,10 @@ lemma Zm_norm : ‖Zm k r‖ ≤ r := by
     unfold zd
     split_ifs with ha hb
     · rw [abs_of_nonneg (Nat.cast_nonneg _)]
-      exact_mod_cast (by omega : r - i.val ≤ r)
+      exact_mod_cast (omega : r - i.val ≤ r)
     · simp
     · rw [abs_neg, abs_of_nonneg (Nat.cast_nonneg _)]
-      exact_mod_cast (by omega : i.val - (r + k) ≤ r)
+      exact_mod_cast (omega : i.val - (r + k) ≤ r)
   · simp
 
 lemma cv_Zm_true (s : ℝ) (g : Mat k r) : cv true (Zm k r) s g = aDil k r (Real.exp (-s)) * g := by

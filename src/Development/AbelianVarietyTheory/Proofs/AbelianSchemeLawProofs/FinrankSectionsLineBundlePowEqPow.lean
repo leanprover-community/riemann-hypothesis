@@ -77,7 +77,7 @@ theorem le_of_frequently {a b g : ℕ} (h : ∀ M : ℕ, ∃ n, M ≤ n ∧ a * 
   have hlt : (b : ℝ) * (1 + 0) ^ g < a := by simpa using hab
   obtain ⟨M, hM⟩ := eventually_atTop.1 (ht.eventually_lt_const hlt)
   obtain ⟨n, hn, hle⟩ := h (M + 1)
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (omega : 0 < n)
   have h1 := hM n (by omega)
   have h2 : (1 + 8 / (n : ℝ)) = (n + 8) / n := by field_simp
   rw [h2, div_pow, ← mul_div_assoc, div_lt_iff₀ (pow_pos hn0 g)] at h1

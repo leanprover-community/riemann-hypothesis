@@ -262,7 +262,7 @@ theorem q_lattice_slope (D : D7) : QSlope D := by
     Ranks.N_zero]
   have hf : (0 : ℝ) < (D.R.f : ℝ) := by
     have : 0 < 2 * D.R.f := by rw [← H.deg]; exact Module.finrank_pos
-    exact_mod_cast (by omega : 0 < D.R.f)
+    exact_mod_cast (omega : 0 < D.R.f)
   have hk : (0 : ℝ) < (D.R.k : ℝ) := by exact_mod_cast columnCount_pos D
   push_cast
   rw [Real.log_pow]

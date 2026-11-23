@@ -455,7 +455,7 @@ theorem exponents_and_defect : ∀ {F : Type} [Field F] [ValuativeRel F] [Topolo
       rw [← L.cj_cj (S.D l), (hDu l h.2).mul_right_eq_zero.1 he, map_zero]
     · exact le_rfl
   have hq : 2 ≤ S.q := (order_facts L S.ϖ S.ϖ_irr).2.2.2.2.2.2.1
-  have hq1 : (1 : ℝ) ≤ S.q := by exact_mod_cast (by omega : 1 ≤ S.q)
+  have hq1 : (1 : ℝ) ≤ S.q := by exact_mod_cast (omega : 1 ≤ S.q)
   have hvth : 0 ≤ S.vth := by unfold Frames.vth; split_ifs <;> norm_num
   have hHp : (S.q : ℝ) ^ S.a ≤ S.Hp := zpow_le_zpow_right₀ hq1 (by omega)
   have hsat : ∀ y ∈ S.sat Λ, y ∈ S.spanTo (S.fr d Λ) (r + 1) ⊔ S.spanTo (S.fr' d Λ) (r + 1) :=

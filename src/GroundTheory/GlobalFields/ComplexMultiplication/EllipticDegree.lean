@@ -151,7 +151,7 @@ lemma nonneg_of_toNat_neg_untopD_eq_zero {o : WithTop ℤ} (h : (-(o.untopD 0)).
   | top => exact le_top
   | coe n =>
     simp only [WithTop.untopD_coe] at h
-    exact_mod_cast (by omega : (0 : ℤ) ≤ n)
+    exact_mod_cast (omega : (0 : ℤ) ≤ n)
 
 lemma toNat_neg_untopD_eq_zero_of_nonneg {o : WithTop ℤ} (h : 0 ≤ o) :
     (-(o.untopD 0)).toNat = 0 := by

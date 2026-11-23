@@ -147,7 +147,7 @@ theorem jets : Laws → Laws2 → Laws4 → TwistBaseChangeStatement → AJetSt 
   have hθ := fun i => (hΦ i).elim fun Φ hΦ' =>
     FamBaseChange.main hL.globalFns V (maximalIdeal V) D q Φ (fa i) hΦ' F
   choose θ hθ using hθ
-  have hq0 : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
   obtain ⟨gm, h0, hle, hge⟩ : ∃ gm : ℚ, 0 ≤ gm ∧ (gm : ℝ) ≤ (n : ℝ) ^ 2 * Φ / q ∧
       ∀ i, (Q (χ i) : ℚ) / q ≤ gm := by
     refine ⟨(⌊(n : ℝ) ^ 2 * Φ⌋ : ℤ) / q, ?_, ?_, fun i => ?_⟩

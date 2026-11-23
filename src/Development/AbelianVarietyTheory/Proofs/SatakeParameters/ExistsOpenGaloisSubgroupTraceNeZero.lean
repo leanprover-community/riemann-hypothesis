@@ -71,7 +71,7 @@ theorem exists_open_trace_ne_zero (Ω : Type) [Field Ω] (K : Type) [Field K] [N
   have hUo : IsOpen U := isOpen_ne_fun hc continuous_const
   have h1 : (1 : G K Ω) ∈ U := by
     simp only [hU, Set.mem_setOf_eq, map_one, Units.val_one, Matrix.trace_one, Fintype.card_fin]
-    exact_mod_cast (by omega : a ≠ 0)
+    exact_mod_cast (omega : a ≠ 0)
   obtain ⟨E, hE, hEU⟩ := (krullTopology_mem_nhds_one_iff K Ω U).mp (hUo.mem_nhds h1)
   exact ⟨E.fixingSubgroup, E.fixingSubgroup_isOpen, fun n hn => hEU hn⟩
 

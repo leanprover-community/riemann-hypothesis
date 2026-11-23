@@ -151,7 +151,7 @@ theorem lattice_eq_id : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {
     intro y hy
     obtain ⟨i, hi⟩ := C.mono.exists_pos (maximalIdeal.isMaximal _).ne_top hy
     have hi' : 0 < C.δ i y y :=
-      (mul_pos_iff_of_pos_left (show (0 : ℤ) < l.M' by exact_mod_cast (by omega : 0 < l.M'))).1 hi
+      (mul_pos_iff_of_pos_left (show (0 : ℤ) < l.M' by exact_mod_cast (omega : 0 < l.M'))).1 hi
     exact Finset.sum_pos' (fun j _ => C.cone.nonneg j y) ⟨i, Finset.mem_univ _, hi'⟩
   have hid := GlobalTheory.UCanon.eq_self_of_cone_congMod H φ (min Dw.p Dw.q) hφ hns C.P.D.toPre.X C.rank C.m C.δ C.cone hpos ga
     d₂ d₁ hd₂ hd₁ hform l.M' hn hcong

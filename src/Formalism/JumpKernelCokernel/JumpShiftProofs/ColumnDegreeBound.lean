@@ -40,7 +40,7 @@ theorem column_degree_bound : CDge := by
   gcongr
   all_goals first
     | exact_mod_cast h2
-    | (rw [sub_nonneg]; exact_mod_cast (by omega : 1 ≤ ℓ))
-    | (rw [sub_pos]; exact_mod_cast (by omega : 1 < ℓ))
+    | (rw [sub_nonneg]; exact_mod_cast (omega : 1 ≤ ℓ))
+    | (rw [sub_pos]; exact_mod_cast (omega : 1 < ℓ))
 
 end Formalism.KernelCokernelLengths

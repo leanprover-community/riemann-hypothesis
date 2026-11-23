@@ -142,7 +142,7 @@ theorem liftVecAt_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ct Cc H : ℝ}
   have hkap : 0 ≤ X.kap0 := by
     have hk : 0 ≤ X.k := by unfold Loc.k; positivity
     have hN : 0 ≤ X.N := by unfold Loc.N; positivity
-    have hp : (1 : ℝ) < (X.p : ℝ) := by have := hs.p5; exact_mod_cast (by omega : 1 < X.p)
+    have hp : (1 : ℝ) < (X.p : ℝ) := by have := hs.p5; exact_mod_cast (omega : 1 < X.p)
     have hl : 0 ≤ Real.logb X.p X.a := by
       unfold Real.logb
       exact div_nonneg (le_trans zero_le_one hs.loga) (Real.log_nonneg hp.le)

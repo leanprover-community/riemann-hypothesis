@@ -64,7 +64,7 @@ theorem ConeAverage.proof (h1 : ConeIntegralMass.Statement) (h2 : ChowDegreePos.
   have hfin : ν S ≠ ⊤ := by
     intro hinf
     rw [hinf, ENNReal.toReal_top, zero_div] at hmass
-    have : (δ : ℝ) ≠ 0 := by exact_mod_cast (by omega : δ ≠ 0)
+    have : (δ : ℝ) ≠ 0 := by exact_mod_cast (omega : δ ≠ 0)
     exact this hmass.symm
   have : IsFiniteMeasure (ν.restrict S) := isFiniteMeasure_restrict.2 hfin
   have hcone : ∀ φ : (Fin n → ℂ) → ℝ,
@@ -75,7 +75,7 @@ theorem ConeAverage.proof (h1 : ConeIntegralMass.Statement) (h2 : ChowDegreePos.
     rw [hν, hd]
     apply hausdorffMeasure_of_dimH_lt
     rw [dimH_singleton]
-    exact_mod_cast (by omega : 0 < 2 * (e + 1))
+    exact_mod_cast (omega : 0 < 2 * (e + 1))
   have hae : ∀ᵐ y ∂(ν.restrict S), y ≠ 0 := by
     rw [ae_iff]
     simpa using hzero

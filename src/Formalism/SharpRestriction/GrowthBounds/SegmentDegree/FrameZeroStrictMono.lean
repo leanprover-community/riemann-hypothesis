@@ -222,7 +222,7 @@ theorem sum_compA (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
     have hNk : (X.Ns : ℝ) ≤ Dat.k (r := r) K := by
       unfold Dat.k
       have := hX.NsK
-      exact_mod_cast (by omega : X.Ns ≤ r + K)
+      exact_mod_cast (omega : X.Ns ≤ r + K)
     have h2 : 4 * (X.Ns : ℝ) * X.a ≤ 4 * Dat.k (r := r) K * X.a := by nlinarith
     have h3 : Dat.k (r := r) K * ((X.Et p K t : ℝ) * (Dat.k (r := r) K * X.Y)) ≤ Dat.k (r := r) K * (4 * X.a) := by
       nlinarith

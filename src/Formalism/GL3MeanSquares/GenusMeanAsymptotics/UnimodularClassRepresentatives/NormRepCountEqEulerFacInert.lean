@@ -150,7 +150,7 @@ theorem normRepCount_eq_eulerFac_split (hK : Formalism.HermitianLatticesTheory.I
     exact hP.ne_top
   have hN2 : (1 : ℝ) < (Ideal.absNorm P : ℝ) := by
     have : 2 ≤ Ideal.absNorm P := by omega
-    exact_mod_cast (by omega : 1 < Ideal.absNorm P)
+    exact_mod_cast (omega : 1 < Ideal.absNorm P)
   have hx : 0 < 1 - (Ideal.absNorm P : ℝ) ^ (-(M : ℤ)) := by
     rw [zpow_neg, zpow_natCast, sub_pos]
     exact inv_lt_one_of_one_lt₀ (one_lt_pow₀ hN2 (by omega))

@@ -475,7 +475,7 @@ theorem kv_main (L : PeriodPair) (hg2 : L.g₂ ∈ Formalism.MainNotions.TaylorL
     linear_combination hD - c * ((n : ℂ) + 2) * y * hxinv
   have h2 : y * ((n : ℂ) + 3) + x * b = 0 := (mul_eq_zero.1 h1).resolve_left hcne
   have h3 : (n : ℂ) + 3 ≠ 0 := by
-    have : ((n + 3 : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (by omega : n + 3 ≠ 0)
+    have : ((n + 3 : ℕ) : ℂ) ≠ 0 := by exact_mod_cast (omega : n + 3 ≠ 0)
     push_cast at this
     exact this
   have hy : y = -(x * b) / ((n : ℂ) + 3) := eq_div_of_mul_eq h3 (by linear_combination h2)

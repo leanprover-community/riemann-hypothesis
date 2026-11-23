@@ -132,7 +132,7 @@ lemma node_mul_U (m : ℕ) (j : Fin (m + 2)) :
     have hpos : 0 < Real.sin ((j:ℕ) * Real.pi / ((m + 1 : ℕ) : ℝ)) := by
       have hjm : ((j:ℕ):ℝ) < ((m + 1 : ℕ) : ℝ) := by
         have := j.isLt
-        exact_mod_cast (by omega : (j:ℕ) < m + 1)
+        exact_mod_cast (omega : (j:ℕ) < m + 1)
       have hm : (0:ℝ) < ((m + 1 : ℕ) : ℝ) := by positivity
       apply Real.sin_pos_of_pos_of_lt_pi
       · have := Real.pi_pos; positivity

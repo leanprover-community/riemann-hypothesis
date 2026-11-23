@@ -796,7 +796,7 @@ theorem BSum_le_of_onePlace {Ch Cg dist CK p : ℝ} {P : ∀ (T T' : ℕ) (b : �
   have hb2 : 2 ≤ b := by
     have h1 := b_ge_of_StdHyp0 hk hStd.to0
     have h2 : (1 : ℝ) ≤ ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 7 :=
-      one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * D.R.rS + D.R.k + 1))
+      one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ 2 * D.R.rS + D.R.k + 1))
     nlinarith
   have hka : (0 : ℝ) < kaRe D := hStd.2.2.2.1
   have hone : (kaRe D / kaRe D) ^ (2 * D.R.rS) = 1 := by rw [div_self hka.ne', one_pow]

@@ -408,13 +408,13 @@ def kapL (p r : ℕ) {L : Type} [Fintype L] (d : L → ℕ) : ℝ :=
 theorem logb_add_nonneg {p : ℕ} (hp : 2 ≤ p) (r a : ℕ) (h : 1 ≤ a + r) :
     0 ≤ Real.logb p ((a : ℝ) + r) := by
   apply Real.logb_nonneg
-  · exact_mod_cast (by omega : 1 < p)
+  · exact_mod_cast (omega : 1 < p)
   · exact_mod_cast h
 
 theorem logb_add_mono {p : ℕ} (hp : 2 ≤ p) (r : ℕ) {a b : ℕ} (h : 1 ≤ a + r) (hab : a ≤ b) :
     Real.logb p ((a : ℝ) + r) ≤ Real.logb p ((b : ℝ) + r) := by
   apply Real.logb_le_logb_of_le
-  · exact_mod_cast (by omega : 1 < p)
+  · exact_mod_cast (omega : 1 < p)
   · have : (1 : ℝ) ≤ a + r := by exact_mod_cast h
     linarith
   · have : (a : ℝ) ≤ b := by exact_mod_cast hab
@@ -475,7 +475,7 @@ theorem natLog_le_term {p : ℕ} (hp : 2 ≤ p) (r a : ℕ) :
   · apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg r)
     have ha0 : (0 : ℝ) < a := Nat.cast_pos.mpr (Nat.pos_of_ne_zero ha)
     have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg r
-    rw [Real.le_logb_iff_rpow_le (by exact_mod_cast (by omega : 1 < p)) (by linarith),
+    rw [Real.le_logb_iff_rpow_le (by exact_mod_cast (omega : 1 < p)) (by linarith),
       Real.rpow_natCast]
     have h2 : ((p ^ Nat.log p a : ℕ) : ℝ) ≤ a := by exact_mod_cast Nat.pow_log_le_self p ha
     push_cast at h2

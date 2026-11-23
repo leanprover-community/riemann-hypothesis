@@ -174,7 +174,7 @@ theorem embedding_xi_zero_ne_zero (D : D7) : D.host.xi0 ≠ 0 := by
     rw [h] at this
     have hd : (D.host.d : D.host.E) ≠ 0 := by
       have := D.host.qd_big.2
-      exact_mod_cast (by omega : D.host.d ≠ 0)
+      exact_mod_cast (omega : D.host.d ≠ 0)
     apply hd
     linear_combination this
   unfold Host.xi0

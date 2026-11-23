@@ -158,7 +158,7 @@ theorem kerSide_of_meansS {J Emb α : Type} [Fintype J] [Fintype Emb] [Fintype �
   have hLL := L_le_La N
   have hg0 : (1 : ℝ) ≤ N.g 0 := by exact_mod_cast (N.g_prime 0).one_lt.le
   have hg1 : (1 : ℝ) ≤ N.g 1 := by exact_mod_cast (N.g_prime 1).one_lt.le
-  have hT1 : (1 : ℝ) ≤ T := by exact_mod_cast (by omega : 1 ≤ T)
+  have hT1 : (1 : ℝ) ≤ T := by exact_mod_cast (omega : 1 ≤ T)
   have hlg0 : 0 ≤ Real.log ((N.g 0 : ℝ) * N.g 1) := Real.log_nonneg (one_le_mul_of_one_le_of_one_le hg0 hg1)
   have hlT0 : 0 ≤ Real.log (T : ℝ) := Real.log_nonneg hT1
   have hlog : Real.log ((N.g 0 : ℝ) * N.g 1 * T) = Real.log ((N.g 0 : ℝ) * N.g 1) + Real.log (T : ℝ) :=

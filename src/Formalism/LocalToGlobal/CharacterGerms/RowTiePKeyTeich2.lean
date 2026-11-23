@@ -256,11 +256,11 @@ theorem teich_holds : TeichSt := by
     rw [← nsmul_eq_mul', Matrix.smul_apply, nsmul_eq_mul]
     have hP := ge_add_matrix_mul_entry_of_ge (ge_zero_matrix_pow_entry_of_ge_zero (hint x hx) m) (ge_nsmul_matrix_pow_entry_of_ge hδ (V.l - m)) i j
     rcases Nat.eq_zero_or_pos m with rfl | hm0
-    · have hL : (2 : ℝ) ≤ ((V.l - 0 : ℕ) : ℝ) := by exact_mod_cast (by omega : 2 ≤ V.l - 0)
+    · have hL : (2 : ℝ) ≤ ((V.l - 0 : ℕ) : ℝ) := by exact_mod_cast (omega : 2 ≤ V.l - 0)
       refine ((ge_zero_natCast V (V.l.choose 0)).mul hP).mono ?_
       nlinarith [mul_le_mul_of_nonneg_right hL ht0]
     · have hdiv : V.l ∣ V.l.choose m := V.3.dvd_choose_self (by omega) hm
-      have hL : (1 : ℝ) ≤ ((V.l - m : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ V.l - m)
+      have hL : (1 : ℝ) ≤ ((V.l - m : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ V.l - m)
       refine ((ge_one_natCast_of_l_dvd hdiv).mul hP).mono ?_
       nlinarith [mul_le_mul_of_nonneg_right hL ht0]
   have Rd : ∀ e : ℕ, ∀ x ∈ A, ∀ y ∈ A, ∀ t : ℝ, 1 ≤ t → (∀ i j, V.Ge t ((y - x) i j)) →

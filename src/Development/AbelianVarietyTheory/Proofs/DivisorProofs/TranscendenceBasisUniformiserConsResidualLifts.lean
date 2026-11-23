@@ -187,7 +187,7 @@ theorem trBasis_uniformiser_cons : ∀ {L K : Type} [Field L] [Field K] (cL : �
     unfold TrBasis
     refine hind.isTranscendenceBasis_of_trdeg_le_of_finite ?_
     rw [hL, Cardinal.mk_fin]
-    exact_mod_cast (by omega : m + 1 ≤ n + 1)
+    exact_mod_cast (omega : m + 1 ≤ n + 1)
   refine ⟨htr, ?_, S.ord_irreducible hf, fun g hg => S.ord_eq_zero (hunit g hg)⟩
   exact GlobalTheory.formOrd_dForm_uniformiser_cons cL n S f w hf hwu ⟨_, htr⟩
 

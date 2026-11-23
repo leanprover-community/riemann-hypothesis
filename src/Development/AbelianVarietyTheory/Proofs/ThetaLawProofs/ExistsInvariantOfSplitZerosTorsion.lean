@@ -68,7 +68,7 @@ theorem exists_ker_int_matrix_four_of_torsion_lift {G G' : Type} [CommGroup G] [
     intro h0
     have h1 := congrArg Matrix.det hal
     rw [Matrix.det_mul, h0, mul_zero, Matrix.det_smul, Matrix.det_one, _root_.mul_one] at h1
-    exact pow_ne_zero _ (by exact_mod_cast (by omega : m ≠ 0)) h1.symm
+    exact pow_ne_zero _ (by exact_mod_cast (omega : m ≠ 0)) h1.symm
   have hal' : al * al.transpose = (m : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ) := by
     have hreg := Matrix.isRegular_of_isLeftRegular_det (A := al)
       (IsRegular.of_ne_zero hdet0).left

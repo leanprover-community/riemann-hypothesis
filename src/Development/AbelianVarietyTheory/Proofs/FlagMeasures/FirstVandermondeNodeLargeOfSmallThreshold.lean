@@ -153,7 +153,7 @@ lemma vand_inner_le (c : Sz.Cfg) (hc : c.Ok) (hs : c.vth ≤ 1 / 10) (de : ℕ �
         push_cast; ring
       have hik : (i : ℝ) + 2 ≤ ((c.k - 1 : ℕ) : ℝ) + 1 := by
         rw [Nat.cast_sub (by omega)]
-        have : ((i + 2 : ℕ) : ℝ) ≤ c.k := by exact_mod_cast (by omega : i + 2 ≤ c.k)
+        have : ((i + 2 : ℕ) : ℝ) ≤ c.k := by exact_mod_cast (omega : i + 2 ≤ c.k)
         push_cast at this ⊢
         linarith
       rw [hvk] at hsub

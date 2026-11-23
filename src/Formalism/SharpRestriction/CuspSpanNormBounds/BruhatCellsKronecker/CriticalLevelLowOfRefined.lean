@@ -84,7 +84,7 @@ variable {D : D7} {large₂ : SizeData₂ D} {C' Cl Cu C0 : ℝ}
 theorem five_le_k_real (D : D7) : (5 : ℝ) ≤ D.R.k := by
   have h1 := D.R.m_add_three_le_k
   have h2 := D.R.two_le_m
-  exact_mod_cast (by omega : 5 ≤ D.R.k)
+  exact_mod_cast (omega : 5 ≤ D.R.k)
 
 theorem one_le_scale_log (large₂ : SizeData₂ D) : 1 ≤ large₂.sc.L := by
   unfold Scale.L

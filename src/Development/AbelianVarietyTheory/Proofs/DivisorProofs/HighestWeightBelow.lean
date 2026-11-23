@@ -72,7 +72,7 @@ theorem highestWeight_below {a b t : ℕ} (hb : b = a + t) {E F : Finset ℚ} (c
       · exact hlt _ (hmem i hi) _ (hblock j hj)
     · have hj : ¬ j.1 < a := by omega
       simp only [g, dif_neg hi, dif_neg hj]
-      have : ((i.1 - a : ℕ) : ℚ) < ((j.1 - a : ℕ) : ℚ) := by exact_mod_cast (by omega : i.1 - a < j.1 - a)
+      have : ((i.1 - a : ℕ) : ℚ) < ((j.1 - a : ℕ) : ℚ) := by exact_mod_cast (omega : i.1 - a < j.1 - a)
       linarith
   have key := descEnum_unique hF hg fun i => by
     by_cases h : i.1 < a

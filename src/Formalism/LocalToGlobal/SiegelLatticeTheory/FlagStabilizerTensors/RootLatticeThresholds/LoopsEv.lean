@@ -84,7 +84,7 @@ theorem loopsAmp_at {C' Cl Cg cb Cw cT CT C0 A C K₀ A₀ : ℝ}
   have hdd := dd_nonneg hT u u'
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hb := Formalism.MainNotions.BridgeLemma.d_two_le_b D large₂
   have hb0 : (0 : ℝ) < large₂.sc.b := by linarith
   have hg : 0 < (X.B.g : ℝ) := by

@@ -53,7 +53,7 @@ theorem powMul_self_le {s i q : ℕ} (h : i + q ≤ s) : (s : ℝ) ^ i * (q : �
     simp
   · have hs' : (1 : ℝ) ≤ s := by exact_mod_cast hs
     calc (s : ℝ) ^ i * (q : ℝ) ^ q ≤ (s : ℝ) ^ i * (s : ℝ) ^ q := by
-          gcongr; exact_mod_cast (by omega : q ≤ s)
+          gcongr; exact_mod_cast (omega : q ≤ s)
       _ = (s : ℝ) ^ (i + q) := by rw [pow_add]
       _ ≤ (s : ℝ) ^ s := pow_le_pow_right₀ hs' h
 

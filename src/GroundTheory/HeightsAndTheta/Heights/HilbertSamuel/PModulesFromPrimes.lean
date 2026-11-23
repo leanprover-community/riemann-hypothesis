@@ -161,7 +161,7 @@ theorem ModulesFromPrimes.proof (hF : MultigradedFiltration.Statement.{u, v})
         have hlt : ringKrullDim (MRing ι F ⧸ q j) <
             (((d + 1) + Fintype.card K : ℕ) : WithBot ℕ∞) := by
           rw [htop]
-          exact_mod_cast (by omega : d + Fintype.card K < d + 1 + Fintype.card K)
+          exact_mod_cast (omega : d + Fintype.card K < d + 1 + Fintype.card K)
         have hdeg := HilbDegBound.full F K ι (d + 1) (q j) hprime hhom hlt
         obtain ⟨a₂, C₂, h₂⟩ := hG K d _ (degLT_diffStep hdeg (c j))
         refine ⟨max a₁ a₂, C₁ + C₂, fun a ha => ?_⟩

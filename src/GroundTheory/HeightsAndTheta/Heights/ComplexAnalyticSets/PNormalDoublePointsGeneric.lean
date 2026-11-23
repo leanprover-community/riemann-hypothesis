@@ -110,7 +110,7 @@ theorem le_belowNat_of_add_two_le {x : WithBot ℕ∞} {d : ℕ}
       have h2 : k + 1 + 1 ≤ d + 1 := by exact_mod_cast h
       cases d with
       | zero => omega
-      | succ e => show ((k : ℕ∞) : WithBot ℕ∞) ≤ ((e : ℕ) : WithBot ℕ∞); exact_mod_cast (by omega : k ≤ e)
+      | succ e => show ((k : ℕ∞) : WithBot ℕ∞) ≤ ((e : ℕ) : WithBot ℕ∞); exact_mod_cast (omega : k ≤ e)
 
 theorem proof : NormalDoublePointsGeneric.Statement := by
   intro n d J u M hJ hdim hu

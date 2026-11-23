@@ -55,7 +55,7 @@ private theorem enat_le_one_of_add_one_le_two {x : ℕ∞} (h : x + 1 ≤ 2) : x
   | top => exact absurd h (by simp)
   | coe n =>
     have : n + 1 ≤ 2 := by exact_mod_cast h
-    exact_mod_cast (by omega : n ≤ 1)
+    exact_mod_cast (omega : n ≤ 1)
 
 theorem LocalDomainDimTwo.proof : LocalDomainDimTwo.Statement := by
   intro A _ _ _ _ hno hQ

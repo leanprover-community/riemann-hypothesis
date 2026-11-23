@@ -86,7 +86,7 @@ theorem exists_map_eq_of_eval {d N : ℕ} (U : Set (Fin d → ℂ)) (S : (Fin d 
     refine (Polynomial.degree_smul_le _ _).trans_lt (Polynomial.degree_map_le.trans_lt ?_)
     rw [Lagrange.degree_basis hinj hi, Finset.card_range]
     have := Finset.mem_range.1 hi
-    exact_mod_cast (by omega : N - 1 < N)
+    exact_mod_cast (omega : N - 1 < N)
   · intro x hx
 
     rw [Lagrange.eq_interpolate (f := S x) hinj (by simpa using hdeg x hx),

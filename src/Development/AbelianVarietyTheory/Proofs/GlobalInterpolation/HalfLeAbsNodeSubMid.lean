@@ -73,7 +73,7 @@ theorem szRow_lowsFar : SzRow (fun C D L => (∀ τ (i j : Fin D.R.m),
   have hxy : L.sc.x ≤ L.sc.x ^ cD := by simpa using up 1 (by norm_num)
   have hn : (D.R.n : ℝ) ≤ L.sc.x ^ cD := by
     have : (D.R.n : ℝ) ≤ D.R.f := by
-      unfold Ranks.f; exact_mod_cast (by omega)
+      unfold Ranks.f; exact_mod_cast (omega)
     exact this.trans (hf.trans (up _ (by norm_num)))
   have hk : (D.R.k : ℝ) ≤ L.sc.x ^ cD := by
     have : (D.R.k : ℝ) ≤ D.R.r := by exact_mod_cast hkr
@@ -102,7 +102,7 @@ theorem szRow_lowsFar : SzRow (fun C D L => (∀ τ (i j : Fin D.R.m),
   have hb0 : 0 < L.sc.b := Real.exp_pos _
   have hm : (1 : ℝ) ≤ D.R.m := by
     have := D.R.two_le_m
-    exact_mod_cast (by omega)
+    exact_mod_cast (omega)
   have hS : L.Sc = (D.R.k : ℝ) * (4 * ((Delv L.sc cD : ℕ) : ℝ)) := by
     rw [L.Sc_eq, V.Del_eq]; push_cast; ring
   unfold lStar

@@ -82,7 +82,7 @@ theorem scaledPowMemSpanCeil : Trunc := by
           apply Nat.ceil_le.mpr
           have h2 := hnum.2
           have h5 : ((ℓ ^ (j - 1) * (m - k) : ℕ) : ℝ) < M := by
-            exact_mod_cast (by omega : ℓ ^ (j - 1) * (m - k) < M)
+            exact_mod_cast (omega : ℓ ^ (j - 1) * (m - k) < M)
           push_cast [Nat.cast_sub hk'] at h5
           have h7 : (m : ℝ) - k ≤ M / (ℓ : ℝ) ^ (j - 1) := by
             rw [le_div_iff₀ hL]

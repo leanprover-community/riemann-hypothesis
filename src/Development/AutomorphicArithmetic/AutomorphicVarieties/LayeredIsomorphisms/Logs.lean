@@ -73,7 +73,7 @@ theorem UpperTheory.V.Win.logs :
               (Nat.cast_pow l _).symm
           _ ≤ ((⌊X ^ Ct⌋₊ : ℕ) : ℝ) := by exact_mod_cast h1
           _ ≤ X ^ Ct := h2
-      have hl0 : (0:ℝ) < l := by exact_mod_cast (by omega : 0 < l)
+      have hl0 : (0:ℝ) < l := by exact_mod_cast (omega : 0 < l)
       have hlog := Real.log_le_log (pow_pos hl0 _) hpow
       rw [Real.log_pow, Real.log_rpow hX0] at hlog
       have hk0 : (0:ℝ) ≤ (Nat.log l ⌊X ^ Ct⌋₊ : ℕ) := Nat.cast_nonneg _

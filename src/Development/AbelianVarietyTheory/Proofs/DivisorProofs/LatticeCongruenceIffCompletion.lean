@@ -75,7 +75,7 @@ theorem fv_nsmul (M : ℕ) (x : Fin n → E) : fv F (M • x) = M • fv F x := 
 
 theorem nsmul_cancel {V : Type} [AddCommGroup V] [Module F V] {M : ℕ} (hM : 1 ≤ M) {u w : V}
     (h : M • u = M • w) : u = w := by
-  have h0 : (M : F) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
+  have h0 : (M : F) ≠ 0 := by exact_mod_cast (omega : M ≠ 0)
   rw [← Nat.cast_smul_eq_nsmul F, ← Nat.cast_smul_eq_nsmul F] at h
   simpa [h0] using congrArg (fun z => (M : F)⁻¹ • z) h
 
@@ -146,7 +146,7 @@ theorem stab_cong_iff_hat (F E : Type) [Field F] [NumberField F] [Field E] [Numb
         simpa only [hRCB] using this
       rw [← hrat, ← hyx]; exact hy
     · obtain ⟨y, hy, e⟩ := hcong _ ((hrat x).2 hx)
-      have hM0 : (M : E) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
+      have hM0 : (M : E) ≠ 0 := by exact_mod_cast (omega : M ≠ 0)
       set w : Fin n → E := (M : E)⁻¹ • (B *ᵥ x - x) with hw
       have hMw : M • w = B *ᵥ x - x := by
         rw [hw, ← Nat.cast_smul_eq_nsmul E, smul_inv_smul₀ hM0]

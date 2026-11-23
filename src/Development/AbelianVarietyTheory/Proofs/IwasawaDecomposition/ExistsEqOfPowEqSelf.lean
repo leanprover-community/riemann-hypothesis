@@ -54,7 +54,7 @@ open Polynomial in
 theorem exists_eq_of_pow_eq_self {Ω L : Type} [Field Ω] [IsAlgClosed Ω] [Field L] (j : Ω →+* L) {N : ℕ}
     (hN : 2 ≤ N) {ζ : L} (hζ : ζ ^ N = ζ) : ∃ z, j z = ζ := by
   have hmon : (X ^ N - X : Polynomial Ω).Monic :=
-    monic_X_pow_sub (by rw [degree_X]; exact_mod_cast (by omega : 1 < N))
+    monic_X_pow_sub (by rw [degree_X]; exact_mod_cast (omega : 1 < N))
   have hb : ζ ∈ ((X ^ N - X : Polynomial Ω).map j).roots := by
     rw [mem_roots (hmon.map j).ne_zero]
     simp [hζ]

@@ -73,7 +73,7 @@ theorem sum_log_le (T : Finset ℕ) (Y : ℝ) (hY : 1 ≤ Y) :
     have := Finset.card_le_card (filter_sub_Icc T Y)
     rw [Nat.card_Icc] at this
     have h3 : ((T.filter (fun l : ℕ => 1 ≤ l ∧ (l : ℝ) ≤ Y)).card : ℝ) ≤ (⌊Y⌋₊ : ℝ) := by
-      exact_mod_cast (by omega : (T.filter (fun l : ℕ => 1 ≤ l ∧ (l : ℝ) ≤ Y)).card ≤ ⌊Y⌋₊)
+      exact_mod_cast (omega : (T.filter (fun l : ℕ => 1 ≤ l ∧ (l : ℝ) ≤ Y)).card ≤ ⌊Y⌋₊)
     exact h3.trans (Nat.floor_le (by linarith))
   rw [nsmul_eq_mul] at h1
   nlinarith

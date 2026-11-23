@@ -394,7 +394,7 @@ theorem gainBoundAll_add_one_of_gainBoundAllRequired (X : Inst D L) (K : Consts)
   have heta := L.etaSz_pos
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hxA : 1 ≤ L.sc.x ^ (Scale.A / 2) :=
     Real.one_le_rpow hx1.le (by unfold Scale.A; norm_num)
   have ha2 : ∀ t ∈ D.host.TT, (a t : ℝ) ≤ 2 * L.sc.a := by

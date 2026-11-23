@@ -63,7 +63,7 @@ theorem lev_gl_size : ∀ (M : Type) [NormedAddCommGroup M] [InnerProductSpace �
   have hn : (1 : ℝ) ≤ n := by
     have := hS.1
     have := hS.2.1
-    exact_mod_cast (by omega : 1 ≤ n)
+    exact_mod_cast (omega : 1 ≤ n)
   have hbig : 10 ^ 6 * (n : ℝ) ^ 7 ≤ bv := hS.2.2.2.2.2
   have hsplit : ∑ a, ∑ c, ‖E a c w‖ ^ 2
       = ∑ a, ‖E a a w‖ ^ 2 + ∑ a, ∑ c ∈ univ.erase a, ‖E a c w‖ ^ 2 := by

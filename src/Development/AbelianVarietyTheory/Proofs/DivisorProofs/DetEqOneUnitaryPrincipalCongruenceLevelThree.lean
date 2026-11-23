@@ -149,8 +149,8 @@ theorem det_eq_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r M
   obtain ⟨⟨hherm, -⟩, hcong⟩ := (hΓ γ).1 hγ
   set g : Matrix (Fin r) (Fin r) E := (γ : Matrix (Fin r) (Fin r) E) with hg
   let φ : E →+* AlgebraicClosure E := algebraMap E (AlgebraicClosure E)
-  have hM0 : (M : AlgebraicClosure E) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
-  have hME : (M : E) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
+  have hM0 : (M : AlgebraicClosure E) ≠ 0 := by exact_mod_cast (omega : M ≠ 0)
+  have hME : (M : E) ≠ 0 := by exact_mod_cast (omega : M ≠ 0)
   set A : Matrix (Fin r) (Fin r) E := (M : E)⁻¹ • (g - 1) with hA
   have hAΛ : ∀ x ∈ X.Λ, A *ᵥ x ∈ X.Λ := by
     intro x hx

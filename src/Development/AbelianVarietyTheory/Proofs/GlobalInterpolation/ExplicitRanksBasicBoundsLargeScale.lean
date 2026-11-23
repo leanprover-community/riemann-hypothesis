@@ -91,7 +91,7 @@ theorem rank_basic_bounds : ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∃ x0 :
   have hmu : (R.m : ℝ) ≤ s.x ^ ((501 : ℝ) / 1000) := by
     have := ab (C := 2) (a := 1 / 2 - s.eps / 16) (b := 501 / 1000) (by norm_num) (by linarith)
     linarith
-  have hmp : (0 : ℝ) < R.m := by exact_mod_cast (by omega : 0 < R.m)
+  have hmp : (0 : ℝ) < R.m := by exact_mod_cast (omega : 0 < R.m)
   have hmi : (R.m : ℝ)⁻¹ ≤ s.x ^ (-(498 : ℝ) / 1000) := by
     have h1 : s.x ^ ((498 : ℝ) / 1000) ≤ R.m := (mono (by linarith)).trans hm1
     rw [neg_div, Real.rpow_neg hxp.le]
@@ -101,7 +101,7 @@ theorem rank_basic_bounds : ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∃ x0 :
   have k0 : (0 : ℝ) ≤ R.k := by positivity
   have L0 : (0 : ℝ) ≤ s.L := by linarith
   have mi0 : (0 : ℝ) ≤ (R.m : ℝ)⁻¹ := by positivity
-  have k1 : (1 : ℝ) ≤ R.k := by exact_mod_cast (by omega : 1 ≤ R.k)
+  have k1 : (1 : ℝ) ≤ R.k := by exact_mod_cast (omega : 1 ≤ R.k)
   have hf1 : 1 ≤ R.f := by
     have : R.m ≤ R.f := R.m_le_f
     omega

@@ -113,7 +113,7 @@ theorem CombCfMonomialPsumOne.proof : CombCfMonomialPsumOne.Statement := by
             · simp [Function.update_of_ne hj, hle j]
           have hs' := sum_update_sub_one l i h1
           rw [if_pos h1, if_pos ⟨hle', by omega⟩, ← prod_factorial_update_sub_one l v i hi]
-          have hne : ((l i - v i : ℕ) : ℚ) ≠ 0 := by exact_mod_cast (by omega : l i - v i ≠ 0)
+          have hne : ((l i - v i : ℕ) : ℚ) ≠ 0 := by exact_mod_cast (omega : l i - v i ≠ 0)
           have hQ : (∏ j, ((Function.update l i (l i - 1) j - v j).factorial : ℚ)) ≠ 0 :=
             Finset.prod_ne_zero_iff.2 fun j _ => by positivity
           field_simp

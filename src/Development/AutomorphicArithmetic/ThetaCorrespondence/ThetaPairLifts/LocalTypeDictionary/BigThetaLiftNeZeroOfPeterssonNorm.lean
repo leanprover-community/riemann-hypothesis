@@ -56,7 +56,7 @@ theorem big_theta_petersson_norm_ne_zero : _root_.GlobalTheory.FunPr.ThetaLocalI
   have hPa := hb.rank.1
   have hPd := hb.rank.2.2.1
   have hre : 0 < (((P.d - P.a : ℕ) : ℂ) / 2).re := by
-    have : (0 : ℝ) < ((P.d - P.a : ℕ) : ℝ) := by exact_mod_cast (by omega : 0 < P.d - P.a)
+    have : (0 : ℝ) < ((P.d - P.a : ℕ) : ℝ) := by exact_mod_cast (omega : 0 < P.d - P.a)
     rw [show (((P.d - P.a : ℕ) : ℂ) / 2) = ((((P.d - P.a : ℕ) : ℝ) / 2 : ℝ) : ℂ) by push_cast; ring, Complex.ofReal_re]
     positivity
   intro h0

@@ -152,7 +152,7 @@ theorem coeff_psubst {a : MvPowerSeries τ C} (ha : constantCoeff a = 0) (f : Po
     apply hn
     rw [coeff_of_lt_order, smul_zero]
     refine lt_of_lt_of_le ?_ (le_order_pow_of_constantCoeff_eq_zero n ha)
-    exact_mod_cast (by omega : μ.degree < n)
+    exact_mod_cast (omega : μ.degree < n)
 
 theorem mvExp_eq [CharZero C] {a : MvPowerSeries τ C} (ha : constantCoeff a = 0) :
     mvExp a = subst (fun _ : Unit => a) (PowerSeries.exp C) := by
@@ -709,7 +709,7 @@ theorem coeff_subst_tyS {l : ℕ} (hl : 2 ≤ l) {a : MvPowerSeries τ C} (ha : 
   · rw [coeff_of_lt_order, mul_zero]
     refine lt_of_lt_of_le ?_ (le_order_pow_of_constantCoeff_eq_zero _ ha)
     rw [Finset.mem_range] at h
-    exact_mod_cast (by omega : μ.degree < l ^ s)
+    exact_mod_cast (omega : μ.degree < l ^ s)
 
 section
 variable {I₁ J₁ : Type} [Fintype I₁] [Fintype J₁] {G : Cart V d I₁ J₁} (S : Sys G) {t : I₁ → MvPowerSeries I₁ C}

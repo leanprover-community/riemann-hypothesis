@@ -131,7 +131,7 @@ theorem unrPoly : PositivityTheory.PfSWUS.Loc.UnrFormula → PositivityTheory.Si
   haveI : Finite (hermMod σ ϖ n k) := Subtype.finite
   letI : Fintype (hermMod σ ϖ n k) := Fintype.ofFinite _
   have hq1 : 1 < q := hR.one_lt
-  have hqC : (q : ℂ) ≠ 0 := by exact_mod_cast (by omega : q ≠ 0)
+  have hqC : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   have hε : (ε : ℂ) ^ 2 = 1 := by
     rcases hR.eps with ⟨rfl, -⟩ | ⟨rfl, -⟩ <;> simp
   have hnε : ‖(ε : ℂ)‖ = 1 := by
@@ -180,7 +180,7 @@ theorem unrPoly : PositivityTheory.PfSWUS.Loc.UnrFormula → PositivityTheory.Si
       simp
     rw [norm_pow, norm_pow, hnorm] at h1
     have hq0 : (0 : ℝ) < (q : ℝ)⁻¹ := by
-      have : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+      have : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
       positivity
     have hq2 : (q : ℝ)⁻¹ ≠ 1 := by
       have : (1 : ℝ) < q := by exact_mod_cast hq1

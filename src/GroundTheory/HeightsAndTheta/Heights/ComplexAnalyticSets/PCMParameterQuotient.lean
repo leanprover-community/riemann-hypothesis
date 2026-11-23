@@ -142,7 +142,7 @@ theorem CMParameterQuotient.proof (hreg : CMRegularElement.Statement.{0}) :
     have hdim' : ringKrullDim ((B ⧸ Ideal.span {x 0}) ⧸ Ideal.span (Set.range x')) + (d : WithBot ℕ∞) =
         ringKrullDim (B ⧸ Ideal.span {x 0}) := by
       rw [he, hk, hk']
-      exact_mod_cast (by omega : k + d = k')
+      exact_mod_cast (omega : k + d = k')
     have : IsCohenMacaulayLocalRing (B ⧸ Ideal.span {x 0}) := hCM
     have := ih (B ⧸ Ideal.span {x 0}) x' hx' hdim'
     exact IsCohenMacaulayLocalRing.of_ringEquiv e

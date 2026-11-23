@@ -100,8 +100,8 @@ theorem mbarTop_squeeze : SuccessiveMinimaLowerBound → SuccessiveMinimaUpperBo
       ((dimFl Ψ N : ℝ) + 1) * (C₆ * Real.log B) * T.mDeg B c lam s :=
     GlobalTheory.T.zhang_upper_bound_dense_points hZ2 II hII Ψ N (T.M B c) (scale s) (T.lamS lam s) s (C₆ * Real.log B) F
       hrat' hSemi hNef hF (fun W hW => hFpt W hW)
-  have hBpos : (0 : ℝ) < B := by exact_mod_cast (by omega : 0 < B)
-  have hlogB : 0 ≤ Real.log B := Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ B))
+  have hBpos : (0 : ℝ) < B := by exact_mod_cast (omega : 0 < B)
+  have hlogB : 0 ≤ Real.log B := Real.log_nonneg (by exact_mod_cast (omega : 1 ≤ B))
   have hlogBs : Real.log B ≤ Real.log (B / (s : ℝ)) :=
     Real.log_le_log hBpos (by rw [le_div_iff₀ hspos]; nlinarith)
   have hLg : 0 ≤ Real.log (B / (s : ℝ)) := le_trans hlogB hlogBs

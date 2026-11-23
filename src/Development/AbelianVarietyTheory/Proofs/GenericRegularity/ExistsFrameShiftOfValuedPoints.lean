@@ -116,7 +116,7 @@ theorem exists_cdvr (Ω : Type) [Field Ω] [CharZero Ω] (v : AddValuation Ω (W
         rw [mul_inv_cancel₀ ha, v.map_one, ← hk, ← hk'] at this
         exact_mod_cast this.symm
       have hneg : ¬ 0 ≤ k := fun h => h0 (by rw [← hk]; exact_mod_cast h)
-      have h1 := hnn a⁻¹ (inv_ne_zero ha) (by rw [← hk']; exact_mod_cast (by omega : 0 ≤ k'))
+      have h1 := hnn a⁻¹ (inv_ne_zero ha) (by rw [← hk']; exact_mod_cast (omega : 0 ≤ k'))
       rw [← hk'] at h1
       have h1' : vV V (ψ a⁻¹) = k' := by exact_mod_cast h1
       have h2 := vV_mul (V := V) ((map_ne_zero ψ).2 ha) ((map_ne_zero ψ).2 (inv_ne_zero ha))
@@ -124,7 +124,7 @@ theorem exists_cdvr (Ω : Type) [Field Ω] [CharZero Ω] (v : AddValuation Ω (W
       have h3 : vV V (1 : FractionRing V) = 0 := by simp [vV]
       rw [← hk]
       show ((vV V (ψ a) : ℤ) : WithTop ℤ) = _
-      exact_mod_cast (by omega : vV V (ψ a) = k)
+      exact_mod_cast (omega : vV V (ψ a) = k)
 
 theorem integer_nonneg {K Ω : Type} [Field K] [NumberField K] [Field Ω] [Algebra K Ω]
     (v : AddValuation Ω (WithTop ℤ)) (a : 𝓞 K) : 0 ≤ v (algebraMap K Ω (a : K)) := by

@@ -145,7 +145,7 @@ theorem proof (hFin : CompactHolomorphicFibreFinite.Statement) (hInf : RankDefic
       rw [ENNReal.coe_natCast]
       calc dimH C ≤ 2 * ((k - 1 : ℕ) : ℝ≥0∞) := hdimC
         _ = ((2 * (k - 1) : ℕ) : ℝ≥0∞) := by push_cast; ring
-        _ < ((2 * k - 1 : ℕ) : ℝ≥0∞) := by exact_mod_cast (by omega : 2 * (k - 1) < 2 * k - 1)
+        _ < ((2 * k - 1 : ℕ) : ℝ≥0∞) := by exact_mod_cast (omega : 2 * (k - 1) < 2 * k - 1)
     have h0 := hausdorffMeasure_of_dimH_lt hlt
     have hexp : ((((2 * k - 1 : ℕ) : ℝ≥0)) : ℝ) = (Module.finrank ℝ (Fin k → ℂ) : ℝ) - 1 := by
       rw [hfr, NNReal.coe_natCast, Nat.cast_sub (by omega)]

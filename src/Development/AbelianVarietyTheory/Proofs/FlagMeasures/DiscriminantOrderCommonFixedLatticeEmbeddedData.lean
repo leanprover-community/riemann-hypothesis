@@ -444,7 +444,7 @@ theorem main : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommG
     Formalism.HermitianLatticesTheory.dualBasic (𝓞 K) K V H.B.flip (flip_isSymm H) Formalism.HermitianLatticesTheory.star_algebraMap_ringOfIntegers_mem_range
   have l3 := (hint L₀).1 hL.2
   have l4 := an _ _ l1
-  have hg0 : (g : K) ≠ 0 := by exact_mod_cast (by omega : g ≠ 0)
+  have hg0 : (g : K) ≠ 0 := by exact_mod_cast (omega : g ≠ 0)
   have hc := core hK hP hη' (by omega : 0 < g) hA hD (l2.trans (l3.trans l4))
     (fun t ht hD => by
       have h1 : (p.2.2 t, t) ∈ p.1.2 := (hΓ t t).1 hD

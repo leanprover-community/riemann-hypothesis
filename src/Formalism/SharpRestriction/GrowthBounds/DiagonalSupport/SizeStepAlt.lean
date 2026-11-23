@@ -93,12 +93,12 @@ theorem sizeStep' : ∃ CDn C₁ : ℝ, 0 < CDn ∧ 0 < C₁ ∧ ∀ C : ℝ, C�
   have hr2R : (2 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr2
   have hr1 : (1 : ℝ) ≤ (r : ℝ) ^ 2 := by nlinarith
   have hT1 : (1 : ℝ) ≤ (TT.card : ℝ) := by exact_mod_cast hT
-  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (by omega : 1 ≤ p)
-  have hpl : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (omega : 1 ≤ p)
+  have hpl : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (omega : 1 < p)
   have hQ1 : (1 : ℝ) ≤ ((p : ℝ) ^ goodG' r de h x) ^ 5 := one_le_pow₀ (one_le_pow₀ hp1)
   have hpQ : (p : ℝ) ≤ ((p : ℝ) ^ goodG' r de h x) ^ 5 :=
     le_trans (le_self_pow₀ hp1 hG) (le_self_pow₀ (one_le_pow₀ hp1) (by norm_num))
-  have hc1 : (1 : ℝ) ≤ (cStar : ℝ) := by exact_mod_cast (by omega : 1 ≤ cStar)
+  have hc1 : (1 : ℝ) ≤ (cStar : ℝ) := by exact_mod_cast (omega : 1 ≤ cStar)
   have hS : (1 : ℝ) ≤ (cStar : ℝ) + ((r : ℝ) * (TT.card : ℝ) * (c0 : ℝ) + 2 * (r : ℝ) * (n' : ℝ) * (cpp : ℝ)) := by
     have : (0 : ℝ) ≤ (r : ℝ) * (TT.card : ℝ) * (c0 : ℝ) + 2 * (r : ℝ) * (n' : ℝ) * (cpp : ℝ) := by positivity
     linarith
@@ -129,7 +129,7 @@ theorem sizeStep' : ∃ CDn C₁ : ℝ, 0 < CDn ∧ 0 < C₁ ∧ ∀ C : ℝ, C�
       _ ≤ _ := h2
       _ = _ := by ring
   have hpa : (p : ℝ) ≤ a := le_trans hpQ hQa
-  have h7 : (7 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 7 ≤ m + 1)
+  have h7 : (7 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 7 ≤ m + 1)
   have hlog : 1 ≤ Real.logb p a := by
     rw [← Real.logb_self_eq_one hpl]
     exact Real.logb_le_logb_of_le hpl (by linarith) hpa
@@ -137,7 +137,7 @@ theorem sizeStep' : ∃ CDn C₁ : ℝ, 0 < CDn ∧ 0 < C₁ ∧ ∀ C : ℝ, C�
     refine ⟨by linarith, hpa, ?_, ?_, hlog, ?_⟩
     · have : 4 * (TT.card : ℝ) ≤ C * (TT.card : ℝ) := mul_le_mul_of_nonneg_right hC (by positivity)
       linarith
-    · have : (r : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : r ≤ m + 1)
+    · have : (r : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : r ≤ m + 1)
       linarith
     · exact one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le hT1 (one_le_pow₀ hA1)) hlog
   have hW' := hW

@@ -66,7 +66,7 @@ private theorem le_natCast_iff_not_succ_le (a : ℕ∞) (m : ℕ) :
       · intro h
         have h2 : n ≤ m := by
           by_contra hc
-          exact h (by exact_mod_cast (by omega : m + 1 ≤ n))
+          exact h (by exact_mod_cast (omega : m + 1 ≤ n))
         exact_mod_cast h2
 
 theorem orderAt_le_iff_notMem_orderAtLeastLocus {X : Scheme.{u}} (I : X.IdealSheafData) (m : ℕ)

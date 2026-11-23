@@ -215,7 +215,7 @@ theorem sum_erase_add_sum_le (a b S η h : ℕ) (hb : 2 * a + η ≤ b) (hbh : b
     have : 0 < b - p + η - 1 := by omega
     exact_mod_cast this
   have hxy : ((b - p + η - 1 : ℕ) : ℝ) ≤ ((h + η : ℕ) : ℝ) := by
-    exact_mod_cast (by omega : b - p + η - 1 ≤ h + η)
+    exact_mod_cast (omega : b - p + η - 1 ≤ h + η)
   have hlog : Real.logb l ((b - p + η - 1 : ℕ) : ℝ) ≤ Real.logb l ((h + η : ℕ) : ℝ) := by
     first
     | exact Real.logb_le_logb_of_le hl1 hx hxy
@@ -224,7 +224,7 @@ theorem sum_erase_add_sum_le (a b S η h : ℕ) (hb : 2 * a + η ≤ b) (hbh : b
       (((b - p + η - 1) - (b - p - η - a - 1) : ℕ) : ℝ) = 3 * (a : ℝ) + S + 2 * η - 1 := by
     have e4 : (b - p + η - 1) - (b - p - η - a - 1) = 2 * η + a := by omega
     have e6 : ((a - 1 - p : ℕ) : ℝ) + 1 + p = a := by
-      exact_mod_cast (by omega : a - 1 - p + 1 + p = a)
+      exact_mod_cast (omega : a - 1 - p + 1 + p = a)
     rw [e4]
     push_cast
     linarith

@@ -138,7 +138,7 @@ theorem run_at_record : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : ModuliInte
     have b1 : Real.log Real.pi ≤ Real.log ((D.host.g 0 : ℝ) * D.host.g 1) :=
       Real.log_le_log Real.pi_pos (by linarith [Real.pi_le_four])
     have b0 : 0 ≤ Real.log ((D.host.g 0 : ℝ) * D.host.g 1) := Real.log_nonneg (by linarith)
-    have hW : (1 : ℝ) ≤ nW := by exact_mod_cast (by omega : 1 ≤ nW)
+    have hW : (1 : ℝ) ≤ nW := by exact_mod_cast (omega : 1 ≤ nW)
     have b2 : (1 : ℝ) ≤ (D.R.f : ℝ) * D.R.r * nW :=
       one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le (by linarith) (by linarith)) hW
     have b3 := le_mul_of_one_le_left b0 b2

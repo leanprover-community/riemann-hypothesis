@@ -171,7 +171,7 @@ theorem MixedTwistShift.proof (hH : SnapperHyperplane.Statement.{u, w}) (hS : Sn
           exact_mod_cast hdim
         refine pieceChar_isNumPolyLT hH hS hP L' n qq hp hh hle ?_ 0
         rw [he]
-        exact_mod_cast (by omega : e + 1 ≤ n)
+        exact_mod_cast (omega : e + 1 ≤ n)
       · push Not at hrel
         exact ⟨0, Or.inl rfl, fun e c => by simp [hf, pieceChar_of_irrelevant qq hrel]⟩
     filter_upwards [hLhs] with c hc

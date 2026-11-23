@@ -65,7 +65,7 @@ theorem lterm_pair (q : W → ℕ) (hq : ∀ w, 2 ≤ q w) {α β : Type} [Finty
         ((q p.1 : ℂ) ^ (-(σ : ℂ))) ^ (p.2 + 1) / (p.2 + 1) := by
   have hq0 : (q p.1 : ℂ) ≠ 0 := by
     have := hq p.1
-    exact_mod_cast (by omega : q p.1 ≠ 0)
+    exact_mod_cast (omega : q p.1 ≠ 0)
   unfold lterm
   have e : (q p.1 : ℂ) ^ (-(((σ + t + t' : ℝ)) : ℂ)) =
       (q p.1 : ℂ) ^ (-(σ : ℂ)) * (q p.1 : ℂ) ^ (-(t : ℂ)) * (q p.1 : ℂ) ^ (-(t' : ℂ)) := by

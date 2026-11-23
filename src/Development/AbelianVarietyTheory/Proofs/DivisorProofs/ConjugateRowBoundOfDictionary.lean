@@ -176,7 +176,7 @@ theorem abs_entry_le {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Inde
   obtain ⟨-, -, -, -, -, -, -, -, -, -, -, hgap, hbe, -⟩ := hs
   have hSc := large₂.Sc_pos
   have hsg : sLen D < gap D 1 := sLen_lt_gap D 1
-  have hg1 : (1 : ℝ) ≤ (gap D 1 : ℝ) := by exact_mod_cast (by omega : 1 ≤ gap D 1)
+  have hg1 : (1 : ℝ) ≤ (gap D 1 : ℝ) := by exact_mod_cast (omega : 1 ≤ gap D 1)
   have hsg' : (sLen D : ℝ) + 1 ≤ (gap D 1 : ℝ) := by exact_mod_cast hsg
   have hm0 : (0 : ℝ) ≤ (D.R.m : ℝ) := Nat.cast_nonneg _
   have hgb : (gap D 1 : ℝ) ≤ large₂.sc.b := by nlinarith

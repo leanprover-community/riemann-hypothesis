@@ -51,7 +51,7 @@ theorem frame_bounds {Ch Cg : ℝ} {T T' : ℕ} {b dist : ℝ} {v : D.what₂.Ta
   have hb2 : 2 ≤ b := by
     have h1 := b_ge_of_StdHyp0 hk hStd.to0
     have h2 : (1 : ℝ) ≤ ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) ^ 7 :=
-      one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ 2 * D.R.rS + D.R.k + 1))
+      one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ 2 * D.R.rS + D.R.k + 1))
     nlinarith
   have hka : 0 < kaRe D := hStd.2.2.2.1
   have hk1 : kaRe D ≤ b ^ Ch := hStd.2.2.2.2.1

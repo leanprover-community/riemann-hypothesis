@@ -96,11 +96,11 @@ theorem type_weight_upper_unit : TypeWeightU := by
   rw [one_div, ← Finset.prod_inv_distrib]
   apply Finset.prod_le_prod₀
   · intro d hd
-    have hgd : (1 : ℝ) ≤ (g : ℝ) ^ d := one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ g))
+    have hgd : (1 : ℝ) ≤ (g : ℝ) ^ d := one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ g))
     exact div_nonneg (Nat.cast_nonneg _) (pow_nonneg (by linarith) _)
   · intro d hd
     have hd1 := hD d hd
-    have hgd : (1 : ℝ) < (g : ℝ) ^ d := one_lt_pow₀ (by exact_mod_cast (by omega : 1 < g)) (by omega)
+    have hgd : (1 : ℝ) < (g : ℝ) ^ d := one_lt_pow₀ (by exact_mod_cast (omega : 1 < g)) (by omega)
     have hNd : (d : ℝ) * (Nd d : ℝ) ≤ (g : ℝ) ^ d - 1 := by
       have h := hN d hd
       have h1 : 1 ≤ g ^ d := Nat.one_le_pow _ _ (by omega)
@@ -109,7 +109,7 @@ theorem type_weight_upper_unit : TypeWeightU := by
       push_cast at h2
       linarith
     have hpos : (0 : ℝ) < (g : ℝ) ^ d - 1 := by linarith
-    have hdpos : (0 : ℝ) < d := by exact_mod_cast (by omega : 0 < d)
+    have hdpos : (0 : ℝ) < d := by exact_mod_cast (omega : 0 < d)
     have hfact : (0 : ℝ) < ((n d).factorial : ℝ) := by exact_mod_cast Nat.factorial_pos _
     calc ((Nd d).choose (n d) : ℝ) / ((g : ℝ) ^ d - 1) ^ (n d)
         ≤ ((Nd d : ℝ) ^ (n d) / ((n d).factorial : ℝ)) / ((g : ℝ) ^ d - 1) ^ (n d) :=

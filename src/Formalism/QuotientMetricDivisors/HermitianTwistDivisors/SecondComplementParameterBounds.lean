@@ -65,7 +65,7 @@ theorem lw_pos (w : HeightOneSpectrum (𝓞 K)) : 0 < lw w := by
   have h1 : Ideal.absNorm w.asIdeal ≠ 1 := by
     rw [Ne, Ideal.absNorm_eq_one_iff]; exact w.isPrime.ne_top
   have h2 : (1 : ℝ) < (Ideal.absNorm w.asIdeal : ℝ) := by
-    exact_mod_cast (by omega : 1 < Ideal.absNorm w.asIdeal)
+    exact_mod_cast (omega : 1 < Ideal.absNorm w.asIdeal)
   apply div_pos (Real.log_pos h2)
   exact_mod_cast Module.finrank_pos
 

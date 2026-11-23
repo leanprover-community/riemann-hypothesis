@@ -261,7 +261,7 @@ theorem jetRel_divQuot {S : Subring (ℂ × ℂ)} (hS : IsFieldGraph S) {L L' : 
       ((ih (n + 2) (by omega)).wr.congr (c4 H hu) (c4 H' hu'))
     intro e
     apply H.divQuot_ne hu (n := n + 1) (by omega)
-    have hn : ((n + 2 : ℕ) : ℂ) ^ 2 ≠ 0 := pow_ne_zero _ (by exact_mod_cast (by omega : n + 2 ≠ 0))
+    have hn : ((n + 2 : ℕ) : ℂ) ^ 2 ≠ 0 := pow_ne_zero _ (by exact_mod_cast (omega : n + 2 ≠ 0))
     filter_upwards [e] with w hw using (mul_eq_zero.1 hw).resolve_left hn
 
 end GlobalTheory.JetConj

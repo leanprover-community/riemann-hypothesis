@@ -54,13 +54,13 @@ theorem k_le_a {C : ℝ} (hC1 : 1 ≤ C) {p n' m r : ℕ} {TT : Finset (Fin n')}
   have hB := hyps_basic hC1 H
   obtain ⟨h1, h2, _, _, _, _, _, _, _, _, h11, h12⟩ := H
   have hr1 : 1 ≤ r := by omega
-  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (by omega : 1 ≤ p)
-  have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ m + 1)
+  have hp1 : (1 : ℝ) ≤ (p : ℝ) := by exact_mod_cast (omega : 1 ≤ p)
+  have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ m + 1)
   have hN1 : (1 : ℝ) ≤ (TT.card : ℝ) := by exact_mod_cast hB.N_pos
   have hrr : (1 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr1
   have hQ1 : (1 : ℝ) ≤ (p : ℝ) ^ goodG' r de h x := one_le_pow₀ hp1
   have hcc : (1 : ℝ) ≤ (cStar : ℝ) + ((r : ℝ) * TT.card * c0 + 2 * r * n' * cpp) := by
-    have h8' : (1 : ℝ) ≤ (cStar : ℝ) := by exact_mod_cast (by omega : 1 ≤ cStar)
+    have h8' : (1 : ℝ) ≤ (cStar : ℝ) := by exact_mod_cast (omega : 1 ≤ cStar)
     have : (0 : ℝ) ≤ (r : ℝ) * TT.card * c0 + 2 * r * n' * cpp := by positivity
     linarith
   obtain ⟨z1, _, _⟩ := factor_le_product_seven C (((m + 1 : ℕ) : ℝ) ^ 3) ((r : ℝ) ^ 2) (TT.card : ℝ)
@@ -98,7 +98,7 @@ theorem sl_lt_Bo (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (p : ℕ) (hp : 1 ≤ 
   obtain ⟨hx1, hx2⟩ := posU_mem' hV hr (segZ j) u hu'
   rw [← hnL j] at hx1 hx2
   have hB := Bo_ge hV hr p hp deg a hdeg (segZ j) _ hx1 hx2
-  have hp' : (0 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 0 < p)
+  have hp' : (0 : ℝ) < (p : ℝ) := by exact_mod_cast (omega : 0 < p)
   have hpos : 0 < Bo p Fr deg (segZ j) (posU Fr (nL j) (segZ j) u) := lt_of_lt_of_le (by positivity) hB
   unfold slU
   exact sl_lt_real _ Y (k : ℝ) _ rfl hpos hY (by exact_mod_cast hk)
@@ -117,7 +117,7 @@ theorem sizeAt_of [hpF : Fact p.Prime] (hk : m + 1 = r + K) (hF : FramesOK TT L�
     SizeAt (K := K) p F nL (dT TT lam0) (9 * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a)) := by
   have hV := hF.2.1
   have hp2 : 2 ≤ p := hpF.out.two_le
-  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (omega : 1 < p)
   have ha2 := hnb.two_le_a
   intro rho dPl dNo hBk bp bn hbp hbn
   have hsum : ∀ x, ((dPl x + dNo x : ℕ) : ℝ) ≤ 2 * a := by
@@ -154,9 +154,9 @@ theorem sizeAt_of [hpF : Fact p.Prime] (hk : m + 1 = r + K) (hF : FramesOK TT L�
   have A := DnoOf_le (K := K) p hp2 nL dNo TT.card (m + 1) a hr (by omega) hcard hdn ha2 hnb.fourN hka
   have B := mult_level_real p dPl bp hbp TT.card a ha2 hcard hdp
   have Cc := mult_level_real p dNo bn hbn TT.card a ha2 hcard hdn
-  have hrk : (r : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : r ≤ m + 1)
-  have hKk : (K : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : K ≤ m + 1)
-  have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ m + 1)
+  have hrk : (r : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : r ≤ m + 1)
+  have hKk : (K : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : K ≤ m + 1)
+  have hk1 : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ m + 1)
   exact size_fin (TT.card : ℝ) ((m + 1 : ℕ) : ℝ) (r : ℝ) (K : ℝ) (Real.logb p a) _ _ _ (Nat.cast_nonneg _)
     (by linarith [hnb.one_le_log]) hk1 (Nat.cast_nonneg _) (Nat.cast_nonneg _) hrk hKk A B Cc
 

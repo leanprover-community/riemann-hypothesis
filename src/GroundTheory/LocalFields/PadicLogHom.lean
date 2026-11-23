@@ -439,7 +439,7 @@ theorem eq_zero_of_logSeries_eq_zero {r : ℤ} (hr : (absRamificationIndex (K :=
     let v := padicValNat p (k + 1 + 1)
     have hvnat : ((p - 1) * v : ℕ) < k + 1 + 1 :=
       sub_one_mul_padicValNat_lt p (Nat.succ_ne_zero (k + 1))
-    have hvcast : (((p - 1) * v : ℕ) : ℤ) ≤ k + 1 := by exact_mod_cast (by omega : _ ≤ k + 1)
+    have hvcast : (((p - 1) * v : ℕ) : ℤ) ≤ k + 1 := by exact_mod_cast (omega : _ ≤ k + 1)
     push_cast [Nat.cast_sub hp.out.one_le] at hvcast
     change a + 1 ≤ (↑(k + 1 + 1) : ℤ) * a - e * v
     push_cast

@@ -140,15 +140,15 @@ theorem wtAt_of_wtNum {PP : ℝ} (h : WtNum p i PP) (hP : (D.R.f : ℝ) * (D.R.r
   simp only [hr] at e2
   unfold WtAt
   clear H hd hH hq h
-  have hT : (1 : ℝ) ≤ lenT p i PP := by exact_mod_cast (by omega : 1 ≤ lenT p i PP)
+  have hT : (1 : ℝ) ≤ lenT p i PP := by exact_mod_cast (omega : 1 ≤ lenT p i PP)
   have hT' : 1 ≤ lenT p i PP := by omega
   generalize lenT p i PP = T at *
   generalize (anchor (dat p i) (wtA (p.κ i)) (p.κ i).n (D.R.k - 1) τ0 : ℝ) = w at *
   generalize ((cZero D ((i : ℕ) + 1) : ℤ) : ℝ) = c at *
   have hf' : (2 : ℝ) ≤ D.R.f := by exact_mod_cast hf
   have hm' : (2 : ℝ) ≤ D.R.m := by exact_mod_cast hm
-  have hk' : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 5 ≤ D.R.k)
-  have hr' : (D.R.k : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : D.R.k ≤ D.R.r)
+  have hk' : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 5 ≤ D.R.k)
+  have hr' : (D.R.k : ℝ) ≤ D.R.r := by exact_mod_cast (omega : D.R.k ≤ D.R.r)
   have hD' : (1 : ℝ) ≤ GlobalTheory.CompHt.dimFlag (dat p i) := by exact_mod_cast hD
   have hkP : (D.R.k : ℝ) ≤ PP := by nlinarith
   have hTb : (T : ℝ) ≤ 4 * L.sc.b := by nlinarith

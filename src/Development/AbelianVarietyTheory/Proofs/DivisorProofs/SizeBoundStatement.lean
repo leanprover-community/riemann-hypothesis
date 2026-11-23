@@ -85,7 +85,7 @@ theorem rho_bounds {ι : Type} [Fintype ι] {N : ℕ} (W : GlobalTheory.MeanTop.
   have h0 : (0 : ℝ) < W.h0 := by
     have := h.h2.1
     have := h.weightConst_nonneg
-    exact_mod_cast (by omega : 0 < W.h0)
+    exact_mod_cast (omega : 0 < W.h0)
   have he : (0 : ℝ) ≤ 6 * N * W.T / W.h0 := by positivity
   have key : ∀ τ (a l : Fin N), a < l →
       0 ≤ ((W.u' τ a : ℝ) - W.u' τ l) / ((W.u1 τ a : ℝ) - W.u1 τ l) ∧
@@ -211,8 +211,8 @@ theorem e_le_row (hp : (dat p i).p = (D.R.sigW ((i : ℕ) + 1)).1) (τ : Psi p.T
     have : D.R.r + D.R.t ≤ 2 * (D.R.nV / 2) + 1 := by unfold Ranks.nV; omega
     have : (D.R.r : ℝ) + D.R.t ≤ 2 * ((D.R.nV / 2 : ℕ) : ℝ) + 1 := by exact_mod_cast this
     linarith
-  have e9 : ((D.R.sigW ((i : ℕ) + 1)).1 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : (D.R.sigW ((i : ℕ) + 1)).1 ≤ D.R.r)
-  have e10 : (2 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 2 ≤ D.R.r)
+  have e9 : ((D.R.sigW ((i : ℕ) + 1)).1 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : (D.R.sigW ((i : ℕ) + 1)).1 ≤ D.R.r)
+  have e10 : (2 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 2 ≤ D.R.r)
   have e11 : (laOf (dat p i) (wtA (p.κ i)) (p.κ i).n τ k0 : ℝ) =
       (aPl D i (D.R.sigW ((i : ℕ) + 1)).1 t 0 : ℝ) + ((D.R.nV / 2 : ℕ) : ℝ) := by
     rw [e1, Int.cast_add, Int.cast_natCast, Int.cast_natCast]
@@ -256,7 +256,7 @@ theorem mainT_le (hom : |(ofRecord D L p.Del p.h0).logOm| ≤ 3 * L.sc.L) :
     rw [dite_eq_left ⟨by omega, hi⟩]; rfl
   have hr : (D.R.r : ℝ) + 1 = D.R.k + D.R.m := by exact_mod_cast (by unfold Ranks.r; omega : D.R.r + 1 = D.R.k + D.R.m)
   have h1 : (((i : ℕ) + 1 : ℕ) : ℝ) ≤ D.R.m := by exact_mod_cast hi
-  have h2 : (1 : ℝ) ≤ (((i : ℕ) + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ (i : ℕ) + 1)
+  have h2 : (1 : ℝ) ≤ (((i : ℕ) + 1 : ℕ) : ℝ) := by exact_mod_cast (omega : 1 ≤ (i : ℕ) + 1)
   have h3 : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
   have hc : |((D.R.k : ℝ) + (((i : ℕ) + 1 : ℕ) : ℝ) - 1) - ((D.R.m : ℝ) - (((i : ℕ) + 1 : ℕ) : ℝ))| ≤ D.R.r :=
     abs_le.2 ⟨by linarith, by linarith⟩
@@ -291,8 +291,8 @@ theorem sizeAt_of {PP A : ℝ} (hH : HostNum D L PP A 1) (hW : WtNum p i PP) : S
   have hrn : D.R.r = D.R.k + D.R.m - 1 := rfl
   have hf : (8 : ℝ) ≤ D.R.f := by exact_mod_cast hH.f8
   have hm' : (2 : ℝ) ≤ D.R.m := by exact_mod_cast hm
-  have hmk : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : D.R.m ≤ D.R.k)
-  have hmr : (D.R.m : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : D.R.m ≤ D.R.r)
+  have hmk : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (omega : D.R.m ≤ D.R.k)
+  have hmr : (D.R.m : ℝ) ≤ D.R.r := by exact_mod_cast (omega : D.R.m ≤ D.R.r)
   have hrV : (D.R.r : ℝ) ≤ D.R.nV := by exact_mod_cast (by unfold Ranks.nV; omega : D.R.r ≤ D.R.nV)
   have hx : 10 ≤ L.sc.x := hL.trans hLx
   have hx2 : L.sc.x ^ (A + 2) = L.sc.x ^ A * L.sc.x ^ 2 := by
@@ -354,7 +354,7 @@ theorem sizeAt_of {PP A : ℝ} (hH : HostNum D L PP A 1) (hW : WtNum p i PP) : S
     refine ⟨by omega, r0, r1, ?_⟩
     have r3 : rhoB (dat p i) u1 * h0 ≤ 6 * D.R.f * (D.R.r : ℝ) ^ 3 * lenT p i PP := by
       rw [← hcard, ← hW.sig.2.2]; exact r2
-    have hT0 : (0 : ℝ) < lenT p i PP := by exact_mod_cast (by omega : 0 < lenT p i PP)
+    have hT0 : (0 : ℝ) < lenT p i PP := by exact_mod_cast (omega : 0 < lenT p i PP)
     have hD0 : (0 : ℝ) < dimFlag (dat p i) := by exact_mod_cast hD
     have hTl : PP ^ 2 * (dimFlag (dat p i) : ℝ) ^ 2 ≤ lenT p i PP := by
       refine le_trans ?_ (Nat.le_ceil _)

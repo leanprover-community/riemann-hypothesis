@@ -77,7 +77,7 @@ theorem kap_transport {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationR
       dvr_order_pow hp0, dvr_order_unit_eq_zero uA.isUnit, dvr_order_unit_eq_zero (Units.isUnit _)]
     have hv : dvrOrderNat (p : O) = 2 := by rw [← h2, dvr_order_pow hw.ne_zero, nv_irr hw]
     rw [hv]
-    have : (n : ℝ) ≤ D := by exact_mod_cast (by omega : n ≤ D)
+    have : (n : ℝ) ≤ D := by exact_mod_cast (omega : n ≤ D)
     push_cast
     linarith
   · rw [huA, huB]

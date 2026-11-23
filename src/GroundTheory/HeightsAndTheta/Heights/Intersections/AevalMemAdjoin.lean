@@ -164,6 +164,6 @@ theorem FibreTranscendenceDegreeAlt.proof (hE : EvalKerKrullDim.Statement) : Fib
   obtain ⟨m, hm⟩ := Cardinal.lt_aleph0.1 hlt
   rw [hm] at hadd ⊢
   have : n + Fintype.card K + m = n + Fintype.card K' := by exact_mod_cast hadd
-  exact_mod_cast (by omega : m = Fintype.card (FibreBlock κ))
+  exact_mod_cast (omega : m = Fintype.card (FibreBlock κ))
 
 end GroundTheory.Heights₂.Heights.Inter

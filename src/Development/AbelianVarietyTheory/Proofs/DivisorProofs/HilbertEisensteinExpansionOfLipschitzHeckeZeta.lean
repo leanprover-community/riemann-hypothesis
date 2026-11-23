@@ -54,7 +54,7 @@ theorem eisClass_summable_of_hecke (hH : HeckeWeightTwo) {F : Type} [Field F] [N
   obtain ⟨G, hG, -, -⟩ := hH F hf 𝔞 𝔟
   have hre : 0 < ((s : ℂ) - 1).re := by
     simp only [Complex.sub_re, Complex.natCast_re, Complex.one_re, sub_pos]
-    exact_mod_cast (by omega : 1 < s)
+    exact_mod_cast (omega : 1 < s)
   have h1 := (hG.1 ((s : ℂ) - 1) hre z hz).1
   have h2 : Summable fun c => ‖eisClass 𝔞 𝔟 2 ((s : ℂ) - 1) z c‖ := summable_norm_iff.mpr h1
   refine Summable.of_norm (h2.congr fun c => ?_)

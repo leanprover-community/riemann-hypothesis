@@ -192,7 +192,7 @@ theorem natDegree_mul_addVal_eq_ramificationIndex {f : 𝒪[K][X]}
     have hi' : i < n := lt_of_le_of_ne (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)) hin
     refine lt_of_lt_of_le ?_ (hlow i hi')
     rw [htop]
-    exact_mod_cast (by omega : n * m < e + i * m)
+    exact_mod_cast (omega : n * m < e + i * m)
   have hm1 : 1 ≤ m := by
     rcases Nat.eq_zero_or_pos m with h | h
     · rw [h] at hA
@@ -209,7 +209,7 @@ theorem natDegree_mul_addVal_eq_ramificationIndex {f : 𝒪[K][X]}
     rcases lt_or_eq_of_le hi' with hlt' | rfl
     · refine lt_of_lt_of_le ?_ (hlow i hlt')
       have : 1 ≤ i * m := Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero hi0 (by omega))
-      exact_mod_cast (by omega : e < e + i * m)
+      exact_mod_cast (omega : e < e + i * m)
     · rw [htop]
       exact_mod_cast hlt
   rw [hm]

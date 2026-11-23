@@ -71,7 +71,7 @@ private theorem height_le_of_dim {R : Type} [CommRing R] [IsLocalRing R] (Q : Id
   have hsl : s.length = p.length + 1 := RelSeries.snoc_length _ _ _
   rw [hsl] at hb
   have hb' : p.length + 1 ≤ N + 1 := by exact_mod_cast hb
-  exact_mod_cast (by omega : p.length ≤ N)
+  exact_mod_cast (omega : p.length ≤ N)
 
 theorem UpperTheory.V.J.htUp :
     ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) [Fr.IsCoef l c.O] (F : Fr.Frame l (ResidueField c.O)) (C₀ n : ℕ), F.Ok C₀ → (n = 2 ∨ n = 3) →

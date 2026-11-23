@@ -46,7 +46,7 @@ theorem UpperTheory.V.X.hQuad :
     ∀ (K : Type) [Field K] [NumberField K] (l : ℕ), l.Prime → 5 ≤ l → Module.finrank ℚ K = 2 → discr K = l → classNumber K < l := by
   intro K _ _ l hl h5 hn hd
   have h := GlobalTheory.classNumber_le_sqrt_discr_mul_pow_pred K
-  have hl0 : (0 : ℝ) < l := by exact_mod_cast (by omega : 0 < l)
+  have hl0 : (0 : ℝ) < l := by exact_mod_cast (omega : 0 < l)
   have habs : |((discr K : ℤ) : ℝ)| = (l : ℝ) := by
     rw [hd]
     push_cast

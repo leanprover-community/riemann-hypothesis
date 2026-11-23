@@ -515,7 +515,7 @@ theorem _root_.UpperTheory.Lit.Tam.supConst2Bounds : ∀ (D : D7) (M : ℕ) (Lb 
   have hd1 : 1 ≤ D.host.d := by omega
   have hq1 : 1 ≤ D.host.q := by omega
   have hfR : (1 : ℝ) ≤ D.R.f := by exact_mod_cast hf0
-  have hrR : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 1 ≤ D.R.r)
+  have hrR : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 1 ≤ D.R.r)
   have hnR : (Module.finrank ℚ D.host.E : ℝ) = 2 * D.R.f := by exact_mod_cast D.host.finrank_E'
   have hnpos : (0 : ℝ) < Module.finrank ℚ D.host.E := by rw [hnR]; linarith
   have hrd := (GlobalTheory.CovTop.log_rd_le_fieldSz D.host.E).trans hsz
@@ -655,7 +655,7 @@ theorem _root_.UpperTheory.Lit.Tam.slopeMax_sq_latW_le_pow_mul (h6 : True) {PP A
     have h1 := D.R.two_le_m
     have h2 := D.R.m_add_three_le_k
     unfold Ranks.r; omega
-  have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by omega : 1 ≤ D.R.r)
+  have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (omega : 1 ≤ D.R.r)
   have hnV : (1 : ℝ) ≤ D.R.nV := by exact_mod_cast (by unfold Ranks.nV; omega : 1 ≤ D.R.nV)
   have hbL : L.sc.b = Real.exp L.sc.L := rfl
   have hb : 1 ≤ L.sc.b := by rw [hbL]; exact Real.one_le_exp (by linarith)

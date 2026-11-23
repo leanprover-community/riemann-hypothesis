@@ -79,26 +79,18 @@ omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 end Ord
 
-section Chain
 variable {s κ : ℕ} (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t]
 
 
-end Chain
 
-section Entry
 variable {s κ : ℕ} (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t]
 
-end Entry
 
-section Main
 variable {s κ : ℕ} (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t]
 
-end Main
 
-section Final
 variable {s κ : ℕ} (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t]
 
-end Final
 
 end GlobalTheory.SymChain.NonZeroAt
 

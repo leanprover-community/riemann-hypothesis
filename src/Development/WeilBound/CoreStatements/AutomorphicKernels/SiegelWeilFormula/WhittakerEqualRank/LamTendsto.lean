@@ -98,7 +98,7 @@ theorem lam_tendsto (S : Finset (HeightOneSpectrum (𝓞 F))) (Z H : ℂ → ℂ
       refine continuous_finsetProd S fun v _ => continuous_const.sub (continuous_const.mul ?_)
       have hq : (Ideal.absNorm v.asIdeal : ℂ) ≠ 0 := by
         have := NumberField.HeightOneSpectrum.one_lt_absNorm v
-        exact_mod_cast (by omega : Ideal.absNorm v.asIdeal ≠ 0)
+        exact_mod_cast (omega : Ideal.absNorm v.asIdeal ≠ 0)
       exact Continuous.const_cpow (Complex.continuous_ofReal.neg) (Or.inl hq)
     have := (hc.tendsto 1).mono_left (nhdsWithin_le_nhds (s := Set.Ioi (1 : ℝ)))
     convert this using 2

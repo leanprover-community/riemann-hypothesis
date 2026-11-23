@@ -98,7 +98,7 @@ private theorem mul_rpow_three_halves_le_pow_four (q n : ℕ) (h : 2 * q ≤ n) 
   · subst hq
     rw [Nat.cast_zero, Real.zero_rpow (by norm_num), mul_zero]
     positivity
-  · have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast (by omega : 2 ≤ n)
+  · have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast (omega : 2 ≤ n)
     have hq2 : 2 * (q : ℝ) ≤ n := by exact_mod_cast h
     have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg q
     have hsq : 4 * (q : ℝ) ^ 2 ≤ (n : ℝ) ^ 2 := by nlinarith
@@ -120,7 +120,7 @@ private theorem mul_sq_mul_sqrt_le_pow_four (q n : ℕ) (h : 2 * q ≤ n) :
     rw [Nat.cast_zero, Real.sqrt_zero, mul_zero]
     positivity
   · have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast hq
-    have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast (by omega : 2 ≤ n)
+    have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast (omega : 2 ≤ n)
     have hq2 : 2 * (q : ℝ) ≤ n := by exact_mod_cast h
     have hs : Real.sqrt (q : ℝ) ≤ q := by
       have h' := Real.sqrt_le_sqrt (show (q : ℝ) ≤ (q : ℝ) ^ 2 by nlinarith)

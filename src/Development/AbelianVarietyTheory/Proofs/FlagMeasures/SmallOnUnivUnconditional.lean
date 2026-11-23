@@ -249,7 +249,7 @@ theorem err_le (D : D7) {δ : ℝ} (hδ : 0 < δ) (h : 8 / Real.log (1 + δ) ≤
     Real.exp ((D.R.f : ℝ) * (2 : ℝ) ^ ((3 : ℝ) - D.R.k)) - 1 ≤ δ := by
   have hk := D.R.m_add_three_le_k
   have hm := D.R.two_le_m
-  have hkR : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 5 ≤ D.R.k)
+  have hkR : (5 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 5 ≤ D.R.k)
   have hl : 0 < Real.log (1 + δ) := Real.log_pos (by linarith)
   have hf : (D.R.f : ℝ) ≤ D.R.k := by exact_mod_cast (show D.R.f ≤ D.R.k from D.R.f_le_k)
   have h2 : (D.R.k : ℝ) ^ 2 ≤ 2 ^ D.R.k := by exact_mod_cast sq_le_two_pow D.R.k (by omega)
@@ -315,7 +315,7 @@ theorem smallOn_univ_unconditional : SmallOn Set.univ := by
     have hkR : (5 : ℝ) ≤ D.R.k := by
       have := D.R.m_add_three_le_k
       have := D.R.two_le_m
-      exact_mod_cast (by omega : 5 ≤ D.R.k)
+      exact_mod_cast (omega : 5 ≤ D.R.k)
     have hrdv : D.host.rdE = 2 * D.host.v := by unfold Host.v; ring
     have hb : 1 ≤ large₂.sc.b := by linarith
     have h4 : (4 : ℝ) ≤ ((D.R.k : ℝ) * large₂.sc.b) ^ 8 :=

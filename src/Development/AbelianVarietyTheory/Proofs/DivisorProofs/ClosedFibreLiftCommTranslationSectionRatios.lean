@@ -122,7 +122,7 @@ theorem GlobalTheory.HeatRatioW.dl_comm_transl_ratio : ∀ (E : Type) [Field E] 
       (A₀.hom.appLE ⊤ (m₀ ⁻¹ᵁ (T ⁻¹ᵁ U)) le_top).hom.comp (Scheme.ΓSpecIso (CommRingCat.of k)).inv.hom
     have hk : IsUnit (2 * N : k) := by
       refine IsUnit.mk0 _ ?_
-      exact_mod_cast (by omega : 2 * N ≠ 0)
+      exact_mod_cast (omega : 2 * N ≠ 0)
     have := hk.map ψ
     rwa [map_mul, map_ofNat, map_natCast] at this
   exact hu.mul_left_cancel h2

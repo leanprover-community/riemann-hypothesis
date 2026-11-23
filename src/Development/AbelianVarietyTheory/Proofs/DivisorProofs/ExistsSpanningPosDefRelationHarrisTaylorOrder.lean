@@ -173,7 +173,7 @@ theorem exists_W_of_casimir (x : Module.Basis (Fin r) ℤ O) (s : O →+ O) (φ 
         hA's j i]
       push_cast; ring
     rw [e]
-    exact (adjugate_posDef hG'pd).smul (by exact_mod_cast (by omega : (0 : ℤ) < 2 * G.det))
+    exact (adjugate_posDef hG'pd).smul (by exact_mod_cast (omega : (0 : ℤ) < 2 * G.det))
   · have e : ∑ i, ∑ j, (G.det • A') i j • (s (x i) * x j) = G.det • C₁ := by
       rw [hC₁, Finset.smul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_

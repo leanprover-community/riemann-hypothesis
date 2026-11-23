@@ -174,7 +174,7 @@ def ArcLengthThreeDescent.Kc (l b₁ y : ℕ) : ℕ :=
 theorem ArcLengthThreeDescent.Kc_le (l b₁ y η : ℕ) [hl : Fact l.Prime] (hy : 1 ≤ y) (hge : l * y ≤ b₁)
     (hlt : b₁ < l * (y + η)) : (ArcLengthThreeDescent.Kc l b₁ y : ℝ) ≤ η + 1 + Real.logb l b₁ := by
   have hl2 : 2 ≤ l := hl.out.two_le
-  have hl1 : (1 : ℝ) < (l : ℝ) := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1 : ℝ) < (l : ℝ) := by exact_mod_cast (omega : 1 < l)
   have hl0 : 0 < l := by omega
   unfold ArcLengthThreeDescent.Kc
   rw [if_neg (not_lt.2 hge)]
@@ -203,7 +203,7 @@ theorem ArcLengthThreeDescent.Kc_le (l b₁ y η : ℕ) [hl : Fact l.Prime] (hy 
     have h2 := Real.logb_le_logb_of_le hl1 (by positivity) h1
     rwa [Real.logb_pow, Real.logb_self_eq_one hl1, mul_one] at h2
   have hlog2 : Real.logb l a ≤ Real.logb l b₁ :=
-    Real.logb_le_logb_of_le hl1 (by exact_mod_cast (by omega : 0 < a)) (by exact_mod_cast ha_b)
+    Real.logb_le_logb_of_le hl1 (by exact_mod_cast (omega : 0 < a)) (by exact_mod_cast ha_b)
   have hcast : ((a - (y - 1) + padicValNat l (a.choose (y - 1)) : ℕ) : ℝ) ≤ (η : ℝ) + 1 + (Nat.log l a : ℝ) := by
     have h5 : a - (y - 1) + padicValNat l (a.choose (y - 1)) ≤ η + 1 + Nat.log l a := by omega
     exact_mod_cast h5

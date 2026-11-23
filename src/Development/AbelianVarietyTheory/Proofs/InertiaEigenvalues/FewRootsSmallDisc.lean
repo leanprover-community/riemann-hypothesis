@@ -72,7 +72,7 @@ theorem coeff_sum_monomial_small (l : ℕ) [Fact l.Prime] (E M : ℕ) (a : ℕ �
       < ‖(l : ℂ_[l])‖ := by
   have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
   have hlpos : 0 < ‖(l : ℂ_[l])‖ := by
-    rw [norm_pos_iff]; exact_mod_cast (by omega : l ≠ 0)
+    rw [norm_pos_iff]; exact_mod_cast (omega : l ≠ 0)
   by_cases h : ∃ k, k ≤ E ∧ l ^ k = j
   · obtain ⟨k, hkE, rfl⟩ := h
     rw [coeff_sum_monomial_pow l E a k hkE]
@@ -93,7 +93,7 @@ theorem few_roots_small_disc : ∀ (l : ℕ) [Fact l.Prime] (E M : ℕ) (a : ℕ
   set H := taylor W G with hH
   have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
   have hlpos : 0 < ‖(l : ℂ_[l])‖ := by
-    rw [norm_pos_iff]; exact_mod_cast (by omega : l ≠ 0)
+    rw [norm_pos_iff]; exact_mod_cast (omega : l ≠ 0)
   have hroots : Multiset.card (G.roots.filter fun z => ‖z - W‖ ≤ ρ)
       = Multiset.card (H.roots.filter fun z => ‖z‖ ≤ ρ) := by
     rw [hH, roots_taylor_eq_map_sub, Multiset.filter_map, Multiset.card_map]

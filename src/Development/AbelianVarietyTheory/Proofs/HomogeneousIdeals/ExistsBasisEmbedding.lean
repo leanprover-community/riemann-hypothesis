@@ -57,7 +57,7 @@ theorem exists_basis_embedding (h2 : finrank ℚ K = 2) (hD : discr K = -d) (σ 
   obtain ⟨b, t, n, h0, hw, hD'⟩ := exists_basis h2
   have hd : (0 : ℝ) < d := by
     have := discr_ne_zero K
-    exact_mod_cast (by omega : 0 < d)
+    exact_mod_cast (omega : 0 < d)
   have e : (t : ℝ) ^ 2 - 4 * n = -d := by exact_mod_cast hD'.symm.trans hD
   have h : σ (b 1) ^ 2 = t * σ (b 1) - n := by
     have := congrArg (fun x : 𝓞 K => σ x) hw
@@ -91,7 +91,7 @@ include h2 hD
 
 theorem discr_pos : (0 : ℝ) < d := by
   have := discr_ne_zero K
-  exact_mod_cast (by omega : 0 < d)
+  exact_mod_cast (omega : 0 < d)
 
 theorem norm_eq_sq (x : K) : (Algebra.norm ℚ x : ℝ) = ‖σ x‖ ^ 2 := by
   obtain ⟨b, t, h0, -, hi⟩ := exists_basis_embedding h2 hD σ

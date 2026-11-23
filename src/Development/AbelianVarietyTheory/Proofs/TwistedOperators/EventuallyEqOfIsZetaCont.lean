@@ -225,7 +225,7 @@ theorem simplePole_of_hecke (hH : GlobalTheory.Published.HeckeLPartialContinuati
       rw [hre0]
       simp only [Finset.mem_sdiff, Finset.mem_range, Finset.mem_singleton] at hi
       obtain ⟨hi1, hi2⟩ := hi
-      have h2 : (i : ℝ) + 2 ≤ t := by exact_mod_cast (by omega : i + 2 ≤ t)
+      have h2 : (i : ℝ) + 2 ≤ t := by exact_mod_cast (omega : i + 2 ≤ t)
       linarith
     have hmem : t - 1 ∈ Finset.range t := Finset.mem_range.mpr (by omega)
     have hE1 : ∀ᶠ s in 𝓝 ((1 + (t : ℂ)) / 2), ∀ i ∈ Finset.range t \ {t - 1},

@@ -51,7 +51,7 @@ variable (D)
 
 theorem m_ge_one : (1 : ℝ) ≤ D.R.m := by
   have h := D.R.two_le_m
-  exact_mod_cast (by omega : 1 ≤ D.R.m)
+  exact_mod_cast (omega : 1 ≤ D.R.m)
 theorem m_le_f : (D.R.m : ℝ) ≤ D.R.f := by
   have h := D.R.m_le_f
   have h' : D.R.m ≤ D.R.f := by
@@ -69,7 +69,7 @@ theorem m_le_k : (D.R.m : ℝ) ≤ D.R.k := by
 theorem k_ge_five : (5 : ℝ) ≤ D.R.k := by
   have h1 := D.R.two_le_m
   have h2 := D.R.m_add_three_le_k
-  exact_mod_cast (by omega : 5 ≤ D.R.k)
+  exact_mod_cast (omega : 5 ≤ D.R.k)
 theorem n_ge_one : (1 : ℝ) ≤ D.R.n := by
   have h1 := D.R.two_le_m
   have h2 := D.R.m_le_f
@@ -116,7 +116,7 @@ theorem nV_le : (D.R.nV : ℝ) ≤ D.R.N D.R.m + D.R.t := by
   exact_mod_cast h'
 theorem t_ge_one : (1 : ℝ) ≤ D.R.t := by
   have h2 := D.R.rank_add_five_le
-  exact_mod_cast (by omega : 1 ≤ D.R.t)
+  exact_mod_cast (omega : 1 ≤ D.R.t)
 
 end Ranks
 
@@ -1389,7 +1389,7 @@ theorem band_pt {l : ℕ} (hl : 2 ≤ l) :
   have hlog : 0 ≤ Real.log (l : ℝ) := Real.log_natCast_nonneg l
   have hm := m_ge_one D
   have hb := one_le_b L
-  have hl0 : (0 : ℝ) < l := by exact_mod_cast (by omega : 0 < l)
+  have hl0 : (0 : ℝ) < l := by exact_mod_cast (omega : 0 < l)
   have hre := r_mul_eta_le L hC P hPar hL
   have hw := w''_le_b' L
   have hb' := b'_le L hC P hPar hL

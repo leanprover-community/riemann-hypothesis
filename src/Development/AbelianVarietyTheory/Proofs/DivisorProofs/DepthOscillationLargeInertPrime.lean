@@ -68,7 +68,7 @@ theorem big_arith {i q k m p : ℕ} (hi : i + 1 ≤ k + m) (hk : k ≤ m * p) (h
 
 theorem big_bound {i q k m p c : ℕ} (hi : i + 1 ≤ k + m) (hk : k ≤ m * p) (hq : q ≤ m) (hp : 2 ≤ p) :
     boundInert p q i c ≤ 5 * (m : ℝ) * c / ((p : ℝ) - 1) := by
-  have hp0 : (0 : ℝ) < p := by exact_mod_cast (by omega : 0 < p)
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast (omega : 0 < p)
   have hp1 : (0 : ℝ) < (p : ℝ) - 1 := by
     have : (2 : ℝ) ≤ p := by exact_mod_cast hp
     linarith

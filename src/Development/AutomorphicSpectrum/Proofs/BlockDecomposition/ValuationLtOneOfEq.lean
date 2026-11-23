@@ -73,7 +73,7 @@ theorem exists_preimage (hπ : Irreducible π) {x : Ω} (hx : valuation Ω x < 1
     rw [Polynomial.natDegree_map, (ltPoly_monic π).natDegree_map, natDegree_ltPoly]
   have hdeg : 0 < P.degree := by
     rw [Polynomial.degree_eq_natDegree hPm.ne_zero, hPd]
-    exact_mod_cast (by omega : 0 < Nat.card 𝓀[K])
+    exact_mod_cast (omega : 0 < Nat.card 𝓀[K])
   obtain ⟨y, hy⟩ := IsAlgClosed.exists_root (P - Polynomial.C x) (by
     rw [Polynomial.degree_sub_C hdeg]; exact hdeg.ne')
   have hy2 : algebraMap K Ω (π : K) * y + y ^ Nat.card 𝓀[K] = x := by

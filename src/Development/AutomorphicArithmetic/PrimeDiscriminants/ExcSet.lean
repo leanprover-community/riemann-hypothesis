@@ -73,8 +73,8 @@ theorem small_le_lJ (D : D7) (P : Par) (hH : P.Hyp) (hL : P.Large) (hf : P.f = D
       rw [sq]; exact Nat.mul_le_mul (by omega) (by omega)
     omega
   have h7 : (l : ℝ) ≤ (P.k : ℝ) * (P.t : ℝ) := by exact_mod_cast h6
-  have hk : (0 : ℝ) < P.k := by exact_mod_cast (by omega : 0 < P.k)
-  have ht : (0 : ℝ) < P.t := by exact_mod_cast (by omega : 0 < P.t)
+  have hk : (0 : ℝ) < P.k := by exact_mod_cast (omega : 0 < P.k)
+  have ht : (0 : ℝ) < P.t := by exact_mod_cast (omega : 0 < P.t)
   have hc := (Formalism.CohomologicalDescent.LogSmallConstantBounds.paramsLJ_holds P hH hL).1
   have hb := hL.b_gt
   refine h7.trans (le_trans ?_ hc)

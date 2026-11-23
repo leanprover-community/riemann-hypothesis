@@ -272,7 +272,7 @@ theorem one_le_sizeZ (D : D7) (b C : ℝ) (Z : GramM D) : 1 ≤ sizeZ D b C Z :=
 
 theorem rpow_le_HHZ (D : D7) (b C x : ℝ) (hb : 1 ≤ b) (hC : 1 ≤ C) (hx : x ≤ C * (D.R.m : ℝ) ^ 2 * D.R.f)
     (Z : GramM D) : b ^ x ≤ HHZ D b C Z := by
-  have hm : (1 : ℝ) ≤ D.R.m := by have := D.R.two_le_m; exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hm : (1 : ℝ) ≤ D.R.m := by have := D.R.two_le_m; exact_mod_cast (omega : 1 ≤ D.R.m)
   have h1 : 1 ≤ b ^ (C * (D.R.m : ℝ) ^ 2 * D.R.f) := Real.one_le_rpow hb (by positivity)
   calc b ^ x ≤ b ^ (C * (D.R.m : ℝ) ^ 2 * D.R.f) := Real.rpow_le_rpow_of_exponent_le hb hx
     _ ≤ (b ^ (C * (D.R.m : ℝ) ^ 2 * D.R.f)) ^ (C * (D.R.m : ℝ)) :=
@@ -306,7 +306,7 @@ theorem main : ∀ Cg cb Cu cT CT C0 A Ad C₁ : ℝ, 0 ≤ C₁ → ∃ C₀ : 
     have := D.R.two_le_m
     unfold Ranks.f Ranks.n
     omega
-  have hm1 : (1 : ℝ) ≤ D.R.m := by have := D.R.two_le_m; exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hm1 : (1 : ℝ) ≤ D.R.m := by have := D.R.two_le_m; exact_mod_cast (omega : 1 ≤ D.R.m)
   have hm : (D.R.m : ℝ) = 2 * D.R.rS + 2 := by exact_mod_cast (GlobalTheory.real_places_facts D).2.2.2.1
   have hN1 : 1 ≤ NT D u := one_le_pow₀ (by exact_mod_cast (show 1 ≤ Tu D u by omega))
   have o1 : 1 ≤ HHZ D large₂.sc.b C Z' := by simpa using rpow_le_HHZ D _ C 0 hb c0 (by positivity) Z'

@@ -91,7 +91,7 @@ theorem exists_monomial_of_count_zero (I S : Type 1) (A : Type) [DecidableEq A] 
       have hcx : c x ≠ 0 := Finsupp.mem_support_iff.1 hx
       have hn : ((c x).toNat : ℕ∞) ≠ 0 := by
         have := hc' x
-        exact_mod_cast (by omega : (c x).toNat ≠ 0)
+        exact_mod_cast (omega : (c x).toNat ≠ 0)
       have hle : ((c x).toNat : ℕ∞) * M x w ≤ c.sum fun x a => (a.toNat : ℕ∞) * M x w :=
         Finset.single_le_sum (f := fun x => ((c x).toNat : ℕ∞) * M x w) (fun _ _ => zero_le) hx
       rw [ht w, htop, ENat.mul_top hn] at hle

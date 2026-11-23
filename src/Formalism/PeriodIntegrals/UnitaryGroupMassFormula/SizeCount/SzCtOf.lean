@@ -52,7 +52,7 @@ theorem ct_le (hA : RowA) (hB : RowB) (hC : RowC) (hS : SizeFacts) (hP : PlaceFa
   have hk5 : (5 : ℝ) ≤ (D.R.k : ℝ) := by
     have h1 := D.R.m_add_three_le_k
     have h2 := D.R.two_le_m
-    exact_mod_cast (by omega : 5 ≤ D.R.k)
+    exact_mod_cast (omega : 5 ≤ D.R.k)
   have hx0 : 0 < L.sc.x := by linarith
   have hxne : L.sc.x ≠ 0 := hx0.ne'
   have hSc : 0 < L.Sc := L.Sc_pos

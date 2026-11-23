@@ -86,7 +86,7 @@ theorem ev_m (K : ℝ) : ∃ x0 : ℝ, Fm.x1 < x0 ∧ ∀ x ≥ x0, ∀ i : Fm.I
 
 theorem m_le_k (D : D7) : (D.R.m : ℝ) ≤ D.R.k := by
   have h := D.R.m_add_three_le_k
-  exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+  exact_mod_cast (omega : D.R.m ≤ D.R.k)
 
 theorem ev_k (K : ℝ) : ∃ x0 : ℝ, Fm.x1 < x0 ∧ ∀ x ≥ x0, ∀ i : Fm.Ix x, K ≤ ((Fm.D x i).R.k : ℝ) := by
   obtain ⟨x0, hx0, h⟩ := ev_m Fm K

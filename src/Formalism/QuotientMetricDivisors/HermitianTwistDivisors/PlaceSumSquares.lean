@@ -276,7 +276,7 @@ lemma blk (K : ℕ) (hK : 40 ≤ K) :
         if_neg c0, if_pos c1, if_neg c2, if_neg c3, if_neg c4, if_pos c5]
       ring
     rw [hsum]
-    have hKr : (240 : ℝ) ≤ ((6 * K : ℕ) : ℝ) := by exact_mod_cast (by omega : 240 ≤ 6 * K)
+    have hKr : (240 : ℝ) ≤ ((6 * K : ℕ) : ℝ) := by exact_mod_cast (omega : 240 ≤ 6 * K)
     have a1 := anti ((6 * K : ℕ) : ℝ) ((6 * K + 1 : ℕ) : ℝ) (by linarith) (by push_cast; linarith)
     have a5 := anti ((6 * K : ℕ) : ℝ) ((6 * K + 1 + 1 + 1 + 1 + 1 : ℕ) : ℝ) (by linarith)
       (by push_cast; linarith)
@@ -331,7 +331,7 @@ lemma prime_sum_le (s : Finset ℕ) (hs : ∀ p ∈ s, p.Prime) :
   have hb := blk K hK40
   have hpos : 0 ≤ (Real.log ((6 * K : ℕ) - 6 : ℝ) + 1) / ((6 * K : ℕ) - 6 : ℝ) := by
     have h1 : (234 : ℝ) ≤ ((6 * K : ℕ) : ℝ) - 6 := by
-      have : (240 : ℝ) ≤ ((6 * K : ℕ) : ℝ) := by exact_mod_cast (by omega : 240 ≤ 6 * K)
+      have : (240 : ℝ) ≤ ((6 * K : ℕ) : ℝ) := by exact_mod_cast (omega : 240 ≤ 6 * K)
       linarith
     apply div_nonneg _ (by linarith)
     have := Real.log_nonneg (by linarith : (1 : ℝ) ≤ ((6 * K : ℕ) : ℝ) - 6)

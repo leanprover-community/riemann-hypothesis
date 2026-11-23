@@ -160,7 +160,7 @@ theorem auser_parLev (P0 : M.Par) (j : Fin (P0.r + 1)) (N : ℕ) : P5.Auser (JC.
   unfold P5.Auser P5.nV JC.parLev
   have h1 : ((P0.r - (j : ℕ) : ℕ) : ℝ) ≤ P0.r := by exact_mod_cast Nat.sub_le _ _
   have h2 : ((2 * (P0.r - (j : ℕ)) + P0.k + 1 : ℕ) : ℝ) ≤ ((2 * P0.r + P0.k + 1 : ℕ) : ℝ) := by
-    exact_mod_cast (by omega)
+    exact_mod_cast (omega)
   gcongr
 
 theorem mmUser_parLev (P0 : M.Par) (j : Fin (P0.r + 1)) (N : ℕ) :
@@ -322,7 +322,7 @@ theorem norm_mnP_le (w : List (Bool × Mat k r)) (hw : ∀ x ∈ w, ‖x.2‖ �
   | cons x w ih =>
     have ih' := ih fun y hy => hw y (List.mem_cons_of_mem _ hy)
     have hx := hw x List.mem_cons_self
-    have hn : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega)
+    have hn : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (omega)
     obtain ⟨b, X⟩ := x
     cases b
     · simp only [mnP, Bool.false_eq_true, if_false, List.length_cons, pow_succ]
@@ -342,7 +342,7 @@ theorem mn_mnQ_norm (w : List (Bool × Mat k r)) (hw : ∀ x ∈ w, ‖x.2‖ �
   | cons x w ih =>
     have ih' := ih fun y hy => hw y (List.mem_cons_of_mem _ hy)
     have hx := hw x List.mem_cons_self
-    have hn : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega)
+    have hn : (1 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (omega)
     obtain ⟨b, X⟩ := x
     cases b
     · simp only [mnQ, Bool.false_eq_true, if_false, List.length_cons, pow_succ]
@@ -365,7 +365,7 @@ theorem mn_dLR_lin_bound (Λ : Mat k r →L[ℝ] V) (K : ℝ) (hK : ∀ M, ‖Λ
     have h1 : (0 : ℝ) < ‖(1 : Mat k r)‖ := norm_pos_iff.2 one_ne_zero
     nlinarith [norm_nonneg (Λ 1)]
   set n : ℝ := ((2 * r + k + 1 : ℕ) : ℝ) with hn_def
-  have hn : (1 : ℝ) ≤ n := by rw [hn_def]; exact_mod_cast (by omega)
+  have hn : (1 : ℝ) ≤ n := by rw [hn_def]; exact_mod_cast (omega)
   have e : (fun g => Λ g) = fun g => Λ (1 * g * 1) := by funext g; simp
   rw [Formalism.FourierDecayAlt.P.BetaSesquilinearity.dLR_eq, e, mn_Dw_lin]
   set w := Formalism.FourierDecayAlt.P.BetaSesquilinearity.wL u ++ Formalism.FourierDecayAlt.P.BetaSesquilinearity.wR v

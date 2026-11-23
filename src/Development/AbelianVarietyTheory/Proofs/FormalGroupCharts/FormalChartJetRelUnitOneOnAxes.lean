@@ -77,7 +77,7 @@ theorem jEq_ev {d n n' m : ℕ} (a : Fin n → Pt R n' d) (ha : ∀ j, GP (a j))
         refine Finset.sum_le_sum fun s _ => ?_
         exact MvPowerSeries.le_order_pow_of_constantCoeff_eq_zero _ (ha s.1 s.2)
       refine lt_of_lt_of_le ?_ h1
-      exact_mod_cast (by omega : e.degree < c.degree)
+      exact_mod_cast (omega : e.degree < c.degree)
     rw [this, smul_zero, smul_zero]
 
 theorem jEq_one_of_idem {σ : Type} {m : ℕ} {e : MvPowerSeries σ R} (hu : IsUnit (MvPowerSeries.constantCoeff e))

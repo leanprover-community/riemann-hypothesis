@@ -42,7 +42,7 @@ namespace Formalism.TruncatedSeriesCounting.RamifiedCoefficientChains
 
 private lemma lam_ge_one (ℓ H : ℕ) (hℓ : 2 ≤ ℓ) : 1 ≤ lam ℓ H := by
   unfold lam
-  have h1 : (1 : ℝ) < ℓ := by exact_mod_cast (by omega : 1 < ℓ)
+  have h1 : (1 : ℝ) < ℓ := by exact_mod_cast (omega : 1 < ℓ)
   rcases Nat.eq_zero_or_pos H with rfl | hH
   · simp
   · have h2 : (1 : ℝ) ≤ 2 * (H : ℝ) := by

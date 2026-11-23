@@ -112,7 +112,7 @@ theorem ltLog_funEq [CharZero K] (l : ℕ) (hl : 2 ≤ l) (τ : K →+* K) :
         exact (Nat.one_lt_pow (Nat.succ_ne_zero k) (by omega : 1 < l ^ 2)).ne'
       rw [if_pos (dvd_pow_self _ (Nat.succ_ne_zero k)), if_neg h1, pow_succ,
         Nat.mul_div_cancel _ (by omega), coeff_ltLog_pow l hl k, ← pow_succ, coeff_ltLog_pow l hl (k + 1)]
-      have hl0 : (l : K) ≠ 0 := by exact_mod_cast (by omega : l ≠ 0)
+      have hl0 : (l : K) ≠ 0 := by exact_mod_cast (omega : l ≠ 0)
       field_simp
       ring
   · have h1 : n ≠ 1 := fun h => hn ⟨0, by simp [h]⟩
@@ -172,7 +172,7 @@ theorem honda_funEq : ∀ (K : Type) [NormedField K] [IsUltrametricDist K] [Char
   intro K _ _ _ l σ hU f e hfe c ε hε hc hH
   have hS := setting hU
   have hl2 : 2 ≤ l := hU.2.1.le
-  have hl : (l : K) ≠ 0 := by exact_mod_cast (by omega : l ≠ 0)
+  have hl : (l : K) ≠ 0 := by exact_mod_cast (omega : l ≠ 0)
   have hq : l ^ 2 ≠ 0 := by positivity
   have hε0 : ε ≠ 0 := by rintro rfl; simp at hε
   obtain ⟨hf0, hf1, he0, hef, -⟩ := hfe

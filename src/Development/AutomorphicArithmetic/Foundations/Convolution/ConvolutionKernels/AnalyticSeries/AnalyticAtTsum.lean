@@ -62,7 +62,7 @@ theorem analyticAt_tsum {W A B : Type} [Fintype A] [Fintype B] (q : W → ℕ) (
     refine Complex.differentiableOn_tsum_of_summable_norm (h ((1 + σ) / 2) (by linarith)) (fun p => ?_) hU fun p s hs => ?_
     · have h0 : (q p.1 : ℂ) ≠ 0 := by
         have := hq p.1
-        exact_mod_cast (by omega : q p.1 ≠ 0)
+        exact_mod_cast (omega : q p.1 ≠ 0)
       have h1 : Differentiable ℂ fun s : ℂ => (q p.1 : ℂ) ^ (-s) := differentiable_id.neg.const_cpow (Or.inl h0)
       unfold lterm
       exact (((h1.pow _).const_mul _).div_const _).differentiableOn

@@ -377,10 +377,10 @@ theorem order_eval : ∀ (O₀ : Type) [CommRing O₀] [IsDomain O₀] [IsDiscre
     intro c hc
     have h1 : (k₁ : ℝ) ≤ Nat.totient (l ^ k) := by
       have := le_totient_pow hl hk1
-      exact_mod_cast (by omega : k₁ ≤ Nat.totient (l ^ k))
+      exact_mod_cast (omega : k₁ ≤ Nat.totient (l ^ k))
     have h2 : (0 : ℝ) < Nat.totient (l ^ k) := by
       have := le_totient_pow hl hk1
-      exact_mod_cast (by omega : 0 < Nat.totient (l ^ k))
+      exact_mod_cast (omega : 0 < Nat.totient (l ^ k))
     have h3 : (c : ℝ) ≤ ((C + W₁ + W₂ : ℕ) : ℝ) := by exact_mod_cast hc
     rw [div_le_iff₀ hε] at hk₁
     rw [div_le_iff₀ h2]

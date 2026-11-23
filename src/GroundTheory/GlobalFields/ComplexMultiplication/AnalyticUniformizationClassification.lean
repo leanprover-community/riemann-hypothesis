@@ -312,7 +312,7 @@ theorem IsAnalyticUniformization.omegaFun_order_nonneg_of_mem
       funext w; simp only [Pi.add_apply]; ring
     have hlt : meromorphicOrderAt (fun w ↦ X w ^ 3) z < meromorphicOrderAt (fun w ↦ a₄ * X w + a₆) z := by
       rw [oX3]
-      exact lt_of_lt_of_le (by exact_mod_cast (by omega : 3 * m < m)) h3
+      exact lt_of_lt_of_le (by exact_mod_cast (omega : 3 * m < m)) h3
     rw [e, meromorphicOrderAt_add_eq_left_of_lt hH hlt, oX3]
   have hkm : 3 * m = -(2 * k) := by
     have := (meromorphicOrderAt_congr heq).symm.trans oY2

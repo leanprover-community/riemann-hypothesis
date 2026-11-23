@@ -156,13 +156,13 @@ theorem area_spec (Λ : AddSubgroup ℂ) (κ : ℝ) (hκ : 0 < κ)
       · have := hmin (-n).toNat (by omega) v hv u hu (by
           rw [Bf_swap, hn, cast_toNat _ (by omega)]; push_cast; ring)
         rw [hn, abs_mul, abs_of_pos hκ, abs_of_neg (by exact_mod_cast hn0 : (n : ℝ) < 0)]
-        have h' : ((m : ℤ) : ℝ) ≤ ((-n : ℤ) : ℝ) := by exact_mod_cast (by omega : (m : ℤ) ≤ -n)
+        have h' : ((m : ℤ) : ℝ) ≤ ((-n : ℤ) : ℝ) := by exact_mod_cast (omega : (m : ℤ) ≤ -n)
         push_cast at h'
         exact mul_le_mul_of_nonneg_left h' hκ.le
       · exfalso; change 0 < |Bf u v| at ha; rw [hn, hn0] at ha; simp at ha
       · have := hmin n.toNat (by omega) u hu v hv (by rw [hn, cast_toNat _ hn0.le])
         rw [hn, abs_mul, abs_of_pos hκ, abs_of_pos (by exact_mod_cast hn0 : (0 : ℝ) < n)]
-        have h' : ((m : ℤ) : ℝ) ≤ ((n : ℤ) : ℝ) := by exact_mod_cast (by omega : (m : ℤ) ≤ n)
+        have h' : ((m : ℤ) : ℝ) ≤ ((n : ℤ) : ℝ) := by exact_mod_cast (omega : (m : ℤ) ≤ n)
         push_cast at h'
         exact mul_le_mul_of_nonneg_left h' hκ.le
   refine ⟨m, hm0, harea, ?_⟩

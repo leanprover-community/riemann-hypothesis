@@ -201,7 +201,7 @@ theorem nuGe_of_class {ϖ : V} (hϖ : Irreducible ϖ) (hQ : QForm.IsQ D.toPre ϖ
     have h0 : VGe D F v k χ (θ.s χ) 0 :=
       ⟨1, fun _ => 1, fun _ => f χ, fun _ => θ.s χ, fun _ => h χ, fun _ => by simp, fun j => by simp [DegPre.constBF]⟩
     refine (SectionScalarValuation.fe_move hϖ hQ hv k z χ θ h0).mono (le_of_eq ?_)
-    have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+    have hk0 : (k : ℚ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
     rw [q_shift hϖ hQ χ z k]; push_cast; field_simp; ring
   · push Not at hα
     refine vge_of_zero (fun j => ?_) _
@@ -313,7 +313,7 @@ theorem jets : Laws → Laws4 → TwistBCSpanStatement → JetSer.JetAlgSt → J
   have hθ := fun i => (hΦ i).elim fun Φ hΦ' =>
     FamBaseChange.main hL.globalFns V (maximalIdeal V) y.P.D q Φ (f i) hΦ' F
   choose θ hθ using hθ
-  have hq0 : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
   obtain ⟨gm, h0, hle, hge⟩ : ∃ gm : ℚ, 0 ≤ gm ∧ (gm : ℝ) ≤ (n : ℝ) ^ 2 * Cc / q ∧
       ∀ i, (y.Q (χ i) : ℚ) / q ≤ gm := by
     refine ⟨(⌊(n : ℝ) ^ 2 * Cc⌋ : ℤ) / q, ?_, ?_, fun i => ?_⟩

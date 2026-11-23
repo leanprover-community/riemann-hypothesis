@@ -61,7 +61,7 @@ theorem OpenB.exp_eq {q : ℕ} {α : ℂ} (h : OpenB q α) (hq : 1 < q) {x y : �
   linarith
 
 theorem OpenB.inv {q : ℕ} {α : ℂ} (h : OpenB q α) (hq : 1 < q) : OpenB q α⁻¹ := by
-  have hq0 : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
   have hp : (0 : ℝ) < (q : ℝ) ^ (1 / 2 : ℝ) := Real.rpow_pos_of_pos hq0 _
   obtain ⟨h1, h2⟩ := h
   rw [Real.rpow_neg hq0.le] at h1

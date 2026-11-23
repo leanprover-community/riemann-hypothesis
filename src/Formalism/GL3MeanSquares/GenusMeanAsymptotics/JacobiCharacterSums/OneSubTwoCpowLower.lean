@@ -230,7 +230,7 @@ theorem zero_detection_first : Detect0 := by
     have e2 : c₀ / (8 * Real.log X) = 3 * θ := by rw [hθ]; field_simp; norm_num
     have : c₀ / (2 * Real.log X) / 2 < (1 - ρ.re) / 2 := by linarith
     linarith
-  have hJpos : (0 : ℝ) < pJd M T := by exact_mod_cast (by omega : 0 < pJd M T)
+  have hJpos : (0 : ℝ) < pJd M T := by exact_mod_cast (omega : 0 < pJd M T)
   have hgoal : c₀ / 24 / (((pJd M T : ℝ) + 1) * Real.log X) = θ / ((pJd M T : ℝ) + 1) := by
     rw [hθ]; field_simp
   rw [hgoal]

@@ -85,7 +85,7 @@ theorem degree_twist_ge : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorem
     have := Fintype.card_subtype_le fun τ : D.host.E →+* ℂ => τ (T.Q.H.rt : D.host.E) = T.Q.H.rt0
     rw [Embeddings.card, hdeg] at this
     exact_mod_cast (Fintype.card_congr (Equiv.refl _)).le.trans this
-  refine numeric hf hr hL (by exact_mod_cast (by omega : (T.Q.Dw j).q ≤ D.R.r)) (by linarith [hd2.1, hd2.2])
+  refine numeric hf hr hL (by exact_mod_cast (omega : (T.Q.Dw j).q ≤ D.R.r)) (by linarith [hd2.1, hd2.2])
     (by rw [lrd_eq]; exact (log_rd_le_fieldSz _).trans hE) (Finset.sum_nonneg fun _ _ => abs_nonneg _) ?_ ?_ ?_
   · refine (Finset.sum_le_card_nsmul _ _ (3 * (D.R.r : ℝ)) fun τ _ => by exact_mod_cast hw τ).trans ?_
     rw [nsmul_eq_mul, Finset.card_univ]

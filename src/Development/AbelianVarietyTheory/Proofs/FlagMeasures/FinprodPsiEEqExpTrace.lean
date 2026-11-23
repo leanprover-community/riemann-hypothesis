@@ -83,8 +83,8 @@ theorem finprod_psiE_eq_exp_trace : ∀ {F E : Type} [Field F] [NumberField F] [
     | coprime a b ha hb hab iha ihb =>
       intro _ y hy
       obtain ⟨u, v, huv⟩ := Nat.isCoprime_iff_coprime.2 hab
-      have ha0 : (a : E) ≠ 0 := by exact_mod_cast (by omega : a ≠ 0)
-      have hb0 : (b : E) ≠ 0 := by exact_mod_cast (by omega : b ≠ 0)
+      have ha0 : (a : E) ≠ 0 := by exact_mod_cast (omega : a ≠ 0)
+      have hb0 : (b : E) ≠ 0 := by exact_mod_cast (omega : b ≠ 0)
       have huv' : (u : E) * a + v * b = 1 := by exact_mod_cast huv
       have e : y / ((a * b : ℕ) : E) = (v * y) / a + (u * y) / b := by
         push_cast

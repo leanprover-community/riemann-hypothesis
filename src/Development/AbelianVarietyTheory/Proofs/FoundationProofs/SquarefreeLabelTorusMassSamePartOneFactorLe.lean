@@ -114,7 +114,7 @@ theorem card_primeFactors_pow_sub_one_le {g d : ℕ} (hg : 2 ≤ g) (hd : 1 ≤ 
   have hreal : (2 : ℝ) ^ (((g ^ d - 1).primeFactors.card : ℕ) : ℝ) ≤ (g : ℝ) ^ d := by
     rw [Real.rpow_natCast]
     exact_mod_cast h2k
-  have hgpos : (0 : ℝ) < (g : ℝ) ^ d := pow_pos (by exact_mod_cast (by omega : 0 < g)) d
+  have hgpos : (0 : ℝ) < (g : ℝ) ^ d := pow_pos (by exact_mod_cast (omega : 0 < g)) d
   have := (Real.le_logb_iff_rpow_le (by norm_num : (1 : ℝ) < 2) hgpos).mpr hreal
   rwa [Real.logb_pow] at this
 
@@ -132,7 +132,7 @@ theorem sum_mul_pow_le {u : ℝ} (h0 : 0 ≤ u) (h1 : u ≤ 1 / 8) (N : ℕ) :
         have hk : ((2 + k : ℕ) : ℝ) ≤ 3 * 4 ^ k := by
           have h1 : k < 4 ^ k := Nat.lt_pow_self (by norm_num)
           have h2 : 1 ≤ 4 ^ k := Nat.one_le_pow _ _ (by norm_num)
-          exact_mod_cast (by omega : 2 + k ≤ 3 * 4 ^ k)
+          exact_mod_cast (omega : 2 + k ≤ 3 * 4 ^ k)
         have hu : u ^ k ≤ (1 / 8 : ℝ) ^ k := pow_le_pow_left₀ h0 h1 k
         calc ((2 + k : ℕ) : ℝ) * u ^ (2 + k) = ((2 + k : ℕ) : ℝ) * u ^ k * u ^ 2 := by ring
           _ ≤ (3 * 4 ^ k) * (1 / 8 : ℝ) ^ k * u ^ 2 := by gcongr
@@ -155,7 +155,7 @@ theorem mass_samePart_one_factor : ∀ (g : ℕ) [Fact g.Prime], ∀ N : ℕ, 2 
   obtain ⟨L, hL⟩ : ∃ L : ℕ → Finset ℕ,
       L = fun d => (g ^ d - 1).primeFactors.filter fun l => ¬ BB g N l := ⟨_, rfl⟩
   obtain ⟨r, hr⟩ : ∃ r : ℝ, r = (g : ℝ) ^ ((1 : ℝ) / 4) := ⟨_, rfl⟩
-  have hgpos : (0 : ℝ) < g := by exact_mod_cast (by omega : 0 < g)
+  have hgpos : (0 : ℝ) < g := by exact_mod_cast (omega : 0 < g)
   have hr0 : 0 < r := hr ▸ Real.rpow_pos_of_pos hgpos _
   have hr4 : r ^ 4 = g := by
     rw [hr, ← Real.rpow_natCast, ← Real.rpow_mul hgpos.le]
@@ -168,7 +168,7 @@ theorem mass_samePart_one_factor : ∀ (g : ℕ) [Fact g.Prime], ∀ N : ℕ, 2 
     norm_num at h1
     linarith
   have hlog : 0 ≤ Real.logb 2 g :=
-    Real.logb_nonneg (by norm_num) (by exact_mod_cast (by omega : 1 ≤ g))
+    Real.logb_nonneg (by norm_num) (by exact_mod_cast (omega : 1 ≤ g))
   have hstep3 : ∀ d ∈ Finset.Icc 2 N, ∀ l ∈ L d, mass g N (fun f => ∃ P ∈ S d l, P ∣ f) ≤
       (g : ℝ) ^ ((3 * d : ℝ) / 4) * (((g ^ d - 1 : ℕ) : ℝ))⁻¹ := by
     intro d hd l hl

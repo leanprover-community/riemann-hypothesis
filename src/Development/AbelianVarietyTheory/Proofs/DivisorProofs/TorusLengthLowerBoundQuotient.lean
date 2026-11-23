@@ -53,8 +53,8 @@ theorem zBase_pow_le_lenT {PP A : ℝ} (h : HostNum D L PP A 1) (hw : WtNum p i 
   have hDd : (1 : ℝ) ≤ dimFlag (dat p i) := by
     rw [hw.dim]
     exact_mod_cast Nat.mul_pos (by omega) (Nat.choose_pos (by unfold Ranks.r; omega))
-  have hm : (0 : ℝ) < D.R.m := by exact_mod_cast (by omega : 0 < D.R.m)
-  have hkm : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+  have hm : (0 : ℝ) < D.R.m := by exact_mod_cast (omega : 0 < D.R.m)
+  have hkm : (D.R.m : ℝ) ≤ D.R.k := by exact_mod_cast (omega : D.R.m ≤ D.R.k)
   have hL : (0 : ℝ) ≤ L.sc.L := by linarith [h.big.2.1]
   have hZ : 0 ≤ zBase L := by unfold zBase; positivity
   have hP : zBase L ^ 24 ≤ PP ^ 2 := by
@@ -83,9 +83,9 @@ theorem at_point {PP A : ℝ} (h : HostNum D L PP A 1) (hw : WtNum p i PP) (hi :
     have m2 := D.R.two_le_m
     have k3 := D.R.m_add_three_le_k
     have f8 := h.f8
-    have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (by omega : 1 ≤ D.R.f)
+    have hf : (1 : ℝ) ≤ D.R.f := by exact_mod_cast (omega : 1 ≤ D.R.f)
     have hr : (1 : ℝ) ≤ D.R.r := by exact_mod_cast (by unfold Ranks.r; omega : 1 ≤ D.R.r)
-    have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+    have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
     have hb : 0 < L.sc.b := Real.exp_pos _
     have hcard : (Fintype.card (Psi p.T.Q.H) : ℝ) = D.R.f := by rw [← hw.card, Nat.card_eq_fintype_card]
     have hN : (((dat p i).p + (dat p i).q : ℕ) : ℝ) = D.R.r := by rw [hw.sig.2.2]
@@ -147,7 +147,7 @@ theorem at_point {PP A : ℝ} (h : HostNum D L PP A 1) (hw : WtNum p i PP) (hi :
     change ((b : ℕ) = (dat p i).p → h0 ≤ 2 * (lenT p i PP : ℤ) * (u1 τ a - u1 τ b) ∧ _) at g2
     by_cases hb : (b : ℕ) = (dat p i).p
     · have k := (g2 hb).1
-      have hT0 : (1 : ℤ) ≤ lenT p i PP := by exact_mod_cast (by omega : 1 ≤ lenT p i PP)
+      have hT0 : (1 : ℤ) ≤ lenT p i PP := by exact_mod_cast (omega : 1 ≤ lenT p i PP)
       nlinarith
     · have k := g1 hb
       have : (0 : ℤ) ≤ (dimFlag (dat p i) : ℤ) + 2 + 2 * (((dat p i).p + (dat p i).q : ℕ) : ℤ) := by positivity

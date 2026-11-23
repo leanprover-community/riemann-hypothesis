@@ -109,7 +109,7 @@ theorem places_ok (eps : ℝ) (C : FC) (cD ch : ℝ) (h0 : 0 < eps) (h1 : eps < 
   have hx1' := s.one_lt_alt
   have hxp : 0 < s.x := by linarith
   have hk := P.R.m_add_three_le_k
-  have hk2 : (2 : ℝ) ≤ P.R.k := by exact_mod_cast (by omega : 2 ≤ P.R.k)
+  have hk2 : (2 : ℝ) ≤ P.R.k := by exact_mod_cast (omega : 2 ≤ P.R.k)
   have hD : (1 : ℝ) ≤ (Delv s cD : ℝ) := by
     have : 0 < ⌈s.x ^ cD⌉₊ := Nat.ceil_pos.mpr (Real.rpow_pos_of_pos hxp _)
     exact_mod_cast this
@@ -218,7 +218,7 @@ theorem window_lower : Formalism.MainNotions.StandardLattice.SiegelMassRatioCM �
   have hk := P.R.m_add_three_le_k
   have hm := P.R.two_le_m
   have hxp : 0 < s.x := by linarith [s.one_lt_alt]
-  have hk1 : (1 : ℝ) ≤ P.R.k := by exact_mod_cast (by omega : 1 ≤ P.R.k)
+  have hk1 : (1 : ℝ) ≤ P.R.k := by exact_mod_cast (omega : 1 ≤ P.R.k)
   have hf1 : (1 : ℝ) ≤ P.R.f := by exact_mod_cast f_pos P.R
   have hm0 : (0 : ℝ) ≤ P.R.m := by positivity
   have hv := pi_le_v P.H

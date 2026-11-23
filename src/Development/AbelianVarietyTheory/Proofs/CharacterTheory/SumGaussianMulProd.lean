@@ -108,7 +108,7 @@ lemma sum_eq (x : ℂ) (hx : x ≠ 0) (h1 : ∀ k : ℕ, x ^ (k + 1) - 1 ≠ 0) 
 
 theorem sum_gaussian_mul_prod : ∀ (q n : ℕ) (N : ℕ → ℕ), 2 ≤ q → (∀ a, a ≤ n → N a * ∏ i ∈ Finset.range a, (q ^ a - q ^ i) = ∏ i ∈ Finset.range a, (q ^ n - q ^ i)) → ∑ a ∈ Finset.Icc 1 n, (N a : ℂ) * ∏ i ∈ Finset.Ico 1 a, (1 - (q : ℂ) ^ i) = n := by
   intro q n N hq hN
-  have hx : (q : ℂ) ≠ 0 := by exact_mod_cast (by omega : q ≠ 0)
+  have hx : (q : ℂ) ≠ 0 := by exact_mod_cast (omega : q ≠ 0)
   have h1 : ∀ k : ℕ, (q : ℂ) ^ (k + 1) - 1 ≠ 0 := by
     intro k h
     have h' : (q : ℂ) ^ (k + 1) = 1 := sub_eq_zero.mp h

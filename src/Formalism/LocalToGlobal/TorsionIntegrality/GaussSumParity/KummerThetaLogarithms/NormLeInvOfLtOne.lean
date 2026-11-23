@@ -175,7 +175,7 @@ theorem sigma_isometry : SigmaIsom := by
   obtain ⟨hp, h2, hnp, hval, hfr⟩ := hU
   rcases eq_or_ne a 0 with rfl | ha
   · simp
-  have hl : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have hl0 : (l : K) ≠ 0 := by exact_mod_cast hp.ne_zero
   have unit : ∀ u : K, ‖u‖ = 1 → ‖σ u‖ = 1 := by
     intro u hu

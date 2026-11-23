@@ -288,7 +288,7 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
     intro c M h
     by_contra hc
     have hcpos : 0 < ‖c‖ := norm_pos_iff.2 hc
-    have hp1 : (1 : ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+    have hp1 : (1 : ℝ) < p := by exact_mod_cast (omega : 1 < p)
     obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (M / ‖c‖) hp1
     obtain ⟨k, hk, hle⟩ := h n
     rw [norm_mul, np] at hle
@@ -397,7 +397,7 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
     rw [g0_pow k, LemTwo.coeff_lgF_odd hp2 k, LemTwo.coeff_g0F_even hp2 N, lg_pow N] at s
     simp only [mul_zero, add_zero, zero_add] at s
     refine ultra (b := α ((p ^ 2) ^ N) * ((p : K) ^ (k + 1))⁻¹) ?_ ?_
-      (one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ p)))
+      (one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ p)))
     · rw [norm_sub_rev]
       exact s
     · rw [norm_mul, np]
@@ -444,7 +444,7 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
       have h4 := IsUltrametricDist.norm_add_le_max a (-b)
       rwa [norm_neg] at h4
     refine (usub _ _).trans (max_le ?_ ?_)
-    · exact s1.trans (one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ p)))
+    · exact s1.trans (one_le_pow₀ (by exact_mod_cast (omega : 1 ≤ p)))
     · rw [norm_mul, np]
       exact mul_le_of_le_one_right (by positivity) s2
   refine ⟨β 1, H - MvPowerSeries.C (β 1) * (at1 0 (lgF K p) * at1 1 (lgF K p)), ?_, by ring⟩

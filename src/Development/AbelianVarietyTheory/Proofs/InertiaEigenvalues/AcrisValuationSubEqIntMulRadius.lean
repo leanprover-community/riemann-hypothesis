@@ -70,7 +70,7 @@ theorem vr_sub_eq_int_mul : ∀ (l : ℕ) [Fact l.Prime] (h s : ℕ), s < h → 
     φc l w * w' = w * φc l w' → ∃ n : ℤ, ∀ r ∈ Set.Ioc (0 : ℝ) 1, vr l r w - vr l r w' = n * r := by
   intro l _ h s hsh w w' hfix hw hw' hrat
   have hl2 : 2 ≤ l := (Fact.out : l.Prime).two_le
-  have hl0 : (0 : ℝ) < l := by exact_mod_cast (by omega : 0 < l)
+  have hl0 : (0 : ℝ) < l := by exact_mod_cast (omega : 0 < l)
   obtain ⟨cA, kA, sA⟩ := GlobalTheory.T.acrisValuationAtRadius_concave_cont_slope l w hw
   obtain ⟨cB, kB, sB⟩ := GlobalTheory.T.acrisValuationAtRadius_concave_cont_slope l w' hw'
   have key := GlobalTheory.T.exists_int_sub_mul_eq_int_mul_of_homogeneous l h s 1 hl2 hsh le_rfl (fun r => vr l r w) (fun r => vr l r w')

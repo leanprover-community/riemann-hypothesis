@@ -211,7 +211,7 @@ theorem isTorsFrame_of_liesOver [CharZero R] (hB : AdmBase R I) (hG : IsSemiAbel
   obtain ⟨E, eG, eA, -, eh, eAct⟩ := (GlobalTheory.IntEnd.exists_nsmul_and_neg hL R _ hB D A G hG U).1 n
   have hinj : Function.Injective E.h := fun a b h => by
     rw [eh, eh, ← natCast_zsmul, ← natCast_zsmul] at h
-    exact smul_right_injective _ (by exact_mod_cast (by omega : n ≠ 0)) h
+    exact smul_right_injective _ (by exact_mod_cast (omega : n ≠ 0)) h
   have hAct : E.Act g₁ o := (eAct F _ _).2 ho
   have key : ∀ k : ℕ, 4 ≤ k → r ^ k = 1 := by
     intro k hk

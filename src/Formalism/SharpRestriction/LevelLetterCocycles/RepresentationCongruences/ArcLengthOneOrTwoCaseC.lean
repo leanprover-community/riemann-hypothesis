@@ -185,7 +185,7 @@ theorem arc_length_one_or_two_case_c [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
   have hde := ArcLengthOneTwo.deA_le (l := PD.p) (size c) (size (c - 1) + S) (by omega) hb₀1
   have hband0 : 0 ≤ bandI PD.p b w S η size Cb := by unfold bandI; split_ifs <;> norm_num
   have hηb : (0 : ℝ) ≤ η * bandI PD.p b w S η size Cb := mul_nonneg (Nat.cast_nonneg _) hband0
-  have hlr1 : (1 : ℝ) < PD.p := by exact_mod_cast (by omega : 1 < PD.p)
+  have hlr1 : (1 : ℝ) < PD.p := by exact_mod_cast (omega : 1 < PD.p)
   have hlr0 : (0 : ℝ) < PD.p := by linarith
   push_cast
   by_cases h1c : PD.p * (size (c - 1) + S) ≤ size c
@@ -204,7 +204,7 @@ theorem arc_length_one_or_two_case_c [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
       linarith
     have hlog0 : 0 ≤ Real.logb PD.p (size c : ℝ) := Real.logb_nonneg hlr1 (by exact_mod_cast hb₀1)
     have hlogle : Real.logb PD.p (size c : ℝ) ≤ Real.logb PD.p (2 * ((b + η + S : ℕ) : ℝ)) := by
-      apply Real.logb_le_logb_of_le hlr1 (by exact_mod_cast (by omega : 0 < size c))
+      apply Real.logb_le_logb_of_le hlr1 (by exact_mod_cast (omega : 0 < size c))
       have : (size c : ℝ) ≤ b + η := by exact_mod_cast hthc.2
       push_cast
       have : (0 : ℝ) ≤ S := Nat.cast_nonneg _

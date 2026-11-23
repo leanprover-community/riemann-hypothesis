@@ -44,7 +44,7 @@ theorem constTerm_eq_zetaVal : ∀ (F : Type) [Field F] [NumberField F] [IsTotal
   intro F _ _ _ k z C Z hk hz hZ
   obtain ⟨Z', hZ', e⟩ := hz C
   have hne : (1 - (k : ℂ)) ∈ ({1}ᶜ : Set ℂ) := by
-    have : (k : ℂ) ≠ 0 := by exact_mod_cast (by omega : k ≠ 0)
+    have : (k : ℂ) ≠ 0 := by exact_mod_cast (omega : k ≠ 0)
     simpa using this
   have h : Z (1 - (k : ℂ)) = Z' (1 - (k : ℂ)) :=
     GlobalTheory.IndefiniteRowSideFullHecke.ZetaValueIdeals.IsClassZeta.eqOn (C := C) (Z := Z) (Z' := Z') hZ hZ' hne

@@ -92,7 +92,7 @@ theorem weights_ge_one_section_B (D : D7) (sc : Scale) (C0 Δ : ℝ) (w : ℕ �
   obtain ⟨-, -, -, -, -, -, hΔ, -, -, -, -, -, hw, hwb, hb0, -⟩ := hB
   have hk : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hx := sc.one_lt_alt
   have hbase : 1 ≤ bN D ρ 0 := by
     have h := (hb0 ρ).1
@@ -118,7 +118,7 @@ theorem eight_L_le_log_g (D : D7) (sc : Scale) (C0 Δ : ℝ) (w : ℕ → D.what
   obtain ⟨-, -, -, -, -, hg, -⟩ := hB
   have hk : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hb : 0 < sc.b := Real.exp_pos _
   have h1 := (hg i).1
   have hpos : 0 < ((D.R.k : ℝ) * sc.b) ^ 8 := by positivity
@@ -143,7 +143,7 @@ theorem corollary_five_four_of_explicit (D : D7) (sc : Scale) (C0 CY : ℝ) (h5 
     omega
   have hX : Real.exp (logXuD D u) ^ (D.R.f * D.R.k) = DstarD D / duStarU D u := by
     have hfR : (0 : ℝ) < D.R.f := by exact_mod_cast hf
-    have hkR : (0 : ℝ) < D.R.k := by exact_mod_cast (by omega : 0 < D.R.k)
+    have hkR : (0 : ℝ) < D.R.k := by exact_mod_cast (omega : 0 < D.R.k)
     rw [← Real.exp_nat_mul]
     unfold logXuD logXu
     push_cast

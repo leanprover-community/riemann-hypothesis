@@ -192,6 +192,6 @@ theorem UpperTheory.V.Pr.components_good_rank_two :
       refine (at_pt hF hB hM h1 hx.2 L).2.2 ⟨⟨P, hP⟩, hMZ.trans hπ.ge, hPI, ?_⟩
       show ((2 * F.d + 1 : ℕ) : WithBot ℕ∞) ≤ ringKrullDim (L.R ⧸ P)
       rw [hdim, show ringKrullDim (S.B ⧸ Z) = _ from hd]
-      exact_mod_cast (by omega : 2 * F.d + 1 ≤ 1 + 2 * F.d + 1)
+      exact_mod_cast (omega : 2 * F.d + 1 ≤ 1 + 2 * F.d + 1)
   intro p hp hI
   exact globProp _ (gd S M) hok (a := ⟨p, hp⟩) hI

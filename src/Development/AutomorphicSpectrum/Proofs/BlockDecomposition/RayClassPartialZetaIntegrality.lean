@@ -161,7 +161,7 @@ theorem classTwist_value_int : ∀ (F : Type) [Field F] [NumberField F] [IsTotal
   obtain ⟨K', Z, hZ⟩ := exists_pow_mul_sum Finset.univ l qj Kj zj hzj
   have hs0 : (1 - (k : ℂ)) = -(((k - 1 : ℕ)) : ℂ) := by rw [Nat.cast_sub hk]; push_cast; ring
   have hmem : (1 - (k : ℂ)) ∈ ({1}ᶜ : Set ℂ) := by
-    rw [Set.mem_compl_singleton_iff, Ne, sub_eq_self]; exact_mod_cast (by omega : k ≠ 0)
+    rw [Set.mem_compl_singleton_iff, Ne, sub_eq_self]; exact_mod_cast (omega : k ≠ 0)
   have hval : T (1 - (k : ℂ)) = ((Ideal.absNorm 𝔟 : ℕ) : ℂ) ^ (1 - (k : ℂ)) * ∑ j, (qj j : ℂ) := by
     rw [heq hmem]
     dsimp only

@@ -163,7 +163,7 @@ private theorem funEquiv_le (lam : ι → DomWeight n) (x : VV ℂ lam) :
   have hN2 : (1 : ℝ) ≤ N := by
     have : (0 : ℝ) ≤ N := by simpa using (Complex.le_def.1 hN0).1
     have h0 : 0 ≤ N := by exact_mod_cast this
-    exact_mod_cast (by omega : 1 ≤ N)
+    exact_mod_cast (omega : 1 ≤ N)
   have hc' : c = (((N : ℝ)⁻¹ : ℝ) : ℂ) := by
     push_cast
     exact eq_inv_of_mul_eq_one_left h3.symm

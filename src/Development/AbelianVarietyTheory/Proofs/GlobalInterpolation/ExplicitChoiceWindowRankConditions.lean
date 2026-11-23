@@ -37,7 +37,7 @@ theorem nWv_lower (R : Ranks) (s : Scale) :
   have hk : 1 ≤ R.k := by have := R.m_add_three_le_k; omega
   have hm : (0 : ℝ) < R.m := by
     have := R.two_le_m
-    exact_mod_cast (by omega : 0 < R.m)
+    exact_mod_cast (omega : 0 < R.m)
   have hmf : (R.m : ℝ) ≤ R.f := by
     have : R.m ≤ R.f := R.m_le_f
     exact_mod_cast this

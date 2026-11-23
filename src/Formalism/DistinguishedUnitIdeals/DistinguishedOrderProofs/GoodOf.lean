@@ -360,7 +360,7 @@ theorem tr_arithN (l D y M r a sg : ℕ) (hl : 3 ≤ l) (hD : 1 ≤ D)
     ∃ e : ℕ, (l - 1) * r = y + ((a - sg) + e) ∧ M ≤ D * e := by
   obtain ⟨lam, rfl⟩ : ∃ lam, l = lam + 1 := ⟨l - 1, by omega⟩
   simp only [Nat.add_sub_cancel] at hs ha ⊢
-  have hz := tr_arithZ lam D y M r a sg (by exact_mod_cast (by omega : 2 ≤ lam))
+  have hz := tr_arithZ lam D y M r a sg (by exact_mod_cast (omega : 2 ≤ lam))
     (by exact_mod_cast hD) (by exact_mod_cast hs) (by exact_mod_cast ha) (by exact_mod_cast hsa)
   have hZ : (0 : ℤ) ≤ (lam : ℤ) * r - y - a + sg := by
     by_contra hneg

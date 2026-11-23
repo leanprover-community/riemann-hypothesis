@@ -79,7 +79,7 @@ private theorem regElt_key {K : Type} [Field K] (e x : Kˣ) (m k : ℕ) (hm : 2 
   refine ⟨fun hf => ?_, fun i hi h => ?_⟩
   · obtain ⟨n, hn, h⟩ := isOfFinOrder_iff_pow_eq_one.1 hf
     have hpos : 0 < (m : ℤ) * k * n := by
-      have a : (0 : ℤ) < m := by exact_mod_cast (by omega : 0 < m)
+      have a : (0 : ℤ) < m := by exact_mod_cast (omega : 0 < m)
       have b : (0 : ℤ) < k := by exact_mod_cast hk
       have c : (0 : ℤ) < n := by exact_mod_cast hn
       positivity

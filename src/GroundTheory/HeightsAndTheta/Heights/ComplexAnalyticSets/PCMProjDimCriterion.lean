@@ -128,7 +128,7 @@ theorem isCohenMacaulayLocalRing_quotient_iff_of_isRegularLocalRing
     refine ⟨d - e, ?_, ?_⟩
     · have := hup S (S ⧸ J) d d ms hserre hbound hmsm hmsreg
       rwa [hmslen] at this
-    · rw [hh]; exact_mod_cast (by omega : d - e ≤ h)
+    · rw [hh]; exact_mod_cast (omega : d - e ≤ h)
   · rintro ⟨ℓ, hpd, hℓ⟩
     obtain ⟨ms, hmsm, hmsreg, hmslen⟩ := hlow S (S ⧸ J) ℓ rs0 hpd hrs0m hrs0.toIsWeaklyRegular
     have hℓh : ℓ ≤ h := by rw [hh] at hℓ; exact_mod_cast hℓ

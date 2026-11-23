@@ -83,9 +83,9 @@ theorem numerics (l b w S η b₁ w' σ A : ℕ) (hl : 11 ≤ l) (hη20 : 20 * �
     have hy' : (w' + S + η) * l ≤ b₁ := by rw [Nat.mul_comm]; exact hy
     exact_mod_cast hy'
   have hy2 : ((w' + S + η : ℕ) : ℝ) ≤ 2 * ((b + η + S : ℕ) : ℝ) := by
-    exact_mod_cast (by omega : w' + S + η ≤ 2 * (b + η + S))
+    exact_mod_cast (omega : w' + S + η ≤ 2 * (b + η + S))
   have hy1 : (1 : ℝ) ≤ ((w' + S + η : ℕ) : ℝ) := by
-    exact_mod_cast (by omega : 1 ≤ w' + S + η)
+    exact_mod_cast (omega : 1 ≤ w' + S + η)
   have key := Formalism.MainNotions.N.FrobeniusPowerSeries.not_le_max_of_lt l hl (b + η + S) (by omega) (σ : ℝ) (A : ℝ) (s₁ : ℝ) (η : ℝ) (b₁ : ℝ)
     ((w' + S + η : ℕ) : ℝ) hσ0 (Nat.cast_nonneg _) (Nat.cast_nonneg _) hy1 hyl hy2 hlt
   refine ⟨s₁, ?_, by omega, ?_, hten⟩

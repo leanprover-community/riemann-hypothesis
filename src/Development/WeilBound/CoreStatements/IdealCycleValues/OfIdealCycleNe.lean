@@ -77,7 +77,7 @@ theorem cycEval_eq_zero {R : Type} [CommRing R] {J : Ideal (MRing ι R)} {n : Id
 
 theorem lt_succ_dim {a : WithBot ℕ∞} {d c : ℕ} (h : a < ((d + c : ℕ) : WithBot ℕ∞)) :
     a < ((d + 1 + c : ℕ) : WithBot ℕ∞) :=
-  lt_of_lt_of_le h (by exact_mod_cast (by omega : d + c ≤ d + 1 + c))
+  lt_of_lt_of_le h (by exact_mod_cast (omega : d + c ≤ d + 1 + c))
 
 theorem intNum_small {F : Type} [Field F] {d : ℕ} {I : Ideal (MRing ι F)} (hI : IsMultiHomogIdeal I)
     (hd : ringKrullDim (MRing ι F ⧸ I) < ((d + Fintype.card K : ℕ) : WithBot ℕ∞))

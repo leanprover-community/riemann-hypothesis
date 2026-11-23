@@ -141,7 +141,7 @@ theorem val_normChar (t : ℝ) (v : HeightOneSpectrum (𝓞 K)) :
     (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.normPow_isUnramifiedAt t v) (Formalism.L2.Host.unif_spec v)
   rw [GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.UnitaryHeckeChar.normPow_valueAt] at h
   have hN := NumberField.HeightOneSpectrum.one_lt_absNorm v
-  rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast (by omega : Ideal.absNorm v.asIdeal ≠ 0)),
+  rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast (omega : Ideal.absNorm v.asIdeal ≠ 0)),
     ← Complex.natCast_log]
   refine Eq.trans h.symm ?_
   congr 1

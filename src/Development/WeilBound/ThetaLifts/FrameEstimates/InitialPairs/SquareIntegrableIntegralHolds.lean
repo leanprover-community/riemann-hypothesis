@@ -112,7 +112,7 @@ theorem square_integrable_integral_holds : ConeIntegralsFinite := by
       exact Finset.sum_congr rfl fun i _ => by ring
     · rcases h1 with h1 | h1
       · omega
-      · have a1 : (d : ℝ) + 2 * k < 2 * n := by exact_mod_cast (by omega : d + 2 * k < 2 * n)
+      · have a1 : (d : ℝ) + 2 * k < 2 * n := by exact_mod_cast (omega : d + 2 * k < 2 * n)
         nlinarith
   · refine lt_of_eq_of_lt (lintegral_congr fun s => ?_) (coneAff y (D * (n - d + 1)) (2 * D) fun k hk hkq => ?_)
     · rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add]
@@ -121,7 +121,7 @@ theorem square_integrable_integral_holds : ConeIntegralsFinite := by
       exact Finset.sum_congr rfl fun i _ => by ring
     · rcases h2 with h2 | h2
       · omega
-      · have a1 : (n : ℝ) + k < d := by exact_mod_cast (by omega : n + k < d)
+      · have a1 : (n : ℝ) + k < d := by exact_mod_cast (omega : n + k < d)
         nlinarith
 
 theorem posWt_eq (n d : ℕ) {q y : ℕ} (s : Fin q → ℝ) (t : Fin y → ℝ) :
@@ -263,7 +263,7 @@ theorem exponent_bound_orthogonal_case : ExpSo := by
     split_ifs with hj
     · exact mul_le_mul_of_nonneg_right (by linarith) a0
     · by_cases hjy : j < y
-      · have : (j : ℝ) + 1 ≤ Y := by exact_mod_cast (by omega : j + 1 ≤ Y)
+      · have : (j : ℝ) + 1 ≤ Y := by exact_mod_cast (omega : j + 1 ≤ Y)
         exact mul_nonneg (by linarith) a0
       · rw [ext, dite_eq_right hjy, mul_zero]
   have e1 : rho2 n s = n * ∑ i, s i - ∑ i, ∑ j, min (s i) (s j) := by

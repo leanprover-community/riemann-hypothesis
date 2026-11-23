@@ -110,7 +110,7 @@ theorem affine_lt_of_global_min (hQ : Q.PosDef) {t : ℝ} (ht : 0 < t) (ν : X �
 theorem lt_of_global_min (hQ : Q.PosDef) (ν : X →+ ℝ) {N : ℤ} (hN : 2 ≤ N) {a : X}
     (ha : ∀ x, Q a / N + ν a ≤ Q x / N + ν x) {w : X} (hw : w ≠ 0) :
     Q a / N + ν a < Q (a + N • w) / N + ν (a + N • w) := by
-  have hN' : (0 : ℝ) < N := by exact_mod_cast (by omega : (0 : ℤ) < N)
+  have hN' : (0 : ℝ) < N := by exact_mod_cast (omega : (0 : ℤ) < N)
   simp only [div_eq_inv_mul] at ha ⊢
   exact affine_lt_of_global_min hQ (inv_pos.mpr hN') ν hN ha hw
 

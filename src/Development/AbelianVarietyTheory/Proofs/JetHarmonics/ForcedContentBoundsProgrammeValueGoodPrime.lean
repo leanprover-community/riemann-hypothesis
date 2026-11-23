@@ -89,7 +89,7 @@ theorem main : ∀ (N : NumDatum) (j l : ℕ), l.Prime → l ∉ N.H.small → l
   have hl' : (2 : ℝ) ≤ l := by exact_mod_cast hl
   have hk : (1 : ℝ) ≤ N.R.k := by
     have := N.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ N.R.k)
+    exact_mod_cast (omega : 1 ≤ N.R.k)
   have hq2 : (0 : ℝ) < (l : ℝ) ^ 2 - 1 := by nlinarith
   have hS : 0 ≤ ∑ z, N.w j z := Finset.sum_nonneg fun z _ => hw z
   have hcls : Inert N l ∨ N.cls l = PrimeClass.splitK := by

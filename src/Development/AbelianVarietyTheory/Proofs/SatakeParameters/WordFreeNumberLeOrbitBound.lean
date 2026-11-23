@@ -218,7 +218,7 @@ theorem wordFreeNumber_le_orbitBound : ∀ (D : D7) (L : SizeData₂ D) (X : Ins
     (hpX.trans hS.xa.1)
     (show ((D.R.N i : ℕ) : ℝ) ≤ ((D.R.N D.R.m : ℕ) : ℝ) by exact_mod_cast hN01.le.trans hN1)
     (show ((D.R.N (i + 1) : ℕ) : ℝ) ≤ ((D.R.N D.R.m : ℕ) : ℝ) by exact_mod_cast hN1)
-    (show (1 : ℝ) ≤ ((D.R.N D.R.m : ℕ) : ℝ) by exact_mod_cast (by omega : 1 ≤ D.R.N D.R.m))
+    (show (1 : ℝ) ≤ ((D.R.N D.R.m : ℕ) : ℝ) by exact_mod_cast (omega : 1 ≤ D.R.N D.R.m))
     hK1 hK2 hp1n
     (fun s => by
       by_cases hs : s ∈ (orbLoc E p h u i (false, t0) Th).TT

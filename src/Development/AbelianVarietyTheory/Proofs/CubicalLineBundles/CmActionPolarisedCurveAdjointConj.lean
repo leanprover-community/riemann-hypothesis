@@ -83,7 +83,7 @@ theorem map_bar {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) 
   obtain ⟨⟨m₁, m₂⟩, hx, -⟩ := huniq x
   have hN : (1 : ℝ) ≤ (((1 + H.d) / 4 : ℕ) : ℝ) := by
     have := H.d_mod
-    exact_mod_cast (by omega : 1 ≤ (1 + H.d) / 4)
+    exact_mod_cast (omega : 1 ≤ (1 + H.d) / 4)
   have hq := congrArg j hquad
   simp only [j.map_add, j.map_pow, map_natCast j] at hq
   have hz : starRingEnd ℂ (j (wK H)) = 1 - j (wK H) := by

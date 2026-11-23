@@ -67,7 +67,7 @@ theorem UpperTheory.altChain_of_permSplit :
   rw [← Nat.cast_smul_eq_nsmul ℂ, smul_smul]
   congr 1
   have hF : ((p + 1).factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
-  have hP2 : ((p : ℂ) + 2) ≠ 0 := by exact_mod_cast (by omega : p + 2 ≠ 0)
+  have hP2 : ((p : ℂ) + 2) ≠ 0 := by exact_mod_cast (omega : p + 2 ≠ 0)
   rw [hc, Nat.factorial_succ (p + 1)]
   push_cast
   field_simp

@@ -71,7 +71,7 @@ theorem P_ne_cut (c : Cfg) (hDel : 0 < c.Del) (hv0 : 0 ≤ c.vlast) (hb : ∀ j,
     by_cases hsl : s ≤ l
     · have : (s : ℝ) ≤ l := by exact_mod_cast hsl
       nlinarith
-    · have : (l : ℝ) + 1 ≤ s := by exact_mod_cast (by omega : l + 1 ≤ s)
+    · have : (l : ℝ) + 1 ≤ s := by exact_mod_cast (omega : l + 1 ≤ s)
       nlinarith
   · have hbj := hb (s + 1 - c.k) (by omega) (by omega)
     unfold Cfg.v at hY2

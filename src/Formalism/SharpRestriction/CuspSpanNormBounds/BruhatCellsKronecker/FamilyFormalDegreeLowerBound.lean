@@ -126,10 +126,10 @@ theorem szh_anti (hH : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT) (τ :
   obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, hd, -, -, hCl⟩ := hH
   have hk0 : (0 : ℝ) < D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 0 < D.R.k)
+    exact_mod_cast (omega : 0 < D.R.k)
   have hm0 : (0 : ℝ) < D.R.m := by
     have := D.R.two_le_m
-    exact_mod_cast (by omega : 0 < D.R.m)
+    exact_mod_cast (omega : 0 < D.R.m)
   have hpos : 0 < Cl * ↑D.R.k * ↑D.R.m ^ 4 + ↑D.R.r * ↑D.R.m ^ 10 :=
     add_pos_of_pos_of_nonneg (mul_pos (mul_pos hCl hk0) (pow_pos hm0 4)) (by positivity)
   rw [Fin.strictAnti_iff_succ_lt]
@@ -209,7 +209,7 @@ theorem szh_k_le (hH : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT) (h1 :
     (D.R.k : ℝ) ≤ Real.exp (2 * large₂.sc.L) := by
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hkC : (D.R.k : ℝ) ≤ (D.R.k : ℝ) ^ Cl := by
     calc (D.R.k : ℝ) = (D.R.k : ℝ) ^ (1 : ℝ) := (Real.rpow_one _).symm
       _ ≤ (D.R.k : ℝ) ^ Cl := Real.rpow_le_rpow_of_exponent_le hk1 h1

@@ -150,7 +150,7 @@ theorem card_torsion_of_lattice {g : ℕ} {Q : Type} [Group Q] (ex : (Fin g → 
     exact this
   have hfr : Module.Free ℤ Λ := ZLattice.module_free ℝ Λ
   have hfi : Module.Finite ℤ Λ := ZLattice.module_finite ℝ Λ
-  have hm0 : (m : ℂ) ≠ 0 := by exact_mod_cast (by omega : m ≠ 0)
+  have hm0 : (m : ℂ) ≠ 0 := by exact_mod_cast (omega : m ≠ 0)
   have : NeZero m := ⟨by omega⟩
   have ex_zero : ex 0 = 1 := by
     have := ex_add 0 0

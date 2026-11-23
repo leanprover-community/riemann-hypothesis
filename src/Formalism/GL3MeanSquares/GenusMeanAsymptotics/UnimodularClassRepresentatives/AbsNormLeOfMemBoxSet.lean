@@ -100,7 +100,7 @@ theorem alphaN_eq_stage (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF
       (nkCount h L 𝔭 k n : ℝ) / (Ideal.absNorm 𝔭 : ℝ) ^ (k * (2 * finrank K V - 1)) := by
   have hq : (0 : ℝ) < (Ideal.absNorm 𝔭 : ℝ) := by
     have := two_le_absNorm h𝔭
-    exact_mod_cast (by omega : 0 < Ideal.absNorm 𝔭)
+    exact_mod_cast (omega : 0 < Ideal.absNorm 𝔭)
   set k0 := 2 * vd h L 𝔭 + 2 * vF 𝔭 n + 2
   refine ⟨k0, ?_⟩
   refine Tendsto.limUnder_eq (tendsto_atTop_of_eventually_const (i₀ := k0) fun k hk => ?_)
@@ -120,7 +120,7 @@ theorem alphaN_bound (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : 
     ∃ C : ℝ, ∀ n : 𝓞 F, n ≠ 0 → 0 ≤ alphaN h L 𝔭 n ∧ alphaN h L 𝔭 n ≤ C := by
   have hq : (0 : ℝ) < (Ideal.absNorm 𝔭 : ℝ) := by
     have := two_le_absNorm h𝔭
-    exact_mod_cast (by omega : 0 < Ideal.absNorm 𝔭)
+    exact_mod_cast (omega : 0 < Ideal.absNorm 𝔭)
   obtain ⟨C, hC⟩ := nkCount_le hK hF hs hd hL hLi hm h𝔭
   refine ⟨C, fun n hn => ?_⟩
   obtain ⟨k, hk⟩ := alphaN_eq_stage hK hF hs hd hL hLi h𝔭 hn

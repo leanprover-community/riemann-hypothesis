@@ -101,7 +101,7 @@ theorem cfac_ne_zero {F : Type} (E : Type) [Field F] [NumberField F] [Field E] [
       rw [Ne, Ideal.absNorm_eq_zero_iff]; exact v.ne_bot
     have h1 : Ideal.absNorm v.asIdeal ≠ 1 := by
       rw [Ne, Ideal.absNorm_eq_one_iff]; exact v.isPrime.ne_top
-    exact_mod_cast (by omega : 1 < Ideal.absNorm v.asIdeal)
+    exact_mod_cast (omega : 1 < Ideal.absNorm v.asIdeal)
   have he : eR E v ≤ 1 := by
     unfold eR PositivityTheory.SiegelWeilFormula.Gen.eSp
     split_ifs <;> norm_num

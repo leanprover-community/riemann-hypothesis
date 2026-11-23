@@ -102,7 +102,7 @@ theorem localMassFactor_eq_of_mem_badPrimes (hK : IsCMUnram K) (hF : IsFixF K F)
     exact Nat.pow_left_injective two_ne_zero this
   have hη : etaF K F 𝔭 = -1 := by rw [h𝔭def, etaF_comap hK hF hPm, if_pos hc]
   have hdisc : (discAut h ⊤ M 𝔭 : ℝ) = (qIn P : ℝ) + 1 := by
-    have hq0 : (qIn P : ℝ) ≠ 0 := by exact_mod_cast (by omega : qIn P ≠ 0)
+    have hq0 : (qIn P : ℝ) ≠ 0 := by exact_mod_cast (omega : qIn P ≠ 0)
     rw [GlobalTheory.T.discriminantModule_isometries_eq_normOne_residues K F V hK hF h hs M hlat 𝔭 h𝔭 b a hJ i hi hj,
       ThirdPropositionSlot.normRepCount_extP hK hF h𝔭 le_rfl, ThirdPropositionSlot.alphaStd_one, hη, hN]
     field_simp
@@ -112,7 +112,7 @@ theorem localMassFactor_eq_of_mem_badPrimes (hK : IsCMUnram K) (hF : IsFixF K F)
     rwa [finrank_top] at this
   obtain ⟨m, hm'⟩ : ∃ m, Module.finrank K V = m + 1 := ⟨_, (Nat.sub_add_cancel hm).symm⟩
   have hpos := alphaStd_pos hK hF h𝔭 m
-  have hq0 : (0 : ℝ) < qIn P := by exact_mod_cast (by omega : 0 < qIn P)
+  have hq0 : (0 : ℝ) < qIn P := by exact_mod_cast (omega : 0 < qIn P)
   rw [lamP, alpha_discriminant_holds K F V hK hF h hs hd M hlat hM.1.2 𝔭 h𝔭 b a hJ, hv, hcJ, hdisc, hm',
     Nat.add_sub_cancel, mul_one]
   have hstep : alphaStd K 𝔭 (m + 1) =

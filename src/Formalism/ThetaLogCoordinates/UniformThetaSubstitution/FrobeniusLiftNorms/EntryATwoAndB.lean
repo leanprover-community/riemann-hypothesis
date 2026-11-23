@@ -261,7 +261,7 @@ theorem entryCappedBound_of (hS : EntryStar) (hC : HitsCapPos) (hA : Formalism.G
   have hH' := hH
   obtain ⟨-, hp2, -, -, -, -, -, -⟩ := hH'
   have hp : 0 < p := by omega
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast (omega : 1 < p)
   rcases hS K p ν r0 r1 C u F TT ξ e l sf T I hH with h0 | ⟨E, α, β, hα, hβ, h3, h4, hn⟩
   · rw [h0, norm_zero]
     exact Real.rpow_nonneg (Nat.cast_nonneg p) _
@@ -310,7 +310,7 @@ theorem EntryB_of (hS : EntryStar) (hC : HitsCapPos) (hJ : HitsColumnsPos) (hB :
   have hH' := hH
   obtain ⟨-, hp2, hpn, -, -, -, -, -⟩ := hH'
   have hp : 0 < p := by omega
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast (by omega : 1 < p)
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast (omega : 1 < p)
   set N := ∑ x : TpV ν r1, (if (x.1.val % 2 = 0 ∧ x.2 ∉ J) ∨ (x.1.val % 2 = 1 ∧ x.2 ∈ J)
           then e x else 0) +
         ∑ c, (if (sf c).val % 2 = 1 then ((univ.image (I c)) ∩ J).card else 0) with hN

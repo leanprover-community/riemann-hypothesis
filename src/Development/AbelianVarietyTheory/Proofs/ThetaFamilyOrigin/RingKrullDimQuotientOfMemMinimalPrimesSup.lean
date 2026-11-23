@@ -382,7 +382,7 @@ theorem degree_hilbertPoly_anti {I J : Ideal T} (hI : I.IsHomogeneous 𝒜)
       finrank K (J.restrictScalars K ⊓ 𝒜 n : Submodule K _) :=
     Submodule.finrank_mono (inf_le_inf_right _ fun x hx => h hx)
   rw [← h1, ← h2]
-  exact_mod_cast (by omega)
+  exact_mod_cast (omega)
 
 theorem hilbertPoly_ne_zero {P : Ideal T} [hP : P.IsPrime] (hI : P.IsHomogeneous 𝒜) {i : ι}
     (h : x i ∉ P) : gradedQuotHilbertPoly 𝒜 P ≠ 0 := by
@@ -456,7 +456,7 @@ theorem degree_hilbertPoly_eq_of_isPrime {P : Ideal T} [hP : P.IsPrime]
     have : ¬ ∀ i, x i ∈ P := fun h => by
       have := ringKrullDim_quotient_le_zero hfin h
       rw [he] at this
-      exact absurd this (by exact_mod_cast (by omega))
+      exact absurd this (by exact_mod_cast (omega))
     push Not at this
     obtain ⟨i, hi⟩ := this
     have hJ := isHomogeneous_sup_span hI (hx i)
@@ -592,7 +592,7 @@ theorem gradedQuotDeg_bot_le {r : ℕ} {c : ℚ}
     filter_upwards [h, eventually_finrank hx hfin hb] with n hn hn'
     have := finrank_piece_add hx hfin ⊥ n
     rw [← hn', eval_monomial, ← mul_pow]
-    exact le_trans (by exact_mod_cast (by omega)) hn
+    exact le_trans (by exact_mod_cast (omega)) hn
   have h2 := (degree_le_of_eventually_eval_nat (eventually_nonneg hx hfin hb) h1).trans
     (degree_monomial_le r _)
   have h3 := coeff_nonneg_of_eventually_eval_nat

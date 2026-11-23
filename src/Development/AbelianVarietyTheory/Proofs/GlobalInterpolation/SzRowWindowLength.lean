@@ -84,7 +84,7 @@ theorem nN_div_m_le {C : FC} (hCt : C.Ct = 401) {cD ch : ℝ} {D : D7} {L : Size
     have h := L.t_win.2
     rwa [hV.Ct_eq, hCt] at h
   have hm2 := D.R.two_le_m
-  have hm : (0 : ℝ) < D.R.m := by exact_mod_cast (by omega : 0 < D.R.m)
+  have hm : (0 : ℝ) < D.R.m := by exact_mod_cast (omega : 0 < D.R.m)
   have hN : D.R.N D.R.m ≤ 2 * D.R.t * D.R.m := by
     have h := D.R.rank_add_five_le
     have h1 : D.R.k + 1 ≤ D.R.t := by omega
@@ -133,7 +133,7 @@ theorem szRow_windowLength : SzRow (fun C D L => (∀ l : ℕ, 11 ≤ l → ∃ 
   · rw [hV.logFiveDepth_eq, hC.2.2.2.1]
     have hb := nN_div_m_le hCt hV
     have hm2 := D.R.two_le_m
-    have hm : (0 : ℝ) < D.R.m := by exact_mod_cast (by omega : 0 < D.R.m)
+    have hm : (0 : ℝ) < D.R.m := by exact_mod_cast (omega : 0 < D.R.m)
     have hn : (0 : ℝ) < D.R.n := by
       have : 0 < D.R.n := by
         have := D.R.two_le_m

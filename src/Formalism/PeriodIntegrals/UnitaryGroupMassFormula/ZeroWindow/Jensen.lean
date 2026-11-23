@@ -90,7 +90,7 @@ theorem jensenCount : JensenCount := by
     intro u hu
     obtain ⟨h1, h2, -, -⟩ := hSD u hu
     simp only [Function.mem_support, h1]
-    exact_mod_cast (by omega : analyticOrderNatAt f u ≠ 0)
+    exact_mod_cast (omega : analyticOrderNatAt f u ≠ 0)
   have hSfin : S.Finite := hfin.subset hSsub
   refine ⟨hSfin, ?_⟩
   have hJ := AnalyticOnNhd.circleAverage_log_norm (R := 19 / 10) hf' hfc

@@ -55,7 +55,7 @@ private theorem UpperTheory.V.Ws.ch_num {x y : WithBot ℕ∞} {a b c N : ℕ} (
     | top => exact absurd h2 (by norm_cast)
     | coe y =>
       have h3 : y + b ≤ c := by exact_mod_cast h2
-      exact_mod_cast (by omega : y + a < N)
+      exact_mod_cast (omega : y + a < N)
 
 private theorem UpperTheory.V.Ws.ch_core {O Γ : Type} [CommRing O] [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
     [CompactSpace Γ] [TotallyDisconnectedSpace Γ] {Φ : Fr O Γ} {l : ℕ} [Fact l.Prime] {Λ : Type} [CommRing Λ] [IsDomain Λ]

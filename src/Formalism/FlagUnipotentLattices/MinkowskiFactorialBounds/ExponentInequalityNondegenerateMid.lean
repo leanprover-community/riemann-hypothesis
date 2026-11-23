@@ -508,7 +508,7 @@ theorem sumNondegenerateRowsLe : NonDegSum := by
     _ ≤ (k : ℝ) * Real.exp (-((k : ℝ) * f * Real.log g) / 2 - Real.log k) := by
         apply mul_le_mul_of_nonneg_right _ (Real.exp_pos _).le
         rw [Nat.card_Icc]
-        exact_mod_cast (by omega : k + 1 - 2 ≤ k)
+        exact_mod_cast (omega : k + 1 - 2 ≤ k)
     _ = Real.exp (-((k : ℝ) * f * Real.log g) / 2) := hkexp _
     _ = (Real.sqrt g)⁻¹ ^ (k * f) := by
         rw [pow_eq_exp_mul_log _ (inv_pos.2 (Real.sqrt_pos.2 hg0)) (k * f), Real.log_inv, Real.log_sqrt hg0.le,
@@ -575,7 +575,7 @@ theorem sumDegenerateRowsLe : DegSum := by
     _ ≤ (k : ℝ) * Real.exp (-((k : ℝ) * f * Real.log k) / 2 - 2 * Real.log Gam - Real.log k) := by
         apply mul_le_mul_of_nonneg_right _ (Real.exp_pos _).le
         rw [Nat.card_Icc]
-        exact_mod_cast (by omega : k + 1 - 2 ≤ k)
+        exact_mod_cast (omega : k + 1 - 2 ≤ k)
     _ = Real.exp (-((k : ℝ) * f * Real.log k) / 2 - 2 * Real.log Gam) := hkexp _
     _ = Real.exp (-((k : ℝ) * f * Real.log k) / 2) * (Gam ^ 2)⁻¹ := by
         rw [Real.exp_sub, pow_eq_exp_mul_log Gam hGam0 2, div_eq_mul_inv, Nat.cast_ofNat]

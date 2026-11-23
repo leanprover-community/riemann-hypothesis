@@ -209,7 +209,7 @@ private theorem sum_weighted_moebius_coeff_sq_le (K : ℝ) (hK : 0 < K)
     rw [hre]
     refine h.trans ?_
     have hQ0 : (0 : ℝ) ≤ Q := by positivity
-    have hQ1 : (1 : ℝ) ≤ Q := by exact_mod_cast (by omega : 1 ≤ Q)
+    have hQ1 : (1 : ℝ) ≤ Q := by exact_mod_cast (omega : 1 ≤ Q)
     rw [div_eq_mul_inv, mul_comm]
     have : ((Q ^ 6 : ℕ) : ℝ) ^ ((1 : ℝ) / 80) = (Q : ℝ) ^ ((6 : ℝ) / 80) := by
       push_cast
@@ -228,7 +228,7 @@ private theorem sum_weighted_moebius_coeff_sq_le (K : ℝ) (hK : 0 < K)
     have hweight : (Q : ℝ) ^ 2 * ((Q : ℝ) + 1) + n ≤ 3 * n := by
       have : ((Q ^ 3 : ℕ) : ℝ) < n := by exact_mod_cast hnQ
       push_cast at this
-      have hQ1 : (1 : ℝ) ≤ Q := by exact_mod_cast (by omega : 1 ≤ Q)
+      have hQ1 : (1 : ℝ) ≤ Q := by exact_mod_cast (omega : 1 ≤ Q)
       nlinarith [pow_le_pow_right₀ hQ1 (show 2 ≤ 3 by norm_num)]
     have hcoef : ‖((∑ d ∈ n.divisors.filter (fun d => d ≤ Q ^ 3), (ArithmeticFunction.moebius d : ℤ) : ℤ) : ℂ)‖ ≤ K * (n : ℝ) ^ ((1 : ℝ) / 400) := by
       refine le_trans ?_ (hdiv n (by omega))
@@ -292,7 +292,7 @@ theorem _root_.GlobalTheory.SpacedDetected.card_spaced_detected_le : ∃ C : ℝ
     apply intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'
     have := (hFdiff x).continuous
     fun_prop
-  have hQ1 : (1 : ℝ) ≤ Q := by exact_mod_cast (by omega : 1 ≤ Q)
+  have hQ1 : (1 : ℝ) ≤ Q := by exact_mod_cast (omega : 1 ≤ Q)
   have hpt : ∀ p ∈ T, (1 / 4 : ℝ) ≤ C₁ / r ^ 2 * ∫ σ in σ₀..σ₁,
       ∫ t in (p.2.2.im - r)..(p.2.2.im + r), ‖F ⟨p.1, p.2.1⟩ (σ + t * I)‖ ^ 2 := by
     intro p hp

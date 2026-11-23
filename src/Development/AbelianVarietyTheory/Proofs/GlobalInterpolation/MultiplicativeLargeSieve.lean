@@ -142,8 +142,8 @@ theorem sum_primitive_le {q : ℕ} [NeZero q] (s : Finset ℕ) (a : ℕ → ℂ)
 theorem farey_spaced (Q q r b c : ℕ) (hq : q ≤ Q) (hr : r ≤ Q) (hb : b < q) (hc : c < r)
     (hne : (b : ℝ) / q ≠ (c : ℝ) / r) (k : ℤ) :
     1 / (Q : ℝ) ^ 2 ≤ |(b : ℝ) / q - (c : ℝ) / r - k| := by
-  have hq0 : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
-  have hr0 : (0 : ℝ) < r := by exact_mod_cast (by omega : 0 < r)
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (omega : 0 < q)
+  have hr0 : (0 : ℝ) < r := by exact_mod_cast (omega : 0 < r)
   have hb1 : (b : ℝ) / q < 1 := (div_lt_one hq0).2 (by exact_mod_cast hb)
   have hc1 : (c : ℝ) / r < 1 := (div_lt_one hr0).2 (by exact_mod_cast hc)
   have hb0 : 0 ≤ (b : ℝ) / q := by positivity

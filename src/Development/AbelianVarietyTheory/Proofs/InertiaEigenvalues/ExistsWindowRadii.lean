@@ -56,7 +56,7 @@ theorem _root_.GlobalTheory.PMonE.exists_window_radii : ∀ (F : Type) [Nontrivi
       (‖lam 0‖ / p) ^ p * ‖π 0‖ = (‖lam (Fin.last k)‖ * ‖π (Fin.last k)‖ ^ p ^ k) ^ p := by
   intro F _ _ _ p _ _ _ k ϖ hϖ lam hlam hanti hclose
   have hp : 1 < p := (Fact.out : p.Prime).one_lt
-  have hpR : (0 : ℝ) < p := by exact_mod_cast (by omega : 0 < p)
+  have hpR : (0 : ℝ) < p := by exact_mod_cast (omega : 0 < p)
   have hl : ∀ j, 0 < ‖lam j‖ := fun j => norm_pos_iff.mpr (hlam j)
   have hρ : ∀ j : Fin k, ∃ y : F, y ^ p ^ (j : ℕ) = lam j.castSucc / lam j.succ :=
     fun j => IsAlgClosed.exists_pow_nat_eq _ (pow_pos (by omega) _)

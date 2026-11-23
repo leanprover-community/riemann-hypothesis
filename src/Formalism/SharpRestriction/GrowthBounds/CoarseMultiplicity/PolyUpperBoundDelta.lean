@@ -230,7 +230,7 @@ theorem kept_upper_level_bound (St : Std C0 Cde CE1 CE2 1 X) (j : Fin (numSeg X.
       show (X.p : ℝ) ^ (segG X.TT j) ≤ (X.p : ℝ) ^ X.G'
       have hp : (1 : ℝ) ≤ (X.p : ℝ) := by
         have := St.p5
-        exact_mod_cast (by omega : 1 ≤ X.p)
+        exact_mod_cast (omega : 1 ≤ X.p)
       exact pow_le_pow_right₀ hp (St.segB j).1
     }
   have hb := St.bpos
@@ -322,7 +322,7 @@ theorem extra_order_le_maximal (St : Std C0 Cde CE1 CE2 1 X) (j : Fin (numSeg X.
       show (X.p : ℝ) ^ (segG X.TT j) ≤ (X.p : ℝ) ^ X.G'
       have hp : (1 : ℝ) ≤ (X.p : ℝ) := by
         have := St.p5
-        exact_mod_cast (by omega : 1 ≤ X.p)
+        exact_mod_cast (omega : 1 ≤ X.p)
       exact pow_le_pow_right₀ hp (St.segB j).1
     }
   have hp5 := H.p0

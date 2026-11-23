@@ -87,7 +87,7 @@ theorem le_ringKrullDim_slice {n e : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)}
       | coe k =>
         have h1 : k ≤ 1 := by exact_mod_cast ha
         have h2 : k + m = e + 1 := by exact_mod_cast hab
-        exact_mod_cast (by omega : e ≤ m)
+        exact_mod_cast (omega : e ≤ m)
   generalize ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ p) = D at hform ⊢
   induction D using WithBot.recBotCoe with
   | bot =>

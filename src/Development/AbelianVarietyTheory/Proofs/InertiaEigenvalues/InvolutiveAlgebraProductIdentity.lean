@@ -1130,7 +1130,7 @@ theorem identity_of_swap : ∀ (K : UQ) (B₁ B₂ : InvAlg K), B₁.g * B₁.σ
   · rw [E1, hz]; simp
   · have hcard : 1 < Nat.card (IsLocalRing.ResidueField K.O) := Finite.one_lt_card
     have hQ : (0 : ℚ) < (K.q : ℚ) ^ 2 := by
-      rw [← hc]; exact_mod_cast (by omega : 0 < Nat.card (IsLocalRing.ResidueField K.O))
+      rw [← hc]; exact_mod_cast (omega : 0 < Nat.card (IsLocalRing.ResidueField K.O))
     have hQ1 : (K.q : ℚ) ^ 2 ≠ 1 := by
       rw [← hc]; exact_mod_cast hcard.ne'
     have hab : val K.O (resultant p₁ p₂) = val K.O (resultant q₁ q₂) :=

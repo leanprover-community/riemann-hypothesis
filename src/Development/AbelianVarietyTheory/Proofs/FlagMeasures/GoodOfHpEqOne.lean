@@ -125,7 +125,7 @@ private lemma gg_false_and_vE_eq_zero_of_Hp_eq_one {d : S.Datum} {Λ : Submodule
           (S.D l * L.cj (S.D l)) = 0 := by
   obtain ⟨ha, hvD, hD, -⟩ := _root_.GlobalTheory.HL.Defect.exponents_and_defect L r k S d Λ h
   have hq2 := two_le_q' S
-  have hq : (1 : ℝ) < S.q := by exact_mod_cast (by omega : 1 < S.q)
+  have hq : (1 : ℝ) < S.q := by exact_mod_cast (omega : 1 < S.q)
   have hn : S.vth + S.a + S.vD = 0 := by
     have hpow : (S.q : ℝ) ^
         (S.vth + S.a + S.vD) =

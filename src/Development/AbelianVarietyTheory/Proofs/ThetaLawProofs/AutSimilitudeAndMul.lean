@@ -84,7 +84,7 @@ private lemma sum_intCast_mul_column_eq_of_transpose_mul_eq_smul (m : ℕ) (al :
 attribute [local instance] Over.cartesianMonoidalCategory in
 private lemma sum_column_smul_add_tors_eq {g : ℕ} (τ : Matrix (Fin g) (Fin g) ℂ) (m : ℕ) (hm : 1 ≤ m) (al : Matrix (Fin 4) (Fin 4) ℤ) (hal : al.transpose * al = (m : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ)) (k n : Fin 4 → Fin g → ℤ) (y : Fin 4 → Fin g → ℂ) (c : Fin 4) :
     ∑ r, (al r c : ℂ) • (∑ c', al r c' • y c' + _root_.GlobalTheory.SimilTheta.tors τ al m k n r) = (m : ℂ) • y c + _root_.GlobalTheory.SimilTheta.lat τ (k c) (n c) := by
-  have hm0 : (m : ℂ) ≠ 0 := by exact_mod_cast (by omega : m ≠ 0)
+  have hm0 : (m : ℂ) ≠ 0 := by exact_mod_cast (omega : m ≠ 0)
   unfold _root_.GlobalTheory.SimilTheta.tors
   simp only [← Int.cast_smul_eq_zsmul ℂ, smul_add, Finset.smul_sum, smul_smul, Finset.sum_add_distrib]
   rw [Finset.sum_comm (f := fun r c' => ((al r c : ℂ) * al r c') • y c')]

@@ -42,7 +42,7 @@ theorem wts_U_le_h0_of_large : ∀ {D : Formalism.BasicNotions.D7} (L : Formalis
   have hk := D.R.m_add_three_le_k
   have hm2 := D.R.two_le_m
   have ht1 : (1 : ℝ) ≤ D.R.t := L.t_win.1
-  have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+  have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
   have hS := L.Sc_pos
   have hη := L.etaSz_pos
   have x1 := L.sc.one_lt_alt

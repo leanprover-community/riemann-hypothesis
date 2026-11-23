@@ -88,7 +88,7 @@ theorem exists_nthRoots_ext (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValu
       hsp.of_dvd h0 (Polynomial.map_dvd _ (Finset.dvd_prod_of_mem _ (Finset.mem_univ k)))
     obtain ⟨t, ht⟩ := h1.exists_eval_eq_zero (by
       rw [(hp k).degree_map, degree_X_pow_sub_C (by omega)]
-      exact_mod_cast (by omega : n ≠ 0))
+      exact_mod_cast (omega : n ≠ 0))
     refine ⟨t, ?_⟩
     simpa [p, sub_eq_zero] using ht
   choose t ht using hroot

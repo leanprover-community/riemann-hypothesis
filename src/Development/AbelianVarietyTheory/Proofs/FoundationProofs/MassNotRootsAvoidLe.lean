@@ -220,7 +220,7 @@ theorem mass_not_rootsAvoid_le : ∀ (g : ℕ) [Fact g.Prime], ∀ (N q d : ℕ)
       ring
     · refine le_trans (Finset.sum_le_sum fun e he => ?_) ((avoid_sum_le g hgR N).trans ?_)
       · have he2 : 2 ≤ e := (Finset.mem_Icc.1 he).1
-        have he0 : (0 : ℝ) < e := by exact_mod_cast (by omega : 0 < e)
+        have he0 : (0 : ℝ) < e := by exact_mod_cast (omega : 0 < e)
         have hq : (0 : ℝ) < (g : ℝ) ^ e - 1 := by
           have : (1 : ℝ) < (g : ℝ) ^ e := one_lt_pow₀ (by linarith) (by omega)
           linarith

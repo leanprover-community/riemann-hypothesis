@@ -137,7 +137,7 @@ theorem lt_of_two_drops {x y : WithBot ℕ∞} {N : ℕ} (h1 : x + 1 ≤ y)
         simp at h3
       | coe a =>
         have : a + 1 < N + 1 := by exact_mod_cast hx
-        exact_mod_cast (by omega : a + 1 ≤ N)
+        exact_mod_cast (omega : a + 1 ≤ N)
   exact withBot_lt_natCast_of_add_one_le x N hx'
 
 end Helpers

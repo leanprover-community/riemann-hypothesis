@@ -159,7 +159,7 @@ theorem cont_prim_scale : ∀ {F : Type} [Field F] [ValuativeRel F] [Topological
   have hO := GlobalTheory.UnramOrder.order_facts L ϖ hϖ
   have hq : (0 : ℝ) < resQ ϖ := by
     have := hO.2.2.2.2.2.2.1
-    exact_mod_cast (by omega : 0 < resQ ϖ)
+    exact_mod_cast (omega : 0 < resQ ϖ)
   have hAi : IsUnit (A⁻¹).det := Matrix.isUnit_nonsing_inv_det A hA
   have hAA : A * A⁻¹ = 1 := Matrix.mul_nonsing_inv _ hA
   have hAA' : A⁻¹ * A = 1 := Matrix.nonsing_inv_mul _ hA

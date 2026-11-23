@@ -110,7 +110,7 @@ theorem exists_cc {O F : Type} [CommRing O] [Field F] [CharZero F] [Algebra O F]
     (hu : IsUnit (1 + (l : O))) (a : ℤ) :
     ∃ c : O, algebraMap O F c = ((cc l a : ℚ) : F) ∧ (l : O) ∣ c + a := by
   have hl' : (l : F) ≠ 0 := Nat.cast_ne_zero.2 hl
-  have h1 : (1 + (l : F)) ≠ 0 := by exact_mod_cast (by omega : 1 + l ≠ 0)
+  have h1 : (1 + (l : F)) ≠ 0 := by exact_mod_cast (omega : 1 + l ≠ 0)
   obtain ⟨w, hw⟩ := hu.exists_right_inv
   have hw' : algebraMap O F w = (1 + (l : F))⁻¹ := by
     have := congrArg (algebraMap O F) hw
@@ -189,7 +189,7 @@ theorem eigMs_eq {F : Type} [Field F] [CharZero F] (l : ℕ) {r : ℕ} (u : Fin 
     eigMs F l (Finset.univ.val.map u) w j j' =
       (Finset.univ : Finset (Fin r × Fin (j' - j).toNat)).val.map fun x =>
         ((1 + (l : F)) ^ (j + w - u x.1) * (1 + (l : F)) ^ (x.2 : ℕ) - 1) / (-(l : F)) := by
-  have h1 : (1 + (l : F)) ≠ 0 := by exact_mod_cast (by omega : 1 + l ≠ 0)
+  have h1 : (1 + (l : F)) ≠ 0 := by exact_mod_cast (omega : 1 + l ≠ 0)
   rw [← Finset.univ_product_univ, Finset.product_val, eigMs, Multiset.bind_map]
   rw [show ∀ (s : Multiset (Fin r)) (t : Multiset (Fin (j' - j).toNat)),
     s ×ˢ t = s.bind fun a => t.map (Prod.mk a) from fun _ _ => rfl, Multiset.map_bind]
@@ -508,7 +508,7 @@ theorem diagQuot [IsDomain O] [CharZero LL] (hinj : Function.Injective (algebraM
     rw [← theta_mem W T J b i hJ hb Qu hQ hj.le, ← hθ]; rfl
   obtain ⟨eq⟩ := quot_equiv _ _ θ hP
   have hp := PD.hp
-  have hχ : (1 + (PD.p : LL)) ≠ 0 := by exact_mod_cast (by omega : 1 + PD.p ≠ 0)
+  have hχ : (1 + (PD.p : LL)) ≠ 0 := by exact_mod_cast (omega : 1 + PD.p ≠ 0)
   have hX : X - ((PD.p : ℕ) : O⟦X⟧) ≠ 0 := fun h => by
     have := congrArg (coeff 1) h
     rw [← map_natCast (C : O →+* O⟦X⟧), map_sub, coeff_one_X, coeff_C, if_neg one_ne_zero, sub_zero,
@@ -610,7 +610,7 @@ theorem coords_of_lines [CharZero LL] (g : W.Gam) (ζ : LL) (U : Multiset ℤ) (
   obtain ⟨e, h1, h2, h3⟩ := GlobalTheory.SenLines.Coords.exists_coords (W.lev i ζ) (W.levN T i ζ) u d hd
     (fun a x => funext fun k => W.levN_smul T i ζ a x k) hs
   exact ⟨u, e, hu, h1, h2, fun x hx k => h3 _ x _
-    (by exact_mod_cast (by omega : 1 + PD.p ≠ 0)) (hγ x hx) k⟩
+    (by exact_mod_cast (omega : 1 + PD.p ≠ 0)) (hγ x hx) k⟩
 
 theorem senPair [IsDomain O] [IsLocalRing O] [CharZero LL] (hinj : Function.Injective (algebraMap O LL))
     (hl : ¬ IsUnit ((PD.p : ℕ) : O))

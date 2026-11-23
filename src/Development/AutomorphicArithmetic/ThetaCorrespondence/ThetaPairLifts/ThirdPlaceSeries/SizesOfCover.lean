@@ -83,7 +83,7 @@ theorem sizes_of_cover_alt : _root_.GlobalTheory.CovTop.CoversCondition fun Fm x
   have hlog3p : 0 < Real.log 3 := Real.log_pos (by norm_num)
   have hf8 : (8 : ℝ) ≤ (Fm.D x ι).R.f := by exact_mod_cast hN.f8
   have hfpos : (0 : ℝ) < (Fm.D x ι).R.f := by linarith
-  have hr2 : (2 : ℝ) ≤ (Fm.D x ι).R.r := by exact_mod_cast (by omega : 2 ≤ (Fm.D x ι).R.r)
+  have hr2 : (2 : ℝ) ≤ (Fm.D x ι).R.r := by exact_mod_cast (omega : 2 ≤ (Fm.D x ι).R.r)
   refine ⟨p.fw.laws, ⟨by omega, by omega⟩, by linarith, ?_, ?_, hN.logfr.1, ?_, ?_, hN.f8, h100, hN.ppLow⟩
   ·
     have hM : Y.d.l₂.M = (Fm.D x ι).host.g 0 * (Fm.D x ι).host.g 1 * 15 ^ expL (Fm.L x ι).sc.L := by

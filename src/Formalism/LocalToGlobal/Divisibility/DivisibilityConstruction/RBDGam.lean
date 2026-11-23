@@ -133,9 +133,9 @@ theorem log_DGam_le (L : SizeData₂ D) (hSC : SizeCond L) (C : ℝ) (hC : 0 ≤
     have := D.R.two_le_m
     omega
   have h2m := D.R.two_le_m
-  have ht5 : (5 : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : 5 ≤ D.R.t)
-  have hk : (D.R.k : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.k ≤ D.R.t)
-  have hm : (D.R.m : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.m ≤ D.R.t)
+  have ht5 : (5 : ℝ) ≤ D.R.t := by exact_mod_cast (omega : 5 ≤ D.R.t)
+  have hk : (D.R.k : ℝ) ≤ D.R.t := by exact_mod_cast (omega : D.R.k ≤ D.R.t)
+  have hm : (D.R.m : ℝ) ≤ D.R.t := by exact_mod_cast (omega : D.R.m ≤ D.R.t)
   have hm0 : (0 : ℝ) ≤ D.R.m := Nat.cast_nonneg _
   have hN : (D.R.N D.R.m : ℝ) ≤ 3 * (D.R.t : ℝ) ^ 2 := by
     unfold Ranks.N

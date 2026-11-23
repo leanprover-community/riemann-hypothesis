@@ -70,7 +70,7 @@ theorem admissible_le_holds : AdmLe := by
   have h3 := key (j.1 - i.1) (by omega)
   have e : (⟨i.1 + (j.1 - i.1), by omega⟩ : Fin n) = j := Fin.ext (by simp only; omega)
   rw [e] at h3
-  have h4 : ((j.1 - i.1 : ℕ) : ℝ) ≤ n := by exact_mod_cast (by omega : j.1 - i.1 ≤ n)
+  have h4 : ((j.1 - i.1 : ℕ) : ℝ) ≤ n := by exact_mod_cast (omega : j.1 - i.1 ≤ n)
   nlinarith
 
 theorem cover_holds : Cover := by

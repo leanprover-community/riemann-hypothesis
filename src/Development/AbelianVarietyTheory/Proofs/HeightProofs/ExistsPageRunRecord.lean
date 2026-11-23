@@ -145,7 +145,7 @@ theorem G_le (T : ParamsT D L P) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) :
   have a1 : 40 * ((T.Dp : ℝ) + 2) ≤ T.TO := by exact_mod_cast T.TO_40
   have a2 : 2 * (D.R.r : ℝ) ≤ T.TO := by
     have := T.TO_nW
-    exact_mod_cast (by omega : 2 * D.R.r ≤ T.TO)
+    exact_mod_cast (omega : 2 * D.R.r ≤ T.TO)
   have a3 : (0 : ℝ) ≤ T.Dp := Nat.cast_nonneg _
   have a4 : (0 : ℝ) ≤ D.R.r := Nat.cast_nonneg _
   have a5 : (0 : ℝ) ≤ D.R.t := Nat.cast_nonneg _
@@ -189,7 +189,7 @@ theorem sigPar_gap (P : ParameterChoice' D L) (τ : D.what₂.Tau) {G : ℝ} (g1
       have a3 := (abs_le.1 (L.be_close τ ⟨i + 1 - (D.R.k - 1), by omega⟩ ⟨1 - 1, by omega⟩)).1
       have a4 : (2 : ℝ) ≤ D.R.t := by
         have := D.R.rank_add_five_le
-        exact_mod_cast (by omega : 2 ≤ D.R.t)
+        exact_mod_cast (omega : 2 ≤ D.R.t)
       have a5 := h0_le_etaSz L
       have a6 := mul_le_mul_of_nonneg_right a4 L.etaSz_pos.le
       push_cast at a3 ⊢
@@ -506,7 +506,7 @@ theorem pageRun_record (T : ParamsT D L P) (hK : DV.KapDef D) (S : SizesAt L) (h
   have hfk : (D.R.f : ℝ) ≤ D.R.k := by exact_mod_cast f_le_k D
   have hmk : (D.R.m : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : D.R.m ≤ D.R.k)
+    exact_mod_cast (omega : D.R.m ≤ D.R.k)
   have hfm : (D.R.f : ℝ) * (D.R.m : ℝ) ^ 3 ≤ (D.R.k : ℝ) ^ 4 := by
     calc (D.R.f : ℝ) * (D.R.m : ℝ) ^ 3 ≤ (D.R.k : ℝ) * (D.R.k : ℝ) ^ 3 := by gcongr
       _ = (D.R.k : ℝ) ^ 4 := by ring

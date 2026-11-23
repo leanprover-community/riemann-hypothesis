@@ -97,7 +97,7 @@ theorem one_le_b {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Indefini
   obtain ⟨-, -, -, -, -, -, -, -, -, -, -, hgap, -, -⟩ := hs
   have hSc := large₂.Sc_pos
   have hsg : sLen D < gap D 1 := sLen_lt_gap D 1
-  have hg1 : (1 : ℝ) ≤ (gap D 1 : ℝ) := by exact_mod_cast (by omega : 1 ≤ gap D 1)
+  have hg1 : (1 : ℝ) ≤ (gap D 1 : ℝ) := by exact_mod_cast (omega : 1 ≤ gap D 1)
   have hm0 : (0 : ℝ) ≤ (D.R.m : ℝ) := Nat.cast_nonneg _
   nlinarith
 

@@ -57,7 +57,7 @@ theorem log_add_log_le_of_mul_le_mul (a b c d e : ℕ) (ha : 1 ≤ a) (hb : 1 �
       linarith
     · have : a * b ≤ e * d := h.trans (Nat.mul_le_mul_right d hce)
       exact_mod_cast this
-  rwa [Real.log_mul (by exact_mod_cast (by omega : a ≠ 0)) (by exact_mod_cast (by omega : b ≠ 0)),
+  rwa [Real.log_mul (by exact_mod_cast (omega : a ≠ 0)) (by exact_mod_cast (omega : b ≠ 0)),
     Real.log_mul (by exact_mod_cast he) (by exact_mod_cast hd)] at h1
 
 theorem lc_add_div_sub_le : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (D : ℕ),

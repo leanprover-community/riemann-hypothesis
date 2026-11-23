@@ -89,7 +89,7 @@ theorem exists_sec_ne_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   intro E _ _ _ X s hs hs0 q hq v
   obtain ⟨m, rfl⟩ : ∃ m, q = m + 1 := ⟨q - 1, by omega⟩
   obtain ⟨p, hp⟩ := Function.ne_iff.mp hs0
-  have hm : (m : ℂ) ≠ 0 := by exact_mod_cast (by omega : m ≠ 0)
+  have hm : (m : ℂ) ≠ 0 := by exact_mod_cast (omega : m ≠ 0)
   obtain ⟨t, h1, h2⟩ := exists_ne_zero_pair (fun t : ℂ => s (v + t • (p - v)))
     (hs.1.comp (by fun_prop)) (by simpa using hp) m hm
   refine ⟨_, prod_translate_mem X s hs m (t • (p - v)), ?_⟩

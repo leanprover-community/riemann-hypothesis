@@ -55,7 +55,7 @@ theorem szRow_sizeNodes : SzRow (fun _ _ L => SizeNodes L) := by
     have : D.R.n ≤ D.R.f := by unfold Ranks.f; omega
     exact_mod_cast this
   have hm2 := D.R.two_le_m
-  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hMN : (D.R.r : ℝ) + D.R.m * D.R.t ≤ D.R.N D.R.m := by
     have : D.R.r + D.R.m * D.R.t ≤ D.R.N D.R.m := by
       unfold Ranks.N Ranks.r

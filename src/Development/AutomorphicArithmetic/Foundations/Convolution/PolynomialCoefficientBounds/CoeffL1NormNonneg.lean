@@ -95,7 +95,7 @@ theorem UpperTheory.ConvolutionTheory.FX.generators0 :
   refine ⟨K + M, fun k P hP hinv => ?_⟩
   set N : ℕ := Fintype.card (τ → Equiv.Perm (Fin n)) with hN
   have hN1 : 1 ≤ N := Fintype.card_pos
-  have hNC : (N : ℂ) ≠ 0 := by exact_mod_cast (by omega : N ≠ 0)
+  have hNC : (N : ℂ) ≠ 0 := by exact_mod_cast (omega : N ≠ 0)
   have hmon : ∀ α, aeval (fun ti : τ × Fin n => rename (fun j => (ti.1, j)) (esymm (Fin n) ℂ (ti.2 + 1)))
       (∑ β, G α β * F β) = ∑ w : τ → Equiv.Perm (Fin n),
         rename (fun ti : τ × Fin n => (ti.1, w ti.1 ti.2)) (monomial α (1 : ℂ)) := by

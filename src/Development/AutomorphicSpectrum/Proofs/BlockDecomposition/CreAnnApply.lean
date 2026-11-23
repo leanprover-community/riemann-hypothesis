@@ -217,7 +217,7 @@ theorem acycQ (lev : Fin n → ℕ) (E1 E2 : Fin n → Fin n → Module.End ℂ 
         | zero => exact fun y _ hy => ihk y fun A => by simpa [GlobalTheory.CompanionTheory.DSICKoszul.filt] using hy A
         | succ m ih =>
           intro y hy1 hy2 hs hd hc
-          have hne : ((m : ℂ) + (j + 1 : ℕ)) ≠ 0 := by exact_mod_cast (by omega : m + (j + 1) ≠ 0)
+          have hne : ((m : ℂ) + (j + 1 : ℕ)) ≠ 0 := by exact_mod_cast (omega : m + (j + 1) ≠ 0)
           have hHy := hHs y hs hd
           have hbs : SuppQ (inUL lev) (bdq E1 E2 y) := bd_supp E1 E2 (cq_closed (inUL_sub lev)) hs
           have hL : ∀ A, (bdq E1 E2 (H y) - Da (H y)) A + H (bdq E1 E2 y - Da y) A ∈ G k := fun A =>

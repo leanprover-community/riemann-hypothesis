@@ -81,7 +81,7 @@ theorem ConeMeetNull.null_of_mem_not_mem (hZ : ZeroLocusDimH.Statement) {n e : �
   have hlt : dimH (coneBall h W ∩ coneBall h W') < (((2 * (e + 1) : ℕ) : NNReal) : ENNReal) := by
     refine hdimH.trans_lt ?_
     rw [ENNReal.coe_natCast]
-    exact_mod_cast (by omega : 2 * e < 2 * (e + 1))
+    exact_mod_cast (omega : 2 * e < 2 * (e + 1))
   rw [show ((2 * (e + 1) : ℕ) : ℝ) = (((2 * (e + 1) : ℕ) : NNReal) : ℝ) from
     (NNReal.coe_natCast _).symm]
   exact hausdorffMeasure_of_dimH_lt hlt

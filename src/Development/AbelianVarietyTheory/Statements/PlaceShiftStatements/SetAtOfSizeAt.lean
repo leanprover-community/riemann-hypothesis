@@ -92,12 +92,12 @@ theorem gap_le (D : D7) (B : ℝ) (hB : 1 ≤ B) (hc : Real.sqrt (cloudLen D) �
     nlinarith
   have hn : nRk D ≤ t := by unfold nRk; omega
   have hs : sLen D ≤ 2 * t := by unfold sLen; omega
-  have t1 : (132 : ℝ) ≤ t := by exact_mod_cast (by omega : 132 ≤ t)
+  have t1 : (132 : ℝ) ≤ t := by exact_mod_cast (omega : 132 ≤ t)
   have hN' : (bigN D : ℝ) ≤ 5 * (t : ℝ) ^ 2 := by exact_mod_cast hN
   have hn' : (nRk D : ℝ) ≤ t := by exact_mod_cast hn
   have hs' : (sLen D : ℝ) ≤ 2 * t := by exact_mod_cast hs
-  have hm' : (D.R.m : ℝ) ≤ t := by exact_mod_cast (by omega : D.R.m ≤ t)
-  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : 1 ≤ D.R.m)
+  have hm' : (D.R.m : ℝ) ≤ t := by exact_mod_cast (omega : D.R.m ≤ t)
+  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have a1 : (bigN D : ℝ) ^ 3 ≤ (t : ℝ) ^ 7 := by
     calc (bigN D : ℝ) ^ 3 ≤ (5 * (t : ℝ) ^ 2) ^ 3 := pow_le_pow_left₀ (by positivity) hN' 3
       _ = 125 * (t : ℝ) ^ 6 := by ring
@@ -248,13 +248,13 @@ theorem sizeRows_of (P : ParameterChoice' D L) (T : ParamsT D L P) (hC : P.CnW =
   have r5 : D.R.f = 2 * D.R.n := rfl
   have r6 : D.R.r = D.R.k + D.R.m - 1 := rfl
   have n1 : 1 ≤ D.R.n := D.R.n_pos'
-  have kt : (D.R.k : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.k ≤ D.R.t)
-  have nt : (D.R.n : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.n ≤ D.R.t)
-  have ft : (D.R.f : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : D.R.f ≤ D.R.t)
-  have mt : (D.R.m : ℝ) + 1 ≤ D.R.t := by exact_mod_cast (by omega : D.R.m + 1 ≤ D.R.t)
-  have t132 : (132 : ℝ) ≤ D.R.t := by exact_mod_cast (by omega : 132 ≤ D.R.t)
+  have kt : (D.R.k : ℝ) ≤ D.R.t := by exact_mod_cast (omega : D.R.k ≤ D.R.t)
+  have nt : (D.R.n : ℝ) ≤ D.R.t := by exact_mod_cast (omega : D.R.n ≤ D.R.t)
+  have ft : (D.R.f : ℝ) ≤ D.R.t := by exact_mod_cast (omega : D.R.f ≤ D.R.t)
+  have mt : (D.R.m : ℝ) + 1 ≤ D.R.t := by exact_mod_cast (omega : D.R.m + 1 ≤ D.R.t)
+  have t132 : (132 : ℝ) ≤ D.R.t := by exact_mod_cast (omega : 132 ≤ D.R.t)
   have n1' : (1 : ℝ) ≤ D.R.n := by exact_mod_cast n1
-  have k4 : (4 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 4 ≤ D.R.k)
+  have k4 : (4 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 4 ≤ D.R.k)
   have q1 : (1 : ℝ) ≤ D.host.q := by exact_mod_cast D.host.hyp.1.one_le
   have d1 : (1 : ℝ) ≤ D.host.d := by exact_mod_cast D.host.hyp.2.1.one_le
   have cE : (LevelStarExponents.condE D : ℝ) = D.host.QS * D.host.q * D.host.d := by unfold LevelStarExponents.condE; push_cast; ring

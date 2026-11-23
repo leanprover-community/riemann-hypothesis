@@ -79,7 +79,7 @@ theorem withBot_natCast_le_of_add_one_le {k : ℕ} {D : WithBot ℕ∞}
     | top => exact WithBot.coe_le_coe.2 le_top
     | coe n =>
       have h' : k + 1 ≤ n + 1 := by exact_mod_cast h
-      exact_mod_cast (by omega : k ≤ n)
+      exact_mod_cast (omega : k ≤ n)
 
 theorem spanFinrank_span_range_le {R : Type*} [CommRing R] {k : ℕ} (z : Fin k → R) :
     (Ideal.span (Set.range z)).spanFinrank ≤ k := by

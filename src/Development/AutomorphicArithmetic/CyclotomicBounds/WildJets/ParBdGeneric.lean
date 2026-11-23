@@ -176,9 +176,9 @@ theorem UpperTheory.WildA.parBd :
       rw [hb] at p1' g''
       rw [he] at p2 g''
       exact ⟨p1', g'', p2⟩
-    · have : (D.R.t : ℝ) ≤ bigN D := by exact_mod_cast (by omega : D.R.t ≤ bigN D)
+    · have : (D.R.t : ℝ) ≤ bigN D := by exact_mod_cast (omega : D.R.t ≤ bigN D)
       exact this.trans hN
-    · have : (sLen D : ℝ) ≤ bigN D := by exact_mod_cast (by omega : sLen D ≤ bigN D)
+    · have : (sLen D : ℝ) ≤ bigN D := by exact_mod_cast (omega : sLen D ≤ bigN D)
       exact this.trans hN
   intro x hx
   cases X with

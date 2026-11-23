@@ -135,7 +135,7 @@ theorem norm_coeff_subst_sub {r : ℝ} (hr : 0 ≤ r) {A B : MvPowerSeries ι K}
     by_contra hlt
     refine hm ?_
     have : MvPowerSeries.coeff d (A ^ m) = 0 :=
-      MvPowerSeries.coeff_of_lt_order (lt_of_lt_of_le (by exact_mod_cast (by omega : d.degree < m))
+      MvPowerSeries.coeff_of_lt_order (lt_of_lt_of_le (by exact_mod_cast (omega : d.degree < m))
         (MvPowerSeries.le_order_pow_of_constantCoeff_eq_zero m hA))
     simp [this]
 

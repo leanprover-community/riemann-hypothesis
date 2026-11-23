@@ -169,7 +169,7 @@ theorem hat_approx {n M : ℕ} (hM : 1 ≤ M) {L : Set (Fin n → E)}
   induction hz using AddSubgroup.closure_induction with
   | mem z hz =>
     obtain ⟨a, ha, x, hx, rfl⟩ := hz
-    obtain ⟨b, y, hy, e⟩ := Formalism.UG.P.integral_adele_approximation_holds F (M : 𝓞 F) (by exact_mod_cast (by omega : M ≠ 0)) a ha
+    obtain ⟨b, y, hy, e⟩ := Formalism.UG.P.integral_adele_approximation_holds F (M : 𝓞 F) (by exact_mod_cast (omega : M ≠ 0)) a ha
     refine ⟨algebraMap F E (b : F) • x, hL b x hx, fun i => y ⊗ₜ[F] x i,
       AddSubgroup.subset_closure ⟨y, hy, x, hx, rfl⟩, ?_⟩
     funext i

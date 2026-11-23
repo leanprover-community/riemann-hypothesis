@@ -228,7 +228,7 @@ theorem tendsto_rhoR (s : ℕ) (σ : ℂ) : Tendsto (rhoR s σ) (cocompact ℂ) 
 theorem tendsto_shift (s : ℕ) (hs : 1 ≤ s) (σ : ℂ) :
     Tendsto (fun x => (s : ℂ) * (rhoR s σ x * (x + σ) - x)) (cocompact ℂ) (𝓝 σ) := by
   set a : ℂ := ((s - 1 : ℕ) : ℂ) * (s : ℂ)⁻¹ with ha
-  have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast (by omega : s ≠ 0)
+  have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast (omega : s ≠ 0)
   have hsa : (s : ℂ) * (1 - a) = 1 := by
     rw [ha, Nat.cast_sub hs]
     field_simp

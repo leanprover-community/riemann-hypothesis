@@ -108,9 +108,9 @@ theorem qd_le_lStar {D : D7} (L : SizeData₂ D) (P : ParameterChoice' D L) :
   have hc := P.condE_le
   rw [← Real.sqrt_eq_rpow] at hc
   have hq1 : (1 : ℝ) ≤ D.host.q := by
-    have := D.host.qd_big.1; exact_mod_cast (by omega : 1 ≤ D.host.q)
+    have := D.host.qd_big.1; exact_mod_cast (omega : 1 ≤ D.host.q)
   have hd1 : (1 : ℝ) ≤ D.host.d := by
-    have := D.host.qd_big.2; exact_mod_cast (by omega : 1 ≤ D.host.d)
+    have := D.host.qd_big.2; exact_mod_cast (omega : 1 ≤ D.host.d)
   have hpos' : 0 < LevelStarExponents.condE D :=
     Nat.mul_pos (Nat.mul_pos D.host.QS_pos D.host.hyp.1.pos) D.host.hyp.2.1.pos
   have hqE : (D.host.q : ℝ) ≤ LevelStarExponents.condE D := by

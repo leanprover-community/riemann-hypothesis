@@ -50,7 +50,7 @@ theorem log_card_comp_le_of_rows : ∀ (D : D7) (T : Top D) (_h : LawsP T) (larg
   have hMg : T.Q.l.M = D.host.g 0 * D.host.g 1 := h.pins.2.1.1
   have hfd : FD.fdeg D.host.E = D.R.f := by
     unfold FD.fdeg; rw [hfin]; omega
-  have hfR : (0 : ℝ) < D.R.f := by exact_mod_cast (by omega : 0 < D.R.f)
+  have hfR : (0 : ℝ) < D.R.f := by exact_mod_cast (omega : 0 < D.R.f)
   have hdisc : 0 < |((NumberField.discr D.host.E : ℤ) : ℝ)| :=
     abs_pos.2 (by exact_mod_cast NumberField.discr_ne_zero D.host.E)
   have hdE : Real.log (FD.dE D.host.E) ≤ 4 * FD.fdeg D.host.E * large₂.sc.L := by

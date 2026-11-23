@@ -49,7 +49,7 @@ theorem pos_add {x y : WithTop ℤ} (hx : 0 ≤ x) (hy : 0 < y) : 0 < x + y := b
     | coe k =>
       have h1 : (0:ℤ) ≤ m := by exact_mod_cast hx
       have h2 : (0:ℤ) < k := by exact_mod_cast hy
-      exact_mod_cast (by omega : (0:ℤ) < m + k)
+      exact_mod_cast (omega : (0:ℤ) < m + k)
 
 variable {K : Type} [Field K] [NumberField K] (Pl : Rows.Places K) (w : Pl.Pl)
 

@@ -104,7 +104,7 @@ def HfInt (T : Tor D) (La' : AddSubgroup (VC D N N')) : Prop :=
 theorem sqrt_d_pos (D : Car) : 0 < Real.sqrt D.host.d := by
   first
   | exact Real.sqrt_pos.mpr (Nat.cast_pos.mpr (Nat.zero_lt_of_lt D.host.qd_big.2))
-  | (apply Real.sqrt_pos.mpr; have h := D.host.qd_big.2; exact_mod_cast (by omega : 0 < D.host.d))
+  | (apply Real.sqrt_pos.mpr; have h := D.host.qd_big.2; exact_mod_cast (omega : 0 < D.host.d))
 
 theorem Hf_add_right (T : Tor D) (x y y' : VC D N N') :
     Hf D T x (y + y') = Hf D T x y + Hf D T x y' := by

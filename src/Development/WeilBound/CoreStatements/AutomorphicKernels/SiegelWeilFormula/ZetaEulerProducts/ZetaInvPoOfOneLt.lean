@@ -94,7 +94,7 @@ theorem lOrd_even (σ : E →ₐ[F] E) (h : IsCMExt F E σ) (S : Finset (HeightO
       have hre : 1 < (j : ℂ).re := by
         obtain ⟨k, hk⟩ := hj
         simp only [Complex.intCast_re]
-        exact_mod_cast (by omega : (1 : ℤ) < j)
+        exact_mod_cast (omega : (1 : ℤ) < j)
       have hP := (zeta_inv_po_of_one_lt F hre).mul
         (PO.prod S (fun v s => (1 - (Ideal.absNorm v.asIdeal : ℂ) ^ (-s))⁻¹) (fun _ => if j = 0 then 1 else 0)
           fun v _ => (factorF_zo v j).inv)
@@ -219,13 +219,13 @@ theorem lOrd_odd (σ : E →ₐ[F] E) (h : IsCMExt F E σ) (S : Finset (HeightOn
         exact ((hZ.mul hPg).mul hPf).mono (by norm_num)
       · have hre : 1 < (j : ℂ).re := by
           simp only [Complex.intCast_re]
-          exact_mod_cast (by omega : (1 : ℤ) < j)
+          exact_mod_cast (omega : (1 : ℤ) < j)
         have hj1c : (j : ℂ) ≠ 1 := by exact_mod_cast hj1'
         have hZ := (zeta_inv_po_of_one_lt E hre).mul (PO.of_analytic (zeta_analyticAt F hj1c))
         exact ((hZ.mul hPg).mul hPf).mono (by norm_num)
     · rw [if_neg hj1, if_neg hj0]
       have hle : j ≤ 0 := by omega
-      have hj1c : (j : ℂ) ≠ 1 := by exact_mod_cast (by omega : j ≠ 1)
+      have hj1c : (j : ℂ) ≠ 1 := by exact_mod_cast (omega : j ≠ 1)
       have hZ := ((zeta_zo_nonpos E j hle).inv).mul (PO.of_analytic (zeta_analyticAt F hj1c))
       refine ((hZ.mul hPg).mul hPf).mono ?_
       simp [hEr, hEc, hj, hj0]

@@ -90,7 +90,7 @@ theorem exists_small_inv (K : Type) [Field K] [NumberField K] [_root_.NumberFiel
     · exact e
   have hrd : rdE K ^ (2 * c) = |(discr K : ℝ)| := by
     unfold rdE dE
-    rw [← Real.rpow_natCast, ← Real.rpow_mul hd.le, hn, one_div_mul_cancel (by exact_mod_cast (by omega : 2 * c ≠ 0)),
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hd.le, hn, one_div_mul_cancel (by exact_mod_cast (omega : 2 * c ≠ 0)),
       Real.rpow_one]
   have hrd0 : 0 < rdE K := Real.rpow_pos_of_pos hd _
   obtain ⟨s, hs⟩ : ∃ s, s = Real.sqrt |(discr K : ℝ)| := ⟨_, rfl⟩

@@ -68,7 +68,7 @@ theorem meanInf_affine (K : Type) [Field K] [NumberField K] (a0 nD Gd : ℝ) (f 
   have hc : (Fintype.card (InfinitePlace K) : ℝ) ≤ Module.finrank ℚ K := by
     have h1 := InfinitePlace.card_add_two_mul_card_eq_rank K
     have h2 := InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces (K := K)
-    exact_mod_cast (by omega : Fintype.card (InfinitePlace K) ≤ Module.finrank ℚ K)
+    exact_mod_cast (omega : Fintype.card (InfinitePlace K) ≤ Module.finrank ℚ K)
   have h3 : 2 / (Module.finrank ℚ K : ℝ) * ((Fintype.card (InfinitePlace K) : ℝ) * a0) ≤ 2 * a0 := by
     rw [div_mul_eq_mul_div, div_le_iff₀ hn]
     nlinarith

@@ -115,7 +115,7 @@ lemma lt_meromorphicOrderAt_of_eventuallyEq {f w : ℂ → ℂ} {x : ℂ} {n : �
   | coe m =>
     rw [ho] at hpos
     have : (1 : ℤ) ≤ m := by exact_mod_cast hpos
-    exact_mod_cast (by omega : n < n + m)
+    exact_mod_cast (omega : n < n + m)
 
 private lemma coe_add_one_le_of_lt {o : ℤ} {x : WithTop ℤ} (h : (o : WithTop ℤ) < x) :
     ((o + 1 : ℤ) : WithTop ℤ) ≤ x := by
@@ -123,7 +123,7 @@ private lemma coe_add_one_le_of_lt {o : ℤ} {x : WithTop ℤ} (h : (o : WithTop
   | top => exact le_top
   | coe m =>
     have : o < m := by exact_mod_cast h
-    exact_mod_cast (by omega : o + 1 ≤ m)
+    exact_mod_cast (omega : o + 1 ≤ m)
 
 lemma even_of_meromorphicOrderAt_eq {f : ℂ → ℂ} (hf : MeromorphicAt f 0)
     (he : ∀ z, f (-z) = f z) {n : ℤ} (hn : meromorphicOrderAt f 0 = n) : Even n := by
@@ -324,7 +324,7 @@ theorem exists_polynomial_div_of_even {f : ℂ → ℂ} (hf : IsEllipticFunction
       meromorphicOrderAt (fun w ↦ Q.eval (℘[L] w) * f w) 0 := by
     cases h : meromorphicOrderAt (fun w ↦ Q.eval (℘[L] w) * f w) 0 with
     | top => exact ⟨0, le_top⟩
-    | coe o => exact ⟨o.natAbs, by exact_mod_cast (by omega : -(o.natAbs : ℤ) ≤ o)⟩
+    | coe o => exact ⟨o.natAbs, by exact_mod_cast (omega : -(o.natAbs : ℤ) ≤ o)⟩
   obtain ⟨P, hP⟩ := exists_polynomial_of_even_of_analyticAt_off_lattice n
     (g := fun w ↦ Q.eval (℘[L] w) * f w)
     (fun z ↦ by

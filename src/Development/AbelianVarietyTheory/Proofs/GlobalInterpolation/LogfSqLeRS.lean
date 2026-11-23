@@ -134,7 +134,7 @@ theorem szRow_logf : SzRow (fun C D L => (Real.log D.R.f ≤ Real.sqrt D.R.rS) �
     nlinarith
   · unfold nW
     rw [hW]
-    have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+    have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (omega : 1 ≤ D.R.k)
     have hk0 : (0 : ℝ) ≤ (D.R.k : ℝ) - 1 := by linarith
     have h2 : 0 ≤ (D.R.f : ℝ) ^ 2 * ((D.R.k : ℝ) - 1) ^ 3 * L.sc.L ^ 2 / D.R.m := by positivity
     have hr0 : (0 : ℝ) ≤ D.R.r := by positivity

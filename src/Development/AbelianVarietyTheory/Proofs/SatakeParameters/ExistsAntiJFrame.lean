@@ -300,7 +300,7 @@ theorem satU_indep (hU : IsUnramInv ϖ σ q) (s : Finset (List ℤ)) (c : List �
   classical
   have hq : (q : ℂ) ≠ 0 := by
     have := hU.2.2.2.2.2.1
-    exact_mod_cast (by omega : q ≠ 0)
+    exact_mod_cast (omega : q ≠ 0)
   have hA : (⋃ d ∈ (s : Set (List ℤ)), {a | cnt σ n ϖ d a ≠ 0}).Finite :=
     s.finite_toSet.biUnion fun d hd => finite_cnt hU (hs d hd)
   have hz : ∀ a ∈ hA.toFinset, (∏ i : Fin (n / 2), (q : ℂ) ^ (-(a i) * ((n : ℤ) - 1 - 2 * (i.val : ℤ)))) *

@@ -93,7 +93,7 @@ theorem ra_cond {D : D7} (L : SizeData₂ D) (S : SizesAt L) (hx : 3 ≤ L.sc.x)
   have htk : (D.R.k : ℝ) + 6 ≤ D.R.t := by
     have h9 := D.R.rank_add_five_le
     have h10 := D.R.two_le_m
-    exact_mod_cast (by omega : D.R.k + 6 ≤ D.R.t)
+    exact_mod_cast (omega : D.R.k + 6 ≤ D.R.t)
   have ht1 : (1 : ℝ) ≤ D.R.t := by
     have : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
     linarith
@@ -179,7 +179,7 @@ theorem ra_Sc {D : D7} (L : SizeData₂ D) (P : ParameterChoice' D L) (S : Sizes
   have hk5 : (5 : ℝ) ≤ D.R.k := by
     have h2 := D.R.m_add_three_le_k
     have h3 := D.R.two_le_m
-    exact_mod_cast (by omega : 5 ≤ D.R.k)
+    exact_mod_cast (omega : 5 ≤ D.R.k)
   have hn1 : (1 : ℝ) ≤ D.R.n := by
     have h4 : 1 ≤ D.R.n := by
       show 1 ≤ D.R.ord

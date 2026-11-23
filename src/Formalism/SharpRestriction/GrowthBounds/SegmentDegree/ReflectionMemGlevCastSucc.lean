@@ -89,9 +89,9 @@ theorem basics (hX : X.Hyp p K) : Basics X p K := by
   have hQ := hX.twist 0 _ hw
   refine ⟨by linarith, by exact_mod_cast hNs, ?_, ?_, ?_, hX.Y1⟩
   · unfold Dat.k
-    exact_mod_cast (by omega : 5 ≤ r + K)
+    exact_mod_cast (omega : 5 ≤ r + K)
   · unfold Dat.k
-    exact_mod_cast (by omega : r ≤ r + K)
+    exact_mod_cast (omega : r ≤ r + K)
   · exact le_trans (one_le_pow₀ (by linarith : (1 : ℝ) ≤ p)) hQ
 
 def Tj (X : Dat n' r) (p K : ℕ) (j : ℤ) : ℝ :=

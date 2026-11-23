@@ -106,10 +106,10 @@ theorem dirichlet_series_unbounded : LandauL → NewtonLow → EulerLog → Remo
   set l : W × ℕ → ℝ := ll q with hl
   have hq : ∀ w, (0 : ℝ) < q w := fun w => by
     have := hS.primes.two w
-    exact_mod_cast (by omega : 0 < q w)
+    exact_mod_cast (omega : 0 < q w)
   have hq1 : ∀ w, (1 : ℝ) ≤ q w := fun w => by
     have := hS.primes.two w
-    exact_mod_cast (by omega : 1 ≤ q w)
+    exact_mod_cast (omega : 1 ≤ q w)
   have hc0 : ∀ p, 0 ≤ c p := fun p => cc_nonneg A x p
   have hl0 : ∀ p, 0 ≤ l p := fun p => mul_nonneg (by positivity) (Real.log_nonneg (hq1 p.1))
   have hpt : ∀ (σ : ℝ) p, ∑ i, ∑ j, lterm q (A (x i)) (A (x j)) σ p = ((c p * Real.exp (-(l p * σ)) : ℝ) : ℂ) :=

@@ -135,7 +135,7 @@ theorem boundA_le (CA η Sc b : ℝ) (l n r t m f : ℕ) (hl : 2 ≤ l) (hη : 0
   have e4 : (1 : ℝ) ≤ ((⌊2 * b⌋₊ : ℕ) : ℝ) := by
     have : 1 ≤ ⌊2 * b⌋₊ := Nat.le_floor (by push_cast; linarith)
     exact_mod_cast this
-  have hl' : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl' : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have e5 : 0 ≤ Real.logb (l : ℝ) ((⌊2 * b⌋₊ : ℕ) : ℝ) := Real.logb_nonneg hl' e4
   have e6 : Real.logb (l : ℝ) ((⌊2 * b⌋₊ : ℕ) : ℝ) ≤ Real.logb (l : ℝ) (2 * b) :=
     Real.logb_le_logb_of_le hl' (by linarith) e3

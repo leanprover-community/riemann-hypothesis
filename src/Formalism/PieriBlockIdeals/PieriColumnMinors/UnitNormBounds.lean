@@ -188,7 +188,7 @@ theorem boxesOfLabel_le_bound (k j t w M i : ℕ) (lam : Fin (k + j) → ℕ) (x
       exact_mod_cast h1
     have h3 := counts_deep_holds k j t w M i lam xm xp hR tau htau ct hct
     have h3' : (cloudBoxes k j t w M lam tau ct : ℝ) * ((xm - ct : ℤ) : ℝ) ≤ (i : ℝ) := by exact_mod_cast h3
-    have hpos : (0 : ℝ) < ((xm - ct : ℤ) : ℝ) := by exact_mod_cast (by omega : (0 : ℤ) < xm - ct)
+    have hpos : (0 : ℝ) < ((xm - ct : ℤ) : ℝ) := by exact_mod_cast (omega : (0 : ℤ) < xm - ct)
     have h4 : (cloudBoxes k j t w M lam tau ct : ℝ) ≤ (i : ℝ) / ((xm - ct : ℤ) : ℝ) := (le_div_iff₀ hpos).mpr h3'
     have h5 := le_min (le_min hk ht) h4
     linarith
@@ -212,7 +212,7 @@ theorem multiplicity_bound_holds : MuBound := by
     rw [h0]
     refine add_nonneg (by split_ifs <;> positivity) (le_min (le_min (Nat.cast_nonneg _) (Nat.cast_nonneg _)) ?_)
     split_ifs with hct
-    · exact div_nonneg (Nat.cast_nonneg _) (by exact_mod_cast (by omega : (0 : ℤ) ≤ xm - ct))
+    · exact div_nonneg (Nat.cast_nonneg _) (by exact_mod_cast (omega : (0 : ℤ) ≤ xm - ct))
     · exact Nat.cast_nonneg _
 
 theorem mem_label_interval_of_mu_ne_zero (k j t w M i : ℕ) (lam : Fin (k + j) → ℕ) (xm xp : ℤ) (hR : Rows k j t w M lam xm xp)
@@ -464,7 +464,7 @@ theorem label_sum_plus_holds : LabelSumPlus := by
     rw [if_pos hlh, add_zero]
     refine add_nonneg (mul_nonneg (Nat.cast_nonneg _) (add_nonneg (div_nonneg ?_ (Nat.cast_nonneg _))
       (indexIntegral_nonneg _ _ _ _))) (gated_min_nonneg l k t i hi _)
-    exact_mod_cast (by omega : (0 : ℤ) ≤ xp - xm)
+    exact_mod_cast (omega : (0 : ℤ) ≤ xp - xm)
   · have h1 := labelSumLe_holds l k t h i (xm - mB) (xp - mB) 0 hl hi le_rfl (by omega) (by omega) (by omega) hh
       (by omega)
     rw [← labelLHS_shift_to_zero] at h1
@@ -487,7 +487,7 @@ theorem harmonic_monotone (l h : ℕ) : Monotone (harm l h) := by
       · have hl0 : (0 : ℝ) < (l : ℝ) := by exact_mod_cast h0
         refine Real.log_nonneg ?_
         rw [le_div_iff₀ hl0, one_mul]
-        exact_mod_cast (by omega : l ≤ h)
+        exact_mod_cast (omega : l ≤ h)
     exact mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right hab (Nat.cast_nonneg _)) (by linarith)
 
 theorem gated_min_monotone (l k t : ℕ) (D : ℤ) {a b : ℝ} (hab : a ≤ b) :
@@ -569,7 +569,7 @@ theorem second_valuation_up_to_holds : Step2ValUpTo := by
     linarith
   have hD : ((xm - maxB t w : ℤ) : ℝ) ≤ (h : ℝ) := by
     have := hR.le
-    exact_mod_cast (by omega : xm - maxB t w ≤ (h : ℤ))
+    exact_mod_cast (omega : xm - maxB t w ≤ (h : ℤ))
   have h3 : (((xm - maxB t w : ℤ) : ℝ) - 1) / ((l : ℝ) - 1) ≤ ((h : ℝ) - 1) / ((l : ℝ) - 1) :=
     div_le_div_of_nonneg_right (by linarith) hl1
   have h4 := mul_le_mul_of_nonneg_left h3 (Nat.cast_nonneg j : (0 : ℝ) ≤ (j : ℝ))

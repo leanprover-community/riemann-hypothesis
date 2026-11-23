@@ -121,10 +121,10 @@ theorem exists_sizeData_explicit : ∀ (eps : ℝ) (C : FC) (cD ch : ℝ), 0 < e
   have hDelR : ((D.s.Del : ℚ) : ℝ) = (Delv s cD : ℝ) := by rw [hDel]; norm_cast
   have hkp : (0 : ℝ) < D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 0 < D.R.k)
+    exact_mod_cast (omega : 0 < D.R.k)
   have hmp : (0 : ℝ) < D.R.m := by
     have := D.R.two_le_m
-    exact_mod_cast (by omega : 0 < D.R.m)
+    exact_mod_cast (omega : 0 < D.R.m)
   have hnp : (0 : ℝ) < D.R.n := by
     unfold Ranks.n
     exact_mod_cast D.R.ord_pos
@@ -132,7 +132,7 @@ theorem exists_sizeData_explicit : ∀ (eps : ℝ) (C : FC) (cD ch : ℝ), 0 < e
   have hh0 : (0 : ℝ) < (h0v s ch : ℝ) := by
     have : 0 < ⌈s.x ^ ch⌉₊ := Nat.ceil_pos.mpr (Real.rpow_pos_of_pos hxp _)
     unfold h0v
-    exact_mod_cast (by omega : 0 < 2 * ⌈s.x ^ ch⌉₊)
+    exact_mod_cast (omega : 0 < 2 * ⌈s.x ^ ch⌉₊)
   have hDp : (0 : ℝ) < (Delv s cD : ℝ) := by
     rw [← hDelR]; exact_mod_cast D.s.Del_pos
   let L : SizeData₂ D :=

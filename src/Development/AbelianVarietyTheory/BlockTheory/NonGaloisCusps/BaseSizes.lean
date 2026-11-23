@@ -151,9 +151,9 @@ theorem zetaP_eq (D : D7) (i : D.nd.Loc) (P : HeightOneSpectrum (𝓞 D.host.E))
   simp [h1]
 
 theorem lStar_pos {D : D7} (L : SizeData₂ D) : 0 < LevelStarExponents.lStar L := by
-  have hm : (0 : ℝ) < D.R.m := by have := D.R.two_le_m; exact_mod_cast (by omega : 0 < D.R.m)
+  have hm : (0 : ℝ) < D.R.m := by have := D.R.two_le_m; exact_mod_cast (omega : 0 < D.R.m)
   have hk : (0 : ℝ) < D.R.k := by
-    have := D.R.m_add_three_le_k; exact_mod_cast (by omega : 0 < D.R.k)
+    have := D.R.m_add_three_le_k; exact_mod_cast (omega : 0 < D.R.k)
   have hn : (0 : ℝ) < D.R.n := by
     have := D.R.two_le_m
     have := D.R.m_le_f

@@ -52,7 +52,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem dvd_of_forall_mem (g : ℕ) (hg : 1 ≤ g) (hr : (Ideal.span {(g : 𝓞 E)}).IsRadical)
     (b : 𝓞 E) (hb : ∀ PP : Pl E, (g : 𝓞 E) ∈ PP.asIdeal → b ∈ PP.asIdeal) : (g : 𝓞 E) ∣ b := by
-  have hg0 : (g : 𝓞 E) ≠ 0 := by exact_mod_cast (by omega : g ≠ 0)
+  have hg0 : (g : 𝓞 E) ≠ 0 := by exact_mod_cast (omega : g ≠ 0)
   rw [← Ideal.mem_span_singleton]
   refine hr ?_
   rw [Ideal.radical_eq_sInf, Submodule.mem_sInf]

@@ -66,15 +66,15 @@ theorem padicValHarmonicPowerSumDivLowerBound : LogCoefVal := by
   have hp1 : 1 < p ^ (t + 1) := Nat.one_lt_pow (Nat.succ_ne_zero t) hp.one_lt
   have hpos : 0 < X := by
     apply mul_pos
-    · have : (0 : ℚ) < ((p ^ (t + 1) : ℕ) : ℚ) := by exact_mod_cast (by omega : 0 < p ^ (t + 1))
+    · have : (0 : ℚ) < ((p ^ (t + 1) : ℕ) : ℚ) := by exact_mod_cast (omega : 0 < p ^ (t + 1))
       positivity
     · apply Finset.sum_pos
       · intro i hi
         have : 1 ≤ i := (Finset.mem_Ico.mp hi).1
-        have : (0 : ℚ) < (i : ℚ) := by exact_mod_cast (by omega : 0 < i)
+        have : (0 : ℚ) < (i : ℚ) := by exact_mod_cast (omega : 0 < i)
         positivity
       · exact ⟨1, Finset.mem_Ico.mpr ⟨le_rfl, hp1⟩⟩
-  have hs0 : (s : ℚ) ≠ 0 := by exact_mod_cast (by omega : s ≠ 0)
+  have hs0 : (s : ℚ) ≠ 0 := by exact_mod_cast (omega : s ≠ 0)
   have key : (s : ℤ) - (padicValNat p s : ℤ) ≤ padicValRat p (X / s) := by
     rw [padicValRat.div (ne_of_gt hpos) hs0, padicValRat.of_nat]
     rw [Nat.padicValNat_def]

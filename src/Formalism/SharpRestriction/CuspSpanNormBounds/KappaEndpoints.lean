@@ -829,7 +829,7 @@ theorem rank_contribution_le {C Ch Cc : ℝ} (hC : 0 ≤ C) (j : ℕ) (hj : j �
     rw [← Real.rpow_mul hb0.le, Real.rpow_def_of_pos hb0, log_scale_eq_L D large₂]
   have hL : 0 < large₂.sc.L := lt_trans one_pos (one_lt_scale_L D large₂)
   have hmR : (2 : ℝ) ≤ D.R.m := by exact_mod_cast D.R.two_le_m
-  have hrm : (D.R.rS : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : D.R.rS ≤ D.R.m)
+  have hrm : (D.R.rS : ℝ) ≤ D.R.m := by exact_mod_cast (omega : D.R.rS ≤ D.R.m)
   have hr0 : (0 : ℝ) ≤ D.R.rS := Nat.cast_nonneg _
   have hr4 : (D.R.rS : ℝ) ^ 4 ≤ (D.R.m : ℝ) ^ 4 := pow_le_pow_left₀ hr0 hrm 4
   have hm4 : (D.R.m : ℝ) ≤ (D.R.m : ℝ) ^ 4 := le_self_pow₀ (by linarith) (by norm_num)

@@ -291,7 +291,7 @@ theorem germ_step (β : ℂ) (hβ : β ≠ 0) (p m : ℕ) (σh : Equiv.Perm (Fin
   have hs : 0 < m + 2 := by omega
   have hm2 : ((m : ℂ) + 2) ≠ 0 := by
     have h : ((m : ℂ) + 2) = ((m + 2 : ℕ) : ℂ) := by push_cast; ring
-    rw [h]; exact_mod_cast (by omega : m + 2 ≠ 0)
+    rw [h]; exact_mod_cast (omega : m + 2 ≠ 0)
   set R := G.rootSet (m + 2) ((-1) ^ (m + 3) * Dd) with hRdef
   have hz₀ : t0 ∈ R := (Formalism.FourierDecayAlt.P.mem_rootSet_iff_pow_eq hs).2 hz0
   let e : Fin R.card ≃ R := R.equivFin.symm

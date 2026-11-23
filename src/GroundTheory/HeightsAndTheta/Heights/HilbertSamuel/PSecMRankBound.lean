@@ -135,7 +135,7 @@ theorem proof (h : GenericFibreVar.Statement) : SecMRankBound.Statement := by
   have hlt : ringKrullDim (MRingOver ℚ ι ⧸ KH.genIdeal y) <
       (((D + 1) + Fintype.card K : ℕ) : WithBot ℕ∞) := by
     rw [hdim]
-    exact_mod_cast (by omega : D + Fintype.card K < D + 1 + Fintype.card K)
+    exact_mod_cast (omega : D + Fintype.card K < D + 1 + Fintype.card K)
   have hdeg := NumbersDVR.HilbDegBound.full ℚ K ι (D + 1) (KH.genIdeal y) hprime
     ((Bridge.isMultiHomogIdeal_iff _).mpr hhom) hlt
   obtain ⟨a₀, C, hC⟩ := DegLTGrowth.proof K (D + 1) _ hdeg

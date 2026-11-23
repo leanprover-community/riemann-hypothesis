@@ -126,7 +126,7 @@ theorem congruence_no_kernel_minimal (hS : HidaSetting D u) (hB : SecondBranchIn
     obtain ⟨n, hn, hle⟩ := ENat.le_natCast_iff.mp hsum
     refine ⟨n, hn, ?_⟩
     have hk : (0 : ℝ) < (D.R.k : ℝ) := by
-      have := D.R.m_add_three_le_k; exact_mod_cast (by omega : 0 < D.R.k)
+      have := D.R.m_add_three_le_k; exact_mod_cast (omega : 0 < D.R.k)
     have he : (0 : ℝ) ≤ (D.what₂.places.ramIdx w : ℝ) := Nat.cast_nonneg _
     have hd : (0 : ℝ) ≤ (D.duS u : ℝ) := Nat.cast_nonneg _
     have hterm : ∀ v : {v // v ∈ VV D u w},

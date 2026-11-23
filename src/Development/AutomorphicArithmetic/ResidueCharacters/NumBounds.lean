@@ -44,7 +44,7 @@ noncomputable def lam (l s : ℕ) (h : ℝ) : ℝ := (s : ℝ) + Real.logb l (2 
 variable {l s : ℕ} {h : ℝ}
 
 theorem logb_nonneg (hl : 2 ≤ l) (hh : 1 ≤ h) : 0 ≤ Real.logb l (2 * h) :=
-  Real.logb_nonneg (by exact_mod_cast (by omega : 1 < l)) (by linarith)
+  Real.logb_nonneg (by exact_mod_cast (omega : 1 < l)) (by linarith)
 
 theorem s_le_lam (hl : 2 ≤ l) (hh : 1 ≤ h) : (s : ℝ) + 1 ≤ lam l s h := by
   unfold lam
@@ -66,7 +66,7 @@ theorem natLog_le_logb (hl : 2 ≤ l) {n : ℕ} {y : ℝ} (hy : 1 ≤ y) (hn : (
 
 theorem natLog_le_lam (hl : 2 ≤ l) (hs : 1 ≤ s) (hh : 1 ≤ h) {n : ℕ} (hn : (n : ℝ) ≤ 8 * h) :
     (Nat.log l n : ℝ) ≤ lam l s h := by
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast (by omega : 1 < l)
+  have hl1 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   have h1 := natLog_le_logb hl (y := 4 * (2 * h)) (by linarith) (by linarith)
   rw [Real.logb_mul (by norm_num) (by linarith)] at h1
   have h2 : Real.logb l 4 ≤ 2 := by

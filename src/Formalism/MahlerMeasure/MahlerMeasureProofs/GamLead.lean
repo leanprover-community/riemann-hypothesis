@@ -679,7 +679,7 @@ theorem core (hr : 1 ≤ r) (o n z t : ℕ) (ht : t ≤ o) (hon : o < n)
   rw [← hx'] at hF0'
 
   rw [hphi, hEt, hBform, hv0v0', hvv, hvv', hF0, hF0']
-  have hδ : (0 : ℝ) < ((n - o : ℕ) : ℝ) := by exact_mod_cast (by omega : 0 < n - o)
+  have hδ : (0 : ℝ) < ((n - o : ℕ) : ℝ) := by exact_mod_cast (omega : 0 < n - o)
   have key := ineq_core A ((n - o : ℕ) : ℝ) (Kc o z) (kap0 o n z t r) hδ (Kc_nonneg o z) (kappa_zero_nonneg o n z t r)
     (fun l => c l * 1 * (((t + l).descFactorial (t + l) *
         ((A - l) + (Bn - l) + r - 1 + (t + l)).descFactorial (t + l) : ℕ) : ℝ))
@@ -1213,7 +1213,7 @@ theorem tendsto_lin (b : ℝ) : Tendsto (fun n : ℕ => ((n : ℝ) + b) / n) atT
   rw [add_zero] at h
   refine h.congr' ?_
   filter_upwards [eventually_ge_atTop 1] with n hn
-  have : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  have : (n : ℝ) ≠ 0 := by exact_mod_cast (omega : n ≠ 0)
   field_simp
 
 theorem choose_lim (c s j : ℕ) :
@@ -1224,7 +1224,7 @@ theorem choose_lim (c s j : ℕ) :
   have h2 := hprod.div_const (j.factorial : ℝ)
   refine h2.congr' ?_
   filter_upwards [eventually_ge_atTop (s + j + 1)] with n hn
-  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (omega : n ≠ 0)
   have hf : (j.factorial : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero j
   have hd := Nat.descFactorial_eq_factorial_mul_choose (n + c - s) j
   rw [Nat.descFactorial_eq_prod_range] at hd
@@ -1256,7 +1256,7 @@ theorem choose_lim' (S j d : ℕ) (hjd : j ≤ d) :
     rw [mul_zero] at h1
     refine h1.congr' ?_
     filter_upwards [eventually_ge_atTop 1] with n hn
-    have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+    have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (omega : n ≠ 0)
     rw [show d = j + (d - j) by omega, pow_add]
     field_simp
     rw [Nat.add_sub_cancel_left]
@@ -1308,7 +1308,7 @@ theorem fk_eta_lim {σ : Type} [Fintype σ] [DecidableEq σ] (i : σ) (S d : ℕ
   rw [show M i + (n - S) = n + M i - S by omega, hc]
   push_cast
   have hk' : ((n - S).factorial : ℝ) ≠ 0 := by exact_mod_cast hk
-  have hn0 : (n : ℝ) ^ d ≠ 0 := pow_ne_zero _ (by exact_mod_cast (by omega : n ≠ 0))
+  have hn0 : (n : ℝ) ^ d ≠ 0 := pow_ne_zero _ (by exact_mod_cast (omega : n ≠ 0))
   field_simp
 
 end Formalism.GM.leadingTermLemmas
@@ -1468,7 +1468,7 @@ theorem kappa_zero_tendsto_factorials (o z e r : ℕ) :
   rw [div_self hf, mul_one] at h3
   refine h3.congr' ?_
   filter_upwards [eventually_ge_atTop (e + 1)] with n hn
-  have hn0 : (n : ℝ) ^ e ≠ 0 := pow_ne_zero _ (by exact_mod_cast (by omega : n ≠ 0))
+  have hn0 : (n : ℝ) ^ e ≠ 0 := pow_ne_zero _ (by exact_mod_cast (omega : n ≠ 0))
   unfold kap0
   rw [show o + n + r - 1 - e = n + (o + r) - (1 + e) by omega, show o + n + r + z - 1 = n + (o + r + z) - 1 by omega,
     Nat.descFactorial_eq_factorial_mul_choose]
@@ -1710,9 +1710,9 @@ theorem real_mono (hr : 1 ≤ r) (hv : LL.vec (Fin.last N) = true) (z e : ℕ)
       simp only [Bf]; rw [leading_vector_add_linked LL ρ e m hme, leading_vector_add_linked LL ρ e m' hme']
     have hQ : 0 < Q n := by
       have : (0 : ℝ) < (((n - S).factorial : ℕ) : ℝ) := by exact_mod_cast Nat.factorial_pos _
-      have h2 : (0 : ℝ) < (n : ℝ) ^ (S - e) := pow_pos (by exact_mod_cast (by omega : 0 < n)) _
+      have h2 : (0 : ℝ) < (n : ℝ) ^ (S - e) := pow_pos (by exact_mod_cast (omega : 0 < n)) _
       positivity
-    have hδ : (0 : ℝ) < ((n - o : ℕ) : ℝ) := by exact_mod_cast (by omega : 0 < n - o)
+    have hδ : (0 : ℝ) < ((n - o : ℕ) : ℝ) := by exact_mod_cast (omega : 0 < n - o)
     rw [Real.norm_eq_abs]
     simp only [f4, bd, abs_div, abs_of_pos hQ]
     rw [hBf, div_le_iff₀ hQ]
@@ -1733,7 +1733,7 @@ theorem real_mono (hr : 1 ≤ r) (hv : LL.vec (Fin.last N) = true) (z e : ℕ)
   filter_upwards [eventually_ge_atTop (S + 1)] with n hn
   rw [hgam n]
   have hQ0 : (((n - S).factorial : ℕ) : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
-  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
+  have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast (omega : n ≠ 0)
   simp only [f4, Q]
   rw [show S + o - e = o + (S - e) by omega, pow_add]
   field_simp

@@ -279,7 +279,7 @@ theorem sum_abs_count_AA_le (hcc : D.host.ccK = ⊤) (S : Finset (HeightOneSpect
     have h1 := key w
     have h2 := hxi w
     rw [abs_of_nonpos (hAle w), abs_of_nonpos (hBle w)]
-    exact_mod_cast (by omega)
+    exact_mod_cast (omega)
   refine (Finset.sum_le_sum hterm).trans ((sum_count_log_le _ hdI S).trans (le_of_eq ?_))
   rw [show D.host.ddE = differentIdeal ℤ (𝓞 D.host.E) from rfl, NumberField.absNorm_differentIdeal D.host.E (𝓞 D.host.E),
     Nat.cast_natAbs, Int.cast_abs]

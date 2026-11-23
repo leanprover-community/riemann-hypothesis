@@ -75,7 +75,7 @@ theorem fInertGe (D : D7) : FInertGe D := by
   intro j _ p hp _ hw
   have hk : 0 ≤ (D.R.k : ℝ) - 1 := by
     have h := D.R.m_add_three_le_k
-    have h1 : (1 : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast (by omega : 1 ≤ D.R.k)
+    have h1 : (1 : ℝ) ≤ (D.R.k : ℝ) := by exact_mod_cast (omega : 1 ≤ D.R.k)
     linarith
   have hwP : ∀ z, 0 ≤ wPl D j z := fun z => hw _
   unfold FInert

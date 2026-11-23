@@ -305,7 +305,7 @@ theorem coeff_bexp_X_mul (f : MvPowerSeries (Fin 2 × κ) C) (s t x : κ) :
 theorem two_le_order_hAt (h : RLaw Y V) {τ : Type} {a b : κ → MvPowerSeries τ C}
     (ha : ∀ x, constantCoeff (a x) = 0) (hb : ∀ x, constantCoeff (b x) = 0) (e : τ →₀ ℕ)
     (he : e.degree < 2) : coeff e (hAt Y a b) = 0 := by
-  have h3 := coeff_of_lt_order (d := e) (lt_of_lt_of_le (by exact_mod_cast (by omega : e.degree < 3))
+  have h3 := coeff_of_lt_order (d := e) (lt_of_lt_of_le (by exact_mod_cast (omega : e.degree < 3))
     (hAt_order Y h.axes ha hb))
 
   rw [map_sub, sub_eq_zero, map_sum] at h3
@@ -326,7 +326,7 @@ theorem IsEnd.bilinear (h : RLaw Y V) {M M' : Matrix κ κ C} (hE : IsEnd Y V M 
       two_le_order_hAt h (hg 0) (h.constantCoeff_endP M' (hg 1)) e he, sub_zero]) _ (bexp_degree s t),
     map_sub] at h0
   have hlt : (((bexp s t).degree : ℕ) : ℕ∞) < ((3 : ℕ) : ℕ∞) := by
-    rw [bexp_degree]; exact_mod_cast (by omega : 2 < 3)
+    rw [bexp_degree]; exact_mod_cast (omega : 2 < 3)
   have h1 := coeff_of_lt_order (lt_of_lt_of_le hlt
     (hAt_order Y h.axes (h.constantCoeff_endP M (hg 0)) (hg 1)))
   have h2 := coeff_of_lt_order (lt_of_lt_of_le hlt

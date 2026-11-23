@@ -297,7 +297,7 @@ theorem log_sqrt_le_log_v (D : D7) : Real.log (Real.sqrt D.host.d) ≤ Real.log 
 theorem half_le_log_v (D : D7) : 1 / 2 ≤ Real.log D.host.v := by
   have h7 : (4 : ℝ) ≤ D.host.d := by
     have := D.host.hyp.2.2.2.1
-    exact_mod_cast (by omega : 4 ≤ D.host.d)
+    exact_mod_cast (omega : 4 ≤ D.host.d)
   have hs : (2 : ℝ) ≤ Real.sqrt D.host.d := by
     rw [show (2 : ℝ) = Real.sqrt 4 by rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
     exact Real.sqrt_le_sqrt h7

@@ -106,7 +106,7 @@ private lemma logb_two_mul_hB_nonneg {n : ℕ} (l b w S η : ℕ) (size : ZMod n
   rcases Nat.eq_zero_or_pos (Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size) with h | h
   · simp [h]
   · apply Real.logb_nonneg
-    · exact_mod_cast (by omega : 1 < l)
+    · exact_mod_cast (omega : 1 < l)
     · have : (1 : ℝ) ≤ (Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size : ℝ) := by exact_mod_cast h
       linarith
 

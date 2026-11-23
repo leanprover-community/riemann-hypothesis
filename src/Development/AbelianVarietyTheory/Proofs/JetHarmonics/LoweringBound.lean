@@ -105,7 +105,7 @@ theorem lowering_bound : ∀ (k r : ℕ) (lam : Fin (2 * r + k + 1) → ℝ) (u 
   · have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
     have hs : Real.sqrt k ≤ k := by
       rw [Real.sqrt_le_left (by linarith)]; nlinarith
-    have hkn : (k : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega)
+    have hkn : (k : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) := by exact_mod_cast (omega)
     have hp : ((2 * r + k + 1 : ℕ) : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ 7 :=
       le_self_pow₀ (by linarith) (by norm_num)
     have h64 : 64 * Real.exp 1 * Real.sqrt k ≤ b := by

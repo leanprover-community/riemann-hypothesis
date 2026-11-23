@@ -154,7 +154,6 @@ theorem twSt_h {X : Formalism.L2.Col.Fields} {Pr : Formalism.L2.Col.Primes X} {R
       · rw [if_neg h2]
         exact fun al => al.elim
 
-section World
 open Formalism.L2.Col
 
 variable {B : Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {v : B.Word} {Ch : ℕ → Type}
@@ -163,15 +162,12 @@ variable {B : Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B
 
 
 
-end World
 
-section Main
 
 variable {B : Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {w : World I l Z} {v : B.Word}
   {a : XPart (I.rec7 l Z) v} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {o : OffX a k ((B.primes X).vT v)} {G : ∀ PP : a.c.Pg, GX a o.ζ₀ PP.1} {A : ColDat I l Z v (w.C.herm.base.Ch v)}
 
-end Main
 
 end GlobalTheory.SeeSaw.StdMatch
 end

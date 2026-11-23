@@ -292,7 +292,7 @@ theorem place_data {R : Ranks} (p : HCParam R) (x Δ a B h0 b1 : ℝ) (hx : 1 �
   have hk := R.m_add_three_le_k
   have hm := R.two_le_m
   have hx0 : 0 < x := by linarith
-  have hk1 : (1 : ℝ) ≤ R.k := by exact_mod_cast (by omega : 1 ≤ R.k)
+  have hk1 : (1 : ℝ) ≤ R.k := by exact_mod_cast (omega : 1 ≤ R.k)
   have hkΔ : 1 ≤ (R.k : ℝ) * (4 * Δ) := by nlinarith
   have ht : (0 : ℚ) ≤ R.t := by positivity
   have hbj : ∀ j : Fin R.m, b1 ≤ ((p.b j : ℚ) : ℝ) := fun j => by
@@ -303,12 +303,12 @@ theorem place_data {R : Ranks} (p : HCParam R) (x Δ a B h0 b1 : ℝ) (hx : 1 �
   refine ⟨⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ?_⟩
   · intro i hi
     rw [seqOf_lt _ hi, hv]
-    have : ((R.k - 2 - i : ℕ) : ℝ) ≤ R.k := by exact_mod_cast (by omega : R.k - 2 - i ≤ R.k)
+    have : ((R.k - 2 - i : ℕ) : ℝ) ≤ R.k := by exact_mod_cast (omega : R.k - 2 - i ≤ R.k)
     exact ⟨by positivity, mul_le_mul_of_nonneg_right this (by positivity)⟩
   · intro i hi
     rw [seqOf_lt _ hi, seqOf_lt _ (by omega : i < R.k - 1), hv, hv]
     have : ((R.k - 2 - i : ℕ) : ℝ) = ((R.k - 2 - (i + 1) : ℕ) : ℝ) + 1 := by
-      exact_mod_cast (by omega : R.k - 2 - i = R.k - 2 - (i + 1) + 1)
+      exact_mod_cast (omega : R.k - 2 - i = R.k - 2 - (i + 1) + 1)
     simp only
     rw [this]; ring
   · intro i hi

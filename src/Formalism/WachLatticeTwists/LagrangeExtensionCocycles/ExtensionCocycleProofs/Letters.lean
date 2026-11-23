@@ -66,7 +66,7 @@ theorem unit_lemma_prime_case_holds : StatWPrime := by
       (∑ a ∈ Finset.range m, (((Mi (i + ((a + 1 : ℕ) : ZMod n)) + hi (i + ((a + 1 : ℕ) : ZMod n)) : ℕ) : ℝ)
         + cW ℓ H + 3) / ((ℓ : ℝ) - 1) ^ a) + (s (i + (m : ZMod n)) : ℝ) / ((ℓ : ℝ) - 1) ^ m := by
     intro i m
-    have hℓR : (1 : ℝ) < ℓ := by exact_mod_cast (by omega : 1 < ℓ)
+    have hℓR : (1 : ℝ) < ℓ := by exact_mod_cast (omega : 1 < ℓ)
     refine residue_finite_holds n (ℓ : ℝ) (cW ℓ H : ℝ) (fun k => (s k : ℝ))
       (fun k => ((Mi k + hi k : ℕ) : ℝ)) hℓR ?_ i m
     intro k

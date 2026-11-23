@@ -111,7 +111,7 @@ theorem tends_lpow : Tends V (fun n => ((V.l ^ (n + 1) : ℕ) : C)) 0 := by
   rw [zero_sub, AddValuation.map_neg, Nat.cast_pow, AddValuation.map_pow, V.v_l, nsmul_one]
   have h2 : ((N : ℝ) : WithTop ℝ) ≤ (((n + 1 : ℕ) : ℝ) : WithTop ℝ) := by
     rw [WithTop.coe_le_coe]
-    exact_mod_cast (by omega : N ≤ n + 1)
+    exact_mod_cast (omega : N ≤ n + 1)
   simpa using h2
 
 theorem lSmall_holds : LSmallSt := by

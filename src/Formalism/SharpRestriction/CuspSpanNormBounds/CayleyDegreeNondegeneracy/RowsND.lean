@@ -162,7 +162,7 @@ theorem rows_nZ_pos (h : rows_Hyps Y C' Cl Cg cb Cu cT CT C0 A c Cpr Ca C2 Ch δ
     exact h19
   have hk1 : (1 : ℝ) ≤ D.R.k := by
     have := D.R.m_add_three_le_k
-    exact_mod_cast (by omega : 1 ≤ D.R.k)
+    exact_mod_cast (omega : 1 ≤ D.R.k)
   have hv0 : 0 < D.host.v := by linarith
   have hk0 : (0 : ℝ) < D.R.k := by linarith
   positivity

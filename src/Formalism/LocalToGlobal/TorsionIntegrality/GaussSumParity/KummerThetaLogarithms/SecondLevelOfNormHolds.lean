@@ -146,7 +146,7 @@ theorem norm_two {l : ℕ} {σ : K →+* K} (hU : UnrOK K l σ) : ‖(2 : K)‖ 
       _ ≤ _ := BrC.norm_sub_le _ _
   rw [hpn, norm_mul] at h3
   have hm1 : ‖(m : K)‖ ≤ 1 := IsUltrametricDist.norm_natCast_le_one K m
-  have hl : ((l : ℕ) : ℝ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ (by exact_mod_cast (by omega : 1 < l))
+  have hl : ((l : ℕ) : ℝ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ (by exact_mod_cast (omega : 1 < l))
   have h4 := mul_le_of_le_one_right (norm_nonneg (2 : K)) hm1
   rcases le_max_iff.1 h3 with h | h
   · linarith

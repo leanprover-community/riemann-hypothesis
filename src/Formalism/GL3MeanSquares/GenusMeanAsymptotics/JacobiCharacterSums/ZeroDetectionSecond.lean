@@ -132,7 +132,7 @@ theorem zero_detection_second : Detect1 := by
   by_contra hcon
   push Not at hcon
   have hJ8 : 8 ≤ pJd M T := by unfold pJd; omega
-  have hJpos : (0 : ℝ) < pJd M T := by exact_mod_cast (by omega : 0 < pJd M T)
+  have hJpos : (0 : ℝ) < pJd M T := by exact_mod_cast (omega : 0 < pJd M T)
   have hlt : ‖D‖ < 1 / 2 := by
     rw [hsplit]
     refine (norm_sum_le _ _).trans_lt ?_

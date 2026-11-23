@@ -97,6 +97,6 @@ theorem charL_chs_eq : GBig fun {D} T _ _ G _ _ _ _ => ∀ (i j : Fin D.R.m) (t 
   rw [chs_nu, GlobalTheory.LFun.charL_eq_of_chrEq (chrEq_nu G t i j hL)]
   refine heckeL_eq_of_ram (fun w hw => nuH_not_unrAt_above hL G t i j w hw) hΛ ?_
   rw [Complex.natCast_re]
-  exact_mod_cast (by omega : 1 < s)
+  exact_mod_cast (omega : 1 < s)
 
 end GlobalTheory.SqStep

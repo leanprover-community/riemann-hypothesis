@@ -104,8 +104,8 @@ private theorem absC_pow (E : Type) [Field E] [NumberField E] [_root_.NumberFiel
     rw [Complex.norm_natCast_cpow_of_pos (by omega), Complex.norm_natCast_cpow_of_pos (by omega),
       show (-(1 : ℂ)).re = -1 by simp, show (-(1 * (b : ℂ))).re = -b by simp] at h2
     have h3 := congrArg Real.log h2
-    rw [Real.log_rpow (by exact_mod_cast (by omega : 0 < (Ideal.absNorm w.asIdeal : ℕ))),
-      Real.log_rpow (by exact_mod_cast (by omega : 0 < (Ideal.absNorm w.asIdeal : ℕ)))] at h3
+    rw [Real.log_rpow (by exact_mod_cast (omega : 0 < (Ideal.absNorm w.asIdeal : ℕ))),
+      Real.log_rpow (by exact_mod_cast (omega : 0 < (Ideal.absNorm w.asIdeal : ℕ)))] at h3
     have h4 : Real.log (Ideal.absNorm w.asIdeal : ℕ) ≠ 0 :=
       (Real.log_pos (by exact_mod_cast h0)).ne'
     linarith [mul_right_cancel₀ h4 h3]
