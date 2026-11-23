@@ -51,12 +51,10 @@ noncomputable section
 
 namespace GlobalTheory.HeckeSeries
 
-section Cosets
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
   {p : 𝒪[k]}
 
-end Cosets
 
 open MeasureTheory ValuativeRel in
 private theorem hermGL_coset_out_entries_integral {k : Type} [Field k] [ValuativeRel k]

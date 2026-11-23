@@ -41,13 +41,11 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LocMod.DblInhab
 
-section Gram
 
 variable (E : Type) [Field E] [CharZero E] [StarRing E]
 
 
 
-end Gram
 
 
 section Place

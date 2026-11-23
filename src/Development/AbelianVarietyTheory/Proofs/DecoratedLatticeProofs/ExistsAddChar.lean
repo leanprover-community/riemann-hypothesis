@@ -48,10 +48,8 @@ noncomputable section
 namespace GlobalTheory.SymTieExists
 open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain GlobalTheory.SymBridge
 
-section Local
 variable {k : Type} [Field k] [ValuativeRel k] {F : Type} [CommRing F]
 
-end Local
 
 section Res
 variable {E k : Type} [Field E] [NumberField E]

@@ -128,7 +128,6 @@ def homOf (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfFam θ) (f : 
 theorem homOf_apply (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfFam θ) (f : W →ₗ[ℂ] MMap M)
     (hf : ∀ w, f w ∈ allMaps θ M) (w : W) : homOf μ hP hθ f hf w = phiOf μ (f w) := rfl
 
-open Classical in
 theorem homOf_mem (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfFam θ) {f : W →ₗ[ℂ] MMap M}
     (hf : f ∈ homInto σ (finRep M) (allMaps θ M)) :
     homOf μ hP hθ f hf.1 ∈ homFinDS σ M (RG V μ) (GlobalTheory.Cusp.L2cusp V μ) := by

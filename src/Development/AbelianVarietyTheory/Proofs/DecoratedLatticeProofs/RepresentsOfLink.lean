@@ -69,25 +69,19 @@ abbrev Live (D : D7) (u : D.what₂.Word) : Type := ∀ j, Submodule ℂ (Fn D u
 
 variable (W : Live D u) {c : Com D}
 
-section Dbl
 
 variable {σ j : ℕ} {N : Node c u (σ + 1) j} {N' : Node c u σ (j + 1 + 1)} (d : Dbl N N')
 
-end Dbl
 
-section Fin2
 
 variable {j : ℕ} {N : Node c u 0 j} {T : HSp D} {top : RowOn T} (e : Fin2 N top)
 
-end Fin2
 
 variable {W}
 
-section Step
 
 variable {X X' : HSp D} {j : ℕ} {A : ColOn c u X j} {A' : ColOn c u X' (j + 1)} {k : ColStep A A'} {vol : Vol X}
 
-end Step
 
 end GlobalTheory.SeeSawCompare
 

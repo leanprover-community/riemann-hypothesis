@@ -54,13 +54,11 @@ namespace GlobalTheory.SeeSaw.LevelData
 open GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.SymChain GlobalTheory.SymBridge GlobalTheory.LocMod
 open Formalism.L2.Col (IntAt redP qOf)
 
-section Gen
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 variable {u : D.what₂.Word}
 
-end Gen
 
 section Chain
 

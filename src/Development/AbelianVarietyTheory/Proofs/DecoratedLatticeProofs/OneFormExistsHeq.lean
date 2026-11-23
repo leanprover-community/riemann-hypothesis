@@ -40,12 +40,10 @@ noncomputable section
 
 namespace GlobalTheory.TopVal.OneForm
 
-section Generic
 
 variable {D : D7} {O : Obj D} {c : ℝ}
 
 
-end Generic
 
 section Rows
 
