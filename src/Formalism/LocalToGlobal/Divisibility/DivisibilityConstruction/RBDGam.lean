@@ -75,7 +75,7 @@ theorem log_card_le_unit_exponent {G : Type} [Fintype G] (L : SizeData₂ D) (hS
     linarith
   have hr := two_r_sq_le_b L hSC
   have hf0 : (0 : ℝ) ≤ D.R.f := Nat.cast_nonneg _
-  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 1 ≤ D.R.m)
+  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hr0 : (0 : ℝ) ≤ (D.R.r : ℝ) ^ 2 := pow_nonneg (Nat.cast_nonneg _) 2
   have hb0 : (0 : ℝ) ≤ L.sc.b := by linarith
   set X := L.sc.x ^ L.sc.eps with hXdef
@@ -180,7 +180,7 @@ theorem log_DGam_le (L : SizeData₂ D) (hSC : SizeCond L) (C : ℝ) (hC : 0 ≤
   have hla0 : (0 : ℝ) ≤ Real.log a := Real.log_nonneg ha1
   have hU : (ofRecord D L Del h0).unitE Nc = X * ((D.R.f : ℝ) * D.R.m * L.sc.b * X + Nc) := rfl
   rw [hU]
-  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 1 ≤ D.R.m)
+  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hX0 : (0 : ℝ) ≤ X := by linarith
   have hkey : a * Real.log a ≤ 9 * (L.sc.b * X) := by
     have e1 : a * Real.log a ≤ (3 * Real.sqrt L.sc.b) * (3 * X) :=

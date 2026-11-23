@@ -156,7 +156,7 @@ theorem mem_closure_nat {l : ℕ} {σ : K →+* K} (hU : UnrOK K l σ) {x : K} (
     (hs : σ x = x) : x ∈ closure (Set.range fun n : ℕ => (n : K)) := by
   rw [Metric.mem_closure_iff]
   intro ε hε
-  have h1 : (1 : ℝ) < l := by exact_mod_cast (by have := hU.2.1; omega : 1 < l)
+  have h1 : (1 : ℝ) < l := by exact_mod_cast (omega : 1 < l)
   obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one hε (inv_lt_one_of_one_lt₀ h1)
   obtain ⟨n, hn⟩ := fixed_is_limit K l σ hU x hx hs k
   refine ⟨n, ⟨n, rfl⟩, ?_⟩

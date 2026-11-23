@@ -66,7 +66,7 @@ theorem place_dimension_upper_bound (D : D7) (sc : Scale) (C0 Δ : ℝ) (w : ℕ
   have hpl := place_data_under_section_B D sc C0 Δ w hB u ρ
   have b7 : 1 ≤ Δ := hB.2.2.2.2.2.2.1
   have hmk : (D.R.m : ℝ) ≤ D.R.k := by
-    exact_mod_cast (by have := D.R.m_add_three_le_k; omega : D.R.m ≤ D.R.k)
+    exact_mod_cast (omega : D.R.m ≤ D.R.k)
   have h := (h3 (1 / 3) (exp_neg_r_le_third D) (by norm_num) ρ
     (fun a b hab => le_trans (explicit_gap_le_general_gap D 8192 (1 / 3) le_rfl) (hgap ρ a b hab))).2
   rw [formal_degree_line_eq, count_plus_eq, count_minus_eq] at h

@@ -615,7 +615,7 @@ theorem nf_eta (hS : SizesAt L) (hh0 : L.etaSz = (D.R.m : ℝ) * (h0 : ℝ)) :
   rw [e, (ofRecord D L Del h0).Nm_cast]
   show (D.R.m : ℝ) * L.etaSz * ((D.R.k : ℝ) + (D.R.m : ℝ) * ((D.R.t : ℝ) + 1)) * L.sc.L ≤ L.sc.b
   have hmL : (D.R.m : ℝ) ^ 2 * L.sc.L ≤ D.R.k := hKR.2.2.2.2.1
-  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 1 ≤ D.R.m)
+  have hm1 : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (omega : 1 ≤ D.R.m)
   have hL1 : 1 ≤ L.sc.L := le_of_lt (Formalism.L2.DIV.NumDatum.one_lt_L (ofRecord D L Del h0))
   have hmk : (D.R.m : ℝ) ≤ D.R.k := by nlinarith
   have hLk : L.sc.L ≤ D.R.k := by
