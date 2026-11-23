@@ -55,7 +55,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.V.Z.Gam
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {V : Type} [AddCommGroup V] [Module ℂ V] {n : ℕ}
@@ -93,9 +92,7 @@ private theorem tw_iff (y : IrrGL (k := k)) (χ θ : kˣ →* ℂˣ) (hχ : IsSm
   · rintro ⟨ξ, hξ, rfl, hu⟩
     exact ⟨ξ * χ, hξ.mul hχ, IrrGL.tw_ofChar _ _ _ _, by rwa [mul_assoc]⟩
 
-end Loc
 
-section Glob
 
 variable {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] {n : ℕ}
 
@@ -119,7 +116,6 @@ private theorem supp_twist {v : HeightOneSpectrum (𝓞 K)} {σ : SmIrr (GL (Fin
       (s.map (·.tw (χ.loc v) (smooth_loc χ v))) :=
   h.tw (χ.loc v) (smooth_loc χ v)
 
-end Glob
 
 end UpperTheory.V.Z.Gam
 

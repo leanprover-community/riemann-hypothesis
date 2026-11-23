@@ -37,7 +37,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 namespace UpperTheory.Lev
 
-section Twist
 
 variable {G : GDatum} {k : Type} [Field k] {Q : Type} [Group Q] {act : G.O → Q → Q}
   {e : ℕ → Q → Q → kˣ → Prop}
@@ -57,7 +56,6 @@ private theorem prim_zpow {u : kˣ} {n : ℕ} (hu : IsPrimitiveRoot u n) {v : �
     (hc : IsCoprime v (n : ℤ)) : IsPrimitiveRoot (u ^ v) n := by
   exact hu.zpow_of_gcd_eq_one v (Int.isCoprime_iff_gcd_eq_one.mp hc)
 
-end Twist
 
 end UpperTheory.Lev
 

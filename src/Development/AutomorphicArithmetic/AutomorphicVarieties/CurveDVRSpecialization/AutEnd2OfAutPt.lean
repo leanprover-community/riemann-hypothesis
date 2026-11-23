@@ -144,7 +144,6 @@ private theorem flag {Γ k : Type} [Group Γ] [Field k] (I : Subgroup Γ) (W : �
     · exact MonoidHom.ext fun s => (hκ s s.2).2
   exact e ▸ hflag
 
-section Red
 
 variable {O A Γ : Type} [CommRing O] [IsLocalRing O] [CommRing A] [IsLocalRing A] [Algebra O A] [Group Γ]
   {η : Γ →* ℤˣ} {Ψ : Γ →* Oˣ} {r : Γ →* GG (m := 3) (R := A)}
@@ -184,7 +183,6 @@ private theorem sq_of_trace [IsLocalHom (algebraMap O A)] (h : UnitaryThreeInert
   show residue O (Ψ g) ^ 2 = -1
   linear_combination residue O (Ψ g) * e - e2
 
-end Red
 
 private theorem norm_lt {l : ℕ} [Fact l.Prime] (O : Subalgebra ℤ_[l] (PadicAlgCl l)) [IsDiscreteValuationRing O]
     [Module.Finite ℤ_[l] O] (b : O) (hb : ¬ IsUnit b) : ‖(b : PadicAlgCl l)‖ < 1 := by

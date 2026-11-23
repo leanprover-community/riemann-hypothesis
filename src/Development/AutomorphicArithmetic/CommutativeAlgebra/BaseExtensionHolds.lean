@@ -47,7 +47,6 @@ private theorem card_quot_of {A B : Type} [CommRing A] [CommRing B] (f : A →+*
     exact h a
   exact Nat.card_congr ((Ideal.quotEquivOfEq hk).trans (RingHom.quotientKerEquivOfSurjective hf)).toEquiv
 
-section Local
 
 variable {E : Type} [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E))
 
@@ -98,7 +97,6 @@ private theorem card_pow (q : ℕ) (hq : q.Prime) (h : (q : 𝓞 E) ∈ w.asIdea
     ∃ f : ℕ, Nat.card (𝓞 E ⧸ w.asIdeal) = q ^ f :=
   by apply _root_.UpperTheory.Reformulated.B.Qi54.card_pow <;> assumption
 
-end Local
 
 theorem baseExtension_holds : Gal.Int.Geo.BaseEx := by
   intro q _ D ha hm E _ _ e gb hstd w 𝔴 r hpl hu N₀ h3 hcop

@@ -83,10 +83,8 @@ variable {S Y : Scheme.{0}} (p' : Y ⟶ S)
 
 end Rep
 
-section Classes
 variable (q : ℕ) {S Y : Scheme.{0}} (p' : Y ⟶ S) {ι : Type} [Fintype ι] {e : ι → ℤ} {j : ℤ} (w : ∀ b, Ht q (sch.obj Y) (e b) j)
 
-end Classes
 
 end UpperTheory.Et
 

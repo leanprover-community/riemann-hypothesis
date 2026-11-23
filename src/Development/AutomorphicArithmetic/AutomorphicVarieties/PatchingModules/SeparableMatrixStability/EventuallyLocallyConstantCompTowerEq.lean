@@ -55,7 +55,6 @@ theorem UpperTheory.V.Pa.eventually_locallyConstant_comp_tower_eq :
       hKo.isOpenMap_subtype_val _ (hρ.isOpen_fiber z)
     open scoped Pointwise in
     obtain ⟨V, hV, hVS⟩ := compact_open_separated_mul_left hc ho subset_rfl
-    open scoped Pointwise in
     exact ⟨V, hV, fun v hv x hx => hVS (Set.mul_mem_mul hv hx)⟩
   choose V hV hVS using hS
   have hW : (⋂ z ∈ Set.range ρ, V z) ∈ nhds (1 : G0.Γ) := (Filter.biInter_mem hfin).2 fun z _ => hV z

@@ -42,7 +42,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-section General
 
 open UpperTheory.V.Hi Polynomial
 
@@ -206,7 +205,6 @@ private theorem into_inv {V : Type} [AddCommGroup V] [Module ℂ V] (π : Repres
     rw [pow_succ', Module.End.mul_apply, e]
     exact (uOpNat _ I ℂ M ρ ℂ V π p.toAddMonoidHom _ I.z_mem F' fun u _ => hp _ F' (hEY m)).symm
 
-end General
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.SmGL UpperTheory.V UpperTheory.V.Hi
 open UpperTheory.V.HV (Coef)

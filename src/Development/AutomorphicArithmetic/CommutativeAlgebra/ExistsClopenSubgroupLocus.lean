@@ -43,7 +43,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Hecke GlobalTheory.UPel.HT.ES GlobalTheory.IwLevel UpperTheory.QO
 
-section ring
 variable {p : ℕ} [Fact p.Prime] {D : Datum p}
 
 private theorem mul_bar_eq (r : ℤ) (w : Ideal (𝓞 D.F)) (hw : w ≠ ⊤) (hu : uIdeal D r ≤ w) :
@@ -126,9 +125,7 @@ private theorem mem_of_pow_mem (I : Ideal (𝓞 D.F)) (e : ℕ) (ε : 𝓞 D.F) 
     have e1 : ε ^ (k + 1) = ε ^ (k + 1 + 1) - ε ^ k * (ε ^ 2 - ε) := by ring
     rw [e1]
     exact I.sub_mem hk (I.mul_mem_left _ hq)
-end ring
 
-section pts
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {R : Type} [CommRing R] {b : Base D R} {N : ℕ}
   {S : Scheme.{0}} {s : S ⟶ Sp R}
 
@@ -309,9 +306,7 @@ private theorem insub_push {r : ℤ} {w : Ideal (𝓞 D.F)} {j c : ℕ} {o : Obj
   subst hT
   have ea : a = pushHom Rd.m₀.cart (Over.mk u) a₀ := Over.OverMorphism.ext ha.symm
   rw [ea]
-end pts
 
-section quot
 open scoped CategoryTheory.Obj
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {R : Type} [CommRing R] {b : Base D R} {N : ℕ}
 
@@ -347,7 +342,6 @@ private theorem exists_quot {r : ℤ} {w : Ideal (𝓞 D.F)} {j c : ℕ} {S : Sc
     rw [Over.comp_left, Category.assoc, h3, ← Category.assoc, he₀]
   exact ⟨_, inferInstance, q₀, GlobalTheory.isAbelianScheme_pullback_obj _ _ hab, hq₀m, fun a₀ =>
     (GlobalTheory.IwLevel.comp_eq_one_iff_push Rd.m₀.cart hP hsq a₀).trans (hsub _)⟩
-end quot
 
 theorem UpperTheory.exists_clopen_subgroup_locus :
     ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ) (r : ℤ) (w : Ideal (𝓞 D.F)) (j c : ℕ), IsUnit ((p : ℕ) : R) → w.IsMaximal → uIdeal D r ≤ w → (∃ e : ℕ, c = p ^ e ∧ (0 < j → 0 < e)) → ∀ (S : Scheme.{0}) [IsLocallyNoetherian S] (s : S ⟶ Sp R) (o : Obj b N s) (Rd : RepData b N r w j c s o) (Sd : SubData w j o), ∃ W : Set Rd.Y.left, IsOpen W ∧ IsClosed W ∧ (∀ (Tb : Scheme.{0}) (t : Tb ⟶ Rd.Y.left), Set.range t.base ⊆ W → KerAt Rd Sd t) ∧ ∀ (k : Type) [Field k] [IsAlgClosed k] (y : Sp k ⟶ Rd.Y.left), Set.range y.base ⊆ W ↔ KerGeo Rd Sd y := by

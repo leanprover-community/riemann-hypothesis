@@ -50,7 +50,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 
 
-section Abstract
 
 variable {M : Type} [AddCommGroup M] [Module ℂ M] {J : Type} [Fintype J]
 
@@ -196,9 +195,7 @@ private def zdSt {G : Type} [Group G] (π : Representation ℂ G M) (y : M) : Su
 private theorem zd_fix {G : Type} [Group G] (π : Representation ℂ G M) (y : M) (U : Subgroup G) :
     y ∈ fixd π U ↔ U ≤ zdSt π y := Iff.rfl
 
-end Abstract
 
-section Gen
 
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
   {c : Coef l} (H : HSet L Ω l n c) (ι : Qbar l ≃+* ℂ) {d : ℕ}
@@ -287,9 +284,7 @@ private theorem zd_H {J : Type} [Fintype J] (Y : J → Submodule ℂ (Fin H.m �
     (fun i y hy => Submodule.smul_mem _ _ (zd_uOp H.X.I (H.X.rpF ℂ d H.m) H.X.I.z (Y i) (hrp i) y hy))
     (fun μ => ‖ι.symm μ‖ = 1) (H.opC ι lam d) hop ev
 
-end Gen
 
-section Conc
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
   {s : HidaSetting l L Ω} {n : ℕ} {V : s.Lev} (ι : Qbar l ≃+* ℂ) (m : ℕ) {lam : Wt L l n} {d : ℕ}
@@ -351,7 +346,6 @@ private theorem zd_rp (g : GV n (fun v : V.frame.Vl => s.w v.1)) :
   exact zd_pi (G := fun v : V.frame.Vl => GLw n (s.w v.1)) ((hset Q τ₀).X.rpF ℂ d m) (wS ι m e σ)
     (fun v g y hy => zd_atV ι e hn Q τ₀ hξ hσ v g y hy) g
 
-end Conc
 
 theorem UpperTheory.V.Z.J.D.zDec :
     ZEq → ZDec := by

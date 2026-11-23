@@ -52,7 +52,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison (pφ pφ₂ isSquare pφ₂_fst pφ₂_snd isGrpPullback gen_refl)
 open GlobalTheory.HTPullEvery (lift_pφ₂ map_left_pφ push_map)
 
-section Act
 
 variable {S S' : Scheme.{0}} (f : S' ⟶ S) {O : Type} [Ring O] {A : Over S} [GrpObj A] [IsCommMonObj A]
 
@@ -76,9 +75,7 @@ private theorem push_pullAct (a : OActN O A) {T : Over S'} (u : T ⟶ (Over.pull
   change (u ≫ (pullAct f a).act c).left ≫ pφ f A = (u.left ≫ pφ f A) ≫ (a.act c).left
   simp [pullAct_sq]
 
-end Act
 
-section Tan
 
 variable {S S' : Scheme.{0}} (f : S' ⟶ S) {O : Type} [Ring O] {A : Over S} [GrpObj A] [IsCommMonObj A]
 
@@ -115,9 +112,7 @@ private theorem tanScal_iff (a : OActN O A) {R' : Type} [CommRing R'] (x : Sp R'
     · rw [Category.assoc, wv, w1, ← Category.assoc, retr, Category.id_comp]
     · rw [wc, Category.assoc, wv, ← Category.assoc, scale]
 
-end Tan
 
-section Tate
 
 variable {G : GDatum}
 
@@ -141,9 +136,7 @@ private theorem tate_along {k : Type} [Field k] {Q Q' : Type} [Group Q] [Group Q
      tower := fun n m hn hm x => by rw [← map_pow, I.tower n m hn hm]
      isom := hisom }, fun _ _ => rfl⟩
 
-end Tate
 
-section Obj
 
 variable {S S' : Scheme.{0}} (f : S' ⟶ S) {G : GDatum} {R : Type} [CommRing R] [Algebra ℚ R] {gb : GBase G R}
   {N : ℕ} {s : S ⟶ Sp R}
@@ -257,7 +250,6 @@ private def baseChangeMap (o : GObj gb N s) (s' : S' ⟶ Sp R) (hs : f ≫ s = s
   pol := gen_refl _ (pull_isLB o.isLB _)
   eta y := GlobalTheory.SiegelPull.secPull_left (isGrpPullback f o.A) _
 
-end Obj
 
 end UpperTheory.LevPull
 

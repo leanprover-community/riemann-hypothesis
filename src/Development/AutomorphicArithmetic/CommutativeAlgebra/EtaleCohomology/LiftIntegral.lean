@@ -48,7 +48,6 @@ open TensorProduct
 
 namespace UpperTheory.Ru.crystallineComparison
 
-section Alg
 
 variable {R A : Type} [CommRing R] [CommRing A] [Algebra R A]
 
@@ -216,7 +215,6 @@ private lemma split_alg (H : ∀ (A : Type) [CommRing A] [Algebra R A], Algebra.
       omega
     exact split_step σ h1 he hi z hz
 
-end Alg
 
 private lemma lift_integral {U R S : Type} [CommRing U] [CommRing R] [CommRing S] (g : U →+* R)
     (hg : Function.Injective g) (hc : ∀ x : R, g.IsIntegralElem x → ∃ u, g u = x) (ψ : U →+* S)

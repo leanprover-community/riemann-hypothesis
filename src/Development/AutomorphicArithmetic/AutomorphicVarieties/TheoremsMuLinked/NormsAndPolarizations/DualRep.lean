@@ -39,7 +39,6 @@ open IsLocalRing Matrix NumberField Formalism.ConjugateSelfDual ReciprocityTheor
 
 namespace UpperTheory.V.Th.Nm
 
-section Cont
 
 variable {G R : Type} [TopologicalSpace G] [CommRing R] {I : Ideal R} {n : ℕ}
 
@@ -83,9 +82,7 @@ private theorem mc_mul {f g : G → Matrix (Fin n) (Fin n) R} (hf : MC I f) (hg 
 private theorem mc_comp {H : Type} [TopologicalSpace H] {f : G → Matrix (Fin n) (Fin n) R} (hf : MC I f) {p : H → G}
     (hp : Continuous p) : MC I fun x => f (p x) := fun i j => ac_comp (hf i j) hp
 
-end Cont
 
-section Tri
 
 variable {R : Type} [CommRing R] {n : ℕ} {A B : Matrix (Fin n) (Fin n) R}
 
@@ -105,9 +102,7 @@ private theorem ut_diag (hA : ∀ i j, j < i → A i j = 0) (hB : ∀ i j, j < i
   · rw [hA _ _ hk, zero_mul]
   · rw [hB _ _ hk, mul_zero]
 
-end Tri
 
-section Du
 
 variable {O : Type} [CommRing O] {n : ℕ}
 
@@ -162,9 +157,7 @@ private def duU (w : GL (Fin n) O) (A : Matrix (Fin n) (Fin n) O) : GL (Fin n) (
     congr 1
     rw [neg_mul, mul_assoc]; simp
 
-end Du
 
-section Main
 
 variable {O : Type} [CommRing O] {n : ℕ}
 
@@ -228,7 +221,6 @@ private theorem diagCh_val {G R : Type} [Group G] [CommRing R] (τ : G →* GL (
     (h : ∀ g i j, j < i → (τ g : GL (Fin n) R) i j = 0) (i : Fin n) (g : G) :
     (diagCh τ h i g).val = (τ g).val i i := MonoidHom.coe_toHomUnits _ g
 
-end Main
 
 private theorem dualRep_gen :
     ∀ {l : ℕ} [Fact l.Prime] {n : ℕ} (F : GFrame l) (O : Type) [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O] (y : Pt F O n) (z : F.G₀ → Matrix (Fin n) (Fin n) O) [IsLocalRing (DualNumber O)], (∀ v (d : F.Gv v → O), AdicCont (maximalIdeal O) d → (∀ g h, d (g * h) = d g + d h) → ∀ g ∈ F.mu v, d g = 0) → OCoc y z → ∃ (ρ' : F.G₀ →* GL (Fin n) (DualNumber O)) (P' : GL (Fin n) (DualNumber O)) (ψ' : ∀ v, Fin n → F.Gv v →* (DualNumber O)ˣ), (∀ i j, AdicCont (maximalIdeal (DualNumber O)) fun g => mat ρ' g i j) ∧ F.IsForm O n ρ' P' ∧ (∀ v, HasFlag (ρ'.comp (F.φ v)) (ψ' v)) ∧ (∀ u, ∀ g ∈ F.Iu u, ρ' g = 1) ∧ pushRep (TrivSqZeroExt.fstHom O O O : DualNumber O →+* O) ρ' = y.ρ ∧ (∀ g, (mat ρ' g).trace.snd = (z g * mat y.ρ g).trace) ∧ ∀ v i, pushCh (TrivSqZeroExt.fstHom O O O : DualNumber O →+* O) (ψ' v i) = y.ψ v i ∧ (AdicCont (maximalIdeal (DualNumber O)) fun g => ((ψ' v i g : (DualNumber O)ˣ) : DualNumber O)) ∧ ∀ g, g ∈ F.Iv v ∨ g ∈ F.mu v → ((ψ' v i g : (DualNumber O)ˣ) : DualNumber O).snd = 0 := by

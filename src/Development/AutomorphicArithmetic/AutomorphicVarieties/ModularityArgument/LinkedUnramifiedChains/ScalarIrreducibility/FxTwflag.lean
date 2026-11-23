@@ -149,7 +149,6 @@ private theorem fx_ord {H K : Type} [Group H] [Field K] {n : ℕ} (I : Subgroup 
 
 end Fx
 
-section Tw
 
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
@@ -218,9 +217,7 @@ private theorem fx_coc (ρD : Fr.NRep F n (DualNumber Q)) (a b : G.G₀) :
   · rw [← Matrix.mul_assoc, Matrix.mul_assoc _ ((ρD.map (dF Q)).r (K.π b)), fx_rr', Matrix.mul_one]
   · simp only [Matrix.mul_assoc]
 
-end Tw
 
-section Core
 
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
@@ -304,9 +301,7 @@ private theorem fx_core (ρD : Fr.NRep F n (DualNumber Q))
   rw [e2, h1, Matrix.sub_mul, Matrix.mul_assoc _ _ ((ρD.map (dF Q)).r (K.π g)), fx_rr, Matrix.mul_one, Matrix.neg_mul, Matrix.mul_neg]
   abel
 
-end Core
 
-section Sp
 
 
 private noncomputable def fxD {O A Q : Type} [CommRing O] [CommRing A] [Algebra O A] [Field Q] [Algebra O Q]
@@ -380,4 +375,3 @@ private theorem fx_ineS [CharP (ResidueField O) l] {C : Type} [CommRing C] [Alge
   rw [← φ.commutes, ← map_mul, h1]
   by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
 
-end Sp

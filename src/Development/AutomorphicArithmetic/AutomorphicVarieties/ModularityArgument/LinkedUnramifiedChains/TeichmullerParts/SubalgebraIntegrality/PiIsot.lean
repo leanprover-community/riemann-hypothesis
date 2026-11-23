@@ -33,7 +33,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.V.Z.J.D
 
-section Ins
 
 variable {I : Type} [DecidableEq I]
 
@@ -186,7 +185,6 @@ private lemma split_intw [Fintype I] {Gi Wi : I → Type} [∀ i, Group (Gi i)] 
       MonoidHom.coe_fst, MonoidHom.coe_snd, piRep_tprod]
   | add a b ha hb => simp only [map_add (f := _), ha, hb]
 
-end Ins
 
 private lemma piIsot_empty {I : Type} [Fintype I] [DecidableEq I] [IsEmpty I] (Gi Wi : I → Type)
     [∀ i, Group (Gi i)] [∀ i, AddCommGroup (Wi i)] [∀ i, Module ℂ (Wi i)]

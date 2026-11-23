@@ -40,7 +40,6 @@ namespace UpperTheory.V.Pr.LkPt2
 
 open Matrix
 
-section Mat
 
 variable {A : Type} [CommRing A]
 
@@ -101,7 +100,6 @@ private theorem drop_mid {H : Type} [Group H] (σ : H →* Matrix (Fin 2) (Fin 2
           simp
   exact (hu.smul_eq_zero).1 e2
 
-end Mat
 
 private theorem w_eq (i : Fin 2) : Fr.w 2 i = Fr.w 3 (![0, 2] i) := by fin_cases i <;> rfl
 

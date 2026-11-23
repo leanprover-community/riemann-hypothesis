@@ -42,7 +42,6 @@ namespace UpperTheory.Ru.crystallineComparison.Th.Deg0
 
 open ComposableArrows GlobalTheory.CatH
 
-section Gen
 
 variable {R : Type} [CommRing R] {E : Type 1} [Category.{0} E] {G : E ⥤ ModuleCat.{1} R}
 
@@ -70,7 +69,6 @@ private theorem dv_eq (f : Cn G 0) {X Y : E} (φ : X ⟶ Y) :
   rw [a0, a1]
   simp [sub_eq_add_neg]
 
-end Gen
 
 variable {C : Type 1} [Category.{0} C]
 

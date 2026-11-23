@@ -40,7 +40,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.V.Cj.S
 
-section SlopeTestRemainingChoices
 
 variable {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
 
@@ -71,7 +70,6 @@ private theorem rightB {κ : Type} (B : κ → Module.End ℂ W) (m : κ → ℂ
   rw [← map_smul, ← h]
   exact TensorProduct.map_comm _ _ u
 
-end SlopeTestRemainingChoices
 
 theorem tensEigB : TensEig := by
   intro V W _ _ _ _ _ _ ι κ A B hA hB z hz

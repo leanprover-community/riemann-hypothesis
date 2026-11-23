@@ -33,7 +33,6 @@ import Mathlib.Tactic.ReduceModChar
 open UpperTheory.V.Z.J.D
 open scoped TensorProduct
 
-section Transfer
 
 variable {G G' W W' : Type} [Group G] [Group G'] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
 
@@ -83,7 +82,6 @@ private lemma pt_eq {ι Z : Type} {s : ι → Type} [∀ i, AddCommGroup (s i)] 
     A x = B x :=
   LinearMap.congr_fun (PiTensorProduct.ext (MultilinearMap.ext h)) x
 
-end Transfer
 
 private lemma piRep_tprod {I : Type} {Gi Wi : I → Type} [∀ i, Group (Gi i)]
     [∀ i, AddCommGroup (Wi i)] [∀ i, Module ℂ (Wi i)]

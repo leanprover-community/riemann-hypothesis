@@ -38,7 +38,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing Polynomial Matrix UpperTheory.V UpperTheory.V.HV UpperTheory.V.Alg GlobalTheory.GalOfCusp
 
-section aux
 
 variable {G K V : Type} [Group G] [Field K] [CharZero K] [AddCommGroup V] [Module K V]
 
@@ -94,7 +93,6 @@ private theorem pn_ext (R : Representation K G V) (η : G →* ℤˣ) (c : G) (h
     rw [hz, h0, map_zero, add_zero, pn_rmul] at h2
     rw [h2, map_smul (R c), map_add (R c), hcc, add_comm (R c Y)]
 
-end aux
 
 theorem UpperTheory.V.Th.Det.polNorm :
     ∀ {l : ℕ} [Fact l.Prime] (F : W.GFrame l) {K : Type} [Field K] [CharZero K] {n : ℕ} (ρ : F.G₀ →* GL (Fin n) K) (P : GL (Fin n) K) (R : Representation K F.Γ (Matrix (Fin n) (Fin n) K)) (z : F.Γ → Matrix (Fin n) (Fin n) K), Ws.Eb.IsAdExt F ρ P R → (∀ g h, z (g * h) = z g + R g (z h)) → ∃ X₀ : Matrix (Fin n) (Fin n) K, (∀ g : F.G₀, (P : Matrix (Fin n) (Fin n) K) * (z (F.conj g) - Pa.dY F (W.mat ρ) X₀ (F.conj g)) = -((z g - Pa.dY F (W.mat ρ) X₀ g)ᵀ * P)) ∧ ∀ Y, (∀ g : F.G₀, z g - Pa.dY F (W.mat ρ) X₀ g = Pa.dY F (W.mat ρ) Y g) → ∃ X, ∀ g, z g = R g X - X := by

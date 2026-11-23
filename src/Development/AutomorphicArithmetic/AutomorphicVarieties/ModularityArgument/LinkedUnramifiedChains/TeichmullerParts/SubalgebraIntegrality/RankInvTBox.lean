@@ -42,13 +42,10 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.J.D
 
-section Abs
 
 variable {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
 
-end Abs
 
-section Fam
 
 variable {I : Type} {Gi Wi Wi' : I → Type} {H X X' : Type} [∀ i, Group (Gi i)] [Group H]
   [∀ i, AddCommGroup (Wi i)] [∀ i, Module ℂ (Wi i)] [∀ i, AddCommGroup (Wi' i)] [∀ i, Module ℂ (Wi' i)]
@@ -63,6 +60,5 @@ private theorem congr_piRep (τ : ∀ i, Representation ℂ (Gi i) (Wi i)) (τ' 
     exact congrArg (fun t => r • PiTensorProduct.tprod ℂ t) (funext fun i => h i (f i))
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
-end Fam
 
 end UpperTheory.V.Z.J.D

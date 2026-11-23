@@ -41,7 +41,6 @@ open TensorProduct
 
 namespace UpperTheory.Ru.crystallineComparison
 
-section Abstract
 
 variable {R F A C T N ι : Type*} [CommRing R] [CommRing F] [Algebra R F] [CommRing A] [Algebra R A]
   [CommRing C] [Algebra F C] [AddCommGroup T] [Module R T] [AddCommGroup N] [Module A N] [Fintype ι]
@@ -136,7 +135,6 @@ private theorem apply_tensor (h : T →+ N) (hh : ∀ (s : R) (w : T), h (s • 
   rw [hφs, map_sum, map_zero] at this
   simpa only [hφ] using this
 
-end Abstract
 
 open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.E GlobalTheory.EtC GroundTheory.PAdicHodge
 

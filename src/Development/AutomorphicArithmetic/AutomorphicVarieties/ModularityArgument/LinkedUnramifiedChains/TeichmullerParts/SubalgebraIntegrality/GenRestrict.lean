@@ -43,7 +43,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.J.D
 
-section Abs
 
 variable {M : Type} [AddCommGroup M] [Module ℂ M]
 
@@ -128,7 +127,6 @@ private theorem gen_list {F : M} (hF : F ∈ fixd π I.N) {κ : Type} (a : κ �
     simp only [List.map_cons, List.prod_cons]
     exact ⟨mul_mem hk.1 ht.1, gen_two I π hk.1 ht.1 hF hk.2 ht.2⟩
 
-end Abs
 
 private theorem prod_single {σ : Type} [DecidableEq σ] {G : σ → Type} [∀ v, Group (G v)] (g : ∀ v, G v) (w : σ) (s : List σ)
     (hs : s.Nodup) (hw : w ∈ s) : (s.map fun v => (Pi.mulSingle v (g v) : ∀ v, G v)).prod w = g w := by
@@ -152,7 +150,6 @@ private theorem al_zero (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace 
   simp only [al, upow, Nat.not_lt_zero, ite_false, zpow_zero]
   exact map_one _
 
-section Set
 
 variable {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
   {c : Coef l} (H : HSet L Ω l n c) (ι : Qbar l ≃+* ℂ)
@@ -162,7 +159,6 @@ private theorem lowVal_ne (lam : Wt L l n) (v : H.V) (j : ℕ) : H.lowVal ι lam
   refine finprod_induction (p := fun y : Qbar l => y ≠ 0) one_ne_zero (fun _ _ => mul_ne_zero) fun e => ?_
   exact zpow_ne_zero _ ((map_ne_zero e.1).2 (Units.ne_zero _))
 
-end Set
 
 end UpperTheory.V.Z.J.D
 

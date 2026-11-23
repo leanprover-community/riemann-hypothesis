@@ -35,7 +35,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.V.Z.J.D
 
-section SlopeTestRemainingChoices
 
 variable {G W W' : Type} [Group G] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
 
@@ -133,9 +132,7 @@ private lemma indep_finset {τ : Representation ℂ G W'} {ρ : Representation �
   have := congrFun h (e.symm ⟨i, hi⟩)
   simpa using this
 
-end SlopeTestRemainingChoices
 
-section Main
 
 variable {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
 
@@ -210,7 +207,6 @@ private lemma evl_surj {τ : Representation ℂ G W'} {ρ : Representation ℂ G
   rintro _ ⟨w, rfl⟩
   exact ⟨w ⊗ₜ ⟨f.1, f.2⟩, evl_tmul τ ρ w ⟨f.1, f.2⟩⟩
 
-end Main
 
 theorem step :
     Step := by

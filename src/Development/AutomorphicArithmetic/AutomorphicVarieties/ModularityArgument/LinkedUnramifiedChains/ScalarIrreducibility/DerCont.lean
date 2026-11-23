@@ -45,7 +45,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument
 
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af UpperTheory.V.Pr UpperTheory.V.Alg UpperTheory.V.J
 
-section Abs
 
 variable {O R K : Type} [CommRing O] [CommRing R] [Algebra O R]
 
@@ -174,7 +173,6 @@ private theorem derCont_abs [IsLocalRing O] [Finite (ResidueField O)] [IsLocalRi
     have := mul_le_mul (hle b) (le_refl (‖y (algebraMap O R p)‖ ^ n)) hρ0 zero_le_one
     nlinarith
 
-end Abs
 
 theorem UpperTheory.V.J.derCont :
     ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) [Fr.IsCoef l c.O] (R : Type) [CommRing R] [Algebra c.O R] [IsCO c.O R] (y : R →ₐ[c.O] Qbar l),

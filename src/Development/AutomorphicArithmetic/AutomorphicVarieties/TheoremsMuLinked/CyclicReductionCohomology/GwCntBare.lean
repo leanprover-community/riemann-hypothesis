@@ -31,11 +31,9 @@ import Mathlib.Tactic.NormNum.Prime
 
 noncomputable section
 
-section Helpers
 
 open Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
-section Count
 
 variable {k G M : Type} [CommRing k] [Group G] [TopologicalSpace G] [AddCommGroup M] [Module k M]
   [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation k G M)
@@ -78,7 +76,6 @@ private theorem fin_Zl [Finite M] [Finite (H1 ρ)] : Finite (Zl ρ) := by
     (AddSubgroup.addGroupEquivQuotientProdAddSubgroup (s := ((B1 ρ).comap (Z1 ρ).subtype).toAddSubgroup)).symm
   exact Finite.of_injective (fun x => (⟨x.1, (Zl_iff ρ _).1 x.2⟩ : Z1 ρ)) fun x y h => Subtype.ext (Subtype.mk.inj h)
 
-end Count
 
 private theorem ex_cls {n : ℕ} {G M : Type} [Group G] [TopologicalSpace G] [AddCommGroup M] [Module (ZMod n) M]
     [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation (ZMod n) G M) (N : AddSubgroup (G → M))
@@ -155,7 +152,6 @@ private theorem conc_core {n : ℕ} {Γ M M' W : Type} [Group Γ] [TopologicalSp
   change _ * _ * Nat.card (B1 ρ') * _ * _ ≤ _
   convert e6 using 1 <;> ring
 
-section Transport
 
 variable {R₁ R₂ G₁ G₂ M₁ M₂ : Type} [CommRing R₁] [CommRing R₂] [Group G₁] [Group G₂] [TopologicalSpace G₁] [TopologicalSpace G₂]
   [AddCommGroup M₁] [Module R₁ M₁] [AddCommGroup M₂] [Module R₂ M₂]
@@ -194,7 +190,6 @@ private theorem tr_Bl (h : ∀ g m, β (ρ₁ g m) = ρ₂ (e g) (β m)) (z : G�
     have := transport_coboundary_mem (tr_sym h) hz
     rwa [show tr e.symm β.symm (tr e β z) = z from (tr e β).symm_apply_apply z] at this, transport_coboundary_mem h⟩
 
-end Transport
 
 private theorem conc_congr {R₁ R₁' Γ₁ M₁' W₁ R₂ R₂' Γ₂ M₂' W₂ M : Type} [AddCommGroup M]
     [CommRing R₁] [CommRing R₁'] [Group Γ₁] [TopologicalSpace Γ₁] [Module R₁ M]

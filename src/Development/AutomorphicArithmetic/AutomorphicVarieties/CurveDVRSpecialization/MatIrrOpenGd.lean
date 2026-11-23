@@ -41,11 +41,9 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicCases.A
 
 attribute [-instance] UpperTheory.V.Pr.IsCD.toIsDiscreteValuationRing
 
-section SlopeTestRemainingChoices
 
 open Matrix IsLocalRing UpperTheory.V.U3 UpperTheory.V.UnitaryThreeInertia
 
-section Abstract
 
 variable {K G : Type} [Field K] [Group G]
 
@@ -293,7 +291,6 @@ private theorem core' (H U : Subgroup G) (hUH : U ≤ H) [U.Normal] (a : G → M
   have := hz k
   rwa [trace_mul_cycle, f, Matrix.one_mul] at this
 
-end Abstract
 
 private theorem roots {k : Type} [Field k] (a b : kˣ) (h : ∀ n : ℕ, ((a * b ^ n : kˣ) : k) + 1 + (((a * b ^ n)⁻¹ : kˣ) : k) = 0) :
     (b : k) ^ 2 - 1 = 0 := by

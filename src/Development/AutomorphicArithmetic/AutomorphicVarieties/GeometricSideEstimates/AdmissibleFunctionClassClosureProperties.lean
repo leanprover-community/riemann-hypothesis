@@ -33,7 +33,6 @@ import Mathlib.Tactic.NormNum.Prime
 open UpperTheory.V.Lit.Geo
 open scoped ContDiff
 
-section aux
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
 
@@ -136,7 +135,6 @@ private theorem pA_bd (q : V → ℝ) (hq : ∀ x, ‖x‖ ^ 2 ≤ q x) {P : V �
     rw [Pi.mul_apply, norm_mul, pow_add, mul_mul_mul_comm]
     exact mul_le_mul (hf x) (hg x) (norm_nonneg _) ((norm_nonneg _).trans (hf x))
 
-end aux
 
 theorem UpperTheory.admissibleFunctionClass_closure_properties :
     PolyBd := by

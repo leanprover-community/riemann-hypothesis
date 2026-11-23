@@ -165,7 +165,6 @@ private theorem dg_lc {Γ R : Type} [TopologicalSpace Γ] {n : ℕ} (f : Γ → 
   filter_upwards [this] with g hg
   exact Matrix.ext hg
 
-section phi
 variable {G : Type} [Group G] {n q : ℕ}
 
 private def dgPhi {R : Type} [CommRing R] (ρ : G → Matrix (Fin n) (Fin n) R) (e : G → R) (P : Matrix (Fin n) (Fin n) R)
@@ -242,7 +241,6 @@ private def dgB {R : Type} [CommRing R] (ρ : G → Matrix (Fin n) (Fin n) R) (e
     · rw [Matrix.transpose_smul, Matrix.mul_smul, Matrix.smul_mul, a2]
     · simp only [Pi.smul_apply, Matrix.mul_smul, Matrix.smul_mul, smul_sub, smul_comm c (e _)]
 
-end phi
 
 theorem UpperTheory.V.Th.ncard_traceZero_twisted_cocycles_le_coboundaries_mul :
     ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G0 : Glob l L) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsCoef l O] [Algebra ℤ_[l] O] (n : ℕ) (y : Pt G0.frame O n) (q : ℕ) (sg : Fin q → G0.G₀), PhiCond G0.Γ l → DetO y (Set.range sg) → ∃ C : ℕ, ∀ m, {z | z ∈ Tw y m ∧ ∀ j (k : ℕ), (z (sg j) * y.ρ0 m (sg j) ^ k).trace = 0}.ncard ≤ (TwB y m).ncard * Nat.card (ResidueField O) ^ C := by

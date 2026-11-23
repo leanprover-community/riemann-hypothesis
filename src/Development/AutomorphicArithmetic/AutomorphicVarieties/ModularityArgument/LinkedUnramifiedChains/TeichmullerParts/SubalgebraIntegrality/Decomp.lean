@@ -72,7 +72,6 @@ private theorem fixOf {L : Type} [Field L] [NumberField L] [IsCMField L] (hU : G
   exact GlobalTheory.T.localComponent_levelFixedVectors_ne_bot L hU n hn S hS lam K' hLev π h1 h2 h3 w hw σ₁
     ⟨p, fun x => rfl, σ₁.irred, f, hf0, hfm, fun x v => hf x v⟩
 
-section Tf
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω]
   [IsAlgClosure L Ω] {s : HidaSetting l L Ω} {n : ℕ} {V : s.Lev} (ι : Qbar l ≃+* ℂ) {lam : Wt L l n} {d : ℕ}
@@ -91,7 +90,6 @@ private theorem yEq {c : Coef l} {m : ℕ} (Q : QData V) (τ₀ : KT n (wt s) �
     (Submodule.pi Set.univ (fun _ => (hset Q τ₀).X.AF ξ) ⊓ fixd ((hset Q τ₀).X.raF d ((hset Q τ₀).τC ι)) (hset Q τ₀).UQ) ⊓
       Submodule.span ℂ {F : Fin (hset Q τ₀).m → (hset Q τ₀).X.Fn ℂ d | ∀ i ℓ, tfOf ι e (F i) ℓ ∈ σ'} = YOf Q ι τ₀ e ξ σ' := rfl
 
-end Tf
 
 private theorem wtY {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω]
     [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ) (hn : 1 ≤ n) (V : s.Lev) (Q : QData V) (c : Coef l) (ι : Qbar l ≃+* ℂ)

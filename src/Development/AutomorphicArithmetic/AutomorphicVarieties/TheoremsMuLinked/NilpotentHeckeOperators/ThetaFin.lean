@@ -38,7 +38,6 @@ open UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Hi UpperTheory.V.AlgebraToo
 open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -59,7 +58,6 @@ private theorem thetaFin_one {A M : Type} [CommRing A] [AddCommGroup M] [Module 
   rw [(hkNorm A _ M ρ _ _ (heckePairIwC k n C).1 hn).1 v]
   exact v.2 _ hm
 
-end Loc
 
 theorem UpperTheory.V.Th.thetaFin :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) (A M : Type) [CommRing A] [AddCommGroup M] [Module A M] (ρ : Representation A (GL (Fin n) k) M) (C C' : Subgroup 𝓀[k]ˣ) (θ), IsTheta ρ C θ → ∀ δ : kˣ, IsGenMod k C' δ → ∀ i : Fin n, ∃ m : ℕ, 0 < m ∧ θ (Pi.mulSingle i δ) ^ m = 1 := by

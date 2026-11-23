@@ -54,7 +54,6 @@ private theorem exists_open_normal {P Z : Type} [Group P] [TopologicalSpace P] [
       hK.isOpenMap_subtype_val _ (hc.isOpen_fiber z)
     open scoped Pointwise in
     obtain ⟨W, hW, hWS⟩ := compact_open_separated_mul_right hcpt ho subset_rfl
-    open scoped Pointwise in
     exact ⟨W, hW, fun x hx w hw => hWS (Set.mul_mem_mul hx hw)⟩
   choose W hW hWS using hS
   have hI : (⋂ z ∈ Set.range c, W z) ∈ nhds (1 : P) := (Filter.biInter_mem hfin).2 fun z _ => hW z

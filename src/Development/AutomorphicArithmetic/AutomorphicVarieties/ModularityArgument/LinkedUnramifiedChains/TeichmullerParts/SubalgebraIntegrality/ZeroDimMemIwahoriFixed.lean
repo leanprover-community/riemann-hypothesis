@@ -55,7 +55,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.J.D
 
-section Comp
 
 variable {G M : Type} [Group G] [AddCommGroup M] [Module ℂ M] {m : ℕ}
   {ρ : Representation ℂ G M} {ρF : Representation ℂ G (Fin m → M)}
@@ -130,9 +129,7 @@ private theorem eigL_pi {L : Type} [Field L] [NumberField L] {n : ℕ} {V : Type
   · intro hF
     exact ⟨⟨⟨fun i => (hF i).1.1.1, fun i => (hF i).1.1.2⟩, fun v j y i => (hF i).1.2 v j y⟩, fun v j i => (hF i).2 v j⟩
 
-end Comp
 
-section Grp
 
 variable {Ga Gp A B W : Type} [Group Ga] [Group Gp] [Group A] [Group B] [AddCommGroup W] [Module ℂ W]
 
@@ -185,9 +182,7 @@ private theorem lvl_iff {m : ℕ} (Ub : Subgroup Ga) (U : Subgroup Ub) (KS : Sub
     rw [b ⟨p.1, hp.1⟩ i (g * (sec (1, p.2), 1))]
     exact c _ hp.2 i g
 
-end Grp
 
-section U
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
 
@@ -331,9 +326,7 @@ private theorem vs_ne (hn : 1 ≤ n) (hV : V.S' = s.S) (Q : QData V) {c : Coef l
     rw [Subsingleton.elim i 0, ← hF', h]
     exact (tl ι e ℓ).map_zero
 
-end U
 
-section U2
 
 private theorem fix_iff {Γ Ga Gp : Type} [Group Γ] [Group Ga] [Group Gp] (X : Frame Γ Ga Gp) {d m : ℕ}
     (τ : X.Ub →* GL (Fin m) ℂ) (U : Subgroup X.Ub) (F : Fin m → X.Fn ℂ d) :
@@ -433,6 +426,5 @@ private theorem part_eq (hS : SecS) (hn : 1 ≤ n) (hV : V.S' = s.S) (Q : QData 
 private theorem rank_of {M : Type} [AddCommGroup M] [Module ℂ M] {A B : Submodule ℂ M} (h : A = B) {r : Cardinal}
     (hB : Module.rank ℂ B = r) : Module.rank ℂ A = r := h ▸ hB
 
-end U2
 
 end UpperTheory.V.Z.J.D

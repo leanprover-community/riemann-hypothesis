@@ -39,7 +39,6 @@ open CategoryTheory Polynomial CrystallineSemistableComparison
 
 namespace UpperTheory.Ru.crystallineComparison
 
-section Factor
 
 variable {R : Type} [CommRing R] {e : R}
 
@@ -163,7 +162,6 @@ private theorem val_quot (he : IsIdempotentElem e) {π : R}
     have := map_dvd (factorMk e) h2
     rwa [ha, map_mul, hb, map_sub, map_one] at this
 
-end Factor
 
 variable {l : ℕ} [Fact l.Prime]
 

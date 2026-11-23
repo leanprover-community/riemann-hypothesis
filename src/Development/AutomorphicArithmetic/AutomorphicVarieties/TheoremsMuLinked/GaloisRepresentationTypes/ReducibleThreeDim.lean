@@ -73,7 +73,6 @@ private theorem bk_map {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algeb
       rw [← key, ← map_sub, ← hx g, LinearMap.rTensor_tmul]
       rfl
 
-section Alg
 
 variable {R : Type} [CommRing R]
 
@@ -279,7 +278,6 @@ private theorem cont_pC : Continuous (pC : Matrix (Fin 3) (Fin 3) R → _) := by
   refine continuous_matrix fun i j => ?_
   fin_cases i <;> fin_cases j <;> first | exact continuous_const | exact continuous_id.matrix_elem 1 1
 
-end Alg
 
 end UpperTheory.V.Th.ReducibleThreeDim
 

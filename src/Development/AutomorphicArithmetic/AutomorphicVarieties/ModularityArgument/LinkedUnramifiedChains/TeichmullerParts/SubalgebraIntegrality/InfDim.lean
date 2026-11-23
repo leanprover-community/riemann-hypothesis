@@ -52,7 +52,6 @@ open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 
-section Abs
 variable {G X D Y : Type} [Group G] [AddCommGroup X] [Module ℂ X] [AddCommGroup D] [Module ℂ D] [AddCommGroup Y] [Module ℂ Y]
 
 private def eqv (R : Representation ℂ G X) (Gi : Subgroup G) (τ : G → Module.End ℂ D) : Submodule ℂ (D →ₗ[ℂ] X) where
@@ -267,9 +266,7 @@ private theorem span_pi {I : Type} [Finite I] {M : I → Type} [∀ i, AddCommGr
   rw [this]
   exact hf _
 
-end Abs
 
-section Mid
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 private theorem span_emb {I : Type} [Finite I] (emb : I → E →+* ℂ)
@@ -364,7 +361,6 @@ private theorem ex_emb (hn : 1 ≤ n) {I : Type} [Finite I] (emb : I → E →+*
   rw [Subsingleton.elim k 0]
   exact LinearMap.congr_fun h ℓ
 
-end Mid
 
 private theorem af_tr {Γ Ga Gp : Type} [Group Γ] [Group Ga] [Group Gp] {d : ℕ} (X : Frame Γ Ga Gp) (ξ : Gp →* GL (Fin d) ℂ)
     (F : Ga × Gp → Fin d → ℂ) (hF : F ∈ X.AF ξ) (p : Ga × Gp) : (fun g => F (g * p)) ∈ X.AF ξ := fun γ g => by

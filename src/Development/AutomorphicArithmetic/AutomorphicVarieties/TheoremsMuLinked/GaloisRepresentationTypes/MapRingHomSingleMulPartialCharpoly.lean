@@ -70,7 +70,6 @@ private theorem cnt (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRin
     Nat.pow_le_pow_iff_right Finite.one_lt_card] at h3
   nlinarith
 
-section Tr
 
 variable {n : ℕ} {R G : Type} [CommRing R] [Group G]
 
@@ -137,9 +136,7 @@ private theorem kill_tr {O X : Type} [CommRing O] [Algebra O R] [AddCommGroup X]
       rw [MonoidAlgebra.mapRingHom_single, MonoidAlgebra.smul_single, smul_eq_mul, mul_one]
     rw [this, map_smul, algebraMap_smul, map_smul, h, smul_zero]
 
-end Tr
 
-section Der
 
 variable {O R X : Type} [CommRing O] [CommRing R] [Algebra O R] [AddCommGroup X] [Module O X] {x : R →ₐ[O] O}
 
@@ -158,7 +155,6 @@ private theorem der_smul {δ : R →ₗ[O] X} (h : IsDer x δ) (c : O) : IsDer x
 private theorem der_wt {δ : R →ₗ[O] X} (h : IsDer x δ) (c : O) (a : R) : δ (algebraMap O R c * a - 1) = c • δ a := by
   rw [map_sub, der_one h, sub_zero, ← Algebra.smul_def, map_smul]
 
-end Der
 
 theorem UpperTheory.V.Th.count :
     Count := by

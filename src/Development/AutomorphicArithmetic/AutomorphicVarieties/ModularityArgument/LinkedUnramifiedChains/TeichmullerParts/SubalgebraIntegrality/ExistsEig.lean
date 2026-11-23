@@ -44,7 +44,6 @@ open ValuativeRel GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL Gl
 
 namespace UpperTheory.V.Z.J.D.OrdinaryOrderOne
 
-section General
 
 variable {G V : Type} [CommGroup G] [AddCommGroup V] [Module ℂ V]
 
@@ -177,7 +176,6 @@ private theorem exists_form {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (h
     rw [hg'] at h
     exact Units.ext (mul_right_cancel₀ hv (h.symm.trans (one_mul _).symm))
 
-end General
 
 private theorem inj {G M J : Type} [Group G] (I : Iwa G) [AddCommGroup M] [Module ℂ M] (π : Representation ℂ G M)
     (hs : I.Smooth π) (a : J → G) (ha : ∀ j, a j ∈ I.P) (μ : J → ℂ) (hμ : ∀ j, μ j ≠ 0) (l : List G)
@@ -213,7 +211,6 @@ private theorem inj {G M J : Type} [Group G] (I : Iwa G) [AddCommGroup M] [Modul
       exact hg.2 v hv (ih _ (st _ hg.1 v hv) h)
   exact key m v ⟨hv, hv'⟩ hm
 
-section Num
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -262,7 +259,6 @@ private theorem num (ω : Fin n → kˣ →* ℂˣ) {j : ℕ} (hj : j ≤ n) :
   rw [Finset.prod_mul_distrib, hp, h2, psEig, Finset.prod_filter, Nat.cast_pow, _root_.zpow_neg, zpow_natCast]
   field_simp
 
-end Num
 
 end UpperTheory.V.Z.J.D.OrdinaryOrderOne
 

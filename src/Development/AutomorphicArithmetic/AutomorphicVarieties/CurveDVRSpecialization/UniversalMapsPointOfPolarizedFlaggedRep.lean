@@ -45,7 +45,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing
 
 set_option linter.overlappingInstances false
 
-section SlopeTestRemainingChoices
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr UpperTheory.V.W UpperTheory.V.CA UpperTheory.V.AlgebraTools.Det
 
@@ -98,7 +97,6 @@ private theorem prod_smul {K : Type} [CommRing K] {M : Type} [Ring M] [Algebra K
     rw [List.ofFn_succ, List.ofFn_succ, List.prod_cons, List.prod_cons, Fin.prod_univ_succ,
       prod_smul (fun i => c i.succ) (fun i => x i.succ), smul_mul_smul_comm]
 
-section Cont
 
 variable {Γ Γ' R R' : Type} [TopologicalSpace Γ] [TopologicalSpace Γ'] [CommRing R] [CommRing R']
 
@@ -120,9 +118,7 @@ private theorem ac_desc {I : Ideal R} {f : Γ → R} {u : Γ' → Γ} (hu : Topo
     (hf : AdicCont I fun x => f (u x)) : AdicCont I f := fun N s =>
   hu.isOpen_preimage.1 (hf N s)
 
-end Cont
 
-section Tw
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
   {F : Frame l (ResidueField O)} {n : ℕ} {G : GFrame l} {r : Resid G O n} (L : TwLink F r)
@@ -189,7 +185,6 @@ private theorem chi_ex : ∃ χ : ∀ v, Fin n → F.Gv v →* Cˣ, IsPsi O F n 
   choose χ h1 h2 using key
   exact ⟨χ, h1, fun v i g => h2 _ v rfl i g⟩
 
-end Tw
 
 private theorem irr_conj {G K : Type} [Group G] [Field K] {n : ℕ} (r : G →* GL (Fin n) K)
     (a : G → Matrix (Fin n) (Fin n) K) (h : GL (Fin n) K) (H : ∀ g, a g = h * mat r g * h⁻¹) (hr : Af.IsIrr r) :

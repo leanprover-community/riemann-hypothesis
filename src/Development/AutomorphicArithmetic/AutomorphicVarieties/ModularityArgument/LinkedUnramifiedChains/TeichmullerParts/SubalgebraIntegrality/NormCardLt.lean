@@ -43,7 +43,6 @@ open UpperTheory.V.Z.J.D
 
 namespace UpperTheory.V.Z.J.D
 
-section Emb
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {l : ℕ} [Fact l.Prime]
 
@@ -60,9 +59,7 @@ private theorem norm_unif_lt (j : k →+* Qbar l) (hj : Continuous j) : ‖j (un
     simpa [Function.comp_def, map_pow] using this
   exact tendsto_pow_atTop_nhds_zero_iff_norm_lt_one.mp hj'
 
-end Emb
 
-section Pow
 
 variable {L : Type} [Field L] [NumberField L] {l : ℕ} [Fact l.Prime] (w : Plc L)
 
@@ -125,7 +122,6 @@ private theorem norm_card_lt (hl : ((l : ℕ) : 𝓞 L) ∈ w.asIdeal) :
         mul_le_mul_of_nonneg_left hm1 (norm_nonneg _)
     _ < 1 := by rw [mul_one]; exact Padic.norm_p_lt_one
 
-end Pow
 
 private theorem prod_le {M : Type} [CommMonoid M] {n : ℕ} (f : ℕ → M) (j : Fin n) :
     ∏ i with i ≤ j, f (i : ℕ) = ∏ k ∈ Finset.range (j + 1), f k := by

@@ -41,7 +41,6 @@ open scoped Pointwise
 private theorem tf (F Ω : Type) [Field F] [Field Ω] [Algebra F Ω] : Module.IsTorsionFree F Ω :=
   DivisionSemiring.to_moduleIsTorsionFree
 
-section SlopeTestRemainingChoices
 
 attribute [local instance high] tf
 
@@ -117,7 +116,6 @@ private theorem idx_prime {X κ : Type} [Group X] (l : ℕ) [hl : Fact l.Prime] 
     rw [h4, orderOf_one] at hx
     exact hl.out.one_lt.ne hx
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.J.linkOf :
     ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsLocalRing O] [CharP (ResidueField O) l] (η : G ℚ Ω →* ℤˣ) (Ψ : G ℚ Ω →* Oˣ) (σ g₁ : G ℚ Ω) (B : ValuationSubring Ω) (M : ℕ), B.valuation (l : Ω) < 1 → ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] [Algebra L Ω] [IsAlgClosure L Ω] (Φ : Fr.Frame l (ResidueField O)) (k : GalLink η Ψ σ g₁ B M L Φ) (κ : Type) [Field κ] [CharP κ l] (f : ResidueField O →+* κ) (C₀ : ℕ), (Φ.ext f).Ok C₀ → Φ.d = Module.finrank ℚ (W.Lp L) → ∃ (cw : Φ.Inf → Φ.Γ) (_ : ∀ w, cw w * cw w = 1 ∧ Φ.del (cw w) = -1), ∃ S K π ι A pl e c, GC.FLink (F := W.Lp L) (Ω := Ω) l { Φ.ext f with cw := cw } S K π ι A pl e c := by

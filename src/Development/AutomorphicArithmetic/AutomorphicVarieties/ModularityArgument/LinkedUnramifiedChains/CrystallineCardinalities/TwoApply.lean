@@ -41,7 +41,6 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N Formalism.Bas
 
 namespace UpperTheory.V.Z.J.StepF
 
-section Alg
 
 variable {G E : Type} [Group G] [Field E]
 
@@ -83,9 +82,7 @@ private def two (α κ : G →* Eˣ) (b : G → E) (hb : ∀ g h, b (g * h) = α
 private theorem two_apply (α κ : G →* Eˣ) (b : G → E) (hb : ∀ g h, b (g * h) = α g * b h + b g * κ h)
     (g : G) (x : E × E) : two α κ b hb g x = (α g * x.1 + b g * x.2, κ g * x.2) := rfl
 
-end Alg
 
-section Cr
 
 variable {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   {E : Type} [Field E] [Algebra ℚ_[l] E] [FiniteDimensional ℚ_[l] E] [TopologicalSpace E]
@@ -147,7 +144,6 @@ private theorem core (φ : G →* GQ l) (hφ : IsOpenEmbedding φ) (α κ ε : G
     rw [hε, mul_comm (ε g : E), mul_assoc, Units.inv_mul_cancel_left]
   rwa [e3] at key
 
-end Cr
 
 end UpperTheory.V.Z.J.StepF
 

@@ -38,7 +38,6 @@ open UpperTheory.Gal.crystallineComparison.Mod (Std TjD TjE KSOKE)
 open UpperTheory.Gal.Int.Geo
 open scoped TensorProduct
 
-section SlopeTestRemainingChoices
 
 variable {q : ℕ} [Fact q.Prime] {D : Datum q} {R R' : Type} [CommRing R] [CommRing R'] [Algebra ℚ R'] {b : Base D R}
   {gb : GBase D.toG R'} {S S' : Scheme.{0}} {s : S ⟶ Sp R} {s' : S' ⟶ Sp R'} {N N₀ c : ℕ}
@@ -61,7 +60,6 @@ private theorem sec_lift {X Y : Scheme.{0}} {A : Over X} {B : Over Y} {f : X ⟶
   refine ⟨Over.homMk (hc.lift (f ≫ e.left) (𝟙 X) (by simp [sec_hom e])) (by simp), ?_⟩
   simp
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.hecke_lift_exists_of_quotient_level :
     NumEx → QObj → QComp → QUniq → QLev → TjIsog → TrEta → CongCRT → LiftEx := by

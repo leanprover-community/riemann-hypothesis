@@ -40,7 +40,6 @@ set_option autoImplicit false
 
 namespace UpperTheory.FixIff
 
-section Local
 
 variable {Y : Scheme.{0}} [IsIntegral Y] {p : Y ⟶ Sp ℂ}
 
@@ -139,9 +138,7 @@ private theorem ne_zero_of_val
   rw [hM.2 f1 hb, ← m] at hne
   exact left_ne_zero_of_mul hne
 
-end Local
 
-section Chart
 
 variable {Z : Scheme.{0}} [IsIntegral Z] {s : Z ⟶ Sp ℂ} [Algebra ℂ Z.functionField] {F : Type} [Field F] [Algebra ℂ F]
   [Algebra F Z.functionField] [IsScalarTower ℂ F Z.functionField] {d : ℕ} {x : Fin (d + 1) → F}
@@ -218,7 +215,6 @@ private theorem mem_chart_of_ne_zero (hx : IsFinCover ℂ Z.functionField x)
   rw [hPq]
   exact CxPts.ptsIn_mono inf_le_right hq
 
-end Chart
 
 end UpperTheory.FixIff
 

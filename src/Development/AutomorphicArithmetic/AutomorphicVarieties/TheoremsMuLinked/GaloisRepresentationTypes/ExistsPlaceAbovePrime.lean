@@ -159,7 +159,6 @@ private theorem free_pow {K : Type} [Field K] {n : ℕ} (M : Matrix (Fin n) (Fin
 
 end Alg
 
-section Gal
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
 
@@ -192,9 +191,7 @@ private theorem free_up (K L : IntermediateField ℚ Ω) [NumberField K] [Number
     rw [← map_pow, MonoidHom.comp_apply, e]
     rfl
 
-end Gal
 
-section Core
 
 private theorem par' {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω]
     [IsAlgClosure L Ω] {s : W.HidaSetting l L Ω} {V : s.Lev} {c : Coef l} {n : ℕ} {r : W.Resid V.frame c.O n} {B : W.UniversalOrdinaryDeterminantRing r}
@@ -211,9 +208,7 @@ private theorem par' {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberFie
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l}
 
-end Core
 
-section Rg
 
 open scoped Matrix TensorProduct
 
@@ -268,7 +263,6 @@ private theorem rg_sign {K Ω : Type} [Field K] [NumberField K] [IsCMField K] (h
       exact (IsCMField.complexEmbedding_complexConj K (j.comp (algebraMap K Ω)) δ).symm
     simp [this, hne]
 
-section BK
 
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {l : ℕ} [Fact l.Prime]
   {C V : Type} [CommRing C] [Algebra ℚ_[l] C] [AddCommGroup V] [Module C V] [Module ℚ_[l] V]
@@ -296,7 +290,6 @@ private theorem rg_bk {ρ ρ' : Representation C (G F Ω) V} (f : V →ₗ[C] V)
     rw [← key, ← map_sub, ← hx g, LinearMap.rTensor_tmul]
     simp [hz]
 
-end BK
 
 private def rgJ (k : Type) [CommRing k] : GL (Fin 4) k where
   val := !![0, 0, 0, 1; 0, 0, 1, 0; 0, -1, 0, 0; -1, 0, 0, 0]

@@ -32,7 +32,6 @@ import Mathlib.Tactic.ReduceModChar
 
 open IsLocalRing Matrix Filter NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa UpperTheory.V.HV UpperTheory.V.Th GlobalTheory.GalOfCusp
 
-section Count
 
 variable {R : Type} [CommRing R] {n : ℕ}
 
@@ -97,7 +96,6 @@ private theorem count_fix [Finite R] {A B : Matrix (Fin n) (Fin n) R} (h1 : A * 
   have := Nat.card_le_card_of_injective F hF
   rwa [Nat.card_fun, card_UU] at this
 
-end Count
 
 private theorem red_mul {O : Type} [CommRing O] [IsLocalRing O] {n : ℕ} (m : ℕ) (X Y : Matrix (Fin n) (Fin n) O) :
     red m X * red m Y = red m (X * Y) := (Matrix.map_mul (f := Ideal.Quotient.mk (maximalIdeal O ^ m))).symm

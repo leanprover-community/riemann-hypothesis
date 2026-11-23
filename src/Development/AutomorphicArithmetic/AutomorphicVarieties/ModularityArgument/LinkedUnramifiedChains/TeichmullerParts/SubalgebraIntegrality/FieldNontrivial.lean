@@ -38,7 +38,6 @@ open Polynomial TensorProduct
 
 namespace UpperTheory.V.Z.J.D
 
-section Nil
 
 variable {K V : Type} [Field K] [AddCommGroup V] [Module K V]
 
@@ -124,9 +123,7 @@ private theorem transport {C W I : Type} [Field C] [AddCommGroup W] [Module C W]
     exact ⟨⟨v, (q v).2 (hv ▸ w.2)⟩, Subtype.ext hv⟩
   exact rank_eq_of_equiv_equiv ι (AddEquiv.ofBijective φ hb) ι.bijective fun k v => Subtype.ext (hs k v.1)
 
-end Nil
 
-section Fibre
 
 variable {A B K M : Type} [CommRing A] [CommRing B] [Field K] [Algebra A B] [Algebra B K] [Algebra A K] [IsScalarTower A B K]
   [AddCommGroup M] [Module A M] [Module B M] [IsScalarTower A B M]
@@ -153,9 +150,7 @@ private theorem fibre_nontrivial [Module.Finite B M] (hann : ∀ b : B, (∀ m :
   have h2 : Nontrivial (K ⊗[p.asIdeal.ResidueField] (p.asIdeal.ResidueField ⊗[B] M)) := field_nontrivial _ _ _
   exact (AlgebraTensorModule.cancelBaseChange B p.asIdeal.ResidueField K K M).symm.toEquiv.nontrivial
 
-end Fibre
 
-section Main
 
 open UpperTheory.V.J
 
@@ -271,7 +266,6 @@ private theorem mu_eq [IsAlgClosed K] [Module.Finite A M] [Module.Free A M] {I :
     ↥(⨅ i, Module.End.maxGenEigenspace (LinearMap.baseChange K (actL lam M hs (g i))) (y (g i)))
   exact Submodule.subsingleton_iff_eq_bot.1 (Module.rank_zero_iff_of_free.1 tr)
 
-end Main
 
 section Hecke
 

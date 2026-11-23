@@ -40,7 +40,6 @@ namespace UpperTheory.Ru.crystallineComparison
 
 variable {l : ℕ} [Fact l.Prime]
 
-section Ring
 
 variable {R : Type} [CommRing R] {ι : Type} [Fintype ι] {T : ι → Type} [∀ i, CommRing (T i)]
   (f : ∀ i, R →+* T i)
@@ -119,9 +118,7 @@ private theorem away_bij (h : Function.Bijective fun (a : R) i => f i a) :
     rw [e2, hci, map_mul, ← hk i, map_pow, map_natCast, mul_assoc, ← pow_add,
       Nat.add_sub_cancel' (hd i)]
 
-end Ring
 
-section Acr
 
 variable {A : PAlg l} {ι : Type} [Fintype ι] {B : ι → PAlg l} (f : ∀ i, A ⟶ B i)
 
@@ -213,7 +210,6 @@ private theorem acr_bij (n : ℕ) (h : Function.Bijective fun (a : A.A) i => Hom
     rw [this, hdi]
     exact hz i
 
-end Acr
 
 end UpperTheory.Ru.crystallineComparison
 

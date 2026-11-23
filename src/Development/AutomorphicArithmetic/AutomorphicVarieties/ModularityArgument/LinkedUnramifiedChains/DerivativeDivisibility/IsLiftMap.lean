@@ -37,7 +37,6 @@ open IsLocalRing UpperTheory.V.Alg UpperTheory.V.Fr
 
 namespace UpperTheory.V.J
 
-section Lift
 
 variable {O R C : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R] [IsCO O R]
   [CommRing C] [Algebra O C] [IsCO O C]
@@ -75,7 +74,6 @@ private theorem isLift_map (f : R →ₐ[O] C) {ρ : NRep F n R} (h : UpperTheor
   · rw [NRep.map_map, hres]
     exact hd
 
-end Lift
 
 theorem det : Det := by
   intro l _ O _ _ _ _ F n S ξ D hD hr hψ

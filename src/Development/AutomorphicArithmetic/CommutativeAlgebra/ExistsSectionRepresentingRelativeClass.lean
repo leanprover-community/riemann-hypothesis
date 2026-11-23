@@ -120,7 +120,6 @@ private theorem alt {G : Type*} [AddCommGroup G] (b : G) (n : ℕ) :
       have ho : Odd n := Nat.not_even_iff_odd.1 h
       simp [h, h', ho.neg_one_pow]
 
-section Concrete
 variable {R : Type} [CommRing R] {X : Scheme.{0}}
 
 private def rdF (Z : Sub (sch.obj X)) (hZ : ∀ (p q : ℕ) (W : Scheme.{0}) (t : W ⟶ X), Z.mem p W t → Z.mem q W t)
@@ -163,7 +162,6 @@ private theorem fam_split (Z : Sub (sch.obj X)) (hZ : ∀ (p q : ℕ) (W : Schem
   · intro p s t a
     rfl
 
-end Concrete
 
 theorem UpperTheory.exists_section_representing_relativeClass :
     ∀ (q : ℕ) (X : Scheme.{0}) (U : X.Opens) (m j : ℤ) (c : Hs q (opn U) m j), ∃ β : Sec ((res _ (tw q j)).X m) X, IsRep U β c.1 := by

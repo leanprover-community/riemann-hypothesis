@@ -47,7 +47,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasGL
 
 namespace UpperTheory.V.Z.Gam
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -125,7 +124,6 @@ private theorem exists_avoid (x : kˣ) (hx : valuation k (x : k) = 1) (hi : ∀ 
   have hpos := hfin.orderOf_pos
   rw [hc, map_pow, max_eq_left (by omega), pow_mul, pow_mul, e, inv_pow, pow_orderOf_eq_one, inv_one, one_pow]
 
-end Loc
 
 private theorem val_one_iff {K : Type} [Field K] [NumberField K] (u : HeightOneSpectrum (𝓞 K)) (x : u.adicCompletion K) :
     valuation (u.adicCompletion K) x = 1 ↔ Valued.v x = 1 := by

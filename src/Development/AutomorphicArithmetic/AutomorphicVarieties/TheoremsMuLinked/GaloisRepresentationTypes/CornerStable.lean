@@ -47,7 +47,6 @@ namespace UpperTheory.V.Th.OrdinaryBlock
 
 open Formalism.BasicNotions.Loc ReciprocityTheory.Gal Topology UpperTheory.V.Loc
 
-section Alg
 
 variable {G E : Type} [Group G] [Field E] {n : ℕ} {r : G →* GL (Fin n) E} {κ : Fin n → G →* Eˣ}
 
@@ -90,9 +89,7 @@ private theorem corner_stable (h : UpperTri r κ) (i j : Fin n) (g : G) :
   obtain ⟨rfl, rfl⟩ := Prod.ext_iff.1 e
   rw [le_antisymm h1 h4, le_antisymm h5 h2]
 
-end Alg
 
-section Fin
 
 variable {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {φ : G →* GQ l}
   {E : Type} [Field E] [Algebra ℚ_[l] E] [FiniteDimensional ℚ_[l] E] [Algebra ℤ_[l] E] [IsScalarTower ℤ_[l] ℚ_[l] E]
@@ -227,7 +224,6 @@ private theorem fin (P : LocalPublishedTheorems) (hφ : IsOpenEmbedding φ)
   exact (z1fUnr P φ hφ (chRep (κ i * (κ i)⁻¹)) (((hκ2 i i).comp continuous_fst).mul continuous_snd)
     (fun g _ => LinearMap.ext fun x => by simp [chRep]) _ h1.1).1 h1 g hg
 
-end Fin
 
 open TensorProduct in
 private theorem tmul_one_inj {k V B : Type} [Field k] [AddCommGroup V] [Module k V] [CommRing B] [Algebra k B]
@@ -237,7 +233,6 @@ private theorem tmul_one_inj {k V B : Type} [Field k] [AddCommGroup V] [Module k
   have h1 : π 1 = 1 := by simpa using LinearMap.congr_fun hπ 1
   simpa [h1] using congrArg (fun x => TensorProduct.rid k V (LinearMap.lTensor V π x)) h
 
-section Bar
 
 variable {l : ℕ} [Fact l.Prime] {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G]
   {φ : G →* GQ l} {n : ℕ}
@@ -404,7 +399,6 @@ private theorem small {K ι : Type} [TotallyDisconnectedSpace G] [Field K] [Topo
   by_contra hne
   exact Set.mem_iInter.1 (hU hg) i ⟨e, hne⟩
 
-end Bar
 
 end UpperTheory.V.Th.OrdinaryBlock
 

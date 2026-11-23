@@ -45,7 +45,6 @@ set_option autoImplicit false
 
 namespace UpperTheory.EvaluationRestriction
 
-section Pts
 
 variable {Y : Scheme.{0}} {s' : Y ⟶ Sp ℂ} {y : CxPts s' (RingHom.id ℂ)}
 
@@ -132,13 +131,11 @@ private theorem pd_step {d : ℕ} {V : Y.Opens} (hV : IsAffineOpen V) (f : Γ(Y,
   · obtain ⟨m, b, ω', e1, e2⟩ := g3 ω hω
     exact ⟨m, b, ω', fun i => (evA_apply hy _).symm.trans (e1 i), e2⟩
 
-end Pts
 
 end UpperTheory.EvaluationRestriction
 
 namespace UpperTheory.EvaluationRestriction
 
-section Charts
 
 variable {X : Scheme.{0}} [IsIntegral X] {p : X ⟶ Sp ℂ} [Algebra ℂ X.functionField] {ι : Type} {U : ι → X.Opens}
   {B : Finset ι → Subalgebra ℂ X.functionField}
@@ -160,9 +157,7 @@ private theorem chart_gen (h : IsAffCover p U B) (i : ι) : genericPoint X ∈ U
   have := h.ne {i}
   rwa [Finset.inf_singleton] at this
 
-end Charts
 
-section Germ
 
 variable {Y : Scheme.{0}} [IsIntegral Y] (s' : Y ⟶ Sp ℂ)
 
@@ -184,7 +179,6 @@ private theorem gm_alg [inst : Algebra ℂ Y.functionField]
     (Y.presheaf.germ ⊤ _ trivial).hom (s'.appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom r))
   exact Y.presheaf.germ_res_apply (homOfLE le_top) _ hg (s'.appTop.hom _)
 
-end Germ
 
 end UpperTheory.EvaluationRestriction
 

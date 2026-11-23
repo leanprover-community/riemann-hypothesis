@@ -41,7 +41,6 @@ open LateralTheory.E.EtaleTopologySheaves LateralTheory.E.LeafGhostCut UpperTheo
 
 namespace UpperTheory.YonedaTruncation
 
-section Abs
 universe w v u
 variable {C : Type u} [Category.{v} C] [Abelian C] [HasDerivedCategory.{w} C]
 
@@ -147,9 +146,7 @@ private lemma dm_post {A : C} {T T' : CochainComplex C ℤ} (φ : T ⟶ T') {n :
   simp only [Category.assoc]
   congr 2
 
-end Abs
 
-section Site
 variable {B : Scheme.{0}} {q : ℕ}
 
 private noncomputable abbrev Z0 (B : Scheme.{0}) (q : ℕ) : B.Etale ⥤ (B.Etaleᵒᵖ ⥤ ModuleCat.{1} (ULift.{1} (ZMod q))) :=
@@ -304,7 +301,6 @@ private lemma ee_closed {T : CochainComplex (SShv B q) ℤ} {n m : ℤ} {U : B.E
   change ee (T.X m) U (dS T n m U s) = 0
   rw [h, ee_zero]
 
-end Site
 
 end UpperTheory.YonedaTruncation
 

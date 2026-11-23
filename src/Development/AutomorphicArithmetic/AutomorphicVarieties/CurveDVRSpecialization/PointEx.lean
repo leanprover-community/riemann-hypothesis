@@ -189,7 +189,6 @@ private theorem pe_cont {Γ R R' : Type} [TopologicalSpace Γ] [CommRing R] [IsL
   rw [e]
   exact (h N).comp _
 
-section Tw
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
   {F : Frame l (ResidueField O)} {n : ℕ} {G : W.GFrame l} {r : W.Resid G O n} (K : Pr.TwLink F r)
@@ -366,7 +365,6 @@ private theorem pe_ine {k : Type} [Field k] [Algebra (ResidueField O) k] [CharP 
     simp [Pr.TwLink.tw, Pr.TwLink.κA, W.pushCh, hπ, hκ]
   exact Pr.T.unipTorsion (K.tw ρ g) _ n m (Matrix.charpoly_monic _) (Matrix.aeval_self_charpoly _) hres hm hpow
 
-end Tw
 
 
 theorem UpperTheory.V.Pr.pointEx_of_le {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]

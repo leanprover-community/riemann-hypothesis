@@ -306,7 +306,6 @@ theorem UpperTheory.V.Pa.t1 :
         hK.isOpenMap_subtype_val _ (hc.isOpen_fiber z)
       open scoped Pointwise in
       obtain ⟨W, hW, hWS⟩ := compact_open_separated_mul_right hcpt ho subset_rfl
-      open scoped Pointwise in
       exact ⟨W, hW, fun x hx w hw => hWS (Set.mul_mem_mul hx hw)⟩
     choose W hW hWS using hS
     have hI : (⋂ z ∈ Set.range c, W z) ∈ nhds (1 : P) := (Filter.biInter_mem hfin).2 fun z _ => hW z
@@ -351,9 +350,7 @@ theorem UpperTheory.V.Pa.t1 :
         (hρ.isClosed_fiber z).isCompact.image continuous_subtype_val
       have ho : IsOpen (Subtype.val '' (ρ ⁻¹' {z}) : Set G0.Γ) :=
         hKo.isOpenMap_subtype_val _ (hρ.isOpen_fiber z)
-      open scoped Pointwise in
       obtain ⟨V, hV, hVS⟩ := compact_open_separated_mul_left hc ho subset_rfl
-      open scoped Pointwise in
       exact ⟨V, hV, fun v hv x hx => hVS (Set.mul_mem_mul hv hx)⟩
     choose V hV hVS using hS
     have hW : (⋂ z ∈ Set.range ρ, V z) ∈ nhds (1 : G0.Γ) := (Filter.biInter_mem hfin).2 fun z _ => hV z

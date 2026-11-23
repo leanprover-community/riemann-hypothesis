@@ -65,7 +65,6 @@ private theorem loc_bind {U : Scheme.{0}} {P Q : ∀ V : Scheme.{0}, (V ⟶ U) �
   rintro W _ ⟨V, k, g, hg, hk, rfl⟩
   exact hTQ V g hg W k hk
 
-section Res
 variable {R : Type} [CommRing R] {F G : Shv R}
 
 private theorem res_comp {W V U : Scheme.{0}} (k : W ⟶ V) (g : V ⟶ U) (a : Sec F U) :
@@ -119,7 +118,6 @@ private theorem glue {U : Scheme.{0}} (P : ∀ (V : Scheme.{0}) (_ : V ⟶ U), S
   rw [← res_comp, ha W (k ≫ g) hk]
   exact huniq W (k ≫ g) _ _ (hs W (k ≫ g) hk) (hres V W g k b hb)
 
-end Res
 
 private abbrev II (q : ℕ) : Cx (ZMod q) := res (ZMod q) (tw q 1)
 
@@ -366,7 +364,6 @@ private theorem Ph_nat {V U : Scheme.{0}} (g : V ⟶ U) (hq : IsUnit (q : Γ(U, 
   rw [← res_comp, Ph_spec hq s t W (k ≫ g) a b (by rw [ha, ur_comp]) (by rw [hb, ur_comp]),
     Ph_spec (unit_res g hq) (ur g s) (ur g t) W k a b ha hb]
 
-section Line
 variable {X : Spc} (L : X ⟶ ofCat (glCat 1))
 
 private theorem face_res {p : ℕ} {V U : Scheme.{0}} (g : V ⟶ U) (x : Sx X (p + 1) U) (i : Fin (p + 2)) :
@@ -417,9 +414,7 @@ private theorem line_face {U : Scheme.{0}} (x : Sx X 2 U) :
   unfold lineUnit
   rw [hf, hf, hf, glMat_face, map_mul, mul_comm]
 
-end Line
 
-section Main
 variable {X : Spc}
 
 private def fam (A0 : ∀ U : Scheme.{0}, Sx X 0 U → Sec ((II q).X 1) U) (A1 : ∀ U : Scheme.{0}, Sx X 1 U → Sec ((II q).X 0) U) :
@@ -521,7 +516,6 @@ private theorem main (L : X ⟶ ofCat (glCat 1)) (w : ∀ T : Scheme.{0}, Sx X 0
     abel
   · exact @Subsingleton.elim _ ((GlobalTheory.T.chosenInjectiveResolutionEtaleSheaf_sections_exactness (ZMod q) (tw q 1) U).2.2.2 s (by omega)) _ _
 
-end Main
 
 end UpperTheory.ChernClassOfTrivializedBundle
 

@@ -351,7 +351,6 @@ private theorem lc_of_ker {Γ C : Type} [Group Γ] [TopologicalSpace Γ] [IsTopo
     (h : IsOpen (η.ker : Set Γ)) : IsLocallyConstant η :=
   _root_.UpperTheory.Reformulated.B.LocallyConstantOfKernel.lc_of_ker η h
 
-section Abs
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {K L : Type} [Field K] [NumberField K]
   [IsCMField K] [Algebra K Ω] [Field L] [NumberField L] [IsCMField L] [Algebra L Ω] [Algebra K L] [IsScalarTower K L Ω]
@@ -416,7 +415,6 @@ private theorem ad_down [IsAlgClosure L Ω] (hK2 : Module.finrank ℚ K = 2) (h�
   · rw [MonoidHom.one_apply, mul_one]
     exact t2 g g' hg
 
-end Abs
 
 end UpperTheory.V.Th.End3
 

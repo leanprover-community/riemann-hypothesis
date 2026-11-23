@@ -175,7 +175,6 @@ private theorem totDisc_quot {G : Type} [Group G] [TopologicalSpace G] [IsTopolo
   obtain ⟨u, hu, hux⟩ := hV.connectedComponent_subset V.one_mem hy
   exact hU (U.toSubgroup.inv_mem hu) (QuotientGroup.eq.1 hux)
 
-section Host
 
 variable {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} {N : ℕ} [NeZero N]
   {e : ℕ} {ψ : DirichletCharacter c.O N} {o₁ : ℕ} {S : Finset Pl} {A : S → ValuationSubring Ω}
@@ -349,7 +348,6 @@ private theorem key (hP : UpperTheory.V.Af.HypothesesH) (hU : UpperTheory.V.Z.J.
     htr]
   exact Real.log_le_log (norm_pos_iff.2 (by exact_mod_cast hN0)) H2
 
-end Host
 
 private theorem final_bound (a b l N e p : ℕ) (hl : 3 ≤ l) (hN : 2 ≤ N) (he : 1 ≤ e) (hp : p ≤ 12 * (l * N)) :
     2 * (a * N.totient * ((N : ℝ) * (e + 1)) ^ b * Real.log p) ≤ ((l : ℝ) * N * e) ^ (2 * a + 1 + b + 3) := by

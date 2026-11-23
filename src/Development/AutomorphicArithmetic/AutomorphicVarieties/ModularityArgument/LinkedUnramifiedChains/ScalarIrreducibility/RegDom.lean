@@ -144,7 +144,6 @@ private theorem algebraic_coef (l : ℕ) [Fact l.Prime] (c : Coef l) : Algebra.I
   rw [this, IsScalarTower.algebraMap_eq ℤ_[l] ℚ_[l] (Qbar l), RingHom.coe_comp]
   exact (algebraMap ℚ_[l] (Qbar l)).injective.comp (IsFractionRing.injective ℤ_[l] ℚ_[l])
 
-section Pt
 
 variable {O A K T : Type} [CommRing O] [CommRing A] [Field K] [Algebra O A] [Algebra O K]
   (ξ : A →ₐ[O] K) [(RingHom.ker ξ).IsPrime] [CommRing T] [IsLocalRing T] [Algebra A T]
@@ -226,7 +225,6 @@ private theorem rank_ge [Algebra O T] [IsScalarTower O A T] [IsNoetherianRing T]
     (hinj.comp (b.constr K).injective)
   rwa [rank_fin_fun] at h5
 
-end Pt
 
 theorem UpperTheory.V.J.regDom :
     ∀ (l : ℕ) [Fact l.Prime] (c : Coef l) (A : Type) [CommRing A] [IsNoetherianRing A] [Algebra c.O A] (ξ : A →ₐ[c.O] Qbar l) (d : ℕ) [(RingHom.ker ξ).IsPrime],

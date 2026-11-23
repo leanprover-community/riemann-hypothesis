@@ -49,7 +49,6 @@ namespace UpperTheory.Ru.crystallineComparison
 
 open UpperTheory.Gal.crystallineComparison
 
-section Act
 
 variable {l : ℕ} {Y : Scheme.{0}} {J : Type} {T : J → Corr l Y} (D : WDat l T)
 
@@ -93,9 +92,7 @@ private lemma act_eq {U : Type} [CommRing U] (hl : (l : U) ∈ nonZeroDivisors U
     act D hl w σ = w₁ :=
   (act_ex D hl w σ).unique (act_spec D hl w σ) ⟨h₁, h₂⟩
 
-end Act
 
-section Idem
 
 variable {R : Type} [CommRing R]
 
@@ -114,7 +111,6 @@ private lemma coi_pi {J : Type} [Fintype J] [DecidableEq J] {I : J → Type} [�
     rw [Finset.prod_univ_sum] at h
     simpa [Fintype.piFinset_univ] using h
 
-end Idem
 
 variable {l : ℕ} [Fact l.Prime]
 

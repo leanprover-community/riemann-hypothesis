@@ -57,7 +57,6 @@ namespace UpperTheory.V.Z.Gam
 
 namespace InductionMatchingPlacesAbove
 
-section Primes
 
 variable {K M : Type} [Field K] [NumberField K] [Field M] [NumberField M] [Algebra K M]
 
@@ -239,7 +238,6 @@ private theorem ind_key (hE : Module.finrank K M = 2) (sat : HeightOneSpectrum (
     refine ⟨hN2, hgood.2 ?_⟩
     rw [normV_absNorm, normV_absNorm, hN2]
 
-end Primes
 
 section Main
 
@@ -281,7 +279,6 @@ private theorem bound_cx {F : Type} [Field F] [NumberField F] (w : HeightOneSpec
 
 end Main
 
-section Cnt
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -324,7 +321,6 @@ private theorem exists_bad (s : Multiset (IrrGL (k := k))) :
   obtain ⟨h1, h2⟩ := h.choose_spec
   exact (IrrGL.ofChar_inj.1 h2).symm
 
-end Cnt
 
 private theorem unrAt_iff {F : Type} [Field F] [NumberField F] (χ : HChar F) (w : HeightOneSpectrum (𝓞 F)) :
     χ.UnrAt w ↔ IsUnram (χ.loc w) := by
@@ -333,7 +329,6 @@ private theorem unrAt_iff {F : Type} [Field F] [NumberField F] (χ : HChar F) (w
   refine forall_congr' fun x => imp_congr_left ?_
   exact (ValuativeRel.isEquiv (ValuativeRel.valuation (w.adicCompletion F)) Valued.v).eq_one_iff_eq_one.symm
 
-section Key
 
 variable {K M : Type} [Field K] [NumberField K] [Field M] [NumberField M] [Algebra K M]
 
@@ -481,7 +476,6 @@ private theorem norm_units (h2 : Module.finrank K M = 2) :
     rw [e, (unrAt_iff η u).1 hu.1 x hx, one_pow]
   exact unr_cancel hη (mul_comm θ _ ▸ hj')
 
-end Key
 
 end InductionMatchingPlacesAbove
 

@@ -45,7 +45,6 @@ open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.T
 
 set_option autoImplicit false
 
-section Alg
 
 variable {ι κ : Type} [LinearOrder ι] [LinearOrder κ]
 
@@ -176,7 +175,6 @@ private theorem lift_cocycle (A : Finset (ι ⊕ₗ κ) → Submodule ℂ E) (A'
     rw [sub_sub_cancel_left, ← map_neg]
     exact Submodule.mem_map_of_mem (Submodule.neg_mem _ hetC)
 
-end Alg
 
 private theorem aff_mono {X : Scheme.{0}} [IsIntegral X] {p : X ⟶ Sp ℂ} [Algebra ℂ X.functionField] {ι : Type}
     {U : ι → X.Opens} {B : Finset ι → Subalgebra ℂ X.functionField} (hU : IsAffCover p U B) (s t : Finset ι)

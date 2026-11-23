@@ -36,7 +36,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 namespace UpperTheory.Adj
 
-section Gen
 universe v u
 variable {C : Type u} [Category.{v} C] [Preadditive C]
 
@@ -82,7 +81,6 @@ private theorem classes {K L K' L' : CochainComplex C ℤ}
     congr 1
     exact Cocycle.ext (AddEquiv.apply_symm_apply (e n) β.1)
 
-end Gen
 
 private theorem map_res {A B : Spc} (f : A ⟶ B) {p : ℕ} {V U : Scheme.{0}} (g : V ⟶ U) (x : Sx A p U) :
     (x.res g).map f = (x.map f).res g :=

@@ -44,7 +44,6 @@ open UpperTheory.Gal.Int.Geo
 
 namespace UpperTheory.TraceConjugationCover
 
-section Lat
 
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p} {L : Link D G}
 
@@ -109,9 +108,7 @@ private theorem lev_le {N₀ : ℕ} {𝔞 : Ideal (𝓞 D.F)} {K₀ : Subgroup G
     exact ⟨w, hw, by rw [← e]; abel⟩
   exact fun g hg => ⟨key g hg, key _ (inv_mem hg)⟩
 
-end Lat
 
-section Tw
 
 variable {B : Scheme.{0}} {Γ : Type} [Group Γ]
 
@@ -198,7 +195,6 @@ private theorem tr_iso (X : UpperTheory.Gal.G3.Tower B Γ) {i M : X.ι} (hM : M 
   rw [X.tr_self _ _ _ _ (one_mem _)]
   infer_instance
 
-end Tw
 
 private theorem isIso_desc {C : Type*} [Category C] {I : Type} [Subsingleton I] [Nonempty I] {Y Z : C}
     [HasCoproduct fun _ : I => Y] (f : I → (Y ⟶ Z)) (hf : ∀ i, IsIso (f i)) : IsIso (Sigma.desc f) := by

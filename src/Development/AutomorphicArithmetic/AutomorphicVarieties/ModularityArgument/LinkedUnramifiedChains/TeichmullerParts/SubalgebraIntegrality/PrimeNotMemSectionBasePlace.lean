@@ -54,7 +54,6 @@ open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 
-section Alg
 
 variable {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
 
@@ -147,9 +146,7 @@ private theorem one_copy (hS : Step) (π : Representation ℂ G W) (τ : Represe
   refine ⟨Z.subtype ∘ₗ E.toLinearMap, Subtype.val_injective.comp E.injective, ?_, fun g m => key g m (e 1)⟩
   rw [LinearMap.range_comp, LinearEquiv.range, Submodule.map_top, Submodule.range_subtype]
 
-end Alg
 
-section Loc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
@@ -274,9 +271,7 @@ private theorem glob_dim (hU : GlobalTheory.BCT.Unr E) (hn : 1 ≤ n) {σ : Subm
     beta_reduce
     rw [h4 _ h', loc_one hU hn hσ _ (τ _) (hτ _) (hun _ h'), Nat.cast_one]
 
-end Loc
 
-section Glob
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω]
   [IsAlgClosure L Ω] {n : ℕ}
@@ -469,9 +464,7 @@ private theorem form_unr
   rw [h3, hl, infRep_fin ι ((finU (E := L) (n := n)).inv_mem (Subgroup.mem_inf.1 hx).1)]
   exact congrArg (fun G => toForm ι e G ℓ) (h1 _ hm)
 
-end Glob
 
-section Model
 
 variable {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω]
   [IsAlgClosure L Ω] {n : ℕ} {s : HidaSetting l L Ω} {V : s.Lev} {σ : Submodule ℂ (UA L n → ℂ)} (C : Comps V σ)
@@ -511,7 +504,6 @@ private theorem level_le (hb : Function.Bijective ((toGS n s).comp (GaS n s).sub
   rintro _ ⟨x, hx, rfl⟩
   exact fix_J V hb K hK G hG.1.2 hG.2 x.1 (hU x hx)
 
-end Model
 
 private theorem vs_data {l : ℕ} [Fact l.Prime] {L Ω : Type} [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω]
     [IsAlgClosure L Ω] {s : HidaSetting l L Ω} {n : ℕ} (hn : 1 ≤ n) {V : s.Lev} (Q : QData V) {c : Coef l} (ι : Qbar l ≃+* ℂ) {m : ℕ}

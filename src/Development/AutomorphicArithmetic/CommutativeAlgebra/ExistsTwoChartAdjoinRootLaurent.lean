@@ -43,7 +43,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 noncomputable section
 open IsLocalRing UpperTheory.Et
 
-section SlopeTestRemainingChoices
 
 variable {A D : Type} [CommRing A] [CommRing D] [Algebra A D]
 
@@ -308,7 +307,6 @@ private theorem assemble {e : ℤ → D} (e0 : e 0 = 1) (ea : ∀ a b, e (a + b)
       have h0 : (0 : ℤ) ≤ k * ((i : ℕ) : ℤ) := by positivity
       exact ⟨⟨by linarith, by linarith⟩, trivial⟩
 
-end SlopeTestRemainingChoices
 
 private theorem basis_model {A : Type} [CommRing A] {P : Polynomial (LaurentPolynomial A)}
     (hP : P.Monic) : ∃ β : Module.Basis (ℤ × Fin P.natDegree) A (AdjoinRoot P),

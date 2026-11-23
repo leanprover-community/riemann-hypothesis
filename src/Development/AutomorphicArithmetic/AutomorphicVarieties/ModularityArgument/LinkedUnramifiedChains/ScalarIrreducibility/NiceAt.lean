@@ -150,7 +150,6 @@ private theorem w_ne {k : Type} [Field k] {n : ℕ} (hn : n = 2 ∨ n = 3) (a : 
   have h3 : a ^ (2 : ℤ) = 1 := by rw [hc, _root_.zpow_mul, h1, _root_.one_zpow]
   exact_mod_cast h3
 
-section Pt
 
 set_option synthInstance.maxHeartbeats 200000
 
@@ -207,7 +206,6 @@ private theorem pt_flag (ξ : S.A →ₐ[c.O] Qbar l) (hV : VPt S ξ) (hn : n = 
     rw [map_sub, map_sub] at h1
     exact h1
 
-end Pt
 
 private theorem det_comap {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H]
     (ρ : G →* Matrix (Fin n) (Fin n) A) (p : H →* G) (τ : H →* Matrix (Fin n) (Fin n) A)

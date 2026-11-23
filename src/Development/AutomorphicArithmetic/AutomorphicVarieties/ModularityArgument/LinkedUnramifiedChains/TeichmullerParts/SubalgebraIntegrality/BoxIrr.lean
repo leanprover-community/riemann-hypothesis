@@ -32,7 +32,6 @@ open scoped TensorProduct
 
 namespace UpperTheory.V.Z.J.D
 
-section SlopeTestRemainingChoices
 
 variable {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
 
@@ -194,7 +193,6 @@ private theorem line_of {ρ : Representation ℂ G W} (h : AbsIrr ρ) (Φ : W �
   rw [show E (w ⊗ₜ[ℂ] b.repr.symm cf) j = cf j • w from E_tmul b _ cf j]
   exact hc j w
 
-end SlopeTestRemainingChoices
 
 theorem boxIrr : BoxIrr := by
   intro G H W W' _ _ _ _ _ _ ρ τ hρ hτ

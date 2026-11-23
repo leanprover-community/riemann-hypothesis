@@ -49,7 +49,6 @@ set_option linter.overlappingInstances false
 
 open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr UpperTheory.V
 
-section Gen
 
 variable {n : ℕ} {A G : Type} [CommRing A] [Group G]
 
@@ -145,9 +144,7 @@ private theorem px_coef {O : Type} [CommRing O] [Algebra O A] (B : Subalgebra O 
   rw [← h1, ← hq]
   simp
 
-end Gen
 
-section Tw
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
   {F : Frame l (ResidueField O)} {n : ℕ} {G : W.GFrame l} {r : W.Resid G O n} (K : Pr.TwLink F r)
@@ -265,7 +262,6 @@ private noncomputable def px_pair [CharP (ResidueField O) l] (hn : n ≠ 0) {ρ 
     rw [px_tr hn, map_mul, map_sub, map_one, MonoidAlgebra.lift_single _ g, px_ine K h u g hg, one_smul, sub_self,
       mul_zero, trace_zero]
 
-end Tw
 
 theorem UpperTheory.V.Pr.phiEx :
     ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [UpperTheory.V.Fr.IsCoef l O] [Algebra ℤ_[l] O] (F : UpperTheory.V.Fr.Frame l (IsLocalRing.ResidueField O)) (n : ℕ) (T : UpperTheory.V.Pr.Setup F n), T.PhiEx := by

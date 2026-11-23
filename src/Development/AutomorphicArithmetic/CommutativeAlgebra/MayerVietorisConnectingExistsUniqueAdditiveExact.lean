@@ -39,7 +39,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 namespace UpperTheory.MVd
 
-section Abstract
 universe v u
 variable {C : Type u} [Category.{v} C] [Preadditive C]
 
@@ -224,7 +223,6 @@ private theorem pb_hzero {K L M : CochainComplex C ℤ} {n : ℤ} (x : Cochain L
   have := pb_hsub (0 : K ⟶ L) 0 x
   rwa [sub_zero, sub_self] at this
 
-end Abstract
 
 private theorem mvx_of_se {R : Type} [CommRing R] {P A B E I : Cx R} {p : P ⟶ A} {q : P ⟶ B} {i : A ⟶ E} {j : B ⟶ E}
     (comm : p ≫ i = q ≫ j) (w)

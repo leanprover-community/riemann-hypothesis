@@ -61,7 +61,6 @@ open IsLocalRing Matrix UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Fr Uppe
 
 namespace UpperTheory.V.Pr
 
-section Gen
 
 variable {n : ℕ} {A G K : Type} [CommRing A] [Group G]
 
@@ -170,9 +169,7 @@ private theorem offTri_of_irr {l : ℕ} [Fact l.Prime] {k : Type} [Field k] {F :
   · exact h (Ideal.subset_span ⟨g, _, _, by simp [Fin.lt_def], rfl⟩)
   · exact h (Ideal.subset_span ⟨g, _, _, by simp [Fin.lt_def], rfl⟩)
 
-end Gen
 
-section Cont
 
 variable {Γ Γ' R R' : Type} [TopologicalSpace Γ] [TopologicalSpace Γ'] [CommRing R] [CommRing R']
 
@@ -206,9 +203,7 @@ private theorem ac_closed {I : Ideal R} [IsHausdorff I R] {f : Γ → R} (hf : A
   rw [this]
   exact isClosed_iInter fun N => (hf N).isClosed_fiber _
 
-end Cont
 
-section Tw
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
   {F : Frame l (ResidueField O)} {n : ℕ} {G : GFrame l} {r : Resid G O n} (L : TwLink F r)
@@ -410,9 +405,7 @@ private theorem chi_ex : ∃ χ : ∀ v, Fin n → F.Gv v →* Cˣ, IsPsi O F n 
   choose χ h1 h2 using key
   exact ⟨χ, h1, fun v i g => h2 _ v rfl i g⟩
 
-end Tw
 
-section Main
 
 set_option linter.overlappingInstances false
 
@@ -534,7 +527,6 @@ private theorem maps_A (Φ : T.B.B →ₐ[O] T.S.B) (hΦ : T.IsPhi Φ) {K : Type
   · rw [← (tw_map ξ T.S.u).2, ← h2]
     rfl
 
-end Main
 
 end UpperTheory.V.Pr
 

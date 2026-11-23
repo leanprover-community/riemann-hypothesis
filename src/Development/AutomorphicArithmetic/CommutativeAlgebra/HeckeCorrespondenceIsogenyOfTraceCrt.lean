@@ -41,7 +41,6 @@ open scoped TensorProduct
 open GlobalTheory.CechPic
 open UpperTheory.Gal.Int.Geo
 
-section Over
 
 variable {X : Scheme.{0}} {U V A B : Over X} [GrpObj U] [GrpObj V] [GrpObj A] [GrpObj B]
 
@@ -73,7 +72,6 @@ private theorem kerIff (e₁ : U ≅ A) (e₂ : V ≅ B) [IsMonHom e₂.hom] (ψ
   have := congrArg (· ≫ e₂.inv) h
   simpa [one_comp] using this
 
-end Over
 
 private theorem isoEqOne {X : Scheme.{0}} {A B : Over X} [GrpObj A] [GrpObj B] (e : A ≅ B) [IsMonHom e.hom] {T : Over X} (y : T ⟶ A) :
     y ≫ e.hom = 1 ↔ y = 1 := by
@@ -84,7 +82,6 @@ private theorem isoEqOne {X : Scheme.{0}} {A B : Over X} [GrpObj A] [GrpObj B] (
   · rintro rfl
     exact MonObj.one_comp _
 
-section Pol
 
 variable {X : Scheme.{0}} {U V A B : Over X} [GrpObj U] [IsCommMonObj U] [GrpObj V] [IsCommMonObj V]
   [GrpObj A] [IsCommMonObj A] [GrpObj B] [IsCommMonObj B]
@@ -133,7 +130,6 @@ private theorem polMove {PU : LB (G2 U).left} {PV : LB (G2 V).left} {PA : LB (G2
   rw [Hecke.Comp.cls_lbPow' hA c hPAc, cls_pull hB _ hPBχ, map_nsmul, ← h1, h3, h2, ← pull_comp,
     ← pull_comp, key]
 
-end Pol
 
 private theorem intMul {p : ℕ} [Fact p.Prime] {a b : AfP p} (ha : IsIntAf a) (hb : IsIntAf b) : IsIntAf (a * b) := fun v => by
   rw [map_mul]; exact mul_mem (ha v) (hb v)

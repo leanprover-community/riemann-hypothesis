@@ -46,7 +46,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument
 
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af UpperTheory.V.Pr UpperTheory.V.Alg UpperTheory.V.J
 
-section Cofinal
 
 variable {B : Type} [CommRing B] [IsLocalRing B] [IsNoetherianRing B]
 
@@ -151,9 +150,7 @@ private theorem cofinal [IsAdicComplete (maximalIdeal B) B] (I : ℕ → Ideal B
   have h6 := (a k).2.2
   exact h6 this
 
-end Cofinal
 
-section Der
 
 variable {O R K : Type} [CommRing O] [CommRing R] [Algebra O R] [CommRing K] [Algebra O K]
 
@@ -186,9 +183,7 @@ private theorem kill (A : Subalgebra O R) (ξ : A →ₐ[O] K) (D : A →ₗ[O] 
     have : (⟨x * y, mul_mem a b⟩ : A) = ⟨x, a⟩ * ⟨y, b⟩ := rfl
     rw [this, hD, ha, hb, mul_zero, mul_zero, add_zero]
 
-end Der
 
-section Close
 
 variable {O R K : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R] [IsCO O R]
   [NormedField K] [Algebra O K]
@@ -215,7 +210,6 @@ private theorem close_zero (B : Subalgebra O R) [hB : IsCO O B]
   rw [map_sub, hT t ht, sub_zero] at h2
   linarith
 
-end Close
 
 set_option synthInstance.maxHeartbeats 200000 in
 theorem UpperTheory.V.J.derExt :

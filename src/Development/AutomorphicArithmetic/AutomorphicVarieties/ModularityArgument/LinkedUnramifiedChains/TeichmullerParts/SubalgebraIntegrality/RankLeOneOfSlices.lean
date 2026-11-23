@@ -46,7 +46,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace UpperTheory.V.Z.J.D.EigenvaluesTensorProduct
 
-section Tensor
 
 variable {I : Type} [Fintype I] [dI : DecidableEq I] {W : I → Type} [∀ i, AddCommGroup (W i)] [∀ i, Module ℂ (W i)]
 
@@ -131,9 +130,7 @@ private theorem rank_le_one_of_slices (E : ∀ i, Submodule ℂ (W i)) (hE : ∀
     rw [h0, mul_zero]
   simpa using LinearMap.rank_le_of_injective _ hinj
 
-end Tensor
 
-section Rep
 
 variable {I : Type} [Fintype I] [dI : DecidableEq I] {W : I → Type} [∀ i, AddCommGroup (W i)] [∀ i, Module ℂ (W i)]
   {G : I → Type} [∀ i, Group (G i)] (τ : ∀ i, Representation ℂ (G i) (W i))
@@ -154,7 +151,6 @@ private theorem sl_single (v : I) (f : ∀ i, Module.Dual ℂ (W i)) (g : G v) (
     rfl
   exact LinearMap.congr_fun this x
 
-end Rep
 
 private theorem genTransfer {M M' : Type} [AddCommGroup M] [Module ℂ M] [AddCommGroup M'] [Module ℂ M']
     (A : Module.End ℂ M) (B : Module.End ℂ M') (s : M →ₗ[ℂ] M') (N : Submodule ℂ M) (c : ℂ)

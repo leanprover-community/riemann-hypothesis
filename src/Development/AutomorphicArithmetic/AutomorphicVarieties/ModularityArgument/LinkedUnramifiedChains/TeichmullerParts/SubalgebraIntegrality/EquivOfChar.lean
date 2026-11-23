@@ -39,7 +39,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Loc
 
 namespace UpperTheory.V.Z.J.D
 
-section Abs
 
 variable {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup W] [Module ℂ W]
 
@@ -118,9 +117,7 @@ private theorem equiv_of_char (P K : Subgroup G) (hK : IsOpen (K : Set G))
     show ((c x : ℂˣ) : ℂ) • ((((c x)⁻¹ : ℂˣ) : ℂ) • f.1.1 x) = f.1.1 x
     rw [smul_smul, ← Units.val_mul, mul_inv_cancel, Units.val_one, one_smul]
 
-end Abs
 
-section Loc
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
 
@@ -151,7 +148,6 @@ private theorem sB_apply (χ : Fin n → kˣ →* ℂˣ) (p : parab k (points (F
     sB χ p v = ((deltaHalf k (fun _ : Fin n => Unit) (leviProj k (points (Fin n)) p) : ℂˣ) : ℂ) *
       (((torusChar χ (dg p) : ℂˣ) : ℂ) * v) := rfl
 
-end Loc
 
 
 theorem psRes : PsRes := by

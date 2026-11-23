@@ -53,7 +53,6 @@ open scoped Matrix
 
 set_option linter.overlappingInstances false
 
-section SlopeTestRemainingChoices
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -329,4 +328,3 @@ private theorem main (H : GlobalTheory.Published.GlobalArtinReciprocity) (ι : Q
     rw [hβ2]
     exact near_mul (a' := (ka g.1).val) (tri (hκc v i g) (hX i g.1)) (by simp) (hzn _ _) (hkn _)
 
-end SlopeTestRemainingChoices

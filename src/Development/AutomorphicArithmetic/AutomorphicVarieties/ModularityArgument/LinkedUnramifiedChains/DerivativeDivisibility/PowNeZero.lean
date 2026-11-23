@@ -38,7 +38,6 @@ open UpperTheory.V.Alg UpperTheory.V.Fr
 
 namespace UpperTheory.V.J
 
-section Grading
 
 variable {l : ℕ} [Fact l.Prime] {k : Type} [Field k] {F : Frame l k} {n : ℕ} {K : Type} [CommRing K]
 
@@ -99,12 +98,10 @@ private theorem exists_mon (ρ : NRep F 3 K) (P : Ideal K) [hP : P.IsPrime] (h :
       norm_num at m
       exact ⟨_, m, hmul hz hx⟩
 
-end Grading
 
 private theorem cancel {O : Type} [CommRing O] [IsDomain O] {a b : O} (ha : a ≠ 0) (h : a * b = 0) : b = 0 :=
   (mul_eq_zero.mp h).resolve_left ha
 
-section Der
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Fr.IsCoef l O]
   {F : Fr.Frame l (IsLocalRing.ResidueField O)} {S : Fr.Space O F 3} {ξ : S.R →ₐ[O] O}
@@ -149,7 +146,6 @@ private theorem der_zero {p q : S.R} (hp : p ∈ S.ρ.mon 1) (hq : q ∈ S.ρ.mo
   · exact e1 m
   · exact e2 m
 
-end Der
 
 theorem tor : Tor := by
   intro l _ O _ _ _ _ F S ξ hTI D hD D' hD' hB hB' hli

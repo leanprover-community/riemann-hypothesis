@@ -75,7 +75,6 @@ private theorem exists_emb {k K : Type} [Field k] [Field K] [IsAlgClosed K] (φ 
     ∃ j : AlgebraicClosure k →+* K, ∀ a, j (algebraMap k (AlgebraicClosure k) a) = φ a :=
   exists_emb' φ
 
-section Link
 
 variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [IsLocalRing O] [Algebra ℤ_[l] O]
   {F : Frame l (ResidueField O)} {G : W.GFrame l} {r : W.Resid G O 3} (K : TwLink F r)
@@ -185,7 +184,6 @@ private theorem kills [CharP (ResidueField O) l] [IsLocalRing Q] [IsNoetherianRi
         rw [th_star, map_one, one_smul, _root_.smul_pow, h3, ← map_pow, Frame.star, ← map_pow, inv_pow, h1, inv_one,
           map_one, map_one, one_smul]
 
-end Link
 
 end UpperTheory.V.Pr
 

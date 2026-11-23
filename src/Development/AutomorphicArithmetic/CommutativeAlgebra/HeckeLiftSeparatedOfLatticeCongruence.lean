@@ -41,7 +41,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open UpperTheory.Gal.Int.Geo
 open scoped TensorProduct
 
-section Cart
 
 variable {S S' : Scheme.{0}} {G' : Over S'} [GrpObj G'] {G : Over S} [GrpObj G] {f : S' ⟶ S} {φ : G'.left ⟶ G.left}
 
@@ -68,7 +67,6 @@ private theorem kill_iff (hp : IsGrpPullback G' G f φ) {T : Over S'} (x : T ⟶
     · rw [h, one_left_cart hp T]
     · rw [Over.w x, Over.w (1 : T ⟶ G')]
 
-end Cart
 
 private theorem one_left_congr {X Y : Scheme.{0}} {G : Over Y} [GrpObj G] {g g' : X ⟶ Y} (e : g = g') :
     (1 : Over.mk g ⟶ G).left = (1 : Over.mk g' ⟶ G).left := by
@@ -99,7 +97,6 @@ private theorem kill_chain {X' Z EX X P : Scheme.{0}} {A' Wo : Over X'} {o o' : 
     simp only [Over.mk_hom, Category.assoc, hyt]
   rw [kill_iff h1, kill_iff (h2.comp h3), L, one_left_congr E]
 
-section Grp
 
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p} {L : Link D G}
 
@@ -124,7 +121,6 @@ private theorem mod_iff {g g' : G.GAf} {M : ℕ} {x' : D.La} {x : D.La} {w : AfP
     refine ⟨v - L.actG g w, sub_mem hv (hg w hw), ?_⟩
     rw [smul_sub, ← e, add_sub_cancel_right]
 
-end Grp
 
 theorem UpperTheory.hecke_lift_separated_of_lattice_congruence :
     NumEx → BaseInv → TrEta → TrEtaPt → CongCRT → GrpLat → GrpCong → LiftSep := by

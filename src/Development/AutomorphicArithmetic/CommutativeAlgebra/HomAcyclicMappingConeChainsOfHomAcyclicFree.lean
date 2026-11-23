@@ -39,7 +39,6 @@ open LateralTheory.E.EtaleTopologySheaves LateralTheory.E.LeafGhostCut UpperTheo
 
 noncomputable section
 
-section Cone
 
 variable {C : Type*} [Category C] [Preadditive C] [HasBinaryBiproducts C]
   {K₁ L₁ K₂ L₂ : CochainComplex C ℤ} (φ₁ : K₁ ⟶ L₁) (φ₂ : K₂ ⟶ L₂) (a : K₁ ⟶ K₂) (b : L₁ ⟶ L₂)
@@ -75,7 +74,6 @@ private theorem map_snd (n : ℤ) :
   · rw [reassoc_of% (inr_map φ₁ φ₂ a b comm n)]
     simp
 
-end Cone
 
 variable {B : Scheme.{0}}
 
