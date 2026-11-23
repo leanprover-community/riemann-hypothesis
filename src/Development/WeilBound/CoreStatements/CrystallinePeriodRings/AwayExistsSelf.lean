@@ -121,7 +121,6 @@ theorem fund_onto (z : Per6.BdR l) : ∃ x : Per6.Bcris l, Per6.φB l x = x ∧
     (T := fontaineT (epsilon l) untilt_epsilon) (a := ACris.iotaPlus ℂ_[l] l y)
     (algebraMap_tBdR_ne_zero (p := l)) he hs hc⟩
 
-section Eps
 
 variable {ε : PreTilt (normInteger ℂ_[l]) l} (hε : PreTilt.untilt ε = 1)
   (hζ : PreTilt.untilt ((_root_.frobeniusEquiv (PreTilt (normInteger ℂ_[l]) l) l).symm ε) ≠ 1)
@@ -129,7 +128,6 @@ variable {ε : PreTilt (normInteger ℂ_[l]) l} (hε : PreTilt.untilt ε = 1)
 
 
 
-end Eps
 
 
 end Concrete

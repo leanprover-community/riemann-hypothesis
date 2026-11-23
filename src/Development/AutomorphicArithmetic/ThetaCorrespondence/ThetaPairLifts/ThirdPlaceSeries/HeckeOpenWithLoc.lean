@@ -34,17 +34,11 @@ section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
 noncomputable section
 namespace GlobalTheory.FitHecke
-section NC
 open Formalism.L2.NCov Module Module.End
 variable {O K V : Type*} [CommRing O] [Field K] [Algebra O K]
   [AddCommGroup V] [Module K V] [Module O V] [IsScalarTower O K V] [IsLocalRing O] {S : Set (End K V)}
-end NC
-section Conj
 variable {R : Ranks}
-end Conj
-section Gen
 variable {D : D7} {M : MtFam D}
-end Gen
 section Chars
 open Formalism.L2.Host
 end Chars

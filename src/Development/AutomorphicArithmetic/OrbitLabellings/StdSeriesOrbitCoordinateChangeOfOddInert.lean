@@ -48,7 +48,6 @@ open Formalism.InvariantFactorPaths.G7 (UnrOK)
 
 namespace UpperTheory.EvenLinearSubstitution
 
-section Alg
 
 variable {K Lt β ι : Type} [Field K] {σ : K →+* K} {i : ℕ} {pos : Lt → ℕ → Lt}
 
@@ -188,7 +187,6 @@ private lemma gam_lin {C : Type} [Field C] (j : K →+* C) [NeZero i] [Fintype L
   refine Finset.sum_congr rfl fun ρ _ => ?_
   rw [map_mul, map_mul, mul_assoc]
 
-end Alg
 
 private lemma bij_even (D : D7) (p : ℕ) (hi : Odd (nP D p)) (R : Finset (Bool × HH D))
     (hR : ∀ z, ∃! r, r ∈ R ∧ ∃ e : ℕ, posPl D p r e = z) :

@@ -55,7 +55,6 @@ theorem exp_entry (Z : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
     have : ContDiff ℝ ∞ (NormedSpace.exp : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ) :=
       contDiff_iff_contDiffAt.2 fun x => (NormedSpace.exp_analytic (𝕂 := ℝ) x).contDiffAt
     exact this.comp (contDiff_id.smul contDiff_const)
-  open scoped Matrix.Norms.Operator in
   exact (LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ i j)).contDiff.comp h1
 
 theorem lineSm (h : IsCMExt F E σ) {b : ℝ → GAd σ J} (hb : IsRealLine σ J b) :

@@ -162,7 +162,6 @@ theorem opN_smul {m n : ℕ} (t : ℂ) (A : Matrix (Fin m) (Fin n) ℂ) :
       exact ⟨_, ⟨v, hv, rfl⟩, by rw [key, mul_div_assoc]⟩
     · rintro ⟨_, ⟨v, hv, rfl⟩, rfl⟩
       exact ⟨v, hv, by rw [key, mul_div_assoc]⟩
-  open scoped Pointwise in
   rw [hset, Real.sSup_smul_of_nonneg (norm_nonneg t), smul_eq_mul]
 
 theorem chartNorm_smul {E : Type} [Field E] [NumberField E] [IsCMField E] : ZnSmul E := by

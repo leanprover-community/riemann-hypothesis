@@ -86,7 +86,6 @@ structure AdSt : Prop where
       ∃ φ ∈ SB (κ → Fv F v), ∃ r, Rest (evFin F v) φ r ∧ Rest (evFin F v) (boxFun φ φ) (boxFun r r) ∧
         l (boxFun (tens (evFin F v) φ r) (tens (evFin F v) φ r)) ≠ 0
 
-section Sec
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) {v : Pl F}
   (t : E →ₐ[F] Fv F v)
@@ -106,7 +105,6 @@ structure IsSec (sec : Fv F v × Fv F v → AE F E) : Prop where
     (∀ χ : Chr F E, (χ z : ℂ) = (chrW χ t x : ℂ)) ∧
       ((adeleClass F).modu (Units.map (Algebra.norm (AF F) : AE F E →* AF F) z) : ℝ) = GlobalTheory.SplitWeil.nabs (Fv F v) x
 
-end Sec
 
 def SecSt : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ →

@@ -47,7 +47,6 @@ open Formalism.IncomingBounds
 
 namespace UpperTheory.AlternatingNumberFlow
 
-section Helpers
 
 variable {l d : ℕ} [NeZero d]
 
@@ -172,7 +171,6 @@ private lemma altNum_nonneg (hl : 1 ≤ l) {D : ZMod d → ℝ}
           field_simp
   linarith
 
-end Helpers
 
 end UpperTheory.AlternatingNumberFlow
 

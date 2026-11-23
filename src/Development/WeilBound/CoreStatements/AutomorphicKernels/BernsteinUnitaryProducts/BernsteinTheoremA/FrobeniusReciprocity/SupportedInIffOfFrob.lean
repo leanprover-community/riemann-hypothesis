@@ -60,7 +60,6 @@ def FrobeniusReciprocity : Prop :=
         (ξ : Distr X) f =
           (∫ g, (α : G → ℂ) g * (χ g : ℂ) ∂μG) * ((Fr ξ : eqvF hp _) : Distr (Fib p)) φ)
 
-section Uses
 
 variable (hF : FrobeniusReciprocity)
   {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G]
@@ -74,6 +73,5 @@ variable (hF : FrobeniusReciprocity)
   {χ : G →* ℂˣ} (hχ : Continuous (fun g => (χ g : ℂ)))
 include hF hH uG uH hpc hχ
 
-end Uses
 
 end PositivityTheory.PfBern.Frob

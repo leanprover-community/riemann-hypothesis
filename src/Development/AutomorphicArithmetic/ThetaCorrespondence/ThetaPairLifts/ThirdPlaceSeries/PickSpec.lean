@@ -114,9 +114,7 @@ theorem pickL_jSide_le_cBig (hstar : ∀ x : D.LL0, star (x : D.what₂.LL) ∈ 
 end Pick
 end GlobalTheory.HeightCounting.RowRhoInt
 namespace GlobalTheory.HeightCounting.RowRhoInt
-section HidaSetting
 variable {D : D7} {cf : CharFrame D} {b0 b1 : Big D} {Sx : Finset (PlE D.host)} {T : TwR D.LL0 D.nd}
-end HidaSetting
 
 
 theorem rho_rows_alt : GlobalTheory.Published.GlobalArtinReciprocity → ∀ (D : D7) (cf : CharFrame D) (jE : D.host.E →+* Qb) (A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE),

@@ -203,7 +203,6 @@ private theorem inv_of_summable (f : A ℚ → ℂ) (hc : Continuous f) (hp : �
   rw [h0]
   exact hG0
 
-section Slice
 
 variable {E : Type} [Field E] [NumberField E] (D : Dat ℚ E)
 
@@ -296,9 +295,7 @@ private theorem aE_rat (α : ℚˣ) : ∃ γ : GL (Fin 2) E, ratGL E 2 γ = Uppe
     rw [coe_diagonal]
     fin_cases i <;> fin_cases j <;> simp [am_rt]
 
-end Slice
 
-section Main
 
 variable {E : Type} [Field E] [NumberField E] (D : Dat ℚ E)
 
@@ -357,7 +354,6 @@ private theorem coeff_ne {φ : GL (Fin 2) (A E) → ℂ} (hL : Pp.Lf φ) (x : GL
   simp only [Wo, hpt]
   exact key
 
-end Main
 
 theorem UpperTheory.hasSum_whittaker_diagTorus_rat_eq_unipotentConstantTerm :
     ∀ (E : Type) [Field E] [NumberField E] (D : Dat ℚ E) (ω : HChar ℚ) (φ : GL (Fin 2) (A E) → ℂ), admitted D ω φ → ∀ x : GL (Fin 2) (A E),

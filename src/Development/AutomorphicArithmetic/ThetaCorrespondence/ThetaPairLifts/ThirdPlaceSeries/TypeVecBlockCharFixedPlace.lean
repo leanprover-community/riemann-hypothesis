@@ -39,9 +39,7 @@ noncomputable section
 open Filter Topology
 namespace GlobalTheory.TypeBlockFix
 variable {F : Type} [Field F] [NumberField F] {F' : Type} [Field F'] [NumberField F']
-section loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-end loc
 end GlobalTheory.TypeBlockFix
 namespace GlobalTheory.TypeBlockFix
 open ValuativeRel

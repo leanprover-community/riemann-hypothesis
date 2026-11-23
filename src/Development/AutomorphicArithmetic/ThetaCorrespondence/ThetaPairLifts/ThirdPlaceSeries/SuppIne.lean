@@ -37,10 +37,8 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 attribute [local instance] GlobalTheory.TypeRec.factG
 namespace GlobalTheory.SuppIne
 open GlobalTheory.LocGL GlobalTheory.SmGL
-section Transport
 variable {k k' : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   [Field k'] [ValuativeRel k'] [TopologicalSpace k'] [IsNonarchimedeanLocalField k']
-end Transport
 end GlobalTheory.SuppIne
 namespace GlobalTheory.SuppIne
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField

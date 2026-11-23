@@ -211,7 +211,6 @@ theorem chart_facts : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
 
 open GlobalTheory.CompanionTheory.Ar.HT
 
-section Scale
 
 variable {C O : Type} [Field C] [CommRing O] [Algebra O C] {E : Type} [Field E] [NumberField E]
   {c : E ≃+* E} {κ : O} {N : ℕ}
@@ -236,7 +235,6 @@ noncomputable def scalePt (P : HTPoint C O c κ N V Ω) (a : Oˣ) : HTPoint C O 
       rw [P.lagr]
       simp [ha] }
 
-end Scale
 
 theorem isUnit_of_coprime {C O : Type} [Field C] [CommRing O] [Algebra O C] {v : Valuation C NNReal}
     (hv : v.Integers O) {p a : ℕ} (hp : v (algebraMap O C (p : O)) < 1) (h : a.Coprime p) : IsUnit (a : O) := by

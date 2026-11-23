@@ -171,7 +171,6 @@ theorem absNorm_mul_relIndex_one {K : Type} [Field K] [NumberField K] (C : Submo
     have h1C : (1 : K) ∈ C := h1 (Submodule.mem_one.mpr ⟨1, map_one _⟩)
     have hm : algebraMap (𝓞 K) K d ∈ Submodule.map (Algebra.linearMap (𝓞 K) K) I.num := by
       rw [← hden]
-      open Pointwise in
       show _ ∈ ((I.den : 𝓞 K) • (I : Submodule (𝓞 K) K))
       exact (Submodule.mem_smul_pointwise_iff_exists _ _ _).mpr
         ⟨1, h1C, by rw [hsm]; simp [μ]⟩

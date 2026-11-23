@@ -52,15 +52,11 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.Basi
 open GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.AllWt GlobalTheory.LevDesc
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 namespace GlobalTheory.CovGminTop
-section Abstract
 variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V]
 variable [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-end Abstract
-section Point
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
-end Point
 theorem covering_gmin_of_gram_deep_size : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → _root_.GlobalTheory.CovTop.GramCondition → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.MinimalGenerator := by
   intro hP hGr hDG hS
   obtain ⟨C, hC, hg⟩ := GlobalTheory.CovGmin.minimal_level_cover_is_good hP

@@ -92,7 +92,6 @@ private theorem finprod_split {A M : Type*} [CommMonoid M] {r : ℕ} (wi : Fin r
   refine finprod_congr fun u => ?_
   simp only [Set.mem_diff, Set.mem_univ, true_and]
 
-section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -249,7 +248,6 @@ private theorem phi_eq (T : Ty σ n q w₀) (L : GM.Loc σ n q w₀) (ψ : ∀ v
     have hu := T.off u.1 (by rw [under_eq]; exact hS) (by rw [under_eq]; exact hvq)
     rw [hother u hsp, dflt_of_triv T u.1 hu.2, hu.1]
 
-end Main
 
 end UpperTheory.FiniteProductSplitting
 

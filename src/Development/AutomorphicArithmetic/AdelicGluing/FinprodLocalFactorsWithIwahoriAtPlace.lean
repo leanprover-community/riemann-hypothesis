@@ -44,7 +44,6 @@ open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.Automorphic.
 open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.GM
 open UpperTheory.ConvolutionTheory.GM.TE
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -91,7 +90,6 @@ private theorem iw_split {q : Pl F} (w₀ : PlacesOver E q) (m : Fin n → ℤ) 
   rw [Finset.prod_congr rfl fun w _ => key w, Finset.prod_mul_distrib, Finset.prod_ite_eq' Finset.univ w₀]
   simp
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.finprod_local_factors_with_iwahori_at_place :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (n : ℕ) (S : Finset (Pl F)) (q : Pl F), q ∉ S → ∀ (w₀ : PlacesOver E q)

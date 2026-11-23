@@ -41,7 +41,6 @@ open GroundTheory.Automorphic.CuspidalSpectrum GroundTheory.Global GroundTheory.
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C Formalism.BasicNotions GlobalTheory.PRep GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets UpperTheory.ConvolutionTheory.L1
 open scoped ComplexConjugate Classical InnerProductSpace
 
-section Abs
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
@@ -117,9 +116,7 @@ private theorem rho_typed (J : ∀ w : Pl K, Subgroup (Gw n w)) (χ : ∀ w : Pl
     rw [hstep, key, hprod, map_smul, heig a x (h0 a (Finset.mem_insert_self a R)), smul_smul,
       Finset.prod_insert ha, mul_comm]
 
-end Abs
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -202,7 +199,6 @@ private theorem at_place {σ : E ≃ₐ[F] E} {q : Pl F} {w₀ : PlacesOver E q}
     rw [(hoff u).1]
     exact hu u
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.typed_vectors_le_fixed_of_fits_level :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E ≃ₐ[F] E) (n : ℕ)

@@ -42,7 +42,6 @@ namespace UpperTheory.IteratedPhiSize
 
 open GlobalTheory.StepData ValuativeRel Formalism.L2.Host GlobalTheory.RowTest Formalism.IndefR.WeilFull GlobalTheory.RowClaim MeasureTheory
 
-section Local
 
 variable {k : Type*} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 variable {K : Type} [Field K] (ι τ : K →+* ℂ)
@@ -101,9 +100,7 @@ private theorem indicator_one_sz {X : Type*} (S : Set X) (x : X) : Sz ι τ (S.i
   · exact Sz.one
   · exact Sz.zero zero_le_one
 
-end Local
 
-section Global
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {K : Type} [Field K] (ι τ : K →+* ℂ)
   (w : Pl D.host.E)
@@ -146,7 +143,6 @@ private theorem givenDatum_sz (B : Frames G) (Φ : G.Datum) (b : Edge) (x) : Sz 
     · simp only [givenDatum]
       exact Sz.zero zero_le_one
 
-end Global
 
 end UpperTheory.IteratedPhiSize
 

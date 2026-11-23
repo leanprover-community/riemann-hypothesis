@@ -54,7 +54,6 @@ noncomputable section
 
 namespace UpperTheory.PlacesDiscr
 
-section Emb
 
 variable {E : Type} [Field E] [NumberField E] {C : Type} [Field C] [CharZero C]
   {v : Valuation C NNReal} {O : Type} [CommRing O] [Algebra O C]
@@ -81,9 +80,7 @@ private theorem restrEmb_spec (hv : v.Integers O) (φ : E →ₐ[ℚ] C) (a : �
 
 variable {p : ℕ} [Fact p.Prime]
 
-end Emb
 
-section Split
 
 variable {p : ℕ} [Fact p.Prime] {R : Type} [CommRing R] [StarRing R]
 
@@ -170,7 +167,6 @@ private def splitEquiv (h1 : ∀ i j, i ≠ j → (w i).e * (w j).e = 0)
         change ((∑ i, (w i).e) + (∑ i, (w i).bar)) * a = a
         rw [h2, one_mul])
 
-end Split
 
 end UpperTheory.PlacesDiscr
 

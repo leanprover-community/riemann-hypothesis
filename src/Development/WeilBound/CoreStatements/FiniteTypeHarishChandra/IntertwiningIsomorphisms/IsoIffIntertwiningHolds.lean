@@ -55,7 +55,6 @@ theorem zIdemOrthogonal_holds (Γ : Type) [Group Γ] [Fintype Γ] (τ σ : FDRep
 
 end Gen
 
-section GeneralLinearIntegers
 
 variable {K : Type} [Field K] [Fintype K] [DecidableEq K]
 
@@ -64,6 +63,5 @@ variable {K : Type} [Field K] [Fintype K] [DecidableEq K]
 
 
 
-end GeneralLinearIntegers
 
 end ReciprocityTheory.Ty.Fin

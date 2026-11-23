@@ -39,7 +39,6 @@ open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.Automorphic.
 open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.GM
 open scoped ComplexConjugate
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
@@ -100,7 +99,6 @@ private theorem above_one (w : Pl E) (g : GL (Fin n) (w.adicCompletion E)) (v : 
   rw [cmp_atFin]
   exact h2 w'.1 (fun h => hne (by rw [← h]; exact under_over w')) g
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.baseChangeLevel_isOpen_isCompact_contains_iwahori :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsGalois F E] (σ : E ≃ₐ[F] E) (n : ℕ), 0 < n → ∀ (q : Pl F) (w₀ : PlacesOver E q) (L : Loc σ n q w₀),

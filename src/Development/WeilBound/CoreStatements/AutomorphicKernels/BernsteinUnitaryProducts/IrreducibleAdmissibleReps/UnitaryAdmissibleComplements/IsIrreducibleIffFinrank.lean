@@ -47,11 +47,9 @@ namespace PositivityTheory.PfBern.Props2
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-section Zero
 
 variable {G X : Type} [Group G] [AddCommGroup X] [Module ℂ X]
 
-end Zero
 
 section GL0
 

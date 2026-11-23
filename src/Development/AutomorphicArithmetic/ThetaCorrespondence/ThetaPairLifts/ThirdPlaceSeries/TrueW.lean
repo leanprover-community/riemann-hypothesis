@@ -127,7 +127,6 @@ structure LocalGroupReading {v : VCom f.c} {n : ℕ} (G : Fin n → GLoc v) (pl 
         valuation (G i).k ((x i : GL (Fin D.R.k ⊕ Fin ((G i).s + 1)) (G i).k).val a b - (ofSplit (G i).q).pr (z : D.host.E)) < 1) →
       (_root_.GlobalTheory.Fam.complexLevelStructure W).chi ⟨g, hg⟩ = ∏ i, (G i).S.P.lam (x i)
 end Real
-section True
 open GlobalTheory.Mem GlobalTheory.Mem.Col2
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {l : I.Laws} {Z : TC.Later B (I.cols l)} {L : SizeData₂ (I.rec7 l Z)}
   {hT : GatTies (I.rec7 l Z)} {Gi : Formalism.MainNotions.G.Inst (I.rec7 l Z) L} {Gl : Formalism.MainNotions.G.LatInst (I.rec7 l Z)} {Kc : Formalism.MainNotions.G.Consts}
@@ -139,7 +138,6 @@ structure ValidRealPackage (W : _root_.GlobalTheory.MiS.RealPackAlt ex) : Prop w
   std : Nonempty (I.StdC l Z W.R.T.cols)
   chr : ∀ j : Fin B.R.m, ChrEq ((_root_.GlobalTheory.Fam.pk_z W).mu0 ((j : ℕ) + 1)) (I.C.mu0 j)
   top : _root_.GlobalTheory.Fam.LeadingReadStatement W
-end True
 end GlobalTheory.Fam
 end
 end

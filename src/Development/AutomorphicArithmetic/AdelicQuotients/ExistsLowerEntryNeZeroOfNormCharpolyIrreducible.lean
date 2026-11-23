@@ -49,7 +49,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Gl
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Loc PositivityTheory.Rg.Tf.Geo
 open scoped NumberField.AdeleRing
 
-section BlockTri
 
 variable {ι R : Type*} [Fintype ι] [DecidableEq ι] [CommRing R] (Q : ι → Prop) [DecidablePred Q]
 
@@ -95,7 +94,6 @@ private theorem charpoly_toSq_dvd {M : Matrix ι ι R} (hM : LowZero Q M) :
   rw [hsq] at h
   exact ⟨_, h⟩
 
-end BlockTri
 
 theorem UpperTheory.exists_lower_entry_ne_zero_of_norm_charpoly_irreducible :
     ∀ (F E : Type) [Field F] [Field E] [Algebra F E] [FiniteDimensional F E] [IsGalois F E] (σ : E ≃ₐ[F] E),

@@ -43,19 +43,15 @@ namespace CrystallineSemistableComparison.CupAbs
 
 universe w₁ w₂ w₃ u₁ u₂ u₃
 
-section BC
 
 variable {R : Type} [CommRing R] (A : Type) [CommRing A] [Algebra R A]
   {M : Type u₁} {N : Type u₂} {P : Type u₃} [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
   [AddCommGroup P] [Module R P]
 
-end BC
 
-section Lim
 
 variable {R : Type} [CommRing R] {S₁ : Sys.{w₁} R} {S₂ : Sys.{w₂} R} {S₃ : Sys.{w₃} R}
 
-end Lim
 
 section One
 

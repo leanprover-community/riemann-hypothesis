@@ -271,7 +271,6 @@ lemma ppos_of_mem {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (w : Fin r �
 lemma perp_of_ppos_zero {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (w : Fin r → ℂ)
     (hw : X.ppos x τ w = 0) (b : Fin X.p0) : hermC τ.1 X.Gm w (col (mat x τ) (Fin.castLE X.p0_le b)) = 0 := by
   have hu : IsUnit (X.gramPos x τ).det := by
-    open scoped ComplexOrder in
     exact (Matrix.isUnit_iff_isUnit_det _).mp (X.gramPos_posDef hx τ).isUnit
   have h1 : hermC τ.1 X.Gm (X.ppos x τ w) (col (mat x τ) (Fin.castLE X.p0_le b)) = 0 := by
     rw [hw, hermC_zero_left]

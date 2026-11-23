@@ -60,7 +60,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.Local
 
 namespace UpperTheory.SgPlace
 
-section Generic
 
 open GlobalTheory.LatVac (liftV evFin_liftV at_liftV)
 
@@ -135,9 +134,7 @@ private theorem symp_idem (hcm : IsCMExt F E σ) {v : HeightOneSpectrum (𝓞 F)
   rw [Matrix.smul_apply, smul_eq_mul]
   linear_combination (-(u i j * JA i k * JB j l)) * key k l
 
-end Generic
 
-section Host
 
 
 variable {D : D7}
@@ -205,7 +202,6 @@ private theorem sb_add {m n : ℕ} {a : AE D} {Λ : AddSubgroup (Mx D m n)} {φ 
     · rw [mul_comm, mul_smul]; exact nsmul_mem (h3 t h) k'
     · rw [mul_smul]; exact nsmul_mem (h3' t h) k
 
-end Host
 
 end UpperTheory.SgPlace
 

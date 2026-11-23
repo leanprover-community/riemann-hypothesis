@@ -45,7 +45,6 @@ open GroundTheory.Global GroundTheory.Global.SemiLocal GroundTheory.Automorphic.
 open UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.GM
 open scoped ComplexConjugate
 
-section SlopeTestRemainingChoices
 
 open GroundTheory.Global.AdeleBaseChange
 open scoped NumberField.AdeleRing TensorProduct ValuativeRel
@@ -97,7 +96,6 @@ private theorem unif_max (w : HeightOneSpectrum (𝓞 E)) (y : w.adicCompletion 
   rw [e, norm_mul]
   exact mul_le_of_le_one_left (norm_nonneg _) ((v_le w _).1 a.2)
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.exists_galois_transport_localGL_preserving_iwahori :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] [IsGalois F E] (σ : E ≃ₐ[F] E) (n : ℕ), 0 < n → ∀ w : Pl E,

@@ -53,11 +53,9 @@ theorem eq_of_isAbsPow {ν ν' : HChar E} {s : ℝ} (h : ν.IsAbsPow s) (h' : ν
       simp [HChar.inf_mul, HChar.inf_inv, e]
   exact mul_inv_eq_one.1 (GlobalTheory.DiscSpec.Model.eq_one_of_isAbsPow h0)
 
-section Quot
 
 variable {I V : Submodule ℂ (Sm E N)} {f : Sm E N →ₗ[ℂ] Sm E N}
 
-end Quot
 
 end PositivityTheory.RSHS.ProjectionSandwichLength
 

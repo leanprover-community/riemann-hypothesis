@@ -36,17 +36,11 @@ noncomputable section
 namespace Formalism.MainNotions.AdmissibleParameterJ
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual NumberField IsDedekindDomain
 variable {D : D7}
-section Sets
 variable (D)
-end Sets
-section Emb
 variable (D)
 variable {D}
-end Emb
-section Stmt
 variable (D)
 variable {D} (L : SizeData₂ D)
-end Stmt
 section admitted
 variable (D)
 def DeRhamFamilyAwayAlt : Prop := ∀ i r, GoodR D.nd i r → _root_.UpperTheory.GalS.G2a D.nd D.naut i r

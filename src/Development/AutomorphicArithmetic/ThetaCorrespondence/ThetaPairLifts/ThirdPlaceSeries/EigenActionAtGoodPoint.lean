@@ -43,9 +43,7 @@ open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual Reciproc
 noncomputable section
 namespace GlobalTheory.PassOp
 open Formalism.MainNotions.N.PlaceLabelTeichmuller
-section Tensor
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {G : ι → Type} [∀ i, Group (G i)] [∀ i, Finite (G i)]
-end Tensor
 local instance  (D : D7) (k : Fin 2) : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
 local instance  (D : D7) (k : Fin 2) : NeZero (D.host.g k) := ⟨(D.host.g_prime k).ne_zero⟩
 theorem exists_isBCV_twistIso_append_mu_of_mem_Z (D : D7) (h0 : SumRepresentations.tie0 D) (h1 : SumRepresentations.adm1 D) (h5 : SumRepresentations.adm5 D) (h41 : _root_.Formalism.MainNotions.SumRepresentations.provisionFortyOne D)

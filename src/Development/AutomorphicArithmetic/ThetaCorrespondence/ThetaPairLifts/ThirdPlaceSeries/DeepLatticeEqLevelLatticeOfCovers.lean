@@ -51,14 +51,12 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FieldBC
 end Forms
 end GlobalTheory.CovTop.TypeLattice
 namespace GlobalTheory.CovTop.TypeLattice
-section Point
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.IndefR.Links Formalism.IndefR.FWT
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.BigTop GlobalTheory.AllWt
 open GlobalTheory.LevDesc (TypeFrame IsTypeLevel typeRed grpHR latN chiHR genChar transl)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelCuspCharacters (Sq LevelGroup levelU psiU)
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ}
-end Point
 section Main
 open CategoryTheory AlgebraicGeometry NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Theta

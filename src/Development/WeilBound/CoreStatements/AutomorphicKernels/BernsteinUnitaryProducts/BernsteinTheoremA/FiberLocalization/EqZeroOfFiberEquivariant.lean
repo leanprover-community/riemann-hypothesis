@@ -55,22 +55,18 @@ def mulInd (A : Set X) (hA : IsClopen A) : SC X →ₗ[ℂ] SC X where
   map_add' f g := Subtype.ext <| funext fun x => by simp [mul_add]
   map_smul' c f := Subtype.ext <| funext fun x => by simp [mul_left_comm]
 
-section General
 
 variable {Y : Type*} [TopologicalSpace Y] [T2Space Y] [LocallyCompactSpace Y]
   [TotallyDisconnectedSpace Y]
 
 
 
-end General
 
-section Conj
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
 variable {Y : Type*} [TopologicalSpace Y] [T2Space Y] [LocallyCompactSpace Y]
   [TotallyDisconnectedSpace Y]
 
-end Conj
 
 section Restrict
 
@@ -92,16 +88,13 @@ theorem restr_surjective (hZ : IsClosed Z) : Function.Surjective (restr hZ) := b
 
 end Restrict
 
-section FiberSubspace
 
 variable [T2Space X] [LocallyCompactSpace X] [TotallyDisconnectedSpace X]
 variable {Y : Type*} [TopologicalSpace Y] [T2Space Y] [LocallyCompactSpace Y]
   [TotallyDisconnectedSpace Y]
 
 
-end FiberSubspace
 
-section OpenSubset
 
 variable {U : Set X}
 
@@ -110,7 +103,6 @@ variable {U : Set X}
 
 variable [T2Space X]
 
-end OpenSubset
 
 section Transport
 

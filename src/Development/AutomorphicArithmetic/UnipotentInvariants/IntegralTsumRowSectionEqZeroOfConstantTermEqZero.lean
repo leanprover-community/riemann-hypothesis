@@ -40,7 +40,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.Ff UpperTheory.ConvolutionTheory.RankTwoDescent
 open scoped Classical ENNReal
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -193,7 +192,6 @@ private theorem van (μ : Measure (G1 E)) [μ.IsHaarMeasure] {S : Set (G1 E)}
     simp only [F, ρ, integral_const_mul, h0, mul_zero, integral_zero]
   exact hl.symm.trans (hswap.trans hr)
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.integral_tsum_rowSection_eq_zero_of_constantTerm_eq_zero :
     ∀ {E : Type} [Field E] [NumberField E] (N : MeasE E) (σ : {r : Fin 2 → E // r ≠ 0} → Matrix.SpecialLinearGroup (Fin 2) E) (A c : G1 E → ℂ), M.RowSec σ → Measurable A → Measurable c → (∀ b x, A (nU b * x) = A x) → (∀ γ x, c (ratS E γ * x) = c x) → (∀ x, ∫ b in fundamentalSet E, c (nU b * x) ∂(adeleMeasure E) = 0) → (∫⁻ x in N.D, ∑' r, ‖A (ratS E (σ r) * x) * c x‖ₑ ∂N.μ) ≠ ⊤ → ∫ x in N.D, ∑' r, A (ratS E (σ r) * x) * c x ∂N.μ = 0 := by

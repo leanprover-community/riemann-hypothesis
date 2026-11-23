@@ -62,9 +62,7 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands Glo
 open GlobalTheory.RowTie (WDTie)
 open Matrix (GeneralLinearGroup)
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-section G
 variable {E Ω : Type} [Field E] [NumberField E] [IsCMField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {l : ℕ} [Fact l.Prime] {a : ℕ}
-end G
 theorem galHodge0_of_cgTrue (sw : _root_.UpperTheory.One.M.TrivialCondition) (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (hF : GlobalTheory.Published.AutomorphicFormsFiniteGL)
     (hG : _root_.UpperTheory.GalS.CuspUAlt) (hB : GlobalTheory.Published.DeRhamPotSemistable) (hGL : _root_.UpperTheory.GalS.CarUAlt)
     {D : D7} {T : WDTie D.nd D.naut} (C : _root_.GlobalTheory.HeightCounting.CGTrueT hL D T) : UpperTheory.GalS.GalHodge0 D T := by

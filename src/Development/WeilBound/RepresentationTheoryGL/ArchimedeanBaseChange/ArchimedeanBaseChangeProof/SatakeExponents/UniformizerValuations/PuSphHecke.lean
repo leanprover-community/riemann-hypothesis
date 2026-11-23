@@ -62,12 +62,10 @@ def pu_pls (l : List (UGen E n)) : Finset (Pl E) :=
 
 end Word
 
-section Word2
 
 variable {S : Set (Pl E)} {lam : InfinitePlace E → DomWeight n} {K' : ∀ w : Pl E, Subgroup (UL n w)}
   {F : UFam S lam K'} {B : Finset (Pl E)}
 
-end Word2
 
 end PositivityTheory.Rg.BcB.F.U
 

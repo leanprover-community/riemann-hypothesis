@@ -40,7 +40,6 @@ namespace UpperTheory.GivenInt
 
 open GlobalTheory.StepData ValuativeRel
 
-section Local
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -102,9 +101,7 @@ private theorem indicator_int {X : Type*} (S : Set X) (x : X) : IsIntegral ℤ (
   · exact isIntegral_one
   · exact isIntegral_zero
 
-end Local
 
-section Global
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (w : Pl D.host.E)
 variable {t : T} (hxi : ∀ x, IsIntegral ℤ ((L.xiH t).loc w x : ℂ))
@@ -135,7 +132,6 @@ private theorem givenDatum_int (B : Frames G) (Φ : G.Datum) (b : Edge) (x) :
     · simp only [givenDatum]
       exact isIntegral_zero
 
-end Global
 
 end UpperTheory.GivenInt
 

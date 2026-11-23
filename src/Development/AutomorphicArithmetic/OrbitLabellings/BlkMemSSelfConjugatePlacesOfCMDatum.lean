@@ -58,7 +58,6 @@ open UpperTheory.G2
 
 variable {d : ℕ} [NeZero d] {hd : ZMod d}
 
-section P0
 open Formalism.IncomingBounds Formalism.L2.Pj
 
 private abbrev IIs {T Orb : Type} (r : T → ℕ) (tau : Orb → ZMod d → T) (o : Orb) : Type := Σ t : ZMod d, Fin (r (tau o t))
@@ -143,7 +142,6 @@ private def IsotropicToStdSubstIntegral : Prop :=
     (pl : (Σ o, Σ i : Fin (L o).length, Fin (rowsAt X L o i)) → Fin N) (n : ℕ) (plc : Fin N × Fin 2 ↪ Fin n)
     (O : Subring C), (∀ o t q s, gm o t q s ∈ O) → ∀ m, (subG r tau gm plc (blkProd X F N L pl)).coeff m ∈ O
 
-section Mem
 
 variable {C : Type} [Field C] {V : VF C} {T : Type} (r : T → ℕ) (cc : T → T) (isX : T → Prop)
   (a : T → ℕ → ℕ) {Orb : Type} [Fintype Orb] (tau : Orb → ZMod d → T) (gm : Orb → ZMod d → Matrix (Fin 2) (Fin 2) C)
@@ -169,7 +167,6 @@ private theorem block_membership_self_conj_first (h1 : IsotropicToStdSubstHarmon
   exact ⟨⟨h1 C V T r cc a Orb tau gm J X F gaC N L pl H n plc isX, h2 C V T r cc a Orb tau gm J X F gaC N L pl H n plc,
     h3 C V T r cc a Orb tau gm J X F gaC N L pl H n plc⟩, h4 C V T r Orb tau gm J X F N L pl n plc O gm_int⟩
 
-end Mem
 
 private theorem first_chern_integral : IsotropicToStdSubstIntegral d := by
   intro C _ V T r Orb _ tau gm J _ X F N L pl n plc O hgm m
@@ -180,7 +177,6 @@ private theorem first_chern_integral : IsotropicToStdSubstIntegral d := by
 
 end P0
 
-section P1
 
 variable {C : Type} [Field C] {T Orb : Type} [Fintype Orb] (r : T → ℕ) (tau : Orb → ZMod d → T)
   (gm : Orb → ZMod d → Matrix (Fin 2) (Fin 2) C) {N n : ℕ} (plc : Fin N × Fin 2 ↪ Fin n)
@@ -313,11 +309,8 @@ private theorem back_subG (inj : Function.Injective fun x : Orb × ZMod d => tau
   rw [AlgHom.comp_apply, AlgHom.id_apply] at this
   exact this
 
-end P1
 
-section P2
 
-section Gen
 
 variable {C : Type} [Field C] {T Orb : Type} [Fintype Orb] {r : T → ℕ} {tau : Orb → ZMod d → T}
   {gm : Orb → ZMod d → Matrix (Fin 2) (Fin 2) C} {N n : ℕ} (plc : Fin N × Fin 2 ↪ Fin n)
@@ -385,18 +378,15 @@ private theorem isImgS_subG {dd : ℕ} (X : ∀ o, RawChart C d (fun _ => IIs r 
     rw [hL]
     split_ifs <;> simp
 
-end Gen
 
 end P2
 
-section P3
 open Formalism.IncomingBounds Formalism.L2.Pj MvPolynomial
 
 variable (hd) in
 private def trueT (hd : ZMod d) (g : Fin 2) (s : ZMod d) : ZMod d :=
   if g = 0 then s else s + hd
 
-section Fam
 
 variable {C : Type} [Field C] {V : VF C} {T : Type} {r : T → ℕ} {cc : T → T} {a : T → ℕ → ℕ}
   {Orb : Type} [Fintype Orb] {tau : Orb → ZMod d → T} {gm : Orb → ZMod d → Matrix (Fin 2) (Fin 2) C}
@@ -502,7 +492,6 @@ private theorem subG_blkProd :
   simp only [map_prod, AlgHom.comp_apply, MvPolynomial.rename_rename]
   rfl
 
-end Fam
 
 private theorem isotropic_to_standard_substitution_invariant : IsotropicToStdSubstLineInvariant hd := by
   intro C _ V T r cc a Orb _ tau gm J _ X F gaC N L pl H n plc σ i i' hi t
@@ -685,9 +674,7 @@ private theorem isotropic_to_std_subst_degree : IsotropicToStdSubstLineDegree hd
 
 end P4
 
-section P5
 
-section Chain
 
 variable {C : Type} [Field C] {T Orb : Type} [Fintype Orb] {r : T → ℕ} {tau : Orb → ZMod d → T}
   {gm : Orb → ZMod d → Matrix (Fin 2) (Fin 2) C} {N n : ℕ} (plc : Fin N × Fin 2 ↪ Fin n)
@@ -731,13 +718,10 @@ private theorem pderiv_subG_lam (inj : Function.Injective fun x : Orb × ZMod d 
         simp [hb]
       · simp
 
-end Chain
 
 end P5
 
-section P6
 
-section Plane
 
 variable {C : Type} [Field C] {T Orb : Type} [Fintype Orb] {r : T → ℕ} {tau : Orb → ZMod d → T}
   {gm : Orb → ZMod d → Matrix (Fin 2) (Fin 2) C} {N n : ℕ} (plc : Fin N × Fin 2 ↪ Fin n)
@@ -810,9 +794,7 @@ private theorem lap_plane (inj : Function.Injective fun x : Orb × ZMod d => tau
   · simp [hgg]
   · rw [hD ρ g g' hgg, map_zero, mul_zero]
 
-end Plane
 
-section Fam
 
 variable {C : Type} [Field C] {V : VF C} {T : Type} {r : T → ℕ} {cc : T → T} {a : T → ℕ → ℕ}
   {Orb : Type} [Fintype Orb] {tau : Orb → ZMod d → T} {gm : Orb → ZMod d → Matrix (Fin 2) (Fin 2) C}
@@ -872,7 +854,6 @@ private theorem SelfConjugatePlaceSetting.no_conj (H : SelfConjugatePlaceSetting
   simp only [tyW, H.hty]
   exact lab_eq H.hd2 g1 g2 hne t
 
-end Fam
 
 private theorem isotropic_to_std_subst_harmonic : IsotropicToStdSubstHarmonic hd := by
   intro C _ V T r cc a Orb _ tau gm J _ X F gaC N L pl H n plc isX
@@ -896,7 +877,6 @@ private theorem isotropic_to_std_subst_harmonic : IsotropicToStdSubstHarmonic hd
 
 end P6
 
-section P7
 
 private theorem blkMemS_mono {C : Type} [Field C] {V : VF C} {Orb : Type} [Fintype Orb] {I J : Orb → Fin 2 → Type}
     [∀ o g, Fintype (I o g)] [∀ o g, Fintype (J o g)] {X : ∀ o, RowData C V d (I o) (J o)} {n : ℕ} {F : ∀ o, Flag (X o)}
@@ -904,7 +884,6 @@ private theorem blkMemS_mono {C : Type} [Field C] {V : VF C} {Orb : Type} [Finty
     (h : PlaneBlockProductsMemFamily hd X n F FF gaC) (hs : FF ⊆ FF') : PlaneBlockProductsMemFamily hd X n F FF' gaC :=
   fun L h1 h2 pl hpl => hs (h L h1 h2 pl hpl)
 
-section Chart
 
 open NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 
@@ -947,7 +926,6 @@ private theorem block_membership_self_conj_charts
     (fun _ _ _ => rfl)
     std alt (fun _ => hj) supp tie) (first_family_subset_image ha hg a plc)
 
-end Chart
 
 end P7
 

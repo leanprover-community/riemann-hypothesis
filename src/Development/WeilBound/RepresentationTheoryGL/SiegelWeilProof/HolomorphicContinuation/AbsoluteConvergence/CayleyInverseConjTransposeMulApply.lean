@@ -170,9 +170,7 @@ private theorem exists_unitary_coshSinh_decomposition (N : M2 n) (hN : Nᴴ * S0
     intro j
     open scoped ComplexOrder in
     have hp := (posSemidef_conjTranspose_mul_self (R * W)).diag_nonneg (i := j)
-    open scoped ComplexOrder in
     rw [hl, diagonal_apply_eq] at hp
-    open scoped ComplexOrder in
     exact Complex.zero_le_real.mp hp
   set X : Fin n → ℝ := fun j => Real.arsinh (Real.sqrt (l j)) with hXd
   have hs2 : ∀ j, Real.sinh (X j) ^ 2 = l j := fun j => by

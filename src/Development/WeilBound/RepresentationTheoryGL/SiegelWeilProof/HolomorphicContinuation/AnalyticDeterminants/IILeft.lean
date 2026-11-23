@@ -66,7 +66,6 @@ theorem cE_entry (E : M2 n) (a b : Fin n ⊕ Fin n) :
     HasDerivAt (fun s : ℝ => cE E s a b) (E a b) 0 := by
   open scoped Matrix.Norms.Operator in
   have h1 := hasDerivAt_exp_smul_const (𝕂 := ℝ) E (0 : ℝ)
-  open scoped Matrix.Norms.Operator in
   have h2 := (LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ a b)).hasFDerivAt.comp_hasDerivAt (0 : ℝ) h1
   simpa [Function.comp_def, cE] using h2
 

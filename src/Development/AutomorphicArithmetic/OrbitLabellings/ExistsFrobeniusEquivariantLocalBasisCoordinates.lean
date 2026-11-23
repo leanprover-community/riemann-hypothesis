@@ -240,7 +240,6 @@ private theorem smul_eq_K (D : D7) {N N' : ℕ} (a : D.host.E) (ha : a ∈ D.hos
   rw [Matrix.smul_apply, Matrix.smul_apply, Algebra.smul_def]
   rfl
 
-section Rank
 
 variable (D : D7)
 
@@ -309,7 +308,6 @@ private theorem rank_of_locBasis {p : ℕ} [Fact p.Prime] {N N' r : ℕ}
   rw [Fintype.card_fin] at h1
   rw [← h1]; ring
 
-end Rank
 
 private theorem inv_map_field {E K : Type*} [Field E] [Field K] (f : E →+* K) {n : Type*} [Fintype n] [DecidableEq n]
     (M : Matrix n n E) : (M.map f)⁻¹ = M⁻¹.map f := by
@@ -482,11 +480,9 @@ private theorem lamB_sum_gK : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (lam : Qbar 
     simp [chgB, Prod.ext_iff, ite_and]
   · simp [chgB, Prod.ext_iff, ht, Ne.symm ht]
 
-section Entries0
 
 variable {D : D7} {p : ℕ} [Fact p.Prime]
 
-section Entries
 
 variable {ρ : D.host.E →+* ℂ_[p]} {N N' : ℕ} {L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
   {L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)} {P : Matrix (Fin N) (Fin N) D.host.E}
@@ -572,7 +568,6 @@ private theorem intIn_of_locBasis (hp : ‖(p : ℂ_[p])‖ < 1) (hA0 : ∀ a �
   rw [entry_smul, map_mul, map_natCast, norm_mul, hs1, one_mul] at h1
   exact h1
 
-end Entries
 
 end Entries0
 

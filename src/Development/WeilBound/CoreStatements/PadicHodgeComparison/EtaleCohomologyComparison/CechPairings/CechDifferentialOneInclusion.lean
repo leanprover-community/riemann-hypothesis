@@ -301,7 +301,6 @@ end Col2
 end CrystallineSemistableComparison.Auxfi
 
 namespace CrystallineSemistableComparison.Auxfi
-section Col3
 variable {R : Type} [CommRing R] {C : Type u} [Category.{v} C] {T : Type u'} [Category.{v'} T] (j : T ⥤ C)
   (F : C ⥤ ModuleCat.{w} R) {A : C} (P : Powers j A)
 
@@ -321,7 +320,6 @@ noncomputable def augc : DCx.AugCol (cosK j F P).cx (cechCos (pmap j P) (j ⋙ F
       (F.map (zz j P (s.obj (Fin.last 0)))).hom ((F.map (P.δ (p + 1) i)).hom x)
     rw [zz_δ, F.map_comp]; rfl
 
-end Col3
 end CrystallineSemistableComparison.Auxfi
 
 namespace CrystallineSemistableComparison.Auxfi

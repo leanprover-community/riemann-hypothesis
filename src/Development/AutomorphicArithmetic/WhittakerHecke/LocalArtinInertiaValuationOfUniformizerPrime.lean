@@ -54,7 +54,6 @@ import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section
 
-section Norm
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.HeckeGal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
   GroundTheory.Global GroundTheory.Global.AdeleBaseChange GroundTheory.Global.SemiLocal
@@ -209,7 +208,6 @@ private theorem res_art_norm (E Ω : Type) [Field E] [NumberField E] [Field Ω] 
   rw [← norm_at_unique v W hW hu y]
   exact (glob_norm ha haK _ τ (τ.restrictScalars E) (fun z => rfl) hτ.symm).symm
 
-end Norm
 
 section Frob
 

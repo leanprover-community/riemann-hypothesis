@@ -38,9 +38,7 @@ open scoped TensorProduct
 open Formalism.CohomologicalDescent.LogSmallConstantBounds (Par)
 namespace GlobalTheory.FrameOf
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-section Int
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {l : ℕ} [Fact l.Prime]
-end Int
 end GlobalTheory.FrameOf
 namespace GlobalTheory.FrameOf
 attribute [local instance] Formalism.BasicNotions.Host.cmStar

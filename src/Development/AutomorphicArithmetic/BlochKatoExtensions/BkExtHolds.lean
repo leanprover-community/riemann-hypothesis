@@ -37,7 +37,6 @@ import Mathlib.Topology.Sheaves.Init
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates Formalism.MainNotions.WachCoordinates.Br Module IsLocalRing
 
-section Generic
 
 open TensorProduct Formalism.MainNotions
 
@@ -149,7 +148,6 @@ private theorem UpperTheory.Prune.bk_core [IsTopologicalRing LL] [FiniteDimensio
   · rw [sub_eq_iff_eq_add.1 e2, map_add (f := _), map_sub, hz, map_add (f := _), W.map_γ]
     abel
 
-end Generic
 
 theorem UpperTheory.Prune.bkExt_holds :
     ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)

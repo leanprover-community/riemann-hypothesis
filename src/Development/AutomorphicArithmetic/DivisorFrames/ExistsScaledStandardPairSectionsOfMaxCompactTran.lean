@@ -54,7 +54,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model Ch
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section SlopeTestRemainingChoices
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -114,7 +113,6 @@ private theorem stdB_ne (ν : kˣ →* ℂˣ) (ϖ : kˣ) (c a a' : ℕ) : ∃ Y,
   rw [stdB, dite_eq_left h]
   exact Units.ne_zero _
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.exists_scaled_standardPairSections_of_maxCompact_translate :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k]

@@ -85,11 +85,9 @@ namespace PetTie
 
 open scoped ENNReal
 
-section FD
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-end FD
 
 variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l}
   {c : Coeff l} {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r} {W : HSp D}

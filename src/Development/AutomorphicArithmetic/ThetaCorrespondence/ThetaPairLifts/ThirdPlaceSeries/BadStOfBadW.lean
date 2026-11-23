@@ -42,7 +42,6 @@ namespace GlobalTheory.BadOnRec
 end GlobalTheory.BadOnRec
 namespace GlobalTheory.BadOnRec
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-section General
 open scoped TensorProduct
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {T : Full D} [inst : Algebra T.J.Q.c.F D.what₂.LL] {R : RealDat D A T.J.Q.c.F} {F : Face D A}
@@ -57,7 +56,6 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.
   {inc : P →* G}
   {ℓ : G → (LaMod (T.Q.Dw ((ι : ℕ) + 1)) T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (T.Q.Dw ((ι : ℕ) + 1)) T.Q.l)} {ph : ℂ}
   {y : (Fin (O.nX v i) → D.what₂.LL) ≃ₗ[D.what₂.LL] (Fin (srcDim A ι (R.mu v) F.P0 F.ψ0⁻¹) → D.what₂.LL)}
-end General
 end GlobalTheory.BadOnRec
 namespace GlobalTheory.BadOnRec
 attribute [local instance] Formalism.BasicNotions.Host.cmStar

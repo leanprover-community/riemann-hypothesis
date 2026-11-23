@@ -46,7 +46,6 @@ open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section SlopeTestRemainingChoices
 
 open GlobalTheory.LinCoords GlobalTheory.WeilM
 
@@ -71,7 +70,6 @@ private theorem hTens_half (h : IsCMExt F E σ) {v : HeightOneSpectrum (𝓞 F)}
   rw [eq_lift2 h t hat, map_mul, map_mul, map_mul, h1, map_mul (piW (t.comp σ)), piW_cA' (t.comp σ), ht, h2, zero_mul, zero_mul, zero_mul, mul_zero,
     lift2_zero]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.exists_ne_zero_linearModel_vacuum_eq_smul :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)

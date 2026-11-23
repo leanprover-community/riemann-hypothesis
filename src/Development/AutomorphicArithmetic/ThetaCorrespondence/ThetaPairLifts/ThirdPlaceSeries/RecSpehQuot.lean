@@ -46,10 +46,8 @@ noncomputable section
 open NumberField ReciprocityTheory.Gal Formalism.ConjugateSelfDual IsDedekindDomain GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
   GlobalTheory.CuspRep GlobalTheory.DefiniteBC
 namespace GlobalTheory.SpehRec
-section Sum
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
-end Sum
 theorem rec_spehQuot_alt : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
     (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)),
     letI := GlobalTheory.LocalData.complRel w

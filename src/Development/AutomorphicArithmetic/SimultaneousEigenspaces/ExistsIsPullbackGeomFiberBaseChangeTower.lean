@@ -35,7 +35,6 @@ open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC GlobalTheory.GalV 
 
 noncomputable section
 
-section Gen
 
 variable {C : Type*} [Category C] [HasPullbacks C] {S A B D X : C}
 
@@ -74,7 +73,6 @@ private theorem uu_nat {Y : C} (p : Y ⟶ S) (q : X ⟶ S) (a : A ⟶ S) (b : B 
   · simp only [Category.assoc, h2, uu_fst, uu_fst_assoc, reassoc_of% h4, h1]
   · simp only [Category.assoc, h3, uu, pullback.lift_snd, reassoc_of% h5]
 
-end Gen
 
 end
 

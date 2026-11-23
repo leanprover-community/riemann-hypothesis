@@ -40,9 +40,7 @@ open Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.L
 noncomputable section
 namespace GlobalTheory.BlockLiftFrame
 open ReciprocityTheory.Aut GlobalTheory.CenFrame
-section Local
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
-end Local
 end GlobalTheory.BlockLiftFrame
 end
 theorem GlobalTheory.BlockLiftFrame.atMem_alt : ∀ hL : _root_.UpperTheory.Zero.LLC.RecTExists, _root_.GlobalTheory.HeightCounting.Up.MemberAtLayerPoint hL fun _ _ _ _ w Z _ _ t _ _ _ =>

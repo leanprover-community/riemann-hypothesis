@@ -44,13 +44,9 @@ open GlobalTheory.GalOfCusp GlobalTheory.TripleGal GlobalTheory.Triple
 open GlobalTheory.TypeLeaf (FrobDense)
 open GlobalTheory.IndefiniteRowSideFullHecke.JumpDictionary (embOver)
 open GlobalTheory.JumpDictionaryFoundation (exists_embOver embOver_true_apply)
-section Twist
 variable {D : D7} {C₀ : CharFrame D} (S : CharSide D C₀) {n : ℕ} (π : D.naut.CG n) {ξ : HChar D.host.E} (hξ : ξ.IsUnitary)
 variable {π}
-end Twist
-section Chars
 variable {D : D7} (C : CharFrame D) (l : ℕ) (j : Fin D.R.m)
-end Chars
 section Triple
 variable {D : D7} {T : WDTie D.nd D.naut} {C₀ C : CharFrame D} (S : CharSide D C₀)
   {art : Ideles D.host.E →* GlobalTheory.HeckeGal.Gab D.host.E D.nd.Om} {i : D.ntw.Tw} {s : D.ntw.Sig i}

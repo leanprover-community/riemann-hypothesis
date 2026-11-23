@@ -85,7 +85,6 @@ structure CharFrameHostEmbedding (D : D7) (cf : CharFrame D) (jE : D.host.E →+
   par : ParSide D jE
   au : _root_.GlobalTheory.HeightCounting.AUSideAlt D
   chiT : ChiTOk D cf
-section Loc
 variable {D : D7}
 
 structure AutomorphicSpecialisation {cf : CharFrame D} {jE : D.host.E →+* Qb} (A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE) (M : MtFam D)
@@ -118,7 +117,6 @@ structure AutomorphicSpecialisation {cf : CharFrame D} {jE : D.host.E →+* Qb} 
     NG.tN (mlX M X i).J s ϖ k ((mlX M X i).real y) = iotaO X.nd Y.naut i ((X.nd.hT i w k : X.nd.X i → X.nd.O i) x) • (mlX M X i).real y
   emb : ∀ i P, Cb.embAV i P = A.au.cls (X.nd.j i) (X.nd.j_range i).1 (X.nd.j_range i).2
     { (mlX M X i).wt with S := S i P, irrS := irr i P }
-end Loc
 structure HeckeOpenStatements (D : D7) (mt : MtFam D) (tup : D.what₂.Tup → Fin D.R.m → HChar D.host.E) where
   hecke : HeckeTied D mt
   av : AVTied D mt

@@ -56,12 +56,10 @@ theorem two_lt_half_finrank (D : D7) : 2 < Module.finrank ℚ D.host.E / 2 := by
   unfold Ranks.f Ranks.n at *
   omega
 
-section Point
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} {p : PtAt ex Csz} {i : Fin D.R.m} {Y : Cov p i}
 
-end Point
 
 end GlobalTheory.CovHt.HtTopG
 

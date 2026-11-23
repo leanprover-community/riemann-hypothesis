@@ -40,9 +40,7 @@ section
 open Formalism.BasicNotions Formalism.ConjugateSelfDual Formalism.MainNotions Formalism.MainNotions.N Polynomial NumberField IsDedekindDomain ReciprocityTheory.Gal GlobalTheory.StringRepresentationDecomposition
 noncomputable section
 namespace GlobalTheory.ResidualRankCount
-section Alg
 variable {Γ : Type} [Group Γ]
-end Alg
 section Lists
 end Lists
 section Psi

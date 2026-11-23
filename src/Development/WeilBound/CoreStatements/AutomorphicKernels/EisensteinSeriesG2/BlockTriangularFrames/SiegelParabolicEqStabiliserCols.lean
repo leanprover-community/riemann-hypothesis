@@ -43,11 +43,9 @@ open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheo
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl
 open GlobalTheory.Doubling (absE)
 
-section Matrix
 
 variable {m R : Type*} [Fintype m] [DecidableEq m] [CommRing R] {b : m → ℕ}
 
-end Matrix
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
   {Y : Spc F E n}

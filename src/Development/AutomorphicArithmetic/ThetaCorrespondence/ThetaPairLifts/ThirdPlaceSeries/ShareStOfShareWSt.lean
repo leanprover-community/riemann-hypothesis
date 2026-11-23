@@ -37,7 +37,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.D
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.ShareOn Formalism.MainNotions.ArithmeticCylinders
 namespace GlobalTheory.ShareOn.Comparison₂
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-section Tied
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
   {J : CoreJ D} [inst : Algebra J.Q.c.F D.what₂.LL] {R : RealDat D A J.Q.c.F} {F : Face D A}
   {κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)} {v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec}
@@ -48,11 +47,8 @@ variable {fw : FWTie J R κ v₀} {hc : LawsCore J.toCore} {run : HeightOneSpect
   {ℓ : ∀ i : Fin D.R.m, G → (LaMod (J.Q.Dw ((i : ℕ) + 1)) J.Q.l ≃ₗ[𝓞 D.host.E] LaMod (J.Q.Dw ((i : ℕ) + 1)) J.Q.l)}
   {ph : Fin D.R.m → ℂ} {c : OnConst}
 variable {P : Type} [Group P] [Finite P]
-end Tied
-section Point
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
-end Point
 end GlobalTheory.ShareOn.Comparison₂
 namespace GlobalTheory.ShareOn
 theorem shareSt_of_shareWSt_alt : _root_.GlobalTheory.ShareOn.SharedWeightStatement → _root_.GlobalTheory.BigOn.ShareStatement := by

@@ -55,7 +55,6 @@ open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -103,7 +102,6 @@ private theorem hTens_half {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {n d : ℕ}
   · rw [map_mul, map_mul, map_mul, ht', zero_mul, zero_mul, zero_mul]
   · rw [map_mul, GlobalTheory.SplitDict.piW_cA, hσ, ht', mul_zero]
 
-end SlopeTestRemainingChoices
 
 theorem UpperTheory.exists_eq_pure_vacuum_of_lattice_invariant :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)

@@ -210,7 +210,6 @@ theorem hasCLM_m (hLv : LeviTau) (hC : Cx D n V ψ χ θ μ ω H l s ν τ ε fr
 theorem hasCLM_nbar (hU : UnipTau) (hW : WEx) (hS : SchOps) (hF : FTfact) (hl0 : tLoc l τ ≠ 0)
     (hC : Cx D n V ψ χ θ μ ω H l s ν τ ε fr ι) (y : GR n) (c : Matrix (Fin n) (Fin n) ℂ) (hc : cᴴ = c)
     (hyc : mR y = nbar c) : HasCLM ω τ fr ι y := by
-  open MvPolynomial in
   have hasTemperateGrowth_expI : (fun t : ℝ => Complex.exp (Complex.I * t)).HasTemperateGrowth := by
     have key : ∀ k : ℕ, iteratedDeriv k (fun t : ℝ => Complex.exp (Complex.I * (t : ℂ))) =
         fun t : ℝ => Complex.I ^ k * Complex.exp (Complex.I * (t : ℂ)) := by

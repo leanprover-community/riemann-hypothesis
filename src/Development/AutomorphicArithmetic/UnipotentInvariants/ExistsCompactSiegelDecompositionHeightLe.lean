@@ -38,7 +38,6 @@ open Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspR
 open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.Ff UpperTheory.ConvolutionTheory.RankTwoDescent
 open scoped Classical
 
-section SlopeTestRemainingChoices
 
 variable {E : Type} [Field E] [NumberField E]
 
@@ -92,7 +91,6 @@ private theorem norm_toL_mD_le (q : (A E)ˣ) {r : ℝ} (hr : 0 ≤ r) (h1 : ∀ 
     first | exact norm_zero | rfl
   · simpa using h2 w
 
-end SlopeTestRemainingChoices
 
 open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction in
 theorem UpperTheory.exists_compact_siegel_decomposition_height_le :

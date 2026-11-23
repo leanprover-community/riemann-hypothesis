@@ -63,13 +63,11 @@ open scoped ContDiff
 noncomputable section
 namespace PositivityTheory.Member.ZakTransform.Z
 
-section Param
 
 variable {P T : Type} [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
   [NormedAddCommGroup T] [NormedSpace ℝ T] [FiniteDimensional ℝ T] [MeasurableSpace T] [BorelSpace T]
 
 
-end Param
 
 section Torus
 
@@ -88,11 +86,9 @@ def ch (B : V →L[ℝ] T →L[ℝ] ℝ) (l : V) (t : T) : ℂ := Complex.exp (2
 
 end Torus
 
-section Cube
 
 variable {ι : Type} [Fintype ι]
 
-end Cube
 
 end PositivityTheory.Member.ZakTransform.Z
 end
@@ -153,12 +149,10 @@ noncomputable section
 namespace PositivityTheory.Member.ZakTransform.Z
 
 
-section Coord
 
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
 
 
-end Coord
 
 end PositivityTheory.Member.ZakTransform.Z
 
@@ -176,7 +170,6 @@ open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 noncomputable section
 namespace PositivityTheory.Member.ZakTransform
 
-section LocA
 open Filter Topology
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -185,29 +178,22 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 variable [Invertible (2 : k)]
 
-end LocA
 
-section LocB
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {ψ : AddChar k ℂ} {κ : Type} [Fintype κ] [Invertible (2 : k)]
 
-end LocB
 
-section LocC
 open Filter Topology GlobalTheory.SplitFlip
 open GlobalTheory.SplitWeil hiding SB
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-end LocC
 
-section LocD
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 
-end LocD
 
 
 end PositivityTheory.Member.ZakTransform
@@ -1139,7 +1125,6 @@ theorem evalPoints_add {κ : Type} (w w' : (κ → AF F) × (κ → AF F)) : evP
 
 end PartB
 
-section PartA
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.MainNotions.StandardLattice GlobalTheory.ChiGrid GlobalTheory.FunObj
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (skewGram mulG colV adjV₁ incM boxB IsDatumB)
 open Formalism.IndefR.Datum.Brg (GG GI cA_inc GG_herm GI_GG)
@@ -1148,7 +1133,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-end PartA
 
 section Datum
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.MainNotions.StandardLattice GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.StdFrames

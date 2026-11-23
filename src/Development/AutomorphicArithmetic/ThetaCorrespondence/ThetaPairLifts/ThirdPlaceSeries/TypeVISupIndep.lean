@@ -33,9 +33,7 @@ section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX GlobalTheory.HeightCounting NumberField IsDedekindDomain Polynomial
 noncomputable section
 namespace GlobalTheory.HeightCounting.MtIndep
-section rep
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
-end rep
 section loc
 variable {D : D7}
 def phiSubmodule {cf : CharFrame D} {jE : D.host.E →+* Qb} (X : LocNd (lay0 D)) (Y : LocAut X) (A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE) (M : MtFam D)

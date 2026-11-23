@@ -43,11 +43,9 @@ open ReciprocityTheory.Aut Formalism.AUTREP
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
 noncomputable section
 namespace GlobalTheory.SphInertRef
-section Read
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : DIV.FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : Formalism.IndefR.Links.RealDat3 D A3 Ks}
   {F : Formalism.IndefR.Links.Face3 D A3} {X0 : BaseLevelRowSide D} {Y : Read R.toRealDat F.lv2 X0} {M : MtFam D}
-end Read
 end GlobalTheory.SphInertRef
 end
 end

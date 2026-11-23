@@ -34,9 +34,7 @@ set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.ExpFrame
 open Formalism.CohomologicalDescent.DepthNonnegative
-section Tests
 variable (O : Type) [CommRing O] (N : ℕ) {ι : Type} [DecidableEq ι] (lam : ι → ℕ → ℕ) (ϖ : O)
-end Tests
 end GlobalTheory.ExpFrame
 end
 set_option autoImplicit false

@@ -44,7 +44,6 @@ open Formalism.IndefR.DatumF MeasureTheory GlobalTheory.FinWeil GlobalTheory.Fin
 open PositivityTheory.ThKW PositivityTheory.ThKW.AutEtaA
 open UpperTheory.TP.W
 
-section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -101,9 +100,7 @@ private theorem exists_lift (P : HeightOneSpectrum (𝓞 E)) (c : P.adicCompleti
     show Pi.single (M := fun Q : HeightOneSpectrum (𝓞 E) => Q.adicCompletion E) P (c : P.adicCompletion E) P = c
     rw [Pi.single_eq_same]
 
-end SlopeTestRemainingChoices
 
-section Aux2
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {nS nT : ℕ}
 
@@ -160,7 +157,6 @@ private theorem ev_mem_span (P : HeightOneSpectrum (𝓞 E)) (Λ : Submodule (�
     rw [Matrix.map_neg _ (map_neg _)]
     exact neg_mem hx
 
-end Aux2
 
 theorem UpperTheory.exists_local_lattice_of_global_lattice :
     ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {nS nT : ℕ}

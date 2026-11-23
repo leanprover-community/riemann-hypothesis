@@ -52,14 +52,11 @@ open GlobalTheory.ThetaConst
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 end Tau
-section Key
 open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.LamT GlobalTheory.KeyFourth GlobalTheory.IndefiniteRowSideFullHecke.FibreFramesOnModels
 open GlobalTheory.KeyIntegralVal GlobalTheory.ShFam
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
-end Key
-section Geometry
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.GeometryOfNumbersTheory Formalism.L2.Pj Formalism.BasicNotions
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Vanishing GlobalTheory.HermTools GlobalTheory.Adelic GlobalTheory.CompHS GlobalTheory.CovTop GlobalTheory.BigTop
@@ -68,7 +65,6 @@ open GlobalTheory.HSApp
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 variable {Y : Model Xo c (RingHom.id c.F)} (X : FlagCover Y) (Z : Comp Xo c)
-end Geometry
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 open GlobalTheory.FlagTan (dimFlag)
 

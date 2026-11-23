@@ -37,10 +37,8 @@ namespace GlobalTheory.HeightCounting.Fin3
 open Formalism.L2.Theta Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult
 
 
-section Gen
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
   {A3 : Formalism.L2.DIV.FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
-end Gen
 variable {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B} {w : ColW B f T} {P : Pre2 K w}
 theorem hecke_expansion_heightData_of_levelC {x : St P}
     (l : _root_.GlobalTheory.HeightCounting.Up.StrictHenselianAcyclicLevel hL x) :

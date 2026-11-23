@@ -64,7 +64,6 @@ structure NAtData (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (cf : C
   ratIn_eig : ratIn.eig = nt.eig
   ratIn_θ : ratIn.θ = nt.θ
   depth : RowDepth nt.D nt.rep
-section Rows
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {Ks : Type}
   [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 set_option genInjectivity false in
@@ -83,7 +82,6 @@ structure NormRealisationData {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {cf 
   S_eq : HEq (ratL a.nt.L a.nt.S) (ratDatR R cG kKs hk)
   hL_eq : HEq a.nt.hL hecke.hL
   rep_eq : HEq a.nt.rep fun σ : D.what₂.FT => principalLevelFrame.rowRepR R.θ (Y.eFT σ)
-end Rows
 variable {K : Ctx} {B : Base} {f : Fr B.toPre} {T : TwDat B}
 structure NormChoiceCore (hL : _root_.UpperTheory.Zero.LLC.RecTExists) {w : ColW B f T} {Z : w.Lt} {Wt : Set B.places.Pl} {p0 : BaseLevelRowSide (w.D Z)}
     (t : RowsT K w Z Wt p0) {nch : NChoice (w.D Z)} (n : NchT w Z Wt nch) : Type 1 where

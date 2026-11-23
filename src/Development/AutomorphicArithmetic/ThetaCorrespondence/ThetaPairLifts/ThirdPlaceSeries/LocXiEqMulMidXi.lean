@@ -47,17 +47,11 @@ open GlobalTheory.SymBridge GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalThe
 noncomputable section
 namespace GlobalTheory.Fam.MidLoc
 open Formalism.L2.Col (IntAt redP qOf)
-section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 variable [MeasurableSpace k] [BorelSpace k]
-end Loc
-section Comparison₂
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-end Comparison₂
-section Mat
 variable {E k : Type} [Field E] [NumberField E] [StarRing E] [Field k] [ValuativeRel k] [TopologicalSpace k]
   [IsNonarchimedeanLocalField k]
-end Mat
 section Tuple
 open Formalism.L2.Col
 end Tuple

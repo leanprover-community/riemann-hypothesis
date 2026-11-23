@@ -183,7 +183,6 @@ def chart (k r : ℕ) (x : Formalism.MainNotions.S.lieE (Formalism.QuantumDeterm
   fun i j => NormedSpace.exp (Formalism.MainNotions.S.unrealify (x : EuclideanSpace ℝ _)) i j
 
 theorem exp_mat_continuous : Continuous (NormedSpace.exp : Mat k r → Mat k r) := by
-  open scoped Matrix.Norms.Operator in
   exact NormedSpace.exp_continuous
 
 theorem unreal_continuous :

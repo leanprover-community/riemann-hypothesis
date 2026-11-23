@@ -58,7 +58,6 @@ namespace PositivityTheory.LocalParametersCuspidal.DepthZeroGlueing
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-section Basics
 variable {m : ℕ}
 
 
@@ -66,7 +65,6 @@ variable {m : ℕ}
 
 
 
-end Basics
 
 section Mask
 variable {N : ℕ} (P : Fin N → Fin N → Prop) [DecidableRel P]
@@ -97,19 +95,15 @@ def U (hP : ∀ a b c, P a b → P b c → False) (X : Matrix (Fin N) (Fin N) k)
 
 end Mask
 
-section Rep
 variable {N : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 
 
-end Rep
 
-section Parab
 variable {M : ℕ}
 
 
 
 
-end Parab
 
 section Main
 
