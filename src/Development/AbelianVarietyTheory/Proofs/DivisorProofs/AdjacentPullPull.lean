@@ -41,19 +41,15 @@ open GlobalTheory GlobalTheory.CxPts GlobalTheory.VB GlobalTheory.Vert
 
 namespace GlobalTheory.FlagChain
 
-section Sub
 
 variable {C C' : Type*} [Category C] [Category C'] {A B A' E E' : C}
 
 variable {f : A ⟶ E} {g : B ⟶ E} {f' : A' ⟶ E}
 
-end Sub
 
-section Bundles
 
 variable {X Y Z : Scheme.{0}} {A B E E' H : X.Modules} {r : ℕ}
 
-end Bundles
 
 section Covers
 

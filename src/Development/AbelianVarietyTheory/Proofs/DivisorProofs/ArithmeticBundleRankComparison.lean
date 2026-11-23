@@ -93,13 +93,10 @@ open GlobalTheory.Twist (resM resM_resM app_resM)
 
 end Sheaves
 
-section Matrices
 
 variable {L : Type} [Field L] {m : ℕ}
 
-end Matrices
 
-section Frames
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
   {Dw : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Datum H} {l : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Level H}
@@ -109,9 +106,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
 
 variable {F : Type} [Field F] {e : F ≃+* c.F}
 
-end Frames
 
-section Points
 
 variable {D : D7} {O : Setup D} {c : O.s.Comp} {Bs : Scheme.{0}} {E : D.what₂.Tau × Bool → Bs.Modules}
   (hE : ∀ a, IsVB (E a) (rkB D.what₂.Tau O.N O.j a)) {Bg : Scheme.{0}} {jB : Bg ⟶ Bs} {πB : Bg ⟶ gen O.s.T.Z}
@@ -120,7 +115,6 @@ variable {D : D7} {O : Setup D} {c : O.s.Comp} {Bs : Scheme.{0}} {E : D.what₂.
   {G : Scheme.{0}} [IsIntegral G] {j : G ⟶ Y₀} {πG : G ⟶ (O.var c).X} {φ : (O.var c).Fn →+* G.functionField}
   {jG : G ⟶ Bg}
 
-end Points
 
 end GlobalTheory.FlagCovQF
 
