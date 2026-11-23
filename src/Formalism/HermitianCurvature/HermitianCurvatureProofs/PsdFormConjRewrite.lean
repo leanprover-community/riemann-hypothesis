@@ -106,10 +106,8 @@ theorem t_PSDTranspose : PSDTranspose := by
   intro α F k h
   exact tb_psdOn_of_ta_psdOn F _ (conv F k h)
 
-section Tower
 variable {E : Type} [Field E]
 
-end Tower
 
 section Agree
 variable {α : Type}

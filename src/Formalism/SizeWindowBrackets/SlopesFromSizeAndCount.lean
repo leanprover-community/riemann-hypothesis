@@ -94,15 +94,11 @@ variable {I : Type} {m : ℕ} (F : Fam I m)
 
 end Fam6
 
-section DefsB
 variable {U0 : Type} {W : U0 → Type} {Top : Type} [Fintype Top] {m f : ℕ}
 
-end DefsB
 
-section DefsB2
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
 
-end DefsB2
 
 structure FamC (I : Type) (m : ℕ) where
 
@@ -209,10 +205,8 @@ variable {I : Type} {m : ℕ} (F : FamC I m)
 
 end FamC
 
-section DefsC
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
 
-end DefsC
 
 def E8 (x ε : ℝ) : ℝ := Real.exp (-(x ^ (ε / 8)))
 
@@ -223,24 +217,18 @@ variable {I : Type} {m : ℕ} (F : FamC I m)
 
 end FamC
 
-section DefsD
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
 
-end DefsD
 
 namespace Fam6
 variable {I : Type} {m : ℕ} (F : Fam I m)
 
 end Fam6
 
-section DefsD'
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
 
-end DefsD'
 
-section Top6
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {m : ℕ}
 
-end Top6
 
 end Formalism.LFunctionChainParameters.LChain6

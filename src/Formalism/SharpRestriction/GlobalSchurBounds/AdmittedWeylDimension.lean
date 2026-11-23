@@ -88,10 +88,8 @@ attribute [instance] ColRep.nacg ColRep.ips
 
 abbrev ColRep.V {D : D7} {Lv : LevelData D} {u : D.what₂.Word} (X : ColRep D Lv u) : Type := ⨂[ℂ] ρ, X.H ρ
 
-section Fam
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Fam
 
 end Formalism.MainNotions.StandardLattice

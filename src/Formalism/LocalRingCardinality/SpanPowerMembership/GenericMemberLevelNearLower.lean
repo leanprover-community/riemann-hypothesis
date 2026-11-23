@@ -43,7 +43,6 @@ namespace Formalism.BasicNotions.Examples₂
 open NumberField IsDedekindDomain Formalism.MainNotions.Inhab
 open scoped TensorProduct
 
-section SpacesG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 
@@ -52,7 +51,6 @@ variable (s : ℕ) (hstar : ∀ x : E, IsIntegral ℤ x → IsIntegral ℤ (star
   (hy : ∃ y : E ⊗[F] FiniteAdeleRing (𝓞 F) F,
     Formalism.UG.sigR cm.sig (FiniteAdeleRing (𝓞 F) F) y * y = -1)
 
-end SpacesG
 
 section RowsG
 
@@ -152,15 +150,12 @@ theorem sInt (R : Ranks) (hc : HCParam R) (i : Fin R.m) :
   · unfold sExp; rw [Nat.add_sub_cancel, ha, hz]; push_cast; ring
   · unfold sExp'; rw [hb, hz]; push_cast; ring
 
-section MemberG
 
 variable {R : Ranks} (hc : HCParam R) (Tau : Type) [Fintype Tau]
 
 variable (T : ℕ) [hT : Fact T.Prime]
 
-end MemberG
 
-section Record
 
 variable {s : ℕ}
 
@@ -179,6 +174,5 @@ variable (T : ℕ) [hT : Fact T.Prime] (Ts : ℝ) (hTs : 0 < Ts) (Gam : ℝ) (hG
   (G : LocalGap H)
 
 
-end Record
 
 end Formalism.BasicNotions.Examples₂

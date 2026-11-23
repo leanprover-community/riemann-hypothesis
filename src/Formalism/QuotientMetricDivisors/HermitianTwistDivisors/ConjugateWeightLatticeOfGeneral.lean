@@ -744,12 +744,10 @@ theorem descent_cm_field : DescentCM := by
 namespace ConjugateWeightGram
 
 
-section Restrict
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
 
-end Restrict
 
 end ConjugateWeightGram
 

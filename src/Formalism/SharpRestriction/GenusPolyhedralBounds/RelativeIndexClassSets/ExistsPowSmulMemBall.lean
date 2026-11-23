@@ -507,11 +507,9 @@ theorem coe_ordZ (h : IsUnif (A := A) ϖ) {x : A} (hx : x ∈ nonZeroDivisors A)
 
 end OrdZ
 
-section Ball2
 
 variable {V : Type*} [AddCommGroup V] [Module A V] {ϖ : O} {e : V} (c : Pts O A → ℤ)
 
-end Ball2
 
 section FieldCase
 

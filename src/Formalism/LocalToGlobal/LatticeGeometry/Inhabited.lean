@@ -392,11 +392,9 @@ def shimUFl {Lev : Type} (jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW 
   alg := algDegenerate D w.N
   pad := padDegenerate D w.N w.j w.j_le jC
 
-section Ar
 
 variable (Tau : Type) [Fintype Tau] (N : ℕ)
 
-end Ar
 
 def formsFl (KO : Type) [Field KO] [NumberField KO] (eO : 𝓞 KO ≃+* D.what₂.O) (kL : KO →+* D.what₂.LL)
     (kL_eO : ∀ x : 𝓞 KO, kL (x : KO) = D.what₂.OtoLL (eO x))

@@ -44,17 +44,13 @@ noncomputable section
 
 namespace Formalism.MainNotions.N.PlaceLabelTeichmuller
 
-section BoundedBy'
 
 open Formalism.BasicNotions Formalism.MainNotions
 
-section Len
 
 variable {R : Type} [CommRing R]
 
-end Len
 
-section Drop
 
 variable {O K V X : Type} [CommRing O] [IsDomain O] [IsPrincipalIdealRing O] [Field K] [Algebra O K]
     [IsFractionRing O K] [AddCommGroup V] [Module K V] [Module O V] [IsScalarTower O K V]
@@ -63,7 +59,6 @@ variable {O K V X : Type} [CommRing O] [IsDomain O] [IsPrincipalIdealRing O] [Fi
 
 
 
-end Drop
 
 end BoundedBy'
 
@@ -666,20 +661,16 @@ end GoodTr
 
 end ClauseA
 
-section DualAmb
 
 
-section Poly
 
 variable {g : ℕ} [Fact g.Prime]
 
-end Poly
 
 variable (D : D7)
 
 end DualAmb
 
-section RecordA
 
 
 variable (D : D7)
@@ -692,6 +683,5 @@ variable {D}
 
 variable (D)
 
-end RecordA
 
 end Formalism.MainNotions.N.PlaceLabelTeichmuller

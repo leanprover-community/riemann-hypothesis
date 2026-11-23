@@ -72,12 +72,10 @@ namespace Formalism.MainNotions.LocalBesselAndTopKernel.SW
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes NumberField IsDedekindDomain MeasureTheory
 open scoped TensorProduct
 
-section Ext
 
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E)
 
-end Ext
 
 open Formalism.BasicNotions
 
@@ -162,7 +160,6 @@ def FamilyMidVolume (D : D7) : Prop :=
 def nPl {N : ℕ} (ε : Fin N → Bool) : ℕ := (Finset.univ.filter (fun a => ε a = true)).card
 def nMi {N : ℕ} (ε : Fin N → Bool) : ℕ := (Finset.univ.filter (fun a => ε a = false)).card
 
-section Glob
 
 open Formalism.MainNotions.S.LocalSplitGroups
 
@@ -174,7 +171,6 @@ variable {D}
 
 variable (D)
 
-end Glob
 
 section One
 

@@ -97,7 +97,6 @@ def primeNZD (v : HeightOneSpectrum (𝓞 F)) : (Ideal (𝓞 F))⁰ :=
   ⟨v.asIdeal, mem_nonZeroDivisors_of_ne_zero v.ne_bot⟩
 
 
-open scoped Classical in
 theorem exists_ordAt_eq_of_mk0_eq {v p : HeightOneSpectrum (𝓞 F)}
     (h : ClassGroup.mk0 (primeNZD v) = ClassGroup.mk0 (primeNZD p)) :
     ∃ x : Fˣ, ∀ w, ordAt w x = (if w = v then 1 else 0) - (if w = p then 1 else 0) := by
@@ -163,7 +162,6 @@ theorem classNumber_nsmul_sPic (c : sPic S) : classNumber F • c = 0 := by
     ring
 
 
-open scoped Classical in
 noncomputable def sPicGen (c : ClassGroup (𝓞 F)) : sPic S :=
   if h : ∃ v : {v : HeightOneSpectrum (𝓞 F) // v ∉ S}, ClassGroup.mk0 (primeNZD v.1) = c then
     sPicMk S (Finsupp.single h.choose 1)

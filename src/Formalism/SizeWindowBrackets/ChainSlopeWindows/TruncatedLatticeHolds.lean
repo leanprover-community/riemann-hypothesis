@@ -613,14 +613,12 @@ theorem covolume_free_module : LcvFree := by
   refine ⟨hfin0, ?_⟩
   rw [h1, hrk, lcv, hfin0, add_zero]
 
-section BaseChange
 
 open scoped Matrix
 
 variable {K V ι : Type} [Field K] [NumberField K] [StarRing K]
   [AddCommGroup V] [Module K V] [Fintype ι] [DecidableEq ι]
 
-end BaseChange
 
 theorem covolume_ideal : LcvIdeal := by
   intro K V ι _ _ _ _ _ _ _ _ _ _ b j e I he hj hI

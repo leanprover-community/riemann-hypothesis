@@ -242,7 +242,6 @@ end PI.RhsWLim.W.MB
 
 namespace PI.RhsWLim.W
 
-open PI.RhsWLim
 
 theorem mBaseMem : MBaseMem := by
   intro k r z z' μW μW' a a' μsec hD

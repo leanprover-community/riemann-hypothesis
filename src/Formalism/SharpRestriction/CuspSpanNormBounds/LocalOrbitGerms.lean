@@ -1585,18 +1585,14 @@ namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Mk
 
 variable {K : Type} [CommRing K] {n : ℕ}
 
-end Mk
 
-section Trans
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [SecondCountableTopology K]
   [MeasurableSpace K] [BorelSpace K] (μ : Measure K) [SigmaFinite μ] [μ.IsAddLeftInvariant] {n : ℕ}
 
-end Trans
 
 end Germ
 
@@ -1613,18 +1609,14 @@ namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Shapes
 
 variable {K : Type} [CommRing K] {n : ℕ}
 
-end Shapes
 
-section Avg
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [SecondCountableTopology K]
   [MeasurableSpace K] [BorelSpace K] (μ : Measure K) [SigmaFinite μ] [μ.IsAddLeftInvariant] (R : Subring K) {n : ℕ}
 
-end Avg
 
 end Germ
 
@@ -1641,7 +1633,6 @@ namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Orb
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [SecondCountableTopology K]
   [MeasurableSpace K] [BorelSpace K] (μ : Measure K) [SigmaFinite μ] [μ.IsAddLeftInvariant] (R : Subring K)
@@ -1649,7 +1640,6 @@ variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [Sec
 
 variable {sb}
 
-end Orb
 
 end Germ
 
@@ -1666,13 +1656,11 @@ namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Fub
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [SecondCountableTopology K]
   [MeasurableSpace K] [BorelSpace K] (μ : Measure K) [SigmaFinite μ] [μ.IsAddLeftInvariant] (R : Subring K)
   (ψ : AddChar K ℂ) (s : List ℕ) (t : ℕ → Kˣ) {sb : Fin s.sum → Fin s.sum → Bool}
 
-end Fub
 
 end Germ
 
@@ -1689,11 +1677,9 @@ namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Core
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K]
 
-end Core
 
 end Germ
 
@@ -1710,12 +1696,10 @@ namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
-end Loc
 
 end Germ
 
@@ -1732,12 +1716,10 @@ namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
-end Loc
 
 end Germ
 
@@ -1754,12 +1736,10 @@ namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
-end Loc
 
 end Germ
 
@@ -1776,18 +1756,14 @@ namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Comb
 
 variable {E : Type} [CommRing E]
 
-end Comb
 
-section Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
-end Loc
 
 end Germ
 

@@ -300,7 +300,6 @@ theorem lenOl_finite (P : LocPrime l) (K LL : FinExt l) :
 
 end Fin
 
-section Words
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -310,6 +309,5 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
 
-end Words
 
 end Formalism.MainNotions.LocalTheoryWindows

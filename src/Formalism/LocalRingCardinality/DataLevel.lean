@@ -42,7 +42,6 @@ namespace Formalism.BasicNotions
 open NumberField IsDedekindDomain Matrix Formalism.UG
 open scoped TensorProduct
 
-section Defs
 
 variable {F E : Type} [Field F] [CommRing E] [Algebra F E]
 
@@ -51,7 +50,6 @@ variable {F E : Type} [Field F] [CommRing E] [Algebra F E]
   letI : Algebra R (E ⊗[F] R) := Algebra.TensorProduct.rightAlgebra
   moduleTopology R (E ⊗[F] R)
 
-end Defs
 
 def IsProGrp {G : Type} [Group G] [TopologicalSpace G] (g : ℕ) (Uw : Subgroup G) : Prop :=
   IsCompact (Uw : Set G) ∧ ∀ N : Subgroup Uw, IsOpen (N : Set Uw) → N.Normal → ∃ m : ℕ, N.index = g ^ m

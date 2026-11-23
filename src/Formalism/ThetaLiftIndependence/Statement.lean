@@ -50,11 +50,9 @@ def chainOpM {R : Type*} [CommSemiring R] {ι : ℕ → Type*} [∀ j, Fintype (
   | 0, f => f
   | m + 1, f => kerOpM (w m) (K m) (chainOpM w K m f)
 
-section Adelic
 
 variable {G : Type} [Group G] {Γ K : Subgroup G}
 
-end Adelic
 
 section Lat
 

@@ -94,15 +94,11 @@ noncomputable def G (L : AddSubgroup E) (S : Finset E) (Th : E → α → α →
 
 end gen
 
-section ta
 variable {E : Type} [Field E] [DecidableEq E]
 
-end ta
 
-section main
 variable {E : Type} [Field E] [DecidableEq E]
 
-end main
 
 end Formalism.FourierDecayAlt.P.RecursionWithDensities.A1
 

@@ -2776,12 +2776,10 @@ namespace Formalism.FourierDecayAlt.P.JCx2
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section pdOps
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-end pdOps
 
 end Formalism.FourierDecayAlt.P.JCx2
 

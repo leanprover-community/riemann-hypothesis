@@ -91,8 +91,6 @@ end GroundTheory.Automorphic.ArchWhittaker
 
 namespace GroundTheory.Automorphic.ArchWhittaker
 
-open Matrix NormedSpace
-open scoped Matrix.Norms.L2Operator
 
 def lW : gl2 := ⟨!![0, 1; -1, 0], Submodule.mem_top⟩
 
@@ -137,8 +135,6 @@ end GroundTheory.Automorphic.ArchWhittaker
 
 namespace GroundTheory.Automorphic.ArchWhittaker
 
-open Matrix NormedSpace
-open scoped Matrix.Norms.L2Operator
 
 theorem kMat_inv (θ : ℝ) : (kMat θ)⁻¹ = kMat (-θ) := by
   rw [inv_eq_iff_mul_eq_one, ← kMat_add, add_neg_cancel, kMat_zero]
@@ -147,8 +143,6 @@ end GroundTheory.Automorphic.ArchWhittaker
 
 namespace GroundTheory.Automorphic.ArchWhittaker
 
-open Matrix NormedSpace
-open scoped Matrix.Norms.L2Operator
 
 theorem exists_cos_sin {p r : ℝ} (h : p ^ 2 + r ^ 2 = 1) :
     ∃ θ : ℝ, Real.cos θ = p ∧ Real.sin θ = r := by
@@ -164,8 +158,6 @@ end GroundTheory.Automorphic.ArchWhittaker
 
 namespace GroundTheory.Automorphic.ArchWhittaker
 
-open Matrix NormedSpace
-open scoped Matrix.Norms.L2Operator
 
 theorem orthogonal_cases {O : Matrix (Fin 2) (Fin 2) ℝ} (hO : O ∈ Matrix.unitaryGroup (Fin 2) ℝ) :
     ∃ θ : ℝ, O = !![Real.cos θ, Real.sin θ; -Real.sin θ, Real.cos θ] ∨

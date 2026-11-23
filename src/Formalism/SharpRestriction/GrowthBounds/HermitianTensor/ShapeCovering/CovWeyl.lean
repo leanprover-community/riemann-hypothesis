@@ -46,7 +46,6 @@ namespace Formalism.MainNotions.flipOneThree.Pf.ShapeCovering
 
 open MvPolynomial Formalism.GradedWeylDivisibility
 
-section general
 
 variable {K : Type} [Field K] {r n : ℕ}
 
@@ -129,7 +128,6 @@ private lemma cw_le_of_shape {k : ℕ} (sz : Fin k → ℕ) (t : Fin n) (h : sha
   rw [h] at hm
   simp at hm
 
-end general
 
 private lemma cw_card {n k : ℕ} (sz : Fin k → ℕ) :
     ∑ j, (if 0 < sz j then 1 else 0) = shapeDeg sz (0 : Fin (n + 1)) := by

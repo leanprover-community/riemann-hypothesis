@@ -1899,11 +1899,9 @@ namespace Formalism.MainNotions.G.TopChoiceBounds
 
 open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions Finset
 
-section Marg
 
 variable {α : Type*} [Fintype α] [DecidableEq α]
 
-end Marg
 
 variable {D : D7} {L : SizeData₂ D}
 

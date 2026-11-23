@@ -114,10 +114,8 @@ theorem cc_Cl (ep : ℂ_[p]) : PowerSeries.constantCoeff (PowerSeries.C ep * g.l
 
 end G1
 
-section Lin
 
 variable {Z E Kap : Type} {R : Type} [CommRing R]
 
-end Lin
 
 end Formalism.MainNotions.J

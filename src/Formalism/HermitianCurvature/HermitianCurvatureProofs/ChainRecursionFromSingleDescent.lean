@@ -331,10 +331,8 @@ theorem skip_two_comp_skip_one {n : ℕ} : ∀ {t : ℕ} (v : Fin (t + 1) → Fi
     simp only [Function.comp] at h3 ⊢
     rw [h3, h4]
 
-section full
 variable {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin n → A)
 
-end full
 
 end
 

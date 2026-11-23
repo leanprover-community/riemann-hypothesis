@@ -45,12 +45,10 @@ def ReindexDim.Statement : Prop :=
     ringKrullDim (NumbersDVR.MRing (fun _ : Unit => κ) F ⧸ mIdealOver F (IndefiniteRowSideFullHecke.Kleiman2.oneBlock x')) =
       ringKrullDim (Kleiman.Poly F N ⧸ Kleiman.primeOf (S := F) (x' ∘ e.symm))
 
-section Inhabitants
 
 open IndefiniteRowSideFullHecke.Kleiman2
 
 variable (F : Type) [Field F]
 
-end Inhabitants
 
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization

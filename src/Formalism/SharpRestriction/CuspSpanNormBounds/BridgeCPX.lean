@@ -162,11 +162,9 @@ theorem rep_vec {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsU
 
 end Vec
 
-section Bound
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
-end Bound
 
 section Der
 
@@ -764,14 +762,12 @@ variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSp
 
 end Final
 
-section Left
 
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 variable {Hm Pc : Matrix (Fin n) (Fin n) ℂ}
 variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
-end Left
 
 section PK
 

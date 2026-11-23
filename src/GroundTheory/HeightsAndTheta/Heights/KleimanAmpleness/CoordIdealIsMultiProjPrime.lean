@@ -76,7 +76,6 @@ def cechD [LinearOrder ι] (C : CechSystem ι k) : (∀ I, C.V I) →ₗ[k] (∀
   else 0
 
 
-open scoped Classical in
 def cechC (C : CechSystem ι k) (i : ℕ) : Submodule k (∀ I, C.V I) :=
   Submodule.pi Set.univ fun I => if C.good I ∧ I.card = i + 1 then C.piece I else ⊥
 
@@ -292,9 +291,7 @@ variable (S)
 
 end Cl
 
-section Filtration
 
-open ReciprocityTheory.ChartRestriction.G.Geo
 
 variable (S : Type) [CommRing S] (N : ℕ)
 variable {M : Type} [AddCommGroup M] [Module (Poly S N) M] [Module S M] [IsScalarTower S (Poly S N) M]
@@ -305,37 +302,27 @@ variable {Ω : Type} [Field Ω] [Algebra S Ω]
 
 variable (S)
 
-end Filtration
 
-section Comparison₂
 
-open ReciprocityTheory.ChartRestriction.G.Geo
 
 variable {S : Type} [CommRing S] {σ : Type} {Ω : Type} [Field Ω] [Algebra S Ω]
 
 
-end Comparison₂
 
-section Inhabitants
 
-open ReciprocityTheory.ChartRestriction.G.Geo
 
 variable (S : Type) [CommRing S] (N : ℕ)
 
 variable {S} {Ω : Type} [Field Ω] [Algebra S Ω]
 
-end Inhabitants
 
-section Inhabitants2
 
-open ReciprocityTheory.ChartRestriction.G.Geo
 
 variable {S : Type} [CommRing S] {N : ℕ} {Ω : Type} [Field Ω] [Algebra S Ω]
 
 
 variable (S N)
 
-end Inhabitants2
 
 end
 

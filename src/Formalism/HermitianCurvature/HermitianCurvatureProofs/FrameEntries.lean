@@ -302,11 +302,9 @@ theorem qr_detHat_of (hA : Formalism.FourierDecayAlt.Qr.AlgDet) (hC : Formalism.
 
 namespace FrameEntries
 
-section Reg
 
 variable {k r : ℕ}
 
-end Reg
 
 end FrameEntries
 

@@ -55,11 +55,9 @@ def FiltrationHilbSum.Statement : Prop :=
         ∀ s : MRing ι F, s • x j ∈ N j.castSucc ↔ s ∈ q j) →
       ∀ m : K → ℤ, (Module.finrank F (piece m) : ℤ) = ∑ j, hilbFn (q j) (m - c j)
 
-section Examples
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} {F : Type u} [Field F]
 
-end Examples
 
 end
 

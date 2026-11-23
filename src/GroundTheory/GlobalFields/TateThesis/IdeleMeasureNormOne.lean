@@ -310,7 +310,6 @@ end ProdHaar
 
 section NormOneMeasure
 
-open IdeleGroup
 
 variable (K : Type*) [Field K] [NumberField K]
 
@@ -350,7 +349,6 @@ end NormOneMeasure
 
 section Independence
 
-open IdeleGroup
 
 variable {K : Type*} [Field K] [NumberField K]
 
@@ -394,7 +392,6 @@ end Independence
 
 section Canonical
 
-open IdeleGroup
 
 variable (K : Type*) [Field K] [NumberField K]
 

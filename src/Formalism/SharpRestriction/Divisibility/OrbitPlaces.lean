@@ -540,12 +540,10 @@ theorem vAdd_pow (w : D.what₂.places.Pl) (k : ℕ) :
     rw [pow_succ, vAdd_mul w (pow_ne_zero _ (p_ne w)) (p_ne w), ih, vAdd_p]
     push_cast; ring
 
-section Layer
 
 variable {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {A : ColumnsAtT D.R C} {P : PeriodMap D.R C}
   {M : MemberForms D.what₂.LL D.what₂.embLL D.what₂.places D.what₂.Tau (D.hcW u) C A P} {w : D.what₂.places.Pl}
 
-end Layer
 
 theorem mem_intW (w : D.what₂.places.Pl) {a : D.what₂.LL} (ha : a ≠ 0) (h : 0 ≤ vAdd (D.plEq w) a) :
     a ∈ intW D.what₂.places w := by

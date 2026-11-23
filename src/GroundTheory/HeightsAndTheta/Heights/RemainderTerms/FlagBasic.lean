@@ -132,7 +132,6 @@ end Flag
 
 namespace Flag
 
-open MvPolynomial Finset
 
 noncomputable section
 
@@ -171,7 +170,6 @@ open MvPolynomial
 
 namespace Flag
 
-open MvPolynomial Finset
 
 end Flag
 

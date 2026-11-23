@@ -695,14 +695,12 @@ theorem exists_short_basis_dual (hT : PI.TransferenceMinima) (S : HSpace E)
 
 end LemT2
 
-section LemTi
 
 
 variable {E : Type} [Field E] [NumberField E]
 
 variable [StarRing E]
 
-end LemTi
 
 section LemTiP
 

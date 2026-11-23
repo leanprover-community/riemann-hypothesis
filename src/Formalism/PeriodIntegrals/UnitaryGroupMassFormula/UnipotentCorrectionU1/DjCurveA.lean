@@ -113,7 +113,6 @@ section DetExp
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 
-open scoped Matrix.Norms.Operator in
 theorem hasDerivAt_exp_entry (X : Matrix n n ℂ) (i j : n) :
     HasDerivAt (fun t : ℝ => (NormedSpace.exp (t • X)) i j) (X i j) 0 := by
   have h := hasDerivAt_exp_smul_const (𝕂 := ℝ) X (0 : ℝ)

@@ -132,7 +132,6 @@ end Formalism.GM.FrozenVariableLemmas
 
 namespace Formalism.GM.FrozenVariableLemmas
 
-open MvPolynomial Finset
 
 section
 variable (p : ℕ) [Fact p.Prime] {K r : ℕ} (L : M.Letters K) (c ρ : Fin r)
@@ -235,7 +234,6 @@ end Formalism.GM.FrozenVariableLemmas
 
 namespace Formalism.GM.FrozenVariableLemmas
 
-open MvPolynomial Finset
 
 section
 variable (p : ℕ) [Fact p.Prime] {τ : Type}

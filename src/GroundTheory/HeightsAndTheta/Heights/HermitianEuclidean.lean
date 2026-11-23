@@ -41,13 +41,11 @@ noncomputable section
 
 variable {K : Type*} [Field K]
 
-section RealToFibre
 
 variable (σ : K →+* ℂ) (E : Type*) [AddCommGroup E] [Module (𝓞 K) E]
 
 variable {σ E}
 
-end RealToFibre
 
 variable [NumberField K]
 

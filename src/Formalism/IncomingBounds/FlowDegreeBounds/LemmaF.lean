@@ -45,7 +45,6 @@ open scoped BigOperators
 
 namespace Formalism.IncomingBounds
 
-section Helpers
 
 variable {l d : ℕ} [NeZero d]
 
@@ -216,7 +215,6 @@ private lemma altNum_nonneg (hl : 1 ≤ l) (hev : Even d) {D : ZMod d → ℝ}
   simp only [e1, e2, e3]
   linarith
 
-end Helpers
 
 theorem lemmaFc_of (hF : FlowAttained) (hA : LemmaFa) : LemmaFc := by
   intro l d _ hl hd hev D E sig hD hE hopt

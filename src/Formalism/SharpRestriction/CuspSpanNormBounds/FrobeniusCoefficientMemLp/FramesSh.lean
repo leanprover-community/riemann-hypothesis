@@ -51,11 +51,9 @@ theorem orbSqO_le_turn (L : LocBessel k r) (ka : ℝ) (hka : 0 < ka) (hc : L.c =
       ⟨isPtRep_turn L ka hg.1, isRelStab_turn L ka hc hg.2.1, isRootMeas_turn L ka hka hc hg.2.2.1,
         isOrbQuot_turn L ka hg.2.2.2⟩ le_rfl)))
 
-section OneRec
 
 variable (D : D7)
 
-end OneRec
 
 end Formalism.MainNotions.S.Pv.Frames
 

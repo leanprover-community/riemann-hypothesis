@@ -305,7 +305,6 @@ theorem ballO_mono [∀ ζ : Pts O A, IsDVRAt ζ] (h : IsUnif (A := A) ϖ) (he :
     {c c' : Pts O A → ℤ} (hc : ∀ ζ, c ζ ≤ c' ζ) : ballO ϖ e c ≤ ballO ϖ e c' := fun v hv => ball_mono h he hc hv
 
 
-open scoped Classical in
 theorem length_step (K : Type*) [Field K] [Algebra K A] [FiniteDimensional K A]
     [Finite (Pts O A)] [∀ ζ : Pts O A, IsDVRAt ζ] (h : IsUnif (A := A) ϖ) (hfin : Module.Finite O ↥(As O A))
     (he : IsGen (A := A) e) (c d : Pts O A → ℤ) (ζ₀ : Pts O A)

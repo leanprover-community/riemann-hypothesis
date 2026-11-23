@@ -213,7 +213,6 @@ end FundamentalDomain
 
 section NormOneClasses
 
-open IdeleGroup
 
 variable (K : Type*) [Field K] [NumberField K]
 
@@ -278,7 +277,6 @@ end NormOneClasses
 
 section Unfolding
 
-open IdeleGroup
 
 variable {K : Type*} [Field K] [NumberField K]
 

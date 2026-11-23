@@ -119,11 +119,9 @@ def TheoremAAfter : Prop :=
 def TheoremAAfterOfSteps : Prop :=
   OneLevelAfter → TB.LimitStep → Formalism.FourierDecayAlt.K.JointTheoremA → TheoremAAfter
 
-section sets
 
 variable {E : Type} [Field E] [DecidableEq E]
 
-end sets
 
 def RecHypAfter {E W : Type} [Field E] (D : TB.Data E W) (C₁ C₄ Θ jn : ℝ) {H : Type}
     [NormedAddCommGroup H] [InnerProductSpace ℂ H] (Vt : TB.Pt E → H) (c : ℕ → TB.Pt E → ℂ) : Prop :=

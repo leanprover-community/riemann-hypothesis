@@ -183,7 +183,6 @@ abbrev mem3 (Dst : ℝ) (hD : 0 < Dst) (du : ℕ) (hdu : 0 < du) (Gam : ℝ) (hG
 
 end Member3
 
-section Record
 
 variable {R : Ranks} (H : Host R)
 
@@ -210,6 +209,5 @@ variable (hv : ℝ) (vol : @HSpace H.E _ _ H.cmStar → ℝ) (hvol : ∀ W, 0 < 
 
 
 
-end Record
 
 end Formalism.BasicNotions.Examples₂

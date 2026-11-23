@@ -12910,7 +12910,6 @@ end Formalism.FourierDecayAlt.P.MAx3.AD
 
 end S_AD_AD2
 
-section S_K_K1
 
 set_option linter.unusedVariables false
 
@@ -12924,7 +12923,6 @@ variable {Hs : Set A}
 
 end Formalism.FourierDecayAlt.P.MAx3.K
 
-end S_K_K1
 
 section S_K_K2
 
@@ -15520,7 +15518,6 @@ end Formalism.FourierDecayAlt.P.MAx3.AD
 
 end S_AD_AD12
 
-section S_AD_AD13
 
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
@@ -15537,7 +15534,6 @@ end
 
 end Formalism.FourierDecayAlt.P.MAx3.AD
 
-end S_AD_AD13
 
 section S_AD_AD14
 

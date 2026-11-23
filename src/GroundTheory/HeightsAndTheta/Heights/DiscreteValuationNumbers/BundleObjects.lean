@@ -66,11 +66,9 @@ def pointIdeal (R : Type*) [CommRing R] [Algebra R Ω] (y : (Σ k, ι k) → Ω)
 
 end Point
 
-section Generic
 
 variable {K : Type*} (R : Type*) [CommRing R] [IsDomain R] (ι : K → Type*)
 
-end Generic
 
 section Charts
 
@@ -168,7 +166,6 @@ def pairNum {N : ℕ} (P : Ideal (MRing ι O)) (x x' : Fin N → K → ℤ) (f g
 
 end Numbers
 
-section Pairs
 
 variable {K : Type*} [Fintype K] [DecidableEq K] {ι : K → Type*} {Ω : Type*} [Field Ω]
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra O Ω]
@@ -182,7 +179,6 @@ structure IsFlagPair (ϖ : O) (y : (Σ k, ι k) → Ω) (B B' : ChartBundle O (s
   vertical : ∀ i, IsVerticalDivisor (pointIdeal O y) ϖ (x i - x' i) (f i) (g i)
   generic : ∀ i, aeval y (f i) = w.repr (w' i) i * aeval y (g i)
 
-end Pairs
 
 section Joins
 
@@ -206,11 +202,9 @@ def IsBirationalJoin [Fintype K] [Fintype K'] (R : Type*) [CommRing R] [Algebra 
 
 end Joins
 
-section GenericJoin
 
 variable {K K' : Type*} (R : Type*) [CommRing R] [IsDomain R] (ι : K → Type) (ι' : K' → Type)
 
-end GenericJoin
 
 section Examples
 

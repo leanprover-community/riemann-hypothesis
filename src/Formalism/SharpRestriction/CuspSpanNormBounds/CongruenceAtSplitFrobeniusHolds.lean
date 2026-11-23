@@ -705,13 +705,11 @@ def KTwoParameterConditions (Cl Cg CT : ℝ) : Prop :=
 
 end K2
 
-section Size
 
 open MeasureTheory Formalism.QuantumDeterminants
 
 variable (D : D7) (large₂ : SizeData₂ D)
 
-end Size
 
 end Formalism.MainNotions.S.UnitaryVolumeMass
 

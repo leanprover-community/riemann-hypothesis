@@ -266,8 +266,6 @@ end PI.AprimeInfW.DiscreteGroups
 
 namespace PI.AprimeInfW.FU
 
-open MeasureTheory Topology Set Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open scoped ENNReal
 
 section Gen
 

@@ -463,7 +463,6 @@ def primeOfOne : Ideal (NumbersDVR.MRing (fun _ : Unit => Fin (N + 1)) S) :=
   (primeOf (S := S) x).comap (oneBlock (S := S) (N := N))
 
 
-open NumbersDVR in
 theorem isMultiProjPrime_primeOfOne (hx : x ≠ 0) :
     IsMultiProjPrime (primeOfOne (S := S) x) := by
   refine ⟨Ideal.comap_isPrime _ _, ?_, ?_⟩
@@ -926,11 +925,9 @@ def lineX : Fin (1 + 1) → RatFunc k := ![1, RatFunc.X]
 
 end Line
 
-section Generic
 
 variable (k : Type u) [Field k] (N : ℕ)
 
-end Generic
 
 section AmpleExample
 

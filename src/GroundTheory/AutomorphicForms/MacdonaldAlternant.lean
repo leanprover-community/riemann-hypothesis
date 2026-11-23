@@ -170,26 +170,21 @@ theorem monomial_single_natCast (a : Fin n) (m : ℕ) :
 open Polynomial in
 def rootPoly (n : ℕ) : (LaurentRing n)[X] := ∏ a : Fin n, (X - C (varL a))
 
-open Polynomial in
 theorem rootPoly_monic : (rootPoly n).Monic :=
   monic_prod_of_monic _ _ fun a _ => monic_X_sub_C _
 
-open Polynomial in
 theorem natDegree_rootPoly : (rootPoly n).natDegree = n := by
   rw [rootPoly, natDegree_prod_of_monic _ _ fun a _ => monic_X_sub_C _]
   simp
 
-open Polynomial in
 theorem eval_rootPoly (a : Fin n) : (rootPoly n).eval (varL a) = 0 := by
   rw [rootPoly, eval_prod]
   exact Finset.prod_eq_zero (Finset.mem_univ a) (by simp)
 
 
-open Polynomial in
 def remCoeff (m k : ℕ) : LaurentRing n := ((X ^ m : (LaurentRing n)[X]) %ₘ rootPoly n).coeff k
 
 
-open Polynomial in
 theorem pow_eq_sum_remCoeff (hn : 0 < n) (a : Fin n) (m : ℕ) :
     varL a ^ m = ∑ k : Fin n, remCoeff (n := n) m k * varL a ^ (k : ℕ) := by
   have hne : rootPoly n ≠ 1 := by
@@ -223,7 +218,6 @@ theorem alternant_natCast_eq (hn : 0 < n) (m : Fin n → ℕ) :
   rw [monomial_single_natCast, pow_eq_sum_remCoeff hn a (m b)]
   exact Finset.sum_congr rfl fun k _ => mul_comm _ _
 
-open Polynomial in
 theorem remMat_staircase (hn : 0 < n) :
     remMat (fun b : Fin n => n - 1 - (b : ℕ)) = Fin.revPerm.permMatrix (LaurentRing n) := by
   ext k b

@@ -131,7 +131,6 @@ namespace GroundTheory.Heights₂.Theta
 
 namespace SymmFun
 
-open MvPolynomial Finset
 
 variable {σ : Type*} [Fintype σ] [DecidableEq σ]
 

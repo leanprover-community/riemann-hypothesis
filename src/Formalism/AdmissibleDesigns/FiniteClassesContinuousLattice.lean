@@ -683,7 +683,6 @@ theorem comp_mem_Lx {P : Type} [AddCommGroup P] [Module R' P] [Module (D.nd.O i)
 
 end PrfCol
 
-section PrfKappa
 
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
@@ -691,6 +690,5 @@ variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D 
   {R' : Subalgebra (D.nd.O i) (X' → Matrix d d (FractionRing (D.nd.O i)))} {Tc : Type} [CommRing Tc] [Algebra Tc R']
   (r : (D.nd.Om ≃ₐ[D.host.E] D.nd.Om) →* R') (χ : (D.nd.Om ≃ₐ[D.host.E] D.nd.Om) →* Tcˣ)
 
-end PrfKappa
 
 end Formalism.MainNotions.N.KHf

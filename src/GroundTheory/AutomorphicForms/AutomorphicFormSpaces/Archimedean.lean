@@ -56,7 +56,6 @@ def ArchMatrix : Type _ := Matrix (Fin n) (Fin n) (mixedSpace K)
 open scoped Classical in
 instance : NormedRing (ArchMatrix K n) := Matrix.linftyOpNormedRing
 
-open scoped Classical in
 instance : NormedAlgebra ℝ (ArchMatrix K n) := Matrix.linftyOpNormedAlgebra
 
 instance : FiniteDimensional ℝ (ArchMatrix K n) := by

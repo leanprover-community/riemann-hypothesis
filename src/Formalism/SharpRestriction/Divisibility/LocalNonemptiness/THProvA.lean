@@ -249,7 +249,6 @@ def stdGrp : GrpData p q :=
           Complex.exp ((s • X).trace / 2) * Complex.exp ((t • X).trace / 2)
         rw [← Complex.exp_add, add_smul, Matrix.trace_add, add_div] }
 
-section Emb
 
 open scoped Kronecker
 
@@ -277,7 +276,6 @@ attribute [instance] FockCore.nacg FockCore.ips FockCore.cs
 
 variable {p q r s}
 
-end Emb
 
 section Checks
 
@@ -289,7 +287,6 @@ abbrev Xm (l : Ln p q r s) : Module.End ℂ (Pol p q r s) := LinearMap.mulLeft �
 
 end Checks
 
-section Skew
 
 
 variable {p q r s : ℕ}
@@ -298,19 +295,14 @@ variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ι : Pol p
 
 variable {ι}
 
-end Skew
 
-section Compact
 
 variable {p q : ℕ}
 
-end Compact
 
-section Triv
 
 variable {p q : ℕ}
 
-end Triv
 
 end Formalism.MainNotions.DIV.Inh
 

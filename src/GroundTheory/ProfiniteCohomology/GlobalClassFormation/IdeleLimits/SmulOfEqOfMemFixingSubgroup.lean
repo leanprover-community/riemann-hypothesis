@@ -86,7 +86,6 @@ def IdeleLimit : Type :=
 
 namespace IdeleLimit
 
-open FiniteSubfield
 
 instance : CommGroup IdeleLimit :=
   inferInstanceAs (CommGroup (DirectLimit (fun F : FiniteSubfield ↦ IdeleGroup F.1)

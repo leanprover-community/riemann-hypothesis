@@ -153,9 +153,7 @@ theorem act_alg (c : ℂ) (f π) : actA P (algebraMap ℂ (A P (DQ P)) c) f π =
 theorem act_kap (g : M.Ty P → ℂ) (f π) : actA P (kap P (DQ P) g) f π = g π • f π := act_diag P _ f π
 end Act
 
-section R0
 variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
-end R0
 
 abbrev Pb (b : ℕ) : M.Par := ⟨1, 0, 1, 1, fun _ => 0, fun _ => 2 * b⟩
 
@@ -1022,9 +1020,7 @@ theorem act_alg (c : ℂ) (f π) : actA P (algebraMap ℂ (A P (DQ P)) c) f π =
   rw [Matrix.algebraMap_eq_diagonal, act_diag]; rfl
 end Act
 
-section R0
 variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
-end R0
 
 variable {τ : ℝ}
 

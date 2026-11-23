@@ -35,20 +35,16 @@ namespace Formalism.MainNotions.product_first_zeroth_parts
 
 open Formalism.BasicNotions Classical NumberField
 
-section Gen
 
 variable {R : Ranks} {LL : Type} [Field LL] [NumberField LL] [StarRing LL] {embLL : LL →+* ℂ}
   {Pl : Rows.Places LL} {Tau : Type} [Fintype Tau] {hc : Tau → HCParam R}
   {C : ColumnChain R Tau hc} {A : ColumnsAtT R C} {P : PeriodMap R C}
   (M : MemberForms LL embLL Pl Tau hc C A P)
 
-end Gen
 
-section Fm
 
 variable (D : D7) (u : D.what₂.Word)
 
-end Fm
 
 section Tw
 
@@ -102,18 +98,14 @@ def TupleChainSharpColumnValuation (Dx : DivX D) (T : TwForms D) (u : D.what₂.
 
 end Tw
 
-section Fam
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Fam
 
-section Ref
 
 open Formalism.BasicNotions.DV
 
 variable {D : D7}
 
-end Ref
 
 end Formalism.MainNotions.product_first_zeroth_parts

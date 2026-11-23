@@ -888,7 +888,6 @@ end
 
 end PieceB2
 
-section PieceB3
 
 
 noncomputable section
@@ -898,11 +897,9 @@ namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
 variable {k r : ℕ}
 
-section Integrand
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq] [NormedSpace ℂ Wq]
 
-end Integrand
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -910,7 +907,6 @@ end
 
 end PieceB3
 
-section PieceB4
 
 
 noncomputable section
@@ -920,13 +916,11 @@ namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
 variable {k r : ℕ}
 
-section Gen
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [FiniteDimensional ℂ Wp] [NormedAddCommGroup Wq]
   [NormedSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
 
-end Gen
 
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
@@ -935,7 +929,6 @@ end
 
 end PieceB4
 
-section PieceC1
 
 
 noncomputable section
@@ -944,11 +937,9 @@ namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.BesselShellMomentBounds
 
-section Shift
 
 variable {n : ℕ}
 
-end Shift
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -1002,7 +993,6 @@ end
 
 end PieceL0
 
-section PieceL1
 
 open MeasureTheory
 open scoped InnerProductSpace ENNReal
@@ -1013,13 +1003,11 @@ namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
 open Formalism.MainNotions.BridgeCSchur
 
-section Avg
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [MeasurableSpace G] [BorelSpace G] [MeasurableMul G] [MeasurableInv G]
   {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V]
   {μ : Measure G} {ρ : G → (V →L[ℂ] V)}
 
-end Avg
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -1027,7 +1015,6 @@ end
 
 end PieceL1
 
-section PieceL2
 
 
 noncomputable section
@@ -1041,7 +1028,6 @@ end Formalism.MainNotions.LowestKTypeMultiplicity
 
 end
 
-end PieceL2
 
 section PieceL3
 
@@ -1073,7 +1059,6 @@ end
 
 end PieceL3
 
-section PieceL4
 
 
 noncomputable section
@@ -1083,13 +1068,11 @@ namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
 variable {k r : ℕ}
 
-section KInv
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   {ε : Fin (2 * r + k + 1) → Bool} {P : Mx k r} {σ : Mx k r → (H →L[ℂ] H)}
 
-end KInv
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -1097,7 +1080,6 @@ end
 
 end PieceL4
 
-section PieceL5
 
 
 noncomputable section
@@ -1107,13 +1089,11 @@ namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
 variable {k r : ℕ}
 
-section KInv
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   {ε : Fin (2 * r + k + 1) → Bool} {P : Mx k r} {σ : Mx k r → (H →L[ℂ] H)}
 
-end KInv
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -1251,7 +1231,6 @@ end
 
 end PieceL8
 
-section PieceL9
 
 
 noncomputable section
@@ -1259,11 +1238,9 @@ noncomputable section
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
 
-section KT
 
 variable {n : ℕ} {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
-end KT
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -1271,7 +1248,6 @@ end
 
 end PieceL9
 
-section PieceL10
 
 
 noncomputable section
@@ -1285,7 +1261,6 @@ end Formalism.MainNotions.LowestKTypeMultiplicity
 
 end
 
-end PieceL10
 
 section PieceZ
 

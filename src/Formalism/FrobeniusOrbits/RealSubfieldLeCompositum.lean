@@ -68,11 +68,9 @@ theorem hcl_neg_one : hcl e (-1 : (ZMod (2 ^ (e + 2)))ˣ) = 1 := by
 
 end Hcl
 
-section Subfields
 
 variable {L : Type*} [Field L] [Algebra ℚ L] {ζ a b : L}
 
-end Subfields
 
 section Signs
 

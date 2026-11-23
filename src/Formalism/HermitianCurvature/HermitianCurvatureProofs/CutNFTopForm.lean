@@ -59,12 +59,10 @@ theorem normC_one (w : List C.Letter) : TBB.normC (fun _ => 1) w = 1 := by
 
 end iter
 
-section iter2
 
 variable {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
 
-end iter2
 
 section assembly
 

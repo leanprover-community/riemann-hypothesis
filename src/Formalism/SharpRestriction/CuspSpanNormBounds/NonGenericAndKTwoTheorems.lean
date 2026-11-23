@@ -71,11 +71,9 @@ def KTwoHypotheses (C' Cl Cg cb Cu cT CT C0 : ℝ) : Prop :=
 
 end Hyps
 
-section Terms
 
 variable (D : D7) (large₂ : SizeData₂ D) (X : TermTie D)
 
-end Terms
 
 def adm7 : Prop :=
   ∀ (k : ℕ) (u u' : Fin k → ℝ) (H H' : Type)
@@ -84,21 +82,17 @@ def adm7 : Prop :=
     IsHCTypeU k u π → IsHCTypeU k u' ρ → u ≠ u' →
     ∀ P : H' →L[ℂ] H, (∀ h ∈ UJset (allPos k), P.comp (ρ h) = (π h).comp P) → P = 0
 
-section Size
 
 variable (D : D7) (large₂ : SizeData₂ D)
 
-end Size
 
 section Mass
 
 end Mass
 
-section L3
 
 variable (D : D7)
 
-end L3
 
 section Packet
 

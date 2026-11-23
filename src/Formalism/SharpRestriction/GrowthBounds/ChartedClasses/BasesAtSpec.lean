@@ -52,14 +52,11 @@ namespace Formalism.MainNotions.G.KAat
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Re
 
 variable {R : Ranks} {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
     [StarRing E] [Algebra F E] {sp : Spaces R F E}
 
-end Re
 
-section AtS
 
 variable {D : D7} {u : D.what₂.Word} {w : D.what₂.places.Pl} {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)}
   [Fact (D.what₂.places.resChar w).Prime] {Fl : Fills (D.gat u w h)} {Lv : Levels Fl} (Ch : Chain Lv)
@@ -74,9 +71,7 @@ variable {D : D7} {u : D.what₂.Word} {w : D.what₂.places.Pl} {h : GIdx D.hos
   (L0 : Lev0Data D u w h) (a : 𝓞 D.host.E) (bad : Finset (HeightOneSpectrum (𝓞 D.host.F)))
 
 
-end AtS
 
-section Spec
 
 variable {D : D7} {u : D.what₂.Word} {w : D.what₂.places.Pl} {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)}
   [Fact (D.what₂.places.resChar w).Prime] {Fl : Fills (D.gat u w h)} {Lv : Levels Fl} (Ch : Chain Lv)
@@ -90,7 +85,6 @@ variable {D : D7} {u : D.what₂.Word} {w : D.what₂.places.Pl} {h : GIdx D.hos
   {μ : D.what₂.Tup} {Tw : TwForms D}
 
 
-end Spec
 
 end Formalism.MainNotions.G.KAat
 

@@ -71,7 +71,6 @@ theorem entry_hasDerivAt {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n
   exact (LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ i j)).hasFDerivAt.comp_hasDerivAt
     (0 : ℝ) (hasDerivAt_exp_smul_const (𝕂 := ℝ) X 0)
 
-section sup
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -79,6 +78,5 @@ variable {k r : ℕ}
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-end sup
 
 end CCRuleCW

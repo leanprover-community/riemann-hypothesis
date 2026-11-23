@@ -56,17 +56,13 @@ def classWeightAlt : ℝ :=
 
 end SW
 
-section W0
 
 variable (D : D7) (large₂ : SizeData₂ D)
 
-end W0
 
-section SWF
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end SWF
 
 end Formalism.MainNotions.BridgeLemma₂
 

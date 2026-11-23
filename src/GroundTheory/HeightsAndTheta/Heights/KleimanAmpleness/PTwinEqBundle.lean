@@ -51,11 +51,9 @@ theorem div_mem_chartRing_of_mem (I : Kleiman.Chart x) {i : Fin (N + 1)} (hi : i
     (j : Fin (N + 1)) : x j / x i ∈ Kleiman.chartRing S x I :=
   ⟨X j, X i, 1, Kleiman.X_mem_monos hi, isHomogeneous_X S j, isHomogeneous_X S i, by simp⟩
 
-section First
 
 variable (Q : Kleiman.LineBundle S x)
 
-end First
 
 section Second
 

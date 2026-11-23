@@ -813,11 +813,9 @@ theorem volume_eq_mass_of_definite (D : D7) (h2 : Conclusion2 D) (hv : DefiniteV
     field_simp at hr
     exact hr
 
-section Landherr
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-end Landherr
 
 end Formalism.MainNotions.StandardLattice
 

@@ -270,7 +270,6 @@ theorem partialCoeff_diagonal_blockGL {ϕ : AdelicGLn.AdelicGL K n → ℂ} (hϕ
     rfl
 
 
-open AutomorphicForm in
 theorem partialCoeff_succ_diagonal_colGL {ϕ : AdelicGLn.AdelicGL K n → ℂ} (hϕ : IsLeftInvariant ϕ)
     {k : ℕ} (hk : k < n) (ξ : Fin k → K) (g : AdelicGLn.AdelicGL K n) :
     partialCoeff ϕ (k + 1) (AdelicGLn.diagonal K n (colGL k ξ) * g) = partialCoeff ϕ (k + 1) g := by
@@ -278,7 +277,6 @@ theorem partialCoeff_succ_diagonal_colGL {ϕ : AdelicGLn.AdelicGL K n → ℂ} (
   exact partialCoeff_diagonal_blockGL hϕ _ (k + 1) rfl hk _ (Or.inl (isLastRowUnit_colX _)) g
 
 
-open AutomorphicForm in
 theorem partialCoeff_succ_diagonal_blockGL {ϕ : AdelicGLn.AdelicGL K n → ℂ}
     (hϕ : IsLeftInvariant ϕ) {k : ℕ} (hk : k < n) (γ : GL (Fin k) K) (g : AdelicGLn.AdelicGL K n) :
     partialCoeff ϕ (k + 1) (AdelicGLn.diagonal K n (blockGL hk.le γ) * g) =
@@ -287,7 +285,6 @@ theorem partialCoeff_succ_diagonal_blockGL {ϕ : AdelicGLn.AdelicGL K n → ℂ}
   exact partialCoeff_diagonal_blockGL hϕ _ (k + 1) rfl hk _ (Or.inl (isLastRowUnit_blockMat _)) g
 
 
-open AutomorphicForm in
 theorem partialCoeff_diagonal_blockGL_eq_vecCoeff {ϕ : AdelicGLn.AdelicGL K n → ℂ}
     (hϕ : IsLeftInvariant ϕ) {k : ℕ} (hk : k < n) (γ : GL (Fin k) K) (g : AdelicGLn.AdelicGL K n) :
     partialCoeff ϕ k (AdelicGLn.diagonal K n (blockGL hk.le γ) * g) =

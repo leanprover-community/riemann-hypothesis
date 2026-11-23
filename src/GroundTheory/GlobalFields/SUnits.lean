@@ -88,7 +88,6 @@ def placeUnit (v : HeightOneSpectrum (𝓞 K)) : Kˣ :=
     rw [ne_eq, map_eq_zero_iff _ (IsFractionRing.injective (𝓞 K) K)]
     exact (exists_pow_classNumber_eq_span v).choose_spec.1
 
-open scoped Classical in
 theorem valuationOfNeZero_placeUnit (v w : HeightOneSpectrum (𝓞 K)) :
     w.valuationOfNeZero (placeUnit v) =
       if w = v then Multiplicative.ofAdd (-(classNumber K : ℤ)) else 1 := by
@@ -105,7 +104,6 @@ theorem placeUnit_mem {v : HeightOneSpectrum (𝓞 K)} (hv : v ∈ S) : placeUni
   have hwv : w ≠ v := fun h => hw (h ▸ hv)
   rw [← valuationOfNeZero_eq, valuationOfNeZero_placeUnit, if_neg hwv, WithZero.coe_one]
 
-open scoped Classical in
 theorem valuationVector_placeUnit (v : S) :
     valuationVector S (Additive.ofMul ⟨placeUnit v.1, placeUnit_mem S v.2⟩) =
       Pi.single v (-(classNumber K : ℤ)) := by

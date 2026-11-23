@@ -52,11 +52,9 @@ noncomputable section
 namespace PI.UnitaryGroupMassFormula.GsFr
 open PI.UnitaryGroupMassFormula.DLm.Gram
 
-section qrefl
 
 variable {m : ℕ} (H : Matrix (Fin m) (Fin m) ℂ)
 
-end qrefl
 
 section hpk
 

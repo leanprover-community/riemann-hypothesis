@@ -72,7 +72,6 @@ theorem burnside : StatBurnside := by
   have := ha (Module.finBasis k V i) (Finset.mem_image_of_mem _ (Finset.mem_univ i))
   simpa [F] using this.symm
 
-section RankMod
 
 variable {O : Type*} [CommRing O] {r : Type} [Fintype r] [DecidableEq r]
 
@@ -160,6 +159,5 @@ private theorem rank_map_conj {F : Type*} [Field F] (f : O →+* F) (P Q : Matri
     rw [h1, map_one]
     exact one_ne_zero
 
-end RankMod
 
 end Formalism.NG

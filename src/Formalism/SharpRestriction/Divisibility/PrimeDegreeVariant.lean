@@ -202,14 +202,11 @@ def DegreeKernelLowerBound (A : HLat K) (e : Module.End K A.V) (n : ℕ) : Prop 
 
 end Lemma2
 
-section Lemma4
 
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
 
-end Lemma4
 
-section Lemma8
 
 structure GMap (K : Type) [Field K] (σ : K →+* ℂ) (G : Type) [Group G] [Fintype G] (T : GoodSet K G)
     (EE : Type) [AddCommGroup EE] [Module ℂ EE] (ρE : Representation ℂ G EE) where
@@ -241,7 +238,6 @@ variable {K : Type} [Field K] {σ : K →+* ℂ} {G : Type} [Group G] [Fintype G
 
 end GMap
 
-end Lemma8
 
 namespace Ten
 
@@ -494,25 +490,19 @@ def LatticeChainWithoutLast (Y : Prov D X) : Prop :=
 
 end Record
 
-section Herm
 
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
 
-end Herm
 
-section Whole
 
 variable {D : D7} {X : BaseLevelRowSide D}
 
-end Whole
 
-section Family
 
 open Formalism.MainNotions
 
 variable {ε : ℝ}
 
-end Family
 
 end Formalism.MainNotions.PrimeDegreeVariant

@@ -97,7 +97,6 @@ theorem complement_two_of_items {eps : ℝ} {Fm : FamP eps} (h : Formalism.MainN
   have := le_trans (le_max_right _ _) hx
   linarith
 
-section ColChoice
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst D L} {Gl : MainNotions.G.LatInst D} {Kc : MainNotions.G.Consts} {Y : DivX D}
   {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX}
@@ -109,7 +108,6 @@ structure ColChoice (P : Formalism.L2.Rows.RowSideFamily ex) where
   Sp : ∀ Zs : Formalism.L2.Indef.DefSub P.A3.fam3.amb3, Formalism.L2.Indef.SPer (c.face Zs)
   tie : Formalism.L2.DIV.ColTie3 P X e c Sp
 
-end ColChoice
 
 
 

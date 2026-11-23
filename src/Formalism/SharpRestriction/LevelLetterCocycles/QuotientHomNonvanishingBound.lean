@@ -652,7 +652,6 @@ end Std
 abbrev KOG (O : Type) [CommRing O] [IsDomain O] (k : ℕ) : Type :=
   (Fin k → FractionRing O) ⧸ stdG O (FractionRing O) k
 
-section KOGtop
 variable (O : Type) [CommRing O] [IsDomain O] (k : ℕ)
 instance : TopologicalSpace (KOG O k) := ⊥
 instance : DiscreteTopology (KOG O k) := ⟨rfl⟩
@@ -660,7 +659,6 @@ instance : IsTopologicalAddGroup (KOG O k) where
   continuous_add := continuous_of_discreteTopology
   continuous_neg := continuous_of_discreteTopology
 instance : ContinuousConstSMul O (KOG O k) := ⟨fun _ => continuous_of_discreteTopology⟩
-end KOGtop
 
 def WKG {O : Type} [CommRing O] [IsDomain O] {Γ : Type} [Group Γ] {k : ℕ}
     (M : Γ →* Matrix (Fin k) (Fin k) O) : Representation O Γ (KOG O k) :=

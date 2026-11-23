@@ -272,9 +272,7 @@ theorem first_bound_of_mass_ratio (D : D7) (large₂ : SizeData₂ D) (u u' : D.
         apply mul_le_mul_of_nonneg_right _ hP
         exact mul_le_mul hA hfac (by positivity) (by unfold Hb; positivity)
 
-section FamL
 variable {eps : ℝ} (Fm : FamP eps)
-end FamL
 
 
 theorem mass_ratio_of_siegel_cm_unramified (h : Formalism.HermitianLatticesTheory.SiegelMassRatio) (D : D7) : UnitaryVolumeMass.stMassRatio D :=
@@ -283,9 +281,7 @@ theorem mass_ratio_of_siegel_cm_unramified (h : Formalism.HermitianLatticesTheor
 
 theorem lattice_count_first_of_siegel (h : Formalism.HermitianLatticesTheory.SiegelMassRatio) (D : D7) : VanishingOnXAndXPlusMass.adm1 D := mass_ratio_of_siegel_cm_unramified h D
 
-section FamM
 variable {eps : ℝ} (Fm : FamP eps)
-end FamM
 
 theorem absNorm_ge_two {K : Type} [Field K] [NumberField K] (p : Ideal (𝓞 K)) (hp : p.IsMaximal) :
     2 ≤ Ideal.absNorm p := by

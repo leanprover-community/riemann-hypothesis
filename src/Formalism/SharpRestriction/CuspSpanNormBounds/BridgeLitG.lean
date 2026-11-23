@@ -78,13 +78,11 @@ def HCMultDSG : Prop :=
     Formalism.MainNotions.GapDS.thrDS ε < h → ∀ S : Submodule ℂ H, FiniteDimensional ℂ S → IsKStableOn ε σ S →
       FiniteDimensional ℂ (eqImg (fun k : KG ε => σ (toMK k)) S)
 
-section Final
 
 open Formalism.MainNotions.BridgeLemma Formalism.MainNotions.PlaceDegreeData Formalism.BasicNotions
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
-end Final
 
 end Formalism.MainNotions.BridgeCPX
 

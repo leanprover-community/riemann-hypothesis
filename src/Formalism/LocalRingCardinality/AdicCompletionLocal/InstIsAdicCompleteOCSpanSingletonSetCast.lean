@@ -39,9 +39,7 @@ namespace Formalism.Per
 
 open Reformulated.AutPerF
 
-section General
 variable {R S : Type} [CommRing R] [CommRing S]
-end General
 
 section Cp
 abbrev Qb (p : ℕ) [Fact p.Prime] : Type := PadicAlgCl p

@@ -138,7 +138,6 @@ theorem rDSCoordAdj_of_p (hp : RDSPAdj) : RDSCoordAdj := by
   · rw [hcb]; exact C1.2
   · rw [hcbi]; exact C2.2
 
-section IpLin
 
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] [FiniteDimensional ℂ Wp]
@@ -146,6 +145,5 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-end IpLin
 
 end Formalism.FourierDecayAlt.P.CutSE

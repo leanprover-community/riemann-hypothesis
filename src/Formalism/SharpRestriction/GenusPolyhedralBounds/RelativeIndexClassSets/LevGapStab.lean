@@ -50,11 +50,9 @@ namespace Formalism.MainNotions.Gaps.LG
 open NumberField IsDedekindDomain Matrix Formalism.UG Formalism.UG.P Formalism.BasicNotions Formalism.FrobeniusOrbits
 open scoped TensorProduct
 
-section Order
 
 variable {F : Type} [Field F] [NumberField F]
 
-end Order
 
 section LocInt
 
@@ -148,7 +146,6 @@ theorem loc_int_bound : ∃ c : 𝓞 F, c ≠ 0 ∧ ∀ x : 𝒜, (∀ w, prV (E
 
 end LocInt
 
-section Fin
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -164,13 +161,10 @@ variable {k : ℕ} (P : Par F E k)
 
 end Par
 
-end Fin
 
-section Lb
 
 variable {E : Type} [Field E] [NumberField E]
 
-end Lb
 
 end Formalism.MainNotions.Gaps.LG
 

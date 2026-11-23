@@ -677,7 +677,6 @@ section PartC
 
 open Formalism.BasicNotions NumberField
 
-section Arch
 
 variable {D : D7} {T : ThetaX D}
 
@@ -703,7 +702,6 @@ structure LocC (X : ZetaProductPairs.Loc D T) where
 
 attribute [instance] LocC.acVc LocC.moVc LocC.acVD LocC.moVD
 
-end Arch
 
 section Rat
 
@@ -715,59 +713,44 @@ def RationalMapValues : Prop :=
 
 end Rat
 
-section C5
 
 variable {D : D7} {T : ThetaX D}
 
-end C5
 
-section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
   (XF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ZetaProductPairs.Loc (Fm.D x i) (Fm.ex x hx i).th)
 
-end Family
 
 end PartC
 
-section PartE
 
 open Formalism.BasicNotions NumberField IsDedekindDomain
 
-section Lat
 
 variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
 
-end Lat
 
-section Form
 
 variable {K : Type} [Field K] {σ : K →+* ℂ} {V : Type} [AddCommGroup V] [Module K V]
   {E : Type} [AddCommGroup E] [Module ℂ E] {ι : Type} [Fintype ι] [DecidableEq ι]
   (b : Module.Basis ι K V) (j : V →ₛₗ[σ] E)
 
-end Form
 
-section Side
 
 variable {D : D7} {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE]
   (S : RowSide D EE)
 
-end Side
 
-section SideAI
 
 variable {D : D7} {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE]
   (S : RowSide D EE)
 
-end SideAI
 
-section Fam
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Fam
 
 end PartE
 
@@ -776,7 +759,6 @@ section PartEJ
 
 end PartEJ
 
-section PartF
 
 
 variable (D : D7)
@@ -784,18 +766,15 @@ variable (D : D7)
 
 
 
-end PartF
 
 section PartF2
 
 
 variable (D : D7)
 
-section Fam
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Fam
 
 
 section IV
@@ -825,12 +804,10 @@ end IV
 
 
 
-section FamJ
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
 
-end FamJ
 
 end PartF2
 

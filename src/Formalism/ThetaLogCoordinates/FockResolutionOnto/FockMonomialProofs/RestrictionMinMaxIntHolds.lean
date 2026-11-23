@@ -550,10 +550,8 @@ theorem wtComp_Y [NeZero r] (LL : Letters N) {q : ℕ} (J : Fin q → ℕ) (M : 
 
 end WtComp
 
-section MulX
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
-end MulX
 
 theorem res_hw {p : ℕ} [Fact p.Prime] {N r : ℕ} (LL : Letters N) (j : ℕ) (ρ : Fin r) (w : Fin r → ℤ) (i : Fin N)
     (e : ℕ) : ∀ x ∈ HWC p LL j (univ.erase ρ) w, resL p (i, ρ) e x ∈ HWC p LL j (univ.erase ρ) w := by

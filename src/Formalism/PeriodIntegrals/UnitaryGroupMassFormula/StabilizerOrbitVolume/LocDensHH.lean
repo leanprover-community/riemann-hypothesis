@@ -42,11 +42,9 @@ open scoped TensorProduct
 open NumberField IsDedekindDomain MeasureTheory Topology Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PI.VolFromSW
   Matrix
 
-section Mat
 
 variable {A : Type} [CommRing A] (s : A →+* A)
 
-end Mat
 
 section Int
 

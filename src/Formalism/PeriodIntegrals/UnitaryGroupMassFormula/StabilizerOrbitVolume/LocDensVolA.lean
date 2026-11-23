@@ -47,18 +47,14 @@ def CondAA : Prop :=
     ∀ᶠ v in cofinite, ∀ t : Fv F v,
       (∀ s ∈ v.adicCompletionIntegers F, psiV F ψ v (s * t) = 1) ↔ t ∈ v.adicCompletionIntegers F
 
-section Vol
 
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] [T2Space V]
   [MeasurableSpace V] [BorelSpace V]
 
-end Vol
 
-section Ann
 
 variable {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
 
-end Ann
 
 end VolAAW
 

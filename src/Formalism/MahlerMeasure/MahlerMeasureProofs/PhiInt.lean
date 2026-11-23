@@ -42,7 +42,6 @@ namespace Formalism.GM.M.PhiIntegrality
 
 open MvPolynomial Finset
 
-open MvPolynomial Finset
 
 section
 variable {p : ℕ} [hp : Fact p.Prime]
@@ -114,7 +113,6 @@ theorem bnd_monomial (m : σ →₀ ℕ) (n : ℕ) : Bnd 1 (monomial m ((n : ℕ
 
 end
 
-open MvPolynomial Finset
 
 section
 variable {p : ℕ} [hp : Fact p.Prime] {σ : Type}
@@ -211,7 +209,6 @@ theorem contr_pow {C : ℝ} (hC : 0 ≤ C) {T : MvPolynomial σ ℚ_[p] →ₗ[�
 
 end
 
-open MvPolynomial Finset
 
 section
 variable {p : ℕ} [hp : Fact p.Prime] {σ : Type}
@@ -280,7 +277,6 @@ theorem contr_Fsum {ι : Type} [DecidableEq ι]
 
 end
 
-open MvPolynomial Finset
 
 
 

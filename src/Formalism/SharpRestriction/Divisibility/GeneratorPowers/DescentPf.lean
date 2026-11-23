@@ -44,11 +44,9 @@ section Gen
 
 variable {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
 
-section Jet
 
 variable {k : Type} [CommRing k] {n : ℕ}
 
-end Jet
 
 section Lin
 
@@ -98,11 +96,9 @@ theorem nabValN_smulP (B : FB R d O) (k : Type) [CommRing k] [Algebra ℚ k] [Al
 
 end Gen
 
-section Asm
 
 variable {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O]
 
-end Asm
 
 section Main
 

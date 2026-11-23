@@ -372,11 +372,9 @@ theorem radical_positive_each_embedding (Λ : Submodule (𝓞 E) S.V) {T T' : E}
 
 end Gen2
 
-section Gen3
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
 
-end Gen3
 
 section D7b
 
@@ -6793,10 +6791,8 @@ theorem lattice_theorem_B (D : D7) : VanishingOnXAndXPlusGluing.Conclusion4 D :=
 theorem lemma_one_section (D : D7) : Formalism.MainNotions.S.UnitaryVolumeMass.stLem1 D := lattice_lemma_one D
 theorem theorem_B_section (D : D7) : Formalism.MainNotions.S.UnitaryVolumeMass.stThmB D := lattice_theorem_B D
 
-section Fam
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Fam
 
 end Formalism.MainNotions.LatticeGluingRadicals
 
@@ -9262,10 +9258,8 @@ theorem lattice_theorem_A_from_degenerate (D : D7) : VanishingOnXAndXPlusGluing.
 
 theorem theorem_A_section (D : D7) : Formalism.MainNotions.S.UnitaryVolumeMass.stThmA D := lattice_theorem_A_from_degenerate D
 
-section Fam
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Fam
 
 end Formalism.MainNotions.LatticeGluingRadicals
 

@@ -40,11 +40,9 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1
 
 open MvPolynomial Formalism.L2.Pj
 
-section Crude
 
 variable {T : Type} [Fintype T] (r : T → ℕ) (n : ℕ)
 
-end Crude
 
 section Germ
 

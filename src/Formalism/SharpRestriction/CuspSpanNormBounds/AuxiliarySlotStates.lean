@@ -209,11 +209,9 @@ def Eword (L : Lev) (w : List (Fin (2 * L.r + (L.k0 + 1) + 1) × Fin (2 * L.r + 
 
 end Lev
 
-section Waves
 
 variable {m : ℕ} {E : Type*} [AddCommGroup E] [Module ℂ E]
 
-end Waves
 
 namespace Lev
 

@@ -450,7 +450,6 @@ end Pure
 section Cusp
 
 open AutomorphicForm CuspidalSpectrum AdelicGLn GLnLocal RestrictedTensor
-open scoped TensorProduct Classical
 
 theorem hR_gen {A H : Type*} [Group A] [NormedAddCommGroup H] [InnerProductSpace ℂ H] (T : A → H → H)
     (hTmul : ∀ a b v, T (a * b) v = T a (T b v)) (hTi : ∀ a v w, inner ℂ (T a v) (T a w) = inner ℂ v w)
@@ -636,8 +635,6 @@ end Conclusion
 
 section Final
 
-open AutomorphicForm CuspidalSpectrum AdelicGLn GLnLocal RestrictedTensor
-open scoped TensorProduct Classical
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 

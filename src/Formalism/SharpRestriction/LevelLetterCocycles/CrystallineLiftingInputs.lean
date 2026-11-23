@@ -204,7 +204,6 @@ def FTool [NeZero n] (W : LocWach PD LL O v n) : Prop :=
 
 end Core
 
-section Lit
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -214,7 +213,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     (PD : PeriodData G Qp K₀ K B BdR)
     (LL O : Type) [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
 
-end Lit
 
 def TToolAlg : Prop :=
   (∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (l : ℕ) [Fact l.Prime]

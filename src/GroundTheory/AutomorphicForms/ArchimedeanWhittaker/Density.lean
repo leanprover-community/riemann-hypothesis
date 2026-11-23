@@ -134,8 +134,6 @@ end GroundTheory.Automorphic
 
 namespace GroundTheory.Automorphic
 
-open MeasureTheory NormedSpace Set Filter Topology Metric
-open scoped ContDiff InnerProductSpace
 
 set_option linter.unusedSectionVars false
 
@@ -172,7 +170,6 @@ end GroundTheory.Automorphic
 
 namespace GroundTheory.Automorphic
 
-open MeasureTheory NormedSpace Set Filter Topology Metric
 open scoped ContDiff InnerProductSpace Manifold
 
 set_option linter.unusedSectionVars false

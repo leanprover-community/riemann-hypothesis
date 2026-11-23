@@ -234,10 +234,8 @@ theorem VanishingOnXAndXPlus.primeHyp_of_stand (D : D7) (u u' : D.what₂.Word) 
   exact ⟨hT, h3, hT', h3', hs, hs', hg, hc, hm,
     fun ζ hζ hβ => rootOfUnity_eq_one_of_modT _ h3 ζ hζ hβ⟩
 
-section Cnt
 variable (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A : ℝ)
 
-end Cnt
 
 section Amp
 variable (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 A : ℝ)
@@ -269,22 +267,16 @@ theorem tprod_of_27 (D : D7) (h : LocalBesselAndTopKernel.projection_sandwich_la
   refine abs_sub_le_of_two_sided (Real.one_le_exp (by positivity)) ?_ h1 h2
   rw [← Real.exp_add]; simp
 
-section Tprod
 variable (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ)
 
-end Tprod
 
-section Fam
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
 variable (Cg cb Cu cT CT C0 A : ℝ)
 
-end Fam
 
-section Same
 variable (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A : ℝ)
 
-end Same
 
 section Bridge
 
@@ -509,10 +501,8 @@ theorem OnePlaceEstimates.upper_bound_mono_constant (D : D7) {Ch Cu Cg Cg' Cb Cb
   fun L lam0 f μsec ka b hLoc hR hf hμ hN γ hG =>
     BpIneq_mono D L f μsec γ (one_le_b_of_StdHyp hCh hLoc.2.2.2.2.2.1) hle (h L lam0 f μsec ka b hLoc hR hf hμ hN γ hG)
 
-section BridgeFam
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (Cg cb Cu cT CT C0 C1 : ℝ)
 
-end BridgeFam
 
 end Bridge
 

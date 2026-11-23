@@ -51,7 +51,6 @@ namespace Formalism.HermitianLattices.GenusMassVolumes
 open Finset NumberField
 open Formalism.LogVandermondeBounds.StandardLattice
 
-section alg
 
 variable (K : Type) [Field K] [NumberField K]
 
@@ -160,7 +159,6 @@ private lemma inert_prime_norm_ge_sq (P : Ideal (𝓞 K)) (hP : P.IsMaximal)
   have := P.sub_mem hn h2
   rwa [sub_sub_sub_cancel_right] at this
 
-end alg
 
 section ana
 
@@ -304,7 +302,6 @@ private lemma euler_factor_split_prime_bound (M : ℕ) (hM : 1 ≤ M) (p : ℕ) 
 
 end ana
 
-section main
 
 variable (K : Type) [Field K] [NumberField K]
 
@@ -417,7 +414,6 @@ private lemma partial_sums_log_euler_factor_le (hK : Formalism.HermitianLattices
         mul_le_mul_of_nonneg_left (sum_neg_log_le_log_zeta M hM S hSp) (by positivity)
     _ = (Formalism.HermitianLatticesTheory.fDeg K : ℝ) * Real.log (zetaR M) := by rw [hn]
 
-end main
 
 theorem log_l_value_field_bound : LogLFunctionEulerBound := by
   intro K _ _ _ hK M hM

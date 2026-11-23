@@ -42,13 +42,11 @@ namespace Formalism.FourierDecayAlt.P.PBA
 
 open Formalism.FourierDecayAlt NumberField
 
-section defeq
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePlace E → Type}
   [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)] [∀ x, NormedAddCommGroup (Wq x)]
   [∀ x, InnerProductSpace ℂ (Wq x)] (S : C.HidaSetting E Wp Wq)
   (RR : Fin S.f → ℝ → ℕ → List C.Letter → C.LPt → C.LPt → ℂ)
 
-end defeq
 
 theorem extract_prob {ι X : Type} [Fintype ι] (U : Finset X) (θ : ℕ → ι → X → ℝ)
     (hθ : ∀ n A, TB.IsProb U (θ n A)) :

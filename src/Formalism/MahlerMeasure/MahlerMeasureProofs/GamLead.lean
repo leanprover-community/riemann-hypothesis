@@ -750,7 +750,6 @@ end Formalism.GM.leadingTermLemmas
 namespace Formalism.GM.leadingTermLemmas
 
 
-section gen
 variable (K : Type) [Field K]
 
 noncomputable def fSub {N r : ℕ} (LL : M.Letters N) (ρ : Fin r) :
@@ -775,7 +774,6 @@ noncomputable def gamK {N r : ℕ} (LL : M.Letters (N + 1)) (ρ : Fin r) (z n : 
       (frz K LL ρ n f)) (frz K LL ρ n f') /
     ((((n - LL.total).factorial * LL.total.factorial : ℕ) : K) * ∏ i, ((LL.deg i).factorial : K))
 
-end gen
 
 theorem fock_eq (p : ℕ) [Fact p.Prime] {σ : Type} [Fintype σ] [DecidableEq σ] (F G : MvPolynomial σ ℚ_[p]) :
     M.fock p F G = fk F G := by

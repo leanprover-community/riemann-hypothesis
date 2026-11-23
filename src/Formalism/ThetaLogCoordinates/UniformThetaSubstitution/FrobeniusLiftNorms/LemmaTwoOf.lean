@@ -202,17 +202,13 @@ theorem coeff_partial_coboundary {F : MvPowerSeries (Fin 2) K} (hF : MvPowerSeri
 
 end Slice
 
-section Norm
 
 variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
-end Norm
 
-section Top
 
 variable {K : Type} [Field K]
 
-end Top
 
 section Additive
 
@@ -281,7 +277,6 @@ end LemTwo
 
 open LemTwo in
 theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
-  open LemTwo in
   intro K _ _ _ _ p σ hU F hF H hH hd hd'
   obtain ⟨hp, -, hnp, -, -⟩ := id hU
   have hp2 : 2 ≤ p := hp.two_le

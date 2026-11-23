@@ -589,11 +589,9 @@ theorem admG5_rN (hd : TruncatedSeriesCountingIdentities.SemisimpleDecomposition
 
 end G5rec
 
-section Final
 
 variable {D : D7} (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
   (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
 
-end Final
 
 end Formalism.MainNotions.N.K.Norm

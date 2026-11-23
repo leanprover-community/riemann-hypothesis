@@ -68,8 +68,6 @@ noncomputable section
 
 namespace PI.IwaMeasEx.Wau
 
-open IsDedekindDomain NumberField Formalism.MainNotions.S Topology
-open scoped TensorProduct Matrix
 
 namespace Cpt
 

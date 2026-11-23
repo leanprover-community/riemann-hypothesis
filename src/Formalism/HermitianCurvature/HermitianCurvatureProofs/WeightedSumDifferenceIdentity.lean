@@ -59,11 +59,9 @@ theorem kap_comm_nab (P : Par) (f : Ty P → ℂ) : Commute (kap P f) (nabA P) :
 
 theorem kap_comm_nabs (P : Par) (f : Ty P → ℂ) : Commute (kap P f) (nabsA P) := kap_comm_diagonal P f _
 
-section abs
 
 variable {R : Type*} [Ring R] [Algebra ℂ R]
 
-end abs
 
 end PartT
 
@@ -77,32 +75,25 @@ end
 
 end PartF
 
-section PartA
 
 
-section Poly
-
-variable {B : Type} [Ring B] [Algebra ℂ B]
-
-end Poly
-
-section AbsDet
 
 variable {B : Type} [Ring B] [Algebra ℂ B]
 
 
-end AbsDet
+
+variable {B : Type} [Ring B] [Algebra ℂ B]
+
+
 
 end PartA
 
 section PartB
 
 
-section abs2
 
 variable {R : Type*} [Ring R] [Algebra ℂ R]
 
-end abs2
 
 theorem star_kap (P : Par) (f : Ty P → ℂ) : star (kap P f) = kap P (fun π => star (f π)) := by
   rw [kap_eq, kap_eq, Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose]

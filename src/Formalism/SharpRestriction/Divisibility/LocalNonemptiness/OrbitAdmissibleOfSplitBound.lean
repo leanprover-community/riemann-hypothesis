@@ -106,13 +106,11 @@ theorem orbit_admissible_of_split_bound (D : D7) (h3 : 3 ≤ D.host.splitBound) 
   unfold OrbitParityCond
   exact ⟨fun p hp hc => orbOK_of_class D p hp h3 hc, fun p hp hc => five_le_of_class D p hp h3 (Or.inl hc)⟩
 
-section Shape
 
 variable {D : D7}
 
 variable {L : SizeData₂ D} {X : Inst D L}
 
-end Shape
 
 end Formalism.MainNotions.DIV.Inh
 

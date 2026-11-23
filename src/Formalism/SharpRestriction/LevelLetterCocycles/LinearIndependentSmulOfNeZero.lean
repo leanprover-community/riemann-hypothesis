@@ -53,7 +53,6 @@ open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
 
 end GT
 
-section Cons
 
 open Formalism.MainNotions.IntegralHeckeForms (IsLatIn)
 open scoped TensorProduct
@@ -61,15 +60,12 @@ open scoped TensorProduct
 variable {D : Formalism.BasicNotions.D7} {N : Formalism.BasicNotions.NData D.R D.host D.what₂}
   {X : Formalism.BasicNotions.NTw D.R D.host D.what₂ D.LL0 N} {Y : Formalism.BasicNotions.NExp D.R D.host D.what₂ D.LL0 N X}
 
-end Cons
 
-section Open
 
 open Formalism.MainNotions.BlochKatoReduction.Gen (SetHyp PsiOk partAT partC partD)
 
 variable (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (N0 : D.ntw.Tw → ℕ)
 
-end Open
 
 section Lattice
 
@@ -112,15 +108,12 @@ def Pack.v : ℝ := sIdx (X.l i) p.B p.Th + (p.c : ℝ) * p.S.card
 
 end Lattice
 
-section Asm0
 
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
 
-end Asm0
 
-section Chain
 
 open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO)
 
@@ -134,12 +127,9 @@ variable {Y}
 
 
 
-end Chain
-
-section CrdAll
 
 
-section Coord
+
 
 variable {O Fm : Type} [CommRing O] [AddCommGroup Fm] [Module O Fm]
 
@@ -149,9 +139,7 @@ variable {B : Submodule O Fm} {d : ℕ} (β : Module.Basis (Fin d) O B)
 
 variable {Λ}
 
-end Coord
 
-section Free
 
 open Formalism.IrreducibleCountingLemmas.TW (relLen)
 
@@ -159,17 +147,13 @@ variable {R W : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Add
 
 variable {d : ℕ} {e : Fin d → W}
 
-end Free
 
-section BaseCh
 
 variable {O Fm : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [AddCommGroup Fm] [Module O Fm]
   {B : Submodule O Fm} {d : ℕ} (β : Module.Basis (Fin d) O B)
   (R' : Type) [CommRing R'] [IsDomain R'] [Algebra O R']
 
-end BaseCh
 
-section Det
 
 
 variable {O Fm : Type} [CommRing O] [AddCommGroup Fm] [Module O Fm]
@@ -177,28 +161,22 @@ variable {O Fm : Type} [CommRing O] [AddCommGroup Fm] [Module O Fm]
 
 variable {Λ : Type} [CommRing Λ] [Algebra O Λ] [Module.Flat O Λ]
 
-end Det
 
-section Det2
 
 
 variable {O Fm : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [AddCommGroup Fm] [Module O Fm]
   {B : Submodule O Fm} {d : ℕ} (β : Module.Basis (Fin d) O B)
 
-end Det2
 
 end CrdAll
 
-section Alg
 
 open Polynomial
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   [IsAlgClosed (IsLocalRing.ResidueField O)]
 
-end Alg
 
-section Asm1
 
 open Classical
 
@@ -210,9 +188,7 @@ variable {n : ℕ} (β : Module.Basis (Fin n) (X.O i) p.B)
 
 variable (es : Fin n ≃ ↥p.S)
 
-end Asm1
 
-section K4
 
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
@@ -221,7 +197,6 @@ variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
 
 variable {n : ℕ} (β : Module.Basis (Fin n) (X.O i) p.B)
 
-end K4
 
 section Asm2
 
@@ -237,7 +212,6 @@ def Pack.x (a : Y.Dat i j b) : Y.Fm i j b := ((X.l i : X.O i) ^ p.c) • p.A (Y.
 
 end Asm2
 
-section Asm3
 
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
@@ -245,9 +219,7 @@ variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {i : X.Tw} {j : ℕ} {b : Bool} (p : Pack Y i j b) {n : ℕ} (β : Module.Basis (Fin n) (X.O i) p.B)
   (es : Fin n ≃ ↥p.S)
 
-end Asm3
 
-section Fin
 
 open Formalism.MainNotions.BlochKatoReduction.Gen (psiAt nval SetHyp PsiOk partA partAT partC partD)
 
@@ -255,16 +227,13 @@ variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
 
 
-end Fin
 
-section Asm4
 
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
   {i : X.Tw} {j : ℕ} {b : Bool} (p : Pack Y i j b)
 
-end Asm4
 
 section FrobAll
 

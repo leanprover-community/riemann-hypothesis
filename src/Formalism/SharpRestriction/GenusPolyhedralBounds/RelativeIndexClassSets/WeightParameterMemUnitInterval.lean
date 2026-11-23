@@ -1296,17 +1296,13 @@ noncomputable section
 namespace Formalism.MainNotions.Gaps.LocalGlobalPassage
 
 
-section Rem
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {n : ℕ}
 
-end Rem
 
-section Exp
 
 variable {K0 K : Type} [Field K0] [NumberField K0] [Field K] [NumberField K] [Algebra K0 K]
 
-end Exp
 
 end Formalism.MainNotions.Gaps.LocalGlobalPassage
 

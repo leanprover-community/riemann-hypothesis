@@ -55,7 +55,6 @@ namespace Formalism.MainNotions.Gaps.LG
 open NumberField IsDedekindDomain Matrix Formalism.UG Formalism.BasicNotions Formalism.FrobeniusOrbits
 open scoped TensorProduct
 
-section Core
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -65,7 +64,6 @@ structure SplitCore (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F)) where
   alg : ∀ c : v.adicCompletion F, φ ((1 : E) ⊗ₜ[F] c) = (c, c)
   int : ∀ x, x ∈ intV E v ↔ (φ x).1 ∈ v.adicCompletionIntegers F ∧ (φ x).2 ∈ v.adicCompletionIntegers F
 
-end Core
 
 section SC
 
@@ -338,28 +336,22 @@ theorem sc_orient {σ : E →ₐ[F] E} {v : HeightOneSpectrum (𝓞 F)} (s : Spl
 
 end SC
 
-section HostSplit
 
 open Formalism.MainNotions.Gaps.LevGap
 
 variable {R : Ranks} (H : Host R)
 
 
-end HostSplit
 
-section IwGen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 variable {k : ℕ} (P : Par F E k)
 
-end IwGen
 
-section IwHost
 
 variable {R : Ranks} (H : Host R)
 
-end IwHost
 
 section FM
 
@@ -432,11 +424,9 @@ variable {k : ℕ} (P : Par F E k)
 
 end FM
 
-section Final
 
 variable {R : Ranks} (H : Host R)
 
-end Final
 
 end Formalism.MainNotions.Gaps.LG
 

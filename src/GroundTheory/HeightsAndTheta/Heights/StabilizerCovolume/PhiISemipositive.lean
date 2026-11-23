@@ -52,13 +52,11 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo NumberField GroundThe
 open ReciprocityTheory.AnForm.A (IsPsh)
 open scoped Matrix ComplexOrder
 
-section Gram
 
 variable {k : ℕ}
 
 variable {ρ m : Type} [Fintype ρ] [Fintype m]
 
-end Gram
 
 section Psh
 
@@ -117,10 +115,8 @@ theorem isPsh_add_re_add_const {U : Set (Fin d → ℂ)} (hU : IsOpen U) {φ : (
 
 end Psh
 
-section Hodge
 
 variable {Em : Type} [Field Em] [NumberField Em] [IsCMField Em] {Ψ : Type} [Fintype Ψ] {N j : ℕ}
 
-end Hodge
 
 end GroundTheory.Heights₂.Heights.NineStatements

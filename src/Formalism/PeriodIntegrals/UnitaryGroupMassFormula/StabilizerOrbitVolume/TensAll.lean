@@ -211,8 +211,6 @@ end Top
 
 end TensAllW
 
-open scoped TensorProduct
-open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PI.AdicCompletionValuation
   PI.VolFromSW TensAllW
 
 theorem lip_ainf (F : Type) [Field F] [NumberField F] : LIP (InfiniteAdeleRing F) := by

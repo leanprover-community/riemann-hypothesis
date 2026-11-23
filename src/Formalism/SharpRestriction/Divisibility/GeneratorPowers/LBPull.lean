@@ -49,19 +49,15 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-section Gen
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X0 : Scheme.{0}} (t : SAB H X0)
 variable {Y Z : Scheme.{0}} {K : Type} [Fintype K]
 
-end Gen
 
-section GenX
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable {Xo : Moduli Dw l} {Y Z : Scheme.{0}} {K : Type} [Fintype K]
 
-end GenX
 
 section Sec
 

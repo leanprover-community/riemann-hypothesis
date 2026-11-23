@@ -228,7 +228,6 @@ theorem realCompM_mem_unitaryGroup {k : archGroup K n} (hk : k ∈ archCompact K
     _ = euclidNorm z := by rw [← hy]; exact (euclidNorm_map ψ.toRingHom hψ y).symm
 
 
-open Reduction in
 theorem complexCompM_mem_unitaryGroup {k : archGroup K n} (hk : k ∈ archCompact K n)
     (v : {w : InfinitePlace K // IsComplex w}) :
     complexCompM v ((k : (ArchMatrix K n)ˣ) : ArchMatrix K n) ∈ unitaryGroup (Fin n) ℂ := by

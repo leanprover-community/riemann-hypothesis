@@ -524,8 +524,6 @@ end Herm
 
 end SdDualW
 
-open scoped TensorProduct
-open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PI.AdicCompletionValuation
   PI.VolFromSW SdUniqW
 
 end PI.VolStabSW

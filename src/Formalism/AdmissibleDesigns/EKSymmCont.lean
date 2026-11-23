@@ -227,19 +227,15 @@ theorem topMatch_pi (n : Type) [Finite n] :
 
 end Homeo
 
-section Cyc
 
 
 variable {D : D7} (i : D.nd.Loc) {w : HeightOneSpectrum (𝓞 D.host.E)} (hw : w ∈ placesOver D.host.E (D.nd.l i))
 
-end Cyc
 
-section Row
 
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
 
-end Row
 
 section RowTop
 

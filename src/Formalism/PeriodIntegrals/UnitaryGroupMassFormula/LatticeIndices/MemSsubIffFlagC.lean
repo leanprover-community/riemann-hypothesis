@@ -42,11 +42,9 @@ namespace MassDataIdxStIm
 open Matrix Formalism.FourierDecayAlt.S3 Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub MassDataIdxSpl
 open scoped TensorProduct
 
-section Reindex
 
 variable {K : Type} [Field K] {n ι : Type} [Fintype n] [DecidableEq n] [Fintype ι] [DecidableEq ι] {m : ℕ}
 
-end Reindex
 
 section Split
 

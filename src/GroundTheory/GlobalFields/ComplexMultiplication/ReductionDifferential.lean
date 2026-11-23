@@ -145,7 +145,6 @@ end Dual
 
 section Gauss
 
-open TrivSqZeroExt
 
 variable {𝒪 : Type u} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
   (W : WeierstrassCurve 𝒪)
@@ -191,7 +190,6 @@ end Gauss
 
 section GaussDeriv
 
-open TrivSqZeroExt
 
 variable {𝒪 : Type u} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
   (K : Type u) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)
@@ -250,7 +248,6 @@ end GaussDeriv
 
 section Compat
 
-open TrivSqZeroExt
 
 variable {𝒪 : Type u} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
   (K : Type u) [Field K] [Algebra 𝒪 K] [IsFractionRing 𝒪 K] (W : WeierstrassCurve 𝒪)

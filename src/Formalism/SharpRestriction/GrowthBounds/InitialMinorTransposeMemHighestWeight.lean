@@ -845,13 +845,11 @@ namespace Formalism.MainNotions.G.Joints.KP
 
 open MvPolynomial Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction
 
-section GlobalTheory
 
 variable {A A' : Type} [CommRing A] [CommRing A'] {n : ℕ}
 
 variable (W : Fin n → A) (Dm : Matrix (Fin n) (Fin n) A) (γ : A) (v : Fin n → A) (b' : Matrix (Fin n) (Fin n) A)
 
-end GlobalTheory
 
 section Eval
 
@@ -962,11 +960,9 @@ theorem kr_not_dvd_det (q : MvPolynomial (Fin n × Fin n) O) (hq : ¬ IsUnit (kr
 
 end Primes
 
-section Coeff
 
 variable {O : Type} [CommRing O] {A : Type} [CommRing A] [Algebra O A] {r : ℕ}
 
-end Coeff
 
 theorem kr_HB_of_universal (O : Type) [CommRing O] [IsDomain O] (r : ℕ) (c : ℤ) (ka : Fin r → ℤ)
     (f₁ : GLCoord O (r + 1))

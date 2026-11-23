@@ -1233,13 +1233,11 @@ theorem qQHerm : QQHerm := by
   · exact congrFun (congrFun (star_t12 P D Y) _) _
   · exact congrFun (congrFun (star_t22 P D Y) _) _
 
-section lead
 
 variable {R : Type*} [Ring R] [Algebra ℂ R]
 
 variable {n m : ℕ} {c d : R} {f g : ℂ → R}
 
-end lead
 
 theorem xC_split (j : ℕ) (hj : j ∈ Icc 1 (P.k - 1)) (π : Ty P) (Y : ℂ) :
     xC P π Y = (Y + (rho P π j : ℂ)) * xEx P {j} π Y := by
@@ -5222,11 +5220,9 @@ theorem z_mem (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (i : Fin P.r) : ∀ 
 
 def Ent {A : Type} [Ring A] [Algebra ℂ A] (C : Subalgebra ℂ A) (M : M2 A) : Prop := ∀ a b, M a b ∈ C
 
-section Ent
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {C : Subalgebra ℂ A}
 
-end Ent
 
 theorem QQr_ent (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (i : Fin P.r) (Y : ℂ) : Ent (Cen P D i) (QQr P D Y) := by
   have hz : zA P D ∈ Cen P D i := z_mem P D i _ (by simp)

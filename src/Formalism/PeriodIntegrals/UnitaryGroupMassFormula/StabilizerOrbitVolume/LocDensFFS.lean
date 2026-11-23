@@ -157,7 +157,6 @@ end FiniteFieldSplitting
 
 namespace FiniteFieldSplitting
 
-open Matrix
 
 variable {k : Type} [Field k] [Finite k] {M a : ℕ}
 

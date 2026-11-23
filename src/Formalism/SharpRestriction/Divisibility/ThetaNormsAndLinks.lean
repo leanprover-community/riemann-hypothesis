@@ -309,11 +309,9 @@ def RunConditions (H : WeightAlgebra.KHyp) (C2 A2 CR CT CRd : ℝ) : Prop := ∀
 
 end Conclusion₂
 
-section Joint
 
 variable (D : D7) (L : SizeData₂ D) {nch : NChoice D} (X : LiftErrorLocal.Loc D nch)
 
-end Joint
 
 section Stmt
 
@@ -347,19 +345,15 @@ theorem vAdd_nonneg_int {K : Type} [Field K] [NumberField K] (la : HeightOneSpec
     simp at this
     omega
 
-section Forms
 
 variable {D : D7} {B : WeightFamilies.Prov D} {P : ModuliIntegralCharts.Prov D} {j : ℕ} (W : WeightAlgebra.PJ D B P j)
 
-end Forms
 
-section Fam
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
   (XF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), LiftErrorLocal.Loc (Fm.D x i) (Fm.ex x hx i).nch)
   (ZF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc8 (XF x hx i))
 
-end Fam
 
 end Formalism.MainNotions.ThetaNormsAndLinks
 

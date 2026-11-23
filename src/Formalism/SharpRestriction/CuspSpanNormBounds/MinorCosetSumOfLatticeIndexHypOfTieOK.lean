@@ -157,11 +157,9 @@ theorem final_arith {L Cl CH rd : ℝ} {r m f n j : ℕ} (hL : 1 < L) (hCl : 0 <
 
 end G
 
-section H
 
 variable {D : D7}
 
-end H
 
 end Formalism.MainNotions.KTwoCosetCount
 

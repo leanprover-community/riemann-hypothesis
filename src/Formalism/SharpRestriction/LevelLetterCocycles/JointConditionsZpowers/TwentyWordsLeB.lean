@@ -102,7 +102,6 @@ end Word2
 
 attribute [local instance] nLet_neZero
 
-section Word3
 
 variable {L : SizeData₂ D} {HW : HWOf D.loc} {F : FonOf D.loc D.locA HW} {i : D.nd.Loc} {r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))}
     {ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))} {π : D.nd.X i}
@@ -119,7 +118,6 @@ structure WordBaseC (Wd : WordDat (nLet i w hw)) : Prop where
       ∑ x ∈ Finset.Icc (-(Wd.η : ℤ)) (Wd.η : ℤ),
         multV ((D.loc (D.nd.l i)).PD (D.nbr i w hw).Kw) T₂.ρ τ x ≤ (Wd.m : ℤ)
 
-end Word3
 
 section RowCD
 

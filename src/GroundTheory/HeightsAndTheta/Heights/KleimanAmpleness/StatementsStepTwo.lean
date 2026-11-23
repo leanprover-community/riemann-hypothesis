@@ -98,11 +98,9 @@ def StepTwo.Reduce.Statement : Prop :=
         Subsingleton (SubSystem.quotH ((M₁.tildeSys 0).twist (Q.twist (twistSys S x c)))
           ((M₂.tildeSys 0).twist (Q.twist (twistSys S x c))) 1)
 
-section Hypotheses
 
 variable (k : Type u) [Field k]
 
-end Hypotheses
 
 end
 

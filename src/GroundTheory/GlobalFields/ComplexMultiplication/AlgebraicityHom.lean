@@ -238,7 +238,6 @@ end ConstSet
 
 section Lattice
 
-open Elliptic
 
 theorem homConstSet_weierstrassCurve (L₁ L₂ : PeriodPair) :
     homConstSet (weierstrassCurve L₁) (weierstrassCurve L₂) = latticeHom L₁ L₂ := by

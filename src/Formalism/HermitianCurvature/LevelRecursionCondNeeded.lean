@@ -41,11 +41,9 @@ noncomputable section
 
 abbrev Sesq (M : Type) [AddCommGroup M] [Module ℂ M] : Type := M →ₗ[ℂ] M →ₛₗ[starRingEnd ℂ] ℂ
 
-section Defs
 
 variable {R M : Type} [Ring R] [Algebra ℂ R] [AddCommGroup M] [Module ℂ M] [Module R M]
 
-end Defs
 
 def lagCo {d : ℕ} (y : Fin (d + 1) → ℝ) (j : Fin (d + 1)) : ℝ := ∏ i ∈ univ.erase j, (y j - y i)⁻¹
 

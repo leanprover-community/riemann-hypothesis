@@ -45,11 +45,9 @@ namespace Formalism.DworkPowerSeriesWeights
 
 open MvPolynomial
 
-section Slices
 
 variable {R : Type u} [CommRing R] {T σ ρ : Type}
 
-end Slices
 
 section Rows
 
@@ -82,10 +80,8 @@ def bT (x : Bool × H → Matrix (Fin N0) (Fin N0) K) (τ : Bool × H) : Matrix 
 
 end Frames
 
-section Norms
 
 variable {K : Type u} [NormedField K] [IsUltrametricDist K] {H : Type} {N0 : ℕ}
 
-end Norms
 
 end Formalism.DworkPowerSeriesWeights

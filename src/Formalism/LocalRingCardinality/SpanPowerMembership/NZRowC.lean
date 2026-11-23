@@ -41,7 +41,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions
 
 abbrev En (n : ℕ) : Type := EuclideanSpace ℂ (Fin n)
 
-section Rows
 
 variable {R : Ranks} (LL : Type) [Field LL] [NumberField LL] (embLL : LL →+* ℂ) (P : Rows.Places LL)
   (Tau : Type) [Fintype Tau] (hTau : Fintype.card Tau = R.f) (Dst : ℝ)
@@ -53,9 +52,7 @@ variable {R : Ranks} (LL : Type) [Field LL] [NumberField LL] (embLL : LL →+* �
   (per : ∀ u : Word, Bool → EuclideanSpace ℂ (cI u) → En d → ℂ)
   (eta : ℕ → P.Pl → ℚ) (heta : ∀ j w, 0 ≤ eta j w)
 
-end Rows
 
-section RowsLemmas
 
 variable {R : Ranks} {LL : Type} [Field LL] [NumberField LL] {embLL : LL →+* ℂ} {P : Rows.Places LL}
   {Tau : Type} [Fintype Tau] {hTau : Fintype.card Tau = R.f} {Dst : ℝ}
@@ -67,12 +64,9 @@ variable {R : Ranks} {LL : Type} [Field LL] [NumberField LL] {embLL : LL →+* �
   {per : ∀ u : Word, Bool → EuclideanSpace ℂ (cI u) → En d → ℂ}
   {eta : ℕ → P.Pl → ℚ} {heta : ∀ j w, 0 ≤ eta j w}
 
-end RowsLemmas
 
-section Gen
 
 variable {R : Ranks} (D : Rows.Data R)
 
-end Gen
 
 end Formalism.BasicNotions.Examples₂.NZ

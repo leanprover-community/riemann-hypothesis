@@ -292,11 +292,9 @@ def DegreeRatioUnitShiftBound (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb C
       ∀ (I : Finset (Fin (2 * D.R.rS + D.R.k + 1))) (s : ℝ), (s = 1 ∨ s = -1) →
         ∀ A' : LocS W, GoodS D (lam' + s • epsI I) A' → A'.deg / A.deg ≤ (D.R.r : ℝ) ^ (hilbertNinetyConstant * (I.card : ℝ))
 
-section Fam
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Fam
 
 end Formalism.MainNotions.BridgeLemma
 

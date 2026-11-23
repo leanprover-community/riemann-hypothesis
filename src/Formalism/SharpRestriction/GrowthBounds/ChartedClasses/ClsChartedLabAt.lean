@@ -167,20 +167,16 @@ theorem kaAt_pt (H : CmpJHyp c I) (j : ℕ) (hj : j + 1 ≤ D.R.m) (β : (I.at' 
   obtain ⟨κ, e⟩ := hs.pt (H.core j hj) hc g hL x hx
   exact ⟨hc, κ, hs.mem, e⟩
 
-section OnTw
 
 variable {st : ∀ j (hj : j + 1 ≤ D.R.m), StepIn (Tw.fm u μ) (j + 1) hj (gatJ Lv (j + 1))}
 
-end OnTw
 
-section Yb
 
 variable {inQ : D.what₂.Tup → HeightOneSpectrum (𝓞 D.host.F) → Prop} (T : Formalism.L2.Herm.TwChTied D inQ)
   {st : ∀ j (hj : j + 1 ≤ D.R.m), StepIn (Tw.fm u μ) (j + 1) hj (gatJ Lv (j + 1))}
 
 variable {T}
 
-end Yb
 
 end Formalism.MainNotions.G.KAat
 

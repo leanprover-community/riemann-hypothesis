@@ -117,7 +117,6 @@ theorem index_mackeySubgroup_realFamily (v : {v : InfinitePlace K.1 // v.IsReal}
       card_realGal_eq_two v.1 v.2]
 
 
-open scoped Classical in
 theorem finrank_mul_card_real_eq_sum_index :
     Module.finrank K.1 L.1 * Nat.card {v : InfinitePlace K.1 // v.IsReal} =
       ∑ p : Σ v : {v : InfinitePlace K.1 // v.IsReal},
@@ -129,7 +128,6 @@ theorem finrank_mul_card_real_eq_sum_index :
     Finset.sum_const, Finset.card_univ, smul_eq_mul, Nat.card_eq_fintype_card, mul_comm]
 
 
-open scoped Classical in
 theorem sum_index_eq_card_top_add :
     ∑ p : Σ v : {v : InfinitePlace K.1 // v.IsReal},
         MackeyDoubleCoset (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))

@@ -105,7 +105,6 @@ theorem bij_of_map {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [Fini
     have hKt : ν K ≠ ⊤ := hKc.measure_lt_top.ne
     open Pointwise in
     have h2m : MeasurableSet ((2 : ℝ) • K) := (hKc.smul (2 : ℝ)).isClosed.measurableSet
-    open Pointwise in
     have hpre : (f : E → F) ⁻¹' ((2 : ℝ) • K) = (2 : ℝ) • ((f : E → F) ⁻¹' K) := by
       ext x
       simp only [Set.mem_preimage, Set.mem_smul_set]

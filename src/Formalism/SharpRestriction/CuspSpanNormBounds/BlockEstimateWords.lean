@@ -33,7 +33,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.RadialGaugeOfGaugeId
 
 @[expose] public section
 
-section PartDefs
 
 open Finset Filter Topology MeasureTheory
 open scoped ComplexConjugate ComplexOrder InnerProductSpace nonZeroDivisors NumberField
@@ -46,12 +45,10 @@ open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.
 
 attribute [local instance] Classical.propDecidable
 
-section Defs
 
 variable {D : D7} {k0 : ℕ} (G : GramWordSpace.GramMap k0 D.R.rS) (X : GramWordSpace.Dat D k0)
   (a : ℕ → ℕ → D.what₂.Tau → ℂ) (cb : ℕ → ℕ → ℝ) (c0 : ℝ) (χ : ℝ → ℝ)
 
-end Defs
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -59,7 +56,6 @@ end
 
 end PartDefs
 
-section PartDefs2
 
 
 noncomputable section
@@ -69,12 +65,10 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Iface
 
 variable {D : D7} {k0 : ℕ} (G : GramWordSpace.GramMap k0 D.R.rS) (X : GramWordSpace.Dat D k0)
   (a : ℕ → ℕ → D.what₂.Tau → ℂ) (cb : ℕ → ℕ → ℝ) (c0 : ℝ) (χ : ℝ → ℝ)
 
-end Iface
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -82,7 +76,6 @@ end
 
 end PartDefs2
 
-section PartE0
 
 
 noncomputable section
@@ -92,19 +85,15 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Append
 
 variable {D : D7} {k0 : ℕ} (X : GramWordSpace.Dat D k0) (a : ℕ → ℕ → D.what₂.Tau → ℂ) (cb : ℕ → ℕ → ℝ)
 
-end Append
 
-section E0
 
 variable {D : D7} {k0 : ℕ} {G : GramWordSpace.GramMap k0 D.R.rS} {X : GramWordSpace.Dat D k0}
   {a : ℕ → ℕ → D.what₂.Tau → ℂ} {cb : ℕ → ℕ → ℝ} {c0 : ℝ} {χ : ℝ → ℝ} {ha : ∀ i s v, a i s v ≠ 0} {Ks : ℕ}
   {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {Φ : ℝ → GramWordSpace.GWord D → TA.Pt D.host.E → H}
 
-end E0
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -112,7 +101,6 @@ end
 
 end PartE0
 
-section PartP72
 
 
 noncomputable section
@@ -122,20 +110,16 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Small
 
 variable {D : D7} {k0 : ℕ}
 
-end Small
 
-section P72
 
 variable {D : D7} {k0 : ℕ} {G : GramWordSpace.GramMap k0 D.R.rS} {X : GramWordSpace.Dat D k0}
   {a : ℕ → ℕ → D.what₂.Tau → ℂ} {cb : ℕ → ℕ → ℝ} {c0 : ℝ} {χ : ℝ → ℝ} {Ks : ℕ}
   {E₀ Eg E₁ E₂ E₃ C C4 T T' : ℝ} {δ : D.host.E} {x : D.what₂.Tau → LocalDataRealPlace D} {L : LatticeDataWithDual D} {κL : ℕ → ℕ → ℝ}
   {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {Φ : ℝ → GramWordSpace.GWord D → TA.Pt D.host.E → H}
 
-end P72
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -143,7 +127,6 @@ end
 
 end PartP72
 
-section PartP74
 
 
 noncomputable section
@@ -153,14 +136,12 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section P74
 
 variable {D : D7} {k0 : ℕ} {G : GramWordSpace.GramMap k0 D.R.rS} {X : GramWordSpace.Dat D k0}
   {a : ℕ → ℕ → D.what₂.Tau → ℂ} {cb : ℕ → ℕ → ℝ} {c0 : ℝ} {χ : ℝ → ℝ} {Ks : ℕ}
   {E₀ Eg E₁ E₂ E₃ C C4 T T' : ℝ} {δ : D.host.E} {x : D.what₂.Tau → LocalDataRealPlace D} {L : LatticeDataWithDual D} {κL : ℕ → ℕ → ℝ}
   {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {Φ : ℝ → GramWordSpace.GWord D → TA.Pt D.host.E → H}
 
-end P74
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -168,7 +149,6 @@ end
 
 end PartP74
 
-section PartP73
 
 
 noncomputable section
@@ -182,14 +162,12 @@ section Psd
 
 end Psd
 
-section Lift
 
 variable {D : D7} {k0 : ℕ} {G : GramWordSpace.GramMap k0 D.R.rS} {X : GramWordSpace.Dat D k0}
   {a : ℕ → ℕ → D.what₂.Tau → ℂ} {cb : ℕ → ℕ → ℝ} {c0 : ℝ} {χ : ℝ → ℝ} {Ks : ℕ}
   {E₀ Eg E₁ E₂ E₃ C C4 T T' : ℝ} {δ : D.host.E} {x : D.what₂.Tau → LocalDataRealPlace D} {L : LatticeDataWithDual D} {κL : ℕ → ℕ → ℝ}
   {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {Φ : ℝ → GramWordSpace.GWord D → TA.Pt D.host.E → H}
 
-end Lift
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -197,7 +175,6 @@ end
 
 end PartP73
 
-section PartPPo0
 
 
 noncomputable section
@@ -207,11 +184,9 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Pos
 
 variable {D : D7} {k0 : ℕ} {G : GramWordSpace.GramMap k0 D.R.rS} {X : GramWordSpace.Dat D k0} {χ : ℝ → ℝ} {Ks : ℕ} {E₀ Eg : ℝ}
 
-end Pos
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -219,7 +194,6 @@ end
 
 end PartPPo0
 
-section PartPPo
 
 
 noncomputable section
@@ -229,14 +203,12 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Main
 
 variable {D : D7} {k0 : ℕ} {G : GramWordSpace.GramMap k0 D.R.rS} {X : GramWordSpace.Dat D k0}
   {a : ℕ → ℕ → D.what₂.Tau → ℂ} {cb : ℕ → ℕ → ℝ} {c0 : ℝ} {χ : ℝ → ℝ} {Ks : ℕ}
   {E₀ Eg E₁ E₂ E₃ C C4 T T' : ℝ} {δ : D.host.E} {x : D.what₂.Tau → LocalDataRealPlace D} {L : LatticeDataWithDual D} {κL : ℕ → ℕ → ℝ}
   {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {Φ : ℝ → GramWordSpace.GWord D → TA.Pt D.host.E → H}
 
-end Main
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -244,7 +216,6 @@ end
 
 end PartPPo
 
-section PartVec
 
 
 noncomputable section
@@ -254,12 +225,10 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Vec
 
 variable {D : D7} {k0 : ℕ} (G : GramWordSpace.GramMap k0 D.R.rS) (X : GramWordSpace.Dat D k0)
   (a : ℕ → ℕ → D.what₂.Tau → ℂ) (cb : ℕ → ℕ → ℝ) (c0 : ℝ) (χ : ℝ → ℝ)
 
-end Vec
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -283,7 +252,6 @@ end
 
 end PartClosed
 
-section PartR0
 
 
 noncomputable section
@@ -293,17 +261,13 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Sums
 
 variable {W : Type}
 
-end Sums
 
-section Words
 
 variable {D : D7}
 
-end Words
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -311,7 +275,6 @@ end
 
 end PartR0
 
-section PartR0b
 
 
 noncomputable section
@@ -321,17 +284,13 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Prob
 
 variable {D : D7}
 
-end Prob
 
-section WordSet
 
 variable {D : D7} {k0 : ℕ} (X : GramWordSpace.Dat D k0) (Ks : ℕ)
 
-end WordSet
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -371,7 +330,6 @@ end
 
 end PartU
 
-section PartPoPi
 
 
 noncomputable section
@@ -381,26 +339,20 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Span
 
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
 
-end Span
 
-section Maps
 
 open scoped FourierTransform
 
 variable {ι : Type} [Fintype ι]
 
-end Maps
 
-section Main
 
 
 variable {ι : Type} [Fintype ι]
 
-end Main
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -458,11 +410,9 @@ theorem trace_tau (D : D7) (x : D.host.E) :
   · show _ = 2 * ((InfinitePlace.mk (plEmb D v)).embedding x).re
     rw [h, ComplexEmbedding.conjugate_coe_eq, Complex.conj_re]
 
-section Scl
 
 variable {ι : Type} [Fintype ι]
 
-end Scl
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -470,7 +420,6 @@ end
 
 end PartLat1
 
-section PartLat2a
 
 
 noncomputable section
@@ -480,11 +429,9 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Alg
 
 variable {K : Type} [Field K] [NumberField K]
 
-end Alg
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -531,7 +478,6 @@ end
 
 end PartLat2b
 
-section PartLat2c
 
 
 noncomputable section
@@ -541,13 +487,11 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Main
 
 open scoped Pointwise
 
 variable (D : D7)
 
-end Main
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -634,11 +578,9 @@ structure LocFrame (D : D7) {k0 : ℕ} (hk : k0 + 1 = D.R.k) (G : GramWordSpace.
     ∫⁻ p : (Fin D.R.rS → ℂ) × ℂ, ENNReal.ofReal (bcWeight D.R.k D.R.rS (Tz D.R.k D.R.rS B.z) (Tz D.R.k D.R.rS B.z') p *
       hsNormSq (B.J f (bigCell D.R.k D.R.rS p.1 (μsec p.2))))
 
-section Glob
 
 variable {D : D7} (L : LatticeDataWithDual D) (kap : D.what₂.Tau → ℝ) (av : D.what₂.Tau → ℕ → ℕ → ℂ) (Aa : D.what₂.Tau → ℝ)
 
-end Glob
 
 structure XTie {D : D7} {k0 : ℕ} (X : GramWordSpace.Dat D k0) (x : D.what₂.Tau → LocalDataRealPlace D) (T T' : ℝ) (kap : D.what₂.Tau → ℝ) : Prop where
   hT : ∀ v, X.T v = kap v ^ (2 * D.R.rS) * T
@@ -657,7 +599,6 @@ end
 
 end PartDefs3
 
-section PartN1
 
 
 noncomputable section
@@ -667,7 +608,6 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Fr
 
 variable {D : D7} {k0 : ℕ} (hk : k0 + 1 = D.R.k) {G : GramWordSpace.GramMap k0 D.R.rS} {B : D.what₂.Tau → LocBessel D.R.k D.R.rS}
     {f : ∀ v, Matrix (Fin (2 * D.R.rS + D.R.k + 1)) (Fin (2 * D.R.rS + D.R.k + 1)) ℂ → ((B v).Wq →L[ℂ] (B v).Wp)}
@@ -676,7 +616,6 @@ variable {D : D7} {k0 : ℕ} (hk : k0 + 1 = D.R.k) {G : GramWordSpace.GramMap k0
     (R : ∀ v (j : ℕ) (hj : j ≤ D.R.rS), ℂ → Matrix (Fin 2) (Fin 2) (GramWordSpace.lev (Fr v).B' (Fr v).μ' j hj).POp)
     (Th : ∀ v (j : ℕ) (_ : j ≤ D.R.rS) (w : TopsChoicePartA.Word), TopsChoicePartA.AuxiliarySlotStates w.length → GramWordSpace.GFn (Fr v).B' → GramWordSpace.GFn (Fr v).B')
 
-end Fr
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -700,7 +639,6 @@ end
 
 end PartN2
 
-section PartNum0
 
 
 noncomputable section
@@ -711,7 +649,6 @@ namespace Formalism.MainNotions.BlockEstimateWords
 attribute [local instance] Classical.propDecidable
 
 
-section Num
 
 variable {D : D7} {k0 : ℕ} {X : GramWordSpace.Dat D k0} {Ks : ℕ} {E₀ Eg E₁ E₂ C T T' ϱ : ℝ} {δ : D.host.E}
     {x : D.what₂.Tau → LocalDataRealPlace D} {L : LatticeDataWithDual D} {Kd : KernelData D} {B : D.what₂.Tau → LocBessel D.R.k D.R.rS}
@@ -726,7 +663,6 @@ variable (hH : ThmAHyp D C Ks δ T T' x L Kd B f μsec) (hX : XTie X x T T' kap)
 
 include hH hX hϱ hkap hav hE₁ hE₁C hE₂ hE₂C
 
-end Num
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -734,7 +670,6 @@ end
 
 end PartNum0
 
-section PartNum1
 
 
 noncomputable section
@@ -744,7 +679,6 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Num1
 
 variable {D : D7} {k0 : ℕ} {X : GramWordSpace.Dat D k0} {Ks : ℕ} {E₀ Eg E₁ E₂ C T T' ϱ : ℝ} {δ : D.host.E}
     {x : D.what₂.Tau → LocalDataRealPlace D} {L : LatticeDataWithDual D} {Kd : KernelData D} {B : D.what₂.Tau → LocBessel D.R.k D.R.rS}
@@ -758,7 +692,6 @@ variable {D : D7} {k0 : ℕ} {X : GramWordSpace.Dat D k0} {Ks : ℕ} {E₀ Eg E�
 
 include hH hX hϱ hkap hav hE₁ hE₁C hE₂ hE₂C
 
-end Num1
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -766,7 +699,6 @@ end
 
 end PartNum1
 
-section PartNum2
 
 
 noncomputable section
@@ -776,7 +708,6 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Num2
 
 variable {D : D7} {k0 : ℕ} {X : GramWordSpace.Dat D k0} {Ks : ℕ} {E₀ Eg E₁ E₂ C T T' ϱ : ℝ} {δ : D.host.E}
     {x : D.what₂.Tau → LocalDataRealPlace D} {L : LatticeDataWithDual D} {Kd : KernelData D} {B : D.what₂.Tau → LocBessel D.R.k D.R.rS}
@@ -790,7 +721,6 @@ variable {D : D7} {k0 : ℕ} {X : GramWordSpace.Dat D k0} {Ks : ℕ} {E₀ Eg E�
 
 include hH hX hϱ hkap hav hE₁ hE₁C hE₂ hE₂C
 
-end Num2
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -798,7 +728,6 @@ end
 
 end PartNum2
 
-section PartNum3
 
 
 noncomputable section
@@ -808,7 +737,6 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Num3
 
 variable {D : D7} {k0 : ℕ} {X : GramWordSpace.Dat D k0} {Ks : ℕ} {E₀ Eg E₁ E₂ C T T' ϱ : ℝ} {δ : D.host.E}
     {x : D.what₂.Tau → LocalDataRealPlace D} {L : LatticeDataWithDual D} {Kd : KernelData D} {B : D.what₂.Tau → LocBessel D.R.k D.R.rS}
@@ -823,7 +751,6 @@ variable (hH : ThmAHyp D C Ks δ T T' x L Kd B f μsec) (hX : XTie X x T T' kap)
 
 include hH hX hϱ hkap hav hE₁ hE₁C hE₂ hE₂C
 
-end Num3
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -831,7 +758,6 @@ end
 
 end PartNum3
 
-section PartVal0
 
 
 noncomputable section
@@ -841,11 +767,9 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section Val
 
 variable {D : D7} {L : LatticeDataWithDual D}
 
-end Val
 
 end Formalism.MainNotions.BlockEstimateWords
 
@@ -853,7 +777,6 @@ end
 
 end PartVal0
 
-section PartVal
 
 
 noncomputable section
@@ -863,7 +786,6 @@ namespace Formalism.MainNotions.BlockEstimateWords
 
 attribute [local instance] Classical.propDecidable
 
-section ValM
 
 variable {D : D7} {k0 : ℕ} (hk : k0 + 1 = D.R.k) {G : GramWordSpace.GramMap k0 D.R.rS} {B : D.what₂.Tau → LocBessel D.R.k D.R.rS}
     {f : ∀ v, Matrix (Fin (2 * D.R.rS + D.R.k + 1)) (Fin (2 * D.R.rS + D.R.k + 1)) ℂ → ((B v).Wq →L[ℂ] (B v).Wp)}
@@ -872,7 +794,6 @@ variable {D : D7} {k0 : ℕ} (hk : k0 + 1 = D.R.k) {G : GramWordSpace.GramMap k0
     (R : ∀ v (j : ℕ) (hj : j ≤ D.R.rS), ℂ → Matrix (Fin 2) (Fin 2) (GramWordSpace.lev (Fr v).B' (Fr v).μ' j hj).POp)
     (Th : ∀ v (j : ℕ) (_ : j ≤ D.R.rS) (w : TopsChoicePartA.Word), TopsChoicePartA.AuxiliarySlotStates w.length → GramWordSpace.GFn (Fr v).B' → GramWordSpace.GFn (Fr v).B')
 
-end ValM
 
 end Formalism.MainNotions.BlockEstimateWords
 

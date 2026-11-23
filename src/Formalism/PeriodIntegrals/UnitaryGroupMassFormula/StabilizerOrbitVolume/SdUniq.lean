@@ -101,12 +101,10 @@ theorem transform_indicator (hLo : IsOpen (L : Set V)) (y : V) :
 
 end Lattice
 
-section Triv
 
 variable {V : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V] [T2Space V]
   [MeasurableSpace V] [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (χ : V → V → ℂ)
 
-end Triv
 
 section Nontriv
 
@@ -212,8 +210,6 @@ end ContY
 
 end SdUniqW
 
-open scoped TensorProduct
-open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PI.AdicCompletionValuation
   PI.VolFromSW SdUniqW
 
 end PI.VolStabSW

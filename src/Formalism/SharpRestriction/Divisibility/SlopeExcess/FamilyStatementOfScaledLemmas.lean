@@ -36,12 +36,10 @@ open NumberField Module Formalism.BasicNotions Formalism.MainNotions.PrimeDegree
 
 namespace Formalism.MainNotions.DIV.Proofs.ScaledLatticeNorms
 
-section Norms
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
   {V ι : Type} [AddCommGroup V] [Module K V] [Fintype ι] [DecidableEq ι]
 
-end Norms
 
 section Lat
 
@@ -60,11 +58,9 @@ theorem mu_le_muMax (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ
 
 end Lat
 
-section Level
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] [NumberField.IsTotallyComplex K]
 
-end Level
 
 section Reals
 
@@ -107,13 +103,11 @@ theorem scaled_lattice_nonzero_holds (D : D7) : Formalism.MainNotions.PrimeDegre
 
 end Zero
 
-section Main
 
 attribute [local instance] Formalism.MainNotions.PrimeDegreeVariant.finiteLevelGroupFintype
 
 variable {D : D7} {X : BaseLevelRowSide D}
 
-end Main
 
 end Formalism.MainNotions.DIV.Proofs.ScaledLatticeNorms
 

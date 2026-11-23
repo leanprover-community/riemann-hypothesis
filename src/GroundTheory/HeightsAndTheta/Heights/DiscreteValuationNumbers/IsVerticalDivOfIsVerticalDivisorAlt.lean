@@ -97,13 +97,11 @@ theorem isMultiProjPrime_iff (P : Ideal (MRing ι R)) :
 
 end Ring
 
-section DVR
 
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
 
 
-end DVR
 
 end Objects
 

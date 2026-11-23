@@ -122,7 +122,6 @@ end PI.LocMassTypW.WGramP
 namespace PI.LocMassTypW
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.LocVol NumberField IsDedekindDomain Matrix WGramP
-open scoped TensorProduct
 
 theorem gram_matrix_unitary_invariance : GramU := by
   classical

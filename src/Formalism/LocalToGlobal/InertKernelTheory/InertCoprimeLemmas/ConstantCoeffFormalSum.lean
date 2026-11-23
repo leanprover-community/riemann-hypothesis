@@ -751,10 +751,8 @@ theorem sum_beta_even : SumBeEven := by
 
 end Even2
 
-section Iff
 
 variable {p : ℕ} [Fact p.Prime]
 
-end Iff
 
 end Formalism.L2.KerInert.K1

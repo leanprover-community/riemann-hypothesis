@@ -45,13 +45,11 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.WeightedMirrorLevelO
 
 @[expose] public section
 
-section PartSl1
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.UnitaryLevelOperators Matrix
 
-section Head
 
 variable (k j r' : ℕ)
 
@@ -60,7 +58,6 @@ variable {k j r'}
 variable (z z' : Fin (2 * (j + r') + k + 1) → ℂ) (h : Matrix (Fin j) (Fin j) ℂ)
   (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ)
 
-end Head
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -85,7 +82,6 @@ end Formalism.MainNotions.BridgeLemma₅
 
 end PartSl3
 
-section PartT22
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
@@ -93,11 +89,9 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.MainNotions.S Formal
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section Homog
 
 variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-end Homog
 
 section Classes
 
@@ -118,40 +112,33 @@ end Formalism.MainNotions.BridgeLemma₅
 
 end PartT22b
 
-section PartBlk
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
 
-section GlobalTheory
 
 variable {k j r' : ℕ}
 
 variable (o o' : Matrix (Fin (2 * (j + r') + k + 1)) (Fin (2 * (j + r') + k + 1)) ℂ)
   (g g' : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ)
 
-end GlobalTheory
 
 end Formalism.MainNotions.BridgeLemma₅
 
 end PartBlk
 
-section PartLv
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
 
-section Lv
 
 variable {k j r' : ℕ}
 
-end Lv
 
 end Formalism.MainNotions.BridgeLemma₅
 
 end PartLv
 
-section PartHd
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
@@ -159,19 +146,16 @@ open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section Hd
 
 variable {k r' : ℕ}
 
 variable (c : ℂ) (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ)
 
-end Hd
 
 end Formalism.MainNotions.BridgeLemma₅
 
 end PartHd
 
-section PartBc
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
@@ -180,26 +164,20 @@ variable {k r' : ℕ}
 
 end Formalism.MainNotions.BridgeLemma₅
 
-end PartBc
 
-section PartSlI
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section Cast
 
 variable {k j r' R : ℕ}
 
-end Cast
 
-section Cast1
 
 variable {k r' R : ℕ}
 
-end Cast1
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -225,7 +203,6 @@ end Formalism.MainNotions.BridgeLemma₅
 
 end PartRp
 
-section PartWdAll
 
 noncomputable section PartWd1
 
@@ -233,11 +210,9 @@ namespace Formalism.MainNotions.BridgeLemma₅
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
 
-section WdAbstract
 
 variable {m : ℕ} {E : Type*} [AddCommGroup E] [Module ℂ E]
 
-end WdAbstract
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -251,13 +226,11 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.MainNotions.S Formal
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section WdZero
 
 variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 variable {Eop : Fin n → Fin n → (Matrix (Fin n) (Fin n) ℂ → E) → (Matrix (Fin n) (Fin n) ℂ → E)}
 
-end WdZero
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -268,19 +241,15 @@ noncomputable section PartWd3
 namespace Formalism.MainNotions.BridgeLemma₅
 
 
-section WdScalars
 
 variable {m : ℕ} {E : Type*} [AddCommGroup E] [Module ℂ E]
 
-end WdScalars
 
-section WdKap
 
 open Formalism.FourierDecayAlt.Wd
 
 variable {S : Type}
 
-end WdKap
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -314,13 +283,11 @@ namespace Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section WdHom
 
 variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 variable {Eop : Fin n → Fin n → (Matrix (Fin n) (Fin n) ℂ → E) → (Matrix (Fin n) (Fin n) ℂ → E)}
 
-end WdHom
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -357,21 +324,17 @@ end Formalism.MainNotions.BridgeLemma₅
 
 end PartLc
 
-section PartFrAll
 
-section PartFr1
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.LevR
 
-section Abstract
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {B : Base E} {r : ℕ} (C : Ctx B r)
 
 variable {C}
 
-end Abstract
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -387,42 +350,34 @@ end Formalism.MainNotions.BridgeLemma₅
 
 end PartFr2
 
-section PartFr3
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
 open Polynomial Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.I
 
-section Ring
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ}
 
-end Ring
 
 end Formalism.MainNotions.BridgeLemma₅
 
 end PartFr3
 
-section PartFr5
 
 namespace Formalism.MainNotions.BridgeLemma₅
 
 open Polynomial Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.LevR Formalism.MainNotions.S.UnitaryLevelOperators
 
-section Rat
 
 variable {V : Type} [Ring V] [Algebra ℂ V]
 
-end Rat
 
-section Ee
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {B : Base E} {r : ℕ} (C : Ctx B r)
   (SS : Fin B.k0 → (Fin (r + 1) → ℂ) → E →L[ℂ] E)
 
 variable {C SS}
 
-end Ee
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -549,7 +504,6 @@ end PartLb7
 
 section PartTaAll
 
-section PartTa1
 
 open NumberField Finset Filter Topology
 open scoped nonZeroDivisors ComplexConjugate ComplexOrder InnerProductSpace
@@ -562,17 +516,13 @@ open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Loca
 
 attribute [local instance] Classical.propDecidable
 
-section Sets
 
 variable (D : D7)
 
-end Sets
 
-section Axioms
 
 variable {D : D7} {L : LatticeDataWithDual D} {Kd : KernelData D} (Lv : ℕ → AddSubgroup D.host.E)
 
-end Axioms
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -580,7 +530,6 @@ end
 
 end PartTa1
 
-section PartTa2
 
 
 noncomputable section
@@ -589,13 +538,11 @@ namespace Formalism.MainNotions.BridgeLemma₅
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalFrameAxioms Formalism.MainNotions.InterlacingSignCuts
 
-section Lattices
 
 variable (D : D7)
 
 variable {D}
 
-end Lattices
 
 end Formalism.MainNotions.BridgeLemma₅
 
@@ -679,7 +626,6 @@ end
 
 end PartTa5
 
-section PartTa6
 
 
 noncomputable section
@@ -689,13 +635,11 @@ namespace Formalism.MainNotions.BridgeLemma₅
 
 attribute [local instance] Classical.propDecidable
 
-section Ultra
 
 variable (D : D7)
 
 variable {D}
 
-end Ultra
 
 end Formalism.MainNotions.BridgeLemma₅
 

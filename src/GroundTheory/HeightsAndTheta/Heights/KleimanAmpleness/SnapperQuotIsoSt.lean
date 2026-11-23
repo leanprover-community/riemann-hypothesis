@@ -41,7 +41,6 @@ noncomputable section
 
 universe u v w v'
 
-section Defs
 
 variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N : ℕ} {x : Fin (N + 1) → Ω}
 
@@ -55,7 +54,6 @@ structure QuotIso {E : Type v} [AddCommGroup E] [Module Ω E] [Module S E] [IsSc
   comm : ∀ (I J : Chart x) (h : I.1 ⊆ J.1) (y : F₁.sub I ⧸ SubSystem.quotSub F₁ F₂ I),
     equiv J (SubSystem.quotRes F₁ F₂ I J h y) = SubSystem.quotRes G₁ G₂ I J h (equiv I y)
 
-end Defs
 
 def SnapperQuotIso.Statement : Prop :=
   ∀ (k : Type u) [Field k] (Ω : Type w) [Field Ω] [Algebra k Ω] (N : ℕ) (x : Fin (N + 1) → Ω)

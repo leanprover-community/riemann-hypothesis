@@ -50,11 +50,9 @@ namespace UnipotentUpperFacts
 
 open C2x5 C2x6 C2x7 HermitianProjections FixedPointsGramVector
 
-section gen
 
 variable {n ι : Type*} [Fintype n] [DecidableEq n] [Fintype ι] [DecidableEq ι]
 
-end gen
 
 variable {k r : ℕ}
 

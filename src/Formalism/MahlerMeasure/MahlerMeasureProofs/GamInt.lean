@@ -1181,10 +1181,8 @@ namespace Formalism.GM.gammaIntegralityLemmas
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
-section term3
 variable {N r : ℕ}
 
-end term3
 
 end Formalism.GM.gammaIntegralityLemmas
 

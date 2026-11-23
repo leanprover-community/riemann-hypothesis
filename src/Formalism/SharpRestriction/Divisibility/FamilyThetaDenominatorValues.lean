@@ -267,12 +267,10 @@ end AdmON
 abbrev ONObjF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Type 1 :=
   ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ONObj (Fm.D x i) (Fm.ex x hx i).nch (Fm.X x i)
 
-section FamON
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (OF : ONObjF Fm)
 
 
-end FamON
 
 end Formalism.MainNotions.PDVN
 

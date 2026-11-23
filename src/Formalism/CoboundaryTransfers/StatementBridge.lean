@@ -41,7 +41,6 @@ namespace Formalism.CoboundaryTransfers
 
 open Formalism
 
-section CL
 
 variable {p : ℕ} [Fact p.Prime] {A : Type} [CommRing A] [Algebra ℤ_[p] A]
 
@@ -50,7 +49,6 @@ variable {B : CL.W.Base p A} {η : ℕ}
 variable {D D' : Type} [AddCommGroup D] [Module A D] [Module ℤ_[p] D] [IsScalarTower ℤ_[p] A D]
   [AddCommGroup D'] [Module A D'] [Module ℤ_[p] D'] [IsScalarTower ℤ_[p] A D']
 
-end CL
 
 section CLback
 

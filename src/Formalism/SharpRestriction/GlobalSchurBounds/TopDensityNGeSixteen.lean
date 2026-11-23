@@ -1691,7 +1691,6 @@ theorem ioP_le {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (K : G.Consts) (p :
   · exact mul_nonneg (mul_nonneg (by norm_num) hSig)
       (div_nonneg (mul_nonneg (by norm_num) (mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)) ha)) hp)
 
-section Points
 
 variable (Fm : FamP eps) (x : ℝ) (i0 : Fm.Ix x)
 
@@ -1699,7 +1698,6 @@ variable {Fm x i0}
 
 
 
-end Points
 
 end Formalism.MainNotions.Lnk
 

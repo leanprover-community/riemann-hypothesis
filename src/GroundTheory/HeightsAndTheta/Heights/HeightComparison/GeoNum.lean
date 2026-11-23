@@ -288,7 +288,6 @@ theorem intNum_map_eq_geoNum {K : Type} [Fintype K] [DecidableEq K] {ι : K → 
   rwa [hcm] at this
 
 
-open GeoNum in
 theorem intNum_map_eq_geoNum_hyps (p : ℕ) [Fact p.Prime] (D : ℕ) :
     Geo.IsMultiProjPrime (RingHom.ker (red (ι := fun _ : Unit => Fin (D + 1)) p)) ∧
       (C (p : ℤ) : Geo.MRing (fun _ : Unit => Fin (D + 1))) ∈

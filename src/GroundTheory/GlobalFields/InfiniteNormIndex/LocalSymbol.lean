@@ -158,7 +158,6 @@ theorem completionConj_ne_one (hv : v.IsReal) (hw : w.IsComplex) :
   simp at h2
 
 
-open scoped Classical in
 theorem eq_one_or_eq_completionConj (hv : v.IsReal) (hw : w.IsComplex)
     (σ : Gal(w.Completion/v.Completion)) : σ = 1 ∨ σ = completionConj hv := by
   classical
@@ -173,7 +172,6 @@ theorem eq_one_or_eq_completionConj (hv : v.IsReal) (hw : w.IsComplex)
   omega
 
 
-open scoped Classical in
 theorem univ_eq_one_completionConj (hv : v.IsReal) (hw : w.IsComplex) :
     (Finset.univ : Finset Gal(w.Completion/v.Completion)) = {1, completionConj hv} := by
   ext σ
@@ -271,7 +269,6 @@ section LocalSymbol
 variable (v)
 
 
-open scoped Classical in
 def localSymbol : v.Completionˣ →* Gal(w.Completion/v.Completion) :=
   if hv : v.IsReal then
     (realSignHom (completionConj (w := w) hv) (completionConj_mul_self hv)).comp

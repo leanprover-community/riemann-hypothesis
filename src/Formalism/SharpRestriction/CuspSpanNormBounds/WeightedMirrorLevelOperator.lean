@@ -236,11 +236,9 @@ end Ctx
 
 namespace Ctx
 
-section Shape
 
 variable {B : Base E} {r : ℕ} {C : Ctx B r} {SS : Fin B.k0 → (Fin (r + 1) → ℂ) → E →L[ℂ] E} {b : Bool}
 
-end Shape
 
 end Ctx
 

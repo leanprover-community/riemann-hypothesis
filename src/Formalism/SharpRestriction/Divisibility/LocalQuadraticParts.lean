@@ -121,11 +121,9 @@ def sExpl (D : D7) (L : SizeData₂ D) (Z : DivX D) (C : ℝ) : ℝ := sFrame D.
 def FrameNumberBound (D : D7) (L : SizeData₂ D) (Z : DivX D) (Csz CH : ℝ) : Prop :=
   sExpl D L Z Csz + D.div.RR.muMax ≤ L.sc.x ^ CH * L.sc.b
 
-section ThmF
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-end ThmF
 
 def ComplementTwoFamily {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) : Prop :=
   ∃ C x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, adm11 (Fm.D x i) (Fm.L x i) C
@@ -178,18 +176,14 @@ def Defs (Gi : G.Inst D L) (K : G.Consts) (Cr : ℝ) : Prop :=
 
 end admitted
 
-section Adm2
 
 variable {D : D7} (L : SizeData₂ D)
 
-end Adm2
 
-section Adm3
 
 variable {D : D7} {L : SizeData₂ D}
 
 
-end Adm3
 
 section Adm4
 
@@ -220,11 +214,9 @@ def adm26 (C : ℝ) : Prop :=
 
 end Adm4
 
-section Adm5
 
 variable {D : D7} {L : SizeData₂ D}
 
-end Adm5
 
 def Conclusion4 {D : D7} {L : SizeData₂ D} (Gi : G.Inst D L) (K : G.Consts) (C Cr : ℝ) : Prop :=
   Defs Gi K Cr →

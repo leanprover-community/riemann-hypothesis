@@ -54,7 +54,6 @@ theorem dualLat_eq (Λ : Submodule ℤ E) :
   simp only [algebraMap_int_eq, eq_intCast]
   exact ⟨fun ⟨n, hn⟩ => ⟨n, hn.symm⟩, fun ⟨n, hn⟩ => ⟨n, hn.symm⟩⟩
 
-section lattice
 
 variable [FiniteDimensional ℝ E] (Λ : Submodule ℤ E) [DiscreteTopology Λ] [IsZLattice ℝ Λ]
 
@@ -64,6 +63,5 @@ instance instDiscreteDualLat : DiscreteTopology (dualLat Λ) := by
   rw [dualLat_eq]
   exact (Formalism.H.dualIsLattice E Λ).1
 
-end lattice
 
 end PI.Tr

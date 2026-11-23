@@ -183,7 +183,6 @@ variable {K : Type*} [Field K] [NumberField K] (L : Type*) [Field L] [NumberFiel
   [IsGalois K L] [IsMulCommutative (L ≃ₐ[K] L)] (v : InfinitePlace K)
 
 
-open scoped Classical in
 def infiniteLocalSymbol : v.Completionˣ →* (L ≃ₐ[K] L) :=
   if hv : v.IsReal then
     (InfinitePlace.realSignHom (conjAt K ((IdeleNorm.nonempty_infinitePlacesOver L v).some :
@@ -241,7 +240,6 @@ theorem ker_infiniteLocalSymbol (w : v.placesOver L) :
     · rw [infiniteLocalSymbol_of_not_isReal L v hv, MonoidHom.one_apply]
 
 
-open scoped Classical in
 theorem range_infiniteLocalNorm_le_ker_infiniteLocalSymbol :
     (IdeleNorm.infiniteLocalNorm L v).range ≤ (infiniteLocalSymbol L v).ker := by
   rintro _ ⟨y, rfl⟩

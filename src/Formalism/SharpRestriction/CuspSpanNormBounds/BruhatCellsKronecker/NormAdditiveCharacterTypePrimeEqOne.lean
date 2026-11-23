@@ -280,25 +280,20 @@ theorem gram_det_eq (P : FPair H r) (hs : M.split = none) :
 
 end NG
 
-section K2
 
 open Formalism.MainNotions.S.Cnt
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end K2
 
 section Copies
 
 end Copies
 
-section Vol
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Vol
 
-section NGEq
 
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel ComplexConjugate
 
@@ -308,7 +303,6 @@ variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 
 variable {H : HermSp M V} {r : ℕ} {P : FPair H r}
 
-end NGEq
 
 section BB
 
@@ -645,17 +639,14 @@ def massS (R : Reps P) (d : Datum P) (S : Term V M r → Prop) : ℝ :=
 
 end NGAsm
 
-section NGAll
 
 
-section One
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 variable {H : HermSp M V} {r : ℕ} {P : FPair H r}
 
-end One
 
 end NGAll
 

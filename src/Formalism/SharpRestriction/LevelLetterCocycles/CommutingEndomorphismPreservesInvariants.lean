@@ -51,18 +51,15 @@ namespace Idx
 open Formalism.IrreducibleCountingLemmas.TW (relLen)
 open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
 
-section Comm
 
 variable {R W : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [AddCommGroup W] [Module R W]
 
-end Comm
 
 end Idx
 
 namespace Idx
 
 
-section BaseChange
 
 variable {R R' W W' : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
   [CommRing R'] [IsDomain R'] [IsDiscreteValuationRing R'] [Algebra R R']
@@ -77,14 +74,12 @@ variable {ϖ : R} {ϖ' : R'} {u : R'ˣ} {e : ℕ}
 
 
 
-end BaseChange
 
 end Idx
 
 namespace Idx
 
 
-section Transfer
 
 variable {O Ok O' Fm : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   [CommRing Ok] [IsDomain Ok] [IsDiscreteValuationRing Ok] [CommRing O'] [IsDomain O']
@@ -92,18 +87,15 @@ variable {O Ok O' Fm : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing 
   [AddCommGroup Fm] [Module O Fm]
 
 
-end Transfer
 
 end Idx
 
 namespace Idx
 
 
-section More
 
 variable {R W : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [AddCommGroup W] [Module R W]
 
-end More
 
 end Idx
 

@@ -38,7 +38,6 @@ namespace Formalism.MainNotions.PairedCharacterCondition.RT
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal
   Polynomial CategoryTheory Formalism.MainNotions.PairedCharacterCondition
 
-section Reps
 
 open Formalism.IrreducibleCountingLemmas.TYPES (RepIso)
 
@@ -47,7 +46,6 @@ variable {Γ : Type} [Group Γ]
 variable {V W U : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
   [AddCommGroup U] [Module ℂ U]
 
-end Reps
 
 section Blocks
 
@@ -205,13 +203,11 @@ theorem idem_mul_eSer (P : Pend D) (k : Fin 2) (τ : (P.lz k).Irr D.R.r) :
 
 end DZ
 
-section TY
 
 open Formalism.MainNotions.SumRepresentations.At
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N)
 
-end TY
 
 end Formalism.MainNotions.PairedCharacterCondition.RT
 

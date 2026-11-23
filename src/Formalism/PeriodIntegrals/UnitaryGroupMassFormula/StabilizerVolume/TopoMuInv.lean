@@ -115,7 +115,6 @@ end PI.VolStabS.TopoMuInv
 namespace PI.VolStabS
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub NumberField IsDedekindDomain MeasureTheory PI.VolFromSW
-open scoped TensorProduct
 
 theorem muInvInf_of (hU : SdUniq) : MuInvInf := by
   intro F E _ _ _ _ _ σ hCM M J hJ ha hc a ha1 ha2 X0 hT hdet ψ hψ μinf hμ h

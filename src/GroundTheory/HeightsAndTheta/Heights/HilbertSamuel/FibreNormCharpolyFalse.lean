@@ -75,7 +75,6 @@ end ProjLine
 
 namespace FibreNormCharpoly
 
-open ProjLine
 
 end FibreNormCharpoly
 

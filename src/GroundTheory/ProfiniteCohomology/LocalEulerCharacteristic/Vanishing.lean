@@ -112,7 +112,6 @@ end GroundTheory.ProfCoh
 
 namespace GroundTheory.ProfCoh
 
-open CategoryTheory GroundTheory.LocalField ValuativeRel IsLocalRing IntermediateField
 
 section DegreeZero
 
@@ -265,7 +264,6 @@ end GroundTheory.ProfCoh
 
 namespace GroundTheory.ProfCoh
 
-open CategoryTheory GroundTheory.LocalField ValuativeRel IsLocalRing IntermediateField
 
 section Helpers
 

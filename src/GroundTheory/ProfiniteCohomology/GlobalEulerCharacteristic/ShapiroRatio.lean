@@ -122,7 +122,6 @@ private theorem rat_prod_eq_of_nat_prod_eq {α β : Type*} [Fintype α] [Fintype
   simpa only [Nat.cast_prod, Nat.cast_mul, Nat.cast_pow] using
     congrArg (fun m : ℕ => (m : ℚ)) h
 
-open scoped Classical in
 theorem gsEulerRatio_coind_eq_of [Finite B]
     (ιrL : ∀ w : {w : InfinitePlace L.1 // w.IsReal}, ℚ̄ →ₐ[L.1] AlgebraicClosure w.1.Completion)
     (mem : {w : InfinitePlace L.1 // w.IsReal} → MackeyTopIndex (gsRealFamily S ιr) (gsOpenSubgroup S hL))

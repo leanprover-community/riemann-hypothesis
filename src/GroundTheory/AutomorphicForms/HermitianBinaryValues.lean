@@ -64,7 +64,6 @@ theorem continuous_ringEquivRealOfIsReal (hv : v.IsReal) :
 end Archimedean
 
 
-open NumberField.InfinitePlace.Completion
 
 universe u
 

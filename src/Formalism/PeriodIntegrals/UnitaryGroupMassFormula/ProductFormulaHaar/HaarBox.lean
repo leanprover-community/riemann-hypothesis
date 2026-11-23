@@ -60,7 +60,6 @@ theorem secondCountable : SecondCountableTopology K := by
         MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
   open scoped Valued in
   have : ProperSpace K := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace K
-  open scoped Valued in
   exact secondCountable_of_proper
 
 variable {K}

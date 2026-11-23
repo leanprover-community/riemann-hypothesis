@@ -240,10 +240,8 @@ structure GivC where
   cT : ℝ
   CT : ℝ
 
-section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Family
 
 end Formalism.MainNotions.AdmissibleBoundsFromSource

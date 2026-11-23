@@ -49,11 +49,9 @@ open Finset
 
 namespace Formalism.InvariantFactorPaths.BranchingDimensions
 
-section Digits
 
 variable {I1 I2 : Type}
 
-end Digits
 
 section Residue
 

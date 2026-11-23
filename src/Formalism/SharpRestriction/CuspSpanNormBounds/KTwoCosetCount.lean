@@ -170,11 +170,9 @@ theorem sum_prod_le {ι α : Type*} [DecidableEq ι] [DecidableEq α] (S : Finse
 
 end C
 
-section Dsum
 
 variable {D : D7}
 
-end Dsum
 
 end Formalism.MainNotions.KTwoCosetCount
 

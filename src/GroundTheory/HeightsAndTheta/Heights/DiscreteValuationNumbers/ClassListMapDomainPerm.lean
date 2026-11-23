@@ -257,17 +257,13 @@ theorem pairNum_eq {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRin
 
 end PairNumbers
 
-section DualGens
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-end DualGens
 
-section ProjBundle
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-end ProjBundle
 
 section Joins
 
@@ -284,10 +280,8 @@ theorem joinForm_eq {R : Type*} [CommRing R] (f : MRing ι R) :
 
 end Joins
 
-section Degenerate
 
 variable (O : Type*) [CommRing O] {Ω : Type*} [Field Ω] [Algebra O Ω]
 
-end Degenerate
 
 end GroundTheory.Heights₂.Heights.NumbersDVR.BundleExamples

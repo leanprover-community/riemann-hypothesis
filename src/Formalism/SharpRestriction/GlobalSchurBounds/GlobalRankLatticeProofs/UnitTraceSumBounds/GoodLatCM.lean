@@ -37,11 +37,9 @@ open Formalism.MainNotions.TaylorLogMetric Formalism.BasicNotions NumberField
 
 namespace Formalism.MainNotions.Ext
 
-section Lat
 
 variable {E : Type} [Field E] [NumberField E]
 
-end Lat
 
 end Formalism.MainNotions.Ext
 

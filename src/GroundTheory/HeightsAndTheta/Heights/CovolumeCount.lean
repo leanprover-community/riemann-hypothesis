@@ -62,12 +62,10 @@ variable [IsZLattice ℝ L]
 
 end Euclidean
 
-section Bundle
 
 variable {K : Type*} [Field K] [NumberField K] {E : Type*} [AddCommGroup E] [Module (𝓞 K) E]
   [Module.Finite (𝓞 K) E] [Module.Projective (𝓞 K) E] (h : HermitianMetric K E)
 
-end Bundle
 
 end
 

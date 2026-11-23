@@ -142,10 +142,8 @@ theorem index_det (ϖ : R) (hϖ : Irreducible ϖ) {n : Type} [Fintype n] [Decida
 
 end IdxDet
 
-section Count
 
 variable {F : Type} [Field F] [Fintype F]
 
-end Count
 
 end Formalism.HermitianLattices.RamifiedLatticeOperators.IndexDeterminantCharacterSums

@@ -99,7 +99,6 @@ private theorem place_kernel {A T' K V G : Type*} [Ring A] [CommRing T'] [Algebr
     simp only [Pi.zero_apply, zero_smul, Finset.sum_const_zero, add_zero]
     exact h.symm
 
-section Hom
 variable {A T' K V G : Type*} [Ring A] [CommRing T'] [Algebra T' A] [Field K] [Group G]
     [AddCommGroup V] [Module A V] [Module K V] [Module T' V] [IsScalarTower T' A V]
     {r : G →* A} {χ : G →* T'ˣ} {E : A} {ι : Type*} [Fintype ι] [DecidableEq ι] {j : ι → ℕ}
@@ -159,7 +158,6 @@ private theorem colHom_exists (e₁ : A) (δ : T') (D : ι → Subgroup G) (Kc :
     rw [← key]
     abel
 
-end Hom
 
 theorem columnJ : StatColumnJ := by
   intro A T' K V G _ _ _ _ _ _ _ _ _ _ _ _ r χ E e₁ δ ι _ _ D j Kc k0 hE he₁ δx hδx hδ hrE hre₁

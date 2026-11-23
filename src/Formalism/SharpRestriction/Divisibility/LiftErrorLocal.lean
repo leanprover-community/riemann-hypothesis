@@ -478,12 +478,10 @@ def Conclusion₂ (CRd C1 C2 C3 CA CD : ℝ) : Prop :=
 
 end Conclusion₂
 
-section Fam
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
   (XF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc (Fm.D x i) (Fm.ex x hx i).nch)
 
-end Fam
 
 end Formalism.MainNotions.LiftErrorLocal
 

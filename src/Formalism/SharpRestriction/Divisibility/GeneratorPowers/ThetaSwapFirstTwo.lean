@@ -189,14 +189,12 @@ theorem cc_psIn {n n' : ℕ} (m : ℕ) (r : Fin n → Fin n') (f : PS S n d) :
 
 end Ser
 
-section Comm
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X0 : Scheme.{0}} (t : SAB H X0)
 variable {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) (d : ℕ) (x : ∀ m, jOG x0 d m 1 ⟶ t.G)
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt)
 
-end Comm
 
 section AxTools
 

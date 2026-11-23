@@ -127,10 +127,8 @@ def IsPlaceAbove (F : Type*) [Field F] [NumberField F] {Ω : Type*} [Field Ω] [
     (A : ValuationSubring Ω) (p : ℕ) : Prop :=
   ∃ v : HeightOneSpectrum (𝓞 F), IsPlaceOver A v ∧ ((p : ℕ) : 𝓞 F) ∈ v.asIdeal
 
-section unram
 
 variable (S : Set (HeightOneSpectrum (𝓞 F)))
 
-end unram
 
 end Formalism.MainNotions.V.Lang

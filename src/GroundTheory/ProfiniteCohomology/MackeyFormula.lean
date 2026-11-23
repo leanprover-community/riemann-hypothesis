@@ -199,7 +199,6 @@ noncomputable def mackeyIncl (d : MackeyDoubleCoset U ι) :
       map_smul' := fun r F => by rw [Pi.single_smul, map_smul]; rfl },
     fun h₀ => LinearMap.ext fun F => mackeyLift_single_ρ U ι N d F h₀⟩
 
-open scoped Classical in
 theorem mackeyIncl_hom_apply (d : MackeyDoubleCoset U ι) (F : mackeySummand U ι N d.out) :
     (mackeyIncl U ι N d).hom F = mackeyLift U ι N (Pi.single d F) :=
   rfl
@@ -224,7 +223,6 @@ section Finite
 
 variable [Fintype (MackeyDoubleCoset U ι)]
 
-open scoped Classical in
 theorem sum_mackeyProj_comp_mackeyIncl :
     ∑ d : MackeyDoubleCoset U ι, mackeyProj U ι N d.out ≫ mackeyIncl U ι N d = 𝟙 _ := by
   ext f : 3

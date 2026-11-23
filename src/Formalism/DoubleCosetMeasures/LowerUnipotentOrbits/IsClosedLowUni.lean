@@ -41,14 +41,12 @@ namespace Formalism.DoubleCosetMeasures.P
 
 namespace GeneralLinearIntegersOpenCompact
 
-section Alg
 
 variable {K : Type} [CommRing K]
 
 noncomputable def glR (R : Subring K) (n : ℕ) : Subgroup (GL (Fin n) K) :=
   _root_.UpperTheory.Reformulated.B.GeneralLinearGroupOverSubring.glR R n
 
-end Alg
 
 section Top
 

@@ -82,13 +82,10 @@ theorem lamC_zpow_mem {s : ℂ} (hs : s ∈ TaylorLogMetric.Qbar) (n : ℤ) : Ta
 
 end lamC
 
-section minv
 
 variable {p : ℕ} [Fact p.Prime] {X : Sys p} {D : D7}
 
-end minv
 
-section scal
 
 variable {p : ℕ} [Fact p.Prime] {D : D7} (X : Sys p) (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (fd : FData X D)
   (χ : TaylorLogMetric.IdE D → ℂ) (muT : ℕ → (D.host.E ⊗[D.host.F] FiniteAdeleRing (𝓞 D.host.F) D.host.F)ˣ → ℂ)
@@ -96,7 +93,6 @@ variable {p : ℕ} [Fact p.Prime] {D : D7} (X : Sys p) (hfin : ∀ j c, (X.Lv.le
 
 variable {X hfin fd χ muT lam}
 
-end scal
 
 end Formalism.L2.KerInert.ScalM
 
@@ -106,7 +102,6 @@ open Formalism.L2.G Formalism.L2.G.Cmp Formalism.MainNotions.G.CmpJ Formalism.L2
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section inst
 
 variable {D : D7} {u : D.what₂.Word} {w : D.what₂.places.Pl} {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)}
   [Fact (D.what₂.places.resChar w).Prime] {Fl : Fills (D.gat u w h)} {Lv : Levels Fl} (Ch : Chain Lv)
@@ -119,6 +114,5 @@ variable {D : D7} {u : D.what₂.Word} {w : D.what₂.places.Pl} {h : GIdx D.hos
   (om : ∀ v, OmBasis (D.what₂.places.resChar w) ((D.gat u w h).P.n' v))
   {μ : D.what₂.Tup} {Tw : TwForms D} (I : CmpJIn Tw u μ w h Lv)
 
-end inst
 
 end Formalism.L2.KerInert.ScalM

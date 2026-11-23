@@ -549,8 +549,6 @@ theorem Formalism.FourierDecayAlt.P.zero_kernel_all_ones : Formalism.FourierDeca
 
 namespace Formalism.FourierDecayAlt.P.A5x7
 
-section Padic
 variable (p : ℕ) [hp : Fact p.Prime]
 
-end Padic
 end Formalism.FourierDecayAlt.P.A5x7

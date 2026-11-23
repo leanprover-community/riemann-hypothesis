@@ -342,11 +342,9 @@ theorem pairAt_add_left_lc {u1 u2 v : RadSp k r z z' π π'} (h1 : u1 ∈ lcSub 
 
 end Fs
 
-section Red
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {S : Type} [Fintype S] [DecidableEq S]
 
-end Red
 
 end Formalism.FourierDecayAlt.P5.HerD

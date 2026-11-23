@@ -42,12 +42,10 @@ namespace PI.VolStabSW
 open MeasureTheory Measure Topology Set Function
 open scoped Pointwise ENNReal NNReal
 
-section Gen
 
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
   [T2Space G] [MeasurableSpace G] [BorelSpace G]
 
-end Gen
 
 section Spec
 

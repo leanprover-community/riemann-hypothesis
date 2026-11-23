@@ -1617,12 +1617,10 @@ theorem cd_tL (hU₀ : IsOpen U₀) (z z' : Fin (2 * r + k + 1) → ℂ) (Y : �
 
 end CDentries
 
-section Germ
 
 
 variable {m : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-end Germ
 
 section FamMod
 
@@ -1669,7 +1667,6 @@ theorem tl_comb (hT : TLinLoc) {E : Type} [NormedAddCommGroup E] [NormedSpace �
 
 end FamRing
 
-section Step
 
 
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp]
@@ -1677,7 +1674,6 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
 
 variable {i : Fin (r + 1)} {Dc : (Fin r → ℂ) → Set (Mx k r)}
 
-end Step
 
 section Final
 
@@ -2346,20 +2342,16 @@ theorem frame_sub {k r m : ℕ} {vs vs' : List (Fin (2 * r + k + 1) → ℂ)} {B
 
 end Spectral
 
-section Core
 
 
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp]
   [NormedAddCommGroup Wq] [NormedSpace ℂ Wq] {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
 
-end Core
 
-section Core2
 
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq] [NormedSpace ℂ Wq]
 
-end Core2
 
 end Formalism.FourierDecayAlt.P.Qx8
 

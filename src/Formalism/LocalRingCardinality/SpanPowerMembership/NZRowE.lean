@@ -80,16 +80,13 @@ theorem col_smul {R : Ranks} {ι : Type} [Fintype ι] {hc : ι → HCParam R} (C
 
 end Chain
 
-section Record
 
 variable {R : Ranks} (H : Host R)
 
-section Per
 
 variable {W : Type} (hcW : W → Tau2 R → HCParam R) (K : W → ClsPkg) (d : ℕ)
   (per : ∀ u : W, Bool → FK ((K u).cls R.m) →ₗ[ℂ] En d →ₗ[ℂ] ℂ)
 
-end Per
 
 variable {W : Type} [Fintype W] (u0 : W) (hcW : W → Tau2 R → HCParam R)
   (hv0 : ∀ u τ, (hcW u τ).v = (hcW u0 τ).v) (hb0 : ∀ u τ, (hcW u τ).b = (hcW u0 τ).b)

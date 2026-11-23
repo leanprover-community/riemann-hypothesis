@@ -356,13 +356,11 @@ noncomputable section
 namespace Formalism.MainNotions.ShortIntervalPrimes
 
 
-section ShortIntervalLowerBound
 
 variable (K0 : Type) [Field K0] [NumberField K0]
 
 variable {K0}
 
-end ShortIntervalLowerBound
 
 end Formalism.MainNotions.ShortIntervalPrimes
 
@@ -383,11 +381,9 @@ namespace Formalism.MainNotions.ShortIntervalPrimes
 
 open NumberField
 
-section Deg2
 
 variable {K0 : Type} [Field K0] [NumberField K0]
 
-end Deg2
 
 end Formalism.MainNotions.ShortIntervalPrimes
 

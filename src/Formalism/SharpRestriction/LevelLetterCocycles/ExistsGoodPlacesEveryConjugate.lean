@@ -79,22 +79,18 @@ namespace Formalism.MainNotions.N.KillingConditions
 
 open Formalism.BasicNotions Formalism.ConjugateSelfDual ReciprocityTheory.Gal
 
-section Kill
 
 variable {D : D7} (ρ : ∀ i : D.nd.Loc, D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i)))
 
-end Kill
 
 end Formalism.MainNotions.N.KillingConditions
 
 namespace Formalism.MainNotions.N.KillingConditions
 
 
-section C6
 
 variable {D : D7} (ρ : ∀ i : D.nd.Loc, D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i)))
 
-end C6
 
 end Formalism.MainNotions.N.KillingConditions
 
@@ -104,14 +100,12 @@ open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO TwOK T3 IsLatIn sIdx sp
 open Formalism.MainNotions.BlochKatoReduction.Gen (psiAt nval SetHyp PsiOk partA partAT partC partD)
 open scoped TensorProduct
 
-section All
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
 
 
 
-end All
 
 end Formalism.MainNotions.LatticeVariant
 
@@ -146,22 +140,18 @@ namespace Formalism.MainNotions.N.TwAll
 
 open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
 
-section Tame
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
 
-end Tame
 
 end Formalism.MainNotions.N.TwAll
 
 namespace Formalism.MainNotions.N.KillingConditions
 
 
-section DensityAveraging
 
 variable {D : D7}
 
-end DensityAveraging
 
 end Formalism.MainNotions.N.KillingConditions
 

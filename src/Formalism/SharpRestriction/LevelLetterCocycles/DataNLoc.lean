@@ -572,7 +572,6 @@ abbrev LocTheory : Type 1 := ∀ (l : ℕ) [Fact l.Prime], LocPrime l
 
 end Fam
 
-section Bridge
 
 
 variable {l : ℕ} [Fact l.Prime]
@@ -596,7 +595,6 @@ structure LocBridge (l : ℕ) [Fact l.Prime] (E Ω : Type) [Field E] [Field Ω] 
   eO_cont : Continuous eO
   eO_symm_cont : Continuous eO.symm
 
-end Bridge
 
 section PullPD
 

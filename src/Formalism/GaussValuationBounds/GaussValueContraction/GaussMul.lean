@@ -47,7 +47,6 @@ namespace Formalism.NOK
 open scoped ENNReal
 open IsDiscreteValuationRing
 
-section GaussMulAux
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
@@ -216,7 +215,6 @@ private theorem gaussV_mul_le {x : ℝ} (hx : 0 < x) {f g : PowerSeries O} (hf :
         rw [hcoeff]
     _ = gaussV x f + gaussV x g := by rw [hi0, hj0]
 
-end GaussMulAux
 
 theorem gaussValMul : GaussMul := by
   intro O _ _ _ x hx f g

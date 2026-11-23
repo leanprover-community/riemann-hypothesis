@@ -63,11 +63,9 @@ theorem oddExponentCount : JCount := by
   push_cast at h3
   linarith
 
-section DegProdSec
 
 variable {σ κ : Type} [DecidableEq κ] (blk : σ → Option κ)
 
-end DegProdSec
 
 section BasisSec
 

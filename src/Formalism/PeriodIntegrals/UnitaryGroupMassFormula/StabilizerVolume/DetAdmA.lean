@@ -42,7 +42,6 @@ open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes NumberField IsDed
   PI.VolStabS.PositiveNearLattice MeasurableSpace
 open scoped TensorProduct ENNReal RestrictedProduct
 
-section Borel
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -51,7 +50,6 @@ instance borel_Af : BorelSpace (Af F) := ⟨rfl⟩
 instance borel_tens {E : Type} [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]
     [TopologicalSpace R] : BorelSpace (R ⊗[F] E) := ⟨rfl⟩
 
-end Borel
 
 section Local
 
@@ -81,10 +79,8 @@ theorem mem_translate (t : Fv F v) :
 
 end Local
 
-section Box1
 
 variable {F : Type} [Field F] [NumberField F]
 
-end Box1
 
 end PI.VolStabS.DeterminantAdmissible

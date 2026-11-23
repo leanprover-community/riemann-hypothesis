@@ -40,7 +40,6 @@ namespace PI.VolStabW
 open MeasureTheory Set
 open scoped ENNReal Pointwise
 
-section Abs
 
 variable {G Y : Type*} [Group G] [MeasurableSpace G] [MeasurableMul G] [MeasurableInv G]
 
@@ -59,6 +58,5 @@ instance subMeasurableInv (H : Subgroup G) : MeasurableInv H where
 
 variable [MulAction G Y]
 
-end Abs
 
 end PI.VolStabW

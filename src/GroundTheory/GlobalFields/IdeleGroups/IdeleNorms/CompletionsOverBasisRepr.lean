@@ -156,7 +156,6 @@ theorem ideleNorm_snd (x : IdeleGroup L) (v : HeightOneSpectrum (𝓞 K)) :
   norm_adeleRing_snd (K := K) v (x : 𝔸[L])
 
 
-open scoped Classical in
 theorem ideleNorm_fst (x : IdeleGroup L) (v : InfinitePlace K) :
     ((ideleNorm K L x : IdeleGroup K) : 𝔸[K]).1 v =
       ∏ w : v.placesOver L, Algebra.norm v.Completion ((x : 𝔸[L]).1 w) :=

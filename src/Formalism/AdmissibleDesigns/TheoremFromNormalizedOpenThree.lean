@@ -181,12 +181,10 @@ theorem selmer_inequality_three [IsNoetherian Dd.R' Dd.R']
 
 end Open
 
-section Final
 
 variable {D : D7} (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
   (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i) (dc : TruncatedSeriesCountingIdentities.Decl D i)
 
-end Final
 
 end Formalism.MainNotions.N.K.St
 

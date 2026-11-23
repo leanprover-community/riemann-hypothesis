@@ -160,7 +160,6 @@ theorem borelSpace_tup [SecondCountableTopology R] (a : ℕ) :
 
 end Gen
 
-section Inf
 
 variable (F : Type) [Field F] [NumberField F]
 
@@ -173,6 +172,5 @@ instance secondCountable_completion (v : InfinitePlace F) : SecondCountableTopol
 instance secondCountable_infiniteAdeleRing : SecondCountableTopology (InfiniteAdeleRing F) :=
   inferInstanceAs (SecondCountableTopology ((v : InfinitePlace F) → v.Completion))
 
-end Inf
 
 end PI.AprimeInfT

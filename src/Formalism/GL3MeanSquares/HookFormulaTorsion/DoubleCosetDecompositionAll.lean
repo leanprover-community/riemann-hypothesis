@@ -43,10 +43,8 @@ namespace Formalism.HermitianLattices.OneDimInversion
 
 open Finset Formalism.LogVandermondeBounds.product_first_zeroth_parts
 
-section T1
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F] {R : Type} [CommRing R]
 
-end T1
 end Formalism.HermitianLattices.OneDimInversion
 
 namespace Formalism.HermitianLattices.RamifiedLatticeOperators

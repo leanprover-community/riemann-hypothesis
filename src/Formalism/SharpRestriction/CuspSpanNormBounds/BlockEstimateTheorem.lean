@@ -46,11 +46,9 @@ export Formalism.MainNotions.S.LocalFrameAxioms (LocMatch FrameAx PsiAx k_le_nS 
 def vmOf (D : D7) {k0 : ℕ} (hk : k0 + 1 = D.R.k) (G : GramWordSpace.GramMap k0 D.R.rS) : ValMap D.R.k D.R.rS :=
   hk ▸ G.toValMap
 
-section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Family
 
 end Formalism.MainNotions.BlockEstimateTheorem
 

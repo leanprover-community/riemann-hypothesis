@@ -582,21 +582,17 @@ section Tests
 
 end Tests
 
-section LocPow
 
 variable {K : Type} [Field K] [NumberField K]
 
 variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-end LocPow
 
-section Local
 
 variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
 
 
-end Local
 
 section LocalTest
 

@@ -1453,19 +1453,15 @@ theorem Bd_bound (w : W) (hinj : Function.Injective (inc w)) (P : MvPolynomial �
 
 end FiltrationBoundaryCriterion
 
-section AuxConj
 
 variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V]
 variable {N2 : (K →+* ℂ) → V → ℝ} {dH : ℕ}
 
-end AuxConj
 
-section AuxMax
 
 variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {ι : Type}
 
-end AuxMax
 
 section Packet
 

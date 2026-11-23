@@ -637,7 +637,6 @@ end
 
 end PartG4
 
-section PartR1
 
 noncomputable section
 
@@ -645,12 +644,10 @@ namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 
 open Formalism.MainNotions.S.Loc Formalism.MainNotions.BridgeLemma ValuativeRel IsDedekindDomain NumberField Topology
 
-section Resid
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {sig : E →ₐ[F] E} {p : HeightOneSpectrum (𝓞 F)} (A : LocAt F E sig p)
 
-end Resid
 
 end Formalism.MainNotions.SchurRelationsDiscreteSeries
 
@@ -694,24 +691,19 @@ end
 
 end PartS1
 
-section PartM1
 
 noncomputable section
 
 namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 
 
-section Homog
 
 variable {k r : ℕ}
 
-end Homog
 
-section Scale
 
 variable (D : D7)
 
-end Scale
 
 end Formalism.MainNotions.SchurRelationsDiscreteSeries
 
@@ -768,7 +760,6 @@ end
 
 end PartM2
 
-section PartM3
 
 noncomputable section
 
@@ -777,13 +768,11 @@ namespace Formalism.MainNotions.SchurRelationsDiscreteSeries
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Main2
 
 variable {D : D7}
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Main2
 
 end Formalism.MainNotions.SchurRelationsDiscreteSeries
 

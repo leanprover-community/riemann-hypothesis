@@ -485,7 +485,6 @@ end DworkIntegrality
 
 open DworkIntegrality in
 theorem dwork_multivariable : DworkMv := by
-  open DworkIntegrality in
     intro K ι _ _ _ _ p σ hp hnp hσ Ψ h0
     have hpos : (0 : ℝ) ≤ (p : ℝ)⁻¹ := by positivity
     rw [← PhiH_apply hp.ne_zero σ Ψ]

@@ -197,8 +197,6 @@ end Main
 end PositiveNearLattice
 
 open PositiveNearLattice
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub NumberField IsDedekindDomain MeasureTheory PI.VolFromSW
-open scoped TensorProduct
 
 def TestNear : Prop := InCtx fun F E _ _ _ _ _ σ M J a X0 _hT =>
   ∃ φ : (Fin a → Fin M → AF F ⊗[F] E) → ℝ, (∀ X, 0 ≤ φ X) ∧ IsAdmS F E (fun X => (φ X : ℂ)) ∧

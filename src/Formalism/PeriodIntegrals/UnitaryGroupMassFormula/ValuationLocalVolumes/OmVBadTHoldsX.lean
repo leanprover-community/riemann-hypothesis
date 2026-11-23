@@ -60,7 +60,6 @@ end Formalism.L2.SG.Pf.NcVal.OmVSt.OmVZ
 
 namespace Formalism.L2.SG.Pf.NcX.OmVSt
 
-open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 variable {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ)
 
@@ -80,7 +79,6 @@ end Formalism.L2.SG.Pf.NcX.OmVSt
 
 namespace Formalism.L2.SG.Pf.NcVal.OmVSt.OmVZ
 
-open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 theorem omV_holdsX {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) : Formalism.L2.SG.Pf.NcVal.OmV X u' ψ :=
   Formalism.L2.SG.Pf.NcX.OmVSt.omVZ_holdsX X u' ψ

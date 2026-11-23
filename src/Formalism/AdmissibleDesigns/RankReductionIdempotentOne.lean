@@ -109,10 +109,8 @@ theorem act_trace (ρ : A →ₐ[O] Matrix n n O) (h1 : Fintype.card n = 1) (x :
 
 end Blocks
 
-section ZlStr
 variable {ℓ : ℕ} [Fact ℓ.Prime]
 
-end ZlStr
 
 section Lat
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {A : Type} [Ring A] [Algebra O A]
@@ -443,12 +441,10 @@ theorem tensor_lattice_facts (hT : Dd.Top T ht) (hrk : ((Dd.ρk 0 Dd.e₁).map (
 
 end Dd
 
-section Checks
 variable {ℓ : ℕ} [Fact ℓ.Prime] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra ℤ_[ℓ] O]
   {A : Type} [Ring A] [Algebra O A] [TopologicalSpace A] [IsTopologicalAddGroup A] [ContinuousConstSMul O A]
   {n : Type} [Fintype n] [DecidableEq n] (ρ : A →ₐ[O] Matrix n n O) (x e₁ : A)
 
-end Checks
 
 section Cont
 open ReciprocityTheory.ChartRestriction.T2 (PadicCoeff IsFGTop)

@@ -237,7 +237,6 @@ end Formalism.GM.M.SSD
 
 namespace Formalism.GM.M.SSD
 
-open MvPolynomial Finset
 
 section Abs
 variable {σ ι K ι' : Type} [Field K] [DecidableEq σ] [Fintype ι] (sv : ι → σ)
@@ -320,7 +319,6 @@ end Formalism.GM.M.SSD
 
 namespace Formalism.GM.M.SSD
 
-open MvPolynomial Finset
 
 section Kap
 variable {σ τ K : Type} [Field K] [DecidableEq σ]
@@ -656,7 +654,6 @@ end Formalism.GM.M
 
 namespace Formalism.GM.M
 
-open MvPolynomial Finset SSD
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 

@@ -1448,10 +1448,8 @@ end Formalism.FourierDecayAlt.P
 namespace Formalism.FourierDecayAlt.P.B2x8
 
 
-section dj
 variable {k r : ℕ}
 
-end dj
 
 end Formalism.FourierDecayAlt.P.B2x8
 

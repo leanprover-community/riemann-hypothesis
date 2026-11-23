@@ -146,7 +146,6 @@ noncomputable def coindBotProj :
       simp
 
 
-open scoped Classical in
 theorem sum_coindBotProj (f : coind (⊥ : Subgroup G).subtype B) :
     ∑ g : G, (coind (⊥ : Subgroup G).subtype B).ρ g
       (coindBotProj B ((coind (⊥ : Subgroup G).subtype B).ρ g⁻¹ f)) = f := by

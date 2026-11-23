@@ -160,11 +160,9 @@ theorem count_rows_class_of_count_class (n₀ : ℕ) (A C c cb : ℝ) (hp : Coun
 
 end Count
 
-section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Family
 
 abbrev PLev : ∀ I : AutInst, Measure I.Gf → ℕ → (I.Gf → ℂ) → Prop := fun I μf g₀ e => I.IsLevelCharIdem μf g₀ e
 

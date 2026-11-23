@@ -251,22 +251,18 @@ theorem isSubquotOfSums_of_conj (Ms Ms' : ι → G → Matrix (Fin k) (Fin k) LL
 
 end Sums
 
-section SS
 
 variable {Kf : Type} [Field Kf] {Γ : Type} [Group Γ] {V V' : Type} [AddCommGroup V] [Module Kf V]
   [AddCommGroup V'] [Module Kf V'] {ρ : Representation Kf Γ V} {ρ' : Representation Kf Γ V'}
   (e : V ≃ₗ[Kf] V') (he : ∀ g x, e (ρ g x) = ρ' g (e x))
 include he
 
-end SS
 
-section Abs
 
 variable {Kf : Type} [Field Kf] {Γ : Type} [Group Γ] {V V' : Type} [AddCommGroup V] [Module Kf V]
   [AddCommGroup V'] [Module Kf V'] {ρ : Representation Kf Γ V} {ρ' : Representation Kf Γ V'}
   (e : V ≃ₗ[Kf] V') (he : ∀ g x, e (ρ g x) = ρ' g (e x))
 include he
 
-end Abs
 
 end Formalism.MainNotions.N.K.Norm

@@ -216,7 +216,6 @@ variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] (P : Heig
 def vP (a : E) : ℤ := Classical.epsilon fun z : ℤ => IsUnit (redP P (a / (q : E) ^ z))
 
 variable {P} in
-open Classical in
 def unitV (χ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (a : E) : K := if h : IsUnit (redP P a) then ((χ h.unit : Kˣ) : K) else 0
 
 variable {P} in

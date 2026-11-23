@@ -133,7 +133,6 @@ theorem twoAdicVal : TwoAdicVal := by
     rw [if_neg hev]
     constructor <;> omega
 
-open TwoAdicValuation in
 theorem twoAdicOrder : TwoAdicOrder := by
   intro N a ha ha2
   haveI : Fact (Nat.Prime 2) := ⟨Nat.prime_two⟩

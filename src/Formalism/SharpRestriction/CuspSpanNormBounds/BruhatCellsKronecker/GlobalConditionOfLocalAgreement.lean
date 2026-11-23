@@ -890,12 +890,10 @@ theorem laIsPeriod_of (δ : ∀ p, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model
 
 end Rec2
 
-section Rec3
 
 
 variable {D : Formalism.BasicNotions.D7}
 
-end Rec3
 
 end Formalism.MainNotions.BridgeLemma
 

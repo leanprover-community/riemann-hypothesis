@@ -41,11 +41,9 @@ noncomputable section
 
 namespace Formalism.NG
 
-section Idem
 
 variable {T A : Type*} [CommRing T] [Ring A] [Algebra T A]
 
-end Idem
 
 section Pres
 

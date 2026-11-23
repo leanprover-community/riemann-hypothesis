@@ -43,14 +43,11 @@ namespace Formalism.MainNotions.Gaps.LevGap
 open NumberField IsDedekindDomain Matrix Formalism.UG Formalism.BasicNotions
 open scoped TensorProduct
 
-section DefCong
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-end DefCong
 
-section Gen
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E]
 variable (R : Type) [CommRing R] [Algebra F R]
@@ -61,16 +58,12 @@ variable [TopologicalSpace R] [IsTopologicalRing R]
 
 variable [FiniteDimensional F E]
 
-end Gen
 
-section GLc
 
 variable {M : Type} [CommRing M] [TopologicalSpace M] [IsTopologicalRing M] [T2Space M]
   {n : Type} [Fintype n] [DecidableEq n]
 
-end GLc
 
-section Dec
 
 variable {F E : Type} [Field F] [Field E] [NumberField E] [Algebra F E]
 variable {R : Type} [CommRing R] [Algebra F R] (O : Subring R)
@@ -79,7 +72,6 @@ variable [NumberField F]
 
 variable {n : Type} [Fintype n] [DecidableEq n]
 
-end Dec
 
 section Adele
 
@@ -117,42 +109,33 @@ variable {E : Type} [Field E] [NumberField E] [Algebra F E]
 
 end Adele
 
-section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
 attribute [local instance] Algebra.TensorProduct.rightAlgebra
 
-end Main
 
-section Bridge
 
 open Formalism.MainNotions.Gaps.LG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-section Loc
 
 variable (v : HeightOneSpectrum (𝓞 F))
 
-end Loc
 
-section ParSec
 
 variable {k : ℕ} (P : Par F E k) (v : HeightOneSpectrum (𝓞 F))
 
-end ParSec
 
 end Bridge
 
-section Facts
 
 open Formalism.MainNotions.Gaps.LG
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {k : ℕ}
 
-end Facts
 
 end Formalism.MainNotions.Gaps.LevGap

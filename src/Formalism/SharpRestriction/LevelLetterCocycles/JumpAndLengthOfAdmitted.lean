@@ -420,13 +420,11 @@ theorem ef_conj {E : Type} [Field E] [NumberField E] (cj : E ≃ₐ[ℚ] E)
 
 end TypeU
 
-section TypeD
 
 open NumberField IsDedekindDomain
 
 variable {E Lc Kf : Type} [Field E] [NumberField E] [Field Lc] [Field Kf]
 
-end TypeD
 
 section Std
 

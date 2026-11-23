@@ -150,7 +150,6 @@ instance (k : ℤ) (U : (Opens (ProjectiveSpectrum.top 𝒜))ᵒᵖ) :
   (sectionsSubgroup k U.unop).toAddCommGroup
 
 
-open ProjectiveSpectrum in
 def toLocFun (U : Opens (ProjectiveSpectrum.top 𝒜)) :
     (ProjectiveSpectrum.Proj.structureSheaf 𝒜).obj.obj (op U) →+* (∀ x : U, Loc 𝒜 x.1) where
   toFun t x := (t.1 x).val
@@ -159,14 +158,12 @@ def toLocFun (U : Opens (ProjectiveSpectrum.top 𝒜)) :
   map_zero' := by funext x; exact HomogeneousLocalization.val_zero
   map_add' a b := by funext x; exact HomogeneousLocalization.val_add _ _
 
-open ProjectiveSpectrum in
 instance (U : Opens (ProjectiveSpectrum.top 𝒜)) :
     Module ((ProjectiveSpectrum.Proj.structureSheaf 𝒜).obj.obj (op U)) (∀ x : U, Loc 𝒜 x.1) :=
   Module.compHom _ (toLocFun U)
 
 
 
-open ProjectiveSpectrum in
 def sectionsSubmodule (k : ℤ) (U : Opens (ProjectiveSpectrum.top 𝒜)) :
     Submodule ((ProjectiveSpectrum.Proj.structureSheaf 𝒜).obj.obj (op U)) (∀ x : U, Loc 𝒜 x.1) where
   __ := sectionsSubgroup k U

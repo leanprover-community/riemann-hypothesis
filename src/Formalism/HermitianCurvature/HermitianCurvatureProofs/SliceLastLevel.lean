@@ -73,25 +73,19 @@ namespace Formalism.FourierDecayAlt.P.SliceLastLevel
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF Formalism.FourierDecayAlt.P.Ux5
 
-section szIndex
 
 variable (k r : ℕ)
 
 variable {k r}
 
-end szIndex
 
-section szBlocks
 
 variable {k r : ℕ}
 
-end szBlocks
 
-section szRel
 
 variable {k r : ℕ}
 
-end szRel
 
 section szBound
 
@@ -122,11 +116,9 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ}
 
-section transport
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-end transport
 
 lemma tr_gN_nonneg (g : B.Mat k r) : 0 ≤ B.gN g := Real.sqrt_nonneg _
 
@@ -332,7 +324,6 @@ end Formalism.FourierDecayAlt.P.SliceLastLevel
 
 end PartTr
 
-section PartCd
 open Matrix Filter Topology
 open scoped ContDiff
 
@@ -341,24 +332,18 @@ namespace Formalism.FourierDecayAlt.P.SliceLastLevel
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section cdmap
 
 variable {k r d : ℕ} {O : Set (Fin d → ℝ)} {cx : (Fin d → ℝ) → Fin r → ℂ} {μx : (Fin d → ℝ) → B.Mat k 0}
 
-end cdmap
 
-section cdmap2
 
 variable {k r d : ℕ} {O : Set (Fin d → ℝ)} {cx : (Fin d → ℝ) → Fin r → ℂ} {μx : (Fin d → ℝ) → B.Mat k 0}
 
-end cdmap2
 
-section cdmap3
 
 variable {k r d : ℕ} {O : Set (Fin d → ℝ)} {cx : (Fin d → ℝ) → Fin r → ℂ} {μx : (Fin d → ℝ) → B.Mat k 0}
   {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-end cdmap3
 
 end Formalism.FourierDecayAlt.P.SliceLastLevel
 
@@ -386,31 +371,24 @@ lemma allLie_lr' {u v : List (B.Mat k r)} (hu : ∀ X ∈ u, B.inLie k r X) (hv 
 
 end bound
 
-section meas
 
 variable {k r : ℕ}
 
-end meas
 
-section clause2
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-end clause2
 
-section clause12
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-end clause12
 
 end Formalism.FourierDecayAlt.P.SliceLastLevel
 
 end PartM
 
-section PartE
 
 
 set_option linter.style.haveILetI false
@@ -420,26 +398,20 @@ namespace Formalism.FourierDecayAlt.P.SliceLastLevel
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section words
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-end words
 
-section clause3
 
 variable {k r d : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-end clause3
 
-section clause3b
 
 variable {k r d : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 
-end clause3b
 
 end Formalism.FourierDecayAlt.P.SliceLastLevel
 

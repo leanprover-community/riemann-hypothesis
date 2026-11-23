@@ -86,10 +86,8 @@ def Gfin (δ : ∀ p, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).
     (Function.mulSupport fun p => (M p).modK (blkMod δ T T' p a s t)).Finite) ∧
   (∀ w w' : Point D.host.E (D.R.rS + 1), (Function.mulSupport fun p => KtopP M δ T T' p w w').Finite)
 
-section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) {Y : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i)}
 
-end Family
 
 end Formalism.MainNotions.JointEigenvalueBoundsFromAnyDatum

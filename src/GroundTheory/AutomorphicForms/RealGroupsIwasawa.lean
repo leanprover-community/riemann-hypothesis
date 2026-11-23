@@ -315,8 +315,6 @@ end Homeomorph
 
 section Homeomorph2
 
-open scoped Matrix.Norms.L2Operator Topology
-open Filter Set
 
 variable [WellFoundedLT n] [LocallyFiniteOrderBot n]
 
@@ -432,8 +430,6 @@ theorem continuous_iwasawaK : Continuous (iwasawaK : GL n 𝕜 → unitaryGroup 
 end Homeomorph2
 
 
-open scoped Matrix.Norms.L2Operator Topology
-open Filter Set
 
 variable [WellFoundedLT n] [LocallyFiniteOrderBot n]
 

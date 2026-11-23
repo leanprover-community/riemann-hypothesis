@@ -130,7 +130,6 @@ theorem gsEulerRatio_pos [Finite S] [Finite M]
 end Real
 
 
-open scoped Classical
 
 variable (ι : ∀ v : InfinitePlace K.1, ℚ̄ →ₐ[K.1] AlgebraicClosure v.Completion)
 

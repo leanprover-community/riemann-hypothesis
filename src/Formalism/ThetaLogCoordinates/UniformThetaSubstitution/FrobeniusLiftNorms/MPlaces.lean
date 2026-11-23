@@ -67,7 +67,6 @@ theorem norm_unif_pow {K : Type} [NormedField K] {p : ℕ} (hp : p.Prime)
 
 namespace MPl
 
-section Alg
 
 variable {K Pl : Type} [Field K] {ι : Pl → Type}
 
@@ -75,7 +74,6 @@ variable [Fintype Pl]
 
 variable [DecidableEq Pl]
 
-end Alg
 
 end MPl
 

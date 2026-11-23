@@ -87,7 +87,6 @@ end Weierstrass
 
 namespace Weierstrass
 
-open MvPolynomial HomogeneousLocalization
 
 variable {R : Type u} [CommRing R] (W : WeierstrassCurve R)
 

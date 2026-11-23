@@ -167,16 +167,13 @@ theorem big_cell_section_negative_vector (k0 r : ℕ) : IsSection (k0 + 1) r (ne
       · intro b _ hb; simp [hb]
       · simp
 
-section LG
 
 variable (k0 r : ℕ) (Hp Hq : Type) [NormedAddCommGroup Hp] [InnerProductSpace ℂ Hp] [FiniteDimensional ℂ Hp]
     [NormedAddCommGroup Hq] [InnerProductSpace ℂ Hq] [FiniteDimensional ℂ Hq]
     (σ : Matrix (Fin (k0 + 1)) (Fin (k0 + 1)) ℂ → (Hp →L[ℂ] Hp))
     (σ' : Matrix (Fin (k0 + 1)) (Fin (k0 + 1)) ℂ → (Hq →L[ℂ] Hq))
 
-end LG
 
-section Two
 
 variable (k0 r : ℕ) (Hp Hq : Type) [NormedAddCommGroup Hp] [InnerProductSpace ℂ Hp] [FiniteDimensional ℂ Hp]
     [NormedAddCommGroup Hq] [InnerProductSpace ℂ Hq] [FiniteDimensional ℂ Hq]
@@ -185,7 +182,6 @@ variable (k0 r : ℕ) (Hp Hq : Type) [NormedAddCommGroup Hp] [InnerProductSpace 
 
 variable (u u' : Fin (k0 + 1) → ℝ) (I : Set ℝ)
 
-end Two
 
 section GenSec
 

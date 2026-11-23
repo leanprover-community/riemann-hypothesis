@@ -311,7 +311,6 @@ theorem rightDiagonalActionFormula : FormWt2 := by
 
 section Grade
 
-open MvPolynomial
 
 variable {σ : Type*}
 
@@ -617,7 +616,6 @@ section HW
 
 variable {p q r s : ℕ}
 
-open MvPolynomial
 
 theorem coeff_fockAct1_diag (a : Ix p q) (P : Pol p q r s) (m : Ln p q r s →₀ ℕ) :
     AddMonoidAlgebra.coeff (fockAct1 p q r s (Eab a a) P) m =

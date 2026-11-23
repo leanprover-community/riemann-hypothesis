@@ -213,11 +213,9 @@ theorem coordinate_real (P : Par) (l : ℕ) (π : Ty P) (Y : ℂ) (hY : star Y =
 
 def Ent {A : Type} [Ring A] [Algebra ℂ A] (C : Subalgebra ℂ A) (M : M2 A) : Prop := ∀ a b, M a b ∈ C
 
-section Ent
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {C : Subalgebra ℂ A}
 
-end Ent
 
 end Formalism.FourierDecayAlt.P.Mx8
 

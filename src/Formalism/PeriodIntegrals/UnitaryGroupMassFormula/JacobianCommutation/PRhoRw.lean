@@ -42,11 +42,9 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.JCC
 
-section twist
 
 variable {Wp Wq : Type*} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq] [NormedSpace ℂ Wq]
 
-end twist
 
 variable {k r : ℕ}
 
@@ -59,11 +57,9 @@ theorem uwset_inv {z : Fin (2 * r + k + 1) → ℂ} {h : B.Mat k r} (hh : h ∈ 
     rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ hu, Matrix.one_mulVec]
   exact ⟨Formalism.QuantumDeterminants.WeylGroupFacts.uh_inv h1, fun a => ⟨key _ (h2 a).1, key _ (h2 a).2⟩, key _ h3⟩
 
-section rho
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
 
-end rho
 
 end PI.UnitaryGroupMassFormula.JCC

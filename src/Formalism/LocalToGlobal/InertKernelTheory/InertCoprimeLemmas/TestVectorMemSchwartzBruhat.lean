@@ -57,27 +57,21 @@ variable {δ}
 
 end Good
 
-section Ring
 
 variable {p : ℕ} [Fact p.Prime]
 
-end Ring
 
-section Deriv
 
 open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 variable {p : ℕ} [Fact p.Prime] {r : ℕ}
 
-end Deriv
 
-section Chain
 
 
 variable {D : D7} {N N' r : ℕ} {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ)
   (C : WeierstrassCurve.VariableChange ℂ_[p]) (wq : PowerSeries ℂ_[p]) (b : Fin r → Matrix (Fin N') (Fin N) D.host.E)
 
-end Chain
 
 section Lin
 
@@ -104,12 +98,10 @@ section Core
 
 end Core
 
-section Log
 
 
 variable {p : ℕ} [Fact p.Prime]
 
-end Log
 
 end JetIntegrality
 

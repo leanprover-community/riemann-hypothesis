@@ -135,7 +135,6 @@ def ys {m : ℕ} (n : Pr (m + 1) → K) (τ : Fin m → K) : Pr (m + 1) → K :=
 
 end Defs
 
-section Cst
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K]
 
@@ -146,7 +145,6 @@ structure Cst (R : Subring K) (ϖ : Kˣ) (L₀ Λ₀ : AddSubgroup K) (Q : Set K
   Qi : ∀ d ∈ Q, ∀ d' : K, d * d' = 1 → Bd R ϖ a d'
   abelian₂ : ∀ x, Sm R ϖ b x → x ∈ Λ₀
 
-end Cst
 
 section BD
 

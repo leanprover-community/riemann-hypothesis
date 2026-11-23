@@ -256,7 +256,6 @@ theorem gsEulerRatio_shortExact [Finite S] (hT : T.ShortExact) [Finite T.X₂]
     hglob hprod
 
 
-open scoped Classical in
 theorem gsEulerRatio_shortExact_of_bijective [Finite S] (hT : T.ShortExact) [Finite T.X₂]
     (hn : ∀ v : HeightOneSpectrum (𝓞 K.1), ((Nat.card T.X₂ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
     (hA : Function.Bijective (gsRealRes S ιr T.X₁ 3).hom)

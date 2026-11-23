@@ -625,11 +625,9 @@ open MeasureTheory Complex
 
 end GrowthPolynomialOperator
 
-section HilbertSchmidtNorm
 
 variable {ι : Type} [Fintype ι]
 
-end HilbertSchmidtNorm
 
 section PB3
 

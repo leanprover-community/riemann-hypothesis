@@ -1639,12 +1639,10 @@ def linj_HMid (W : LocWach PD LL O v n) : Prop :=
 
 end LiftInj
 
-section LiftInjD
 
 variable {l : ℕ} [Fact l.Prime] {P : LocPrime l} {H : LocHW l P} {AI : LocAinf l P} {K : FinExt l} {s : ℕ}
     {LL : FinExt l} {h : Good K s LL}
 
-end LiftInjD
 
 def linjMidOpen (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),

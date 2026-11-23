@@ -71,7 +71,6 @@ theorem expMv_eq_subst [CharZero K] {σ : Type} {F : MvPowerSeries σ K}
     rw [MvPowerSeries.coeff_eq_zero_of_constantCoeff_nilpotent (m := 1)
       (by rw [pow_one]; exact hF) (by omega), smul_zero]
 
-section Rename₂
 
 variable {ι ι' : Type} [Fintype ι]
 
@@ -80,7 +79,6 @@ variable (g : Dat K) (hex0 : PowerSeries.constantCoeff g.ex = 0)
 include hex0 hl0
 
 
-end Rename₂
 
 end PI.FglPhSplit.Wk
 

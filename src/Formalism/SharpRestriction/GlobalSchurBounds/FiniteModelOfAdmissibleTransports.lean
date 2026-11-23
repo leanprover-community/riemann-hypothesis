@@ -137,12 +137,10 @@ variable {i : ℕ} {v : (D.mem u).A.vT} (H : Unf D u i v)
 
 include H
 
-section ram
 
 variable {φ : Fn D u i} (hφ : φ ∈ (D.fm u).Fi i) (hN : Nm D u i v φ = 0)
 include hφ hN
 
-end ram
 
 end Unf
 
@@ -179,12 +177,10 @@ lemma ipC_sum_right {i : ℕ} {ι : Type} [Fintype ι] (s : ι → ℂ) (F : ι 
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun c _ => by ring))
 
-section T7
 
 variable (hF : FiSt D u) (hM : DiaMul D u) (hX : CrossDia D u) (hU : UnfAll D u)
 include hF hM hX hU
 
-end T7
 
 variable (D u)
 

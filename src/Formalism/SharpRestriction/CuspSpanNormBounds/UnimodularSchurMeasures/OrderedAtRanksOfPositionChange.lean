@@ -54,12 +54,10 @@ theorem mat_mul_mem_UH_Hpk {k r : ℕ} {g h : CayleySignature.Mat k r} (hg : g �
         rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
     _ = Formalism.QuantumDeterminants.Hpk k r := by rw [hg', hh']
 
-section Move
 
 variable {k r : ℕ} {H H' : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedAddCommGroup H']
   [InnerProductSpace ℂ H']
 
-end Move
 
 end Formalism.MainNotions.LeviCoordinates
 

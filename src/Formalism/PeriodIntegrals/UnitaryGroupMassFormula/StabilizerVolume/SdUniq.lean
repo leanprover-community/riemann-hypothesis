@@ -367,8 +367,6 @@ end ContY
 
 end SdUniqW
 
-open scoped TensorProduct
-open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PI.AdicCompletionValuation
   PI.VolFromSW SdUniqW
 
 def SdTestInf : Prop := InCtx fun F E _ _ _ _ _ σ M J a _X0 _hT =>

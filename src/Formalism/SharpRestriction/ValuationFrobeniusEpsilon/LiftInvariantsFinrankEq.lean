@@ -339,10 +339,8 @@ namespace Formalism.MainNotions.UnusedSlot38
 
 open Formalism.BasicNotions.V1 IsLocalRing MvPowerSeries
 
-section Prob
 
 variable (P : LiftProb)
 
-end Prob
 
 end Formalism.MainNotions.UnusedSlot38
