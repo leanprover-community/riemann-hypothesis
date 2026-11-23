@@ -499,7 +499,7 @@ namespace Formalism.MainNotions.G.Joints
 theorem strip_lt {n : ℕ} {nu mu : Fin n → ℤ} {b : ℕ} (hs : HStrip nu mu b) (hd : Dominant mu) {a a' : Fin n}
     (h : a < a') : mu a' ≤ nu a := by
   have h0 : a.1 < a'.1 := h
-  have h1 : a.1 + 1 < n := by have := a'.2; omega
+  have h1 : a.1 + 1 < n := omega
   have h2 : (⟨a.1 + 1, h1⟩ : Fin n) ≤ a' := by
     show a.1 + 1 ≤ a'.1
     omega

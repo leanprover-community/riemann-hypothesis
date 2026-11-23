@@ -388,7 +388,7 @@ lemma levi_three_block (g₁ : Mat k r') (a b : ℂ) (y : Fin (2 * r' + k + 1) �
     ιLev k 1 r' g₁ *ᵥ mk3 k r' a y b = mk3 k r' a (g₁ *ᵥ y) b := by
   have hN0 : 2 * (1 + r') + k ≠ 0 := by omega
   have hN0' : (0 : ℕ) ≠ 2 * (1 + r') + k := by omega
-  have hN : ∀ j : Fin (2 * r' + k + 1), j.val + 1 ≠ 2 * (1 + r') + k := fun j => by have := j.isLt; omega
+  have hN : ∀ j : Fin (2 * r' + k + 1), j.val + 1 ≠ 2 * (1 + r') + k := bun j => omega
   apply eq_three_block_of_coordinates
   · rw [tk_mulVec]
     simp only [ιLev_apply_tkF]
@@ -434,8 +434,8 @@ lemma long_weyl_three_block (c a b : ℂ) (y : Fin (2 * r' + k + 1) → ℂ) :
     w0 k r' c *ᵥ mk3 k r' a y b = mk3 k r' ((conj c)⁻¹ * b) y (c * a) := by
   have hN0 : 2 * (1 + r') + k ≠ 0 := by omega
   have hN0' : (0 : ℕ) ≠ 2 * (1 + r') + k := by omega
-  have hN : ∀ j : Fin (2 * r' + k + 1), j.val + 1 ≠ 2 * (1 + r') + k := fun j => by have := j.isLt; omega
-  have hN' : ∀ j : Fin (2 * r' + k + 1), 2 * (1 + r') + k ≠ j.val + 1 := fun j => by have := j.isLt; omega
+  have hN : ∀ j : Fin (2 * r' + k + 1), j.val + 1 ≠ 2 * (1 + r') + k := bun j => omega
+  have hN' : ∀ j : Fin (2 * r' + k + 1), 2 * (1 + r') + k ≠ j.val + 1 := bun j => omega
   apply eq_three_block_of_coordinates
   · rw [tk_mulVec]
     simp only [w0_tkF_apply_eq_ite_star_inv]

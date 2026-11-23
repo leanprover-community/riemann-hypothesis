@@ -518,7 +518,7 @@ lemma hasLevel_index_eq_of_mem_II (F F' : FlagD H r) (hStep : Formalism.Hermitia
     have haa' : a = a' := by
       by_contra hne
       have hne' : a'.val ≠ a.val := fun h => hne (Fin.ext h).symm
-      have ha'lt : a'.val + 1 < r := by have := a'.isLt; omega
+      have ha'lt : a'.val + 1 < r := omega
       have hsa' : a'.succ = (⟨a'.val + 1, ha'lt⟩ : Fin r).castSucc := succ_eq_castSucc a' ha'lt
       have h2 : al' • F'.e a'.succ ∈ F.X ⊔ F'.X := by
         rw [hsa']
@@ -584,7 +584,7 @@ lemma hasLevel_index_eq_of_mem_II (F F' : FlagD H r) (hStep : Formalism.Hermitia
         exact hF'
       · have hne : b.val ≠ a.val := fun h => hba (Fin.ext h)
         exact h3 b (Fin.le_iff_val_le_val.2 (show a.val + 1 ≤ b.val by have := Fin.le_iff_val_le_val.1 hb; omega))
-    · have ha'r : a'.val + 1 = r := by have := a'.isLt; omega
+    · have ha'r : a'.val + 1 = r := omega
       have hsa' : a'.succ = Fin.last r := succ_eq_last a' ha'r
       exfalso
       apply hN0 K V H r F' F

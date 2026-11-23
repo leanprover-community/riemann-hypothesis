@@ -378,7 +378,7 @@ theorem card_initSeg {h : ℕ} (hh : h ≤ n) : (initSeg n h).card = h := by
 theorem initSeg_emb {h k : ℕ} (hh : h ≤ n) (hk : (initSeg n h).card = k) (i : Fin k) :
     ((initSeg n h).orderEmbOfFin hk i).val = i.val := by
   have hkh : k = h := by rw [← hk, card_initSeg hh]
-  have hlt : ∀ j : Fin k, j.val < n := fun j => by have := j.2; omega
+  have hlt : ∀ j : Fin k, j.val < n := bun j => omega
   have := Finset.orderEmbOfFin_unique hk (f := fun j : Fin k => (⟨j.val, hlt j⟩ : Fin n))
     (fun j => by
       unfold initSeg
@@ -522,7 +522,7 @@ theorem semi_mono {T : Fin C → Finset (Fin n)} (hT : SemiStd T) (a : ℕ) :
       rw [this]
     | succ d ih =>
       intro c c' h
-      have hlt : c.val + d < C := by have := c'.2; omega
+      have hlt : c.val + d < C := omega
       exact (ih c ⟨c.val + d, hlt⟩ rfl).trans (step ⟨c.val + d, hlt⟩ c' (by simp only; omega))
   intro c c' hcc
   have hle : c.val ≤ c'.val := hcc

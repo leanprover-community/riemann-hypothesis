@@ -210,7 +210,7 @@ lemma strip2_iff {n : ℕ} (μ ν : Fin (n + 1) → ℤ) :
   · intro h i
     exact h i.castSucc i.succ (by simp only [Fin.val_succ, Fin.coe_castSucc])
   · intro h m m' hm
-    have hlt : m.val < n := by have := m'.isLt; omega
+    have hlt : m.val < n := omega
     obtain ⟨i, rfl⟩ : ∃ i : Fin n, m = i.castSucc := ⟨⟨m.val, hlt⟩, Fin.ext rfl⟩
     simp only [Fin.coe_castSucc] at hm
     have e2 : m' = i.succ := Fin.ext (by simp only [Fin.val_succ]; omega)

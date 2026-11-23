@@ -105,7 +105,6 @@ theorem ActionPin.exists_rep {h : LawsP T.toTop} {fw : FWTie T.J R κ v₀} {i :
     ((R.FW i).ρ.comp inc) (fun g => a (inc g)) fun g F => h2 (inc g) F
   exact ⟨ρ, fun g F => (congrArg Subtype.val (hρ g F)).trans (h1 (inc g) F)⟩
 
-section Tied
 
 variable (h : LawsP T.toTop) (fw : FWTie T.J R κ v₀) (hinj : Function.Injective D.what₂.OtoLL) (EX : ErrX D)
   (r : HeightOneSpectrum (𝓞 D.what₂.LL) → RunData T.J) (hr : ∀ v, LawsP (r v).full.toTop)
@@ -120,7 +119,6 @@ variable (h : LawsP T.toTop) (fw : FWTie T.J R κ v₀) (hinj : Function.Injecti
     D.what₂.LL ⊗[(recB h.toLawsCore).KO] (recB h.toLawsCore).Cusp ((ι i : ℕ) + 1) (κ (ι i)))
 
 
-end Tied
 
 def blankObj (D : D7) {Bs : DefBase D.what₂.LL} {Df : DefSide Bs} (S : IndefData Df) (P : Type) [Group P] [Finite P] (oc : OnConst)
     (n : Bs.J → ℕ) : OnObj S P oc where
@@ -177,7 +175,6 @@ def blankObj (D : D7) {Bs : DefBase D.what₂.LL} {Df : DefSide Bs} (S : IndefDa
   dd := D.host.d
   sm := D.host.small
 
-section Exists
 
 variable (h : LawsP T.toTop) (fw : FWTie T.J R κ v₀) (hinj : Function.Injective D.what₂.OtoLL) (EX : ErrX D)
   (r : HeightOneSpectrum (𝓞 D.what₂.LL) → RunData T.J) (hr : ∀ v, LawsP (r v).full.toTop)
@@ -185,6 +182,5 @@ variable (h : LawsP T.toTop) (fw : FWTie T.J R κ v₀) (hinj : Function.Injecti
   {Bs : DefBase D.what₂.LL} {Df : DefSide Bs} (S : IndefData Df) (P : Type) [Group P] [Finite P] (oc : OnConst)
   (ι : Bs.J → Fin D.R.m) (wL wF : ∀ i, WeightFamilies.Wt D ((ι i : ℕ) + 1)) (nT : ℕ) (inc : P →* G)
 
-end Exists
 
 end GlobalTheory.OnTies

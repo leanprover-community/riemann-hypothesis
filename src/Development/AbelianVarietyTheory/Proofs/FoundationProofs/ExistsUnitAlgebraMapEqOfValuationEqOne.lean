@@ -169,7 +169,6 @@ theorem exists_unit_algebraMap_eq (hπ : π ≠ 0) {y : A} (hy : IsUnit y) {z : 
 
 end Inter
 
-section Valuation
 
 variable [(Ideal.span {π}).IsPrime]
   {A : Type*} [CommRing A] [Algebra R A] [IsLocalization.Away π A]
@@ -178,7 +177,6 @@ variable [(Ideal.span {π}).IsPrime]
   (K : Type*) [Field K] [Algebra R K] [FaithfulSMul R K]
   [Algebra A K] [IsScalarTower R A K] [Algebra S K] [IsScalarTower R S K] [IsFractionRing S K]
 
-end Valuation
 
 theorem existsUnique_zpow_mul_eq_unit {S K : Type*} [CommRing S] [IsDomain S]
     [IsDiscreteValuationRing S] [Field K] [Algebra S K] [IsFractionRing S K] {ϖ : S}

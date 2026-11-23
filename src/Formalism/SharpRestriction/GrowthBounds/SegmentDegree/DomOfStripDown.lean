@@ -63,7 +63,7 @@ theorem dom_of_strip_down {n : ℕ} {ν μ : Fin n → ℤ} {b : ℕ} (h : HStri
   rcases eq_or_lt_of_le hmm with he | hlt
   · rw [he]
   · have hlt' : m.val < m'.val := hlt
-    have hm1 : m.val + 1 < n := by have := m'.2; omega
+    have hm1 : m.val + 1 < n := omega
     have h2 := h.2.1 m hm1
     have h3 : ν m' ≤ ν ⟨m.val + 1, hm1⟩ := hν (by rw [Fin.le_def]; simp only; omega)
     exact le_trans (h.1 m') (le_trans h3 h2)

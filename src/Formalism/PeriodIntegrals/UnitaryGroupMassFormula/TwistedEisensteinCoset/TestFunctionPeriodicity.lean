@@ -306,7 +306,7 @@ theorem test_function_periodicity : PhiPerP := by
       rw [d1, d2]
     · push_neg at hr
       have hi : ∀ i : Fin r, i.1 < n + c := fun i => by have := i.2; omega
-      have hj : ∀ j : Fin r, j.1 < n' + c' := fun j => by have := j.2; omega
+      have hj : ∀ j : Fin r, j.1 < n' + c' := bun j => omega
       rw [redP_det_twisted_eisenstein_coset (Matrix.of fun s t : Fin r =>
           entB (qOf P) k₀ c' n' c n 0 0 y s.1 t.1 + entB (qOf P) k₀ c' n' c n 0 0 ε s.1 t.1)
           (fun i j => by rw [Matrix.of_apply, ← e]; exact h1.1 _ _ (hi i) (hj j)),

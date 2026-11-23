@@ -198,7 +198,7 @@ lemma qa_g_lt {n : ℕ} [NeZero n] (m : Fin n × Fin n →₀ ℕ) (hint : Forma
     exact qa_g_step m hint k hk1 p p' (by omega) (by rw [hcol]; omega) (by rw [hcol]; exact hk)
   | succ d ih =>
     intro p p' hpp hk
-    have hlt : p.val + d + 1 < n := by have := p'.2; omega
+    have hlt : p.val + d + 1 < n := omega
     have h1 : ν p' ≤ ν ⟨p.val + d + 1, hlt⟩ := hν (by rw [Fin.le_def]; simp only; omega)
     refine (ih p ⟨p.val + d + 1, hlt⟩ rfl (by omega)).trans ?_
     exact qa_g_step m hint k hk1 _ p' (by simp only; omega) (by rw [hcol]; omega) (by rw [hcol]; exact hk)
