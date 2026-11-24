@@ -128,6 +128,22 @@ variable (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E)))
 
 abbrev LocAlg : Type := v.adicCompletion (maximalRealSubfield E) ⊗[(maximalRealSubfield E)] E
 
+instance : CommRing (LocAlg v) := inferInstance
+
+instance : Ring (LocAlg v) := inferInstance
+
+instance : Semiring (LocAlg v) := inferInstance
+
+instance : NonAssocSemiring (LocAlg v) := inferInstance
+
+instance : AddCommGroup (LocAlg v) := inferInstance
+
+instance : Nontrivial (LocAlg v) := inferInstance
+
+instance : Algebra (v.adicCompletion (maximalRealSubfield E)) (LocAlg v) := inferInstance
+
+instance : Algebra (v.adicCompletionIntegers (maximalRealSubfield E)) (LocAlg v) := inferInstance
+
 def locEmb : E →+* LocAlg v :=
   (Algebra.TensorProduct.includeRight : E →ₐ[(maximalRealSubfield E)] LocAlg v)
 
