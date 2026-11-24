@@ -135,8 +135,8 @@ theorem spPJ_eq (j : Fin g) : spPJ j = spTransl (eJ j) * spLow (-eJ j) * spTrans
   have hE := eJ_mul_self j
   unfold spPJ spTransl spLow
   rw [fromBlocks_multiply, fromBlocks_multiply]
-  congr 1 <;> simp only [Matrix.mul_one, Matrix.one_mul, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add,
-    Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_add, Matrix.add_mul, hE] <;> abel
+  congr 1 <;> simp only [Matrix.mul_one, Matrix.one_mul, Matrix.mul_zero, add_zero, zero_add,
+    Matrix.mul_neg, Matrix.neg_mul, Matrix.add_mul, hE] <;> abel
 
 theorem spPJ_mem (j : Fin g) : spPJ j ∈ spH g := by
 
@@ -166,7 +166,7 @@ theorem row_inr_of_col_inl {M : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ}
   rw [mul_col_of_unit h, Matrix.mul_apply] at h2
   have hJ : ∀ r, J (Fin g) ℤ r (Sum.inl i) = if r = Sum.inr i then 1 else 0 := by
     intro r
-    rcases r with r | r <;> by_cases hri : r = i <;> simp [Matrix.J, Matrix.one_apply, hri]
+    rcases r with r | r <;> by_cases hri : r = i <;> simp [Matrix.J, hri]
   simp_rw [hJ, Matrix.transpose_apply] at h2
   simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
   rw [h2, Matrix.one_apply]
@@ -186,7 +186,7 @@ theorem row_inl_of_col_inr {M : Matrix (Fin g ⊕ Fin g) (Fin g ⊕ Fin g) ℤ}
   rw [mul_col_of_unit h, Matrix.mul_apply] at h2
   have hJ : ∀ r, J (Fin g) ℤ r (Sum.inr i) = if r = Sum.inl i then -1 else 0 := by
     intro r
-    rcases r with r | r <;> by_cases hri : r = i <;> simp [Matrix.J, Matrix.one_apply, hri]
+    rcases r with r | r <;> by_cases hri : r = i <;> simp [Matrix.J, hri]
   simp_rw [hJ, Matrix.transpose_apply] at h2
   simp only [mul_ite, mul_neg, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
   rw [Matrix.one_apply]

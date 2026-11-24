@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MonicRootNormLeOneAddSum
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
 import Mathlib.Algebra.Order.Floor.Extended
@@ -73,33 +74,7 @@ namespace GlobalTheory
 
 theorem norm_root_monic_le (n : ℕ) (s : Fin n → ℂ) (y : ℂ)
     (hy : y ^ n + ∑ j, s j * y ^ (j : ℕ) = 0) : ‖y‖ ≤ 1 + ∑ j, ‖s j‖ := by
-  have hS : 0 ≤ ∑ j, ‖s j‖ := Finset.sum_nonneg fun j _ => norm_nonneg _
-  by_cases h1 : ‖y‖ ≤ 1
-  · linarith
-  push_neg at h1
-  cases n with
-  | zero => simp at hy
-  | succ m =>
-    have hyn : y ^ (m + 1) = -∑ j, s j * y ^ (j : ℕ) := eq_neg_of_add_eq_zero_left hy
-    have hle : ‖y‖ ^ (m + 1) ≤ (∑ j, ‖s j‖) * ‖y‖ ^ m := by
-      calc ‖y‖ ^ (m + 1) = ‖y ^ (m + 1)‖ := (norm_pow _ _).symm
-        _ = ‖∑ j, s j * y ^ (j : ℕ)‖ := by rw [hyn, norm_neg]
-        _ ≤ ∑ j, ‖s j * y ^ (j : ℕ)‖ := norm_sum_le _ _
-        _ ≤ ∑ j : Fin (m + 1), ‖s j‖ * ‖y‖ ^ m := by
-          refine Finset.sum_le_sum fun j _ => ?_
-          rw [norm_mul, norm_pow]
-          gcongr
-          · exact h1.le
-          · exact Nat.lt_succ_iff.1 j.isLt
-        _ = (∑ j, ‖s j‖) * ‖y‖ ^ m := by rw [Finset.sum_mul]
-    have hpos : 0 < ‖y‖ ^ m := pow_pos (by linarith) _
-    rw [pow_succ] at hle
-    have : ‖y‖ ≤ ∑ j, ‖s j‖ := by
-      by_contra hc
-      push_neg at hc
-      have := mul_lt_mul_of_pos_left hc hpos
-      nlinarith
-    linarith
+  apply GlobalTheory.monic_root_norm_le_one_add_sum <;> assumption
 
 end GlobalTheory
 

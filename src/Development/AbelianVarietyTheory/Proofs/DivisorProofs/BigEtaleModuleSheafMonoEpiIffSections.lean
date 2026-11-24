@@ -1,5 +1,6 @@
 module
 
+import Development.EtaleCohomology.TateTwists.EtaleSheafMonoEpiIffSectionsOfSeparation
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
 import Mathlib.Algebra.Order.Floor.Extended
@@ -77,21 +78,7 @@ theorem mono_iff_inj {F G : Shv R} (φ : F ⟶ G) :
 theorem inj_iff_loc {F G : Shv R} (φ : F ⟶ G) :
     (∀ U, Function.Injective (Sec.map φ (U := U))) ↔
       ∀ U (a : Sec F U), Sec.map φ a = 0 → Loc U fun _ g => Sec.res g a = 0 := by
-  constructor
-  · intro h U a ha
-    have : a = 0 := h U (by rw [ha]; exact (map_zero _).symm)
-    subst this
-    exact ⟨⊤, Scheme.etaleTopology.top_mem U, fun V g _ => map_zero _⟩
-  · intro h U
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-    intro a ha
-    obtain ⟨S, hS, hP⟩ := h U a ha
-    have hF : Presieve.IsSheaf Scheme.etaleTopology (F.obj ⋙ forget _) :=
-      (isSheaf_iff_isSheaf_of_type _ _).1 ((sheafCompose Scheme.etaleTopology (forget (ModuleCat.{1} (ULift.{1} R)))).obj F).property
-    refine (hF S hS).isSeparatedFor.ext fun V g hg => ?_
-    change Sec.res g a = Sec.res g (0 : Sec F U)
-    rw [hP V g hg]
-    exact (map_zero _).symm
+  apply LateralTheory.EtaleFoundations.MonoEpiPf.inj_iff_loc <;> assumption
 
 theorem epi_iff_loc {F G : Shv R} (φ : F ⟶ G) :
     Epi φ ↔ ∀ U (b : Sec G U), Loc U fun V g => ∃ a : Sec F V, Sec.map φ a = Sec.res g b := by

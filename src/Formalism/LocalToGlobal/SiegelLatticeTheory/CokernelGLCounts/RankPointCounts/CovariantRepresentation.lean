@@ -147,15 +147,7 @@ theorem fix_rv {q : GCar X u u' (X.Fu u) (X.Fu u') Λ Λ'} {h : X.B.I.Ginf} (hh 
     uMat (h v) *ᵥ rv X.B.I v (X.crd y) = rv X.B.I v (X.crd y) := by
   dsimp [pointwiseStabilizerInfinite, Hset] at hh
   first
-  | exact hh _ ⟨y, hy, rfl⟩ v
   | exact hh v _ ⟨y, hy, rfl⟩
-  | exact hh.2 _ ⟨y, hy, rfl⟩ v
-  | exact hh.2 v _ ⟨y, hy, rfl⟩
-  | (clear hy; done)
-
-theorem uMat_inv_mul {n : ℕ} {ε : Fin n → Bool} (a : Formalism.REAL.UJ ε) : uMat a⁻¹ * uMat a = 1 := by
-  delta uMat
-  simp
 
 theorem fix'_rv {q : GCar X u u' (X.Fu u) (X.Fu u') Λ Λ'} {h : X.B.I.Ginf} (hh : h ∈ pointwiseStabilizerInfinite X q)
     {y : (VS D).V} (hy : q.1.2 y ∈ fixedSubspaceOfRepresentative X q) (v : InfinitePlace X.B.I.F) :
@@ -167,7 +159,7 @@ theorem fix'_rv {q : GCar X u u' (X.Fu u) (X.Fu u') Λ Λ'} {h : X.B.I.Ginf} (hh
     delta uMat
     simp
   rw [hm, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, h1, h2, ← h1, Matrix.mulVec_mulVec,
-    uMat_inv_mul, Matrix.one_mulVec]
+    _root_.Formalism.L2.SG.PoincareInHH.Cut.uMat_inv_mul, Matrix.one_mulVec]
 
 theorem inS_of_fix {n r : ℕ} (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) (g : Matrix (Fin n) (Fin n) ℂ)
     (he : ∀ a, g *ᵥ e a = e a) (hz : g *ᵥ z = z) : InS e z g := by

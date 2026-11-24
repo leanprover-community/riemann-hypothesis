@@ -153,7 +153,7 @@ theorem C_mul_X_not_mem_dualIdeal (b' : Module.Basis T ℤ (dualLattice F')) {c 
     (C c * X ⟨(), t⟩ : MRing (dualBlocks T)) ∉ dualIdeal b' := by
   intro h
   have h0 : mConeMap (dualLatticeCoord b') (C c * X ⟨(), t⟩ : MRing (dualBlocks T)) = 0 := h
-  simp only [mConeMap, map_mul, aeval_C, aeval_X, eq_intCast, map_intCast] at h0
+  simp only [mConeMap, map_mul, aeval_X, eq_intCast, map_intCast] at h0
   rcases mul_eq_zero.mp h0 with h1 | h1
   · exact hc (by exact_mod_cast h1)
   · rcases mul_eq_zero.mp h1 with h2 | h2

@@ -101,7 +101,7 @@ lemma measure_coset_le (κ : Measure H) [κ.IsMulLeftInvariant] (y : G) (E : Set
     have h0 : κ {h : H | y * h ∈ E} = 0 :=
       measure_mono_null (fun h hh => (hne h hh).elim) measure_empty
     rw [h0]
-    first | exact zero_le _ | exact zero_le | simp
+    first | exact zero_le
 
 lemma measure_coset_lt_top (hH : IsClosed (H : Set G)) (κ : Measure H)
     [IsFiniteMeasureOnCompacts κ] {E : Set G} (hE : IsCompact E) :
@@ -110,13 +110,6 @@ lemma measure_coset_lt_top (hH : IsClosed (H : Set G)) (κ : Measure H)
   have hc2 : IsCompact {h : H | (h : G) ∈ E⁻¹ * E} := by
     first
     | exact hH.isClosedEmbedding_subtypeVal.isCompact_preimage hc
-    | exact hH.closedEmbedding_subtype_val.isCompact_preimage hc
-    | (rw [Subtype.isCompact_iff]
-       have e : ((↑) : H → G) '' {h : H | (h : G) ∈ E⁻¹ * E} = (E⁻¹ * E) ∩ (H : Set G) := by
-         ext x
-         simp
-       rw [e]
-       exact hc.inter_right hH)
   exact hc2.measure_lt_top
 
 lemma measure_nhds_pos (κ : Measure H) [IsOpenPosMeasure κ] {V : Set G} (hV : V ∈ 𝓝 (1 : G)) :
@@ -125,7 +118,6 @@ lemma measure_nhds_pos (κ : Measure H) [IsOpenPosMeasure κ] {V : Set G} (hV : 
     continuous_subtype_val.continuousAt.preimage_mem_nhds hV
   first
   | exact measure_pos_of_mem_nhds κ h1
-  | exact (measure_pos_of_nonempty_interior κ ⟨1, mem_interior_iff_mem_nhds.2 h1⟩)
 
 lemma exists_fib_eq_one (hH : IsClosed (H : Set G)) (κ : Measure H) [SFinite κ]
     [κ.IsMulLeftInvariant] [IsFiniteMeasureOnCompacts κ] [IsOpenPosMeasure κ] :
@@ -188,20 +180,15 @@ lemma exists_fib_eq_one (hH : IsClosed (H : Set G)) (κ : Measure H) [SFinite κ
           intro n
           first
           | exact mul_le_mul_of_nonneg_left (measure_coset_le κ _ V) (by simp)
-          | exact mul_le_mul_left (measure_coset_le κ _ V) _
         first
         | exact ENNReal.tsum_le_tsum hn
-        | exact tsum_le_tsum hn ENNReal.summable ENNReal.summable
-        | exact Summable.tsum_le_tsum hn ENNReal.summable ENNReal.summable
       refine lt_of_le_of_lt hle ?_
       rw [ENNReal.tsum_mul_right, ENNReal.tsum_geometric]
       first
       | exact ENNReal.mul_lt_top (by simp) hC
-      | exact ENNReal.mul_lt_top (by simp) hC.ne
   refine ⟨fun x => φ x * (fib κ φ x)⁻¹, ?_, ?_⟩
   · first
     | exact hφ.mul (measurable_fib κ hφ).inv
-    | exact hφ.mul (ENNReal.continuous_inv.measurable.comp (measurable_fib κ hφ))
   · intro x
     have e : ∀ h : H, φ (x * h) * (fib κ φ (x * h))⁻¹ = φ (x * h) * (fib κ φ x)⁻¹ := fun h => by
       rw [fib_mul]

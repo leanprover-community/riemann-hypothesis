@@ -59,10 +59,6 @@ def InertPart (D : D7) : Prop :=
       ∀ 𝔭 : Ideal (𝓞 D.host.F), 𝔭.IsPrime → 𝔭.LiesOver (span {(p : ℤ)}) →
         (Inert D 𝔭 ↔ φ₀ = c0 ∧ Odd (addOrderOf h)))
 
-theorem tau_one_mem_orbit_set (φ : Formalism.HC.Frame) (t : φ.A) : φ.tau1 t ∈ φ.Psi := by
-  show φ.chD (φ.tau1 t) = 1
-  rfl
-
 private theorem neg_one_of_ne {x : ℤˣ} (h : x ≠ 1) : x = -1 := by
   rcases Int.units_eq_one_or x with hx | hx
   · exact absurd hx h
@@ -242,18 +238,18 @@ theorem lemma_one_three_of_inert (D : D7) (hI : InertPart D) : PointsLemma D := 
         decide
       · rw [← mul_assoc, cc_mul_cc, one_mul]
   · intro t i
-    have := (Formalism.HC.Frame.hostOrbitsPlaces (φ := D.R.toFrame) _ hg (D.R.tau1 t) (tau_one_mem_orbit_set D.R.toFrame t) i).1
+    have := (Formalism.HC.Frame.hostOrbitsPlaces (φ := D.R.toFrame) _ hg (D.R.tau1 t) (_root_.Formalism.HC.Frame.tau1_mem_Psi D.R.toFrame t) i).1
     show D.R.iotaInv (Formalism.HC.Frame.placeOf _).2 = _
     rw [this, Formalism.HC.Frame.iotaInv_mul, Formalism.HC.Frame.iotaInv_pow]
     change i • D.R.iotaInv (D.R.iota h) + D.R.iotaInv (D.R.iota t) = t + i • h
     rw [Formalism.HC.Frame.iotaInv_iota, Formalism.HC.Frame.iotaInv_iota, add_comm]
   · intro hc t i
-    have := (Formalism.HC.Frame.hostOrbitsPlaces (φ := D.R.toFrame) _ hg (D.R.tau1 t) (tau_one_mem_orbit_set D.R.toFrame t) i).2.1
+    have := (Formalism.HC.Frame.hostOrbitsPlaces (φ := D.R.toFrame) _ hg (D.R.tau1 t) (_root_.Formalism.HC.Frame.tau1_mem_Psi D.R.toFrame t) i).2.1
       (by rw [hg1]; exact hc)
     rw [this]
     rfl
   · intro hs t i
-    have := (Formalism.HC.Frame.hostOrbitsPlaces (φ := D.R.toFrame) _ hg (D.R.tau1 t) (tau_one_mem_orbit_set D.R.toFrame t) i).2.2
+    have := (Formalism.HC.Frame.hostOrbitsPlaces (φ := D.R.toFrame) _ hg (D.R.tau1 t) (_root_.Formalism.HC.Frame.tau1_mem_Psi D.R.toFrame t) i).2.2
       (by rw [hg1, hs, hsg])
     rw [this]
     exact mul_one _

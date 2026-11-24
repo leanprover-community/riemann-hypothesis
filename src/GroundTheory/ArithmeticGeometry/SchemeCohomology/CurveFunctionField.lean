@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsAlgebraicRatFuncFractionRingDedekind
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CurveBase
 public import GroundTheory.FunctionField.PlaceDefs
 public import Mathlib.AlgebraicGeometry.Morphisms.FiniteType
@@ -71,18 +72,7 @@ section Algebra
 theorem ringKrullDim_le_of_isIntegral {A R : Type*} [CommRing A] [CommRing R] [Algebra A R]
     [Algebra.IsIntegral A R] (h : Function.Injective (algebraMap A R)) :
     ringKrullDim A ≤ ringKrullDim R := by
-  rcases isEmpty_or_nonempty (PrimeSpectrum A) with hA | hA
-  · rw [ringKrullDim, Order.krullDim_eq_bot]
-    exact bot_le
-  rw [ringKrullDim, Order.krullDim_eq_iSup_length]
-  rw [WithBot.coe_iSup (OrderTop.bddAbove _)]
-  refine iSup_le fun l => ?_
-  obtain ⟨P, -, hP, hPl⟩ := Ideal.exists_ideal_over_prime_of_isIntegral l.head.asIdeal (⊥ : Ideal R)
-    (by rw [Ideal.under_def, ← RingHom.ker_eq_comap_bot, (RingHom.injective_iff_ker_eq_bot _).1 h]; exact bot_le)
-  have : P.LiesOver l.head.asIdeal := ⟨hPl.symm⟩
-  obtain ⟨L, hL, -, -⟩ := Ideal.exists_ltSeries_of_hasGoingUp l P
-  rw [← hL]
-  exact LTSeries.length_le_krullDim L
+  apply _root_.GlobalTheory.FracAlgDedekind.ringKrullDim_le_of_isIntegral <;> assumption
 
 variable (k R K : Type u) [Field k] [CommRing R] [IsDomain R] [Algebra k R]
   [Algebra.FiniteType k R] [Field K] [Algebra R K] [IsFractionRing R K] [Algebra k K]

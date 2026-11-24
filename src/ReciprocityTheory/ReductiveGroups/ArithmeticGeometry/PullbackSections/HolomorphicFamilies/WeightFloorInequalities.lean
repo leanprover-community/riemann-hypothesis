@@ -56,11 +56,7 @@ theorem weight_floor_inequalities (a aW Dm c1 c2 T T' : ℤ) (hT' : T' = T + Dm 
   rw [Int.fdiv_eq_ediv, if_pos (Or.inl hTp.le), sub_zero] at hW
   have h1 : (a - c1 - c2) % T' + T' * ((a - c1 - c2) / T') = a - c1 - c2 := by
     first
-      | exact Int.emod_add_ediv _ _
       | exact Int.emod_add_mul_ediv _ _
-      | (rw [Int.emod_def]; ring)
-      | (rw [Int.mul_comm]; exact Int.emod_add_ediv' _ _)
-      | exact (by simp [Int.emod_def])
   have h2 : 0 ≤ (a - c1 - c2) % T' := Int.emod_nonneg _ hTp.ne'
   have h3 : (a - c1 - c2) % T' < T' := Int.emod_lt_of_pos _ hTp
   rw [← hW] at h1

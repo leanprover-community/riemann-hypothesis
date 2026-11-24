@@ -188,7 +188,6 @@ theorem charFacts : CharFacts := by
   obtain ⟨σ⟩ : Nonempty (K →+* ℂ) := by
     first
     | exact inferInstance
-    | exact ⟨(IsAlgClosed.lift (R := ℚ) (M := ℂ) (S := K)).toRingHom⟩
   refine ⟨?_, fun σ' => ⟨(hmain σ').2.1, (hmain σ').2.2⟩⟩
   exact (isIntegral_algHom_iff σ.toIntAlgHom σ.injective).1 (hmain σ).1
 
@@ -218,7 +217,6 @@ theorem dimSq_of (h : Schur) : DimSq := by
   obtain ⟨σ⟩ : Nonempty (K →+* ℂ) := by
     first
     | exact inferInstance
-    | exact ⟨(IsAlgClosed.lift (R := ℚ) (M := ℂ) (S := K)).toRingHom⟩
   have hdim : charOf (τ s) 1 = (finrank K (T s) : K) := by
     unfold charOf
     rw [map_one, LinearMap.trace_one]

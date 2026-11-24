@@ -122,7 +122,7 @@ lemma Hpk_fix_of_phi (y : Fin (2 * r + k + 1) → ℂ) (hy : phiL k r y = 0) : H
     · rw [hw, mul_zero]
     · intro b _ hb
       have hb' : b.val ≠ r + k := fun h => hb (Fin.ext h)
-      simp only [Hpk, Fin.ext_iff, Fin.val_mk]
+      simp only [Hpk, Fin.ext_iff]
       split_ifs with h1 h2 h3 <;> first | omega | simp
     · intro h; exact absurd (Finset.mem_univ _) h
   · have hlt : 2 * r + k - i.val < r := by omega
@@ -151,8 +151,7 @@ lemma herm_self_of_fix (y : Fin (2 * r + k + 1) → ℂ) (hy : Hpk k r *ᵥ y = 
   simp only [dotProduct, Pi.star_apply]
   push_cast
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [Complex.normSq_eq_conj_mul_self]
-  rfl
+  simp [Complex.normSq_eq_conj_mul_self]
 
 lemma eq_zero_of_sum_normSq_nonpos {n : ℕ} (y : Fin n → ℂ) (h : ∑ i, Complex.normSq (y i) ≤ 0) : y = 0 := by
   have hnn : ∀ j ∈ Finset.univ, 0 ≤ Complex.normSq (y j) := fun j _ => Complex.normSq_nonneg _
@@ -189,8 +188,7 @@ lemma gram_det (z z' : Fin (2 * r + k + 1) → ℂ) (γ : B.Mat k r) (hstd : C2.
 
 lemma gram_herm (z z' : Fin (2 * r + k + 1) → ℂ) (γ : B.Mat k r) :
     ((gnB k r z z' γ)ᴴ * Hpk k r * gnB k r z z' γ)ᴴ = (gnB k r z z' γ)ᴴ * Hpk k r * gnB k r z z' γ := by
-  have hH : (Hpk k r)ᴴ = Hpk k r := (hpkFacts k r).1
-  simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, hH, Matrix.mul_assoc]
+  simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, (hpkFacts k r).1, Matrix.mul_assoc]
 
 end FixedPointsGramVector
 
@@ -328,7 +326,6 @@ theorem gram_independent_signature' : C2.GramIndependentSignature := by
     unfold C2.Uperp
     rw [of_star_gramVec]
     show Module.finrank ℂ (LinearMap.ker (Matrix.mulVecLin (Vᴴ * H))) = k - 1
-    have hk := hstd.1
     omega
 
 end Formalism.FourierDecayAlt.P

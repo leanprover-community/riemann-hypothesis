@@ -68,10 +68,6 @@ open Polynomial Module.End
 
 variable {L W : Type} [Field L] [AddCommGroup W] [Module L W]
 
-theorem hfs_aeval_restrict (f : Module.End L W) {p : Submodule L W} (h : ∀ x ∈ p, f x ∈ p) (q : L[X]) (x : p) :
-    ((aeval (f.restrict h) q x : p) : W) = aeval f q x := by
-  first | exact UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict .. | (apply UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict L W ‹_› ‹_› ‹_› f p h q x | exact @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict L W ‹_› ‹_› ‹_› f p h q | exact @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict L W ‹_› ‹_› ‹_› f p h | exact @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict L W ‹_› ‹_› ‹_› f p | exact @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict L W ‹_› ‹_› ‹_› f | exact @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict L W ‹_› ‹_› ‹_› | exact @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict L W ‹_› ‹_› | exact @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict L W ‹_› | exact @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict L W | exact @UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict L
-
 theorem hfs_iSup_maxGen_of_splits [FiniteDimensional L W] (f : Module.End L W) (hs : (minpoly L f).Splits) :
     ⨆ μ, f.maxGenEigenspace μ = ⊤ := by
   suffices H : ∀ n, ∀ (W : Type) [AddCommGroup W] [Module L W] [FiniteDimensional L W] (f : Module.End L W),
@@ -99,7 +95,7 @@ theorem hfs_iSup_maxGen_of_splits [FiniteDimensional L W] (f : Module.End L W) (
     have hs' : (minpoly L f').Splits := by
       refine hs.of_dvd (minpoly.ne_zero hint) (minpoly.dvd L f' ?_)
       ext x
-      rw [hfs_aeval_restrict f h_f_ER, minpoly.aeval]
+      rw [_root_.UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict f h_f_ER, minpoly.aeval]
       rfl
     have h_dim_ES_pos : 0 < finrank L ES := by
       dsimp +instances only [ES]

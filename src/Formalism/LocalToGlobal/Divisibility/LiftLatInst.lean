@@ -101,9 +101,7 @@ def TupF (TU : Finset (Tup X.F X.E X.K S)) : Type := {τ : Tup X.F X.E X.K S // 
 def mu0F (TU : Finset (Tup X.F X.E X.K S)) : TupF TU := ⟨mu0 X.F X.E X.K S, Or.inl rfl⟩
 
 theorem tupF_finite (TU : Finset (Tup X.F X.E X.K S)) : Finite (TupF TU) := by
-  have h : ({τ | τ = mu0 X.F X.E X.K S ∨ τ ∈ TU} : Set (Tup X.F X.E X.K S)).Finite :=
-    (TU.finite_toSet.insert (mu0 X.F X.E X.K S)).subset (fun τ hτ => by simpa using hτ)
-  exact h.to_subtype
+  exact Set.Finite.to_subtype ((TU.finite_toSet.insert (mu0 X.F X.E X.K S)).subset (fun τ hτ => by simpa using hτ) : ({τ | τ = mu0 X.F X.E X.K S ∨ τ ∈ TU} : Set (Tup X.F X.E X.K S)).Finite)
 
 def colIn (v0 : InfinitePlace X.K) (TU : Finset (Tup X.F X.E X.K S))
     (Xg : Finset (Col.G0 X.E Pr.vGs R.r → X.K)) (S0 : Set (HeightOneSpectrum (𝓞 X.E)))

@@ -65,31 +65,6 @@ open NumberField in
 open scoped ComplexConjugate ComplexOrder Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
 omit [IsCMField E] in
-private theorem exists_int_mul_isIntegral_of_fg (Λ : Submodule (𝓞 E) (Fin r → E)) (hΛ : Λ.FG) :
-    ∃ d : ℤ, d ≠ 0 ∧ ∀ x ∈ Λ, ∀ a, IsIntegral ℤ ((d : E) * x a) := by
-  classical
-  obtain ⟨s, rfl⟩ := hΛ
-  obtain ⟨d, hd, hint⟩ := exists_integral_multiples ℤ ℚ (s.biUnion fun x => Finset.univ.image x)
-  refine ⟨d, hd, fun x hx => ?_⟩
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-    intro a
-    have h := hint (x a) (Finset.mem_biUnion.2 ⟨x, hx, Finset.mem_image_of_mem _ (Finset.mem_univ a)⟩)
-    rwa [zsmul_eq_mul] at h
-  | zero => intro a; simpa using isIntegral_zero
-  | add x y _ _ hx hy => intro a; simpa [mul_add] using (hx a).add (hy a)
-  | smul k x _ hx =>
-    intro a
-    have h : (d : E) * (k • x) a = algebraMap (𝓞 E) E k * ((d : E) * x a) := by
-      rw [Pi.smul_apply, Algebra.smul_def]
-      ring
-    rw [h]
-    exact (RingOfIntegers.isIntegral_coe k).mul (hx a)
-
-open NumberField in
-open scoped ComplexConjugate ComplexOrder Matrix in
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} in
-omit [IsCMField E] in
 private theorem exists_int_smul_single_mem_of_span_eq_univ (Λ : Submodule (𝓞 E) (Fin r → E))
     (hspan : Submodule.span E (Λ : Set (Fin r → E)) = ⊤) :
     ∃ c : ℤ, c ≠ 0 ∧ ∀ b : Fin r, (c : E) • (Pi.single b 1 : Fin r → E) ∈ Λ := by
@@ -147,7 +122,7 @@ theorem _root_.GlobalTheory.Member.LatData.exists_data_lattice : ∀ (E : Type) 
     (Λ : Submodule (𝓞 E) (Fin r → E)), Λ.FG → Submodule.span E (Λ : Set (Fin r → E)) = ⊤ →
     ∃ X : _root_.ReciprocityTheory.ChartRestriction.G.FD.Data E r, X.Λ = Λ := by
   intro E _ _ _ r Λ hfg hspan
-  obtain ⟨d, hd, hdint⟩ := exists_int_mul_isIntegral_of_fg Λ hfg
+  obtain ⟨d, hd, hdint⟩ := _root_.GlobalTheory.LatFin.exists_common_den Λ hfg
   obtain ⟨c, hc, hcmem⟩ := exists_int_smul_single_mem_of_span_eq_univ Λ hspan
   have hdc : ((d * c : ℤ) : E) ≠ 0 := by exact_mod_cast mul_ne_zero hd hc
   refine ⟨{ _root_.GlobalTheory.Up.Definite.data (E := E) (r := r) with

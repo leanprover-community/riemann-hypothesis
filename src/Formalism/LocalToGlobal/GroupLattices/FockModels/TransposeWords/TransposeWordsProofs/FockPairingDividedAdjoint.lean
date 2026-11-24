@@ -45,6 +45,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.FockPairing
 
 @[expose] public section
 
@@ -58,57 +59,32 @@ open Formalism.GradedWeylDivisibility
 
 lemma adj_fockR_of_subset {σ R : Type*} [CommRing R] (f g : MvPolynomial σ R) (s : Finset (σ →₀ ℕ))
     (h : f.support ⊆ s) :
-    fockR f g = ∑ m ∈ s, f.coeff m * g.coeff m * ((∏ k ∈ m.support, (m k).factorial : ℕ) : R) := by
-  unfold fockR
-  apply Finset.sum_subset h
-  intro m _ hm
-  rw [MvPolynomial.mem_support_iff, not_not] at hm
-  rw [hm]
-  ring
+    fockR f g = ∑ m ∈ s, f.coeff m * g.coeff m * ((∏ k ∈ m.support, (m k).factorial : ℕ) : R) :=
+  FockPairing.pair_eq_sum f g s h
 
 lemma adj_fockR_add_left {σ R : Type*} [CommRing R] (f f' g : MvPolynomial σ R) :
-    fockR (f + f') g = fockR f g + fockR f' g := by
-  classical
-  rw [adj_fockR_of_subset _ _ (f.support ∪ f'.support) MvPolynomial.support_add,
-    adj_fockR_of_subset f g (f.support ∪ f'.support) Finset.subset_union_left,
-    adj_fockR_of_subset f' g (f.support ∪ f'.support) Finset.subset_union_right, ← Finset.sum_add_distrib]
-  apply Finset.sum_congr rfl
-  intro m _
-  rw [MvPolynomial.coeff_add]
-  ring
+    fockR (f + f') g = fockR f g + fockR f' g :=
+  FockPairing.pair_add_left f f' g
 
 lemma adj_fockR_smul_left {σ R : Type*} [CommRing R] (a : R) (f g : MvPolynomial σ R) :
-    fockR (a • f) g = a * fockR f g := by
-  rw [adj_fockR_of_subset _ _ f.support MvPolynomial.support_smul, fockR, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro m _
-  rw [MvPolynomial.coeff_smul, smul_eq_mul]
-  ring
+    fockR (a • f) g = a * fockR f g :=
+  FockPairing.pair_smul_left a f g
 
 lemma adj_fockR_symm {σ R : Type*} [CommRing R] (f g : MvPolynomial σ R) :
-    fockR f g = fockR g f := by
-  classical
-  rw [adj_fockR_of_subset f g (f.support ∪ g.support) Finset.subset_union_left,
-    adj_fockR_of_subset g f (f.support ∪ g.support) Finset.subset_union_right]
-  apply Finset.sum_congr rfl
-  intro m _
-  ring
+    fockR f g = fockR g f :=
+  FockPairing.pair_comm f g
 
 lemma adj_fockR_add_right {σ R : Type*} [CommRing R] (f g g' : MvPolynomial σ R) :
-    fockR f (g + g') = fockR f g + fockR f g' := by
-  rw [adj_fockR_symm, adj_fockR_add_left, adj_fockR_symm g, adj_fockR_symm g']
+    fockR f (g + g') = fockR f g + fockR f g' :=
+  FockPairing.pair_add_right f g g'
 
 lemma adj_fockR_smul_right {σ R : Type*} [CommRing R] (a : R) (f g : MvPolynomial σ R) :
-    fockR f (a • g) = a * fockR f g := by
-  rw [adj_fockR_symm, adj_fockR_smul_left, adj_fockR_symm]
+    fockR f (a • g) = a * fockR f g :=
+  FockPairing.pair_smul_right a f g
 
 lemma adj_fockR_map {σ R S : Type*} [CommRing R] [CommRing S] (φ : R →+* S) (f g : MvPolynomial σ R) :
-    fockR (map φ f) (map φ g) = φ (fockR f g) := by
-
-  rw [adj_fockR_of_subset _ _ f.support (MvPolynomial.support_map_subset _ _), fockR, map_sum]
-  apply Finset.sum_congr rfl
-  intro m _
-  simp [MvPolynomial.coeff_map]
+    fockR (map φ f) (map φ g) = φ (fockR f g) :=
+  FockPairing.pair_map φ f g
 
 lemma adj_fockR_rat {σ : Type*} (f g : MvPolynomial σ ℚ) : fockR f g = fockQ f g := rfl
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ConstantCoeffSubstSame
 public import Formalism.IncomingBounds.StatementThmP
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -71,21 +72,7 @@ private theorem mem_support_or_of_mem_support_add {σ : Type} (P Q : MvPolynomia
 
 theorem tpjet_jetAt0_add {σ : Type} (P Q : MvPolynomial σ C) (G : MvPowerSeries σ C) :
     jetAt0 (P + Q) G = jetAt0 P G + jetAt0 Q G := by
-  classical
-  have h1 : (P + Q).support ⊆ P.support ∪ Q.support := by
-    intro a ha
-    exact Finset.mem_union.2 (mem_support_or_of_mem_support_add P Q a ha)
-  have h2 : P.support ⊆ P.support ∪ Q.support := by
-    intro a ha
-    exact Finset.mem_union.2 (Or.inl ha)
-  have h3 : Q.support ⊆ P.support ∪ Q.support := by
-    intro a ha
-    exact Finset.mem_union.2 (Or.inr ha)
-  rw [tpjet_jetAt0_superset (P + Q) G _ h1, tpjet_jetAt0_superset P G _ h2,
-    tpjet_jetAt0_superset Q G _ h3, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun m _ => ?_
-  rw [MvPolynomial.coeff_add]
-  ring
+  apply GlobalTheory.MinorShiftJet.jetAt0_add_left <;> assumption
 
 theorem tpjet_jetAt0_zero {σ : Type} (G : MvPowerSeries σ C) :
     jetAt0 (0 : MvPolynomial σ C) G = 0 := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverMorphismRestrictOfRelAmple
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.PullChartIsLB
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -71,21 +72,7 @@ theorem compat_res (s : H.Sec) (i j : H.ι) {V : X.Opens} (hi : V ≤ H.U i) (hj
 
 theorem isUnit_res (t : H.Sec) (l : H.ι) {V : X.Opens} (hV : V ≤ Out.nonzeroLocus t)
     (hl : V ≤ H.U l) : IsUnit (resG X hl (t.f l)) := by
-  have hle : V ≤ X.basicOpen (t.f l) := by
-    intro x hx
-    obtain ⟨k, hk⟩ := TopologicalSpace.Opens.mem_iSup.1 (hV hx)
-    have hk' : x ∈ H.U k := X.basicOpen_le _ hk
-    have h1 : x ∈ X.basicOpen (resG X (inf_le_left : H.U k ⊓ H.U l ≤ H.U k) (t.f k)) := by
-      erw [Scheme.basicOpen_res]
-      exact ⟨⟨hk', hl hx⟩, hk⟩
-    rw [compat_res t k l inf_le_left inf_le_right, Scheme.basicOpen_mul] at h1
-    have h2 := h1.2
-    erw [Scheme.basicOpen_res] at h2
-    exact h2.2
-  have hu : IsUnit (resG X (X.basicOpen_le (t.f l)) (t.f l)) :=
-    X.toRingedSpace.isUnit_res_basicOpen (t.f l)
-  have := hu.map (resG X hle)
-  rwa [rr] at this
+  apply GlobalTheory.ProjSpace.isUnit_resG_sec <;> assumption
 
 theorem existsUnique_isRatio (hH : H.IsLB) (s t : H.Sec) (W : X.Opens)
     (hW : W ≤ Out.nonzeroLocus t) : ∃! r : Γ(X, W), IsRatio s t W r := by

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ExpPowSubOne
 public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -61,31 +62,7 @@ variable {LL : Type} [Field LL]
 theorem framepf_exp_pow_sub_one (E : PowerSeries LL) (h0 : constantCoeff E = 1)
     (hd : PowerSeries.derivative E = E) (p : ℕ) :
     ∃ w : PowerSeries LL, E ^ p - 1 = X * w ∧ constantCoeff w = (p : LL) := by
-  have hX1 : X ∣ E - 1 := by
-    rw [PowerSeries.X_dvd_iff]
-    simp [h0]
-  obtain ⟨w1, hw1⟩ := hX1
-  have hc1 : constantCoeff w1 = 1 := by
-    have h2 : coeff 0 (PowerSeries.derivative E) = coeff 1 E := by
-      rw [PowerSeries.coeff_derivative]
-      simp
-    rw [hd] at h2
-    have h1 : coeff 1 (E - 1) = coeff 0 w1 := by
-      rw [hw1]
-      exact PowerSeries.coeff_succ_X_mul 0 w1
-    have h3 : coeff 1 (E - 1) = coeff 1 E := by
-      simp [PowerSeries.coeff_one]
-    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, ← h1, h3, ← h2,
-      PowerSeries.coeff_zero_eq_constantCoeff_apply, h0]
-  induction p with
-  | zero => exact ⟨0, by simp, by simp⟩
-  | succ k ih =>
-    obtain ⟨w, hw, hwc⟩ := ih
-    refine ⟨w * E + w1, ?_, ?_⟩
-    · have he : E ^ (k + 1) - 1 = (E ^ k - 1) * E + (E - 1) := by ring
-      rw [he, hw, hw1]
-      ring
-    · simp [hwc, hc1, h0]
+  apply Formalism.MainNotions.N.Pv.LocalLengthBound.exp_pow_sub_one <;> assumption
 
 end Zero
 
@@ -104,46 +81,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 open PowerSeries in
 theorem framepf_lev_q_simple (c : ZMod n) (ζ : LL) (hζ : IsPrimitiveRoot ζ PD.p) :
     ∃ u : PowerSeries LL, W.lev c ζ W.q = X * u ∧ constantCoeff u ≠ 0 := by
-  obtain ⟨E, hE0, hEd, hE⟩ := W.lev_π c ζ ⟨1, by simpa using hζ⟩
-  obtain ⟨w, hw, hwc⟩ := framepf_exp_pow_sub_one E hE0 hEd PD.p
-  have hp0 : (PD.p : LL) ≠ 0 := by
-    intro h
-    have h1 := W.v_l
-    rw [h, AddValuation.map_zero] at h1
-    simp at h1
-  have hp1 : PD.p ≠ 1 := by
-    intro h
-    have h1 := W.v_l
-    rw [h, Nat.cast_one, AddValuation.map_one] at h1
-    simp at h1
-  have hζ1 : ζ ≠ 1 := by
-    intro h
-    have h2 := hζ.eq_orderOf
-    rw [h, orderOf_one] at h2
-    exact hp1 h2
-  have hζp : ζ ^ PD.p = 1 := hζ.pow_eq_one
-  have hq : (letπ : LetA O n) * W.q = (1 + letπ) ^ PD.p - 1 := by
-    funext i
-    simp only [Pi.mul_apply, Pi.sub_apply, Pi.pow_apply, Pi.add_apply, Pi.one_apply]
-    exact W.q₀_def
-  have hfq : W.lev c ζ letπ * W.lev c ζ W.q = E ^ PD.p - 1 := by
-    rw [← map_mul, hq, map_sub, map_pow, map_add (f := _), map_one, hE, mul_pow, ← map_pow, hζp, map_one,
-      one_mul]
-  set P := W.lev c ζ letπ with hPdef
-  have hP : P = C ζ * E - 1 := eq_sub_of_add_eq' hE
-  have hPc : constantCoeff P = ζ - 1 := by
-    rw [hP]
-    simp [hE0]
-  have hPne : constantCoeff P ≠ 0 := by
-    rw [hPc]
-    exact sub_ne_zero.mpr hζ1
-  refine ⟨w * P⁻¹, ?_, ?_⟩
-  · have hinv : P⁻¹ * P = 1 := PowerSeries.inv_mul_cancel P hPne
-    calc W.lev c ζ W.q = (P⁻¹ * P) * W.lev c ζ W.q := by rw [hinv, one_mul]
-      _ = P⁻¹ * (E ^ PD.p - 1) := by rw [mul_assoc, hfq]
-      _ = X * (w * P⁻¹) := by rw [hw]; ring
-  · rw [map_mul, hwc, PowerSeries.constantCoeff_inv, hPc]
-    exact mul_ne_zero hp0 (inv_ne_zero (sub_ne_zero.mpr hζ1))
+  apply Formalism.MainNotions.N.Pv.LocalLengthBound.lev_q_simple <;> assumption
 
 theorem framepf_Q_eq_q (hs : W.s = 1) : W.Q = W.q := by
   simp [Formalism.BasicNotions.LocWach.Q, hs]

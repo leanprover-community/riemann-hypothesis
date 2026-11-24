@@ -1,5 +1,6 @@
 module
 
+import Formalism.LatticeSlopes.LatticeSlopesProofs.SlopesBdd
 public import Formalism.LatticeSlopes.Statement
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.CovolEqGram
 import Mathlib.Algebra.Order.Floor.Extended
@@ -57,46 +58,7 @@ namespace Formalism.F
 theorem linearIndependent_coe_basis {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] (L : Submodule ℤ E) [hL : DiscreteTopology L] {ι : Type*} [Fintype ι]
     (b : Basis ι ℤ L) : LinearIndependent ℝ (fun i => (b i : E)) := by
-  classical
-
-  let V : Submodule ℝ E := Submodule.span ℝ (L : Set E)
-  let L' : Submodule ℤ V := L.comap (V.subtype.restrictScalars ℤ)
-  let φ : L ≃ₗ[ℤ] L' :=
-    { toFun := fun x => ⟨⟨x, Submodule.subset_span x.2⟩, x.2⟩
-      invFun := fun y => ⟨((y : V) : E), y.2⟩
-      left_inv := fun _ => rfl
-      right_inv := fun _ => rfl
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  haveI : DiscreteTopology L' :=
-    DiscreteTopology.of_continuous_injective (f := fun y : L' => (⟨((y : V) : E), y.2⟩ : L))
-      ((continuous_subtype_val.comp continuous_subtype_val).subtype_mk _)
-      (by
-        intro a c h
-        have h' := congrArg Subtype.val h
-        exact Subtype.ext (Subtype.ext h'))
-  haveI : IsZLattice ℝ L' := ⟨by
-    apply Submodule.map_injective_of_injective V.injective_subtype
-    rw [Submodule.map_span, Submodule.map_top, Submodule.range_subtype]
-    show Submodule.span ℝ _ = Submodule.span ℝ (L : Set E)
-    congr 1
-    ext x
-    constructor
-    · rintro ⟨y, hy, rfl⟩
-      exact hy
-    · intro hx
-      exact ⟨⟨x, Submodule.subset_span hx⟩, hx, rfl⟩⟩
-  have hrank := ZLattice.rank ℝ L'
-  have hLspan : Submodule.span ℤ (Set.range fun i => (b i : E)) = L := by
-    have h1 := congrArg (Submodule.map L.subtype) b.span_eq
-    rw [Submodule.map_span, Submodule.map_top, Submodule.range_subtype, ← Set.range_comp] at h1
-    exact h1
-  have key : Fintype.card ι = Module.finrank ℝ V := by
-    rw [← hrank, ← φ.finrank_eq, Module.finrank_eq_card_basis b]
-  rw [linearIndependent_iff_card_eq_finrank_span]
-  show Fintype.card ι = Module.finrank ℝ (Submodule.span ℝ (Set.range fun i => (b i : E)))
-  rw [← Submodule.span_span_of_tower ℤ ℝ, hLspan]
-  exact key
+  apply Formalism.F.linearIndependent_coe_basis' <;> assumption
 
 theorem covol_pos' : CovolPos := by
   intro E _ _ _ L hL
@@ -141,10 +103,8 @@ theorem covol_basic_properties : CovolBasic := by
         rw [linearIndependent_unique_iff]
         first
           | exact hv
-          | (intro r hr; exact (smul_eq_zero.1 hr).resolve_right hv)
       first
         | exact hR.restrict_scalars' ℤ
-        | exact hR.restrict_scalars (by intro a c h; simpa using h)
     have hr : span ℤ (Set.range fun _ : Unit => v) = span ℤ ({v} : Set E) := by
       rw [Set.range_const]
     let b : Basis Unit ℤ (span ℤ ({v} : Set E)) := (Basis.span hli).map (LinearEquiv.ofEq _ _ hr)

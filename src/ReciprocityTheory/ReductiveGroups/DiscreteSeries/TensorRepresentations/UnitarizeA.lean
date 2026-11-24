@@ -134,7 +134,7 @@ theorem int_norm_le {a b : G → ℂ} (ha : MemLp a 2 μ) (hb : MemLp b 2 μ) :
   rw [h1]
   calc inner ℝ (hA.toLp _) (hB.toLp _) ≤ ‖hA.toLp _‖ * ‖hB.toLp _‖ := real_inner_le_norm _ _
     _ = nrm μ a * nrm μ b := by
-      simp only [nrm, Lp.norm_toLp, eLpNorm_norm]
+      simp only [nrm, Lp.norm_toLp]
       rw [eLpNorm_norm a ha.aestronglyMeasurable, eLpNorm_norm b hb.aestronglyMeasurable]
 
 theorem pr_add_left {a a₁ b : G → ℂ} (ha : MemLp a 2 μ) (ha₁ : MemLp a₁ 2 μ) (hb : MemLp b 2 μ) :
@@ -205,7 +205,7 @@ theorem pr_rt (a b : G → ℂ) (g : G) :
 theorem pr_shift (a b : G → ℂ) (g : G) :
     pr μ (fun x => a (x * g)) b = pr μ a (fun x => b (x * g⁻¹)) := by
   rw [← pr_rt (fun x => a (x * g)) b g⁻¹]
-  simp only [inv_mul_cancel_right, mul_inv_cancel_right]
+  simp only [inv_mul_cancel_right]
 
 end Invariant
 
@@ -273,7 +273,7 @@ theorem small_zero {D : ℂ} {C : ℝ} (h : ∀ t : ℝ, 0 < t → t ≤ 1 → �
   have h2 := h _ ht0 ht1
   have h3 : min 1 (‖D‖ / (2 * C)) * C ≤ ‖D‖ / 2 := by
     calc min 1 (‖D‖ / (2 * C)) * C ≤ ‖D‖ / (2 * C) * C := mul_le_mul_of_nonneg_right ht2 hC.le
-      _ = ‖D‖ / 2 := by field_simp <;> ring
+      _ = ‖D‖ / 2 := by field_simp
   linarith
 
 private theorem negder_lemma {φ : ℝ → G} {a a' : G → ℂ}

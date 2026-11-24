@@ -222,7 +222,6 @@ theorem exp_dilation_generator_eq_aDil (k r : ℕ) (s : ℝ) :
   congr 1
   funext i
   rw [Pi.coe_exp, Pi.smul_apply, smul_eq_mul, ← Complex.exp_eq_exp_ℂ]
-  have hr : (rr r) ≠ 0 := (rr_pos r).ne'
   unfold dilationGeneratorDiagonal
   split_ifs with h1 h2
   · rw [← Real.exp_nat_mul, ← Complex.ofReal_mul, ← Complex.ofReal_exp]
@@ -606,7 +605,6 @@ theorem sgs_dil (hU : DilUW) (D : RealPlaceData k r Wp Wq) {p : SS k r} (hp : D.
   have ua := WeylGroupFacts.isUnit_of_uh (aDil_mem k r hx)
   have ub := WeylGroupFacts.isUnit_of_uh (aDil_mem k r hy)
   have uh := WeylGroupFacts.isUnit_of_uh (UWset_sub k r _ hp.1)
-  have uh' := WeylGroupFacts.isUnit_of_uh (UWset_sub k r _ hp.2.2.1)
   have k1 : aDil k r x * (Matrix.of h : Mat k r) = Matrix.of h * aDil k r x := hU k r D.z x _ hp.1
   have k2 : aDil k r y * (Matrix.of h' : Mat k r) = Matrix.of h' * aDil k r y := hU k r D.z' y _ hp.2.2.1
   have c1 : (Matrix.of h : Mat k r)⁻¹ * aDil k r x = aDil k r x * (Matrix.of h : Mat k r)⁻¹ := by
@@ -1124,7 +1122,6 @@ theorem norm_hilbertSchmidt_rho_pointwise_le (H : Hyp D Ξ α) {A B : Mat k r �
       (Module.finrank ℂ Wq : ℝ) * (cA * M ^ α * cB) * (gN g ^ (-α) * gN g ^ (-α)) := by
   have hxy := inSS_mem D hp
   have hcA := admissible_constant_nonneg hA
-  have hcB := admissible_constant_nonneg hB
   have h1 := admissible_norm_bound (admissible_two_sided_translate H.α_nonneg hA (WeylGroupFacts.uh_inv hxy.1) hxy.2) hg
   rw [Matrix.nonsing_inv_nonsing_inv _ (WeylGroupFacts.isUnit_of_uh hxy.1)] at h1
   have h2 := admissible_norm_bound hB hg
@@ -1964,7 +1961,6 @@ theorem lorentzian_weight_bound {τ : ℝ} (h : 0 < τ) (l : ℝ) :
   have hl : l ^ 2 = |l| ^ 2 := (sq_abs l).symm
   rw [hl]
   set a := |l| with ha
-  have ha0 : 0 ≤ a := abs_nonneg l
   set M := max 1 (τ ^ 2)⁻¹
   have : (1 + τ ^ 2 * a ^ 2) * (2 * M) = 2 * M + 2 * (M * τ ^ 2) * a ^ 2 := by ring
   rw [this]
@@ -2210,7 +2206,6 @@ theorem Ef_bound (H : Hyp D Ξ α) : ∃ K : ℝ, 0 ≤ K ∧ ∀ (F F' : Mat k 
   have hc := admissible_constant_nonneg (admissible_of_weighted hF)
   have hc' := admissible_constant_nonneg (admissible_of_weighted hF')
   have hX := XX_nonneg Ξ p
-  have nn : 0 ≤ K * c * c' * XX Ξ p := by positivity
   by_cases ht : t ∈ Set.Ioo (1 / 2 : ℝ) 2 ×ˢ Set.Ioo (1 / 2 : ℝ) 2
   · unfold Ef
     have term : ∀ m ∈ Finset.range 3, ∀ l ∈ Finset.range 3,
@@ -2404,7 +2399,6 @@ theorem Bt_bound (H : Hyp D Ξ α) : ∃ K : ℝ, 0 ≤ K ∧ ∀ (F F' : Mat k 
   have hc := admissible_constant_nonneg (admissible_of_weighted hF)
   have hc' := admissible_constant_nonneg (admissible_of_weighted hF')
   have hX := XX_nonneg Ξ p
-  have nn : 0 ≤ K * c * c' * XX Ξ p := by positivity
   by_cases hp : D.inSS p
   · by_cases ht : t ∈ Set.Ioo (1 / 2 : ℝ) 2 ×ˢ Set.Ioo (1 / 2 : ℝ) 2
     · rw [Bt_eq D F F' hp, regBracket_eq, norm_mul, Complex.norm_real, norm_mul]
@@ -2986,7 +2980,6 @@ theorem scaled_decay_weight_bound {t : ℝ} (ht : 1 / 2 ≤ t) (x : ℝ) :
   have h1 : |t * x| = t * |x| := by rw [abs_mul, abs_of_nonneg (by linarith)]
   rw [h1, ← div_eq_mul_inv, inv_eq_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
   have h2 : 1 + |x| ≤ 2 * (1 + t * |x|) := by nlinarith
-  have h3 : 0 ≤ 1 + |x| := by positivity
   nlinarith
 
 end avg2pre
@@ -3059,8 +3052,6 @@ theorem fourier_weighted_phase_integrable (H : Hyp D Ξ α) {F F' : Mat k r → 
   obtain ⟨C₁, hC₁, d₁⟩ := fourier_transform_quadratic_decay h₁
   obtain ⟨C₂, hC₂, d₂⟩ := fourier_transform_quadratic_decay h₂
   obtain ⟨K, hK, hb⟩ := ph_bound H
-  have hc := admissible_constant_nonneg hF
-  have hc' := admissible_constant_nonneg hF'
   refine Integrable.mono' ((xi_integrable H).const_mul (C₁ * C₂ * (K * c * c'))) (aestronglyMeasurable_dilation_pair_integrand H hF hF' h₁ h₂) ?_
   filter_upwards [ae_inSS D] with p hp
   unfold fourierWeightedPhase
@@ -3069,7 +3060,6 @@ theorem fourier_weighted_phase_integrable (H : Hyp D Ξ α) {F F' : Mat k r → 
   have e2 := d₂ (-lam k r D.z' (Matrix.of p.2.2))
   rw [abs_neg] at e2
   have e3 := hb F F' c c' hF hF' p hp
-  have hX := XX_nonneg Ξ p
   calc ‖om w₁ (lam k r D.z (Matrix.of p.1.2))‖ * ‖om w₂ (-lam k r D.z' (Matrix.of p.2.2))‖ * ‖Ph D F F' p‖
       ≤ (C₁ * (1 + |lam k r D.z (Matrix.of p.1.2)|) ^ (-2 : ℝ)) *
           (C₂ * (1 + |lam k r D.z' (Matrix.of p.2.2)|) ^ (-2 : ℝ)) * (K * c * c' * XX Ξ p) := by

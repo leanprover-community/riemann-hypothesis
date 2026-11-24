@@ -70,7 +70,6 @@ theorem pb_trace_pow_herm {A : Matrix (Fin n) (Fin n) ℂ} (hA : A.IsHermitian) 
     | (rw [Unitary.conjStarAlgAut_apply, Matrix.trace_mul_cycle, Unitary.coe_star_mul_self, one_mul,
         Matrix.diagonal_pow, Matrix.trace_diagonal]
        simp)
-    | simp [Unitary.conjStarAlgAut_apply, Matrix.trace_mul_cycle, Matrix.diagonal_pow, Matrix.trace_diagonal]
 
 theorem psum_continuous (ε : Fin n → Bool) (j : ℕ) :
     Continuous (fun z : PCoord ε → ℂ => ∑ a, pev z a ^ j) := by
@@ -169,7 +168,7 @@ theorem pairfun_continuous (ε : Fin n → Bool) (h : ℝ → ℝ) (hc : Continu
     have hq : (n : ℝ) * n / (n * n + 1) < 1 := (div_lt_one (by positivity)).2 (by linarith)
     have heq : (n : ℝ) * n * η = e / 3 * ((n * n) / (n * n + 1)) := by
       rw [hη]
-      first | (field_simp; ring) | field_simp | ring
+      first | (field_simp; ring) | field_simp
     rw [heq]
     exact mul_lt_of_lt_one_right (by positivity) hq
   rw [Real.dist_eq]

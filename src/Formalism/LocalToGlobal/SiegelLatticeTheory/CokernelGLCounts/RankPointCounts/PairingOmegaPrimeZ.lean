@@ -56,8 +56,7 @@ open Formalism.MainNotions.S Formalism.BasicNotions
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}
 
 theorem hT_swap (x y : S.V) : S.hT y x = star (S.hT x y) := by
-  have h := S.herm.eq x y
-  simpa [starRingEnd_apply] using h.symm
+  simpa [starRingEnd_apply] using (S.herm.eq x y).symm
 
 theorem brS_add_left (x x' y : S.V) : brS S (x + x') y = brS S x y + brS S x' y := by
   simp [brS]
@@ -114,8 +113,7 @@ theorem brS_omp_fvec (a : Fin (r + 1)) :
   split_ifs <;> simp
 
 theorem brS_omp_e (a : Fin r) : brS S (omp F F') (F.e a) = 0 := by
-  have h : F.e a = F.fvec (Fin.castSucc a) := by simp [FlagG.fvec]
-  rw [h, brS_omp_fvec]
+  rw [show F.e a = F.fvec (Fin.castSucc a) by simp [FlagG.fvec], brS_omp_fvec]
   simp [Fin.castSucc_ne_last]
 
 theorem det_eq_Dl : (Zhat F F').det = Dl F F' (r + 1) := by
@@ -124,8 +122,7 @@ theorem det_eq_Dl : (Zhat F F').det = Dl F F' (r + 1) := by
   congr 1
 
 theorem pairing_omegaPrime_z : brS S (omp F F') F.z = Dl F F' (r + 1) := by
-  have h : F.z = F.fvec (Fin.last r) := by simp [FlagG.fvec]
-  rw [h, brS_omp_fvec, if_pos rfl, det_eq_Dl]
+  rw [show F.z = F.fvec (Fin.last r) by simp [FlagG.fvec], brS_omp_fvec, if_pos rfl, det_eq_Dl]
 
 theorem adj_last_eq_Dl : (Zhat F F').adjugate (Fin.last r) (Fin.last r) = Dl F F' r := by
   rw [Matrix.adjugate_fin_succ_eq_det_submatrix]

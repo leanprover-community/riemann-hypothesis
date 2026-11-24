@@ -180,7 +180,6 @@ lemma kK_hasCompactSupport : HasCompactSupport (kK : (ι → ℝ) → ℝ) := by
 lemma kK_integral : ∫ h : ι → ℝ, kK h = 1 := by
   show ∫ h : ι → ℝ, ∏ j, kθ (h j) = 1
   first
-    | rw [integral_fintype_prod_eq_pow ι kθ, kθ_integral, one_pow]
     | rw [integral_fintype_prod_eq_prod ι (fun _ => kθ)]; simp [kθ_integral]
     | (rw [MeasureTheory.integral_fintype_prod_volume_eq_prod (fun _ => kθ)]; simp [kθ_integral])
 
@@ -188,7 +187,6 @@ lemma integrable_mul_kK {g : (ι → ℝ) → ℝ} (hg : Continuous g) :
     Integrable (fun h => g h * kK h) := by
   first
     | exact (hg.mul kK_contDiff.continuous).integrable_of_hasCompactSupport kK_hasCompactSupport.mul_left
-    | exact (hg.mul kK_contDiff.continuous).integrable_of_hasCompactSupport kK_hasCompactSupport.mul_right
 
 lemma integral_coord_kK (i : ι) : ∫ h, h i * kK h = 0 := by
   have e := integral_neg_eq_self (fun h : ι → ℝ => h i * kK h) volume
@@ -204,7 +202,6 @@ lemma integral_affine_kK (c a : ℝ) (i : ι) : ∫ h, (c + a * h i) * kK h = c 
   rw [e, integral_add (kK_integrable.const_mul c) ((integrable_mul_kK (continuous_apply i)).const_mul a)]
   first
     | rw [integral_const_mul, integral_const_mul]
-    | rw [integral_mul_left, integral_mul_left]
   rw [kK_integral, integral_coord_kK]
   ring
 
@@ -250,7 +247,6 @@ lemma integral_kK_mono {F G : (ι → ℝ) → ℝ} (hF : Continuous F) (hG : Co
 lemma integral_const_kK (c : ℝ) : ∫ h : ι → ℝ, c * kK h = c := by
   first
     | rw [integral_const_mul, kK_integral, mul_one]
-    | rw [integral_mul_left, kK_integral, mul_one]
 
 lemma integral_lin_kK {F G : (ι → ℝ) → ℝ} (hF : Continuous F) (hG : Continuous G) (a b : ℝ) :
     ∫ h, (a * F h + b * G h) * kK h = a * (∫ h, F h * kK h) + b * (∫ h, G h * kK h) := by
@@ -260,7 +256,6 @@ lemma integral_lin_kK {F G : (ι → ℝ) → ℝ} (hF : Continuous F) (hG : Con
   rw [e, integral_add ((integrable_mul_kK hF).const_mul a) ((integrable_mul_kK hG).const_mul b)]
   first
     | rw [integral_const_mul, integral_const_mul]
-    | rw [integral_mul_left, integral_mul_left]
 
 lemma regMax_ge (η : ℝ) (t : ι → ℝ) : tmax t ≤ regMax η t := by
   obtain ⟨i, hi⟩ := exists_tmax t
@@ -308,11 +303,9 @@ lemma regMax_update [DecidableEq ι] {η : ℝ} (hη : 0 ≤ η) (t : ι → ℝ
     show Function.update t j s i + η * h i = t i + η * h i
     first
       | rw [Function.update_of_ne hi]
-      | rw [Function.update_noteq hi]
   · show Function.update t j s j + η * h j ≤ Function.update t j s k + η * h k
     first
       | rw [Function.update_self, Function.update_of_ne hkj]
-      | rw [Function.update_same, Function.update_noteq hkj]
     linarith [(mul_coord_bounds hη hh j).2, (mul_coord_bounds hη hh k).1]
   · show t j + η * h j ≤ t k + η * h k
     linarith [(mul_coord_bounds hη hh j).2, (mul_coord_bounds hη hh k).1]
@@ -380,7 +373,6 @@ lemma regMax_scale {η : ℝ} (hη : 0 < η) (t : ι → ℝ) : regMax η t = η
   rw [regMax_eq_kK, regMax_eq_kK]
   first
     | rw [← integral_const_mul]
-    | rw [← integral_mul_left]
   congr 1
   funext h
   rw [tmax_scale hη t h, mul_assoc]
@@ -391,7 +383,6 @@ lemma regMax_one_eq_conv :
   rw [regMax_eq_kK]
   first
     | rw [convolution_def]
-    | unfold convolution
   simp only [ContinuousLinearMap.lsmul_apply, smul_eq_mul]
   have e := integral_neg_eq_self (fun h : ι → ℝ => tmax (fun j => x j + 1 * h j) * kK h) volume
   rw [← e]

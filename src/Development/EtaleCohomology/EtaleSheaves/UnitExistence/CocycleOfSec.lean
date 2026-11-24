@@ -119,7 +119,7 @@ theorem key (R : Type) [CommRing R] (F : Shv R) (E : Spc)
   erw [AlgebraicTopology.AlternatingFaceMapComplex.obj_d_eq]
   rw [Fin.sum_univ_two]
   erw [Preadditive.add_comp]
-  simp only [Fin.val_zero, Fin.val_one, pow_zero, pow_one, one_smul, neg_smul, Preadditive.neg_comp]
+  simp only [Fin.val_zero, Fin.val_one, pow_zero, pow_one, one_smul, neg_smul]
   erw [phi_face R F E s hs 0 1]
   erw [Preadditive.neg_comp]
   exact add_neg_cancel _

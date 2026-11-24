@@ -262,9 +262,6 @@ theorem harish_chandra_first_clause (hD : ForIrr fun _ ε H _ _ σ => Dense {v :
     have hkM : ∀ v, Formalism.MainNotions.S.IsKFin (epq p q) σ (io' v) := fun v => (hkf _).1 ((hran _).1 ⟨v, rfl⟩)
     let φ : M.V →ₗ[ℂ] smD (epq p q) σ := io'.codRestrict _ fun v => hsm _ (hkM v)
     have hφi : Function.Injective φ := fun a b h => hinj (congrArg Subtype.val h)
-    have hφs : ∀ w ∈ KF (epq p q) σ, ∃ v, φ v = w := fun w hw => by
-      obtain ⟨v, hv⟩ := (hran _).2 ((hkf _).2 hw)
-      exact ⟨v, Subtype.ext hv⟩
     have hφ : ∀ Z v, φ (M.act Z v) = L Z (φ v) := by
       have key : ∀ Y ∈ upq p q, ∀ v, φ (M.act Y v) = L Y (φ v) := fun Y hY v =>
         Subtype.ext ((hdM Y hY v).unique (hd Y hY (φ v)))

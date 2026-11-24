@@ -125,7 +125,7 @@ theorem re_trace_loc (R : RD d) (w : InfinitePlace F) (W X : Mx F E d.m d.n) :
 theorem inner_arc (R : RD d) (W X : Mx F E d.m d.n) :
     ⟪arc R W, arc R X⟫_ℝ =
       ∑ w, ∑ i, ∑ j, ((R.loc w W i j).re * (R.loc w X i j).re + (R.loc w W i j).im * (R.loc w X i j).im) := by
-  simp only [arc, PiLp.inner_apply, EuclideanSpace.equiv, real_inner_eq_re_inner, RCLike.inner_apply, conj_trivial]
+  simp only [arc, PiLp.inner_apply, EuclideanSpace.equiv, RCLike.inner_apply, conj_trivial]
   rw [Fintype.sum_prod_type]
   refine Finset.sum_congr rfl fun w _ => ?_
   rw [Fintype.sum_prod_type]
@@ -142,26 +142,11 @@ theorem fin_gram_tw (R : RD d) (W : Mx F E d.m d.n) (t : ℝ) (X : Mx F E d.m d.
   rw [← Matrix.smul_mul, ← Matrix.smul_mul, ← Matrix.transpose_smul, smul_comm, (tw_spec R W).1]
   simp
 
-theorem hTens_trace {R E : Type} [CommRing R] [CommRing E] [Algebra R E] (c : E →ₐ[R] E) {α β : Type} [Fintype α]
-    [Fintype β] (JA : Matrix α α E) (JB : Matrix β β E) (x y : Matrix α β E) :
-    hTens c JA JB x y = (xᵀ * JA * y.map c * JBᵀ).trace := by
-  simp only [hTens, Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply,
-    Finset.sum_mul]
-  calc _ = ∑ j, ∑ i, ∑ k, ∑ l, x i j * JA i k * JB j l * c (y k l) := Finset.sum_comm
-    _ = ∑ j, ∑ l, ∑ k, ∑ i, x i j * JA i k * c (y k l) * JB j l := by
-        refine Finset.sum_congr rfl fun j _ => ?_
-        calc _ = ∑ k, ∑ i, ∑ l, x i j * JA i k * JB j l * c (y k l) := Finset.sum_comm
-          _ = ∑ k, ∑ l, ∑ i, x i j * JA i k * JB j l * c (y k l) :=
-              Finset.sum_congr rfl fun k _ => Finset.sum_comm
-          _ = ∑ l, ∑ k, ∑ i, x i j * JA i k * JB j l * c (y k l) := Finset.sum_comm
-          _ = _ := Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun k _ =>
-              Finset.sum_congr rfl fun i _ => by ring
-
 theorem spf_eq (x y : Matrix (Fin d.m) (Fin d.n ⊕ Fin d.n) (AE F E)) :
     spf d x y = Algebra.trace (AF F) (AE F E)
       (-(xᵀ * incM F d.A.J * y.map (cA σ) * (dbl (incM F d.Y.J))ᵀ).trace) := by
   unfold spf symp
-  rw [hTens_trace, neg_one_mul]
+  rw [_root_.GlobalTheory.ThK.Dbl.Dense.hTens_tr, neg_one_mul]
   rfl
 
 theorem trace_evI_trace (z : AE F E) :

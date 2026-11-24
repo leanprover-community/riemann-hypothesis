@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartNorm
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.StatementsChartFirstGroupDvd
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartNormAlgClosed
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsChartNormSep
@@ -162,20 +163,7 @@ theorem eval_map_firstGroup {F : Type} [Field F] {n e : ℕ} (p : Ideal (MvPolyn
     eval (fun m => algebraMap F (Localization.AtPrime p) (u m))
         (map (algebraMap (MvPolynomial (Fin e × Fin n) F) (Localization.AtPrime p)) (firstGroup f)) =
       algebraMap _ (Localization.AtPrime p) (specFirst f u) := by
-  rw [eval_map]
-  simp only [firstGroup, specFirst]
-  induction f using MvPolynomial.induction_on with
-  | C a =>
-    rw [aeval_C, bind₁_C_right, MvPolynomial.algebraMap_apply, eval₂_C, MvPolynomial.algebraMap_eq]
-  | add a b ha hb =>
-    rw [map_add (f := _), map_add (f := _), eval₂_add, ha, hb, map_add (f := _)]
-  | mul_X a ij ha =>
-    rw [map_mul, map_mul, eval₂_mul, ha, map_mul, aeval_X, bind₁_X_right]
-    congr 1
-    obtain ⟨i, m⟩ := ij
-    cases i using Fin.cases with
-    | zero => simp [specFirstVar, algebraMap_localization_C]
-    | succ i => simp [specFirstVar]
+  apply _root_.GroundTheory.Heights₂.Heights.eval_map_firstGroup <;> assumption
 
 end ChartNormAlgClosed
 

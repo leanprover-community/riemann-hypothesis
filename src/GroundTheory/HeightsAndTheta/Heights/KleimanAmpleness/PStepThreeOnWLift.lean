@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepThreeAway
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsStepThreeOnWLift
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsClaimSeq
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PClaimVanish
@@ -74,27 +75,7 @@ theorem homogeneousComponent_mul_of_isHomogeneous {σ R : Type*} [CommRing R] {P
     {l : ℕ} (hP : P.IsHomogeneous l) (G : MvPolynomial σ R) (d : ℕ) :
     homogeneousComponent d (P * G) =
       if l ≤ d then P * homogeneousComponent (d - l) G else 0 := by
-  conv_lhs => rw [← sum_homogeneousComponent G, Finset.mul_sum]
-
-  rw [map_sum]
-  have hterm : ∀ i, homogeneousComponent d (P * homogeneousComponent i G) =
-      if d = l + i then P * homogeneousComponent i G else 0 := fun i =>
-    homogeneousComponent_of_mem ((hP.mul (homogeneousComponent_isHomogeneous i G)))
-  simp_rw [hterm]
-  by_cases h : l ≤ d
-  · rw [if_pos h]
-    have h2 : ∀ i, (if d = l + i then P * homogeneousComponent i G else 0) =
-        if d - l = i then P * homogeneousComponent i G else 0 := fun i => by
-      split_ifs <;> first | rfl | (exfalso; omega)
-    simp_rw [h2]
-    rw [Finset.sum_ite_eq]
-    split_ifs with hm
-    · rfl
-    · rw [homogeneousComponent_eq_zero, mul_zero]
-      simp only [Finset.mem_range] at hm
-      omega
-  · rw [if_neg h]
-    exact Finset.sum_eq_zero fun i _ => if_neg (by omega)
+  apply GroundTheory.Heights₂.Heights.Kleiman.StepThree.Away.homogeneousComponent_homog_mul <;> assumption
 
 theorem exists_finset_forms (P : Ideal (Poly k N)) :
     ∃ T : Finset (Poly k N), (∀ h ∈ T, h ∈ P ∧ ∃ e : ℕ, h.IsHomogeneous e) ∧

@@ -72,8 +72,6 @@ theorem MuVal.norm {V : HSp D} {χ : (AE D)ˣ →* Circle} {mu : GA D V → ℂ}
   rw [h.2 g x hx]
   first
     | exact Circle.norm_coe _
-    | exact Circle.abs_coe _
-    | exact mem_sphere_zero_iff_norm.mp (χ x).2
 
 def FinUnit (x : (AE D)ˣ) : Prop :=
   infPart D (x : AE D) = 1 ∧ finPart D (x : AE D) ∈ intAE D ∧ finPart D ((x⁻¹ : (AE D)ˣ) : AE D) ∈ intAE D

@@ -102,7 +102,7 @@ theorem last_powLine (II : IntersectionSystem) (hII : IsFullIntersectionSystem I
       funext j
       refine Fin.lastCases ?_ (fun j => ?_) j
       · simp
-      · simp [Function.update_of_ne (Fin.castSucc_lt_last j).ne]
+      · simp
     simpa only [e₁] using h
   have hs : (Fin.snoc (fun _ : Fin e => A) A : Fin (e + 1) → HermLine (Bk n)) = fun _ => A := by
     funext j
@@ -237,7 +237,7 @@ theorem combLine_single [DecidableEq κ] (A : κ → HermLine ι)
       rw [if_pos hz, Finset.prod_eq_single o]
       · simp
       · intro b _ hb
-        simp [Pi.single_apply, hb]
+        simp [hb]
       · simp
     · simp only [combLine]
       rw [if_neg hz, cA o z hz]

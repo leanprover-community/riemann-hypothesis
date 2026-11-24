@@ -154,7 +154,7 @@ theorem colsFixed_spPJ {k : ℕ} (j : Fin g) (hj : k ≤ (j : ℕ)) : ColsFixed 
   intro i hi
   have hij : j ≠ i := fun h => by subst h; omega
   refine ⟨fun r => ?_, fun r => ?_⟩ <;> rcases r with r | r <;>
-    simp [spPJ, Matrix.single_apply, Matrix.one_apply, hij]
+    simp [spPJ, Matrix.one_apply, hij]
 
 theorem vecMulVec_sq {u v : Fin g → ℤ} (h : v ⬝ᵥ u = 0) : vecMulVec u v * vecMulVec u v = 0 := by
   ext a b
@@ -214,11 +214,11 @@ theorem phase1 (k : Fin g) (n : ℕ) : ∀ M ∈ symplecticGroup (Fin g) ℤ, Co
   set d := M (Sum.inr j0) (Sum.inl k) with hdd
   set S : Matrix (Fin g) (Fin g) ℤ := (-(a / d)) • eJ j0 with hS
   have hSsymm : S.IsSymm := by
-    simp [hS, Matrix.IsSymm, Matrix.transpose_smul, Matrix.transpose_single]
+    simp [hS, Matrix.IsSymm, Matrix.transpose_single]
   have hSk : ∀ i : Fin g, (i : ℕ) < k → ∀ l, S l i = 0 := by
     intro i hi l
     have hne : j0 ≠ i := fun h => by subst h; omega
-    simp [hS, Matrix.single_apply, hne]
+    simp [hS, hne]
   have hO1 : spPJ j0 * spTransl S ∈ spH g := Submonoid.mul_mem _ (spPJ_mem j0) (spTransl_mem hSsymm)
   have hspH : spH g ≤ symplecticGroup (Fin g) ℤ := Submonoid.closure_le.2 (spGens_subset g)
   have hM' : spPJ j0 * spTransl S * M ∈ symplecticGroup (Fin g) ℤ :=

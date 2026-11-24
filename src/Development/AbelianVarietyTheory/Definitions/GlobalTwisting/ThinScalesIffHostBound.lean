@@ -170,9 +170,8 @@ theorem Pt.From.field (h : p.From H a b c u0) : HEq p.D.host.toHostAx H.toHostAx
 
 theorem Pt.From.congr_field (h : p.From H a b c u0) {α : Sort*} (f : ∀ φ : Formalism.HC.Frame, Formalism.HC.HostAx φ → α) :
     f p.D.R.toFrame p.D.host.toHostAx = f R.toFrame H.toHostAx := by
-  have h1 := h.1
   have h2 := h.field
-  subst h1
+  cases h.1
   rw [eq_of_heq h2]
 
 theorem Pt.From.QS_eq (h : p.From H a b c u0) : p.D.host.QS = H.QS := h.congr_field fun _ X => X.QS
@@ -192,21 +191,16 @@ theorem Pt.From.isCharED_iff (h : p.From H a b c u0) {N : ℕ} (χ : DirichletCh
 
 theorem Pt.From.boxE (h : p.From H a b c u0) {Y eps : ℝ} (hB : BoxH H Y eps) : GlobalTheoryTheory.BoxE p.D Y eps := by
   intro N _ χ hχ hr
-  have := hB N χ ((h.isCharED_iff χ).1 hχ) hr
-  unfold GlobalTheoryTheory.oddQS
-  rw [h.QS_eq, h.2.2.2.1, h.2.2.2.2.1]
-  exact this
+  simpa [GlobalTheoryTheory.oddQS, h.QS_eq, h.2.2.2.1, h.2.2.2.2.1] using
+    hB N χ ((h.isCharED_iff χ).1 hχ) hr
 
 theorem Pt.From.pairRow (h : p.From H a b c u0) {Y eps : ℝ} (hr : PairRow Y eps H) : PairRow Y eps p.D.host := by
-  unfold PairRow
-  rw [h.QS_eq, h.2.2.2.1, h.2.2.2.2.1]
-  exact hr
+  simpa [PairRow, h.QS_eq, h.2.2.2.1, h.2.2.2.2.1] using hr
 
 theorem Pt.From.boxW (h : p.From H a b c u0) {s : Scale} (hB : BoxW s H) : BoxW s p.D.host := by
   obtain ⟨Y, h1, h2, h3, h4⟩ := hB
   refine ⟨Y, h1, h.pairRow h2, ?_, h.boxE h4⟩
-  rw [h.2.2.2.1, h.2.2.2.2.1]
-  exact h3
+  simpa [h.2.2.2.1, h.2.2.2.2.1] using h3
 
 theorem Pt.From.boxesW (h : p.From H a b c u0) {s : Scale} (hB : BoxW s H) : BoxesW p.D s := (h.boxW hB).boxesW
 

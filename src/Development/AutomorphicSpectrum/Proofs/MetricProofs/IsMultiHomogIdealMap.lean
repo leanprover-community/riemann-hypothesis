@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.IAlgebra
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 import Mathlib.Algebra.Order.Floor.Extended
@@ -47,6 +48,7 @@ import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Per
 import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticSeventh
 
 @[expose] public section
 
@@ -68,50 +70,6 @@ theorem isMultiHomog_mul {f g : MRing ι} {a b : K → ℕ} (hf : IsMultiHomog f
   have h1 := hf m1 hm1 k
   have h2 := hg m2 hm2 k
   simp [Finset.sum_add_distrib, h1, h2]
-
-theorem isMultiHomog_rename {κ : K → K'} {v : (Σ k, ι k) → (Σ k, ι' k)} (hv : IsBlockMap κ v) {f : MRing ι}
-    {a : K → ℕ} (hf : IsMultiHomog f a) : IsMultiHomog (rename v f : MRing ι') (Function.extend κ a 0) := by
-  intro m hm k'
-  rw [support_rename_of_injective hv.2.1] at hm
-  obtain ⟨m0, hm0, rfl⟩ := Finset.mem_image.mp hm
-  by_cases hk : k' ∈ Set.range κ
-  · obtain ⟨k, rfl⟩ := hk
-    rw [hv.1.extend_apply, ← hf m0 hm0 k]
-    have hex : ∀ i' : ι' (κ k), ∃ i : ι k, v ⟨k, i⟩ = ⟨κ k, i'⟩ := by
-      intro i'
-      obtain ⟨p, hp⟩ := hv.2.2.2 ⟨κ k, i'⟩ ⟨k, rfl⟩
-      have h1 : κ p.1 = κ k := by rw [← hv.2.2.1 p, hp]
-      obtain ⟨k₁, i⟩ := p
-      obtain rfl : k₁ = k := hv.1 h1
-      exact ⟨i, hp⟩
-    choose g hg using hex
-    have hb : Function.Bijective g := by
-      constructor
-      · intro a b hab
-        have : (⟨κ k, a⟩ : Σ k, ι' k) = ⟨κ k, b⟩ := by rw [← hg a, ← hg b, hab]
-        exact eq_of_heq (Sigma.mk.inj this).2
-      · intro i
-        obtain ⟨q1, q2⟩ : ∃ q : Σ k, ι' k, q = v ⟨k, i⟩ := ⟨_, rfl⟩
-        have hq : ∃ i', v ⟨k, i⟩ = ⟨κ k, i'⟩ := by
-          have h1 := hv.2.2.1 ⟨k, i⟩
-          generalize v ⟨k, i⟩ = q at h1
-          obtain ⟨q1, q2⟩ := q
-          simp only at h1
-          subst h1
-          exact ⟨q2, rfl⟩
-        obtain ⟨i', hi'⟩ := hq
-        refine ⟨i', ?_⟩
-        have h2 : v ⟨k, g i'⟩ = v ⟨k, i⟩ := by rw [hg i', hi']
-        exact eq_of_heq (Sigma.mk.inj (hv.2.1 h2)).2
-    calc ∑ i', (Finsupp.mapDomain v m0) ⟨κ k, i'⟩ = ∑ i', m0 ⟨k, g i'⟩ := by
-          refine Finset.sum_congr rfl fun i' _ => ?_
-          rw [← hg i', Finsupp.mapDomain_apply_of_injective hv.2.1]
-      _ = ∑ i, m0 ⟨k, i⟩ := hb.sum_comp fun i => m0 ⟨k, i⟩
-  · rw [Function.extend_apply' _ _ _ (by simpa using hk)]
-    refine Finset.sum_eq_zero fun i' _ => ?_
-    refine Finsupp.mapDomain_notin_range _ _ ?_
-    rintro ⟨p, hp⟩
-    exact hk ⟨p.1, by rw [← hv.2.2.1 p, hp]⟩
 
 theorem eval_map_rename (zt : (Σ k, ι' k) → ℂ) (v : (Σ k, ι k) → (Σ k, ι' k)) (s : MRing ι) :
     eval zt (map (Int.castRingHom ℂ) (rename v s : MRing ι')) = eval (fun p => zt (v p)) (map (Int.castRingHom ℂ) s) := by
@@ -140,7 +98,7 @@ theorem isMultiHomogIdeal_map {κ : K → K'} {v : (Σ k, ι k) → (Σ k, ι' k
   refine ⟨_ '' S, ?_, Ideal.map_span _ _⟩
   rintro _ ⟨s, hs, rfl⟩
   obtain ⟨a, ha⟩ := hS s hs
-  exact ⟨_, isMultiHomog_rename hv ha⟩
+  exact ⟨_, _root_.GlobalTheory.CompanionTheory.Ar.PB.BaseEtale.isMultiHomog_rename_block hv ha⟩
 
 end Forms
 
@@ -168,15 +126,6 @@ end GlobalTheory.CompanionTheory.Ar.PB.CovMap
 
 noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.PB.CovMap
-
-section Corr
-
-variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Φ : Type} [Field Φ] {y : (Σ k, ι k) → Φ}
-  {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N j : ℕ} {M : FlagModel y Ψ N j} {K' : Type} [Fintype K']
-  {ι' : K' → Type} [∀ k, Fintype (ι' k)] {Φ' : Type} [Field Φ'] {y' : (Σ k, ι' k) → Φ'}
-  {M' : FlagModel y' Ψ N j}
-
-end Corr
 
 end GlobalTheory.CompanionTheory.Ar.PB.CovMap
 

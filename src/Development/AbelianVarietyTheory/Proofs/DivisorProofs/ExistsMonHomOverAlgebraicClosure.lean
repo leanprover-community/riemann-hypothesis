@@ -83,7 +83,7 @@ theorem torsion_factor (K : Type) [Field K] [CharZero K] (A : Over (Sp K)) [GrpO
   have := GlobalTheory.GrpTangent.isFinite_torsion A hu
   obtain ⟨hη1, huniv⟩ := GlobalTheory.LamF.torsion_universal A n
   obtain ⟨w, hw⟩ := huniv T y hy
-  obtain ⟨u, hu1, hu2⟩ := factor_finite K B E i hι hint (torsion A n).left (torsion A n).hom (t ≫ w.left)
+  obtain ⟨u, hu1, hu2⟩ := _root_.GlobalTheory.point_factor_integral_subalgebra K B E i hι hint (torsion A n).left (torsion A n).hom (t ≫ w.left)
     (by rw [Category.assoc, Over.w w, ht])
   refine ⟨Over.homMk u hu1 ≫ torsion.ι A n, ?_, ?_⟩
   · rw [← comp_pow, hη1, comp_one]

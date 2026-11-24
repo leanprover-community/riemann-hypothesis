@@ -64,7 +64,7 @@ abbrev uliftIntToIntRep (M : Rep.{0} (ULift.{0} ℤ) Γ) : Rep.{0} ℤ Γ :=
         simp
       map_mul' := fun g h => by
         ext x
-        simp [Module.End.mul_apply] }
+        simp }
 
 theorem inhomogeneousCochains_d_uliftIntToIntRep (M : Rep.{0} (ULift.{0} ℤ) Γ) (i j : ℕ)
     (x : (Fin i → Γ) → M.V) :

@@ -81,7 +81,7 @@ theorem lmat_mem_R (hs : (Z.M p).split = some g) {x y : (D.s.atP p).Ep} (hx : x 
     (by rw [AlgEquiv.apply_symm_apply]; exact (comp_mem Z p g hy).2) ⟨(g.e o).1, (comp_mem Z p g ho).1, ?_⟩
   rw [AlgEquiv.apply_symm_apply]
   have h := congrArg (fun t => (g.e t).1) he
-  simp only [map_sub, map_mul, AlgEquiv.commutes, g.e_cj, Prod.fst_sub, Prod.swap_prod_mk, Prod.fst_mul,
+  simp only [map_sub, map_mul, AlgEquiv.commutes, g.e_cj, Prod.fst_sub, Prod.fst_mul,
     Prod.fst_swap, Prod.algebraMap_apply] at h
   rw [h]
   rfl

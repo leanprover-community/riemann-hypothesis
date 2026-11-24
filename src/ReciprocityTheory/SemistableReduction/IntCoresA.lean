@@ -100,7 +100,7 @@ theorem sphere_zero_null (hSJ : SJStatement) {n a : ℕ} (g : MvPolynomial (Fin 
       intro z
       by_cases hz : MvPolynomial.eval (spherePoint z) g = 0
       · have hzZ : z ∈ Z := hz
-        simp [Set.indicator_apply, hzZ, hz]
+        simp [hzZ, hz]
       · have hzZ : z ∈ Zᶜ := hz
         rw [Set.indicator_of_mem hzZ, norm_mul,
           Real.log_mul (norm_ne_zero_iff.mpr hc) (norm_ne_zero_iff.mpr hz)]

@@ -67,8 +67,6 @@ theorem flog_constantCoeff (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_
     PowerSeries.constantCoeff (flog W wq) = 0 := by
   first
   | simp [PI.AddIntG.flog]
-  | (rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]; simp [PI.AddIntG.flog])
-  | (rw [← PowerSeries.coeff_zero_eq_constantCoeff]; simp [PI.AddIntG.flog])
 
 theorem coeff_one_flog {W : WeierstrassCurve ℂ_[p]} {wq : PowerSeries ℂ_[p]} (h : IsWq W wq) :
     PowerSeries.coeff 1 (flog W wq) = 1 := by
@@ -93,28 +91,23 @@ theorem coeff_one_flog {W : WeierstrassCurve ℂ_[p]} {wq : PowerSeries ℂ_[p]}
     simp [PI.AddIntG.omegaW, hw, PowerSeries.constantCoeff_inv, h2, hc2]
     first
     | done
-    | exact mul_inv_cancel₀ h2
     | field_simp
   have e : PowerSeries.coeff 1 (PI.AddIntG.flog W wq) = PowerSeries.coeff 0 (PI.AddIntG.omegaW W wq) := by
     simp [PI.AddIntG.flog]
   first
   | (rw [e, PowerSeries.coeff_zero_eq_constantCoeff_apply, hinv])
   | (rw [e]; simpa using hinv)
-  | simpa [e] using hinv
 
 private theorem hasSubst_of_constantCoeff_eq_zero_additive_integral_groups {K : Type*} [Field K] {a : PowerSeries K}
     (ha : PowerSeries.constantCoeff a = 0) : PowerSeries.HasSubst a := by
   have ha2 : MvPowerSeries.constantCoeff a = 0 := ha
   first
   | exact PowerSeries.HasSubst.of_constantCoeff_zero ha2
-  | exact PowerSeries.HasSubst.of_constantCoeff_zero' ha
-  | exact PowerSeries.HasSubst.of_constantCoeff_nilpotent (by rw [ha2]; exact IsNilpotent.zero)
 
 private theorem hasSubst_of_mvConstantCoeff_eq_zero {K : Type*} [Field K] {σ : Type*} {b : MvPowerSeries σ K}
     (hb : MvPowerSeries.constantCoeff b = 0) : PowerSeries.HasSubst b := by
   first
   | exact PowerSeries.HasSubst.of_constantCoeff_zero hb
-  | exact PowerSeries.HasSubst.of_constantCoeff_nilpotent (by rw [hb]; exact IsNilpotent.zero)
 
 private theorem subst_subst_eq_subst_subst_of_constantCoeff {K : Type*} [Field K] {σ : Type*} {a : PowerSeries K}
     {b : MvPowerSeries σ K} (ha : PowerSeries.constantCoeff a = 0)
@@ -124,9 +117,6 @@ private theorem subst_subst_eq_subst_subst_of_constantCoeff {K : Type*} [Field K
   have hb' := hasSubst_of_mvConstantCoeff_eq_zero hb
   first
   | exact PowerSeries.subst_comp_subst_apply ha' hb' f
-  | exact PowerSeries.subst_comp_subst_apply (R := K) ha' hb' f
-  | exact congrFun (PowerSeries.subst_comp_subst ha' hb') f
-  | simp [PowerSeries.subst_comp_subst_apply ha' hb']
 
 private theorem subst_X_eq_self_of_constantCoeff_eq_zero {K : Type*} [Field K] {σ : Type*} {b : MvPowerSeries σ K}
     (hb : MvPowerSeries.constantCoeff b = 0) :
@@ -134,7 +124,6 @@ private theorem subst_X_eq_self_of_constantCoeff_eq_zero {K : Type*} [Field K] {
   have hb' := hasSubst_of_mvConstantCoeff_eq_zero hb
   first
   | exact PowerSeries.subst_X hb'
-  | simp [PowerSeries.subst_X hb']
 
 private theorem coeff_pow_eq_zero_of_X_dvd_of_lt {K : Type*} [Field K] {y : PowerSeries K}
     (hy : PowerSeries.X ∣ y) {m d : ℕ} (h : m < d) : PowerSeries.coeff m (y ^ d) = 0 := by
@@ -151,9 +140,6 @@ private theorem powerSeries_coeff_subst_eq_sum_range_coeff_mul {K : Type*} [Fiel
       ∑ᶠ d, PowerSeries.coeff d l • PowerSeries.coeff n (y ^ d) := by
     first
     | exact PowerSeries.coeff_subst' hs l n
-    | exact PowerSeries.coeff_subst hs l (Finsupp.single () n)
-    | rw [PowerSeries.coeff_subst' hs]
-    | simp only [PowerSeries.coeff_subst' hs]
   have hsupp : Function.support (fun d => PowerSeries.coeff d l • PowerSeries.coeff n (y ^ d)) ⊆
       ↑(Finset.range (n + 1)) := by
     intro d hd
@@ -245,14 +231,8 @@ theorem subst_left_inv {K : Type*} [Field K] {l ex : PowerSeries K} (hl0 : Power
   have hy0 : PowerSeries.constantCoeff (PowerSeries.subst l ex) = 0 := by
     first
     | (rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, powerSeries_coeff_subst_eq_sum_range_coeff_mul hl0]; simp [hex0])
-    | (have h00 := powerSeries_coeff_subst_eq_sum_range_coeff_mul hl0 ex 0
-       simp [hex0] at h00
-       simpa using h00)
-    | (obtain ⟨e, he⟩ := PowerSeries.X_dvd_iff.2 hex0
-       rw [he, PowerSeries.subst_mul (hasSubst_of_constantCoeff_eq_zero_additive_integral_groups hl0), subst_X_eq_self_of_constantCoeff_eq_zero hl0, map_mul, hl0, zero_mul])
   have hXl : PowerSeries.subst (PowerSeries.X : PowerSeries K) l = l := by
     first
-    | exact PowerSeries.subst_self l
     | (ext n
        rw [powerSeries_coeff_subst_eq_sum_range_coeff_mul PowerSeries.constantCoeff_X]
        simp [PowerSeries.coeff_X_pow])
@@ -272,14 +252,12 @@ theorem add_eq_of {W : WeierstrassCurve ℂ_[p]} {wq ex : PowerSeries ℂ_[p]} (
   have hinv := subst_left_inv hl0 hl1 hex0 hex
   first
   | unfold PI.AddIntG.add
-  | simp only [PI.AddIntG.add]
   rw [← hF, ← subst_subst_eq_subst_subst_of_constantCoeff hl0 hF0 ex, hinv, subst_X_eq_self_of_constantCoeff_eq_zero hF0]
 
 theorem exists_intS (p : ℕ) [Fact p.Prime] : ∃ S : Subring ℂ_[p], ∀ x, x ∈ S ↔ ‖x‖ ≤ 1 := by
   have hadd : ∀ a b : ℂ_[p], ‖a + b‖ ≤ max ‖a‖ ‖b‖ := by
     first
     | exact fun a b => IsUltrametricDist.norm_add_le_max a b
-    | exact fun a b => (IsUltrametricDist.isNonarchimedean_norm (R := ℂ_[p])) a b
   refine ⟨{ carrier := {x | ‖x‖ ≤ 1},
             mul_mem' := fun {a b} ha hb => ?_,
             one_mem' := ?_,

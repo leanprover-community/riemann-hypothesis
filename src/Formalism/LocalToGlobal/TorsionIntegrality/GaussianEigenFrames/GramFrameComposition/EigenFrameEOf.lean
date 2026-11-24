@@ -99,7 +99,7 @@ theorem EigenFrame_of (hB : GramBasic) (hC : EigenCompat) : EigenFrame := by
       (fun j => hA j y) (hchi' e y.1) (hT e x) (hT' e y)
     rw [hBB, heq, hth, norm_mul]
     exact mul_le_of_le_one_right (norm_nonneg _) hε
-  obtain ⟨q1, hq1, hsplit⟩ := Formalism.L2.Th1.G.eigenSplit ℂ_[p] ((Bool × H) × Fin N0 × Fin N1) (Bool × H) Xo
+  obtain ⟨q1, hq1, hsplit⟩ := _root_.Formalism.L2.Th1.G.eigen_split_holds ℂ_[p] ((Bool × H) × Fin N0 × Fin N1) (Bool × H) Xo
     (fun x => x.1) (fun τ => (!τ.1, τ.2)) BB th chi chi' hth0 (fun x y => (hBx x y).1) hcomp hsep
   have main : ∀ x y, ∃ e : ℂ_[p], ‖e‖ ≤ 1 ∧
       BB x y = (if x.1.2 = y.1.2 ∧ x.2 = y.2 ∧ x.1.1 ≠ y.1.1 then u x.1.2 else 0) + th * e := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PrimeIdealsCountingBounds
 public import Formalism.LocalRingCardinality.DataRows
 public import Formalism.LocalRingCardinality.DataArith
 import Mathlib.Algebra.Order.Floor.Extended
@@ -144,42 +145,7 @@ variable {K : Type} [Field K] [NumberField K]
 
 theorem exists_prime_mem (w : HeightOneSpectrum (𝓞 K)) :
     ∃ p : ℕ, p.Prime ∧ ((p : 𝓞 K) ∈ w.asIdeal) := by
-  have key : ∀ n : ℕ, 2 ≤ n → ((n : 𝓞 K) ∈ w.asIdeal) →
-      ∃ p : ℕ, p.Prime ∧ ((p : 𝓞 K) ∈ w.asIdeal) := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | _ n ih =>
-      intro hn hmem
-      by_cases hp : n.Prime
-      · exact ⟨n, hp, hmem⟩
-      · have hlt : n.minFac < n := (Nat.not_prime_iff_minFac_lt hn).1 hp
-        have hmp : n.minFac.Prime := Nat.minFac_prime (by omega)
-        have hdvd : n.minFac ∣ n := Nat.minFac_dvd n
-        have hsplit : (n : 𝓞 K) = (n.minFac : 𝓞 K) * ((n / n.minFac : ℕ) : 𝓞 K) := by
-          rw [← Nat.cast_mul, Nat.mul_div_cancel' hdvd]
-        rw [hsplit] at hmem
-        rcases w.isPrime.mem_or_mem hmem with h | h
-        · exact ⟨_, hmp, h⟩
-        · have h2 : 2 ≤ n.minFac := hmp.two_le
-          have hq0 : n / n.minFac ≠ 0 := by
-            intro h0
-            rw [Nat.div_eq_zero_iff] at h0
-            omega
-          have hq1 : n / n.minFac ≠ 1 := by
-            intro h1
-            apply hp
-            have : n = n.minFac := by
-              have := Nat.div_mul_cancel hdvd
-              rw [h1, one_mul] at this
-              exact this.symm
-            rw [this]; exact hmp
-          exact ih (n / n.minFac) (Nat.div_lt_self (by omega) h2) ((Nat.two_le_iff _).2 ⟨hq0, hq1⟩) h
-  refine key (Ideal.absNorm w.asIdeal) ?_ (Ideal.absNorm_mem w.asIdeal)
-  have h0 : Ideal.absNorm w.asIdeal ≠ 0 := by
-    rw [Ne, Ideal.absNorm_eq_zero_iff]; exact w.ne_bot
-  have h1 : Ideal.absNorm w.asIdeal ≠ 1 := by
-    rw [Ne, Ideal.absNorm_eq_one_iff]; exact w.isPrime.ne_top
-  omega
+  apply GlobalTheory.Mem.FewPrimes.exists_prime_mem <;> assumption
 
 
 open Classical in

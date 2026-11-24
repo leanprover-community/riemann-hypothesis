@@ -54,7 +54,6 @@ section Paths
 theorem double_sum_eq_of_filter_card {α M : Type} [DecidableEq α] [AddCommMonoid M] (A A' : Finset α) (B B' : α → Finset α) (φ : α → M)
     (h : ∀ f, (A.filter fun e => f ∈ B e).card = (A'.filter fun e => f ∈ B' e).card) :
     ∑ e ∈ A, ∑ f ∈ B e, φ f = ∑ e ∈ A', ∑ f ∈ B' e, φ f := by
-
   have key : ∀ (A : Finset α) (B : α → Finset α) (U : Finset α), (∀ e ∈ A, B e ⊆ U) →
       ∑ e ∈ A, ∑ f ∈ B e, φ f = ∑ f ∈ U, (A.filter fun e => f ∈ B e).card • φ f := by
     intro A B U hU
@@ -62,11 +61,7 @@ theorem double_sum_eq_of_filter_card {α M : Type} [DecidableEq α] [AddCommMono
     · simp only [Finset.sum_const]
     · intro e f
       simp only [Finset.mem_filter]
-      constructor
-      · rintro ⟨he, hf⟩
-        exact ⟨⟨he, hf⟩, hU e he hf⟩
-      · rintro ⟨⟨he, hf⟩, -⟩
-        exact ⟨he, hf⟩
+      exact ⟨fun h => ⟨h, hU e h.1 h.2⟩, And.left⟩
   set U := A.biUnion B ∪ A'.biUnion B'
   rw [key A B U (fun e he => (Finset.subset_biUnion_of_mem B he).trans Finset.subset_union_left),
     key A' B' U (fun e he => (Finset.subset_biUnion_of_mem B' he).trans Finset.subset_union_right)]

@@ -109,7 +109,6 @@ theorem exists_inside_order : ∀ (n : ℕ) (ε : Fin n → Bool) (lev : Fin n �
   have hfl : f ∈ l := by simp [hl]
   obtain ⟨he1, he2⟩ := (mem_inside_iff hlev e).1 ((hmem' e).1 he)
   obtain ⟨hf1, hf2⟩ := (mem_inside_iff hlev f).1 ((hmem' f).1 hfl)
-  have he0 : (e.1.1 : ℕ) < e.1.2 := e.2
   have hf0 : (f.1.1 : ℕ) < f.1.2 := f.2
 
   have hkey : (ε k.1.1 = ε k.1.2 ∧ lev k.1.1 = lev k.1.2) ∧ rootHt f < rootHt k := by

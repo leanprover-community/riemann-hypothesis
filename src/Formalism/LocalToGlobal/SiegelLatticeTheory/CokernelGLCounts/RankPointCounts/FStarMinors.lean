@@ -164,7 +164,7 @@ theorem starMinors_holds : StarMinors u u' F0 what₂ := by
   have c1 := star_frame_cell_minor γ w hγ
   have c2 := FsLA.lm_cell Z w' hZ
   have hdet : ∀ v : Point D.host.E (D.R.rS + 1), leadMinorE (ptMat v) (D.R.rS + 1) ≠ 0 := fun v => by
-    rw [FsLA.leadMinorE_full]; exact Formalism.L2.SG.Pf.det_ptMat_ne v
+    rw [FsLA.leadMinorE_full]; exact _root_.Formalism.MainNotions.BridgeLemma.ptMat_det_ne v
   have hcross : Dmin w D.R.rS * Dmin w' (D.R.rS + 1) = Dmin w' D.R.rS * Dmin w (D.R.rS + 1) := by
     unfold kind at hk
     by_cases h0 : Dmin w D.R.rS = 0

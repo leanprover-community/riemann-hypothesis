@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CrystallineDiscPeriodsGaloisActionEq
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -119,24 +120,7 @@ theorem eq_zero_of_forall_pow_dvd (w : Wq l bk.a) (h : ∀ n : ℕ, (l : Wq l bk
   rwa [map_mul, map_natCast, CharP.cast_eq_zero, zero_mul, WittVector.constantCoeff_apply] at this
 
 theorem ev_injective : Function.Injective bk.ev := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro x hx
-  have key : ∀ n : ℕ, ∀ x : bk.S, bk.ev x = 0 → (l : bk.S) ^ n ∣ x := by
-    intro n
-    induction n with
-    | zero => intro x _; simp
-    | succ n ih =>
-      intro x hx
-      obtain ⟨x', rfl⟩ := bk.dvd_of_dvd_ev x (by rw [hx]; exact dvd_zero _)
-      have h2 : bk.ev x' = 0 := ainf_torsionFree _ (by rw [← map_natCast bk.ev, ← map_mul]; exact hx)
-      obtain ⟨z, hz⟩ := ih x' h2
-      exact ⟨z, by rw [hz, pow_succ]; ring⟩
-  refine PowerSeries.ext fun k => ?_
-  rw [map_zero]
-  refine bk.eq_zero_of_forall_pow_dvd _ fun n => ?_
-  obtain ⟨z, hz⟩ := key n x hx
-  refine ⟨coeff k z, ?_⟩
-  rw [hz, ← map_natCast (C : Wq l bk.a →+* (Wq l bk.a)⟦X⟧), ← map_pow, coeff_C_mul]
+  apply GlobalTheory.BSP.BK.ev_injective_galPer <;> assumption
 
 end Red
 

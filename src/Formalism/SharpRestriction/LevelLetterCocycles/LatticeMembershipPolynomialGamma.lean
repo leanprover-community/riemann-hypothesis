@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.UniformizerMemDeltaInvariants
 public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
 public import Formalism.SharpRestriction.LevelLetterCocycles.KillerLevCoreOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralOfRingCondition
@@ -167,31 +168,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
 theorem uniformizer_mem_delta_invariants : W.π₀ ∈ W.AΔ := by
-  intro δ hδ
-  funext i
-  show W.γ₀ δ W.π₀₁ = W.π₀₁
-  have hmem : ∀ {x y : W.Gam}, x ∈ W.DelF → y ∈ W.DelF → x * y ∈ W.DelF := by
-    intro x y hx hy
-    obtain ⟨a, ha, hxa⟩ := (W.DelF_def x).1 hx
-    obtain ⟨b, hb, hyb⟩ := (W.DelF_def y).1 hy
-    refine (W.DelF_def _).2 ⟨a * b, Nat.mul_pos ha hb, ?_⟩
-    rw [mul_pow, pow_mul, hxa, one_pow, pow_mul', hyb, one_pow, one_mul]
-  have hinv : δ⁻¹ ∈ W.DelF := by
-    obtain ⟨a, ha, hxa⟩ := (W.DelF_def δ).1 hδ
-    exact (W.DelF_def _).2 ⟨a, ha, by rw [inv_pow, hxa, inv_one]⟩
-  unfold LocWach.π₀₁
-
-  rw [map_add (f := _), map_sub, map_one, map_natCast, map_sum]
-  congr 1
-  have key : ∀ y : W.Gam, W.γ₀ δ (W.γ₀ y (1 + PowerSeries.X)) = W.γ₀ (δ * y) (1 + PowerSeries.X) := by
-    intro y; rw [map_mul, AlgHom.mul_apply]
-  simp only [key]
-  refine Finset.sum_nbij' (fun x => δ * x) (fun x => δ⁻¹ * x) ?_ ?_ ?_ ?_ ?_
-  · intro x hx; exact hmem hδ hx
-  · intro x hx; exact hmem hinv hx
-  · intro x _; simp
-  · intro x _; simp
-  · intro x _; rfl
+  apply Formalism.MainNotions.RamifiedCoefficientChains.S9.LD.uniformizer_mem_delta_invariants <;> assumption
 
 theorem ps_mem (s : ℕ) : Formalism.MainNotions.ArcLiftingSetup.ps W s ∈ W.AΔ :=
   Formalism.MainNotions.UnusedSlot80.PhiPowers.ps_mem_AΔ W (uniformizer_mem_delta_invariants W) s
@@ -667,7 +644,7 @@ theorem invNL_outside (hCA : Formalism.MainNotions.LiftingTheory.CaseA W) (h5 : 
       funext m
       by_cases h : m = k
       · subst h; simp
-      · simp [Pi.single_apply, h]
+      · simp [h]
     rw [e]
     exact hup k hk s hs bs hbs
   let g : Fin d → W.EE := fun k => if k ∈ Rst then 0 else πi * (W.γE W.gam (F k) - F k)
@@ -680,7 +657,7 @@ theorem invNL_outside (hCA : Formalism.MainNotions.LiftingTheory.CaseA W) (h5 : 
       intro k
       by_cases h : m = k
       · subst h; simp
-      · simp [Pi.single_apply, h]
+      · simp [h]
     simp only [this, Finset.sum_ite_eq, Finset.mem_filter, Finset.mem_univ, true_and, g]
     by_cases hm : m ∈ Rst <;> simp [hm]
   refine ⟨g, ?_, fun k => ?_⟩

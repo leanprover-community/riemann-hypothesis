@@ -70,13 +70,11 @@ theorem nat_mem (n : ℕ) [n.AtLeastTwo] : (OfNat.ofNat n : ℂ) ∈ Formalism.M
 
 theorem d_sq (D : D7) : Squarefree D.host.d := (D.host.hyp.2.1 : D.host.d.Prime).squarefree
 
-theorem host_imagQuadratic_discriminant_mod_four (D : D7) : D.host.d % 4 = 3 := by have := D.host.hyp.2.2.2.1; omega
-
 theorem hasCMBy_curve (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (hcc : Formalism.MainNotions.TaylorLogMetric.IsCurveIdeal D cc)
     (hδ : Formalism.MainNotions.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (L : PeriodPair)
     (hL : L.lattice.toAddSubgroup = Formalism.MainNotions.TaylorLogMetric.lamOf D cc δ) : Formalism.L2.Th1.CM.HasCMBy D.host.d L := by
   have hδ0 : δ ≠ 0 := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.brcc_delta_ne D cc hcc δ hδ
-  obtain ⟨-, hCM⟩ := Formalism.L2.Th1.F2.lamOfLat D cc δ hcc.1 hδ0
+  obtain ⟨-, hCM⟩ := _root_.Formalism.L2.Th1.F2.lambda_of_lattice_holds D cc δ hcc.1 hδ0
   intro ω hω
   have h1 := hCM ω (by rw [← hL]; exact hω)
   rw [← hL] at h1
@@ -97,7 +95,7 @@ theorem weierstrass_invariants_algebraic : InvAlg := by
   intro D cc δ hcc hδ L hL
   have hdisc := disc_curve D cc δ hcc hδ L hL
   have hcm := hasCMBy_curve D cc δ hcc hδ L hL
-  have hj : IsIntegral ℤ (Formalism.L2.Th1.CM.jInv L) := Formalism.L2.Th1.CM.cm1 D.host.d L (d_sq D) (host_imagQuadratic_discriminant_mod_four D) hcm
+  have hj : IsIntegral ℤ (Formalism.L2.Th1.CM.jInv L) := _root_.ReciprocityTheory.ChartRestriction.L1.cm1 D.host.d L (d_sq D) (_root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.discriminant_mod_four D) hcm
   have hjQ : Formalism.L2.Th1.CM.jInv L ∈ Formalism.MainNotions.TaylorLogMetric.Qbar :=
     (qbar_iff _).2 (hj.tower_top (A := ℚ)).isAlgebraic
   have hg2c : L.g₂ ^ 3 = Formalism.L2.Th1.CM.jInv L / 1728 := by
@@ -419,11 +417,9 @@ end ChartWirtingerDerivatives
 
 open ChartWirtingerDerivatives
 
-theorem invAlg' : InvAlg := ChartWirtingerDerivatives.weierstrass_invariants_algebraic
-
 theorem secondEisensteinAlgebraic : SecondEisensteinAlgebraic := by
   intro D cc δ hcc hδ L hL
-  obtain ⟨h2, h3⟩ := invAlg' D cc δ hcc hδ L hL
+  obtain ⟨h2, h3⟩ := _root_.Formalism.L2.KerInert.Sigma.ChartWirtingerDerivatives.weierstrass_invariants_algebraic D cc δ hcc hδ L hL
   have hcm := hasCMBy_curve D cc δ hcc hδ L hL
   have hd0 : 0 < D.host.d := (D.host.hyp.2.1 : D.host.d.Prime).pos
   obtain ⟨S, -, -, hIso, -⟩ := Formalism.L2.Th1.F.hasCMByIsogeny D.host.d L hcm (-1) 2 (by simp) hd0

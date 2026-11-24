@@ -127,7 +127,7 @@ theorem not_lagrangian_w1_mul (h : Hyp L nb uM nb' w₁ cM δ) {g : d.G} (hg : F
   have h1 := hS L.i₀
   rw [GlobalTheory.EisBL.DoubledParabolic.inFrame_mul, Matrix.mul_apply, Finset.sum_eq_single (Sum.inl L.i₀)] at h1
   · rw [hg, Matrix.one_apply_eq, mul_one, hW] at h1
-    simp [Matrix.single_apply, Matrix.one_apply] at h1
+    simp at h1
     exact hb (kfour.inclR_injective (F := F) (by rw [h1, map_zero]))
   · intro j _ hj; rw [hg j, Matrix.one_apply_ne hj, mul_zero]
   · simp
@@ -167,7 +167,7 @@ theorem w1_mul_j_comm (h : Hyp L nb uM nb' w₁ cM δ) (g : G2 σ L.Y) : w₁ * 
     rw [Matrix.sub_apply, hW]
     simp only [P, not_and_or] at hrc
     rcases hrc with hr | hr <;> push_neg at hr <;>
-      simp [Matrix.single_apply, Matrix.one_apply, hr.1, hr.2, Ne.symm hr.1, Ne.symm hr.2]
+      simp [Matrix.one_apply, Ne.symm hr.1, Ne.symm hr.2]
   have hJo : ∀ r c, (P r ∨ P c) → (J - 1) r c = 0 := by
     intro r c hrc
     rw [Matrix.sub_apply, sub_eq_zero]
@@ -224,7 +224,7 @@ theorem fix_cM' (h : Hyp L nb uM nb' w₁ cM δ) (c : (Fin L.n → AE F E) × AF
   intro k
   rw [cM_frame h]
   rcases k with k | k
-  · simp [uA, Matrix.one_apply, Matrix.single_apply, Matrix.sum_apply, C4.em_ne L]
+  · simp [uA, Matrix.one_apply, Matrix.sum_apply, C4.em_ne L]
   · simp
 
 theorem cM_rat' (h : Hyp L nb uM nb' w₁ cM δ) {c : (Fin L.n → AE F E) × AF F} (hu : c.1 ∈ L.ratV)
@@ -250,7 +250,7 @@ theorem cM_rat' (h : Hyp L nb uM nb' w₁ cM δ) {c : (Fin L.n → AE F E) × AF
       show Algebra.TensorProduct.map _ _ ((1 : AF F) ⊗ₜ[F] a) = (1 : AF F) ⊗ₜ[F] σ a
       simp
     ext i k
-    simp [incM, uA, GlobalTheory.ThK.incV, Matrix.single_apply, Matrix.one_apply, Matrix.sum_apply, hc]
+    simp [incM, uA, GlobalTheory.ThK.incV, Matrix.single_apply, Matrix.one_apply, Matrix.sum_apply]
     refine Finset.sum_congr rfl fun j _ => ?_
     split_ifs <;> simp [hc]
 
@@ -258,8 +258,8 @@ theorem emS_cM (h : Hyp L nb uM nb' w₁ cM δ) (c : (Fin L.n → AE F E) × AF 
     (inFrame d.b (cM c)).submatrix (emS L) (emS L) = 1 := by
   ext r r'
   rcases r with k | k <;> rcases r' with k' | k' <;>
-    simp [cM_frame h, emS, uA, aB, Matrix.one_apply, Matrix.single_apply, Matrix.sum_apply, C4.em_ne L, L.inj.eq_iff,
-      Ne.symm (C4.em_ne L _)] <;> split_ifs <;> simp
+    simp [cM_frame h, emS, uA, aB, Matrix.one_apply, Matrix.sum_apply, L.inj.eq_iff,
+      Ne.symm (C4.em_ne L _)] <;> split_ifs
 
 end PositivityTheory.SiegelWeilFormula.Act.C6
 

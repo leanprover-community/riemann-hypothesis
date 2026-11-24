@@ -43,6 +43,8 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsBaseTwoWords
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsTotallyComplexOfI
 
 @[expose] public section
 
@@ -115,23 +117,7 @@ theorem emb_cm (σ : H.E →+* ℂ) :
 
 theorem sum_emb_bijective : Function.Bijective
     (Sum.elim (fun t : Tau R => H.emb t) fun t : Tau R => ComplexEmbedding.conjugate (H.emb t)) := by
-  have hc : ∀ σ : H.E →+* ℂ, ComplexEmbedding.conjugate (ComplexEmbedding.conjugate σ) = σ :=
-    fun σ => star_star σ
-  have hi : ∀ {a b : Tau R}, H.emb a = H.emb b → a = b := fun h => Subtype.ext ((factEmb R H).1.1 h)
-  constructor
-  · rintro (a | a) (b | b) h <;> simp only [Sum.elim_inl, Sum.elim_inr] at h
-    · rw [hi h]
-    · exact absurd ⟨a, h⟩ ((emb_cm H (H.emb b)).1 ⟨b, rfl⟩)
-    · exact absurd ⟨b, h.symm⟩ ((emb_cm H (H.emb a)).1 ⟨a, rfl⟩)
-    · have := congrArg ComplexEmbedding.conjugate h
-      rw [hc, hc] at this
-      rw [hi this]
-  · intro σ
-    by_cases h : ∃ t : Tau R, H.emb t = ComplexEmbedding.conjugate σ
-    · obtain ⟨t, ht⟩ := h
-      exact ⟨Sum.inr t, by simp only [Sum.elim_inr]; rw [ht, hc]⟩
-    · obtain ⟨t, ht⟩ := (emb_cm H σ).2 h
-      exact ⟨Sum.inl t, ht⟩
+  apply _root_.GlobalTheory.Mem.BaseEx.sum_emb_bijective <;> assumption
 
 
 open Classical in
@@ -164,18 +150,7 @@ theorem isAlgebraic_exp (N : ℕ) : IsAlgebraic ℚ (Complex.exp (2 * Real.pi * 
 
 theorem exists_gens (E : Type) [Field E] [NumberField E] : ∃ S : Finset ℂ, (∀ z ∈ S, IsAlgebraic ℚ z) ∧
     ∀ K : IntermediateField ℚ ℂ, (∀ z ∈ S, z ∈ K) → ∀ (τ : E →+* ℂ) x, τ x ∈ K := by
-  classical
-  let b := Module.finBasis ℚ E
-  refine ⟨Finset.univ.image fun p : (E →+* ℂ) × Fin (Module.finrank ℚ E) => p.1 (b p.2), ?_, ?_⟩
-  · intro z hz
-    obtain ⟨p, -, rfl⟩ := Finset.mem_image.1 hz
-    exact (Algebra.IsAlgebraic.isAlgebraic (b p.2)).algHom p.1.toRatAlgHom
-  · intro K hK τ x
-
-    rw [← b.sum_repr x, map_sum]
-    refine sum_mem fun i _ => ?_
-    rw [map_rat_smul]
-    exact K.smul_mem (hK _ (Finset.mem_image.2 ⟨(τ, i), Finset.mem_univ _, rfl⟩))
+  apply _root_.GlobalTheory.Mem.BaseField.exists_gens <;> assumption
 
 @[instance_reducible] def starOf (K : IntermediateField ℚ ℂ) (h : ∀ z ∈ K, starRingEnd ℂ z ∈ K) : StarRing K where
   star x := ⟨starRingEnd ℂ x, h _ x.2⟩

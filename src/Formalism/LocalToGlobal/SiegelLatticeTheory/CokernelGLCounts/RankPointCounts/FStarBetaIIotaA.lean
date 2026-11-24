@@ -77,11 +77,7 @@ theorem gS_typed (g : Loc.SplitG (Zd.M p).L) (hs : (Zd.M p).split = some g) :
     push_cast
     rw [mul_inv_cancel₀ h0, map_one]
 
-theorem localLattice_mono {A B : Submodule (𝓞 D.host.E) (VS D).V} (h : A ≤ B) : lattice₂ D Zd.M p A ≤ lattice₂ D Zd.M p B :=
-  Submodule.span_mono (Set.image_mono h)
-
-theorem mem_O_M {a : (D.s.atP p).Ep} (ha : a ∈ (D.s.atP p).O) : a ∈ (Zd.M p).L.O := by
-  rw [Formalism.L2.SG.Pf.LocalDenominators.hO Zd p]; exact ha
+alias localLattice_mono := _root_.Formalism.L2.SG.Pf.BBTie.latP_mono
 
 theorem smul_gS_mem {Λ : Submodule (𝓞 D.host.E) (VS D).V} {T T' : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T)
     (F' : LFlag (D.sp.Y 0) D.R.rS T') {v : Vp D p} (hv : v ∈ lattice₂ D Zd.M p Λ) :
@@ -148,7 +144,7 @@ theorem l1 {Λ : Submodule (𝓞 D.host.E) (VS D).V} {T' : D.host.E} (G : LFlag 
   · rw [hf, hXS, Formalism.L2.SG.Pf.BBTie.bt_latP_XS Zd p (Formalism.L2.SG.Pf.locDiffC_holds D Zd) G.fl, mul_smul]
     have hm : frFac Zd.δ p i.castSucc • baseChange₂ D p (G.fl.e i) ∈ Submodule.span (Zd.M p).L.O
         (Set.range fun a : Fin D.R.rS => frFac Zd.δ p a.castSucc • baseChange₂ D p (G.fl.e a)) := Submodule.subset_span ⟨i, rfl⟩
-    exact Submodule.smul_mem _ (⟨s i.castSucc, mem_O_M Zd p (hs _)⟩ : (Zd.M p).L.O) hm
+    exact Submodule.smul_mem _ (⟨s i.castSucc, _root_.Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.mem_O_M Zd p (hs _)⟩ : (Zd.M p).L.O) hm
   · have : c (Fin.last D.R.rS) • f (Fin.last D.R.rS) = 0 := by
       rw [Subring.smul_def, key, zero_smul]
     rw [this]; exact zero_mem _

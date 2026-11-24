@@ -69,9 +69,7 @@ theorem cd_nM (τ : X.Ψ) (a b : Fin r) : ContDiff ℂ ∞ fun z : V (nd X) => n
   by_cases h : b < a
   · simp only [dif_pos h]
     first
-      | exact (EuclideanSpace.proj (𝕜 := ℂ) _).contDiff
       | fun_prop
-      | exact ((EuclideanSpace.proj (𝕜 := ℂ) _).contDiff).congr fun z => rfl
   · simp only [dif_neg h]
     exact contDiff_const
 
@@ -85,18 +83,12 @@ theorem unipotentFrame_inv_eq_adjugate (z : V (nd X)) (τ : X.Ψ) : (n1 X z τ)�
   rw [Matrix.inv_def, hdet]
   simp
 
-private lemma cd_det_lemma {𝕜 : Type*} [NontriviallyNormedField 𝕜] [NormedAlgebra 𝕜 ℂ] {F : Type*}
-    [NormedAddCommGroup F] [NormedSpace 𝕜 F] {k : ℕ} {M : F → Matrix (Fin k) (Fin k) ℂ}
-    (h : ∀ i j, ContDiff 𝕜 ∞ fun z => M z i j) : ContDiff 𝕜 ∞ fun z => (M z).det := by
-  simp only [Matrix.det_apply, Units.smul_def, zsmul_eq_mul]
-  exact ContDiff.sum fun σ _ => contDiff_const.mul (contDiff_prod fun i _ => h _ _)
-
 private lemma cd_adj_lemma_2 {𝕜 : Type*} [NontriviallyNormedField 𝕜] [NormedAlgebra 𝕜 ℂ] {F : Type*}
     [NormedAddCommGroup F] [NormedSpace 𝕜 F] {k : ℕ} {M : F → Matrix (Fin k) (Fin k) ℂ}
     (h : ∀ i j, ContDiff 𝕜 ∞ fun z => M z i j) (i j : Fin k) :
     ContDiff 𝕜 ∞ fun z => (M z).adjugate i j := by
   simp only [Matrix.adjugate_apply]
-  refine cd_det_lemma fun a b => ?_
+  refine _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExhD.contDiff_det_of fun a b => ?_
   by_cases hab : a = j
   · simp only [Matrix.updateRow_apply, hab, if_true]
     exact contDiff_const
@@ -128,11 +120,10 @@ theorem cd_Am_entry (τ : X.Ψ) (a c : Fin X.p0) :
   rw [hfun]
   refine contDiff_const.sub (ContDiff.sum fun m _ => (hZ a m).mul ?_)
   first
-    | exact (hZ c m).star
     | exact Complex.conjCLE.contDiff.comp (hZ c m)
 
 theorem cd_detAm (τ : X.Ψ) : ContDiff ℝ ∞ fun z : V (nd X) => (Am X z τ).det := by
-  exact cd_det_lemma (M := fun z : V (nd X) => Am X z τ) fun a c => cd_Am_entry X τ a c
+  exact _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExhD.contDiff_det_of (M := fun z : V (nd X) => Am X z τ) fun a c => cd_Am_entry X τ a c
 
 theorem rhF_contDiffAt (x0 : Frame X.Ψ r) (ho : IsOrth X x0) {z : V (nd X)} (hz : z ∈ OmF X x0) : ContDiffAt ℝ ∞ (rhF X x0) z := by
   have hfun : rhF X x0 = fun w => -∑ τ, Real.log ‖(Am X w τ).det‖ := funext (rhF_eq_sum X x0 ho)

@@ -324,7 +324,7 @@ theorem nfin_inv_pres {n : X.B.I.Gf} (hn : n ∈ X.NfinU u) :
 theorem mul_sub_one_mulVec (a b : X.B.I.Gf) (y : VA X.B.I) :
     (X.B.I.fmat (a * b) - 1) *ᵥ y = X.B.I.fmat a *ᵥ ((X.B.I.fmat b - 1) *ᵥ y) + (X.B.I.fmat a - 1) *ᵥ y := by
   rw [fmat_mul]
-  simp only [sub_mulVec, mulVec_sub, mulVec_mulVec, one_mulVec, Matrix.mul_sub, Matrix.mul_one]
+  simp only [sub_mulVec, mulVec_sub, mulVec_mulVec, one_mulVec]
   abel
 
 theorem inv_sub_one_mulVec (a : X.B.I.Gf) (y : VA X.B.I) :
@@ -490,7 +490,7 @@ theorem mulVec_inverse_mem_SpL_of_C1 {M M' : Matrix (Fin n) (Fin n) R} (hM : C1 
 
 theorem mul_sub_one_mulVec' (M N : Matrix (Fin n) (Fin n) R) (y : Fin n → R) :
     (M * N - 1) *ᵥ y = M *ᵥ ((N - 1) *ᵥ y) + (M - 1) *ᵥ y := by
-  simp only [sub_mulVec, mulVec_sub, mulVec_mulVec, one_mulVec, Matrix.mul_sub, Matrix.mul_one]
+  simp only [sub_mulVec, mulVec_sub, mulVec_mulVec, one_mulVec]
   abel
 
 theorem inv_sub_one_mulVec' (M M' : Matrix (Fin n) (Fin n) R) (hMM : M' * M = 1) (y : Fin n → R) :

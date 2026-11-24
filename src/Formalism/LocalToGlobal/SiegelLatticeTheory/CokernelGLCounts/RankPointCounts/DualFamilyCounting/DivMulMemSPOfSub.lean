@@ -65,7 +65,7 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 local notation "ι" => algebraMap (𝓞 F) (𝓞 K)
 local notation "jK" => algebraMap (𝓞 K) K
 
-theorem jK_conjO (z : 𝓞 K) : jK (conjO K z) = star (jK z) := rfl
+alias jK_conjO := _root_.Formalism.HermitianLattices.Ext.L3.WA.algebraMap_conjO
 
 theorem jK_star (z : 𝓞 K) : jK (star z) = star (jK z) := rfl
 

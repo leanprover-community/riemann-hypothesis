@@ -67,7 +67,6 @@ theorem val_iF_le (a b : F) :
     valuation A.Fp (A.ιF a) ≤ valuation A.Fp (A.ιF b) ↔ p.valuation F a ≤ p.valuation F b := by
   first
   | exact ((Valuation.Compatible.vle_iff_le (v := valuation A.Fp) _ _).symm).trans (A.val a b)
-  | exact ((Valuation.Compatible.vle_iff_le _ _).symm).trans (A.val a b)
 
 theorem iF_mem_iff (a : F) : A.ιF a ∈ 𝒪[A.Fp] ↔ p.valuation F a ≤ 1 := by
   have h := val_iF_le A a 1
@@ -75,7 +74,6 @@ theorem iF_mem_iff (a : F) : A.ιF a ∈ 𝒪[A.Fp] ↔ p.valuation F a ≤ 1 :=
   rw [Valuation.mem_integer_iff]
   first
   | exact h
-  | simpa using h
 
 theorem val_int_le (t : 𝓞 F) : p.valuation F (t : F) ≤ 1 := p.valuation_le_one t
 
@@ -83,7 +81,6 @@ theorem val_unit {t : 𝓞 F} (ht : t ∉ p.asIdeal) : p.valuation F (t : F) = 1
   refine le_antisymm (val_int_le t) (not_lt.mp fun h => ht ?_)
   first
   | exact (p.valuation_lt_one_iff_mem t).mp h
-  | exact (HeightOneSpectrum.valuation_lt_one_iff_mem (K := F) p t).mp h
 
 theorem iF_unit {t : 𝓞 F} (ht : t ∉ p.asIdeal) : valuation A.Fp (A.ιF (t : F)) = 1 := by
   have h1 := (val_iF_le A (t : F) 1).mpr (by rw [map_one, val_unit ht])
@@ -119,7 +116,6 @@ theorem iE_int {y : E} (hy : IsIntegral ℤ y) : A.ιE y ∈ A.O := by
   refine (A.O_def _).mpr ?_
   first
   | exact (map_isIntegral_int A.ιE hy).tower_top
-  | exact IsIntegral.tower_top (map_isIntegral_int A.ιE hy)
 
 theorem iE_alg (a : F) : A.ιE (algebraMap F E a) = algebraMap A.Fp A.Ep (A.ιF a) := A.compat a
 
@@ -136,7 +132,6 @@ theorem mem_of_alg_mem_O {z : A.Fp} (hz : algebraMap A.Fp A.Ep z ∈ A.O) : z �
       (algebraMap A.Fp A.Ep).injective).mp h1
   first
   | exact (Valuation.integer.integers _).mem_of_integral h2
-  | simpa using (Valuation.integer.integers _).mem_of_integral h2
 
 variable (hσ : ∀ e, sig (sig e) = e) (hfix : ∀ y : E, sig y = y → y ∈ (algebraMap F E).range)
 include hσ hfix

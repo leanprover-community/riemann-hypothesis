@@ -122,7 +122,7 @@ theorem l2_one_eq_toGT_l2_col1 (s : (Fin 1 → Vsp X.dim) → ℂ) : X.l2 1 s = 
 theorem card_idx [IsCMField E] : Fintype.card (Idx X.dim) = X.gA := by
   have hinv : Function.Involutive
       (NumberField.ComplexEmbedding.conjugate : (E →+* ℂ) → (E →+* ℂ)) :=
-    fun φ => RingHom.ext fun x => by simp [NumberField.ComplexEmbedding.conjugate_coe_eq]
+    fun φ => RingHom.ext fun x => by simp
   have hsum : ∑ τ, X.dim (NumberField.ComplexEmbedding.conjugate τ) = ∑ τ, X.dim τ :=
     Equiv.sum_comp (Function.Involutive.toPerm _ hinv) X.dim
   have h2 : 2 * ∑ τ, X.dim τ = Fintype.card (E →+* ℂ) * X.r := by

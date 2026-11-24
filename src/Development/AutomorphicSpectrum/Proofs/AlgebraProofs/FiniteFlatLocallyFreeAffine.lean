@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelAmpleDiagonalDescendedBundleGaloisCover
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FiniteFreeHom
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSecImageNonzeroLocus
 import Mathlib.Algebra.Order.Floor.Extended
@@ -61,58 +62,7 @@ theorem exists_finFree_away_of_finitePresentation {A B : Type} [CommRing A] [Com
       IsPushout (CommRingCat.ofHom φ) (CommRingCat.ofHom α) (CommRingCat.ofHom β)
         (CommRingCat.ofHom φ') →
       IsUnit (α r) → FinFree φ' := by
-  letI : Algebra A B := φ.toAlgebra
-  haveI : Module.Finite A B := hf
-  haveI : Module.Flat A B := hfl
-  haveI : Algebra.FinitePresentation A B := hfp
-  haveI : Module.FinitePresentation A B :=
-    Module.FinitePresentation.of_finite_of_finitePresentation A B
-  haveI : Module.Finite (Localization.AtPrime p.asIdeal)
-      (TensorProduct A (Localization.AtPrime p.asIdeal) B) :=
-    Module.Finite.base_change A (Localization.AtPrime p.asIdeal) B
-  haveI : Module.Free (Localization.AtPrime p.asIdeal)
-      (TensorProduct A (Localization.AtPrime p.asIdeal) B) :=
-    Module.free_of_flat_of_isLocalRing
-  haveI : IsLocalizedModule p.asIdeal.primeCompl
-      (TensorProduct.mk A (Localization.AtPrime p.asIdeal) B 1) :=
-    (isLocalizedModule_iff_isBaseChange p.asIdeal.primeCompl (Localization.AtPrime p.asIdeal)
-      _).mpr (TensorProduct.isBaseChange A B (Localization.AtPrime p.asIdeal))
-  obtain ⟨r, hr, hfree, -⟩ := Module.FinitePresentation.exists_free_localizedModule_powers
-    p.asIdeal.primeCompl (TensorProduct.mk A (Localization.AtPrime p.asIdeal) B 1)
-    (Localization.AtPrime p.asIdeal)
-  refine ⟨r, hr, ?_⟩
-  intro A' B' _ _ α β φ' h hu
-  have hbc : IsBaseChange (Localization.Away r)
-      (LocalizedModule.mkLinearMap (Submonoid.powers r) B) :=
-    (isLocalizedModule_iff_isBaseChange (Submonoid.powers r) (Localization.Away r) _).mp
-      inferInstance
-  haveI : Module.Free (Localization.Away r) (TensorProduct A (Localization.Away r) B) :=
-    Module.Free.of_equiv hbc.equiv.symm
-  letI : Algebra A A' := α.toAlgebra
-  letI : Algebra B B' := β.toAlgebra
-  letI : Algebra A' B' := φ'.toAlgebra
-  letI : Algebra A B' := (φ'.comp α).toAlgebra
-  haveI : IsScalarTower A A' B' := IsScalarTower.of_algebraMap_eq' rfl
-  have hw : β.comp φ = φ'.comp α := by
-    have := congrArg CommRingCat.Hom.hom h.w
-    simpa using this
-  haveI : IsScalarTower A B B' := IsScalarTower.of_algebraMap_eq' hw.symm
-  haveI hpo : Algebra.IsPushout A A' B B' := CommRingCat.isPushout_iff_isPushout.mp h.flip
-  let e2 : TensorProduct A A' B ≃ₗ[A'] B' := hpo.out.equiv
-  letI : Algebra (Localization.Away r) A' := (IsLocalization.Away.lift r hu).toAlgebra
-  haveI : IsScalarTower A (Localization.Away r) A' :=
-    IsScalarTower.of_algebraMap_eq (fun a => (IsLocalization.Away.lift_eq r hu a).symm)
-  let e1 : TensorProduct (Localization.Away r) A' (TensorProduct A (Localization.Away r) B)
-      ≃ₗ[A'] TensorProduct A A' B :=
-    TensorProduct.AlgebraTensorModule.cancelBaseChange A (Localization.Away r) A' A' B
-  haveI : Module.Free A'
-      (TensorProduct (Localization.Away r) A' (TensorProduct A (Localization.Away r) B)) :=
-    Module.Free.of_basis (Algebra.TensorProduct.basis A'
-      (Module.Free.chooseBasis (Localization.Away r) (TensorProduct A (Localization.Away r) B)))
-  haveI : Module.Finite A' (TensorProduct A A' B) := Module.Finite.base_change A A' B
-  refine (show φ'.Finite ∧ Module.Free A' B' from ⟨?_, ?_⟩)
-  · exact Module.Finite.equiv e2
-  · exact Module.Free.of_equiv (e1.trans e2)
+  apply GlobalTheory.FiniteAmpleFP.exists_finFree_away_fp <;> assumption
 
 theorem finiteFreeHom_comp_isIso {A B C : CommRingCat.{0}} (f : A ⟶ B) (e : B ⟶ C) [IsIso e]
     (h : FinFree f.hom) : FiniteFreeHom (f ≫ e).hom := by

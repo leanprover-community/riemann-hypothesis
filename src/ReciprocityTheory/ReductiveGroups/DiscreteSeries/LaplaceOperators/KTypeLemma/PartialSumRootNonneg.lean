@@ -97,17 +97,6 @@ theorem partialSum_root_nonneg {a b : Fin n} (hab : a < b) (k : ℕ) : 0 ≤ kir
   · exfalso; omega
   · norm_num
 
-theorem partialSum_single_bounds {β : Fin n → ℝ} (hβ : InRootCone β) (k : ℕ) : 0 ≤ kirrPs k β := by
-  obtain ⟨m, rfl⟩ := hβ
-  rw [partialSum_finset_sum_eq]
-  refine Finset.sum_nonneg fun a _ => ?_
-  rw [partialSum_finset_sum_eq]
-  refine Finset.sum_nonneg fun b _ => ?_
-  split_ifs with h
-  · rw [partialSum_smul]
-    exact mul_nonneg (Nat.cast_nonneg _) (partialSum_root_nonneg h k)
-  · simp [kirrPs]
-
 theorem partialSum_add_eq {ι : Type*} (s : Finset ι) (f : ι → Fin n → ℝ) :
     kUnitWtLin (∑ i ∈ s, f i) = ∑ i ∈ s, kUnitWtLin (f i) := by
   simp only [kUnitWtLin, Finset.sum_apply, Finset.mul_sum]
@@ -185,8 +174,6 @@ theorem highestWeight_dominant {N : Type*} [NormedAddCommGroup N] [InnerProductS
   have key' : (ν a - ν b) * ‖y‖ ^ 2 = ‖A b a y‖ ^ 2 := by
     norm_cast at key
     first
-    | exact Complex.ofReal_injective key
-    | exact RCLike.ofReal_injective key
     | exact (Complex.ofReal_injective (by simpa using key))
   have hpos : 0 < ‖y‖ ^ 2 := pow_pos (norm_pos_iff.mpr hy0) 2
   by_contra hlt
@@ -343,8 +330,8 @@ theorem exists_kIrreducible_highestWeight {N : Type*} [NormedAddCommGroup N] [In
     by_cases h1 : c = a <;> by_cases h2 : c = b
     · subst h1; subst h2; simp
     · subst h1; simp [h2, Ne.symm h2]
-    · subst h2; simp [h1, Ne.symm h1]
-    · simp [h1, h2, Ne.symm h1, Ne.symm h2]
+    · subst h2; simp [h1]
+    · simp [h1, h2, Ne.symm h2]
   have hHr : ∀ a b x, H (A a b x) = A a b (H x) + (((b : ℕ) : ℂ) - ((a : ℕ) : ℂ)) • A a b x := by
     intro a b x
 

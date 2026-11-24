@@ -57,20 +57,13 @@ namespace Formalism.FourierDecayAlt.P.GramProductIdentities
 open Finset Formalism.FourierDecayAlt.FormPairingAction Formalism.FourierDecayAlt.Wd
 open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator
 
-section Rep
-
-variable {A S V : Type} [Ring A] [StarRing A] [Algebra ℂ A] [Fintype S] [DecidableEq S]
-  [AddCommGroup V] [Module ℂ V] [Module A V] [IsScalarTower ℂ A V]
-
-end Rep
-
 section CS
 
 variable {M : Type} [AddCommGroup M] [Module ℂ M]
 
 theorem cs_of_pos (Ξ : F7.Sesq M) (h : ∀ m, 0 ≤ (Ξ m m).re ∧ (Ξ m m).im = 0) (x y : M) :
     ‖Ξ x y‖ ^ 2 ≤ (Ξ x x).re * (Ξ y y).re := by
-  first | exact Bl.HermitianSesquilinear.goal1 .. | (apply Bl.HermitianSesquilinear.goal1 <;> assumption) | (intros; apply Bl.HermitianSesquilinear.goal1 <;> assumption) | (apply @Bl.HermitianSesquilinear.goal1 <;> assumption) | (intros; apply @Bl.HermitianSesquilinear.goal1 <;> assumption) | (apply @Bl.HermitianSesquilinear.goal1 <;> first | assumption | infer_instance) | exact @Bl.HermitianSesquilinear.goal1 M ‹_› ‹_› Ξ h x y | exact @Bl.HermitianSesquilinear.goal1 M ‹_› ‹_› Ξ h x | exact @Bl.HermitianSesquilinear.goal1 M ‹_› ‹_› Ξ h | exact @Bl.HermitianSesquilinear.goal1 M ‹_› ‹_› Ξ | exact @Bl.HermitianSesquilinear.goal1 M ‹_› ‹_› | exact @Bl.HermitianSesquilinear.goal1 M ‹_› | exact @Bl.HermitianSesquilinear.goal1 M
+  first | (apply Bl.HermitianSesquilinear.goal1 <;> assumption) | exact @Bl.HermitianSesquilinear.goal1 M ‹_› ‹_› Ξ h x y | exact @Bl.HermitianSesquilinear.goal1 M ‹_› ‹_› Ξ h x | exact @Bl.HermitianSesquilinear.goal1 M ‹_› ‹_› Ξ h | exact @Bl.HermitianSesquilinear.goal1 M ‹_› ‹_› Ξ | exact @Bl.HermitianSesquilinear.goal1 M ‹_› ‹_› | exact @Bl.HermitianSesquilinear.goal1 M ‹_› | exact @Bl.HermitianSesquilinear.goal1 M
 
 end CS
 
@@ -81,7 +74,6 @@ theorem exp_le_one_add {x : ℝ} (hx : |x| ≤ 1 / 2) : Real.exp (-2 * |x|) ≤ 
   · have hu : |x| = -x := abs_of_neg h0
     set u := -x with hu'
     have hu0 : 0 ≤ u := by linarith
-    have hu1 : u ≤ 1 / 2 := by rw [← hu]; exact hx
     have h1 : 1 + 2 * u ≤ Real.exp (2 * u) := by linarith [Real.add_one_le_exp (2 * u)]
     have h2 : Real.exp (-2 * u) * Real.exp (2 * u) = 1 := by rw [← Real.exp_add]; simp
     have h3 : Real.exp (-2 * u) * (1 + 2 * u) ≤ 1 := by
@@ -89,7 +81,6 @@ theorem exp_le_one_add {x : ℝ} (hx : |x| ≤ 1 / 2) : Real.exp (-2 * |x|) ≤ 
             mul_le_mul_of_nonneg_left h1 (Real.exp_pos _).le
         _ = 1 := h2
     rw [hu]
-    have he := Real.exp_pos (-2 * u)
     nlinarith [mul_nonneg hu0 (by linarith : (0:ℝ) ≤ 1 - 2 * u)]
 
 theorem prod_bounds {ι : Type} (g : ι → ℝ) (ε : ℝ) (hε : ε ≤ 1 / 2) :
@@ -140,7 +131,6 @@ theorem qProduct : QProduct := by
       simp only [if_true]
       have h2 : Y - l.pt ≠ 0 := hl
       field_simp
-      try ring
 
 theorem lemmaQ : LemmaQ := by
   intro S _ _ q w N dl Y hN hw hdl hpts hq
@@ -207,4 +197,3 @@ theorem dkStep4 : DKStep4 := by
 
 end Formalism.FourierDecayAlt.P.GramProductIdentities
 
-theorem Formalism.FourierDecayAlt.P.lemma_Q_estimate : Formalism.FourierDecayAlt.FormPairingAction.LemmaQ := Formalism.FourierDecayAlt.P.GramProductIdentities.lemmaQ

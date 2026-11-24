@@ -93,7 +93,7 @@ theorem rt_mem_openInv {F : GA E a → ℂ} (hF : F ∈ openInv E a) (h : GA E a
     (continuous_const.mul continuous_id).mul continuous_const
   let U : Subgroup (GL (Fin a) (Af E)) := (invSub F).comap (MulAut.conj k⁻¹).toMonoidHom
   have hU : (U : Set _) = (fun u : GL (Fin a) (Af E) => k⁻¹ * u * k) ⁻¹' (invSub F : Set _) := by
-    ext u; simp [U, MulAut.conj_apply]
+    ext u; simp [U]
   have hF' : IsOpen (invSub F : Set (GL (Fin a) (Af E))) := hF
   refine Subgroup.isOpen_mono (H₁ := U) ?_ (by rw [hU]; exact hF'.preimage hc)
   intro u hu g

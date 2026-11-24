@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LevelSubgroupCharacterUnitary
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.HidaSetting
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -210,54 +211,7 @@ theorem hA_symm (u v : VA I) : hA I v u = sigA I (hA I u v) := by
   ring
 
 theorem hA_int {u v : VA I} (hu : u ∈ I.Lf) (hv : v ∈ I.Lf) : hA I u v ∈ IntAf I.F I.E := by
-  have gen : ∀ x ∈ I.L, ∀ y ∈ I.L, hA I (incl I x) (incl I y) ∈ IntAf I.F I.E := by
-    intro x hx y hy
-    rw [hA_incl]
-    exact inclE_mem I ((I.L_dual y).1 hy x hx)
-  have h1 : ∀ x ∈ I.L, ∀ w ∈ I.Lf, hA I (incl I x) w ∈ IntAf I.F I.E := by
-    intro x hx w hw
-    let P : Submodule (IntAf I.F I.E) (VA I) :=
-      { carrier := {w | hA I (incl I x) w ∈ IntAf I.F I.E}
-        add_mem' := fun {a b} ha hb => by
-          show hA I (incl I x) (a + b) ∈ IntAf I.F I.E
-          rw [hA_add_right]
-          exact add_mem ha hb
-        zero_mem' := by
-          show hL I (incl I x) 0 ∈ IntAf I.F I.E
-          rw [map_zero]
-          exact zero_mem _
-        smul_mem' := fun c w hw => by
-          show hA I (incl I x) ((c : I.E ⊗[I.F] Af I.F) • w) ∈ IntAf I.F I.E
-          rw [hA_smul_right]
-          exact mul_mem c.2 hw }
-    have hle : I.Lf ≤ P := by
-      show Submodule.span _ _ ≤ P
-      rw [Submodule.span_le]
-      rintro _ ⟨⟨y, hy⟩, rfl⟩
-      exact gen x hx y hy
-    exact hle hw
-  let Q : Submodule (IntAf I.F I.E) (VA I) :=
-    { carrier := {w | hA I w v ∈ IntAf I.F I.E}
-      add_mem' := fun {a b} ha hb => by
-        show hA I (a + b) v ∈ IntAf I.F I.E
-        rw [hA_add_left]
-        exact add_mem ha hb
-      zero_mem' := by
-        show hA I 0 v ∈ IntAf I.F I.E
-        have h0 := hA_smul_left I 0 v 0
-        rw [zero_smul, map_zero, zero_mul] at h0
-        rw [h0]
-        exact zero_mem _
-      smul_mem' := fun c w hw => by
-        show hA I ((c : I.E ⊗[I.F] Af I.F) • w) v ∈ IntAf I.F I.E
-        rw [hA_smul_left]
-        exact mul_mem (sigA_mem I c.2) hw }
-  have hle : I.Lf ≤ Q := by
-    show Submodule.span _ _ ≤ Q
-    rw [Submodule.span_le]
-    rintro _ ⟨⟨y, hy⟩, rfl⟩
-    exact h1 y hy v hv
-  exact hle hu
+  apply Formalism.L2.SG.Pf.unitaryCongruence.hA_int <;> assumption
 
 theorem hA_sub_right (u v w : VA I) : hA I u (v - w) = hA I u v - hA I u w := by
   show hL I u (v - w) = hL I u v - hL I u w

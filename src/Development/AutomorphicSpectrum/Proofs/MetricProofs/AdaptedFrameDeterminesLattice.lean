@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameChangeUnitary
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -84,23 +85,7 @@ theorem exists_dual (R : RiemLat E g Λ) (i : Fin (2 * g)) :
   simp [Module.Basis.coord_apply, Finsupp.single_apply]
 
 theorem perExt_injective (R : RiemLat E g Λ) : Function.Injective (C.perExt R) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro y hy
-  have hc : ∀ i, C.bas.repr y i = 0 := by
-    intro i
-    obtain ⟨z, hz⟩ := C.exists_dual R i
-    have h0 : ((C.perExt R y) ⬝ᵥ R.Hm *ᵥ star (R.P z)).im = 0 := by simp [hy]
-    have hk : ∀ k, ((C.bas.repr y k • R.P (C.lam k)) ⬝ᵥ R.Hm *ᵥ star (R.P z)).im =
-        C.bas.repr y k * (R.form (C.lam k) z : ℝ) := by
-      intro k
-      rw [smul_dotProduct, Complex.smul_im, R.im]
-      simp
-    rw [C.perExt_eq_sum, sum_dotProduct, Complex.im_sum] at h0
-    simp only [hk, hz] at h0
-    simpa using h0
-  apply C.bas.repr.injective
-  ext i
-  simpa using hc i
+  apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.perExt_injective <;> assumption
 
 theorem perExt_bijective (R : RiemLat E g Λ) : Function.Bijective (C.perExt R) := by
   have hd : Module.finrank ℝ (Ψ → Fin (j + j') → ℂ) = Module.finrank ℝ (Fin g → ℂ) := by
@@ -112,13 +97,13 @@ def latPt (x : Λ) : Ψ → Fin (j + j') → ℂ := ∑ k, ((C.lam.repr x k : �
 
 theorem perExt_latPt (R : RiemLat E g Λ) (x : Λ) : C.perExt R (C.latPt x) = R.P x := by
   have hb : ∀ k, C.perExt R (C.bas k) = R.P (C.lam k) := fun k => by
-    simp [perExt, Module.Basis.constr_basis]
+    simp [perExt]
 
   conv_rhs => rw [← C.lam.sum_repr x, map_sum]
   unfold latPt
 
   rw [map_sum]
-  simp only [map_smul, hb, Int.cast_smul_eq_zsmul, map_zsmul]
+  simp only [hb, Int.cast_smul_eq_zsmul, map_zsmul]
 
 
 omit [NumberField E] in

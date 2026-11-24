@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.HomExtOfGeometricPoints
 public import Mathlib.AlgebraicGeometry.Morphisms.Etale
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
@@ -63,21 +64,7 @@ namespace GlobalTheory.HkFactor
 lemma ext_of_geometricPoints {T X Z : Scheme.{0}} [IsReduced T] (q : X ⟶ Z) [IsSeparated q]
     (f g : T ⟶ X) (h : f ≫ q = g ≫ q)
     (H : ∀ (k : Type) [Field k] [IsAlgClosed k] (x : Sp k ⟶ T), x ≫ f = x ≫ g) : f = g := by
-  classical
-
-  let K : T → Type := fun t => AlgebraicClosure (T.residueField t)
-  let pts : (∐ fun t : T => Sp (K t)) ⟶ T := Sigma.desc fun t =>
-    Spec.map (CommRingCat.ofHom (algebraMap (T.residueField t) (K t))) ≫ T.fromSpecResidueField t
-
-  have : Surjective pts := by
-    refine ⟨fun t => ⟨Sigma.ι (fun t : T => Sp (K t)) t (IsLocalRing.closedPoint (K t)), ?_⟩⟩
-    have e : (Sigma.ι (fun t : T => Sp (K t)) t ≫ pts) (IsLocalRing.closedPoint (K t)) = t := by
-      simp only [pts, Sigma.ι_desc]
-      exact (Scheme.Hom.comp_apply _ _ _).trans (Scheme.fromSpecResidueField_apply _ _)
-    exact (Scheme.Hom.comp_apply _ _ _).symm.trans e
-  refine ext_of_isDominant_of_isSeparated q h pts ?_
-  refine Sigma.hom_ext _ _ fun t => ?_
-  simpa only [pts, Sigma.ι_desc_assoc] using H (K t) _
+  apply (config := { allowSynthFailures := true }) GlobalTheory.HkFam.hom_ext_of_geometric_points <;> assumption
 
 theorem exists_unique_factor : ∀ (S : Scheme.{0}) [IsReduced S] (A B B' : Over S) [GrpObj A] [GrpObj B] [GrpObj B'] (ψ : A ⟶ B) (g : A ⟶ B'), IsAbelianScheme A → IsAbelianScheme B → IsSeparated B'.hom → IsMonHom ψ → IsFinite ψ.left → Etale ψ.left → Surjective ψ.left → IsMonHom g → (∀ (k : Type) [Field k] [IsAlgClosed k] (t : Sp k ⟶ S) (x : Over.mk t ⟶ A), x ≫ ψ = 1 → x ≫ g = 1) → ∃ g' : B ⟶ B', IsMonHom g' ∧ ψ ≫ g' = g ∧ ∀ g'' : B ⟶ B', ψ ≫ g'' = g → g'' = g' := by
   intro S _ A B B' _ _ _ ψ g _ _ hsep hψ hfin het hsurj hg H

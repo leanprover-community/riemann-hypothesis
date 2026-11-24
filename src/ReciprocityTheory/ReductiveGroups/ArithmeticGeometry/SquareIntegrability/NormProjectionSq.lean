@@ -107,7 +107,7 @@ lemma norm_projection_sq [IsCMField E] {dim : (E →+* ℂ) → ℕ} {I : Submod
     rcases eq_or_ne i.1 σ with h1 | h1
     · simp [Mc_apply, h1, hσ']
     · by_cases h2 : i.1 = ComplexEmbedding.conjugate σ
-      · simp [Mc_apply, h1, h2, hσ]
+      · simp [Mc_apply, h2, hσ]
       · simp [Mc_apply, h1, h2]
   have e2 : ‖prj σ u‖ ^ 2 = S1 := by
     rw [EuclideanSpace.norm_sq_eq, hS1]
@@ -117,9 +117,9 @@ lemma norm_projection_sq [IsCMField E] {dim : (E →+* ℂ) → ℕ} {I : Submod
     rw [Hf, Complex.im_sum, hS1, hS2, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun i _ => ?_
     rcases eq_or_ne i.1 σ with h1 | h1
-    · simp [Mc_apply, h1, hσ', Complex.mul_im, Complex.sq_norm, Complex.normSq_apply] <;> ring
+    · simp [Mc_apply, h1, hσ', Complex.mul_im, Complex.sq_norm, Complex.normSq_apply]
     · by_cases h2 : i.1 = ComplexEmbedding.conjugate σ
-      · simp [Mc_apply, h1, h2, hσ, Complex.mul_im, Complex.sq_norm, Complex.normSq_apply] <;> ring
+      · simp [Mc_apply, h2, hσ, Complex.mul_im, Complex.sq_norm, Complex.normSq_apply]
       · simp [Mc_apply, h1, h2]
   have e4 := Hf_im_IR_lemma hI h1 hi
   linarith
@@ -147,7 +147,7 @@ lemma orth_prj [IsCMField E] {dim : (E →+* ℂ) → ℕ} {I : Submodule ℤ (V
     rcases eq_or_ne i.1 σ with h1 | h1
     · simp [Mc_apply, prj_apply, h1, hσ'] <;> ring
     · by_cases h2 : i.1 = ComplexEmbedding.conjugate σ
-      · simp [Mc_apply, prj_apply, h1, h2, hσ] <;> ring
+      · simp [Mc_apply, prj_apply, h2, hσ] <;> ring
       · simp [Mc_apply, prj_apply, h1, h2]
   have hz : ∀ c : ℂ, Hf t (Mc σ c y) = 0 := fun c =>
     Complex.ext (by rw [← hre]; simpa using horth c) (by simpa using Hf_im_IR_lemma hI ht (hy c))
@@ -178,14 +178,14 @@ lemma Hf_act [IsCMField E] {dim : (E →+* ℂ) → ℕ} (α : 𝓞 E) (x a : Vs
     Hf (act α x) a = Hf x (act (conjO α) a) := by
   unfold Hf
   refine Finset.sum_congr rfl fun i _ => ?_
-  simp [act, emb_conjO]
+  simp [act]
   ring
 
 lemma inner_act [IsCMField E] {dim : (E →+* ℂ) → ℕ} (α : 𝓞 E) (u a : Vsp dim) :
     inner ℝ (act α u) a = inner ℝ u (act (conjO α) a) := by
   rw [PiLp.inner_apply, PiLp.inner_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
-  simp [act, emb_conjO, Complex.inner, Complex.mul_re, Complex.mul_im]
+  simp [act, Complex.inner, Complex.mul_re, Complex.mul_im]
   ring
 
 lemma act_mem_IR {dim : (E →+* ℂ) → ℕ} {I : Submodule ℤ (Vsp dim)}

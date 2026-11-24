@@ -50,6 +50,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
 
 @[expose] public section
 
@@ -472,16 +473,9 @@ section Dual
 
 variable {D : D7} (X : HidaSetting D)
 
-theorem hE_f_e (a b : Fin D.R.rS) : hE X (X.fR a) (X.eR b) = if b = a then 1 else 0 := by
-  apply X.ιE.injective
-  show X.ιE (Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J (X.crd (X.fY a)) (X.crd (X.eX b))) = _
-  rw [Formalism.L2.SG.PoincareInHH.Cut.hform_crd, hT_f_e X a b]
-  split_ifs <;> simp
+alias hE_f_e := _root_.Formalism.L2.SG.Pf.Level.hE_f_e
 
-theorem hermitian_f_z_zero (u : D.what₂.Word) (a : Fin D.R.rS) : hE X (X.fR a) (X.zR u) = 0 := by
-  apply X.ιE.injective
-  show X.ιE (Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J (X.crd (X.fY a)) (X.crd (X.zu u))) = _
-  rw [Formalism.L2.SG.PoincareInHH.Cut.hform_crd, (X.zu_orth u a).2, map_zero]
+alias hermitian_f_z_zero := _root_.Formalism.L2.SG.Pf.Level.hermitian_f_z_zero
 
 end Dual
 
@@ -669,7 +663,7 @@ theorem ratPt_holds : Formalism.L2.SG.TermOp.Vanish.RatPt := by
     rw [Formalism.L2.SG.PoincareInHH.Cut.hform_crd, Formalism.L2.SG.PoincareInHH.Cut.hform_crd, hn]
   have hf : Formalism.UG.bc (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F)) γ ∈
       Formalism.UG.UPts X.B.I.cm.sig X.B.I.J (Af X.B.I.F) :=
-    Formalism.UG.Final.RatPtsLe X.B.I.F X.B.I.E (Fin X.B.I.n) X.B.I.cm.sig X.B.I.J (Af X.B.I.F)
+    _root_.Formalism.UG.P.rational_points_le_holds X.B.I.F X.B.I.E (Fin X.B.I.n) X.B.I.cm.sig X.B.I.J (Af X.B.I.F)
       (Subgroup.mem_map_of_mem _ hγ)
   exact ⟨(fun v => rtReal' X.B.I γ hγ v, ⟨_, hf⟩), γ, hγ, fun v => rfl, rfl, crd_matOf X n⟩
 

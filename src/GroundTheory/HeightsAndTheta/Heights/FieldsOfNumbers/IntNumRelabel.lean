@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PRenameIntNum
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 public import Mathlib.Tactic.Continuity
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PIntNumBaseChange
@@ -97,17 +98,7 @@ theorem eventualValue_precomp (g : (K₁ → ℤ) → ℤ) :
 
 theorem mixedDiff_precomp {n : ℕ} (bs : Fin n → K₂ → ℤ) (h : (K₁ → ℤ) → ℤ) :
     mixedDiff bs (fun m => h (m ∘ e)) = fun m => mixedDiff (fun i => bs i ∘ e) h (m ∘ e) := by
-  unfold mixedDiff
-  have hl : List.ofFn (fun i => bs i ∘ e) = (List.ofFn bs).map (fun b => b ∘ e) := by
-    rw [List.map_ofFn]
-    rfl
-  rw [hl]
-  generalize List.ofFn bs = l
-  induction l with
-  | nil => rfl
-  | cons b l ih =>
-    rw [List.foldr_cons, List.map_cons, List.foldr_cons, ih]
-    rfl
+  apply _root_.GroundTheory.Heights₂.Heights.FieldNumbers.RenameIntNum.mixedDiff_comp <;> assumption
 
 end Eventual
 

@@ -66,7 +66,7 @@ theorem mp_toC : MeasurePreserving (toC (k := k) (r := r)) volume volume := by
   have h5 := ((h4.comp h3).comp h2).prod (MeasurePreserving.id (volume : Measure (Fin r → ℝ)))
   have h6 := h5.comp h1
   convert h6 using 1
-  all_goals first | rfl | (funext y; rfl)
+  all_goals first | rfl
 
 def fromC (t : (CI k r → ℂ) × (Fin r → ℝ)) : J k r → ℝ
   | Sum.inl (Sum.inl c) => (t.1 c).re

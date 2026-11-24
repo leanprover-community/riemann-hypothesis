@@ -125,7 +125,7 @@ theorem grad_le_of_minorant (rh Ψ : V n → ℝ) (v0 : V n) (C : ℝ) (hC : 0 <
   set Lr := (leviV n (fun y => (rh y : ℂ)) v0 ξ).re
   have h3 : (-C * (Ψ v0)⁻¹) * LΨ + C * ((Ψ v0) ^ 2)⁻¹ * N ≤ Lr := by
     simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
-      sub_zero, Complex.neg_re, Complex.one_re, neg_mul, one_mul] at h2
+      sub_zero, neg_mul, one_mul] at h2
     linarith
   have hlhs : Complex.normSq (∑ j, wd n j (fun y => (rh y : ℂ)) v0 * ξ j) =
       (C * (Ψ v0)⁻¹) ^ 2 * N := by

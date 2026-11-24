@@ -45,6 +45,7 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LatIntZero
 import Formalism.LocalToGlobal.KernelLattices.LateralTheory
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FourthTensorThetaEqKernel
 
 @[expose] public section
 
@@ -73,7 +74,7 @@ theorem multiIndexFactorial_add_single (n : σ →₀ ℕ) (k : σ) :
       rw [Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ, if_pos rfl]
       push_cast; ring
     · rw [Finsupp.add_apply, if_neg hi]
-      simp [Finsupp.single_apply, Ne.symm hi]
+      simp [Ne.symm hi]
   rw [Finset.prod_congr rfl fun i _ => h i, Finset.prod_mul_distrib, Finset.prod_ite_eq' Finset.univ k]
   simp
 
@@ -132,21 +133,7 @@ theorem perm_of_cnt {k : ℕ} (f l : Fin k → σ) (h : ∀ i, cnt f i = cnt l i
 
 theorem cnt_toList (α : σ →₀ ℕ) (i : σ) :
     cnt (fun j : Fin (Multiset.card α.toMultiset) => α.toMultiset.toList.get ⟨j, by simpa using j.2⟩) i = α i := by
-  set l := fun j : Fin (Multiset.card α.toMultiset) => α.toMultiset.toList.get ⟨j, by simpa using j.2⟩
-  have hmap : Multiset.map l Finset.univ.val = α.toMultiset := by
-    rw [Fin.univ_val_map]
-    have : List.ofFn l = α.toMultiset.toList := by
-      refine List.ext_get (by simp) ?_
-      intro n h1 h2
-      simp [l]
-    rw [this, Multiset.coe_toList]
-  have h := congrArg (Multiset.count i) hmap
-  rw [Multiset.count_map, Finsupp.count_toMultiset] at h
-  rw [← h]
-  unfold cnt
-  rw [Finset.card_def, Finset.filter_val]
-  congr 1
-  exact Multiset.filter_congr fun j _ => eq_comm
+  apply _root_.Formalism.L2.KerInert.AlgP.cnt_toList <;> assumption
 
 def cntF {m : ℕ} (f : Fin m → σ) : σ →₀ ℕ := ∑ j, Finsupp.single (f j) 1
 

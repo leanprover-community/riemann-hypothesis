@@ -124,7 +124,6 @@ theorem gtB_inner_eq (n : ℕ) (x y : EuclideanSpace ℝ (Fin n)) :
     inner ℝ x y = ∑ k, EuclideanSpace.equiv (Fin n) ℝ x k * EuclideanSpace.equiv (Fin n) ℝ y k := by
   first
     | simp [PiLp.inner_apply, mul_comm]
-    | (rw [EuclideanSpace.inner_eq_star_dotProduct]; simp [dotProduct, mul_comm])
 
 theorem gtB_nondeg (n : ℕ) : (innerₗ (EuclideanSpace ℝ (Fin n))).Nondegenerate := by
   show _ ∧ _
@@ -132,11 +131,9 @@ theorem gtB_nondeg (n : ℕ) : (innerₗ (EuclideanSpace ℝ (Fin n))).Nondegene
   · intro x hx
     first
       | simpa using hx x
-      | simpa [innerₗ_apply_apply] using hx x
   · intro y hy
     first
       | simpa using hy y
-      | simpa [innerₗ_apply_apply] using hy y
 
 theorem gtB_dual_short {n : ℕ} (hn : 0 < n) (b : Basis (Fin n) ℝ (EuclideanSpace ℝ (Fin n)))
     (lam : ℝ) (hlam : 0 < lam)

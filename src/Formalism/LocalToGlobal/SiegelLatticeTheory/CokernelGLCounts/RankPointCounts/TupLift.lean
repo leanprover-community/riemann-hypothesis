@@ -46,6 +46,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermCarrierStability.TermStableHolds
 
 @[expose] public section
 
@@ -226,8 +227,8 @@ theorem repAtTup_of (M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D,
   obtain ⟨w₁, F₁, L₁, U₁⟩ := y
   obtain ⟨⟨p₁, e₁⟩, hadm₁, -⟩ := hspec
   simp only at hz
-  have hEq := Formalism.L2.SG.Closed.TermEqIff_holds D u u' F0 γ.lam hΛ
-  have hFun := Formalism.L2.SG.Closed.TermFun_holds D u u' F0 γ.lam hΛ
+  have hEq := _root_.term_eq_iff_relation D u u' F0 γ.lam hΛ
+  have hFun := _root_.term_function_const D u u' F0 γ.lam hΛ
   obtain ⟨Fa, ⟨pa, ea⟩, hGa, hcell⟩ := hel.2
   have hdca := (hEq ⟨Fa, pa⟩ ⟨F₁, p₁⟩).1 (ea.trans e₁.symm)
   change DCRel γ.lam (lf D F0) Fa F₁ at hdca
@@ -253,7 +254,7 @@ theorem repAtTup_of (M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D,
   have hdc : DCRel γ.lam (lf D F0) F₁ F2 :=
     ⟨ν⁻¹, Formalism.L2.SG.Pf.nlamPf_inv hν, m, hm', hf2, rfl⟩
   have pd2 : PD D γ.lam (lf D F0) u' F2 :=
-    Formalism.L2.SG.Closed.TermStable_holds D u u' F0 γ.lam hΛ ⟨F₁, p₁⟩ F2 hdc
+    _root_.PI.TCS.termStable_holds D u u' F0 γ.lam hΛ ⟨F₁, p₁⟩ F2 hdc
   have hT' : ((Tu D u' : ℕ) : D.host.E) ≠ 0 := Nat.cast_ne_zero.2 hpre.2.2.1.2.2.1.ne_zero
   have hFΛ : ∀ c, frame (lf D F0) c ∈ γ.lam := by
     intro c

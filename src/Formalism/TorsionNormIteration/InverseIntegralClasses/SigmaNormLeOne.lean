@@ -283,6 +283,4 @@ theorem powCongr : Formalism.LT.PowCongr.{u, v} := by
 
 end Formalism.LT.CoeffP
 
-theorem Formalism.LT.CoeffBound_valid : Formalism.LT.CoeffBound.{u} := Formalism.LT.CoeffP.coeffBound
-
-theorem Formalism.LT.PowCongr_valid : Formalism.LT.PowCongr.{u, v} := Formalism.LT.CoeffP.powCongr
+alias Formalism.LT.PowCongr_valid := _root_.Formalism.LT.CoeffP.powCongr

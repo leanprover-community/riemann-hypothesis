@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.NodupRootsOfDerivativeNeZero
 public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Analysis.Analytic.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
@@ -350,25 +351,7 @@ variable {E : Type*} {n : ℕ}
 
 theorem growth_mv (q : MvPolynomial (Fin n) ℂ) :
     ∃ (C : ℝ) (m : ℕ), 0 ≤ C ∧ ∀ x : Fin n → ℂ, ‖MvPolynomial.eval x q‖ ≤ C * (1 + ‖x‖) ^ m := by
-  induction q using MvPolynomial.induction_on with
-  | C c => exact ⟨‖c‖, 0, norm_nonneg _, fun x => by simp⟩
-  | add p q hp hq =>
-    obtain ⟨C, m, hC, h⟩ := hp
-    obtain ⟨C', m', hC', h'⟩ := hq
-    refine ⟨C + C', m + m', by positivity, fun x => ?_⟩
-    have h1 : (1 : ℝ) ≤ 1 + ‖x‖ := by simp
-    rw [map_add (f := _), add_mul]
-    refine (norm_add_le _ _).trans (add_le_add ((h x).trans ?_) ((h' x).trans ?_))
-    · gcongr; omega
-    · gcongr; omega
-  | mul_X p i hp =>
-    obtain ⟨C, m, hC, h⟩ := hp
-    refine ⟨C, m + 1, hC, fun x => ?_⟩
-    rw [map_mul, norm_mul, MvPolynomial.eval_X, pow_succ, ← mul_assoc]
-    have := norm_le_pi_norm x i
-    have := h x
-    gcongr
-    linarith
+  apply GlobalTheory.SimpleRoots.exists_norm_eval_le <;> assumption
 
 theorem growth_finite {ι : Type*} [Fintype ι] (x : E → ℝ) (hx : ∀ e, 1 ≤ x e) (u : ι → E → ℂ)
     (hu : ∀ c, ∃ (C : ℝ) (m : ℕ), 0 ≤ C ∧ ∀ e, ‖u c e‖ ≤ C * x e ^ m) :
@@ -385,21 +368,7 @@ theorem growth_finite {ι : Type*} [Fintype ι] (x : E → ℝ) (hx : ∀ e, 1 �
 theorem growth_root (s : Polynomial (MvPolynomial (Fin n) ℂ)) (hs : s.Monic) :
     ∃ (C : ℝ) (m : ℕ), 0 ≤ C ∧ ∀ (x : Fin n → ℂ) (y : ℂ),
       (s.map (MvPolynomial.eval x)).eval y = 0 → ‖y‖ ≤ C * (1 + ‖x‖) ^ m := by
-  obtain ⟨C, m, hC, h⟩ := growth_finite (ι := Fin s.natDegree) (fun x : Fin n → ℂ => 1 + ‖x‖)
-    (fun x => by simp) (fun c x => MvPolynomial.eval x (s.coeff c)) fun c => growth_mv _
-  refine ⟨C + 1, m, by positivity, fun x y hy => ?_⟩
-  have hm := hs.map (MvPolynomial.eval x)
-  have h1 := Polynomial.IsRoot.norm_lt_cauchyBound hm.ne_zero hy
-  have h0 : (0 : ℝ) ≤ C * (1 + ‖x‖) ^ m := by positivity
-  have h2 : (s.map (MvPolynomial.eval x)).cauchyBound ≤ ⟨_, h0⟩ + 1 := by
-    rw [Polynomial.cauchyBound, hm.leadingCoeff, nnnorm_one, div_one, hs.natDegree_map]
-    refine add_le_add ?_ le_rfl
-    refine Finset.sup_le fun i hi => ?_
-    rw [Polynomial.coeff_map]
-    exact h x ⟨i, Finset.mem_range.1 hi⟩
-  have h3 : ‖y‖ ≤ C * (1 + ‖x‖) ^ m + 1 := by exact_mod_cast (h1.le.trans h2)
-  have h4 : (1 : ℝ) ≤ (1 + ‖x‖) ^ m := one_le_pow₀ (by simp)
-  linarith
+  apply GlobalTheory.SimpleRoots.exists_norm_root_le <;> assumption
 
 theorem analyticAt_eval (r : Polynomial (MvPolynomial (Fin n) ℂ)) (w : (Fin n → ℂ) × ℂ) :
     AnalyticAt ℂ (fun w : (Fin n → ℂ) × ℂ => (r.map (MvPolynomial.eval w.1)).eval w.2) w := by

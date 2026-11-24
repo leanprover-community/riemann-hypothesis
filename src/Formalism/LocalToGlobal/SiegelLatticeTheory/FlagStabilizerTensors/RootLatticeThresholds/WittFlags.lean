@@ -40,6 +40,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.ThetaLiftIndependence.ThetaOrbitSums.LatLiftIndep
 
 @[expose] public section
 
@@ -57,23 +58,9 @@ section Gen
 variable {R K V : Type*} [CommRing R] [Field K] [StarRing K] [Algebra R K]
   [AddCommGroup V] [Module K V] [Module R V] [IsScalarTower R K V]
 
-theorem gmap_mul (a b : V ≃ₗ[K] V) (L : Submodule R V) :
-    Formalism.HermitianLatticesTheory.gmap (a * b) L = Formalism.HermitianLatticesTheory.gmap a (Formalism.HermitianLatticesTheory.gmap b L) := by
-  unfold Formalism.HermitianLatticesTheory.gmap
-  rw [← Submodule.map_comp]
-  rfl
-
-theorem gmap_one (L : Submodule R V) : Formalism.HermitianLatticesTheory.gmap (1 : V ≃ₗ[K] V) L = L := by
-  ext x
-  simp [Formalism.HermitianLatticesTheory.gmap]
-
-theorem gmap_inv_gmap (a : V ≃ₗ[K] V) (L : Submodule R V) :
-    Formalism.HermitianLatticesTheory.gmap a⁻¹ (Formalism.HermitianLatticesTheory.gmap a L) = L := by
-  rw [← gmap_mul, inv_mul_cancel, gmap_one]
-
 theorem gmap_gmap_inv (a : V ≃ₗ[K] V) (L : Submodule R V) :
     Formalism.HermitianLatticesTheory.gmap a (Formalism.HermitianLatticesTheory.gmap a⁻¹ L) = L := by
-  rw [← gmap_mul, mul_inv_cancel, gmap_one]
+  rw [← _root_.Formalism.ThetaLiftIndependence.LatticeLiftIndependence.gmap_mul, mul_inv_cancel, _root_.Formalism.ThetaLiftIndependence.LatticeLiftIndependence.gmap_one]
 
 end Gen
 
@@ -94,6 +81,6 @@ theorem LatIso_holds (D : D7) : Formalism.L2.SG.TermTieOf.LatIso D := by
     exact LinearMap.range_eq_top.mpr β.surjective
   obtain ⟨g, hg, hgΛ⟩ := hΛG p hp
   refine ⟨β * g, (Formalism.HermitianLatticesTheory.isom _).mul_mem hβ hg, ?_⟩
-  rw [gmap_mul, hgΛ, hloc p]
+  rw [_root_.Formalism.ThetaLiftIndependence.LatticeLiftIndependence.gmap_mul, hgΛ, hloc p]
 
 end Formalism.L2.SG.Pf.WittFlags

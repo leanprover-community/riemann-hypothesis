@@ -78,7 +78,7 @@ theorem adjB_K (dual : Bool) (hσ : IsURepOn (UJset ε) σ) {M : Submodule ℂ D
     adjR ε M ps x'' f' := by
   classical
   refine ⟨hf', fun c y hy => ?_⟩
-  have hkh := adjB_star_Kset hk
+  have hkh := _root_.ReciprocityTheory.ChartRestriction.DS.rq_KH hk
   obtain ⟨y', hy'M, hy'⟩ := hMK kᴴ hkh y hy
   have hL : inner ℂ (f' c) y = ∑ d, (starRingEnd ℂ) (cond dual (star (k c d)) (k c d)) * inner ℂ (u d) y' := by
     rw [Submodule.coe_inner, show ((f' c : D) : H) = kDiag dual σ k (fun c => ((u c : D) : H)) c from congrFun hff c]

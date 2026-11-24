@@ -76,7 +76,6 @@ theorem dense_comb (K : Type*) [Field K] [NumberField K] [_root_.NumberField.IsT
   have hu : u.IsComplex := by
     first
       | exact IsTotallyComplex.isComplex u
-      | exact NumberField.IsTotallyComplex.isComplex u
   have hy := congrArg (fun z : mixedEmbedding.mixedSpace K => z.2 ⟨u, hu⟩)
     ((mixedEmbedding.latticeBasis K).sum_repr y)
   simp only [Prod.snd_sum, Finset.sum_apply, Prod.smul_snd, Pi.smul_apply,
@@ -97,8 +96,6 @@ theorem realize_apply (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι �
       if p.2.2 = 0 then (Formalism.HermitianLatticesTheory.fcoord b X p.1 x p.2.1).re else (Formalism.HermitianLatticesTheory.fcoord b X p.1 x p.2.1).im := by
   first
     | rfl
-    | simp [Formalism.HermitianLatticesTheory.realize]
-    | (unfold Formalism.HermitianLatticesTheory.realize; done)
 
 theorem fcoord_smul (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ) (v : InfinitePlace K)
     (a : K) (x : V) : Formalism.HermitianLatticesTheory.fcoord b X v (a • x) = v.embedding a • Formalism.HermitianLatticesTheory.fcoord b X v x := by
@@ -106,8 +103,6 @@ theorem fcoord_smul (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ
   have hv : Formalism.HermitianLatticesTheory.vecAt b v (a • x) = v.embedding a • Formalism.HermitianLatticesTheory.vecAt b v x := by
     first
       | (funext i; simp [Formalism.HermitianLatticesTheory.vecAt, map_mul])
-      | (funext i; simp [Formalism.HermitianLatticesTheory.vecAt, Finsupp.smul_apply, map_mul])
-      | (unfold Formalism.HermitianLatticesTheory.vecAt; done)
   rw [hv, Matrix.mulVec_smul]
 
 end
@@ -205,7 +200,6 @@ theorem mem_placePart (v : P) (w : EuclideanSpace ℝ (P × ι × Fin 2)) :
   first
     | exact Iff.rfl
     | simp [placePart]
-    | (unfold placePart; simp)
 
 theorem prj_mem (v : P) (w : EuclideanSpace ℝ (P × ι × Fin 2)) : prj v w ∈ placePart v := by
   rw [mem_placePart]
@@ -223,8 +217,6 @@ theorem prj_of_mem (v : P) (w : EuclideanSpace ℝ (P × ι × Fin 2)) (hw : w �
 theorem sum_prj (w : EuclideanSpace ℝ (P × ι × Fin 2)) : ∑ v, prj v w = w := by
   ext p
   first
-    | rw [Finset.sum_apply]
-    | erw [Finset.sum_apply]
     | simp only [WithLp.ofLp_sum, Finset.sum_apply]
   simp [prj_apply]
 
@@ -268,8 +260,6 @@ theorem realize_mem (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ
       (zl (Formalism.HermitianLatticesTheory.realize b X) N : Set (EuclideanSpace ℝ (InfinitePlace K × ι × Fin 2))) := by
   first
     | exact Submodule.subset_span ⟨x, hx, rfl⟩
-    | exact Submodule.subset_span (AddSubgroup.mem_map.2 ⟨x, hx, rfl⟩)
-    | exact Submodule.subset_span (Set.mem_image_of_mem _ hx)
 
 theorem re_comb {κ : Type*} [Fintype κ] (r : κ → ℝ) (c : κ → ℂ) (f : ℂ) :
     ∑ k, r k * (c k * f).re = ((∑ k, (r k : ℂ) * c k) * f).re := by
@@ -409,7 +399,6 @@ theorem finrank_span_complex (b : Basis ι K V) (X : InfinitePlace K → Matrix 
   haveI : Fintype t := by
     first
       | exact hli.setFinite.fintype
-      | exact @Fintype.ofFinite _ hli.finite
   have hadd : ∀ x y : V, Formalism.HermitianLatticesTheory.vecAt b v (x + y) =
       Formalism.HermitianLatticesTheory.vecAt b v x + Formalism.HermitianLatticesTheory.vecAt b v y := by
     intro x y
@@ -469,8 +458,6 @@ theorem finrank_span_complex (b : Basis ι K V) (X : InfinitePlace K → Matrix 
   have h3 := finrank_span_eq_card hli
   first
     | rw [Subtype.range_coe] at h3
-    | rw [Subtype.range_val] at h3
-    | simp only [Subtype.range_coe_subtype, Set.setOf_mem_eq] at h3
   exact h3.symm
 
 theorem finrank_real_span (b : Basis ι K V) (X : InfinitePlace K → Matrix ι ι ℂ)

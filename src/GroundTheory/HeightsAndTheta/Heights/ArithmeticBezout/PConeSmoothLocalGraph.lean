@@ -95,8 +95,7 @@ theorem hasFDerivAt_eval_mvPolynomial (q : MvPolynomial (Fin n) ℂ) (x : Fin n 
     simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
       ContinuousLinearMap.coe_sum', Finset.sum_apply, ContinuousLinearMap.proj_apply, smul_eq_mul, pderiv_mul,
       pderiv_X, map_add, map_mul, eval_X, Pi.single_apply, add_mul, Finset.sum_add_distrib]
-    simp only [apply_ite, map_one, map_zero, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-      if_true, Finset.mul_sum]
+    simp only [apply_ite, map_one, map_zero, mul_one, mul_zero, Finset.mul_sum]
     rw [add_comm]
     congr 1
     · exact Finset.sum_congr rfl fun j _ => by ring
@@ -206,8 +205,7 @@ theorem ConeSmoothLocalGraph.proof (hGen : PolyLocalGenerators.Statement)
         have hD := hzero.fderiv_eq (𝕜 := ℂ)
         rw [fderiv_const_apply, fderiv_comp x (hasFDerivAt_eval_pointOf h r _).differentiableAt hd] at hD
         have hDv := congrArg (fun L : EuclideanSpace ℂ (Fin m) →L[ℂ] ℂ => L v) hD
-        simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, Pi.zero_apply,
-          ContinuousLinearMap.zero_apply, fderiv_eval_pointOf_apply] at hDv
+        simp only [ContinuousLinearMap.coe_comp', Function.comp_apply, ContinuousLinearMap.zero_apply, fderiv_eval_pointOf_apply] at hDv
         exact hDv
       · rw [fderiv_zero_of_not_differentiableAt hd]
         have h0 : h.pointOf 0 = 0 := by simpa using h.pointOf_smul' 0 0

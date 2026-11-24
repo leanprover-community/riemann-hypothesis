@@ -86,7 +86,7 @@ theorem gf_add_left (p p' q : MvPolynomial τ ℂ) : gf w (p + p') q = gf w p q 
     gf_eq w (p.support ∪ p'.support ∪ q.support) ((Finset.subset_union_right).trans Finset.subset_union_left)
       Finset.subset_union_right, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun s _ => ?_
-  simp [MvPolynomial.coeff_add, star_add]; ring
+  simp [star_add]; ring
 
 theorem gf_add_right (p q q' : MvPolynomial τ ℂ) : gf w p (q + q') = gf w p q + gf w p q' := by
   classical
@@ -97,7 +97,7 @@ theorem gf_add_right (p q q' : MvPolynomial τ ℂ) : gf w p (q + q') = gf w p q
     gf_eq w (p.support ∪ (q.support ∪ q'.support)) Finset.subset_union_left
       ((Finset.subset_union_right).trans Finset.subset_union_right), ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun s _ => ?_
-  simp [MvPolynomial.coeff_add]; ring
+  simp; ring
 
 theorem gf_smul_left (r : ℂ) (p q : MvPolynomial τ ℂ) : gf w (r • p) q = star r * gf w p q := by
   classical
@@ -240,7 +240,7 @@ omit [Fintype τ] in
 theorem pderiv_X' (v u : τ) : pderiv v (X u : MvPolynomial τ ℂ) = if v = u then 1 else 0 := by
   rw [pderiv_X]; by_cases h : v = u
   · subst h; simp
-  · simp [Pi.single_apply, Ne.symm h, h]
+  · simp [Ne.symm h, h]
 
 theorem der_expand (D : Derivation ℂ (MvPolynomial τ ℂ) (MvPolynomial τ ℂ)) (p : MvPolynomial τ ℂ) :
     D p = ∑ v, D (X v) * pderiv v p := by
@@ -297,7 +297,7 @@ theorem bf_add_left (w : (τ →₀ ℕ) → ℂ) (p p' q : MvPolynomial τ ℂ)
     bf_eq w (p.support ∪ p'.support ∪ q.support) ((Finset.subset_union_right).trans Finset.subset_union_left)
       Finset.subset_union_right, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun s _ => ?_
-  simp [MvPolynomial.coeff_add]; ring
+  simp; ring
 
 theorem bf_add_right (w : (τ →₀ ℕ) → ℂ) (p q q' : MvPolynomial τ ℂ) : bf w p (q + q') = bf w p q + bf w p q' := by
   classical
@@ -308,7 +308,7 @@ theorem bf_add_right (w : (τ →₀ ℕ) → ℂ) (p q q' : MvPolynomial τ ℂ
     bf_eq w (p.support ∪ (q.support ∪ q'.support)) Finset.subset_union_left
       ((Finset.subset_union_right).trans Finset.subset_union_right), ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun s _ => ?_
-  simp [MvPolynomial.coeff_add]; ring
+  simp; ring
 
 theorem bf_monomial (w : (τ →₀ ℕ) → ℂ) (s t : τ →₀ ℕ) (a b : ℂ) :
     bf w (monomial s a) (monomial t b) = if s = t then a * b * w s else 0 := by

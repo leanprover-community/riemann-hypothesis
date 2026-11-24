@@ -226,7 +226,6 @@ theorem plus_id {R : Type*} [Ring R] (e00 e01 e11 K T l0m E x xi lz m01 : R) (h0
       rw [mul_sub, mul_add, ← mul_assoc xi K, hk, hl]; noncomm_ring
     rw [h2, hxi, mul_sub, ← mul_assoc xi x, hxi]; noncomm_ring
   rw [hΔ]
-  have e : K * E = (e00 + e11) * (K * E) := by rw [h01, one_mul]
   have h3 : K * (e00 * (E - (xi * E * x - E) + T) + e01 * m01 + e11 * (xi * E * x)) =
       e00 * (K * (E - (xi * E * x - E) + T)) + K * (e01 * m01) + e11 * (K * (xi * E * x)) := by
     rw [mul_add, mul_add, ← mul_assoc K e00, k0, ← mul_assoc K e11, k3]; simp only [mul_assoc]
@@ -238,7 +237,6 @@ theorem minus_id {R : Type*} [Ring R] (e00 e10 e11 K T l0m E lz m10 : R) (h01 : 
     (k0 : K * e00 = e00 * K) (k3 : K * e11 = e11 * K) (t3 : T * e11 = e11 * T) :
     l0m + K * (e00 * E + e10 * m10 + e11 * (E + T)) - lz =
       (l0m + K * E - lz) + (K * (e10 * m10) + K * T * e11) := by
-  have e : K * E = (e00 + e11) * (K * E) := by rw [h01, one_mul]
   rw [mul_add, mul_add, ← mul_assoc K e00, k0, ← mul_assoc K e11, k3, mul_assoc K T e11, t3, ← mul_assoc K e11, k3]
   rw [show e11 = 1 - e00 by rw [← h01]; abel]
   noncomm_ring
@@ -299,7 +297,7 @@ theorem main (L : LevelData A r) (st : Start A) (hL : IsStarLevel L) (hst : IsLe
     have hr1 : star (l.pt + 1) = l.pt + 1 := by rw [star_add, hr, star_one]
     have hrm : star (l.pt - 1) = l.pt - 1 := by rw [star_sub, hr, star_one]
     obtain ⟨hx, hxi⟩ := x_kMat L st w
-    have hrec := Formalism.FourierDecayAlt.P.admissible_rec_of_admissible A S r L st (l :: w) hA0
+    have hrec := _root_.Formalism.FourierDecayAlt.P.Fr2.admissible_rec_of_admissible_word A S r L st (l :: w) hA0
     have h01 := eU_sum (A := A) l.intersection_update_fsHerm_neg_one
     have kE : ∀ i j, kapL L * (eU l.intersection_update_fsHerm_neg_one i j : SlopeTestRemainingChoices S A) = eU l.intersection_update_fsHerm_neg_one i j * kapL L := fun i j => (eU_comm_io _ _ _ _).eq
     have tE : ∀ i j, tz L * (eU l.intersection_update_fsHerm_neg_one i j : SlopeTestRemainingChoices S A) = eU l.intersection_update_fsHerm_neg_one i j * tz L := fun i j => (eU_comm_io _ _ _ _).eq

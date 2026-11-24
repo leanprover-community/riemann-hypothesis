@@ -161,8 +161,8 @@ lemma monX_split (D : Lifts H U X) {α : Nb p g} {j : Ix g} (hj : α j ≠ 0) :
     ← Finset.mul_prod_erase _ _ (Finset.mem_univ j)]
   have hrest : ∏ i ∈ Finset.univ.erase j, xL D i ^ (Function.update α j (α j - 1) i).val =
       ∏ i ∈ Finset.univ.erase j, xL D i ^ (α i).val :=
-    Finset.prod_congr rfl fun i hi => by simp [Function.update_apply, Finset.ne_of_mem_erase hi]
-  have hself : (Function.update α j (α j - 1) j) = α j - 1 := by simp [Function.update_apply]
+    Finset.prod_congr rfl fun i hi => by simp [Finset.ne_of_mem_erase hi]
+  have hself : (Function.update α j (α j - 1) j) = α j - 1 := by simp
   rw [hrest, hself]
   have hv1 : 1 ≤ (α j).val := Nat.one_le_iff_ne_zero.mpr (by rwa [Ne, ZMod.val_eq_zero])
   have hsub : (α j - 1).val = (α j).val - 1 := by
@@ -202,7 +202,7 @@ lemma sub_lin_mem_sq (hv : v.Integers R) (D : Lifts H U X) (hdet : (valM D).det 
   have hval : f = (valM D) *ᵥ (fun α => algebraMap R C (c α)) := by
     rw [← hc]
     funext y
-    simp only [Finset.sum_apply, Pi.smul_apply, Algebra.smul_def, Matrix.mulVec, dotProduct, valM,
+    simp only [Finset.sum_apply, Algebra.smul_def, Matrix.mulVec, dotProduct, valM,
       Matrix.of_apply]
     exact Finset.sum_congr rfl fun α _ => mul_comm _ _
   have hcoef : coefX D f = fun α => algebraMap R C (c α) := by

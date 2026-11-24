@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.FiniteExponentBaseChangeField
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsUniqueSamePt
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SecEqZeroOfSvalWhiskerRightEqZero
 import Mathlib.Algebra.Order.Floor.Extended
@@ -62,24 +63,7 @@ theorem sval_eq_zero_of_local_eq_zero {X Y Z : Scheme.{0}} {L : LB X} {K : Type}
 theorem appTop_field_point_injective (R : Type) [CommRing R] [IsDomain R] (F : Type) [Field F]
     [Algebra (FractionRing R) F] :
     Function.Injective (toUnit (TF (R := R) F)).left.appTop.hom := by
-  have e : (toUnit (TF (R := R) F)).left =
-      Spec.map (CommRingCat.ofHom ((algebraMap (FractionRing R) F).comp (algebraMap R (FractionRing R)))) := by
-    have := Over.w (toUnit (TF (R := R) F))
-    rw [CommRingCat.ofHom_comp, Spec.map_comp]
-    exact (Category.comp_id _).symm.trans this
-  rw [e]
-  have hi : Function.Injective ((algebraMap (FractionRing R) F).comp (algebraMap R (FractionRing R))) :=
-    (algebraMap (FractionRing R) F).injective.comp (IsFractionRing.injective R (FractionRing R))
-  have n := Scheme.ΓSpecIso_naturality
-    (CommRingCat.ofHom ((algebraMap (FractionRing R) F).comp (algebraMap R (FractionRing R))))
-  have hb : Function.Injective (Scheme.ΓSpecIso (CommRingCat.of R)).hom.hom :=
-    (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of R)).hom).1
-  have hc := hi.comp hb
-  intro a b hab
-  apply hc
-  have na := congrArg (fun q => q.hom a) n
-  have nb := congrArg (fun q => q.hom b) n
-  exact na.symm.trans ((congrArg (Scheme.ΓSpecIso (CommRingCat.of F)).hom.hom hab).trans nb)
+  apply GlobalTheory.UU.FEDesc.toUnit_injective <;> assumption
 
 theorem pullB_ne_zero_iff : ∀ (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (F : Type) [Field F] [Algebra (FractionRing R) F] (k : ℕ) (f : ∀ α, SecBT D (𝟙_ _) k α) (s : Raw D F k), PullB D F (toUnit _) k f s → ∀ α, ((∃ j, (s α).f j ≠ 0) ↔ ∃ j, (f α).f j ≠ 0) := by
   intro R _ _ D F _ _ k f s h α

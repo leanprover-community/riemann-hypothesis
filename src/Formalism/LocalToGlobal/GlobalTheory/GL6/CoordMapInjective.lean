@@ -78,13 +78,6 @@ def t2xE (Φ : M ≃ₗ[ℂ] (Cl → Fin d → ℂ)) (ρ : G →* (M →ₗ[ℂ]
   map_add' φ ψ := by funext x; simp
   map_smul' a φ := by funext x; simp
 
-theorem coordMap_intertwines (Φ : M ≃ₗ[ℂ] (Cl → Fin d → ℂ)) (ρ : G →* (M →ₗ[ℂ] M)) (g : G) (φ : M)
-    (x : G × (MulAction.orbitRel.Quotient G Cl × Fin d)) :
-    t2xE Φ ρ (ρ g φ) x = t2xE Φ ρ φ (g * x.1, x.2) := by
-  show Φ (ρ x.1 (ρ g φ)) (Quotient.out x.2.1) x.2.2 = Φ (ρ (g * x.1) φ) (Quotient.out x.2.1) x.2.2
-  rw [mul_comm g x.1, map_mul]
-  rfl
-
 theorem exists_smul_out_eq (c : Cl) : ∃ g : G, g • Quotient.out (Quotient.mk (MulAction.orbitRel G Cl) c) = c := by
   have h := Quotient.mk_out (s := MulAction.orbitRel G Cl) c
   obtain ⟨g, hg⟩ := MulAction.mem_orbit_iff.1 (MulAction.orbitRel_apply.1 h)

@@ -47,6 +47,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.TauReduction.Imports
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
 
 @[expose] public section
 
@@ -180,7 +181,7 @@ theorem congruence_subgroup_compact_open : CongK := by
   refine ⟨g * c * c, Nat.mul_pos (Nat.mul_pos hg hc) hc, ?_⟩
   rintro x ⟨γ, hγ, hx⟩
   have hf : Formalism.UG.bc (Formalism.UG.inclE (F := I.F) (Af I.F)) γ ∈ Formalism.UG.UPts I.cm.sig I.J (Af I.F) :=
-    Formalism.UG.Final.RatPtsLe I.F I.E (Fin I.n) I.cm.sig I.J (Af I.F) (Subgroup.mem_map_of_mem _ hγ.1)
+    _root_.Formalism.UG.P.rational_points_le_holds I.F I.E (Fin I.n) I.cm.sig I.J (Af I.F) (Subgroup.mem_map_of_mem _ hγ.1)
   have st : ∀ {A : Matrix (Fin I.n) (Fin I.n) I.E}, Cong I (g * c * c) A → ∀ y ∈ I.Lf,
       A.map (Formalism.UG.inclE (F := I.F) (Af I.F)) *ᵥ y ∈ I.Lf := fun hA y hy => by
     obtain ⟨z, hz, e⟩ := cong_Lf I h1 h2 hA y hy

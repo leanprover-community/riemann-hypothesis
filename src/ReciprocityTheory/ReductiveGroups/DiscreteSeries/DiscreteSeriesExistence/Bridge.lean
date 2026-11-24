@@ -284,14 +284,14 @@ theorem isKStableSub_of_kStable (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn
     have e1 : (j = a ∧ i = b) ↔ (i = b ∧ j = a) := and_comm
     have e2 : (j = b ∧ i = a) ↔ (i = a ∧ j = b) := and_comm
     simp only [e1, e2]
-    split_ifs <;> simp [Complex.star_def, Complex.conj_I]
+    split_ifs <;> simp
   have hH₂ : X₂ᴴ = -X₂ := by
     ext i j
     simp only [hX₂, Matrix.conjTranspose_apply, Matrix.of_apply, Matrix.neg_apply]
     have e1 : (j = a ∧ i = b) ↔ (i = b ∧ j = a) := and_comm
     have e2 : (j = b ∧ i = a) ↔ (i = a ∧ j = b) := and_comm
     simp only [e1, e2]
-    split_ifs <;> simp [Complex.star_def, Complex.conj_I]
+    split_ifs <;> simp [Complex.conj_I]
   have m₁ := br_actM_mem_of_kStable hσ hD S hS hK (hinK X₁ hH₁ hJ₁) hv
   have m₂ := br_actM_mem_of_kStable hσ hD S hS hK (hinK X₂ hH₂ hJ₂) hv
   have e₁ : actM E X₁ v = E a b v + (-1 : ℂ) • E b a v := by

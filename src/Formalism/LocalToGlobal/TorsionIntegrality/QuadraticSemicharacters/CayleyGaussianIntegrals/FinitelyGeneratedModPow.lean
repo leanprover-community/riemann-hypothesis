@@ -180,12 +180,12 @@ theorem KernelRatio_of (hC : UnitaryConstant) : KernelRatio := by
   have iab : relIdx Λa Λb ≠ 0 := KR.relIdx_trans ia0 i0b
   have iba : relIdx Λb Λa ≠ 0 := KR.relIdx_trans ib0 i0a
 
-  have sd0 : IsSelfDual H Λ₀ := by rw [hHdef, hΛ₀]; exact stdSelfDual L _
+  have sd0 : IsSelfDual H Λ₀ := by rw [hHdef, hΛ₀]; exact _root_.Formalism.L2.Th1.H.StdSelfDual_proof L _
   have sda : IsSelfDual H Λa := by rw [hHdef, hΛa]; exact D0.selfDual
   have sdb : IsSelfDual H Λb := by rw [hHdef, hΛb]; exact D1.selfDual
   have sc0 : IsSemiChar H Λ₀ β := by
     rw [hHdef, hΛ₀]
-    exact isSemiChar_congr _ _ _ _ D0.betaStd (stdSemiChar L ω₀ (Fin 4 × n) D0.per)
+    exact isSemiChar_congr _ _ _ _ D0.betaStd (_root_.Formalism.L2.Th1.H.StdSemiChar_proof L ω₀ (Fin 4 × n) D0.per)
   have sca : IsSemiChar H Λa β := by rw [hHdef, hΛa]; exact D0.betaSemi
   have scb : IsSemiChar H Λb β := by rw [hHdef, hΛb]; exact D1.betaSemi
   have hLat0 : IsLat Λ₀ := by rw [hΛ₀]; exact KR.isLat_stdLat L _
@@ -234,7 +234,7 @@ theorem KernelRatio_of (hC : UnitaryConstant) : KernelRatio := by
   have hFline : ∀ G ∈ Th H β Λ₀, ∃ c : ℂ, G = c • F := by
     intro G hG
     rw [hHdef, hΛ₀] at hG
-    exact ⟨G 0, hF ▸ thStd L ω₀ _ D0.per D0.half β D0.betaStd G hG⟩
+    exact ⟨G 0, hF ▸ _root_.Formalism.L2.Th1.H.ThStd_proof L ω₀ _ D0.per D0.half β D0.betaStd G hG⟩
   obtain ⟨hGa0, hGaline⟩ := lineTransport (Fin 4 × n → ℂ) H hHerm Λ₀ Λa β sd0 sda sc0 sca i0a ia0 F hFmem
     hFne hFline
   have hGamem : inter H β Λ₀ Λa F ∈ Th H β Λa := interTh _ H hHerm Λ₀ Λa β sca i0a F hFmem

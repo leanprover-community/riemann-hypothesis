@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsPullOWOverComp
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.HodgeWedgeFields.H1CommutesBaseChange
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CechTripleRestrictCompositeInjectiveSecond
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniqueIsPullForm
@@ -176,26 +177,7 @@ theorem cechTripleRestrictComposite_injective_cohomology_forms (ψ : X'' ⟶ X')
 theorem isPullO_comp (h : φ ≫ s = s' ≫ spMap σ) (h' : ψ ≫ s' = s'' ≫ spMap τ)
     (h'' : (ψ ≫ φ) ≫ s = s'' ≫ spMap (τ.comp σ)) {a : HO1 s} {a' : HO1 s'} {a'' : HO1 s''}
     (p : IsPullO h a a') (p' : IsPullO h' a' a'') : IsPullO h'' a a'' := by
-  refine cechTripleRestrictComposite_injective_cohomology_forms ψ φ s'' ?_
-  have p0 : (pairPull h).pull1 a = (pairRes φ s').pull1 a' := p
-  have p1 : (pairPull h').pull1 a' = (pairRes ψ s'').pull1 a'' := p'
-  have t1 : (cechTripleRestrictComposite ψ φ s'').pull1 ((pairPull h'').pull1 a) =
-      (cechTriplePullbackSecond h').pull1 ((pairPull h).pull1 a) := by
-    rw [← CoefMap.pullCohomologyOne_comp, ← CoefMap.pullCohomologyOne_comp]
-    exact CoefMap.pullCohomologyOne_eq_of_natTrans ((pairPull h'').comp (cechTripleRestrictComposite ψ φ s''))
-      ((pairPull h).comp (cechTriplePullbackSecond h')) { app U := 𝟙 _ } (fun U b ↦ by
-        erw [mp_id]
-        exact congrArg (fun q ↦ q.hom b) (Scheme.Hom.appLE_comp_appLE ψ φ U.unop.1.2.2.1 U.unop.1.2.1.1
-          U.unop.1.1.1 U.unop.2.2 U.unop.2.1)) a
-  have t2 : (cechTriplePullbackSecond (φ := φ) h').pull1 ((pairRes φ s').pull1 a') =
-      (cechTripleRestrictFirst ψ φ s'').pull1 ((pairPull h').pull1 a') := by
-    rw [← CoefMap.pullCohomologyOne_comp, ← CoefMap.pullCohomologyOne_comp]
-    exact CoefMap.pullCohomologyOne_eq_of_natTrans _ _ { app U := 𝟙 _ } (fun U b ↦ by erw [mp_id]) a'
-  have t3 : (cechTripleRestrictFirst ψ φ s'').pull1 ((pairRes ψ s'').pull1 a'') =
-      (cechTripleRestrictComposite ψ φ s'').pull1 ((pairRes (ψ ≫ φ) s'').pull1 a'') := by
-    rw [← CoefMap.pullCohomologyOne_comp, ← CoefMap.pullCohomologyOne_comp]
-    exact CoefMap.pullCohomologyOne_eq_of_natTrans _ _ { app U := 𝟙 _ } (fun U b ↦ mp_id (OAff s'') _ b) a''
-  rw [t1, p0, t2, p1, t3]
+  apply GlobalTheory.CompanionTheory.Axis.PullO.isPullO_comp <;> assumption
 end Comp
 
 section Over

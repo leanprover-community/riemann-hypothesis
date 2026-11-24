@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsAlgebrasMaxCompactAndLeviInter
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Order.Floor.Extended
@@ -139,41 +140,7 @@ theorem exists_orthonormal (G : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ)) (d :
     (hd : Module.finrank ℝ G = d) :
     ∃ E : Fin d → Matrix (Fin n) (Fin n) ℂ,
       (∀ i k, ((E i * (E k)ᴴ).trace).re = if i = k then 1 else 0) ∧ Submodule.span ℝ (Set.range E) = G := by
-  subst hd
-  let c : InnerProductSpace.Core ℝ G :=
-    { inner := fun X Y => (((X : Matrix (Fin n) (Fin n) ℂ) * (Y : Matrix (Fin n) (Fin n) ℂ)ᴴ).trace).re
-      conj_inner_symm := by
-        intro X Y
-        have : (X : Matrix (Fin n) (Fin n) ℂ) * (Y : Matrix (Fin n) (Fin n) ℂ)ᴴ =
-          ((Y : Matrix (Fin n) (Fin n) ℂ) * (X : Matrix (Fin n) (Fin n) ℂ)ᴴ)ᴴ := by simp
-        simp only [conj_trivial]
-        rw [this, Matrix.trace_conjTranspose]
-        simp
-      re_inner_nonneg := by
-        intro X
-        have := (Matrix.posSemidef_self_mul_conjTranspose (X : Matrix (Fin n) (Fin n) ℂ)).trace_nonneg
-        simpa using (Complex.le_def.1 this).1
-      add_left := by
-        intro X Y Z
-        simp [add_mul]
-      smul_left := by
-        intro X Y r
-        simp
-      definite := by
-        intro X hX
-        have h := (Matrix.posSemidef_self_mul_conjTranspose (X : Matrix (Fin n) (Fin n) ℂ)).trace_nonneg
-        have h2 : ((X : Matrix (Fin n) (Fin n) ℂ) * (X : Matrix (Fin n) (Fin n) ℂ)ᴴ).trace = 0 :=
-          Complex.ext hX (Complex.le_def.1 h).2.symm
-        exact Subtype.ext (Matrix.trace_mul_conjTranspose_self_eq_zero_iff.1 h2) }
-  letI : NormedAddCommGroup G := c.toNormedAddCommGroup
-  letI : InnerProductSpace ℝ G := InnerProductSpace.ofCore c.toCore
-  let b := stdOrthonormalBasis ℝ G
-  refine ⟨fun i => b i, fun i k => ?_, ?_⟩
-  · exact orthonormal_iff_ite.1 b.orthonormal i k
-  · have := b.toBasis.span_eq
-    have h2 := congrArg (Submodule.map G.subtype) this
-    rw [Submodule.map_span, Submodule.map_top, Submodule.range_subtype, ← Set.range_comp] at h2
-    exact h2
+  apply GlobalTheory.FlagMeas.CompactAlg.exists_orthonormal <;> assumption
 
 theorem finrank_real_form (ε : Fin n → Bool) (C : Submodule ℂ (Matrix (Fin n) (Fin n) ℂ))
     (hC : ∀ X ∈ C, Formalism.REAL.Jm ε * Xᴴ * Formalism.REAL.Jm ε ∈ C) (G : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ))

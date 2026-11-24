@@ -78,7 +78,7 @@ theorem det_updateRow_last_single (A : Matrix (Fin (r + 1)) (Fin (r + 1)) R) :
   have hsub : (A.updateRow (Fin.last r) (Pi.single (Fin.last r) 1)).submatrix Fin.castSucc
       Fin.castSucc = A.submatrix Fin.castSucc Fin.castSucc := by
     ext a b
-    simp [Matrix.updateRow_ne (Fin.castSucc_lt_last a).ne]
+    simp
   rw [Matrix.det_succ_row _ (Fin.last r), Finset.sum_eq_single (Fin.last r)]
   · rw [Fin.succAbove_last, hsub, Matrix.updateRow_self, Pi.single_eq_same, mul_one,
       Fin.val_last, ← two_mul, pow_mul, neg_one_sq, one_pow, one_mul]
@@ -97,8 +97,8 @@ theorem det_add_cornerM (A : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (c : R) :
       by_cases hj : j = Fin.last r
       · subst hj
         simp [cornerM]
-      · simp [cornerM, hj, Pi.single_apply]
-    · simp [cornerM, hi, Matrix.updateRow_ne hi]
+      · simp [cornerM, hj]
+    · simp [cornerM, hi]
   rw [h, Matrix.det_updateRow_add, Matrix.det_updateRow_smul, Matrix.updateRow_eq_self,
     det_updateRow_last_single]
 
@@ -125,7 +125,7 @@ theorem mbeShift_bCls (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (c : R) :
   by_cases hi : i = Fin.last r
   · subst hi
     simp [cornerM]
-  · simp [cornerM, hi, Pi.single_apply]
+  · simp [cornerM, hi]
 
 theorem card_isoMbe_shift (Z₁ Z₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) R) (c : R) :
     Nat.card (IsoMbe (Z₁ + cornerM r c) (Z₂ + cornerM r c)) = Nat.card (IsoMbe Z₁ Z₂) := by

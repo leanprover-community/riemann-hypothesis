@@ -2,10 +2,14 @@ module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.HypJ
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelesLocallyCompactSecondCountable
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicHaarScalingByRealIdeleStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GroupActionHaarScalingContinuousStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HaarScalingUnderFlowStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRingStatement
+public import Mathlib.NumberTheory.NumberField.AdeleRing
+public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicHaarScalingByRealIdele
+public import Mathlib.MeasureTheory.Group.Measure
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GroupActionHaarScalingContinuous
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HaarScalingUnderFlow
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -101,7 +105,7 @@ theorem map_scale_adele {F : Type} [Field F] [NumberField F] (hF : IsTotallyReal
   haveI : BorelSpace (AF F) := ⟨rfl⟩
   let μ' : Measure (Unit → AF F) := Measure.pi fun _ => μA
   haveI : μ'.IsAddHaarMeasure := Measure.pi.isAddHaarMeasure _
-  have h := GlobalTheory.T.adelic_haar_scaling_by_real_idele F hF θ hθ Unit μ' t ht
+  have h := _root_.GlobalTheory.CompanionTheory.AdelicFlow.map_scalar F hF θ hθ Unit μ' t ht
   have he : μ'.map (MeasurableEquiv.funUnique Unit (AF F)) = μA :=
     (measurePreserving_funUnique μA Unit).map_eq
   have hf : Measurable (fun y : AF F => pairA F (θ t) 1 * y) :=
@@ -139,7 +143,7 @@ theorem exists_modulus_chi : ∀ (F E : Type) [Field F] [NumberField F] [Field E
         Real.exp (-(2 * Module.finrank ℚ F * (M + 1) * x)) := by
   intro F E _ _ _ _ _ σ hCM τ hτ M μW μA hW hA
   obtain ⟨⟨lcA, scA, t2A⟩, -⟩ := GlobalTheory.CompanionTheory.AdeleTop.adele_top F
-  obtain ⟨trK, lcK, scK, t2K, cSig, -, -, bor, -, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hCM (AF F)
+  obtain ⟨trK, lcK, scK, t2K, cSig, -, -, bor, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hCM (AF F)
   haveI : BorelSpace (AF F) := ⟨rfl⟩
   haveI : BorelSpace (Fin 1 → Fin M → AF F ⊗[F] E) := bor 1 M
   have h2 : Module.finrank F E = 2 := hCM.2.2.1
@@ -174,7 +178,7 @@ theorem exists_modulus_chi : ∀ (F E : Type) [Field F] [NumberField F] [Field E
   haveI : SigmaFinite μW := inferInstance
   haveI : SigmaFinite μA := inferInstance
   haveI : (μW.prod μA).IsAddHaarMeasure := inferInstance
-  obtain ⟨χ, hχc, hχ⟩ := GlobalTheory.T.group_action_haar_scaling_continuous ((Fin 1 → Fin M → AF F ⊗[F] E) × AF F) (μW.prod μA)
+  obtain ⟨χ, hχc, hχ⟩ := _root_.GlobalTheory.CompanionTheory.Adelic.ModulusAction.exists_continuous_modulus ((Fin 1 → Fin M → AF F ⊗[F] E) × AF F) (μW.prod μA)
     (AF F ⊗[F] E)ˣ a hcont continuous_inv
     (by intro y; rw [ha]; simp)
     (by intro s t y; simp only [ha, Units.val_mul, map_mul, smul_smul, mul_assoc])
@@ -199,7 +203,7 @@ theorem exists_modulus_chi : ∀ (F E : Type) [Field F] [NumberField F] [Field E
     rw [e2, map_mul]
     change ((θ (Real.exp x) * θ (Real.exp x), (1 : Af F) * 1) : Ainf F × Af F) = (_, 1)
     rw [one_mul]
-  have hWm := GlobalTheory.T.haar_scaling_under_flow F E σ hCM τ hτ' 1 M μW hW x
+  have hWm := _root_.GlobalTheory.CompanionTheory.SW.Flow.modulus_flow F E σ hCM τ hτ' 1 M μW hW x
   have hAm := map_scale_adele hCM.1 θ hθ μA hA (Real.exp (2 * x)) (Real.exp_pos _)
   have mW : Measurable (fun X : Fin 1 → Fin M → AF F ⊗[F] E =>
       ((τ (Multiplicative.ofAdd x) : (AF F ⊗[F] E)ˣ) : AF F ⊗[F] E) • X) :=

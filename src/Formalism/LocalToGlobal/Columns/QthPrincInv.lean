@@ -67,8 +67,7 @@ theorem qth_ext_close (g : Sp E n ≃ₗ[E] Sp E n) (N : ℕ) (hg : lqPrinc P N 
         LinearMap.toMatrix' (W : Sp E (n + c) →ₗ[E] Sp E (n + c)) := by
     intro W
     simp only [toGLm, Matrix.GeneralLinearGroup.toLin, LinearMap.GeneralLinearGroup.generalLinearEquiv,
-      MulEquiv.trans_apply, MulEquiv.symm_symm, MulEquiv.symm_mk, MulEquiv.coe_mk, Equiv.coe_fn_symm_mk,
-      Units.coe_map, MonoidHom.coe_coe]
+      MulEquiv.trans_apply, MulEquiv.symm_mk, MulEquiv.coe_mk, Equiv.coe_fn_symm_mk]
     rfl
   set u : Fin (n + c) → E := Pi.single l 1 with hu0
   have hpi : ∀ y : Fin n → E, (Loc.inX E n c y) i = if h : (i : ℕ) < n then y ⟨i, h⟩ else 0 := by
@@ -99,7 +98,7 @@ theorem qth_ext_close (g : Sp E n ≃ₗ[E] Sp E n) (N : ℕ) (hg : lqPrinc P N 
       exact h2
     · have hu' : LinearMap.funLeft E E (Fin.castAdd c) u = 0 := by
         ext j
-        simp only [hu0, LinearMap.funLeft_apply, Pi.single_apply, Pi.zero_apply, Function.comp_apply]
+        simp only [hu0, LinearMap.funLeft_apply, Pi.single_apply, Pi.zero_apply]
         rw [if_neg]
         intro h
         apply hl
@@ -147,7 +146,7 @@ theorem qth_princ_inv {N : ℕ} (g : ↥(GLint E n P)) (hg : lqPrinc P N (g : Sp
       by_cases h : t = k
       · subst h
         simp
-      · simp [Pi.single_apply, h]
+      · simp [h]
     have hmem : ((g⁻¹ : GLint E n P) : Sp E n ≃ₗ[E] Sp E n) ∈ stabL E n (stdAt E n P) :=
       (g⁻¹ : GLint E n P).2
     have h2 := ((ChainCounts.mem_stabL_iff.1 hmem) _).2 hs

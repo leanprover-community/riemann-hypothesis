@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.HermitianCharacters.SelfDualLatticeFiltrationCharacter
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SmulEqZeroOfInf
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
@@ -58,30 +59,7 @@ namespace GlobalTheory.AdeleCharTwist
 theorem exists_eq_exp (g : ℝ → ℂ) (hc : Continuous g) (hn : ∀ t, ‖g t‖ = 1) (h0 : g 0 = 1)
     (hadd : ∀ s t, g (s + t) = g s * g t) :
     ∃ c : ℝ, ∀ t : ℝ, g t = Complex.exp (2 * Real.pi * Complex.I * ((c * t : ℝ) : ℂ)) := by
-  have hm : ∀ a, g a ∈ Submonoid.unitSphere ℂ := fun a => by simpa [Submonoid.unitSphere] using hn a
-  let χ : C(ℝ, Circle) := ⟨fun a => ⟨g a, hm a⟩, hc.subtype_mk hm⟩
-  have hχ : ∀ s t, χ (s + t) = χ s * χ t := fun s t => Subtype.ext (hadd s t)
-  obtain ⟨L, ⟨hL0, hL⟩, hu⟩ := Circle.isCoveringMap_exp.existsUnique_continuousMap_lifts χ 0 0
-    (by rw [Circle.exp_zero]; exact Subtype.ext h0.symm)
-  have hL' : ∀ t, Circle.exp (L t) = χ t := congrFun hL
-  have hLa : ∀ s t, L (s + t) = L s + L t := fun s t => by
-    have := hu ⟨fun t => L (s + t) - L s, by fun_prop⟩ ⟨by simp, by
-      funext t
-      show Circle.exp (L (s + t) - L s) = χ t
-      rw [Circle.exp_sub, hL', hL', hχ, mul_div_cancel_left]⟩
-    have h2 : L (s + t) - L s = L t := DFunLike.congr_fun this t
-    linarith
-  let l : ℝ →+ ℝ := AddMonoidHom.mk' L hLa
-  refine ⟨L 1 / (2 * Real.pi), fun t => ?_⟩
-  have h3 : L t = t * L 1 := by
-    have := map_real_smul l L.continuous t 1
-    simpa [l] using this
-  have h4 : g t = (Circle.exp (L t) : ℂ) := by rw [hL']; rfl
-  have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-  rw [h4, Circle.coe_exp, h3]
-  congr 1
-  push_cast
-  field_simp
+  apply GlobalTheory.CompanionTheory.AdeleCharLocal.exists_eq_exp <;> assumption
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -94,43 +72,18 @@ theorem algebraMap_eq_pairA (x : F) :
   rfl
 
 theorem denseRange_fin : DenseRange (algebraMap F (Af F)) := by
-  intro y
-  rw [mem_closure_iff_nhds]
-  intro U hU
-  have hc : Continuous fun z : Af F => y - z := continuous_const.sub continuous_id
-  have hV : (fun z : Af F => y - z) ⁻¹' U ∈ 𝓝 (0 : Af F) :=
-    hc.continuousAt.preimage_mem_nhds (by simpa using hU)
-  obtain ⟨N, hN, hNU⟩ := GlobalTheory.AdLat.OpenLat.exists_nsmul_adele F _ hV
-  obtain ⟨a, β, hβ, e⟩ := (GlobalTheory.AdLat.strong_approximation_mod_nat F N hN).1 y
-  refine ⟨y - N • β, hNU β hβ, a, ?_⟩
-  rw [e, add_sub_cancel_right]
+  apply GlobalTheory.CompanionTheory.AdeleCharLocal.denseRange_fin <;> assumption
 
 theorem ext_of_inf {ψ ψ' : AF F → ℂ} (hc : Continuous ψ) (hc' : Continuous ψ')
     (ha : ∀ x y, ψ (x + y) = ψ x * ψ y) (ha' : ∀ x y, ψ' (x + y) = ψ' x * ψ' y)
     (hr : ∀ a : F, ψ (algebraMap F _ a) = 1) (hr' : ∀ a : F, ψ' (algebraMap F _ a) = 1)
     (h : ∀ a : F, ψ (pairA F (algebraMap F _ a) 0) = ψ' (pairA F (algebraMap F _ a) 0)) (x : AF F) :
     ψ x = ψ' x := by
-  have h1 : (fun z => ψ (pairA F z 0)) = fun z => ψ' (pairA F z 0) :=
-    (InfiniteAdeleRing.denseRange_algebraMap F).equalizer
-      (hc.comp (continuous_id.prodMk continuous_const)) (hc'.comp (continuous_id.prodMk continuous_const))
-      (funext h)
-  have h2 : (fun z => ψ (pairA F 0 z)) = fun z => ψ' (pairA F 0 z) :=
-    denseRange_fin.equalizer
-      (hc.comp (continuous_const.prodMk continuous_id)) (hc'.comp (continuous_const.prodMk continuous_id))
-      (funext fun a => by
-        have e := hr a
-        have e' := hr' a
-        rw [algebraMap_eq_pairA, ha, h] at e
-        rw [algebraMap_eq_pairA, ha'] at e'
-        exact mul_left_cancel₀ (left_ne_zero_of_mul_eq_one e) (e.trans e'.symm))
-  have e : x = pairA F x.1 0 + pairA F 0 x.2 := by
-    rw [← pairA_add, add_zero, zero_add]
-    rfl
-  rw [e, ha, ha', congrFun h1, congrFun h2]
+  apply GlobalTheory.CompanionTheory.AdeleCharLocal.ext_of_inf <;> assumption
 
 theorem exists_nsmul_inf {ψ : AddChar (AF F) ℂ} (hψ : IsCharAF F ψ) :
     ∃ N : ℕ, 0 < N ∧ ∀ r : 𝓞 F, ψ (pairA F (algebraMap F _ ((N : F) * r)) 0) = 1 := by
-  obtain ⟨N, hN, h⟩ := GlobalTheory.AdLat.OpenLat.exists_nsmul_adele F _ (GlobalTheory.FinTranslate.ker_mem_nhds hψ.1 hψ.2.1)
+  obtain ⟨N, hN, h⟩ := _root_.GlobalTheory.LocalNormBound.main F _ (GlobalTheory.FinTranslate.ker_mem_nhds hψ.1 hψ.2.1)
   refine ⟨N, hN, fun r => ?_⟩
   have h1 : ψ (pairA F 0 (N • algebraMap F (Af F) r)) = 1 :=
     h _ fun v => HeightOneSpectrum.coe_mem_adicCompletionIntegers v r

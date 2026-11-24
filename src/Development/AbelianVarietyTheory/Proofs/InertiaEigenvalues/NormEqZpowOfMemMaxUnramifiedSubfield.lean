@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.ProdOneSubPrimitiveRoots
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -307,24 +308,7 @@ theorem exists_mul_mem {x : Om l} (hx : x ∈ MaximalUnramifiedExtension l) :
 
 theorem norm_of_mem_Kur {x : Om l} (hx : x ∈ MaximalUnramifiedExtension l) (h0 : x ≠ 0) :
     ∃ n : ℤ, ‖x‖ = (l : ℝ) ^ n := by
-  have hp : l.Prime := Fact.out
-  obtain ⟨m, hm, hlm, c, hc, hmem⟩ := exists_mul_mem hx
-  have hcx : algebraMap ℤ_[l] (Om l) c * x ≠ 0 := by
-    refine mul_ne_zero ?_ h0
-    rw [← norm_ne_zero_iff, norm_algebraMap_int]
-    exact norm_ne_zero_iff.2 hc
-  obtain ⟨n, hn⟩ := norm_rootRing hm hlm hmem hcx
-  rw [norm_mul, norm_algebraMap_int] at hn
-  have hc' : (c : ℚ_[l]) ≠ 0 := fun h => hc (PadicInt.ext (h.trans PadicInt.coe_zero.symm))
-  have hcv : ‖c‖ = (l : ℝ) ^ (-(c : ℚ_[l]).valuation) := by
-    rw [PadicInt.norm_def]
-    exact Padic.norm_eq_zpow_neg_valuation hc'
-  have hl0 : (l : ℝ) ≠ 0 := by exact_mod_cast hp.ne_zero
-  rw [hcv] at hn
-  refine ⟨n + (c : ℚ_[l]).valuation, ?_⟩
-  calc ‖x‖ = (l : ℝ) ^ ((c : ℚ_[l]).valuation) * ((l : ℝ) ^ (-(c : ℚ_[l]).valuation) * ‖x‖) := by
-        rw [← mul_assoc, ← zpow_add₀ hl0, add_neg_cancel, zpow_zero, one_mul]
-    _ = (l : ℝ) ^ (n + (c : ℚ_[l]).valuation) := by rw [hn, zpow_add₀ hl0, mul_comm]
+  apply Formalism.MainNotions.N.PreambleDegrees.Loc.norm_Kur_zpow <;> assumption
 
 theorem norm_of_mem_unramified_subfield : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (x : Om l),
     x ∈ K0 K → x ≠ 0 → ∃ n : ℤ, ‖x‖ = (l : ℝ) ^ n := by

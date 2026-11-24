@@ -71,7 +71,7 @@ theorem ConeVanishingHomog.proof : ConeVanishingHomog.Statement := by
     rw [← sum_homogeneousComponent f, map_sum] at h0
     rw [Polynomial.IsRoot, hp, Polynomial.eval_finsetSum, ← h0]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [GoodChartZeroSet.eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous i f)]
+    rw [_root_.UpperTheory.Reformulated.B.Ydc1.eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous i f)]
     rw [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X, mul_comm]
   have hinf : Set.Infinite {x | p.IsRoot x} := by
     refine Set.Infinite.mono (s := ({0} : Set ℂ)ᶜ) ?_

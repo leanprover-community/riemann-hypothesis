@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.LocalOrbitGerms
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FractionFieldToGenericStalkAlgebraMapEq
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -67,25 +68,7 @@ section Field
 variable (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
 
 theorem localField_secondCountable : SecondCountableTopology F := by
-  have hZ : Countable (WithZero (Multiplicative ℤ)) := by
-    have : Countable (Multiplicative ℤ) := inferInstanceAs (Countable ℤ)
-    exact inferInstanceAs (Countable (Option (Multiplicative ℤ)))
-  have hcount : Countable (ValueGroupWithZero F) :=
-    (IsNonarchimedeanLocalField.valueGroupWithZeroIsoInt F).injective.countable
-  have : Countable (ValueGroupWithZero F)ˣ := Units.val_injective.countable
-  have hsig : SigmaCompactSpace F := by
-    refine SigmaCompactSpace.of_countable (Set.range fun γ : ValueGroupWithZero F => {x : F | valuation F x ≤ γ})
-      (Set.countable_range _) ?_ ?_
-    · rintro _ ⟨γ, rfl⟩
-      exact IsNonarchimedeanLocalField.isCompact_closedBall F γ
-    · refine Set.eq_univ_of_forall fun x => ?_
-      exact Set.mem_sUnion.mpr ⟨_, ⟨valuation F x, rfl⟩, show valuation F x ≤ valuation F x from le_rfl⟩
-  let := IsTopologicalAddGroup.rightUniformSpace F
-  have := isUniformAddGroup_of_addCommGroup (G := F)
-  have : (nhds (0 : F)).IsCountablyGenerated :=
-    (IsValuativeTopology.hasBasis_nhds_zero F).isCountablyGenerated
-  have := IsUniformAddGroup.uniformity_countably_generated (α := F)
-  infer_instance
+  apply Formalism.MainNotions.LocalOrbitGerms.Top.sc_F <;> assumption
 
 theorem t2Space_of_isNonarchimedeanLocalField_flag_measures : T2Space F := by
   refine IsTopologicalAddGroup.t2Space_of_zero_sep fun x hx => ?_

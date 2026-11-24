@@ -84,7 +84,7 @@ theorem isMultiHomog_X_single [DecidableEq K] (k : K) (i : ι k) :
     simp [Finsupp.single_apply]
   · have : ∀ j : ι k', (⟨k, i⟩ : Σ k, ι k) ≠ ⟨k', j⟩ := fun j e => h (congrArg Sigma.fst e).symm
     classical
-    simp [Finsupp.single_apply, this, h, Pi.single_apply]
+    simp [h]
 
 def formSub (P : Ideal (MRing ι)) : Submonoid (MRing ι ⧸ P) :=
   Submonoid.closure {y | ∃ (v : MRing ι) (a : K → ℕ), IsMultiHomog v a ∧ v ∉ P ∧ Ideal.Quotient.mk P v = y}

@@ -80,10 +80,7 @@ theorem maxCuspsA_zMatC_add (X : Data E r) (cu : CuspFD X ρ) (τ : E →+* ℂ)
     zMatC X cu.e τ (β + β') = zMatC X cu.e τ β * zMatC X cu.e τ β' := by
   have hτ : ∀ x : E, τ (cc x) = (starRingEnd ℂ) (τ x) := fun x => by
     first
-    | exact IsCMField.complexEmbedding_complexConj τ x
     | exact IsCMField.complexEmbedding_complexConj (K := E) τ x
-    | simp [cc, IsCMField.complexEmbedding_complexConj]
-    | simp [cc]
   obtain ⟨U, hU⟩ : ∃ U : Matrix (Fin r) (Fin ρ) ℂ, U = Matrix.of fun k a => τ (cu.e a k) := ⟨_, rfl⟩
   obtain ⟨V, hV⟩ : ∃ V : Matrix (Fin ρ) (Fin r) ℂ,
       V = Matrix.of fun b l => ∑ k', τ (X.Gm l k') * (starRingEnd ℂ) (τ (cu.e b k')) := ⟨_, rfl⟩
@@ -129,10 +126,7 @@ theorem maxCuspsA_zMatE_map (X : Data E r) (e : Fin ρ → Fin r → E) (τ : E 
     (β : Matrix (Fin ρ) (Fin ρ) E) : (zMatE X e β).map τ = zMatC X e τ (β.map τ) := by
   have hτ : ∀ x : E, τ (cc x) = (starRingEnd ℂ) (τ x) := fun x => by
     first
-    | exact IsCMField.complexEmbedding_complexConj τ x
     | exact IsCMField.complexEmbedding_complexConj (K := E) τ x
-    | simp [cc, IsCMField.complexEmbedding_complexConj]
-    | simp [cc]
   ext k l
 
   simp only [zMatE, zMatC, Matrix.map_apply, Matrix.of_apply, map_add (f := _), map_sum, map_mul, hτ]

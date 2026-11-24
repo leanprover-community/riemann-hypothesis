@@ -255,7 +255,6 @@ theorem bdFacts : CAR → BdFacts := by
     refine commute_of_unitary_conjugate (lift ε (E c d)) (Gop ε c d)
       (fun k : NC ε => (lift ε (E k.1.1 k.1.2) : Module.End ℂ (Ch ε V))) ann
       (fun k => lift_ann _ k) (fun k => lift_Gop _ c d) ?_
-    beta_reduce
     have hrow : ∀ k : NC ε, (lift ε (E c d) : Module.End ℂ (Ch ε V)) * lift ε (E k.1.1 k.1.2)
         - lift ε (E k.1.1 k.1.2) * lift ε (E c d)
         = (if d = k.1.1 then lift ε (E c k.1.2) else 0) - (if k.1.2 = c then lift ε (E k.1.1 d) else 0) :=
@@ -287,7 +286,6 @@ theorem bdFacts : CAR → BdFacts := by
     refine commute_of_unitary_conjugate (lift ε (E c d)) (Gop ε c d)
       (fun k : NC ε => (lift ε (E k.1.2 k.1.1) : Module.End ℂ (Ch ε V))) cre
       (fun k => lift_cre _ k) (fun k => lift_Gop _ c d) ?_
-    beta_reduce
     have hrow : ∀ k : NC ε, (lift ε (E c d) : Module.End ℂ (Ch ε V)) * lift ε (E k.1.2 k.1.1)
         - lift ε (E k.1.2 k.1.1) * lift ε (E c d)
         = (if d = k.1.2 then lift ε (E c k.1.1) else 0) - (if k.1.1 = c then lift ε (E k.1.2 d) else 0) :=

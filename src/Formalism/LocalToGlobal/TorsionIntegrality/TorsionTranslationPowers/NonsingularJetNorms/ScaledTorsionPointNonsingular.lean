@@ -90,10 +90,10 @@ theorem scaled_torsion_point_of_add (hA : PtOfAdd) : ScaledTorsionPointNonsingul
   rw [(PtOfZero_of l (F.scalePair L _ hc) ι _).2 hNz',
     AnaSys.ptOf_notMem (l := l) (L := F.scalePair L _ hc) (ι := ι) _ hz'] at htor
   refine ScaledTorsionTransport.transport ?_ ?_ ?_ _ N htor
-  · simp only [curveL, hg2, hg3, map_mul, map_inv₀, map_pow, inv_pow, inv_inv,
+  · simp only [curveL, hg2, hg3, map_mul, map_pow, inv_pow, inv_inv,
       RingEquiv.apply_symm_apply]
-  · simp only [hwp, map_mul, map_inv₀, map_pow, inv_pow, inv_inv, RingEquiv.apply_symm_apply]
-  · simp only [ScaledModelNorms.dwp_scale, map_mul, map_inv₀, map_pow, inv_pow, inv_inv,
+  · simp only [hwp, map_mul, map_pow, inv_pow, inv_inv, RingEquiv.apply_symm_apply]
+  · simp only [ScaledModelNorms.dwp_scale, map_mul, map_pow, inv_pow, inv_inv,
       RingEquiv.apply_symm_apply]
 
 end Formalism.L2.Th1.E

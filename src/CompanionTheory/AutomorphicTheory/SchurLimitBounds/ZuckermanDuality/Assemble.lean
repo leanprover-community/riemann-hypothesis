@@ -125,11 +125,7 @@ theorem wsp_smooth (hK : PI.KFinSmooth) (hS : CoefSmooth) {F : B.Mat k r → (Wq
   obtain ⟨U, F', hU, hgU, hF', hFe⟩ := ckOn_GV_of_mem_Wsp hK hS hF g₀ hg₀.1.1
   exact ⟨U, F', hU, hgU, hF', fun g hg hgl => hFe g hg hgl.1⟩
 
-theorem wsp_ckOn (hK : PI.KFinSmooth) (hS : CoefSmooth) {F : B.Mat k r → (Wq →L[ℂ] Wp)}
-    (hF : F ∈ Wsp k r Wp Wq ε μ) : B.CkOn ⊤ (B.GV k r) F := by
-  intro g₀ hg₀
-  obtain ⟨U, f', hU, hgU, hf', he⟩ := wsp_smooth hK hS hF g₀ (Dx1.LZ.glev0 hg₀)
-  exact ⟨U, f', hU, hgU, hf', fun g hg hgG => he g hg (Dx1.LZ.glev0 hgG).1⟩
+alias wsp_ckOn := _root_.CompanionTheory.LimBd.Main.ckOn_GV_of_mem_Wsp
 
 theorem wsp_inCC (hK : PI.KFinSmooth) (hC : CoefCC) {A h : ℝ} (hD : KDecay k r ε A h)
     (hg : PI.ZuckTensor.GapAtLeast ε μ h) {F : B.Mat k r → (Wq →L[ℂ] Wp)} (hF : F ∈ Wsp k r Wp Wq ε μ) :

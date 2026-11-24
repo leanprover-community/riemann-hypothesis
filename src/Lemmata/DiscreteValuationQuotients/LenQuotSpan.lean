@@ -62,9 +62,7 @@ private lemma lenQuotSpan {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValua
 
 private lemma addValUnit {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (u : Oˣ) : IsDiscreteValuationRing.addVal O (u : O) = 0 := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
-  have h := IsDiscreteValuationRing.addVal_def' u hϖ 0
-  rwa [pow_zero, mul_one, Nat.cast_zero] at h
+  simp
 
 private lemma addValProd {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     {ι : Type*} (s : Finset ι) (g : ι → O) :

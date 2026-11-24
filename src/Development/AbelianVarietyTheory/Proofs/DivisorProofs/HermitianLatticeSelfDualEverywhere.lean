@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.ThetaLifts.TowerModels.PlaneReal
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
 import Mathlib.Algebra.Order.Floor.Extended
@@ -56,22 +57,7 @@ namespace GlobalTheory.HermSelfDualLoc
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 theorem det_ne_zero_of_hasSig {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M r s) : M.det ≠ 0 := by
-  obtain ⟨hrs, A, hA⟩ := h
-  let e : Fin r ⊕ Fin s ≃ Fin n := finSumFinEquiv.trans (finCongr hrs)
-  let Q : Matrix (Fin n) (Fin n) ℂ := A.submatrix id e.symm
-  have key : Qᵀ * M * Q.map star =
-      (Matrix.fromBlocks (1 : Matrix (Fin r) (Fin r) ℂ) 0 0 (-1)).submatrix e.symm e.symm := by
-    rw [← hA]
-    simp only [Q]
-    ext i j
-    simp [Matrix.mul_apply, Matrix.submatrix_apply]
-  have hN : ((Matrix.fromBlocks (1 : Matrix (Fin r) (Fin r) ℂ) 0 0 (-1)).submatrix e.symm e.symm).det ≠ 0 := by
-    rw [Matrix.det_submatrix_equiv_self, Matrix.det_fromBlocks_zero₂₁]
-    simp [Matrix.det_neg]
-  intro h0
-  apply hN
-  rw [← key, Matrix.det_mul, Matrix.det_mul, h0]
-  simp
+  apply PositivityTheory.ThKG.Tow.Pln.det_ne_zero_of_hasSig <;> assumption
 
 theorem det_ne_zero_of_isHerm (σ : E →ₐ[F] E) (B : Base F E) {n : ℕ} {X : Spc F E n} {r s : ℕ}
     (hX : X.IsHerm σ B r s) : X.J.det ≠ 0 := by

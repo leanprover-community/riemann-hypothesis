@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.PublishedTheorems.GaloisGeometry₂.ConclusionFinite
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaMod
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
 import Mathlib.Algebra.Order.Floor.Extended
@@ -48,22 +49,7 @@ namespace GlobalTheory.HeckeComp
 
 theorem smooth_loc {E : Type} [Field E] [NumberField E] (χ : HChar E) (w : HeightOneSpectrum (𝓞 E)) :
     GlobalTheory.SmGL.IsSmoothChar (χ.loc w) := by
-  obtain ⟨n, hn⟩ := GlobalTheory.Mem.UnrAe.exists_levelLe χ w
-  have hu := unif_spec w
-  set c : w.adicCompletion E := ((atFin w (unif w) : (w.adicCompletion E)ˣ) : w.adicCompletion E) ^ (n + 1) with hc
-  have hv : Valued.v c = WithZero.exp (-((n : ℤ) + 1)) := by
-    unfold IsUnifAt at hu
-    rw [hc, map_pow, hu, ← WithZero.exp_nsmul]; congr 1; simp
-  have ho : IsOpen {x : (w.adicCompletion E)ˣ | ((x : w.adicCompletion E) - 1) * c⁻¹ ∈ w.adicCompletionIntegers E} :=
-    (Valued.isOpen_valuationSubring _).preimage ((Units.continuous_val.sub continuous_const).mul continuous_const)
-  refine Subgroup.isOpen_of_mem_nhds _ (g := 1) (Filter.mem_of_superset (ho.mem_nhds (by simp)) fun x hx => ?_)
-  have h1 : Valued.v (((x : w.adicCompletion E) - 1) * c⁻¹) ≤ 1 := hx
-  rw [map_mul, map_inv₀, hv, mul_inv_le_iff₀ WithZero.exp_pos, one_mul] at h1
-  have h2 : Valued.v ((x : w.adicCompletion E) - 1) < 1 :=
-    h1.trans_lt (by rw [← WithZero.exp_zero, WithZero.exp_lt_exp]; omega)
-  refine hn x ?_ (h1.trans (WithZero.exp_le_exp.2 (by omega)))
-  have := Valuation.map_one_add_of_lt _ h2
-  rwa [add_sub_cancel] at this
+  apply _root_.GlobalTheory.Published.ParamAboveModel.smooth_loc <;> assumption
 
 theorem eq_of_isComp {E : Type} [Field E] [NumberField E] {χ : HChar E} {w : HeightOneSpectrum (𝓞 E)}
     {ξ ξ' : (w.adicCompletion E)ˣ →* ℂˣ} (hξ : IsComp χ w ξ) (hξ' : IsComp χ w ξ') : ξ' = ξ := by

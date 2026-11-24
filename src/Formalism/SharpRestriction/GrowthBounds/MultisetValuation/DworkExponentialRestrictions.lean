@@ -140,10 +140,6 @@ theorem th_coordZA_int (X : Sys p) (K' : Type) [Field K'] [Algebra (K0 p) K'] (v
     · exact Subring.one_mem _
     · exact Subring.zero_mem _
 
-private theorem constantCoeff_coordZ_eq_zero {n' r0 r1 : ℕ} (B : OmBasis p n') (K' : Type) [Field K'] [Algebra (K0 p) K']
-    (vp : K') (x : Eidx n' r0 r1 ⊕ Eidx n' r0 r1) : MvPowerSeries.constantCoeff (coordZ B K' vp x) = 0 := by
-  rcases x with ⟨r, a, b⟩ | ⟨r, a, b⟩ <;> simp [coordZ]
-
 theorem restSExp_of (hB : RestBeta p) (hG : RestGc p) : RestSExp p := by
   intro h5 hD be hbe n' r0 r1 h2 hev B Ph hPh K' _ _ vp hvp
   obtain ⟨c, hc, hE⟩ := hB h5 hD be hbe
@@ -151,14 +147,10 @@ theorem restSExp_of (hB : RestBeta p) (hG : RestGc p) : RestSExp p := by
   obtain ⟨u, hu, V, hV, hGeq⟩ := hG h5 c hc n' r0 r1 h2 hev B K' vp hvp μ hμ0 hμ1
   obtain ⟨V', hV', hred⟩ := th_reduce (p := p) be (th_be_const hbe) (wK p c) (wK p (sigW p c))
     (th_Gser_const _ _) (fun _ => hE) Ph hPh K' vp μ hμ0 hμR hμ1 (coordZ B K' 1)
-    (fun i => constantCoeff_coordZ_eq_zero B K' 1 i) (fun i => th_coordZ_int B K' vp i)
+    (fun i => _root_.Formalism.MainNotions.FormalGroupSystem.Pf.coordZ_const B K' 1 i) (fun i => th_coordZ_int B K' vp i)
   refine ⟨u, hu, V * V', IntR_mul hV hV', ?_⟩
   unfold ThZ
   rw [th_coordZ_eq B K' vp, hred, hGeq, mul_assoc]
-
-private theorem constantCoeff_coordZA_eq_zero (X : Sys p) (K' : Type) [Field K'] [Algebra (K0 p) K'] (j : ℕ)
-    (x : X.EA j ⊕ X.EA j) : MvPowerSeries.constantCoeff (X.coordZA K' j x) = 0 := by
-  rcases x with ⟨v, r, a, b⟩ | ⟨v, r, a, b⟩ <;> simp [Sys.coordZA]
 
 private theorem mvPowerSeries_map_algebraMap_map_algebraMap (K1 K' : Type) [Field K1] [Algebra (K0 p) K1] [Field K'] [Algebra (K0 p) K']
     [Algebra K1 K'] [IsScalarTower (K0 p) K1 K'] {σ : Type} (F : MvPowerSeries σ (K0 p)) :
@@ -177,12 +169,11 @@ theorem restSExpA_of (X : Sys p) (hB : RestBeta p) (hG : RestGcA X) : RestSExpA 
     · refine ⟨0, ?_, fun e => absurd (X.std e.1).five_le h5⟩
       first
         | exact Function.iterate_fixed (map_zero (sigW p)) 2
-        | simp
   obtain ⟨μ, hμ0, hμR, hμ1⟩ := exists_mu (p := p) K' vp hvp
   obtain ⟨u, hu, V, hV, hGeq⟩ := hG c hc j K' vp hvp μ hμ0 hμ1
   obtain ⟨V', hV', hred⟩ := th_reduce (p := p) be (th_be_const hbe) (wK p c) (wK p (sigW p c))
     (th_Gser_const _ _) hE Ph hPh K' vp μ hμ0 hμR hμ1 (X.coordZA K' j)
-    (fun i => constantCoeff_coordZA_eq_zero X K' j i) (fun i => th_coordZA_int X K' vp j i)
+    (fun i => _root_.Formalism.MainNotions.FormalGroupSystem.Pf.coordZA_const X K' j i) (fun i => th_coordZA_int X K' vp j i)
   refine ⟨u, hu, V * V', IntR_mul hV hV', ?_⟩
   rw [atPi_map_ThZA (X := X), mvPowerSeries_map_algebraMap_map_algebraMap, hred, hGeq, mul_assoc]
 

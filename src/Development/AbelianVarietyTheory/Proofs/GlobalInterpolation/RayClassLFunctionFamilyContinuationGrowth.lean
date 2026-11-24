@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExpSumBounds
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LamIdealOfNotPrimePow
 public import Mathlib.NumberTheory.LSeries.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -145,22 +146,7 @@ theorem res_eq : 𝓕.res χ = ∑ g, χ g * (𝓕.κ : ℂ) := by
 
 theorem norm_rem_le (x : ℝ) (hx : 1 ≤ x) :
     ‖(∑ n ∈ Finset.Icc 1 ⌊x⌋₊, 𝓕.aChi χ n) - 𝓕.res χ * x‖ ≤ 10 * 𝓕.B * Real.sqrt x := by
-  have h : (∑ n ∈ Finset.Icc 1 ⌊x⌋₊, 𝓕.aChi χ n) - 𝓕.res χ * x =
-      ∑ g, χ g * ((∑ n ∈ Finset.Icc 1 ⌊x⌋₊, 𝓕.a g n - 𝓕.κ * x : ℝ) : ℂ) := by
-    simp only [LFam.aChi, res_eq]
-    rw [Finset.sum_comm, Finset.sum_mul, ← Finset.sum_sub_distrib]
-    refine Finset.sum_congr rfl fun g _ => ?_
-    push_cast
-    rw [← Finset.mul_sum]
-    ring
-  rw [h]
-  refine (norm_sum_le _ _).trans ?_
-  refine (Finset.sum_le_sum (g := fun _ => 10 * Real.sqrt x) fun g _ => ?_).trans ?_
-  · rw [norm_mul, AddChar.norm_apply, one_mul, norm_real, Real.norm_eq_abs]
-    exact 𝓕.count g x hx
-  · simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-    have := mul_le_mul_of_nonneg_right 𝓕.card_le (by positivity : 0 ≤ 10 * Real.sqrt x)
-    linarith
+  apply GlobalTheory.Hk.LFam.norm_sum_aChi_sub_le <;> assumption
 
 theorem measurable_rem :
     Measurable fun x : ℝ => (∑ n ∈ Finset.Icc 1 ⌊x⌋₊, 𝓕.aChi χ n) - 𝓕.res χ * x :=

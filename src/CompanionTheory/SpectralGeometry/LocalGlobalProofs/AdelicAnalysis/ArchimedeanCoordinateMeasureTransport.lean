@@ -3,8 +3,8 @@ module
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GaussQ
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHomeomorphRankOneTuplesStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyRealStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHomeomorphRankOneTuples
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -150,14 +150,14 @@ end GlobalTheory.CompanionTheory.SW.BB.InfPush
 open GlobalTheory.CompanionTheory.SW.BB.InfPush in
 theorem GlobalTheory.CompanionTheory.SW.BB.infPush : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M d : ℕ) (b : Module.Basis (Fin d) F E) (e : Ainf F ≃+* (InfinitePlace F → ℝ)), IsHomeomorph e → ∀ (laminf : Measure (Ainf F)), laminf.IsAddHaarMeasure → laminf.map e = ENNReal.ofReal (Real.sqrt |(discr F : ℝ)|)⁻¹ • (volume : Measure (InfinitePlace F → ℝ)) → (coordW (Ainf F) b laminf 1 M).map (fun X w => xw e b X w) = ENNReal.ofReal ((Real.sqrt |(discr F : ℝ)|)⁻¹ ^ (M * d)) • (volume : Measure (InfinitePlace F → Fin M × Fin d → ℝ)) := by
   intro F E _ _ _ _ _ σ hσ M d b e he laminf hH hmap
-  have hloc := GlobalTheory.T.infinite_adeles_local_ring_totally_real F hσ.1
+  have hloc := _root_.GlobalTheory.CompanionTheory.SW.isLocR_Ainf F hσ.1
   obtain ⟨h1, h2, h3, h4, -⟩ := hloc
   haveI := h1
   haveI := h2
   haveI := h3
   haveI := h4
   haveI : BorelSpace (Ainf F) := ⟨rfl⟩
-  obtain ⟨-, hemb, hcoord⟩ := GlobalTheory.T.coordinate_homeomorph_rank_one_tuples F E σ hσ (Ainf F) d b laminf hH M
+  obtain ⟨-, hemb, hcoord⟩ := _root_.GlobalTheory.CompanionTheory.SW.BB.coordMap_one F E σ hσ (Ainf F) d b laminf hH M
   have hem : Measurable (fun x : Ainf F => (e x : InfinitePlace F → ℝ)) := he.continuous.measurable
   have hΦ : Measurable (fun (y : Fin M × Fin d → Ainf F) (w : InfinitePlace F) (p : Fin M × Fin d) => e (y p) w) :=
     measurable_pi_iff.2 fun w => measurable_pi_iff.2 fun p =>

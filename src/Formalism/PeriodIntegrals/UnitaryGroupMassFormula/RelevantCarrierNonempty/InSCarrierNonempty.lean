@@ -185,11 +185,8 @@ theorem relevant_of_inSF (K : Type) [Field K] [Algebra K E] {T T' : E} {F : LFla
   have hfv : ∀ i : Fin (r + 1), F'.fl.fvec i - F.fl.fvec i ∈ F.fl.Xa i.val := by
     intro i
     refine Fin.lastCases ?_ (fun a => ?_) i
-    · simp only [FlagG.fvec, Fin.snoc_last, Fin.val_last]
-      rw [Xflag_r]
-      exact h.2
-    · simp only [FlagG.fvec, Fin.snoc_castSucc, Fin.coe_castSucc]
-      exact h.1 a
+    · simpa [FlagG.fvec, Fin.snoc_last, Fin.val_last, Xflag_r] using h.2
+    · simpa [FlagG.fvec, Fin.snoc_castSucc, Fin.coe_castSucc] using h.1 a
   unfold FlagG.dpsi
   rw [ell_eq_of hfv hY.1]
 
@@ -200,8 +197,7 @@ section D7
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem termInSRel_main (D : D7) (u u' : D.what₂.Word) : TermInSRel D u u' := by
-  intro F0 Λ hΛ x hx
-  exact relevant_of_inSF _ hx
+  exact fun F0 Λ hΛ x hx => relevant_of_inSF _ hx
 
 end D7
 

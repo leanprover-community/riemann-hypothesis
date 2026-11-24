@@ -95,12 +95,6 @@ theorem mul_dz_fLog {g : PowerSeries K} (hg : constantCoeff g = 1) : g * dz (fLo
   have h := mul_pd_fLog (ι := Unit) () (g := g) hg
   rwa [pd_unit_eq_dz, pd_unit_eq_dz] at h
 
-private theorem dz_prim_eq_self (f : PowerSeries K) : dz (prim f) = f := by
-  ext n
-  rw [PowerSeries.coeff_derivative, coeff_prim_succ]
-  push_cast
-  exact div_mul_cancel₀ _ (Nat.cast_add_one_ne_zero n)
-
 private theorem eq_of_constantCoeff_eq_of_dz_eq {F G : PowerSeries K} (h0 : constantCoeff F = constantCoeff G)
     (hd : dz F = dz G) : F = G := by
   ext n
@@ -169,9 +163,9 @@ theorem sigmaOneSquare : Sigma1Sq := by
     apply eq_of_constantCoeff_eq_of_dz_eq
     · rw [map_add (f := _), map_add (f := _), map_add (f := _), hs0, hs10, hL0]; ring
     · apply eq_of_constantCoeff_eq_of_dz_eq
-      · simp only [map_add (f := _), sigmaOneSeries, sigS, map_neg, dz_prim_eq_self, hp0, hL1]
+      · simp only [map_add (f := _), sigmaOneSeries, sigS, map_neg, _root_.Formalism.L2.Th1.B.dz_prim, hp0, hL1]
         ring
-      · simp only [map_add (f := _), sigmaOneSeries, sigS, map_neg, dz_prim_eq_self, hLdd]
+      · simp only [map_add (f := _), sigmaOneSeries, sigS, map_neg, _root_.Formalism.L2.Th1.B.dz_prim, hLdd]
         ring
   have hsq : fExp (sigmaOneSeries e1 (3 * e1 ^ 2 - q) w) ^ 2 = fExp (sigS P + sigS P) * u := by
     have hss : MvPowerSeries.constantCoeff (sigS P + sigS P) = 0 := by

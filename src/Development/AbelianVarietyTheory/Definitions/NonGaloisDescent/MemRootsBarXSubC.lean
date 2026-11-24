@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaOfPow
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -57,24 +58,7 @@ variable {g}
 
 theorem thetaOf_gen_pow (L : LabelDatum g) {d : ℕ} (hd : 0 < d) {x : Fbar g} (hx : x ^ (g ^ d - 1) = 1) (n : ℕ) :
     thetaOf L d x (L.gen d ^ n) = L.teich x ^ n := by
-  have hex : ∃ m : ℕ, L.gen d ^ n = L.gen d ^ m := ⟨n, rfl⟩
-  rw [thetaOf, dite_eq_left hex]
-  have hm := hex.choose_spec
-  have hN := N_pos g hd
-  have hP : IsPrimitiveRoot (L.gen d) (g ^ d - 1) :=
-    L.gen_order d hd ▸ IsPrimitiveRoot.orderOf (L.gen d)
-
-  have h1 : n % (g ^ d - 1) = hex.choose % (g ^ d - 1) := by
-    apply hP.pow_inj (Nat.mod_lt _ hN) (Nat.mod_lt _ hN)
-    rw [← L.gen_order d hd, pow_mod_orderOf, pow_mod_orderOf]
-    exact hm
-  have h2 : orderOf (L.teich x) ∣ g ^ d - 1 :=
-    orderOf_dvd_of_pow_eq_one (by rw [← map_pow, hx, map_one])
-  have h3 : n % orderOf (L.teich x) = hex.choose % orderOf (L.teich x) := Nat.ModEq.of_dvd h2 h1
-  calc L.teich x ^ hex.choose = L.teich x ^ (hex.choose % orderOf (L.teich x)) :=
-        (pow_mod_orderOf _ _).symm
-    _ = L.teich x ^ (n % orderOf (L.teich x)) := by rw [h3]
-    _ = L.teich x ^ n := pow_mod_orderOf _ _
+  apply GlobalTheory.GLq.LabelModel.thetaOf_pow <;> assumption
 
 theorem toG_coe {n : ℕ} (x : Gn g n) : toG (x : Mt g n) = x := by
   rw [toG, dite_eq_left x.isUnit]

@@ -162,14 +162,7 @@ theorem sec_mul (a a' : (E →+* ℂ) × ℕ → ℕ) (n n' : ℕ) {f g : Rul Xo
   · intro p t y y' h
     change f p y' * g p y' = _ * (f p y * g p y)
     rw [hf2 p t y y' h, hg2 p t y y' h]
-    have he : ∀ i, ex Dw (a + a') (n + n') i = ex Dw a n i + ex Dw a' n' i := by
-      intro i
-      cases i <;> rfl
-    try unfold wchar
-    rw [show (∏ i, (t i : p.R) ^ ex Dw (a + a') (n + n') i) =
-        (∏ i, (t i : p.R) ^ ex Dw a n i) * ∏ i, (t i : p.R) ^ ex Dw a' n' i by
-      rw [← Finset.prod_mul_distrib]
-      exact Finset.prod_congr rfl fun i _ => by rw [he, pow_add]]
+    simp only [wchar, ex_add Dw a a' n n', Pi.add_apply, pow_add, Finset.prod_mul_distrib]
     ring
 
 end Formalism.L2.Pj

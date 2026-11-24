@@ -130,7 +130,7 @@ theorem coeff_iter_pderiv {σ : Type} (q : σ) (L : ℕ) (f : MvPowerSeries σ C
       rw [add_smul, one_smul, add_assoc]
     rw [Function.iterate_succ_apply, ih, coeff_pderiv, Finset.prod_range_succ, h1]
     simp only [Finsupp.coe_add, Finsupp.coe_smul, Pi.add_apply, Pi.smul_apply, Finsupp.single_eq_same,
-      smul_eq_mul, mul_one, Nat.cast_add, Nat.cast_one]
+      smul_eq_mul, mul_one, Nat.cast_add]
     ring
 
 theorem coeff_rz_iter (m : ℕ) (i : Fin dd) (L : ℕ) (f : PS C (m + 1) dd) (ν : Fin m × Fin dd →₀ ℕ) :

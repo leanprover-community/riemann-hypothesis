@@ -52,11 +52,8 @@ namespace Formalism.L2.SG.Pf.Unip
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] {K : Type*} [CommRing K] [StarRing K]
 
-private theorem mul_eq_one_comm_of_mul_eq_one {G G' : Matrix ι ι K} (h : G * G' = 1) : G' * G = 1 :=
-  mul_eq_one_comm.mp h
-
 theorem conj_pow {G G' Z : Matrix ι ι K} (h : G * G' = 1) (j : ℕ) : G' * Z ^ j * G = (G' * Z * G) ^ j := by
-  have hG : G' * G = 1 := mul_eq_one_comm_of_mul_eq_one h
+  have hG : G' * G = 1 := _root_.Formalism.L2.SG.Pf.Unip.mul_comm_one h
   induction j with
   | zero => rw [pow_zero, pow_zero, Matrix.mul_one, hG]
   | succ n ih =>
@@ -71,7 +68,7 @@ theorem conj_geo {G G' Z : Matrix ι ι K} (h : G * G' = 1) (N : ℕ) : G' * geo
 
 theorem conj_cay [Invertible (2 : K)] {G G' Z : Matrix ι ι K} (h : G * G' = 1) (N : ℕ) :
     G' * cay N Z * G = cay N (G' * Z * G) := by
-  have hG : G' * G = 1 := mul_eq_one_comm_of_mul_eq_one h
+  have hG : G' * G = 1 := _root_.Formalism.L2.SG.Pf.Unip.mul_comm_one h
   have e1 : G' * ((⅟2 : K) • Z) * G = (⅟2 : K) • (G' * Z * G) := by
     rw [Matrix.mul_smul, Matrix.smul_mul]
   unfold cay

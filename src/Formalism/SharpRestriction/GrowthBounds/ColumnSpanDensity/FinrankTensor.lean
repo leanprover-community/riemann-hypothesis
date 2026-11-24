@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FinrankTensor
 public import Formalism.PolynomialDimension.DigitClassSize
 public import Formalism.PolynomialDimension.WeylDim
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundLargeConductor
@@ -60,7 +61,6 @@ private theorem choose_add_succ_succ_eq_choose_mul_div (A m : ℕ) :
   have h : (A + m + 1) * (A + m).choose m = (A + m + 1).choose (m + 1) * (m + 1) := by
     first
     | exact Nat.add_one_mul_choose_eq (A + m) m
-    | exact Nat.succ_mul_choose_eq (A + m) m
   rw [eq_div_iff (by positivity), show A + (m + 1) = A + m + 1 by omega]
   have h' : (((A + m + 1) * (A + m).choose m : ℕ) : ℚ) = (((A + m + 1).choose (m + 1) * (m + 1) : ℕ) : ℚ) := by
     rw [h]
@@ -148,7 +148,7 @@ theorem weylDim_hwt_eq (m A B : ℕ) : weylDim (m + 2) (hwt m A B) = (dimHar (m 
   rw [weylDim_cons_eq_prod_mul, weylDim_snoc_eq_mul_prod, weylDim_const, one_mul, Fin.prod_univ_castSucc]
   simp only [Fin.snoc_castSucc, Fin.snoc_last, Fin.coe_castSucc, Fin.val_last]
   push_cast
-  try simp only [sub_zero, zero_sub, neg_neg, sub_neg_eq_add, zero_add]
+  try simp only [sub_zero, sub_neg_eq_add, zero_add]
   rw [prodA m A, prodB m B]
   unfold dimHar dimPol
   have hle : (if A = 0 ∨ B = 0 then 0 else (A - 1 + (m + 1)).choose (m + 1) * (B - 1 + (m + 1)).choose (m + 1)) ≤
@@ -194,29 +194,7 @@ theorem finrank_tensor (Kf : Type) [Field Kf] (S : Type) [Fintype S] [DecidableE
     (ν : S → Fin n → ℕ) :
     Module.finrank Kf (Formalism.GradedWeylDivisibility.tensorLat Kf Kf fun s => Formalism.GradedWeylDivisibility.dualWeyl Kf k n (ν s)) =
       ∏ s, Module.finrank Kf (Formalism.GradedWeylDivisibility.dualWeyl Kf k n (ν s)) := by
-  classical
-  haveI : IsFractionRing Kf Kf := by
-    first
-    | infer_instance
-    | exact IsLocalization.atUnits Kf (nonZeroDivisors Kf)
-        (fun x hx => (IsUnit.mem_submonoid_iff _).mpr (Ne.isUnit (nonZeroDivisors.ne_zero hx)))
-  let M : S → Submodule Kf (MvPolynomial (Fin k × Fin n) Kf) := fun s => Formalism.GradedWeylDivisibility.dualWeyl Kf k n (ν s)
-  let B : ∀ s, Module.Basis (Module.Basis.ofVectorSpaceIndex Kf (M s)) Kf (M s) :=
-    fun s => Module.Basis.ofVectorSpace Kf (M s)
-  let b : ∀ s, Module.Basis.ofVectorSpaceIndex Kf (M s) → MvPolynomial (Fin k × Fin n) Kf :=
-    fun s i => ((B s i : M s) : MvPolynomial (Fin k × Fin n) Kf)
-  have hli : ∀ s, LinearIndependent Kf (b s) := fun s =>
-    (B s).linearIndependent.map' (M s).subtype (Submodule.ker_subtype _)
-  have hsp : ∀ s, Submodule.span Kf (Set.range (b s)) = M s := by
-    intro s
-    have h1 : Set.range (b s) = (M s).subtype '' Set.range (B s) := by
-      rw [← Set.range_comp]
-      rfl
-    rw [h1, Submodule.span_image, (B s).span_eq, Submodule.map_subtype_top]
-  obtain ⟨hT, hTs⟩ := Formalism.GradedWeylDivisibility.tensorBasis Kf Kf S k n (fun s => Module.Basis.ofVectorSpaceIndex Kf (M s)) M b hli hsp
-  show Module.finrank Kf (Formalism.GradedWeylDivisibility.tensorLat Kf Kf M) = _
-  rw [← hTs, Module.finrank_eq_nat_card_basis (Module.Basis.span hT), Nat.card_pi]
-  exact Finset.prod_congr rfl fun s _ => (Module.finrank_eq_nat_card_basis (B s)).symm
+  apply Formalism.MainNotions.ColumnSystems.Pf.finrank_tensor <;> assumption
 
 theorem RS.charZeroO {p n' : ℕ} (R : RS p n') : CharZero R.O := by
   obtain ⟨c, hc⟩ := CharP.exists R.O

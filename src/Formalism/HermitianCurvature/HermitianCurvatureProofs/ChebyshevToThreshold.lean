@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.AxiomsFromFamilies
 public import Formalism.HermitianCurvature.StatementJ
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -54,35 +55,7 @@ namespace Formalism.FourierDecayAlt.P.Jx10
 
 theorem pull {α X : Type} [DecidableEq X] (η : α → X) (F : Finset α) (k : X → X → ℂ)
     (h : A5.IsPSD (F.image η) k) : A5.IsPSD F (fun x y => k (η x) (η y)) := by
-  unfold Formalism.FourierDecayAlt.A5.IsPSD at h ⊢
-  intro a
-  show (∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k (η x) (η y)).im = 0 ∧
-    0 ≤ (∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k (η x) (η y)).re
-  set b : X → ℂ := fun u => ∑ z ∈ F.filter (fun z => η z = u), a z with hb
-  have hmaps : ∀ x ∈ F, η x ∈ F.image η := fun x hx => Finset.mem_image_of_mem η hx
-  have rhs : ∀ u v, b u * conj (b v) * k u v =
-      ∑ x ∈ F.filter (fun z => η z = u), ∑ y ∈ F.filter (fun z => η z = v),
-        a x * conj (a y) * k (η x) (η y) := by
-    intro u v
-    simp only [hb]
-
-    rw [map_sum, Finset.sum_mul_sum, Finset.sum_mul]
-    refine Finset.sum_congr rfl (fun x hx => ?_)
-    rw [Finset.sum_mul]
-    refine Finset.sum_congr rfl (fun y hy => ?_)
-    have h1 := (Finset.mem_filter.mp hx).2
-    have h2 := (Finset.mem_filter.mp hy).2
-    rw [h1, h2] <;> ring
-  have key : (∑ x ∈ F, ∑ y ∈ F, a x * conj (a y) * k (η x) (η y)) =
-      ∑ u ∈ F.image η, ∑ v ∈ F.image η, b u * conj (b v) * k u v := by
-    simp_rw [rhs]
-    rw [← Finset.sum_fiberwise_of_maps_to hmaps]
-    refine Finset.sum_congr rfl (fun u _ => ?_)
-    conv_rhs => rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl (fun x _ => ?_)
-    rw [Finset.sum_fiberwise_of_maps_to hmaps]
-  rw [key]
-  exact h b
+  apply Formalism.FourierDecayAlt.P.Jx9.pull <;> assumption
 
 theorem inter_of_module (E : Type) [Field E] [NumberField E] [IsCMField E] (L : Submodule ℤ E)
     (hL : ∀ (a : 𝓞 (maximalRealSubfield E)) (t : E), t ∈ L →

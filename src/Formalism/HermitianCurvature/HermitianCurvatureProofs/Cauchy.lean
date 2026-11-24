@@ -140,7 +140,6 @@ open Complex Metric Set Formalism.FourierDecayAlt.P.Cauchy
 
 theorem cauchy_theta_identity : Formalism.FourierDecayAlt.E.CauchyTheta := by
   intro σ ε hσ hε p u
-  have hσ0 : 0 < σ := by linarith
   set ρ : ℝ := 1 / (4 * σ) with hρdef
   have hρ0 : 0 < ρ := by positivity
   have hρ : ρ ≤ 1 / 16 := by

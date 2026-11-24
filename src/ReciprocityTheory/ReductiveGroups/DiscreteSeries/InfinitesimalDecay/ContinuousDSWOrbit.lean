@@ -66,7 +66,7 @@ theorem inG_rsum {ι : Type*} (s : Finset ι) (r : ι → ℝ) (X : ι → Matri
   | empty => simpa using SmDerA.inG_zero ε
   | insert a s ha ih =>
     rw [Finset.sum_insert ha]
-    exact smc_inG_add (smc_inG_rsmul (hX a (Finset.mem_insert_self a s)) (r a))
+    exact _root_.ReciprocityTheory.ChartRestriction.DS.SmDerA.inG_add (_root_.ReciprocityTheory.ChartRestriction.DS.SmDerA.inG_rsmul (hX a (Finset.mem_insert_self a s)) (r a))
       (ih fun i hi => hX i (Finset.mem_insert_of_mem hi))
 
 theorem dS_rsum (hσ : IsURepOn (UJset ε) σ) {ι : Type*} (s : Finset ι) (r : ι → ℝ)
@@ -156,7 +156,7 @@ theorem finCont_step (hσ : IsURepOn (UJset ε) σ) {z : S7.KG ε → H} (hz : F
   set r : S7.KG ε → (Fin n × Fin n) × Bool → ℝ := fun k p =>
     cond p.2 (Y k p.1.1 p.1.2).re (-(Y k p.1.1 p.1.2).im)
   refine ⟨ι × ((Fin n × Fin n) × Bool), inferInstance, fun q k => d q.1 k * (r k q.2 : ℂ),
-    fun q => dS σ (B q.2) (v q.1), fun q => ?_, fun q => dS_smooth hσ (hB q.2) (hv q.1), fun k => ?_⟩
+    fun q => dS σ (B q.2) (v q.1), fun q => ?_, fun q => _root_.ReciprocityTheory.ChartRestriction.DS.IsSmoothVecU.dS hσ (hB q.2) (hv q.1), fun k => ?_⟩
   · refine (hd q.1).mul (Complex.continuous_ofReal.comp ?_)
     have hent : Continuous fun k => Y k q.2.1.1 q.2.1.2 :=
       (continuous_apply q.2.1.2).comp ((continuous_apply q.2.1.1).comp hYc)

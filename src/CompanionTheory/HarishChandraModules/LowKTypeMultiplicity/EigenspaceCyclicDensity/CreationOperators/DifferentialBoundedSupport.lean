@@ -208,9 +208,6 @@ theorem differential_bounded_support : BdSup := by
       have pi := hpos i
       have pj := hpos j'
       have pk := hpos k
-      have v1 : (i.1.2 : ℕ) = j'.1.1 := congrArg Fin.val t1
-      have v2 : (k.1.1 : ℕ) = i.1.1 := congrArg Fin.val t2
-      have v3 : (k.1.2 : ℕ) = j'.1.2 := congrArg Fin.val t3
       set R := (A.erase k).filter fun i => ¬cpt ε i with hR
       have hjR : j' ∉ R := fun h => h5 (mem_filter.1 h).1
       have hiR : i ∉ R := fun h => h6 (mem_insert_of_mem (mem_filter.1 h).1)

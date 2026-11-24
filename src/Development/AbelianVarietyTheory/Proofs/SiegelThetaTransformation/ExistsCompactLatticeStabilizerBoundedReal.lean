@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompletedLatticeStabilizerCompactOpen
 public import Formalism.LocalToGlobal.BesselHermitianTheta.DefsReal
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsInverseChart
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsCompactAdeleRingModNumberField
@@ -96,54 +97,7 @@ theorem exists_compact_of_entries {F E : Type} [Field F] [Field E] [Algebra F E]
 theorem exists_compact_latHat (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {M : ℕ} (L : Submodule (𝓞 E) (Fin M → E)) (hL : L.FG) :
     ∃ C : Set (Fin M → Af F ⊗[F] E), IsCompact C ∧ ∀ y ∈ latHat F E (L : Set (Fin M → E)), y ∈ C := by
-  haveI : IsModuleTopology (Af F) (Af F ⊗[F] E) := ⟨rfl⟩
-  haveI : ContinuousAdd (Af F ⊗[F] E) := IsModuleTopology.toContinuousAdd (Af F) _
-  haveI : ContinuousSMul (Af F) (Af F ⊗[F] E) := IsModuleTopology.toContinuousSMul _ _
-  have hZ : (L.restrictScalars ℤ).FG := hL.restrictScalars
-  obtain ⟨m, x, hx⟩ := Submodule.fg_iff_exists_fin_generating_family.1 hZ
-  let g : (Fin m → Af F) → Fin M → Af F ⊗[F] E := fun c i => ∑ k, c k ⊗ₜ[F] x k i
-  have hg : Continuous g := by
-    refine continuous_pi fun i => continuous_finsetSum _ fun k _ => ?_
-    have : (fun c : Fin m → Af F => c k ⊗ₜ[F] x k i) = fun c => c k • ((1 : Af F) ⊗ₜ[F] x k i) := by
-      funext c
-      rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
-    rw [this]
-    have hk : Continuous fun c : Fin m → Af F => c k := continuous_apply k
-    have ho : Continuous fun _ : Fin m → Af F => (1 : Af F) ⊗ₜ[F] x k i := continuous_const
-    exact hk.smul ho
-  have hI : IsCompact (intAf F) := GlobalTheory.AdeleCocompact.isCompact_integral F
-  refine ⟨g '' Set.pi Set.univ fun _ => intAf F, (isCompact_univ_pi fun _ => hI).image hg, fun y hy => ?_⟩
-  induction hy using AddSubgroup.closure_induction with
-  | mem y hy =>
-    obtain ⟨a, ha, v, hv, rfl⟩ := hy
-    have hv' : v ∈ Submodule.span ℤ (Set.range x) := by rw [hx]; exact hv
-    obtain ⟨n, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℤ).1 hv'
-    refine ⟨fun k => n k • a, fun k _ w => ?_, ?_⟩
-    · rw [map_zsmul]
-      exact zsmul_mem (ha w) _
-    · funext i
-      simp only [g, Finset.sum_apply, Pi.smul_apply, TensorProduct.tmul_sum, TensorProduct.smul_tmul]
-  | zero =>
-    refine ⟨0, fun k _ w => ?_, ?_⟩
-    · rw [Pi.zero_apply, map_zero]
-      exact zero_mem _
-    · funext i
-      simp [g]
-  | add y z _ _ hy hz =>
-    obtain ⟨c, hc, rfl⟩ := hy
-    obtain ⟨d, hd, rfl⟩ := hz
-    refine ⟨c + d, fun k _ w => ?_, ?_⟩
-    · rw [Pi.add_apply, map_add (f := _)]
-      exact add_mem (hc k trivial w) (hd k trivial w)
-    · funext i
-      simp only [g, Pi.add_apply, TensorProduct.add_tmul, Finset.sum_add_distrib]
-  | neg y _ hy =>
-    obtain ⟨c, hc, rfl⟩ := hy
-    refine ⟨-c, fun k _ w => ?_, ?_⟩
-    · rw [Pi.neg_apply, map_neg]
-      exact neg_mem (hc k trivial w)
-    · funext i
-      simp only [g, Pi.neg_apply, TensorProduct.neg_tmul, Finset.sum_neg_distrib]
+  apply GlobalTheory.Mem.Vol.StabGroup.exists_compact_latHat <;> assumption
 
 theorem exists_compact_entries (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {M : ℕ} (L : Submodule (𝓞 E) (Fin M → E)) (hL : L.FG)
@@ -151,24 +105,7 @@ theorem exists_compact_entries (F E : Type) [Field F] [NumberField F] [Field E] 
     ∃ C : Set (Af F ⊗[F] E), IsCompact C ∧ ∀ A : Matrix (Fin M) (Fin M) (Af F ⊗[F] E),
       (∀ y ∈ latHat F E (L : Set (Fin M → E)), A.mulVec y ∈ latHat F E (L : Set (Fin M → E))) →
       ∀ i j, A i j ∈ C := by
-  haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
-  haveI : IsModuleTopology (Af F) (Af F ⊗[F] E) := ⟨rfl⟩
-  haveI : IsTopologicalRing (Af F ⊗[F] E) := IsModuleTopology.isTopologicalRing (Af F) _
-  obtain ⟨C, hC, hLC⟩ := exists_compact_latHat F E L hL
-  choose d hd hdL using fun j => GlobalTheory.AdLat.OpenLat.exists_denom L hsp (Pi.single j 1)
-  refine ⟨⋃ p : Fin M × Fin M, (fun y : Fin M → Af F ⊗[F] E =>
-      y p.1 * ((1 : Af F) ⊗ₜ[F] ((d p.2 : E)⁻¹))) '' C,
-    isCompact_iUnion fun p => hC.image ((continuous_apply p.1).mul continuous_const), fun A hA i j => ?_⟩
-  have h1 : (1 : Af F) ∈ intAf F := fun w => by rw [map_one]; exact one_mem _
-  have hy : (fun k => (1 : Af F) ⊗ₜ[F] (d j • (Pi.single j 1 : Fin M → E)) k) ∈
-      latHat F E (L : Set (Fin M → E)) := AddSubgroup.subset_closure ⟨1, h1, _, hdL j, rfl⟩
-  refine Set.mem_iUnion.2 ⟨(i, j), _, hLC _ (hA _ hy), ?_⟩
-  have hd0 : (d j : E) ≠ 0 := Nat.cast_ne_zero.2 (hd j).ne'
-  simp only [Matrix.mulVec, dotProduct]
-  rw [Finset.sum_eq_single j (fun k _ hk => by simp [hk]) (by simp), mul_assoc,
-    Algebra.TensorProduct.tmul_mul_tmul]
-  simp only [Pi.smul_apply, Pi.single_eq_same, nsmul_eq_mul, mul_one, mul_inv_cancel₀ hd0]
-  rw [← Algebra.TensorProduct.one_def, mul_one]
+  apply GlobalTheory.Mem.Vol.StabGroup.exists_compact_entries <;> assumption
 
 theorem det_gram_ne_zero {E : Type} [Field E] [NumberField E] [StarRing E] (S : Formalism.BasicNotions.HSpace E) :
     S.gram.det ≠ 0 := by

@@ -46,6 +46,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.Columns.ChainInstS
 
 @[expose] public section
 
@@ -128,24 +129,6 @@ theorem ocbPhiGS_supp (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (
     exact e
   · exact absurd rfl h
 
-private theorem redP_mul_of_intAt_of_intAt {F : Type} [Field F] [NumberField F] {Q : HeightOneSpectrum (𝓞 F)} {a b : F}
-    (ha : IntAt Q a) (hb : IntAt Q b) : redP Q (a * b) = redP Q a * redP Q b := by
-  have h := redP_prod (P := Q) (Finset.univ : Finset (Fin 2)) ![a, b] (by
-    intro i _
-    fin_cases i
-    · exact ha
-    · exact hb)
-  simpa [Fin.prod_univ_two] using h
-
-private theorem redP_add_of_intAt {F : Type} [Field F] [NumberField F] {Q : HeightOneSpectrum (𝓞 F)} {a b : F}
-    (ha : IntAt Q a) (hb : IntAt Q b) : redP Q (a + b) = redP Q a + redP Q b := by
-  have h := redP_sum (P := Q) (Finset.univ : Finset (Fin 2)) ![a, b] (by
-    intro i _
-    fin_cases i
-    · exact ha
-    · exact hb)
-  simpa [Fin.sum_univ_two] using h
-
 theorem ocbPhiGS_red (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) : 𝓞 E) ∉ P.asIdeal ^ 2) (σ : K →+* ℂ)
     (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) {k₀ m t j n' c' c n : ℕ}
     (hr : ocbRanks k₀ m t j n' c n) (hc' : c' = c + 1) (y : HomE E (n' + c') (n + c))
@@ -167,12 +150,12 @@ theorem ocbPhiGS_red (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) 
         redP P (LocE.entB q k₀ (c + 1) n' c n (fun i => i + 1) (fun i => i + 1) y p p') := by
     intro p p' hp hp'
     rw [ocbBEnt_entB]
-    exact hred _ _ (ocbPhi_fIdx_lt hk hp) (ocbPhi_fIdx_lt hk' hp')
+    exact hred _ _ (_root_.Formalism.L2.Col.symFIdx_lt hk hp) (_root_.Formalism.L2.Col.symFIdx_lt hk' hp')
   have hI : ∀ p p', p < n + c → p' < n' + (c + 1) →
       IntAt P (LocE.entB q k₀ (c + 1) n' c n (fun i => i + 1) (fun i => i + 1) y p p') := by
     intro p p' hp hp'
     rw [ocbBEnt_entB]
-    exact hint _ _ (ocbPhi_fIdx_lt hk hp) (ocbPhi_fIdx_lt hk' hp')
+    exact hint _ _ (_root_.Formalism.L2.Col.symFIdx_lt hk hp) (_root_.Formalism.L2.Col.symFIdx_lt hk' hp')
   have hz : ∀ x : E, IntAt P x → (redP P x = 0 ↔ IntAt P (x / (q : E))) := by
     intro x hx
     constructor
@@ -181,7 +164,7 @@ theorem ocbPhiGS_red (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) 
     · intro hb
       have e : x = (q : E) * (x / (q : E)) := by
         field_simp
-      rw [e, redP_mul_of_intAt_of_intAt ciIntAt_q hb, redP_natCast_eq_zero hq, zero_mul]
+      rw [e, _root_.Formalism.L2.Col.reduction_mul ciIntAt_q hb, redP_natCast_eq_zero hq, zero_mul]
   unfold LocE.PhiGS ocbPhiS
   dsimp only
   split_ifs with h1 h2 h2
@@ -221,7 +204,7 @@ theorem ocbPhiGS_red (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) 
         intro i hi
         have := Finset.mem_range.mp hi
         exact hI _ _ (by omega) (by omega)
-      rw [redP_add_of_intAt (ciIntAt_sum _ _ i1) (ciIntAt_sum _ _ i2), redP_sum _ _ i1, redP_sum _ _ i2, e1, e2,
+      rw [_root_.Formalism.L2.Col.reduction_add (ciIntAt_sum _ _ i1) (ciIntAt_sum _ _ i2), redP_sum _ _ i1, redP_sum _ _ i2, e1, e2,
         ocbPhi_sum_split k₀ (k₀ + m - 1) hk1 (by omega), h0, add_zero]
     have hB : ∀ i ∈ Finset.range (j - 1),
         redP P (Matrix.of fun (s s' : Fin t) =>

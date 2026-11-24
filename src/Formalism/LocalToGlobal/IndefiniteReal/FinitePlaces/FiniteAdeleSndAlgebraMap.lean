@@ -72,16 +72,10 @@ theorem epv_self (v : HeightOneSpectrum (𝓞 F)) : (epv v).2 v = 1 := by
   classical
   first
   | exact Pi.single_eq_same v (1 : v.adicCompletion F)
-  | (simp [epv, pairA, single]; done)
-  | (simp [epv, pairA, single]; convert Pi.single_eq_same v (1 : v.adicCompletion F); done)
-  | (simp [epv, pairA, single]; rfl)
 theorem epv_ne {v w : HeightOneSpectrum (𝓞 F)} (h : w ≠ v) : (epv v).2 w = 0 := by
   classical
   first
   | exact Pi.single_eq_of_ne h (1 : v.adicCompletion F)
-  | (simp [epv, pairA, single, h]; done)
-  | (simp [epv, pairA, single]; convert Pi.single_eq_of_ne h (1 : v.adicCompletion F); done)
-  | (simp [epv, pairA, single]; rfl)
 
 theorem epv_sq (v : HeightOneSpectrum (𝓞 F)) : epv v * epv v = epv v := by
   refine Prod.ext ?_ ?_
@@ -113,7 +107,6 @@ theorem exists_splitIdem' (v : HeightOneSpectrum (𝓞 D.host.F)) (s : v.adicCom
     intro a x
     first
     | rfl
-    | simp [cA]
   have h2F : (2 : v.adicCompletion D.host.F) ≠ 0 := by
     have h := (algebraMap D.host.F (v.adicCompletion D.host.F)).injective.ne (two_ne_zero (α := D.host.F))
     rw [map_ofNat, map_zero] at h
@@ -132,17 +125,11 @@ theorem exists_splitIdem' (v : HeightOneSpectrum (𝓞 D.host.F)) (s : v.adicCom
     intro t
     first
     | exact Pi.single_eq_same v t
-    | (simp [single]; done)
-    | (simp [single]; convert Pi.single_eq_same v t; done)
-    | (simp [single]; rfl)
   have hsw : ∀ (t : v.adicCompletion D.host.F) (w : HeightOneSpectrum (𝓞 D.host.F)), w ≠ v →
       (single v t) w = 0 := by
     intro t w hw
     first
     | exact Pi.single_eq_of_ne hw t
-    | (simp [single, hw]; done)
-    | (simp [single]; convert Pi.single_eq_of_ne hw t; done)
-    | (simp [single]; rfl)
   have hAF : ∀ x y : AF D.host.F, x.1 = y.1 → (∀ w, x.2 w = y.2 w) → x = y := by
     intro x y h1 h2
     refine Prod.ext h1 ?_

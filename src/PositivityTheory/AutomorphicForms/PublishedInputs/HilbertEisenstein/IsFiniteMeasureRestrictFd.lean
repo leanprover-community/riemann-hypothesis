@@ -61,7 +61,7 @@ theorem integral_count_Xi (f : Xi F → ℂ) : ∫ ξ, f ξ ∂(Measure.count : 
       rw [integrable_count_iff]
       exact summable_norm_iff.mpr hf
     rw [integral_countable hi]
-    simp [count_real_singleton]
+    simp
   · rw [tsum_eq_zero_of_not_summable hf, integral_undef]
     intro hi
     rw [integrable_count_iff] at hi

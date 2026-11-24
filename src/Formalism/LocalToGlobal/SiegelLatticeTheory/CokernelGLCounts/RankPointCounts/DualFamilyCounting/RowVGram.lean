@@ -44,6 +44,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.BesselFrame
 
 @[expose] public section
 
@@ -142,9 +143,9 @@ theorem rowV_gram (v : InfinitePlace X.B.I.F) (x y : (VS D).V) (hy : InW X y) :
   rw [← hJ_pV, decompW X u v y hy, PI.SchurPlaces.hJ_add_r, PI.SchurPlaces.hJ_sum_r, PI.SchurPlaces.hJ_smul_r]
   simp only [rowV_w, rowV_last_eq_hJ]
   have e1 : ∀ c, hJ (X.B.I.ε v) (X.wfr u v c) (pV X v y) = star (hJ (X.B.I.ε v) (pV X v y) (X.wfr u v c)) :=
-    fun c => hJ_conj' _ _ _
+    fun c => _root_.Formalism.L2.SG.Pf.WFL.hJ_swap _ _ _
   have e2 : hJ (X.B.I.ε v) (Formalism.L2.SG.Pf.LsNc5.zV X u v) (pV X v y) =
-      star (hJ (X.B.I.ε v) (pV X v y) (Formalism.L2.SG.Pf.LsNc5.zV X u v)) := hJ_conj' _ _ _
+      star (hJ (X.B.I.ε v) (pV X v y) (Formalism.L2.SG.Pf.LsNc5.zV X u v)) := _root_.Formalism.L2.SG.Pf.WFL.hJ_swap _ _ _
   simp only [e1, e2]
   push_cast
   rw [sub_eq_add_neg]
@@ -158,9 +159,9 @@ theorem rowV_inj (x : (VS D).V) (hx : InW X x) (h : rowV X u x = 0) : x = 0 := b
     rw [decompW X u v x hx]
     have h1 : ∀ c, hJ (X.B.I.ε v) (X.wfr u v c) (pV X v x) = 0 := by
       intro c
-      rw [hJ_conj', ← rowV_w, h]; simp
+      rw [_root_.Formalism.L2.SG.Pf.WFL.hJ_swap, ← rowV_w, h]; simp
     have h2 : hJ (X.B.I.ε v) (Formalism.L2.SG.Pf.LsNc5.zV X u v) (pV X v x) = 0 := by
-      rw [hJ_conj', ← rowV_last_eq_hJ, h]; simp
+      rw [_root_.Formalism.L2.SG.Pf.WFL.hJ_swap, ← rowV_last_eq_hJ, h]; simp
     simp [h1, h2]
   refine (VS D).nondeg.1 x fun y => ?_
   apply (embS D (X.pl v)).injective

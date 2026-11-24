@@ -99,7 +99,7 @@ theorem inner_wC (j : Fin D.R.m) {v : InfinitePlace D.what₂.LL} (hv : v ≠ A3
     Real.mul_self_sqrt (RealDat.nP_pos (F := F.lv2) b).le, hs]
   generalize twAt D.what₂.embLL v = s at ht
   subst ht
-  simp only [cj, RealDat.nP, Bool.false_eq_true, if_false]
+  simp only [cj, RealDat.nP]
   simp only [cond_false, RingHom.id_apply, Complex.ofReal_inv, Complex.ofReal_natCast]
 
 theorem tC_cpt (cr : Crd A3.fam3.amb3 F.fc) (j : Fin D.R.m) (t : T0)

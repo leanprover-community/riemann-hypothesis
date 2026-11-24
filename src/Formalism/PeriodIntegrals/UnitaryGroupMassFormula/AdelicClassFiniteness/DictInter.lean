@@ -65,7 +65,6 @@ def tau (w : E) : E ⊗[F] Af F →ₗ[F] Af F :=
 lemma tau_tmul (w e : E) (a : Af F) : tau w (e ⊗ₜ[F] a) = Algebra.trace F E (w * e) • a := by
   first
     | simp [tau]
-    | rfl
 
 
 variable (F E) in
@@ -115,7 +114,6 @@ lemma of_algebraMap_mem_intAd (f : F) (h : algebraMap F (Af F) f ∈ Formalism.U
   have hv : Valued.v ((f : F) : v.adicCompletion F) ≤ 1 := h v
   first
     | rwa [IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation'] at hv
-    | rwa [IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation] at hv
 
 def tSet (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] :
     Set (E ⊗[F] Af F) :=
@@ -204,7 +202,6 @@ theorem dual_intersection : DInter := by
   have hd : FractionalIdeal.dual (𝓞 F) F (1 : FractionalIdeal (𝓞 E)⁰ E) ≠ 0 := by
     first
       | exact FractionalIdeal.dual_ne_zero (𝓞 F) F h1
-      | exact FractionalIdeal.dual_ne_zero h1
   have hmem : e ∈ FractionalIdeal.dual (𝓞 F) F
       (FractionalIdeal.dual (𝓞 F) F (1 : FractionalIdeal (𝓞 E)⁰ E)) := by
     rw [FractionalIdeal.mem_dual hd]

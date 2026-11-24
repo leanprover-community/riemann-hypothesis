@@ -200,7 +200,7 @@ theorem adL_comm_apply {lev : Fin n → ℕ} (hm : Monotone lev) {x : Cn n V} (h
   rw [h]
   have e : ∀ a b : Fin n, (adL a b x : Cn n V) = ∑ i : Pos n, ∑ l : Pos n, adC a b i l • cre l (ann i x) := by
     intro a b
-    simp [adL, LinearMap.sum_apply, Module.End.mul_apply]
+    simp [adL, LinearMap.sum_apply]
   have t : ∀ i l : Pos n,
       (∑ k : Pos n, (adC r v i k * adC p q k l - adC p q i k * adC r v k l)) • cre l (ann i x) =
       ((if q = r then adC p v i l else 0) - (if v = p then adC r q i l else 0)) • cre l (ann i x) := by

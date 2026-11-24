@@ -275,7 +275,7 @@ theorem term_laws : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V V₀ W : HS
     have hterm : (fun p => term ψ d W vS (om p Ψ) x) = fun p => ∫ a in vS.𝓕,
         ψ (symplOH V W (d.extY W a) (d.extX W (rat x))) * om p Ψ (d.extY W a + d.extX W (rat x) + d.ext0 W 0) ∂vS.μ := by
       funext p
-      simp only [term, _root_.I195MixedCoordinates_071817f88d1fbc2886640714.source]
+      simp only [term]
       exact integral_congr_ae (Filter.Eventually.of_forall fun a => d.integrandS_eq _ _ _ _)
     rw [hterm]
     refine continuous_periodic_integral vS.covol

@@ -73,7 +73,6 @@ theorem valCrit_proj {R : Type} [CommRing R] {X : Scheme.{0}} (f : X ⟶ Sp R) (
   haveI : ValuationRing V := by
     first
       | exact inferInstance
-      | exact ValuationRing.of_isDiscreteValuationRing V
   let S : ValuativeCommSq f := ⟨V, K, y, spMap b, ⟨hy⟩⟩
   obtain ⟨l⟩ := (hE S).exists_lift
   exact ⟨l.l, l.fac_right, l.fac_left⟩
@@ -100,7 +99,6 @@ theorem exists_family {D : Datum H} {l : Level H} (X0 : Moduli D l) (hN : ∀ l'
     | (beta_reduce
        rw [dite_eq_left rfl]
        rfl)
-    | simp
 
 end Proofs
 

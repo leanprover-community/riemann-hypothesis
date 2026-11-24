@@ -1,7 +1,8 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BezoutEisensteinDerivativePrimePowStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BezoutEisensteinDerivativePrimePow
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HenselianLocalRingHens
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -53,21 +54,7 @@ namespace GlobalTheory.BSP
 theorem eval_derivative_scaleRoots_mul {R : Type*} [CommRing R] (P : Polynomial R) (s x : R) :
     (Polynomial.derivative (P.scaleRoots s)).eval (s * x) =
       s ^ (P.natDegree - 1) * (Polynomial.derivative P).eval x := by
-  have h1 : (Polynomial.derivative (P.scaleRoots s)).natDegree < P.natDegree - 1 + 1 := by
-    have := Polynomial.natDegree_derivative_le (P.scaleRoots s)
-    rw [Polynomial.natDegree_scaleRoots] at this
-    omega
-  have h2 : (Polynomial.derivative P).natDegree < P.natDegree - 1 + 1 := by
-    have := Polynomial.natDegree_derivative_le P
-    omega
-  rw [Polynomial.eval_eq_sum_range' h1, Polynomial.eval_eq_sum_range' h2, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i hi => ?_
-  have hi' : i ≤ P.natDegree - 1 := Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)
-  rw [Polynomial.coeff_derivative, Polynomial.coeff_derivative, Polynomial.coeff_scaleRoots]
-  obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hi'
-  have h3 : P.natDegree - (i + 1) = k := by omega
-  rw [h3, hk]
-  ring
+  apply GlobalTheory.Henselisation.eval_derivative_scaleRoots_mul <;> assumption
 
 theorem exists_approx_root_scaleRoots {R : Type*} [CommRing R] (P : Polynomial R) (hP : 0 < P.natDegree)
     (t x b : R) (c : ℕ) (hb : P.eval x ∣ b * (Polynomial.derivative P).eval x - t ^ c) (n : ℕ) :
@@ -111,7 +98,7 @@ theorem BK.exists_approx_root : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk 
     ∃ (m : ℕ) (q : bk.S), bk.E ∣ q - (l : bk.S) ^ m * X ∧
       bk.E ^ n ∣ Polynomial.eval₂ PowerSeries.C q (bk.Ep.scaleRoots ((l : Wq l bk.a) ^ m)) := by
   intro l _ K bk n
-  obtain ⟨c, a, b, hab⟩ := GlobalTheory.T.bezout_eisenstein_derivative_prime_pow l K bk
+  obtain ⟨c, a, b, hab⟩ := _root_.GlobalTheory.BSP.bezout_Ep_derivative l K bk
   have hcoe : ∀ p : Polynomial (Wq l bk.a),
       (p.map (PowerSeries.C : Wq l bk.a →+* bk.S)).eval (X : bk.S) = (p : bk.S) := fun p => by
     rw [Polynomial.eval_map, Polynomial.eval₂_C_X_eq_coe]

@@ -97,6 +97,26 @@ private theorem localization_comp_eq {R S F : Type*}
 
 namespace ACris
 
+section IotaBOfIsUnit
+
+variable {F : Type*} [NontriviallyNormedField F] [IsUltrametricDist F] {p : ℕ} [hp : Fact p.Prime]
+  [IsPerfectoidField F p] [CharZero F] {ε : PreTilt (normInteger F) p} (hε : PreTilt.untilt ε = 1)
+
+/-- The extension of `iotaPlus` to `BCris hε`, for a general perfectoid field `F` in which the
+image of `periodT hε` is a unit; `iotaB` is the case `F = ℂ_[p]`.
+
+`iotaB` is defined through this map so that its value contains no instance proof specialised to
+`ℂ_[p]`. Lean moves such proofs into auxiliary theorems in the value of a definition but leaves
+them in its type, and the kernel is slow to identify the two forms of the ring structure on
+`BCris hε`. -/
+def iotaBOfIsUnit (h : IsUnit (((algebraMap (BDeRhamPlus (normInteger F) p)
+    (BDeRham (normInteger F) p)).comp (iotaPlus F p))
+      (algebraMap (ACris F p) (BCrisPlus F p) (periodT hε)))) :
+    BCris hε →+* BDeRham (normInteger F) p :=
+  Localization.awayLift _ _ h
+
+end IotaBOfIsUnit
+
 variable {p : ℕ} [hp : Fact p.Prime]
 
 local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
@@ -116,8 +136,7 @@ theorem isUnit_iotaPlus_periodT :
       (fontaineT_ne_zero hε hζ))
 
 def iotaB : BCris hε →+* 𝔹dR :=
-  Localization.awayLift ((algebraMap 𝔹 𝔹dR).comp (iotaPlus ℂ_[p] p))
-    (algebraMap (ACris ℂ_[p] p) (BCrisPlus ℂ_[p] p) (periodT hε)) (isUnit_iotaPlus_periodT hε hζ)
+  iotaBOfIsUnit hε (isUnit_iotaPlus_periodT hε hζ)
 
 theorem iotaB_algebraMap (x : BCrisPlus ℂ_[p] p) :
     iotaB hε hζ (algebraMap (BCrisPlus ℂ_[p] p) (BCris hε) x) =

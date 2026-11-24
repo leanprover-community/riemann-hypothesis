@@ -230,7 +230,6 @@ theorem cca_contDiffOn_nat [FiniteDimensional ℂ X] [CompleteSpace E] {U : Set 
     rw [Nat.cast_succ, contDiffOn_succ_iff_fderiv_of_isOpen hU]
     first
       | exact ⟨hF, fun h => absurd h (by simp), hk⟩
-      | exact ⟨hF, hk⟩
 
 theorem cca_contDiffOn [FiniteDimensional ℂ X] [CompleteSpace E] {F : X → E} {U : Set X}
     (hU : IsOpen U) (hF : DifferentiableOn ℂ F U) : ContDiffOn ℂ ∞ F U := contDiffOn_infty.2 fun k => cca_contDiffOn_nat hU k hF

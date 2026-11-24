@@ -143,7 +143,7 @@ theorem prod_ofFn_apply_highestWeight (μ : Fin n → ℂ) (v : M) (x : ℂ) (hu
       by_cases hall : ∀ j : Fin p, (r j.castSucc : ℕ) = j
       · rw [if_pos hall, if_pos (hiff.2 hall), smul_smul, Fin.prod_univ_castSucc]
         congr 1
-        simp only [Fin.coe_castSucc, Fin.val_last, hcl]
+        simp only [Fin.coe_castSucc, Fin.val_last]
         ring
       · rw [if_neg hall, if_neg (fun h => hall (hiff.1 h)), smul_zero]
 

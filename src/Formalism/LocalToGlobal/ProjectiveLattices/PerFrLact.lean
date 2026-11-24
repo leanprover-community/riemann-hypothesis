@@ -70,7 +70,7 @@ theorem hermC_eq (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (u w : Fin r 
 theorem star_mulVec' (A : Matrix (Fin r) (Fin r) ℂ) (w : Fin r → ℂ) :
     star (A *ᵥ w) = (A.map (starRingEnd ℂ)) *ᵥ star w := by
   funext a
-  simp [Matrix.mulVec, dotProduct, star_sum, mul_comm]
+  simp [Matrix.mulVec, dotProduct, star_sum]
 
 end Equiv
 

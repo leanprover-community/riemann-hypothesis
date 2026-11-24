@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasDerivAtLogCosh
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsBlockOrd
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.NotTrivialAndTwist
@@ -59,33 +60,7 @@ variable {p q : ℕ}
 
 theorem sq_expt (T : GrpData p q) {X : Mat p q} (hX : X ∈ upq p q) :
     ((T.sq (T.expt X) : ℂˣ) : ℂ) = Complex.exp (X.trace / 2) := by
-  set c : ℂ := X.trace / 2 with hc
-  set f : ℝ → ℂ := fun t => ((T.sq (T.expt (t • X)) : ℂˣ) : ℂ) with hf
-  have hd : ∀ t, HasDerivAt f (f t * c) t := by
-    intro t
-    have h0 : HasDerivAt f c 0 := Cover.hasDerivAt_sq (T := T) hX
-    have h1 : HasDerivAt (fun s : ℝ => f (s - t)) c t :=
-      HasDerivAt.comp_sub_const t t (f := f) (f' := c) (by rw [sub_self]; exact h0)
-    have h2 : f = fun s => f t * f (s - t) := by
-      funext s
-      simp only [hf]
-      rw [← Units.val_mul, ← map_mul, ← T.expt_add X hX, add_sub_cancel]
-    have h3 := h1.const_mul (f t)
-    rw [← h2] at h3
-    exact h3
-  have hg : ∀ t : ℝ, HasDerivAt (fun t : ℝ => Complex.exp (-(c * t)) * f t) 0 t := by
-    intro t
-    have h1 : HasDerivAt (fun t : ℝ => Complex.exp (-(c * t))) (Complex.exp (-(c * t)) * (-c)) t := by
-      have : HasDerivAt (fun t : ℝ => -(c * (t : ℂ))) (-c) t := by
-        simpa using ((Complex.ofRealCLM.hasDerivAt (x := t)).const_mul c).fun_neg
-      exact this.cexp
-    exact (h1.fun_mul (hd t)).congr_deriv (by ring)
-  have h := is_const_of_deriv_eq_zero (fun t => (hg t).differentiableAt) (fun t => (hg t).deriv) 1 0
-  simp only [hf, one_smul, zero_smul, T.expt_zero, map_one, Complex.ofReal_one, mul_one, Complex.ofReal_zero, mul_zero,
-    neg_zero, Complex.exp_zero, Units.val_one] at h
-  calc _ = Complex.exp c * (Complex.exp (-c) * ((T.sq (T.expt X) : ℂˣ) : ℂ)) := by
-        rw [← mul_assoc, ← Complex.exp_add, add_neg_cancel, Complex.exp_zero, one_mul]
-    _ = _ := by rw [h, mul_one]
+  apply GlobalTheory.FockDecay.sq_expt <;> assumption
 
 theorem exists_expt_ker (hn : 1 ≤ p + q) (T : GrpData p q) :
     ∃ Z ∈ upq p q, T.cov (T.expt Z) = 1 ∧ T.sq (T.expt Z) = -1 := by

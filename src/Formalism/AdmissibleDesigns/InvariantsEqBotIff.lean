@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -136,27 +137,7 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
 include he
 
 theorem isCrys_congr (h : IsCrys PD ρ) : IsCrys PD ρ' := by
-  let E : V ⊗[Qp] B ≃ₗ[LL] V' ⊗[Qp] B := AlgebraTensorModule.congr e (LinearEquiv.refl Qp B)
-  have hE : ∀ g x, E (actVB PD ρ g x) = actVB PD ρ' g (E x) := by
-    intro g x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a b => simp [E, actVB, he]
-    | add a b ha hb => rw [map_add (f := _), map_add (f := _), ha, hb, map_add (f := _), map_add (f := _)]
-  have hD : Dcris PD ρ = (Dcris PD ρ').comap (E : V ⊗[Qp] B →ₗ[LL] V' ⊗[Qp] B) := by
-    ext x
-    simp only [Dcris, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply,
-      LinearMap.id_apply, Submodule.mem_comap, sub_eq_zero]
-    constructor
-    · intro hx g
-      rw [LinearEquiv.coe_coe, ← hE, hx g]
-    · intro hx g
-      apply E.injective
-      rw [hE]
-      exact hx g
-  unfold IsCrys at h ⊢
-  rw [← e.finrank_eq, ← h, hD]
-  exact (E.ofSubmodule' (Dcris PD ρ')).finrank_eq.symm
+  apply (config := { allowSynthFailures := true }) Formalism.MainNotions.LiftingTheory.gen_isCrys_congr <;> assumption
 
 omit he in
 theorem filV_map_tmul (a : ℤ) (y : V ⊗[Qp] ↥((PD.Fil a).restrictScalars Qp)) :

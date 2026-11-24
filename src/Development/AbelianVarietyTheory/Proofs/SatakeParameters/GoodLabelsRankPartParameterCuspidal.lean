@@ -51,6 +51,7 @@ import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import ReciprocityTheory.Automorphisms.PlaceA
+import Formalism.SharpRestriction.LevelLetterCocycles.ResidualIrreducibleOfTheoremThreePrime
 
 @[expose] public section
 
@@ -64,19 +65,7 @@ namespace GlobalTheory.GoodCuspPoint
 theorem param_parts_pos_rank (D : D7) (i : D.nd.Loc) (x : D.nd.X i) (Sig : List (Formalism.BasicNotions.Part D.naut.CG))
     (hx : HasParamX D.nd D.naut i x Sig) :
     (∀ p ∈ Sig, 1 ≤ p.a ∧ 1 ≤ p.d) ∧ rankIso D.nd D.naut Sig = D.R.r := by
-  obtain ⟨P, -, hBC⟩ := hx
-  refine ⟨fun p hp => ?_, ?_⟩
-  · have hm : (⟨p.a, D.naut.tw p.π D.naut.etaTinv, p.d⟩ : Formalism.BasicNotions.Part D.naut.CG) ∈
-        twistIso D.nd D.naut (Sig ++ [muPart D.nd D.naut i]) D.naut.etaTinv :=
-      List.mem_map.2 ⟨p, List.mem_append_left _ hp, rfl⟩
-    exact ⟨(hBC.1 _ hm).1, (hBC.1 _ hm).2.1⟩
-  · have h := hBC.2.2.1
-    have e : rankIso D.nd D.naut (twistIso D.nd D.naut (Sig ++ [muPart D.nd D.naut i]) D.naut.etaTinv) =
-        rankIso D.nd D.naut Sig + D.R.t := by
-      simp [rankIso, twistIso, muPart, List.map_map, Function.comp_def]
-    rw [e] at h
-    have : D.R.nV = D.R.r + D.R.t := rfl
-    omega
+  apply _root_.Formalism.MainNotions.AdmissibleThreePrime.parts_of <;> assumption
 
 theorem cuspidal_of_good_labels (D : D7) (hT : Formalism.MainNotions.SumRepresentations.tieLab D) (i : D.nd.Loc) (x : D.nd.X i)
     (Sig : List (Formalism.BasicNotions.Part D.naut.CG)) (hx : HasParamX D.nd D.naut i x Sig)

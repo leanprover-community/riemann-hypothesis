@@ -86,7 +86,7 @@ theorem cM_one : cM (1 : Matrix (Fin r) (Fin r) ℂ) = 1 := by
   ext i j
   by_cases h : i = j
   · subst h; simp [cM]
-  · simp [cM, Matrix.one_apply, h]
+  · simp [cM, h]
 
 theorem unitary_core (g : Matrix (Fin r) (Fin r) ℂ) (F : Matrix (Fin r) (Fin ρ) ℂ)
     (β : Matrix (Fin ρ) (Fin ρ) ℂ) (hg : (cM g)ᵀ = g) (hiso : Fᵀ * g * cM F = 0)
@@ -101,7 +101,7 @@ theorem unitary_core (g : Matrix (Fin r) (Fin r) ℂ) (F : Matrix (Fin r) (Fin �
   simp only [Matrix.transpose_add, Matrix.transpose_one, Matrix.transpose_mul, Matrix.transpose_transpose,
     cM_add, cM_one, cM_mul, cM_transpose, cM_cM, hg', hsk]
   simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one, Matrix.mul_assoc,
-    Matrix.mul_neg, Matrix.neg_mul, key, neg_zero, Matrix.mul_zero, add_zero, neg_neg]
+    Matrix.mul_neg, Matrix.neg_mul, key, Matrix.mul_zero, add_zero]
   abel
 
 theorem det_ne_core (g : Matrix (Fin r) (Fin r) ℂ) (F : Matrix (Fin r) (Fin ρ) ℂ)
@@ -115,8 +115,8 @@ theorem det_ne_core (g : Matrix (Fin r) (Fin r) ℂ) (F : Matrix (Fin r) (Fin ρ
     intro X
     rw [← Matrix.mul_assoc, hT, Matrix.zero_mul]
   have hinv : (1 + F * β * H) * (1 - F * β * H) = 1 := by
-    simp only [add_mul, mul_sub, one_mul, mul_one, Matrix.mul_assoc, key, Matrix.mul_zero, sub_zero]
-    first | abel | skip
+    simp only [add_mul, mul_sub, one_mul, mul_one, Matrix.mul_assoc, key, Matrix.mul_zero]
+    first | abel
   intro h0
   have := congrArg Matrix.det hinv
   rw [Matrix.det_mul, h0, zero_mul, Matrix.det_one] at this

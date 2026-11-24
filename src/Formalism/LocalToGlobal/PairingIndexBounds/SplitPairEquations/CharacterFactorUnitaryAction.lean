@@ -123,7 +123,7 @@ theorem character_factor_unitary_action (χ : TaylorLogMetric.IdE D → ℂ) (h�
   rw [hS N (StandardLatticesGL3.stdL D N) L γ hN (sd0 N) h1, hS N' (StandardLatticesGL3.stdL D N') L' γ' hN' (sd0 N') h2,
     hχ.1 _ _ (hU ⟨_, u1⟩) (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.relative_determinant_norm_one D N _ _ hN (sd0 N) h1),
     hχ.1 _ _ (hU ⟨_, u2⟩) (Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.relative_determinant_norm_one D N' _ _ hN' (sd0 N') h2), c1, c2, s1]
-  simp only [Finset.prod_inv_distrib, mul_zpow, zpow_neg, zpow_natCast, inv_pow]
+  simp only [Finset.prod_inv_distrib, zpow_neg, zpow_natCast, inv_pow]
   ring_nf
   simp only [inv_inv]
 

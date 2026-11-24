@@ -317,7 +317,7 @@ lemma coeff_one_gLog [CharZero K] {τ : Type} [DecidableEq τ] {l d : ℕ} (hl :
     have := hl.two_le
     nlinarith
   rw [Finsupp.degree_single, Finset.sum_range_succ, Finset.sum_range_one]
-  simp [Finsupp.single_eq_single_iff, hl1, Ne.symm hl1, hl.one_lt.ne']
+  simp [Finsupp.single_eq_single_iff, Ne.symm hl1]
 
 lemma isIdMod2_letLog [CharZero K] {l d : ℕ} [NeZero d] (hl : l.Prime) :
     Formalism.FG.IsIdMod2 (letLog (K := K) (d := d) l) := by
@@ -492,9 +492,9 @@ lemma mXY_shift (hd : Even d) (σ : K →+* K) {om oms : ι → K}
   unfold mXY
   by_cases h : s.val % 2 = 0
   · have h' : (s - 2).val % 2 = 0 := by omega
-    cases b <;> simp [h, h', key _ (hfix r).1, key _ (hfix r).2]
+    cases b <;> simp [h, h', key _ (hfix r).1]
   · have h' : ¬ (s - 2).val % 2 = 0 := by omega
-    cases b <;> simp [h, h', key _ (hfix r).1, key _ (hfix r).2]
+    cases b <;> simp [h, h', key _ (hfix r).2]
 
 lemma zXY_shift [CharZero K] [Fintype ι] {l : ℕ} (hl : l.Prime) (hd : Even d) (σ : K →+* K)
     {om oms : ι → K} (hfix : ∀ r, σ^[d] (om r) = om r ∧ σ^[d] (oms r) = oms r) (s : ZMod d) :
@@ -578,7 +578,7 @@ theorem BMinus1_of' (hE : ExpSpec) : BMinus1 := by
     (letter_shift K l d σ hl).2.1
   have hZS := shiftType_zXY hl hd hball hO
   have hid := isIdMod2_letLog (K := K) (d := d) hl
-  obtain ⟨T0, hT00, hT0I, hT0s⟩ := Formalism.FG.funEqHomV K l (l ^ 2) hq (σ.comp σ) hset (ZMod d)
+  obtain ⟨T0, hT00, hT0I, hT0s⟩ := _root_.Formalism.FG.functional_equation_hom_vector K l (l ^ 2) hq (σ.comp σ) hset (ZMod d)
     (sM K d) (by intro j k; unfold sM; split_ifs <;> simp) (letLog l) hid
     (funEq_of_shift hq σ hLS) (Bool × ι) (zXY l σ om oms) (cc_zXY hl2 σ om oms)
     (funEq_of_shift hq σ hZS)

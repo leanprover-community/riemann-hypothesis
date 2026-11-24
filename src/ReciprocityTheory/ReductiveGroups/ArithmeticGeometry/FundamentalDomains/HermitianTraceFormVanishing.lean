@@ -170,10 +170,6 @@ lemma eq_zero_of_trace (a : E) (h : ∀ β : 𝓞 E, Algebra.trace ℚ E (cc (β
   · exact hd h3
   · exact hy (by exact_mod_cast h3)
 
-theorem exists_smul_mem {R F X : Type*} [CommRing R] [IsDomain R] [Field F] [Algebra R F]
-    [IsFractionRing R F] [AddCommGroup X] [Module F X] [Module R X] [IsScalarTower R F X]
-    (S : Submodule R X) {x : X}
-    (hx : x ∈ Submodule.span F (S : Set X)) : ∃ d : R, d ≠ 0 ∧ d • x ∈ S := by
-  exact Bl.general_b_fact_alt_form.goal1 S hx
+alias exists_smul_mem := _root_.Bl.general_b_fact_alt_form.goal1
 
 end ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing

@@ -74,7 +74,7 @@ theorem pderiv_comm' (i j : σ) (p : MvPolynomial σ R) :
   · rename_i p n hp
     have h0 : ∀ a b : σ, pderiv a (Pi.single (M := fun _ => MvPolynomial σ R) b 1 n) = 0 := by
       intro a b; rw [Pi.single_apply]; split_ifs <;> simp
-    simp only [Derivation.leibniz, map_add (f := _), smul_eq_mul, pderiv_X, h0, hp, mul_zero, zero_add, add_zero]
+    simp only [Derivation.leibniz, map_add (f := _), smul_eq_mul, pderiv_X, h0, hp, mul_zero, zero_add]
     ring
 
 noncomputable abbrev Dp (v : σ) : Module.End R (MvPolynomial σ R) := (pderiv v).toLinearMap
@@ -99,7 +99,6 @@ theorem pow_Dp_mul (v : σ) (a b : MvPolynomial σ R) (m : ℕ) :
       refine Finset.sum_congr rfl fun ij hij => ?_
       rw [Finset.HasAntidiagonal.mem_antidiagonal] at hij
       have hsym : n.choose ij.2 = n.choose ij.1 := by rw [← hij, Nat.choose_symm_add]
-      beta_reduce
       rw [map_nsmul, hl, hs, hs, hsym]
       ring
   rw [key, Finset.Nat.sum_antidiagonal_eq_sum_range_succ (fun i j => m.choose i • ((Dp v ^ i) a * (Dp v ^ j) b))]
@@ -164,7 +163,7 @@ theorem fw_add_single (m : σ →₀ ℕ) (v : σ) :
     · subst h
       simp only [Finsupp.add_apply, Finsupp.single_eq_same, if_true, Nat.factorial_succ, Nat.cast_mul]
       ring
-    · simp [Finsupp.single_apply, Ne.symm h, h]
+    · simp [h]
   simp_rw [key, Finset.prod_mul_distrib, Finset.prod_ite_eq']
   simp
 
@@ -240,7 +239,7 @@ private theorem coeff_pderiv_lemma_7 (v : σ) (b : MvPolynomial σ ℚ_[p]) (m :
 theorem fock_X_mul (v : σ) (a b : MvPolynomial σ ℚ_[p]) :
     M.fock p (X v * a) b = M.fock p a (pderiv v b) := by
   have hsupp : (X v * a).support ⊆ a.support.map (addRightEmbedding (Finsupp.single v 1)) := by
-    rw [mul_comm, support_mul_X] <;> exact Finset.Subset.refl _
+    rw [mul_comm, support_mul_X]
   rw [fock_eq_sum p _ b _ hsupp, Finset.sum_map, fock_eq_sum p a _ a.support (Finset.Subset.refl _)]
   refine Finset.sum_congr rfl fun m _ => ?_
   simp only [addRightEmbedding_apply]
@@ -512,7 +511,6 @@ theorem tiePhi_eq (o n z : ℕ) (u : MvPolynomial σ k) :
     tiePhi w e o n z u = ∑ j ∈ range (o + 1), cph k (o + n + r + z - 1) j • (tieE w e ^ j) ((tieF w e ^ j) u) := by
   first
   | (simp only [tiePhi, cph, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.comp_apply]; done)
-  | simp [tiePhi, cph, LinearMap.sum_apply]
 
 theorem phi_E_step (hw : Function.Injective w) (he : Function.Injective e) (hwe : ∀ c d, w c ≠ e d)
     (o' n' z : ℕ) (Z : MvPolynomial σ k) (hW : EW w Z = (o' : k) • Z) (hE : EW e Z = (n' : k) • Z) :
@@ -534,7 +532,6 @@ theorem phi_E_step (hw : Function.Injective w) (he : Function.Injective e) (hwe 
 
   rw [tiePhi_eq, tiePhi_eq, hA1, hA2, map_sum, Finset.smul_sum]
   conv_lhs => rw [Finset.sum_range_succ']
-  beta_reduce
   simp only [hG, smul_add, smul_smul, Finset.sum_add_distrib, map_smul, hE2]
   have h0 : (tieE w e ^ 0) ((tieF w e ^ 0) (tieE w e Z)) = (tieE w e ^ (0 + 1)) ((tieF w e ^ 0) Z) := by simp
   rw [h0]
@@ -542,7 +539,6 @@ theorem phi_E_step (hw : Function.Injective w) (he : Function.Injective e) (hwe 
     (fun t => cph k (o' + n' + r + z + 1) t • (tieE w e ^ (t + 1)) ((tieF w e ^ t) Z)) (o' + 1)
   rw [Finset.sum_range_succ (fun t => cph k (o' + n' + r + z + 1) t • (tieE w e ^ (t + 1)) ((tieF w e ^ t) Z))
     (o' + 1)] at hs2
-  beta_reduce at hs2
   rw [hvan, map_zero, smul_zero, add_zero] at hs2
   rw [add_right_comm, ← hs2, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun t ht => ?_
@@ -860,7 +856,6 @@ theorem coef_PD (o r z s j S : ℕ) (hr : 1 ≤ r) (hsj : s + j ≤ o) (hoS : o 
       ((o.factorial : k) * (j.factorial : k))))
   rw [add_zero] at hK
   refine hK.congr fun n hn => ?_
-  beta_reduce
   have hA : (o - s) + (n - s) + r + (z + s) - 1 = o + n + r + z - 1 - s := by omega
   have hc : o + n + r + z - 1 - s - j = n + (o + r + z - 1 - s - j) := by omega
   have hnat := coef_nat (o + n + r + z - 1) o s j hsj
@@ -951,10 +946,10 @@ theorem quot_mem_pol (LL : M.Letters (N + 1)) (ρ : Fin r) (e : ℕ) (f h : MvPo
     · subst hi
       rw [Finset.sum_eq_single ρ]
       · simp
-      · intro c _ hc; simp [Finsupp.single_apply, Ne.symm hc]
+      · intro c _ hc; simp [Ne.symm hc]
       · simp
     · rw [if_neg hi]
-      exact Finset.sum_eq_zero fun c _ => by simp [Finsupp.single_apply, Ne.symm hi]
+      exact Finset.sum_eq_zero fun c _ => by simp [Ne.symm hi]
   rw [hs] at h2
   show ∑ c, m (i, c) = Function.update LL.deg (Fin.last N) (LL.deg (Fin.last N) - e) i
   by_cases hi : i = Fin.last N
@@ -1035,9 +1030,8 @@ theorem degH_eq (LL : M.Letters (N + 1)) (e : ℕ) (he : e ≤ LL.deg (Fin.last 
       (fun b' : Fin (N + 1 + 1) => if b' = Fin.last (N + 1) then 1 else 0) (Fin.last (N + 1))) *
         (lowerLast LL e).deg b = LL.total - e := by
   first
-  | (simp only [Fin.castSucc_ne_last, eq_self_iff_true, ↓reduceIte, zero_add, one_mul]
+  | (simp only [Fin.castSucc_ne_last, ↓reduceIte, zero_add, one_mul]
      rw [← lowerLast_total LL e he]; rfl)
-  | (simp [Fin.castSucc_ne_last]; rw [← lowerLast_total LL e he]; rfl)
 
 theorem Z_biHom (LL : M.Letters (N + 1)) (ρ : Fin r) (e : ℕ) (he : e ≤ LL.deg (Fin.last N))
     (h : MvPolynomial (Fin (N + 1) × Fin r) ℚ_[p]) (hh : h ∈ M.Pol p r (lowerLast LL e)) (m0 : ℕ) :
@@ -1063,7 +1057,7 @@ theorem Z_biHom (LL : M.Letters (N + 1)) (ρ : Fin r) (e : ℕ) (he : e ≤ LL.d
     rw [weight_ind] at hW hH
     refine ⟨?_, ?_⟩
     · simp only [Finsupp.add_apply, Finset.sum_add_distrib, hW]
-      simp [Finsupp.single_apply, (Fin.castSucc_lt_last (Fin.last N)).ne']
+      simp
     · simp only [Finsupp.add_apply, Finset.sum_add_distrib, hH]
       simp [Finsupp.single_apply, add_comm]
   · exact absurd rfl hm

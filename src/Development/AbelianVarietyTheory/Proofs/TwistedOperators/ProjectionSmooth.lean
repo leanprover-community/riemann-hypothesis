@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FormalDegreeLeOfNeighbourhoodVolume
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ProjExists
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LinMulti
 import Mathlib.Algebra.Order.Floor.Extended
@@ -69,28 +70,7 @@ theorem one_mem' (ε : Fin m → Bool) : (1 : Mat m) ∈ UJset ε := by
 
 theorem exp_mem {ε : Fin m → Bool} {X : Mat m} (hX : X ∈ lieOf (Jm ε)) (t : ℝ) :
     NormedSpace.exp (t • X) ∈ UJset ε := by
-  have JJ := Formalism.REAL.Jm_mul_self ε
-  have hX' : Xᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * X = 0 := hX
-  set Y : Mat m := t • X with hY
-  have hYh : Yᴴ = Formalism.REAL.Jm ε * (-Y) * Formalism.REAL.Jm ε := by
-    have : Xᴴ = -(Formalism.REAL.Jm ε * X) * Formalism.REAL.Jm ε := by
-      have h1 : Xᴴ * Formalism.REAL.Jm ε = -(Formalism.REAL.Jm ε * X) := eq_neg_of_add_eq_zero_left hX'
-      calc Xᴴ = Xᴴ * Formalism.REAL.Jm ε * Formalism.REAL.Jm ε := by rw [Matrix.mul_assoc, JJ, Matrix.mul_one]
-        _ = _ := by rw [h1]
-    rw [hY, Matrix.conjTranspose_smul, this]
-    simp [Matrix.mul_smul, Matrix.smul_mul, Matrix.neg_mul, Matrix.mul_neg]
-  have hc : NormedSpace.exp Yᴴ = Formalism.REAL.Jm ε * NormedSpace.exp (-Y) * Formalism.REAL.Jm ε := by
-    have hJi : (Formalism.REAL.Jm ε)⁻¹ = Formalism.REAL.Jm ε := Matrix.inv_eq_left_inv JJ
-    have := Matrix.exp_conj (Formalism.REAL.Jm ε) (-Y) ⟨⟨_, _, JJ, JJ⟩, rfl⟩
-    rw [hJi] at this
-    rw [hYh, this]
-  rw [mem_iff, ← Matrix.exp_conjTranspose, hc]
-  have he : NormedSpace.exp (-Y) * NormedSpace.exp Y = 1 := by
-    rw [← Matrix.exp_add_of_commute _ _ (Commute.neg_left (Commute.refl Y)), neg_add_cancel, NormedSpace.exp_zero]
-  calc Formalism.REAL.Jm ε * NormedSpace.exp (-Y) * Formalism.REAL.Jm ε * Formalism.REAL.Jm ε * NormedSpace.exp Y
-      = Formalism.REAL.Jm ε * (NormedSpace.exp (-Y) * (Formalism.REAL.Jm ε * Formalism.REAL.Jm ε) * NormedSpace.exp Y) := by
-        simp only [Matrix.mul_assoc]
-    _ = _ := by rw [JJ, Matrix.mul_one, he, Matrix.mul_one]
+  apply GlobalTheory.SepReal.expS_mem_UJset <;> assumption
 
 theorem list_mem {m : ℕ} {ε : Fin m → Bool} : ∀ l : List (Mat m), (∀ x ∈ l, x ∈ UJset ε) → l.prod ∈ UJset ε
   | [], _ => by simpa using one_mem' ε

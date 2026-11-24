@@ -127,10 +127,10 @@ theorem mdisc_swap_row {D : ℕ} (A : Fin D → Matrix (Fin D) (Fin D) ℂ) (p q
         simp only [Matrix.of_apply, Matrix.submatrix_apply, id, hu]
         by_cases hck : c = k
         · rw [hck, Equiv.swap_apply_left, h1, h2]
-          simp [hpq, Ne.symm hpq, Matrix.single_apply]
+          simp [hpq, Matrix.single_apply]
         · by_cases hcb : c = b
           · rw [hcb, Equiv.swap_apply_right, h1, h2]
-            simp [hpq, Ne.symm hpq, Matrix.single_apply]
+            simp [hpq, Matrix.single_apply]
           · rw [Equiv.swap_apply_of_ne_of_ne hck hcb]
             have hp : σ c ≠ p := fun h => hck (σ.injective (h.trans h1.symm))
             have hq : σ c ≠ q := fun h => hcb (σ.injective (h.trans h2.symm))
@@ -139,14 +139,14 @@ theorem mdisc_swap_row {D : ℕ} (A : Fin D → Matrix (Fin D) (Fin D) ℂ) (p q
       simp
     · have hbq : b ≠ σ.symm q := fun h => h2 (by rw [h, Equiv.apply_symm_apply])
       rw [Matrix.det_eq_zero_of_column_eq_zero (σ.symm q) fun i => by
-          simp [hu, Matrix.single_apply, hbq],
+          simp [hu, hbq],
         Matrix.det_eq_zero_of_column_eq_zero (σ.symm q) fun i => by
-          simp [hu, Matrix.single_apply, hbq], neg_zero]
+          simp [hu, hbq], neg_zero]
   · have hkp : k ≠ σ.symm p := fun h => h1 (by rw [h, Equiv.apply_symm_apply])
     rw [Matrix.det_eq_zero_of_column_eq_zero (σ.symm p) fun i => by
-        simp [hu, Matrix.single_apply, hkp, hpq],
+        simp [hu, hkp, hpq],
       Matrix.det_eq_zero_of_column_eq_zero (σ.symm p) fun i => by
-        simp [hu, Matrix.single_apply, hkp, hpq], neg_zero]
+        simp [hu, hkp, hpq], neg_zero]
 
 abbrev BilinSp (D : ℕ) := (Fin D → ℂ) →L[ℝ] (Fin D → ℂ) →L[ℝ] ℝ
 
@@ -236,9 +236,9 @@ theorem hessCof_hasDeriv {n : ℕ} (φ : Fin n → (Fin (n + 1) → ℂ) → ℝ
   have hg : HasFDerivAt g g' z := by
     refine hasFDerivAt_pi.2 fun i => ?_
     refine Fin.cases ?_ (fun l => ?_) i
-    · simp only [g, g', Fin.cons_zero, Fin.cases_zero]
+    · simp only [Fin.cases_zero]
       exact hasFDerivAt_const _ _
-    · simp only [g, g', Fin.cons_succ, Fin.cases_succ]
+    · simp only [Fin.cases_succ]
       exact L.hasFDerivAt.comp z (hφ l).hasFDerivAt
   have hfun : (fun y => hessCof φ y j k) = fun y => Mc (g y) := by
     funext y

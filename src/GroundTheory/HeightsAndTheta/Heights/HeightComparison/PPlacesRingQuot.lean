@@ -172,6 +172,6 @@ theorem PlacesRingQuot.proof : PlacesRingQuot.Statement := by
   have h0 : WithZero.exp (-(n w : ℤ)) ≠ 0 := WithZero.exp_ne_zero
   rw [Real.log_pow, hw, hn w ((hsS w).1 hws), WithZeroMulInt.toNNReal_neg_apply _ h0,
     WithZero.log_exp]
-  simp [Real.log_zpow]
+  simp
 
 end GroundTheory.Heights₂.Heights

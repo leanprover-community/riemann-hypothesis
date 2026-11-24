@@ -59,10 +59,6 @@ open Formalism.L2.Th1.CM (omegaK)
 
 namespace GramFrameCompositionTwoFacts
 
-theorem conj_omegaK (d : ℕ) : conj (omegaK d) = (1 - Complex.I * ((Real.sqrt d : ℝ) : ℂ)) / 2 := by
-  rw [omegaK, map_div₀, map_add (f := _), map_one, map_mul, Complex.conj_I, Complex.conj_ofReal, map_ofNat]
-  ring
-
 end GramFrameCompositionTwoFacts
 
 open GramFrameCompositionTwoFacts

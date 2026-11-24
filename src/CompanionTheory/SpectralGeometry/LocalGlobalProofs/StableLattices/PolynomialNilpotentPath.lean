@@ -6,7 +6,8 @@ public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.JacquetBasis
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantCoefficientsExpansion
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CapelliDetBlockLeviCongrModUpperBlockIdeal
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CapelliDetBlockLeviCongrModUpperBlockIdealStatement
+public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
+public import Formalism.RealPlaceAnalysis.StatementE
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliOperatorsCommute
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliPolynomialCoefficientsIdeal
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GlRelationsDerivativePreserved
@@ -162,7 +163,7 @@ theorem exists_monic_trace (n : Fin c → ℕ) (h : ∑ i, n i = N) (Xf : Fin N 
       rw [← map_prod]
     obtain ⟨k, hk⟩ := hP u
     set D := qdet Xf (u + ((N : ℂ) - 1) / 2) with hD
-    have hspan := GlobalTheory.T.capelliDet_block_levi_congr_mod_upperBlockIdeal (Module.End ℂ V) n h Xf hX u
+    have hspan := _root_.GlobalTheory.CapHC.qdet_blocks_congr (Module.End ℂ V) n h Xf hX u
     have hspan' : D - (b : Module.End ℂ V) ∈ Submodule.span ℂ {y : Module.End ℂ V | ∃ (p q : Fin N) (w : Module.End ℂ V),
         blk (stdBlocks n h) p < blk (stdBlocks n h) q ∧ y = Xf p q * w} := by
       rw [hb]

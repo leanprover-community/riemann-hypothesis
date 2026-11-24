@@ -117,29 +117,24 @@ theorem conv_of (hC : R.WeakCharacterisation F) (H : HkDat3 A3) : IndefConv A3.f
 theorem kFormR_of (hM : R.toRealDat.IsModels) : (R.toCx3 F).KFormR := by
   first
     | exact RealDat.kFormR_of (R := R.toRealDat) (F := F.lv2) hM
-    | exact RealDat.kFormR_of hM
 
 theorem kFormL_of (hM : R.toRealDat.IsModels) : (R.toCx3 F).KFormL := by
   first
     | exact RealDat.kFormL_of (R := R.toRealDat) (F := F.lv2) hM
-    | exact RealDat.kFormL_of hM
 
 theorem jIsoR_of (hM : R.toRealDat.IsModels) : (R.toCx3 F).JIsoR F.cv := by
   first
     | exact RealDat.jIsoR_of (R := R.toRealDat) (F := F.lv2) hM
-    | exact RealDat.jIsoR_of hM
 
 theorem jIsoL_of (hM : R.toRealDat.IsModels) : (R.toCx3 F).JIsoL F.cv := by
   first
     | exact RealDat.jIsoL_of (R := R.toRealDat) (F := F.lv2) hM
-    | exact RealDat.jIsoL_of hM
 
 theorem kForm_of (h : R.toRealDat.LUnif) (b : Bool) : (R.toCx3 F).KForm b := RealDat.kForm (F := F.lv2) h b
 
 theorem ewNorm (b : Bool) : (R.toCx3 F).EWnorm b := by
   first
     | exact RealDat.ewNorm (R := R.toRealDat) (F := F.lv2) b
-    | exact RealDat.ewNorm b
 
 theorem height_change_of_D0 (h : R.IsTup) : (R.toCx3 F).H0 := by
   refine ⟨h.mu_conj, fun w => ⟨h.mu_ne w, fun hne => ?_⟩⟩

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateDecompositionCompletedCyclotomicIntegers
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
@@ -296,25 +297,13 @@ end Abstract
 variable {l : ℕ} [Fact l.Prime]
 
 theorem finite_Ks (K : FinExt l) (j : ℕ) : FiniteDimensional ℚ_[l] (Ks K j) := by
-  haveI := K.2
-  haveI : FiniteDimensional ℚ_[l] (K0 K) :=
-    Module.Finite.of_injective
-      (IntermediateField.inclusion (inf_le_left : K0 K ≤ K.1)).toLinearMap
-      (IntermediateField.inclusion_injective (inf_le_left : K0 K ≤ K.1))
-  have hf : {x : Om l | x ^ (l ^ j) = 1}.Finite := by
-    refine (Polynomial.nthRootsFinset (l ^ j) (1 : Om l)).finite_toSet.subset fun x hx => ?_
-    exact Finset.mem_coe.2 ((Polynomial.mem_nthRootsFinset
-      (pow_pos (Fact.out : l.Prime).pos _) _).2 hx)
-  haveI := hf.to_subtype
-  haveI : FiniteDimensional ℚ_[l] (IntermediateField.adjoin ℚ_[l] {x : Om l | x ^ (l ^ j) = 1}) :=
-    IntermediateField.finiteDimensional_adjoin fun x _ => Algebra.IsIntegral.isIntegral x
-  exact IntermediateField.finiteDimensional_sup _ _
+  apply _root_.GlobalTheory.TateDecomp.finite_Ks <;> assumption
 
 theorem isCyc_unique {χ χ' : GQ l →* ℚ_[l]ˣ} (h : IsCyc χ) (h' : IsCyc χ') : χ = χ' := by
   ext g
   rw [← sub_eq_zero, ← norm_le_zero_iff]
   by_contra hne
-  obtain ⟨m, hm⟩ := exists_zpow_neg_lt (l := l) (not_le.1 hne)
+  obtain ⟨m, hm⟩ := PadicInt.exists_pow_neg_lt (p := l) (not_le.1 hne)
   obtain ⟨ζ, hζ⟩ := exists_primRoot_pow (l := l) m
   obtain ⟨a, ha, hga⟩ := h g m ζ hζ.pow_eq_one
   obtain ⟨a', ha', hga'⟩ := h' g m ζ hζ.pow_eq_one

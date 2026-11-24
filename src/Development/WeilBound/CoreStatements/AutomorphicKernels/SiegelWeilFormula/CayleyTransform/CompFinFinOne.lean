@@ -57,9 +57,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 theorem continuous_piInf {w : InfinitePlace F} (τ : EmbOver E w) : Continuous (piInf τ : AE F E → ℂ) :=
   GlobalTheory.Grow.continuous_infEmb_compInf F w τ
 
-theorem piInf_cA (h : IsCMExt F E σ) {w : InfinitePlace F} (τ : EmbOver E w) (z : AE F E) :
-    piInf τ (cA σ z) = star (piInf τ z) :=
-  Dense.piInf_cA h τ z
+alias piInf_cA := _root_.GlobalTheory.ThK.Dbl.Dense.piInf_cA
 
 theorem map_cA {p q : Type} (h : IsCMExt F E σ) {w : InfinitePlace F} (τ : EmbOver E w) (X : Matrix p q (AE F E)) :
     (X.map (cA σ)).map (piInf τ) = (X.map (piInf τ)).map star :=

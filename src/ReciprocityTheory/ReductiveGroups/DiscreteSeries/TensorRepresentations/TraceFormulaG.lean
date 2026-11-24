@@ -160,7 +160,7 @@ theorem tf_closure_stable (dual : Bool) {lam : Fin n → ℝ} {H : Type*} [Norme
         have ht : tensGrp dual σ g (fun i => ((a • f.1 i : D) : H)) =
             a • tensGrp dual σ g (fun i => ((f.1 i : D) : H)) := by
           funext i
-          simp [tensGrp, smul_sum, smul_smul, mul_assoc, mul_comm, mul_left_comm]
+          simp [tensGrp, smul_sum, smul_smul, mul_comm]
         simp only [Pi.smul_apply, Submodule.coe_smul]
         have ht' := ht
         simp only [Submodule.coe_smul] at ht'

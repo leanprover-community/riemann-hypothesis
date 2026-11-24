@@ -100,7 +100,7 @@ theorem exists_sq_val (oa : D.OAct O) (w0 a : O) (N : ℕ) (haa : star a * a = (
       have a₁ : x ≫ w = w := Category.id_comp _
       have a₂ : x ≫ g = g := Category.id_comp _
       rw [hz, a₁, a₂, Fin.prod_univ_three]
-      simp only [Sum.elim_inl, Sum.elim_inr, Matrix.cons_val]
+      simp only [Sum.elim_inr, Matrix.cons_val]
       rw [_root_.one_mul (w ^ (N + 1)), _root_.one_mul x, mul_comm (w ^ (N + 1)) x, mul_comm w x]
       apply Additive.ofMul.injective
       simp only [ofMul_mul, ofMul_inv, ofMul_zpow, ofMul_pow]

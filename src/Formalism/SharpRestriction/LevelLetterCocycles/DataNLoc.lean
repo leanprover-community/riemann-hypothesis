@@ -1276,4 +1276,87 @@ def LocHW.IsPt {P : LocPrime l} (H : LocHW l P) {K : FinExt l} {s : ℕ} {LL : F
   (∀ (x : ↥(K0 K)) (y : ↥(Ks K s)), (y : Om l) = (x : Om l) → τ y = (H.W K s LL h).emb i x) ∧
     ∀ y : ↥(Ks K s), (y : Om l) = P.ζQ s → τ y = ζ
 
+namespace Loc
+
+variable {l : ℕ} [Fact l.Prime]
+
+instance (priority := high) OL.instModuleSubmodule (LL : FinExt l) {M : Type*} [AddCommMonoid M]
+    [Module ↥(OL LL) M] (S : Submodule ↥(OL LL) M) : Module ↥(OL LL) ↥S :=
+  Submodule.module S
+
+instance (priority := high) OL.instSMulSubmodule (LL : FinExt l) {M : Type*} [AddCommMonoid M]
+    [Module ↥(OL LL) M] (S : Submodule ↥(OL LL) M) : SMul ↥(OL LL) ↥S :=
+  (Submodule.module S).toSMul
+
+instance (priority := high) FinExt.instModuleSubmodule (LL : FinExt l) {M : Type*} [AddCommMonoid M]
+    [Module ↥LL.1 M] (S : Submodule ↥LL.1 M) : Module ↥LL.1 ↥S :=
+  Submodule.module S
+
+instance (priority := high) FinExt.instSMulSubmodule (LL : FinExt l) {M : Type*} [AddCommMonoid M]
+    [Module ↥LL.1 M] (S : Submodule ↥LL.1 M) : SMul ↥LL.1 ↥S :=
+  (Submodule.module S).toSMul
+
+instance (priority := high) OL.instModuleSubmoduleField (LL : FinExt l) {M : Type*} [AddCommMonoid M]
+    [mL : Module ↥LL.1 M] [mO : Module ↥(OL LL) M]
+    [h : @IsScalarTower ↥(OL LL) ↥LL.1 M _ mL.toSMul mO.toSMul]
+    (S : Submodule ↥LL.1 M) : Module ↥(OL LL) ↥S :=
+  @Submodule.module' ↥(OL LL) ↥LL.1 M _ _ mL S _ _ mO h
+
+instance (priority := high) OL.instSMulSubmoduleField (LL : FinExt l) {M : Type*} [AddCommMonoid M]
+    [mL : Module ↥LL.1 M] [mO : Module ↥(OL LL) M]
+    [h : @IsScalarTower ↥(OL LL) ↥LL.1 M _ mL.toSMul mO.toSMul]
+    (S : Submodule ↥LL.1 M) : SMul ↥(OL LL) ↥S :=
+  (@Submodule.module' ↥(OL LL) ↥LL.1 M _ _ mL S _ _ mO h).toSMul
+
+instance (priority := high) OL.instModulePi (LL : FinExt l) {ι : Type*} {M : ι → Type*}
+    [∀ i, AddCommMonoid (M i)] [∀ i, Module ↥(OL LL) (M i)] : Module ↥(OL LL) (∀ i, M i) :=
+  Pi.module _ _ _
+
+instance (priority := high) OL.instSMulPi (LL : FinExt l) {ι : Type*} {M : ι → Type*}
+    [∀ i, SMul ↥(OL LL) (M i)] : SMul ↥(OL LL) (∀ i, M i) :=
+  Pi.instSMul
+
+instance (priority := high) FinExt.instModulePi (LL : FinExt l) {ι : Type*} {M : ι → Type*}
+    [∀ i, AddCommMonoid (M i)] [∀ i, Module ↥LL.1 (M i)] : Module ↥LL.1 (∀ i, M i) :=
+  Pi.module _ _ _
+
+instance (priority := high) FinExt.instSMulPi (LL : FinExt l) {ι : Type*} {M : ι → Type*}
+    [∀ i, SMul ↥LL.1 (M i)] : SMul ↥LL.1 (∀ i, M i) :=
+  Pi.instSMul
+
+instance (priority := high) OL.instAlgebraPi (LL : FinExt l) {ι : Type*} {B : ι → Type*}
+    [∀ i, Semiring (B i)] [∀ i, Algebra ↥(OL LL) (B i)] : Algebra ↥(OL LL) (∀ i, B i) :=
+  Pi.algebra _ _
+
+instance (priority := high) OL.instAlgebraPowerSeries (LL : FinExt l) :
+    Algebra ↥(OL LL) (PowerSeries ↥(OL LL)) :=
+  MvPowerSeries.instAlgebra
+
+instance (priority := high) OL.instAlgebraTensorProductLeft (LL : FinExt l) {B : Type*}
+    [CommSemiring B] [Algebra ℤ_[l] B] : Algebra ↥(OL LL) (↥(OL LL) ⊗[ℤ_[l]] B) :=
+  Algebra.TensorProduct.leftAlgebra
+
+instance (priority := high) OL.instModuleTensorProductLeft (LL : FinExt l) {M : Type*}
+    [AddCommMonoid M] [Module ℤ_[l] M] : Module ↥(OL LL) (↥(OL LL) ⊗[ℤ_[l]] M) :=
+  TensorProduct.leftModule
+
+instance (priority := high) RW.instAddCommGroupTensorProduct (LL : FinExt l) {M : Type*}
+    [AddCommGroup M] [Module ↥(OL LL) M] : AddCommGroup (RW LL ⊗[↥(OL LL)] M) :=
+  TensorProduct.addCommGroup
+
+instance (priority := high) RW.instModuleTensorProduct (LL : FinExt l) {M : Type*}
+    [AddCommMonoid M] [Module ↥(OL LL) M] : Module (RW LL) (RW LL ⊗[↥(OL LL)] M) :=
+  TensorProduct.leftModule
+
+instance (priority := high) RW.instSMulTensorProduct (LL : FinExt l) {M : Type*}
+    [AddCommMonoid M] [Module ↥(OL LL) M] : SMul (RW LL) (RW LL ⊗[↥(OL LL)] M) :=
+  TensorProduct.leftModule.toSMul
+
+instance (priority := high) RW.instHSMulTensorProduct (LL : FinExt l) {M : Type*}
+    [AddCommMonoid M] [Module ↥(OL LL) M] :
+    HSMul (RW LL) (RW LL ⊗[↥(OL LL)] M) (RW LL ⊗[↥(OL LL)] M) :=
+  @instHSMul _ _ TensorProduct.leftModule.toSMul
+
+end Loc
+
 end Formalism.BasicNotions

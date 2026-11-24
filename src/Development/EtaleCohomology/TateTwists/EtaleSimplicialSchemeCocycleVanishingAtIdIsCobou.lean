@@ -57,10 +57,10 @@ lemma cob_altsum (k : ℕ) : ∑ i : Fin k, (-1 : ℤ) ^ (i : ℕ) = if k % 2 = 
     rcases Nat.even_or_odd k with ⟨j, rfl⟩ | ⟨j, rfl⟩
     · have : (j + j) % 2 = 0 := by omega
       have h2 : (j + j + 1) % 2 ≠ 0 := by omega
-      simp [this, h2, ← two_mul, pow_mul]
+      simp [← two_mul, pow_mul]
     · have : (2 * j + 1) % 2 ≠ 0 := by omega
       have h2 : (2 * j + 1 + 1) % 2 = 0 := by omega
-      simp [this, h2, pow_succ, pow_mul]
+      simp [h2, pow_succ, pow_mul]
 
 lemma cob_map_zsmul {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} (c : ℤ) (z : Sec F U) :
     Sec.map φ (c • z) = c • Sec.map φ z := by
@@ -151,5 +151,5 @@ theorem LateralTheory.EtaleFoundations.etaleSimplicialScheme_cocycle_vanishing_a
     · have h1 : (2 * j + 1 + 1) % 2 = 0 := by omega
       have h2 : (2 * j + 1 + 2) % 2 = 1 := by omega
       have h3 : (2 * j + 1) % 2 = 1 := by omega
-      simp only [cobB, h1, h2, h3, ↓reduceIte, one_ne_zero, one_smul, smul_smul]
+      simp only [cobB, h1, h2, h3, ↓reduceIte, one_ne_zero, smul_smul]
       rw [if_neg (by omega), cob_map_zero, zero_add, one_mul, hεε, one_smul]

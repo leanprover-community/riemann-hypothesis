@@ -203,12 +203,10 @@ theorem autG_eq_ofReal (th : ∀ p, Option ((M p).Cls D.R.rS)) : autG M th = ((a
   have e := MonoidHom.map_finprod_of_injective (Complex.ofRealHom : ℝ →+* ℂ).toMonoidHom
     Complex.ofReal_injective (fun p => autPR M p (th p))
   simp only [RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, Complex.ofRealHom_eq_coe] at e
-  rw [e]
-  simp only [autP_ofReal]
+  simpa only [autP_ofReal] using e.symm
 
 theorem autR_nonneg (th : ∀ p, Option ((M p).Cls D.R.rS)) : 0 ≤ autR M th := by
-  unfold autR
-  exact finprod_nonneg fun p => by unfold autPR; split <;> positivity
+  simpa only [autR] using (finprod_nonneg fun p => by unfold autPR; split <;> positivity)
 
 theorem bbtop_none (p : PlF D) (w : Point D.host.E (D.R.rS + 1)) : BBtop M δ T T' p w none = 0 := by
   unfold BBtop
@@ -279,10 +277,7 @@ theorem bbG_eq_prod {θ0 : ∀ p, Option ((M p).Cls D.R.rS)} {S : Finset (PlF D)
   rw [if_pos hk]
   refine finprod_eq_prod_of_mulSupport_subset _ fun p hp => ?_
   by_contra hpS
-  apply hp
-  show BBtop M δ T T' p w (θ p) = 1
-  rw [hθ p hpS, (hu p hpS).2]
-  simp
+  exact hp (by simp [hθ p hpS, (hu p hpS).2])
 
 theorem autG_eq_prodS {θ0 : ∀ p, Option ((M p).Cls D.R.rS)} {S : Finset (PlF D)} {w : Point D.host.E (D.R.rS + 1)}
     (hu : UnramOff M δ T T' θ0 S w) {θ : ∀ p, Option ((M p).Cls D.R.rS)} (hθ : ∀ p ∉ S, θ p = θ0 p) :
@@ -375,8 +370,7 @@ theorem re_emb_G (τ : D.what₂.Tau) (T T' : ℕ) (w : Point D.host.E (D.R.rS +
 
 theorem dmin_top_eq_zeta (w : Point D.host.E (D.R.rS + 1)) (h0 : Dmin w D.R.rS ≠ 0) :
     Dmin w (D.R.rS + 1) = zetaOf w * Dmin w D.R.rS := by
-  simp only [zetaOf]
-  exact (div_mul_cancel₀ _ h0).symm
+  simpa only [zetaOf] using (div_mul_cancel₀ _ h0).symm
 
 theorem totPos_of_kind {T T' : ℕ} {w w' : Point D.host.E (D.R.rS + 1)} (hk : kind w = kind w')
     (h' : TotPos (Gpt T T' w')) : TotPos (Gpt (D := D) T T' w) := by
@@ -394,7 +388,7 @@ theorem totPos_of_kind {T T' : ℕ} {w w' : Point D.host.E (D.R.rS + 1)} (hk : k
     rw [dmin_top_eq_zeta w h0]
     rw [dmin_top_eq_zeta w' h0'] at h'τ
     rw [hz]
-    simp only [map_mul, Complex.normSq_mul] at h'τ ⊢
+    simp only [map_mul] at h'τ ⊢
     have hp : 0 < Complex.normSq (D.host.emb (D.eTau τ : D.R.GG) (Dmin w D.R.rS)) :=
       Complex.normSq_pos.mpr ((map_ne_zero _).mpr h0)
     have hp' : 0 < Complex.normSq (D.host.emb (D.eTau τ : D.R.GG) (Dmin w' D.R.rS)) :=

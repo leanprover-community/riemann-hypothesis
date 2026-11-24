@@ -47,6 +47,6 @@ namespace ReciprocityTheory.ChartRestriction.G.Out
 
 open Semi
 
-theorem proved_CubePullSt : CubePullSt := ReciprocityTheory.ChartRestriction.G.Out.CubePf.cubePull
+alias proved_CubePullSt := _root_.ReciprocityTheory.ChartRestriction.G.Out.CubePf.cubePull
 
 end ReciprocityTheory.ChartRestriction.G.Out

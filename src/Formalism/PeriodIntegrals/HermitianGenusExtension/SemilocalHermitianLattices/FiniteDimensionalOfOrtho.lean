@@ -1,5 +1,6 @@
 module
 
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.FiniteDimensionalOfOrtho
 public import Formalism.PeriodIntegrals.HermitianGenusExtension.SemilocalHermitianLattices.MassSt
 public import Formalism.HermitianLattices.StatementMass
 public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
@@ -138,22 +139,7 @@ theorem isFullLattice_of_ortho {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule
 theorem isTotPosDef_of_ortho (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {h : V →ₗ⋆[K] V →ₗ[K] K}
     (hs : h.IsSymm) {L : Submodule (𝓞 K) V} {n : ℕ} (hL : Formalism.HermitianLatticesTheory.IsOrthoLattice h L n) :
     IsTotPosDef h := by
-  obtain ⟨e, hli, hsp, -, he⟩ := hL
-  intro x hx φ
-  obtain ⟨c, rfl⟩ := exists_coord hsp x
-
-  rw [form_sum he, map_sum, Complex.re_sum]
-  have hc : ∃ i, c i ≠ 0 := by
-    by_contra hcon
-    push Not at hcon
-    exact hx (by simp [hcon])
-  obtain ⟨i, hi⟩ := hc
-  have hterm : ∀ j, (φ (star (c j) * c j)).re = Complex.normSq (φ (c j)) := by
-    intro j
-    rw [map_mul, hK.2.1, Complex.normSq_eq_conj_mul_self.symm, Complex.ofReal_re]
-  simp only [hterm]
-  refine Finset.sum_pos' (fun j _ => Complex.normSq_nonneg _) ⟨i, Finset.mem_univ _, ?_⟩
-  exact Complex.normSq_pos.2 (by simpa using hi)
+  apply Formalism.HermitianLattices.Ext.L3.isTotPosDef_of_ortho <;> assumption
 
 theorem trace_pos_of_ortho (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {h : V →ₗ⋆[K] V →ₗ[K] K}
     (hs : h.IsSymm) {L : Submodule (𝓞 K) V} {n : ℕ} (hL : Formalism.HermitianLatticesTheory.IsOrthoLattice h L n) :
@@ -174,36 +160,11 @@ theorem trace_pos_of_ortho (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) 
 
 theorem isIntegralLat_of_ortho {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (𝓞 K) V} {n : ℕ}
     (hL : Formalism.HermitianLatticesTheory.IsOrthoLattice h L n) : Formalism.HermitianLatticesTheory.IsIntegralLat h L := by
-  obtain ⟨e, hli, hsp, rfl, he⟩ := hL
-  intro x hx y hy
-  obtain ⟨c, rfl⟩ := (mem_lat_iff x).1 hx
-  obtain ⟨d, rfl⟩ := (mem_lat_iff y).1 hy
-  rw [form_sum he]
-  refine Submodule.sum_mem _ fun i _ => ?_
-  obtain ⟨t, ht⟩ := star_int (c i)
-  rw [← ht, ← map_mul]
-  exact Submodule.mem_one.2 ⟨_, rfl⟩
+  apply Formalism.HermitianLattices.Ext.L3.isIntegralLat_of_ortho <;> assumption
 
 theorem isUnimodular_of_ortho {h : V →ₗ⋆[K] V →ₗ[K] K} {L : Submodule (𝓞 K) V} {n : ℕ}
     (hL : Formalism.HermitianLatticesTheory.IsOrthoLattice h L n) : Formalism.HermitianLatticesTheory.IsUnimodular h L := by
-  have hint := isIntegralLat_of_ortho hL
-  obtain ⟨e, hli, hsp, rfl, he⟩ := hL
-  apply le_antisymm
-  · intro x hx
-    obtain ⟨c, rfl⟩ := exists_coord hsp x
-    simp only [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
-      LinearMap.coe_restrictScalars] at hx
-    have hc : ∀ i, ∃ r : 𝓞 K, algebraMap (𝓞 K) K r = c i := by
-      intro i
-      have := hx (e i) (Submodule.subset_span ⟨i, rfl⟩)
-      rw [form_left he] at this
-      exact Submodule.mem_one.1 this
-    choose r hr using hc
-    exact (mem_lat_iff _).2 ⟨r, by simp only [hr]⟩
-  · intro x hx
-    simp only [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
-      LinearMap.coe_restrictScalars]
-    exact fun y hy => hint y hy x hx
+  apply Formalism.HermitianLattices.Ext.L3.isUnimodular_of_ortho <;> assumption
 
 theorem mass_pos_of_ortho (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {h : V →ₗ⋆[K] V →ₗ[K] K}
     (hs : h.IsSymm) {L : Submodule (𝓞 K) V} {n : ℕ} (hL : Formalism.HermitianLatticesTheory.IsOrthoLattice h L n) :

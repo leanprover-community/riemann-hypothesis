@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.KTypeGeneratedByHighest
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ActSingleNeZero
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
@@ -322,21 +323,7 @@ theorem kStable_iff (hσ : IsURepOn (UJset ε) σ) (hD : IsDer ε σ V E) (W : S
 
 theorem diag_inK (ε : Fin n → Bool) (θ : Fin n → ℝ) :
     inK ε (Matrix.diagonal fun a => (θ a : ℂ) * Complex.I) := by
-  show ((Matrix.diagonal fun a => (θ a : ℂ) * Complex.I)ᴴ * Formalism.REAL.Jm ε +
-      Formalism.REAL.Jm ε * (Matrix.diagonal fun a => (θ a : ℂ) * Complex.I) = 0) ∧
-    (Matrix.diagonal fun a => (θ a : ℂ) * Complex.I) * Formalism.REAL.Jm ε =
-      Formalism.REAL.Jm ε * (Matrix.diagonal fun a => (θ a : ℂ) * Complex.I)
-  refine ⟨?_, ?_⟩
-  · rw [Formalism.REAL.Jm, Matrix.diagonal_conjTranspose, Matrix.diagonal_mul_diagonal,
-      Matrix.diagonal_mul_diagonal, Matrix.diagonal_add, ← Matrix.diagonal_zero]
-    congr 1
-    funext a
-    simp [star_mul, Complex.conj_ofReal, Complex.conj_I]
-    split_ifs <;> ring
-  · rw [Formalism.REAL.Jm, Matrix.diagonal_mul_diagonal, Matrix.diagonal_mul_diagonal]
-    congr 1
-    funext a
-    ring
+  apply GlobalTheory.KTypeHighest.inK_diag <;> assumption
 
 theorem exp_diag (θ : Fin n → ℝ) (t : ℝ) :
     NormedSpace.exp ((t : ℂ) • Matrix.diagonal fun a => (θ a : ℂ) * Complex.I) =

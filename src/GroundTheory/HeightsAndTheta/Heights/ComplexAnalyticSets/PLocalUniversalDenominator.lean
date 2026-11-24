@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.IrreducibleConnected.BasicOpenSteps
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLocalUniversalDenominator
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StFiniteProjectionCluster
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRootSumHolomorphic
@@ -103,23 +104,7 @@ theorem exists_eval_ne_zero {d : ℕ} {P : MvPolynomial (Fin d) ℂ} (hP : P ≠
 
 theorem exists_dim {n : ℕ} (I : Ideal (MvPolynomial (Fin n) ℂ)) (hI : I.IsPrime) :
     ∃ d : ℕ, ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ I) = d := by
-  have := hI
-  have hle : ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ I) ≤ (n : WithBot ℕ∞) := by
-    have h := ringKrullDim_quotient_le I
-    rwa [MvPolynomial.ringKrullDim_of_isNoetherianRing_of_finite, ringKrullDim_eq_zero_of_field,
-      Nat.card_eq_fintype_card, Fintype.card_fin, zero_add] at h
-  have h0 : (0 : WithBot ℕ∞) ≤ ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ I) :=
-    ringKrullDim_nonneg_of_nontrivial
-  generalize ringKrullDim (MvPolynomial (Fin n) ℂ ⧸ I) = x at hle h0 ⊢
-  induction x using WithBot.recBotCoe with
-  | bot => exact absurd h0 (by simp)
-  | coe e =>
-    induction e using ENat.recTopCoe with
-    | top =>
-      exfalso
-      rw [← WithBot.coe_natCast, WithBot.coe_le_coe, top_le_iff] at hle
-      exact ENat.natCast_ne_top n hle
-    | coe k => exact ⟨k, rfl⟩
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.IrreducibleBasicOpenConnected.exists_dim <;> assumption
 
 def divCoeff (P : Polynomial ℂ) (K j : ℕ) (τ : ℂ) : ℂ :=
   ∑ i ∈ Finset.range (K + 1), if j < i then P.coeff i * τ ^ (i - 1 - j) else 0

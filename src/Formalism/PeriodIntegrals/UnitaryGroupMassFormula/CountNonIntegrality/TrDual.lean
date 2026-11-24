@@ -60,7 +60,6 @@ theorem exists_trOne (D : Formalism.BasicNotions.D7) : ∃ x : D.host.E, IsInteg
   refine ⟨(1 + D.host.sqd) / 2, Formalism.BasicNotions.Examples₂.isIntegral_halfB (H := D.host), ?_⟩
   first
     | (rw [Formalism.BasicNotions.Examples₂.conj_half (H := D.host), hc]; ring)
-    | (rw [map_div₀, map_add (f := _), map_one, hc, map_ofNat]; ring)
 
 theorem trace_iE_eq_one (D : Formalism.BasicNotions.D7) (p : PlF D) (x : D.host.E) (hx1 : x + D.host.conj x = 1) :
     Algebra.trace (D.s.atP p).Fp (D.s.atP p).Ep ((D.s.atP p).ιE x) = 1 := by
@@ -68,8 +67,6 @@ theorem trace_iE_eq_one (D : Formalism.BasicNotions.D7) (p : PlF D) (x : D.host.
   haveI : Module.Finite (D.s.atP p).Fp (D.s.atP p).Ep := by
     first
       | exact Module.finite_of_finrank_pos (by rw [(D.s.atP p).rank]; norm_num)
-      | exact Module.finite_of_finrank_eq_succ (D.s.atP p).rank
-      | exact FiniteDimensional.of_finrank_pos (by rw [(D.s.atP p).rank]; norm_num)
   haveI : CharZero (D.s.atP p).Fp := (D.s.atP p).char0
   have hsum : (D.s.atP p).ιE x + (D.s.atP p).cj ((D.s.atP p).ιE x) = 1 := by
     rw [(D.s.atP p).cj_ιE, D.conjF_eq, ← map_add (f := _), hx1, map_one]
@@ -77,7 +74,6 @@ theorem trace_iE_eq_one (D : Formalism.BasicNotions.D7) (p : PlF D) (x : D.host.
       Algebra.trace (D.s.atP p).Fp (D.s.atP p).Ep ((D.s.atP p).ιE x) := by
     first
       | exact Algebra.trace_eq_of_algEquiv (D.s.atP p).cj _
-      | exact (Algebra.trace_eq_of_algEquiv (D.s.atP p).cj _).symm
   have hone : Algebra.trace (D.s.atP p).Fp (D.s.atP p).Ep 1 = 2 := by
     have h := Algebra.trace_algebraMap (S := (D.s.atP p).Ep) (1 : (D.s.atP p).Fp)
     rw [map_one, (D.s.atP p).rank] at h
@@ -114,15 +110,12 @@ theorem norm_trace_le_of_psi {ℓ : ℕ} [Fact ℓ.Prime] {Fp Ep : Type} [Field 
     push_cast
     first
       | exact Padic.norm_int_le_one n
-      | exact PadicInt.norm_le_one (n : ℤ_[ℓ])
-      | simpa using (PadicInt.norm_le_one (n : ℤ_[ℓ]))
   have key : ∀ T : ℚ_[ℓ], ‖T - ((a : ℚ) : ℚ_[ℓ])‖ ≤ 1 → ‖T‖ ≤ 1 := by
     intro T hT
     calc ‖T‖ = ‖(T - ((a : ℚ) : ℚ_[ℓ])) + ((a : ℚ) : ℚ_[ℓ])‖ := by rw [sub_add_cancel]
       _ ≤ max ‖T - ((a : ℚ) : ℚ_[ℓ])‖ ‖((a : ℚ) : ℚ_[ℓ])‖ := by
         first
           | exact Padic.nonarchimedean _ _
-          | exact IsUltrametricDist.norm_add_le_max _ _
       _ ≤ 1 := max_le hT hna
   exact key _ hle
 
@@ -152,8 +145,6 @@ theorem trace_dual_lattice : TrDual := by
   haveI : Module.Finite (D.s.atP p).Fp (D.s.atP p).Ep := by
     first
       | exact Module.finite_of_finrank_pos (by rw [(D.s.atP p).rank]; norm_num)
-      | exact Module.finite_of_finrank_eq_succ (D.s.atP p).rank
-      | exact FiniteDimensional.of_finrank_pos (by rw [(D.s.atP p).rank]; norm_num)
   have hθO : (D.s.atP p).ιE x ∈ (D.s.atP p).O := by
     rw [(D.s.atP p).O_def]
     exact (hxint.map (D.s.atP p).ιE.toIntAlgHom).tower_top
@@ -162,7 +153,6 @@ theorem trace_dual_lattice : TrDual := by
     have hi := isIntegral_algebraMap (R := 𝒪[(D.s.atP p).Fp]) (A := (D.s.atP p).Ep) (x := ⟨c, hc⟩)
     first
       | exact hi
-      | simpa [IsScalarTower.algebraMap_apply 𝒪[(D.s.atP p).Fp] (D.s.atP p).Fp (D.s.atP p).Ep] using hi
   have hyO : -((D.s.atP p).ιE x * algebraMap (D.s.atP p).Fp (D.s.atP p).Ep c) ∈ (M p).L.O := by
     rw [hO]
     exact neg_mem (mul_mem hθO hcO)

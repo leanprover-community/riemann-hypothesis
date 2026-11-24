@@ -145,16 +145,6 @@ theorem hasDeriv_curve_at {n : ℕ} {ε : Fin n → Bool} {f : Matrix (Fin n) (F
   simp only
   rw [Matrix.mul_assoc, ← exp_shift X t u]
 
-theorem curve_cont {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) :
-    Continuous (fun t : ℝ => NormedSpace.exp ((t : ℂ) • X)) := by
-  refine continuous_iff_continuousAt.2 fun t => ?_
-  have h1 : HasDerivAt (fun u : ℝ => NormedSpace.exp ((t : ℂ) • X) * NormedSpace.exp ((u : ℂ) • X))
-      (NormedSpace.exp ((t : ℂ) • X) * X) (t - t) := by
-    rw [sub_self]; exact Formalism.REAL.hasDerivAt_mul_exp_smul_zero _ X
-  refine ((h1.comp_sub_const t t).continuousAt).congr (Eventually.of_forall fun u => ?_)
-  simp only
-  rw [← exp_shift X t u]
-
 theorem rd_smul {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (f : Matrix (Fin n) (Fin n) ℂ → ℂ) (g : Matrix (Fin n) (Fin n) ℂ)
     (s : ℝ) : Formalism.REAL.Rd ((s : ℂ) • X) f g = (s : ℂ) * Formalism.REAL.Rd X f g := by
   unfold Formalism.REAL.Rd
@@ -196,15 +186,6 @@ theorem ne_zero_of_inUJ {n : ℕ} (hn : 0 < n) {ε : Fin n → Bool} {g : Matrix
 theorem one_mem_UH (k r : ℕ) : (1 : Mat k r) ∈ UH (Hpk k r) := by
   show (1 : Mat k r)ᴴ * Hpk k r * 1 = Hpk k r
   simp
-
-theorem uh_mul' {k r : ℕ} {a b : Mat k r} (ha : a ∈ UH (Hpk k r)) (hb : b ∈ UH (Hpk k r)) :
-    a * b ∈ UH (Hpk k r) := by
-  show (a * b)ᴴ * Hpk k r * (a * b) = Hpk k r
-  have ha' : aᴴ * Hpk k r * a = Hpk k r := ha
-  have hb' : bᴴ * Hpk k r * b = Hpk k r := hb
-  calc (a * b)ᴴ * Hpk k r * (a * b) = bᴴ * (aᴴ * Hpk k r * a) * b := by
-        simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = Hpk k r := by rw [ha', hb']
 
 theorem inUJ_conj {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {P : Mat k r} (hP : Formalism.MainNotions.S.IsCayley k r ε P)
     {a : Mat k r} (ha : a ∈ UH (Hpk k r)) : Formalism.REAL.inUJ ε (P * a * P⁻¹) := by
@@ -292,7 +273,7 @@ theorem aesm_int {ε : Fin (2 * r + k + 1) → Bool} {P : Mat k r} (hP : Formali
   refine ContinuousOn.smul ?_ ?_
   · refine hG.comp ((cont_gp P x).matrix_mul continuous_const).continuousOn ?_
     intro p hp
-    exact Formalism.REAL.indefinite_unitary_mul_mem ε (inUJ_conj hP (uh_mul' (uh_mul' hp.1.1 hp.2.1) hx)) he
+    exact Formalism.REAL.indefinite_unitary_mul_mem ε (inUJ_conj hP (_root_.ReciprocityTheory.ChartRestriction.DS.Lap.mul_mem_UH' (_root_.ReciprocityTheory.ChartRestriction.DS.Lap.mul_mem_UH' hp.1.1 hp.2.1) hx)) he
   · unfold chiInv
     refine ContinuousOn.smul ((continuous_star.comp ((psiGen_cont z c).comp continuous_second_matrix)).continuousOn) ?_
     have hinv : ContinuousOn (fun p : Mt k r × Mt k r => (Matrix.of p.1 : Mat k r)⁻¹) (suppA k r z) := by
@@ -327,7 +308,7 @@ theorem int_bound {ε : Fin (2 * r + k + 1) → Bool} {P : Mat k r} (hP : Formal
   refine Integrable.mono' (hI.const_mul (K ^ (a - 1))) ?_ ?_
   · exact ((frob_cont.comp (cont_gp P x)).measurable.pow_const _).aestronglyMeasurable
   · filter_upwards [ae_supp hW hN] with p hp
-    have hgU : Matrix.of p.1 * Matrix.of p.2 * x ∈ UH (Hpk k r) := uh_mul' (uh_mul' hp.1.1 hp.2.1) hx
+    have hgU : Matrix.of p.1 * Matrix.of p.2 * x ∈ UH (Hpk k r) := _root_.ReciprocityTheory.ChartRestriction.DS.Lap.mul_mem_UH' (_root_.ReciprocityTheory.ChartRestriction.DS.Lap.mul_mem_UH' hp.1.1 hp.2.1) hx
     have hJ := inUJ_conj hP hgU
     have hn : 0 < 2 * r + k + 1 := by omega
     have hG0 : 0 < frob (P * (Matrix.of p.1 * Matrix.of p.2 * x) * P⁻¹) := frob_pos _ (ne_zero_of_inUJ hn hJ)

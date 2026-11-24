@@ -64,7 +64,7 @@ theorem fr_nonneg (N : Matrix (Fin n) (Fin n) ℂ) : 0 ≤ fr N := by
 theorem fr_conjTranspose (N : Matrix (Fin n) (Fin n) ℂ) : fr Nᴴ = fr N := by
   unfold fr
   rw [Finset.sum_comm]
-  simp [conjTranspose_apply, norm_star]
+  simp [conjTranspose_apply]
 
 theorem trace_mul_conjTranspose (N : Matrix (Fin n) (Fin n) ℂ) : (N * Nᴴ).trace = (fr N : ℂ) := by
   simp only [fr, Matrix.trace, Matrix.diag, Matrix.mul_apply, conjTranspose_apply, Complex.star_def,
@@ -79,7 +79,7 @@ theorem sq_sum_le (N : Matrix (Fin n) (Fin n) ℂ) (v : Fin n → ℂ) :
     have h1 : ‖(Nᴴ *ᵥ v) i‖ ≤ ∑ j, ‖N j i‖ * ‖v j‖ := by
       simp only [mulVec, dotProduct, conjTranspose_apply]
       refine (norm_sum_le _ _).trans (le_of_eq ?_)
-      simp [norm_star]
+      simp
     have h2 := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun j => ‖N j i‖) (fun j => ‖v j‖)
     calc ‖(Nᴴ *ᵥ v) i‖ ^ 2 ≤ (∑ j, ‖N j i‖ * ‖v j‖) ^ 2 := by gcongr
       _ ≤ _ := h2
@@ -210,7 +210,7 @@ theorem entry_single (u : Matrix (Fin n) (Fin n) ℂ) (a i : Fin n) (c : ℂ) :
   rw [Matrix.mul_apply]
   simp only [mul_diagonal, conjTranspose_apply]
   rw [Finset.sum_eq_single a]
-  · simp only [if_pos rfl]
+  · simp only
     rw [if_pos trivial]
     have := Complex.mul_conj (u i a)
     rw [Complex.normSq_eq_norm_sq] at this
@@ -396,7 +396,7 @@ theorem contraction_dichotomy (hn : 0 < n) {x xi y yi d : Matrix (Fin n) (Fin n)
         simp only [conjTranspose_mul, conjTranspose_conjTranspose, mul_assoc]
       rw [e0, hc]
       simp only [conjTranspose_mul, conjTranspose_conjTranspose, Matrix.mul_add, Matrix.add_mul,
-        Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_one, Matrix.one_mul, mul_assoc, c6]
+        Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_one, mul_assoc, c6]
     have t := congrArg Matrix.trace e
     rw [trace_mul_conjTranspose, trace_add, trace_smul, trace_smul, trace_mul_conjTranspose,
       trace_mul_conjTranspose, fr_conjTranspose] at t
@@ -441,17 +441,17 @@ theorem contraction_dichotomy (hn : 0 < n) {x xi y yi d : Matrix (Fin n) (Fin n)
     have hT : (fr yi • (y * yᴴ) - 1).PosSemidef := by
       have h := psd_conj (psd_fr yi) y
       convert h using 1
-      simp only [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_one, mul_assoc, c3, hy1']
+      simp only [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_one, c3, hy1']
     have h1 : (M • (d * (yiᴴ * yi) * dᴴ) - x * xᴴ).PosSemidef := by
       have h := psd_conj (psd_le_lemma_2 hN) (d * yiᴴ)
       convert h using 1
       simp only [conjTranspose_mul, conjTranspose_conjTranspose, Matrix.mul_smul, Matrix.smul_mul,
-        Matrix.mul_one, Matrix.one_mul, mul_assoc, c3, c5, c7, hd1]
+        Matrix.mul_one, mul_assoc, c3, c5, c7, hd1]
     have h2 : (M • (x * xᴴ) - d * (yiᴴ * yi) * dᴴ).PosSemidef := by
       have h := psd_conj (psd_le_lemma_2 hA) x
       convert h using 1
       simp only [conjTranspose_mul, conjTranspose_conjTranspose, Matrix.mul_smul, Matrix.smul_mul,
-        Matrix.mul_one, Matrix.one_mul, mul_assoc, c1, hx1']
+        Matrix.mul_one, mul_assoc, c1, hx1']
     have h3 : (1 - s) * fr yi ≤ M ^ 2 * (n : ℝ) ^ 2 := by
       have a1 : (1 - s) * fr yi ≤ (1 - s) * (M * (s * fr y + (1 - s) * n)) :=
         mul_le_mul_of_nonneg_left G2 (by linarith)
@@ -479,7 +479,7 @@ theorem contraction_dichotomy (hn : 0 < n) {x xi y yi d : Matrix (Fin n) (Fin n)
           yᴴ * dᴴ * (y * yᴴ) * (yᴴ * dᴴ)ᴴ =
           (M * (2 + M ^ 2 * (n : ℝ) ^ 2)) • (1 : Matrix (Fin n) (Fin n) ℂ) - (yᴴ * dᴴ * y) * (yᴴ * dᴴ * y)ᴴ := by
         simp only [conjTranspose_mul, conjTranspose_conjTranspose, Matrix.mul_smul, Matrix.smul_mul,
-          Matrix.mul_one, mul_assoc, c6, c8, hy2, hy2']
+          mul_assoc, c6, c8, hy2]
       rw [e] at h
       have := tr_push_algHom_eq_map_tr h
       unfold cmp

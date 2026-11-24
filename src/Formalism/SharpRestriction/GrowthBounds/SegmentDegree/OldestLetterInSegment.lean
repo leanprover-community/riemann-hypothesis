@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.CardFinRange
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ReflectionMemGlevCastSucc
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -69,18 +70,12 @@ theorem mem_evL (F : Frames n' r) (j x z : ℤ) : z ∈ evL F j x ↔ z ∈ F.le
   rw [Finset.mem_sort, Finset.mem_filter]
 
 theorem bk_fr_lt {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j : ℤ) (i : ℕ) :
-    ∀ i', i < i' → i' < r → F.fr j i < F.fr j i' := by
-  intro i' hi hi'
-  induction i', hi using Nat.le_induction with
-  | base => exact hV.2.2.1 j i hi'
-  | succ k hik ih =>
-    exact lt_trans (ih (by omega)) (hV.2.2.1 j k hi')
+    ∀ i', i < i' → i' < r → F.fr j i < F.fr j i' :=
+  TE.fr_lt hV j i
 
 theorem bk_fr_le {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j : ℤ) (i i' : ℕ) (h : i ≤ i') (h' : i' < r) :
-    F.fr j i ≤ F.fr j i' := by
-  rcases Nat.lt_or_eq_of_le h with h1 | h1
-  · exact le_of_lt (bk_fr_lt hV j i i' h1 h')
-  · rw [h1]
+    F.fr j i ≤ F.fr j i' :=
+  TE.fr_le hV j i i' h h'
 
 theorem r_le_length {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j x : ℤ) (hx : x ∈ F.letters j)
     (hW : ¬ F.IsW j x) : r ≤ (evL F j x).length := by

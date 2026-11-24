@@ -43,6 +43,7 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GenericallyFiniteFiniteNearCodimOnePoint
 
 @[expose] public section
 
@@ -55,24 +56,7 @@ namespace GlobalTheory.ZH
 
 theorem finite_notMem_coheight_le_one {X : Scheme.{0}} [IsIntegral X] [IsNoetherian X] (U : X.Opens)
     (hU : (U : Set X).Nonempty) : {ξ : X | ξ ∉ U ∧ Order.coheight ξ ≤ 1}.Finite := by
-  obtain ⟨S, hS, hcl, hirr, hun⟩ :=
-    TopologicalSpace.NoetherianSpace.exists_finite_set_isClosed_irreducible U.isOpen.isClosed_compl
-  have hg : genericPoint X ∈ U := (genericPoint_specializes hU.some).mem_open U.isOpen hU.some_mem
-  refine (hS.biUnion (t := fun C => {κ | IsGenericPoint κ C}) fun C _ =>
-    Set.Subsingleton.finite fun _ h _ h' => h.eq h').subset ?_
-  rintro ξ ⟨hξ, h1⟩
-  obtain ⟨C, hC, hξC⟩ : ξ ∈ ⋃₀ S := hun ▸ hξ
-  obtain ⟨κ, hκ⟩ := QuasiSober.sober (hirr C hC) (hcl C hC)
-  have hκU : κ ∈ (U : Set X)ᶜ := hun ▸ ⟨C, hC, hκ.mem⟩
-  refine Set.mem_biUnion hC ?_
-  by_cases h : ξ ⤳ κ
-  · rwa [(h.antisymm (hκ.specializes hξC)).eq]
-  · have hlt : ξ < κ := lt_of_le_not_ge (hκ.specializes hξC) h
-    have hlt' : κ < genericPoint X := lt_of_le_not_ge (genericPoint_specializes κ)
-      fun h' => hκU (((genericPoint_specializes κ).antisymm h').eq ▸ hg)
-    have h2 := (add_le_add_left (le_add_self.trans (Order.coheight_add_one_le hlt')) 1).trans
-      ((Order.coheight_add_one_le hlt).trans h1)
-    exact absurd h2 (by decide)
+  apply _root_.GlobalTheory.PushFinite.finite_notMem_coheight_le_one <;> assumption
 
 namespace RatModel
 

@@ -70,7 +70,6 @@ private theorem valV_unit_lemma (u : Vˣ) :
   | exact IsDedekindDomain.HeightOneSpectrum.intValuation_eq_one_iff.mpr hu
   | exact le_antisymm (IsDedekindDomain.HeightOneSpectrum.intValuation_le_one _ _)
       (not_lt.mp fun h => hu ((IsDedekindDomain.HeightOneSpectrum.intValuation_lt_one_iff_mem _ _).mp h))
-  | simpa using hu
 
 private theorem valV_unif_lemma_2 {ϖ : V} (hϖ : Irreducible ϖ) :
     IsDedekindDomain.HeightOneSpectrum.valuation F (IsDiscreteValuationRing.maximalIdeal V)
@@ -80,7 +79,6 @@ private theorem valV_unif_lemma_2 {ϖ : V} (hϖ : Irreducible ϖ) :
     (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ
   first
   | exact IsDedekindDomain.HeightOneSpectrum.intValuation_singleton _ hϖ.ne_zero hspan
-  | simpa using IsDedekindDomain.HeightOneSpectrum.intValuation_singleton _ hϖ.ne_zero hspan
 
 lemma vV_unit_alg (u : Vˣ) : vV V (algebraMap V F (u : V)) = 0 := by
   unfold vV valV
@@ -92,8 +90,6 @@ lemma vV_pow_gen {x : F} (hx : x ≠ 0) (k : ℕ) : vV V (x ^ k) = k * vV V x :=
   rw [map_pow]
   first
   | rw [WithZero.log_pow, nsmul_eq_mul]; ring
-  | rw [WithZero.log_pow]; ring
-  | simp [WithZero.log_pow]
 
 lemma vV_alg_of_addVal {v : V} {k : ℕ} (hk : IsDiscreteValuationRing.addVal V v = k) :
     vV V (algebraMap V F v) = k := by
@@ -123,14 +119,11 @@ theorem isLocalization_unif (h : IsUnif A ϖ) :
   constructor
   · first
     | (rintro ⟨_, n, rfl⟩; rw [map_pow]; exact h.isUnit.pow n)
-    | (rintro _ ⟨n, rfl⟩; rw [map_pow]; exact h.isUnit.pow n)
   · intro x
     obtain ⟨n, hn⟩ := h.denom x
     refine ⟨⟨⟨ϖ ^ n • x, hn⟩, ⟨_, n, rfl⟩⟩, ?_⟩
     first
     | simp [Algebra.smul_def, mul_comm]
-    | (show x * (algebraMap O A ϖ) ^ n = ϖ ^ n • x
-       rw [Algebra.smul_def, map_pow, mul_comm])
   · intro a b hab
     refine ⟨1, ?_⟩
     rw [Subtype.ext hab]
@@ -192,8 +185,6 @@ theorem phiAt_coe (h : IsUnif A ϖ) (hι : AddValPres ζ ι) (a : ↥(As O A)) :
   unfold phiAt
   first
   | exact IsLocalization.lift_eq _ a
-  | exact IsLocalization.Away.lift_eq _ _ a
-  | simp [IsLocalization.Away.lift]
 
 private theorem vV_mul_lemma_4 {V₁ F₁ : Type} [CommRing V₁] [IsDomain V₁] [IsDiscreteValuationRing V₁]
     [Field F₁] [Algebra V₁ F₁] [IsFractionRing V₁ F₁] {x y : F₁} (hx : x ≠ 0) (hy : y ≠ 0) :
@@ -222,7 +213,6 @@ private theorem toE_ordAt_lemma_3 (h : IsUnif A ϖ) (hι : AddValPres ζ ι) (x 
     rw [hT]
     first
     | rfl
-    | simp [toE]
   · obtain ⟨k, hk⟩ := ENat.ne_top_iff_exists.mp hT
     have hla : locMap ζ F ι a ≠ 0 := locMap_ne_zero (F := F) hι hT
     have hφ : phiAt ζ F ι h hι x ≠ 0 := by
@@ -248,8 +238,6 @@ private theorem toE_ordAt_lemma_3 (h : IsUnif A ϖ) (hι : AddValPres ζ ι) (x 
     first
     | (show ((((k : ℤ) - m * (ep ϖ ζ : ℤ) : ℤ) : ℝ) : EReal) = _
        rw [Nat.cast_one, div_one])
-    | simp [toE]
-    | rfl
 
 theorem toE_ord_eq (h : IsUnif A ϖ) (hι : AddValPres ζ ι) (x : A) :
     toE (ord ϖ ζ x) = nval V 1 (phiAt ζ F ι h hι x) := by

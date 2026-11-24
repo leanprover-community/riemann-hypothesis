@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsTwistBasisOffPrime
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.MvPowerSeries.Inverse
@@ -457,40 +458,7 @@ theorem exists_up_sec {X X' Y : Scheme.{0}} {L : LB X} {L' : LB X'} {F : X' ⟶ 
       ∀ (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) (p : K → L.ι) (q : K → L'.ι), r z ∈ LB.wchart L φ p →
         r z ∈ LB.wchart L' φ' q → gs r z (LB.wchart L φ p) (t.f p) =
           (pw w φ' ε r z p q).val * gs r z (LB.wchart L' φ' q) (a.f q) := by
-  obtain rfl : (fun k => φ' k ≫ F) = φ := funext e
-  choose u hu using fun p q => exists_pw w φ' ε p q
-  have glue : ∀ p : K → L.ι, ∃ s : Γ(Y, LB.wchart L (fun k => φ' k ≫ F) p), ∀ (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) q,
-      r z ∈ LB.wchart L (fun k => φ' k ≫ F) p → r z ∈ LB.wchart L' φ' q →
-      gs r z _ s = (pw w φ' ε r z p q).val * gs r z (LB.wchart L' φ' q) (a.f q) := by
-    intro p
-    let W : (K → L'.ι) → Y.Opens := fun q => LB.wchart L (fun k => φ' k ≫ F) p ⊓ LB.wchart L' φ' q
-    obtain ⟨v, hv⟩ : ∃ v : ∀ q, Γ(Y, W q), ∀ (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) q, r z ∈ W q →
-        gs r z (W q) (v q) = (pw w φ' ε r z p q).val * gs r z (LB.wchart L' φ' q) (a.f q) :=
-      ⟨fun q => (u p q).val * (Y.presheaf.map (homOfLE (inf_le_right : W q ≤ LB.wchart L' φ' q)).op).hom (a.f q),
-        fun Z r z q hz => (gs_mul r z _ hz _ _).trans (congrArg₂ (· * ·)
-          ((gs_unit r z _ hz _).trans (congrArg Units.val (hu p q Z r z hz))) (gs_res r z _ hz _))⟩
-    obtain ⟨s, hs, -⟩ := Y.sheaf.existsUnique_gluing' W (LB.wchart L (fun k => φ' k ≫ F) p)
-      (fun q => homOfLE inf_le_left) (fun y hy => by
-        choose q hq using fun k => exists_chart hL' (φ' k y)
-        exact Opens.mem_iSup.2 ⟨q, hy, Set.mem_iInter.2 hq⟩) v
-      (fun q q' => fn_ext (V := W q ⊓ W q') fun y hy => by
-        refine (gs_res (𝟙 Y) y inf_le_left hy _).trans (Eq.trans ?_ (gs_res (𝟙 Y) y inf_le_right hy _).symm)
-        rw [hv _ _ y q hy.1, hv _ _ y q' hy.2, pw_trans hw φ' ε (𝟙 Y) y hy.1.1 hy.1.1 hy.1.2 hy.2.2,
-          trF_self hL _ ε (𝟙 Y) y hy.1.1, sec_trans a (𝟙 Y) y hy.1.2 hy.2.2, one_mul, ← mul_assoc, ← Units.val_mul,
-          mul_right_comm, inv_mul_cancel, one_mul])
-    refine ⟨s, fun Z r z q h₁ h₂ => ?_⟩
-    have hz : r z ∈ W q := ⟨h₁, h₂⟩
-    exact (gs_res r z inf_le_left hz s).symm.trans ((congrArg (gs r z (W q)) (hs q)).trans (hv Z r z q hz))
-  choose s hs using glue
-  refine ⟨⟨s, fun j j' => fn_ext fun y hy => ?_⟩, fun Z r z p q => hs p Z r z q⟩
-  choose q hq using fun k => exists_chart hL' (φ' k y)
-  have m : (𝟙 Y : Y ⟶ Y) y ∈ LB.wchart L' φ' q := Set.mem_iInter.2 hq
-  refine (gs_res (𝟙 Y) y _ hy _).trans (Eq.trans ?_ ((gs_mul (𝟙 Y) y _ hy _ _).trans (congrArg₂ (· * ·)
-    ((gs_unit (𝟙 Y) y _ hy _).trans (congrArg Units.val (gm_linComb L _ ε (𝟙 Y) y j j' hy.1 hy.2)))
-    (gs_res (𝟙 Y) y _ hy _))).symm)
-  refine (hs j _ (𝟙 Y) y q hy.1 m).trans (Eq.trans ?_ (congrArg _ (hs j' _ (𝟙 Y) y q hy.2 m)).symm)
-  rw [pw_trans hw φ' ε (𝟙 Y) y hy.1 hy.2 m m, trF_self hL' _ ε (𝟙 Y) y m, inv_one, mul_one, Units.val_mul, mul_assoc]
-  rfl
+  apply GlobalTheory.TwistLoc.exists_up_sec <;> assumption
 
 theorem gs_comp {X Y Z : Scheme.{0}} (r : Z ⟶ Y) (q : Y ⟶ X) (z : Z) (U : X.Opens) (h : q (r z) ∈ U) (a : Γ(X, U)) :
     gs (r ≫ q) z U a = (r.stalkMap z).hom (gs q (r z) U a) := by

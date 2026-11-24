@@ -50,11 +50,6 @@ namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G NumberField MvPolynomial
 
-theorem finitePlace_sum_le {K : Type*} [Field K] [NumberField K] (v : FinitePlace K) {α : Type*}
-    (s : Finset α) (f : α → K) {B : ℝ} (hB : 0 ≤ B) (h : ∀ a ∈ s, v (f a) ≤ B) :
-    v (∑ a ∈ s, f a) ≤ B :=
-  _root_.UpperTheory.Reformulated.B.FinitePlaceSumBound.finitePlace_sum_le v s f hB h
-
 theorem OrbitCenterLe.proof : OrbitCenterLe.Statement := by
   intro ι _ _ n x v F d hF
   classical
@@ -65,7 +60,7 @@ theorem OrbitCenterLe.proof : OrbitCenterLe.Statement := by
   have hW : IsWeightedHomogeneous (coordDeg n) F d := (geoMultiHomog_iff F d).mp hF
   unfold evalCone
   rw [eval₂_eq']
-  refine finitePlace_sum_le v _ _
+  refine _root_.UpperTheory.Reformulated.B.FinitePlaceSumBound.finitePlace_sum_le v _ _
     (Finset.prod_nonneg fun k _ ↦ pow_nonneg (hM0 k) _) fun m hm ↦ ?_
   have hw : ∀ k, ∑ i, m ⟨k, i⟩ = d k := fun k ↦ by
     rw [← weight_coordDeg_apply, hW (mem_support_iff.mp hm)]

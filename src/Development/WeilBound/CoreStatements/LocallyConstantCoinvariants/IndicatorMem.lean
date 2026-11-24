@@ -48,6 +48,7 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ExistsNhdsInvariant
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealDictionaryHypotheses
 
 @[expose] public section
 
@@ -464,100 +465,7 @@ private theorem near_of_dvd {n M : ℕ} (h : n ∣ M) {a b : κ → Af F} (hab :
 theorem schA_le (L : Submodule ℂ ((κ → AF F) → ℂ))
     (hL : ∀ (f : SInf F κ) (φ : ∀ v : Pl F, (κ → Fv F v) → ℂ), (∀ v, φ v ∈ SB _) →
       (∀ᶠ v in cofinite, φ v = Set.indicator {x | ∀ i, x i ∈ v.adicCompletionIntegers F} 1) → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ ∈ L) :
-    schA F κ ≤ L := by
-  classical
-  have hbox : ∀ (f : SInf F κ) {M : ℕ}, M ≠ 0 → ∀ c : κ → Af F,
-      pureA F (⇑f) (fun y => box M c y) ∈ L := by
-    intro f M hM c
-    have h := hL f (fun v => (ballAt M c v).indicator (1 : (κ → Fv F v) → ℂ))
-      (fun v => ball_mem hM c v) (ball_cof hM c)
-    convert h using 1
-    funext x
-    rfl
-  have hrefl : ∀ (M : ℕ) (y : κ → Af F), Near M y y := by
-    intro M y v i
-    simp
-  unfold schA
-  rw [Submodule.span_le]
-  rintro Φ ⟨f, g, hg, rfl⟩
-  obtain ⟨M, hM0, hinv, t, hcov⟩ : ∃ M : ℕ, M ≠ 0 ∧ (∀ a b, Near M a b → g a = g b) ∧
-      ∃ t : Finset (κ → Af F), Function.support g ⊆ ⋃ c ∈ t, {z | Near M c z} := by
-    have hK : IsCompact (Function.support g) :=
-      hg.2.isCompact.of_isClosed_subset (hg.1.isClopen_fiber 0).isOpen.isClosed_compl (subset_tsupport g)
-    have hloc : ∀ y, ∃ n : ℕ, n ≠ 0 ∧ {z | Near n y z} ⊆ {z | g z = g y} :=
-      fun y => exists_near_subset_of_mem_nhds y (hg.1.eventually_eq y)
-    choose n hn0 hn using hloc
-    obtain ⟨t₁, -, hcov₁⟩ := hK.elim_nhds_subcover (fun y => {z | Near (n y) y z})
-      (fun y _ => (isOpen_setOf_near (hn0 y) y).mem_nhds (hrefl _ y))
-    have hM0 : (∏ y ∈ t₁, n y) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun y _ => hn0 y)
-    have hinv1 : ∀ a b, a ∈ Function.support g → Near (∏ y ∈ t₁, n y) a b → g a = g b := by
-      intro a b ha hab
-      have hmem := hcov₁ ha
-      simp only [Set.mem_iUnion, exists_prop, Set.mem_setOf_eq] at hmem
-      obtain ⟨y, hy, hya⟩ := hmem
-      have hab' := near_of_dvd (Finset.dvd_prod_of_mem n hy) hab
-      have e1 : g a = g y := hn y hya
-      have e2 : g b = g y := hn y (hya.trans hab')
-      rw [e1, e2]
-    have hinv : ∀ a b, Near (∏ y ∈ t₁, n y) a b → g a = g b := by
-      intro a b hab
-      by_cases ha : a ∈ Function.support g
-      · exact hinv1 a b ha hab
-      · by_cases hb : b ∈ Function.support g
-        · exact (hinv1 b a hb hab.symm).symm
-        · rw [Function.notMem_support.mp ha, Function.notMem_support.mp hb]
-    obtain ⟨t, -, hcov⟩ := hK.elim_nhds_subcover (fun y => {z | Near (∏ y ∈ t₁, n y) y z})
-      (fun y _ => (isOpen_setOf_near hM0 y).mem_nhds (hrefl _ y))
-    exact ⟨_, hM0, hinv, t, hcov⟩
-  have key : ∀ (s : Finset (κ → Af F)) (h : (κ → Af F) → ℂ), (∀ a b, Near M a b → h a = h b) →
-      Function.support h ⊆ ⋃ c ∈ s, {z | Near M c z} → pureA F (⇑f) h ∈ L := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty =>
-      intro h _ hs
-      have h0 : h = 0 := by
-        funext x
-        by_contra hx
-        have hx' := hs hx
-        simp at hx'
-      rw [h0]
-      convert L.zero_mem using 1
-      funext x
-      simp [pureA]
-    | insert c s hcs ih =>
-      intro h hh hs
-      have hsplit : pureA F (⇑f) h = h c • pureA F (⇑f) (fun y => box M c y) +
-          pureA F (⇑f) (fun y => h y - h c * box M c y) := by
-        funext x
-        simp only [pureA, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
-        ring
-      rw [hsplit]
-      refine L.add_mem (L.smul_mem _ (hbox f hM0 c)) (ih _ ?_ ?_)
-      · intro a b hab
-        by_cases hca : Near M c a
-        · have hcb : Near M c b := hca.trans hab
-          rw [box_of_near hca, box_of_near hcb, hh a b hab]
-        · have hcb : ¬ Near M c b := fun hcb => hca (hcb.trans hab.symm)
-          rw [box_of_not hM0 hca, box_of_not hM0 hcb, hh a b hab]
-      · intro z hz
-        have hcz : ¬ Near M c z := by
-          intro hcz
-          apply hz
-          show h z - h c * box M c z = 0
-          rw [box_of_near hcz, hh c z hcz]
-          ring
-        have hz' : h z ≠ 0 := by
-          intro h0
-          apply hz
-          show h z - h c * box M c z = 0
-          rw [box_of_not hM0 hcz, h0]
-          ring
-        have hmem := hs hz'
-        simp only [Set.mem_iUnion, Finset.mem_insert, exists_prop, Set.mem_setOf_eq] at hmem ⊢
-        obtain ⟨d, hd, hdz⟩ := hmem
-        rcases hd with rfl | hd
-        · exact absurd hdz hcz
-        · exact ⟨d, hd, hdz⟩
-  exact key t g hinv hcov
+    schA F κ ≤ L :=
+  by apply _root_.GlobalTheory.ThetaInterchange.schA_le_of_pure <;> assumption
 
 end PositivityTheory.KCo

@@ -70,7 +70,7 @@ theorem mem_compSet_iff (x : PIW.MassDataColumns.KvH X u p.1) :
     ((x : Hsub (Fv X.B.I.F p.1) X.B.I.cm.sig X.B.I.J (frameOf X u)) : HA (Fv X.B.I.F p.1) X.B.I.cm.sig X.B.I.J) ∈
         compSet X.B.I.cm.sig X.B.I.J (K2u X hb u) p.1 ↔
       x ∈ (PIW.MassDataColumns.unitaryLevelLocalComponent X hb u p.1).subgroupOf (PIW.MassDataColumns.KvH X u p.1) := by
-  rw [PIW.MassDataColumns.mem_K2Hp_iff X hb (Formalism.L2.SG.Closed.level_subgroup_is_group X) (Formalism.L2.SG.Closed.level_subgroup_properties X) u p x,
+  rw [PIW.MassDataColumns.mem_K2Hp_iff X hb (_root_.Formalism.L2.SG.Pf.level_subgroup_character_unitary X) (Formalism.L2.SG.Closed.level_subgroup_properties X) u p x,
     comp_set_conjugated_level_eq]
   constructor
   · rintro ⟨z, hz, hzx⟩
@@ -115,7 +115,7 @@ theorem idxHp_eq : MassDataLevelSSteps.idxHp X hb u p = PIW.MassDataColumns.lIdx
 
 theorem sTypIdx_holds : STypIdx := by
   intro D X hb u p hT _
-  have hK := Formalism.L2.SG.Closed.level_subgroup_is_group X
+  have hK := _root_.Formalism.L2.SG.Pf.level_subgroup_character_unitary X
   have hL := Formalism.L2.SG.Closed.level_subgroup_properties X
   have h1 := MassDataLevelSSteps.haarIdxLoc_holds X hb hK hT hL u p
   rw [MassDataLevelSSteps.locLevi_holds X hb hK hT hL u p, idxHp_eq X hb u p] at h1

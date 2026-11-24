@@ -62,7 +62,7 @@ theorem nfRat : NFRat := by
     intro w
     rw [map_natCast, Complex.natCast_re]
     exact_mod_cast tie_Tu_pos D w
-  obtain ⟨j, hj, c, hN⟩ := Formalism.HermitianLatticeCounting.Final.S6.normalForm D.host.E (VS D).V σ (nfH (VS D)) D.R.rS
+  obtain ⟨j, hj, c, hN⟩ := _root_.Formalism.HermitianLatticeCounting.P.existsNormalForm D.host.E (VS D).V σ (nfH (VS D)) D.R.rS
     (nfF (lf D (X.Fu u)).fl (nf_T_ne D u)) (nfF (frq X q).fl (nf_T_ne D u')) (fun x => p_starConj D σ x)
     (hpos u) (hpos u') (nf_pos _ _ (p_posX D _ (tie_Tu_pos D u) _) σ)
     (nf_pos _ _ (p_posX D _ (tie_Tu_pos D u') _) σ)

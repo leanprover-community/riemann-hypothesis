@@ -99,11 +99,6 @@ theorem kUnit_weight_shift (hA : IsGlRep A) {μ : Fin n → ℝ} {w : X} (hw : �
     · simp [hca, hcb, Ne.symm hcb] at h ⊢
       linear_combination (norm := module) h
 
-theorem kUnit_exists_joint (hA : IsGlRep A) (s : Finset (Fin n)) :
-    ∀ T : Submodule ℂ X, FiniteDimensional ℂ T → (∀ c, ∀ v ∈ T, A c c v ∈ T) → T ≠ ⊥ →
-      ∃ w ∈ T, w ≠ 0 ∧ ∃ μ : Fin n → ℂ, ∀ c ∈ s, A c c w = μ c • w := by
-  first | exact Bl.SimultaneousEigenvectors.goal1 .. | (apply Bl.SimultaneousEigenvectors.goal1 <;> assumption) | (intros; apply Bl.SimultaneousEigenvectors.goal1 <;> assumption)
-
 theorem kUnit_eig_real (hU : IsKUnitary ε A) {c : Fin n} {w : X} (hw0 : w ≠ 0) {z : ℂ}
     (hw : A c c w = z • w) : z = ((z.re : ℝ) : ℂ) := by
   have h := hU c c rfl w w
@@ -142,7 +137,7 @@ theorem exists_khw (hA : IsGlRep A) (hU : IsKUnitary ε A) {S : Submodule ℂ X}
     · intro h
       exact hw0 (congrArg Subtype.val h)
   have hPne : P.Nonempty := by
-    obtain ⟨w, hw, hw0, z, hz⟩ := kUnit_exists_joint hA Finset.univ S hfd hSc hne
+    obtain ⟨w, hw, hw0, z, hz⟩ := _root_.Bl.SimultaneousEigenvectors.goal1 hA Finset.univ S hfd hSc hne
     refine ⟨fun c => (z c).re, w, hw, hw0, fun c => ?_⟩
     rw [hz c (Finset.mem_univ c)]
     congr 1

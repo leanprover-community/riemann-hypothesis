@@ -283,61 +283,7 @@ private theorem eq_of_exceptionalIdeal_pow_mul_eq_mul {Y Y' : Scheme.{u}} {π : 
   rw [Blowup.exceptionalIdeal_eq_comap] at e
   exact eq_of_isLocallyGeneratedByNonZeroDivisor_pow_mul_eq_mul h.1 n e
 
-private theorem projectionToBase_eq_projectionToBase_toBlowupSequenceData (u : MarkedBlowupSequenceData p I m E) (i : ℕ) :
-    u.proj i = u.toBlowupSequenceData.projectionToBase i := by
-  induction i with
-  | zero => rw [u.proj_zero, BlowupSequenceData.projectionToBase_zero]
-  | succ j ih => rw [u.proj_succ j, BlowupSequenceData.projectionToBase_succ, ih]
-
-private theorem toBlowupSequenceData_boundary_eq_boundary (u : MarkedBlowupSequenceData p I m E) :
-    ∀ i, i ≤ u.length → u.toBlowupSequenceData.boundaryFrom E i = u.boundary i := by
-  intro i
-  induction i with
-  | zero =>
-      intro _
-      rw [BlowupSequenceData.boundary_zero, u.boundary_zero]
-  | succ j ih =>
-      intro hj
-      have hjlt : j < u.length := hj
-      rw [BlowupSequenceData.boundary_succ, ih (le_of_lt hjlt), u.boundary_succ j hjlt]
-
-private theorem toBlowupSequenceData_controlledTransform_eq_ideal (u : MarkedBlowupSequenceData p I m E) :
-    ∀ i, i ≤ u.length → u.toBlowupSequenceData.controlledTransform I m i = u.ideal i := by
-  intro i
-  induction i with
-  | zero =>
-      intro _
-      rw [BlowupSequenceData.controlledTransform_zero, u.ideal_zero]
-  | succ j ih =>
-      intro hj
-      have hjlt : j < u.length := hj
-      have hIH : u.toBlowupSequenceData.controlledTransform I m j = u.ideal j := ih (le_of_lt hjlt)
-      have hex : ∃ B : (u.obj (j + 1)).IdealSheafData,
-          Blowup.exceptionalIdeal (u.map j) (u.center j) ^ m * B =
-            (u.toBlowupSequenceData.controlledTransform I m j).comap (u.map j) := by
-        refine ⟨u.ideal (j + 1), ?_⟩
-        rw [hIH]
-        exact u.ideal_succ j hjlt
-      have key := u.toBlowupSequenceData.pow_exceptionalIdeal_mul_controlledTransform_succ I m j hex
-      refine eq_of_exceptionalIdeal_pow_mul_eq_mul (u.isBlowup j hjlt) m ?_
-      rw [key, hIH]
-      exact (u.ideal_succ j hjlt).symm
-
-theorem isMarked (u : MarkedBlowupSequenceData p I m E) : u.toBlowupSequenceData.IsMarked p I m E := by
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · intro i hi
-    refine ⟨u.ideal (i + 1), ?_⟩
-    rw [toBlowupSequenceData_controlledTransform_eq_ideal u i (le_of_lt hi)]
-    exact u.ideal_succ i hi
-  · intro i hi
-    rw [toBlowupSequenceData_controlledTransform_eq_ideal u i (le_of_lt hi)]
-    exact u.center_order i hi
-  · intro i hi
-    have h := u.center_smooth i hi
-    rwa [projectionToBase_eq_projectionToBase_toBlowupSequenceData u i] at h
-  · intro i hi
-    have h := u.center_snc i hi
-    rwa [projectionToBase_eq_projectionToBase_toBlowupSequenceData u i, ← toBlowupSequenceData_boundary_eq_boundary u i (le_of_lt hi)] at h
+alias isMarked := _root_.FunctorialResolution.EmbeddedResolution.MarkedBlowupSequenceData.isMarked_toBlowupSequenceData
 
 private theorem getElemOpt_map_append.{v, w} {α : Type v} {β : Type w} (f : α → β) (T : List β) :
     ∀ (L : List α) (i : ℕ), i < L.length → (List.map f L ++ T)[i]? = Option.map f (L[i]?) := by

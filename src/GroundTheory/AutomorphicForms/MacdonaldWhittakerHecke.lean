@@ -154,7 +154,7 @@ def eigenSubalgebra (z : Fin n → ℂˣ) (f : GL (Fin n) F → ℂ)
     evalAt z (satakeTransform μ h) * f g}
   mul_mem' {h₁ h₂} hh₁ hh₂ g := integral_mul_mul_eigen z hf hh₁ hh₂ g
   one_mem' g := by
-    simp only [Set.mem_setOf_eq, map_one, one_mul]
+    simp only [map_one, one_mul]
     exact integral_one_mul hf g
   add_mem' {h₁ h₂} hh₁ hh₂ g := by
     simp only [HeckeAlgebraLevel.val_add, HeckeAlgebra.coe_add, Pi.add_apply, add_mul]

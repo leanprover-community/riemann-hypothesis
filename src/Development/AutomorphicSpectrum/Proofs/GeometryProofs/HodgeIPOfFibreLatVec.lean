@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartPshPhMu
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.PotentialsBoundedRegSettingEqReference
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUniqueLeftBasisCoordsAdicCompletion
 import Mathlib.Algebra.Order.Floor.Extended
@@ -146,49 +147,14 @@ theorem exists_log_norm {n : ℕ} {t₀ : Fin n → ℂ} {F : (Fin n → ℂ) �
 theorem analyticAt_eval {A : Type} {n : ℕ} {q : (Fin n → ℂ) → A → ℂ} {t₀ : Fin n → ℂ}
     (hq : ∀ i, AnalyticAt ℂ (fun t => q t i) t₀) (p : MvPolynomial A ℤ) :
     AnalyticAt ℂ (fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) p)) t₀ := by
-  induction p using MvPolynomial.induction_on with
-  | C a => simpa using analyticAt_const
-  | add p r hp hr =>
-    have e : (fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) (p + r))) =
-        (fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) p)) +
-          fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) r) := by
-      funext t; simp
-    rw [e]; exact hp.add hr
-  | mul_X p i hp =>
-    have e : (fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) (p * MvPolynomial.X i))) =
-        (fun t => MvPolynomial.eval (q t) (MvPolynomial.map (Int.castRingHom ℂ) p)) * fun t => q t i := by
-      funext t; simp
-    rw [e]; exact hp.mul (hq i)
+  apply GlobalTheory.CompanionTheory.Ar.Cusp.MuPsh.analyticAt_eval <;> assumption
 
 
 open scoped ComplexOrder in
 theorem gram_det_pos {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
     [Module (𝓞 E) Λ] (R : RiemLat E g Λ) {m : ℕ} (u : Fin m → Fin g → ℂ) (hu : LinearIndependent ℂ u) :
     0 < (R.gram u).det.re := by
-  have hH : (R.Hmᵀ).IsHermitian := by
-    ext i j
-    exact R.herm.apply j i
-  have hM : (R.Hmᵀ).PosDef := by
-    refine Matrix.PosDef.of_dotProduct_mulVec_pos hH fun x hx => ?_
-    have h1 := R.pos x hx
-    have e : star x ⬝ᵥ (R.Hmᵀ *ᵥ x) = x ⬝ᵥ R.Hm *ᵥ star x := by
-      rw [Matrix.mulVec_transpose, dotProduct_comm, ← Matrix.dotProduct_mulVec]
-    have him : (star x ⬝ᵥ (R.Hmᵀ *ᵥ x)).im = 0 := hH.im_star_dotProduct_mulVec_self x
-    rw [Complex.pos_iff]
-    exact ⟨by rw [e]; exact h1, him.symm⟩
-  let C : Matrix (Fin g) (Fin m) ℂ := (Matrix.of u)ᵀ
-  have hC : Function.Injective C.mulVec := Matrix.mulVec_injective_iff.2 hu
-  have e : R.gram u = Cᴴ * R.Hmᵀ * C := by
-    ext a b
-    simp only [RiemLat.gram, RiemLat.ip, Matrix.of_apply, Matrix.mul_apply, dotProduct, Matrix.mulVec,
-      Matrix.conjTranspose_apply, Matrix.transpose_apply, Pi.star_apply, C]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Finset.mul_sum, Finset.sum_mul]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    ring
-  have hp := (hM.conjTranspose_mul_mul_same hC).det_pos
-  rw [← e] at hp
-  exact (Complex.pos_iff.1 hp).1
+  apply GlobalTheory.CompanionTheory.Ar.Cusp.MuPsh.gram_det_pos <;> assumption
 
 theorem hodgeInnerProduct_of_fibreLatticeVector {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
     {X : Scheme.{0}} {t : SAB H X} {z : Sp ℂ ⟶ X} {g : ℕ} {Λ : Type} [AddCommGroup Λ] [Module (𝓞 E) Λ]
@@ -205,20 +171,7 @@ section Free
 variable {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {II : IntersectionSystem} {Ψ : Type} [Fintype Ψ]
   {Ω : Type} [Field Ω] [Algebra ℚ Ω] {W : Ψ → Type} [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)]
 
-theorem isOpen_offBd (D : ComponentData II Ψ K J Ω W) (a : Fin D.nCharts) : IsOpen (offBd D a) := by
-  have e : offBd D a = ball 0 1 ∩ ⋂ i : Fin (Fintype.card Ψ * D.j * (D.N - D.j)),
-      {t | (i : ℕ) < (D.chart a).a → t i ≠ 0} := by
-    ext t
-    simp only [offBd, Set.mem_setOf_eq, Set.mem_inter_iff, Set.mem_iInter]
-    refine and_congr_right fun ht => ?_
-    rw [(D.chart a).boundary t ht]
-    push_neg
-    rfl
-  rw [e]
-  refine isOpen_ball.inter (isOpen_iInter_of_finite fun i => ?_)
-  by_cases h : (i : ℕ) < (D.chart a).a
-  · simpa [h] using isOpen_ne_fun (continuous_apply i) continuous_const
-  · simp [h]
+alias isOpen_offBd := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.isOpen_offBd
 
 end Free
 

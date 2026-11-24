@@ -162,8 +162,6 @@ theorem exists_sheet_partition [CompactSpace Y] [T2Space Y] [CompactSpace X] [T2
   · intro m
     first
       | exact disjointed_subset _ m
-      | exact disjointed_le _ m
-      | exact disjointed_subset m
   · intro m
     exact ⟨hV0o _, hk0 _, hW0 _, hdis0 _, hpre0 _, hsh0 _⟩
 

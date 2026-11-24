@@ -75,7 +75,7 @@ theorem paD_smul (α : ι →₀ ℕ) (a : ℂ) {H : EuclideanSpace ℂ ι → �
   ring
 
 theorem paD_zero (α : ι →₀ ℕ) : paD α (0 : EuclideanSpace ℂ ι → ℂ) = 0 := by
-  simp [paD, polyDeriv, iteratedFDeriv_fun_zero]
+  simp [paD, polyDeriv]
 
 theorem paFact_ne (α : ι →₀ ℕ) : (paFact α : ℂ) ≠ 0 := by
   unfold paFact

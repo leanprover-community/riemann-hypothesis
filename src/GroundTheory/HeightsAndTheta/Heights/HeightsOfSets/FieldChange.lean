@@ -72,19 +72,13 @@ section Extension
 variable {K L : Type*} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
 
 
-open scoped Classical in
-open Classical in
-theorem card_embeddings_restrict (τ : K →+* ℂ) :
-    (Finset.univ.filter fun σ : L →+* ℂ ↦ σ.comp (algebraMap K L) = τ).card = finrank K L :=
-  _root_.UpperTheory.Reformulated.B.CardEmbeddingsRestrict.card_embeddings_restrict τ
-
 theorem sum_embeddings_restrict (f : (K →+* ℂ) → ℝ) :
     ∑ σ : L →+* ℂ, f (σ.comp (algebraMap K L)) = finrank K L * ∑ τ : K →+* ℂ, f τ := by
   classical
   rw [← Finset.sum_fiberwise Finset.univ (fun σ : L →+* ℂ ↦ σ.comp (algebraMap K L)), Finset.mul_sum]
   refine Finset.sum_congr rfl fun τ _ ↦ ?_
   rw [Finset.sum_congr rfl (g := fun _ ↦ f τ) (fun σ hσ ↦ by rw [(Finset.mem_filter.mp hσ).2]),
-    Finset.sum_const, card_embeddings_restrict, nsmul_eq_mul]
+    Finset.sum_const, _root_.UpperTheory.Reformulated.B.CardEmbeddingsRestrict.card_embeddings_restrict, nsmul_eq_mul]
 
 theorem finprod_iSup_algebraMap_int {ι : Type*} [Finite ι] {y : ι → 𝓞 K} (hy : y ≠ 0) :
     ∏ᶠ w : FinitePlace L, ⨆ i, w (algebraMap K L (y i)) =
@@ -227,14 +221,6 @@ theorem support_log_iSup_place_finite {F : Type*} [Field F] [NumberField F] {ι 
   have h1' : (⨆ i, w (y i)) = 1 := h1
   change Real.log (⨆ i, w (y i)) = 0
   rw [h1', Real.log_one]
-
-section Cone
-
-variable {ι : Type} [Fintype ι] [DecidableEq ι] {n : ι → ℕ}
-
-
-
-end Cone
 
 end
 

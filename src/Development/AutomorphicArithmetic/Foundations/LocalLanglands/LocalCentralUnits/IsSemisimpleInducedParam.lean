@@ -190,7 +190,6 @@ private theorem det_shift {n : ℕ} (hn : 0 < n) {b : ℂ} (hb : b ≠ 0) (S : M
       rw [hl, finRotate_last]
       simp only [wt, if_true]
       rw [← h4, ← h3]
-      congr 1
       simp
     · have hlt : (i : ℕ) < m := by omega
       have h5 : finRotate (m + 1) i = ⟨(i : ℕ) + 1, by omega⟩ := finRotate_of_lt hlt

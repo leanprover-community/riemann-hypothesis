@@ -64,15 +64,10 @@ section Res
 
 variable {X : Scheme.{u}}
 
-private lemma resF_refl (F : X.Modules) {U : X.Opens} (h : U ≤ U) (m : Γ(F, U)) : resF F h m = m := by
-  change (F.presheaf.map (homOfLE h).op).hom m = m
-  rw [show (homOfLE h).op = 𝟙 (op U) from rfl, F.presheaf.map_id]
-  rfl
-
 private lemma resF_injective_of_le (F : X.Modules) {U V : X.Opens} (h : V ≤ U) (h' : U ≤ V) :
     Function.Injective (resF F h) := fun a b hab => by
   have := congrArg (resF F h') hab
-  rwa [resF_resF, resF_resF, resF_refl, resF_refl] at this
+  rwa [resF_resF, resF_resF, _root_.GroundTheory.Arith.SchemeCoh.resF_self, _root_.GroundTheory.Arith.SchemeCoh.resF_self] at this
 
 end Res
 

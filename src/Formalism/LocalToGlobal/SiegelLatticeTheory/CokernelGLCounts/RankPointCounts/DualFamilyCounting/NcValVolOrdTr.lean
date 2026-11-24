@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.VolUTr
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.DiffProd
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalJacobianType.ContinuousTrESymm
 import Mathlib.Algebra.Order.Floor.Extended
@@ -164,22 +165,7 @@ theorem trace_v (σ : E →ₐ[F] E) (hinv : ∀ y, σ (σ y) = y) (hnt : ∃ x,
     (hfin : Module.finrank F E = 2) (w : Fv F v ⊗[F] E) :
     algebraMap (Fv F v) (Fv F v ⊗[F] E) (Algebra.trace (Fv F v) (Fv F v ⊗[F] E) w) =
       w + sigR (Fv F v) σ w := by
-  induction w using TensorProduct.induction_on with
-  | zero => simp
-  | tmul c e =>
-    have ht := trace_eq_add σ hinv hnt hfin e
-    have e1 : (c ⊗ₜ[F] e : Fv F v ⊗[F] E) = c • inclR (F := F) (Fv F v) e := by
-      simp [inclR, TensorProduct.smul_tmul']
-    have e2 : sigR (Fv F v) σ (c ⊗ₜ[F] e) = c ⊗ₜ[F] σ e := by
-      simp [sigR, Algebra.TensorProduct.map_tmul]
-    rw [e2, ← TensorProduct.tmul_add, ← ht, Algebra.algebraMap_eq_smul_one (A := E) (Algebra.trace F E e),
-      ← TensorProduct.smul_tmul, e1, map_smul, PI.UnitaryGroupMassFormula.LocJacTyp.Sd.trace_inclR (v := v),
-      Algebra.TensorProduct.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply]
-    congr 1
-    rw [smul_eq_mul, Algebra.smul_def, mul_comm]
-  | add x y hx hy =>
-    rw [map_add (f := _), map_add (f := _), hx, hy, map_add (f := _)]
-    abel
+  apply Formalism.L2.SG.Pf.NcVal.VolUTr.TrW.trace_v <;> assumption
 
 theorem dual_mem (σ : E →ₐ[F] E) (hinv : ∀ y, σ (σ y) = y) (hnt : ∃ x, σ x ≠ x)
     (hfin : Module.finrank F E = 2) (θ t : 𝓞 E) (ht : σ (θ : E) = (t : E)) (e : 𝓞 F)
@@ -187,63 +173,7 @@ theorem dual_mem (σ : E →ₐ[F] E) (hinv : ∀ y, σ (σ y) = y) (hnt : ∃ x
     (hz : ∀ x ∈ OEv (E := E) v,
       Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (x * z) ∈ v.adicCompletionIntegers F) :
     z ∈ OEv (E := E) v := by
-  have hsub : ∀ x y : Fv F v ⊗[F] E, x ∈ OEv (E := E) v → y ∈ OEv (E := E) v →
-      x - y ∈ OEv (E := E) v := by
-    intro x y hx hy
-    simp only [OEv, SetLike.mem_coe] at hx hy ⊢
-    exact Submodule.sub_mem _ hx hy
-  have hθ := inclR_mem' (F := F) (E := E) v θ
-  have ht' := inclR_mem' (F := F) (E := E) v t
-  have hσθ : sigR (Fv F v) σ (inclR (F := F) (Fv F v) (θ : E)) = inclR (F := F) (Fv F v) (t : E) := by
-    simp [sigR, inclR, Algebra.TensorProduct.map_tmul, ht]
-  have hA := trace_v v σ hinv hnt hfin (inclR (F := F) (Fv F v) (θ : E) * z)
-  have hB := trace_v v σ hinv hnt hfin z
-  rw [RingHom.map_mul (sigR (Fv F v) σ), hσθ] at hA
-  have hδ : (inclR (F := F) (Fv F v) (θ : E) - inclR (F := F) (Fv F v) (t : E)) * z =
-      algebraMap (Fv F v) (Fv F v ⊗[F] E)
-          (Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (inclR (F := F) (Fv F v) (θ : E) * z)) -
-        inclR (F := F) (Fv F v) (t : E) *
-          algebraMap (Fv F v) (Fv F v ⊗[F] E) (Algebra.trace (Fv F v) (Fv F v ⊗[F] E) z) := by
-    rw [hA, hB]
-    ring
-  have hδ2 : (inclR (F := F) (Fv F v) (θ : E) - inclR (F := F) (Fv F v) (t : E)) *
-      (inclR (F := F) (Fv F v) (θ : E) - inclR (F := F) (Fv F v) (t : E)) =
-      algebraMap (Fv F v) (Fv F v ⊗[F] E) (algebraMap F (Fv F v) (e : F)) := by
-    rw [← inclR_alg (F := F) (E := E) v, ← he, sq, map_mul, map_sub]
-  have hAm : algebraMap (Fv F v) (Fv F v ⊗[F] E)
-      (Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (inclR (F := F) (Fv F v) (θ : E) * z)) ∈ OEv (E := E) v :=
-    alg_mem (F := F) (E := E) v (hz _ hθ)
-  have hBm : algebraMap (Fv F v) (Fv F v ⊗[F] E) (Algebra.trace (Fv F v) (Fv F v ⊗[F] E) z) ∈
-      OEv (E := E) v := by
-    have := hz 1 (one_mem (F := F) (E := E) v)
-    rw [one_mul] at this
-    exact alg_mem (F := F) (E := E) v this
-  have hmem : algebraMap (Fv F v) (Fv F v ⊗[F] E) (algebraMap F (Fv F v) (e : F)) * z ∈ OEv (E := E) v := by
-    rw [← hδ2, mul_assoc, hδ]
-    exact mul_mem (F := F) (E := E) v (hsub _ _ hθ ht')
-      (hsub _ _ hAm (mul_mem (F := F) (E := E) v ht' hBm))
-  have hne : algebraMap F (Fv F v) (e : F) ≠ 0 := by
-    intro h0
-    apply hev
-    have h1 : (e : F) = 0 := (algebraMap F (Fv F v)).injective (by rw [h0, map_zero])
-    have h2 : e = 0 := RingOfIntegers.coe_eq_zero_iff.mp h1
-    rw [h2]
-    exact v.asIdeal.zero_mem
-  have hval : Valued.v (algebraMap F (Fv F v) (e : F)) = 1 := by
-    have h1 := IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' (K := F) v (e : F)
-    have h2 : IsDedekindDomain.HeightOneSpectrum.valuation F v (e : F) = 1 := by
-      rw [show (e : F) = algebraMap (𝓞 F) F e from rfl,
-        IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap,
-        IsDedekindDomain.HeightOneSpectrum.intValuation_eq_one_iff.mpr hev]
-    rw [← h2, ← h1]
-    rfl
-  have hinvm : (algebraMap F (Fv F v) (e : F))⁻¹ ∈ v.adicCompletionIntegers F := by
-    rw [IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers, map_inv₀, hval, inv_one]
-  rw [← Algebra.smul_def] at hmem
-  have hz' : z = (algebraMap F (Fv F v) (e : F))⁻¹ • ((algebraMap F (Fv F v) (e : F)) • z) := by
-    rw [smul_smul, inv_mul_cancel₀ hne, one_smul]
-  rw [hz']
-  exact oev_smul' (F := F) (E := E) v hinvm hmem
+  apply Formalism.L2.SG.Pf.NcVal.VolUTr.TrW.dual_mem <;> assumption
 
 end Gen
 

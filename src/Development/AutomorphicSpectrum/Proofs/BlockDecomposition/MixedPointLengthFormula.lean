@@ -46,6 +46,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
+import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.IsSmoothHermConstLine
 
 @[expose] public section
 
@@ -99,18 +100,6 @@ section Homog
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-theorem isMultiHomog_add {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
-    IsMultiHomog (f + g) a := fun m hm => by
-  classical
-  rcases Finset.mem_union.1 (MvPolynomial.support_add hm) with h | h
-  exacts [hf m h, hg m h]
-
-theorem isMultiHomog_mul {f g : MRing ι} {a b : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g b) :
-    IsMultiHomog (f * g) (a + b) := fun m hm k => by
-  classical
-  obtain ⟨u, hu, v, hv, rfl⟩ := Finset.mem_add.1 (MvPolynomial.support_mul f g hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hf u hu k, hg v hv k]
-
 theorem isMultiHomog_C (c : ℤ) : IsMultiHomog (C c : MRing ι) 0 := fun m hm k => by
   classical
   have hm0 : m = 0 := by
@@ -131,15 +120,7 @@ theorem isMultiHomog_X (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.sing
       rw [Finsupp.single_apply, if_neg]
       intro e
       exact hk (congrArg Sigma.fst e).symm
-    simp [this, Pi.single_apply, hk]
-
-theorem isMultiHomog_pow {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (e : ℕ) :
-    IsMultiHomog (f ^ e) (e • a) := by
-  induction e with
-  | zero => simpa using isMultiHomog_C (ι := ι) 1
-  | succ e ih =>
-    rw [pow_succ, succ_nsmul]
-    exact isMultiHomog_mul ih hf
+    simp [this, hk]
 
 theorem isMultiHomog_prod {α : Type} (s : Finset α) (f : α → MRing ι) (a : α → K → ℕ)
     (h : ∀ o ∈ s, IsMultiHomog (f o) (a o)) : IsMultiHomog (∏ o ∈ s, f o) (∑ o ∈ s, a o) := by
@@ -148,7 +129,7 @@ theorem isMultiHomog_prod {α : Type} (s : Finset α) (f : α → MRing ι) (a :
   | empty => simpa using isMultiHomog_C (ι := ι) 1
   | insert o s ho ih =>
     rw [Finset.prod_insert ho, Finset.sum_insert ho]
-    exact isMultiHomog_mul (h o (Finset.mem_insert_self o s))
+    exact _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.isMultiHomog_mul (h o (Finset.mem_insert_self o s))
       (ih fun o' ho' => h o' (Finset.mem_insert_of_mem ho'))
 
 abbrev chartI (c : ∀ k, ι k) : Ideal (MRing ι) := Ideal.span (Set.range fun k => (X ⟨k, c k⟩ : MRing ι) - 1)
@@ -167,7 +148,7 @@ theorem mono_sub_one_mem (c : ∀ k, ι k) (E : K → ℕ) : (∏ k, (X ⟨k, c 
 theorem isMultiHomog_mono (c : ∀ k, ι k) (E : K → ℕ) : IsMultiHomog (∏ k, (X ⟨k, c k⟩ : MRing ι) ^ E k) E := by
   classical
   have h := isMultiHomog_prod (ι := ι) Finset.univ (fun k => (X ⟨k, c k⟩ : MRing ι) ^ E k)
-    (fun k => E k • Pi.single k 1) fun k _ => isMultiHomog_pow (isMultiHomog_X ⟨k, c k⟩) (E k)
+    (fun k => E k • Pi.single k 1) fun k _ => _root_.GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HeightsSet.isMultiHomog_pow (isMultiHomog_X ⟨k, c k⟩) (E k)
   have e : (∑ k, E k • (Pi.single k 1 : K → ℕ)) = E := by
     funext l
     simp [Finset.sum_apply, Pi.single_apply]
@@ -179,7 +160,7 @@ theorem exists_homog (c : ∀ k, ι k) (f : MRing ι) :
   induction f using MvPolynomial.induction_on with
   | C a =>
     refine ⟨0, fun E _ => ⟨C a * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ E k, ?_, ?_⟩⟩
-    · simpa using isMultiHomog_mul (isMultiHomog_C a) (isMultiHomog_mono c E)
+    · simpa using _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.isMultiHomog_mul (isMultiHomog_C a) (isMultiHomog_mono c E)
     · have : (C a : MRing ι) - C a * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ E k =
           -(C a * ((∏ k, (X ⟨k, c k⟩ : MRing ι) ^ E k) - 1)) := by ring
       rw [this]
@@ -190,7 +171,7 @@ theorem exists_homog (c : ∀ k, ι k) (f : MRing ι) :
     refine ⟨D₁ ⊔ D₂, fun E hE => ?_⟩
     obtain ⟨u, hu, hu'⟩ := h₁ E (le_sup_left.trans hE)
     obtain ⟨v, hv, hv'⟩ := h₂ E (le_sup_right.trans hE)
-    refine ⟨u + v, isMultiHomog_add hu hv, ?_⟩
+    refine ⟨u + v, _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.isMultiHomog_add hu hv, ?_⟩
     have : f + g - (u + v) = (f - u) + (g - v) := by ring
     rw [this]
     exact add_mem hu' hv'
@@ -208,7 +189,7 @@ theorem exists_homog (c : ∀ k, ι k) (f : MRing ι) :
       simp only [Pi.add_apply, Pi.sub_apply] at this ⊢
       omega
     refine ⟨u * X p, ?_, ?_⟩
-    · have := isMultiHomog_mul hu (isMultiHomog_X p)
+    · have := _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.isMultiHomog_mul hu (isMultiHomog_X p)
       rwa [hE'] at this
     · have : f * X p - u * X p = (f - u) * X p := by ring
       rw [this]
@@ -293,7 +274,7 @@ theorem chartMap_surjective [Finite Ω] (y : (Σ k, ι k) → Ω) (c c₀ : ∀ 
   have hyF : ∀ p, y p ∈ F := by
     intro p
     have e : y p = ratioCoord y c p * (ratioCoord y c ⟨p.1, c₀ p.1⟩)⁻¹ := by
-      simp only [ratioCoord, h₁, mul_one, mul_inv, inv_inv]
+      simp only [ratioCoord, h₁, mul_one, inv_inv]
       field_simp [hc p.1]
     rw [e]
     exact F.mul_mem (hmem p) (F.inv_mem (hmem _))
@@ -334,7 +315,7 @@ theorem charOf_mCoordIdeal {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fint
     rw [Ideal.mem_comap, Ideal.mem_span_singleton, ← CharP.intCast_eq_zero_iff Ω p]
     change mConeMap y (C a) = 0 ↔ _
     have : mConeMap y (C a) = C (a : Ω) := by
-      simp [mConeMap, MvPolynomial.algebraMap_eq]
+      simp [mConeMap]
     rw [this, MvPolynomial.C_eq_zero]
   have := Submodule.IsPrincipal.span_singleton_generator ((mCoordIdeal y).comap (C : ℤ →+* MRing ι))
   rw [charOf]

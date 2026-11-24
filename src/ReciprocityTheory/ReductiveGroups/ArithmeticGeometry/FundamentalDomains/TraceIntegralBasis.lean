@@ -72,8 +72,7 @@ lemma iota_apply (x : E) (w : CP E) : iota E x w = w.1.embedding x := rfl
 lemma conj_conj (φ : E →+* ℂ) :
     ComplexEmbedding.conjugate (ComplexEmbedding.conjugate φ) = φ := by
   first
-    | exact ComplexEmbedding.conjugate_conjugate φ
-    | (ext x; simp [ComplexEmbedding.conjugate_coe_eq])
+    | (ext x; simp)
 
 lemma inner_iota (x y : E) :
     inner ℝ (iota E x) (iota E y) = ∑ w : CP E, (w.1.embedding x * conj (w.1.embedding y)).re := by
@@ -120,9 +119,6 @@ lemma sum_re_eq_trace (u : E) :
   have h0 : algebraMap ℚ ℂ (Algebra.trace ℚ E u) = ∑ σ : E →ₐ[ℚ] ℂ, σ u := by
     first
       | exact trace_eq_sum_embeddings ℂ
-      | exact trace_eq_sum_embeddings ℂ (x := u)
-      | exact trace_eq_sum_embeddings (E := ℂ) (x := u)
-      | exact Algebra.trace_eq_sum_embeddings ℂ
   have h1 : ∑ σ : E →ₐ[ℚ] ℂ, σ u = ∑ φ : E →+* ℂ, φ u :=
     (Fintype.sum_equiv (RingHom.equivRatAlgHom E ℂ) (fun φ : E →+* ℂ => φ u)
       (fun σ : E →ₐ[ℚ] ℂ => σ u)
@@ -133,7 +129,6 @@ lemma sum_re_eq_trace (u : E) :
     refine Finset.sum_congr rfl fun w _ => ?_
     first
       | exact hfib w
-      | convert hfib w
   have h3 : ((Algebra.trace ℚ E u : ℚ) : ℂ) =
       ∑ w : CP E, (w.1.embedding u + conj (w.1.embedding u)) := by
     rw [← eq_ratCast (algebraMap ℚ ℂ), h0, h1, h2]
@@ -167,7 +162,6 @@ lemma bas_apply (i : Free.ChooseBasisIndex ℤ (𝓞 E)) : bas E i = iota E (int
   rw [bas, Basis.map_apply, mixedEmbedding.latticeBasis_apply]
   first
     | rfl
-    | (ext w; simp [toVS, iota, mixedEmbedding])
 
 lemma mem_span_bas {x : VS E} (hx : x ∈ span ℤ (Set.range (bas E))) :
     ∃ α : 𝓞 E, x = iota E (α : E) := by
@@ -181,7 +175,6 @@ lemma card_CP : Fintype.card (CP E) = fdeg E ∧ finrank ℚ E = 2 * Fintype.car
   have h0 : nrRealPlaces E = 0 := by
     first
       | exact Fintype.card_eq_zero
-      | simp [nrRealPlaces]
   have h1 : nrComplexPlaces E = Fintype.card (CP E) := rfl
   rw [h0, zero_add, h1] at h
   refine ⟨?_, h.symm⟩
@@ -193,6 +186,5 @@ lemma finrank_VS : finrank ℝ (VS E) = finrank ℚ E := by
   rw [← (toVS E).finrank_eq]
   first
     | exact mixedEmbedding.finrank E
-    | exact mixedEmbedding.finrank
 
 end ReciprocityTheory.ChartRestriction.G.FD.TraceIntegralBasis

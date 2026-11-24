@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedStandardAddCharConductorProperties
 public import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
 public import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
 import Mathlib.Algebra.Order.Floor.Extended
@@ -141,7 +142,7 @@ theorem mem_UG_iff (s : L →+* L) (J : Matrix (Fin n) (Fin n) L) (g : GL (Fin n
       funext k
       by_cases hk : k = i
       · subst hk; simp
-      · simp [Pi.single_apply, hk]
+      · simp [hk]
     rw [hsi] at this
     simpa using this
 
@@ -171,21 +172,7 @@ end Tor
 
 theorem exists_unif (L : Type) [NontriviallyNormedField L] [IsUltrametricDist L] [ProperSpace L] :
     ∃ p : L, p ≠ 0 ∧ ‖p‖ < 1 ∧ ∀ a : L, ‖a‖ < 1 → ‖a‖ ≤ ‖p‖ := by
-  obtain ⟨x, hx0, hx1⟩ := NormedField.exists_norm_lt_one L
-  have hclosed : IsClosed ({a : L | ‖x‖ ≤ ‖a‖} ∩ Metric.ball 0 1) :=
-    (isClosed_le continuous_const continuous_norm).inter (IsUltrametricDist.isClopen_ball (0 : L) 1).isClosed
-  have hcomp : IsCompact ({a : L | ‖x‖ ≤ ‖a‖} ∩ Metric.ball 0 1) :=
-    (isCompact_closedBall (0 : L) 1).of_isClosed_subset hclosed
-      (fun a ha => Metric.ball_subset_closedBall ha.2)
-  obtain ⟨p, hpA, hmax⟩ := hcomp.exists_isMaxOn ⟨x, le_refl ‖x‖, by simpa using hx1⟩
-    continuous_norm.continuousOn
-  have hp1 : ‖p‖ < 1 := by simpa using hpA.2
-  have hxp : ‖x‖ ≤ ‖p‖ := hpA.1
-  refine ⟨p, fun h => ?_, hp1, fun a ha => ?_⟩
-  · rw [h, norm_zero] at hxp; linarith
-  · by_cases h : ‖x‖ ≤ ‖a‖
-    · exact hmax ⟨h, by simpa using ha⟩
-    · exact (not_le.1 h).le.trans hxp
+  apply GlobalTheory.StdChar.exists_unif <;> assumption
 
 theorem exists_cover {G : Type} [Group G] [TopologicalSpace G] [ContinuousMul G] (K K₀ : Subgroup G)
     (hK : IsOpen (K : Set G)) (hc : IsCompact (K₀ : Set G)) :

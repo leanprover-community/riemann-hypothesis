@@ -101,7 +101,7 @@ theorem single_mulVec' {a : ℕ} (i₀ : Fin a) (v : Fin a → K) :
   by_cases h : i = i₀
   · subst h
     simp [Matrix.mulVec, dotProduct, Matrix.single_apply]
-  · simp [Matrix.mulVec, dotProduct, Matrix.single_apply, h, Ne.symm h]
+  · simp [Matrix.mulVec, dotProduct, h, Ne.symm h]
 
 theorem indep_iff {a : ℕ} {T : Matrix (Fin a) (Fin a) K} (i₀ : Fin a) (hc : ∀ j, T j i₀ = 0)
     (hu : IsUnit (T + Matrix.single i₀ i₀ 1).det) (X : Fin a → Fin M → K) (hX : ffGram σ J X = T) :
@@ -156,9 +156,9 @@ theorem det_corOne {a : ℕ} (T : Matrix (Fin (a + 1)) (Fin (a + 1)) K) (i₀ : 
   have hsub : (T + Matrix.single i₀ i₀ t).submatrix i₀.succAbove i₀.succAbove =
       T.submatrix i₀.succAbove i₀.succAbove := by
     ext a b
-    simp [Matrix.single_apply, (Fin.succAbove_ne i₀ a).symm]
+    simp [(Fin.succAbove_ne i₀ a).symm]
   rw [hsub]
-  simp [hr, Matrix.single_apply, ← two_mul, pow_mul]
+  simp [hr, ← two_mul, pow_mul]
 
 end gen
 

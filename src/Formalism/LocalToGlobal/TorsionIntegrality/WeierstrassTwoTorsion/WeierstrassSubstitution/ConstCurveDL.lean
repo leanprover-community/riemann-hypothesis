@@ -80,7 +80,7 @@ theorem constCurve_dL (W : WeierstrassCurve K) : ConstCurve dL (curveL W) := by
   have h : ∀ c : K, dL (HahnSeries.C c : LaurentSeries K) = 0 := by
     intro c
     ext n
-    simp [dL, HahnSeries.C_apply, HahnSeries.coeff_single]
+    simp [dL, HahnSeries.C_apply]
   exact ⟨h _, h _, h _, h _, h _⟩
 
 variable (W : WeierstrassCurve K) {e : K⟦X⟧} (he : HasSubst e)

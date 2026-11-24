@@ -359,7 +359,6 @@ theorem gaussOneDamped : Formalism.FourierDecayAlt.G.GaussOneDamped := by
   have h1 : 4 * δ ^ 2 + ‖β‖ ^ 2 * ‖a‖ ^ 2 = 2 ^ 2 * (δ ^ 2 + ‖β * a / 2‖ ^ 2) := by
     rw [norm_div, norm_mul]; simp; ring
   rw [h1, Real.sqrt_mul (by positivity), Real.sqrt_sq (by norm_num)]
-  have h2 : 0 < Real.sqrt (δ ^ 2 + ‖β * a / 2‖ ^ 2) := Real.sqrt_pos.2 (by positivity)
   have := Real.pi_pos
   field_simp
 
@@ -469,8 +468,6 @@ theorem gaussOne_of_damped (h : GaussOneDamped) : GaussOne := by
       ∫ w : ℂ, ((Real.exp (-δ * ‖w‖ ^ 2) : ℝ) : ℂ) * psi β (a * w ^ 2 / 2) ∂(mu β) := by
     filter_upwards [self_mem_nhdsWithin] with δ hδ using (h β a δ hδ).symm
   refine Filter.Tendsto.congr' h1 ?_
-  have hb : 0 < ‖β‖ := norm_pos_iff.2 hβ
-  have hab : 0 < ‖a‖ := norm_pos_iff.2 ha
   have hc : ContinuousAt (fun δ:ℝ => ‖β‖ / Real.sqrt (4 * δ ^ 2 + ‖β‖ ^ 2 * ‖a‖ ^ 2)) 0 := by
     apply ContinuousAt.div₀ continuousAt_const (by fun_prop)
     have : 0 < 4 * (0:ℝ) ^ 2 + ‖β‖ ^ 2 * ‖a‖ ^ 2 := by positivity

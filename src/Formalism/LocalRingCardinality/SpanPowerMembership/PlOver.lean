@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.AdmissibleParameterJoins.SumLogPrimeFactorsLe
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -82,28 +83,7 @@ theorem prime_unique {L : Type} [Field L] [NumberField L] {p q : ℕ} (hp : p.Pr
 
 theorem resChar_mem (w : D.what₂.places.Pl) :
     ((D.what₂.places.resChar w : ℕ) : 𝓞 D.what₂.LL) ∈ (D.plEq w).asIdeal := by
-  have hq := D.what₂.places.resChar_prime w
-  have hne : ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) ≠ 0 := Nat.cast_ne_zero.mpr hq.ne_zero
-  have h1 := D.val_eq w _ hne
-  rw [D.what₂.places.val_resChar] at h1
-  have h2 : ((D.what₂.places.ramIdx w : ℕ) : ℤ) =
-      vAdd (D.plEq w) ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) := by exact_mod_cast h1
-  have h3 : 0 < vAdd (D.plEq w) ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) := by
-    rw [← h2]; exact_mod_cast D.what₂.places.ramIdx_pos w
-  unfold vAdd at h3
-  have hlt : (D.plEq w).valuation D.what₂.LL ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) < 1 := by
-    by_contra h
-    push_neg at h
-    have hv0 : (D.plEq w).valuation D.what₂.LL ((D.what₂.places.resChar w : ℕ) : D.what₂.LL) ≠ 0 :=
-      (Valuation.ne_zero_iff _).mpr hne
-    have h4 := (WithZero.log_le_log one_ne_zero hv0).mpr h
-    rw [WithZero.log_one] at h4
-    omega
-  refine (HeightOneSpectrum.valuation_lt_one_iff_mem (K := D.what₂.LL) _ _).mp ?_
-  first
-    | exact hlt
-    | (simpa using hlt)
-    | (convert hlt using 2; exact map_natCast _ _)
+  apply Formalism.MainNotions.J.resChar_mem <;> assumption
 
 theorem resChar_eq_iff (p : ℕ) [hp : Fact p.Prime] (w : D.what₂.places.Pl) :
     D.what₂.places.resChar w = p ↔ ((p : ℕ) : 𝓞 D.what₂.LL) ∈ (D.plEq w).asIdeal := by

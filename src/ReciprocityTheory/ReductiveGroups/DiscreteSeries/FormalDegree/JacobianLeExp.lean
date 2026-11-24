@@ -100,7 +100,6 @@ theorem shc_bounds (u : ℝ) : 1 ≤ shc u ∧ shc u ≤ Real.exp (u ^ 2 / 6) �
       rw [← pow_mul, pow_succ]
       first
         | (field_simp; done)
-        | (field_simp; ring)
     rw [hfun]
     exact h
   refine ⟨?_, ?_, ?_⟩

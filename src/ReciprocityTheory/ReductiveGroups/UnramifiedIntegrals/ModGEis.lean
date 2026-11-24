@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NonzeroDiscriminants.DiscMain
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -89,22 +90,7 @@ theorem G_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) {k : ℕ
   ring
 
 theorem sixVal : riemannZeta 6 = (Real.pi : ℂ) ^ 6 / 945 := by
-  have h5 : bernoulli' 5 = 0 := by
-    rw [bernoulli'_def]
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, bernoulli'_zero, bernoulli'_one,
-      bernoulli'_two, bernoulli'_three, bernoulli'_four]
-    norm_num [Nat.choose]
-  have h6 : bernoulli' 6 = 1 / 42 := by
-    rw [bernoulli'_def]
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, bernoulli'_zero, bernoulli'_one,
-      bernoulli'_two, bernoulli'_three, bernoulli'_four, h5]
-    norm_num [Nat.choose]
-  have hB : bernoulli 6 = 1 / 42 := by
-    rw [bernoulli_eq_bernoulli'_of_ne_one (by norm_num), h6]
-  have h := riemannZeta_two_mul_nat (k := 3) (by norm_num)
-  norm_num [Nat.factorial, hB] at h
-  rw [h]
-  ring
+  apply DiscrNeWork.zeta6 <;> assumption
 
 theorem g₂_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) :
     L.g₂ = (c ^ 4)⁻¹ * (4 * (Real.pi : ℂ) ^ 4 / 3) * E₄ τ := by

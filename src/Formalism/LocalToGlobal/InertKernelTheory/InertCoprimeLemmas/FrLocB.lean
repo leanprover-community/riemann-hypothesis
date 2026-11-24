@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsEmbeddingPadicAlgClPlace
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsFrONB
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.IsometryLinkageTrivialLevel
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
@@ -319,44 +320,13 @@ theorem intAt_det {n : Type*} [Fintype n] [DecidableEq n] (M : Matrix n n K) (h 
 
 theorem norm_le_one_of_int {k : Type*} [NormedField k] [IsUltrametricDist k] {y : k}
     (hy : IsIntegral ℤ y) : ‖y‖ ≤ 1 := by
-  by_contra hlt
-  push_neg at hlt
-  obtain ⟨P, hPm, hP⟩ := hy
-  have hsum : y ^ P.natDegree = -∑ i ∈ Finset.range P.natDegree, (P.coeff i : k) * y ^ i := by
-    have h := hP
-    rw [hPm.as_sum] at h
-    simp only [Polynomial.eval₂_add, Polynomial.eval₂_X_pow, Polynomial.eval₂_finsetSum,
-      Polynomial.eval₂_mul, Polynomial.eval₂_C, Polynomial.eval₂_X_pow, algebraMap_int_eq, eq_intCast, map_sum] at h
-    refine eq_neg_of_add_eq_zero_left ?_
-    rw [← h]
-    congr 1
-    refine Finset.sum_congr rfl fun i _ => ?_
-    congr 1
-    rw [← Polynomial.C_eq_intCast, Polynomial.eval₂_C]
-    simp
-  have hy1 : 1 ≤ ‖y‖ := hlt.le
-  rcases Nat.eq_zero_or_pos P.natDegree with hn | hn
-  · rw [hn, pow_zero, Finset.range_zero, Finset.sum_empty, neg_zero] at hsum
-    exact one_ne_zero hsum
-  · have hle : ‖∑ i ∈ Finset.range P.natDegree, (P.coeff i : k) * y ^ i‖ ≤ ‖y‖ ^ (P.natDegree - 1) := by
-      refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity) fun i hi => ?_
-      rw [norm_mul, norm_pow]
-      have hc : ‖(P.coeff i : k)‖ ≤ 1 := IsUltrametricDist.norm_intCast_le_one ..
-      have hp : ‖y‖ ^ i ≤ ‖y‖ ^ (P.natDegree - 1) :=
-        pow_le_pow_right₀ hy1 (by have := Finset.mem_range.mp hi; omega)
-      calc ‖(P.coeff i : k)‖ * ‖y‖ ^ i ≤ 1 * ‖y‖ ^ (P.natDegree - 1) :=
-            mul_le_mul hc hp (by positivity) zero_le_one
-        _ = ‖y‖ ^ (P.natDegree - 1) := one_mul _
-    rw [← norm_neg, ← hsum, norm_pow] at hle
-    have hlt2 : ‖y‖ ^ (P.natDegree - 1) < ‖y‖ ^ P.natDegree := pow_lt_pow_right₀ hlt (by omega)
-    linarith
+  apply GlobalTheory.norm_le_one_of_isIntegral_int <;> assumption
 
 theorem norm_nat_coprime [Fact p.Prime] {s : ℕ} (h : Nat.Coprime s p) : ‖(s : ℂ_[p])‖ = 1 := by
   have h1 : ((s : ℚ_[p]) : ℂ_[p]) = (s : ℂ_[p]) := map_natCast (algebraMap ℚ_[p] ℂ_[p]) s
   rw [← h1, PadicComplex.norm_extends, PadicAlgCl.norm_extends, Padic.norm_natCast_eq_one_iff]
   first
   | exact h.symm
-  | exact (Nat.Prime.coprime_iff_not_dvd Fact.out).mp h.symm
 
 theorem norm_le_of_intAt [Fact p.Prime] (ψ : K →+* ℂ_[p]) {x : K} (h : IntAt p x) : ‖ψ x‖ ≤ 1 := by
   obtain ⟨s, hs, hx⟩ := h
@@ -564,9 +534,6 @@ theorem hK_sum_smul_right {ι : Type*} (s : Finset ι) (k : ι → D.host.K) (f 
 
   simp only [G0.hK, map_sum, Finset.mul_sum]
 
-theorem hK_smul_right (k : D.host.K) (x y : D.host.E) : G0.hK D x (k • y) = G0.cK D k * G0.hK D x y :=
-  hK_smul_right' D k x y
-
 theorem cK_nat (s : ℕ) : G0.cK D (s : D.host.K) = s := map_natCast _ s
 
 theorem cK_int {x : D.host.K} (h : IsIntegral ℤ x) : IsIntegral ℤ (G0.cK D x) :=
@@ -631,7 +598,7 @@ theorem local_orthonormal_basis : LocBasisMM := by
     have := hK_of_mem D h1 h2
     rw [show (s : D.host.E) * b m = (s : D.host.K) • b m from by rw [Algebra.smul_def, map_natCast],
       show (t : D.host.E) * b k = (t : D.host.K) • b k from by rw [Algebra.smul_def, map_natCast],
-      hK_smul_left, hK_smul_right, cK_nat] at this
+      hK_smul_left, _root_.Formalism.L2.KerInert.FrLocB.hK_smul_right', cK_nat] at this
     have e : ((s * t : ℕ) : D.host.K) * G m k = (s : D.host.K) * ((t : D.host.K) * G0.hK D (b m) (b k)) := by
       simp only [G, Matrix.of_apply]; rw [Nat.cast_mul]; ring
     rw [e]; exact isInt_cast this
@@ -654,7 +621,7 @@ theorem local_orthonormal_basis : LocBasisMM := by
     have e1 : G0.hK D ((S : D.host.K) • w n) y = G0.cK D (c n) := by
       rw [hK_smul_left, ← cK_nat D S]
       have e2 : G0.cK D (S : D.host.K) * G0.hK D (w n) y = G0.hK D (w n) ((S : D.host.K) • y) := by
-        rw [hK_smul_right]
+        rw [_root_.Formalism.L2.KerInert.FrLocB.hK_smul_right']
       rw [e2, hc, hK_sum_smul_right]
       rw [Finset.sum_eq_single n]
       · rw [hK_symm, hw, if_pos rfl, map_one, mul_one]
@@ -757,6 +724,6 @@ end Formalism.L2.KerInert.FrLocB
 
 namespace Formalism.L2.KerInert
 
-theorem local_orthonormal_basis : LocBasisMM := FrLocB.local_orthonormal_basis
+alias local_orthonormal_basis := _root_.Formalism.L2.KerInert.FrLocB.local_orthonormal_basis
 
 end Formalism.L2.KerInert

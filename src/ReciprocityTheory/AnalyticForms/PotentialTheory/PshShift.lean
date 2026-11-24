@@ -51,7 +51,7 @@ open scoped ContDiff
 
 noncomputable section
 
-theorem pshShift : PshShiftStatement := plurisubharmonicShift_proof
+alias pshShift := _root_.ReciprocityTheory.AnForm.M.plurisubharmonicShift_proof
 
 end
 

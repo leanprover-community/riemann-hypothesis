@@ -61,7 +61,7 @@ theorem bRaw_e (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) (y : Fin (r + 1) → O
   rw [Finset.sum_eq_single (Fin.last r)]
   · simp [lamL, lamC]
   · intro j _ hj
-    simp [Pi.single_apply, hj]
+    simp [hj]
   · simp
 
 theorem bRaw_b_mem (hcj : ∀ x, cj (cj x) = x) (hO : ∀ x ∈ O, cj x ∈ O)
@@ -162,7 +162,7 @@ theorem lamS_e (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O)
   rw [Finset.sum_eq_single (Fin.last r)]
   · rw [hκ, map_zero, zero_mul]
   · intro b _ hb
-    simp [Pi.single_apply, hb]
+    simp [hb]
   · simp
 
 variable (hcj : ∀ x, cj (cj x) = x) (hO : ∀ x ∈ O, cj x ∈ O)

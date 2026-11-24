@@ -115,7 +115,6 @@ theorem mixT_zero_flagN {S T T₀ : HSp D} {σ : ℕ} (d : HypDec T T₀ σ) (ψ
   rw [show symplOH S T₀ w 0 = 0 by
     first
     | exact symplOH_zero_right S T₀ w
-    | exact GlobalTheory.MixModel.symplOH_zero_right S T₀ w
     | simp [symplOH, symplO, hO]]
   rw [AddChar.map_zero_eq_one, one_mul]
 

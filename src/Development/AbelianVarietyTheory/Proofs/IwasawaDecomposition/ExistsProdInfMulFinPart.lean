@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisOpenSubgroupLocalUnits
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousInfIdele
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsProdUnifMulUnitIdl
@@ -53,23 +54,7 @@ namespace GlobalTheory.Mem.Chr.Determ
 variable {L : Type} [Field L] [NumberField L]
 
 theorem continuous_finSingle (v : HeightOneSpectrum (𝓞 L)) : Continuous (finiteSingle L v) := by
-  classical
-  have hle : (Filter.cofinite : Filter (HeightOneSpectrum (𝓞 L))) ≤ Filter.principal ({v}ᶜ : Set _) := by
-    rw [Filter.le_principal_iff]
-    exact (Set.finite_singleton v).compl_mem_cofinite
-  let f : v.adicCompletion L → RestrictedProduct (fun w : HeightOneSpectrum (𝓞 L) => w.adicCompletion L)
-      (fun w => (w.adicCompletionIntegers L : Set (w.adicCompletion L))) (Filter.principal ({v}ᶜ : Set _)) :=
-    fun x => ⟨Pi.mulSingle v x, by
-      rw [Filter.eventually_principal]
-      intro w hw
-      have h' : w ≠ v := hw
-      rw [Pi.mulSingle_eq_of_ne h']
-      exact one_mem _⟩
-  have hf : Continuous f := by
-    rw [RestrictedProduct.continuous_rng_of_principal]
-    exact continuous_mulSingle (A := fun w : HeightOneSpectrum (𝓞 L) => w.adicCompletion L) v
-  have := (RestrictedProduct.continuous_inclusion hle).comp hf
-  exact this
+  apply GlobalTheory.CompanionTheory.InertOpen.continuous_finiteSingle <;> assumption
 
 theorem continuous_localIdele (v : HeightOneSpectrum (𝓞 L)) : Continuous (localIdele L v) := by
   apply Continuous.units_map

@@ -382,7 +382,7 @@ theorem exists_half (s : ℤ) (hs : (15 : ℤ) ∣ s ^ 2 + H.d) (e : ℕ) :
   let J : Ideal (𝓞 E) := Ideal.span {15, (s : 𝓞 E) + H.rt}
   have hJ : J.map (H.bar : 𝓞 E →+* 𝓞 E) = Ideal.span {15, (s : 𝓞 E) - H.rt} := by
     rw [Ideal.map_span, Set.image_pair]
-    simp [bar_root, sub_eq_add_neg, map_ofNat]
+    simp [sub_eq_add_neg, map_ofNat]
   have m1 : (15 : 𝓞 E) ∈ J := Ideal.subset_span (by simp)
   have m2 : (s : 𝓞 E) + H.rt ∈ J := Ideal.subset_span (by simp)
   have m3 : (15 : 𝓞 E) ∈ J.map (H.bar : 𝓞 E →+* 𝓞 E) := hJ ▸ Ideal.subset_span (by simp)

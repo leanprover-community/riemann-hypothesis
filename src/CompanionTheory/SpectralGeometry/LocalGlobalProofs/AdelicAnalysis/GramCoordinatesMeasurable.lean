@@ -3,8 +3,9 @@ module
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GaussQ
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelesLocallyCompactSecondCountable
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicUnitaryGroupLocallyCompactStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRingStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicUnitaryGroupLocallyCompact
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -63,10 +64,10 @@ theorem continuous_gmat_entry {F E : Type} [Field F] [NumberField F] [Field E] [
     (p q : Fin M × Fin d) :
     Continuous fun h : HA R σ J => gmat R σ J b h p q := by
   classical
-  have hact := ((GlobalTheory.T.adelic_unitary_group_locally_compact F E σ hσ M J hJ R).2.2.2.2.2 1).1
+  have hact := ((_root_.GlobalTheory.CompanionTheory.SW.TopH.topH_props F E σ hσ M J hJ R).2.2.2.2.2 1).1
   have hco : IsHomeomorph fun (y : R ⊗[F] E) (k : Fin d) =>
       (Algebra.TensorProduct.basis R b).repr y k :=
-    (GlobalTheory.T.tensor_locally_compact_ring F E σ hσ R).2.2.2.2.2.2.1 d b
+    (_root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hσ R).2.2.2.2.2.2.1 d b
   let X : Fin 1 → Fin M → R ⊗[F] E := fun _ => Pi.single q.1 (inclR R (b q.2))
   have h1 : Continuous fun h : HA R σ J => actW R σ J h X :=
     hact.comp (continuous_id.prodMk continuous_const)
@@ -81,7 +82,7 @@ theorem continuous_gmat_entry {F E : Type} [Field F] [NumberField F] [Field E] [
 theorem ginf_gfin_measurable : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (e : Ainf F ≃+* (InfinitePlace F → ℝ)), IsHomeomorph e → (∀ w p q, Measurable fun ω => ginf e σ J b ω w p q) ∧ (∀ p q, Measurable fun ω => gfin σ J b ω p q) := by
   intro F E _ _ _ _ _ σ hσ M J hJ d b e he
   obtain ⟨⟨hlc, hsc, ht2⟩, -⟩ := GlobalTheory.CompanionTheory.AdeleTop.adele_top F
-  obtain ⟨htg, -, -, -, hbor, -⟩ := GlobalTheory.T.adelic_unitary_group_locally_compact F E σ hσ M J hJ (AF F)
+  obtain ⟨htg, -, -, -, hbor, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopH.topH_props F E σ hσ M J hJ (AF F)
   have hinv : ∀ p q, Continuous fun ω : HA (AF F) σ J => gmat (AF F) σ J b ω⁻¹ p q := fun p q =>
     (continuous_gmat_entry σ hσ J hJ b (AF F) p q).comp continuous_inv
   haveI : BorelSpace (Af F) := ⟨rfl⟩

@@ -46,6 +46,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.PositionPrependMemNoncompactPositionSubmodule
 
 @[expose] public section
 
@@ -70,10 +71,6 @@ theorem mem_ncV_iff_apply {k : ℕ} {F : Big n k M} :
 
 theorem permute_apply {k : ℕ} (σ : Equiv.Perm (Fin k)) (F : Big n k M)
     (κ : Fin k → Fin n × Fin n) : permute σ F κ = F (κ ∘ σ) := rfl
-
-theorem phi_apply_eq (k : ℕ) (F : Big n k M) : phi E k F = ∑ κ, word E κ (F κ) := by
-  simp only [phi, LinearMap.sum_apply, LinearMap.comp_apply]
-  rfl
 
 theorem listProd_mem_layer (hE : IsGlRep E) (hV : IsKStableSub ε E V)
     (l : List (Fin n × Fin n)) {j : ℕ} {v : M} (hv : v ∈ layer ε E V j) :
@@ -132,7 +129,7 @@ theorem word_eq_listProd {k : ℕ} (κ : Fin k → Fin n × Fin n) :
 theorem phi_permute_sub_mem (hE : IsGlRep E) (hV : IsKStableSub ε E V) {k : ℕ}
     (σ : Equiv.Perm (Fin (k + 1))) {F : Big n (k + 1) M} (hF : F ∈ ncV ε V (k + 1)) :
     phi E (k + 1) F - phi E (k + 1) (permute σ F) ∈ layer ε E V k := by
-  rw [phi_apply_eq, phi_apply_eq]
+  rw [_root_.ReciprocityTheory.ChartRestriction.DS.wordContraction_apply, _root_.ReciprocityTheory.ChartRestriction.DS.wordContraction_apply]
   have hre : ∑ κ, word E κ ((permute σ F) κ) = ∑ κ, word E (κ ∘ σ.symm) (F κ) := by
     let e : (Fin (k + 1) → Fin n × Fin n) ≃ (Fin (k + 1) → Fin n × Fin n) :=
       ⟨fun κ => κ ∘ σ, fun κ => κ ∘ σ.symm, fun κ => by funext i; simp, fun κ => by funext i; simp⟩

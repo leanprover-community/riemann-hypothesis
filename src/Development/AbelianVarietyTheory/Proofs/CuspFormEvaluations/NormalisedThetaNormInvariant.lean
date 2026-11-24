@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsBoundOrthonormalFrame
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAtData
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsBasisSpanEqOfCommensurable
@@ -192,24 +193,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 theorem hermC_map_mulVec (G : Matrix (Fin r) (Fin r) E) {γ : Matrix (Fin r) (Fin r) E}
     (hγ : ∀ x y, herm G (γ.mulVec x) (γ.mulVec y) = herm G x y) (τ : E →+* ℂ) (u w : Fin r → ℂ) :
     hermC τ G ((γ.map τ).mulVec u) ((γ.map τ).mulVec w) = hermC τ G u w := by
-  have hx : ∀ (P : Matrix (Fin r) (Fin r) E) (u : Fin r → ℂ), (P.map τ).mulVec u =
-      ∑ k, u k • Data.emb τ (P.mulVec (Pi.single k 1)) := by
-    intro P u
-    funext j
-    simp [Data.emb, Matrix.mulVec, dotProduct, Pi.single_apply, mul_comm, apply_ite τ]
-  have hexp : ∀ P : Matrix (Fin r) (Fin r) E,
-      hermC τ G ((P.map τ).mulVec u) ((P.map τ).mulVec w) = ∑ k, ∑ l, u k * (conj (w l) *
-        τ (herm G (P.mulVec (Pi.single k 1)) (P.mulVec (Pi.single l 1)))) := by
-    intro P
-    rw [hx, hx, hermC_sum_left]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [hermC_smul_left, hermC_sum_right, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun l _ => ?_
-    rw [hermC_smul_right, hermC_emb]
-  have h1 : ((1 : Matrix (Fin r) (Fin r) E).map τ) = 1 := Matrix.map_one τ τ.map_zero τ.map_one
-  conv_rhs => rw [← Matrix.one_mulVec u, ← Matrix.one_mulVec w, ← h1]
-  rw [hexp, hexp]
-  simp only [hγ, Matrix.one_mulVec]
+  apply GlobalTheory.MixedSignature.hermC_stab <;> assumption
 
 theorem hermC_eq_zero_of_mem_span (X : Data E r) (τ : X.Ψ) (e : Fin r → Fin r → ℂ)
     (he : ∀ a b, hermC τ.1 X.Gm (e a) (e b) = if a = b then ((sgn X.p0 a : ℝ) : ℂ) else 0)
@@ -300,7 +284,7 @@ theorem exists_unit_frame (X : Data E r) {x b : Frame X.Ψ r} (hb : b ∈ Bor X.
           exact Submodule.zero_mem _
       · funext j
         simp only [Matrix.mulVecLin_apply, Matrix.mulVec, dotProduct, col, mat, lact, rmul,
-          Matrix.of_apply, Matrix.mul_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, hg,
+          Matrix.of_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, hg,
           mul_comm]
         rfl) a
   refine ⟨conj u, by rw [Complex.norm_conj, hu], fun v => ?_⟩

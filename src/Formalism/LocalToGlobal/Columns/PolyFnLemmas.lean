@@ -88,7 +88,7 @@ theorem map_fockS (s : K →+* ℂ) (f g : MvPolynomial σ K) (hf : ∀ m, s (st
 
   rw [fockF_eq_sum _ _ _ hsg, map_sum, Finset.sum_subset hsf ?_]
   · refine Finset.sum_congr rfl fun m _ => ?_
-    simp only [MvPolynomial.coeff_map, map_mul, hf m, map_natCast, mfact, Finsupp.prod]
+    simp only [MvPolynomial.coeff_map, map_mul, hf m, map_natCast, mfact]
     ring
   · intro m _ hm
     have hc : f.coeff m = 0 := by simpa [MvPolynomial.mem_support_iff] using hm
@@ -134,7 +134,7 @@ theorem fockF_blockAct (g : ι → Matrix (Fin n) (Fin n) ℂ) (f h : MvPolynomi
     fockF (blockAct ℂ g f) h = fockF f (blockAct ℂ (fun τ => (g τ)ᴴ) h) := by
   classical
   rw [blockAct_eq_sub, blockAct_eq_sub, ← bigM_conjTranspose]
-  exact Formalism.GradedWeylDivisibility.fockSubAdj _ _ _ _
+  exact _root_.Formalism.GradedWeylDivisibility.fischerInnerSubstitutionAdjoint _ _ _ _
 
 theorem map_blockAct {K : Type} [Field K] (s : K →+* ℂ) (g : ι → Matrix (Fin n) (Fin n) K)
     (P : MvPolynomial (ι × Fin n × Fin n) K) :

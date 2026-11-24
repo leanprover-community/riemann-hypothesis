@@ -44,6 +44,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.SigmaAlg
 
 @[expose] public section
 
@@ -255,101 +256,7 @@ theorem coeff_mvExp_gauss (t : ℂ) (k : ℕ) :
 theorem algebraic_isogenyConstant_of_isogenyFormula (e : PowerSeries ℂ) (he : InQ e) (s α : ℂ) (hα : α ∈ Formalism.MainNotions.TaylorLogMetric.Qbar) (hα0 : α ≠ 0)
     {ι : Type} [Fintype ι] (c : ι → ℂ) (hI : Formalism.L2.Th1.C.IsogenyFormula e s c α) :
     (((Fintype.card ι + 1 : ℕ) : ℂ) - α ^ 2) * s ∈ Formalism.MainNotions.TaylorLogMetric.Qbar := by
-  classical
-  obtain ⟨n, hn⟩ : ∃ n, n = Fintype.card ι := ⟨_, rfl⟩
-  obtain ⟨D, hD⟩ : ∃ D, D = Formalism.L2.Th1.C.dblInt e := ⟨_, rfl⟩
-  obtain ⟨lm, hlm⟩ : ∃ lm, lm = Formalism.L2.Th1.C.lam e s := ⟨_, rfl⟩
-  obtain ⟨Φ, hΦ⟩ : ∃ Φ : PowerSeries ℂ, Φ = mvExp (-lm) := ⟨_, rfl⟩
-  obtain ⟨Pi, hPi⟩ : ∃ Pi : PowerSeries ℂ, Pi = ∏ P, Formalism.L2.Th1.C.wpShift e (c P) := ⟨_, rfl⟩
-  have hD0 : constantCoeff D = 0 := by
-    rw [← coeff_zero_eq_constantCoeff_apply, hD]
-    unfold Formalism.L2.Th1.C.dblInt
-    rw [coeff_mk]; simp
-  have hlmD : lm = D + C (s / 2) * X ^ 2 := by rw [hlm, hD]; rfl
-  have hlm0 : constantCoeff lm = 0 := by
-    rw [hlmD, map_add (f := _), hD0, map_mul, map_pow, constantCoeff_X]; simp
-  have hnl0 : constantCoeff (-lm) = 0 := by rw [map_neg, hlm0, neg_zero]
-
-  have h1 : (rescale α Φ) ^ 2 = Φ ^ (2 * (n + 1)) * Pi := by
-    have hI' := hI
-    unfold Formalism.L2.Th1.C.IsogenyFormula Formalism.L2.Th1.C.sgStar at hI'
-    rw [← hlm, ← hΦ, ← hPi, ← hn, map_mul, rescale_X] at hI'
-    have hne : (C (α ^ 2) * X ^ (2 * n + 2) : PowerSeries ℂ) ≠ 0 := by
-      refine mul_ne_zero ?_ (pow_ne_zero _ X_ne_zero)
-      intro h0
-      have := congrArg (coeff 0) h0
-      rw [coeff_C, if_pos rfl, map_zero] at this
-      exact hα0 (pow_eq_zero_iff (by norm_num) |>.1 this)
-    have key : C (α ^ 2) * X ^ (2 * n + 2) * ((rescale α Φ) ^ 2 - Φ ^ (2 * (n + 1)) * Pi) = 0 := by
-      rw [map_pow] at hI' ⊢
-      linear_combination hI'
-    exact sub_eq_zero.1 ((mul_eq_zero.1 key).resolve_left hne)
-
-  have hr0 : constantCoeff (rescale α (-lm)) = 0 := by
-    rw [← coeff_zero_eq_constantCoeff_apply, coeff_rescale, coeff_zero_eq_constantCoeff_apply, hnl0, mul_zero]
-  have ha0 : constantCoeff ((2 * (n + 1)) • (-lm)) = 0 := by rw [map_nsmul, hnl0, smul_zero]
-  have hna0 : constantCoeff (-((2 * (n + 1)) • (-lm))) = 0 := by rw [map_neg, ha0, neg_zero]
-  have hb0 : constantCoeff (2 • rescale α (-lm)) = 0 := by rw [map_nsmul, hr0, smul_zero]
-  have ha : (mvExp ((2 * (n + 1)) • (-lm)) : PowerSeries ℂ) = Φ ^ (2 * (n + 1)) := by
-    rw [hΦ]; exact mvExp_nsmul hnl0 _
-  have hb : (mvExp (2 • rescale α (-lm)) : PowerSeries ℂ) = (rescale α Φ) ^ 2 := by
-    rw [hΦ, rescale_mvExp hnl0 α]; exact mvExp_nsmul hr0 2
-  have h2 : Pi = mvExp (-((2 * (n + 1)) • (-lm)) + 2 • rescale α (-lm)) := by
-    rw [mvExp_add hna0 hb0, hb, h1, ← ha, ← mul_assoc, mvExp_neg ha0, one_mul]
-
-  set t : ℂ := (((2 * (n + 1) : ℕ) : ℂ)) * (s / 2) - 2 * (α ^ 2 * (s / 2)) with ht
-  set F0 : PowerSeries ℂ := (2 * (n + 1)) • D - 2 • rescale α D with hF0
-  have h3 : -((2 * (n + 1)) • (-lm)) + 2 • rescale α (-lm) = F0 + C t * X ^ 2 := by
-    rw [hF0, ht, hlmD]
-    simp only [map_neg, map_add (f := _), map_mul, map_pow, rescale_X, rescale_C', nsmul_eq_mul, map_sub, map_natCast]
-    push_cast
-    rw [show (C (2 : ℂ) : PowerSeries ℂ) = 2 from map_ofNat C 2]
-    ring
-  have hF00 : constantCoeff F0 = 0 := by
-    rw [hF0, map_sub, map_nsmul, map_nsmul, hD0, ← coeff_zero_eq_constantCoeff_apply, coeff_rescale,
-      coeff_zero_eq_constantCoeff_apply, hD0]
-    simp
-  have hG0 : constantCoeff (C t * X ^ 2 : PowerSeries ℂ) = 0 := by simp
-  have hnF0 : constantCoeff (-F0) = 0 := by rw [map_neg, hF00, neg_zero]
-  have h4 : Pi * mvExp (-F0) = mvExp (C t * X ^ 2) := by
-    rw [h2, h3, mvExp_add hF00 hG0, mul_comm (mvExp F0), mul_assoc, mvExp_mul_neg hF00, mul_one]
-
-  have hw : ∀ x, Formalism.L2.Th1.C.wpShift e x = (1 + X ^ 2 * e) - C x * X ^ 2 := by
-    intro x; unfold Formalism.L2.Th1.C.wpShift; ring
-  obtain ⟨q, hq⟩ := prod_expand (1 + X ^ 2 * e) (X ^ 2) Finset.univ c
-  rw [Finset.card_univ, ← hn] at hq
-  have hPi' : Pi = ∑ i ∈ Finset.range (n + 1), C (q i) * (X ^ 2) ^ i * (1 + X ^ 2 * e) ^ (n - i) := by
-    rw [hPi, ← hq]; simp only [hw]
-  set B : ℕ → PowerSeries ℂ := fun i => (1 + X ^ 2 * e) ^ (n - i) * mvExp (-F0) with hB
-  have h5 : mvExp (C t * X ^ 2) = ∑ i ∈ Finset.range (n + 1), C (q i) * (X ^ (2 * i) * B i) := by
-    rw [← h4, hPi', Finset.sum_mul]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [hB, pow_mul]; ring
-
-  have hDq : InQ D := by rw [hD]; exact inQ_dblInt he
-  have hF0q : InQ F0 := by rw [hF0]; exact inQ_sub (inQ_nsmul hDq _) (inQ_nsmul (inQ_rescale hDq hα) 2)
-  have hAq : InQ (1 + X ^ 2 * e) := inQ_add inQ_one (inQ_mul (inQ_pow inQ_X 2) he)
-  have hBq : ∀ i, InQ (B i) := fun i => inQ_mul (inQ_pow hAq _) (inQ_mvExp (inQ_neg hF0q) hnF0)
-  have hB0 : ∀ i, coeff (2 * 0) (B i) = 1 := by
-    intro i
-    rw [mul_zero, coeff_zero_eq_constantCoeff_apply, hB]
-    simp only [map_mul, map_pow, map_add (f := _), map_one, constantCoeff_X]
-    have : constantCoeff (mvExp (-F0) : PowerSeries ℂ) = 1 := constantCoeff_mvExp hnF0
-    rw [this]; simp
-  have htri : t ∈ Formalism.MainNotions.TaylorLogMetric.Qbar := by
-    refine tri_alg n (fun i k => coeff (2 * k) (B i)) (fun i k => hBq i _) hB0 q t ?_
-    intro k _
-
-    rw [← coeff_mvExp_gauss t k, h5, map_sum]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [coeff_C_mul, coeff_X_pow_mul']
-    congr 1
-    by_cases hik : i ≤ k
-    · rw [if_pos (by omega), if_pos hik, show 2 * k - 2 * i = 2 * (k - i) by omega]
-    · rw [if_neg (by omega), if_neg hik]
-  have e : (((Fintype.card ι + 1 : ℕ) : ℂ) - α ^ 2) * s = t := by
-    rw [ht, ← hn]; push_cast; ring
-  rw [e]; exact htri
+  apply _root_.Formalism.L2.KerInert.Sigma.ChartWirtingerDerivatives.mul_s2_mem_Qbar_of_isogenyFormula <;> assumption
 
 theorem alpha_sq (dK : ℕ) :
     (((-1 : ℤ) : ℂ) + ((2 : ℤ) : ℂ) * Formalism.L2.Th1.CM.omegaK dK) ^ 2 = -(dK : ℂ) := by

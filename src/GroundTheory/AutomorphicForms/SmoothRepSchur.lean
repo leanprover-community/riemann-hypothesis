@@ -198,7 +198,7 @@ theorem rank_le_aleph0_of_isSmooth (hρ : IsSmooth ρ) [ρ.IsIrreducible] :
     intro g
     refine Submodule.span_le.2 ?_
     rintro _ ⟨h, rfl⟩
-    exact Submodule.subset_span ⟨g * h, by simp [map_mul, Module.End.mul_apply]⟩
+    exact Submodule.subset_span ⟨g * h, by simp [map_mul]⟩
   let W : Subrepresentation ρ :=
     ⟨Submodule.span ℂ (Set.range fun h : G => ρ h v), fun g _ hx => hstable g hx⟩
   have hW : W = ⊤ := (eq_bot_or_eq_top W).resolve_left fun h => hv (by

@@ -93,13 +93,9 @@ theorem gradAt_X_sub_C (q : Fin n → ℂ) (i : Fin n) (c : ℂ) :
   · subst h; simp [gradAt_apply, pderiv_X]
   · simp [gradAt_apply, pderiv_X, h, Ne.symm h]
 
-theorem exists_expansion (q : Fin n → ℂ) (p : MvPolynomial (Fin n) ℂ) :
-    ∃ c : Fin n → MvPolynomial (Fin n) ℂ, p = C (eval q p) + ∑ i, c i * (X i - C (q i)) :=
-  _root_.UpperTheory.Reformulated.B.Qn12.exists_expansion q p
-
 theorem mem_sq_of_gradAt_eq_zero (q : Fin n → ℂ) (p : MvPolynomial (Fin n) ℂ) (hp : eval q p = 0)
     (hg : gradAt q p = 0) : p ∈ RingHom.ker (eval q) ^ 2 := by
-  obtain ⟨c, hc⟩ := exists_expansion q p
+  obtain ⟨c, hc⟩ := _root_.UpperTheory.Reformulated.B.Qn12.exists_expansion q p
   rw [hp, map_zero, zero_add] at hc
   have hgrad : gradAt q p = ∑ i, eval q (c i) • (Pi.single i 1 : Fin n → ℂ) := by
 
@@ -184,7 +180,7 @@ theorem isTransverseSliceAt_iff (W : Ideal (MvPolynomial (Fin n) ℂ)) (L : Matr
       gradAt_X_sub_C, smul_smul, eval_C, inv_mul_cancel₀ hs, one_smul, Pi.basisFun_apply]
   · intro hG g hg
     refine exists_mul_mem_of_le_sup_sq q I (fun x hx => ?_) g hg
-    obtain ⟨c, hc⟩ := exists_expansion q x
+    obtain ⟨c, hc⟩ := _root_.UpperTheory.Reformulated.B.Qn12.exists_expansion q x
     rw [RingHom.mem_ker.1 hx, map_zero, zero_add] at hc
     rw [hc]
     refine Ideal.sum_mem _ fun i _ => Ideal.mul_mem_left _ _ ?_
@@ -220,7 +216,7 @@ theorem dense_linearIndependent {m d : ℕ} (h : m ≤ d) :
       · subst hkl
         simp [A, g, LinearMap.funLeft_apply]
       · have : ι l ≠ ι k := fun e => hkl (Fin.castLE_injective h e).symm
-        simp [A, g, LinearMap.funLeft_apply, Matrix.one_apply, hkl, Pi.single_apply, this]
+        simp [A, g, LinearMap.funLeft_apply, hkl, this]
     rw [hfun]
     exact Matrix.linearIndependent_rows_iff_isUnit.2 hU
   have hT : Tendsto (fun t : ℂ => f₀ + t • g) (𝓝[≠] 0) (𝓝 f₀) := by

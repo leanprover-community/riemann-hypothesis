@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsTorusWithSignUniformisationFrame
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsBaseClassLevelAdapted
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsQuotEquiv
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HMatMulVecPerCrd
@@ -169,28 +170,7 @@ theorem datum_move {l : Geo.Tor.Level H} {Xo : Moduli Dw l} {c : Coeff l} (d : D
   ring
 
 theorem cmHostUnit_add_conj_eq_one (H : Host E) : H.w0 + H.bar H.w0 = 1 := by
-  have hsq : (H.bar H.rt) ^ 2 = H.rt ^ 2 := by rw [← map_pow, H.rt_sq]; simp
-  have hne : H.bar H.rt ≠ H.rt := by
-    intro h
-    obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
-    have h1 : IsCMField.complexConj E (H.rt : E) = H.rt := by rw [← H.bar_eq, h]
-    have h2 := IsCMField.complexEmbedding_complexConj E φ (H.rt : E)
-    rw [h1] at h2
-    have h3 : φ (H.rt : E) ^ 2 = -(H.d : ℂ) := by
-      have := congrArg (fun x : 𝓞 E => φ (x : E)) H.rt_sq
-      simpa using this
-    have him : (φ (H.rt : E)).im = 0 := Complex.conj_eq_iff_im.1 h2.symm
-    have h4 := congrArg Complex.re h3
-    simp [sq, him] at h4
-    have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-    nlinarith [mul_self_nonneg (φ (H.rt : E)).re]
-  have hb : H.bar H.rt = -H.rt := (sq_eq_sq_iff_eq_or_eq_neg.1 hsq).resolve_left hne
-  have h2 : 2 * H.bar H.w0 = 1 - H.rt := by
-    have := congrArg H.bar H.two_weight_eq_one_add_root
-    rw [map_mul, map_add (f := _), map_one, hb, map_ofNat] at this
-    rw [this]; ring
-  have : (2 : 𝓞 E) * (H.w0 + H.bar H.w0) = 2 * 1 := by rw [mul_add, H.two_weight_eq_one_add_root, h2]; ring
-  exact mul_left_cancel₀ two_ne_zero this
+  apply GlobalTheory.TorusSign.cmHostUnit_add_conj_eq_one <;> assumption
 
 theorem cSep_spec (l : Geo.Tor.Level H) : cSep l ∈ Mfr l ∧ cSep l - 1 ∈ l.Mb := by
   have h : ∃ c, c ∈ Mfr l ∧ c - 1 ∈ l.Mb := by
@@ -386,7 +366,7 @@ theorem mem_tens {Λ : Lt E n} {L : Lt E r} {M N : ℕ} (hΛ : Λ ∈ Vset E n M
     have := congrFun h k
     simp only [Pi.smul_apply, nsmul_eq_mul] at this
     rw [Nat.cast_smul_eq_nsmul]
-    simp only [Matrix.smul_apply, vecMulVec_apply, Pi.smul_apply, nsmul_eq_mul, Pi.mul_apply, Pi.natCast_apply]
+    simp only [Matrix.smul_apply, vecMulVec_apply, nsmul_eq_mul, Pi.mul_apply, Pi.natCast_apply]
     linear_combination (Pi.single b 1 : Fin n → E) i * this
 
 theorem heis_eq {X : Data E r} {bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ} (idx : Fin g ≃ X.Ψ × Fin r)

@@ -118,7 +118,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 noncomputable def toRepresentation (π : BanachRep K' E) : Representation ℂ K' E where
   toFun k := (π k : E →ₗ[ℂ] E)
   map_one' := by ext v; simp
-  map_mul' k k' := by ext v; simp [map_mul_apply]
+  map_mul' k k' := by ext v; simp
 
 noncomputable def restrict (π : BanachRep K' E) (K : Subgroup K') : BanachRep K E where
   toHom := π.toHom.comp K.subtype
@@ -265,7 +265,7 @@ noncomputable def kRepGK : Representation ℂ K (h.gkVectors π K) where
       map_add' := fun v w => by ext; simp
       map_smul' := fun c v => by ext; simp }
   map_one' := by ext v; simp
-  map_mul' k k' := by ext v; simp [BanachRep.map_mul_apply]
+  map_mul' k k' := by ext v; simp
 
 theorem exists_strongDual_eq [CompleteSpace E] (φ : Module.Dual ℂ (h.gkVectors π K))
     (v : h.gkVectors π K) :

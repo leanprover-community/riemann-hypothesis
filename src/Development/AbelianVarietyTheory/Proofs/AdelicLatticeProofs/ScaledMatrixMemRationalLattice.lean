@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsNatMulMemRingOfIntegers
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FinTensMemLatO
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -53,22 +54,7 @@ variable {D : D7}
 
 theorem exists_nat_integral {E : Type} [Field E] [NumberField E] (c : E) :
     ∃ n : ℕ, 0 < n ∧ ∃ d : 𝓞 E, (d : E) = n * c := by
-  obtain ⟨y, hy0, hy⟩ := exists_integral_multiples ℤ ℚ ({c} : Finset E)
-  have h := hy c (by simp)
-  refine ⟨y.natAbs, Int.natAbs_pos.2 hy0, ?_⟩
-  rcases Int.natAbs_eq y with h1 | h1
-  · refine ⟨⟨y • c, h⟩, ?_⟩
-    change y • c = _
-    rw [zsmul_eq_mul]
-    congr 1
-    conv_lhs => rw [h1]
-    exact Int.cast_natCast _
-  · refine ⟨-⟨y • c, h⟩, ?_⟩
-    change -(y • c) = _
-    rw [zsmul_eq_mul, ← neg_mul]
-    congr 1
-    conv_lhs => rw [h1]
-    rw [Int.cast_neg, neg_neg, Int.cast_natCast]
+  apply GlobalTheory.NatMulMemRingOfIntegers.exists_nat_mul_mem_ringOfIntegers <;> assumption
 
 theorem AA_ne_zero (D : D7) : D.host.AA ≠ 0 := by
   refine mul_ne_zero ?_ (inv_ne_zero ?_)

@@ -176,8 +176,6 @@ theorem af_nontriv (F : Type) [Field F] [NumberField F] : Nontrivial (Af F) := b
   have h1 := congrArg (fun x : Af F => x v) h
   first
   | exact one_ne_zero h1
-  | (simp only [RestrictedProduct.one_apply, RestrictedProduct.zero_apply] at h1
-     exact one_ne_zero h1)
 
 theorem inclE_inj :
     Function.Injective (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) : X.B.I.E → X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) := by

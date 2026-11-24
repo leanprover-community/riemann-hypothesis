@@ -53,8 +53,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-theorem ddS_ne' : ddS D ≠ 0 := Formalism.L2.SG.Pf.NcReal.JX.CovB.ddS_ne
-
 theorem star_mem_zpow (m : ℤ) {x : D.host.E} (hx : x ∈ ddS D ^ m) : star x ∈ ddS D ^ m := by
   rcases Int.eq_nat_or_neg m with ⟨n, rfl | rfl⟩
   · rw [zpow_natCast, Formalism.L2.SG.Pf.NcReal.JX.CovB.ddS_eq, ← FractionalIdeal.coeIdeal_pow] at hx ⊢
@@ -69,7 +67,7 @@ theorem iQ_eq (b a : Fin D.R.rS) :
       FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) : Set D.host.E) := by
   unfold iQ aaD
   congr 1
-  rw [← _root_.zpow_neg, ← zpow_add₀ ddS_ne']
+  rw [← _root_.zpow_neg, ← zpow_add₀ _root_.Formalism.L2.SG.Pf.Level.ddS_ne]
   congr 1
   ring
 
@@ -78,7 +76,7 @@ theorem iP_eq (b a : Fin D.R.rS) :
       FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) : Set D.host.E) := by
   unfold iP aaD
   congr 1
-  rw [← zpow_add₀ ddS_ne']
+  rw [← zpow_add₀ _root_.Formalism.L2.SG.Pf.Level.ddS_ne]
   congr 1
 
 theorem star_mem_iQ {b a : Fin D.R.rS} {x : D.host.E} (hx : x ∈ iQ D b a) : star x ∈ iQ D b a := by

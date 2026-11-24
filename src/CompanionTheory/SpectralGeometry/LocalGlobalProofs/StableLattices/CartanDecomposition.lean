@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.LeviDecomposition
 public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -283,29 +284,7 @@ theorem Hq_inner (k r : ℕ) (j : Fin (2 * r + k + 1)) (hj : ¬ outer k r j) :
   split_ifs <;> (try simp) <;> omega
 
 theorem Hq_sq (k r : ℕ) : Hq k r * Hq k r = 1 := by
-  have hHq : ∀ i j : Fin (2 * r + k + 1), Hq k r i j =
-      if outer k r i then (if (i : ℕ) + (j : ℕ) = 2 * r + k then 1 else 0) else if i = j then 1 else 0 :=
-    fun _ _ => rfl
-  have hout : ∀ i : Fin (2 * r + k + 1), outer k r i ↔ ((i : ℕ) ≤ r ∨ r + k ≤ (i : ℕ)) := fun _ => Iff.rfl
-  have hbv : ∀ {m : ℕ} (i : Fin m), bvec i = Pi.single i (1 : ℂ) := fun _ => rfl
-  have hcol : ∀ j, (Hq k r * Hq k r) *ᵥ bvec j = bvec j := by
-    intro j
-    have hjl := j.isLt
-    rw [← Matrix.mulVec_mulVec]
-    by_cases hj : outer k r j
-    · have hlt : 2 * r + k - j.val < 2 * r + k + 1 := by omega
-      have hj' : outer k r ⟨2 * r + k - j.val, hlt⟩ := by
-        rw [hout] at hj ⊢
-        simp only [Fin.val_mk]
-        omega
-      rw [GlobalTheory.CompanionTheory.BesselCartan.Hq_outer k r ⟨2 * r + k - j.val, hlt⟩ j hj' (by simp only [Fin.val_mk]; omega),
-        GlobalTheory.CompanionTheory.BesselCartan.Hq_outer k r j ⟨2 * r + k - j.val, hlt⟩ hj (by simp only [Fin.val_mk]; omega)]
-    · rw [GlobalTheory.CompanionTheory.BesselCartan.Hq_inner k r j hj, GlobalTheory.CompanionTheory.BesselCartan.Hq_inner k r j hj]
-  ext i j
-  have h := congrFun (hcol j) i
-  simp only [Matrix.mulVec, dotProduct, hbv, Pi.single_apply, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
-  rw [h, Matrix.one_apply]
+  apply GlobalTheory.CompanionTheory.BesselLevi.Hq_sq <;> assumption
 
 def tor (k r : ℕ) (u : ℝ) : Fin (2 * r + k + 1) → ℝ := fun i =>
   if i.val = r then u else if i.val = r + k then u⁻¹ else 1
@@ -318,7 +297,7 @@ theorem dg_bvec {m : ℕ} (d : Fin m → ℝ) (i : Fin m) : dg d *ᵥ bvec i = (
   by_cases h : m = i
   · subst h
     simp [Matrix.mulVec_diagonal]
-  · simp [Matrix.mulVec_diagonal, Pi.single_apply, h]
+  · simp [Matrix.mulVec_diagonal, h]
 
 theorem dg_mul (k r : ℕ) (u : ℝ) (hu : u ≠ 0) : dg (tor k r u⁻¹) * dg (tor k r u) = 1 := by
   have hdg : ∀ {m : ℕ} (d : Fin m → ℝ), dg d = Matrix.diagonal (fun i => ((d i : ℝ) : ℂ)) := fun _ => rfl
@@ -381,7 +360,7 @@ theorem bvec_dot {m : ℕ} (i j : Fin m) : star (bvec i) ⬝ᵥ bvec j = if i = 
   by_cases h : i = j
   · subst h
     simp [hbv, dotProduct_single]
-  · simp [hbv, h, dotProduct_single, Pi.single_apply, Ne.symm h]
+  · simp [hbv, h, dotProduct_single, Ne.symm h]
 
 theorem cartanQ : CartanQ := by
   intro k r hk μ hμ

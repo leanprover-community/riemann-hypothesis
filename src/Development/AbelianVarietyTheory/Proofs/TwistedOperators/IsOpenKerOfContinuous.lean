@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsOpenKerFinIdele
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.PositiveTwistAverage
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Mathlib.Algebra.Module.Lattice.Full
@@ -58,6 +59,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OrbitLocallyConstant
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
 
 @[expose] public section
 
@@ -66,26 +68,6 @@ open Filter Topology
 
 noncomputable section
 namespace GlobalTheory.RootEx.UniformLattices
-
-theorem eq_one_of_pow_near {z : ℂ} (h : ∀ n : ℕ, ‖z ^ n - 1‖ < 1 / 2) : z = 1 := by
-  by_contra hz
-  have hp : 0 < ‖z - 1‖ := norm_pos_iff.2 (sub_ne_zero.2 hz)
-  obtain ⟨n, hn⟩ := exists_nat_gt (1 / ‖z - 1‖)
-  have h1 : ‖(∑ k ∈ Finset.range n, z ^ k) - n‖ ≤ n / 2 := by
-    have : (∑ k ∈ Finset.range n, z ^ k) - n = ∑ k ∈ Finset.range n, (z ^ k - 1) := by
-      rw [Finset.sum_sub_distrib]; simp
-    rw [this]
-    refine (norm_sum_le _ _).trans ?_
-    refine (Finset.sum_le_sum fun k _ => (h k).le).trans ?_
-    simp; linarith
-  have h2 : (n : ℝ) / 2 ≤ ‖∑ k ∈ Finset.range n, z ^ k‖ := by
-    have := norm_sub_norm_le (n : ℂ) (∑ k ∈ Finset.range n, z ^ k)
-    rw [norm_sub_rev, Complex.norm_natCast] at this
-    linarith
-  have h3 := h n
-  rw [← geom_sum_mul, norm_mul] at h3
-  rw [div_lt_iff₀ hp] at hn
-  nlinarith
 
 section Lattices
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -107,7 +89,7 @@ theorem isOpen_ker_of_continuous (μ : kˣ →* ℂˣ) (hμ : Continuous μ) : I
     inter_mem ((continuous_const.add continuous_id).continuousAt.preimage_mem_nhds (by simpa using hT))
       (cball_mem_nhds 1)
   obtain ⟨s, hs⟩ := exists_cball_subset h1
-  refine isOpen_ker_of_cball μ s fun x hx => Units.ext (eq_one_of_pow_near fun n => ?_)
+  refine isOpen_ker_of_cball μ s fun x hx => Units.ext (_root_.GlobalTheory.PowerTwoNormLowerBound.main fun n => ?_)
   have hx1 : valuation k (x : k) ≤ 1 := by
     have := add_mem_cball (hs hx).2 (show (1 : k) ∈ cball 1 by simp [cball])
     simpa [cball] using this
@@ -280,24 +262,5 @@ theorem integral_eq_sum_reps [MeasurableSpace V] [BorelSpace V] (m : Measure V) 
     exact hBc.measure_lt_top.ne
 
 end Reps
-
-section Abstract
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  [MeasurableSpace k] [BorelSpace k] {n : Type} [Fintype n] [DecidableEq n] {c p : ℕ}
-  {ψ : AddChar k Circle} {ν : Measure k} {V : Type} [AddCommGroup V] [Module ℂ V]
-  {ω : Representation ℂ (GL (n ⊕ Fin c) k) V} {l : V →ₗ[ℂ] ℂ} {v : V}
-
-end Abstract
-
-section Target
-open Unfolding
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  [MeasurableSpace k] [BorelSpace k] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
-  {c p : ℕ} {ψ : AddChar k Circle} {ν : Measure k} {μ : kˣ →* ℂˣ}
-  {A P P' : Type} [AddCommGroup A] [Module ℂ A] [AddCommGroup P] [Module ℂ P] [AddCommGroup P'] [Module ℂ P']
-  {σ : Representation ℂ (GL (n ⊕ Fin c) k) A} {π : Representation ℂ (GL n k) P}
-  {π' : Representation ℂ (GL n' k) P'}
-
-end Target
 
 end GlobalTheory.RootEx.UniformLattices

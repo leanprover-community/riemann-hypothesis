@@ -135,7 +135,6 @@ lemma sig_split {p q : ℕ} (G : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ)
   set U : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ := ↑hG.eigenvectorUnitary with hUd
   set lam := hG.eigenvalues with hlam
   have hUU : star U * U = 1 := Matrix.mem_unitaryGroup_iff'.mp hG.eigenvectorUnitary.2
-  have hUU' : U * star U = 1 := Matrix.mem_unitaryGroup_iff.mp hG.eigenvectorUnitary.2
   have hspec : G = U * diagonal (RCLike.ofReal ∘ lam) * star U := by
     have := hG.spectral_theorem
     rwa [Unitary.conjStarAlgAut_apply] at this
@@ -253,7 +252,6 @@ lemma sig_split {p q : ℕ} (G : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ)
     congr 1
     funext i
     have hab : 0 < |lam i| := abs_pos.mpr (hlam0 i)
-    have hsq : Real.sqrt |lam i| * Real.sqrt |lam i| = |lam i| := Real.mul_self_sqrt hab.le
     have hsne : Real.sqrt |lam i| ≠ 0 := (Real.sqrt_pos.mpr hab).ne'
     simp only [s, Pi.star_apply, Complex.star_def, Complex.conj_ofReal]
     rw [← Complex.ofReal_mul, ← Complex.ofReal_mul]

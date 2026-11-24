@@ -119,21 +119,6 @@ theorem _root_.GlobalTheory.TestLat.SumLat.isLattice_sumLat [Finite C] (lam : ι
         exact ht
       · rw [Pi.single_eq_of_ne hc]
         exact zero_mem _
-  have key : ∀ c, ∀ t ∈ Submodule.span K (T c : Set (_root_.Formalism.L2.DIV.VV K lam)),
-      g c t ∈ Submodule.span K (L : Set (Fin N → K)) := by
-    intro c t ht
-    induction ht using Submodule.span_induction with
-    | mem x hx =>
-      exact Submodule.subset_span (Submodule.mem_iSup_of_mem c (Submodule.mem_map_of_mem hx))
-    | zero =>
-      rw [map_zero]
-      exact zero_mem _
-    | add x y _ _ hx hy =>
-      rw [map_add (f := _)]
-      exact add_mem hx hy
-    | smul a x _ hx =>
-      rw [map_smul]
-      exact Submodule.smul_mem _ a hx
   rw [hP]
   refine ⟨Submodule.fg_iSup _ fun c => ((hT c).fg).map _, ?_⟩
   intro s hs hli

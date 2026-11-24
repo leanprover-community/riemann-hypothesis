@@ -680,7 +680,7 @@ theorem La_lower {N N' : ℕ} (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E
       convert h1 using 1
       funext τ i j
       simp only [ins, Pi.neg_apply]
-      split_ifs <;> simp <;> ring
+      split_ifs <;> simp
 
 theorem span_La {N N' : ℕ} (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E))
     (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) (hA : admitted D N N' L L')

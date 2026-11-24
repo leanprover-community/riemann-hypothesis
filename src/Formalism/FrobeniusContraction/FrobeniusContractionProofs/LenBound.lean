@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LengthQuotientSpanPowLeMulLength
 public import Formalism.FrobeniusContraction.Statement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -86,49 +87,7 @@ theorem length_le_of_span {P : Type} [AddCommGroup P] [Module O P] {ι : Type} [
 
 theorem length_quot_pow_le (a : O) (e : ℕ) :
     Module.length O (O ⧸ Ideal.span {a ^ e}) ≤ (e : ℕ∞) * Module.length O (O ⧸ Ideal.span {a}) := by
-  induction e with
-  | zero =>
-    rw [pow_zero, Ideal.span_singleton_one, Nat.cast_zero, zero_mul]
-    haveI : Subsingleton (O ⧸ (⊤ : Ideal O)) := ⟨fun x y => by
-      obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-      obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ y
-      exact (Submodule.Quotient.eq _).2 Submodule.mem_top⟩
-    exact le_of_eq (Module.length_eq_zero)
-  | succ e ih =>
-    have hle : Ideal.span {a ^ (e + 1)} ≤ Ideal.span {a ^ e} :=
-      Ideal.span_singleton_le_span_singleton.2 (pow_dvd_pow a (Nat.le_succ e))
-    have hex := Module.length_eq_add_of_exact (LinearMap.ker (Submodule.factor hle)).subtype
-      (Submodule.factor hle) (Submodule.injective_subtype _) (Submodule.factor_surjective hle)
-      (LinearMap.exact_subtype_ker_map _)
-    let f0 : O →ₗ[O] O ⧸ Ideal.span {a ^ (e + 1)} :=
-      (Ideal.span {a ^ (e + 1)}).mkQ ∘ₗ LinearMap.mulLeft O (a ^ e)
-    have hf0 : Ideal.span {a} ≤ LinearMap.ker f0 := by
-      refine Ideal.span_le.2 (Set.singleton_subset_iff.2 ?_)
-      show (Ideal.span {a ^ (e + 1)}).mkQ (a ^ e * a) = 0
-      rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, ← pow_succ]
-      exact Ideal.subset_span rfl
-    let f := (Ideal.span {a}).liftQ f0 hf0
-    have hfk : ∀ x, f x ∈ LinearMap.ker (Submodule.factor hle) := by
-      intro x
-      obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-      rw [LinearMap.mem_ker]
-      show (Submodule.Quotient.mk (a ^ e * y) : O ⧸ Ideal.span {a ^ e}) = 0
-      rw [Submodule.Quotient.mk_eq_zero]
-      exact Ideal.mem_span_singleton'.2 ⟨y, mul_comm _ _⟩
-    let f' : O ⧸ Ideal.span {a} →ₗ[O] LinearMap.ker (Submodule.factor hle) := LinearMap.codRestrict _ f hfk
-    have hf'surj : Function.Surjective f' := by
-      rintro ⟨z, hz⟩
-      obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ z
-      have hy : y ∈ Ideal.span {a ^ e} := by
-        rw [LinearMap.mem_ker] at hz
-        exact (Submodule.Quotient.mk_eq_zero _).1 hz
-      obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 hy
-      refine ⟨Submodule.Quotient.mk c, Subtype.ext ?_⟩
-      show (Submodule.Quotient.mk (a ^ e * c) : O ⧸ Ideal.span {a ^ (e + 1)}) = Submodule.Quotient.mk (c * a ^ e)
-      rw [mul_comm]
-    have hk := Module.length_le_of_surjective f' hf'surj
-    rw [hex, Nat.cast_succ, add_mul, one_mul]
-    exact (add_le_add hk ih).trans (le_of_eq (add_comm _ _))
+  apply GlobalTheory.length_quotient_span_pow_le <;> assumption
 
 end PLenBound
 

@@ -64,13 +64,6 @@ private lemma countable_of_intermediateField_fg {K Ω : Type} [Field K] [Countab
   haveI : Countable (MvPolynomial (S : Set Ω) K) := by
     first
     | infer_instance
-    | exact Cardinal.mk_le_aleph0_iff.mp (MvPolynomial.cardinal_mk_le_max.trans
-        (max_le (max_le Cardinal.mk_le_aleph0 Cardinal.mk_le_aleph0) le_rfl))
-    | exact Cardinal.mk_le_aleph0_iff.mp (MvPolynomial.cardinalMk_le_max_lift.trans
-        (max_le (max_le (Cardinal.lift_le_aleph0.mpr Cardinal.mk_le_aleph0)
-          (Cardinal.lift_le_aleph0.mpr Cardinal.mk_le_aleph0)) le_rfl))
-    | exact Cardinal.mk_le_aleph0_iff.mp (MvPolynomial.cardinalMk_le_max.trans
-        (max_le (max_le Cardinal.mk_le_aleph0 Cardinal.mk_le_aleph0) le_rfl))
   let f : MvPolynomial (S : Set Ω) K × MvPolynomial (S : Set Ω) K → Ω := fun pq =>
     MvPolynomial.aeval (fun x : (S : Set Ω) => (x : Ω)) pq.1 /
       MvPolynomial.aeval (fun x : (S : Set Ω) => (x : Ω)) pq.2
@@ -97,11 +90,9 @@ theorem exists_embedding_over {K Ω : Type} [Field K] [NumberField K] [Field Ω]
   haveI : FaithfulSMul K ℂ := by
     first
     | infer_instance
-    | exact (faithfulSMul_iff_algebraMap_injective K ℂ).mpr sg.injective
   haveI : FaithfulSMul K Ω := by
     first
     | infer_instance
-    | exact (faithfulSMul_iff_algebraMap_injective K Ω).mpr (algebraMap K Ω).injective
   obtain ⟨s, hs⟩ := exists_isTranscendenceBasis K Ω
   obtain ⟨t, ht⟩ := exists_isTranscendenceBasis K ℂ
   have hC : Cardinal.aleph0 < Cardinal.mk ℂ := by
@@ -142,7 +133,6 @@ theorem exists_embedding_over {K Ω : Type} [Field K] [NumberField K] [Field Ω]
       (algebraMap K (Algebra.adjoin K (Set.range (Subtype.val : s → Ω))) k) := by
     first
     | rfl
-    | exact IsScalarTower.algebraMap_apply _ _ _ k
   show g (algebraMap K Ω k) = sg k
   rw [h1, g.commutes]
   exact φ.commutes k

@@ -65,22 +65,17 @@ theorem comap_muPolarMat_isHaar (ε : Fin n → Bool) :
       (Measure.comap (β := Fin n → Fin n → ℂ)
         (fun g : H => ((g : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ))
         (muPolarMat ε)).IsHaarMeasure := by
-  intro H hH
-  subst hH
-  have key := muPolar_isHaar ε
+  rintro H rfl
   have h0 : (inferInstance : MeasurableSpace (UJ ε)) = borel (UJ ε) := BorelSpace.measurable_eq
-  intro m hm
-  have h1 : m = borel (UJ ε) := hm.measurable_eq
-  have e : m = _ := h1.trans h0.symm
+  rintro m hm
+  have e : m = _ := hm.measurable_eq.trans h0.symm
   subst e
-  exact key
+  exact muPolar_isHaar ε
 
 theorem muCD_isHaar (ε : Fin n → Bool) : (muCD ε).IsHaarMeasure := by
-
   haveI hH := comap_muPolarMat_isHaar ε (Formalism.REAL.UJ ε) (real_UJ_eq_UJ ε) inferInstance inferInstance
   unfold muCD
-  have hc : ENNReal.ofReal (cPQ ε) ≠ 0 := (ENNReal.ofReal_pos.mpr (cPQ_pos ε)).ne'
-  have ht : ENNReal.ofReal (cPQ ε) ≠ ⊤ := ENNReal.ofReal_ne_top
-  exact MeasureTheory.Measure.IsHaarMeasure.smul _ hc ht
+  exact MeasureTheory.Measure.IsHaarMeasure.smul _
+    (ENNReal.ofReal_pos.mpr (cPQ_pos ε)).ne' ENNReal.ofReal_ne_top
 
 end ReciprocityTheory.ChartRestriction.DS

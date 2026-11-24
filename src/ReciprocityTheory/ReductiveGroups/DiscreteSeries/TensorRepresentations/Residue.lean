@@ -227,7 +227,7 @@ theorem ratioVd_add_single_mul {μ : Fin n → ℝ} (s : Fin n) (hμ : Function.
     intro h
     apply hne
     apply hμs
-    simp [Pi.single_apply, hne]
+    simp [hne]
     linarith
   simp only [Pi.add_apply, Pi.single_eq_same, Pi.single_apply, hne, if_false, add_zero]
   rw [show μ s + 1 - 1 - μ s' = μ s - μ s' by ring]

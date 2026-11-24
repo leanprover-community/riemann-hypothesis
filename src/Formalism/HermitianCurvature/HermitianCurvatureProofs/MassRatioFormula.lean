@@ -194,7 +194,6 @@ theorem factorialCancel : Formalism.FourierDecayAlt.Sz.FactorialCancel := by
 theorem volumeChain : Formalism.FourierDecayAlt.Sz.VolumeChain := by
   intro ι _ S hOk hM
   have hn : S.n = S.k + (2 * S.r + 1) := by unfold SizeData.n SizeData.m; omega
-  have hm1 : S.m - 1 = 2 * S.r + 1 := by unfold SizeData.m; omega
   have hmR : (S.m : ℝ) - 1 = ((2 * S.r + 1 : ℕ) : ℝ) := by unfold SizeData.m; push_cast; ring
   have hsum := (sumRanks S.k S.r S.m S.n rfl rfl).1
   have h := vol_chain S hM (2 * S.r + 1) (by omega)

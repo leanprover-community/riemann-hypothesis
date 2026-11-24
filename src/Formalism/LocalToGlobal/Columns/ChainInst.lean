@@ -542,8 +542,6 @@ theorem ciLiftM_det_ne {n : ℕ} (M : GL (Fin n) (𝓞 E ⧸ P.asIdeal)) : (ciLi
   have hinj : Function.Injective (algebraMap (𝓞 E) E) := by
     first
     | exact FaithfulSMul.algebraMap_injective (𝓞 E) E
-    | exact NoZeroSMulDivisors.algebraMap_injective (𝓞 E) E
-    | exact RingOfIntegers.coe_injective
   rw [ciLiftM_det]
   intro h
   apply ciLiftO_det_notMem M
@@ -612,7 +610,6 @@ theorem ciEquiv_inv_apply {N : ℕ} (M M' : Matrix (Fin N) (Fin N) E) (h1 : M * 
     (ciEquiv M M' h1 h2)⁻¹ v = M'.mulVec v := by
   first
   | rfl
-  | simp [ciEquiv]
 
 theorem ciEquiv_stab {N : ℕ} {M M' : Matrix (Fin N) (Fin N) E} {h1 : M * M' = 1} {h2 : M' * M = 1} {L : Submodule (𝓞 E) (Sp E N)}
     (hM : ∀ v ∈ L, M.mulVec v ∈ L) (hM' : ∀ v ∈ L, M'.mulVec v ∈ L) : ciEquiv M M' h1 h2 ∈ stabL E N L := by
@@ -700,7 +697,7 @@ theorem ciEN {n c p : ℕ} (hp : p < n) : Loc.eN E (n + c) p = Loc.inX E n c (Pi
   funext l
   rw [ciInX_apply]
   simp only [Loc.eN]
-  split_ifs <;> first | omega | rfl | simp_all [Pi.single_apply, Fin.ext_iff]
+  split_ifs <;> first | omega | rfl | simp_all [Fin.ext_iff]
 
 theorem ciAtN_inX {n c p : ℕ} (hp : p < n) (v : Fin n → E) : Loc.atN (Loc.inX E n c v) p = v ⟨p, hp⟩ := by
   simp [Loc.atN, ciInX_apply, hp, show p < n + c by omega]

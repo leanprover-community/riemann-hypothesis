@@ -119,8 +119,8 @@ private theorem isMultiHomog_pderiv_and_one_le_of_pderiv_ne_zero [DecidableEq K]
     obtain ⟨k0, i0⟩ := v
     by_cases hk : k = k0
     · subst hk
-      simp [Finsupp.single_apply, Sigma.mk.inj_iff]
-    · simp [Finsupp.single_apply, Sigma.mk.inj_iff, Ne.symm hk, hk]
+      simp [Finsupp.single_apply]
+    · simp [hk]
   refine ⟨fun m hm k => ?_, fun hne => ?_⟩
   · have := key m hm k
     beta_reduce

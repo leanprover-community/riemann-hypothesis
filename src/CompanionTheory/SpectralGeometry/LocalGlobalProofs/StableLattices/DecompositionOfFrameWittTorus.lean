@@ -133,7 +133,6 @@ theorem norm_discrete {p : L} (hp0 : p ≠ 0) (hp1 : ‖p‖ < 1) (hpu : ∀ a :
   have hc : 1 < ‖p‖⁻¹ := (one_lt_inv₀ hpp).2 hp1
   obtain ⟨n, hn1, hn2⟩ := exists_mem_Ico_zpow (norm_pos_iff.2 hx) hc
   refine ⟨-n, ?_⟩
-  have hcn : 0 < ‖p‖⁻¹ ^ n := zpow_pos (inv_pos.2 hpp) n
   set y : L := x * p ^ n with hy
   have hyn : ‖y‖ = ‖x‖ * ‖p‖ ^ n := by simp [hy, norm_zpow]
   have hinv : ‖p‖ ^ n * ‖p‖⁻¹ ^ n = 1 := by
@@ -385,14 +384,12 @@ theorem frame_flip (hs : IsInv s) (hδ : δ ≠ 0) (hh : IsHerm s h)
     (hn : ∀ i, ‖u i‖ = ‖p‖ ^ n i) (hp0 : p ≠ 0) :
     ∃ (e' f' : Fin l → V) (m : Fin l → ℕ), IsFrame h δ e' f' W ∧ IsAdapted h e' f' W (fun _ => 1) Λ ∧
       IsAdapted h e' f' W (fun i => p ^ m i) Λ' := by
-  have hsδ : s δ ≠ 0 := (map_ne_zero s).2 hδ
   have hc : ‖δ / s δ‖ = 1 := by
     rw [norm_div, hs.2.1, div_self (norm_ne_zero_iff.2 hδ)]
   refine ⟨_, _, fun i => (n i).natAbs, hermitian_frame_partial_flip hs hδ hh hF (fun i => n i < 0),
     adapted_flip (fun i => n i < 0) hc (fun i => ?_) h1, adapted_flip (fun i => n i < 0) hc (fun i => ?_) h2⟩
   · simp
   · rw [hn i, norm_pow]
-    have hpp : ‖p‖ ≠ 0 := norm_ne_zero_iff.2 hp0
     by_cases hi : n i < 0
     · rw [if_pos hi, ← zpow_neg, ← zpow_natCast]
       congr 1
@@ -416,9 +413,9 @@ theorem stDecomp_of_frame_witt_tor : StFrame → StWitt → StTor → StDecomp :
   obtain ⟨P, hP, hPe, hPf, hPW⟩ := frame_perm hδ0 hh hF σ
   have hk : IsIso h (k₀ * P) := isIso_mul hk₀ hP
   have he' : ∀ i, (k₀ * P) (e i) = (e₂ ∘ (σ.trans q)) i := fun i => by
-    simp [LinearEquiv.mul_apply, hPe, hke]
+    simp [hPe, hke]
   have hf' : ∀ i, (k₀ * P) (f i) = (f₂ ∘ (σ.trans q)) i := fun i => by
-    simp [LinearEquiv.mul_apply, hPf, hkf]
+    simp [hPf, hkf]
   have hW' : ∀ w ∈ W, (k₀ * P) w ∈ W₁ := fun w hw => by
     simpa [LinearEquiv.mul_apply, hPW w hw] using (hkW w).1 hw
   have hu' : ∀ i, p ^ (m ∘ q ∘ σ) i ≠ 0 := fun i => pow_ne_zero _ hp0

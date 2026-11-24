@@ -54,6 +54,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Presheaf
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FlagPairDefinitePartLattice
+import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodularSpan
 
 @[expose] public section
 
@@ -91,47 +92,7 @@ variable [FiniteDimensional K V]
 theorem span_eq_top_of_unimodular (h : V →ₗ⋆[K] V →ₗ[K] K) (hs : h.IsSymm)
     (hn : h.Nondegenerate) {Λ : Submodule (𝓞 K) V} (hL : Submodule.IsLattice K Λ)
     (hU : IsUnimodular h Λ) : Submodule.span K (Λ : Set V) = ⊤ := by
-  classical
-  by_contra hspan
-  obtain ⟨φ, hφ₀, hφ⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.mpr hspan)
-  let H : Formalism.HermitianLatticeCounting.S6.HermSpace K V :=
-    { B := h.flip, herm := fun x y => hs.eq y x, nondeg := fun x hx => hn.2 x hx }
-  obtain ⟨μ, hμ⟩ := GlobalTheory.UnimodQuot.exists_rep H φ
-  have hμ₀ : μ ≠ 0 := by
-    intro e
-    apply hφ₀
-    ext y
-    simpa [H, e] using (hμ y).symm
-  have hline (a : K) : a • μ ∈ Λ := by
-    rw [← hU]
-    apply (dualBasic_mem_dual _ _ _).2
-    intro y hy
-    have hy₀ := LinearMap.mem_ker.mp (hφ (Submodule.subset_span hy))
-    have hm : h μ y = φ y := hμ y
-    have hz : h y μ = 0 := by rw [← hs.eq, hm, hy₀, map_zero]
-    simp [map_smul, hz]
-  obtain ⟨ψ, hψ, -⟩ := Submodule.exists_le_ker_of_notMem
-    (show μ ∉ (⊥ : Submodule K V) by simpa using hμ₀)
-  let f := ψ.restrictScalars (𝓞 K)
-  have hmap (x : K) : x ∈ Λ.map f := by
-    refine ⟨(x / ψ μ) • μ, hline _, ?_⟩
-    change ψ ((x / ψ μ) • μ) = x
-    rw [map_smul, smul_eq_mul, div_mul_cancel₀ _ hψ]
-  obtain ⟨d, hd₀, hd⟩ := FractionalIdeal.isFractional_of_fg
-    (S := nonZeroDivisors (𝓞 K)) (hL.fg.map f)
-  have hinj := IsFractionRing.injective (𝓞 K) K
-  have hne {a : 𝓞 K} (ha : a ≠ 0) : algebraMap (𝓞 K) K a ≠ 0 :=
-    fun e => ha (hinj (e.trans (map_zero _).symm))
-  have hinteger (x : K) : IsLocalization.IsInteger (𝓞 K) x := by
-    have hx := hd _ (hmap ((algebraMap (𝓞 K) K d)⁻¹ * x))
-    rwa [Algebra.smul_def, ← mul_assoc, mul_inv_cancel₀ (hne (nonZeroDivisors.ne_zero hd₀)),
-      one_mul] at hx
-  apply RingOfIntegers.not_isField K
-  refine ⟨⟨0, 1, zero_ne_one⟩, mul_comm, ?_⟩
-  intro a ha
-  obtain ⟨b, hb⟩ := hinteger ((algebraMap (𝓞 K) K a)⁻¹)
-  refine ⟨b, hinj ?_⟩
-  rw [map_mul, hb, map_one, mul_inv_cancel₀ (hne ha)]
+  exact Formalism.HermitianLatticesTheory.IsUnimodular.span_eq_top hU hs hL.fg
 
 theorem exists_rep (h : V →ₗ⋆[K] V →ₗ[K] K) (hs : h.IsSymm) (hn : h.Nondegenerate) {Λ : Submodule (𝓞 K) V}
     (hL : Submodule.IsLattice K Λ) (hU : IsUnimodular h Λ) (U : Submodule K V) (f : V →ₗ[K] K)

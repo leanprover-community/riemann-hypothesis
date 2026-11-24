@@ -63,12 +63,12 @@ variable {F : Type} [Field F] [NumberField F]
 private theorem trace_pi_real_eq_sum' {ι : Type} [Fintype ι] (f : ι → ℝ) :
     Algebra.trace ℝ (ι → ℝ) f = ∑ i, f i := by
   rw [Algebra.trace_eq_matrix_trace (Pi.basisFun ℝ ι)]
-  simp [Matrix.trace, Algebra.leftMulMatrix_eq_repr_mul, Pi.single_apply]
+  simp [Matrix.trace, Algebra.leftMulMatrix_eq_repr_mul]
 
 private theorem trace_pi_complex_eq_sum_two_mul_re {ι : Type} [Fintype ι] (f : ι → ℂ) :
     Algebra.trace ℝ (ι → ℂ) f = ∑ i, 2 * (f i).re := by
   rw [Algebra.trace_eq_matrix_trace (Pi.basis fun _ : ι => Complex.basisOneI)]
-  simp [Matrix.trace, Algebra.leftMulMatrix_eq_repr_mul, Fintype.sum_sigma, Pi.single_apply, Fin.sum_univ_two,
+  simp [Matrix.trace, Algebra.leftMulMatrix_eq_repr_mul, Fintype.sum_sigma, Fin.sum_univ_two,
     Complex.coe_basisOneI, Complex.coe_basisOneI_repr]
   refine Finset.sum_congr rfl fun i _ => ?_
   ring
@@ -144,7 +144,6 @@ theorem lift_add (x y : κ → mixedEmbedding.mixedSpace F) : liftV (x + y) = li
   simp only [liftV, Pi.add_apply, map_add (f := _)]
   first
     | exact Prod.ext rfl (add_zero 0).symm
-    | exact Prod.ext (by simp) (by simp)
 
 theorem lift_smul (c : ℝ) (x : κ → mixedEmbedding.mixedSpace F) : liftV (c • x) = realAd F c • liftV x := by
   funext i
@@ -153,7 +152,6 @@ theorem lift_smul (c : ℝ) (x : κ → mixedEmbedding.mixedSpace F) : liftV (c 
   rw [Algebra.smul_def, map_mul]
   first
     | exact Prod.ext rfl (mul_zero 0).symm
-    | exact Prod.ext (by simp) (by simp)
 
 theorem lift_loc (x : κ → AF F) : liftV (locV x) = realAd F 1 • x := by
   funext i
@@ -205,8 +203,6 @@ theorem incM_gram {p q k : Type} [Fintype k] (P : Matrix k p E) (J : Matrix k k 
     simp only [incM, Matrix.map_apply]
     first
       | simp [cA, inclR]
-      | rfl
-      | simp [cA]
   rw [hQ, hinc, hinc, hincT]
 
 theorem gram_apply {p q : Type} {m : ℕ} (P : Matrix (Fin m) p E) (J : Matrix (Fin m) (Fin m) E)
@@ -225,13 +221,11 @@ def coordI (u : Matrix (Fin n) (Fin d) (AE F E)) :
 theorem coordI_add (u u' : Matrix (Fin n) (Fin d) (AE F E)) : coordI M (u + u') = coordI M u + coordI M u' := by
   first
     | simp only [coordI, map_add (f := _), Prod.fst_add, Prod.snd_add, loc_add, Prod.mk_add_mk]
-    | simp [coordI, loc_add]
 
 theorem coordI_smul (c : ℝ) (u : Matrix (Fin n) (Fin d) (AE F E)) :
     coordI M (realAd F c • u) = c • coordI M u := by
   first
     | simp only [coordI, map_smul, Prod.smul_fst, Prod.smul_snd, loc_smul, Prod.smul_mk]
-    | simp [coordI, loc_smul]
 
 theorem coordI_one (u : Matrix (Fin n) (Fin d) (AE F E)) : coordI M (realAd F 1 • u) = coordI M u := by
   rw [coordI_smul, one_smul]
@@ -240,13 +234,11 @@ theorem coordI_lift (v : (Fin n × Fin d → mixedEmbedding.mixedSpace F) × (Fi
     coordI M (M.co.e.symm (liftV v.1, liftV v.2)) = v := by
   first
     | simp [coordI, loc_lift]
-    | simp only [coordI, LinearEquiv.apply_symm_apply, loc_lift, Prod.mk.eta]
 
 theorem lift_coordI (u : Matrix (Fin n) (Fin d) (AE F E)) :
     M.co.e.symm (liftV (coordI M u).1, liftV (coordI M u).2) = realAd F 1 • u := by
   first
     | (rw [coordI, lift_loc, lift_loc, ← Prod.smul_mk, Prod.mk.eta, ← map_smul, LinearEquiv.symm_apply_apply])
-    | simp [coordI, lift_loc, ← map_smul]
 
 abbrev sympM (X : Spc F E n) (W : Spc F E d) := symp (R := AF F) (cA σ) (-1) (incM F X.J) (incM F W.J)
 
@@ -275,14 +267,12 @@ variable {n d d₁ : ℕ} {X : Spc F E n} {W : Spc F E d} {W₁ : Spc F E d₁}
 theorem incM_one' : incM F (1 : Matrix (Fin n) (Fin n) E) = 1 := by
   first
     | exact Matrix.map_one _ (map_zero _) (map_one _)
-    | (ext i j; simp [incM, Matrix.one_apply]; split_ifs <;> simp)
 
 theorem vecMulVec_eq_mul (y : Fin n → AE F E) (x : Fin d → E) :
     Matrix.vecMulVec y (incV F x) = Matrix.replicateCol Unit y * (incM F (Matrix.replicateCol Unit x))ᵀ := by
   ext i j
   first
     | simp [Matrix.vecMulVec_apply, Matrix.mul_apply, incM, incV]
-    | simp [Matrix.vecMulVec_apply, Matrix.mul_apply, incM]
 
 variable {B : Base F E} {r' s' i₀ i₁ : ℕ} {H' : Plane E d d₁}
 
@@ -339,8 +329,6 @@ theorem decomp (hS : W.IsSkew σ B r' s') (hA : H'.IsAdapted σ B W W₁ i₀ i�
     rw [e1, h]
     first
       | (congr 2; exact Finset.sum_congr rfl fun k _ => mul_comm _ _)
-      | simp only [mul_comm]
-      | ring
   refine ⟨Matrix.of (fun i (_ : Unit) => s i), Matrix.of (fun i k => u i k), Matrix.of (fun i (_ : Unit) => t i), fun w => ?_⟩
   have hinc : ∀ {p q r : Type} [Fintype q] (A : Matrix p q E) (B : Matrix q r E), incM F (A * B) = incM F A * incM F B :=
     fun A B => Matrix.map_mul

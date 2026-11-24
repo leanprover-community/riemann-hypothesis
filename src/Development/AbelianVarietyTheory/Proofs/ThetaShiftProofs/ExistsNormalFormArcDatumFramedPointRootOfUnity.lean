@@ -5,13 +5,18 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsIntegra
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTangentOfIsLieImage
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsSmulPtSmulPt
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueConstantTangentVectorsAlongArcStatement
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.FrameChangeComposeInvertBaseChangeTriangularStatement
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueConstantTangentVectorsAlongArc
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.FrameChangeComposeInvertBaseChangeTriangular
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.FrameChangeExistsUniqueInvertible
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsOpenImmersionJKPowerSeries
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.LieImgIffIsLieCombStatement
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ThetaGeneratorEqRootOfUnityMulStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsTangentModuleUniversalGroupStatement
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.LieImgIffIsLieComb
+public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ThetaGeneratorEqRootOfUnityMul
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsIsArcFr
+import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsTangentModuleUniversalGroup
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameChangeExistsUniqueOfSamePoint
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -57,7 +62,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RigidSys
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.ArcLineFunctions.ArcSPin
@@ -90,21 +94,7 @@ theorem one_eq : η[t'.G].left ≫ m.φ = (1 : Over.mk x ⟶ Xo.univ.t.G).left :
   exact this
 
 theorem tan_iff (w : epsR S ⟶ t'.G) : IsTanAt x (w.left ≫ m.φ) ↔ IsTangent w := by
-  have hw : w.left ≫ t'.G.hom = spMap (algebraMap S (DualNumber S)) := Over.w w
-  constructor
-  · intro h
-    apply m.cart.1.hom_ext
-    · rw [Category.assoc]; exact h.2.trans (one_eq m).symm
-    · have a : η[t'.G].left ≫ t'.G.hom = 𝟙 _ := Over.w η[t'.G]
-      rw [Category.assoc, hw, a, ← spMap_comp]
-      have : (TrivSqZeroExt.fstHom S S S).toRingHom.comp (algebraMap S (DualNumber S)) = RingHom.id S := by
-        ext r; simp [TrivSqZeroExt.algebraMap_eq_inl]
-      rw [this]
-      exact Spec.map_id _
-  · intro h
-    refine ⟨by rw [Category.assoc, m.cart.1.w, ← Category.assoc, hw], ?_⟩
-    rw [← Category.assoc]
-    exact (congrArg (· ≫ m.φ) h).trans (one_eq m)
+  apply GlobalTheory.ArcQ.ExFr.tan_iff <;> assumption
 
 theorem scale_over (s : S) : spMap (epsScaleR s) ≫ spMap (algebraMap S (DualNumber S)) =
     spMap (algebraMap S (DualNumber S)) := by
@@ -124,23 +114,7 @@ theorem push_prod {n : ℕ} (u : Fin n → (epsR S ⟶ t'.G)) :
 
 theorem comb_iff {n : ℕ} (v : Fin n → (epsR S ⟶ t'.G)) (cf : Fin n → S) (w : epsR S ⟶ t'.G) :
     IsCombAt x (fun i => (v i).left ≫ m.φ) cf (w.left ≫ m.φ) ↔ IsLieComb cf v w := by
-  constructor
-  · rintro ⟨u, hu, hw⟩
-    choose u' hu' using fun i => exists_lift m (T := epsR S) (u i).left (Over.w (u i))
-    have e : u = fun i => pushHom m.cart (epsR S) (u' i) := funext fun i => Over.OverMorphism.ext (hu' i).symm
-    refine ⟨u', fun i => ?_, Over.OverMorphism.ext ?_⟩
-    · apply m.cart.1.hom_ext
-      · rw [Category.assoc]; exact (hu' i).trans (hu i)
-      · have hv : (v i).left ≫ t'.G.hom = spMap (algebraMap S (DualNumber S)) := Over.w (v i)
-        rw [Over.w, Category.assoc, hv, scale_over]; rfl
-    · apply m.cart.1.hom_ext
-      · rw [e] at hw
-        exact hw.symm.trans (push_prod m u').symm
-      · rw [Over.w, Over.w]
-  · rintro ⟨u, hu, rfl⟩
-    refine ⟨fun i => pushHom m.cart (epsR S) (u i), fun i => ?_, (push_prod m u).symm⟩
-    show (u i).left ≫ m.φ = _
-    rw [hu, Category.assoc]; rfl
+  apply GlobalTheory.ArcQ.ExFr.comb_iff <;> assumption
 
 end ExFr
 
@@ -215,7 +189,7 @@ theorem sc_mul (s t : S) : sc s ≫ sc t = sc (s * t) := by
   show spMap (epsScaleR s) ≫ spMap (epsScaleR t) = spMap (epsScaleR (s * t))
   rw [← spMap_comp]
   congr 1
-  ext r <;> simp [epsScaleR, _root_.mul_assoc]
+  ext r <;> simp [epsScaleR]
 
 theorem isLieComb_iff {n : ℕ} (cf : Fin n → S) (v : Fin n → (epsR S ⟶ G)) (w : epsR S ⟶ G) :
     IsLieComb cf v w ↔ w = (List.ofFn fun i => sc (cf i) ≫ v i).prod := by
@@ -402,7 +376,7 @@ theorem isoMaps_scale {w : LB.Iso t.PP.L (Xo.univ.t.PP.L.pull m.φ)} {s s' : LB.
 theorem eq_of_isCombAt {n : ℕ} {u u' U : Fin n → (Sp (DualNumber S) ⟶ Xo.univ.t.G.left)}
     {X : Matrix (Fin n) (Fin n) S} (hX : IsUnit X.det) (hu : ∀ k, IsTanAt x (u k)) (hu' : ∀ k, IsTanAt x (u' k))
     (h : ∀ i, IsCombAt x u (X i) (U i)) (h' : ∀ i, IsCombAt x u' (X i) (U i)) : u = u' := by
-  obtain ⟨N, _, _, v, ρ, hv, htan, hcomb, -, -⟩ := GlobalTheory.T.exists_tangent_module_universal_group E H Dw l Xo S x
+  obtain ⟨N, _, _, v, ρ, hv, htan, hcomb, -, -⟩ := _root_.GlobalTheory.TanMod.exists_tangent_module E H Dw l Xo S x
   choose b hb using fun k => (htan _).1 (hu k)
   choose b' hb' using fun k => (htan _).1 (hu' k)
   obtain rfl : u = fun k => v (b k) := funext fun k => (hb k).symm
@@ -464,13 +438,13 @@ theorem exists_frame (hL : Out.Laws) (hL2 : Out.Laws2) {E : Type} [Field E] [Num
   obtain ⟨w, gw', rw', -⟩ := m.lin
   obtain ⟨s₁, hs₁⟩ := exists_reads m yF.s
   obtain ⟨σ₁, hσ₁⟩ := exists_isoMaps w gw' Xo.univ.t.PP.isLB t.PP.isLB s₁
-  obtain ⟨ξ, N, hN, hξ, hσξ⟩ := GlobalTheory.T.theta_generator_eq_rootOfUnity_mul_alt hL hL2 E H Dw l Xo c S t yF.x m m1 w w1 σ₁ σ' s₁ s1 yF.s yF.gen
+  obtain ⟨ξ, N, hN, hξ, hσξ⟩ := _root_.GlobalTheory.theta_generator_eq_rootOfUnity_mul hL hL2 E H Dw l Xo c S t yF.x m m1 w w1 σ₁ σ' s₁ s1 yF.s yF.gen
     ⟨gw', rw'⟩ r1 hσ₁ i1 hs₁ hg
   have hζ : ξ * ξ ^ (N - 1) = 1 := by rw [← pow_succ', Nat.sub_add_cancel hN, hξ]
   obtain ⟨y₀, hy₀⟩ := (GlobalTheory.ArcQ.frChg_exists_unique_units E H Dw l Xo c _ (fun τ => (X τ)⁻¹) ξ yF).1
     (fun τ => Matrix.isUnit_nonsing_inv_det _ (hX τ)) (IsUnit.of_mul_eq_one _ hζ)
   have hchg : FrChg X (ξ ^ (N - 1)) y₀ yF := by
-    obtain ⟨c1, c2, -⟩ := GlobalTheory.T.frameChange_compose_invert_baseChange_triangular E H Dw l Xo c S
+    obtain ⟨c1, c2, -⟩ := _root_.GlobalTheory.Frames.frChg_calculus E H Dw l Xo c S
     refine (c1 _ _ _ _ _ _ _ hy₀).2 ?_
     rw [mul_comm, hζ, funext fun τ => Matrix.mul_nonsing_inv _ (hX τ)]
     exact c2 yF
@@ -501,13 +475,13 @@ theorem exists_frame (hL : Out.Laws) (hL2 : Out.Laws2) {E : Type} [Field E] [Num
     exact h2
   refine ⟨ξ ^ (N - 1), N, _, hN, by rw [← pow_mul, mul_comm, pow_mul, hξ, one_pow], hchg, fun ht => core e v u hv hu
     (fun τ k => isTangent_baseChange m2.cart (hu τ k)
-      (((GlobalTheory.T.exists_unique_constant_tangent_vectors_along_arc hL.globalFns E H Dw l Xo c _ _ Y K _ _ χ W (e τ k)).2 _ (hv τ k)).1 (ht τ k))) hcomb, ?_⟩
+      (((_root_.GlobalTheory.ConstLie.main hL.globalFns E H Dw l Xo c _ _ Y K _ _ χ W (e τ k)).2 _ (hv τ k)).1 (ht τ k))) hcomb, ?_⟩
   choose e₀ he₀ using fun τ k => exists_gtComb (Pi.single k (1 : K)) (e τ)
-  choose v₀ hv₀ using fun τ k => (GlobalTheory.T.exists_unique_constant_tangent_vectors_along_arc hL.globalFns E H Dw l Xo c _ _ Y K _ _ χ W (e₀ τ k)).1.exists
+  choose v₀ hv₀ using fun τ k => (_root_.GlobalTheory.ConstLie.main hL.globalFns E H Dw l Xo c _ _ Y K _ _ χ W (e₀ τ k)).1.exists
   choose u' hu' using fun τ k => exists_baseChange m2.cart (v₀ τ k)
   have hl : ∀ τ k, IsLieComb (Pi.single k (1 : S)) (u τ) (u' τ k) := fun τ k => by
     have h := isLieComb_baseChange m2.cart (hu τ) (hu' τ k)
-      ((GlobalTheory.T.lieImg_iff_isLieComb_of_gtComb hL.globalFns E H Dw l Xo c _ _ Y K _ _ χ W _ _ _ _ (v τ) _ (hv τ) (he₀ τ k)).1 (hv₀ τ k))
+      ((_root_.GlobalTheory.ConstLin.lieImg_iff_isLieComb hL.globalFns E H Dw l Xo c _ _ Y K _ _ χ W _ _ _ _ (v τ) _ (hv τ) (he₀ τ k)).1 (hv₀ τ k))
     refine Eq.mp (congrArg (fun q => IsLieComb q (u τ) (u' τ k)) (funext fun j => ?_)) h
     by_cases hjk : j = k
     · subst hjk; simp

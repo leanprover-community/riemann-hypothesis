@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.WhittakerModels.UnipBEqUnipotent
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
 public import GroundTheory.AutomorphicForms.SmoothRep
 public import GroundTheory.AutomorphicForms.WhittakerGroups
@@ -74,20 +75,6 @@ theorem whitChar_eq_psiN (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace
 
 theorem isAdmissible_iff {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V]
     [Module ℂ V] (ρ : Representation ℂ G V) : GlobalTheory.PRep.IsAdmissible ρ ↔ GroundTheory.Automorphic.IsAdmissible ρ := by
-  have hfix : ∀ K : Subgroup G, fixed ρ K = GroundTheory.Automorphic.fixedVectors ρ K := by
-    intro K
-    ext v
-    constructor
-    · intro h g hg
-      have := h ⟨g, hg⟩
-      simpa using this
-    · intro h g
-      have := h g g.2
-      simpa using this
-  constructor
-  · rintro ⟨h1, h2⟩
-    exact ⟨h1, fun K hc ho => hfix K ▸ h2 K ho hc⟩
-  · rintro ⟨h1, h2⟩
-    exact ⟨h1, fun K ho hc => (hfix K).symm ▸ h2 K hc ho⟩
+  apply CompanionTheory.rg.gu.whit.isAdmissible_iff <;> assumption
 
 end PositivityTheory.rg.gu.whit

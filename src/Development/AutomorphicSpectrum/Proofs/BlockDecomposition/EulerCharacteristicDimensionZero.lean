@@ -1,7 +1,8 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsPullHermPullLine
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MixedPointLengthFormulaStatement
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSmoothHermCombLine
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MixedPointLengthFormula
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -39,7 +40,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Proportional
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSmoothHermCombLine
 
 @[expose] public section
 
@@ -125,11 +125,6 @@ theorem chi_eq_geoNum : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ) (Z : Scheme.{0})
   haveI : IsAffine Z := by
     first
       | exact IsAffine.of_isIso Z.topIso.inv
-      | exact isAffine_of_isIso Z.topIso.inv
-      | exact AlgebraicGeometry.isAffineOpen_top_iff.mp hA
-      | exact (AlgebraicGeometry.isAffineOpen_top_iff Z).mp hA
-      | exact IsAffine.of_isIso (Scheme.topIso Z).inv
-      | exact hA.isAffine_of_top
   rw [GlobalTheory.chi_structureModule_of_isAffine Z (ZMod p)]
   have hb := bijective_top Z hd
   have hRes : CharP (Z.residueField (genericPoint Z)) p :=
@@ -143,7 +138,7 @@ theorem chi_eq_geoNum : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ) (Z : Scheme.{0})
     rw [Ideal.mem_comap, Ideal.mem_span_singleton,
       ← CharP.intCast_eq_zero_iff ((MP ℤ m n).residueField (f (genericPoint Z))) p]
     simp only [ptIdeal, ReciprocityTheory.ChartRestriction.G.Geo.mCoordIdeal, RingHom.mem_ker, ReciprocityTheory.ChartRestriction.G.Geo.mConeMap,
-      MvPolynomial.aeval_C, MvPolynomial.algebraMap_apply, MvPolynomial.C_eq_zero, eq_intCast]
+      eq_intCast]
     rw [map_intCast, ← map_intCast (MvPolynomial.C : (MP ℤ m n).residueField (f (genericPoint Z)) →+*
       MvPolynomial (Fin (m + 1)) ((MP ℤ m n).residueField (f (genericPoint Z)))), MvPolynomial.C_eq_zero]
   have hchar : charOf (ptIdeal (f (genericPoint Z))) = p := by
@@ -158,7 +153,7 @@ theorem chi_eq_geoNum : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ) (Z : Scheme.{0})
     exact key _ hcomap
   have hcl : topologicalKrullDim (closure ({genericPoint Z} : Set Z)) = (0 : ℕ) :=
     (dim_closure_generic Z).trans hd
-  have hL := GlobalTheory.T.mixed_point_length_formula m n Z f (genericPoint Z) hcl a
+  have hL := _root_.GlobalTheory.CompanionTheory.MixZ.PtLenProof.ptLen m n Z f (genericPoint Z) hcl a
   rw [hchar] at hL
   have hcard : Nat.card (Z.residueField (genericPoint Z)) = Nat.card Γ(Z, ⊤) :=
     (Nat.card_eq_of_bijective _ hb).symm

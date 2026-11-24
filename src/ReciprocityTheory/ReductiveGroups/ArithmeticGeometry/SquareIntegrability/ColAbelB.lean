@@ -97,7 +97,6 @@ theorem cab_J_le (η : EuclideanSpace ℂ ι) (hη : ‖η‖ ≤ 1) (c q : ℕ)
     ∫ v : EuclideanSpace ℂ ι, ‖MvPolynomial.eval (fun i => v i) (cabPoly η c)‖ ^ 2 *
       Real.exp (-(q * Real.pi) * ‖v‖ ^ 2) ≤
       c.factorial * (2 / (q * Real.pi)) ^ c * (2 / q) ^ Fintype.card ι := by
-  have hq' : (0 : ℝ) < q := by exact_mod_cast hq
   set s : ℝ := q * Real.pi / 2 with hs
   have hs0 : 0 < s := by positivity
   have hpt : ∀ v : EuclideanSpace ℂ ι, ‖MvPolynomial.eval (fun i => v i) (cabPoly η c)‖ ^ 2 *
@@ -177,7 +176,6 @@ theorem cab_sup (hS : GSupStatement) (Y : GT ι) (q c : ℕ) (hq : 2 ≤ q) (R0 
     (w : EuclideanSpace ℂ ι) :
     Y.ptN2 q β w ≤ 12 * (5.12 : ℝ) ^ Fintype.card ι * c.factorial * (2 / (q * Real.pi)) ^ c := by
   have hq1 : 1 ≤ q := by omega
-  have hq0 : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
   have h := hS ι Y q hq1 β hβ w
   set G := Fintype.card ι with hG
   set A := 4 * Real.sqrt (2 * G) / (Real.sqrt (q * Real.pi) * Y.la1) with hA
@@ -204,7 +202,6 @@ theorem cab_sup (hS : GSupStatement) (Y : GT ι) (q c : ℕ) (hq : 2 ≤ q) (R0 
     rw [MeasureTheory.setAverage_eq]
     exact smul_nonneg (inv_nonneg.2 MeasureTheory.measureReal_nonneg)
       (MeasureTheory.integral_nonneg fun v => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)
-  have hqG : (0 : ℝ) ≤ 2 * (q : ℝ) ^ G := by positivity
   calc Y.ptN2 q β w ≤ 2 * (q : ℝ) ^ G * (1 + A) ^ (2 * G) * Y.l2 q β := h
     _ ≤ 2 * (q : ℝ) ^ G * 2.56 ^ G * (6 * (c.factorial * (2 / (q * Real.pi)) ^ c * (2 / q) ^ G)) := by
         gcongr
@@ -255,9 +252,6 @@ theorem cab_key (c gA : ℕ) (q t0 : ℝ) (hq : 2 ≤ q) (dst : ℝ) (hd : 0 ≤
   have hexp : Real.exp (gA / 4) * Real.exp (c * Real.log (q * c)) * Real.exp (5 * Real.pi * c) *
       Real.exp (-((Real.pi - 2) * t0)) ≤ 1 := by
     rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add, Real.exp_le_one_iff]
-    have hcl : (c : ℝ) * Real.log (q * c) = c * Real.log (q * c) := rfl
-    have hc0 : (0 : ℝ) ≤ c := Nat.cast_nonneg c
-    have hg0 : (0 : ℝ) ≤ gA := Nat.cast_nonneg gA
     nlinarith [mul_le_mul_of_nonneg_left hC5 (by linarith : (0 : ℝ) ≤ (Real.pi - 2) / 2),
       mul_le_mul_of_nonneg_left hC6 (by linarith : (0 : ℝ) ≤ (Real.pi - 2) / 2)]
   calc (5.12 : ℝ) ^ gA * (2 * (c + 1) / Real.pi) ^ c * Real.exp (5 * Real.pi * c) *
@@ -275,7 +269,6 @@ theorem cab_numeric (c G gA g' dst : ℕ) (q t0 : ℝ) (hq : 2 ≤ q) (hG : G �
         (q * (c + 1)) ^ ((c : ℝ) / 2) * Real.exp (5 * Real.pi * c / 2) *
         (2 * 9 ^ g' * Real.exp (-(Real.pi / 2 * t0))) ≤
       7 * 2 ^ gA * (4.3 : ℝ) ^ dst * Real.exp (-t0) * c.factorial := by
-  have hq0 : 0 < q := by linarith
   have hqc : 0 < q * (c + 1) := by positivity
   have hf1 : (1 : ℝ) ≤ c.factorial := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.factorial_ne_zero c)
   set Y := (q * (c + 1)) ^ ((c : ℝ) / 2) * Real.exp (5 * Real.pi * c / 2) *
@@ -318,7 +311,6 @@ theorem cab_numeric (c G gA g' dst : ℕ) (q t0 : ℝ) (hq : 2 ≤ q) (hG : G �
         Real.exp (-((Real.pi - 2) * t0)) ≤ 4 ^ gA := by
       refine le_trans ?_ hK
       gcongr
-    have hE : 0 ≤ Real.exp (-2 * t0) := (Real.exp_pos _).le
     calc 48 * (c.factorial : ℝ) * 81 ^ g' * Real.exp (-2 * t0) *
           ((5.12 : ℝ) ^ G * (2 * (c + 1) / Real.pi) ^ c * Real.exp (5 * Real.pi * c) *
             Real.exp (-((Real.pi - 2) * t0)))

@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PAmpleTwistLocal
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Objects
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -78,25 +79,7 @@ theorem res_mem_twistMod_zero_of_mem_chartRing {I : Chart x} {a : Ω} (ha : a �
 theorem SubSystem.res_mul_mem_pow (H : SubSystem S x Ω) (I : Chart x) {m : ℕ} {a : Ω}
     (ha : a ∈ (H.pow m).sub I) (n : ℕ) {b : Ω} (hb : b ∈ (H.pow n).sub I) :
     a * b ∈ (H.pow (m + n)).sub I := by
-  induction n generalizing b with
-  | zero =>
-    have hb' : b ∈ chartRing S x I := res_mem_chartRing_of_mem_twistMod_zero hb
-    have := ((H.pow m).sub I).smul_mem ⟨b, hb'⟩ ha
-    rw [chartRing_smul_def] at this
-    rw [mul_comm]; exact this
-  | succ n ih =>
-    change b ∈ ((H.pow n).twist H).sub I at hb
-    change a * b ∈ ((H.pow (m + n)).twist H).sub I
-    refine Submodule.span_induction (p := fun z _ => a * z ∈ ((H.pow (m + n)).twist H).sub I)
-      ?_ ?_ ?_ ?_ hb
-    · rintro _ ⟨q, hq, z, hz, rfl⟩
-      refine Submodule.subset_span ⟨q, hq, a * z, ih hz, ?_⟩
-      simp only [smul_eq_mul]; ring
-    · rw [mul_zero]; exact Submodule.zero_mem _
-    · intro u v _ _ hu hv; rw [mul_add]; exact Submodule.add_mem _ hu hv
-    · intro c u _ hu
-      rw [chartRing_smul_def, mul_left_comm, ← chartRing_smul_def]
-      exact Submodule.smul_mem _ c hu
+  apply GroundTheory.Heights₂.Heights.Kleiman.AmpleTwistLocal.mul_mem_pow <;> assumption
 
 theorem LineBundle.res_exists_mul_mem_pow (H : LineBundle S x) {I J : Chart x} (hIJ : I.1 ⊆ J.1)
     (n : ℕ) {z : Ω} (hz : z ∈ (H.pow n).sub J) :

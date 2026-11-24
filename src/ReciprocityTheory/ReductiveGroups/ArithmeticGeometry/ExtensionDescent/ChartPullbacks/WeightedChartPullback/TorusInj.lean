@@ -94,12 +94,10 @@ def pt : Spec (GA (X := X) (V := V)) ⟶ (splitTorus S X ⊗ Y).left :=
 lemma pt_snd : pt hV ≫ (snd (splitTorus S X) Y).left = ptY hV := by
   first
   | exact pullback.lift_snd _ _ _
-  | simp [pt]
 
 lemma pt_fst : pt hV ≫ (fst (splitTorus S X) Y).left = ptT hV := by
   first
   | exact pullback.lift_fst _ _ _
-  | simp [pt]
 
 lemma ptY_preimage : ptY (X := X) hV ⁻¹ᵁ V = ⊤ := by
   apply eq_top_iff.mpr
@@ -135,10 +133,6 @@ lemma specMap_appLE_top {R R' : CommRingCat.{0}} (f : R ⟶ R') (e) :
   have h1 : (Spec.map f).appLE ⊤ ⊤ e = (Spec.map f).appTop := by
     first
     | (rw [Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE]; rfl)
-    | (simp only [Scheme.Hom.appLE]
-       erw [show (homOfLE e).op = 𝟙 (Opposite.op (⊤ : (Spec R').Opens)) from Subsingleton.elim _ _,
-         CategoryTheory.Functor.map_id, Category.comp_id]
-       rfl)
   rw [h1, Scheme.ΓSpecIso_naturality, ← Category.assoc, Iso.inv_hom_id, Category.id_comp]
 
 lemma specMap_fromSpec_appLE {R : CommRingCat.{0}} (f : Γ(Y.left, V) ⟶ R) (e) :
@@ -169,7 +163,7 @@ lemma charUnit_val (χ : X) :
     (charUnit S X χ).val = ((tFst (S := S) X).appLE ⊤ ⊤
       (tle _)).hom
       ((Scheme.ΓSpecIso (torusRing ZU X)).inv.hom (AddMonoidAlgebra.single χ 1)) := by
-  simp [charUnit, res, pullU, Scheme.Hom.appLE, AddMonoidAlgebra.of_apply]
+  simp [charUnit, res, pullU, Scheme.Hom.appLE]
   rfl
 
 lemma ev_chi (χ : X) :
@@ -203,9 +197,7 @@ lemma coeff_sum_single {A : Type} [CommRing A] (s : Finset X) (g : X → A) (χ�
     (∑ c ∈ s, AddMonoidAlgebra.single c (g c)).coeff χ₀ = g χ₀ := by
   classical
   first
-  | simp [AddMonoidAlgebra.coeff, Finsupp.finsetSum_apply, Finsupp.single_apply, h]
   | simp [Finsupp.finsetSum_apply, Finsupp.single_apply, h]
-  | simp [AddMonoidAlgebra.coeff_sum, AddMonoidAlgebra.coeff_single, h]
 
 theorem eq_zero_of_sum {V : Y.left.Opens} (s : Finset X) (h : X → Γ(Y.left, V))
     (hs : ∑ χ ∈ s, ((splitTorus S X ⊗ Y).left.presheaf.map (homOfLE le_top).op).hom (chiP X Y χ) *

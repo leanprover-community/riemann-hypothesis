@@ -50,6 +50,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.TangentLinearity.ConstPullback
 import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.GoodClass
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.IsAbelianSchemeOfAbelianThickenings
 
 @[expose] public section
 
@@ -65,31 +66,7 @@ open GlobalTheory.AbLaw GlobalTheory.AbLaw.Seesaw ReciprocityTheory.ChartRestric
 
 theorem preconnectedSpace_of_functions (Y : Scheme.{0})
     (H : ∀ s : Γ(Y, ⊤), Y.basicOpen s = ⊥ ∨ Y.basicOpen s = ⊤) : PreconnectedSpace Y := by
-  refine ⟨fun U W hU hW hc ⟨u, _, hu⟩ ⟨w, _, hw⟩ => ?_⟩
-  by_contra hne
-  let O : Bool → Y.Opens := fun i => bif i then ⟨U, hU⟩ else ⟨W, hW⟩
-  have hd : O true ⊓ O false = ⊥ := le_bot_iff.1 fun y hy => hne ⟨y, trivial, hy⟩
-  have hcov : ⨆ i, O i = ⊤ := top_unique fun y _ => by
-    rcases hc (Set.mem_univ y) with h | h
-    · exact TopologicalSpace.Opens.mem_iSup.2 ⟨true, h⟩
-    · exact TopologicalSpace.Opens.mem_iSup.2 ⟨false, h⟩
-  obtain ⟨s, hs⟩ := TLinPf.glue O hcov (fun i => bif i then 1 else 0) (fun i j => by
-    have sub : ∀ T : Y.Opens, T = ⊥ → Subsingleton Γ(Y, T) := fun T hT => by
-      subst hT; infer_instance
-    cases i <;> cases j
-    · exact (map_zero _).trans (map_zero _).symm
-    · exact (sub _ ((inf_comm _ _).trans hd)).elim _ _
-    · exact (sub _ hd).elim _ _
-    · exact (map_one _).trans (map_one _).symm)
-  rcases H s with h | h
-  · have h₁ : u ∈ Y.basicOpen s := (mem_basicOpen_rs (le_top : O true ≤ ⊤) s hu).1 (by
-      rw [show rs Y (le_top : O true ≤ ⊤) s = 1 from hs true]
-      exact mem_of_isUnit isUnit_one hu)
-    rw [h] at h₁
-    exact h₁
-  · have h₁ := (mem_basicOpen_rs (le_top : O false ≤ ⊤) s hw).2 (h.ge (Set.mem_univ w))
-    rw [show rs Y (le_top : O false ≤ ⊤) s = 0 from hs false, Scheme.basicOpen_zero] at h₁
-    exact h₁
+  apply _root_.GlobalTheory.AlgGroup.preconnectedSpace_of_functions <;> assumption
 
 variable {X X' : Scheme.{0}}
 

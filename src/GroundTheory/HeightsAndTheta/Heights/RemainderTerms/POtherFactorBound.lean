@@ -182,14 +182,8 @@ theorem OtherFactorBound.proof (hO : OtherFactorFormula.Statement)
     exact_mod_cast (Nat.factorial_mul_descFactorial hk1).symm
   have hM : ((n + 1).factorial : ℚ) = ((n + 1 : ℕ) : ℚ) * (n.factorial : ℚ) := by
     rw [Nat.factorial_succ]; push_cast; ring
-  have hdesc : (0 : ℚ) < n1.descFactorial (k - 1) := by
-    exact_mod_cast Nat.descFactorial_pos.mpr hk1
   have hchoose : (0 : ℚ) < Nat.choose (n1 + k) k := by
     exact_mod_cast Nat.choose_pos (by omega)
-  have hBpos : (0 : ℚ) < (n1 - (k - 1)).factorial := by positivity
-  have hKpos : (0 : ℚ) < k.factorial := by positivity
-  have hnpos : (0 : ℚ) < n.factorial := by positivity
-  have hkpos : (0 : ℚ) < k := by exact_mod_cast (show 0 < k by omega)
 
   have hstep : |C₀ * k * ((n + 1).factorial : ℚ) /
         (((n1 + k).factorial : ℚ) * ((n1 - (k - 1)).factorial : ℚ) *
@@ -197,7 +191,6 @@ theorem OtherFactorBound.proof (hO : OtherFactorFormula.Statement)
       ((n + 1 : ℕ) : ℚ) * |C₀ * (n.factorial : ℚ) / ((n1).factorial : ℚ) ^ (g + 2) * P ^ (g + 2)| *
         ((n1.descFactorial (k - 1) : ℚ) * 2 ^ (k - 1)) / (k.factorial : ℚ) := by
     rw [hD1, hM]
-    have hApos : (0 : ℚ) < n1.factorial := by positivity
     simp only [abs_mul, abs_div, abs_pow, Nat.abs_cast, abs_of_pos hP]
     have hX1 : 0 ≤ |C₀| * (k : ℚ) * (((n + 1 : ℕ) : ℚ) * (n.factorial : ℚ)) /
         ((Nat.choose (n1 + k) k : ℚ) * (k.factorial : ℚ) * (n1.factorial : ℚ) *
@@ -218,7 +211,6 @@ theorem OtherFactorBound.proof (hO : OtherFactorFormula.Statement)
         ≤ (n1 : ℚ) ^ (k - 1) * 2 ^ (k - 1) := by gcongr
       _ = (2 * (n1 : ℚ)) ^ (k - 1) := by ring
       _ ≤ restX r a ^ (k - 1) := by gcongr
-  have hpos1 : 0 ≤ ((n + 1 : ℕ) : ℚ) := by positivity
   gcongr
 
 end

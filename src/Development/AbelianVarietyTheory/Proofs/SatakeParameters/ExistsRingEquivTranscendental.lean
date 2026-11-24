@@ -63,6 +63,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.CubicFields.PeriodRelations.Bridge
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.GenusOneDatumExistence
 
 @[expose] public section
 
@@ -183,50 +184,10 @@ section Gen
 variable {p : ℕ} [Fact p.Prime]
 
 theorem mem_Wp_of_kur {x : ℂ_[p]} (hx : x ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p) (h1 : ‖x‖ ≤ 1) : x ∈ Wp p := by
-  have hp : p.Prime := Fact.out
-  have hB := ((Formalism.L2.Th1.D.kurIntegers p).1 x).2 ⟨hx, h1⟩
-  have hS : Formalism.L2.Th1.D.muPrime p = {ζ : ℂ_[p] | ∃ n : ℕ, 0 < n ∧ Nat.Coprime n p ∧ ζ ^ n = 1} := by
-    ext ζ
-    simp only [Formalism.L2.Th1.D.muPrime, Set.mem_ofPred_eq]
-    constructor
-    · rintro ⟨n, h0, hn, h⟩
-      exact ⟨n, h0, Nat.coprime_comm.mp ((Nat.Prime.coprime_iff_not_dvd hp).mpr hn), h⟩
-    · rintro ⟨n, h0, hn, h⟩
-      exact ⟨n, h0, (Nat.Prime.coprime_iff_not_dvd hp).mp (Nat.coprime_comm.mp hn), h⟩
-  unfold Formalism.L2.Th1.D.ringB Formalism.L2.Th1.D.ringA at hB
-  rw [hS] at hB
-  exact hB
+  apply _root_.Formalism.L2.KerInert.GenusOneDatumExistence.mem_Wp_of_kur <;> assumption
 
 theorem logF_eq : logF p = Formalism.L2.Th1.CM.ltLog ℂ_[p] p := by
-  have hp : p.Prime := Fact.out
-  have hinj : Function.Injective (fun j : ℕ => p ^ (2 * j)) := by
-    intro a b h
-    have := Nat.pow_right_injective hp.two_le h
-    simpa using this
-  ext n
-  simp only [logF, Formalism.L2.Th1.CM.ltLog, coeff_mk]
-  split_ifs with h
-  · have hj := Nat.find_spec h
-    set j0 := Nat.find h
-    have hn : n = p ^ (2 * j0) := by rw [hj, ← pow_mul]
-    rw [Finset.sum_eq_single j0]
-    · rw [if_pos hn]
-    · intro j _ hne
-      rw [if_neg]
-      intro h'
-      exact hne (hinj (h'.symm.trans hn))
-    · intro hj0
-      exfalso
-      apply hj0
-      rw [Finset.mem_range, hn]
-      have : j0 < p ^ j0 := Nat.lt_pow_self hp.one_lt
-      have h2 : p ^ j0 ≤ p ^ (2 * j0) := Nat.pow_le_pow_right hp.pos (by omega)
-      omega
-  · apply Finset.sum_eq_zero
-    intro j _
-    rw [if_neg]
-    intro h'
-    exact h ⟨j, by rw [h', pow_mul]⟩
+  apply _root_.Formalism.L2.KerInert.GenusOneDatumExistence.logF_eq <;> assumption
 
 theorem isWq_wU (W : WeierstrassCurve ℂ_[p]) : Formalism.MainNotions.TaylorLogMetric.IsWq W (Formalism.L2.Th1.A.wU W) := by
   have hF := (Formalism.L2.Th1.A.CurveSer.wSer_fixed W).2
@@ -256,52 +217,7 @@ theorem datum_of_short (h5 : 5 ≤ p) (lam : Formalism.MainNotions.TaylorLogMetr
         ‖PowerSeries.coeff n ((Formalism.L2.Th1.CM.uSer g2 g3).subst
           (PowerSeries.C ε * Formalism.L2.Th1.CM.ltLog ℂ_[p] p))‖ ≤ 1) :
     ∃ g : G1 p, g.lam = lam ∧ g.abelian₂ = Λ ∧ g.C = C ∧ g.Ok ∧ ModelOverW g.lam g.abelian₂ g.C ∧ LTIso g := by
-  set S := Formalism.L2.Th1.A.shortW g2 g3 with hS
-  let g : G1 p := ⟨lam, Λ, C, Formalism.L2.Th1.A.wU S, Formalism.L2.Th1.A.expSer S⟩
-  have hgW : g.W = S := hW
-  have h4 := norm_four (p := p) h5
-  have hWq : Formalism.MainNotions.TaylorLogMetric.IsWq g.W g.wq := by
-    rw [hgW]; exact isWq_wU S
-  obtain ⟨hx0, -, hLE, hEL, -⟩ := Formalism.L2.Th1.A.expSpec ℂ_[p] S
-  have hfl : Formalism.MainNotions.TaylorLogMetric.flog S (Formalism.L2.Th1.A.wU S) = Formalism.L2.Th1.A.logSer S :=
-    Formalism.L2.KerInert.Dict.formal_logarithm_agree p S _ (isWq_wU S)
-  have hΔ : S.Δ = g2 ^ 3 - 27 * g3 ^ 2 := (Formalism.L2.Th1.A.shortInv ℂ_[p] g2 g3).2.2.2
-  have na4 : ‖S.a₄‖ ≤ 1 := by
-    simp only [hS, Formalism.L2.Th1.A.shortW, norm_div, norm_neg, h4, div_one]; exact n2
-  have na6 : ‖S.a₆‖ ≤ 1 := by
-    simp only [hS, Formalism.L2.Th1.A.shortW, norm_div, norm_neg, h4, div_one]; exact n3
-  have hU : IsModelU lam Λ C := by
-    show Formalism.MainNotions.TaylorLogMetric.IsIntP (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₁ ∧ Formalism.MainNotions.TaylorLogMetric.IsIntP (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₂ ∧
-      Formalism.MainNotions.TaylorLogMetric.IsIntP (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₃ ∧ Formalism.MainNotions.TaylorLogMetric.IsIntP (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₄ ∧
-      Formalism.MainNotions.TaylorLogMetric.IsIntP (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₆ ∧ ‖(C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).Δ‖ = 1
-    rw [hW]
-    refine ⟨?_, ?_, ?_, na4, na6, by rw [hΔ]; exact nd⟩ <;> simp [Formalism.MainNotions.TaylorLogMetric.IsIntP, hS, Formalism.L2.Th1.A.shortW]
-  have hOk : g.Ok := by
-    refine ⟨hU, hWq, hx0, ?_⟩
-    show PowerSeries.subst (Formalism.L2.Th1.A.expSer S) (Formalism.MainNotions.TaylorLogMetric.flog g.W (Formalism.L2.Th1.A.wU S)) = PowerSeries.X
-    rw [hgW, hfl]
-    exact hLE
-  have hM : ModelOverW lam Λ C := by
-    show (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₁ ∈ Wp p ∧ (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₂ ∈ Wp p ∧
-      (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₃ ∈ Wp p ∧ (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₄ ∈ Wp p ∧
-      (C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ).a₆ ∈ Wp p
-    rw [hW]
-    refine ⟨by simp [hS, Formalism.L2.Th1.A.shortW], by simp [hS, Formalism.L2.Th1.A.shortW],
-      by simp [hS, Formalism.L2.Th1.A.shortW], mem_Wp_of_kur ?_ na4, mem_Wp_of_kur ?_ na6⟩
-    · simp only [hS, Formalism.L2.Th1.A.shortW]
-      exact div_mem (neg_mem k2) (ofNat_mem _ 4)
-    · simp only [hS, Formalism.L2.Th1.A.shortW]
-      exact div_mem (neg_mem k3) (ofNat_mem _ 4)
-  have hpt : (g.pt (MvPowerSeries.C ε * logF p) : MvPowerSeries Unit ℂ_[p]) =
-      (Formalism.L2.Th1.CM.uSer g2 g3).subst (PowerSeries.C ε * Formalism.L2.Th1.CM.ltLog ℂ_[p] p) := by
-    show PowerSeries.subst (MvPowerSeries.C ε * logF p) (Formalism.L2.Th1.A.expSer S) = _
-    rw [hS, ← Formalism.L2.Th1.A.uSerEq, logF_eq]
-    rfl
-  have hΘ : IntegralW (g.pt (MvPowerSeries.C ε * logF p) : MvPowerSeries Unit ℂ_[p]) := by
-    intro n
-    rw [hpt, Finsupp.unique_single n]
-    exact mem_Wp_of_kur (hint (n ())).1 (hint (n ())).2
-  exact ⟨g, rfl, rfl, rfl, hOk, hM, ltIso_of' g hOk hε1 hΘ⟩
+  apply _root_.Formalism.L2.KerInert.GenusOneDatumExistence.datum_of_short <;> assumption
 
 end Gen
 

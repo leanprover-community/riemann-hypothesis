@@ -78,11 +78,9 @@ theorem quotSupp_of (V : HSp D) (hV : FinVol V) (hP : ∃ p : Measure (GA D V) �
   haveI : (volPair V).1.IsHaarMeasure := hvp.1.1
   haveI : BorelSpace (GA D V) := by
     first
-    | exact Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.borelHA
     | exact Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.borelHA _ _
   haveI : MeasurableMul (GA D V) := by
     first
-    | exact Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.measurableMulHA
     | exact Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.measurableMulHA _ _
   haveI : MeasurableConstSMul (GQ V) (GA D V) := ⟨fun c => measurable_const_mul (c : GA D V)⟩
   haveI : SMulInvariantMeasure (GQ V) (GA D V) (volPair V).1 :=
@@ -120,7 +118,6 @@ theorem quotSupp_of (V : HSp D) (hV : FinVol V) (hP : ∃ p : Measure (GA D V) �
   have hmeas : AEMeasurable (autMk V) ((volPair V).1.restrict (volPair V).2) := by
     have hm : Measurable (autMk V) := by
       first
-      | exact measurable_quotient_mk'
       | exact fun _ hs => hs
     exact hm.aemeasurable
   have hpre : autMk V ⁻¹' S = O := by

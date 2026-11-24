@@ -73,26 +73,7 @@ theorem rp_pre {g : G} (hg : RPres μ g) (s : Set G) : μ ((fun x => x * g) ⁻�
 theorem rp_N_pre [μ.IsMulLeftInvariant] [Countable Γ] (h : rr_FD μ Γ D) {g : G} (hg : RPres μ g) :
     μ ((fun x => x * g) ⁻¹' rr_N Γ D) = 0 := by
   rw [rp_pre hg]
-  have key : ∀ γ₁ ∈ Γ, ∀ γ₂ ∈ Γ, γ₁ ≠ γ₂ → μ {y | γ₁ * y ∈ D ∧ γ₂ * y ∈ D} = 0 := by
-    intro γ₁ h₁ γ₂ h₂ hne
-    have hγ : γ₁ * γ₂⁻¹ ∈ (Γ : Set G) := Γ.mul_mem h₁ (Γ.inv_mem h₂)
-    have hne' : γ₁ * γ₂⁻¹ ≠ 1 := fun h1 => hne (mul_inv_eq_one.mp h1)
-    have h0 := h.disj _ hγ hne'
-    have hsub : {y | γ₁ * y ∈ D ∧ γ₂ * y ∈ D} ⊆
-        (fun y => γ₁ * y) ⁻¹' ((fun z => γ₁ * γ₂⁻¹ * z) '' D ∩ D) := by
-      rintro y ⟨hy1, hy2⟩
-      exact ⟨⟨γ₂ * y, hy2, by simp [mul_assoc]⟩, hy1⟩
-    refine measure_mono_null hsub ?_
-    rw [measure_preimage_mul]
-    exact h0
-  have hN : rr_N Γ D ⊆ ⋃ (p : Γ × Γ) (_ : p.1 ≠ p.2), {y | (p.1 : G) * y ∈ D ∧ (p.2 : G) * y ∈ D} := by
-    intro y hy
-    simp only [rr_N, Set.mem_setOf_eq] at hy
-    obtain ⟨γ₁, h₁, γ₂, h₂, hne, hy1, hy2⟩ := hy
-    exact Set.mem_iUnion₂.mpr ⟨(⟨γ₁, h₁⟩, ⟨γ₂, h₂⟩), fun heq => hne (congrArg Subtype.val heq), hy1, hy2⟩
-  refine measure_mono_null hN ?_
-  exact measure_iUnion_null fun p => measure_iUnion_null fun hp =>
-    key p.1 p.1.2 p.2 p.2.2 (fun heq => hp (Subtype.ext heq))
+  simpa only [rr_N] using rr_N_null h
 
 theorem rp_rep_ae_eq [μ.IsMulLeftInvariant] [Countable Γ] (h : rr_FD μ Γ D) {r : G → G}
     (hr : ∀ y, ∃ γ ∈ Γ, r y = γ * y ∧ γ * y ∈ D) {g : G} (hg : RPres μ g) :
@@ -109,8 +90,6 @@ theorem rp_rep_ae_eq [μ.IsMulLeftInvariant] [Countable Γ] (h : rr_FD μ Γ D) 
     unfold rr_rep
     first
     | exact dif_pos hex
-    | rw [dif_pos hex]
-    | simp only [dif_pos hex]
   rw [e, hr'] at hx
   show ∃ γ₁ ∈ Γ, ∃ γ₂ ∈ Γ, γ₁ ≠ γ₂ ∧ γ₁ * (x * g) ∈ D ∧ γ₂ * (x * g) ∈ D
   exact ⟨hex.choose, hex.choose_spec.1, γ, hγ, fun heq => hx (by rw [heq]), hex.choose_spec.2, hD⟩
@@ -208,8 +187,6 @@ theorem rp_map [μ.IsMulLeftInvariant] [Countable Γ] (h : rr_FD μ Γ D) {g : G
     unfold rr_rep
     first
     | exact dif_pos hex
-    | rw [dif_pos hex]
-    | simp only [dif_pos hex]
   haveI : Nonempty Γ := ⟨1⟩
   obtain ⟨e, he⟩ := exists_surjective_nat Γ
   have hp : ∀ y : G, ∃ n, (e n : G) * y ∈ D := fun y => by
@@ -244,8 +221,6 @@ theorem rp_rep_comp [μ.IsMulLeftInvariant] [Countable Γ] (h : rr_FD μ Γ D) (
     unfold rr_rep
     first
     | exact dif_pos hex
-    | rw [dif_pos hex]
-    | simp only [dif_pos hex]
   rw [ae_iff]
   refine measure_mono_null (fun x hx => ?_) hnull
   simp only [Set.mem_setOf_eq] at hx
@@ -309,8 +284,6 @@ variable (I : AutInst)
 theorem muInf_right : (ProjRows.muInf I).IsMulRightInvariant := by
   first
   | infer_instance
-  | (unfold ProjRows.muInf; infer_instance)
-  | (unfold Formalism.L2.SG.ProjRows.muInf Formalism.REAL.muG; infer_instance)
 
 theorem rp_inst (μf : Measure I.Gf) [SigmaFinite μf] (g : I.Ginf) :
     RPres (I.muA μf) ((g, 1) : I.GA) := by
@@ -360,13 +333,10 @@ theorem adele_tendsto (μf : Measure I.Gf) [SigmaFinite μf] {A : Set I.GA} (hA 
         = (fun x : I.Ginf => (x, y)) ⁻¹' A \ (fun x => x * g) ⁻¹' ((fun x : I.Ginf => (x, y)) ⁻¹' A) := by
     intro g y
     ext x
-    simp [Set.mem_diff]
+    simp
   have hmA : ∀ y : I.Gf, MeasurableSet ((fun x : I.Ginf => (x, y)) ⁻¹' A) := fun y => by
     first
-    | exact hA.preimage measurable_prod_mk_right
     | exact hA.preimage measurable_prodMk_right
-    | exact hA.preimage (measurable_id.prodMk measurable_const)
-    | exact hA.preimage (measurable_id.prod_mk measurable_const)
   have hB : ∀ g : I.Ginf, MeasurableSet (A \ (fun x => x * ((g, 1) : I.GA)) ⁻¹' A) := fun g =>
     hA.diff (hA.preimage (measurable_mul_const _))
   have hF : ∀ g : I.Ginf, I.muA μf (A \ (fun x => x * ((g, 1) : I.GA)) ⁻¹' A)
@@ -382,7 +352,6 @@ theorem adele_tendsto (μf : Measure I.Gf) [SigmaFinite μf] {A : Set I.GA} (hA 
     exact hfin
   have hmeasA : Measurable fun y : I.Gf => ProjRows.muInf I ((fun x : I.Ginf => (x, y)) ⁻¹' A) := by
     first
-    | exact measurable_measure_prod_mk_right hA
     | exact measurable_measure_prodMk_right hA
   simp_rw [hF]
   rw [show (0 : ℝ≥0∞) = ∫⁻ _ : I.Gf, (0 : ℝ≥0∞) ∂μf by simp]
@@ -390,7 +359,6 @@ theorem adele_tendsto (μf : Measure I.Gf) [SigmaFinite μf] {A : Set I.GA} (hA 
     (fun y => ProjRows.muInf I ((fun x : I.Ginf => (x, y)) ⁻¹' A)) ?_ ?_ hAint ?_
   · filter_upwards with g
     first
-    | exact measurable_measure_prod_mk_right (hB g)
     | exact measurable_measure_prodMk_right (hB g)
   · filter_upwards with g
     filter_upwards with y
@@ -414,76 +382,15 @@ variable (I : AutInst) (μf : Measure I.Gf) [SigmaFinite μf] [μf.IsHaarMeasure
 
 include hfd hR in
 theorem reg_norm (g : I.Ginf) (F : I.L2 μf fund) : ‖R (g, 1) F‖ = ‖F‖ := by
-  have hdet : ∀ v, IsUnit (I.P v).det := fun v => (Matrix.isUnit_iff_isUnit_det _).mp (I.P_unit v)
-  have key : ∀ (P A B : Matrix (Fin I.n) (Fin I.n) ℂ), IsUnit P.det →
-      P⁻¹ * A * P * (P⁻¹ * B * P) = P⁻¹ * (A * B) * P := by
-    intro P A B hP
-    calc P⁻¹ * A * P * (P⁻¹ * B * P) = P⁻¹ * A * (P * P⁻¹) * B * P := by simp only [Matrix.mul_assoc]
-      _ = P⁻¹ * (A * B) * P := by
-        rw [Matrix.mul_nonsing_inv _ hP, Matrix.mul_one, Matrix.mul_assoc (P⁻¹) A B]
-  have h1 : (1 : I.GA) ∈ I.GFset := by
-    simp only [AutInst.GFset, Set.mem_setOf_eq]
-    refine ⟨1, (Formalism.UG.UJ (starRingEnd I.E) I.J).one_mem, fun v => ?_, ?_⟩
-    · simp [uMat, Matrix.nonsing_inv_mul _ (hdet v)]
-    · simp [AutInst.fmat]
-  have hmul : ∀ {a b : I.GA}, a ∈ I.GFset → b ∈ I.GFset → a * b ∈ I.GFset := by
-    intro a b ha hb
-    simp only [AutInst.GFset, Set.mem_setOf_eq] at ha hb ⊢
-    obtain ⟨γ₁, hγ₁, hu₁, hf₁⟩ := ha
-    obtain ⟨γ₂, hγ₂, hu₂, hf₂⟩ := hb
-    refine ⟨γ₁ * γ₂, (Formalism.UG.UJ (starRingEnd I.E) I.J).mul_mem hγ₁ hγ₂, fun v => ?_, ?_⟩
-    · have e : uMat ((a * b).1 v) = uMat (a.1 v) * uMat (b.1 v) := by simp [uMat]
-      rw [e, hu₁ v, hu₂ v, key _ _ _ (hdet v), Units.val_mul, Matrix.map_mul]
-    · have e : I.fmat (a * b).2 = I.fmat a.2 * I.fmat b.2 := by simp [AutInst.fmat]
-      rw [e, hf₁, hf₂, Units.val_mul, Matrix.map_mul]
-  have hinv : ∀ {a : I.GA}, a ∈ I.GFset → a⁻¹ ∈ I.GFset := by
-    intro a ha
-    simp only [AutInst.GFset, Set.mem_setOf_eq] at ha ⊢
-    obtain ⟨γ, hγ, hu, hf⟩ := ha
-    refine ⟨γ⁻¹, (Formalism.UG.UJ (starRingEnd I.E) I.J).inv_mem hγ, fun v => ?_, ?_⟩
-    · have hM : uMat (a.1 v) * uMat (a⁻¹.1 v) = 1 := by simp [uMat]
-      rw [← Matrix.inv_eq_right_inv hM]
-      apply Matrix.inv_eq_right_inv
-      rw [hu v, key _ _ _ (hdet v), ← Matrix.map_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one,
-        Matrix.map_one _ (map_zero _) (map_one _), Matrix.mul_one, Matrix.nonsing_inv_mul _ (hdet v)]
-    · have hM : I.fmat a.2 * I.fmat a⁻¹.2 = 1 := by simp [AutInst.fmat]
-      rw [← Matrix.inv_eq_right_inv hM]
-      apply Matrix.inv_eq_right_inv
-      rw [hf, ← Matrix.map_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one,
-        Matrix.map_one _ (map_zero _) (map_one _)]
-  let Γ : Subgroup I.GA :=
-    { carrier := I.GFset
-      mul_mem' := hmul
-      one_mem' := h1
-      inv_mem' := hinv }
-  haveI hEc : Countable I.E := (Module.finBasis ℚ I.E).equivFun.injective.countable
-  haveI hGLc : Countable (GL (Fin I.n) I.E) := by
-    refine Function.Injective.countable
-      (f := fun u : GL (Fin I.n) I.E => fun i j => (u : Matrix (Fin I.n) (Fin I.n) I.E) i j) ?_
-    intro u w huw
-    exact Units.ext (Matrix.ext fun i j => congrFun (congrFun huw i) j)
-  haveI hΓc : Countable Γ := by
-    refine Function.Injective.countable (f := fun x : Γ => Classical.choose x.2) ?_
-    intro x y hxy
-    have hxy' : Classical.choose x.2 = Classical.choose y.2 := hxy
-    have sx := Classical.choose_spec x.2
-    have sy := Classical.choose_spec y.2
-    rw [hxy'] at sx
-    apply Subtype.ext
-    apply Prod.ext
-    · funext v
-      apply Subtype.ext
-      apply Units.ext
-      exact (sx.2.1 v).trans (sy.2.1 v).symm
-    · apply Subtype.ext
-      apply Units.ext
-      exact sx.2.2.trans sy.2.2.symm
+  let Γ : Subgroup I.GA := rr_GF I
   haveI hli : (I.muA μf).IsMulLeftInvariant := by
     unfold AutInst.muA
     first
     | infer_instance
     | (unfold Formalism.REAL.muG; infer_instance)
-  have hFD : rr_FD (I.muA μf) Γ fund := ⟨hfd.1, hfd.2.1, hfd.2.2⟩
+  have hFD : rr_FD (I.muA μf) Γ fund := by
+    refine ⟨hfd.1, ?_, hfd.2.2⟩
+    simpa only [Γ, rr_GF_coe, AutInst.GFset] using hfd.2.1
   have hReg : rr_IsReg (I.muA μf) Γ fund R := by
     intro g' F'
     first
@@ -493,70 +400,7 @@ theorem reg_norm (g : I.Ginf) (F : I.L2 μf fund) : ‖R (g, 1) F‖ = ‖F‖ :
 
 include hfd hR in
 theorem reg_mul (a b : I.Ginf) : R (a * b, 1) = (R (a, 1)).comp (R (b, 1)) := by
-  have hdet : ∀ v, IsUnit (I.P v).det := fun v => (Matrix.isUnit_iff_isUnit_det _).mp (I.P_unit v)
-  have key : ∀ (P A B : Matrix (Fin I.n) (Fin I.n) ℂ), IsUnit P.det →
-      P⁻¹ * A * P * (P⁻¹ * B * P) = P⁻¹ * (A * B) * P := by
-    intro P A B hP
-    calc P⁻¹ * A * P * (P⁻¹ * B * P) = P⁻¹ * A * (P * P⁻¹) * B * P := by simp only [Matrix.mul_assoc]
-      _ = P⁻¹ * (A * B) * P := by
-        rw [Matrix.mul_nonsing_inv _ hP, Matrix.mul_one, Matrix.mul_assoc (P⁻¹) A B]
-  have h1 : (1 : I.GA) ∈ I.GFset := by
-    simp only [AutInst.GFset, Set.mem_setOf_eq]
-    refine ⟨1, (Formalism.UG.UJ (starRingEnd I.E) I.J).one_mem, fun v => ?_, ?_⟩
-    · simp [uMat, Matrix.nonsing_inv_mul _ (hdet v)]
-    · simp [AutInst.fmat]
-  have hmul : ∀ {a b : I.GA}, a ∈ I.GFset → b ∈ I.GFset → a * b ∈ I.GFset := by
-    intro a b ha hb
-    simp only [AutInst.GFset, Set.mem_setOf_eq] at ha hb ⊢
-    obtain ⟨γ₁, hγ₁, hu₁, hf₁⟩ := ha
-    obtain ⟨γ₂, hγ₂, hu₂, hf₂⟩ := hb
-    refine ⟨γ₁ * γ₂, (Formalism.UG.UJ (starRingEnd I.E) I.J).mul_mem hγ₁ hγ₂, fun v => ?_, ?_⟩
-    · have e : uMat ((a * b).1 v) = uMat (a.1 v) * uMat (b.1 v) := by simp [uMat]
-      rw [e, hu₁ v, hu₂ v, key _ _ _ (hdet v), Units.val_mul, Matrix.map_mul]
-    · have e : I.fmat (a * b).2 = I.fmat a.2 * I.fmat b.2 := by simp [AutInst.fmat]
-      rw [e, hf₁, hf₂, Units.val_mul, Matrix.map_mul]
-  have hinv : ∀ {a : I.GA}, a ∈ I.GFset → a⁻¹ ∈ I.GFset := by
-    intro a ha
-    simp only [AutInst.GFset, Set.mem_setOf_eq] at ha ⊢
-    obtain ⟨γ, hγ, hu, hf⟩ := ha
-    refine ⟨γ⁻¹, (Formalism.UG.UJ (starRingEnd I.E) I.J).inv_mem hγ, fun v => ?_, ?_⟩
-    · have hM : uMat (a.1 v) * uMat (a⁻¹.1 v) = 1 := by simp [uMat]
-      rw [← Matrix.inv_eq_right_inv hM]
-      apply Matrix.inv_eq_right_inv
-      rw [hu v, key _ _ _ (hdet v), ← Matrix.map_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one,
-        Matrix.map_one _ (map_zero _) (map_one _), Matrix.mul_one, Matrix.nonsing_inv_mul _ (hdet v)]
-    · have hM : I.fmat a.2 * I.fmat a⁻¹.2 = 1 := by simp [AutInst.fmat]
-      rw [← Matrix.inv_eq_right_inv hM]
-      apply Matrix.inv_eq_right_inv
-      rw [hf, ← Matrix.map_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one,
-        Matrix.map_one _ (map_zero _) (map_one _)]
-  let Γ : Subgroup I.GA :=
-    { carrier := I.GFset
-      mul_mem' := hmul
-      one_mem' := h1
-      inv_mem' := hinv }
-  haveI hEc : Countable I.E := (Module.finBasis ℚ I.E).equivFun.injective.countable
-  haveI hGLc : Countable (GL (Fin I.n) I.E) := by
-    refine Function.Injective.countable
-      (f := fun u : GL (Fin I.n) I.E => fun i j => (u : Matrix (Fin I.n) (Fin I.n) I.E) i j) ?_
-    intro u w huw
-    exact Units.ext (Matrix.ext fun i j => congrFun (congrFun huw i) j)
-  haveI hΓc : Countable Γ := by
-    refine Function.Injective.countable (f := fun x : Γ => Classical.choose x.2) ?_
-    intro x y hxy
-    have hxy' : Classical.choose x.2 = Classical.choose y.2 := hxy
-    have sx := Classical.choose_spec x.2
-    have sy := Classical.choose_spec y.2
-    rw [hxy'] at sx
-    apply Subtype.ext
-    apply Prod.ext
-    · funext v
-      apply Subtype.ext
-      apply Units.ext
-      exact (sx.2.1 v).trans (sy.2.1 v).symm
-    · apply Subtype.ext
-      apply Units.ext
-      exact sx.2.2.trans sy.2.2.symm
+  let Γ : Subgroup I.GA := rr_GF I
   haveI hli : (I.muA μf).IsMulLeftInvariant := by
     unfold AutInst.muA
     first
@@ -577,70 +421,7 @@ include hfd hR in
 theorem ind_tendsto {s : Set I.GA} (hs : MeasurableSet s) (hμs : (I.muA μf).restrict fund s ≠ ∞) :
     Tendsto (fun g : I.Ginf => R (g, 1) (indicatorConstLp 2 hs hμs (1 : ℂ))) (𝓝 1)
       (𝓝 (indicatorConstLp 2 hs hμs (1 : ℂ))) := by
-  have hdet : ∀ v, IsUnit (I.P v).det := fun v => (Matrix.isUnit_iff_isUnit_det _).mp (I.P_unit v)
-  have key : ∀ (P A B : Matrix (Fin I.n) (Fin I.n) ℂ), IsUnit P.det →
-      P⁻¹ * A * P * (P⁻¹ * B * P) = P⁻¹ * (A * B) * P := by
-    intro P A B hP
-    calc P⁻¹ * A * P * (P⁻¹ * B * P) = P⁻¹ * A * (P * P⁻¹) * B * P := by simp only [Matrix.mul_assoc]
-      _ = P⁻¹ * (A * B) * P := by
-        rw [Matrix.mul_nonsing_inv _ hP, Matrix.mul_one, Matrix.mul_assoc (P⁻¹) A B]
-  have h1 : (1 : I.GA) ∈ I.GFset := by
-    simp only [AutInst.GFset, Set.mem_setOf_eq]
-    refine ⟨1, (Formalism.UG.UJ (starRingEnd I.E) I.J).one_mem, fun v => ?_, ?_⟩
-    · simp [uMat, Matrix.nonsing_inv_mul _ (hdet v)]
-    · simp [AutInst.fmat]
-  have hmul : ∀ {a b : I.GA}, a ∈ I.GFset → b ∈ I.GFset → a * b ∈ I.GFset := by
-    intro a b ha hb
-    simp only [AutInst.GFset, Set.mem_setOf_eq] at ha hb ⊢
-    obtain ⟨γ₁, hγ₁, hu₁, hf₁⟩ := ha
-    obtain ⟨γ₂, hγ₂, hu₂, hf₂⟩ := hb
-    refine ⟨γ₁ * γ₂, (Formalism.UG.UJ (starRingEnd I.E) I.J).mul_mem hγ₁ hγ₂, fun v => ?_, ?_⟩
-    · have e : uMat ((a * b).1 v) = uMat (a.1 v) * uMat (b.1 v) := by simp [uMat]
-      rw [e, hu₁ v, hu₂ v, key _ _ _ (hdet v), Units.val_mul, Matrix.map_mul]
-    · have e : I.fmat (a * b).2 = I.fmat a.2 * I.fmat b.2 := by simp [AutInst.fmat]
-      rw [e, hf₁, hf₂, Units.val_mul, Matrix.map_mul]
-  have hinv : ∀ {a : I.GA}, a ∈ I.GFset → a⁻¹ ∈ I.GFset := by
-    intro a ha
-    simp only [AutInst.GFset, Set.mem_setOf_eq] at ha ⊢
-    obtain ⟨γ, hγ, hu, hf⟩ := ha
-    refine ⟨γ⁻¹, (Formalism.UG.UJ (starRingEnd I.E) I.J).inv_mem hγ, fun v => ?_, ?_⟩
-    · have hM : uMat (a.1 v) * uMat (a⁻¹.1 v) = 1 := by simp [uMat]
-      rw [← Matrix.inv_eq_right_inv hM]
-      apply Matrix.inv_eq_right_inv
-      rw [hu v, key _ _ _ (hdet v), ← Matrix.map_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one,
-        Matrix.map_one _ (map_zero _) (map_one _), Matrix.mul_one, Matrix.nonsing_inv_mul _ (hdet v)]
-    · have hM : I.fmat a.2 * I.fmat a⁻¹.2 = 1 := by simp [AutInst.fmat]
-      rw [← Matrix.inv_eq_right_inv hM]
-      apply Matrix.inv_eq_right_inv
-      rw [hf, ← Matrix.map_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one,
-        Matrix.map_one _ (map_zero _) (map_one _)]
-  let Γ : Subgroup I.GA :=
-    { carrier := I.GFset
-      mul_mem' := hmul
-      one_mem' := h1
-      inv_mem' := hinv }
-  haveI hEc : Countable I.E := (Module.finBasis ℚ I.E).equivFun.injective.countable
-  haveI hGLc : Countable (GL (Fin I.n) I.E) := by
-    refine Function.Injective.countable
-      (f := fun u : GL (Fin I.n) I.E => fun i j => (u : Matrix (Fin I.n) (Fin I.n) I.E) i j) ?_
-    intro u w huw
-    exact Units.ext (Matrix.ext fun i j => congrFun (congrFun huw i) j)
-  haveI hΓc : Countable Γ := by
-    refine Function.Injective.countable (f := fun x : Γ => Classical.choose x.2) ?_
-    intro x y hxy
-    have hxy' : Classical.choose x.2 = Classical.choose y.2 := hxy
-    have sx := Classical.choose_spec x.2
-    have sy := Classical.choose_spec y.2
-    rw [hxy'] at sx
-    apply Subtype.ext
-    apply Prod.ext
-    · funext v
-      apply Subtype.ext
-      apply Units.ext
-      exact (sx.2.1 v).trans (sy.2.1 v).symm
-    · apply Subtype.ext
-      apply Units.ext
-      exact sx.2.2.trans sy.2.2.symm
+  let Γ : Subgroup I.GA := rr_GF I
   haveI hli : (I.muA μf).IsMulLeftInvariant := by
     unfold AutInst.muA
     first
@@ -653,22 +434,8 @@ theorem ind_tendsto {s : Set I.GA} (hs : MeasurableSet s) (hμs : (I.muA μf).re
     | exact hR g' F'
     | (filter_upwards [hR g' F'] with x hx; rw [hx]; rfl)
   classical
-  have hrep : ∀ y : I.GA, ∃ c ∈ Γ, rr_rep (Γ : Set I.GA) fund y = c * y ∧ c * y ∈ fund := by
-    intro y
-    have hex : ∃ γ ∈ (Γ : Set I.GA), γ * y ∈ fund := hFD.cov y
-    refine ⟨hex.choose, hex.choose_spec.1, ?_, hex.choose_spec.2⟩
-    unfold rr_rep
-    first
-    | exact dif_pos hex
-    | rw [dif_pos hex]
-    | simp only [dif_pos hex]
-  have hN0 : I.muA μf (rr_N Γ fund) = 0 := by
-    have h0 := rp_N_pre hFD (rp_inst I μf 1)
-    have e1 : (fun x : I.GA => x * (((1 : I.Ginf), (1 : I.Gf)) : I.GA)) = id :=
-      funext fun x => mul_one x
-    first
-    | (rw [e1, Set.preimage_id] at h0; exact h0)
-    | simpa using h0
+  have hrep := rr_rep_spec hFD
+  have hN0 := rr_N_null hFD
   have hs' : MeasurableSet (s ∩ fund) := hs.inter hfd.1
   have hs'f : I.muA μf (s ∩ fund) ≠ ∞ := by
     rw [← Measure.restrict_apply hs]

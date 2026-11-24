@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.LatticeGeometry.CmTypeMeetsConjugatePair
@@ -96,22 +97,7 @@ theorem tauE_injective (D : D7) : Function.Injective (tauE D) := fun _ _ h =>
 
 theorem tauE_cm (D : D7) (σ : D.host.E →+* ℂ) :
     (∃ τ, tauE D τ = σ) ↔ ¬ ∃ τ, tauE D τ = ComplexEmbedding.conjugate σ := by
-  obtain ⟨g, rfl⟩ := (factEmb D.R D.host).1.2 σ
-  have hc : ComplexEmbedding.conjugate (D.host.emb g) = D.host.emb (g * D.R.cc) := by
-    rw [Formalism.L2.Geo.emb_mul_cc_comp]
-    refine RingHom.ext fun x => ?_
-    have hcm := D.host.isCMField_hostE
-    have h : IsCMField.complexConj D.host.E x = D.host.conj x := by
-      apply D.host.φ₀.injective
-      rw [IsCMField.complexEmbedding_complexConj]
-      exact (D.host.toHostAx.conjE_apply _ x).symm
-    show starRingEnd ℂ (D.host.emb g x) = D.host.emb g (D.host.conj x)
-    rw [← h, IsCMField.complexEmbedding_complexConj]
-  have h : ∀ g, (∃ τ, tauE D τ = D.host.emb g) ↔ g ∈ D.R.Psi := fun g => by
-    rw [← Formalism.L2.Geo.exists_tauEmb_iff D g]
-    exact exists_congr fun τ => eq_comm
-  rw [hc, h, h]
-  exact Formalism.L2.Geo.mem_Psi_iff_mul_cc_notMem g
+  apply GlobalTheory.SmoothForms.RealPts.tauE_cm <;> assumption
 
 theorem sum_tauE_eq_trace (D : D7) (x : D.host.F) :
     ∑ t, tauE D t (algebraMap D.host.F D.host.E x) = ((Algebra.trace ℚ D.host.F x : ℚ) : ℂ) := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFrameOfIsPeriod
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.EqTopOfForallEmbAllMem
@@ -255,66 +256,11 @@ omit [IsCMField E] in
 lemma trace_re (Ψ : Finset (E →+* ℂ))
     (h : ∀ τ : E →+* ℂ, τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ) (z : E) :
     ((Algebra.trace ℚ E z : ℚ) : ℝ) = ∑ τ : Ψ, 2 * (τ.1 z).re := by
-  classical
-  have h1 : algebraMap ℚ ℂ (Algebra.trace ℚ E z) = ∑ σ : E →ₐ[ℚ] ℂ, σ z :=
-    trace_eq_sum_embeddings (K := ℚ) (E := ℂ) (x := z)
-  have h2 : ∑ σ : E →ₐ[ℚ] ℂ, σ z = ∑ σ : E →+* ℂ, σ z :=
-    (Fintype.sum_equiv (RingHom.equivRatAlgHom (R := E) (S := ℂ)) (fun σ : E →+* ℂ => σ z)
-      (fun σ => σ z) (fun σ => rfl)).symm
-  have h3 : ∑ σ ∈ Ψᶜ, σ z = ∑ σ ∈ Ψ, conj (σ z) := by
-    refine Finset.sum_nbij' (fun σ => ComplexEmbedding.conjugate σ)
-      (fun σ => ComplexEmbedding.conjugate σ) ?_ ?_ ?_ ?_ ?_
-    · intro σ hσ
-      have := h (ComplexEmbedding.conjugate σ)
-      rw [ComplexEmbedding.involutive_conjugate E σ] at this
-      simp only [Finset.mem_compl] at hσ
-      exact this.mpr hσ
-    · intro σ hσ
-      simp only [Finset.mem_compl]
-      exact (h σ).mp hσ
-    · intro σ _; exact ComplexEmbedding.involutive_conjugate E σ
-    · intro σ _; exact ComplexEmbedding.involutive_conjugate E σ
-    · intro σ _; simp [ComplexEmbedding.conjugate_coe_eq]
-  have h4 : ((Algebra.trace ℚ E z : ℚ) : ℂ) = ∑ σ ∈ Ψ, (σ z + conj (σ z)) := by
-    rw [← eq_ratCast (algebraMap ℚ ℂ) (Algebra.trace ℚ E z), h1, h2,
-      ← Finset.sum_add_sum_compl Ψ, h3, Finset.sum_add_distrib]
-  apply Complex.ofReal_injective
-  rw [Complex.ofReal_ratCast, h4, ← Finset.sum_coe_sort Ψ]
-  push_cast
-  refine Finset.sum_congr rfl fun τ _ => ?_
-  rw [Complex.add_conj]; push_cast; rfl
+  apply GlobalTheory.PeriodOnto.trace_eq_sum_re <;> assumption
 
 lemma cmType (H : Host E) (Ψ : Finset (E →+* ℂ)) (hΨ : ∀ τ, τ ∈ Ψ ↔ τ (H.rt : E) = H.rt0)
     (τ : E →+* ℂ) : τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ := by
-  rw [hΨ, hΨ, ComplexEmbedding.conjugate_coe_eq]
-  set z := τ (H.rt : E) with hz
-  have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-  have h1 : z ^ 2 = -(H.d : ℂ) := by
-    have := congrArg (fun a : 𝓞 E => τ (a : E)) H.rt_sq
-    simpa using this
-  have hc : conj z = -z := by
-    have h2 : (conj z) ^ 2 = z ^ 2 := by rw [← map_pow, h1]; simp
-    rcases sq_eq_sq_iff_eq_or_eq_neg.1 h2 with h | h
-    · exfalso
-      have h3 := Complex.conj_eq_iff_re.1 h
-      rw [← h3] at h1
-      have h4 : z.re ^ 2 = -(H.d : ℝ) := by exact_mod_cast h1
-      nlinarith [sq_nonneg z.re]
-    · exact h
-  have hz0 : z ≠ 0 := by
-    intro h
-    rw [h] at h1
-    have : (H.d : ℂ) = 0 := by simpa using h1
-    exact hd.ne' (by exact_mod_cast this)
-  rw [hc]
-  constructor
-  · intro h h'
-    apply hz0
-    linear_combination (h - h') / 2
-  · intro h
-    rcases sq_eq_sq_iff_eq_or_eq_neg.1 (h1.trans H.sqrt_neg_disc_sq.symm) with h' | h'
-    · exact h'
-    · exact absurd (by rw [h', neg_neg]) h
+  apply GlobalTheory.PeriodOnto.cmType_host <;> assumption
 
 omit [NumberField E] [IsCMField E] in
 lemma card_fibre {Ψ : Finset (E →+* ℂ)} {g : ℕ} (idx : Fin g ≃ Ψ × Fin r) (σ : Ψ) (p : Fin g → Prop)

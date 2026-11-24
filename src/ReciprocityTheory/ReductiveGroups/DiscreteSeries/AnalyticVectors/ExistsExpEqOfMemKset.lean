@@ -107,8 +107,6 @@ lemma exists_inK_exp_eq_of_mem_Kset {ε : Fin n → Bool} {k : Matrix (Fin n) (F
 
 end L2
 
-theorem exists_exp_eq_of_mem_Kset {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ}
-    (hk : k ∈ Kset ε) : ∃ Z, inK ε Z ∧ NormedSpace.exp Z = k :=
-  exists_inK_exp_eq_of_mem_Kset hk
+alias exists_exp_eq_of_mem_Kset := _root_.ReciprocityTheory.ChartRestriction.DS.exists_inK_exp_eq_of_mem_Kset
 
 end ReciprocityTheory.ChartRestriction.DS

@@ -424,7 +424,7 @@ theorem paPF_diff (p : MvPolynomial ι ℂ) : Differentiable ℂ (paPF p) ∧
       map_mul, MvPolynomial.eval_X, Pi.single_apply]
     by_cases h : j = k
     · subst h; simp <;> ring
-    · simp [h, Ne.symm h] <;> ring
+    · simp [Ne.symm h] <;> ring
 
 theorem paPF_contDiff (p : MvPolynomial ι ℂ) : ContDiff ℂ (⊤ : ℕ∞) (paPF p) := by
   induction p using MvPolynomial.induction_on with

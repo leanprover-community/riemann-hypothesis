@@ -94,7 +94,7 @@ theorem tensor_sqMetric_a {A : HermLine ι} {α β : K → ℕ} (h : ∀ k, (α 
   rw [← h k]
   ring
 
-theorem Conservation.proof : Conservation.Statement := Conservation.statement_holds
+alias Conservation.proof := _root_.GroundTheory.Heights₂.Heights.Inter.Conservation.statement_holds
 
 theorem InductiveIntersectionFormula.proof : InductiveIntersectionFormula.Statement := by
   classical

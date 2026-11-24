@@ -124,6 +124,5 @@ theorem packet_conditions_closed (h1 : LatticeFinitelyGenerated) (h2 : ExistsBou
     all_goals first
       | assumption
       | (intro y hy; rw [← SetLike.mem_coe, hM]; aesop)
-      | aesop
 
 end Formalism.L2.SG.Pf.Tau

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.GeometricallyConnectedOfRatPoint
 public import Mathlib.AlgebraicGeometry.Geometrically.Connected
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
@@ -89,42 +90,7 @@ theorem isOpen_connectedComponent_of_noetherianSpace {X : Type u} [TopologicalSp
 theorem geometricallyConnected_of_isAlgClosed {k : Type u} [Field k] [IsAlgClosed k]
     {X : Scheme.{u}} (f : X ⟶ Spec (.of k)) [LocallyOfFiniteType f] [ConnectedSpace X] :
     GeometricallyConnected f := by
-  refine ⟨fun K _ y Z p q h => ?_⟩
-  have := LocallyOfFiniteType.jacobsonSpace f
-  have hy : Surjective y := ⟨fun a => ⟨Classical.arbitrary _, Subsingleton.elim _ _⟩⟩
-  have hs : Surjective p := MorphismProperty.of_isPullback h.flip hy
-  have ho : UniversallyOpen p := MorphismProperty.of_isPullback h.flip
-    (inferInstance : UniversallyOpen y)
-
-  have fib : ∀ x : X, IsClosed {x} → ∀ a b : Z, p a = x → p b = x → a = b := by
-    intro x hx a b ha hb
-    let s := pointOfClosedPoint f x hx
-    have hs : s ≫ f = 𝟙 _ := pointOfClosedPoint_comp f x hx
-    let t : Spec (.of K) ⟶ Z := h.lift (y ≫ s) (𝟙 _) (by simp [hs])
-    have ht : IsPullback t y p s := by
-      refine IsPullback.of_right (h₁₂ := q) (v₁₃ := y) (h₂₂ := f) ?_ (by simp [t]) h.flip
-      rw [hs, show t ≫ q = 𝟙 _ by simp [t]]
-      exact IsPullback.of_id_fst
-    obtain ⟨a', rfl, -⟩ := Scheme.exists_preimage_of_isPullback ht a (IsLocalRing.closedPoint k)
-      (ha.trans (pointOfClosedPoint_apply f x hx _).symm)
-    obtain ⟨b', rfl, -⟩ := Scheme.exists_preimage_of_isPullback ht b (IsLocalRing.closedPoint k)
-      (hb.trans (pointOfClosedPoint_apply f x hx _).symm)
-    rw [Subsingleton.elim a' b']
-  have hne : Nonempty Z := (p.surjective (Classical.arbitrary X)).nonempty
-  have : PreconnectedSpace Z := by
-    refine preconnectedSpace_iff_clopen.2 fun U hU => ?_
-    by_contra hc
-    push Not at hc
-    have h₁ : (p '' U).Nonempty := hc.1.image _
-    have h₂ : (p '' Uᶜ).Nonempty := (Set.nonempty_compl.2 hc.2).image _
-    have o₁ : IsOpen (p '' U) := p.isOpenMap _ hU.isOpen
-    have o₂ : IsOpen (p '' Uᶜ) := p.isOpenMap _ hU.compl.isOpen
-    have hcov : p '' U ∪ p '' Uᶜ = Set.univ := by
-      rw [← Set.image_union, Set.union_compl_self, Set.image_univ, p.surjective.range_eq]
-    obtain ⟨x, ⟨⟨a, ha, hax⟩, ⟨b, hb, hbx⟩⟩, hx⟩ := nonempty_inter_closedPoints
-      (nonempty_inter o₁ o₂ hcov h₁ h₂) (o₁.inter o₂).isLocallyClosed
-    exact hb (fib x hx a b hax hbx ▸ ha)
-  exact ⟨hne⟩
+  apply GlobalTheory.RatPointConn.of_isAlgClosed <;> assumption
 
 section Sub
 

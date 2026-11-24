@@ -149,7 +149,7 @@ def plusAlg (σ : E →ₐ[F] E) (J γ : Matrix n n E) : Subalgebra F (genAlg γ
     have hd : ((algebraMap F (genAlg γ) r : genAlg γ) : Matrix n n E) = r • (1 : Matrix n n E) := by
       rw [Algebra.algebraMap_eq_smul_one]; rfl
     have he : cT (σ : E →+* E) (r • (1 : Matrix n n E)) = r • (1 : Matrix n n E) := by
-      ext i j; by_cases h : i = j <;> simp [cT, Matrix.one_apply, h, eq_comm]
+      ext i j; by_cases h : i = j <;> simp [cT, h, eq_comm]
     rw [hd, he]; simp
 
 def plusTensor (σ : E →ₐ[F] E) (J γ : Matrix n n E) :

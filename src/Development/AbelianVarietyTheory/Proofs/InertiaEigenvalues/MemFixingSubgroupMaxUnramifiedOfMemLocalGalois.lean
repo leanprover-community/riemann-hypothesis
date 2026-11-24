@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HausdorffOfModuleTopologyFiniteDimensional
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
@@ -413,23 +414,7 @@ theorem norm_le_of_v_le (P : LocPrime l) (LL : FinExt l) (a b : ℚ_[l])
 
 theorem algebraMap_RW_injective (LL : FinExt l) :
     Function.Injective (algebraMap ↥(OL LL) (RW LL)) := by
-  have hinj : Function.Injective (algebraMap ℤ_[l] ↥(OL LL)) := by
-    intro a b hab
-    have h1 : algebraMap ℚ_[l] ↥LL.1 (a : ℚ_[l]) = algebraMap ℚ_[l] ↥LL.1 (b : ℚ_[l]) :=
-      congrArg Subtype.val hab
-    exact Subtype.ext ((algebraMap ℚ_[l] ↥LL.1).injective h1)
-  haveI : Module.IsTorsionFree ℤ_[l] ↥(OL LL) :=
-    Module.isTorsionFree_iff_algebraMap_injective.2 hinj
-  haveI : Module.Flat ℤ_[l] ↥(OL LL) := by
-    rw [Module.Flat.flat_iff_torsion_eq_bot_of_isBezout]
-    first
-      | exact Submodule.isTorsionFree_iff_torsion_eq_bot.1 inferInstance
-      | exact Submodule.torsion_eq_bot ..
-      | simp
-  have h : Function.Injective (algebraMap ℤ_[l] (WCb l)) :=
-    (WittVector.map_injective _ (ZMod.castHom_injective (Cb l))).comp
-      (WittVector.equiv l).symm.injective
-  exact Algebra.TensorProduct.includeLeft_injective (R := ℤ_[l]) (S := ℤ_[l]) h
+  apply GlobalTheory.HerrNatural.ol_rw_injective <;> assumption
 
 end Cyc
 

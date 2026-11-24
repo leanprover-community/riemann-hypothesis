@@ -80,9 +80,7 @@ theorem lin_one {R : Type} [CommRing R] {k : ℕ} (P : MvPolynomial (Fin k) R) :
 
 theorem mono_eq {R : Type} [CommRing R] {σ : Type} [Fintype σ] (μ : σ →₀ ℕ) :
     (monomial μ (1 : R)) = ∏ v, X v ^ μ v := by
-  rw [MvPolynomial.monomial_eq, MvPolynomial.C_1, one_mul, Finsupp.prod_fintype]
-  intro i
-  exact pow_zero _
+  simp [MvPolynomial.monomial_eq, Finsupp.prod_fintype]
 
 theorem scaleHd {R : Type} [CommRing R] {k d : ℕ} (q : MvPolynomial (Fin k) R) (P : MvPolynomial (Fin k) R)
     (hP : P ∈ Hd R k d) : aeval (fun c => q * X c) P = q ^ d * P := by
@@ -389,8 +387,7 @@ theorem polynomial_theta_product (R : Type) [CommRing R] [IsDomain R] (m : ℕ) 
   rfl
 
 theorem qf_ne (R : Type) [CommRing R] [IsDomain R] (m : ℕ) (vec : Bool) : qf R m vec ≠ 0 := by
-  simp only [qf]
-  cases vec <;> simp [MvPolynomial.X_ne_zero]
+  cases vec <;> simp [qf, MvPolynomial.X_ne_zero]
 
 theorem Th0_inj (R : Type) [CommRing R] [IsDomain R] (m : ℕ) (hm : 1 ≤ m) (vec : S → Bool) (d : S → ℕ)
     (F G : MvPolynomial (S × Fin (m + 1)) R) (hF : F ∈ Pol R (m + 1) d) (hG : G ∈ Pol R (m + 1) d)

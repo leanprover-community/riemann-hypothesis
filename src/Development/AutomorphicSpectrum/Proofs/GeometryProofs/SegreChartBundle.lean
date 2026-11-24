@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueLatOfChartBundle
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GermGenPtInjectiveRangeRegAt
@@ -73,18 +74,7 @@ theorem genMap_germ (U : X.Opens) (h : genPt ξ ∈ U) (q : Cpt ξ) (hq : q.1 �
 
 theorem isUnit_iff_unitAt {q : Cpt ξ} (hi : Function.Injective (genMap ξ q)) (s : X.presheaf.stalk q.1) :
     IsUnit s ↔ unitAt ξ q (genMap ξ q s) := by
-  constructor
-  · intro hs
-    have hu := hs.map (genMap ξ q)
-    refine ⟨hu.ne_zero, ⟨s, rfl⟩, ?_⟩
-    obtain ⟨u, rfl⟩ := hs
-    refine ⟨(u⁻¹ : (X.presheaf.stalk q.1)ˣ).1, ?_⟩
-    have : genMap ξ q u.1 * genMap ξ q (u⁻¹ : (X.presheaf.stalk q.1)ˣ).1 = 1 := by
-      rw [← map_mul, Units.mul_inv, map_one]
-    exact eq_inv_of_mul_eq_one_right this
-  · rintro ⟨h0, -, ⟨s', hs'⟩⟩
-    have : s * s' = 1 := hi (by rw [map_mul, hs', map_one, mul_inv_cancel₀ h0])
-    exact IsUnit.of_mul_eq_one _ this
+  apply GlobalTheory.CompanionTheory.Ar.TieVB.isUnit_iff_unitAt <;> assumption
 
 theorem mem_basicOpen_iff (hg : IsCptGen ξ) (U : X.Opens) (h : genPt ξ ∈ U) (q : Cpt ξ) (hq : q.1 ∈ U)
     (t : Γ(X, U)) : q.1 ∈ X.basicOpen t ↔ unitAt ξ q (secVal ξ U h t) := by
@@ -166,24 +156,7 @@ theorem exists_chart (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) :
 
 theorem exists_point (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) (P : Ideal (chartRing o x c)) (hP : P.IsPrime) :
     ∃ p : Cpt ξ, InChart ξ x c p ∧ ∀ s : chartRing o x c, s ∈ P ↔ ¬ unitAt ξ p s := by
-  obtain ⟨U, h, hU, hUq, hsp, -, hran⟩ := exists_chart hT hc
-  let φ : Γ(X, U) →+* chartRing o x c :=
-    (secVal ξ U h).codRestrict (chartRing o x c) fun t => (hran _).2 ⟨t, rfl⟩
-  let y : PrimeSpectrum Γ(X, U) := ⟨P.comap φ, inferInstance⟩
-  have hyU : hU.fromSpec y ∈ U := by
-    have : hU.fromSpec y ∈ Set.range hU.fromSpec := ⟨y, rfl⟩
-    rwa [hU.range_fromSpec] at this
-  let q : Cpt ξ := ⟨_, hsp _ hyU⟩
-  refine ⟨q, (hUq q).1 hyU, fun s => ?_⟩
-  obtain ⟨t, ht⟩ := (hran s).1 s.2
-  have hst : s = φ t := Subtype.ext ht.symm
-  have key : q.1 ∈ X.basicOpen t ↔ t ∉ P.comap φ := by
-    show y ∈ hU.fromSpec ⁻¹ᵁ X.basicOpen t ↔ _
-    rw [hU.fromSpec_preimage_basicOpen]
-    rfl
-  have h2 := mem_basicOpen_iff hT.gen U h q hyU t
-  have h3 : (s : Ω) = secVal ξ U h t := ht.symm
-  rw [h3, ← h2, key, hst, Ideal.mem_comap, not_not]
+  apply GlobalTheory.CompanionTheory.Ar.TieVB.exists_point <;> assumption
 
 theorem exists_basic (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) (V : X.Opens) {q : Cpt ξ}
     (hq : InChart ξ x c q) (hV : q.1 ∈ V) :
@@ -257,27 +230,7 @@ theorem exists_den_span (hT : CoordTie o ξ x) {c : κ} {p : Cpt ξ} (hp : InCha
     (hM : ∀ a ∈ chartRing o x c, ∀ e ∈ M, a • e ∈ M) {e : E}
     (he : e ∈ Submodule.span (regAt ξ p) (M : Set E)) :
     ∃ s ∈ chartRing o x c, unitAt ξ p s ∧ s • e ∈ M := by
-  induction he using Submodule.span_induction with
-  | mem v hv => exact ⟨1, one_mem _, unitAt_one p, by simpa using hv⟩
-  | zero => exact ⟨1, one_mem _, unitAt_one p, by simp⟩
-  | add u v _ _ hu hv =>
-    obtain ⟨s, hs, hsu, hsM⟩ := hu
-    obtain ⟨t, ht, htu, htM⟩ := hv
-    refine ⟨s * t, mul_mem hs ht, unitAt_mul hsu htu, ?_⟩
-    have h1 : (s * t) • (u + v) = t • s • u + s • t • v := by
-      rw [smul_add, smul_smul, smul_smul, mul_comm t s]
-    rw [h1]
-    exact add_mem (hM t ht _ hsM) (hM s hs _ htM)
-  | smul r u _ hu =>
-    obtain ⟨s, hs, hsu, hsM⟩ := hu
-    obtain ⟨t, ht, htu, htr⟩ := exists_den hT hp r.2
-    refine ⟨t * s, mul_mem ht hs, unitAt_mul htu hsu, ?_⟩
-    have h1 : (t * s) • r • u = (t * (r : Ω)) • s • u := by
-      rw [Subring.smul_def, smul_smul, smul_smul]
-      congr 1
-      ring
-    rw [h1]
-    exact hM _ htr _ hsM
+  apply GlobalTheory.CompanionTheory.Ar.TieVB.exists_den_span <;> assumption
 
 theorem coords_mem {p : Cpt ξ} {r : ℕ} {b : Fin r → E} (hli : LinearIndependent Ω b) {a : Fin r → Ω}
     (h : ∑ i, a i • b i ∈ Submodule.span (regAt ξ p) (Set.range b)) (i : Fin r) : a i ∈ regAt ξ p := by

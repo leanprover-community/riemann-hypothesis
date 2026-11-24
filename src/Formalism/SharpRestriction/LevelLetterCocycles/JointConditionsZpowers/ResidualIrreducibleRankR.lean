@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsConjInertiaTameCharOtherPlace
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -205,11 +206,11 @@ theorem span_descent {k L : Type} [Field k] [Field L] (φ : k →+* L) {n : ℕ}
       rw [Finset.sum_eq_single i, Finset.sum_eq_single j]
       · simp
       · intro q _ hq
-        simp [Matrix.single_apply, Ne.symm hq]
+        simp [Ne.symm hq]
       · simp
       · intro p _ hp
         refine Finset.sum_eq_zero fun q _ => ?_
-        simp [Matrix.single_apply, Ne.symm hp]
+        simp [Ne.symm hp]
       · simp
     rw [h2] at this
     exact (map_eq_zero_iff φ φ.injective).mp this.symm
@@ -218,31 +219,7 @@ theorem span_descent {k L : Type} [Field k] [Field L] (φ : k →+* L) {n : ℕ}
 theorem conj_mem_Ine_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
     (A : ValuationSubring Ω) (τ σ : G F Ω) (hσ : σ ∈ Ine (F := F) A) :
     τ * σ * τ⁻¹ ∈ Ine (F := F) (τ • A) := by
-  have hmem : ∀ x : Ω, x ∈ τ • A ↔ (τ⁻¹ : G F Ω) x ∈ A := by
-    intro x
-    rw [← ValuationSubring.smul_mem_pointwise_smul_iff (g := τ⁻¹), inv_smul_smul]
-    rfl
-  have hlt : ∀ y : Ω, (τ • A).valuation y < 1 ↔ A.valuation ((τ⁻¹ : G F Ω) y) < 1 := by
-    intro y
-    rw [valuation_lt_one_iff', valuation_lt_one_iff', hmem, hmem, map_inv₀,
-      map_eq_zero_iff _ (τ⁻¹ : G F Ω).injective]
-  refine ⟨?_, fun x hx => ?_⟩
-  · show (τ * σ * τ⁻¹) • (τ • A) = τ • A
-    rw [mul_smul, mul_smul, inv_smul_smul]
-    congr 1
-    exact hσ.1
-  · rw [hlt]
-    have hx' : A.valuation ((τ⁻¹ : G F Ω) x) ≤ 1 := by
-      rw [A.valuation_le_one_iff, ← hmem]
-      exact ((τ • A).valuation_le_one_iff x).mp hx
-    have e : (τ⁻¹ : G F Ω) ((τ * σ * τ⁻¹) x - x) = σ ((τ⁻¹ : G F Ω) x) - (τ⁻¹ : G F Ω) x := by
-      rw [map_sub]
-      congr 1
-      show (τ⁻¹ * (τ * σ * τ⁻¹)) x = _
-      rw [← mul_assoc, ← mul_assoc, inv_mul_cancel, one_mul]
-      rfl
-    rw [e]
-    exact hσ.2 _ hx'
+  apply GlobalTheory.TameMove.conj_mem_Ine_smul <;> assumption
 
 theorem placesOver_disj (E : Type) [Field E] [NumberField E] {p q : ℕ} (hp : p.Prime) (hq : q.Prime)
     (hpq : p ≠ q) (v : HeightOneSpectrum (𝓞 E)) (h1 : v ∈ placesOver E p) : v ∉ placesOver E q := by

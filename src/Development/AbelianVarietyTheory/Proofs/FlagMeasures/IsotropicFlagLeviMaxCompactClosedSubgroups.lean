@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IwasawaDecompositionUnitaryIsotropicFlag
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -69,21 +70,7 @@ theorem continuous_uMat : Continuous (fun g : Formalism.REAL.UJ ε => uMat g) :=
 
 theorem inv_keeps {A B : Matrix (Fin n) (Fin n) ℂ} (hBA : B * A = 1) (V : Submodule ℂ (Fin n → ℂ))
     (hA : ∀ y ∈ V, A *ᵥ y ∈ V) : ∀ y ∈ V, B *ᵥ y ∈ V := by
-  have hA' : ∀ y ∈ V, Matrix.toLin' A y ∈ V := fun y hy => by simpa using hA y hy
-  have hinj : Function.Injective ((Matrix.toLin' A).restrict hA') := by
-    intro x y hxy
-    have h1 : A *ᵥ (x : Fin n → ℂ) = A *ᵥ (y : Fin n → ℂ) := by
-      simpa using congrArg Subtype.val hxy
-    have h2 := congrArg (fun z => B *ᵥ z) h1
-    simp only [Matrix.mulVec_mulVec, hBA, Matrix.one_mulVec] at h2
-    exact Subtype.ext h2
-  have hsurj := LinearMap.injective_iff_surjective.mp hinj
-  intro y hy
-  obtain ⟨x, hx⟩ := hsurj ⟨y, hy⟩
-  have h1 : A *ᵥ (x : Fin n → ℂ) = y := by
-    simpa using congrArg Subtype.val hx
-  rw [← h1, Matrix.mulVec_mulVec, hBA, Matrix.one_mulVec]
-  exact x.2
+  apply GlobalTheory.RealIwasawa.inv_stable <;> assumption
 
 
 variable (ε) in

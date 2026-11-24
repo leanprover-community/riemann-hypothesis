@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.Intersections.IsHorizontalImageZ
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.LocRing
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 import Mathlib.Algebra.Order.Floor.Extended
@@ -85,40 +86,7 @@ open Classical in
 theorem rename_isMultiHomog {κ : K → K'} {v : (Σ k, ι k) → (Σ k', ι' k')} (hv : IsBlockMap κ v)
     {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) :
     IsMultiHomog (rename v f) (Function.extend κ a 0) := by
-  intro m' hm' k'
-  rw [support_rename_of_injective hv.2.1, Finset.mem_image] at hm'
-  obtain ⟨m, hm, rfl⟩ := hm'
-  have hblock : ∀ (F : (Σ k', ι' k') → ℕ), ∑ i, F ⟨k', i⟩ = ∑ q, if q.1 = k' then F q else 0 := by
-    intro F
-    rw [Fintype.sum_sigma, Finset.sum_eq_single k']
-    · simp
-    · intro b _ hb
-      simp [hb]
-    · simp
-  rw [hblock]
-  have h1 : (∑ q, if q.1 = k' then Finsupp.mapDomain v m q else 0) =
-      ∑ p, if κ p.1 = k' then m p else 0 := by
-    have := Finsupp.sum_mapDomain_index_inj (h := fun (q : Σ k', ι' k') (n : ℕ) => if q.1 = k' then n else 0)
-      (s := m) hv.2.1
-    rw [Finsupp.sum_fintype _ _ (by simp), Finsupp.sum_fintype _ _ (by simp)] at this
-    simpa [hv.2.2.1] using this
-  have h2 : (∑ p : Σ k, ι k, if κ p.1 = k' then m p else 0) = ∑ k, if κ k = k' then a k else 0 := by
-    rw [Fintype.sum_sigma]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    split_ifs with hk
-    · exact hf m hm k
-    · simp
-  convert h1.trans h2
-  by_cases h : ∃ k, κ k = k'
-  · obtain ⟨k, rfl⟩ := h
-    rw [hv.1.extend_apply, Finset.sum_eq_single k]
-    · simp
-    · intro b _ hb
-      simp [hv.1.ne hb]
-    · simp
-  · rw [Function.extend_apply' _ _ _ h]
-    refine (Finset.sum_eq_zero fun k _ => ?_).symm
-    rw [if_neg fun hk => h ⟨k, hk⟩]
+  apply GroundTheory.Heights₂.Heights.Inter.ArithmeticIntersectionHorizontal.isMultiHomog_rename <;> assumption
 
 abbrev quotMapZ (v : (Σ k, ι k) → (Σ k', ι' k')) (P' : Ideal (MRing ι')) :
     MRing ι ⧸ imageZ v P' →+* MRing ι' ⧸ P' :=

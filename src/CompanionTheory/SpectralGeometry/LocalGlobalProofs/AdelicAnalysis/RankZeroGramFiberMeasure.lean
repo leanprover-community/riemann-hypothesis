@@ -63,7 +63,7 @@ theorem fibre_eq_dirac_of_unique {V X : Type} [MeasurableSpace V] [MeasurableSpa
     rw [Subsingleton.elim b S]
     simp
   rw [hc] at h1
-  simp only [lintegral_const, one_mul, hμ, hν, mul_one] at h1
+  simp only [lintegral_const, hμ, hν, mul_one] at h1
   ext s _
   rcases s.eq_empty_or_nonempty with rfl | hs
   · simp

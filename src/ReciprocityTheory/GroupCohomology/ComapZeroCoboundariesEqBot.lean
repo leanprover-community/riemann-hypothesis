@@ -78,9 +78,9 @@ theorem dn_one_apply (f : (Fin 1 → G) → M) (v : Fin 2 → G) :
   have hs : (fun i : Fin 1 => v i.succ) = ![v 1] := by
     funext k; fin_cases k; rfl
   have h0 : (Fin.contractNth 0 (· * ·) v : Fin 1 → G) = ![v 0 * v 1] := by
-    funext k; fin_cases k; first | rfl | simp [Fin.contractNth]
+    funext k; fin_cases k; first | rfl
   have h1 : (Fin.contractNth 1 (· * ·) v : Fin 1 → G) = ![v 0] := by
-    funext k; fin_cases k; first | rfl | simp [Fin.contractNth]
+    funext k; fin_cases k; first | rfl
   show rho (v 0) (f fun i => v i.succ) + ∑ j : Fin 2, (-1 : R) ^ ((j : ℕ) + 1) •
     f (Fin.contractNth j (· * ·) v) = _
   rw [Fin.sum_univ_two, hs, h0, h1]
@@ -92,11 +92,11 @@ theorem dn_two_apply (f : (Fin 2 → G) → M) (v : Fin 3 → G) :
   have hs : (fun i : Fin 2 => v i.succ) = ![v 1, v 2] := by
     funext k; fin_cases k <;> rfl
   have h0 : (Fin.contractNth 0 (· * ·) v : Fin 2 → G) = ![v 0 * v 1, v 2] := by
-    funext k; fin_cases k <;> first | rfl | simp [Fin.contractNth]
+    funext k; fin_cases k <;> first | rfl
   have h1 : (Fin.contractNth 1 (· * ·) v : Fin 2 → G) = ![v 0, v 1 * v 2] := by
-    funext k; fin_cases k <;> first | rfl | simp [Fin.contractNth]
+    funext k; fin_cases k <;> first | rfl
   have h2 : (Fin.contractNth 2 (· * ·) v : Fin 2 → G) = ![v 0, v 1] := by
-    funext k; fin_cases k <;> first | rfl | simp [Fin.contractNth]
+    funext k; fin_cases k <;> first | rfl
   show rho (v 0) (f fun i => v i.succ) + ∑ j : Fin 3, (-1 : R) ^ ((j : ℕ) + 1) •
     f (Fin.contractNth j (· * ·) v) = _
   rw [Fin.sum_univ_three, hs, h0, h1, h2]
@@ -138,7 +138,7 @@ theorem map_zEquiv (n : ℕ) :
         (Submodule.mem_bot R).1 (show (y : M.coch.X 0) ∈ (⊥ : Submodule R (M.coch.X 0)) from hy')
       show (y : M.coch.X 0).1 ∈ (⊥ : Submodule R ((Fin 0 → G) → M.V))
       rw [h0]
-      first | exact Submodule.zero_mem _ | simp
+      first | exact Submodule.zero_mem _
     | succ k =>
       obtain ⟨w, hw⟩ := LinearMap.mem_range.1
         (show (y : M.coch.X (k + 1)) ∈ LinearMap.range (M.coch.d k) from hy')

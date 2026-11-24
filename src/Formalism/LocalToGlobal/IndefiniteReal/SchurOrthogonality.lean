@@ -265,7 +265,7 @@ theorem sm_dense (M : DSModel V S) (τ : D.what₂.Tau) : Dense (M.sm τ : Set (
     Submodule.eq_bot_iff]
   intro x hx
   obtain ⟨Φ, hΦ, hΦc, -, hle⟩ := PI.KFinSmoothW.dense_weak_vectors _ (M.ε τ) (M.H τ) (M.σ τ) hb (ℂ ∙ x) inferInstance
-  have hws := PI.KFinSmoothW.garding_vectors_smooth _ (M.ε τ) (M.H τ) (M.σ τ) hb Φ hΦ hΦc x
+  have hws := _root_.PI.KFinSmoothW.Gard.stepGarding_main _ (M.ε τ) (M.H τ) (M.σ τ) hb Φ hΦ hΦc x
   have hsv : SmoothVec (lieAt V τ) (M.rep τ) (PI.KFinSmoothW.gv (M.ε τ) (M.σ τ) Φ x) :=
     Formalism.IndefR.PeterssonHilbertSpace.sm_transfer (M.ε τ) (M.σ τ) (M.fr τ) _ (M.fr_unit τ) (M.fr_gram τ) (lieAt V τ)
       (fun X hX => hX) _ hws

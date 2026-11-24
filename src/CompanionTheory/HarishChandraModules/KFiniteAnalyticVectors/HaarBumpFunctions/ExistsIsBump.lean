@@ -410,7 +410,6 @@ theorem IsInv.exists_op [(haar : Measure (MG G hG)).IsInvInvariant] (θ : Mat n 
       have := Submodule.le_topologicalClosure _ hm
       rwa [h0, Submodule.mem_bot] at this
   set C' := |C * ∑ j, ‖dsW σ' (W' j) y‖| * Fintype.card ι + ‖T y‖ with hC'
-  have hC0 : 0 ≤ C' := by positivity
   rw [← sub_eq_zero, ← norm_le_zero_iff]
   refine le_of_forall_pos_le_add fun δ hδ => ?_
   obtain ⟨a, ha, hxa⟩ := exists_approx hG h hiso hx₀s hd hx (ι := Option ι) (W := fun o => o.elim [] W)

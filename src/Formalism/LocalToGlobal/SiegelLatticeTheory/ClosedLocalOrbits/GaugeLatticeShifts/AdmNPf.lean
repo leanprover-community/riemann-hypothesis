@@ -105,10 +105,6 @@ theorem InAt_K {κ : X.B.I.Gf} (hκ : κ ∈ X.B.I.Kset) {a : VA X.B.I} (ha : In
   obtain ⟨c, hc, h⟩ := ha
   exact ⟨c, hc, by rw [← Matrix.mulVec_smul]; exact mem_mL_of_Kset X hκ _ h⟩
 
-theorem crd_add' (v w : (VS D).V) : X.crd (v + w) = X.crd v + X.crd w := by
-  funext i
-  simp [Formalism.L2.SG.HidaSetting.HidaSetting.crd, crdOf]
-
 theorem crd_sub' (v w : (VS D).V) : X.crd (v - w) = X.crd v - X.crd w := by
   funext i
   simp [Formalism.L2.SG.HidaSetting.HidaSetting.crd, crdOf]
@@ -183,20 +179,21 @@ variable {X} {u u' : D.what₂.Word}
   {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)} {F0' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)}
   {what₂ rows' : Finset (Submodule (𝓞 D.host.E) (VS D).V)} (cs : ColSys X u what₂) (cs' : ColSys X u' rows')
 
-theorem adm_norm_of_fixed_frames (hTF : FrameTie X u u' F0 F0') (hK : TermK F0 F0' cs cs') (hM : ModGAt X) :
-    AdmN F0 F0' cs cs' := by
-  intro t
+theorem norm_congruence_of_carrier (hTF : FrameTie X u u' F0 F0') (hM : Formalism.L2.SG.NormCut.ModGAt X)
+    {Λ Λ' : Submodule (𝓞 D.host.E) (VS D).V} (hΛ : Λ ∈ what₂) (p : GCar X u u' F0 F0' Λ Λ')
+    (hKp : kOf X u u' (cs.h (cs.base Λ) : X.B.I.Gf) (cs'.h (cs'.base Λ') : X.B.I.Gf) p.1.1 ∈ X.B.I.Kset) :
+    Formalism.L2.SG.NormCut.NCong X (kOf X u u' (cs.h (cs.base Λ) : X.B.I.Gf) (cs'.h (cs'.base Λ') : X.B.I.Gf) p.1.1) := by
   obtain ⟨hE0, hF0, hZ0, hB, hBd⟩ := frame_Lf X
-  set g1 : X.B.I.Gf := (cs.h (cs.base t.lam) : X.B.I.Gf) * X.xu u with hg1
-  set g2 : X.B.I.Gf := (cs'.h (cs'.base t.lam') : X.B.I.Gf) * X.xu u' with hg2
-  have hκK := hK t
-  set κ := kOf X u u' (cs.h (cs.base t.lam) : X.B.I.Gf) (cs'.h (cs'.base t.lam') : X.B.I.Gf) t.pt with hκ
-  have hκ' : κ = g1⁻¹ * t.pt.2 * g2 := rfl
-  have hb : cs.lamOf (cs.base t.lam) = t.lam := cs.base_lam _ t.mem
-  have hRL : RatLink X t.pt t.lin := t.rep.2.1
-  have hiso : t.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := t.rep.2.2.1
-  obtain ⟨-, ⟨ξ, hξl, hξd, hξm⟩, -⟩ := t.rep.2.2.2.2
-  have hlat : ∀ y, y ∈ t.lam ↔ X.B.I.fmat g1⁻¹ *ᵥ incl X.B.I (X.crd y) ∈ X.B.I.Lf := fun y => by
+  set g1 : X.B.I.Gf := (cs.h (cs.base Λ) : X.B.I.Gf) * X.xu u with hg1
+  set g2 : X.B.I.Gf := (cs'.h (cs'.base Λ') : X.B.I.Gf) * X.xu u' with hg2
+  have hκK := hKp
+  set κ := kOf X u u' (cs.h (cs.base Λ) : X.B.I.Gf) (cs'.h (cs'.base Λ') : X.B.I.Gf) p.1.1 with hκ
+  have hκ' : κ = g1⁻¹ * p.1.1.2 * g2 := rfl
+  have hb : cs.lamOf (cs.base Λ) = Λ := cs.base_lam _ hΛ
+  have hRL : RatLink X p.1.1 p.1.2 := p.2.1
+  have hiso : p.1.2 ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := p.2.2.1
+  obtain ⟨-, ⟨ξ, hξl, hξd, hξm⟩, -⟩ := p.2.2.2.2
+  have hlat : ∀ y, y ∈ Λ ↔ X.B.I.fmat g1⁻¹ *ᵥ incl X.B.I (X.crd y) ∈ X.B.I.Lf := fun y => by
     rw [← hb]; exact cs.lat_eq _ y
 
   set s : Fin (D.R.rS + 1) → Fin (D.R.rS + 1) → X.B.I.E ⊗[X.B.I.F] Af X.B.I.F :=
@@ -207,9 +204,9 @@ theorem adm_norm_of_fixed_frames (hTF : FrameTie X u u' F0 F0') (hK : TermK F0 F
   set Y' : Fin (D.R.rS + 1) → VA X.B.I := fun c => X.B.I.fmat g2⁻¹ *ᵥ incl X.B.I (X.crd (F0'.fvec c)) with hY'
   have key2 : ∀ c, InAt X.B.I X.B.g X.B.g (X.B.I.fmat κ *ᵥ Y' c - ∑ a, s a c • Y a) := by
     intro c
-    have h1 := hM g1 t.lam hlat _ (hξm c)
+    have h1 := hM g1 Λ hlat _ (hξm c)
     erw [frame_mapLF hiso] at h1
-    have e : X.B.I.fmat g1⁻¹ *ᵥ incl X.B.I (X.crd (t.lin (frame (lf D F0') c) -
+    have e : X.B.I.fmat g1⁻¹ *ᵥ incl X.B.I (X.crd (p.1.2 (frame (lf D F0') c) -
         frameAct (frame (lf D F0)) ξ c)) = X.B.I.fmat κ *ᵥ Y' c - ∑ a, s a c • Y a := by
       simp only [frameAct, crd_sub', crd_sum', crd_smul', incl_sub', incl_sum', incl_smul', Matrix.mulVec_sub,
         mulVec_fsum, Matrix.mulVec_smul, ratLink_incl X hRL]
@@ -217,6 +214,7 @@ theorem adm_norm_of_fixed_frames (hTF : FrameTie X u u' F0 F0') (hK : TermK F0 F
       simp only [hY', Matrix.mulVec_mulVec, hκ', ← fmat_mul]
       congr 2
       group
+    -- Transport membership directly since `rw` cannot unfold the flag index at its default transparency.
     exact (congrArg (InAt X.B.I X.B.g X.B.g) e).mp h1
 
   have fixE : ∀ (w : D.what₂.Word) (h : Formalism.L2.SG.PoincareInHH.PoincareSetting.Hfin X w) (a : Fin D.R.rS),
@@ -304,6 +302,12 @@ theorem adm_norm_of_fixed_frames (hTF : FrameTie X u u' F0 F0') (hK : TermK F0 F
     have : s (Fin.castSucc i) (Fin.last _) • X.e0 i = (⟨_, hsI _ _⟩ : IntAf X.B.I.F X.B.I.E) • X.e0 i := rfl
     rw [this]
     exact Submodule.smul_mem _ _ (sub_Mo X.B.I ⟨i, rfl⟩)
+
+theorem adm_norm_of_fixed_frames (hTF : FrameTie X u u' F0 F0') (hK : TermK F0 F0' cs cs') (hM : ModGAt X) :
+    AdmN F0 F0' cs cs' := by
+  intro t
+  exact norm_congruence_of_carrier cs cs' hTF hM t.mem t.rep (hK t)
+
 
 end AdmNMain
 

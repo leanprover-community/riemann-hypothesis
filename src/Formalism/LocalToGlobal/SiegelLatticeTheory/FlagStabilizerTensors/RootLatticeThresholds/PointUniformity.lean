@@ -90,7 +90,7 @@ theorem gglob_of_cell {T T' : ℕ} (F : LFlag (D.sp.Y 0) D.R.rS (T : D.host.E)) 
       leadMinorK (ZhatOM (ZhatL F F')) l hl = leadMinorK (ptMat p) l hl := by
     intro l hl
     rw [leadMinorK_eq, leadMinorK_eq, hZ]
-    exact Formalism.HermitianLatticeCounting.Final.ExpansionTerms.leadingMinorUnipotentInvariant _ _ _ _ _ _ ⟨fun i => (hL i i).2 rfl, fun i j h => (hL i j).1 h⟩
+    exact _root_.Formalism.HermitianLatticeCounting.P.invariant_value_holds _ _ _ _ _ _ ⟨fun i => (hL i i).2 rfl, fun i j h => (hL i j).1 h⟩
       ⟨fun i => (hU i i).2 rfl, fun i j h => (hU i j).1 h⟩
   unfold Gglob
   rw [← hinv, ← hinv, lead_sign, lead_sign]

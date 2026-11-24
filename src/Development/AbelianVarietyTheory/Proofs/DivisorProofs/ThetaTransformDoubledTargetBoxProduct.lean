@@ -134,7 +134,7 @@ theorem thetaTr_coDbl_boxFun : ∀ (F E : Type) [Field F] [NumberField F] [Field
     funext i; simp [hAdef]
   simp only [GlobalTheory.WeilM.schr, h3, map_mul, Complex.conj_conj, hc,
     Prod.fst_neg, Prod.snd_neg]
-  simp only [neg_dotProduct, dotProduct_neg, neg_neg, neg_add, sub_eq_add_neg, mul_neg]
+  simp only [neg_dotProduct, dotProduct_neg, neg_neg, neg_add, sub_eq_add_neg]
 
 end GlobalTheory.DblThetaProd
 

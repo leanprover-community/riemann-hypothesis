@@ -220,7 +220,7 @@ theorem proof : AffineChartTrdeg.Statement := by
       simp only [Polynomial.coeff_sub, Polynomial.coeff_C_mul_X, Polynomial.coeff_C, ↓reduceIte,
         one_ne_zero, Polynomial.coeff_zero] at this
       have h' := congrArg Subtype.val this
-      simp only [Subalgebra.coe_sub, Subalgebra.coe_zero, sub_zero] at h'
+      simp only [Subalgebra.coe_zero, sub_zero] at h'
       exact h'
     · simp only [map_sub, map_mul, Polynomial.aeval_C, Polynomial.aeval_X]
       show algebraMap R K b * (algebraMap R K a / algebraMap R K b) - algebraMap R K a = 0

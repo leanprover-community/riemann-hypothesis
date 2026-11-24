@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveUniqOfWaveSpeed
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.IsMultZero
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableAtOfSmooth
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveSolutionExistence
@@ -73,20 +74,7 @@ theorem Eu_smooth {f : Mat n → V} (hf : ContDiffOn ℝ ∞ f (GLs n)) (s : Boo
 
 theorem Epow_smooth {f : Mat n → V} (hf : ContDiffOn ℝ ∞ f (GLs n)) (s : Bool) (m : ℕ) :
     ∀ a b : Fin n, ContDiffOn ℝ ∞ (Epow s m a b f) (GLs n) := by
-  induction m with
-  | zero =>
-    intro a b
-    by_cases hab : a = b
-    · simpa [Epow, hab] using hf
-    · simp only [Epow, if_neg hab]
-      exact contDiffOn_const (c := (0 : V))
-  | succ m ih =>
-    intro a b
-    have e : Epow s (m + 1) a b f = fun x => ∑ c, Eu s a c (Epow s m c b f) x := by
-      ext x
-      simp only [Epow, Finset.sum_apply]
-    rw [e]
-    exact ContDiffOn.sum fun c _ => Eu_smooth (ih c b) s a c
+  apply _root_.GlobalTheory.CompanionTheory.WaveK.Uniq.Epow_smooth <;> assumption
 
 theorem Eu_add {f f' : Mat n → V} (hf : ContDiffOn ℝ ∞ f (GLs n)) (hf' : ContDiffOn ℝ ∞ f' (GLs n)) (s : Bool)
     (a b : Fin n) : Set.EqOn (Eu s a b (f + f')) (Eu s a b f + Eu s a b f') (GLs n) := by

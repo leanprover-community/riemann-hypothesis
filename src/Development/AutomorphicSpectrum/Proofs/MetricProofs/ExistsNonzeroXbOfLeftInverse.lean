@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BasePartYvEqAlgebraMapXb
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ColFlags
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -83,31 +84,7 @@ theorem exists_rows_castLE_det_ne_zero {Ω : Type} [Field Ω] {n m a : ℕ} (M :
 theorem step_full {Ψ : Type} {p q : ℕ} (K₀ : Type) (t : StepIx Ψ p q)
     (h : ∀ r, blkF (Ψ := Ψ) (p := p) (q := q) K₀ r ≠ some (.inr t)) :
     (t.2 : ℕ) + 1 = rk Ψ p q t.1 := by
-  classical
-  obtain ⟨s, a⟩ := t
-  rcases s with τ | τ
-  · have ha : (a : ℕ) < p := a.2
-    by_contra hne
-    have hne' : (a : ℕ) + 1 ≠ p := hne
-    refine h (τ, ⟨a, by omega⟩) ?_
-    have hp : IsProperStep (p + q) p (⟨a, by omega⟩ : Fin (p + q)) :=
-      ⟨hne', by show (a : ℕ) + 1 ≠ p + q; intro h'; omega⟩
-    rw [blkF, if_pos hp]
-    simp [stepOf, ha]
-    rfl
-  · have ha : (a : ℕ) < q := a.2
-    by_contra hne
-    have hne' : (a : ℕ) + 1 ≠ q := hne
-    refine h (τ, ⟨p + a, by omega⟩) ?_
-    have hp : IsProperStep (p + q) p (⟨p + a, by omega⟩ : Fin (p + q)) := by
-      constructor
-      · show p + (a : ℕ) + 1 ≠ p
-        omega
-      · show p + (a : ℕ) + 1 ≠ p + q
-        omega
-    rw [blkF, if_pos hp]
-    simp [stepOf]
-    rfl
+  apply GlobalTheory.CompanionTheory.Ar.PB.FMX.YBase.full_of_noBlock <;> assumption
 
 theorem xb_block_ne : ∀ (Ψ : Type) [Fintype Ψ] (p q : ℕ) (Ω : Type) [Field Ω] (n : Ψ ⊕ Ψ → ℕ)
     (A : ∀ s, Matrix (Fin (n s)) (Fin (rk Ψ p q s)) Ω) (K₀ : Type) [Fintype K₀] (J₀ : K₀ → Type)

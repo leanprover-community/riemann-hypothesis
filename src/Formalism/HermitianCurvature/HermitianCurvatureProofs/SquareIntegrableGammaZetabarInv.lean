@@ -58,6 +58,7 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelNablaStarRelations
 
 @[expose] public section
 
@@ -169,10 +170,6 @@ theorem act_alg (c : ℂ) (f π) : actA P (algebraMap ℂ (A P (DQ P)) c) f π =
 theorem act_kap (g : M.Ty P → ℂ) (f π) : actA P (kap P (DQ P) g) f π = g π • f π := act_diag P _ f π
 end Act
 
-section R0
-variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
-end R0
-
 abbrev Pb (b : ℕ) : M.Par := ⟨1, 0, 1, 1, fun _ => 0, fun _ => 2 * b⟩
 
 variable (b : ℕ)
@@ -193,17 +190,6 @@ set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-open Formalism.FourierDecayAlt.MA
-
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
-
-noncomputable section
-
-variable {τ : ℝ}
-
-end
-
 end Formalism.FourierDecayAlt.P.MAx2.R2
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
@@ -399,8 +385,6 @@ theorem lemma_model_of_parts : Formalism.FourierDecayAlt.MA.LemmaEModelOfParts :
   rw [hJn P l L j lam α β _ c Ntot] at this
   exact this
 
-theorem model_words : Formalism.FourierDecayAlt.MA.ModelWordsD := MAx2.R2.modelWordsD
-
 end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.MAx2
@@ -469,8 +453,8 @@ theorem famPos (P : M.Par) (l : ℕ) (L : R.LevelData (A P (DQ P)) P.r) (j : M.T
       exact ⟨Complex.ofReal_im _, by rw [Complex.ofReal_re]; exact hcut _ (hYI b)⟩
     set ix := ixOf P (List.ofFn Y).length (cast (iota_len P N Y) i)
     have hπ := Formalism.FourierDecayAlt.P.types_interlace P hOK ix.2
-    have hpos := Formalism.FourierDecayAlt.P.c_pos_truncated Formalism.FourierDecayAlt.P.interlacing_sign Formalism.FourierDecayAlt.P.q_positive_interlacing
-      Formalism.FourierDecayAlt.P.q_positive_shift Formalism.FourierDecayAlt.P.cPos_true (Fin (List.ofFn Y).length) P.k P.u P.u'
+    have hpos := _root_.Formalism.FourierDecayAlt.P.Fr2.cPosCut _root_.Formalism.FourierDecayAlt.P.Interlace.interlaceSign _root_.Formalism.FourierDecayAlt.P.Interlace.qPositive
+      _root_.Formalism.FourierDecayAlt.P.Fr2.qPositiveShift _root_.Formalism.FourierDecayAlt.P.Fr2.cPos (Fin (List.ofFn Y).length) P.k P.u P.u'
       (M.rho P ix.2) l P.T P.T' (wordP (List.ofFn Y)) hl1 hlk hπ hOK.T_pos hOK.T'_pos hcutw
       (pairwise_wordP hpw) ix.1
     exact hpos.1
@@ -1046,10 +1030,6 @@ theorem act_alg (c : ℂ) (f π) : actA P (algebraMap ℂ (A P (DQ P)) c) f π =
   rw [Matrix.algebraMap_eq_diagonal, act_diag]; rfl
 end Act
 
-section R0
-variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
-end R0
-
 variable {τ : ℝ}
 
 variable {k : ℕ} {T T' : ℝ} {uu uu' : ℕ → ℝ}
@@ -1098,8 +1078,6 @@ end
 end Formalism.FourierDecayAlt.P.MAx2.J0
 
 namespace Formalism.FourierDecayAlt.P
-
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx2.J0
 
 end Formalism.FourierDecayAlt.P
 
@@ -1542,14 +1520,14 @@ theorem ev_d0Q_alt (hTT : 0 ≤ TT) : eulerQ M.vz (d0Q : SmQ r TT) = 0 := by
   rw [ev_d0Q hTT]
   have h : ∀ m : Fin r, ((if (M.vz : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vz : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = 0 := fun m => by
-    rw [if_neg (Formalism.FourierDecayAlt.P.MAx1.vc_vz m).symm, if_neg (Formalism.FourierDecayAlt.P.MAx1.vcb_vz m).symm, add_zero]
+    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vz m).symm, if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vz m).symm, add_zero]
   simp [h]
 
 theorem ev_d0Q_zb (hTT : 0 ≤ TT) : eulerQ M.vzb (d0Q : SmQ r TT) = 0 := by
   rw [ev_d0Q hTT]
   have h : ∀ m : Fin r, ((if (M.vzb : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vzb : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = 0 := fun m => by
-    rw [if_neg (Formalism.FourierDecayAlt.P.MAx1.vc_vzb m).symm, if_neg (Formalism.FourierDecayAlt.P.MAx1.vcb_vzb m).symm, add_zero]
+    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vzb m).symm, if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_vzb m).symm, add_zero]
   simp [h]
 
 theorem ev_d0Q_c (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vc l) (d0Q : SmQ r TT) = (-1 : ℂ) • d0Q := by
@@ -1557,10 +1535,10 @@ theorem ev_d0Q_c (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vc l) (d0Q : SmQ r TT)
   congr 1
   have h : ∀ m : Fin r, ((if (M.vc l : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vc l : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = if l = m then (-1 : ℂ) else 0 := fun m => by
-    rw [if_neg (Formalism.FourierDecayAlt.P.MAx1.vc_vcb l m), add_zero]
+    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb l m), add_zero]
     by_cases hlm : l = m
-    · rw [if_pos hlm, if_pos ((Formalism.FourierDecayAlt.P.MAx1.vc_inj l m).2 hlm)]
-    · rw [if_neg hlm, if_neg (fun h => hlm ((Formalism.FourierDecayAlt.P.MAx1.vc_inj l m).1 h))]
+    · rw [if_pos hlm, if_pos ((_root_.Formalism.FourierDecayAlt.P.Mx2.vc_inj l m).2 hlm)]
+    · rw [if_neg hlm, if_neg (fun h => hlm ((_root_.Formalism.FourierDecayAlt.P.Mx2.vc_inj l m).1 h))]
   simp [h]
 
 theorem ev_d0Q_cb (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vcb l) (d0Q : SmQ r TT) = (-1 : ℂ) • d0Q := by
@@ -1568,10 +1546,10 @@ theorem ev_d0Q_cb (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vcb l) (d0Q : SmQ r T
   congr 1
   have h : ∀ m : Fin r, ((if (M.vcb l : M.Var r) = M.vc m then (-1 : ℂ) else 0) +
       (if (M.vcb l : M.Var r) = M.vcb m then (-1 : ℂ) else 0)) = if l = m then (-1 : ℂ) else 0 := fun m => by
-    rw [if_neg (Formalism.FourierDecayAlt.P.MAx1.vc_vcb m l).symm, zero_add]
+    rw [if_neg (_root_.Formalism.FourierDecayAlt.P.Mx2.vc_vcb m l).symm, zero_add]
     by_cases hlm : l = m
-    · rw [if_pos hlm, if_pos ((Formalism.FourierDecayAlt.P.MAx1.vcb_inj l m).2 hlm)]
-    · rw [if_neg hlm, if_neg (fun h => hlm ((Formalism.FourierDecayAlt.P.MAx1.vcb_inj l m).1 h))]
+    · rw [if_pos hlm, if_pos ((_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_inj l m).2 hlm)]
+    · rw [if_neg hlm, if_neg (fun h => hlm ((_root_.Formalism.FourierDecayAlt.P.Mx2.vcb_inj l m).1 h))]
   simp [h]
 
 theorem ev_kc (hTT : 0 ≤ TT) (l : Fin r) : eulerQ (M.vc l) (coordQ (M.vc l) * d0Q : SmQ r TT) = 0 := by

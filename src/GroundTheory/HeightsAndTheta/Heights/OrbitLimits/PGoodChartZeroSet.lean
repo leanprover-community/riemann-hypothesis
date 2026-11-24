@@ -65,10 +65,6 @@ namespace GoodChartZeroSet
 
 section Lemmas
 
-theorem eval_smul_of_isHomogeneous {τ : Type*} {φ : MvPolynomial τ ℂ} {n : ℕ} (hφ : φ.IsHomogeneous n)
-    (c : ℂ) (w : τ → ℂ) : eval (c • w) φ = c ^ n * eval w φ :=
-  _root_.UpperTheory.Reformulated.B.Ydc1.eval_smul_of_isHomogeneous hφ c w
-
 theorem eval_homogenize {m : ℕ} (f : MvPolynomial (Fin m) ℂ) {D : ℕ} (hD : f.totalDegree ≤ D) (a : Fin m)
     (w : Fin m → ℂ) (hw : w a ≠ 0) :
     eval w (X a * ∑ d ∈ range (D + 1), X a ^ (D - d) * homogeneousComponent d f) =
@@ -82,7 +78,7 @@ theorem eval_homogenize {m : ℕ} (f : MvPolynomial (Fin m) ℂ) {D : ℕ} (hD :
   rw [map_mul, map_sum, map_sum, eval_X, Finset.mul_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun d hd => ?_
   have hdD : d ≤ D := by simp at hd; omega
-  rw [eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous d f), map_mul, map_pow, eval_X]
+  rw [_root_.UpperTheory.Reformulated.B.Ydc1.eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous d f), map_mul, map_pow, eval_X]
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hdD
   rw [Nat.add_sub_cancel_left]
   have hinv : w a ^ d * (w a)⁻¹ ^ d = 1 := by rw [← mul_pow, mul_inv_cancel₀ hw, one_pow]

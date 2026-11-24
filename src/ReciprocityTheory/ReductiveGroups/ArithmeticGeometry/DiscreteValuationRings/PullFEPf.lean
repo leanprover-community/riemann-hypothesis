@@ -71,10 +71,10 @@ theorem cubN_mul {A U : Type} [CommGroup A] [CommGroup U] {θ : A → A → A �
       have e := h.coc c (m ^ n) m x
       calc θ c (m ^ n) x * (∏ l ∈ Finset.range n, θ (m ^ l) m x) * θ (c * m ^ n) m x
           = (∏ l ∈ Finset.range n, θ (m ^ l) m x) * (θ (c * m ^ n) m x * θ c (m ^ n) x) := by
-            first | ac_rfl | simp only [_root_.mul_comm, _root_.mul_left_comm, _root_.mul_assoc]
+            first | ac_rfl
         _ = (∏ l ∈ Finset.range n, θ (m ^ l) m x) * (θ c (m ^ n * m) x * θ (m ^ n) m x) := by rw [e]
         _ = θ c (m ^ n * m) x * ((∏ l ∈ Finset.range n, θ (m ^ l) m x) * θ (m ^ n) m x) := by
-            first | ac_rfl | simp only [_root_.mul_comm, _root_.mul_left_comm, _root_.mul_assoc]
+            first | ac_rfl
   unfold cubN
   try simp only [_root_.one_mul]
   induction k with
@@ -87,7 +87,7 @@ theorem cubN_mul {A U : Type} [CommGroup A] [CommGroup U] {θ : A → A → A �
       rw [pow_add, ← pow_mul, _root_.mul_comm n k, _root_.mul_assoc]
     simp only [e2]
     rw [L (b * (m ^ n) ^ k) n, pow_succ]
-    first | ac_rfl | simp only [_root_.mul_comm, _root_.mul_left_comm, _root_.mul_assoc] | simp only [_root_.one_mul, _root_.mul_comm, _root_.mul_left_comm, _root_.mul_assoc]
+    first | ac_rfl
 
 section Two
 

@@ -71,7 +71,7 @@ private lemma cc_psTrunc_lemma {κ : Type} [Fintype κ] [DecidableEq κ] (m : �
 
   rw [map_sum, Finset.sum_eq_single 0]
   · rw [MvPolynomial.constantCoeff_monomial, if_pos rfl]
-    first | rfl | simp
+    first | rfl
   · intro e _ he
     rw [MvPolynomial.constantCoeff_monomial, if_neg he]
   · intro h0
@@ -88,9 +88,6 @@ theorem const_coeff_coe_zero {κ : Type} (P : MvPolynomial κ R) (hP : MvPolynom
   first
   | (rw [MvPolynomial.constantCoeff_coe]; exact hP)
   | exact hP
-  | (show MvPowerSeries.coeff 0 (P : MvPowerSeries κ R) = 0
-     rw [MvPolynomial.coeff_coe]; exact hP)
-  | simpa using hP
 
 private lemma mono_mem_lemma_2 {κ : Type} (m : ℕ) (e : κ →₀ ℕ) (c : R) (he : m + 1 ≤ e.sum fun _ k => k) :
     MvPolynomial.monomial e c ∈ orig R κ ^ (m + 1) := by
@@ -143,8 +140,6 @@ theorem jetSubstPS_eq {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] (m : ℕ) 
   unfold jetSubstPS jetMap
   first
   | (simp only [e]; done)
-  | (congr 1; simp only [e]; done)
-  | (congr; funext i; exact e i)
 
 theorem jetSubstPS_psJet {κ κ' : Type} [Fintype κ] [DecidableEq κ] [Fintype κ'] [DecidableEq κ'] (m : ℕ)
     (g : κ → MvPowerSeries κ' R) (hg : ∀ i, MvPowerSeries.constantCoeff (g i) = 0) (f : MvPowerSeries κ R) :
@@ -170,7 +165,7 @@ theorem jetSubstP_eq_jetSubstPS {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] 
   rw [Ideal.Quotient.eq]
   apply mem_of_coeff_lemma_3
   intro e he
-  simp [MvPolynomial.coeff_sub, coeff_psTrunc_lemma_4, (mem_degLE_lemma_5 m e).mpr he, MvPolynomial.coeff_coe,
+  simp [coeff_psTrunc_lemma_4, (mem_degLE_lemma_5 m e).mpr he, MvPolynomial.coeff_coe,
     cc_psTrunc_lemma, hP, fun i => const_coeff_coe_zero _ (hP i)]
 
 private lemma jetSubstPS_X_lemma_6 {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] (m : ℕ) (g : κ → MvPowerSeries κ' R)
@@ -193,8 +188,6 @@ theorem jetSubstPS_trunc' {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] (m : �
   rw [jetSubstPS_X_lemma_6]
   first
   | (simp only [Ideal.Quotient.factorₐ_apply_mk]; rw [jetSubstPS_X_lemma_6, Ideal.Quotient.eq])
-  | (simp only [Ideal.Quotient.factorₐ_mk]; rw [jetSubstPS_X_lemma_6, Ideal.Quotient.eq])
-  | (erw [Ideal.Quotient.factor_mk, Ideal.Quotient.factor_mk]; rw [jetSubstPS_X_lemma_6, Ideal.Quotient.eq])
   apply mem_of_coeff_lemma_3
   intro e he
   simp [MvPolynomial.coeff_sub, coeff_psTrunc_lemma_4, (mem_degLE_lemma_5 m e).mpr he,
@@ -205,8 +198,6 @@ theorem aug_psJet {κ : Type} [Fintype κ] [DecidableEq κ] (m : ℕ) (f : MvPow
   unfold psJet jetAug
   first
   | (simp [liftJet, cc_psTrunc_lemma, MvPolynomial.coe_aeval_eq_eval, MvPolynomial.eval_zero']; done)
-  | (simp [liftJet])
-  | unfold liftJet
 
 theorem aug_comp_jetSubstPS {κ κ' : Type} [Fintype κ'] [DecidableEq κ'] (m : ℕ) (g : κ → MvPowerSeries κ' R)
     (hg : ∀ i, MvPowerSeries.constantCoeff (g i) = 0) :
@@ -241,8 +232,6 @@ theorem actS_eq (a : 𝓞 E) :
   rw [MvPolynomial.coe_mul, MvPolynomial.coe_C, MvPolynomial.coe_X]
   first
   | rw [MvPowerSeries.smul_eq_C_mul]
-  | (rw [Algebra.smul_def, MvPowerSeries.algebraMap_apply, Algebra.id.map_eq_self])
-  | (ext e; simp [MvPowerSeries.coeff_C_mul, MvPowerSeries.coeff_smul])
 
 theorem cc_atPt {n : ℕ} (b : Fin n) {g : MvPowerSeries (Fin 1 × Fin (dL Dw)) S}
     (hg : MvPowerSeries.constantCoeff g = 0) : MvPowerSeries.constantCoeff (atPt (Dw := Dw) b g) = 0 := by
@@ -251,8 +240,6 @@ theorem cc_atPt {n : ℕ} (b : Fin n) {g : MvPowerSeries (Fin 1 × Fin (dL Dw)) 
       (fun q : Fin 1 × Fin (dL Dw) => (MvPowerSeries.X (b, q.2) : MvPowerSeries (Fin n × Fin (dL Dw)) S)) := by
     first
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero fun _ => MvPowerSeries.constantCoeff_X _
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero fun _ => MvPowerSeries.constantCoeff_X _
-    | exact MvPowerSeries.hasSubst_of_constantCoeff_zero fun _ => by simp
   rw [MvPowerSeries.constantCoeff_subst hS]
   apply finsum_eq_zero_of_forall_eq_zero
   intro d

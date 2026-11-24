@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.CMDeterminantIdeals.CMIdealValuations.OneLeAbsNormOfLeOne
 public import Formalism.LocalToGlobal.CMDeterminantIdeals.StatementB
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -110,26 +111,7 @@ variable {K : Type} [Field K] [NumberField K]
 theorem valuation_eq_exp_neg_count (p : HeightOneSpectrum (𝓞 K)) {x : K} (hx : x ≠ 0) :
     p.valuation K x =
       WithZero.exp (-FractionalIdeal.count K p (FractionalIdeal.spanSingleton (𝓞 K)⁰ x)) := by
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 K) x
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  have ha0 : a ≠ 0 := by
-    rintro rfl
-    simp at hx
-  have hsa : Ideal.span {a} ≠ 0 := by simpa using ha0
-  have hsb : Ideal.span {b} ≠ 0 := by simpa using hb0
-  rw [map_div₀, IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap,
-    IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap,
-    IsDedekindDomain.HeightOneSpectrum.intValuation_def, IsDedekindDomain.HeightOneSpectrum.intValuation_def,
-    if_neg ha0, if_neg hb0, div_eq_mul_inv, div_eq_mul_inv, ← FractionalIdeal.spanSingleton_mul_spanSingleton,
-    ← FractionalIdeal.spanSingleton_inv, ← FractionalIdeal.coeIdeal_span_singleton,
-    ← FractionalIdeal.coeIdeal_span_singleton, FractionalIdeal.count_mul K p ?_ ?_, FractionalIdeal.count_inv,
-    FractionalIdeal.count_coe K p hsa, FractionalIdeal.count_coe K p hsb, ← WithZero.exp_neg, ← WithZero.exp_add]
-  · congr 1
-    ring
-  · rw [FractionalIdeal.coeIdeal_span_singleton, Ne, FractionalIdeal.spanSingleton_eq_zero_iff]
-    exact (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).mpr ha0
-  · rw [FractionalIdeal.coeIdeal_span_singleton, Ne, inv_eq_zero, FractionalIdeal.spanSingleton_eq_zero_iff]
-    exact (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).mpr hb0
+  apply Formalism.L2.LamCM.valuation_eq_exp_count <;> assumption
 
 theorem count_eq_of_valuation_le (p : HeightOneSpectrum (𝓞 K)) {k c : K} (hk : k ≠ 0) (hc : c ≠ 0)
     (h1 : p.valuation K k ≤ p.valuation K c) (h2 : p.valuation K k⁻¹ ≤ p.valuation K c⁻¹) :

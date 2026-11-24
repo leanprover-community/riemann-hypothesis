@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.FunEqZeroOfAffine
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PsiScal
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.FinrankComplexReal
 import Mathlib.Algebra.Order.Floor.Extended
@@ -134,30 +135,7 @@ theorem isTwistPull_of_sval (hL : L.IsLB) (hα : α.IsGen) {s : LB.Sec (LPow A L
     {s' : LB.Sec (LPow A L a T)}
     (H : ∀ y J, Good L y J → sval (L := L) (φ := fun _ : Fin 1 => (snd T A).left) (ε := fun _ => a) s' (𝟙 _) y J = (val α (𝟙 _) y J).val * sval (L := L) (φ := fun _ : Fin 1 => (snd T A).left) (ε := fun _ => b) s (𝟙 _ ≫ ψ.left) y J) :
     IsTwistPull A L ψ m hm a b α s s' := by
-  intro j
-  have e : ψ.left ≫ (snd T A).left = m.left := by rw [← Over.comp_left, hm]
-  refine fn_ext fun y hy => ?_
-  choose J hJ using fun χ : (T ⊗ A).left ⟶ A.left => exists_chart hL (χ y)
-  have h0 := chart_le_zero A L m j hy
-  have h1 := chart_le_pull A L ψ m hm j hy
-  refine (gs_res _ y _ hy _).trans (Eq.trans ?_ ((gs_mul _ y _ hy _ _).trans
-    (congrArg₂ (· * ·) (gs_unit _ y _ hy _) ((gs_res _ y _ hy _).trans
-      (gs_pull _ ψ.left y _ h1 _)))).symm)
-  refine (sec_trans (φ := fun _ : Fin 1 => (snd T A).left) (ε := fun _ => a) s' (𝟙 _) y h0
-    (Good.mem hJ _ _)).trans ?_
-  refine Eq.trans ?_ (congrArg₂ (· * ·) (congrArg Units.val (gen_trans hα (𝟙 _) y hy (Good.mem hJ _ _)))
-    (sec_trans (φ := fun _ : Fin 1 => (snd T A).left) (ε := fun _ => b) s (𝟙 _ ≫ ψ.left) y h1
-    (Good.mem hJ _ _))).symm
-  refine (congrArg _ (H y J hJ)).trans ?_
-  rw [Units.val_mul]
-  refine Eq.trans ?_ (_root_.mul_mul_mul_comm _ _ _ _)
-  rw [← Units.val_mul]
-  refine congrArg₂ (· * ·) (congrArg Units.val ?_) rfl
-  have e' : (𝟙 _ ≫ ψ.left) ≫ (snd T A).left = 𝟙 _ ≫ m.left := by rw [Category.assoc, e]
-  simp only [trF, Fin.prod_univ_two, Fin.prod_univ_one, Matrix.cons_val_zero,
-    Matrix.cons_val_one, zpow_neg]
-  rw [e']
-  exact (inv_mul_cancel_right _ _).symm
+  apply GlobalTheory.VVCompare.isTwistPull_of_sv <;> assumption
 
 end Twist
 

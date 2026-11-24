@@ -77,7 +77,7 @@ theorem expand {A : Type*} [CommRing A] {p : ℕ} (hp : p.Prime) (m : A) :
   have h2 : r.coeff 0 = 1 := by
     simp [hp1] at h1
     apply mul_left_cancel₀ hp0
-    first | simpa using h1.symm | simpa using h1 | (rcases h1 with h1 | h1 <;> simp_all)
+    first | simpa using h1.symm
   obtain ⟨s, hs⟩ := Polynomial.X_dvd_sub_C (p := r)
   rw [h2, sub_eq_iff_eq_add] at hs
   refine ⟨Polynomial.aeval m s, ?_⟩
@@ -1005,36 +1005,7 @@ end UnitOfRootAlt
 namespace PowDivFactorialAlt
 section
 
-theorem Bridge.RingBasics.exists_pow_div_factorial : ∀ (l : ℕ) [Fact l.Prime] (n : ℕ), ∃ c : ℤ_[l], ((n.factorial : ℕ) : ℤ_[l]) * c = ((l : ℕ) : ℤ_[l]) ^ n := by
-  intro l hl n
-  obtain ⟨m, hm⟩ : l ^ padicValNat l n.factorial ∣ n.factorial := (_root_.Dvd.intro_left _ (_root_.Nat.divMaxPow_mul_pow_padicValNat _ _))
-  have hle : padicValNat l n.factorial ≤ n := by
-    simpa only [Nat.padicValNat_def] using (multiplicity_factorial_le l n)
-  have hnd : ¬ l ∣ m := by
-    rintro ⟨k, hk⟩
-    have hnot : ¬ l ^ (padicValNat l n.factorial + 1) ∣ n.factorial := by
-      simpa only [Nat.padicValNat_def] using
-        (pow_succ_multiplicity_not_dvd (p := l) (Nat.factorial_ne_zero n))
-    apply hnot
-    refine ⟨k, ?_⟩
-    rw [pow_succ, mul_assoc, ← hk]
-    exact hm
-  have hu : IsUnit ((m : ℕ) : ℤ_[l]) := by
-    rw [PadicInt.isUnit_iff]
-    apply le_antisymm (PadicInt.norm_le_one _)
-    by_contra h
-    have h' : ‖(((m : ℕ) : ℤ) : ℤ_[l])‖ < 1 := by simpa using not_le.mp h
-    rw [PadicInt.norm_int_lt_one_iff_dvd] at h'
-    exact hnd (by exact_mod_cast h')
-  obtain ⟨u, hu'⟩ := hu.exists_right_inv
-  obtain ⟨d, hd⟩ := Nat.exists_eq_add_of_le hle
-  generalize padicValNat l n.factorial = v at hm hd
-  refine ⟨u * ((l : ℕ) : ℤ_[l]) ^ d, ?_⟩
-  rw [hm]
-  push_cast
-  calc ((l : ℕ) : ℤ_[l]) ^ v * (m : ℤ_[l]) * (u * ((l : ℕ) : ℤ_[l]) ^ d)
-      = ((l : ℕ) : ℤ_[l]) ^ v * ((m : ℤ_[l]) * u) * ((l : ℕ) : ℤ_[l]) ^ d := by ring
-    _ = ((l : ℕ) : ℤ_[l]) ^ n := by rw [hu', mul_one, ← pow_add, ← hd]
+alias Bridge.RingBasics.exists_pow_div_factorial := _root_.Reformulated.AutPerF.exists_factorial_mul_eq_pow
 
 end
 end PowDivFactorialAlt

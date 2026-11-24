@@ -224,7 +224,7 @@ theorem isLieBasis_baseChange [IsLocalRing R] [Smooth G.hom] {R' : Type} [CommRi
   convert basis_of_chart hx' using 2 with j
   refine Over.OverMorphism.ext (pullback.hom_ext ?_ ((Over.w _).trans (Over.w _).symm))
   have s : (algebraMap R R' ∘ Pi.single j (1 : R) : Fin d → R') = Pi.single j 1 := by
-    funext i; by_cases hij : i = j <;> simp [hij, Pi.single_apply]
+    funext i; by_cases hij : i = j <;> simp [hij]
   have := e' (Pi.single j 1)
   rw [s] at this
   rw [Over.comp_left, Category.assoc, heφ, hv', hxv]

@@ -239,8 +239,7 @@ theorem quotientGram_eq_projector (σ : K →+* ℂ) {b : Fin k → Fin r → K}
     unfold ReciprocityTheory.MultiplicativeHeights.quotGramC
     rw [gramMatrix_eq_embeddingColumns, gramMatrix_eq_embeddingColumns, crossGram_eq_embeddingColumns, crossGram_eq_embeddingColumns]
     unfold hPm
-    simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.conjTranspose_mul,
-      Matrix.conjTranspose_conjTranspose, Matrix.mul_assoc]
+    simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.mul_assoc]
   rw [hq, key, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, orthogonalProjector_conjTranspose,
     orthogonalProjector_mul_self σ hb]
   rfl

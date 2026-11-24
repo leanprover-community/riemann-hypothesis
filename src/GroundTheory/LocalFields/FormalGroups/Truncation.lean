@@ -158,16 +158,4 @@ theorem add_le_order_subst_sub_subst {a b : σ → MvPowerSeries τ S} (ha : Has
 
 end Subst
 
-section FixedPoint
-
-variable {σ R : Type*} [CommRing R]
-
-theorem existsUnique_fixedPoint (Φ : MvPowerSeries σ R → MvPowerSeries σ R)
-    (hΦ : ∀ f g : MvPowerSeries σ R, ∀ n : ℕ, (n : ℕ∞) ≤ order (f - g) →
-      ((n + 1 : ℕ) : ℕ∞) ≤ order (Φ f - Φ g)) :
-    ∃! f, Φ f = f :=
-  _root_.UpperTheory.Reformulated.B.Ydb5.existsUnique_fixedPoint Φ hΦ
-
-end FixedPoint
-
 end GroundTheory.LocalField.FormalGroup

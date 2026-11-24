@@ -61,7 +61,7 @@ theorem ext (n : ℕ) : EXTStatement n := by
   have hset : Metric.ball c r \ {y | F y = 0} = Metric.ball c r ∩ F ⁻¹' {(0 : ℂ)}ᶜ := by
     apply Set.ext
     intro y
-    simp [Set.mem_diff]
+    simp
   have hZ : IsOpen (Metric.ball c r \ {y | F y = 0}) := by
     rw [hset]
     exact hF.continuousOn.isOpen_inter_preimage Metric.isOpen_ball isOpen_compl_singleton

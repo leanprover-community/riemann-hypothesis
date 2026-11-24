@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LoglogQuotNonneg
 import Mathlib.Algebra.Order.Floor.Extended
@@ -149,21 +150,7 @@ theorem isRegFamily_enlarge (A : FinHolAtlas e X) (Θ L : LocPot X) (s : X → X
     linarith
 
 theorem continuous_of_smooth (A : FinHolAtlas e X) (u : X → ℝ) (h : A.Smooth u) : Continuous u := by
-  rw [continuous_iff_continuousAt]
-  intro x
-  obtain ⟨j, hj⟩ := A.cover x
-  have h1 : ContinuousOn (u ∘ (A.chart j).symm) (A.chart j).target := by
-    have := (h j).continuousOn
-    simpa using this
-  have hx : (A.chart j) x ∈ (A.chart j).target := (A.chart j).map_source hj
-  have h2 : ContinuousAt (u ∘ (A.chart j).symm) (A.chart j x) :=
-    h1.continuousAt ((A.chart j).open_target.mem_nhds hx)
-  have h3 : ContinuousAt (A.chart j) x := (A.chart j).continuousAt hj
-  have h4 : ContinuousAt ((u ∘ (A.chart j).symm) ∘ (A.chart j)) x :=
-    ContinuousAt.comp (g := u ∘ (A.chart j).symm) h2 h3
-  refine h4.congr ?_
-  filter_upwards [(A.chart j).open_source.mem_nhds hj] with z hz
-  simp [(A.chart j).left_inv hz]
+  apply ReciprocityTheory.AnForm.M.PLAux.smooth_continuous <;> assumption
 
 theorem tendstoUniformlyOn_self {α β : Type*} [UniformSpace β] (f : α → β) (p : Filter ℝ)
     (K : Set α) : TendstoUniformlyOn (fun _ : ℝ => f) f p K := by

@@ -104,7 +104,7 @@ theorem row_zero {n : ℕ} {i₀ : Fin n} (c : AE F E →+* AE F E) (ε : ℤˣ)
   intro b hb
   have e := congrFun (congrFun hM b) (Sum.inl i₀)
   rw [form_apply, Finset.sum_eq_single i₀] at e
-  · simp only [hcol, if_true, Sum.inr.injEq, reduceCtorEq, if_false, map_zero, mul_zero, add_zero] at e
+  · simp only [hcol, if_true, reduceCtorEq, if_false, map_zero, mul_zero, add_zero] at e
     have hr : Jm n ((ε : ℤ) : AE F E) b (Sum.inl i₀) = 0 := by
       rcases b with b | b
       · simp

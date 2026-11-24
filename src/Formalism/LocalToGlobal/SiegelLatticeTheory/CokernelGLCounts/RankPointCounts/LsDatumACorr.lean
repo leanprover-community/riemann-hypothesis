@@ -41,6 +41,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalGluing.MemOfProjEqZero
 
 @[expose] public section
 
@@ -68,14 +69,11 @@ private theorem h_finset_sum_smul_left {ι : Type} (s : Finset ι) (c : ι → E
   | insert a s ha ih =>
     rw [Finset.sum_insert ha, Finset.sum_insert ha, H.h_add_left, H.h_smul_left, ih]
 
-private theorem h_add_right_rank_point_counts (x y z : V) : H.h x (y + z) = H.h x y + H.h x z := by
-  rw [H.h_herm (y + z) x, H.h_add_left, map_add (f := _), ← H.h_herm, ← H.h_herm]
-
 private theorem h_smul_right_eq_cj_mul (a : E) (x y : V) : H.h x (a • y) = M.L.cj a * H.h x y := by
   rw [H.h_herm (a • y) x, H.h_smul_left, map_mul, ← H.h_herm]
 
 private theorem h_zero_right_rank_point_counts (x : V) : H.h x 0 = 0 := by
-  simpa using h_add_right_rank_point_counts H x 0 0
+  simpa using _root_.PI.LocHerm.Glue.h_add_right H x 0 0
 
 theorem mem_perpX_of {f : Fin (r + 1) → V} {v : V} (h : ∀ j : Fin r, H.h v (f j.castSucc) = 0) :
     v ∈ H.perp (H.X f) := by
@@ -86,7 +84,7 @@ theorem mem_perpX_of {f : Fin (r + 1) → V} {v : V} (h : ∀ j : Fin r, H.h v (
     obtain ⟨j, rfl⟩ := hy
     exact h j
   | zero => exact h_zero_right_rank_point_counts H v
-  | add y z _ _ hy hz => rw [h_add_right_rank_point_counts, hy, hz, add_zero]
+  | add y z _ _ hy hz => rw [_root_.PI.LocHerm.Glue.h_add_right, hy, hz, add_zero]
   | smul a y _ hy => rw [h_smul_right_eq_cj_mul, hy, mul_zero]
 
 theorem z_mem_perpX {f : Fin (r + 1) → V} {T : F} (hF : Formalism.MainNotions.ThinScalesBound.FrameK H f T) :

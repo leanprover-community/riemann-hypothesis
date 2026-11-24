@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsChart
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.InclStd
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.SubThickRees
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsChartFromCoordinates
@@ -125,30 +126,6 @@ theorem rep_lift {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {X : Schem
 theorem exists_flat_chart : ∀ {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} (γ : DividedPowers I) (p : ℕ) (hp : p ≠ 0)
     (hn : IsNilpotent (p : R)) {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of O)) (κ : O →+* R ⧸ I) {V : X.Opens} {d : ℕ}
     (c : Coord q V d), ∃ c' : Chart γ p q κ V d, FlatT c'.D ∧ ∀ i, ev c'.D c'.inV (c.t i) = Ideal.Quotient.mk _ (c'.t i) := by
-  intro O R _ _ I γ p hp hn X q κ V d c
-  obtain ⟨L⟩ := GlobalTheory.CompanionTheory.EtaleLift.nonempty_lift (strV q V) c.t I κ c.etale
-  have hF : L.i.Flat := flat_of_etale_poly L.i L.t L.et
-  obtain ⟨δ, hδ⟩ : ∃ δ : DividedPowers (I.map L.i), IsDPMorphism γ δ L.i := by
-    letI : Algebra R L.D := L.i.toAlgebra
-    haveI : Module.Flat R L.D := hF
-    exact GlobalTheory.CompanionTheory.JLiftDP.dpFlat R L.D I γ
-  let ψ : R ⧸ I →+* L.D ⧸ I.map L.i := Ideal.quotientMap _ L.i Ideal.le_comap_map
-  have hψ : ∀ r, ψ (Ideal.Quotient.mk I r) = Ideal.Quotient.mk _ (L.i r) := fun r => rfl
-  have hκ : L.j.comp (strV q V) = ψ.comp κ := by
-    refine RingHom.ext fun o => ?_
-    obtain ⟨x, hx⟩ := Ideal.Quotient.mk_surjective (κ o)
-    rw [RingHom.comp_apply, RingHom.comp_apply, L.hj o x hx, ← hx, hψ]
-  let y : PtOver X q κ (L.D ⧸ I.map L.i) :=
-    ⟨(ψ, Spec.map (CommRingCat.ofHom L.j) ≫ c.affine.fromSpec), by
-      change (Spec.map (CommRingCat.ofHom L.j) ≫ c.affine.fromSpec) ≫ q = _
-      rw [Category.assoc, fromSpec_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp, hκ]⟩
-  let T : Thick (nlFun γ p X q κ) := mkT L.D L.i (I.map L.i) δ
-    ⟨fun _ => by simpa using hn.map L.i, fun h => absurd h hp⟩ hδ y hψ
-  have hin : InU V T := top_le_specMap c.affine L.j
-  refine ⟨⟨T, L.t, L.et, rfl, hin, fun B y' hy' => rep_lift c.affine L y hψ rfl B y' hy'⟩, hF, fun i => ?_⟩
-  have e : ev T hin = L.j := evalAt_specMap c.affine L.j _ rfl hin
-  change ev T hin (c.t i) = _
-  rw [e]
-  exact L.hT i
+  apply GlobalTheory.CompanionTheory.ChartP.exists_chart <;> assumption
 
 end GlobalTheory.CompanionTheory.FlatChartP

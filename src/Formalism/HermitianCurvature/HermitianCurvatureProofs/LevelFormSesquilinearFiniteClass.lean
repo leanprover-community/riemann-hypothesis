@@ -341,8 +341,10 @@ theorem norm_mnP_le (w : List (Bool × Mat k r)) (hw : ∀ x ∈ w, ‖x.2‖ �
     obtain ⟨b, X⟩ := x
     cases b
     · simp only [mnP, Bool.false_eq_true, if_false, List.length_cons, pow_succ]
-      have : 0 ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ w.length * ‖P‖ := by positivity
-      nlinarith
+      calc ‖mnP w P‖ ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ w.length * ‖P‖ := ih'
+        _ ≤ (((2 * r + k + 1 : ℕ) : ℝ) ^ w.length * ‖P‖) * ((2 * r + k + 1 : ℕ) : ℝ) :=
+            le_mul_of_one_le_right (by positivity) hn
+        _ = ((2 * r + k + 1 : ℕ) : ℝ) ^ w.length * ((2 * r + k + 1 : ℕ) : ℝ) * ‖P‖ := by ring
     · simp only [mnP, if_true, List.length_cons, pow_succ]
       calc ‖mnP w P * -X‖ ≤ ((2 * r + k + 1 : ℕ) : ℝ) * ‖mnP w P‖ * ‖-X‖ := mn_norm_mul_le _ _
         _ ≤ ((2 * r + k + 1 : ℕ) : ℝ) * (((2 * r + k + 1 : ℕ) : ℝ) ^ w.length * ‖P‖) * 1 := by
@@ -366,19 +368,18 @@ theorem mn_mnQ_norm (w : List (Bool × Mat k r)) (hw : ∀ x ∈ w, ‖x.2‖ �
           gcongr
         _ = _ := by ring
     · simp only [mnQ, if_true, List.length_cons, pow_succ]
-      have : 0 ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ w.length * ‖Q‖ := by positivity
-      nlinarith
+      calc ‖mnQ w Q‖ ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ w.length * ‖Q‖ := ih'
+        _ ≤ (((2 * r + k + 1 : ℕ) : ℝ) ^ w.length * ‖Q‖) * ((2 * r + k + 1 : ℕ) : ℝ) :=
+            le_mul_of_one_le_right (by positivity) hn
+        _ = ((2 * r + k + 1 : ℕ) : ℝ) ^ w.length * ((2 * r + k + 1 : ℕ) : ℝ) * ‖Q‖ := by ring
 
 theorem mn_dLR_lin_bound (Λ : Mat k r →L[ℝ] V) (K : ℝ) (hK : ∀ M, ‖Λ M‖ ≤ K * ‖M‖) (m : ℕ) :
     ∀ u v : List (Mat k r), (∀ X ∈ u, unitLie k r X) → (∀ X ∈ v, unitLie k r X) → u.length + v.length ≤ m →
       ∀ g : Mat k r, ‖dLR u v (fun g => Λ g) g‖ ≤
         K * ((2 * r + k + 1 : ℕ) : ℝ) ^ (2 * m + 2) * gN g := by
   intro u v hu hv hl g
-  have hK0 : 0 ≤ K := by
-    have h := hK 1
-    by_contra hneg
-    have h1 : (0 : ℝ) < ‖(1 : Mat k r)‖ := norm_pos_iff.2 one_ne_zero
-    nlinarith [norm_nonneg (Λ 1)]
+  have hK0 : 0 ≤ K :=
+    nonneg_of_mul_nonneg_left ((norm_nonneg (Λ 1)).trans (hK 1)) (norm_pos_iff.2 one_ne_zero)
   set n : ℝ := ((2 * r + k + 1 : ℕ) : ℝ) with hn_def
   have hn : (1 : ℝ) ≤ n := by rw [hn_def]; exact_mod_cast (by omega)
   have e : (fun g => Λ g) = fun g => Λ (1 * g * 1) := by funext g; simp
@@ -1079,17 +1080,17 @@ theorem bc_tL_post {E E' : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] [Nor
       (fun x => L (f x))) g = L (-(Q.chatL (Q.EH k r) (Q.posL k r 0) (Q.uC k r 0 Y - 1) (fun _ => Q.xv k r z' 0)
         (Q.ybv k r z 0) f) g)
 
-    simp only [Pi.neg_apply, Q.chatL, map_neg, map_sum, map_smul, bc_qminor_post L hf hg]
+    simp only [Q.chatL, map_neg, map_sum, map_smul, bc_qminor_post L hf hg]
   · show -(Q.chatL (Q.EH k r) (Q.posL k r 0) (Q.uC k r 0 Y) (Q.yv k r z 0) (fun _ => Q.xbv k r z' 0)
       (fun x => L (f x))) g = L (-(Q.chatL (Q.EH k r) (Q.posL k r 0) (Q.uC k r 0 Y) (Q.yv k r z 0)
         (fun _ => Q.xbv k r z' 0) f) g)
 
-    simp only [Pi.neg_apply, Q.chatL, map_neg, map_sum, map_smul, bc_qminor_post L hf hg]
+    simp only [Q.chatL, map_neg, map_sum, map_smul, bc_qminor_post L hf hg]
   · show -(Q.chat2L (Q.EH k r) (Q.posL k r 0) (Q.uC k r 0 Y - 1) (Q.yv k r z 0) (fun _ => Q.xv k r z' 0)
       (Q.ybv k r z 0) (fun _ => Q.xbv k r z' 0) (fun x => L (f x))) g = L (-(Q.chat2L (Q.EH k r) (Q.posL k r 0)
         (Q.uC k r 0 Y - 1) (Q.yv k r z 0) (fun _ => Q.xv k r z' 0) (Q.ybv k r z 0) (fun _ => Q.xbv k r z' 0) f) g)
 
-    simp only [Pi.neg_apply, Q.chat2L, map_neg, map_sum, apply_ite L, map_smul, map_zero, bc_qminor_post L hf hg]
+    simp only [Q.chat2L, map_neg, map_sum, apply_ite L, map_smul, map_zero, bc_qminor_post L hf hg]
 
 theorem bc_smoothLev {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {f : B.Mat k r → E}
     (hf : CkOn (⊤ : ℕ∞) (GV k r) f) : Q.SmoothLev k r 0 Set.univ f := by
@@ -1638,7 +1639,7 @@ theorem rma_step (X : ActualOps k r z z' π π') (L : R.LevelData (Pr (RadSp k r
           (∑ d, rma_fst _ (M c d) (rma_fst _ (Wd.Ts (P5.site L l) Y d b) Ψ)) := by
 
       simp only [Matrix.mul_apply, map_sum, map_mul, Finset.sum_mul, LinearMap.sum_apply, Module.End.mul_apply]
-      first | rfl | exact Finset.sum_comm
+      first | exact Finset.sum_comm
     rw [e1]
     simp only [Submodule.coe_sum, Finset.sum_apply, oMul]
     refine Finset.sum_congr rfl fun c _ => ?_
@@ -2571,7 +2572,10 @@ theorem rb_int_pair (D : B.RealPlaceData k r Wp Wq) (F F' : B.Mat k r → (Wq �
   rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hb]
   have h1 : ‖inner ℂ (B.hsVec (B.JF D F' (B.gq D q))) (B.hsVec (B.JF D F (B.gq D q)))‖ ≤ v * u :=
     norm_inner_le_norm _ _
-  have h2 : v * u ≤ (u ^ 2 + v ^ 2) / 2 := by nlinarith [sq_nonneg (u - v)]
+  have h2 : v * u ≤ (u ^ 2 + v ^ 2) / 2 := by
+    have := sq_nonneg (u - v)
+    have : (u - v) ^ 2 = u ^ 2 + v ^ 2 - 2 * (v * u) := by ring
+    linarith
   calc b * ‖inner ℂ (B.hsVec (B.JF D F' (B.gq D q))) (B.hsVec (B.JF D F (B.gq D q)))‖ ≤ b * ((u ^ 2 + v ^ 2) / 2) :=
         mul_le_mul_of_nonneg_left (h1.trans h2) hb
     _ = (b * u ^ 2 + b * v ^ 2) / 2 := by ring
@@ -2883,7 +2887,7 @@ theorem pd_phi_support : HasCompactSupport (pdPhi (k := k) (r := r)) := by
     have h1 := mn_norm_le_gN M
     have h2 : gN M ^ 2 ≤ 2 ^ 2 := by rw [← pd_sq_eq]; linarith
     have h0 : 0 ≤ gN M := Real.sqrt_nonneg _
-    have h3 : gN M ≤ 2 := by nlinarith
+    have h3 : gN M ≤ 2 := le_of_pow_le_pow_left₀ (by norm_num) (by norm_num) h2
     linarith
   refine HasCompactSupport.intro hK fun M hM => ?_
   simp only [Set.mem_setOf_eq, not_le] at hM
@@ -2972,9 +2976,8 @@ section pdCutBound
 variable {k r : ℕ}
 
 theorem pd_gN_le_of_sq {M : Mat k r} {a : ℝ} (ha : 0 ≤ a) (h : pdSq M ≤ a ^ 2) : gN M ≤ a := by
-  have h0 : 0 ≤ gN M := Real.sqrt_nonneg _
   rw [pd_sq_eq] at h
-  nlinarith
+  exact le_of_pow_le_pow_left₀ (by norm_num) ha h
 
 theorem pd_phi_deriv (m : ℕ) : ∃ C : ℝ, 0 ≤ C ∧ ∀ w, admitted m w → ∀ M : Mat k r, ‖Dw w pdPhi M‖ ≤ C := by
   set n : ℝ := ((2 * r + k + 1 : ℕ) : ℝ)
@@ -2988,7 +2991,7 @@ theorem pd_phi_deriv (m : ℕ) : ∃ C : ℝ, 0 ≤ C ∧ ∀ w, admitted m w �
     have hn : 0 ≤ n ^ (2 * m + 2) := by positivity
     simp only [one_pow, mul_one]
     calc ‖Dw (wL u ++ wR v) (fun M : Mat k r => M) M‖ ≤ 1 * n ^ (2 * m + 2) * gN M := h1
-      _ ≤ n ^ (2 * m + 2) * 3 := by nlinarith
+      _ ≤ n ^ (2 * m + 2) * 3 := by rw [one_mul]; exact mul_le_mul_of_nonneg_left h2 hn
   obtain ⟨C, hC0, hC⟩ := Formalism.FourierDecayAlt.P.AdmissibleLieWords.fdb (fun M : Mat k r => M) contDiff_id {M : Mat k r | pdSq M ≤ 3 ^ 2}
     Set.univ (fun _ _ => trivial) (fun _ => (1 : ℝ)) (fun _ _ => le_rfl) 0 0 (n ^ (2 * m + 2) * 3) m H m ℂ
     pdPhi pd_phi_cd pd_phi_bound
@@ -3031,7 +3034,7 @@ theorem pd_psi_deriv (m : ℕ) : ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R →
       rw [pd_sq_smul, pd_sq_eq]
       have h0 : 0 ≤ gN g := Real.sqrt_nonneg _
       rw [inv_pow, inv_mul_lt_iff₀ (by positivity), mul_one]
-      nlinarith
+      exact pow_lt_pow_left₀ hg h0 (by norm_num)
     have hz : ∀ g' ∈ {g' : Mat k r | pdSq (R⁻¹ • g') < 1}, pdPsi R g' = (fun _ => (0 : ℂ)) g' := by
       intro g' hg'
       simp [pdPsi, pdPhi, pd_chi_one (le_of_lt hg')]
@@ -3117,7 +3120,8 @@ theorem pd_cut_nice {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {R : �
   simp only [Set.mem_setOf_eq, not_le] at hg
   have h4 : 4 ≤ pdSq (R⁻¹ • g) := by
     rw [pd_sq_smul, inv_pow, le_inv_mul_iff₀ (by positivity)]
-    nlinarith
+    have : 4 * R ^ 2 = (2 * R) ^ 2 := by ring
+    linarith
   simp [pdPhi, pd_chi_zero h4]
 
 end pdCutCC
@@ -3213,15 +3217,20 @@ theorem pd_thr_AB (P0 : M.Par) (j : Fin (P0.r + 1)) (N : ℕ) (A : ℝ) (hA : P5
   have h1 : 1 ≤ ((P0.r : ℝ) + 1) ^ 3 := one_le_pow₀ (by linarith)
   have hbr : 0 ≤ (N : ℝ) * n ^ 2 + n ^ 3 := by positivity
   have h2 : 127 * ((N : ℝ) * n ^ 2 + n ^ 3) ≤ 127 * ((P0.r : ℝ) + 1) ^ 3 * ((N : ℝ) * n ^ 2 + n ^ 3) := by
-    nlinarith
+    calc 127 * ((N : ℝ) * n ^ 2 + n ^ 3) = 127 * 1 * ((N : ℝ) * n ^ 2 + n ^ 3) := by ring
+      _ ≤ 127 * ((P0.r : ℝ) + 1) ^ 3 * ((N : ℝ) * n ^ 2 + n ^ 3) :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h1 (by norm_num)) hbr
   have h3 : 2 * ((P0.k : ℝ) + ((P0.r - (j : ℕ) : ℕ) : ℝ)) * (((P0.r - (j : ℕ) : ℕ) : ℝ) + 1) ≤ 2 * n * n := by
     have a1 : (P0.k : ℝ) + ((P0.r - (j : ℕ) : ℕ) : ℝ) ≤ n := by rw [hnc]; linarith
     have a2 : ((P0.r - (j : ℕ) : ℕ) : ℝ) + 1 ≤ n := by rw [hnc]; linarith
-    nlinarith
+    exact mul_le_mul (mul_le_mul_of_nonneg_left a1 (by norm_num)) a2 (by linarith) (by positivity)
   have h4 : 2 * n * n + 1 + 2 * N ≤ 127 * ((N : ℝ) * n ^ 2 + n ^ 3) := by
-    have b1 : n * n ≤ n ^ 3 := by nlinarith
+    have b1 : n * n ≤ n ^ 3 := by
+      calc n * n = n ^ 2 := by ring
+        _ ≤ n ^ 3 := pow_le_pow_right₀ hn1 (by norm_num)
     have b2 : (N : ℝ) ≤ N * n ^ 2 := le_mul_of_one_le_right hN0 (one_le_pow₀ hn1)
-    nlinarith
+    have b3 : 1 ≤ n ^ 3 := one_le_pow₀ hn1
+    linarith
   linarith
 
 theorem pd_thr_mm (P0 : M.Par) (j : Fin (P0.r + 1)) (N mm : ℕ) (hmm : P5.mmUser P0 N ≤ mm) :
@@ -3231,7 +3240,7 @@ theorem pd_thr_mm (P0 : M.Par) (j : Fin (P0.r + 1)) (N mm : ℕ) (hmm : P5.mmUse
     Nat.mul_le_mul_right _ (by omega)
   have h2 : (2 * P0.r + P0.k + 1) * N ≤ 3 * (P0.r + 1) * (N + 2) * (2 * P0.r + P0.k + 1) := by
     have : (2 * P0.r + P0.k + 1) * N ≤ (2 * P0.r + P0.k + 1) * (3 * (P0.r + 1) * (N + 2)) :=
-      Nat.mul_le_mul_left _ (by nlinarith)
+      Nat.mul_le_mul_left _ (Nat.le_trans (by omega) (Nat.le_mul_of_pos_left (N + 2) (by omega)))
     linarith [Nat.mul_comm (2 * P0.r + P0.k + 1) (3 * (P0.r + 1) * (N + 2))]
   omega
 

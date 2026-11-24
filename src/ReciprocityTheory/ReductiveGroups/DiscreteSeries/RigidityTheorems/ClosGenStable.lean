@@ -64,13 +64,16 @@ theorem closGen_stable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ
     ∀ g ∈ UJset ε, ∀ x ∈ closGen E V, σ g x ∈ closGen E V :=
   closure_genSub_stable hσ hD hV.1 hV.2.1 hc
 
-theorem rigid_irred {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-    {ε : Fin n → Bool} {lam : Fin n → ℝ} (hgap : StdGap ε lam)
+private theorem rigid_irred_of_multiplicity_one {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    {ε : Fin n → Bool} {lam : Fin n → ℝ}
     {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ)
     {D : Submodule ℂ H} {E : Fin n → Fin n → Module.End ℂ D} (hD : IsDerivedOn ε σ D E)
     {V : Submodule ℂ D} (hV : IsKIrrHW ε E (lowK ε lam) V)
-    (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
     (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v)
+    (hMultiplicityOne : ∀ (j' : V →ₗ[ℂ] H),
+      (∀ k ∈ Kset ε, ∀ v w : V, ((w : D) : H) = σ k ((v : D) : H) → j' w = σ k (j' v)) →
+      (∀ v : V, j' v ∈ closGen E V) →
+      (∀ v v' : V, inner ℂ (j' v') ((v : D) : H) = 0) → j' = 0)
     (S : Submodule ℂ H) (hS : S ≤ closGen E V) (hSc : IsClosed (S : Set H))
     (hSG : ∀ g ∈ UJset ε, ∀ x ∈ S, σ g x ∈ S) :
     S = ⊥ ∨ S = closGen E V := by
@@ -106,7 +109,7 @@ theorem rigid_irred {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
       (((ContinuousLinearMap.id ℂ H - Q).comp P).toLinearMap).comp (D.subtype.comp V.subtype)
     have hj'v : ∀ v : V, j' v = P ((v : D) : H) - Q (P ((v : D) : H)) := fun v => rfl
     have hj'0 : j' = 0 := by
-      refine rigid_multOne hgap hσ hD hV hc hVK j' ?_ ?_ ?_
+      refine hMultiplicityOne j' ?_ ?_ ?_
       · intro k hk v w hvw
         have hkU := UnitaryGroupOfForm.K_mem_UJ hk
         rw [hj'v, hj'v, hvw, UnitaryGroupOfForm.proj_comm S (σ k) (hSG k hkU) (hSo k hkU),
@@ -144,5 +147,18 @@ theorem rigid_irred {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
         (fun v hv => (show v ∈ S' by rw [hV']; exact hv).2)
     rw [eq_bot_iff, ← Submodule.inf_orthogonal_eq_bot S]
     exact le_inf le_rfl (hS.trans hle)
+
+theorem rigid_irred {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    {ε : Fin n → Bool} {lam : Fin n → ℝ} (hgap : StdGap ε lam)
+    {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ)
+    {D : Submodule ℂ H} {E : Fin n → Fin n → Module.End ℂ D} (hD : IsDerivedOn ε σ D E)
+    {V : Submodule ℂ D} (hV : IsKIrrHW ε E (lowK ε lam) V)
+    (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
+    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v)
+    (S : Submodule ℂ H) (hS : S ≤ closGen E V) (hSc : IsClosed (S : Set H))
+    (hSG : ∀ g ∈ UJset ε, ∀ x ∈ S, σ g x ∈ S) :
+    S = ⊥ ∨ S = closGen E V := by
+  exact rigid_irred_of_multiplicity_one hσ hD hV hVK
+    (rigid_multOne hgap hσ hD hV hc hVK) S hS hSc hSG
 
 end ReciprocityTheory.ChartRestriction.DS

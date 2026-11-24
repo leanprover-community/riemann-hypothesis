@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.IndefiniteReal.FockTheta.RealPlaceImaginaryGeneratorReEqZero
 public import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -57,26 +58,7 @@ variable {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
 
 theorem thetaO_add {f g : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) (hg : IsThetaFunO ψ S T g) :
     IsThetaFunO ψ S T (f + g) := by
-
-  obtain ⟨U1, hU1, h1⟩ := hf.level
-  obtain ⟨U2, hU2, h2⟩ := hg.level
-  constructor
-  · intro γ w
-    simp only [Pi.add_apply, hf.quasi, hg.quasi]
-    ring
-  · refine ⟨U1 ⊓ U2, ?_, fun u hu hfin => ?_⟩
-    · first
-      | exact hU1.inter hU2
-      | simpa using hU1.inter hU2
-    · have hu' : u ∈ U1 ∧ u ∈ U2 := by simpa using hu
-      funext x
-      have e1x := congrFun (h1 u hu'.1 hfin) x
-      have e2x := congrFun (h2 u hu'.2 hfin) x
-      simp only [heisO, Pi.add_apply] at e1x e2x ⊢
-      rw [mul_add, e1x, e2x]
-  · exact hf.cont.add hg.cont
-  · intro k L hL hfin w
-    exact (hf.smooth k L hL hfin w).add (hg.smooth k L hL hfin w)
+  apply Formalism.IndefR.Fock.CCR.theta_add <;> assumption
 
 theorem thetaO_smul {f : WO S T → ℂ} (c : ℂ) (hf : IsThetaFunO ψ S T f) : IsThetaFunO ψ S T (c • f) := by
 

@@ -70,8 +70,8 @@ theorem latOfLam : LatOfLamSt := by
       have h2 := (le_div_iff₀ hpos).mp h1
       show -((Fintype.card (B.KO →+* ℂ) : ℝ) * _) ≤ ∑ σ : B.KO →+* ℂ, Real.log (B.supN j ka σ f)
       linarith
-  have hUD := discriminant_of_product_lower B.KO (B.Cusp j ka) Nf (B.Mlat j ka) _ hPL
-  have hFG := formalGroup_of_discriminant B.KO (B.Cusp j ka) Nf (B.Mlat j ka) hUD
+  have hUD := _root_.PI.UnitaryGroupMassFormula.TBDisc.discOfProdLower B.KO (B.Cusp j ka) Nf (B.Mlat j ka) _ hPL
+  have hFG := _root_.PI.UnitaryGroupMassFormula.TBDisc.fGOfDisc B.KO (B.Cusp j ka) Nf (B.Mlat j ka) hUD
   exact Submodule.IsLattice.of_fg B.KO hFG
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

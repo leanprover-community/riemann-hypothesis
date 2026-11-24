@@ -55,9 +55,7 @@ namespace PLC
 
 variable {e : ℕ} {X : Type} [TopologicalSpace X]
 
-theorem continuous_of_smooth (A : FinHolAtlas e X) {f : X → ℝ} (hf : A.Smooth f) :
-    Continuous f := by
-  exact st_smooth_continuous A hf
+alias continuous_of_smooth := _root_.ReciprocityTheory.AnForm.M.st_smooth_continuous
 
 theorem locDens_congr_phi (A : FinHolAtlas e X) (Φ Ψ : Fin e → LocPot X)
     (h : ∀ i a b, (Φ i).φ a b = (Ψ i).φ a b) (j : Fin A.n) (y : Fin e → ℂ) :

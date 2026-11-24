@@ -82,20 +82,13 @@ theorem recPJ_vAt_inc (j : ℕ) (hj : InR D j) (la : HeightOneSpectrum (𝓞 T.Q
   · change vAtV y ((AddMonoidAlgebra.single (deg w) F.1).coeff (deg w)) = _
     first
       | simp [AddMonoidAlgebra.coeff_single]
-      | simp [AddMonoidAlgebra.single_apply]
-      | simp [Finsupp.single_apply]
-      | exact (0 : Nat)
   · change _ ≤ vAtV y ((AddMonoidAlgebra.single (deg w) F.1).coeff m)
     by_cases hm : deg w = m
     · subst hm
       first
         | simp [AddMonoidAlgebra.coeff_single]
-        | simp [AddMonoidAlgebra.single_apply]
-        | simp [Finsupp.single_apply]
     · first
         | simp [AddMonoidAlgebra.coeff_single, hm]
-        | simp [AddMonoidAlgebra.single_apply, hm]
-        | simp [Finsupp.single_apply, hm]
       rw [(isVal_vAt y).zero]
       exact le_top
 

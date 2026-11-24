@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetModuleInStagesRefinedBlocks
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -77,25 +78,7 @@ variable {R : Type} [CommRing R] {α β n : Type} {m : α → Type} {m' : β →
 
 theorem mem_unipRad_iff_entries {e : (Σ a, m a) ≃ n} {g : GL n R} :
     g ∈ unipRad R e ↔ ∀ i j, ¬ blk e i < blk e j → (g : Matrix n n R) i j = (1 : Matrix n n R) i j := by
-  rw [mem_unipRad]
-  constructor
-  · rintro ⟨h1, h2⟩ i j hij
-    rcases (not_lt.1 hij).lt_or_eq with h | h
-    · rw [mem_parab.1 h1 i j h, Matrix.one_apply_ne]
-      rintro rfl
-      exact lt_irrefl _ h
-    · obtain ⟨⟨a, i⟩, rfl⟩ := e.surjective i
-      obtain ⟨⟨b, j⟩, rfl⟩ := e.surjective j
-      obtain rfl : b = a := by simpa using h
-      rw [h2]
-      simp [Matrix.one_apply]
-  · intro h
-    refine ⟨mem_parab.2 fun i j hij => ?_, fun a i j => ?_⟩
-    · rw [h i j hij.not_gt, Matrix.one_apply_ne]
-      rintro rfl
-      exact lt_irrefl _ hij
-    · rw [h _ _ (by simp)]
-      simp [Matrix.one_apply]
+  apply GlobalTheory.JacStagesProof.mem_unipRad_iff_entries' <;> assumption
 
 theorem unipRad_ne_bot_iff [Nontrivial R] {e : (Σ a, m a) ≃ n} :
     unipRad R e ≠ ⊥ ↔ ∃ i j, blk e i < blk e j := by

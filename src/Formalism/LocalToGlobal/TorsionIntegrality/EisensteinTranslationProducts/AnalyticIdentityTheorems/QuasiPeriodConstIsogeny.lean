@@ -116,9 +116,6 @@ lemma hasDerivAt_psi (hP : IsogenyP) (hd : ZetaHasDeriv) (L : PeriodPair) (α : 
       exact (hd L (z + P) hPz).comp_add_const z P
     first
       | exact HasDerivAt.fun_sum hC'
-      | (have h5 := HasDerivAt.sum hC'
-         rw [Finset.sum_fn] at h5
-         exact h5)
   have hD : HasDerivAt (fun w => (∑ P ∈ S, L.weierstrassP P) * w) ((∑ P ∈ S, L.weierstrassP P) * 1) z :=
     (hasDerivAt_id' z).const_mul _
   have hall := ((hA.sub hB).sub hC).sub hD
@@ -128,8 +125,6 @@ lemma hasDerivAt_psi (hP : IsogenyP) (hd : ZetaHasDeriv) (L : PeriodPair) (α : 
   first
     | (refine hall.congr_deriv ?_
        linear_combination -hiso)
-    | (convert hall using 1
-       linear_combination hiso)
 
 lemma psi_const (hP : IsogenyP) (hd : ZetaHasDeriv) (L : PeriodPair) (α : ℂ) (S : Finset ℂ)
     (hα : α ≠ 0) (hst : MulStable L α) (hS : IsKerReps L α S) {x y : ℂ}

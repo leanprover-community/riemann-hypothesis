@@ -45,6 +45,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
+import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.FlatImageOfOverFractionFieldOfValuationRing
 
 @[expose] public section
 
@@ -391,35 +392,7 @@ private theorem ker_app_eq_map_ker_of_isPullback_of_flat {Z X X' Z' : Scheme.{u}
 theorem ker_eq_comap_ker_of_isPullback_of_flat {Z X X' Z' : Scheme.{u}} {h : Z ⟶ X} {g : X' ⟶ X}
     {g' : Z' ⟶ Z} {h' : Z' ⟶ X'} (H : IsPullback g' h' h g)
     [QuasiCompact h] [QuasiCompact h'] [AlgebraicGeometry.Flat g] :
-    h'.ker = h.ker.comap g := by
-  classical
-  apply Scheme.IdealSheafData.ext
-  funext V
-  set s : Set Γ(X', (V : X'.Opens)) :=
-    {f | ∃ U : X.affineOpens, X'.basicOpen f ≤ g ⁻¹ᵁ (U : X.Opens)} with hsdef
-  have hs : ∀ f ∈ s, h'.ker.ideal (X'.affineBasicOpen f)
-      = (h.ker.comap g).ideal (X'.affineBasicOpen f) := by
-    rintro f ⟨U, hU⟩
-    have hV' : ((X'.affineBasicOpen f : X'.affineOpens) : X'.Opens) ≤ g ⁻¹ᵁ (U : X.Opens) := hU
-    rw [AlgebraicGeometry.Scheme.IdealSheafData.comap_ideal_eq_map_appLE h.ker g U
-      (X'.affineBasicOpen f) hV', Scheme.Hom.ker_apply, Scheme.Hom.ker_apply]
-    exact ker_app_eq_map_ker_of_isPullback_of_flat H U (X'.affineBasicOpen f) hV'
-  have hspan : Ideal.span s = ⊤ := by
-    refine span_eq_top_of_le_iSup_basicOpen V s ?_
-    intro x hx
-    obtain ⟨y, hy⟩ := X.affineCover.covers (g.base x)
-    have hUaff : IsAffineOpen (X.affineCover.f (X.affineCover.idx (g.base x))).opensRange :=
-      isAffineOpen_opensRange _
-    have hgx : g.base x ∈ (X.affineCover.f (X.affineCover.idx (g.base x))).opensRange := ⟨y, hy⟩
-    have hx2 : x ∈ ((V : X'.Opens) ⊓
-        g ⁻¹ᵁ (X.affineCover.f (X.affineCover.idx (g.base x))).opensRange) := ⟨hx, hgx⟩
-    obtain ⟨f, hfle, hxf⟩ := V.2.exists_basicOpen_le
-      (V := (V : X'.Opens) ⊓ g ⁻¹ᵁ (X.affineCover.f (X.affineCover.idx (g.base x))).opensRange)
-      ⟨x, hx2⟩ hx
-    have hfs : f ∈ s :=
-      ⟨⟨(X.affineCover.f (X.affineCover.idx (g.base x))).opensRange, hUaff⟩,
-        le_trans hfle inf_le_right⟩
-    exact TopologicalSpace.Opens.mem_iSup.mpr ⟨⟨f, hfs⟩, hxf⟩
-  exact ideal_eq_of_ideal_affineBasicOpen_eq _ _ V s hspan hs
+    h'.ker = h.ker.comap g :=
+  GlobalTheory.ker_eq_comap_of_flat h H.flip
 
 end FunctorialResolution.EmbeddedResolution

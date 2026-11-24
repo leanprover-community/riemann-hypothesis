@@ -237,13 +237,11 @@ theorem selfDual_of_between : ∀ (V : Type) [AddCommGroup V] [TopologicalSpace 
   intro V _ _ _ _ _ χ μ hμ hs hn ha L₁ L L₂ h1 h2 oL₁ cL₂ cP₁ oP₂ dd₁ dd₂ _ m₂
   let Q : AddSubgroup V → AddSubgroup V := perpSub χ hs hn ha
   have hQ : ∀ (A : AddSubgroup V) (y : V), y ∈ Q A ↔ ∀ x ∈ A, χ x y = 1 := fun _ _ => Iff.rfl
-  have hQc : ∀ A : AddSubgroup V, (Q A : Set V) = perp χ A := fun _ => rfl
   have anti : ∀ A B : AddSubgroup V, A ≤ B → Q B ≤ Q A :=
     fun A B h y hy x hx => hy x (h hx)
   have hself : ∀ A : AddSubgroup V, A ≤ Q (Q A) := fun A x hx y hy => by
     rw [hs]
     exact hy x hx
-  have placeRankTwoOne : Q L₂ ≤ Q L₁ := anti _ _ (h1.trans h2)
   have P2 : Q L₂ ≤ Q L := anti _ _ h2
   have P1 : Q L ≤ Q L₁ := anti _ _ h1
   have LM : L ≤ Q (Q L) := hself L

@@ -87,10 +87,6 @@ theorem vcGood_smul (T : Fin n → Fin n → Module.End ℂ U) (P : (Fin n → �
   refine ⟨ν, hP, fun a => ?_⟩
   rw [map_smul, hν a, smul_comm]
 
-theorem vc_exists_list {G : Set U} (hs : ∀ w ∈ G, ∀ c : ℂ, c • w ∈ G) {y : U}
-    (hy : y ∈ Submodule.span ℂ G) : ∃ l : List U, (∀ w ∈ l, w ∈ G) ∧ y = l.sum := by
-  first | exact Bl.SmulListSum.goal1 .. | (apply Bl.SmulListSum.goal1 <;> assumption) | (intros; apply Bl.SmulListSum.goal1 <;> assumption)
-
 theorem vc_eq_zero_of_list (T : Fin n → Fin n → Module.End ℂ U) (P : (Fin n → ℝ) → Prop)
     {μ : Fin n → ℝ} (hμ : ¬ P μ) :
     ∀ (N : ℕ) (l : List U), l.length = N → (∀ w ∈ l, w ∈ vcGood T P) → ∀ x : U,
@@ -140,7 +136,7 @@ theorem vc_eq_zero_of_list (T : Fin n → Fin n → Module.End ℂ U) (P : (Fin 
 theorem vc_eq_zero_of_mem_span (T : Fin n → Fin n → Module.End ℂ U) (P : (Fin n → ℝ) → Prop)
     {μ : Fin n → ℝ} (hμ : ¬ P μ) {x : U} (hx : ∀ a, T a a x = ((μ a : ℝ) : ℂ) • x)
     (hxs : x ∈ Submodule.span ℂ (vcGood T P)) : x = 0 := by
-  obtain ⟨l, hl, e⟩ := vc_exists_list (fun w hw c => vcGood_smul T P hw c) hxs
+  obtain ⟨l, hl, e⟩ := _root_.Bl.SmulListSum.goal1 (fun w hw c => vcGood_smul T P hw c) hxs
   exact vc_eq_zero_of_list T P hμ l.length l rfl hl x hx e
 
 def vcMon (T : Fin n → Fin n → Module.End ℂ U) (v : U) : ℕ → Set U
@@ -225,8 +221,6 @@ theorem vcMon_weight (T : Fin n → Fin n → Module.End ℂ U) (hT : IsGlRep T)
       have e : (T c c * T a b - T a b * T c c) x = T c c (T a b x) - T a b (T c c x) := by
         first
           | rfl
-          | simp [LinearMap.sub_apply, Module.End.mul_apply]
-          | simp [LinearMap.sub_apply, LinearMap.mul_apply]
       rw [e, hxν c, map_smul] at hc
       simp only [root, Pi.add_apply, Pi.sub_apply, Pi.single_apply]
       by_cases h1 : c = a
@@ -319,8 +313,6 @@ theorem vc_genSub_le_mon (T : Fin n → Fin n → Module.End ℂ U) (hT : IsGlRe
       have e : (T a b * T c d - T c d * T a b) x = T a b (T c d x) - T c d (T a b x) := by
         first
           | rfl
-          | simp [LinearMap.sub_apply, Module.End.mul_apply]
-          | simp [LinearMap.sub_apply, LinearMap.mul_apply]
       rw [e, sub_eq_iff_eq_add] at hc
       rw [hc]
       refine Submodule.add_mem _ ?_ (hup c d hcd _ (ih a b x hx))

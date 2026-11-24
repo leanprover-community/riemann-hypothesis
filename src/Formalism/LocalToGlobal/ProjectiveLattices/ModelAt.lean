@@ -183,16 +183,16 @@ theorem goodAt_of_two_primes {g0 g1 : ℕ} (hM : l.M = g0 * g1) (h0 : g0.Prime) 
   rw [hM, Nat.factorization_mul h0.ne_zero h1.ne_zero, Finsupp.add_apply, h0.factorization, h1.factorization]
   by_cases e0 : p = g0
   · have e : (Finsupp.single g0 1 : ℕ →₀ ℕ) p + (Finsupp.single g1 1 : ℕ →₀ ℕ) p = 1 := by
-      simp [Finsupp.single_apply, e0, hne, hne.symm]
+      simp [e0, hne]
     rw [e, pow_one, e0, Nat.mul_div_cancel_left g1 h0.pos]
     exact t1
   · by_cases e1 : p = g1
     · have e : (Finsupp.single g0 1 : ℕ →₀ ℕ) p + (Finsupp.single g1 1 : ℕ →₀ ℕ) p = 1 := by
-        simp [Finsupp.single_apply, e1, hne, hne.symm]
+        simp [e1, hne.symm]
       rw [e, pow_one, e1, Nat.mul_div_cancel g0 h1.pos]
       exact t0
     · have e : (Finsupp.single g0 1 : ℕ →₀ ℕ) p + (Finsupp.single g1 1 : ℕ →₀ ℕ) p = 0 := by
-        simp [Finsupp.single_apply, e0, e1, Ne.symm e0, Ne.symm e1]
+        simp [e0, e1]
       rw [e, pow_zero, Nat.div_one]
       exact h3
 

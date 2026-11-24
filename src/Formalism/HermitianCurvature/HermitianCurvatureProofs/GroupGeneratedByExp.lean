@@ -130,7 +130,6 @@ theorem trotter (X Y : 𝔸) :
       (𝓝 (NormedSpace.exp (X + Y))) := by
   let _ : NormedAlgebra ℚ 𝔸 := NormedAlgebra.restrictScalars ℚ ℝ 𝔸
   set s : ℝ := ‖X‖ + ‖Y‖ with hs
-  have hs0 : 0 ≤ s := by positivity
   set F : ℝ → 𝔸 := fun t : ℝ =>
     NormedSpace.exp (t • X) * NormedSpace.exp (t • Y) - NormedSpace.exp (t • (X + Y)) with hF
   have hF0 : F 0 = 0 := by simp [hF, NormedSpace.exp_zero]
@@ -182,7 +181,6 @@ theorem trotterMx (N : ℕ) (X Y : Matrix (Fin N) (Fin N) ℂ) :
       (𝓝 (NormedSpace.exp (X + Y))) := by
   let _ := Matrix.linftyOpNormedRing (n := Fin N) (α := ℂ)
   let _ := Matrix.linftyOpNormedAlgebra (R := ℝ) (n := Fin N) (α := ℂ)
-  have hc : CompleteSpace (Matrix (Fin N) (Fin N) ℂ) := FiniteDimensional.complete ℝ _
   have h := trotter X Y
   simp only [Complex.coe_smul]
   exact h

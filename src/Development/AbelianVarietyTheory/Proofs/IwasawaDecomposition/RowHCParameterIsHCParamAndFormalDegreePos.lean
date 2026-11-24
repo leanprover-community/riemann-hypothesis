@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselGapDimensionFormula
 public import Development.AbelianVarietyTheory.Definitions.Foundations.CdScaleTieIff
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -115,22 +116,7 @@ theorem lamSH_isHCParam (R : Ranks) (P : HCParam R) : Formalism.QuantumDetermina
 
 theorem fdegHC_pos_of_injective {n : ℕ} (lam : Fin n → ℝ) (hlam : Function.Injective lam) :
     0 < Formalism.QuantumDeterminants.fdegHC lam := by
-  unfold Formalism.QuantumDeterminants.fdegHC
-  apply div_pos
-  · apply Finset.prod_pos
-    intro a _
-    apply Finset.prod_pos
-    intro b hb
-    rw [Finset.mem_filter] at hb
-    exact abs_pos.mpr (sub_ne_zero.mpr fun h => hb.2.ne (hlam h))
-  · apply Finset.prod_pos
-    intro a _
-    apply Finset.prod_pos
-    intro b hb
-    rw [Finset.mem_filter] at hb
-    have h1 : (a : ℕ) < b := hb.2
-    have h2 : ((a : ℕ) : ℝ) < ((b : ℕ) : ℝ) := by exact_mod_cast h1
-    linarith
+  apply GlobalTheory.BesselNorm.fdegHC_pos <;> assumption
 
 theorem lamSH_isHCParam_and_trueDsig_pos :
     ∀ (R : Ranks) (P : HCParam R), Formalism.QuantumDeterminants.IsHCParam (lamSH R P) ∧ 0 < trueDsig R P := by

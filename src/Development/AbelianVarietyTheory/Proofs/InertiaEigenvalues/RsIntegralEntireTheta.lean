@@ -3,10 +3,11 @@ module
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DecaysOfMemSmoothSpan
 public import GroundTheory.AutomorphicForms.FourierWhittaker.PartialCoeffDiagonalBlockGLEqVecCoeff
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixAdelic
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfMemWeakIn
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeAdelicMatrixIntegralTranslate
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemContraIff
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SchwartzBruhatIntegrableMomentsStatement
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.DifferentiableAtChart
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SchwartzBruhatIntegrableMoments
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfMemWeakIn
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
 import GroundTheory.AutomorphicForms.ReductionMeasure
 import Mathlib.Algebra.Order.Floor.Extended
@@ -195,7 +196,7 @@ omit [_root_.NumberField.IsTotallyComplex E] in
 theorem blockGL_col {R : Type} [CommRing R] (hmn : m < n) (h : GL (Fin m) R) {l : Fin n} (hl : l.val = m)
     (i : Fin n) : (blockGL hmn.le h : Matrix (Fin n) (Fin n) R) i l = (1 : Matrix (Fin n) (Fin n) R) i l := by
   rw [coe_blockGL, blockMat_apply, Matrix.one_apply]
-  split_ifs with h1 h2 h3 <;> first | rfl | omega | (subst h3; omega)
+  split_ifs with h1 h2 h3 <;> first | rfl | omega
 
 omit [_root_.NumberField.IsTotallyComplex E] in
 theorem det_colGL {R : Type} [CommRing R] (k : ℕ) (y : Fin k → R) :
@@ -348,7 +349,7 @@ theorem norm_le_of_inS (hmn : m < n) {φ : GA E n → ℂ} (hφ : φ ∈ goodFns
   have hw : (fun t => pFin E (w t)) = Φ fun i => pFin E (x i) := by
     funext t
     simp only [w, Φ, colGL, coe_uGL, uMat_apply, colX_apply]
-    split_ifs <;> first | (simp; done) | (exfalso; simp only [Fin.lt_def] at *; omega) | (simp only [Fin.lt_def] at *; omega)
+    split_ifs <;> first | (simp; done) | (exfalso; simp only [Fin.lt_def] at *; omega)
   have b2 := h₂ (invT n (Ad E) (g * u)) 1 rfl _ hne2 (by rw [hcol, hw]; exact ⟨_, hx, rfl⟩)
   rw [mul_one, hcol] at b2
   change ‖φ (invT n (Ad E) (invT n (Ad E) (g * u)))‖ ≤ C₂ * (_ / detAbs (invT n (Ad E) (g * u))) ^ N at b2
@@ -419,7 +420,7 @@ theorem continuous_colSmooth {F : (Fin m → Ad E) → ℂ} (hF : F ∈ GJMatrix
 theorem colSmooth_bound (hmn : m < n) {φ : GA E n → ℂ} (hφ : φ ∈ goodFns n) {F : (Fin m → Ad E) → ℂ}
     (hF : F ∈ GJMatrix.schwartzBruhatPi (K := E) (ι := Fin m)) (N : ℕ) :
     ∃ C : ℝ, ∀ g, InS m g → ‖colSmooth m F φ g‖ ≤ C * (min (detAbs g) (detAbs g)⁻¹) ^ N := by
-  obtain ⟨⟨L, hL, hsupp⟩, hint⟩ := GlobalTheory.T.schwartz_bruhat_integrable_moments E m F hF
+  obtain ⟨⟨L, hL, hsupp⟩, hint⟩ := _root_.GlobalTheory.SchwartzBruhatMoments.compactSupport_and_integrable_moments E m F hF
   obtain ⟨C, hC0, hC⟩ := norm_le_of_inS hmn hφ hL N
   set k := n * Module.finrank ℚ E * N
   refine ⟨C * ∫ x, ‖F x‖ * (1 + ‖fun i => pInf E (x i)‖) ^ k ∂GJMatrix.adeleMeasurePi E, fun g hg => ?_⟩

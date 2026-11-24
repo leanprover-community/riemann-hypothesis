@@ -79,7 +79,7 @@ theorem jetAug_mk {ι : Type} (q : MvPolynomial ι V) :
 private lemma snd_tan_lemma (c x : V) : (algebraMap V (DualNumber V) c + x • DualNumber.eps).snd = x := by
   rw [TrivSqZeroExt.snd_add, TrivSqZeroExt.snd_smul, DualNumber.snd_eps, smul_eq_mul, mul_one]
   have h0 : (algebraMap V (DualNumber V) c).snd = 0 := by
-    first | rfl | simp [TrivSqZeroExt.algebraMap_eq_inl] | exact TrivSqZeroExt.snd_inl _ _
+    first | rfl
   rw [h0, zero_add]
 
 theorem snd_lin (φ : Jet V (Fin 1 × Fin d) 1 →ₐ[V] DualNumber V) (hφ : ∀ w, (φ w).fst = jetAug w)
@@ -91,7 +91,7 @@ theorem snd_lin (φ : Jet V (Fin 1 × Fin d) 1 →ₐ[V] DualNumber V) (hφ : �
     have h1 : (Ideal.Quotient.mk _ (C a) : Jet V (Fin 1 × Fin d) 1) = algebraMap V _ a := rfl
     have h2 : (φ (Ideal.Quotient.mk _ (C a))).snd = 0 := by
       rw [h1, AlgHom.commutes]
-      first | rfl | simp [TrivSqZeroExt.algebraMap_eq_inl] | exact TrivSqZeroExt.snd_inl _ _
+      first | rfl
     rw [h2]
     have hne : ∀ c : Fin d, (0 : Fin 1 × Fin d →₀ ℕ) ≠ Finsupp.single ((0 : Fin 1), c) 1 :=
       fun c => (Finsupp.single_ne_zero.2 one_ne_zero).symm

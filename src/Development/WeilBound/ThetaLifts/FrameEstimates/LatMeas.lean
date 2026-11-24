@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.RLLines
 public import Development.WeilBound.ThetaLifts.FrameEstimates.SquareIntegrableWeilRange
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -100,28 +101,7 @@ theorem ring_AE : IsTopologicalRing (AE F E) := by
 
 omit [NumberField E] in
 theorem continuous_piInf {w : InfinitePlace F} (τ : EmbOver E w) : Continuous (piInf τ) := by
-  let φ : AF F →+* ℂ := (NumberField.InfinitePlace.Completion.extensionEmbedding w).comp
-    (GlobalTheory.AdelicU.evInf F w).toRingHom
-  have hφ : Continuous φ :=
-    (NumberField.InfinitePlace.Completion.isometry_extensionEmbedding w).continuous.comp
-      ((continuous_apply w).comp continuous_fst)
-  letI : Module (AF F) ℂ := Module.compHom ℂ φ
-  haveI : ContinuousSMul (AF F) ℂ := ⟨(hφ.comp continuous_fst).mul continuous_snd⟩
-  have hpt : ∀ (b : AF F) (e : E), piInf τ (b ⊗ₜ[F] e) = φ b * (τ.1 e) := fun b e => rfl
-  let Lm : AE F E →ₗ[AF F] ℂ :=
-    { toFun := piInf τ
-      map_add' := map_add _
-      map_smul' := by
-        intro a x
-        induction x using TensorProduct.induction_on with
-        | zero => simp
-        | tmul b e =>
-          rw [TensorProduct.smul_tmul', hpt, hpt, smul_eq_mul, map_mul]
-          show φ a * φ b * τ.1 e = φ a * (φ b * τ.1 e)
-          ring
-        | add x y hx hy =>
-          rw [smul_add, map_add (f := _), hx, hy, map_add (f := _), smul_add] }
-  exact IsModuleTopology.continuous_of_linearMap Lm
+  apply PositivityTheory.RL.continuous_piInf <;> assumption
 
 variable {n d : ℕ}
 

@@ -205,7 +205,7 @@ theorem genus_one_datum_exists (hInv : Formalism.L2.KerInert.Sigma.InvAlg) : For
 
   have hδ : δ ≠ 0 := by
     intro h0
-    obtain ⟨⟨L1, hL1⟩, -⟩ := Formalism.L2.Th1.F2.lamOfLat D cc 1 hcc one_ne_zero
+    obtain ⟨⟨L1, hL1⟩, -⟩ := _root_.Formalism.L2.Th1.F2.lambda_of_lattice_holds D cc 1 hcc one_ne_zero
     obtain ⟨e2, e3⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.g2_g3_eq_periodPair _ L1 (congrArg (fun A : AddSubgroup ℂ => (A : Set ℂ)) hL1)
     have hd := Formalism.L2.Th1.F.discNeZero L1
     apply hd
@@ -214,12 +214,12 @@ theorem genus_one_datum_exists (hInv : Formalism.L2.KerInert.Sigma.InvAlg) : For
     rw [h0, e2, e3] at h12
     rw [← h12]; norm_num
 
-  obtain ⟨⟨L, hL⟩, hCM⟩ := Formalism.L2.Th1.F2.lamOfLat D cc δ hcc hδ
+  obtain ⟨⟨L, hL⟩, hCM⟩ := _root_.Formalism.L2.Th1.F2.lambda_of_lattice_holds D cc δ hcc hδ
   obtain ⟨hg2, hg3⟩ := hInv D cc δ hcurve hδ12 L hL
   obtain ⟨e2, e3⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.g2_g3_eq_periodPair _ L (congrArg (fun A : AddSubgroup ℂ => (A : Set ℂ)) hL)
   set a2 : Formalism.MainNotions.TaylorLogMetric.Qbar := ⟨L.g₂, hg2⟩ with ha2
   set a3 : Formalism.MainNotions.TaylorLogMetric.Qbar := ⟨L.g₃, hg3⟩ with ha3
-  obtain ⟨ι, hι⟩ := Formalism.L2.KerInert.lamExt p lam
+  obtain ⟨ι, hι⟩ := _root_.Formalism.L2.KerInert.lattice_extension p lam
 
   have hdp : D.host.d.Prime := D.host.hyp.2.1
   have hd4 : D.host.d % 4 = 3 := by have := D.host.hyp.2.2.2.1; omega

@@ -67,9 +67,6 @@ theorem bigCell_of (hLU : LUStatement (E := E)) : BigCellStatement (E := E) := b
       intro τ
       first
       | exact continuous_apply τ
-      | (unfold mat; exact continuous_apply τ)
-      | fun_prop
-      | continuity
     have hgram : ∀ τ : X.Ψ, Continuous fun x : Frame X.Ψ r => gram τ.1 X.Gm (mat x τ) := by
       intro τ
       refine continuous_matrix fun a b => ?_
@@ -77,7 +74,6 @@ theorem bigCell_of (hLU : LUStatement (E := E)) : BigCellStatement (E := E) := b
       have h := hmat τ
       first
       | fun_prop
-      | continuity
     have hdet : ∀ τ : X.Ψ, Continuous fun x : Frame X.Ψ r => (mat x τ).det :=
       fun τ => (hmat τ).matrix_det
     have hmin : ∀ τ : X.Ψ, ∀ i : Fin (r + 1), Continuous fun x : Frame X.Ψ r => (dmin X.Gm x τ i).re := by

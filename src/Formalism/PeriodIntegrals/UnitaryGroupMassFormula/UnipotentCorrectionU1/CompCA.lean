@@ -79,15 +79,11 @@ lemma Dx_fd (x : Bool × Mat k r) {f : Mat k r → ℂ} (hf : Differentiable ℝ
 lemma sm_diff {f : Mat k r → ℂ} (hf : ContDiff ℝ ∞ f) : Differentiable ℝ f := by
   first
   | exact hf.differentiable (by simp)
-  | exact hf.differentiable le_top
-  | exact hf.differentiable (by norm_num)
 
 lemma sm_Dx (x : Bool × Mat k r) {f : Mat k r → ℂ} (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (Dx x f) := by
   rw [Dx_fd x (sm_diff hf)]
   first
   | exact (hf.fderiv_right (m := ∞) le_rfl).clm_apply (dirL x).contDiff
-  | exact (hf.fderiv_right (m := ∞) (by simp)).clm_apply (dirL x).contDiff
-  | exact (hf.fderiv_right (m := ∞) (by norm_num)).clm_apply (dirL x).contDiff
 
 lemma sm_Dw (w : List (Bool × Mat k r)) {f : Mat k r → ℂ} (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (Dw w f) := by
   induction w with
@@ -182,13 +178,11 @@ lemma norm_reC (z : ℂ) : ‖reC z‖ ≤ ‖z‖ := by
   rw [reC_apply, Complex.norm_real, Real.norm_eq_abs]
   first
   | exact Complex.abs_re_le_norm z
-  | exact Complex.abs_re_le_abs z
 
 lemma norm_imC (z : ℂ) : ‖imC z‖ ≤ ‖z‖ := by
   rw [imC_apply, Complex.norm_real, Real.norm_eq_abs]
   first
   | exact Complex.abs_im_le_norm z
-  | exact Complex.abs_im_le_abs z
 
 lemma clm_split (L : ℂ →L[ℝ] ℂ) (d : ℂ) : L d = L 1 * reC d + L Complex.I * imC d := by
   have h : d = (d.re : ℝ) • (1 : ℂ) + (d.im : ℝ) • Complex.I := by
@@ -206,8 +200,6 @@ lemma Dx_comp (x : Bool × Mat k r) {χ : ℂ → ℂ} {ψ : Mat k r → ℂ} (h
   have hχd : Differentiable ℝ χ := by
     first
     | exact hχ.differentiable (by simp)
-    | exact hχ.differentiable le_top
-    | exact hχ.differentiable (by norm_num)
   have h1 := hasDx x (sm_diff hψ) g
   have h2 : HasFDerivAt χ (fderiv ℝ χ (ψ g)) (ψ (crv x g 0)) := by
     rw [h0]; exact (hχd (ψ g)).hasFDerivAt
@@ -219,7 +211,5 @@ lemma Dx_comp (x : Bool × Mat k r) {χ : ℂ → ℂ} {ψ : Mat k r → ℂ} (h
 lemma sm_fd {χ : ℂ → ℂ} (hχ : ContDiff ℝ ∞ χ) (v : ℂ) : ContDiff ℝ ∞ (fun z => fderiv ℝ χ z v) := by
   first
   | exact (hχ.fderiv_right (m := ∞) le_rfl).clm_apply contDiff_const
-  | exact (hχ.fderiv_right (m := ∞) (by simp)).clm_apply contDiff_const
-  | exact (hχ.fderiv_right (m := ∞) (by norm_num)).clm_apply contDiff_const
 
 end PI.UnitaryCorollaryDerivatives.CCA

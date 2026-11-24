@@ -140,7 +140,6 @@ theorem intAf_le_congSub (n : ℤ) (hn : n ≠ 0) : IntAf F E ≤ congSub n := b
       have hcoe : ((algebraMap (𝓞 F) (𝓞 E) b : 𝓞 E) : E) = algebraMap F E (b : F) := by
         first
         | rfl
-        | simp [RingOfIntegers.coe_eq_algebraMap, ← IsScalarTower.algebraMap_apply]
       rw [hcoe]
       simp only [Formalism.UG.inclE, Algebra.TensorProduct.includeLeftRingHom_apply]
       rw [Algebra.algebraMap_eq_smul_one, Algebra.algebraMap_eq_smul_one, TensorProduct.smul_tmul]
@@ -148,7 +147,6 @@ theorem intAf_le_congSub (n : ℤ) (hn : n ≠ 0) : IntAf F E ≤ congSub n := b
       rw [← Algebra.TensorProduct.includeRight_apply, map_intCast]
     refine ⟨algebraMap (𝓞 F) (𝓞 E) b, (1 : E) ⊗ₜ[F] c', one_tmul_mem c' hc'int, ?_⟩
     rw [hB, hn', Algebra.TensorProduct.tmul_mul_tmul, one_mul, key, ← TensorProduct.tmul_add]
-    congr 1
     abel
 
 private lemma sum_embedding_eq_trace_of_totallyReal {K : Type} [Field K] [NumberField K]
@@ -183,7 +181,6 @@ private lemma sum_phi_add_star_eq_trace (I : AutInst) (z : I.E) :
     have e1 : Algebra.trace I.F I.E (star z) = Algebra.trace I.F I.E z := by
       first
       | exact Algebra.trace_eq_of_algEquiv e z
-      | exact (Algebra.trace_eq_of_algEquiv e z).symm
     have e2 : Algebra.trace I.F I.E (z + star z) = 2 • a := by
       rw [← ha, Algebra.trace_algebraMap, I.cm.deg2]
     rw [map_add (f := _), e1, two_nsmul] at e2

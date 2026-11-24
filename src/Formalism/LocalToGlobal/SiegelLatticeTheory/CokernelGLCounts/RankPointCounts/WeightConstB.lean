@@ -73,7 +73,7 @@ theorem eSum_arith (s n : ℕ) (h1 : 1 ≤ s) (h2 : s ≤ n) :
   have e2 : k + 1 + m - 1 = k + m := by omega
   rw [e0, e1, e2]
   rcases m with _ | m
-  · simp only [Nat.zero_sub, mul_zero, zero_mul, add_zero]
+  · simp only [Nat.zero_sub, mul_zero, add_zero]
     ring
   · rw [show m + 1 - 1 = m by omega]
     ring

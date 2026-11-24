@@ -73,7 +73,6 @@ lemma app_res {V₁ V₂ : B.Opens} (h : V₁ ≤ V₂) (c : Γ(B, V₂)) :
   have h2 := congrArg (fun f => f.hom c) (q.naturality (homOfLE h).op)
   first
   | exact h2.symm
-  | simpa using h2.symm
 
 lemma res_res {Y : Scheme.{0}} {U₁ U₂ U₃ : Y.Opens} (h₁ : U₁ ≤ U₂) (h₂ : U₂ ≤ U₃) (s : Γ(Y, U₃)) :
     (Y.presheaf.map (homOfLE h₁).op).hom ((Y.presheaf.map (homOfLE h₂).op).hom s) =
@@ -81,7 +80,6 @@ lemma res_res {Y : Scheme.{0}} {U₁ U₂ U₃ : Y.Opens} (h₁ : U₁ ≤ U₂)
   have h2 := congrArg (fun f => f.hom s) (Y.presheaf.map_comp (homOfLE h₂).op (homOfLE h₁).op)
   first
   | exact h2.symm
-  | simpa using h2.symm
 
 variable (hnat : ∀ (V₁ V₂ : B.Opens) (h₁ : V₁ ≤ W) (h₂ : V₂ ≤ W) (h : V₁ ≤ V₂)
     (x : Multiplicative X),
@@ -93,9 +91,9 @@ lemma cm_nat {V₁ V₂ : B.Opens} (h₁ : V₁ ≤ W) (h₂ : V₂ ≤ W) (h : 
       (cm q φ V₁ h₁).comp (AddMonoidAlgebra.mapRingHom X (B.presheaf.map (homOfLE h).op).hom) := by
   apply AddMonoidAlgebra.ringHom_ext
   · intro r
-    simp [AddMonoidAlgebra.liftNC_single, app_res]
+    simp
   · intro x
-    simp [AddMonoidAlgebra.liftNC_single, hnat V₁ V₂ h₁ h₂ h]
+    simp [hnat V₁ V₂ h₁ h₂ h]
 
 include hnat in
 lemma cm_nat_apply {V₁ V₂ : B.Opens} (h₁ : V₁ ≤ W) (h₂ : V₂ ≤ W) (h : V₁ ≤ V₂)

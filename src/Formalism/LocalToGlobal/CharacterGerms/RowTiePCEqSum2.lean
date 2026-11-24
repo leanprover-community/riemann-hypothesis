@@ -90,7 +90,6 @@ theorem subst_lin {σ τ : Type} {a : σ → MvPowerSeries τ C} (ha : MvPowerSe
   refine Finset.sum_congr rfl (fun i _ => ?_)
   first
   | exact map_smul _ _ _
-  | exact AlgHom.map_smul_of_tower _ _ _
 
 theorem coeff_subst_tyS {τ : Type} [Finite τ] {l : ℕ} (hl : 2 ≤ l) {T : MvPowerSeries τ C}
     (hT : MvPowerSeries.constantCoeff T = 0) (a : ℕ → C) (μ : τ →₀ ℕ) :

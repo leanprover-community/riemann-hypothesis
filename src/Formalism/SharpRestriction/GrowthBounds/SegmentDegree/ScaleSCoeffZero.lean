@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.CardFinRange
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.GoodPathWeight
 public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 import Mathlib.Algebra.AffineMonoid.UniqueSums
@@ -154,11 +155,9 @@ namespace Dat
 
 variable {n' r : ℕ} [NeZero n'] (X : Dat n' r) (K : ℕ)
 
-
 omit [NeZero n'] in
 def offSet (j : ℤ) : Set (ℤ × Fin (r + K)) :=
   {v | ∃ t c : Fin r, c ≠ Fin.rev t ∧ v = (X.F.fr j t.val, Fin.castAdd K c)}
-
 
 omit [NeZero n'] in
 def monTau (j : ℤ) (u : Fin r × Fin r → ℕ) : ℤ × Fin (r + K) →₀ ℕ :=
@@ -178,26 +177,8 @@ def RestKey (C₀ : ℝ) : Prop :=
         monomial (X.monTau K j q.1.2.2) (1 : O) * kill (X.offSet K j) (X.wordEl K O j q.1)
 
 theorem fr_injective {n' r : ℕ} [NeZero n'] (F : Frames n' r) {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j : ℤ) :
-    Function.Injective fun a : Fin r => F.fr j a.val := by
-  obtain ⟨-, -, h3, -⟩ := hV
-  have key : ∀ d a : ℕ, a + d + 1 < r → F.fr j a < F.fr j (a + d + 1) := by
-    intro d
-    induction d with
-    | zero => intro a h; exact h3 j a h
-    | succ d ih => intro a h; exact lt_trans (ih a (by omega)) (h3 j (a + d + 1) (by omega))
-  intro a b hab
-  have hab' : F.fr j a.val = F.fr j b.val := hab
-  by_contra hne
-  have hne' : a.val ≠ b.val := fun h => hne (Fin.ext h)
-  have ha := a.isLt
-  have hb := b.isLt
-  rcases lt_or_gt_of_ne hne' with h | h
-  · have := key (b.val - a.val - 1) a.val (by omega)
-    rw [show a.val + (b.val - a.val - 1) + 1 = b.val by omega] at this
-    exact absurd hab' (ne_of_lt this)
-  · have := key (a.val - b.val - 1) b.val (by omega)
-    rw [show b.val + (a.val - b.val - 1) + 1 = a.val by omega] at this
-    exact absurd hab'.symm (ne_of_lt this)
+    Function.Injective fun a : Fin r => F.fr j a.val :=
+  fun a b hab => Fin.ext (TE.fr_inj hV j a.val b.val a.isLt b.isLt hab)
 
 theorem plEmb_injective (O : Type) [CommRing O] (r K : ℕ) : Function.Injective (plEmb O r K) := by
   apply rename_injective

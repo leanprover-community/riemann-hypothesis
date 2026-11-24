@@ -79,7 +79,7 @@ lemma act_q : act g ≫ g.q = snd (Te D I e) (thickObj R I e G) ≫ g.q := by
   have hf : fst (Te D I e) (thickObj R I e G) ≫ toUnit (Te D I e) =
       toUnit (Te D I e ⊗ thickObj R I e G) := toUnit_unique _ _
   simp only [act, Category.assoc, IsMonHom.mul_hom, CartesianMonoidalCategory.lift_map_assoc, hq,
-    reassoc_of% hq, reassoc_of% hf, MonObj.lift_comp_one_left]
+    reassoc_of% hf, MonObj.lift_comp_one_left]
 
 lemma sec_act : sec (D := D) (G := G) (I := I) (e := e) ≫ act g = 𝟙 _ := by
   haveI : IsMonHom g.i := g.i_hom

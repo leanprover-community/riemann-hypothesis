@@ -161,7 +161,6 @@ theorem extend_isom [CharZero L] [FiniteDimensional L V] (hs : ∀ x, s (s x) = 
     rw [hh.2.2.1 z (c • x), hh.2.1, map_mul, ← hh.2.2.1]
   let B : V →ₗ⋆[L] V →ₗ[L] L := LinearMap.mk₂'ₛₗ (starRingEnd L) (RingHom.id L) h hadd
     (fun c x z => hsm c x z) hh.1 (fun c x z => hh.2.1 c x z)
-  have hB : ∀ x y, B x y = h x y := fun _ _ => rfl
   obtain ⟨g, hg, hgφ⟩ := witt_extension_theorem L V B
     (fun x y => (hh.2.2.1 x y).symm) (fun x hx => hh.2.2.2 x hx) U φ hinj hiso
   exact ⟨g, hg, hgφ⟩

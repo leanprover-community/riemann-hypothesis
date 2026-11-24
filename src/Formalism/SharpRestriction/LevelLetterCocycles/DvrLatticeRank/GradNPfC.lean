@@ -72,8 +72,6 @@ theorem gradNPf_isUnit_of_v (a : O) (ha : v (ι a) = 0) : IsUnit a := by
     rw [h0, v.map_zero] at ha
     first
       | simp at ha
-      | exact WithTop.top_ne_zero ha
-      | exact absurd ha (by decide)
   have hinv : v (ι a)⁻¹ = 0 := by
     have h1 : v (ι a * (ι a)⁻¹) = 0 := by rw [mul_inv_cancel₀ hne, v.map_one]
     rwa [v.map_mul, ha, zero_add] at h1
@@ -81,8 +79,6 @@ theorem gradNPf_isUnit_of_v (a : O) (ha : v (ι a) = 0) : IsUnit a := by
   have hab : a * b = 1 := hι (by rw [_root_.map_mul, _root_.map_one, hb, mul_inv_cancel₀ hne])
   first
     | exact isUnit_iff_exists_inv.2 ⟨b, hab⟩
-    | exact IsUnit.of_mul_eq_one b hab
-    | exact isUnit_of_mul_eq_one_right hab
 
 private theorem exists_one_add_pow_eq_one_add_mul_add_sq (a : O) (i : ℕ) :
     ∃ b : O, (1 + a) ^ i = 1 + (i : O) * a + a ^ 2 * b := by
@@ -130,8 +126,6 @@ theorem gradNPf_zero_lt_one : (0 : WithTop ℚ) < 1 := by
   first
     | exact WithTop.coe_lt_coe.2 zero_lt_one
     | exact_mod_cast (zero_lt_one : (0 : ℚ) < 1)
-    | norm_num
-    | simp
 
 include hι hR in
 theorem gradNPf_unit_one_add (lO d : O) (hl : v (ι lO) = 1) : IsUnit (1 + lO * d) := by
@@ -141,7 +135,6 @@ theorem gradNPf_unit_one_add (lO d : O) (hl : v (ι lO) = 1) : IsUnit (1 + lO * 
   have hle : (1 : WithTop ℚ) ≤ 1 + v (ι d) := by
     first
       | exact le_add_of_nonneg_right h0
-      | simpa using add_le_add_left h0 1
   have hlt : v (1 : L) < v (ι lO * ι d) := by
     rw [v.map_one, hy]
     exact lt_of_lt_of_le gradNPf_zero_lt_one hle
@@ -171,8 +164,6 @@ theorem gradNPf_sub_one (lO x : O) (hl : v (ι lO) = 1) (hx : v (ι x - 1) = 1) 
     rw [h0, v.map_zero] at hl
     first
       | simp at hl
-      | exact WithTop.top_ne_one hl
-      | exact absurd hl (by decide)
   have hinv : 1 + v (ι lO)⁻¹ = 0 := by
     have h1 : v (ι lO * (ι lO)⁻¹) = 0 := by rw [mul_inv_cancel₀ hne, v.map_one]
     rwa [v.map_mul, hl] at h1

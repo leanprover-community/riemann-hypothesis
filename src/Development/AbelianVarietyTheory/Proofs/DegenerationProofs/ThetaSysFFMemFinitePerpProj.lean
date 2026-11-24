@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsAdaptedBasisTestLattice
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.ArithBase
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.OrthogonalFreeOfPerfectAltZmod
 import Mathlib.Algebra.Order.Floor.Extended
@@ -63,17 +64,7 @@ theorem eStd_swap (g n : ℕ) (a b : Fin g ⊕ Fin g → ZMod n) : eStd g n a b 
 
 theorem exists_eStd_eq (g n : ℕ) (f : (Fin g ⊕ Fin g → ZMod n) →ₗ[ZMod n] ZMod n) :
     ∃ b, ∀ y, eStd g n b y = f y := by
-  refine ⟨Sum.elim (fun i => f (Pi.single (.inr i) 1)) (fun i => -f (Pi.single (.inl i) 1)),
-    fun y => ?_⟩
-
-  conv_rhs => rw [← Finset.univ_sum_single y, map_sum, Fintype.sum_sum_type,
-  ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  have h : ∀ j, f (Pi.single j (y j)) = y j * f (Pi.single j 1) := fun j => by
-    rw [← smul_eq_mul, ← map_smul, ← Pi.single_smul, smul_eq_mul, _root_.mul_one]
-  rw [h, h]
-  simp only [Sum.elim_inl, Sum.elim_inr]
-  ring
+  apply _root_.GlobalTheory.ZH.TestBasis.exists_eStd_eq_linear <;> assumption
 
 theorem exists_retraction {n d : ℕ} [NeZero n] {Γ : Type} [AddCommGroup Γ] [Module (ZMod n) Γ]
     (T : AddSubgroup Γ) (e : T ≃+ (Fin d → ZMod n)) : ∃ p : Γ →+ T, ∀ t : T, p t = t := by

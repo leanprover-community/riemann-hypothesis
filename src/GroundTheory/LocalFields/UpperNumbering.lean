@@ -145,7 +145,7 @@ theorem exists_lowerIndex_eq_herbrandPhi (σ : L ≃ₐ[K] L) :
     obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.mp (lowerIndex_ne_top hσ₀1)
     obtain ⟨k, hk⟩ := ENat.ne_top_iff_exists.mp (lowerIndex_ne_top hs)
     refine ⟨m, k, hm.symm, hk.symm, ?_⟩
-    have hsum := ramificationIndex_mul_lowerIndex_restrictNormalHom M σ₀
+    have hsum := _root_.UpperTheory.Reformulated.B.RamificationLowerIndex.ramificationIndex_mul_lowerIndex_restrictNormalHom M σ₀
     rw [hres, ← hk] at hsum
     simp_rw [hmin, ← hm] at hsum
     have hconv : (∑ τ : L ≃ₐ[M] L, min (lowerIndex M L τ) (m : ℕ∞)) =

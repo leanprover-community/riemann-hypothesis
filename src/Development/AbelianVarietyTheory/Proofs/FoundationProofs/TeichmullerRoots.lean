@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RootsReverseProd
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.FactorSeriesSupport
 import Mathlib.Algebra.AffineMonoid.UniqueSums
@@ -118,25 +119,7 @@ theorem root_pow_rootExp {N : ℕ} {f : (ZMod g)[X]} (hf : IsLabel N f) {x : Fba
 
 theorem roots_reverse_prod {F : Type} [Field F] (S : Multiset F) (hS : 0 ∉ S) :
     ((S.map fun x => X - C x).prod.reverse).roots = S.map fun x => x⁻¹ := by
-  induction S using Multiset.induction_on with
-  | empty => simp [reverse]
-  | cons x S ih =>
-    have hx : x ≠ 0 := fun h => hS (h ▸ Multiset.mem_cons_self _ _)
-    have hS' : 0 ∉ S := fun h => hS (Multiset.mem_cons_of_mem h)
-    have hm : (S.map fun x => X - C x).prod.Monic :=
-      monic_multiset_prod_of_monic _ _ fun x _ => monic_X_sub_C x
-    have e : (X - C x).reverse = C (-x) * (X - C x⁻¹) := by
-      have : (X - C x) = X + C (-x) := by simp [sub_eq_add_neg]
-      rw [this, reverse_add_C, natDegree_X]
-      have hX : (X : F[X]).reverse = 1 := by
-        have := reverse_mul_X (1 : F[X])
-        simpa [reverse] using this
-      rw [hX, mul_sub, ← C_mul, neg_mul, mul_inv_cancel₀ hx]
-      simp; ring
-    rw [Multiset.map_cons, Multiset.prod_cons, reverse_mul_of_domain, roots_mul, ih hS', e,
-      roots_C_mul _ (neg_ne_zero.2 hx), roots_X_sub_C, Multiset.map_cons, Multiset.singleton_add]
-    exact mul_ne_zero (by rw [Ne, reverse_eq_zero]; exact X_sub_C_ne_zero x)
-      (by rw [Ne, reverse_eq_zero]; exact hm.ne_zero)
+  apply GlobalTheory.DualLabel.roots_reverse_prod <;> assumption
 
 theorem dual_spec {f : (ZMod g)[X]} (hm : f.Monic) (h0 : f.coeff 0 ≠ 0) :
     (C (f.coeff 0)⁻¹ * f.reverse).Monic ∧ IsPowLabel (-1) f (C (f.coeff 0)⁻¹ * f.reverse) := by

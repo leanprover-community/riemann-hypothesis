@@ -106,7 +106,7 @@ theorem lmat_coe {l : ℕ} [Fact l.Prime] {m m' : Type} (d : ℕ) (ι : ℂ ≃+
     (lmat δ A B).map (MaximalUnramifiedExtension l).subtype = (kmat d A B).map ι := by
   ext x y
   simp only [lmat, kmat, Matrix.map_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul,
-    map_add, map_mul, map_ratCast, hδ]
+    map_add, map_mul, map_ratCast]
   simp
   exact Or.inl hδ
 

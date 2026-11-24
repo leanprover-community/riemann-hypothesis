@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.SmoothGaloisGeometry.IsOpenConnectedComponentOfNoetherianSpace
 public import Mathlib.AlgebraicGeometry.IdealSheaf.Functorial
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
 import Mathlib.Algebra.Order.Floor.Extended
@@ -112,32 +113,7 @@ theorem comap_map_of_isClosedImmersion {S X : Scheme.{u}} (ι : S ⟶ X)
 
 theorem isOpen_connectedComponent_of_noetherianSpace (T : Type v) [TopologicalSpace T]
     [TopologicalSpace.NoetherianSpace T] (x : T) : IsOpen (connectedComponent x) := by
-  classical
-  have hfin : {Z : Set T | Z ∈ irreducibleComponents T ∧ ¬ Z ⊆ connectedComponent x}.Finite := by
-    refine Set.Finite.subset
-      (TopologicalSpace.NoetherianSpace.finite_irreducibleComponents) ?_
-    rintro Z ⟨hZ, -⟩
-    exact hZ
-  have heq : (connectedComponent x)ᶜ
-      = ⋃ Z ∈ {Z : Set T | Z ∈ irreducibleComponents T ∧ ¬ Z ⊆ connectedComponent x}, Z := by
-    apply Set.Subset.antisymm
-    · intro y hy
-      exact Set.mem_biUnion
-        (⟨irreducibleComponent_mem_irreducibleComponents y,
-          fun h => hy (h mem_irreducibleComponent)⟩ :
-          irreducibleComponent y ∈
-            {Z : Set T | Z ∈ irreducibleComponents T ∧ ¬ Z ⊆ connectedComponent x})
-        mem_irreducibleComponent
-    · intro z hz
-      simp only [Set.mem_iUnion, Set.mem_ofPred_eq, exists_prop] at hz
-      obtain ⟨Z, ⟨hZ, hZ'⟩, hzZ⟩ := hz
-      intro hzc
-      have h1 : Z ⊆ connectedComponent z :=
-        hZ.1.2.isPreconnected.subset_connectedComponent hzZ
-      rw [← connectedComponent_eq hzc] at h1
-      exact hZ' h1
-  rw [← isClosed_compl_iff, heq]
-  exact hfin.isClosed_biUnion (fun Z hZ => isClosed_of_mem_irreducibleComponents _ hZ.1)
+  apply CrystallineSemistableComparison.isOpen_connectedComponent_of_noetherianSpace <;> assumption
 
 end FunctorialResolution.Blowup
 

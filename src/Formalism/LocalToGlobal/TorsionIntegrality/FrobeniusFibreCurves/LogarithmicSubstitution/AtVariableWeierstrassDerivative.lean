@@ -277,7 +277,7 @@ end Two
 theorem GCob_of (hW : WAdd) (hP : WPrimeU) : GCob := by
   intro K _ _ _ g2 g3 c0 a1 a3 xT yT P l i ep F hWp hL hC hC3 hT he
   have hl := hL.2.2.1
-  have hIW := wOfWp K g2 g3 (xT + c0) P hWp he
+  have hIW := _root_.Formalism.L2.Th1.B.shiftedReciprocalInverted K g2 g3 (xT + c0) P hWp he
   have E1 := wadd_law hl hL.1 (ParO.log_law hL) (hW K _ _ _ hIW)
   have hp := hP K g2 g3 c0 a1 a3 xT yT P l i ep F hWp hL hC hC3 hT
   have hg := wl_mul_g (xT := xT) hl (ne_zero_of_law hL) hC.2.2.1

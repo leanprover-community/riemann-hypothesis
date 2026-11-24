@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAnalyticDenseGoodPoints
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -57,29 +58,7 @@ variable {e N : ℕ} {s : Set (Fin e → ℂ)}
 theorem analytic_minorIJ (g : (Fin e → ℂ) → Matrix (Fin N) (Fin N) ℂ)
     (hg : ∀ a b, AnalyticOnNhd ℂ (fun w => g w a b) s) (I J : Finset (Fin N)) :
     AnalyticOnNhd ℂ (fun w => minorIJ (g w) I J) s := by
-  by_cases e' : I.card = J.card
-  · have hfun : (fun w => minorIJ (g w) I J) = fun w => ∑ σ : Equiv.Perm (Fin J.card),
-        ((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ i, g w (I.orderEmbOfFin e' (σ i)) (J.orderEmbOfFin rfl i) := by
-      funext w
-      rw [minorIJ, dite_eq_left e', Matrix.det_apply']
-      rfl
-    rw [hfun]
-    have H := Finset.analyticOnNhd_sum (𝕜 := ℂ) (s := s) (Finset.univ : Finset (Equiv.Perm (Fin J.card)))
-      (f := fun σ w => ((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ i, g w (I.orderEmbOfFin e' (σ i)) (J.orderEmbOfFin rfl i))
-      (fun σ _ => analyticOnNhd_const.mul (by
-        have P := Finset.analyticOnNhd_prod (𝕜 := ℂ) (s := s) (Finset.univ : Finset (Fin J.card))
-          (f := fun i w => g w (I.orderEmbOfFin e' (σ i)) (J.orderEmbOfFin rfl i)) (fun i _ => hg _ _)
-        convert P using 1
-        funext w
-        rw [Finset.prod_apply]))
-    convert H using 1
-    funext w
-    rw [Finset.sum_apply]
-  · have hfun : (fun w => minorIJ (g w) I J) = fun _ => 0 := by
-      funext w
-      rw [minorIJ, dite_eq_right e']
-    rw [hfun]
-    exact analyticOnNhd_const
+  apply GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.DensR.analytic_minorIJ <;> assumption
 
 theorem analytic_mul_entry (g g' : (Fin e → ℂ) → Matrix (Fin N) (Fin N) ℂ)
     (hg : ∀ a b, AnalyticOnNhd ℂ (fun w => g w a b) s)
@@ -130,7 +109,6 @@ theorem analytic_wH_snd (s : Set (Fin e → ℂ)) (h : Ψ → Matrix (Fin N) (Fi
     AnalyticOnNhd ℂ (fun w => (wH h ε τ w * (1 + Matrix.single cb ca (wT ε w))) a b) s := by
   refine analytic_mul_entry (s := s) (fun w => wH h ε τ w) (fun w => 1 + Matrix.single cb ca (wT ε w))
     (fun a b => analytic_wH s h ε τ a b) (fun a' b' => ?_) a b
-  beta_reduce
   by_cases hc : cb = a' ∧ ca = b'
   · have hfun : (fun w => (1 + Matrix.single cb ca (wT ε w)) a' b') =
         fun w => (1 : Matrix (Fin N) (Fin N) ℂ) a' b' + w (ε (Sum.inr (Sum.inr ()))) := by

@@ -59,9 +59,7 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
 theorem side_well_formed {s : ℕ} (h : A3.fam3.Ok3 s) (P : Subgroup G) (ψ : P →* Kˣ) (Zs : DefSub A3.fam3.amb3)
     (hst : Zs.Stable) (hin : Zs.InBlock) (hsep : A3.fam3.TypesSep3) : (A3.side3 P ψ Zs).WF := by
   first
-  | exact DefFam3.side_well_formed h P ψ Zs hst hin hsep
   | exact A3.fam3.side_well_formed h P ψ Zs hst hin hsep
-  | exact DefFam3.side_well_formed (F3 := A3.fam3) h P ψ Zs hst hin hsep
 
 end FamIn3
 

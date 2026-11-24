@@ -216,9 +216,6 @@ theorem vtf_local (hol : IsHolFam e) (V : (pullback f u).Opens) (φ : Γ(pullbac
   obtain ⟨n, hn⟩ := s.2
   have hpow : ∀ z, valAt' (pP z) ⊤ (h ^ n) = valAt' (pP z) ⊤ h ^ n := fun z =>
     (hv _ _).symm.trans ((map_pow _ _ _).trans (congrArg (· ^ n) (hv _ _)))
-  have hal : ∀ q : Γ(pullback fU uW, ⊤), algebraMap Γ(pullback fU uW, ⊤)
-      Γ(pullback fU uW, (pullback fU uW).basicOpen h) q =
-      ((pullback fU uW).presheaf.map (homOfLE ((pullback fU uW).basicOpen_le h)).op).hom q := fun _ => rfl
   let N : Set (Fin g → ℂ) := {z | ⊤ ≤ e z ⁻¹ᵁ U} ∩ (fun z => valAt' (pP z) ⊤ h) ⁻¹' {0}ᶜ
   have hN : IsOpen N := (hall h).continuousOn.isOpen_inter_preimage hSU isOpen_compl_singleton
   have hD : ∀ z ∈ N, ⊤ ≤ pP z ⁻¹ᵁ (pullback fU uW).basicOpen h := fun z hz =>

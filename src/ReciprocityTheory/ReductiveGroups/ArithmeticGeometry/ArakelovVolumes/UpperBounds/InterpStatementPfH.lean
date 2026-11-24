@@ -47,6 +47,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.DetSubUpper
 
 @[expose] public section
 
@@ -123,13 +124,6 @@ theorem Lm_zero (x : Frame X.Ψ r) (τ : X.Ψ) : Lm X x τ 0 = 0 := by
   rw [Matrix.det_isEmpty]
   simp
 
-private theorem gram_eq_lemma (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (x : Matrix (Fin r) (Fin r) ℂ) :
-    gram τ G x = xᵀ * G.map τ * x.map (starRingEnd ℂ) := by
-  ext a b
-  simp only [gram, hermC, col, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
-    Matrix.map_apply, Finset.sum_mul]
-  rw [Finset.sum_comm]
-
 theorem Lm_last_cpt (x0 : Frame X.Ψ r) (ho : IsOrth X x0) (z : V (nd X)) (τ : X.Ψ) :
     Lm X (cpt X x0 z) τ (Fin.last r) = 0 := by
   have hN : (mat (nmat X z) τ).det = 1 := by
@@ -144,10 +138,10 @@ theorem Lm_last_cpt (x0 : Frame X.Ψ r) (ho : IsOrth X x0) (z : V (nd X)) (τ : 
   have e1 : mat (cpt X x0 z) τ = mat x0 τ * mat (nmat X z) τ := rfl
   have hs : ∀ a : Fin r, ‖((sgn X.p0 (a : ℕ) : ℝ) : ℂ)‖ = 1 := fun a => by
     unfold sgn; split_ifs <;> simp
-  rw [Lm, key, e1, gram_eq_lemma, Matrix.transpose_mul, Matrix.map_mul,
+  rw [Lm, key, e1, _root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.gram_eq, Matrix.transpose_mul, Matrix.map_mul,
     show ∀ A B C D F : Matrix (Fin r) (Fin r) ℂ, A * B * C * (D * F) = A * (B * C * D) * F from
       fun A B C D F => by simp only [Matrix.mul_assoc],
-    ← gram_eq_lemma τ.1 X.Gm (mat x0 τ), ho τ, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose,
+    ← _root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.gram_eq τ.1 X.Gm (mat x0 τ), ho τ, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose,
     hN, hNc, Matrix.det_diagonal]
   simp only [one_mul, mul_one, norm_prod, hs, Finset.prod_const_one, Real.log_one]
 
@@ -209,7 +203,6 @@ theorem gram_cpt_cd (x0 : Frame X.Ψ r) (τ : X.Ψ) (a b : Fin r) :
     intro a b
     first
     | exact Complex.conjCLE.contDiff.comp (hc a b)
-    | simpa [Function.comp_def] using Complex.conjCLE.contDiff.comp (hc a b)
   simp only [gram, hermC, col, Matrix.of_apply, mat]
   refine ContDiff.sum (fun k _ => ContDiff.sum (fun l _ => ?_))
   exact ((hc k a).mul contDiff_const).mul (hcj l b)
@@ -221,7 +214,6 @@ theorem dmin_cpt_cd (x0 : Frame X.Ψ r) (τ : X.Ψ) (i : Fin (r + 1)) :
   refine ContDiff.sum (fun σ _ => contDiff_const.mul ?_)
   first
   | exact contDiff_prod (fun j _ => gram_cpt_cd X x0 τ _ _)
-  | fun_prop
 
 theorem log_norm_eq (w : ℂ) : Real.log ‖w‖ = Real.log (Complex.normSq w) / 2 := by
   rw [Complex.normSq_eq_norm_sq, Real.log_pow]
@@ -246,7 +238,6 @@ private theorem contDiff_det_mat_cpt (x0 : Frame X.Ψ r) (τ : X.Ψ) :
   refine ContDiff.sum (fun σ _ => contDiff_const.mul ?_)
   first
   | exact contDiff_prod (fun j _ => cpt_entry_cd X x0 τ _ _)
-  | fun_prop
 
 private theorem eventually_mem_omF (x0 : Frame X.Ψ r) {z : V (nd X)} (hz : z ∈ OmF X x0) :
     ∀ᶠ w in 𝓝 z, w ∈ OmF X x0 := by
@@ -293,7 +284,6 @@ theorem nmat_zero (τ : X.Ψ) : mat (nmat X (0 : V (nd X))) τ = 1 := by
   · simp [mat, nmat, Matrix.one_apply, h, h.ne']
     first
     | exact V_zero_app _
-    | rfl
   · simp [mat, nmat, Matrix.one_apply, h]
 
 theorem cpt_zero (x0 : Frame X.Ψ r) : cpt X x0 0 = x0 := by
@@ -317,7 +307,7 @@ private theorem mem_dom_of_isOrth' (x0 : Frame X.Ψ r) (ho : IsOrth X x0) : x0 �
   refine ⟨?_, fun i => ?_⟩
   · intro h0
     have h3 := congrArg Matrix.det (ho τ)
-    rw [gram_eq_lemma, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, h0, zero_mul, zero_mul,
+    rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.gram_eq, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, h0, zero_mul, zero_mul,
       Matrix.det_diagonal] at h3
     exact (Finset.prod_ne_zero_iff.mpr (fun a _ => Complex.ofReal_ne_zero.mpr
       (by unfold sgn; split_ifs <;> norm_num))) h3.symm
@@ -333,8 +323,7 @@ theorem zero_mem_OmF (x0 : Frame X.Ψ r) (ho : IsOrth X x0) : (0 : V (nd X)) ∈
   rw [cpt_zero]
   exact mem_dom_of_isOrth' X x0 ho
 
-theorem orth_mem_dom (x0 : Frame X.Ψ r) (ho : IsOrth X x0) : x0 ∈ X.dom := by
-  exact mem_dom_of_isOrth' X x0 ho
+alias orth_mem_dom := _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.IW.mem_dom_of_isOrth'
 
 theorem phla_comb {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la1 la2 : Wt X.Ψ r) (k : ℕ) :
     phla X (la1 - kapW X - k • la2) x = phla X la1 x - phla X (kapW X) x - k * phla X la2 x := by
@@ -357,15 +346,10 @@ private theorem leviV_sub_sub_const_mul_of_eventuallyEq {n : ℕ} (f f1 f2 f3 : 
   have hle1 : (1 : WithTop ℕ∞) ≤ ∞ := by
     first
     | exact mod_cast le_top
-    | simp
   have hle2 : (1 : WithTop ℕ∞) + 1 ≤ ∞ := by
     rw [one_add_one_eq_two]
     first
     | exact WithTop.coe_le_coe.mpr le_top
-    | exact (WithTop.coe_le_coe.mpr (le_top : ((2 : ℕ) : ℕ∞) ≤ ⊤))
-    | exact mod_cast le_top
-    | simp
-    | decide
   have hn0 : (∞ : WithTop ℕ∞) ≠ 0 := (lt_of_lt_of_le zero_lt_one hle1).ne'
   have hD : ∀ᶠ w in 𝓝 z, fderiv ℝ f w = fderiv ℝ f1 w - fderiv ℝ f2 w - c • fderiv ℝ f3 w := by
     filter_upwards [hev.eventuallyEq_nhds, h1, h2, h3] with w hw hw1 hw2 hw3
@@ -424,7 +408,6 @@ theorem leviM_comb (x0 : Frame X.Ψ r) (ho : IsOrth X x0) {z : V (nd X)} (hz : z
   · first
     | (simp only [Complex.sub_re, Complex.mul_re, Complex.natCast_re, Complex.natCast_im, zero_mul,
         sub_zero]; done)
-    | simp
   · filter_upwards [hev] with w hw
     have hw' : cpt X x0 w ∈ X.dom := hw
     try dsimp only

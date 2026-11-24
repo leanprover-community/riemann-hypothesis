@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLevelSubgroup
 public import Formalism.LocalToGlobal.ProjectiveLattices.EquivariantFiniteGroup
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.InfAdeleTensorBijective
@@ -121,22 +122,7 @@ open scoped TensorProduct Topology
 open GlobalTheory.RecDict
 
 theorem gram_det_ne_zero {E : Type} [Field E] [NumberField E] [StarRing E] (V : HSpace E) : V.gram.det ≠ 0 := by
-  intro h0
-  obtain ⟨v, hv, hz⟩ := Matrix.exists_mulVec_eq_zero_iff.2 h0
-  have h1 : ∀ i, V.hT (V.frame i) (V.frame.equivFun.symm v) = 0 := by
-    intro i
-    have := congrFun hz i
-    simp only [Matrix.mulVec, dotProduct, HSpace.gram, Pi.zero_apply] at this
-
-    rw [Module.Basis.equivFun_symm_apply, map_sum, ← this]
-    exact Finset.sum_congr rfl fun j _ => by rw [map_smul, smul_eq_mul, mul_comm]
-  have h2 : V.frame.equivFun.symm v = 0 := by
-    refine V.nondeg.2 _ fun x => ?_
-
-    rw [← V.frame.sum_repr x, map_sum, LinearMap.sum_apply]
-    exact Finset.sum_eq_zero fun i _ => by
-      rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, h1, smul_zero]
-  exact hv (V.frame.equivFun.symm.injective (h2.trans (map_zero _).symm))
+  apply GlobalTheory.RecDict.det_gram_ne_zero <;> assumption
 
 section Tens
 

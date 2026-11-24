@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.IwaChol
 public import Mathlib.Analysis.Matrix.LDL
 public import GroundTheory.AutomorphicForms.RealGroupsPolar
 import Mathlib.Algebra.Order.Floor.Extended
@@ -161,21 +162,7 @@ theorem star_mul_self_norm_div {x : 𝕜} (hx : x ≠ 0) :
 theorem exists_cholesky {S : Matrix n n 𝕜} (hS : S.PosDef) :
     ∃ B : Matrix n n 𝕜, ∃ a : n → ℝ, B.IsUpperTriangular ∧ (∀ i, 0 < a i) ∧
       (∀ i, B i i = a i) ∧ Bᴴ * B = S := by
-  obtain ⟨R, hR, hRS⟩ := exists_isUpperTriangular_conjTranspose_mul_self hS
-  have hdet : S.det ≠ 0 := (isUnit_iff_isUnit_det S).1 hS.isUnit |>.ne_zero
-  have hRi : ∀ i, R i i ≠ 0 := by
-    have : R.det ≠ 0 := by
-      intro h; apply hdet; rw [← hRS, det_mul, h, mul_zero]
-    rw [det_of_isUpperTriangular hR] at this
-    exact fun i => Finset.prod_ne_zero_iff.1 this i (Finset.mem_univ i)
-  refine ⟨diagonal (fun i => (‖R i i‖ : 𝕜) / R i i) * R, fun i => ‖R i i‖,
-    (blockTriangular_diagonal _).mul hR, fun i => norm_pos_iff.2 (hRi i), fun i => ?_, ?_⟩
-  · rw [diagonal_mul, div_mul_cancel₀ _ (hRi i)]
-  · rw [conjTranspose_mul, Matrix.mul_assoc, ← Matrix.mul_assoc (diagonal _)ᴴ,
-      diagonal_conjTranspose, diagonal_mul_diagonal]
-    have : (fun i => (star (fun i => (‖R i i‖ : 𝕜) / R i i)) i * ((‖R i i‖ : 𝕜) / R i i)) =
-        fun _ => 1 := funext fun i => star_mul_self_norm_div (hRi i)
-    rw [this, diagonal_one, Matrix.one_mul, hRS]
+  apply CompanionTheory.D.gk.admitted.CholeskyDecomposition.exists_cholesky <;> assumption
 
 theorem exists_KAN (g : GL n 𝕜) :
     ∃ k : unitaryGroup n 𝕜, ∃ a : n → ℝ, (∀ i, 0 < a i) ∧ ∃ u : Matrix n n 𝕜,

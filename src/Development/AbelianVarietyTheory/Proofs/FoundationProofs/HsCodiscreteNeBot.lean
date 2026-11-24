@@ -45,6 +45,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerNeZero
 
 @[expose] public section
 
@@ -81,20 +82,7 @@ def Z1 (N l w : ℕ) [Fact l.Prime] : Submodule ℤ_[l] (Gam N l → MvPolynomia
     · simp only [Pi.smul_apply, h2, map_smul, smul_add]
 
 theorem hs_codiscrete_neBot : (Filter.codiscreteWithin Hs).NeBot := by
-  rw [Filter.neBot_iff]
-  intro h
-  have hmem : (∅ : Set ℂ) ∈ Filter.codiscreteWithin Hs := by rw [h]; exact Filter.mem_bot
-  rw [mem_codiscreteWithin] at hmem
-  have hI : Complex.I ∈ Hs := by simp [Hs]
-  have hd := hmem Complex.I hI
-  simp only [Set.diff_empty] at hd
-  have hopen : IsOpen Hs := isOpen_lt continuous_const Complex.continuous_im
-  have hle : nhdsWithin Complex.I {Complex.I}ᶜ ≤ Filter.principal Hs :=
-    le_trans nhdsWithin_le_nhds (Filter.le_principal_iff.2 (hopen.mem_nhds hI))
-  have hbot : nhdsWithin Complex.I {Complex.I}ᶜ = ⊥ := by
-    have := hd.mono_right hle
-    exact disjoint_self.1 this
-  exact (NormedField.nhdsNE_neBot Complex.I).ne hbot
+  apply _root_.GlobalTheory.KZ.codiscreteWithin_Hs_neBot <;> assumption
 
 theorem btZ_zero (X : Tower Ω ε) (N l : ℕ) [Fact l.Prime] : BtZ X N l 0 0 := by
   intro n u

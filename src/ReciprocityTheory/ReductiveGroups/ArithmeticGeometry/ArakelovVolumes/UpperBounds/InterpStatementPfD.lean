@@ -81,7 +81,6 @@ theorem ext_glue (hU : IsOpen U) (g G : V n → ℂ) (hg : DifferentiableOn ℂ 
       (hF z hz).continuousOn.continuousAt (isOpen_ball.mem_nhds hxz)
     have hev : ∀ᶠ t in 𝓝 x, F y hy t ≠ F z hz t := by
       first
-        | exact hcy.eventually_ne hcz hne
         | exact ((hcy.sub hcz).eventually_ne (sub_ne_zero.mpr hne)).mono fun t ht h => ht (sub_eq_zero.mpr h)
     have hs : {t | t ∈ ball y (ρ y hy) ∧ t ∈ ball z (ρ z hz) ∧ F y hy t ≠ F z hz t} ∈ 𝓝 x :=
       Filter.inter_mem (isOpen_ball.mem_nhds hxy) (Filter.inter_mem (isOpen_ball.mem_nhds hxz) hev)

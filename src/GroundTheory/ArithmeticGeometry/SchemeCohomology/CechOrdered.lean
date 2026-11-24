@@ -115,18 +115,6 @@ lemma cone_single {q : ℕ} (c : ι) (t : Fin (q + 1) → ι) (k : ℤ) :
     cone c (Finsupp.single t k) = Finsupp.single (Fin.cons c t : Fin (q + 2) → ι) k := by
   simp [cone]
 
-lemma cons_comp_succAbove_zero' {n : ℕ} (c : ι) (i : Fin (n + 1) → ι) :
-    (Fin.cons c i : Fin (n + 2) → ι) ∘ (0 : Fin (n + 2)).succAbove = i := by
-  funext a
-  simp
-
-lemma cons_comp_succAbove_succ' {n : ℕ} (c : ι) (i : Fin (n + 1) → ι) (k : Fin (n + 1)) :
-    (Fin.cons c i : Fin (n + 2) → ι) ∘ k.succ.succAbove = Fin.cons c (i ∘ k.succAbove) := by
-  funext a
-  cases a using Fin.cases with
-  | zero => simp
-  | succ a => simp
-
 lemma bd_cone {q : ℕ} (c : ι) (z : Chain ι (q + 1)) :
     bd (q + 1) (cone c z) = z - cone c (bd q z) := by
   induction z using Finsupp.induction_linear with
@@ -135,8 +123,8 @@ lemma bd_cone {q : ℕ} (c : ι) (z : Chain ι (q + 1)) :
   | single t k =>
 
     rw [cone_single, bd_single, Fin.sum_univ_succ, bd_single, map_sum]
-    simp only [Fin.val_zero, pow_zero, one_smul, cons_comp_succAbove_zero', Fin.val_succ,
-      cons_comp_succAbove_succ', map_zsmul, cone_single, pow_succ, mul_neg, mul_one, neg_smul,
+    simp only [Fin.val_zero, pow_zero, one_smul, _root_.GroundTheory.Arith.SchemeCoh.cons_comp_succAbove_zero, Fin.val_succ,
+      _root_.GroundTheory.Arith.SchemeCoh.cons_comp_succAbove_succ, map_zsmul, cone_single, pow_succ, mul_neg, mul_one, neg_smul,
       Finset.sum_neg_distrib, sub_eq_add_neg]
 
 def Supp {q : ℕ} (Q : (Fin (q + 1) → ι) → Prop) (z : Chain ι q) : Prop :=

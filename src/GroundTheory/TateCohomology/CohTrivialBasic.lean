@@ -110,7 +110,7 @@ theorem exists_sum_eq_subgroup [Fintype G] (ρ : Representation k G V) (φ : V �
     sum_eq_sum_quotient_sum S, Finset.sum_comm]
   refine Fintype.sum_equiv (Equiv.inv S) _ _ fun s => ?_
 
-  simp [map_sum, LinearMap.sum_apply, map_mul, mul_inv_rev, Module.End.mul_apply]
+  simp [map_sum, LinearMap.sum_apply, map_mul, mul_inv_rev]
 
 theorem cohTrivial_of_sum_eq [Fintype G] (M : Rep.{u} k G) (φ : M.V →ₗ[k] M.V)
     (hφ : ∀ m : M, ∑ g : G, M.ρ g (φ (M.ρ g⁻¹ m)) = m) : CohTrivial M := fun S _ => by

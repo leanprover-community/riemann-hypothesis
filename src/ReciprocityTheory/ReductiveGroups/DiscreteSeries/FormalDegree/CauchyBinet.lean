@@ -61,7 +61,7 @@ namespace ReciprocityTheory.ChartRestriction.DS
 private lemma cauchyBinet_det_mul_fun {R : Type*} [CommRing R] {i N : ℕ} (A : Matrix (Fin i) (Fin N) R)
     (B : Matrix (Fin N) (Fin i) R) :
     (A * B).det = ∑ f : Fin i → Fin N, (∏ a, A a (f a)) * (B.submatrix f id).det := by
-  first | exact Bl.general_b_fact.goal1 .. | (apply Bl.general_b_fact.goal1 <;> assumption) | (intros; apply Bl.general_b_fact.goal1 <;> assumption)
+  first | exact Bl.general_b_fact.goal1 ..
 
 private def cauchyBinetPar {i N : ℕ} (p : (Σ _ : {S : Finset (Fin N) // S.card = i}, Equiv.Perm (Fin i))) :
     Fin i ↪ Fin N :=

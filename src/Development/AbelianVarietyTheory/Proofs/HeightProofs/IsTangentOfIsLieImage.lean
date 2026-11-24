@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.GermEqZeroOfThickenings
 public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.LieLiftsTangentReduction
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegUnif
@@ -88,42 +89,7 @@ theorem prod_Oφ_zero {T : Over (Sp R)} (b : T ⟶ D.P.A) {Z : Scheme.{0}} (π :
   simp
 
 theorem exists_isZero (T : Over (Sp R)) : ∃ g : GtPt D T, g.IsZero := by
-  have hF : ∀ χ, FormEq (PEmpty.elim : PEmpty → (T.left ⟶ D.P.A.left)) PEmpty.elim
-      (DegPre.gtφT D T 1 χ) DegPre.gtε := fun χ U _ h => by
-    have := prod_Oφ_zero (D := D) (1 : T ⟶ D.P.A) (𝟙 _) T.hom (by
-      show 𝟙 _ ≫ (toUnit T ≫ η[D.P.A]).left = _
-      simp [eSec]) χ h
-    simp only [Category.id_comp] at this
-    rw [TorusCoord.gtφT_eq]
-    exact (Fintype.prod_empty _).trans this.symm
-  choose s h using fun χ => exists_gen D.P.isLB (hF χ) (LB.oneGen D.P.L)
-    (fun i j => (map_one _).trans ((congrArg₂ (· * ·) (Fintype.prod_empty _) (map_one _)).trans
-      (_root_.mul_one _)).symm)
-  have hs := fun χ => (h χ).1
-  have vs := fun χ => (h χ).2
-  have v1 : ∀ χ y J, Good D.P.L y J → val (s χ) (𝟙 _) y J = 1 := fun χ y J hJ =>
-    (vs χ _ _ y J hJ).trans (val_one _)
-  refine ⟨⟨1, s, hs, corr_of_val D.P.isLB fun y J hJ => vs 0 _ _ y J hJ,
-    fun χ χ' => corr_of_val D.P.isLB fun y J hJ => ?_⟩, rfl,
-    fun χ => corr_of_val D.P.isLB fun y J hJ => vs χ _ _ y J hJ⟩
-  have c := val_cub D.cub (𝟙 T) hJ (DegPre.cT D T χ) (DegPre.cT D T χ') 1
-  simp only [Category.id_comp] at c
-  have face (x x' : T ⟶ D.P.A) : cubV D.cub y J 1 x x' = 1 := by
-    have e := val_corr hJ (D.cub.face 0) (lift x x').left
-    rw [val_one] at e
-    refine (Eq.trans ?_ (val_cub D.cub (lift x x') hJ (pzero D.P.A _) (x2 D.P.A 0) (x2 D.P.A 1)).symm).trans e
-    congr 1 <;> simp [x2, pzero, Hom.one_def]
-  have swap01 (x x' w : T ⟶ D.P.A) : cubV D.cub y J x x' w = cubV D.cub y J x' x w := by
-    have e := (val_corr hJ D.cub.cubeSymmetric_swap_first (lift x (lift x' w)).left).trans (val_cub D.cub (lift x (lift x' w)) hJ _ _ _)
-    refine Eq.trans e ?_
-    congr 1 <;> simp [x3]
-  have swap12 (x x' w : T ⟶ D.P.A) : cubV D.cub y J x x' w = cubV D.cub y J x w x' := by
-    have e := (val_corr hJ D.cub.cubeSymmetric_swap_last (lift x (lift x' w)).left).trans (val_cub D.cub (lift x (lift x' w)) hJ _ _ _)
-    refine Eq.trans e ?_
-    congr 1 <;> simp [x3]
-  have c' := c.trans ((swap12 _ _ _).trans ((swap01 _ _ _).trans (face _ _)))
-  exact ((val_mul hJ _ _ _).trans (congrArg₂ (· * ·) (v1 _ y J hJ) c')).trans
-    ((val_mul hJ _ _ _).trans (congrArg₂ (· * ·) (v1 _ y J hJ) (v1 _ y J hJ))).symm
+  apply GlobalTheory.FormalValue.exists_isZero <;> assumption
 
 
 variable {I : Ideal R} {e : ℕ} {G : Over (Sp R)} [GrpObj G] [IsCommMonObj G] (g : GtCoord I D e G)

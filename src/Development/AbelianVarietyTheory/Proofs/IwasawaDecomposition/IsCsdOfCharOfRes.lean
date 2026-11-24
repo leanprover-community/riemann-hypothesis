@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousNormFin
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExpoConjOfIsCsd
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfValuedEq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DenseRangeUnits
@@ -97,41 +98,11 @@ theorem normFin_loc (c : L ≃+* L) (χ : HChar L) {v v' : HeightOneSpectrum (�
 theorem loc_eq_one_of_prod {ψ : Ideles L →* ℂˣ} (hψ : Continuous ψ) (S : Finset (HeightOneSpectrum (𝓞 L)))
     (h : ∀ k : Lˣ, ∏ Q ∈ S, ψ (localIdele L Q (atFin Q k)) = 1) {v : HeightOneSpectrum (𝓞 L)} (hv : v ∈ S)
     (x : (v.adicCompletion L)ˣ) : ψ (localIdele L v x) = 1 := by
-  classical
-  let e : ∀ Q : S, Loc S →* Q.1.adicCompletion L := fun Q =>
-    (Pi.evalMonoidHom (fun Q : S => Q.1.adicCompletion L) Q).comp (MonoidHom.snd _ _)
-  have h2 : ∀ y : (Loc S)ˣ, ∏ Q : S, ψ (localIdele L Q.1 (Units.map (e Q) y)) = 1 := fun y =>
-    (denseRange_units S).induction_on (p := fun y => ∏ Q : S, ψ (localIdele L Q.1 (Units.map (e Q) y)) = 1) y
-      (isClosed_eq (continuous_finsetProd _ fun Q _ => hψ.comp ((GlobalTheory.Mem.UnrAe.continuous_localIdele Q.1).comp
-        (Continuous.units_map _ ((continuous_apply Q).comp continuous_snd)))) continuous_const) fun k =>
-      (Finset.prod_coe_sort S fun Q => ψ (localIdele L Q (atFin Q k))).trans (h k)
-  have h3 := h2 (Units.map (proj S) (localIdele L v x))
-  rw [Finset.prod_eq_single_of_mem ⟨v, hv⟩ (Finset.mem_univ _)] at h3
-  · rw [← h3]
-    congr 2
-    exact Units.ext (Function.update_self v (x : v.adicCompletion L)
-      (fun w : HeightOneSpectrum (𝓞 L) => (1 : w.adicCompletion L))).symm
-  · intro Q _ hQ
-    have : Units.map (e Q) (Units.map (proj S) (localIdele L v x)) = 1 :=
-      Units.ext (Function.update_of_ne (fun h => hQ (Subtype.ext h)) (x : v.adicCompletion L)
-        (fun w : HeightOneSpectrum (𝓞 L) => (1 : w.adicCompletion L)))
-    rw [this, map_one, map_one]
+  apply GlobalTheory.CsdTriv.loc_eq_one_of_prod <;> assumption
 
 theorem infId_pInf [_root_.NumberField.IsTotallyComplex L] (k : Lˣ) :
     infId L (Units.map (pInf L).toMonoidHom (diagUnits L k)) = ∏ w, infIdele L w (atInf w k) := by
-  classical
-  apply Units.ext
-  rw [Units.coe_prod]
-  let ι : (∀ w : InfinitePlace L, w.Completion) →* AdeleRing (𝓞 L) L :=
-    MonoidHom.inl (InfiniteAdeleRing L) (FiniteAdeleRing (𝓞 L) L)
-  change _ = ∏ w : InfinitePlace L, ι (Pi.mulSingle w (algebraMap L w.Completion k))
-  rw [← map_prod, Finset.univ_prod_mulSingle (fun w : InfinitePlace L => algebraMap L w.Completion k)]
-  refine Prod.ext ?_ ?_
-  · change (1 : InfiniteAdeleRing L) - infEq L 1 + infEq L ((infEq L).symm _) = _
-    rw [map_one, sub_self, zero_add, RingEquiv.apply_symm_apply]
-    rfl
-  · change (1 : Af L) - 0 + 0 = 1
-    simp
+  apply GlobalTheory.CsdTriv.infId_pInf <;> assumption
 
 end General
 
@@ -153,64 +124,11 @@ theorem mem_aboveF_iff (v Q : HeightOneSpectrum (𝓞 L)) :
 
 theorem fin_eq_one (χ : HChar L) (h : ∀ (k : Lˣ) (t : (𝐅)ˣ), upF 𝐅 t = k * cU 𝐜 k → ∀ p, χ.resFin p t = 1)
     (u : (Af L)ˣ) : χ.1 (finId L (u * Units.map (conjFin 𝐜).toMonoidHom u)) = 1 := by
-  choose σ hσ hu using fun w => existsUnique_conjPl 𝐜 w
-  have hσσ : ∀ w, σ (σ w) = w := fun w => (hu _ _ fun x => by
-    rw [← hσ w (𝐜 x)]
-    exact congrArg _ (IsCMField.complexConj_apply_apply L x)).symm
-  have hm : ∀ p, ∀ w ∈ aboveF (L := L) 𝐅 p, σ w ∈ aboveF (L := L) 𝐅 p := fun p w hw => by
-    obtain rfl : w.under (𝓞 𝐅) = p := by simpa [aboveF] using hw
-    exact (mem_aboveF_iff w _).2 (Or.inr (hσ w))
-  have h1 : ∀ v x, normFin 𝐜 χ (localIdele L v x) = 1 := fun v =>
-    loc_eq_one_of_prod (continuous_normFin _ χ) (aboveF (L := L) 𝐅 (v.under (𝓞 𝐅))) (fun k => by
-      obtain ⟨t, ht⟩ := exists_norm k
-      have h2 := h k t ht (v.under (𝓞 𝐅))
-      rw [HChar.resFin, MonoidHom.finsetProd_apply] at h2
-      simp only [MonoidHom.comp_apply, ht, map_mul, Finset.prod_mul_distrib] at h2
-      rw [Finset.prod_congr rfl fun Q _ => normFin_loc _ χ (hσ Q) k, Finset.prod_mul_distrib, ← h2]
-      congr 1
-      exact Finset.prod_nbij' σ σ (hm _) (hm _) (fun w _ => hσσ w) (fun w _ => hσσ w) fun _ _ => rfl)
-      ((mem_aboveF_iff v v).2 (Or.inl rfl))
-  have h3 := eq_one_of_local _ (continuous_normFin 𝐜 χ) (finId L u) (by
-    change (1 : InfiniteAdeleRing L) - 0 + 0 = 1
-    simp) fun v => h1 v _
-  have e : Units.map (pFin L).toMonoidHom (finId L u) = u := Units.ext (by
-    change (1 : Af L) - 1 + u = u
-    simp)
-  change χ.1 (finId L (Units.map (pFin L).toMonoidHom (finId L u) *
-    Units.map (conjFin 𝐜).toMonoidHom (Units.map (pFin L).toMonoidHom (finId L u)))) = 1 at h3
-  rwa [e] at h3
+  apply GlobalTheory.CsdTriv.fin_eq_one <;> assumption
 
 theorem inf_eq_one (χ : HChar L) (h : ∀ (k : Lˣ) (t : (𝐅)ˣ), upF 𝐅 t = k * cU 𝐜 k → ∀ w, χ.resInf w t = 1)
     (u : (Cinf L)ˣ) : chiInf χ (u * Units.map (starRingEnd (Cinf L)).toMonoidHom u) = 1 := by
-  classical
-  let q : Loc (∅ : Finset (HeightOneSpectrum (𝓞 L))) →* Cinf L := (pInf L).toMonoidHom.comp (incl ∅)
-  have hq : Continuous q := (continuous_pi fun w =>
-    (InfinitePlace.Completion.isometryEquivComplexOfIsComplex (IsTotallyComplex.isComplex w)).continuous.comp
-      ((continuous_apply w).comp continuous_fst) : Continuous fun y w => q y w)
-  have h2 : ∀ y, chiInf χ (Units.map q y * Units.map (starRingEnd (Cinf L)).toMonoidHom (Units.map q y)) = 1 := fun y =>
-    (denseRange_units ∅).induction_on
-      (p := fun y => chiInf χ (Units.map q y * Units.map (starRingEnd (Cinf L)).toMonoidHom (Units.map q y)) = 1) y
-      (isClosed_eq ((continuous_chiInf χ).comp ((hq.units_map _).mul
-        ((Continuous.units_map _ continuous_star).comp (hq.units_map _)))) continuous_const) fun k => by
-      obtain ⟨t, ht⟩ := exists_norm k
-      have e : Units.map q (Units.map (proj ∅) (diagUnits L k)) *
-          Units.map (starRingEnd (Cinf L)).toMonoidHom (Units.map q (Units.map (proj ∅) (diagUnits L k))) =
-          Units.map (pInf L).toMonoidHom (diagUnits L (upF 𝐅 t)) := by
-        rw [ht, map_mul, map_mul]
-        congr 1
-        exact Units.ext (pInf_complexConj (k : L)).symm
-      rw [e, chiInf, MonoidHom.comp_apply, infId_pInf, map_prod,
-        ← Finset.prod_fiberwise Finset.univ fun w : InfinitePlace L => w.comap (algebraMap 𝐅 L)]
-      refine Finset.prod_eq_one fun w _ => ?_
-      have h3 := h k t ht w
-      rw [HChar.resInf, MonoidHom.finsetProd_apply] at h3
-      rw [← h3]
-      exact Finset.prod_congr (by ext; simp [aboveInf]) fun _ _ => rfl
-  have h3 := h2 (Units.map (proj ∅) (infId L u))
-  have e : Units.map q (Units.map (proj ∅) (infId L u)) = u := Units.ext (by
-    change (infEq L).symm (1 - infEq L 1 + infEq L u) = u
-    simp)
-  rwa [e] at h3
+  apply GlobalTheory.CsdTriv.inf_eq_one <;> assumption
 
 theorem isCsd_of_norm (χ : HChar L)
     (h : ∀ (k : Lˣ) (t : (𝐅)ˣ), upF 𝐅 t = k * cU 𝐜 k → (∀ p, χ.resFin p t = 1) ∧ ∀ w, χ.resInf w t = 1) :

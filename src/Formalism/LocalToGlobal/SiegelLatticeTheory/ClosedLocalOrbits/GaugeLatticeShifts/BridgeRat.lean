@@ -196,7 +196,7 @@ theorem ratFromAd (A : X.B.I.Gf) {u : D.what₂.Word} {Λ : Submodule (𝓞 D.ho
   obtain ⟨s, hs, m, hm, hsm⟩ := Submodule.mem_sup.1 hy
   obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun (IntAf X.B.I.F X.B.I.E)).1 hs
   choose t c' hc' ht using fun a => PIW.AdelClassFin.dual_dense X.B.I.F X.B.I.E X.B.g
-    (Nat.pos_of_ne_zero (Formalism.L2.SG.Pf.ChiNMul.gB_ne_zero X)) (c a : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) (c a).2
+    (Nat.pos_of_ne_zero (_root_.Formalism.L2.SG.Pf.modulus_g_ne_zero X)) (c a : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) (c a).2
   set r : (VS D).V := ∑ a, X.ιE ((t a : 𝓞 X.B.I.E) : X.B.I.E) • X.eX a with hr
 
   have hdiff : InAt X.B.I X.B.g X.B.g (hat X A (y - r)) := by
@@ -232,7 +232,7 @@ theorem ratFromAd (A : X.B.I.Gf) {u : D.what₂.Word} {Λ : Submodule (𝓞 D.ho
       rw [hr]
       refine sum_mem fun a _ => ?_
       have hmem : X.eX a ∈ Submodule.span (𝓞 D.host.E) (Set.range fun b => cc b • (lf D (X.Fu u)).fl.e b) :=
-        Submodule.subset_span ⟨a, by simp [hc1' a, hTF a, lf]⟩
+        Submodule.subset_span ⟨a, by simp [hc1' a, hTF a]⟩
       have hint : X.ιE ((t a : 𝓞 X.B.I.E) : X.B.I.E) ∈ (algebraMap (𝓞 D.host.E) D.host.E).range := by
         have := ((t a).2 : IsIntegral ℤ ((t a : 𝓞 X.B.I.E) : X.B.I.E)).map X.ιE.toRingHom.toIntAlgHom
         exact ⟨⟨_, this⟩, rfl⟩

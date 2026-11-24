@@ -169,7 +169,7 @@ theorem conj_mem_Ine_smul {A : ValuationSubring Ω} {γ σ : G F Ω} (hσ : σ �
       rw [map_sub]
       congr 1
       show (γ⁻¹ : G F Ω) (γ (σ ((γ⁻¹ : G F Ω) x))) = σ ((γ⁻¹ : G F Ω) x)
-      first | exact γ.symm_apply_apply _ | simp
+      first | exact γ.symm_apply_apply _
     rw [e]
     exact hσ2 _ hx
 

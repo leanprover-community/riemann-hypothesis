@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemClosureSpecialUnitarySupportedAtPlaces
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NotIsCompactUnivFv
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -76,25 +77,7 @@ theorem idem_unitary (c : R →+* R) (e : R) (he : e * e = e) (hc : c e = e) (J 
 
 theorem idem_det (e : R) (he : e * e = e) (A : Matrix n n R) (hA : A.det = 1) :
     (1 + e • (A - 1)).det = 1 := by
-  rcases isEmpty_or_nonempty n with hn | hn
-  · exact Matrix.det_isEmpty
-  have hpow : ∀ f : R, f * f = f → ∀ k : ℕ, f ^ (k + 1) = f := by
-    intro f hf k
-    induction k with
-    | zero => simp
-    | succ k ih => rw [pow_succ, ih, hf]
-  have hk : Fintype.card n = (Fintype.card n - 1) + 1 := by
-    have := Fintype.card_pos (α := n); omega
-  have h1 : e • (1 + e • (A - 1)) = e • A := by
-    rw [smul_add, smul_smul, he, smul_sub]; abel
-  have h2 : (1 - e) • (1 + e • (A - 1)) = (1 - e) • (1 : Matrix n n R) := by
-    rw [smul_add, smul_smul, show (1 - e) * e = 0 by rw [sub_mul, one_mul, he, sub_self], zero_smul, add_zero]
-  have he' : (1 - e) * (1 - e) = 1 - e := by ring_nf; rw [sq, he]; ring
-  have d1 := congrArg Matrix.det h1
-  have d2 := congrArg Matrix.det h2
-  rw [Matrix.det_smul, Matrix.det_smul, hk, hpow e he, hA] at d1
-  rw [Matrix.det_smul, Matrix.det_smul, hk, hpow _ he', Matrix.det_one] at d2
-  linear_combination d1 + d2
+  apply GlobalTheory.SUTrunc.det_trunc <;> assumption
 
 end Ring
 

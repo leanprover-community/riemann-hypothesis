@@ -422,7 +422,7 @@ theorem im_Hw_Pw {w : ℂ} (hw : (A.BwMat w).PosDef) (a b : A.La) :
   simp only [map_sub, map_smul, LinearMap.map_smulₛₗ, LinearMap.sub_apply, LinearMap.smul_apply,
     A.dualForm_BwC hw, h2, smul_eq_mul] at h1
   simp only [Complex.sub_im, Complex.sub_re, Complex.mul_im, Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.I_re,
-    Complex.I_im, RingHom.id_apply, torusProj_Pw_re, torusProj_Pw_im, BwC_apply, Complex.ofReal_re,
+    Complex.I_im, torusProj_Pw_re, torusProj_Pw_im, BwC_apply, Complex.ofReal_re,
     Complex.ofReal_im] at h1
   rw [Hw_apply, Complex.add_im, EF_apply, Pw_snd, Pw_snd]
   simp only [H_add_left, H_add_right, Complex.add_im]

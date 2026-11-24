@@ -83,7 +83,7 @@ theorem wf_add_single (m : σ →₀ ℕ) (i : σ) :
     intro x
     by_cases hx : x = i
     · subst hx; simp [Nat.factorial_succ]; ring
-    · simp [hx, Finsupp.single_apply]
+    · simp [hx]
   rw [Finset.prod_congr rfl (fun x _ => h x), Finset.prod_mul_distrib, Finset.prod_ite_eq']
   simp [mul_comm]
 
@@ -246,10 +246,10 @@ theorem sum_single_e (c : Fin r) : (∑ c', (Finsupp.single (e c) 1 : σ →₀ 
   simp [Finsupp.single_apply, he.eq_iff]
 
 theorem sum_single_we (c : Fin r) : (∑ c', (Finsupp.single (w c) 1 : σ →₀ ℕ) (e c')) = 0 := by
-  simp [Finsupp.single_apply, hwe]
+  simp [hwe]
 
 theorem sum_single_ew (c : Fin r) : (∑ c', (Finsupp.single (e c) 1 : σ →₀ ℕ) (w c')) = 0 := by
-  simp [Finsupp.single_apply, fun c' => Ne.symm (hwe c' c)]
+  simp [fun c' => Ne.symm (hwe c' c)]
 
 theorem biHom_X_w {a b : ℕ} (c : Fin r) {u : MvPolynomial σ K} (hu : BiHom w e a b u) :
     BiHom w e (a + 1) b (X (w c) * u) := by
@@ -528,7 +528,7 @@ theorem ineq_core (A : ℕ) (δ Kc p0 : ℝ) (hδ : 0 < δ) (hKc : 0 ≤ Kc) (hp
         exact add_le_add s1 (mul_le_mul_of_nonneg_left s2 hp0)
     _ ≤ _ := by
         rw [mul_add Kc, mul_add p0]
-        simp only [zero_mul, add_zero]
+        simp only [zero_mul]
         linarith
 end Formalism.GM.leadingTermLemmas
 
@@ -876,13 +876,13 @@ theorem biHom_Xcs (i : Fin (N + 1)) (c : Fin r) :
   · simp only [Finsupp.single_apply, Prod.mk.injEq, Fin.castSucc_inj]
     by_cases h : i = Fin.last N
     · subst h; simp
-    · simp [h, Ne.symm h]
-  · simp [Finsupp.single_apply, Fin.castSucc_ne_last]
+    · simp [h]
+  · simp [Fin.castSucc_ne_last]
 
 theorem biHom_Xeta (c : Fin r) :
     BiHom (wW (N := N)) eη 0 1 (X (Fin.last (N + 1), c) : MvPolynomial (Fin (N + 1 + 1) × Fin r) K) := by
   apply biHom_X_of
-  · simp [Finsupp.single_apply, (Fin.castSucc_ne_last _).symm]
+  · simp
   · simp [Finsupp.single_apply]
 
 theorem biHom_fSub (x : Fin (N + 1) × Fin r) :
@@ -1045,10 +1045,10 @@ theorem F_eta_pow (k : ℕ) (g : MvPolynomial (Fin (N + 1 + 1) × Fin r) K)
     apply pderiv_X_of_ne; intro h; simp only [wW, Prod.mk.injEq] at h; exact Fin.castSucc_ne_last _ h.1.symm
   by_cases hc : c = ρ
   · subst hc
-    simp only [pderiv_mul, pderiv_pow, h1, hg, pderiv_X_self, mul_zero, zero_mul, add_zero, mul_one]
-    simp [pderiv_mul, hg, h1]
+    simp only [pderiv_mul, pderiv_pow, pderiv_X_self, mul_one]
+    simp [hg, h1]
   · rw [pderiv_mul, pderiv_pow, pderiv_X_of_ne (by simp [eη, Ne.symm hc] : (Fin.last (N + 1), ρ) ≠ eη (N := N) c)]
-    simp [pderiv_mul, pderiv_pow, h1]
+    simp [h1]
 
 end
 
@@ -1073,7 +1073,7 @@ theorem wf_single_add (M : σ →₀ ℕ) (i : σ) (k : ℕ) :
       have := Nat.factorial_mul_descFactorial (n := M x + k) (k := k) (by omega)
       rw [Nat.add_sub_cancel] at this
       rw [add_comm k, ← this]; push_cast; ring
-    · simp [hx, Finsupp.single_apply, Ne.symm hx]
+    · simp [hx]
   rw [Finset.prod_congr rfl (fun x _ => h x), Finset.prod_mul_distrib, Finset.prod_ite_eq']
   simp [mul_comm]
 
@@ -1833,7 +1833,7 @@ theorem gamK_map {N : ℕ} (LL : M.Letters (N + 1)) (ρ : Fin r) (z n : ℕ) (m 
     gamK K LL ρ z n (monomial m 1) (monomial m' 1) = ι (gamK ℚ LL ρ z n (monomial m 1) (monomial m' 1)) := by
   unfold gamK
   rw [← map_frz_monomial K LL ρ n m, ← map_frz_monomial K LL ρ n m', ← map_tiePhi, fk_map]
-  simp [map_div₀, map_prod]
+  simp [map_div₀]
 
 theorem inMono_map {N : ℕ} (ρ : Fin r) (e : ℕ) (m : Fin (N + 1) × Fin r →₀ ℕ) :
     map ι (inMono (K := ℚ) ρ e m) = inMono (K := K) ρ e m := by
@@ -1887,7 +1887,7 @@ theorem fock_init_bil (p : ℕ) [Fact p.Prime] {N r : ℕ} (ρ : Fin r) (e : ℕ
     M.fock p (M.initPart (Fin.last N, ρ) e f) (M.initPart (Fin.last N, ρ) e f') =
       ∑ m ∈ f.support, ∑ m' ∈ f'.support, f.coeff m * f'.coeff m' * fk (inMono (K := ℚ_[p]) ρ e m) (inMono ρ e m') := by
   rw [fock_eq, initPart_sum, initPart_sum, fk_sum_left]
-  simp only [fk_smul_left, fk_sum_right, fk_smul_right, Finset.mul_sum]
+  simp only [fk_smul_left, fk_sum_right, fk_smul_right]
   refine Finset.sum_congr rfl (fun m _ => Finset.sum_congr rfl (fun m' _ => ?_))
   ring
 

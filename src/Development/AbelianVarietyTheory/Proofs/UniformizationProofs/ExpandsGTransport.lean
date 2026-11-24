@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsTwistBasisOffPrime
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegExpF
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.UnifBaseChangeSt
@@ -184,35 +185,7 @@ theorem famφ_eq (D : DegPre R) (F : Type) [Field F] [Algebra (FractionRing R) F
 theorem famφB_pull (hD : IsPullDeg φ D D') (x : D'.X) (κ : Fin 4) :
     D'.famφB x κ ≫ (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) =
       (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) ≫ D.famφB (hD.xe x) κ := by
-  obtain ⟨G1, G2⟩ := pull_grp hD
-  have he := hD.he
-  unfold eSec at he
-  have k2 : (toUnit D'.P.A ≫ D'.c x).left ≫ (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) =
-      (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) ≫ (toUnit D.P.A ≫ D.c (hD.xe x)).left := by
-    dsimp
-    rw [← Category.assoc _ D.P.A.hom, G1.w, Category.assoc, Category.assoc, hD.c_pr x]
-  have k3 : (toUnit D'.P.A ≫ η).left ≫ (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) =
-      (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) ≫ (toUnit D.P.A ≫ η).left := by
-    dsimp
-    rw [← Category.assoc _ D.P.A.hom, G1.w, Category.assoc, Category.assoc, he]
-  let x₀ : Over.mk (D'.P.A.hom ≫ spMap φ) ⟶ D.P.A :=
-    Over.homMk (hD.e.hom.left ≫ pullback.fst D.P.A.hom (specOf φ)) G1.w
-  have h1 := G2 D'.P.A (𝟙 _) (toUnit _ ≫ D'.c x) x₀ (x₀ ≫ toUnit D.P.A ≫ D.c (hD.xe x))
-    (Category.id_comp _).symm k2.symm
-  have h2 : x₀ * (x₀ ≫ toUnit D.P.A ≫ D.c (hD.xe x)) =
-      x₀ ≫ padd D.P.A (𝟙 _) (toUnit D.P.A ≫ D.c (hD.xe x)) := by
-    unfold padd
-    rw [Hom.mul_def, CartesianMonoidalCategory.comp_lift_assoc, Category.comp_id]
-  have h3 : (𝟙 D'.P.A) * (toUnit _ ≫ D'.c x) = padd D'.P.A (𝟙 _) (toUnit _ ≫ D'.c x) := by
-    unfold padd
-    rw [Hom.mul_def]
-  rw [h2, h3, Over.comp_left] at h1
-  unfold DegPre.famφB
-  fin_cases κ
-  · simp
-  · exact h1.symm
-  · exact k2
-  · exact k3
+  apply GlobalTheory.TwistLoc.fam_comm <;> assumption
 
 end Fam
 

@@ -1,5 +1,6 @@
 module
 
+import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ImageLcv
 public import Formalism.QuotientMetricDivisors.ProdFormula
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.DiscreteSpanOfLinIndep
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
@@ -138,22 +139,12 @@ theorem gram_det_real {d m : ℕ} (X : InfinitePlace K → Matrix (Fin d) (Fin d
     rw [← h]; exact norm_nonneg _
   exact Complex.ext (by simp) (by simp [him])
 
-theorem gram_re_ne [_root_.NumberField.IsTotallyComplex K] {d : ℕ}
-    (X : InfinitePlace K → Matrix (Fin d) (Fin d) ℂ) (hX : ∀ v, IsUnit (X v).det)
-    (e : Fin d → Fin d → K) (he : LinearIndependent K e) (v : InfinitePlace K) :
-    (gram X v e).det.re ≠ 0 := by
-  obtain ⟨h1, -⟩ := Formalism.HN.height_gram_determinant K (Fin d → K) (Fin d) (Pi.basisFun K (Fin d)) X hX d e he
-  obtain ⟨-, -, hpos⟩ := Formalism.HN.place_lattice_structure K (Fin d → K) (Fin d) (Pi.basisFun K (Fin d)) X hX
-    (Submodule.span (𝓞 K) (Set.range e)) (Submodule.fg_span (Set.finite_range e))
-  rw [h1] at hpos
-  exact (Finset.prod_ne_zero_iff.mp hpos.ne') v (Finset.mem_univ v)
-
 theorem gram_ne [_root_.NumberField.IsTotallyComplex K] {d : ℕ}
     (X : InfinitePlace K → Matrix (Fin d) (Fin d) ℂ) (hX : ∀ v, IsUnit (X v).det)
     (e : Fin d → Fin d → K) (he : LinearIndependent K e) (v : InfinitePlace K) :
     (gram X v e).det ≠ 0 := by
   intro h
-  apply gram_re_ne X hX e he v
+  apply _root_.Formalism.DivisionValues.imageLcv_gram_ne X hX e he v
   rw [h]; simp
 
 theorem std_li (d : ℕ) : LinearIndependent K (fun i => (Pi.single i 1 : Fin d → K)) := by
@@ -185,7 +176,7 @@ theorem gram_image [_root_.NumberField.IsTotallyComplex K] {d : ℕ}
     conv_lhs => rw [vec_expand (e i)]
     rw [Matrix.mulVec_sum]
     simp only [Matrix.mulVec_smul, γ, Matrix.of_apply]
-  have hS := gram_re_ne XS hXS _ (std_li d) v
+  have hS := _root_.Formalism.DivisionValues.imageLcv_gram_ne XS hXS _ (_root_.Formalism.DivisionValues.imageLcv_std_li d) v
   rw [hφe, gram_change, he, gram_change, detRatio]
   rw [gram_det_real XT v (fun i => φ *ᵥ (Pi.single i 1 : Fin d → K)),
     gram_det_real XS v (fun i => (Pi.single i 1 : Fin d → K))]
@@ -262,19 +253,6 @@ theorem isLocBasis_image {d : ℕ} (φ : Matrix (Fin d) (Fin d) K) (hφ : IsUnit
   unfold Formalism.HermitianLatticesTheory.loc at h2 ⊢
   rw [span_image, matLat_eq_map φ hφ, matLat_eq_map φ hφ, locS_map, locS_map, h2]
 
-theorem hcompl_le_conj (w : HeightOneSpectrum (𝓞 K)) :
-    Formalism.HermitianLatticesTheory.hcompl (K := K) w.asIdeal ≤ (conjPl w).asIdeal.primeCompl := by
-  unfold Formalism.HermitianLatticesTheory.hcompl
-  rw [Submonoid.closure_le]
-  intro s hs
-  show s ∉ (conjPl w).asIdeal
-  intro hsc
-  obtain ⟨u, hu, hus⟩ := (Ideal.mem_map_of_equiv (cO K) s).mp hsc
-  apply hs.2 u _ hu
-  rw [← hus]
-  show (u : K) = star (star (u : K))
-  rw [star_star]
-
 theorem localization_eq_and_conj_eq_of_semilocalization_eq (w : HeightOneSpectrum (𝓞 K)) {d : ℕ} (A B : Submodule (𝓞 K) (Fin d → K))
     (h : Formalism.HermitianLatticesTheory.loc (K := K) w.asIdeal A = Formalism.HermitianLatticesTheory.loc (K := K) w.asIdeal B) :
     Formalism.HermitianLatticesTheory.localization₂ w.asIdeal A = Formalism.HermitianLatticesTheory.localization₂ w.asIdeal B ∧
@@ -285,7 +263,7 @@ theorem localization_eq_and_conj_eq_of_semilocalization_eq (w : HeightOneSpectru
     rw [← locS_locS_of_le hT A, ← locS_locS_of_le hT B]
     unfold Formalism.HermitianLatticesTheory.loc at h
     rw [h]
-  exact ⟨key _ (Formalism.HermitianLatticesTheory.locBasic_hcompl_le (K := K) w.asIdeal), key _ (hcompl_le_conj w)⟩
+  exact ⟨key _ (Formalism.HermitianLatticesTheory.locBasic_hcompl_le (K := K) w.asIdeal), key _ (_root_.Formalism.DivisionValues.idxChange_hcompl_le_conj w)⟩
 
 theorem lidx_congr {R W : Type*} [CommRing R] [AddCommGroup W] [Module R W] (p : Ideal R)
     [p.IsPrime] (A A' B B' : Submodule R W) (hA : Formalism.HermitianLatticesTheory.localization₂ p A = Formalism.HermitianLatticesTheory.localization₂ p A')
@@ -336,8 +314,8 @@ theorem detRatio_ne [_root_.NumberField.IsTotallyComplex K] {d : ℕ}
     (hXS : ∀ v, IsUnit (XS v).det) (hXT : ∀ v, IsUnit (XT v).det)
     (φ : Matrix (Fin d) (Fin d) K) (hφ : IsUnit φ.det) (v : InfinitePlace K) :
     detRatio XS XT φ v ≠ 0 :=
-  div_ne_zero (gram_re_ne XT hXT _ (image_li φ hφ _ (std_li d)) v)
-    (gram_re_ne XS hXS _ (std_li d) v)
+  div_ne_zero (_root_.Formalism.DivisionValues.imageLcv_gram_ne XT hXT _ (image_li φ hφ _ (_root_.Formalism.DivisionValues.imageLcv_std_li d)) v)
+    (_root_.Formalism.DivisionValues.imageLcv_gram_ne XS hXS _ (_root_.Formalism.DivisionValues.imageLcv_std_li d) v)
 
 end Val
 
@@ -349,35 +327,7 @@ variable {R K V : Type*} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R 
 theorem lidx_add (p : Ideal R) [p.IsPrime] (A B C : Submodule R V)
     (hA : Submodule.IsFullLattice K A) (hB : Submodule.IsFullLattice K B) (hC : Submodule.IsFullLattice K C) :
     Formalism.HermitianLatticesTheory.lidx p A C = Formalism.HermitianLatticesTheory.lidx p A B + Formalism.HermitianLatticesTheory.lidx p B C := by
-  have hfin : ∀ X Y : Submodule R V, X.FG → Formalism.HermitianLatticesTheory.locS (nonZeroDivisors R) Y = ⊤ →
-      Module.length R (↥(Formalism.HermitianLatticesTheory.localization₂ p X) ⧸
-        (Formalism.HermitianLatticesTheory.localization₂ p Y).comap (Formalism.HermitianLatticesTheory.localization₂ p X).subtype) ≠ ⊤ := by
-    intro X Y hX hY
-    obtain ⟨d, hd, hdY⟩ :=
-      Formalism.HermitianLatticesTheory.indexBasic_denom (nonZeroDivisors R) X Y hX (by rw [hY]; exact le_top)
-    exact Module.length_ne_top_iff.mpr (Formalism.HermitianLatticesTheory.indexBasic_finLen p X Y hX hd hdY)
-  have hAt := Formalism.HermitianLatticesTheory.indexBasic_locS_top (K := K) A
-    (Submodule.IsFullLattice.span_eq_top (self := hA))
-  have hBt := Formalism.HermitianLatticesTheory.indexBasic_locS_top (K := K) B
-    (Submodule.IsFullLattice.span_eq_top (self := hB))
-  have hCt := Formalism.HermitianLatticesTheory.indexBasic_locS_top (K := K) C
-    (Submodule.IsFullLattice.span_eq_top (self := hC))
-  have hAfg : A.FG := Submodule.IsLattice.fg (self := hA.toIsLattice)
-  have hBfg : B.FG := Submodule.IsLattice.fg (self := hB.toIsLattice)
-  have hCfg : C.FG := Submodule.IsLattice.fg (self := hC.toIsLattice)
-  have hDt : Formalism.HermitianLatticesTheory.locS (nonZeroDivisors R) (A ⊓ B ⊓ C) = ⊤ := by
-    rw [Formalism.HermitianLatticesTheory.locBasic_locS_inf, Formalism.HermitianLatticesTheory.locBasic_locS_inf, hAt, hBt, hCt]
-    simp
-  have hAD := hfin A _ hAfg hDt
-  have hBD := hfin B _ hBfg hDt
-  have hCD := hfin C _ hCfg hDt
-  rw [Formalism.HermitianLatticesTheory.indexBasic_lidx_via p A C (A ⊓ B ⊓ C) (le_trans inf_le_left inf_le_left)
-      inf_le_right hAD hCD,
-    Formalism.HermitianLatticesTheory.indexBasic_lidx_via p A B (A ⊓ B ⊓ C) (le_trans inf_le_left inf_le_left)
-      (le_trans inf_le_left inf_le_right) hAD hBD,
-    Formalism.HermitianLatticesTheory.indexBasic_lidx_via p B C (A ⊓ B ⊓ C) (le_trans inf_le_left inf_le_right)
-      inf_le_right hBD hCD]
-  ring
+  apply (config := { allowSynthFailures := true }) Formalism.DivisionValues.idxLcv_lidx_add <;> assumption
 
 end Add
 

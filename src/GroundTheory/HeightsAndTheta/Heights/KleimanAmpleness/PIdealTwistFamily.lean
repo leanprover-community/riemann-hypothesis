@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PClaimSeq
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsIdealTwist
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -67,31 +68,14 @@ variable {R : Type u} [CommRing R] {N : ℕ}
 theorem homogeneousComponent_mul_form (r g : Poly R N) {d : ℕ} (hg : g.IsHomogeneous d) (e : ℕ) :
     homogeneousComponent e (r * g) ∈ Submodule.span R
       {z | ∃ (h : Poly R N) (d' : ℕ), h.IsHomogeneous d' ∧ d' + d = e ∧ z = h * g} := by
-
-  rw [show r * g = ∑ i ∈ Finset.range (r.totalDegree + 1), homogeneousComponent i r * g by
-  rw [← Finset.sum_mul, sum_homogeneousComponent], map_sum]
-  refine Submodule.sum_mem _ fun i _ => ?_
-  have hm : homogeneousComponent i r * g ∈ homogeneousSubmodule (Fin (N + 1)) R (i + d) :=
-    (mem_homogeneousSubmodule _ _).mpr ((homogeneousComponent_isHomogeneous i r).mul hg)
-  rw [homogeneousComponent_of_mem hm]
-  split_ifs with h
-  · exact Submodule.subset_span ⟨_, i, homogeneousComponent_isHomogeneous i r, h.symm, rfl⟩
-  · exact Submodule.zero_mem _
+  apply GroundTheory.Heights₂.Heights.Kleiman.homogeneousComponent_mul_form <;> assumption
 
 theorem mem_span_forms_of_mem_ideal {G : Set (Poly R N)} (deg : Poly R N → ℕ)
     (hG : ∀ g ∈ G, g.IsHomogeneous (deg g)) {f : Poly R N} {e : ℕ} (hf : f ∈ Ideal.span G)
     (he : f.IsHomogeneous e) :
     f ∈ Submodule.span R {z | ∃ g ∈ G, ∃ (h : Poly R N) (d' : ℕ), h.IsHomogeneous d' ∧
       d' + deg g = e ∧ z = h * g} := by
-  obtain ⟨c, t, htG, -, rfl⟩ := Submodule.mem_span_iff_exists_finset_subset.mp hf
-
-  rw [← homogeneousComponent_eq_self he, map_sum]
-  refine Submodule.sum_mem _ fun g hg => ?_
-  have hc := homogeneousComponent_mul_form (c g) g (hG g (htG hg)) e
-  rw [smul_eq_mul]
-  refine Submodule.span_le.mpr ?_ hc
-  rintro _ ⟨h, d', hh, hd, rfl⟩
-  exact Submodule.subset_span ⟨g, htG hg, h, d', hh, hd, rfl⟩
+  apply GroundTheory.Heights₂.Heights.Kleiman.mem_span_forms_of_mem_ideal <;> assumption
 
 theorem isHomogeneous_totalDegree {g : Poly R N} {d : ℕ} (hg : g.IsHomogeneous d) :
     g.IsHomogeneous g.totalDegree := by

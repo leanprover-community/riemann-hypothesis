@@ -102,8 +102,6 @@ private theorem op_isFractionRing' (D N : ℕ) (la : HeightOneSpectrum (𝓞 K))
       congr 1
       first
         | (field_simp; done)
-        | (rw [mul_div_assoc', mul_div_cancel_left₀ _ hy'])
-        | (field_simp; ring)
     next p q hp hq =>
       obtain ⟨s1, hs1, p1, hp1⟩ := hp
       obtain ⟨s2, hs2, q1, hq1⟩ := hq
@@ -159,8 +157,6 @@ private theorem op_isFractionRing' (D N : ℕ) (la : HeightOneSpectrum (𝓞 K))
     have h2 := hCne sp hsp
     first
       | (field_simp; done)
-      | (field_simp; ring)
-      | (rw [div_mul_eq_mul_div, div_eq_iff hq0]; ring)
   · intro x y hxy
     exact ⟨1, by rw [hinj hxy]⟩
 
@@ -241,7 +237,6 @@ private theorem isDedekindDomain_Op (D N : ℕ) (la : HeightOneSpectrum (𝓞 K)
   haveI : IsNoetherianRing (Op D N la) := by
     first
       | infer_instance
-      | exact IsLocalization.isNoetherianRing (laT D N la).primeCompl (Op D N la) inferInstance
   have hnf : ¬ IsField (Op D N la) := by
     rw [IsLocalRing.isField_iff_maximalIdeal_eq]
     intro h
@@ -304,11 +299,9 @@ theorem comp_facts (hd : d.AxH 𝒜) (h : d.S1) (la : HeightOneSpectrum (𝓞 K)
   · first
       | exact integralClosure.isDedekindDomain (A := Op d.D d.N la) (K := KTf K d.D d.N)
           (L := OmS (Ω c) d.D d.N)
-      | exact integralClosure.isDedekindDomain (Op d.D d.N la) (KTf K d.D d.N) (OmS (Ω c) d.D d.N)
   · first
       | exact integralClosure.isFractionRing_of_finite_extension (A := Op d.D d.N la)
           (K := KTf K d.D d.N) (L := OmS (Ω c) d.D d.N)
-      | exact integralClosure.isFractionRing_of_finite_extension (KTf K d.D d.N) (OmS (Ω c) d.D d.N)
 
 theorem plOver_eq (h : d.S1) (la : HeightOneSpectrum (𝓞 K)) (c : ι) :
     letI : Algebra (Op d.D d.N la) (OmS (Ω c) d.D d.N) := d.algOp h la c
@@ -350,9 +343,6 @@ theorem plOver_eq (h : d.S1) (la : HeightOneSpectrum (𝓞 K)) (c : ι) :
       first
         | exact IsLocalization.AtPrime.to_map_mem_maximal_iff (S := Op d.D d.N la)
             (I := laT d.D d.N la) x
-        | (rw [← IsLocalization.mk'_one (M := (laT d.D d.N la).primeCompl) (Op d.D d.N la) x]
-           exact IsLocalization.AtPrime.mk'_mem_maximal_iff (S := Op d.D d.N la)
-            (I := laT d.D d.N la) x 1)
     rw [hOS, key] at this
     exact this
 

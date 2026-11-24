@@ -48,6 +48,10 @@ open DividedPowers GlobalTheory.Cris GlobalTheory.DeRham
 
 namespace GlobalTheory.Published
 
+/-- Grothendieck--Messing deformation theory for abelian schemes over nilpotent divided-power
+thickenings `R → R₀` without the `p`-nilpotency hypothesis (implying `GrothendieckMessing` via
+`GrothendieckDeformation.grothendieckMessing`).
+See [Messing, *The Crystals Associated to Barsotti-Tate Groups* (Chapter V, Theorem 1.6 and Section 2)][messing1972]. -/
 def GrothendieckDeformation : Prop :=
   ∀ (R : Type) [CommRing R] (I : Ideal R) (κ : DividedPowers I), IsNilDP κ →
     ∀ (R₀ : Type) [CommRing R₀] (π : R →+* R₀), Function.Surjective π → RingHom.ker π = I →

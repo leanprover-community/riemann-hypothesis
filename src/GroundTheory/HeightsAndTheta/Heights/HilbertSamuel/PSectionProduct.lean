@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionOrderAtPoint
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionProduct
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBoundedMul
 import Mathlib.Algebra.Order.Floor.Extended
@@ -59,22 +60,7 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 omit [Fintype K] in
 theorem isMultiHomog_pow {g : MRing ι} {d : K → ℕ} (hg : IsMultiHomog g d) (j : ℕ) :
     IsMultiHomog (g ^ j) (j • d) := by
-  induction j with
-  | zero =>
-    rw [pow_zero, zero_smul]
-    classical
-    intro m hm k
-    have h : (1 : MRing ι) = monomial 0 1 := by simp
-    rw [h] at hm
-    rw [Finset.mem_singleton.mp (support_monomial_subset hm)]
-    simp
-  | succ j ih =>
-    rw [pow_succ, succ_nsmul]
-    classical
-    intro m hm k
-    obtain ⟨m₁, hm₁, m₂, hm₂, rfl⟩ := Finset.mem_add.mp (support_mul _ _ hm)
-    simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply]
-    rw [ih m₁ hm₁ k, hg m₂ hm₂ k]
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.SectionOrderAtPoint.isMultiHomog_pow' <;> assumption
 
 end SectionProduct
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormDetInnerLeOfDetEqOne
 public import Formalism.PeriodIntegrals.Transference
 public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
 public import Mathlib.Algebra.AffineMonoid.Basic
@@ -339,58 +340,7 @@ theorem had_onb {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] (ρ 
 
 theorem had_inner' {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] (ρ : ℕ) (a x : Fin ρ → E) :
     ‖(Matrix.of fun i k => inner ℂ (a i) (x k)).det‖ ≤ (∏ i, ‖a i‖) * ∏ k, ‖x k‖ := by
-  classical
-  by_cases hx : LinearIndependent ℂ x
-  · set w : Fin ρ → E := InnerProductSpace.gramSchmidtNormed ℂ x with hwdef
-    have hw : Orthonormal ℂ w := InnerProductSpace.gramSchmidtNormed_orthonormal hx
-    have hexp : ∀ k, x k = ∑ l, inner ℂ (w l) (x k) • w l := by
-      intro k
-      have hmem : x k ∈ Submodule.span ℂ (Set.range w) := by
-        rw [hwdef, InnerProductSpace.span_gramSchmidtNormed_range, InnerProductSpace.span_gramSchmidt]
-        exact Submodule.subset_span ⟨k, rfl⟩
-      obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).mp hmem
-      have hcl : ∀ l, inner ℂ (w l) (x k) = c l := by
-        intro l
-        rw [← hc]
-        exact hw.inner_right_fintype c l
-      rw [← hc]
-      refine Finset.sum_congr rfl fun l _ => ?_
-      rw [hc, hcl]
-    have hfac : (Matrix.of fun i k => inner ℂ (a i) (x k)) =
-        (Matrix.of fun i l => inner ℂ (a i) (w l)) * (Matrix.of fun l k => inner ℂ (w l) (x k)) := by
-      ext i k
-      rw [Matrix.mul_apply]
-      simp only [Matrix.of_apply]
-      conv_lhs => rw [hexp k]
-      rw [inner_sum]
-      refine Finset.sum_congr rfl fun l _ => ?_
-      rw [inner_smul_right, mul_comm]
-    rw [hfac, Matrix.det_mul, norm_mul]
-    refine mul_le_mul ?_ (had_onb ρ w x hw) (norm_nonneg _) (Finset.prod_nonneg fun _ _ => norm_nonneg _)
-    have h1 : ‖(Matrix.of fun i l => inner ℂ (a i) (w l)).det‖ =
-        ‖(Matrix.of fun l i => inner ℂ (w l) (a i)).det‖ := by
-      have h2 : (Matrix.of fun i l => inner ℂ (a i) (w l)) =
-          ((Matrix.of fun l i => inner ℂ (w l) (a i)) : Matrix (Fin ρ) (Fin ρ) ℂ).conjTranspose := by
-        ext i l
-        simp [Matrix.conjTranspose_apply]
-      rw [h2, Matrix.det_conjTranspose, norm_star]
-    rw [h1]
-    exact had_onb ρ w a hw
-  · have hdet : (Matrix.of fun i k => inner ℂ (a i) (x k)).det = 0 := by
-      rw [← Matrix.exists_mulVec_eq_zero_iff]
-      rw [Fintype.linearIndependent_iff] at hx
-      push Not at hx
-      obtain ⟨g, hg, k0, hk0⟩ := hx
-      refine ⟨g, fun h => hk0 (by rw [h]; rfl), ?_⟩
-      ext i
-      simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.zero_apply]
-      have : ∑ k, inner ℂ (a i) (x k) * g k = inner ℂ (a i) (∑ k, g k • x k) := by
-        rw [inner_sum]
-        refine Finset.sum_congr rfl fun k _ => ?_
-        rw [inner_smul_right, mul_comm]
-      rw [this, hg, inner_zero_right]
-    rw [hdet, norm_zero]
-    exact mul_nonneg (Finset.prod_nonneg fun _ _ => norm_nonneg _) (Finset.prod_nonneg fun _ _ => norm_nonneg _)
+  apply GlobalTheory.PlueckerBound.norm_det_inner_le <;> assumption
 
 theorem had_inner (d ρ : ℕ) (a x : Fin ρ → EuclideanSpace ℂ (Fin d)) :
     ‖(Matrix.of fun i k => inner ℂ (a i) (x k)).det‖ ≤ (∏ i, ‖a i‖) * ∏ k, ‖x k‖ :=
@@ -491,7 +441,7 @@ theorem exists_minor_ne_zero {ρ m : ℕ} (cf : Fin m → (V →ₗ[K] K)) (hcf 
     funext i k
     rw [Finset.sum_apply, Matrix.of_apply, ha i]
     ext β
-    simp [coeff_polyOf, MvPolynomial.coeff_sum]
+    simp [coeff_polyOf]
   rw [h1, det_sum_rows (fun i j => fun k => MvPolynomial.C (a i j) * polyOf (cf j) (z k))
     (fun _ => (Finset.univ : Finset (Fin m)))]
   refine Finset.sum_eq_zero fun J _ => ?_
@@ -1032,7 +982,7 @@ theorem tr_traceDual : TrTraceDual := by
   exact ⟨cf, fun f => by simpa using h 1 f⟩
 
 theorem tr_scale : TrScale := by
-  first | exact UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale .. | (apply UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> assumption) | (intros; apply UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> assumption) | (apply @UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> assumption) | (apply @UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> first | assumption | infer_instance)
+  first | (apply UpperTheory.Reformulated.B.PairedCharacterCondition.tr_scale <;> assumption)
 
 section TrA
 

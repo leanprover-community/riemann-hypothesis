@@ -55,11 +55,7 @@ namespace GlobalTheory.EvalAtZero
 
 variable {D : D7}
 
-theorem heisO_smul (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (w₀ : WO S T) (c : ℂ) (f : WO S T → ℂ) :
-    heisO ψ S T w₀ (c • f) = c • heisO ψ S T w₀ f := by
-  funext w
-  simp only [heisO, Pi.smul_apply, smul_eq_mul]
-  ring
+alias heisO_smul := _root_.GlobalTheory.SplitScalar.heisO_smul
 
 theorem det_UX {ρ : ℕ} (γ : UX D ρ) : Matrix.GeneralLinearGroup.det γ.1 = 1 := by
   have hu : γ.1 ∈ UX D ρ := γ.2

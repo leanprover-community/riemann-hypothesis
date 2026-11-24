@@ -62,16 +62,6 @@ noncomputable section
 
 namespace ComplementArchCocompact
 
-section Lattice
-
-variable {E : Type*} [Field E] [NumberField E] {W : Type*} [AddCommGroup W] [Module E W]
-
-theorem exists_zsmul_mem {La : AddSubgroup W} (hL : IsLattice E La) (x : W) :
-    ∃ d : ℤ, d ≠ 0 ∧ d • x ∈ La :=
-  _root_.UpperTheory.Reformulated.B.ExistsZsmulMem.exists_zsmul_mem hL x
-
-end Lattice
-
 end ComplementArchCocompact
 
 variable {F E : Type*} [Field F] [Field E] [NumberField F] [NumberField E] [Algebra F E]
@@ -130,7 +120,7 @@ theorem ComplementArchCocompact.proof (h : HermitianForm F E W) (v : Basis ι E 
     funext w i
     rw [vecAt, coordEmbed_apply, ← Basis.equivFun_apply, LinearEquiv.apply_symm_apply]
   let p : _ → W := fun k => (ComplementExtension.proj hp (e k) : W)
-  choose d hd hdL using fun k => exists_zsmul_mem hLa (p k)
+  choose d hd hdL using fun k => _root_.UpperTheory.Reformulated.B.ExistsZsmulMem.exists_zsmul_mem hLa (p k)
   let f : _ → W := fun k => m • d k • p k
   let D : _ → ℝ := fun k => (m : ℝ) * d k
   have hD : ∀ k, D k ≠ 0 := fun k =>

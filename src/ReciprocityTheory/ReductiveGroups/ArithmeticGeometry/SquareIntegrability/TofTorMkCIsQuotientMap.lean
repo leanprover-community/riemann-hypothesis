@@ -73,7 +73,6 @@ theorem tof_torMk_isQuotientMap (d : ℕ) : IsQuotientMap (tof_torMk d) := by
     show Continuous fun x : Fin d → ℝ => ((x i : ℝ) : UnitAddCircle)
     first
     | exact continuous_quotient_mk'.comp (continuous_apply i)
-    | exact (AddCircle.continuous_mk' 1).comp (continuous_apply i)
     | fun_prop
     | continuity
   have hsurj : Function.Surjective (tof_torMk d) := by
@@ -88,7 +87,6 @@ theorem tof_torMk_isQuotientMap (d : ℕ) : IsQuotientMap (tof_torMk d) := by
         (Filter.Eventually.of_forall fun _ => QuotientAddGroup.mk_surjective)
   first
   | exact ho.isQuotientMap hc hsurj
-  | exact IsOpenQuotientMap.isQuotientMap ⟨hsurj, hc, ho⟩
 
 def tof_torMkC (d : ℕ) : C((Fin d → ℝ), UnitAddTorus (Fin d)) :=
   ⟨tof_torMk d, (tof_torMk_isQuotientMap d).continuous⟩
@@ -104,13 +102,9 @@ theorem tof_torMk_eq {d : ℕ} {a b : Fin d → ℝ} (h : tof_torMk d a = tof_to
     have h0 : ((b i - a i : ℝ) : UnitAddCircle) = 0 := by
       first
       | rw [QuotientAddGroup.mk_sub, hi, sub_self]
-      | rw [AddCircle.coe_sub, hi, sub_self]
-      | simp [hi]
     obtain ⟨k, hk⟩ : ∃ k : ℤ, k • (1 : ℝ) = b i - a i := by
       first
       | exact (AddCircle.coe_eq_zero_iff 1).mp h0
-      | exact AddCircle.coe_eq_zero_iff.mp h0
-      | exact AddSubgroup.mem_zmultiples_iff.mp ((QuotientAddGroup.eq_zero_iff _).mp h0)
     refine ⟨k, ?_⟩
     simp only [zsmul_eq_mul, mul_one] at hk
     linarith
@@ -137,18 +131,16 @@ theorem tof_torLift_mk {d : ℕ} (F : (Fin d → ℝ) → ℂ) (hF : Continuous 
       ((tof_torMkC_isQuotientMap d).lift_comp ⟨F, hF⟩ (tof_torMk_factors F hF hper)) y
   | exact ContinuousMap.congr_fun
       ((tof_torMkC_isQuotientMap d).lift_comp (g := ⟨F, hF⟩) (h := tof_torMk_factors F hF hper)) y
-  | simp [tof_torLift]
 
 theorem tof_box_measurable (d : ℕ) : MeasurableSet {x : Fin d → ℝ | ∀ i, x i ∈ Set.Ioc (0 : ℝ) 1} := by
   first
   | (simp only [Set.setOf_forall]
      exact MeasurableSet.iInter fun i => measurable_pi_apply i measurableSet_Ioc)
-  | measurability
 
 theorem tof_mFourier_torMk {d : ℕ} (n : Fin d → ℤ) (y : Fin d → ℝ) :
     mFourier n (tof_torMk d y) = cexp (2 * Real.pi * I * ∑ i, (n i : ℂ) * y i) := by
   have e : mFourier n (tof_torMk d y) = ∏ i, fourier (n i) ((y i : ℝ) : UnitAddCircle) := by
-    first | rfl | simp [mFourier, tof_torMk]
+    first | rfl
   rw [e]
   simp only [fourier_coe_apply, Complex.ofReal_one, div_one]
   rw [Finset.mul_sum, Complex.exp_sum]
@@ -177,7 +169,6 @@ private theorem measurePreserving_torMk_restrict_Ioc (d : ℕ) :
     Measure.restrict_pi_pi]
   first
   | exact measurePreserving_pi _ _ (fun _ => measurePreserving_coe_unitAddCircle_restrict_Ioc)
-  | exact measurePreserving_pi (fun _ => measurePreserving_coe_unitAddCircle_restrict_Ioc)
 
 private theorem integral_torus_eq_setIntegral_Ioc_torMk {d : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [SecondCountableTopology E] (g : UnitAddTorus (Fin d) → E) (hg : Continuous g) :
@@ -204,8 +195,6 @@ theorem tof_coeff_eq {d : ℕ} (f : C(UnitAddTorus (Fin d), ℂ)) (F : (Fin d �
     ((mFourier (-n)).continuous.smul f.continuous)).trans ?_
   first
   | exact setIntegral_congr_fun (tof_box_measurable d) key
-  | exact setIntegral_congr (tof_box_measurable d) key
-  | exact setIntegral_congr_fun₀ (tof_box_measurable d).nullMeasurableSet key
 
 private theorem hasSum_norm_sq_mFourierCoeff_eq_integral_norm_sq {d : ℕ} (f : C(UnitAddTorus (Fin d), ℂ)) :
     HasSum (fun n : Fin d → ℤ => ‖mFourierCoeff f n‖ ^ 2) (∫ t, ‖f t‖ ^ 2) := by
@@ -214,8 +203,6 @@ private theorem hasSum_norm_sq_mFourierCoeff_eq_integral_norm_sq {d : ℕ} (f : 
     first
     | exact ContinuousMap.coeFn_toLp f
     | exact ContinuousMap.coeFn_toLp (μ := volume) f
-    | exact ContinuousMap.coeFn_toLp ℂ f
-    | exact ContinuousMap.coeFn_toLp _ _ _ f
   have h := hasSum_sq_mFourierCoeff
     (ContinuousMap.toLp (E := ℂ) 2 (volume : Measure (UnitAddTorus (Fin d))) ℂ f)
   have e1 : ∀ n, mFourierCoeff
@@ -224,9 +211,6 @@ private theorem hasSum_norm_sq_mFourierCoeff_eq_integral_norm_sq {d : ℕ} (f : 
     intro n
     first
     | exact mFourierCoeff_toLp f n
-    | exact mFourierCoeff_toLp n
-    | exact mFourierCoeff_toLp (f := f) n
-    | simp [mFourierCoeff_toLp]
   have e2 : ∫ t, ‖(ContinuousMap.toLp (E := ℂ) 2 (volume : Measure (UnitAddTorus (Fin d))) ℂ f) t‖ ^ 2
       = ∫ t, ‖f t‖ ^ 2 :=
     integral_congr_ae (hae.mono fun t ht => by simp only [ht])
@@ -255,13 +239,10 @@ theorem tof_torus_unique {d : ℕ} (F : (Fin d → ℝ) → ℂ) (hF : Continuou
   have hint : Integrable (fun t => ‖f t‖ ^ 2) (volume : Measure (UnitAddTorus (Fin d))) := by
     first
     | exact integrableOn_univ.mp (hcont.continuousOn.integrableOn_compact isCompact_univ)
-    | exact hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-    | exact (ContinuousMap.mk _ hcont).integrable
   have hae := (integral_eq_zero_iff_of_nonneg (fun t => sq_nonneg ‖f t‖) hint).mp hI
   have heq : (fun t => ‖f t‖ ^ 2) = (0 : UnitAddTorus (Fin d) → ℝ) := by
     first
     | exact (Continuous.ae_eq_iff_eq volume hcont continuous_zero).mp hae
-    | exact (Continuous.ae_eq_iff_eq hcont continuous_zero).mp hae
   have h1 : ‖f (tof_torMk d x)‖ ^ 2 = 0 := congrFun heq (tof_torMk d x)
   rw [hfx] at h1
   simpa using h1
@@ -280,7 +261,6 @@ theorem tof_box_shift {d : ℕ} (F : (Fin d → ℝ) → ℂ) (hF : Continuous F
     first
     | exact (QuotientAddGroup.mk_add _ _).symm
     | rfl
-    | simp
   have e1 := integral_torus_eq_setIntegral_Ioc_torMk (fun t => f (t + tof_torMk d s))
     (f.continuous.comp (continuous_id.add continuous_const))
   have e2 := integral_torus_eq_setIntegral_Ioc_torMk (fun t => f t) f.continuous
@@ -315,7 +295,6 @@ theorem tof_torus_inversion {d : ℕ} (F : (Fin d → ℝ) → ℂ) (hF : Contin
   have hpt : HasSum (fun n => mFourierCoeff f n • mFourier n (tof_torMk d 0)) (f (tof_torMk d 0)) := by
     first
     | exact hasSum_mFourier_series_apply_of_summable hs (tof_torMk d 0)
-    | exact ContinuousMap.hasSum_apply (hasSum_mFourier_series_of_summable hs) (tof_torMk d 0)
     | exact (hasSum_mFourier_series_of_summable hs).map (ContinuousMap.evalCLM ℂ (tof_torMk d 0))
         (ContinuousMap.evalCLM ℂ (tof_torMk d 0)).continuous
   have h1 : ∀ n : Fin d → ℤ, mFourier n (tof_torMk d 0) = 1 := by

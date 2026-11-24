@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCharA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.SfiniteMuN
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -63,29 +64,13 @@ section Grp
 variable {k r : ℕ}
 
 theorem hpk_sq (k r : ℕ) : Hpk k r * Hpk k r = 1 := by
-  ext i j
-  have hi := i.isLt
-  have hj := j.isLt
-  rw [Matrix.mul_apply, Finset.sum_eq_single
-    (⟨if (i : ℕ) < r ∨ r + k < i then 2 * r + k - i else i, by split_ifs <;> omega⟩ :
-      Fin (2 * r + k + 1))]
-  · simp only [Hpk, Matrix.one_apply, Fin.ext_iff, Fin.val_mk]
-    split_ifs <;> first | (exfalso; omega) | norm_num
-  · intro l _ hl
-    have hl' : (l : ℕ) ≠ if (i : ℕ) < r ∨ r + k < i then 2 * r + k - i else i :=
-      fun h => hl (Fin.ext h)
-    have hl2 := l.isLt
-    simp only [Hpk, Fin.ext_iff, Fin.val_mk]
-    split_ifs at hl' ⊢ <;> first | (exfalso; omega) | norm_num
-  · intro h
-    exact absurd (Finset.mem_univ _) h
+  apply ReciprocityTheory.ChartRestriction.DS.Mult1.InvChr.Hpk_sq <;> assumption
 
 theorem uh_mul {a b : Mx k r} (ha : a ∈ UH (Hpk k r)) (hb : b ∈ UH (Hpk k r)) : a * b ∈ UH (Hpk k r) := by
-  show (a * b)ᴴ * Hpk k r * (a * b) = Hpk k r
   have ha' : aᴴ * Hpk k r * a = Hpk k r := ha
   have hb' : bᴴ * Hpk k r * b = Hpk k r := hb
-  rw [Matrix.conjTranspose_mul]
-  calc bᴴ * aᴴ * Hpk k r * (a * b) = bᴴ * (aᴴ * Hpk k r * a) * b := by simp only [mul_assoc]
+  calc (a * b)ᴴ * Hpk k r * (a * b) = bᴴ * (aᴴ * Hpk k r * a) * b := by
+        simp only [conjTranspose_mul, mul_assoc]
     _ = Hpk k r := by rw [ha', hb']
 
 theorem uh_inv {a : Mx k r} (ha : a ∈ UH (Hpk k r)) :
@@ -104,9 +89,8 @@ theorem uh_inv {a : Mx k r} (ha : a ∈ UH (Hpk k r)) :
     _ = Hpk k r := by rw [h2]; simp
 
 theorem col_eq (g : Mx k r) (j : Fin (2 * r + k + 1)) : g *ᵥ bvec j = fun i => g i j := by
-  unfold bvec
   ext i
-  simp [Matrix.mulVec, dotProduct, Pi.single_apply]
+  simp [bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
 
 def lowS (k r a : ℕ) : Submodule ℂ (Fin (2 * r + k + 1) → ℂ) where
   carrier := {y | ∀ i : Fin (2 * r + k + 1), a ≤ i.val → y i = 0}
@@ -161,9 +145,8 @@ private lemma mem_lowS_of_apply_mem_lowS {g : Mx k r} (hg : g⁻¹ * g = 1) {a :
     (hx : g *ᵥ x ∈ lowS k r a) : x ∈ lowS k r a := by
   obtain ⟨x', hx', he⟩ := onto_low hg hmaps _ hx
   have h3 : x' = x := by
-    have h2 := congrArg (fun v => g⁻¹ *ᵥ v) he
-    simp only [Matrix.mulVec_mulVec, hg, Matrix.one_mulVec] at h2
-    exact h2
+    simpa only [Matrix.mulVec_mulVec, hg, Matrix.one_mulVec] using
+      congrArg (fun v => g⁻¹ *ᵥ v) he
   rw [← h3]
   exact hx'
 
@@ -260,26 +243,20 @@ theorem hpk_row_eI (b : Fin r) (l : Fin (2 * r + k + 1)) :
 theorem herm_esI (y : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
     herm (Hpk k r) y (bvec (esI k r b)) = y (eI k r b) := by
   have hs : star (bvec (esI k r b) : Fin (2 * r + k + 1) → ℂ) = bvec (esI k r b) := by
-    unfold bvec
     ext l
-    rw [Pi.star_apply]
-    by_cases h : l = esI k r b <;> simp [h]
+    by_cases h : l = esI k r b <;> simp [bvec, h, Pi.star_apply]
   unfold herm
   rw [hs]
-  unfold bvec
-  simp [dotProduct, Matrix.mulVec, Pi.single_apply, hpk_row_esI]
+  simp [bvec, dotProduct, Matrix.mulVec, Pi.single_apply, hpk_row_esI]
 
 theorem herm_eI (y : Fin (2 * r + k + 1) → ℂ) (b : Fin r) :
     herm (Hpk k r) y (bvec (eI k r b)) = y (esI k r b) := by
   have hs : star (bvec (eI k r b) : Fin (2 * r + k + 1) → ℂ) = bvec (eI k r b) := by
-    unfold bvec
     ext l
-    rw [Pi.star_apply]
-    by_cases h : l = eI k r b <;> simp [h]
+    by_cases h : l = eI k r b <;> simp [bvec, h, Pi.star_apply]
   unfold herm
   rw [hs]
-  unfold bvec
-  simp [dotProduct, Matrix.mulVec, Pi.single_apply, hpk_row_eI]
+  simp [bvec, dotProduct, Matrix.mulVec, Pi.single_apply, hpk_row_eI]
 
 theorem uw_inWb {z : Fin (2 * r + k + 1) → ℂ} {h : Mx k r} (hh : h ∈ UWset k r z)
     {v : Fin (2 * r + k + 1) → ℂ} (hv : inWb k r v) : inWb k r (h *ᵥ v) := by

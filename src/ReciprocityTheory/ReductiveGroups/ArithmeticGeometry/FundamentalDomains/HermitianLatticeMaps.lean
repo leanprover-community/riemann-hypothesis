@@ -85,15 +85,6 @@ theorem coe_expand (f : Basis ι ℤ X.Λ) (v : X.Λ) :
     | (conv_lhs => rw [← f.sum_repr v]
        rw [Submodule.coe_sum]
        rfl)
-    | (conv_lhs => rw [← f.sum_repr v]
-       rw [Submodule.coe_sum]
-       exact Finset.sum_congr rfl fun i _ => Submodule.coe_smul_of_tower _ _)
-    | (conv_lhs => rw [← f.sum_repr v]
-       push_cast
-       rfl)
-    | (have e := congrArg (fun w : X.Λ => (w : Fin r → E)) (f.sum_repr v)
-       simp only [Submodule.coe_sum, Submodule.coe_smul_of_tower] at e
-       exact e.symm)
 
 variable (f f' : Basis ι ℤ X.Λ)
 
@@ -103,10 +94,6 @@ noncomputable def phi : (Fin r → E) →ₗ[ℚ] (Fin r → E) :=
 theorem phi_f (i : ι) : phi X f f' (f i : Fin r → E) = f' i := by
   first
     | (rw [← RealPlaceEmbeddings.qb_apply X f i]; unfold phi; rw [Basis.constr_basis])
-    | (rw [← RealPlaceEmbeddings.qb_apply (X := X) f i]; unfold phi; rw [Basis.constr_basis])
-    | (have e := (RealPlaceEmbeddings.qb X f).constr_basis ℚ (fun j => (f' j : Fin r → E)) i
-       rw [RealPlaceEmbeddings.qb_apply] at e
-       exact e)
 
 theorem phi_zsum (n : ι → ℤ) :
     phi X f f' (∑ i, n i • (f i : Fin r → E)) = ∑ i, n i • (f' i : Fin r → E) := by
@@ -129,8 +116,6 @@ theorem phi_phi (x : Fin r → E) : phi X f' f (phi X f f' x) = x := by
 theorem smul_coe (ω : 𝓞 E) (v : X.Λ) : ((ω • v : X.Λ) : Fin r → E) = (ω : E) • (v : Fin r → E) := by
   first
     | rfl
-    | (rw [Submodule.coe_smul]; rfl)
-    | (rw [Submodule.coe_smul, Algebra.smul_def]; rfl)
 
 variable {f f'}
 

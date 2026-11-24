@@ -58,13 +58,6 @@ noncomputable section
 
 universe u
 
-theorem fderiv_isBigO_of_isBigO_pow {n : ℕ} {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F]
-    {f : V n → F} {U : Set (V n)} {x : V n} (hU : IsOpen U) (hx : x ∈ U)
-    (hf : DifferentiableOn ℂ f U) {m : ℕ}
-    (hO : f =O[𝓝 x] fun v => ‖v - x‖ ^ (m + 1 + 1)) :
-    fderiv ℂ f =O[𝓝 x] fun v => ‖v - x‖ ^ (m + 1) := by
-  first | exact Bl.CoprimeDirections.goal1 .. | (apply Bl.CoprimeDirections.goal1 <;> assumption) | (intros; apply Bl.CoprimeDirections.goal1 <;> assumption)
-
 theorem isBigO_succ_of_fderiv_isBigO {n : ℕ} {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F]
     {f : V n → F} {U : Set (V n)} {x : V n} (hU : IsOpen U) (hx : x ∈ U)
     (hf : DifferentiableOn ℂ f U) (h0 : f x = 0) {m : ℕ}
@@ -116,7 +109,7 @@ theorem iteratedFDeriv_eq_zero_of_isBigO_alt {n : ℕ} (m : ℕ) : ∀ {F : Type
     · rw [← norm_eq_zero, norm_iteratedFDeriv_zero, norm_eq_zero]
       exact hO.eq_zero_of_norm_pow (by omega)
     · have hd : ContDiffOn ℂ ∞ (fderiv ℂ f) U := hf.fderiv_of_isOpen hU top_add_one_le_top
-      have hO' := fderiv_isBigO_of_isBigO_pow hU hx (hf.differentiableOn top_ne_zero_withTop) hO
+      have hO' := _root_.Bl.CoprimeDirections.goal1 hU hx (hf.differentiableOn top_ne_zero_withTop) hO
       rw [← norm_eq_zero, ← norm_iteratedFDeriv_fderiv, norm_eq_zero]
       exact ih (fderiv ℂ f) U x hU hx hd hO' k (by omega)
 

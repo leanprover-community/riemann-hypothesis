@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLineBundleDescentToSubfield
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.NonemptyIsLimitBaseChange
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MorphismsSpreadOutToFgSubalgebra
 import Mathlib.Algebra.Order.Floor.Extended
@@ -105,21 +106,7 @@ theorem exists_appLE_eq {i : I} {U : (D.obj i).Opens} (hU : IsCompact (U : Set (
     (s : Γ(X, π i ⁻¹ᵁ U)) :
     ∃ (j : I) (f : j ⟶ i) (t : Γ(D.obj j, D.map f ⁻¹ᵁ U)),
       ((π j).appLE _ _ (cone_preimage_le D π w f U)).hom t = s := by
-  have (j : Over i) : CompactSpace ((opensDiagram D i U).obj j) :=
-    isCompact_iff_compactSpace.mp (QuasiCompact.isCompact_preimage _ U.2 hU)
-  have (j : Over i) : QuasiSeparatedSpace ((opensDiagram D i U).obj j) :=
-    (isQuasiSeparated_iff_quasiSeparatedSpace _ (D.map _ ⁻¹ᵁ _).2).mp (.of_quasiSeparatedSpace _)
-  obtain ⟨j, t, hj⟩ := exists_appTop_π_eq_of_isLimit _ _
-    (isLimitOpensCone D _ hc i U) ((π i ⁻¹ᵁ U).topIso.inv s)
-  refine ⟨j.left, j.hom, (D.map j.hom ⁻¹ᵁ U).topIso.hom t, ?_⟩
-  have h := (congrArg (π i ⁻¹ᵁ U).topIso.hom hj.symm).trans (Iso.inv_hom_id_apply _ s)
-  have e : ∀ {X Y : Scheme.{0}} (f : X ⟶ Y) (U : Y.Opens) (V : X.Opens) (e : V ≤ f ⁻¹ᵁ U)
-      (t : Γ(U.toScheme, ⊤)), (f.appLE U V e).hom (U.topIso.hom t) =
-        V.topIso.hom ((f.resLE U V e).appTop t) := by
-    intro X Y f U V e t
-    rw [Scheme.Hom.appTop, Scheme.Hom.resLE_app_top, CommRingCat.comp_apply, CommRingCat.comp_apply,
-      Iso.inv_hom_id_apply]
-  exact (e _ _ _ _ t).trans h
+  apply GlobalTheory.LBDescent.exists_appLE_eq <;> assumption
 
 
 include hc in
@@ -127,30 +114,7 @@ theorem exists_unit_eq {i : I} {U : (D.obj i).Opens} (hU : IsCompact (U : Set (D
     (s : Γ(X, π i ⁻¹ᵁ U)ˣ) :
     ∃ (j : I) (f : j ⟶ i) (t : Γ(D.obj j, D.map f ⁻¹ᵁ U)ˣ), ∀ y : X, y ∈ π i ⁻¹ᵁ U →
       gm (π j) y (D.map f ⁻¹ᵁ U) t = gm (𝟙 X) y (π i ⁻¹ᵁ U) s := by
-  obtain ⟨j, f, t, ht⟩ := exists_appLE_eq D π w hc hU s.val
-  have h₁ : π j ⁻¹ᵁ (D.map f ⁻¹ᵁ U) ≤ π j ⁻¹ᵁ (D.obj j).basicOpen t := by
-    have h := X.basicOpen_of_isUnit (ht ▸ s.isUnit)
-    rw [Scheme.basicOpen_appLE] at h
-    rw [← Scheme.Hom.comp_preimage, w, ← h]
-    exact inf_le_right
-  obtain ⟨k, g, hg⟩ := exists_map_preimage_le_map_preimage D _ hc
-    (QuasiCompact.isCompact_preimage (f := D.map f) _ U.2 hU) h₁
-  have le : D.map (g ≫ f) ⁻¹ᵁ U ≤ D.map g ⁻¹ᵁ (D.map f ⁻¹ᵁ U) := by
-    rw [D.map_comp, Scheme.Hom.comp_preimage]
-  have hu : IsUnit (((D.map g).appLE _ _ le).hom t) := by
-    refine (D.obj k).toRingedSpace.isUnit_of_isUnit_germ _ _ fun y hy => ?_
-    refine ((D.obj k).mem_basicOpen _ y hy).1 ?_
-    rw [Scheme.basicOpen_appLE]
-    exact ⟨hy, hg (le hy)⟩
-  refine ⟨k, g ≫ f, hu.unit, fun y hy => Units.ext ?_⟩
-  have hy' := cone_preimage_le D π w (g ≫ f) U hy
-  rw [gm_val _ y _ hy', gm_val (𝟙 X) y _ hy, IsUnit.unit_spec, ← ht]
-  have e : (D.map g).appLE _ _ le ≫ (π k).appLE _ _ (cone_preimage_le D π w (g ≫ f) U) =
-      (π j).appLE _ _ (cone_preimage_le D π w f U) := by
-    simp only [Scheme.Hom.appLE_comp_appLE, w]
-  rw [← e]
-  exact (TopCat.Presheaf.germ_res_apply X.presheaf
-    (homOfLE (cone_preimage_le D π w (g ≫ f) U)) y hy _).symm
+  apply GlobalTheory.LBDescent.exists_unit_eq <;> assumption
 
 
 include hc in

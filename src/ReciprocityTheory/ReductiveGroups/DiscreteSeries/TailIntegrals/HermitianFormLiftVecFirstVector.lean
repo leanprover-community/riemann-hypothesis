@@ -67,8 +67,7 @@ theorem ell_col (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (g : Mat k r) :
   by_cases h : a.val + 1 < r
   · rw [dif_pos h]
     first
-      | simp [fvec, h, bvec, Matrix.mulVec_single_one]
-      | simp [fvec, h, bvec, Matrix.mulVec, dotProduct, Pi.single_apply]
+      | simp [fvec, h, bvec]
   · rw [dif_neg h]
     simp [fvec, h]
 
@@ -174,7 +173,7 @@ theorem firstVector_apply_first (h : 0 < 1 + r') : e0 k r' (eI k (1 + r') ⟨0, 
   simp [e0, bvec, a0, eI]
 
 theorem firstVector_apply_succ (b : ℕ) (h : b + 1 < 1 + r') : e0 k r' (eI k (1 + r') ⟨b + 1, h⟩) = 0 := by
-  simp [e0, bvec, a0, eI, Pi.single_apply]
+  simp [e0, bvec, a0, eI]
 
 theorem eI_succ (b : ℕ) (h : b + 1 < 1 + r') : eI k (1 + r') ⟨b + 1, h⟩ = sh (eI k r' ⟨b, by omega⟩) := by
   ext
@@ -263,11 +262,11 @@ theorem fvec_lift (z1 : Fin (2 * r' + k + 1) → ℂ) (a : Fin (1 + r')) :
     fvec k (1 + r') (liftVec k 1 r' z1) ⟨a.val + 1, by omega⟩ = liftVec k 1 r' (fvec k r' z1 ⟨a.val, by omega⟩) := by
   by_cases ha : a.val < r'
   · have h1 : a.val + 1 < 1 + r' := by omega
-    simp only [fvec, Fin.val_mk, dif_pos h1, dif_pos ha]
+    simp only [fvec, dif_pos h1, dif_pos ha]
     rw [eI_succ a.val h1]
     exact (liftVec_bvec_eq_bvec_sh _).symm
   · have h1 : ¬ a.val + 1 < 1 + r' := by omega
-    simp only [fvec, Fin.val_mk, dif_neg h1, dif_neg ha]
+    simp only [fvec, dif_neg h1, dif_neg ha]
 
 private lemma liftVec_apply_eI_zero_eq_zero (v : Fin (2 * r' + k + 1) → ℂ) (h : 0 < 1 + r') :
     liftVec k 1 r' v (eI k (1 + r') ⟨0, h⟩) = 0 := by

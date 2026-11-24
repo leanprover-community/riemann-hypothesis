@@ -70,9 +70,7 @@ def Pinf : Set (InfiniteAdeleRing F) := eM F ⁻¹' ZSpan.fundamentalDomain (mix
 
 theorem eM_algebraMap (a : F) : eM F (algebraMap F (InfiniteAdeleRing F) a) = mixedEmbedding F a := by
   first
-  | exact (InfiniteAdeleRing.mixedEmbedding_eq_algebraMap_comp).symm
   | exact (InfiniteAdeleRing.mixedEmbedding_eq_algebraMap_comp F).symm
-  | exact (InfiniteAdeleRing.mixedEmbedding_eq_algebraMap_comp (x := a)).symm
 
 theorem inf_exU (x : InfiniteAdeleRing F) : ∃! a : 𝓞 F, algebraMap F (InfiniteAdeleRing F) (a : F) + x ∈ Pinf F := by
   have key : ∀ a : 𝓞 F, (algebraMap F (InfiniteAdeleRing F) (a : F) + x ∈ Pinf F) ↔
@@ -106,7 +104,7 @@ theorem inf_exU (x : InfiniteAdeleRing F) : ∃! a : 𝓞 F, algebraMap F (Infin
       rw [ha]
       exact congrArg Subtype.val h1
     have h3 : (b : F) = (a : F) := mixedEmbedding_injective F h2
-    first | exact RingOfIntegers.ext h3 | exact RingOfIntegers.coe_injective h3 | exact Subtype.ext h3
+    first | exact RingOfIntegers.ext h3
 
 theorem measurableSet_Pinf : MeasurableSet (ZSpan.fundamentalDomain (mixedEmbedding.latticeBasis F)) :=
   ZSpan.fundamentalDomain_measurableSet _
@@ -119,7 +117,6 @@ theorem Pinf_sub_compact : ∃ K : Set (InfiniteAdeleRing F), IsCompact K ∧ Pi
     have hi := InfinitePlace.Completion.isometry_extensionEmbedding w
     first
     | exact hi.isClosedEmbedding.isCompact_preimage (isCompact_closedBall 0 R)
-    | exact hi.closedEmbedding.isCompact_preimage (isCompact_closedBall 0 R)
   · intro x hx
     have hx' : ‖eM F x‖ ≤ R := mem_closedBall_zero_iff.mp (hR (show eM F x ∈ _ from hx))
     show ∀ w ∈ (Set.univ : Set (InfinitePlace F)),
@@ -145,7 +142,7 @@ theorem Pinf_sub_compact : ∃ K : Set (InfiniteAdeleRing F), IsCompact K ∧ Pi
 abbrev Ohat : Set (FiniteAdeleRing (𝓞 F) F) := (Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory.intAd F : Set (FiniteAdeleRing (𝓞 F) F))
 
 theorem isOpen_Ohat : IsOpen (Ohat F) := by
-  first | exact Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory.isOpen_intAd F | exact Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory.isOpen_intAd
+  first | exact Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory.isOpen_intAd
 
 theorem isCompact_Ohat : IsCompact (Ohat F) := Formalism.L2.Col.rlt_isCompact_intAd
 
@@ -161,8 +158,6 @@ theorem ad_exU (x : AdeleRing (𝓞 F) F) : ∃! q : F, algebraMap F (AdeleRing 
     rw [e, HeightOneSpectrum.valuedAdicCompletion_eq_valuation']
     first
     | exact HeightOneSpectrum.valuation_le_one v a
-    | (rw [show (a : F) = algebraMap (𝓞 F) F a from rfl, HeightOneSpectrum.valuation_of_algebraMap];
-       exact HeightOneSpectrum.intValuation_le_one v a)
   have hint : ∀ q : F, algebraMap F (FiniteAdeleRing (𝓞 F) F) q ∈ Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory.intAd F →
       ∃ a : 𝓞 F, (a : F) = q := by
     intro q hq
@@ -173,10 +168,9 @@ theorem ad_exU (x : AdeleRing (𝓞 F) F) : ∃! q : F, algebraMap F (AdeleRing 
       have h2 : Valued.v ((q : v.adicCompletion F)) ≤ 1 := h1
       rwa [HeightOneSpectrum.valuedAdicCompletion_eq_valuation'] at h2)
     obtain ⟨a, ha⟩ := hr
-    first | exact ⟨a, ha⟩ | exact ⟨a, by simpa using ha⟩
+    first | exact ⟨a, ha⟩
   obtain ⟨u, hu⟩ : ∃ u : F, x.2 - algebraMap F (FiniteAdeleRing (𝓞 F) F) u ∈ Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory.intAd F := by
     first
-    | exact Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory.exists_sub_mem_intAd F x.2
     | exact Formalism.L2.GlobalTheoryTheory.FiltrationBoundaryCriterion.CompactFixesLatticeTheory.exists_sub_mem_intAd x.2
   obtain ⟨a, ha, hauniq⟩ := inf_exU F (algebraMap F (InfiniteAdeleRing F) (-u) + x.1)
   refine ⟨-u + (a : F), ?_, ?_⟩

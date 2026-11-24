@@ -348,7 +348,7 @@ theorem exists_frob_inert {P : HeightOneSpectrum (𝓞 E)} (h : ConjPl c.toRingE
     have hxq : A.valuation (x ^ q) ≤ 1 := by rw [map_pow]; exact pow_le_one' hx _
     rw [← sub_add_sub_cancel _ (φ x ^ q), sq, pow_mul]
     exact Valuation.map_add_lt _ (hφ _ hx')
-      ((GlobalTheory.Mem.WildChar.val_pow_sub_pow_le _ hx' hxq q).trans_lt (hφ x hx))
+      ((_root_.GlobalTheory.ValuationPowSubPow.valuation_pow_sub_pow_le _ hx' hxq q).trans_lt (hφ x hx))
 
 theorem resFin_of_anti {art : Ideles E →* Gab E Ω} (ha : IsGlobalArtin art) {r : Formalism.ConjugateSelfDual.G E Ω →* ℂˣ} {χ : HChar E}
     (h : Corr art r χ) (hr : AntiHom cc r) (v : HeightOneSpectrum (𝓞 F)) (k : Fˣ) : χ.resFin v k = 1 := by

@@ -2,7 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.EqZeroOfForallPowDvd
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfFrobeniusSemilinearEquationExistsUniqueStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfFrobeniusSemilinearEquationExistsUnique
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIsoWindowsOfMatrixCongrModTau
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -66,25 +67,7 @@ theorem frob_teich (x : PreTilt O p) :
   rw [WittVector.frobenius_eq_map_frobenius, WittVector.map_teichmuller, frobenius_def, map_pow]
 
 theorem sigma_tau : F.σ F.τ = p * F.τ := by
-  apply p_cancel F
-  have hS : WittVector.frobenius (Sandwich.mu ε) =
-      Sandwich.mu ε * ∑ i ∈ Finset.range p, WittVector.teichmuller p ε ^ i := by
-    unfold Sandwich.mu
-    rw [map_sub, map_one, frob_teich, mul_comm, geom_sum_mul]
-  have hd : Sandwich.mu ε ∣ ∑ i ∈ Finset.range p, WittVector.teichmuller p ε ^ i - (p : Ainf p O) := by
-    have : ∑ i ∈ Finset.range p, WittVector.teichmuller p ε ^ i - (p : Ainf p O) =
-        ∑ i ∈ Finset.range p, (WittVector.teichmuller p ε ^ i - 1) := by
-      simp [Finset.sum_sub_distrib]
-    rw [this]
-    apply Finset.dvd_sum
-    intro i _
-    simpa [Sandwich.mu, one_pow] using sub_dvd_pow_sub_pow (WittVector.teichmuller p ε) 1 i
-  have h0 := (F.τ_mul _).2 hd
-  rw [map_sub, map_natCast] at h0
-  have h1 : (p : F.B) * F.σ F.τ = F.a (WittVector.frobenius (Sandwich.mu ε)) := by
-    rw [← F.σ_a, ← F.p_τ, map_mul, map_natCast]
-  rw [h1, hS, map_mul, ← F.p_τ]
-  linear_combination (p : F.B) * h0
+  apply GlobalTheory.WindowIso.σ_τ <;> assumption
 
 theorem theta_tau [IsDomain O] : F.θ F.τ = 0 :=
   mul_self_eq_zero.1 (by rw [← map_mul, F.τ_sq, map_zero])
@@ -148,7 +131,7 @@ theorem core (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C 
     obtain ⟨c, hc⟩ := step F M m hm (fun j => F.a (z j)) z (fun j => by simp) i
     rw [sub_eq_iff_eq_add] at hc
     rw [hc, mul_add, ← mul_assoc, F.τ_sq, zero_mul, zero_add, sub_self]
-  exact (F.τ_mul _).2 ((GlobalTheory.T.ainf_frobenius_semilinear_equation_existsUnique p C v O hv ε hε ι m (nil_lift F M m hm hM)).2 z key i)
+  exact (F.τ_mul _).2 ((_root_.GlobalTheory.WSolve.main p C v O hv ε hε ι m (nil_lift F M m hm hM)).2 z key i)
 
 theorem vec_eq {ι : Type} [Fintype ι] (M : Matrix ι ι F.B) (g : ι → F.B) (z : ι → Ainf p O)
     (hz : ∀ i, g i = F.τ * F.a (z i))

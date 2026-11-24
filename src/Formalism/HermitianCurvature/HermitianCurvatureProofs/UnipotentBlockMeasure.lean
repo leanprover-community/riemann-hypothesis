@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.GrowthOfBasic
 public import Formalism.HermitianCurvature.StatementPN
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LocalVolumePositivity
 import Mathlib.Algebra.Order.Floor.Extended
@@ -213,7 +214,6 @@ theorem step1 (L : LocalNG Cl Nu) (hU : L.Unfold) (S : Finset (Cl × Nu)) :
   · intro x d h
     unfold LocalNG.a2
     simp only [h]
-    try rfl
 
 theorem core (hS4 : Formalism.HermitianLatticeCounting.S4.Step4) (L : LocalNG Cl Nu) (κ : ℕ) (Xp Yp : L.P → ℝ)
     (hX : ∀ p, 1 ≤ Xp p) (hY : ∀ p, 1 ≤ Yp p) (hb : L.Basic)
@@ -239,7 +239,6 @@ theorem core (hS4 : Formalism.HermitianLatticeCounting.S4.Step4) (L : LocalNG Cl
   · unfold LocalNG.ampNG
     first
     | rfl
-    | congr!
   · simp only [Finset.prod_const_one, one_pow, mul_one, Finset.prod_mul_distrib] <;> ring
 
 theorem pow_card_eq {P : Type} [Fintype P] (Om : Finset P) (a : ℝ) :
@@ -473,28 +472,7 @@ theorem summable_pairs (a : ι → V) (ha : Summable (fun i => ‖a i‖)) :
 
 theorem normsq_tsum (a : ι → V) (ha : Summable (fun i => ‖a i‖)) :
     ‖∑' i, a i‖ ^ 2 = ∑' p : ι × ι, (inner ℂ (a p.1) (a p.2) : ℂ).re := by
-  have hS : HasSum a (∑' i, a i) := ha.of_norm.hasSum
-  have hP : Summable (fun p : ι × ι => (inner ℂ (a p.1) (a p.2) : ℂ).re) :=
-    Complex.reCLM.summable (summable_pairs a ha)
-  have hfib : ∀ i, HasSum (fun j => (inner ℂ (a i) (a j) : ℂ).re)
-      (inner ℂ (a i) (∑' j, a j) : ℂ).re := by
-    intro i
-    have h2 := Complex.reCLM.hasSum ((innerSL ℂ (a i)).hasSum hS)
-    simpa using h2
-  have hout : HasSum (fun i => (inner ℂ (a i) (∑' j, a j) : ℂ).re)
-      (inner ℂ (∑' j, a j) (∑' j, a j) : ℂ).re := by
-    have h2 : HasSum (fun i => (inner ℂ (∑' j, a j) (a i) : ℂ).re)
-        (inner ℂ (∑' j, a j) (∑' j, a j) : ℂ).re := by
-      simpa using Complex.reCLM.hasSum ((innerSL ℂ (∑' j, a j)).hasSum hS)
-    have he : (fun i => (inner ℂ (a i) (∑' j, a j) : ℂ).re)
-        = fun i => (inner ℂ (∑' j, a j) (a i) : ℂ).re := by
-      funext i
-      rw [← inner_conj_symm, Complex.conj_re]
-    rw [he]
-    exact h2
-  have heq := hout.unique (hP.hasSum.prod_fiberwise hfib)
-  rw [← heq]
-  exact (inner_self_eq_norm_sq (𝕜 := ℂ) _).symm
+  apply Formalism.FourierDecayAlt.P.GrowthPolynomialOperator.norm_sq_tsum <;> assumption
 
 end
 
@@ -918,7 +896,7 @@ theorem occ_of_ne {τ Rw I H H₁ : Type} [Fintype I] [NormedAddCommGroup H] [In
     · rw [Set.indicator_of_mem ht]
       by_contra hv
       exact hno ⟨t, ht.1, hv, ht.2.1, ht.2.2.1, ht.2.2.2⟩
-    · simp [Set.indicator_apply, ht]
+    · simp [ht]
   unfold Formalism.FourierDecayAlt.PN.grp
   simp only [hz, tsum_zero]
 
@@ -1050,33 +1028,7 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt
 
-theorem norm_of_lemmas : Formalism.FourierDecayAlt.PN.NormOfLemmas := HermitianFormNormLemmas.A.t_NormOfLemmas
-
 theorem pn_norm_bound : Formalism.FourierDecayAlt.PN.NormBound :=
-  norm_of_lemmas jacobian_natural_measure_constant local_ratio_product column_identity
-
-theorem frame_passage : Formalism.FourierDecayAlt.PN.FramePassage := HermitianFormNormLemmas.A.t_FramePassage
-
-theorem norm_real_part : Formalism.FourierDecayAlt.PN.NormRe := HermitianFormNormLemmas.A.t_NormRe
-
-theorem mean_amplitude_joint : Formalism.FourierDecayAlt.PN.MeanAmpJoint := HermitianFormNormLemmas.B.t_MeanAmpJoint
-
-theorem class_squares_sum : Formalism.FourierDecayAlt.PN.ClassSquaresSum := HermitianFormNormLemmas.C.t_ClassSquaresSum
-
-theorem class_cauchy_schwarz : Formalism.FourierDecayAlt.PN.ClassCS := HermitianFormNormLemmas.C.t_ClassCS
-
-theorem first_bracket : Formalism.FourierDecayAlt.PN.FirstBracket := HermitianFormNormLemmas.D1.t_FirstBracket
-
-theorem second_bracket : Formalism.FourierDecayAlt.PN.SecondBracket := HermitianFormNormLemmas.D2.t_SecondBracket
-
-theorem line_from_classes : Formalism.FourierDecayAlt.PN.RowFromClasses := HermitianFormNormLemmas.E.t_RowFromClasses
-
-theorem line_norm_abstract : Formalism.FourierDecayAlt.PN.RowNGAbstract := HermitianFormNormLemmas.E.t_RowNGAbstract
-
-theorem exponent_sum : Formalism.FourierDecayAlt.PN.ExponentSum := HermitianFormNormLemmas.D1.t_ExponentSum
-
-theorem norm_numbers : Formalism.FourierDecayAlt.PN.NGNumbers := HermitianFormNormLemmas.D3.t_NGNumbers
-
-theorem line_norm_joint : Formalism.FourierDecayAlt.PN.RowNGJoint := HermitianFormNormLemmas.F.t_RowNGJoint
+  _root_.Formalism.FourierDecayAlt.P.HermitianFormNormLemmas.A.t_NormOfLemmas jacobian_natural_measure_constant local_ratio_product column_identity
 
 end Formalism.FourierDecayAlt.P

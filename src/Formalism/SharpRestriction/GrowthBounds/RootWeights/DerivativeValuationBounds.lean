@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
 public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -263,21 +264,7 @@ theorem flt_lam1S_le {R : Type*} [CommRing R] {ι : Type*} {n : ℕ} [NeZero n] 
 
 theorem flt_withTop_le {a b : WithTop ℤ} {N : ℤ}
     (h : ∀ t : ℤ, (t : WithTop ℤ) ≤ a → ((t - N : ℤ) : WithTop ℤ) ≤ b) : a ≤ b + (N : WithTop ℤ) := by
-  induction a with
-  | top =>
-    induction b with
-    | top => simp
-    | coe y =>
-      exfalso
-      have h1 := WithTop.coe_le_coe.1 (h (y + N + 1) le_top)
-      linarith
-  | coe x =>
-    have hx := h x le_rfl
-    induction b with
-    | top => simp
-    | coe y =>
-      rw [← WithTop.coe_add]
-      exact WithTop.coe_le_coe.2 (by have h1 := WithTop.coe_le_coe.1 hx; linarith)
+  apply Formalism.MainNotions.G.Joints.withTop_le_add_of_forall <;> assumption
 
 theorem flt_withBot_le {a b : WithBot ℤ} {N : ℤ}
     (h : ∀ M : ℤ, b ≤ (M : WithBot ℤ) → a ≤ ((M + N : ℤ) : WithBot ℤ)) : a ≤ b + (N : WithBot ℤ) := by
@@ -449,21 +436,7 @@ theorem flt_twist_monomial_mem {R : Type*} [CommRing R] {ι : Type*} {n : ℕ} (
   rwa [AddMonoidHom.neg_apply] at h1
 
 theorem flt_gL_mul_gLinv (R : Type*) [CommRing R] (n : ℕ) : gL R n * gLinv R n = 1 := by
-  have key : ∀ a b, (gL R n * gLinv R n) a b = LaurentPolynomial.C
-      (IsLocalization.Away.invSelf (genMat R n).det *
-        algebraMap _ (GLCoord R n) ((genMat R n * (genMat R n).adjugate) a b)) := by
-    intro a b
-
-    simp only [gL, gLinv, Matrix.mul_apply, Matrix.map_apply, ← _root_.map_mul, _root_.map_sum, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun c _ => ?_
-    congr 1
-    rw [_root_.map_mul]
-    ring
-  ext a b
-  rw [key, Matrix.mul_adjugate, Matrix.smul_apply, Matrix.one_apply, Matrix.one_apply]
-  split_ifs
-  · rw [smul_eq_mul, mul_one, mul_comm, IsLocalization.Away.mul_invSelf, _root_.map_one]
-  · rw [smul_zero, _root_.map_zero, mul_zero, _root_.map_zero]
+  apply Formalism.MainNotions.G.Joints.genericMatrix_mul_inverse_eq_one <;> assumption
 
 theorem flt_gLinv_mul_gL (R : Type*) [CommRing R] (n : ℕ) : gLinv R n * gL R n = 1 := by
   have key : ∀ a b, (gLinv R n * gL R n) a b = LaurentPolynomial.C
@@ -526,7 +499,7 @@ theorem flt_g_pascal (R : Type*) [CommRing R] {σ : Type*} (m be : σ →₀ ℕ
       · simp
       · exact Finset.prod_congr rfl fun k hk => by
           have hka : a ≠ k := Ne.symm (Finset.ne_of_mem_erase hk)
-          simp [Finsupp.single_apply, hka]
+          simp [hka]
     have hP1 : (be.prod fun k j => (m k).choose j) = (m a).choose (be a) * Q := by
       rw [hQ]
       simp only [Finsupp.prod]
@@ -540,7 +513,7 @@ theorem flt_g_pascal (R : Type*) [CommRing R] {σ : Type*} (m be : σ →₀ ℕ
       · simp
       · exact Finset.prod_congr rfl fun k hk => by
           have hka : a ≠ k := Ne.symm (Finset.ne_of_mem_erase hk)
-          simp [Finsupp.single_apply, hka]
+          simp [hka]
     have hle : Q ≠ 0 → ∀ k, k ≠ a → be k ≤ m k := by
       intro hQ0 k hk
       rw [hQ] at hQ0
@@ -604,7 +577,7 @@ theorem flt_g_pascal (R : Type*) [CommRing R] {σ : Type*} (m be : σ →₀ ℕ
       simp only [Finsupp.prod]
       exact Finset.prod_congr rfl fun k hk => by
         have hka : a ≠ k := fun h' => h (by rw [h']; exact hk)
-        simp [Finsupp.single_apply, hka]
+        simp [hka]
     rw [hx, hp]
 
 theorem flt_tay_monomial (R : Type*) [CommRing R] {σ : Type*} (m : σ →₀ ℕ) :
@@ -662,7 +635,7 @@ theorem flt_tay_monomial (R : Type*) [CommRing R] {σ : Type*} (m : σ →₀ �
       simp only [flt_tay, eval₂Hom_X']
     rw [← hm', e1, _root_.map_mul, flt_g_pascal, e2, mul_add, MvPolynomial.coeff_add,
       mul_comm _ (C (X a)), MvPolynomial.coeff_C_mul, MvPolynomial.coeff_mul_X', ih _ hsum be, ih _ hsum (be - Finsupp.single a 1)]
-    all_goals (first | ring | (split_ifs <;> ring))
+    all_goals (first | ring)
 
 theorem flt_tay_coeff (R : Type*) [CommRing R] {σ : Type*} (F : MvPolynomial σ R) (be : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff (flt_tay R σ F) be = divDer be F := by
@@ -721,8 +694,7 @@ theorem flt_Th_twist {R : Type*} [CommRing R] {ι : Type*} {n : ℕ} (LL : Lette
   have h2 : (twistMat R n j 1).transpose * (twistMat R n j (-1)).transpose = 1 := by
     rw [← Matrix.transpose_mul, h1, Matrix.transpose_one]
   refine MvPolynomial.ringHom_ext (fun r => ?_) (fun v => ?_)
-  · simp only [RingHom.comp_apply, flt_tay, flt_Th, twistSub, eval₂Hom_C, RingHom.coe_comp,
-      Function.comp_apply, MvPolynomial.map_C]
+  · simp only [RingHom.comp_apply, flt_tay, flt_Th, twistSub, eval₂Hom_C, MvPolynomial.map_C]
   · simp only [RingHom.comp_apply, flt_tay, eval₂Hom_X', _root_.map_add (f := _), MvPolynomial.map_C, MvPolynomial.map_X]
     by_cases hS : v.1 ∈ S
     · cases hv : LL.vec v.1

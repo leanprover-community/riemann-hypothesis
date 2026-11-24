@@ -68,7 +68,6 @@ theorem satDir_of (hS : ChartSaturated Xo c) {T : CDVR} {io : c.F →+* T.Fr} {y
   have hwA : (Matrix.of w) * (Matrix.of A) = 1 := by
     first
       | exact mul_eq_one_comm.mp hAw
-      | exact (Matrix.mul_eq_one_comm_of_equiv (Equiv.refl _)).mp hAw
   refine ⟨fun i j => A j (emb i), fun i i' => ?_⟩
   letI := io.toAlgebra
   have e1 : ∀ j, C.ch.uvec ⟨τ, i'⟩ j * algebraMap T.V T.Fr (A j (emb i)) =

@@ -119,9 +119,7 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Fo
 
 variable (D : D7)
 
-theorem emb_conj (φ : D.host.E →+* ℂ) (x : D.host.E) :
-    φ (D.host.conj x) = starRingEnd ℂ (φ x) := by
-  exact D.host.conjE_apply φ x
+alias emb_conj := _root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.CU.emb_conj
 
 theorem Hf_embV (T : Tor D) (hT : ∀ τ x, T.emb τ x = embT D τ x) {N N' : ℕ}
     (A B : Matrix (Fin N') (Fin N) D.host.E) :

@@ -103,12 +103,6 @@ private theorem reesGenerator_mem_of_span {A : Type u} [CommRing A] (s : Set A)
       rw [e, Algebra.smul_def]
       exact Ideal.mul_mem_left P _ ih
 
-private theorem reesGenerator_mem_homogeneousIdeal_of_span {A : Type u} [CommRing A] (s : Set A)
-    (P : HomogeneousIdeal (Blowup.reesGrading (Ideal.span s)))
-    (hP : ∀ y ∈ s, ∀ hy : y ∈ Ideal.span s, Blowup.reesGenerator (Ideal.span s) ⟨y, hy⟩ ∈ P)
-    (a : ↥(Ideal.span s)) : Blowup.reesGenerator (Ideal.span s) a ∈ P :=
-  reesGenerator_mem_of_span s P.toIdeal (fun y hy hy2 => hP y hy hy2) a
-
 theorem iSup_opensRange_affineBlowupChart_coordIdealGen (R : Type u) [CommRing R] {σ : Type v}
     (S : Finset σ) :
     (⨆ i : ↥S, Scheme.Hom.opensRange
@@ -124,7 +118,7 @@ theorem iSup_opensRange_affineBlowupChart_coordIdealGen (R : Type u) [CommRing R
   obtain ⟨a, ha⟩ := TopologicalSpace.Opens.mem_iSup.mp hxtop
   by_contra hxn
   refine (Proj.mem_basicOpen ..).mp ha ?_
-  refine reesGenerator_mem_homogeneousIdeal_of_span
+  refine reesGenerator_mem_of_span
     ((MvPolynomial.X : σ → MvPolynomial σ R) '' (S : Set σ)) _ ?_ a
   intro y hy hy2
   obtain ⟨i, hiS, rfl⟩ := hy
@@ -134,15 +128,8 @@ theorem iSup_opensRange_affineBlowupChart_coordIdealGen (R : Type u) [CommRing R
   exact (Proj.mem_basicOpen ..).mpr hcon
 
 theorem X_mem_nonZeroDivisors (R : Type u) [CommRing R] {σ : Type v} (i : σ) :
-    (MvPolynomial.X i : MvPolynomial σ R) ∈ nonZeroDivisors (MvPolynomial σ R) := by
-  have key : ∀ x : MvPolynomial σ R, x * MvPolynomial.X i = 0 → x = 0 := by
-    intro x hx
-    ext m
-    have h := MvPolynomial.coeff_mul_X m i x
-    rw [hx, MvPolynomial.coeff_zero] at h
-    simp [← h]
-  rw [mem_nonZeroDivisors_iff]
-  exact ⟨fun x hx => key x (by rw [mul_comm]; exact hx), key⟩
+    (MvPolynomial.X i : MvPolynomial σ R) ∈ nonZeroDivisors (MvPolynomial σ R) :=
+  (IsRegular.monomial (m := Finsupp.single i 1) (isRegular_one (R := R))).mem_nonZeroDivisors
 
 def coordBlowupSubst (R : Type u) [CommRing R] {σ : Type v} [DecidableEq σ] (S : Finset σ) (s : σ) :
     MvPolynomial σ R →ₐ[R] MvPolynomial σ R :=
@@ -251,11 +238,6 @@ private def homogeneousAwayToLocalization {A : Type u} [CommRing A] (I : Ideal A
   algebraMap (HomogeneousLocalization.Away (Blowup.reesGrading I) (Blowup.reesGenerator I a))
     (Localization (Submonoid.powers (Blowup.reesGenerator I a)))
 
-private theorem homogeneousLocalizationVal_apply {A : Type u} [CommRing A] (I : Ideal A) (a : ↥I)
-    (z : HomogeneousLocalization.Away (Blowup.reesGrading I) (Blowup.reesGenerator I a)) :
-    homogeneousAwayToLocalization I a z = HomogeneousLocalization.val z :=
-  HomogeneousLocalization.algebraMap_apply ..
-
 private def coordBlowupChartToMvPolynomial (R : Type u) [CommRing R] {σ : Type v} [DecidableEq σ]
     (S : Finset σ) (s : σ) (hs : s ∈ S) :
     HomogeneousLocalization.Away (Blowup.reesGrading (coordIdeal R S))
@@ -271,7 +253,7 @@ private theorem chartToMvPolynomial_apply (R : Type u) [CommRing R] {σ : Type v
       IsLocalization.lift (isUnit_reesAlgebraToMvPolynomial_powers R S s hs) (HomogeneousLocalization.val z) := by
   show IsLocalization.lift (isUnit_reesAlgebraToMvPolynomial_powers R S s hs)
       (homogeneousAwayToLocalization (coordIdeal R S) (coordIdealGen R S s hs) z) = _
-  rw [homogeneousLocalizationVal_apply]
+  rw [homogeneousAwayToLocalization, HomogeneousLocalization.algebraMap_apply]
 
 private theorem chartToMvPolynomial_chartRingHom (R : Type u) [CommRing R] {σ : Type v} [DecidableEq σ]
     (S : Finset σ) (s : σ) (hs : s ∈ S) (r : MvPolynomial σ R) :

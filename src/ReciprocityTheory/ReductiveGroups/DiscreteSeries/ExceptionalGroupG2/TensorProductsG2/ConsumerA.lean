@@ -152,7 +152,7 @@ theorem cns_kfin (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v�
   refine ⟨S, hSf, ⟨y, hk, hx.symm⟩, ?_⟩
   intro g hg v hv
   obtain ⟨u, hu, huv⟩ := hv
-  have hgU : g ∈ UJset ε := cf_kset_sub hg
+  have hgU : g ∈ UJset ε := _root_.ReciprocityTheory.ChartRestriction.DS.UnitaryGroupOfForm.K_mem_UJ hg
   obtain ⟨w, hw, hwe⟩ := hS0K g hg u hu
   refine ⟨w, hw, ?_⟩
   show (w : L2 ε) = ((sigLam ε Ψ v₀ g v : Hlam ε Ψ v₀) : L2 ε)
@@ -295,14 +295,14 @@ theorem cns_shift_inj (dual : Bool) (μ : Fin n → ℝ) {s s' : Fin n} (h : shi
     s = s' := by
   by_contra hne
   have h1 := congrFun h s
-  cases dual <;> simp [shiftF, Pi.single_apply, hne, Ne.symm hne] at h1
+  cases dual <;> simp [shiftF, hne] at h1
 
 theorem cns_coefV {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (g : Matrix (Fin n) (Fin n) ℂ) (a b : H) (x y : Fin n → ℂ) :
     inner ℂ b (σ g a) * (star y ⬝ᵥ (g *ᵥ x)) =
       ∑ c, inner ℂ (y c • b) (tensGrp false σ g (fun d => x d • a) c) := by
   simp only [tensGrp, cond_false, map_smul, inner_sum, inner_smul_left, inner_smul_right, dotProduct,
-    Matrix.mulVec, Finset.mul_sum, Finset.sum_mul, Pi.star_apply, Complex.star_def]
+    Matrix.mulVec, Finset.mul_sum, Pi.star_apply, Complex.star_def]
   refine Finset.sum_congr rfl (fun c _ => Finset.sum_congr rfl (fun d _ => ?_))
   ring
 
@@ -311,7 +311,7 @@ theorem cns_coefVd {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     inner ℂ b (σ g a) * (star y ⬝ᵥ (g⁻¹ *ᵥ x)) =
       ∑ c, inner ℂ (star (x c) • b) (tensGrp true σ g (fun d => star (y d) • a) c) := by
   simp only [tensGrp, cond_true, map_smul, inner_sum, inner_smul_left, inner_smul_right, dotProduct,
-    Matrix.mulVec, Finset.mul_sum, Finset.sum_mul, Pi.star_apply, Complex.star_def, Complex.conj_conj]
+    Matrix.mulVec, Finset.mul_sum, Pi.star_apply, Complex.star_def, Complex.conj_conj]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun c _ => Finset.sum_congr rfl (fun d _ => ?_))
   ring

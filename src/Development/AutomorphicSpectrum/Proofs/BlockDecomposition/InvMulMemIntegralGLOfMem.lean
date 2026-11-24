@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaBound.MinusculeCentralEigen
 public import Development.WeilBound.CoreStatements.PublishedTheorems.JacquetShalikaBound.FormQuasiInvariantMirabolic
 import GroundTheory.AutomorphicForms.HaarCosets
 public import GroundTheory.AutomorphicForms.MacdonaldHecke
@@ -77,26 +78,7 @@ theorem torusPow_central (t : GL (Fin n) F) (c : GL (Fin n) F)
 
 theorem torusPow_one_mem_minusculeSet :
     torusPow F n (fun _ => 1) ∈ minusculeSet F n n := by
-  have hπ : π ≠ 0 := Cartan.uniformizer_ne_zero F
-  have hinv : (torusPow F n (fun _ => (1 : ℤ)))⁻¹ = torusPow F n (fun _ => -1) := by
-    rw [← torusPow_neg]
-    congr 1
-  refine ⟨fun i j => ?_, fun i j => ?_, ?_⟩
-  · change ((torusPow F n (fun _ => (1 : ℤ)) : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) i j ∈ 𝒪[F]
-    rw [coe_torusPow, diagonal_apply]
-    split_ifs
-    · simp
-    · exact (𝒪[F]).zero_mem
-  · rw [hinv]
-    change π * ((torusPow F n (fun _ => (-1 : ℤ)) : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) i j ∈ 𝒪[F]
-    rw [coe_torusPow, diagonal_apply]
-    split_ifs
-    · rw [_root_.zpow_neg_one, mul_inv_cancel₀ hπ]
-      exact (𝒪[F]).one_mem
-    · rw [mul_zero]
-      exact (𝒪[F]).zero_mem
-  · rw [coe_torusPow, det_diagonal]
-    simp
+  apply PositivityTheory.JacquetShalikaLocal.MinusculeCentralEigen.torusPow_one_mem <;> assumption
 
 theorem inv_mul_mem_integralGL_of_mem {x : GL (Fin n) F} (hx : x ∈ minusculeSet F n n) :
     (torusPow F n (fun _ => 1))⁻¹ * x ∈ integralGL F n := by
@@ -260,46 +242,7 @@ theorem evalAt_esymmL_self_mul (z : Fin n → ℂˣ) :
   rw [this, one_mul, ← AddMonoidAlgebra.one_def, map_one]
 
 theorem heckeEigenvector_whittaker : L7 := by
-  unfold L7
-  intro F _ _ _ _ ψ hψ n V _ _ ρ v z hv l hl g
-  borelize (GL (Fin n) F)
-  let μ : Measure (GL (Fin n) F) := Measure.haar
-  obtain ⟨hK, hT⟩ := hv
-  set W : GL (Fin n) F → ℂ := fun g => l (ρ g v) with hW
-  have hWN : ∀ u ∈ unipotent F n, ∀ g, W (u * g) = Whittaker.psiN ψ u * W g := by
-    intro u hu g
-    simp only [hW, map_mul, Module.End.mul_apply]
-    exact hl u hu _
-  have hWK : ∀ g, ∀ k ∈ integralGL F n, W (g * k) = W g := by
-    intro g k hk
-    simp only [hW, map_mul, Module.End.mul_apply, hK k hk]
-  have hTm : ∀ r ≤ n, minusculeHecke μ r ∈ eigenSubalgebra μ z W hWK := by
-    intro r hr g
-    change ∫ x, (minusculeHecke μ r : HeckeAlgebra μ) x * l (ρ (g * x) v) ∂μ = _ * l (ρ g v)
-    rw [integral_minusculeHecke_form ρ hK l r (hT r hr) g,
-      evalAt_satakeTransform_minusculeHecke z hr]
-    ring
-  have hen : evalAt z (esymmL n n) ≠ 0 := left_ne_zero_of_mul_eq_one (evalAt_esymmL_self_mul z)
-  have hcen : ρ (torusPow F n (fun _ => -1)) v = (evalAt z (esymmL n n))⁻¹ • v := by
-    refine rho_torusPow_neg_one ρ hK hen ?_
-    have := hT n le_rfl
-    simpa using this
-  have hc : centralHecke μ ∈ eigenSubalgebra μ z W hWK := by
-    intro g
-    rw [integral_centralHecke_form hWK g, satakeTransform_centralHecke, map_smul, smul_eq_mul]
-    simp only [hW, map_mul, Module.End.mul_apply, hcen, map_smul, smul_eq_mul]
-    rw [inv_eq_of_mul_eq_one_right (evalAt_esymmL_self_mul z)]
-    ring
-  have htop := eigenSubalgebra_eq_top z hWK hTm hc
-  have heig : ∀ (h : SphericalHecke μ (F := F) (n := n)) (g : GL (Fin n) F),
-      ∫ x, (h : HeckeAlgebra μ) x * W (g * x) ∂μ = evalAt z (satakeTransform μ h) * W g := by
-    intro h g
-    have hmem : h ∈ eigenSubalgebra μ z W hWK := by
-      rw [htop]
-      exact Algebra.mem_top
-    exact hmem g
-  have := eq_smul_sphericalWhittaker hψ.1 hψ.2.1 z hWN hWK heig g
-  simpa [hW] using this
+  apply PositivityTheory.JacquetShalikaLocal.minuscule_eigenvalue <;> assumption
 
 end GlobalTheory.CompanionTheory.SatakeBound
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SecondClosedOfFirstClosed
 public import Formalism.AdmissibleDesigns.GlobalIndexTheoremPlacesOfRNAdm
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -65,30 +66,7 @@ theorem mem_pow_of_mul {c : O} (hc : c ≠ 0) : ∃ k : ℕ, ∀ (n : ℕ) (y : 
 
 theorem continuous_of_mul {X : Type} [TopologicalSpace X] (hadic : IsAdic (IsLocalRing.maximalIdeal O))
     {c : O} (hc : c ≠ 0) {f : X → O} (hf : Continuous fun x => c * f x) : Continuous f := by
-  obtain ⟨k, hk⟩ := mem_pow_of_mul hc
-  obtain ⟨hopen, hbasis⟩ := isAdic_iff.1 hadic
-  rw [continuous_iff_continuousAt]
-  intro x0
-  rw [ContinuousAt, Filter.tendsto_def]
-  intro s hs
-  have hs0 : (fun y => f x0 + y) ⁻¹' s ∈ 𝓝 (0 : O) := by
-    have hcont : Continuous fun y : O => f x0 + y := continuous_const.add continuous_id
-    have := hcont.continuousAt (x := 0)
-    rw [ContinuousAt, add_zero] at this
-    exact this hs
-  obtain ⟨n, hn⟩ := hbasis _ hs0
-  let V : Set X := (fun x => c * f x - c * f x0) ⁻¹' (((IsLocalRing.maximalIdeal O) ^ (n + k) : Ideal O) : Set O)
-  have hV : V ∈ 𝓝 x0 := by
-    refine (hopen (n + k)).preimage (hf.sub continuous_const) |>.mem_nhds ?_
-    show c * f x0 - c * f x0 ∈ (IsLocalRing.maximalIdeal O) ^ (n + k)
-    rw [sub_self]
-    exact Ideal.zero_mem _
-  refine Filter.mem_of_superset hV (fun x hx => ?_)
-  have h1 : c * (f x - f x0) ∈ (IsLocalRing.maximalIdeal O) ^ (n + k) := by
-    rw [mul_sub]
-    exact hx
-  have h2 := hn (hk n _ h1)
-  simpa using h2
+  apply GlobalTheory.BlockJumpsCompare.continuous_of_mul <;> assumption
 
 end Adic
 

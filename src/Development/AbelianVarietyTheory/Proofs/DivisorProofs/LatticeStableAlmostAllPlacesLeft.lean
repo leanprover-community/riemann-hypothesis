@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFinsetAdelicUnitaryPreservesLatticeAlmostA
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -52,49 +53,11 @@ namespace GlobalTheory.AdelMatLat
 
 theorem exists_int_smul_mem {E : Type} [Field E] [NumberField E] {n : ℕ} (L : Submodule (𝓞 E) (Fin n → E))
     (hL : L.IsFullLattice E) (v : Fin n → E) : ∃ d : ℤ, d ≠ 0 ∧ d • v ∈ L := by
-  have hv : v ∈ Submodule.span E (L : Set (Fin n → E)) := by
-    let _ := hL
-    rw [Submodule.IsFullLattice.span_eq_top (A := E) (M := L)]; trivial
-  induction hv using Submodule.span_induction with
-  | mem x hx => exact ⟨1, one_ne_zero, by simpa using hx⟩
-  | zero => exact ⟨1, one_ne_zero, by simp⟩
-  | add x y _ _ hx hy =>
-    obtain ⟨d₁, h₁, hx⟩ := hx
-    obtain ⟨d₂, h₂, hy⟩ := hy
-    refine ⟨d₁ * d₂, mul_ne_zero h₁ h₂, ?_⟩
-    have : (d₁ * d₂) • (x + y) = d₂ • (d₁ • x) + d₁ • (d₂ • y) := by
-      rw [smul_add, mul_comm, mul_smul, mul_comm, mul_smul]
-    rw [this]
-    exact add_mem (zsmul_mem hx _) (zsmul_mem hy _)
-  | smul e x _ hx =>
-    obtain ⟨d, hd, hx⟩ := hx
-    obtain ⟨m, hm, hint⟩ := exists_integral_multiples ℤ ℚ (L := E) {e}
-    let o : 𝓞 E := ⟨m • e, (hint e (Finset.mem_singleton_self e) :)⟩
-    refine ⟨m * d, mul_ne_zero hm hd, ?_⟩
-    have : (m * d) • (e • x) = o • (d • x) := by
-      have ho : algebraMap (𝓞 E) E o = m • e := rfl
-      rw [← algebraMap_smul E o (d • x), ho, smul_assoc, smul_comm e d x, mul_smul]
-    rw [this]
-    exact L.smul_mem o hx
+  apply GlobalTheory.LatAlmostAll.exists_int_smul_mem <;> assumption
 
 theorem exists_int_mulVec_mem {E : Type} [Field E] [NumberField E] {n : ℕ} (L : Submodule (𝓞 E) (Fin n → E))
     (hL : L.IsFullLattice E) (N : Matrix (Fin n) (Fin n) E) : ∃ D : ℤ, D ≠ 0 ∧ ∀ x ∈ L, D • (N *ᵥ x) ∈ L := by
-  obtain ⟨s, hs⟩ := hL.toIsLattice.fg
-  choose d hd hdm using fun g : Fin n → E => exists_int_smul_mem L hL (N *ᵥ g)
-  refine ⟨∏ g ∈ s, d g, Finset.prod_ne_zero_iff.2 fun g _ => hd g, ?_⟩
-  let f : (Fin n → E) →ₗ[𝓞 E] (Fin n → E) := ((∏ g ∈ s, d g) • N.mulVecLin).restrictScalars (𝓞 E)
-  have hf : ∀ x, f x = (∏ g ∈ s, d g) • (N *ᵥ x) := fun x => rfl
-  have hle : Submodule.span (𝓞 E) (s : Set (Fin n → E)) ≤ L.comap f := by
-    rw [Submodule.span_le]
-    intro g hg
-    simp only [SetLike.mem_coe, Submodule.mem_comap, hf]
-    classical
-    rw [← Finset.mul_prod_erase s d hg, mul_comm, mul_smul]
-    exact zsmul_mem (hdm g) _
-  intro x hx
-  rw [← hs] at hx
-  have := hle hx
-  rwa [Submodule.mem_comap, hf] at this
+  apply GlobalTheory.LatAlmostAll.exists_int_mulVec_mem <;> assumption
 
 theorem incM_zsmul {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {m k : Type}
     (D : ℤ) (V : Matrix m k E) : incM F (D • V) = (algebraMap F (AF F) (D : F)) • incM F V := by

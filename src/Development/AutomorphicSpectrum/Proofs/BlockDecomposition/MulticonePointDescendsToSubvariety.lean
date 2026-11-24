@@ -6,7 +6,7 @@ public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsL
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUniqueComplexPointUnder
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultiprojectivePrimeEqPointIdeal
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PointIdealMultiprojectivePrime
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpecializesIffPointIdealLeStatement
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpecializesIffPointIdealLe
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageInverse
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -46,6 +46,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSmoothHermCombLine
+import Mathlib.Algebra.Azumaya.Basic
 
 @[expose] public section
 
@@ -149,7 +150,7 @@ theorem exists_cxPt_of_mem_mcPts : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ) (X : 
   have hP : ptIdeal (i (genericPoint X)) ≤ ptIdeal (w.1 (IsLocalRing.closedPoint ℂ)) := by
     rw [ptIdeal_of_isUnder hz.1 hw]
     exact le_mCoordIdeal_of_mem_mcPts (isMultiProjPrime_ptIdeal m n _).2.1 hz
-  have hs := (GlobalTheory.T.specializes_iff_point_ideal_le m n _ _).2 hP
+  have hs := (_root_.GlobalTheory.CompanionTheory.MPDict.Spec.specializes_iff_ptIdeal_le m n _ _).2 hP
   have hr : w.1 (IsLocalRing.closedPoint ℂ) ∈ Set.range i :=
     hs.mem_closed i.isClosedEmbedding.isClosed_range ⟨_, rfl⟩
   have : Subsingleton (Sp ℂ) := inferInstanceAs (Subsingleton (PrimeSpectrum ℂ))

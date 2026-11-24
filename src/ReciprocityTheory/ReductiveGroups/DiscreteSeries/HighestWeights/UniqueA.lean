@@ -99,10 +99,8 @@ lemma uq_kRel_prod {A B : Type*} [Ring A] [Ring B] (ε : Fin n → Bool) (F : Fi
   refine Prod.ext ?_ ?_
   · first
       | (simp only [Prod.fst_sub, Prod.fst_mul, h a b c d hab hcd, apply_ite Prod.fst, Prod.fst_zero]; done)
-      | simp [h a b c d hab hcd, apply_ite Prod.fst]
   · first
       | (simp only [Prod.snd_sub, Prod.snd_mul, h' a b c d hab hcd, apply_ite Prod.snd, Prod.snd_zero]; done)
-      | simp [h' a b c d hab hcd, apply_ite Prod.snd]
 
 section
 
@@ -195,9 +193,6 @@ lemma uq_bij {P U : Type} [NormedAddCommGroup P] [InnerProductSpace ℂ P] [Fini
     obtain ⟨nn, hnn, mm, hmm, hxnm⟩ : ∃ y ∈ N, ∃ z ∈ Nᗮ, x = y + z := by
       first
         | exact N.exists_add_mem_mem_orthogonal x
-        | (obtain ⟨y, hy, z, hz, e⟩ := Submodule.mem_sup.1
-              (show x ∈ N ⊔ Nᗮ by rw [Submodule.sup_orthogonal_of_completeSpace]; exact Submodule.mem_top)
-           exact ⟨y, hy, z, hz, e.symm⟩)
     have hnr : ∀ c d, c < d → ε c = ε d → G c d nn = 0 := by
       intro c d hcd hε
       have h0 : G c d nn + G c d mm = 0 := by rw [← map_add (f := _), ← hxnm, hx.2 c d hcd hε]
@@ -224,7 +219,7 @@ lemma uq_bij {P U : Type} [NormedAddCommGroup P] [InnerProductSpace ℂ P] [Fini
         refine hBle S ?_ ?_
         · show ⟪nn, x⟫_ℂ * ((‖x‖ : ℂ) ^ 2) = ⟪nn, x⟫_ℂ * ⟪x, x⟫_ℂ
           rw [inner_self_eq_norm_sq_to_K]
-          first | rfl | simp | norm_cast
+          first | rfl
         · intro a b hba hab y _
           show ⟪nn, G a b y⟫_ℂ * ((‖x‖ : ℂ) ^ 2) = ⟪nn, x⟫_ℂ * ⟪x, G a b y⟫_ℂ
           rw [← hU b a hab.symm nn y, ← hU b a hab.symm x y, hnr b a hba hab.symm,
@@ -292,10 +287,10 @@ theorem uq_exists_equiv (ε : Fin n → Bool) (F : Fin n → Fin n → Module.En
   have hp₁ : ∀ y, p₁ y = (WithLp.ofLp y).1 := fun _ => rfl
   have hp₂ : ∀ y, p₂ y = (WithLp.ofLp y).2 := fun _ => rfl
   have hb₁ := uq_bij ε (uqG F F') F Λ (WithLp.toLp 2 (w, w')) hRG hUG hxH p₁
-    (fun a b hab y => by rw [hp₁, hp₁, uqG_apply] <;> rfl) (by rw [hp₁]; simpa using hw0)
+    (fun a b hab y => by rw [hp₁, hp₁, uqG_apply]) (by rw [hp₁]; simpa using hw0)
     (by rw [hp₁]; simpa using hT)
   have hb₂ := uq_bij ε (uqG F F') F' Λ (WithLp.toLp 2 (w, w')) hRG hUG hxH p₂
-    (fun a b hab y => by rw [hp₂, hp₂, uqG_apply] <;> rfl) (by rw [hp₂]; simpa using hw0')
+    (fun a b hab y => by rw [hp₂, hp₂, uqG_apply]) (by rw [hp₂]; simpa using hw0')
     (by rw [hp₂]; simpa using hT')
   let e₁ := LinearEquiv.ofBijective (p₁.domRestrict (kSpan ε (uqG F F') (WithLp.toLp 2 (w, w')))) hb₁
   let e₂ := LinearEquiv.ofBijective (p₂.domRestrict (kSpan ε (uqG F F') (WithLp.toLp 2 (w, w')))) hb₂
@@ -317,9 +312,9 @@ theorem uq_exists_equiv (ε : Fin n → Bool) (F : Fin n → Fin n → Module.En
   · have hx : WithLp.toLp 2 (w, w') ∈ kSpan ε (uqG F F') (WithLp.toLp 2 (w, w')) :=
       uq_mem_kSpan ε _ _
     have h2 : e₁.symm w = ⟨_, hx⟩ := by
-      rw [LinearEquiv.symm_apply_eq, he₁, hp₁] <;> simp
+      rw [LinearEquiv.symm_apply_eq, he₁, hp₁]
     show e₂ (e₁.symm w) = w'
-    rw [h2, he₂, hp₂] <;> simp
+    rw [h2, he₂, hp₂]
 
 private theorem eq_bot_of_KStable_of_highest_not_mem (ε : Fin n → Bool) (F : Fin n → Fin n → Module.End ℂ V) (Λ : Fin n → ℝ)
     (w : V) (hR : KRel ε F) (hU : KUnit ε F) (hw : KHighest ε F Λ w) (hT : kSpan ε F w = ⊤)
@@ -396,8 +391,8 @@ theorem uq_exists_isometry (ε : Fin n → Bool) (F : Fin n → Fin n → Module
     intro u v
     rw [← hAinner, hEtop, inner_smul_left, hc1, one_mul]
   refine ⟨φ.isometryOfInner hinner, fun a b hab v => ?_, ?_⟩
-  · first | exact hφ a b hab v | simpa using hφ a b hab v
-  · first | exact hφw | simpa using hφw
+  · first | exact hφ a b hab v
+  · first | exact hφw
 
 end
 

@@ -141,7 +141,7 @@ theorem UpperTheory.exists_qdet_eq_pow_add_sum_coeff_mem_span :
   have hF1 : ∀ a b, (F a b).coeff 1 = if a = b then 1 else 0 := by
     intro a b
     simp only [F]
-    split_ifs <;> simp [Polynomial.coeff_X, Polynomial.coeff_C]
+    split_ifs <;> simp [Polynomial.coeff_X]
   have hQ : ∀ σ, (Q σ).natDegree ≤ n ∧ (Q σ).coeff n = if σ = 1 then 1 else 0 := by
     intro σ
     have h := UpperTheory.natDegree_list_prod_le_and_leading_coeff (List.ofFn fun k => F (σ k) k) (by

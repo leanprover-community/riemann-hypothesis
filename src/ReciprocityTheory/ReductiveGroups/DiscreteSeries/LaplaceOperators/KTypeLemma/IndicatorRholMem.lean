@@ -86,9 +86,6 @@ theorem indicator_rhol_mem (X : Matrix (Fin n) (Fin n) ℂ) (F : cOm n) :
     have h0 := (LinearMap.toContinuousLinearMap (LinearMap.mulRight ℂ X)).contDiff (n := ∞)
     first
       | exact h0
-      | simpa using h0
-      | (convert h0 using 1; funext z; rfl)
-      | (convert h0 using 1; funext z; simp [LinearMap.mulRight_apply])
   refine mem_cOm.2 ⟨?_, fun z hz => Set.indicator_of_notMem hz _⟩
   refine (hd.clm_apply hg.contDiffOn).congr fun z hz => ?_
   rw [Set.indicator_of_mem hz]
@@ -153,10 +150,7 @@ theorem rOm_comm (X Y : Matrix (Fin n) (Fin n) ℂ) :
     have hinf := (cOm_smooth F).contDiffAt (isOpen_positiveOmega.mem_nhds hz)
     have h2 : ContDiffAt ℂ 2 (F : Matrix (Fin n) (Fin n) ℂ → ℂ) z := by
       first
-        | exact hinf.of_le (by exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤))
         | exact contDiffAt_infty.1 hinf 2
-        | exact hinf.of_le (by norm_cast)
-        | exact hinf.of_le (by simp)
     exact rightHol_commutator h2 X Y
   · simp only [Set.indicator_of_notMem hz, sub_zero]
 
@@ -172,9 +166,7 @@ private theorem single_one_mul_single_one_eq_ite (i j k l : Fin n) :
   · subst h
     first
       | rw [Matrix.single_mul_single_same, mul_one]
-      | simp
   · first
-      | rw [Matrix.single_mul_single_of_ne h]
       | simp [h]
 
 theorem isGlRep_eOm : IsGlRep (eOm (n := n)) := by

@@ -170,7 +170,7 @@ theorem volProd_of (hA : ∀ p, Agree δ M p)
   have hspec := hex.choose_spec
   obtain ⟨hRep, -, hL, hU, e⟩ := hspec
   obtain ⟨F₁, hR₁, -, hc₁⟩ := hat
-  have hw : w = hex.choose.1 := pt_eq_of_cells cell_point_uniqueness (Formalism.L2.SG.Closed.TermFun_holds D u u') hrows γ
+  have hw : w = hex.choose.1 := pt_eq_of_cells cell_point_uniqueness (_root_.term_function_const D u u') hrows γ
     hR₁ hRep hc₁ ⟨_, _, hL, hU, e⟩
   have hγ' : EligAt γ hex.choose.1 := hw ▸ hγ0
   have key := hVP hA hT hrows γ hex.choose.1 hex.choose.2.1 hex.choose.2.2.1 hex.choose.2.2.2 hγ' hex.choose_spec

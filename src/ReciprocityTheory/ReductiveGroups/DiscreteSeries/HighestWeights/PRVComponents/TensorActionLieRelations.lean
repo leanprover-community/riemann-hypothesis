@@ -105,8 +105,8 @@ theorem ext1Shift_kUnit {V : Type*} [NormedAddCommGroup V] [InnerProductSpace �
   intro a b hab x y
   by_cases h : a = b
   · subst h
-    simp [endomorphismFamilyShift, inner_add_left, inner_add_right, inner_smul_left, inner_smul_right, hF a a hab x y]
-  · simp [endomorphismFamilyShift, h, Ne.symm h, inner_add_left, inner_add_right, hF a b hab x y]
+    simp [endomorphismFamilyShift, hF a a hab x y]
+  · simp [endomorphismFamilyShift, h, Ne.symm h, hF a b hab x y]
 
 section Dual
 
@@ -188,7 +188,7 @@ theorem tensor_action_unitary {A : Fin n → Fin n → Module.End ℂ V} (hA : F
   intro a b hab x y
   simp only [PiLp.inner_apply, tensAct_apply_eq_add_sum_smul, inner_add_left, inner_add_right, sum_inner, inner_sum,
     inner_smul_left, inner_smul_right, Finset.sum_add_distrib, hA a b hab, hD a b hab, Matrix.conjTranspose_apply,
-    starRingEnd_apply, star_star]
+    starRingEnd_apply]
   congr 1
   rw [Finset.sum_comm]
 
@@ -200,7 +200,7 @@ theorem tensor_pure_highest_weight {A : Fin n → Fin n → Module.End ℂ V} {D
   · have h1 := congrFun (hgw a) i
     simp only [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul] at h1
     rw [tensAct_apply_eq_add_sum_smul, PiLp.smul_apply]
-    simp only [PiLp.toLp_apply]
+    simp only
     rw [map_smul, hp.1 a]
     simp_rw [smul_smul]
     rw [← Finset.sum_smul, h1, ← add_smul]
@@ -210,7 +210,7 @@ theorem tensor_pure_highest_weight {A : Fin n → Fin n → Module.End ℂ V} {D
   · have h1 := congrFun (hgh a b hab he) i
     simp only [Matrix.mulVec, dotProduct, Pi.zero_apply] at h1
     rw [tensAct_apply_eq_add_sum_smul]
-    simp only [PiLp.toLp_apply, PiLp.zero_apply]
+    simp only [PiLp.zero_apply]
     rw [map_smul, hp.2 a b hab he, smul_zero, zero_add]
     simp_rw [smul_smul]
     rw [← Finset.sum_smul, h1, zero_smul]
@@ -224,8 +224,8 @@ theorem tensor_action_single [DecidableEq ι] (A : Fin n → Fin n → Module.En
   rw [tensAct_apply_eq_add_sum_smul]
   by_cases hk : k = i
   · subst hk
-    simp [matrixFamilyDual, Pi.single_apply, hc, sub_eq_add_neg, Finset.sum_ite_eq', Finset.smul_sum]
-  · simp [matrixFamilyDual, Pi.single_apply, hk, sub_eq_add_neg, Finset.sum_ite_eq', Finset.smul_sum]
+    simp [matrixFamilyDual, Pi.single_apply, hc, sub_eq_add_neg, Finset.sum_ite_eq']
+  · simp [matrixFamilyDual, Pi.single_apply, hk, sub_eq_add_neg, Finset.sum_ite_eq']
 
 end Tens
 

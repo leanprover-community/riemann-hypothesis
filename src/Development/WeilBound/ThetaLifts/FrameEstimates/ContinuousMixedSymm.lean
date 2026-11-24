@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.ThetaLifts.FrameEstimates.IsCompactIntV
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinPartIdemMulMemIff
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
@@ -216,29 +217,7 @@ theorem isCompact_intV (u : HeightOneSpectrum (𝓞 F)) :
 
 theorem isCompact_box (C : ∀ u : HeightOneSpectrum (𝓞 F), Set (Fv F u)) (hC : ∀ u, IsCompact (C u))
     (h : ∀ᶠ u in cofinite, C u ⊆ u.adicCompletionIntegers F) : IsCompact {a : Af F | ∀ u, evalV F u a ∈ C u} := by
-  let S : Set (HeightOneSpectrum (𝓞 F)) := {u | C u ⊆ u.adicCompletionIntegers F}
-  have hS : cofinite ≤ 𝓟 S := le_principal_iff.2 h
-  let P := RestrictedProduct (fun u : HeightOneSpectrum (𝓞 F) => u.adicCompletion F)
-      (fun u => (u.adicCompletionIntegers F : Set (u.adicCompletion F))) (𝓟 S)
-  have h1 : IsCompact {x : P | ∀ u, x u ∈ C u} := by
-    rw [RestrictedProduct.isEmbedding_coe_of_principal.isCompact_iff]
-    convert isCompact_univ_pi hC
-    ext x
-    constructor
-    · rintro ⟨y, hy, rfl⟩ u -
-      exact hy u
-    · intro hx
-      exact ⟨⟨x, fun u hu => hu (hx u trivial)⟩, fun u => hx u trivial, rfl⟩
-  have h2 := h1.image (RestrictedProduct.continuous_inclusion hS)
-  have e : {a : Af F | ∀ u, evalV F u a ∈ C u} = RestrictedProduct.inclusion _ _ hS '' {x : P | ∀ u, x u ∈ C u} := by
-    ext a
-    constructor
-    · intro ha
-      exact ⟨⟨a.1, fun u hu => hu (ha u)⟩, ha, rfl⟩
-    · rintro ⟨y, hy, rfl⟩
-      exact hy
-  rw [e]
-  exact h2
+  apply PositivityTheory.ThKEst.FiniteAdelicSupportCompactness.isCompact_box <;> assumption
 
 theorem pf_eq_prod {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ} (S : Finset (HeightOneSpectrum (𝓞 F)))
     (y : κ → Af F) (h : ∀ u ∉ S, φ u = stdF κ u ∧ ∀ i, evalV F u (y i) ∈ u.adicCompletionIntegers F) :
@@ -258,35 +237,7 @@ theorem exists_fin {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) →
     exact hu (Set.Finite.mem_toFinset _ |>.2 hn)⟩
 
 theorem pf_mem {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ} (hφ : Good φ) : pf φ ∈ SB (κ → Af F) := by
-  have hc : ∀ u, Continuous fun (y : κ → Af F) i => evalV F u (y i) := fun u =>
-    continuous_pi fun i => (cont_evalV u).comp (continuous_apply i)
-  constructor
-  · rw [IsLocallyConstant.iff_eventually_eq]
-    intro x
-    obtain ⟨S, hS⟩ := exists_fin hφ.2 x
-    have h1 : ∀ᶠ y in 𝓝 x, ∀ i v, evalV F v (y i - x i) ∈ v.adicCompletionIntegers F :=
-      eventually_all.2 fun i => (isOpen_intAf.preimage (f := fun y : κ → Af F => y i - x i) (by fun_prop)).mem_nhds
-        (by intro v; simp)
-    have h2 : ∀ᶠ y in 𝓝 x, ∀ u ∈ S, φ u (fun i => evalV F u (y i)) = φ u fun i => evalV F u (x i) :=
-      (eventually_all_finset S).2 fun u _ => ((hφ.1 u).1.comp_continuous (hc u)).eventually_eq x
-    filter_upwards [h1, h2] with y h1 h2
-    rw [pf_eq_prod S x hS, pf_eq_prod S y fun u hu => ⟨(hS u hu).1, fun i => ?_⟩]
-    · exact Finset.prod_congr rfl h2
-    · have := add_mem (h1 i u) ((hS u hu).2 i)
-      rwa [map_sub, sub_add_cancel] at this
-  · have hK : ∀ i : κ, IsCompact {a : Af F | ∀ u, evalV F u a ∈ (fun x => x i) '' tsupport (φ u)} := fun i =>
-      isCompact_box _ (fun u => (hφ.1 u).2.isCompact.image (continuous_apply i)) (by
-        filter_upwards [hφ.2] with u hu
-        rintro _ ⟨x, hx, rfl⟩
-        rw [hu] at hx
-        exact closure_minimal Set.support_indicator_subset (isCompact_intV u).isClosed hx i)
-    refine HasCompactSupport.intro (isCompact_univ_pi hK) fun y hy => ?_
-    by_contra h0
-    refine hy fun i _ u => ⟨fun i => evalV F u (y i), subset_tsupport _ (fun h => h0 ?_), rfl⟩
-    obtain ⟨S, hS⟩ := exists_fin hφ.2 y
-    classical
-    rw [pf_eq_prod (insert u S) y fun v hv => hS v fun h => hv (Finset.mem_insert_of_mem h)]
-    exact Finset.prod_eq_zero (Finset.mem_insert_self _ _) h
+  apply PositivityTheory.ThKEst.FiniteAdelicSupportCompactness.pf_mem <;> assumption
 
 theorem pure_mem (f : SInf F κ) {φ : ∀ u : HeightOneSpectrum (𝓞 F), (κ → Fv F u) → ℂ} (hφ : Good φ) :
     pure f φ ∈ schA F κ := Submodule.subset_span ⟨f, pf φ, pf_mem hφ, rfl⟩

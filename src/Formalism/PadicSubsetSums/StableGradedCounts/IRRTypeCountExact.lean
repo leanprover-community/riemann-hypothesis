@@ -80,8 +80,6 @@ theorem type_count_exact : TypeCountExact := by
       have hna : normalize a = a := by
         first
           | exact ha.1.normalize_eq_self
-          | exact Polynomial.Monic.normalize_eq_self ha.1
-          | simp [normalize_apply, Polynomial.coe_normUnit, ha.1.leadingCoeff]
       rw [Multiset.prod_cons]
       refine ⟨ha.1.mul h1, ?_, ?_, ?_⟩
       · rw [normalizedFactors_mul ha.2.1.ne_zero h1.ne_zero, normalizedFactors_irreducible ha.2.1,
@@ -100,19 +98,16 @@ theorem type_count_exact : TypeCountExact := by
     have hirr : Irreducible q := by
       first
         | exact irreducible_of_normalized_factor q hq
-        | exact UniqueFactorizationMonoid.irreducible_of_normalized_factor q hq
     have hq0 : q ≠ 0 := hirr.ne_zero
     have hnq : normalize q = q := by
       first
         | exact normalize_normalized_factor q hq
-        | exact UniqueFactorizationMonoid.normalize_normalized_factor q hq
     have hmon : q.Monic := by
       have h := Polynomial.monic_normalize hq0
       rwa [hnq] at h
     have hdvd : q ∣ monicOf c := by
       first
         | exact dvd_of_mem_normalizedFactors hq
-        | exact UniqueFactorizationMonoid.dvd_of_mem_normalizedFactors hq
     have hp0 : monicOf c ≠ 0 := (monicOf_monic c).ne_zero
     refine ⟨hmon, hirr, ?_, ?_, ?_⟩
     · intro h0
@@ -137,9 +132,6 @@ theorem type_count_exact : TypeCountExact := by
     apply Polynomial.eq_of_monic_of_associated hm (monicOf_monic c)
     first
       | exact prod_normalizedFactors hp0
-      | exact normalizedFactors_prod hp0
-      | exact UniqueFactorizationMonoid.prod_normalizedFactors hp0
-      | exact UniqueFactorizationMonoid.normalizedFactors_prod hp0
   set Irr : ℕ → Finset K[X] := fun d => ((Finset.univ : Finset (Fin d → K)).filter
     (fun c => Irreducible (monicOf c) ∧ (monicOf c).coeff 0 ≠ 0)).image monicOf with hIrrdef
   have hIrr : ∀ (d : ℕ) (q : K[X]), q ∈ Irr d ↔

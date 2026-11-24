@@ -128,7 +128,7 @@ theorem ct_iter_cexp {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
           ((ContinuousMultilinearMap.mkPiAlgebraFin ℂ n ℂ).compContinuousLinearMap (fun _ => ℓ))) v :=
       (ℓ.hasFDerivAt.cexp).smul_const _
     rw [hd.fderiv]
-    simp [ContinuousMultilinearMap.mkPiAlgebraFin_apply, List.prod_ofFn, Fin.prod_univ_succ, Fin.tail]
+    simp [ContinuousMultilinearMap.mkPiAlgebraFin_apply, List.prod_ofFn, Fin.tail]
     all_goals ring
 
 theorem ct_iter_cexp_apply {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
@@ -145,7 +145,6 @@ theorem ct_iter_mul_jet_one {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ 
     intro k
     first
       | exact_mod_cast (le_top : (k : ℕ∞) ≤ ⊤)
-      | exact WithTop.coe_le_coe.2 le_top
   have hhC : ContDiff ℂ (⊤ : ℕ∞) (fun v => g v - 1) := hg.sub contDiff_const
   have hz : ∀ k ≤ c, iteratedFDeriv ℂ k (fun v => g v - 1) 0 = 0 := by
     intro k hk
@@ -156,7 +155,6 @@ theorem ct_iter_mul_jet_one {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ 
       rw [e]
       first
         | rw [iteratedFDeriv_sub_apply (hg.of_le (hle k)).contDiffAt contDiff_const.contDiffAt]
-        | rw [iteratedFDeriv_sub_apply (hg.of_le (hle k)) contDiff_const]
       rw [hjet k hk0 hk, iteratedFDeriv_const_of_ne (by omega)]
       simp
   have hsplit : (fun v => f v * g v) = (fun v => f v) + (fun v => f v * (g v - 1)) := by
@@ -167,7 +165,6 @@ theorem ct_iter_mul_jet_one {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ 
   rw [hsplit]
   first
     | rw [iteratedFDeriv_add_apply (hf.of_le (hle c)).contDiffAt (hfh.of_le (hle c)).contDiffAt]
-    | rw [iteratedFDeriv_add_apply (hf.of_le (hle c)) (hfh.of_le (hle c))]
   have hb := norm_iteratedFDeriv_mul_le hf hhC (0 : V) (n := c) (hle c)
   have h0' : iteratedFDeriv ℂ c (fun v => f v * (g v - 1)) 0 = 0 := by
     rw [← norm_le_zero_iff]
@@ -194,8 +191,6 @@ theorem ct_itD_contDiff {f : W → ℂ} (hf : ContDiff ℂ (⊤ : ℕ∞) f) (l 
     refine contDiff_infty.2 fun m => hf.iteratedFDeriv_right ?_
     first
       | exact_mod_cast (le_top : ((m + l.length : ℕ) : ℕ∞) ≤ ⊤)
-      | exact WithTop.coe_le_coe.2 le_top
-      | simp
   exact (ContinuousMultilinearMap.apply ℂ (fun _ : Fin l.length => W) ℂ _).contDiff.comp h
 
 theorem ct_itD_cons_cons {f : W → ℂ} (hf : ContDiff ℂ (⊤ : ℕ∞) f) (a b : W) (l : List W) (z : W) :
@@ -227,10 +222,7 @@ theorem ct_itD_perm {f : W → ℂ} (hf : ContDiff ℂ (⊤ : ℕ∞) f) {l₁ l
       try simp only [minSmoothness_of_isRCLikeNormedField]
       first
         | exact WithTop.coe_le_coe.2 le_top
-        | exact (WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤))
         | exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-        | norm_num
-        | decide
     exact hs y x
   | @trans l₁ l₂ l₃ _ _ ih1 ih2 => rw [ih1, ih2]
 
@@ -270,8 +262,6 @@ theorem ct_degree_toFinsupp_ofFn {ι : Type} [DecidableEq ι] (j : ℕ) (v : Fin
   refine Eq.trans ?_ h.symm
   first
     | rfl
-    | simp [Finsupp.degree, Finsupp.sum]
-    | simp [Finsupp.degree_eq_sum, Finsupp.sum]
 
 open scoped Classical in
 open Classical in

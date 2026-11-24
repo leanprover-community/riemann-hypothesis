@@ -66,7 +66,7 @@ private theorem cpart1_mem_inG (ε : Fin n → Bool) (Z : Matrix (Fin n) (Fin n)
   unfold Formalism.REAL.inG
   ext i j
   simp [S7.cpart1, Formalism.REAL.Jm, Jm, Matrix.mul_diagonal, Matrix.diagonal_mul,
-    Matrix.conjTranspose_apply, Complex.star_def]
+    Matrix.conjTranspose_apply]
   split_ifs <;> (try simp) <;> ring
 
 private theorem cpart2_mem_inG (ε : Fin n → Bool) (Z : Matrix (Fin n) (Fin n) ℂ) :
@@ -74,7 +74,7 @@ private theorem cpart2_mem_inG (ε : Fin n → Bool) (Z : Matrix (Fin n) (Fin n)
   unfold Formalism.REAL.inG
   ext i j
   simp [S7.cpart2, Formalism.REAL.Jm, Jm, Matrix.mul_diagonal, Matrix.diagonal_mul,
-    Matrix.conjTranspose_apply, Complex.star_def]
+    Matrix.conjTranspose_apply]
   split_ifs <;> (try simp) <;> (try field_simp) <;> ring
 
 private theorem cpart1_add_I_mul_cpart2 (ε : Fin n → Bool) (Z : Matrix (Fin n) (Fin n) ℂ) (c d : Fin n) :
@@ -93,15 +93,15 @@ theorem rightDerivative_toL2 {ε : Fin n → Bool} {F : Matrix (Fin n) (Fin n) �
   rw [← Finset.sum_add_distrib]
   simp_rw [← Finset.sum_add_distrib, ← add_smul, cpart1_add_I_mul_cpart2]
   rw [Finset.sum_eq_single a, Finset.sum_eq_single b]
-  · simp [Matrix.single_apply]
+  · simp
   · intro d _ hd
-    simp [Matrix.single_apply, Ne.symm hd]
+    simp [Ne.symm hd]
   · intro h
     exact absurd (Finset.mem_univ b) h
   · intro c _ hc
     apply Finset.sum_eq_zero
     intro d _
-    simp [Matrix.single_apply, Ne.symm hc]
+    simp [Ne.symm hc]
   · intro h
     exact absurd (Finset.mem_univ a) h
 

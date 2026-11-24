@@ -200,7 +200,7 @@ private theorem comm_lie (i l : Fin n) :
   simp only [map_sub, map_mul, uC_ιC] at h2
   have z : lie E n (toL 0) = 0 := map_zero (lie E n)
   rw [z] at h2
-  first | exact sub_eq_zero.1 h2 | exact sub_eq_zero.1 h2.symm
+  first | exact sub_eq_zero.1 h2
 
 private theorem comm_rt (i : Fin n) (a : Fin n → (Cinf E)ˣ) :
     Commute (lie E n (toL (Matrix.single i i 1))) (rt E n (infGL E n (diagUnits n a))) := by

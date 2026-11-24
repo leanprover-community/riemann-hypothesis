@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.BoundedHalfModels.AdicBoxOpenness.CentralCharacterLocalHolds
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -63,22 +64,7 @@ theorem coe_ne {n : 𝓞 D.host.E} (hn : n ≠ 0) : (n : D.host.E) ≠ 0 := by
 theorem mem_homL {N N' : ℕ} {L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
     {L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)} {A : Matrix (Fin N') (Fin N) D.host.E} :
     A ∈ TaylorLogMetric.homL D L L' ↔ ∀ x ∈ L, A *ᵥ x ∈ L' := by
-  constructor
-  · intro h
-    unfold TaylorLogMetric.homL at h
-    induction h using Submodule.span_induction with
-    | mem B hB => exact hB
-    | zero => intro x _; simp
-    | add B C _ _ hB hC =>
-      intro x hx
-      rw [Matrix.add_mulVec]
-      exact L'.add_mem (hB x hx) (hC x hx)
-    | smul c B _ hB =>
-      intro x hx
-      rw [Matrix.smul_mulVec]
-      exact L'.smul_mem c (hB x hx)
-  · intro h
-    exact Submodule.subset_span h
+  apply Formalism.L2.PairingIndexBounds.Rec.mem_homL <;> assumption
 
 theorem homL_mul_pres {N N' : ℕ} {L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)}
     {L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)} {e : Matrix (Fin N') (Fin N') D.host.E}

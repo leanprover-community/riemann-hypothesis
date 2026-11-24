@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundle
 public import Development.WeilBound.CoreStatements.FlagImmersions.FibSandwich
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ProjectiveLinePlaceTrivialOnConstants
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
@@ -56,10 +57,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open MonoidalCategory CartesianMonoidalCategory MonObj GlobalTheory.CompanionTheory.Ar.LieTangent
 
 namespace RootFieldNumerics.RF.Fib
-
-theorem mem_eigSp {R W O : Type} [CommRing R] [AddCommGroup W] [Module R W] [CommRing O]
-    {ρ : O →+* Module.End R W} {σ : O →+* R} {w : W} : w ∈ eigSp ρ σ ↔ ∀ a, ρ a w = σ a • w := by
-  simp [eigSp, Submodule.mem_iInf, LinearMap.mem_ker, sub_eq_zero]
 
 private theorem exists_trace_dual_integral_projector {E : Type} [Field E] [NumberField E] {Ix : Type} [Fintype Ix] [DecidableEq Ix]
     (B : Module.Basis Ix ℤ (𝓞 E)) (A : Matrix Ix Ix ℤ) (d : ℤ) (hd : d ≠ 0)
@@ -120,11 +117,11 @@ private theorem exists_eigSp_projector_sum_mem_and_discr_smul (E : Type) [Field 
   intro K W _ _ _ χ ρ w
   have hB : ∀ a k, a * B k = ∑ j, B.repr (a * B k) j • B j := fun a k => (B.sum_repr (a * B k)).symm
   constructor
-  · rw [mem_eigSp]
+  · rw [_root_.PositivityTheory.HtPt.Gh.mem_eig]
     intro a
     calc ρ a (∑ k, χ (z k) • ρ (B k) w) = ∑ k, χ (z k) • ρ (a * B k) w := by
 
-          simp [map_sum, map_smul, map_mul, Module.End.mul_apply]
+          simp [map_sum, map_smul, map_mul]
       _ = ∑ k, χ (z k) • ∑ j, ((B.repr (a * B k) j : ℤ) : K) • ρ (B j) w := by
           refine Finset.sum_congr rfl fun k _ => ?_
           conv_lhs => rw [hB a k]
@@ -138,11 +135,11 @@ private theorem exists_eigSp_projector_sum_mem_and_discr_smul (E : Type) [Field 
           refine Finset.sum_congr rfl fun j _ => ?_
 
           rw [hza a j, map_sum, Finset.sum_smul]
-          simp only [map_zsmul, zsmul_eq_mul, map_mul, map_intCast]
+          simp only [zsmul_eq_mul, map_mul, map_intCast]
       _ = χ a • ∑ k, χ (z k) • ρ (B k) w := by
           simp [Finset.smul_sum, smul_smul, map_mul]
   · intro hw
-    rw [mem_eigSp] at hw
+    rw [_root_.PositivityTheory.HtPt.Gh.mem_eig] at hw
     simp only [hw, smul_smul]
     rw [← Finset.sum_smul]
     simp only [← map_mul]
@@ -158,26 +155,7 @@ variable {X : Scheme.{0}} {G : Over X} [GrpObj G] {Ω : Type} [Field Ω] {ξ : S
 
 theorem lat_act (M : LieModel G ξ E) (f : G ⟶ G) [IsMonHom f] (T : E →ₗ[Ω] E) (hT : M.IsDiffOf f T) {p : Cpt ξ} {e : E}
     (he : e ∈ M.lat p) : T e ∈ M.lat p := by
-  have key : ∀ (e : E) (v : epsAt (X.fromSpecStalk p.1) ⟶ G), M.Extends p e v → M.Extends p (T e) (v ≫ f) := by
-    intro e v hv
-    obtain ⟨h1, h2⟩ := hv
-    refine ⟨?_, ?_⟩
-    · unfold IsTanAt at h1 ⊢
-      rw [Over.comp_left, ← Category.assoc, h1, ← Over.comp_left]
-      simp
-    · rw [hT e, Over.comp_left, h2, Category.assoc, Over.comp_left]
-  unfold LieModel.lat at he ⊢
-  induction he using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨v, hv⟩ := hx
-    exact Submodule.subset_span ⟨v ≫ f, key _ _ hv⟩
-  | zero => simp
-  | add x y _ _ hx hy =>
-    rw [map_add (f := _)]
-    exact add_mem hx hy
-  | smul a x _ hx =>
-    rw [LinearMap.map_smul_of_tower]
-    exact Submodule.smul_mem _ a hx
+  apply (config := { allowSynthFailures := true }) GlobalTheory.CompanionTheory.Ar.Flat.EigVb.lat_stable <;> assumption
 
 theorem val_smul (hξ : IsCptGen ξ) {e : E} {w : EC} {a : Ω} {r : V} (ha : ValAt ξ z a r)
     (h : M.ValAt (Spec.map (CommRingCat.ofHom (algebraMap V L)) ≫ z) e (MC.pt w)) :
@@ -242,7 +220,7 @@ theorem val_eig (hξ : IsCptGen ξ) {O : Type} [CommRing O] {act : O → (G ⟶ 
     {χ : O →+* Ω} {σ : O →+* V} (hσ : ∀ a, ValAt ξ z (χ a) (σ a)) {e : E} (he : e ∈ eigSp ρ χ) {w : EC}
     (hw : M.ValAt (Spec.map (CommRingCat.ofHom (algebraMap V L)) ≫ z) e (MC.pt w)) :
     w ∈ eigSp ρC ((algebraMap V L).comp σ) := by
-  rw [mem_eigSp] at he ⊢
+  rw [_root_.PositivityTheory.HtPt.Gh.mem_eig] at he ⊢
   intro a
   have hA : M.ValAt (Spec.map (CommRingCat.ofHom (algebraMap V L)) ≫ z) (ρ a e) (MC.pt (ρC a w)) := by
     obtain ⟨hc, v, ⟨hv1, hv2⟩, hv3⟩ := id hw
@@ -294,7 +272,7 @@ private theorem mem_lat_of_specializes {X : Scheme.{0}} {G : Over X} [GrpObj G] 
           (X.presheaf.stalk q.1) (X.presheaf.stalk q.1) (X.presheaf.stalk q.1)).toRingHom) := by
         rw [hφl, ← Spec.map_comp, ← Spec.map_comp]
         congr 1
-        ext a <;> simp [GlobalTheory.CompanionTheory.Ar.dualMap] <;> first | rfl | exact map_zero _
+        ext a <;> simp [GlobalTheory.CompanionTheory.Ar.dualMap] <;> first | rfl
       rw [Over.comp_left, ← Category.assoc, key, Category.assoc, hv1]
       let ψ : Over.mk (X.fromSpecStalk q'.1) ⟶ Over.mk (X.fromSpecStalk q.1) := Over.homMk _ hψ
       have h1 : ψ ≫ (1 : Over.mk (X.fromSpecStalk q.1) ⟶ G) = 1 := by
@@ -306,7 +284,7 @@ private theorem mem_lat_of_specializes {X : Scheme.{0}} {G : Over X} [GrpObj G] 
       congr 2
       have hg : ∀ s, genMap ξ q' ((X.presheaf.stalkSpecializes hs).hom s) = genMap ξ q s :=
         fun s => ProjectiveLinePlaces.genMap_specializes hs q'.2 q.2 s
-      ext a <;> simp [GlobalTheory.CompanionTheory.Ar.dualMap, hg] <;> first | rfl | exact (hg _).symm
+      ext a <;> simp [GlobalTheory.CompanionTheory.Ar.dualMap, hg]
   unfold LieModel.lat at he ⊢
   induction he using Submodule.span_induction with
   | mem x hx =>

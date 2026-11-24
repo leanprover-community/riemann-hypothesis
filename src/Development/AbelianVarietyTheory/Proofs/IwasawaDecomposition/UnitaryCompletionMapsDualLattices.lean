@@ -47,6 +47,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GlESymmApply
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemLocLatOverLat
 
 @[expose] public section
 
@@ -83,21 +84,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 theorem mem_dualL (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E)
     (Λ : Submodule (𝓞 E) (Fin n → E)) (y : Fin n → E) :
     y ∈ dualL σ J Λ ↔ y ∈ dualSet σ J Λ := by
-  refine ⟨fun hy => ?_, fun hy => Submodule.subset_span hy⟩
-  induction hy using Submodule.span_induction with
-  | mem y hy => exact hy
-  | zero => intro x _; simp [hform]
-  | add y z _ _ hy hz =>
-    intro x hx
-    have : hform σ J x (y + z) = hform σ J x y + hform σ J x z := by
-      simp [hform, mul_add, Finset.sum_add_distrib]
-    rw [this]; exact add_mem (hy x hx) (hz x hx)
-  | smul a y _ hy =>
-    intro x hx
-    have : hform σ J x (a • y) = algebraMap (𝓞 E) E a * hform σ J x y := by
-      simp only [hform, Finset.mul_sum, Pi.smul_apply, Algebra.smul_def]
-      exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-    rw [this]; exact mul_mem ⟨a, rfl⟩ (hy x hx)
+  apply _root_.GlobalTheory.OverLat.mem_span_dualSet <;> assumption
 
 theorem exists_common_den {p : ℕ} (hp : p.Prime) (M : Submodule (𝓞 E) (Fin n → E)) (hM : M.FG) (B : GL (Fin n) E)
     (hB : IsLocBasis p (M : Set (Fin n → E)) B) :

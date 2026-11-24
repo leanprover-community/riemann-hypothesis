@@ -67,9 +67,6 @@ theorem smulInv_ratOf {G : Type} [Group G] [MeasurableSpace G] [MeasurableMul G]
     (Γ : Subgroup K) (μ : Measure K) [μ.IsMulLeftInvariant] : SMulInvariantMeasure Γ K μ := by
   first
   | exact inferInstance
-  | exact ⟨fun c s _ => by
-      show μ ((fun x : K => (c : K) * x) ⁻¹' s) = μ s
-      exact measure_preimage_mul μ (c : K) s⟩
 
 theorem covol_eq_of_fd {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) [MeasurableMul (HA (AF F) σ J)]

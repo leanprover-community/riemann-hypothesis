@@ -280,7 +280,7 @@ theorem crRowSum (τ σ : T) (m i0 : ℕ) :
     (∑ j : Fin m, if τ = σ ∧ (j : ℕ) = i0 then 1 else 0) = if τ = σ ∧ i0 < m then 1 else 0 := by
   by_cases h : τ = σ
   · subst h
-    simp only [eq_self_iff_true, true_and]
+    simp only [true_and]
     rw [Fin.sum_univ_eq_sum_range (fun j => if j = i0 then 1 else 0) m, Finset.sum_ite_eq']
     simp only [Finset.mem_range]
   · simp [h]

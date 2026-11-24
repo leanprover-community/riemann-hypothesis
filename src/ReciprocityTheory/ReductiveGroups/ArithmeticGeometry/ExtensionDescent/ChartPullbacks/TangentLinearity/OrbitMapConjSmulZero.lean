@@ -64,8 +64,6 @@ lemma padd_comm {S : Scheme.{0}} (B : Over S) [GrpObj B] [IsCommMonObj B] {T : O
   unfold padd
   first
   | exact mul_comm x y
-  | (rw (occs := .pos [1]) [← IsCommMonObj.mul_comm B]; rw [← Category.assoc]; congr 1; ext <;> simp)
-  | rw [Category.id_comp]
 
 lemma ite_neg_one_eq_neg (c : Prop) [Decidable c] : (if c then (-1 : ℤ) else 0) = -(if c then 1 else 0) := by
   split_ifs <;> simp
@@ -117,7 +115,6 @@ lemma hOv_pG (hO : ∀ a : O, (Over.pullback (thick R I e)).map (ιG.act a) ≫ 
   simp only [DegPre.prBe, Over.comp_left, Over.homMk_left, Over.map_map_left]
   all_goals first
   | exact pullback.lift_fst _ _ _
-  | simp
 
 end Fam
 

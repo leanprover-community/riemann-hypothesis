@@ -139,9 +139,7 @@ theorem rowOrth : (tOf F0 F0' TR cs cs' FdN FdN').RowOrth := by
   simp only [tOf, vec]
   split_ifs with h1 h2
   · exact absurd (h1.symm.trans h2) hpair
-  · simp
-  · simp
-  · simp
+  all_goals simp
 
 theorem GG_diag (i : Iof TR) :
     (tOf F0 F0' TR cs cs' FdN FdN').GG i i =

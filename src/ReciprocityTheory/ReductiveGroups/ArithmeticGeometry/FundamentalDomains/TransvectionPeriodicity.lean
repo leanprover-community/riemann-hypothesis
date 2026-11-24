@@ -74,7 +74,7 @@ lemma emb_kappa (X : Data E r) (τ : X.Ψ) : τ.1 X.κ0 = -(I * X.c τ) := by
     simp
   have hnorm : ‖τ.1 X.κ0‖ = X.c τ := by
     unfold Data.c
-    rcases X.κ0_xi with h | h <;> rw [h] <;> simp [norm_mul, map_ofNat]
+    rcases X.κ0_xi with h | h <;> rw [h] <;> simp [map_ofNat]
   have him := X.κ0_sign τ
   rw [hn, abs_of_neg him] at hnorm
   rw [hz, ← hnorm]
@@ -94,7 +94,7 @@ lemma transvMat_mul (G : Matrix (Fin r) (Fin r) E) {ξ : Fin r → E} (hξ : her
     rw [← hξ]
     unfold herm
     refine Finset.sum_congr rfl fun j _ => ?_
-    simp only [hw, Finset.sum_mul, Finset.mul_sum]
+    simp only [hw, Finset.sum_mul]
     refine Finset.sum_congr rfl fun k _ => ?_
     ring
 

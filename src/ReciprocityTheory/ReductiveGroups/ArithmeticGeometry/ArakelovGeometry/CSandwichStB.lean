@@ -234,10 +234,9 @@ open Matrix in
 theorem quad_monoDiag (D N δ : ℕ) (v : Fin (δ * (Finset.Nat.antidiagonalTuple (D + 1) N).card) → ℂ) :
     (star v ⬝ᵥ monoDiag D N δ *ᵥ v).re =
       ∑ l : Fin δ, ∑ i, monoNormSq (adtEnum D N i) * ‖v (finProdFinEquiv (l, i))‖ ^ 2 := by
-  simp only [monoDiag, Matrix.mulVec_diagonal]
+  simp only [monoDiag]
   first
   | simp only [dotProduct, Pi.star_apply, Matrix.mulVec_diagonal]
-  | simp only [Matrix.dotProduct, Pi.star_apply, Matrix.mulVec_diagonal]
   rw [Complex.re_sum, ← finProdFinEquiv.sum_comp, Fintype.sum_prod_type]
   refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun i _ => ?_
   try simp only [Equiv.symm_apply_apply]
@@ -264,8 +263,6 @@ theorem sum_monoNormSq_traceMat {r δ N : ℕ} (g : Fin r → Fin δ → MvPolyn
     intro i
     first
     | simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, traceMat, Matrix.of_apply,
-        Equiv.symm_apply_apply, C]
-    | simp only [Matrix.mulVec, Matrix.dotProduct, Matrix.map_apply, traceMat, Matrix.of_apply,
         Equiv.symm_apply_apply, C]
   have hj : ∀ (j : Fin r) (w : Fin (D + 1) → ℂ), eval w (map (Int.castRingHom ℂ) (g j l)) =
       ∑ a ∈ Finset.Nat.antidiagonalTuple (D + 1) N,

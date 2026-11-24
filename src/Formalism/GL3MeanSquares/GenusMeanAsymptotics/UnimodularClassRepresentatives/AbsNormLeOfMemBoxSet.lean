@@ -1,5 +1,6 @@
 module
 
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.AbsNormEqProdOfMem
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.LocalDensityRatio
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.BoxInterEqEmpty
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.EulerFacMulConjInvSplit
@@ -62,39 +63,9 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 variable {V : Type} [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
 
-theorem boxSet_finite (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) (T : ℝ) :
-    (boxSet K F T).Finite := by
-  refine Set.Finite.of_finite_image (f := fun n : 𝓞 F => algebraMap F K (n : F)) ?_
-    (fun a _ b _ hab => RingOfIntegers.ext ((algebraMap F K).injective hab))
-  refine (NumberField.Embeddings.finite_of_norm_le K ℂ T).subset ?_
-  rintro _ ⟨n, hn, rfl⟩
-  refine ⟨map_isIntegral_int (algebraMap F K) (RingOfIntegers.isIntegral_coe n), fun φ => ?_⟩
-  have hst : star (algebraMap F K (n : F)) = algebraMap F K (n : F) := (hF _).mpr ⟨_, rfl⟩
-  have hc := hK.2.1 φ (algebraMap F K (n : F))
-  rw [hst] at hc
-  obtain ⟨r, hr⟩ := Complex.conj_eq_iff_real.mp hc.symm
-  have h1 := hn φ
-  simp only at h1 ⊢
-  rw [hr] at h1 ⊢
-  rw [Complex.ofReal_re] at h1
-  rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos h1.1]
-  exact h1.2
+alias boxSet_finite := _root_.Formalism.HermitianLattices.Ext.L3.BoxSum.finite_boxSet
 
-theorem ne_zero_of_mem_boxSet {T : ℝ} {n : 𝓞 F} (hn : n ∈ boxSet K F T) : n ≠ 0 := by
-  rintro rfl
-  obtain ⟨φ⟩ := (inferInstance : Nonempty (K →+* ℂ))
-  have := (hn φ).1
-  simp at this
-
-theorem absNorm_le_of_mem_boxSet (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {T : ℝ} {n : 𝓞 F}
-    (hn : n ∈ boxSet K F T) :
-    (Ideal.absNorm (Ideal.span {n}) : ℝ) ≤ T ^ Formalism.HermitianLatticesTheory.fDeg K := by
-  by_contra hlt
-  have := box_inter_eq_empty hK hF (b := Ideal.span {n}) (not_le.mp hlt)
-  have hmem : n ∈ {n' : 𝓞 F | n' ∈ boxSet K F T ∧ n' ∈ Ideal.span {n}} :=
-    ⟨hn, Ideal.mem_span_singleton_self n⟩
-  rw [this] at hmem
-  exact hmem
+alias ne_zero_of_mem_boxSet := _root_.Formalism.HermitianLattices.Ext.L3.BoxSum.ne_zero_of_mem_boxSet
 
 def eFac (K : Type) {F : Type} [Field K] [Field F] [NumberField F] [Algebra F K] (m : ℕ)
     (𝔭 : Ideal (𝓞 F)) : ℝ :=

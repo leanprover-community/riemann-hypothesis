@@ -124,9 +124,7 @@ theorem zhat_inv {k r : ℕ} (z z' : Fin (2 * r + k + 1) → ℂ) {g : Matrix (F
   have hgi : g * g⁻¹ = 1 := Matrix.mul_nonsing_inv g hu
   have hkey : (Hpk k r * g)ᴴ = Hpk k r * g⁻¹ := by
     rw [Matrix.conjTranspose_mul, hH]
-    have h2 := congrArg (· * g⁻¹) hg'
-    simp only [Matrix.mul_assoc, hgi, Matrix.mul_one] at h2
-    exact h2
+    simpa only [Matrix.mul_assoc, hgi, Matrix.mul_one] using congrArg (· * g⁻¹) hg'
   unfold Formalism.QuantumDeterminants.Zhat Formalism.QuantumDeterminants.herm
   rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, ← hkey]
   generalize Hpk k r * g = M

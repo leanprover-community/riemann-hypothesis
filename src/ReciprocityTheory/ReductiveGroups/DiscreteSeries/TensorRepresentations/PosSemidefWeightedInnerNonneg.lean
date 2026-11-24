@@ -113,10 +113,6 @@ theorem onb_expand_vector_inner {E V : Type*} [NormedAddCommGroup E] [InnerProdu
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun i _ => by ring
 
-theorem k_type_op_inner_preserved {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : S7.KType ε Λ) (k : S7.KG ε) (x y : T.V) :
-    inner ℂ (T.op k x) (T.op k y) = inner ℂ x y :=
-  ContinuousLinearMap.inner_map_map_of_mem_unitary (T.τ k).2 x y
-
 theorem k_matrix_conjTranspose_mul_self {ε : Fin n → Bool} (k : S7.KG ε) :
     (S7.toMK k)ᴴ * S7.toMK k = 1 := by
   have hk : S7.toMK k ∈ Kset ε := k.2
@@ -142,7 +138,7 @@ theorem k_twist_vector_inner_preserved (dual : Bool) {ε : Fin n → Bool} {Λ :
       rw [h]
       split_ifs <;> simp
   unfold ob2SI ob2TauF
-  simp only [sum_inner, inner_sum, inner_smul_left, inner_smul_right, k_type_op_inner_preserved]
+  simp only [sum_inner, inner_sum, inner_smul_left, inner_smul_right, _root_.ReciprocityTheory.ChartRestriction.DS.ffa_op_inner]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun e _ => ?_
   simp_rw [Finset.mul_sum]
@@ -245,9 +241,6 @@ theorem psi_twist_exp_positive (dual : Bool) {ε : Fin n → Bool} {Λ : Fin n �
 
 theorem k_matrix_of_one {ε : Fin n → Bool} : S7.toMK (1 : S7.KG ε) = 1 := rfl
 
-theorem k_type_op_one {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : S7.KType ε Λ) : T.op 1 = 1 := by
-  simp [S7.KType.op]
-
 theorem psi_pairing_nonneg (dual : Bool) {ε : Fin n → Bool} {lam lam' : Fin n → ℝ} {T : S7.KType ε (lowK ε lam)}
     {T' : S7.KType ε (lowK ε lam')}
     {Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)} {Ψ' : Matrix (Fin n) (Fin n) ℂ → (T'.V →L[ℂ] T'.V)}
@@ -268,10 +261,10 @@ theorem psi_pairing_nonneg (dual : Bool) {ε : Fin n → Bool} {lam lam' : Fin n
     exact h1
   have hΨ : Ψ (S7.toMK k * NormedSpace.exp Y) = T.op k * Ψ (NormedSpace.exp Y) := by
     have := hP.1 k 1 _ hE
-    rwa [k_matrix_of_one, Matrix.mul_one, k_type_op_one, mul_one] at this
+    rwa [k_matrix_of_one, Matrix.mul_one, _root_.ReciprocityTheory.ChartRestriction.DS.pdA_op_one, mul_one] at this
   have hΨ' : Ψ' (S7.toMK k * NormedSpace.exp Y) = T'.op k * Ψ' (NormedSpace.exp Y) := by
     have := hP'.1 k 1 _ hE
-    rwa [k_matrix_of_one, Matrix.mul_one, k_type_op_one, mul_one] at this
+    rwa [k_matrix_of_one, Matrix.mul_one, _root_.ReciprocityTheory.ChartRestriction.DS.pdA_op_one, mul_one] at this
   set b := stdOrthonormalBasis ℂ T'.V
   set E := NormedSpace.exp Y
   have step : ∀ j, ob2SI (ob2B dual Ψ (S7.toMK k * E) (ι₀ (b j))) (ι₀ (Ψ' (S7.toMK k * E) (b j))) =

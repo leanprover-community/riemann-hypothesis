@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LbIsoGenericSpreadsOut
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.MorphismsSpreadOutToFgSubalgebra
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.NonemptyIsLimitBaseChange
@@ -65,21 +66,7 @@ theorem exists_finset_lbIso_adjoin {k A : Type} [CommRing k] [CommRing A] [Algeb
     ∃ s : Finset A,
       LBIso (M.pull (pullback.fst pB (spMap (algebraMap k (Algebra.adjoin k (s : Set A))))))
         (N.pull (pullback.fst pB (spMap (algebraMap k (Algebra.adjoin k (s : Set A)))))) := by
-  classical
-  obtain ⟨t, f, h⟩ := exists_lbIso_of_isLimit (Spread.bcDiagram pB A)
-    (X := pullback pB (spMap (algebraMap k A)))
-    (fun s => Spread.bcMap pB (Algebra.adjoin k (s.unop : Set A)).val)
-    (fun f => (Spread.bcCone pB A).w f) (Spread.isLimitBcCone pB A) (i := .op ∅)
-    (M.pull (pullback.fst _ _)) (N.pull (pullback.fst _ _)) (LB.isLB_pull hM _) (LB.isLB_pull hN _)
-    (LBIso.chartPull
-      (chartPullOut M _ _ _ _ fun _ => (Spread.bcMap_fst pB _).symm)
-      (chartPullOut N _ _ _ _ fun _ => (Spread.bcMap_fst pB _).symm) H)
-  have H₂ := LBIso.chartPull (chartPullIn M _ _ _) (chartPullIn N _ _ _) h
-  refine ⟨t.unop, ?_⟩
-  exact LBIso.chartPull (chartPullSame M _ _ _ (𝟙 _) fun _ =>
-      ((Category.id_comp _).trans (Spread.bcMap_fst pB _)).symm)
-    (chartPullSame N _ _ _ (𝟙 _) fun _ =>
-      ((Category.id_comp _).trans (Spread.bcMap_fst pB _)).symm) H₂
+  apply GlobalTheory.GenericLB.exists_finset_lbIso <;> assumption
 
 theorem lbIso_descends_to_subring_containing_finset :
     ∀ (S : Type) [CommRing S] (R₀ : Subring S) (X X₀ : Scheme.{0}) (f : X ⟶ Sp S) (f₀ : X₀ ⟶ Sp R₀) (π : X ⟶ X₀) [QuasiCompact f₀] [QuasiSeparated f₀] (M N : LB X₀), IsPullback π f f₀ (spMap R₀.subtype) → M.IsLB → N.IsLB → LBIso (M.pull π) (N.pull π) → ∃ F : Finset S, ∀ (R₁ : Subring S) (h : R₀ ≤ R₁), (F : Set S) ⊆ R₁ → ∀ (X₁ : Scheme.{0}) (f₁ : X₁ ⟶ Sp R₁) (π₁ : X₁ ⟶ X₀), IsPullback π₁ f₁ f₀ (spMap (Subring.inclusion h)) → LBIso (M.pull π₁) (N.pull π₁) := by

@@ -176,7 +176,7 @@ theorem ad_triple (A : R)
         - d a e * c b e * (if p = a then c q b else 0) := by
     intro a b e
     rw [ad_mul, ad_mul, hAd, hAc, hAc]
-    simp only [sub_mul, mul_sub, add_mul, mul_add, mul_assoc]
+    simp only [sub_mul, mul_sub, add_mul, mul_assoc]
     abel
   have s1 : ∑ a, ∑ b, ∑ e, (if q = a then d p e else 0) * c b e * c a b
       = ∑ b, ∑ e, d p e * c b e * c q b := by

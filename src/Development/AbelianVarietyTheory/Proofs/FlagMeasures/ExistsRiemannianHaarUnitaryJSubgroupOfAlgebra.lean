@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LieAlgebraOfIsCutOutByRealMatrixAlgebra
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsLimitOfChart
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NonemptyCompactDualHaar
@@ -64,21 +65,7 @@ variable {n : ℕ}
 theorem exp_sub_one_mem (A : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ))
     (hA : ∀ X ∈ A, ∀ Y ∈ A, X * Y ∈ A) {X : Matrix (Fin n) (Fin n) ℂ} (hX : X ∈ A) :
     NormedSpace.exp X - 1 ∈ A := by
-  letI : NormedAddCommGroup (Matrix (Fin n) (Fin n) ℂ) := Matrix.frobeniusNormedAddCommGroup
-  letI : NormedRing (Matrix (Fin n) (Fin n) ℂ) := Matrix.frobeniusNormedRing
-  letI : NormedAlgebra ℝ (Matrix (Fin n) (Fin n) ℂ) := Matrix.frobeniusNormedAlgebra
-  haveI : CompleteSpace (Matrix (Fin n) (Fin n) ℂ) := FiniteDimensional.complete ℝ _
-  have h := NormedSpace.exp_series_hasSum_exp' (𝕂 := ℝ) X
-  have h1 := (hasSum_nat_add_iff' 1).2 h
-  simp only [Finset.range_one, Finset.sum_singleton, Nat.factorial_zero, Nat.cast_one, inv_one,
-    pow_zero, one_smul] at h1
-  have hp : ∀ k : ℕ, X ^ (k + 1) ∈ A := by
-    intro k
-    induction k with
-    | zero => simpa using hX
-    | succ k ih => rw [pow_succ]; exact hA _ ih _ hX
-  exact A.closed_of_finiteDimensional.mem_of_tendsto h1.tendsto_sum_nat
-    (Eventually.of_forall fun m => A.sum_mem fun k _ => A.smul_mem _ (hp k))
+  apply GlobalTheory.IwTangent.exp_sub_one_mem <;> assumption
 
 def algSub (ε : Fin n → Bool) (A : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ))
     (hA : ∀ X ∈ A, ∀ Y ∈ A, X * Y ∈ A) : Subgroup (UJ ε) where

@@ -99,9 +99,7 @@ namespace GlobalTheory.FinPl.HandInvPf
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
 
-theorem mul_star_psi (hψ : IsStdChar D ψ (-1)) (x : AF D.host.F) : ψ x * star (ψ x) = 1 := by
-  have h1 : ‖ψ x‖ = 1 := hψ.1.2.1 x
-  rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq, h1]; simp
+alias mul_star_psi := _root_.GlobalTheory.ThetaSchur.mul_star_psi
 
 theorem star_psi_neg (hψ : IsStdChar D ψ (-1)) (x : AF D.host.F) : star (ψ (-x)) = ψ x := by
   have h1 := mul_star_psi hψ (-x)

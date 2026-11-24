@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ToricGeometry.NodupRootsOfDerivativeNeZero
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.ContDiff.Defs
 public import Mathlib.FieldTheory.Separable
@@ -71,51 +72,12 @@ namespace GlobalTheory.FiniteCoverGrowth
 
 theorem exists_norm_eval_le {d : ℕ} (c : MvPolynomial (Fin d) ℂ) :
     ∃ (K : ℝ) (M : ℕ), 0 ≤ K ∧ ∀ x : Fin d → ℂ, ‖MvPolynomial.eval x c‖ ≤ K * (1 + ‖x‖) ^ M := by
-  induction c using MvPolynomial.induction_on with
-  | C a => exact ⟨‖a‖, 0, norm_nonneg _, fun x => by simp⟩
-  | add p q hp hq =>
-    obtain ⟨K, M, hK, h⟩ := hp
-    obtain ⟨K', M', hK', h'⟩ := hq
-    refine ⟨K + K', M + M', by positivity, fun x => ?_⟩
-    have h1 : (1 : ℝ) ≤ 1 + ‖x‖ := by linarith [norm_nonneg x]
-    have h2 : (1 + ‖x‖) ^ M ≤ (1 + ‖x‖) ^ (M + M') := pow_le_pow_right₀ h1 (by omega)
-    have h3 : (1 + ‖x‖) ^ M' ≤ (1 + ‖x‖) ^ (M + M') := pow_le_pow_right₀ h1 (by omega)
-    rw [map_add (f := _)]
-    refine (norm_add_le _ _).trans ?_
-    have := mul_le_mul_of_nonneg_left h2 hK
-    have := mul_le_mul_of_nonneg_left h3 hK'
-    nlinarith [h x, h' x]
-  | mul_X p i hp =>
-    obtain ⟨K, M, hK, h⟩ := hp
-    refine ⟨K, M + 1, hK, fun x => ?_⟩
-    rw [map_mul, norm_mul, MvPolynomial.eval_X, pow_succ, ← mul_assoc]
-    have : ‖x i‖ ≤ 1 + ‖x‖ := by linarith [norm_le_pi_norm x i]
-    exact mul_le_mul (h x) this (norm_nonneg _) (by positivity)
+  apply GlobalTheory.SimpleRoots.exists_norm_eval_le <;> assumption
 
 theorem exists_norm_root_le {d : ℕ} (p : Polynomial (MvPolynomial (Fin d) ℂ)) (hp : p.Monic) :
     ∃ (K : ℝ) (M : ℕ), 0 ≤ K ∧ ∀ (x : Fin d → ℂ) (y : ℂ),
       (p.map (MvPolynomial.eval x)).eval y = 0 → ‖y‖ ≤ K * (1 + ‖x‖) ^ M := by
-  choose K M hK h using fun i : ℕ => exists_norm_eval_le (p.coeff i)
-  refine ⟨∑ i ∈ Finset.range p.natDegree, K i + 1, ∑ i ∈ Finset.range p.natDegree, M i,
-    add_nonneg (Finset.sum_nonneg fun i _ => hK i) zero_le_one, fun x y hy => ?_⟩
-  have hm : (p.map (MvPolynomial.eval x)).Monic := hp.map _
-  have h1 := Polynomial.IsRoot.norm_lt_cauchyBound hm.ne_zero hy
-  have h2 : (p.map (MvPolynomial.eval x)).cauchyBound ≤
-      ∑ i ∈ Finset.range p.natDegree, ‖MvPolynomial.eval x (p.coeff i)‖₊ + 1 := by
-    simp only [Polynomial.cauchyBound, hm.leadingCoeff, nnnorm_one, div_one,
-      add_le_add_iff_right, hp.natDegree_map, Finset.sup_le_iff, Polynomial.coeff_map]
-    intro i hi
-    exact Finset.single_le_sum (f := fun i => ‖MvPolynomial.eval x (p.coeff i)‖₊)
-      (fun _ _ => zero_le) hi
-  have h3 : ‖y‖ ≤ ∑ i ∈ Finset.range p.natDegree, ‖MvPolynomial.eval x (p.coeff i)‖ + 1 := by
-    have := NNReal.coe_le_coe.2 (h1.le.trans h2)
-    simpa using this
-  have h0 : (1 : ℝ) ≤ 1 + ‖x‖ := by linarith [norm_nonneg x]
-  refine h3.trans ?_
-  rw [add_mul, Finset.sum_mul, one_mul]
-  refine add_le_add (Finset.sum_le_sum fun i hi => (h i x).trans ?_) (one_le_pow₀ h0)
-  exact mul_le_mul_of_nonneg_left (pow_le_pow_right₀ h0
-    (Finset.single_le_sum (f := M) (fun _ _ => Nat.zero_le _) hi)) (hK i)
+  apply GlobalTheory.SimpleRoots.exists_norm_root_le <;> assumption
 
 theorem exists_map_eq_of_eval {d N : ℕ} (U : Set (Fin d → ℂ)) (S : (Fin d → ℂ) → Polynomial ℂ)
     (hdeg : ∀ x ∈ U, (S x).degree < N)

@@ -1,12 +1,12 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.FieldTheory.Galois.Profinite
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.LocalFieldAutomorphisms.ContinuousGK
 public import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
@@ -16,7 +16,6 @@ import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -63,7 +62,6 @@ theorem norm_natCast_padicAlgCl : ‖((p : ℕ) : PadicAlgCl p)‖ = (p : ℝ)�
   | (rw [← map_natCast (algebraMap ℚ_[p] (PadicAlgCl p)) p, norm_algebraMap', Padic.norm_p])
   | (rw [← map_natCast (algebraMap ℚ_[p] (PadicAlgCl p)) p, PadicAlgCl.norm_extends, Padic.norm_p])
   | (have h1 := PadicAlgCl.norm_extends p (p : ℚ_[p]); rw [map_natCast] at h1; rw [h1, Padic.norm_p])
-  | simp [Padic.norm_p]
 
 theorem norm_apply_le_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* PadicAlgCl p} (h : Compat p A ι) {τ : Ω ≃ₐ[F] Ω}
     (hτ : τ ∈ Dec (F := F) A) (x : Ω) : ‖ι (τ x)‖ ≤ ‖ι x‖ := by
@@ -74,7 +72,6 @@ theorem norm_apply_le_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* PadicA
     have hsA := MulAction.mem_stabilizer_iff.mp hτ
     first
     | (rw [hsA] at h2; exact h2)
-    | exact hsA ▸ h2
     | (simp only [hsA] at h2; exact h2)
     | (erw [hsA] at h2; exact h2)
   have key : ∀ y, ‖ι y‖ ≤ 1 → ‖ι (τ y)‖ ≤ 1 := fun y hy => (h (τ y)).1 (hs y ((h y).2 hy))
@@ -97,7 +94,6 @@ theorem norm_apply_le_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* PadicA
     rw [div_pow] at hn
     first
     | exact (lt_div_iff₀ (pow_pos ha n)).mp hn
-    | exact (lt_div_iff (pow_pos ha n)).mp hn
   have h3 : (p : ℝ) ^ (m + 1) < ‖ι (τ x)‖ ^ n := by
     rw [zpow_add_one₀ hpa.ne']
     calc (p : ℝ) ^ m * p ≤ ‖ι x‖ ^ n * p := mul_le_mul_of_nonneg_right hm1 hpa.le
@@ -106,7 +102,6 @@ theorem norm_apply_le_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* PadicA
   have hz : (0 : ℝ) < (p : ℝ) ^ (m + 1) := by
     first
     | exact zpow_pos hpa _
-    | exact zpow_pos_of_pos hpa _
   have hk := key (x ^ n * (p : Ω) ^ (m + 1)) (by
     simp only [map_mul, map_pow, map_zpow₀, map_natCast, norm_mul, norm_pow, norm_zpow,
       norm_natCast_padicAlgCl, inv_zpow]
@@ -125,7 +120,6 @@ theorem norm_apply_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* PadicAlgC
     first
     | exact τ.symm_apply_apply x
     | (rw [← AlgEquiv.mul_apply, inv_mul_cancel, AlgEquiv.one_apply])
-    | simp
   rwa [e] at h1
 
 theorem norm_sum_mul_pow_le (n : ℕ) (u : ℕ → PadicAlgCl p) (z : PadicAlgCl p) {δ : ℝ} (hu : ∀ i, ‖u i‖ ≤ δ) :
@@ -153,8 +147,6 @@ theorem minpoly_aeval_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* PadicA
       have hr' : ∃ r : ℚ, ‖a - r‖ < ε := by
         first
         | exact Padic.rat_dense p a hε
-        | exact Padic.rat_dense a hε
-        | exact Padic.rat_dense (p := p) a hε
       obtain ⟨r, hr⟩ := hr'
       refine ⟨ι (algebraMap F Ω (r : F)), ⟨(r : F), rfl⟩, ?_⟩
       rw [dist_eq_norm, map_ratCast, map_ratCast, ← map_ratCast (algebraMap ℚ_[p] (PadicAlgCl p)) r,
@@ -190,7 +182,6 @@ theorem minpoly_aeval_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* PadicA
     first
     | rfl
     | (refine Finset.sum_congr rfl fun i _ => ?_; rw [Algebra.smul_def]; rfl)
-    | simp only [Algebra.smul_def, IntermediateField.algebraMap_apply]
   obtain ⟨N, hN⟩ : ∃ N : ℕ, N = (minpoly (Kloc F ι) (ι x)).natDegree + 1 := ⟨_, rfl⟩
   rw [← hN] at hsum
   obtain ⟨c, hc⟩ : ∃ c : ℕ → PadicAlgCl p,
@@ -250,7 +241,6 @@ theorem exists_apply_eq_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* Padi
   have hint : IsIntegral (Kloc F ι) (ι x) := by
     first
     | exact Algebra.IsIntegral.isIntegral _
-    | exact (Algebra.IsAlgebraic.isAlgebraic (R := Kloc F ι) (ι x)).isIntegral
   have hc : IsConjRoot (Kloc F ι) (ι x) (ι (τ x)) :=
     isConjRoot_of_aeval_eq_zero hint (minpoly_aeval_of_mem_dec h hτ x)
   obtain ⟨σ, hσ⟩ := isConjRoot_iff_exists_algEquiv.mp hc
@@ -268,14 +258,8 @@ theorem exists_res_eqOn_of_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* Padi
   have hint : IsIntegral F α := IsIntegral.of_finite F α
   have htop : Algebra.adjoin F {α} = ⊤ := by
     first
-    | rw [← IntermediateField.adjoin_simple_toSubalgebra_of_isIntegral hint, hα,
-        IntermediateField.top_toSubalgebra]
     | rw [← IntermediateField.adjoin_simple_toSubalgebra_of_isAlgebraic hint.isAlgebraic, hα,
         IntermediateField.top_toSubalgebra]
-    | rw [← IntermediateField.adjoin_toSubalgebra_of_isAlgebraic (S := {α})
-        (fun _ _ => Algebra.IsAlgebraic.isAlgebraic _), hα, IntermediateField.top_toSubalgebra]
-    | rw [← IntermediateField.adjoin_algebraic_toSubalgebra (S := {α})
-        (fun _ _ => Algebra.IsAlgebraic.isAlgebraic _), hα, IntermediateField.top_toSubalgebra]
   have key : ((res ι σ).toAlgHom.comp E.val : E →ₐ[F] Ω) = τ.toAlgHom.comp E.val := by
     apply AlgHom.ext_of_adjoin_eq_top htop
     intro z hz
@@ -296,7 +280,6 @@ theorem exists_res_eq {A : ValuationSubring Ω} {ι : Ω →+* PadicAlgCl p} (h 
     have hai : IsIntegral (Kloc F ι) a := by
       first
       | exact Algebra.IsIntegral.isIntegral _
-      | exact (Algebra.IsAlgebraic.isAlgebraic (R := Kloc F ι) a).isIntegral
     haveI hfin : FiniteDimensional (Kloc F ι) (IntermediateField.adjoin (Kloc F ι) {a}) :=
       IntermediateField.adjoin.finiteDimensional hai
     have hU : IsOpen ((IntermediateField.adjoin (Kloc F ι) {a}).fixingSubgroup : Set (GK F ι)) :=
@@ -313,7 +296,6 @@ theorem exists_res_eq {A : ValuationSubring Ω} {ι : Ω →+* PadicAlgCl p} (h 
         first
         | (rw [← AlgEquiv.mul_apply, ← mul_assoc, mul_inv_cancel, one_mul])
         | (rw [← AlgEquiv.mul_apply, ← mul_assoc, mul_right_inv, one_mul])
-        | simp
       rw [← hρb, ← e, hfix]
     · show σ⁻¹ * σ ∈ (IntermediateField.adjoin (Kloc F ι) {a}).fixingSubgroup
       rw [inv_mul_cancel]
@@ -366,8 +348,6 @@ theorem continuous_resDec {A : ValuationSubring Ω} {ι : Ω →+* PadicAlgCl p}
     Continuous (resDec (F := F) h) := by
   first
   | exact (continuous_res ι).subtype_mk _
-  | exact Continuous.subtype_mk (continuous_res ι) (res_mem_dec h)
-  | exact continuous_induced_rng.2 (continuous_res ι)
 
 def equiv {A : ValuationSubring Ω} {ι : Ω →+* PadicAlgCl p} (h : Compat p A ι) : GK F ι ≃ₜ* Dec (F := F) A := by
   haveI := isAlgClosure_Kloc (F := F) ι

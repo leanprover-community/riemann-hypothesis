@@ -61,10 +61,9 @@ namespace NMoveP
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E)
 
-theorem hsw (x y : S.V) : S.hT y x = star (S.hT x y) := PI.ScalarPairDr.W.hT_swap S x y
+alias hsw := _root_.PI.PairCorankPos.W.hT_swap
 
-theorem hT_smulL (a : E) (x v : S.V) : S.hT (a • x) v = star a * S.hT x v := by
-  rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply]
+alias hT_smulL := _root_.PI.ScalarPairDr.W.hT_smul_left
 
 theorem spanL {ι : Type*} (x : ι → S.V) (y : S.V) (h : ∀ i, S.hT (x i) y = 0) :
     ∀ u ∈ Submodule.span E (Set.range x), S.hT u y = 0 := by
@@ -91,8 +90,7 @@ variable {S} {r : ℕ}
 theorem fvecC {T : E} (F : FlagG S r T) (i : Fin r) : F.fvec i.castSucc = F.e i :=
   PI.UnitaryGroupMassFormula.BetaLUniq.GN.fvec_castSucc F i
 
-theorem fvecL {T : E} (F : FlagG S r T) : F.fvec (Fin.last r) = F.z :=
-  PI.UnitaryGroupMassFormula.BetaLUniq.GN.fvec_last F
+alias fvecL := _root_.PI.ScalarPairDr.W.fvec_last
 
 theorem hT_f_e {T : E} (F : FlagG S r T) (a : Fin (r + 1)) (c : Fin r) : S.hT (F.fvec a) (F.e c) = 0 := by
   refine Fin.lastCases ?_ (fun i => ?_) a

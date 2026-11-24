@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.CommutingEndomorphismPreservesInvariants
 public import Formalism.SharpRestriction.LevelLetterCocycles.IntegralHeckeForms
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -69,32 +70,7 @@ theorem act_mem (i : X.Tw) (j : ℕ) (b : Bool) (W : Submodule (FractionRing (X.
 
 theorem eG_on_irred (i : X.Tw) (j : ℕ) (b : Bool) (W : Submodule (FractionRing (X.O i)) (Y.Fm i j b))
     (hW : GIrred Y i j b W) : (∀ x ∈ W, eG Y i j b x = x) ∨ (∀ x ∈ W, eG Y i j b x = 0) := by
-  have he : eG Y i j b = act Y i j b (Y.eAlg i b) := rfl
-  have hcomm : ∀ g x, eG Y i j b (Y.actG i j b g x) = Y.actG i j b g (eG Y i j b x) := by
-    intro g x
-    rw [he, ← act_single, ← act_single, ← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul, ← map_mul,
-      Y.eAlg_central]
-  have hid : ∀ x, eG Y i j b (eG Y i j b x) = eG Y i j b x := by
-    intro x
-    rw [he, ← Module.End.mul_apply, ← map_mul, Y.eAlg_idem]
-  obtain ⟨-, hst, hmin⟩ := hW
-  rcases hmin (W ⊓ LinearMap.ker (eG Y i j b)) inf_le_left (fun g x hx =>
-    ⟨hst g x hx.1, by
-      have h2 : eG Y i j b x = 0 := hx.2
-      show eG Y i j b _ = 0
-      rw [hcomm, h2, map_zero]⟩) with h | h
-  · left
-    intro x hx
-    have : x - eG Y i j b x ∈ W ⊓ LinearMap.ker (eG Y i j b) :=
-      ⟨W.sub_mem hx (act_mem Y i j b W hst _ x hx), by
-        show eG Y i j b _ = 0
-        rw [map_sub, hid, sub_self]⟩
-    rw [h, Submodule.mem_bot, sub_eq_zero] at this
-    exact this.symm
-  · right
-    intro x hx
-    rw [← h] at hx
-    exact hx.2
+  apply Formalism.MainNotions.IntegralHeckeForms.eG_irred <;> assumption
 
 theorem act_comm (i : X.Tw) (j : ℕ) (b : Bool) (T : Module.End (FractionRing (X.O i)) (Y.Fm i j b))
     (hT : ∀ g x, Y.actG i j b g (T x) = T (Y.actG i j b g x))

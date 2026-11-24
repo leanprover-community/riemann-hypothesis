@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RootEqOfNormLt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormEqZpowOfMemMaxUnramifiedSubfield
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -78,39 +79,7 @@ theorem fg_rootRing {m : ℕ} (hm : 0 < m) : (rootRing l m).toSubmodule.FG := by
 
 theorem exists_mem_rootRing {x : Om l} (hx : x ∈ MaximalUnramifiedExtension l) (h1 : ‖x‖ ≤ 1) :
     ∃ m : ℕ, 0 < m ∧ ¬ l ∣ m ∧ x ∈ rootRing l m := by
-  have hp : l.Prime := Fact.out
-  have hl0 : (l : Om l) ≠ 0 := Nat.cast_ne_zero.mpr hp.ne_zero
-  have hl1 : (1 : ℝ) < l := by exact_mod_cast hp.one_lt
-  obtain ⟨m, hm, hl, c, hc, h⟩ := exists_mul_mem hx
-  refine ⟨m, hm, hl, ?_⟩
-  have key : ∀ k : ℕ, (l : Om l) ^ k * x ∈ rootRing l m → x ∈ rootRing l m := by
-    intro k
-    induction k with
-    | zero => simp
-    | succ k ih =>
-      intro hk
-      obtain ⟨z, hz, ez⟩ := exists_eq_mul hm hl hk (by
-        rw [norm_mul, norm_pow, norm_l]
-        have : ((l : ℝ)⁻¹) ^ (k + 1) < 1 :=
-          pow_lt_one₀ (by positivity) (inv_lt_one_of_one_lt₀ hl1) (Nat.succ_ne_zero k)
-        calc _ ≤ ((l : ℝ)⁻¹) ^ (k + 1) * 1 := by gcongr
-          _ < 1 := by simpa using this)
-      apply ih
-      have : (l : Om l) ^ k * x = z := by
-        apply mul_left_cancel₀ hl0
-        rw [← ez]; ring
-      rwa [this]
-  apply key c.valuation
-  have e := PadicInt.unitCoeff_spec hc
-  set u := PadicInt.unitCoeff hc
-  have e2 : (l : Om l) ^ c.valuation * x =
-      algebraMap ℤ_[l] (Om l) (↑u⁻¹ : ℤ_[l]) * (algebraMap ℤ_[l] (Om l) c * x) := by
-    rw [← mul_assoc, ← map_mul]
-    congr 1
-    conv_rhs => rw [e, Units.inv_mul_cancel_left]
-    simp
-  rw [e2]
-  exact mul_mem (Subalgebra.algebraMap_mem _ _) h
+  apply GlobalTheory.TiltInvariants.mem_rootRing <;> assumption
 
 theorem norm_pow_sub_pow_le {m : ℕ} (hm : 0 < m) {k : ℕ} (hk : k ≠ 0) {a b : Om l}
     (ha : a ∈ rootRing l m) (hb : b ∈ rootRing l m) (h : ‖a - b‖ ≤ (l : ℝ)⁻¹) :

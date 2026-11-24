@@ -83,7 +83,7 @@ theorem discrIdeal_span {h : V →ₗ⋆[K] V →ₗ[K] K} (b : Basis (Fin (finr
     have hz' : z = conjO K d * g₀ * d := by
       apply IsFractionRing.injective (𝓞 K) K
       have e1 : algebraMap (𝓞 K) K (conjO K d) = star (algebraMap (𝓞 K) K d) := by
-        first | rfl | simp [conjO]
+        first | rfl
       rw [hz, map_mul, map_mul, e1, hd, hg]
     rw [hz', Ideal.mem_span_singleton]
     exact ⟨conjO K d * d, by ring⟩

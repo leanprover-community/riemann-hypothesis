@@ -56,6 +56,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.Columns.RecLevelHost
 
 @[expose] public section
 
@@ -378,11 +379,6 @@ section MhlNbr
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 
-theorem conjPrime_conjPrime (P : Pl E) : conjPrime₂ (conjPrime₂ P) = P := by
-  apply HeightOneSpectrum.ext
-  ext r
-  rw [mem_conjP, mem_conjP, cO_cO]
-
 structure MhlUnif (Pb : Pl E) where
 
   π : 𝓞 E
@@ -556,7 +552,7 @@ theorem mhl_isHeckeNbr (hov : IsOver v Pb) (hov2 : ∀ Q : Pl E, IsOver v Q → 
     GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F)) with hη
   set N := Formalism.UG.CS.globLat X (stdLat E n) with hN
   set N' := Formalism.UG.CS.globLat (X * η) (stdLat E n) with hN'
-  rw [isHeckeNbr_iff, conjPrime_conjPrime]
+  rw [isHeckeNbr_iff, _root_.Formalism.L2.Col.rlh_conjP_conjP]
   refine ⟨?_, ?_, ?_⟩
   · refine Formalism.L2.DIV.lc_le_of_le_locP fun Q => ?_
     rw [Submodule.smul_le]
@@ -792,7 +788,7 @@ theorem mhl_surj (ST SG : Finset (Pl E)) (hov : IsOver v Pb) (hov2 : ∀ Q : Pl 
     rw [hd0] at this
     exact this
   have hnb' := (isHeckeNbr_iff (conjPrime₂ Pb) k N d'.1.N).1 hnbN
-  rw [conjPrime_conjPrime] at hnb'
+  rw [_root_.Formalism.L2.Col.rlh_conjP_conjP] at hnb'
   obtain ⟨h1, h2, ⟨φ⟩⟩ := hnb'
   have hPbmax := Pb.isMaximal
   letI : Field (𝓞 E ⧸ Pb.asIdeal) := Ideal.Quotient.field Pb.asIdeal
@@ -904,7 +900,7 @@ theorem mhl_surj (ST SG : Finset (Pl E)) (hov : IsOver v Pb) (hov2 : ∀ Q : Pl 
       exact ⟨(hiff z h2).2 h1, h2⟩
   obtain ⟨hnb'', hf'', hb''⟩ := hmem
   have hsp' : conjPrime₂ (conjPrime₂ Pb) ≠ conjPrime₂ Pb := by
-    rw [conjPrime_conjPrime]
+    rw [_root_.Formalism.L2.Col.rlh_conjP_conjP]
     exact Ne.symm hsp
   have e₁ := IsHeckeNbr.eq_glue (decoOf ST SG X).2.lat (decoOf ST SG X).2.uni
     (decoOf ST SG ((x * κ * mhlEta hc n v U.hπ0 k : UAd hc n) : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af F))).2.uni (conjPrime₂ Pb) hsp' hnb''

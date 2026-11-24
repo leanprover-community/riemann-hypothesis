@@ -84,7 +84,7 @@ theorem aG_frame_nonneg (hd : d.AxH 𝒜) (h : d.S1) : 0 ≤ d.aG h d.wF hd.a4.c
     apply hq c
     rw [e1]
     refine Finset.sum_eq_zero fun k _ => ?_
-    rw [hno k, ratio_eq_of_eq_smul hec.2 (zero_smul (Ω c) (hd.a4.choose c)).symm, map_zero, mul_zero]
+    rw [hno k, _root_.ReciprocityTheory.ChartRestriction.G.T0.ValuationResidueLemmas.ratio_eq hec.2 (zero_smul (Ω c) (hd.a4.choose c)).symm, map_zero, mul_zero]
   obtain ⟨k, hk⟩ := hk
   have htm : d.thp (hd.sel k) c ∈ 𝒜 c d.wF := hd.thp_mem _ c
   have hr := eq_ratio_smul_on_line d (hd := hd) htm hec.1 hec.2

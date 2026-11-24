@@ -68,11 +68,6 @@ section Ambient
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : Fin n → Bool}
   {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {D : Submodule ℂ H} {E : Fin n → Fin n → Module.End ℂ D}
 
-theorem occA_tensGrp_mul (dual : Bool) (hσ : IsURepOn (UJset ε) σ) {g k : Matrix (Fin n) (Fin n) ℂ}
-    (hg : g ∈ UJset ε) (hk : k ∈ Kset ε) (f : Fin n → H) :
-    tensGrp dual σ (g * k) f = tensGrp dual σ g (kDiag dual σ k f) := by
-  exact tensor_group_mul_kDiag dual hσ hg hk f
-
 theorem occA_coef_Eab (dual : Bool) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E) (η : Fin n → H)
     (f : Fin n → D) (a b : Fin n) {g : Matrix (Fin n) (Fin n) ℂ} (hg : Formalism.REAL.inUJ ε g) :
     Formalism.REAL.Eab ε a b (occCoef dual σ η (fun c => (f c : H))) g =

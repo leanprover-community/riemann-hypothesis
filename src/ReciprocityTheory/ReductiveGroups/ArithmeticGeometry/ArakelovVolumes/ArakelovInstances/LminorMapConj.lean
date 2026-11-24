@@ -106,6 +106,6 @@ theorem tr_D_conj (A : Matrix (Fin r) (Fin r) ℂ) (D : Fin r → ℝ) :
   · ext i j
     simp [Matrix.conjTranspose_apply]
   · ext i j
-    by_cases h : i = j <;> simp [Matrix.diagonal_apply, h]
+    by_cases h : i = j <;> simp [h]
 
 end ReciprocityTheory.ChartRestriction.G.AR.Inst.CurvPf

@@ -80,7 +80,7 @@ theorem split_anisotropic : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
   have hherm : ∀ y z, σ (hE σ J y z) = hE σ J z y := by
     intro y z
 
-    simp only [hE, hform, map_sum, map_mul, AlgHom.coe_toRingHom, RingHom.coe_coe, hσ]
+    simp only [hE, hform, map_sum, map_mul, RingHom.coe_coe, hσ]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     rw [hJ.1 i j]

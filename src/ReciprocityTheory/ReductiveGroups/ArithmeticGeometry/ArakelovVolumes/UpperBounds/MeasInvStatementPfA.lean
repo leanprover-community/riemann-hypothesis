@@ -168,7 +168,7 @@ lemma toMatrix_luD_zero (e : ι ≃ Fin (Fintype.card ι)) (w : Ix ι r → ℂ)
     intro k
     by_cases hka : k < a
     · by_cases hbk : b < k
-      · simp [Pi.single_apply, up, hbk]
+      · simp [up, hbk]
       · have := hne a k (by omega) le_rfl
         simp [Pi.single_apply, sl, hka, this]
     · simp [Pi.single_apply, sl, hka]

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsFullAll
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIsFib
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissibleBaseOfCompleteDvr
 public import Development.AbelianVarietyTheory.Statements.TorsionEndomorphisms.EndDeterminedOnTorsion
@@ -66,17 +67,7 @@ namespace GlobalTheory.Ex.FibIso
 theorem isThetaPt_mul {S : Scheme.{0}} {P : PolAV S} {k : ℕ} {T : Over S} {I : Type}
     {x : I → (T ⟶ P.A)} {v : I → Γ(T.left, ⊤)} (c : Γ(T.left, ⊤)) (hc : IsUnit c)
     (H : IsThetaPt P k x v) : IsThetaPt P k x (fun i => c * v i) := by
-  obtain ⟨h1, h2, h3⟩ := H
-  refine ⟨h1, h2, fun p => ?_⟩
-  obtain ⟨V, hV, th, s1, α, τ, U, s2, w, u, a1, a2, a3, a4, a5, a6, a7, a8⟩ := h3 p
-  obtain ⟨c', hc'⟩ := hc.map V.ι.appTop.hom
-  refine ⟨V, hV, th, s1, α, τ, U, s2, w, (c' * (show Γ(V.toScheme, ⊤)ˣ from u) : Γ(V.toScheme, ⊤)ˣ), a1, a2, a3, a4,
-    a5, a6, a7, fun i => ?_⟩
-  have aux : ∀ (a : Γ(T.left, ⊤)) (u₀ : Γ(V.toScheme, ⊤)ˣ) (w₀ : Γ(V.toScheme, ⊤)),
-      V.ι.appTop.hom a = u₀.val * w₀ → V.ι.appTop.hom (c * a) = (c' * u₀).val * w₀ := by
-    intro a u₀ w₀ h
-    rw [map_mul, h, Units.val_mul, hc', _root_.mul_assoc]
-  exact aux (v i) u (w i) (a8 i)
+  apply _root_.GlobalTheory.Ex.AllLevels.isThetaPt_mul <;> assumption
 
 def Reads {F : Type} [Field F] (B : NumB F) (Q : PolAV (Sp F)) (E : B.A ≃* (baseOver (Sp F) ⟶ Q.A)) : Prop :=
   (∀ k : ℕ, 1 ≤ k → ∀ b b' : B.A, b ^ k = 1 → b' ^ k = 1 →

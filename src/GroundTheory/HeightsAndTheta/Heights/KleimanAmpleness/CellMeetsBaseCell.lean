@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AevalNeZeroOfMemCellMon
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsMoreLast
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsTerBis
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsExtraBis
@@ -89,16 +90,7 @@ theorem baseCell_mono (k₀ : K) {N : ℕ} (e : ι k₀ ≃ Fin (N + 1)) {J J' :
 theorem cellMeets_baseCell (y : (Σ k, ι k) → Ω) (k₀ : K) {N : ℕ} (e : ι k₀ ≃ Fin (N + 1))
     (J : Kleiman.Chart (IndefiniteRowSideFullHecke.Kleiman2.blockVec y k₀ ∘ e.symm)) {I : ∀ k, Finset (ι k)} (hI : CellMeets y I) :
     CellMeets y (baseCell k₀ e J.1 I) := by
-  intro k i hi
-  unfold baseCell at hi
-  by_cases hk : k = k₀
-  · subst hk
-    rw [Function.update_self, Finset.mem_union] at hi
-    rcases hi with hi | hi
-    · exact hI k i hi
-    · obtain ⟨j, hj, rfl⟩ := Finset.mem_map.mp hi
-      exact (Kleiman.mem_support _).mp (J.2.2 hj)
-  · rw [Function.update_of_ne hk] at hi; exact hI k i hi
+  apply _root_.GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowLocCover.cellMeets_baseCell <;> assumption
 
 theorem ModelCechRefine.proof (hC : CechContract.Statement) (hR : ModelRowExact.Statement)
     (hD : DoubleCech.Statement) : ModelCechRefine.Statement := by

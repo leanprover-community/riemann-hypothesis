@@ -1,7 +1,8 @@
 module
 
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.LdExOfLeaves
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNeZeroConjNegOfCmExtensionStatement
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNeZeroConjNegOfCmExtension
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LagrangianDecomposition.SigSig
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -81,13 +82,13 @@ theorem yFrame : YFrame := by
   obtain ⟨ε, hε⟩ := d.ok.frame.1
   have hεσ : σ (((ε : ℤ) : E)) = ((ε : ℤ) : E) := map_intCast σ _
   rcases d.ok.sign with ⟨hA, hY⟩ | ⟨hA, hY⟩
-  · obtain ⟨ξ, hξ, hσξ⟩ := GlobalTheory.T.exists_ne_zero_conj_neg_of_cmExtension F E σ d.B d.ok.good
+  · obtain ⟨ξ, hξ, hσξ⟩ := _root_.GlobalTheory.CMTraceZero.exists_ne_zero_conj_neg F E σ d.B d.ok.good
     have hξ' : -ξ ≠ 0 := neg_ne_zero.2 hξ
     let J : Matrix (Fin n) (Fin n) E := ξ • 1
     have hJ : ∀ i j, σ (J j i) = (-1) * J i j := fun i j => by
       by_cases h : i = j
       · subst h; simp [J, hσξ]
-      · simp [J, Matrix.one_apply, h, Ne.symm h]
+      · simp [J, h, Ne.symm h]
     let T : GL (Fin n) E := ⟨(-ξ)⁻¹ • 1, (-ξ) • 1,
       by rw [Matrix.smul_mul, Matrix.mul_smul, Matrix.one_mul, smul_smul, inv_mul_cancel₀ hξ', one_smul],
       by rw [Matrix.smul_mul, Matrix.mul_smul, Matrix.one_mul, smul_smul, mul_inv_cancel₀ hξ', one_smul]⟩
@@ -95,7 +96,7 @@ theorem yFrame : YFrame := by
       ext i j
       by_cases h : i = j
       · subst h; simp [T, map_inv₀, hσξ]
-      · simp [T, Matrix.one_apply, h]
+      · simp [T, h]
     have hT : J * T.1.map σ = 1 := by
       rw [hm, Matrix.smul_mul, Matrix.mul_smul, Matrix.one_mul, smul_smul, mul_inv_cancel₀ hξ, one_smul]
     obtain ⟨b, hb, hd⟩ := frame_of hc (by norm_num) hJ T hT
@@ -109,7 +110,7 @@ theorem yFrame : YFrame := by
     have hJ : ∀ i j, σ (J j i) = 1 * J i j := fun i j => by
       by_cases h : i = j
       · subst h; simp [J]
-      · simp [J, Matrix.one_apply, h, Ne.symm h]
+      · simp [J, h, Ne.symm h]
     have hT : J * (1 : GL (Fin n) E).1.map σ = 1 := by
       simp [J, Matrix.map_one _ (map_zero σ) (map_one σ)]
     obtain ⟨b, hb, hd⟩ := frame_of hc (by norm_num) hJ 1 hT

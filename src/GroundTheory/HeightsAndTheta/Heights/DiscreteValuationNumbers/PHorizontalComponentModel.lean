@@ -95,7 +95,7 @@ theorem ringKrullDim_quotient_eq_of_minimalPrime_of_sup_ne_top {O : Type*} [Comm
   have hWp : W.IsPrime := hWmin.1.1
   have hPW : P ≤ W := le_sup_left.trans hWmin.1.2
   have hfW : f ∈ W := hWmin.1.2 (Ideal.mem_sup_right (Ideal.mem_span_singleton_self f))
-  have hup := ReciprocityTheory.ChartRestriction.G.AI.I1.cyc_dim_add_one_le hPW hfW hfP
+  have hup := _root_.Bl.FirstBlockLemmaB.goal1 hPW hfW hfP
 
   have hq : W.map (Ideal.Quotient.mk P) ∈ (Ideal.span {Ideal.Quotient.mk P f}).minimalPrimes := by
     have e : Ideal.span {Ideal.Quotient.mk P f} = (Ideal.span {f}).map (Ideal.Quotient.mk P) := by
@@ -159,7 +159,7 @@ theorem ringKrullDim_quotient_eq_of_minimalPrime_of_sup_ne_top {O : Type*} [Comm
   have hlow' : ((N : ℕ) : WithBot ℕ∞) ≤ ringKrullDim (MRing ι O ⧸ W) :=
     le_trans (by exact_mod_cast hb') hlow
   rw [hdim] at hup
-  exact withBot_eq_of_le_of_add_one_le hlow' hup
+  exact _root_.UpperTheory.Reformulated.B.Ydd3.withBot_eq_of_le_of_add_one_le hlow' hup
 
 theorem HorizontalComponentModel.proof : HorizontalComponentModel.Statement := by
   intro O _ _ _ ϖ hϖ K _ _ ι _ P d hP c x hxc hxP W hW hϖW

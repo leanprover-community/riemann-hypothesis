@@ -49,7 +49,7 @@ set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.Vertical
 
-theorem FreeParAlgIndep.full : FreeParAlgIndep.Statement := FreeParAlgIndep.proof
+alias FreeParAlgIndep.full := _root_.GroundTheory.Heights₂.Heights.Vertical.FreeParAlgIndep.proof
 
 theorem GenSecSeparable.full : GenSecSeparable.Statement :=
   GenSecSeparable.of_freeParAlgIndep FreeParAlgIndep.full

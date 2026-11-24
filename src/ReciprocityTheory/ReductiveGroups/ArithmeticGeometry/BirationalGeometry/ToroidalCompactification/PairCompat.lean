@@ -56,10 +56,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 theorem away_ext {S : Type} [CommRing S] (u : S) {B : Type} [CommRing B] [Algebra S B]
     (f g : Localization.Away u →ₐ[S] B) : f = g := by
   first
-  | exact Subsingleton.elim f g
   | exact (IsLocalization.algHom_subsingleton (Submonoid.powers u)).elim f g
-  | exact AlgHom.coe_ringHom_injective (IsLocalization.ringHom_ext (Submonoid.powers u)
-      (by ext x; simp))
 
 abbrev Rv {S : Type} [CommRing S] (a b c : S) : Type := Localization.Away (algebraMap S (Qv a b) c)
 

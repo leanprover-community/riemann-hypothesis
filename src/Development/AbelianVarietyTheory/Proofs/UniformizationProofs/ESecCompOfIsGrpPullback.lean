@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsMonHomLift
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.ExistsUniqueTorusCompat
 import Mathlib.Algebra.Order.Floor.Extended
@@ -92,23 +93,7 @@ private theorem comp_mul_of_isGrpPullback_lift {G H : Over S} {G' H' : Over S'} 
 theorem isMonHom_of_over_isMonHom {G H : Over S} {G' H' : Over S'} [GrpObj G] [GrpObj H] [GrpObj G'] [GrpObj H']
     {φ : G'.left ⟶ G.left} {ψ : H'.left ⟶ H.left} (hφ : IsGrpPullback G' G f φ) (hψ : IsGrpPullback H' H f ψ)
     (a : G ⟶ H) [IsMonHom a] (a' : G' ⟶ H') (h : a'.left ≫ ψ = φ ≫ a.left) : IsMonHom a' := by
-  have key := fun (T : Over S') (x y : T ⟶ G') => comp_mul_of_isGrpPullback_lift hφ hψ a a' h x y
-  have hmul : μ ≫ a' = (a' ⊗ₘ a') ≫ μ := by
-    have := key (G' ⊗ G') (fst G' G') (snd G' G')
-    simpa [Hom.mul_def] using this
-  have h1 : (1 : 𝟙_ (Over S') ⟶ G') = η := by
-    rw [Hom.one_def, toUnit_unique (toUnit _) (𝟙 _), Category.id_comp]
-  have h1' : (1 : 𝟙_ (Over S') ⟶ H') = η := by
-    rw [Hom.one_def, toUnit_unique (toUnit _) (𝟙 _), Category.id_comp]
-  have hone : η ≫ a' = η := by
-    have e := key _ (1 : 𝟙_ (Over S') ⟶ G') 1
-    rw [_root_.mul_one] at e
-    have e' : ((1 : 𝟙_ (Over S') ⟶ G') ≫ a') * 1 = ((1 : 𝟙_ (Over S') ⟶ G') ≫ a') * ((1 : 𝟙_ (Over S') ⟶ G') ≫ a') := by
-      rw [_root_.mul_one]; exact e
-    have e'' := (mul_left_cancel e').symm
-    rw [h1, h1'] at e''
-    exact e''
-  exact { one_hom := hone, mul_hom := hmul }
+  apply (config := { allowSynthFailures := true }) GlobalTheory.SharpPull.isMonHom_lift <;> assumption
 
 theorem eSec_comp_of_isGrpPullback {G : Over S} {G' : Over S'} [GrpObj G] [GrpObj G'] {φ : G'.left ⟶ G.left}
     (hφ : IsGrpPullback G' G f φ) : (η[G']).left ≫ φ = f ≫ (η[G]).left := by

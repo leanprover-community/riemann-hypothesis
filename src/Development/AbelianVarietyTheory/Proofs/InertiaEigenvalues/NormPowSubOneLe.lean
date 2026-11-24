@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormZpowSubOneLe
 public import Mathlib.Analysis.Normed.Field.Basic
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -72,20 +73,6 @@ theorem norm_pow_sub_one_le {C : Type} [NormedField C] [IsUltrametricDist C] (u 
 
 theorem norm_zpow_sub_one_le {C : Type} [NormedField C] [IsUltrametricDist C] (u : C)
     (h : ‖u - (1 : C)‖ < (1 : ℝ)) (i : ℤ) : ‖u ^ i - (1 : C)‖ ≤ ‖u - (1 : C)‖ := by
-  have hu : ‖u‖ = 1 := norm_eq_one_of_close u h
-  have hu0 : u ≠ 0 := by
-    intro h0
-    rw [h0, norm_zero] at hu
-    exact zero_ne_one hu
-  obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg i
-  · rw [zpow_natCast]
-    exact norm_pow_sub_one_le u hu n
-  · rw [zpow_neg, zpow_natCast]
-    have hn : u ^ n ≠ 0 := pow_ne_zero n hu0
-    have e : (u ^ n)⁻¹ - 1 = -((u ^ n)⁻¹ * (u ^ n - 1)) := by
-      field_simp
-      ring
-    rw [e, norm_neg, norm_mul, norm_inv, norm_pow, hu, one_pow, inv_one, one_mul]
-    exact norm_pow_sub_one_le u hu n
+  apply GlobalTheory.UnitNormPowerSubOne.norm_zpow_sub_one_le <;> assumption
 
 end GlobalTheory.CloseToUnitNorm

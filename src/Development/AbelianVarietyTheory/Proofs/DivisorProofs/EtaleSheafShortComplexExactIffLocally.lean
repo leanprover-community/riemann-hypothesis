@@ -1,5 +1,6 @@
 module
 
+import Development.EtaleCohomology.TateTwists.acycIffPf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BigEtaleModuleSheafMonoEpiIffSectionsStatement
 public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
@@ -74,23 +75,6 @@ theorem exactIff_kernel_sec {R : Type} [CommRing R] {G K : Shv R} (ψ : G ⟶ K)
   exact ⟨k, hk⟩
 
 theorem exactIff : ∀ (R : Type) [CommRing R] (S : ShortComplex (Shv R)), S.Exact ↔ ∀ U (b : Sec S.X₂ U), Sec.map S.g b = 0 → Loc U fun V g => ∃ a : Sec S.X₁ V, Sec.map S.f a = Sec.res g b := by
-  intro R _ S
-  have hME : ∀ {F G : Shv R} (φ : F ⟶ G), _ := fun {F G} φ => GlobalTheory.T.bigEtaleModuleSheaf_mono_epi_iff_sections R φ
-  rw [ShortComplex.exact_iff_epi_kernel_lift, (hME (kernel.lift S.g S.f S.zero)).2.2.1]
-  have hinj : ∀ U, Function.Injective (Sec.map (kernel.ι S.g) (U := U)) :=
-    ((hME (kernel.ι S.g)).1).1 inferInstance
-  have hfac : ∀ {V : Scheme.{0}} (a : Sec S.X₁ V),
-      Sec.map (kernel.ι S.g) (Sec.map (kernel.lift S.g S.f S.zero) a) = Sec.map S.f a := fun a => by
-    rw [← exactIff_map_comp, kernel.lift_ι]
-  constructor
-  · intro h U b hb
-    obtain ⟨k, rfl⟩ := exactIff_kernel_sec S.g b hb
-    refine exactIff_loc_mono (h U k) fun V g ⟨a, ha⟩ => ⟨a, ?_⟩
-    rw [← hfac, ha, exactIff_map_res]
-  · intro h U k
-    have hk : Sec.map S.g (Sec.map (kernel.ι S.g) k) = 0 := by
-      rw [← exactIff_map_comp, kernel.condition]; rfl
-    refine exactIff_loc_mono (h U _ hk) fun V g ⟨a, ha⟩ => ⟨a, hinj V ?_⟩
-    rw [hfac, ha, exactIff_map_res]
+  apply LateralTheory.EtaleFoundations.acycIffPf.exact_iff <;> assumption
 
 end GlobalTheory.EtC

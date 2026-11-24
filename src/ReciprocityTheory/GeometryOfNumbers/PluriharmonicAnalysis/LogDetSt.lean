@@ -78,8 +78,8 @@ theorem trace_adjugate_mul_eq_sum_perm {r : ℕ} (A B : Matrix (Fin r) (Fin r) �
     congr 1
     all_goals first
       | (refine Finset.prod_congr rfl fun j hj => ?_
-         simp [Matrix.updateCol_apply, Finset.ne_of_mem_erase hj])
-      | simp [Matrix.updateCol_apply]
+         simp [Finset.ne_of_mem_erase hj])
+      | simp
   simp only [Matrix.trace, Matrix.diag, hcol]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun σ _ => ?_
@@ -99,17 +99,8 @@ theorem hasDerivAt_det {r : ℕ} (G : ℝ → Matrix (Fin r) (Fin r) ℂ) (G' : 
     fun σ _ => by
       first
         | exact (HasDerivAt.fun_finsetProd (u := Finset.univ) (fun j _ => hG (σ j) j)).const_mul _
-        | (have hp := HasDerivAt.finset_prod (u := Finset.univ) (fun j _ => hG (σ j) j)
-           simp only [Finset.prod_apply] at hp
-           exact hp.const_mul _)
-        | (have hp := HasDerivAt.finset_prod (u := Finset.univ) (fun j _ => hG (σ j) j)
-           convert hp.const_mul (Equiv.Perm.sign σ : ℂ) using 2
-           funext s
-           simp [Finset.prod_apply])
   first
     | exact HasDerivAt.fun_sum hσ
-    | exact HasDerivAt.sum hσ
-    | simpa using HasDerivAt.sum hσ
 
 theorem hasDerivAt_log_det {r : ℕ} (G : ℝ → Matrix (Fin r) (Fin r) ℂ)
     (G' : Matrix (Fin r) (Fin r) ℂ) (t : ℝ) (hG : ∀ i j, HasDerivAt (fun s => G s i j) (G' i j) t)
@@ -157,8 +148,6 @@ theorem bI_succ (i j : ℕ) : ((j : ℝ) + 1) * betaNatInt (i + 1) j = ((i : ℝ
     refine h2.congr_deriv ?_
     first
       | (simp only [id, Nat.cast_add, Nat.cast_one, Nat.add_sub_cancel]; ring)
-      | (simp; ring)
-      | simp
   have hparts := intervalIntegral.integral_mul_deriv_eq_deriv_mul hu hv
     (by apply Continuous.intervalIntegrable; fun_prop)
     (by apply Continuous.intervalIntegrable; fun_prop)

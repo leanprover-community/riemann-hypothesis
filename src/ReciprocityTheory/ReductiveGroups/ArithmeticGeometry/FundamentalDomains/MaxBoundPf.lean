@@ -287,7 +287,7 @@ theorem maxBound_holds : MaxBoundStatement (E := E) := by
 
   have hkey : ((fdeg E : ℝ) * w + 2) * Real.log 2 ≤ 2 * π * t / M := by
     have he : 2 * π * t / M = π / (M * X.k0 * ε) := by
-      rw [ht]; field_simp <;> ring
+      rw [ht]; field_simp
     rw [he, le_div_iff₀ (by positivity)]
     calc ((fdeg E : ℝ) * w + 2) * Real.log 2 * (M * X.k0 * ε)
         = ε * (M * ((fdeg E : ℝ) * w + 2) * X.k0 * Real.log 2) := by ring

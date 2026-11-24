@@ -170,10 +170,6 @@ theorem diff_Hf (a : Vsp X.dim) : Differentiable ℂ (fun v : Vsp X.dim => Hf v 
   unfold Hf
   first
     | fun_prop
-    | exact Differentiable.fun_sum fun i _ =>
-        (EuclideanSpace.proj i : Vsp X.dim →L[ℂ] ℂ).differentiable.mul_const _
-    | exact Differentiable.sum fun i _ =>
-        (EuclideanSpace.proj i : Vsp X.dim →L[ℂ] ℂ).differentiable.mul_const _
 
 omit hI in
 theorem differentiable_zeroModeLift_of (hβd : Differentiable ℂ β) : Differentiable ℂ (F0 I q β) := by

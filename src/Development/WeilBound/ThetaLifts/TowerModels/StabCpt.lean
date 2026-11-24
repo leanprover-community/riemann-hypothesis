@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactOfUnits
 public import Development.WeilBound.ThetaLifts.TowerModels.ExistsHaarOfIsCompact
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
@@ -68,42 +69,7 @@ theorem isCompact_of_units {A : Type} [Monoid A] [TopologicalSpace A] [Continuou
 
 theorem cartan_bound {n : ℕ} {M θ : Matrix (Fin n) (Fin n) ℂ} (h : IsCartan M θ) :
     ∃ R : ℝ, ∀ A : Matrix (Fin n) (Fin n) ℂ, Aᵀ * M * A.map star = M → Commute A θ → ∀ i j, ‖A i j‖ ≤ R := by
-  let Q : (Fin n → ℂ) → ℝ := fun x => ((θ *ᵥ x) ⬝ᵥ M *ᵥ star x).re
-  have hQ : Continuous Q := Complex.continuous_re.comp
-    ((continuous_const.matrix_mulVec continuous_id).dotProduct (continuous_const.matrix_mulVec continuous_star))
-  have hom : ∀ (t : ℝ) x, Q (t • x) = t ^ 2 * Q x := fun t x => by
-    simp only [Q, star_smul, star_trivial, Matrix.mulVec_smul, smul_dotProduct, dotProduct_smul, Complex.smul_re,
-      smul_eq_mul]
-    ring
-  obtain ⟨c, hc, hle⟩ := (isCompact_sphere (0 : Fin n → ℂ) 1).exists_forall_le' hQ.continuousOn (a := 0)
-    fun x hx => h.2.2 x (by rintro rfl; simp at hx)
-  have low : ∀ x, c * ‖x‖ ^ 2 ≤ Q x := fun x => by
-    by_cases hx : x = 0
-    · subst hx; simp [Q]
-    · have hn : 0 < ‖x‖ := norm_pos_iff.2 hx
-      have h1 := hle (‖x‖⁻¹ • x) (by simp [norm_smul, hn.ne'])
-      have h2 : Q x = ‖x‖ ^ 2 * Q (‖x‖⁻¹ • x) := by rw [← hom, smul_smul, mul_inv_cancel₀ hn.ne', one_smul]
-      rw [h2, mul_comm]
-      exact mul_le_mul_of_nonneg_left h1 (sq_nonneg _)
-  refine ⟨∑ j, √(Q (Pi.single j 1) / c), fun A hA hc' i j => ?_⟩
-  have inv : ∀ x, Q (A *ᵥ x) = Q x := fun x => by
-    have e1 : star (A *ᵥ x) = A.map star *ᵥ star x := by
-      ext k; simp [Matrix.mulVec, dotProduct]
-    have e2 : θ *ᵥ A *ᵥ x = A *ᵥ θ *ᵥ x := by rw [Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hc'.eq]
-    have e3 : (A *ᵥ θ *ᵥ x) ⬝ᵥ M *ᵥ A.map star *ᵥ star x = (θ *ᵥ x) ⬝ᵥ (Aᵀ * M * A.map star) *ᵥ star x := by
-      rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec (θ *ᵥ x) Aᵀ,
-        Matrix.vecMul_transpose]
-    simp only [Q]
-    rw [e1, e2, e3, hA]
-  have h1 : ‖A i j‖ ≤ ‖A *ᵥ Pi.single j 1‖ := by
-    have := norm_le_pi_norm (A *ᵥ Pi.single j 1) i
-    rwa [Matrix.mulVec_single_one] at this ⊢
-  have h2 : ‖A *ᵥ Pi.single j 1‖ ≤ √(Q (Pi.single j 1) / c) := by
-    refine Real.le_sqrt_of_sq_le ?_
-    rw [le_div_iff₀ hc, mul_comm, ← inv]
-    exact low _
-  exact h1.trans (h2.trans (Finset.single_le_sum (f := fun j => √(Q (Pi.single j 1) / c))
-    (fun _ _ => Real.sqrt_nonneg _) (Finset.mem_univ j)))
+  apply GlobalTheory.ThK.Dbl.St.cartan_bound <;> assumption
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
 
@@ -158,40 +124,7 @@ theorem mem_latHat (X : Spc F E n) {a : AF F} (ha : a ∈ intF F) {y : Fin n →
   AddSubgroup.subset_closure ⟨a, ha.1, ha.2, y, hy, rfl⟩
 
 theorem isCompact_latHat (X : Spc F E n) (hX : X.L.FG) : IsCompact (latHat X : Set (Fin n → AE F E)) := by
-  have hZ : (X.L.restrictScalars ℤ).FG := hX.restrictScalars
-  obtain ⟨m, s, hs⟩ := Submodule.fg_iff_exists_fin_generating_family.1 hZ
-  have hsL : ∀ j, s j ∈ X.L := fun j => by
-    have : s j ∈ X.L.restrictScalars ℤ := hs ▸ Submodule.subset_span ⟨j, rfl⟩
-    exact this
-  haveI : CompactSpace (intF F) := isCompact_iff_compactSpace.1 isCompact_intF
-  let f : (Fin m → intF F) →+ (Fin n → AE F E) :=
-    AddMonoidHom.mk' (fun a => ∑ j, (a j : AF F) • incV F (s j)) fun a b => by
-      rw [← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl fun j _ => ?_
-      have : ((a + b) j : AF F) = a j + b j := rfl
-      rw [this, add_smul]
-  have hf : Continuous f := by
-    change Continuous fun a : Fin m → intF F => ∑ j, (a j : AF F) • incV F (s j)
-    refine continuous_finsetSum _ fun j _ => ?_
-    have h1 : Continuous fun a : Fin m → intF F => (a j : AF F) := Continuous.subtype_val (continuous_apply j)
-    exact h1.fun_smul continuous_const
-  have e : latHat X = f.range := by
-    refine le_antisymm ((AddSubgroup.closure_le _).2 ?_) ?_
-    · rintro _ ⟨a, ha, ha', y, hy, rfl⟩
-      have hy' : y ∈ Submodule.span ℤ (Set.range s) := by rw [hs]; exact hy
-      obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℤ).1 hy'
-      refine ⟨fun j => c j • ⟨a, ha, ha'⟩, funext fun i => ?_⟩
-      change (∑ j, (c j • a) • incV F (s j)) i = a • inclR (F := F) (AF F) ((∑ j, c j • s j) i)
-
-      rw [Finset.sum_apply, Finset.sum_apply, map_sum, Finset.smul_sum]
-      refine Finset.sum_congr rfl fun j _ => ?_
-      change (c j • a) • inclR (F := F) (AF F) (s j i) = _
-      rw [Pi.smul_apply, map_zsmul, smul_assoc, smul_comm]
-    · rintro _ ⟨a, rfl⟩
-      change (∑ j, (a j : AF F) • incV F (s j)) ∈ latHat X
-      exact sum_mem fun j _ => mem_latHat X (a j).2 (hsL j)
-  rw [e, AddMonoidHom.coe_range]
-  exact isCompact_range hf
+  apply GlobalTheory.ThK.Dbl.St.isCompact_latHat <;> assumption
 
 
 variable (F) in

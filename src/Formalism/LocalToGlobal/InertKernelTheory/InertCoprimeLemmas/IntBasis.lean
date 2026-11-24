@@ -101,28 +101,6 @@ theorem integral_subst {σ τ : Type*} [Finite σ] (a : σ → MvPowerSeries τ 
   rw [MvPowerSeries.map_subst hs]
   simp only [ha']
 
-theorem galE_sigmaOf (D : D7) (g : D.R.GG) :
-    D.host.galE (D.host.sigmaOf g) = g := by
-  exact D.host.gal.apply_symm_apply _
-
-theorem embT_K (D : D7) (τ : D.what₂.Tau) (x : D.host.E) (hx : x ∈ D.host.K) :
-    embT D τ x = D.host.φ₀ x := by
-  set σ := D.host.sigmaOf ((D.eTau τ : D.R.Psi) : D.R.GG)
-  have hb : σ (D.host.sqd) = D.host.sqd := by
-    rw [← D.host.galE_mem_Psi_iff, galE_sigmaOf]
-    exact (D.eTau τ).2
-  have hfix : σ x = x := by
-    have hx' : x ∈ IntermediateField.adjoin ℚ {D.host.sqd} := hx
-    clear hx
-    induction hx' using IntermediateField.adjoin_induction with
-    | mem y hy => rw [Set.mem_singleton_iff.mp hy]; exact hb
-    | algebraMap r => rw [eq_ratCast (algebraMap ℚ D.host.E) r]; exact map_ratCast σ r
-    | add y z _ _ h1 h2 => rw [map_add (f := _), h1, h2]
-    | inv y _ h1 => rw [map_inv₀, h1]
-    | mul y z _ _ h1 h2 => rw [map_mul, h1, h2]
-  show D.host.φ₀ (σ x) = _
-  rw [hfix]
-
 theorem emb_mem (D : D7) (τ : D.what₂.Tau) (x : D.host.E) : embT D τ x ∈ Qbar := by
   rw [mem_algebraicClosure_iff']
   exact (Algebra.IsIntegral.isIntegral x).map (embT D τ).toRatAlgHom
@@ -189,7 +167,7 @@ theorem atLog_change (D : D7) {N N' r : ℕ} (lam : Qbar →+* ℂ_[p]) (Λ : Ad
     simp only [Matrix.smul_apply, smul_eq_mul, map_sum, map_mul]
   have hy : ∀ i j, lamC lam (D.host.φ₀ (A i j)) = lam (embQ D k.1 (A i j)) := by
     intro i j
-    rw [← embT_K D k.1 _ (hAK i j), lamC_embT]
+    rw [← _root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL.embT_K D k.1 _ (hAK i j), lamC_embT]
 
   simp only [hx, hy, lamC_embT, Finset.mul_sum, map_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
@@ -301,7 +279,6 @@ theorem orthChange_core : OrthChange := by
     IntermediateField.coe_zero, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h
   first
   | exact h.symm
-  | (rw [← h]; split_ifs <;> simp)
 
 end IntegralOrthonormalChange
 
@@ -320,8 +297,6 @@ theorem basisInv_of (hO : OrthChange) (hU : UnitSubst) : BasisInv := by
   rw [key, hPV, ← mul_assoc, ← MvPowerSeries.subst_mul hSs]
   exact integral_mul (integral_subst S hS0 hSI (hI C wq hC hW)) hV
 
-theorem orthonormal_change_unitary_integral : OrthChange := IntegralOrthonormalChange.orthChange_core
-
-theorem basisInv_of_unitSubst (hU : UnitSubst) : BasisInv := basisInv_of orthonormal_change_unitary_integral hU
+theorem basisInv_of_unitSubst (hU : UnitSubst) : BasisInv := basisInv_of _root_.Formalism.L2.KerInert.IntegralOrthonormalChange.orthChange_core hU
 
 end Formalism.L2.KerInert

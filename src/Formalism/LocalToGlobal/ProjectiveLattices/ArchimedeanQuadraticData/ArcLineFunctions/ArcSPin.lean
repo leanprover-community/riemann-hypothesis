@@ -57,9 +57,6 @@ theorem arcS_pin (Dw : Datum H) (K₁ : Type) [Field K₁] {F₀ : Type} [Field 
   have h2 : algebraMap F₀ (PowerSeries K₁) r = PowerSeries.C (R := K₁) (algebraMap F₀ K₁ r) := by
     first
       | (rw [IsScalarTower.algebraMap_apply F₀ K₁ (PowerSeries K₁)]; rfl)
-      | exact MvPowerSeries.algebraMap_apply
-      | exact PowerSeries.algebraMap_apply' r
-      | simp [Algebra.algebraMap_eq_smul_one]
   simp only [arcι, RingHom.comp_apply, MvPolynomial.algebraMap_apply, h1, h2]
 
 end Formalism.L2.Pj.QAt

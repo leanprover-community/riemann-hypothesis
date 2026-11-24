@@ -60,7 +60,7 @@ variable {n : ℕ}
 
 theorem sCoef_lamT (lam : Fin n → ℝ) (t : ℕ) {i : ℕ} (hi : i + 1 < n) :
     sCoef (lamT lam t) i = sCoef lam i + t := by
-  simp only [sCoef, dif_pos hi, lamT, Dvec, Pi.add_apply, Pi.smul_apply, smul_eq_mul, Fin.val_mk]
+  simp only [sCoef, dif_pos hi, lamT, Dvec, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
   push_cast
   ring
 
@@ -87,7 +87,7 @@ theorem dvec_antitone : Antitone (Dvec n) := by
 
 theorem lamT_apply (lam : Fin n → ℝ) (t : ℕ) (a : Fin n) :
     lamT lam t a = lam a + (t : ℝ) * ((n : ℝ) - 1 - ((a : ℕ) : ℝ)) := by
-  simp only [lamT, Dvec, Pi.add_apply, Pi.smul_apply, smul_eq_mul] <;> ring
+  simp only [lamT, Dvec, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
 
 theorem lamT_sub (lam : Fin n → ℝ) (t : ℕ) (a b : Fin n) :
     lamT lam t a - lamT lam t b = (lam a - lam b) + (t : ℝ) * (((b : ℕ) : ℝ) - ((a : ℕ) : ℝ)) := by
@@ -154,7 +154,7 @@ theorem ratioV_eq_vand {μ : Fin n → ℝ} (hμ : StrictAnti μ) (s : Fin n) :
       have h1 : μ a - μ b ≠ 0 := hne a b hab'
       rw [if_pos rfl, if_neg hab'.symm, mul_one]
       simp only [Pi.add_apply, Pi.single_eq_same, Pi.single_eq_of_ne hab'.symm, add_zero]
-      field_simp <;> ring
+      field_simp
     · by_cases hb' : b = s
       · subst hb'
         have h2 : μ b - μ a ≠ 0 := hne b a hab'.symm

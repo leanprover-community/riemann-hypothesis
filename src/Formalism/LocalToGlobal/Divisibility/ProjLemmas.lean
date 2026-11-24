@@ -117,10 +117,6 @@ theorem subE_rat (Z : Submodule K (Fin n → K)) (h : SubHasRatBasis Z) (i : Fin
   have e : subBasis Z = h.choose := by
     first
     | exact dif_pos h
-    | (unfold subBasis; exact dif_pos h)
-    | (rw [subBasis, dif_pos h])
-    | (simp only [subBasis, h, dite_true])
-    | (unfold subBasis; simp [h])
   show ((subBasis Z j : Fin n → K) i) ∈ cmMax K
   rw [e]
   exact h.choose_spec j i
@@ -186,9 +182,6 @@ theorem mem_valLatF {K : Type} [Field K] [NumberField K] [StarRing K] {n : ℕ} 
     x ∈ valLatF I N ↔ ∀ c, I x c ∈ N c := by
   first
   | exact ⟨fun h c => h c (Set.mem_univ c), fun h c _ => h c⟩
-  | (unfold valLatF; simp [Submodule.mem_pi])
-  | (simp only [valLatF, Submodule.mem_comap, Submodule.mem_pi, Set.mem_univ, forall_const,
-      LinearMap.restrictScalars_apply])
 
 theorem action_preserves_lattice : ActLat := by
   intro K _ _ _ S G _ _ r hr t
@@ -222,7 +215,7 @@ private theorem dot_H_lemma {K : Type} [Field K] [NumberField K] [StarRing K] (S
       S.pair (∑ k, x k • u k) (∑ l, y l • w l) = ∑ k, ∑ l, star (x k) * y l * S.pair (u k) (w l) := by
     intro x y u w
 
-    simp only [map_sum, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, map_smul, smul_eq_mul,
+    simp only [map_sum, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
     starRingEnd_apply, RingHom.id_apply, Finset.mul_sum]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
@@ -312,7 +305,6 @@ private theorem single_mul_lvlIdem_lemma {K : Type} [Field K] {G : Type} [Group 
   simp only [Equiv.coe_mulLeft, Subgroup.coe_mul]
   first
   | rw [MonoidAlgebra.smul_single']
-  | rw [MonoidAlgebra.smul_single, smul_eq_mul]
   congr 1
   rw [mul_inv_rev, map_mul, Units.val_mul]
   have e : ((ψ h : Kˣ) : K) * ((ψ h⁻¹ : Kˣ) : K) = 1 := by
@@ -491,7 +483,6 @@ theorem lvlIdem_idem [CharZero K] (P : Subgroup G) (ψ : P →* Kˣ) :
         ((Nat.card P : K)⁻¹ * ((ψ h⁻¹ : Kˣ) : K)) • MonoidAlgebra.single (h : G) (1 : K) := by
       first
       | rw [MonoidAlgebra.smul_single', mul_one]
-      | rw [MonoidAlgebra.smul_single, smul_eq_mul, mul_one]
     rw [hs, smul_mul_assoc, single_mul_lvlIdem, smul_smul, mul_assoc, ← Units.val_mul, ← map_mul,
       inv_mul_cancel, map_one, Units.val_one, mul_one]
   rw [Finset.sum_congr rfl fun h _ => e h, Finset.sum_const, Finset.card_univ, ← Nat.card_eq_fintype_card,
@@ -530,13 +521,10 @@ private theorem conj_eq_inv_lemma {z : ℂ} {n : ℕ} (hn : n ≠ 0) (h : z ^ n 
     starRingEnd ℂ z = z⁻¹ := by
   have hnorm : ‖z‖ = 1 := by
     first
-    | exact norm_eq_one_of_pow_eq_one h hn
     | exact Complex.norm_eq_one_of_pow_eq_one h hn
   have hz : starRingEnd ℂ z * z = 1 := by
     first
     | (rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, hnorm]; simp)
-    | (rw [mul_comm, Complex.mul_conj, hnorm]; simp)
-    | (rw [Complex.conj_mul', hnorm]; simp)
   exact eq_inv_of_mul_eq_one_left hz
 
 theorem star_of_pow_eq_one {v0 : InfinitePlace K} (hv : IsConjAt v0) {u : K} {n : ℕ} (hn : n ≠ 0)
@@ -558,8 +546,6 @@ theorem exists_int_of_pow_eq_one {u : K} {n : ℕ} (hn : n ≠ 0) (hu : u ^ n = 
     ⟨Polynomial.X ^ n - Polynomial.C 1, Polynomial.monic_X_pow_sub_C 1 hn, by simp [hu]⟩
   first
   | exact ⟨⟨u, hint⟩, rfl⟩
-  | exact ⟨⟨u, (mem_integralClosure_iff ℤ K).mpr hint⟩, rfl⟩
-  | exact ⟨NumberField.RingOfIntegers.mk u hint, rfl⟩
 
 variable {G : Type} [Group G] [Fintype G]
 
@@ -567,8 +553,6 @@ theorem psi_pow (P : Subgroup G) (ψ : P →* Kˣ) (h : P) : ((ψ h : Kˣ) : K) 
   have h1 : h ^ Nat.card P = 1 := by
     first
     | exact pow_card_eq_one'
-    | exact pow_natCard_eq_one
-    | simp
   have h2 : (ψ h) ^ Nat.card P = 1 := by rw [← map_pow, h1, map_one]
   rw [← Units.val_pow_eq_pow_val, h2, Units.val_one]
 
@@ -580,12 +564,9 @@ private theorem int_iff_lemma {K : Type} [Field K] [NumberField K] (x : K) :
   · rintro ⟨b, rfl⟩
     first
     | exact NumberField.RingOfIntegers.isIntegral_coe b
-    | exact b.2
-    | exact (mem_integralClosure_iff ℤ K).mp b.2
   · intro h
     first
     | exact ⟨⟨x, h⟩, rfl⟩
-    | exact ⟨⟨x, (mem_integralClosure_iff ℤ K).mpr h⟩, rfl⟩
 
 theorem level_idempotent_spec : LvlIdemSpec := by
   intro K _ _ _ v0 hv G _ _ P ψ
@@ -644,8 +625,6 @@ theorem goodAtSpec_of (h1 : IdemOfSpec) (h2 : LvlIdemSpec) : GoodAtSpec := by
       exact e1.mul e2
     first
     | exact IsIntegral.sum _ fun s _ => key s
-    | exact IsIntegral.sum fun s _ => key s
-    | exact (integralClosure ℤ K).sum_mem fun s _ => key s
 
 section Chars
 
@@ -753,8 +732,6 @@ theorem idemOf_integral {K : Type} [Field K] [NumberField K] {G : Type} [Group G
     exact ((hX χ hχ).isIntegral 1).mul ((hX χ hχ).isIntegral t⁻¹)
   first
   | exact IsIntegral.sum _ key
-  | exact IsIntegral.sum key
-  | exact (integralClosure ℤ K).sum_mem key
 
 end Chars
 
@@ -1001,7 +978,6 @@ theorem chiIdem_mul {χ χ' : G → K} (h : IsAbsIrrChar χ) (h' : IsAbsIrrChar 
   · subst he
     rw [coeff_chiIdem]
     field_simp
-    try ring
   · rw [mul_zero]
     simp
 
@@ -1072,7 +1048,7 @@ private theorem exists_mul_lemma {K : Type} [Field K] {m n p : ℕ} {A : Matrix 
     have hB : (fun i => B i j) ∈ LinearMap.range B.mulVecLin :=
       LinearMap.mem_range.mpr ⟨Pi.single j 1, by
         ext i
-        simp [Matrix.mulVecLin_apply, Matrix.mulVec, dotProduct, Pi.single_apply]⟩
+        simp [Matrix.mulVec, dotProduct, Pi.single_apply]⟩
     obtain ⟨c, hc⟩ := LinearMap.mem_range.mp (h hB)
     exact ⟨c, by rw [← Matrix.mulVecLin_apply]; exact hc⟩
   choose c hc using hc
@@ -1125,7 +1101,6 @@ theorem cut_posDef {K : Type} [Field K] [NumberField K] [StarRing K] {n d : ℕ}
   have hP := hpos.conjTranspose_mul_mul_same hE'
   first
   | exact hP.smul hc
-  | exact Matrix.PosDef.smul hP hc
 
 theorem gaMat_rat {K : Type} [Field K] [NumberField K] [StarRing K] (S : CSD K) {G : Type} [Group G]
     [Fintype G] (r : Representation K G S.Forms) (hr : S.ActRat r) (a : MonoidAlgebra K G)
@@ -1282,8 +1257,7 @@ private theorem hform_eq_lemma {K : Type} [Field K] [NumberField K] [StarRing K]
     (u v : Fin m → K) : hform M u v = star u ⬝ᵥ (M *ᵥ v) := by
   unfold hform
   rw [Matrix.toLinearMapₛₗ₂'_apply]
-  simp only [dotProduct, Matrix.mulVec, Finset.mul_sum, Pi.star_apply, starRingEnd_apply, RingHom.id_apply,
-    mul_assoc]
+  simp only [dotProduct, Matrix.mulVec, Finset.mul_sum, Pi.star_apply, starRingEnd_apply, RingHom.id_apply]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   simp only [smul_eq_mul]
   ring
@@ -1350,10 +1324,8 @@ theorem lvlClassSum_of (h1 : ImESpec) : LvlClassSum := by
     rfl
   · first
     | rfl
-    | (ext x; exact Iff.rfl)
   · first
     | rfl
-    | (ext x; exact Iff.rfl)
 
 theorem idempotent_central : IdemOfCentral := by
   intro K _ _ G _ _ X hX

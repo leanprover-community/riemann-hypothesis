@@ -125,7 +125,7 @@ variable (X : Data E r) (τ : X.Ψ) (e : Fin r → Fin r → ℂ)
   (hind : LinearIndependent ℂ (X.colP x τ))
 
 theorem sgn_castLE (a : Fin X.p0) : ((sgn X.p0 (Fin.castLE X.p0_le a : ℕ) : ℝ) : ℂ) = 1 := by
-  simp [sgn, Fin.coe_castLE, a.isLt]
+  simp [sgn, a.isLt]
 
 include he in
 theorem proj (y : Fin r → ℂ)

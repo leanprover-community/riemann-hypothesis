@@ -384,7 +384,6 @@ theorem exists_approx (hG : IsMatGroup G) (h : RepOn G σ) (hiso : ∀ g ∈ G, 
     let C : ℝ := ∑ i, ∫ g : MG G hG, ‖LW (W i) φ g.mat‖ ∂haar
     have hC0 : ∀ i, 0 ≤ ∫ g : MG G hG, ‖LW (W i) φ g.mat‖ ∂haar := fun i =>
       integral_nonneg fun _ => norm_nonneg _
-    have hC : 0 ≤ C := Finset.sum_nonneg fun i _ => hC0 i
     rw [← SetLike.mem_coe, ← hS.closure_eq, Metric.mem_closure_iff]
     intro ε hε
     obtain ⟨y, hy, hxy⟩ := Metric.mem_closure_iff.1 (hd x) (ε / (C + 1)) (by positivity)

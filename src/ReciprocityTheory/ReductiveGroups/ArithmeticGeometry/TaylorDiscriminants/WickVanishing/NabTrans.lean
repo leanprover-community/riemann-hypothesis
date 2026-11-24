@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.CanonicalGaugeDifferenceBiadditiveJet
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -62,44 +63,12 @@ theorem nt_ev_smul {m n : ℕ} (a : Fin m → Pt k n d) (ha : ∀ j, GP (a j)) (
   have hs : MvPowerSeries.HasSubst (fun p : Fin m × Fin d => a p.1 p.2) := by
     first
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun p => ha p.1 p.2)
-    | exact ⟨fun p => by rw [ha p.1 p.2]; exact IsNilpotent.zero, fun e => Set.toFinite _⟩
   unfold ev
   first
   | exact MvPowerSeries.subst_smul hs r f
-  | (rw [← MvPowerSeries.coe_substAlgHom hs]; exact map_smul _ r f)
 
 theorem nt_expS_zero [Algebra ℚ k] {n : ℕ} : FB.expS k (0 : PS k n d) = 1 := by
-  have hdvd : (PowerSeries.X : PowerSeries k) ^ 1 ∣ PowerSeries.exp k - 1 := by
-    rw [PowerSeries.X_pow_dvd_iff]
-    intro j hj
-    have hj0 : j = 0 := by omega
-    subst hj0
-    first
-    | (simp [PowerSeries.coeff_exp]; done)
-    | (simp only [map_sub, PowerSeries.coeff_exp, PowerSeries.coeff_one, if_true, Nat.factorial_zero,
-        Nat.cast_one, div_one, map_one, sub_self]; done)
-  obtain ⟨R, hR⟩ := hdvd
-  have hexp : PowerSeries.exp k = 1 + PowerSeries.X ^ 1 * R := by
-    rw [← hR]
-    ring
-  have hc : constantCoeff (0 : PS k n d) = 0 := map_zero _
-  have hs : PowerSeries.HasSubst (0 : PS k n d) := by
-    first
-    | exact PowerSeries.HasSubst.of_constantCoeff_zero hc
-    | exact PowerSeries.HasSubst.of_constantCoeff_zero' hc
-    | (show IsNilpotent _; rw [hc]; exact IsNilpotent.zero)
-  have key : ∀ f : PowerSeries k, PowerSeries.subst (0 : PS k n d) f = PowerSeries.substAlgHom hs f := by
-    intro f
-    first
-    | rw [PowerSeries.coe_substAlgHom]
-    | rfl
-  have hX : PowerSeries.substAlgHom hs (PowerSeries.X : PowerSeries k) = 0 := by
-    first
-    | exact PowerSeries.substAlgHom_X hs
-    | (rw [← key]; exact PowerSeries.subst_X hs)
-  unfold FB.expS
-  rw [hexp, key]
-  simp [hX]
+  apply GlobalTheory.ChartCmp.GaugeDiff.expS_zero <;> assumption
 
 theorem nt_const_smul {n : ℕ} (r : k) (f : PS k n d) : constantCoeff (r • f) = r * constantCoeff f := by
   rw [MvPowerSeries.smul_eq_C_mul, map_mul, MvPowerSeries.constantCoeff_C]

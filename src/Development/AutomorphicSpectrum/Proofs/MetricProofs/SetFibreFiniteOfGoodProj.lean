@@ -328,7 +328,7 @@ private lemma finite_zeros_lemma_9 {V : Type} [Fintype V] [DecidableEq V] (r : V
         refine ⟨α, ?_, rfl⟩
         rw [hT, Finset.coe_image]
         refine ⟨⇑α, ?_, ?_⟩
-        · simp [Fintype.mem_piFinset, hsmall]
+        · simp [hsmall]
         · ext v
           simp
       · push Not at hsmall

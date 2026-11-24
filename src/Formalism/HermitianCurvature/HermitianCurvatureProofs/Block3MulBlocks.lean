@@ -126,7 +126,7 @@ lemma entry_le_mx {m n : Type*} [Fintype m] [Fintype n] (A : Matrix m n ℂ) (i 
 
 lemma det_norm_le {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℂ) {m : ℝ} (h : EB A m) :
     ‖A.det‖ ≤ (Fintype.card n).factorial * m ^ Fintype.card n := by
-  first | exact UpperTheory.Reformulated.B.Qi39.det_norm_le .. | (apply UpperTheory.Reformulated.B.Qi39.det_norm_le <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qi39.det_norm_le <;> assumption) | (apply @UpperTheory.Reformulated.B.Qi39.det_norm_le <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qi39.det_norm_le <;> assumption) | (apply @UpperTheory.Reformulated.B.Qi39.det_norm_le <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› A m h | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› A m | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› A | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n
+  first | (apply UpperTheory.Reformulated.B.Qi39.det_norm_le <;> assumption) | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› A m h | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› A m | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› A | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› ‹_› | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n ‹_› | exact @UpperTheory.Reformulated.B.Qi39.det_norm_le n
 
 lemma inv_entry_le {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) {m : ℝ} (h : EB A m) :
     EB A⁻¹ ((n - 1).factorial * m ^ (n - 1) / ‖A.det‖) := by
@@ -370,7 +370,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.aux_statement_17 : BlockHeadSizes := 
   have hδ0pos : 0 < δ0 := by positivity
   set Kd : ℝ := ∑ i : Fin p, ((i.val + 1).factorial : ℝ) / ‖∏ t : Fin (i.val + 1), d (Fin.castLE i.isLt t)‖
     with hKd
-  have hKd0 : 0 ≤ Kd := Finset.sum_nonneg fun _ _ => by positivity
   have hδi : 0 ≤ δ0⁻¹ := inv_nonneg.mpr hδ0pos.le
   refine ⟨Kd * (1 + δ0⁻¹) + (p.factorial : ℝ) / ‖dH‖ + (1 + δ0⁻¹) + (p : ℝ) * ((p.factorial : ℝ) / ‖dH‖),
     fun η Z => ?_⟩
@@ -449,7 +448,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.aux_statement_17 : BlockHeadSizes := 
     have h2 := EB_mul hHi hHBb
     rw [← h1, Fintype.card_fin] at h2
     exact h2.mono ((le_of_eq (by ring)).trans hfa)
-  have hbA0 : 0 ≤ bA := by positivity
   have hZb : EB (Matrix.of Z) (m + p * (m * bA)) := by
     have h1 : Matrix.of Z = (Matrix.of a * H * Matrix.of b + Matrix.of Z) - Matrix.of a * H * Matrix.of b := by abel
     have h2 := EB_sub hBRb (EB_mul hAHb hb)
@@ -534,7 +532,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.sizes_top_level : SizesTop := by
   have hCp0 : 0 ≤ Cp := le_max_right _ _
   set K : ℝ := (1 + Cp) ^ 5 with hK
   have hK0 : 0 < K := by positivity
-  have hps1 : (1 : ℝ) ≤ ((p + s : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ p + s)
   have hps : (0 : ℝ) < 5 * ((p + s : ℕ) : ℝ) := by positivity
   set e := A' / (5 * ((p + s : ℕ) : ℝ)) with he
   have he0 : 0 ≤ e := div_nonneg hA' hps.le

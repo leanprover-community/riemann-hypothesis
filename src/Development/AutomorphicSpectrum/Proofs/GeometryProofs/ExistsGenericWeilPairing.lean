@@ -4,7 +4,11 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDesc
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GenWeil
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.MemEigSpOfMemHtDual
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsGrpPullbackOfCommute
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeilPairingBaseChangeUnitStatement
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
+public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeilPairingBaseChangeUnit
+public import Mathlib.GroupTheory.FiniteAbelian.Duality
+public import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsCommonAlgClosedExtension
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -18,7 +22,6 @@ import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
-public import Mathlib.GroupTheory.FiniteAbelian.Duality
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
@@ -51,7 +54,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-public import Mathlib.GroupTheory.FiniteAbelian.Basic
 
 @[expose] public section
 
@@ -65,9 +67,7 @@ namespace GlobalTheory.CompanionTheory.Ar.WeilObj
 def extPt {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Sp Ω ⟶ X) {k : Type} [Field k] (i : Ω →+* k) :
     Over.mk (spMap i ≫ ξ) ⟶ Over.mk ξ := Over.homMk (spMap i) rfl
 
-theorem spMap_comp_of {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap (g.comp f) = spMap g ≫ spMap f := by
-  rw [← Spec.map_comp]; rfl
+alias spMap_comp_of := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp
 
 theorem epi_spMap_field : ∀ (K L : Type) [Field K] [Field L] (i : K →+* L), Epi (spMap i) := by
   intro K L _ _ i
@@ -80,22 +80,7 @@ theorem epi_spMap_field : ∀ (K L : Type) [Field K] [Field L] (i : K →+* L), 
 
 theorem exists_common_closed : ∀ (Ω k K : Type) [Field Ω] [Field k] [Field K] (i : Ω →+* k) (i' : Ω →+* K),
     ∃ (M : Type) (_ : Field M) (_ : IsAlgClosed M) (j : k →+* M) (j' : K →+* M), j.comp i = j'.comp i' := by
-  intro Ω k K _ _ _ i i'
-  letI := i.toAlgebra
-  letI := i'.toAlgebra
-  haveI : Nontrivial (TensorProduct Ω k K) := inferInstance
-  obtain ⟨m, hm⟩ := Ideal.exists_maximal (TensorProduct Ω k K)
-  letI : Field (TensorProduct Ω k K ⧸ m) := Ideal.Quotient.field m
-  let q : TensorProduct Ω k K →+* AlgebraicClosure (TensorProduct Ω k K ⧸ m) :=
-    (algebraMap _ _).comp (Ideal.Quotient.mk m)
-  refine ⟨AlgebraicClosure (TensorProduct Ω k K ⧸ m), inferInstance, inferInstance,
-    q.comp Algebra.TensorProduct.includeLeftRingHom, q.comp (Algebra.TensorProduct.includeRight.toRingHom), ?_⟩
-  ext a
-  simp only [RingHom.comp_apply]
-  congr 1
-  show (i a) ⊗ₜ[Ω] (1 : K) = (1 : k) ⊗ₜ[Ω] (i' a)
-  rw [show i a = a • (1 : k) from (Algebra.algebraMap_eq_smul_one a),
-    show i' a = a • (1 : K) from (Algebra.algebraMap_eq_smul_one a), TensorProduct.smul_tmul]
+  apply GlobalTheory.CommonAlgClosedExtension.exists_common_algClosed_extension <;> assumption
 
 theorem ef_dvd : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (n : ℕ),
     (∀ a : D.La, (∀ c, (n : ℤ) ∣ D.EF a c) → ∃ a', a = n • a') ∧
@@ -263,11 +248,11 @@ theorem genWeil_of_obj : Out.WeilSt → ∀ (E : Type) [Field E] [NumberField E]
       rw [hjj, spMap_comp_of, Category.assoc]
     obtain ⟨cM, -, hcM⟩ := exk M (j.comp i) (extPt (ξ₀ ≫ f) (j.comp i) ≫ x) (extPt (ξ₀ ≫ f) (j.comp i) ≫ g)
       (tors _ x hx) (tors _ g hg)
-    have e1 := GlobalTheory.T.weil_pairing_base_change_unit t.G t.PP.L hL k M j _ _ hq n xk gk (extPt (ξ₀ ≫ f) (j.comp i) ≫ x)
+    have e1 := _root_.GlobalTheory.CompanionTheory.Ar.weilIs_fieldExt t.G t.PP.L hL k M j _ _ hq n xk gk (extPt (ξ₀ ≫ f) (j.comp i) ≫ x)
       (extPt (ξ₀ ≫ f) (j.comp i) ≫ g)
       (show spMap (j.comp i) ≫ x.left = spMap j ≫ xk.left by rw [hxk, spMap_comp_of, Category.assoc])
       (show spMap (j.comp i) ≫ g.left = spMap j ≫ gk.left by rw [hgk, spMap_comp_of, Category.assoc]) c cM hc hcM
-    have e2 := GlobalTheory.T.weil_pairing_base_change_unit t.G t.PP.L hL K M j' _ _ hq' n (extPt (ξ₀ ≫ f) iK ≫ x) (extPt (ξ₀ ≫ f) iK ≫ g)
+    have e2 := _root_.GlobalTheory.CompanionTheory.Ar.weilIs_fieldExt t.G t.PP.L hL K M j' _ _ hq' n (extPt (ξ₀ ≫ f) iK ≫ x) (extPt (ξ₀ ≫ f) iK ≫ g)
       (extPt (ξ₀ ≫ f) (j.comp i) ≫ x) (extPt (ξ₀ ≫ f) (j.comp i) ≫ g)
       (show spMap (j.comp i) ≫ x.left = spMap j' ≫ (spMap iK ≫ x.left) by
         rw [hjj, spMap_comp_of, Category.assoc])
