@@ -54,7 +54,9 @@ stays on them. A pull request told before, by any batch, that it is left out und
 heading is not told again: that comment is brought up to date instead, which notifies nobody.
 One whose entry is removed from the description is told that too. After every run, `frozen` is
 put on each open pull request a maintainer's `batch` stands for, and `frozen` and
-`batch-building` are taken off any that is neither queued nor in a batch being built. Which pull requests a batch
+`batch-building` are taken off any that is neither queued nor in a batch being built. A frozen
+pull request whose head has moved on from the commit that was taken is labelled `changed after
+frozen` until its head is that commit again or it is no longer frozen. Which pull requests a batch
 contains is read from its branch, never from its description. The names of the labels are in
 `batch-labels.py`, and `verification/BATCHES.md` says what someone assembling a batch by hand
 should do for all this to work.
@@ -104,6 +106,7 @@ _LABELS_SPEC = importlib.util.spec_from_file_location("rh_batch_labels", Path(__
 _labels = importlib.util.module_from_spec(_LABELS_SPEC)
 _LABELS_SPEC.loader.exec_module(_labels)
 QUEUED, BUILDING, MEMBER, FROZEN = _labels.QUEUED, _labels.BUILDING, _labels.MEMBER, _labels.FROZEN
+CHANGED = _labels.CHANGED
 # A maintainer's label: pull requests that carry it go into a batch before the others.
 PRIORITY, WAITING = _labels.PRIORITY, _labels.WAITING
 # What a pull request in a batch assembled by hand carries, `building` from before the batch's
@@ -648,6 +651,16 @@ def holders(hand):
     return held
 
 
+def holding(hand):
+    """Which pull requests the batches assembled by hand contain, as {number: commit}. A pull
+    request two batches contain at different commits keeps the first."""
+    held = {}
+    for batch in hand:
+        for key, commit in members(batch["note"]).items():
+            held.setdefault(key, commit)
+    return held
+
+
 def contains(gh, head, commit):
     """Whether a branch whose head is `head` has `commit` in it, or None if GitHub did not say."""
     status, data = gh.call("GET", f"compare/{head}...{commit}?per_page=1")
@@ -1125,7 +1138,7 @@ def unlabel_closed(gh, closed, cleared, log):
                        "requests, and the next run carries on")
             return
         seen.add(number)
-        gone = {label["name"] for label in item.get("labels") or ()} & {QUEUED, *IN_BATCH}
+        gone = {label["name"] for label in item.get("labels") or ()} & {QUEUED, CHANGED, *IN_BATCH}
         if number in cleared:
             gone -= set(IN_BATCH)
         if gone:
@@ -1181,48 +1194,72 @@ def reopened(gh, number):
 
 
 def reconcile(gh, pulls, held, approved, log):
-    """Keep `frozen` in step with `batch queue` and the batches being built, on open pull
-    requests other than batches. A queued pull request that a maintainer's `batch` stands for
-    (`approved`) is frozen, since the queue takes only the commit that was queued; one labelled
-    `batch queue` by hand is left as it is. One that is neither queued nor in a batch being built (`held`) loses
-    `frozen` and `batch-building`: whatever put them there is over. This writes nothing when
-    every label is where it should be."""
+    """Keep `frozen` and `changed after frozen` in step with `batch queue` and the batches being
+    built, on open pull requests other than batches.
+
+    A pull request in a batch being built is frozen at the commit the batch took (`held`, as
+    {number: commit}); `hold` labels it, and this only adds `changed after frozen` while it is
+    still labelled `frozen`. A queued pull request that a maintainer's `batch` stands for is frozen at
+    the commit that was queued (`approved`, the same), since the queue takes only that commit.
+    One labelled `batch queue` by hand, or whose `batch` was not looked at in this run, is left
+    as it is. A frozen pull request whose head has moved on from the commit it is frozen at is
+    labelled `changed after frozen`, and loses that label again once its head is what is frozen,
+    for instance after another `batch`. One that is neither queued nor in a batch being built
+    loses `frozen`, `batch-building` and `changed after frozen`: whatever put them there is over.
+    This writes nothing when every label is where it should be.
+    """
     for pr in sorted(pulls.values(), key=lambda pr: pr["number"]):
         if is_batch(pr) or BUILDING in pr["labels"]:
             continue
-        queued, inside = QUEUED in pr["labels"], str(pr["number"]) in held
-        stale = set() if queued or inside else pr["labels"] & {MEMBER, FROZEN}
-        if (queued and pr["number"] in approved and FROZEN not in pr["labels"]) or stale:
-            if gh.short():
-                log.append(f"only {gh.remaining} requests left this hour: stopped bringing `{FROZEN}` up to date, "
-                           "and the next run carries on")
-                return
-            if stale:
-                relabel(gh, pr, remove=sorted(stale))
-                log.append(f"#{pr['number']} is neither queued nor in a batch being built: "
-                           + " and ".join(f"`{name}`" for name in sorted(stale)) + " removed")
-            else:
-                relabel(gh, pr, add=FROZEN)
-                log.append(f"#{pr['number']} is queued: now `{FROZEN}`")
+        number, have = pr["number"], pr["labels"]
+        inside = str(number) in held
+        at = held.get(str(number)) or (approved.get(number) if QUEUED in have else None)
+        if at is None and QUEUED in have:
+            continue  # queued, but whether a `batch` stands for it was not looked at
+        if at is None:
+            add, gone = set(), have & {MEMBER, FROZEN, CHANGED}
+        else:
+            # `hold` labels what a batch contains, once: a label taken off by hand stays off.
+            add = set() if inside else {FROZEN}
+            if pr["sha"] != at and (FROZEN in have or not inside):
+                add.add(CHANGED)
+            add, gone = add - have, have & ({CHANGED} if pr["sha"] == at else set())
+        if not add and not gone:
+            continue
+        if gh.short():
+            log.append(f"only {gh.remaining} requests left this hour: stopped bringing `{FROZEN}` up to date, "
+                       "and the next run carries on")
+            return
+        relabel(gh, pr, add=sorted(add), remove=sorted(gone))
+        if at is None:
+            log.append(f"#{number} is neither queued nor in a batch being built: "
+                       + " and ".join(f"`{name}`" for name in sorted(gone)) + " removed")
+        elif CHANGED in add:
+            log.append(f"#{number} was pushed to after `{at[:10]}` was taken: now `{CHANGED}`")
+        elif CHANGED in gone:
+            log.append(f"#{number} is at `{at[:10]}`, the commit that was taken: `{CHANGED}` removed")
+        else:
+            log.append(f"#{number} is queued: now `{FROZEN}`")
 
 
 def sync(gh, now=None):
     """Bring batches and labels up to date. Returns lines saying what was done."""
-    log, approved = [], set()
-    pulls, held = {}, {}
-    log = assemble(gh, now, log, approved, pulls, held)
+    log, approved, pulls, held, held_at = [], {}, {}, {}, {}
+    log = assemble(gh, now, log, approved, pulls, held, held_at)
     # Last, so that the batch is assembled first when requests run short, and only after a run
     # that went through: `held` is complete only then.
     before = len(log)
-    reconcile(gh, pulls, held, approved, log)
+    reconcile(gh, pulls, held_at, approved, log)
     if len(log) > before and log[0] == "nothing to do":
         log.pop(0)
     return log
 
 
-def assemble(gh, now, log, approved, pulls, held):
-    """The body of `sync`. `pulls` and `held` are filled in for `reconcile`, and `approved` with
-    the queued pull requests a maintainer's `batch` is known to stand for."""
+def assemble(gh, now, log, approved, pulls, held, held_at):
+    """The body of `sync`. `pulls` is filled in for `reconcile`, `held` with the batches being
+    built that contain each pull request, `held_at` with the commit at which one of them holds it,
+    and `approved` with the commit that a maintainer's `batch` is known to stand for on each
+    queued pull request."""
     main = gh.get("")["default_branch"]
     main_sha = gh.get(f"git/ref/heads/{main}")["object"]["sha"]
     pulls.update(open_pulls(gh))
@@ -1248,6 +1285,7 @@ def assemble(gh, now, log, approved, pulls, held):
         requeued |= hold(gh, batch, pulls, held, main, log)
     held.clear()
     held.update(holders(hand))
+    held_at.update(holding(hand))
 
     if requeued:
         # Leave time to take the pull request that broke the build out of the queue first.
@@ -1274,7 +1312,7 @@ def assemble(gh, now, log, approved, pulls, held):
         number, key = pr["number"], str(pr["number"])
         sha, comments = look(gh, pr, state["seen"])
         if sha is not None:
-            approved.add(number)
+            approved[number] = sha
         if sha is None:
             unapproved.append(number)
             continue

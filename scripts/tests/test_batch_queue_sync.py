@@ -20,7 +20,7 @@ NOW = datetime.datetime(2026, 11, 23, 4, 12, 30, tzinfo=datetime.timezone.utc)
 T0 = datetime.datetime(2026, 11, 23, 3, 0, 0, tzinfo=datetime.timezone.utc)
 FIRST = "batch/2026-11-23-041230"
 QUEUED, BUILDING, BOT = batch.QUEUED, batch.BUILDING, batch.BOT
-MEMBER, FROZEN, WAITING = batch.MEMBER, batch.FROZEN, batch.WAITING
+MEMBER, FROZEN, WAITING, CHANGED = batch.MEMBER, batch.FROZEN, batch.WAITING, batch.CHANGED
 IN = {MEMBER, FROZEN}
 # What the label job puts on a pull request it queues.
 QF = {QUEUED, FROZEN}
@@ -872,7 +872,8 @@ class BuiltByHand(unittest.TestCase):
         gh.push(11, "head11-later")  # the batch holds an older commit of #11 only
         gh.writes = []
         sync(gh)
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[1018]["labels"]), (QF, {"large"}))
+        # Pushed to after it was queued, so changed after it was frozen.
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[1018]["labels"]), (QF | {CHANGED}, {"large"}))
         self.assertEqual(gh.said(1018), [])
         self.assertEqual([write for write in gh.writes if "1018" in write[1]], [])
 
@@ -892,7 +893,7 @@ class BuiltByHand(unittest.TestCase):
         gh.push(12, "head12-later")
         sync(gh)
         # What was assembled is still being built, and the author is told what that means.
-        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING, CHANGED})
         self.assertIn(f"builds and lands `{short('head12')}` only, not `{short('head12-later')}`", gh.said(12)[-1])
         self.assertEqual(len(gh.said(12)), 2)  # frozen, then pushed to: each once
         sync(gh)
@@ -1342,7 +1343,7 @@ class Robustness(unittest.TestCase):
         gh.push(11, "head11-later")
         queue(gh, 11)
         sync(gh)
-        self.assertEqual(gh.pulls[11]["labels"], IN | {WAITING})
+        self.assertEqual(gh.pulls[11]["labels"], IN | {WAITING, CHANGED})
         gh.close(1018, merged=True)
         log = sync(gh)
         self.assertTrue(QF <= gh.pulls[11]["labels"])
@@ -1404,6 +1405,59 @@ class LeftOutDigests(unittest.TestCase):
                          digest("Left out under the maintainers' guidance in `AGENTS.md` (no workarounds):", "b"))
         self.assertNotEqual(digest("Left out for other reasons:", "a"),
                             digest("Left out because they conflict with a PR earlier in the batch:", "a"))
+
+
+class ChangedAfterFrozen(unittest.TestCase):
+    """`changed after frozen` marks a frozen pull request whose head has moved on."""
+
+    def test_a_queued_pull_request_pushed_to_and_queued_again(self):
+        gh = Fake()
+        queue(gh, 11)
+        sync(gh)
+        gh.push(11, "head11-later")
+        log = sync(gh)
+        self.assertEqual(gh.pulls[11]["labels"], QF | {CHANGED})
+        self.assertIn(f"#11 was pushed to after `{short('head11')}` was taken: now `changed after frozen`", log)
+        queue(gh, 11)  # a maintainer queues the new head
+        log = sync(gh)
+        self.assertEqual(gh.pulls[11]["labels"], QF)
+        self.assertIn(f"#11 is at `{short('head11-later')}`, the commit that was taken: `changed after frozen` removed",
+                      log)
+
+    def test_a_member_pushed_to_until_its_batch_lands(self):
+        gh = Fake()
+        gh.add_pull(14, "head14")
+        by_hand(gh, 14)
+        sync(gh)
+        gh.push(14, "head14-later")
+        sync(gh)
+        self.assertEqual(gh.pulls[14]["labels"], IN | {WAITING, CHANGED})
+        gh.close(1018, merged=True)
+        sync(gh)
+        self.assertEqual(gh.pulls[14]["labels"], {WAITING})  # no longer frozen, so not changed after it either
+
+    def test_withdrawn_it_loses_the_label_and_closed_too(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        sync(gh)
+        gh.push(11, "head11-later")
+        gh.push(12, "head12-later")
+        sync(gh)
+        unqueue(gh, 11)
+        gh.close(12)
+        sync(gh)
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), (set(), set()))
+
+    def test_a_member_whose_labels_were_taken_off_by_hand_is_left_alone(self):
+        gh = Fake()
+        gh.add_pull(14, "head14")
+        by_hand(gh, 14)
+        sync(gh)
+        gh.label(14, remove=MEMBER, login="maintainer")
+        gh.label(14, remove=FROZEN, login="maintainer")
+        gh.push(14, "head14-later")
+        sync(gh)
+        self.assertEqual(gh.pulls[14]["labels"], {WAITING})
 
 
 def resets(gh):

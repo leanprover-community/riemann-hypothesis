@@ -81,6 +81,12 @@ queue stays `frozen`. After every run the workflow puts `frozen` back on a queue
 that has lost it, and takes `frozen` and `batch-building` off one that is neither queued nor in a
 batch being built.
 
+A frozen pull request whose head has moved on from the commit that was taken, by a batch or by
+the queue, is labelled `changed after frozen`: what was pushed since is not part of what is
+built. The label comes off when the head is the commit that was taken again, for instance after
+another `batch` comment or once a batch merges in the new head, and when the pull request is no
+longer frozen.
+
 `batch-building`, `frozen` and `awaiting-author` keep a pull request out of the inbox (see
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`
 of the sync job in `.github/workflows/batch-queue.yml` names some of them as well.

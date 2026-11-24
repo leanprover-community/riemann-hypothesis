@@ -16,5 +16,8 @@ MEMBER = "batch-building"
 # On the same pull requests: the batch builds the commit it took, so their authors should not
 # push until it has landed or been closed.
 FROZEN = "frozen"
+# On a frozen pull request whose head has moved on from the commit a batch or the queue took:
+# the commits after it are not part of what is built.
+CHANGED = "changed after frozen"
 # Handed back to the pull request's author.
 WAITING = "awaiting-author"
