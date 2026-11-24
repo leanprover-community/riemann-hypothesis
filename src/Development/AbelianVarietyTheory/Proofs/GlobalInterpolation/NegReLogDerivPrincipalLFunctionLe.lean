@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.CompletedLFunctionNeZeroOfReNonpos
+
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.NumberTheory.LSeries.DirichletContinuation
 public import Mathlib.NumberTheory.Harmonic.ZetaAsymp
@@ -61,49 +63,10 @@ open scoped Classical
 
 namespace GlobalTheory
 
-private lemma analyticAt_eulerFactor (a : ℂ) {p : ℕ} (hp : p.Prime) (s : ℂ) :
-    AnalyticAt ℂ (fun z : ℂ => 1 - a * (p : ℂ) ^ (-z)) s := by
-  have hp0 : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne_zero
-  exact (show Differentiable ℂ (fun z : ℂ => 1 - a * (p : ℂ) ^ (-z)) by
-    fun_prop (disch := exact Or.inl hp0)).analyticAt s
-
 /-- At the origin an Euler factor is a simple zero exactly when its coefficient is one. -/
 theorem analyticOrderAt_eulerFactor_zero (a : ℂ) {p : ℕ} (hp : p.Prime) :
     analyticOrderAt (fun z : ℂ => 1 - a * (p : ℂ) ^ (-z)) 0 = if a = 1 then 1 else 0 := by
-  split_ifs with ha
-  · subst a
-    apply (analyticAt_eulerFactor 1 hp 0).analyticOrderAt_eq_one_of_zero_deriv_ne_zero (by simp)
-    have hp0 : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne_zero
-    have hd : HasDerivAt (fun z : ℂ => 1 - (p : ℂ) ^ (-z)) (Complex.log p) 0 := by
-      simpa only [Pi.neg_apply, neg_zero, cpow_zero, one_mul, mul_neg_one, neg_neg] using
-        (((hasDerivAt_id' (0 : ℂ)).neg).const_cpow (Or.inl hp0)).const_sub 1
-    simp only [one_mul]
-    rw [hd.deriv, ← Complex.ofReal_natCast, ← Complex.ofReal_log (Nat.cast_nonneg p)]
-    exact Complex.ofReal_ne_zero.mpr (ne_of_gt (Real.log_pos (by exact_mod_cast hp.one_lt)))
-  · exact analyticOrderAt_eq_zero.mpr (.inr (by simpa using sub_ne_zero.mpr (Ne.symm ha)))
-
-private lemma analyticOrderAt_eulerProduct_zero (a : ℕ → ℂ) (S : Finset ℕ)
-    (hS : ∀ p ∈ S, p.Prime) :
-    analyticOrderAt (fun z : ℂ => ∏ p ∈ S, (1 - a p * (p : ℂ) ^ (-z))) 0 =
-      (S.filter fun p => a p = 1).card := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => simp
-  | @insert p S hp ih =>
-    have hp' := hS p (Finset.mem_insert_self p S)
-    have hS' : ∀ p ∈ S, p.Prime := fun p hp => hS p (Finset.mem_insert_of_mem hp)
-    have heq : (fun z : ℂ => ∏ r ∈ insert p S, (1 - a r * (r : ℂ) ^ (-z))) =
-        (fun z : ℂ => 1 - a p * (p : ℂ) ^ (-z)) *
-          (fun z : ℂ => ∏ r ∈ S, (1 - a r * (r : ℂ) ^ (-z))) := by
-      funext z
-      rw [Finset.prod_insert hp]
-      rfl
-    rw [heq, analyticOrderAt_mul (analyticAt_eulerFactor (a p) hp' 0)
-      (S.analyticAt_fun_prod fun p hp => analyticAt_eulerFactor (a p) (hS' p hp) 0),
-      analyticOrderAt_eulerFactor_zero _ hp', ih hS']
-    by_cases ha : a p = 1
-    · simp [ha, Finset.filter_insert, Finset.mem_filter, hp, add_comm]
-    · simp [ha, Finset.filter_insert]
+  simpa using analyticOrderAt_eulerFactor a hp 0
 
 /-- Changing the level adds one to the origin's vanishing order for each removed
 Euler factor with character value one. This also covers imprimitive characters. -/
@@ -111,20 +74,7 @@ theorem analyticOrderAt_LFunction_changeLevel_zero {M N : ℕ} [NeZero M] [NeZer
     (hMN : M ∣ N) (χ : DirichletCharacter ℂ M) :
     analyticOrderAt (LFunction (changeLevel hMN χ)) 0 =
       analyticOrderAt (LFunction χ) 0 + (N.primeFactors.filter fun (p : ℕ) => χ (p : ZMod M) = 1).card := by
-  have ha : AnalyticAt ℂ (LFunction χ) 0 :=
-    (DifferentiableOn.analyticOnNhd (fun z (hz : z ∈ ({1} : Set ℂ)ᶜ) =>
-      (differentiableAt_LFunction _ z (.inl hz)).differentiableWithinAt)
-      isOpen_compl_singleton) 0 (by simp)
-  have hp : AnalyticAt ℂ (fun z : ℂ => ∏ p ∈ N.primeFactors,
-      (1 - χ p * (p : ℂ) ^ (-z))) 0 :=
-    N.primeFactors.analyticAt_fun_prod fun p hp =>
-      analyticAt_eulerFactor (χ p) (Nat.prime_of_mem_primeFactors hp) 0
-  have heq : LFunction (changeLevel hMN χ) =ᶠ[𝓝 (0 : ℂ)]
-      LFunction χ * (fun z : ℂ => ∏ p ∈ N.primeFactors, (1 - χ p * (p : ℂ) ^ (-z))) := by
-    filter_upwards [eventually_ne_nhds (by norm_num : (0 : ℂ) ≠ 1)] with z hz
-    exact LFunction_changeLevel hMN χ (.inr hz)
-  rw [analyticOrderAt_congr heq, analyticOrderAt_mul ha hp,
-    analyticOrderAt_eulerProduct_zero _ _ (fun p hp => Nat.prime_of_mem_primeFactors hp)]
+  simpa using analyticOrderAt_LFunction_changeLevel hMN χ (s := 0) (by norm_num)
 
 end GlobalTheory
 

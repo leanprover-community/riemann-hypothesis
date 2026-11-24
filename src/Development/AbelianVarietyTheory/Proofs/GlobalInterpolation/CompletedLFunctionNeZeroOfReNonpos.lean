@@ -401,7 +401,8 @@ private lemma analyticAt_factor (a : ℂ) {p : ℕ} (hp : p.Prime) (s : ℂ) :
   have hp0 : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne_zero
   fun_prop (disch := exact Or.inl hp0)
 
-private lemma order_factor (a : ℂ) {p : ℕ} (hp : p.Prime) (s : ℂ) :
+/-- Every zero of an individual Euler factor has multiplicity one. -/
+theorem _root_.GlobalTheory.analyticOrderAt_eulerFactor (a : ℂ) {p : ℕ} (hp : p.Prime) (s : ℂ) :
     analyticOrderAt (fun z : ℂ => 1 - a * (p : ℂ) ^ (-z)) s =
       if a * (p : ℂ) ^ (-s) = 1 then 1 else 0 := by
   split_ifs with ha
@@ -435,10 +436,33 @@ private lemma order_product (a : ℕ → ℂ) (S : Finset ℕ)
       rfl
     rw [heq, analyticOrderAt_mul (analyticAt_factor (a p) hp' s)
       (S.analyticAt_fun_prod fun p hp => analyticAt_factor (a p) (hS' p hp) s),
-      order_factor _ hp', ih hS']
+      analyticOrderAt_eulerFactor _ hp', ih hS']
     by_cases ha : a p * (p : ℂ) ^ (-s) = 1
     · simp [ha, Finset.filter_insert, Finset.mem_filter, hp, add_comm]
     · simp [ha, Finset.filter_insert]
+
+/-- Away from the pole at one, changing the level adds the multiplicities of
+exactly the Euler factors that vanish at the evaluation point. -/
+theorem _root_.GlobalTheory.analyticOrderAt_LFunction_changeLevel {M N : ℕ}
+    [NeZero M] [NeZero N] (hMN : M ∣ N) (χ : DirichletCharacter ℂ M)
+    {s : ℂ} (hs : s ≠ 1) :
+    analyticOrderAt (LFunction (changeLevel hMN χ)) s =
+      analyticOrderAt (LFunction χ) s +
+        (N.primeFactors.filter fun (p : ℕ) => χ p * (p : ℂ) ^ (-s) = 1).card := by
+  have ha : AnalyticAt ℂ (LFunction χ) s :=
+    DifferentiableOn.analyticAt (s := {z | z ≠ 1})
+      (fun z hz => (differentiableAt_LFunction _ z (.inl hz)).differentiableWithinAt)
+      (isOpen_ne.mem_nhds hs)
+  have hp : AnalyticAt ℂ (fun z : ℂ => ∏ p ∈ N.primeFactors,
+      (1 - χ p * (p : ℂ) ^ (-z))) s :=
+    N.primeFactors.analyticAt_fun_prod fun p hp =>
+      analyticAt_factor (χ p) (Nat.prime_of_mem_primeFactors hp) s
+  have heq : LFunction (changeLevel hMN χ) =ᶠ[𝓝 s] LFunction χ *
+      (fun z : ℂ => ∏ p ∈ N.primeFactors, (1 - χ p * (p : ℂ) ^ (-z))) := by
+    filter_upwards [eventually_ne_nhds hs] with z hz
+    exact LFunction_changeLevel hMN χ (.inr hz)
+  rw [analyticOrderAt_congr heq, analyticOrderAt_mul ha hp,
+    order_product _ _ (fun p hp => Nat.prime_of_mem_primeFactors hp)]
 
 private lemma primitive_ne_zero {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
     (hχ : χ.IsPrimitive) {s : ℂ} (hs : s.re = 0) (hs0 : s ≠ 0) : LFunction χ s ≠ 0 := by
@@ -459,22 +483,12 @@ theorem analyticOrderAt_eq {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q)
         χ.primitiveCharacter p * (p : ℂ) ^ (-s) = 1).card := by
   have : NeZero χ.conductor := ⟨χ.conductor_ne_zero⟩
   have hs1 : s ≠ 1 := by intro h; norm_num [h] at hs
-  have ha : AnalyticAt ℂ (LFunction χ.primitiveCharacter) s :=
-    DifferentiableOn.analyticAt (s := {z | z ≠ 1})
-      (fun z hz => (differentiableAt_LFunction _ z (.inl hz)).differentiableWithinAt)
-      (isOpen_ne.mem_nhds hs1)
-  have hp : AnalyticAt ℂ (fun z : ℂ => ∏ p ∈ q.primeFactors,
-      (1 - χ.primitiveCharacter p * (p : ℂ) ^ (-z))) s :=
-    q.primeFactors.analyticAt_fun_prod fun p hp =>
-      analyticAt_factor (χ.primitiveCharacter p) (Nat.prime_of_mem_primeFactors hp) s
-  have heq : LFunction χ =ᶠ[𝓝 s] LFunction χ.primitiveCharacter *
-      (fun z : ℂ => ∏ p ∈ q.primeFactors, (1 - χ.primitiveCharacter p * (p : ℂ) ^ (-z))) := by
-    filter_upwards [eventually_ne_nhds hs1] with z hz
-    simpa [changeLevel_primitiveCharacter] using
-      LFunction_changeLevel χ.conductor_dvd_level χ.primitiveCharacter (.inr hz)
-  rw [analyticOrderAt_congr heq, analyticOrderAt_mul ha hp,
+  have h := analyticOrderAt_LFunction_changeLevel χ.conductor_dvd_level
+    χ.primitiveCharacter hs1
+  rw [changeLevel_primitiveCharacter,
     analyticOrderAt_eq_zero.mpr (.inr (primitive_ne_zero χ.primitiveCharacter_isPrimitive hs hs0)),
-    zero_add, order_product _ _ (fun p hp => Nat.prime_of_mem_primeFactors hp)]
+    zero_add] at h
+  exact h
 
 /-- The natural-number multiplicity version of `analyticOrderAt_eq`. -/
 theorem analyticOrderNatAt_eq {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q)
