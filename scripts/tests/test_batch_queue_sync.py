@@ -253,6 +253,13 @@ class Fake(batch.GitHub):
         self.label(int(number), remove=name)
         return 200, []
 
+    def _set_labels(self, payload, number):
+        for name in sorted(self.pulls[int(number)]["labels"] - set(payload["labels"])):
+            self.label(int(number), remove=name)
+        for name in payload["labels"]:
+            self.label(int(number), add=name)
+        return 200, []
+
     def _comment(self, payload, number):
         return 201, {"id": self.say(int(number), payload["body"])}
 
@@ -302,6 +309,7 @@ class Fake(batch.GitHub):
         (r"PATCH pulls/(\d+)", _edit_pull),
         (r"POST issues/(\d+)/labels", _add_label),
         (r"DELETE issues/(\d+)/labels/(.+)", _drop_label),
+        (r"PUT issues/(\d+)/labels", _set_labels),
         (r"POST issues/(\d+)/comments", _comment),
         (r"PATCH issues/comments/(\d+)", _edit_comment),
         (r"PATCH git/refs/heads/(.+)", _reset_ref),
@@ -1442,10 +1450,11 @@ class ClosedPullRequests(unittest.TestCase):
             gh.close(number, merged=True)
         gh.writes = []
         sync(gh)
-        drops = [path for method, path, _ in gh.writes if method == "DELETE" and "labels" in path]
-        self.assertEqual(sorted(drops), ["issues/1018/labels/building", "issues/11/labels/batch-building",
-                                         "issues/11/labels/frozen", "issues/12/labels/batch-building",
-                                         "issues/12/labels/frozen"])
+        # One request each: closed pull requests have their labels set in one go.
+        drops = [(method, path) for method, path, _ in gh.writes if method in ("DELETE", "PUT") and "labels" in path]
+        self.assertEqual(sorted(drops), [("DELETE", "issues/1018/labels/building"), ("PUT", "issues/11/labels"),
+                                         ("PUT", "issues/12/labels")])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12)], [set(), set()])
 
 
 class Reopening(unittest.TestCase):

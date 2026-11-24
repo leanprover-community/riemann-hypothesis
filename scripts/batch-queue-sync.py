@@ -275,6 +275,17 @@ def relabel(gh, pr_or_number, add=None, remove=None):
         pr_or_number["labels"] = (pr_or_number["labels"] | set(add)) - set(remove)
 
 
+def unlabel(gh, number, have, gone):
+    """Take the labels `gone` off a closed pull request that carries `have`, in one request when
+    there are several: setting its labels replaces them all. Nobody else changes the labels of a
+    closed pull request, so the list read earlier in the run is current enough."""
+    gone = sorted(set(gone) & set(have))
+    if len(gone) > 1:
+        gh.write("PUT", f"issues/{number}/labels", {"labels": sorted(set(have) - set(gone))})
+    elif gone:
+        gh.write("DELETE", f"issues/{number}/labels/{quoted(gone[0])}")
+
+
 def unfrozen(back):
     """The labels a pull request leaving a batch assembled by hand loses. One that goes back to
     the queue stays `frozen`: the queue, too, takes only the commit that was queued."""
@@ -933,7 +944,7 @@ def finish(gh, pulls, held, leftover, main, main_sha, closed_building, closed_la
                 # Closed, or marked merged by GitHub along with the batch.
                 gone = closed_labels.get(int(key), set()) & set(IN_BATCH)
                 if gone:
-                    relabel(gh, int(key), remove=sorted(gone))
+                    unlabel(gh, int(key), closed_labels[int(key)], gone)
                     cleared.add(int(key))
                     log.append(f"#{key} landed with batch #{batch['number']}: "
                                + " and ".join(f"`{name}`" for name in sorted(gone)) + " removed")
@@ -1010,7 +1021,7 @@ def unlabel_closed(gh, closed, cleared, log):
         if number in cleared:
             gone -= set(IN_BATCH)
         if gone:
-            relabel(gh, number, remove=sorted(gone))
+            unlabel(gh, number, {label['name'] for label in item.get('labels') or ()}, gone)
             log.append(f"#{number} is closed: " + " and ".join(f"`{name}`" for name in sorted(gone)) + " removed")
 
 
