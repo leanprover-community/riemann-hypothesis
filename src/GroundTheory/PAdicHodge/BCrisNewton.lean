@@ -107,6 +107,30 @@ def fracBCrisOf (f : BCris hε →+* BDeRham (normInteger F) p) :
 
 end FracBCrisOf
 
+section ExistsMulEqOfIsUnit
+
+variable {F : Type*} [NontriviallyNormedField F] [IsUltrametricDist F] {p : ℕ} [hp : Fact p.Prime]
+  [IsPerfectoidField F p] [CharZero F] {ε : PreTilt (normInteger F) p} (hε : PreTilt.untilt ε = 1)
+
+/-- `exists_iotaB_mul_eq` for a general perfectoid field `F`, with `iotaBOfIsUnit` in place of
+`iotaB`. Over `ℂ_[p]` the kernel is slow to identify the ring structures on `BCris hε` in the
+statement and in the proof term; over a general `F` they agree syntactically. -/
+private theorem exists_iotaBOfIsUnit_mul_eq
+    (h : IsUnit (((algebraMap (BDeRhamPlus (normInteger F) p)
+      (BDeRham (normInteger F) p)).comp (iotaPlus F p))
+        (algebraMap (ACris F p) (BCrisPlus F p) (periodT hε))))
+    (hr : iota F p (p : ACris F p) ≠ 0) (ha : iota F p (periodT hε) ≠ 0) (u : BCris hε) :
+    ∃ w s : ACris F p, s ≠ 0 ∧ iotaBOfIsUnit hε h u *
+      algebraMap (BDeRhamPlus (normInteger F) p) (BDeRham (normInteger F) p) (iota F p s) =
+        algebraMap (BDeRhamPlus (normInteger F) p) (BDeRham (normInteger F) p) (iota F p w) :=
+  clear_denominator_of_away_away (r := (p : ACris F p)) (a := periodT hε)
+    (iota F p) (iotaPlus F p) (iotaPlus_algebraMap (K := F) (p := p))
+    (algebraMap _ _) (iotaBOfIsUnit hε h)
+    (RingHom.congr_fun (IsLocalization.Away.lift_comp (S := BCris hε)
+      (algebraMap (ACris F p) (BCrisPlus F p) (periodT hε)) h)) u hr ha
+
+end ExistsMulEqOfIsUnit
+
 variable {p : ℕ} [hp : Fact p.Prime]
 
 local notation "𝔹" => BDeRhamPlus (normInteger ℂ_[p]) p
@@ -131,9 +155,7 @@ theorem exists_iotaB_mul_eq (u : BCris hε) : ∃ w s : ACris ℂ_[p] p, s ≠ 0
     fun hz => natCast_p_ne_zero_bdR (p := p) ((map_natCast (iota ℂ_[p] p) p).symm.trans hz)
   have ha : iota ℂ_[p] p (periodT hε) ≠ 0 :=
     fun hz => fontaineT_ne_zero hε hζ ((iota_periodT hε).symm.trans hz)
-  exact clear_denominator_of_away_away (r := (p : ACris ℂ_[p] p)) (a := periodT hε)
-    (iota ℂ_[p] p) (iotaPlus ℂ_[p] p) (iotaPlus_algebraMap (K := ℂ_[p]) (p := p))
-    (algebraMap 𝔹 𝔹dR) (iotaB hε hζ) (iotaB_algebraMap hε hζ) u hr ha
+  exact exists_iotaBOfIsUnit_mul_eq hε (isUnit_iotaPlus_periodT hε hζ) hr ha u
 
 
 

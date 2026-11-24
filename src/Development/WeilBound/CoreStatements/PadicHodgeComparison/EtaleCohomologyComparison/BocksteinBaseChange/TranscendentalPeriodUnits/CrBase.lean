@@ -98,6 +98,37 @@ private theorem closure_range_pair_eq {A R F : Type*} [CommRing A] [CommRing R] 
   · exact hu
   · exact hv
 
+section IotaBOfIsUnit
+
+variable {F : Type*} [NontriviallyNormedField F] [IsUltrametricDist F] {p : ℕ} [Fact p.Prime]
+  [IsPerfectoidField F p] [CharZero F] {ε : PreTilt (normInteger F) p} (hε : PreTilt.untilt ε = 1)
+
+/-- `away_away_range_le` for `ACris.iotaBOfIsUnit` over a general perfectoid field `F`;
+`range_le_bcr` is the case `F = ℂ_[l]`. Over `ℂ_[l]` the kernel is slow to identify the ring
+structures on `BCris hε` in the statement and in the proof term; over a general `F` they agree
+syntactically. -/
+private theorem iotaBOfIsUnit_range_le
+    (h : IsUnit (((algebraMap (BDeRhamPlus (normInteger F) p)
+      (BDeRham (normInteger F) p)).comp (ACris.iotaPlus F p))
+        (algebraMap (ACris.ACris F p) (ACris.BCrisPlus F p) (ACris.periodT hε))))
+    (S : Subring (BDeRham (normInteger F) p)) {T L Ti Li : BDeRham (normInteger F) p}
+    (ht : algebraMap (BDeRhamPlus (normInteger F) p) (BDeRham (normInteger F) p)
+      (ACris.iotaPlus F p (algebraMap (ACris.ACris F p) (ACris.BCrisPlus F p)
+        (ACris.periodT hε))) = T)
+    (hr : algebraMap (BDeRhamPlus (normInteger F) p) (BDeRham (normInteger F) p)
+      (ACris.iota F p (p : ACris.ACris F p)) = L)
+    (hT : T * Ti = 1) (hL : L * Li = 1) (hTi : Ti ∈ S) (hLi : Li ∈ S)
+    (hm : ∀ a, algebraMap (BDeRhamPlus (normInteger F) p) (BDeRham (normInteger F) p)
+      (ACris.iota F p a) ∈ S) :
+    (ACris.iotaBOfIsUnit hε h).range ≤ S :=
+  away_away_range_le (ACris.iota F p) (ACris.iotaPlus F p) ACris.iotaPlus_algebraMap
+    (algebraMap _ _) (ACris.iotaBOfIsUnit hε h)
+    (RingHom.congr_fun (IsLocalization.Away.lift_comp (S := ACris.BCris hε)
+      (algebraMap (ACris.ACris F p) (ACris.BCrisPlus F p) (ACris.periodT hε)) h))
+    S ht hr hT hL hTi hLi hm
+
+end IotaBOfIsUnit
+
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
 
 local notation "ιB" =>
@@ -173,10 +204,8 @@ theorem tinv_mem_bcr : (tQ l)⁻¹ ∈ Bcr l := Subring.subset_closure (Or.inr (
 
 theorem range_le_bcr : (ιB).range ≤ Bcr l := by
   let j := algebraMap (BdRp l) (BdR l)
-  refine away_away_range_le (r := (l : ACris.ACris ℂ_[l] l))
-    (t := algebraMap (ACris.ACris ℂ_[l] l) (ACris.BCrisPlus ℂ_[l] l) (tA l))
-    (ACris.iota ℂ_[l] l) (ACris.iotaPlus ℂ_[l] l) ACris.iotaPlus_algebraMap j ιB
-    (ACris.iotaB_algebraMap (untilt_epsilon (p := l)) untilt_frobeniusEquiv_symm_epsilon_ne_one)
+  refine iotaBOfIsUnit_range_le (untilt_epsilon (p := l))
+    (ACris.isUnit_iotaPlus_periodT _ untilt_frobeniusEquiv_symm_epsilon_ne_one)
     (Bcr l) ?_ (map_natCast (iC l) l) (mul_inv_cancel₀ DeRhamTwist.Twist.tQ_ne) (mul_inv_cancel₀ l_ne)
     tinv_mem_bcr linv_mem_bcr iC_mem_bcr
   exact congrArg j (ACris.iotaPlus_algebraMap (tA l))
