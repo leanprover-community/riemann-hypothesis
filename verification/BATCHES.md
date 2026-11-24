@@ -27,9 +27,10 @@ request still under review adds. Until it lands, the label exists but nothing pu
 out of the inbox (`inbox`, see `.github/workflows/inbox.yml`), and so will `batch-conflict`
 *(planned, #1700)*. The names are in `scripts/batch-labels.py`.
 
-Also planned *(#1707)*: a check of each batch's description against its branch, posted on the
-batch's pull request. It reports pull requests listed as included that aren't in the branch, members the
-description doesn't mention, and pull requests reverted in the branch.
+Besides the labels, the workflow checks each batch's description against its branch, in a
+comment on the batch's pull request: pull requests listed as included that aren't in the branch,
+members the description doesn't mention, and pull requests reverted in the branch (see "What
+the workflow does").
 
 ## Rules
 
