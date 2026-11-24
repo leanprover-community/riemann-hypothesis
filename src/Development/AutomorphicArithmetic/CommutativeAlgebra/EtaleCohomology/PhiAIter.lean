@@ -290,35 +290,28 @@ private def gK (k : ℕ) (σ : WittVector l r.k →+* Acris l) (h : ∀ w, Pb.Mi
 
 private theorem phiA_zero (a : Acris l) : Pb.Mid.phiA l 0 a = a := by rw [Pb.Mid.phiA, pow_zero]; rfl
 
-private theorem gK_succ (k : ℕ) (σ : WittVector l r.k →+* Acris l) (h : ∀ w, Pb.Mid.phiA l k (r.w w) = σ w) (j : ℕ)
-    (y : CH.H (Wc.OM l (B.schFn M.p) r.ρ n) j) :
-    phiH (PQ M.p (gRes r)) n j ((gK r M n k σ h).pull j y) =
-      (gK r M n (k + 1) ((ACris.phi (K := ℂ_[l]) (p := l)).comp σ) fun w => by
-        rw [Pb.Mid.phiA_succ, h]; rfl).pull j y := by
-  haveI : RingHomCompTriple σ (ACris.phi (K := ℂ_[l]) (p := l)) ((ACris.phi (K := ℂ_[l]) (p := l)).comp σ) := ⟨rfl⟩
-  change (phiMor (PQ M.p (gRes r)) n).pull j ((gK r M n k σ h).pull j y) = _
-  refine (pull_pull ((ACris.phi (K := ℂ_[l]) (p := l)).comp σ) (gK r M n k σ h) (phiMor (PQ M.p (gRes r)) n) j y).trans ?_
-  exact cr_pull_eq ((gK r M n k σ h).comp (σ'' := (ACris.phi (K := ℂ_[l]) (p := l)).comp σ) (phiMor (PQ M.p (gRes r)) n))
-    (gK r M n (k + 1) ((ACris.phi (K := ℂ_[l]) (p := l)).comp σ) fun w => by rw [Pb.Mid.phiA_succ, h]; rfl) (fun T => 𝟙 (gObj r M n T)) (fun _ _ => rfl)
-    (fun (T : El (PQ M.p (gRes r))) x => phK_succ T.1.obj n k x) j y
-
 private theorem phiA_zero' (w : WittVector l r.k) : Pb.Mid.phiA l 0 (r.w w) = r.w w := phiA_zero _
 
-private theorem gK_iter (k : ℕ) (σ : WittVector l r.k →+* Acris l) (h : ∀ w, Pb.Mid.phiA l k (r.w w) = σ w) (j : ℕ)
-    (y : CH.H (Wc.OM l (B.schFn M.p) r.ρ n) j) :
-    (phiH (PQ M.p (gRes r)) n j)^[k] ((gK r M n 0 r.w (phiA_zero' r)).pull j y) = (gK r M n k σ h).pull j y := by
+private theorem mor_iter_pull_eq {R S : Type} [CommRing R] [CommRing S] {C D : Type 1} [Category.{0} C] [Category.{0} D]
+    {F : C ⥤ ModuleCat.{0} R} {G : D ⥤ ModuleCat.{0} S} (φ : S →+* S) (phiK : ℕ → (S →+* S))
+    (h0 : ∀ a, phiK 0 a = a) (hS : ∀ k a, phiK (k + 1) a = φ (phiK k a))
+    (p : CH.Mor G G φ) (w0 : R →+* S)
+    (g : ∀ k (σ : R →+* S), (∀ w, phiK k (w0 w) = σ w) → CH.Mor F G σ) (j : ℕ) (y : CH.H F j)
+    (hstep : ∀ k (σ : R →+* S) (h : ∀ w, phiK k (w0 w) = σ w), p.pull j ((g k σ h).pull j y) =
+      (g (k + 1) (φ.comp σ) fun w => by rw [hS, h]; rfl).pull j y)
+    (k : ℕ) (σ : R →+* S) (h : ∀ w, phiK k (w0 w) = σ w) :
+    (p.pull j)^[k] ((g 0 w0 fun w => h0 (w0 w)).pull j y) = (g k σ h).pull j y := by
   induction k generalizing σ with
   | zero =>
-    have e : σ = r.w := RingHom.ext fun w => (h w).symm.trans (phiA_zero _)
+    have e : σ = w0 := RingHom.ext fun w => (h w).symm.trans (h0 _)
     subst e
     exact congrFun (Function.iterate_zero _) _
   | succ k ih =>
-    have e : σ = (ACris.phi (K := ℂ_[l]) (p := l)).comp ((Pb.Mid.phiA l k).comp r.w) := RingHom.ext fun w => by
-      rw [← h, Pb.Mid.phiA_succ]; rfl
+    have e : σ = φ.comp ((phiK k).comp w0) := RingHom.ext fun w => by
+      rw [← h, hS]; rfl
     subst e
-    have h' : ∀ w, Pb.Mid.phiA l k (r.w w) = ((Pb.Mid.phiA l k).comp r.w) w := fun w => (RingHom.comp_apply _ _ _).symm
-    have i1 := ih _ h'
-    exact (Function.iterate_succ_apply' _ _ _).trans ((congrArg _ i1).trans (gK_succ r M n k _ h' j y))
+    have h' : ∀ w, phiK k (w0 w) = ((phiK k).comp w0) w := fun w => (RingHom.comp_apply _ _ _).symm
+    exact (Function.iterate_succ_apply' _ _ _).trans ((congrArg _ (ih _ h')).trans (hstep k _ h'))
 
 private theorem map_sq' (P : CommRingCat.{0} ⥤ Type) {R S S' T : CommRingCat.{0}} {a : R ⟶ S} {b : S ⟶ T} {c : R ⟶ S'} {d : S' ⟶ T}
     (h : a ≫ b = c ≫ d) (y : P.obj R) : P.map b (P.map a y) = P.map d (P.map c y) :=
@@ -364,48 +357,46 @@ private theorem phK_iA (A : PAlg l) (f : ℕ) (hf : ∀ x : r.k, x ^ l ^ f = x) 
   obtain ⟨w, rfl⟩ := Ideal.Quotient.mk_surjective w
   rw [iA_mk, phK_cris, phiA_fix r f hf]
 
-private theorem absCl_fr (f : ℕ) (hf : ∀ x : r.k, x ^ l ^ f = x) (F : PQ M.p (gRes r) ⟶ PQ M.p (gRes r)) (hF : IsFr f F) (j : ℕ)
-    (y : CH.H (Wc.OM l (B.schFn M.p) r.ρ n) j) :
-    (phiH _ n j)^[f] ((gK r M n 0 r.w (phiA_zero' r)).pull j y) = pullH F n j ((gK r M n 0 r.w (phiA_zero' r)).pull j y) := by
-  refine (gK_iter r M n f r.w (phiA_fix r f hf) j y).trans ?_
-  refine Eq.trans ?_ (pull_pull r.w (gK r M n 0 r.w (phiA_zero' r)) (pullMor F n) j y).symm
-  exact cr_pull_eq (gK r M n f r.w (phiA_fix r f hf)) ((gK r M n 0 r.w (phiA_zero' r)).comp (σ'' := r.w) (pullMor F n))
-    (fun T => crHom (T := gObj r M n T) (T' := gObj r M n ((elMap F).obj T)) (phK T.1.obj n f) (phK_iA r n T.1.obj f hf)
-      (phK_dp T.1.obj n f) fun h => by
-        have hy := hF T.1.obj (Pb.Mid.frbN (l_qb T.1.obj) f) (Pb.Mid.frbN_apply _ f) T.2
-        change (B.schFn M.p).Pt.map (CommRingCat.ofHom (Ideal.quotientMap _ (phK T.1.obj n f) h))
-          ((B.schFn M.p).Pt.map (CommRingCat.ofHom (qq T.1.obj n)) T.2.1) =
-            (B.schFn M.p).Pt.map (CommRingCat.ofHom (qq T.1.obj n)) (F.app T.1.obj T.2).1
-        rw [hy]
-        exact map_sq' (B.schFn M.p).Pt (qq_frob T.1.obj n f h) T.2.1)
-    (fun {T T'} g x => (phK_nat g.1.hom n f x).symm)
-    (fun (T : El (PQ M.p (gRes r))) x => phK_zero T.1.obj n _) j y
-
-private theorem absCl_rd (N : ℕ) (ρ : M.P ⟶ PQ M.p (gRes r)) (hρ : IsRd N ρ) (m : MuMor r M n) (hm : IsMu r M n N m) (j : ℕ)
-    (y : CH.H (Wc.OM l (B.schFn M.p) r.ρ n) j) :
-    betaM M n j (m.pull j y) = pullH ρ n j ((gK r M n 0 r.w (phiA_zero' r)).pull j y) := by
-  obtain ⟨η, h1, h2, -, h3, h4⟩ := hm
-  refine (pull_pull r.w m (B.βMor (B.schFn M.p) (okToOC l K) true n) j y).trans
-    (Eq.trans ?_ (pull_pull r.w (gK r M n 0 r.w (phiA_zero' r)) (pullMor ρ n) j y).symm)
-  exact cr_pull_eq (m.comp (σ'' := r.w) (B.βMor (B.schFn M.p) (okToOC l K) true n))
-    ((gK r M n 0 r.w (phiA_zero' r)).comp (σ'' := r.w) (pullMor ρ n))
-    (fun T => crHom (T := m.G.obj ((B.gT (B.schFn M.p) (okToOC l K) true n).obj T)) (T' := gObj r M n ((elMap ρ).obj T))
-      (η _).toRingHom (fun w => h3 _ w) (h2 _) fun h => by
-        have hy := hρ T.1.obj (psi T.1.obj N) (psi_th _ N) T.2
-        refine (h4 ((B.gT (B.schFn M.p) (okToOC l K) true n).obj T) h (Pb.Mid.frbN (l_pq T.1.obj n) N) (Pb.Mid.frbN_apply _ N)).trans ?_
-        change (B.schFn M.p).Pt.map (CommRingCat.ofHom (Pb.Mid.frbN (l_pq T.1.obj n) N))
-          ((B.schFn M.p).Pt.map (CommRingCat.ofHom (B.uJ true T.1.obj n)) T.2.1) =
-            (B.schFn M.p).Pt.map (CommRingCat.ofHom (qq T.1.obj n)) (ρ.app T.1.obj T.2).1
-        rw [hy]
-        exact map_sq' (B.schFn M.p).Pt (qq_psi T.1.obj n N) T.2.1)
-    (fun {T T'} g x => by
-      have e := m.nat ((B.gT (B.schFn M.p) (okToOC l K) true n).map g) x
-      exact (h1 _ _).symm.trans (e.trans (congrArg (mapAcr g.1.hom n) (h1 _ x))))
-    (fun (T : El M.P) x => (phK_zero T.1.obj n _).trans (h1 _ x).symm) j y
-
 theorem absCl : AbsCl := by
   intro l _ K r M f N n j hf F ρ hF hρ m hm y
-  exact ⟨(gK r M n 0 r.w (phiA_zero' r)).pull j y, absCl_fr r M n f hf F hF j y, absCl_rd r M n N ρ hρ m hm j y⟩
+  refine ⟨(gK r M n 0 r.w (phiA_zero' r)).pull j y, ?_, ?_⟩
+  · refine (mor_iter_pull_eq (ACris.phi (K := ℂ_[l]) (p := l)) (Pb.Mid.phiA l) phiA_zero (fun k a => Pb.Mid.phiA_succ k a)
+      (phiMor (PQ M.p (gRes r)) n) r.w (gK r M n) j y (fun k σ h => by
+        haveI : RingHomCompTriple σ (ACris.phi (K := ℂ_[l]) (p := l)) ((ACris.phi (K := ℂ_[l]) (p := l)).comp σ) := ⟨rfl⟩
+        refine (pull_pull ((ACris.phi (K := ℂ_[l]) (p := l)).comp σ) (gK r M n k σ h) (phiMor (PQ M.p (gRes r)) n) j y).trans ?_
+        exact cr_pull_eq ((gK r M n k σ h).comp (σ'' := (ACris.phi (K := ℂ_[l]) (p := l)).comp σ) (phiMor (PQ M.p (gRes r)) n))
+          (gK r M n (k + 1) ((ACris.phi (K := ℂ_[l]) (p := l)).comp σ) fun w => by rw [Pb.Mid.phiA_succ, h]; rfl) (fun T => 𝟙 (gObj r M n T)) (fun _ _ => rfl)
+          (fun (T : El (PQ M.p (gRes r))) x => phK_succ T.1.obj n k x) j y) f r.w (phiA_fix r f hf)).trans ?_
+    refine Eq.trans ?_ (pull_pull r.w (gK r M n 0 r.w (phiA_zero' r)) (pullMor F n) j y).symm
+    exact cr_pull_eq (gK r M n f r.w (phiA_fix r f hf)) ((gK r M n 0 r.w (phiA_zero' r)).comp (σ'' := r.w) (pullMor F n))
+      (fun T => crHom (T := gObj r M n T) (T' := gObj r M n ((elMap F).obj T)) (phK T.1.obj n f) (phK_iA r n T.1.obj f hf)
+        (phK_dp T.1.obj n f) fun h => by
+          have hy := hF T.1.obj (Pb.Mid.frbN (l_qb T.1.obj) f) (Pb.Mid.frbN_apply _ f) T.2
+          change (B.schFn M.p).Pt.map (CommRingCat.ofHom (Ideal.quotientMap _ (phK T.1.obj n f) h))
+            ((B.schFn M.p).Pt.map (CommRingCat.ofHom (qq T.1.obj n)) T.2.1) =
+              (B.schFn M.p).Pt.map (CommRingCat.ofHom (qq T.1.obj n)) (F.app T.1.obj T.2).1
+          rw [hy]
+          exact map_sq' (B.schFn M.p).Pt (qq_frob T.1.obj n f h) T.2.1)
+      (fun {T T'} g x => (phK_nat g.1.hom n f x).symm)
+      (fun (T : El (PQ M.p (gRes r))) x => phK_zero T.1.obj n _) j y
+  · obtain ⟨η, h1, h2, -, h3, h4⟩ := hm
+    refine (pull_pull r.w m (B.βMor (B.schFn M.p) (okToOC l K) true n) j y).trans
+      (Eq.trans ?_ (pull_pull r.w (gK r M n 0 r.w (phiA_zero' r)) (pullMor ρ n) j y).symm)
+    exact cr_pull_eq (m.comp (σ'' := r.w) (B.βMor (B.schFn M.p) (okToOC l K) true n))
+      ((gK r M n 0 r.w (phiA_zero' r)).comp (σ'' := r.w) (pullMor ρ n))
+      (fun T => crHom (T := m.G.obj ((B.gT (B.schFn M.p) (okToOC l K) true n).obj T)) (T' := gObj r M n ((elMap ρ).obj T))
+        (η _).toRingHom (fun w => h3 _ w) (h2 _) fun h => by
+          have hy := hρ T.1.obj (psi T.1.obj N) (psi_th _ N) T.2
+          refine (h4 ((B.gT (B.schFn M.p) (okToOC l K) true n).obj T) h (Pb.Mid.frbN (l_pq T.1.obj n) N) (Pb.Mid.frbN_apply _ N)).trans ?_
+          change (B.schFn M.p).Pt.map (CommRingCat.ofHom (Pb.Mid.frbN (l_pq T.1.obj n) N))
+            ((B.schFn M.p).Pt.map (CommRingCat.ofHom (B.uJ true T.1.obj n)) T.2.1) =
+              (B.schFn M.p).Pt.map (CommRingCat.ofHom (qq T.1.obj n)) (ρ.app T.1.obj T.2).1
+          rw [hy]
+          exact map_sq' (B.schFn M.p).Pt (qq_psi T.1.obj n N) T.2.1)
+      (fun {T T'} g x => by
+        have e := m.nat ((B.gT (B.schFn M.p) (okToOC l K) true n).map g) x
+        exact (h1 _ _).symm.trans (e.trans (congrArg (mapAcr g.1.hom n) (h1 _ x))))
+      (fun (T : El M.P) x => (phK_zero T.1.obj n _).trans (h1 _ x).symm) j y
 
 end UpperTheory.Ru.crystallineComparison
 end -- clump:auto
@@ -621,6 +612,17 @@ private theorem apply_tensor (h : T →+ N) (hh : ∀ (s : R) (w : T), h (s • 
   rw [hφs, map_sum, map_zero] at this
   simpa only [hφ] using this
 
+private theorem apply_tensor_proj {T' : Type*} [AddCommGroup T'] (proj : T → T') (e : T' →+ N)
+    (toN : R → ℕ) (hproj_add : ∀ w w', proj (w + w') = proj w + proj w')
+    (hproj_smul : ∀ (s : R) (w : T), proj (s • w) = toN s • proj w)
+    (halg : ∀ (s : R) (y : N), algebraMap R A s • y = toN s • y)
+    (v : ι → T) (a : ι → A) (s : A) (hs : s • ∑ k, (a k ⊗ₜ[R] v k : A ⊗[R] T) = 0) :
+    s • ∑ k, a k • e (proj (v k)) = 0 :=
+  apply_tensor (R := R) (N := N)
+    (AddMonoidHom.mk' (fun w => e (proj w)) fun w w' => by rw [hproj_add, map_add])
+    (fun s w => (congrArg e (hproj_smul s w)).trans ((map_nsmul e (toN s) (proj w)).trans (halg s (e (proj w))).symm))
+    v a s hs
+
 end Abstract
 
 open CategoryTheory CrystallineSemistableComparison CrystallineSemistableComparison.E GlobalTheory.EtC GroundTheory.PAdicHodge
@@ -638,26 +640,10 @@ private theorem acr_torsion (A : PAlg l) (n : ℕ) (y : A.Acr n) : ((l : Acris l
   rw [map_pow, map_natCast] at h
   rw [Algebra.smul_def, map_pow, map_natCast, h, zero_mul]
 
-private theorem mh_torsion (P : PAlg l ⥤ Type) (n j : ℕ) (x : MH P n j) : ((l : Acris l) ^ n) • x = 0 :=
-  h_torsion _ _ (fun _ y => acr_torsion _ n y) j x
-
 private theorem zA_smul {N : Type*} [AddCommGroup N] [Module (Acris l) N] (n : ℕ)
     (hN : ∀ y : N, ((l : Acris l) ^ n) • y = 0) (z : ℤ_[l]) (y : N) :
     zA l z • y = (PadicInt.toZModPow n z).val • y :=
   _root_.UpperTheory.Reformulated.B.Qi53.zA_smul n hN z y
-
-private theorem lev_smul (e : EtFam l K) (M : Model l K) (n j : ℕ) (z : ℤ_[l]) (w : M.T j) :
-    e M n j ((z • w).lev n) = zA l z • e M n j (w.lev n) := by
-  have hk : (z • w).lev n = (PadicInt.toZModPow n z).val • w.lev n :=
-    HtL.smul_eq l n n le_rfl _ _ _ z ((show Hl l M.spc j 0 from w).1 n)
-  have h2 := zA_smul n (mh_torsion M.P n j) z (e M n j (w.lev n))
-  have h3 := map_nsmul (e M n j) (PadicInt.toZModPow n z).val (w.lev n)
-  have h1 := congrArg (fun x => e M n j x) hk
-  exact h1.trans (h3.trans h2.symm)
-
-private def levAdd (e : EtFam l K) (M : Model l K) (n j : ℕ) : M.T j →+ M.MH n j :=
-  AddMonoidHom.mk' (fun w => e M n j (w.lev n)) fun w w' => map_add (e M n j) (w.lev n) (w'.lev n)
-
 
 theorem vecZero : VecZero := by
   intro l _ K B e _ M j ι _ v c r h
@@ -667,8 +653,11 @@ theorem vecZero : VecZero := by
     (fun x => B.z_c x) v c r h'
   refine ⟨0, u, fun n => ?_⟩
   rw [pow_zero, one_mul]
-  have h2 := apply_tensor (R := ℤ_[l]) (N := M.MH n j) (levAdd e M n j) (fun z w => lev_smul e M n j z w) v c (tA l ^ u) hu
-  exact h2
+  exact apply_tensor_proj (R := ℤ_[l]) (N := M.MH n j) (fun w : M.T j => w.lev n) (e M n j)
+    (fun z => (PadicInt.toZModPow n z).val) (fun _ _ => rfl)
+    (fun z w => HtL.smul_eq l n n le_rfl _ _ _ z ((show Hl l M.spc j 0 from w).1 n))
+    (fun z y => zA_smul n (fun x => h_torsion _ _ (fun _ y => acr_torsion _ n y) j x) z y)
+    v c (tA l ^ u) hu
 
 end UpperTheory.Ru.crystallineComparison
 end -- clump:auto
@@ -1165,10 +1154,6 @@ private theorem iter_smul_gen {R Mo : Type*} [SMul R Mo] (φ : R → R) (ϕ : Mo
   | zero => rfl
   | succ N ih => rw [Function.iterate_succ_apply, h, ih, Function.iterate_succ_apply, Function.iterate_succ_apply]
 
-private theorem phi_iter_smul (P : PAlg l ⥤ Type) (n j N : ℕ) (a : Acris l) (x : MH P n j) :
-    (phiH P n j)^[N] (a • x) = ((phiA l)^[N] a) • (phiH P n j)^[N] x :=
-  iter_smul_gen (phiA l) (phiH P n j) (fun a x => LinearMap.map_smulₛₗ ((phiMor P n).pull j) a x) N a x
-
 private theorem phiA_iter_l (N : ℕ) : (phiA l)^[N] (l : Acris l) = l := by
   induction N with
   | zero => rfl
@@ -1184,17 +1169,18 @@ private theorem phiA_iterate_zA (N : ℕ) (x : ℤ_[l]) : (phiA l)^[N] (zA l x) 
   | zero => rfl
   | succ N ih => rw [Function.iterate_succ_apply', ih, phiA_zA]
 
-private theorem chain1 {R Q H Γ : Type*} {Mn : ℕ → Type*} [CommRing R] [AddCommGroup Q] [Module R Q] [AddCommGroup H] [Module R H]
-    [∀ n, AddCommGroup (Mn n)] [∀ n, Module R (Mn n)] (l : ℕ) (t : R) (φ : R →+* R) (σ : Γ → R →+* R) (X : Γ → R)
-    (b : ∀ n, H →ₗ[R] Mn n) (G : Γ → H → H) (γ : ∀ g n, Mn n →ₛₗ[σ g] Mn n) (u s N : ℕ) (α : H →+ Q) (T : Γ → Q →+ Q)
-    (hker : ∀ x, (∀ n, b n x = 0) → t ^ u • x = 0) (hgal : ∀ g x n, b n (G g x) = γ g n (b n x))
-    (E : ∀ n, Mn n) (h : H) (hh : ∀ n, b n h = t ^ u • E n) (hχ : ∀ g, σ g t = X g * t)
+private theorem chain1 {R : Type} {Q Γ : Type*} {Mn : ℕ → Type*} [CommRing R] [AddCommGroup Q] [Module R Q]
+    [∀ n, AddCommGroup (Mn n)] [∀ n, Module R (Mn n)] (S : Sys R) (l : ℕ) (t : R) (φ : R →+* R) (σ : Γ → R →+* R) (X : Γ → R)
+    (b₀ : ∀ n, S.M n →ₗ[R] Mn n) (G : Γ → S.lim → S.lim) (γ : ∀ g n, Mn n →ₛₗ[σ g] Mn n) (u s N : ℕ) (α : S.lim →+ Q) (T : Γ → Q →+ Q)
+    (hker : ∀ x : S.lim, (∀ n, b₀ n (x.1 n) = 0) → t ^ u • x = 0) (hgal : ∀ g (x : S.lim) n, b₀ n ((G g x).1 n) = γ g n (b₀ n (x.1 n)))
+    (E : ∀ n, Mn n) (h : S.lim) (hh : ∀ n, b₀ n (h.1 n) = t ^ u • E n) (hχ : ∀ g, σ g t = X g * t)
     (hl : φ^[N] (l : R) = l) (ht : φ^[N] t = (l : R) ^ N * t) (hX : ∀ g, φ^[N] (X g) = X g)
     (lin : ∀ (a : R) x, α (a • x) = (φ^[N] a) • α x) (gal : ∀ g x, α (G g x) = T g (α x))
     (hab : ∀ g, ∃ a b' : ℕ, ∀ n, ((l : R) ^ a * t ^ b') • γ g n (E n) = ((l : R) ^ a * t ^ b' * X g ^ s) • E n) (g : Γ) :
     ∃ a b' : ℕ, ((l : R) ^ a * t ^ b') • T g (α h) = ((l : R) ^ a * t ^ b' * X g ^ (u + s)) • α h := by
   obtain ⟨a, c, hac⟩ := hab g
   have h0 := hker (((l : R) ^ a * t ^ c) • G g h - ((l : R) ^ a * t ^ c * X g ^ (u + s)) • h) fun n => by
+    change b₀ n (((l : R) ^ a * t ^ c) • (G g h).1 n - ((l : R) ^ a * t ^ c * X g ^ (u + s)) • h.1 n) = 0
     rw [map_sub, map_smul, map_smul, hgal, hh]
     have e2 : γ g n (t ^ u • E n) = (X g * t) ^ u • γ g n (E n) := by
       rw [← hχ g, LinearMap.map_smulₛₗ, map_pow]
@@ -1209,38 +1195,31 @@ private theorem chain1 {R Q H Γ : Type*} {Mn : ℕ → Type*} [CommRing R] [Add
   refine ⟨a + N * (c + u), c + u, ?_⟩
   convert h1 using 2 <;> ring
 
-private theorem chain2 {R Q H : Type*} {Mn : ℕ → Type*} [CommRing R] [AddCommGroup Q] [Module R Q] [AddCommGroup H] [Module R H]
-    [∀ n, AddCommGroup (Mn n)] [∀ n, Module R (Mn n)] (l : ℕ) (t : R) (φ : R →+* R)
-    (b : ∀ n, H →ₗ[R] Mn n) (P : H → H) (ϕ : ∀ n, Mn n → Mn n) (u r N e a' b' : ℕ) (α : H → Q) (β : Q →ₗ[R] H) (h : H) (q : Q)
-    (E E' : ∀ n, Mn n) (hh : ∀ n, b n h = t ^ u • E n) (hl : φ^[N] (l : R) = l) (ht : φ^[N] t = (l : R) ^ N * t)
+private theorem chain2 {R : Type} {Q : Type*} {Mn : ℕ → Type*} [CommRing R] [AddCommGroup Q] [Module R Q]
+    [∀ n, AddCommGroup (Mn n)] [∀ n, Module R (Mn n)] (S : Sys R) (l : ℕ) (t : R) (φ : R →+* R)
+    (b₀ : ∀ n, S.M n →ₗ[R] Mn n) (P : S.lim → S.lim) (ϕ : ∀ n, Mn n →ₛₗ[φ] Mn n) (u r N e a' b' : ℕ) (α : S.lim → Q) (β : Q →ₗ[R] S.lim) (h : S.lim) (q : Q)
+    (E E' : ∀ n, Mn n) (hh : ∀ n, b₀ n (h.1 n) = t ^ u • E n) (hl : φ^[N] (l : R) = l) (ht : φ^[N] t = (l : R) ^ N * t)
     (hy : ((l : R) ^ a' * t ^ b') • α h = t ^ (b' + (u + r)) • q) (fac : β (α h) = (l : R) ^ e • P^[N] h)
-    (hphi : ∀ x n, b n (P x) = ϕ n (b n x)) (hit : ∀ n (a : R) x, (ϕ n)^[N] (a • x) = (φ^[N] a) • (ϕ n)^[N] x)
-    (hE : ∀ n, (ϕ n)^[N] (E n) = E' n) (n : ℕ) :
-    ((l : R) ^ (a' + e + N * u) * t ^ (b' + u)) • E' n = t ^ (b' + u + r) • b n (β q) := by
-  have hP : ∀ (k : ℕ) x, b n (P^[k] x) = (ϕ n)^[k] (b n x) := fun k => by
+    (hphi : ∀ (x : S.lim) n, b₀ n ((P x).1 n) = ϕ n (b₀ n (x.1 n)))
+    (hE : ∀ n, (ϕ n : Mn n → Mn n)^[N] (E n) = E' n) (n : ℕ) :
+    ((l : R) ^ (a' + e + N * u) * t ^ (b' + u)) • E' n = t ^ (b' + u + r) • b₀ n ((β q).1 n) := by
+  have hP : ∀ (k : ℕ) (x : S.lim), b₀ n ((P^[k] x).1 n) = (ϕ n : Mn n → Mn n)^[k] (b₀ n (x.1 n)) := fun k => by
     induction k with
     | zero => intro x; rfl
     | succ k ih => intro x; rw [Function.iterate_succ_apply', Function.iterate_succ_apply', hphi, ih]
-  have h1 := congrArg (fun x => b n (β x)) hy
-  simp only [map_smul, fac, smul_smul, hP, hh, hit, hE] at h1
+  have hit : ∀ (a : R) x, (ϕ n : Mn n → Mn n)^[N] (a • x) = (φ^[N] a) • (ϕ n : Mn n → Mn n)^[N] x :=
+    fun a x => iter_smul_gen φ (ϕ n) (fun a x => LinearMap.map_smulₛₗ (ϕ n) a x) N a x
+  let b : S.lim →ₗ[R] Mn n := (b₀ n).comp ((LinearMap.proj n).comp S.lim.subtype)
+  have h1 := congrArg (fun x => b (β x)) hy
+  simp only [map_smul, fac, smul_smul] at h1
+  change ((l : R) ^ a' * t ^ b' * (l : R) ^ e) • b₀ n ((P^[N] h).1 n) = t ^ (b' + (u + r)) • b₀ n ((β q).1 n) at h1
+  simp only [hP, hh, hit, hE, smul_smul] at h1
   have ip : ∀ (x : R) (k : ℕ), φ^[N] (x ^ k) = (φ^[N] x) ^ k := fun x k => iterate_map_pow φ N x k
   simp only [ip, ht] at h1
   have e1 : t ^ (b' + u + r) = t ^ (b' + (u + r)) := by rw [add_assoc]
   rw [e1, ← h1]
   congr 1
   ring
-
-private theorem keyStep {r : Res l K} {M : Model l K} {f N j : ℕ} (hk : ∀ x : r.k, x ^ l ^ f = x)
-    {Fr : PQ M.p (gRes r) ⟶ PQ M.p (gRes r)} {ρ : M.P ⟶ PQ M.p (gRes r)} (hFr : IsFr f Fr) (hρ : IsRd N ρ)
-    (F : Pb.Fac r N) (hPin : Pin F M j) (y : Pb.LW r M j) (n : ℕ) :
-    ∃ x : MH (PQ M.p (gRes r)) n j, (phiH _ n j)^[f] x = pullH Fr n j x ∧
-      betaM M n j (levH (F.β M j ((1 : Pb.AW r) ⊗ₜ y)) n) = pullH ρ n j x :=
-  Exists.elim (hPin n) fun m hm =>
-    Exists.elim (absCl l K r M f N n j hk Fr ρ hFr hρ m hm.1 (y.1 n)) fun x hx =>
-      ⟨x, hx.1, (congrArg (betaM M n j) (hm.2 y)).trans hx.2⟩
-
-private def bl (M : Model l K) (j n : ℕ) : (M.HS true j).lim →ₗ[Acris l] M.MH n j :=
-  (B.β (B.schFn M.p) (okToOC l K) true n j).comp ((LinearMap.proj n).comp (M.HS true j).lim.subtype)
 
 private theorem witt_fac (k : Type) [Field k] [CharP k l] [PerfectRing k l] (y : WittVector l k) (hy : y ≠ 0) :
     ∃ (m : ℕ) (b : WittVector l k), y = (l : WittVector l k) ^ m * b ∧ IsUnit b := by
@@ -1269,8 +1248,9 @@ theorem UpperTheory.Ru.crystallineComparison.absInvOf :
   refine Exists.elim (hsurj ⟨_, hy⟩) fun h hh => ?_
   choose χ hχ using (galA_tA (K := K))
   letI iQ : Module (Acris l) (Pb.AL r M j) := (inferInstance : Module (per l K).A (Pb.AL r M j))
-  have hz := chain1 (R := Acris l) (Q := Pb.AL r M j) (H := (M.HS true j).lim) (Γ := K.fixingSubgroup)
-    (Mn := fun n => M.MH n j) l (tA l) (phiA l) galA (fun g => zA l (χ g)) (fun n => bl M j n) (fun g => Pb.galL M j g)
+  have hz := chain1 (R := Acris l) (Q := Pb.AL r M j) (Γ := K.fixingSubgroup)
+    (Mn := fun n => M.MH n j) (M.HS true j) l (tA l) (phiA l) galA (fun g => zA l (χ g))
+    (fun n => B.β (B.schFn M.p) (okToOC l K) true n j) (fun g => Pb.galL M j g)
     (fun g n => M.galMH (IntermediateField.fixingSubgroupEquiv K g) n j) u s (f * N') (F.α M j) (F.galT M j)
     hker (fun g x n => hgal g x n) (fun n => evE e M j n v c) h hh hχ (phiA_iter_l _) (phiA_iterate_tA _)
     (fun g => phiA_iterate_zA _ _) (F.lin M hM j) (F.gal M hM j)
@@ -1279,13 +1259,18 @@ theorem UpperTheory.Ru.crystallineComparison.absInvOf :
     B₀.c (tA l) galA (fun g => (B₀.σ g).toRingHom) (fun g => zA l (χ g)) (F.galT M j) (F.α M j h) (u + s)
     (witt_fac r.k) (isUnit_l B₀) B₀.t_unit B₀.loc B₀.ker B₀.σ_c hC.1 hχ (fun g a y => F.galT_tmul M hM j g a y) hC.2 hz
   obtain ⟨a', b', y, hab⟩ := hd
-  have key := keyStep hk hFr hρ F hPin y
+  have key : ∀ n, ∃ x : MH (PQ M.p (gRes r)) n j, (phiH _ n j)^[f] x = pullH Fr n j x ∧
+      betaM M n j (levH (F.β M j ((1 : Pb.AW r) ⊗ₜ y)) n) = pullH ρ n j x := fun n =>
+    Exists.elim (hPin n) fun m hm =>
+      Exists.elim (absCl l K r M f (f * N') n j hk Fr ρ hFr hρ m hm.1 (y.1 n)) fun x hx =>
+        ⟨x, hx.1, (congrArg (betaM M n j) (hm.2 y)).trans hx.2⟩
   choose x hx1 hx2 using key
   refine ⟨a' + F.e M j + f * N' * u, b' + u, x, fun n => ⟨hx1 n, ?_⟩⟩
-  have hc := chain2 (R := Acris l) (Q := Pb.AL r M j) (H := (M.HS true j).lim) (Mn := fun n => M.MH n j) l (tA l) (phiA l)
-    (fun n => bl M j n) (fun x => Pb.phiL M j x) (fun n => phiH M.P n j) u s (f * N') (F.e M j) a' b' (F.α M j) (F.β M j) h
+  have hc := chain2 (R := Acris l) (Q := Pb.AL r M j) (Mn := fun n => M.MH n j) (M.HS true j) l (tA l) (phiA l)
+    (fun n => B.β (B.schFn M.p) (okToOC l K) true n j) (fun x => Pb.phiL M j x) (fun n => (phiMor M.P n).pull j)
+    u s (f * N') (F.e M j) a' b' (F.α M j) (F.β M j) h
     ((1 : Pb.AW r) ⊗ₜ y) (fun n => evE e M j n v c) (fun n => evE e M j n v fun k => (phiA l)^[f * N'] (c k)) hh
-    (phiA_iter_l _) (phiA_iterate_tA _) hab (F.fac M hM j h) (fun x n => hphi x n) (fun n a x => phi_iter_smul M.P n j _ a x)
+    (phiA_iter_l _) (phiA_iterate_tA _) hab (F.fac M hM j h) (fun x n => hphi x n)
     (fun n => UpperTheory.crisFrobenius_iterate_evalEtaleFamily e he.phi M j n _ v c) n
   exact hc.trans (congrArg _ (hx2 n))
 end -- clump:auto

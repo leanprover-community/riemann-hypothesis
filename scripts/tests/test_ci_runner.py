@@ -272,6 +272,14 @@ class RunnerChecks(unittest.TestCase):
         self.assertEqual((report["failed"], report["ready"], error), ([], True, None))
         self.assertNotIn("bwrap_error", report)
 
+        # Quick checks run doctor before executing candidate code. Only runner installation needs the tarfile data filter.
+        for filters, module in ((True, SimpleNamespace(data_filter=None)), (False, SimpleNamespace())):
+            with patch.object(runner, "tarfile", module):
+                report, error, _ = doctor()
+            self.assertEqual((report["python"], report["tarfile_data_filter"]),
+                             (runner.platform.python_version(), filters))
+            self.assertEqual((report["failed"], report["ready"], error), ([], True, None))
+
         # The probe prints nothing when its connection is not refused as unreachable, so the report must
         # not point at "".
         report, error, _ = doctor(probe=(runner.PROBE_NOT_OFFLINE, ""))
@@ -296,6 +304,16 @@ class RunnerChecks(unittest.TestCase):
         self.assertEqual(report["ready"], not report["failed"])
         self.assertEqual(error, "runner prerequisites failed: " + "; ".join(report["failed"])
                          + ". No host security settings were changed.")
+
+    def test_install_refuses_python_without_tarfile_filters_before_downloading(self):
+        with tempfile.TemporaryDirectory() as name, patch.object(runner, "tarfile", SimpleNamespace()), \
+                patch.object(runner.sys, "platform", "linux"), patch.object(runner.os, "getuid", return_value=1000), \
+                patch.object(runner.urllib.request, "urlopen") as urlopen:
+            directory = Path(name) / "runner"
+            with self.assertRaisesRegex(ValueError, "lacks tarfile extraction filters"):
+                runner.install(SimpleNamespace(directory=directory))
+            urlopen.assert_not_called()
+            self.assertFalse(directory.exists())
 
     def test_policy_rejects_branch_or_repository_expansion(self):
         with tempfile.TemporaryDirectory() as name:

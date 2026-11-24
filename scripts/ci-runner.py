@@ -86,7 +86,7 @@ def runner_directory(path):
     if path.exists():
         info = path.stat()
         if info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) & 0o077:
-            raise ValueError("runner directory must be owned by you, mode0700")
+            raise ValueError("runner directory must be owned by you, mode 0700")
     return path
 
 
@@ -171,6 +171,9 @@ def doctor(args):
             ["systemctl", "--user", "show-environment"], stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL).returncode == 0 if shutil.which("systemctl") else False,
         "cgroup_v2": Path("/sys/fs/cgroup/cgroup.controllers").is_file(),
+        "python": platform.python_version(),
+        # Informational: install needs this (filter="data", Python 3.11.4+); quick checks do not.
+        "tarfile_data_filter": hasattr(tarfile, "data_filter"),
     }
     memory = Path("/proc/meminfo").read_text()
     report["physical_ram_gib"] = round(int(re.search(r"MemTotal:\s+(\d+)", memory)[1]) / 2**20, 1)
@@ -208,6 +211,9 @@ def doctor(args):
 def install(args):
     if sys.platform != "linux" or os.getuid() == 0:
         raise ValueError("install as the dedicated unprivileged Linux runner account")
+    if not hasattr(tarfile, "data_filter"):
+        raise ValueError(f"python3 {platform.python_version()} lacks tarfile extraction filters: "
+                         "need Python 3.11+ with them (upstream CPython 3.11.4 or newer)")
     directory = runner_directory(args.directory)
     if directory.exists() and any(directory.iterdir()):
         raise ValueError("installation directory must be absent or empty")
@@ -448,7 +454,7 @@ def run_jit(args):
 
 def aws_user_data(args):
     print(f"""#cloud-config
-# Debian 12/13 or another compatible apt-based image. No registration credential here.
+# Debian 13 or another apt-based image (Debian 12's own python3 lacks tarfile filters). No registration credential here.
 package_update: true
 packages:
   - ca-certificates
@@ -496,8 +502,8 @@ def main():
     configure = commands.add_parser("register", help="register with an operator-issued one-hour token")
     configure.add_argument("--directory", type=Path, default=DEFAULT_DIRECTORY)
     configure.add_argument("--name", default=platform.node().split(".")[0])
-    configure.add_argument("--token-file", type=Path, help="private mode0600 file; otherwise stdin/prompt")
-    configure.add_argument("--policy-file", type=Path, help="required mode0600 fresh GitHub runner-group API receipt")
+    configure.add_argument("--token-file", type=Path, help="private mode 0600 file; otherwise stdin/prompt")
+    configure.add_argument("--policy-file", type=Path, help="required mode 0600 fresh GitHub runner-group API receipt")
     configure.add_argument("--maintenance", action="store_true", help="also accept the exact trusted infrastructure/byo-build-ci branch during operator acceptance")
     configure.add_argument("--ephemeral", action="store_true", help="one job only; requires new enrollment afterward")
     configure.add_argument("--remove", action="store_true", help="use a fresh removal token; stop service first")
