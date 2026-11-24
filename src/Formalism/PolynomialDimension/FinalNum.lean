@@ -59,27 +59,38 @@ namespace Formalism.CountingSumsFrames
 
 open Real
 
-lemma pII0_one_le_mul {a b : ℝ} (ha : 1 ≤ a) (hb : 1 ≤ b) : 1 ≤ a * b := by
-  nlinarith
+lemma pII0_one_le_mul {a b : ℝ} (ha : 1 ≤ a) (hb : 1 ≤ b) : 1 ≤ a * b :=
+  one_le_mul_of_one_le_of_one_le ha hb
 
 lemma pII0_basic (r N N₁ k : ℝ) (hr : 2 ≤ r) (hrN1 : r ≤ N₁) (hN1 : N₁ ^ 2 ≤ r * N)
     (hk : N₁ + 3 * r ≤ k) : r ≤ N ∧ 8 ≤ k ∧ N₁ + 1 ≤ 2 * r * N := by
-  have h1 : r * r ≤ r * N := by nlinarith
+  have h1 : r * r ≤ r * N := by
+    rw [← pow_two]; exact le_trans (pow_le_pow_left₀ (by linarith) hrN1 2) hN1
   have hrN : r ≤ N := le_of_mul_le_mul_left h1 (by linarith)
-  exact ⟨hrN, by linarith, by nlinarith⟩
+  exact ⟨hrN, by linarith,
+    by linarith [hN1, le_self_pow₀ (show (1 : ℝ) ≤ N₁ by linarith) two_ne_zero]⟩
 
 lemma sizeBound_frame_le (r N N₁ Nₛ k : ℝ) (hr : 2 ≤ r) (hrN1 : r ≤ N₁) (hN1 : N₁ ^ 2 ≤ r * N)
     (hk8 : 8 ≤ k) (hN0 : 0 ≤ N) (hNs1 : Nₛ ≤ N₁) (hNs2 : Nₛ ≤ 2 * N) :
     Nₛ * (N₁ + r * k) ≤ 2 * r ^ 2 * N * k := by
-  have hpos : 0 ≤ N₁ + r * k := by nlinarith
+  have hpos : 0 ≤ N₁ + r * k := by
+    linarith [mul_nonneg (show (0 : ℝ) ≤ r by linarith) (show (0 : ℝ) ≤ k by linarith)]
   have hrk : 0 ≤ r * N * k := by positivity
   rcases le_or_gt 0 Nₛ with hs | hs
-  · have e1 : Nₛ * N₁ ≤ N₁ ^ 2 := by nlinarith
-    have e2 : r * N ≤ r ^ 2 * N * k := by nlinarith
+  · have e1 : Nₛ * N₁ ≤ N₁ ^ 2 := by
+      rw [pow_two]; exact mul_le_mul_of_nonneg_right hNs1 (by linarith)
+    have e2 : r * N ≤ r ^ 2 * N * k := by
+      have hrk : (1 : ℝ) ≤ r * k := by
+        have h := mul_le_mul hr hk8 (by norm_num) (show (0 : ℝ) ≤ r by linarith)
+        linarith
+      rw [show r ^ 2 * N * k = (r * N) * (r * k) by ring]
+      exact le_mul_of_one_le_right (mul_nonneg (by linarith) hN0) hrk
     have e3 : Nₛ * (r * k) ≤ 2 * N * (r * k) := by
       apply mul_le_mul_of_nonneg_right hNs2; positivity
-    have e4 : 2 * N * (r * k) ≤ r ^ 2 * N * k := by nlinarith
-    nlinarith
+    have e4 : 2 * N * (r * k) ≤ r ^ 2 * N * k := by
+      linarith [mul_nonneg (mul_nonneg (mul_nonneg hN0 (show (0 : ℝ) ≤ k by linarith))
+        (show (0 : ℝ) ≤ r by linarith)) (show (0 : ℝ) ≤ r - 2 by linarith)]
+    linarith
   · have : Nₛ * (N₁ + r * k) ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hs.le hpos
     have : 0 ≤ 2 * r ^ 2 * N * k := by positivity
     linarith
@@ -87,29 +98,34 @@ lemma sizeBound_frame_le (r N N₁ Nₛ k : ℝ) (hr : 2 ≤ r) (hrN1 : r ≤ N�
 lemma sizeBound_multiplicity_le (r k Q c' al : ℝ) (hQ : 1 ≤ Q) (hr : 2 ≤ r) (hk8 : 8 ≤ k) (hc : 1 ≤ c')
     (hal : al ≤ 1 + r * k * Q) :
     (2 * Q + 3) * c' + k * Q + c' * al + 3 * c' ≤ 3 * r * k * c' * Q := by
-  have hrk : 16 ≤ r * k := by nlinarith
+  have hrk : 16 ≤ r * k := by
+    linarith [mul_le_mul hr hk8 (by norm_num) (show (0 : ℝ) ≤ r by linarith)]
   have e1 : c' * al ≤ c' * (1 + r * k * Q) := mul_le_mul_of_nonneg_left hal (by linarith)
-  have hcQ : 1 ≤ c' * Q := by nlinarith
+  have hcQ : 1 ≤ c' * Q := one_le_mul_of_one_le_of_one_le hc hQ
   have e2 : k * Q ≤ k * (c' * Q) :=
-    mul_le_mul_of_nonneg_left (by nlinarith) (by linarith)
+    mul_le_mul_of_nonneg_left (le_mul_of_one_le_left (by linarith) hc) (by linarith)
   have e3 : 2 * k * (c' * Q) ≤ r * k * (c' * Q) :=
-    mul_le_mul_of_nonneg_right (by nlinarith) (by linarith)
-  have e4 : 16 * (c' * Q) ≤ r * k * (c' * Q) := by nlinarith
-  have e5 : c' ≤ c' * Q := by nlinarith
-  nlinarith
+    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hr (by linarith)) (by linarith)
+  have e4 : 16 * (c' * Q) ≤ r * k * (c' * Q) :=
+    mul_le_mul_of_nonneg_right hrk (mul_nonneg (by linarith) (by linarith))
+  have e5 : c' ≤ c' * Q := le_mul_of_one_le_right (by linarith) hQ
+  linarith
 
 lemma sizeBound_count_le (r N N₁ Nₛ : ℝ) (hrN1 : 2 ≤ N₁) (hN1 : N₁ ^ 2 ≤ r * N) (hNs1 : Nₛ ≤ N₁) :
     Nₛ * (N₁ + 1) ≤ 2 * r * N := by
   rcases le_or_gt 0 Nₛ with hs | hs
-  · nlinarith [mul_le_mul_of_nonneg_right hNs1 (by linarith : (0 : ℝ) ≤ N₁ + 1)]
-  · nlinarith [mul_nonpos_of_nonpos_of_nonneg hs.le (by linarith : (0 : ℝ) ≤ N₁ + 1)]
+  · linarith [mul_le_mul_of_nonneg_right hNs1 (by linarith : (0 : ℝ) ≤ N₁ + 1), hN1,
+      le_self_pow₀ (show (1 : ℝ) ≤ N₁ by linarith) two_ne_zero]
+  · linarith [mul_nonpos_of_nonpos_of_nonneg hs.le (by linarith : (0 : ℝ) ≤ N₁ + 1), hN1,
+      sq_nonneg N₁]
 
 lemma sizeBound_card_le (r N Nₛ k Q c' : ℝ) (hr : 2 ≤ r) (hk : 1 ≤ k) (hQ : 1 ≤ Q) (hc : 1 ≤ c')
     (hN0 : 0 ≤ N) (hNs2 : Nₛ ≤ 2 * N) : Nₛ ≤ r ^ 2 * N * k * c' * Q ^ 2 := by
   have hkcQ : 1 ≤ k * c' * Q ^ 2 :=
     pII0_one_le_mul (pII0_one_le_mul hk hc) (one_le_pow₀ hQ)
-  have h4 : 4 ≤ r ^ 2 := by nlinarith
-  have e1 : 2 * N ≤ r ^ 2 * N := by nlinarith
+  have h4 : 4 ≤ r ^ 2 := by
+    linarith [pow_le_pow_left₀ (show (0 : ℝ) ≤ 2 by norm_num) hr 2]
+  have e1 : 2 * N ≤ r ^ 2 * N := by linarith [mul_le_mul_of_nonneg_right h4 hN0]
   have e2 : r ^ 2 * N ≤ r ^ 2 * N * (k * c' * Q ^ 2) :=
     le_mul_of_one_le_right (by positivity) hkcQ
   calc Nₛ ≤ 2 * N := hNs2
@@ -117,7 +133,7 @@ lemma sizeBound_card_le (r N Nₛ k Q c' : ℝ) (hr : 2 ≤ r) (hk : 1 ≤ k) (h
     _ ≤ r ^ 2 * N * (k * c' * Q ^ 2) := e2
     _ = r ^ 2 * N * k * c' * Q ^ 2 := by ring
 
-lemma pII0_size (CE p r N N₁ Nₛ k Q c' Y al : ℝ) (hCE : 0 ≤ CE) (hp : 0 ≤ p) (hpQ : p ≤ Q)
+lemma pII0_size (CE p r N N₁ Nₛ k Q c' Y al : ℝ) (hCE : 0 ≤ CE) (_hp : 0 ≤ p) (hpQ : p ≤ Q)
     (hQ : 1 ≤ Q) (hr : 2 ≤ r) (hrN1 : r ≤ N₁) (hN1 : N₁ ^ 2 ≤ r * N) (hk : N₁ + 3 * r ≤ k)
     (hNs0 : 0 ≤ Nₛ) (hNs1 : Nₛ ≤ N₁) (hNs2 : Nₛ ≤ 2 * N) (hc : 1 ≤ c') (hY : 0 ≤ Y)
     (hal0 : 0 ≤ al) (hal : al ≤ 1 + r * k * Q) :
@@ -128,14 +144,15 @@ lemma pII0_size (CE p r N N₁ Nₛ k Q c' Y al : ℝ) (hCE : 0 ≤ CE) (hp : 0 
   have hN0 : 0 ≤ N := by linarith
   set S := (2 * Q + 3) * c' + k * Q + c' * al + 3 * c' with hS
   have hS0 : 0 ≤ S := by
-    have : 0 ≤ c' * al := by nlinarith
-    nlinarith
+    have hal' : 0 ≤ c' * al := mul_nonneg (by linarith) hal0
+    linarith [hS, mul_nonneg (show (0 : ℝ) ≤ 2 * Q + 3 by linarith) (show (0 : ℝ) ≤ c' by linarith),
+      mul_nonneg (show (0 : ℝ) ≤ k by linarith) (show (0 : ℝ) ≤ Q by linarith), hal']
   have hS3 : S ≤ 3 * r * k * c' * Q := sizeBound_multiplicity_le r k Q c' al hQ hr hk8 hc hal
   have h1 := sizeBound_frame_le r N N₁ Nₛ k hr hrN1 hN1 hk8 hN0 hNs1 hNs2
   have h3 := sizeBound_count_le r N N₁ Nₛ (by linarith) hN1 hNs1
   have h4 := sizeBound_card_le r N Nₛ k Q c' hr (by linarith) hQ hc hN0 hNs2
   set M := k * r ^ 2 * N * Q ^ 2 * c' with hM
-  have hQ2 : Q ≤ Q ^ 2 := by nlinarith
+  have hQ2 : Q ≤ Q ^ 2 := le_self_pow₀ hQ two_ne_zero
   have a1 : Nₛ * (CE * c' * (N₁ + r * k) * Q ^ 2) ≤ 2 * CE * M := by
     have : Nₛ * (CE * c' * (N₁ + r * k) * Q ^ 2) = (CE * c' * Q ^ 2) * (Nₛ * (N₁ + r * k)) := by ring
     rw [this]
@@ -152,8 +169,8 @@ lemma pII0_size (CE p r N N₁ Nₛ k Q c' Y al : ℝ) (hCE : 0 ≤ CE) (hp : 0 
       _ = 6 * (k * r ^ 2 * N * Q * c') := by ring
       _ ≤ 6 * M := by
         rw [hM]
-        have : 0 ≤ k * r ^ 2 * N * c' := by positivity
-        nlinarith
+        have hP : 0 ≤ k * r ^ 2 * N * c' := by positivity
+        linarith [mul_le_mul_of_nonneg_left hQ2 hP]
   have a3 : Nₛ ≤ M := by rw [hM]; linarith [h4, show r ^ 2 * N * k * c' * Q ^ 2 = k * r ^ 2 * N * Q ^ 2 * c' by ring]
   have hX : Nₛ * (CE * c' * (N₁ + r * k) * Q ^ 2 + (N₁ + 1) * S + 1) ≤ (2 * CE + 7) * M := by
     have : Nₛ * (CE * c' * (N₁ + r * k) * Q ^ 2 + (N₁ + 1) * S + 1)
@@ -163,7 +180,8 @@ lemma pII0_size (CE p r N N₁ Nₛ k Q c' Y al : ℝ) (hCE : 0 ≤ CE) (hp : 0 
   have hpX : p * (Nₛ * (CE * c' * (N₁ + r * k) * Q ^ 2 + (N₁ + 1) * S + 1)) ≤ Q * ((2 * CE + 7) * M) := by
     have hX0 : 0 ≤ Nₛ * (CE * c' * (N₁ + r * k) * Q ^ 2 + (N₁ + 1) * S + 1) := by
       have : 0 ≤ CE * c' * (N₁ + r * k) * Q ^ 2 := by
-        have : 0 ≤ N₁ + r * k := by nlinarith
+        have : 0 ≤ N₁ + r * k := by
+          linarith [mul_nonneg (show (0 : ℝ) ≤ r by linarith) (show (0 : ℝ) ≤ k by linarith)]
         positivity
       have : 0 ≤ (N₁ + 1) * S := mul_nonneg (by linarith) hS0
       positivity
@@ -208,8 +226,9 @@ lemma sizeBound_third_term (r N N₁ k Q c' Y al : ℝ) (hQ : 1 ≤ Q) (hr : 2 �
       ≤ 6 * (k ^ 3 * r ^ 2 * N * Q ^ 5 * c' * Y) := by
   have hS3 := sizeBound_multiplicity_le r k Q c' al hQ hr hk8 hc hal
   have hS0 : 0 ≤ (2 * Q + 3) * c' + k * Q + c' * al + 3 * c' := by
-    have : 0 ≤ c' * al := by nlinarith
-    nlinarith
+    have hal' : 0 ≤ c' * al := mul_nonneg (by linarith) hal0
+    linarith [mul_nonneg (show (0 : ℝ) ≤ 2 * Q + 3 by linarith) (show (0 : ℝ) ≤ c' by linarith),
+      mul_nonneg (show (0 : ℝ) ≤ k by linarith) (show (0 : ℝ) ≤ Q by linarith), hal']
   have hW : 0 ≤ Y * k ^ 2 * Q := by positivity
   have e1 : (N₁ + 1) * ((2 * Q + 3) * c' + k * Q + c' * al + 3 * c') ≤ (2 * r * N) * (3 * r * k * c' * Q) :=
     mul_le_mul hN1r hS3 hS0 (by positivity)
@@ -226,10 +245,13 @@ lemma sizeBound_fourth_term (r N k Q c' Y : ℝ) (hr : 1 ≤ r) (hN : 1 ≤ N) (
   have h := sizeBound_first_term r N k Q 1 Y (by linarith) hN hk hQ (by norm_num) hY
   have h0 : 0 ≤ k ^ 3 * r ^ 2 * N * Q ^ 5 * Y := by positivity
   have h1 : Y * k ^ 2 * Q ≤ r ^ 2 * 1 * (Y * k ^ 2 * Q) := by
-    have : 1 ≤ r ^ 2 := one_le_pow₀ hr
-    have : 0 ≤ Y * k ^ 2 * Q := by positivity
-    nlinarith
-  have h2 : k ^ 3 * r ^ 2 * N * Q ^ 5 * 1 * Y ≤ k ^ 3 * r ^ 2 * N * Q ^ 5 * c' * Y := by nlinarith
+    have hr2 : (1 : ℝ) ≤ r ^ 2 := one_le_pow₀ hr
+    have h0' : 0 ≤ Y * k ^ 2 * Q := by positivity
+    calc Y * k ^ 2 * Q = 1 * (Y * k ^ 2 * Q) := by ring
+      _ ≤ r ^ 2 * (Y * k ^ 2 * Q) := mul_le_mul_of_nonneg_right hr2 h0'
+      _ = r ^ 2 * 1 * (Y * k ^ 2 * Q) := by ring
+  have h2 : k ^ 3 * r ^ 2 * N * Q ^ 5 * 1 * Y ≤ k ^ 3 * r ^ 2 * N * Q ^ 5 * c' * Y := by
+    linarith [mul_le_mul_of_nonneg_left hc h0]
   linarith
 
 lemma pII0_slack (r N N₁ k Q c' Y al c₀ : ℝ) (hQ : 1 ≤ Q) (hr : 2 ≤ r) (hrN1 : r ≤ N₁)
@@ -279,7 +301,7 @@ lemma pII0_om (r N n' c₀ c'' : ℕ) (hr : 1 ≤ r) (hN : 1 ≤ N) : (c₀ : �
   have hrN : (1 : ℝ) ≤ r * N := pII0_one_le_mul hr' hN'
   have hc : (0 : ℝ) ≤ c₀ := Nat.cast_nonneg _
   have h2 : (0 : ℝ) ≤ 2 * r * n' * c'' := by positivity
-  nlinarith
+  linarith [mul_le_mul_of_nonneg_right hrN hc, h2]
 
 
 theorem secondParameterSizeBounds_holds : ParamsII0 := by
@@ -342,11 +364,13 @@ theorem secondParameterSizeBounds_holds : ParamsII0 := by
     have h155 : 155 * M ≤ (64 * CE + 400 + C₂) * M :=
       mul_le_mul_of_nonneg_right (by linarith) hM0
     have hYk : 100 ≤ Y * (k : ℝ) ^ 2 := by
-      have : (64 : ℝ) ≤ (k : ℝ) ^ 2 := by nlinarith
-      nlinarith
+      have hk64 : (64 : ℝ) ≤ (k : ℝ) ^ 2 := by
+        linarith [pow_le_pow_left₀ (show (0 : ℝ) ≤ 8 by norm_num)
+          (show (8 : ℝ) ≤ (k : ℝ) by linarith) 2]
+      linarith [mul_le_mul (show (2 : ℝ) ≤ Y by linarith) hk64 (by norm_num) (by linarith)]
     exact pII0_floor _ Y k Q a B (by linarith) ha0 hYk (by linarith) hB
-  · have : (0 : ℝ) ≤ (k : ℝ) ^ 2 * Y ^ 2 := by positivity
-    nlinarith
+  · have hky : (0 : ℝ) ≤ (k : ℝ) ^ 2 * Y ^ 2 := by positivity
+    linarith [mul_le_mul_of_nonneg_right hNs2' hky, h256]
   · rcases le_or_gt 0 (Real.log a) with hl | hl
     · have hsq : (Nₛ : ℝ) ^ 2 ≤ (N₁ : ℝ) ^ 2 := pow_le_pow_left₀ (Nat.cast_nonneg _) hNs1' 2
       have e1 : C₂ * (Nₛ : ℝ) ^ 2 ≤ (64 * CE + 400 + C₂) * (N₁ : ℝ) ^ 2 :=
