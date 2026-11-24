@@ -502,7 +502,7 @@ theorem exp_neg_bound_mul_l2_le_l2_twist (h : IsFam μ v) (hw : ∀ σ, Measurab
   · have h0 := cmb_nonneg v c σ y
     have h1 := exp_neg_ge (hC σ y)
     simp only
-    nlinarith
+    exact (mul_le_mul_of_nonneg_right h1 h0).trans_eq (mul_comm _ _)
 
 theorem posDef_twist (h : IsFam μ v) (hG : (gram μ v).PosDef) (hw : ∀ σ, Measurable (w σ))
     (hC : ∀ σ y, |w σ y| ≤ C) : (gram μ (twist v w)).PosDef := by
@@ -515,7 +515,7 @@ theorem posDef_twist (h : IsFam μ v) (hG : (gram μ v).PosDef) (hw : ∀ σ, Me
   have hp : 0 < l2 μ v c := by exact_mod_cast hpos
   have := exp_neg_bound_mul_l2_le_l2_twist h hw hC c
   rw [hc0] at this
-  nlinarith [Real.exp_pos (-C)]
+  exact absurd (mul_pos (Real.exp_pos (-C)) hp) (not_lt.mpr this)
 
 theorem jensen (hS : Finite S) (f : ∀ σ, Y σ → ℝ) (hf0 : ∀ σ y, 0 ≤ f σ y)
     (hfi : ∀ σ, Integrable (f σ) (μ σ)) (hf1 : ∑ᶠ σ, ∫ y, f σ y ∂μ σ = 1) (hw : ∀ σ, Measurable (w σ))
@@ -539,7 +539,7 @@ theorem jensen (hS : Finite S) (f : ∀ σ, Y σ → ℝ) (hf0 : ∀ σ y, 0 ≤
     have h3 : Real.exp (-m) * (m - w σ y + 1) ≤ Real.exp (-(w σ y)) := by
       rw [← h2]; exact mul_le_mul_of_nonneg_left h1 (Real.exp_pos _).le
     have h4 := mul_le_mul_of_nonneg_left h3 (hf0 σ y)
-    nlinarith
+    grind
   have e : ∀ σ, ∫ y, Real.exp (-m) * (f σ y * (1 + m) - w σ y * f σ y) ∂μ σ =
       Real.exp (-m) * ((1 + m) * ∫ y, f σ y ∂μ σ - ∫ y, w σ y * f σ y ∂μ σ) := by
     intro σ
@@ -767,8 +767,7 @@ theorem GlobalTheory.HSAmp.berg_mass_extremal : ∀ (S : Type) (Y : S → Type) 
       exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
     have h2 := h (star u)
     rw [hc, hl] at h2
-    have h0 := hpos σ y
-    nlinarith
+    exact (hpos σ y).eq_or_lt.elim (· ▸ hM) (le_of_mul_le_mul_right (by rwa [← sq]))
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BergmanFunctionTotalMassExtremal =====
@@ -803,15 +802,15 @@ theorem tendsto_of_abs_sub_le_eventually (a q : ℕ → ℝ) (I G W V C : ℝ) (
     refine mul_le_mul_of_nonneg_left ?_ hC
     have := neg_abs_le (q m - G)
     have := le_abs_self V
-    nlinarith
-  have h3 : C * |q m - G| ≤ (C + 1) * |q m - G| := by nlinarith [abs_nonneg (q m - G)]
+    linarith [mul_le_mul_of_nonneg_left this hε0.le]
+  have h3 : C * |q m - G| ≤ (C + 1) * |q m - G| := by linarith [abs_nonneg (q m - G)]
   have h4 : (C + 1) * |q m - G| < e / 2 := by
     have := mul_lt_mul_of_pos_left hqm (by linarith : (0:ℝ) < C + 1)
     rwa [mul_div_assoc', mul_comm 2 (C + 1), ← div_div, mul_div_cancel_left₀ _ (by linarith : (C + 1) ≠ 0)] at this
   have h5 : ε * (|W| + C * |V|) < e / 2 := by
     rw [hε, div_mul_eq_mul_div, div_lt_div_iff₀ (by positivity) (by norm_num)]
-    nlinarith [abs_nonneg W, abs_nonneg V]
-  nlinarith
+    linarith [abs_nonneg W, abs_nonneg V]
+  grind
 
 end GlobalTheory.HSAmp
 
@@ -1001,8 +1000,8 @@ theorem polynomial_increment_near_derivative (s : Polynomial ℝ) {η δ : ℝ}
     (by rw [Real.dist_eq, abs_lt]; constructor <;> linarith [hc.1, hc.2])
   rw [Real.dist_eq, abs_lt] at h1 h2
   constructor
-  · rw [hsc]; nlinarith [mul_lt_mul_of_pos_left h1.1 hpos]
-  · rw [hsc]; nlinarith [mul_lt_mul_of_pos_left h2.2 hpos]
+  · rw [hsc]; linarith [mul_lt_mul_of_pos_left h1.1 hpos]
+  · rw [hsc]; linarith [mul_lt_mul_of_pos_left h2.2 hpos]
 
 theorem riemann_sum_of_one_sided_increments : ∀ (s : Polynomial ℝ) (ℓ : ℚ → ℕ → ℝ),
     (∀ t t' : ℚ, 0 ≤ t → t ≤ 1 → 0 ≤ t' → t' ≤ 1 → ∀ ε : ℝ, 0 < ε →
@@ -1067,8 +1066,8 @@ theorem riemann_sum_of_one_sided_increments : ∀ (s : Polynomial ℝ) (ℓ : �
     rw [hd'] at l
     rw [hηn] at k1 k2
     rw [abs_le]; constructor
-    · nlinarith
-    · nlinarith
+    · grind
+    · grind
   rw [Real.dist_eq, hsumℓ, hsums, ← Finset.sum_sub_distrib]
   calc |∑ j ∈ Finset.range n, ((ℓ (t j) m - ℓ (t (j+1)) m) - (s.eval (t (j+1) : ℝ) - s.eval (t j : ℝ)))|
       ≤ ∑ j ∈ Finset.range n, |(ℓ (t j) m - ℓ (t (j+1)) m) - (s.eval (t (j+1) : ℝ) - s.eval (t j : ℝ))| :=
@@ -1492,7 +1491,7 @@ theorem tendsto_logCount_sub_up : GlobalTheory.Published.ArCalc → ∀ (k : Typ
     have hu' := (abs_le.1 (hu σ y)).1
     have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
     push_cast
-    nlinarith [mul_le_mul_of_nonneg_left (neg_le.1 hu') hm0, mul_nonneg hm0 hB]
+    linarith [mul_le_mul_of_nonneg_left (neg_le.1 hu') hm0, mul_nonneg hm0 hB]
   have h1 := _root_.GlobalTheory.HSAmp.count_ball_asymp k X p D hX hS P hP ω _ f hmem hli _ hΛ.rank C hC1 hs t (by linarith)
   have h2 := _root_.GlobalTheory.HSAmp.count_ball_asymp k X p D hX hS (upperParabolic P u) hup ω _ f hmem' hli _ hΛ.rank (C * Real.exp B) hC1' hs' t
     (by rw [hlog]; linarith)

@@ -271,8 +271,7 @@ theorem GlobalTheory.SUVol.Degenerate.riemHaar_le_one : ∀ (E : Type) [Field E]
     rcases Nat.mul_eq_zero.1 hc with h | h
     · exact Or.inl h
     · right
-      have : r ^ 2 ≤ 1 := by omega
-      nlinarith
+      exact le_antisymm ((Nat.pow_le_one_iff (by decide : 2 ≠ 0)).mp (by omega : r ^ 2 ≤ 1)) hr
   haveI := realSU_subsingleton Ψ G h
   haveI : CompactSpace (realSU Ψ G) := Finite.compactSpace
   set K := (realLie Ψ G).comap (fromFrame x) with hK
@@ -809,7 +808,7 @@ theorem riemLie_frameBox_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   have h2 : 2 * t * √2 ≤ 3 * t := by
     have hs : √2 ≤ 3 / 2 := by
       rw [Real.sqrt_le_left (by norm_num)]; norm_num
-    nlinarith
+    exact (mul_le_mul_of_nonneg_left hs (by linarith : (0 : ℝ) ≤ 2 * t)).trans_eq (by ring)
   exact pow_le_pow_left₀ (by positivity) h2 _
 
 end GlobalTheory.CovTop.VolUp.FrameBox
@@ -989,7 +988,7 @@ theorem riemHaar_frBall_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   have hr2 : 3 ≤ r ^ 2 - 1 := by
     have : r ≠ 1 := fun h => hd (by rw [h]; simp)
     have : 2 ≤ r := by omega
-    have : 4 ≤ r ^ 2 := by nlinarith
+    have : 4 ≤ r ^ 2 := by rw [sq]; exact Nat.mul_le_mul this this
     omega
   have hd3 : 3 ≤ Ψ.card * (r ^ 2 - 1) := le_trans hr2 (Nat.le_mul_of_pos_left _ hΨ)
   obtain ⟨lam, hlam, hmap⟩ := exists_lam Ψ G x hx
