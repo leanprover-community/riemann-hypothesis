@@ -515,13 +515,13 @@ noncomputable section
 namespace GlobalTheory.CovTop.ShortRoad
 
 theorem hilbertSamuel_of_component_estimates_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted →
-    GlobalTheory.Published.SiegelToroidalIntegral → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.CoverDegree →
+    GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.CoverDegree →
     _root_.GlobalTheory.CovTop.ShareCondition → _root_.GlobalTheory.CovTop.CoverHeightSum := by
-  intro hX h2 hGD hQd hSi hTo hSA hDG hS hF hDe hSh
+  intro hX h2 hGD hQd hTo hSA hDG hS hF hDe hSh
   obtain ⟨Cp, hCp, htw⟩ := _root_.GlobalTheory.TwistDeg.degree_twist_ge h2
   have hrk := _root_.GlobalTheory.TwistRank.flat_twist_rank_eq h2
   have hgood := _root_.GlobalTheory.CovTop.GoodDom.covering_regular_at_domain h2
-  refine Closed.imp (((((((_root_.GlobalTheory.HSShortRun.hsClaim_short_alt_alt hX h2 hGD hQd hSi hTo hSA hDG hS hF).and (_root_.GlobalTheory.CovTop.CovSz.size_rows_alt hS)).and (_root_.GlobalTheory.QuoWt.weights_at_point_alt hS)).and hS).and hF).and
+  refine Closed.imp (((((((_root_.GlobalTheory.HSShortRun.hsClaim_short_alt_alt hX h2 hGD hQd hTo hSA hDG hS hF).and (_root_.GlobalTheory.CovTop.CovSz.size_rows_alt hS)).and (_root_.GlobalTheory.QuoWt.weights_at_point_alt hS)).and hS).and hF).and
     hDe).and hSh) ?_
   intro eps Fm CH _ H
   obtain ⟨⟨⟨⟨⟨⟨⟨_, _, hR⟩, _, _, hZ⟩, _, _, hQu⟩, CS, _, hSz⟩, _, _, hFl⟩, _, _, hDg⟩, _, _, hSr⟩ := H

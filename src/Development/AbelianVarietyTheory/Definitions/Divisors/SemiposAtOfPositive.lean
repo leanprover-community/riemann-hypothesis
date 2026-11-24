@@ -157,16 +157,6 @@ end One
 
 
 
-section Obj
-
-open GlobalTheory.Mean4 GlobalTheory.Mean4O Formalism.BasicNotions.DV
-
-
-structure HypothesesH : Prop where
-  sieg : GlobalTheory.Published.SiegelToroidalIntegral
-
-end Obj
-
 end GlobalTheory.CovHt
 
 end

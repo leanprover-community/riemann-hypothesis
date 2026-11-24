@@ -583,8 +583,7 @@ open GlobalTheory.Vanishing.H0
 open GlobalTheory.CompHt (genVal genPoint)
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
-theorem cuspRatioField_eq_top_of_toroidalCompactification (hP : _root_.GlobalTheory.CovTop.Hypotheses'') (hG : GlobalTheory.Published.GrothendieckDeformation) (hN : GlobalTheory.Published.NefNumerics)
-    (hSi : GlobalTheory.Published.SiegelToroidalIntegral) (hCh : GlobalTheory.Published.ToroidalChartsForFan)
+theorem cuspRatioField_eq_top_of_toroidalCompactification (hP : _root_.GlobalTheory.CovTop.Hypotheses'') (hG : GlobalTheory.Published.GrothendieckDeformation) (hN : GlobalTheory.Published.NefNumerics) (hCh : GlobalTheory.Published.ToroidalChartsForFan)
     (hLie : GlobalTheory.Published.SemiAbelianLieSeminegative) (hS : GlobalTheory.Published.PointSeparationPair) (TF : TorFlag Xo c)
     (Z : Comp Xo c) {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r) (hF : FnAlgClosed (Xo := Xo) (c := c)) (hD : 1 ≤ dimFlag Dw)
     (hpq : 1 ≤ Dw.p + Dw.q) (la : AllWt.Weight Dw)
@@ -645,7 +644,7 @@ theorem cuspRatioField_eq_top_of_toroidalCompactification (hP : _root_.GlobalThe
   have hstd : GapGe 1 std := _root_.GlobalTheory.HSApp.gapGe_stdWt Dw
   have nef : ∀ w : AllWt.Weight Dw, GapGe 0 w → letI := algebraΓOfHom M.str; IsNef c.F ((L₀ TF.X Z w).pull M.σ) :=
     fun w hw => TwoPoint.nef_pull hN _ M.str M.σ hV.2.1 M.proj _ (_root_.GlobalTheory.NefWt.weight_line_bundle_isNef hP hN hLie E H Dw l Xo c TF Z hF w hw)
-  obtain ⟨mu, hmu0, m', hm', hA⟩ := _root_.GlobalTheory.HSApp.hodge_bundle_ample_at_regular_point hP hN hSi hCh E H Dw l Xo c TF Z hF std hstd _ hη
+  obtain ⟨mu, hmu0, m', hm', hA⟩ := _root_.GlobalTheory.HSApp.hodge_bundle_ample_at_regular_point hP hN hCh E H Dw l Xo c TF Z hF std hstd _ hη
   have C := (common₀ TF.X Z).pull M.σ
   have e₁ := cls_common_add C (m' • std - mu) mu
   rw [sub_add_cancel] at e₁
@@ -685,15 +684,15 @@ end Geometry
 open NumberField GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.DegCmp GlobalTheory.DegVal GlobalTheory.CovTop ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 open scoped ENNReal NNReal
 
-theorem cusp_values_separate_general_points : GlobalTheory.CovTop.HypothesesX → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SiegelToroidalIntegral → _root_.GlobalTheory.CovTop.Hypotheses'' → GlobalTheory.Published.NadelVanishingAndNonKltDivisor → GlobalTheory.Published.Principalisation → ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ (u : GlobalTheory.AllWt.Weight (T.Q.Dw j)), (∀ τ (a b : Fin ((T.Q.Dw j).p + (T.Q.Dw j).q)), (b : ℕ) = a + 1 → (((dimFlag (T.Q.Dw j) + 3) ^ 2 + 2 * ((T.Q.Dw j).p + (T.Q.Dw j).q) : ℕ) : ℤ) ≤ u τ a - u τ b) → ∀ Z : Comp Y.d.Xo₂ Y.d.c₂, ∃ (σ : Y.d.c₂.F →+* ℂ) (A B : Subalgebra Y.d.c₂.F (Om Z)), A.FG ∧ B.FG ∧ B ≤ A ∧ (∀ b ∈ B, b ∈ ratioField (genPoint Z (cuspOn Y.U Z (wtOf (T.Q.Dw j) u 0)))) ∧ IntermediateField.adjoin Y.d.c₂.F (A : Set (Om Z)) = ⊤ ∧ (∀ b ∈ B, b ≠ 0 → ∃ x : A →+* ℂ, (∀ k : Y.d.c₂.F, x (@algebraMap Y.d.c₂.F A _ _ A.algebra k) = σ k) ∧ (∀ hb : b ∈ A, x ⟨b, hb⟩ ≠ 0) ∧ ∀ y : A →+* ℂ, (∀ k : Y.d.c₂.F, y (@algebraMap Y.d.c₂.F A _ _ A.algebra k) = σ k) → (∀ a : A, (a : Om Z) ∈ B → y a = x a) → y = x) := by
-  intro hX hG hQ hSi hP _ _ D T _ j hp hq Y e o hY u hu Z
+theorem cusp_values_separate_general_points : GlobalTheory.CovTop.HypothesesX → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → _root_.GlobalTheory.CovTop.Hypotheses'' → GlobalTheory.Published.NadelVanishingAndNonKltDivisor → GlobalTheory.Published.Principalisation → ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ (u : GlobalTheory.AllWt.Weight (T.Q.Dw j)), (∀ τ (a b : Fin ((T.Q.Dw j).p + (T.Q.Dw j).q)), (b : ℕ) = a + 1 → (((dimFlag (T.Q.Dw j) + 3) ^ 2 + 2 * ((T.Q.Dw j).p + (T.Q.Dw j).q) : ℕ) : ℤ) ≤ u τ a - u τ b) → ∀ Z : Comp Y.d.Xo₂ Y.d.c₂, ∃ (σ : Y.d.c₂.F →+* ℂ) (A B : Subalgebra Y.d.c₂.F (Om Z)), A.FG ∧ B.FG ∧ B ≤ A ∧ (∀ b ∈ B, b ∈ ratioField (genPoint Z (cuspOn Y.U Z (wtOf (T.Q.Dw j) u 0)))) ∧ IntermediateField.adjoin Y.d.c₂.F (A : Set (Om Z)) = ⊤ ∧ (∀ b ∈ B, b ≠ 0 → ∃ x : A →+* ℂ, (∀ k : Y.d.c₂.F, x (@algebraMap Y.d.c₂.F A _ _ A.algebra k) = σ k) ∧ (∀ hb : b ∈ A, x ⟨b, hb⟩ ≠ 0) ∧ ∀ y : A →+* ℂ, (∀ k : Y.d.c₂.F, y (@algebraMap Y.d.c₂.F A _ _ A.algebra k) = σ k) → (∀ a : A, (a : Om Z) ∈ B → y a = x a) → y = x) := by
+  intro hX hG hQ hP _ _ D T _ j hp hq Y e o hY u hu Z
   have hf : 2 < Module.finrank ℚ D.host.E / 2 := by
     have := D.eight_le_f
     rw [D.host.finrank_E']
     omega
   have hD : 1 ≤ FlagTan.dimFlag (T.Q.Dw j) := Nat.mul_pos (by omega) (Nat.choose_pos (by omega))
   obtain ⟨TF⟩ := _root_.GlobalTheory.CompHS.TorFlagEx.nonempty_torFlag_alt hP _ _ _ _ Y.d.Xo₂ Y.d.c₂ hD
-  have htop := _root_.GlobalTheory.SepCusp.cuspRatioField_eq_top_of_toroidalCompactification hP hG hQ.nef hSi hX.ks.toroidalChartsForFan hX.lie hX.sep TF Z Y.U hY.geo hD (by omega) u (gapGe_sub_kap u hu)
+  have htop := _root_.GlobalTheory.SepCusp.cuspRatioField_eq_top_of_toroidalCompactification hP hG hQ.nef hX.ks.toroidalChartsForFan hX.lie hX.sep TF Z Y.U hY.geo hD (by omega) u (gapGe_sub_kap u hu)
     (GlobalTheory.HSApp.vanBd_le_space D T.toCore j Y e o hY hf Z TF u)
   have := Y.d.c₂.fin
   have : Countable Y.d.c₂.F := (Module.finBasis ℚ Y.d.c₂.F).equivFun.injective.countable
@@ -716,10 +715,10 @@ open NumberField GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.DegCmp Glob
 open scoped ENNReal NNReal
 set_option autoImplicit false
 namespace GlobalTheory.DegVal
-theorem birOn_of_weight_gaps_large : GlobalTheory.CovTop.HypothesesX → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SiegelToroidalIntegral → _root_.GlobalTheory.CovTop.Hypotheses'' → GlobalTheory.Published.NadelVanishingAndNonKltDivisor → GlobalTheory.Published.Principalisation → ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ (u : GlobalTheory.AllWt.Weight (T.Q.Dw j)), (∀ τ (a b : Fin ((T.Q.Dw j).p + (T.Q.Dw j).q)), (b : ℕ) = a + 1 → (((dimFlag (T.Q.Dw j) + 3) ^ 2 + 2 * ((T.Q.Dw j).p + (T.Q.Dw j).q) : ℕ) : ℤ) ≤ u τ a - u τ b) → ∀ Z : Comp Y.d.Xo₂ Y.d.c₂, BirOn Y.U Z (wtOf (T.Q.Dw j) u 0) := by
-  intro hX hG hQ hS hP hN hPr D T hT j hp hq Y e o hY u hu Z
-  obtain ⟨f₀, hf₀, hne⟩ := _root_.GlobalTheory.CentreCusp.exists_cusp_with_generic_value_ne_zero hX hG hQ hS hP hN hPr D T hT j hp hq Y e o hY u hu Z
-  obtain ⟨σ, A, B, hA, hB, hBA, hBr, hAtop, hsep⟩ := _root_.GlobalTheory.SepCusp.cusp_values_separate_general_points hX hG hQ hS hP hN hPr D T hT j hp hq Y e o hY u hu Z
+theorem birOn_of_weight_gaps_large : GlobalTheory.CovTop.HypothesesX → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → _root_.GlobalTheory.CovTop.Hypotheses'' → GlobalTheory.Published.NadelVanishingAndNonKltDivisor → GlobalTheory.Published.Principalisation → ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ (u : GlobalTheory.AllWt.Weight (T.Q.Dw j)), (∀ τ (a b : Fin ((T.Q.Dw j).p + (T.Q.Dw j).q)), (b : ℕ) = a + 1 → (((dimFlag (T.Q.Dw j) + 3) ^ 2 + 2 * ((T.Q.Dw j).p + (T.Q.Dw j).q) : ℕ) : ℤ) ≤ u τ a - u τ b) → ∀ Z : Comp Y.d.Xo₂ Y.d.c₂, BirOn Y.U Z (wtOf (T.Q.Dw j) u 0) := by
+  intro hX hG hQ hP hN hPr D T hT j hp hq Y e o hY u hu Z
+  obtain ⟨f₀, hf₀, hne⟩ := _root_.GlobalTheory.CentreCusp.exists_cusp_with_generic_value_ne_zero hX hG hQ hP hN hPr D T hT j hp hq Y e o hY u hu Z
+  obtain ⟨σ, A, B, hA, hB, hBA, hBr, hAtop, hsep⟩ := _root_.GlobalTheory.SepCusp.cusp_values_separate_general_points hX hG hQ hP hN hPr D T hT j hp hq Y e o hY u hu Z
   have key := exists_mul_eq_of_generic_unique_complexPoint _ _ σ A B hA hB hBA hsep
   refine ⟨fun h => hne ?_, eq_top_iff.2 ?_⟩
   · have := LinearMap.congr_fun h ⟨f₀, hf₀⟩

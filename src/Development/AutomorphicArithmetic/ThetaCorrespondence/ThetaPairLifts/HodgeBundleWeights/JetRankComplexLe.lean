@@ -1501,8 +1501,8 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR latN levDet secRing transl pul
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.BadCount
 open scoped TensorProduct
-theorem jet_bundle_rank_le : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.SiegelToroidalIntegral → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SemiAbelianLieSeminegative → ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → 2 < Module.finrank ℚ D.host.E / 2 → InR D j → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ (Z : Comp Y.d.Xo₂ Y.d.c₂) (u la : AllWt.Weight (T.Q.Dw j)) (n a : ℕ), GapGe (((CompHt.dimFlag (T.Q.Dw j) + 3) * ((CompHt.dimFlag (T.Q.Dw j) + 1).choose 2 + 4 * ((T.Q.Dw j).p + (T.Q.Dw j).q) + CompHt.dimFlag (T.Q.Dw j) + 3) : ℕ) : ℤ) u → (∀ τ, Antitone (la τ)) → (∀ τ, Antitone ((n : ℤ) • u τ - la τ)) → (n : ℝ) * CompHt.topDeg Y.U Z u < (a + 1) * Y.dg u Z → Y.rkC la Z ≤ ((a + CompHt.dimFlag (T.Q.Dw j)).choose (CompHt.dimFlag (T.Q.Dw j)) : ℕ) * Y.dg u Z := by
-  intro hX hP2 hSi hTo hGD hQ hSe D T hT j hp hq hf hj Y e o hY Z u la n a hu hla hnu hlt
+theorem jet_bundle_rank_le : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SemiAbelianLieSeminegative → ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → 2 < Module.finrank ℚ D.host.E / 2 → InR D j → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ (Z : Comp Y.d.Xo₂ Y.d.c₂) (u la : AllWt.Weight (T.Q.Dw j)) (n a : ℕ), GapGe (((CompHt.dimFlag (T.Q.Dw j) + 3) * ((CompHt.dimFlag (T.Q.Dw j) + 1).choose 2 + 4 * ((T.Q.Dw j).p + (T.Q.Dw j).q) + CompHt.dimFlag (T.Q.Dw j) + 3) : ℕ) : ℤ) u → (∀ τ, Antitone (la τ)) → (∀ τ, Antitone ((n : ℤ) • u τ - la τ)) → (n : ℝ) * CompHt.topDeg Y.U Z u < (a + 1) * Y.dg u Z → Y.rkC la Z ≤ ((a + CompHt.dimFlag (T.Q.Dw j)).choose (CompHt.dimFlag (T.Q.Dw j)) : ℕ) * Y.dg u Z := by
+  intro hX hP2 hTo hGD hQ hSe D T hT j hp hq hf hj Y e o hY Z u la n a hu hla hnu hlt
   have hP := _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems.toClassicalTheorems hP2
   have hDe := dimFlag_eq (T.Q.Dw j)
   have hD : 1 ≤ FlagTan.dimFlag (T.Q.Dw j) :=
@@ -1516,14 +1516,14 @@ theorem jet_bundle_rank_le : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTh
   have hp0 : (0 : ℤ) ≤ ((T.Q.Dw j).p : ℤ) := Int.natCast_nonneg _
   have hq0 : (0 : ℤ) ≤ ((T.Q.Dw j).q : ℤ) := Int.natCast_nonneg _
   have hF : FreeOnOpen TF.X Z Y.U u := by
-    refine _root_.GlobalTheory.HSApp.globally_generated_on_open_of_weight_gap_ge hP hGD hQ hP2.q15 hP2.q16 hSi hTo.toroidalChartsForFan hSe _ _ _ _ _ _ TF Z _ Y.U hY.geo hD _ (fun τ k hk => ?_) (hC _)
+    refine _root_.GlobalTheory.HSApp.globally_generated_on_open_of_weight_gap_ge hP hGD hQ hP2.q15 hP2.q16 hTo.toroidalChartsForFan hSe _ _ _ _ _ _ TF Z _ Y.U hY.geo hD _ (fun τ k hk => ?_) (hC _)
     have h₁ := hu τ k hk
     have h₂ := gap_kap_le (Dw := T.Q.Dw j) τ hk
     rw [Pi.sub_apply, gap_sub, ← hDe]
     push_cast at h₁ h₂ ⊢
     nlinarith
   have hB : BirOn Y.U Z (wtOf (T.Q.Dw j) u 0) := by
-    refine _root_.GlobalTheory.DegVal.birOn_of_weight_gaps_large hX hGD hQ hSi hP hP2.q15 hP2.q16 D T hT j hp hq Y e o hY u (fun τ a b hab => ?_) Z
+    refine _root_.GlobalTheory.DegVal.birOn_of_weight_gaps_large hX hGD hQ hP hP2.q15 hP2.q16 D T hT j hp hq Y e o hY u (fun τ a b hab => ?_) Z
     have h₁ := hu τ a (by omega)
     rw [gap_eq _ hab] at h₁
     push_cast at h₁ ⊢
@@ -1539,7 +1539,7 @@ theorem jet_bundle_rank_le : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTh
         rw [show (i : ℕ) = (i.castSucc : ℕ) from rfl, gap_eq w (j := i.succ) rfl] at this
         omega
     exact key _ _ (hu1 τ)
-  obtain ⟨hPr, hv⟩ := _root_.GlobalTheory.CompProport.hirzebruch_proportionality_toroidal hP2 hSi hTo hSe D T hT j hp hq hf hj Y e o hY
+  obtain ⟨hPr, hv⟩ := _root_.GlobalTheory.CompProport.hirzebruch_proportionality_toroidal hP2 hTo hSe D T hT j hp hq hf hj Y e o hY
   have hnef := _root_.GlobalTheory.NefWt.weight_line_bundle_isNef hP hQ.nef hSe _ _ _ _ _ _ TF Z hY.geo
   have key := finrank_cusp_le (n := n) (a := a) (la := la) hQ hP2.q16 hV hD hC hF hB
     (mul_nonneg (hv Z).le (Int.cast_pos.2 (CompHt.vdm_pos hsa)).le) (hPr Z u hsa)

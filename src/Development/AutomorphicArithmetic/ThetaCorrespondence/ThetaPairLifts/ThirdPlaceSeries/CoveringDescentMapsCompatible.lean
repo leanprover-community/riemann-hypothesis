@@ -600,8 +600,8 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 namespace GlobalTheory.ShortDet
-theorem exists_short_integral_vector : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SiegelToroidalIntegral → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative → ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → 2 < Module.finrank ℚ D.host.E / 2 → InR D j → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ Lb : ℝ, 1 ≤ Lb → Real.log Y.d.l₂.M ≤ 30 * Lb → fieldSz D.host.E ≤ 3 * Lb → Real.log (D.R.f * D.R.r) ≤ Lb → o ≤ 391 * (D.R.f * D.R.r * Lb) ^ 2 → ∀ c₁ : ℝ, GlobalTheory.FlatLine.FlatExistsAt Y.U (xiR D) c₁ → |c₁| ≤ 9 * D.R.r * Lb → 4 ≤ e → (∀ k, D.R.r + 1 < D.host.g k) → 8 ≤ D.R.f → 100 ≤ D.R.r → ∀ (fr : TypeFrame (T.Q.Dw j) Y.d.l₂), ∃ u : Y.V (wtOf (T.Q.Dw j) (cZero D j • hodgeWt (T.Q.Dw j)) 0), u ∈ AllWt.latW Y.U _ ∧ (∀ f ∈ secRing Y.d.Xo₂ Y.d.c₂, levDet Y.d.Xo₂ Y.d.c₂ (grpHR fr) u * f = 0 → f = 0) ∧ ∀ (γ : (LevelAut (T.Q.Dw j) Y.d.l₂)) (G : WTZ D.host.E) (f : Y.V G) (g : Y.V (G + (wtOf (T.Q.Dw j) (cZero D j • hodgeWt (T.Q.Dw j)) 0))), Even G.2 → (g : Rul Y.d.Xo₂ Y.d.c₂) = f * pull Y.d.Xo₂ Y.d.c₂ γ u → ∀ σ, Y.nrm _ σ g ≤ Real.exp (C * ((D.R.f : ℝ) * D.R.r * Lb) ^ 9) * Y.nrm G σ f := by
-  intro hP hGr hQ hS hK hN
+theorem exists_short_integral_vector : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative → ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j : ℕ, 1 ≤ (T.Q.Dw j).p → 1 ≤ (T.Q.Dw j).q → 2 < Module.finrank ℚ D.host.E / 2 → InR D j → ∀ (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), Y.Good e o → ∀ Lb : ℝ, 1 ≤ Lb → Real.log Y.d.l₂.M ≤ 30 * Lb → fieldSz D.host.E ≤ 3 * Lb → Real.log (D.R.f * D.R.r) ≤ Lb → o ≤ 391 * (D.R.f * D.R.r * Lb) ^ 2 → ∀ c₁ : ℝ, GlobalTheory.FlatLine.FlatExistsAt Y.U (xiR D) c₁ → |c₁| ≤ 9 * D.R.r * Lb → 4 ≤ e → (∀ k, D.R.r + 1 < D.host.g k) → 8 ≤ D.R.f → 100 ≤ D.R.r → ∀ (fr : TypeFrame (T.Q.Dw j) Y.d.l₂), ∃ u : Y.V (wtOf (T.Q.Dw j) (cZero D j • hodgeWt (T.Q.Dw j)) 0), u ∈ AllWt.latW Y.U _ ∧ (∀ f ∈ secRing Y.d.Xo₂ Y.d.c₂, levDet Y.d.Xo₂ Y.d.c₂ (grpHR fr) u * f = 0 → f = 0) ∧ ∀ (γ : (LevelAut (T.Q.Dw j) Y.d.l₂)) (G : WTZ D.host.E) (f : Y.V G) (g : Y.V (G + (wtOf (T.Q.Dw j) (cZero D j • hodgeWt (T.Q.Dw j)) 0))), Even G.2 → (g : Rul Y.d.Xo₂ Y.d.c₂) = f * pull Y.d.Xo₂ Y.d.c₂ γ u → ∀ σ, Y.nrm _ σ g ≤ Real.exp (C * ((D.R.f : ℝ) * D.R.r * Lb) ^ 9) * Y.nrm G σ f := by
+  intro hP hGr hQ hK hN
   obtain ⟨C₁, hC₁, hb⟩ := _root_.UpperTheory.Lit.Tam.tamagawa_number_formula hP
   obtain ⟨C₃, hC₃, h3⟩ := _root_.GlobalTheory.ShortGenComp.short_generator_comparison hP
   refine ⟨C₃ + 240 + C₁ + 2 * C₃, by positivity, ?_⟩
@@ -658,7 +658,7 @@ theorem exists_short_integral_vector : _root_.GlobalTheory.CovTop.PublishedHodge
   have hw : ∀ k, k ≤ 9 → Z ^ k ≤ Z ^ 9 := fun k hk => pow_le_pow_right₀ hZ hk
   have hA : Y.d.l₂.A.Coprime Y.d.l₂.M := by rw [hG.lev.2]; exact Nat.coprime_one_left _
   have hpos : 1 ≤ (T.Q.Dw j).p + (T.Q.Dw j).q := by omega
-  obtain ⟨u₀, h₀, hd₀⟩ := _root_.GlobalTheory.OrbitSep.exists_cusp_regular_level_determinant hP hGr hQ hS hK hN D T hT j hp hq hE hj Y e o hG he hg fr _ (Or.inl rfl)
+  obtain ⟨u₀, h₀, hd₀⟩ := _root_.GlobalTheory.OrbitSep.exists_cusp_regular_level_determinant hP hGr hQ hK hN D T hT j hp hq hE hj Y e o hG he hg fr _ (Or.inl rfl)
   obtain ⟨u, hu, hd, hsup⟩ := exists_short (β := Real.exp (C₁ * Z ^ 3)) (Λ := Real.exp (2 * C₃ * Z ^ 9))
     (N := Real.exp (C₃ * Z ^ 3)) hpos hA hG.unf (grpHR fr) _ (Real.one_le_exp (by positivity)) (Real.exp_pos _).le
     (Real.exp_pos _).le (fun W => (hb' (by linarith) W).2.1)
@@ -716,10 +716,9 @@ namespace GlobalTheory.CovTop.DescentMaps
 end GlobalTheory.CovTop.DescentMaps
 namespace GlobalTheory.CovTop.DescentMaps
 
-theorem covering_descent_maps_compatible_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SiegelToroidalIntegral →
-    GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.GramCondition → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.MapsCondition := by
-  intro hP hGD hQ hSI hTF hSN hGram hDG hSz hFD
-  obtain ⟨C, hC0, hub⟩ := _root_.GlobalTheory.ShortDet.exists_short_integral_vector hP hGD hQ hSI hTF hSN
+theorem covering_descent_maps_compatible_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.GramCondition → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.MapsCondition := by
+  intro hP hGD hQ hTF hSN hGram hDG hSz hFD
+  obtain ⟨C, hC0, hub⟩ := _root_.GlobalTheory.ShortDet.exists_short_integral_vector hP hGD hQ hTF hSN
   have hT := _root_.GlobalTheory.CovTop.TypeLattice.exists_psi_latDeep_eq_latN_of_covers hP hGram hDG
   have hS := _root_.GlobalTheory.CovTop.CovSz.size_rows_alt hSz
   have hH := _root_.GlobalTheory.CovTop.Sizes.hostN_alt (2 * C + 200)

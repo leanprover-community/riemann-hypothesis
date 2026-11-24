@@ -374,10 +374,10 @@ open scoped TensorProduct
 
 noncomputable section
 namespace GlobalTheory.CovTop.HodgeSteps
-theorem rk_le_alt_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.SiegelToroidalIntegral → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.CoverDegree → _root_.GlobalTheory.CovTop.ShareCondition → _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y PP _ => ∀ s : ℕ, 1 ≤ s → s ≤ 2 → (Y.rk (Gs p i (s * cZero (Fm.D x ι) ((i : ℕ) + 1))) : ℝ) ≤ (1 + min (1 / 2) ((Fm.L x ι).sc.b / (PP * kap p i))) * Y.rk (Gs p i (-(cZero (Fm.D x ι) ((i : ℕ) + 1)))) := by
-  intro hX hP hSi hTo hG hQ hN hDG hS hFD hDeg hSh
+theorem rk_le_alt_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.CoverDegree → _root_.GlobalTheory.CovTop.ShareCondition → _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y PP _ => ∀ s : ℕ, 1 ≤ s → s ≤ 2 → (Y.rk (Gs p i (s * cZero (Fm.D x ι) ((i : ℕ) + 1))) : ℝ) ≤ (1 + min (1 / 2) ((Fm.L x ι).sc.b / (PP * kap p i))) * Y.rk (Gs p i (-(cZero (Fm.D x ι) ((i : ℕ) + 1)))) := by
+  intro hX hP hTo hG hQ hN hDG hS hFD hDeg hSh
   refine ((((((((((hDG.and hS).and hFD).and hDeg).and hSh).and (_root_.GlobalTheory.QuoWt.weights_at_point_alt hS)).and (_root_.GlobalTheory.CovTop.CovSz.size_rows_alt hS)).and
-    (_root_.GlobalTheory.ValMultRun.valuation_multiplicity_of_consecutive_run_alt hP hG hQ hSi hTo hN hDG hS hFD)).and (_root_.GlobalTheory.CovTop.FlatVal.flat_val_alt hFD)).and _root_.GlobalTheory.HSApp.wtBig_run_alt).and _root_.GlobalTheory.CovTop.WtShape.wtN_z).imp fun Fm CH _ h => ?_
+    (_root_.GlobalTheory.ValMultRun.valuation_multiplicity_of_consecutive_run_alt hP hG hQ hTo hN hDG hS hFD)).and (_root_.GlobalTheory.CovTop.FlatVal.flat_val_alt hFD)).and _root_.GlobalTheory.HSApp.wtBig_run_alt).and _root_.GlobalTheory.CovTop.WtShape.wtN_z).imp fun Fm CH _ h => ?_
   obtain ⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨_, -, a1⟩, A, -, a2⟩, _, -, a3⟩, _, -, a4⟩, _, -, a5⟩, _, -, a6⟩, _, -, a7⟩, _, -, a8⟩, _, -, a9⟩,
     _, -, a10⟩, _, -, a11⟩ := h
   obtain ⟨x0, h⟩ := (((((((((a1.and a2).and a3).and a4).and a5).and a6).and a7).and a8).and a9).and a10).and a11
@@ -423,12 +423,12 @@ theorem rk_le_alt_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.
     rw [le_div_iff₀ c3]
     gcongr
   obtain ⟨a, ha1, ha2⟩ := exists_jet_order _ _ _ (by omega) hT hρ0 hz2
-  have hbir := _root_.GlobalTheory.DegVal.birOn_of_weight_gaps_large hX hG hQ hSi (_root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems.toClassicalTheorems hP) hP.q15 hP.q16 _ p.T hL _ hp1 hq1 Y _ _ hY.1 u1 fun τ a b hb => by
+  have hbir := _root_.GlobalTheory.DegVal.birOn_of_weight_gaps_large hX hG hQ (_root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems.toClassicalTheorems hP) hP.q15 hP.q16 _ p.T hL _ hp1 hq1 Y _ _ hY.1 u1 fun τ a b hb => by
     rw [← gap_eq _ hb]
     refine le_trans ?_ (hgap τ a (hb ▸ b.2))
     exact_mod_cast bir_gap_le _ _ hd3
-  have hboth := _root_.GlobalTheory.DegVal.compDeg_between _ _ _ _ _ _ _ Y.U hY.1.unf (_root_.GlobalTheory.T.proportionality_principle_compactification hP hSi hTo hN _ p.T hL _ hp1 hq1 hf hj Y _ _ hY.1).1
-    (_root_.GlobalTheory.T.compactification_top_chern_eq_volume hP hSi hTo hN _ p.T hL _ hp1 hq1 hf hj Y _ _ hY.1) u1 (fun τ => (hA τ).1) (fun τ => (hA τ).2) hbir hval
+  have hboth := _root_.GlobalTheory.DegVal.compDeg_between _ _ _ _ _ _ _ Y.U hY.1.unf (_root_.GlobalTheory.T.proportionality_principle_compactification hP hTo hN _ p.T hL _ hp1 hq1 hf hj Y _ _ hY.1).1
+    (_root_.GlobalTheory.T.compactification_top_chern_eq_volume hP hTo hN _ p.T hL _ hp1 hq1 hf hj Y _ _ hY.1) u1 (fun τ => (hA τ).1) (fun τ => (hA τ).2) hbir hval
   have hc0 : 1 ≤ cZero (Fm.D x ι) ((i : ℕ) + 1) := by
     have := (cZeroN_isLeast (Fm.D x ι) ((i : ℕ) + 1)).1.2.2
     unfold cZero
@@ -469,7 +469,7 @@ theorem rk_le_alt_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.
     unfold zed
     positivity
   first
-    | have hJ := _root_.GlobalTheory.T.jet_rank_complex_le hX hP hSi hTo hG hQ hN
+    | have hJ := _root_.GlobalTheory.T.jet_rank_complex_le hX hP hTo hG hQ hN
   letI := Fintype.ofFinite (Comp Y.d.Xo₂ Y.d.c₂)
   rw [finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, Finset.mul_sum]
   refine Finset.sum_le_sum fun Z _ => ?_

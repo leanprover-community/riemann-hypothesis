@@ -477,7 +477,7 @@ section Point
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
 theorem geometric_height_bound_at_place (hX : GlobalTheory.CovTop.HypothesesX) (hG : GlobalTheory.Published.GrothendieckDeformation) (hQ : GlobalTheory.HSCore.Quoted)
-    (hP : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems) (hS1 : GlobalTheory.Published.SiegelToroidalIntegral) (hS2 : GlobalTheory.Published.ToroidalForFanKS)
+    (hP : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems) (hS2 : GlobalTheory.Published.ToroidalForFanKS)
     (hS3 : GlobalTheory.Published.SemiAbelianLieSeminegative)
     {PP C A M : ℝ} (hsz : SizeAt p i PP C) (hN : HostNum D L PP A M) (hw : WtNum p i PP) (hi : (i : ℕ) + 1 < D.R.m)
     (Y : Cov p i) (hY : GoodCov p i Y) (u1 : AllWt.Weight (dat p i)) (hu : Quo p i PP u1) : GeomAt p i Y u1 := by
@@ -507,8 +507,8 @@ theorem geometric_height_bound_at_place (hX : GlobalTheory.CovTop.HypothesesX) (
     push_cast at *
     nlinarith
   have hgood := _root_.GlobalTheory.CovTop.GoodDom.covering_regular_at_domain hP _ p.T hL _ hp1 hq1 hf hj Y _ _ hYg u1 (fun τ => (hsa τ).antitone) hg1
-  have hbir := _root_.GlobalTheory.DegVal.birOn_of_weight_gaps_large hX hG hQ hS1 (_root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems.toClassicalTheorems hP) hP.q15 hP.q16 _ p.T hL _ hp1 hq1 Y _ _ hYg u1 hgap
-  have hprop := (_root_.GlobalTheory.CompProport.hirzebruch_proportionality_toroidal hP hS1 hS2 hS3 _ p.T hL _ hp1 hq1 hf hj Y _ _ hYg).1
+  have hbir := _root_.GlobalTheory.DegVal.birOn_of_weight_gaps_large hX hG hQ (_root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems.toClassicalTheorems hP) hP.q15 hP.q16 _ p.T hL _ hp1 hq1 Y _ _ hYg u1 hgap
+  have hprop := (_root_.GlobalTheory.CompProport.hirzebruch_proportionality_toroidal hP hS2 hS3 _ p.T hL _ hp1 hq1 hf hj Y _ _ hYg).1
   intro Z
   refine ⟨hgood.2 Z, hbir Z, ?_⟩
   have hv : vdm u1 ≠ 0 := (GlobalTheory.CompHt.vdm_pos hsa).ne'
@@ -541,9 +541,9 @@ set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.CovHt.GeomBound
 theorem geom_of_prints_toroidal_deepGood_size : GlobalTheory.CovTop.HypothesesX → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems →
-    GlobalTheory.Published.SiegelToroidalIntegral → GlobalTheory.Published.ToroidalForFanKS →
+    GlobalTheory.Published.ToroidalForFanKS →
     GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovHt.GeometricCondition := by
-  intro hX hG hQ hP h1 h2 h3 _ hS
+  intro hX hG hQ hP h2 h3 _ hS
   have hH := _root_.GlobalTheory.CovTop.Sizes.hostN_alt 0
   have hW := _root_.GlobalTheory.CovTop.WtShape.wtN_z
   unfold _root_.GlobalTheory.CovHt.GeometricCondition _root_.GlobalTheory.CovTop.CoversCondition _root_.GlobalTheory.CovTop.LiftsCondition
@@ -555,7 +555,7 @@ theorem geom_of_prints_toroidal_deepGood_size : GlobalTheory.CovTop.HypothesesX 
   obtain ⟨x0, hx0⟩ := (e1.and e2).and e3
   refine ⟨0, le_rfl, x0, fun x hx hle ι p hp i hi Y hY u1 hu => ?_⟩
   obtain ⟨⟨b1, b2⟩, b3⟩ := hx0 x hx hle ι p hp
-  exact _root_.GlobalTheory.CovHt.GeomBound.geometric_height_bound_at_place p i hX hG hQ hP h1 h2 h3 (b1 i) (b2 i) (b3 i) hi Y hY u1 hu
+  exact _root_.GlobalTheory.CovHt.GeomBound.geometric_height_bound_at_place p i hX hG hQ hP h2 h3 (b1 i) (b2 i) (b3 i) hi Y hY u1 hu
 end GlobalTheory.CovHt.GeomBound
 end
 end
@@ -819,8 +819,8 @@ section
 open GlobalTheory.CovTop GlobalTheory.BigTop
 namespace SelfIntersectionVolumeEstimates
 
-theorem height_lower_bound_general_alt : _root_.SelfIntersectionVolumeEstimates.VolumeEstimateHypotheses → GlobalTheory.CovTop.HypothesesX → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.CovHt.HypothesesH → GlobalTheory.CompanionTheory.Ar.Plug.DeepStR → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.CoverDegree → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.HeightCondition :=
-  fun hSB hX hGD hQ hP hH hD hG hS hDg hF => _root_.GlobalTheory.CovHt.HtTopG.height_of_meanAll_bound hSB hP hG hS hDg (_root_.GlobalTheory.CovHt.ShortPf.cover_height_short_section_alt hP hG hS hF) (_root_.GlobalTheory.CovHt.GeomBound.geom_of_prints_toroidal_deepGood_size hX hGD hQ hP hH.sieg hX.ks hX.lie hG hS) (_root_.GlobalTheory.CovMult.multC_of_refW_alt (_root_.GlobalTheory.RefSum.refinedSum_weight_of_size_alt hP hG hS hF) (_root_.GlobalTheory.CovHt.KeySection.cover_height_section_bound_alt hP hH hG hS hF)) (_root_.GlobalTheory.CovHt.BudgetPf.budget_alt _root_.GlobalTheory.CovTop.Sizes.hostN_alt _root_.GlobalTheory.CovTop.WtShape.wtN_z hS) hD
+theorem height_lower_bound_general_alt : _root_.SelfIntersectionVolumeEstimates.VolumeEstimateHypotheses → GlobalTheory.CovTop.HypothesesX → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.CompanionTheory.Ar.Plug.DeepStR → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.CoverDegree → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.HeightCondition :=
+  fun hSB hX hGD hQ hP hD hG hS hDg hF => _root_.GlobalTheory.CovHt.HtTopG.height_of_meanAll_bound hSB hP hG hS hDg (_root_.GlobalTheory.CovHt.ShortPf.cover_height_short_section_alt hP hG hS hF) (_root_.GlobalTheory.CovHt.GeomBound.geom_of_prints_toroidal_deepGood_size hX hGD hQ hP hX.ks hX.lie hG hS) (_root_.GlobalTheory.CovMult.multC_of_refW_alt (_root_.GlobalTheory.RefSum.refinedSum_weight_of_size_alt hP hG hS hF) (_root_.GlobalTheory.CovHt.KeySection.cover_height_section_bound_alt hP hG hS hF)) (_root_.GlobalTheory.CovHt.BudgetPf.budget_alt _root_.GlobalTheory.CovTop.Sizes.hostN_alt _root_.GlobalTheory.CovTop.WtShape.wtN_z hS) hD
 end SelfIntersectionVolumeEstimates
 end
 end

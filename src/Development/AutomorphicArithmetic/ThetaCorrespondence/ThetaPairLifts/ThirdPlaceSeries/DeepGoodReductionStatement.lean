@@ -265,8 +265,7 @@ set_option autoImplicit false
 
 noncomputable section
 namespace GlobalTheory.CovTop.LowNonzero
-theorem exists_cusp_value_ne_zero_low_level (hP : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems) (hG : GlobalTheory.Published.GrothendieckDeformation) (hQ : GlobalTheory.HSCore.Quoted)
-    (hS : GlobalTheory.Published.SiegelToroidalIntegral) (hT : GlobalTheory.Published.ToroidalChartsForFan)
+theorem exists_cusp_value_ne_zero_low_level (hP : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems) (hG : GlobalTheory.Published.GrothendieckDeformation) (hQ : GlobalTheory.HSCore.Quoted) (hT : GlobalTheory.Published.ToroidalChartsForFan)
     (hN : GlobalTheory.Published.SemiAbelianLieSeminegative) {D : D7}
     {T : Core D} {j : ℕ} (Y : Deep T j) {e : ℕ} {o : ℝ} (hY : Y.Good e o) (hf : 2 < Module.finrank ℚ D.host.E / 2)
     (hD : 1 ≤ FlagTan.dimFlag (T.Q.Dw j)) (Z : Comp Y.d.Xo₂ Y.d.c₂) (la : AllWt.Weight (T.Q.Dw j))
@@ -274,7 +273,7 @@ theorem exists_cusp_value_ne_zero_low_level (hP : _root_.GlobalTheory.CovTop.Pub
     ∃ f ∈ cuspOn Y.U Z (wtOf (T.Q.Dw j) la 0), f ≠ 0 := by
   have hP1 := _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems.toClassicalTheorems hP
   obtain ⟨TF⟩ := _root_.GlobalTheory.CompHS.TorFlagEx.nonempty_torFlag_alt hP1 _ _ _ _ Y.d.Xo₂ Y.d.c₂ hD
-  have hfree := _root_.GlobalTheory.T.hodge_bundle_base_point_free_on_open hP1 hG hQ hP.q15 hP.q16 hS hT hN _ _ _ _ _ _ TF Z _ Y.U hY.geo hD _ hla
+  have hfree := _root_.GlobalTheory.T.hodge_bundle_base_point_free_on_open hP1 hG hQ hP.q15 hP.q16 hT hN _ _ _ _ _ _ TF Z _ Y.U hY.geo hD _ hla
     ⟨GlobalTheory.T.cuspForms_extend_vanish_compactifiedFlagSpace _ _ _ Y _ _ hY hf Z TF _, vanBd_le_space _ _ _ Y _ _ hY hf Z TF _⟩
   haveI := (_root_.GlobalTheory.VarFlag.isVariety₀_flag _ _ _ _ _ _ TF Z hY.geo).2.2
   haveI : ConnectedSpace (Y₀ TF.X Z) := GeometricallyConnected.connectedSpace_of_subsingleton (str₀ TF.X Z)
@@ -323,8 +322,8 @@ set_option autoImplicit false
 
 noncomputable section
 namespace GlobalTheory.CovTop.LowNonzero
-theorem exists_cusp_uM_alt_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SiegelToroidalIntegral → GlobalTheory.Published.ToroidalChartsForFan → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y _ _ => ∃ Z : Comp Y.d.Xo₂ Y.d.c₂, ∃ f ∈ cuspOn Y.U Z (wtOf (dat p i) (uM p i) 0), f ≠ 0 := by
-  intro hP hG hQ hS hT hN
+theorem exists_cusp_uM_alt_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.ToroidalChartsForFan → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y _ _ => ∃ Z : Comp Y.d.Xo₂ Y.d.c₂, ∃ f ∈ cuspOn Y.U Z (wtOf (dat p i) (uM p i) 0), f ≠ 0 := by
+  intro hP hG hQ hT hN
   have R := _root_.GlobalTheory.CovTop.HodgeGapBounds.reading_alt
   have W := _root_.GlobalTheory.QuoWt.weights_at_point_alt _root_.GlobalTheory.CovTop.SizeRows.size_alt_bis
   have B := _root_.GlobalTheory.HSApp.wtBig_run_alt
@@ -339,7 +338,7 @@ theorem exists_cusp_uM_alt_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBundle
   obtain ⟨-, -, -, -, -, ⟨w, -, hw⟩, -⟩ := hB i hi
   have hbig := hC i hi
   obtain ⟨Z⟩ := GlobalTheory.CovTop.good_comp_nonempty _ p.T hL _ hj Y _ _ hY.1
-  refine ⟨Z, _root_.GlobalTheory.CovTop.LowNonzero.exists_cusp_value_ne_zero_low_level hP hG hQ hS hT hN Y hY.1 hf hbig.one_le Z _ ?_⟩
+  refine ⟨Z, _root_.GlobalTheory.CovTop.LowNonzero.exists_cusp_value_ne_zero_low_level hP hG hQ hT hN Y hY.1 hf hbig.one_le Z _ ?_⟩
   rw [hw]
   exact gapGe_wt_add_parWt _ hbig _ w
 end GlobalTheory.CovTop.LowNonzero
@@ -373,13 +372,13 @@ noncomputable section
 namespace GlobalTheory.CovTop.LowPos
 open GlobalTheory.FlatTw GlobalTheory.FlatLine
 theorem lowered_rank_pos_alt_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation →
-    GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SiegelToroidalIntegral → GlobalTheory.Published.ToroidalForFanKS →
+    GlobalTheory.HSCore.Quoted → GlobalTheory.Published.ToroidalForFanKS →
     GlobalTheory.Published.SemiAbelianLieSeminegative →
     _root_.GlobalTheory.CovTop.CoversCondition fun Fm x _ ι p i Y _ _ => 0 < Y.rk (Gs p i (-(cZero (Fm.D x ι) ((i : ℕ) + 1)))) := by
-  intro hP hG hQ hS hKS hLie
+  intro hP hG hQ hKS hLie
   have R := _root_.GlobalTheory.CovTop.HodgeGapBounds.reading_alt
   have F := _root_.GlobalTheory.CovTop.FlatVal.flat_val_alt (_root_.GlobalTheory.CovTop.FlatDegProof.flatDeg_alt_alt hP)
-  have S := _root_.GlobalTheory.CovTop.LowNonzero.exists_cusp_uM_alt_alt hP hG hQ hS hKS.toroidalChartsForFan hLie
+  have S := _root_.GlobalTheory.CovTop.LowNonzero.exists_cusp_uM_alt_alt hP hG hQ hKS.toroidalChartsForFan hLie
   unfold _root_.GlobalTheory.CovTop.CoversCondition _root_.GlobalTheory.CovTop.LiftsCondition at *
   refine (R.and (F.and S)).imp fun Fm CH _ h => ?_
   obtain ⟨⟨C1, h1, e1⟩, ⟨C2, h2, e2⟩, ⟨C3, h3, e3⟩⟩ := h
@@ -425,10 +424,10 @@ open scoped TensorProduct
 noncomputable section
 namespace GlobalTheory.CovTop.DeepGoodAll
 theorem deepGood_alt_alt : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted →
-    GlobalTheory.Published.SiegelToroidalIntegral → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.DeepGoodness := by
-  intro hP hG hQ hS hT hN
+    GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.DeepGoodness := by
+  intro hP hG hQ hT hN
   have R := _root_.GlobalTheory.CovTop.HodgeGapBounds.reading_alt
-  have P := _root_.GlobalTheory.CovTop.LowPos.lowered_rank_pos_alt_alt hP hG hQ hS hT hN
+  have P := _root_.GlobalTheory.CovTop.LowPos.lowered_rank_pos_alt_alt hP hG hQ hT hN
   unfold _root_.GlobalTheory.CovTop.DeepGoodness _root_.GlobalTheory.CovTop.CoversCondition _root_.GlobalTheory.CovTop.LiftsCondition at *
   refine (R.and P).imp fun Fm CH _ h => ?_
   obtain ⟨⟨C1, h1, e1⟩, ⟨C2, h2, e2⟩⟩ := h

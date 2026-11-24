@@ -320,11 +320,11 @@ open scoped TensorProduct
 set_option autoImplicit false
 namespace GlobalTheory.CovTop.DegProof
 
-theorem covering_degree_eq_alt : HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.SiegelToroidalIntegral → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.GrothendieckDeformation →
+theorem covering_degree_eq_alt : HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.GrothendieckDeformation →
     GlobalTheory.HSCore.Quoted → GlobalTheory.Published.SemiAbelianLieSeminegative → _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.CoverDegree := by
-  intro hX h2 hS hT hG hQ hN hDG hSz hF
+  intro hX h2 hT hG hQ hN hDG hSz hF
   have hP := _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems.toClassicalTheorems h2
-  refine Closed.imp (Closed.and (Closed.and (_root_.GlobalTheory.ValMultRun.valuation_multiplicity_of_consecutive_run_alt h2 hG hQ hS hT hN hDG hSz hF) _root_.GlobalTheory.HSApp.wtBig_run_alt)
+  refine Closed.imp (Closed.and (Closed.and (_root_.GlobalTheory.ValMultRun.valuation_multiplicity_of_consecutive_run_alt h2 hG hQ hT hN hDG hSz hF) _root_.GlobalTheory.HSApp.wtBig_run_alt)
     (Closed.and (Closed.and (_root_.GlobalTheory.QuoWt.weights_at_point_alt hSz) (_root_.GlobalTheory.CovTop.CovSz.size_rows_alt hSz)) hDG)) ?_
   rintro eps Fm CH - ⟨⟨⟨_, -, a₁⟩, _, -, a₂⟩, ⟨⟨_, -, a₃⟩, _, -, a₄⟩, _, -, a₅⟩
   obtain ⟨x0, a⟩ := (a₁.and a₂).and ((a₃.and a₄).and a₅)
@@ -338,9 +338,9 @@ theorem covering_degree_eq_alt : HypothesesX → _root_.GlobalTheory.CovTop.Publ
   have hW := a₂ i hi
   have hV := a₁ i hi Y hY
   rw [hQuo u1 hu1]
-  have hPr := _root_.GlobalTheory.CompProport.hirzebruch_proportionality_toroidal h2 hS hT hN _ p.T hLaw _ hp1 hq1 hE hIn Y _ _ hY.1
-  have hEq := _root_.GlobalTheory.CompEqVol.equal_volume_of_compactification h2 hS hT hN _ p.T hLaw _ hp1 hq1 hE hIn Y _ _ hY.1
-  have hBir := _root_.GlobalTheory.DegVal.birOn_of_weight_gaps_large hX hG hQ hS hP h2.q15 h2.q16 _ p.T hLaw _ hp1 hq1 Y _ _ hY.1 _ (fun τ a b hab => by
+  have hPr := _root_.GlobalTheory.CompProport.hirzebruch_proportionality_toroidal h2 hT hN _ p.T hLaw _ hp1 hq1 hE hIn Y _ _ hY.1
+  have hEq := _root_.GlobalTheory.CompEqVol.equal_volume_of_compactification h2 hT hN _ p.T hLaw _ hp1 hq1 hE hIn Y _ _ hY.1
+  have hBir := _root_.GlobalTheory.DegVal.birOn_of_weight_gaps_large hX hG hQ hP h2.q15 h2.q16 _ p.T hLaw _ hp1 hq1 Y _ _ hY.1 _ (fun τ a b hab => by
     have hb := b.2
     have h := hW.gaps τ a (by rw [← hab]; exact hb)
     rw [gap_eq _ hab] at h
@@ -627,10 +627,10 @@ open GlobalTheory.BadCount
 open scoped TensorProduct
 namespace GlobalTheory.CovTop
 theorem covering_rank_of_descent_steps_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted →
-    GlobalTheory.Published.SiegelToroidalIntegral → GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative →
+    GlobalTheory.Published.ToroidalForFanKS → GlobalTheory.Published.SemiAbelianLieSeminegative →
     _root_.GlobalTheory.CovTop.DeepGoodness → _root_.GlobalTheory.CovTop.SizeCondition → _root_.GlobalTheory.CovTop.FlatDegreeCondition → _root_.GlobalTheory.CovTop.CoverDegree → _root_.GlobalTheory.CovTop.ShareCondition → _root_.GlobalTheory.CovTop.CoverRank := by
-  intro hX h1 h2 h3 hS hT hL h4 h5 h6 h7 h8
-  refine Formalism.MainNotions.Closed.imp (_root_.GlobalTheory.T.rank_growth_bound_small_scale_alt_alt hX h1 hS hT h2 h3 hL h4 h5 h6 h7 h8) ?_
+  intro hX h1 h2 h3 hT hL h4 h5 h6 h7 h8
+  refine Formalism.MainNotions.Closed.imp (_root_.GlobalTheory.T.rank_growth_bound_small_scale_alt_alt hX h1 hT h2 h3 hL h4 h5 h6 h7 h8) ?_
   rintro _ Fm _ _ ⟨C, h0, a, h⟩
   refine ⟨C, h0, a, fun x hx hle ι p hp i hi Y hY => ?_⟩
   have H := h x hx hle ι p hp i hi Y hY 1 le_rfl (by norm_num)
@@ -1733,10 +1733,9 @@ section
 open GlobalTheory.CovTop GlobalTheory.BigTop
 namespace SelfIntersectionVolumeEstimates
 
-theorem topCovolG_alt_alt : _root_.SelfIntersectionVolumeEstimates.VolumeEstimateHypotheses → GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.CovHt.HypothesesH → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.CompanionTheory.Ar.Plug.DeepStR → _root_.GlobalTheory.CovTop.CovolumeBoundOfX :=
+theorem topCovolG_alt_alt : _root_.SelfIntersectionVolumeEstimates.VolumeEstimateHypotheses → GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.CompanionTheory.Ar.Plug.DeepStR → _root_.GlobalTheory.CovTop.CovolumeBoundOfX :=
   by
-  intro hSB hX hP hH hGD hQ hD
-  have hS := hH.sieg
+  intro hSB hX hP hGD hQ hD
   have hK := hX.ks
   have hN := hX.lie
   have gram := _root_.GlobalTheory.CovTop.covering_gram_matrix_of_local_traces_alt hP
@@ -1744,15 +1743,15 @@ theorem topCovolG_alt_alt : _root_.SelfIntersectionVolumeEstimates.VolumeEstimat
   have meas := _root_.GlobalTheory.CovTop.MeasRd.covering_measure_reduction_alt hP
   have anc := _root_.GlobalTheory.CovTop.anchor_holds_alt
   have dex := _root_.GlobalTheory.CovTop.DeepExist.exists_deep_covering_level_alt hP
-  have dg := _root_.GlobalTheory.CovTop.DeepGoodAll.deepGood_alt_alt hP hGD hQ hS hK hN
+  have dg := _root_.GlobalTheory.CovTop.DeepGoodAll.deepGood_alt_alt hP hGD hQ hK hN
   have fd := _root_.GlobalTheory.CovTop.FlatDegProof.flatDeg_alt_alt hP
-  have deg := _root_.GlobalTheory.CovTop.DegProof.covering_degree_eq_alt hX hP hS hK hGD hQ hN dg size fd
-  have sh := _root_.GlobalTheory.CovTop.ShareRowsNef.share_alt_alt hX hP hS hK hGD hQ hN dg size fd deg
-  have ht := _root_.SelfIntersectionVolumeEstimates.height_lower_bound_general_alt hSB hX hGD hQ hP hH hD dg size deg fd
-  have hs := _root_.GlobalTheory.CovTop.ShortRoad.hilbertSamuel_of_component_estimates_alt hX hP hGD hQ hS hK hN dg size fd deg sh
+  have deg := _root_.GlobalTheory.CovTop.DegProof.covering_degree_eq_alt hX hP hK hGD hQ hN dg size fd
+  have sh := _root_.GlobalTheory.CovTop.ShareRowsNef.share_alt_alt hX hP hK hGD hQ hN dg size fd deg
+  have ht := _root_.SelfIntersectionVolumeEstimates.height_lower_bound_general_alt hSB hX hGD hQ hP hD dg size deg fd
+  have hs := _root_.GlobalTheory.CovTop.ShortRoad.hilbertSamuel_of_component_estimates_alt hX hP hGD hQ hK hN dg size fd deg sh
   have ul := _root_.GlobalTheory.CovTop.FromComp.u_low_of_cover_hyps dg size deg sh ht hs (_root_.GlobalTheory.CovTop.sumC_of_deepGood_alt dg)
-  have low := _root_.GlobalTheory.CovTop.LowCover.low_of_cover_hypotheses size (_root_.GlobalTheory.CovTop.DefLow.covering_low_defect_alt hP gram anc) dex dg (_root_.GlobalTheory.CovTop.RingStep.ring_of_covering_descent_alt hP gram dg) (_root_.GlobalTheory.CovTop.DescentMaps.covering_descent_maps_compatible_alt hP hGD hQ hS hK hN gram dg size fd) (_root_.GlobalTheory.CovTop.covering_rank_of_descent_steps_alt hX hP hGD hQ hS hK hN dg size fd deg sh) (_root_.GlobalTheory.CovGminTop.covering_gmin_of_gram_deep_size hP gram dg size) (_root_.GlobalTheory.FlatSplit.flat_alt_alt hP dg fd anc) ul
-  exact _root_.GlobalTheory.CovTop.Assembly.covolX_of_lift_bounds_and_coreLe gram (_root_.GlobalTheory.CovTop.liftRecursive_of_gram gram) (_root_.GlobalTheory.CovTop.covering_cut_of_local_traces_alt hP) (_root_.GlobalTheory.CovTop.covering_bad_locus_of_descent_steps_alt hX hP hGD hQ hS hK hN hX.green gram dex dg size fd deg sh) (_root_.GlobalTheory.CovTop.LamAll.covering_lambda_all_places_alt hP gram meas) size (_root_.GlobalTheory.CoreSlope.coreLe_of_gram_meas_rat_alt gram meas (_root_.GlobalTheory.CovTop.covering_rational_of_local_traces_alt hP)) low
+  have low := _root_.GlobalTheory.CovTop.LowCover.low_of_cover_hypotheses size (_root_.GlobalTheory.CovTop.DefLow.covering_low_defect_alt hP gram anc) dex dg (_root_.GlobalTheory.CovTop.RingStep.ring_of_covering_descent_alt hP gram dg) (_root_.GlobalTheory.CovTop.DescentMaps.covering_descent_maps_compatible_alt hP hGD hQ hK hN gram dg size fd) (_root_.GlobalTheory.CovTop.covering_rank_of_descent_steps_alt hX hP hGD hQ hK hN dg size fd deg sh) (_root_.GlobalTheory.CovGminTop.covering_gmin_of_gram_deep_size hP gram dg size) (_root_.GlobalTheory.FlatSplit.flat_alt_alt hP dg fd anc) ul
+  exact _root_.GlobalTheory.CovTop.Assembly.covolX_of_lift_bounds_and_coreLe gram (_root_.GlobalTheory.CovTop.liftRecursive_of_gram gram) (_root_.GlobalTheory.CovTop.covering_cut_of_local_traces_alt hP) (_root_.GlobalTheory.CovTop.covering_bad_locus_of_descent_steps_alt hX hP hGD hQ hK hN hX.green gram dex dg size fd deg sh) (_root_.GlobalTheory.CovTop.LamAll.covering_lambda_all_places_alt hP gram meas) size (_root_.GlobalTheory.CoreSlope.coreLe_of_gram_meas_rat_alt gram meas (_root_.GlobalTheory.CovTop.covering_rational_of_local_traces_alt hP)) low
 end SelfIntersectionVolumeEstimates
 end
 end
