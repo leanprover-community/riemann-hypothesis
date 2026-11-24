@@ -256,10 +256,10 @@ theorem one_le_highestWeightBoundConst {n : ℕ} (ε : Fin n → Bool) (d Λ₀ 
 theorem le_mul_of_sq_le_mul_sq {x C s : ℝ} (_hx : 0 ≤ x) (hC : 1 ≤ C) (hs : 1 ≤ s) (h : x ^ 2 ≤ C * s ^ 2) :
     x ≤ C * s := by
   have h1 : C * s ^ 2 ≤ (C * s) ^ 2 := by
-    nlinarith [mul_nonneg (mul_nonneg (by linarith : (0:ℝ) ≤ C - 1) (by linarith : (0:ℝ) ≤ C))
+    linarith [hs, mul_nonneg (mul_nonneg (by linarith : (0:ℝ) ≤ C - 1) (by linarith : (0:ℝ) ≤ C))
       (sq_nonneg s)]
   have h2 : 0 ≤ C * s := by positivity
-  nlinarith
+  exact (sq_le_sq₀ _hx h2).mp (h.trans h1)
 
 section Datum
 
@@ -324,22 +324,22 @@ theorem highest_weight_datum_bounds {d Λ₀ : Fin n → ℝ} {t : ℝ} (ht : 1 
     have e6 : t * |d b| ≤ t * S := mul_le_mul_of_nonneg_left (hdS b) ht0
     have e7 := hΛT a
     have e8 := hΛT b
-    have e9 : T ≤ T * t := by nlinarith
-    nlinarith
+    have e9 : T ≤ T * t := le_mul_of_one_le_right hT0 ht
+    linarith
   have hsqb : ∀ a b, a ≠ b → ‖E a b w‖ ^ 2 ≤ C * t := by
     intro a b hab
-    have hKt : |K0| ≤ |K0| * t := by nlinarith
+    have hKt : |K0| ≤ |K0| * t := le_mul_of_one_le_right hK0a ht
     rcases lt_or_gt_of_ne hab with h | h <;> by_cases he : ε a = ε b
     · rw [hup a b h he]; simp; positivity
     · have h1 := hI2 a b h he
       have h2 := noncompact_lowering_norm_small hw h he
       have h3 := hdiff a b
-      rw [h1]; nlinarith
+      rw [h1, hCe]; linarith
     · have h1 := hI1 b a h he.symm
       have h3 := hdiff b a
-      rw [h1]; nlinarith
+      rw [h1, hCe]; linarith [hK0a]
     · have h2 := noncompact_lowering_norm_small hw h (Ne.symm he)
-      nlinarith
+      rw [hCe]; linarith [mul_nonneg hS0 ht0, mul_nonneg hT0 ht0]
   have hsq1 : 1 ≤ Real.sqrt t := by
     rw [show (1:ℝ) = Real.sqrt 1 from Real.sqrt_one.symm]; exact Real.sqrt_le_sqrt ht
   have hsq2 : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht0
@@ -354,7 +354,7 @@ theorem highest_weight_datum_bounds {d Λ₀ : Fin n → ℝ} {t : ℝ} (ht : 1 
     · subst hab
       rw [if_pos rfl, hdg]
       have := hΛT a
-      nlinarith
+      linarith [hS0, hT0, hK0a, le_mul_of_one_le_right (show 0 ≤ C by linarith) hsq1]
     · rw [if_neg hab, zero_smul, sub_zero]
       exact le_mul_of_sq_le_mul_sq (norm_nonneg _) hC1 hsq1 (by rw [hsq2]; exact hsqb a b hab)
   refine ⟨?_, ?_, ?_⟩
@@ -362,7 +362,7 @@ theorem highest_weight_datum_bounds {d Λ₀ : Fin n → ℝ} {t : ℝ} (ht : 1 
     rcases hab with ⟨h, he, -⟩ | ⟨h, he⟩
     · rw [hup a b h he, norm_zero]; linarith
     · have h2 := noncompact_lowering_norm_small hw h (Ne.symm he)
-      have := le_mul_of_sq_le_mul_sq (norm_nonneg (E a b w)) hC1 le_rfl (by nlinarith)
+      have := le_mul_of_sq_le_mul_sq (norm_nonneg (E a b w)) hC1 le_rfl (by linarith [hS0, hT0])
       linarith
   · intro a b hab
     obtain ⟨he, hd⟩ := hab
@@ -380,7 +380,7 @@ theorem highest_weight_datum_bounds {d Λ₀ : Fin n → ℝ} {t : ℝ} (ht : 1 
         have e8 := hΛT b
         have e3 := neg_abs_le (Λ₀ a)
         have e4 := le_abs_self (Λ₀ b)
-        have := le_mul_of_sq_le_mul_sq (norm_nonneg (E a b w)) hC1 le_rfl (by rw [h1]; nlinarith)
+        have := le_mul_of_sq_le_mul_sq (norm_nonneg (E a b w)) hC1 le_rfl (by rw [h1]; linarith [hS0, hK0a])
         linarith
   · intro X
     have key : actM E X w - ((t : ℂ) * trace (dMat d * X)) • w =
