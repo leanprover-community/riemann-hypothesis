@@ -142,7 +142,6 @@ end GlobalTheory.CechPic
 
 namespace GlobalTheory.CechPic
 
-open scoped CategoryTheory.Obj
 open IsLocalRing
 
 theorem eq_zero_of_sqZero_baseChange_nsmul : ∀ (k : ℕ) (R R₀ : Type) [CommRing R] [CommRing R₀] (π : R →+* R₀),

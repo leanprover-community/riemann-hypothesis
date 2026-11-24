@@ -55,7 +55,6 @@ noncomputable section
 
 namespace GlobalTheory.SchAConj
 
-open GlobalTheory.WeilM
 open scoped Classical
 
 def conjSchwartz {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] (f : SchwartzMap V ℂ) : SchwartzMap V ℂ where

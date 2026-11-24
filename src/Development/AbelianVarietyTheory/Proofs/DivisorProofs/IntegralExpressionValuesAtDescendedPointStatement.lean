@@ -1313,7 +1313,6 @@ end GaloisVia
 
 section NormalisedVia
 
-open GlobalTheory.UT
 
 variable {V₁ W₀ K : Type} [CommRing V₁] [IsDomain V₁] [CommRing W₀] [Field K] [IsAlgClosed K] {D : DegPre V₁}
   {B₀ : Over (Sp W₀)} [GrpObj B₀] {f : W₀ →+* V₁} {β : D.P.A.left ⟶ B₀.left} {ev : V₁ →+* K} {k₀ : Subfield K}

@@ -1687,7 +1687,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.ColDepth
 
-open GlobalTheory.FGDepth
 
 section Ultra
 

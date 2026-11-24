@@ -795,7 +795,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level Moduli Coeff)
 
 namespace GlobalTheory.TwistScalarField
 
-open NumberField IsDedekindDomain
 
 alias val_mul := _root_.Formalism.L2.Host.HChar.val_mul
 

@@ -62,7 +62,6 @@ noncomputable section
 
 namespace GlobalTheory.frameChangeUnitDeterminant
 
-open Formalism.IndefR.Datum
 
 variable {D : D7}
 
@@ -259,7 +258,6 @@ end GlobalTheory.frameChangeUnitDeterminant
 
 namespace GlobalTheory.frameChangeUnitDeterminant
 
-open Formalism.IndefR.Datum
 
 
 

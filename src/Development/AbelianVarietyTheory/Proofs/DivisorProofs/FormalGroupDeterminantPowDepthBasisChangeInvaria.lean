@@ -251,7 +251,6 @@ open MvPowerSeries ReciprocityTheory.PGsh ReciprocityTheory.ChartRestriction.G.S
 
 namespace GlobalTheory.DetDepthBasis
 
-open MvPowerSeries ReciprocityTheory.PGsh GlobalTheory.FGDepth
 
 noncomputable section
 
@@ -305,7 +304,6 @@ end GlobalTheory.DetDepthBasis
 
 namespace GlobalTheory.DetDepthBasis
 
-open MvPowerSeries ReciprocityTheory.PGsh GlobalTheory.FGDepth
 
 noncomputable section
 
@@ -383,7 +381,6 @@ end GlobalTheory.DetDepthBasis
 
 namespace GlobalTheory.DetDepthBasis
 
-open MvPowerSeries ReciprocityTheory.PGsh GlobalTheory.FGDepth
 
 noncomputable section
 

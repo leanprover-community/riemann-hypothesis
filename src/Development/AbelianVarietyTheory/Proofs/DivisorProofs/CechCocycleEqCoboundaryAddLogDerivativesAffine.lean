@@ -999,7 +999,6 @@ noncomputable section
 
 namespace GlobalTheory.CechTr
 
-open GlobalTheory.CechFin
 
 theorem cechFG_of_transfer {Z Z' : Scheme.{0}} {J : Type} (W : J → Z.Opens) (W' : J → Z'.Opens)
     (R : Type) [CommRing R]
@@ -1064,7 +1063,6 @@ end GlobalTheory.CechTr
 
 namespace GlobalTheory.CechTr
 
-open GlobalTheory.CechFin
 
 theorem preimage_inf' {X Y : Scheme.{0}} (f : X ⟶ Y) (A B : Y.Opens) :
     f ⁻¹ᵁ (A ⊓ B) = f ⁻¹ᵁ A ⊓ f ⁻¹ᵁ B := by
@@ -1088,7 +1086,6 @@ end GlobalTheory.CechTr
 
 namespace GlobalTheory.CechTr
 
-open GlobalTheory.CechFin
 
 theorem cechFG_of_baseChange_affineOpen (G X : Scheme.{0}) (p : G ⟶ X) (U : X.Opens) (hU : IsAffineOpen U)
     (J : Type) (W : J → G.Opens) (hWU : ∀ i, W i ≤ p ⁻¹ᵁ U) :

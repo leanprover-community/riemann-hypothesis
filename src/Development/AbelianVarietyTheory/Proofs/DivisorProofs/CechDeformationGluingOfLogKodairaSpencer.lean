@@ -101,7 +101,6 @@ open ReciprocityTheory.ChartRestriction.G.PullbackSections (tv)
 open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 open GlobalTheory.LogPole
 open scoped Classical
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 namespace GlobalTheory.FramedTransport
 

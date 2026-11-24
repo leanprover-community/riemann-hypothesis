@@ -175,7 +175,6 @@ end GlobalTheory.LatCount
 
 namespace GlobalTheory.LatCount
 
-open scoped ENNReal
 
 theorem encard_le (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : DataX E r)
     (x : Frame X.Ψ r) (ε R : ℝ) (hx : x ∈ X.dom) (hε : 0 < ε) (hR : 0 ≤ R)

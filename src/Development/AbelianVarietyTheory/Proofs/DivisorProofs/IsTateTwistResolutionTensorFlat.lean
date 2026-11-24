@@ -899,7 +899,6 @@ end GlobalTheory.EtC
 
 namespace GlobalTheory.EtC
 variable {R : Type} [CommRing R]
-open scoped DirectSum TensorProduct
 
 theorem Pair.lift_of_tmul {I J K : Cx R} (μ : Pair I J K) (U : Scheme.{0}) (w : ℤ) (p : {p : ℤ × ℤ // p.1 + p.2 = w})
     (a : Sec (I.X p.1.1) U) (b : Sec (J.X p.1.2) U) :
@@ -980,7 +979,6 @@ end GlobalTheory.EtC
 
 namespace GlobalTheory.EtC
 variable {R : Type} [CommRing R]
-open scoped DirectSum TensorProduct
 
 theorem Sec.map_d_d (I : Cx R) (i j k : ℤ) {U : Scheme.{0}} (a : Sec (I.X i) U) :
     Sec.map (I.d j k) (Sec.map (I.d i j) a) = 0 := by
@@ -1013,7 +1011,6 @@ end GlobalTheory.EtC
 
 namespace GlobalTheory.EtC
 variable {R : Type} [CommRing R]
-open scoped DirectSum TensorProduct
 
 theorem Tens.d_of (I J : Cx R) (U : Scheme.{0}) (w : ℤ) (p : {p : ℤ × ℤ // p.1 + p.2 = w})
     (y : Sec (I.X p.1.1) U ⊗[ULift.{1} R] Sec (J.X p.1.2) U) :
@@ -1084,7 +1081,6 @@ end GlobalTheory.EtC
 
 namespace GlobalTheory.EtC
 variable {R : Type} [CommRing R]
-open scoped DirectSum TensorProduct
 
 theorem Sec.eq_zero_of_isZero {F : Shv R} (hF : IsZero F) {U : Scheme.{0}} (x : Sec F U) : x = 0 := by
   have h : Sec.map (𝟙 F) x = Sec.map (0 : F ⟶ F) x := by rw [hF.eq_of_src (𝟙 F) 0]

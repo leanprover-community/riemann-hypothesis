@@ -68,7 +68,6 @@ set_option autoImplicit false
 
 namespace GlobalTheory.PDivGroup
 
-open GlobalTheory.PDiv
 
 theorem eq_zero_of_cob_eq_zero_of_pow (p : ℕ) (R : Type) [CommRing R] (N : ℕ)
     (hN : (p : R) ^ N = 0) (G : PDivGroup p R) (B : G.funs) (hB : G.cob B = 0) : B = 0 := by

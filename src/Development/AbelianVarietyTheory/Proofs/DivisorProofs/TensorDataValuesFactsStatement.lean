@@ -266,7 +266,6 @@ open GlobalTheory.Ex GlobalTheory.Mum.TensTor
 noncomputable section
 namespace GlobalTheory.Mum.TensTor.PsiVal
 
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 theorem stalk_gm {Z Y : Scheme.{0}} (f : Z ⟶ Y) {X : Scheme.{0}} (r : Y ⟶ X) (z : Z) (U : X.Opens) (h : r (f z) ∈ U)
     (a : Γ(X, U)ˣ) : (f.stalkMap z).hom (gm r (f z) U a).val = (gm (f ≫ r) z U a).val := by

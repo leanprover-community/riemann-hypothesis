@@ -49,7 +49,6 @@ open scoped ENNReal
 
 namespace GlobalTheory.LamPet
 
-open scoped ENNReal
 
 theorem log_le_of_sq_le {A B : ℝ≥0∞} {K L : ℝ} (hL : 0 < L) (hA : A ≠ ⊤) (hB : B ≠ ⊤) (hA0 : A ≠ 0)
     (h : A ^ 2 ≤ ENNReal.ofReal K * B ^ 2) :

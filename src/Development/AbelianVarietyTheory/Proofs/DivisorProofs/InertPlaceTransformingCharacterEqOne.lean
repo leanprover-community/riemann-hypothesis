@@ -419,7 +419,6 @@ noncomputable section
 
 namespace GlobalTheory.InertScalarUnit
 
-open GlobalTheory.LatVac
 
 theorem exists_ne_of_cm {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (σ : E →ₐ[F] E) (hσ : IsCMExt F E σ) : ∃ x : E, σ x ≠ x := by
@@ -488,7 +487,6 @@ end GlobalTheory.InertScalarUnit
 
 namespace GlobalTheory.InertScalarUnit
 
-open GlobalTheory.LatVac
 
 theorem exists_scalar_inv_at : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E), B.IsGood σ →
     ∀ (v : Pl (F := F)) (w : HeightOneSpectrum (𝓞 E)), Formalism.UG.IsInertAt F E v w → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (g : UA σ J),

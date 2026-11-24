@@ -235,7 +235,6 @@ noncomputable section
 
 namespace GlobalTheory.FormalAlg
 
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 theorem commGroup_mul_inv_zpow {G : Type} [CommGroup G] (x y : G) (a : ℤ) : (x * y⁻¹) ^ a = x ^ a * (y ^ a)⁻¹ := by
   rw [mul_zpow, inv_zpow]

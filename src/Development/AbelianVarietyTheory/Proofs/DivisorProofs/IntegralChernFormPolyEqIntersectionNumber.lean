@@ -1041,8 +1041,6 @@ noncomputable section
 namespace GlobalTheory.ChernCalc.TopPow
 
 open ReciprocityTheory.L2DbarEstimates (cHess)
-open GlobalTheory.HermFrame (ddc kappa)
-open GlobalTheory.GoodMetric (coordVec)
 
 theorem ddc_coordVec (n : ℕ) (u : V n → ℝ) (v : V n) (hu : ContDiffAt ℝ 2 u v) (a b : Fin n) :
     ddc u v (coordVec a) (coordVec b) = kappa * cHess n (fun w => (u w : ℂ)) v a b := by

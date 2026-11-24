@@ -1231,7 +1231,6 @@ open GlobalTheory.SplitFlip GlobalTheory.SplitWeil
 
 noncomputable section
 namespace GlobalTheory.StdPairZetaB
-open GlobalTheory.SplitWeil GlobalTheory.SplitFlip
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 

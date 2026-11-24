@@ -64,7 +64,6 @@ open scoped Classical
 
 noncomputable section
 namespace GlobalTheory.WeilL2Words
-open NumberField IsDedekindDomain
 
 theorem adeleOfMixedSpaceComponent_add (F : Type) [Field F] [NumberField F] (z w : mixedEmbedding.mixedSpace F) :
     arch1 F (z + w) = arch1 F z + arch1 F w :=

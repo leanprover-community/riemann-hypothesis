@@ -1053,7 +1053,6 @@ attribute [-instance] Formalism.DoubleCosetMeasures.instMeasMat GlobalTheory.Spl
 open MeasureTheory
 
 noncomputable section
-open MeasureTheory
 
 namespace GlobalTheory.ThetaSchurFam
 

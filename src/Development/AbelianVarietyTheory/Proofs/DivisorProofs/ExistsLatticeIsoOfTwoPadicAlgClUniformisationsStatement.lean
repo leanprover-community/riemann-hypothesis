@@ -1018,7 +1018,6 @@ open GlobalTheory.Poinc
 open MonObj
 attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
-open ReciprocityTheory.ChartRestriction.G.Out
 
 noncomputable section
 

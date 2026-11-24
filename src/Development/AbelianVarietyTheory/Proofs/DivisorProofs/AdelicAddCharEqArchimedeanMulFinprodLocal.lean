@@ -51,7 +51,6 @@ noncomputable section
 
 namespace GlobalTheory.PsiProd
 
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -104,7 +103,6 @@ end GlobalTheory.PsiProd
 
 namespace GlobalTheory.PsiProd
 
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 theorem addChar_sum {A ι : Type} [AddCommMonoid A] (χ : AddChar A ℂ) (s : Finset ι) (f : ι → A) :
     χ (∑ i ∈ s, f i) = ∏ i ∈ s, χ (f i) := by

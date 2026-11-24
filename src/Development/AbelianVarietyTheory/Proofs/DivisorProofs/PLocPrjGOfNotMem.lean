@@ -52,7 +52,6 @@ noncomputable section
 
 namespace GlobalTheory.EulerTw.Transport
 
-open GlobalTheory.BCT
 
 variable {G H : Type} [Group G] [TopologicalSpace G] [Group H] [TopologicalSpace H]
 

@@ -74,7 +74,6 @@ noncomputable section
 
 namespace GlobalTheory.SplitLatDict
 
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open scoped TensorProduct
 
 

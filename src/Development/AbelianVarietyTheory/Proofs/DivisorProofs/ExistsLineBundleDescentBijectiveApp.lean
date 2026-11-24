@@ -54,7 +54,6 @@ open TopologicalSpace
 
 namespace GlobalTheory.Mum.LBDesc
 
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor (gm gm_res gm_pull unit_ext glue_unit exists_chart gw PGen)
 
 variable {Z Y : Scheme.{0}}
 
@@ -205,7 +204,6 @@ end GlobalTheory.Mum.LBDesc
 
 namespace GlobalTheory.Mum
 
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor (gm gm_pull)
 open GlobalTheory.Mum.LBDesc
 
 theorem lb_descend : ∀ (Z Y : Scheme.{0}) (p : Z ⟶ Y), (∀ V : Y.Opens, Function.Bijective (p.app V).hom) →

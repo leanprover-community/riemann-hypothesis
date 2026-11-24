@@ -70,7 +70,6 @@ theorem det_ne_zero_of_hasSig {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h 
 end GlobalTheory.SplitIdele
 
 namespace GlobalTheory.SplitIdele
-open scoped TensorProduct
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
@@ -122,7 +121,6 @@ theorem exists_isQuad (h : IsCMExt F E σ) : ∃ ξ : AE F E, IsQuad (cA σ) ξ 
 end GlobalTheory.SplitIdele
 
 namespace GlobalTheory.SplitIdele
-open scoped TensorProduct
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
@@ -175,7 +173,6 @@ theorem chrW_comp (h : IsCMExt F E σ) (χ : Chr F E) {m : ℕ}
 end GlobalTheory.SplitIdele
 
 namespace GlobalTheory.SplitIdele
-open scoped TensorProduct
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 

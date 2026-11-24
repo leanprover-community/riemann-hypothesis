@@ -51,7 +51,6 @@ noncomputable section
 
 namespace GlobalTheory.SpecField
 
-open AlgebraicGeometry
 
 variable {A : Type} [CommRing A]
 

@@ -79,7 +79,6 @@ noncomputable section
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 namespace GlobalTheory.TorsSpec
 

@@ -711,7 +711,6 @@ end GlobalTheory.RegularGamma
 
 namespace GlobalTheory.RegularGamma
 
-open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots
 
 theorem isRegSS_gam {D : D7} (V : HSp D) (P : PPol D.sp.cm.sig V.rank) (ρ : D.what₂.Tau) {x φ}
     (h : IsIsom P (placeOf D ρ).Completion V.gram x φ) : IsRegSS (matAt V ρ (gam h)) := by

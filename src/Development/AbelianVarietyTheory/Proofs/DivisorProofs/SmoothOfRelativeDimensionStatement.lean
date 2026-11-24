@@ -704,7 +704,6 @@ set_option autoImplicit false
 
 noncomputable section
 
-open scoped TensorProduct
 
 namespace GlobalTheory.HTSummand
 

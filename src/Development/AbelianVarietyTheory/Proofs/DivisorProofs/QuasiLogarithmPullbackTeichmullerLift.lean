@@ -55,7 +55,6 @@ open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv G
 
 namespace GlobalTheory.KatzPull
 
-open GlobalTheory.Katz
 
 theorem lift_X (p : ℕ) [Fact p.Prime] {k : Type} [Field k] [CharP k p] {σ : Type} (s : σ) :
     Katz.lift p (X s : MvPowerSeries σ k) = X s := by

@@ -56,7 +56,6 @@ noncomputable section
 
 namespace GlobalTheory.SkewLatSelfDual
 
-open GlobalTheory.FunObj.SqNum
 
 variable {D : D7}
 

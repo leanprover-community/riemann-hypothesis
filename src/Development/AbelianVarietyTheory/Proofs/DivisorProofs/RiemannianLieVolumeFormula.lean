@@ -423,7 +423,6 @@ noncomputable section
 
 namespace GlobalTheory.LieDisc.ImIndex
 
-open NumberField ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.LieDisc
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 

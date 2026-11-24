@@ -592,7 +592,6 @@ set_option autoImplicit false
 
 namespace GlobalTheory.CechPoset.CechPosetH1Surjective
 
-open GlobalTheory.CechPoset
 
 variable {κ : Type} [LinearOrder κ] {R : Type} [CommRing R] (F : (NE κ)ᵒᵖ ⥤ CommAlgCat.{0} R)
 
@@ -649,7 +648,6 @@ theorem exists_triple {s : Finset κ} (h : s.card = 3) : ∃ a b c, a < b ∧ b 
 end GlobalTheory.CechPoset.CechPosetH1Surjective
 
 namespace GlobalTheory.CechPoset.CechPosetH1Surjective
-open GlobalTheory.CechPoset
 variable {κ : Type} [LinearOrder κ] {R : Type} [CommRing R] {F : (NE κ)ᵒᵖ ⥤ CommAlgCat.{0} R}
 
 theorem erase3 {a b c : κ} (hab : a < b) (hbc : b < c) :
@@ -690,7 +688,6 @@ theorem part2 (f : Z1 F) : f.1 - e1 F (zc f) = d0 F (fun a => V F f a (mn a)) :=
 end GlobalTheory.CechPoset.CechPosetH1Surjective
 
 namespace GlobalTheory.CechPoset.CechPosetH1Surjective
-open GlobalTheory.CechPoset
 variable {κ : Type} [LinearOrder κ] {R : Type} [CommRing R] {F : (NE κ)ᵒᵖ ⥤ CommAlgCat.{0} R}
 
 def term3 {M : Type} [AddCommGroup M] (W : κ → M) (a b c x : κ) : M :=

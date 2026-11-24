@@ -89,7 +89,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.WeightTwoSum
 open scoped ContDiff nonZeroDivisors
 
-open NumberField IsDedekindDomain GlobalTheory.CMVal
 
 namespace GlobalTheory.CMTypeImPos
 

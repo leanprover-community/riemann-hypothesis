@@ -51,7 +51,6 @@ noncomputable section
 
 namespace GlobalTheory.CovTop.VolUp.FrameBox
 
-open Matrix
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
@@ -87,7 +86,6 @@ def boxCoord {Ψ : Finset (E →+* ℂ)} (z : Fin r) (k : Ψ × {ab : Fin r × F
 end GlobalTheory.CovTop.VolUp.FrameBox
 
 namespace GlobalTheory.CovTop.VolUp.FrameBox
-open Matrix
 
 theorem det_ne_zero_of_isIdent {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {κ : Type} {p q : κ → ℕ}
     {Ψ : Finset (E →+* ℂ)} {G : Matrix (Fin r) (Fin r) E} {x : Frame Ψ r} {σ : κ ≃ Ψ}

@@ -275,7 +275,6 @@ noncomputable section
 
 namespace GlobalTheory.AdelicPush
 
-open GlobalTheory.AdelicU
 
 theorem lintegral_tens_eq_const_mul : ∀ {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (r : (κ → AF F) → ℂ),
     @Measurable _ _ (borel _) _ r →

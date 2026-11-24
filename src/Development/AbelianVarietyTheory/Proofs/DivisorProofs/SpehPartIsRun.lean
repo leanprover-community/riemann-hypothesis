@@ -125,7 +125,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace GlobalTheory.GalDef.RunPart
 
-open GlobalTheory.DefiniteBC
 
 theorem map_le_spehInf (d k : ℕ) (hk : k < d) (m : Multiset ℂ) :
     m.map (· + (((d : ℂ) - 1) / 2 - k)) ≤ spehInf d m := by

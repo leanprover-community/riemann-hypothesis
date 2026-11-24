@@ -445,7 +445,6 @@ noncomputable section
 
 namespace GlobalTheory.LieBasisChange
 
-open GlobalTheory.QLog
 
 variable {d : ℕ} {O E : Type} [CommRing O] [CommRing E] [Algebra O E]
 

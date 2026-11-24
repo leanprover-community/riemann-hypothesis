@@ -102,7 +102,6 @@ open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
 
 open GlobalTheory.LB GlobalTheory.Vanishing.H0 GlobalTheory.TangentOrigin
-open GlobalTheory.Adelic (cutIdeal)
 
 namespace GlobalTheory.CompHS
 

@@ -284,7 +284,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CoverForms
 
-open KaehlerDifferential
 
 theorem exists_pow_smul_eq_zero {R C B : Type} [CommRing R] [CommRing C] [CommRing B]
     [Algebra R C] [Algebra R B] (g : C →ₐ[R] B) (f : C)

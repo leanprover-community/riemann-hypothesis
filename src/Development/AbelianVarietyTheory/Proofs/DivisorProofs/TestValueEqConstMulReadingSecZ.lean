@@ -74,7 +74,6 @@ namespace GlobalTheory
 
 section IntWeight
 
-open Formalism.L2.Pj
 
 variable {K : Type} [Field K] {ι : Type}
   {pts : ∀ (S : Type) [CommRing S] [Algebra K S], Type}

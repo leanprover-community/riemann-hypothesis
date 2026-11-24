@@ -73,7 +73,6 @@ open GlobalTheory.Cartier GlobalTheory.Discrepancy GlobalTheory.QCoh
 set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.NadelApp
-open GlobalTheory.Discrepancy GlobalTheory.Cartier GlobalTheory.QCoh
 
 theorem topologicalKrullDim_eq_of_smooth (X : Scheme.{0}) [IsIntegral X] (q : X ⟶ Sp ℂ) (D : ℕ)
     [SmoothOfRelativeDimension D q] : topologicalKrullDim X = D := by

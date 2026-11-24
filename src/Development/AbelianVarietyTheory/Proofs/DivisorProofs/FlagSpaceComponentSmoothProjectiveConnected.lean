@@ -71,7 +71,6 @@ open GlobalTheory.FlagMod (FlagCover FlagModel Frames)
 open GlobalTheory.ShFam (EigFrame FlagCpt)
 open ReciprocityTheory.AnForm.R.FinalTheorems (Snc)
 open GlobalTheory.Toroidal (gen genι genStr genBd genBdIdeal)
-open GlobalTheory.CompHS (Y₀ inc₀ str₀ barComp U₀ IsVariety₀ TorFlag dense_U₀ flagStr flagOpen)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)}

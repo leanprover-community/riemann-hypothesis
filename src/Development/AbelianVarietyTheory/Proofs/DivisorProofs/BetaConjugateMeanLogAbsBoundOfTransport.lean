@@ -149,7 +149,6 @@ theorem norm_infChar (φ : I → E →+* ℂ) (n : I → ℤ) (a : Ideles E) : �
 end GlobalTheory.ConjValChar
 
 namespace GlobalTheory.ConjValChar
-open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host GlobalTheory.CMVal
 variable {E : Type} [Field E] [NumberField E]
 
 theorem continuous_conjFin (χ : HChar E) (σ : ℂ ≃+* ℂ) : Continuous (conjFin χ σ) := by
@@ -198,7 +197,6 @@ theorem continuous_conjFin (χ : HChar E) (σ : ℂ ≃+* ℂ) : Continuous (con
 end GlobalTheory.ConjValChar
 
 namespace GlobalTheory.ConjValChar
-open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host GlobalTheory.CMVal
 variable {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I]
 
 theorem infChar_diag (φ : I → E →+* ℂ) (n : I → ℤ) (k : Eˣ) :
@@ -254,7 +252,6 @@ theorem infChar_finIdele (φ : I → E →+* ℂ) (n : I → ℤ) (y : (Af E)ˣ)
 end GlobalTheory.ConjValChar
 
 namespace GlobalTheory.ConjValChar
-open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host GlobalTheory.CMVal
 variable {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I]
 
 theorem injective_of_isCMType {φ : I → E →+* ℂ} (h : IsCMType φ) : Function.Injective φ := fun i j hij =>
@@ -322,7 +319,6 @@ theorem sigma_modF (σ : ℂ ≃+* ℂ) (y : (Af E)ˣ) (s : ℕ) : σ ((modF y ^
 end GlobalTheory.ConjValChar
 
 namespace GlobalTheory.ConjValChar
-open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host GlobalTheory.CMVal
 variable {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I]
 
 theorem conj_diag [IsCMField E] {φ : I → E →+* ℂ} {σ : ℂ ≃+* ℂ} (p : Equiv.Perm I)
@@ -379,7 +375,6 @@ theorem conjChar_hasInf : HasInf (conjChar φ σ p hp χ m hχ) φ (fun j => m (
 end GlobalTheory.ConjValChar
 
 namespace GlobalTheory.ConjValChar
-open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host GlobalTheory.CMVal
 variable {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I]
 
 theorem infChar_infIdele {φ : I → E →+* ℂ} (n : I → ℤ) (hbij : Function.Bijective fun i => InfinitePlace.mk (φ i))
@@ -419,7 +414,6 @@ theorem conjChar_levelLe_iff (v : HeightOneSpectrum (𝓞 E)) (n : ℕ) :
 end GlobalTheory.ConjValChar
 
 namespace GlobalTheory.ConjValChar
-open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host GlobalTheory.CMVal
 variable {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I]
 variable [IsCMField E] {φ : I → E →+* ℂ} {σ : ℂ ≃+* ℂ} {p : Equiv.Perm I} {hp : ∀ i x, σ (φ i x) = φ (p i) x}
   {χ : HChar E} {m : I → ℤ} {hχ : HasInf χ φ m}
@@ -463,7 +457,6 @@ theorem conjChar_trivOnF (hT : TrivOnF χ) (hbij : Function.Bijective fun i => I
 end GlobalTheory.ConjValChar
 
 namespace GlobalTheory.ConjValChar
-open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host GlobalTheory.CMVal
 
 theorem exists_conj_valChar : ∀ {K E : Type} [Field K] [NumberField K] [Field E] [NumberField E] [IsCMField E] [Algebra K E]
     {I : Type} [Fintype I] (φK : K →+* ℂ) (φ : I → E →+* ℂ) (s : ℕ) (κ : I → ℕ) (𝔣 : Ideal (OF E)) (χ : HChar E)

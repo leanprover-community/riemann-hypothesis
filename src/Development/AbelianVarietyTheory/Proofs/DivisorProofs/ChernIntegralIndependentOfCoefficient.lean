@@ -115,7 +115,6 @@ end GlobalTheory.FlatMass
 
 namespace GlobalTheory.FlatMass
 
-open GlobalTheory.CoverNorm
 
 variable {F : Type} [Field F] [NumberField F] {Y : Var F}
 

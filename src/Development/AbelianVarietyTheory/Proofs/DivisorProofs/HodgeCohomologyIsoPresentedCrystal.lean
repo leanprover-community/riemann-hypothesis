@@ -124,7 +124,6 @@ end GlobalTheory.LiftSys.Coh
 
 namespace GlobalTheory.LiftSys.Coh
 
-open Opposite
 
 variable {R R₀ : Type} [CommRing R] [CommRing R₀] {I : Ideal R} {π : R →+* R₀} {X₀ : Scheme.{0}}
   {s₀ : X₀ ⟶ Sp R₀} {S : Sys I π s₀} {X : Scheme.{0}} {s : X ⟶ Sp R} {i : X₀ ⟶ X}
@@ -188,7 +187,6 @@ end GlobalTheory.LiftSys.Coh
 
 namespace GlobalTheory.LiftSys.Coh
 
-open Opposite
 
 variable {R R₀ : Type} [CommRing R] [CommRing R₀] {I : Ideal R} {π : R →+* R₀} {X₀ : Scheme.{0}}
   {s₀ : X₀ ⟶ Sp R₀} {S : Sys I π s₀} {X : Scheme.{0}} {s : X ⟶ Sp R} {i : X₀ ⟶ X}
@@ -257,7 +255,6 @@ end GlobalTheory.LiftSys.Coh
 
 namespace GlobalTheory.LiftSys.Coh
 
-open Opposite
 
 variable {R R₀ : Type} [CommRing R] [CommRing R₀] {I : Ideal R} {π : R →+* R₀} {X₀ : Scheme.{0}}
   {s₀ : X₀ ⟶ Sp R₀} {S : Sys I π s₀} {X : Scheme.{0}} {s : X ⟶ Sp R} {i : X₀ ⟶ X}

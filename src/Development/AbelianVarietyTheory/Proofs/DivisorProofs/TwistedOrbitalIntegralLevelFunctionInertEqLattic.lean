@@ -923,7 +923,6 @@ noncomputable section
 
 namespace GlobalTheory.TwLat
 
-open Formalism.UG
 
 namespace Unimod
 

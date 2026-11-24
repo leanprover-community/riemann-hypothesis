@@ -55,7 +55,6 @@ set_option autoImplicit false
 noncomputable section
 
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 namespace GlobalTheory.TorsSpec
 

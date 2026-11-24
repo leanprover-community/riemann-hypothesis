@@ -52,7 +52,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 namespace GlobalTheory.ChrLocal
 
 open scoped TensorProduct
-open GlobalTheory.AdelicU
 
 theorem map_eq_zero_of_at {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {B : Type} [CommRing B]
     [Algebra F B] {v : Pl (F := F)} {x : _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)} (hx : At (evFin F v) x) {a : AF F}

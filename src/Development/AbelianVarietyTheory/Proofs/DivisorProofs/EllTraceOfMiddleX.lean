@@ -300,7 +300,6 @@ open GlobalTheory.TrMult
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.TruncKer
 
-open GlobalTheory.Orb
 
 namespace GlobalTheory.RegSupp
 
@@ -421,7 +420,6 @@ noncomputable section
 
 namespace GlobalTheory.ArchVanish
 
-open GlobalTheory.AdelicU
 
 section General
 
@@ -465,7 +463,6 @@ open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 
 noncomputable section
 namespace GlobalTheory.CompanionTheory.EllTrace
-open GlobalTheory.TruncKer
 
 theorem countable_GF {D : D7} (V : HSp D) : Countable (GF V) := by
   haveI : Countable D.host.E :=
@@ -1809,7 +1806,6 @@ open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 noncomputable section
 namespace GlobalTheory.PsCo.Plug
 open GlobalTheory.CompanionTheory.EllTrace
-open GlobalTheory.TruncKer
 
 theorem ellTrace_of_middleX : MainStatements.RegularCuspidalTrace.RegClassInt → MainStatements.RegularCuspidalTrace.RegClassFin → (∀ (D : D7) (V : HSp D) (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant], GlobalTheory.IndefiniteRowSideFullHecke.CuspidalNoRadicalFixed.CuspidalOperators V μ) → GlobalTheory.IndefiniteRowSideFullHecke.ConstantTermVanishing.ParabolicAndConstTermX → GlobalTheory.IndefiniteRowSideFullHecke.IwahoriSubgroup.IwahoriEigenvalues → GlobalTheory.IndefiniteRowSideFullHecke.CentralizerTensorForms.RegularSemisimple → GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt.NonFieldTypeVanishingX → HyperZeroX → EllTraceX := by
   intro hInt hFinC hCO hPC hIw _hRS hNF hHZ D V lam S M T U μa μf μ _ _ fa ff hT

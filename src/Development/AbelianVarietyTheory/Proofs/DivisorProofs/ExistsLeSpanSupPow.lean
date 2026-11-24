@@ -115,7 +115,6 @@ end GlobalTheory.Izumi
 
 namespace GlobalTheory.Izumi
 
-open IsLocalRing
 
 theorem exists_le_span_sup_pow (A : Type) [CommRing A] [IsLocalRing A] [IsNoetherianRing A] (K : ℕ → Ideal A)
     (f : A) (hK : Antitone K) (hf : ∀ N, f ∈ K N)

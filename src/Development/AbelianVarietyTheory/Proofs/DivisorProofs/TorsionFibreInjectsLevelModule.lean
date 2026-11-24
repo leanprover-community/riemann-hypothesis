@@ -92,7 +92,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 set_option autoImplicit false
 noncomputable section
@@ -227,7 +226,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.eq_of_torsionPointClassAtStalk_eq : ∀ {X' : Scheme.{0}} [IsIntegral X'] [GlobalTheory.IsNormalScheme X'] (G : Over X') [GrpObj G] [IsCommMonObj G]
@@ -261,7 +259,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 namespace GlobalTheory.TorsSpec
 
@@ -322,7 +319,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.eq_of_formallyUnramified_of_eq_at_closedPoint : ∀ {S T : Scheme.{0}} (f : T ⟶ S) [FormallyUnramified f]
@@ -353,7 +349,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 set_option autoImplicit false
 noncomputable section
 
@@ -466,7 +461,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.exists_class_torsionPoint_localScheme : ∀ {E : Type} [Field E] {X' : Scheme.{0}} [IsIntegral X'] [GlobalTheory.IsNormalScheme X'] (G : Over X') [GrpObj G] [IsCommMonObj G]
@@ -500,7 +494,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 set_option autoImplicit false
 noncomputable section
 open CartesianMonoidalCategory MonObj
@@ -600,7 +593,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.exists_levelSection_of_ideal_torsion_at_geometricPoint : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
@@ -634,7 +626,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 namespace GlobalTheory.TorsSpec
 
@@ -717,7 +708,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.levelSection_add_at_geometricPoint : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
@@ -749,7 +739,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 namespace GlobalTheory.TorsSpec
 
@@ -836,7 +825,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 end -- clump:auto
@@ -862,7 +850,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 set_option autoImplicit false
 open CartesianMonoidalCategory MonObj
@@ -933,7 +920,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.levelSection_smul_at_geometricPoint : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
@@ -965,7 +951,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 set_option autoImplicit false
 noncomputable section
 
@@ -1080,7 +1065,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.torsionPointClassAtStalk_smul_action : ∀ {E : Type} [Field E] {X' : Scheme.{0}} [IsIntegral X'] [GlobalTheory.IsNormalScheme X'] (G : Over X') [GrpObj G] [IsCommMonObj G]
@@ -1116,7 +1100,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 set_option autoImplicit false
 noncomputable section
@@ -1181,7 +1164,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 set_option autoImplicit false
 noncomputable section
 
@@ -1259,7 +1241,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.torsionPoint_class_image_eq_level_action : ∀ {E : Type} [Field E] {X' : Scheme.{0}} [IsIntegral X'] [GlobalTheory.IsNormalScheme X'] (G : Over X') [GrpObj G] [IsCommMonObj G]
@@ -1296,7 +1277,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 open CartesianMonoidalCategory MonObj
 set_option autoImplicit false
@@ -1426,7 +1406,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.torsionPoint_class_mul_eq_add : ∀ {X' : Scheme.{0}} [IsIntegral X'] [GlobalTheory.IsNormalScheme X'] (G : Over X') [GrpObj G] [IsCommMonObj G]
@@ -1465,7 +1444,6 @@ set_option autoImplicit false
 noncomputable section
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 namespace GlobalTheory.TorsSpec
 

@@ -85,7 +85,6 @@ open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheor
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw GlobalTheory.FunObj.borelSpaceKw
 
-open GlobalTheory.StdFrames (cpt sg OA mem_OA_iff)
 open GlobalTheory.IdemSupport (cP)
 
 namespace GlobalTheory.ProdLevCompactC

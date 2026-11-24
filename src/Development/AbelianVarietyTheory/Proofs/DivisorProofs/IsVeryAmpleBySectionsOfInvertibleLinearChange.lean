@@ -57,9 +57,7 @@ noncomputable section
 namespace GlobalTheory.LinChange
 
 open TopologicalSpace
-open ReciprocityTheory.ChartRestriction.G.Semi (LB)
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp PSpace resG)
 open GlobalTheory.QCoh.Qcqs (baseRingHom baseRingHom_res baseRingHom_top)
 
 variable {R : Type} [CommRing R] {X : Scheme.{0}} {H : LB X} {n : ℕ}
@@ -103,9 +101,7 @@ end GlobalTheory.LinChange
 
 namespace GlobalTheory.LinChange
 open TopologicalSpace
-open ReciprocityTheory.ChartRestriction.G.Semi (LB)
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp PSpace resG)
 open GlobalTheory.QCoh.Qcqs (baseRingHom baseRingHom_res baseRingHom_top)
 open GlobalTheory.ProjSpace (toProj toProj_str toProj_preimage_chart O1 coord coord_f chart pullRatio secRatio_on
   pullRatio_toProj_on iSup_nonzeroLocus_coord toProj_coord)
@@ -164,9 +160,7 @@ end GlobalTheory.LinChange
 
 namespace GlobalTheory.LinChange
 open TopologicalSpace
-open ReciprocityTheory.ChartRestriction.G.Semi (LB)
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp PSpace resG)
 open GlobalTheory.ProjSpace (toProj coord iSup_nonzeroLocus_coord toProj_coord)
 
 variable {R : Type} [CommRing R] {X : Scheme.{0}} {H : LB X} {n : ℕ}

@@ -54,7 +54,6 @@ open GlobalTheory.Mum
 
 namespace GlobalTheory.Mum.ExpandNonzero
 
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 theorem mem_wchart {X Y : Scheme.{0}} (L : LB X) {K : Type} [Fintype K] (φ : K → (Y ⟶ X))
     (j : K → L.ι) (y : Y) : y ∈ LB.wchart L φ j ↔ ∀ k, (φ k).base y ∈ L.U (j k) := by

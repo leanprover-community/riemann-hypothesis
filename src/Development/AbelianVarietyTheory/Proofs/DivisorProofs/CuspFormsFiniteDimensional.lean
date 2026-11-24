@@ -93,7 +93,6 @@ theorem eLpNorm_sq_eq {α : Type*} [MeasurableSpace α] {μ : Measure α} [IsPro
 
 open scoped TensorProduct
 
-open scoped TensorProduct
 
 variable {D : D7} {r : ℕ} {Comp : Type} [Fintype Comp] {X : Comp → Data D.host.E r}
 

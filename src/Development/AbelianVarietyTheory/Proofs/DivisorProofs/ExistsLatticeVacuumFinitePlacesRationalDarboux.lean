@@ -631,7 +631,6 @@ open scoped GlobalTheory.VacAny
 
 noncomputable section
 
-open Matrix
 
 namespace GlobalTheory.HeisLatVac
 

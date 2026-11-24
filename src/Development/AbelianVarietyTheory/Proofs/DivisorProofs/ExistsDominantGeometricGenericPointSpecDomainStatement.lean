@@ -85,7 +85,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 namespace GlobalTheory
 
@@ -133,7 +132,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.exists_dominant_geometricGenericPoint_spec_domain : ∀ (A : CommRingCat.{0}) [IsDomain A], ∃ (Ω : Type) (_ : Field Ω) (_ : IsAlgClosed Ω) (y : Sp Ω ⟶ Spec A), (∀ x, (y x).asIdeal = ⊥) ∧ IsDominant y := by

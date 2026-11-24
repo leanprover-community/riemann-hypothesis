@@ -101,7 +101,6 @@ open GlobalTheory.ChiGrid GlobalTheory.LeafRestExamples GlobalTheory.FunObj.SqNu
 open GlobalTheory.Mem.Col2.SplitChar (finIdl)
 open scoped nonZeroDivisors
 
-open GlobalTheory.NormSum
 
 noncomputable section
 

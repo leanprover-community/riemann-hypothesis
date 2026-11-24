@@ -61,7 +61,6 @@ noncomputable section
 
 namespace GlobalTheory.BiextPairing
 
-open GlobalTheory.UPel.HT
 
 theorem lbIso_lbPow_hecke {X : Scheme.{0}} {P : LB X} (hP : P.IsLB) (k : ℕ) :
     LBIso (lbPow P k) ((Hecke.lbPow P k).pull (𝟙 X)) := by
@@ -85,6 +84,5 @@ end GlobalTheory.BiextPairing
 
 namespace GlobalTheory.BiextPairing
 
-open GlobalTheory.UPel.HT
 
 end GlobalTheory.BiextPairing

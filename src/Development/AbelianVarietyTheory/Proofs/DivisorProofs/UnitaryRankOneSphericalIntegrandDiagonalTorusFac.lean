@@ -61,7 +61,6 @@ noncomputable section
 
 namespace GlobalTheory.WeylCell.U21TorusFactor
 
-open Formalism.UG
 
 theorem swap_rev_comm {n : ℕ} (a i : Fin n) :
     Equiv.swap a a.rev i.rev = (Equiv.swap a a.rev i).rev := by
@@ -118,7 +117,6 @@ end GlobalTheory.WeylCell.U21TorusFactor
 
 namespace GlobalTheory.WeylCell.U21TorusFactor
 
-open Formalism.UG
 
 theorem torus_factor : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] [CompleteSpace L] (ϖ : L)
     (σ : L →+* L) (q : ℕ), IsUnramInv ϖ σ q →

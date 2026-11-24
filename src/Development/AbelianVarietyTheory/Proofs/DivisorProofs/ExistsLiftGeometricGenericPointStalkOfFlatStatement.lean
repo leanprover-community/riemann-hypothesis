@@ -83,7 +83,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 namespace GlobalTheory
 
@@ -148,7 +147,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] CategoryTheory.Hom.group
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelMod)
 open MonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi
 
 
 theorem _root_.GlobalTheory.T.exists_lift_geometricGenericPoint_stalk_of_flat : ∀ {X' W : Scheme.{0}} [IsIntegral X'] (h : W ⟶ X') [Flat h] (q : W)

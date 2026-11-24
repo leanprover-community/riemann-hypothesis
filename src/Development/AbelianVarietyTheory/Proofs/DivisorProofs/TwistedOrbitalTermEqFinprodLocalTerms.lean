@@ -56,7 +56,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace GlobalTheory.EulerAbs
 
-open GlobalTheory.BCT
 
 theorem mem_map_conj_iff_term {G : Type} [Group G] (K : Subgroup G) (y z : G) :
     z ∈ K.map (MulAut.conj y).toMonoidHom ↔ y⁻¹ * z * y ∈ K := by

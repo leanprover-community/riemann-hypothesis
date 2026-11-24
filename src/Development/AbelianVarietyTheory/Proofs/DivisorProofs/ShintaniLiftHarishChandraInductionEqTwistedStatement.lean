@@ -600,7 +600,6 @@ noncomputable section
 
 namespace GlobalTheory.ShinBlock
 
-open GlobalTheory.Shin
 
 variable {K : Type} [Field K]
 

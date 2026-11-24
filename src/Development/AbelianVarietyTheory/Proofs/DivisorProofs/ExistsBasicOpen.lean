@@ -48,7 +48,6 @@ set_option autoImplicit false
 
 noncomputable section
 
-open CategoryTheory AlgebraicGeometry
 
 namespace GlobalTheory.CechDR
 

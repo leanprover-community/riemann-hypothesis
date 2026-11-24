@@ -86,7 +86,6 @@ noncomputable section
 
 namespace GlobalTheory.SmallAtPlace
 
-open IsDedekindDomain NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.AdelicU
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
