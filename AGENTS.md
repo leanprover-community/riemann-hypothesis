@@ -73,7 +73,8 @@ Drop the part from `---` on if the pull request depends on no other.
   CI rejects any pull request that does.
 - add axioms or `sorry`. `src/Main.lean` may use only `propext`, `Quot.sound` and
   `Classical.choice`.
-- rewrite the proof along a substantially different path, or add files the proof does not need.
+- rewrite the proof along a substantially different path, or add files or lemmas the proof does
+  not need.
 - report the results of your own builds or Comparator runs in a pull request. Check that your
   change compiles, but don't write that it builds on your machine; maintainers build pull
   requests themselves.
@@ -82,6 +83,12 @@ Drop the part from `---` on if the pull request depends on no other.
 
 These are changes agents often make that we don't want. Most of them hide a problem in one file
 instead of fixing it where it comes from. We add to this list as we find more.
+
+### Keeping the old lemma next to a new one
+
+A sharper or more general version of a lemma is welcome if its proof is about as easy as the old
+one and it replaces the old one: update the callers and delete the old statement instead of
+keeping it as a corollary. Don't add lemmas nothing uses.
 
 ### Rewriting `nlinarith` by hand
 

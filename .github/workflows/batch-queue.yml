@@ -16,7 +16,8 @@ name: batch queue
 # a large pull request is not the one left out when it conflicts with smaller ones. The order
 # counts when a batch is started or rebuilt. After that, a newly queued pull request goes on top
 # of what is already there, and one that was left out stays out, `priority` or not. To start
-# again in order, close the batch's pull request.
+# again in order, close the batch's pull request. Commenting `p`, or `p <commit>`, queues a pull
+# request the way `batch` does and labels it `priority` as well.
 #
 # Commenting `-batch` takes a pull request out of the queue again: it withdraws the recorded
 # commit and removes the `batch queue` label, and nothing else. Commits already merged into a
@@ -47,7 +48,8 @@ name: batch queue
 # the queue like any other.
 #
 # Only a comment whose whole text is one of these counts, letter case and surrounding blank space
-# aside: `batch` or `b`, `batch <commit>` or `b <commit>`, `-batch` or `-b`, `aa` and `ready`.
+# aside: `batch` or `b`, `batch <commit>` or `b <commit>`, `p` and `p <commit>`, `-batch` or
+# `-b`, `aa` and `ready`.
 # `aa` needs triage access to this repository, `ready` needs triage access or to come from the
 # pull request's author, and the others need write access. Every other comment is ignored.
 # GitHub runs this workflow from the default branch for every event below, so a pull request
@@ -77,15 +79,16 @@ permissions: {}
 
 jobs:
   label:
-    name: Act on a `batch`, `-batch`, `aa` or `ready` comment
+    name: Act on a `batch`, `p`, `-batch`, `aa` or `ready` comment
     # A first filter, so that most comments start no runner: pull requests only, and the comment
-    # has to contain one of the words. `b`, `-b` and `aa` are too short to look for anywhere in a
-    # comment, and `ready` too common, so they are only noticed at its very start. startsWith
+    # has to contain one of the words. `b`, `p`, `-b` and `aa` are too short to look for anywhere
+    # in a comment, and `ready` too common, so they are only noticed at its very start. startsWith
     # ignores letter case. The step below makes the exact comparison.
     if: >-
       ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request &&
           (contains(github.event.comment.body, 'batch') ||
            startsWith(github.event.comment.body, 'b') || startsWith(github.event.comment.body, '-b') ||
+           startsWith(github.event.comment.body, 'p') ||
            startsWith(github.event.comment.body, 'aa') || startsWith(github.event.comment.body, 'ready')) }}
     runs-on: ubuntu-latest
     # `contents: read` is for the log of pushes to a branch of this repository, and
@@ -110,6 +113,7 @@ jobs:
           BODY: ${{ github.event.comment.body }}
           WHEN: ${{ github.event.comment.created_at }}
           LABEL: batch queue
+          PRIORITY: priority
           WAITING: awaiting-author
         run: |
           # The comment text arrives in an environment variable. It is compared and never run.
@@ -117,21 +121,25 @@ jobs:
           # Drop blank space, line breaks included, from both ends.
           text="${text#"${text%%[![:space:]]*}"}"
           text="${text%"${text##*[![:space:]]}"}"
-          # `batch <commit>` names the commit to queue.
+          # `batch <commit>` names the commit to queue. `p` queues like `batch` and also adds the
+          # `priority` label. `again` is the word to repeat in a help comment.
           named=''
-          with_commit='^(batch|b)[[:space:]]+([0-9a-f]{7,40})$'
+          with_commit='^(batch|b|p)[[:space:]]+([0-9a-f]{7,40})$'
           if [[ "$text" =~ $with_commit ]]; then
             named=${BASH_REMATCH[2]}
-            text=batch
+            text=${BASH_REMATCH[1]}
           fi
+          priority=''
+          again=batch
           case "$text" in
             b) text=batch ;;
+            p) text=batch priority=yes again=p ;;
             -b) text=-batch ;;
           esac
           case "$text" in
             batch | -batch | aa | ready) ;;
             *)
-              echo "The comment is not just 'batch', '-batch', 'aa' or 'ready', or 'b' or '-b': nothing to do."
+              echo "The comment is not just 'batch', 'p', '-batch', 'aa' or 'ready', or 'b' or '-b': nothing to do."
               exit 0
               ;;
           esac
@@ -221,6 +229,10 @@ jobs:
             echo "::error::There is no '$LABEL' label in $REPO. Was it renamed?"
             exit 1
           fi
+          if [ -n "$priority" ] && ! gh api "repos/$REPO/labels/$(jq -rn --arg label "$PRIORITY" '$label | @uri')" --silent; then
+            echo "::error::There is no '$PRIORITY' label in $REPO. Was it renamed?"
+            exit 1
+          fi
 
           # The pull request's head now, and the repository and branch it comes from.
           {
@@ -238,7 +250,7 @@ jobs:
           # comment, so a push made in between would otherwise pass as approved.
           if [ -n "$named" ]; then
             if [ "${#named}" -lt 40 ]; then
-              say "$(printf '<!-- batch-queue-help -->\nNothing was queued. `batch <commit>` needs the full 40-character commit id, because another commit can be made to share a shorter one. The head of this pull request is now:\n\n```\nbatch %s\n```' "$head")"
+              say "$(printf '<!-- batch-queue-help -->\nNothing was queued. `%s <commit>` needs the full 40-character commit id, because another commit can be made to share a shorter one. The head of this pull request is now:\n\n```\n%s %s\n```' "$again" "$again" "$head")"
               echo "A short commit id was given: nothing queued."
               exit 0
             fi
@@ -261,7 +273,7 @@ jobs:
             fi
             why=$(printf 'the head of this pull request when `%s` commented' "$AUTHOR")
             if ! [[ "$commit" =~ ^[0-9a-f]{40}$ ]]; then
-              say "$(printf '<!-- batch-queue-help -->\nNothing was queued. GitHub'"'"'s log of pushes to this branch did not show which commit was the head when you commented. Name the commit to queue. The head is now:\n\n```\nbatch %s\n```' "$head")"
+              say "$(printf '<!-- batch-queue-help -->\nNothing was queued. GitHub'"'"'s log of pushes to this branch did not show which commit was the head when you commented. Name the commit to queue. The head is now:\n\n```\n%s %s\n```' "$again" "$head")"
               echo "Could not tell which commit was the head of pull request $PR at $WHEN: nothing queued."
               exit 0
             fi
@@ -272,8 +284,14 @@ jobs:
           # this workflow.
           say "$(printf '<!-- batch-queue-approved %s -->\nQueued at `%s`, %s. A batch takes this commit and no other.' "$commit" "$commit" "$why")"
           echo "Recorded $commit as the queued commit."
-          gh api -X POST "repos/$REPO/issues/$PR/labels" -f "labels[]=$LABEL" --silent
-          echo "Added '$LABEL' to pull request $PR, as $AUTHOR asked."
+          # Both labels in one request, so the sync job never sees the pull request queued
+          # without its `priority`.
+          labels=(-f "labels[]=$LABEL")
+          if [ -n "$priority" ]; then
+            labels+=(-f "labels[]=$PRIORITY")
+          fi
+          gh api -X POST "repos/$REPO/issues/$PR/labels" "${labels[@]}" --silent
+          echo "Added '$LABEL'${priority:+ and '$PRIORITY'} to pull request $PR, as $AUTHOR asked."
           echo "queued=true" >> "$GITHUB_OUTPUT"
 
   conflicts:
