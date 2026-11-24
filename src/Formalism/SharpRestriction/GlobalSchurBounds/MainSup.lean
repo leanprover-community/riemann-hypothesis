@@ -146,15 +146,15 @@ private lemma gl2b2_ptw (c v lam : ℝ) (hc : 0 < c) (hv : 1 ≤ v) (hl0 : 0 < l
   have hD : 0 < lam + Real.sqrt v := by positivity
   have h39 : 0 ≤ v ^ (39 / 100 : ℝ) := by positivity
   have hkey : v ^ (39 / 100 : ℝ) * (lam + Real.sqrt v) ≤ 2 * v := by
-    nlinarith [mul_le_mul_of_nonneg_left hl h39, mul_le_mul_of_nonneg_left hsq h39]
+    linarith [mul_le_mul_of_nonneg_left hl h39, mul_le_mul_of_nonneg_left hsq h39]
   have hexp : Real.exp (-c * v / (lam + Real.sqrt v)) ≤
       Real.exp (-(c / 2) * v ^ (39 / 100 : ℝ)) := by
     apply Real.exp_le_exp.mpr
     rw [div_le_iff₀ hD]
-    nlinarith [mul_le_mul_of_nonneg_left hkey hc.le]
+    linarith [mul_le_mul_of_nonneg_left hkey hc.le]
   have hpoly : (v + lam) ^ 2 ≤ 4 * v ^ (2 : ℝ) := by
     rw [Real.rpow_two]
-    nlinarith [mul_nonneg (sub_nonneg.mpr hlv) hv0.le, mul_nonneg (sub_nonneg.mpr hlv) hl0.le]
+    linarith [mul_nonneg (sub_nonneg.mpr hlv) hv0.le, mul_nonneg (sub_nonneg.mpr hlv) hl0.le]
   calc (v + lam) ^ 2 * Real.exp (-c * v / (lam + Real.sqrt v))
       ≤ (4 * v ^ (2 : ℝ)) * Real.exp (-(c / 2) * v ^ (39 / 100 : ℝ)) :=
         mul_le_mul hpoly hexp (Real.exp_pos _).le (by positivity)
@@ -199,7 +199,7 @@ theorem gl2b2_thinIntegral : Formalism.HermitianLattices.ZeroFreeRegionGL2.ThinI
     have hs : x ^ (ε / 3) = x ^ (33 * ε / 100) * x ^ (ε / 300) := by
       rw [← Real.rpow_add hx0]; congr 1; ring
     have hpos : 0 ≤ x ^ (33 * ε / 100) := by positivity
-    nlinarith [mul_le_mul_of_nonneg_left h1 hpos]
+    linarith [mul_le_mul_of_nonneg_left h1 hpos]
   have hV1 : 1 ≤ V := le_trans (Real.one_le_rpow hxone (by positivity)) hVx
   have hV0 : 0 < V := by linarith
   have hL0 : 0 < Real.log x := Real.log_pos (by linarith)
@@ -212,7 +212,7 @@ theorem gl2b2_thinIntegral : Formalism.HermitianLattices.ZeroFreeRegionGL2.ThinI
     have hsq : x ^ δ = x ^ δ' * x ^ δ' := by
       rw [← Real.rpow_add hx0]; congr 1; rw [hδ, hδ']; ring
     have h2 : Real.log x ^ 2 ≤ (x ^ δ' / δ') ^ 2 := by
-      nlinarith [mul_nonneg (sub_nonneg.mpr hLle) hL0.le,
+      linarith [mul_nonneg (sub_nonneg.mpr hLle) hL0.le,
         mul_nonneg (sub_nonneg.mpr hLle) (sub_nonneg.mpr hLle)]
     rw [hsq]
     calc Real.log x ^ 2 ≤ (x ^ δ' / δ') ^ 2 := h2
@@ -246,7 +246,7 @@ theorem gl2b2_thinIntegral : Formalism.HermitianLattices.ZeroFreeRegionGL2.ThinI
         Real.exp (-(c / 4) * V ^ (39 / 100 : ℝ)) * Real.exp (-(c / 4) * v ^ (39 / 100 : ℝ)) := by
       rw [← Real.exp_add]
       apply Real.exp_le_exp.mpr
-      nlinarith [mul_le_mul_of_nonneg_left h39 hc.le]
+      linarith [mul_le_mul_of_nonneg_left h39 hc.le]
     have hv2 : 0 ≤ v ^ (2 : ℝ) := by positivity
     calc (v + lam) ^ 2 * Real.exp (-c * v / (lam + Real.sqrt v))
         ≤ 4 * (v ^ (2 : ℝ) * Real.exp (-(c / 2) * v ^ (39 / 100 : ℝ))) := h1
@@ -304,7 +304,7 @@ theorem gl2b2_thinIntegral : Formalism.HermitianLattices.ZeroFreeRegionGL2.ThinI
     linarith
   have hE1 : Real.exp (-(c / 4) * V ^ (39 / 100 : ℝ)) ≤ Real.exp (-(c / 4) * x ^ (ε / 8)) := by
     apply Real.exp_le_exp.mpr
-    nlinarith [mul_le_mul_of_nonneg_left hw hc.le]
+    linarith [mul_le_mul_of_nonneg_left hw hc.le]
   have hsplitE : Real.exp (-(c / 4) * x ^ (ε / 8)) =
       (Real.exp (c / 8 * x ^ (ε / 8)))⁻¹ * Real.exp (-(c / 8) * x ^ (ε / 8)) := by
     rw [← Real.exp_neg, ← Real.exp_add]; congr 1; ring
@@ -1640,7 +1640,7 @@ theorem logNE_le_of_rows (D : D7) {Y x eps : ℝ} (he : 0 < eps) (h1 : 1 < Y) (h
   have ha : Y ^ (eps / 5) ≤ x ^ (eps / 5) := Real.rpow_le_rpow hY0.le hY (by linarith)
   have hl0 : 0 ≤ Real.log Y := Real.log_nonneg h1.le
   have hl : Real.log Y ≤ Real.log x := Real.log_le_log hY0 hY
-  have hsq : Real.log Y ^ 2 ≤ Real.log x ^ 2 := by nlinarith
+  have hsq : Real.log Y ^ 2 ≤ Real.log x ^ 2 := sq_le_sq' (by linarith) hl
   have hp : 0 ≤ Y ^ (eps / 5) := Real.rpow_nonneg hY0.le _
   have hm : Y ^ (eps / 5) * Real.log Y ^ 2 ≤ x ^ (eps / 5) * Real.log x ^ 2 :=
     mul_le_mul ha hsq (by positivity) (le_trans hp ha)
