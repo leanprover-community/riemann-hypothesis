@@ -16,16 +16,15 @@ request still under review adds. Until it lands, the label exists but nothing pu
 | `building` | the pull request of a batch assembled by hand | its branch holds the head of an open pull request | the batch is merged or closed, once its members are tidied up after |
 | `batch-building` | each pull request in that batch | the batch takes its head commit | it leaves the branch; the batch is merged or closed; it is closed |
 | `frozen` | each pull request in that batch, and each queued pull request | with `batch-building`, or with `batch queue` on a `batch` comment | it is neither queued nor in a batch being built: `-batch`, it leaves the batch, the batch is merged or closed, it is closed |
-| `changed after frozen` *(planned, #1697)* | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
+| `changed after frozen` | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
-| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it *(planned, #1700)* | `ready`, by the author or a maintainer |
-| `main-conflict` *(planned, #1700)* | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
-| `batch-conflict` *(planned, #1700)* | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
+| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it | `ready`, by the author or a maintainer |
+| `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
+| `batch-conflict` | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
-`batch queue`, `building`, `batch-building`, `frozen` and `awaiting-author` keep a pull request
-out of the inbox (`inbox`, see `.github/workflows/inbox.yml`), and so will `batch-conflict`
-*(planned, #1700)*. The names are in `scripts/batch-labels.py`.
+`batch queue`, `building`, `batch-building`, `frozen`, `awaiting-author` and `batch-conflict`
+keep a pull request out of the inbox (`inbox`, see `.github/workflows/inbox.yml`). The names are in `scripts/batch-labels.py`.
 
 Besides the labels, the workflow checks each batch's description against its branch, in a
 comment on the batch's pull request: pull requests listed as included that aren't in the branch,
@@ -68,8 +67,11 @@ the workflow does").
    against the branch (see below):
    - A heading is a line of its own, not part of a list, that ends with a colon. Pull requests
      listed under a heading that contains "left out" or "not included" (in any letter case) are
-     left out. For example: `Left out because they conflict with a PR earlier in the batch:`.
-     Those listed under any other heading, such as `Included:`, are included.
+     left out. For example: `Left out for other reasons:`. Those under a heading about conflicts,
+     such as `Left out because they conflict with a PR earlier in the batch:`, are not told
+     anything from the description: the conflict-labels workflow finds conflicts from the
+     branches and tells them itself (see below). Those listed under any other heading, such as
+     `Included:`, are included.
    - Each one is a list entry starting with `- ` and then a link to the pull request, either
      `#123` or its full URL. The rest of the entry is the reason. Lines indented under an entry,
      and entries that don't start with a link, are not read.
@@ -134,9 +136,62 @@ queue stays `frozen`. After every run the workflow puts `frozen` back on a queue
 that has lost it, and takes `frozen` and `batch-building` off one that is neither queued nor in a
 batch being built.
 
+A frozen pull request whose head has moved on from the commit that was taken, by a batch or by
+the queue, is labelled `changed after frozen`: what was pushed since is not part of what is
+built. The label comes off when the head is the commit that was taken again, for instance after
+another `batch` comment or once a batch merges in the new head, and when the pull request is no
+longer frozen.
+
 `batch-building`, `frozen` and `awaiting-author` keep a pull request out of the inbox (see
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`
-of the sync job in `.github/workflows/batch-queue.yml` names some of them as well.
+of the sync job in `.github/workflows/batch-queue.yml` and of `.github/workflows/conflict-labels.yml`
+name some of them as well.
+
+## Conflicts with main and with the batch
+
+Another workflow (`.github/workflows/conflict-labels.yml`, which runs
+`scripts/conflict-labels.py`) labels the open pull requests into `main` that are not drafts and
+not batches:
+
+- `main-conflict`: GitHub says the pull request conflicts with `main`. There is no comment,
+  because GitHub shows the conflict too. A pull request that depends on an open batch does not
+  get it (see below).
+- `batch-conflict`: the pull request conflicts with the head of a batch being built, one labelled
+  `building`. git cannot merge a file that both change since they left `main`, or one of the two
+  deletes a Lean file that the other starts to import. The pull requests in the batch, labelled
+  `batch-building`, never get it. The first time a pull request gets it for a batch, it is also
+  labelled `awaiting-author` and told in a comment which files conflict and what to do.
+
+Both labels come off by themselves once the reason has gone: the conflict was resolved, the pull
+request was closed or joined the batch, or the batch was merged or closed. `awaiting-author` stays
+until the author comments `ready`. `batch-conflict` keeps a pull request out of the inbox;
+`main-conflict` does not, since a pull request that conflicts with `main` still needs a first look.
+
+The workflow finds these conflicts from the branches alone, whatever the batch's description says.
+A pull request that the description leaves out because it conflicts is told only by this
+workflow, and only if it still conflicts: the batch queue does not repeat entries under a
+heading about conflicts.
+
+### If your pull request is labelled `batch-conflict`
+
+1. Merge the batch's branch (`batch/...`, named in the comment) into your branch, or rebase onto
+   it, and resolve the conflicts.
+2. Add this line at the top of the description, where #123 is the batch's pull request:
+
+   ```
+   - [ ] depends on: #123
+   ```
+
+   Your pull request now carries the batch's changes, and may conflict with `main`, until the
+   batch lands. The line says that this is expected, and keeps `main-conflict` off it.
+3. Comment `ready`.
+
+Or wait until the batch has landed, then merge `main` into your branch and resolve the conflicts
+there.
+
+A line counts as a dependency when it starts with `depends on`, `depend on` or `depends upon`,
+optionally after `- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its
+address.
 
 ## Several batches at once
 

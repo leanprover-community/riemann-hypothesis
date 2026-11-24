@@ -21,7 +21,7 @@ NOW = datetime.datetime(2026, 11, 23, 4, 12, 30, tzinfo=datetime.timezone.utc)
 T0 = datetime.datetime(2026, 11, 23, 3, 0, 0, tzinfo=datetime.timezone.utc)
 FIRST = "batch/2026-11-23-041230"
 QUEUED, BUILDING, BOT = batch.QUEUED, batch.BUILDING, batch.BOT
-MEMBER, FROZEN, WAITING = batch.MEMBER, batch.FROZEN, batch.WAITING
+MEMBER, FROZEN, WAITING, CHANGED = batch.MEMBER, batch.FROZEN, batch.WAITING, batch.CHANGED
 IN = {MEMBER, FROZEN}
 # What the label job puts on a pull request it queues.
 QF = {QUEUED, FROZEN}
@@ -877,7 +877,8 @@ class BuiltByHand(unittest.TestCase):
         gh.push(11, "head11-later")  # the batch holds an older commit of #11 only
         gh.writes = []
         sync(gh)
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[1018]["labels"]), (QF, {"large"}))
+        # Pushed to after it was queued, so changed after it was frozen.
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[1018]["labels"]), (QF | {CHANGED}, {"large"}))
         self.assertEqual(gh.said(1018), [])
         self.assertEqual([write for write in gh.writes if "1018" in write[1]], [])
 
@@ -897,7 +898,7 @@ class BuiltByHand(unittest.TestCase):
         gh.push(12, "head12-later")
         sync(gh)
         # What was assembled is still being built, and the author is told what that means.
-        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING, CHANGED})
         self.assertIn(f"builds and lands `{short('head12')}` only, not `{short('head12-later')}`", gh.said(12)[-1])
         self.assertEqual(len(gh.said(12)), 2)  # frozen, then pushed to: each once
         sync(gh)
@@ -1132,19 +1133,19 @@ class Members(unittest.TestCase):
     def test_what_is_left_out_is_told_why_and_handed_to_its_author(self):
         gh = self.built()
         log = sync(gh)
-        [note] = self.left(gh, 21)
+        [note] = self.left(gh, 23)
         self.assertIn("Batch #1018 leaves this pull request out. Its description says:\n\n"
-                      "> Left out because they conflict with a PR earlier in the batch:\n>\n"
-                      f"> {URL}21 refactor: fold modules", note)
+                      "> Left out for other reasons:\n>\n"
+                      f"> {URL}23 Drop imports from the root theorems", note)
         self.assertIn("comment `ready`", note)
-        self.assertEqual(gh.pulls[21]["labels"], QF | {WAITING})  # still queued
-        self.assertEqual([gh.pulls[n]["labels"] for n in (22, 23, 24)], [{WAITING}, {WAITING}, set()])
-        self.assertEqual([len(self.left(gh, n)) for n in (11, 22, 23, 24)], [0, 1, 1, 0])
+        # Conflicts are left to the conflict-labels workflow, which finds them from git.
+        self.assertEqual([gh.pulls[n]["labels"] for n in (21, 22, 23, 24)], [QF, set(), {WAITING}, set()])
+        self.assertEqual([len(self.left(gh, n)) for n in (11, 21, 22, 23, 24)], [0, 0, 0, 1, 0])
         self.assertIn("told #23 that the batch #1018 leaves it out: now `awaiting-author`", log)
         # Nothing new: nothing said, nothing read. (#21 is queued, so the queue reads it again.)
         gh.reads = []
         sync(gh)
-        self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23)], [1, 1, 1])
+        self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23)], [0, 0, 1])
         self.assertEqual([path for path in gh.reads if path.startswith(("issues/22/", "issues/23/"))], [])
 
     def test_the_same_kind_of_reason_reworded_updates_the_comment_quietly(self):
@@ -1180,13 +1181,12 @@ class Members(unittest.TestCase):
         sync(gh)
         gh.label(23, remove=WAITING)
         moved = DESCRIPTION.replace(f"- {URL}23 Drop imports from the root theorems (@frank): it changes `src/Main.lean`.\n", "")
-        moved = moved.replace("Left out because they conflict with a PR earlier in the batch:\n\n",
-                              f"Left out because they conflict with a PR earlier in the batch:\n\n- {URL}23 Drop (@frank): conflicts with #11.\n")
+        moved += f"\nLeft out under the maintainers' guidance in `AGENTS.md`:\n\n- {URL}23 Drop (@frank): adds an option.\n"
         gh.pulls[1018]["body"] = moved
         gh.touch(1018)
         sync(gh)
         first, second = self.left(gh, 23)
-        self.assertIn("conflicts with #11", second)
+        self.assertIn("adds an option", second)
         self.assertIn(WAITING, gh.pulls[23]["labels"])
 
     def test_an_entry_reworded_in_the_description_is_brought_up_to_date(self):
@@ -1258,10 +1258,10 @@ class Members(unittest.TestCase):
         gh = self.built()
         gh.left = batch.RESERVE - 1
         sync(gh)
-        self.assertEqual([len(gh.said(n)) for n in (11, 12, 14, 21)], [0, 0, 0, 0])
+        self.assertEqual([len(gh.said(n)) for n in (11, 12, 14, 23)], [0, 0, 0, 0])
         gh.left = 900
         sync(gh)
-        self.assertEqual([len(gh.said(n)) for n in (11, 12, 14, 21)], [1, 1, 1, 1])
+        self.assertEqual([len(gh.said(n)) for n in (11, 12, 14, 23)], [1, 1, 1, 1])
 
 
 class Robustness(unittest.TestCase):
@@ -1347,7 +1347,7 @@ class Robustness(unittest.TestCase):
         gh.push(11, "head11-later")
         queue(gh, 11)
         sync(gh)
-        self.assertEqual(gh.pulls[11]["labels"], IN | {WAITING})
+        self.assertEqual(gh.pulls[11]["labels"], IN | {WAITING, CHANGED})
         gh.close(1018, merged=True)
         log = sync(gh)
         self.assertTrue(QF <= gh.pulls[11]["labels"])
@@ -1645,6 +1645,59 @@ class LeftOutDigests(unittest.TestCase):
                          digest("Left out under the maintainers' guidance in `AGENTS.md` (no workarounds):", "b"))
         self.assertNotEqual(digest("Left out for other reasons:", "a"),
                             digest("Left out because they conflict with a PR earlier in the batch:", "a"))
+
+
+class ChangedAfterFrozen(unittest.TestCase):
+    """`changed after frozen` marks a frozen pull request whose head has moved on."""
+
+    def test_a_queued_pull_request_pushed_to_and_queued_again(self):
+        gh = Fake()
+        queue(gh, 11)
+        sync(gh)
+        gh.push(11, "head11-later")
+        log = sync(gh)
+        self.assertEqual(gh.pulls[11]["labels"], QF | {CHANGED})
+        self.assertIn(f"#11 was pushed to after `{short('head11')}` was taken: now `changed after frozen`", log)
+        queue(gh, 11)  # a maintainer queues the new head
+        log = sync(gh)
+        self.assertEqual(gh.pulls[11]["labels"], QF)
+        self.assertIn(f"#11 is at `{short('head11-later')}`, the commit that was taken: `changed after frozen` removed",
+                      log)
+
+    def test_a_member_pushed_to_until_its_batch_lands(self):
+        gh = Fake()
+        gh.add_pull(14, "head14")
+        by_hand(gh, 14)
+        sync(gh)
+        gh.push(14, "head14-later")
+        sync(gh)
+        self.assertEqual(gh.pulls[14]["labels"], IN | {WAITING, CHANGED})
+        gh.close(1018, merged=True)
+        sync(gh)
+        self.assertEqual(gh.pulls[14]["labels"], {WAITING})  # no longer frozen, so not changed after it either
+
+    def test_withdrawn_it_loses_the_label_and_closed_too(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        sync(gh)
+        gh.push(11, "head11-later")
+        gh.push(12, "head12-later")
+        sync(gh)
+        unqueue(gh, 11)
+        gh.close(12)
+        sync(gh)
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), (set(), set()))
+
+    def test_a_member_whose_labels_were_taken_off_by_hand_is_left_alone(self):
+        gh = Fake()
+        gh.add_pull(14, "head14")
+        by_hand(gh, 14)
+        sync(gh)
+        gh.label(14, remove=MEMBER, login="maintainer")
+        gh.label(14, remove=FROZEN, login="maintainer")
+        gh.push(14, "head14-later")
+        sync(gh)
+        self.assertEqual(gh.pulls[14]["labels"], {WAITING})
 
 
 def resets(gh):
