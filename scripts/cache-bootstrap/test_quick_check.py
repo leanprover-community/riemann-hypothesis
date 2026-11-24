@@ -100,6 +100,38 @@ class QueuePolicy(unittest.TestCase):
    self.assertEqual(saved['phase'], 'terminal')
    self.assertEqual(saved['result']['status'], 'infrastructure_or_outer_budget_failure')
 
+ def test_failed_input_download_leaves_no_attempt_directory(self):
+  from types import SimpleNamespace
+  from unittest.mock import patch
+
+  host = q.runner('gcp-small')
+  head = 'a' * 40
+  state = {'phase': 'watching', 'pr': 152, 'pr_head': head, 'run_id': '123'}
+  run = {'id': 123, 'event': 'workflow_dispatch', 'head_branch': 'main',
+         'path': '.github/workflows/build-pr.yml', 'status': 'completed',
+         'run_attempt': 1, 'conclusion': 'success'}
+
+  def subprocess_run(args, **kwargs):
+   if args[2] == 'download':
+    destination = Path(args[args.index('--dir') + 1])
+    q.write(destination / 'partial.json', {})
+    if args[args.index('--name') + 1] == 'quick-input-123-1':
+     raise self.queue.subprocess.CalledProcessError(1, args)
+   return SimpleNamespace(returncode=0)
+
+  with tempfile.TemporaryDirectory() as tmp:
+   root = Path(tmp)
+   host_state = root / 'host-gcp-small.json'
+   q.write(host_state, state)
+   with patch.object(sys, 'argv', ['quick-schedule', '--state', tmp, '--once']), \
+        patch.object(self.queue, 'command', return_value='[]'), \
+        patch.object(self.queue, 'gh', side_effect=[
+         {'resources': {'core': {'remaining': 5000}}}, {'runners': []}, run]), \
+        patch.object(self.queue.subprocess, 'run', side_effect=subprocess_run):
+    self.queue.main()
+   self.assertEqual(json.loads(host_state.read_text())['phase'], 'held')
+   self.assertEqual(list((root / f'152:{head}').glob('attempt-*')), [])
+
  def test_foreign_base_rejected_before_git(self):
   with self.assertRaisesRegex(ValueError,'main as base'):q.plan(Path('/unused'),{'expected':{},'base_ref':'feature'})
  def test_many_roots_rejected_before_elaboration(self):

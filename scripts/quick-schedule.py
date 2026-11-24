@@ -6,6 +6,7 @@ An uncertain POST or monitor outcome is held for operator recovery, never retrie
 """
 import argparse,concurrent.futures,fcntl,json,os,re,subprocess,threading,time
 from pathlib import Path
+from shutil import rmtree
 from tempfile import mkdtemp
 REPO='leanprover-community/riemann-hypothesis'
 PRIORITY={134,150}
@@ -80,9 +81,14 @@ def main():
     result_download = subprocess.run(
      ['gh', 'run', 'download', state['run_id'], '--repo', REPO,
       '--name', 'quick-result-' + attempt, '--dir', str(artifacts / 'result')], check=False)
-    subprocess.run(
-     ['gh', 'run', 'download', state['run_id'], '--repo', REPO,
-      '--name', 'quick-input-' + attempt, '--dir', str(artifacts / 'input')], check=True)
+    try:
+     subprocess.run(
+      ['gh', 'run', 'download', state['run_id'], '--repo', REPO,
+       '--name', 'quick-input-' + attempt, '--dir', str(artifacts / 'input')], check=True)
+    except subprocess.CalledProcessError:
+     # The attempt is unusable without its input, so don't leave its directory behind.
+     rmtree(artifacts, ignore_errors=True)
+     raise
     controls = json.loads((artifacts / 'input' / 'quick-request.json').read_text())
     if controls['pr_number']!=pr['number']or controls.get('quick_runner')!=host:raise RuntimeError('foreign diagnostic control artifact')
     result = artifacts / 'result' / 'result.json'
