@@ -85,7 +85,7 @@ Taking a pull request out of the queue never changes a batch. Commits already me
 stay there, and the batch's description says so. No batch is rebuilt for that.
 
 A pull request that is closed, whether merged or not, loses `batch queue`, `building`,
-`batch-building` and `frozen`: it is neither waiting for a build nor in one any more. The pull
+`batch-building`, `frozen` and `changed after frozen`: it is neither waiting for a build nor in one any more. The pull
 request of a batch assembled by hand is the exception, because it keeps `building` until it has
 been tidied up after. When a pull
 request is reopened, `batch queue` comes back if this workflow was the last to take a label off,
@@ -1459,7 +1459,9 @@ def reconcile(gh, pulls, held, approved, log):
             add = set() if inside else {FROZEN}
             if pr["sha"] != at and (FROZEN in have or not inside):
                 add.add(CHANGED)
-            add, gone = add - have, have & ({CHANGED} if pr["sha"] == at else set())
+            # One no longer labelled `frozen`, taken off by hand, is not changed after it either.
+            thawed = inside and FROZEN not in have
+            add, gone = add - have, have & ({CHANGED} if pr["sha"] == at or thawed else set())
         if not add and not gone:
             continue
         if gh.short():
