@@ -164,7 +164,6 @@ LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
 # gives a commit that reverts another one, or that reverts such a revert.
 MERGED_BY_HAND = re.compile(r"Merge PR #(\d+) into batch")
 UNDONE = re.compile(r'(Revert|Reapply) "(.*)"')
-||||||| 52efe8b0c59
 # A left-out heading for conflicts. `conflict-labels.py` finds those itself, from git, and tells
 # the pull request with `batch-conflict`, so they are not told again from the description.
 CONFLICT_HEADING = re.compile(r"\bconflict", re.IGNORECASE)
