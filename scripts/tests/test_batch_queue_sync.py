@@ -1127,19 +1127,19 @@ class Members(unittest.TestCase):
     def test_what_is_left_out_is_told_why_and_handed_to_its_author(self):
         gh = self.built()
         log = sync(gh)
-        [note] = self.left(gh, 21)
+        [note] = self.left(gh, 23)
         self.assertIn("Batch #1018 leaves this pull request out. Its description says:\n\n"
-                      "> Left out because they conflict with a PR earlier in the batch:\n>\n"
-                      f"> {URL}21 refactor: fold modules", note)
+                      "> Left out for other reasons:\n>\n"
+                      f"> {URL}23 Drop imports from the root theorems", note)
         self.assertIn("comment `ready`", note)
-        self.assertEqual(gh.pulls[21]["labels"], QF | {WAITING})  # still queued
-        self.assertEqual([gh.pulls[n]["labels"] for n in (22, 23, 24)], [{WAITING}, {WAITING}, set()])
-        self.assertEqual([len(self.left(gh, n)) for n in (11, 22, 23, 24)], [0, 1, 1, 0])
+        # Conflicts are left to the conflict-labels workflow, which finds them from git.
+        self.assertEqual([gh.pulls[n]["labels"] for n in (21, 22, 23, 24)], [QF, set(), {WAITING}, set()])
+        self.assertEqual([len(self.left(gh, n)) for n in (11, 21, 22, 23, 24)], [0, 0, 0, 1, 0])
         self.assertIn("told #23 that the batch #1018 leaves it out: now `awaiting-author`", log)
         # Nothing new: nothing said, nothing read. (#21 is queued, so the queue reads it again.)
         gh.reads = []
         sync(gh)
-        self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23)], [1, 1, 1])
+        self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23)], [0, 0, 1])
         self.assertEqual([path for path in gh.reads if path.startswith(("issues/22/", "issues/23/"))], [])
 
     def test_the_same_kind_of_reason_reworded_updates_the_comment_quietly(self):
@@ -1175,13 +1175,12 @@ class Members(unittest.TestCase):
         sync(gh)
         gh.label(23, remove=WAITING)
         moved = DESCRIPTION.replace(f"- {URL}23 Drop imports from the root theorems (@frank): it changes `src/Main.lean`.\n", "")
-        moved = moved.replace("Left out because they conflict with a PR earlier in the batch:\n\n",
-                              f"Left out because they conflict with a PR earlier in the batch:\n\n- {URL}23 Drop (@frank): conflicts with #11.\n")
+        moved += f"\nLeft out under the maintainers' guidance in `AGENTS.md`:\n\n- {URL}23 Drop (@frank): adds an option.\n"
         gh.pulls[1018]["body"] = moved
         gh.touch(1018)
         sync(gh)
         first, second = self.left(gh, 23)
-        self.assertIn("conflicts with #11", second)
+        self.assertIn("adds an option", second)
         self.assertIn(WAITING, gh.pulls[23]["labels"])
 
     def test_an_entry_reworded_in_the_description_is_brought_up_to_date(self):
@@ -1253,10 +1252,10 @@ class Members(unittest.TestCase):
         gh = self.built()
         gh.left = batch.RESERVE - 1
         sync(gh)
-        self.assertEqual([len(gh.said(n)) for n in (11, 12, 14, 21)], [0, 0, 0, 0])
+        self.assertEqual([len(gh.said(n)) for n in (11, 12, 14, 23)], [0, 0, 0, 0])
         gh.left = 900
         sync(gh)
-        self.assertEqual([len(gh.said(n)) for n in (11, 12, 14, 21)], [1, 1, 1, 1])
+        self.assertEqual([len(gh.said(n)) for n in (11, 12, 14, 23)], [1, 1, 1, 1])
 
 
 class Robustness(unittest.TestCase):

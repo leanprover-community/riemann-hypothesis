@@ -145,6 +145,9 @@ LEFT_OUT = re.compile(r"<!-- batch-queue-left-out (\{.*?\}) -->")
 NO_LONGER_LEFT_OUT = "<!-- batch-queue-no-longer-left-out {number} -->"
 # A heading in a batch's description under which the pull requests listed are left out.
 LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
+# A left-out heading for conflicts. `conflict-labels.py` finds those itself, from git, and tells
+# the pull request with `batch-conflict`, so they are not told again from the description.
+CONFLICT_HEADING = re.compile(r"\bconflict", re.IGNORECASE)
 # In a batch pull request's text: the part this script writes, and its note to itself.
 BODY = "<!-- batch-queue -->"
 STATE = re.compile(r"<!-- batch-queue-state (\{.*\}) -->")
@@ -853,15 +856,18 @@ def tell_left_out(gh, batch, pulls, log):
     nobody, so a pull request left out of batch after batch hears it once and still finds the
     latest reason there. One whose entry has
     gone from the description since it was told is told that. What the batch contains is never
-    told it is left out. The note's `left` remembers, for each pull request, a digest of the entry
+    told it is left out, and neither is one listed under a heading about conflicts: the
+    conflict-labels workflow tells those itself, if git finds the conflict. The note's `left`
+    remembers, for each pull request, a digest of the entry
     it was last told about for this batch, and is brought up to date as each is told.
     """
     note, number, since = batch["note"], batch["number"], 0
     found, left = note["members"], note["left"]
     listed = left_out(pulls[number]["body"], gh.repo)
+    conflicts = {other for other, (heading, _) in listed.items() if CONFLICT_HEADING.search(heading)}
     for key in sorted(set(left) | {str(other) for other in listed}, key=int):
         pr = pulls.get(int(key))
-        if pr is None or key in found or is_batch(pr) or by_hand(pr):
+        if pr is None or key in found or is_batch(pr) or by_hand(pr) or int(key) in conflicts:
             left.pop(key, None)
             continue
         entry = listed.get(int(key))

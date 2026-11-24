@@ -39,7 +39,10 @@ below. This page is for whoever assembles one.
    which pull requests a batch contains. The workflow reads it only for what it leaves out:
    - A heading is a line of its own, not part of a list, that ends with a colon. Pull requests
      listed under a heading that contains "left out" or "not included" (in any letter case) are
-     left out. For example: `Left out because they conflict with a PR earlier in the batch:`.
+     left out. For example: `Left out for other reasons:`. Those under a heading about conflicts,
+     such as `Left out because they conflict with a PR earlier in the batch:`, are not told
+     anything from the description: the conflict-labels workflow finds conflicts from the
+     branches and tells them itself (see below).
    - Each one is a list entry starting with `- ` and then a link to the pull request, either
      `#123` or its full URL. The rest of the entry is the reason. Lines indented under an entry,
      and entries that don't start with a link, are not read.
@@ -107,8 +110,9 @@ until the author comments `ready`. `batch-conflict` keeps a pull request out of 
 `main-conflict` does not, since a pull request that conflicts with `main` still needs a first look.
 
 The workflow finds these conflicts from the branches alone, whatever the batch's description says.
-A pull request that the description leaves out because it conflicts is told twice: once by the
-batch queue, quoting its entry, and once by this workflow.
+A pull request that the description leaves out because it conflicts is told only by this
+workflow, and only if it still conflicts: the batch queue does not repeat entries under a
+heading about conflicts.
 
 ### If your pull request is labelled `batch-conflict`
 
