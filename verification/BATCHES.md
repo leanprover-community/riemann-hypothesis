@@ -47,12 +47,16 @@ below. This page is for whoever assembles one.
 
    Each pull request left out is sent a comment quoting the heading and its entry, and is
    labelled `awaiting-author`. Write the entry for its author: it is what they see. A pull
-   request told the same thing by an earlier batch is not told again, so that `ready` is not
-   undone every time a batch leaves it out for the same reason. A pull request that is in the
-   branch is never told it is left out, whatever the description says.
+   request that an earlier batch, or an earlier version of the description, left out under the
+   same heading (ignoring anything in parentheses) is not told again. Its comment is edited to
+   show the new entry, which notifies nobody, so that `ready` is not undone every time a batch
+   leaves it out for the same kind of reason. Keep the headings the same from one batch to the
+   next for this to work. A pull request that is in the branch is never told it is left out,
+   whatever the description says.
 8. **Edit the description whenever the batch changes.** The workflow reads it again on every
-   edit. An entry that is new, or says something new, is sent as above, and a pull request whose
-   entry is removed is told so.
+   edit. A pull request listed under a new heading is sent a comment as above, one whose entry
+   changed under the same heading has its comment brought up to date, and one whose entry is
+   removed is told so.
 
 ## What the workflow does
 
@@ -73,7 +77,9 @@ told it can push again, and goes back to `batch queue` if it was queued.
 A pull request queued with a `batch` comment is labelled `frozen` too, since the queue also takes
 only the commit that was queued. `-batch` takes `frozen` off again, unless a batch being built
 holds the pull request. A pull request that leaves a batch assembled by hand and goes back to the
-queue stays `frozen`.
+queue stays `frozen`. After every run the workflow puts `frozen` back on a queued pull request
+that has lost it, and takes `frozen` and `batch-building` off one that is neither queued nor in a
+batch being built.
 
 `batch-building`, `frozen` and `awaiting-author` keep a pull request out of the inbox (see
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`

@@ -54,6 +54,12 @@ class Fake(batch.GitHub):
         self.clock, self.left, self.comment_ids = 0, None, 0
         # How long after the latest change a run happens. An hour: everything has settled.
         self.ahead = datetime.timedelta(hours=1)
+        # Requests to answer badly: [method, pattern of the path, status or exception, times].
+        self.failures = []
+
+    def fail(self, method, pattern, answer, times=1):
+        """Answer the next `times` requests matching with `answer`: a status, or an exception."""
+        self.failures.append([method, pattern, answer, times])
 
     def now(self):
         return T0 + datetime.timedelta(seconds=self.clock) + self.ahead
@@ -131,6 +137,12 @@ class Fake(batch.GitHub):
     def call(self, method, path, payload=None):
         self.calls += 1
         self.remaining = self.left
+        for failure in self.failures:
+            if failure[3] > 0 and failure[0] == method and re.fullmatch(failure[1], path):
+                failure[3] -= 1
+                if isinstance(failure[2], Exception):
+                    raise failure[2]
+                return failure[2], {"message": "refused"}
         if method != "GET":
             self.writes.append((method, path, payload))
         else:
@@ -253,6 +265,13 @@ class Fake(batch.GitHub):
         self.label(int(number), remove=name)
         return 200, []
 
+    def _set_labels(self, payload, number):
+        for name in sorted(self.pulls[int(number)]["labels"] - set(payload["labels"])):
+            self.label(int(number), remove=name)
+        for name in payload["labels"]:
+            self.label(int(number), add=name)
+        return 200, []
+
     def _comment(self, payload, number):
         return 201, {"id": self.say(int(number), payload["body"])}
 
@@ -302,6 +321,7 @@ class Fake(batch.GitHub):
         (r"PATCH pulls/(\d+)", _edit_pull),
         (r"POST issues/(\d+)/labels", _add_label),
         (r"DELETE issues/(\d+)/labels/(.+)", _drop_label),
+        (r"PUT issues/(\d+)/labels", _set_labels),
         (r"POST issues/(\d+)/comments", _comment),
         (r"PATCH issues/comments/(\d+)", _edit_comment),
         (r"PATCH git/refs/heads/(.+)", _reset_ref),
@@ -996,22 +1016,23 @@ class BuiltByHand(unittest.TestCase):
         sync(gh)
         self.assertEqual(len([path for path in gh.reads if path.startswith("compare/main")]), 1)
         # Labels, the frozen notes and the comment are writes: three for each queued pull request,
-        # two for the batch.
-        self.assertLess(gh.calls - before, 33 * 3 + 15)
+        # and the batch's note, saved after every ten told.
+        self.assertLess(gh.calls - before, 33 * 3 + 20)
         # The eight requests of a run with nothing new, and this script's comment on the batch.
         for _ in range(2):
             before = gh.calls
             sync(gh)
             self.assertEqual(gh.calls - before, 9)
 
-    def test_a_record_from_before_queued_was_written_down_puts_everything_back(self):
+    def test_a_record_from_before_queued_was_written_down_puts_back_only_what_was_queued(self):
         gh = self.built()
         sync(gh)
         [comment] = [item for item in gh.comments[1018] if item["body"].startswith("<!-- batch-queue-by-hand")]
         comment["body"] = re.sub(r', "queued": \[[^]]*\]', "", comment["body"])
         gh.close(1018)
         sync(gh)
-        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [QF] * 3)
+        # The note takes all three to have been queued, but nobody commented `batch` on #14.
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [QF, QF, set()])
 
     def test_looking_through_stops_when_the_hours_allowance_is_nearly_gone(self):
         gh = self.built()
@@ -1121,6 +1142,21 @@ class Members(unittest.TestCase):
         self.assertEqual([len(self.left(gh, n)) for n in (21, 22, 23)], [1, 1, 1])
         self.assertEqual([path for path in gh.reads if path.startswith(("issues/22/", "issues/23/"))], [])
 
+    def test_the_same_kind_of_reason_reworded_updates_the_comment_quietly(self):
+        gh = self.built()
+        sync(gh)
+        gh.label(23, remove=WAITING)  # the author commented `ready`
+        gh.close(1018)
+        sync(gh)
+        by_hand(gh, 11, 12, 14, number=1100, ref="batch/b5-on-1018", name="kim-b5")
+        gh.pulls[1100]["body"] = DESCRIPTION.replace("it changes `src/Main.lean`", "it still changes `src/Main.lean`")
+        log = sync(gh)
+        [note] = self.left(gh, 23)
+        self.assertIn("Batch #1100 leaves this pull request out", note)
+        self.assertIn("it still changes `src/Main.lean`", note)
+        self.assertNotIn(WAITING, gh.pulls[23]["labels"])
+        self.assertIn("brought up to date what #23 was told about being left out, for the batch #1100", log)
+
     def test_ready_is_not_undone_by_the_next_batch_leaving_it_out_for_the_same_reason(self):
         gh = self.built()
         sync(gh)
@@ -1134,16 +1170,30 @@ class Members(unittest.TestCase):
         self.assertNotIn(WAITING, gh.pulls[23]["labels"])
         self.assertNotIn("told #23 that the batch #1100 leaves it out: now `awaiting-author`", log)
 
-    def test_a_new_reason_is_told_and_hands_it_back_again(self):
+    def test_a_new_kind_of_reason_is_told_and_hands_it_back_again(self):
         gh = self.built()
         sync(gh)
         gh.label(23, remove=WAITING)
-        gh.pulls[1018]["body"] = DESCRIPTION.replace("it changes `src/Main.lean`", "its changes are already on main")
+        moved = DESCRIPTION.replace(f"- {URL}23 Drop imports from the root theorems (@frank): it changes `src/Main.lean`.\n", "")
+        moved = moved.replace("Left out because they conflict with a PR earlier in the batch:\n\n",
+                              f"Left out because they conflict with a PR earlier in the batch:\n\n- {URL}23 Drop (@frank): conflicts with #11.\n")
+        gh.pulls[1018]["body"] = moved
         gh.touch(1018)
         sync(gh)
         first, second = self.left(gh, 23)
-        self.assertIn("its changes are already on main", second)
+        self.assertIn("conflicts with #11", second)
         self.assertIn(WAITING, gh.pulls[23]["labels"])
+
+    def test_an_entry_reworded_in_the_description_is_brought_up_to_date(self):
+        gh = self.built()
+        sync(gh)
+        gh.pulls[1018]["body"] = DESCRIPTION.replace("it changes `src/Main.lean`", "it edits `src/Main.lean`")
+        sync(gh)
+        [note] = self.left(gh, 23)
+        self.assertIn("it edits `src/Main.lean`", note)
+        gh.writes = []
+        sync(gh)
+        self.assertEqual([write for write in gh.writes if "comments" in write[1] and "1018" not in write[1]], [])
 
     def test_an_entry_removed_from_the_description_is_told_so(self):
         gh = self.built()
@@ -1207,6 +1257,153 @@ class Members(unittest.TestCase):
         gh.left = 900
         sync(gh)
         self.assertEqual([len(gh.said(n)) for n in (11, 12, 14, 21)], [1, 1, 1, 1])
+
+
+class Robustness(unittest.TestCase):
+    """Runs cut short, refused writes, and the ways a pull request can leave and come back."""
+
+    def built(self):
+        gh = Fake()
+        queue(gh, 11, 12)
+        gh.add_pull(14, "head14")
+        by_hand(gh, 11, 12, 14)
+        return gh
+
+    def frozen_notes(self, gh, number):
+        return [body for body in gh.said(number) if body.startswith("<!-- batch-queue-frozen")]
+
+    def test_a_run_cut_short_tells_no_one_twice(self):
+        gh = self.built()
+        gh.fail("POST", r"issues/14/comments", RuntimeError("no answer from GitHub"))
+        with self.assertRaises(RuntimeError):
+            sync(gh)
+        sync(gh)
+        self.assertEqual([len(self.frozen_notes(gh, n)) for n in (11, 12, 14)], [1, 1, 1])
+
+    def test_a_refused_comment_or_label_is_tried_again(self):
+        gh = self.built()
+        gh.fail("POST", r"issues/12/comments", 403)
+        gh.fail("POST", r"issues/14/labels", 403)
+        sync(gh)
+        self.assertEqual((len(self.frozen_notes(gh, 12)), gh.pulls[14]["labels"]), (0, set()))
+        sync(gh)
+        self.assertEqual((len(self.frozen_notes(gh, 12)), gh.pulls[14]["labels"]), (1, IN))
+
+    def test_the_rate_limit_stops_the_run_and_the_next_one_carries_on(self):
+        gh = self.built()
+        gh.fail("POST", r"issues/12/comments", 429)
+        with self.assertRaises(batch.Refused):
+            sync(gh)
+        sync(gh)
+        self.assertEqual([len(self.frozen_notes(gh, n)) for n in (11, 12, 14)], [1, 1, 1])
+
+    def test_a_record_that_cannot_be_saved_stops_the_run_before_anything_is_said(self):
+        gh = self.built()
+        gh.fail("POST", r"issues/1018/comments", 403, times=5)
+        with self.assertRaises(batch.Refused):
+            sync(gh)
+        self.assertEqual([gh.said(n) for n in (11, 12, 14)], [[], [], []])
+
+    def test_a_batch_reopened_after_it_was_closed_starts_again(self):
+        gh = self.built()
+        sync(gh)
+        gh.close(1018)
+        sync(gh)
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 14)], [QF, set()])
+        gh.reopen(1018)
+        sync(gh)
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [IN] * 3)
+        self.assertEqual([len(self.frozen_notes(gh, n)) for n in (11, 14)], [2, 2])
+
+    def test_a_member_never_queued_is_not_queued_when_it_is_reopened(self):
+        gh = self.built()
+        sync(gh)
+        gh.close(14)
+        sync(gh)
+        self.assertEqual(gh.pulls[14]["labels"], set())
+        gh.reopen(14)
+        self.assertEqual(batch.reopened(gh, 14), ["#14 was never queued: nothing to put back"])
+        sync(gh)  # the batch still holds it
+        self.assertEqual(gh.pulls[14]["labels"], IN)
+
+    def test_withdrawn_while_in_a_batch_it_does_not_go_back_to_the_queue(self):
+        gh = self.built()
+        sync(gh)
+        unqueue(gh, 11)
+        self.assertEqual(gh.pulls[11]["labels"], IN)  # still in the batch, so still frozen
+        gh.close(1018)
+        sync(gh)
+        self.assertEqual(gh.pulls[11]["labels"], set())
+        self.assertIn("no longer `frozen`", gh.said(11)[-1])
+
+    def test_queued_again_at_a_new_head_it_goes_back_to_the_queue_when_the_batch_lands(self):
+        gh = self.built()
+        sync(gh)
+        gh.push(11, "head11-later")
+        queue(gh, 11)
+        sync(gh)
+        self.assertEqual(gh.pulls[11]["labels"], IN | {WAITING})
+        gh.close(1018, merged=True)
+        log = sync(gh)
+        self.assertTrue(QF <= gh.pulls[11]["labels"])
+        self.assertIn("That commit was queued, so it is back in the batch queue.", told(gh, 11)[-1])
+        self.assertIn("#11 was pushed to after the batch #1018 took it: told what landed, now `awaiting-author` "
+                      "and `batch queue` again", log)
+
+    def test_nothing_is_said_or_closed_for_a_commit_that_is_not_on_main(self):
+        gh = Fake()
+        gh.add_pull(15, "head15", base="batch/b3-on-644")
+        by_hand(gh, 15)
+        sync(gh)
+        gh.close(1018, merged=True)
+        gh.inside[MAIN] = set()  # merged into something else than main, say
+        log = sync(gh)
+        self.assertEqual(gh.pulls[15]["state"], "open")
+        self.assertIn(f"#15: commit `{short('head15')}`, which batch #1018 took, is not on `main`: left alone", log)
+
+    def test_tidying_up_stops_when_the_allowance_runs_short_and_finishes_later(self):
+        gh = self.built()
+        sync(gh)
+        gh.close(1018)
+        gh.left = batch.RESERVE - 1
+        sync(gh)
+        self.assertIn(BUILDING, gh.pulls[1018]["labels"])
+        gh.left = 900
+        sync(gh)
+        self.assertNotIn(BUILDING, gh.pulls[1018]["labels"])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [QF, QF, set()])
+        for number in (11, 12, 14):
+            self.assertEqual(len([body for body in gh.said(number) if body.startswith("<!-- batch-queue-unfrozen")]), 1)
+
+
+class Reconciling(unittest.TestCase):
+    """`frozen` follows `batch queue` and the batches being built."""
+
+    def test_a_pull_request_queued_before_frozen_existed_is_frozen(self):
+        gh = Fake()
+        gh.add_pull(31, "head31")
+        gh.say(31, f"<!-- batch-queue-approved {sha('head31')} -->\nQueued at this commit.")
+        gh.label(31, add=QUEUED)
+        log = sync(gh)
+        self.assertEqual(gh.pulls[31]["labels"], QF)
+        self.assertIn("#31 is queued: now `frozen`", log)
+
+    def test_labels_of_a_batch_nothing_holds_come_off(self):
+        gh = Fake()
+        gh.add_pull(32, "head32", labels=[MEMBER, FROZEN])
+        log = sync(gh)
+        self.assertEqual(gh.pulls[32]["labels"], set())
+        self.assertIn("#32 is neither queued nor in a batch being built: `batch-building` and `frozen` removed", log)
+        self.assertEqual(sync(gh), ["nothing to do"])
+
+
+class LeftOutDigests(unittest.TestCase):
+    def test_the_kind_of_reason_is_its_heading_up_to_any_parenthesis(self):
+        digest = batch.left_out_digest
+        self.assertEqual(digest("Left out under the maintainers' guidance in `AGENTS.md` (no instance switching):", "a"),
+                         digest("Left out under the maintainers' guidance in `AGENTS.md` (no workarounds):", "b"))
+        self.assertNotEqual(digest("Left out for other reasons:", "a"),
+                            digest("Left out because they conflict with a PR earlier in the batch:", "a"))
 
 
 def resets(gh):
@@ -1442,10 +1639,11 @@ class ClosedPullRequests(unittest.TestCase):
             gh.close(number, merged=True)
         gh.writes = []
         sync(gh)
-        drops = [path for method, path, _ in gh.writes if method == "DELETE" and "labels" in path]
-        self.assertEqual(sorted(drops), ["issues/1018/labels/building", "issues/11/labels/batch-building",
-                                         "issues/11/labels/frozen", "issues/12/labels/batch-building",
-                                         "issues/12/labels/frozen"])
+        # One request each: closed pull requests have their labels set in one go.
+        drops = [(method, path) for method, path, _ in gh.writes if method in ("DELETE", "PUT") and "labels" in path]
+        self.assertEqual(sorted(drops), [("DELETE", "issues/1018/labels/building"), ("PUT", "issues/11/labels"),
+                                         ("PUT", "issues/12/labels")])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12)], [set(), set()])
 
 
 class Reopening(unittest.TestCase):
