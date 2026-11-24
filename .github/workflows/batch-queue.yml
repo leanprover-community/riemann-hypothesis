@@ -1,6 +1,7 @@
 name: batch queue
 
-# A maintainer queues a pull request for a batch build by commenting `batch`, or just `b`, on it.
+# A maintainer or reviewer queues a pull request for a batch build by commenting `batch`, or just
+# `b`, on it.
 # This records the commit that was the pull request's head when the comment was posted, adds the
 # `batch queue` label, and merges that commit into the batch being assembled: a branch `batch/...`
 # with its own pull request, which the workflow opens and keeps described. `batch <commit>`, with
@@ -50,8 +51,9 @@ name: batch queue
 # Only a comment whose whole text is one of these counts, letter case and surrounding blank space
 # aside: `batch` or `b`, `batch <commit>` or `b <commit>`, `p` and `p <commit>`, `-batch` or
 # `-b`, `aa` and `ready`.
-# `aa` needs triage access to this repository, `ready` needs triage access or to come from the
-# pull request's author, and the others need write access. Every other comment is ignored.
+# Each of them needs triage access to this repository or more, except that the pull request's
+# author can comment `ready` too. Reviewers are the people given the Triage role: it lets them
+# queue pull requests and hand them back without write access. Every other comment is ignored.
 # GitHub runs this workflow from the default branch for every event below, so a pull request
 # cannot change what it does. Nothing from a pull request is checked out or run:
 # GitHub performs the merges, and comparisons read git objects only.
@@ -144,9 +146,9 @@ jobs:
               ;;
           esac
 
-          # Write access or higher, or triage access for `aa` and `ready`. The API reports the
-          # maintain role as write and triage as read under `permission`, so triage is told apart
-          # by `role_name`. The pull request's author may comment `ready` whatever their access.
+          # Triage access or higher. The API reports the maintain role as write and triage as read
+          # under `permission`, so triage is told apart by `role_name`. The pull request's author
+          # may comment `ready` whatever their access.
           if [ "$text" = ready ] && [ "$AUTHOR" = "$OPENER" ]; then
             permission=author
             role=''
@@ -160,7 +162,7 @@ jobs:
           case "$permission" in
             admin | write | author) ;;
             *)
-              if { [ "$text" = aa ] || [ "$text" = ready ]; } && [ "$role" = triage ]; then
+              if [ "$role" = triage ]; then
                 :
               elif [ "$text" = aa ]; then
                 echo "$AUTHOR has '${role:-$permission}' access. Labelling a pull request '$WAITING' needs triage access."
@@ -169,7 +171,7 @@ jobs:
                 echo "$AUTHOR did not open pull request $PR and has '${role:-$permission}' access. Taking '$WAITING' off someone else's pull request needs triage access."
                 exit 0
               else
-                echo "$AUTHOR has '${role:-$permission}' access. Queuing or unqueuing needs write access."
+                echo "$AUTHOR has '${role:-$permission}' access. Queuing or unqueuing needs triage access."
                 exit 0
               fi
               ;;
