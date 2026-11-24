@@ -102,26 +102,26 @@ theorem weight_bounds (L f r n d : ℝ) (hL : 2 ≤ L) (hf : 1 ≤ f) (hfr : f �
   have hdx : 1 + d ≤ x ^ 2 := by rw [← e2]; exact (Real.log_le_iff_le_exp (by linarith)).1 hD
   have hfx : f ≤ x := by linarith
   have hrx : r ≤ x := by linarith
-  have hfn : f * n ≤ x ^ 2 := by nlinarith
-  have hfn0 : 0 ≤ f * n := by nlinarith
-  have hx2 : 9 ≤ x ^ 2 := by nlinarith
-  have hx23 : 3 * x ^ 2 ≤ x ^ 3 := by nlinarith
-  have hx35 : 9 * x ^ 3 ≤ x ^ 5 := by nlinarith
+  have hfn : f * n ≤ x ^ 2 := by rw [sq]; exact mul_le_mul hfx hnx hn0.le (by linarith)
+  have hfn0 : 0 ≤ f * n := mul_nonneg (by linarith) hn0.le
+  have hx2 : 9 ≤ x ^ 2 := by linarith [pow_le_pow_left₀ (by norm_num) hx3 2]
+  have hx23 : 3 * x ^ 2 ≤ x ^ 3 := by linarith [mul_le_mul_of_nonneg_right hx3 (sq_nonneg x)]
+  have hx35 : 9 * x ^ 3 ≤ x ^ 5 := by rw [show x ^ 5 = x ^ 2 * x ^ 3 by ring]; exact mul_le_mul_of_nonneg_right hx2 (pow_nonneg (by linarith) 3)
   have hA : d + f * n + 1 ≤ 2 * x ^ 2 := by linarith
   refine ⟨?_, ?_, ?_⟩
   · rw [Real.log_le_iff_le_exp (by linarith), e3]
     linarith
   · have hB : f * (d + f * n + 1) ≤ x * (2 * x ^ 2) := mul_le_mul hfx hA (by linarith) (by linarith)
-    rw [Real.log_le_iff_le_exp (by nlinarith), e5]
-    nlinarith
+    rw [Real.log_le_iff_le_exp (by positivity), e5]
+    linarith [pow_nonneg (show 0 ≤ x by linarith) 3, one_le_pow₀ (n := 3) (show 1 ≤ x by linarith)]
   · intro s hs0 hs
-    have hfr0 : 0 ≤ f * r := by nlinarith
+    have hfr0 : 0 ≤ f * r := mul_nonneg (by linarith) (by linarith)
     have hC : f * r * n ≤ x ^ 3 := by
       have h1 : f * r ≤ x * x := mul_le_mul hfx hrx (by linarith) (by linarith)
       have h2 : f * r * n ≤ x * x * x := mul_le_mul h1 hnx hn0.le (by positivity)
-      nlinarith
+      linarith
     rw [Real.log_le_iff_le_exp (by linarith), e3]
-    nlinarith
+    linarith [sq_nonneg x]
 
 private theorem level_M_eq_g_zero_mul_g_one_of_lawsM {D : D7} (T : Core D) (h : Formalism.L2.Pj.LawsM T) :
     T.Q.l.M = D.host.g 0 * D.host.g 1 := by
