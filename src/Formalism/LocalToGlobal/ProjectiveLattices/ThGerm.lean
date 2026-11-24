@@ -63,9 +63,8 @@ abbrev overAt (A : Type) [CommRing A] [Algebra S A] : Over X := Over.mk (spMap (
 
 theorem spMap_comp_alg {A B : Type} [CommRing A] [Algebra S A] [CommRing B] [Algebra S B]
     (f : A →ₐ[S] B) : spMap (f : A →+* B) ≫ spMap (algebraMap S A) = spMap (algebraMap S B) := by
-  first
-    | rw [← spMap_comp, AlgHom.comp_algebraMap]
-    | (unfold spMap; rw [← Spec.map_comp, ← CommRingCat.ofHom_comp, AlgHom.comp_algebraMap])
+  unfold spMap
+  rw [← Spec.map_comp, ← CommRingCat.ofHom_comp, AlgHom.comp_algebraMap]
 
 def homAt {A B : Type} [CommRing A] [Algebra S A] [CommRing B] [Algebra S B] (f : A →ₐ[S] B) :
     overAt x0 B ⟶ overAt x0 A :=

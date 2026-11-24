@@ -66,7 +66,6 @@ theorem gram_herm (hc : CMData F E) (S : HSpace E) : IsHerm (hc.sig : E →+* E)
   have h := S.herm
   first
     | exact h.eq (S.frame j) (S.frame i)
-    | exact h (S.frame j) (S.frame i)
 
 theorem gram_det_unit (hc : CMData F E) (S : HSpace E) : IsUnit S.gram.det := by
   classical
@@ -114,8 +113,7 @@ private theorem star_dotProduct_Jpq_mulVec_eq_sub (p q : ℕ) (Z : Fin p ⊕ Fin
     ∑ a, star (Z (Sum.inl a)) * Z (Sum.inl a) - ∑ b, star (Z (Sum.inr b)) * Z (Sum.inr b) := by
   rw [Jpq, Matrix.fromBlocks_mulVec]
   simp only [dotProduct, Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr, Matrix.one_mulVec,
-    Matrix.zero_mulVec, add_zero, zero_add, Matrix.neg_mulVec, Pi.neg_apply, Pi.add_apply,
-    Pi.star_apply, Function.comp_apply, mul_neg, Finset.sum_neg_distrib, sub_eq_add_neg]
+    Matrix.zero_mulVec, add_zero, zero_add, Matrix.neg_mulVec, Pi.neg_apply, Pi.star_apply, Function.comp_apply, mul_neg, Finset.sum_neg_distrib, sub_eq_add_neg]
 
 theorem gram_totDef (hc : CMData F E) (S : HSpace E) (hs : S.SigOK) (hd : S.IsDefinite) : IsTotDef hc.sig S.gram := by
   classical
@@ -196,7 +194,6 @@ theorem gram_totDef (hc : CMData F E) (S : HSpace E) (hs : S.SigOK) (hd : S.IsDe
     rw [h2]
     first
       | rfl
-      | simp
   have hyne : ∀ x : Fin S.rank → E, x ≠ 0 → (fun i => τ (x i)) ≠ 0 := by
     intro x hx hy
     apply hx

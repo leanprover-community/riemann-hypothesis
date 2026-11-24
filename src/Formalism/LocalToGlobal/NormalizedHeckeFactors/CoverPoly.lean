@@ -67,8 +67,6 @@ theorem repr_transport (σ : K₁ →+* K₂) (ι : V₁ →ₛₗ[σ] V₂) {n 
     rw [Module.Basis.mk_apply, Function.comp_apply]
     first
       | exact LinearMap.map_smulₛₗ ι (b.repr x i) (b i)
-      | exact map_smulₛₗ ι (b.repr x i) (b i)
-      | simp
   rw [hx, Module.Basis.repr_sum_self]
 
 theorem charpoly_transport_basis [Module.Finite K₁ V₁] [Module.Finite K₂ V₂] (σ : K₁ →+* K₂) (ι : V₁ →ₛₗ[σ] V₂) {n : Type*} [Fintype n] [DecidableEq n]

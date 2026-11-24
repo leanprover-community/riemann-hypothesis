@@ -255,7 +255,7 @@ theorem sec_mem_UPts (σE : E →ₐ[F] E) (J : Matrix n n E) {X : GL n (E ⊗[F
     ext a b
     by_cases hab : a = b
     · subst hab; simp [cT, mapE, hσ, sig_iE]
-    · simp [cT, mapE, hσ, sig_iE, Matrix.one_apply_ne hab, Matrix.one_apply_ne (Ne.symm hab)]
+    · simp [cT, mapE, sig_iE, Matrix.one_apply_ne hab, Matrix.one_apply_ne (Ne.symm hab)]
   have hJ : epsW F E w • J.map (inclE (F := F) (FiniteAdeleRing (𝓞 F) F)) =
       mapE F E w (J.map (inclE (F := F) (w.adicCompletion F))) := by
     ext a b

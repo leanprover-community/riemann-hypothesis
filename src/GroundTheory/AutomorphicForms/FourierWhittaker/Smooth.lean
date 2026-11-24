@@ -320,7 +320,7 @@ theorem infEmb_expG_dirMat (k : ℕ) (hk : k < n) (p : Fin k × BIdx K) (s : ℝ
     refine Matrix.ext fun a b => ?_
     rw [AdelicGLn.prodEquiv_apply_snd]
     simp only [colGL, coe_uGL, uMat_apply, colX_apply, Units.val_one, Matrix.one_apply]
-    split_ifs <;> first | rfl | simp_all
+    split_ifs <;> first | rfl
   have hinf : archEquiv K n (AdelicGLn.prodEquiv K n (colGL k v)).1 =
       (isExpLieAlgebra K n).expG (s • ⟨dirMat k p, Submodule.mem_top⟩) := by
     apply Subtype.ext

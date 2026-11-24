@@ -71,7 +71,7 @@ theorem mvPow : MVPowStatement := by
   have hind : (ball (0 : V n) 1).indicator (fun z : V n => ‖z‖ ^ (-2 * s)) =
       fun z => (Iio (1 : ℝ)).indicator (fun y : ℝ => y ^ (-2 * s)) ‖z‖ := by
     funext z
-    by_cases h : ‖z‖ < 1 <;> simp [Set.indicator, mem_ball_zero_iff, h]
+    by_cases h : ‖z‖ < 1 <;> simp [Set.indicator, h]
   rw [← integrable_indicator_iff measurableSet_ball, hind, integrable_fun_norm_addHaar,
     finrank_real_V]
   have hfun : (fun y : ℝ => y ^ (2 * n - 1) • (Iio (1 : ℝ)).indicator (fun y : ℝ => y ^ (-2 * s)) y) =

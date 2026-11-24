@@ -82,7 +82,7 @@ theorem kc_sqd_ne_zero : H.sqd ≠ 0 := by
   omega
 
 theorem kc_mem_Psi_iff (σ : H.E ≃ₐ[ℚ] H.E) : H.gal σ ∈ φ.Psi ↔ σ H.sqd = H.sqd := by
-  apply Formalism.HC.Der.gal_mem_Psi_iff <;> assumption
+  apply Formalism.HC.Der.gal_mem_Psi_iff
 
 theorem kc_gal_conj : H.gal H.conj = φ.cc := by
   unfold HostRaw.conj

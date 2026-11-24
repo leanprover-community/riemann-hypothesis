@@ -75,10 +75,10 @@ theorem glue_inl_inl {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) {U : Sub
   simp only [glueFam, Sum.elim_inl]
   split_ifs with h1 h2 h2
   · exact hbo _ _ hii
-  · simp only [map_smulₛₗ, map_smul, map_add (f := _), LinearMap.add_apply, LinearMap.smul_apply, smul_zero, add_zero, zero_add, smul_eq_mul, mul_zero, hbo _ _ hii, form_U_orth (hbU i) (hwW _)]
-  · simp only [map_smulₛₗ, map_smul, map_add (f := _), LinearMap.add_apply, LinearMap.smul_apply, smul_zero, add_zero, zero_add, smul_eq_mul, mul_zero, hbo _ _ hii, form_orth_U hs (hbU i') (hwW _)]
+  · simp only [map_smulₛₗ, map_add (f := _), add_zero, smul_eq_mul, mul_zero, hbo _ _ hii, form_U_orth (hbU i) (hwW _)]
+  · simp only [map_smulₛₗ, map_add (f := _), LinearMap.add_apply, LinearMap.smul_apply, add_zero, smul_eq_mul, mul_zero, hbo _ _ hii, form_orth_U hs (hbU i') (hwW _)]
   · have hτ' : τ i ≠ τ i' := fun e => hii (hτ i i' h1 h2 e)
-    simp only [map_smulₛₗ, map_smul, map_add (f := _), LinearMap.add_apply, LinearMap.smul_apply, smul_zero, add_zero, zero_add, smul_eq_mul, mul_zero, hbo _ _ hii, form_U_orth (hbU i) (hwW _),
+    simp only [map_smulₛₗ, map_add (f := _), LinearMap.add_apply, LinearMap.smul_apply, add_zero, smul_eq_mul, mul_zero, hbo _ _ hii, form_U_orth (hbU i) (hwW _),
       form_orth_U hs (hbU i') (hwW _), hwo _ _ hτ']
 
 theorem glue_inl_w {h : V →ₗ⋆[K] V →ₗ[K] K} {U : Submodule K V}
@@ -90,6 +90,6 @@ theorem glue_inl_w {h : V →ₗ⋆[K] V →ₗ[K] K} {U : Submodule K V}
   simp only [glueFam, Sum.elim_inl]
   split_ifs with h1
   · exact form_U_orth (hbU i) (hwW j)
-  · simp only [map_smulₛₗ, map_smul, map_add (f := _), LinearMap.add_apply, LinearMap.smul_apply, smul_zero, add_zero, zero_add, smul_eq_mul, mul_zero, form_U_orth (hbU i) (hwW j), hwo _ _ (hj h1)]
+  · simp only [map_smulₛₗ, map_add (f := _), LinearMap.add_apply, LinearMap.smul_apply, add_zero, smul_eq_mul, mul_zero, form_U_orth (hbU i) (hwW j), hwo _ _ (hj h1)]
 
 end Formalism.L2.SG.Pf.GluedFormOrthogonality

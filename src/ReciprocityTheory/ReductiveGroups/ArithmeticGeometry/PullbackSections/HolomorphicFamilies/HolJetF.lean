@@ -74,9 +74,6 @@ theorem specMap_comp_appLE {A B : CommRingCat.{0}} (χ : A ⟶ B) (q : Spec A �
   have e0 : (Spec.map χ ≫ q).appLE U ⊤ h = q.app U ≫ (Spec.map χ).appLE (q ⁻¹ᵁ U) ⊤ h := by
     first
     | exact Scheme.Hom.comp_appLE _ _ _ _ _
-    | (simp only [Scheme.Hom.appLE, Scheme.comp_app, Category.assoc]; rfl)
-    | (simp only [Scheme.Hom.appLE, Scheme.Hom.comp_app, Category.assoc]; rfl)
-    | (unfold Scheme.Hom.appLE; simp [Category.assoc])
   rw [e0]
   have e1 : (Spec.map χ).appLE (q ⁻¹ᵁ U) ⊤ h =
       (Spec A).presheaf.map (homOfLE hq).op ≫ (Spec.map χ).app ⊤ := by
@@ -116,7 +113,7 @@ theorem aeval_tan (ℓ : ι) (q : MvPolynomial ι K) :
     · have h' : ℓ ≠ i := Ne.symm h
       have hc : AddMonoidAlgebra.coeff (p * MvPolynomial.X i) (Finsupp.single ℓ 1) = 0 := by
         rw [MvPolynomial.coeff_mul_X']
-        simp [Finsupp.single_apply, h', h]
+        simp [h]
       rw [hc]
       ext <;> simp [h]
 

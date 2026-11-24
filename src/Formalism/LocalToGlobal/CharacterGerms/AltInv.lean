@@ -163,7 +163,6 @@ def OrdV {σ : Type*} (D : ℕ) (f : MvPowerSeries σ C) : Prop :=
 private theorem degree_add_lemma_2 (a b : σ →₀ ℕ) : (a + b).degree = a.degree + b.degree := by
   first
   | exact map_add _ a b
-  | exact Finsupp.sum_add_index' (h := fun _ n => n) (fun _ => rfl) (fun _ _ _ => rfl)
 
 theorem low_mul {E D D' : ℕ} {f g : MvPowerSeries σ C} (hf : OrdV D f) (hf' : LowLt (v := v) (E + D) f)
     (hg : OrdV D' g) (hg' : LowLt (v := v) (E + D') g) :

@@ -69,7 +69,7 @@ theorem meas_herm_top'_k (d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ)
     inferInstanceAs (LocallyCompactSpace (Fin d.n → Fin d.n → AF F ⊗[F] E))
   haveI : SecondCountableTopology (Matrix (Fin d.n) (Fin d.n) (AF F ⊗[F] E)) :=
     inferInstanceAs (SecondCountableTopology (Fin d.n → Fin d.n → AF F ⊗[F] E))
-  haveI : Countable E := meas_countableE
+  haveI : Countable E := _root_.Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.countableE
   haveI : Countable (Matrix (Fin d.n) (Fin d.n) E) := inferInstanceAs (Countable (Fin d.n → Fin d.n → E))
   refine ⟨inferInstance, (hcl d.n).locallyCompactSpace,
     inferInstanceAs (SecondCountableTopology ((HeckeCharacterZeroLocus.SiegelWeilU.HermR (AF F) σ d.n : Set (Matrix (Fin d.n) (Fin d.n) (AF F ⊗[F] E))))),
@@ -90,7 +90,7 @@ theorem meas_mx_top'_k (d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ) :
   obtain ⟨hTR, hLC', hSC', hT2', -⟩ := GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hCM (AF F)
   haveI := hTR; haveI := hLC'; haveI := hSC'; haveI := hT2'
   haveI : BorelSpace (AE F E) := ⟨rfl⟩
-  haveI : Countable E := meas_countableE
+  haveI : Countable E := _root_.Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.countableE
   haveI : Countable (Matrix (Fin d.m) (Fin d.n) E) := inferInstanceAs (Countable (Fin d.m → Fin d.n → E))
   refine ⟨inferInstance, inferInstanceAs (LocallyCompactSpace (Fin d.m → Fin d.n → AE F E)),
     inferInstanceAs (SecondCountableTopology (Fin d.m → Fin d.n → AE F E)),

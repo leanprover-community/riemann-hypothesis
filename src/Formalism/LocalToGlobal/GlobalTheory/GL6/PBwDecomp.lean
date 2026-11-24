@@ -145,13 +145,13 @@ theorem bwD_single_mul_apply (p q : Fin r) (x : ℂ) (M : Matrix (Fin r) (Fin r)
     (Matrix.single p q x * M) a b = if a = p then x * M q b else 0 := by
   by_cases h : a = p
   · subst h; simp [Matrix.mul_apply, Matrix.single_apply]
-  · simp [Matrix.mul_apply, Matrix.single_apply, h, Ne.symm h]
+  · simp [Matrix.mul_apply, h, Ne.symm h]
 
 theorem bwD_mul_single_apply (p q : Fin r) (x : ℂ) (M : Matrix (Fin r) (Fin r) ℂ) (a b : Fin r) :
     (M * Matrix.single p q x) a b = if b = q then M a p * x else 0 := by
   by_cases h : b = q
   · subst h; simp [Matrix.mul_apply, Matrix.single_apply]
-  · simp [Matrix.mul_apply, Matrix.single_apply, h, Ne.symm h]
+  · simp [Matrix.mul_apply, h, Ne.symm h]
 
 private lemma one_add_single_mul_one_add_single_eq_one {r : ℕ} (p q : Fin r) (c d : ℂ)
     (h : d + c + (if q = p then d * c else 0) = 0) :
@@ -163,10 +163,10 @@ private lemma one_add_single_mul_one_add_single_eq_one {r : ℕ} (p q : Fin r) (
     by_cases hx : x = p
     · by_cases hz : z = q
       · by_cases hqp : q = p
-        · simp [Matrix.single_apply, hx, hz, hqp]
-        · simp [Matrix.single_apply, hx, hz, hqp, Ne.symm hqp]
-      · simp [Matrix.single_apply, hx, hz, Ne.symm hz]
-    · simp [Matrix.single_apply, hx, Ne.symm hx]
+        · simp [hx, hz, hqp]
+        · simp [hx, hz, hqp, Ne.symm hqp]
+      · simp [hx, Ne.symm hz]
+    · simp [hx, Ne.symm hx]
   rw [add_mul, one_mul, mul_add, mul_one, hdc]
   generalize (if q = p then d * c else 0) = e at h ⊢
   ext x z
@@ -257,7 +257,7 @@ theorem bwD_elim (hL : bwD_Loc O) (M : Matrix (Fin r) (Fin r) ℂ) (hM : bwD_Int
       have hb'j : b' ≠ j := Finset.ne_of_mem_erase hb'
       ext x z
       rw [bwD_single_mul_apply, Matrix.zero_apply]
-      simp [Matrix.single_apply, hb'j]
+      simp [hb'j]
     have hSS : S * S = 0 := by
       rw [hS, Finset.sum_mul_sum]
       exact Finset.sum_eq_zero fun b hb => Finset.sum_eq_zero fun b' hb' => hX0 b hb b' hb'
@@ -324,7 +324,7 @@ theorem bwD_decomp (hL : bwD_Loc O) (N M : Matrix (Fin r) (Fin r) ℂ) (t : ℂ)
     have hjk : j ≠ k := (Finset.ne_of_mem_erase hk).symm
     ext a b
     rw [bwD_single_mul_apply, Matrix.zero_apply]
-    simp [Matrix.single_apply, hjk]
+    simp [hjk]
   have hSS : S * S = 0 := by
     rw [hS, Finset.sum_mul_sum]
     exact Finset.sum_eq_zero fun b hb => Finset.sum_eq_zero fun b' hb' => hX0 b hb b' hb'

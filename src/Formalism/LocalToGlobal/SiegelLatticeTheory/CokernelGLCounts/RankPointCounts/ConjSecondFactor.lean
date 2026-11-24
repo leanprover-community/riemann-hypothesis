@@ -137,7 +137,7 @@ theorem cShape (w : Point D.host.E (D.R.rS + 1)) : CShapeAt M δ u u' w hA L U h
               rw [hLL, Matrix.one_mul, Matrix.mul_one]
           _ = Lpi * (Lp * ((x.1 : GLp p) : MP p) * Lpi) * Lp := by simp only [Matrix.mul_assoc]
       rw [e]
-      exact ZsVolGrp.isLoUni_mul (ZsVolGrp.isLoUni_mul
+      exact _root_.PI.TermAttrConst.UnitaryGroupMassFormula.isLoUni_mul (_root_.PI.TermAttrConst.UnitaryGroupMassFormula.isLoUni_mul
         (lOf_loUni M δ hA _ _ (ZsVolGrp.isLoUni_inv hL).1 (ZsVolGrp.isUpUni_inv hU).1) (loUni_of_int M h1'))
         (lOf_loUni M δ hA _ _ hL hU)
     have hup : IsUpUni ((x.2.unop : GLp p) : MP p) := by
@@ -146,7 +146,7 @@ theorem cShape (w : Point D.host.E (D.R.rS + 1)) : CShapeAt M δ u u' w hA L U h
               rw [hUU, Matrix.one_mul, Matrix.mul_one]
           _ = Up * (Upi * ((x.2.unop : GLp p) : MP p) * Up) * Upi := by simp only [Matrix.mul_assoc]
       rw [e]
-      exact ZsVolGrp.isUpUni_mul (ZsVolGrp.isUpUni_mul (ρOf_upUni M δ hA _ _ hL hU) (upUni_of_int M h2'))
+      exact _root_.GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul (_root_.GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul (ρOf_upUni M δ hA _ _ hL hU) (upUni_of_int M h2'))
         (ρOf_upUni M δ hA _ _ (ZsVolGrp.isLoUni_inv hL).1 (ZsVolGrp.isUpUni_inv hU).1)
     exact ⟨⟨x, hlo, hup, hst⟩, ⟨h1', h2'⟩, rfl⟩
 

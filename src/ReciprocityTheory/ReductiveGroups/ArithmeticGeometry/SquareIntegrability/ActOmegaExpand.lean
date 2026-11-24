@@ -64,14 +64,11 @@ lemma act_omega_expand {dim : (E →+* ℂ) → ℕ} (ω : Fin (Module.finrank �
     by
       first
       | exact hω.span_eq_top_of_card_eq_finrank' (Fintype.card_fin _)
-      | (haveI : Nonempty (Fin (Module.finrank ℚ E)) := ⟨⟨0, Module.finrank_pos⟩⟩
-         exact hω.span_eq_top_of_card_eq_finrank (Fintype.card_fin _))
   have hα : (α : E) ∈ Submodule.span ℚ (Set.range fun j => (ω j : E)) := by
     rw [hsp]; exact Submodule.mem_top
   obtain ⟨c, hc⟩ : ∃ c : Fin (Module.finrank ℚ E) → ℚ, ∑ j, c j • (ω j : E) = α := by
     first
     | exact (Submodule.mem_span_range_iff_exists_fun ℚ).1 hα
-    | exact Submodule.mem_span_range_iff_exists_fun.1 hα
   have key : act α y = ∑ j, ((c j : ℝ)) • act (ω j) y := by
     ext i
     simp only [act, ← hc]

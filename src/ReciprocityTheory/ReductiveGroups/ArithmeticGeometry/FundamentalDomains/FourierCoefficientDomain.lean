@@ -62,10 +62,7 @@ section Cauchy
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℂ F]
 
-lemma norm_fderiv_le {U : Set F} (hU : IsOpen U) {G : F → ℂ} (hG : DifferentiableOn ℂ G U)
-    {y : F} {R C : ℝ} (hR : 0 < R) (hball : closedBall y R ⊆ U)
-    (hC : ∀ z ∈ closedBall y R, ‖G z‖ ≤ C) : ‖fderiv ℂ G y‖ ≤ C / R := by
-  first | exact Bl.general_b_fact_bis_form.goal1 .. | (apply Bl.general_b_fact_bis_form.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_bis_form.goal1 <;> assumption)
+alias norm_fderiv_le := _root_.Bl.general_b_fact_bis_form.goal1
 
 end Cauchy
 

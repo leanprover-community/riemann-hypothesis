@@ -137,7 +137,7 @@ theorem proof : PullSectionIntegralInt.Statement := by
     intro i
     convert ha i using 1
     ext k
-    simp [Pi.smul_apply, smul_eq_mul, add_mul]
+    simp [add_mul]
   have hg : aeval y (xpow c ((w + 1) • e)) = Mc ^ (w + 1) := by
     simp only [xpow, map_prod, map_pow, aeval_X, Mc, ← Finset.prod_pow]
     refine Finset.prod_congr rfl fun k _ => ?_

@@ -72,8 +72,6 @@ theorem integ_iff (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) (t : hostE ζ a b
     IsIntegral ℤ (σ t) ↔ IsIntegral ℤ t := by
   first
   | exact isIntegral_algEquiv (σ.restrictScalars ℤ)
-  | exact ⟨fun h => by simpa using h.map (σ.symm.toAlgHom.restrictScalars ℤ),
-      fun h => h.map (σ.toAlgHom.restrictScalars ℤ)⟩
 
 theorem smul_ne_bot (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) (B : Ideal (𝓞 (hostE ζ a b)))
     (hB : B ≠ ⊥) : σ • B ≠ ⊥ := by
@@ -83,9 +81,7 @@ theorem smul_ne_bot (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) (B : Ideal (�
   rw [inv_smul_smul] at h'
   rw [h']
   first
-  | exact smul_bot _
   | exact Ideal.map_bot
-  | (rw [Ideal.pointwise_smul_def]; exact Ideal.map_bot)
 
 theorem mem_inv_smul (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) (B : Ideal (𝓞 (hostE ζ a b)))
     (hB : B ≠ ⊥) (y : hostE ζ a b) :
@@ -123,7 +119,6 @@ theorem mem_inv_smul (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) (B : Ideal (�
     have hv : σ⁻¹ • w' ∈ B := by
       first
       | exact (Ideal.mem_pointwise_smul_iff_inv_smul_mem).mp hw'
-      | (obtain ⟨v, hv, rfl⟩ := hw'; simpa using hv)
     have := h (algebraMap _ _ (σ⁻¹ • w')) (by
       rw [FractionalIdeal.mem_coeIdeal]
       exact ⟨σ⁻¹ • w', hv, rfl⟩)
@@ -178,12 +173,10 @@ private theorem galE_fst_snd_eq_one_of_mem_stabilizer_of_jacobiSym_eq_one {e q d
     rw [hspec, hs']
     first
     | simp [bE]
-    | (simp; rfl)
   have hb2 : (bE ζ a b) ^ 2 = algebraMap ℤ (hostE ζ a b) (-(d : ℤ)) := by
     apply Subtype.ext
     first
     | simp [bE, hL'.2.2.1]
-    | (simp [bE]; exact hL'.2.2.1)
   have hbI : IsIntegral ℤ (bE ζ a b) := by
     have h := isIntegral_algebraMap (R := ℤ) (A := hostE ζ a b) (x := -(d : ℤ))
     rw [← hb2] at h
@@ -207,15 +200,10 @@ private theorem galE_fst_snd_eq_one_of_mem_stabilizer_of_jacobiSym_eq_one {e q d
     rw [← eq_intCast (algebraMap ℤ (𝓞 (hostE ζ a b))) x, ← Ideal.mem_span_singleton]
     first
     | exact (Ideal.mem_of_liesOver P (span {(p : ℤ)}) x).symm
-    | (rw [Ideal.over_def P (span {(p : ℤ)})]; rfl)
-    | (rw [Ideal.LiesOver.over (P := P) (p := span {(p : ℤ)})]; rfl)
-    | (rw [Ideal.over_def P (span {(p : ℤ)})]; simp [Ideal.under])
   have hsq : IsSquare (((-(d : ℤ)) : ℤ) : ZMod p) := by
     have hl : legendreSym p (-(d : ℤ)) = 1 := by
       first
       | (rw [jacobiSym.legendreSym.to_jacobiSym]; exact hj)
-      | (rw [← jacobiSym.legendreSym.to_jacobiSym] at hj; exact hj)
-      | (simp [jacobiSym, Nat.primeFactorsList_prime hp] at hj; exact hj)
     have h0 : (((-(d : ℤ)) : ℤ) : ZMod p) ≠ 0 := by
       intro h0
       have := (legendreSym.eq_zero_iff p (-(d : ℤ))).mpr h0
@@ -285,12 +273,10 @@ theorem hostOrdinary : HostOrdinary := by
   have hg1 : galE e ζ a b 1 = 1 := by
     first
     | exact map_one (MonoidHom.mk' (galE e ζ a b) hmul)
-    | (have h11 := hmul 1 1; rw [one_mul] at h11; exact (mul_eq_left.mp h11.symm))
   have hPsi : ∀ g : GG e, g ∈ Psi e ↔ g.1.2 = 1 := by
     intro g
     first
     | exact Iff.rfl
-    | (rw [Psi, MonoidHom.mem_ker]; rfl)
   have hS := hostSplitK_of (hostFrob_of hostGalois hostGalSpec) e q d hH L ζ a b hL
   have hF := hostFrob_of hostGalois hostGalSpec e q d hodd L ζ a b hL
   have hcq : Nat.Coprime q (2 ^ (e + 2)) :=
@@ -361,8 +347,6 @@ theorem hostUnimodular : HostUnimodular := by
     rw [← FractionalIdeal.coeIdeal_mul, ← h]
     first
     | exact coeIdeal_differentIdeal _ _ _ _
-    | exact coeIdeal_differentIdeal (A := 𝓞 (KinE ζ a b)) (K := KinE ζ a b) (L := hostE ζ a b)
-        (B := 𝓞 (hostE ζ a b))
   have hne : ((𝔟 : Ideal (𝓞 (hostE ζ a b))) :
       FractionalIdeal (𝓞 (hostE ζ a b))⁰ (hostE ζ a b)) *
       ((σ • 𝔟 : Ideal (𝓞 (hostE ζ a b))) :

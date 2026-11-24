@@ -133,7 +133,7 @@ theorem shift_shift (b : Bool) (μ : Fin n → ℝ) (s : Fin n) : shift (!b) (sh
 
 theorem shift_apply (b : Bool) (μ : Fin n → ℝ) (s a : Fin n) :
     shift b μ s a = μ a + if a = s then (if b then -1 else 1) else 0 := by
-  cases b <;> by_cases h : a = s <;> simp [shift, h, Pi.single_apply, sub_eq_add_neg]
+  cases b <;> by_cases h : a = s <;> simp [shift, h, sub_eq_add_neg]
 
 theorem gap_shift {ε : Fin n → Bool} {μ : Fin n → ℝ} {h : ℝ} (hg : GapAtLeast ε μ h) (b : Bool) (s : Fin n) :
     GapAtLeast ε (shift b μ s) (h - 1) := by

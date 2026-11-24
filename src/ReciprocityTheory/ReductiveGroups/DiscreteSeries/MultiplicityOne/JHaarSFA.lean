@@ -73,19 +73,11 @@ theorem eq_smul_of_sigmaFinite (μ ν : Measure G) [SigmaFinite μ] [SigmaFinite
   have hμf : μ (spanningSets (μ + ν) n) ≠ ∞ := (lt_of_le_of_lt le_self_add hfin).ne
   have heq : μ = (μ (spanningSets (μ + ν) n) / ν (spanningSets (μ + ν) n)) • ν := by
     first
-    | exact measure_eq_div_smul μ ν (spanningSets (μ + ν) n) hn hνf
-    | exact measure_eq_div_smul μ ν hS hn hνf
-    | exact measure_eq_div_smul μ ν (spanningSets (μ + ν) n) hS hn hνf
     | (ext t ht
-       have key := measure_mul_measure_eq μ ν (spanningSets (μ + ν) n) t hn hνf ht
        rw [Measure.smul_apply, smul_eq_mul, ENNReal.div_eq_inv_mul, mul_assoc, key, ← mul_assoc,
          ENNReal.inv_mul_cancel hn hνf, one_mul])
     | (ext t ht
        have key := measure_mul_measure_eq μ ν (spanningSets (μ + ν) n) t hn hνf
-       rw [Measure.smul_apply, smul_eq_mul, ENNReal.div_eq_inv_mul, mul_assoc, key, ← mul_assoc,
-         ENNReal.inv_mul_cancel hn hνf, one_mul])
-    | (ext t ht
-       have key := measure_mul_measure_eq μ ν (spanningSets (μ + ν) n) t hS ht hn hνf
        rw [Measure.smul_apply, smul_eq_mul, ENNReal.div_eq_inv_mul, mul_assoc, key, ← mul_assoc,
          ENNReal.inv_mul_cancel hn hνf, one_mul])
   have hμ0 : μ (spanningSets (μ + ν) n) ≠ 0 := by
@@ -179,7 +171,7 @@ theorem mEmb : MeasurableEmbedding (Subtype.val : Aset U → Mt k r) := by
 theorem map_comap_val (μ : Measure (Mt k r)) (hc : μ (Aset U)ᶜ = 0) :
     (μ.comap (Subtype.val : Aset U → Mt k r)).map Subtype.val = μ := by
   rw [(mEmb (U := U)).map_comap μ]
-  first | rw [Subtype.range_coe] | rw [Subtype.range_val] | skip
+  first | rw [Subtype.range_coe]
   exact Measure.restrict_eq_self_of_ae_mem (ae_iff.mpr hc)
 
 theorem sigmaFinite_comap (μ : Measure (Mt k r)) [SigmaFinite μ] :

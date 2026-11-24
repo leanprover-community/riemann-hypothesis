@@ -317,7 +317,7 @@ theorem finrank_cmField (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b) :
   rw [hostE_eq_fixedField hqd h]
   have h1 := (letI : Module.Free (fixedField (Subgroup.zpowers (tau0 hqd h))) L := Module.Free.of_divisionRing _ _; Module.finrank_mul_finrank ℚ (fixedField (Subgroup.zpowers (tau0 hqd h))) L)
   rw [IntermediateField.finrank_fixedField_eq_card, hL] at h1
-  simp only [Nat.card_zpowers, Fintype.card_zpowers, orderOf_zeta_inversion hqd h] at h1
+  simp only [Nat.card_zpowers, orderOf_zeta_inversion hqd h] at h1
   rw [pow_succ] at h1
   exact Nat.eq_of_mul_eq_mul_right (by norm_num) h1
 

@@ -160,7 +160,7 @@ theorem discrete_series_unique_large_gap :
     rw [← hmul _ hc _ hci]
     have e : P'⁻¹ * (P' * Pᴴ * (P * P'ᴴ)) * P' = 1 := by
       rw [h3']
-      simp only [Matrix.mul_assoc, kP, kP', h1, h1', Matrix.mul_one]
+      simp only [Matrix.mul_assoc, kP, kP', h1']
     rw [e, hone]
     rfl
   refine ⟨U.trans (LinearIsometryEquiv.ofSurjective f hsurj), ?_⟩

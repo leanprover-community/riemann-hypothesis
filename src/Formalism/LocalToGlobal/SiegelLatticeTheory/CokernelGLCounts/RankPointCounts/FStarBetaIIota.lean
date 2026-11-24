@@ -283,9 +283,9 @@ theorem iotaB_of (hP : PinB Zd u u' F0 what₂) : IotaB Zd u u' F0 what₂ := by
     simp only [XLam, Submodule.mem_inf]
     constructor
     · rintro ⟨h1, h2⟩; refine ⟨?_, h2⟩
-      first | exact memX Zd γ hpr2 hpr1 hΛfull hu h2 h1 | exact memX Zd γ hpr2 hpr1 hΛfull.toIsLattice hu h2 h1
+      first | exact memX Zd γ hpr2 hpr1 hΛfull hu h2 h1
     · rintro ⟨h1, h2⟩; refine ⟨?_, h2⟩
-      first | exact memX Zd γ hpr1 hpr2 hΛ₂full hu h2 h1 | exact memX Zd γ hpr1 hpr2 hΛ₂full.toIsLattice hu h2 h1
+      first | exact memX Zd γ hpr1 hpr2 hΛ₂full hu h2 h1
 
   have hXmap : (Xsp (repF γ)).map (β₀ : (VS D).V →ₗ[D.host.E] (VS D).V) = Xsp (liftF F'₂) :=
     BwdBetaCut.Xsp_of_frame β₀ _ _ hfr
@@ -346,7 +346,6 @@ theorem iotaB_of (hP : PinB Zd u u' F0 what₂) : IotaB Zd u u' F0 what₂ := by
     obtain ⟨μ, hμ, ξ, hξ, ξ', hξ', heq⟩ := NgX_dec hmem
     first
     | refine mem_of_bcP Zd (IotaBP.isLattice_NgX hΛ₂full _ _) fun p => ?_
-    | refine mem_of_bcP Zd (IotaBP.isLattice_NgX_aux hΛ₂full _ _) fun p => ?_
     rcases hsp : (Zd.M p).split with _ | g
     · exact untyped_mem Zd p hsp _ _ (BwdNP.baseChange_mem_localLattice Zd (sub_mem hl₂Λ (hβΛ _ hx'Λ)) p)
     · exact IotaBP.fwd_typed Zd p g hsp γ F'₂ Λ₂ (φ' p) (hRp p g hsp) β₀ (v * β₀)
@@ -356,7 +355,6 @@ theorem iotaB_of (hP : PinB Zd u u' F0 what₂) : IotaB Zd u u' F0 what₂ := by
     obtain ⟨μ, hμ, ξ, hξ, ξ', hξ', heq⟩ := NgX_dec hmem
     first
     | refine mem_of_bcP Zd (IotaBP.isLattice_NgX hΛfull _ _) fun p => ?_
-    | refine mem_of_bcP Zd (IotaBP.isLattice_NgX_aux hΛfull.toIsLattice _ _) fun p => ?_
     rcases hsp : (Zd.M p).split with _ | g
     · exact untyped_mem Zd p hsp _ _ (BwdNP.baseChange_mem_localLattice Zd (sub_mem hlΛ hx'Λ) p)
     · exact IotaBP.bwd_typed Zd p g hsp γ F'₂ Λ₂ (φ' p) (hRp p g hsp) β₀ (v * β₀)

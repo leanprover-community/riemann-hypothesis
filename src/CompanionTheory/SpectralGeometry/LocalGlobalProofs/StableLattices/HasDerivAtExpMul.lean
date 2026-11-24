@@ -247,7 +247,7 @@ theorem wtLink : CompanionTheory.D.DSIC.WtLink := by
       rw [Finset.sum_eq_single a]
       · simp [θ]
       · intro b _ hb
-        simp [θ, Pi.single_apply, hb]
+        simp [θ, hb]
       · intro ha
         exact absurd (Finset.mem_univ a) ha
     rw [hsum] at hu

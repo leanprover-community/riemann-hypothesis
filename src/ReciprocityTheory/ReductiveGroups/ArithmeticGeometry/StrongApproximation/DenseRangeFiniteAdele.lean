@@ -130,7 +130,6 @@ theorem denseRange_finiteAdele : DenseRange (algebraMap K (FiniteAdeleRing R K))
         -((b - algebraMap K (FiniteAdeleRing R K) u) v - algebraMap K _ (algebraMap R K a)) := by
       first
       | rfl
-      | simp
     rw [hv, Valuation.map_neg]
     exact ha v)
   simpa using hmem

@@ -39,6 +39,7 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -58,10 +59,10 @@ def fracPt (ρ : V →+* V₁) (hρ : Function.Injective ρ) : (TK V₁).left �
   spMap (IsFractionRing.map (K := FractionRing V) (L := FractionRing V₁) hρ)
 
 theorem fracPt_comp (ρ : V →+* V₁) (hρ : Function.Injective ρ) : fracPt ρ hρ ≫ jK V = jK V₁ ≫ spMap ρ := by
-  simp only [fracPt, spMap, jK, TK, Over.mk_hom, ← Spec.map_comp]
+  simp only [fracPt, spMap, jK, TK, ← Spec.map_comp]
   congr 1
   ext x
-  simp [IsFractionRing.map, IsLocalization.map_eq]
+  simp [IsFractionRing.map]
 
 theorem gm_spMap_unitOn {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R') (z : Sp R') (k : Rˣ) :
     gm (spMap f) z ⊤ (unitOn k) = gm (𝟙 _) z ⊤ (unitOn (Units.map f.toMonoidHom k)) := by

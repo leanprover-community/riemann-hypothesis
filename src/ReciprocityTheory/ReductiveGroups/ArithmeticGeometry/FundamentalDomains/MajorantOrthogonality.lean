@@ -50,6 +50,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicCombinations
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.PositiveSpanMatrices
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ExistsUnitaryBasisSameFlag
 
 @[expose] public section
 
@@ -112,7 +113,7 @@ private lemma sum_inv_mulVec_smul_col_of_det_ne_zero (M : Matrix (Fin r) (Fin r)
 private lemma hermC_col_mat_of_isOrtho (X : Data E r) {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : X.Ψ) (k l : Fin r) :
     hermC τ.1 X.Gm (col (mat x τ) k) (col (mat x τ) l) =
       if k = l then (if (k : ℕ) < X.p0 then (1 : ℂ) else -1) else 0 := by
-  rw [ReciprocityTheory.ChartRestriction.G.FD.PositiveSpanMatrices.ortho_apply (X := X) ho τ k l]
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalPerpBasis.ortho_h (X := X) ho τ k l]
   by_cases hkl : k = l
   · subst hkl
     by_cases hk : (k : ℕ) < X.p0
@@ -140,8 +141,8 @@ lemma maj_ortho (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (ho : X.IsO
     ext a b
     by_cases hab : a = b
     · subst hab
-      simp [Matrix.diagonal_apply, sgn, a.isLt]
-    · simp [Matrix.diagonal_apply, Matrix.one_apply, hab, Fin.castLE_inj]
+      simp [sgn, a.isLt]
+    · simp [hab, Fin.castLE_inj]
   have hpos : X.posPart x τ v = ∑ a : Fin X.p0, ‖c (Fin.castLE X.p0_le a)‖ ^ 2 := by
     unfold Data.posPart
     rw [hgp, inv_one]

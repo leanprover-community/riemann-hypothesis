@@ -46,6 +46,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
@@ -93,7 +94,7 @@ theorem dc_of_toTerm {s s' : TT Y u u'} (h : s.toTerm = s'.toTerm) :
         IsRowLat D (X.Fu u) Λ₁ → TermDef.DCRel Λ₁ (lf D (X.Fu u)) x.1 y.1 := by
     intro Λ₁ Λ₂ hΛ x y hxy hr
     subst hΛ
-    exact (Formalism.L2.SG.Closed.TermEqIff_holds D u u' (X.Fu u) Λ₁ hr x y).1 (eq_of_heq hxy)
+    exact (_root_.term_eq_iff_relation D u u' (X.Fu u) Λ₁ hr x y).1 (eq_of_heq hxy)
   exact key s.lam s'.lam hl ⟨s.frame, s.rep.2.2.2.2⟩ ⟨s'.frame, s'.rep.2.2.2.2⟩ hc hrow
 
 theorem perpS_eq_orth (U : Submodule D.host.E (VS D).V) : perpS (VS D) U = orth (VS D) U := by
@@ -334,18 +335,13 @@ theorem fibFin_holds : Formalism.L2.SG.TermTieOf.FibFinAll := by
   · obtain ⟨s₀⟩ := h
     have hrow : IsRowLat D (X.Fu u') s₀.1.lam' := (Y.rowsOK u').1 _ s₀.1.mem'
     have hA : (autLz D (X.Fu u') s₀.1.lam').Finite :=
-      _root_.automorphism_lattice_finite D (D.sp.Y_sig 0) _ (D.mem u').A.T_prime.pos (X.Fu u') _ hrow
+      _root_.PI.AutLzFinite.SlopeTestRemainingChoices.autLzFin_main D (D.sp.Y_sig 0) _ (D.mem u').A.T_prime.pos (X.Fu u') _ hrow
     haveI := hA.to_subtype
     exact Finite.of_injective (phi Y t s₀) (phi_inj t s₀)
 
 section Move
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}
-
-theorem orth_anti {U W : Submodule E S.V} (h : U ≤ W) : orth S W ≤ orth S U := by
-  intro x hx
-  rw [mem_orth'] at hx ⊢
-  exact fun y hy => hx y (h hy)
 
 theorem XLamF_le_UU (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T) (F' : LFlag S r T') : XLam Λ F ≤ UU Λ F F' := by
   unfold UU
@@ -357,11 +353,11 @@ theorem XLamG_le_UU (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T) (F' : LFlag 
 
 theorem Hp_le_orthF {Λ : Submodule (𝓞 E) S.V} {F : LFlag S r T} (F' : LFlag S r T')
     (hs : Xsp F ≤ spanE S (XLam Λ F)) : Hp Λ F F' ≤ orth S (Xsp F) :=
-  orth_anti (hs.trans (Submodule.span_mono (fun x hx => XLamF_le_UU Λ F F' hx)))
+  _root_.Formalism.MainNotions.LatticeGluingRadicals.c_orth_anti (hs.trans (Submodule.span_mono (fun x hx => XLamF_le_UU Λ F F' hx)))
 
 theorem Hp_le_orthG {Λ : Submodule (𝓞 E) S.V} (F : LFlag S r T) {F' : LFlag S r T'}
     (hs : Xsp F' ≤ spanE S (XLam Λ F')) : Hp Λ F F' ≤ orth S (Xsp F') :=
-  orth_anti (hs.trans (Submodule.span_mono (fun x hx => XLamG_le_UU Λ F F' hx)))
+  _root_.Formalism.MainNotions.LatticeGluingRadicals.c_orth_anti (hs.trans (Submodule.span_mono (fun x hx => XLamG_le_UU Λ F F' hx)))
 
 theorem UUE_move {Λ : Submodule (𝓞 E) S.V} {F : LFlag S r T} {G K : LFlag S r T'} {n m : S.V ≃ₗ[E] S.V}
     (hn : n ∈ NLam Λ F) (hm : m ∈ NLam Λ G) (hf : ∀ a, frame K a = n (m (frame G a))) (hz : K.zt = n (m G.zt))
@@ -587,8 +583,8 @@ theorem scal_move {Λ : Submodule (𝓞 E) S.V} {F : LFlag S r T} {G₁ G₂ K�
     have h2 := xplus_frame (φ := n * m) (fun a => hf a) h1
     have : (n * m) (m.symm w) = n w := by show n (m (m.symm w)) = n w; rw [LinearEquiv.apply_symm_apply]
     rwa [this] at h2
-  have hoX : orth S (Xplus F) ≤ orth S (Xsp F) := orth_anti le_sup_left
-  have hoX' : ∀ (G : LFlag S r T'), orth S (Xplus G) ≤ orth S (Xsp G) := fun G => orth_anti le_sup_left
+  have hoX : orth S (Xplus F) ≤ orth S (Xsp F) := _root_.Formalism.MainNotions.LatticeGluingRadicals.c_orth_anti le_sup_left
+  have hoX' : ∀ (G : LFlag S r T'), orth S (Xplus G) ≤ orth S (Xsp G) := fun G => _root_.Formalism.MainNotions.LatticeGluingRadicals.c_orth_anti le_sup_left
   intro y1 hy1 y2 hy2 y1' hy1' y2'' hy2'' h12 h2'' al al'
   have hY1 : n₁.symm y1 ∈ Ylift Λ F G₁ :=
     ⟨(mem_map_iff n₁ _ _).1 (hU₁ ▸ hy1.1), hpF hn₁ hy1.2⟩

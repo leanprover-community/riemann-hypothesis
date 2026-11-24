@@ -78,11 +78,11 @@ variable [IsGalois K L]
 omit [NumberField K] [NumberField L] [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
 theorem coe_res_smul (σ : G K Ω) (x : 𝓞 L) :
     algebraMap L Ω ((AlgEquiv.restrictNormalHom L σ • x : 𝓞 L) : L) = σ (algebraMap L Ω (x : L)) := by
-  apply PositivityTheory.FamInh.coe_res_smul <;> assumption
+  apply PositivityTheory.FamInh.coe_res_smul
 
 omit [NumberField K] [NumberField L] [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
 theorem res_restrictScalars (g : Ω ≃ₐ[L] Ω) : AlgEquiv.restrictNormalHom L (g.restrictScalars K : G K Ω) = 1 := by
-  apply PositivityTheory.FamInh.res_restrictScalars <;> assumption
+  apply PositivityTheory.FamInh.res_restrictScalars
 
 variable {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 L)}
 
@@ -93,7 +93,7 @@ theorem res_mem_stabilizer (hw : IsPlaceOver A w) {σ : G K Ω} (hσ : σ ∈ De
 
 omit [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
 theorem val_int_le_one (A : ValuationSubring Ω) (x : 𝓞 L) : A.valuation (algebraMap L Ω (x : L)) ≤ 1 := by
-  apply PositivityTheory.FamInh.val_int_le_one <;> assumption
+  apply PositivityTheory.FamInh.val_int_le_one
 
 omit [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
 theorem res_mem_inertia (hw : IsPlaceOver A w) {σ : G K Ω} (hσ : σ ∈ Ine (F := K) A) :
@@ -128,7 +128,7 @@ omit [IsAlgClosure K Ω] [IsAlgClosure L Ω] in
 theorem inertia_eq_bot_iff (v : HeightOneSpectrum (𝓞 K)) (w : HeightOneSpectrum (𝓞 L))
     [w.asIdeal.LiesOver v.asIdeal] :
     w.asIdeal.inertia (L ≃ₐ[K] L) = ⊥ ↔ w.asIdeal.ramificationIdx (𝓞 K) = 1 := by
-  apply PositivityTheory.FamInh.inertia_eq_bot_iff v w <;> assumption
+  apply PositivityTheory.FamInh.inertia_eq_bot_iff v w
 
 end CompanionTheory.FamInh
 

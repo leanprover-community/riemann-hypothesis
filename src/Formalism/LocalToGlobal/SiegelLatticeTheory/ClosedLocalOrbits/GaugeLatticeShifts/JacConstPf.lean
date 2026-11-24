@@ -434,6 +434,6 @@ end Formalism.L2.SG.Pf.Jac
 
 namespace Formalism.L2.SG.Pf
 
-theorem jacGauge_of (hB : BruhatHaar) (hW : WbHaar) (hE : GaugeExists) : JacGauge := Jac.jacGauge_of hB hW hE
+alias jacGauge_of := _root_.Formalism.L2.SG.Pf.Jac.jacGauge_of
 
 end Formalism.L2.SG.Pf

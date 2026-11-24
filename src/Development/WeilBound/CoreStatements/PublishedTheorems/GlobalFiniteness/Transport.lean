@@ -3,9 +3,12 @@ module
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MaxUnramifiedOutside
 public import ReciprocityTheory.Hypotheses.GalCohDefs
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GaloisUnramifiedOutsideCohomologyStatement
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.NormalSubgroupLeUnramifiedFixingStatement
+public import ReciprocityTheory.GaloisValuations.Global
+public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GaloisUnramifiedOutsideCohomology
+public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.NormalSubgroupLeUnramifiedFixing
 public import Development.WeilBound.CoreStatements.EulerCharacteristicCounts.GcohCmp
+public import Mathlib.FieldTheory.Galois.Profinite
+public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.Transport
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -19,7 +22,6 @@ import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
 import Mathlib.Data.Nat.Choose.Multinomial
-public import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -49,7 +51,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Sheaves.Init
-public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.Transport
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.TransportA
 import GroundTheory.GlobalFields.HerbrandQuotients.RationalForm
 
@@ -68,7 +69,7 @@ theorem gsEquiv (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω
   let φ : G F Ω →* Gal(E/F) := AlgEquiv.restrictNormalHom E
   have hφs : Function.Surjective φ := AlgEquiv.restrictNormalHom_surjective Ω
   have hNS : NS Ω S = (maxUnramifiedOutside F Ω S).fixingSubgroup :=
-    le_antisymm (GlobalTheory.T.normal_subgroup_le_unramified_fixing F Ω S) (GlobalTheory.T.galois_unramified_outside_cohomology F Ω S)
+    le_antisymm (_root_.GlobalTheory.CompanionTheory.GlobalFiniteness.NS_le_fixingSubgroup F Ω S) (_root_.GlobalTheory.CompanionTheory.Glob.InertiaLift.fixingSubgroup_le_NS F Ω S)
   have hker : φ.ker = NS Ω S := by
     rw [hNS]
     ext σ
@@ -123,7 +124,7 @@ theorem mapAlong_transport_comp {k G H : Type} [CommRing k] [Group G] [Topologic
   rw [← cohomologyMapAlong_comp]
   exact mapAlong_eq_id_of_eq_id A (φ.comp ψ) (hφ.comp hψ)
     (MonoidHom.ext fun x => by show θ.symm (θ x) = x; simp)
-    ((Rep.resFunctor ψ).map (𝟙 (Rep.res φ A)) ≫ g) (fun a => by first | rfl | simp [g]) n
+    ((Rep.resFunctor ψ).map (𝟙 (Rep.res φ A)) ≫ g) (fun a => by first | rfl) n
 
 theorem finite_cohomology_transport {k G H : Type} [CommRing k] [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] [Group H] [TopologicalSpace H] [IsTopologicalGroup H] (θ : G ≃ₜ* H)

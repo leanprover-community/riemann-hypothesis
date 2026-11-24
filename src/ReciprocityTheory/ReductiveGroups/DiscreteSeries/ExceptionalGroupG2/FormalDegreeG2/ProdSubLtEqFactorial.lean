@@ -1,7 +1,6 @@
 module
 
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.ProdSubLtEqFactorial
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.FormalDegreeG2.FdDefs
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.ProdSubLtEqFactorial
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PmatIsHermitian
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Residue
 import Mathlib.Algebra.Order.Floor.Extended
@@ -92,26 +91,11 @@ theorem strictAnti_lamT {lam : Fin n → ℝ} (hlam : StrictAnti lam) (t : ℕ) 
   have := lamT_sub lam t b a
   nlinarith
 
-theorem isHCParam_lamT {lam : Fin n → ℝ} (hlam : IsHCParam lam) (t : ℕ) : IsHCParam (lamT lam t) := by
-  apply ReciprocityTheory.ChartRestriction.DS.isHCParam_lamT <;> assumption
-
-theorem gap_lamT {ε : Fin n → Bool} {lam : Fin n → ℝ} {h : ℝ} (hlam : StrictAnti lam)
-    (hgap : GapAtLeast ε lam h) (t : ℕ) : GapAtLeast ε (lamT lam t) (h + t) := by
-  apply ReciprocityTheory.ChartRestriction.DS.gap_lamT <;> assumption
-
 theorem vand_pos {lam : Fin n → ℝ} (hlam : StrictAnti lam) : 0 < Vand lam := by
   unfold Vand
   refine Finset.prod_pos fun a _ => Finset.prod_pos fun b hb => ?_
   simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hb
   exact sub_pos.2 (hlam hb)
-
-theorem ratioV_eq_vand {μ : Fin n → ℝ} (hμ : StrictAnti μ) (s : Fin n) :
-    ratioV μ s = Vand (μ + Pi.single s 1) / Vand μ := by
-  apply ReciprocityTheory.ChartRestriction.DS.ratioV_eq_vand <;> assumption
-
-theorem prod_sub_lt_eq_factorial (b : Fin n) :
-    ∏ a ∈ univ.filter (fun a : Fin n => a < b), (((b : ℕ) : ℝ) - ((a : ℕ) : ℝ)) = ((b : ℕ).factorial : ℝ) := by
-  apply ReciprocityTheory.ChartRestriction.DS.prod_sub_lt_eq_factorial <;> assumption
 
 theorem prod_pairs_eq_factorial (n : ℕ) :
     ∏ a : Fin n, ∏ b ∈ univ.filter (fun b : Fin n => a < b), (((b : ℕ) : ℝ) - ((a : ℕ) : ℝ)) =

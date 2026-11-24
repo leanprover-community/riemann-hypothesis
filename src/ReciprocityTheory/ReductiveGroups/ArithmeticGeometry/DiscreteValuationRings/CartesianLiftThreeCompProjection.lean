@@ -134,9 +134,9 @@ lemma fsum_theta (x y z : T ⟶ A) :
   simp only [Equiv.ulift_symm_down]
   rw [hu]
   simp (config := {decide := true}) only [Finset.sum_insert, Finset.mem_insert, Finset.mem_singleton,
-    Finset.sum_singleton, not_false_eq_true, or_self, p0, p1, p2, p3, p01, p02, p12, p012]
+    Finset.sum_singleton, not_false_eq_true, p0, p1, p2, p3, p01, p02, p12, p012]
   simp (config := {decide := true}) only [Finset.card_empty, Finset.card_singleton, Finset.card_insert_of_notMem,
-    Finset.mem_insert, Finset.mem_singleton, not_false_eq_true, or_self]
+    Finset.mem_insert, Finset.mem_singleton, not_false_eq_true]
   unfold lamP
   simp only [lf_add, lf_sub, lf_single]
   norm_num

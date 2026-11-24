@@ -123,9 +123,6 @@ theorem cc_ev' {K : Type} [CommRing K] {m n d : ℕ} {a : Fin m → Pt K n d} (h
   have hs : MvPowerSeries.HasSubst (fun p : Fin m × Fin d => a p.1 p.2) := by
     first
       | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun p => ha p.1 p.2)
-      | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' (fun p => ha p.1 p.2)
-      | exact MvPowerSeries.hasSubst_of_constantCoeff_nilpotent
-          (fun p => by rw [ha p.1 p.2]; exact IsNilpotent.zero)
   rw [MvPowerSeries.constantCoeff_subst hs, finsum_eq_single _ 0]
   · simp
   · intro e he
@@ -172,23 +169,18 @@ theorem integral_family_point_zero : ∀ j i, (![pt k (n := 1) d 0, 0] : Fin 2 �
   fin_cases j
   · first
       | exact ig_pt 0 i
-      | simpa using ig_pt (R := R) (k := k) (0 : Fin 1) i
   · first
       | exact (Ig R k _).zero_mem
-      | simpa using (Ig R k (Fin 1 × Fin d)).zero_mem
 
 theorem integral_family_pair_zero : ∀ j i, (![pt k (n := 2) d 0, pt k d 1, 0] : Fin 3 → Pt k 2 d) j i ∈ Ig R k (Fin 2 × Fin d) := by
   intro j i
   fin_cases j
   · first
       | exact ig_pt 0 i
-      | simpa using ig_pt (R := R) (k := k) (0 : Fin 2) i
   · first
       | exact ig_pt 1 i
-      | simpa using ig_pt (R := R) (k := k) (1 : Fin 2) i
   · first
       | exact (Ig R k _).zero_mem
-      | simpa using (Ig R k (Fin 2 × Fin d)).zero_mem
 
 end Fam
 

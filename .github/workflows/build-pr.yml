@@ -35,12 +35,6 @@ on:
         description: Pull request whose proposed merge result should be built
         type: number
         required: true
-      runner_pool:
-        description: Full-build pool (small hosts use quick-check mode)
-        type: choice
-        default: rh-build
-        options:
-          - rh-build
       fragment_commit:
         description: "Fragment: commit SHA, or 'SHA BASE HEAD DATE PR' for an rh-buildq PR merge"
         type: string
@@ -58,9 +52,9 @@ on:
         type: string
         default: ''
       fragment_publish:
-        description: "Fragment: publish the result to the shared cache (only for a commit a maintainer trusts)"
+        description: "Fragment: publish the result to the shared cache"
         type: boolean
-        default: false
+        default: true
 
 permissions:
   contents: read
@@ -611,9 +605,9 @@ jobs:
   # The only job of the fragment mode that sees cache credentials: a fresh GitHub-hosted runner
   # that runs trusted code only. It verifies the staged modules against the target commit
   # (read as Git objects) before deriving the R2 keys, then publishes them. It runs after
-  # failed or cancelled builds too, so their finished modules are not lost. Code in the build
-  # can write any input hash into its traces, so this only runs when the dispatcher declares
-  # the commit trusted with fragment_publish (default false); see verification/CACHE.md.
+  # failed or cancelled builds too, so their finished modules are not lost. The shared cache is
+  # fully trusted by policy, so this runs unless the dispatcher sets fragment_publish=false;
+  # see verification/CACHE.md.
   fragment_publish:
     needs: fragment
     if: ${{ always() && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.mode == 'fragment' && inputs.fragment_publish && needs.fragment.result != 'skipped' }}

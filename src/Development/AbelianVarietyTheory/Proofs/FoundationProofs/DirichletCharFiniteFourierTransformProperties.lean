@@ -73,7 +73,7 @@ theorem hat_eq_sum_std {N : ℕ} [NeZero N] (φ : ZMod N → ℂ) (d : ℤ) :
   refine Finset.sum_nbij' (fun i => (i : ZMod N)) (fun y => y.val) ?_ ?_ ?_ ?_ ?_
   · intro i _; simp
   · intro y _; simp [ZMod.val_lt]
-  · intro i hi; simp only [Finset.mem_coe, Finset.mem_range] at hi; simp [ZMod.val_cast_of_lt hi]
+  · intro i hi; simp only [Finset.mem_range] at hi; simp [ZMod.val_cast_of_lt hi]
   · intro y _; simp
   · intro i _; rfl
 

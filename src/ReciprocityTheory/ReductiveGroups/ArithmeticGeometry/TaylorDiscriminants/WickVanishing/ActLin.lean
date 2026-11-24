@@ -124,7 +124,7 @@ theorem hom_at {d : ℕ} {O : Type} [CommRing O] (G : FGLaw k d) (A : OAct O G) 
       funext j' l'
       fin_cases j'
       exact (ev_X _ huv 0 l').symm
-    · simp only [comp1, Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_zero, Fin.mk_one, Fin.isValue]
+    · simp only [comp1, Matrix.cons_val_one, Matrix.cons_val_zero, Fin.mk_one, Fin.isValue]
       rw [ev_ev _ _ hp1 huv]
       congr 1
       funext j' l'

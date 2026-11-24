@@ -127,7 +127,7 @@ theorem abs_maDensity_mix_le {e : ℕ} {M N : Matrix (Fin (e + 1)) (Fin (e + 1))
       rw [h]
       exact hsm _ (sub_nonneg.2 (le_max_right C 1))
   have hmono : (mixedDisc A).re ≤ (mixedDisc B).re := ReciprocityTheory.AnForm.A.mdisc_re_mono A B hApsd hAB
-  have hnn : 0 ≤ (mixedDisc A).re := (ReciprocityTheory.AnForm.A.mdisc_nonneg_of_posSemidef A hApsd).2
+  have hnn : 0 ≤ (mixedDisc A).re := (_root_.ReciprocityTheory.AnForm.A.mixedDiscriminant_nonneg_of_gram A hApsd).2
   have hB : mixedDisc B = ((max C 1 : ℝ) : ℂ) ^ e * HN.det := by
     have h := ReciprocityTheory.AnForm.A.mdisc_const (((max C 1 : ℝ) : ℂ) • HN)
     rw [det_smul, Fintype.card_fin] at h

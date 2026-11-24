@@ -86,13 +86,13 @@ theorem log_norm_coeff_sub_le_blockSphereLogMean (hSJ : SJStatement) (hInt : Sph
       intro j
       rw [norm_div, hz1, Complex.norm_of_nonneg hr.le]
     rw [mem_sphere_zero_iff_norm, EuclideanSpace.norm_eq]
-    simp only [PiLp.toLp_apply, hj, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+    simp only [hj, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     rw [div_pow, one_pow, hr2, mul_one_div_cancel hnpos.ne', Real.sqrt_one]
   let u : BlockSphere B n := fun b => ⟨WithLp.toLp 2 (fun j => z (b, j) / (r : ℂ)), hmem b⟩
   have hrC : (r : ℂ) ≠ 0 := by exact_mod_cast hr.ne'
   have hz' : (fun p => (r : ℂ) * blockPoint u p) = z := by
     funext p
-    simp only [blockPoint, spherePoint, u, PiLp.toLp_apply]
+    simp only [blockPoint, spherePoint, u]
     field_simp
   have hev := eval_mul_of_isMultiHomogeneous hg (r : ℂ) (blockPoint u)
   rw [hz'] at hev

@@ -91,7 +91,7 @@ theorem originIdeal_pow_le_span (N : ℕ) :
     refine (Ideal.mul_mono_left ih).trans ?_
     rw [originIdeal, Ideal.span_mul_span', Ideal.span_le]
     rintro _ ⟨_, ⟨m, hm, rfl⟩, _, ⟨i, rfl⟩, rfl⟩
-    exact Ideal.subset_span ⟨m + Finsupp.single i 1, by simp [hm], by simp [X, monomial_mul]⟩
+    exact Ideal.subset_span ⟨m + Finsupp.single i 1, by simp [hm], by simp [X]⟩
 
 theorem originIdeal_pow_le {N : ℕ} {I : Ideal (MvPolynomial (Fin n) ℂ)}
     (h : ∀ m : Fin n →₀ ℕ, m.degree = N → monomial m (1 : ℂ) ∈ I) : originIdeal n ^ N ≤ I := by

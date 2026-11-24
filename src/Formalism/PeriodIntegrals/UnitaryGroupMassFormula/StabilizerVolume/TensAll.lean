@@ -153,7 +153,7 @@ theorem wMat_mulVec_eq_zero (R : Type) [CommRing R] [Algebra F R] {a M : ℕ}
 theorem linIndep_iff (R : Type) [CommRing R] [Algebra F R] {a M : ℕ}
     (X : Fin a → Fin M → R ⊗[F] E) :
     LinearIndependent (R ⊗[F] E) X ↔ ∀ c, wMat b R X *ᵥ c = 0 → c = 0 := by
-  apply PI.AprimeInfW.linIndep_iff <;> assumption
+  apply PI.AprimeInfW.linIndep_iff
 
 section Top
 

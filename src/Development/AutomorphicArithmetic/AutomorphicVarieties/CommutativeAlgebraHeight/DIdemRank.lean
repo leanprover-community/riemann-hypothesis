@@ -72,7 +72,7 @@ private theorem coeff_aeval_C_mul_X' {A : Type} [CommRing A] (P : A[X]) (a : A[X
     rw [e1, Polynomial.coeff_C_mul_X_pow, Polynomial.coeff_monomial]
     by_cases h : j = i
     · subst h; simp
-    · simp [h, Ne.symm h]
+    · simp [h]
 
 private theorem aeval_C_X_eq_C {A : Type} [CommRing A] (P : A[X]) :
     aeval (Polynomial.C (X : A[X]) : A[X][X]) P = Polynomial.C P := by

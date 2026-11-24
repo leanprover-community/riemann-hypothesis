@@ -75,27 +75,6 @@ def NormTie {Ch Cg : ℝ} {T T' : ℕ} {b : ℝ} (Bd : BData D Ch Cg T T' b 0) (
 
 end Core
 
-section Sum
-
-variable {D : D7} {τ Rw I H H₁ : Type} [Fintype I] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-  [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] (X : PB.Terms τ Rw I H H₁)
-  {Cl Nu : Type} (N : PN.NGData τ D.host.E D.R.rS Cl Nu)
-
-end Sum
-
-section Step
-
-open scoped Classical
-open Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
-  Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData
-
-theorem J2of_nonneg' {D : D7} {X : HidaSetting D} (Y : Full X) (u u' : D.what₂.Word) (ν : X.B.I.Ginf → Measure X.B.I.Ginf)
-    (γ : PN.Pts D.host.E D.R.rS) : 0 ≤ J2of Y u u' ν γ := by
-  unfold J2of
-  split_ifs <;> positivity
-
-end Step
-
 section Wt
 
 open scoped Classical
@@ -117,9 +96,5 @@ theorem weight_normalized (h : WtTieConc) {D : D7} {X : HidaSetting D} (Y : Full
   exact h D _ _ A w hb
 
 end Wt
-
-section FromStmtU
-
-end FromStmtU
 
 end Formalism.L2.SG.ThmBUse

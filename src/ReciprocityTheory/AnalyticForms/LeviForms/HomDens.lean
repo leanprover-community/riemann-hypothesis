@@ -105,7 +105,7 @@ theorem detGram_line (N : ℕ) (hd : Fin N → ℝ) (m : ℕ) (hm : m ≤ N) (v 
       eval_cpP, h2, h1, Matrix.mul_assoc]
     congr 2
     ext i j
-    by_cases h : i = j <;> simp [diagonal_apply, h]
+    by_cases h : i = j <;> simp [h]
   unfold detGram
   rw [← hG]
   congr 1
@@ -209,7 +209,7 @@ theorem bracket_eq (N : ℕ) (hd : Fin N → ℝ) (m : ℕ) (hm : m ≤ N) (v : 
 
 theorem sW_I (N : ℕ) (hd : Fin N → ℝ) (m : ℕ) (w : Pairs N → ℂ) :
     sW N hd m (Complex.I • w) = sW N hd m w := by
-  simp [sW, zMat_smul, norm_mul]
+  simp [sW, zMat_smul]
 
 theorem sW_pairs (N : ℕ) (hd : Fin N → ℝ) (m : ℕ) (w : Pairs N → ℂ) :
     sW N hd m w = ∑ p : Pairs N, if p.1.1.val < m ∧ m ≤ p.1.2.val then

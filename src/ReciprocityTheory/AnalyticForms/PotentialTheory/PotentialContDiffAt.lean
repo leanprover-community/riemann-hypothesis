@@ -136,21 +136,13 @@ theorem integrableOn_weight [CompactSpace X] [T2Space X] (A : FinHolAtlas e X)
 
 end Chart
 
-private theorem mdisc_comp_perm_potential {D : ℕ} (B : Fin D → Matrix (Fin D) (Fin D) ℂ) (σ : Equiv.Perm (Fin D)) :
-    ReciprocityTheory.AnForm.mdisc (B ∘ σ) = ReciprocityTheory.AnForm.mdisc B := by
-  classical
-  unfold ReciprocityTheory.AnForm.mdisc
-  congr 1
-  refine Fintype.sum_equiv (Equiv.finsetCongr σ) _ _ fun S => ?_
-  simp [Equiv.finsetCongr_apply, Finset.card_map, Finset.sum_map]
-
 theorem mIntSymm : MIntSymmStatement := by
   intro e X _ A Φ σ g
   have hloc : ∀ j y, locDens A (Φ ∘ σ) j y = locDens A Φ j y := by
     intro j y
     unfold locDens maDens
     congr 2
-    exact mdisc_comp_perm_potential (fun k => ReciprocityTheory.AnForm.hessC
+    exact _root_.ReciprocityTheory.AnForm.A.mdisc_comp_perm (fun k => ReciprocityTheory.AnForm.hessC
       (fun y' => (Φ k).φ ((A.chart j).symm y) ((A.chart j).symm y')) y) σ
   unfold mInt integralWith
   simp only [hloc]

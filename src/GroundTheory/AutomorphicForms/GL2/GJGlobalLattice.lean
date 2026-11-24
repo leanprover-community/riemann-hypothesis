@@ -69,16 +69,7 @@ open GroundTheory.Global GJMatrix
 
 variable {K : Type*} [Field K] [NumberField K]
 
-theorem norm_apply_le_norm_homeomorphMixedSpace (x : InfiniteAdeleRing K) (w : InfinitePlace K) :
-    ‖x w‖ ≤ ‖homeomorphMixedSpace K x‖ := by
-  rw [homeomorphMixedSpace_apply, InfiniteAdeleRing.ringEquiv_mixedSpace_apply]
-  by_cases hw : w.IsReal
-  · refine le_trans ?_ (norm_fst_le _)
-    refine le_trans ?_ (norm_le_pi_norm _ ⟨w, hw⟩)
-    simp [(InfinitePlace.Completion.isometry_extensionEmbeddingOfIsReal hw).norm_map_of_map_zero]
-  · refine le_trans ?_ (norm_snd_le _)
-    refine le_trans ?_ (norm_le_pi_norm _ ⟨w, InfinitePlace.not_isReal_iff_isComplex.1 hw⟩)
-    simp [(InfinitePlace.Completion.isometry_extensionEmbedding w).norm_map_of_map_zero]
+alias norm_apply_le_norm_homeomorphMixedSpace := _root_.GroundTheory.Automorphic.Reduction.norm_apply_le_norm_homeomorphMixedSpace
 
 theorem norm_homeomorphMixedSpace_le_sum (x : InfiniteAdeleRing K) :
     ‖homeomorphMixedSpace K x‖ ≤ ∑ w, ‖x w‖ := by

@@ -63,6 +63,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 
 @[expose] public section
 
@@ -319,7 +320,7 @@ private theorem span_eq_top_of_def_unimod
 theorem clFinite_of (h : LevFiniteIndex) : ClFinite := by
   intro F E _ _ _ _ _ _ hc LL _ n J L β D hU hβ
   obtain ⟨hle, hidx⟩ := h F E hc LL n J L β D hβ
-  have hfin := Formalism.UG.Final.ClassSetFiniteL F E (Fin n) hc.sig J (cm_comp hc) hU.herm hU.unit hU.tdef L
+  have hfin := _root_.Formalism.UG.P.lattice_class_set_finite_local_holds F E (Fin n) hc.sig J (cm_comp hc) hU.herm hU.unit hU.tdef L
     (Module.Finite.iff_fg.2 hU.lat.fg) (span_eq_top_of_def_unimod hU)
   refine class_set_finite_of_finite_index _ _ _ _ ?_ ?_ hfin
   · intro x hx

@@ -68,7 +68,7 @@ theorem X_mem_primeOf_of_eq_zero {i : Fin (N + 1)} (hi : x i = 0) :
 theorem X_base_mem_mIdealOver_graph (s : Fin m → Ω) {i : Fin (N + 1)} (hi : x i = 0) :
     (X ⟨baseBlock, i⟩ : NumbersDVR.MRing (graphIdx N m) S) ∈ mIdealOver S (graphVec x s) := by
   change mConeMapOver S (graphVec x s) (X _) = 0
-  simp [mConeMapOver, hi]
+  simp [mConeMapOver]
   exact hi
 
 end Zero

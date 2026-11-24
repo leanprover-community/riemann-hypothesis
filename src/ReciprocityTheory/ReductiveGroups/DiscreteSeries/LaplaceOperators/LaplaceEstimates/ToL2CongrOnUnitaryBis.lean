@@ -190,16 +190,6 @@ section Fun
 
 variable {n : ℕ} {ε : Fin n → Bool}
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
-theorem contOn_of_smooth {F : Matrix (Fin n) (Fin n) ℂ → ℂ} (hF : Formalism.REAL.SmoothOnG ε F) :
-    ContinuousOn F (UJset ε) := by
-  intro g₀ hg₀
-  obtain ⟨U, F', hU, hg, hF', hEq⟩ := hF g₀ hg₀
-  have hc : ContinuousAt F' g₀ := hF'.continuousOn.continuousAt (hU.mem_nhds hg)
-  refine hc.continuousWithinAt.congr_of_eventuallyEq ?_ (hEq g₀ hg hg₀)
-  filter_upwards [inter_mem_nhdsWithin (UJset ε) (hU.mem_nhds hg)] with g hg'
-  exact hEq g hg'.2 hg'.1
-
 theorem eqOn_unitary_of_toL2_eq {F G : Matrix (Fin n) (Fin n) ℂ → ℂ} (hF : IsSmoothL2 ε F) (hG : IsSmoothL2 ε G)
     (h : toL2 ε F = toL2 ε G) : ∀ g ∈ UJset ε, F g = G g := by
   have hF2 : MemLp (fun g : Formalism.REAL.UJ ε => F (Formalism.MainNotions.S.umat g)) 2 (Formalism.REAL.muG ε) := hF.2 []

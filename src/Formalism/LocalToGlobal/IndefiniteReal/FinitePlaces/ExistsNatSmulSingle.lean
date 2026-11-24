@@ -110,7 +110,7 @@ lemma exists_nat_smul_single {n : ℕ} {Λ : Submodule (𝓞 D.host.E) (Fin n �
     (hΛ : Submodule.IsFullLattice D.host.E Λ) :
     ∃ m : ℕ, 0 < m ∧ ∀ j, (m : D.host.E) • (Pi.single j 1 : Fin n → D.host.E) ∈ Λ := by
   refine uniform_nat (fun j m => (m : D.host.E) • (Pi.single j 1 : Fin n → D.host.E) ∈ Λ) (fun j k m h => ?_)
-    (fun j => exists_nat_smul_mem hΛ _)
+    (fun j => _root_.UpperTheory.Reformulated.B.ExistsNatSmulMem.exists_nat_smul_mem hΛ _)
   rw [Nat.cast_mul, mul_smul, Nat.cast_smul_eq_nsmul]
   exact Λ.nsmul_mem h m
 

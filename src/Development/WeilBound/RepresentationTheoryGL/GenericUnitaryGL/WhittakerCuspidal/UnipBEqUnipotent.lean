@@ -75,6 +75,6 @@ theorem whitChar_eq_psiN (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace
 
 theorem isAdmissible_iff {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V]
     [Module ℂ V] (ρ : Representation ℂ G V) : GlobalTheory.PRep.IsAdmissible ρ ↔ GroundTheory.Automorphic.IsAdmissible ρ := by
-  apply CompanionTheory.rg.gu.whit.isAdmissible_iff <;> assumption
+  apply CompanionTheory.rg.gu.whit.isAdmissible_iff
 
 end PositivityTheory.rg.gu.whit

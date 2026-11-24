@@ -63,8 +63,6 @@ theorem atInf_inv_isUnit {n : ℕ} (A : Matrix (Fin n) (Fin n) D.host.E) (hA : I
   have h := (Matrix.isUnit_nonsing_inv_det A hA).map (embT D τ)
   first
   | (rw [RingHom.map_det, RingHom.mapMatrix_apply] at h; exact h)
-  | simpa [RingHom.map_det] using h
-  | simpa [AlgHom.map_det] using h
 
 variable (Tf : FormsTied D u)
   (B : D.what₂.places.Pl → (D.fm u).clsP → Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) D.host.E)

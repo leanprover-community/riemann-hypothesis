@@ -82,26 +82,6 @@ theorem isMultiHomog_sub' {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f 
   · exact hg m h k
 
 
-omit [Fintype K] in
-theorem isMultiHomog_add' {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
-    IsMultiHomog (f + g) a := by
-  classical
-  intro m hm k
-  rcases Finset.mem_union.mp (MvPolynomial.support_add hm) with h | h
-  · exact hf m h k
-  · exact hg m h k
-
-
-omit [Fintype K] in
-theorem isMultiHomog_C' (a : ℤ) : IsMultiHomog (C a : MRing ι) 0 := by
-  classical
-  intro m hm k
-  have hm' : m ∈ (monomial (0 : (Σ k, ι k) →₀ ℕ) a).support := hm
-  have := MvPolynomial.support_monomial_subset hm'
-  rw [Finset.mem_singleton] at this
-  subst this
-  simp
-
 theorem exists_homog {S : Type*} [CommRing S] (χ : MRing ι →+* S) (c : ∀ k, ι k)
     (hχ : ∀ k, χ (X ⟨k, c k⟩) = 1) (f : MRing ι) :
     ∃ (n : K → ℕ) (G : MRing ι), IsMultiHomog G n ∧ χ G = χ f := by
@@ -109,12 +89,12 @@ theorem exists_homog {S : Type*} [CommRing S] (χ : MRing ι →+* S) (c : ∀ k
   have hχp : ∀ n : K → ℕ, χ (∏ k, (X ⟨k, c k⟩ : MRing ι) ^ n k) = 1 := fun n => by
     simp [map_prod, hχ]
   induction f using MvPolynomial.induction_on with
-  | C a => exact ⟨0, C a, isMultiHomog_C' a, rfl⟩
+  | C a => exact ⟨0, C a, _root_.GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_C_zero a, rfl⟩
   | add p q hp hq =>
     obtain ⟨n₁, G₁, h₁, e₁⟩ := hp
     obtain ⟨n₂, G₂, h₂, e₂⟩ := hq
     refine ⟨n₁ + n₂, G₁ * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ n₂ k + G₂ * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ n₁ k,
-      isMultiHomog_add' (isMultiHomog_mul h₁ (isMultiHomog_coordProd c n₂)) ?_, ?_⟩
+      _root_.GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_add (isMultiHomog_mul h₁ (isMultiHomog_coordProd c n₂)) ?_, ?_⟩
     · rw [add_comm n₁]
       exact isMultiHomog_mul h₂ (isMultiHomog_coordProd c n₁)
     · rw [map_add (f := _), map_mul, map_mul, hχp, hχp, mul_one, mul_one, e₁, e₂, map_add (f := _)]
@@ -141,7 +121,7 @@ theorem exists_homog_mem {S : Type*} [CommRing S] (χ : MRing ι →+* S) (c : �
     obtain ⟨n₂, G₂, hG₂, h₂, e₂⟩ := hz
     refine ⟨n₁ + n₂, G₁ * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ n₂ k + G₂ * ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ n₁ k,
       add_mem (Ideal.mul_mem_right _ _ hG₁) (Ideal.mul_mem_right _ _ hG₂),
-      isMultiHomog_add' (isMultiHomog_mul h₁ (isMultiHomog_coordProd c n₂)) ?_, ?_⟩
+      _root_.GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_add (isMultiHomog_mul h₁ (isMultiHomog_coordProd c n₂)) ?_, ?_⟩
     · rw [add_comm n₁]
       exact isMultiHomog_mul h₂ (isMultiHomog_coordProd c n₁)
     · rw [map_add (f := _), map_mul, map_mul, hχp, hχp, mul_one, mul_one, e₁, e₂, map_add (f := _)]

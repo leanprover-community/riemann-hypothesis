@@ -78,8 +78,8 @@ theorem trace_adjugate_mul_eq_sum_perm {r : ℕ} (A B : Matrix (Fin r) (Fin r) �
     congr 1
     all_goals first
       | (refine Finset.prod_congr rfl fun j hj => ?_
-         simp [Matrix.updateCol_apply, Finset.ne_of_mem_erase hj])
-      | simp [Matrix.updateCol_apply]
+         simp [Finset.ne_of_mem_erase hj])
+      | simp
   simp only [Matrix.trace, Matrix.diag, hcol]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun σ _ => ?_

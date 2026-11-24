@@ -94,7 +94,7 @@ theorem quad_diag_re (d : Fin N → ℝ) (z : Fin N → ℂ) :
 theorem single_quad (B : Matrix (Fin N) (Fin N) ℂ) (k : Fin N) :
     star (Pi.single k (1 : ℂ) : Fin N → ℂ) ⬝ᵥ (B *ᵥ Pi.single k 1) = B k k := by
   have : star (Pi.single k (1 : ℂ) : Fin N → ℂ) = Pi.single k 1 := by
-    ext a; by_cases h : a = k <;> simp [Pi.single_apply, h]
+    ext a; by_cases h : a = k <;> simp [h]
   rw [this]
   simp
 

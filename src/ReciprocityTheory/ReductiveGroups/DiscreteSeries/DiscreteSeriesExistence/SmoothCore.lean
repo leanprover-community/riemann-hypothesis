@@ -66,13 +66,6 @@ section Alg
 
 variable {ε : Fin n → Bool}
 
-theorem smc_inG_add {X Y : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) (hY : inG ε Y) : inG ε (X + Y) :=
-  Formalism.REAL.lie_algebra_add_mem_matrix hX hY
-
-theorem smc_inG_rsmul {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) (r : ℝ) : inG ε ((r : ℂ) • X) := by
-  simpa using smd_inG_add_smul (inG_zero' ε) hX r
-where inG_zero' (ε : Fin n → Bool) : inG ε (0 : Matrix (Fin n) (Fin n) ℂ) := by simp [inG]
-
 theorem smc_cpart (Z : Matrix (Fin n) (Fin n) ℂ) :
     inG ε (S7.cpart1 ε Z) ∧ inG ε (S7.cpart2 ε Z) ∧ Z = S7.cpart1 ε Z + Complex.I • S7.cpart2 ε Z ∧
       (inG ε Z → S7.cpart1 ε Z = Z ∧ S7.cpart2 ε Z = 0) :=

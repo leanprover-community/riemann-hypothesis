@@ -73,7 +73,6 @@ theorem qdf_frExists : FrExists (n := n) ST SG Q := by
   intro d P
   first
   | exact DetChrL.frame_exists P.1 ((let d := d; _root_.Formalism.L2.Col.hcnt_isFullLattice_of_unimodular d.2.lat d.2.uni))
-  | exact DetChrL.frame_exists P.1 d.2.lat
 
 abbrev qPi (q : QLoc hc n Q Θ) (P : Q) : E ⊗[F] Formalism.L2.Herm.Af F →+* (qv F P.1).adicCompletion F :=
   ((RingHom.fst _ _).comp (q.sp P).toRingHom).comp (prV (E := E) (qv F P.1))
@@ -196,7 +195,7 @@ theorem qdf_frLat (q : QLoc hc n Q Θ) : FrLat ST SG q := by
         funext k
         by_cases hk : k = j
         · subst hk; simp
-        · simp [Pi.single_apply, hk]
+        · simp [hk]
       rw [e3]
       exact Submodule.subset_span ⟨Pi.single j 1, by
         have := single_mem_stdLat (E := E) (n := n) j 1
@@ -215,7 +214,7 @@ theorem qdf_frLat (q : QLoc hc n Q Θ) : FrLat ST SG q := by
     rw [e0]
     have hcol : fr (Pi.single j 1) ∈ p.deco.1.at P.1 :=
       (p.2 P (Pi.single j 1)).2 ((mem_localization_standardLattice P.1 _).2 fun k => ⟨if k = j then 1 else 0, 1, P.1.isPrime.one_notMem, by
-        by_cases hk : k = j <;> simp [Pi.single_apply, hk]⟩)
+        by_cases hk : k = j <;> simp [hk]⟩)
     obtain ⟨s, hs, hsN⟩ := (mem_locP P.1 _ _).1 hcol
     rw [hN] at hsN
     have hpull := (mem_globLat x.1 (s • fr (Pi.single j 1))).1 hsN
@@ -230,7 +229,7 @@ theorem qdf_frLat (q : QLoc hc n Q Θ) : FrLat ST SG q := by
       rw [e5]
       have e6 : (fun k => q.phi P ((s • fr (Pi.single j 1)) k)) = q.phi P (s : E) • fun k => q.phi P ((fr (Pi.single j 1)) k) := by
         funext k
-        simp [Submodule.smul_def, Algebra.smul_def]
+        simp [Algebra.smul_def]
       rw [e6, Matrix.mulVec_smul, Pi.smul_apply, smul_eq_mul, ← mul_assoc, inv_mul_cancel₀ hne, one_mul, Units.val_mul,
         Matrix.mul_apply]
       rw [Matrix.mulVec, dotProduct]

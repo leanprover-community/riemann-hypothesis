@@ -231,7 +231,7 @@ open scoped TensorProduct
 theorem um_countable_HFinIn (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) :
     Countable (HFinIn (AF F) σ J) := by
-  apply PI.VolStabSW.um_countable_HFinIn <;> assumption
+  apply PI.VolStabSW.um_countable_HFinIn
 
 instance t2Space_adelic_unitary (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] [FiniteDimensional F E] (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E) :

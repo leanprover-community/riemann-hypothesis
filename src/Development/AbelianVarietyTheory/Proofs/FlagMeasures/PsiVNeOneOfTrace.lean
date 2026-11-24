@@ -63,7 +63,7 @@ variable {F : Type} [Field F] [NumberField F]
 
 theorem trace_int_iff (a : F) : (∀ r : 𝓞 F, ∃ k : ℤ, Algebra.trace ℚ F (a * r) = k) ↔
     ∀ d ∈ differentIdeal ℤ (𝓞 F), ∃ r : 𝓞 F, (r : F) = a * d := by
-  apply _root_.GlobalTheory.SnMass.Inhab.trace_int_iff <;> assumption
+  apply _root_.GlobalTheory.SnMass.Inhab.trace_int_iff
 
 theorem integral_iff (x : F) : (∀ v : HeightOneSpectrum (𝓞 F), algebraMap F (Af F) x v ∈ v.adicCompletionIntegers F) ↔
     ∃ r : 𝓞 F, (r : F) = x := by
@@ -126,7 +126,7 @@ theorem psiV_ne_one_of_trace {ψ : AddChar (AF F) ℂ} (h : IsCharAF F ψ)
 
 theorem sum_places_eq_trace [IsTotallyReal F] (x : F) :
     (((∑ w : InfinitePlace F, (w.embedding x).re : ℝ)) : ℂ) = ((Algebra.trace ℚ F x : ℚ) : ℂ) := by
-  apply _root_.GlobalTheory.SnMass.Inhab.sum_places_eq_trace <;> assumption
+  apply _root_.GlobalTheory.SnMass.Inhab.sum_places_eq_trace
 
 end Local
 

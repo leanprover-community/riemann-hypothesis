@@ -71,12 +71,10 @@ theorem natNorm_mem (m : ℕ) :
     (((Ideal.absNorm (differentIdeal ℤ (𝓞 D.host.F)) ^ m : ℕ) : D.host.E)) ∈ ddS D ^ m := by
   unfold ddS
   rw [← FractionalIdeal.coeIdeal_pow, FractionalIdeal.mem_coeIdeal]
-  refine ⟨((Ideal.absNorm (differentIdeal ℤ (𝓞 D.host.F)) : 𝓞 D.host.E)) ^ m, ?_, ?_⟩
-  · apply Ideal.pow_mem_pow
-    have h := Ideal.mem_map_of_mem (algebraMap (𝓞 D.host.F) (𝓞 D.host.E))
-      (Ideal.absNorm_mem (differentIdeal ℤ (𝓞 D.host.F)))
-    simpa using h
-  · simp
+  refine ⟨((Ideal.absNorm (differentIdeal ℤ (𝓞 D.host.F)) : 𝓞 D.host.E)) ^ m, ?_, by simp⟩
+  apply Ideal.pow_mem_pow
+  simpa using Ideal.mem_map_of_mem (algebraMap (𝓞 D.host.F) (𝓞 D.host.E))
+    (Ideal.absNorm_mem (differentIdeal ℤ (𝓞 D.host.F)))
 
 theorem ddS_ne_zero : ddS D ≠ 0 := by
   intro h
@@ -105,8 +103,7 @@ theorem one_mem_aaD (a : Fin D.R.rS) : (1 : D.host.E) ∈ aaD D a := by
 
 theorem mem_aaD_inv (a : Fin D.R.rS) :
     (((Ideal.absNorm (differentIdeal ℤ (𝓞 D.host.F)) ^ (D.R.rS - (a : ℕ)) : ℕ) : D.host.E)) ∈ (aaD D a)⁻¹ := by
-  rw [aaD_eq, inv_inv]
-  exact natNorm_mem _
+  simpa [aaD_eq] using natNorm_mem (D := D) (D.R.rS - (a : ℕ))
 
 theorem inAt_of_smul_mem (A : UnitaryGroupInstance D) (y : (VS D).V) (c : ℕ) (hc : Nat.Coprime c (gD D))
     (hy : ((c : ℕ) : D.host.E) • y ∈ (VS D).L0) :

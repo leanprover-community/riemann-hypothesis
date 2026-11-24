@@ -54,6 +54,6 @@ theorem vand_pos {n : ℕ} {x : Fin n → ℝ} (h : StrictAnti x) : 0 < Formalis
 
 theorem sizes_of_hyp : ∀ (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ), D.host.rdE ≤ large₂.sc.b →
     HypZ D large₂ C' Cl Cg cb Cu cT CT C0 → Sizes D large₂ Cl Cg CT := by
-  apply GlobalTheory.Amp.RangeModel.sizes_of <;> assumption
+  apply GlobalTheory.Amp.RangeModel.sizes_of
 
 end GlobalTheory.Amp.SizesProof

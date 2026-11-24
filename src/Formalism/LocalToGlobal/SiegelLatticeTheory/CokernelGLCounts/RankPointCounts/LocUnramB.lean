@@ -144,7 +144,7 @@ theorem cok_sub_of_isGL (M : Loc.Model F E) {m : ℕ} (ZZ : M.Mat (m + 1)) (h : 
   rw [Submodule.Quotient.subsingleton_iff, eq_top_iff]
   intro x _
   refine ⟨Matrix.mulVec CR x, ?_⟩
-  simp [Matrix.mulVecLin_apply, Matrix.mulVec_mulVec, hCR]
+  simp [Matrix.mulVec_mulVec, hCR]
 
 theorem clsOf_triv (M : Loc.Model F E) {m : ℕ} (A : Matrix (Fin (m + 1)) (Fin (m + 1)) E) (h : IsGL M.R A) :
     clsOf M A = some (LocModel.trivCls M m) := by
@@ -536,7 +536,7 @@ theorem loU_corner (p : PlF D) (c : (D.s.atP p).Ep) {L N : LsDatumB.MatP D p} (h
   ext a b
   rw [Matrix.mul_apply, Finset.sum_eq_single (Fin.last _)]
   · rw [Matrix.mul_apply, Finset.sum_eq_single (Fin.last _)]
-    · simp only [cornerM, Matrix.of_apply, true_and, and_true]
+    · simp only [cornerM, Matrix.of_apply, and_true]
       rw [hLl, hNl]
       by_cases ha : a = Fin.last _ <;> by_cases hb : b = Fin.last _ <;> simp [ha, hb]
     · intro k _ hk; simp [cornerM, hk]
@@ -844,24 +844,10 @@ theorem isGL_sgn (p : PlF D) : IsGL (M p).R (LsDatumB.sgnP p) := by
     · exact Subring.zero_mem _
   exact ⟨hint, LsDatumB.sgnP p, hint, permSign_mul_self₂ p⟩
 
-theorem one_intLow (p : PlF D) : TieN.IntLow (M p) (1 : LsDatumB.MatP D p) :=
-  ⟨fun a => Matrix.one_apply_eq a, fun a b h => Matrix.one_apply_ne (ne_of_lt h),
-    fun a b => by rw [Matrix.one_apply]; split_ifs; exacts [Subring.one_mem _, Subring.zero_mem _]⟩
-
-theorem one_intUp (p : PlF D) : TieN.IntUp (M p) (1 : LsDatumB.MatP D p) :=
-  ⟨fun a => Matrix.one_apply_eq a, fun a b h => Matrix.one_apply_ne (ne_of_gt h),
-    fun a b => by rw [Matrix.one_apply]; split_ifs; exacts [Subring.one_mem _, Subring.zero_mem _]⟩
-
 end Restr
 
 end Formalism.L2.SG.Pf.LocUnramB
 
 namespace Formalism.L2.SG.Pf
-
-theorem locUnram_holds {D : Formalism.BasicNotions.D7} {δ : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, (D.s.atP p).Fp}
-    {M : ∀ p : Formalism.MainNotions.S.LocalSplitGroups.PlF D, Formalism.MainNotions.S.Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep}
-    (hA : ∀ p, Formalism.MainNotions.S.LocalSplitGroups.Agree δ M p) (u u' : D.what₂.Word) :
-    Formalism.L2.SG.LsDatumB.LocUnram M δ u u' (LocModel.thTriv M) :=
-  LocUnramB.locUnram_triv hA u u'
 
 end Formalism.L2.SG.Pf

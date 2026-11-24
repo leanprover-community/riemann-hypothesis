@@ -385,7 +385,7 @@ theorem exists_match (hL : Laws) (h2 : Laws2) (hR : AdmBase R I) (hV : AdmBase V
     ((isGen_iff hN.w).1 hN.w_gen)
   have g0 := (isGen_iff W.w).1 s2
   obtain ⟨w, T⟩ := exists_comp W.P.D.toPre.P.isLB W.w v g0 gv a.D₀.P.isLB N.P.isLB
-  have hs' : spMap (h.comp f) = spMap i ≫ spMap (g.comp f) := by rw [hig, ← spMap_comp]; try rfl
+  have hs' : spMap (h.comp f) = spMap i ≫ spMap (g.comp f) := by rw [hig, ← spMap_comp]
   have he : eSec N.P.A ≫ r ≫ W.φ = spMap (h.comp f) ≫ eSec a.D₀.P.A := by
     rw [reassoc_of% er, W.he, hs', Category.assoc]
   have cr : ∀ y, (N.c (e y)).left ≫ r = spMap i ≫ (W.P.D.toPre.c (W.e y)).left := fun y => by

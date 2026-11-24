@@ -60,9 +60,8 @@ open ReciprocityTheory.ChartRestriction.DS.S7
 variable {n : ℕ}
 
 theorem exp_pmat_inUJ {ε : Fin n → Bool} (z : PCoord ε → ℂ) : inUJ ε (NormedSpace.exp (pmat z)) := by
-  have h := inUJ_kexp (1 : KG ε) (pmat_inP z)
   have e : toMK (1 : KG ε) = 1 := rfl
-  rwa [e, Matrix.one_mul] at h
+  simpa only [e, Matrix.one_mul] using inUJ_kexp (1 : KG ε) (pmat_inP z)
 
 theorem polarM_inUJ {ε : Fin n → Bool} (kz : KG ε × (PCoord ε → ℂ)) : inUJ ε (polarM kz) :=
   inUJ_kexp kz.1 (pmat_inP kz.2)
@@ -70,8 +69,7 @@ theorem polarM_inUJ {ε : Fin n → Bool} (kz : KG ε × (PCoord ε → ℂ)) : 
 theorem pmat_injective (ε : Fin n → Bool) : Function.Injective (pmat (ε := ε)) := by
   intro z z' h
   funext ab
-  have := congrFun (congrFun h ab.1.1) ab.1.2
-  simpa [pmat, dif_pos ab.2] using this
+  simpa [pmat, dif_pos ab.2] using congrFun (congrFun h ab.1.1) ab.1.2
 
 theorem polarM_injective (ε : Fin n → Bool) : Function.Injective (polarM (ε := ε)) := by
   rintro ⟨k, z⟩ ⟨k', z'⟩ h
@@ -143,9 +141,7 @@ def polarHomeo (ε : Fin n → Bool) : KG ε × (PCoord ε → ℂ) ≃ₜ UJset
   continuous_invFun := polarInv_continuous ε
 
 theorem polarM_isClosedEmbedding (ε : Fin n → Bool) : Topology.IsClosedEmbedding (polarM (ε := ε)) := by
-  have h : Topology.IsClosedEmbedding ((Subtype.val : UJset ε → Matrix (Fin n) (Fin n) ℂ) ∘ polarHomeo ε) :=
-    (isClosed_inUJ ε).isClosedEmbedding_subtypeVal.comp (polarHomeo ε).isClosedEmbedding
-  exact h
+  exact (isClosed_inUJ ε).isClosedEmbedding_subtypeVal.comp (polarHomeo ε).isClosedEmbedding
 
 end Emb
 

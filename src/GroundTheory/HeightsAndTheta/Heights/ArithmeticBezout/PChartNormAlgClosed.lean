@@ -163,7 +163,7 @@ theorem eval_map_firstGroup {F : Type} [Field F] {n e : ℕ} (p : Ideal (MvPolyn
     eval (fun m => algebraMap F (Localization.AtPrime p) (u m))
         (map (algebraMap (MvPolynomial (Fin e × Fin n) F) (Localization.AtPrime p)) (firstGroup f)) =
       algebraMap _ (Localization.AtPrime p) (specFirst f u) := by
-  apply _root_.GroundTheory.Heights₂.Heights.eval_map_firstGroup <;> assumption
+  apply _root_.GroundTheory.Heights₂.Heights.eval_map_firstGroup
 
 end ChartNormAlgClosed
 

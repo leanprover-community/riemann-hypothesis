@@ -64,7 +64,7 @@ def uMap {dim : (E →+* ℂ) → ℕ} (I : Submodule ℤ (Vsp dim)) : Vsp dim �
 
 theorem tof_re_inner_negI {ι : Type} [Fintype ι] (a x : EuclideanSpace ℂ ι) :
     inner ℝ a ((-Complex.I) • x) = (Hf x a).im := by
-  simp only [real_inner_eq_re_inner ℂ, PiLp.inner_apply, Hf, Complex.re_sum, Complex.im_sum,
+  simp only [real_inner_eq_re_inner ℂ, PiLp.inner_apply, Hf, Complex.im_sum,
     PiLp.smul_apply, smul_eq_mul, RCLike.inner_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   simp [Complex.mul_re, Complex.mul_im]

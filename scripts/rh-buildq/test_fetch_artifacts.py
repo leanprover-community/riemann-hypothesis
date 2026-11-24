@@ -1,5 +1,6 @@
 """Exercise completed and truncated HTTP transfers with real curl, without network access."""
 import contextlib
+import errno
 import hashlib
 from http.server import BaseHTTPRequestHandler
 import importlib.util
@@ -19,6 +20,12 @@ from unittest.mock import patch
 spec = importlib.util.spec_from_file_location("fetch_artifacts", Path(__file__).with_name("fetch-artifacts.py"))
 fetch = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fetch)
+
+
+class TransferRecordTests(unittest.TestCase):
+    def test_only_complete_success_records_are_accepted(self):
+        records = "0 finished.ltar\n18 failed.ltar\n0 interrupted.ltar"
+        self.assertEqual(fetch.completed_outputs(records), {"finished.ltar"})
 
 
 @unittest.skipUnless(shutil.which("curl") and hasattr(socket, "AF_UNIX"), "curl and Unix sockets are required")
@@ -47,10 +54,16 @@ class ArtifactTransferTests(unittest.TestCase):
             def log_message(self, *args):
                 pass
 
-        with tempfile.TemporaryDirectory(prefix="rh-fetch-test-") as directory:
+        with (tempfile.TemporaryDirectory(prefix="rh-fetch-test-") as directory,
+              tempfile.TemporaryDirectory(prefix="rf-", dir="/tmp") as socket_directory):
             root = Path(directory)
-            endpoint = root / "http.sock"
-            server = socketserver.ThreadingUnixStreamServer(str(endpoint), Handler)
+            endpoint = Path(socket_directory) / "http.sock"
+            try:
+                server = socketserver.ThreadingUnixStreamServer(str(endpoint), Handler)
+            except OSError as e:
+                if e.errno == errno.ENAMETOOLONG or "AF_UNIX path too long" in str(e):
+                    self.skipTest("Unix socket path is too long")
+                raise
             thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.01})
             thread.start()
             mapping = root / "map.jsonl"
@@ -65,12 +78,12 @@ class ArtifactTransferTests(unittest.TestCase):
             real_run = subprocess.run
             curl_codes = []
 
-            def curl(args):
+            def curl(args, **kwargs):
                 # Run actual HTTP transfers over a local Unix socket. Disable curl's
                 # internal retries by default so the script's settling passes are observable.
                 command = [*args, "--unix-socket", str(endpoint), "--retry", str(retries), "--retry-delay", "1",
                            "--connect-timeout", "1", "--max-time", "5"]
-                done = real_run(command, capture_output=True, text=True, timeout=10)
+                done = real_run(command, timeout=10, **kwargs)
                 curl_codes.append(done.returncode)
                 return done
 

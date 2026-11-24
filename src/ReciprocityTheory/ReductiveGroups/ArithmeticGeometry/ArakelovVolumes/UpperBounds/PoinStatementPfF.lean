@@ -85,7 +85,7 @@ def Mq (X : Data E r) (x0 x : Frame X.Ψ r) (τ : X.Ψ) :
 theorem Jd_submatrix (X : Data E r) : (Jd X).submatrix (eS X) (eS X) = -Jf (r - X.p0) X.p0 := by
   ext a b
   rcases a with i | j <;> rcases b with k | l <;>
-    simp [Jd, Jf, Matrix.diagonal_apply, Matrix.one_apply, sgn, eS_inl, eS_inr, Equiv.apply_eq_iff_eq]
+    simp [Jd, Jf, Matrix.diagonal_apply, Matrix.one_apply, sgn, eS_inl, eS_inr]
   all_goals (try split_ifs)
   all_goals (try simp_all)
 
@@ -279,7 +279,7 @@ theorem lminor_orth_ne (X : Data E r) {x0 x : Frame X.Ψ r} (hx0 : IsOrth X x0) 
   have h22 := congrArg Matrix.toBlocks₂₂ hU
   rw [← Matrix.fromBlocks_toBlocks (Mq X x0 x τ)] at h22
   simp only [Jf, Matrix.fromBlocks_conjTranspose, Matrix.fromBlocks_multiply, Matrix.toBlocks_fromBlocks₂₂,
-    Matrix.mul_one, Matrix.mul_zero, Matrix.zero_mul, Matrix.mul_neg, add_zero, zero_add] at h22
+    Matrix.mul_one, Matrix.mul_zero, Matrix.mul_neg, add_zero, zero_add] at h22
   set B := (Mq X x0 x τ).toBlocks₁₂
   set D := (Mq X x0 x τ).toBlocks₂₂
   have hDD : Dᴴ * D = 1 + Bᴴ * B := by
@@ -325,12 +325,7 @@ theorem lminor_gM_ne (X : Data E r) {x0 y : Frame X.Ψ r} (hx0 : IsOrth X x0) (h
   rw [lminor_gM_rmul X x0 y hb] at h
   exact left_ne_zero_of_mul h
 
-theorem dmin_ne (X : Data E r) {y : Frame X.Ψ r} (hy : y ∈ X.dom) (τ : X.Ψ) (i : Fin (r + 1)) :
-    dmin X.Gm y τ i ≠ 0 := by
-  intro h
-  have h2 := (hy τ).2 i
-  rw [h, Complex.zero_re, mul_zero] at h2
-  exact lt_irrefl _ h2
+alias dmin_ne := _root_.ReciprocityTheory.ChartRestriction.G.FD.FlowCoefficientBounds.dmin_ne
 
 theorem rhY_rmul (X : Data E r) {x0 y : Frame X.Ψ r} (hx0 : IsOrth X x0) (hy : y ∈ X.dom)
     {b : Frame X.Ψ r} (hb : b ∈ Bor X.Ψ r) : rhY X x0 (rmul y b) = rhY X x0 y := by

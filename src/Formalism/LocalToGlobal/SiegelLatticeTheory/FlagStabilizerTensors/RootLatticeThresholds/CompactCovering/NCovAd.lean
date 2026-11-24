@@ -58,9 +58,6 @@ variable {F : Type} [Field F] [NumberField F]
 theorem NCovAd_ball_compact (v : InfinitePlace F) (R : ℝ) :
     IsCompact (closedBall (0 : v.Completion) R) := by
   first
-  | exact isCompact_closedBall (0 : v.Completion) R
-  | exact (haveI : ProperSpace v.Completion := ProperSpace.of_locallyCompactSpace v.Completion
-      isCompact_closedBall (0 : v.Completion) R)
   | exact (by
       have hi := NumberField.InfinitePlace.Completion.isometry_extensionEmbedding v
       have hc := (hi.isClosedEmbedding).isCompact_preimage (isCompact_closedBall (0 : ℂ) R)

@@ -154,9 +154,8 @@ theorem eigCOf : @EigCOfStatement K _ _ _ G _ _ Pl0 I0 Ty T m := by
       (adjoint_closed_lift_operators hH hK hJ j) (goodL_stable hok hH hK P0 ψ0 P1 ψ1 j)
   have hDn : X.DnLevL (cvOf3 A3 P0 ψ0 P1 ψ1) false :=
     lift_descent_at_lower_type (Dc := Dc) (Sp := Sp) (Zsc := Zsc) hok hK hJ hRZ hU hG hL0
-  have hGI : GoodIn (X.θ' j A3.A.fam.μ0) (goodL A3 X P0 ψ0 P1 ψ1 j) (goodW A3 X j) :=
-    fun x hx => hDn j A3.A.fam.μ0 ⟨x, hx, rfl⟩
-  exact liftsFull_adj hD (fun i x => hTh.intw j A3.A.fam.μ0 i x) hGI (hO j)
+  exact liftsFull_adj hD (fun i x => hTh.intw j A3.A.fam.μ0 i x)
+    (fun x hx => hDn j A3.A.fam.μ0 ⟨x, hx, rfl⟩) (hO j)
 
 theorem sys_of_occ {I V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] {op : I → Module.End ℂ V}
     (hc : Formalism.L2.Col.PairComm op) {S : (I → ℂ) → Prop} {W : Submodule ℂ V} (hW : W ≤ Formalism.L2.Col.eigSum op S)

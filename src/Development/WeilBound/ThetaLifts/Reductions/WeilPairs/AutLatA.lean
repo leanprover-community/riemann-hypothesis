@@ -5,12 +5,13 @@ public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutDef
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.GoodLat
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteRationalPointsCompletedLattice
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDetSmulSubOne
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalLatticeSelfDualFgFullIndex
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexMapNsmulComapEqAbsNormDetStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaFunctionHeisenbergInvariant
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.FinIdemSmulOfReal
-import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepA
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.QInertHolds
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalLatticeSelfDualFgFullIndex
+import Mathlib.NumberTheory.NumberField.Basic
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexMapNsmulComapEqAbsNormDet
+import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LatRepA
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -88,11 +89,11 @@ theorem finRatF_mem_of {y : Matrix (Fin nT) (Fin nS) E} (hy : y ∈ Λ) : finRat
 theorem mem_iff (C : Ctx σ B JS JT ξ₀ θ ι) (hR : RatSD σ JS JT ξ₀ Λ)
     (hA : SelfDual (gamFF σ JS JT ξ₀ B.ψ) (latF F E nS nT Λ)) (y : Matrix (Fin nT) (Fin nS) E) :
     finRatF F y ∈ latF F E nS nT Λ ↔ y ∈ Λ :=
-  ⟨fun h => (hR y).2 fun M' hM' => (gamQF_eq_one_iff' C y M').1 ((hA _).1 h _ (finRatF_mem_of hM')),
+  ⟨fun h => (hR y).2 fun M' hM' => (_root_.PositivityTheory.ThKW.TauSpanIdentities.gamQF_eq_one_iff' C y M').1 ((hA _).1 h _ (finRatF_mem_of hM')),
     finRatF_mem_of⟩
 
 theorem sdQ (C : Ctx σ B JS JT ξ₀ θ ι) (hR : RatSD σ JS JT ξ₀ Λ) : SelfDual (gamQF σ JS JT ξ₀ B.ψ) Λ := fun x =>
-  (hR x).trans (forall₂_congr fun y _ => (gamQF_eq_one_iff' C x y).symm)
+  (hR x).trans (forall₂_congr fun y _ => (_root_.PositivityTheory.ThKW.TauSpanIdentities.gamQF_eq_one_iff' C x y).symm)
 
 theorem exists_denomM (hL : Λ.FG) : ∃ d : E, d ≠ 0 ∧ ∀ x ∈ Λ, ∀ i j, IsIntegral ℤ (d * x i j) := by
   obtain ⟨s, hs⟩ := hL
@@ -147,12 +148,6 @@ theorem finLat (hB : B.IsGood σ) (hG : GoodLat Λ) (R : ℝ) : {y | y ∈ Λ �
   rw [hv]
   exact (norm_le_pi_norm (infRatF (tauB B) y) ((i, j), v)).trans hR
 
-theorem nsmul_inv_smul' {M : Type} [AddCommGroup M] [Module (AEF F E) M] {N : ℕ} (hN : 0 < N) (x : M) :
-    N • (incAF F E (N : E)⁻¹ • x) = x := by
-  have h : (N : E) ≠ 0 := Nat.cast_ne_zero.2 hN.ne'
-  rw [← Nat.cast_smul_eq_nsmul (AEF F E), smul_smul, ← map_natCast (incAF F E) N, ← map_mul, mul_inv_cancel₀ h, map_one,
-    one_smul]
-
 theorem level (hG : GoodLat Λ) (N : ℕ) (hN : 0 < N) : ∃ U : AddSubgroup (WOF F E nS nT), IsOpen (U : Set (WOF F E nS nT)) ∧
     ∀ u ∈ U, ∃ l ∈ latF F E nS nT Λ, finIdem F E • u = ((N • l : XFF F E nS nT) : WOF F E nS nT) := by
   haveI := GlobalTheory.HeisThetaF.isTopologicalRing_AEF (F := F) (E := E)
@@ -173,7 +168,7 @@ theorem level (hG : GoodLat Λ) (N : ℕ) (hN : 0 < N) : ∃ U : AddSubgroup (WO
     simpa using hV
   refine ⟨U, AddSubgroup.isOpen_of_mem_nhds U (Filter.mem_of_superset hm fun u hu => ?_),
     fun u ⟨z, hz, e⟩ => ⟨XFF.mk z (lat_fin hz), hz, e⟩⟩
-  exact ⟨_, hV' _ hu ((finSubF F E nS nT).smul_mem _ (finIdem_smul_fin u)), (nsmul_inv_smul' hN _).symm⟩
+  exact ⟨_, hV' _ hu ((finSubF F E nS nT).smul_mem _ (finIdem_smul_fin u)), (_root_.PositivityTheory.ThKW.LatC.nsmul_inv_smul hN _).symm⟩
 
 theorem inv_rho (g : GAF σ JS) (h : GAF σ JT) (x : XFF F E nS nT) :
     rhoFF σ JS JT (g, h) (rhoFF σ JS JT (g⁻¹, h⁻¹) x) = x ∧ rhoFF σ JS JT (g⁻¹, h⁻¹) (rhoFF σ JS JT (g, h) x) = x := by
@@ -213,7 +208,7 @@ theorem idx_eq (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) (hR : RatSD σ
     · ext x; exact hmem x
     · ext x
       show finRatF F x ∈ (latF F E nS nT Λ).map (rhoFF σ JS JT (g, h)) ↔ b * x * a ∈ Λ
-      rw [mem_map_rho, rhoFF_finRatF ha hb, hmem]
+      rw [mem_map_rho, _root_.PositivityTheory.ThKW.TauSpanIdentities.rhoFF_finRatF ha hb, hmem]
   · intro z hz
     have hN := Nat.pos_of_ne_zero hfin
     obtain ⟨γ, hγ⟩ := lat_approx hG _ (incAF F E ((idx (latF F E nS nT Λ)
@@ -221,7 +216,7 @@ theorem idx_eq (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) (hR : RatSD σ
     obtain ⟨u, hu, e⟩ : ∃ u ∈ latF F E nS nT Λ, z = finRatF F (idx (latF F E nS nT Λ)
         ((latF F E nS nT Λ).map (rhoFF σ JS JT (g⁻¹, h⁻¹))) • γ) +
         idx (latF F E nS nT Λ) ((latF F E nS nT Λ).map (rhoFF σ JS JT (g⁻¹, h⁻¹))) • u :=
-      ⟨_, hγ, by rw [map_nsmul, ← nsmul_add, add_sub_cancel, nsmul_inv_smul' (F := F) (E := E) hN]⟩
+      ⟨_, hγ, by rw [map_nsmul, ← nsmul_add, add_sub_cancel, _root_.PositivityTheory.ThKW.LatC.nsmul_inv_smul (F := F) (E := E) hN]⟩
     refine ⟨idx (latF F E nS nT Λ) ((latF F E nS nT Λ).map (rhoFF σ JS JT (g⁻¹, h⁻¹))) • γ, ?_, ?_⟩
     · show finRatF F _ ∈ (latF F E nS nT Λ).map (rhoFF σ JS JT (g, h))
       rw [eq_sub_of_add_eq e.symm]
@@ -272,10 +267,10 @@ theorem data (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) (hR : RatSD σ J
         rw [map_add, smul_add]
         exact add_mem hx hy
     exact hz ⟨x, hx⟩
-  have i1 := GlobalTheory.T.relIndex_map_nsmul_comap_eq_abs_norm_pow_mul_det _ _ A fg full (sandw b a - 1) N hN hd fun x hx => by
+  have i1 := _root_.GlobalTheory.relIndex_map_nsmul_comap_eq_abs_norm_det _ _ A fg full (sandw b a - 1) N hN hd fun x hx => by
     rw [LinearMap.sub_apply, smul_sub]
     exact sub_mem (hNA x hx) (nsmul_mem hx N)
-  have i2 := GlobalTheory.T.relIndex_map_nsmul_comap_eq_abs_norm_pow_mul_det _ _ A fg full (sandw b a) N hN hΔ hNA
+  have i2 := _root_.GlobalTheory.relIndex_map_nsmul_comap_eq_abs_norm_det _ _ A fg full (sandw b a) N hN hΔ hNA
   set B₁ := A.comap (sandw b a - 1).toAddMonoidHom with hB₁
   set B₂ := A.comap (sandw b a).toAddMonoidHom with hB₂
   set NA := A.map (N • AddMonoidHom.id _) with hNA'
@@ -302,9 +297,9 @@ theorem data (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) (hR : RatSD σ J
     (fun x y => by
       show gamFF σ JS JT ξ₀ B.ψ (finRatF F (b * x * a)) (finRatF F (b * y * a)) =
         gamFF σ JS JT ξ₀ B.ψ (finRatF F x) (finRatF F y)
-      rw [← rhoFF_finRatF ha hb, ← rhoFF_finRatF ha hb]
+      rw [← _root_.PositivityTheory.ThKW.TauSpanIdentities.rhoFF_finRatF ha hb, ← _root_.PositivityTheory.ThKW.TauSpanIdentities.rhoFF_finRatF ha hb]
       unfold gamFF
-      rw [coe_rhoFF, coe_rhoFF, symplOF_actOF C]) hbij.2 _ t t1 t2
+      rw [coe_rhoFF, coe_rhoFF, _root_.PositivityTheory.ThKW.TauSpanIdentities.symplOF_actOF C]) hbij.2 _ t t1 t2
   exact ⟨_, t, _, N, _, right_ne_zero_of_mul h0, left_ne_zero_of_mul h0, hN, t1, t2, g1, g2, m1 ▸ i1, m2 ▸ i2⟩
 
 end AutLatA

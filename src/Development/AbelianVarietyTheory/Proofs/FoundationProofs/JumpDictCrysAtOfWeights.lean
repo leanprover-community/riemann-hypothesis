@@ -122,7 +122,7 @@ variable {R : Ranks} (H : Host R)
 
 theorem exists_finite_split : ∃ A : Set (HeightOneSpectrum (𝓞 H.E)), A.Finite ∧
     ∀ v, v ∉ A → v.asIdeal.inertiaDeg ℤ = 1 → IsSplitPl H v := by
-  apply GlobalTheory.FrobDense.exists_finite_split <;> assumption
+  apply GlobalTheory.FrobDense.exists_finite_split
 
 variable {H} {what₂ : Rows.Data R} (N : NData R H what₂)
 

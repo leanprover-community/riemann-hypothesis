@@ -83,9 +83,6 @@ theorem sc_Fv (v : HeightOneSpectrum (𝓞 F)) : SecondCountableTopology (v.adic
     ⟨_, Set.countable_range _, v.denseRange_algebraMap F⟩
   infer_instance
 
-theorem sc_Af : SecondCountableTopology (FiniteAdeleRing (𝓞 F) F) := by
-  apply GlobalTheory.AdelicUnitaryTop.secondCountable_finiteAdele <;> assumption
-
 variable {F} {E : Type} [Field E] [NumberField E] [Algebra F E]
 
 end Count

@@ -66,13 +66,6 @@ def globalSection (F : X.Modules) (m : Γ(F, ⊤)) : F.sections :=
     rw [← ConcreteCategory.comp_apply, ← F.presheaf.map_comp]
     rfl)
 
-private lemma resF_comp (F : X.Modules) {U V W : X.Opens} (h₁ : V ≤ U) (h₂ : W ≤ V) (m : Γ(F, U)) :
-    resF F h₂ (resF F h₁ m) = resF F (h₂.trans h₁) m := by
-  change (F.presheaf.map (homOfLE h₂).op) ((F.presheaf.map (homOfLE h₁).op) m) =
-    (F.presheaf.map (homOfLE (h₂.trans h₁)).op) m
-  rw [← ConcreteCategory.comp_apply, ← F.presheaf.map_comp]
-  rfl
-
 lemma freeHomEquiv_symm_app_ιFree (F : X.Modules) {κ : Type u} (t : κ → F.sections) (k : κ)
     (W : X.Opens) (a : Γ(X, W)) :
     (F.freeHomEquiv.symm t).val.app (op W) ((SheafOfModules.ιFree k).val.app (op W) a) =
@@ -117,7 +110,7 @@ theorem exists_generatingSections (F : X.Modules) [F.IsQuasicoherent] {ι : Type
 
       rw [← hc, map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
-      rw [resF_smul, resF_comp]
+      rw [resF_smul, _root_.GroundTheory.Arith.SchemeCoh.resF_resF]
     have h₂ : ((w : Γ(X, X.basicOpen f))) • resF F hDU m =
         ∑ k, resO (X.basicOpen_le f) (c k) • resF F (le_top : X.basicOpen f ≤ ⊤) (s k) := by
       rw [← h₁, hm', hw]

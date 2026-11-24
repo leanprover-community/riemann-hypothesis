@@ -71,7 +71,7 @@ theorem idF_mem (X : Data E r) : idF X ∈ Bor X.Ψ r := by
       rfl
     rw [h1, Matrix.det_one]
     exact one_ne_zero
-  · simp [idF, Matrix.one_apply, ne_of_gt h]
+  · simp [idF, ne_of_gt h]
 
 theorem rmul_idF (X : Data E r) (y : Frame X.Ψ r) : rmul y (idF X) = y := by
   funext τ

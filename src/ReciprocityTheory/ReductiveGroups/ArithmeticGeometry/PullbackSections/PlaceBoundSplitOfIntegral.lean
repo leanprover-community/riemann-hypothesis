@@ -73,9 +73,6 @@ theorem nval_nonneg_of_int (e : ℕ) {x : K'} (hx : x ∈ (algebraMap V K').rang
     have hl : ((valV V) ((algebraMap V K') y)).log ≤ 0 := by
       first
       | exact (WithZero.log_le_log hne one_ne_zero).mpr hv |>.trans_eq WithZero.log_one
-      | exact WithZero.log_nonpos hv
-      | exact WithZero.log_le_zero_iff.mpr hv
-      | simpa using WithZero.log_mono hne hv
     have h1 : (0:ℝ) ≤ ((-(valV V ((algebraMap V K') y)).log : ℤ) : ℝ) / (e : ℝ) :=
       div_nonneg (by exact_mod_cast (by omega : (0:ℤ) ≤ -(valV V ((algebraMap V K') y)).log)) (Nat.cast_nonneg _)
     exact EReal.coe_nonneg.mpr h1

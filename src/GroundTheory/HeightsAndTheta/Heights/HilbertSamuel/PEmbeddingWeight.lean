@@ -78,7 +78,7 @@ def conjVec (z : (Σ k, ι k) → ℂ) : (Σ k, ι k) → ℂ := fun p => conj (
 
 theorem blockNormSq_smul (c : K → ℂ) (z : (Σ k, ι k) → ℂ) (k : K) :
     blockNormSq (fun p => c p.1 * z p) k = ‖c k‖ ^ 2 * blockNormSq z k := by
-  simp [blockNormSq, norm_mul, mul_pow, Finset.mul_sum]
+  simp [blockNormSq, mul_pow, Finset.mul_sum]
 
 theorem blockNormSq_pos {z : (Σ k, ι k) → ℂ} (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) (k : K) :
     0 < blockNormSq z k := by

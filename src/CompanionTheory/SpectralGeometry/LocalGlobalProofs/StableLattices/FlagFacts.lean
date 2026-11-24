@@ -73,13 +73,13 @@ theorem A4 (h : A * A * A = A) : A * A * A * A = A * A := by rw [h]
 theorem pM_idem (h : A * A * A = A) : pM A * pM A = pM A := by
   have h4 := A4 h
   unfold pM
-  simp only [smul_mul_assoc, mul_smul_comm, smul_smul, sub_mul, mul_sub, ← mul_assoc, h4, h]
+  simp only [smul_mul_assoc, mul_smul_comm, sub_mul, mul_sub, ← mul_assoc, h]
   module
 
 theorem pM_mul_qM (h : A * A * A = A) : pM A * qM A = 0 := by
   have h4 := A4 h
   unfold pM qM
-  simp only [smul_mul_assoc, mul_smul_comm, smul_smul, sub_mul, mul_add, add_mul, mul_sub, ← mul_assoc, h4, h]
+  simp only [smul_mul_assoc, mul_smul_comm, sub_mul, mul_add, ← mul_assoc, h]
   module
 
 theorem J_mul_pM (h : IsGrad ε A) : Formalism.REAL.Jm ε * pM A = qM A * Formalism.REAL.Jm ε := by

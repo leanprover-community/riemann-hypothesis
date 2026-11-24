@@ -149,7 +149,6 @@ theorem chart_filtration_one (t : (CI k r → ℂ) × (Fin r → ℝ)) : Fil 1 (
     simp only [posE_apply, pos, dg_eI, dg_wI, dg_esI] at h <;>
     simp only [posE_apply, pos, Lm_ee, Lm_ew, Lm_es, Lm_we, Lm_ww, Lm_ws, Lm_se, Lm_sw, Lm_ss]
   all_goals first
-    | rfl
     | exact chart_matrix_lower _ (Fin.le_iff_val_le_val.2 (by omega))
     | (rw [neg_eq_zero, star_eq_zero]
        exact chart_matrix_lower _ (Fin.le_iff_val_le_val.2 (by have := a.isLt; have := b.isLt; omega)))

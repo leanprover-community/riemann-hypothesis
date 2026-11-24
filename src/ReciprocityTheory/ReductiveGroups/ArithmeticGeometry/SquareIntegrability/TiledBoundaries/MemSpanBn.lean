@@ -171,7 +171,6 @@ theorem stepPos : StepPos := by
   refine mul_pos (inv_pos.mpr ?_) hpos
   first
     | (rw [measureReal_def]; exact ENNReal.toReal_pos (fd_ne_zero X n) (fd_ne_top X n))
-    | exact ENNReal.toReal_pos (fd_ne_zero X n) (fd_ne_top X n)
 
 theorem stepF : StepF := by
   intro E _ _ X n f hf

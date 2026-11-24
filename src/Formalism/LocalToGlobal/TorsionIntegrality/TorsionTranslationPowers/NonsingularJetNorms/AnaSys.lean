@@ -154,16 +154,15 @@ theorem Rd.opU (x : ℂ) :
     Rd l L ι (F.opU L x (F.sgStar L)) (inU l L ι (F.opU L x (F.sgStar L))) :=
   ⟨analytic_opU L x, rfl⟩
 
-theorem taylorSgStar : F.TaylorSgStar :=
-  F.taylorSgStar_of (F.taylorSigma_of F.taylorRing F.taylorDeriv) F.taylorRing F.taylorExp F.sigmaEntire
+alias taylorSgStar := _root_.Formalism.L2.Th1.F.taylorSgStar
 
 theorem cc_phL : constantCoeff (phL l L ι) = 0 :=
-  (B.phODef ℂ_[l] _ _ _ (lg0 l L ι) (lg1 l L ι)).1
+  (_root_.Formalism.L2.Th1.B.Ph.logSigmaPullbackSpec ℂ_[l] _ _ _ (lg0 l L ι) (lg1 l L ι)).1
 
 theorem inU_sgStar : inU l L ι (F.sgStar L) = X * B.fExp (-(phL l L ι)) := by
   unfold inU phL
   rw [taylorSgStar L, B.Map.map_sgStar]
-  exact (B.phODef ℂ_[l] _ _ _ (lg0 l L ι) (lg1 l L ι)).2
+  exact (_root_.Formalism.L2.Th1.B.Ph.logSigmaPullbackSpec ℂ_[l] _ _ _ (lg0 l L ι) (lg1 l L ι)).2
 
 theorem fExp_cancel : B.fExp (phL l L ι) * B.fExp (-(phL l L ι)) = 1 :=
   B.ParO.fExp_mul_neg (cc_phL l L ι)
@@ -366,7 +365,7 @@ end Trans
 theorem transWpBridge : TransWpBridge := by
   intro l _ L ι t ht
   have hz := A.zMap ℂ ℂ_[l] (ι : ℂ →+* ℂ_[l]) (A.shortW L.g₂ L.g₃)
-  have hp := (A.plusMap ℂ ℂ_[l] (ι : ℂ →+* ℂ_[l]) (A.shortW L.g₂ L.g₃) (L.weierstrassP t)
+  have hp := (_root_.Formalism.L2.Th1.A.addition_map ℂ ℂ_[l] (ι : ℂ →+* ℂ_[l]) (A.shortW L.g₂ L.g₃) (L.weierstrassP t)
     (L.derivWeierstrassP t / 2)).2.1
   have he := A.expSpec ℂ_[l] (curveL l L ι)
   unfold inU

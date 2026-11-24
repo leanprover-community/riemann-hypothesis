@@ -58,9 +58,6 @@ theorem t2Space_finiteAdeleRing_of_numberField (F : Type) [Field F] [NumberField
     (fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
     (fun v => (v.adicCompletionIntegers F : Set (v.adicCompletion F))) Filter.cofinite))
 
-theorem t2Space_infiniteAdeleRing_of_numberField_field (F : Type) [Field F] [NumberField F] : T2Space (InfiniteAdeleRing F) :=
-  inferInstanceAs (T2Space ((v : InfinitePlace F) → v.Completion))
-
 theorem adele_top : ∀ (F : Type) [Field F] [NumberField F],
     (LocallyCompactSpace (AF F) ∧ SecondCountableTopology (AF F) ∧ T2Space (AF F)) ∧
     (LocallyCompactSpace (Af F) ∧ SecondCountableTopology (Af F) ∧ T2Space (Af F)) := by
@@ -70,7 +67,7 @@ theorem adele_top : ∀ (F : Type) [Field F] [NumberField F],
     GlobalTheory.AdelicUnitaryTop.locallyCompact_finiteAdele F,
     GlobalTheory.AdelicUnitaryTop.secondCountable_finiteAdele F, t2Space_finiteAdeleRing_of_numberField F⟩
   haveI : T2Space (FiniteAdeleRing (𝓞 F) F) := t2Space_finiteAdeleRing_of_numberField F
-  haveI := t2Space_infiniteAdeleRing_of_numberField_field F
+  haveI := _root_.GlobalTheory.AdelicUnitaryTop.t2Space_infiniteAdeleRing_of_numberField_field F
   exact inferInstanceAs (T2Space (InfiniteAdeleRing F × FiniteAdeleRing (𝓞 F) F))
 
 end GlobalTheory.CompanionTheory.AdeleTop

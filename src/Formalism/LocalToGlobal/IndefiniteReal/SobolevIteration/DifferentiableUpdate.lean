@@ -122,7 +122,7 @@ lemma pds_clm (L : List (Fin N)) (A : H →L[ℝ] H) {f : (Fin N → ℝ) → H}
 lemma update_add_single {i j : Fin N} (hij : i ≠ j) (r : Fin N → ℝ) (s t : ℝ) :
     Function.update (r + t • Pi.single i 1) j s = Function.update r j s + t • Pi.single i 1 := by
   funext k
-  by_cases hk : k = j <;> simp [Function.update_apply, hk, Pi.single_apply, Ne.symm hij]
+  by_cases hk : k = j <;> simp [hk, Pi.single_apply, Ne.symm hij]
 
 lemma differentiable_update (j : Fin N) (s : ℝ) :
     Differentiable ℝ (fun r : Fin N → ℝ => Function.update r j s) := by

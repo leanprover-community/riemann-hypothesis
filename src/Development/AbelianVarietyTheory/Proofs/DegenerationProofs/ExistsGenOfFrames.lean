@@ -152,7 +152,7 @@ theorem Rel.trans {M P} (H : Rel G L N h₁ a h₂ b M) (H' : Rel G L N h₂ b h
 
 theorem Rel.refl : Rel G L N h₁ a h₁ a 1 := by
   intro k Y r z J _
-  simp [Matrix.one_apply, apply_ite (gT (r ≫ (fst T G).left) z)]
+  simp [Matrix.one_apply]
 
 theorem rel_of_lin (hL : L.IsLB) {M : Matrix (Fin m) (Fin n) Γ(T.left, ⊤)}
     (H : ∀ k, ∃ t, Lin G L N h₁ (fun _ : Fin 1 => a k) (fun _ => 1) t ∧ Lin G L N h₂ b (fun k' => M k k') t) :

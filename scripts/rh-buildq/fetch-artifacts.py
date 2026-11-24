@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Download every artifact named in a Lake map that is missing from a local Lake cache.
 
-usage: fetch-artifacts.py <map.jsonl> <cache-dir> [--sha256 <file>]
+usage: fetch-artifacts.py <map.jsonl> <cache-dir> [--sha256 <file> [--verify-existing]]
+                          [--base-url <url>] [--user-agent <agent>] [--report <file>]
 Stock Lake 4.37 does not download artifacts lazily during `lake build`: a mapped module whose
 artifact is absent locally is simply compiled. So restores must prefetch. One curl process
 downloads up to 500 files at a time (fd soft limit raised to match) and retries transport
@@ -9,15 +10,44 @@ errors and CDN 5xx. Files land in <cache-dir>/artifacts/<hash16>.ltar atomically
 there is always complete. Objects are content-addressed and write-once (If-None-Match) in R2.
 --sha256 names a JSON object {"<hash16>.ltar": "<sha256>"} (e.g. from a CI module manifest):
 those downloads are verified before they are moved into the cache, and a mismatch is discarded
-and downloaded again. Up to three passes; exit 1 if anything is still missing.
-Requires curl 7.83 or newer to remove incomplete outputs after transfer errors.
+and downloaded again. A download must have a successful per-transfer status
+before it can be promoted (requires curl 7.75 or newer). With --verify-existing, artifacts
+already in the cache are checked too
+(a symlink or mismatch is removed and downloaded again). Up to three passes; exit 1 if anything
+is still missing. curl's error lines (one per failed attempt, retries included) are grouped by
+error code and printed once per pass. --report writes the last pass's curl exit code, those
+groups and its SHA-256 failure count as JSON. scripts/ci-cache-get.py (`lake exe cache get`)
+uses this with its own --user-agent and puts the report in its final error.
 """
-import hashlib, json, os, resource, subprocess, sys, tempfile
+import hashlib, json, os, re, resource, subprocess, sys, tempfile
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 PUBLIC = "https://rh-cache.taucetiproject.org/artifacts/leanprover-community/riemann-hypothesis/"
 PARALLEL = 500
+CURL_ERROR = re.compile(r"curl: \((\d+)\)")
+
+
+def curl_errors(stderr):
+    """[[count, first line], ...] for curl's error output, most frequent first.
+
+    Lines with an error code also name a file or byte counts, so they are grouped by the code;
+    other lines (an unknown option, for example) are grouped as they are."""
+    groups = {}
+    for line in stderr.splitlines():
+        line = line.strip()
+        if not line or line.startswith("curl: try "):
+            continue
+        match = CURL_ERROR.match(line)
+        key = match.group(1) if match else line
+        groups.setdefault(key, [0, line[:300]])[0] += 1
+    return sorted(groups.values(), key=lambda group: -group[0])
+
+
+def completed_outputs(stdout):
+    """Return only filenames with a complete, successful curl transfer record."""
+    return {line[2:-1] for line in stdout.splitlines(keepends=True)
+            if line.startswith("0 ") and line.endswith("\n")}
 
 
 def sha256(path):
@@ -25,13 +55,25 @@ def sha256(path):
         return hashlib.file_digest(f, "sha256").hexdigest()
 
 
+def option(args, name, default=None):
+    if name not in args:
+        return default
+    i = args.index(name)
+    value = args[i + 1]
+    del args[i:i + 2]
+    return value
+
+
 def main():
     args = sys.argv[1:]
-    digests = {}
-    if "--sha256" in args:
-        i = args.index("--sha256")
-        digests = json.loads(Path(args[i + 1]).read_text())
-        del args[i:i + 2]
+    digests = option(args, "--sha256")
+    digests = json.loads(Path(digests).read_text()) if digests else {}
+    base = option(args, "--base-url", PUBLIC)
+    agent = option(args, "--user-agent", "rh-buildq/1")
+    report = option(args, "--report")
+    verify_existing = "--verify-existing" in args
+    if verify_existing:
+        args.remove("--verify-existing")
     mapping, cache = Path(args[0]), Path(args[1]) / "artifacts"
     cache.mkdir(parents=True, exist_ok=True)
     soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
@@ -40,22 +82,42 @@ def main():
         resource.setrlimit(resource.RLIMIT_NOFILE, (want, hard))
     lines = mapping.read_text().splitlines()[1:]
     names = sorted({json.loads(l)[1] for l in lines if l})
-    missing = [n for n in names if not (cache / n).exists()]
+
+    def present(n):
+        p = cache / n
+        if not verify_existing:
+            return p.exists()
+        if p.is_symlink() or (p.exists() and n in digests and sha256(p) != digests[n]):
+            print(f"fetch-artifacts: discarding corrupt local {n}", flush=True)
+            p.unlink()
+            return False
+        return p.is_file()
+
+    with ThreadPoolExecutor(32) as pool:
+        missing = [n for n, ok in zip(names, pool.map(present, names)) if not ok]
     print(f"fetch-artifacts: {len(names)} mapped, {len(missing)} missing locally", flush=True)
+    code, errors, corrupt = 0, [], []
     for attempt in range(1, 4):
         if not missing:
             break
         with tempfile.TemporaryDirectory(prefix="fetch-", dir=cache.parent) as t:
             conf = Path(t) / "curl.conf"
-            conf.write_text("".join(f'url = "{PUBLIC}{n[:-5]}.art"\noutput = "{t}/{n}"\n' for n in missing))
-            r = subprocess.run(["curl", "--disable", "--fail", "--remove-on-error", "--silent", "--show-error", "--location",
-                                "--user-agent", "rh-buildq/1", "--retry", "5", "--retry-all-errors",
+            conf.write_text("".join(f'url = "{base}{n[:-5]}.art"\noutput = "{n}"\n' for n in missing))
+            r = subprocess.run(["curl", "--disable", "--fail", "--silent", "--show-error", "--location",
+                                "--user-agent", agent, "--retry", "5", "--retry-all-errors",
                                 "--connect-timeout", "30", "--max-time", "600",
-                                "--parallel", "--parallel-max", str(PARALLEL), "--config", str(conf)])
+                                "--parallel", "--parallel-max", str(PARALLEL),
+                                "--write-out", "%{exitcode} %{filename_effective}\\n",
+                                "--config", conf.name],
+                               cwd=t, capture_output=True, text=True, errors="replace")
+            code, errors = r.returncode, curl_errors(r.stderr)
+            # A failed or interrupted transfer may leave a nonempty file, but no
+            # success record. The paths are the relative output names we gave curl.
+            succeeded = completed_outputs(r.stdout)
 
             def settle(n):
                 p = Path(t) / n
-                if not (p.is_file() and p.stat().st_size):
+                if n not in succeeded or not (p.is_file() and p.stat().st_size):
                     return "missing"
                 if n in digests and sha256(p) != digests[n]:
                     p.unlink()
@@ -69,9 +131,14 @@ def main():
         corrupt = [n for n, s in zip(missing, results) if s == "corrupt"]
         missing = [n for n, s in zip(missing, results) if s != "ok"]
         print(f"fetch-artifacts: pass {attempt}: downloaded {len(results) - len(missing)}/{len(results)}"
-              f" (curl exit {r.returncode}; {len(corrupt)} failed SHA-256 verification)", flush=True)
+              f" (curl exit {code}; {len(corrupt)} failed SHA-256 verification)", flush=True)
+        for count, line in errors[:5]:
+            print(f"fetch-artifacts: {line}" + (f" (reported {count} times)" if count > 1 else ""), flush=True)
         for n in corrupt[:10]:
             print(f"fetch-artifacts: SHA-256 mismatch for {n}", flush=True)
+    if report:
+        Path(report).write_text(json.dumps({"curl_exit": code, "curl_errors": errors,
+                                            "sha256_mismatches": len(corrupt)}))
     sys.exit(1 if missing else 0)
 
 

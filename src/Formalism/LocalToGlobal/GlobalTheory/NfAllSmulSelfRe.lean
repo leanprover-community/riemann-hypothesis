@@ -174,7 +174,7 @@ theorem gram_of_norm (hG : Gᴴ = G) (t : E) (ht : (φ t).im ≠ 0)
         norm_cast
       have i2 : (φ (star x ⬝ᵥ (G *ᵥ x))).im = 0 := by
         have e : star (star x ⬝ᵥ (G *ᵥ x)) = star x ⬝ᵥ (G *ᵥ x) := by
-          simp only [dotProduct, Matrix.mulVec, Pi.star_apply, star_sum, star_mul', star_star, Finset.mul_sum, Finset.sum_mul]
+          simp only [dotProduct, Matrix.mulVec, Pi.star_apply, star_sum, star_mul', star_star, Finset.mul_sum]
           rw [Finset.sum_comm]
           refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
           have hij : star (G j i) = G i j := by

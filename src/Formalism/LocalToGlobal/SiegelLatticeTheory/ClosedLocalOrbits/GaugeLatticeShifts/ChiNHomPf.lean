@@ -60,15 +60,13 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
-theorem gB_ne_zero : X.B.g ≠ 0 := by
-  rw [X.g_eq]; exact Nat.mul_ne_zero (D.host.g_prime 0).ne_zero (D.host.g_prime 1).ne_zero
+alias gB_ne_zero := _root_.Formalism.L2.SG.Pf.modulus_g_ne_zero
 
 theorem hfe : ∀ a b : Fin D.R.rS, a ≠ b → ZMod' X.B.I X.B.g (hA X.B.I (X.f0 a) (X.e0 b)) := by
   intro a b hab
   rw [hA_symm]
-  have := (X.gramIntegral b a).2.2
-  rw [if_neg (Ne.symm hab), sub_zero] at this
-  exact Z_sig X.B.I X.B.g this
+  exact Z_sig X.B.I X.B.g (by
+    simpa only [if_neg (Ne.symm hab), sub_zero] using (X.gramIntegral b a).2.2)
 
 theorem hfz : ∀ a, ZMod' X.B.I X.B.g (hA X.B.I (X.f0 a) X.z0) := fun a => ((X.formsAtZero).2 a).2
 
@@ -245,16 +243,14 @@ namespace Formalism.L2.SG.Pf
 
 open Formalism.L2.SG.TermOp.Vanish
 
-theorem chiTrivialC_of_nconj (hK : NilradicalConjLevel) : ChiTrivialC := Formalism.L2.SG.NormCut.chiTrivialC_of_nilradicalConjLevel hK
-
 theorem ooFundIndepC_of_nconj (hK : NilradicalConjLevel) : Formalism.L2.SG.Full.OOFundIndepC :=
-  ooFundIndepC_of_chi (chiTrivialC_of_nconj hK)
+  ooFundIndepC_of_chi (_root_.Formalism.L2.SG.NormCut.chiTrivialC_of_nilradicalConjLevel hK)
 
 theorem ampWellDefC_of_nconj (hK : NilradicalConjLevel) : Formalism.L2.SG.Full.AmpWellDefC :=
-  ampWellDefC_of_chi hK (chiTrivialC_of_nconj hK)
+  ampWellDefC_of_chi hK (_root_.Formalism.L2.SG.NormCut.chiTrivialC_of_nilradicalConjLevel hK)
 
 theorem lemmaVC_of_nconj (hA : AvgCore) (hK : NilradicalConjLevel) (h3 : RCocompactC) (h4 : NonRelCharC) :
     Formalism.L2.SG.Full.LemmaVC :=
-  lemmaVC_of_chi hA (chiTrivialC_of_nconj hK) h3 h4
+  lemmaVC_of_chi hA (_root_.Formalism.L2.SG.NormCut.chiTrivialC_of_nilradicalConjLevel hK) h3 h4
 
 end Formalism.L2.SG.Pf

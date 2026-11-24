@@ -82,7 +82,6 @@ theorem kType_finrank {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε �
     (Module.finrank ℂ T.V : ℝ) = ∏ a : Fin n, ∏ b ∈ Finset.univ.filter (fun b => a < b ∧ ε a = ε b),
       ((Λ + rhoC ε) a - (Λ + rhoC ε) b) / (rhoC ε a - rhoC ε b) := by
   rw [hwfin_weyl T, ← hwfin_denom ε, ← Finset.prod_div_distrib]
-  refine Finset.prod_congr rfl fun a _ => ?_
-  rw [Finset.prod_div_distrib]
+  simp_rw [Finset.prod_div_distrib]
 
 end ReciprocityTheory.ChartRestriction.DS.HW

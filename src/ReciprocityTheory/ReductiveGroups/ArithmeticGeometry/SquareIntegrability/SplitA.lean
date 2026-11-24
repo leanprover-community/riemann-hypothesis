@@ -62,7 +62,6 @@ private theorem Hf_eq_inner_swap_complex (v w : EuclideanSpace ℂ ι) : Hf v w 
 
 private theorem real_inner_eq_re_inner' (x y : EuclideanSpace ℂ ι) : ⟪x, y⟫_ℝ = (inner ℂ x y).re := by
   first
-  | exact real_inner_eq_re_inner ℂ x y
   | simp [PiLp.inner_apply, Complex.inner, Complex.re_sum, RCLike.inner_apply, mul_comm]
 
 theorem Hf_conj (v w : EuclideanSpace ℂ ι) : Hf w v = (starRingEnd ℂ) (Hf v w) := by

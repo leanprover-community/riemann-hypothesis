@@ -268,9 +268,6 @@ theorem b_mul_mem_map (P : Ideal (𝓞 E)) (c : 𝓞 E) (hc : c ∈ P) (t : RInt
   have h1 : toRInt F E c ∈ P.map (toRInt F E) := Ideal.mem_map_of_mem _ hc
   first
   | exact Ideal.mul_mem_right _ _ h1
-  | exact Ideal.mul_mem_right t _ h1
-  | exact Ideal.mul_mem_right t h1
-  | exact (P.map (toRInt F E)).mul_mem_right t h1
 
 theorem b_eps_mem (v : HeightOneSpectrum (𝓞 F)) (P : HeightOneSpectrum (𝓞 E))
     (hP : P.asIdeal.under (𝓞 F) ≠ v.asIdeal) : bEps E v ∈ P.asIdeal.map (toRInt F E) := by
@@ -643,7 +640,6 @@ theorem auxiliary_primes_finite : QprimeFinite := by
 private theorem hs_eq_lemma_2 {P Q : HeightOneSpectrum (𝓞 E)} (h : P.asIdeal = Q.asIdeal) : P = Q := by
   first
   | exact HeightOneSpectrum.ext h
-  | (cases P; cases Q; cases h; rfl)
 
 theorem b_other_of_split (v : HeightOneSpectrum (𝓞 F)) (P P' Q : HeightOneSpectrum (𝓞 E))
     (h : Ideal.map (algebraMap (𝓞 F) (𝓞 E)) v.asIdeal = P.asIdeal * P'.asIdeal) (hQ : Q ≠ P) (hQ' : Q ≠ P') :

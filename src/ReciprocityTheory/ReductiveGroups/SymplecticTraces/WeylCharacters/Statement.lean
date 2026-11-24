@@ -90,8 +90,6 @@ theorem ne_zero_of_toMK_diag {n : ℕ} {ε : Fin n → Bool} (k : KG ε) {t : Fi
     rw [← hk]
     first
     | exact Units.isUnit _
-    | exact (unitary.toUnits _).isUnit
-    | exact (Matrix.isUnit_iff_isUnit_det _).mpr (Units.isUnit _)
   have hdet := (Matrix.isUnit_iff_isUnit_det _).mp hu
   rw [Matrix.det_diagonal] at hdet
   exact Finset.prod_ne_zero_iff.mp hdet.ne_zero i (Finset.mem_univ i)

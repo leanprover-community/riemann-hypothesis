@@ -286,7 +286,7 @@ theorem norm_tm_le (hD : D.Ax) (hB : B1b) (k : I → ℕ) (hk : ∀ v, 1 ≤ k v
           mul_le_mul_of_nonneg_right (norm_ee_le D hD _) (norm_nonneg _)
       _ = _ := by rw [one_mul, eq_div_of_mul_eq hn.ne' hq]; ring
   · rw [tm_supp D k y.1 y.2 γ z x hγ]
-    simp [Set.indicator_apply, hγ]
+    simp [hγ]
 
 theorem bdd (hD : D.Ax) (hB : B1b) (hC : B1c) (hS : KapSum) (k : I → ℕ) (hk : ∀ v, 4 ≤ k v) (y : D.Y) :
     ∃ C, ∀ z x, ‖D.Kern k y (z, x)‖ * nrm k z ≤ C := by
@@ -339,7 +339,7 @@ theorem near_bd (hD : D.Ax) (hB : B1b) (hC : B1c) (hI : KapInt) (k : I → ℕ) 
             ≤ (A * Kap k z₀ (D.act γ.out y.2)) * (cst k * nrm k y.2 / (nrm k z₀ / 2)) :=
             mul_le_mul hK hd (div_nonneg hc (nrm_pos k z).le) (mul_nonneg A.2 (Kap_nonneg hC k _ _))
         _ = _ := by ring
-    · simp [Set.indicator_apply, hγ]
+    · simp [hγ]
 
 theorem tm_cont (hB : B1b) (k : I → ℕ) (ω : D.Om) (w : X I) (x : Gf) (g : GL (Fin 2) F) :
     Continuous fun z : X I => tm D k ω w (z, x) g := by

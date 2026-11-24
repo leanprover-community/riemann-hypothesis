@@ -113,7 +113,7 @@ theorem coord_mulVec (β : Module.Basis (Fin d) R A) (H : Matrix (Fin M) (Fin M)
   simp only [coord, Matrix.mulVec, dotProduct, Fintype.sum_prod_type, hg]
 
   simp only [hterm, map_sum, map_smul, Finsupp.coe_finsetSum, Finset.sum_apply,
-  Finsupp.smul_apply, Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul, mul_comm]
+  Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul, mul_comm]
 
 theorem coord_surj (β : Module.Basis (Fin d) R A) (u : Fin M × Fin d → R) :
     ∃ x : Fin M → A, coord β x = u := by

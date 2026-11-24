@@ -46,6 +46,7 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsStandardIndModule
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviModulusOneLinearReductiveExpMulExp
 
 @[expose] public section
 
@@ -133,16 +134,6 @@ theorem hasSum_chain {f : ℕ → ℝ → E} (hf : ∀ m s, HasDerivAt (f m) (f 
 
 end Chain
 
-section Exp
-
-attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
-
-theorem continuous_exp_smul_real {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) :
-    Continuous fun t : ℝ => NormedSpace.exp (t • X) := by
-  exact NormedSpace.exp_continuous.comp (continuous_id.smul continuous_const)
-
-end Exp
-
 variable {n : ℕ} {G : Set (Matrix (Fin n) (Fin n) ℂ)} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {v : H}
 
@@ -184,7 +175,7 @@ theorem exists_bound_orbit_Icc [CompleteSpace H] (hc : ∀ v, ContinuousOn (fun 
     ∃ B : ℝ, ∀ s ∈ Set.Icc (0 : ℝ) 1, ‖π (NormedSpace.exp (s • X))‖ ≤ B := by
   have hcont : ∀ w, ContinuousOn (fun s : ℝ => π (NormedSpace.exp (s • X)) w) (Set.Icc 0 1) := by
     intro w
-    exact (hc w).comp (continuous_exp_smul_real X).continuousOn (fun s _ => hX s)
+    exact (hc w).comp (_root_.GlobalTheory.LeviPolar.continuous_exp_smul X).continuousOn (fun s _ => hX s)
   have hb : ∀ w, ∃ C, ∀ i : Set.Icc (0 : ℝ) 1, ‖π (NormedSpace.exp ((i : ℝ) • X)) w‖ ≤ C := by
     intro w
     obtain ⟨C, hC⟩ := isCompact_Icc.exists_bound_of_continuousOn (hcont w)

@@ -89,17 +89,15 @@ theorem PuJPu_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   · subst hji
     simp only [Fin.ext_iff]
     simp only [u1, u2, dK, epsK, sgn, decide_eq_true_eq]
-    split_ifs at * <;> first | (exfalso; omega) | ring_nf | skip
-    all_goals first | ring | linear_combination h2 | linear_combination (-1 : ℂ) * h2 |
-      linear_combination (2 : ℂ) * h2 | linear_combination (-2 : ℂ) * h2
+    split_ifs at * <;> first | (exfalso; omega) | ring_nf
   · by_cases hjs : j = sig k r i
     · subst hjs
       simp only [sig_sig]
       have hji' : ¬ (sig k r i).val = i.val := fun h => hji (Fin.ext h)
       simp only [Fin.ext_iff]
       simp only [u1, u2, dK, epsK, sgn, decide_eq_true_eq]
-      split_ifs at * <;> first | (exfalso; omega) | ring_nf | skip
-      all_goals first | ring | linear_combination h2 | linear_combination (-1 : ℂ) * h2 |
+      split_ifs at * <;> first | (exfalso; omega) | ring_nf
+      all_goals first | linear_combination h2 | linear_combination (-1 : ℂ) * h2 |
         linear_combination (2 : ℂ) * h2 | linear_combination (-2 : ℂ) * h2
     · have h1 : ¬ i = j := fun h => hji h.symm
       have h2' : ¬ i = sig k r j := fun h => hjs ((eq_sig_iff k r i j).1 h)
@@ -121,8 +119,8 @@ theorem PuPu_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   · subst hji
     simp only [Fin.ext_iff]
     simp only [u1, u2]
-    split_ifs at * <;> first | (exfalso; omega) | ring_nf | skip
-    all_goals first | ring | linear_combination h2 | linear_combination (-1 : ℂ) * h2 |
+    split_ifs at * <;> first | (exfalso; omega) | ring_nf
+    all_goals first | linear_combination h2 | linear_combination (-1 : ℂ) * h2 |
       linear_combination (2 : ℂ) * h2 | linear_combination (-2 : ℂ) * h2
   · by_cases hjs : j = sig k r i
     · subst hjs
@@ -130,9 +128,7 @@ theorem PuPu_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
       have hji' : ¬ (sig k r i).val = i.val := fun h => hji (Fin.ext h)
       simp only [Fin.ext_iff]
       simp only [u1, u2]
-      split_ifs at * <;> first | (exfalso; omega) | ring_nf | skip
-      all_goals first | ring | linear_combination h2 | linear_combination (-1 : ℂ) * h2 |
-        linear_combination (2 : ℂ) * h2 | linear_combination (-2 : ℂ) * h2
+      split_ifs at * <;> first | (exfalso; omega) | ring_nf
     · have h1 : ¬ i = j := fun h => hji h.symm
       have h2' : ¬ i = sig k r j := fun h => hjs ((eq_sig_iff k r i j).1 h)
       have h3 : ¬ sig k r j = sig k r i := fun h => hji ((sig_inj k r j i).1 h)

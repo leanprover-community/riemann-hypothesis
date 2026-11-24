@@ -82,41 +82,12 @@ theorem cs1 (t : ℝ) : (Real.cos t : ℂ) * Real.cos t + (Real.sin t : ℂ) * R
   have := Real.cos_sq_add_sin_sq t
   exact_mod_cast (by nlinarith [this] : Real.cos t * Real.cos t + Real.sin t * Real.sin t = 1)
 
-theorem yrotM_mul' (n : ℕ) (s : ℤˣ) (t t' : ℝ) : yrotM n s t * yrotM n s t' = yrotM n s (t + t') := by
-  rw [yrotM_sb, yrotM_sb, yrotM_sb, sb_mul]
-  rcases Int.units_eq_one_or s with rfl | rfl <;>
-    apply sb_congr <;> push_cast [Real.cos_add, Real.sin_add] <;> ring
-
-theorem yrotM_zero' (n : ℕ) (s : ℤˣ) : yrotM n s 0 = 1 := by
-  rw [yrotM_sb, sb_one]
-  apply sb_congr <;> simp
-
-theorem inK_yrotM' (n : ℕ) (s : ℤˣ) (t : ℝ) : InK (yrotM n s t) := by
-  have h1 := cs1 t
-  have e1 : star (Real.cos t : ℂ) = Real.cos t := Complex.conj_ofReal _
-  have e2 : star (Real.sin t : ℂ) = Real.sin t := Complex.conj_ofReal _
-  have hs : ((s : ℤ) : ℂ) * ((s : ℤ) : ℂ) = 1 := by
-    rcases Int.units_eq_one_or s with h | h <;> simp [h]
-  have es : star ((s : ℤ) : ℂ) = ((s : ℤ) : ℂ) := by simp
-  rw [yrotM_sb]
-  generalize (Real.cos t : ℂ) = c at h1 e1 e2 ⊢
-  generalize (Real.sin t : ℂ) = sn at h1 e1 e2 ⊢
-  generalize ((s : ℤ) : ℂ) = z at hs es ⊢
-  refine ⟨?_, ?_⟩
-  · simp only [InG]
-    rw [sb_ct, sb_JJ, sb_mul, sb_mul]
-    apply sb_congr <;> simp only [star_mul', star_neg, e1, e2, es] <;>
-      first | ring1 | linear_combination h1 + sn * sn * hs | linear_combination -(h1 + sn * sn * hs)
-  · rw [sb_ct, sb_mul, sb_one]
-    apply sb_congr <;> simp only [star_mul', star_neg, e1, e2, es] <;>
-      first | ring1 | linear_combination h1 + sn * sn * hs | linear_combination -(h1 + sn * sn * hs)
-
 theorem sgn_sq (s : ℤˣ) : ((s : ℤ) : ℂ) * ((s : ℤ) : ℂ) = 1 := by
   rcases Int.units_eq_one_or s with h | h <;> simp [h]
 
 theorem det_yrotM_ne (n : ℕ) (s : ℤˣ) (t : ℝ) : (yrotM n s t).det ≠ 0 := by
-  have h := congrArg Matrix.det (yrotM_mul' n s t (-t))
-  rw [add_neg_cancel, yrotM_zero', det_mul, det_one] at h
+  have h := congrArg Matrix.det (_root_.PositivityTheory.SiegelWeilFormula.KFP.yrotM_mul n s t (-t))
+  rw [add_neg_cancel, _root_.PositivityTheory.SiegelWeilFormula.KFP.yrotM_zero, det_mul, det_one] at h
   exact left_ne_zero_of_mul_eq_one h
 
 theorem rot_unit (s : ℤˣ) (t : ℝ) (a : ℂ) (ha : a = 1 ∨ a = -1) :
@@ -163,7 +134,7 @@ theorem om_place (hT : TAll) (hLO : LocOpEx) (hLI : LocInst) (R : RD d) (w : Inf
   have hvt : d.T Ω = R.tens w (fP (1 : PX d.m d.n)) Ψ := by
     rw [hTΩ]
     funext X
-    simp only [vac, gau, RD.tens, fin, Ψ]
+    simp only [vac, gau, RD.tens, Ψ]
     rw [← Finset.mul_prod_erase Finset.univ (fun w' => fP (1 : PX d.m d.n) (R.loc w' X)) (Finset.mem_univ w), mul_assoc]
     rfl
   have h1 := (hL y (fP (1 : PX d.m d.n)) (KFock.isSw_fP 1)).2 Ψ (KFock.away_inv R w Ψ hΨ) Ω hΩ hvt
@@ -192,7 +163,7 @@ theorem om_rot_vac' (hT : TAll) (hLO : LocOpEx) (hLI : LocInst) (R : RD d) (t : 
       obtain ⟨p, q, e, hw⟩ := om_place hT hLO hLI R w
       refine ⟨F0 p q e (yrot d.n (R.sg w) t) * χ, mul_ne_zero (weight_factor_rotation_ne_zero p q e d.n (R.sg w) t) hχ,
         fun g hg Ω hΩ hTΩ => ?_⟩
-      have hK : InK (mR (yrot d.n (R.sg w) t)) := by rw [mR_yrot]; exact inK_yrotM' _ _ _
+      have hK : InK (mR (yrot d.n (R.sg w) t)) := by rw [mR_yrot]; exact _root_.PositivityTheory.SiegelWeilFormula.KFP.inK_yrotM _ _ _
       rw [List.map_cons, List.prod_cons, map_mul, Module.End.mul_apply, h g hg Ω hΩ hTΩ, map_smul,
         hw _ hK g hg Ω hΩ hTΩ, smul_smul, mul_comm]
   exact key _

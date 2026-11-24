@@ -202,7 +202,6 @@ theorem sigPar_step (z : RPl N.R) (i : ℕ) (hi : i + 1 < N.R.k - 1 + N.R.m) :
       rw [hb0, hx, hy]
       have hxy : -x < y := by exact_mod_cast a1.trans a2
       have := Int.add_one_le_iff.mpr hxy
-      push_cast
       exact_mod_cast this
     ·
       have hl : i - (N.R.k - 1) < N.R.m := by omega

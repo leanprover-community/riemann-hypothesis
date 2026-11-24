@@ -256,9 +256,7 @@ theorem gsLocalRes_sUnitsToUnits_eq (v : S) (z : cohomology (galSUnitsMax K.1 �
   refine (cohomologyMap_uliftInt_cohomologyMapAlong_local (gsFinFamily S ιs v).toMonoidHom (continuous_toMonoidHom _)
     (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) (gsSUnitsLocalMor S ιs v) (uliftUnitsToUnitsZ S v)
     (embUnitsMorZ S (ιs v)) (fun _ => rfl) 2 z).trans ?_
-  exact ConcreteCategory.congr_hom hres.symm
-    (cohomologyULiftIntAddEquiv _ 2
-      ((cohomologyMap (sUnitsToUnits S (maxUnramifiedOutside K.1 ℚ̄ S)) 2).hom z))
+  rw [hres]
 
 variable (ℓ : ℕ) (hℓ : ℓ.Prime)
   (hS : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)

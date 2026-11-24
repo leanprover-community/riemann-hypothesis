@@ -232,7 +232,7 @@ theorem eval_transl (z : Fin (D + 1) × Fin (N + 1) → K)
     eval (fun t => if t.1 = 0 then 0 else z t) (transl (fun j => z (0, j)) f) = eval z f := by
   induction f using MvPolynomial.induction_on
   next c =>
-    simp only [algHom_C, eval_C, AlgHom.commutes, algebraMap_eq]
+    simp only [algHom_C, eval_C, algebraMap_eq]
   next p q hp hq =>
     simp only [map_add (f := _), hp, hq]
   next p t hp =>
@@ -286,7 +286,7 @@ theorem multiHom_of_dvd [CharZero K] {g : MvPolynomial (Fin (D + 1) × Fin (N + 
       apply hb
       rcases D with _ | D
       · exact Fin.ext (Nat.lt_one_iff.mp b.isLt)
-      · simp [Fin.ext_iff] at h
+      · simp at h
     have hb1 : bdeg b s = bdeg 1 s := by
       by_cases h1 : b = 1
       · rw [h1]

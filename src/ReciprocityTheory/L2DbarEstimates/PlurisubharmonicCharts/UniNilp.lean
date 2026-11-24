@@ -70,11 +70,6 @@ section Newton
 
 open Polynomial
 
-private theorem trace_pow_eq_zero_of_le_dim {K : Type*} [Field K] (r : ℕ)
-    (N : Matrix (Fin r) (Fin r) K) (h : ∀ k, 1 ≤ k → k ≤ r → (N ^ k).trace = 0) :
-    ∀ k, 1 ≤ k → (N ^ k).trace = 0 := by
-  first | exact UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim .. | (apply UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim <;> assumption) | (apply @UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim <;> first | assumption | infer_instance)
-
 private theorem trace_aeval_X_mul {K : Type*} [Field K] {n : ℕ} (N : Matrix (Fin n) (Fin n) K)
     (h : ∀ k : ℕ, (N ^ (k + 1)).trace = 0) (p : K[X]) :
     (aeval N (X * p)).trace = 0 := by
@@ -131,7 +126,7 @@ end Newton
 theorem isNilpotent_of_trace_pow {K : Type*} [Field K] [CharZero K] (r : ℕ)
     (N : Matrix (Fin r) (Fin r) K) (h : ∀ k, 1 ≤ k → k ≤ r → (N ^ k).trace = 0) :
     IsNilpotent N :=
-  isNilpotent_of_trace_pow_succ N fun k => trace_pow_eq_zero_of_le_dim r N h (k + 1) (by omega)
+  isNilpotent_of_trace_pow_succ N fun k => _root_.UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim r N h (k + 1) (by omega)
 
 end
 

@@ -56,10 +56,6 @@ section Degrees
 
 variable {G : Type*} [Group G]
 
-theorem relIndex_sup_of_le_normalizer {H N : Subgroup G} (hLE : H ≤ Subgroup.normalizer (N : Set G)) :
-    H.relIndex (H ⊔ N) = H.relIndex N :=
-  _root_.GroundTheory.Variant₂.N1.relIndex_sup_of_le_normalizer hLE
-
 variable (d : G →* Multiplicative ℤ̂)
 
 noncomputable def relInertiaDegree (K L : Subgroup G) : ℕ :=
@@ -93,7 +89,7 @@ theorem relIndex_eq_mul {K L : Subgroup G} (hLK : L ≤ K) :
   rw [← Subgroup.relIndex_mul_relIndex L (L ⊔ (d.ker ⊓ K)) K le_sup_left hP]
   congr 1
   · rw [relRamificationIndex]
-    refine relIndex_sup_of_le_normalizer ?_
+    refine _root_.GroundTheory.Variant₂.N1.relIndex_sup_of_le_normalizer ?_
     intro g hg
     rw [Subgroup.mem_normalizer_iff]
     intro x

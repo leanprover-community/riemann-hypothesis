@@ -95,7 +95,7 @@ theorem intS_ps {f : PowerSeries C} : IntS V f ↔ ∀ n, V.Ge 0 (PowerSeries.co
   · intro h μ
     have hμ : μ = Finsupp.single () (μ ()) := by
       ext
-      simp [Finsupp.single_apply]
+      simp
     rw [hμ]
     exact h (μ ())
 
@@ -177,7 +177,7 @@ variable {dd : ℕ}
 theorem pts_eq_X : (fun p : Fin 2 × Fin dd => ![pt C (n := 2) dd 0, pt C (n := 2) dd 1] p.1 p.2) = MvPowerSeries.X := by
   funext p
   rcases p with ⟨i, j⟩
-  fin_cases i <;> first | rfl | simp [pt]
+  fin_cases i <;> first | rfl
 
 theorem addOf_pts (F : Fin dd → PS C 2 dd) (j : Fin dd) :
     addOf F (pt C (n := 2) dd 0) (pt C (n := 2) dd 1) j = F j := by

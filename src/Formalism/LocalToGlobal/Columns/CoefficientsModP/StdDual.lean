@@ -111,7 +111,6 @@ def sdDelta (i : Formalism.GradedWeylDivisibility.ssIdx n n ν) : MvPolynomial (
   sdC ν • ∑ j, (sdGram ν)⁻¹ i j • sdBetaQ ν j
 
 theorem sd_delta_mem (i : Formalism.GradedWeylDivisibility.ssIdx n n ν) : sdDelta ν i ∈ Formalism.GradedWeylDivisibility.dualWeyl ℚ n n ν := by
-  unfold sdDelta
   refine Submodule.smul_mem _ _ (Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ ?_)
   rw [← (sd_betaQ_spec ν).2]
   exact Submodule.subset_span ⟨j, rfl⟩

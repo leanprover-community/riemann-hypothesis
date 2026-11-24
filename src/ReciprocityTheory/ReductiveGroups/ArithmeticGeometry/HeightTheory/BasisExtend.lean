@@ -159,7 +159,6 @@ theorem basis_extend [FiniteDimensional L E] {n : Type} [Fintype n] [DecidableEq
     rw [Module.Basis.mk_apply, Algebra.smul_def (algebraMap L (FractionRing (MvPolynomial σ L)) _),
       IsScalarTower.algebraMap_apply L (MvPolynomial σ L) (FractionRing (MvPolynomial σ L)), MvPolynomial.algebraMap_eq,
       ← himg, hsmul, MvPolynomial.map_C, ← MvPolynomial.C_mul, Algebra.smul_def]
-  beta_reduce
   rw [hx, Module.Basis.repr_sum_self]
 
 end ReciprocityTheory.ChartRestriction.G.T0.VariableBasisExtension

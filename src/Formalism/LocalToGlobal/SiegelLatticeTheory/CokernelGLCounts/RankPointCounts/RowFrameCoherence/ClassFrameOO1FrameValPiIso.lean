@@ -222,22 +222,12 @@ theorem classFrameOO1_liftFrame (hP : PtValueC X Y u u' vR i0 i0' νq κ) (hVL :
   exact ClassFrameUnitaryProducts.frame_alg X u u' (Formalism.L2.SG.RealObj.InfCut.hsetU_sub X u hD.1)
     (Formalism.L2.SG.RealObj.InfCut.hsetU_sub X u' hD.2.1) _ _ _ hEq
 
-theorem classFrameOO1_piIso_coe (w : D.what₂.Word) (g : X.B.I.Ginf) (hg : g ∈ X.SinfU w) :
-    ((Formalism.L2.SG.RealObj.InfCut.piIso X w g hg : X.Vpi w ≃ₗᵢ[ℂ] X.Vpi w) : X.Vpi w →L[ℂ] X.Vpi w) = X.piU w g := by
-  ext x
-  rfl
-
-theorem classFrameOO1_piIso_symm (w : D.what₂.Word) (g : X.B.I.Ginf) (hg : g ∈ X.SinfU w) :
-    (((Formalism.L2.SG.RealObj.InfCut.piIso X w g hg).symm : X.Vpi w ≃ₗᵢ[ℂ] X.Vpi w) : X.Vpi w →L[ℂ] X.Vpi w) =
-      X.piU w g⁻¹ := by
-  rw [← Formalism.L2.SG.RealObj.InfCut.piIso_symm X w g hg]
-
 theorem classFrameOO1_frameVal_piIso (h h' : X.B.I.Ginf) (hh : h ∈ X.SinfU u) (hh' : h' ∈ X.SinfU u')
     (s : Formalism.L2.SG.TermOp.GTerm X u u' (X.Fu u) (X.Fu u') (Y.what₂ u) (Y.what₂ u')) :
     frameVal X Y u u' vR i0 i0' νq (Formalism.L2.SG.RealObj.InfCut.piIso X u h hh)
       (Formalism.L2.SG.RealObj.InfCut.piIso X u' h' hh') s = dVal X Y u u' vR i0 i0' νq h h' s := by
   unfold frameVal dVal
-  rw [classFrameOO1_piIso_coe, classFrameOO1_piIso_symm]
+  rw [_root_.Formalism.L2.SG.RealObj.InfCut.piIso_coe, _root_.Formalism.L2.SG.RealObj.InfCut.piIso_symm]
 
 theorem commonFrameC_of (hP : PtValueC X Y u u' vR i0 i0' νq κ) (hVL : VIndepLiftC X Y u u' i0 i0' κ)
     (hCD : CommonDFrameC X Y u u' vR i0 i0' νq κ) (hZ : IrrelZeroC X Y u u' vR i0 i0' νq κ) :

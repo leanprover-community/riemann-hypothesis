@@ -137,7 +137,7 @@ private lemma isWH_of_multiHomog [DecidableEq K] {f : MvPolynomial (Σ k, ι k) 
   · intro b _ hb
     apply Finset.sum_eq_zero
     intro i _
-    simp [Pi.single_apply, Ne.symm hb]
+    simp [Ne.symm hb]
   · simp
 
 private lemma segre_isWH [DecidableEq K] {φ : MvPolynomial ((k : K) → ι k) ℂ} {n : ℕ}

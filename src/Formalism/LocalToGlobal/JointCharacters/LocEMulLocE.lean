@@ -76,8 +76,7 @@ theorem locE_mul_locE {e : AE D} (he : e * e = e) (k l : D.host.E) : locE D e k 
 
 theorem isUnit_locE {e : AE D} (he : e * e = e) (k : D.host.Eˣ) : IsUnit (locE D e k) := by
   refine isUnit_iff_exists_inv.mpr ⟨locE D e ((k⁻¹ : D.host.Eˣ) : D.host.E), ?_⟩
-  rw [locE_mul_locE he]
-  simp [locE]
+  simpa [locE] using locE_mul_locE he k ((k⁻¹ : D.host.Eˣ) : D.host.E)
 
 def locU {e : AE D} (he : e * e = e) (k : D.host.Eˣ) : (AE D)ˣ := (isUnit_locE he k).unit
 

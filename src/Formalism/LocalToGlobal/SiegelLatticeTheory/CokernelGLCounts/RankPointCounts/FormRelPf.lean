@@ -89,8 +89,8 @@ theorem formRelC_of (hRD : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' :
   have hrel : t.relevant := by
     by_contra hr
     apply hv
-    have h0 : OOt t = 0 := Formalism.L2.SG.TermOp.Vanish.ooVanish_of Formalism.L2.SG.Closed.AvgCore_holds
-      Formalism.L2.SG.Pf.ginfUnimod_holds Formalism.L2.SG.Pf.nLamNinf_holds Formalism.L2.SG.Closed.ChiTrivialC_holds
+    have h0 : OOt t = 0 := Formalism.L2.SG.TermOp.Vanish.ooVanish_of _root_.Formalism.L2.SG.TermOp.Vanish.avgCore
+      Formalism.L2.SG.Pf.ginfUnimod_holds Formalism.L2.SG.Pf.nLamNinf_holds _root_.Formalism.L2.SG.Pf.chiTrivialC_outright
       Formalism.L2.SG.Pf.psiInfChar_holds Formalism.L2.SG.Pf.rClosedC_holds Formalism.L2.SG.Pf.roDiscreteC_holds
       Formalism.L2.SG.TermOp.Vanish.rational_cocompact_holds Formalism.L2.SG.NonRelPf.nonRelCharC_holds Y t hr
     show vec (Y.cs u) (Y.cs u') (Y.FN u) (Y.FN u') t = 0

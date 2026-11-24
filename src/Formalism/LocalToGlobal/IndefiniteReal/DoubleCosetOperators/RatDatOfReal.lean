@@ -86,8 +86,7 @@ def idxOf (D : D7) (j : ℕ) : Fin D.R.m := ⟨min (j - 1) (D.R.m - 1), by have 
 theorem idxOf_succ (D : D7) (i : Fin D.R.m) : idxOf D ((i : ℕ) + 1) = i := by
   apply Fin.ext
   simp only [idxOf, Nat.add_sub_cancel]
-  have := i.2
-  omega
+  exact Nat.min_eq_left (Nat.le_pred_of_lt i.2)
 
 def ratDatOfReal (Rl : RealDat3 D A3 Ks) (eG0 : G ≃* G0g D.nd) (kKs : Ks →+* ↥D.LL0)
     (hk : ∀ x : Ks, ((kKs x : ↥D.LL0) : D.what₂.LL) = algebraMap Ks D.what₂.LL x) : RatDat D.ntw where

@@ -135,13 +135,7 @@ lemma det_pow_matrix (n : ℕ) (l : Fin n → ℕ) :
     congr 1
     omega
 
-lemma schur_zero (n : ℕ) : schur n (fun _ => 0) = 1 := by
-  rw [schur, Matrix.det_of_upperTriangular]
-  · refine prod_eq_one fun i _ => ?_
-    simp [MvPolynomial.hsymm_zero]
-  · intro i j hij
-    have : (j : ℕ) < i := hij
-    rw [Matrix.of_apply, if_pos (by push_cast; omega)]
+alias schur_zero := _root_.GlobalTheory.JSW.schur_zero
 
 end GlobalTheory.JSW.Bialt
 

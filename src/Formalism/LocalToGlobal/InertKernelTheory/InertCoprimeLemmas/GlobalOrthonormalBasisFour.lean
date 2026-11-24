@@ -173,7 +173,7 @@ theorem homL_le_intS (N N' : ℕ) : homL D (Formalism.MainNotions.StandardLattic
     intro i
     by_cases h : i = c
     · subst h; simpa using (isInt_one (D := D))
-    · simp [Pi.single_apply, h]
+    · simp [h]
   have h2 := (mem_stdL _).1 (hA _ h1) a
   simpa [Matrix.mulVec, dotProduct, Pi.single_apply] using h2
 
@@ -323,8 +323,7 @@ theorem smul_bq {m : ℕ} (e : Fin m → Matrix (Fin 1) (Fin 1) D.host.E) (n : F
   have hn : (n ik.1 : D.host.E) ≠ 0 := by exact_mod_cast hn0 ik.1
   refine Matrix.ext fun a c => ?_
   rw [Matrix.sum_apply, Finset.sum_eq_single (pos (a, c))]
-  · simp only [bq, plc, LinearMap.coe_mk, AddHom.coe_mk, Matrix.of_apply, Matrix.smul_apply, smul_eq_mul, if_pos rfl,
-      zsmul_eq_mul, ite_true, if_true]
+  · simp only [bq, plc, LinearMap.coe_mk, AddHom.coe_mk, Matrix.of_apply, Matrix.smul_apply, smul_eq_mul, zsmul_eq_mul, ite_true]
     rw [Nat.cast_mul]
     field_simp
   · intro j _ hj

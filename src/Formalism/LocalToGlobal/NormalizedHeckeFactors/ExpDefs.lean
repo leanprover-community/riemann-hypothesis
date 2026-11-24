@@ -208,7 +208,7 @@ theorem tv_uniTri {R : Type} [CommRing R] (hr : 2 ≤ r) (c : R) : IsUniTri r (t
 theorem supSum_tv {R : Type} [CommRing R] (hr : 2 ≤ r) (c : R) : supSum r (tv hr c) = c := by
   simp only [supSum]
   rw [Finset.sum_eq_single (⟨0, by omega⟩ : Fin r), Finset.sum_eq_single (⟨1, by omega⟩ : Fin r)]
-  · simp [tv, Matrix.transvection, Matrix.one_apply, Matrix.single_apply, Fin.ext_iff]
+  · simp [tv, Matrix.transvection, Fin.ext_iff]
   · intro b _ hb
     rw [if_neg]
     intro h

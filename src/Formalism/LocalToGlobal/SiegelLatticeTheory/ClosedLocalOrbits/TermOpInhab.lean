@@ -72,11 +72,9 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
 theorem ratLink_one : RatLink X 1 1 := by
-  refine ⟨1, (Formalism.UG.UJ _ _).one_mem, ?_, ?_, ?_⟩
+  refine ⟨1, (Formalism.UG.UJ _ _).one_mem, ?_, by simp, ?_⟩
   · intro v
-    simp [uMat]
-    exact (Formalism.MainNotions.LeviCoordinates.rrg_P_inv_mul _ v).symm
-  · simp
+    simpa [uMat] using (Formalism.MainNotions.LeviCoordinates.rrg_P_inv_mul _ v).symm
   · intro y
     simp
 

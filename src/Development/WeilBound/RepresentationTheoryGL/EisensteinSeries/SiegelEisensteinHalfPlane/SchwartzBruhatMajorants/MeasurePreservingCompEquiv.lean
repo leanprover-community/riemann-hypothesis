@@ -75,7 +75,7 @@ theorem map_mulVec_fin {k : Type} [Field k] [NumberField k] {n : ℕ} (A : GL (F
     (adeleMeasurePi k).map (fun x : Fin n → 𝔸[k] => (A : Matrix (Fin n) (Fin n) 𝔸[k]) *ᵥ x) =
       ENNReal.ofReal ((ideleModule k (Matrix.GeneralLinearGroup.det A) : ℝ))⁻¹ •
         adeleMeasurePi k (ι := Fin n) := by
-  apply GlobalTheory.CompanionTheory.LtrFourier.map_mulVec_fin <;> assumption
+  apply GlobalTheory.CompanionTheory.LtrFourier.map_mulVec_fin
 
 theorem map_mulVec {k : Type} [Field k] [NumberField k] {ι : Type} [Fintype ι] [DecidableEq ι]
     (A : GL ι 𝔸[k]) :
@@ -142,7 +142,7 @@ theorem integral_comp_mulVec {k : Type} [Field k] [NumberField k] {ι : Type} [F
 theorem adelicFourierPi_ltr : ∀ {k : Type} [Field k] [NumberField k], ∀ {ι : Type} [Fintype ι] [DecidableEq ι], ∀ (A : GL ι 𝔸[k]) (F : (ι → 𝔸[k]) → ℂ), adelicFourierPi k (ltr A F) =
       (((ideleModule k (Matrix.GeneralLinearGroup.det A) : ℝ))⁻¹ : ℂ) •
         ltr (tInv A) (adelicFourierPi k F) := by
-  apply GlobalTheory.CompanionTheory.LtrFourier.adelicFourierPi_ltr <;> assumption
+  apply GlobalTheory.CompanionTheory.LtrFourier.adelicFourierPi_ltr
 
 end
 

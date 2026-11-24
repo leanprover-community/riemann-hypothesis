@@ -64,7 +64,6 @@ theorem hsNormSq_nonneg {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSpa
   intro i _
   first
   | exact inner_self_nonneg (𝕜 := ℂ) (x := A (stdOrthonormalBasis ℂ Wq i))
-  | (rw [inner_self_eq_norm_sq_to_K]; norm_cast; positivity)
 
 theorem hsNormSq_smul {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (c : ℂ) (A : Wq →L[ℂ] Wp) :
@@ -74,7 +73,6 @@ theorem hsNormSq_smul {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSpace
   rw [← Finset.mul_sum]
   first
   | rw [Complex.mul_conj]
-  | rw [← Complex.normSq_eq_conj_mul_self]
   rw [Complex.re_ofReal_mul]
 
 theorem isQuotMeas_smul {k r : ℕ} {μG μS ν : Measure (Formalism.QuantumDeterminants.Mt k r)} (h : IsQuotMeas μG μS ν) {c : ENNReal}
@@ -103,7 +101,7 @@ theorem star_dot_conjT {n m : Type*} [Fintype n] [Fintype m] (Q : Matrix n m ℂ
 theorem hJ_smul_real {n : ℕ} (ε : Fin n → Bool) (r s : ℝ) (x y : Fin n → ℂ) :
     hJ ε ((r : ℂ) • x) ((s : ℂ) • y) = ((r * s : ℝ) : ℂ) * hJ ε x y := by
   simp only [hJ]
-  simp [Matrix.mulVec_smul, smul_eq_mul]
+  simp [Matrix.mulVec_smul]
   try push_cast
   try ring
 
@@ -162,8 +160,6 @@ theorem trG_mem {n m : ℕ} {ε : Fin n → Bool} (Q : Matrix (Fin n) (Fin m) �
   have hU : (uMat g)ᴴ * Formalism.REAL.Jm ε * uMat g = Formalism.REAL.Jm ε := by
     first
     | exact g.2
-    | (unfold uMat; exact g.2)
-    | simpa [uMat] using g.2
   have h1 : ∀ X : Matrix (Fin n) (Fin m) ℂ, Qiᴴ * (Qᴴ * X) = X := by
     intro X
     rw [← Matrix.mul_assoc, ← Matrix.conjTranspose_mul, hQQi, Matrix.conjTranspose_one, Matrix.one_mul]

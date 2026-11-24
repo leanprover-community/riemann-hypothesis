@@ -67,8 +67,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL O : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL] [CommRing O] [Algebra O LL]
     {v : AddValuation LL (WithTop ℚ)} {n : ℕ} (W : LocWach PD LL O v n)
 
-theorem Q_eq_q (hs : W.s = 1) : W.Q = W.q := by
-  simp [LocWach.Q, hs]
+alias Q_eq_q := _root_.Formalism.MainNotions.LiftingTheory.wmap_Q_one
 
 theorem q_mul : (letπ : LetA O n) * W.q = (1 + letπ) ^ PD.p - 1 := by
   funext i
@@ -161,11 +160,7 @@ theorem lev_q_eq (c : ZMod n) {ζ : LL} (hζ : IsPrimitiveRoot ζ PD.p) (hp : (P
           rw [← mul_assoc, PowerSeries.inv_mul_cancel _ hne, one_mul]
       _ = PowerSeries.X * ((W.lev c ζ letπ)⁻¹ * w) := by rw [h, hw]; ring
 
-theorem letE_mul_self (c : ZMod n) : (letE c : LetA O n) * letE c = letE c := by
-  funext i
-  by_cases h : i = c
-  · subst h; simp [letE]
-  · simp [letE, h]
+alias letE_mul_self := _root_.Formalism.MainNotions.LiftingTheory.letter_idempotent_sq
 
 theorem letE_smul_of_mem_Nl {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T}
     (hy : y ∈ W.Nl T c) : (letE c : LetA O n) • y = y := by
@@ -173,10 +168,7 @@ theorem letE_smul_of_mem_Nl {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T}
   simp only [LinearMap.smul_apply, LinearMap.id_apply]
   rw [smul_smul, letE_mul_self]
 
-theorem Nl_le_N (T : LocLat G Qp LL O) (c : ZMod n) : W.Nl T c ≤ W.N T := by
-  rintro _ ⟨z, hz, rfl⟩
-  simp only [LinearMap.smul_apply, LinearMap.id_apply]
-  exact (W.N T).smul_mem _ hz
+alias Nl_le_N := _root_.Formalism.MainNotions.LiftingTheory.wmap_Nl_le
 
 theorem mem_Nl_of {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T} (hy : y ∈ W.N T)
     (hc : (letE c : LetA O n) • y = y) : y ∈ W.Nl T c :=

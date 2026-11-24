@@ -131,7 +131,6 @@ theorem card_subtype_ne' {σ : Type} [Fintype σ] [DecidableEq σ] (e0 : σ) :
     Fintype.card {e // e ≠ e0} = Fintype.card σ - 1 := by
   first
   | rw [Fintype.card_subtype_compl, Fintype.card_subtype_eq]
-  | simp [Fintype.card_subtype_compl]
 
 theorem card_baseOrOffColumn {D N : ℕ} (j0 : Fin (N + 1)) :
     Fintype.card {e : TVar D N // e.1 = 0 ∨ e.2 ≠ j0} = (D + 1) * (N + 1) - D := by
@@ -239,7 +238,6 @@ theorem exists_integral_base (hd : d.AxH 𝒜) (c : ι) (v : AddValuation (Ω c)
     rw [h0, AddValuation.map_zero] at hvle
     first
     | exact absurd hvle (by simp)
-    | exact WithTop.zero_ne_top (top_le_iff.mp hvle)
   have hw0 : d.w j0 c ≠ 0 := by
     rw [hx j0]
     exact smul_ne _ _ hq0 (hd.w_base c)

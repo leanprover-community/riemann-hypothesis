@@ -92,7 +92,7 @@ theorem blkSq_smul (c : K → ℂ) (z : (Σ k, ι k) → ℂ) (k : K) :
   unfold blkSq
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  simp [torusSmul, norm_mul, mul_pow]
+  simp [torusSmul, mul_pow]
 
 theorem blkSq_pos {z : (Σ k, ι k) → ℂ} (hz : z ∈ blocksNe ι) (k : K) : 0 < blkSq z k := by
   obtain ⟨i, hi⟩ := hz k
@@ -126,7 +126,7 @@ theorem proj_smul (c : K → ℂ) (hc : ∀ k, c k ≠ 0) (z : (Σ k, ι k) → 
 theorem secAt_proj (z₀ w : (Σ k, ι k) → ℂ) :
     secAt z₀ (proj w) = torusSmul (coefAt z₀ w) w := by
   funext p
-  simp only [secAt, proj, torusSmul, coefAt, Finset.sum_mul, Finset.mul_sum]
+  simp only [secAt, proj, torusSmul, coefAt, Finset.sum_mul]
   refine Finset.sum_congr rfl fun j _ => ?_
   ring
 

@@ -121,7 +121,6 @@ def nu (hU : IsClosedSubgroup U) (μ : Measure (Mt k r)) : Measure (SG hU) := μ
 theorem map_nu {μ : Measure (Mt k r)} (hμ : IsHaarOn U μ) : (nu hU μ).map (fun g : SG hU => g.1) = μ := by
   unfold nu
   rw [(me_val hU).map_comap]
-  first | rw [Subtype.range_coe_subtype] | rw [Subtype.range_val_subtype] | skip
   have hae : ∀ᵐ x ∂μ, (Matrix.of x : Mat k r) ∈ U := ae_iff.mpr hμ.conc
   exact Measure.restrict_eq_self_of_ae_mem (hae.mono fun x hx => ⟨⟨x, hx⟩, rfl⟩)
 

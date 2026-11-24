@@ -1,8 +1,9 @@
 module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRingStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HaarMeasureProdOfAddGroupsStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
+public import Mathlib.MeasureTheory.Group.Measure
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.HaarMeasureProdOfAddGroups
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsResidueEqZeroIff
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import GroundTheory.GlobalFields.LocalAtPlace
@@ -123,11 +124,11 @@ theorem map_unit (lam : Measure (Fv F v)) (h : IsStdV v lam) (u : Fv F v) (hu : 
     lam.map (fun t => u * t) = lam := by
   haveI := h.1
   haveI : BorelSpace (Fv F v) := ⟨rfl⟩
-  obtain ⟨_, hl, hs, ht, _⟩ := GlobalTheory.T.completion_is_local_ring F v
+  obtain ⟨_, hl, hs, ht, _⟩ := _root_.GlobalTheory.CompanionTheory.SW.LocFv.isLocR_Fv F v
   have hu0 : u ≠ 0 := by
     rintro rfl
     simp at hu
-  refine (GlobalTheory.T.map_addHaar_addEquiv_eq_smul_and_eq_of_compact_open (Fv F v) (Fv F v) lam lam (mulAdd v u hu0) (mulAdd_continuous v u hu0)
+  refine (_root_.GlobalTheory.CompanionTheory.SW.HaarTransport.map_addEquiv_haar (Fv F v) (Fv F v) lam lam (mulAdd v u hu0) (mulAdd_continuous v u hu0)
     (mulAdd_symm_continuous v u hu0)).2 (v.adicCompletionIntegers F : Set (Fv F v))
     (v.adicCompletionIntegers F : Set (Fv F v)) (isCompact_integers v) (isOpen_integers v)
     ⟨0, zero_mem _⟩ (fun x => ?_) rfl
@@ -147,7 +148,7 @@ theorem map_unif (lam : Measure (Fv F v)) (h : IsStdV v lam) (π : Fv F v)
     lam.map (fun t => π * t) = (Ideal.absNorm v.asIdeal : ℝ≥0∞) • lam := by
   haveI := h.1
   haveI : BorelSpace (Fv F v) := ⟨rfl⟩
-  obtain ⟨_, hl, hs, ht, _⟩ := GlobalTheory.T.completion_is_local_ring F v
+  obtain ⟨_, hl, hs, ht, _⟩ := _root_.GlobalTheory.CompanionTheory.SW.LocFv.isLocR_Fv F v
   have hq0 := absNorm_ne_zero v
   have hqt : (Ideal.absNorm v.asIdeal : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top _
   have hπ0 : π ≠ 0 := by
@@ -156,7 +157,7 @@ theorem map_unif (lam : Measure (Fv F v)) (h : IsStdV v lam) (π : Fv F v)
     exact WithZero.exp_ne_zero hπ.symm
   haveI : ((Ideal.absNorm v.asIdeal : ℝ≥0∞) • lam).IsAddHaarMeasure :=
     Measure.IsAddHaarMeasure.smul lam hq0 hqt
-  refine (GlobalTheory.T.map_addHaar_addEquiv_eq_smul_and_eq_of_compact_open (Fv F v) (Fv F v) lam ((Ideal.absNorm v.asIdeal : ℝ≥0∞) • lam)
+  refine (_root_.GlobalTheory.CompanionTheory.SW.HaarTransport.map_addEquiv_haar (Fv F v) (Fv F v) lam ((Ideal.absNorm v.asIdeal : ℝ≥0∞) • lam)
     (mulAdd v π hπ0) (mulAdd_continuous v π hπ0) (mulAdd_symm_continuous v π hπ0)).2
     (v.adicCompletionIntegers F : Set (Fv F v)) {t | Valued.v t < 1} (isCompact_integers v)
     (isOpen_integers v) ⟨0, zero_mem _⟩ (fun x => ?_) ?_

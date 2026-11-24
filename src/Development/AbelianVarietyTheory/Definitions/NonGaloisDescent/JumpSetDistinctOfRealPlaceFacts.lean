@@ -821,28 +821,6 @@ lemma jd_lowT_f : lowT D false j ρ = reflS D (lowJ D j ρ) := rfl
 lemma jumpUnion_true : JW D true j ρ = cloudJ D j ρ ∪ lowJ D j ρ := rfl
 lemma jd_JW_f : JW D false j ρ = reflS D (cloudJ D j ρ) ∪ reflS D (lowJ D j ρ) := rfl
 
-lemma one_le_jump_parameter (F : JFacts L j ρ) : (1 : ℚ) ≤ D.R.t := by exact_mod_cast F.t_pos
-
-lemma jumpCount_t_add_one_lt_size (F : JFacts L j ρ) : (D.R.t : ℚ) + 1 < sz D j ρ := by
-  have h1 := F.s_gt
-  have h2 := F.t_le_eta
-  have h3 := F.Sc_pos
-  have h4 : (1 : ℝ) ≤ D.R.t := by exact_mod_cast F.t_pos
-  have : (((D.R.t : ℚ) + 1 : ℚ) : ℝ) < ((sz D j ρ : ℚ) : ℝ) := by push_cast; linarith
-  exact_mod_cast this
-
-lemma jd_b (F : JFacts L j ρ) (a : Fin D.R.m) : 0 < (D.hc ρ).b a := by
-  have h1 := F.s_gt
-  have h2 := F.low_le a
-  have h3 := F.Sc_pos
-  have h5 : ((sz D j ρ - (D.hc ρ).b a : ℚ) : ℝ) ≤ ((|sz D j ρ - (D.hc ρ).b a| : ℚ) : ℝ) :=
-    Rat.cast_le.mpr (le_abs_self _)
-  have h6 : ((sz D j ρ - (D.hc ρ).b a : ℚ) : ℝ) = ((sz D j ρ : ℚ) : ℝ) - (((D.hc ρ).b a : ℚ) : ℝ) := by
-    push_cast; ring
-  have h4 : (0 : ℝ) ≤ D.R.t := by positivity
-  have : (0 : ℝ) < (((D.hc ρ).b a : ℚ) : ℝ) := by linarith
-  exact_mod_cast this
-
 lemma jd_lneg (F : JFacts L j ρ) (a : Fin D.R.m) (h : j ≤ a.1) :
     sz D j ρ - (D.hc ρ).b a + c0 D ≤ -2 := by
   have := F.low_neg a h
@@ -858,15 +836,15 @@ lemma jd_lpos (F : JFacts L j ρ) (a : Fin D.R.m) (h : a.1 < j) :
 lemma jd_cl (F : JFacts L j ρ) (a : Fin (D.R.k - 1)) :
     (D.R.t : ℚ) + 1 < sz D j ρ + (D.hc ρ).v a + c0 D := by
   have := F.v_nonneg a
-  have := jumpCount_t_add_one_lt_size F
-  have := one_le_jump_parameter F
+  have := _root_.GlobalTheory.JumpSets.realPlace_t_add_one_lt_size F
+  have := _root_.GlobalTheory.JumpSets.jp_t_one F
   have hc : c0 D = ((D.R.t : ℚ) - 1) / 2 := rfl
   linarith
 
 lemma jd_cl_low (F : JFacts L j ρ) (a : Fin (D.R.k - 1)) (a' : Fin D.R.m) :
     sz D j ρ - (D.hc ρ).b a' + c0 D < sz D j ρ + (D.hc ρ).v a + c0 D := by
   have := F.v_nonneg a
-  have := jd_b F a'
+  have := _root_.GlobalTheory.JumpSets.jp_b_pos F a'
   linarith
 
 end Core
@@ -874,7 +852,7 @@ end Core
 theorem jumpSetDistinct_of_realPlaceFacts {L : SizeData₂ D} (h : ∀ j, 1 ≤ j → j ≤ D.R.m → ∀ ρ, JFacts L j ρ) : JumpLowsSignCount D := by
   intro j hj1 hjm ρ
   have F := h j hj1 hjm ρ
-  have ht := one_le_jump_parameter F
+  have ht := _root_.GlobalTheory.JumpSets.jp_t_one F
   have iL : Function.Injective (fun a : Fin D.R.m => sz D j ρ - (D.hc ρ).b a + c0 D) :=
     jd_inj _ (fun a a' hl e => by
       have := F.b_mono a a' hl; try dsimp only at e
@@ -961,8 +939,8 @@ theorem jumpSetDistinct_of_realPlaceFacts {L : SizeData₂ D} (h : ∀ j, 1 ≤ 
 theorem jumpSetFinal_of_realPlaceFacts {L : SizeData₂ D} (h : ∀ j, 1 ≤ j → j ≤ D.R.m → ∀ ρ, JFacts L j ρ) : DualCloudSizes L := by
   intro j hj1 hjm ρ
   have F := h j hj1 hjm ρ
-  have ht := one_le_jump_parameter F
-  have hs := jumpCount_t_add_one_lt_size F
+  have ht := _root_.GlobalTheory.JumpSets.jp_t_one F
+  have hs := _root_.GlobalTheory.JumpSets.realPlace_t_add_one_lt_size F
   have htR : (1 : ℝ) ≤ D.R.t := by exact_mod_cast F.t_pos
   have hc : c0 D = ((D.R.t : ℚ) - 1) / 2 := rfl
   have iL4 : Function.Injective
@@ -1139,12 +1117,7 @@ end GlobalTheory.JumpSets
 
 end
 
-noncomputable section
-
 namespace GlobalTheory.JumpSets
-
-open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.MainNotions.AdmissibleParameterJ
 
 end GlobalTheory.JumpSets
 
-end

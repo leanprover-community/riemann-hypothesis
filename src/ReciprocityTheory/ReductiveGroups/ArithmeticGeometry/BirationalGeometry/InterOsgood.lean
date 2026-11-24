@@ -53,11 +53,7 @@ public import Mathlib.Analysis.SpecialFunctions.Complex.Log
 
 namespace ReciprocityTheory.ChartRestriction.G.Geo
 
-def OsgoodStatement : Prop :=
-  ∀ (e : ℕ) (U : Set (Fin e → ℂ)) (f : (Fin e → ℂ) → ℂ), IsOpen U → DifferentiableOn ℂ f U →
-    AnalyticOnNhd ℂ f U
-
-theorem osgood : OsgoodStatement := by
+theorem osgood : _root_.ReciprocityTheory.AnForm.Osgood.OsgoodStatement := by
   intro e U f hU hf z₀ hz₀
   obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.1 hU z₀ hz₀
   have hs : 0 < r / 2 := half_pos hr

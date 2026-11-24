@@ -359,7 +359,7 @@ theorem recursion_of [CharZero K] {c : K} {r : K⟦X⟧}
   have h3 : 2 * q + 2 - 2 = 2 * q := by omega
   have h4 : 2 * q ≠ 0 := by omega
   have e := congrArg (coeff (2 * q + 2)) h
-  simp only [map_sub, map_add (f := _), coeff_X_pow_mul', if_pos h2, h3, coeff_ofNat_mul, coeff_derivative,
+  simp only [map_sub, map_add (f := _), coeff_X_pow_mul', if_pos h2, h3, coeff_derivative,
     coeff_C, if_neg h4, sub_zero] at e
   rw [show 2 * q + 1 + 1 = 2 * q + 2 by omega] at e
   have hs := sum_even (fun n => coeff n r) h0 hodd q
@@ -430,8 +430,6 @@ theorem wpL_shape (hE : ExpSpec.{u}) (hO : WpODE.{u}) [CharZero K] (W : Weierstr
     ext n
     rw [wpReg, coeff_mk, hL]
     first
-    | simp [uPow, HahnSeries.coeff_single, show (n : ℤ) ≠ -2 by omega]
-    | simp [uPow, HahnSeries.single_coeff_of_ne, show (n : ℤ) ≠ -2 by omega]
     | simp [uPow, show (n : ℤ) ≠ -2 by omega]
   refine ⟨?_, ?_⟩
   · rw [hR]

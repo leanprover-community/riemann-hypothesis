@@ -68,7 +68,7 @@ lemma mjip_norm_le {n : ℕ} (p q : Fin n → ℂ) :
     ‖mjip p q‖ ≤ Real.sqrt (nsq p) * Real.sqrt (nsq q) := by
   unfold mjip nsq
   calc ‖∑ i, p i * conj (q i)‖ ≤ ∑ i, ‖p i * conj (q i)‖ := norm_sum_le _ _
-    _ = ∑ i, ‖p i‖ * ‖q i‖ := by simp [norm_mul]
+    _ = ∑ i, ‖p i‖ * ‖q i‖ := by simp
     _ ≤ _ := Real.sum_mul_le_sqrt_mul_sqrt _ _ _
 
 lemma mjip_single {n : ℕ} (p : Fin n → ℂ) (d : Fin n) : mjip p (Pi.single d 1) = p d := by
@@ -135,7 +135,6 @@ private lemma sum_fin_eq_sum_castLE_add_sum_shift {M : Type} [AddCommMonoid M] {
   let e : Fin p0 ⊕ Fin (n - p0) ≃ Fin n := finSumFinEquiv.trans (finCongr (Nat.add_sub_cancel' h))
   rw [← e.sum_comp f, Fintype.sum_sum_type]
   congr 1
-  all_goals exact Finset.sum_congr rfl fun i _ => congrArg f (Fin.ext (by simp [e]))
 
 lemma hermC_orthonormal_coordinates {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : X.Ψ) (p q : Fin r → ℂ) :
     hermC τ.1 X.Gm (mat x τ *ᵥ p) (mat x τ *ᵥ q) =
@@ -155,9 +154,9 @@ lemma hermC_orthonormal_coordinates {x : Frame X.Ψ r} (ho : X.IsOrtho x) (τ : 
   simp only [mjip, mjpa, mjpb, sub_eq_add_neg, ← Finset.sum_neg_distrib]
   congr 1
   · refine Finset.sum_congr rfl fun a _ => ?_
-    simp [sgn, mjpa, a.isLt]
+    simp [sgn, a.isLt]
   · refine Finset.sum_congr rfl fun m _ => ?_
-    simp [sgn, mjpb, nI]
+    simp [sgn, nI]
 
 lemma mj_colP (x : Frame X.Ψ r) (Z : X.Coord) (τ : X.Ψ) (c : Fin X.p0) :
     X.colP (X.xZ x Z) τ c = mat x τ *ᵥ col (X.lowBlock Z τ) (Fin.castLE X.p0_le c) := by

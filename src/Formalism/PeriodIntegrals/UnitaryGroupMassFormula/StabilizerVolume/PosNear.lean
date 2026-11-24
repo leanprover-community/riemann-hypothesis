@@ -122,10 +122,10 @@ theorem isClosed_int : IsClosed (v.adicCompletionIntegers F : Set (v.adicComplet
   (ReciprocityTheory.GeneralLinearIntegers.GeneralLinearIntegersOpenCompact.isCompact_integers v).isClosed
 
 theorem isClopen_latV (a M : ℕ) : IsClopen (latV (M := M) (n := a) b v) := by
-  apply PI.VolStabSW.PositiveNearLattice.isClopen_latV <;> assumption
+  apply PI.VolStabSW.PositiveNearLattice.isClopen_latV
 
 theorem isCompact_latV (a M : ℕ) : IsCompact (latV (M := M) (n := a) b v) := by
-  apply PI.VolStabSW.PositiveNearLattice.isCompact_latV <;> assumption
+  apply PI.VolStabSW.PositiveNearLattice.isCompact_latV
 
 theorem isSB_latV (a M : ℕ) :
     IsSB ((latV (M := M) (n := a) b v).indicator (fun _ => (1 : ℂ))) := by

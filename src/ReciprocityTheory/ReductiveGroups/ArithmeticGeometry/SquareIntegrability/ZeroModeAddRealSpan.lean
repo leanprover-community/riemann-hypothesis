@@ -82,7 +82,6 @@ theorem zmG_differentiable {s : (Fin 1 → Vsp X.dim) → ℂ} (hs : s ∈ X.Sec
     exact (innerSL ℂ (e (IR I) k)).differentiable
   first
     | exact Differentiable.fun_sum fun k _ => hz k
-    | exact Differentiable.sum fun k _ => hz k
 
 theorem zmG_continuous {s : (Fin 1 → Vsp X.dim) → ℂ} (hs : s ∈ X.Sec 1 1) :
     Continuous (zmG I s) := (zmG_differentiable hs).continuous
@@ -175,14 +174,10 @@ private lemma zmG_add_mem_of_isSplit (hI : IsSplit P I) {s : (Fin 1 → Vsp X.di
     apply Complex.ext
     · rw [Complex.ofReal_re, OrthonormalBasis.repr_apply_apply, ← hγ', Submodule.coe_inner, heb]
       first
-        | exact (real_inner_eq_re_inner (𝕜 := ℂ) _ _).symm
         | (rw [PiLp.inner_apply, PiLp.inner_apply, Complex.re_sum]
            refine Finset.sum_congr rfl fun i _ => ?_
            first
-             | (rw [RCLike.inner_apply, Complex.inner, mul_comm])
-             | (rw [RCLike.inner_apply, Complex.inner])
-             | exact (real_inner_eq_re_inner (𝕜 := ℂ) _ _).symm
-             | simp [Complex.inner, RCLike.inner_apply, mul_comm])
+             | (rw [RCLike.inner_apply, Complex.inner, mul_comm]))
     · rw [Complex.ofReal_im]
       exact hreal _ (he_mem k) _ hγR
   have hstar : ∀ u : Vsp X.dim, ∑ k : Fin (dK (IR I)), z (IR I) k u * z (IR I) k γ = Hf u γ := by
@@ -193,9 +188,6 @@ private lemma zmG_add_mem_of_isSplit (hI : IsSplit P I) {s : (Fin 1 → Vsp X.di
     refine Finset.sum_congr rfl fun k _ => ?_
     first
       | (rw [hzγ, hz, heb, ← Complex.coe_smul, inner_smul_left, Complex.conj_ofReal, mul_comm])
-      | (rw [hzγ, hz, heb, ← Complex.coe_smul, inner_smul_left, Complex.conj_ofReal, mul_comm]; rfl)
-      | (rw [hzγ, hz, heb, RCLike.real_smul_eq_coe_smul (K := ℂ), inner_smul_left, RCLike.conj_ofReal,
-          mul_comm]; congr 1)
   have hS : ∀ u : Vsp X.dim, S (IR I) (u + γ) = S (IR I) u + 2 * Hf u γ + Hf γ γ := by
     intro u
     unfold S

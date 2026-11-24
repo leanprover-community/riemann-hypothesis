@@ -280,7 +280,7 @@ theorem phi_comparison : PhCompare := by
     rw [h, norm_zero] at hε
     exact zero_ne_one hε
   obtain ⟨cV, hsub⟩ := ph_sub hl.two_le g2 g3 s2 hε0
-  have h := (Formalism.L2.Th1.B.simeqLog K Unit _ cV (integral_V hε hθ)).2
+  have h := (_root_.Formalism.L2.Th1.B.Sim.simeq_formal_log K Unit _ cV (integral_V hε hθ)).2
   unfold Simeq at h ⊢
   rw [sub_zero] at h
   have e : (phFF l g2 g3 s2 ε : MvPowerSeries Unit K) -
@@ -296,7 +296,7 @@ theorem first_level_curve_holds : CurveExponentCoboundaryCocycle := by
   obtain ⟨hLaw, hInv, -⟩ := Formalism.L2.Th1.A.bridgeLaw K (shortW g2 g3) hW
   have hO := Formalism.L2.Th1.B.f1O K _ _ s2 _ _ _ _ _ _ (Formalism.L2.Th1.A.bridgeWp K (shortW g2 g3))
     hLaw hInv (Formalism.L2.Th1.A.bridgeCurve K (shortW g2 g3) hW) ht
-  exact transport_first_level K l hl hn F hF (fgl (shortW g2 g3)) (thetaS l g2 g3 ε) (phCurve g2 g3 s2)
+  exact _root_.Formalism.L2.Th1.D.transport_first_level_holds K l hl hn F hF (fgl (shortW g2 g3)) (thetaS l g2 g3 ε) (phCurve g2 g3 s2)
     (phFF l g2 g3 s2 ε) hLaw.1 hθ (theta_homomorphism K l hl hn F hF g2 g3 ε).2
     ⟨hO.1, hO.2.2.1, hO.2.2.2⟩ (phi_comparison K l hl g2 g3 s2 ε hε hθ)
 

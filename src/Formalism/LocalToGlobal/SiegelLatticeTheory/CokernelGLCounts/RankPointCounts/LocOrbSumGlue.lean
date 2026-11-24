@@ -315,7 +315,7 @@ theorem fL_hasSum (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (
           have hZi : ∀ i j, (Loc.uLow hX.choose.1 * a.mat * Loc.uUp a hX.choose.2) i j ∈ (M p).R := by
             intro i j; rw [← hZ]; exact add_mem (hrepI i j) (shM_mem M δ T T' p w i j)
           have hZd : IsUnit (Loc.uLow hX.choose.1 * a.mat * Loc.uUp a hX.choose.2).det := by
-            rw [Matrix.det_mul, Matrix.det_mul, Formalism.L2.SG.Pf.LocModel.uLow_det, Formalism.L2.SG.Pf.LocModel.uUp_det,
+            rw [Matrix.det_mul, Matrix.det_mul, _root_.Formalism.L2.SG.Pf.det_uLow, _root_.Formalism.L2.SG.Pf.det_uUp,
               one_mul, mul_one, Formalism.MainNotions.LocalModelPeriodLattices.det_eq]
             exact Formalism.FourierDecayAlt.P.A5x6.pt_det_isUnit _
           have hth : thL M δ T T' p w rep = clsOf (M p) (Loc.uLow hX.choose.1 * a.mat * Loc.uUp a hX.choose.2) := by
@@ -391,7 +391,7 @@ theorem nAutNe_of (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (
   haveI := Formalism.MainNotions.LocalModelPeriodLattices.top_of_OK (M p) hOK
   have hD := Formalism.MainNotions.LocalModelPeriodLattices.datum_of_OK (M p) hOK
   have hI : Formalism.DoubleCosetMeasures.IsInt (M p).R ((Quotient.out c).Z.map (M p).R.subtype) := fun i j => ((Quotient.out c).Z i j).2
-  have hfin := (Formalism.DoubleCosetMeasures.Final.isoFinite _ (M p).R (Formalism.FourierDecayAlt.P.A5x3.finite_quot hD) _ _ hI (Quotient.out c).unit).2
+  have hfin := (_root_.Formalism.DoubleCosetMeasures.P.isoFinite _ (M p).R (Formalism.FourierDecayAlt.P.A5x3.finite_quot hD) _ _ hI (Quotient.out c).unit).2
     ((M p).Cok (Quotient.out c)) ((M p).eCls (Quotient.out c)) (Formalism.MainNotions.LocalOrbitGerms.Cls.lamK (M p) (Quotient.out c))
   haveI : Finite ((M p).Iso (Quotient.out c) (Quotient.out c)) :=
     (Equiv.finite_iff (Formalism.MainNotions.LocalOrbitGerms.Cls.isoEquiv (M p) (Quotient.out c) (Quotient.out c))).2 hfin.to_subtype

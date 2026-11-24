@@ -79,7 +79,7 @@ theorem hform_eq (x y : Fin (VS D).rank → D.host.E) :
       (VS D).hT (∑ i, x i • (VS D).frame i) (∑ j, y j • (VS D).frame j) := by
   unfold Formalism.UG.hform Jv
 
-  simp only [map_sum, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, map_smul, smul_eq_mul,
+  simp only [map_sum, map_smulₛₗ, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul,
   Finset.mul_sum, RingHom.id_apply]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
@@ -102,8 +102,7 @@ theorem J_det : (Jv D).det ≠ 0 := by
   obtain ⟨v, hv, hJv⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hdet
   apply hv
   have hrow : ∀ i, ∑ j, Jv D i j * v j = 0 := fun i => by
-    have := congrFun hJv i
-    simpa [Matrix.mulVec, dotProduct] using this
+    simpa [Matrix.mulVec, dotProduct] using congrFun hJv i
   have hy : ∀ x, (VS D).hT x (∑ j, v j • (VS D).frame j) = 0 := by
     intro x
     rw [← (VS D).frame.sum_repr x, ← hform_eq D (⇑((VS D).frame.repr x)) v]
@@ -123,8 +122,7 @@ theorem Lv_eq_map : Lv D = (VS D).L0.map ((crdE D).symm.toLinearMap.restrictScal
     rwa [LinearEquiv.apply_symm_apply]
 
 theorem L_fg : (Lv D).FG := by
-  rw [Lv_eq_map]
-  exact Submodule.FG.map _ (VS D).standardTuple_isLattice.fg
+  simpa [Lv_eq_map] using Submodule.FG.map _ (VS D).standardTuple_isLattice.fg
 
 theorem L_span : Submodule.span D.host.E ((Lv D : Set (Fin (VS D).rank → D.host.E))) = ⊤ := by
   have hspan : Submodule.span D.host.E ((VS D).L0 : Set (VS D).V) = ⊤ :=
@@ -143,16 +141,11 @@ theorem L_dual (x : Fin (VS D).rank → D.host.E) : x ∈ Lv D ↔
   constructor
   · intro h y hy
     rw [mem_Lv] at hy
-    rw [hform_eq]
-    obtain ⟨a, ha⟩ := h _ hy
-    exact ⟨a, ha⟩
+    simpa [hform_eq] using h _ hy
   · intro h w hw
     have hw' : (⇑((VS D).frame.repr w)) ∈ Lv D := by
-      rw [mem_Lv, (VS D).frame.sum_repr]
-      exact hw
-    obtain ⟨a, ha⟩ := h _ hw'
-    rw [hform_eq, (VS D).frame.sum_repr] at ha
-    exact ⟨a, ha⟩
+      simpa [mem_Lv, (VS D).frame.sum_repr] using hw
+    simpa [hform_eq, (VS D).frame.sum_repr] using h _ hw'
 
 end Formalism.L2.SG.InstExistsPf
 
@@ -161,9 +154,7 @@ namespace Formalism.L2.SG.InstExistsPf
 variable (D : D7)
 
 theorem rank_eq : (VS D).rank = D.R.r := by
-  unfold VS
-  rw [D.sp.Y_rank 0 (Nat.zero_le _)]
-  simp [Ranks.rankY]
+  simpa [VS, Ranks.rankY] using D.sp.Y_rank 0 (Nat.zero_le _)
 
 def epsV : Fin (VS D).rank → Bool := fun i => epsS D.R (Fin.cast (rank_eq D) i)
 
@@ -201,9 +192,8 @@ theorem card_not_epsV : Fintype.card {i // ¬ epsV D i = true} = D.R.rS + 1 := b
   have hm := D.R.two_le_m
   have hk := D.R.m_add_three_le_k
   obtain ⟨j, hj⟩ := D.R.m_even
-  have hr0 := rank_eq D
-  unfold Ranks.r at hr0
-  unfold Ranks.rS
+  rw [rank_eq D]
+  unfold Ranks.r Ranks.rS
   omega
 
 def eSgn : Fin (VS D).rank ≃ Fin (D.R.k + D.R.rS) ⊕ Fin (D.R.rS + 1) :=
@@ -214,15 +204,9 @@ def eSgn : Fin (VS D).rank ≃ Fin (D.R.k + D.R.rS) ⊕ Fin (D.R.rS + 1) :=
 
 theorem eSgn_isLeft (i : Fin (VS D).rank) : (eSgn D i).isLeft = epsV D i := by
   by_cases h : epsV D i = true
-  · rw [h]
-    simp [eSgn, h]
+  · simp [eSgn, h]
   · simp only [Bool.not_eq_true] at h
-    rw [h]
     simp [eSgn, h]
-
-theorem cT_eq {m p : Type} (M : Matrix m p ℂ) : Formalism.UG.cT (starRingEnd ℂ) M = Mᴴ := by
-  ext i j
-  simp [Formalism.UG.cT]
 
 theorem Jpq_sub (p q : ℕ) {n : Type} [DecidableEq n] (e : n ≃ Fin p ⊕ Fin q) (ε : n → Bool) (he : ∀ i, (e i).isLeft = ε i) :
     (Formalism.UG.Jpq p q).submatrix e e = Matrix.diagonal fun a => if ε a then (1 : ℂ) else -1 := by
@@ -231,10 +215,10 @@ theorem Jpq_sub (p q : ℕ) {n : Type} [DecidableEq n] (e : n ≃ Fin p ⊕ Fin 
   by_cases hab : a = b
   · subst hab
     have ha := he a
-    rcases hea : e a with x | x <;> simp_all [Matrix.one_apply]
+    rcases hea : e a with x | x <;> simp_all
   · rw [if_neg hab]
     have hne : e a ≠ e b := fun h => hab (e.injective h)
-    rcases hea : e a with x | x <;> rcases heb : e b with y | y <;> simp_all [Matrix.one_apply]
+    rcases hea : e a with x | x <;> rcases heb : e b with y | y <;> simp_all
 
 theorem exists_P (τ : D.what₂.Tau) : ∃ P : Matrix (Fin (VS D).rank) (Fin (VS D).rank) ℂ, IsUnit P ∧
     Pᴴ * (Jv D).map (embS D τ) * P = Formalism.REAL.Jm (epsV D) := by
@@ -243,7 +227,7 @@ theorem exists_P (τ : D.what₂.Tau) : ∃ P : Matrix (Fin (VS D).rank) (Fin (V
     rw [D.sp.baseSpace_signature_eq] at h0
     exact h0
   obtain ⟨e, P, hP⟩ := hs
-  rw [cT_eq] at hP
+  rw [_root_.Formalism.UG.P.cT_conj_eq] at hP
   refine ⟨P.val.submatrix e (eSgn D), ?_, ?_⟩
   · have h1 : P.val.submatrix e (eSgn D) * (P⁻¹).val.submatrix (eSgn D) e = 1 := by
       rw [Matrix.submatrix_mul_equiv, ← Units.val_mul, mul_inv_cancel, Units.val_one,

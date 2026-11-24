@@ -157,11 +157,10 @@ theorem zhat_conj {T T' : E} (F : FlagG S r T) (F' : FlagG S r T') (s : S.V ≃�
   simp only [Zhat, brS, Matrix.mul_apply, Matrix.conjTranspose_apply]
   rw [key, hu a, hu' b]
 
-  simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, map_smul, LinearMap.smul_apply, smul_eq_mul,
+  simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul,
   starRingEnd_apply, RingHom.id_apply, Finset.mul_sum, Finset.sum_mul]
   first
   | exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
-  | (rw [Finset.sum_comm]; exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring)
 
 end Frames
 

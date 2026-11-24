@@ -77,7 +77,7 @@ theorem prod_norm_update_zpow [DecidableEq K] (k0 : K) (v : ℂ) (a : K → ℤ)
   rw [Finset.prod_eq_single k0]
   · simp
   · intro k _ hk
-    simp [Function.update_apply, hk]
+    simp [hk]
   · intro h
     exact absurd (Finset.mem_univ k0) h
 

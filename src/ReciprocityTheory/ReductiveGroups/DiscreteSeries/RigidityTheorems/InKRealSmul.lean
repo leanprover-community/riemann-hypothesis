@@ -115,15 +115,15 @@ theorem actM_single (E : Fin n → Fin n → Module.End ℂ M) (a b : Fin n) (c 
   classical
   unfold actM
   rw [Finset.sum_eq_single a, Finset.sum_eq_single b]
-  · simp [Matrix.single_apply]
+  · simp
   · intro j _ hj
-    simp [Matrix.single_apply, Ne.symm hj]
+    simp [Ne.symm hj]
   · intro h
     exact absurd (Finset.mem_univ _) h
   · intro i _ hi
     apply Finset.sum_eq_zero
     intro j _
-    simp [Matrix.single_apply, Ne.symm hi]
+    simp [Ne.symm hi]
   · intro h
     exact absurd (Finset.mem_univ _) h
 

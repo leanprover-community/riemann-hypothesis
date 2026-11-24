@@ -135,7 +135,7 @@ theorem coeff_subst_xz {τ : Type*} (h : PS k 2 d) (h0 : ev (n := 1) ![0, pt k d
     simp only [true_and] at e0 e1
     have n01 : ((1 : Fin 2) = 0) = False := by simp
     have n10 : ((0 : Fin 2) = 1) = False := by simp
-    simp only [n01, n10, false_and, and_false, if_false, add_zero, zero_add] at e0 e1
+    simp only [n01, n10, false_and, if_false, add_zero, zero_add] at e0 e1
     split_ifs at e0 e1 <;> simp_all
   have hprod : ∀ D : Fin 2 × Fin d →₀ ℕ, D.prod (fun s e => a s ^ e) = subst a (monomial D (1 : k)) := fun D => by
     rw [subst_monomial hs, map_one, one_mul]
@@ -224,7 +224,7 @@ theorem coeff_xz_mul_X (φ : PS k 1 d) (j i m : Fin d) :
     rw [coeff_embDomain_rename]
   · rw [if_neg hm]
     apply coeff_mul_X_eq_zero
-    simp [single_apply, Ne.symm hm]
+    simp [Ne.symm hm]
 
 theorem coeff_xz_X_mul (ψ : PS k 1 d) (j i l : Fin d) :
     coeff (single ((0 : Fin 2), j) 1 + single ((1 : Fin 2), i) 1) (X ((0 : Fin 2), l) * rename (eZ d) ψ) =
@@ -243,7 +243,7 @@ theorem coeff_xz_X_mul (ψ : PS k 1 d) (j i l : Fin d) :
     rw [coeff_embDomain_rename]
   · rw [if_neg hl]
     apply coeff_mul_X_eq_zero
-    simp [single_apply, Ne.symm hl]
+    simp [Ne.symm hl]
 
 theorem const_actK (B : FB R d O) (a : O) (l : Fin d) : constantCoeff (B.actK k a l) = 0 := by
   simp only [FB.actK]
@@ -280,7 +280,7 @@ theorem coeff_ad_side2 (B : FB R d O) (h : PS k 2 d) (hc : B.IsCanonGauge k h) (
         ((0, l) : Fin 2 × Fin d).2 = X ((0 : Fin 2), l) := fun l => rfl
     have e1 : ∀ m : Fin d, ![pt k d 0, comp1 (B.actK k (star a)) (pt k d 1)] ((1, m) : Fin 2 × Fin d).1
         ((1, m) : Fin 2 × Fin d).2 = rename (eZ d) (B.actK k (star a) m) := fun m => eval_second_point_rename _
-    simp only [e0, e1, coeff_xz_X_mul, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [e0, e1, coeff_xz_X_mul, mul_ite, mul_zero]
     rw [Finset.sum_comm]
     simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
     rfl

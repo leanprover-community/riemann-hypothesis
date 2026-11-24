@@ -78,7 +78,7 @@ theorem lptOf_toStd : ∀ (L : Formalism.FourierDecayAlt.TB.Pt K) (o : ℕ), (�
     simp only [List.map_cons, List.sum_cons] at ho
     have hs : 1 ≤ s := hL (s, t) (List.mem_cons_self)
     simp only [Formalism.L2.SG.DataInst.signAux, List.map_cons, Prod.swap_prod_mk, lptOf, Formalism.FourierDecayAlt.C.loc,
-      Formalism.FourierDecayAlt.D.toStd, List.cons.injEq, true_and]
+      Formalism.FourierDecayAlt.D.toStd, List.cons.injEq]
     constructor
     · rw [map_mul, map_pow, map_neg, map_one, ← mul_assoc, blk_std r g s o hs (by omega)]
     · have := lptOf_toStd rest (o + s) (fun b hb => hL b (List.mem_cons_of_mem _ hb)) (by omega)

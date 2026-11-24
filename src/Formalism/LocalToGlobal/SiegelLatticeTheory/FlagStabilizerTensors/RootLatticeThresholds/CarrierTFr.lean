@@ -166,7 +166,7 @@ theorem onCut_setting (S : Formalism.FourierDecayAlt.C.HidaSetting E Wp Wq) (hw 
       (S.G.place (S.pl v)).v S.l - 1 / 2 - de S.l * (S.G.place (S.pl v)).Del := by
     intro de
     simp only [Formalism.FourierDecayAlt.Sz.Cfg.u, if_neg hl1, if_neg hlk, Nat.add_sub_cancel]
-  simp only [Formalism.FourierDecayAlt.I.OnCut, Formalism.FourierDecayAlt.D.parOf, hu]
+  simp only [Formalism.FourierDecayAlt.I.OnCut, hu]
   have hN : (0 : ℝ) ≤ (S.Ntop : ℝ) := Nat.cast_nonneg _
   have hD : 5 ≤ (S.G.place (S.pl v)).Del := by
     nlinarith [pow_nonneg hN 3]
@@ -217,7 +217,6 @@ theorem isBuiltPlace_carrierInT (Cc : ℝ) (u u' : D.what₂.Word) (e : Infinite
     hl1, hl2, hG, hL, hCA, hsm, (by show 2 ≤ D.R.k; omega), hA, ?_⟩
   · first
       | exact Formalism.L2.SG.DataInst.unram_host D
-      | exact Formalism.L2.SG.Pf.CarrierSz.unram_host D
   · exact onCut_setting _ hw hw' hl1 hl2 hne hG
 
 theorem exists_Cc_data : ∃ Cc : ℝ, ∀ {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) {θ : ℝ} (C : Choice X θ)
@@ -251,10 +250,6 @@ theorem exists_Cc_data : ∃ Cc : ℝ, ∀ {D : D7} (X : Formalism.L2.SG.HidaSet
   have hLAB : Formalism.FourierDecayAlt.JCT.LevelsActualBuilt := by
     first
       | exact Formalism.FourierDecayAlt.P.levels_of_built_setting
-      | exact Formalism.FourierDecayAlt.P.JCT.levelsActualBuilt_proof
-      | exact Formalism.FourierDecayAlt.JCT.levelsActualBuilt
-      | exact Formalism.FourierDecayAlt.P.levelsActualBuilt_proof
-      | exact Formalism.FourierDecayAlt.P.levelsActualBuilt
   obtain ⟨Cc, hC⟩ := hLAB
   refine ⟨Cc, ?_⟩
   intro D X θ C u u' e he hv CA de de' l grid grid1 fc c ν' m₀ Θ TP A₀ hB j

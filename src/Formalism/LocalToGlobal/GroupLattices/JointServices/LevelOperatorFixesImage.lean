@@ -64,9 +64,8 @@ theorem lvlE_lvlPr_V0E {v0 : InfinitePlace K} (h0 : IsConjAt v0) (hpos : (S.H.ma
     (hX : ∀ χ ∈ X, IsAbsIrrChar χ) (F : Fin (S.BaseDimension r X P ψ) → K) :
     (S.lvlE r P ψ).mulVec ((S.lvlPr r P ψ * S.V0E r X P ψ).mulVec F) = (S.V0E r X P ψ).mulVec F := by
   have hl := (level_idempotent_spec K v0 h0 G P ψ).1
-  have h1 : S.lvlE r P ψ * S.lvlPr r P ψ = S.gaMat r (lvlIdem P ψ) :=
-    (orthogonal_projection_spec K v0 h0 S hpos G r hr (lvlIdem P ψ) hl.idem hl.selfAdj).2
-  rw [← Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, h1]
+  erw [← Matrix.mulVec_mulVec, Matrix.mulVec_mulVec,
+    (orthogonal_projection_spec K v0 h0 S hpos G r hr (lvlIdem P ψ) hl.idem hl.selfAdj).2]
   exact CSD.lvlIdem_mulVec_of_mem S r P ψ _ (level_subspace_image_mem S r X P ψ hX F).2
 
 theorem lvlOp_V0E {v0 : InfinitePlace K} (h0 : IsConjAt v0) (hpos : (S.H.map v0.embedding).PosDef) (hr : S.ActGood r)

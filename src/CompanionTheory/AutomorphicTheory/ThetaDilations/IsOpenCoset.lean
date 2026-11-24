@@ -116,7 +116,7 @@ theorem sb_smul (c : ℂ) {g : V → ℂ} (hg : SB g) : SB (c • g) := by
 
 omit [AddCommGroup V] in
 theorem sb_zero : SB (0 : V → ℂ) := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.sb_zero <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.sb_zero
 
 omit [AddCommGroup V] in
 theorem sb_sum {α : Type} (s : Finset α) {f : α → V → ℂ} (h : ∀ a ∈ s, SB (f a)) : SB (∑ a ∈ s, f a) := by
@@ -190,7 +190,7 @@ theorem fou_add {f g : V → ℂ} (hf : SB f) (hg : SB g) : fou χ μ (f + g) = 
 
 omit h in
 theorem fou_smul (c : ℂ) (f : V → ℂ) : fou χ μ (c • f) = c • fou χ μ f := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.fou_smul <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.fou_smul
 
 omit h [AddCommGroup V] [MeasurableSpace V] in
 theorem map_sum_sb {T : (V → ℂ) → (V → ℂ)} (hadd : ∀ φ φ', SB φ → SB φ' → T (φ + φ') = T φ + T φ')

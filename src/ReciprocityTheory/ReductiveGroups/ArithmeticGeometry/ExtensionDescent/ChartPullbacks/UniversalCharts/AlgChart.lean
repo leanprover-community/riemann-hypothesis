@@ -57,9 +57,7 @@ namespace ReciprocityTheory.ChartRestriction.G.Chart
 
 variable {R : Type} [CommRing R]
 
-theorem isUnit_of_aug {A : Type} [CommRing A] [Algebra R A] (aug : A →ₐ[R] R) (hJ : IsNilpotent (RingHom.ker aug))
-    (a : A) (ha : IsUnit (aug a)) : IsUnit a := by
-  exact @Bl.FirstBlockLemmaK.goal1 R _ A _ _ aug hJ a ha
+alias isUnit_of_aug := _root_.Bl.FirstBlockLemmaK.goal1
 
 theorem nil_of_pow {A : Type} [CommRing A] (J : Ideal A) {m : ℕ} (hJ : J ^ (m + 1) = ⊥) : IsNilpotent J :=
   ⟨m + 1, by rw [hJ, Ideal.zero_eq_bot]⟩

@@ -123,9 +123,7 @@ lemma contDiff_lead (i : ℕ) : ContDiff ℂ ω (fun z : 𝕄 => lead i z) := by
     rw [e]
     exact contDiff_const
 
-def PhiQ (μ : Fin n → ℤ) : 𝕄 → ℂ := fun y => PhiM μ y
-
-lemma contDiffOn_phiQ (μ : Fin n → ℤ) : ContDiffOn ℂ ω (PhiQ μ) (OmegaSet n : Set 𝕄) := by
+lemma contDiffOn_phiQ (μ : Fin n → ℤ) : ContDiffOn ℂ ω (_root_.ReciprocityTheory.ChartRestriction.DS.S7.Ps1.PhiP μ) (OmegaSet n : Set 𝕄) := by
   show ContDiffOn ℂ ω (fun y : 𝕄 => ∏ i : Fin n, lead ((i : ℕ) + 1) y ^ (-(μ i - muNext μ i)))
     (OmegaSet n : Set 𝕄)
   refine contDiffOn_prod fun i _ => ?_

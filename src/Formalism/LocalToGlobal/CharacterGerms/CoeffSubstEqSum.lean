@@ -319,7 +319,6 @@ theorem ord_one_of_const {f : MvPowerSeries σ C} (hf : constantCoeff f = 0) : O
   subst h0
   first
   | (rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply]; exact hf)
-  | simpa using hf
 
 theorem Ord.prod {ι : Type} (S : Finset ι) {k : ι → ℕ} {f : ι → MvPowerSeries σ C}
     (h : ∀ i ∈ S, Ord (k i) (f i)) : Ord (∑ i ∈ S, k i) (∏ i ∈ S, f i) := by
@@ -338,8 +337,6 @@ theorem ord_fprod {τ : Type} {a : σ → MvPowerSeries τ C} (ha : ∀ s, const
   have hdeg : Finsupp.degree d = ∑ s ∈ d.support, d s := by
     first
     | rfl
-    | simp [Finsupp.degree_apply]
-    | simp [Finsupp.degree]
   rw [hdeg]
   simp only [Finsupp.prod]
   exact Ord.prod d.support (k := fun s => d s) (f := fun s => a s ^ d s)
@@ -352,9 +349,6 @@ theorem coeff_subst_eq_sum [Finite σ] {τ : Type} {a : σ → MvPowerSeries τ 
   have hs : MvPowerSeries.HasSubst a := by
     first
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero ha
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun s => by rw [ha s]; exact IsNilpotent.zero)
-    | exact MvPowerSeries.hasSubst_of_constantCoeff_nilpotent (fun s => by rw [ha s]; exact IsNilpotent.zero)
-    | exact ⟨fun s => by rw [ha s]; exact IsNilpotent.zero, fun d => Set.toFinite _⟩
   rw [MvPowerSeries.coeff_subst hs]
   simp only [smul_eq_mul]
   apply finsum_eq_sum_of_support_subset

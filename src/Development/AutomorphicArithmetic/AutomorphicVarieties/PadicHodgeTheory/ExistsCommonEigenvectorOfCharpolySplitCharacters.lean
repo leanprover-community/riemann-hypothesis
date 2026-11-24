@@ -160,7 +160,7 @@ theorem UpperTheory.exists_common_eigenvector_of_charpoly_split_characters :
     have key : ∀ y (hy : y ∈ E), Polynomial.aeval (ρ Φ) p y = ((Polynomial.aeval A p) ⟨y, hy⟩ : W) := by
       intro y hy
       rw [Polynomial.aeval_eq_sum_range, Polynomial.aeval_eq_sum_range]
-      simp [A, Module.End.pow_restrict, LinearMap.sum_apply]
+      simp [A, LinearMap.sum_apply]
       refine Finset.sum_congr rfl (fun m _ => ?_)
       rw [Module.End.pow_restrict]
       rfl

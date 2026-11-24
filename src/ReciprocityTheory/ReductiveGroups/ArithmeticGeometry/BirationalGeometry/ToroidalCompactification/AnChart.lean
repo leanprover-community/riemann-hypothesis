@@ -76,7 +76,7 @@ theorem hasFDerivAt_eval {I : Type} [Fintype I] [DecidableEq I] (p : MvPolynomia
   | mul_X p j hp =>
     refine ((hp.mul (hasFDerivAt_apply (𝕜 := ℂ) j x)).congr_fderiv (ContinuousLinearMap.ext fun v => ?_)).congr_of_eventuallyEq
       (Filter.Eventually.of_forall fun y => by simp)
-    simp [pderiv_X, Pi.single_apply, mul_add, Finset.sum_add_distrib, Finset.mul_sum, mul_comm, mul_left_comm, apply_ite, add_comm]
+    simp [pderiv_X, Pi.single_apply, mul_add, Finset.sum_add_distrib, Finset.mul_sum, mul_comm, mul_left_comm, apply_ite]
 
 theorem anChart_alg {k A : Type} [Field k] [CommRing A] [Algebra k A] (D : ℕ) [h : Algebra.IsStandardSmoothOfRelativeDimension D k A]
     (σ : k →+* ℂ) (ψ₀ : A →+* ℂ) (h₀ : ψ₀.comp (algebraMap k A) = σ) :

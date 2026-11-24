@@ -46,6 +46,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Presheaf
 import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
+import Formalism.LocalToGlobal.CharacterGerms.CartesianBoundOnCurves
 
 @[expose] public section
 
@@ -63,9 +64,6 @@ namespace VP
 section Inv
 
 variable {C : Type} [Field C] {V : VF C} {σ : Type}
-
-theorem inv_int {c : C} (hc : V.v c = 0) : V.Ge 0 c⁻¹ := by
-  simp [VF.Ge, AddValuation.map_inv, hc]
 
 theorem intInv {U : MvPowerSeries σ C} (hU : IntS V U) (h0 : V.v (MvPowerSeries.constantCoeff U) = 0) :
     ∃ U' : MvPowerSeries σ C, IntS V U' ∧ U' * U = 1 := by
@@ -90,8 +88,8 @@ theorem intInv {U : MvPowerSeries σ C} (hU : IntS V U) (h0 : V.v (MvPowerSeries
   | _ μ ih =>
     rw [MvPowerSeries.coeff_inv]
     split_ifs with hμ
-    · exact inv_int h0
-    · refine hmul _ _ (hneg _ (inv_int h0)) ?_
+    · exact _root_.Formalism.L2.FormalSeriesBounds.inv_unit_int h0
+    · refine hmul _ _ (hneg _ (_root_.Formalism.L2.FormalSeriesBounds.inv_unit_int h0)) ?_
       refine Finset.sum_induction _ (V.Ge 0) hadd hge0 (fun x _ => ?_)
       split_ifs with hlt
       · exact hmul _ _ (hU x.1) (ih x.2 hlt)
@@ -170,7 +168,7 @@ theorem cc_hL (Y : FBChart C V O dd) : MvPowerSeries.constantCoeff (Y.B.hL C Y.h
     · show MvPowerSeries.constantCoeff (comp1 (Y.B.actK C Y.w0) (pt C dd 0) i) = 0
       simp only [comp1]
       rw [cc_ev_lemma _ (fun j i => by rw [Fin.fin_one_eq_zero j]; simp [pt]) _]
-      simp [ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ.FB.actK, MvPowerSeries.constantCoeff_map, Y.B.A.const]
+      simp [ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ.FB.actK, Y.B.A.const]
 
 end VP
 

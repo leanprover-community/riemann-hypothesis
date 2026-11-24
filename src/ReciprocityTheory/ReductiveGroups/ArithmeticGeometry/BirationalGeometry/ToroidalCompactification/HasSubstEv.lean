@@ -58,8 +58,6 @@ lemma hasSubst_ev {m n : ℕ} (a : Fin m → Pt R n d) (h : ∀ j i, constantCoe
     HasSubst (fun p : Fin m × Fin d => a p.1 p.2) := by
   first
   | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun p => h p.1 p.2)
-  | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' (fun p => h p.1 p.2)
-  | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun p => by rw [h p.1 p.2]; exact IsNilpotent.zero)
 
 lemma ev_X {m n : ℕ} (a : Fin m → Pt R n d) (h : ∀ j i, constantCoeff (a j i) = 0)
     (j : Fin m) (i : Fin d) : ev a (X (j, i) : PS R m d) = a j i := by
@@ -81,9 +79,7 @@ lemma ev_C {m n : ℕ} (a : Fin m → Pt R n d) (r : R) : ev a (C r : PS R m d) 
   letI : UniformSpace R := ⊥
   first
   | (open MvPowerSeries.WithPiTopology in rw [MvPowerSeries.eval₂_C])
-  | erw [MvPowerSeries.eval₂_C]
   all_goals first
     | rfl
-    | simp [MvPowerSeries.algebraMap_apply]
 
 end ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ

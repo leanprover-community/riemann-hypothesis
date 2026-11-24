@@ -64,7 +64,7 @@ theorem dual_int {E : Type} [Field E] [NumberField E] (δ : 𝓞 E) (hδ : δ �
   set ω := RingOfIntegers.basis E
   set bq := integralBasis E
   have hbqω : ∀ i, bq i = algebraMap (𝓞 E) E (ω i) := fun i => integralBasis_apply E i
-  have h := _root_.dual_difference E _ bq (fun i => by rw [hbqω]; exact RingOfIntegers.isIntegral_coe _) (fun x => by
+  have h := _root_.PI.UnitaryGroupMassFormula.TBIdemDen.dualDiff E _ bq (fun i => by rw [hbqω]; exact RingOfIntegers.isIntegral_coe _) (fun x => by
       refine ⟨fun i => ω.repr x i, ?_⟩
       have h1 := congrArg (algebraMap (𝓞 E) E) (ω.sum_repr x)
 

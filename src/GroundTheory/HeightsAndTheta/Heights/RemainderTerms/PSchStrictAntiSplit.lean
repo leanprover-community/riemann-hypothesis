@@ -51,10 +51,6 @@ namespace GroundTheory.Heights₂.Heights.RestTerms
 
 open Finset
 
-theorem SchStrictAntiSplit.add_gap_le {r : ℕ} {d : Fin r → ℕ} (hd : StrictAnti d) :
-    ∀ (k : ℕ) (i j : Fin r), (j : ℕ) = i + k → d j + k ≤ d i :=
-  _root_.UpperTheory.Reformulated.B.Yoa4.add_gap_le hd
-
 theorem SchStrictAntiSplit.sum_staircase (r : ℕ) :
     ∑ i : Fin r, (r - 1 - (i : ℕ)) = r * (r - 1) / 2 := by
   rw [Fin.sum_univ_eq_sum_range (fun i => r - 1 - i) r, Finset.sum_range_reflect (fun i => i) r,
@@ -65,7 +61,7 @@ theorem SchStrictAntiSplit.proof : SchStrictAntiSplit.Statement := by
   have hlow : ∀ i : Fin r, r - 1 - (i : ℕ) ≤ d i := by
     intro i
     have hr : 0 < r := Fin.pos i
-    have h := SchStrictAntiSplit.add_gap_le hd (r - 1 - (i : ℕ)) i ⟨r - 1, by omega⟩
+    have h := _root_.UpperTheory.Reformulated.B.Yoa4.add_gap_le hd (r - 1 - (i : ℕ)) i ⟨r - 1, by omega⟩
       (by simp; omega)
     omega
   refine ⟨hlow, ?_⟩
@@ -78,7 +74,7 @@ theorem SchStrictAntiSplit.proof : SchStrictAntiSplit.Statement := by
     rw [SchStrictAntiSplit.sum_staircase] at hadd
     omega
   · intro i j hij
-    have h := SchStrictAntiSplit.add_gap_le hd ((j : ℕ) - i) i j (by omega)
+    have h := _root_.UpperTheory.Reformulated.B.Yoa4.add_gap_le hd ((j : ℕ) - i) i j (by omega)
     have := hlow i
     have := hlow j
     have : (i : ℕ) ≤ j := hij

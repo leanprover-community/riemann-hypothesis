@@ -275,7 +275,7 @@ lemma qrA_exists (Z : Matrix (Fin N) (Fin N) ℂ) (hZ : Z.det ≠ 0) :
     intro j
     have ha : ‖InnerProductSpace.gramSchmidt ℂ f j‖ ≠ 0 := norm_ne_zero_iff.2 (hgs j)
     rw [hRdef, hb j, InnerProductSpace.gramSchmidtNormed, inner_smul_left, hself j]
-    simp only [map_inv₀, RCLike.conj_ofReal, Complex.conj_ofReal]
+    simp only [map_inv₀, RCLike.conj_ofReal]
     change (((‖InnerProductSpace.gramSchmidt ℂ f j‖ : ℝ) : ℂ))⁻¹ *
         ((‖InnerProductSpace.gramSchmidt ℂ f j‖ : ℝ) : ℂ) ^ 2 = ((‖InnerProductSpace.gramSchmidt ℂ f j‖ : ℝ) : ℂ)
     have hc : ((‖InnerProductSpace.gramSchmidt ℂ f j‖ : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 ha
@@ -309,7 +309,7 @@ lemma qrA_exists (Z : Matrix (Fin N) (Fin N) ℂ) (hZ : Z.det ≠ 0) :
     rw [Matrix.mul_apply]
     have e := congrArg (fun v : EuclideanSpace ℂ (Fin N) => v.ofLp a) (b.sum_repr' (f j))
     simp only [WithLp.ofLp_sum, WithLp.ofLp_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
-      f, PiLp.toLp_apply, Matrix.col_apply] at e
+      f, Matrix.col_apply] at e
     rw [← e]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hQdef, hRdef]

@@ -283,7 +283,7 @@ theorem levi_bracket_sum_second (hm : Monotone lev) (hpq : lev p = lev q) {a b :
     · rw [Finset.sum_eq_single (⟨(a.1.2, m.1.2), hlt⟩ : Pos n)]
       · have : tc a (⟨(a.1.2, m.1.2), hlt⟩ : Pos n) m = 1 := if_pos ⟨rfl, h1, rfl⟩
         rw [this, one_mul, adC_eq, cZ, cY]
-        simp only [h1, true_and, and_true]
+        simp only [h1, true_and]
         congr 1
         · refine if_congr ?_ rfl rfl
           constructor

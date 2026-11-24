@@ -155,9 +155,6 @@ theorem cz12 : CZ (![pt k (n := 3) d 1, pt k d 2] : Fin 2 → Pt k 3 d) := CZ.co
 
 end Fams
 
-private theorem ev_zero_of_CZ {m n : ℕ} {a : Fin m → Pt k n d} (ha : CZ a) : ev a (0 : PS k m d) = 0 := by
-  simpa using ev_sub ha (0 : PS k m d) 0
-
 theorem formal_ev_second_point_of_x_zero (g : PS k 2 d) :
     ev (n := 2) ![pt k d 1] (ev (n := 1) ![pt k d 0, 0] g) = ev (n := 2) ![pt k d 1, 0] g := by
   rw [ev_ev czY cz1]
@@ -165,7 +162,7 @@ theorem formal_ev_second_point_of_x_zero (g : PS k 2 d) :
   funext j l
   fin_cases j
   · simp [pt_apply, ev_X czY]
-  · simp [ev_zero_of_CZ czY]
+  · simp [_root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.ev_zero' czY]
 
 theorem ev_z_yz (g : PS k 2 d) :
     ev (n := 2) ![pt k d 0, pt k d 1, 0] (ev (n := 3) ![pt k d 1, pt k d 2] g) = ev (n := 2) ![pt k d 1, 0] g := by
@@ -240,7 +237,7 @@ private theorem ev_jacobian_left (i b : Fin d) :
     funext j l
     fin_cases j
     · simp [pt_apply, ev_X (czFF G)]
-    · simp [ev_zero_of_CZ (czFF G)]
+    · simp [_root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.ev_zero' (czFF G)]
   rw [hs, ev_ev czZ hA, e1]
   simp only [Jac]
   rw [ev_ev (czFF G) cz1, e2]

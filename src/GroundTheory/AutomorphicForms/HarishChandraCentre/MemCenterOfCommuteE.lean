@@ -87,10 +87,10 @@ theorem E_mul_sub_mul (a b : Fin n × Fin n) :
   congr 1
   · by_cases h : j = k
     · subst h; simp [Matrix.single_mul_single_same]
-    · simp [h, Matrix.single_mul_single_of_ne (h := h)]
+    · simp [h]
   · by_cases h : l = i
     · subst h; simp [Matrix.single_mul_single_same]
-    · simp [h, Matrix.single_mul_single_of_ne (h := h)]
+    · simp [h]
 
 theorem e_mul_sub_mul (a b : Fin n × Fin n) :
     e a * e b - e b * e a =

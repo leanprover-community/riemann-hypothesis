@@ -50,6 +50,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.NeZeroOfNotMem
 
 @[expose] public section
 
@@ -81,21 +82,13 @@ section
 variable {h : V →ₗ⋆[K] V →ₗ[K] K} {X : Submodule K V} {L : Submodule (𝓞 K) V} {𝔭 : Ideal (𝓞 F)}
   {n : ℕ} {b : Fin n → V} {a : Fin n → 𝓞 F}
 
-private theorem coe_iota_eq_algebraMap_coe (a : 𝓞 F) : jK (ι a) = algebraMap F K (a : F) := by
-  rw [← IsScalarTower.algebraMap_apply (𝓞 F) (𝓞 K) K, IsScalarTower.algebraMap_apply (𝓞 F) F K]
-
-private theorem jK_iota_ne_zero {a : 𝓞 F} (ha : a ≠ 0) : jK (ι a) ≠ 0 := by
-  rw [coe_iota_eq_algebraMap_coe]
-  refine (map_ne_zero (algebraMap F K)).mpr ?_
-  exact (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 F) F)).mpr ha
-
 theorem h_phi (horth : ∀ i j, i ≠ j → h (b i) (b j) = 0)
     (hdiag : ∀ i, h (b i) (b i) = algebraMap F K ((a i : 𝓞 F) : F)) (ha : ∀ i, a i ≠ 0)
     (z : Fin n → 𝓞 K) (k : Fin n) : h (b k) (phi b a z) = jK (z k) := by
   show h (b k) (∑ i, (jK (z i) / jK (ι (a i))) • b i) = jK (z k)
   rw [map_sum, Finset.sum_eq_single k]
-  · rw [LinearMap.map_smul, smul_eq_mul, hdiag k, ← coe_iota_eq_algebraMap_coe,
-      div_mul_cancel₀ _ (jK_iota_ne_zero (ha k))]
+  · rw [LinearMap.map_smul, smul_eq_mul, hdiag k, ← _root_.Formalism.HermitianLattices.Ext.L3.MeanB.algebraMap_comp,
+      div_mul_cancel₀ _ (_root_.Formalism.HermitianLattices.Ext.L3.HU.jι_ne_zero (ha k))]
   · intro i _ hik
     rw [LinearMap.map_smul, horth k i hik.symm, smul_zero]
   · simp

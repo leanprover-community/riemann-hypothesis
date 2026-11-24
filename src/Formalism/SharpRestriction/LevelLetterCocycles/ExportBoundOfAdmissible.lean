@@ -60,7 +60,7 @@ include hC P hPar hL
 open Classical in
 theorem sum_small (T : Finset ℕ) (hT : ∀ l ∈ T, l.Prime ∧ l ≠ 2 ∧ l ≠ 3 ∧ (l : ℝ) ≤ lStar L) :
     ∑ l ∈ T, Real.log l * (bbB L C + lenB L C l) ≤ 1000 * (C + 1) ^ 3 * D.R.f * D.R.m * L.sc.b * large₂ L ^ 2 := by
-  have h5 : ∀ l ∈ T, 5 ≤ l := fun l hl => ge_five (hT l hl).1 (hT l hl).2.1 (hT l hl).2.2.1
+  have h5 : ∀ l ∈ T, 5 ≤ l := fun l hl => Nat.Prime.five_le_of_ne_two_of_ne_three (hT l hl).1 (hT l hl).2.1 (hT l hl).2.2.1
   have hT1 : ∀ l ∈ T, 1 ≤ l ∧ (l : ℝ) ≤ lStar L := fun l hl => ⟨by have := h5 l hl; omega, (hT l hl).2.2.2⟩
   have hT2 : ∀ l ∈ T, 2 ≤ l ∧ (l : ℝ) ≤ lStar L := fun l hl => ⟨by have := h5 l hl; omega, (hT l hl).2.2.2⟩
   have hbb := sum_bb L hC P hPar hL T hT1
@@ -253,10 +253,10 @@ theorem Den_le_U : Den L ≤ 10 * Ub L C ^ 7 := by
   have hB0 : 0 ≤ L.Sc + D.R.t + large₂ L := by linarith
   have hA : (D.R.n : ℝ) * (D.R.t : ℝ) ^ 2 * ((D.R.N D.R.m : ℝ) + D.R.t) * large₂ L ^ 2 ≤
       Ub L C * Ub L C ^ 2 * (4 * Ub L C ^ 2) * Ub L C ^ 2 := by
-    gcongr <;> first | assumption | positivity | linarith
+    gcongr
   have hB : (D.R.k : ℝ) * (D.R.n : ℝ) ^ 2 * (L.Sc + D.R.t + large₂ L) ≤
       Ub L C * Ub L C ^ 2 * (4 * Ub L C + Ub L C + Ub L C) := by
-    gcongr <;> first | assumption | positivity | linarith
+    gcongr
   have h47 : Ub L C ^ 4 ≤ Ub L C ^ 7 := pow_le_pow_right₀ hU1 (by norm_num)
   unfold Den
   nlinarith
@@ -352,7 +352,7 @@ theorem lA_lt_lStar : lA L < lStar L := by
     rw [div_le_iff₀ (by positivity)]
     have h1 : (D.R.k : ℝ) * L.sc.x ^ L.sc.eps * L.sc.x ^ L.sc.eps ≤ Ub L C ^ 3 := by
       calc (D.R.k : ℝ) * L.sc.x ^ L.sc.eps * L.sc.x ^ L.sc.eps ≤ Ub L C * Ub L C * Ub L C := by
-            gcongr <;> first | assumption | positivity | linarith
+            gcongr
         _ = Ub L C ^ 3 := by ring
     nlinarith [mul_le_mul_of_nonneg_right h1 hde0.le,
       mul_le_mul_of_nonneg_left hde1 (mul_nonneg hk0 hxe0.le),
@@ -528,26 +528,9 @@ end Formalism.MainNotions.TwistedPlaces
 
 end
 
-noncomputable section
-
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
-
-variable {D : D7} (L : SizeData₂ D)
-
-section Sums
-
-variable {C : ℝ} (hC : 0 < C) (P : ParameterChoice' D L) (hPar : ParametersPolynomiallyBounded L C P) (hL : Large L.sc.x L.sc.eps C)
-include hC P hPar hL
-
-theorem big_le_b : 4 * 10 ^ 6 * (C + 1) ^ 2 * Ub L C ^ 18 ≤ L.sc.b := sc_b_ge_const_mul_Ub_pow_eighteen L hC P hPar hL
-
-end Sums
-
 end Formalism.MainNotions.TwistedPlaces
-
-end
 
 noncomputable section
 
@@ -729,7 +712,7 @@ include hC P hPar hL
 
 theorem U_pow_eighteen_le_b : Ub L C ^ 18 ≤ L.sc.b := by
   have hU : 1 ≤ Ub L C := one_le_U L hC P hPar hL
-  have hb := big_le_b L hC P hPar hL
+  have hb := _root_.Formalism.MainNotions.TwistedPlaces.sc_b_ge_const_mul_Ub_pow_eighteen L hC P hPar hL
   have hU18 : 0 ≤ Ub L C ^ 18 := by positivity
   have hK : (1:ℝ) ≤ 4 * 10 ^ 6 * (C + 1) ^ 2 := by nlinarith [hC]
   exact le_trans (le_mul_of_one_le_left hU18 hK) hb
@@ -965,7 +948,7 @@ theorem point_bound (tb : Tab L) (hA : AdmT L tb C P) (S : Finset ℕ) (hS : ∀
     exact ⟨hS l hlS, h.1, h.2.1, h.2.2⟩)
   have s5 := sum_exc L hC P hPar hL tb hRe hExc (S.filter (fun l => l ∈ tb.exc ∧ lStar L < l)) (fun l hl => (Finset.mem_filter.1 hl).2)
   have gl := glob_le L hC P hPar hL
-  have hbig := big_le_b L hC P hPar hL
+  have hbig := _root_.Formalism.MainNotions.TwistedPlaces.sc_b_ge_const_mul_Ub_pow_eighteen L hC P hPar hL
   have hm := m_ge_one D
   have hf1 : (1 : ℝ) ≤ D.R.f := (m_ge_one D).trans (m_le_f D)
   have hL1 := L_ge_one L

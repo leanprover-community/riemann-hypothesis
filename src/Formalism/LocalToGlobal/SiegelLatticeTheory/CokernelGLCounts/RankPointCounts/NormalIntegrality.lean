@@ -89,7 +89,6 @@ theorem pair_int (hun : Formalism.HermitianLatticesTheory.IsUnimodular (VS D).hT
   have hxx : (VS D).hT x2 x1 = 0 := hiso x1 hx1' x2 hx2'
   have hsym : starRingEnd D.host.E ((VS D).hT x1 y0) = (VS D).hT y0 x1 := by
     first
-      | exact (VS D).herm x1 y0
       | exact (VS D).herm.eq x1 y0
   have hy2 : (VS D).hT y0 x1 = 0 := by
     rw [← hsym, hy1 x1 hx1', map_zero]

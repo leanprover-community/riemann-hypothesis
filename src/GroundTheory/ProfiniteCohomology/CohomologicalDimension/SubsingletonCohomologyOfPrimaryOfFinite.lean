@@ -418,7 +418,7 @@ theorem exists_finite_stable_submodule [CompactSpace G] (A : Rep.{u} (ULift.{u} 
   refine ⟨Submodule.span _ O, fun g => Submodule.span_le.2 ?_, ?_, Submodule.subset_span ⟨1, by simp⟩⟩
   · rintro _ ⟨h, rfl⟩
     show A.ρ g (A.ρ h a) ∈ Submodule.span _ O
-    exact Submodule.subset_span ⟨g * h, by simp [map_mul, Module.End.mul_apply]⟩
+    exact Submodule.subset_span ⟨g * h, by simp [map_mul]⟩
   · have hsub : (Submodule.span (ULift.{u} ℤ) O : Set A) ⊆ AddSubgroup.closure O := by
       intro x hx
       induction hx using Submodule.span_induction with

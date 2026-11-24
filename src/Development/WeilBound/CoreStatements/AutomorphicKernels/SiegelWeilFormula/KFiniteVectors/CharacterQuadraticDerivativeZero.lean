@@ -286,9 +286,6 @@ theorem T_D {Φ : d.Fn} (hΦ : Φ ∈ d.sch) {u : Matrix (Fin d.m) (Fin d.n ⊕ 
     map_smul, smul_eq_mul]
   ring
 
-theorem evI_add' (a b : AF F) : evI F (a + b) = evI F a + evI F b :=
-  map_add (InfiniteAdeleRing.ringEquiv_mixedSpace F) a.1 b.1
-
 theorem sp_add_right (x y y' : Matrix (Fin d.m) (Fin d.n ⊕ Fin d.n) (AE F E)) :
     sp d x (y + y') = sp d x y + sp d x y' := by
   rw [sp_eq, sp_eq, sp_eq, map_add (f := _), Prod.fst_add, Prod.snd_add, dotProduct_add, add_dotProduct]
@@ -300,7 +297,7 @@ theorem sp_smul_left (c : AF F) (x y : Matrix (Fin d.m) (Fin d.n ⊕ Fin d.n) (A
   ring
 
 theorem mZ_add (Z Z' X : Mx F E d.m d.n) : mZ d (Z + Z') X = mZ d Z X + mZ d Z' X := by
-  simp only [mZ, Matrix.add_mul, sp_add_right, evI_add', map_add (f := _)]
+  simp only [mZ, Matrix.add_mul, sp_add_right, _root_.GlobalTheory.ThK.Dbl.Dense.evI_add, map_add (f := _)]
 
 theorem td_T_add (Φ Ψ : d.Fn) (X : Mx F E d.m d.n) : d.T (Φ + Ψ) X = d.T Φ X + d.T Ψ X := by
   simp only [SD.T, rho_add_fn, map_add (f := _)]
@@ -344,7 +341,7 @@ theorem td_at_mul {p : Type} [Fintype p] {Z : Matrix (Fin d.m) p (AE F E)} (hZ :
     (N : Matrix p q (AE F E)) : At (evI F) (Z * N) := fun c hc => by rw [← Matrix.smul_mul, hZ c hc, Matrix.zero_mul]
 
 theorem incM_diagCols : incM F (diagCols (Fin d.n) : Matrix (Fin d.n ⊕ Fin d.n) (Fin d.n) E) = dg d := by
-  ext (i | i) j <;> by_cases h : i = j <;> simp [incM, diagCols, Matrix.one_apply, h]
+  ext (i | i) j <;> by_cases h : i = j <;> simp [incM, diagCols, h]
 
 theorem split_arch {u : Matrix (Fin d.m) (Fin d.n ⊕ Fin d.n) (AE F E)} (hu : At (evI F) u) :
     ∃ Z₁ Z₂ : Mx F E d.m d.n, At (evI F) Z₁ ∧ At (evI F) Z₂ ∧ u = Z₁ * (dg d)ᵀ + Z₂ * (b2 d)ᵀ := by
@@ -541,7 +538,7 @@ theorem theta_derivative_second_frame {Φ : d.Fn} (hΦ : Φ ∈ d.sch) {Z : Mx F
     obtain ⟨v, hv, ev⟩ := exists_at' (d := d) (Pi.single j 1)
     have := hsp v hv
     rw [sp_eq, ev, vec_eq_zero (at_fst hu) ha] at this
-    simp only [zero_dotProduct, dotProduct_zero, zero_sub, neg_eq_zero] at this
+    simp only [dotProduct_zero, zero_sub, neg_eq_zero] at this
     have e3 := congrArg (evI F) this
     rw [evI_dot] at e3
     have e4 : ∀ i, evI F (Dense.pt (Pi.single j (1 : mixedEmbedding.mixedSpace F)) 0 i) =

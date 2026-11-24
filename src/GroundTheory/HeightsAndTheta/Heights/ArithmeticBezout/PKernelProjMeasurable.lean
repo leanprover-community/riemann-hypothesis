@@ -73,13 +73,13 @@ def shifted (A : E →L[ℂ] F) (ε : ℝ) : E →L[ℂ] E :=
 
 theorem re_inner_shifted (A : E →L[ℂ] F) (ε : ℝ) (u : E) :
     RCLike.re (inner ℂ u (shifted A ε u)) = ‖A u‖ ^ 2 + ε * ‖u‖ ^ 2 := by
-  simp only [shifted, add_apply, comp_apply, smul_apply, one_apply, inner_add_right,
+  simp only [shifted, add_apply, comp_apply, smul_apply, inner_add_right,
     inner_smul_right, adjoint_inner_right, inner_self_eq_norm_sq_to_K, map_add]
   simp [← Complex.ofReal_pow]
 
 theorem inner_shifted_of_apply_eq_zero (A : E →L[ℂ] F) (ε : ℝ) (u : E) {z : E} (hz : A z = 0) :
     inner ℂ z (shifted A ε u) = (ε : ℂ) * inner ℂ z u := by
-  simp [shifted, inner_add_right, inner_smul_right, adjoint_inner_right, hz]
+  simp [shifted, adjoint_inner_right, hz]
 
 theorem shifted_apply_of_apply_eq_zero (A : E →L[ℂ] F) (ε : ℝ) {z : E} (hz : A z = 0) :
     shifted A ε z = (ε : ℂ) • z := by

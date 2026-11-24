@@ -168,10 +168,6 @@ end Coef
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem omegaP_mem_nhds {x : Matrix (Fin n) (Fin n) ℂ} (hx : x ∈ OmegaP n) : OmegaP n ∈ 𝓝 x :=
-  (tb_inv_hasFDerivAt (tb_isUnit_of_omegaP hx)).choose_spec.1.continuousAt.preimage_mem_nhds
-    (isOpen_omega.mem_nhds hx)
-
 def evZ (μ : Fin n → ℤ) (z : Matrix (Fin n) (Fin n) ℂ) : MMT μ →ₗ[ℂ] ℂ :=
   (LinearMap.proj z : (Matrix (Fin n) (Fin n) ℂ → ℂ) →ₗ[ℂ] ℂ) ∘ₗ (cOm n).subtype ∘ₗ (mmSub μ).subtype
 
@@ -185,7 +181,7 @@ theorem evZ_word (μ : Fin n → ℤ) (L : List (Matrix (Fin n) (Fin n) ℂ)) : 
     have h1 : ∀ a b, evZ μ z (eMM μ a b F) =
         fderiv ℂ (hWord L (PhiP μ)) z (z * Matrix.single a b 1) := fun a b => by
       have e : ((F : cOm n) : Matrix (Fin n) (Fin n) ℂ → ℂ) =ᶠ[𝓝 z] hWord L (PhiP μ) :=
-        eventually_of_mem (omegaP_mem_nhds hz) ih
+        eventually_of_mem (_root_.ReciprocityTheory.ChartRestriction.DS.Lap.LemK.positiveOmega_mem_nhds hz) ih
       rw [← e.fderiv_eq]
       exact Set.indicator_of_mem hz _
     rw [List.map_cons, List.prod_cons, Module.End.mul_apply, ← hF]

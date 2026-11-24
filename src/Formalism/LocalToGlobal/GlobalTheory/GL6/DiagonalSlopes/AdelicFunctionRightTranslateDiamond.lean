@@ -99,7 +99,7 @@ theorem level_prime_ne_type_prime (A : AtTTied u) (j : Fin 2) : (D.mem u).A.T â‰
   apply Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.level_prime_ne_type_prime <;> assumption
 
 theorem level_places_not_bad (A : AtTTied u) (v : (D.mem u).A.vT) : (A.eV v).1 âˆ‰ badG D := by
-  apply Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.level_places_not_bad <;> assumption
+  apply Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.level_places_not_bad
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0
 

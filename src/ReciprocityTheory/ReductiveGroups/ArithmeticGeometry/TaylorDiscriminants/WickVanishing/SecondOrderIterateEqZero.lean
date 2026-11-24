@@ -141,7 +141,6 @@ theorem pairMin_step (c : ι → π) (s : ι → Bool) (n : ι →₀ ℕ) (l l'
     by_cases hq : c l = q
     · have hq' : c l' = q := hc ▸ hq
       simp [hq, hq', hs, hs']
-      try omega
     · have hq' : ¬ c l' = q := hc ▸ hq
       simp only [hq, hq', false_and, if_false]
       omega

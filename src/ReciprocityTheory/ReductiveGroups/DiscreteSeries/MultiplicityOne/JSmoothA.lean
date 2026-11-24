@@ -71,14 +71,14 @@ theorem hpk_out {i : Fin (2 * r + k + 1)} (h : i.val < r ∨ r + k < i.val) (j :
   have hi := i.isLt
   have hj := j.isLt
   simp only [Hpk, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega) | simp_all | omega
+  split_ifs <;> first | rfl | (exfalso; omega)
 
 theorem hpk_mid {i : Fin (2 * r + k + 1)} (h : ¬(i.val < r ∨ r + k < i.val)) (j : Fin (2 * r + k + 1)) :
     Hpk k r i j = if j.val = i.val then (if i.val = r + k then -1 else 1) else 0 := by
   have hi := i.isLt
   have hj := j.isLt
   simp only [Hpk, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega) | simp_all | omega
+  split_ifs <;> first | rfl | (exfalso; omega)
 
 theorem hpk_mulVec (v : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
     (Hpk k r *ᵥ v) i = if i.val < r ∨ r + k < i.val then v ⟨2 * r + k - i.val, by omega⟩
@@ -132,7 +132,7 @@ theorem hpk_conjT : (Hpk k r)ᴴ = Hpk k r := by
   have hi := i.isLt
   have hj := j.isLt
   simp only [Matrix.conjTranspose_apply, Hpk, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega) | simp | (simp_all; omega) | simp_all
+  split_ifs <;> first | rfl | (exfalso; omega) | simp
 
 theorem gv_left_inv {g : Mat k r} (hg : g ∈ GV k r) : Hpk k r * gᴴ * Hpk k r * g = 1 := by
   have hg' : gᴴ * Hpk k r * g = Hpk k r := hg

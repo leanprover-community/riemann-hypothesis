@@ -74,7 +74,7 @@ theorem exists_periodPair_of_isLat (Λ : AddSubgroup ℂ) (hΛ : IsLat Λ) :
     rw [hfun]
     ext x
     simp only [Set.mem_range, Fin.exists_fin_two, Set.mem_insert_iff, Set.mem_singleton_iff,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+      Matrix.cons_val_zero, Matrix.cons_val_one]
     exact ⟨fun h => h.imp Eq.symm Eq.symm, fun h => h.imp Eq.symm Eq.symm⟩
   have hspan : Submodule.span ℤ {(b 0 : ℂ), (b 1 : ℂ)} = Λ' := by
     rw [← hrange]

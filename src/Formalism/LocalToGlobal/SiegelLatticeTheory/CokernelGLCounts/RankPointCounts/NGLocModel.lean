@@ -195,8 +195,7 @@ def FamOKS {Z : LocDat D} {τ : Type} {Cl Nu : Type}
 theorem famOK_iff {Z : LocDat D} {τ : Type} {Cl Nu : Type}
     (N : PN.NGData τ D.host.E D.R.rS Cl Nu) (γ : PN.Pts D.host.E D.R.rS) (S : Finset (Cl × Nu)) (C0n : ℕ) (AAre : ℝ)
     (Fm : LocFam Z Cl Nu) : FamOK N γ S C0n AAre Fm ↔ FamOKS N γ S C0n AAre (fun L => L.ampNG) Fm := by
-  unfold FamOK FamOKS
-  simp only [localAmplitudeSq_eq_weighted]
+  rfl
 
 theorem localLe_of_fam {Z : LocDat D} {τ Rw I H H₁ : Type} [Fintype I] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] (X : PB.Terms τ Rw I H H₁) {Cl Nu : Type}

@@ -105,10 +105,6 @@ theorem InAt_K {κ : X.B.I.Gf} (hκ : κ ∈ X.B.I.Kset) {a : VA X.B.I} (ha : In
   obtain ⟨c, hc, h⟩ := ha
   exact ⟨c, hc, by rw [← Matrix.mulVec_smul]; exact mem_mL_of_Kset X hκ _ h⟩
 
-theorem crd_add' (v w : (VS D).V) : X.crd (v + w) = X.crd v + X.crd w := by
-  funext i
-  simp [Formalism.L2.SG.HidaSetting.HidaSetting.crd, crdOf]
-
 theorem crd_sub' (v w : (VS D).V) : X.crd (v - w) = X.crd v - X.crd w := by
   funext i
   simp [Formalism.L2.SG.HidaSetting.HidaSetting.crd, crdOf]

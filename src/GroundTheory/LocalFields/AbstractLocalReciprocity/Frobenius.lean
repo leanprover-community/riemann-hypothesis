@@ -254,7 +254,7 @@ theorem isOpen_frobeniusClosure (hd : Continuous d) (hL : IsOpen (L : Set G))
   have : Finite (G ⧸ L) := Subgroup.quotient_finite_of_isOpen _ hL
   have : L.FiniteIndex := Subgroup.finiteIndex_of_finite_quotient
   have h2 : S.relIndex (S ⊔ d.ker) ≠ 0 := by
-    rw [relIndex_sup_of_le_normalizer (Subgroup.le_normalizer_of_normal),
+    rw [_root_.GroundTheory.Variant₂.N1.relIndex_sup_of_le_normalizer (Subgroup.le_normalizer_of_normal),
       ← Subgroup.inf_relIndex_right, frobeniusClosure_inf_ker hd hL hσ hN hdσ,
       Subgroup.inf_relIndex_right]
     exact Subgroup.FiniteIndex.index_ne_zero

@@ -69,9 +69,7 @@ private theorem section_module_eq_span_pow (x : κ → Ω) (n : ℕ) :
 theorem sec_mul_sec (x : κ → Ω) (a b : ℕ) : sec ℤ x a * sec ℤ x b = sec ℤ x (a + b) := by
   rw [section_module_eq_span_pow, section_module_eq_span_pow, section_module_eq_span_pow, pow_add]
 
-theorem sec_eq_span_pow (x : κ → Ω) (n : ℕ) :
-    sec ℤ x n = (Submodule.span ℤ (Set.range x)) ^ n :=
-  section_module_eq_span_pow x n
+alias sec_eq_span_pow := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.section_module_eq_span_pow
 
 theorem sec_comp_le (x : κ → Ω) (e : Fin (D + 1) → κ) (n : ℕ) : sec ℤ (x ∘ e) n ≤ sec ℤ x n := by
   rintro z ⟨p, hp, rfl⟩

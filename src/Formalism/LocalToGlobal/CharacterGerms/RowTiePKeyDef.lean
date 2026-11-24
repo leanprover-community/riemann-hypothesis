@@ -95,11 +95,6 @@ section Lemmas
 
 variable {C : Type} [Field C] {V : VF C}
 
-theorem aeval_mulVec {n : ℕ} (A : Matrix (Fin n) (Fin n) C) (w : Fin n → C) (lam : C)
-    (h : Matrix.mulVec A w = lam • w) (f : Polynomial C) :
-    Matrix.mulVec (Polynomial.aeval A f) w = f.eval lam • w := by
-  first | exact Bl.PowMulVecEigen.goal1 .. | (apply Bl.PowMulVecEigen.goal1 <;> assumption) | (intros; apply Bl.PowMulVecEigen.goal1 <;> assumption) | (apply @Bl.PowMulVecEigen.goal1 <;> assumption) | (intros; apply @Bl.PowMulVecEigen.goal1 <;> assumption) | (apply @Bl.PowMulVecEigen.goal1 <;> first | assumption | infer_instance)
-
 theorem eig_int {n : ℕ} (A : Matrix (Fin n) (Fin n) C) (hA : ∀ i j, V.Ge 0 (A i j)) (w : Fin n → C) (hw : w ≠ 0)
     (lam : C) (h : Matrix.mulVec A w = lam • w) : V.Ge 0 lam := by
   obtain ⟨i0, hi0⟩ : ∃ i, w i ≠ 0 := by

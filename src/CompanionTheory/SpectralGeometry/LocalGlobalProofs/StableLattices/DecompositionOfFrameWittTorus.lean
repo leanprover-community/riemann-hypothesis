@@ -413,9 +413,9 @@ theorem stDecomp_of_frame_witt_tor : StFrame → StWitt → StTor → StDecomp :
   obtain ⟨P, hP, hPe, hPf, hPW⟩ := frame_perm hδ0 hh hF σ
   have hk : IsIso h (k₀ * P) := isIso_mul hk₀ hP
   have he' : ∀ i, (k₀ * P) (e i) = (e₂ ∘ (σ.trans q)) i := fun i => by
-    simp [LinearEquiv.mul_apply, hPe, hke]
+    simp [hPe, hke]
   have hf' : ∀ i, (k₀ * P) (f i) = (f₂ ∘ (σ.trans q)) i := fun i => by
-    simp [LinearEquiv.mul_apply, hPf, hkf]
+    simp [hPf, hkf]
   have hW' : ∀ w ∈ W, (k₀ * P) w ∈ W₁ := fun w hw => by
     simpa [LinearEquiv.mul_apply, hPW w hw] using (hkW w).1 hw
   have hu' : ∀ i, p ^ (m ∘ q ∘ σ) i ≠ 0 := fun i => pow_ne_zero _ hp0

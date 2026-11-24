@@ -84,8 +84,7 @@ theorem gs_res (f : Y ⟶ X) (y : Y) {U V : X.Opens} (hle : V ≤ U) (h : f y �
   | (rw [← CategoryTheory.comp_apply, ← CategoryTheory.comp_apply, ← CategoryTheory.comp_apply,
       Scheme.Hom.naturality_assoc]
      first
-     | (erw [TopCat.Presheaf.germ_res]; done)
-     | (simp only [TopCat.Presheaf.germ_res]; done))
+     | (erw [TopCat.Presheaf.germ_res]; done))
   | (rw [← CommRingCat.comp_apply, ← CommRingCat.comp_apply, ← CommRingCat.comp_apply,
       Scheme.Hom.naturality_assoc]
      erw [TopCat.Presheaf.germ_res])
@@ -94,7 +93,7 @@ theorem gs_pull (f : Z ⟶ Y) (g : Y ⟶ X) (z : Z) (U : X.Opens) (h : g (f z) �
     gs f z (g ⁻¹ᵁ U) ((g.app U).hom a) = gs (f ≫ g) z U a := by
   have h' : (f ≫ g) z ∈ U := h
   rw [gs_eq f z (g ⁻¹ᵁ U) h, gs_eq (f ≫ g) z U h']
-  simp only [Scheme.Hom.comp_app, CommRingCat.comp_apply]
+  simp only [Scheme.Hom.comp_app]
   try rfl
 
 theorem fn_ext {V : X.Opens} {a b : Γ(X, V)} (h : ∀ x ∈ V, gs (𝟙 X) x V a = gs (𝟙 X) x V b) : a = b := by

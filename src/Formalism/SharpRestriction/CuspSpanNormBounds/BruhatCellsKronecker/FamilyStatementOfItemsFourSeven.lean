@@ -325,11 +325,6 @@ theorem list_map_prod_le (f g : ℕ → ℝ) (h : ∀ a, 0 ≤ f a ∧ f a ≤ g
     simp only [List.map_cons, List.prod_cons]
     exact ⟨mul_nonneg (h a).1 ih.1, mul_le_mul (h a).2 ih.2 ih.1 (le_trans (h a).1 (h a).2)⟩
 
-theorem one_le_max_self_inv {t : ℝ} (ht : 0 < t) : 1 ≤ max t t⁻¹ := by
-  rcases le_total 1 t with h | h
-  · exact le_trans h (le_max_left _ _)
-  · exact le_trans ((one_le_inv₀ ht).2 h) (le_max_right _ _)
-
 theorem max_inv_pow_le_rpow (t : ℝ) (ht : 0 ≤ t) (m : ℕ) (hm : 2 ≤ m) (C : ℝ) (hC : 6 ≤ C) :
     0 ≤ (max t t⁻¹) ^ (2 * (m + 4)) ∧ (max t t⁻¹) ^ (2 * (m + 4)) ≤ (max t t⁻¹) ^ (C * (m : ℝ)) := by
   have hm2 : (2 : ℝ) ≤ m := by exact_mod_cast hm
@@ -338,17 +333,12 @@ theorem max_inv_pow_le_rpow (t : ℝ) (ht : 0 ≤ t) (m : ℕ) (hm : 2 ≤ m) (C
     have hm' : (m : ℝ) ≠ 0 := by positivity
     have : C * (m : ℝ) ≠ 0 := mul_ne_zero (by linarith) hm'
     simp only [inv_zero, max_self, Real.zero_rpow this, zero_pow (by omega : 2 * (m + 4) ≠ 0), le_refl, and_self]
-  · have h1 := one_le_max_self_inv h
+  · have h1 := _root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv h
     refine ⟨by positivity, ?_⟩
     rw [← Real.rpow_natCast]
     apply Real.rpow_le_rpow_of_exponent_le h1
     push_cast
     nlinarith
-
-theorem one_le_scale_base {D : D7} (large₂ : SizeData₂ D) : 1 ≤ large₂.sc.b := by
-  unfold Scale.b Scale.L
-  apply Real.one_le_exp
-  exact Real.rpow_nonneg (le_of_lt (lt_trans one_pos large₂.sc.one_lt_alt)) _
 
 theorem loss_factor_le_rpow {k r : ℕ} (b CPT Cc C : ℝ) (m : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (γ : MatKR k r)
     (p : Point ℂ (r + 1)) (hb : 1 ≤ b) (hm : 2 ≤ m) (hPT : 0 ≤ CPT) (hCc : 0 ≤ Cc) (hC : CPT + Cc + 6 ≤ C)
@@ -359,7 +349,7 @@ theorem loss_factor_le_rpow {k r : ℕ} (b CPT Cc C : ℝ) (m : ℕ) (z z' : Fin
         b ^ (Cc * (m : ℝ) ^ 2) ≤ lossV b C m z z' γ p := by
   set G := Gf k r z z' γ with hGdef
   set y := max G G⁻¹ with hy
-  have hy1 : 1 ≤ y := one_le_max_self_inv hG
+  have hy1 : 1 ≤ y := _root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv hG
   have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast (by omega : 1 ≤ m)
   have hm2 : (1 : ℝ) ≤ (m : ℝ) ^ 2 := one_le_pow₀ hm1
   have hm4 : (m : ℝ) ^ 2 ≤ (m : ℝ) ^ 4 := pow_le_pow_right₀ hm1 (by norm_num)
@@ -424,7 +414,7 @@ theorem weightStatement_of_section (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg
   set B1 := large₂.sc.b ^ (CPT * (D.R.m : ℝ) ^ 4) * (max 1 G⁻¹) ^ (CPT * (D.R.m : ℝ) ^ 2) with hB1
   set Mx := max G G⁻¹ * ((ptBlockEnds p).map fun l => (max ‖DminN W.z W.z' γ l‖ ‖DminN W.z W.z' γ l‖⁻¹) ^ (2 * (D.R.m + 4))).prod
     with hMx
-  have hb := one_le_scale_base large₂
+  have hb := _root_.Formalism.MainNotions.BridgeLemma.one_le_b large₂
   have hX0 : 0 ≤ X := Formalism.MainNotions.BesselShellMomentBounds.hsNormSq_nonneg _
   have hn00 : 0 ≤ n0 := by rw [hn0]; unfold normalizedLocalScale; exact D.R.k_even.pow_nonneg _
   have hti0 : 0 ≤ ti := inv_nonneg.2 (D.R.k_even.pow_nonneg _)
@@ -477,7 +467,7 @@ theorem inv_pow_le_max_inv_pow {t : ℝ} (ht : 0 < t) (n : ℕ) : (t⁻¹) ^ n �
   pow_le_pow_left₀ (inv_pos.2 ht).le (le_max_right _ _) n
 
 theorem one_le_pow_mul_max_inv_pow {t : ℝ} (ht : 0 < t) {n K : ℕ} (h : n ≤ K) : 1 ≤ t ^ n * (max t t⁻¹) ^ K := by
-  have h1 := one_le_max_self_inv ht
+  have h1 := _root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv ht
   have h2 : (t⁻¹) ^ n ≤ (max t t⁻¹) ^ K := le_trans (inv_pow_le_max_inv_pow ht n) (pow_le_pow_right₀ h1 h)
   calc (1 : ℝ) = t ^ n * (t⁻¹) ^ n := by rw [← mul_pow, mul_inv_cancel₀ ht.ne', one_pow]
     _ ≤ t ^ n * (max t t⁻¹) ^ K := by gcongr
@@ -487,7 +477,7 @@ theorem power_change_of_scale_bound (d d' τ F' : ℝ) (E E' e0 s K : ℕ) (hd :
     F' * d' ^ E' ≤ (τ ^ (2 * e0) * F') * d ^ E * (max d' d'⁻¹) ^ K * (max d d⁻¹) ^ K := by
   have hd0 : 0 < d' := by rw [hd']; positivity
   have A : 1 ≤ d ^ (2 * s + 4) * (max d d⁻¹) ^ K := one_le_pow_mul_max_inv_pow hd hK
-  have hmu := one_le_max_self_inv hd0
+  have hmu := _root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv hd0
   have B : d' ^ E' ≤ d' ^ (2 * e0) * (max d' d'⁻¹) ^ K := by
     have e : d' ^ E' = d' ^ (2 * e0) * (d' ^ 4 * (d'⁻¹) ^ (2 * s)) := by
       have : d' ^ E' * d' ^ (2 * s) = d' ^ (2 * e0) * d' ^ 4 := by rw [← pow_add, ← pow_add, h2]
@@ -518,7 +508,7 @@ theorem cell_weight_induction (k r : ℕ) (T T' : ℝ) (δ : ℕ → ℝ) (K : �
       0 < ptWeightFrom k r T T' a bs ∧
       G ^ k ≤ ptWeightFrom k r T T' a bs * δ a ^ (2 * (2 * (r + 1 - a) + k)) * max G G⁻¹ *
         (max (δ a) (δ a)⁻¹) ^ K * ((blockEndsFrom a bs).map fun l => (max (δ l) (δ l)⁻¹) ^ (2 * K)).prod := by
-  have hy : 1 ≤ max G G⁻¹ := one_le_max_self_inv hG
+  have hy : 1 ≤ max G G⁻¹ := _root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv hG
   intro bs
   induction bs with
   | nil =>
@@ -530,7 +520,7 @@ theorem cell_weight_induction (k r : ℕ) (T T' : ℝ) (δ : ℕ → ℝ) (K : �
       rw [hGd]; nlinarith [mul_nonneg hTT (sq_nonneg (δ r))]
     have h2 : G ^ k ≤ δ (r + 1) ^ (2 * k) := by
       rw [pow_mul]; exact pow_le_pow_left₀ hG.le h1 k
-    have h3 : 1 ≤ (max (δ (r + 1)) (δ (r + 1))⁻¹) ^ K := one_le_pow₀ (one_le_max_self_inv hda)
+    have h3 : 1 ≤ (max (δ (r + 1)) (δ (r + 1))⁻¹) ^ K := one_le_pow₀ (_root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv hda)
     simp only [ptWeightFrom, blockEndsFrom, List.map_nil, List.prod_nil, Nat.sub_self, mul_zero, zero_add, one_mul, mul_one]
     have n0 : 0 ≤ δ (r + 1) ^ (2 * k) := by positivity
     calc G ^ k ≤ δ (r + 1) ^ (2 * k) := h2
@@ -550,8 +540,8 @@ theorem cell_weight_induction (k r : ℕ) (T T' : ℝ) (δ : ℕ → ℝ) (K : �
     obtain ⟨ihp, ihl⟩ := ih (a + s) hb' hsum' hc2 hd'
     have hP0 : 0 ≤ ((blockEndsFrom (a + s) bs).map fun l => (max (δ l) (δ l)⁻¹) ^ (2 * K)).prod :=
       (list_map_prod_le _ _ (fun l => ⟨(even_two_mul K).pow_nonneg _, le_rfl⟩) _).1
-    have hmu' := one_le_max_self_inv hd'
-    have hmu := one_le_max_self_inv hda
+    have hmu' := _root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv hd'
+    have hmu := _root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv hda
     by_cases hsp : s = 1 ∧ a + 1 = r + 1
     · obtain ⟨hs1, ha⟩ := hsp
       have har : a = r := by omega
@@ -632,7 +622,7 @@ theorem minor_chain_of_step (δ : ℕ → ℝ) : ∀ (bs : List (ℂ × ℕ)) (a
 theorem leading_minor_norm_step {d : ℕ} (p : Point ℂ d) (q : ℕ) (hq : q < p.1.length) :
     ‖leadingPrincipalMinor (blockAntidiagonalMatrix (toComp p) (toT p)) (pS p.1 (q + 1))‖ =
       ‖leadingPrincipalMinor (blockAntidiagonalMatrix (toComp p) (toT p)) (pS p.1 q)‖ * ‖(p.1[q]).1‖ ^ (p.1[q]).2 := by
-  rw [← sizeUpTo_toComp, ← sizeUpTo_toComp, Formalism.HermitianLatticeCounting.Final.ExpansionTerms.e4aValue, Formalism.HermitianLatticeCounting.Final.ExpansionTerms.e4aValue]
+  rw [← sizeUpTo_toComp, ← sizeUpTo_toComp, _root_.Formalism.HermitianLatticeCounting.P.leading_minor_at_block_end, _root_.Formalism.HermitianLatticeCounting.P.leading_minor_at_block_end]
   have hq' : q < (toComp p).length := by rw [toComp_length]; exact hq
   have hf : (Finset.univ.filter (fun a : Fin (toComp p).length => (a : ℕ) < q + 1)) =
       insert (⟨q, hq'⟩ : Fin (toComp p).length) (Finset.univ.filter (fun a : Fin (toComp p).length => (a : ℕ) < q)) := by
@@ -671,7 +661,7 @@ theorem cell_weight_lemma (D : D7) : CellWeightBound D := by
     exact leading_minor_norm_step p q hq
   have h0 : ‖DminN z z' γ 0‖ = 1 := by
     rw [hδ 0 (Nat.zero_le _)]
-    have := Formalism.HermitianLatticeCounting.Final.ExpansionTerms.e4aValue ℂ _ (Formalism.MainNotions.BesselShellMomentBounds.toComp p) (Formalism.MainNotions.BesselShellMomentBounds.toT p) 0
+    have := _root_.Formalism.HermitianLatticeCounting.P.leading_minor_at_block_end ℂ _ (Formalism.MainNotions.BesselShellMomentBounds.toComp p) (Formalism.MainNotions.BesselShellMomentBounds.toT p) 0
     rw [Composition.sizeUpTo_zero] at this
     rw [this]
     simp
@@ -700,7 +690,7 @@ theorem weight_admissible_mono (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb 
     (hA : VanishingOnXAndXPlusBranching.adm1 D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C) : VanishingOnXAndXPlusBranching.adm1 D large₂ C' Cl Cg cb Cu cT CT C0 Cn C1 C₂ := by
   intro hH τ w w' hTT θ hθ W hGW lam' hl S hGS μsec hμ γ p hRel θ' hθ' νR hν
   refine le_trans (hA hH τ w w' hTT θ hθ W hGW lam' hl S hGS μsec hμ γ p hRel θ' hθ' νR hν) ?_
-  have hb := one_le_scale_base large₂
+  have hb := _root_.Formalism.MainNotions.BridgeLemma.one_le_b large₂
   have h1 : large₂.sc.b ^ (C * (D.R.m : ℝ) ^ 4) ≤ large₂.sc.b ^ (C₂ * (D.R.m : ℝ) ^ 4) :=
     Real.rpow_le_rpow_of_exponent_le hb (by gcongr)
   have h2 : (max 1 (Gf D.R.k D.R.rS W.z W.z' γ)⁻¹) ^ (C * (D.R.m : ℝ) ^ 2) ≤
@@ -712,7 +702,7 @@ theorem constant_bound_mono (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu 
     (hA : VanishingOnXAndXPlusBranching.Conclusion1 D large₂ C' Cl Cg cb Cu cT CT C0 C1 C) : VanishingOnXAndXPlusBranching.Conclusion1 D large₂ C' Cl Cg cb Cu cT CT C0 C1 C₂ := by
   intro hH τ w w' hTT θ hθ W hGW S hGS hdeg μsec hμ
   refine le_trans (hA hH τ w w' hTT θ hθ W hGW S hGS hdeg μsec hμ) ?_
-  have hb := one_le_scale_base large₂
+  have hb := _root_.Formalism.MainNotions.BridgeLemma.one_le_b large₂
   have h1 : large₂.sc.b ^ (C * (D.R.m : ℝ) ^ 2) ≤ large₂.sc.b ^ (C₂ * (D.R.m : ℝ) ^ 2) :=
     Real.rpow_le_rpow_of_exponent_le hb (by gcongr)
   have hti0 : 0 ≤ (tvPr D τ w' ^ D.R.k)⁻¹ := inv_nonneg.2 (D.R.k_even.pow_nonneg _)
@@ -1162,11 +1152,6 @@ namespace Formalism.MainNotions.BridgeLemma
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants Formalism.HermitianLatticeCounting.LatticeSumBounds
 open scoped InnerProductSpace
 
-theorem one_le_max_self_inv_pos {a : ℝ} (ha : 0 < a) : 1 ≤ max a a⁻¹ := by
-  rcases le_total 1 a with h | h
-  · exact le_max_of_le_left h
-  · exact le_max_of_le_right ((one_le_inv₀ ha).2 h)
-
 theorem max_self_inv_nonneg {a : ℝ} (ha : 0 ≤ a) : 0 ≤ max a a⁻¹ := le_max_of_le_left ha
 
 theorem max_inv_rpow_mono_exponent {a e1 e2 : ℝ} (ha : 0 ≤ a) (h0 : 0 < e1) (h : e1 ≤ e2) :
@@ -1175,7 +1160,7 @@ theorem max_inv_rpow_mono_exponent {a e1 e2 : ℝ} (ha : 0 ≤ a) (h0 : 0 < e1) 
   · subst h'
     simp only [inv_zero, max_self]
     rw [Real.zero_rpow h0.ne', Real.zero_rpow (lt_of_lt_of_le h0 h).ne']
-  · exact Real.rpow_le_rpow_of_exponent_le (one_le_max_self_inv_pos h') h
+  · exact Real.rpow_le_rpow_of_exponent_le (_root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv h') h
 
 theorem list_prod_max_inv_rpow_nonneg (L : List ℕ) (d : ℕ → ℝ) (hd : ∀ l, 0 ≤ d l) (e : ℝ) :
     0 ≤ (L.map fun l => (max (d l) (d l)⁻¹) ^ e).prod := by
@@ -1201,7 +1186,7 @@ theorem one_le_list_prod_max_inv_rpow (L : List ℕ) (d : ℕ → ℝ) (hd : ∀
   | cons a L ih =>
     rw [List.map_cons, List.prod_cons]
     exact one_le_mul_of_one_le_of_one_le
-      (Real.one_le_rpow (one_le_max_self_inv_pos (hd a (List.mem_cons_self))) he)
+      (Real.one_le_rpow (_root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv (hd a (List.mem_cons_self))) he)
       (ih fun l hl => hd l (List.mem_cons_of_mem _ hl))
 
 theorem single_factor_le_list_prod (L : List ℕ) (d : ℕ → ℝ) (hd : ∀ l ∈ L, 0 < d l) {e : ℝ} (he : 0 ≤ e) (l0 : ℕ) (hl0 : l0 ∈ L) :
@@ -1211,31 +1196,21 @@ theorem single_factor_le_list_prod (L : List ℕ) (d : ℕ → ℝ) (hd : ∀ l 
   | cons a L ih =>
     rw [List.map_cons, List.prod_cons]
     have ha : 1 ≤ (max (d a) (d a)⁻¹) ^ e :=
-      Real.one_le_rpow (one_le_max_self_inv_pos (hd a (List.mem_cons_self))) he
+      Real.one_le_rpow (_root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv (hd a (List.mem_cons_self))) he
     have hL : ∀ l ∈ L, 0 < d l := fun l hl => hd l (List.mem_cons_of_mem _ hl)
     rcases List.mem_cons.1 hl0 with h | h
     · subst h
       exact le_mul_of_one_le_right (le_trans zero_le_one ha) (one_le_list_prod_max_inv_rpow L d hL he)
     · exact (ih hL h).trans (le_mul_of_one_le_left (le_trans zero_le_one (one_le_list_prod_max_inv_rpow L d hL he)) ha)
 
-theorem one_le_foldr_max_alt (xs : List ℝ) : 1 ≤ xs.foldr max 1 := by
-  induction xs with
-  | nil => simp
-  | cons a xs ih => rw [List.foldr_cons]; exact le_max_of_le_right ih
-
 section Loss
 
 variable {k r : ℕ} (b : ℝ) (m : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (γ : MatKR k r) (p : Point ℂ (r + 1))
 
-theorem one_le_loss_factor (hb : 1 ≤ b) {C : ℝ} (hC : 0 ≤ C) : 1 ≤ lossP b C m z z' γ p := by
-  unfold lossP
-  refine Real.one_le_rpow ?_ (by positivity)
-  exact one_le_mul_of_one_le_of_one_le (Real.one_le_rpow hb (by positivity)) (one_le_foldr_max_alt _)
-
 theorem local_loss_mono_constant (hb : 1 ≤ b) {Ca C : ℝ} (hCa : 0 ≤ Ca) (h : Ca ≤ C) :
     lossP b Ca m z z' γ p ≤ lossP b C m z z' γ p := by
   unfold lossP
-  have hM := one_le_foldr_max_alt ((ptBlockEnds p).map fun l => max 1 ‖DminN z z' γ l‖⁻¹)
+  have hM := _root_.Formalism.MainNotions.BridgeLemma.one_le_foldr_max ((ptBlockEnds p).map fun l => max 1 ‖DminN z z' γ l‖⁻¹)
   have h1 : b ^ (Ca * (m : ℝ)) ≤ b ^ (C * (m : ℝ)) :=
     Real.rpow_le_rpow_of_exponent_le hb (by gcongr)
   have h0 : 1 ≤ b ^ (Ca * (m : ℝ)) := Real.one_le_rpow hb (by positivity)
@@ -1254,7 +1229,7 @@ theorem loss_volume_mono_constant (hb : 1 ≤ b) (hm : 0 < m) {Ca C : ℝ} (hCa 
   unfold lossV
   have hm' : (0 : ℝ) < m := by exact_mod_cast hm
   refine mul_le_mul (mul_le_mul (Real.rpow_le_rpow_of_exponent_le hb (by gcongr))
-    (Real.rpow_le_rpow_of_exponent_le (one_le_max_self_inv_pos hG) (by gcongr))
+    (Real.rpow_le_rpow_of_exponent_le (_root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv hG) (by gcongr))
     (Real.rpow_nonneg (max_self_inv_nonneg hG.le) _) (Real.rpow_nonneg (by linarith) _)) ?_ ?_ ?_
   · exact list_prod_max_inv_rpow_mono _ (fun l => ‖DminN z z' γ l‖) (fun l => norm_nonneg _) (by positivity) (by gcongr)
   · exact list_prod_max_inv_rpow_nonneg _ (fun l => ‖DminN z z' γ l‖) (fun l => norm_nonneg _) _
@@ -1268,35 +1243,22 @@ theorem minor_power_le_loss (hb : 1 ≤ b) {C : ℝ} (hC : 0 ≤ C) (hG : 0 < Gf
   have h1 : ‖DminN z z' γ l0‖ ^ N ≤ (max ‖DminN z z' γ l0‖ ‖DminN z z' γ l0‖⁻¹) ^ (C * (m : ℝ)) := by
     refine (pow_le_pow_left₀ (norm_nonneg _) (le_max_left _ (‖DminN z z' γ l0‖⁻¹)) N).trans ?_
     rw [← Real.rpow_natCast]
-    exact Real.rpow_le_rpow_of_exponent_le (one_le_max_self_inv_pos (hpos l0 hl0)) hN
+    exact Real.rpow_le_rpow_of_exponent_le (_root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv (hpos l0 hl0)) hN
   have h2 := single_factor_le_list_prod (ptBlockEnds p) (fun l => ‖DminN z z' γ l‖) hpos (by positivity : 0 ≤ C * (m : ℝ)) l0 hl0
   have h3 : 1 ≤ b ^ (C * (m : ℝ) ^ 4) * (max (Gf k r z z' γ) (Gf k r z z' γ)⁻¹) ^ (C * (m : ℝ) ^ 2) :=
     one_le_mul_of_one_le_of_one_le (Real.one_le_rpow hb (by positivity))
-      (Real.one_le_rpow (one_le_max_self_inv_pos hG) (by positivity))
+      (Real.one_le_rpow (_root_.Formalism.MainNotions.BridgeLemma.one_le_max_inv hG) (by positivity))
   refine (h1.trans h2).trans (le_mul_of_one_le_left ?_ h3)
   exact list_prod_max_inv_rpow_nonneg _ (fun l => ‖DminN z z' γ l‖) (fun l => norm_nonneg _) _
 
 end Loss
-
-theorem hs_norm_sq_eq_sum_basis {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-    [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (A : Wq →L[ℂ] Wp) :
-    hsNormSq A = ∑ i, ‖A (stdOrthonormalBasis ℂ Wq i)‖ ^ 2 := by
-  unfold hsNormSq hsInner
-  rw [Complex.re_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [inner_self_eq_norm_sq_to_K]
-  norm_cast
-
-theorem hs_norm_sq_nonneg {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-    [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (A : Wq →L[ℂ] Wp) : 0 ≤ hsNormSq A := by
-  rw [hs_norm_sq_eq_sum_basis]; positivity
 
 theorem hs_norm_sq_le_rank_mul_norm {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] (A : Wq →L[ℂ] Wp) :
     hsNormSq A ≤ (Module.finrank ℂ Wp : ℝ) * ‖A‖ ^ 2 := by
   have := FiniteDimensional.complete ℂ Wp
   have := FiniteDimensional.complete ℂ Wq
-  rw [hs_norm_sq_eq_sum_basis]
+  rw [_root_.Formalism.MainNotions.BridgeLemma.hsNormSq_eq_sum]
   have h1 : ∀ i, ‖A (stdOrthonormalBasis ℂ Wq i)‖ ^ 2 =
       ∑ j, ‖⟪stdOrthonormalBasis ℂ Wp j, A (stdOrthonormalBasis ℂ Wq i)⟫_ℂ‖ ^ 2 := fun i =>
     ((stdOrthonormalBasis ℂ Wp).sum_sq_norm_inner_right _).symm
@@ -1439,11 +1401,7 @@ theorem numericVolume_bound_ii (k r : ℕ) (C A G T T' g v t la lc pa pc hs dim 
   have hC0 : 0 ≤ C := hA0.le.trans hA
   exact product_le_enlarged_losses la lc pa pc _ hla hlac hpa hpac (by positivity)
 
-theorem rank_eq_two_mul_add_two (D : D7) : D.R.m = 2 * D.R.rS + 2 := by
-  obtain ⟨t, ht⟩ := D.R.m_even
-  have h2 := D.R.two_le_m
-  simp only [Ranks.rS]
-  omega
+alias rank_eq_two_mul_add_two := _root_.Formalism.MainNotions.BridgeLemma.m_eq
 
 theorem rank_lower_bound (D : D7) : 2 * D.R.rS + 6 ≤ D.R.k := by
   obtain ⟨t, ht⟩ := D.R.m_even
@@ -1453,9 +1411,7 @@ theorem rank_lower_bound (D : D7) : 2 * D.R.rS + 6 ≤ D.R.k := by
   simp only [Ranks.rS]
   omega
 
-theorem one_le_scale_base_local {D : D7} (large₂ : SizeData₂ D) : 1 ≤ large₂.sc.b := by
-  unfold Scale.b Scale.L
-  exact Real.one_le_exp (Real.rpow_nonneg (le_trans zero_le_one large₂.sc.one_lt_alt.le) _)
+alias one_le_scale_base_local := _root_.Formalism.MainNotions.BridgeLemma.one_le_b
 
 theorem level_rpow_neg_rank_eq (D : D7) (hg : 0 < gg D) : gg D ^ (-(D.R.m : ℝ)) = (gg D)⁻¹ ^ (2 * D.R.rS + 2) := by
   rw [Real.rpow_neg hg.le, Real.rpow_natCast, rank_eq_two_mul_add_two D, inv_pow]
@@ -1548,9 +1504,9 @@ theorem lossStatement_of_bounds (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb
   have hall : ∀ l ∈ ptBlockEnds p, DminN W.z W.z' γ l ≠ 0 := fun l hl => cell_ne_of_mem D hRel l hl
   have hla0 := loss_volume_nonneg large₂.sc.b D.R.m W.z W.z' γ p hb Ca hG
   have hlac := loss_volume_mono_constant large₂.sc.b D.R.m W.z W.z' γ p hb hm0 hCa hCaC hG
-  have hpa := one_le_loss_factor large₂.sc.b D.R.m W.z W.z' γ p hb hCa.le
+  have hpa := _root_.Formalism.MainNotions.BridgeLemma.one_le_lossP large₂.sc.b D.R.m W.z W.z' γ p hb hCa.le
   have hpac := local_loss_mono_constant large₂.sc.b D.R.m W.z W.z' γ p hb hCa.le hCaC
-  have hhs := hs_norm_sq_nonneg (S.J νR γ)
+  have hhs := _root_.Formalism.MainNotions.BridgeLemma.hsNormSq_nonneg (S.J νR γ)
   have hrank := hs_norm_sq_le_rank_mul_norm (S.J νR γ)
   have hTA' : Tr D w' / Tr D w ≤ A := hTA
   have hA0 : 0 < A := lt_of_lt_of_le (by positivity) hTA'
@@ -1637,21 +1593,9 @@ end Formalism.MainNotions.BridgeLemma
 
 end
 
-noncomputable section
-
 namespace Formalism.MainNotions.BridgeLemma
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
-
-section Assembly
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Assembly
-
 end Formalism.MainNotions.BridgeLemma
-
-end
 
 noncomputable section
 
@@ -2083,9 +2027,9 @@ theorem decayProp_of_l2AbsDecay (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb
   have hall : ∀ l ∈ ptBlockEnds p, DminN W.z W.z' γ l ≠ 0 := fun l hl => cell_ne_of_mem D hRel l hl
   have hla0 := loss_volume_nonneg large₂.sc.b D.R.m W.z W.z' γ p hb Ca hG
   have hlac := loss_volume_mono_constant large₂.sc.b D.R.m W.z W.z' γ p hb hm0 hCa hCaC hG
-  have hpa := one_le_loss_factor large₂.sc.b D.R.m W.z W.z' γ p hb hCa.le
+  have hpa := _root_.Formalism.MainNotions.BridgeLemma.one_le_lossP large₂.sc.b D.R.m W.z W.z' γ p hb hCa.le
   have hpac := local_loss_mono_constant large₂.sc.b D.R.m W.z W.z' γ p hb hCa.le hCaC
-  have hhs := hs_norm_sq_nonneg (S.J νR γ)
+  have hhs := _root_.Formalism.MainNotions.BridgeLemma.hsNormSq_nonneg (S.J νR γ)
   have hrank := hs_norm_sq_le_rank_mul_norm (S.J νR γ)
   have hTA' : Tr D w' / Tr D w ≤ A := hTA
   have hA0 : 0 < A := lt_of_lt_of_le (by positivity) hTA'
@@ -2204,7 +2148,7 @@ theorem abs_decay_mono_constants (D : D7) (large₂ : SizeData₂ D) {C' Cl Cg c
   have hv0 : 0 < D.host.v := lt_of_lt_of_le one_pos hv
   have hk0 : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
   have hb := one_le_scale_base_local large₂
-  have hpa := one_le_loss_factor large₂.sc.b D.R.m W.z W.z' γ p hb hCa
+  have hpa := _root_.Formalism.MainNotions.BridgeLemma.one_le_lossP large₂.sc.b D.R.m W.z W.z' γ p hb hCa
   have hpac := local_loss_mono_constant large₂.sc.b D.R.m W.z W.z' γ p hb hCa hC
   have hq1 : (Ca / (D.R.k * D.host.v)) ^ (D.R.rS * (D.R.k - 2 - D.R.rS)) ≤
       (C / (D.R.k * D.host.v)) ^ (D.R.rS * (D.R.k - 2 - D.R.rS)) :=
@@ -2215,12 +2159,6 @@ theorem abs_decay_mono_constants (D : D7) (large₂ : SizeData₂ D) {C' Cl Cg c
     (Real.rpow_nonneg (le_trans zero_le_one (one_le_size_volume _ _ _ _)) _) ?_
   have : 0 ≤ lossP large₂.sc.b C D.R.m W.z W.z' γ p := by linarith
   positivity
-
-section Fam
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Fam
 
 end Formalism.MainNotions.BridgeLemma
 
@@ -2541,34 +2479,11 @@ end Formalism.MainNotions.BridgeLemma
 
 end
 
-noncomputable section
-
 namespace Formalism.MainNotions.BridgeLemma
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
-
-section Final
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Final
 
 end Formalism.MainNotions.BridgeLemma
 
-end
-
-noncomputable section
-
 namespace Formalism.MainNotions.BridgeLemma
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
-
-section Final
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Final
 
 end Formalism.MainNotions.BridgeLemma
 
-end

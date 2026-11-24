@@ -80,14 +80,7 @@ theorem det_jacC (τ : (Fin D → ℂ) → (Fin D → ℂ)) (z : Fin D → ℂ) 
     (jacC τ z).det = LinearMap.det (fderiv ℂ τ z : (Fin D → ℂ) →ₗ[ℂ] (Fin D → ℂ)) := by
   rw [jacC_eq_toMatrix', LinearMap.det_toMatrix']
 
-theorem hessC_isHermitian (φ : (Fin D → ℂ) → ℝ) (z : Fin D → ℂ) (hφ : ContDiffAt ℝ 2 φ z) :
-    (hessC φ z).IsHermitian := by
-  exact TraceConjugationCover.complexHessian_isHermitian_of_contDiffAt φ z hφ
-
-theorem hessC_add (φ ψ : (Fin D → ℂ) → ℝ) (z : Fin D → ℂ) (hφ : ContDiffAt ℝ 2 φ z)
-    (hψ : ContDiffAt ℝ 2 ψ z) :
-    hessC (fun w => φ w + ψ w) z = hessC φ z + hessC ψ z := by
-  exact TraceConjugationCover.complexHessian_add_of_contDiffAt φ ψ z hφ hψ
+alias hessC_isHermitian := _root_.ReciprocityTheory.AnForm.A.TraceConjugationCover.complexHessian_isHermitian_of_contDiffAt
 
 theorem hessC_comp (φ : (Fin E → ℂ) → ℝ) (τ : (Fin D → ℂ) → (Fin E → ℂ)) (z : Fin D → ℂ)
     (hτ : AnalyticAt ℂ τ z) (hφ : ContDiffAt ℝ 2 φ (τ z)) :
@@ -104,19 +97,11 @@ theorem maDens_comp (φ : Fin D → (Fin D → ℂ) → ℝ) (τ : (Fin D → �
   rw [h, mdisc_transpose_mul_mul_conj, Complex.re_ofReal_mul]
   ring
 
-theorem hessC_log_norm (g : (Fin D → ℂ) → ℂ) (z : Fin D → ℂ) (hg : AnalyticAt ℂ g z)
-    (hz : g z ≠ 0) : hessC (fun w => Real.log ‖g w‖) z = 0 := by
-  exact hessC_log_norm' g z hg hz
+alias hessC_log_norm := _root_.ReciprocityTheory.AnForm.A.hessC_log_norm'
 
-theorem hessC_add_log_norm (φ : (Fin D → ℂ) → ℝ) (g : (Fin D → ℂ) → ℂ) (z : Fin D → ℂ)
-    (hφ : ContDiffAt ℝ 2 φ z) (hg : AnalyticAt ℂ g z) (hz : g z ≠ 0) :
-    hessC (fun w => φ w + Real.log ‖g w‖) z = hessC φ z := by
-  exact hessC_add_log_norm' φ g z hφ hg hz
+alias hessC_add_log_norm := _root_.ReciprocityTheory.AnForm.A.hessC_add_log_norm'
 
-theorem hessC_add_re_analytic (φ : (Fin D → ℂ) → ℝ) (G : (Fin D → ℂ) → ℂ) (z : Fin D → ℂ)
-    (hφ : ContDiffAt ℝ 2 φ z) (hG : AnalyticAt ℂ G z) :
-    hessC (fun w => φ w + (G w).re) z = hessC φ z := by
-  exact hessC_add_re_analytic' φ G z hφ hG
+alias hessC_add_re_analytic := _root_.ReciprocityTheory.AnForm.A.hessC_add_re_analytic'
 
 theorem det_restrictScalars_real {V : Type*} [AddCommGroup V] [Module ℂ V]
     [FiniteDimensional ℂ V] (f : V →ₗ[ℂ] V) :
@@ -175,9 +160,7 @@ theorem integrableOn_image_iff_analytic {F : Type*} [NormedAddCommGroup F] [Norm
   rw [integrableOn_image_iff_integrableOn_abs_det_fderiv_smul volume hU.measurableSet hd hinj f]
   simp_rw [hdet]
 
-theorem hessC_sum_normSq (z : Fin D → ℂ) :
-    hessC (fun w => ∑ i, Complex.normSq (w i)) z = 1 := by
-  exact TraceConjugationCover.complexHessian_sum_normSq_coord z
+alias hessC_sum_normSq := _root_.ReciprocityTheory.AnForm.A.TraceConjugationCover.complexHessian_sum_normSq_coord
 
 end
 

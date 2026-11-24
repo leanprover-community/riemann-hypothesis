@@ -64,7 +64,7 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
 
 theorem norm_map (φ : R →ₐ[F] R') (x : R ⊗[F] E) :
     Algebra.norm R' (Algebra.TensorProduct.map φ (AlgHom.id F E) x) = φ (Algebra.norm R x) := by
-  apply GlobalTheory.CNorm.tensor_norm_map <;> assumption
+  apply GlobalTheory.CNorm.tensor_norm_map
 
 theorem norm_inclR (x : E) : Algebra.norm R (inclR (F := F) R x) = algebraMap F R (Algebra.norm F x) := by
   rw [Algebra.norm_apply, Algebra.norm_apply, ← LinearMap.det_baseChange]

@@ -91,7 +91,8 @@ theorem resH1_bijective_of_inverse {G H : Type} [Group G] [TopologicalSpace G] [
         change z.1 (χ (ψ h)) = z.1 h
         rw [h2]
 
-theorem resCmp1' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H]
+/-- Cohomology comparison, with explicit compatibility on cocycle representatives. -/
+theorem resCmp1_with_representatives {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H]
     [TopologicalSpace H] [IsTopologicalGroup H] (θ : G ≃ₜ* H) {ι : Type} {Lv Hv : ι → Type}
     [∀ v, Group (Lv v)] [∀ v, TopologicalSpace (Lv v)] [∀ v, IsTopologicalGroup (Lv v)]
     [∀ v, Group (Hv v)] [∀ v, TopologicalSpace (Hv v)] [∀ v, IsTopologicalGroup (Hv v)]
@@ -103,7 +104,13 @@ theorem resCmp1' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup
     (hM : ∀ g m, eM (rho g m) = A.ρ (θ g) (eM m)) :
     ∃ (E : H1 rho ≃+ cohomology A 1)
       (Ev : ∀ v, H1 (rho.comp (lam v)) ≃+ cohomology (Rep.res (φ v).toMonoidHom A) 1),
-      ∀ v x, Ev v (resH1 rho (lam v) (hlam v) x) = ptRes φ A v 1 (E x) := by
+      (∀ v x, Ev v (resH1 rho (lam v) (hlam v) x) = ptRes φ A v 1 (E x)) ∧
+      (∀ (z : ↥(Z1 rho)) (x : cocycles A 1),
+        (∀ s : Fin 1 → H, cochainOf A (cocycleι A 1 x) s = eM (z.1 (θ.symm (s 0)))) →
+        E (Submodule.Quotient.mk z) = cohomologyπ A 1 x) ∧
+      (∀ v (z : ↥(Z1 (rho.comp (lam v)))) (x : cocycles (Rep.res (φ v).toMonoidHom A) 1),
+        (∀ s : Fin 1 → Hv v, cochainOf _ (cocycleι _ 1 x) s = eM (z.1 (ev v (s 0)))) →
+        Ev v (Submodule.Quotient.mk z) = cohomologyπ _ 1 x) := by
   have hθs : Continuous (θ.symm : H ≃* G).toMonoidHom := θ.symm.continuous
   let rho' : Representation R H M := rho.comp (θ.symm : H ≃* G).toMonoidHom
   have hM' : ∀ h m, eM (rho' h m) = A.ρ h (eM m) := fun h m => by
@@ -124,7 +131,7 @@ theorem resCmp1' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup
     (ev v).symm.toMonoidHom (hev2 v) (fun g => (ev v).apply_symm_apply g) (fun h => (ev v).symm_apply_apply h)
   let rv : ∀ v, H1 (rho.comp (lam v)) ≃ₗ[R] H1 ((rho.comp (lam v)).comp (ev v).toMonoidHom) :=
     fun v => LinearEquiv.ofBijective _ (bijv v)
-  refine ⟨r1.toAddEquiv.trans e1, fun v => (rv v).toAddEquiv.trans (ev1 v), fun v x => ?_⟩
+  refine ⟨r1.toAddEquiv.trans e1, fun v => (rv v).toAddEquiv.trans (ev1 v), fun v x => ?_, fun z x hx => ?_, fun v z x hx => ?_⟩
   induction x using Submodule.Quotient.induction_on with
   | H z =>
     obtain ⟨y, hy⟩ := he1a (restrictCocycles1 rho (θ.symm : H ≃* G).toMonoidHom hθs z)
@@ -146,5 +153,25 @@ theorem resCmp1' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup
     change eM (z.1 (θ.symm (φ v (s 0)))) = eM (z.1 (lam v (ev v (s 0))))
     rw [← hev]
     exact congrArg (fun t => eM (z.1 t)) (θ.symm_apply_apply _)
+  · show e1 (r1 (Submodule.Quotient.mk z)) = _
+    exact he1b (restrictCocycles1 rho (θ.symm : H ≃* G).toMonoidHom hθs z) x (fun s => by rw [hx s]; rfl)
+  · show ev1 v (rv v (Submodule.Quotient.mk z)) = _
+    exact hev1b v (restrictCocycles1 (rho.comp (lam v)) (ev v).toMonoidHom (hev1 v) z) x (fun s => by rw [hx s]; rfl)
+
+theorem resCmp1' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group H]
+    [TopologicalSpace H] [IsTopologicalGroup H] (θ : G ≃ₜ* H) {ι : Type} {Lv Hv : ι → Type}
+    [∀ v, Group (Lv v)] [∀ v, TopologicalSpace (Lv v)] [∀ v, IsTopologicalGroup (Lv v)]
+    [∀ v, Group (Hv v)] [∀ v, TopologicalSpace (Hv v)] [∀ v, IsTopologicalGroup (Hv v)]
+    (lam : ∀ v, Lv v →* G) (hlam : ∀ v, Continuous (lam v)) (φ : ∀ v, Hv v →ₜ* H)
+    (ev : ∀ v, Hv v ≃* Lv v) (hev1 : ∀ v, Continuous (ev v)) (hev2 : ∀ v, Continuous (ev v).symm)
+    (hev : ∀ v σ, θ (lam v (ev v σ)) = φ v σ) {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
+    [TopologicalSpace M] [DiscreteTopology M] (rho : Representation R G M) (hc : ContAction rho)
+    (A : Rep.{0} (ULift.{0} ℤ) H) [IsDiscreteRep A] (eM : M ≃+ A.V)
+    (hM : ∀ g m, eM (rho g m) = A.ρ (θ g) (eM m)) :
+    ∃ (E : H1 rho ≃+ cohomology A 1)
+      (Ev : ∀ v, H1 (rho.comp (lam v)) ≃+ cohomology (Rep.res (φ v).toMonoidHom A) 1),
+      ∀ v x, Ev v (resH1 rho (lam v) (hlam v) x) = ptRes φ A v 1 (E x) := by
+  obtain ⟨E, Ev, h, -, -⟩ := resCmp1_with_representatives θ lam hlam φ ev hev1 hev2 hev rho hc A eM hM
+  exact ⟨E, Ev, h⟩
 
 end PositivityTheory.Lit1.PTN

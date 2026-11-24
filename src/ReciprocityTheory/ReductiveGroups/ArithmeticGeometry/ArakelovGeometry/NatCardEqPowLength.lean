@@ -188,8 +188,6 @@ theorem card_dehom {W : Ideal (MRing ι)} (hWp : W.IsPrime) (hWm : IsMultiHomogI
     have hcard : (Set.range (dmap W i a')).ncard ≤ (Set.range (dmap W i a)).ncard := by
       show Nat.card (Set.range (dmap W i a')) ≤ Nat.card (Set.range (dmap W i a))
       first
-        | rw [Set.Nat.card_range_of_injective (hinj a), Set.Nat.card_range_of_injective (hinj a'),
-            hconst a ha, hconst a' ha']
         | rw [Nat.card_range_of_injective (hinj a), Nat.card_range_of_injective (hinj a'),
             hconst a ha, hconst a' ha']
     have heq := Set.eq_of_subset_of_ncard_le hsub hcard (Set.finite_range _)

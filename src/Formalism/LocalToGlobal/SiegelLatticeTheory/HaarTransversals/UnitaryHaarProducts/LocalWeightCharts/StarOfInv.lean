@@ -122,7 +122,7 @@ lemma star_of_inv {a b : ℂ} (ha : ‖a‖ = 1) (hab : a * b = 1) : star b = a 
   have hb : b = a⁻¹ := (inv_eq_of_mul_eq_one_right hab).symm
   have hconj : star a = a⁻¹ := by
     rw [Complex.inv_def, Complex.normSq_eq_norm_sq, ha]
-    simp [Complex.star_def]
+    simp
   rw [hb, star_inv₀, hconj, inv_inv]
 
 end AE

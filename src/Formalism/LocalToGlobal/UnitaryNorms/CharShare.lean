@@ -80,7 +80,6 @@ theorem TupTied.xi_unitary (μ : D.what₂.Tup) : (Tp.xi μ).IsUnitary := by
   have e : ((Tp.xi μ : Ideles D.host.E →* ℂˣ) x) ^ n = 1 := by
     first
       | simpa using h'
-      | exact h'
   have e2 : ‖(((Tp.xi μ : Ideles D.host.E →* ℂˣ) x : ℂˣ) : ℂ)‖ ^ n = 1 := by
     rw [← norm_pow, ← Units.val_pow_eq_pow_val, e, Units.val_one, norm_one]
   exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn.ne').mp e2

@@ -86,12 +86,9 @@ lemma sameFlag_rmul (z : Frame X.Ψ r) {b : Frame X.Ψ r} (hb : b ∈ Bor X.Ψ r
   have hmul : mat (rmul z b) τ = mat z τ * mat b τ := by
     first
     | rfl
-    | (unfold rmul mat; rfl)
-    | (ext i j; simp [rmul, mat, Matrix.mul_apply])
   have hT : (mat b τ).BlockTriangular id := fun a c h => by
     first
     | exact htri a c h
-    | (simp only [mat]; exact htri a c h)
   haveI : Invertible (mat b τ).det := invertibleOfNonzero hdet
   haveI : Invertible (mat b τ) := Matrix.invertibleOfDetInvertible _
   apply le_antisymm

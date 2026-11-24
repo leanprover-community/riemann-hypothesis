@@ -53,6 +53,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OddThetaFunctionExistenceUniqueness
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PeriodLatticeSesquilinearFormIsHerm
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.HasCMByStable
 
 @[expose] public section
 
@@ -117,7 +118,7 @@ theorem g_change {p : ℕ} [Fact p.Prime] (C : WeierstrassCurve.VariableChange �
 
 theorem wpReg_eq {K : Type} [Field K] [CharZero K] (W : WeierstrassCurve K) :
     Formalism.L2.Th1.A.wpReg W = Formalism.L2.Th1.F.pOf (Formalism.L2.Th1.A.g₂ W) (Formalism.L2.Th1.A.g₃ W) :=
-  Formalism.L2.Th1.F.isWpUnique K _ _ _ _ (Formalism.L2.Th1.A.bridgeWp K W) (Formalism.L2.Th1.F.pOfIsWp K _ _)
+  _root_.Formalism.L2.Th1.F.weierstrass_series_unique K _ _ _ _ (Formalism.L2.Th1.A.bridgeWp K W) (_root_.Formalism.L2.Th1.F.weierstrass_p_of_series K _ _)
 
 section Int
 
@@ -276,7 +277,7 @@ theorem sigmaCurveInert_of (hInv : InvAlg) (hS2 : SecondEisensteinAlgebraic) : F
 
   have hδ : δ ≠ 0 := by
     intro h0
-    obtain ⟨⟨L1, hL1⟩, -⟩ := Formalism.L2.Th1.F2.lamOfLat D cc 1 hcc one_ne_zero
+    obtain ⟨⟨L1, hL1⟩, -⟩ := _root_.Formalism.L2.Th1.F2.lambda_of_lattice_holds D cc 1 hcc one_ne_zero
     obtain ⟨e2, e3⟩ := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.g2_g3_eq_periodPair _ L1 (congrArg (fun A : AddSubgroup ℂ => (A : Set ℂ)) hL1)
     have hd := Formalism.L2.Th1.F.discNeZero L1
     apply hd
@@ -285,7 +286,7 @@ theorem sigmaCurveInert_of (hInv : InvAlg) (hS2 : SecondEisensteinAlgebraic) : F
     rw [h0, e2, e3] at h12
     rw [← h12]; norm_num
 
-  obtain ⟨⟨L, hL⟩, hCM⟩ := Formalism.L2.Th1.F2.lamOfLat D cc δ hcc hδ
+  obtain ⟨⟨L, hL⟩, hCM⟩ := _root_.Formalism.L2.Th1.F2.lambda_of_lattice_holds D cc δ hcc hδ
   have hLg : g.abelian₂ = L.lattice.toAddSubgroup := hLam.trans hL.symm
   obtain ⟨hg2, hg3⟩ := hInv D cc δ hcurve hδ12 L hL
   have hs := hS2 D cc δ hcurve hδ12 L hL
@@ -306,10 +307,10 @@ theorem sigmaCurveInert_of (hInv : InvAlg) (hS2 : SecondEisensteinAlgebraic) : F
   have hwp : Formalism.L2.Th1.A.wpReg g.W =
       PowerSeries.C (ε ^ 2) * PowerSeries.rescale ε (Formalism.L2.Th1.F.pOf (g.lam a2) (g.lam a3)) := by
     rw [wpReg_eq, gW2, gW3]
-    exact (Formalism.L2.Th1.F.seriesScale ℂ_[p] (g.lam a2) (g.lam a3) ε).2.2.2.1
+    exact (_root_.Formalism.L2.Th1.F.series_scale ℂ_[p] (g.lam a2) (g.lam a3) ε).2.2.2.1
   refine ⟨ε ^ 2 * g.lam s0, ?_, ?_⟩
   ·
-    obtain ⟨ι, hι⟩ := Formalism.L2.KerInert.lamExt p g.lam
+    obtain ⟨ι, hι⟩ := _root_.Formalism.L2.KerInert.lattice_extension p g.lam
     have hp : p.Prime := Fact.out
     have hdp : D.host.d.Prime := D.host.hyp.2.1
     have hd4 : D.host.d % 4 = 3 := by have := D.host.hyp.2.2.2.1; omega
@@ -340,6 +341,6 @@ theorem sigmaCurveInert_of (hInv : InvAlg) (hS2 : SecondEisensteinAlgebraic) : F
   ·
     unfold Formalism.L2.Th1.B.sgW
     rw [hser, hwp]
-    exact ((Formalism.L2.Th1.F.sigmaScale ℂ_[p] (Formalism.L2.Th1.F.pOf (g.lam a2) (g.lam a3)) (g.lam s0) ε).2).symm
+    exact ((_root_.Formalism.L2.Th1.F.sigma_scale' ℂ_[p] (Formalism.L2.Th1.F.pOf (g.lam a2) (g.lam a3)) (g.lam s0) ε).2).symm
 
 end Formalism.L2.KerInert.Sigma

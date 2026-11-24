@@ -144,8 +144,8 @@ theorem hf_single (M : Matrix ι ι R) (i j : ι) :
     intro k
     by_cases h : k = j
     · subst h; simp
-    · simp [Pi.single_apply, h]
-  simp [hf, hs, Pi.single_apply]
+    · simp [h]
+  simp [hf, Pi.single_apply]
 
 theorem eq_of_hf (M M' : Matrix ι ι R) (h : ∀ x y, hf σ M x y = hf σ M' x y) : M = M' := by
   ext i j
@@ -226,9 +226,9 @@ theorem eich_det {e u : ι → R} {c : R} (he : hf σ J e e = 0) (hue : hf σ J 
   have hAB : vecMulVec u α * vecMulVec e β = 0 := by
     rw [vecMulVec_mul_vecMulVec, hαe, zero_smul]; ext i j; simp [vecMulVec_apply]
   have hAC : vecMulVec u α * (c • vecMulVec e α) = 0 := by
-    rw [Matrix.mul_smul, vecMulVec_mul_vecMulVec, hαe, zero_smul]; ext i j; simp [vecMulVec_apply]
+    rw [Matrix.mul_smul, vecMulVec_mul_vecMulVec, hαe, zero_smul]; ext i j; simp
   have hBC : vecMulVec e β * (c • vecMulVec e α) = 0 := by
-    rw [Matrix.mul_smul, vecMulVec_mul_vecMulVec, hβe, zero_smul]; ext i j; simp [vecMulVec_apply]
+    rw [Matrix.mul_smul, vecMulVec_mul_vecMulVec, hβe, zero_smul]; ext i j; simp
   have hfac : eich σ J e u c
       = (1 + vecMulVec u α) * (1 - vecMulVec e β) * (1 + c • vecMulVec e α) := by
     have h3 : ∀ A B C : Matrix ι ι R, (1 + A) * (1 - B) * (1 + C)

@@ -67,26 +67,6 @@ namespace ReciprocityTheory.ChartRestriction.DS.G2
 
 variable {n : ℕ}
 
-theorem adjA_high {D : Type*} [AddCommGroup D] [Module ℂ D] {W : Type*} [AddCommGroup W] [Module ℂ W]
-    [FiniteDimensional ℂ W] (M : Submodule ℂ D) (T : Module.End ℂ D) (hT : ∀ y ∈ M, T y ∈ M)
-    (Φ : D →ₗ[ℂ] W) (hΦ : ∀ y ∈ M, Φ y = 0 → Φ (T y) = 0) :
-    ∃ C : ℝ, ∀ y ∈ M, ∀ θ : ℝ, C < θ → T y = (θ : ℂ) • y → Φ y = 0 := by
-  apply ReciprocityTheory.ChartRestriction.DS.adjA_high <;> assumption
-
-theorem adjA_tensF_single {M : Type*} [AddCommGroup M] [Module ℂ M] (dual : Bool)
-    (E : Fin n → Fin n → Module.End ℂ M) (a b c : Fin n) (y : M) :
-    ∃ c' : Fin n, ∃ r : ℂ, tensF dual E a b (Pi.single c y) = Pi.single c (E a b y) + r • (Pi.single c' y : Fin n → M) := by
-  apply ReciprocityTheory.ChartRestriction.DS.adjA_tensF_single <;> assumption
-
-theorem adjA_single_mem {M : Type*} [AddCommGroup M] [Module ℂ M] {S : Submodule ℂ M} (c : Fin n) {y : M}
-    (hy : y ∈ S) : (Pi.single c y : Fin n → M) ∈ tensSub S := by
-  classical
-  refine Submodule.mem_pi.2 fun x _ => ?_
-  rw [Pi.single_apply]
-  split_ifs
-  · exact hy
-  · exact S.zero_mem
-
 section Rep
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : Fin n → Bool}

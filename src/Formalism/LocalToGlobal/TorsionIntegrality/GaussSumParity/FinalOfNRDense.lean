@@ -46,8 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 
 namespace Formalism.L2.Th1.D
 
-theorem sqrtKur : SqrtKur := sqrt_in_unramified_completion
-theorem denseOK : DenseOK := dense_criterion
-theorem homothetic_lattice_integral_s2 : HomotheticLatticeIntegralS2 := homothetic_lattice_integral_of
-
+alias sqrtKur := _root_.Formalism.L2.Th1.D.sqrt_in_unramified_completion
+alias denseOK := _root_.Formalism.L2.Th1.D.dense_criterion
 end Formalism.L2.Th1.D

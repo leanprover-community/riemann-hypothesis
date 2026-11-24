@@ -152,9 +152,7 @@ private lemma measurable_cpt : Measurable (cpt X x0) := by
   split_ifs
   · refine Measurable.const_mul ?_ _
     first
-      | exact measurable_pi_apply _
       | exact (EuclideanSpace.proj _).continuous.measurable
-      | fun_prop
   · exact measurable_const
   · exact measurable_const
 

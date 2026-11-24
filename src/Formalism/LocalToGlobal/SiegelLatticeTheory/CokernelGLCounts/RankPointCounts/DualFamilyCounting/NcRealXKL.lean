@@ -302,7 +302,7 @@ theorem skew_conj (F Δ : Matrix (Fin r) (Fin r) ℂ) (hΔ : ∀ i j, star (Δ j
     rw [conjTranspose_mul, conjTranspose_mul, conjTranspose_conjTranspose, hD]
     simp only [Matrix.mul_assoc, Matrix.neg_mul, Matrix.mul_neg]
   have h2 := congrArg (fun M => M b a) hM
-  simp only [conjTranspose_apply, neg_apply] at h2
+  simp only [conjTranspose_apply] at h2
   exact h2
 
 end Tri
@@ -402,7 +402,7 @@ theorem bk_tri {T : ℝ} (hT : 0 < T) (p : CBlk r) (x x' y y' : ∀ q : CBlk r, 
       WlocSk.NB.shG (ph0 (chAt T x' v)) (chAt T y' v).1 (Sum.inl ⟨(b, a), hba⟩) - x' (Sum.inl (Sum.inl ⟨(b, a), hba⟩)) v
     simp only [WlocSk.NB.shG, ph0, WlocSk.NB.phi0, WlocSk.NB.bA_mk]
     rw [sub_eq_sub_iff_sub_eq_sub, ← Finset.sum_sub_distrib, Finset.sum_eq_single a]
-    · simp only [if_pos hba, WlocSk.NB.cA, dif_pos hba, dif_neg (lt_irrefl a), if_pos rfl, ite_true, mul_one]
+    · simp only [if_pos hba, WlocSk.NB.cA, dif_pos hba, dif_neg (lt_irrefl a), ite_true, mul_one]
       rfl
     · intro c _ hca
       by_cases hbc : b < c

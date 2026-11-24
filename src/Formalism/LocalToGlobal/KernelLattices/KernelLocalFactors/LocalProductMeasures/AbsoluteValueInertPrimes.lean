@@ -168,11 +168,11 @@ theorem ab_read {P Q : HeightOneSpectrum (𝓞 E)} (h : P ≠ Q) (a : Eˣ) : ∃
 
 theorem ab_reads (P Q : HeightOneSpectrum (𝓞 E)) (h : P ≠ Q) (x : Eˣ) : ∃ b : Eˣ, OneAt P ((b : E) / (x : E)) ∧ OneAt Q (b : E) := ab_read h x
 
-theorem OneAt.val_eq_one {P : HeightOneSpectrum (𝓞 E)} {a : E} (h : OneAt P a) : P.valuation E a = 1 := ab_one_val h
+alias OneAt.val_eq_one := _root_.Formalism.L2.Ker.ab_one_val
 
-theorem OneAt.mul {P : HeightOneSpectrum (𝓞 E)} {a b : E} (ha : OneAt P a) (hb : OneAt P b) : OneAt P (a * b) := ab_one_mul ha hb
+alias OneAt.mul := _root_.Formalism.L2.Ker.ab_one_mul
 
-theorem OneAt.inv {P : HeightOneSpectrum (𝓞 E)} {a : E} (ha : OneAt P a) : OneAt P a⁻¹ := ab_one_inv ha
+alias OneAt.inv := _root_.Formalism.L2.Ker.ab_one_inv
 
 end One
 
@@ -207,11 +207,9 @@ theorem ab_int_star (P : HeightOneSpectrum (𝓞 E)) (r : 𝓞 E) : (conjPrime�
   have := ab_int_le (conjPrime₂ P) (cO E r)
   rwa [ab_conj_conj, cO_cO] at this
 
-theorem ab_cO_coe (r : 𝓞 E) : algebraMap (𝓞 E) E (cO E r) = star (algebraMap (𝓞 E) E r) := rfl
-
 theorem ab_val_star (P : HeightOneSpectrum (𝓞 E)) (a : E) : (conjPrime₂ P).valuation E (star a) = P.valuation E a := by
   obtain ⟨r, s, _, hrs⟩ := IsFractionRing.div_surjective (A := 𝓞 E) a
-  rw [← hrs, star_div₀, ← ab_cO_coe, ← ab_cO_coe, map_div₀, map_div₀, HeightOneSpectrum.valuation_of_algebraMap,
+  rw [← hrs, star_div₀, ← _root_.Formalism.L2.Col.algebraMap_cO, ← _root_.Formalism.L2.Col.algebraMap_cO, map_div₀, map_div₀, HeightOneSpectrum.valuation_of_algebraMap,
     HeightOneSpectrum.valuation_of_algebraMap, HeightOneSpectrum.valuation_of_algebraMap, HeightOneSpectrum.valuation_of_algebraMap,
     ab_int_star, ab_int_star]
 
@@ -243,7 +241,7 @@ theorem ab_conjP_under (hX : X.Ok) (P : HeightOneSpectrum (𝓞 X.E)) : (conjPri
 theorem ab_norm_int (hX : X.Ok) (a : 𝓞 X.E) : ∃ k : 𝓞 X.F, algebraMap (𝓞 X.F) (𝓞 X.E) k = a * cO X.E a := by
   have h1 : star ((a * cO X.E a : 𝓞 X.E) : X.E) = ((a * cO X.E a : 𝓞 X.E) : X.E) := by
     show star (algebraMap (𝓞 X.E) X.E (a * cO X.E a)) = algebraMap (𝓞 X.E) X.E (a * cO X.E a)
-    rw [map_mul, ab_cO_coe, star_mul', star_star, mul_comm]
+    rw [map_mul, _root_.Formalism.L2.Col.algebraMap_cO, star_mul', star_star, mul_comm]
   obtain ⟨k, hk⟩ := (rlh_fixed hX _).1 h1
   have hint : IsIntegral ℤ k := by
     have h2 : IsIntegral ℤ (algebraMap X.F X.E k) := by

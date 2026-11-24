@@ -207,17 +207,13 @@ theorem exists_level {W : Set (GL (Fin m) L)} (hW : W ∈ 𝓝 (1 : GL (Fin m) L
 
 variable [ProperSpace L]
 
-theorem isCompact_box (c : Matrix (Fin m) (Fin m) L) (r : ℝ) :
-    IsCompact {g : GL (Fin m) L | (∀ i j, ‖g.1 i j - c i j‖ ≤ r) ∧ ∀ i j, ‖(g⁻¹).1 i j - c i j‖ ≤ r} :=
-  _root_.UpperTheory.Reformulated.B.Qf31.isCompact_box c r
-
 theorem isCompact_intS : IsCompact ((intS : Subgroup (GL (Fin m) L)) : Set (GL (Fin m) L)) := by
-  convert isCompact_box (L := L) (m := m) 0 1 using 1
+  convert _root_.UpperTheory.Reformulated.B.Qf31.isCompact_box (L := L) (m := m) 0 1 using 1
   ext g
   simp [mem_intS, IsInt]
 
 theorem isCompact_congS {r : ℝ} (h0 : 0 ≤ r) (h1 : r < 1) : IsCompact ((congS r h0 h1 : Subgroup (GL (Fin m) L)) : Set (GL (Fin m) L)) := by
-  convert isCompact_box (L := L) (m := m) 1 r using 1
+  convert _root_.UpperTheory.Reformulated.B.Qf31.isCompact_box (L := L) (m := m) 1 r using 1
   ext g
   constructor
   · intro hg

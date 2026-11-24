@@ -86,8 +86,8 @@ theorem evDelta_pf : ChernClassExistence.LeafEvDelta := by
   · intro p s t hs ht x
     unfold ev
     rw [δ_v n m hm α _ t ht s (-(p : ℤ)) (by omega) (by push_cast; omega), chains_d]
-    simp only [Preadditive.comp_add, Preadditive.comp_zsmul, Category.assoc, Iso.inv_hom_id_assoc]
-    simp [Sec.map, Units.smul_def, Preadditive.comp_sum, Preadditive.sum_comp, Preadditive.zsmul_comp, Preadditive.comp_zsmul, freeGen_nat, Sx.face]
+    simp only [Preadditive.comp_add, Category.assoc]
+    simp [Sec.map, Units.smul_def, Preadditive.comp_sum, Preadditive.sum_comp, Sx.face]
 
     rw [evH_apply, map_zsmul, map_sum]
     congr 1

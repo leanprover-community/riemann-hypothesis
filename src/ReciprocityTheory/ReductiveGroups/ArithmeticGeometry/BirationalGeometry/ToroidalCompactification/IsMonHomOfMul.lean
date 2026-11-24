@@ -141,7 +141,6 @@ private theorem units_ext_gm_lemma_3 {A : Scheme.{0}} {V : A.Opens} (a b : Γ(A,
     simp only [gm, dif_pos hy1]
     first
     | rfl
-    | simp [pullU]
   ext
   refine TopCat.Presheaf.section_ext A.sheaf V _ _ fun y hy => ?_
   have h := congrArg Units.val (H y hy)
@@ -190,7 +189,6 @@ private theorem gm_id_lemma_6 {A : Scheme.{0}} (V : A.Opens) (y : A) (hy : y ∈
   simp only [gm, dif_pos hy1]
   first
   | rfl
-  | simp [pullU]
 
 private theorem glue_units_lemma_5 {A : Scheme.{0}} {I : Type} (V : A.Opens) (U : I → A.Opens)
     (hU : ∀ i, U i ≤ V) (hcov : ∀ y ∈ V, ∃ i, y ∈ U i) (σ : ∀ i, Γ(A, U i)ˣ)
@@ -270,7 +268,7 @@ theorem exists_up {w : LB.Iso L' (L.pull F)} (hw : PGen w) (hL : L.IsLB) (hL' : 
   have hcovq : ∀ y : Y, ∃ q : K → L'.ι, y ∈ LB.wchart L' φ' q := by
     intro y
     have hk : ∀ k, ∃ i, φ' k y ∈ L'.U i := fun k =>
-      Opens.mem_iSup.mp (by rw [hL'.cover]; first | trivial | exact Set.mem_univ _ | simp)
+      Opens.mem_iSup.mp (by rw [hL'.cover]; first | trivial)
     choose q hq using hk
     exact ⟨q, (mem_wchart_lemma _ _ _ _).mpr hq⟩
   choose u hu using fun p q => exists_pw w φ' ε p q
@@ -323,7 +321,7 @@ theorem exists_down {w : LB.Iso L' (L.pull F)} (hw : PGen w) (hL : L.IsLB) (hL' 
   have hcovp : ∀ y : Y, ∃ p : K → L.ι, y ∈ LB.wchart L (fun k => φ' k ≫ F) p := by
     intro y
     have hk : ∀ k, ∃ i, (φ' k ≫ F) y ∈ L.U i := fun k =>
-      Opens.mem_iSup.mp (by rw [hL.cover]; first | trivial | exact Set.mem_univ _ | simp)
+      Opens.mem_iSup.mp (by rw [hL.cover]; first | trivial)
     choose p hp using hk
     exact ⟨p, (mem_wchart_lemma _ _ _ _).mpr hp⟩
   choose u hu using fun p q => exists_pw w φ' ε p q
@@ -392,9 +390,9 @@ theorem maps_of_good {w : LB.Iso L' (L.pull F)} (hw : PGen w) (hL : L.IsLB) (hL'
     have e := congrArg (fun m : Y ⟶ X => m y) (hψ k)
     simpa using e.symm
   have cov : ∀ ψ : Y ⟶ X, ∃ i, ψ y ∈ L.U i := fun ψ =>
-    Opens.mem_iSup.mp (by rw [hL.cover]; first | trivial | exact Set.mem_univ _ | simp)
+    Opens.mem_iSup.mp (by rw [hL.cover]; first | trivial)
   have cov' : ∀ ψ : Y ⟶ X', ∃ i, ψ y ∈ L'.U i := fun ψ =>
-    Opens.mem_iSup.mp (by rw [hL'.cover]; first | trivial | exact Set.mem_univ _ | simp)
+    Opens.mem_iSup.mp (by rw [hL'.cover]; first | trivial)
   choose J hJ using cov
   choose J' hJ' using cov'
   have hh := h y J J' hJ hJ'

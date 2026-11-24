@@ -136,14 +136,14 @@ theorem le_monoNormSq {D : ℕ} (a : Fin (D + 1) → ℕ) :
 theorem chiPAux_sum_update_zero {D : ℕ} (a : Fin (D + 1) → ℕ) (v : ℕ) :
     ∑ i, Function.update a 0 v i = v + ∑ i : Fin D, a i.succ := by
   rw [Fin.sum_univ_succ]
-  simp [Function.update_apply, Fin.succ_ne_zero]
+  simp [Fin.succ_ne_zero]
 
 theorem monoNormSq_succ {D : ℕ} (a : Fin (D + 1) → ℕ) :
     monoNormSq (Function.update a 0 (a 0 + 1)) =
       monoNormSq a * ((a 0 + 1 : ℝ) / ((∑ i, a i : ℕ) + D + 1 : ℝ)) := by
   have e0 : Function.update a 0 (a 0 + 1) 0 = a 0 + 1 := by simp
   have es : ∀ i : Fin D, Function.update a 0 (a 0 + 1) i.succ = a i.succ := fun i => by
-    simp [Function.update_apply, Fin.succ_ne_zero]
+    simp [Fin.succ_ne_zero]
   have hs : ∑ i, Function.update a 0 (a 0 + 1) i = (∑ i, a i) + 1 := by
     rw [chiPAux_sum_update_zero, Fin.sum_univ_succ a]
     ring
@@ -160,7 +160,6 @@ theorem monoNormSq_succ {D : ℕ} (a : Fin (D + 1) → ℕ) :
   have hg : (∑ i, (a i : ℝ)) + D + 1 ≠ 0 := by positivity
   first
     | (rw [div_mul_div_comm, div_eq_div_iff (mul_ne_zero hg hF) (mul_ne_zero hF hg)]; ring)
-    | (field_simp; ring)
 
 theorem chiP_nonneg (D n : ℕ) : 0 ≤ chiP D n := by
   unfold chiP
@@ -212,7 +211,7 @@ theorem chiPAux_filter_zero_eq_empty (n : ℕ) :
   rw [Finset.filter_eq_empty_iff]
   intro b hb h0
   have h1 := Finset.Nat.mem_antidiagonalTuple.mp hb
-  simp [Fin.sum_univ_succ, h0] at h1 <;> omega
+  simp [h0] at h1
 
 theorem chiPAux_sum_split (D n : ℕ) (g : (Fin (D + 1) → ℕ) → ℝ) :
     ∑ b ∈ Finset.Nat.antidiagonalTuple (D + 1) (n + 1), g b =
@@ -229,7 +228,7 @@ theorem chiPAux_sum_split (D n : ℕ) (g : (Fin (D + 1) → ℕ) → ℝ) :
       refine Finset.mem_filter.mpr ⟨Finset.Nat.mem_antidiagonalTuple.mpr ?_, ?_⟩
       · rw [chiPAux_sum_update_zero]
         omega
-      · simp [Function.update_apply]
+      · simp
     · intro b hb
       have h1 := Finset.Nat.mem_antidiagonalTuple.mp (Finset.mem_filter.mp hb).1
       have h2 : b 0 ≠ 0 := (Finset.mem_filter.mp hb).2
@@ -241,15 +240,15 @@ theorem chiPAux_sum_split (D n : ℕ) (g : (Fin (D + 1) → ℕ) → ℝ) :
       funext i
       by_cases hi : i = 0
       · subst hi
-        simp [Function.update_apply]
-      · simp [Function.update_apply, hi]
+        simp
+      · simp [hi]
     · intro b hb
       have h2 : b 0 ≠ 0 := (Finset.mem_filter.mp hb).2
       funext i
       by_cases hi : i = 0
       · subst hi
-        simp [Function.update_apply] <;> omega
-      · simp [Function.update_apply, hi]
+        simp <;> omega
+      · simp [hi]
     · intro a _
       rfl
   linarith [key]
@@ -461,7 +460,6 @@ theorem exists_chiP_succ_sub_le (D : ℕ) :
       rw [hL]
       first
         | exact (div_mul_cancel₀ c₀ hl2.ne').symm
-        | field_simp
     rw [e]
     exact mul_le_mul_of_nonneg_left ht hL0
   refine ⟨(1 / 2) * (2 ^ D + 3 ^ D * (2 + (D : ℝ))) * (1 + L), fun n hn => ?_⟩

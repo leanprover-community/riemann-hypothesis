@@ -57,9 +57,7 @@ variable {f p q N' : ℕ}
 
 theorem two_le_infty : (2 : WithTop ℕ∞) ≤ ∞ := by
   first
-  | exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
   | exact WithTop.coe_le_coe.mpr le_top
-  | simp
 
 theorem sqNorm_nonneg' {m : ℕ} (g : Fin m → ℂ) : 0 ≤ sqNorm g :=
   Finset.sum_nonneg fun i _ => Complex.normSq_nonneg _

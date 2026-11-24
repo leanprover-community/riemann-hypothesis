@@ -113,7 +113,7 @@ theorem isGlRep_resE {n : ℕ} (E : Fin n → Fin n → Module.End ℂ M) (S : S
   simp only [LinearMap.sub_apply, Module.End.mul_apply, resE, Submodule.coe_sub,
     LinearMap.coe_restrict_apply]
   rw [this]
-  split_ifs <;> simp [resE, LinearMap.coe_restrict_apply]
+  split_ifs <;> simp [LinearMap.coe_restrict_apply]
 
 end CapelliMinorRestriction
 
@@ -201,12 +201,12 @@ theorem tMap_sum {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 theorem coefX_add {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (σ : Mat k r → (H →L[ℂ] H))
     (x₀ : Mat k r) (w m₁ m₂ : H) (G : Mat k r) :
     coefX σ x₀ w (m₁ + m₂) G = coefX σ x₀ w m₁ G + coefX σ x₀ w m₂ G := by
-  simp [coefX, inner_add_right]
+  simp [coefX]
 
 theorem coefX_smul {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (σ : Mat k r → (H →L[ℂ] H))
     (x₀ : Mat k r) (w m : H) (a : ℂ) (G : Mat k r) :
     coefX σ x₀ w (a • m) G = a * coefX σ x₀ w m G := by
-  simp [coefX, inner_smul_right]
+  simp [coefX]
 
 variable {Vp : Type*} [NormedAddCommGroup Vp] [InnerProductSpace ℂ Vp] [CompleteSpace Vp]
 

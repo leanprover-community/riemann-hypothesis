@@ -285,8 +285,7 @@ namespace ReciprocityTheory.ChartRestriction.G.AR.Up
 
 open NumberField
 
-theorem FundSetMeasStatement_holds {E : Type} [Field E] [NumberField E] [IsCMField E] :
-    FundSetMeasStatement (E := E) := FSM.fundSetMeasStatement_of_isCMField
+alias FundSetMeasStatement_holds := _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.FSM.fundSetMeasStatement_of_isCMField
 
 theorem DivStartStatement_holds {E : Type} [Field E] [NumberField E] [IsCMField E] :
     DivStartStatement (E := E) := DivSt.divStart_of FundSetMeasStatement_holds

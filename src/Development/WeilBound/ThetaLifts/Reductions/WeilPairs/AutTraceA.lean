@@ -2,14 +2,14 @@ module
 
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutDef
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.GoodLat
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergCMRealLineAddNoPhase
+public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutSerA
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAddCharIsStandardCharOfAdmissibleCM
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnfoldPoincareSeriesLatticeFourierStatement
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnfoldPoincareSeriesLatticeFourier
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumOpTransversal
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutLat
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutSer
-import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.ContinuousTheta
-import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.FinIdemSmulOfReal
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -32,7 +32,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -45,11 +44,35 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergCMRealLineAddNoPhase
+import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.ContinuousTheta
+import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.FinIdemSmulOfReal
+import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaDistributionInvariantRationalTarget
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutSer, Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutTraceA
+
+-- ===== clump member: Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutSer =====
+-- clump-header: {"m": "Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutSer", "h": "module\n\npublic import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutDef\npublic import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.GoodLat\npublic import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutSerA\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+namespace PositivityTheory.ThKW
+
+end PositivityTheory.ThKW
+
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutSer =====
+
+-- ===== clump member: Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutTraceA =====
+-- clump-header: {"m": "Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutTraceA", "h": "module\n\npublic import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutDef\npublic import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.GoodLat\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAddCharIsStandardCharOfAdmissibleCM\npublic import Mathlib.Analysis.CStarAlgebra.Classes\npublic import Mathlib.Analysis.InnerProductSpace.Basic\npublic import Mathlib.MeasureTheory.Integral.Bochner.Basic\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnfoldPoincareSeriesLatticeFourier\npublic import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SumOpTransversal\npublic import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutLat\npublic import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutSer\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeisenbergCMRealLineAddNoPhase\nimport Development.WeilBound.ThetaLifts.Reductions.WeilPairs.ContinuousTheta\nimport Development.WeilBound.ThetaLifts.Reductions.WeilPairs.FinIdemSmulOfReal\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Separation.CompletelyRegular\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaDistributionInvariantRationalTarget\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -73,12 +96,9 @@ theorem sgsg (C : Ctx σ B JS JT ξ₀ θ ι) (x : E) : σ (σ x) = x := by
   apply τ.injective
   rw [C.good.cm.2.2.2 τ, C.good.cm.2.2.2 τ, star_star]
 
-theorem piWF_add (x y : WOF F E nS nT) : piWF θ (x + y) = piWF θ x + piWF θ y := (piWA θ).map_add x y
+alias piWF_add := _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_add
 
-theorem piWF_of_fin {u : WOF F E nS nT} (hu : u.map (infPartF F E) = 0) : piWF θ u = 0 := by
-  funext p
-  show θ p.2 (infPartF F E (u p.1.1 p.1.2)) = 0
-  rw [show infPartF F E (u p.1.1 p.1.2) = 0 from congrFun (congrFun hu p.1.1) p.1.2, map_zero]
+alias piWF_of_fin := _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_of_fin
 
 theorem coe_finRatF (y : Matrix (Fin nT) (Fin nS) E) :
     (finRatF F y : WOF F E nS nT) = finIdem F E • ratWF (F := F) y := rfl
@@ -90,20 +110,15 @@ theorem iota_fin (C : Ctx σ B JS JT ξ₀ θ ι) (v : IxF F nS nT → ℂ) : (i
 theorem symplOHF_act (C : Ctx σ B JS JT ξ₀ θ ι) (g : GAF σ JS) (h : GAF σ JT) (x y : WOF F E nS nT) :
     symplOHF σ JS JT ξ₀ (actOF σ JS JT g h x) (actOF σ JS JT g h y) = symplOHF σ JS JT ξ₀ x y := by
   unfold symplOHF
-  rw [symplOF_actOF C]
+  rw [_root_.PositivityTheory.ThKW.TauSpanIdentities.symplOF_actOF C]
 
 theorem actOF_zero' (g : GAF σ JS) (h : GAF σ JT) : actOF σ JS JT g h (0 : WOF F E nS nT) = 0 := by
   unfold actOF
   rw [Matrix.mul_zero, Matrix.zero_mul]
 
-theorem symplOHF_zero_left' (y : WOF F E nS nT) : symplOHF σ JS JT ξ₀ 0 y = 0 := by
-  have h := GlobalTheory.HeisLineF.symplOHF_add_left σ JS JT ξ₀ (0 : WOF F E nS nT) 0 y
-  rw [add_zero] at h
-  linear_combination -h
-
 theorem ratWF_eq (C : Ctx σ B JS JT ξ₀ θ ι) (y : Matrix (Fin nT) (Fin nS) E) :
     ratWF (F := F) y = iotaVF ι (infRatF (tauB B) y) + (finRatF F y : WOF F E nS nT) := by
-  rw [add_comm, ← piWF_ratWF C y]
+  rw [add_comm, ← _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C y]
   exact finIdem_add_iota C.chart _
 
 theorem beta_fin (C : Ctx σ B JS JT ξ₀ θ ι) (x y : Matrix (Fin nT) (Fin nS) E) :
@@ -111,8 +126,8 @@ theorem beta_fin (C : Ctx σ B JS JT ξ₀ θ ι) (x y : Matrix (Fin nT) (Fin nS
       Complex.exp (-(Real.pi * Complex.I) *
         (omV (HMF JS JT ξ₀ (tauB B)) (infRatF (tauB B) x) (infRatF (tauB B) y) : ℝ)) = 1 := by
   have h1 := psi_rat C x y
-  have h2 := beta_iota_left C (infRatF (tauB B) x) (ratWF (F := F) y)
-  have h3 := beta_iota_right C (finRatF F x : WOF F E nS nT) (infRatF (tauB B) y)
+  have h2 := _root_.PositivityTheory.ThKW.TauSpanIdentities.beta_iota_left C (infRatF (tauB B) x) (ratWF (F := F) y)
+  have h3 := _root_.PositivityTheory.ThKW.TauSpanIdentities.beta_iota_right C (finRatF F x : WOF F E nS nT) (infRatF (tauB B) y)
   rw [piWF_of_fin (finRatF F x).fin, LinearMap.map_zero, LinearMap.zero_apply, Complex.ofReal_zero, mul_zero,
     Complex.exp_zero] at h3
   have d1 : symplOHF σ JS JT ξ₀ (ratWF x) (ratWF y) =
@@ -123,17 +138,17 @@ theorem beta_fin (C : Ctx σ B JS JT ξ₀ θ ι) (x y : Matrix (Fin nT) (Fin nS
       symplOHF σ JS JT ξ₀ (finRatF F x : WOF F E nS nT) (iotaVF ι (infRatF (tauB B) y)) +
         symplOHF σ JS JT ξ₀ (finRatF F x : WOF F E nS nT) (finRatF F y) := by
     rw [← GlobalTheory.HeisLineF.symplOHF_add_right, ← ratWF_eq C]
-  rw [d1, d2, AddChar.map_add_eq_mul, AddChar.map_add_eq_mul, h2, h3, one_mul, mul_comm, piWF_ratWF C] at h1
+  rw [d1, d2, AddChar.map_add_eq_mul, AddChar.map_add_eq_mul, h2, h3, one_mul, mul_comm, _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C] at h1
   exact h1
 
 theorem chiLat_add_iota (C : Ctx σ B JS JT ξ₀ θ ι) (x : WOF F E nS nT) (v : IxF F nS nT → ℂ) :
     chiLatF σ JS JT ξ₀ B.ψ Λ w (x + iotaVF ι v) = chiLatF σ JS JT ξ₀ B.ψ Λ w x := by
   unfold chiLatF
-  rw [smul_add, finIdem_smul_of_real (iota_fin C v), add_zero]
+  rw [smul_add, _root_.PositivityTheory.ThKW.TauSpanIdentities.finIdem_smul_of_real (iota_fin C v), add_zero]
 
 theorem ratWF_injective (C : Ctx σ B JS JT ξ₀ θ ι) :
     Function.Injective (ratWF (F := F) : Matrix (Fin nT) (Fin nS) E → WOF F E nS nT) := fun x y h =>
-  infRatF_injective B (by rw [← piWF_ratWF C, ← piWF_ratWF C, h])
+  _root_.PositivityTheory.ThKW.TauSpanIdentities.infRatF_injective B (by rw [← _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C, ← _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C, h])
 
 def ratEquivF (C : Ctx σ B JS JT ξ₀ θ ι) : Matrix (Fin nT) (Fin nS) E ≃ ratLF F E nS nT :=
   Equiv.ofBijective (fun y => ⟨ratWF y, y, rfl⟩)
@@ -154,7 +169,7 @@ theorem serF_eq (C : Ctx σ B JS JT ξ₀ θ ι) (a : IxF F nS nT → ℂ) (x : 
           (jV s (infRatF (tauB B) y + (a + piWF θ x))) : ℝ)) := by
   unfold serF GlobalTheory.HeisenbergGaussianSeries.series
   rw [← (ratEquivF C).tsum_eq]
-  simp only [coe_ratEquivF, piWA_apply, iotaA_apply, piWF_ratWF C]
+  simp only [coe_ratEquivF, piWA_apply, iotaA_apply, _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C]
 
 section Act
 
@@ -178,7 +193,7 @@ theorem act_finRat (ha : IsRatF σ JS g a) (hb : IsRatF σ JT h⁻¹ b) (y : Mat
 theorem act_iota (C : Ctx σ B JS JT ξ₀ θ ι) (v : IxF F nS nT → ℂ) :
     actOF σ JS JT g⁻¹ h⁻¹ (iotaVF ι v) = iotaVF ι (mMF σ JS JT θ (g⁻¹, h⁻¹) *ᵥ v) := by
   have e := finIdem_add_iota C.chart (actOF σ JS JT g⁻¹ h⁻¹ (iotaVF ι v))
-  rw [← actOF_smul, finIdem_smul_of_real (iota_fin C v), actOF_zero', zero_add, piWF_actOF C,
+  rw [← actOF_smul, _root_.PositivityTheory.ThKW.TauSpanIdentities.finIdem_smul_of_real (iota_fin C v), actOF_zero', zero_add, _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_actOF C,
     piWF_iotaVF C.chart] at e
   exact e
 
@@ -189,9 +204,9 @@ theorem omV_act (C : Ctx σ B JS JT ξ₀ θ ι) (u v : IxF F nS nT → ℂ) :
       (omV (HMF JS JT ξ₀ (tauB B)) (mMF σ JS JT θ (g⁻¹, h⁻¹) *ᵥ (t • u)) (mMF σ JS JT θ (g⁻¹, h⁻¹) *ᵥ v) : ℝ)) =
       Complex.exp (-(Real.pi * Complex.I) * (omV (HMF JS JT ξ₀ (tauB B)) (t • u) v : ℝ)) := by
     intro t
-    have h1 := beta_iota_left C (mMF σ JS JT θ (g⁻¹, h⁻¹) *ᵥ (t • u)) (actOF σ JS JT g⁻¹ h⁻¹ (iotaVF ι v))
-    have h2 := beta_iota_left C (t • u) (iotaVF ι v)
-    rw [piWF_actOF C, piWF_iotaVF C.chart, ← act_iota C, symplOHF_act C] at h1
+    have h1 := _root_.PositivityTheory.ThKW.TauSpanIdentities.beta_iota_left C (mMF σ JS JT θ (g⁻¹, h⁻¹) *ᵥ (t • u)) (actOF σ JS JT g⁻¹ h⁻¹ (iotaVF ι v))
+    have h2 := _root_.PositivityTheory.ThKW.TauSpanIdentities.beta_iota_left C (t • u) (iotaVF ι v)
+    rw [_root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_actOF C, piWF_iotaVF C.chart, ← act_iota C, symplOHF_act C] at h1
     rw [piWF_iotaVF C.chart] at h2
     exact h1.symm.trans h2
   by_contra hne
@@ -221,7 +236,7 @@ theorem actR_add_infRat (C : Ctx σ B JS JT ξ₀ θ ι) (ha : IsRatF σ JS g a)
     (y : Matrix (Fin nT) (Fin nS) E) (v : IxF F nS nT → ℂ) :
     mMF σ JS JT θ (g⁻¹, h⁻¹) *ᵥ (infRatF (tauB B) y + v) =
       infRatF (tauB B) (b * y * a) + mMF σ JS JT θ (g⁻¹, h⁻¹) *ᵥ v := by
-  rw [mulVec_add, ← piWF_ratWF C y, ← piWF_ratWF C (b * y * a), ← act_ratW ha hb, piWF_actOF C]
+  rw [mulVec_add, ← _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C y, ← _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C (b * y * a), ← act_ratW ha hb, _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_actOF C]
 
 end Act
 
@@ -239,19 +254,6 @@ theorem phase_identity (C : Ctx σ B JS JT ξ₀ θ ι) {W : AEF F E} (hW : W + 
     GlobalTheory.HeisLineF.symplOHF_add_right] at hi
   rw [GlobalTheory.HeisLineF.symplOHF_add_left, ← symplOHF_add_self]
   linear_combination hi + h1 + h2 - h3
-
-theorem gam_periodic {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M]
-    {s : R →+* R} {w : R} {γ : X → X → ℂ} {W : X → M →ₗ[ℂ] M} (H : IsHeis s w γ W) {A : Submodule R X}
-    (hA : SelfDual γ A) (φ : X →ₗ[R] X) (hφ : ∀ x y, γ (φ x) (φ y) = γ x y) (r : R) {y c : X} (hy : φ y - y ∈ A)
-    (hc : c ∈ A) (hc' : φ c ∈ A) : γ (r • (φ (y + c) - (y + c))) (y + c) = γ (r • (φ y - y)) y := by
-  have e1 : φ (y + c) - (y + c) = (φ y - y) + (φ c - c) := by rw [map_add (f := _)]; abel
-  have e2 : γ (r • c) y = γ (r • φ c) y := by
-    rw [← hφ, map_smul, ← sub_add_cancel (φ y) y, H.add_right, H.iso hA (A.smul_mem r hc') hy, one_mul]
-  have e3 : γ (r • (φ c - c)) y = 1 := by
-    rw [smul_sub, sub_eq_add_neg, H.add_left, H.neg_left, e2, mul_inv_cancel₀ (H.ne_zero _ _)]
-  rw [H.add_right, H.iso hA (A.smul_mem r (e1 ▸ A.add_mem hy (A.sub_mem hc' hc))) hc, mul_one, e1, smul_add,
-    H.add_left, e3, mul_one]
-
 
 variable (σ JS JT ξ₀) in
 def gaussQF (ψ : AddChar (AF F) ℂ) (Λ : Submodule (𝓞 E) (Matrix (Fin nT) (Fin nS) E)) (w : 𝓞 E)
@@ -300,8 +302,8 @@ theorem left_side (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) (hR : RatSD
   have h1 := actR_add_infRat C ha hb y 0
   rw [mulVec_zero, add_zero, add_zero] at h1
   rw [h1] at h0
-  rw [Equiv.ofBijective_apply, chiLat_add_iota C, chiLat_mul_exp C hG hR hA ha hb hw, beta_iota_right C,
-    beta_iota_left C, gaussV, actR_add_infRat C ha hb, piWF_add, piWF_iotaVF C.chart, piWF_ratWF C, map_sub (infRatF (tauB B))]
+  rw [Equiv.ofBijective_apply, chiLat_add_iota C, chiLat_mul_exp C hG hR hA ha hb hw, _root_.PositivityTheory.ThKW.TauSpanIdentities.beta_iota_right C,
+    _root_.PositivityTheory.ThKW.TauSpanIdentities.beta_iota_left C, gaussV, actR_add_infRat C ha hb, piWF_add, piWF_iotaVF C.chart, _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C, map_sub (infRatF (tauB B))]
   generalize mMF σ JS JT θ (g⁻¹, h⁻¹) *ᵥ v = u at h0 ⊢
   generalize infRatF (tauB B) (b * y * a) = z at h0 ⊢
   generalize infRatF (tauB B) y = x at h0 ⊢
@@ -335,7 +337,7 @@ theorem right_side (C : Ctx σ B JS JT ξ₀ θ ι)
       ∑' y, coefQF σ JS JT ξ₀ B s Λ w u y *
         Complex.exp (2 * Real.pi * Complex.I * ((-omV (HMF JS JT ξ₀ (tauB B)) (infRatF (tauB B) y)) v : ℝ)) := by
   have hu : piWF θ (u : WOF F E nS nT) = 0 := piWF_of_fin u.fin
-  rw [Pi.smul_apply, smul_eq_mul, heisOF, beta_iota_left C, hu, LinearMap.map_zero, Complex.ofReal_zero, mul_zero,
+  rw [Pi.smul_apply, smul_eq_mul, heisOF, _root_.PositivityTheory.ThKW.TauSpanIdentities.beta_iota_left C, hu, LinearMap.map_zero, Complex.ofReal_zero, mul_zero,
     Complex.exp_zero, one_mul, serF_eq C, ← tsum_mul_left]
   refine tsum_congr fun y => ?_
   have e1 : ratWF (F := F) y + (iotaVF ι v + (u : WOF F E nS nT)) = (ratWF y + (u : WOF F E nS nT)) + iotaVF ι v := by
@@ -349,8 +351,8 @@ theorem right_side (C : Ctx σ B JS JT ξ₀ θ ι)
     simp only [map_add (f := _), map_neg, LinearMap.neg_apply, e2, halt v (infRatF (tauB B) y)]
     push_cast
     ring
-  rw [coefQF, GlobalTheory.HeisLineF.symplOHF_add_right, AddChar.map_add_eq_mul, beta_iota_right C, beta_iota_left C,
-    piWF_add, piWF_add, hu, piWF_iotaVF C.chart, piWF_ratWF C, add_zero, neg_add_cancel, add_zero, e1,
+  rw [coefQF, GlobalTheory.HeisLineF.symplOHF_add_right, AddChar.map_add_eq_mul, _root_.PositivityTheory.ThKW.TauSpanIdentities.beta_iota_right C, _root_.PositivityTheory.ThKW.TauSpanIdentities.beta_iota_left C,
+    piWF_add, piWF_add, hu, piWF_iotaVF C.chart, _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C, add_zero, neg_add_cancel, add_zero, e1,
     chiLat_add_iota C, ← e3]
   ring
 
@@ -365,12 +367,12 @@ theorem summable_coefQF (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) (hR :
     (chiLatF σ JS JT ξ₀ B.ψ Λ w) hpos
     (by
       rintro _ ⟨y, rfl⟩ hy
-      have : y = 0 := infRatF_injective B (((piWF_ratWF C y).symm.trans hy).trans (map_zero _).symm)
+      have : y = 0 := _root_.PositivityTheory.ThKW.TauSpanIdentities.infRatF_injective B (((_root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C y).symm.trans hy).trans (map_zero _).symm)
       rw [this, map_zero])
     (fun R => by
-      refine ((finite_lat C.good hG R).image (fun y => ratWF (F := F) y)).subset ?_
+      refine ((_root_.PositivityTheory.ThKW.AutLatA.finLat C.good hG R).image (fun y => ratWF (F := F) y)).subset ?_
       rintro _ ⟨⟨y, rfl⟩, h1, h2⟩
-      exact ⟨y, ⟨(finRatF_mem_iff C hG hR hA y).1 h1, by rw [← piWF_ratWF C]; exact h2⟩, rfl⟩)
+      exact ⟨y, ⟨(finRatF_mem_iff C hG hR hA y).1 h1, by rw [← _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C]; exact h2⟩, rfl⟩)
     (fun x hx => if_neg hx)
     (fun x => by
       unfold chiLatF
@@ -381,7 +383,7 @@ theorem summable_coefQF (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) (hR :
   rw [← (ratEquivF C).summable_iff] at h
   refine h.congr fun y => ?_
   have e : ‖phaseF σ JS JT ξ₀ B.ψ w u‖ = 1 := hψ.2.1 _
-  simp only [Function.comp_apply, coe_ratEquivF, piWA_apply, piWF_ratWF C, add_zero, zero_mul, Real.exp_zero,
+  simp only [Function.comp_apply, coe_ratEquivF, piWA_apply, _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C, add_zero, zero_mul, Real.exp_zero,
     mul_one]
   rw [coefQF, norm_mul (phaseF σ JS JT ξ₀ B.ψ w u), e, one_mul]
 
@@ -391,16 +393,16 @@ theorem mem_of_coefQF_ne_zero {w : 𝓞 E} {u : XFF F E nS nT} {y : Matrix (Fin 
   apply h
   have e : chiLatF σ JS JT ξ₀ B.ψ Λ w (ratWF y + (u : WOF F E nS nT)) = 0 := by
     unfold chiLatF
-    rw [smul_add, finIdem_smul_of_fin u.fin]
+    rw [smul_add, _root_.PositivityTheory.ThKW.TauSpanIdentities.finIdem_smul_of_fin u.fin]
     exact if_neg hn
   rw [coefQF, e, mul_zero, zero_mul, mul_zero]
 
 theorem coefQF_zero (w : 𝓞 E) {u : XFF F E nS nT} (hu : u ∈ latF F E nS nT Λ) :
     coefQF σ JS JT ξ₀ B s Λ w u 0 = 1 := by
   have e : ratWF (F := F) (0 : Matrix (Fin nT) (Fin nS) E) = 0 := Matrix.map_zero _ (incAF F E).map_zero
-  rw [coefQF, e, zero_add, map_zero, symplOHF_zero_left', AddChar.map_zero_eq_one, one_mul, map_zero,
+  rw [coefQF, e, zero_add, map_zero, _root_.GlobalTheory.HeisThetaF.symplOHF_zero_left, AddChar.map_zero_eq_one, one_mul, map_zero,
     LinearMap.zero_apply, Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one, chiLatF,
-    finIdem_smul_of_fin u.fin, if_pos (mem_latF.1 hu), phaseF, ← AddChar.map_add_eq_mul, neg_add_cancel,
+    _root_.PositivityTheory.ThKW.TauSpanIdentities.finIdem_smul_of_fin u.fin, if_pos (mem_latF.1 hu), phaseF, ← AddChar.map_add_eq_mul, neg_add_cancel,
     AddChar.map_zero_eq_one]
 
 def sandF (b : Matrix (Fin nT) (Fin nT) E) (a : Matrix (Fin nS) (Fin nS) E) :
@@ -428,7 +430,7 @@ theorem gauss_mul_integral_A (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) 
     · rw [conjTranspose_smul, RealC.herm_map (hτ _) C.hT]
       simp
     · rw [conjTranspose_nonsing_inv, RealC.herm_map (hτ _) C.hS]
-  obtain ⟨halt, -, -, hpos⟩ := omV_laws (H := HMF JS JT ξ₀ (tauB B)) hH hs.sq hs.pos
+  obtain ⟨halt, -, -, hpos⟩ := _root_.PositivityTheory.ThKW.TauSpanIdentities.omV_laws (H := HMF JS JT ξ₀ (tauB B)) hH hs.sq hs.pos
   have hw := hO.hw
   have H := isHeis_opFF hσ C.hS C.hT C.hξ hc hw
   have hA := hO.sd
@@ -448,7 +450,7 @@ theorem gauss_mul_integral_A (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) 
       by_contra hn
       exact hj (hi' j (by simpa using mem_of_coefQF_ne_zero hn))
     · exact fun hn => (hn (Finset.mem_univ _)).elim
-  have key := GlobalTheory.T.unfold_poincareSeries_lattice_fourier (IxF F nS nT → ℂ) volume _ (infRatF (tauB B)) (infRatF_injective B) Cg
+  have key := _root_.GlobalTheory.PoincareUnfold.unfold_poincare_fourier (IxF F nS nT → ℂ) volume _ (infRatF (tauB B)) (infRatF_injective B) Cg
     (fun R => (finite_lat C.good hG R).subset fun c hc => ⟨((hC c).1 hc.1).1, hc.2⟩) ?_ n t
     (gaussQF σ JS JT ξ₀ B.ψ Λ w a b) ?_ ?_ ?_ _ hF
     (fun y => κ * ∑ i, coefQF σ JS JT ξ₀ B s Λ w (u i) y)
@@ -457,7 +459,7 @@ theorem gauss_mul_integral_A (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) 
     refine ⟨r, hr, ?_⟩
     rw [h0, Finset.sum_congr rfl fun k _ => hQ _ (ht k)] at e
     exact e
-  · rw [eq_top_iff, ← span_infRatF C.good, Submodule.span_le]
+  · rw [eq_top_iff, ← _root_.PositivityTheory.ThKW.TauSpanIdentities.span_infRatF C.good, Submodule.span_le]
     rintro _ ⟨y, rfl⟩
     obtain ⟨N, hN, h1⟩ := hG.den y
     obtain ⟨M, hM, h2⟩ := hG.den (b * y * a)
@@ -490,12 +492,12 @@ theorem gauss_mul_integral_A (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) 
     have hc' : b * c * a - c ∈ Λ := sub_mem hc2 hc1
     by_cases hy : b * y * a - y ∈ Λ
     · rw [hQ _ hy, hQ _ (e ▸ add_mem hy hc'), gamQF, gamQF, map_smul, map_smul, map_sub, map_sub,
-        ← rhoFF_finRatF ha hb, ← rhoFF_finRatF ha hb, map_add (finRatF F)]
-      refine gam_periodic H hA _ (fun x y => ?_) _ ?_ ((hmem c).2 hc1) ?_
+        ← _root_.PositivityTheory.ThKW.TauSpanIdentities.rhoFF_finRatF ha hb, ← _root_.PositivityTheory.ThKW.TauSpanIdentities.rhoFF_finRatF ha hb, map_add (finRatF F)]
+      refine _root_.GlobalTheory.RatTrace.gam_periodic H hA _ (fun x y => ?_) _ ?_ ((hmem c).2 hc1) ?_
       · unfold gamFF
-        rw [coe_rhoFF, coe_rhoFF, symplOF_actOF C]
-      · rw [rhoFF_finRatF ha hb, ← map_sub]; exact (hmem _).2 hy
-      · rw [rhoFF_finRatF ha hb]; exact (hmem _).2 hc2
+        rw [coe_rhoFF, coe_rhoFF, _root_.PositivityTheory.ThKW.TauSpanIdentities.symplOF_actOF C]
+      · rw [_root_.PositivityTheory.ThKW.TauSpanIdentities.rhoFF_finRatF ha hb, ← map_sub]; exact (hmem _).2 hy
+      · rw [_root_.PositivityTheory.ThKW.TauSpanIdentities.rhoFF_finRatF ha hb]; exact (hmem _).2 hc2
     · rw [hQ0 _ hy, hQ0]
       intro hn
       rw [e] at hn
@@ -506,7 +508,7 @@ theorem gauss_mul_integral_A (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) 
     exact mul_le_mul_of_nonneg_left (norm_sum_le _ _) (norm_nonneg _)
   · simp
   · intro y hy hn
-    have h1 : infRatF (tauB B) y ≠ 0 := fun h => hy (infRatF_injective B (h.trans (map_zero _).symm))
+    have h1 : infRatF (tauB B) y ≠ 0 := fun h => hy (_root_.PositivityTheory.ThKW.TauSpanIdentities.infRatF_injective B (h.trans (map_zero _).symm))
     have h2 := hpos _ h1
     rw [neg_eq_zero.1 hn] at h2
     exact lt_irrefl _ h2
@@ -515,21 +517,20 @@ theorem gauss_mul_integral_A (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) 
     obtain ⟨i, -, hi⟩ := Finset.exists_ne_zero_of_sum_ne_zero (right_ne_zero_of_mul hy)
     have h1 : finRatF F c ∈ (latF F E nS nT Λ).map (rhoFF σ JS JT (g, h)) := by
       refine ⟨finRatF F (b * c * a), (hmem _).2 hc2, ?_⟩
-      rw [← rhoFF_finRatF ha hb, ← Module.End.mul_apply, ← map_mul,
+      rw [← _root_.PositivityTheory.ThKW.TauSpanIdentities.rhoFF_finRatF ha hb, ← Module.End.mul_apply, ← map_mul,
         show ((g, h) : GAF σ JS × GAF σ JT) * (g⁻¹, h⁻¹) = 1 from mul_inv_cancel (g, h), map_one,
         Module.End.one_apply]
     have h2 := H.iso hA (mem_of_coefQF_ne_zero hi) ((hmem c).2 hc1)
     rw [H.add_left, H.iso hB (huB i) h1, mul_one] at h2
-    obtain ⟨z, hz⟩ := (gamQF_eq_one_iff C y c).1 h2
+    obtain ⟨z, hz⟩ := (_root_.PositivityTheory.ThKW.TauSpanIdentities.gamQF_eq_one_iff C y c).1 h2
     exact ⟨-z, by rw [LinearMap.neg_apply, hz, Int.cast_neg]⟩
   · intro v
-    obtain ⟨hf, hfix, hvac⟩ := ser_vacuum C hG hR hO hs (-v)
+    obtain ⟨hf, hfix, hvac⟩ := _root_.PositivityTheory.ThKW.SerA.main C hG hR hO hs (-v)
     have e := hκ ⟨_, hf⟩ hfix hvac (iotaVF ι v)
     rw [(sumOp_eq_sum_transversal H _ _ hB _ hfix _ u huB huT).1, Submodule.coe_sum, Finset.sum_apply] at e
     simp only [coe_opFF, right_side C halt, left_side C hG hR hA ha hb hw halt hbij] at e
     rw [e, ← Summable.tsum_finsetSum, ← tsum_mul_left]
     · refine tsum_congr fun y => ?_
-      beta_reduce
       rw [← Finset.sum_mul, mul_assoc κ]
     · intro i _
       refine Summable.of_norm ((summable_coefQF C hG hR hA hpos w (u i)).congr fun y => ?_)
@@ -542,3 +543,6 @@ theorem gauss_mul_integral_A (C : Ctx σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) 
 end PositivityTheory.ThKW.Trc
 
 end
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.WeilBound.ThetaLifts.Reductions.WeilPairs.AutTraceA =====

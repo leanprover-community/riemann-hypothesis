@@ -66,11 +66,11 @@ theorem adjugate_last (r : ℕ) (M : Matrix (Fin (r + 1)) (Fin (r + 1)) K) :
   · have hsub : ((M.updateRow (Fin.last r) (Pi.single (Fin.last r) 1)).submatrix
         (Fin.last r).succAbove (Fin.last r).succAbove) = M.submatrix Fin.castSucc Fin.castSucc := by
       ext i j
-      simp [Fin.succAbove_last, updateRow_ne (Fin.castSucc_lt_last i).ne]
+      simp [Fin.succAbove_last]
     rw [hsub]
     simp [← two_mul, pow_mul]
   · intro j _ hj
-    simp [Pi.single_apply, hj]
+    simp [hj]
   · simp
 
 theorem det_sub_single (r : ℕ) (W : Matrix (Fin (r + 1)) (Fin (r + 1)) K) (c : K) :
@@ -83,8 +83,8 @@ theorem det_sub_single (r : ℕ) (W : Matrix (Fin (r + 1)) (Fin (r + 1)) K) (c :
     · subst hi
       by_cases hj : j = Fin.last r
       · subst hj; simp [sub_eq_add_neg]
-      · simp [hj, single_apply, Ne.symm hj]
-    · simp [hi, single_apply, Ne.symm hi]
+      · simp [hj, Ne.symm hj]
+    · simp [hi, Ne.symm hi]
   rw [h, det_updateRow_add, det_updateRow_smul, updateRow_eq_self, adjugate_apply]
   ring
 

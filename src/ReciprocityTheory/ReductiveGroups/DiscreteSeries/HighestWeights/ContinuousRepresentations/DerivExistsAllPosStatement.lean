@@ -1,6 +1,6 @@
 module
 
-public import Mathlib
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
 public import Formalism.RealPlaceAnalysis.StatementKT
 import Mathlib.Algebra.Order.Floor.Extended

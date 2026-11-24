@@ -68,10 +68,6 @@ theorem sig_sig (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
   apply τ.injective
   rw [h.2.2.2, h.2.2.2, star_star]
 
-theorem exists_of_sig_fixed (h : IsCMExt F E σ) {x : E} (hx : σ x = x) :
-    ∃ t : F, algebraMap F E t = x :=
-  _root_.Bl.EqIdOfFixed.goal1 h hx
-
 end Fixed
 
 section Form
@@ -104,7 +100,7 @@ theorem exists_repr : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
   obtain ⟨hH, hdet⟩ := hT
   by_cases hd : ∃ i, T i i ≠ 0
   · obtain ⟨i, hi⟩ := hd
-    obtain ⟨t, ht⟩ := exists_of_sig_fixed hσ (hH i i)
+    obtain ⟨t, ht⟩ := _root_.Bl.EqIdOfFixed.goal1 hσ (hH i i)
     refine ⟨t, Pi.single i 1, ?_, ?_⟩
     · rintro rfl
       exact hi (by rw [← ht, map_zero])

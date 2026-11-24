@@ -151,16 +151,16 @@ theorem brp_diag_transvection (i j : Fin n) (hij : i ≠ j) (c : K) :
     rw [Matrix.diagonal_mul]
     by_cases ha : a = i
     · subst ha
-      by_cases hb : j = b <;> simp [Matrix.single_apply, hb]
-    · simp [Matrix.single_apply, ha, Ne.symm ha]
+      by_cases hb : j = b <;> simp [hb]
+    · simp [ha, Ne.symm ha]
   have h2 : Matrix.single i j (2 * c) * Matrix.diagonal (Function.update (1 : Fin n → K) i 2) =
       Matrix.single i j (2 * c) := by
     ext a b
     rw [Matrix.mul_diagonal]
     by_cases hb : b = j
     · subst hb
-      simp [Function.update_apply, Ne.symm hij]
-    · simp [Matrix.single_apply, Ne.symm hb]
+      simp [Ne.symm hij]
+    · simp [Ne.symm hb]
   rw [Matrix.transvection, Matrix.transvection, Matrix.mul_add, Matrix.add_mul, Matrix.mul_one, Matrix.one_mul, h1, h2]
 
 def brpDiag : (Fin n → Kˣ) →* GL (Fin n) K :=

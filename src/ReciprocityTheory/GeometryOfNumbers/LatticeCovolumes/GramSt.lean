@@ -69,7 +69,7 @@ theorem gramSt_det_one_add_eq {Q : Matrix ι ι ℂ} (hQ : Q.PosSemidef) :
     ext i j
     by_cases h : i = j
     · subst h; simp
-    · simp [h, one_apply]
+    · simp [h]
   rw [h1, Unitary.conjStarAlgAut_apply, hd, det_mul, det_mul, det_diagonal, Complex.ofReal_prod]
   rw [mul_comm (det _) (∏ _, _), mul_assoc, ← det_mul]
   try rw [Unitary.coe_star]

@@ -278,7 +278,7 @@ theorem det_corner {n : ℕ} (A B : Matrix (Fin (n + 1)) (Fin (n + 1)) S)
       by_cases hy : y = Fin.last n
       · subst hy
         simp [hc]
-      · simp [Matrix.updateRow_apply, Pi.single_apply, hy, h _ y (fun hh => hy hh.2)]
+      · simp [Matrix.updateRow_apply, hy, h _ y (fun hh => hy hh.2)]
     · simp [Matrix.updateRow_apply, hx, h x y (fun hh => hx hh.1)]
   rw [hA, Matrix.det_updateRow_add, Matrix.updateRow_eq_self, Matrix.det_updateRow_smul]
   congr 2

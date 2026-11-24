@@ -69,7 +69,7 @@ theorem capEntry_apply_shift {V : Type} [AddCommGroup V] [Module ℂ V]
   unfold capEntry
   by_cases h : a = b
   · subst h
-    simp [Module.algebraMap_end_apply, sub_smul, add_assoc]
+    simp [Module.algebraMap_end_apply, add_assoc]
   · simp [h, Ne.symm h]
 
 theorem sum_pair_swap {M : Type*} [AddCommMonoid M] {q : ℕ} (Φ : Fin (q + 2) → Fin (q + 1) → M) :
@@ -123,7 +123,7 @@ theorem minor_expand (i : Fin (q + 2)) (l : Fin (q + 1)) :
     funext t
     simp [Function.comp, Fin.succ_succAbove_succ]
   rw [h0, h1]
-  simp [dbl, LinearMap.sum_apply, Module.End.mul_apply]
+  simp [dbl, LinearMap.sum_apply]
 
 theorem key_identity :
     (∑ i : Fin (q + 2), ((-1 : ℂ) ^ (i : ℕ)) • capEntry E x (R i) (C 0)
@@ -195,7 +195,7 @@ theorem cminor_tensE_apply (X : GMod n) (q : ℕ) : ∀ (R C : Fin (q + 1) → F
   | zero =>
     intro R C x f d
     rw [cminor_succ_col, cminor_succ_col X.E]
-    simp [cminor_zero, capEntry_tensE_apply, Module.End.mul_apply, LinearMap.sum_apply]
+    simp [cminor_zero, capEntry_tensE_apply]
   | succ q ih =>
     intro R C x f d
     have hL : cminor (tensE X) R C x f d =

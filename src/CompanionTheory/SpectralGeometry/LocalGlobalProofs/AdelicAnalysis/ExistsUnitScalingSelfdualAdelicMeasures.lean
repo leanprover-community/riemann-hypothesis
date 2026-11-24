@@ -4,9 +4,10 @@ public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerPr
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHaarMeasure
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsTraceFormGramMatrixInBasis
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsUnipotentInvariantCompactlySupportedWeightStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsUnipotentInvariantCompactlySupportedWeight
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SelfdualMeasureTransportEquiv
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.SelfdualMeasureTransportEquivStatement
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -199,7 +200,7 @@ theorem sdW_iff (hCM : IsCMExt F E σ) {M : ℕ} (J : Matrix (Fin M) (Fin M) E)
     rw [Measure.map_map hm' hm]
     have : (e.symm ∘ e) = id := by funext X; exact e.symm_apply_apply X
     rw [this, Measure.map_id]
-  have key := GlobalTheory.T.selfdual_measure_transport_equiv _ _ e μ (fun x y => ψR (x ⬝ᵥ
+  have key := _root_.GlobalTheory.CompanionTheory.SW.selfDual_transport _ _ e μ (fun x y => ψR (x ⬝ᵥ
         ((Matrix.blockDiagonal fun _ : Fin n => B).map (algebraMap F R) *ᵥ y)))
   have hform : SdW F E σ M J R ψR n μ ↔ SelfDual μ (fun X Y => ψR (e X ⬝ᵥ
         ((Matrix.blockDiagonal fun _ : Fin n => B).map (algebraMap F R) *ᵥ e Y))) := by
@@ -230,7 +231,7 @@ theorem sdW_coord : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Number
   have hdet' : (Matrix.blockDiagonal fun _ : Fin n => B).det ≠ 0 := by
     rw [Matrix.det_blockDiagonal]
     exact Finset.prod_ne_zero_iff.mpr fun _ _ => hdet
-  obtain ⟨cinf, c, hU, h1, h2⟩ := GlobalTheory.T.exists_unipotentInvariant_compactlySupported_weight F hCM.1 laminf lam hinf hv ψ hψ
+  obtain ⟨cinf, c, hU, h1, h2⟩ := _root_.GlobalTheory.CompanionTheory.SW.SdCoord.selfDual_coord F hCM.1 laminf lam hinf hv ψ hψ
     ((Fin M × Fin d) × Fin n) (Matrix.blockDiagonal fun _ : Fin n => B) hsym' hdet'
   refine ⟨cinf, c, hU, ?_, fun v => ?_⟩
   · obtain ⟨t1, t2, t3, t4, -⟩ := GlobalTheory.CompanionTheory.SW.isLocR_Ainf F hCM.1

@@ -44,6 +44,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.BigCellDiagIff
 
 @[expose] public section
 
@@ -209,26 +210,6 @@ namespace Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL
 
 open Formalism.L2.SG.RealObj CoordinateScalingProducts
 
-private theorem dcLoc_eq_formula (r : ℕ) :
-    dcLoc (r := r) = (2 : ℝ≥0∞) ^ (r + 1) • (volume : Measure (Fin (r + 1) → ℂ)) := by
-  unfold dcLoc
-  have : SigmaFinite ((2 : ℝ≥0∞) • (volume : Measure ℂ)) := by
-    have h2 : (2 : ℝ≥0∞) = ((2 : NNReal) : ℝ≥0∞) := rfl
-    rw [h2, ← ENNReal.smul_def]
-    infer_instance
-  refine Measure.pi_eq fun s _ => ?_
-  rw [Measure.smul_apply, volume_pi, Measure.pi_pi, smul_eq_mul]
-  simp only [Measure.smul_apply, smul_eq_mul, Finset.prod_mul_distrib, Finset.prod_const,
-    Finset.card_univ, Fintype.card_fin]
-
-private theorem measurableSet_goodLoc' (r : ℕ) (T T' : ℝ) : MeasurableSet (GoodLoc (r := r) T T') := by
-  have hc : Continuous fun c : Fin (r + 1) → ℂ => Gv T T' (Matrix.diagonal c) := by
-    simp only [Gv, dl_diag _ (r + 1) le_rfl, dl_diag _ r (Nat.le_succ r)]
-    fun_prop
-  rw [GoodLoc, Set.ofPred_and, Set.ofPred_forall]
-  refine (MeasurableSet.iInter fun l => ?_).inter (measurableSet_lt measurable_const hc.measurable)
-  exact (measurable_pi_apply l) (measurableSet_singleton 0).compl
-
 private theorem volume_normSq_snd_eq_const_eq_zero {r : ℕ} {T T' : ℝ} :
     (volume : Measure ((Fin r → ℂ) × ℂ)) {q | Complex.normSq q.2 = T * T'} = 0 := by
   have hS : {z : ℂ | Complex.normSq z = T * T'} ⊆ Metric.sphere 0 (Real.sqrt (T * T')) := by
@@ -309,8 +290,8 @@ theorem coordW_holds : CoordW := by
   have key : ∫⁻ c in GoodLoc (r := r) T T', ENNReal.ofReal (wtLoc k T T' c) * F c ∂(dcLoc (r := r)) =
       ENNReal.ofReal C * ∫⁻ q : (Fin r → ℂ) × ℂ,
         ENNReal.ofReal (Formalism.QuantumDeterminants.bcWeight k r T T' q) * F (coordSc r sc q) := by
-    rw [dcLoc_eq_formula, Measure.restrict_smul, lintegral_smul_measure,
-      ← lintegral_indicator (measurableSet_goodLoc' r T T')]
+    rw [_root_.Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL.dcLoc_eq, Measure.restrict_smul, lintegral_smul_measure,
+      ← lintegral_indicator (_root_.Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL.measurableSet_goodLoc r T T')]
     have hvol : (volume : Measure (Fin (r + 1) → ℂ)) =
         ENNReal.ofReal (nrm r sc) • (volume.map (Phe r sc hsc)) := by
       rw [map_Phe hsc, smul_smul, ← ENNReal.ofReal_mul hnrm.le, mul_inv_cancel₀ hnrm.ne',

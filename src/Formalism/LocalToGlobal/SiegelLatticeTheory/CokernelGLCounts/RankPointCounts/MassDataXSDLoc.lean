@@ -177,7 +177,7 @@ theorem oev_smul_lat {t : Fv F v ⊗[F] E} (ht : t ∈ OEv (E := E) v) {w : Fin 
     | smul c y _ hy =>
       have e : (fun i => inclR (F := F) (Fv F v) (a : E) * (c • y) i) =
           c • (fun i => inclR (F := F) (Fv F v) (a : E) * y i) := by
-        funext i; simp [mul_smul_comm]
+        funext i; simp
       rw [e]; exact Submodule.smul_mem _ c hy
   | zero =>
     convert zero_mem (latLoc v (Lb : Set (Fin n → E))) using 1
@@ -186,7 +186,7 @@ theorem oev_smul_lat {t : Fv F v ⊗[F] E} (ht : t ∈ OEv (E := E) v) {w : Fin 
     have e : (fun i => (x + y) * w i) = (fun i => x * w i) + (fun i => y * w i) := by funext i; simp [add_mul]
     rw [e]; exact add_mem hx hy
   | smul c x _ hx =>
-    have e : (fun i => (c • x) * w i) = c • (fun i => x * w i) := by funext i; simp [smul_mul_assoc]
+    have e : (fun i => (c • x) * w i) = c • (fun i => x * w i) := by funext i; simp
     rw [e]; exact Submodule.smul_mem _ c hx
 
 theorem swVv_mem_latLoc {z : Fin n → E ⊗[F] Fv F v}
@@ -205,7 +205,7 @@ theorem swVv_mem_latLoc {z : Fin n → E ⊗[F] Fv F v}
     rw [this]; exact add_mem hx hy
   | smul s x _ hx =>
     have : swVv v (s • x) = fun i => swp v (s : E ⊗[F] Fv F v) * swVv v x i := by
-      funext i; simp [swVv, Submodule.coe_smul_of_tower, Subring.smul_def, smul_eq_mul, map_mul]
+      funext i; simp [swVv, Subring.smul_def, smul_eq_mul, map_mul]
     rw [this]
     exact oev_smul_lat v Lb (swp_mem_oev v s.2) hx
 

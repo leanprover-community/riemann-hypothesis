@@ -92,7 +92,7 @@ theorem ndA (H : Hyps) {d : SD σ} (R : RD d) (hmn : d.m < d.n) {Φ : d.Fn} (hΦ
   obtain ⟨hadd, hbd⟩ := H.lamBd F E σ d L hL
   obtain ⟨nb, lam, 𝓖, T, x, hc, hT, rfl⟩ := hL
   obtain ⟨hUo, hR, hs, hp, hd, hcont, hinv, hfar⟩ := hE
-  obtain ⟨hDiff, hComm⟩ := lamDeriv (rat2 σ d.Y) _ hadd hbd U Ê hUo hd hcont hinv
+  obtain ⟨hDiff, hComm⟩ := _root_.GlobalTheory.CompanionTheory.HolFamily.functional_commutes_iteratedDeriv (rat2 σ d.Y) _ hadd hbd U Ê hUo hd hcont hinv
   show fc d.B.ψ d.b nb lam 𝓖 (fun g => iteratedDeriv j (Ê · g) (s0 d.m d.n)) T x = 0
   rw [← hComm _ hs j]
   obtain ⟨t', ht'⟩ := H.unfold F E σ d _ _ hsec hEis
@@ -125,7 +125,7 @@ theorem exists_isHolW_iteratedDeriv (H : Hyps) {d : SD σ} (R : RD d) (hmn : d.m
   obtain ⟨-, -, hTG, hLC, hT2, hSC⟩ := H.auxEx F E σ d
   have hE' := hE
   obtain ⟨hUo, hR, hs, hp, hd, hcont, hinv, hfar⟩ := hE'
-  have hAc := famCont U Ê hUo hd hcont _ hs j
+  have hAc := _root_.GlobalTheory.CompanionTheory.HolFamily.continuous_iteratedDeriv_family U Ê hUo hd hcont _ hs j
   have hAi : ∀ γ ∈ rat2 σ d.Y, ∀ g, iteratedDeriv j (Ê · (γ * g)) (s0 d.m d.n) = iteratedDeriv j (Ê · g) (s0 d.m d.n) :=
     fun γ hγ g => derivInv U Ê hUo _ hs γ g (fun z hz => hinv z hz γ hγ g) j
   obtain ⟨Ψ, hΨ, hTΨ⟩ := vac_tens R w _ hv

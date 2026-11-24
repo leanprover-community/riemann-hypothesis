@@ -58,10 +58,8 @@ theorem lin_injective {E : Type} [AddCommGroup E] [Module ℂ E] {n : ℕ} (v : 
     Function.Injective (lin v) := by
   rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
   intro x hx
-  have h := Fintype.linearIndependent_iff.mp hv x
-  simp only [lin, Fintype.linearCombination_apply] at hx
   funext i
-  exact h hx i
+  exact Fintype.linearIndependent_iff.mp hv x (by simpa only [lin, Fintype.linearCombination_apply] using hx) i
 
 theorem ratThOfLiftTest : RatThOfLiftTest := by
   intro K _ _ _ Bs A X fc cr b hT hH5 hKF hEW hnP j t i k

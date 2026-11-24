@@ -51,6 +51,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.InertPrimeTeichmuller.NormLeOneOfIntegralInt
 
 @[expose] public section
 
@@ -97,14 +98,8 @@ theorem okp_zp (u : ℤ_[p]) : (zc u, zc u) ∈ OKp D lam := by
     simpa [zc_int] using okp_intPair D lam n)
   rwa [(okp_closed D lam).closure_eq] at h
 
-theorem norm_p_cp : ‖(p : ℂ_[p])‖ = (p : ℝ)⁻¹ := by
-  have h := norm_int_cp (p := p) (p : ℤ)
-  push_cast at h
-  rw [h]
-  exact PadicInt.norm_p
-
 theorem pow_dvd_of_norm (t : ℤ) (e : ℕ) (h : ‖(t : ℂ_[p])‖ ≤ ‖(p : ℂ_[p])‖ ^ e) : ((p : ℤ) ^ e) ∣ t := by
-  rw [norm_int_cp, norm_p_cp] at h
+  rw [norm_int_cp, _root_.PI.OkpW.norm_p_cp] at h
   apply PadicInt.norm_int_le_pow_iff_dvd.1
   rw [zpow_neg, zpow_natCast, ← inv_pow]
   exact h
@@ -312,7 +307,7 @@ theorem lamb_change {N N' r : ℕ} (b b' : Fin r → Matrix (Fin N') (Fin N) D.h
 
   simp only [Matrix.smul_apply, smul_eq_mul, map_sum, map_mul]
   refine Finset.sum_congr rfl fun n _ => ?_
-  rw [← IntegralOrthonormalChange.embT_K D k.1 _ (hQK n m), IntegralOrthonormalChange.lamC_embT, IntegralOrthonormalChange.lamC_embT]
+  rw [← _root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL.embT_K D k.1 _ (hQK n m), IntegralOrthonormalChange.lamC_embT, IntegralOrthonormalChange.lamC_embT]
 
 theorem v_change {N N' r : ℕ} (b b' : Fin r → Matrix (Fin N') (Fin N) D.host.E) (Q : Fin r → Fin r → D.host.E)
     (hQK : ∀ i j, Q i j ∈ D.host.K) (hb' : ∀ j, b' j = ∑ i, Q i j • b i)

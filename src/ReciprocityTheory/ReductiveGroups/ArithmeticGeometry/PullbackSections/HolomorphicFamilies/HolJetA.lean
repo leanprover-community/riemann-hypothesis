@@ -71,7 +71,6 @@ theorem germ_stalkClosedPointTo_eq {R : CommRingCat.{0}} [IsLocalRing R] (f : Sp
   simp only [Iso.trans_hom, Functor.mapIso_hom, Iso.op_hom, eqToIso.hom, Category.assoc]
   first
   | rfl
-  | congr 3
 
 
 set_option backward.isDefEq.respectTransparency false in
@@ -129,10 +128,8 @@ theorem isLocalHom_nbhdLift [IsLocalRing A] (ψ : ∀ U : Y.Opens, y₀ ∈ U �
   have e : (nbhdLift y₀ A ψ hψ).hom (Y.presheaf.germ U y₀ hU f) = ψ U hU f := by
     first
     | simpa using congrArg (fun g => g.hom f) (germ_nbhdLift ψ hψ U hU)
-    | rw [← CommRingCat.comp_apply, germ_nbhdLift]
   rw [e] at ha
   first
-  | exact (Y.mem_basicOpen f ⟨y₀, hU⟩).mp (hloc U hU f ha)
   | exact (Y.mem_basicOpen f y₀ hU).mp (hloc U hU f ha)
 
 set_option backward.isDefEq.respectTransparency false in
@@ -147,7 +144,6 @@ theorem nbhdPt_closedPoint [IsLocalRing A] (ψ : ∀ U : Y.Opens, y₀ ∈ U →
       IsLocalRing.closedPoint (Y.presheaf.stalk y₀) := by
     first
     | exact IsLocalRing.comap_closedPoint (nbhdLift y₀ A ψ hψ).hom
-    | simp
   rw [e, Scheme.fromSpecStalk_closedPoint]
 
 
@@ -206,7 +202,6 @@ theorem nbhdPt_comp_appLE [IsLocalRing A] {Y' : Scheme.{0}} (φ : Y ⟶ Y')
   rw [Scheme.Hom.comp_appLE]
   first
   | rw [nbhdPt_appLE ψ hψ hloc (φ ⁻¹ᵁ U') hU']
-  | erw [nbhdPt_appLE ψ hψ hloc (φ ⁻¹ᵁ U') hU']
 
 end Lift
 

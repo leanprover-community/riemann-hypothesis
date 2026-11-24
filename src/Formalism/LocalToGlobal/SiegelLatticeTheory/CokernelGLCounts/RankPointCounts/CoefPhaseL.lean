@@ -92,7 +92,7 @@ theorem sg_dec_eq {m : ℕ} (a : Loc.Pt E (m + 1)) (l ρ l' ρ' : Matrix (Fin (m
   have hLi := (sa (rI a l)⁻¹ (rI a l)).1 (Formalism.DoubleCosetMeasures.isLowUni_inv E hLo) hLo
   rw [Matrix.nonsing_inv_mul _ hLd, sLow_one] at hLi
   have hUi := (sa (rI a ρ) (rI a ρ)⁻¹).2 hUp (Formalism.DoubleCosetMeasures.isUpUni_inv E hUp)
-  rw [Matrix.mul_nonsing_inv _ hUd, sUp_one] at hUi
+  rw [Matrix.mul_nonsing_inv _ hUd, _root_.Formalism.MainNotions.LocalOrbitGerms.Dec.sUp_one] at hUi
   rw [Formalism.MainNotions.LocalOrbitGerms.Cls.simpleLow_eq, Formalism.MainNotions.LocalOrbitGerms.Cls.simpleUp_eq, Formalism.MainNotions.LocalOrbitGerms.Cls.simpleLow_eq,
     Formalism.MainNotions.LocalOrbitGerms.Cls.simpleUp_eq, ← sLow_rI a l', ← sUp_rI a ρ', ← sLow_rI a l, ← sUp_rI a ρ]
   linear_combination h0 + hLi + hUi

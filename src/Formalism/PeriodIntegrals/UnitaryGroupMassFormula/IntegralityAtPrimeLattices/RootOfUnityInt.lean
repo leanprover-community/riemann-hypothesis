@@ -184,7 +184,7 @@ theorem fnOf_tr (s : D.what₂.Tau → ℤ) (M : D.what₂.Tau → Matrix (Fin (
     fnOf _ s M P (frameTranslate (embT D) (fun τ x => embedding_conj_compat D τ x) g hg y) =
       fnOf _ s (fun τ => M τ * atInf (embT D) (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) τ) P y := by
   unfold fnOf frameTranslate
-  simp only [LinearMap.coe_mk, AddHom.coe_mk, Subtype.coe_mk, Matrix.mul_assoc]
+  simp only [LinearMap.coe_mk, AddHom.coe_mk, Matrix.mul_assoc]
 
 theorem valSc_tr (T : Forms0 D u) (w : D.what₂.places.Pl) (c : (D.mem u).C.cls 0) (h : (D.mem u).C.Y 0 → ℂ)
     (g : GL (Fin (D.R.N 0)) D.host.E) (hg : g ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D 0 (Nat.zero_le _)))

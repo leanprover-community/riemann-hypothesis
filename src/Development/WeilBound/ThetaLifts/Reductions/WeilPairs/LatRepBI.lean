@@ -148,8 +148,7 @@ theorem split_mem (h : IsCMExt F E σ) {e : AEF F E} (hee : e * e = e)
   have := hin P hP hqP _ hr
   rwa [show sgOF σ (sgOF σ r) = r from RingOfIntegers.ext (sg_sg h _)] at this
 
-theorem mtF_mul {n : ℕ} {J : Matrix (Fin n) (Fin n) E} (a b : GAF σ J) : mtF σ J (a * b) = mtF σ J a * mtF σ J b := by
-  simp only [mtF, map_mul, Units.val_mul]
+alias mtF_mul := _root_.GlobalTheory.WeilPartsF.mtF_mul
 
 theorem mtF_one {n : ℕ} {J : Matrix (Fin n) (Fin n) E} : mtF σ J 1 = 1 := by
   simp only [mtF, map_one, Units.val_one]

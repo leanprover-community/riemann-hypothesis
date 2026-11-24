@@ -125,7 +125,7 @@ theorem covolRef_of (hN : LsNc5.CovolN) (hB : RefNBox) : CovolRef := by
   have hd : (0 : ℝ) < |(NumberField.discr X.B.I.F : ℝ)| :=
     abs_pos.2 (Int.cast_ne_zero.2 (NumberField.discr_ne_zero _))
   rw [covol_refN hN hB X u _ FdN hH.2.2.1,
-    covol_refN hN hB X u _ FdN' (by first | exact hH.2.2.2.1 | exact hH.2.2.2), ← Real.rpow_add hd]
+    covol_refN hN hB X u _ FdN' (by first | exact hH.2.2.2), ← Real.rpow_add hd]
   congr 1
   delta eDF LsNc5.covolumeExponent
   ring

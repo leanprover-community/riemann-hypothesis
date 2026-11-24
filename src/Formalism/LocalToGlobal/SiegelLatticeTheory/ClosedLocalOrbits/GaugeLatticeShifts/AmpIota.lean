@@ -62,24 +62,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
-theorem ratLink_unique {x y : X.B.I.GA} {γ : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hx : RatLink X x γ)
-    (hy : RatLink X y γ) : x = y := by
-  obtain ⟨M, -, h1, h2, h3⟩ := hx
-  obtain ⟨N, -, k1, k2, k3⟩ := hy
-  have hMN : (M : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E) = N := by
-    ext i j
-    obtain ⟨w, hw⟩ : ∃ w, X.crd w = Pi.single j 1 :=
-      ⟨Formalism.L2.SG.Pf.LatDictK.vOf X (Pi.single j 1), Formalism.L2.SG.Pf.LatDictK.crd_vOf X _⟩
-    have e := (h3 w).symm.trans (k3 w)
-    rw [hw] at e
-    have := congrFun e i
-    simpa [Matrix.mulVec_single_one] using this
-  have hMN' : M = N := Units.ext hMN
-  subst hMN'
-  refine Prod.ext (funext fun v => ?_) ?_
-  · exact Subtype.ext (Units.ext ((h1 v).trans (k1 v).symm))
-  · exact Subtype.ext (Units.ext (h2.trans k2.symm))
-
 variable {X} (TR : TypedRed X)
 
 theorem levi_eq_one_of {a : X.B.I.Gf} (ga : Good X a)
@@ -114,7 +96,7 @@ theorem rep_split {u u' : D.what₂.Word} (Y : Formalism.L2.SG.Full.Full X) {Λ 
   have h1 : RatLink X q.1.1 q.1.2 := q.2.1
   have h2 : RatLink X (xn * p.1.1 * xn') (n * p.1.2 * n') := ratLink_mul X (ratLink_mul X hxn p.2.1) hxn'
   rw [← hq] at h2
-  exact ratLink_unique X h1 h2
+  exact _root_.Formalism.L2.SG.TermOp.Vanish.ratLink_unique X h1 h2
 
 end Formalism.L2.SG.Pf.AmpIota
 

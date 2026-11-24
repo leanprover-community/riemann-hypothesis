@@ -90,15 +90,15 @@ theorem cont_of_lc {X : Type} [TopologicalSpace X] {f : X → A.V} (hf : IsLocal
 end
 
 theorem gcn : Sgcn := by
-  apply CompanionTheory.LocalTateOrthogonality.Gcoh.gcn <;> assumption
+  apply CompanionTheory.LocalTateOrthogonality.Gcoh.gcn
 
 theorem gc0 : Sgc0 := by
-  apply CompanionTheory.LocalTateOrthogonality.Gcoh.gc0 <;> assumption
+  apply CompanionTheory.LocalTateOrthogonality.Gcoh.gc0
 
 theorem gc1 : Sgc1 := by
-  apply CompanionTheory.LocalTateOrthogonality.Gcoh.gc1 <;> assumption
+  apply CompanionTheory.LocalTateOrthogonality.Gcoh.gc1
 
 theorem gc2 : Sgc2 := by
-  apply CompanionTheory.LocalTateOrthogonality.Gcoh.gc2 <;> assumption
+  apply CompanionTheory.LocalTateOrthogonality.Gcoh.gc2
 
 end PositivityTheory.LocalTateOrthogonality.Gcoh

@@ -139,12 +139,6 @@ theorem max_not_mem_ass_swap {x y w : R} (hy : y ∈ maximalIdeal R) (rx : IsSMu
   rw [smul_zero, ← Submodule.Quotient.mk_smul]
   exact (Submodule.Quotient.mk_eq_zero _).mpr (hzb w hw)
 
-theorem exists_reg_both {N₁ N₂ : Type*} [AddCommGroup N₁] [Module R N₁] [Module.Finite R N₁]
-    [AddCommGroup N₂] [Module R N₂] [Module.Finite R N₂]
-    (h₁ : maximalIdeal R ∉ associatedPrimes R N₁) (h₂ : maximalIdeal R ∉ associatedPrimes R N₂) :
-    ∃ z ∈ maximalIdeal R, IsSMulRegular N₁ z ∧ IsSMulRegular N₂ z := by
-  first | exact Bl.general_b_fact_side.goal1 .. | (apply Bl.general_b_fact_side.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_side.goal1 <;> assumption)
-
 end Noeth
 
 section Main
@@ -177,7 +171,7 @@ theorem exists_regular_sequence_cons (n : ℕ) :
     have ry' : IsSMulRegular (QuotSMulTop y N) y' := ((isRegular_cons_iff _ _ _).mp hys).1
     have hAy := max_not_mem_ass_of_reg hy' ry'
     have hAx := max_not_mem_ass_swap hy reg ry hy' ry'
-    obtain ⟨z, hz, rzx, rzy⟩ := exists_reg_both hAx hAy
+    obtain ⟨z, hz, rzx, rzy⟩ := _root_.Bl.general_b_fact_side.goal1 hAx hAy
     have hdy : ModDepthGE R (QuotSMulTop y N) (n + 1) :=
       ⟨y' :: ys', by simpa using hlen, fun r hr => hmem r (List.mem_cons_of_mem _ hr), hys⟩
     obtain ⟨zs, hzs, hzsm, hzreg⟩ := ih (QuotSMulTop y N) hz rzy hdy

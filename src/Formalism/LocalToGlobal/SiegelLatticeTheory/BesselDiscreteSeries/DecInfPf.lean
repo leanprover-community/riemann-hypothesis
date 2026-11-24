@@ -80,10 +80,8 @@ theorem thrStar_le {n : ℕ} (hn : 1 ≤ n) (ε : Fin n → Bool) :
     rw [Real.sqrt_le_left (by positivity)]
     nlinarith
   have hnsq : (1 : ℝ) ≤ (n : ℝ) ^ 2 := one_le_pow₀ hn1
-  have hn22 : (n : ℝ) ^ 2 ≤ (n : ℝ) ^ 3 := by
-    calc (n : ℝ) ^ 2 = (n : ℝ) ^ 2 * 1 := by ring
-      _ ≤ (n : ℝ) ^ 2 * n := mul_le_mul_of_nonneg_left hn1 (by positivity)
-      _ = (n : ℝ) ^ 3 := by ring
+  have hn22 : (n : ℝ) ^ 2 ≤ (n : ℝ) ^ 3 :=
+    pow_le_pow_right₀ hn1 (by norm_num)
   have hn2 : (n : ℝ) ≤ (n : ℝ) ^ 3 := by nlinarith
   unfold ReciprocityTheory.ChartRestriction.DS.thrStar
   apply max_le
@@ -128,8 +126,6 @@ theorem decInf : Formalism.FourierDecayAlt.ThreeDimData.DecInf := by
       rw [this]; simpa using ha0
   have hthr : ReciprocityTheory.ChartRestriction.DS.thrStar ε + m < h := by
     have h1 := thrStar_le hn ε
-    have h120' : 120 * (((2 * r + k + 1 : ℕ) : ℝ)) ^ 3 ≤ h := h120
-    have hn3 : (0 : ℝ) < (((2 * r + k + 1 : ℕ) : ℝ)) ^ 3 := by positivity
     nlinarith
   obtain ⟨C, Ws, hWs, hC⟩ := ReciprocityTheory.ChartRestriction.DS.DecInf.decSm hlam hgap m hthr hσ
 

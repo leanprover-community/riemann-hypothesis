@@ -74,9 +74,6 @@ private theorem coeff_single_one_mul' (t : Fin 1 × Fin dd) (x y : PS C 1 dd) :
       simp
      rw [key, key, key, Derivation.leibniz, map_add (f := _), smul_eq_mul, smul_eq_mul, map_mul, map_mul]
      ring)
-  | (rw [MvPowerSeries.coeff_mul, Finsupp.antidiagonal_single]
-     simp [Finset.Nat.antidiagonal_succ]
-     ring)
 
 private theorem coeff_single_one_pow_add_two_eq_zero (x : PS C 1 dd) (hx : MvPowerSeries.constantCoeff x = 0)
     (t : Fin 1 × Fin dd) (k : ℕ) : MvPowerSeries.coeff (Finsupp.single t 1) (x ^ (k + 1 + 1)) = 0 := by
@@ -134,10 +131,7 @@ private theorem coeff_single_one_ev_eq_sum (f : PS C 1 dd) (ψ : Pt C 1 dd) (hψ
     rfl
   have hs : MvPowerSeries.HasSubst (fun p : Fin 1 × Fin dd => ψ p.2) := by
     first
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero (fun s => hψ s.2)
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun s => hψ s.2)
-    | exact ⟨fun s => by simp [hψ s.2], fun d => Set.toFinite _⟩
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun s => by simp [hψ s.2])
   rw [hev, MvPowerSeries.coeff_subst hs]
   refine (finsum_eq_sum_of_support_subset _ (s := Finset.univ.image fun s => Finsupp.single s 1) ?_).trans ?_
   · intro d hd
@@ -149,7 +143,6 @@ private theorem coeff_single_one_ev_eq_sum (f : PS C 1 dd) (ψ : Pt C 1 dd) (hψ
     rw [(constantCoeff_and_linear_coeff_finsupp_prod_pow _ (fun s => hψ s.2) _ d).2 (fun s h => hne s h.symm), smul_zero]
   · first
     | rw [Finset.sum_image (fun x _ y _ h => Finsupp.single_left_injective one_ne_zero h)]
-    | rw [Finset.sum_image ((Finsupp.single_left_injective one_ne_zero).injOn)]
     rw [Fintype.sum_prod_type, Fin.sum_univ_one]
     simp [Finsupp.prod_single_index, smul_eq_mul]
 

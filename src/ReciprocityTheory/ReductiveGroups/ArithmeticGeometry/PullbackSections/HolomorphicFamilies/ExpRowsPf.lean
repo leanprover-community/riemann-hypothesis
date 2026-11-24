@@ -84,8 +84,6 @@ theorem dual_top_le (W : (Spec (CommRingCat.of (DualNumber ℂ))).Opens)
   have hs : (x : PrimeSpectrum (DualNumber ℂ)) ⤳ IsLocalRing.closedPoint (DualNumber ℂ) := by
     first
     | exact IsLocalRing.specializes_closedPoint _
-    | exact (PrimeSpectrum.le_iff_specializes _ _).1
-        (IsLocalRing.le_maximalIdeal (x : PrimeSpectrum (DualNumber ℂ)).2.ne_top)
   exact hs.mem_open W.isOpen hW
 
 theorem fst_appLE {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g → ℂ} {v : Sp (DualNumber ℂ) ⟶ Y}
@@ -106,7 +104,6 @@ theorem fst_appLE {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g → ℂ} {
   have key2 := congrArg (fun φ => φ.hom f) key
   first
   | exact key2.symm
-  | simpa using key2.symm
 
 theorem tangent_open_preimage_zero {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g → ℂ} {v : Sp (DualNumber ℂ) ⟶ Y}
     (hv : IsDerivAt0 e w v) (U : Y.Opens) (h : ⊤ ≤ v ⁻¹ᵁ U) : ⊤ ≤ (e 0) ⁻¹ᵁ U := by
@@ -115,7 +112,6 @@ theorem tangent_open_preimage_zero {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w :
   have hx := h (show (spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom).base x ∈ (⊤ : (Sp (DualNumber ℂ)).Opens) from trivial)
   first
   | exact hx
-  | (simp only [Scheme.Hom.mem_preimage, Scheme.comp_base_apply] at hx ⊢; exact hx)
 
 theorem isDerivAt0_unique {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g → ℂ} {v v' : Sp (DualNumber ℂ) ⟶ Y}
     (hv : IsDerivAt0 e w v) (hv' : IsDerivAt0 e w v') : v = v' := by
@@ -145,9 +141,7 @@ theorem isDerivAt0_comp_hom {Y' : Scheme.{0}} {e : (Fin g → ℂ) → (Sp ℂ �
   rw [← key]
   have hc : (v ≫ φ).appLE U ⊤ h = φ.app U ≫ v.appLE (φ ⁻¹ᵁ U) ⊤ h' := by
     first
-    | exact Scheme.comp_appLE v φ U ⊤ h
     | exact Scheme.Hom.comp_appLE v φ U ⊤ h
-    | simp [Scheme.Hom.appLE]
   rw [hc]
   rfl
 
@@ -168,7 +162,6 @@ theorem isDerivAt0_smul {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g → 
         IsLocalRing.comap_closedPoint (epsMul cc)
       first
       | (rw [← hc]; exact hx)
-      | (simp only [Scheme.Hom.mem_preimage, Scheme.comp_base_apply] at hx ⊢; rwa [hc] at hx)
     have hq : ⊤ ≤ v ⁻¹ᵁ U := dual_top_le _ hp
     have key := congrArg (fun φ => φ.hom f) (specMap_comp_appLE (CommRingCat.ofHom (epsMul cc)) v U h hq)
     have hd := hv.2 U hq f
@@ -178,7 +171,6 @@ theorem isDerivAt0_smul {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g → 
     rw [key]
     first
     | simp [epsMul]
-    | rfl
 
 theorem isDerivAt0_comp_lin {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} (hol : IsHolFam e) (D : (Fin g → ℂ) →L[ℂ] (Fin g → ℂ))
     {w : Fin g → ℂ} {v : Sp (DualNumber ℂ) ⟶ Y} (hv : IsDerivAt0 e (D w) v) :
@@ -217,7 +209,6 @@ theorem derivAt_over (F : FamilyUnif Xo σ' ty) (i : Fin F.n) (P : (F.Di i).La �
   rw [isDerivAt0_unique hv hv0, Over.w v0]
   first
   | rfl
-  | simp [epsPt]
 
 end Tan
 

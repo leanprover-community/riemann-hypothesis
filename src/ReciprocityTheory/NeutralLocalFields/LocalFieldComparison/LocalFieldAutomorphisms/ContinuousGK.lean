@@ -82,13 +82,8 @@ def res (ι : Ω →+* PadicAlgCl p) : GK F ι →* (Ω ≃ₐ[F] Ω) where
 theorem res_spec (ι : Ω →+* PadicAlgCl p) (σ : GK F ι) (x : Ω) : ι (res ι σ x) = σ (ι x) :=
   Classical.choose_spec (exists_res ι σ) x
 
-private theorem norm_GK_lemma (ι : Ω →+* PadicAlgCl p) (σ : GK F ι) (y : PadicAlgCl p) : ‖σ y‖ = ‖y‖ := by
-  rw [← PadicAlgCl.spectralNorm_eq, ← PadicAlgCl.spectralNorm_eq]
-  unfold spectralNorm
-  exact congrArg _ (minpoly.algEquiv_eq (σ.restrictScalars ℚ_[p]) y)
-
 theorem continuous_GK (ι : Ω →+* PadicAlgCl p) (σ : GK F ι) : Continuous σ :=
-  (AddMonoidHomClass.isometry_of_norm σ (norm_GK_lemma ι σ)).continuous
+  (AddMonoidHomClass.isometry_of_norm σ (_root_.ReciprocityTheory.Neutral.Cmp.norm_map_GK ι σ)).continuous
 
 theorem res_injective (ι : Ω →+* PadicAlgCl p) : Function.Injective (res (F := F) ι) := by
   intro σ τ h
@@ -137,7 +132,7 @@ theorem continuous_res (ι : Ω →+* PadicAlgCl p) : Continuous (res (F := F) �
 
 theorem res_mem_dec {A : ValuationSubring Ω} {ι : Ω →+* PadicAlgCl p} (h : Compat p A ι) (σ : GK F ι) :
     res ι σ ∈ Dec (F := F) A := by
-  have hτ : ∀ x, res ι σ x ∈ A ↔ x ∈ A := fun x => by rw [h, h, res_spec, norm_GK_lemma]
+  have hτ : ∀ x, res ι σ x ∈ A ↔ x ∈ A := fun x => by rw [h, h, res_spec, _root_.ReciprocityTheory.Neutral.Cmp.norm_map_GK]
   rw [Dec, ValuationSubring.decompositionSubgroup, MulAction.mem_stabilizer_iff]
   ext x
   rw [ValuationSubring.mem_smul_pointwise_iff_exists]

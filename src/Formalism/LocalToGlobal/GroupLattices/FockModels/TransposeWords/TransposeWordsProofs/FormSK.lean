@@ -68,11 +68,8 @@ theorem charZero_of_irreducible_natCast {W : Type*} [CommRing W] [IsDomain W] {p
       have hu : IsUnit (p : ZMod (ringChar W)) := by
         rw [ZMod.isUnit_iff_coprime]
         exact (Nat.coprime_primes hp hq).mpr hpq
-      have hu' := hu.map (ZMod.castHom (dvd_refl _) W)
-      simpa using hu'
-  · haveI : CharP W 0 := by
-      rw [← hq]
-      exact ringChar.charP W
+      simpa using hu.map (ZMod.castHom (dvd_refl _) W)
+  · haveI : CharP W 0 := by simpa [hq] using ringChar.charP W
     exact CharP.charP_to_charZero W
 
 theorem nuOf_antitone {m : ℕ} {lam : Fin (m + 1) → ℤ} (hl : Antitone lam) : Antitone (nuOf lam) := by
@@ -85,9 +82,8 @@ theorem lastIdx_succ (m : ℕ) : lastIdx (m + 1) = Fin.last m := by
 
 theorem nuOf_le_ellWt {m : ℕ} {lam : Fin (m + 1) → ℤ} (hl : Antitone lam) (t : Fin (m + 1)) :
     nuOf lam t ≤ ellWt lam := by
-  unfold ellWt
-  rw [lastIdx_succ]
-  exact Int.toNat_le_toNat (sub_le_sub_right (hl (Fin.zero_le t)) _)
+  simpa [nuOf, ellWt, lastIdx_succ] using
+    Int.toNat_le_toNat (sub_le_sub_right (hl (Fin.zero_le t)) _)
 
 theorem formCoreSK_of (h : FormCoreG) : FormCoreSK := by
   intro p n' W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ j w hS m lam hl
@@ -100,8 +96,7 @@ theorem formCoreSK_of (h : FormCoreG) : FormCoreSK := by
   have : CharZero Kf := charZero_of_injective_ringHom hinj
   have hj : Function.Injective j := by
     intro x y hxy
-    apply hinj
-    simp only [RingHom.comp_apply, hS.ι_comp, hxy]
+    exact hinj (by simpa [RingHom.comp_apply, hS.ι_comp] using hxy)
   have hp : ¬ IsUnit ((p : ℕ) : O) := by
     intro hu
     have := hS.finite.to_isIntegral.isLocalHom hj

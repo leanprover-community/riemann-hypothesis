@@ -205,7 +205,7 @@ def put4 (n : Type) (a : Fin 4) : (n → ℂ) →+ (Fin 4 × n → ℂ) where
 
 theorem fourth_power_le_closure_embeddings (Λ : AddSubgroup ℂ) : pow4 (lamMM D Λ) ≤
     AddSubgroup.closure {z | ∃ w ∈ Λ, ∃ y : Fin 4 → D.host.E, (∀ a, y a ∈ D.host.AA0) ∧ z = w • emb4 D y} := by
-  apply GlobalTheory.FourthRootStd.fourth_power_le_closure_embeddings <;> assumption
+  apply GlobalTheory.FourthRootStd.fourth_power_le_closure_embeddings
 
 theorem int_mem_inverse_half_different {x : D.host.E} (hx : IsIntegral ℤ x) : x ∈ D.host.AA0 := by
   have h1 := FL.one_mem_inverse_halfDifferent D
@@ -275,11 +275,11 @@ theorem betaSemi (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetri
 theorem up : ∃ N : ℕ, 0 < N ∧
     ∀ x ∈ imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) (pow4 B.lamM),
       N • x ∈ stdLat B.L (Fin 4 × D.what₂.Tau) := by
-  apply GlobalTheory.FourthRootStd.up <;> assumption
+  apply GlobalTheory.FourthRootStd.up
 
 theorem down : ∃ N : ℕ, 0 < N ∧ ∀ x ∈ stdLat B.L (Fin 4 × D.what₂.Tau),
     N • x ∈ imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) (pow4 B.lamM) := by
-  apply GlobalTheory.FourthRootStd.down <;> assumption
+  apply GlobalTheory.FourthRootStd.down
 
 theorem idx₂ : relIdx (imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) (pow4 B.lamM))
     (stdLat B.L (Fin 4 × D.what₂.Tau)) ≠ 0 := by

@@ -132,7 +132,6 @@ theorem tfRed_eq {g g' : ↥(GLint E n P)} (h : tfRed P N g = tfRed P N g') : lq
 theorem tfFinite_quot (hN : 0 < N) : Finite (𝓞 E ⧸ P.asIdeal ^ N) := by
   have hPN : P.asIdeal ^ N ≠ ⊥ := pow_ne_zero _ P.ne_bot
   first
-    | exact @Finite.of_fintype _ (Ideal.fintypeQuotientOfFreeOfNeBot _ hPN)
     | exact Ideal.finiteQuotientOfFreeOfNeBot _ hPN
 
 theorem tfFinite_of_princ (hN : 0 < N) (H : Subgroup ↥(GLint E n P)) (hH : ∀ g : ↥(GLint E n P), lqPrinc P N (g : Sp E n ≃ₗ[E] Sp E n) → g ∈ H) :

@@ -472,7 +472,7 @@ theorem harish_chandra_descent : Descend := by
       refine PI.UnitaryCorollaryDerivatives.DjC.mul_hom_exp (fun s => (NormedSpace.exp (s • X)).det) X.trace (fun a b => ?_) ?_ ?_ s
       · rw [add_smul, Matrix.exp_add_of_commute _ _ ((Commute.refl X).smul_left _ |>.smul_right _), det_mul]
       · simp
-      · exact PI.UnitaryCorollaryDerivatives.DjC.hasDerivAt_det_of_one _ _ (by simp) fun a b =>
+      · exact _root_.Bl.b110.goal1 _ _ (by simp) fun a b =>
           PI.UnitaryCorollaryDerivatives.DjC.hasDerivAt_exp_entry X a b
     have hφe : ∀ s, φ s = Complex.exp (s * X.trace / 2) := by
       let ψ : ℝ → ℂ := fun s => φ s * Complex.exp (-(s * X.trace / 2))

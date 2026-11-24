@@ -64,15 +64,6 @@ namespace PositivityTheory.RL.Up
 
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
 
-theorem trace_emb (a : F) : Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (mixedEmbedding F a) =
-    (Algebra.trace ℚ F a : ℚ) := by
-  classical
-  rw [Algebra.trace_eq_matrix_trace (mixedEmbedding.latticeBasis F), Algebra.trace_eq_matrix_trace (integralBasis F), Matrix.trace,
-    Matrix.trace, Rat.cast_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Matrix.diag_apply, Matrix.diag_apply, Algebra.leftMulMatrix_eq_repr_mul, Algebra.leftMulMatrix_eq_repr_mul,
-    mixedEmbedding.latticeBasis_apply, ← map_mul, mixedEmbedding.latticeBasis_repr_apply]
-
 theorem trace_nondeg (l : κ → mixedEmbedding.mixedSpace F)
     (h : ∀ y, Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (l ⬝ᵥ y) = 0) : l = 0 := by
   funext i
@@ -80,7 +71,7 @@ theorem trace_nondeg (l : κ → mixedEmbedding.mixedSpace F)
   have := h (Pi.single i (mixedEmbedding F ((integralBasis F).traceDual j)))
   rw [dotProduct_single, ← (mixedEmbedding.latticeBasis F).sum_repr (l i)] at this
 
-  simp only [Finset.sum_mul, smul_mul_assoc, map_sum, map_smul, mixedEmbedding.latticeBasis_apply, ← map_mul, trace_emb,
+  simp only [Finset.sum_mul, smul_mul_assoc, map_sum, map_smul, mixedEmbedding.latticeBasis_apply, ← map_mul, _root_.GlobalTheory.LatVacArith.trace_mixedEmbedding,
   Module.Basis.trace_mul_traceDual] at this
   simpa [apply_ite] using this
 

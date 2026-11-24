@@ -220,5 +220,4 @@ theorem main : MuTwistQuotientEmbedsInUnitTorsorPresheaf := by
 end LateralTheory.EtaleFoundations.KTP
 
 namespace LateralTheory.EtaleFoundations
-theorem mu_twist_quotient_embeds_in_unit_torsor_presheaf : MuTwistQuotientEmbedsInUnitTorsorPresheaf := KTP.main
 end LateralTheory.EtaleFoundations

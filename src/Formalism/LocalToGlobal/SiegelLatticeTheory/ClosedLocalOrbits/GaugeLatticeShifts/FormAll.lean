@@ -81,8 +81,6 @@ theorem decomp (μR : Measure G) (R : Set G) (hR : μR Rᶜ = 0) (Γ0 : Subgroup
   have hRae : ∀ᵐ x ∂μR, x ∈ R := by
     first
       | exact ae_iff.2 hR
-      | exact (mem_ae_iff.2 hR : R ∈ ae μR)
-      | simpa [ae_iff] using hR
   have hae : P =ᵐ[μR] ⋃ s : Γ0, (P ∩ (fun x => (s : G) * x) ⁻¹' Q) := by
     filter_upwards [hRae] with x hx
     constructor

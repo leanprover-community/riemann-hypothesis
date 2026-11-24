@@ -71,7 +71,7 @@ def UWb (k r : ℕ) : Set (Mx k r) :=
 theorem hpk_herm : (Hpk k r)ᴴ = Hpk k r := by
   ext i j
   simp only [Matrix.conjTranspose_apply, Hpk, Fin.ext_iff]
-  split_ifs <;> first | (exfalso; omega) | simp | norm_num
+  split_ifs <;> first | (exfalso; omega) | simp
 
 theorem uw_clsub (z : Fin (2 * r + k + 1) → ℂ) : ClSub (UWset k r z : Set (Mx k r)) := by
   refine ⟨⟨uh_one, fun a => ⟨Matrix.one_mulVec _, Matrix.one_mulVec _⟩, Matrix.one_mulVec _⟩, ?_, ?_,
@@ -339,13 +339,13 @@ lemma hpk_e (a : Fin r) : Hpk k r *ᵥ bvec (eI k r a) = bvec (esI k r a) := by
   funext i
   rw [mulVec_bvec]
   simp only [Hpk, bvec, Pi.single_apply, eI, esI, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega) | norm_num
+  split_ifs <;> first | rfl | (exfalso; omega)
 
 lemma hpk_es (a : Fin r) : Hpk k r *ᵥ bvec (esI k r a) = bvec (eI k r a) := by
   funext i
   rw [mulVec_bvec]
   simp only [Hpk, bvec, Pi.single_apply, eI, esI, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega) | norm_num
+  split_ifs <;> first | rfl | (exfalso; omega)
 
 lemma not_mid_cases (i : Fin (2 * r + k + 1)) (hi : ¬ mid k r i) : ∃ a : Fin r, i = eI k r a ∨ i = esI k r a := by
   have := i.isLt

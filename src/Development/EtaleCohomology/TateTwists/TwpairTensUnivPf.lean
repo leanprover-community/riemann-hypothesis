@@ -1,7 +1,7 @@
 module
 
+public import Development.EtaleCohomology.TateTwists.EtaleTensorTripleProductOfFamilyAndLeibniz
 public import Development.EtaleCohomology.TateTwists.EtaleTateTwistCupPairingOfTensorAndResolutionPro
-public import Development.EtaleCohomology.TateTwists.EtaleTensorTripleProductLeibnizOfSeparated
 public import Development.EtaleCohomology.TateTwists.TensorLocallyBijectiveHolds
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -29,7 +29,7 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -42,7 +42,95 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Linter.Style
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.EtaleCohomology.TateTwists.EtaleTensorTripleProductLeibnizOfSeparated, Development.EtaleCohomology.TateTwists.TwpairTensUnivPf
+
+-- ===== clump member: Development.EtaleCohomology.TateTwists.EtaleTensorTripleProductLeibnizOfSeparated =====
+-- clump-header: {"m": "Development.EtaleCohomology.TateTwists.EtaleTensorTripleProductLeibnizOfSeparated", "h": "module\n\npublic import Development.EtaleCohomology.TateTwists.EtaleTensorTripleProductOfFamilyAndLeibniz\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+section -- clump:auto
+@[expose] public section
+
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
+
+namespace LateralTheory.EtaleFoundations.EtaleTensorTripleProductLeibnizSeparated
+
+def SecSep : Prop :=
+  ∀ (R : Type) [CommRing R] (F : Shv R) (U : Scheme.{0}) (a b : Sec F U),
+    (Loc U fun _ g => Sec.res g a = Sec.res g b) → a = b
+
+lemma res_map {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
+    Sec.res g (Sec.map φ x) = Sec.map φ (Sec.res g x) := by
+  simp only [Sec.res, Sec.map]
+  exact congrArg (fun f => (ModuleCat.Hom.hom f) x) (φ.hom.naturality g.op).symm
+
+lemma res_add {R : Type} [CommRing R] {F : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) (x y : Sec F U) :
+    Sec.res g (x + y) = Sec.res g x + Sec.res g y := map_add _ x y
+
+lemma res_usmul {R : Type} [CommRing R] {F : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) (u : ℤˣ) (x : Sec F U) :
+    Sec.res g (u • x) = u • Sec.res g x := by
+  simp only [Units.smul_def]; exact map_zsmul _ _ x
+
+lemma loc_mono {U : Scheme.{0}} {P Q : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (hP : Loc U P)
+    (h : ∀ V g, P V g → Q V g) : Loc U Q := by
+  obtain ⟨S, hS, hP⟩ := hP
+  exact ⟨S, hS, fun V g hg => h V g (hP V g hg)⟩
+
+lemma leib_lift {R : Type} [CommRing R] {I J K T M L : Cx R} (τ : Pair I J T) (μ' : Pair J K M) (ν' : Pair I M L)
+    (m : ∀ (U : Scheme.{0}) (s t w : ℤ), s + t = w → Sec (T.X s) U →ₗ[ULift.{1} R] Sec (K.X t) U →ₗ[ULift.{1} R] Sec (L.X w) U)
+    (heq : ∀ (U : Scheme.{0}) (s t u st tu w : ℤ) (h1 : s + t = st) (h2 : st + u = w) (h3 : t + u = tu) (h4 : s + tu = w) a b c,
+        m U st u w h2 (τ.mul U s t st h1 a b) c = ν'.mul U s tu w h4 a (μ'.mul U t u tu h3 b c))
+    (V : Scheme.{0}) (s t w : ℤ) (h : s + t = w) (x : Tens I J V s) (b : Sec (K.X t) V) :
+    Sec.map (L.d w (w + 1)) (m V s t w h (τ.lift V s x) b) = m V (s + 1) t (w + 1) (by omega) (Sec.map (T.d s (s + 1)) (τ.lift V s x)) b +
+          s.negOnePow • m V s (t + 1) (w + 1) (by omega) (τ.lift V s x) (Sec.map (K.d t (t + 1)) b) := by
+  classical
+  induction x using DirectSum.induction_on with
+  | zero => simp
+  | add x y hx hy =>
+    simp only [map_add (f := _), LinearMap.add_apply, smul_add, Sec.map] at hx hy ⊢
+    rw [hx, hy]; abel
+  | of p z =>
+    obtain ⟨⟨s1, t1⟩, hp⟩ := p
+    induction z using TensorProduct.induction_on with
+    | zero => simp
+    | add x y hx hy =>
+      simp only [map_add (f := _), LinearMap.add_apply, smul_add, Sec.map] at hx hy ⊢
+      rw [hx, hy]; abel
+    | tmul a1 b1 =>
+      have hl : τ.lift V s (DirectSum.of _ ⟨(s1, t1), hp⟩ (a1 ⊗ₜ b1)) = τ.mul V s1 t1 s hp a1 b1 := by
+        unfold Pair.lift
+        rw [← DirectSum.lof_eq_of (ULift.{1} R), DirectSum.toModule_lof, TensorProduct.lift.tmul]
+      simp only at hp
+      rw [hl, τ.leibniz V s1 t1 s hp a1 b1]
+      rw [heq V s1 t1 t s (t1 + t) w hp h (by omega) (by omega)]
+      rw [ν'.leibniz V s1 (t1 + t) w (by omega), μ'.leibniz V t1 t (t1 + t) rfl]
+      simp only [map_add (f := _), LinearMap.add_apply, Units.smul_def, map_zsmul, LinearMap.smul_apply]
+      rw [heq V (s1 + 1) t1 t (s + 1) (t1 + t) (w + 1) (by omega) (by omega) (by omega) (by omega),
+        heq V s1 (t1 + 1) t (s + 1) (t1 + t + 1) (w + 1) (by omega) (by omega) (by omega) (by omega),
+        heq V s1 t1 (t + 1) s (t1 + t + 1) (w + 1) hp (by omega) (by omega) (by omega)]
+      have hs : ((s.negOnePow : ℤˣ) : ℤ) = (s1.negOnePow : ℤ) * (t1.negOnePow : ℤ) := by
+        rw [← Units.val_mul, ← Int.negOnePow_add, hp]
+      rw [hs, mul_smul, smul_add]
+      abel
+
+end LateralTheory.EtaleFoundations.EtaleTensorTripleProductLeibnizSeparated
+
+open LateralTheory.EtaleFoundations.EtaleTensorTripleProductLeibnizSeparated in
+theorem LateralTheory.EtaleFoundations.etale_tensor_triple_product_leibniz_of_separated (hsep : LateralTheory.EtaleFoundations.EtaleTensorTripleProductLeibnizSeparated.SecSep) :
+    LateralTheory.EtaleFoundations.EtaleTensorTripleProductLeibniz := by
+  intro R _ I J K T τ hτ M L μ' ν' m hnat heq U s t w h a b
+  apply hsep R (L.X (w + 1)) U
+  refine loc_mono (hτ.1 U s a) ?_
+  rintro V g ⟨x, hx⟩
+  rw [res_map, hnat, res_add, res_usmul, hnat, hnat, res_map, res_map, ← hx, leib_lift τ μ' ν' m heq]
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.EtaleCohomology.TateTwists.EtaleTensorTripleProductLeibnizOfSeparated =====
+
+-- ===== clump member: Development.EtaleCohomology.TateTwists.TwpairTensUnivPf =====
+-- clump-header: {"m": "Development.EtaleCohomology.TateTwists.TwpairTensUnivPf", "h": "module\n\npublic import Development.EtaleCohomology.TateTwists.EtaleTateTwistCupPairingOfTensorAndResolutionPro\npublic import Development.EtaleCohomology.TateTwists.EtaleTensorTripleProductLeibnizOfSeparated\npublic import Development.EtaleCohomology.TateTwists.TensorLocallyBijectiveHolds\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+section -- clump:auto
 @[expose] public section
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
@@ -52,17 +140,12 @@ namespace LateralTheory.EtaleFoundations
 theorem secmap_comp {R : Type} [CommRing R] {F G H : Shv R} (φ : F ⟶ G) (ψ : G ⟶ H) {U : Scheme.{0}} (x : Sec F U) :
     Sec.map ψ (Sec.map φ x) = Sec.map (φ ≫ ψ) x := rfl
 
-theorem secmap_res {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
-    Sec.res g (Sec.map φ x) = Sec.map φ (Sec.res g x) := by
-  have := congrArg (fun k => k.hom x) (φ.hom.naturality g.op)
-  exact this.symm
-
 noncomputable def pairPost {R : Type} [CommRing R] {I J K K' : Cx R} (μ : Pair I J K) (u : K ⟶ K') : Pair I J K' where
   mul U s t w h := (μ.mul U s t w h).compr₂ ((u.f w).hom.app (op U)).hom
   nat g s t w h a b := by
     simp only [LinearMap.compr₂_apply]
     rw [← μ.nat g s t w h a b]
-    exact secmap_res (u.f w) g _
+    exact _root_.LateralTheory.EtaleFoundations.EtaleTensorTripleProductLeibnizSeparated.res_map (u.f w) g _
   leibniz U s t w h a b := by
     simp only [LinearMap.compr₂_apply]
     have hc : Sec.map (K'.d w (w + 1)) (Sec.map (u.f w) (μ.mul U s t w h a b)) =
@@ -106,7 +189,7 @@ theorem tens_univ_uniq_of (hsep : LateralTheory.EtaleFoundations.EtaleTensorTrip
   apply hsep R (K'.X w) U.unop
   refine TensLocbij.loc_mono (hτ.1 U.unop w y) ?_
   rintro V r ⟨x, hx⟩
-  rw [secmap_res, secmap_res, ← hx]
+  rw [_root_.LateralTheory.EtaleFoundations.EtaleTensorTripleProductLeibnizSeparated.res_map, _root_.LateralTheory.EtaleFoundations.EtaleTensorTripleProductLeibnizSeparated.res_map, ← hx]
   exact lift_comp_eq τ ν f g u u' hu hu' V w x
 
 theorem sec_zero_of_isZero {R : Type} [CommRing R] {F : Shv R} (hF : IsZero F) {U : Scheme.{0}} (x : Sec F U) : x = 0 := by
@@ -168,7 +251,7 @@ theorem tens_univ_ex_of (hdeg : twpair_tens_univ_exdeg) : twpair_tens_univ_ex :=
   refine TensLocbij.loc_mono (hτ.1 U.unop i y) ?_
   rintro V r ⟨x, hx⟩
   show Sec.res r (Sec.map (φ i ≫ K'.d i (i + 1)) y) = Sec.res r (Sec.map (K.d i (i + 1) ≫ φ (i + 1)) y)
-  rw [secmap_res, secmap_res, ← hx]
+  rw [_root_.LateralTheory.EtaleFoundations.EtaleTensorTripleProductLeibnizSeparated.res_map, _root_.LateralTheory.EtaleFoundations.EtaleTensorTripleProductLeibnizSeparated.res_map, ← hx]
   classical
   have key : ((K.d i (i + 1) ≫ φ (i + 1)).hom.app (op V)).hom ∘ₗ τ.lift V i =
       ((φ i ≫ K'.d i (i + 1)).hom.app (op V)).hom ∘ₗ τ.lift V i := by
@@ -204,3 +287,6 @@ theorem twpair_tens_univ_of (hdeg : twpair_tens_univ_exdeg) :
   exact ⟨u, hu, fun u' hu' => tens_univ_uniq_of hsep R τ hτ ν f g u' u hu' hu⟩
 
 end LateralTheory.EtaleFoundations
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.EtaleCohomology.TateTwists.TwpairTensUnivPf =====

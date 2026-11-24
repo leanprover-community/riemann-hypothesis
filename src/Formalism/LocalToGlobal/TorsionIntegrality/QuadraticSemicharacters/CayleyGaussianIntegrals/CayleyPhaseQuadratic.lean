@@ -76,8 +76,8 @@ theorem ud_adj (h : UnitaryData H Λ α δ Ae) (x y : V) :
 theorem ud_skew (h : UnitaryData H Λ α δ Ae) (x y : V) : H (cayC Ae x) y = -H x (cayC Ae y) := by
   have h1 := ud_adj h x y
   have hc : (starRingEnd ℂ) (1 / 2 : ℂ) = 1 / 2 :=
-    Complex.conj_eq_iff_real.mpr ⟨1 / 2, by first | norm_num | simp | (push_cast; ring)⟩
-  simp only [cayC, map_sub, map_smul, map_smulₛₗ, RingHom.id_apply, LinearMap.sub_apply,
+    Complex.conj_eq_iff_real.mpr ⟨1 / 2, by first | norm_num | (push_cast; ring)⟩
+  simp only [cayC, map_sub, map_smul, map_smulₛₗ, LinearMap.sub_apply,
     LinearMap.smul_apply, smul_eq_mul, hc]
   linear_combination h1
 
@@ -118,10 +118,10 @@ theorem altE_cayC (x y : V) :
     altE H (cayC Ae x) y = altE H (Ae.symm x) y - altE H x y / 2 := by
   have key : ∀ z : ℂ, ((1 / 2 : ℂ) * z).im = z.im / 2 := by
     intro z
-    have e : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by first | norm_num | simp | (push_cast; ring)
+    have e : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by first | norm_num
     rw [e, Complex.im_ofReal_mul]
     ring
-  simp only [altE, cayC, map_sub, map_smul, map_smulₛₗ, RingHom.id_apply, LinearMap.sub_apply,
+  simp only [altE, cayC, map_sub, map_smul, LinearMap.sub_apply,
     LinearMap.smul_apply, smul_eq_mul, Complex.sub_im, key]
 
 theorem cayC_add (x y : V) : cayC Ae (x + y) = cayC Ae x + cayC Ae y := by
@@ -356,8 +356,6 @@ theorem out_mk_latA (x : Λ) : ∃ k ∈ latA Λ δ Ae,
       (latA Λ δ Ae).addSubgroupOf Λ := by
     first
     | (rw [← QuotientAddGroup.eq]; exact Quotient.out_eq _)
-    | exact (QuotientAddGroup.eq).mp (Quotient.out_eq (QuotientAddGroup.mk x : Λ ⧸ (latA Λ δ Ae).addSubgroupOf Λ))
-    | (rw [← QuotientAddGroup.eq, QuotientAddGroup.out_eq'])
   refine ⟨-(((-(Quotient.out (QuotientAddGroup.mk x : Λ ⧸ (latA Λ δ Ae).addSubgroupOf Λ)) + x : Λ)) : V),
     ?_, ?_⟩
   · exact (latA Λ δ Ae).neg_mem (AddSubgroup.mem_addSubgroupOf.mp e)
@@ -471,7 +469,7 @@ theorem UnitaryGauss_of (hG : GaussEighth) : UnitaryGauss := by
     exact_mod_cast Finset.card_pos.mpr ⟨x, hx⟩
   have hs : ((Real.sqrt S.card : ℝ) : ℂ) ^ 8 = (S.card : ℂ) ^ 4 := by
     rw [show (8 : ℕ) = 2 * 4 by norm_num, pow_mul, ← Complex.ofReal_pow, Real.sq_sqrt hpos.le]
-    first | norm_num | (push_cast; ring) | simp
+    first | norm_num
   unfold gaussC
   rw [mul_pow, hsum, hq, hcard, inv_pow, hs]
   have hne : (S.card : ℂ) ^ 4 ≠ 0 := pow_ne_zero _ (by exact_mod_cast hpos.ne')

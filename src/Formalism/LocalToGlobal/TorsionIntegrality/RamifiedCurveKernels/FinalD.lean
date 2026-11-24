@@ -45,6 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 
 namespace Formalism.L2.Th1.G
 
-theorem curveJetsUnramThm : CurveJetsUnram := curve_jets_unramified_holds
+alias curveJetsUnramThm := _root_.Formalism.L2.Th1.G.curve_jets_unramified_holds
 
 end Formalism.L2.Th1.G

@@ -65,10 +65,6 @@ variable {e : ℕ} {X : Type} [TopologicalSpace X]
 theorem two_le_infty : (2 : WithTop ℕ∞) ≤ ∞ := by
   first
   | exact WithTop.coe_le_coe.2 le_top
-  | exact_mod_cast (le_top : ((2 : ℕ∞) ≤ ⊤))
-  | norm_num
-  | simp
-  | decide
 
 theorem pshShift_local (A : FinHolAtlas e X) (Ω : LocPot X) (hΩ : IsPotential A Ω)
     (hpos : IsPosPot A Ω) (w : X → ℝ) (hw : A.Smooth w) (p : X) (j : Fin A.n)
@@ -118,8 +114,8 @@ theorem pshShift_local (A : FinHolAtlas e X) (Ω : LocPot X) (hΩ : IsPotential 
   · have ht : 0 < ‖u‖ := norm_pos_iff.2 hu
     obtain ⟨s, v, hv, rfl⟩ : ∃ s : ℝ, ∃ v ∈ Metric.sphere (0 : Fin e → ℂ) 1, u = s • v := by
       refine ⟨‖u‖, ‖u‖⁻¹ • u, ?_, ?_⟩
-      · simp [norm_smul, hu, ht.ne']
-      · simp [smul_smul, hu, ht.ne']
+      · simp [norm_smul, ht.ne']
+      · simp [smul_smul, ht.ne']
     have hq : ((y, v) : (Fin e → ℂ) × (Fin e → ℂ)) ∈ K := ⟨hy, hv⟩
     have h1 := hM ⟨(y, v), hq, rfl⟩
     have h2 := hposK _ hq

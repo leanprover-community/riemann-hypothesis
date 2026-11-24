@@ -305,7 +305,7 @@ theorem const_mem_type_set_of_nonneg (hlg : ∀ i, MvPowerSeries.constantCoeff (
             _ = V.l ^ 1 := (pow_one _).symm
             _ ≤ V.l ^ (s + 1) := Nat.pow_le_pow_right (by omega) (by omega)
         have hl1 : V.l ≠ 1 := by omega
-        simp [const0, PowerSeries.coeff_X, h1.ne', hl1]
+        simp [const0, PowerSeries.coeff_X, hl1]
     · have hm1 : m ≠ 1 := fun h => hm 0 (by simp [h])
       simp [PowerSeries.coeff_X, hm1]
   refine ⟨fun _ => 0, fun q => ζ q • PowerSeries.X, ?_, ?_, ?_, ?_⟩

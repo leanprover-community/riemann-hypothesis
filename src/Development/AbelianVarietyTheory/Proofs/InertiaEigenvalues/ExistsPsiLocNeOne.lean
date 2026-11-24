@@ -94,7 +94,7 @@ theorem stdPsi_psi : StdPsi (psi E) := by
     exact Circle.coe_eq_one.1 this)
   letI : Invertible (2 : E) := invertibleOfNonzero two_ne_zero
   letI : Invertible (2 : Ad E) := (Invertible.map (algebraMap E (Ad E)) 2).copy 2 (map_ofNat _ 2).symm
-  have h := GlobalTheory.CompanionTheory.AdeleAnn.unitary_and_annihilator_eq E (psi E) hc hne hr
+  have h := _root_.UpperTheory.Reformulated.B.UnitaryAnnihilator.unitary_and_annihilator_eq E (psi E) hc hne hr
   exact ⟨hc, h.1, hr, h.2, exists_psi_loc_ne_one⟩
 
 end GlobalTheory.StdCharConductor

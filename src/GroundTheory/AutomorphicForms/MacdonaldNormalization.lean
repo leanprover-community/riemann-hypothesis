@@ -171,7 +171,7 @@ theorem exists_antisymm_hlFactor_eq (t : ℂ) :
     refine ⟨(hlFactor n t).coeff ν * c, ?_⟩
     have : (single ν ((hlFactor n t).coeff ν) : LaurentRing n) =
         (hlFactor n t).coeff ν • monomial ν := by
-      simp [monomial, smul_single']
+      simp [monomial]
     rw [this, map_smul, ← alternant, hc, smul_smul]
   choose c hc using key
   refine ⟨∑ ν ∈ (hlFactor n t).coeff.support.attach, c ν.1 ν.2, ?_⟩
@@ -369,7 +369,7 @@ theorem hlR_zero (t : ℂ) (ht : Function.Injective fun k : ℕ => t ^ k) :
       rw [hlFactor]
       exact Finset.prod_eq_one fun p _ => p.1.elim0
     rw [hD, hδ, antisymm_apply, Fintype.sum_unique] at hc
-    simp only [Equiv.Perm.sign_one, one_smul, map_one] at hc
+    simp only [map_one] at hc
     rw [vPoly, Finset.range_zero, Finset.prod_empty]
     have := congrArg (fun p : LaurentRing 0 => p.coeff 0) hc
     simp [AddMonoidAlgebra.one_def] at this

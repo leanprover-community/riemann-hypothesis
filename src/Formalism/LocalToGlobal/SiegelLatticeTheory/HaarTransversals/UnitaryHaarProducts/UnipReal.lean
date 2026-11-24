@@ -61,7 +61,7 @@ theorem mulVec_eq_sum_cols {m p : Type*} [Fintype p] [DecidableEq p] (M : Matrix
     M *ᵥ c = ∑ k, c k • (M *ᵥ Pi.single k 1) := by
   ext i
   rw [Finset.sum_apply]
-  simp [Matrix.mulVec, dotProduct, Pi.single_apply, mul_comm]
+  simp [Matrix.mulVec, dotProduct, mul_comm]
 
 theorem Bv_mulVec (c : Kap X → ℂ) : Bv X v *ᵥ c = ∑ k, c k • rv X.B.I v (bv X k) := by
   rw [mulVec_eq_sum_cols]

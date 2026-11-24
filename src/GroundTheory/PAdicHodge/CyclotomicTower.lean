@@ -66,9 +66,6 @@ noncomputable section
 
 variable {p : ℕ} [Fact p.Prime]
 
-theorem norm_natCast_prime : ‖(p : PadicAlgCl p)‖ = (p : ℝ)⁻¹ :=
-  _root_.UpperTheory.Reformulated.B.CapelliMiscellany.norm_natCast_prime
-
 theorem norm_eq_one_of_pow_eq_one {x : PadicAlgCl p} {N : ℕ} (hN : N ≠ 0) (hx : x ^ N = 1) :
     ‖x‖ = 1 := by
   have h : ‖x‖ ^ N = 1 := by rw [← norm_pow, hx, norm_one]
@@ -100,7 +97,7 @@ theorem norm_sub_one_pow_totient {ζ : PadicAlgCl p} {k : ℕ}
   have h1 := congrArg (eval 1) (cyclotomic_eq_prod_X_sub_primitiveRoots hζ)
   rw [eval_one_cyclotomic_prime_pow, eval_prod] at h1
   simp only [eval_sub, eval_X, eval_C] at h1
-  rw [← norm_natCast_prime]
+  rw [← _root_.UpperTheory.Reformulated.B.CapelliMiscellany.norm_natCast_prime]
   calc ‖ζ - 1‖ ^ Nat.totient (p ^ (k + 1))
       = ∏ _μ ∈ primitiveRoots (p ^ (k + 1)) (PadicAlgCl p), ‖ζ - 1‖ := by
         rw [Finset.prod_const, hζ.card_primitiveRoots]

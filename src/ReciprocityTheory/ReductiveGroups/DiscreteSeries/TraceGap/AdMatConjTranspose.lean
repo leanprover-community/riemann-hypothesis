@@ -166,7 +166,7 @@ theorem adMat_conjTranspose (k : Matrix (Fin n) (Fin n) ℂ) : (adMat ε k)ᴴ =
   · have : y ≠ x := fun h => hy (h ▸ hx)
     simp [hx, hy, this]
   · have : x ≠ y := fun h => hx (h ▸ hy)
-    simp [hx, hy, this, Ne.symm this]
+    simp [hx, hy, this]
   · simp only [hx, hy, if_false]
     by_cases h : y = x
     · subst h; simp

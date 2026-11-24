@@ -170,7 +170,7 @@ theorem densIn_continuousAt (W : Weight L) (dV : SmoothVolume A) (j : Fin A.n) {
   have hnhds : (A.chart j).target ∈ 𝓝 (A.chart j x) := (A.chart j).open_target.mem_nhds hy
   have hH : ContinuousAt (hessC (W.φ j ∘ (A.chart j).symm)) (A.chart j x) :=
     (hessC_continuousOn _ _ (A.chart j).open_target
-      ((weight_contDiffOn W j).of_le (by first | exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤) | simp |
+      ((weight_contDiffOn W j).of_le (by first | simp |
         exact WithTop.coe_le_coe.2 le_top))).continuousAt hnhds
   have hdet : Continuous fun M : Matrix (Fin D) (Fin D) ℂ =>
       (D.factorial : ℝ) * ((((1 / Real.pi : ℝ) : ℂ) • M).det).re := by fun_prop

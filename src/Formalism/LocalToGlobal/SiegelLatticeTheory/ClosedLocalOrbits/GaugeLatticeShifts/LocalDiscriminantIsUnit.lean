@@ -1771,18 +1771,6 @@ end BBTie
 
 open BBTie
 
-theorem bbTie_of (Z : LocDat D) (hE : LocEqC D Z) (hS : LocSatC D Z) (hD : LocDiffC D Z) : BBTie D Z :=
-  bbTie_core Z hE hS hD
-
-theorem frameGenLoc_of (Z : LocDat D) (hE : LocEqC D Z) (hS : LocSatC D Z) (hD : LocDiffC D Z)
-    (hDu : LocUnimodC D Z) {u u' : D.what₂.Word} (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
-    (Λ : Submodule (𝓞 D.host.E) (VS D).V) (F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E))
-    (hR : IsRowLat D F0 Λ) (hPD : PD D Λ (lf D F0) u' F') (hMI : MplusIndep Λ (lf D F0) (gS D) F')
-    (hG : Gval (lf D F0) F' ≠ 0) (hD1 : Dr1 (lf D F0) F' ≠ 0) :
-    IsGeneric Λ (gS D) (lf D F0) F' ↔
-      ∀ p : PlF D, (locH Z p).IsGeneric (locTerm Z p Λ (lf D F0) F' (Tu D u) (Tu D u')) :=
-  frameGenLoc_core Z hE hS hD hDu F0 Λ F' hR hPD hMI hG hD1
-
 section Tied
 
 
@@ -1802,7 +1790,7 @@ theorem frameGenLoc_of' (hDN : Formalism.L2.SG.GramJoint.DNeZeroAt) (Z : LocDat 
     IsGeneric Λ (gS D) (lf D F0) F' ↔
       ∀ p : PlF D, (locH Z p).IsGeneric (locTerm Z p Λ (lf D F0) F' (Tu D u) (Tu D u')) := by
   obtain ⟨τ⟩ : Nonempty (D.host.E →+* ℂ) := inferInstance
-  exact frameGenLoc_of Z hE hS hD hDu F0 Λ F' hR hPD hMI hG
+  exact _root_.Formalism.L2.SG.Pf.BBTie.frameGenLoc_core Z hE hS hD hDu F0 Λ F' hR hPD hMI hG
     (hDN D.host.E (VS D) τ (D.sp.cm.cmUnram.2.1 τ) (D.sp.Y_sig 0) D.R.rS (Tu D u) (Tu D u')
       (Formalism.L2.SG.GramJoint.sig_hS D τ) (Formalism.L2.SG.GramJoint.Tu_pos D u) (Formalism.L2.SG.GramJoint.Tu_pos D u') F0 F'.fl hG)
 

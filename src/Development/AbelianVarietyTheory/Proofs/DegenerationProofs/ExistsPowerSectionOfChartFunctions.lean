@@ -2,11 +2,15 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Degenerations.CharZeroOfIsPrimitiveRoot
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ThetaPtEqUnitMulTh
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsUniqueWeilIs
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SymmetricLiftOddOrderExistsUnique
-public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.MulqLawsStatement
+public import Development.AbelianVarietyTheory.Definitions.Degenerations.SepticCharacterInjective
+public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.MulqLaws
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsThetaPtOverOfSubsingleton
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsEquivOfIsPushout
+public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SpanEqTopOfFunctionals
+public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ThetaGrpActsLinearly
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsUniqueWeilIs
+import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SymmetricLiftOddOrderExistsUnique
 import Development.AbelianVarietyTheory.Statements.TorsionEndomorphisms.ExistsGeneratorOfIsField
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -56,9 +60,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ExistsRosatiGen
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
-public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.SpanEqTopOfFunctionals
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ThetaGrpActsLinearly
 
 @[expose] public section
 
@@ -254,7 +255,7 @@ theorem reg_cubN (hJ : Good L.L y J) (k : ℕ) (m d : T ⊗ A ⟶ A) :
   obtain ⟨t, ht, hv⟩ := exists_cubN c (1 : T ⊗ A ⟶ A) m d k
   refine ⟨_, _, _, _, t, ht, fun U _ h => ?_, fun x => (hv _ (ptSecT A x) y J hJ).trans (by rw [MonObj.comp_one])⟩
   apply Additive.ofMul.injective
-  simp [Fin.prod_univ_succ, ofMul_mul, ofMul_inv, ofMul_zpow, ofMul_pow]
+  simp [Fin.prod_univ_succ, ofMul_mul, ofMul_inv, ofMul_pow]
   module
 
 theorem reg_mulq (hJ : Good L.L y J) (s : LB.Gen (LB.LinComb L.L (K := Fin 2) ![(ι[A]).left, 𝟙 A.left] ![1, -1]))
@@ -322,7 +323,7 @@ theorem prod_cubN_wS {k : ℕ} (hk : Odd k) {b : B.A} (hb : b ^ k = 1) :
 
 theorem cubN_wS_sym {k : ℕ} (hk : Odd k) {b : B.A} (hb : b ^ k = 1) :
     cubN B.θ k 1 b b⁻¹ * B.wS k b 1 1 * (B.wS k b 1 1 * B.σ b⁻¹ ^ k) = 1 := by
-  have a₁ := (GlobalTheory.T.mulq_dbl_cubN_relations O B k 1 b b).2.2.1
+  have a₁ := (_root_.GlobalTheory.Ex.mulq_laws O B k 1 b b).2.2.1
   have a₂ := cubN_mul B.cub hb b⁻¹ b
   have a₃ := B.σ_inv b
   rw [hb, B.cub.N_one, dbl, B.cub.face, B.σ_one] at a₁

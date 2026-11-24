@@ -65,25 +65,19 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 namespace ExG
 
-theorem two_le_inf : (2 : WithTop ℕ∞) ≤ ∞ := by
-  first
-    | exact WithTop.coe_le_coe.mpr le_top
+alias two_le_inf := _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExhE.two_le_infty
 
 variable {r : ℕ} (X : Data E r)
 
-private lemma isOpen_omF (x0 : Frame X.Ψ r) : IsOpen (OmF X x0) := by
-  first
-  | exact ExF.isOpen_OmF X x0
-
 theorem isOpen_Om (x0 : Frame X.Ψ r) (g1 : V (nd X) → ℂ) (hg : DifferentiableOn ℂ g1 (OmF X x0)) :
     IsOpen {z | z ∈ OmF X x0 ∧ g1 z ≠ 0} := by
-  have hO := isOpen_omF X x0
+  have hO := _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExF.isOpen_OmF X x0
   exact hg.continuousOn.isOpen_inter_preimage hO isOpen_ne
 
 theorem g_cd (x0 : Frame X.Ψ r) (g1 : V (nd X) → ℂ) (hg : DifferentiableOn ℂ g1 (OmF X x0))
     {z : V (nd X)} (hz : z ∈ OmF X x0) : ContDiffAt ℂ ∞ g1 z := by
-  exact (contDiffOn_of_differentiableOn (nd X) g1 (OmF X x0) (isOpen_omF X x0) hg).contDiffAt
-    ((isOpen_omF X x0).mem_nhds hz)
+  exact (contDiffOn_of_differentiableOn (nd X) g1 (OmF X x0) (_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExF.isOpen_OmF X x0) hg).contDiffAt
+    ((_root_.ReciprocityTheory.ChartRestriction.G.AR.Up.ExF.isOpen_OmF X x0).mem_nhds hz)
 
 theorem inv_cd (x0 : Frame X.Ψ r) (g1 : V (nd X) → ℂ) (hg : DifferentiableOn ℂ g1 (OmF X x0))
     {z : V (nd X)} (hz : z ∈ OmF X x0) (hne : g1 z ≠ 0) :
@@ -140,13 +134,6 @@ theorem isCompact_sub (x0 : Frame X.Ψ r) (ho : IsOrth X x0) (g1 : V (nd X) → 
 
 end ExG
 
-private theorem leviV_ofReal_add_of_contDiffAt_two {n : ℕ} {F G : V n → ℝ} {y : V n} (hF : ContDiffAt ℝ 2 F y)
-    (hG : ContDiffAt ℝ 2 G y) (ξ : Fin n → ℂ) :
-    leviV n (fun v => ((F v + G v : ℝ) : ℂ)) y ξ =
-      leviV n (fun v => (F v : ℂ)) y ξ + leviV n (fun v => (G v : ℂ)) y ξ := by
-  have h := leviV_ofReal_sum (u := ![F, G]) (x := y) (fun i => by fin_cases i <;> simpa) ξ
-  simpa [Fin.sum_univ_two] using h
-
 theorem exhaustG_holds : ExhaustGStatement (E := E) := by
   intro r X x0 ho g1 hg
   have hU : IsOpen {z | z ∈ OmF X x0 ∧ g1 z ≠ 0} := ExG.isOpen_Om X x0 g1 hg
@@ -195,11 +182,11 @@ theorem exhaustG_holds : ExhaustGStatement (E := E) := by
       (ExG.inv_cd X x0 g1 hg hxO x.2.2).of_le h2
     have hR : ContDiffAt ℝ 2 (rhF X x0) x := (ExF.rhF_contDiffAt X x0 ho hxO).of_le h2
     have hT : ContDiffAt ℝ 2 (fun z : V (nd X) => Real.log (1 + ‖z‖ ^ 2)) x := ExF.T_cd.contDiffAt.of_le h2
-    rw [leviV_ofReal_add_of_contDiffAt_two hE hI ξ]
+    rw [_root_.ReciprocityTheory.L2DbarEstimates.Y.LocalMaximumSecondDerivative.leviV_ofReal_add hE hI ξ]
     have hEsplit : leviV (nd X) (fun v => (eF X x0 v : ℂ)) x ξ =
         leviV (nd X) (fun v => (rhF X x0 v : ℂ)) x ξ +
           leviV (nd X) (fun v => (Real.log (1 + ‖v‖ ^ 2) : ℂ)) x ξ :=
-      leviV_ofReal_add_of_contDiffAt_two hR hT ξ
+      _root_.ReciprocityTheory.L2DbarEstimates.Y.LocalMaximumSecondDerivative.leviV_ofReal_add hR hT ξ
     rw [hEsplit, Complex.add_re, Complex.add_re]
     have h1 := ExF.levi_rhF_nonneg X x0 ho hxO ξ
     have h3 := ExF.leviT_nonneg (x : V (nd X)) ξ

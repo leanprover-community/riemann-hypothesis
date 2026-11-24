@@ -71,7 +71,7 @@ lemma fh_decomp (Z : Matrix (Fin k) (Fin k) ℂ) : ∃ Z₁ Z₂ : Matrix (Fin k
   have hJ : Jm (fun _ : Fin k => true) = 1 := fh_Jm_allPos
   have hh : star (1 / 2 : ℂ) = 1 / 2 := by simp
   have hi : star (-(Complex.I / 2)) = Complex.I / 2 := by
-    simp [Complex.star_def, Complex.conj_I, neg_div]
+    simp [Complex.conj_I, neg_div]
   refine ⟨(1 / 2 : ℂ) • (Z - Zᴴ), (-(Complex.I / 2)) • (Z + Zᴴ), ⟨?_, ?_⟩, ⟨?_, ?_⟩, ?_⟩
   · simp only [inG, hJ, Matrix.mul_one, Matrix.one_mul]
     rw [Matrix.conjTranspose_smul, Matrix.conjTranspose_sub, Matrix.conjTranspose_conjTranspose, hh]
@@ -242,7 +242,7 @@ lemma fh_dτ_of_wt {μ : Fin k → ℝ} {v : H}
     refine ⟨?_, by rw [hJ, Matrix.mul_one, Matrix.one_mul]⟩
     simp only [inG, hJ, Matrix.mul_one, Matrix.one_mul]
     rw [Matrix.conjTranspose_smul, Matrix.conjTranspose_single, star_one]
-    simp [Complex.star_def, Complex.conj_I]
+    simp [Complex.conj_I]
   have hγ : ∀ t : ℝ, toMK (onepCurve (fun _ : Fin k => true) hX t) =
       NormedSpace.exp ((t : ℂ) • (Complex.I • Matrix.single a a 1)) := toMK_onepCurve _ hX
   have hd1 := hder _ hX _ hγ
@@ -260,9 +260,9 @@ lemma fh_dτ_of_wt {μ : Fin k → ℝ} {v : H}
       rcases eq_or_ne i j with rfl | hij
       · by_cases hia : i = a
         · subst hia
-          simp [θ, Matrix.diagonal_apply, Matrix.single_apply, mul_comm]
-        · simp [θ, Matrix.diagonal_apply, Matrix.single_apply, hia, Ne.symm hia]
-      · simp [θ, Matrix.diagonal_apply, Matrix.single_apply, hij]
+          simp [θ, mul_comm]
+        · simp [θ, hia, Ne.symm hia]
+      · simp [θ, Matrix.single_apply, hij]
         rintro rfl rfl
         exact absurd rfl hij
     rw [e1, Matrix.exp_diagonal, Pi.exp_def, Complex.exp_eq_exp_ℂ]

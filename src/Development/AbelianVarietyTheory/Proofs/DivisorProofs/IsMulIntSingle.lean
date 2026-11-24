@@ -60,7 +60,7 @@ theorem IsMulInt.mono {F : Type} [Field F] [NumberField F] {κ : Type} {k m : �
     (h : IsMulInt F (k * m) a) : IsMulInt F m a := by
   refine ⟨h.1, fun v i => (h.2 v i).trans ?_⟩
   rw [Nat.cast_mul, norm_mul]
-  exact mul_le_of_le_one_left (norm_nonneg _) (GlobalTheory.SmoothForms.denom_norm_natCast_le_one v k)
+  exact mul_le_of_le_one_left (norm_nonneg _) (_root_.GlobalTheory.AdicNatCastNorm.norm_natCast_adicCompletion_le_one v k)
 
 def sand {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n d : ℕ}
     (g : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)) (h : Matrix (Fin d) (Fin d) (AF F ⊗[F] E)) :

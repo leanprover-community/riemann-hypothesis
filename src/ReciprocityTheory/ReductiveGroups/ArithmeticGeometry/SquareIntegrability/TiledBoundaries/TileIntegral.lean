@@ -247,12 +247,8 @@ theorem tile_integral (bA bB : Basis ι ℝ V) (hAB : span ℤ (range bA) ≤ sp
     have hK : IsCompact (closure ((fun x => x - c) ⁻¹' ZSpan.fundamentalDomain bB)) := by
       first
         | exact hb.isCompact_closure
-        | exact Metric.isCompact_of_isClosed_isBounded isClosed_closure hb.closure
     first
       | exact ((hc.locallyIntegrable (μ := μ)).integrableOn_isCompact hK).mono_set subset_closure
-      | exact (hc.continuousOn.integrableOn_compact hK).mono_set subset_closure
-      | exact (hc.integrableOn_isCompact hK).mono_set subset_closure
-      | exact (hc.continuousOn.integrableOn_isCompact hK).mono_set subset_closure
 
 theorem tile_measure (bA bB : Basis ι ℝ V) (hAB : span ℤ (range bA) ≤ span ℤ (range bB)) :
     μ.real (ZSpan.fundamentalDomain bA) =

@@ -74,9 +74,6 @@ theorem norm_sub_le_of_toZModPow_eq {x y : ℤ_[ℓ]} {n : ℕ}
 theorem exists_zpow_neg_lt {ε : ℝ} (hε : 0 < ε) : ∃ n : ℕ, (ℓ : ℝ) ^ (-(n : ℤ)) < ε :=
   PadicInt.exists_pow_neg_lt ℓ hε
 
-theorem continuous_toZModPow (n : ℕ) : Continuous (PadicInt.toZModPow (p := ℓ) n) :=
-  _root_.UpperTheory.Reformulated.B.Yde3.continuous_toZModPow n
-
 theorem continuous_of_continuous_toZModPow {X : Type*} [TopologicalSpace X] {f : X → ℤ_[ℓ]}
     (h : ∀ n, Continuous fun x => PadicInt.toZModPow n (f x)) : Continuous f := by
   refine continuous_iff_continuousAt.2 fun x => Metric.tendsto_nhds.2 fun ε hε => ?_

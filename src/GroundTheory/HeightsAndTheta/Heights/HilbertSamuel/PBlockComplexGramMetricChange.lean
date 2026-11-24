@@ -88,13 +88,9 @@ theorem isMultiHomog_mapQ {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a)
 theorem isMultiHomog_mapC {b : MvPolynomial (Σ k, ι k) ℚ} {a : K → ℕ} (hb : IsMultiHomog b a) :
     IsMultiHomog (map (algebraMap ℚ ℂ) b) a := fun m hm => hb m (support_map_subset _ _ hm)
 
-theorem prod_norm_unitDeg (c : K → ℂ) (k₀ : K) : ∏ k, ‖c k‖ ^ unitDeg k₀ k = ‖c k₀‖ := by
-  rw [Fintype.prod_eq_single k₀ fun k hk => by simp [unitDeg, hk]]
-  simp [unitDeg]
-
 theorem h_torus (B : HermLine ι) {k₀ : K} (hB : B.a = unitDeg k₀) (c : K → ℂ) (hc : ∀ k, c k ≠ 0)
     (z : (Σ k, ι k) → ℂ) : B.h (fun p => c p.1 * z p) = ‖c k₀‖ * B.h z := by
-  rw [B.smul c z hc, hB, prod_norm_unitDeg]
+  rw [B.smul c z hc, hB, _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.SupBoundCount.prod_unitDeg]
 
 theorem blockPt_mem (d : HSMBlockDatum D K ι Ω) (y : d.R.X) : ∀ k, ∃ i, blockPt d y ⟨k, i⟩ ≠ 0 :=
   (d.R.mem y y (d.R.mem_U y)).1

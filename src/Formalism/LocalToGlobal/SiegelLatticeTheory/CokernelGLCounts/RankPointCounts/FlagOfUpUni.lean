@@ -137,7 +137,7 @@ theorem flag_of_upUni (F : FlagG S r T) (g : S.V →ₗ[E] S.V) (N : Matrix (Fin
     have hc' : c < Fin.castSucc a := (Finset.mem_filter.1 hc).2
     have hcl : c ≠ Fin.last r := ne_of_lt (lt_trans hc' (Fin.castSucc_lt_last a))
     obtain ⟨c', rfl⟩ := Fin.exists_castSucc_eq.2 hcl
-    simp only [FlagG.fvec, Fin.snoc_castSucc]
+    simp only [Fin.snoc_castSucc]
     exact Submodule.subset_span ⟨c', by simpa using hc', rfl⟩
   refine ⟨fun j x hx => ?_, ?_⟩
   · induction hx using Submodule.span_induction with
@@ -156,7 +156,7 @@ theorem flag_of_upUni (F : FlagG S r T) (g : S.V →ₗ[E] S.V) (N : Matrix (Fin
     refine Submodule.sum_mem _ fun c hc => Submodule.smul_mem _ _ ?_
     have hcl : c ≠ Fin.last r := ne_of_lt (Finset.mem_filter.1 hc).2
     obtain ⟨c', rfl⟩ := Fin.exists_castSucc_eq.2 hcl
-    simp only [FlagG.fvec, Fin.snoc_castSucc]
+    simp only [Fin.snoc_castSucc]
     exact Submodule.subset_span ⟨c', rfl⟩
 
 end Formalism.L2.SG.NGCut.NormalVectorPairings

@@ -99,7 +99,6 @@ theorem inner_actM_add_inner_actM (hσ : IsURepOn (UJset ε) σ) (hD : IsDerived
   simp [hσ'.1.1] at h0
   first
     | (rw [Submodule.coe_inner, Submodule.coe_inner]; linear_combination h0)
-    | (simpa [add_comm] using h0)
 
 theorem actM_single' {M : Type*} [AddCommGroup M] [Module ℂ M] (E : Fin n → Fin n → Module.End ℂ M)
     (a b : Fin n) : actM E (Matrix.single a b 1) = E a b := by
@@ -148,13 +147,11 @@ theorem inner_actM_eq (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E
     rw [smul_smul, hc]
     first
       | module
-      | (ext i j; simp; ring)
   have hT : Jm ε * Mᴴ * Jm ε = (-(1 / 2) : ℂ) • (M - Jm ε * Mᴴ * Jm ε) +
       (Complex.I / 2) • ((-Complex.I) • (M + Jm ε * Mᴴ * Jm ε)) := by
     rw [smul_smul, hc]
     first
       | module
-      | (ext i j; simp; ring)
   rw [hT]
   conv_lhs => rw [hM]
   rw [actM_add', actM_add', actM_smul' E (1 / 2 : ℂ), actM_smul' E (-(1 / 2) : ℂ),
@@ -167,7 +164,7 @@ theorem theta_single (ε : Fin n → Bool) (a b : Fin n) :
     Jm ε * (Matrix.single a b (1 : ℂ))ᴴ * Jm ε = adjSign ε a b • Matrix.single b a 1 := by
   ext i j
   simp [Jm, adjSign, Matrix.diagonal_mul, Matrix.mul_diagonal, Matrix.single_apply,
-    Matrix.conjTranspose_apply, Matrix.smul_apply] <;> split_ifs <;> simp_all
+    Matrix.smul_apply] <;> split_ifs <;> simp_all
 
 theorem isInfUnitary_of_isDerivedOn (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E) :
     IsInfUnitary ε E := by

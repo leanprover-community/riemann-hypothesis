@@ -88,7 +88,7 @@ theorem cExpl_pos' (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (F0 : Fl
     exact lValEta_pos hK i hi2
   have hA : Formalism.L2.SG.PairVal.AutFin D F0 what₂ := by
     intro Λ hΛ
-    exact _root_.automorphism_lattice_finite D (D.sp.Y_sig 0) (D.mem u).A.T (D.mem u).A.T_prime.pos F0 Λ (hR.1 Λ hΛ)
+    exact _root_.PI.AutLzFinite.SlopeTestRemainingChoices.autLzFin_main D (D.sp.Y_sig 0) (D.mem u).A.T (D.mem u).A.T_prime.pos F0 Λ (hR.1 Λ hΛ)
   have hm := Formalism.L2.SG.PairVal.massRows_pos D F0 what₂ hA hne
   unfold cExpl
   positivity

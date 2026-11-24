@@ -52,7 +52,7 @@ namespace GlobalTheory.ZEulLocal
 
 theorem wtS_eq_sum (n : ℕ) (a : Fin n → ℤ) :
     GlobalTheory.CellDec.wtS n a = ∑ i : Fin n, ((n : ℤ) - 1 - 2 * (i : ℕ)) * a i := by
-  apply GlobalTheory.WeightSumSplit.wtS_eq <;> assumption
+  apply GlobalTheory.WeightSumSplit.wtS_eq
 
 
 open GlobalTheory.JSW in

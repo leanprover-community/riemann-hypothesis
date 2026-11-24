@@ -150,18 +150,13 @@ theorem eDat_coeff_one_re_pos (g N : ℕ) [NeZero g] (P : Matrix (Fin N) (Fin N)
       (fun u : GL (Fin N) (ZMod g) => P (u : Matrix (Fin N) (Fin N) (ZMod g)))).card :=
     Finset.card_pos.mpr ⟨1, by simp [hP]⟩
   unfold eDat
-  simp [h1, hP]
+  simp
   rw [Finset.sum_eq_single (1 : GL (Fin N) (ZMod g))]
-  · simp [h1, hφ]
+  · simp [hφ]
     first
-      | exact hc
-      | positivity
-      | exact inv_pos.mpr (by exact_mod_cast hc)
       | exact Finset.card_pos.mp hc
-      | exact ⟨1, by simp [hP]⟩
-      | exact (rfl : (0:ℕ) = 0)
   · intro b _ hb
-    simp [Finsupp.single_apply, hb]
+    simp [hb]
   · intro h
     exact absurd (by simp [hP]) h
 

@@ -90,7 +90,7 @@ theorem parity_mod_two : ∀ a b c d s₁ s₂ x₁ x₂ : ZMod 2,
 theorem exists_orthonormal_basis_family (Λ : AddSubgroup ℂ) (ω t : ℂ) (G : ℂ → ℂ) (z : ℂ) :
     U1 Λ ω (U1 Λ t G) z =
       Complex.exp (-(Real.pi : ℂ) * Complex.I * (gl3FieldFirst Λ ω (2 * t) : ℂ)) * U1 Λ t (U1 Λ ω G) z := by
-  apply GlobalTheory.HalfPeriodTheta.exists_orthonormal_basis_family <;> assumption
+  apply GlobalTheory.HalfPeriodTheta.exists_orthonormal_basis_family
 
 theorem even_im_hermitian_sub (Λ : AddSubgroup ℂ) (w₁ w₂ : ℂ) (hi : LinearIndependent ℝ ![w₁, w₂])
     (hΛ : Λ = AddSubgroup.closure {w₁, w₂})

@@ -62,15 +62,15 @@ theorem det_add_cor {K : Type} [CommRing K] {r : ℕ} (A : Matrix (Fin (r + 1)) 
       by_cases hb : b = Fin.last r
       · subst hb
         simp [cor]
-      · simp [cor, hb, Pi.single_apply]
-    · simp [cor, ha, Matrix.updateRow_ne ha]
+      · simp [cor, hb]
+    · simp [cor, ha]
   rw [e1, Matrix.det_updateRow_add, Matrix.updateRow_eq_self, Matrix.det_updateRow_smul]
   congr 2
   rw [Matrix.det_succ_row _ (Fin.last r), Finset.sum_eq_single (Fin.last r)]
   · have hsub : (A.updateRow (Fin.last r) (Pi.single (Fin.last r) 1)).submatrix (Fin.last r).succAbove
         (Fin.last r).succAbove = A.submatrix Fin.castSucc Fin.castSucc := by
       ext a b
-      simp [Fin.succAbove_last, Matrix.updateRow_ne (Fin.castSucc_lt_last a).ne]
+      simp [Fin.succAbove_last]
     rw [hsub, Matrix.updateRow_self, Pi.single_eq_same, mul_one, Fin.val_last, ← two_mul, pow_mul, neg_one_sq,
       one_pow, one_mul]
   · intro j _ hj

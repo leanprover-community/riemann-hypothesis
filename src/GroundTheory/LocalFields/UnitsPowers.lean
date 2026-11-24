@@ -76,10 +76,7 @@ theorem isUnit_unit_add {η : 𝒪[K]ˣ} {x : 𝒪[K]} (hx : x ∈ 𝓂[K]) : Is
   rw [this]
   exact η.isUnit.mul h1
 
-theorem exists_root_of_dvd {ϖ : 𝒪[K]} (hϖ : Irreducible ϖ) (f : 𝒪[K][X]) (a : 𝒪[K]) (k : ℕ)
-    (ε : 𝒪[K]ˣ) (hd : f.derivative.eval a = ϖ ^ k * ε) (hf : ϖ ^ (2 * k + 1) ∣ f.eval a) :
-    ∃ b, f.eval b = 0 ∧ ϖ ^ (k + 1) ∣ b - a :=
-  _root_.UpperTheory.Reformulated.B.AdicCompleteRootExistence.exists_root_of_dvd hϖ f a k ε hd hf
+alias exists_root_of_dvd := _root_.UpperTheory.Reformulated.B.AdicCompleteRootExistence.exists_root_of_dvd
 
 theorem eq_one_of_pow_eq_one {m : ℕ} (hm : (m : 𝓀[K]) ≠ 0) {u : 𝒪[K]ˣ}
     (hu : u ∈ unitFiltration K 1) (h : u ^ m = 1) : u = 1 := by

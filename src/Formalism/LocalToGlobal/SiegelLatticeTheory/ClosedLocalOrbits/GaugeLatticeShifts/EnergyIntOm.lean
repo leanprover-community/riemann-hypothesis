@@ -98,7 +98,6 @@ theorem zhat_tr {v : InfinitePlace X.B.I.F} {lam : ℂ} {Q : Matrix (Fin X.B.I.n
   have eb := q_fvec X hQ hsc u' b
   unfold ZX Formalism.QuantumDeterminants.Zhat trG
   unfold Formalism.L2.SG.RealObj.Zhat
-  beta_reduce
   unfold Formalism.QuantumDeterminants.herm Formalism.L2.SG.HidaSetting.hJ
   rw [← h3]
   have hm : Qᴴ * Formalism.REAL.Jm (X.B.I.ε v) * Q * (Qi * uMat (γ v) * Q) =

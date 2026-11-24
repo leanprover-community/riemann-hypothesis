@@ -158,13 +158,11 @@ theorem unrAt_iff (v : HeightOneSpectrum (𝓞 L)) : χ.UnrAt v ↔ χ.LevelLe v
   · intro h x hx _
     exact h x hx
   · intro h x hx
-    apply h x hx
-    have hx' : Valued.v (x : v.adicCompletion L) = 1 := hx
     have h1 : Valued.v ((x : v.adicCompletion L) - 1) ≤
         max (Valued.v (x : v.adicCompletion L)) (Valued.v (1 : v.adicCompletion L)) :=
       Valued.v.map_sub _ _
-    rw [hx', map_one, max_self] at h1
-    simpa using h1
+    rw [hx, map_one, max_self] at h1
+    exact h x hx (by simpa using h1)
 
 theorem val_eq {v : HeightOneSpectrum (𝓞 L)} (h : χ.UnrAt v) (x : (v.adicCompletion L)ˣ) (hx : IsUnifAt v x) :
     χ.loc v x = χ.val v := by

@@ -79,11 +79,8 @@ theorem star_conj (x : D.host.E) : (letI := D.host.cmStar; star x) = D.host.conj
   haveI : IsCMField D.host.E := by
     first
     | exact D.host.isCMField_hostE
-    | exact D.host.der.cm
   first
   | exact NumberField.IsCMField.complexEmbedding_complexConj D.host.E ψ x
-  | exact NumberField.IsCMField.complexEmbedding_complexConj (K := D.host.E) ψ x
-  | exact NumberField.IsCMField.complexEmbedding_complexConj (K := D.host.E) (φ := ψ) (x := x)
 
 theorem emb_conj (φ : D.host.E →+* ℂ) (x : D.host.E) :
     φ (D.host.conj x) = starRingEnd ℂ (φ x) :=

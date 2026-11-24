@@ -72,9 +72,6 @@ private theorem hs_lemma_2 {σ τ : Type} [Finite σ] {a : σ → MvPowerSeries 
     (ha0 : ∀ s, constantCoeff (a s) = 0) : HasSubst a := by
   first
   | exact hasSubst_of_constantCoeff_zero ha0
-  | exact HasSubst.of_constantCoeff_zero' ha0
-  | exact hasSubst_of_constantCoeff_nilpotent (fun s => by rw [ha0 s]; exact IsNilpotent.zero)
-  | exact HasSubst.of_constantCoeff_nilpotent (fun s => by rw [ha0 s]; exact IsNilpotent.zero)
 
 theorem mvIsInt_subst {σ τ : Type} [Finite σ] (v : AddValuation C (WithTop ℝ))
     {f : MvPowerSeries σ C} (hf : MvIsInt v f) {a : σ → MvPowerSeries τ C}
@@ -263,7 +260,6 @@ theorem degree_eq_one {σ : Type} {e : σ →₀ ℕ} (he : e.degree = 1) :
   have hd : ∑ i ∈ e.support, e i = 1 := by
     first
     | exact he
-    | simpa [Finsupp.degree] using he
   have hne : e.support.Nonempty := by
     rw [Finset.nonempty_iff_ne_empty]
     intro h
@@ -293,7 +289,6 @@ theorem order_lg_sub_X (G : LogFGL v d) (a : Fin d) : ((2 : ℕ) : ℕ∞) ≤ (
   rcases (show e.degree = 0 ∨ e.degree = 1 by omega) with h0 | h1
   · have hz : e = 0 := by
       first
-      | exact Finsupp.degree_eq_zero_iff.mp h0
       | exact (Finsupp.degree_eq_zero_iff e).mp h0
     rw [hz, coeff_zero_eq_constantCoeff_apply, coeff_zero_eq_constantCoeff_apply, G.lg_const,
       constantCoeff_X, sub_zero]

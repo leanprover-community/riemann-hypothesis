@@ -1,7 +1,8 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.BaseSt
-public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.FdomExistsAll
+public import Mathlib.MeasureTheory.Group.FundamentalDomain
+public import Lemmata.MiscLemmasB.Imports
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.HfinExistsMat
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.NumFieldHosCountable
 import Mathlib.Algebra.Order.Floor.Extended
@@ -78,7 +79,7 @@ theorem gfC_secondCountable (V : HSp D) : SecondCountableTopology (GfC V) := by
 theorem fundDomExists_holds : FundDomExists D := fun V => by
   obtain ⟨h1, -, -, h4, h5⟩ := ga_facts D V
   have := gQDiscrete_holds D V
-  exact G5.fdom_exists_all (GQ V)
+  exact _root_.Bl.SecondBlockLemmaC.goal1 (GQ V)
 
 end Formalism.IndefR.Eqv
 

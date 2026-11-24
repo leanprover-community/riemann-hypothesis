@@ -101,8 +101,8 @@ theorem le_lintegral_bump [T2Space V] (m : Measure V) {K : Set V} (hK : IsCompac
   rw [← lintegral_indicator_one hKm]
   refine lintegral_mono fun v => ?_
   by_cases hv : v ∈ K
-  · simp [Set.indicator_apply, hv, h1 v hv]
-  · simp [Set.indicator_apply, hv]
+  · simp [hv, h1 v hv]
+  · simp [hv]
 
 theorem lintegral_bump_le (m : Measure V) {O : Set V} (hO : IsOpen O) {φ : V → ℝ}
     (h1 : ∀ v, φ v ≤ 1) (hs : tsupport φ ⊆ O) : ∫⁻ v, ENNReal.ofReal (φ v) ∂m ≤ m O := by
@@ -113,7 +113,7 @@ theorem lintegral_bump_le (m : Measure V) {O : Set V} (hO : IsOpen O) {φ : V �
   · have hz : φ v = 0 := by
       by_contra hne
       exact hv (hs (subset_tsupport φ hne))
-    simp [Set.indicator_apply, hv, hz]
+    simp [hv, hz]
 
 variable [TopologicalSpace X] [MeasurableSpace X] [BorelSpace X]
 

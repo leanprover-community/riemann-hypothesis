@@ -72,8 +72,6 @@ theorem lawA3'_of (δ : ∀ Z : Comp Xo c, AddValuation (Om Z) (WithTop ℤ) →
   have hcoeff : (a • (AddMonoidAlgebra.single G (1 : Om Z))).coeff G = a := by
     first
       | simp
-      | simp [AddMonoidAlgebra.smul_single']
-      | (rw [AddMonoidAlgebra.smul_single', mul_one]; rfl)
   refine ((hD Z a ha).union (hF Z)).subset ?_
   rintro v ⟨hadm, hne⟩
   rw [hord] at hne

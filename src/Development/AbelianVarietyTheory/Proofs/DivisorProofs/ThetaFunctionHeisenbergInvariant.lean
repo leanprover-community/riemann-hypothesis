@@ -188,7 +188,7 @@ theorem continuous_symplOHF_right (x : WOF F E nS nT) : Continuous fun y => symp
 
 variable (F) in
 theorem continuous_ringEquiv_mixedSpace : Continuous (InfiniteAdeleRing.ringEquiv_mixedSpace F) := by
-  apply _root_.GlobalTheory.ArchIsom.continuous_toMixed <;> assumption
+  apply _root_.GlobalTheory.ArchIsom.continuous_toMixed
 
 end Top
 

@@ -214,7 +214,7 @@ noncomputable def zmodRepOfTorsion : Rep.{0} (ZMod l) G :=
         simp
       map_mul' := fun g h => by
         ext a
-        simp [Module.End.mul_apply] }
+        simp }
 
 def zmodRepOfTorsionEquiv : A ≃+ zmodRepOfTorsion l A hA :=
   AddEquiv.refl A

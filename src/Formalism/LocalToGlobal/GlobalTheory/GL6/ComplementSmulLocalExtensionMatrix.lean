@@ -224,7 +224,7 @@ theorem local_extension_GL_same_place (M : GL (Fin n) (E ⊗[F] v.adicCompletion
   by_cases h : i = j
   · subst h
     simp [bc, localExtensionGL, localDiagMatrix, localExtensionMatrix, proj_local_idempotent_same_place, proj_local_extension_same_place]
-  · simp [bc, localExtensionGL, localDiagMatrix, localExtensionMatrix, proj_local_idempotent_same_place, proj_local_extension_same_place, Matrix.one_apply_ne h]
+  · simp [bc, localExtensionGL, localDiagMatrix, localExtensionMatrix, proj_local_extension_same_place, Matrix.one_apply_ne h]
 
 theorem local_extension_GL_other_place (w : HeightOneSpectrum (𝓞 F)) (hw : w ≠ v) (M : GL (Fin n) (E ⊗[F] v.adicCompletion F)) :
     bc (prV (E := E) w) (localExtensionGL v M) = 1 := by
@@ -233,7 +233,7 @@ theorem local_extension_GL_other_place (w : HeightOneSpectrum (𝓞 F)) (hw : w 
   by_cases h : i = j
   · subst h
     simp [bc, localExtensionGL, localDiagMatrix, localExtensionMatrix, proj_local_idempotent_other_place v w hw, proj_local_extension_other_place v w hw]
-  · simp [bc, localExtensionGL, localDiagMatrix, localExtensionMatrix, proj_local_idempotent_other_place v w hw, proj_local_extension_other_place v w hw, Matrix.one_apply_ne h]
+  · simp [bc, localExtensionGL, localDiagMatrix, localExtensionMatrix, proj_local_extension_other_place v w hw, Matrix.one_apply_ne h]
 
 end Mat
 
@@ -250,7 +250,7 @@ theorem local_diag_matrix_conj_transpose (M : Matrix (Fin n) (Fin n) (E ⊗[F] v
   by_cases h : i = j
   · subst h
     simp [cT, localDiagMatrix, localExtensionMatrix, Matrix.transpose_apply, Matrix.map_apply, local_extension_conj_comm, conj_local_idempotent]
-  · simp [cT, localDiagMatrix, localExtensionMatrix, Matrix.transpose_apply, Matrix.map_apply, local_extension_conj_comm, conj_local_idempotent, Matrix.one_apply_ne h,
+  · simp [cT, localDiagMatrix, localExtensionMatrix, Matrix.transpose_apply, Matrix.map_apply, local_extension_conj_comm, Matrix.one_apply_ne h,
       Matrix.one_apply_ne (Ne.symm h)]
 
 theorem local_extension_GL_mem_unitary (J : Matrix (Fin n) (Fin n) E) (M : GL (Fin n) (E ⊗[F] v.adicCompletion F))

@@ -69,7 +69,7 @@ def pm (a b : K) (r : Fin M → K) (d : K) (w : Fin M → K) (U : Matrix (Fin M)
 theorem blk_eta (g : Matrix (Fin (M + 2)) (Fin (M + 2)) K) :
     g = blk (g 0 0) (g 0 1) (fun j => g 0 j.succ.succ) (g 1 0) (g 1 1) (fun j => g 1 j.succ.succ)
       (fun i => g i.succ.succ 0) (fun i => g i.succ.succ 1) (Matrix.of fun i j => g i.succ.succ j.succ.succ) := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.blk_eta <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.blk_eta
 
 theorem blk_inj {a b c d a' b' c' d' : K} {r s u w r' s' u' w' : Fin M → K} {U U' : Matrix (Fin M) (Fin M) K}
     (h : blk a b r c d s u w U = blk a' b' r' c' d' s' u' w' U') :
@@ -81,38 +81,38 @@ theorem blk_mul (a b c d a' b' c' d' : K) (r s u w r' s' u' w' : Fin M → K) (U
       blk (a * a' + b * c' + r ⬝ᵥ u') (a * b' + b * d' + r ⬝ᵥ w') (a • r' + b • s' + r ᵥ* U')
         (c * a' + d * c' + s ⬝ᵥ u') (c * b' + d * d' + s ⬝ᵥ w') (c • r' + d • s' + s ᵥ* U')
         (a' • u + c' • w + U *ᵥ u') (b' • u + d' • w + U *ᵥ w') (vecMulVec u r' + vecMulVec w s' + U * U') := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.blk_mul <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.blk_mul
 
 theorem pm_mul (a b d a' b' d' : K) (r w r' w' : Fin M → K) (U U' : Matrix (Fin M) (Fin M) K) :
     pm a b r d w U * pm a' b' r' d' w' U' =
       pm (a * a') (a * b' + b * d' + r ⬝ᵥ w') (a • r' + r ᵥ* U') (d * d') (d' • w + U *ᵥ w') (U * U') := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.pm_mul <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.pm_mul
 
 theorem pm_one : pm (1 : K) 0 (0 : Fin M → K) 1 0 1 = 1 := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.pm_one <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.pm_one
 
 theorem blk_map {L : Type} [CommRing L] (φ : K → L) (a b c d : K) (r s u w : Fin M → K) (U : Matrix (Fin M) (Fin M) K) :
     (blk a b r c d s u w U).map φ = blk (φ a) (φ b) (φ ∘ r) (φ c) (φ d) (φ ∘ s) (φ ∘ u) (φ ∘ w) (U.map φ) := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.blk_map <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.blk_map
 
 theorem pm_map {L : Type} [CommRing L] (φ : K →+* L) (a b d : K) (r w : Fin M → K) (U : Matrix (Fin M) (Fin M) K) :
     (pm a b r d w U).map φ = pm (φ a) (φ b) (φ ∘ r) (φ d) (φ ∘ w) (U.map φ) := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.pm_map <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.pm_map
 
 theorem block_matrix_transpose (a b c d : K) (r s u w : Fin M → K) (U : Matrix (Fin M) (Fin M) K) :
     (blk a b r c d s u w U)ᵀ = blk a c u b d w r s Uᵀ := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.block_matrix_transpose <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.block_matrix_transpose
 
 theorem hypJ_eq (J : Matrix (Fin M) (Fin M) K) : hypJ J = blk 0 1 0 1 0 0 0 0 J := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.hypJ_eq <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.hypJ_eq
 
 theorem hypJ_map {L : Type} [CommRing L] (φ : K →+* L) (J : Matrix (Fin M) (Fin M) K) :
     (hypJ J).map φ = hypJ (J.map φ) := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.hypJ_map <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.hypJ_map
 
 theorem hform_eq (s : K →+* K) (J : Matrix (Fin M) (Fin M) K) (x y : Fin M → K) :
     hform s J x y = ((s ∘ x) ᵥ* J) ⬝ᵥ y := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.hform_eq <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.hform_eq
 
 theorem gram_blk (s : K →+* K) (J : Matrix (Fin M) (Fin M) K) (a b d : K) (r t w : Fin M → K)
     (U : Matrix (Fin M) (Fin M) K) :
@@ -120,7 +120,7 @@ theorem gram_blk (s : K →+* K) (J : Matrix (Fin M) (Fin M) K) (a b d : K) (r t
       blk 0 (s a * d) (s a • t) (s d * a) (s d * b + s b * d + ((s ∘ w) ᵥ* J) ⬝ᵥ w)
         (s d • r + s b • t + ((s ∘ w) ᵥ* J) ᵥ* U) (a • (s ∘ t)) (b • (s ∘ t) + d • (s ∘ r) + (cT s U * J) *ᵥ w)
         (vecMulVec (s ∘ t) r + vecMulVec (s ∘ r) t + cT s U * J * U) := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.gram_blk <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.gram_blk
 
 variable (s : K →+* K) (J : Matrix (Fin M) (Fin M) K)
 
@@ -142,7 +142,7 @@ theorem mM_unit (hs : ∀ x, s (s x) = x) (a : Kˣ) :
 
 theorem nM_mul (w w' : Fin M → K) (z z' : K) :
     nM s J w z * nM s J w' z' = nM s J (w + w') (z + z' - hform s J w w') := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.nM_mul <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.nM_mul
 
 theorem iM_nM {U : Matrix (Fin M) (Fin M) K} (hU : cT s U * J * U = J) (w : Fin M → K) (z : K) :
     pm 1 0 0 1 0 U * nM s J w z = nM s J (U *ᵥ w) z * pm 1 0 0 1 0 U := by
@@ -155,7 +155,7 @@ theorem mM_nM (hs : ∀ x, s (s x) = x) (a : Kˣ) (w : Fin M → K) (z : K) :
 
 theorem nim (w : Fin M → K) (z a d : K) (U : Matrix (Fin M) (Fin M) K) :
     nM s J w z * pm 1 0 0 1 0 U * pm a 0 0 d 0 1 = pm a (z * d) (-(((s ∘ w) ᵥ* J) ᵥ* U)) d (d • w) U := by
-  apply PositivityTheory.PlacePermOperatorBicommutantSpan.nim <;> assumption
+  apply PositivityTheory.PlacePermOperatorBicommutantSpan.nim
 
 theorem par_dec (hs : ∀ x, s (s x) = x) {g : Matrix (Fin (M + 2)) (Fin (M + 2)) K} (hg : cT s g * hypJ J * g = hypJ J)
     (h0 : ∀ i : Fin (M + 1), g i.succ 0 = 0) :

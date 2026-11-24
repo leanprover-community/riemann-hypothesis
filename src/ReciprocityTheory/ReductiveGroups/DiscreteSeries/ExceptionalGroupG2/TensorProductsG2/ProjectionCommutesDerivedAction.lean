@@ -1,7 +1,6 @@
 module
 
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.ProjectionCommutesDerivedAction
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.TensorProductsG2.OccATensWordMem
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.ProjectionCommutesDerivedAction
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.DatumEmbeddingMemHlam
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -46,6 +45,7 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.ExistenceG2.SigLamKTypeBounds
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceEstimates.ImageLeClosGen
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.IsInLieAlgebraISmulAddConjTranspose
+public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.TensorProductsG2.ContinuousUnitaryMatrix
 
 @[expose] public section
 
@@ -83,32 +83,5 @@ theorem projection_commutes_derived_action (hgap : StdGap ε lam) (hP : IsPsiFor
   Lap.QuotA.smE_comm (rreg_isURepOn ε) _ (fun g hg v => projection_commutes_right_regular hgap hP hv₀ g hg v) x hx a b
 
 end Proj
-
-section Layer
-
-variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : Fin n → Bool}
-  {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {D : Submodule ℂ H} {E : Fin n → Fin n → Module.End ℂ D}
-
-theorem layer_k_stable (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E) {V : Submodule ℂ D}
-    (hVs : IsKStableSub ε E V) (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) :
-    ∀ j, ∀ k ∈ Kset ε, ∀ x ∈ layer ε E V j, ∃ y ∈ layer ε E V j, (y : H) = σ k x := by
-  apply ReciprocityTheory.ChartRestriction.DS.layer_k_stable <;> assumption
-
-theorem tensor_generated_mem_layer (hE : IsGlRep E) {V : Submodule ℂ D} (hVs : IsKStableSub ε E V)
-    {f : Fin n → D} (hf : f ∈ tensSub (genSub E V)) : ∃ j, ∀ c, f c ∈ layer ε E V j := by
-  apply ReciprocityTheory.ChartRestriction.DS.tensor_generated_mem_layer <;> assumption
-
-theorem occurrence_coef_add (dual : Bool) (η f f' : Fin n → H) :
-    occCoef dual σ η (f + f') = occCoef dual σ η f + occCoef dual σ η f' := by
-  funext g
-  simp only [occCoef, tensGrp, Pi.add_apply, map_add (f := _), smul_add, Finset.sum_add_distrib, inner_add_right]
-
-theorem occurrence_coef_smul (dual : Bool) (η f : Fin n → H) (c : ℂ) :
-    occCoef dual σ η (c • f) = c • occCoef dual σ η f := by
-  funext g
-  simp only [occCoef, tensGrp, Pi.smul_apply, map_smul, smul_comm _ c, ← Finset.smul_sum, inner_smul_right,
-    Finset.mul_sum, smul_eq_mul]
-
-end Layer
 
 end ReciprocityTheory.ChartRestriction.DS.G2

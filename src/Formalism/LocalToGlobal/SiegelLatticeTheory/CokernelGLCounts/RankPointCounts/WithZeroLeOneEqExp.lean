@@ -58,23 +58,6 @@ open NumberField IsDedekindDomain ValuativeRel
 
 namespace Formalism.L2.SG.Pf.PCountEx
 
-section ZM
-
-end ZM
-
-section Approx
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E}
-  (A : ∀ p : HeightOneSpectrum (𝓞 F), Formalism.MainNotions.S.Loc.LocAt F E sig p)
-
-theorem approxF (S : Finset (HeightOneSpectrum (𝓞 F))) (c : 𝓞 F) (hc : c ≠ 0) (b : ∀ p, (A p).Fp) :
-    ∃ f : F, (∀ p ∈ S, haveI := (A p).lf
-        valuation (A p).Fp ((A p).ιF f - b p) ≤ valuation (A p).Fp ((A p).ιF (algebraMap (𝓞 F) F c))) ∧
-      ∀ p ∉ S, (A p).ιF f ∈ (haveI := (A p).lf; 𝒪[(A p).Fp]) :=
-  by apply _root_.UpperTheory.Reformulated.B.ApproximationIntegralOutsideFinset.approxF <;> assumption
-
-end Approx
-
 section ApproxE
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E}
@@ -139,7 +122,7 @@ theorem approxE (S : Finset (HeightOneSpectrum (𝓞 F))) (c : 𝓞 F) (hc : c �
     exact (Submodule.mem_span_range_iff_exists_fun _).1 ha
   choose l hl using hco
 
-  have hf := fun j : Fin n => approxF A S c hc (fun p => l p j)
+  have hf := fun j : Fin n => _root_.UpperTheory.Reformulated.B.ApproximationIntegralOutsideFinset.approxF A S c hc (fun p => l p j)
   choose f hfS hfO using hf
   refine ⟨∑ j, algebraMap F E (f j) * (e j : E), fun p hp => ?_, fun q hq => ?_⟩
   · haveI := (A p).lf

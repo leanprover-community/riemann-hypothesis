@@ -73,11 +73,11 @@ theorem cond_one : cond (1 : 𝒪[k]ˣ →* ℂˣ) = 0 := by
 theorem res_div_swap {s : ℕ} (μ : Fin s → kˣ →* ℂˣ) (a b : Fin s) :
     res (μ b / μ a) = (res (μ a / μ b))⁻¹ := by
   ext u
-  simp [res, MonoidHom.div_apply, MonoidHom.inv_apply, inv_div]
+  simp [res, MonoidHom.div_apply, inv_div]
 
 theorem res_div_mul {s : ℕ} (μ : Fin s → kˣ →* ℂˣ) (a b c : Fin s) (u : 𝒪[k]ˣ) :
     res (μ a / μ c) u = res (μ a / μ b) u * res (μ b / μ c) u := by
-  simp [res, MonoidHom.div_apply, div_mul_div_cancel₀]
+  simp [res, MonoidHom.div_apply]
 
 theorem cc_self {s : ℕ} (μ : Fin s → kˣ →* ℂˣ) (a : Fin s) : cc μ a a = 0 := by
   unfold cc

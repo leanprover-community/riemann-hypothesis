@@ -87,15 +87,6 @@ lemma Hpk_eq (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   simp only [e1, e2]
   split_ifs at * <;> first | rfl | (exfalso; omega)
 
-lemma Hpk_sq (k r : ℕ) : Formalism.QuantumDeterminants.Hpk k r * Formalism.QuantumDeterminants.Hpk k r = 1 := by
-  ext i j
-  rw [Matrix.mul_apply]
-  simp only [Hpk_eq k r i, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  rw [Hpk_eq, sig_sig, sgn_sig, Matrix.one_apply]
-  by_cases h : j = i
-  · rw [if_pos h, if_pos h.symm]; unfold sgn; split_ifs <;> norm_num
-  · rw [if_neg h, if_neg (Ne.symm h), mul_zero]
-
 variable {k r : ℕ}
 
 lemma one_mem : (1 : Mat k r) ∈ Gr k r := by
@@ -124,7 +115,7 @@ lemma inv_left {g : Mat k r} (hg : g ∈ Gr k r) :
   have hg' : gᴴ * Formalism.QuantumDeterminants.Hpk k r * g = Formalism.QuantumDeterminants.Hpk k r := hg
   calc Formalism.QuantumDeterminants.Hpk k r * gᴴ * Formalism.QuantumDeterminants.Hpk k r * g
       = Formalism.QuantumDeterminants.Hpk k r * (gᴴ * Formalism.QuantumDeterminants.Hpk k r * g) := by simp only [Matrix.mul_assoc]
-    _ = 1 := by rw [hg', Hpk_sq]
+    _ = 1 := by rw [hg', _root_.Formalism.MainNotions.BesselShellMomentBounds.Hpk_sq']
 
 lemma inv_eq {g : Mat k r} (hg : g ∈ Gr k r) : g⁻¹ = Formalism.QuantumDeterminants.Hpk k r * gᴴ * Formalism.QuantumDeterminants.Hpk k r :=
   Matrix.inv_eq_left_inv (inv_left hg)
@@ -143,7 +134,7 @@ lemma isClosed_Gr : IsClosed (Gr k r) := by
   have hc : Continuous (fun x : Mat k r => xᴴ * Formalism.QuantumDeterminants.Hpk k r * x) := by fun_prop
   exact isClosed_eq hc continuous_const
 
-lemma continuous_of : Continuous (fun x : Formalism.QuantumDeterminants.Mt k r => (Matrix.of x : Mat k r)) := continuous_id
+alias continuous_of := _root_.Formalism.MainNotions.LowestKTypeMultiplicity.continuous_of
 
 lemma measurableSet_Gr : MeasurableSet {x : Formalism.QuantumDeterminants.Mt k r | Matrix.of x ∈ Gr k r} :=
   (isClosed_Gr.preimage continuous_of).measurableSet

@@ -212,7 +212,7 @@ theorem rightDeriv_bracket {f : G → F} (hf : h.IsSmoothFun f) (X Y : 𝔤) :
     have h1 := hasDerivAt_comp_line (hAd (s • (er + eu))) et
     have h2 := h.hasDerivAt_rightDeriv hf (h.Ad (h.expG (s • X)) Y) g
     refine h1.unique (h2.congr_of_eventuallyEq (Eventually.of_forall fun t => ?_))
-    simp only [A, er, eu, et, Prod.smul_mk, Prod.mk_add_mk, smul_zero, smul_eq_mul, mul_one,
+    simp only [A, er, eu, et, Prod.smul_mk, Prod.mk_add_mk, smul_eq_mul, mul_one,
       mul_zero, add_zero, zero_add]
     rw [← map_smul, expG_Ad, smul_neg, expG_neg]
     simp only [mul_assoc]

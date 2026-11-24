@@ -115,7 +115,7 @@ theorem wittMat_map_mul {K : Type} [Field K] (r m : ℕ) (g : Fin r → K) (σ :
   rw [wittMat_eq]
   ext i k
   rw [Matrix.mul_apply, Finset.sum_eq_single (wPart r m i)]
-  · simp only [Matrix.mul_diagonal, Matrix.map_apply, Matrix.of_apply, if_pos rfl, wPart_wPart,
+  · simp only [Matrix.mul_diagonal, Matrix.map_apply, Matrix.of_apply, wPart_wPart,
       Matrix.diagonal_apply]
     by_cases hik : i = k
     · subst hik

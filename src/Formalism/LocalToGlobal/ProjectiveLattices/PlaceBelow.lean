@@ -191,17 +191,13 @@ end Places
 
 private lemma le_ceil_toNat_lemma (a x b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) :
     a * x ≤ ((⌈a * (x + b)⌉.toNat : ℕ) : ℝ) := by
-  have h1 : a * x ≤ a * (x + b) := mul_le_mul_of_nonneg_left (by linarith) ha
-  have h2 : a * (x + b) ≤ (⌈a * (x + b)⌉ : ℝ) := Int.le_ceil _
-  have h3 : ((⌈a * (x + b)⌉ : ℤ) : ℝ) ≤ ((⌈a * (x + b)⌉.toNat : ℕ) : ℝ) := by
-    exact_mod_cast Int.self_le_toNat _
-  linarith
+  exact (mul_le_mul_of_nonneg_left (by linarith) ha).trans
+    ((Int.le_ceil (a * (x + b))).trans (by exact_mod_cast Int.self_le_toNat _))
 
 theorem DepPage.le_eLam (Q : DepPage) (eL : ℕ) (nu : ℝ) (p : ℕ) :
     (eL : ℝ) * (Q.T : ℝ) * nu ≤ (Q.eLam eL nu p : ℝ) := by
   unfold DepPage.eLam
-  refine le_ceil_toNat_lemma _ _ _ (by positivity) ?_
-  split_ifs <;> norm_num
+  exact le_ceil_toNat_lemma _ _ _ (by positivity) (by split_ifs <;> norm_num)
 
 section Inst
 

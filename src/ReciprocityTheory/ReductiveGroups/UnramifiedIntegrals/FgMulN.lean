@@ -57,13 +57,7 @@ theorem powerSeries_subst_subst_of_constantCoeff_zero {R : Type} [CommRing R] {�
   rw [PowerSeries.subst, PowerSeries.subst]
   first
   | exact MvPowerSeries.subst_comp_subst_apply
-      (MvPowerSeries.HasSubst.of_constantCoeff_zero (fun _ => hu)) hb φ
-  | exact MvPowerSeries.subst_comp_subst_apply
       (MvPowerSeries.hasSubst_of_constantCoeff_zero (fun _ => hu)) hb φ
-  | exact MvPowerSeries.subst_comp_subst_apply
-      ((PowerSeries.HasSubst.of_constantCoeff_zero hu).hasSubst) hb φ
-  | exact MvPowerSeries.subst_comp_subst_apply
-      ⟨fun _ => by rw [hu]; exact IsNilpotent.zero, by simp⟩ hb φ
 
 theorem mulN_integral {lam : PowerSeries K} {Φ : MvPowerSeries (Fin 2) K} (h : LawD lam Φ) (n : ℕ) :
     ∃ e : PowerSeries K, constantCoeff e = 0 ∧ IntegralPS e ∧ lam.subst e = C (n : K) * lam := by
@@ -121,11 +115,10 @@ theorem mulN_integral {lam : PowerSeries K} {Φ : MvPowerSeries (Fin 2) K} (h : 
       unfold atX atY
       first
       | rw [MvPowerSeries.subst_add ha]
-      | rw [← MvPowerSeries.coe_substAlgHom ha, map_add (f := _), MvPowerSeries.coe_substAlgHom]
       rw [powerSeries_subst_subst_of_constantCoeff_zero lam (MvPowerSeries.constantCoeff_X 0) ha,
         powerSeries_subst_subst_of_constantCoeff_zero lam (MvPowerSeries.constantCoeff_X 1) ha,
         MvPowerSeries.subst_X ha, MvPowerSeries.subst_X ha]
-      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+      simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
       rw [hlog, hXs, Nat.cast_succ, map_add (f := _), map_one]
       ring
 

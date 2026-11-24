@@ -68,6 +68,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.FormSK
 
 @[expose] public section
 
@@ -344,15 +345,6 @@ theorem chartRankGe_of [IsFractionRing G.O G.Kf] (S : StepIn M i hi G) (e : D.wh
     _ ≤ finrank ℂ (FiB S β) := sum_le_finrank_FiB S β (fiBPi S β)
 
 end Forms
-
-section LocJ
-
-variable {D : D7} {X : Formalism.L2.Herm.Herm0 D} {u : D.what₂.Word} {w : D.what₂.places.Pl}
-  {hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Fl : Fills (D.gat u w hg)} {Lv : Levels Fl} {i : ℕ}
-  (hi : i + 1 ≤ D.R.m) {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {A : ColumnsAtT D.R C} {P : PeriodMap D.R C}
-  {M : MemberForms D.what₂.LL D.what₂.embLL D.what₂.places D.what₂.Tau (D.hcW u) C A P}
-
-end LocJ
 
 end GlobalTheory.HP
 end
@@ -916,16 +908,10 @@ section Tr
 
 variable {ι : Type} [Fintype ι] {n : ℕ}
 
-theorem foNat_anti (lam : DomWeight n) : Antitone lam.natW := by
-  intro a b hab
-  have := lam.anti hab
-  unfold DomWeight.natW
-  exact Int.toNat_le_toNat (by omega)
-
 theorem foRow_delSq (lam : DomWeight n) (g : Matrix (Fin n) (Fin n) ℂ) {q : MvPolynomial (Fin n × Fin n) ℂ}
     (hq : q ∈ delSq ℂ n lam) : Formalism.GradedWeylDivisibility.rowAct ℂ g q ∈ delSq ℂ n lam := by
   unfold delSq at hq ⊢
-  rw [Formalism.L2.G.Model.sw_weyl_eq ℂ n n le_rfl _ (foNat_anti lam)] at hq ⊢
+  rw [Formalism.L2.G.Model.sw_weyl_eq ℂ n n le_rfl _ (_root_.Formalism.L2.Col.natW_anti lam)] at hq ⊢
   exact Formalism.GradedWeylDivisibility.dualWeylRowStable ℂ n n _ g q hq
 
 def foTr {Gm : ι → Matrix (Fin n) (Fin n) ℂ} (g : ι → Matrix (Fin n) (Fin n) ℂ) (hg : ∀ τ, IsUnit (g τ).det)
@@ -996,10 +982,6 @@ theorem foInf_unit (emb : ι → E →+* ℂ) (γ : GL (Fin n) E) (τ : ι) : Is
   have h := ((Matrix.isUnit_iff_isUnit_det _).1 γ.isUnit).map (emb τ)
   rwa [RingHom.map_det] at h
 
-theorem foInf_mul (emb : ι → E →+* ℂ) (a b : Matrix (Fin n) (Fin n) E) (τ : ι) :
-    atInf emb (a * b) τ = atInf emb a τ * atInf emb b τ := by
-  simp [atInf, Matrix.map_mul]
-
 theorem foInf_one (emb : ι → E →+* ℂ) (τ : ι) : atInf emb (1 : Matrix (Fin n) (Fin n) E) τ = 1 := by
   simp [atInf]
 
@@ -1014,7 +996,7 @@ theorem foTrR_mul (emb : ι → E →+* ℂ) (γ δ : GL (Fin n) E) (y : Formali
   apply Subtype.ext
   funext τ
   show (foTrR emb (γ * δ) y).1 τ = (foTrR emb γ (foTrR emb δ y)).1 τ
-  rw [foTrR_val, foTrR_val, foTrR_val, Units.val_mul, foInf_mul, Matrix.mul_assoc]
+  rw [foTrR_val, foTrR_val, foTrR_val, Units.val_mul, _root_.Formalism.L2.G.Cmp.atInf_mul, Matrix.mul_assoc]
 
 theorem foTrR_one (emb : ι → E →+* ℂ) (y : Formalism.L2.Forms.Frames (gramC J emb)) : foTrR emb 1 y = y := by
   apply Subtype.ext
@@ -1046,24 +1028,6 @@ variable {S emb}
 
 end Adelic
 
-section Rec
-
-open Formalism.MainNotions.G Formalism.L2.G Formalism.L2.G.Cmp Formalism.MainNotions.G.CmpJ Formalism.MainNotions.G.CmpJ.PCard GlobalTheory.HP GlobalTheory.HP
-
-variable {D : D7} {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {A : ColumnsAtT D.R C} {P : PeriodMap D.R C}
-  {M : MemberForms D.what₂.LL D.what₂.embLL D.what₂.places D.what₂.Tau (D.hcW u) C A P} {p : ℕ} {i : ℕ} {hi : i ≤ D.R.m} {G : GAtP p}
-
-end Rec
-
-section Card
-
-open Formalism.MainNotions.G Formalism.L2.G Formalism.L2.G.Cmp Formalism.MainNotions.G.CmpJ Formalism.MainNotions.G.CmpJ.PCard GlobalTheory.HP GlobalTheory.HP
-
-variable {D : D7} {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl}
-  {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Fl : Fills (D.gat u w h)} {Lv : Levels Fl}
-
-end Card
-
 end GlobalTheory.HP
 end
 
@@ -1073,11 +1037,6 @@ namespace GlobalTheory.HP
 open Formalism Formalism.L2 Formalism.L2.G
 
 open Formalism.L2.G.Cmp Formalism.L2.G.RelativeIndexFlags Formalism.L2.G.RelativeIndexFlags.Core
-
-theorem nuOf_anti_ev {m : ℕ} {lam : Fin (m + 1) → ℤ} (h : Antitone lam) : Antitone (nuOf lam) := by
-  intro i j hij
-  unfold nuOf
-  exact Int.toNat_le_toNat (by have := h hij; omega)
 
 section Gen
 
@@ -1095,7 +1054,7 @@ theorem vsp_le (v : Fin P.nV) :
       dualWeyl ℂ (P.m + 1) (P.m + 1) (nuOf (lamAt (P.lam0 v) s)) else ⊥) → F ∈ Submodule.span ℂ (T s) := by
     intro s F hF
     have ha := lamAt_anti (P.lam0 v) (P.dom v) s
-    rw [if_pos ha, ← Formalism.L2.G.Model.sw_weyl_eq ℂ (P.m + 1) (P.m + 1) le_rfl _ (nuOf_anti_ev ha),
+    rw [if_pos ha, ← Formalism.L2.G.Model.sw_weyl_eq ℂ (P.m + 1) (P.m + 1) le_rfl _ (_root_.Formalism.L2.G.Model.TS.nuOf_antitone ha),
       weyl_eq_span_int] at hF
     exact hF
   have hP := prodSpan (O := ℂ) (I := Fin (P.n' v)) (B := fun _ => MvPolynomial (Fin (P.m + 1) × Fin (P.m + 1)) ℂ)
@@ -1295,13 +1254,6 @@ theorem cmpLiftOf_of (S : StepIn M i hi G) (e : D.what₂.LL →+* G.Kf) (hD : V
     exact b.map' (phiC S β γ0) (ker_phiC S β γ0)
 
 end Rec
-
-section Card
-
-variable {D : D7} {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl}
-  {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Fl : Fills (D.gat u w h)} {Lv : Levels Fl}
-
-end Card
 
 end GlobalTheory.HP
 end
@@ -1524,13 +1476,6 @@ theorem cmpLiftOf_of_raw (S : StepIn M i hi G) (e : D.what₂.LL →+* G.Kf) (hV
 
 end Rec
 
-section Card
-
-variable {D : D7} {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl}
-  {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Fl : Fills (D.gat u w h)} {Lv : Levels Fl}
-
-end Card
-
 end GlobalTheory.HP
 end
 
@@ -1627,13 +1572,6 @@ theorem cmpLiftOf_of_evVal (S : StepIn M i hi G) (e : D.what₂.LL →+* G.Kf) (
 
 end Rec
 
-section Card
-
-variable {D : D7} {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl}
-  {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Fl : Fills (D.gat u w h)} {Lv : Levels Fl}
-
-end Card
-
 end GlobalTheory.HP
 end
 
@@ -1662,13 +1600,6 @@ theorem cmpLiftOf_holds (S : StepIn M i hi G) (e : D.what₂.LL →+* G.Kf) : Cm
   exact cmpLiftOf_of_evVal S e (fun β => evValLe_of_wt S β (H β).wt) hS H X
 
 end Rec
-
-section Card
-
-variable {D : D7} {Tw : TwForms D} {u : D.what₂.Word} {μ : D.what₂.Tup} {w : D.what₂.places.Pl}
-  {h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)} {Fl : Fills (D.gat u w h)} {Lv : Levels Fl}
-
-end Card
 
 end GlobalTheory.HP
 end

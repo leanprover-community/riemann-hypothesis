@@ -139,7 +139,7 @@ theorem exists_chart_bump {M : Type*} [TopologicalSpace M] [T2Space M] (n : ℕ)
   · by_cases hys : y ∈ e.source
     · simp only [ψ, Set.indicator_of_mem hys]
       exact ⟨φ.nonneg, φ.le_one⟩
-    · simp [ψ, Set.indicator_apply, hys]
+    · simp [ψ, hys]
   · have h1 : IsOpen (e.source ∩ e ⁻¹' Metric.ball (e x) (r / 2)) :=
       e.isOpen_inter_preimage Metric.isOpen_ball
     filter_upwards [h1.mem_nhds ⟨hxe, Set.mem_preimage.mpr (Metric.mem_ball_self (by positivity))⟩] with y hy

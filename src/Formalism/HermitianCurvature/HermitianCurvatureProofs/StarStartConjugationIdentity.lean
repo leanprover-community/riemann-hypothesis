@@ -217,7 +217,7 @@ theorem io_star (a : A) : star (io a : SlopeTestRemainingChoices S A) = io (star
   by_cases hij : i = j
   · subst hij
     simp [Matrix.star_apply, Matrix.scalar_apply]
-  · simp [Matrix.star_apply, Matrix.scalar_apply, Matrix.diagonal_apply, hij, Ne.symm hij]
+  · simp [Matrix.star_apply, Matrix.scalar_apply, hij, Ne.symm hij]
 
 theorem io_comm {a : A} {M : SlopeTestRemainingChoices S A} (h : ∀ i j, Commute a (M i j)) : Commute (io a) M := by
   unfold io Commute SemiconjBy

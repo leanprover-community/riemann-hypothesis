@@ -137,7 +137,7 @@ theorem wtfA_fst_epsMul (a : S) :
   ext r <;> simp [epsMul]
 
 theorem wtfA_epsMul_mul (a b : S) : (epsMul a).comp (epsMul b) = epsMul (a * b) := by
-  ext r <;> simp [epsMul, mul_assoc, smul_smul]
+  ext r <;> simp [epsMul]
 
 theorem wtfA_epsMul_zero :
     epsMul (0 : S) = (algebraMap S (DualNumber S)).comp (TrivSqZeroExt.fstHom S S S).toRingHom := by
@@ -337,7 +337,6 @@ theorem wtfA_scal_pull {T : Type} [CommRing T] (ψ : S →+* T) {x : Sp S ⟶ Xo
     have h3 := congrArg (fun f => f.appTop.hom r) hf
     first
     | exact h3.symm
-    | simpa [Scheme.comp_appTop] using h3.symm
   rw [h2]
   generalize (fst (Over.mk x) Xo.univ.t.G).left.appTop.hom r = s
   rw [← CommRingCat.comp_apply, ← CommRingCat.comp_apply, Scheme.Hom.map_appLE]

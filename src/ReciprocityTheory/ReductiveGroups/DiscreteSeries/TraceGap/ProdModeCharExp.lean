@@ -92,7 +92,7 @@ theorem tco_diagE_wt (E : Fin n → Fin n → Module.End ℂ N) (a : Fin n)
   rw [Finset.sum_eq_single s]
   · simp [fockBasis_wt]
   · intro b _ hb
-    simp [fockBasis_wt, Finsupp.single_apply, hb]
+    simp [fockBasis_wt, hb]
   · simp
 
 end T
@@ -255,35 +255,5 @@ theorem kLow_wt_eq_lowWt {A : Fin n → Fin n → Module.End ℂ (TensorProduct 
   simp at this
 
 end Orth
-
-theorem cdom_lowWt (γ : Fin n → ℝ) :
-    ∀ l : List (Fin n × Fin n), (∀ p ∈ l, IsKLow ε p) → Formalism.MainNotions.S.CDom ε (lowWt γ l) γ := by
-  intro l
-  induction l with
-  | nil =>
-    intro _
-    exact ⟨fun _ _ => 0, fun a b h => absurd rfl h, by simp [lowWt]⟩
-  | cons p l ih =>
-    intro hl
-    obtain ⟨c, hc, heq⟩ := ih fun q hq => hl q (List.mem_cons_of_mem _ hq)
-    obtain ⟨c0, d0⟩ := p
-    have hp : IsKLow ε (c0, d0) := hl _ (List.mem_cons_self ..)
-    refine ⟨fun a b => c a b + if a = d0 ∧ b = c0 then 1 else 0, ?_, ?_⟩
-    · intro a b h
-      by_cases h' : a = d0 ∧ b = c0
-      · obtain ⟨rfl, rfl⟩ := h'
-        exact ⟨hp.1, hp.2.symm⟩
-      · dsimp only at h
-        rw [if_neg h', add_zero] at h
-        exact hc a b h
-    · have hs : (∑ a, ∑ b, (((if a = d0 ∧ b = c0 then 1 else 0 : ℕ)) : ℝ) • Formalism.REAL.root a b) =
-          Formalism.REAL.root d0 c0 := by
-        rw [Finset.sum_eq_single d0 (fun a _ ha => Finset.sum_eq_zero fun b _ => by simp [ha]) (by simp),
-          Finset.sum_eq_single c0 (fun b _ hb => by simp [hb]) (by simp)]
-        simp
-      simp only [Nat.cast_add, add_smul, Finset.sum_add_distrib, hs, ← heq, lowWt]
-      ext i
-      simp only [Pi.sub_apply, Pi.add_apply, root, Formalism.REAL.root]
-      ring
 
 end ReciprocityTheory.ChartRestriction.DS.TRGap

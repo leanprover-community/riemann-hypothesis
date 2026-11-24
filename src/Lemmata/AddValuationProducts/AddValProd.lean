@@ -86,11 +86,9 @@ theorem goal1 :
   have hab : ∀ i, (ab i : ι → O) = a i • b' i := Submodule.smithNormalFormBotBasis_def b h
   have hL : Module.length O ((ι → O) ⧸ N) = ∑ i, IsDiscreteValuationRing.addVal O (a i) := by
     rw [(N.quotientEquivPiSpan b h).length_eq, Module.length_pi_of_fintype]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    exact Ring.ord_eq_addVal (a i)
+    exact Finset.sum_congr rfl fun i _ => Ring.ord_eq_addVal (a i)
   let u : (ι → O) ≃ₗ[O] N := b'.equiv ab (Equiv.refl ι)
-  have hgj : ∀ j, (N.subtype ∘ₗ u.toLinearMap) (b' j) = a j • b' j := by
-    intro j
+  have hgj : ∀ j, (N.subtype ∘ₗ u.toLinearMap) (b' j) = a j • b' j := fun j => by
     rw [← hab j]
     simp [u]
   have hg : LinearMap.toMatrix b' b' (N.subtype ∘ₗ u.toLinearMap) = Matrix.diagonal a := by

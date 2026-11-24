@@ -75,7 +75,7 @@ theorem dS_X (τ : Ψ) (S : Finset (Fin N)) (σ : Ψ) (a : Fin N) :
     rw [if_pos ⟨rfl, ha⟩, Finset.sum_eq_single a]
     · simp
     · intro b _ hb
-      simp [Pi.single_apply, Ne.symm hb]
+      simp [Ne.symm hb]
     · intro h'
       exact absurd ha h'
   · rw [if_neg h]

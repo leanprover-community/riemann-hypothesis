@@ -85,13 +85,13 @@ theorem norm_le_sum_gMat {ε : Fin n → Bool} (s : GCo ε) : ‖s‖ ≤ ∑ a,
     have h1 : ¬ (b < a ∧ ε a ≠ ε b) := fun h' => h'.2 h.2
     have h2 : ¬ (a < b ∧ ε b ≠ ε a) := fun h' => lt_asymm h'.1 h.1
     have h3 : a ≠ b := h.1.ne'
-    simp [gMat, kMat, pmat, h3, h, h1, h2]
+    simp [gMat, kMat, pmat, h3, h]
   · refine (pi_norm_le_iff_of_nonneg h0).2 fun ab => (le_of_eq ?_).trans (hS ab.1.1 ab.1.2)
     obtain ⟨⟨a, b⟩, h⟩ := ab
     have h1 : ¬ (b < a ∧ ε a = ε b) := fun h' => h.2 h'.2
     have h2 : ¬ (a < b ∧ ε b = ε a) := fun h' => lt_asymm h'.1 h.1
     have h3 : a ≠ b := h.1.ne'
-    simp [gMat, kMat, pmat, h3, h, h1, h2]
+    simp [gMat, kMat, pmat, h3, h, h2]
 
 theorem gco_haar (ε : Fin n → Bool) :
     (volume : Measure (KCo ε)).IsAddHaarMeasure ∧ (volume : Measure (PCoord ε → ℂ)).IsAddHaarMeasure ∧

@@ -1,8 +1,9 @@
 module
 
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.HermitianCharacters.CharacteristicIdentity
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantTensorStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantTensor
+public import Mathlib.LinearAlgebra.Dual.Lemmas
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.HermitianCharacters.CharacteristicIdentity
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -51,7 +52,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
-public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 @[expose] public section
 
@@ -168,15 +168,6 @@ def liftL (V : Type) [AddCommGroup V] [Module ℂ V] (I : Type) :
     show (algebraMap ℂ (Module.End ℂ V) c) (f i) = (algebraMap ℂ (Module.End ℂ (I → V)) c f) i
     simp [Module.algebraMap_end_apply]
 
-theorem commute_qdet_om (M : GMod n) (u : ℂ) : Commute ((qdet M.E u).compLeft (Fin n)) (om M) := by
-  refine LinearMap.ext fun f => funext fun b => ?_
-  have hc : ∀ (a : Fin n) (x : M.V), qdet M.E u (M.E a b x) = M.E a b (qdet M.E u x) := fun a x =>
-    LinearMap.congr_fun (qDetCentral _ n M.E M.gl u a b) x
-  show (qdet M.E u) (om M f b) = ∑ a, M.E a b (qdet M.E u (f a))
-
-  rw [om_apply, map_sum]
-  simp only [hc]
-
 theorem commute_coeff_om (M : GMod n) (p : (Module.End ℂ (Fin n → M.V))[X])
     (h : ∀ y : ℂ, Commute (p.eval (algebraMap ℂ _ y)) (om M)) (k : ℕ) : Commute (p.coeff k) (om M) := by
   have h0 : p * C (om M) - C (om M) * p = 0 := eq_zero_of_eval _ fun y => by
@@ -264,7 +255,7 @@ theorem cayleyHam_of (H : QdetTens) : CayleyHam := by
   have hCom : ∀ j, Commute ((pC - Q).coeff j) (-om M - algebraMap ℂ _ (cn n)) := by
     intro j
     have h1 : Commute (pC.coeff j) (om M) := commute_coeff_om M pC
-      (fun y => by rw [hC]; exact commute_qdet_om M _) j
+      (fun y => by rw [hC]; exact _root_.GlobalTheory.CompanionTheory.RgExh.commute_compLeft_om M _) j
     have h2 : Commute (pC.coeff j) (-om M - algebraMap ℂ _ (cn n)) :=
       h1.neg_right.sub_right (commute_alg _ _)
     have h3 : ∀ z, Commute (algebraMap ℂ (Module.End ℂ (Fin n → M.V)) (Q0.coeff j)) z :=
@@ -283,6 +274,6 @@ theorem cayleyHam_of (H : QdetTens) : CayleyHam := by
   exact ⟨k, (smul_eq_zero.1 hz).resolve_left
     (pow_ne_zero _ (neg_ne_zero.2 (pow_ne_zero _ (by norm_num))))⟩
 
-theorem cayleyHam : CayleyHam := cayleyHam_of GlobalTheory.T.QuantumDeterminantTensor
+theorem cayleyHam : CayleyHam := cayleyHam_of _root_.GlobalTheory.CompanionTheory.RgExh.qdetTens
 
 end GlobalTheory.CompanionTheory.RgExhHecke.CayleyOm

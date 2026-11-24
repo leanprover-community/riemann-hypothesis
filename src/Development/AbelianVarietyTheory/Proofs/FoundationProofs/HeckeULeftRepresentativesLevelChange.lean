@@ -160,7 +160,7 @@ theorem lrep_repU_of_dvd (M l : ℕ) (hl : l.Prime) (hlM : l ∣ M) :
     · simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one] at e3 ⊢
       rw [e3]; simp [γ]; linarith
     · simpa [γ] using e2
-    · simp only [Fin.zero_eta, Fin.isValue, Fin.mk_one] at e4 ⊢
+    · simp only [Fin.isValue, Fin.mk_one] at e4 ⊢
       rw [e4]; simp [γ]; linarith
 
 theorem lrep_repU (L l : ℕ) (hl : l.Prime) :

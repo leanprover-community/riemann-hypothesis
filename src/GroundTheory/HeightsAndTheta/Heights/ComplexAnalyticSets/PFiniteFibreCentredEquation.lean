@@ -73,7 +73,7 @@ theorem FiniteFibreCentredEquation.centredPoly_eval (a : ℂ) {k : ℕ} (c : Fin
 theorem FiniteFibreCentredEquation.centredPoly_coeff (a : ℂ) {k : ℕ} (c : Fin k → ℂ) (m : ℕ) :
     (FiniteFibreCentredEquation.centredPoly a c).coeff m =
       ((X - C a) ^ k).coeff m + ∑ j : Fin k, c j * ((X - C a) ^ (j : ℕ)).coeff m := by
-  simp [FiniteFibreCentredEquation.centredPoly, finsetSum_coeff, coeff_C_mul]
+  simp [FiniteFibreCentredEquation.centredPoly, coeff_C_mul]
 
 theorem FiniteFibreCentredEquation.centredPoly_natDegree_lt (a : ℂ) {k : ℕ} (c : Fin k → ℂ) :
     (FiniteFibreCentredEquation.centredPoly a c).natDegree < k + 1 := by

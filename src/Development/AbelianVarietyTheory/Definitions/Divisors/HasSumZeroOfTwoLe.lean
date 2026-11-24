@@ -82,7 +82,7 @@ theorem modF_pos (y : (Af E)ˣ) : 0 < modF y :=
 
 theorem modF_princ (k : Eˣ) :
     modF (Units.map (algebraMap E (Af E)).toMonoidHom k) = (|((Algebra.norm ℚ (k : E) : ℚ) : ℝ)|)⁻¹ := by
-  apply _root_.GlobalTheory.CMVal.IdeleModule.modF_princ <;> assumption
+  apply _root_.GlobalTheory.CMVal.IdeleModule.modF_princ
 
 theorem hatO_integral {c : Ideal (OF E)} {y : Af E} (hy : y ∈ hatO c) (v : HeightOneSpectrum (𝓞 E)) :
     Valued.v (y v) ≤ 1 := by

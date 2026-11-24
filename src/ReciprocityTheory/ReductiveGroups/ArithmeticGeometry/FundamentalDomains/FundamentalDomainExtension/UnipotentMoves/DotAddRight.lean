@@ -102,7 +102,7 @@ lemma dot_adj {m n : ℕ} (A : Matrix (Fin m) (Fin n) ℂ) (a : Fin n → ℂ) (
 
 lemma norm_dot_le {n : ℕ} (u w : Fin n → ℂ) : ‖dot u w‖ ≤ en u * en w := by
   have h : dot u w = inner ℂ (WithLp.toLp 2 w : EuclideanSpace ℂ (Fin n)) (WithLp.toLp 2 u) := by
-    simp only [dot, PiLp.inner_apply, RCLike.inner_apply, PiLp.toLp_apply]
+    simp only [dot, PiLp.inner_apply, RCLike.inner_apply]
   rw [h, en, en, mul_comm]
   exact norm_inner_le_norm _ _
 

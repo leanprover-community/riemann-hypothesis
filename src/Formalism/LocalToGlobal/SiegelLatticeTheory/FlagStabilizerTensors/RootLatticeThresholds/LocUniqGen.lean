@@ -589,10 +589,10 @@ theorem gapOK_of_big (k r : ℕ) (hk : 1 ≤ k) (hN : 1801 ≤ 2 * r + k + 1) :
     have e1 : ((2 * r + k : ℕ) : ℝ) = 2 * (r : ℝ) + k := by push_cast; ring
     rw [e1]
     have := hb.2.1
-    convert this using 2 <;> ring
+    convert this using 2
   · unfold Formalism.FourierDecayAlt.ThreeDimData.AG Formalism.FourierDecayAlt.ThreeDimData.aOf
     have := hb.2.2
-    convert this using 2 <;> ring
+    convert this using 2
 
 end Inst
 

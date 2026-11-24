@@ -77,7 +77,6 @@ theorem tendsS_smul {σ : Type} (c : C) {f : ℕ → MvPowerSeries σ C} {F : Mv
   intro μ
   first
     | simp only [map_smul, smul_eq_mul]
-    | simp only [MvPowerSeries.coeff_smul]
   exact (tends_const c).mul (h μ)
 
 theorem tendsS_ite {σ : Type} (P : Prop) [Decidable P] {f : ℕ → MvPowerSeries σ C} {F : MvPowerSeries σ C}
@@ -112,22 +111,12 @@ private theorem eq_zero_of_tends_const_zero {y : C} (h : Tends V (fun _ => (0 : 
   have h2 := WithTop.coe_le_coe.mp h1
   linarith
 
-private theorem ge_zero_of_tends_of_forall_ge_zero {s : ℕ → C} {y : C} (h : Tends V s y) (hs : ∀ k, V.Ge 0 (s k)) :
-    V.Ge 0 y := by
-  obtain ⟨n0, hn0⟩ := h 0
-  have h1 : ((0 : ℝ) : WithTop ℝ) ≤ V.v (y - s n0) := hn0 n0 le_rfl
-  have h2 : ((0 : ℝ) : WithTop ℝ) ≤ V.v (s n0) := hs n0
-  have e : y = (y - s n0) + s n0 := by ring
-  show ((0 : ℝ) : WithTop ℝ) ≤ V.v y
-  rw [e]
-  exact le_trans (le_min h1 h2) (V.v.map_add _ _)
-
 theorem isCv_lim {σ : Type} {γ : ℕ → σ → PowerSeries C} {Γ : σ → PowerSeries C}
     (h : ∀ i, TendsS V (fun k => γ k i) (Γ i)) (hc : ∀ k, IsCv V (γ k)) : IsCv V Γ := by
   intro i
   have hcoef : ∀ n, Tends V (fun k => PowerSeries.coeff n (γ k i)) (PowerSeries.coeff n (Γ i)) :=
     fun n => tendsP (h i) n
-  refine ⟨?_, fun n => ge_zero_of_tends_of_forall_ge_zero (hcoef n) (fun k => (hc k i).2 n)⟩
+  refine ⟨?_, fun n => _root_.Formalism.L2.FormalSeriesBounds.RowTiePE0.Tends.ge0 (hcoef n) (fun k => (hc k i).2 n)⟩
   have e : ∀ k, PowerSeries.coeff 0 (γ k i) = 0 := fun k => by
     rw [PowerSeries.coeff_zero_eq_constantCoeff_apply]
     exact (hc k i).1
@@ -145,15 +134,12 @@ theorem constantCoeff_lin {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] 
   rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
   first
     | rw [map_smul, coeff_tyS_mv]
-    | rw [MvPowerSeries.coeff_smul, coeff_tyS_mv]
   simp
 
 private theorem hasSubst_of_constantCoeff_eq_zero' {σ τ : Type} [Finite σ] {a : σ → MvPowerSeries τ C}
     (ha : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) : MvPowerSeries.HasSubst a := by
   first
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero ha
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun s => by rw [ha s]; exact IsNilpotent.zero)
-    | exact MvPowerSeries.hasSubst_of_constantCoeff_nilpotent (fun s => by rw [ha s]; exact IsNilpotent.zero)
 
 theorem lim_mem {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] {κ : Type} [Fintype κ] (X : RawChart C d I κ)
     (hl : 2 ≤ V.l)

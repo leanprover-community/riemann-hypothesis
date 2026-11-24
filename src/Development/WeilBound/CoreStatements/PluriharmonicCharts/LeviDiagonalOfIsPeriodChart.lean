@@ -2,15 +2,17 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsTwiceDifferentiableAt
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogDetComparableGramBound
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogDetComparableGramBoundStatement
+public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.InFlagDomainOne
+public import Mathlib.LinearAlgebra.Matrix.Block
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.XPerCell
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
@@ -58,7 +60,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.AnalyticForms.LeviForms.HomDens
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodChartPotentialLeviForm
@@ -147,7 +148,7 @@ theorem plurRe_stepCorr {z0 : Fin e → ℂ} {b : (Fin e → ℂ) → Matrix (Fi
 theorem stepPot_unitary_mul {j : ℕ} {u : Matrix (Fin N) (Fin N) ℂ}
     (hu : gramOf (sigForm N j) u = diagonal fun i => ((sigForm N j i : ℝ) : ℂ))
     (i : Fin N) (g : Matrix (Fin N) (Fin N) ℂ) : stepPot N j i (u * g) = stepPot N j i g := by
-  have h k := (GlobalTheory.T.gram_log_unitary_triangular_invariance N (sigForm N j) k g u 1).1 hu
+  have h k := (_root_.GlobalTheory.CompanionTheory.Ar.PB.gramLog_inv N (sigForm N j) k g u 1).1 hu
   unfold stepPot
   simp only [h]
 
@@ -309,7 +310,6 @@ private theorem gramHead_det_ne_zero_of_inFlagDomain {j : ℕ} {c : Matrix (Fin 
   have hnonneg : 0 ≤ star (c *ᵥ (Bm *ᵥ z)) ⬝ᵥ (c *ᵥ (Bm *ᵥ z)) := by
     first
       | exact dotProduct_star_self_nonneg _
-      | exact Matrix.dotProduct_star_self_nonneg _
   have hy0 : y' = 0 := by
     by_contra h
     have h1 := hnq y' hys h
@@ -321,7 +321,6 @@ private theorem gramHead_det_ne_zero_of_inFlagDomain {j : ℕ} {c : Matrix (Fin 
       simp
     first
       | exact dotProduct_star_self_eq_zero.1 h1
-      | exact Matrix.dotProduct_star_self_eq_zero.1 h1
   have hx0 : Bm *ᵥ z = 0 := by
     have h1 : c⁻¹ *ᵥ (c *ᵥ (Bm *ᵥ z)) = Bm *ᵥ z := by
       rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul c hcu, Matrix.one_mulVec]
@@ -336,7 +335,7 @@ private theorem gramHead_det_ne_zero_of_inFlagDomain {j : ℕ} {c : Matrix (Fin 
     · simpa using h1
     · intro b _ hb
       have h2 : (s : ℕ) ≠ b := fun h => hb (Fin.ext h.symm)
-      simp [Fin.coe_castLE, h2]
+      simp [h2]
     · simp
   apply hz0
   funext o
@@ -371,7 +370,7 @@ private theorem star_quadForm_gramOf_swap (hd : Fin N → ℝ) (g : Matrix (Fin 
     star (star x ⬝ᵥ (gramOf hd g *ᵥ y)) = star y ⬝ᵥ (gramOf hd g *ᵥ x) := by
   rw [bilinForm_gramOf_eq_sum, bilinForm_gramOf_eq_sum, star_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  simp only [star_mul', star_star, Complex.star_def, Complex.conj_ofReal, Complex.conj_conj]
+  simp only [star_mul', Complex.star_def, Complex.conj_ofReal, Complex.conj_conj]
   ring
 
 private theorem im_quadForm_gramOf_eq_zero (hd : Fin N → ℝ) (g : Matrix (Fin N) (Fin N) ℂ) (y : Fin N → ℂ) :
@@ -543,7 +542,7 @@ private theorem exists_triangular_gram_orthonormal_of_inFlagDomain {j : ℕ} {g 
   | zero =>
     intro _
     refine ⟨fun a => Pi.single a 1, fun a m ham => ?_, fun a => by simp, fun a b hab => ?_⟩
-    · simp [Pi.single_apply, (ne_of_lt ham).symm]
+    · simp [(ne_of_lt ham).symm]
     · omega
   | succ k ih =>
     intro hk
@@ -644,8 +643,7 @@ private theorem exists_triangular_gram_orthonormal_of_inFlagDomain {j : ℕ} {g 
             field_simp
             ring
           · have hb : (b : ℕ) < k := hlow b hb1 hb2
-            simp only [hv', if_pos rfl, if_neg hb1, if_neg hb2, if_neg hkb, Matrix.mulVec_smul,
-              dotProduct_smul, star_smul, smul_dotProduct, smul_eq_mul, hstar]
+            simp only [hv', if_pos rfl, if_neg hb1, if_neg hb2, if_neg hkb, star_smul, smul_dotProduct, smul_eq_mul, hstar]
             have h1 := hor b kk (Or.inl hb)
             rw [if_neg hb1] at h1
             rw [← star_quadForm_gramOf_swap, h1]
@@ -658,7 +656,7 @@ private theorem exists_triangular_gram_orthonormal_of_inFlagDomain {j : ℕ} {g 
         have hak : (a : ℕ) < k := hlow a ha1 ha2
         by_cases hb1 : b = kk
         · subst hb1
-          simp only [hv', if_neg ha1, if_neg ha2, if_pos rfl, if_neg ha1, Matrix.mulVec_smul,
+          simp only [hv', if_neg ha2, if_pos rfl, if_neg ha1, Matrix.mulVec_smul,
             dotProduct_smul, smul_eq_mul]
           rw [hor a kk (Or.inl hak), if_neg ha1]
           simp
@@ -688,7 +686,7 @@ private theorem exists_triangular_gram_orthonormal_of_inFlagDomain {j : ℕ} {g 
       · rw [← star_quadForm_gramOf_swap, main b a hab]
         by_cases e : b = a
         · subst e
-          simp [Complex.star_def, Complex.conj_ofReal]
+          simp [Complex.conj_ofReal]
         · simp [e, Ne.symm e]
 private theorem exists_unitary_mul_blockTriangular_of_inFlagDomain {j : ℕ} (hj : j ≤ N) {g : Matrix (Fin N) (Fin N) ℂ}
     (hg : InFlagDomain N j g) :
@@ -758,7 +756,7 @@ private theorem inFlagDomain_inv_mul_mul {j : ℕ} {u g c : Matrix (Fin N) (Fin 
     have hneg : ∀ (A B : Matrix {a : Fin N // (a : ℕ) < N - j} {a : Fin N // (a : ℕ) < N - j} ℂ),
         -(Bᴴ * A * B) = Bᴴ * (-A) * B := by
       intro A B
-      simp [Matrix.mul_neg, Matrix.neg_mul]
+      simp
     rw [hneg]
     refine Matrix.PosDef.conjTranspose_mul_mul_same hgP ?_
     rw [Matrix.mulVec_injective_iff_isUnit, Matrix.isUnit_iff_isUnit_det]
@@ -966,7 +964,7 @@ private theorem levi_cellMat_potential_at_zero_eq_sum {j : ℕ} (hj : j ≤ N) (
     have hb := b.isLt
     dsimp only
     simp only [sigForm, rel]
-    split_ifs <;> first | (exfalso; omega) | ring | norm_num
+    split_ifs <;> first | (exfalso; omega) | ring
   · have k1 : N ≤ N := le_refl N
     have k2 : N - j ≤ N := Nat.sub_le N j
     have k3 : (i : ℕ) + 1 - j ≤ N := by omega
@@ -995,7 +993,7 @@ private theorem levi_cellMat_potential_at_zero_eq_sum {j : ℕ} (hj : j ≤ N) (
     have hb := b.isLt
     dsimp only
     simp only [sigForm, rel]
-    split_ifs <;> first | (exfalso; omega) | ring | norm_num
+    split_ifs <;> first | (exfalso; omega) | ring
 
 theorem levi_of_cell {j : ℕ} (hj : j ≤ N) (i : Fin N) {z0 : Fin e → ℂ} {f : (Fin e → ℂ) → ℝ}
     {z : (Fin e → ℂ) → Pairs N → ℂ} (hz : AnalyticAt ℂ z z0) (hz0 : z z0 = 0)

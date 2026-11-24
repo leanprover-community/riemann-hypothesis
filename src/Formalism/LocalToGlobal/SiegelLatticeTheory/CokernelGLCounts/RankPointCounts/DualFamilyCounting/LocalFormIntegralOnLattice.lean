@@ -84,7 +84,6 @@ theorem base_change_smul_integral {δ : ∀ p : PlF D, (D.s.atP p).Fp} (hA : Agr
     congr 1
     first
     | exact (algebraMap_smul D.host.E o x).symm
-    | rfl
 
 theorem local_form_integral_on_lattice (Λ : Submodule (𝓞 D.host.E) (VS D).V)
     (hcjO : ∀ a ∈ (M p).L.O, (M p).L.cj a ∈ (M p).L.O)

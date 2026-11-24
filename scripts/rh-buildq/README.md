@@ -4,14 +4,14 @@ The `fragment` mode of `.github/workflows/build-pr.yml` builds a list of Lake ta
 commit on a chosen self-hosted runner of the RiemannHypothesisBuild group. Some of these
 runners belong to donors, and the commit may be an untrusted pull request, so the build runs
 sandboxed and the runner never holds cache credentials (see "Security model" below). The
-newly built modules are uploaded as a GitHub Actions artifact. When the dispatcher sets
-`fragment_publish=true` for a commit they trust, the `fragment_publish` job on a GitHub-hosted
-runner verifies them and publishes them to the R2 cache when the build job ends. Chunks of an `rh-shard` plan can be built on several machines; each picks up what the
+newly built modules are uploaded as a GitHub Actions artifact, and the `fragment_publish` job
+on a GitHub-hosted runner verifies them and publishes them to the R2 cache when the build job
+ends. Chunks of an `rh-shard` plan can be built on several machines; each picks up what the
 others have already published when it starts or is rerun. Dispatch it from `main`:
 
     gh workflow run build-pr.yml --ref main -f mode=fragment -f pr_number=0 \
       -f fragment_commit=<sha> -f fragment_targets='Mod.A Mod.B' -f fragment_runner=<label> \
-      [-f fragment_publish=true]
+      [-f fragment_publish=false]
 
 - `fragment_commit` is a SHA on GitHub, or `SHA BASE HEAD DATE PR` for the deterministic
   merge commit that `rh-buildq start <PR>` builds. The job recreates that merge and checks
@@ -21,8 +21,8 @@ others have already published when it starts or is rerun. Dispatch it from `main
   points at an `rh-shard-plan/1` plan, append `#<chunk id>`. The job then builds that chunk's
   `targets`.
 - `fragment_jobs` sets `LEAN_NUM_THREADS` (default: all cores).
-- `fragment_publish` (default `false`) publishes the built modules to the shared cache. Set it
-  only for a commit whose code you trust (see "Security model").
+- `fragment_publish` (default `true`) publishes the built modules to the shared cache. Set it
+  to `false` to build without publishing.
 - The commit must use `main`'s `lean-toolchain` and `lake-manifest.json` exactly. Commits that
   change the toolchain or a dependency are refused; build them on trusted infrastructure.
 
@@ -66,7 +66,7 @@ Each job runs these steps:
    number of staged modules, the outputs neither cached nor staged, and the timings. The job
    uploads it as the artifact `fragment-result-<run>-<attempt>`, together with the gzipped
    build log.
-5. With `fragment_publish=true`, the `fragment_publish` job (`publish-fragment.py`) runs
+5. Unless `fragment_publish=false`, the `fragment_publish` job (`publish-fragment.py`) runs
    after the build job, also when it failed or was cancelled. It verifies the stage, then uploads the artifacts as
    content-addressed `artifacts/...` objects and records them in the
    `rh-buildq/maps/<sha>.jsonl` and `rh-buildq/pool/<toolchain>.jsonl` maps, which it updates
@@ -123,10 +123,9 @@ Lean's elaborator, all at revisions the commit chooses. The job therefore splits
 - What the publisher cannot check without rebuilding is that a module's input hash really
   yields its artifact. Code in the build can write any input hash into a `.trace` file and
   pair it with any artifact, so a hostile commit could publish an artifact under the input
-  hash of a module of another commit and poison the shared pool for later builds. Until that
-  is addressed, `fragment_publish` defaults to `false` and only runs when the dispatcher
-  declares the commit trusted. Untrusted commits can still be built (for example to see
-  whether they compile); their outputs are not published.
+  hash of a module of another commit and poison the shared pool for later builds. The shared
+  cache is fully trusted by policy: everything built is published, so `fragment_publish`
+  defaults to `true`. Dispatch with `fragment_publish=false` to build without publishing.
 Since publication happens at the end of the build job, other fragments see a fragment's
 modules only once it has finished (or been cancelled), not while it builds. Every run builds
 on a private copy of the prepared dependencies, so that one run's sandbox cannot alter what
@@ -139,7 +138,7 @@ code only in the sandbox of `scripts/ci-build.py`: offline, `--unshare-all`, `--
 whose lakefile, manifest or toolchain differ from `main`, prepares dependencies from `main`'s
 own lakefile outside the sandbox, publishes nothing and holds no cache credentials.
 
-`python3 scripts/rh-buildq/test_sandbox.py` checks the sandbox with a hostile lakefile that
+`python3 scripts/tests/rh-buildq/test_sandbox.py` checks the sandbox with a hostile lakefile that
 tries to write into `$HOME`, read `~/.ssh`, read the runner's files and connect to the
 network: all fail, and a normal build of the same project succeeds. It checks that the
 sandbox cannot reach loopback services, the metadata address or the host's abstract Unix

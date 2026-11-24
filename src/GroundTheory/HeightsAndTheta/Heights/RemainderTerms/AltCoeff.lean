@@ -271,7 +271,7 @@ theorem exists_perm_strictAnti {u : Fin m → ℕ} (hu : Function.Injective u) :
 theorem IsAlt.eq_zero_of_cf {P : MvPolynomial (Fin m) ℚ} (hP : IsAlt P)
     (h : ∀ l : Fin m → ℕ, StrictAnti l → cf l P = 0) : P = 0 := by
   ext d
-  simp only [AddMonoidAlgebra.coeff_zero, Pi.zero_apply]
+  simp only [AddMonoidAlgebra.coeff_zero]
   have hd : AddMonoidAlgebra.coeff P d = cf (⇑d) P := by unfold cf; simp
   rw [hd]
   by_cases hinj : Function.Injective (⇑d)

@@ -83,7 +83,7 @@ theorem blockEndMinors_of_cell {D : D7} (Z : Matrix (Fin (D.R.rS + 1)) (Fin (D.R
     BlockEndMinorsIntegral (toSig γ) := by
   obtain ⟨L, U, hL, hU, rfl⟩ := hc
   intro (a : Fin (toComp γ).length)
-  have key := Formalism.HermitianLatticeCounting.Final.ExpansionTerms.integral_evaluation_fourth D.host.E (integralClosure ℤ D.host.E).toSubring (D.R.rS + 1)
+  have key := _root_.Formalism.HermitianLatticeCounting.P.orbit_integral_entries D.host.E (integralClosure ℤ D.host.E).toSubring (D.R.rS + 1)
     (toComp γ) (toT γ) (toT_ne γ) L U
     ⟨fun i => (hL i i).2 rfl, fun i j hij => (hL i j).1 hij⟩
     ⟨fun i => (hU i i).2 rfl, fun i j hij => (hU i j).1 hij⟩
