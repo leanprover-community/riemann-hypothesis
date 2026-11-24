@@ -969,10 +969,10 @@ private theorem le_constants_proof : Formalism.FourierDecayAlt.LE.Constants := b
     mul_le_mul_of_nonneg_left e3 hC₂.le
   have e5 : 0 ≤ C₂ * ((N:ℝ) * ((r:ℝ) + 1) ^ 2) := by positivity
   refine ⟨?_, ?_, ?_⟩
-  · nlinarith
+  · linarith [mul_nonneg hC₂.le hN2Q, mul_nonneg hC₂.le hkNQ]
   · push_cast
-    nlinarith
-  · nlinarith
+    linarith [mul_nonneg hC₂.le hN2Q, mul_nonneg hC₂.le hkNQ]
+  · linarith [mul_nonneg hC₂.le hN2Q, mul_nonneg hC₂.le hkNQ]
 
 private theorem le_constSign_proof : Formalism.FourierDecayAlt.LE.ConstSign := by
   intro n lam α β h
@@ -1003,7 +1003,7 @@ private theorem le_boxesFit_proof : Formalism.FourierDecayAlt.LE.BoxesFit := by
   intro S hL hfit
   have hL0 : 0 < S.L := by linarith
   have hN0 : (0:ℝ) ≤ S.Ntot := Nat.cast_nonneg _
-  have hαβ : S.α ≤ S.β := by nlinarith [mul_nonneg hN0 hL0.le]
+  have hαβ : S.α ≤ S.β := by linarith [mul_nonneg hN0 hL0.le]
   have hmid : ∀ a, a < S.Ntot →
       S.box a ⊆ Set.Icc (S.α + (S.β - S.α) / 3) (S.β - (S.β - S.α) / 3) := by
     intro a ha x hx
@@ -1015,14 +1015,14 @@ private theorem le_boxesFit_proof : Formalism.FourierDecayAlt.LE.BoxesFit := by
     have h2 := mul_le_mul_of_nonneg_right ha' hL0.le
     constructor
     · linarith
-    · nlinarith
+    · linarith
   have hsep : ∀ a b, a < b → ∀ x ∈ S.box a, ∀ y ∈ S.box b, S.L ≤ y - x := by
     intro a b hab x hx y hy
     have hab1 : a + 1 ≤ b := hab
     have hab' : (a:ℝ) + 1 ≤ b := by exact_mod_cast hab1
     obtain ⟨hx1, hx2⟩ := hx
     obtain ⟨hy1, hy2⟩ := hy
-    nlinarith [mul_le_mul_of_nonneg_right hab' hL0.le]
+    linarith [mul_le_mul_of_nonneg_right hab' hL0.le]
   refine ⟨hmid, hsep, ?_⟩
   have hmem : ∀ w : List ℝ, S.OnBoxes w → ∀ Z ∈ w, ∃ j, j < w.length ∧ Z ∈ S.box j := by
     intro w
@@ -1122,12 +1122,12 @@ private theorem le_eFromConstituents_proof : Formalism.FourierDecayAlt.LE.LemmaE
   have hN1' : 1 ≤ S.Ntot := by omega
   have hN1 : (1:ℝ) ≤ S.Ntot := by exact_mod_cast hN1'
   have hr0 : (0:ℝ) ≤ S.r := Nat.cast_nonneg _
-  have hQ : (1:ℝ) ≤ ((S.r:ℝ) + 1) ^ 2 := by nlinarith
-  have hNQ : (1:ℝ) ≤ (S.Ntot:ℝ) * ((S.r:ℝ) + 1) ^ 2 := by nlinarith
+  have hQ : (1:ℝ) ≤ ((S.r:ℝ) + 1) ^ 2 := one_le_pow₀ (by linarith)
+  have hNQ : (1:ℝ) ≤ (S.Ntot:ℝ) * ((S.r:ℝ) + 1) ^ 2 := one_le_mul_of_one_le_of_one_le hN1 hQ
   have hNQ0 : (0:ℝ) ≤ (S.Ntot:ℝ) * ((S.r:ℝ) + 1) ^ 2 := by linarith
   have hL64 : 64 ≤ S.L := by
     rw [hL]
-    nlinarith [mul_le_mul hC₂64 hNQ (by norm_num) (by linarith)]
+    linarith [mul_le_mul hC₂64 hNQ (by norm_num) (by linarith)]
   have hL2 : 2 < S.L := by linarith
   have hL0 : 0 < S.L := by linarith
   obtain ⟨-, -, h6⟩ := hConst S.k S.r S.Ntot C₂ C₆ (S.β - S.α) hN (by linarith) hC₆ hI
@@ -1136,7 +1136,7 @@ private theorem le_eFromConstituents_proof : Formalism.FourierDecayAlt.LE.LemmaE
     linarith
   have hσ : (4:ℝ) ≤ 4 * (S.Ntot:ℝ) := by linarith
   have hclaims := hAll hStep hInd S (4 * (S.Ntot:ℝ)) CR Cd CP hσ hCR hCd hCP hL0
-    (by rw [hL]; nlinarith [mul_le_mul_of_nonneg_right hC₂ hNQ0]) hJL2 hImp
+    (by rw [hL]; linarith [mul_le_mul_of_nonneg_right hC₂ hNQ0, le_mul_of_one_le_right (mul_nonneg (add_nonneg (add_nonneg hCR hCd) hCP) (show (0 : ℝ) ≤ 4 * (S.Ntot : ℝ) by linarith)) hQ]) hJL2 hImp
   have hBox := hBL hLB hLA hLL2 hPL hCL2 hLeib hCut S hL0 hFam hThm hclaims
   exact hRed hGrid hSign hFit S hL2 hfit hRO hI1 hBox
 
@@ -1204,7 +1204,7 @@ private theorem le_reduceToBoxes_proof : Formalism.FourierDecayAlt.LE.ReduceToBo
         mul_nonneg (Nat.cast_nonneg _) (div_nonneg hL0.le hc.le)
       have h1 : (i:ℝ) * (S.L / (((S.k + 2 * S.r + 1 : ℕ) : ℝ) + 1)) ≤ S.L := by
         rw [mul_div_assoc', div_le_iff₀ hc]
-        nlinarith [mul_le_mul_of_nonneg_right hi' hL0.le]
+        linarith [mul_le_mul_of_nonneg_right hi' hL0.le]
       constructor
       · linarith
       · linarith
@@ -1311,7 +1311,7 @@ theorem Formalism.FourierDecayAlt.P.ratio_middle_range : Formalism.FourierDecayA
     have h2 : L ≤ L / D * |Y + s + lam t| := by
       rw [div_mul_eq_mul_div, le_div_iff₀ hD0]
       exact mul_le_mul_of_nonneg_left (hfac t) hL
-    nlinarith
+    linarith
   have hprod : |∏ t, (Y + lam t)| ≤ (1 + L / D) ^ n * |∏ t, (Y + s + lam t)| := by
     rw [Finset.abs_prod, Finset.abs_prod]
     calc ∏ t, |Y + lam t| ≤ ∏ t, ((1 + L / D) * |Y + s + lam t|) :=
@@ -1337,7 +1337,7 @@ theorem Formalism.FourierDecayAlt.P.imported_results_hold : Formalism.FourierDec
   have hN1 : (1:ℝ) ≤ S.Ntot := by
     have : 1 ≤ S.Ntot := by omega
     exact_mod_cast this
-  have hαβ : S.α < S.β := by nlinarith
+  have hαβ : S.α < S.β := by linarith [mul_pos (show (0 : ℝ) < S.Ntot by linarith) hL0]
   have hmid := (hFit S hL hfit).1 w.length hlen
   have hJ : ∀ Y ∈ (S.step w).J,
       Y ∈ Set.Icc (S.α + (S.β - S.α) / 3) (S.β - (S.β - S.α) / 3) := by
@@ -1357,7 +1357,7 @@ theorem Formalism.FourierDecayAlt.P.imported_results_hold : Formalism.FourierDec
     intro h0
     have hYm := hJ Y hY
     apply hRO s
-    refine ⟨?_, ?_⟩ <;> nlinarith [hYm.1, hYm.2]
+    refine ⟨?_, ?_⟩ <;> linarith [hYm.1, hYm.2]
   · intro Y s hY hYs
     have hYm := hJ Y hY
     have hYsm := hJ (Y + s) hYs

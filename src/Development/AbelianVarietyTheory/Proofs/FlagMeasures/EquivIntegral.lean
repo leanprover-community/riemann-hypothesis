@@ -283,7 +283,7 @@ namespace GlobalTheory.GramHeight
 theorem max_mul_le {c y : ℝ} (hc : 1 ≤ c) : max 1 (c * y) ≤ c * max 1 y := by
   have hy : 1 ≤ max 1 y := le_max_left _ _
   refine max_le ?_ ?_
-  · nlinarith
+  · exact one_le_mul_of_one_le_of_one_le hc hy
   · exact mul_le_mul_of_nonneg_left (le_max_right _ _) (by linarith)
 
 theorem one_le_prod' {ι : Type} (s : Finset ι) (x : ι → ℝ) (h : ∀ i ∈ s, 1 ≤ x i) : 1 ≤ ∏ i ∈ s, x i := by
@@ -324,7 +324,7 @@ theorem PP_inv_le {x : D.host.E} (hx : IsIntegral ℤ x) : ∏ τ, max 1 ‖embS
       have hsq := GlobalTheory.RealPlaces.prod_norm D x
       have hp0 : 0 ≤ ∏ τ, ‖embS D τ x‖ := Finset.prod_nonneg (fun τ _ => norm_nonneg _)
       rw [Finset.prod_pow] at hsq
-      nlinarith
+      exact (sq_le_sq₀ zero_le_one hp0).mp (by linarith)
     calc ∏ τ, max 1 ‖embS D τ x‖⁻¹ ≤ (∏ τ, max 1 ‖embS D τ x‖⁻¹) * ∏ τ, ‖embS D τ x‖ :=
           le_mul_of_one_le_right (Finset.prod_nonneg fun _ _ => le_trans zero_le_one (le_max_left _ _)) hN
       _ = ∏ τ, (max 1 ‖embS D τ x‖⁻¹ * ‖embS D τ x‖) := (Finset.prod_mul_distrib).symm
@@ -458,7 +458,7 @@ theorem G_le (Z : GramM D) {T T' : ℝ} (hT : 0 ≤ T) (hT' : 0 ≤ T') :
       exact mul_le_of_le_one_right (norm_nonneg _) (inv_le_one_of_one_le₀ hp)
     have h0 : 0 ≤ absDl D Z (D.R.rS + 1) τ := by rw [absDl_eq]; positivity
     have hG : Gz D T T' Z τ ≤ absDl D Z (D.R.rS + 1) τ ^ 2 := by
-      simp only [Gz]; nlinarith [sq_nonneg (absDl D Z D.R.rS τ), mul_nonneg hT hT']
+      simp only [Gz]; linarith [mul_nonneg (mul_nonneg hT hT') (sq_nonneg (absDl D Z D.R.rS τ))]
     have hm := le_max_right 1 ‖embS D τ (leadMinorE Z (D.R.rS + 1))‖
     refine max_le (one_le_pow₀ (le_max_left _ _)) ?_
     calc Gz D T T' Z τ ≤ absDl D Z (D.R.rS + 1) τ ^ 2 := hG
@@ -548,7 +548,7 @@ theorem G_inv_le (Z : GramM D) (h : ∀ a b, IsIntegral ℤ (Z a b)) (hr : 1 ≤
       have hTP := mul_le_mul_of_nonneg_left (hy2.trans hyP) (by positivity : (0:ℝ) ≤ (T : ℝ) * T')
       have hTP' := mul_le_mul_of_nonneg_left hP1 (by positivity : (0:ℝ) ≤ (T : ℝ) * T')
       have hn0' : 0 ≤ (T : ℝ) * T' * ‖embS D τ (leadMinorE Z D.R.rS)‖ ^ 2 := by positivity
-      refine max_le (by nlinarith) (abs_le.mpr ⟨by nlinarith, by nlinarith⟩)
+      refine max_le (by nlinarith) (abs_le.mpr ⟨by linarith [sq_nonneg ‖embS D τ (leadMinorE Z (D.R.rS + 1))‖], by nlinarith⟩)
     calc PP D (leadMinorE Z (D.R.rS + 1) * star (leadMinorE Z (D.R.rS + 1)) - ((T : D.host.E) * (T' : D.host.E)) * (leadMinorE Z D.R.rS * star (leadMinorE Z D.R.rS))) = ∏ τ, max 1 ‖embS D τ (leadMinorE Z (D.R.rS + 1) * star (leadMinorE Z (D.R.rS + 1)) - ((T : D.host.E) * (T' : D.host.E)) * (leadMinorE Z D.R.rS * star (leadMinorE Z D.R.rS)))‖ := rfl
       _ ≤ ∏ τ, ((2 * T * T') * ((max 1 ‖embS D τ (leadMinorE Z (D.R.rS + 1))‖) ^ 2 * (max 1 ‖embS D τ (leadMinorE Z D.R.rS)‖) ^ 2)) :=
           Finset.prod_le_prod₀ (fun τ _ => le_trans zero_le_one (le_max_left _ _)) (fun τ _ => hτ τ)
@@ -623,7 +623,7 @@ theorem minors_le (Z Z₂ : GramM D) (h : ∀ a b, IsIntegral ℤ (Z a b)) (he :
     refine Finset.prod_le_one₀ (fun a _ => mul_nonneg (rho_bounds D _).1.le (rho_bounds D _).1.le) (fun a _ => ?_)
     have h1 := rho_bounds D (I a)
     have h2 := rho_bounds D (J a)
-    nlinarith [h1.1, h1.2.1, h2.1, h2.2.1]
+    exact (mul_le_mul_of_nonneg_left h2.2.1 h1.1.le).trans (by linarith [h1.2.1])
   have hj : j ≤ D.R.rS + 1 := by simpa using Fintype.card_le_of_embedding I.toEmbedding
   have hRinv : (∏ a, (rhoF D (I a) * rhoF D (J a)))⁻¹ ≤ Y := by
     rw [← Finset.prod_inv_distrib]
@@ -634,7 +634,7 @@ theorem minors_le (Z Z₂ : GramM D) (h : ∀ a b, IsIntegral ℤ (Z a b)) (he :
             exact mul_le_mul (rho_bounds D _).2.2 (rho_bounds D _).2.2 (inv_nonneg.mpr (rho_bounds D _).1.le) (by positivity)
       _ = D.host.rdE ^ (2 * (D.R.rS + 1) * j) := by
           rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin, ← pow_add, ← pow_mul]; ring_nf
-      _ ≤ D.host.rdE ^ (2 * (D.R.rS + 1) ^ 2) := pow_le_pow_right₀ hrd (by nlinarith)
+      _ ≤ D.host.rdE ^ (2 * (D.R.rS + 1) ^ 2) := pow_le_pow_right₀ hrd (by rw [sq, ← mul_assoc]; exact Nat.mul_le_mul_left _ hj)
       _ ≤ Y := hY
   constructor
   · calc ∏ τ, max 1 (UnitaryVolumeMass.absMinor D Z₂ I J τ) ≤ ∏ τ, max 1 ‖embS D τ (Z₂.submatrix I J).det‖ := by
@@ -690,7 +690,8 @@ theorem final_le (Z : GramM D) {b : ℝ} (hb : 1 ≤ b) (n : ℕ)
         refine mul_le_mul (pow_le_pow_right₀ hb ?_) (pow_le_pow_right₀ hs1 (by norm_num)) (pow_nonneg hs0 2)
           (pow_nonneg hb0.le _)
         have hexp : (2 * n + 5) + (1 + (2 * n + 7)) * D.R.m ≤ (2 * n + 7) * (2 * n + 7) * D.R.m := by
-          nlinarith [Nat.mul_le_mul_left n hm2, Nat.zero_le (n * n * D.R.m), Nat.zero_le (n * D.R.m)]
+          zify at hm2 ⊢
+          linarith [mul_nonneg (sq_nonneg (n : ℤ)) (show (0 : ℤ) ≤ D.R.m by linarith), mul_nonneg (Int.natCast_nonneg n) (show (0 : ℤ) ≤ (D.R.m : ℤ) - 2 by linarith), Int.natCast_nonneg n]
         have := Nat.mul_le_mul_left (D.R.m ^ 2 * D.R.f) hexp
         have e2 : (D.R.rS + 1) * 2 = D.R.m := by omega
         calc D.R.m ^ 2 * (2 * n + 5) * D.R.f + (D.R.m ^ 2 + (2 * n + 7) * D.R.m ^ 2) * ((D.R.rS + 1) * D.R.f) * 2
@@ -704,7 +705,7 @@ theorem const_le {b ρ : ℝ} (hb : 2 ≤ b) (r n : ℕ) (h0 : 0 ≤ ρ) (hρ : 
   have h1 : ρ ^ (2 * (r + 1)) ≤ b ^ ((n + 2) * (2 * (r + 1))) := by
     rw [pow_mul b (n + 2)]; exact pow_le_pow_left₀ h0 hρ _
   have h2 : (4:ℝ) ^ (r + 1) ≤ b ^ (2 * (r + 1)) := by
-    rw [pow_mul]; exact pow_le_pow_left₀ (by norm_num) (by nlinarith) _
+    rw [pow_mul]; exact pow_le_pow_left₀ (by norm_num) (by linarith [pow_le_pow_left₀ (by norm_num) hb 2]) _
   have h3 : ((((r + 1).factorial : ℕ) : ℝ)) ^ 2 ≤ b ^ (2 * (r + 1) ^ 2) := by
     have hf : (((r + 1).factorial : ℕ) : ℝ) ≤ ((r + 1 : ℕ) : ℝ) ^ (r + 1) := by
       exact_mod_cast Nat.factorial_le_pow (r + 1)
@@ -718,7 +719,7 @@ theorem const_le {b ρ : ℝ} (hb : 2 ≤ b) (r n : ℕ) (h0 : 0 ≤ ρ) (hρ : 
       ≤ b ^ (2 * (r + 1)) * b ^ (2 * (r + 1) ^ 2) * b ^ ((n + 2) * (2 * (r + 1))) :=
         mul_le_mul (mul_le_mul h2 h3 (by positivity) (by positivity)) h1 (by positivity) (by positivity)
     _ = b ^ (2 * (r + 1) + 2 * (r + 1) ^ 2 + (n + 2) * (2 * (r + 1))) := by rw [pow_add, pow_add]
-    _ ≤ b ^ ((2 * r + 2) ^ 2 * (n + 4)) := pow_le_pow_right₀ hb1 (by nlinarith [Nat.zero_le (r * n)])
+    _ ≤ b ^ ((2 * r + 2) ^ 2 * (n + 4)) := pow_le_pow_right₀ hb1 (by zify; linarith [mul_nonneg (Int.natCast_nonneg n) (sq_nonneg (r : ℤ)), mul_nonneg (Int.natCast_nonneg n) (Int.natCast_nonneg r), sq_nonneg (r : ℤ), Int.natCast_nonneg n, Int.natCast_nonneg r])
     _ = (b ^ ((2 * r + 2) ^ 2)) ^ (n + 4) := by rw [pow_mul]
 
 theorem height_bounds : ∀ Cg cb Cu cT CT C0 A : ℝ, ∃ C : ℝ, 1 ≤ C ∧ ∀ (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl : ℝ), 1 ≤ Cl → Formalism.MainNotions.S.UnitaryVolumeMass.stHH D large₂ u u' C' Cl Cg cb Cu cT CT C0 A C := by
@@ -747,7 +748,7 @@ theorem height_bounds : ∀ Cg cb Cu cT CT C0 A : ℝ, ∃ C : ℝ, 1 ≤ C ∧ 
     exact (Real.log_le_iff_le_exp (by linarith)).mp h1
   have hY : D.host.rdE ^ (2 * (D.R.rS + 1) ^ 2) ≤ (large₂.sc.b ^ (D.R.m ^ 2)) := by
     refine (pow_le_pow_left₀ (by linarith) hrdb _).trans (pow_le_pow_right₀ hb1 ?_)
-    rw [hm]; nlinarith
+    rw [hm]; zify; linarith [sq_nonneg (D.R.rS : ℤ), Int.natCast_nonneg D.R.rS]
   have hB1 : 1 ≤ (large₂.sc.b ^ (D.R.m ^ 2)) := one_le_pow₀ hb1
   have hB0 : 0 ≤ (large₂.sc.b ^ (D.R.m ^ 2)) := by linarith
   have hZint : ∀ a b, IsIntegral ℤ ((ZhatL (lf D F0) F') a b) := fun a b => zhat_integral D F0 Λ hΛ F' hF' a b
@@ -760,7 +761,7 @@ theorem height_bounds : ∀ Cg cb Cu cT CT C0 A : ℝ, ∃ C : ℝ, 1 ≤ C ∧ 
     push_cast
     have e1 : CT * (D.R.m : ℝ) ≤ (N : ℝ) * D.R.m := mul_le_mul_of_nonneg_right hCT (by linarith)
     have e2 : (N : ℝ) * D.R.m ≤ (N : ℝ) * (D.R.m : ℝ) ^ 2 :=
-      mul_le_mul_of_nonneg_left (by nlinarith) (N.cast_nonneg)
+      mul_le_mul_of_nonneg_left (le_self_pow₀ (by linarith) two_ne_zero) (N.cast_nonneg)
     linarith
   refine ⟨?_, ?_, ?_, ?_⟩
   · calc NT D u = ((D.mem u).A.T : ℝ) ^ D.R.f := rfl
@@ -806,7 +807,7 @@ theorem height_bounds : ∀ Cg cb Cu cT CT C0 A : ℝ, ∃ C : ℝ, 1 ≤ C ∧ 
     have hfb : (D.R.f : ℝ) ≤ large₂.sc.b ^ N := by
       have hk1 : (1 : ℝ) ≤ D.R.k := by exact_mod_cast (hf1.trans hfk)
       have hfk' : (D.R.f : ℝ) ≤ D.R.k := by exact_mod_cast hfk
-      have h1 : (D.R.f : ℝ) ≤ (D.R.k : ℝ) * large₂.sc.b := by nlinarith
+      have h1 : (D.R.f : ℝ) ≤ (D.R.k : ℝ) * large₂.sc.b := hfk'.trans (le_mul_of_one_le_right (by linarith) hb1)
       have h2 : (D.R.k : ℝ) * large₂.sc.b ≤ ((D.R.k : ℝ) * large₂.sc.b) ^ 8 :=
         le_self_pow₀ (one_le_mul_of_one_le_of_one_le hk1 hb1) (by norm_num)
       have h3 : ((D.R.k : ℝ) * large₂.sc.b) ^ 8 ≤ large₂.sc.b ^ Cg := hkb.trans hg1
@@ -818,7 +819,7 @@ theorem height_bounds : ∀ Cg cb Cu cT CT C0 A : ℝ, ∃ C : ℝ, 1 ≤ C ∧ 
       have h1 : ((finrank ℚ D.host.E : ℕ) : ℝ) ≤ (large₂.sc.b ^ (N + 1)) ^ 2 := by
         rw [hfr]; push_cast
         calc 2 * (D.R.f : ℝ) ≤ 2 * large₂.sc.b ^ N := by linarith
-          _ ≤ large₂.sc.b * large₂.sc.b ^ N := by nlinarith [pow_nonneg hb0.le N]
+          _ ≤ large₂.sc.b * large₂.sc.b ^ N := mul_le_mul_of_nonneg_right hb2 (pow_nonneg hb0.le N)
           _ = large₂.sc.b ^ (N + 1) := by ring
           _ ≤ (large₂.sc.b ^ (N + 1)) ^ 2 := le_self_pow₀ (one_le_pow₀ hb1) (by norm_num)
       calc Real.sqrt (finrank ℚ D.host.E) ≤ Real.sqrt ((large₂.sc.b ^ (N + 1)) ^ 2) := Real.sqrt_le_sqrt h1
